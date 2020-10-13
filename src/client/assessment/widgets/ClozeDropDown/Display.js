@@ -11,7 +11,7 @@ import {
   orderBy,
 } from 'lodash'
 import styled, { withTheme } from 'styled-components'
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/es5/react-jsx-parser.min'
 
 import {
   helpers,

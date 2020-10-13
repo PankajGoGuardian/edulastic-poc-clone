@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react'
 import { cloneDeep, get } from 'lodash'
 import uuid from 'uuid/v4'
 
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/es5/react-jsx-parser.min'
 import {
   PreWrapper,
   helpers,

@@ -1,7 +1,8 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 let babelPreset = require('babel-preset-react-app')({
-  flow: true,
+  flow: false,
+  typescript: false,
 })
 
 babelPreset = { ...babelPreset }

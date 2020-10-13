@@ -21,7 +21,7 @@ import {
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT,
 } from '@edulastic/constants/const/questionType'
-import { methods, defaultNumberPad } from '@edulastic/constants/const/math'
+import { math } from '@edulastic/constants'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { FaBars } from 'react-icons/fa'
@@ -49,6 +49,8 @@ import { clearAnswersAction } from '../../../src/actions/answers'
 import { deleteAnnotationAction } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
+
+const { methods, defaultNumberPad } = math
 
 const DragHandle = sortableHandle(() => (
   <StyledHandleSpan>

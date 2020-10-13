@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import produce from 'immer'
 import styled, { withTheme } from 'styled-components'
 import { findIndex, find, isEmpty, get } from 'lodash'
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/es5/react-jsx-parser.min'
 import {
   InstructorStimulus,
   helpers,

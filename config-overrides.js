@@ -19,7 +19,7 @@ const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 // const fs = require('fs')
 /** Uncomment to have a copy of files written on disk */
 
-const rootNodeModDir = path.resolve(__dirname, 'node_modules')
+// const rootNodeModDir = path.resolve(__dirname, 'node_modules')
 
 module.exports = override(
   disableEsLint(),
@@ -35,14 +35,14 @@ module.exports = override(
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
 
-    config.module.rules[0].parser.requireEnsure = true
+    // config.module.rules[0].parser.requireEnsure = true
 
     config.resolve.plugins = config.resolve.plugins.filter(
       (plugin) => !(plugin instanceof ModuleScopePlugin)
     )
 
     // add our global node modules if in workspace
-    config.resolve.modules.push(rootNodeModDir)
+    // config.resolve.modules.push(rootNodeModDir)
 
     let rules = getIn(config.module.rules, [1, 'oneOf'])
 
@@ -159,30 +159,30 @@ module.exports = override(
       config.output.filename = 'app.[chunkhash:8].js'
       config.output.chunkFilename = '[name].[chunkhash:8].chunk.js'
       // add chunk split optimizations
-      config.optimization = {
-        ...(config.optimization || {}),
-        runtimeChunk: 'single',
-        splitChunks: {
-          chunks: 'all',
-          maxInitialRequests: Infinity,
-          minSize: 0,
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name(module) {
-                // get the name. E.g. node_modules/packageName/not/this/part.js
-                // or node_modules/packageName
-                const packageName = module.context.match(
-                  /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-                )[1]
+      // config.optimization = {
+      //   ...(config.optimization || {}),
+      //   runtimeChunk: 'single',
+      //   splitChunks: {
+      //     chunks: 'all',
+      //     maxInitialRequests: Infinity,
+      //     minSize: 0,
+      //     cacheGroups: {
+      //       vendor: {
+      //         test: /[\\/]node_modules[\\/]/,
+      //         name(module) {
+      //           // get the name. E.g. node_modules/packageName/not/this/part.js
+      //           // or node_modules/packageName
+      //           const packageName = module.context.match(
+      //             /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+      //           )[1]
 
-                // npm package names are URL-safe, but some servers don't like @ symbols
-                return `vendor.lib.${packageName.replace('@', '')}`
-              },
-            },
-          },
-        },
-      }
+      //           // npm package names are URL-safe, but some servers don't like @ symbols
+      //           return `vendor.lib.${packageName.replace('@', '')}`
+      //         },
+      //       },
+      //     },
+      //   },
+      // }
     }
 
     /** Uncomment to have a copy of files written on disk */

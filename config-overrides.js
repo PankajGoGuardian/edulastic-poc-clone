@@ -139,7 +139,7 @@ module.exports = override(
       new webpack.BannerPlugin({ banner: `${Date()} Copyright Snapwiz` })
     )
 
-    config.plugins.push(new ProgressBarPlugin())
+    if (!isProduction) config.plugins.push(new ProgressBarPlugin())
 
     /* eslint-enable no-param-reassign */
 

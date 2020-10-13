@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#6d7e39a8d8588d3ff32572e3e9a73af0a5199cca",
+    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#5ec82d2905aa7e4bd9f28732ed811a636617f867",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",

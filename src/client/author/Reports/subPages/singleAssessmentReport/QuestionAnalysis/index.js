@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { getUserRole } from '../../../../../student/Login/ducks'
 import { EmptyData } from '../../../common/components/emptyData'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
-import { StyledH3 } from '../../../common/styled'
+import { StyledH3, NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import { SimpleStackedBarWithLineChartContainer } from './componenets/charts/simpleStackedBarWithLineChartContainer'
 import {
@@ -85,6 +85,10 @@ const QuestionAnalysis = ({
   }
 
   const assessmentName = get(settings, 'selectedTest.title', '')
+
+  if (settings.selectedTest && !settings.selectedTest.key) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
+  }
 
   return (
     <div>

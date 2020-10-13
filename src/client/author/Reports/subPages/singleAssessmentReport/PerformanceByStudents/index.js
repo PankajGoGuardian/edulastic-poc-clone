@@ -14,7 +14,7 @@ import { EduButton, SpinLoader, notification } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'
 
 import CsvTable from '../../../common/components/tables/CsvTable'
-import { StyledH3, StyledCard } from '../../../common/styled'
+import { StyledH3, StyledCard, NoDataContainer } from '../../../common/styled'
 import {
   UpperContainer,
   StyledDropDownContainer,
@@ -213,6 +213,10 @@ const PerformanceByStudents = ({
         />
       )
     }
+  }
+
+  if (settings.selectedTest && !settings.selectedTest.key) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   return (

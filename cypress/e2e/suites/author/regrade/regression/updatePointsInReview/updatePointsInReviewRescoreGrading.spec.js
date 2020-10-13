@@ -111,30 +111,21 @@ describe(`${FileHelper.getSpecName(
         verifyStudentSide(data, aType, students[2], vertestids, aData)
     })
     context('> verify teacherside', () => {
+      const param1 = [data, testidByAttempt, usedStudents]
+      const param2 = [aStatus, aData]
+
       before('login', () => {
         cy.login('teacher', Teacher.username, Teacher.password)
         aType.forEach((att, ind) => {
           testidByAttempt[att] = vertestids[ind]
         })
       })
+
       if (aType.includes(attemptTypes.RIGHT))
-        verifyTeacherSide(
-          data,
-          testidByAttempt,
-          usedStudents,
-          attemptTypes.RIGHT,
-          aStatus,
-          aData
-        )
+        verifyTeacherSide(...param1, attemptTypes.RIGHT, ...param2)
+
       if (aType.includes(attemptTypes.WRONG))
-        verifyTeacherSide(
-          data,
-          testidByAttempt,
-          usedStudents,
-          attemptTypes.WRONG,
-          aStatus,
-          aData
-        )
+        verifyTeacherSide(...param1, attemptTypes.WRONG, ...param2)
     })
   })
 })

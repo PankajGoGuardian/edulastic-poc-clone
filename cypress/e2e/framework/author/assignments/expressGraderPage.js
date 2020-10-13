@@ -192,7 +192,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
             ? attemptData[attemptType]
             : [attemptData[attemptType]]
           studentResponse =
-            attemptType === attemptTypes.SKIP
+            attemptType === attemptTypes.SKIP ||
+            attemptType === attemptTypes.MANUAL_GRADE
               ? skippedResponse
               : studentResponseByAttempt
                   .map((ele) => choices.indexOf(ele))

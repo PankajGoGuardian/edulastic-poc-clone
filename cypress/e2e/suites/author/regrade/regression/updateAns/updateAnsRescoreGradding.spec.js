@@ -111,43 +111,35 @@ describe(`${FileHelper.getSpecName(
     })
 
     context('> verify student side', () => {
+      const param1 = [data, aType]
+      const param2 = [vertestids, newAttempt, 0, true]
+
       if (aStatus.includes(studentSide.SUBMITTED))
-        verifyStudentSide(data, aType, students[0], vertestids, aData)
+        verifyStudentSide(...param1, students[0], ...param2)
 
       if (aStatus.includes(studentSide.IN_PROGRESS))
-        verifyStudentSide(data, aType, students[1], vertestids, newAttempt)
+        verifyStudentSide(...param1, students[1], ...param2)
 
       if (aStatus.includes(studentSide.NOT_STARTED))
-        verifyStudentSide(data, aType, students[2], vertestids, newAttempt)
+        verifyStudentSide(...param1, students[2], ...param2)
     })
 
     context('> verify teacherside', () => {
+      const param1 = [data, testidByAttempt, usedStudents]
+      const param2 = [aStatus, newAttempt, true]
+
       before('login', () => {
         cy.login('teacher', Teacher.username, Teacher.password)
         aType.forEach((att, ind) => {
           testidByAttempt[att] = vertestids[ind]
         })
       })
+
       if (aType.includes(attemptTypes.RIGHT))
-        verifyTeacherSide(
-          data,
-          testidByAttempt,
-          usedStudents,
-          attemptTypes.RIGHT,
-          aStatus,
-          newAttempt,
-          true
-        )
+        verifyTeacherSide(...param1, attemptTypes.RIGHT, ...param2)
+
       if (aType.includes(attemptTypes.WRONG))
-        verifyTeacherSide(
-          data,
-          testidByAttempt,
-          usedStudents,
-          attemptTypes.WRONG,
-          aStatus,
-          newAttempt,
-          true
-        )
+        verifyTeacherSide(...param1, attemptTypes.WRONG, ...param2)
     })
   })
 })

@@ -186,7 +186,7 @@
       "attemptData": {
         "right": ["wrong-1", "wrong-2"],
         "wrong": ["right-1", "right-2"],
-        "partialCorrect": ["right-2", "wrong-1"]
+        "partialCorrect": [ "wrong-1","right-2"]
       },
       "standards": [
         {

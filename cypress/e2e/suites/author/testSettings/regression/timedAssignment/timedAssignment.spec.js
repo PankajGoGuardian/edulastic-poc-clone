@@ -44,7 +44,8 @@ describe(`${FileHelper.getSpecName(
           testlibraryPage.testSettings.verifyTimeAssignedForTest(
             defaultTestItems[index]
           )
-          testlibraryPage.testSettings.getAllowExit().should('not.be.checked')
+          // Allow exist should be enabled by default as per https://snapwiz.atlassian.net/browse/EV-20319
+          testlibraryPage.testSettings.getAllowExit().should('be.checked')
           testlibraryPage.testSettings.verifyInfoAboutTestTime()
           testlibraryPage.header.clickOnPublishButton()
         })
@@ -84,7 +85,8 @@ describe(`${FileHelper.getSpecName(
           testlibraryPage.assignPage.verifyTimeAssignedForTest(
             defaultTestItems[index]
           )
-          testlibraryPage.assignPage.getAllowExit().should('not.be.checked')
+          // Allow exit should be enabled as per https://snapwiz.atlassian.net/browse/EV-20319
+          testlibraryPage.assignPage.getAllowExit().should('be.checked')
         })
         it(`>assign the test - ${index}`, () => {
           testlibraryPage.assignPage.verifyInfoAboutTestTime()

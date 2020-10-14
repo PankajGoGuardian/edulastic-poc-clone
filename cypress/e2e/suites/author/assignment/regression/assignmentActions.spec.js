@@ -299,7 +299,7 @@ describe(`${FileHelper.getSpecName(
       })
 
       context('> edit test', () => {
-        before('> create an item', () => {
+        /*  before('> create an item', () => {
           item.createItem(newItemKey).then((id) => {
             // New Item Details
             newItemId = id
@@ -336,8 +336,10 @@ describe(`${FileHelper.getSpecName(
           assignmentsPage.clickOnAssigmentByTestId(OriginalTestId)
           studentTestPage.verifyNoOfQuestions(itemKeysInTest.length)
           studentTestPage.clickOnExitTest()
-        })
-        it('> edit test after attempt-regrade', () => {
+        }) */
+
+        // As per app changes https://snapwiz.atlassian.net/browse/EV-20572
+        it('> edit test after assign but before attempt - gets versioned and regrade', () => {
           cy.login('teacher', Teacher.email, Teacher.pass)
           testLibraryPage.sidebar.clickOnAssignment()
           authorAssignmentPage.clickOnEditTest(true)
@@ -351,6 +353,7 @@ describe(`${FileHelper.getSpecName(
           testLibraryPage.header.clickRegradePublish()
           regrade.applyRegrade()
         })
+
         it('> verify after edit-regrade', () => {
           cy.login('student', Student1.email, Student1.pass)
           assignmentsPage.clickOnAssigmentByTestId(newTestId)

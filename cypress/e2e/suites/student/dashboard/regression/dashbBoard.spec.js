@@ -1,11 +1,11 @@
 import AssignmentsPage from '../../../../framework/student/assignmentsPage'
 import FileHelper from '../../../../framework/util/fileHelper'
-
+//teacherAuto@snapwiz.com
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
 )} >> Test Assignment Page`, () => {
   const assignmentPage = new AssignmentsPage()
-  const student = { email: 'student3@automation.com', password: 'automation' }
+  const student = { email: 'newstud@automation.com', password: 'automation' }
   before(() => {
     cy.clearToken()
     cy.login('student', student.email, student.password)
@@ -32,9 +32,9 @@ describe(`${FileHelper.getSpecName(
     })
   })
 
-  context(' > Active assignments in Automation_class', () => {
-    before('Automation_class', () => {
-      assignmentPage.getclass('Automation_class')
+  context(' > Active assignments in New_Automation_class', () => {
+    before('New_Automation_class', () => {
+      assignmentPage.getclass('New_Automation_class')
     })
 
     it(' >TC01 Verify ALL assignments', () => {
@@ -52,9 +52,9 @@ describe(`${FileHelper.getSpecName(
       assignmentPage.verifyAssignmentCount('IN_PROGRESS')
     })
   })
-  context(' > Active assignments in automation_class2', () => {
-    before('Automation_class2', () => {
-      assignmentPage.getclass('automation_class2')
+  context(' > Active assignments in New_automation_Class2', () => {
+    before('New_automation_Class2', () => {
+      assignmentPage.getclass('New_automation_Class2')
     })
 
     it(' >TC01 Verify ALL assignments', () => {

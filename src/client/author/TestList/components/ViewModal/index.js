@@ -1,4 +1,5 @@
-import React, { Suspense, lazy } from 'react'
+import React, { Suspense } from 'react'
+import { lazy } from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
 import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'

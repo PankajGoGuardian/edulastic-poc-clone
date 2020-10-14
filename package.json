@@ -55,6 +55,8 @@
     "prettier:format": "yarn prettier --write \"src/**/*.js|src/**/*.ts\""
   },
   "dependencies": {
+    "@loadable/babel-plugin": "^5.13.2",
+    "@loadable/component": "^5.13.2",
     "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#5ec82d2905aa7e4bd9f28732ed811a636617f867",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",

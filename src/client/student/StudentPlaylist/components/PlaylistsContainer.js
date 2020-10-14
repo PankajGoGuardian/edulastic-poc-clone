@@ -1,4 +1,5 @@
-import React, { useEffect, lazy, Suspense } from 'react'
+import React, { useEffect, Suspense } from 'react'
+import { lazy } from '@loadable/component'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { connect } from 'react-redux'

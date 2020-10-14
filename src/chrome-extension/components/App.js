@@ -1,6 +1,7 @@
-import React, { Suspense, lazy, useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
+import { lazy } from '@loadable/component'
 import { userApi, classApi } from '../api'
 import {
   updateUserAction,

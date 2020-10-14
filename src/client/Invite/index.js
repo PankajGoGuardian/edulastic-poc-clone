@@ -1,4 +1,5 @@
-import React, { lazy, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { lazy } from '@loadable/component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter, Redirect } from 'react-router'

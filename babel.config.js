@@ -21,6 +21,7 @@ babelPreset.plugins.push.apply(babelPreset.plugins, [
       useDisplayName: false,
     },
   ],
+  '@loadable/babel-plugin',
 ])
 
 module.exports = babelPreset

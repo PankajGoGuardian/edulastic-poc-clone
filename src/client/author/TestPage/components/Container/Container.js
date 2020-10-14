@@ -1,4 +1,5 @@
-import React, { PureComponent, lazy, Suspense } from 'react'
+import React, { PureComponent, Suspense } from 'react'
+import { lazy } from '@loadable/component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'

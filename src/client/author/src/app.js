@@ -1,4 +1,5 @@
-import React, { lazy, Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
+import { lazy } from '@loadable/component'
 import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled, { ThemeProvider } from 'styled-components'

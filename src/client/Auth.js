@@ -1,4 +1,5 @@
-import React, { lazy } from 'react'
+import React from 'react'
+import { lazy } from '@loadable/component'
 import PropTypes from 'prop-types'
 import { withRouter, Redirect } from 'react-router'
 import { get } from 'lodash'
@@ -15,17 +16,11 @@ import TeacherSignup from './student/Signup/components/TeacherContainer/Containe
 import { isLoggedInForPrivateRoute } from './common/utils/helpers'
 
 const GetStarted = lazy(() =>
-  import(
-    /* webpackChunkName: "getStarted" */ './student/Signup/components/GetStartedContainer'
-  )
+  import('./student/Signup/components/GetStartedContainer')
 )
-const Login = lazy(() =>
-  import(/* webpackChunkName: "login" */ './student/Login/components')
-)
+const Login = lazy(() => import('./student/Login/components'))
 
-const SsoLogin = lazy(() =>
-  import(/* webpackChunkName:"ssoLogin" */ './student/SsoLogin')
-)
+const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
 const Auth = ({
   user,

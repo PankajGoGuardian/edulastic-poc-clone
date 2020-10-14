@@ -1,4 +1,4 @@
-import React, { Component, Suspense, lazy, useEffect } from 'react'
+import React, { Component, Suspense, useEffect } from 'react'
 import { capitalize, get, isUndefined, isEmpty } from 'lodash'
 import qs from 'qs'
 import PropTypes from 'prop-types'
@@ -9,6 +9,7 @@ import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
 import { test, signUpState, roleuser } from '@edulastic/constants'
+import { lazy } from '@loadable/component'
 import { OfflineNotifier, notification, DragDrop } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { Banner } from './common/components/Banner'
@@ -38,46 +39,26 @@ import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
-const AssessmentPlayer = lazy(() =>
-  import(/* webpackChunkName: "assessmentPlayer" */ './assessment/index')
-)
+const AssessmentPlayer = lazy(() => import('./assessment/index'))
 const TeacherSignup = lazy(() =>
-  import(
-    /* webpackChunkName: "teacherSignup" */ './student/Signup/components/TeacherContainer/Container'
-  )
+  import('./student/Signup/components/TeacherContainer/Container')
 )
-const Auth = lazy(() => import(/* webpackChunkName: "auth" */ './Auth'))
-const Invite = lazy(() =>
-  import(/* webpackChunkName: "auth" */ './Invite/index')
-)
+const Auth = lazy(() => import('./Auth'))
+const Invite = lazy(() => import('./Invite/index'))
 const GetStarted = lazy(() =>
-  import(
-    /* webpackChunkName: "getStarted" */ './student/Signup/components/GetStartedContainer'
-  )
+  import('./student/Signup/components/GetStartedContainer')
 )
 const StudentSignup = lazy(() =>
-  import(
-    /* webpackChunkName: "studentSignup" */ './student/Signup/components/StudentContainer'
-  )
+  import('./student/Signup/components/StudentContainer')
 )
 const AdminSignup = lazy(() =>
-  import(
-    /* webpackChunkName: "adminSignup" */ './student/Signup/components/AdminContainer/Container'
-  )
+  import('./student/Signup/components/AdminContainer/Container')
 )
-const Dashboard = lazy(() =>
-  import(/* webpackChunkName: "student" */ './student/app')
-)
-const Author = lazy(() =>
-  import(/* webpackChunkName: "author" */ './author/src/app')
-)
-const Publisher = lazy(() =>
-  import(/* webpackChunkName: "author" */ './publisher/app')
-)
-const Admin = lazy(() => import(/* webpackChunkName: "admin" */ './admin/app'))
-const RedirectToTest = lazy(() =>
-  import(/* webpackChunkName: "RedirecToTest" */ './author/RedirectToTest')
-)
+const Dashboard = lazy(() => import('./student/app'))
+const Author = lazy(() => import('./author/src/app'))
+const Publisher = lazy(() => import('./publisher/app'))
+const Admin = lazy(() => import('./admin/app'))
+const RedirectToTest = lazy(() => import('./author/RedirectToTest'))
 const DistrictRoutes = lazy(() => import('./districtRoutes/index'))
 const ResetPassword = lazy(() => import('./resetPassword/index'))
 const SetParentPassword = lazy(() => import('./SetParentPassword'))

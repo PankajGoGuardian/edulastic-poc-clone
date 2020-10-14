@@ -125,7 +125,6 @@ const PeerPerformance = ({
     ]
 
   const res = { ...peerPerformance, bandInfo }
-
   const parsedData = useMemo(() => {
     const denormData = denormalizeData(res, ddfilter.compareBy)
     return {

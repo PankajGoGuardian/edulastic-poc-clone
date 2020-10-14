@@ -536,6 +536,8 @@ class AssessmentPlayerDefault extends React.Component {
                       updateScratchpadtoStore
                       isPassageWithQuestions={item?.isPassageWithQuestions}
                       isStudentReport={isStudentReport}
+                      itemId={item._id}
+                      itemLevelScoring={item.itemLevelScoring}
                     />
                   )}
                   {testItemState === 'check' && (
@@ -568,6 +570,8 @@ class AssessmentPlayerDefault extends React.Component {
                       changePreviewTab={this.handleChangePreview}
                       isStudentReport={isStudentReport}
                       enableMagnifier={enableMagnifier}
+                      itemId={item._id}
+                      itemLevelScoring={item.itemLevelScoring}
                     />
                   )}
                 </MainWrapper>

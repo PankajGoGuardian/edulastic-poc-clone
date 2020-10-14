@@ -49,9 +49,9 @@ const FeedBackContainer = ({
   prevScore,
   prevMaxScore,
   prevFeedback,
-  itemId,
   userAnswers,
   redirectPolicy,
+  qId,
 }) => {
   const [feedbackView, setFeedbackView] = useState(false)
   const toggleFeedbackView = () => {
@@ -63,7 +63,7 @@ const FeedBackContainer = ({
     } else {
       setFeedbackView(false)
     }
-  }, [itemId])
+  }, [qId])
 
   const iconHeight = feedbackView ? 12 : 40
   const iconHeight2 = feedbackView ? 10 : 30
@@ -107,7 +107,7 @@ const FeedBackContainer = ({
     prevMaxScore,
     prevFeedback,
   }
-  const currentUserAnswer = userAnswers?.[itemId]
+  const currentUserAnswer = userAnswers?.[qId]
   if (!isEmpty(currentUserAnswer)) {
     return null
   }
@@ -172,16 +172,12 @@ const IconWrapper = styled.div`
   margin-bottom: 15px;
 `
 const Wrapper = styled.div`
-  position: fixed;
-  right: 40px;
   display: ${({ visible }) => (visible ? 'flex' : 'none')};
   flex-direction: column;
   box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  top: 100px;
   padding: 20px 15px;
   background-color: white;
-  z-index: 100;
 `
 
 const TeacherResponse = styled.div`

@@ -99,7 +99,7 @@ const FeedbackWrapper = ({
             prevScore={prevScore}
             prevMaxScore={prevMaxScore}
             prevFeedback={prevFeedback}
-            itemId={data.id}
+            qId={data.id}
           />
         )}
       {/* STUDENT REPORT PAGE FEEDBACK */}

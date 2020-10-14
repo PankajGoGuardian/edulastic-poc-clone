@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
+// import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { slice } from '../../ducks'
 
@@ -165,11 +165,11 @@ function formatDate(subEndDate) {
   return `${date[2]} ${date[1]}, ${date[3]}`
 }
 
+const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
+
 const Subscription = (props) => {
   const {
-    t,
     verificationPending,
-    subscription,
     isPremiumAccount,
     isSubscriptionExpired,
     verifyAndUpgradeLicense,
@@ -202,14 +202,15 @@ const Subscription = (props) => {
   const isSubscribed =
     subType === 'premium' || subType === 'enterprise' || isSuccess
 
-  const TEN_DAYS = 864000000
   const isAboutToExpire = subEndDate
-    ? Date.now() + TEN_DAYS > subEndDate
+    ? Date.now() + ONE_MONTH > subEndDate
     : false
 
   const showRenewalOptions =
-    (isPremiumAccount && isAboutToExpire) ||
-    (!isPremiumAccount && isSubscriptionExpired)
+    ((isPremiumAccount && isAboutToExpire) ||
+      (!isPremiumAccount && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
+
   const showUpgradeOptions = !isSubscribed
 
   return (

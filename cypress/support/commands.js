@@ -280,33 +280,34 @@ Cypress.Commands.add(
       }).then(({ body: responseBody }) => {
         const assignments =
           responseBody.result.assignments || responseBody.result
-        const tests = responseBody.result.tests || []
+        //const tests = responseBody.result.tests || []
         assignments.forEach((asgnDO) => {
           const assignment = {}
           assignment._id = asgnDO._id
           assignment.groupId = asgnDO.classId || asgnDO.class[0]._id
+          assignment.testID = asgnDO.testId
           asgnIds.push(assignment)
         })
-        tests.forEach((test) => {
-          if (testsToExclude.indexOf(test._id) === -1) testAssign.push(test._id)
+        asgnIds.forEach((test) => {
+          if (testsToExclude.indexOf(test.testID) === -1) testAssign.push(test)
         })
         console.log('All Assignments = ', asgnIds)
         console.log('All Tests = ', testAssign)
         // TODO: FIX this once it is fixed in UI
-        // asgnIds.forEach(({ _id, groupId }) => {
-        //   cy.request({
-        //     url: `${BASE_URL}/assignments/${_id}/group/${groupId}`, // added groupId as per API change
-        //     method: "DELETE",
-        //     headers: {
-        //       authorization: authToken,
-        //       "Content-Type": "application/json"
-        //     }
-        //   }).then(({ body }) => {
-        //     console.log(`${_id} :: `, body.result);
-        //   });
-        // });
-
         testAssign.forEach((test) => {
+           cy.request({
+             url: `${BASE_URL}/assignments/${test._id}/group/${test.groupId}?testId=${test.testID}`, // added groupId as per API change
+             method: "DELETE",
+             headers: {
+               authorization: authToken,
+               "Content-Type": "application/json"
+             },
+             retryOnStatusCodeFailure: true
+           }).then(({ body }) => {
+             console.log(`${test._id} :: `, body.result);
+           });
+         });
+        /* testAssign.forEach((test) => {
           cy.request({
             url: `${BASE_URL}/test/${test}/delete-assignments`,
             method: 'DELETE',
@@ -316,7 +317,7 @@ Cypress.Commands.add(
             },
             retryOnStatusCodeFailure: true, // cause 502 intermittently and blocks complete suite, now will retry on such occurences
           })
-        })
+        }) */
       })
     })
   }

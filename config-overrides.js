@@ -137,6 +137,7 @@ module.exports = override(
     /* eslint-enable no-param-reassign */
 
     if (process.env.QUICK_BUILD) {
+      config.devtool = false
       config.output.sourceMap = false
       config.output.minimize = false
     }
@@ -148,7 +149,7 @@ module.exports = override(
       config.output.filename = 'app.js'
       config.output.chunkFilename = '[name].chunk.js'
     } else {
-      config.devtool = false // disable sourcemaps on production
+      // config.devtool = false // disable sourcemaps on production
       config.output.filename = 'app.[chunkhash:8].js'
       config.output.chunkFilename = '[name].[chunkhash:8].chunk.js'
 
@@ -172,25 +173,31 @@ module.exports = override(
       //   // },
       // }
 
-      config.optimization = {
-        ...(config.optimization || {}),
-        splitChunks: {
-          chunks: 'all',
-        },
-        // Keep the runtime chunk seperated to enable long term caching
-        // https://twitter.com/wSokra/status/969679223278505985
-        runtimeChunk: true,
-      }
+      // config.optimization = {
+      //   ...(config.optimization || {}),
+      //   splitChunks: {
+      //     chunks: 'all',
+      //   },
+      //   // Keep the runtime chunk seperated to enable long term caching
+      //   // https://twitter.com/wSokra/status/969679223278505985
+      //   runtimeChunk: true,
+      // }
 
       // add chunk split optimizations
       config.optimization = {
         ...(config.optimization || {}),
-        runtimeChunk: 'single',
+        runtimeChunk: true,
         splitChunks: {
           chunks: 'all',
           maxInitialRequests: Infinity,
           minSize: 0,
           cacheGroups: {
+            auth: {
+              chunks: 'initial',
+              test: /[\\/]auth[\\/]/,
+              name: 'auth-bundle',
+              enforce: true,
+            },
             vendor: {
               test: /[\\/]node_modules[\\/]/,
               name(module) {

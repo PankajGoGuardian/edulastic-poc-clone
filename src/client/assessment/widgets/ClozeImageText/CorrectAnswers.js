@@ -9,8 +9,11 @@ import CorrectAnswer from './CorrectAnswer'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
 class SetCorrectAnswers extends Component {
-  state = {
-    currentTab: 0,
+  constructor() {
+    super()
+    this.state = {
+      currentTab: 0,
+    }
   }
 
   handleTabChange = (currentTab) => {
@@ -24,7 +27,7 @@ class SetCorrectAnswers extends Component {
     setQuestionData(
       produce(item, (draft) => {
         const response = {
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: {},
         }
 

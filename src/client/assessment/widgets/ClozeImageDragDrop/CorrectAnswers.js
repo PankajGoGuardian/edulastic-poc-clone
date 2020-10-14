@@ -12,8 +12,11 @@ import {
 import CorrectAnswer from './CorrectAnswer'
 
 class SetCorrectAnswers extends Component {
-  state = {
-    currentTab: 0,
+  constructor() {
+    super()
+    this.state = {
+      currentTab: 0,
+    }
   }
 
   handleTabChange = (currentTab) => {
@@ -38,7 +41,7 @@ class SetCorrectAnswers extends Component {
       produce(item, (draft) => {
         const numberOfResponses = draft.responses?.length || 0 // responses cannot be empty, there is validator which checks that
         const response = {
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: new Array(numberOfResponses).fill({}),
         }
 

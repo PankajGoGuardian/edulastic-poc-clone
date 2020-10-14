@@ -35,7 +35,7 @@ const EditShortText = ({
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           matchingRule,
           value: '',
         })

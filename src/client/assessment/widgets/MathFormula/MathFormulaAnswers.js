@@ -20,8 +20,11 @@ const initialMethod = {
 const initialOption = {}
 
 class MathFormulaAnswers extends React.Component {
-  state = {
-    currentTab: 0,
+  constructor() {
+    super()
+    this.state = {
+      currentTab: 0,
+    }
   }
 
   setCorrectTab = (currentTab) => this.setState({ currentTab })
@@ -35,7 +38,7 @@ class MathFormulaAnswers extends React.Component {
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: [initialMethod],
         })
 

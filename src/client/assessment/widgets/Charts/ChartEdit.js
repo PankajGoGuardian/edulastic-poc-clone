@@ -162,7 +162,7 @@ const ChartEdit = ({
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: draft.validation.validResponse.value.map((chartData) => ({
             ...chartData,
             y: initValue,

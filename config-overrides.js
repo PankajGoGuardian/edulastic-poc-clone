@@ -141,7 +141,7 @@ module.exports = override(
       config.output.minimize = false
     }
 
-    config.output.path = path.resolve(__dirname, 'dist')
+    // config.output.path = path.resolve(__dirname, 'dist')
 
     // chunking optimization
     if (!isProduction) {

@@ -41,6 +41,7 @@ import { Tools } from './components/Tools'
 import ChartEditTool from './components/ChartEditTool'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
+import { getFilteredAnswerData } from './helpers'
 
 const ChartPreview = ({
   item,
@@ -101,7 +102,7 @@ const ChartPreview = ({
 
   useEffect(() => {
     if (!answerIsActual()) {
-      const answer = data.map(({ x, y }) => ({ x, y }))
+      const answer = getFilteredAnswerData(data)
       saveAnswer(answer)
       setElementsStash(answer, getStashId())
     }
@@ -133,16 +134,25 @@ const ChartPreview = ({
 
   const saveAnswerHandler = (ans, index) => {
     changePreviewTab(CLEAR)
-
+    let answerToSave = ans
+    /*
+     * chart data contains additional data as well
+     * keep only required data in the validation, ignore the rest
+     * TODO:
+     * check for other chart types and remove the question type check
+     */
+    if (chartType === questionType.LINE_CHART && Array.isArray(answerToSave)) {
+      answerToSave = getFilteredAnswerData(ans)
+    }
     if (tool === 'delete' && index >= 0) {
-      const newAnswer = cloneDeep(ans)
+      const newAnswer = cloneDeep(answerToSave)
       newAnswer[index].y = data[index].y || uiStyle.yAxisMin
       setTool('')
       saveAnswer(newAnswer)
       setElementsStash(newAnswer, getStashId())
     } else {
-      saveAnswer(ans)
-      setElementsStash(ans, getStashId())
+      saveAnswer(answerToSave)
+      setElementsStash(answerToSave, getStashId())
     }
   }
 

@@ -10,7 +10,7 @@ import Options from './components/Options'
 import ChartPreview from './ChartPreview'
 import PointsList from './components/PointsList'
 import AxisOptions from './AxisOption'
-import { getReCalculatedPoints } from './helpers'
+import { getFilteredAnswerData, getReCalculatedPoints } from './helpers'
 
 import ComposeQuestion from './ComposeQuestion'
 import { AnnotationBlock } from './AnnotationBlock'
@@ -186,12 +186,25 @@ const ChartEdit = ({
   }
 
   const handleAnswerChange = (ans) => {
+    /*
+     * chart data contains additional data as well
+     * keep only required data in the validation, ignore the rest
+     * TODO:
+     * check for other chart types and remove the question type check
+     */
     setQuestionData(
       produce(item, (draft) => {
+        let answerToSave = ans
+        if (
+          draft.type === questionType.LINE_CHART &&
+          Array.isArray(answerToSave)
+        ) {
+          answerToSave = getFilteredAnswerData(ans)
+        }
         if (currentTab === 0) {
-          draft.validation.validResponse.value = ans
+          draft.validation.validResponse.value = answerToSave
         } else {
-          draft.validation.altResponses[currentTab - 1].value = ans
+          draft.validation.altResponses[currentTab - 1].value = answerToSave
         }
       })
     )

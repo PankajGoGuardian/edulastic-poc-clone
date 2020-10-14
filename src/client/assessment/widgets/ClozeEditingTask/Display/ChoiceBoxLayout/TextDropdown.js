@@ -1,8 +1,8 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Select as AntSelect } from 'antd'
 import { lightBlue1 } from '@edulastic/colors'
-import { MathSpan, ScrollContext } from '@edulastic/common'
+import { MathSpan } from '@edulastic/common'
 import { subOptions } from '../../constants'
 
 const { Option } = AntSelect
@@ -17,7 +17,7 @@ const TextDropdown = ({
   displayStyleOption,
 }) => {
   const isDahsline = subOptions.DASHED_LINE === displayStyleOption
-  const { getScrollElement } = useContext(ScrollContext)
+
   return (
     <SelectWrapper style={{ ...styles, minWidth: styles.minWidthpx }}>
       <Select
@@ -26,7 +26,6 @@ const TextDropdown = ({
         placeholder={placeholder}
         disabled={disableResponse}
         onChange={onChange}
-        getPopupContainer={getScrollElement}
       >
         {options.map((response, respID) => (
           <Option title={response} value={response} key={respID}>

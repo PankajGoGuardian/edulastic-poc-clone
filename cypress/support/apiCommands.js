@@ -1,3 +1,6 @@
+/* eslint-disable func-names */
+/* eslint-disable cypress/no-unnecessary-waiting */
+/* eslint-disable no-shadow */
 /// <reference types="Cypress"/>
 
 import uuidv4 from 'uuid/v4'
@@ -639,3 +642,66 @@ Cypress.Commands.add('deletePlaylistEntry', (playlistId) => {
     }
   })
 })
+
+Cypress.Commands.add(
+  'getAllPlaylistsAndDelete',
+  (publisher, password = 'snapwiz', playlistsToExclude = [], filters = {}) => {
+    cy.setToken(publisher, password).then(() => {
+      cy.getAllOwnPlaylists(filters).then((playlists) => {
+        playlists.forEach((playlistObj) => {
+          if (!playlistsToExclude.includes(playlistObj._id))
+            cy.deletePlayList(playlistObj)
+        })
+      })
+    })
+  }
+)
+
+Cypress.Commands.add(
+  'getAllOwnPlaylists',
+  (filters = {}, access_token = getAccessToken()) => {
+    const playlistids = []
+    const { collections = [] } = filters
+    /* filters:{
+    collections:[collection_1_id,collection_2_id....]
+  } */
+    return cy
+      .request({
+        url: `${BASE_URL}/playlists/search/`,
+        method: 'POST',
+        body: {
+          search: {
+            collections,
+            createdAt: '',
+            filter: 'AUTHORED_BY_ME',
+            grades: [],
+            searchString: [],
+            status: '',
+            subject: [],
+            tags: [],
+            type: '',
+          },
+          sort: {
+            sortBy: 'recency',
+            sortDir: 'desc',
+          },
+          page: 1,
+          limit: NO_ITEMS_TO_DELETE,
+        },
+        headers: {
+          authorization: access_token,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ body }) => {
+        const playlists = body.result.hits.hits
+        playlists.forEach((testObj) => {
+          const playlist = {}
+          playlist._id = testObj._id
+          playlist.authToken = access_token
+          playlistids.push(playlist)
+        })
+      })
+      .then(() => playlistids)
+  }
+)

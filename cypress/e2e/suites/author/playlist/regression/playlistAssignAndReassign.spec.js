@@ -151,7 +151,7 @@ describe(`${FileHelper.getSpecName(
 
       it("> markstudents as 'submitted' and 'close' tests", () => {
         cy.login('teacher', teacher1.email, teacher1.pass)
-        testIds.forEach((test, i) => {
+        testIds.forEach((test) => {
           playlistlibraryPage.sidebar.getFavouritePlaylist()
           testlibraryPage.sidebar.clickOnAssignment()
           authorAssignmentPage.clickOnLCBbyTestId(test, assignMentIdObj[test])
@@ -386,7 +386,7 @@ describe(`${FileHelper.getSpecName(
         assignmentsPage.getAssignmentButton().should('have.length', 1)
 
         assignmentsPage.clickOnAssigmentByTestId(testIds[0])
-        studentTestPage.clickOnNext()
+        studentTestPage.clickOnNext(false, true)
         studentTestPage.submitTest()
       })
 

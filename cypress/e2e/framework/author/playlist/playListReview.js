@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import LiveClassboardPage from '../assignments/LiveClassboardPage'
 import PlayListSearchContainer from './searchConatinerPage'
 import CypressHelper from '../../util/cypressHelpers'
@@ -89,7 +90,7 @@ export default class PlayListReview {
   getDropDownItem = () =>
     cy
       .get('.ant-dropdown-menu-item')
-      .filter((i, $ele) => Cypress.dom.isVisible($ele))
+      .filter((_i, $ele) => Cypress.dom.isVisible($ele))
 
   getEditModule = () => this.getDropDownItem().contains('Edit Module')
 
@@ -518,7 +519,8 @@ export default class PlayListReview {
     sourcemodNumber,
     sourceTestNumber,
     targetModuleNumber,
-    testid
+    testid,
+    isAllowed = true
   ) => {
     this.clickExpandByModule(sourcemodNumber)
     this.clickExpandByModule(targetModuleNumber)
@@ -543,12 +545,16 @@ export default class PlayListReview {
         clientY: y + opts.offsetY,
       })
     })
-    this.getTestsInModuleByModule(targetModuleNumber)
-      .last()
-      .should('have.attr', 'data-test', testid.toString())
+    this.getModuleRowByModule(targetModuleNumber)
+      .find(`[data-test="${testid}"]`)
+      .should('have.length', 1)
+    // TODO: uncomment belown once actions to trigger msg are confirmed
+    /*  CypressHelper.verifyAntMesssage(
+      'Dropped Test already exists in this module'
+    ) */
   }
 
-  dragTestFromSearchToModule = (targetmod, test) => {
+  dragTestFromSearchToModule = (targetmod, test, isAllowed = true) => {
     this.clickExpandByModule(targetmod)
     this.getModuleNameByModule(targetmod).as('target-container')
     this.searchContainer
@@ -573,9 +579,15 @@ export default class PlayListReview {
       })
     })
 
-    this.getTestsInModuleByModule(targetmod)
-      .last()
-      .should('have.attr', 'data-test', test.toString())
+    this.getModuleRowByModule(targetmod)
+      .find(`[data-test="${test}"]`)
+      .should('have.length', 1)
+
+    // TODO: uncomment belown once actions to trigger msg are confirmed
+    /*  if (!isAllowed)
+      CypressHelper.verifyAntMesssage(
+        'Dropped Test already exists in this module'
+      ) */
   }
 
   dragResourceFromSearchToModule = (targetmod, targetTest, resource) => {

@@ -1,3 +1,5 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
+/* eslint-disable max-len */
 import PlayListLibrary from '../../../../framework/author/playlist/playListLibrary'
 import FileHelper from '../../../../framework/util/fileHelper'
 import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
@@ -129,7 +131,7 @@ describe(`${FileHelper.getSpecName(
 
     it("> verify review- 'module name,id and test count'", () => {
       /*  5. verify module id, name and title */
-      tests.forEach((id, index) => {
+      tests.forEach((_id, index) => {
         playlistlibraryPage.reviewTab.clickExpandByModule(index + 1)
         playlistlibraryPage.reviewTab.verifyModuleDetailsByModule(
           index + 1,
@@ -165,7 +167,7 @@ describe(`${FileHelper.getSpecName(
 
     it(">verify review- 'standards in test row'", () => {
       /* 8. standard tags on test cards inside modules */
-      tests.forEach((id, index) => {
+      tests.forEach((_id, index) => {
         playlistlibraryPage.reviewTab.verifyStandardsByTestByModule(
           index + 1,
           1,
@@ -220,11 +222,11 @@ describe(`${FileHelper.getSpecName(
       playlistlibraryPage.reviewTab.dragTestFromSearchToModule(1, tests[0])
       playlistlibraryPage.reviewTab.verifyNoOfTestByModule(1, 1)
 
-      playlistlibraryPage.reviewTab.dragTestFromSearchToModule(1, tests[0])
-      CypressHelper.verifyAntMesssage(
-        'Dropped Test already exists in this module'
+      playlistlibraryPage.reviewTab.dragTestFromSearchToModule(
+        1,
+        tests[0],
+        false
       )
-
       playlistlibraryPage.reviewTab.dragTestFromSearchToModule(2, tests[0])
       playlistlibraryPage.reviewTab.verifyNoOfTestByModule(2, 1)
     })
@@ -399,7 +401,7 @@ describe(`${FileHelper.getSpecName(
         playlistlibraryPage.reviewTab.clickExpandByModule(i + 1)
         playlistlibraryPage.reviewTab
           .getTestByTestByModule(i + 1, 1)
-          .then(($ele, i) => {
+          .then(($ele) => {
             cy.wrap($ele).should('have.attr', 'data-test', test)
           })
       })
@@ -425,7 +427,7 @@ describe(`${FileHelper.getSpecName(
         playlistlibraryPage.reviewTab.clickExpandByModule(i + 1)
         playlistlibraryPage.reviewTab
           .getTestByTestByModule(i + 1, 1)
-          .then(($ele, i) => {
+          .then(($ele) => {
             cy.wrap($ele).should('have.attr', 'data-test', test)
           })
       })
@@ -451,7 +453,7 @@ describe(`${FileHelper.getSpecName(
         playlistlibraryPage.reviewTab.clickExpandByModule(i + 1)
         playlistlibraryPage.reviewTab
           .getTestByTestByModule(i + 1, 1)
-          .then(($ele, i) => {
+          .then(($ele) => {
             cy.wrap($ele).should('have.attr', 'data-test', test)
           })
       })

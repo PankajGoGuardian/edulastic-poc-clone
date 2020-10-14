@@ -23,7 +23,7 @@ const packageJson = require('./package.json')
 module.exports = override(
   disableEsLint(),
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
-  process.env.BUNDLE_VISUALIZE === 1 && addBundleVisualizer(),
+  process.env.BUNDLE_VISUALIZE && addBundleVisualizer(),
   adjustWorkbox((wb) =>
     Object.assign(wb, {
       skipWaiting: true,
@@ -192,10 +192,14 @@ module.exports = override(
           maxInitialRequests: Infinity,
           minSize: 0,
           cacheGroups: {
-            auth: {
-              chunks: 'initial',
-              test: /[\\/]auth[\\/]/,
-              name: 'auth-bundle',
+            author: {
+              test: /[\\/]author[\\/]/,
+              name: 'author',
+              enforce: true,
+            },
+            assessment: {
+              test: /[\\/]assessment[\\/]/,
+              name: 'assessment',
               enforce: true,
             },
             vendor: {

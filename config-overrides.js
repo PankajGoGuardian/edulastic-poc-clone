@@ -188,7 +188,13 @@ module.exports = override(
         ...(config.optimization || {}),
         runtimeChunk: true,
         splitChunks: {
-          chunks: 'all',
+          chunks: 'async',
+          minRemainingSize: 0,
+          maxSize: 0,
+          minChunks: 1,
+          maxAsyncRequests: 30,
+          automaticNameDelimiter: '~',
+          enforceSizeThreshold: 50000,
           maxInitialRequests: Infinity,
           minSize: 0,
           cacheGroups: {

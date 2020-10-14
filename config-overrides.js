@@ -218,6 +218,11 @@ module.exports = override(
                 return `vendor.lib.${packageName.replace('@', '')}`
               },
             },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true,
+            },
           },
         },
       }

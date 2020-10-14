@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Qs from 'qs'
 import { withRouter } from 'react-router-dom'
 import { keyBy as _keyBy, get } from 'lodash'
 import { questionType } from '@edulastic/constants'
@@ -9,8 +10,6 @@ import { QuestionDiv, Content } from './styled'
 import { formatQuestionLists } from '../../../PrintAssessment/utils'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
-
-const queryString = require('query-string')
 
 function Preview({ item, passages, evaluation }) {
   const rows = getRows(item)
@@ -54,7 +53,7 @@ Preview.propTypes = {
 class StudentQuestions extends Component {
   getTestItems() {
     const { currentStudent, questionActivities, location } = this.props
-    const { type, qs } = queryString.parse(location.search)
+    const { type, qs } = Qs.parse(location.search)
     // convert query string to array format
     const formattedFilteredQs = formatQuestionLists(qs)
     let {

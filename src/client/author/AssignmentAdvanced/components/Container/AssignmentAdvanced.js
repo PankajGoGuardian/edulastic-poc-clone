@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import qs from 'qs'
 import { find, isEmpty, get } from 'lodash'
 import { Dropdown } from 'antd'
 import { withWindowSizes, FlexContainer } from '@edulastic/common'
@@ -64,8 +65,6 @@ import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAss
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 
 const { assignmentStatusBg } = authorAssignment
-
-const qs = require('query-string')
 
 class AssignmentAdvanced extends Component {
   state = {

@@ -4,14 +4,12 @@ import styled from 'styled-components'
 import Moment from 'moment'
 import { get } from 'lodash'
 import { PrintActionWrapper } from '@edulastic/common'
-
+import qs from 'qs'
 import { receiveTestActivitydAction } from '../src/actions/classBoard'
 import { getSortedTestActivitySelector } from '../ClassBoard/ducks'
 import StudentReportPage from './components/StudentReportPage'
 import { getDefaultTestSettingsAction } from '../TestPage/ducks'
 import { performanceBandSelector } from '../AssignTest/duck'
-
-const queryString = require('query-string')
 
 const StudentsReportCard = ({
   location,
@@ -26,7 +24,7 @@ const StudentsReportCard = ({
   const gradedTestActivities = testActivity.filter(
     (ta) => ta.status === 'submitted' && ta.graded === 'GRADED'
   )
-  let { options } = queryString.parse(location.search)
+  let { options } = qs.parse(location.search)
   options = options.split(',').map((o) => o.trim())
   options = options.reduce((acc, option) => {
     acc[option] = true

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { Table } from 'antd'
+import qs from 'qs'
 import { connect } from 'react-redux'
 import { get, isInteger, floor, isEmpty } from 'lodash'
 import { PrintActionWrapper } from '@edulastic/common'
@@ -21,8 +22,6 @@ import {
 } from './styled'
 
 import { fetchStudentsByIdAction } from '../../ducks'
-
-const queryString = require('query-string')
 
 const columns = [
   {
@@ -61,7 +60,7 @@ class PrintPreviewClass extends React.Component {
   render() {
     const appLoginUrl = `${window.location.origin}/login`
     const { selctedClass, students, location, user } = this.props
-    const query = queryString.parse(location.search)
+    const query = qs.parse(location.search)
     const { studentIds } = query
     const selectedStudent =
       studentIds && students

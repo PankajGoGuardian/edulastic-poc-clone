@@ -15,6 +15,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { IconPlusCircle, IconItemGroup } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
+import qs from 'qs'
 import { ItemsPagination, Selected } from './styled'
 import {
   getCurriculumsListSelector,
@@ -82,8 +83,6 @@ import HeaderFilter from '../../../ItemList/components/HeaderFilter'
 import PreviewModal from '../../../src/components/common/PreviewModal'
 import SortMenu from '../../../ItemList/components/SortMenu'
 
-const Qs = require('query-string')
-
 class AddItems extends PureComponent {
   static propTypes = {
     items: PropTypes.array.isRequired,
@@ -138,7 +137,7 @@ class AddItems extends PureComponent {
       needToSetFilter,
       sort: initSort,
     } = this.props
-    const query = Qs.parse(window.location.search)
+    const query = qs.parse(window.location.search)
     let search = {}
     const sessionSort =
       JSON.parse(sessionStorage.getItem('sortBy[itemList]')) || {}

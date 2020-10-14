@@ -45,8 +45,6 @@ const INITIAL_DD_FILTERS = {
   race: 'all',
 }
 
-const queryString = require('query-string')
-
 const SingleAssessmentReportContainer = (props) => {
   const {
     settings,
@@ -65,15 +63,13 @@ const SingleAssessmentReportContainer = (props) => {
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
-  const [isCliUser, setCliUser] = useState(
-    cliUser || queryString.parse(location.search).cliUser
-  )
+  const [isCliUser] = useState(cliUser || qs.parse(location.search).cliUser)
   const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS })
   const [selectedExtras, setSelectedExtras] = useState({
     ...INITIAL_DD_FILTERS,
   })
-  const [customStudentUserId, setCustomStudentUserId] = useState(
-    queryString.parse(location.search).customStudentUserId
+  const [customStudentUserId] = useState(
+    qs.parse(location.search).customStudentUserId
   )
 
   useEffect(() => {

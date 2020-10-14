@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import _qs from 'qs'
 import { Row, Col } from 'antd'
-
 import { withRouter } from 'react-router-dom'
 import { testsApi } from '@edulastic/api'
 import {
@@ -22,8 +22,6 @@ import {
 } from '../src/selectors/user'
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants
-
-const queryString = require('query-string')
 
 function useTestFetch(testId, type, filterQuestions, assignmentId, groupId) {
   const [testDetails, setTestDetails] = useState(null)
@@ -77,7 +75,7 @@ function useTestFetch(testId, type, filterQuestions, assignmentId, groupId) {
 
 const PrintAssessment = ({ match, userRole, features, location }) => {
   const containerRef = useRef(null)
-  const query = queryString.parse(location.search)
+  const query = _qs.parse(location.search)
   const { type, qs, assignmentId, groupId } = query
   const filterQuestions = type === 'custom' ? formatQuestionLists(qs) : []
   const { testId } = match.params

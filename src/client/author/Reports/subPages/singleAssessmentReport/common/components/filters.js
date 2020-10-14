@@ -3,7 +3,6 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
-
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Tooltip, Spin } from 'antd'
 
@@ -51,8 +50,6 @@ import { receivePerformanceBandAction } from '../../../../../PerformanceBand/duc
 import { receiveStandardsProficiencyAction } from '../../../../../StandardsProficiency/ducks'
 
 import staticDropDownData from '../static/staticDropDownData.json'
-
-const queryString = require('query-string')
 
 const getTestIdFromURL = (url) => {
   if (url.length > 16) {
@@ -125,7 +122,7 @@ const SingleAssessmentReportFilters = ({
   useEffect(() => {
     if (SARFilterData !== prevSARFilterData) {
       const search = pickBy(
-        queryString.parse(location.search),
+        qs.parse(location.search),
         (f) => f !== 'All' && !isEmpty(f)
       )
       const termId =
@@ -143,7 +140,7 @@ const SingleAssessmentReportFilters = ({
   let processedTestIds
   let dropDownData
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
-    let search = queryString.parse(location.search)
+    let search = qs.parse(location.search)
     search.testId = getTestIdFromURL(location.pathname)
 
     // get saved filters from backend

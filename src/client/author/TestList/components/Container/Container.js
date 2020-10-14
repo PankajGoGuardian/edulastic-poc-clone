@@ -10,6 +10,7 @@ import {
   isEqual,
   omit,
 } from 'lodash'
+import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
@@ -143,8 +144,6 @@ import ApproveConfirmModal from '../../../ItemList/components/ApproveConfirmModa
 const setBlockstyleInSession = (blockstyle) => {
   sessionStorage.setItem('testLibraryBlockstyle', blockstyle)
 }
-
-const qs = require('query-string')
 
 class TestList extends Component {
   static propTypes = {

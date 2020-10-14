@@ -105,7 +105,6 @@
     "pdfjs-dist": "^2.5.207",
     "prop-types": "^15.6.2",
     "qs": "^6.7.0",
-    "query-string": "^6.13.5",
     "rc-color-picker": "^1.2.6",
     "react-ace": "^8.0.0",
     "react-autosize-textarea": "4.0.0",

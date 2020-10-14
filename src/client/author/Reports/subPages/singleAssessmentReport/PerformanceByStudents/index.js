@@ -26,7 +26,6 @@ import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import PerformanceBandPieChart from './components/charts/StudentPerformancePie'
 
-
 // ducks & helpers
 import {
   parseData,
@@ -48,8 +47,6 @@ import {
 } from '../common/filterDataDucks'
 
 import columns from './static/json/tableColumns.json'
-
-const queryString = require('query-string')
 
 const PerformanceByStudents = ({
   loading,
@@ -203,7 +200,7 @@ const PerformanceByStudents = ({
     )
     if (studentData) {
       const { pathname, search } = window.location
-      const parseSearch = queryString.parse(search)
+      const parseSearch = qs.parse(search)
       delete parseSearch.customStudentUserId
       const { assignmentId, groupId, testActivityId } = studentData
       return (

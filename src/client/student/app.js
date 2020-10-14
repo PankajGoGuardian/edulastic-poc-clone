@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import qs from 'qs'
 import { ErrorHandler } from '@edulastic/common'
 import styled, { ThemeProvider } from 'styled-components'
 import { Layout } from 'antd'
@@ -28,8 +29,6 @@ import {
   updateCliUserAction,
 } from './Login/ducks'
 
-const queryString = require('query-string')
-
 const StudentApp = ({
   match,
   selectedTheme,
@@ -43,7 +42,7 @@ const StudentApp = ({
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
   useEffect(() => {
-    const searchParams = queryString.parse(location.search)
+    const searchParams = qs.parse(location.search)
     if (searchParams.cliUser) {
       updateCliUser(true)
     }

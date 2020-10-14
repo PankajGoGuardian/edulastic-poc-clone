@@ -2,6 +2,7 @@ import { IconSend } from '@edulastic/icons'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import qs from 'qs'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
   ControlBtn,
@@ -19,8 +20,6 @@ import {
 } from '../common'
 import HeaderMainMenu from '../common/HeaderMainMenu'
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown'
-
-const queryString = require('query-string')
 
 const PlayerHeader = ({
   LCBPreviewModal,
@@ -64,7 +63,7 @@ const PlayerHeader = ({
   groupId,
   location,
 }) => {
-  const query = queryString.parse(location.search)
+  const query = qs.parse(location.search)
   const { cliUser } = query
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 

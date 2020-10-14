@@ -153,22 +153,23 @@ module.exports = override(
       config.output.chunkFilename = '[name].[chunkhash:8].chunk.js'
 
       // config.optimization = {
-      //   // splitChunks: {
-      //   //   chunks(chunk) {
-      //   //     // exclude `my-excluded-chunk`
-      //   //     return !chunk.name.match(/auth/)
-      //   //   },
-      //   // },
       //   splitChunks: {
-      //     cacheGroups: {
-      //       vendor: {
-      //         chunks: 'initial',
-      //         test: /[\\/]node_modules[\\/]/,
-      //         name: 'vendor',
-      //         enforce: true,
-      //       },
+      //     chunks(chunk) {
+      //       // exclude `my-excluded-chunk`
+      //       return !chunk.name.match(/auth/)
       //     },
       //   },
+      //   runtimeChunk: true,
+      //   // splitChunks: {
+      //   //   cacheGroups: {
+      //   //     vendor: {
+      //   //       chunks: 'initial',
+      //   //       test: /[\\/]node_modules[\\/]/,
+      //   //       name: 'vendor',
+      //   //       enforce: true,
+      //   //     },
+      //   //   },
+      //   // },
       // }
 
       config.optimization = {
@@ -182,30 +183,30 @@ module.exports = override(
       }
 
       // add chunk split optimizations
-      // config.optimization = {
-      //   ...(config.optimization || {}),
-      //   runtimeChunk: 'single',
-      //   splitChunks: {
-      //     chunks: 'all',
-      //     maxInitialRequests: Infinity,
-      //     minSize: 0,
-      //     cacheGroups: {
-      //       vendor: {
-      //         test: /[\\/]node_modules[\\/]/,
-      //         name(module) {
-      //           // get the name. E.g. node_modules/packageName/not/this/part.js
-      //           // or node_modules/packageName
-      //           const packageName = module.context.match(
-      //             /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-      //           )[1]
+      config.optimization = {
+        ...(config.optimization || {}),
+        runtimeChunk: 'single',
+        splitChunks: {
+          chunks: 'all',
+          maxInitialRequests: Infinity,
+          minSize: 0,
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name(module) {
+                // get the name. E.g. node_modules/packageName/not/this/part.js
+                // or node_modules/packageName
+                const packageName = module.context.match(
+                  /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+                )[1]
 
-      //           // npm package names are URL-safe, but some servers don't like @ symbols
-      //           return `vendor.lib.${packageName.replace('@', '')}`
-      //         },
-      //       },
-      //     },
-      //   },
-      // }
+                // npm package names are URL-safe, but some servers don't like @ symbols
+                return `vendor.lib.${packageName.replace('@', '')}`
+              },
+            },
+          },
+        },
+      }
     }
 
     /** Uncomment to have a copy of files written on disk */

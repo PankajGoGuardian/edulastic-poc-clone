@@ -3,6 +3,7 @@ import { greyLight1, greyThemeLight } from '@edulastic/colors'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
+import qs from 'qs'
 import { debounce, get, pick, isEqual } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -94,8 +95,6 @@ function getUrlFilter(filter) {
   }
   return ''
 }
-
-const qs = require('query-string')
 
 class TestList extends Component {
   static propTypes = {

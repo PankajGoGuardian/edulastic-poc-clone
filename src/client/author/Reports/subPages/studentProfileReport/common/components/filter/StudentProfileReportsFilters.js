@@ -40,8 +40,6 @@ import {
 
 import staticDropDownData from '../../../../singleAssessmentReport/common/static/staticDropDownData.json'
 
-const queryString = require('query-string')
-
 const { subjects: subjectOptions, grades: gradeOptions } = staticDropDownData
 
 const StudentProfileReportsFilters = ({
@@ -66,7 +64,7 @@ const StudentProfileReportsFilters = ({
 }) => {
   const splittedPath = location.pathname.split('/')
   const urlStudentId = splittedPath[splittedPath.length - 1]
-  const parsedQuery = queryString.parse(location.search)
+  const parsedQuery = qs.parse(location.search)
 
   const {
     termId: urlTermId,

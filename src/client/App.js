@@ -36,8 +36,6 @@ import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 
-const queryString = require('query-string')
-
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
@@ -94,7 +92,7 @@ const Loading = () => (
   </div>
 )
 
-const query = queryString.parse(window.location.search)
+const query = qs.parse(window.location.search)
 if (query.token && query.userId && query.role) {
   TokenStorage.storeAccessToken(query.token, query.userId, query.role)
   TokenStorage.selectAccessToken(query.userId, query.role)

@@ -3,6 +3,7 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import qs from 'qs'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
 import { debounce } from 'lodash'
@@ -24,8 +25,6 @@ import {
   setPercentUploadedAction,
   uploadToDriveAction,
 } from '../../ducks'
-
-const qs = require('query-string')
 
 const breadcrumbStyle = {
   position: 'static',

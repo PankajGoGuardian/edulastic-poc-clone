@@ -188,10 +188,7 @@ module.exports = override(
         ...(config.optimization || {}),
         runtimeChunk: true,
         splitChunks: {
-          chunks: 'async',
-          minChunks: 1,
-          maxAsyncRequests: 30,
-          automaticNameDelimiter: '~',
+          chunks: 'all',
           maxInitialRequests: Infinity,
           minSize: 0,
           cacheGroups: {
@@ -221,7 +218,6 @@ module.exports = override(
             default: {
               minChunks: 2,
               priority: -20,
-              reuseExistingChunk: true,
             },
           },
         },

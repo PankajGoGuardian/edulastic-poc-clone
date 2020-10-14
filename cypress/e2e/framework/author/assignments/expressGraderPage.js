@@ -567,18 +567,29 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       })
   }
 
-  updateResponse = (questionType, attemptType, attemptData) => {
+  updateResponse = (
+    questionType,
+    attemptType,
+    attemptData,
+    isLastQuestion = false
+  ) => {
     // TODO: implement logic to reset previous attempt, currently should use question with no attempt
     cy.server()
     cy.route('PUT', '**/response-entry-and-score').as('responseEntry')
     this.attemptQuestion(questionType, attemptType, attemptData)
     cy.contains('span', 'NEXT QUESTION').click()
-    cy.wait('@responseEntry').then((xhr) =>
-      expect(
-        xhr.status,
-        `verify api requests for updating response for the question type - ${questionType}`
-      ).to.eq(200)
-    )
+    if (isLastQuestion) {
+      cy.contains(
+        'Congratulations. You have finished grading all students!'
+      ).should('be.visible')
+    } else {
+      cy.wait('@responseEntry').then((xhr) =>
+        expect(
+          xhr.status,
+          `verify api requests for updating response for the question type - ${questionType}`
+        ).to.eq(200)
+      )
+    }
   }
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>

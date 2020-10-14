@@ -435,7 +435,7 @@ describe(`${FileHelper.getSpecName(
       const { stuName: updatingResponseStudent } = students[6]
 
       context(' > update responses', () => {
-        queList.forEach((queNum) => {
+        queList.forEach((queNum, i) => {
           it(` > update response of ${updatingResponseStudent} for :: ${queNum}`, () => {
             expressg.routeAPIs()
             expressg.clickOnExit()
@@ -446,7 +446,8 @@ describe(`${FileHelper.getSpecName(
             expressg.updateResponse(
               questionTypeMap[queNum].queKey.split('.')[0],
               attemptTypes.RIGHT,
-              questionTypeMap[queNum].attemptData
+              questionTypeMap[queNum].attemptData,
+              i == queList.length - 1
             )
             expressg.clickOnExit()
             expressg.verifyCellColorForQuestion(queNum, attemptTypes.RIGHT)

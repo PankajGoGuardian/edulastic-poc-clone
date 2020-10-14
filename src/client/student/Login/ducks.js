@@ -13,7 +13,7 @@ import {
   schoolApi,
 } from '@edulastic/api'
 import { roleuser } from '@edulastic/constants'
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import { fetchAssignmentsAction } from '../Assignments/ducks'
 import {
@@ -1162,7 +1162,7 @@ function* googleLogin({ payload }) {
       if (payload.role === 'teacher') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
         if (payload.isAdmin) {
-          localStorage.setItem('thirdPartySignOnAdditionalRole', "admin")
+          localStorage.setItem('thirdPartySignOnAdditionalRole', 'admin')
         }
         role = 'teacher'
       } else if (payload.role === 'student') {
@@ -1260,7 +1260,7 @@ function* msoLogin({ payload }) {
       if (payload.role === 'teacher') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
         if (payload.isAdmin) {
-          localStorage.setItem('thirdPartySignOnAdditionalRole', "admin")
+          localStorage.setItem('thirdPartySignOnAdditionalRole', 'admin')
         }
         role = 'teacher'
       } else if (payload.role === 'student') {

@@ -1,19 +1,19 @@
-import * as Firebase from 'firebase/app'
+import firebase from 'firebase/app'
 // Required for side-effects
 import 'firebase/firestore'
 import { useState, useEffect } from 'react'
 import { firebaseConfig } from '../../../src/app-config'
 
-Firebase.initializeApp({
+firebase.initializeApp({
   apiKey: firebaseConfig.apiKey,
   authDomain: firebaseConfig.authDomain,
   projectId: firebaseConfig.projectId,
 })
 
-export const db = Firebase.firestore()
+export const db = firebase.firestore()
 // for debugging purposes if needed
 if (process?.env?.NODE_ENV === 'development') {
-  window._firebase = Firebase
+  window._firebase = firebase
   window._firedb = db
 }
 

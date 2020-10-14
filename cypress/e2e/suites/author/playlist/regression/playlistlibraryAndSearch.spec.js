@@ -48,6 +48,11 @@ describe(`${FileHelper.getSpecName(
   const usedPlaylists = [metadata[0].existingPlaylistId]
 
   before('create playlists', () => {
+    cy.getAllPlaylistsAndDelete(
+      teacher,
+      'snapwiz',
+      metadata.map(({ existingPlaylistId }) => existingPlaylistId)
+    )
     cy.login('teacher', teacher)
     metadata.forEach((data, i) => {
       playlistlibraryPage
@@ -149,7 +154,7 @@ describe(`${FileHelper.getSpecName(
             playlistlibraryPage.searchFilter.clearAll()
             playlistlibraryPage.searchFilter.getAuthoredByMe()
             playlistlibraryPage.searchFilter.typeInSearchBox(grade)
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.getPlayListCardById(_id)
             })
             testlibraryPage
@@ -162,7 +167,7 @@ describe(`${FileHelper.getSpecName(
         metadata
           .slice(0, 1)
           .forEach(({ existingPlaylistId, newPlaylistId }) => {
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.searchFilter.clearAll()
               playlistlibraryPage.searchFilter.getAuthoredByMe()
               playlistlibraryPage.searchFilter.typeInSearchBox(_id)
@@ -182,7 +187,7 @@ describe(`${FileHelper.getSpecName(
             playlistlibraryPage.searchFilter.clearAll()
             playlistlibraryPage.searchFilter.getAuthoredByMe()
             playlistlibraryPage.searchFilter.typeInSearchBox(tags[0])
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.getPlayListCardById(_id)
             })
             testlibraryPage
@@ -199,7 +204,7 @@ describe(`${FileHelper.getSpecName(
             playlistlibraryPage.searchFilter.getAuthoredByMe()
             playlistlibraryPage.searchFilter.typeInSearchBox(tags[0])
             playlistlibraryPage.searchFilter.typeInSearchBox(name)
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.getPlayListCardById(_id)
             })
             testlibraryPage
@@ -219,7 +224,7 @@ describe(`${FileHelper.getSpecName(
             playlistlibraryPage.searchFilter.clearAll()
             playlistlibraryPage.searchFilter.getAuthoredByMe()
             playlistlibraryPage.searchFilter.setFilters({ standards }, false)
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.getPlayListCardById(_id)
             })
             testlibraryPage
@@ -236,7 +241,7 @@ describe(`${FileHelper.getSpecName(
             playlistlibraryPage.searchFilter.clearAll()
             playlistlibraryPage.searchFilter.getAuthoredByMe()
             playlistlibraryPage.searchFilter.setFilters({ standards }, false)
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.getPlayListCardById(_id)
             })
             testlibraryPage
@@ -252,7 +257,7 @@ describe(`${FileHelper.getSpecName(
             playlistlibraryPage.searchFilter.clearAll()
             playlistlibraryPage.searchFilter.getAuthoredByMe()
             playlistlibraryPage.searchFilter.setFilters({ tags }, false)
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.getPlayListCardById(_id)
             })
             testlibraryPage
@@ -269,7 +274,7 @@ describe(`${FileHelper.getSpecName(
         )
 
         metadata.forEach(({ existingPlaylistId, newPlaylistId }) => {
-          ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+          ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
             playlistlibraryPage.getPlayListCardById(_id)
           })
           testlibraryPage
@@ -286,7 +291,7 @@ describe(`${FileHelper.getSpecName(
             playlistlibraryPage.searchFilter.clearAll()
             playlistlibraryPage.searchFilter.getAuthoredByMe()
             playlistlibraryPage.searchFilter.setFilters({ standards }, false)
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.getPlayListCardById(_id)
             })
             testlibraryPage
@@ -297,7 +302,7 @@ describe(`${FileHelper.getSpecName(
 
       it("> using 'tags+subject'", () => {
         metadata
-          .slice(0, 2)
+          .slice(1)
           .forEach(({ tags, subject, existingPlaylistId, newPlaylistId }) => {
             const standards = { subject }
             playlistlibraryPage.searchFilter.clearAll()
@@ -306,7 +311,7 @@ describe(`${FileHelper.getSpecName(
               { standards, tags },
               false
             )
-            ;[existingPlaylistId, newPlaylistId].forEach((_id, i) => {
+            ;[existingPlaylistId, newPlaylistId].forEach((_id) => {
               playlistlibraryPage.getPlayListCardById(_id)
               testlibraryPage
                 .getAllTestCardsInCurrentPage()

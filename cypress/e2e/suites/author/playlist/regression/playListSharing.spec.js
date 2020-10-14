@@ -2,6 +2,7 @@ import PlayListLibrary from '../../../../framework/author/playlist/playListLibra
 import FileHelper from '../../../../framework/util/fileHelper'
 import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
 import { COLLECTION as collection } from '../../../../framework/constants/questionTypes'
+import CypressHelper from '../../../../framework/util/cypressHelpers'
 
 const userData = require('../../../../../fixtures/users')
 
@@ -138,7 +139,9 @@ describe(`${FileHelper.getSpecName(
           playlistlibraryPage.searchFilter.clearAll()
 
           playlistlibraryPage.searchFilter.sharedWithMe()
-          playlistlibraryPage.searchFilter.typeInSearchBox(playlistid)
+          playlistlibraryPage.searchFilter.typeInSearchBox(
+            CypressHelper.getShortId(playlistid)
+          )
 
           playlistlibraryPage.clickOnPlayListCardById(playlistid)
           playlistlibraryPage.reviewTab.clickExpandByModule(1)
@@ -176,7 +179,9 @@ describe(`${FileHelper.getSpecName(
           playlistlibraryPage.searchFilter.clearAll()
           playlistlibraryPage.searchFilter.sharedWithMe()
 
-          playlistlibraryPage.searchFilter.typeInSearchBox(playlistid)
+          playlistlibraryPage.searchFilter.typeInSearchBox(
+            CypressHelper.getShortId(playlistid)
+          )
           playlistlibraryPage.clickOnPlayListCardById(playlistid)
 
           playlistlibraryPage.reviewTab.clickExpandByModule(1)
@@ -194,7 +199,9 @@ describe(`${FileHelper.getSpecName(
           playlistlibraryPage.searchFilter.clearAll()
           playlistlibraryPage.searchFilter.sharedWithMe()
 
-          playlistlibraryPage.searchFilter.typeInSearchBox(playlistid)
+          playlistlibraryPage.searchFilter.typeInSearchBox(
+            CypressHelper.getShortId(playlistid)
+          )
           playlistlibraryPage
             .getPlayListCardById(playlistid)
             .should('be.visible')

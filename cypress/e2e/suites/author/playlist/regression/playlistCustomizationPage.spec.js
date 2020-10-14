@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import PlayListLibrary from '../../../../framework/author/playlist/playListLibrary'
 import FileHelper from '../../../../framework/util/fileHelper'
 import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
@@ -494,8 +495,8 @@ describe(`${FileHelper.getSpecName(
           playlistlibraryPage.searchPlaylistById(playlistId_1)
           playlistlibraryPage
             .clickOnCloneOnCardByPlaylistId(playlistId_1)
-            .then((id) => {
-              playlistId_2 = id
+            .then((clonedId) => {
+              playlistId_2 = clonedId
               playlistlibraryPage.header.clickOnPublish()
             })
         })
@@ -573,7 +574,6 @@ describe(`${FileHelper.getSpecName(
       )
       playlistlibraryPage.sidebar.clickOnAssignment()
       cy.contains('Assignments not available')
-      playlistlibraryPage.playlistCustom.clickOnManageContent()
     })
 
     it("> edit customized-'add new test'", () => {

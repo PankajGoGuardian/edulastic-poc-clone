@@ -4,6 +4,8 @@ let babelPreset = require('babel-preset-react-app')()
 
 babelPreset = { ...babelPreset }
 
+babelPreset.sourceType = 'unambiguous'
+
 babelPreset.plugins.push.apply(babelPreset.plugins, [
   [
     'import',

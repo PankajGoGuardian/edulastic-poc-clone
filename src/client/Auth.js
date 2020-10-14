@@ -24,7 +24,7 @@ const Login = lazy(() =>
 )
 
 const SsoLogin = lazy(() =>
-  import(/* webpackChunkName:"SSo Login" */ './student/SsoLogin')
+  import(/* webpackChunkName:"ssoLogin" */ './student/SsoLogin')
 )
 
 const Auth = ({

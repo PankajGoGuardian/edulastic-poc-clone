@@ -10,7 +10,9 @@ const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { setIn, getIn } = require('timm')
 const path = require('path')
+const CopyPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const packageJson = require('./package.json')
 
 /** Uncomment to have a copy of files written on disk */
@@ -117,22 +119,35 @@ module.exports = override(
 
     config.plugins.push(new MomentLocalesPlugin())
 
-    // config.plugins.push(
-    //   new CopyPlugin({
-    //     patterns: [
-    //       {
-    //         from: 'node_modules/pdfjs-dist/build/pdf.worker.js',
-    //         to: 'pdf.worker.js',
-    //       },
-    //     ],
-    //   })
-    // )
+    config.plugins.push(
+      new CopyPlugin({
+        patterns: [
+          {
+            from: 'node_modules/pdfjs-dist/build/pdf.worker.js',
+            to: 'pdf.worker.js',
+          },
+        ],
+      })
+    )
 
     config.plugins.push(
       new webpack.BannerPlugin({ banner: `${Date()} Copyright Snapwiz` })
     )
 
-    if (!isProduction) config.plugins.push(new ProgressBarPlugin())
+    if (!isProduction) {
+      config.plugins.push(new ProgressBarPlugin())
+    } else {
+      config.plugins.push(
+        new ScriptExtHtmlWebpackPlugin({
+          sync: /main|app/,
+          defaultAttribute: 'defer',
+          preload: {
+            test: /\.js$/,
+            chunks: 'async',
+          },
+        })
+      )
+    }
 
     /* eslint-enable no-param-reassign */
 

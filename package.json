@@ -162,6 +162,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "script-ext-html-webpack-plugin": "^2.1.4",
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "3.0.0",
     "postcss-preset-env": "^6.6.0",

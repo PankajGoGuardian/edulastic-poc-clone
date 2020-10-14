@@ -6,7 +6,7 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
-import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
+import { StyledCard, StyledH3 } from '../../../common/styled'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
@@ -51,10 +51,6 @@ const AssessmentSummary = ({
   const { bandInfo, metricInfo } = assessmentSummary
 
   const assessmentName = get(settings, 'selectedTest.title', '')
-
-  if (settings.selectedTest && !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
-  }
 
   return loading ? (
     <SpinLoader position="fixed" />

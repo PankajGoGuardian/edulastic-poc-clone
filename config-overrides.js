@@ -141,10 +141,10 @@ module.exports = override(
         new ScriptExtHtmlWebpackPlugin({
           sync: /main|app/,
           defaultAttribute: 'defer',
-          preload: {
-            test: /\.js$/,
-            chunks: 'async',
-          },
+          // preload: {
+          //   test: /\.js$/,
+          //   chunks: 'async',
+          // },
         })
       )
     }

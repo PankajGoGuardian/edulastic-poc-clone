@@ -190,10 +190,10 @@
       },
       "standards": [
         {
-          "subject": "ELA",
-          "standard": ["CCRA.L.1", "CCRA.L.2"],
-          "standardSet": "ELA - Common Core",
-          "grade": "Grade 2"
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
         }
       ],
       "meta": {
@@ -875,9 +875,9 @@
       },
       "standards": [
         {
-          "subject": "ELA",
-          "standard": ["CCRA.L.2"],
-          "standardSet": "ELA - Common Core",
+          "subject": "Mathematics",
+          "standard": ["2.G.A.1","2.G.A.2"],
+          "standardSet": "Math - Common Core",
           "grade": "Grade 2"
         }
       ],
@@ -899,9 +899,9 @@
       },
       "standards": [
         {
-          "subject": "ELA",
-          "standard": ["CCRA.L.1", "CCRA.L.2"],
-          "standardSet": "ELA - Common Core",
+          "subject": "Mathematics",
+          "standard": ["2.G.A.1","2.G.A.2"],
+          "standardSet": "Math - Common Core",
           "grade": "Grade 2"
         }
       ],

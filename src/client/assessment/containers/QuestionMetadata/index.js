@@ -249,7 +249,9 @@ const QuestionMetadata = ({
           testletQuestionId={questionData.testletQuestionId}
           testletResponseIds={questionData.testletResponseIds}
           testletAdditionalMetadata={questionData.testletAdditionalMetadata}
-          isGraphType={type === questionType.GRAPH}
+          showAdditionalMeta={
+            type === questionType.GRAPH || type === questionType.MULTIPLE_CHOICE
+          }
         />
       </div>
     </ThemeProvider>

@@ -266,7 +266,6 @@ const PlayerContent = ({
         if (isEmpty(eduQuestions)) {
           continue
         }
-
         eduQuestions.forEach((eduQuestion) => {
           const data = getUserResponse(eduQuestion, response)
           if (!previewPlayer && !isEmpty(data)) {

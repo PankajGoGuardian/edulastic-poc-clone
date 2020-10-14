@@ -45,7 +45,7 @@ const SecondBlock = ({
   highlightCollection,
   recentCollectionsList,
   collectionsToShow,
-  isGraphType,
+  showAdditionalMeta,
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], 'tagName')
   const [searchValue, setSearchValue] = useState('')
@@ -193,7 +193,7 @@ const SecondBlock = ({
               ))}
             </SelectInputStyled>
           </ItemBody>
-          {isGraphType && (
+          {showAdditionalMeta && (
             <ItemBody>
               <FieldLabel>
                 {t('component.options.additionalMetadata')}

@@ -241,7 +241,12 @@ const generateAnswers = {
     return data
   },
   [questionType.MULTIPLE_CHOICE](item, testletResponseIds, testletResponses) {
-    const { options } = item
+    const { options, testletAdditionalMetadata } = item
+    let _alphabet = ALPHABET
+    if (testletAdditionalMetadata) {
+      _alphabet = testletAdditionalMetadata
+    }
+
     const data = testletResponseIds.map((id) => {
       const value = testletResponses[id]
       if (!value) {
@@ -250,12 +255,12 @@ const generateAnswers = {
       if (isArray(value)) {
         // multiple response
         return value.map((v) => {
-          const opIndex = ALPHABET.indexOf(v)
+          const opIndex = _alphabet.indexOf(v)
           return options[opIndex]?.value
         })
       }
       // Radio type.
-      const opIndex = ALPHABET.indexOf(value)
+      const opIndex = _alphabet.indexOf(value)
       return options[opIndex]?.value
     })
 

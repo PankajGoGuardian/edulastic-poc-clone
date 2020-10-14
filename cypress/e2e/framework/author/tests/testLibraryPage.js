@@ -624,13 +624,13 @@ export default class TestLibrary {
   verifyDescriptionOnTestCardById = (id, desc) =>
     this.getDescriptionOnTestCardById(id).should('have.text', desc)
 
-  verifyStandardsOnTestCardById = (id, standards, listview = false) => {
+  verifyStandardsOnTestCardById = (id, standards) => {
     this.getStandardsByTestId(id).then(($ele) => {
       if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
           .find('.hidden-tags')
           .last()
-          .trigger(`${listview ? 'click' : 'mouseover'}`)
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
     })
     standards.forEach((sta) =>
@@ -644,7 +644,7 @@ export default class TestLibrary {
         cy.wrap($ele)
           .find('.hidden-tags')
           .first()
-          .click({ force: true })
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
     })
     tags.forEach((sta) =>
@@ -657,7 +657,7 @@ export default class TestLibrary {
       if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
           .find('.hidden-tags')
-          .click({ force: true })
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
     })
     grades.forEach((grade) => {
@@ -670,7 +670,7 @@ export default class TestLibrary {
       if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
           .find('.hidden-tags')
-          .click({ force: true })
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
 
       subjects.forEach((sub) => {
@@ -683,11 +683,11 @@ export default class TestLibrary {
       if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
           .find('.hidden-tags')
-          .click({ force: true })
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
 
       tags.forEach((tag) => {
-        this.getTestSubjectsOnTestCardPopUp().find('span').contains(tag)
+        this.getTestTagsOnTestCardPopUp().find('span').contains(tag)
       })
     })
 

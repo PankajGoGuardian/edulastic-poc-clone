@@ -295,8 +295,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       })
 
       folderPage.clickOnFolderByName(`Folder -1`)
-      itemlist.verifyNoOfQuestionsInUI(2)
-      itemIds.slice(0, 2).forEach((item) => {
+      itemlist.verifyNoOfQuestionsInUI(1)
+      itemIds.slice(0, 1).forEach((item) => {
         itemlist.getAddButtonById(item).should('be.visible')
       })
     })
@@ -319,8 +319,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       itemlist.getAddButtonById(itemIds[2]).should('be.visible')
       folderPage.clickOnFolderByName(`Folder -1`)
 
-      itemlist.verifyNoOfQuestionsInUI(2)
-      itemIds.slice(0, 2).forEach((item) => {
+      itemlist.verifyNoOfQuestionsInUI(1)
+      itemIds.slice(0, 1).forEach((item) => {
         itemlist.getAddButtonById(item).should('be.visible')
       })
     })

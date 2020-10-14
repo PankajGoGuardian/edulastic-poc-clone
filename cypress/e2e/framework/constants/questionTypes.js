@@ -142,6 +142,7 @@ export const COLLECTION = {
   district: 'District Library',
   private: 'Private Library',
   public: 'Public Library',
+  edulastic: 'Edulastic Certified',
 }
 
 export const sortOptions = {

@@ -42,7 +42,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: 'Skill/Concept',
       difficulty: 'Easy',
       tags: ['item tag 3'],
-      id: '5f69c8639a8a8e0008fa2e3f',
+      id: '5f85d22b678e230007b45b79',
       queType: 'ESSAY_RICH',
     },
     {
@@ -55,33 +55,33 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: 'Extended Thinking',
       difficulty: 'Hard',
       tags: ['item tag 1'],
-      id: '5f69c88f9a88640007cc6957',
+      id: '5f85d251678e230007b45b7d',
       queType: 'ESSAY_RICH',
     },
     {
       standards: {
-        subject: 'ELA',
-        standardSet: 'ELA - Common Core',
-        standard: ['CCRA.L.2'],
+        subject: 'Mathematics',
+        standardSet: 'Math - Common Core',
+        standard: ['2.G.A.1', '2.G.A.2'],
         grade: ['Grade 2'],
       },
       dok: 'Strategic Thinking',
       difficulty: 'Easy',
       tags: ['item tag 1'],
-      id: '5f69c8c529207d00077e4d7f',
+      id: '5f85d28392aa300008947250',
       queType: 'ESSAY_RICH',
     },
     {
       standards: {
-        subject: 'ELA',
-        standardSet: 'ELA - Common Core',
-        standard: ['CCRA.L.1', 'CCRA.L.2'],
+        subject: 'Mathematics',
+        standardSet: 'Math - Common Core',
+        standard: ['2.G.A.1', '2.G.A.2'],
         grade: ['Grade 2'],
       },
       dok: 'Skill/Concept',
       difficulty: 'Easy',
       tags: ['item tag 2'],
-      id: '5f69c915be36ce00073fdb7e',
+      id: '5f85d2cdb459450008a1cc6c',
       queType: 'ESSAY_RICH',
     },
   ]
@@ -94,34 +94,36 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       'snapwiz',
       filters.map((obj) => obj.id)
     )
-    /*  filters = [];
+    /*   filters = []
     itemKeys.slice(0, 4).forEach((item, index) => {
-      itemlist.createItem(item, index + 1).then(id => {
-        const filtersObj = {};
-        cy.fixture("questionAuthoring").then(questionData => {
-          const itemProps = questionData[`${item.split(".")[0]}`][`${item.split(".")[1]}`];
+      itemlist.createItem(item, index + 1).then((id) => {
+        const filtersObj = {}
+        cy.fixture('questionAuthoring').then((questionData) => {
+          const itemProps =
+            questionData[`${item.split('.')[0]}`][`${item.split('.')[1]}`]
 
-          filtersObj.standards = {};
-          filtersObj.standards.subject = itemProps.standards[0].subject;
-          filtersObj.standards.standardSet = itemProps.standards[0].standardSet;
-          filtersObj.standards.standard = itemProps.standards[0].standard;
-          filtersObj.standards.grade = [itemProps.standards[0].grade];
+          filtersObj.standards = {}
+          filtersObj.standards.subject = itemProps.standards[0].subject
+          filtersObj.standards.standardSet = itemProps.standards[0].standardSet
+          filtersObj.standards.standard = itemProps.standards[0].standard
+          filtersObj.standards.grade = [itemProps.standards[0].grade]
           if (itemProps.meta) {
-            if (itemProps.meta.dok) filtersObj.dok = itemProps.meta.dok;
-            if (itemProps.meta.difficulty) filtersObj.difficulty = itemProps.meta.difficulty;
-            if (itemProps.meta.tags) filtersObj.tags = itemProps.meta.tags;
+            if (itemProps.meta.dok) filtersObj.dok = itemProps.meta.dok
+            if (itemProps.meta.difficulty)
+              filtersObj.difficulty = itemProps.meta.difficulty
+            if (itemProps.meta.tags) filtersObj.tags = itemProps.meta.tags
           }
-          filtersObj.id = id;
-          filtersObj.queType = item.split(".")[0];
-          filters.push(filtersObj);
-        });
-      });
-    }); */
+          filtersObj.id = id
+          filtersObj.queType = item.split('.')[0]
+          filters.push(filtersObj)
+        })
+      })
+    }) */
   })
 
-  /*  before(">", () => {
-    cy.writeFile("temp.json", filters);
-  }); */
+  /* before('>', () => {
+    cy.writeFile('temp.json', filters)
+  }) */
 
   before('> create new items', () => {
     itemKeys.slice(4).forEach((item, index) => {
@@ -168,9 +170,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
     })
 
     it('> subject', () => {
-      const customFilter = { standards: { subject: subject.ELA } }
+      const customFilter = { standards: { subject: subject.MATH } }
       const expectedItem = filters.filter(
-        (item) => item.standards.subject === subject.ELA
+        (item) => item.standards.subject === subject.MATH
       )
 
       itemlist.searchFilters.clearAll()
@@ -186,7 +188,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       const customFilter = {
         standards: {
           subject: subject.MATH,
-          grade: [grades.GRADE_4],
           standardSet: mathCommonCore,
         },
       }

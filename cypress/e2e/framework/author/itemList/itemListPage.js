@@ -56,7 +56,7 @@ class ItemListPage {
     this.getItemContainerInlistById(id).find('[data-cy="detail_index-1"]')
 
   getItemIdById = (id) =>
-    this.getItemContainerInlistById(id).find('[data-cy="detail_index-3"]')
+    this.getItemContainerInlistById(id).find('[data-cy="detail_index-2"]')
 
   getItemDOKIById = (id) =>
     this.getItemContainerInlistById(id).find('[data-cy="detail_index-0"]')
@@ -317,7 +317,15 @@ class ItemListPage {
   verifyQuestionTypeAllItemsInCurrentPage = (qType) => {
     const queType = this.mapQueTypeKeyToUITextInItemCard(qType)
     this.getAllItemsInListContainer().each(($ele) => {
-      cy.wrap($ele).find('[data-cy="ques-type"]').should('contain', queType)
+      cy.wrap($ele)
+        .find('[data-cy="ques-type"]')
+        .first()
+        .should((ele) =>
+          expect(
+            ele.text(),
+            `question type expected is ${qType} or 'passage'`
+          ).to.be.oneOf([queType, 'PASSAGE', 'MULTIPART'])
+        )
     })
   }
 

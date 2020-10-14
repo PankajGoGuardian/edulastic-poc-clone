@@ -31,7 +31,6 @@ const SET_TEST_ID = '[reports] set standards testId'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-// export const getStandardsProcessRequestsAction = createAction(GET_REPORTS_STANDARDS_PROCESS_REQUESTS);
 export const getStandardsBrowseStandardsRequestAction = createAction(
   GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST
 )
@@ -116,7 +115,7 @@ const initialState = {
     termId: '',
     subject: '',
     grades: ['K'],
-    domainIds: ['All'],
+    domainIds: 'All',
     profileId: '',
   },
   testIds: [],
@@ -164,9 +163,7 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: setFiltersReducer,
   [SET_TEST_ID]: setTestIdReducer,
-  [RESET_ALL_REPORTS]: (state) => {
-    state = initialState
-  },
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS]: (state, { payload }) => {
     state.prevBrowseStandards = payload
   },
@@ -189,7 +186,7 @@ function* getReportsStandardsBrowseStandardsRequest({ payload }) {
       typeof curriculumId === 'string' &&
       curriculumId.length
     ) {
-      payload.curriculumId = parseInt(curriculumId)
+      payload.curriculumId = parseInt(curriculumId, 10)
     }
     const browseStandards = curriculumId
       ? yield call(reportsApi.fetchStandardMasteryBrowseStandards, payload)

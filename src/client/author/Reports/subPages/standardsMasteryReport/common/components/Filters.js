@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, keyBy, uniqBy } from 'lodash'
+import { get, isEmpty, keyBy, uniqBy, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Select, Spin } from 'antd'
@@ -230,31 +230,40 @@ const StandardsFilters = ({
     setPrevStandardsFilters(standardsFilters)
     if (standardsFilteresReceiveCount.current === 0) {
       const search = qs.parse(location.search.substring(1))
+      // default filters
+      const _filters = getInitialFilters()
       // filters fetched on page load
-      const onLoadFilters = get(standardsFilters, 'filters', [])
-      const onLoadTestIds = get(standardsFilters, 'testIds')
+      const onLoadFilters = pickBy(
+        get(standardsFilters, 'filters', {}),
+        (f) => f !== 'All' && !isEmpty(f)
+      )
+      // get new filters
+      const { testIds: onLoadTestIds, ...newFilters } = {
+        ..._filters,
+        ...onLoadFilters,
+      }
       // check if testIds in url are valid (present in the array)
-      const urlTestIds = onLoadTestIds || search.testIds || []
+      const urlTestIds = onLoadTestIds?.length
+        ? onLoadTestIds
+        : search.testIds || []
       const validTestIds = allTestIds.filter((test) =>
         urlTestIds.includes(test.key)
       )
       _setTestId(validTestIds)
       // checks to check if saved filters match the default
-      const shouldUpdateSchoolYear =
-        onLoadFilters.termId && onLoadFilters.termId !== filters.termId
+      const shouldUpdateSchoolYear = newFilters.termId !== filters.termId
       const shouldUpdateDomains =
-        (onLoadFilters.subject && onLoadFilters.subject !== filters.subject) ||
-        (onLoadFilters.grades?.[0] &&
-          onLoadFilters.grades?.[0] !== filters.grades?.[0])
+        newFilters.subject !== filters.subject ||
+        newFilters.grades?.[0] !== filters.grades?.[0]
       // settings to fetch the page data
       const settings = {
-        filters: { ...filters, ...onLoadFilters },
+        filters: { ...newFilters },
         selectedTest: validTestIds,
       }
-      _setFilters({ ...filters, ...onLoadFilters })
+      _setFilters(newFilters)
       // update standards filters for mismatch of saved filters
       if (shouldUpdateSchoolYear) {
-        const q = { termId: onLoadFilters.termId }
+        const q = { termId: newFilters.termId }
         if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
           Object.assign(q, {
             schoolIds: get(user, 'institutionIds', []).join(','),
@@ -264,8 +273,8 @@ const StandardsFilters = ({
       }
       if (shouldUpdateDomains) {
         const q = {
-          curriculumId: onLoadFilters.subject,
-          grades: onLoadFilters.grades,
+          curriculumId: newFilters.subject,
+          grades: newFilters.grades,
         }
         getStandardsBrowseStandardsRequest(q)
       }

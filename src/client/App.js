@@ -157,11 +157,6 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
       history.push(
         location.pathname.replace('home', 'author') || '/author/assignments'
       )
-    } else if (
-      role === roleuser.EDULASTIC_ADMIN &&
-      !location.pathname.startsWith('/admin')
-    ) {
-      history.push('/admin')
     }
   }, [])
   return null

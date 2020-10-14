@@ -26,6 +26,7 @@ import {
   notification,
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
+import { TokenStorage } from '@edulastic/api'
 
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
@@ -75,6 +76,8 @@ const shouldAutoSave = (itemRows) => {
   }
   return false
 }
+
+const isSEB = () => window.navigator.userAgent.includes('SEB')
 
 const RealTimeV2HookWrapper = ({
   userId,
@@ -166,6 +169,25 @@ const AssessmentContainer = ({
   const isFirst = () => currentItem === 0
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
+
+  const assignmentObj = currentAssignment && assignmentById[currentAssignment]
+  useEffect(() => {
+    if (assignmentObj) {
+      if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
+        const token = TokenStorage.getAccessToken()
+        const sebUrl = `${process.env.POI_APP_API_URI.replace(
+          'http',
+          'seb'
+        )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${
+          assignmentObj._id
+        }/testActivity/${
+          restProps.utaId
+        }/token/${token}/settings.seb?classId=${groupId}`
+        history.push('/home/assignments')
+        window.location.href = sebUrl
+      }
+    }
+  })
 
   // start assessment
   useEffect(() => {
@@ -551,7 +573,7 @@ const AssessmentContainer = ({
     }
   }, [savingResponse])
 
-  if (loading) {
+  if (loading || (!assignmentObj && !preview)) {
     return <Spin />
   }
 

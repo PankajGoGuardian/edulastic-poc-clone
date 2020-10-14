@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withNamespaces } from '@edulastic/localization'
-import { PaddingDiv } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-import { StyledTextField, TitleTextInput } from '../common/styled_components'
 import { Row } from '../../../styled/WidgetOptions/Row'
 import { Col } from '../../../styled/WidgetOptions/Col'
 import { Label } from '../../../styled/WidgetOptions/Label'
@@ -27,7 +25,7 @@ class AxisSegments extends Component {
     const { canvas } = graphData
 
     if (name !== 'title') {
-      canvas[name] = parseInt(value) || 1
+      canvas[name] = parseInt(value, 10)
     } else {
       canvas[name] = value
     }
@@ -57,7 +55,7 @@ class AxisSegments extends Component {
 
   render() {
     const { t, graphData, fillSections, cleanSections, fontSize } = this.props
-    const { canvas, stimulus, firstMount } = graphData
+    const { canvas = {}, stimulus, firstMount } = graphData
 
     return (
       <div>
@@ -113,6 +111,7 @@ class AxisSegments extends Component {
                 onBlur={(event) => this.handleCanvasBlur(event, 0)}
                 disabled={false}
                 step={1}
+                max={parseInt(canvas.xMax, 10) - 1}
               />
             </Col>
             <Col md={12}>
@@ -125,6 +124,7 @@ class AxisSegments extends Component {
                 onBlur={(event) => this.handleCanvasBlur(event, 10)}
                 disabled={false}
                 step={1}
+                min={parseInt(canvas.xMin, 10) + 1}
               />
             </Col>
           </Row>

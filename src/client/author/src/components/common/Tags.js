@@ -73,7 +73,7 @@ const Tags = ({
           placement="bottomLeft"
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           content={popup}
-          trigger="click"
+          onClick={(e) => e.stopPropagation()}
         >
           <Label
             className={`${className} hidden-tags`}

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { EmptyData } from '../../../common/components/emptyData'
-import { StyledH3, StyledSlider } from '../../../common/styled'
+import { StyledH3, StyledSlider, NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { StackedBarChartContainer } from './components/charts/stackedBarChartContainer'
 import { StyledCard, StyledContainer } from './components/styled'
@@ -52,8 +52,9 @@ const ResponseFrequency = ({
       filteredData: [],
     }
     if (res && res.metrics && !isEmpty(res.metrics)) {
-      const arr = Object.keys(res.metrics).map((key, i) => {
+      const arr = Object.keys(res.metrics).map((key) => {
         res.metrics[key].uid = key
+        res.metrics[key].maxScore = res.metrics[key].maxScore || '-'
         return res.metrics[key]
       })
 
@@ -91,6 +92,10 @@ const ResponseFrequency = ({
 
   const onResetClickCB = () => {
     setFilter({})
+  }
+
+  if (settings.selectedTest && !settings.selectedTest.key) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (isEmpty(res) && !loading) {

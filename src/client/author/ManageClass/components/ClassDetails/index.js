@@ -269,6 +269,7 @@ const ClassDetails = ({
               isUserGoogleLoggedIn={isUserGoogleLoggedIn}
               enableCleverSync={enableCleverSync}
               syncClassesWithClever={syncClassesWithClever}
+              unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
             />
@@ -289,7 +290,6 @@ const ClassDetails = ({
               archiveClass={archiveClass}
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
-              unarchiveClass={unarchiveClass}
             />
 
             <ActionContainer

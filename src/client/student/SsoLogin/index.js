@@ -47,6 +47,10 @@ class SsoLogin extends React.Component {
       localStorage.removeItem('payloadForUserData')
     }
 
+    if (localStorage.getItem('thirdPartySignOnAdditionalRole') === "admin") {
+      payload.isAdmin = true
+    }
+
     if (path.includes('mso')) {
       msoSSOLogin(payload)
     } else if (path.includes('google')) {

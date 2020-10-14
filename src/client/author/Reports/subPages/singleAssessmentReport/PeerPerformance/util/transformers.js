@@ -61,9 +61,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
         const { maxScore = 0, totalScore = 0, progressStatus } = currentValue
         return {
           // progressStatus = 2 is for absent student, needs to be excluded
-          totalMaxScore: (total.totalMaxScore +=
-            progressStatus === 2 ? 0 : maxScore),
-          totalTotalScore: (total.totalTotalScore += totalScore),
+          totalMaxScore:
+            total.totalMaxScore + (progressStatus === 2 ? 0 : maxScore),
+          totalTotalScore: total.totalTotalScore + totalScore,
         }
       },
       { totalMaxScore: 0, totalTotalScore: 0 }
@@ -119,9 +119,9 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
         const { maxScore = 0, totalScore = 0, progressStatus } = currentValue
         return {
           // progressStatus = 2 is for absent student, needs to be excluded
-          totalMaxScore: (total.totalMaxScore +=
-            progressStatus === 2 ? 0 : maxScore),
-          totalTotalScore: (total.totalTotalScore += totalScore),
+          totalMaxScore:
+            total.totalMaxScore + (progressStatus === 2 ? 0 : maxScore),
+          totalTotalScore: total.totalTotalScore + totalScore,
         }
       },
       { totalMaxScore: 0, totalTotalScore: 0 }
@@ -276,7 +276,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
 
     const proficiencyPercentages = {}
 
-    bandInfoAsc.map((o, index) => {
+    bandInfoAsc.forEach((o, index) => {
       const prof = Math.round((item[o.name] / (item.total || 1)) * 100)
       const fill = Math.round((100 / (bandInfo.length - 1)) * index)
       if (proficienciesDetail[o.name].aboveStandard !== 1) {
@@ -317,10 +317,19 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
   return arr
 }
 
-export const parseData = (rawData, data, filter) => {
+export const parseData = (rawData, filter) => {
   let compareBy = filter.compareBy
+  let data = (rawData.metricInfo || []).map((d) => {
+    const gender =
+      d.gender.toLowerCase() === 'm'
+        ? 'Male'
+        : d.gender.toLowerCase() === 'f'
+        ? 'Female'
+        : d.gender
+    return { ...d, gender }
+  })
   if (filter.compareBy === 'group') {
-    data = transformMetricForStudentGroups(rawData.metaInfo, data)
+    data = transformMetricForStudentGroups(data, data)
     compareBy = 'groupId'
   }
   const filteredData = filterData(data, filter)

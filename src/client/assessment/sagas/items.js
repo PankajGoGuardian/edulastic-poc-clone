@@ -88,6 +88,7 @@ function* saveUserResponse({ payload }) {
       isPlaylist = false,
       callback,
       pausing,
+      questionId,
     } = payload
     const itemIndex = payload.itemId
     const assignmentsByIds = yield select(
@@ -186,7 +187,15 @@ function* saveUserResponse({ payload }) {
     const shuffles = {}
     const timesSpent = {}
     questions.forEach((question) => {
-      timesSpent[question] = ts / questions.length
+      if (isDocBased) {
+        if (questionId && question === questionId) {
+          timesSpent[questionId] = ts
+        } else {
+          timesSpent[question] = 0
+        }
+      } else {
+        timesSpent[question] = ts / questions.length
+      }
       itemAnswers[question] = answers[question]
       // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"

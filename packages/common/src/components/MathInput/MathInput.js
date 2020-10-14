@@ -72,7 +72,12 @@ class MathInput extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { defaultFocus, value, isDocbasedSection } = this.props
+    const {
+      defaultFocus,
+      value,
+      isDocbasedSection,
+      handleDocBasedBlur,
+    } = this.props
     if (!window.MathQuill) return
 
     const MQ = window.MathQuill.getInterface(2)
@@ -115,6 +120,9 @@ class MathInput extends React.PureComponent {
         textarea.addEventListener('keyup', this.handleChangeField)
         textarea.addEventListener('keypress', this.handleKeypress)
         textarea.addEventListener('keydown', this.handleTabKey, false)
+        if (isDocbasedSection) {
+          textarea.addEventListener('blur', handleDocBasedBlur, false)
+        }
         document.addEventListener('click', this.handleClick, false)
       }
     )

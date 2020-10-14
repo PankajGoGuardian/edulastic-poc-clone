@@ -14,6 +14,7 @@ const getUserDetails = ({
   clever_district = false,
   gm = false,
   orgData: { districts = [] },
+  isAdmin = false,
 }) => {
   // setting first district details for student other user role will have only one district
   const {
@@ -41,6 +42,7 @@ const getUserDetails = ({
     districtId: v1Id || districtId,
     district,
     state,
+    isAdmin,
   }
 }
 

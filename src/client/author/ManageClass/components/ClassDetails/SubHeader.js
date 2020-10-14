@@ -37,7 +37,7 @@ const SubHeader = ({
   atlasId,
   cleverId,
 }) => {
-  const [showUnarchiveModal, setShowUnarchiveModal] = useState(false)
+  
   const { exitPath } = location?.state || {}
   const typeText = type !== 'class' ? 'Group' : 'Class'
   const studentCount = studentsList?.filter(
@@ -53,13 +53,6 @@ const SubHeader = ({
   const otherTeachers = coTeachers.slice(1, lastTeacher)
   const otherTeacherNames = otherTeachers.join(', ')
 
-  const handleUnarchiveClass = () => {
-    unarchiveClass({ groupId: _id, exitPath, isGroup: type !== 'class' })
-    setShowUnarchiveModal(false)
-  }
-  const handleUnarchiveClassCancel = () => {
-    setShowUnarchiveModal(false)
-  }
 
   return (
     <ContainerHeader>
@@ -96,28 +89,6 @@ const SubHeader = ({
           </Col>
         </CodeWrapper>
       )}
-      <RightContent>
-        {active !== 1 && !atlasId && !cleverId && (
-          <ClassLink onClick={() => setShowUnarchiveModal(true)}>
-            UNARCHIVE
-          </ClassLink>
-        )}
-        {showUnarchiveModal && (
-          <SimpleConfirmModal
-            visible={showUnarchiveModal}
-            title={`Unarchive ${typeText}`}
-            description={
-              <p style={{ margin: '5px 0' }}>
-                Are you sure you want to Unarchive{' '}
-                <LightGreenSpan>{name}</LightGreenSpan>?
-              </p>
-            }
-            buttonText="Unarchive"
-            onProceed={handleUnarchiveClass}
-            onCancel={handleUnarchiveClassCancel}
-          />
-        )}
-      </RightContent>
     </ContainerHeader>
   )
 }

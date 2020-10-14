@@ -45,6 +45,7 @@ const StartAssignment = ({
         allowedTime,
         testId,
         testType = 'assessment',
+        safeBrowser,
       } = timedAssignment
       const content = pauseAllowed ? (
         <p>
@@ -80,7 +81,13 @@ const StartAssignment = ({
             testType,
             groupId,
           })
-          startAssignment({ testId, assignmentId, testType, classId: groupId })
+          startAssignment({
+            testId,
+            assignmentId,
+            testType,
+            classId: groupId,
+            safeBrowser,
+          })
           console.warn('==Initiated assignment successfully==')
           Modal.destroyAll()
         },
@@ -105,8 +112,14 @@ const StartAssignment = ({
 
   const continueToTest = () => {
     const { assignmentId, groupId } = match.params
-    const { testId, testType = 'assessment' } = assignment
-    startAssignment({ testId, assignmentId, testType, classId: groupId })
+    const { testId, testType = 'assessment', safeBrowser } = assignment
+    startAssignment({
+      testId,
+      assignmentId,
+      testType,
+      classId: groupId,
+      safeBrowser,
+    })
     setShowTestInstruction({ showInstruction: false, assignment: {} })
   }
 

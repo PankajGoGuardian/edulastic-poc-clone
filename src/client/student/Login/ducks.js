@@ -816,6 +816,7 @@ function* signup({ payload }) {
       role,
       classCode,
       passwordForExistingUser,
+      isAdmin,
     } = payload
     let nameList = name.split(' ')
     nameList = nameList.filter((item) => !!(item && item.trim()))
@@ -857,6 +858,10 @@ function* signup({ payload }) {
 
     if (passwordForExistingUser) {
       obj.passwordForExistingUser = passwordForExistingUser
+    }
+
+    if (isAdmin) {
+      obj.isAdmin = isAdmin
     }
 
     const addAccount = yield select(getAddAccount)
@@ -1156,6 +1161,9 @@ function* googleLogin({ payload }) {
     if (payload) {
       if (payload.role === 'teacher') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
+        if (payload.isAdmin) {
+          localStorage.setItem('thirdPartySignOnAdditionalRole', "admin")
+        }
         role = 'teacher'
       } else if (payload.role === 'student') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
@@ -1229,6 +1237,7 @@ function* googleSSOLogin({ payload }) {
   localStorage.removeItem('thirdPartySignOnRole')
   localStorage.removeItem('thirdPartySignOnClassCode')
   localStorage.removeItem('thirdPartySignOnGeneralSettings')
+  localStorage.removeItem('thirdPartySignOnAdditionalRole')
 }
 
 function* msoLogin({ payload }) {
@@ -1250,6 +1259,9 @@ function* msoLogin({ payload }) {
     if (payload) {
       if (payload.role === 'teacher') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
+        if (payload.isAdmin) {
+          localStorage.setItem('thirdPartySignOnAdditionalRole', "admin")
+        }
         role = 'teacher'
       } else if (payload.role === 'student') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
@@ -1306,6 +1318,7 @@ function* msoSSOLogin({ payload }) {
   localStorage.removeItem('thirdPartySignOnRole')
   localStorage.removeItem('thirdPartySignOnClassCode')
   localStorage.removeItem('thirdPartySignOnGeneralSettings')
+  localStorage.removeItem('thirdPartySignOnAdditionalRole')
 }
 
 function* cleverLogin({ payload }) {

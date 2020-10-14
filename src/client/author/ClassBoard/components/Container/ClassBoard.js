@@ -899,7 +899,7 @@ class ClassBoard extends Component {
     }
     const selectedStudentsKeys = Object.keys(selectedStudents)
     const firstStudentId = get(
-      testActivity.filter((x) => !!x.testActivityId),
+      testActivity.filter((x) => x.UTASTATUS === testActivityStatus.SUBMITTED),
       [0, 'studentId'],
       false
     )
@@ -912,7 +912,9 @@ class ClassBoard extends Component {
       (x) => !selectedStudents[x.studentId]
     )
     const nobodyStarted = testActivity.every(
-      (activity) => activity.UTASTATUS === testActivityStatus.NOT_STARTED
+      ({ UTASTATUS }) =>
+        UTASTATUS === testActivityStatus.NOT_STARTED ||
+        UTASTATUS === testActivityStatus.ABSENT
     )
 
     const existingStudents = testActivity

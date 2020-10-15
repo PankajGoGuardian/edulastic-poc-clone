@@ -13,7 +13,6 @@ import {
   StyledCard,
   StyledH3,
   StyledSignedBarContainer,
-  NoDataContainer,
 } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
@@ -31,6 +30,40 @@ import {
 } from './ducks'
 import columns from './static/json/tableColumns.json'
 import { idToName, parseData } from './util/transformers'
+
+const denormalizeData = (res, compareBy) => {
+  if (res && !isEmpty(res.metricInfo)) {
+    const hMap = groupBy(res.metaInfo, 'groupId')
+    const filteredArr = res.metricInfo.filter(
+      (data) => !isEmpty(hMap[data.groupId])
+    )
+    // create duplicates for metric data if compareBy = (schoolId, teacherId)
+    const denormArr = filteredArr.flatMap((data) => {
+      // default metaData for teachers
+      let metaArr = [
+        {
+          ...hMap[data.groupId][0],
+          teacherName: uniq(
+            hMap[data.groupId].map((o) => o.teacherName).filter((txt) => txt)
+          ).join(', '),
+        },
+      ]
+      // metaData for DA / SA when grouped by school / teacher
+      if (compareBy === 'schoolId' || compareBy === 'teacherId') {
+        metaArr = uniqBy(hMap[data.groupId], (o) => o[compareBy])
+      }
+      const gender =
+        data.gender.toLowerCase() === 'm'
+          ? 'Male'
+          : data.gender.toLowerCase() === 'f'
+          ? 'Female'
+          : data.gender
+      return metaArr.map((mData) => ({ ...mData, ...data, gender }))
+    })
+    return denormArr
+  }
+  return []
+}
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -92,8 +125,9 @@ const PeerPerformance = ({
 
   const res = { ...peerPerformance, bandInfo }
   const parsedData = useMemo(() => {
+    const denormData = denormalizeData(res, ddfilter.compareBy)
     return {
-      data: parseData(res, ddfilter),
+      data: parseData(res, denormData, ddfilter),
       columns: getColumns(),
     }
   }, [res, ddfilter])
@@ -129,10 +163,6 @@ const PeerPerformance = ({
   }
 
   const assessmentName = get(settings, 'selectedTest.title', '')
-
-  if (settings.selectedTest && !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
-  }
 
   return (
     <div>
@@ -231,6 +261,7 @@ const PeerPerformance = ({
 const reportPropType = PropTypes.shape({
   districtAvg: PropTypes.number,
   districtAvgPerf: PropTypes.number,
+  metaInfo: PropTypes.array,
   metricInfo: PropTypes.array,
 })
 

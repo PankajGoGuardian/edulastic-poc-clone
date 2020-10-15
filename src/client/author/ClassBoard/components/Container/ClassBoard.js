@@ -1350,7 +1350,11 @@ class ClassBoard extends Component {
                     open={showAddStudentsPopup}
                     groupId={classId}
                     closePolicy={additionalData.closePolicy}
-                    classEndDate={additionalData.endDate}
+                    classEndDate={
+                      additionalData.dueDate
+                        ? additionalData.dueDate
+                        : additionalData.endDate
+                    }
                     serverTimeStamp={additionalData.ts}
                     assignmentId={assignmentId}
                     closePopup={this.handleHideAddStudentsPopup}

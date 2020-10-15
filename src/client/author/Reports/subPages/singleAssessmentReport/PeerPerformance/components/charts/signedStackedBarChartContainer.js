@@ -16,17 +16,8 @@ export const SignedStackedBarChartContainer = ({
   const aboveBelowStandard = 'aboveBelowStandard'
   const proficiencyBand = 'proficiencyBand'
 
-  const sortBandInfo = () => {
-    bandInfo.sort((a, b) => {
-      if (!a.aboveStandard && !b.aboveStandard) {
-        return b.threshold - a.threshold
-      }
-      return a.threshold - b.threshold
-    })
-  }
-
   const dataParser = () => {
-    sortBandInfo()
+    bandInfo.sort((a, b) => a.threshold - b.threshold)
 
     const arr = data.map((item) => {
       if (
@@ -38,7 +29,9 @@ export const SignedStackedBarChartContainer = ({
           item.fill_1 = getHSLFromRange1(0)
         } else if (analyseBy === proficiencyBand) {
           for (let i = 0; i < bandInfo.length; i++) {
-            item[`fill_${i}`] = bandInfo[i].color
+            item[`fill_${i}`] = getHSLFromRange1(
+              Math.round((100 / (bandInfo.length - 1)) * i)
+            )
           }
         }
       } else if (analyseBy === aboveBelowStandard) {
@@ -141,13 +134,13 @@ export const SignedStackedBarChartContainer = ({
       }
     }
     if (analyseBy === proficiencyBand) {
-      sortBandInfo()
+      bandInfo.sort((a, b) => a.threshold - b.threshold)
       const barsData = []
       for (const [index, value] of bandInfo.entries()) {
         barsData.push({
           key: `${value.name}Percentage`,
           stackId: 'a',
-          fill: value.color,
+          fill: getHSLFromRange1((100 / (bandInfo.length - 1)) * index),
           unit: '%',
           name: value.name,
         })

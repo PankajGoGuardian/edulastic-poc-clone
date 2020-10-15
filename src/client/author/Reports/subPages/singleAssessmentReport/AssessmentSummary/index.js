@@ -1,11 +1,10 @@
 import { SpinLoader } from '@edulastic/common'
-import { Col, Empty } from 'antd'
+import { Col } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { withRouter } from 'react-router-dom'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { StyledCard, StyledH3 } from '../../../common/styled'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
@@ -20,7 +19,6 @@ import {
   getAssessmentSummaryRequestAction,
   getReportsAssessmentSummary,
   getReportsAssessmentSummaryLoader,
-  setReportsAssesmentSummaryLoadingAction,
 } from './ducks'
 
 const AssessmentSummary = ({
@@ -32,10 +30,6 @@ const AssessmentSummary = ({
   getAssessmentSummary,
   settings,
   user,
-  match,
-  setShowHeader,
-  preventHeaderRender,
-  setAssesmentSummaryLoading,
 }) => {
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -49,15 +43,7 @@ const AssessmentSummary = ({
         ...requestFilters,
         profileId: performanceBandProfile,
       }
-      if (settings.cliUser && q.testId) {
-        const { testId } = match.params
-        if (testId !== q.testId) {
-          setAssesmentSummaryLoading(false)
-          setShowHeader(false)
-          preventHeaderRender(true)
-          return
-        }
-      }
+
       getAssessmentSummary(q)
     }
   }, [settings])
@@ -70,20 +56,9 @@ const AssessmentSummary = ({
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
-  if (loading) {
-    return <SpinLoader position="fixed" />
-  }
-
-  if (settings.cliUser && !metricInfo?.length) {
-    return (
-      <Empty
-        description="Reports are not available for this test yet. Please try again later..."
-        style={{ marginTop: '25vh' }}
-      />
-    )
-  }
-
-  return (
+  return loading ? (
+    <SpinLoader position="fixed" />
+  ) : (
     <>
       <UpperContainer type="flex">
         <StyledCard className="sub-container district-statistics">
@@ -138,7 +113,6 @@ AssessmentSummary.propTypes = {
 }
 
 const enhance = compose(
-  withRouter,
   connect(
     (state) => ({
       loading: getReportsAssessmentSummaryLoader(state),
@@ -150,7 +124,6 @@ const enhance = compose(
     }),
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction,
-      setAssesmentSummaryLoading: setReportsAssesmentSummaryLoadingAction,
     }
   )
 )

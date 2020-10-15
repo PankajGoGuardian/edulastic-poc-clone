@@ -899,7 +899,11 @@ class ClassBoard extends Component {
     }
     const selectedStudentsKeys = Object.keys(selectedStudents)
     const firstStudentId = get(
-      testActivity.filter((x) => x.UTASTATUS === testActivityStatus.SUBMITTED),
+      testActivity.filter(
+        (x) =>
+          x.UTASTATUS === testActivityStatus.SUBMITTED ||
+          x.UTASTATUS === testActivityStatus.START
+      ),
       [0, 'studentId'],
       false
     )

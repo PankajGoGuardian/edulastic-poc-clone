@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import loadable from '@loadable/component'
-import { Progress } from '@edulastic/common/src/components/Progress'
+import Progress from '@edulastic/common/src/components/Progress'
 import {
   ReportIssueContainer,
   ReportHeader,

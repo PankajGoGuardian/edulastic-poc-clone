@@ -15,7 +15,7 @@ import {
   get,
 } from 'lodash'
 import loadable from '@loadable/component'
-import { Progress } from '@edulastic/common/src/components/Progress'
+import Progress from '@edulastic/common/src/components/Progress'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { math } from '@edulastic/constants'
 // import { ToolbarContainer } from "../../styled/ToolbarContainer";

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import loadable from '@loadable/component'
 import { Dropdown, Menu, Modal } from 'antd'
-import { Progress } from '@edulastic/common/src/components/Progress'
+import Progress from '@edulastic/common/src/components/Progress'
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from './styled'
 import { BLANK_URL } from '../Worksheet/Worksheet'
 

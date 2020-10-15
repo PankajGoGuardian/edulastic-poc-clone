@@ -5,7 +5,7 @@ import produce from 'immer'
 import { isEqual } from 'lodash'
 import { v4 } from 'uuid'
 import loadable from '@loadable/component'
-import { Progress } from '@edulastic/common/src/components/Progress'
+import Progress from '@edulastic/common/src/components/Progress'
 
 import { withNamespaces } from '@edulastic/localization'
 import { IconTrash } from '@edulastic/icons'

@@ -9,7 +9,7 @@ import { find, cloneDeep, isArray, last } from 'lodash'
 import 'react-quill/dist/quill.snow.css'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import loadable from '@loadable/component'
-import { Progress } from '@edulastic/common/src/components/Progress'
+import Progress from '@edulastic/common/src/components/Progress'
 import { withNamespaces } from '@edulastic/localization'
 
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'

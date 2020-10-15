@@ -13,7 +13,7 @@ import produce from 'immer'
 
 import { withNamespaces } from '@edulastic/localization'
 import loadable from '@loadable/component'
-import { Progress } from '@edulastic/common/src/components/Progress'
+import Progress from '@edulastic/common/src/components/Progress'
 
 import { updateVariables } from '../../utils/variables'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'

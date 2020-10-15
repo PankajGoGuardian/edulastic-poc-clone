@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { arrayMove } from 'react-sortable-hoc'
 import produce from 'immer'
 import loadable from '@loadable/component'
-import { Progress } from '@edulastic/common/src/components/Progress'
+import Progress from '@edulastic/common/src/components/Progress'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
 import { withNamespaces } from '@edulastic/localization'

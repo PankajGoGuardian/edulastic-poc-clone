@@ -2,7 +2,7 @@ import React from 'react'
 
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import loadable from '@loadable/component'
-import { Progress } from '@edulastic/common/src/components/Progress'
+import Progress from '@edulastic/common/src/components/Progress'
 
 import Question from '../../../components/Question/index'
 import { Subtitle } from '../../../styled/Subtitle'

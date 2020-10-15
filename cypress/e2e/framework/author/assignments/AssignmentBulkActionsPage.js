@@ -181,8 +181,8 @@ export default class AssignmentBulkActionsPage {
   }
 
   verifyTotalClassesSelected = (total) => {
-    this.getTotalSelected().then(($ele) => {
-      assert.equal($ele.text(), total, 'Total selected class does not match :')
+    this.getTotalSelected().should(($ele) => {
+      expect($ele, 'Total selected class does not match').to.have.text(total)
     })
   }
 
@@ -338,31 +338,27 @@ export default class AssignmentBulkActionsPage {
   }
 
   verifyNumberofClassesInFilter = (filterStatus, number) => {
-    this.getFilterOption(filterStatus).then(($ele) => {
-      assert.equal(
-        $ele.text(),
-        number,
-        `Unexpected number of classes in the filter :`
-      )
+    this.getFilterOption(filterStatus).should(($ele) => {
+      expect(
+        $ele,
+        'Number of classes in the filter does not match'
+      ).to.have.text(number)
     })
   }
 
   verifyNumberofClassesFiltered = (numberOfClasses) => {
-    this.getClassRows().then(($classRows) => {
-      assert.equal(
-        $classRows.length,
-        numberOfClasses,
-        `Unexpected number of classes filtered: `
-      )
+    this.getClassRows().should(($ele) => {
+      expect(
+        $ele,
+        'Number of classes filtered does not match'
+      ).to.have.lengthOf(numberOfClasses)
     })
   }
 
   verifyFilteredClasses = (classes) => {
     this.getClassRows().each(($row, index) => {
-      assert.equal(
-        $row.find(`td`).eq(1).text(),
-        classes[index],
-        'Class names not matching'
+      expect($row.find(`td`).eq(1), 'Filtered unexpected classes').to.have.text(
+        classes[index]
       )
     })
   }
@@ -377,10 +373,9 @@ export default class AssignmentBulkActionsPage {
     this.getClassRows()
       .find(`td > button`)
       .each(($row) => {
-        assert.equal(
-          $row.css('background-color'),
-          filterColor,
-          'Filter color and classes status color not matching'
+        expect($row, 'Color doesnot match').to.have.css(
+          'background-color',
+          filterColor
         )
       })
   }

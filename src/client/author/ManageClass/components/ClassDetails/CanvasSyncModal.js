@@ -53,11 +53,17 @@ const CanvasSyncModal = ({
     !canvasSectionList?.length
 
   useEffect(() => {
-    getCanvasCourseListRequest(institutionId)
-    if (course && section) {
-      getCanvasSectionListRequest({ institutionId, allCourseIds: [course] })
+    if (institutionId) {
+      canvasCourseList = []
+      getCanvasCourseListRequest(institutionId)
     }
-  }, [])
+  }, [institutionId])
+
+  useEffect(() => {
+    if (canvasCourseList.length && institutionId) {
+      getCanvasSectionListRequest({ allCourseIds: [course], institutionId })
+    }
+  }, [canvasCourseList])
 
   const handleCourseChange = (value) => {
     getCanvasSectionListRequest({ institutionId, allCourseIds: [value] })

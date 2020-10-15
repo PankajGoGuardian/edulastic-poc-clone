@@ -39,7 +39,11 @@ const AddStudentsPopup = ({
   }, [])
 
   useEffect(() => {
-    if (classEndDate && dateNow < classEndDate) {
+    const diffInSecs = (classEndDate - dateNow) / 1000
+    const diffInHours = diffInSecs / (60 * 60)
+    if (diffInHours < 24) {
+      setEndDate(moment().add(2, 'day'))
+    } else if (classEndDate && dateNow < classEndDate) {
       setEndDate(moment(classEndDate))
     }
   }, [classEndDate])

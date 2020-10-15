@@ -19,7 +19,7 @@ export default class GroupPopup {
 
   getSelectedStudentByName = (studentName) =>
     this.getSelectedStudentsContainer().find(
-      `[data-cy="${Helpers.getFormattedFirstLastName(studentName)}"]`
+      `[data-cy="${(studentName)}"]`
     )
 
   getGroupStudentByName = (studentName) =>

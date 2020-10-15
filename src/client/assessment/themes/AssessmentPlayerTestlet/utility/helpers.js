@@ -9,6 +9,7 @@ import {
   last,
   isString,
   compact,
+  flattenDeep,
 } from 'lodash'
 import { questionType } from '@edulastic/constants'
 
@@ -216,7 +217,7 @@ const generateAnswers = {
       return null
     })
 
-    return data.filter((d) => !!d)
+    return flattenDeep(data.filter((d) => !!d))
   },
   [questionType.EXPRESSION_MULTIPART](
     item,

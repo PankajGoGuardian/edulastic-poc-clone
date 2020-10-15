@@ -92,7 +92,7 @@ const StandardsPerformance = ({
       subject,
       compareBy: tableFilters.compareBy.key,
       ...modifiedFilter,
-      schoolIds: schoolId,
+      schoolIds: schoolId || modifiedFilter.schoolId,
     }
     if (isEmpty(schoolId) && get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
       q.schoolIds = get(user, 'institutionIds', []).join(',')

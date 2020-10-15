@@ -13,7 +13,7 @@ import { questionType } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
-import { Container } from './styled/Container'
+import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
 import { TimeSpentWrapper } from '../QuestionWrapper'
 import ShowUserWork from '../Common/ShowUserWork'
@@ -81,17 +81,21 @@ class TestItemPreview extends Component {
       isPassageWithQuestions,
       isStudentReport,
       viewComponent,
+      itemLevelScoring,
     } = this.props
     const isStudentAttempt = ['studentPlayer', 'practicePlayer'].includes(
       viewComponent
     )
     let shouldShowFeedback
     let shouldTakeDimensionsFromStore
-
     switch (true) {
-      case isStudentAttempt:
-        shouldShowFeedback = true
+      case isStudentAttempt && itemLevelScoring:
+        shouldShowFeedback = widgetIndex === 0 && colIndex === 0
         shouldTakeDimensionsFromStore = false
+        break
+      case isStudentAttempt && !itemLevelScoring:
+        shouldShowFeedback = true
+        shouldTakeDimensionsFromStore = true
         break
 
       case isDocBased || stackedView:
@@ -437,17 +441,14 @@ class TestItemPreview extends Component {
               !isStudentReport)) && (
             <>
               {!isCliUser && (
-                <div
-                  style={{
-                    position: 'relative',
-                    'min-width': !isPrintPreview && '265px',
-                    overflowY: isExpressGrader && 'auto',
-                    overflowX: isExpressGrader && 'hidden',
-                  }}
+                <RenderFeedBack
+                  isExpressGrader={isExpressGrader}
+                  isPrintPreview={isPrintPreview}
+                  isStudentAttempt={isStudentAttempt}
                   className="__print-feedback-main-wrapper"
                 >
                   {this.renderFeedbacks(showStackedView)}
-                </div>
+                </RenderFeedBack>
               )}
             </>
           )}

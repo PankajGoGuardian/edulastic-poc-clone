@@ -46,7 +46,7 @@ const EditSortList = ({
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: [...Array(item.source ? item.source.length : 0).keys()],
         })
       })

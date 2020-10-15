@@ -10,8 +10,11 @@ import CorrectAnswer from './CorrectAnswer'
 import AnswerOptions from './AnswerOptions'
 
 class SetCorrectAnswers extends Component {
-  state = {
-    currentTab: 0,
+  constructor() {
+    super()
+    this.state = {
+      currentTab: 0,
+    }
   }
 
   handleTabChange = (currentTab) => {
@@ -33,7 +36,7 @@ class SetCorrectAnswers extends Component {
     setQuestionData(
       produce(item, (draft) => {
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: alternateAnswers,
         })
       })

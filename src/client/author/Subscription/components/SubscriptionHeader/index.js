@@ -29,21 +29,22 @@ const SubscriptionHeader = ({
         <EduButton isBlue width="215px" onClick={openPaymentServiceModal}>
           UPGRADE NOW FOR $100/YEAR
         </EduButton>
-      ) : /*
-      removing renew subscription for everyone
       ) : showRenewalOptions ? (
         <EduButton
           onClick={openPaymentServiceModal}
           type="primary"
           isBlue
-          style={{ marginLeft: "5px", backgroundColor: darkOrange1, border: "none" }}
+          style={{
+            marginLeft: '5px',
+            backgroundColor: darkOrange1,
+            border: 'none',
+          }}
           data-cy="manageClass"
         >
           <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           <span>RENEW SUBSCRIPTION</span>
         </EduButton>
-      */
-      null}
+      ) : null}
     </ActionBtnWrapper>
   </MainHeader>
 )

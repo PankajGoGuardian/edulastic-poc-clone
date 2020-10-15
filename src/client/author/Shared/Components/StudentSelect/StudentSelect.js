@@ -54,7 +54,8 @@ const SortBar = ({
                   value={student.testActivityId || null}
                   disabled={
                     !valid(student) ||
-                    student.UTASTATUS === testActivityStatus.NOT_STARTED
+                    student.UTASTATUS === testActivityStatus.NOT_STARTED ||
+                    student.UTASTATUS === testActivityStatus.ABSENT
                   }
                 >
                   {isPresentationMode

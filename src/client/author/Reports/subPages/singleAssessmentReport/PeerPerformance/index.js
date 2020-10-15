@@ -91,7 +91,6 @@ const PeerPerformance = ({
     ]
 
   const res = { ...peerPerformance, bandInfo }
-
   const parsedData = useMemo(() => {
     return {
       data: parseData(res, ddfilter),

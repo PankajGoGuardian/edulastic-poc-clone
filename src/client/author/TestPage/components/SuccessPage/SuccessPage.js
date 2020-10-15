@@ -343,6 +343,7 @@ class SuccessPage extends React.Component {
         <ShareModal
           shareLabel="TEST URL"
           isVisible={isShareModalVisible}
+          isPlaylist={isPlaylist}
           testId={_id}
           hasPremiumQuestion={hasPremiumQuestion}
           isPublished={status === statusConstants.PUBLISHED}

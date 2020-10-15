@@ -41,8 +41,7 @@ const Header = ({
   handleCanvasBulkSync,
   isClassLink,
 }) => {
-  const { orgData } = user
-  const { isCleverDistrict } = orgData
+  const { cleverId } = user
 
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
@@ -135,7 +134,7 @@ const Header = ({
             </EduButton>
           )}
           {googleAllowedInstitutions?.length > 0 &&
-            !isCleverDistrict &&
+            !cleverId &&
             !enableCleverSync &&
             !isClassLink && (
               <GoogleLogin
@@ -155,7 +154,7 @@ const Header = ({
               />
             )}
           {canvasAllowedInstitution?.length > 0 &&
-            !isCleverDistrict &&
+            !cleverId &&
             !enableCleverSync &&
             !isClassLink && (
               <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>

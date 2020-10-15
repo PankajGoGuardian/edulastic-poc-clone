@@ -175,9 +175,9 @@ class Assignments extends Component {
     const { currentTestId, currentAssignmentId, currentClassId } = this.state
 
     window.open(
-      `/author/printAssessment/${currentTestId}?type=${type}&assignmentId=${currentAssignmentId}&groupId=${currentClassId}&qs=${
-        type === 'custom' ? customValue : ''
-      }`,
+      `/author/printAssessment/${currentTestId}?type=${type}&assignmentId=${currentAssignmentId}${
+        currentClassId ? `&groupId=${currentClassId}` : ''
+      }${type === 'custom' ? `&qs=${customValue}` : ''}`,
       '_blank'
     )
     this.togglePrintModal()

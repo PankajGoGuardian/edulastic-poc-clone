@@ -4,7 +4,7 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, round } from 'lodash'
+import { get, round, isEqual } from 'lodash'
 import { IconClockCircularOutline } from '@edulastic/icons'
 
 import { withNamespaces } from '@edulastic/localization'
@@ -374,6 +374,32 @@ class QuestionWrapper extends Component {
     const { studentId, ttsUserIds = [], userRole, data } = this.props
     const key = data?.activity?.userId || studentId
     return userRole === 'teacher' && ttsUserIds.includes(key)
+  }
+
+  shouldComponentUpdate(prevProps) {
+    const {
+      data: prevData,
+      windowWidth: prevWindowWidth,
+      windowHeight: prevWindowHeight,
+    } = prevProps
+    const {
+      data,
+      isLCBView,
+      isExpressGrader,
+      windowWidth,
+      windowHeight,
+    } = this.props
+    if (
+      isLCBView &&
+      !isExpressGrader &&
+      data?.activity &&
+      isEqual(prevData?.activity, data?.activity) &&
+      prevWindowHeight === windowHeight &&
+      prevWindowWidth === windowWidth
+    ) {
+      return false
+    }
+    return true
   }
 
   render() {

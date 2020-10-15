@@ -21,7 +21,7 @@ const PlayerContent = ({
   gotoSummary,
   testActivityId,
   testletState,
-  testletData = {},
+  testletConfig = {},
   LCBPreviewModal,
   previewPlayer,
   groupId,
@@ -38,7 +38,7 @@ const PlayerContent = ({
   const [testletItems, setQuestions] = useState([])
   const [currentScoring, setCurrentScoring] = useState(false)
   const [unlockNext, setUnlockNext] = useState(false)
-  const { hasSubmitButton } = testletData
+  const { hasSubmitButton } = testletConfig
 
   const handleScrollPage = (e) => {
     const page = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(
@@ -212,18 +212,18 @@ const PlayerContent = ({
   const saveUserResponse = () => {
     if (!LCBPreviewModal && !previewPlayer) {
       const { currentPageIds, response } = frameController
-      const extData = {}
       for (const scoringId in currentPageIds) {
         if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
           const eduQuestions = getEduQuestions(scoringId.trim())
           if (isEmpty(eduQuestions)) {
             continue
           }
-          extData[scoringId] = response[scoringId]
+          const extData = {}
           eduQuestions.forEach((eduQuestion) => {
             if (eduQuestion) {
+              extData[scoringId] = response[scoringId]
               const timeSpent = Date.now() - lastTime.current
-              onSubmitAnswer(eduQuestion.id, timeSpent, groupId, { extData })
+              onSubmitAnswer(eduQuestion.id, timeSpent, groupId, extData)
             }
           })
         }
@@ -293,11 +293,11 @@ const PlayerContent = ({
   }
 
   useEffect(() => {
-    if (testletData.testletURL && frameRef.current) {
+    if (testletConfig.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState
 
       frameController = new ParentController(
-        testletData.testletId,
+        testletConfig.testletId,
         initState,
         testletState.response
       )
@@ -319,7 +319,7 @@ const PlayerContent = ({
         frameController.disconnect()
       }
     }
-  }, [testletData])
+  }, [testletConfig])
 
   useEffect(() => {
     window.addEventListener('resize', rerenderMagnifier)
@@ -357,13 +357,13 @@ const PlayerContent = ({
         groupId={groupId}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-        <MainContent id={`${testletData.testletId}_magnifier`}>
+        <MainContent id={`${testletConfig.testletId}_magnifier`}>
           {LCBPreviewModal && currentScoring && <OverlayDiv />}
-          {testletData.testletURL && (
+          {testletConfig.testletURL && (
             <iframe
               ref={fromContent ? frameRef : frameRefForMagnifier}
-              id={`${testletData.testletId}_magnifier`}
-              src={testletData.testletURL}
+              id={`${testletConfig.testletId}_magnifier`}
+              src={testletConfig.testletURL}
               title="testlet player"
             />
           )}

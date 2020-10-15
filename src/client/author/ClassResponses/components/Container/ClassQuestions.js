@@ -469,7 +469,7 @@ class ClassQuestions extends Component {
       ? {
           testType: classResponse.testType,
           title: classResponse.title,
-          metadata: classResponse.metadata,
+          testletConfig: classResponse.testletConfig,
           testletState: get(testActivity, 'userWork.testletState'),
           itemGroups: [{ items: [selectedTestItem] }],
         }

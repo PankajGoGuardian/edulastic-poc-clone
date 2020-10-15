@@ -317,14 +317,14 @@ class Setting extends Component {
     })
   }
 
-  updateMetadata = (key) => (e) => {
+  updateExternalData = (key) => (e) => {
     const {
       setTestData,
-      entity: { metadata = {} },
+      entity: { testletConfig = {} },
     } = this.props
     setTestData({
-      metadata: {
-        ...metadata,
+      testletConfig: {
+        ...testletConfig,
         [key]: e.target.value,
       },
     })
@@ -380,7 +380,7 @@ class Setting extends Component {
       freezeSettings = false,
       hasInstruction = false,
       instruction = '',
-      metadata = {},
+      testletConfig = {},
       enableSkipAlert = false,
     } = entity
 
@@ -1277,8 +1277,8 @@ class Setting extends Component {
                         <TextInputStyled
                           size="large"
                           type="text"
-                          onChange={this.updateMetadata('testletURL')}
-                          value={metadata.testletURL || ''}
+                          onChange={this.updateExternalData('testletURL')}
+                          value={testletConfig?.testletURL || ''}
                         />
                       </Col>
                       <Col span={12}>
@@ -1286,8 +1286,8 @@ class Setting extends Component {
                         <TextInputStyled
                           size="large"
                           type="text"
-                          onChange={this.updateMetadata('testletId')}
-                          value={metadata.testletId || ''}
+                          onChange={this.updateExternalData('testletId')}
+                          value={testletConfig?.testletId || ''}
                         />
                       </Col>
                     </Row>

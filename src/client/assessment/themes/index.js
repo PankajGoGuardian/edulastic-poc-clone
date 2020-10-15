@@ -19,7 +19,11 @@ import {
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 
-import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
+import {
+  gotoItem as gotoItemAction,
+  saveUserResponse,
+  saveTestletUserResponse,
+} from '../actions/items'
 import {
   finishTestAcitivityAction,
   setPasswordValidateStatusAction,
@@ -101,6 +105,7 @@ const AssessmentContainer = ({
   history,
   changePreview,
   saveUserResponse: saveUserAnswer,
+  saveTestletUserResponseAction,
   evaluateAnswer: evaluate,
   match,
   url,
@@ -120,6 +125,7 @@ const AssessmentContainer = ({
   submitPreviewTest,
   testletType,
   testletState,
+  testletConfig,
   testType,
   test,
   groupId,
@@ -559,8 +565,9 @@ const AssessmentContainer = ({
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
+        testletConfig={testletConfig}
         testletState={testletState}
-        saveUserAnswer={saveUserAnswer}
+        saveUserAnswer={saveTestletUserResponseAction}
         gotoSummary={gotoSummary}
         {...test}
       />
@@ -665,7 +672,7 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
-      testletConfig: state.test.testletConfig,
+      testletConfig: state.test?.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(
         state,
@@ -705,6 +712,7 @@ const enhance = compose(
       setPasswordValidateStatus: setPasswordValidateStatusAction,
       fetchAssignments: fetchAssignmentsAction,
       evaluateForPreview: evaluateCurrentAnswersForPreviewAction,
+      saveTestletUserResponseAction: saveTestletUserResponse,
     }
   )
 )

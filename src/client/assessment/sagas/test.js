@@ -287,11 +287,6 @@ function* loadTest({ payload }) {
       enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
       enableSkipAlert: testActivity?.assignmentSettings?.enableSkipAlert,
       releaseScore: testActivity?.testActivity?.releaseScore,
-      testletData: {
-        testletId: metadata?.testletId,
-        testletURL: metadata?.testletURL,
-        hasSubmitButton: metadata?.hasSubmitButton,
-      },
     }
 
     const answerCheckByItemId = {}
@@ -483,6 +478,7 @@ function* loadTest({ payload }) {
         title: test.title,
         testType: settings.testType || test.testType,
         playerSkinType: settings.playerSkinType || test.playerSkinType,
+        testletConfig: test.testletConfig,
         annotations: test.annotations,
         docUrl: test.docUrl,
         isDocBased: test.isDocBased,

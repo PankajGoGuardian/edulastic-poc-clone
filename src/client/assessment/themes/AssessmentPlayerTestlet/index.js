@@ -84,6 +84,7 @@ class AssessmentPlayerTestlet extends React.Component {
       currentItem,
       selectedTheme = 'default',
       settings,
+      testletConfig,
       timedAssignment = false,
       previewPlayer,
       demo,
@@ -98,7 +99,7 @@ class AssessmentPlayerTestlet extends React.Component {
 
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
-    const { calcProvider, calcType, testletData } = settings
+    const { calcProvider, calcType } = settings
     const calculateMode =
       calcProvider && calcType !== 'NONE'
         ? `${calcType}_${calcProvider}`
@@ -116,7 +117,7 @@ class AssessmentPlayerTestlet extends React.Component {
             onSubmitAnswer={this.submitAnswer}
             saveTestletLog={this.saveTestletLog}
             timedAssignment={timedAssignment}
-            testletData={testletData}
+            testletConfig={testletConfig}
           />
           {(!previewPlayer || demo) && (
             <SubmitConfirmation

@@ -6,6 +6,7 @@ import {
   GOTO_ITEM,
   SAVE_USER_RESPONSE,
   LOAD_USER_RESPONSE,
+  SAVE_TESTLET_USER_RESPONSE,
 } from '../constants/actions'
 
 export const receiveItemsAction = ({ page, limit, search }) => ({
@@ -49,6 +50,26 @@ export const saveUserResponse = (
     itemId: item,
     autoSave,
     groupId,
+  },
+})
+
+// NOTE we should use separate an action to store testlet user response
+export const saveTestletUserResponse = (
+  item,
+  timeSpent,
+  autoSave = false,
+  groupId,
+  extData,
+  payload
+) => ({
+  type: SAVE_TESTLET_USER_RESPONSE,
+  payload: {
+    ...payload,
+    timeSpent,
+    itemId: item,
+    autoSave,
+    groupId,
+    extData,
   },
 })
 

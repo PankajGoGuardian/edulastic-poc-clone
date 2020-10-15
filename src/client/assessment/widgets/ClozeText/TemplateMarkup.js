@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { find, cloneDeep, isArray, last } from 'lodash'
 import 'react-quill/dist/quill.snow.css'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-
-import { FroalaEditor } from '@edulastic/common'
+import loadable from '@loadable/component'
+import { Progress } from '@edulastic/common/src/components/Progress'
 import { withNamespaces } from '@edulastic/localization'
 
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
@@ -17,6 +17,10 @@ import { updateVariables } from '../../utils/variables'
 
 import { Subtitle } from '../../styled/Subtitle'
 import Question from '../../components/Question'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -142,6 +146,7 @@ class TemplateMarkup extends Component {
         </Subtitle>
 
         <FroalaEditor
+          fallback={<Progress />}
           data-cy="templateBox"
           onChange={this.onChangeMarkUp}
           value={item.stimulus}

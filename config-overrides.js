@@ -141,7 +141,7 @@ module.exports = override(
         new ScriptExtHtmlWebpackPlugin({
           sync: /main|app/,
           defaultAttribute: 'defer',
-          async: /react-pdf|froala-editor|pdfjs-dist|jsx-graph/,
+          async: /pdfjs-dist|jsx-graph|mathjs|draft-js/,
           // preload: {
           //   test: /\.js$/,
           //   chunks: 'async',

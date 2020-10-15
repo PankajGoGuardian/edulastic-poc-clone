@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { arrayMove } from 'react-sortable-hoc'
 import produce from 'immer'
-import { FroalaEditor } from '@edulastic/common'
+import loadable from '@loadable/component'
+import { Progress } from '@edulastic/common/src/components/Progress'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
 import { withNamespaces } from '@edulastic/localization'
@@ -11,6 +12,10 @@ import Question from '../../../components/Question'
 
 import { Subtitle } from '../../../styled/Subtitle'
 import { updateVariables } from '../../../utils/variables'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 class ComposeQuestion extends Component {
   static propTypes = {
@@ -133,6 +138,7 @@ class ComposeQuestion extends Component {
           {t('component.multiplechoice.composequestion')}
         </Subtitle>
         <FroalaEditor
+          fallback={<Progress />}
           tag="textarea"
           placeholder={t('component.multiplechoice.questionPlaceholder')}
           value={item.stimulus}

@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import { red, greyThemeDark2 } from '@edulastic/colors'
-import { FroalaEditor } from '@edulastic/common'
 import { IconTrashAlt } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
+import loadable from '@loadable/component'
+import { Progress } from '@edulastic/common/src/components/Progress'
 import PropTypes from 'prop-types'
 import { Container } from './styled/Container'
 import { Row } from '../../styled/WidgetOptions/Row'
 import { Col } from '../../styled/WidgetOptions/Col'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 class Annotation extends Component {
   render() {
@@ -17,6 +22,7 @@ class Annotation extends Component {
           {/* overFlow is hidden by default */}
           <Container overflow="unset">
             <FroalaEditor
+              fallback={<Progress />}
               value={value}
               onChange={(val) => updateAnnotation(val, index)}
               toolbarInline

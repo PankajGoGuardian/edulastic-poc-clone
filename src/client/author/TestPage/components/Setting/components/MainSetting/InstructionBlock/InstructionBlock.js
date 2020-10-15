@@ -1,7 +1,12 @@
 import React from 'react'
-import { FroalaEditor } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import loadable from '@loadable/component'
+import { Progress } from '@edulastic/common/src/components/Progress'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 const Instruction = ({ instruction = '', updateTestData }) => {
   const onChange = (value) => {
@@ -10,6 +15,7 @@ const Instruction = ({ instruction = '', updateTestData }) => {
 
   return (
     <StyledEditor
+      fallback={<Progress />}
       toolbarId="test-instruction"
       value={instruction}
       onChange={onChange}

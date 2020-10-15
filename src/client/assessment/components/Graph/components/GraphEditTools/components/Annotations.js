@@ -4,14 +4,19 @@ import styled from 'styled-components'
 import produce from 'immer'
 import { isEqual } from 'lodash'
 import { v4 } from 'uuid'
+import loadable from '@loadable/component'
+import { Progress } from '@edulastic/common/src/components/Progress'
 
 import { withNamespaces } from '@edulastic/localization'
-import { FroalaEditor } from '@edulastic/common'
 import { IconTrash } from '@edulastic/icons'
 import { red, secondaryTextColor, white } from '@edulastic/colors'
 
 import { FroalaInput } from '../styled/FroalaInput'
 import { CustomStyleBtn } from '../../../../../styled/ButtonStyles'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 class Annotations extends Component {
   constructor(props) {
@@ -122,6 +127,7 @@ class Annotations extends Component {
           >
             <FroalaInput style={{ width: '195px' }}>
               <FroalaEditor
+                fallback={<Progress />}
                 value={an}
                 onChange={(val) => this.handleInput(val, index)}
                 toolbarInline
@@ -144,6 +150,7 @@ class Annotations extends Component {
         <Wrapper key="annotation-wrapper-add">
           <FroalaInput style={{ width: '160px' }}>
             <FroalaEditor
+              fallback={<Progress />}
               value={newAnnotation}
               onChange={(val) => this.handleInput(val)}
               style={{ height: '40px', width: '160px' }}

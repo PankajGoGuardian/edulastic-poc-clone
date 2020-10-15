@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Document, Page } from 'react-pdf'
+import loadable from '@loadable/component'
 import { Dropdown, Menu, Modal } from 'antd'
-
+import { Progress } from '@edulastic/common/src/components/Progress'
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from './styled'
 import { BLANK_URL } from '../Worksheet/Worksheet'
+
+const Document = loadable(() => import('react-pdf/dist/Document'))
+const Page = loadable(() => import('react-pdf/dist/Page'))
 
 const createContextMenu = ({
   index,
@@ -130,7 +133,7 @@ const ThumbnailsItem = ({
         <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
           <PagePreview rotate={rotate}>
             {url && (
-              <Document file={url} renderMode="canvas">
+              <Document file={url} renderMode="canvas" fallback={<Progress />}>
                 <Page pageNumber={pageNumber} renderTextLayer={false} />
               </Document>
             )}

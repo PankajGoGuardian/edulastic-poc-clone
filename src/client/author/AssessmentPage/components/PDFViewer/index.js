@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Spin } from 'antd'
+import loadable from '@loadable/component'
 // eslint-disable-next-line
-import pdfjsLib from 'pdfjs-dist/es5/build/pdf'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { BLANK_URL } from '../Worksheet/Worksheet'
 import PdfStoreAdapter from './PdfStoreAdapter'
+
+const PDFJSLIB = loadable.lib(() => import('pdfjs-dist/es5/build/pdf'))
 
 const { UI } = PDFJSAnnotate
 
@@ -23,6 +25,7 @@ const PDFViewer = ({
   const { pageNo, URL, rotate } = page
   const pageNumber = URL === BLANK_URL ? 1 : pageNo
   const viewerRef = useRef(null)
+  const pdfLib = useRef(null)
   const [pdfDocument, setPdfDocument] = useState(null)
 
   const clearAllTools = () => {
@@ -86,7 +89,7 @@ const PDFViewer = ({
     if (!docLoading) {
       setDocLoading(true)
     }
-    const loadingTask = pdfjsLib.getDocument(URL)
+    const loadingTask = pdfLib.current.getDocument(URL)
     loadingTask.promise
       .then((_pdfDocument) => {
         _pdfDocument
@@ -115,8 +118,9 @@ const PDFViewer = ({
   }, [authoringMode, currentAnnotationTool, annotationToolsProperties])
 
   useEffect(() => {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
+    if (pdfLib.current)
+      pdfLib.current.GlobalWorkerOptions.workerSrc =
+        'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
     if (!pdfDocument) {
       loadPdf()
     }
@@ -170,7 +174,12 @@ const PDFViewer = ({
     )
   }
 
-  return <div id="viewer" className="pdfViewer" ref={viewerRef} />
+  return (
+    <>
+      <div id="viewer" className="pdfViewer" ref={viewerRef} />
+      <PDFJSLIB ref={pdfLib} />
+    </>
+  )
 }
 
 export default PDFViewer

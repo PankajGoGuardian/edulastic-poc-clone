@@ -112,6 +112,7 @@ import {
   SwitchBox,
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
+import { updateCliUserAction } from '../../../../student/Login/ducks'
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -181,7 +182,8 @@ class ClassBoard extends Component {
       match,
       studentUnselectAll,
       location,
-      isCliUser,
+      updateCliUser,
+      isCliUser: cliUserUpdated,
       history,
       setShowAllStudents,
     } = this.props
@@ -191,7 +193,11 @@ class ClassBoard extends Component {
     loadTestActivity(assignmentId, classId)
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
-    if (isCliUser) {
+    const cliUser = new URLSearchParams(window.location.search).has('cliUser')
+    if (cliUser) {
+      updateCliUser(true)
+    }
+    if (cliUserUpdated && !cliUser) {
       history.push({
         search: search ? `${search}&cliUser=true` : `?cliUser=true`,
         state,
@@ -1692,6 +1698,7 @@ const enhance = compose(
       markSubmitted: markSubmittedAction,
       downloadGradesResponse: downloadGradesResponseAction,
       setShowAllStudents: setShowAllStudentsAction,
+      updateCliUser: updateCliUserAction,
     }
   )
 )

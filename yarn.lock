@@ -12301,6 +12301,15 @@ jest-worker@^25.1.0, jest-worker@^25.4.0:
     merge-stream "^2.0.0"
     supports-color "^7.0.0"
 
+jest-worker@^26.5.0:
+  version "26.5.0"
+  resolved "https://registry.yarnpkg.com/jest-worker/-/jest-worker-26.5.0.tgz#87deee86dbbc5f98d9919e0dadf2c40e3152fa30"
+  integrity sha512-kTw66Dn4ZX7WpjZ7T/SUDgRhapFRKWmisVAF0Rv4Fu8SLFD7eLbqpLvbxVqYhSgaWa7I+bW7pHnbyfNsH6stug==
+  dependencies:
+    "@types/node" "*"
+    merge-stream "^2.0.0"
+    supports-color "^7.0.0"
+
 jest@24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest/-/jest-24.9.0.tgz#987d290c05a08b52c56188c1002e368edb007171"
@@ -12781,6 +12790,14 @@ levn@^0.3.0, levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
+
+line-column@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/line-column/-/line-column-1.0.2.tgz#d25af2936b6f4849172b312e4792d1d987bc34a2"
+  integrity sha1-0lryk2tvSEkXKzEuR5LR2Ye8NKI=
+  dependencies:
+    isarray "^1.0.0"
+    isobject "^2.0.0"
 
 line-height@^0.3.1:
   version "0.3.1"
@@ -14098,6 +14115,11 @@ nanoid@^2.1.10:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.1.11.tgz#ec24b8a758d591561531b4176a01e3ab4f0f0280"
   integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
 
+nanoid@^3.1.12:
+  version "3.1.12"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.12.tgz#6f7736c62e8d39421601e4a0c77623a97ea69654"
+  integrity sha512-1qstj9z5+x491jfiC4Nelk+f8XBad7LN20PmyWINJEMRSf3wcAjAWysw1qaA8z6NSKe2sjq1hRSDpBH5paCb6A==
+
 nanomatch@^1.2.9:
   version "1.2.13"
   resolved "https://registry.yarnpkg.com/nanomatch/-/nanomatch-1.2.13.tgz#b87a8aa4fc0de8fe6be88895b38983ff265bd119"
@@ -14693,6 +14715,14 @@ optimize-css-assets-webpack-plugin@5.0.3:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/optimize-css-assets-webpack-plugin/-/optimize-css-assets-webpack-plugin-5.0.3.tgz#e2f1d4d94ad8c0af8967ebd7cf138dcb1ef14572"
   integrity sha512-q9fbvCRS6EYtUKKSwI87qm2IxlyJK5b4dygW1rKUBT6mMDhdG5e5bZT63v6tnJR9F9FB/H5a0HTmtw+laUBxKA==
+  dependencies:
+    cssnano "^4.1.10"
+    last-call-webpack-plugin "^3.0.0"
+
+optimize-css-assets-webpack-plugin@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/optimize-css-assets-webpack-plugin/-/optimize-css-assets-webpack-plugin-5.0.4.tgz#85883c6528aaa02e30bbad9908c92926bb52dc90"
+  integrity sha512-wqd6FdI2a5/FdoiCNNkEvLeA//lHHfG24Ln2Xm2qqdIk4aOlsR18jwpyOihqQ8849W3qu2DX8fOYxpvTMj+93A==
   dependencies:
     cssnano "^4.1.10"
     last-call-webpack-plugin "^3.0.0"
@@ -15964,6 +15994,13 @@ postcss-safe-parser@4.0.1:
   dependencies:
     postcss "^7.0.0"
 
+postcss-safe-parser@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/postcss-safe-parser/-/postcss-safe-parser-5.0.2.tgz#459dd27df6bc2ba64608824ba39e45dacf5e852d"
+  integrity sha512-jDUfCPJbKOABhwpUKcqCVbbXiloe/QXMcbJ6Iipf3sDIihEzTqRCeMBfRaOHxhBuTYqtASrI1KJWxzztZU4qUQ==
+  dependencies:
+    postcss "^8.1.0"
+
 postcss-selector-matches@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/postcss-selector-matches/-/postcss-selector-matches-4.0.0.tgz#71c8248f917ba2cc93037c9637ee09c64436fcff"
@@ -16063,6 +16100,16 @@ postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, po
     chalk "^2.4.2"
     source-map "^0.6.1"
     supports-color "^6.1.0"
+
+postcss@^8.1.0:
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.1.1.tgz#c3a287dd10e4f6c84cb3791052b96a5d859c9389"
+  integrity sha512-9DGLSsjooH3kSNjTZUOt2eIj2ZTW0VI2PZ/3My+8TC7KIbH2OKwUlISfDsf63EP4aiRUt3XkEWMWvyJHvJelEg==
+  dependencies:
+    colorette "^1.2.1"
+    line-column "^1.0.2"
+    nanoid "^3.1.12"
+    source-map "^0.6.1"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -19404,7 +19451,7 @@ source-map-support@^0.4.15:
   dependencies:
     source-map "^0.5.6"
 
-source-map-support@^0.5.6, source-map-support@^0.5.9, source-map-support@~0.5.12:
+source-map-support@^0.5.6, source-map-support@^0.5.9, source-map-support@~0.5.12, source-map-support@~0.5.19:
   version "0.5.19"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.19.tgz#a98b62f86dcaf4f67399648c085291ab9e8fed61"
   integrity sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
@@ -19434,7 +19481,7 @@ source-map@^0.5.0, source-map@^0.5.3, source-map@^0.5.6, source-map@^0.5.7:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
   integrity sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w=
 
-source-map@^0.7.3:
+source-map@^0.7.3, source-map@~0.7.2:
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.3.tgz#5302f8169031735226544092e64981f751750383"
   integrity sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==
@@ -20176,6 +20223,18 @@ terser-webpack-plugin@^2.1.2:
     terser "^4.6.12"
     webpack-sources "^1.4.3"
 
+terser-webpack-plugin@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-5.0.0.tgz#88f58d27d1c8244965c59540d3ccda1598fc958c"
+  integrity sha512-rf7l5a9xamIVX3enQeTl0MY2MNeZClo5yPX/tVPy22oY0nzu0b45h7JqyFi/bygqKWtzXMnml0u12mArhQPsBQ==
+  dependencies:
+    jest-worker "^26.5.0"
+    p-limit "^3.0.2"
+    schema-utils "^3.0.0"
+    serialize-javascript "^5.0.1"
+    source-map "^0.6.1"
+    terser "^5.3.5"
+
 terser@^4.1.2, terser@^4.4.3, terser@^4.6.12, terser@^4.6.3:
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/terser/-/terser-4.8.0.tgz#63056343d7c70bb29f3af665865a46fe03a0df17"
@@ -20184,6 +20243,15 @@ terser@^4.1.2, terser@^4.4.3, terser@^4.6.12, terser@^4.6.3:
     commander "^2.20.0"
     source-map "~0.6.1"
     source-map-support "~0.5.12"
+
+terser@^5.3.5:
+  version "5.3.5"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.3.5.tgz#9e080baa0568f96654621b20eb9effa440b1484e"
+  integrity sha512-Qw3CZAMmmfU824AoGKalx+riwocSI5Cs0PoGp9RdSLfmxkmJgyBxqLBP/isDNtFyhHnitikvRMZzyVgeq+U+Tg==
+  dependencies:
+    commander "^2.20.0"
+    source-map "~0.7.2"
+    source-map-support "~0.5.19"
 
 test-data-bot@^0.6.0:
   version "0.6.1"

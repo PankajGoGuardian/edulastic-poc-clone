@@ -14,13 +14,14 @@ babelPreset.plugins.push.apply(babelPreset.plugins, [
     },
     'antd',
   ],
-  'lodash',
   [
     'styled-components',
     {
       useDisplayName: false,
     },
   ],
+  'lodash',
+  'react-require',
   '@loadable/babel-plugin',
 ])
 

@@ -86,6 +86,10 @@ import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
+import {
+  addLoadingComponentAction,
+  removeLoadingComponentAction,
+} from '../src/actions/authorUi'
 
 // constants
 
@@ -1486,7 +1490,8 @@ function* createTest(data) {
     omitedItems.push('freezeSettings')
   }
   const dataToSend = omit(data, omitedItems)
-  // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
+  /* we are getting testItem ids only in payload from cart, 
+  but whole testItem Object from test library. */
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups)
   const entity = yield call(testsApi.create, dataToSend)
   yield put({
@@ -1644,6 +1649,7 @@ function* updateTestSaga({ payload }) {
 }
 
 function* updateTestDocBasedSaga({ payload }) {
+  yield put(addLoadingComponentAction({ componentName: 'saveButton' }))
   try {
     const _questions =
       payload?.data?.itemGroups?.[0]?.items?.[0]?.data?.questions || []
@@ -1745,6 +1751,8 @@ function* updateTestDocBasedSaga({ payload }) {
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
+  } finally {
+    yield put(removeLoadingComponentAction({ componentName: 'saveButton' }))
   }
 }
 

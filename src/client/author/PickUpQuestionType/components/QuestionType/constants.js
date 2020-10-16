@@ -2438,7 +2438,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           responseFontScale: 'Normal (100%)',
         },
         numberPad: defaultNumberPad,
-        symbols: ['basic', 'intermediate', 'general'],
+        symbols: ['advanced_matrices', 'basic', 'intermediate', 'general'],
         hints: [{ value: uuids[0], label: '' }],
       },
       onSelectQuestionType,

@@ -41,8 +41,7 @@ const ClassCreatePage = ({
     console.log('error', err)
   }
 
-  const { isUserGoogleLoggedIn, orgData } = user
-  const { isCleverDistrict } = orgData
+  const { isUserGoogleLoggedIn, cleverId } = user
   return (
     <>
       <ClassCreateContainer>
@@ -63,7 +62,7 @@ const ClassCreatePage = ({
                 <EduButton isBlue>CREATE NEW CLASS</EduButton>
               </Link>
               {googleAllowedInstitutions?.length > 0 &&
-                !isCleverDistrict &&
+                !cleverId &&
                 !isClassLink && (
                   <GoogleLogin
                     clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}

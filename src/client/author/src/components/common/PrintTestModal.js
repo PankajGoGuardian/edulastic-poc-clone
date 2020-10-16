@@ -79,15 +79,22 @@ const PrintTestModal = ({
       onCancel={onCancel}
       title="Print Test"
       footer={
-        <StyledFooter>
-          <EduButton isGhost data-cy="CANCEL" height="40px" onClick={onCancel}>
-            CANCEL
-          </EduButton>
-          ,
-          <EduButton height="40px" data-cy="PRINT" onClick={handleSubmit}>
-            PRINT
-          </EduButton>
-        </StyledFooter>
+        <>
+          <StyledFooter>
+            <EduButton
+              isGhost
+              data-cy="CANCEL"
+              height="40px"
+              onClick={onCancel}
+            >
+              CANCEL
+            </EduButton>
+
+            <EduButton height="40px" data-cy="PRINT" onClick={handleSubmit}>
+              PRINT
+            </EduButton>
+          </StyledFooter>
+        </>
       }
       width={626}
     >

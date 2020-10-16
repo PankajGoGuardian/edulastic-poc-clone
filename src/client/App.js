@@ -150,6 +150,11 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
         location.pathname.replace('author', 'home') || '/home/assignments'
       )
     } else if (
+      role === roleuser.EDULASTIC_ADMIN &&
+      !location.pathname.startsWith('/admin')
+    ) {
+      history.push('/admin')
+    } else if (
       role !== 'student' &&
       role !== 'parent' &&
       location.pathname.startsWith('/home')

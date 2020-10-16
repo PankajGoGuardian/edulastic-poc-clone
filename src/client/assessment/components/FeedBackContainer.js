@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'lodash'
+import { isEqual } from 'lodash'
 import { Divider } from 'antd'
 import styled from 'styled-components'
 import { yellow, greenDark3, red } from '@edulastic/colors'
@@ -51,6 +51,7 @@ const FeedBackContainer = ({
   prevFeedback,
   userAnswers,
   redirectPolicy,
+  previousUserResponse,
   qId,
 }) => {
   const [feedbackView, setFeedbackView] = useState(false)
@@ -108,9 +109,21 @@ const FeedBackContainer = ({
     prevFeedback,
   }
   const currentUserAnswer = userAnswers?.[qId]
-  if (!isEmpty(currentUserAnswer)) {
+
+  /**
+   * TODO: Fixes the current issue [EV-20491], Need to fix for other question types
+   * eg: Expression multipart (math input, adds index undefined in current response),
+   * Graph adds unique id to every response
+   */
+  const differenceInResponse = useMemo(() => {
+    if (currentUserAnswer === undefined) return false
+    return !isEqual(previousUserResponse || '', currentUserAnswer || '')
+  }, [previousUserResponse, currentUserAnswer])
+
+  if (differenceInResponse) {
     return null
   }
+
   if (
     !prevFeedback?.text &&
     correct === undefined &&

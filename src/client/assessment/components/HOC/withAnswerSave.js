@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { AnswerContext } from '@edulastic/common'
+import { isUndefined } from 'lodash'
 import { setUserAnswerAction } from '../../actions/answers'
 import {
   getUserAnswerSelector,
@@ -34,7 +35,9 @@ export default (WrappedComponent) => {
 
     const userAnswer = answerContext.hideAnswers
       ? undefined
-      : _userAnswer || userPrevAnswer
+      : isUndefined(_userAnswer)
+      ? userPrevAnswer
+      : _userAnswer
 
     // `isReviewTab` is being only passed from test page's review tab, in which case
     // userAnswer nor evaluation should be propagated forward. Doing the same will cause

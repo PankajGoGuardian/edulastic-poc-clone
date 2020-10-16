@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Select } from 'antd'
 import CancelApplyActions from './CancelApplyActions'
-import {
-  CLASS_NAME_PATTERN_CONFIG,
-  deltaSyncConfig,
-  DISABLE_SUBMIT_TITLE,
-} from '../Data'
+import { CLASS_NAME_PATTERN_CONFIG, DISABLE_SUBMIT_TITLE } from '../Data'
 import { CheckboxLabel } from '@edulastic/common'
 
 const { Option } = Select
@@ -18,6 +14,7 @@ export default function ClassNamePattern({
   overrideClassName = false,
   disableFields,
   isClasslink,
+  isClever = false,
 }) {
   const [selectState, setSelectState] = useState(
     CLASS_NAME_PATTERN_CONFIG[classNamePattern]
@@ -35,27 +32,35 @@ export default function ClassNamePattern({
     setValueBackToDefault()
   }, [classNamePattern])
 
-  const handleApplyClick = () =>
-    applyClassNamesSync({
+  const handleApplyClick = () => {
+    const data = {
       orgId,
       orgType,
       classNamePattern: selectState,
-      overrideClassName: overrideClassNameState,
       isClasslink,
-    })
+    }
+    if (isClever) {
+      Object.assign(data, {
+        overrideClassName: overrideClassNameState
+      })
+    }
+    applyClassNamesSync(data)
+  }
   const onOverrideChange = ({ target }) => {
     setOverrideClassNameState(target.checked)
   }
 
   return (
     <>
-      <CheckboxLabel
-        style={{ margin: '10px 0px 20px 0px' }}
-        checked={overrideClassNameState}
-        onChange={onOverrideChange}
-      >
-        Override Class Name
-      </CheckboxLabel>
+      {isClever &&
+        <CheckboxLabel
+          style={{margin: '10px 0px 20px 0px'}}
+          checked={overrideClassNameState}
+          onChange={onOverrideChange}
+        >
+          Override Class Name
+        </CheckboxLabel>
+      }
       <h3>Edulastic Class Names</h3>
       <Select
         value={selectState}
@@ -63,7 +68,7 @@ export default function ClassNamePattern({
         onChange={(value) => setSelectState(value)}
       >
         <Option value="DEFAULT">
-          {`Default ${isClasslink ? 'Classlink' : 'Clever'} Names`}
+          {`Default ${isClasslink ? 'Edlink' : 'Clever'} Names`}
         </Option>
         <Option value="CNAME_TLNAME_PERIOD">
           Course Name - Teacher LastName - Period

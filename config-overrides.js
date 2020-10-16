@@ -218,7 +218,7 @@ module.exports = override(
               enforce: true,
             },
             vendor: {
-              test: /[\\/]node_modules[\\/]((?!(froala-editor|react-pdf|pdfjs-dist|jsxgraph|firebase|mathjs|ace-builds|react-jsx-parser|recharts)).*)[\\/]/,
+              test: /[\\/]node_modules[\\/]((?!(react-pdf|jsxgraph|firebase|mathjs|ace-builds|react-jsx-parser|recharts)).*)[\\/]/,
               name(module) {
                 // get the name. E.g. node_modules/packageName/not/this/part.js
                 // or node_modules/packageName
@@ -229,10 +229,6 @@ module.exports = override(
                 // npm package names are URL-safe, but some servers don't like @ symbols
                 return `vendor.lib.${packageName.replace('@', '')}`
               },
-            },
-            default: {
-              minChunks: 2,
-              priority: -20,
             },
           },
         },

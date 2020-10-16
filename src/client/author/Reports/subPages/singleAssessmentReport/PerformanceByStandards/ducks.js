@@ -7,6 +7,7 @@ import { isEmpty } from 'lodash'
 import { reportsApi } from '@edulastic/api'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+import { getOrgDataFromSARFilter } from '../common/filterDataDucks'
 
 const GET_PERFORMANCE_BY_STANDARDS_REQUEST =
   '[reports] get performance by standards request'
@@ -42,8 +43,8 @@ const initialState = {
 }
 
 export const reportPerformanceByStandardsReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state) => (state = initialState),
-  [GET_PERFORMANCE_BY_STANDARDS_REQUEST]: (state) => {
+  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [GET_PERFORMANCE_BY_STANDARDS_REQUEST]: (state, { payload }) => {
     state.loading = true
   },
   [GET_PERFORMANCE_BY_STANDARDS_SUCCESS]: (state, { payload }) => {
@@ -70,10 +71,15 @@ export const getPerformanceByStandardsErrorSelector = createSelector(
   (state) => state.error
 )
 
-export const getPerformanceByStandardsReportSelector = createSelector(
+const _getPerformanceByStandardsReportSelector = createSelector(
   stateSelector,
   (state) => state.performanceByStandards
 )
+
+export const getPerformanceByStandardsReportSelector = (state) => ({
+  ..._getPerformanceByStandardsReportSelector(state),
+  teacherInfo: getOrgDataFromSARFilter(state),
+})
 
 function* getPerformanceByStandardsSaga({ payload }) {
   const errorMessage =

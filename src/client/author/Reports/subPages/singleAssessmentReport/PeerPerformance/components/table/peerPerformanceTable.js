@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledH3, ColoredCell } from '../../../../../common/styled'
-import { downloadCSV, getHSLFromRange1 } from '../../../../../common/util'
+import { downloadCSV } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'
 import { StyledTable } from '../styled'
 
@@ -188,11 +188,6 @@ export const PeerPerformanceTable = ({
       colouredCellsNo = 2
     } else {
       bandInfo.sort((a, b) => a.threshold - b.threshold)
-      for (let i = 0; i < bandInfo.length; i++) {
-        dataSource.forEach((d) => {
-          d[`fill_${i}`] = bandInfo[i].color
-        })
-      }
 
       const allBandCols = {}
       for (const band of bandInfo) {

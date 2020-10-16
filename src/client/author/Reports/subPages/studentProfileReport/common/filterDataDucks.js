@@ -178,10 +178,7 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   [RESET_REPORTS_SPR_FILTER_DATA]: (state) => {
     state.SPRFilterData = {}
   },
-  // eslint-disable-next-line no-unused-vars
-  [RESET_ALL_REPORTS]: (state) => {
-    state = initialState
-  },
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST]: (state) => {
     state.loading = true
   },

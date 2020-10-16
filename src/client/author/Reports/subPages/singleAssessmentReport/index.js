@@ -61,8 +61,6 @@ const SingleAssessmentReportContainer = (props) => {
     match,
     updateCliUser,
     cliUser,
-    setShowHeader,
-    preventHeaderRender,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -145,20 +143,22 @@ const SingleAssessmentReportContainer = (props) => {
   }, [settings])
 
   const onGoClick = (_settings) => {
-    const obj = {}
-    const arr = Object.keys(_settings.filters)
-    // eslint-disable-next-line array-callback-return
-    arr.map((item) => {
-      const val =
-        _settings.filters[item] === 'All' ? '' : _settings.filters[item]
-      obj[item] = val
-    })
+    if (_settings.selectedTest.key) {
+      const obj = {}
+      const arr = Object.keys(_settings.filters)
+      // eslint-disable-next-line array-callback-return
+      arr.map((item) => {
+        const val =
+          _settings.filters[item] === 'All' ? '' : _settings.filters[item]
+        obj[item] = val
+      })
 
-    setSARSettings({
-      selectedTest: _settings.selectedTest,
-      requestFilters: obj,
-      cliUser: isCliUser,
-    })
+      setSARSettings({
+        selectedTest: _settings.selectedTest,
+        requestFilters: obj,
+        cliUser: isCliUser,
+      })
+    }
   }
 
   const toggleFilter = (e) => {
@@ -239,12 +239,7 @@ const SingleAssessmentReportContainer = (props) => {
               exact
               path="/author/reports/assessment-summary/test/:testId?"
               render={(_props) => (
-                <AssessmentSummary
-                  {..._props}
-                  settings={settings}
-                  setShowHeader={setShowHeader}
-                  preventHeaderRender={preventHeaderRender}
-                />
+                <AssessmentSummary {..._props} settings={settings} />
               )}
             />
             <Route

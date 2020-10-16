@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import React from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
@@ -85,8 +86,20 @@ class WorksheetComponent extends React.Component {
   constructor(props) {
     super(props)
     this.pdfRef = React.createRef()
+    this.state = {
+      currentPage: 0,
+      highlightedQuestion: undefined,
+      history: 0,
+      selected: 0,
+      uploadModal: false,
+      isAddPdf: false,
+      deleteConfirmation: false,
+      minimized: true,
+      isToolBarVisible: true,
+    }
   }
 
+  // eslint-disable-next-line react/static-property-placement
   static propTypes = {
     setTestData: PropTypes.func.isRequired,
     userWork: PropTypes.object.isRequired,
@@ -99,6 +112,7 @@ class WorksheetComponent extends React.Component {
     annotations: PropTypes.array,
   }
 
+  // eslint-disable-next-line react/static-property-placement
   static defaultProps = {
     review: false,
     annotations: [],
@@ -108,18 +122,6 @@ class WorksheetComponent extends React.Component {
   }
 
   cancelUpload
-
-  state = {
-    currentPage: 0,
-    highlightedQuestion: undefined,
-    history: 0,
-    selected: 0,
-    uploadModal: false,
-    isAddPdf: false,
-    deleteConfirmation: false,
-    minimized: true,
-    isToolBarVisible: true,
-  }
 
   componentDidMount() {
     const { saveUserWork, itemDetail, freeFormNotes } = this.props
@@ -632,6 +634,8 @@ class WorksheetComponent extends React.Component {
               }
               undoAnnotationsOperation={undoAnnotationsOperation}
               redoAnnotationsOperation={redoAnnotationsOperation}
+              pdfAnnotations={pdfAnnotations}
+              onHighlightQuestion={this.handleHighlightQuestion}
             />
           </PDFAnnotationToolsWrapper>
         )}
@@ -773,6 +777,7 @@ class WorksheetComponent extends React.Component {
 }
 
 const withForwardedRef = (Component) => {
+  // eslint-disable-next-line react/jsx-props-no-spreading
   const handle = (props, ref) => <Component {...props} forwardedRef={ref} />
 
   const name = Component.displayName || Component.name

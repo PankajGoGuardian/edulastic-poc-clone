@@ -1,6 +1,6 @@
 import React from 'react'
 import ColorPicker from 'rc-color-picker'
-import { InputNumber } from 'antd'
+import { Dropdown, InputNumber, Menu } from 'antd'
 import { FlexContainer } from '@edulastic/common'
 import { ANNOTATION_TOOLS } from './ToolsData'
 import {
@@ -21,6 +21,8 @@ const PDFAnnotationTools = ({
   redoAnnotationsOperation,
   isAnnotationsStackEmpty = false,
   isAnnotationsEmpty = false,
+  pdfAnnotations,
+  onHighlightQuestion,
 }) => {
   const handleClick = (key) => {
     if (key === 'thumbnails') {
@@ -50,26 +52,63 @@ const PDFAnnotationTools = ({
     updateToolProperties({ key, value: { size: prop } })
   }
 
+  const getAnnotationCustomList = () => {
+    const data = {}
+    pdfAnnotations.forEach((o) => {
+      data[o.qIndex] = o.questionId
+    })
+    return data
+  }
+
+  const annotationList = (
+    <Menu>
+      {Object.keys(getAnnotationCustomList()).map((key) => (
+        <Menu.Item
+          key={key}
+          onClick={() => onHighlightQuestion(getAnnotationCustomList()[key])}
+        >
+          Question {key}
+        </Menu.Item>
+      ))}
+    </Menu>
+  )
+
   return (
     <FlexContainer justifyContent="flex-start" alignItems="center">
       {ANNOTATION_TOOLS.map(
         ({ key, title, icon, showColorPicker, showSizeSelection }, index) => (
           <ToolsWrapper border={['draw', 'text'].includes(key)}>
-            <ToolWrapper
-              key={key || title}
-              title={title}
-              active={
-                (currentTool === key && !['undo', 'redo'].includes(key)) ||
-                (!minimized && index === 0)
-              }
-              onClick={() => handleClick(key)}
-              disabled={
-                (isAnnotationsStackEmpty && key === 'redo') ||
-                (isAnnotationsEmpty && key === 'undo')
-              }
-            >
-              {icon}
-            </ToolWrapper>
+            {key === 'list' ? (
+              <Dropdown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={annotationList}
+                trigger={['click']}
+              >
+                <ToolWrapper
+                  key={key || title}
+                  title={title}
+                  active={currentTool === key || (!minimized && index === 0)}
+                >
+                  {icon}
+                </ToolWrapper>
+              </Dropdown>
+            ) : (
+              <ToolWrapper
+                key={key || title}
+                title={title}
+                active={
+                  (currentTool === key && !['undo', 'redo'].includes(key)) ||
+                  (!minimized && index === 0)
+                }
+                onClick={() => handleClick(key)}
+                disabled={
+                  (isAnnotationsStackEmpty && key === 'redo') ||
+                  (isAnnotationsEmpty && key === 'undo')
+                }
+              >
+                {icon}
+              </ToolWrapper>
+            )}
             {showSizeSelection && currentTool === key && (
               <FontPickerWrapper>
                 <InputNumber

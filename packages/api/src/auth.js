@@ -60,7 +60,7 @@ const cleverLogin = () =>
     })
     .then((result) => result.data.result)
 
-const classlinkLogin = (params) =>
+const atlasLogin = (params) =>
   api
     .callApi({
       url: `${prefix}/login-atlas`,
@@ -96,7 +96,7 @@ const cleverSSOLogin = (data) =>
     })
     .then((result) => result.data.result)
 
-const classlinkSSOLogin = (data) =>
+const atlasSSOLogin = (data) =>
   api
     .callApi({
       url: `${prefix}/callback-sso/atlas`,
@@ -153,9 +153,9 @@ export default {
   googleLogin,
   googleSSOLogin,
   cleverSSOLogin,
-  classlinkSSOLogin,
+  atlasSSOLogin,
   cleverLogin,
-  classlinkLogin,
+  atlasLogin,
   msoLogin,
   msoSSOLogin,
   checkUserExist,

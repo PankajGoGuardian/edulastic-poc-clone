@@ -24,9 +24,9 @@ const StudentsReportCard = ({
   const gradedTestActivities = testActivity.filter(
     (ta) => ta.status === 'submitted' && ta.graded === 'GRADED'
   )
-  let { options } = qs.parse(location.search)
-  options = options.split(',').map((o) => o.trim())
-  options = options.reduce((acc, option) => {
+  let { options = [] } = qs.parse(location.search)
+  options = options?.split(',')?.map((o) => o.trim())
+  options = options?.reduce((acc, option) => {
     acc[option] = true
     return acc
   }, {})

@@ -107,7 +107,7 @@ export default createReducer(initialState, {
 // selectors
 const _module = 'authorGroups'
 export const getGroupsSelector = (state) =>
-  state[module].isLoading ? [] : state[_module].groups
+  state[_module].isLoading ? [] : state[_module].groups
 export const getArchiveGroupsSelector = (state) =>
   state[_module].isLoading ? [] : state[_module].archiveGroups
 export const getStudentsSelector = (state) =>

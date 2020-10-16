@@ -121,11 +121,4 @@ completesummary.push({
 })
 
 completesummary.push(finalSummary(stats))
-console.log('***************************')
-console.log(
-  `Test Passing Rate - ${((stats.passes * 100) / stats.testsRegistered).toFixed(
-    2
-  )}% `
-)
-console.log('***************************')
 console.table('Run Summary', completesummary)

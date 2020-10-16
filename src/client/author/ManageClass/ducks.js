@@ -162,6 +162,8 @@ export const REMOVE_CLASS_SYNC_NOTIFICATION =
 
 export const SET_CLEVER_SYNC_MODAL = '[manageClass] set clever sync modal'
 
+export const SET_FILTER_CLASS = '[manageClass] set filter class'
+
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST)
@@ -273,6 +275,8 @@ export const removeClassSyncNotificationAction = createAction(
 
 export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL)
 
+export const setFilterClassAction = createAction(SET_FILTER_CLASS)
+
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -297,6 +301,11 @@ const initialState = {
   classNotFoundError: false,
   unarchivingClass: false,
   showCleverSyncModal: false,
+  filterClass: 'Active',
+}
+
+const setFilterClass = (state, { payload }) => {
+  state.filterClass = payload
 }
 
 const setShowCleverSyncModal = (state, { payload }) => {
@@ -540,6 +549,8 @@ export default createReducer(initialState, {
     state.unarchivingClass = false
   },
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
+
+  [SET_FILTER_CLASS]: setFilterClass,
 })
 
 function* fetchClassList({ payload }) {
@@ -550,6 +561,7 @@ function* fetchClassList({ payload }) {
     yield put(setUserGoogleLoggedInAction(true))
     yield put(setGoogleCourseListAction(result.courseDetails))
     yield put(fetchClassListStatusAction(false))
+    yield put(setFilterClassAction(data.filterClass))
   } catch (e) {
     Sentry.captureException(e)
     const errorMessage = 'fetching classlist failed'

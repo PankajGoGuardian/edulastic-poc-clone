@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/prop-types */
 import { passageApi, testItemsApi } from '@edulastic/api'
 import { red, themeColor, white, title } from '@edulastic/colors'
@@ -124,6 +125,7 @@ class PreviewModal extends React.Component {
     clearAnswers()
   }
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps) {
     const { flag } = this.state
     const { isVisible } = nextProps
@@ -538,28 +540,33 @@ class PreviewModal extends React.Component {
           </FlexContainer>
 
           <ModalTopAction>
-            {isPassage && showAddPassageItemToTestButton ? (
-              <EduButton
-                isBlue
-                isGhost={!this.isAddOrRemove}
-                height="28px"
-                justifyContent="center"
-                onClick={this.handleSelection}
-              >
-                {this.isAddOrRemove
-                  ? 'ADD PASSAGE TO TEST'
-                  : 'REMOVE FROM TEST'}
-              </EduButton>
-            ) : (
-              <EduButton
-                isBlue
-                height="28px"
-                justifyContent="center"
-                onClick={this.handleSelection}
-              >
-                {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
-              </EduButton>
+            {!isDisableEdit && (
+              <>
+                {isPassage && showAddPassageItemToTestButton ? (
+                  <EduButton
+                    isBlue
+                    isGhost={!this.isAddOrRemove}
+                    height="28px"
+                    justifyContent="center"
+                    onClick={this.handleSelection}
+                  >
+                    {this.isAddOrRemove
+                      ? 'ADD PASSAGE TO TEST'
+                      : 'REMOVE FROM TEST'}
+                  </EduButton>
+                ) : (
+                  <EduButton
+                    isBlue
+                    height="28px"
+                    justifyContent="center"
+                    onClick={this.handleSelection}
+                  >
+                    {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
+                  </EduButton>
+                )}
+              </>
             )}
+
             <ButtonsWrapper
               justifyContent="flex-end"
               wrap="nowrap"
@@ -751,7 +758,8 @@ class PreviewModal extends React.Component {
                   toggleReportIssue={this.toggleReportIssue}
                   showHints={showHints}
                   allowDuplicate={allowDuplicate}
-                  /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
+                  /* Giving edit test item functionality to the user who 
+                  is a curator as curator can edit any test item. */
                   isEditable={
                     (isEditable && isOwner) ||
                     userFeatures.isCurator ||

@@ -3,9 +3,9 @@ import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { createAction, createReducer } from 'redux-starter-kit'
+import { notification } from '@edulastic/common'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getOrgDataFromSARFilter } from '../common/filterDataDucks'
 
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST =
   '[reports] get reports sub-groups performance request'
@@ -29,15 +29,10 @@ export const getPeerPerformanceRequestAction = createAction(
 export const stateSelector = (state) =>
   state.reportReducer.reportPeerPerformanceReducer
 
-const _getReportsPeerPerformance = createSelector(
+export const getReportsPeerPerformance = createSelector(
   stateSelector,
   (state) => state.peerPerformance
 )
-
-export const getReportsPeerPerformance = (state) => ({
-  ..._getReportsPeerPerformance(state),
-  metaInfo: getOrgDataFromSARFilter(state),
-})
 
 export const getReportsPeerPerformanceLoader = createSelector(
   stateSelector,
@@ -63,8 +58,8 @@ const initialState = {
 }
 
 export const reportPeerPerformanceReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_PEER_PERFORMANCE_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [GET_REPORTS_PEER_PERFORMANCE_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS]: (state, { payload }) => {

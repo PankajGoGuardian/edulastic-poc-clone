@@ -45,8 +45,8 @@ const HighlightImagePreview = ({
   const { width = 0, height = 0 } = image
 
   const imageContainerDimensions = {
-    width: max([image.x + width + 10, 700]),
-    height: max([image.y + height + 10, 600]),
+    width: max([+image.x + +width + 10, 700]),
+    height: max([+image.y + +height + 10, 600]),
   }
 
   const altText = image ? image.altText : ''

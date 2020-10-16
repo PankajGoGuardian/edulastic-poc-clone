@@ -16,10 +16,9 @@ const Resizeable = ({
   handleDragStop,
 }) => {
   const containerDimensions = {
-    width: Math.max(x + width + 10, 700),
-    height: Math.max(y + height + 10, 600),
+    width: Math.max(+x + +width + 10, 700),
+    height: Math.max(+y + +height + 10, 600),
   }
-
   const wrapperRef = useRef(null)
 
   return (
@@ -50,6 +49,8 @@ const Resizeable = ({
       >
         <div
           data-cy="previewImage"
+          role="img"
+          aria-label={altText}
           style={{
             backgroundImage: `url(${src})`,
             backgroundSize: `${width}px ${height}px`,

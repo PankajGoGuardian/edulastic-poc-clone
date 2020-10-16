@@ -265,6 +265,7 @@ const StudentReportPage = ({
             performanceRef={performanceRef}
             className="hide-on-print"
             performanceBandsData={performanceBandsData}
+            author_classboard_testActivity={author_classboard_testActivity}
           />
         }
         {showQuestionsTable && !!data.questionTableData?.length && (
@@ -306,6 +307,7 @@ const StudentReportPage = ({
                 data={data}
                 className="hide-without-print"
                 performanceBandsData={performanceBandsData}
+                author_classboard_testActivity={author_classboard_testActivity}
               />
             )}
             {i !== 0 && (

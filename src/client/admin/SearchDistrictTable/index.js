@@ -22,7 +22,7 @@ const EditableAction = ({
   isClasslink,
 }) => {
   const editTitle = `Edit ${disabled ? 'disabled for' : ''} ${districtName}'s ${
-    isClasslink ? 'classlink' : 'clever'
+    isClasslink ? 'Edlink' : 'clever'
   } ID`
   return (
     <>
@@ -244,7 +244,7 @@ export default function SearchDistrictTable({
       {isClasslink ? (
         <Column
           render={renderClasslinkCell}
-          title="Classlink ID"
+          title="Edlink ID"
           dataIndex="_source.atlasId"
           key="atlasId"
         />

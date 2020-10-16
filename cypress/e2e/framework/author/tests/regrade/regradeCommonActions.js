@@ -299,7 +299,7 @@ export function verifyStudentSide(
       }
       it(`> verify  ${
         isRegradeAdded ? 'added' : 'edited'
-      } question in 'grades page'`, () => {
+      } question in 'grades page', for ${stuStatus} student, attempted as ${attempt}`, () => {
         const attempType = getEffectiveAttempType(
           attempt,
           stuStatus,
@@ -639,7 +639,7 @@ export function manualEvaluation(
         )
         questions = isAddedItem ? ['Q1', 'Q2'] : ['Q1']
       })
-      it('> upadate score and verify in question centric view', () => {
+      it(`> upadate score and verify in question centric view, attempted as ${aType}`, () => {
         const student = students[0].name.split(',').reverse().join(', ')
         lcb.clickonQuestionsTab()
         if (isAddedItem) lcb.questionResponsePage.selectQuestion('Q2')
@@ -657,7 +657,7 @@ export function manualEvaluation(
         )
       })
 
-      it('> verify student centric view after manual evaluation', () => {
+      it(`> verify student centric view after manual evaluation, for student, attempted as ${aType}`, () => {
         const student = students[0].name.split(',').reverse().join(', ')
         lcb.clickOnStudentsTab()
         cy.wait(3000)
@@ -684,7 +684,7 @@ export function manualEvaluation(
         )
       })
 
-      it(`> verify lcb card view after manual evaluation`, () => {
+      it(`> verify lcb card view after manual evaluation, attempted as ${aType}`, () => {
         lcb.clickOnCardViewTab()
         cy.wait(3000)
         lcb.verifyScoreByStudentIndex(
@@ -698,7 +698,7 @@ export function manualEvaluation(
           questions
         )
       })
-      it(`> verify express grader view after manual evaluation`, () => {
+      it(`> verify express grader view after manual evaluation, attempted as ${aType}`, () => {
         const student = students[0].name.split(',').reverse().join(', ')
 
         lcb.header.clickOnExpressGraderTab()

@@ -17,7 +17,6 @@ import {
   RECEIVE_ITEM_SUCCESS,
   RECEIVE_ITEM_ERROR,
   SAVE_USER_RESPONSE,
-  SAVE_TESTLET_USER_RESPONSE,
   SAVE_USER_RESPONSE_SUCCESS,
   SAVE_USER_RESPONSE_ERROR,
   LOAD_USER_RESPONSE,
@@ -295,7 +294,8 @@ function* saveUserResponse({ payload }) {
     }
     if (shouldClearUserWork) {
       /**
-       * if we have two assignments one for practice and one for class assignment with same questions
+       * if we have two assignments one for practice
+       * and one for class assignment with same questions
        * need to clear user work in store after we click save and exit button
        * otherwise the store data remains and it is shown in the other assignment
        */
@@ -346,7 +346,5 @@ export default function* watcherSaga() {
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
     yield Effects.throttleAction(8000, SAVE_USER_RESPONSE, saveUserResponse),
     yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse),
-    // NOTE we should use separate a saga to store testlet user response
-    yield takeLatest(SAVE_TESTLET_USER_RESPONSE, saveUserResponse),
   ])
 }

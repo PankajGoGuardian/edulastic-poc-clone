@@ -19,11 +19,7 @@ import {
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 
-import {
-  gotoItem as gotoItemAction,
-  saveUserResponse,
-  saveTestletUserResponse,
-} from '../actions/items'
+import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
   finishTestAcitivityAction,
   setPasswordValidateStatusAction,
@@ -105,7 +101,6 @@ const AssessmentContainer = ({
   history,
   changePreview,
   saveUserResponse: saveUserAnswer,
-  saveTestletUserResponseAction,
   evaluateAnswer: evaluate,
   match,
   url,
@@ -567,7 +562,7 @@ const AssessmentContainer = ({
         {...props}
         testletConfig={testletConfig}
         testletState={testletState}
-        saveUserAnswer={saveTestletUserResponseAction}
+        saveUserAnswer={saveUserAnswer}
         gotoSummary={gotoSummary}
         {...test}
       />
@@ -712,7 +707,6 @@ const enhance = compose(
       setPasswordValidateStatus: setPasswordValidateStatusAction,
       fetchAssignments: fetchAssignmentsAction,
       evaluateForPreview: evaluateCurrentAnswersForPreviewAction,
-      saveTestletUserResponseAction: saveTestletUserResponse,
     }
   )
 )

@@ -212,18 +212,19 @@ const PlayerContent = ({
   const saveUserResponse = () => {
     if (!LCBPreviewModal && !previewPlayer) {
       const { currentPageIds, response } = frameController
+      const extData = {}
       for (const scoringId in currentPageIds) {
         if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
           const eduQuestions = getEduQuestions(scoringId.trim())
           if (isEmpty(eduQuestions)) {
             continue
           }
-          const extData = {}
+
           eduQuestions.forEach((eduQuestion) => {
             if (eduQuestion) {
-              extData[scoringId] = response[scoringId]
+              extData[eduQuestion.id] = { [scoringId]: response[scoringId] }
               const timeSpent = Date.now() - lastTime.current
-              onSubmitAnswer(eduQuestion.id, timeSpent, groupId, extData)
+              onSubmitAnswer(eduQuestion.id, timeSpent, groupId, { extData })
             }
           })
         }

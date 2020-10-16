@@ -219,8 +219,6 @@ module.exports = override(
             },
             vendor: {
               test: /[\\/]node_modules[\\/]((?!(froala-editor|react-pdf|pdfjs-dist|jsxgraph|firebase|mathjs|ace-builds|react-jsx-parser|recharts)).*)[\\/]/,
-              chunks: 'all',
-              reuseExistingChunk: true,
               name(module) {
                 // get the name. E.g. node_modules/packageName/not/this/part.js
                 // or node_modules/packageName

@@ -52,10 +52,6 @@ const AssessmentSummary = ({
 
   const assessmentName = get(settings, 'selectedTest.title', '')
 
-  if (settings.selectedTest && !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
-  }
-
   return loading ? (
     <SpinLoader position="fixed" />
   ) : (

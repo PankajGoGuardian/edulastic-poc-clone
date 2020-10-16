@@ -67,15 +67,16 @@ const HighlightImagePreview = ({
   )
 
   const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
+  const isAuthorPreview = viewComponent === 'editQuestion'
   let showDrawing =
     isLCBView ||
     isStudentReport ||
     isExpressGrader ||
-    viewComponent === 'editQuestion' ||
+    isAuthorPreview ||
     scratchPadMode
 
   if (showDrawing && !isStudentAttempt) {
-    if (isExpressGrader && !disableResponse) {
+    if ((isExpressGrader && !disableResponse) || isAuthorPreview) {
       showDrawing = true
     } else {
       // show scratchpad only if there is data

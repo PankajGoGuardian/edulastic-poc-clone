@@ -65,6 +65,7 @@ const ClassificationPreview = ({
   isReviewTab,
   setQuestionData,
   isPrintPreview,
+  isStudentAttempt,
   isPrint,
 }) => {
   const listPosition = get(item, 'uiStyle.possibilityListPosition', 'left')
@@ -310,7 +311,10 @@ const ClassificationPreview = ({
     saveAnswer(userAnswers)
   }
 
-  const preview = previewTab === CHECK || previewTab === SHOW
+  // preview should be false on student attempt
+  const preview = !isStudentAttempt
+    ? previewTab === CHECK || previewTab === SHOW
+    : false
 
   const arrayOfRows = new Set(
     boxes
@@ -360,7 +364,6 @@ const ClassificationPreview = ({
   }
 
   const dragItemProps = {
-    preview,
     disableResponse,
     from: 'container',
     dragHandle: showDragHandle,

@@ -46,17 +46,14 @@ const getContent = ({ setvisible, needsRenewal }) => (
   </FlexContainer>
 )
 
-const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
-
 const HeaderSection = ({
   premium,
   isSubscriptionExpired = false,
   fetchUserSubscriptionStatus,
   t,
   openLaunchHangout,
-  subscription,
+  subEndDate,
 }) => {
-  const { subEndDate, subType } = subscription || {}
   useEffect(() => {
     fetchUserSubscriptionStatus()
   }, [])
@@ -66,15 +63,14 @@ const HeaderSection = ({
     openLaunchHangout()
   }
 
+  const TEN_DAYS = 864000000
   const isAboutToExpire = subEndDate
-    ? Date.now() + ONE_MONTH > subEndDate
+    ? Date.now() + TEN_DAYS > subEndDate
     : false
 
   const needsRenewal =
     (premium && isAboutToExpire) || (!premium && isSubscriptionExpired)
-  const showPopup =
-    (needsRenewal || !premium) &&
-    !['enterprise', 'partial_premium'].includes(subType)
+  const showPopup = needsRenewal || !premium
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -112,24 +108,19 @@ const HeaderSection = ({
               onClick={() => setvisible(true)}
               visible={visible}
             >
-              {needsRenewal ? (
+              {needsRenewal ? null : (
+                /*
+                removing renew subscription for everyone
                 <EduButton
                   type="primary"
                   isBlue
-                  style={{
-                    marginLeft: '5px',
-                    backgroundColor: darkOrange1,
-                    border: 'none',
-                  }}
+                  style={{ marginLeft: "5px", backgroundColor: darkOrange1, border: "none" }}
                   data-cy="manageClass"
                 >
-                  <FontAwesomeIcon
-                    icon={faExclamationTriangle}
-                    aria-hidden="true"
-                  />
+                  <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
                   <span>RENEW SUBSCRIPTION</span>
                 </EduButton>
-              ) : (
+                */
                 <EduButton
                   isBlue
                   style={{ marginLeft: '5px' }}
@@ -158,8 +149,9 @@ export default withNamespaces('header')(
   connect(
     (state) => ({
       premium: state?.user?.user?.features?.premium,
-      subscription: state?.subscription?.subscriptionData?.subscription,
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
+      subEndDate:
+        state?.subscription?.subscriptionData?.subscription?.subEndDate,
     }),
     {
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,

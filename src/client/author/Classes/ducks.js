@@ -10,6 +10,7 @@ import * as Sentry from '@sentry/browser'
 const RECEIVE_CLASSLIST_REQUEST = '[class] receive list request'
 const RECEIVE_CLASSLIST_SUCCESS = '[class] receive list success'
 const RECEIVE_CLASSLIST_ERROR = '[class] receive list error'
+const CLEAR_CLASSLIST = '[class] clear list'
 const UPDATE_CLASS_REQUEST = '[class] update data request'
 const UPDATE_CLASS_SUCCESS = '[class] update data success'
 const UPDATE_CLASS_ERROR = '[class] update data error'
@@ -45,6 +46,7 @@ export const receiveClassListSuccessAction = createAction(
   RECEIVE_CLASSLIST_SUCCESS
 )
 export const receiveClassListErrorAction = createAction(RECEIVE_CLASSLIST_ERROR)
+export const clearClassListAction = createAction(CLEAR_CLASSLIST)
 export const updateClassAction = createAction(UPDATE_CLASS_REQUEST)
 export const updateClassSuccessAction = createAction(UPDATE_CLASS_SUCCESS)
 export const updateClassErrorAction = createAction(UPDATE_CLASS_ERROR)
@@ -161,6 +163,9 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_CLASSLIST_ERROR]: (state, { payload }) => {
     state.loading = false
     state.error = payload.error
+  },
+  [CLEAR_CLASSLIST]: (state) => {
+    state.data = {}
   },
   [UPDATE_CLASS_REQUEST]: (state) => {
     state.updating = true

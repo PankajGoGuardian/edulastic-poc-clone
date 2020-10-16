@@ -39,11 +39,13 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId) => {
     return { testIds: finalTestIds, validTestId: { key: '', title: '' } }
   }
   _dropDownData.testDataArr.sort((a, b) => b.assessmentDate - a.assessmentDate)
-  /** @TODO Filter tests based on group and class both  */
   const arr = _dropDownData.testDataArr.filter(
     (item) =>
       (item.assessmentType === currentFilter.assessmentType ||
         currentFilter.assessmentType === 'All') &&
+      (item.groupId === currentFilter.groupId ||
+        currentFilter.groupId === 'All' ||
+        currentFilter.groupId === '') &&
       (item.groupId === currentFilter.classId ||
         currentFilter.classId === 'All' ||
         currentFilter.classId === '')

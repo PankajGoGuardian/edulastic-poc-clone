@@ -12,15 +12,17 @@ import { getUser } from '../../../../../src/selectors/user'
 import {
   receiveClassListAction,
   getClassListSelector,
+  clearClassListAction,
 } from '../../../../../Classes/ducks'
 
-const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
+const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
 const ClassAutoComplete = ({
   userDetails,
   classList,
   loading,
   loadClassList,
+  clearClassList,
   grade,
   subject,
   school: institutionId,
@@ -80,6 +82,7 @@ const ClassAutoComplete = ({
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
     setIsFocus(false)
+    clearClassList()
   }
 
   // effects
@@ -143,6 +146,7 @@ export default connect(
   }),
   {
     loadClassList: receiveClassListAction,
+    clearClassList: clearClassListAction,
   }
 )(ClassAutoComplete)
 

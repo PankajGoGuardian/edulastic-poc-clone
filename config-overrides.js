@@ -23,9 +23,9 @@ const packageJson = require('./package.json')
 // const fs = require('fs')
 /** Uncomment to have a copy of files written on disk */
 
-// const rootNodeModDir = path.resolve(__dirname, 'node_modules')
+const rootNodeModDir = path.resolve(__dirname, 'node_modules')
 
-const getOptimizers = (sourceMapEnabled = true) => [
+const getOptimizers = () => [
   new TerserPlugin({
     terserOptions: {
       parse: {
@@ -61,13 +61,10 @@ const getOptimizers = (sourceMapEnabled = true) => [
         ascii_only: true,
       },
     },
+    extractComments: false,
     // Use multi-process parallel running to improve the build speed
     // Default number of concurrent runs: os.cpus().length - 1
     parallel: true,
-    // Enable file caching
-    cache: true,
-    // @todo add flag for sourcemaps
-    sourceMap: sourceMapEnabled,
   }),
   new OptimizeCSSAssetsPlugin({
     cssProcessorOptions: {
@@ -104,7 +101,7 @@ module.exports = override(
     // config.module.noParse = /pdfjs-dist/
 
     // add our global node modules if in workspace
-    // config.resolve.modules.push(rootNodeModDir)
+    config.resolve.modules.push(rootNodeModDir)
 
     let rules = getIn(config.module.rules, [1, 'oneOf'])
 

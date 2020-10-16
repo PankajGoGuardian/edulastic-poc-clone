@@ -215,10 +215,7 @@
     "serve": "^10.1.2",
     "socket.io-client": "^2.3.0",
     "test-data-bot": "^0.6.0",
-    "webpack-bundle-analyzer": "^3.9.0",
-    "terser-webpack-plugin": "^5.0.0",
-    "postcss-safe-parser": "^5.0.2",
-    "optimize-css-assets-webpack-plugin": "^5.0.4"
+    "webpack-bundle-analyzer": "^3.9.0"
   },
   "ava": {
     "files": [

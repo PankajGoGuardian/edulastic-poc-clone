@@ -1,10 +1,11 @@
 import { SpinLoader } from '@edulastic/common'
-import { Col } from 'antd'
+import { Col, Empty } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
@@ -19,6 +20,7 @@ import {
   getAssessmentSummaryRequestAction,
   getReportsAssessmentSummary,
   getReportsAssessmentSummaryLoader,
+  setReportsAssesmentSummaryLoadingAction,
 } from './ducks'
 
 const CustomCliEmptyComponent = () => (
@@ -37,6 +39,10 @@ const AssessmentSummary = ({
   getAssessmentSummary,
   settings,
   user,
+  match,
+  setShowHeader,
+  preventHeaderRender,
+  setAssesmentSummaryLoading,
 }) => {
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -50,7 +56,15 @@ const AssessmentSummary = ({
         ...requestFilters,
         profileId: performanceBandProfile,
       }
-
+      if (settings.cliUser && q.testId) {
+        const { testId } = match.params
+        if (testId !== q.testId) {
+          setAssesmentSummaryLoading(false)
+          setShowHeader(false)
+          preventHeaderRender(true)
+          return
+        }
+      }
       getAssessmentSummary(q)
     } else if (settings.cliUser) {
       // On first teacher launch no data is available to teacher
@@ -132,6 +146,7 @@ AssessmentSummary.propTypes = {
 }
 
 const enhance = compose(
+  withRouter,
   connect(
     (state) => ({
       loading: getReportsAssessmentSummaryLoader(state),
@@ -143,6 +158,7 @@ const enhance = compose(
     }),
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction,
+      setAssesmentSummaryLoading: setReportsAssesmentSummaryLoadingAction,
     }
   )
 )

@@ -2337,14 +2337,18 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       receiveStandardsProficiencySuccessAction(standardsProficiencyProfiles)
     )
     yield put(setDefaultTestTypeProfilesAction(defaultTestSettings))
-    const performanceBand = getDefaultSettings({
-      testType: testEntity?.testType,
-      defaultTestProfiles,
-    })?.performanceBand
-    const standardGradingScale = getDefaultSettings({
-      testType: testEntity?.testType,
-      defaultTestProfiles,
-    })?.standardProficiency
+    const performanceBand =
+      testEntity?.performanceBand ||
+      getDefaultSettings({
+        testType: testEntity?.testType,
+        defaultTestProfiles,
+      })?.performanceBand
+    const standardGradingScale =
+      testEntity?.standardGradingScale ||
+      getDefaultSettings({
+        testType: testEntity?.testType,
+        defaultTestProfiles,
+      })?.standardProficiency
     const testData = yield select(getTestSelector)
     const userId = yield select(getUserId)
     const isAuthor = testData.authors?.some((author) => author._id === userId)

@@ -186,6 +186,7 @@ const AudioControls = ({
             choiceAudio
           ).then((choice) => {
             setOptionHowl((prev) => ({ ...prev, [`choice_${i}`]: choice }))
+            if (!optionUrls?.[item].optionAudioURL) return
             audioLoad[i] = audioLoadResolve(optionUrls?.[item].optionAudioURL)
             audioLoad[i].then((val) => {
               setOptionHowl((prev) => ({ ...prev, [item]: val }))
@@ -197,6 +198,7 @@ const AudioControls = ({
         })
       } else if (questionData.type === questionType.PASSAGE) {
         if (!questionData.paginated_content) {
+          if (!questionData?.tts?.content.contentAudioURL) return
           audioLoadResolve(questionData?.tts?.content.contentAudioURL).then(
             (contentAudio) => {
               setPageHowls([contentAudio])

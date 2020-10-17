@@ -360,7 +360,6 @@ const ClassificationPreview = ({
   }
 
   const dragItemProps = {
-    preview,
     disableResponse,
     from: 'container',
     dragHandle: showDragHandle,

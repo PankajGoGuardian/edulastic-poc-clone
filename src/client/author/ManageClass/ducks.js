@@ -28,6 +28,10 @@ import {
   addClassToUserAction,
 } from '../../student/Login/ducks'
 import { requestEnrolExistingUserToClassAction } from '../ClassEnrollment/ducks'
+import {
+  addLoadingComponentAction,
+  removeLoadingComponentAction,
+} from '../src/actions/authorUi'
 
 // selectors
 const manageClassSelector = (state) => state.manageClass
@@ -63,6 +67,11 @@ export const getClassNotFoundError = createSelector(
 export const getCanvasFetchingStateSelector = createSelector(
   manageClassSelector,
   (state) => state.isFetchingCanvasData
+)
+
+export const getManageCoTeacherModalVisibleStateSelector = createSelector(
+  manageClassSelector,
+  (state) => state.showUpdateCoTeachersModal
 )
 
 export const getGoogleAuthRequiredSelector = createSelector(
@@ -173,6 +182,12 @@ export const REMOVE_CLASS_SYNC_NOTIFICATION =
   '[manageClass] remove class sync notification'
 
 export const SET_CLEVER_SYNC_MODAL = '[manageClass] set clever sync modal'
+
+export const SET_UPDATE_COTEACHER_MODAL =
+  '[manageClass] set coteacher update modal'
+
+export const UPDATE_CO_TEACHER_REQUEST =
+  '[manageClass] update co-teacher request'
 
 export const SET_FILTER_CLASS = '[manageClass] set filter class'
 
@@ -300,6 +315,12 @@ export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL)
 
 export const setFilterClassAction = createAction(SET_FILTER_CLASS)
 
+export const updateCoTeacherAction = createAction(UPDATE_CO_TEACHER_REQUEST)
+
+export const showUpdateCoTeacherModalAction = createAction(
+  SET_UPDATE_COTEACHER_MODAL
+)
+
 export const setGoogleAuthenticationRequiredAction = createAction(
   SET_GOOGLE_AUTHENTICATION_REQUIRED
 )
@@ -346,6 +367,10 @@ const setFilterClass = (state, { payload }) => {
 
 const setShowCleverSyncModal = (state, { payload }) => {
   state.showCleverSyncModal = payload
+}
+
+const setshowUpdateCoTeachersModal = (state, { payload }) => {
+  state.showUpdateCoTeachersModal = payload
 }
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -591,6 +616,7 @@ export default createReducer(initialState, {
   },
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
   [SET_FILTER_CLASS]: setFilterClass,
+  [SET_UPDATE_COTEACHER_MODAL]: setshowUpdateCoTeachersModal,
   [SET_GOOGLE_AUTHENTICATION_REQUIRED]: (state) => {
     state.googleAuthenticationRequired = !state.googleAuthenticationRequired
   },
@@ -1009,6 +1035,27 @@ function* saveGoogleTokensAndRetrySyncSaga({ payload }) {
   }
 }
 
+// update co-teacher or ptimary teacher for the group
+function* updateGroupTeachers({ payload }) {
+  yield put(addLoadingComponentAction({ componentName: 'updateButton' }))
+  try {
+    yield call(groupApi.updateCoTeacher, payload)
+    yield put(showUpdateCoTeacherModalAction(false))
+    notification({
+      type: 'success',
+      msg: `Group co-teachers updated.`,
+    })
+  } catch (e) {
+    notification({
+      type: 'error',
+      msg: 'Failed to updated group teachers.',
+    })
+    Sentry.captureException(e)
+  } finally {
+    yield put(removeLoadingComponentAction({ componentName: 'updateButton' }))
+  }
+}
+
 // watcher saga
 export function* watcherSaga() {
   yield all([
@@ -1042,6 +1089,7 @@ export function* watcherSaga() {
       REMOVE_CLASS_SYNC_NOTIFICATION,
       removeClassSyncNotification
     ),
+    yield takeLatest(UPDATE_CO_TEACHER_REQUEST, updateGroupTeachers),
     yield takeLatest(
       SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC,
       saveGoogleTokensAndRetrySyncSaga

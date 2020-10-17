@@ -1754,6 +1754,7 @@ function* updateRegradeDataSaga({ payload }) {
     yield call(testsApi.publishTest, payload.newTestId)
     yield call(assignmentApi.regrade, payload)
     notification({ type: 'success', messageKey: 'successUpdate' })
+    yield put(setEditEnableAction(false))
     yield put(push(`/author/regrade/${payload.newTestId}/success`))
   } catch (err) {
     const {

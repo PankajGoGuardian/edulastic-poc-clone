@@ -27,6 +27,7 @@ export const markQuestionLabel = (testItems) => {
     } else if (item.isDocBased) {
       item.data.questions = item.data.questions
         .filter((q) => q.type !== questionType.SECTION_LABEL)
+        .sort((a, b) => a.qIndex - b.qIndex)
         .map((q, qIndex) => ({
           ...q,
           qLabel: `Q${qIndex + 1}`,

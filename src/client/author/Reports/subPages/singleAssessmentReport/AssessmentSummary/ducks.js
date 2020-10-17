@@ -13,11 +13,17 @@ const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS =
   '[reports] get reports assessment summary success'
 const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR =
   '[reports] get reports assessment summary error'
+const SET_REPORTS_ASSESSMENT_SUMMARY_LOADING =
+  '[reports] set reports assessment summary loading'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getAssessmentSummaryRequestAction = createAction(
   GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST
+)
+
+export const setReportsAssesmentSummaryLoadingAction = createAction(
+  SET_REPORTS_ASSESSMENT_SUMMARY_LOADING
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -52,7 +58,7 @@ export const defaultReport = {
 
 const initialState = {
   assessmentSummary: defaultReport,
-  loading: false,
+  loading: true,
 }
 
 export const reportAssessmentSummaryReducer = createReducer(initialState, {
@@ -67,6 +73,9 @@ export const reportAssessmentSummaryReducer = createReducer(initialState, {
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR]: (state, { payload }) => {
     state.loading = false
     state.error = payload.error
+  },
+  [SET_REPORTS_ASSESSMENT_SUMMARY_LOADING]: (state, { payload }) => {
+    state.loading = payload
   },
 })
 

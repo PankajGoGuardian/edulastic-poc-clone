@@ -61,6 +61,8 @@ const SingleAssessmentReportContainer = (props) => {
     match,
     updateCliUser,
     cliUser,
+    setShowHeader,
+    preventHeaderRender,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -237,7 +239,12 @@ const SingleAssessmentReportContainer = (props) => {
               exact
               path="/author/reports/assessment-summary/test/:testId?"
               render={(_props) => (
-                <AssessmentSummary {..._props} settings={settings} />
+                <AssessmentSummary
+                  {..._props}
+                  settings={settings}
+                  setShowHeader={setShowHeader}
+                  preventHeaderRender={preventHeaderRender}
+                />
               )}
             />
             <Route

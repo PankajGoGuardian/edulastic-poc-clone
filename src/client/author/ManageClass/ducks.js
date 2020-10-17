@@ -28,6 +28,10 @@ import {
   addClassToUserAction,
 } from '../../student/Login/ducks'
 import { requestEnrolExistingUserToClassAction } from '../ClassEnrollment/ducks'
+import {
+  addLoadingComponentAction,
+  removeLoadingComponentAction,
+} from '../src/actions/authorUi'
 
 // selectors
 const manageClassSelector = (state) => state.manageClass
@@ -64,6 +68,12 @@ export const getCanvasFetchingStateSelector = createSelector(
   manageClassSelector,
   (state) => state.isFetchingCanvasData
 )
+
+export const getManageCoTeacherModalVisibleStateSelector = createSelector(
+  manageClassSelector,
+  (state) => state.showUpdateCoTeachersModal
+)
+
 // action types
 
 export const FETCH_CLASS_LIST = '[manageClass] fetch google class'
@@ -161,6 +171,12 @@ export const REMOVE_CLASS_SYNC_NOTIFICATION =
   '[manageClass] remove class sync notification'
 
 export const SET_CLEVER_SYNC_MODAL = '[manageClass] set clever sync modal'
+
+export const SET_UPDATE_COTEACHER_MODAL =
+  '[manageClass] set coteacher update modal'
+
+export const UPDATE_CO_TEACHER_REQUEST =
+  '[manageClass] update co-teacher request'
 
 // action creators
 
@@ -273,6 +289,12 @@ export const removeClassSyncNotificationAction = createAction(
 
 export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL)
 
+export const updateCoTeacherAction = createAction(UPDATE_CO_TEACHER_REQUEST)
+
+export const showUpdateCoTeacherModalAction = createAction(
+  SET_UPDATE_COTEACHER_MODAL
+)
+
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -297,10 +319,15 @@ const initialState = {
   classNotFoundError: false,
   unarchivingClass: false,
   showCleverSyncModal: false,
+  showUpdateCoTeachersModal: false,
 }
 
 const setShowCleverSyncModal = (state, { payload }) => {
   state.showCleverSyncModal = payload
+}
+
+const setshowUpdateCoTeachersModal = (state, { payload }) => {
+  state.showUpdateCoTeachersModal = payload
 }
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -540,6 +567,8 @@ export default createReducer(initialState, {
     state.unarchivingClass = false
   },
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
+
+  [SET_UPDATE_COTEACHER_MODAL]: setshowUpdateCoTeachersModal,
 })
 
 function* fetchClassList({ payload }) {
@@ -910,6 +939,27 @@ function* removeClassSyncNotification() {
   }
 }
 
+// update co-teacher or ptimary teacher for the group
+function* updateGroupTeachers({ payload }) {
+  yield put(addLoadingComponentAction({ componentName: 'updateButton' }))
+  try {
+    yield call(groupApi.updateCoTeacher, payload)
+    yield put(showUpdateCoTeacherModalAction(false))
+    notification({
+      type: 'success',
+      msg: `Group co-teachers updated.`,
+    })
+  } catch (e) {
+    notification({
+      type: 'error',
+      msg: 'Failed to updated group teachers.',
+    })
+    Sentry.captureException(e)
+  } finally {
+    yield put(removeLoadingComponentAction({ componentName: 'updateButton' }))
+  }
+}
+
 // watcher saga
 export function* watcherSaga() {
   yield all([
@@ -943,5 +993,6 @@ export function* watcherSaga() {
       REMOVE_CLASS_SYNC_NOTIFICATION,
       removeClassSyncNotification
     ),
+    yield takeLatest(UPDATE_CO_TEACHER_REQUEST, updateGroupTeachers),
   ])
 }

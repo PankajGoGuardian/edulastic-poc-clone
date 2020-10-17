@@ -36,6 +36,7 @@ import {
   getCoursesForDistrictSelector,
   receiveSearchCourseAction,
 } from '../../../Courses/ducks'
+import UpdateCoTeacher from '../../../ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
@@ -73,6 +74,10 @@ import ArchiveClassModal from './ArchiveClassModal/ArchiveClassModal'
 import BulkEditModal from './BulkEditModal'
 import EditClassModal from './EditClassModal/EditClassModal'
 import { ClassTable, TeacherSpan } from './styled'
+import {
+  getManageCoTeacherModalVisibleStateSelector,
+  showUpdateCoTeacherModalAction,
+} from '../../../ManageClass/ducks'
 
 const { Option } = Select
 
@@ -197,6 +202,11 @@ class ClassesTable extends Component {
     })
   }
 
+  onManageCoTeachers = () => {
+    const { showUpdateCoTeacherModal } = this.props
+    showUpdateCoTeacherModal(true)
+  }
+
   handleDelete = (key) => {
     // const dataSource = [...this.state.dataSource];
     this.setState({
@@ -221,9 +231,8 @@ class ClassesTable extends Component {
   }
 
   afterSetState = (key) => {
-    const { filtersColumn, filtersValue, filterStr } = this.state.filtersData[
-      key
-    ]
+    const { filtersData } = this.state
+    const { filtersColumn, filtersValue, filterStr } = filtersData[key]
     if (
       // (filtersData[key].filterAdded || key === 2) &&
       filtersColumn &&
@@ -260,6 +269,11 @@ class ClassesTable extends Component {
     } else if (e.key === 'archive selected class') {
       if (selectedRowKeys.length > 0) this.onArchiveClass()
       else notification({ msg: t('class.validations.archiveclass') })
+    } else if (e.key === 'manage co teachers') {
+      if (selectedRowKeys.length === 1) this.onManageCoTeachers()
+      else if (selectedRowKeys.length > 1)
+        notification({ msg: t('class.validations.selectmultipleclass') })
+      else notification({ msg: t('class.validations.selectoneclass') })
     } else if (e.key === 'bulk edit') {
       if (!selectedRowKeys.length) {
         notification({ type: 'warn', msg: t('class.validations.selectclass') })
@@ -309,7 +323,8 @@ class ClassesTable extends Component {
     const { userOrgId: districtId, deleteClass, userDetails } = this.props
 
     this.setState({
-      // here selectedRowKeys is set back to [], since all the previously selected rows would have been deleted,
+      /* here selectedRowKeys is set back to [],
+      since all the previously selected rows would have been deleted, */
       // by the api call
       selectedRowKeys: [],
       archiveClassModalVisible: false,
@@ -331,16 +346,23 @@ class ClassesTable extends Component {
     this.setState({ archiveClassModalVisible: false })
   }
 
+  handleCloseModal = (keys) => {
+    const { showUpdateCoTeacherModal } = this.props
+    if (keys === 'manage co-teacher') showUpdateCoTeacherModal(false)
+  }
+
   _bulkUpdateClasses = (obj) => {
+    const { bulkUpdateClasses } = this.props
     const _obj = {
       data: obj,
       searchQuery: this.getSearchQuery(),
     }
-    this.props.bulkUpdateClasses(_obj)
+    bulkUpdateClasses(_obj)
   }
 
   _onRefineResultsCB = () => {
-    this.setState({ refineButtonActive: !this.state.refineButtonActive })
+    const { refineButtonActive } = this.state
+    this.setState({ refineButtonActive: !refineButtonActive })
   }
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
@@ -354,7 +376,8 @@ class ClassesTable extends Component {
   }
 
   onSearchFilter = (value, event, i) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (index === i) {
         return {
           ...item,
@@ -371,7 +394,8 @@ class ClassesTable extends Component {
   }
 
   onBlurFilterText = (event, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -384,7 +408,8 @@ class ClassesTable extends Component {
   }
 
   changeStatusValue = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -399,7 +424,8 @@ class ClassesTable extends Component {
   }
 
   changeFilterText = (e, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -412,17 +438,20 @@ class ClassesTable extends Component {
   }
 
   changeFilterColumn = (value, key) => {
+    const { filtersData } = this.state
     // here we need to use cloneDeep since a simple spread operator mutates the state
-    const filtersData = cloneDeep(this.state.filtersData)
-    filtersData[key].filtersColumn = value
+    const _filtersData = cloneDeep(filtersData)
+    _filtersData[key].filtersColumn = value
 
     if (value === 'subjects' || value === 'grades' || value === 'active')
-      filtersData[key].filtersValue = 'eq'
-    this.setState({ filtersData }, () => this.afterSetState(key)) // this is done so that we dont have multiple set states and we can avoid two renders
+      _filtersData[key].filtersValue = 'eq'
+    // this is done so that we dont have multiple set states and we can avoid two renders
+    this.setState({ filtersData }, () => this.afterSetState(key))
   }
 
   changeFilterValue = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -465,7 +494,8 @@ class ClassesTable extends Component {
     } else {
       newFiltersData = filtersData.filter((item, index) => index !== key)
     }
-    // here we check if the filter we are removing is the active filter, then we enable the checkbox back
+    /* here we check if the filter we are removing is the active filter,
+    then we enable the checkbox back */
     this.setState({ filtersData: newFiltersData }, this.loadFilteredList)
   }
 
@@ -556,6 +586,8 @@ class ClassesTable extends Component {
       addNewTag,
       role,
       t,
+      features,
+      manageCoTeacherModalVisible,
     } = this.props
 
     let columnsData = [
@@ -599,7 +631,7 @@ class ClassesTable extends Component {
         width: 200,
       },
     ]
-    if (this.props.features.selectCourse) {
+    if (features.selectCourse) {
       columnsData.push({
         title: t('class.course'),
         dataIndex: '_source.course',
@@ -719,6 +751,9 @@ class ClassesTable extends Component {
           {t('class.archiveclass')}
         </Menu.Item>
         <Menu.Item key="bulk edit">{t('class.bulkedit')}</Menu.Item>
+        <Menu.Item key="manage co teachers">
+          {t('class.managecoteachers')}
+        </Menu.Item>
       </Menu>
     )
 
@@ -952,6 +987,15 @@ class ClassesTable extends Component {
             t={t}
           />
         )}
+
+        {manageCoTeacherModalVisible && (
+          <UpdateCoTeacher
+            isOpen={manageCoTeacherModalVisible}
+            selectedClass={dataSource[selectedRowKeys]}
+            handleCancel={() => this.handleCloseModal('manage co-teacher')}
+          />
+        )}
+
         <BulkEditModal
           bulkEditData={bulkEditData}
           districtId={userOrgId}
@@ -986,6 +1030,9 @@ const enhance = compose(
       allTagsData: getAllTagsSelector(state, 'group'),
       features: getUserFeatures(state),
       role: getUserRole(state),
+      manageCoTeacherModalVisible: getManageCoTeacherModalVisibleStateSelector(
+        state
+      ),
     }),
     {
       createClass: createClassAction,
@@ -1001,6 +1048,7 @@ const enhance = compose(
       bulkUpdateClasses: bulkUpdateClassesAction,
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
+      showUpdateCoTeacherModal: showUpdateCoTeacherModalAction,
     }
   )
 )

@@ -1,11 +1,10 @@
 import React from 'react'
 import { Menu } from 'antd'
 import { Link } from 'react-router-dom'
-import qs from 'qs'
+import { assignmentApi } from '@edulastic/api'
 import { get } from 'lodash'
 import * as Sentry from '@sentry/browser'
 
-import { assignmentApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { IconPrint, IconTrashAlt, IconBarChart } from '@edulastic/icons'
 import { roleuser, test } from '@edulastic/constants'
@@ -19,19 +18,6 @@ import DuplicateTest from './ItemClone'
 
 const { duplicateAssignment } = assignmentApi
 const { testContentVisibility: testContentVisibilityOptions } = test
-
-const getReportPathForAssignment = (testId = '', assignment = {}) => {
-  const q = {}
-  if (testId === assignment.testId) {
-    if (assignment.termId) {
-      q.termId = assignment.termId
-    }
-    if (assignment.testType) {
-      q.assessmentType = assignment.testType
-    }
-  }
-  return `${testId}?${qs.stringify(q)}`
-}
 
 const ActionMenu = ({
   onOpenReleaseScoreSettings = () => {},
@@ -129,6 +115,7 @@ const ActionMenu = ({
     userClassList?.some((c) => c?._id === assignmentDetails?.classId) || false
   const isAdmin =
     roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
+
   return (
     <Container>
       <StyledMenu>
@@ -216,15 +203,10 @@ const ActionMenu = ({
           data-cy="summary-grades"
           key="summary-report"
           disabled={
-            !(assignmentDetails.gradedCount || assignmentDetails.submittedCount)
+            !(currentAssignment.gradedCount + currentAssignment.submittedCount)
           }
         >
-          <Link
-            to={`/author/reports/assessment-summary/test/${getReportPathForAssignment(
-              currentTestId,
-              assignmentDetails
-            )}`}
-          >
+          <Link to={`/author/reports/assessment-summary/test/${currentTestId}`}>
             <IconBarChart />
             <SpaceElement />
             View Summary Report

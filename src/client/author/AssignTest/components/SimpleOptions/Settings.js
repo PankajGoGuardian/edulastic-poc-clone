@@ -39,10 +39,10 @@ import {
   Title,
   TimeSpentInput,
 } from './styled'
-import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
-import SubscriptionsBlock from '../../../TestPage/components/Setting/components/Container/SubscriptionsBlock'
+import StandardProficiencyTable from '../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable'
+import SubscriptionsBlock from '../../../TestPage/components/Setting/components/MainSetting/SubscriptionsBlock'
 
-import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
+import PeformanceBand from '../../../TestPage/components/Setting/components/MainSetting/PeformanceBand'
 
 import { getUserRole, getUserFeatures } from '../../../src/selectors/user'
 import TestTypeSelector from './TestTypeSelector'
@@ -167,7 +167,11 @@ const Settings = ({
   }
 
   useEffect(() => {
-    const { scoringType, penalty } = assignmentSettings
+    const { scoringType: _scoringType, penalty: _penalty } = tempTestSettings
+    const {
+      scoringType = _scoringType,
+      penalty = _penalty,
+    } = assignmentSettings
     if (scoringType === PARTIAL_CREDIT && !penalty)
       overRideSettings('scoringType', PARTIAL_CREDIT_IGNORE_INCORRECT)
   }, [])
@@ -244,14 +248,12 @@ const Settings = ({
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
     enableScratchpad = tempTestSettings.enableScratchpad,
-    enableSkipAlert = tempTestSettings.enableSkipAlert || false,
   } = assignmentSettings
   const playerSkinType =
     assignmentSettings.playerSkinType || testSettings.playerSkinType
   const accessibilityData = [
     { key: 'showMagnifier', value: showMagnifier },
     { key: 'enableScratchpad', value: enableScratchpad },
-    { key: 'enableSkipAlert', value: enableSkipAlert },
   ].filter((a) => features[a.key])
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'

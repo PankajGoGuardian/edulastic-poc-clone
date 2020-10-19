@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 // components
 import { Link } from 'react-router-dom'
@@ -28,7 +28,6 @@ import CartButton from '../../../ItemList/components/CartButton/CartButton'
 import {
   addBulkTeacherAdminAction,
   setTeachersDetailsModalVisibleAction,
-  toggleBroadcastSummaryAction,
 } from '../../../SchoolAdmin/ducks'
 import StudentsDetailsModal from '../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal'
 import InviteMultipleTeacherModal from '../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal'
@@ -37,8 +36,6 @@ import {
   getUserOrgId,
   getUserRole,
 } from '../../selectors/user'
-import BroadcastSummaryModal from '../../../Extended/BroadcastSummaryModal'
-import BroadcastIcon from '../../assets/broadcast'
 
 const ListHeader = ({
   onCreate,
@@ -64,19 +61,8 @@ const ListHeader = ({
   newTest,
   toggleSidebar,
   titleWidth,
-  showBroadcastSummary = false,
-  toggleBroadcastSummary,
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false)
-  const [isMeetActive, setMeetActive] = useState({})
-
-  useEffect(() => {
-    window.chrome?.runtime?.sendMessage?.(
-      process.env.EXTENSION_ID || 'eadjoeopijphkogdmabgffpiiebjdgoo',
-      { type: 'REQUEST_MEETINGS_STATUS' },
-      (response = {}) => response.meetingID && setMeetActive(response)
-    )
-  }, [])
 
   const sendInvite = (userDetails) => {
     addBulkTeacher({ addReq: userDetails })
@@ -100,22 +86,6 @@ const ListHeader = ({
 
       <RightButtonWrapper>
         <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
-        {isMeetActive.meetingID && (
-          <div
-            onClick={() => toggleBroadcastSummary(true)}
-            title="Broadcast Results"
-          >
-            <BroadcastIcon
-              iconStyle={{
-                fill: '#BBBFC4',
-                width: '28px',
-                height: '28px',
-                margin: '0 14px',
-                cursor: 'pointer',
-              }}
-            />
-          </div>
-        )}
         {renderFilter(isAdvancedView)}
         {hasButton &&
           !createAssignment &&
@@ -201,13 +171,6 @@ const ListHeader = ({
           title="Teacher Details"
         />
       )}
-      {isMeetActive.meetingID && showBroadcastSummary && (
-        <BroadcastSummaryModal
-          visible={showBroadcastSummary}
-          closeModal={() => toggleBroadcastSummary(false)}
-          meetingID={isMeetActive.meetingID}
-        />
-      )}
     </MainHeader>
   )
 }
@@ -256,12 +219,10 @@ const enhance = compose(
         ['schoolAdminReducer', 'teacherDetailsModalVisible'],
         false
       ),
-      showBroadcastSummary: state.schoolAdminReducer.showBroadcastSummary,
     }),
     {
       addBulkTeacher: addBulkTeacherAdminAction,
       setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction,
-      toggleBroadcastSummary: toggleBroadcastSummaryAction,
     }
   )
 )

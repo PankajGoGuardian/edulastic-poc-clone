@@ -307,10 +307,9 @@ class AddClassModal extends Component {
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
                   {courseList.map((course) => (
-                    <Option
-                      key={course._id}
-                      value={course._id}
-                    >{`${course.name} - ${course.number}`}</Option>
+                    <Option key={course._id} value={course._id}>
+                      {`${course.name} - ${course.number}`}
+                    </Option>
                   ))}
                 </SelectInputStyled>
               )}

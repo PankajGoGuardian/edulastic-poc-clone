@@ -185,9 +185,11 @@ class Layout extends Component {
               <Container key={index}>
                 <Row>
                   <Col md={18}>
-                    <Label>{`${t(
-                      'component.options.responsecontainerindividual'
-                    )} ${index + 1}`}</Label>
+                    <Label>
+                      {`${t('component.options.responsecontainerindividual')} ${
+                        index + 1
+                      }`}
+                    </Label>
                   </Col>
                   <Col md={6}>
                     <Delete onClick={() => removeIndividual(index)}>X</Delete>{' '}

@@ -1,4 +1,5 @@
 # File structure
+
     ├── components
         ├── AddItems
             ├── index.js
@@ -59,22 +60,23 @@
     ├── ducks.js
     ├── index.js
     └──README
-    
+
 ### Components relationship
+
 In the root components folder (`TestPage/components`) we have:
+
 - Container the main entry point to the component,
-- AddItems component (`default render`) 
-    - has it's own ducks.js file which include new reducer `testsAddItems` 
+- AddItems component (`default render`)
+  - has it's own ducks.js file which include new reducer `testsAddItems`
 - Assign component (`render when user click on Assign tab`)
-    - has it's own ducks.js file which include new reducer `testsAssign` 
+  - has it's own ducks.js file which include new reducer `testsAssign`
 - Review component (`render when user click on Review tab`)
-    - has it's own ducks.js file which connect to `test` reducer (`TestPage/ducks.js`) 
+  - has it's own ducks.js file which connect to `test` reducer (`TestPage/ducks.js`)
 - Setting component (`render when user click on Setting tab`)
-    - has it's own ducks.js file which connect to `test` reducer (`TestPage/ducks.js`) 
+  - has it's own ducks.js file which connect to `test` reducer (`TestPage/ducks.js`)
 - Summary component (`render when user click on Summary tab`)
-    - has it's own ducks.js file which connect to `test` reducer (`TestPage/ducks.js`) 
+  - has it's own ducks.js file which connect to `test` reducer (`TestPage/ducks.js`)
 
 ### Routes
 
 - `/author/tests/create`
-

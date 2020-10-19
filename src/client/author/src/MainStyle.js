@@ -141,7 +141,7 @@ export const MainContainer = styled.div`
         }
         &:hover {
           .ant-pagination-item-link {
-            color: ${themeColor};
+            color: ${themeColorBlue};
           }
         }
       }
@@ -153,23 +153,22 @@ export const MainContainer = styled.div`
         }
         &:hover,
         &:focus {
-          background: ${themeColorBlue};
-          border-color: ${themeColorBlue};
+          background: ${(props) => props.theme.themeColorBlue};
+          border-color: ${(props) => props.theme.themeColorBlue};
           a {
             color: white;
           }
         }
         &-active {
-          border: 1px solid ${themeColor};
-          opacity: 0.75;
-          background: ${(props) => props.theme.themeColor};
-          border-color: ${(props) => props.theme.themeColor};
+          border: 1px solid ${themeColorBlue};
+          background: ${(props) => props.theme.themeColorBlue};
+          border-color: ${(props) => props.theme.themeColorBlue};
           a {
             color: white;
           }
           &:hover,
           &:focus {
-            background: ${(props) => props.theme.themeColor};
+            background: ${(props) => props.theme.themeColorBlue};
             a {
               color: white;
             }
@@ -182,7 +181,7 @@ export const MainContainer = styled.div`
       &-next {
         .ant-pagination-item-container {
           .ant-pagination-item-link-icon {
-            color: ${(props) => props.theme.themeColor};
+            color: ${(props) => props.theme.themeColorBlue};
           }
         }
       }

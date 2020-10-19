@@ -223,7 +223,8 @@ class MultipleChoice extends Component {
                       this.handleOptionsChange(
                         'multipleResponses',
                         !multipleResponses
-                      )}
+                      )
+                    }
                     checked={multipleResponses}
                   >
                     {t('component.multiplechoice.multipleResponses')}

@@ -55,10 +55,14 @@ const _getquestionLabels = memoizeOne(getQuestionLabels)
 setAutoFreeze(false)
 
 class StudentViewContainer extends Component {
-  state = {
-    showFeedbackPopup: false,
-    showTestletPlayer: false,
-    hasStickyHeader: false,
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      showFeedbackPopup: false,
+      showTestletPlayer: false,
+      hasStickyHeader: false,
+    }
   }
 
   feedbackRef = React.createRef()
@@ -356,7 +360,9 @@ class StudentViewContainer extends Component {
                 isPresentationMode={isPresentationMode}
                 showTestletPlayer={showTestletPlayer}
                 closeTestletPlayer={() =>
-                  this.setState({ showTestletPlayer: false })}
+                  this.setState({ showTestletPlayer: false })
+                }
+                testActivityId={studentResponse?.testActivity?._id}
                 isLCBView
               />
             </AnswerContext.Provider>

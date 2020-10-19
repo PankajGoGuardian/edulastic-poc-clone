@@ -38,9 +38,11 @@ class Clock extends Component {
     return (
       <Container>
         <ClockCircularOutlineIcon />
-        <MainClock>{`${this.formatNum(hour)}:${this.formatNum(
-          minute
-        )}:${this.formatNum(second)}`}</MainClock>
+        <MainClock>
+          {`${this.formatNum(hour)}:${this.formatNum(minute)}:${this.formatNum(
+            second
+          )}`}
+        </MainClock>
       </Container>
     )
   }

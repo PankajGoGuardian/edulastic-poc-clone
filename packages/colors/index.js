@@ -74,6 +74,7 @@ export const separatorColor = '#d6d0d0'
 export const dashBorderColor = '#e6e6e6'
 export const dashBorderColorOpacity = '#e6e6e633'
 export const dropZoneTitleColor = '#b1b1b1'
+export const skippedBarColor = '#6a737f'
 
 export const svgMapFillColor = 'rgba(0, 176, 255, 0.19)'
 export const svgMapStrokeColor = 'rgba(0, 176, 255, 1)'

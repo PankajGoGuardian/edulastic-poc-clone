@@ -13,7 +13,8 @@ export const AxisLabel = styled.div`
         white-space: nowrap;
         margin-right: 16px;
         transform: rotate(-90deg);
-        justify-content: flex-start;    
+        justify-content: center;
+        align-items: center;
       `
     }
     return `

@@ -221,7 +221,8 @@ class ClozeImageText extends Component {
                           this.handleValidationOptionsChange(
                             'ignoreCase',
                             !ignoreCase
-                          )}
+                          )
+                        }
                         checked={!!ignoreCase}
                       >
                         {t('component.cloze.dropDown.ignorecase')}
@@ -232,7 +233,8 @@ class ClozeImageText extends Component {
                           this.handleValidationOptionsChange(
                             'allowSingleLetterMistake',
                             !allowSingleLetterMistake
-                          )}
+                          )
+                        }
                         checked={!!allowSingleLetterMistake}
                       >
                         {t('component.cloze.dropDown.allowsinglelettermistake')}
@@ -242,7 +244,8 @@ class ClozeImageText extends Component {
                           this.handleValidationOptionsChange(
                             'mixAndMatch',
                             !mixAndMatch
-                          )}
+                          )
+                        }
                         checked={!!mixAndMatch}
                       >
                         Mix-n-Match alternative answers

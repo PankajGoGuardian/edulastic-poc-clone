@@ -261,9 +261,11 @@ class Layout extends Component {
               <Container key={responsecontainerindividual.id}>
                 <Row>
                   <Col md={18}>
-                    <Label>{`${t(
-                      'component.options.responsecontainerindividual'
-                    )} ${respIndex + 1}`}</Label>
+                    <Label>
+                      {`${t('component.options.responsecontainerindividual')} ${
+                        respIndex + 1
+                      }`}
+                    </Label>
                   </Col>
                   <Col md={6}>
                     <CustomStyleBtn

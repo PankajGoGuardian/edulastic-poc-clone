@@ -179,7 +179,8 @@ class ClozeDragDrop extends Component {
                           this.handleOptionsChange(
                             'duplicatedResponses',
                             !duplicatedResponses
-                          )}
+                          )
+                        }
                         checked={duplicatedResponses}
                       >
                         {t('component.cloze.dragDrop.duplicatedresponses')}
@@ -193,7 +194,8 @@ class ClozeDragDrop extends Component {
                           this.handleOptionsChange(
                             'showDraghandle',
                             !showDraghandle
-                          )}
+                          )
+                        }
                         checked={showDraghandle}
                       >
                         {t('component.cloze.dragDrop.showdraghandle')}
@@ -207,7 +209,8 @@ class ClozeDragDrop extends Component {
                           this.handleOptionsChange(
                             'shuffleOptions',
                             !shuffleOptions
-                          )}
+                          )
+                        }
                         checked={shuffleOptions}
                       >
                         {t('component.cloze.dragDrop.shuffleoptions')}

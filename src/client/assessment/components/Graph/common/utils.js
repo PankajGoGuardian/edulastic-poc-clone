@@ -9,12 +9,25 @@ export const getAdjustedHeightAndWidth = (
   parentWidth,
   parentHeight,
   layout,
-  MIN_WIDTH
+  MIN_WIDTH,
+  MIN_HEIGHT,
+  responseBoxPosition,
+  responseBoxTitleWidth,
+  disableResponse,
+  delta = 20
 ) => {
   const obj = { width: parentWidth, height: layout.height }
 
   if (parentWidth < layout.width) {
     obj.width = Math.max(parentWidth, MIN_WIDTH)
+  }
+
+  if (
+    (responseBoxPosition === 'left' || responseBoxPosition === 'right') &&
+    !disableResponse
+  ) {
+    // delta is will be padding between container and choices
+    obj.width -= responseBoxTitleWidth + delta
   }
 
   // have coded the height part cuz I haven't investigated what the problem yet

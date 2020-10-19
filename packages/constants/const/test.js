@@ -122,7 +122,6 @@ module.exports = {
     // SHOW_ZOOM: "Show Zoom",
     showMagnifier: 'MAGNIFIER',
     enableScratchpad: 'SCRATCHPAD',
-    enableSkipAlert: 'SKIP ALERT',
   },
   collectionDefaultFilter: [
     { text: 'All Collections', value: '' },
@@ -202,6 +201,5 @@ module.exports = {
     sbac: 'sbac',
     cmas: 'cmas',
     casspp: 'casspp',
-    testlet: 'testlet',
   },
 }

@@ -1,10 +1,8 @@
 import * as StyledComponents from './src/components/StyledComponents'
 import * as Effects from './src/effects'
 import * as FireBaseService from './src/Firebase'
-import * as MeetFirebase from './src/MeetFirebase'
 
 export { FireBaseService }
-export { MeetFirebase }
 export { default as MainHeader } from './src/components/MainHeader'
 export { default as Paper } from './src/components/Paper'
 export { default as Select } from './src/components/Select'

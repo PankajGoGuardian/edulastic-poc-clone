@@ -8,7 +8,7 @@ import {
   QuestionSubLabel,
   QuestionContentWrapper,
 } from '@edulastic/common'
-
+import { isEmpty, max } from 'lodash'
 import { PREVIEW } from '../../constants/constantsForQuestions'
 import { PreviewContainer } from './styled/PreviewContainer'
 import DEFAULT_IMAGE from '../../assets/highlightImageBackground.svg'
@@ -28,16 +28,25 @@ const HighlightImagePreview = ({
   showQuestionNumber,
   viewComponent,
   clearClicked,
-  hideInternalOverflow,
+  isStudentReport,
+  isLCBView,
+  isExpressGrader,
+  saveUserWork,
+  LCBPreviewModal,
+  userWork,
+  disableResponse,
+  scratchpadDimensions,
+  colWidth,
+  scratchPadMode,
+  isStudentAttempt,
 }) => {
   const containerRef = useRef()
   const { image = {} } = item
-
   const { width = 0, height = 0 } = image
 
   const imageContainerDimensions = {
-    width: Math.max(image.x + width + 10, 700),
-    height: Math.max(image.y + height + 10, 600),
+    width: max([+image.x + +width + 10, 700]),
+    height: max([+image.y + +height + 10, 600]),
   }
 
   const altText = image ? image.altText : ''
@@ -57,20 +66,58 @@ const HighlightImagePreview = ({
     />
   )
 
-  const showDrawing = viewComponent === 'editQuestion'
+  const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
+  const isAuthorPreview = viewComponent === 'editQuestion'
+  let showDrawing =
+    isLCBView ||
+    isStudentReport ||
+    isExpressGrader ||
+    isAuthorPreview ||
+    scratchPadMode
+
+  if (showDrawing && !isStudentAttempt) {
+    if ((isExpressGrader && !disableResponse) || isAuthorPreview) {
+      showDrawing = true
+    } else {
+      // show scratchpad only if there is data
+      //  in teacher view (LCB, ExpressGrader, etc)
+      showDrawing = !isEmpty(userWork)
+    }
+  }
+
+  const showToolBar =
+    (showDrawing && !readyOnlyScratchpad && !disableResponse) ||
+    (!disableResponse && isExpressGrader)
+
+  const scratchpadWidth = max([
+    containerRef.current?.clientWidth,
+    imageContainerDimensions.width + 51, // 51 is current question label width,
+    scratchpadDimensions?.width,
+  ])
 
   return (
     <>
-      {showDrawing && <ScratchpadTool />}
+      {showToolBar && <ScratchpadTool />}
       <PreviewContainer
-        hideInternalOverflow={
-          hideInternalOverflow || viewComponent === 'authorPreviewPopup'
-        }
         padding={smallSize}
         ref={containerRef}
+        data-cy="drawing-response-preview"
         boxShadow={smallSize ? 'none' : ''}
       >
-        {showDrawing && <Scratchpad clearClicked={clearClicked} hideTools />}
+        {showDrawing && (
+          <Scratchpad
+            hideTools
+            clearClicked={clearClicked}
+            readOnly={readyOnlyScratchpad}
+            dimensions={{
+              width: scratchpadWidth,
+              height: scratchpadDimensions?.height,
+            }}
+            saveData={saveUserWork}
+            conatinerWidth={colWidth}
+            data={userWork}
+          />
+        )}
         <FlexContainer justifyContent="flex-start" alignItems="baseline">
           <QuestionLabelWrapper>
             {showQuestionNumber && (

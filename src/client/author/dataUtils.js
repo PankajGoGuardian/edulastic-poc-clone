@@ -57,17 +57,9 @@ export const getTestAuthorName = (item, orgCollections) => {
   return authors.length && authors[0].name
 }
 
-export const getTestItemAuthorName = (item) => {
-  const { owner = '', authors = [] } = item
-  if (owner) {
-    const author = authors.find((_item) => _item._id === owner) || {}
-    return author.name || authors?.[0]?.name || 'Anonymous'
-  }
-  return (authors.length && authors?.[0]?.name) || 'Anonymous'
-}
+export const getTestItemAuthorName = (item, orgCollections) => {
+  const { owner = '', collections = [], authors = [] } = item
 
-export const getTestItemCollectionName = (item, orgCollections) => {
-  const { collections = [] } = item
   if (collections.length) {
     // TO DO : this if block hasnt been tested cuz data wasnt present at the time of development
     const collectionItem = hasUserGotAccessToPremiumItem(
@@ -79,9 +71,14 @@ export const getTestItemCollectionName = (item, orgCollections) => {
       return collectionItem.name
     }
   }
+  if (owner) {
+    const author = authors.find((_item) => _item._id === owner) || {}
+    return author.name || authors?.[0]?.name || 'Anonymous'
+  }
+  return (authors.length && authors?.[0]?.name) || 'Anonymous'
 }
 
-export const getTestItemCollectionIcon = (item, orgCollections) => {
+export const getTestItemAuthorIcon = (item, orgCollections) => {
   const { collections = [] } = item
 
   if (collections.length) {
@@ -96,9 +93,9 @@ export const getTestItemCollectionIcon = (item, orgCollections) => {
       return collectionMap[collectionItem.name].icon
     }
   }
-}
 
-export const getTestItemAuthorIcon = () => <UserIcon data-cy="user" />
+  return <UserIcon data-cy="user" />
+}
 
 export const getPlaylistAuthorName = (item) => {
   const {

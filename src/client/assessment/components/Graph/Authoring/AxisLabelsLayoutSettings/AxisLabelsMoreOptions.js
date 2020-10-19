@@ -397,7 +397,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'leftArrow',
                     numberlineAxis.leftArrow
-                  )}
+                  )
+                }
                 name="leftArrow"
                 checked={numberlineAxis.leftArrow}
               >
@@ -412,7 +413,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'rightArrow',
                     numberlineAxis.rightArrow
-                  )}
+                  )
+                }
                 checked={numberlineAxis.rightArrow}
               >
                 {t('component.graphing.layoutoptions.showrightarrow')}
@@ -497,7 +499,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'showTicks',
                     numberlineAxis.showTicks
-                  )}
+                  )
+                }
                 checked={numberlineAxis.showTicks}
               >
                 {t('component.graphing.ticksoptions.showticks')}
@@ -510,7 +513,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'showMax',
                     numberlineAxis.showMax
-                  )}
+                  )
+                }
                 checked={numberlineAxis.showMax}
               >
                 {t('component.graphing.labelsoptions.showmax')}
@@ -523,7 +527,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'showMin',
                     numberlineAxis.showMin
-                  )}
+                  )
+                }
                 checked={numberlineAxis.showMin}
               >
                 {t('component.graphing.labelsoptions.showmin')}
@@ -536,7 +541,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'snapToTicks',
                     numberlineAxis.snapToTicks
-                  )}
+                  )
+                }
                 checked={numberlineAxis.snapToTicks}
               >
                 {t('component.graphing.ticksoptions.snaptoticks')}
@@ -592,7 +598,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'showLabels',
                     numberlineAxis.showLabels
-                  )}
+                  )
+                }
                 checked={numberlineAxis.showLabels}
               >
                 {t('component.graphing.labelsoptions.showLabels')}
@@ -605,7 +612,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'labelShowMin',
                     numberlineAxis.labelShowMin
-                  )}
+                  )
+                }
                 checked={numberlineAxis.labelShowMin}
               >
                 {t('component.graphing.labelsoptions.showmin')}
@@ -618,7 +626,8 @@ class AxisLabelsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'labelShowMax',
                     numberlineAxis.labelShowMax
-                  )}
+                  )
+                }
                 checked={numberlineAxis.labelShowMax}
               >
                 {t('component.graphing.labelsoptions.showmax')}

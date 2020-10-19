@@ -37,9 +37,9 @@ const Group = ({
       justifyContent="space-between"
       style={{ width: '100%' }}
     >
-      <Subtitle margin="20px 0px 0px">{`${groupHeadText}${
-        index + 1
-      }`}</Subtitle>
+      <Subtitle margin="20px 0px 0px">
+        {`${groupHeadText}${index + 1}`}
+      </Subtitle>
       <IconTrash onClick={onRemove(index)} />
     </FlexContainer>
     <Subtitle

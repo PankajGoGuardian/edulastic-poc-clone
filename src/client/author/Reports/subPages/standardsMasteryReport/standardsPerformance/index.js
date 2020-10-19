@@ -14,7 +14,6 @@ import {
   getReportsStandardsFilters,
   getSelectedStandardProficiency,
   getStandardsFiltersRequestAction,
-  getReportsStandardsFiltersLoader,
 } from '../common/filterDataDucks'
 import StandardsPerformanceChart from './components/charts/StandardsPerformanceChart'
 import { StyledInnerRow, StyledRow } from './components/styled'
@@ -32,7 +31,6 @@ import {
   getOverallMasteryScore,
   getParsedData,
 } from './utils/transformers'
-import { processClassAndGroupIds } from '../../../common/util'
 
 const { compareByData, analyseByData } = dropDownData
 
@@ -45,12 +43,10 @@ const StandardsPerformance = ({
   settings,
   role,
   loading,
-  loadingFiltersData,
   selectedStandardProficiency,
   filters,
   ddfilter,
   user,
-  standardsOrgData,
 }) => {
   const filterData = standardsFilters || []
   const scaleInfo = selectedStandardProficiency || []
@@ -71,10 +67,6 @@ const StandardsPerformance = ({
   })
 
   const [selectedDomains, setSelectedDomains] = useState([])
-  const [classIdArr, groupIdArr] = useMemo(
-    () => processClassAndGroupIds(standardsOrgData),
-    [standardsOrgData]
-  )
 
   useEffect(() => {
     const { requestFilters = {} } = settings
@@ -100,22 +92,10 @@ const StandardsPerformance = ({
       subject,
       compareBy: tableFilters.compareBy.key,
       ...modifiedFilter,
-      schoolIds: schoolId,
+      schoolIds: schoolId || modifiedFilter.schoolId,
     }
     if (isEmpty(schoolId) && get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
       q.schoolIds = get(user, 'institutionIds', []).join(',')
-    }
-    if (!loadingFiltersData) {
-      Object.assign(q, {
-        classList: classIdArr
-          .slice(1)
-          .map((cId) => cId.key)
-          .join(),
-        groupList: groupIdArr
-          .slice(1)
-          .map((gId) => gId.key)
-          .join(),
-      })
     }
     if (termId) {
       getStandardsPerformanceSummaryRequest(q)
@@ -219,7 +199,6 @@ const enhance = connect(
   (state) => ({
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
     loading: getReportsStandardsPerformanceSummaryLoader(state),
-    loadingFiltersData: getReportsStandardsFiltersLoader(state),
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),

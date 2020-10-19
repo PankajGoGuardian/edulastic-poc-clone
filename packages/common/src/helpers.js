@@ -35,6 +35,41 @@ export const ALPHABET = [
   'Z',
 ]
 
+export const BLOCK_LEVEL_TAGS = [
+  'TABLE',
+  'TR',
+  'TD',
+  'UL',
+  'LI',
+  'OL',
+  'DIV',
+  'ADDRESS',
+  'FIELDSET',
+  'FIGCAPTION',
+  'FORM',
+  'DIALOG',
+  'HR',
+  'DT ',
+  'H1',
+  'H2',
+  'H3',
+  'H4',
+  'H5',
+  'H6',
+  'ARTICLE',
+  'MAIN',
+  'ASIDE',
+  'FIGURE',
+  'NAV',
+  'BLOCKQUOTE',
+  'DETAILS',
+  'PRE',
+  'DL',
+  'HEADER',
+  'SECTION',
+  'HGROUP',
+]
+
 const REGEXP = /[xy]/g
 const PATTERN = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
 
@@ -107,10 +142,10 @@ function convertBlobToFile(blob) {
   return null
 }
 
-function convertStringToBlob(str) {
+function convertStringToFile(str) {
   const blob = new Blob([str], { type: 'text/plain;charset=utf-8' })
-  blob.name = `scratchpad-${Date.now()}.text`
-  return blob
+  const file = new File([blob], `scratchpad-${Date.now()}.text`)
+  return file
 }
 
 const s3Folders = Object.values(aws.s3Folders)
@@ -138,7 +173,7 @@ export const uploadToS3 = async (
   if (isString(file)) {
     // this case will come from scratchpad
     // create new file with the string
-    fileToUpload = convertStringToBlob(file)
+    fileToUpload = convertStringToFile(file)
   }
 
   const { name: fileName } = fileToUpload
@@ -326,44 +361,24 @@ export const sanitizeForReview = (stimulus) => {
     'span',
   ]
   let tagFound = false
-  let firstImageSkipped = false
-
   tagsToRemove.forEach((tagToRemove) => {
     jqueryEl.find(tagToRemove).each(function () {
       const elem = $(this).context
-      const elemNodeName = elem.nodeName
-      const isImageElement = elemNodeName === 'IMG'
-
-      let shouldReplace
-      switch (elemNodeName) {
-        case 'SPAN':
-          // replace if tag is not span
-          // span comes when we use italic or bold
-          // sanitize other tags (mainly input responses) from stimulus except span
-          shouldReplace = false
-          break
-        case 'IMG':
-          shouldReplace = firstImageSkipped
-          break
-        default:
-          shouldReplace = true
-      }
-
+      // replace if tag is not span
+      // span comes when we use italic or bold
+      const shouldReplace = elem.nodeName !== 'SPAN' // sanitize other tags (mainly input responses) from stimulus except span
       const latex = elem.getAttribute('data-latex')
       // sanitize span only if matrix is rendered using a span tag
       // do no sanitize if span does not have latex (in case we use bold or italic)
-      if (elemNodeName === 'SPAN' && latex && latex.includes('matrix')) {
+      if (elem.nodeName === 'SPAN' && latex && latex.includes('matrix')) {
         $(this).replaceWith(` [matrix] `)
       }
       if (shouldReplace) {
         if (tagMapping[tagToRemove]) {
-          $(this).replaceWith(`${tagMapping[tagToRemove]} `)
+          $(this).replaceWith(` ${tagMapping[tagToRemove]} `)
         } else {
-          $(this).replaceWith(`[${tagToRemove}] `)
+          $(this).replaceWith(`  [${tagToRemove}] `)
         }
-      }
-      if (isImageElement) {
-        firstImageSkipped = true
       }
       tagFound = true
     })
@@ -558,6 +573,19 @@ export const highlightSelectedText = (
     commonAncestorContainer,
   } = range
   if (startOffset === endOffset) {
+    clearSelection()
+    return
+  }
+
+  const cloned = range.cloneContents()
+  const childNodeNames = [...get(cloned, 'childNodes', {})]
+    .map((childElement) => childElement.tagName)
+    .filter((x) => x)
+  const hasBlockedNode = BLOCK_LEVEL_TAGS.some((n) =>
+    childNodeNames.includes(n)
+  )
+
+  if (hasBlockedNode) {
     clearSelection()
     return
   }

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { themeColor, greyDarken, boxShadowColor } from '@edulastic/colors'
 import { SMALL_DESKTOP_WIDTH } from '../../../constants/others'
 
@@ -8,7 +8,7 @@ export const Container = styled.div`
   justify-content: ${(props) =>
     props.isCollapsed ? 'space-between' : 'initial'};
   flex-grow: 1;
-  overflow: ${({ isStudentAttempt }) => !isStudentAttempt && `auto`};
+  overflow: ${({ hideOverflow }) => (hideOverflow ? 'hidden' : `auto`)};
   /* dont give overflow: auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598 */
   width: 100%;
   height: 100%;
@@ -88,4 +88,18 @@ export const Dividerlines = styled.span`
   color: ${greyDarken};
   transform: scaley(1.5);
   text-align: center;
+`
+const feedbackWrapperAlignment = css`
+  position: absolute;
+  right: 60px;
+  top: 30px;
+  width: 140px;
+`
+export const RenderFeedBack = styled.div`
+  position: relative;
+  min-width: ${(props) =>
+    !props.isPrintPreview && !props.isStudentAttempt && '265px'};
+  overflow-y: ${(props) => props.isExpressGrader && 'auto'};
+  overflow-x: ${(props) => props.isExpressGrader && 'hidden'};
+  ${(props) => props.isStudentAttempt && feedbackWrapperAlignment}
 `

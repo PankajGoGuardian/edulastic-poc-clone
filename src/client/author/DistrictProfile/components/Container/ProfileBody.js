@@ -670,7 +670,9 @@ class ProfileBody extends React.Component {
                         <DetailData>{user.firstName}</DetailData>
                       </DetailRow>
                       <DetailRow>
-                        <DetailTitle>{t('common.title.middleNameInputLabel')}</DetailTitle>
+                        <DetailTitle>
+                          {t('common.title.middleNameInputLabel')}
+                        </DetailTitle>
                         <DetailData>{user.middleName || ''}</DetailData>
                       </DetailRow>
                       <DetailRow>
@@ -690,18 +692,14 @@ class ProfileBody extends React.Component {
                     this.getEditProfileContent()
                   )}
                 </UserDetail>
-                {user.role === 'edulastic-curator' ? null : (
-                  <ChangePasswordToggleButton
-                    onClick={() => {
-                      this.setState({ showChangePassword: !showChangePassword })
-                    }}
-                  >
-                    <span>Change Password</span>
-                    <Icon
-                      type={showChangePassword ? 'caret-up' : 'caret-down'}
-                    />
-                  </ChangePasswordToggleButton>
-                )}
+                <ChangePasswordToggleButton
+                  onClick={() => {
+                    this.setState({ showChangePassword: !showChangePassword })
+                  }}
+                >
+                  <span>Change Password</span>
+                  <Icon type={showChangePassword ? 'caret-up' : 'caret-down'} />
+                </ChangePasswordToggleButton>
 
                 {showChangePassword && (
                   <FormWrapper>

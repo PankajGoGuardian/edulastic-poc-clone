@@ -944,7 +944,7 @@
     "description": ""
   },
   "feedbackSuccessfullyUpdate": {
-    "message": "Feedback successully update",
+    "message": "Feedback successfully updated",
     "description": ""
   },
   "scoreSucessfullyUpdated": {
@@ -1759,8 +1759,8 @@
     "message": "Clever Login failed",
     "description": ""
   },
-  "classlinkLoginFailed": {
-    "message": "Classlink Login failed",
+  "atlasLoginFailed": {
+    "message": "Atlas Login failed",
     "description": ""
   },
   "failedToFetchUserData": {
@@ -1927,6 +1927,10 @@
     "message": "Failed to load test.",
     "description": ""
   },
+  "testPausedOrClosedByTeacher": {
+    "message": "Assessment is paused or closed by teacher.",
+    "description": ""
+  },
   "invalidAction": {
     "message": "Invalid Action.",
     "description": ""
@@ -1937,6 +1941,10 @@
   },
   "signInUserNotFound": {
     "message": "It seems you are new to Edulastic! Please select your role.",
+    "description": ""
+  },
+  "ttsErrorMessage": {
+    "message": "Can not load read aloud text-to-speech, internet connection is slow.",
     "description": ""
   }
 }

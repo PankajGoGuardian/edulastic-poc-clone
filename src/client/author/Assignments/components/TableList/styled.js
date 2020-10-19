@@ -10,7 +10,6 @@ import {
   themeColor,
   title,
   white,
-  themeColorBlue,
 } from '@edulastic/colors'
 import { testActivity } from '@edulastic/constants'
 import { IconDownEmptyArrow } from '@edulastic/icons'
@@ -253,11 +252,6 @@ export const ActionDiv = styled.div`
 export const ActionsWrapper = styled.div`
   display: flex;
   justify-content: space-around;
-  a:hover {
-    svg > g > path {
-      fill: ${themeColorBlue};
-    }
-  }
 `
 
 export const GreyFont = styled.div`

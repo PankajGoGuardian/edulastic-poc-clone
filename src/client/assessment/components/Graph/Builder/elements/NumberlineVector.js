@@ -26,37 +26,41 @@ const handleVectorPointDrag = (
       return
     }
 
-    let currentPosition = isVertical ? point.Y() : point.X()
-
-    if (board.numberlineSnapToTicks) {
-      currentPosition = getClosestTick(currentPosition, board.numberlineAxis)
-    }
-
-    if (
-      availablePositions.findIndex(
-        (pos) => currentPosition > pos.start && currentPosition < pos.end
-      ) > -1
-    ) {
-      lastTruePosition = currentPosition
-    }
-
+    const currentPosition = isVertical ? point.Y() : point.X()
     const coord = isVertical
-      ? [position, lastTruePosition]
-      : [lastTruePosition, position]
+      ? [position, currentPosition]
+      : [currentPosition, position]
     point.setPosition(JXG.COORDS_BY_USER, coord)
     point.dragged = true
     board.dragged = true
   })
 
   point.on('up', () => {
-    availablePositions = null
-    lastTruePosition = null
     if (point.dragged) {
       point.dragged = false
-      const coord = isVertical ? [position, point.Y()] : [point.X(), position]
+      let currentPosition = isVertical ? point.Y() : point.X()
+
+      if (board.numberlineSnapToTicks) {
+        currentPosition = getClosestTick(currentPosition, board.numberlineAxis)
+      }
+
+      if (
+        availablePositions.findIndex(
+          (pos) => currentPosition > pos.start && currentPosition < pos.end
+        ) > -1
+      ) {
+        lastTruePosition = currentPosition
+      }
+
+      const coord = isVertical
+        ? [position, lastTruePosition]
+        : [lastTruePosition, position]
+
       point.setPosition(JXG.COORDS_BY_USER, coord)
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
     }
+    availablePositions = null
+    lastTruePosition = null
   })
 
   point.on('down', () => {

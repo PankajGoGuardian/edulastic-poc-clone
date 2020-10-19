@@ -9,6 +9,7 @@ import LiveClassboardPage from '../../../../framework/author/assignments/LiveCla
 import CypressHelper from '../../../../framework/util/cypressHelpers'
 
 const { TEST_SETTING } = require('../../../../../fixtures/testAuthoring')
+const questionData = require('../../../../../fixtures/questionAuthoring')
 
 const { _ } = Cypress
 
@@ -55,7 +56,7 @@ describe(`${FileHelper.getSpecName(
     sub: 'SUBMITTED',
     graded: 'GRADED',
   }
-  const { start } = assignmentButtonsText
+  const { start, retake, review } = assignmentButtonsText
 
   const className = 'Automation Class - shuffleQuestions teacher.1'
   const teacher = 'teacher.1.shufflequestions@snapwiz.com'
@@ -71,8 +72,7 @@ describe(`${FileHelper.getSpecName(
       cy.contains('Share With Others')
 
       // update the settings
-      testLibrary.visitTestById(testId)
-      testLibrary.header.clickOnSettings()
+      cy.visit(`author/tests/tab/settings/id/${testId}`)
       testLibrary.header.clickOnEditButton(true)
 
       // set shuffle question to ON
@@ -106,7 +106,7 @@ describe(`${FileHelper.getSpecName(
       )
       assignmentPage.clickOnAssignmentButton()
 
-      Object.keys(itemKeys).forEach(() => {
+      Object.keys(itemKeys).forEach((que) => {
         cy.wait(1000)
         studentTest
           .getQuestionText()
@@ -132,7 +132,7 @@ describe(`${FileHelper.getSpecName(
       )
       assignmentPage.clickOnAssignmentButton()
 
-      Object.keys(itemKeys).forEach(() => {
+      Object.keys(itemKeys).forEach((que) => {
         cy.wait(1000)
         studentTest
           .getQuestionText()
@@ -158,7 +158,7 @@ describe(`${FileHelper.getSpecName(
       )
       assignmentPage.clickOnAssignmentButton()
 
-      Object.keys(itemKeys).forEach(() => {
+      Object.keys(itemKeys).forEach((que) => {
         cy.wait(1000)
         studentTest
           .getQuestionText()

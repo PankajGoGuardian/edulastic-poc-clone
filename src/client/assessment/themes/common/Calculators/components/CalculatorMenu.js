@@ -33,14 +33,16 @@ class CalculatorMenu extends Component {
                 <StyledButton
                   enable={select === `${item}_${calcBrands[0]}`}
                   onClick={(e) =>
-                    this.calculatorMenuHandler(e, `${item}_${calcBrands[0]}`)}
+                    this.calculatorMenuHandler(e, `${item}_${calcBrands[0]}`)
+                  }
                 >
                   <CaculatorIcon />
                 </StyledButton>
                 <StyledButton
                   enable={select === `${item}_${calcBrands[1]}`}
                   onClick={(e) =>
-                    this.calculatorMenuHandler(e, `${item}_${calcBrands[1]}`)}
+                    this.calculatorMenuHandler(e, `${item}_${calcBrands[1]}`)
+                  }
                 >
                   <CaculatorIcon />
                 </StyledButton>

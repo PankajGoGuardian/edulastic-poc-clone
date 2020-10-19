@@ -24,32 +24,17 @@ import {
   setItemLevelScoreAction,
 } from '../../../../ducks'
 import AddNewItem from '../AddNew/AddNewItem'
-import { AddNewButton, Container as ButtonContainer } from '../AddNew/styled'
+import { PassageAddNewButton, PassageButtonContainer } from '../AddNew/styled'
+import PassageAddPart from '../AddNew/PassageAddPart'
 
 // src/client/author/ItemDetail/ducks.js
 
 class Container extends Component {
-  state = {
-    tabIndex: 0,
-  }
-
-  static propTypes = {
-    row: PropTypes.object.isRequired,
-    onAdd: PropTypes.func.isRequired,
-    dragging: PropTypes.bool.isRequired,
-    onDeleteWidget: PropTypes.func.isRequired,
-    onEditWidget: PropTypes.func.isRequired,
-    rowIndex: PropTypes.number.isRequired,
-    itemData: PropTypes.object.isRequired,
-    setItemLevelScore: PropTypes.func.isRequired,
-    view: PropTypes.string.isRequired,
-    previewTab: PropTypes.string.isRequired,
-    changeTabTitle: PropTypes.string.isRequired,
-    isPassageQuestion: PropTypes.bool.isRequired,
-    handleAddToPassage: PropTypes.func.isRequired,
-    hideColumn: PropTypes.func.isRequired,
-    addTabs: PropTypes.func.isRequired,
-    removeTab: PropTypes.func.isRequired,
+  constructor() {
+    super()
+    this.state = {
+      tabIndex: 0,
+    }
   }
 
   handleTabChange = (tabIndex) => {
@@ -196,8 +181,8 @@ class Container extends Component {
       hideColumn,
       addTabs,
       removeTab,
-      passageNavigator,
       showAddItemButton,
+      isPassageWithQuestions,
     } = this.props
     const { tabIndex } = this.state
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex)
@@ -216,7 +201,6 @@ class Container extends Component {
             ADD TABS
           </AddTabButton>
         )}
-        {passageNavigator}
         {row.tabs && row.tabs.length > 0 && (
           <TabContainer>
             <Tabs
@@ -278,43 +262,79 @@ class Container extends Component {
               tabIndex={tabIndex}
             />
           )}
+        {dragging &&
+          row.widgets.filter((w) => w.tabIndex === tabIndex).length === 0 && (
+            <ItemDetailDropTarget
+              widgetIndex={0}
+              rowIndex={rowIndex}
+              tabIndex={tabIndex}
+            />
+          )}
         {this.renderWidgets()}
         {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
             {/* New part/question */}
-            <AddNew
-              isAddFirstPart={isAddFirstPart}
-              onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
-            />
+            {isPassageWithQuestions ? (
+              <PassageAddPart
+                isAddFirstPart={isAddFirstPart}
+                onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
+              />
+            ) : (
+              <AddNew
+                isAddFirstPart={isAddFirstPart}
+                onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
+              />
+            )}
+
             {/* New testItem */}
-            {showAddItemButton && (
+            {showAddItemButton && isPassageWithQuestions && (
               <AddNewItem onClick={this.addNewItemToPassage} />
             )}
           </AddButtonContainer>
         )}
         {isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
-            <ButtonContainer>
-              <AddNewButton
+            <PassageButtonContainer>
+              <PassageAddNewButton
                 onClick={() => handleAddToPassage('video', tabIndex)}
               >
                 <IconPlusCircle />
                 ADD VIDEO
-              </AddNewButton>
-            </ButtonContainer>
-            <ButtonContainer>
-              <AddNewButton
+              </PassageAddNewButton>
+            </PassageButtonContainer>
+            <PassageButtonContainer>
+              <PassageAddNewButton
                 onClick={() => handleAddToPassage('passage', tabIndex)}
               >
                 <IconPlusCircle />
                 ADD PASSAGE
-              </AddNewButton>
-            </ButtonContainer>
+              </PassageAddNewButton>
+            </PassageButtonContainer>
           </AddButtonContainer>
         )}
       </Content>
     )
   }
+}
+
+Container.propTypes = {
+  row: PropTypes.object.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  dragging: PropTypes.bool.isRequired,
+  onDeleteWidget: PropTypes.func.isRequired,
+  onEditWidget: PropTypes.func.isRequired,
+  rowIndex: PropTypes.number.isRequired,
+  itemData: PropTypes.object.isRequired, // itemData could be passage data or testItem data
+  setItemLevelScore: PropTypes.func.isRequired,
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  changeTabTitle: PropTypes.string.isRequired,
+  isPassageQuestion: PropTypes.bool.isRequired, // Provided when itemData is passage data
+  handleAddToPassage: PropTypes.func.isRequired,
+  hideColumn: PropTypes.func.isRequired,
+  addTabs: PropTypes.func.isRequired,
+  removeTab: PropTypes.func.isRequired,
+  isPassageWithQuestions: PropTypes.bool.isRequired, // Determines if the item is passage with questions (property in testItem)
 }
 
 const enhance = compose(

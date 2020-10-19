@@ -26,7 +26,8 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
           fetchStudents({ classId })
         }}
         filterOption={(input, option) =>
-          option?.props?.name?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0}
+          option?.props?.name?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0
+        }
         value={selectedGroups}
         getPopupContainer={(trigger) => trigger.parentNode}
         margin="0px 0px 10px"

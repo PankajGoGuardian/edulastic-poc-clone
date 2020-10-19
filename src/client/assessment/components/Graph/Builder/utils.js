@@ -234,10 +234,7 @@ export const handleSnap = (line, points, board) => {
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
     }
   })
-  line.on('drag', (e) => {
-    if (e.movementX === 0 && e.movementY === 0) {
-      return
-    }
+  line.on('drag', () => {
     line.dragged = true
     board.dragged = true
   })
@@ -249,10 +246,7 @@ export const handleSnap = (line, points, board) => {
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
       }
     })
-    point.on('drag', (e) => {
-      if (e.movementX === 0 && e.movementY === 0) {
-        return
-      }
+    point.on('drag', () => {
       point.dragged = true
       board.dragged = true
       EditButton.cleanButton(board, point)
@@ -504,6 +498,9 @@ export function flat2nestedConfig(config) {
                 acc[id].dimensions = dimensions
               }
             } else {
+              if (type === CONSTANT.TOOLS.POLYGON && !element.subElementsIds) {
+                element.subElementsIds = {}
+              }
               acc[id].points = getPointsFromFlatConfig(
                 type,
                 element.subElementsIds,

@@ -162,7 +162,11 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
                   <ScatterLabel
                     handleArrowClick={(e, studentId) => {
                       e.stopPropagation()
-                      toggleActiveData({ studentId, activeData, setActiveData })
+                      toggleActiveData({
+                        studentId,
+                        activeData,
+                        setActiveData,
+                      })
                     }}
                     handleCircleClick={(e, studentIds, color) => {
                       e.stopPropagation()

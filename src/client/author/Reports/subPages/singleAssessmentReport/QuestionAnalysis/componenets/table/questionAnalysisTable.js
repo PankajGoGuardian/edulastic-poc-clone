@@ -99,9 +99,9 @@ export const QuestionAnalysisTable = ({
     const getCellContents = (props) => {
       const { printData } = props
       return (
-        <ColoredCell
-          bgColor={getHSLFromRange1(printData)}
-        >{`${printData}%`}</ColoredCell>
+        <ColoredCell bgColor={getHSLFromRange1(printData)}>
+          {`${printData}%`}
+        </ColoredCell>
       )
     }
 

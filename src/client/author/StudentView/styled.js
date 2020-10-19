@@ -9,8 +9,6 @@ import {
   desktopWidth,
   mobileWidthLarge,
   mediumDesktopExactWidth,
-  themeColorBlue,
-  themeColorHoverBlue,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -67,7 +65,7 @@ const StyledTabButton = styled.a`
   padding: 6px 15px;
   font-size: 11px;
   font-weight: 600;
-  background-color: ${({ active }) => (active ? themeColorBlue : white)};
+  background-color: ${({ active }) => (active ? themeColor : white)};
   color: ${({ active }) => (active ? white : themeColor)};
   border: 1px solid ${themeColor};
   border-left: none;
@@ -75,7 +73,7 @@ const StyledTabButton = styled.a`
   justify-content: center;
   align-items: center;
   &:hover {
-    background-color: ${themeColorHoverBlue};
+    background-color: ${themeColor};
     color: ${white};
   }
   &:first-child {
@@ -119,7 +117,7 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
     fill: ${themeColor};
   }
   &:hover {
-    background-color: ${themeColorHoverBlue};
+    background-color: ${themeColor};
     color: ${white};
     svg {
       fill: ${white};

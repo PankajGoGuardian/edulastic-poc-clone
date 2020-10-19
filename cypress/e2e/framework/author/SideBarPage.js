@@ -3,8 +3,6 @@ export default class TeacherSideBar {
 
   menuItems = () => cy.get('.scrollbar-container').find('li.ant-menu-item')
 
-  getFavouritePlaylist = () => cy.get(`[data-cy="My Playlist"]`)
-
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -72,7 +70,7 @@ export default class TeacherSideBar {
   clickOnRecentUsedPlayList = (isLoading = true) => {
     cy.server()
     cy.route('GET', '**/playlists/**').as('loadPlayContent')
-    this.getFavouritePlaylist().dblclick({ force: true })
+    cy.get(`[data-cy="My Playlist"]`).dblclick({ force: true })
     if (isLoading) cy.wait('@loadPlayContent')
   }
 

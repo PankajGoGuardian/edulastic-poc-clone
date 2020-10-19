@@ -256,10 +256,14 @@ const AddPermissionModal = ({
       })
     }
     if (fieldName === 'startDate' && date >= fieldData?.endDate) {
-      return notification({ messageKey: 'startDateShouldBeLessThanTheEndDate' })
+      return notification({
+        messageKey: 'startDateShouldBeLessThanTheEndDate',
+      })
     }
     if (fieldName === 'endDate' && date <= fieldData?.startDate) {
-      return notification({ messageKey: 'endDateShouldBeMoreThanThestartDate' })
+      return notification({
+        messageKey: 'endDateShouldBeMoreThanThestartDate',
+      })
     }
     handleFieldChange(fieldName, date)
   }

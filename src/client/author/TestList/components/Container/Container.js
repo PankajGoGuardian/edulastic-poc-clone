@@ -651,7 +651,10 @@ class TestList extends Component {
 
     if (item?.status === 'draft' || item?.status === 'rejected') {
       const testStatus = item?.status === 'draft' ? 'Draft' : 'Rejected'
-      notification({ type: 'warn', msg: `${testStatus} tests cannot be added` })
+      notification({
+        type: 'warn',
+        msg: `${testStatus} tests cannot be added`,
+      })
       return
     }
 

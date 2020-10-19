@@ -25,7 +25,6 @@ describe(`${FileHelper.getSpecName(
   const itemListPage = new ItemListPage()
   const previewItem = new PreviewItemPopup()
   const mcqTrueFalsePage = new MCQTrueFalsePage()
-  let versionItemIds = []
   let Author
   let itemIds
   let DIST1_SCHOOL1
@@ -75,12 +74,7 @@ describe(`${FileHelper.getSpecName(
           previewItem.clickEditOnPreview()
           mcqTrueFalsePage.updatePoints('10')
           mcqTrueFalsePage.header.saveAndgetId(true).then((id) => {
-            expect(
-              id,
-              'Points of the item shared along with test is upadated, expected to create new version of the item'
-            ).not.eq(itemIds[index])
-            cy.saveItemDetailToDelete(id)
-            versionItemIds.push(id)
+            expect(id).eq(itemIds[index])
             mcqTrueFalsePage.header.clickOnPublishItem()
           })
         })
@@ -88,17 +82,11 @@ describe(`${FileHelper.getSpecName(
       it(">verify 'change' at owner side", () => {
         cy.login('teacher', Author[EMAIL], Author[PASS])
         testLibrary.sidebar.clickOnItemBank()
+        itemListPage.searchFilters.clearAll()
+        itemListPage.searchFilters.getAuthoredByMe()
         itemKeysInTest.forEach((item, index) => {
-          itemListPage.searchFilters.clearAll()
-          itemListPage.searchFilters.getAuthoredByMe()
           itemListPage.searchFilters.typeInSearchBox(itemIds[index])
-          cy.contains('Items Not Available')
-
-          itemListPage.searchFilters.clearAll()
-          itemListPage.searchFilters.getAuthoredByMe()
-          itemListPage.searchFilters.typeInSearchBox(versionItemIds[index])
-          itemListPage.clickOnViewItemById(versionItemIds[index])
-
+          itemListPage.clickOnViewItemById(itemIds[index])
           previewItem.clickOnEditItemOnPreview()
           mcqTrueFalsePage.getPoints().should('have.value', '10.0')
           mcqTrueFalsePage.header.save(true)
@@ -342,7 +330,6 @@ describe(`${FileHelper.getSpecName(
           cy.login('teacher', Author[EMAIL], Author[PASS])
           testLibrary.createTest(TEST, true).then(() => {
             itemIds = testLibrary.items
-            versionItemIds = []
           })
         })
         before('>share to multiple people', () => {
@@ -367,10 +354,7 @@ describe(`${FileHelper.getSpecName(
             previewItem.clickOnCopyItemOnPreview()
             mcqTrueFalsePage.updatePoints('5')
             mcqTrueFalsePage.header.saveAndgetId(true).then((id) => {
-              expect(
-                id,
-                'Points of the item shared along with test is upadated, expected to create new version of the item'
-              ).not.eq(itemIds[index])
+              expect(id).not.eq(itemIds[index])
               cy.saveItemDetailToDelete(id)
               clonedItem.push(id)
               mcqTrueFalsePage.header.clickOnPublishItem()
@@ -403,9 +387,7 @@ describe(`${FileHelper.getSpecName(
             previewItem.clickEditOnPreview()
             mcqTrueFalsePage.updatePoints('20')
             mcqTrueFalsePage.header.saveAndgetId(true).then((id) => {
-              expect(id).not.eq(itemIds[index])
-              versionItemIds.push(id)
-              cy.saveItemDetailToDelete(id)
+              expect(id).eq(itemIds[index])
               mcqTrueFalsePage.header.clickOnPublishItem()
             })
           })
@@ -413,18 +395,12 @@ describe(`${FileHelper.getSpecName(
         it('>verify change', () => {
           cy.login('teacher', Author[EMAIL], Author[PASS])
           testLibrary.sidebar.clickOnItemBank()
+          itemListPage.searchFilters.clearAll()
+          itemListPage.searchFilters.getAuthoredByMe()
           itemKeysInTest.forEach((item, index) => {
-            itemListPage.searchFilters.clearAll()
-            itemListPage.searchFilters.getAuthoredByMe()
             itemListPage.searchFilters.typeInSearchBox(itemIds[index])
-            cy.contains('Items Not Available')
-
-            itemListPage.searchFilters.clearAll()
-            itemListPage.searchFilters.getAuthoredByMe()
-            itemListPage.searchFilters.typeInSearchBox(versionItemIds[index])
-            itemListPage.clickOnViewItemById(versionItemIds[index])
+            itemListPage.clickOnViewItemById(itemIds[index])
             previewItem.clickOnEditItemOnPreview()
-
             mcqTrueFalsePage.getPoints().should('have.value', '20.0')
             mcqTrueFalsePage.header.save(true)
             mcqTrueFalsePage.header.clickOnPublishItem()

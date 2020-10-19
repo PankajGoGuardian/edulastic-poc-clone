@@ -1,11 +1,12 @@
 import React from 'react'
 import { lightGrey12 } from '@edulastic/colors'
-import { CenteredText, DragDrop } from '@edulastic/common'
+import { CenteredText, DragDrop, FlexContainer } from '@edulastic/common'
 import styled from 'styled-components'
 import { get, groupBy } from 'lodash'
 import { Table, TH, TD, TR } from '../styled/TableLayout'
 
 import DragItem from './DragItem'
+import { ColumnHeader, ColumnLabel } from '../styled/Column'
 
 const TableLayout = ({
   rowCount,
@@ -22,14 +23,13 @@ const TableLayout = ({
   evaluation,
   preview,
   onDrop,
-  minWidth,
   disableResponse,
   rowHeader = '',
   dragItemSize = {},
 }) => {
+  const { maxWidth, minWidth, minHeight, maxHeight, width } = dragItemSize
   const classifications = get(item, ['classifications'], [])
   const classificationsGrouped = groupBy(classifications, (obj) => obj.rowIndex)
-
   let validIndex = -1
   const responses = item.groupPossibleResponses
     ? item.possibleResponseGroups.flatMap((group) => group.responses)
@@ -40,23 +40,13 @@ const TableLayout = ({
     onDrop(data, { columnId, flag })
   }
 
-  for (let index = 0; index < colCount; index++) {
-    columnTitles.push(
-      <TH colSpan={2} minWidth={minWidth}>
-        <CenteredText
-          wordWrap="break-word"
-          dangerouslySetInnerHTML={{ __html: colTitles[index] }}
-        />
-      </TH>
-    )
-  }
-
   const rows = []
 
   for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
     const arr = []
     arr.push(
-      <TD center>
+      // marginTop is column height title
+      <TD center marginTop={rowIndex === 0 ? '48px' : ''}>
         <CenteredText
           wordWrap="break-word"
           dangerouslySetInnerHTML={{ __html: rowTitles[rowIndex] }}
@@ -70,42 +60,60 @@ const TableLayout = ({
         Array.isArray(answers[column.id]) && answers[column.id].length > 0
       arr.push(
         <TD>
-          <DropContainer
-            drop={onDropHandler('column', column.id)}
-            index={validIndex}
-            borderColor={lightGrey12}
-          >
-            <ColumnContainer
-              height={height}
-              width={minWidth}
-              isTransparent={isBackgroundImageTransparent}
+          <FlexContainer flexDirection="column">
+            {rowIndex === 0 && colTitles[columnIndex] && (
+              <ColumnHeader>
+                <ColumnLabel
+                  dangerouslySetInnerHTML={{ __html: colTitles[columnIndex] }}
+                />
+              </ColumnHeader>
+            )}
+            <DropContainer
+              maxWidth={maxWidth}
+              minWidth={minWidth}
+              minHeight={minHeight}
+              maxHeight={maxHeight}
+              width={width + 24} // margin+padding+border
+              drop={onDropHandler('column', column.id)}
+              index={validIndex}
+              borderColor={lightGrey12}
             >
-              {hasAnswer &&
-                answers[column.id].map((responseId, answerIndex) => {
-                  const resp = responses.find((res) => res.id === responseId)
-                  const valid = get(
-                    evaluation,
-                    [column.id, responseId],
-                    undefined
-                  )
-                  return (
-                    <DragItem
-                      isTransparent={isTransparent}
-                      dragHandle={dragHandle}
-                      valid={isReviewTab ? true : valid}
-                      preview={preview}
-                      key={answerIndex}
-                      item={(resp && resp.value) || ''}
-                      disableResponse={disableResponse}
-                      {...dragItemSize}
-                      isResetOffset
-                      from="column"
-                      fromColumnId={column.id}
-                    />
-                  )
-                })}
-            </ColumnContainer>
-          </DropContainer>
+              <ColumnContainer
+                minHeight={height}
+                minWidth={`${minWidth}px`}
+                isTransparent={isBackgroundImageTransparent}
+              >
+                {hasAnswer &&
+                  answers[column.id].map((responseId, answerIndex) => {
+                    const resp = responses.find((res) => res.id === responseId)
+                    const valid = get(
+                      evaluation,
+                      [column.id, responseId],
+                      undefined
+                    )
+                    return (
+                      <DragItem
+                        isTransparent={isTransparent}
+                        dragHandle={dragHandle}
+                        valid={isReviewTab ? true : valid}
+                        preview={preview}
+                        key={resp?.id || answerIndex}
+                        item={(resp && resp.value) || ''}
+                        disableResponse={disableResponse}
+                        maxWidth={maxWidth}
+                        minWidth={minWidth}
+                        minHeight={minHeight}
+                        maxHeight={maxHeight}
+                        width={width}
+                        isResetOffset
+                        from="column"
+                        fromColumnId={column.id}
+                      />
+                    )
+                  })}
+              </ColumnContainer>
+            </DropContainer>
+          </FlexContainer>
         </TD>
       )
     }
@@ -133,6 +141,11 @@ export default TableLayout
 const DropContainer = styled(DragDrop.DropContainer)`
   display: flex;
   border-radius: 4px;
+  max-width: ${({ maxWidth }) => `${maxWidth}px`};
+  min-width: ${({ minWidth }) => `${minWidth}px`};
+  max-height: ${({ maxHeight }) => `${maxHeight}px`};
+  min-height: ${({ minHeight }) => `${minHeight}px`};
+  width: ${({ width }) => `${width}px`};
 `
 
 const ColumnContainer = styled.div`
@@ -141,8 +154,8 @@ const ColumnContainer = styled.div`
   justify-content: flex-start;
   position: relative;
   flex-direction: column;
-  min-height: ${({ height }) => height};
-  min-width: ${({ width }) => width};
+  min-height: ${({ minHeight }) => minHeight};
+  min-width: ${({ minWidth }) => minWidth};
   width: 100%;
   height: 100%;
   background-color: ${({ isTransparent, theme }) =>

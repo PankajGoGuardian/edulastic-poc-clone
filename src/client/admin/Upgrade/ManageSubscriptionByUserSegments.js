@@ -125,7 +125,9 @@ const ManageSubscriptionByUserSegments = Form.create({
     const renderGrade = (item, _, index) => (
       <Select
         value={item.grade}
+        style={{ width: 250 }}
         placeholder="Please select"
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
         onChange={(value) =>
           setGradeSubjectValue({
             type: 'grade',
@@ -149,6 +151,7 @@ const ManageSubscriptionByUserSegments = Form.create({
     const renderSubject = (item, _, index) => (
       <Select
         value={item.subject}
+        style={{ width: 250 }}
         placeholder="Please select"
         onChange={(value) =>
           setGradeSubjectValue({

@@ -80,6 +80,7 @@ function Preview({
       key={item._id}
       data-cy="student-question-container"
       className={`student-question-container-id-${studentId}`}
+      height={isLCBView && isQuestionView && 'auto'}
     >
       <TestItemPreview
         showCollapseBtn
@@ -102,9 +103,9 @@ function Preview({
         isLCBView={isLCBView}
         timeSpent={timeSpent}
         attachments={attachments}
-        history={userWork[target]}
+        userWork={userWork[target]}
         scratchpadDimensions={scratchpadDimensions}
-        saveHistory={() => {}}
+        saveUserWork={() => {}}
         {...scoringProps}
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}

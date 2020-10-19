@@ -38,8 +38,6 @@ import {
   FilterButton,
 } from '../../common/styled'
 
-import { hidePendoBanner } from '../../../../common/utils/helpers'
-
 const INITIAL_DD_FILTERS = {
   gender: 'all',
   frlStatus: 'all',
@@ -63,6 +61,8 @@ const SingleAssessmentReportContainer = (props) => {
     match,
     updateCliUser,
     cliUser,
+    setShowHeader,
+    preventHeaderRender,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -81,9 +81,6 @@ const SingleAssessmentReportContainer = (props) => {
     if (isCliUser) {
       updateCliUser(true)
     }
-    
-    hidePendoBanner(isCliUser);
-  
     return () => {
       console.log('Single Assessment Reports Component Unmount')
       resetAllReports()
@@ -148,22 +145,20 @@ const SingleAssessmentReportContainer = (props) => {
   }, [settings])
 
   const onGoClick = (_settings) => {
-    if (_settings.selectedTest.key) {
-      const obj = {}
-      const arr = Object.keys(_settings.filters)
-      // eslint-disable-next-line array-callback-return
-      arr.map((item) => {
-        const val =
-          _settings.filters[item] === 'All' ? '' : _settings.filters[item]
-        obj[item] = val
-      })
+    const obj = {}
+    const arr = Object.keys(_settings.filters)
+    // eslint-disable-next-line array-callback-return
+    arr.map((item) => {
+      const val =
+        _settings.filters[item] === 'All' ? '' : _settings.filters[item]
+      obj[item] = val
+    })
 
-      setSARSettings({
-        selectedTest: _settings.selectedTest,
-        requestFilters: obj,
-        cliUser: isCliUser,
-      })
-    }
+    setSARSettings({
+      selectedTest: _settings.selectedTest,
+      requestFilters: obj,
+      cliUser: isCliUser,
+    })
   }
 
   const toggleFilter = (e) => {
@@ -244,7 +239,12 @@ const SingleAssessmentReportContainer = (props) => {
               exact
               path="/author/reports/assessment-summary/test/:testId?"
               render={(_props) => (
-                <AssessmentSummary {..._props} settings={settings} />
+                <AssessmentSummary
+                  {..._props}
+                  settings={settings}
+                  setShowHeader={setShowHeader}
+                  preventHeaderRender={preventHeaderRender}
+                />
               )}
             />
             <Route
@@ -295,6 +295,7 @@ const SingleAssessmentReportContainer = (props) => {
                   pageTitle={loc}
                   filters={ddfilter}
                   customStudentUserId={customStudentUserId}
+                  isCliUser={isCliUser}
                 />
               )}
             />

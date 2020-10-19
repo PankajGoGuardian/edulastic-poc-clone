@@ -185,7 +185,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
         absentStudent[1].email
       )
       // verify student side assignment entry
-      cy.login('student', absentStudent[1].email, password)
+      cy.login('student', submitStudent[1].email, password)
       test.assignmentPage.getAssignmentButton().should('not.be.visible')
     })
 
@@ -299,8 +299,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       // select inprogress student
       lcb.selectCheckBoxByStudentName(removeStudent[2].stuName)
       // click on Remove and assert
-      lcb.clickOnRemove(false, true)
-      /*    // assert student card should not be present
+      lcb.clickOnRemove()
+      // assert student card should not be present
       lcb
         .getStudentCardByStudentName(removeStudent[2].stuName)
         .should(
@@ -318,7 +318,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
 
       // verify student side assignment entry
       cy.login('student', removeStudent[2].email, password)
-      test.assignmentPage.getAssignmentButton().should('not.be.visible') */
+      test.assignmentPage.getAssignmentButton().should('not.be.visible')
     })
 
     it(" > removing 'Not Started' student verify", () => {
@@ -346,7 +346,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
         )
 
       // verify student side assignment entry
-      cy.login('student', removeStudent[3].email, password)
+      cy.login('student', removeStudent[2].email, password)
       test.assignmentPage.getAssignmentButton().should('not.be.visible')
     })
 
@@ -438,12 +438,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
           `${++addStuCount} Submitted`,
           'after adding student total student count should change'
         )
-      // NOT OPEN assingment should not be listed at student side now
+      // verify student side assignment entry
       cy.login('student', students[2].email, password)
-      test.assignmentPage.getAssignmentButton().should('not.be.visible')
-      // test.assignmentPage.verifyAssignmentIslocked()
-
-      // open the assingment and verify
+      test.assignmentPage.verifyAssignmentIslocked()
       cy.login('teacher', teacher, password)
       teacherSidebar.clickOnAssignment()
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0)

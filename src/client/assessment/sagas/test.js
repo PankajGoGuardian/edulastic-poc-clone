@@ -82,6 +82,67 @@ const getQuestions = (testItems = []) => {
   return allQuestions
 }
 
+const getSettings = (test, testActivity, preview) => {
+  const { assignmentSettings = {} } = testActivity || {}
+  const calcType = preview ? assignmentSettings.calcType : test.calcType
+  // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
+  const calcProvider =
+    calcType === testContants.calculatorTypes.GRAPHING
+      ? 'DESMOS'
+      : preview
+      ? test.calculatorProvider
+      : testActivity?.calculatorProvider
+
+  const maxAnswerChecks = preview
+    ? test.maxAnswerChecks
+    : assignmentSettings.maxAnswerChecks
+  const passwordPolicy = preview
+    ? test.passwordPolicy
+    : assignmentSettings.passwordPolicy
+  const testType = preview ? test.testType : assignmentSettings.testType
+  const playerSkinType = preview
+    ? test.playerSkinType
+    : assignmentSettings.playerSkinType
+  const showMagnifier = preview
+    ? test.showMagnifier
+    : assignmentSettings.showMagnifier
+  const timedAssignment = preview
+    ? test.timedAssignment
+    : assignmentSettings.timedAssignment
+  const allowedTime = preview
+    ? test.allowedTime
+    : assignmentSettings.allowedTime
+  const pauseAllowed = preview
+    ? test.pauseAllowed
+    : assignmentSettings.pauseAllowed
+  const enableScratchpad = preview
+    ? test.enableScratchpad
+    : assignmentSettings.enableScratchpad
+  const releaseScore = preview
+    ? test.releaseScore
+    : testActivity?.testActivity?.releaseScore
+
+  return {
+    testType,
+    calcProvider,
+    playerSkinType,
+    showMagnifier,
+    timedAssignment,
+    allowedTime,
+    pauseAllowed,
+    enableScratchpad,
+    calcType: calcType || testContants.calculatorTypes.NONE,
+    maxAnswerChecks: maxAnswerChecks || 0,
+    passwordPolicy:
+      passwordPolicy ||
+      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+    showPreviousAttempt: assignmentSettings.showPreviousAttempt || 'NONE',
+    endDate: assignmentSettings.endDate,
+    closePolicy: assignmentSettings.closePolicy,
+    releaseScore,
+  }
+}
+
 function* loadTest({ payload }) {
   const {
     testActivityId,
@@ -93,7 +154,6 @@ function* loadTest({ payload }) {
     isShowStudentWork = false,
     playlistId,
     currentAssignmentId,
-    sharedType = '',
   } = payload
   try {
     if (!preview && !testActivityId) {
@@ -131,13 +191,24 @@ function* loadTest({ payload }) {
       },
     })
 
+    const studentAssesment = yield select((state) =>
+      (state.router.location.pathname || '').match(
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+      )
+    )
+
     // for urls that doesnt have groupId, fallback
     const groupId =
       groupIdFromUrl || (yield select(getCurrentGroupWithAllClasses))
 
     // if !preivew, need to load previous responses as well!
     const getTestActivity = !preview
-      ? call(testActivityApi.getById, testActivityId, groupId)
+      ? call(
+          testActivityApi.getById,
+          testActivityId,
+          groupId,
+          !!studentAssesment
+        )
       : false
     const testRequest = !demo
       ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
@@ -148,7 +219,7 @@ function* loadTest({ payload }) {
           ...(playlistId ? { playlistId } : {}),
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
-      : call(testsApi.getPublicTest, testId, { sharedType })
+      : call(testsApi.getPublicTest, testId)
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
     if (!preview) {
@@ -256,38 +327,9 @@ function* loadTest({ payload }) {
       )
     }
     // eslint-disable-next-line prefer-const
-    let { testItems, passages, testType, metadata } = test
+    let { testItems, passages, testType } = test
 
-    const settings = {
-      // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
-      calcProvider:
-        testActivity?.testActivity?.calcType ===
-          testContants.calculatorTypes.GRAPHING ||
-        test.calcType === testContants.calculatorTypes.GRAPHING
-          ? 'DESMOS'
-          : testActivity?.calculatorProvider,
-      calcType:
-        testActivity?.assignmentSettings?.calcType ||
-        test.calcType ||
-        testContants.calculatorTypes.NONE,
-      maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
-      passwordPolicy:
-        testActivity?.assignmentSettings?.passwordPolicy ||
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
-      showPreviousAttempt:
-        testActivity?.assignmentSettings?.showPreviousAttempt || 'NONE',
-      testType: testActivity?.assignmentSettings?.testType,
-      playerSkinType: testActivity?.assignmentSettings?.playerSkinType,
-      showMagnifier: testActivity?.assignmentSettings?.showMagnifier,
-      endDate: testActivity?.assignmentSettings?.endDate,
-      closePolicy: testActivity?.assignmentSettings?.closePolicy,
-      timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
-      allowedTime: testActivity?.assignmentSettings?.allowedTime,
-      pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
-      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
-      enableSkipAlert: testActivity?.assignmentSettings?.enableSkipAlert,
-      releaseScore: testActivity?.testActivity?.releaseScore,
-    }
+    const settings = getSettings(test, testActivity, preview)
 
     const answerCheckByItemId = {}
     ;(testActivity.questionActivities || []).forEach((item) => {
@@ -513,6 +555,8 @@ function* loadTest({ payload }) {
     if (err.status) {
       if (err.status === 400) {
         messageKey = 'invalidAction'
+      } else if (err.status === 302) {
+        messageKey = 'testPausedOrClosedByTeacher'
       }
     }
     if (userRole === roleuser.STUDENT) {
@@ -561,11 +605,20 @@ function* submitTest({ payload }) {
     if (testActivityId === 'test' || !testActivityId) {
       throw new Error('Unable to submit the test.')
     }
-    yield call(testActivityApi.submit, testActivityId, groupId)
+    yield testActivityApi.submit(testActivityId, groupId)
     // log the details on auto submit
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
+
+    const isCliUser = yield select((state) => state.user?.isCliUser)
+    if (isCliUser) {
+      window.parent.postMessage(
+        JSON.stringify({ type: 'SUBMIT_ASSIGNMENT' }),
+        '*'
+      )
+    }
+
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: { testActivityId: '' },
@@ -599,7 +652,6 @@ function* submitTest({ payload }) {
 
     if (preventRouteChange) return
     const test = yield select((state) => state.test)
-    const isCliUser = yield select((state) => state.user?.isCliUser)
 
     if (isCliUser) {
       yield put(
@@ -651,7 +703,7 @@ function* submitTest({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
-    yield Effects.throttleAction(3000, FINISH_TEST, submitTest),
+    yield Effects.throttleAction(10000, FINISH_TEST, submitTest),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
   ])
 }

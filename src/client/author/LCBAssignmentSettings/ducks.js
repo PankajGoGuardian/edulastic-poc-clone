@@ -220,14 +220,19 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
       settings,
     })
     yield put(slice.actions.updateAssignmentClassSettingsSucess())
-    notification({ type: 'success', messageKey: 'settingsUpdatedSuccessfully' })
+    notification({
+      type: 'success',
+      messageKey: 'settingsUpdatedSuccessfully',
+    })
   } catch (err) {
     const {
       data: { message: errorMessage },
     } = err.response
     Sentry.captureException(err)
     yield put(slice.actions.updateAssignmentClassSettingsError())
-    notification({ msg: errorMessage || 'Updating assignment settings failed' })
+    notification({
+      msg: errorMessage || 'Updating assignment settings failed',
+    })
   }
 }
 

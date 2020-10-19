@@ -27,7 +27,7 @@ describe(`${FileHelper.getSpecName(
   const reportsPage = new ReportsPage()
 
   let itemIds
-  const TEST = 'default'
+  const TEST = 'EDIT_ASSIGNED_TEST_REGRADE'
   let testId
   let itemsInTest
   let qType
@@ -38,7 +38,6 @@ describe(`${FileHelper.getSpecName(
   const questionType = []
   const attempt = []
   const choices = []
-  const versionItemIds = []
   const queTexts = {}
   const UPDATED_POINTS = [3, 4, 5, 6, 7]
   const UPDATED_TEXT = 'Updated Text'
@@ -77,7 +76,7 @@ describe(`${FileHelper.getSpecName(
       })
     })
   })
-  context('> item edit when it is used in a test -Points', () => {
+  context('Edit Before Use/Attempt-- Points', () => {
     /* Edited points should not reflect in test review as well as student side */
     before('Assign the test', () => {
       testLibraryPage.clickOnAssign()
@@ -86,11 +85,11 @@ describe(`${FileHelper.getSpecName(
       // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign()
     })
-    /* before("Verify Presence of Assigned Test", () => {
-      cy.login("student", Student1.email, Student1.pass);
-      assignmentsPage.verifyPresenceOfTest(testId);
-      cy.login("teacher", Teacher.email, Teacher.pass);
-    }); */
+    before('Verify Presence of Assigned Test', () => {
+      cy.login('student', Student1.email, Student1.pass)
+      assignmentsPage.verifyPresenceOfTest(testId)
+      cy.login('teacher', Teacher.email, Teacher.pass)
+    })
     it('Edit Points of each item', () => {
       testLibraryPage.sidebar.clickOnItemBank()
 
@@ -103,11 +102,7 @@ describe(`${FileHelper.getSpecName(
         mcqTrueFalsePage.updatePoints(UPDATED_POINTS[i])
         editItemPage.header.saveAndgetId(true).then((id) => {
           /* Id of item wont change in case of Before attempt */
-          expect(
-            id,
-            'Points of the item used in a test is upadated, expected to create new version of the item'
-          ).not.eq(ele)
-          cy.saveItemDetailToDelete(id)
+          expect(id).eq(ele)
         })
         editItemPage.header.clickOnPublishItem()
       })
@@ -142,7 +137,7 @@ describe(`${FileHelper.getSpecName(
       })
     })
   })
-  context('> item edit when it is used in a test- Question Text', () => {
+  context('Edit Before Use/Attempt-- Question Text', () => {
     /* Apart from every thing should reflect at test review as well as student side in case of no attempt */
     before('login and create new items and test', () => {
       cy.login('teacher', Teacher.email, Teacher.pass)
@@ -159,11 +154,11 @@ describe(`${FileHelper.getSpecName(
       // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign()
     })
-    /*  before("Verify Presence of Assigned Test", () => {
-      cy.login("student", Student1.email, Student1.pass);
-      assignmentsPage.verifyPresenceOfTest(testId);
-      cy.login("teacher", Teacher.email, Teacher.pass);
-    }); */
+    before('Verify Presence of Assigned Test', () => {
+      cy.login('student', Student1.email, Student1.pass)
+      assignmentsPage.verifyPresenceOfTest(testId)
+      cy.login('teacher', Teacher.email, Teacher.pass)
+    })
     it('Edit question text of each item', () => {
       testLibraryPage.sidebar.clickOnItemBank()
 
@@ -175,11 +170,7 @@ describe(`${FileHelper.getSpecName(
         itemPreview.clickEditOnPreview()
         mcqTrueFalsePage.setQuestionEditorText(UPDATED_TEXT)
         editItemPage.header.saveAndgetId(true).then((id) => {
-          expect(
-            id,
-            'Question text of the item used in a test is upadated, expected to create new version of the item'
-          ).not.eq(ele)
-          cy.saveItemDetailToDelete(id)
+          expect(id).eq(ele)
         })
         editItemPage.header.clickOnPublishItem()
       })
@@ -193,10 +184,10 @@ describe(`${FileHelper.getSpecName(
       testLibraryPage.clickOnDetailsOfCard()
       itemIds.forEach((id, i) => {
         testReviewTab.clickOnExpandRow()
-        testReviewTab.getQueContainerById(id).should('contain', questText[i])
         testReviewTab
           .getQueContainerById(id)
-          .should('not.contain', UPDATED_TEXT)
+          .should('not.contain', questText[i])
+        testReviewTab.getQueContainerById(id).should('contain', UPDATED_TEXT)
         testReviewTab.clickOnCollapseRow()
       })
     })
@@ -207,8 +198,8 @@ describe(`${FileHelper.getSpecName(
       assignmentsPage.verifyPresenceOfTest(testId)
       assignmentsPage.clickOnAssigmentByTestId(testId)
       studentTestPage.getQuestionByIndex(0)
-      itemsInTest.forEach((item, i) => {
-        studentTestPage.getQuestionText().should('contain', questText[i])
+      itemsInTest.forEach(() => {
+        studentTestPage.getQuestionText().should('contain', UPDATED_TEXT)
         studentTestPage.clickOnNext(false, true)
       })
       studentTestPage.submitTest()
@@ -218,7 +209,7 @@ describe(`${FileHelper.getSpecName(
       })
     })
   })
-  context('> item edit when it is used in a test- correct ans', () => {
+  context('Edit Before Use/Attempt-- correct ans', () => {
     /* Changing Correct ans should also get reflected */
     before('login and create new items and test', () => {
       cy.login('teacher', Teacher.email, Teacher.pass)
@@ -235,12 +226,12 @@ describe(`${FileHelper.getSpecName(
       // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign()
     })
-    /*  before("Verify Presence of Assigned Test", () => {
-      cy.login("student", Student1.email, Student1.pass);
-      assignmentsPage.verifyPresenceOfTest(testId);
-      cy.login("teacher", Teacher.email, Teacher.pass);
-    }); */
-    it('Edit correct ans of each item', () => {
+    before('Verify Presence of Assigned Test', () => {
+      cy.login('student', Student1.email, Student1.pass)
+      assignmentsPage.verifyPresenceOfTest(testId)
+      cy.login('teacher', Teacher.email, Teacher.pass)
+    })
+    it('Edit question text of each item', () => {
       testLibraryPage.sidebar.clickOnItemBank()
       itemListPage.searchFilters.clearAll()
       itemIds.forEach((ele, i) => {
@@ -251,13 +242,9 @@ describe(`${FileHelper.getSpecName(
         itemPreview.clickEditOnPreview()
         mcqTrueFalsePage.setCorrectAnswer(choices[i][1])
         // eslint-disable-next-line prefer-destructuring
+        attempt[i].right = choices[i][1]
         editItemPage.header.saveAndgetId(true).then((id) => {
-          expect(
-            id,
-            'Correct ans of the item used in a test is upadated, expected to create new version of the item'
-          ).not.eq(ele)
-          versionItemIds.push(id)
-          cy.saveItemDetailToDelete(id)
+          expect(id).eq(ele)
         })
         editItemPage.header.clickOnPublishItem()
       })
@@ -272,7 +259,6 @@ describe(`${FileHelper.getSpecName(
       itemIds.forEach((id, i) => {
         testReviewTab.clickOnExpandRow()
         attempt[i].item = id
-        attempt[i].right = choices[i][0]
         /* After updating correct ans */
         itemPreview.verifyQuestionResponseCard(
           questionType[i],
@@ -302,14 +288,14 @@ describe(`${FileHelper.getSpecName(
     })
   })
 
-  context('> item edit, when item is not used in test- question text', () => {
+  context('Edit After Use/Attempt-- Question Text', () => {
     before('login As Teacher And Edit Test', () => {
       cy.login('teacher', Teacher.email, Teacher.pass)
     })
 
     it('Edit question text of each item', () => {
       testLibraryPage.sidebar.clickOnItemBank()
-      versionItemIds.forEach((ele, i) => {
+      itemIds.forEach((ele, i) => {
         itemListPage.searchFilters.clearAll()
         itemListPage.searchFilters.getAuthoredByMe()
         itemListPage.searchFilters.typeInSearchBox(ele)
@@ -317,10 +303,8 @@ describe(`${FileHelper.getSpecName(
         itemPreview.clickEditOnPreview()
         mcqTrueFalsePage.setQuestionEditorText(UPDATED_TEXT)
         editItemPage.header.saveAndgetId(true).then((id) => {
-          expect(
-            id,
-            'Question text of the item not used in a test is upadated, expected to not create new version of the item'
-          ).eq(ele)
+          expect(id).not.eq(ele)
+          cy.saveItemDetailToDelete(id)
         })
         editItemPage.header.clickOnPublishItem()
       })

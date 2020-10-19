@@ -46,19 +46,15 @@ class ReportsPage {
   getAttemptsByTestId = (id) =>
     this.getTestCardByTesyId(id).find('[data-cy="attemptClick"]')
 
-  getQUestionInStudentReportPage = () =>
-    cy.get('.recharts-layer').eq(0).find('tspan').contains('Q1')
-
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
   clickOnReviewButtonButton() {
+    cy.server()
+    cy.route('GET', '**/test-activity/**').as('testactivity')
     this.getReviewButton().should('be.visible').click({ force: true })
-    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 }).click({
-      force: true,
-    })
-    cy.get('[data-cy="questionNumber"]', { timeout: 60000 })
+    cy.wait('@testactivity')
   }
 
   selectQuestion = (queNum) => {
@@ -75,16 +71,7 @@ class ReportsPage {
     this.getTestCardByTesyId(id)
       .find('[data-cy="reviewButton"]')
       .click({ force: true })
-
-    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 }).click({
-      force: true,
-    })
-
-    cy.get('[data-cy="questionNumber"]', { timeout: 60000 })
-  }
-
-  verifyReviewPaused = () => {
-    this.getReviewButton().contains('PAUSED').should('exist')
+    cy.get('[data-cy="questionNumber"]')
   }
 
   // *** ACTIONS END ***

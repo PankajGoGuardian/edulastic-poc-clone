@@ -406,14 +406,7 @@ class UserForm extends React.Component {
                   <Form.Item>
                     {getFieldDecorator('dob', {
                       initialValue: dobValue ? moment(dobValue) : null,
-                    })(
-                      <DatePickerStyled
-                        format="DD MMM, YYYY"
-                        disabledDate={(current) =>
-                          current && current.valueOf() > Date.now()
-                        }
-                      />
-                    )}
+                    })(<DatePickerStyled format="DD MMM, YYYY" />)}
                   </Form.Item>
                 </Field>
                 <Field name="gender">

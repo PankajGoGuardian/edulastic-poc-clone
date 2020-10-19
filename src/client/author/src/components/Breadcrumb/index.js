@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Breadcrumb } from 'antd'
 import styled, { css } from 'styled-components'
 
-import { linkColor, themeColorBlue } from '@edulastic/colors'
+import { secondaryTextColor, linkColor, themeColor } from '@edulastic/colors'
 
 const BreadCrumb = (props) => {
   const { data, style, ellipsis } = props
@@ -103,7 +103,7 @@ const Container = styled.div`
       color: ${linkColor};
       font-weight: 600;
       &:hover {
-        color: ${themeColorBlue};
+        color: ${themeColor};
       }
     }
   }
@@ -115,7 +115,7 @@ const Container = styled.div`
   .ant-breadcrumb-link {
     cursor: pointer;
     &:hover {
-      color: ${themeColorBlue};
+      color: ${themeColor};
     }
   }
 `

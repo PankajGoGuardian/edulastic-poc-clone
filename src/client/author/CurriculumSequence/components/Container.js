@@ -183,7 +183,11 @@ class CurriculumContainer extends Component {
           attrsToOmit.push('standardIdentifiers')
         }
         const newItem = omit(item, attrsToOmit)
-        addIntoModule({ item: newItem, moduleIndex: toModuleIndex, afterIndex })
+        addIntoModule({
+          item: newItem,
+          moduleIndex: toModuleIndex,
+          afterIndex,
+        })
       } else {
         notification({
           msg: `Dropped ${

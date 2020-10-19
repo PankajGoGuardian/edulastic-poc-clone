@@ -77,9 +77,7 @@ class ChoiceMatrixStandardPage {
       .next()
       .find(".ql-editor");
  */
-    return this.getallChoices()
-      .should('have.length.at.least', index + 1)
-      .eq(index)
+    return this.getallChoices().eq(index)
   }
 
   deleteChoiceByIndex(index) {
@@ -110,9 +108,7 @@ class ChoiceMatrixStandardPage {
       .get(selector)
       .next()
       .find(".ql-editor"); */
-    return this.getallSteam()
-      .should('have.length.at.least', index + 1)
-      .eq(index)
+    return this.getallSteam().eq(index)
   }
 
   deleteSteamByIndex(index) {

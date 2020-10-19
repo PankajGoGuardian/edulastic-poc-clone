@@ -4,10 +4,18 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Spin, message, Modal, Button } from 'antd'
-import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from 'lodash'
+import {
+  isUndefined,
+  get,
+  isEmpty,
+  isNull,
+  isEqual,
+  isObject,
+  flatMap,
+} from 'lodash'
 import useInterval from '@use-it/interval'
 import {
-  test as testConstants,
+  test as testTypes,
   assignmentPolicyOptions,
   questionType,
   roleuser,
@@ -18,6 +26,7 @@ import {
   notification,
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
+import { TokenStorage } from '@edulastic/api'
 
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
@@ -49,8 +58,6 @@ import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 
-const { playerSkinValues } = testConstants
-
 const shouldAutoSave = (itemRows) => {
   if (!itemRows) {
     return false
@@ -69,6 +76,8 @@ const shouldAutoSave = (itemRows) => {
   }
   return false
 }
+
+const isSEB = () => window.navigator.userAgent.includes('SEB')
 
 const RealTimeV2HookWrapper = ({
   userId,
@@ -125,7 +134,7 @@ const AssessmentContainer = ({
   test,
   groupId,
   showTools,
-  showScratchPad,
+  isStudentReport,
   savingResponse,
   playerSkinType,
   userPrevAnswer,
@@ -161,6 +170,25 @@ const AssessmentContainer = ({
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
+  const assignmentObj = currentAssignment && assignmentById[currentAssignment]
+  useEffect(() => {
+    if (assignmentObj) {
+      if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
+        const token = TokenStorage.getAccessToken()
+        const sebUrl = `${process.env.POI_APP_API_URI.replace(
+          'http',
+          'seb'
+        )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${
+          assignmentObj._id
+        }/testActivity/${
+          restProps.utaId
+        }/token/${token}/settings.seb?classId=${groupId}`
+        history.push('/home/assignments')
+        window.location.href = sebUrl
+      }
+    }
+  })
+
   // start assessment
   useEffect(() => {
     /**
@@ -168,7 +196,7 @@ const AssessmentContainer = ({
      * requires current assignment id in store (studentAssignment.current)
      * TODO: Use studentAssignment.assignment to store current assignment data
      */
-    if (!assignmentById[currentAssignment]) {
+    if (!assignmentById[currentAssignment] && !preview) {
       fetchAssignments()
     }
 
@@ -262,7 +290,7 @@ const AssessmentContainer = ({
       return []
     }
     return questions.filter((q) => {
-      const qAnswers = answersById[q.id]
+      const qAnswers = answersById[q.id] || userPrevAnswer[q.id]
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
           return (
@@ -338,7 +366,7 @@ const AssessmentContainer = ({
           return keys.some((key) => !qAnswers[key])
         }
         default:
-          return isEmpty(answersById[q.id])
+          return isEmpty(qAnswers)
       }
     })
   }
@@ -355,7 +383,9 @@ const AssessmentContainer = ({
       hideHints()
       setCurrentItem(index)
       const timeSpent = Date.now() - lastTime.current
-      evaluateForPreview({ currentItem, timeSpent })
+      if (!demo) {
+        evaluateForPreview({ currentItem, timeSpent })
+      }
     } else {
       const unansweredQs = getUnAnsweredQuestions()
       if (
@@ -479,6 +509,10 @@ const AssessmentContainer = ({
     itemRows = [passage?.structure, ...itemRows]
   }
 
+  const hasDrawingResponse = flatMap(itemRows, (r) => r.widgets).some(
+    (x) => x.type === questionType.HIGHLIGHT_IMAGE
+  )
+
   const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows])
 
   useInterval(() => {
@@ -512,7 +546,7 @@ const AssessmentContainer = ({
     closeTestPreviewModal,
     showTools,
     groupId,
-    showScratchPad,
+    isStudentReport,
     passage,
     defaultAP,
     playerSkinType,
@@ -520,6 +554,7 @@ const AssessmentContainer = ({
     handleMagnifier,
     enableMagnifier,
     studentReportModal,
+    hasDrawingResponse,
     ...restProps,
   }
 
@@ -538,7 +573,7 @@ const AssessmentContainer = ({
     }
   }, [savingResponse])
 
-  if (loading) {
+  if (loading || (!assignmentObj && !preview)) {
     return <Spin />
   }
 
@@ -556,7 +591,10 @@ const AssessmentContainer = ({
         {...props}
       />
     )
-  } else if (playerSkinType === playerSkinValues.testlet) {
+  } else if (
+    testType === testTypes.type.TESTLET ||
+    test.testType === testTypes.type.TESTLET
+  ) {
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
@@ -667,7 +705,7 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
-      testletConfig: state.test?.testletConfig,
+      testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(
         state,

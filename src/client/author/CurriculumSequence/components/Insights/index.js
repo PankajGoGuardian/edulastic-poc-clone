@@ -110,7 +110,10 @@ const Insights = ({
 
   const { studInfo = [], metricInfo = [], scaleInfo = [] } = playlistInsights
   const masteryData = getMasteryData(scaleInfo[0]?.scale)
-  const filterData = { ...getFilterData(modules, filters.modules), masteryData }
+  const filterData = {
+    ...getFilterData(modules, filters.modules),
+    masteryData,
+  }
 
   // merge trendData with studInfo;
   const studInfoMap = getMergedTrendMap(studInfo, trendData)

@@ -89,7 +89,6 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <SpecialCharactersOption
-                data-cy="specialCharactersOption"
                 disabled={inputType === 'number'}
                 onChange={(checked) => {
                   if (checked) {

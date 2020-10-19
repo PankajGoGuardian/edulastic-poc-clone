@@ -95,9 +95,9 @@ class ComposeQuestion extends Component {
           let value = val
 
           if (prop === 'height') {
-            value = value < maxHeight ? value : maxHeight
+            value = parseInt(value < maxHeight ? value : maxHeight, 10)
           } else if (prop === 'width') {
-            value = value < maxWidth ? value : maxWidth
+            value = parseInt(value < maxWidth ? value : maxWidth, 10)
           }
 
           draft.image[prop] = value

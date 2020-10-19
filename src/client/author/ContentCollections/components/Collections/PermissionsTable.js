@@ -58,22 +58,13 @@ const PermissionsTable = ({
 
   useEffect(() => {
     if (permissionTableRef) {
-      const reCalTableMaxHeight =
+      const tableMaxHeight =
         window.innerHeight -
         caluculateOffset(permissionTableRef._container) -
         40
-      setTableMaxHeight(reCalTableMaxHeight)
+      setTableMaxHeight(tableMaxHeight)
     }
   }, [permissionTableRef?._container?.offsetTop])
-
-  const handleEditPermission = (permission) => {
-    setSelectedPermission(permission)
-    setPermissionModalVisibility(true)
-  }
-
-  const handleDeactivatePermission = (id) => {
-    deletePermissionRequest({ bankId: selectedCollection.bankId, id })
-  }
 
   const columns = [
     {
@@ -91,29 +82,7 @@ const PermissionsTable = ({
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
-      render: (_, record) => {
-        let { role } = record
-        const { permissions: userPermissions, orgType } = record
-        // for orgType = USER,
-        // if user of type teacher have permission of 'author', then it will show 'Author'
-        // and for 'curator' it will show 'content approvar'
-        if (orgType === 'USER') {
-          if (
-            role.includes(roleuser.TEACHER) &&
-            userPermissions?.includes('author')
-          ) {
-            role = role.map((r) => (r === roleuser.TEACHER ? 'Author' : r))
-          } else if (
-            role.includes(roleuser.DISTRICT_ADMIN) &&
-            userPermissions?.includes('curator')
-          ) {
-            role = role.map((r) =>
-              r === roleuser.DISTRICT_ADMIN ? 'Content Approvar' : r
-            )
-          }
-        }
-        return role.join(' / ')
-      },
+      render: (_, record) => record.role.join(' / '),
     },
     {
       title: 'Start',
@@ -169,6 +138,15 @@ const PermissionsTable = ({
       },
     },
   ]
+
+  const handleEditPermission = (permission) => {
+    setSelectedPermission(permission)
+    setPermissionModalVisibility(true)
+  }
+
+  const handleDeactivatePermission = (id) => {
+    deletePermissionRequest({ bankId: selectedCollection.bankId, id })
+  }
 
   const handlePermissionModalResponse = (response) => {
     setPermissionModalVisibility(false)

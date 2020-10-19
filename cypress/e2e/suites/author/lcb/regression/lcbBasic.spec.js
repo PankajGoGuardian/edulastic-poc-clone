@@ -1,17 +1,23 @@
-import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
-import BarGraph from '../../../../framework/author/assignments/barGraphs'
+import FileHelper from '../../../../framework/util/fileHelper'
+// import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+import StudentTestPage from '../../../../framework/student/studentTestPage'
 import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
-import StandardBasedReportPage from '../../../../framework/author/assignments/standardBasedReportPage'
-import TeacherSideBar from '../../../../framework/author/SideBarPage'
-import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
+import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
 import {
   studentSide,
   teacherSide,
 } from '../../../../framework/constants/assignmentStatus'
-import SidebarPage from '../../../../framework/student/sidebarPage'
-import StudentTestPage from '../../../../framework/student/studentTestPage'
-import FileHelper from '../../../../framework/util/fileHelper'
+import ExpressGraderPage from '../../../../framework/author/assignments/expressGraderPage'
+import StandardBasedReportPage from '../../../../framework/author/assignments/standardBasedReportPage'
+import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
+import BarGraph from '../../../../framework/author/assignments/barGraphs'
 import Helpers from '../../../../framework/util/Helpers'
+import TeacherSideBar from '../../../../framework/author/SideBarPage'
+import { attemptTypes } from '../../../../framework/constants/questionTypes'
+import SidebarPage from '../../../../framework/student/sidebarPage'
+import CypressHelper from '../../../../framework/util/cypressHelpers'
+
+const { _ } = Cypress
 
 const students = {
   1: {
@@ -244,6 +250,7 @@ describe(`${FileHelper.getSpecName(
   const test = new StudentTestPage()
   const lcb = new LiveClassboardPage()
   const authorAssignmentPage = new AuthorAssignmentPage()
+  const expressg = new ExpressGraderPage()
   const sbrPage = new StandardBasedReportPage()
   const testLibrary = new TestLibrary()
   const teacherSidebar = new TeacherSideBar()
@@ -403,6 +410,194 @@ describe(`${FileHelper.getSpecName(
     })
   })
 
+  describe(' > verify express grader', () => {
+    before('> navigate to lcb', () => {
+      teacherSidebar.clickOnAssignment()
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0)
+    })
+
+    before(() => {
+      lcb.header.clickOnExpressGraderTab()
+    })
+
+    context('default view', () => {
+      it('verify response view is enabled', () => {
+        expressg.verifyToggleSetToResponse()
+      })
+    })
+
+    context(' > verify scores', () => {
+      before('Change toggle button to score view', () => {
+        expressg.setToggleToScore()
+      })
+      submittedStudentList.forEach((studentName) => {
+        // ["Student01"].forEach(studentName => {
+        it(` > verify scores and color for student :: ${studentName}`, () => {
+          const { attempt, score, perfValue } = statsMap[studentName]
+          expressg.verifyScoreGrid(
+            studentName,
+            attempt,
+            score,
+            perfValue,
+            questionTypeMap
+          )
+          expressg.verifyScoreGridColor(studentName, attempt, questionTypeMap) // assert color
+        })
+      })
+    })
+
+    context(' > verify question level data', () => {
+      queList.forEach((queNum) => {
+        // ["Q1"].forEach(queNum => {
+        it(` > verify for :: ${queNum}`, () => {
+          const attempt = submittedQueCentric[queNum]
+          expressg.verifyQuestionLevelGrid(queNum, attempt, questionTypeMap)
+        })
+      })
+    })
+
+    context(' > verify Responses', () => {
+      before('Change toggle button to Response view', () => {
+        expressg.setToggleToResponse()
+      })
+
+      submittedStudentList.forEach((studentName) => {
+        // ["Student01"].forEach(studentName => {
+        it(` > verify response and color for student :: ${studentName}`, () => {
+          // expressg.verifyScoreToggleButtonEnabled(false);
+          const { attempt } = statsMap[studentName]
+          expressg.verifyResponseGrid(attempt, questionTypeMap, studentName)
+          expressg.verifyScoreGridColor(studentName, attempt, questionTypeMap) // assert color
+        })
+      })
+    })
+
+    context(' > verify student responses pop ups', () => {
+      beforeEach(() => {
+        expressg.clickOnExit()
+      })
+
+      after(() => {
+        expressg.clickOnExit()
+      })
+
+      // submittedStudentList.forEach(studentName => {
+      // navigating through all the students eats up excess time,hence currently doing for 1 student
+      ;[students[1].stuName].forEach((studentName) => {
+        it(` > navigate all quetions using button for student :: ${studentName}`, () => {
+          const { attempt } = statsMap[studentName]
+          expressg.verifyResponsesInGridStudentLevel(
+            studentName,
+            attempt,
+            questionTypeMap,
+            false
+          )
+        })
+
+        it(` > navigate all que using keyboard key for student :: ${studentName}`, () => {
+          const { attempt } = statsMap[studentName]
+          expressg.verifyResponsesInGridStudentLevel(
+            studentName,
+            attempt,
+            questionTypeMap,
+            true
+          )
+        })
+      })
+
+      // queList.forEach(queNum => {
+      // navigating through all the questions eats up excess time,hence currently doing for 1 question
+      ;['Q1'].forEach((queNum) => {
+        it(` > navigate all students using button for que :: ${queNum} `, () => {
+          const attempt = submittedQueCentric[queNum]
+          expressg.verifyResponsesInGridQuestionLevel(
+            queNum,
+            attempt,
+            questionTypeMap,
+            false
+          )
+        })
+
+        it(` > navigate all students using keyboard key for que :: ${queNum} `, () => {
+          const attempt = submittedQueCentric[queNum]
+          expressg.verifyResponsesInGridQuestionLevel(
+            queNum,
+            attempt,
+            questionTypeMap,
+            true
+          )
+        })
+      })
+    })
+  })
+
+  describe('> verify present-reset toggle', () => {
+    before('> navigate to lcb', () => {
+      teacherSidebar.clickOnAssignment()
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0)
+    })
+
+    it('enable the present from card view', () => {
+      lcb.header.clickOnLCBTab()
+      lcb.clickOnPresent()
+    })
+
+    it('verify names are masked on card view', () => {
+      lcb.getAllStudentName().then((studentNames) => {
+        expect(_.intersection(allStudentList, studentNames)).to.deep.eq([])
+      })
+    })
+
+    it('verify names are masked on student view', () => {
+      lcb.clickOnStudentsTab()
+      lcb.questionResponsePage.getDropDownListAsArray().then((lists) => {
+        expect(_.intersection(allStudentList, lists)).to.deep.eq([])
+      })
+    })
+
+    it('verify names are masked on question view', () => {
+      lcb.clickonQuestionsTab()
+      submittedInprogressStudentList.forEach((studentName) => {
+        lcb.questionResponsePage.verifyNoQuestionResponseCard(studentName)
+      })
+    })
+
+    it('verify names are masked on express grader', () => {
+      lcb.header.clickOnExpressGraderTab()
+      expressg.getAllStudentNamesAsArray().then((studentName) => {
+        expect(_.intersection(submittedStudentList, studentName)).to.deep.eq([])
+      })
+    })
+
+    it('disable the present from expresser grader', () => {
+      lcb.header.clickOnExpressGraderTab()
+      expressg.clickOnResetSwitch()
+      expressg.getAllStudentNamesAsArray().then((studentName) => {
+        CypressHelper.checkObjectEquality(submittedStudentList, studentName)
+      })
+    })
+
+    it('verify names are not masked on card view', () => {
+      lcb.header.clickOnLCBTab()
+      lcb.getAllStudentName().then((studentNames) => {
+        CypressHelper.checkObjectEquality(allStudentList, studentNames)
+      })
+    })
+
+    it('verify names are not masked on student view', () => {
+      lcb.clickOnStudentsTab()
+      lcb.questionResponsePage.getDropDownListAsArray().then((lists) => {
+        CypressHelper.checkObjectEquality(allStudentList, lists)
+      })
+    })
+
+    it('verify names are not masked on question view', () => {
+      lcb.clickonQuestionsTab()
+      submittedInprogressStudentList.forEach((studentName) => {
+        lcb.questionResponsePage.verifyQuestionResponseCardExist(studentName)
+      })
+    })
+  })
   // diabling redirect in lcb as redirect is being covered under redirectPolicy.spec.js
   /*   
   describe(" > verify redirect", () => {
@@ -521,6 +716,89 @@ describe(`${FileHelper.getSpecName(
     });
   }); 
   */
+
+  describe(' > update response and score from express grader', () => {
+    before('> navigate to lcb', () => {
+      teacherSidebar.clickOnAssignment()
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0)
+    })
+
+    before(() => {
+      lcb.header.clickOnExpressGraderTab()
+      expressg.clickOnResetSwitch()
+    })
+
+    context(' > verify updating responses and color', () => {
+      const { stuName: updatingResponseStudent } = students[7]
+
+      queList.forEach((queNum) => {
+        it(` > update response of ${updatingResponseStudent} for :: ${queNum}`, () => {
+          expressg.routeAPIs()
+          expressg.clickOnExit()
+          expressg.getGridRowByStudent(updatingResponseStudent)
+          expressg.getScoreforQueNum(queNum).click({ force: true }) // force due to Q10
+          // expressg.getEditResponseToggle().click(); // be default should be enabled as express grid is set to response
+          expressg.waitForStudentData()
+          expressg.updateResponse(
+            questionTypeMap[queNum].queKey.split('.')[0],
+            attemptTypes.RIGHT,
+            questionTypeMap[queNum].attemptData
+          )
+          expressg.clickOnExit()
+          expressg.verifyCellColorForQuestion(queNum, attemptTypes.RIGHT)
+        })
+      })
+
+      context(
+        ` > verify at student centric view for ${updatingResponseStudent}`,
+        () => {
+          before(() => {
+            lcb.header.clickOnLCBTab()
+            lcb.clickOnStudentsTab()
+            lcb.questionResponsePage.selectStudent(updatingResponseStudent)
+          })
+
+          queList.forEach((queNum, qIndex) => {
+            it(` > verify for ${queNum}`, () => {
+              const { queKey, attemptData, points } = questionTypeMap[queNum]
+              lcb.questionResponsePage.verifyQuestionResponseCard(
+                points,
+                queKey,
+                attemptTypes.RIGHT,
+                attemptData,
+                true,
+                qIndex
+              )
+            })
+          })
+        }
+      )
+    })
+
+    context(' > verify updating score and color', () => {
+      beforeEach(() => {
+        expressg.clickOnExit()
+      })
+
+      before(() => {
+        lcb.header.clickOnExpressGraderTab()
+        expressg.setToggleToScore()
+      })
+
+      queList.forEach((queNum) => {
+        it(` > update the score for :: ${queNum}`, () => {
+          // below will update the score for 1 student all question and then revert back to original score
+          const { attempt } = statsMap[submittedStudentList[2]]
+          expressg.verifyUpdateScore(
+            submittedStudentList[2],
+            queNum,
+            '0.5',
+            attempt[queNum]
+          )
+        })
+      })
+    })
+  })
 
   describe(' > verify score update from question centric', () => {
     before('> navigate to lcb', () => {

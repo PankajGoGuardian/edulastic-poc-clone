@@ -1,6 +1,22 @@
-import { MeetFirebase } from '@edulastic/common'
+import { useState, useEffect } from 'react'
+import * as firebase from 'firebase/app'
 
-const db = MeetFirebase
+import 'firebase/firestore'
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyAuhiIU4yWmVx5lyiZ8TDfb9cTr2B_sIkY',
+  authDomain: 'edu-meet-dev.firebaseapp.com',
+  databaseURL: 'https://edu-meet-dev.firebaseio.com',
+  projectId: 'edu-meet-dev',
+  storageBucket: 'edu-meet-dev.appspot.com',
+  messagingSenderId: '414031562106',
+  appId: '1:414031562106:web:2ed1cb00d9ea9f6b5142c3',
+  measurementId: 'G-LXX5ZZEPN6',
+}
+
+firebase.initializeApp(firebaseConfig)
+
+const db = firebase.firestore()
 
 export const useFirestoreRealtimeDocuments = (queryFn, args) => {
   const [docs, setDocs] = useState([])

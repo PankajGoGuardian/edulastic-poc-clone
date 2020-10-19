@@ -163,7 +163,7 @@ const OrderList = ({
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: keys(draft.list).reduce(
             (acc, curr, currIndex) => ({ ...acc, [curr]: currIndex }),
             {}

@@ -19,6 +19,7 @@ import { connect } from 'react-redux'
 import { getRedirectEndDate, getUserName } from '../utils'
 import { BodyContainer } from './styled'
 import { getIsSpecificStudents } from '../ducks'
+import { gradebookUnSelectAllAction } from '../../src/reducers/gradeBook'
 
 const { redirectPolicy } = testContants
 
@@ -28,9 +29,10 @@ const QuestionDelivery = {
 }
 
 const ShowPreviousAttempt = {
-  FEEDBACK_ONLY: 'Teacher Feedback only',
-  SCORE_AND_FEEDBACK: 'Score & Teacher Feedback',
-  STUDENT_RESPONSE_AND_FEEDBACK: 'Student Response & Teacher Feedback',
+  FEEDBACK_ONLY: 'Teacher feedback only',
+  SCORE_AND_FEEDBACK: 'Student score & teacher feedback',
+  STUDENT_RESPONSE_AND_FEEDBACK: 'Student response & teacher feedback',
+  SCORE_RESPONSE_AND_FEEDBACK: 'Student score, response & teacher feedback',
 }
 
 const Option = Select.Option
@@ -67,6 +69,7 @@ const RedirectPopUp = ({
   testActivity,
   isPremiumUser,
   specificStudents,
+  studentUnselectAll,
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, 'day'))
   const [endDate, setEndDate] = useState(
@@ -77,7 +80,7 @@ const RedirectPopUp = ({
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents)
   const [qDeliveryState, setQDeliveryState] = useState('ALL')
   const [showPrevAttempt, setshowPrevAttempt] = useState(
-    isPremiumUser ? 'FEEDBACK_ONLY' : 'STUDENT_RESPONSE_AND_FEEDBACK'
+    isPremiumUser ? 'STUDENT_RESPONSE_AND_FEEDBACK' : 'FEEDBACK_ONLY'
   )
   const [allowedTime, setAllowedTime] = useState(
     additionalData.allowedTime || 1
@@ -159,6 +162,7 @@ const RedirectPopUp = ({
         })
       }
     }
+    studentUnselectAll()
     setLoading(false)
   }, [
     studentsToRedirect,
@@ -236,9 +240,12 @@ const RedirectPopUp = ({
           <SelectInputStyled
             showSearch
             optionFilterProp="data"
-            filterOption={(input, option) =>
-              option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => {
+              return (
+                option.props.data.toLowerCase().indexOf(input.toLowerCase()) >=
+                0
+              )
+            }}
             mode="multiple"
             disabled={type !== 'specificStudents'}
             style={{ width: '100%' }}
@@ -379,5 +386,7 @@ export default connect(
     isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
     specificStudents: getIsSpecificStudents(state),
   }),
-  null
+  {
+    studentUnselectAll: gradebookUnSelectAllAction,
+  }
 )(RedirectPopUp)

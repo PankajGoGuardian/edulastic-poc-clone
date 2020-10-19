@@ -1,7 +1,15 @@
 import React, { PureComponent } from 'react'
 import { Row, Col } from 'antd'
 import PropTypes from 'prop-types'
-import { cloneDeep, get, uniq as _uniq, keyBy, set, findIndex } from 'lodash'
+import {
+  cloneDeep,
+  get,
+  uniq as _uniq,
+  keyBy,
+  set,
+  findIndex,
+  isEmpty,
+} from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
@@ -21,7 +29,6 @@ import {
   setTestItemsAction,
 } from '../../../AddItems/ducks'
 import { getStandardsSelector } from '../../ducks'
-import queryString from 'query-string'
 import {
   setTestDataAction,
   previewCheckAnswerAction,
@@ -56,59 +63,26 @@ import {
 import TestPreviewModal from '../../../../../Assignments/components/Container/TestPreviewModal'
 import ReviewItems from '../ReviewItems'
 import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
-import { hidePendoBanner } from '../../../../../../common/utils/helpers'
 
 class Review extends PureComponent {
-  static propTypes = {
-    test: PropTypes.object.isRequired,
-    onChangeGrade: PropTypes.func.isRequired,
-    onChangeSubjects: PropTypes.func.isRequired,
-    rows: PropTypes.array.isRequired,
-    clearEvaluation: PropTypes.func.isRequired,
-    setData: PropTypes.func.isRequired,
-    standards: PropTypes.object.isRequired,
-    current: PropTypes.string.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    addItemsToAutoselectGroupsRequest: PropTypes.func.isRequired,
-    clearDictAlignment: PropTypes.func.isRequired,
-    owner: PropTypes.bool,
-    onSaveTestId: PropTypes.func,
-    history: PropTypes.any.isRequired,
-    clearAnswer: PropTypes.func.isRequired,
-    checkAnswer: PropTypes.func.isRequired,
-    showAnswer: PropTypes.func.isRequired,
-    updateDefaultThumbnail: PropTypes.func.isRequired,
-    onChangeCollection: PropTypes.func.isRequired,
-    questions: PropTypes.object.isRequired,
-    itemsSubjectAndGrade: PropTypes.any.isRequired,
-    isEditable: PropTypes.bool.isRequired,
-    defaultThumbnail: PropTypes.any.isRequired,
-    setTestItems: PropTypes.func.isRequired,
-    showCancelButton: PropTypes.bool.isRequired,
-    userFeatures: PropTypes.object.isRequired,
-    testItems: PropTypes.array.isRequired,
-  }
-
-  static defaultProps = {
-    owner: false,
-    onSaveTestId: () => {},
-  }
-
   secondHeaderRef = React.createRef()
 
   containerRef = React.createRef()
 
   listWrapperRef = React.createRef()
 
-  state = {
-    isCollapse: true,
-    isShowSummary: true,
-    isModalVisible: false,
-    item: [],
-    isTestPreviewModalVisible: false,
-    currentTestId: '',
-    hasStickyHeader: false,
-    indexForPreview: 0,
+  constructor(props) {
+    super(props)
+    this.state = {
+      isCollapse: true,
+      isShowSummary: true,
+      isModalVisible: false,
+      item: [],
+      isTestPreviewModalVisible: false,
+      currentTestId: '',
+      hasStickyHeader: false,
+      indexForPreview: 0,
+    }
   }
 
   componentWillUnmount() {
@@ -119,7 +93,7 @@ class Review extends PureComponent {
 
   componentDidMount() {
     this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
-    const { test, addItemsToAutoselectGroupsRequest, location } = this.props
+    const { test, addItemsToAutoselectGroupsRequest } = this.props
     const hasAutoSelectItems = test.itemGroups.some(
       (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
     )
@@ -136,11 +110,6 @@ class Review extends PureComponent {
         isTestPreviewModalVisible: true,
       })
     }
-
-    const query = queryString.parse(location.search);
-    const { cliUser } = query;
-
-    hidePendoBanner(cliUser);
   }
 
   // componentDidUpdate(prevProps, prevState) {
@@ -515,11 +484,11 @@ class Review extends PureComponent {
     const grades = _uniq([
       ...(test.grades || []),
       ...itemsSubjectAndGrade.grades,
-    ])
+    ]).filter((grade) => !isEmpty(grade))
     const subjects = _uniq([
       ...(test.subjects || []),
       ...itemsSubjectAndGrade.subjects,
-    ])
+    ]).filter((grade) => !isEmpty(grade))
     const collections = get(test, 'collections', [])
     const passages = get(test, 'passages', [])
     const passagesKeyed = keyBy(passages, '_id')
@@ -653,6 +622,41 @@ class Review extends PureComponent {
       </MainContentWrapper>
     )
   }
+}
+
+Review.propTypes = {
+  test: PropTypes.object.isRequired,
+  onChangeGrade: PropTypes.func.isRequired,
+  onChangeSubjects: PropTypes.func.isRequired,
+  rows: PropTypes.array.isRequired,
+  clearEvaluation: PropTypes.func.isRequired,
+  setData: PropTypes.func.isRequired,
+  standards: PropTypes.object.isRequired,
+  current: PropTypes.string.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  addItemsToAutoselectGroupsRequest: PropTypes.func.isRequired,
+  clearDictAlignment: PropTypes.func.isRequired,
+  owner: PropTypes.bool,
+  onSaveTestId: PropTypes.func,
+  history: PropTypes.any.isRequired,
+  clearAnswer: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  showAnswer: PropTypes.func.isRequired,
+  updateDefaultThumbnail: PropTypes.func.isRequired,
+  onChangeCollection: PropTypes.func.isRequired,
+  questions: PropTypes.object.isRequired,
+  itemsSubjectAndGrade: PropTypes.any.isRequired,
+  isEditable: PropTypes.bool.isRequired,
+  defaultThumbnail: PropTypes.any.isRequired,
+  setTestItems: PropTypes.func.isRequired,
+  showCancelButton: PropTypes.bool.isRequired,
+  userFeatures: PropTypes.object.isRequired,
+  testItems: PropTypes.array.isRequired,
+}
+
+Review.defaultProps = {
+  owner: false,
+  onSaveTestId: () => {},
 }
 
 const enhance = compose(

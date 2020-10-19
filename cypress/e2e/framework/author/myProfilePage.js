@@ -154,7 +154,7 @@ export default class MyProfile {
     cy.get(`[data-cy="joinSchoolBody"]`).should('not.be.visible')
   }
 
-  closePopup = () => {
+  closePopup() {
     cy.get('body').then(($body) => {
       if ($body.find('.ant-modal-close-x').length > 0) {
         cy.get('.ant-modal-close-x').click({ force: true })

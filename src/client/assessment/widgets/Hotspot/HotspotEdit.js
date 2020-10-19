@@ -88,7 +88,7 @@ const HotspotEdit = ({
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: [],
         })
         updateVariables(draft)

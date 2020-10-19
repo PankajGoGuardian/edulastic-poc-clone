@@ -496,7 +496,10 @@ function* saveSubjectGradeSaga({ payload }) {
         currentSignUpState: 'DONE',
         institutionIds: user.orgData.institutionIds,
       }
-      const _result = yield call(userApi.updateUser, { data, userId: user._id })
+      const _result = yield call(userApi.updateUser, {
+        data,
+        userId: user._id,
+      })
       const finalUser = {
         ..._result,
         features: user.features,

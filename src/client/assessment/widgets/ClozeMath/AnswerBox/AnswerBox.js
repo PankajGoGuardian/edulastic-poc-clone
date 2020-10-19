@@ -29,7 +29,9 @@ const AnswerBox = ({
   })
 
   dropdownAnswers.map((answer) => {
-    const { index } = find(dropDowns, (d) => d.id === answer.id) || { index: 0 }
+    const { index } = find(dropDowns, (d) => d.id === answer.id) || {
+      index: 0,
+    }
     return validAnswers.push({
       index,
       value: answer.value,

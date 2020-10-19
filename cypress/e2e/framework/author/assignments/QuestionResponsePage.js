@@ -4,7 +4,6 @@ import {
   queColor,
 } from '../../constants/questionTypes'
 import CypressHelper from '../../util/cypressHelpers'
-import Helpers from '../../util/Helpers'
 
 export default class QuestionResponsePage {
   // *** ELEMENTS START ***
@@ -36,7 +35,7 @@ export default class QuestionResponsePage {
   getQuestionContainerByStudent = (studentName) =>
     cy
       .get('[data-cy="studentName"]')
-      .contains(Helpers.getFormattedFirstLastName(studentName))
+      .contains(studentName)
       .closest('[data-cy="student-question-container"]')
       .should(($ele) => expect(Cypress.dom.isAttached($ele)).to.be.true)
 
@@ -52,7 +51,6 @@ export default class QuestionResponsePage {
     card.find('[data-cy="updateButton"]').click({ force: true })
 
   selectStudent = (studentName) => {
-    studentName = Helpers.getFormattedFirstLastName(studentName)
     let index = -1
     cy.server()
     cy.route('GET', '**/test-activity/**').as('test-activity')
@@ -219,7 +217,6 @@ export default class QuestionResponsePage {
     inExpGrader = false
   ) => {
     cy.server()
-    const randomString = Helpers.getRamdomString(2)
     const stringAdjust = inExpGrader ? '' : '{esc}'
     this.getScoreInput(this.getQuestionContainerByStudent(studentName)).then(
       ($Currestscore) => {
@@ -232,15 +229,13 @@ export default class QuestionResponsePage {
           )
         ) {
           cy.wait(1000)
-          cy.route('PUT', '**/response-entry-and-score').as(
-            `scoreEntry-${randomString}`
-          )
+          cy.route('PUT', '**/response-entry-and-score').as('scoreEntry')
 
           this.getScoreInput(
             this.getQuestionContainerByStudent(studentName)
           ).type(`{selectall}{del}${score}${stringAdjust}`, { force: true })
           inExpGrader ? cy.contains('Student Feedback!').click() : undefined
-          cy.wait(`@scoreEntry-${randomString}`).then((xhr) => {
+          cy.wait('@scoreEntry').then((xhr) => {
             expect(
               xhr.status,
               `score update ${xhr.status === 200 ? 'success' : 'fialed'}`
@@ -262,12 +257,12 @@ export default class QuestionResponsePage {
 
     if (feedback) {
       cy.wait(1000)
-      cy.route('PUT', '**/feedback').as(`feedback-${randomString}`)
+      cy.route('PUT', '**/feedback').as('feedback')
       this.getFeedbackArea(
         this.getQuestionContainerByStudent(studentName)
       ).type(`{selectall}${feedback}${stringAdjust}`, { force: true })
       inExpGrader ? cy.contains('Student Feedback!').click() : undefined
-      cy.wait(`@feedback-${randomString}`).then((xhr) => {
+      cy.wait('@feedback').then((xhr) => {
         expect(
           xhr.status,
           `feed back update ${xhr.status === 200 ? 'success' : 'fialed'}`
@@ -287,7 +282,7 @@ export default class QuestionResponsePage {
   verifyTotalScoreAndImprovement = (totalScore, maxScore, improvemnt) => {
     this.getTotalScore().should('have.text', `${totalScore}`)
     this.getMaxScore().should('have.text', `${maxScore}`)
-    if (improvemnt === 0 || improvemnt)
+    if (improvemnt)
       this.getImprovement().should(
         'have.text',
         `${Math.sign(improvemnt) == 1 ? '+' : ''}${improvemnt}`
@@ -298,7 +293,7 @@ export default class QuestionResponsePage {
   verifyOptionDisabled = (option) => {
     this.getDropDown().eq(0).click()
     this.getDropDownMenu()
-      .contains(Helpers.getFormattedFirstLastName(option))
+      .contains(option)
       .should('have.class', 'ant-select-dropdown-menu-item-disabled')
   }
 
@@ -309,11 +304,6 @@ export default class QuestionResponsePage {
       .closest('label')
       .find('input')
       .should('be.checked')
-
-  verifyLabelsUnChecked = (quecard) =>
-    this.getLabels(quecard).each((ele) =>
-      cy.wrap(ele).find('input').should('not.be.checked')
-    )
 
   verifyLabelClass = (quecard, choice, classs) =>
     this.getLabels(quecard)
@@ -629,15 +619,11 @@ export default class QuestionResponsePage {
     card.should('not.contain', 'Correct Answer')
 
   verifyNoQuestionResponseCard = (studentName) => {
-    cy.get('[data-cy="studentName"]')
-      .contains(Helpers.getFormattedFirstLastName(studentName))
-      .should('not.exist')
+    cy.get('[data-cy="studentName"]').contains(studentName).should('not.exist')
   }
 
   verifyQuestionResponseCardExist = (studentName) => {
-    cy.get('[data-cy="studentName"]')
-      .contains(Helpers.getFormattedFirstLastName(studentName))
-      .should('exist')
+    cy.get('[data-cy="studentName"]').contains(studentName).should('exist')
   }
 
   verifyQuestionResponseCard = (
@@ -710,7 +696,6 @@ export default class QuestionResponsePage {
             break
 
           case attemptTypes.SKIP:
-            this.verifyLabelsUnChecked(cy.get('@quecard'))
             break
 
           case attemptTypes.PARTIAL_CORRECT:

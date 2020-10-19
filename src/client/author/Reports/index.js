@@ -24,6 +24,7 @@ import ClassCreate from '../ManageClass/components/ClassCreate'
 const Container = (props) => {
   const { isCsvDownloading, isPrinting, match, isCliUser } = props
   const [showHeader, setShowHeader] = useState(true)
+  const [hideHeader, setHideHeader] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
   const [showApply, setShowApply] = useState(false)
   const reportType = props?.match?.params?.reportType || 'standard-reports'
@@ -205,7 +206,9 @@ const Container = (props) => {
             `/author/reports/performance-by-students/test/`,
           ]}
           render={(_props) => {
-            setShowHeader(true)
+            if (!hideHeader) {
+              setShowHeader(true)
+            }
             return (
               <SingleAssessmentReportContainer
                 {..._props}
@@ -214,6 +217,8 @@ const Container = (props) => {
                 onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
                 updateNavigation={setNavigationItems}
+                setShowHeader={setShowHeader}
+                preventHeaderRender={setHideHeader}
               />
             )
           }}

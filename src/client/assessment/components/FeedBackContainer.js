@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'lodash'
+import { isEqual } from 'lodash'
 import { Divider } from 'antd'
 import styled from 'styled-components'
 import { yellow, greenDark3, red } from '@edulastic/colors'
-import { IconCorrect, IconRemove, IconWrong } from '@edulastic/icons'
+import { IconCorrect, IconWrong, IconCarets } from '@edulastic/icons'
 import { assignmentPolicyOptions } from '@edulastic/constants'
 import { redirectPolicySelector } from '../selectors/test'
 
+const {
+  STUDENT_RESPONSE_AND_FEEDBACK,
+  SCORE_RESPONSE_AND_FEEDBACK,
+} = assignmentPolicyOptions.showPreviousAttemptOptions
 const TeacherResponseContainer = ({
   correct,
   answerIcon,
-  answer,
-  isResponseVisible,
   prevScore,
   prevMaxScore,
   prevFeedback,
@@ -22,16 +24,13 @@ const TeacherResponseContainer = ({
     <FlexBox>
       <div>
         {correct !== undefined && (
-          <span>
-            {answerIcon} {`  ${answer}`}
-          </span>
+          <>
+            <span>
+              {answerIcon} {' Prior Attempt'}
+            </span>
+          </>
         )}
       </div>
-      {isResponseVisible && (
-        <div>
-          <IconRemove data-cy="remove" height={20} width={20} />
-        </div>
-      )}
     </FlexBox>
     {(prevScore || prevScore === 0) && (
       <FlexBox column>
@@ -50,17 +49,22 @@ const FeedBackContainer = ({
   prevScore,
   prevMaxScore,
   prevFeedback,
-  itemId,
   userAnswers,
   redirectPolicy,
+  previousUserResponse,
+  qId,
 }) => {
   const [feedbackView, setFeedbackView] = useState(false)
   const toggleFeedbackView = () => {
     setFeedbackView(!feedbackView)
   }
   useEffect(() => {
-    setFeedbackView(false)
-  }, [itemId])
+    if (redirectPolicy === STUDENT_RESPONSE_AND_FEEDBACK) {
+      setFeedbackView(true)
+    } else {
+      setFeedbackView(false)
+    }
+  }, [qId])
 
   const iconHeight = feedbackView ? 12 : 40
   const iconHeight2 = feedbackView ? 10 : 30
@@ -68,7 +72,7 @@ const FeedBackContainer = ({
     correct === true
       ? prevScore === prevMaxScore
         ? {
-            answer: 'Correct',
+            answer: 'Prior Attempt',
             answerIcon: (
               <IconCorrect
                 height={iconHeight}
@@ -78,7 +82,7 @@ const FeedBackContainer = ({
             ),
           }
         : {
-            answer: 'Partially Correct',
+            answer: 'Prior Attempt',
             answerIcon: (
               <IconCorrect
                 height={iconHeight}
@@ -88,63 +92,73 @@ const FeedBackContainer = ({
             ),
           }
       : {
-          answer: 'Incorrect',
+          answer: 'Prior Attempt',
           answerIcon: (
             <IconWrong height={iconHeight2} width={iconHeight2} color={red} />
           ),
         }
   const isResponseVisible =
-    redirectPolicy ===
-    assignmentPolicyOptions.showPreviousAttemptOptions
-      .STUDENT_RESPONSE_AND_FEEDBACK
+    redirectPolicy === STUDENT_RESPONSE_AND_FEEDBACK ||
+    redirectPolicy === SCORE_RESPONSE_AND_FEEDBACK
   const props = {
     correct,
     answerIcon,
     answer,
-    isResponseVisible,
     prevScore,
     prevMaxScore,
     prevFeedback,
   }
-  const currentUserAnswer = userAnswers?.[itemId]
-  if (!isEmpty(currentUserAnswer)) {
+  const currentUserAnswer = userAnswers?.[qId]
+
+  /**
+   * TODO: Fixes the current issue [EV-20491], Need to fix for other question types
+   * eg: Expression multipart (math input, adds index undefined in current response),
+   * Graph adds unique id to every response
+   */
+  const differenceInResponse = useMemo(() => {
+    if (currentUserAnswer === undefined) return false
+    return !isEqual(previousUserResponse || '', currentUserAnswer || '')
+  }, [previousUserResponse, currentUserAnswer])
+
+  if (differenceInResponse) {
     return null
   }
+
+  if (
+    !prevFeedback?.text &&
+    correct === undefined &&
+    !(prevScore || prevScore === 0)
+  ) {
+    return null
+  }
+
   if (!isResponseVisible) {
-    // return here if all contents are blank
-    if (
-      !prevFeedback?.text &&
-      correct === undefined &&
-      !(prevScore || prevScore === 0)
-    )
-      return ''
     return (
       <Wrapper visible>
         <TeacherResponseContainer {...props} />
       </Wrapper>
     )
   }
+  const showNavArrow = redirectPolicy === SCORE_RESPONSE_AND_FEEDBACK
   return (
-    <Wrapper onClick={toggleFeedbackView} visible>
+    <Wrapper visible>
       {!feedbackView && correct !== undefined && (
         <div style={{ width: '100px' }}>
-          <div
-            data-cy="answerIcon"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginBottom: '15px',
-            }}
-          >
-            {answerIcon}
+          <IconWrapper data-cy="answerIcon">{answerIcon}</IconWrapper>
+          <div data-cy="answerType" style={{ textAlign: 'center' }}>
+            Prior Attempt
           </div>
-          <div
-            data-cy="answerType"
-            style={{ textAlign: 'center' }}
-          >{`Thats ${answer}`}</div>
         </div>
       )}
       {feedbackView && <TeacherResponseContainer {...props} />}
+      {showNavArrow && (
+        <div
+          style={{ textAlign: 'center', cursor: 'pointer' }}
+          onClick={toggleFeedbackView}
+        >
+          <IconCarets.IconCaretRight />
+        </div>
+      )}
     </Wrapper>
   )
 }
@@ -165,17 +179,18 @@ export default connect(
   null
 )(FeedBackContainer)
 
+const IconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+`
 const Wrapper = styled.div`
-  position: fixed;
-  right: 40px;
   display: ${({ visible }) => (visible ? 'flex' : 'none')};
   flex-direction: column;
   box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  top: 100px;
   padding: 20px 15px;
   background-color: white;
-  z-index: 100;
 `
 
 const TeacherResponse = styled.div`

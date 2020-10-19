@@ -75,7 +75,8 @@ class AnnotationSettings extends Component {
                 toolbarSize="SM"
                 value={labelRight}
                 onChange={(value) =>
-                  this.handleInputChange('labelRight', value)}
+                  this.handleInputChange('labelRight', value)
+                }
               />
             </WidgetFRInput>
           </Col>
@@ -90,7 +91,8 @@ class AnnotationSettings extends Component {
                 toolbarSize="SM"
                 value={labelBottom}
                 onChange={(value) =>
-                  this.handleInputChange('labelBottom', value)}
+                  this.handleInputChange('labelBottom', value)
+                }
               />
             </WidgetFRInput>
           </Col>

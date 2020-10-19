@@ -41,7 +41,7 @@ const ShadingEdit = ({
         }
         draft.validation.altResponses.push({
           ...draft.validation.validResponse,
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: [],
         })
       })

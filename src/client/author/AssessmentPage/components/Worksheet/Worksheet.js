@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-curly-newline */
 import React from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
@@ -7,7 +6,13 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { get, debounce } from 'lodash'
 import { ActionCreators } from 'redux-undo'
-import { withWindowSizes, notification, helpers } from '@edulastic/common'
+import {
+  WithResources,
+  withWindowSizes,
+  notification,
+  helpers,
+  toggleIntercomDisplay,
+} from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
 import { Modal, Button } from 'antd'
@@ -43,6 +48,7 @@ import {
   uploadToDriveAction,
 } from '../../../AssessmentCreate/ducks'
 import PDFAnnotationTools from '../PDFAnnotationTools'
+import AppConfig from '../../../../../../app-config'
 
 const swap = (array, i, j) => {
   const copy = array.slice()
@@ -99,33 +105,11 @@ class WorksheetComponent extends React.Component {
     }
   }
 
-  // eslint-disable-next-line react/static-property-placement
-  static propTypes = {
-    setTestData: PropTypes.func.isRequired,
-    userWork: PropTypes.object.isRequired,
-    questions: PropTypes.array.isRequired,
-    questionsById: PropTypes.object.isRequired,
-    answersById: PropTypes.object,
-    pageStructure: PropTypes.array,
-    review: PropTypes.bool,
-    noCheck: PropTypes.bool,
-    annotations: PropTypes.array,
-  }
-
-  // eslint-disable-next-line react/static-property-placement
-  static defaultProps = {
-    review: false,
-    annotations: [],
-    noCheck: false,
-    pageStructure: [],
-    answersById: {},
-  }
-
   cancelUpload
 
   componentDidMount() {
     const { saveUserWork, itemDetail, freeFormNotes } = this.props
-
+    toggleIntercomDisplay()
     const fromFreeFormNotes = {}
     if (itemDetail?._id) {
       for (const key in freeFormNotes) {
@@ -634,8 +618,6 @@ class WorksheetComponent extends React.Component {
               }
               undoAnnotationsOperation={undoAnnotationsOperation}
               redoAnnotationsOperation={redoAnnotationsOperation}
-              pdfAnnotations={pdfAnnotations}
-              onHighlightQuestion={this.handleHighlightQuestion}
             />
           </PDFAnnotationToolsWrapper>
         )}
@@ -776,9 +758,37 @@ class WorksheetComponent extends React.Component {
   }
 }
 
+WorksheetComponent.propTypes = {
+  setTestData: PropTypes.func.isRequired,
+  userWork: PropTypes.object.isRequired,
+  questions: PropTypes.array.isRequired,
+  questionsById: PropTypes.object.isRequired,
+  answersById: PropTypes.object,
+  pageStructure: PropTypes.array,
+  review: PropTypes.bool,
+  noCheck: PropTypes.bool,
+  annotations: PropTypes.array,
+}
+
+WorksheetComponent.defaultProps = {
+  review: false,
+  annotations: [],
+  noCheck: false,
+  pageStructure: [],
+  answersById: {},
+}
+
 const withForwardedRef = (Component) => {
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  const handle = (props, ref) => <Component {...props} forwardedRef={ref} />
+  const handle = (props, ref) => (
+    <WithResources
+      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+      fallBack={<span />}
+      onLoaded={() => null}
+    >
+      {' '}
+      <Component {...props} forwardedRef={ref} />{' '}
+    </WithResources>
+  )
 
   const name = Component.displayName || Component.name
   handle.displayName = `withForwardedRef(${name})`

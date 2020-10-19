@@ -75,7 +75,7 @@ export const MinimizeButton = styled.div`
 
 export const PDFAnnotationToolsWrapper = styled.div`
   width: 100%;
-  height: 40px;
+  height: 42px;
   background: ${white};
   position: absolute;
   z-index: 1;

@@ -118,7 +118,10 @@ class AddNewUserForm extends React.Component {
         return null
       }
 
-      this.setState((prevState) => ({ ...prevState, userExistsInClass: false }))
+      this.setState((prevState) => ({
+        ...prevState,
+        userExistsInClass: false,
+      }))
 
       // student exists in other class
       if (user._id) {
@@ -633,12 +636,7 @@ class AddNewUserForm extends React.Component {
                 <FieldLabel>DOB</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator('dob')(
-                    <DatePickerStyled
-                      format="DD MMM, YYYY"
-                      disabledDate={(current) =>
-                        current && current.valueOf() > Date.now()
-                      }
-                    />
+                    <DatePickerStyled format="DD MMM, YYYY" />
                   )}
                 </Form.Item>
               </Field>

@@ -64,7 +64,7 @@ class ClozeDropDownPage {
     expect(arrayOfchoices).to.have.lengthOf(expectedLength)
   }
 
-  getPoints = () => cy.get(`[data-cy="points"]`)
+  getPoints = () => cy.get('#text-drop-down-points')
 
   // advance options
   clickOnAdvancedOptions() {

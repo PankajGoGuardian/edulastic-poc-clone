@@ -110,9 +110,9 @@ class PointsList extends Component {
           <Fragment key={`points-${index}`}>
             <ColoredRow gutter={isShowFractionField ? 10 : 30}>
               <Col md={isShowFractionField ? 3 : 5}>
-                <RowLabel>{`${t('component.chart.point')} ${
-                  index + 1
-                }`}</RowLabel>
+                <RowLabel>
+                  {`${t('component.chart.point')} ${index + 1}`}
+                </RowLabel>
               </Col>
               <Col md={4}>
                 <StyledTextField

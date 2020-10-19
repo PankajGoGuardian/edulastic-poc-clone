@@ -49,6 +49,8 @@ const EssayRichTextPreview = ({
   disableResponse,
   previewTab,
   isPrintPreview,
+  isStudentAttempt,
+  isFeedbackVisible,
 }) => {
   userAnswer = typeof userAnswer === 'object' ? '' : userAnswer
   const toolbarButtons = getToolBarButtons(item)
@@ -132,7 +134,12 @@ const EssayRichTextPreview = ({
               <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
             )}
           </QuestionTitleWrapper>
-          <EssayRichTextContainer data-cy="previewBoxContainer">
+          <EssayRichTextContainer
+            reduceWidth={
+              isStudentAttempt && isFeedbackVisible ? '150px' : '0px'
+            }
+            data-cy="previewBoxContainer"
+          >
             {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
               <FroalaEditorContainer>
                 <FroalaEditor
@@ -216,6 +223,8 @@ EssayRichTextPreview.propTypes = {
   isPrintPreview: PropTypes.bool.isRequired,
   disableResponse: PropTypes.bool.isRequired,
   col: PropTypes.object,
+  isFeedbackVisible: PropTypes.bool,
+  isStudentAttempt: PropTypes.bool,
 }
 
 EssayRichTextPreview.defaultProps = {
@@ -223,6 +232,8 @@ EssayRichTextPreview.defaultProps = {
   userAnswer: '',
   showQuestionNumber: false,
   col: {},
+  isFeedbackVisible: false,
+  isStudentAttempt: false,
 }
 
 const toolbarOptions = (options) => {
@@ -273,7 +284,7 @@ const enhance = compose(withNamespaces('assessment'), withTheme)
 export default enhance(EssayRichTextPreview)
 
 const EssayRichTextContainer = styled.div`
-  width: 100%;
+  width: ${({ reduceWidth }) => `calc(100% - ${reduceWidth})`};
   border-radius: 4px;
   position: relative;
   border-right: 1px solid ${lightGrey12};

@@ -111,16 +111,14 @@ export default class TestLibrary {
       this.getTestCardById(id).find('button').contains('More')
     )
 
-  getAllTestCardsInCurrentPage = () => cy.get('[data-cy="test-title"]')
+  getAllTestCardsInCurrentPage = () =>
+    cy.get('[data-cy="test-id"]').closest('.ant-card').parent()
 
   getTestCardInCurrentPageByIndex = (index) =>
     this.getAllTestCardsInCurrentPage().eq(index)
 
   getTestIdOfCardInCurrentPageByIndex = (index) =>
-    this.getTestCardInCurrentPageByIndex(index)
-      .closest('.ant-card')
-      .parent()
-      .invoke('attr', 'data-cy')
+    this.getTestCardInCurrentPageByIndex(index).invoke('attr', 'data-cy')
 
   getCloseTestCardPopUpButton = () =>
     cy.get(`button[class^="styles_closeButton"]`)
@@ -304,7 +302,6 @@ export default class TestLibrary {
     cy.route('POST', '**/test/**').as('duplicateTest')
     cy.route('GET', '**/test/*/assignments').as('getTest')
     cy.contains('CLONE').click({ force: true })
-    cy.contains('span', 'Continue to clone').click({ force: true })
     cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
     // cy.wait("@getTest");
   }
@@ -410,7 +407,6 @@ export default class TestLibrary {
     cy.server()
     cy.route('POST', '**/test/**').as('duplicateTest')
     this.getDuplicateButtonInReview().should('be.visible').click()
-    cy.contains('span', 'Continue to clone').click({ force: true })
     cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
   }
 
@@ -588,7 +584,7 @@ export default class TestLibrary {
     cy.server()
     cy.route('GET', '**/test/*/regrade-assignments').as('load-test-review')
     cy.visit(`/author/tests/tab/review/id/${id}`)
-    cy.wait('@load-test-review', { timeout: 120000 }) // increased 2 min timeout as needed to load multiple xhrs, timesout when running on remote
+    cy.wait('@load-test-review')
   }
 
   searchByCollection = (collection) => {
@@ -626,11 +622,11 @@ export default class TestLibrary {
 
   verifyStandardsOnTestCardById = (id, standards) => {
     this.getStandardsByTestId(id).then(($ele) => {
-      if ($ele.find('.hidden-tags').length > 0)
+      if ($ele.find('.ant-dropdown-trigger').length > 0)
         cy.wrap($ele)
-          .find('.hidden-tags')
+          .find('.ant-dropdown-trigger')
           .last()
-          .trigger(`mouseover`)
+          .trigger('mouseover')
           .then(() => cy.wait(500))
     })
     standards.forEach((sta) =>
@@ -640,11 +636,11 @@ export default class TestLibrary {
 
   verifyTagsOnTestCardById = (id, tags) => {
     this.getStandardsByTestId(id).then(($ele) => {
-      if ($ele.find('.hidden-tags').length > 0)
+      if ($ele.find('.ant-dropdown-trigger').length > 0)
         cy.wrap($ele)
-          .find('.hidden-tags')
+          .find('.ant-dropdown-trigger')
           .first()
-          .trigger(`mouseover`)
+          .trigger('mouseover')
           .then(() => cy.wait(500))
     })
     tags.forEach((sta) =>
@@ -654,10 +650,10 @@ export default class TestLibrary {
 
   verifyGradesOnTestCardPopUp = (grades) => {
     this.getGradesOnTestCardPopUp().then(($ele) => {
-      if ($ele.find('.hidden-tags').length > 0)
+      if ($ele.find('.ant-dropdown-trigger').length > 0)
         cy.wrap($ele)
-          .find('.hidden-tags')
-          .trigger(`mouseover`)
+          .find('.ant-dropdown-trigger')
+          .trigger('mouseover')
           .then(() => cy.wait(500))
     })
     grades.forEach((grade) => {
@@ -667,27 +663,14 @@ export default class TestLibrary {
 
   verifySubjectsOnTestCardPopUp = (subjects) =>
     this.getTestSubjectsOnTestCardPopUp().then(($ele) => {
-      if ($ele.find('.hidden-tags').length > 0)
+      if ($ele.find('.ant-dropdown-trigger').length > 0)
         cy.wrap($ele)
-          .find('.hidden-tags')
-          .trigger(`mouseover`)
+          .find('.ant-dropdown-trigger')
+          .trigger('mouseover')
           .then(() => cy.wait(500))
 
       subjects.forEach((sub) => {
         this.getTestSubjectsOnTestCardPopUp().find('span').contains(sub)
-      })
-    })
-
-  verifyTagsOnTestCardPopUp = (tags) =>
-    this.getTestTagsOnTestCardPopUp().then(($ele) => {
-      if ($ele.find('.hidden-tags').length > 0)
-        cy.wrap($ele)
-          .find('.hidden-tags')
-          .trigger(`mouseover`)
-          .then(() => cy.wait(500))
-
-      tags.forEach((tag) => {
-        this.getTestTagsOnTestCardPopUp().find('span').contains(tag)
       })
     })
 

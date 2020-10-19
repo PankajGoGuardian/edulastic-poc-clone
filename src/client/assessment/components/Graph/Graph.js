@@ -86,6 +86,8 @@ const getFontSizeList = () => [
 ]
 
 class Graph extends Component {
+  // Todo: need to fix, there are more
+  // eslint-disable-next-line react/static-property-placement
   static contextType = AnswerContext
 
   getOptionsComponent = () => {
@@ -336,7 +338,7 @@ class Graph extends Component {
 
     const response = {
       id: `alt-${Math.random().toString(36)}`,
-      score: 1,
+      score: newItem?.validation?.validResponse?.score,
       value: [],
     }
 

@@ -1,12 +1,7 @@
 import styled from 'styled-components'
 import { Menu, Button } from 'antd'
 
-import {
-  white,
-  mobileWidth,
-  themeColor,
-  themeColorBlue,
-} from '@edulastic/colors'
+import { white, mobileWidth, themeColor } from '@edulastic/colors'
 
 export const Container = styled.div`
   left: 0;
@@ -24,6 +19,7 @@ export const Container = styled.div`
 
 export const StyledMenu = styled(Menu)`
   border: 0px;
+
   .ant-menu-item {
     margin: 0 !important;
     padding: 0 13px;
@@ -42,8 +38,7 @@ export const StyledMenu = styled(Menu)`
     }
 
     :hover {
-      background: ${themeColorBlue};
-      color: ${white};
+      background: ${themeColor};
 
       img {
         filter: brightness(10);

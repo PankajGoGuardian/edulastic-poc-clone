@@ -1,32 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import firebase from 'firebase/app'
-
-import { MeetFirebase } from '@edulastic/common'
-import { evaluateItem } from '../../../client/author/src/utils/evalution'
 import TrayActionButton from './TrayActionButton'
-import {
-  setDropdownTabAction,
-  setQuestionItemsAction,
-} from '../../reducers/ducks/edulastic'
-import { setBroadcastModalAction } from '../../reducers/ducks/settings'
-import { keyBy } from '../../utils'
+import { setDropdownTabAction } from '../../reducers/ducks/edulastic'
 
-import BroadcastModal from '../BroadcastModal'
-import CommonDropdown from './TeacherComponents/TeacherDropdown'
 import EduLogo from './Icons/Logo'
 import AttendanceIcon from './Icons/Attendance'
 import EngagementIcon from './Icons/Engagement'
-import BroadcastIcon from './Icons/Broadcast'
-import IconChat from './Icons/Chat'
+import ChecklistIcon from './Icons/Checklist'
 import Settings from './Icons/Settings'
 import { ReactionsButton, HandUpButton, SettingsButton } from '../ActionButtons'
 import { MainTray, WrapperContainer, LoginBtn } from './styled'
+import CommonDropdown from './TeacherComponents/CommonDropdown'
 
-const TeacherTray = ({ dropdownTab, setDropdownTab }) => (
+const TeacherComponent = ({ dropdownTab, setDropdownTab }) => (
   <div style={{ display: 'flex', background: 'white' }}>
     <TrayActionButton
       active={dropdownTab === 'attendance'}
+      text="Attendance"
       icon={<AttendanceIcon />}
       callback={() => setDropdownTab('attendance')}
     />
@@ -39,11 +29,8 @@ const TeacherTray = ({ dropdownTab, setDropdownTab }) => (
     <TrayActionButton
       active={dropdownTab === 'checklist'}
       text="CheckList"
-      icon={<BroadcastIcon />}
-      callback={() => {
-        setDropdownTab('')
-        window.open(`${process.env.BROADCAST_URL}`, '_blank')
-      }}
+      icon={<ChecklistIcon />}
+      callback={() => setDropdownTab('checklist')}
     />
     <TrayActionButton
       active={dropdownTab === 'teachersettings'}
@@ -54,7 +41,7 @@ const TeacherTray = ({ dropdownTab, setDropdownTab }) => (
   </div>
 )
 
-const StudentTray = ({
+const StudentComponent = ({
   authToken,
   isUserLoaded,
   activeToneId = 0,
@@ -64,19 +51,20 @@ const StudentTray = ({
   setReactionsDropdown,
 }) => (
   <div style={{ display: 'flex', background: 'white' }}>
+    <ReactionsButton
+      activeToneId={activeToneId}
+      visible={isReactionsVisible}
+      callback={() => setReactionsDropdown((x) => !x)}
+    />
+    <HandUpButton activeToneId={activeToneId} />
     {authToken ? (
       (isUserLoaded && (
         <>
-          <ReactionsButton
-            activeToneId={activeToneId}
-            visible={isReactionsVisible}
-            callback={() => setReactionsDropdown((x) => !x)}
-          />
-          <HandUpButton activeToneId={activeToneId} />
           <TrayActionButton
-            active={dropdownTab === 'ask'}
-            icon={<IconChat />}
-            callback={() => setDropdownTab('ask')}
+            active={dropdownTab === 'studentChat'}
+            text="StudentChat"
+            icon={<Settings />}
+            callback={() => setDropdownTab('studentChat')}
           />
           <TrayActionButton
             active={dropdownTab === 'studentsettings'}
@@ -103,88 +91,15 @@ const StudentTray = ({
   </div>
 )
 
-const getCurrentEvaluation = async (userAnswer, item) => {
-  const questions = keyBy(item.data.questions, 'id')
-  const evaluation = await evaluateItem(
-    userAnswer,
-    questions,
-    item.itemLevelScoring,
-    item.maxScore
-  )
-  return evaluation
-}
-
 const ReactionTray = ({
   isUserLoaded,
   authToken,
   userRole,
-  meetingID,
-  userId,
   dropdownTab,
   setDropdownTab,
-  isBroadcastModalVisible = false,
-  setBroadcastModal,
-  questionItems = [],
-  setQuestionItems,
-  userAnswer = {},
 }) => {
-  console.log('questionItems', questionItems)
   const [isReactionsVisible, setReactionsDropdown] = useState(false)
   const [isSettingsVisible, setSettingsDropdown] = useState(false)
-
-  // rnt-jbbt-mri
-  // 5e4a6c9b1838d70007432954
-  // rnt-jbbt-mri-5e4a6c9b1838d70007432954
-
-  useEffect(() => {
-    if (meetingID && userId) {
-      MeetFirebase.db
-        ?.collection('MeetingUserQuestions')
-        .doc(`${meetingID}-${userId}`)
-        .onSnapshot((doc) => {
-          const { questions = [], evaluations = [] } = doc.data() || {}
-          const attemptedItemIds = evaluations.map(({ itemId }) => itemId)
-          const pendingItems = questions.filter(
-            ({ _id }) => !attemptedItemIds.includes(_id)
-          )
-          console.log('pendingItems', pendingItems)
-          setQuestionItems(pendingItems)
-          if (!pendingItems.length) setBroadcastModal(false)
-          else setBroadcastModal(true)
-        })
-    }
-  }, [meetingID, userId])
-
-  const handler = async (item, skipped) => {
-    if (meetingID && userId) {
-      const evaluation = skipped
-        ? {}
-        : await getCurrentEvaluation(userAnswer, item)
-
-      const _evaluation = {
-        itemId: item._id || null,
-        userAnswer: skipped ? [] : userAnswer,
-        skipped,
-        evaluation,
-      }
-
-      const docRef = await MeetFirebase.db
-        .collection('MeetingUserQuestions')
-        .doc(`${meetingID}-${userId}`)
-
-      docRef.get().then((doc) => {
-        if (doc.exists) {
-          docRef.update({
-            evaluations: firebase.firestore.FieldValue.arrayUnion(_evaluation),
-          })
-        } else {
-          console.log(`Document Doesn't Exist !`)
-        }
-      })
-    } else {
-      console.log('MeetingID && userId are required : ', { meetingID, userId })
-    }
-  }
 
   const activeToneId = parseInt(localStorage.getItem('edu-skinTone')) || 0
 
@@ -205,9 +120,9 @@ const ReactionTray = ({
       <MainTray>
         <EduLogo />
         {userRole && isTeacher ? (
-          <TeacherTray {...userProps} />
+          <TeacherComponent {...userProps} />
         ) : (
-          <StudentTray
+          <StudentComponent
             authToken={authToken}
             isUserLoaded={isUserLoaded}
             {...userProps}
@@ -215,14 +130,6 @@ const ReactionTray = ({
         )}
       </MainTray>
       {dropdownTab && <CommonDropdown isTeacher={isTeacher} />}
-      {userRole && !isTeacher && isBroadcastModalVisible && (
-        <BroadcastModal
-          visible={isBroadcastModalVisible}
-          handleSkip={() => handler(questionItems[0], true)}
-          handleSubmit={() => handler(questionItems[0], false)}
-          item={questionItems[0]}
-        />
-      )}
     </WrapperContainer>
   )
 }
@@ -231,18 +138,10 @@ export default connect(
   (state) => ({
     authToken: state.edulasticReducer.authToken,
     userRole: state.edulasticReducer.user?.role,
-    meetingID: state.meetingsReducer?.userData?.meetingID,
-    userId: state.edulasticReducer.user?._id,
     isUserLoaded: Object.keys(state.edulasticReducer.user).length,
     dropdownTab: state.edulasticReducer.dropdownTab,
-    isBroadcastModalVisible: state.settingsReducer.isBroadcastModalVisible,
-    questionItems: state.edulasticReducer.questionItems,
-    evaluation: state.edulasticReducer.evaluation,
-    userAnswer: state.edulasticReducer.userAnswer,
   }),
   {
     setDropdownTab: setDropdownTabAction,
-    setBroadcastModal: setBroadcastModalAction,
-    setQuestionItems: setQuestionItemsAction,
   }
 )(ReactionTray)

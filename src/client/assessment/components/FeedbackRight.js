@@ -70,7 +70,6 @@ class FeedbackRight extends Component {
 
     let { maxScore } = props?.widget?.activity || {}
     const { score } = props?.widget?.activity || {}
-
     if (!maxScore) {
       maxScore = props?.widget?.validation?.validResponse?.score || 0
     }
@@ -87,6 +86,12 @@ class FeedbackRight extends Component {
   }
 
   static contextType = AnswerContext
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps?.widget?.activity && !this.props?.widget?.activity) {
+      this.setState({ score: 0 })
+    }
+  }
 
   componentDidMount() {
     if (this.context?.expressGrader === true) {
@@ -239,8 +244,8 @@ class FeedbackRight extends Component {
   }
 
   preCheckSubmit = () => {
-    const { changed } = this.state
-    if (changed) {
+    const { changed, showFeedbackSaveBtn } = this.state
+    if (changed || showFeedbackSaveBtn) {
       this.setState({ submitted: true }, this.onFeedbackSubmit)
     }
     this.setState({ showFeedbackSaveBtn: false })
@@ -446,7 +451,7 @@ class FeedbackRight extends Component {
           )}
         </LeaveDiv>
         {!isError && (
-          <>
+          <Fragment>
             <FeedbackInput
               tabIndex={0}
               data-cy="feedBackInput"
@@ -458,7 +463,7 @@ class FeedbackRight extends Component {
               onKeyDown={this.onKeyDownFeedback}
               autoSize
             />
-          </>
+          </Fragment>
         )}
 
         {showPreviewRubric && (

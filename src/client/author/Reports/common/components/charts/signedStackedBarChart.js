@@ -210,10 +210,9 @@ export const SignedStackedBarChart = ({
     const positive = barKeys.filter((ite) => barData[ite.key] > 0)
     const negative = barKeys.filter((ite) => barData[ite.key] < 0)
     return (
-      findLast(positive)?.idx === bdIndex || head(negative)?.idx === bdIndex
+      findLast(positive)?.idx === bdIndex || findLast(negative)?.idx === bdIndex
     )
   }
-
   return (
     <StyledSignedStackedBarChartContainer>
       <a

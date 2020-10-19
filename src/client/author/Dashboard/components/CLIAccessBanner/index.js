@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Menu } from 'antd'
 import Modal from 'react-responsive-modal'
-import queryString from 'query-string'
 import { get } from 'lodash'
+import queryString from 'query-string'
 import { logoutAction } from '../../../src/actions/auth'
 import CLILogo from '../../assets/svgs/cli-logo.svg'
 import {
@@ -36,9 +36,9 @@ const CLIAccessBanner = ({
     </Menu>
   )
 
-  const query = queryString.parse(location.search);
-  const { cliUser } = query;
-  const isShowBanner = cliUser || isCliUser;
+  const query = queryString.parse(location.search)
+  const { cliUser } = query
+  const isShowBanner = cliUser || isCliUser
 
   const toggleDropdown = () => {
     setVisible(!isVisible)
@@ -121,7 +121,7 @@ export default connect(
   (state) => ({
     firstName: state.user.user.firstName,
     lastName: state.user.user.lastName,
-    isCliUser: get(state, "user.isCliUser", false)
+    isCliUser: get(state, 'user.isCliUser', false),
   }),
   {
     logout: logoutAction,

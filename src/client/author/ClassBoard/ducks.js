@@ -15,6 +15,7 @@ import {
   testActivity,
   assignmentPolicyOptions,
   roleuser,
+  testActivityStatus,
 } from '@edulastic/constants'
 import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
@@ -154,49 +155,48 @@ export function* receiveTestActivitySaga({ payload }) {
     )
     if (isRandomDelivery) {
       // students can have different test items so generating student data for each student with its testItems
-      const studentsDataWithTestItems = students.map((student) => {
-        const activity = gradebookData.testActivities.find(
-          (a) => a.userId === student._id
-        )
-        let allItems = []
-        if (activity) {
-          allItems = activity.itemsToDeliverInGroup
-            .flatMap((g) => g.items)
-            .map((id) => {
-              const item = gradebookData.testItemsData.find(
-                (ti) => ti._id === id
-              )
-              if (item) return item
-              return {
-                _id: id,
-                itemLevelScoring: true,
+      const studentsDataWithTestItems = gradebookData.testActivities.map(
+        (activity) => {
+          let allItems = []
+          if (activity) {
+            allItems = activity.itemsToDeliverInGroup
+              .flatMap((g) => g.items)
+              .map((id) => {
+                const item = gradebookData.testItemsData.find(
+                  (ti) => ti._id === id
+                )
+                if (item) return item
+                return {
+                  _id: id,
+                  itemLevelScoring: true,
+                }
+              })
+          } else {
+            classResponse.itemGroups.forEach((group) => {
+              if (
+                group.deliveryType === ALL_RANDOM ||
+                group.deliveryType === LIMITED_RANDOM
+              ) {
+                const dummyItems = [...new Array(group.deliverItemsCount)].map(
+                  () => ({
+                    _id: '',
+                    itemLevelScoring: true,
+                  })
+                )
+                allItems.push(...dummyItems)
+              } else {
+                allItems.push(...group.items)
               }
             })
-        } else {
-          classResponse.itemGroups.forEach((group) => {
-            if (
-              group.deliveryType === ALL_RANDOM ||
-              group.deliveryType === LIMITED_RANDOM
-            ) {
-              const dummyItems = [...new Array(group.deliverItemsCount)].map(
-                () => ({
-                  _id: '',
-                  itemLevelScoring: true,
-                })
-              )
-              allItems.push(...dummyItems)
-            } else {
-              allItems.push(...group.items)
-            }
-          })
-        }
+          }
 
-        return {
-          activityId: activity?._id || '',
-          studentId: student._id,
-          items: allItems,
+          return {
+            activityId: activity?._id || '',
+            studentId: activity.userId,
+            items: allItems,
+          }
         }
-      })
+      )
 
       entities = studentsDataWithTestItems.map((studentData) => {
         const studentActivityData = transformGradeBookResponse({
@@ -587,6 +587,11 @@ export const stateExpressGraderAnswerSelector = (state) => state.answers
 export const stateQuestionAnswersSelector = (state) =>
   state.classQuestionResponse
 
+const getTestItemsData = createSelector(
+  stateTestActivitySelector,
+  (state) => state?.data?.testItemsData || []
+)
+
 export const getClassResponseSelector = createSelector(
   stateClassResponseSelector,
   (state) => state.data
@@ -760,12 +765,13 @@ export const getAggregateByQuestion = (entities, studentId) => {
     return {}
   }
   const total = entities.length
-  const submittedEntities = entities.filter((x) => x.status === 'submitted')
+  const submittedEntities = entities.filter(
+    (x) => x.UTASTATUS === testActivityStatus.SUBMITTED
+  )
   const activeEntities = entities.filter(
     (x) =>
-      x.status === 'inProgress' ||
-      x.status === 'submitted' ||
-      x.status === 'graded'
+      x.UTASTATUS === testActivityStatus.START ||
+      x.UTASTATUS === testActivityStatus.SUBMITTED
   )
   let questionsOrder = {}
   if (entities.length > 0) {
@@ -782,8 +788,9 @@ export const getAggregateByQuestion = (entities, studentId) => {
     )
   }
   const submittedNumber = submittedEntities.length
-  // TODO: handle absent
-  const absentNumber = 0
+  const absentNumber =
+    entities.filter((x) => x.UTASTATUS === testActivityStatus.ABSENT)?.length ||
+    0
   const scores = activeEntities
     .map(({ score, maxScore }) => score / maxScore)
     .reduce((prev, cur) => prev + cur, 0)
@@ -880,6 +887,25 @@ export const getActiveAssignedStudents = createSelector(
     )
 )
 
+export const getFirstQuestionEntitiesSelector = createSelector(
+  getTestActivitySelector,
+  getTestItemsData,
+  (uta, itemsData) => {
+    const itemsKeyed = keyBy(itemsData, '_id')
+    const uqa = get(uta, [0, 'questionActivities'], [])
+    const result = uqa.filter((_uqa) => {
+      const { testItemId } = _uqa
+      const item = itemsKeyed[testItemId]
+      if (!item) return false
+      if (item.itemLevelScoring) {
+        delete itemsKeyed[testItemId]
+      }
+      return true
+    })
+    return result
+  }
+)
+
 export const getTestQuestionActivitiesSelector = createSelector(
   stateTestActivitySelector,
   (state) => {
@@ -932,12 +958,12 @@ export const getGradeBookSelector = createSelector(
 
 export const notStartedStudentsSelector = createSelector(
   getTestActivitySelector,
-  (state) => state.filter((x) => x.status === 'notStarted')
+  (state) => state.filter((x) => x.UTASTATUS === testActivityStatus.NOT_STARTED)
 )
 
 export const inProgressStudentsSelector = createSelector(
   getTestActivitySelector,
-  (state) => state.filter((x) => x.status === 'inProgress')
+  (state) => state.filter((x) => x.UTASTATUS === testActivityStatus.START)
 )
 
 export const getAdditionalDataSelector = createSelector(

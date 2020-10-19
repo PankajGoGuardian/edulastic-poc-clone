@@ -720,7 +720,11 @@
         "fontsizelist": ["Small", "Normal", "Large", "Extra large", "Huge"],
         "margin": "Margin (px)",
         "stemNumeration": "Stem numeration (review only)",
-        "stemNumerationList": ["Numerical", "Uppercase alphabet", "Lowercase alphabet"],
+        "stemNumerationList": [
+          "Numerical",
+          "Uppercase alphabet",
+          "Lowercase alphabet"
+        ],
         "fontSize": "Font Size",
         "drawLabelzero": "Draw label zero",
         "displayPositionOnHover": "Display position on hover",
@@ -828,6 +832,7 @@
       "decimal": "Decimal",
       "simpleFraction": "Check for simple fraction",
       "mixedFraction": "Check for mixed fraction",
+      "improperFraction": "Check for improper fraction",
       "exponent": "Exponent",
       "standardForm": "Standard Form",
       "slopeInterceptForm": "Slope Intercept Form",
@@ -887,6 +892,7 @@
       "isDecimal": "Check if number is a decimal",
       "isSimpleFraction": "Check for simple fraction",
       "isMixedFraction": "Mixed Fraction",
+      "isImproperFraction": "Improper Fraction",
       "isExponent": "Check if variable is an exponent",
       "isStandardForm": "Check if equation is in standard form",
       "isSlopeInterceptForm": "Check if equation is in slope intercept form",

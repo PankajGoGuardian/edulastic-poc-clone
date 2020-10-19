@@ -355,9 +355,11 @@ class Layout extends Component {
                 <Container key={index}>
                   <Row gutter={24}>
                     <Col md={18}>
-                      <Label>{`${t(
-                        'component.options.responsecontainerindividual'
-                      )} ${index + 1}`}</Label>
+                      <Label>
+                        {`${t(
+                          'component.options.responsecontainerindividual'
+                        )} ${index + 1}`}
+                      </Label>
                     </Col>
                     <Col md={6}>
                       <CustomStyleBtn

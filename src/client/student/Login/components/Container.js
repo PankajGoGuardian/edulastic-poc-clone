@@ -24,13 +24,14 @@ import {
 import cleverIcon from '../../assets/clever-icon.svg'
 import googleIcon from '../../assets/google-btn.svg'
 import classlinkIcon from '../../assets/classlink-icon.png'
+import schoologyIcon from '../../assets/schoology.png'
 import icon365 from '../../assets/icons8-office-365.svg'
 import {
   cleverLoginAction,
   googleLoginAction,
   loginAction,
   msoLoginAction,
-  classlinkLoginAction,
+  atlasLoginAction,
   getIsClassCodeModalOpen,
   toggleClassCodeModalAction,
 } from '../ducks'
@@ -112,7 +113,7 @@ class LoginContainer extends React.Component {
       generalSettings,
       googleLogin,
       cleverLogin,
-      classlinkLogin,
+      atlasLogin,
       msoLogin,
       loadingComponents,
       isClassCodeModalOpen,
@@ -218,7 +219,7 @@ class LoginContainer extends React.Component {
                         span={20}
                         offset={2}
                         onClick={() => {
-                          classlinkLogin('teacher')
+                          atlasLogin('teacher')
                         }}
                       >
                         <img
@@ -227,6 +228,26 @@ class LoginContainer extends React.Component {
                           className="classlink-icon"
                         />
                         {t('common.classlinksigninbtn')}
+                      </ThirdPartyLoginBtn>
+                    ) : null}
+                    {isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'schoologySignOn'
+                    ) ? (
+                      <ThirdPartyLoginBtn
+                        span={20}
+                        offset={2}
+                        onClick={() => {
+                          atlasLogin('teacher')
+                        }}
+                      >
+                        <img
+                          src={schoologyIcon}
+                          alt=""
+                          className="schoology-icon"
+                        />
+                        {t('common.schoologysigninbtn')}
                       </ThirdPartyLoginBtn>
                     ) : null}
                   </FormHead>
@@ -367,7 +388,7 @@ const enhance = compose(
       cleverLogin: cleverLoginAction,
       msoLogin: msoLoginAction,
       login: loginAction,
-      classlinkLogin: classlinkLoginAction,
+      atlasLogin: atlasLoginAction,
       toggleClassCodeModal: toggleClassCodeModalAction,
     }
   )

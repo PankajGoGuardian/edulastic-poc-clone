@@ -2,7 +2,6 @@
 import React from 'react'
 import withIconStyles from './HOC/withIconStyles'
 import SVG from './common/SVG'
-
 ;<svg
   xmlns="http://www.w3.org/2000/svg"
   width="17.463"

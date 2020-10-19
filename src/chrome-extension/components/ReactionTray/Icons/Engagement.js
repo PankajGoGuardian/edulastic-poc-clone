@@ -6,7 +6,7 @@ const EngagementIcon = () => (
     x="0px"
     y="0px"
     viewBox="0 0 480 480"
-    style={{ height: '28px', fill: '#bbbbbb' }}
+    style={{ height: '28px', fill: '#555' }}
   >
     <g>
       <g>

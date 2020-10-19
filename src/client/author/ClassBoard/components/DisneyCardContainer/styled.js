@@ -151,6 +151,7 @@ export const PaginationInfoS = styled(StyledFlexContainer)`
 export const PaginationInfoT = styled(StyledFlexContainer)`
   flex-wrap: wrap;
   justify-content: flex-start;
+  min-height: 15px;
 `
 
 export const CircularDiv = styled.div`

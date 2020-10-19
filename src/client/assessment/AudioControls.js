@@ -1,13 +1,14 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable prefer-promise-reject-errors */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Button } from 'antd'
 import { Howl, Howler } from 'howler'
 import styled, { css } from 'styled-components'
 import { connect } from 'react-redux'
+import * as Sentry from '@sentry/browser'
 
 import { questionType } from '@edulastic/constants'
-import { EduButton } from '@edulastic/common'
+import { EduButton, notification } from '@edulastic/common'
 import { themeColor, white } from '@edulastic/colors'
 import {
   IconPlayFilled,
@@ -61,7 +62,7 @@ const AudioControls = ({
   item: questionData = {},
   btnWithText = false,
   audioSrc,
-  qId,
+  qId: targetQId,
   currentPlayingDetails,
   setCurrentPlayingDetails,
   className,
@@ -74,31 +75,82 @@ const AudioControls = ({
   const [currentHowl, setCurrentHowl] = useState({})
   const [pageHowls, setPageHowls] = useState([])
 
+  const qId = useMemo(() => targetQId, [targetQId])
+
   // Loading audio
-  const audioLoadResolve = (url) =>
-    new Promise((resolve, reject) => {
+  const audioLoadResolve = (url) => {
+    const _prom = new Promise((resolve, reject) => {
+      const srcArr = [url].filter((a) => a)
+
+      if (!srcArr.length) {
+        reject([4, 'Tried to initialize howl with empty urls'], url)
+      }
+
       const sound = new Howl({
-        src: url,
+        src: srcArr,
+        preload: false,
         html5: true,
       })
-      sound.load()
-      sound.on('load', () => {
-        resolve(sound)
+
+      resolve(sound)
+
+      sound.on('playerror', (...args) => {
+        reject({ args, url })
       })
-      sound.on('loaderror', (id, e) => {
-        reject({ id, e, url })
+      sound.on('loaderror', (...args) => {
+        reject({ args, url })
       })
     })
 
+    _prom.catch((err) => {
+      setLoading(false)
+      Sentry.withScope((scope) => {
+        scope.setExtra('error', err)
+        notification({ type: 'error', messageKey: 'ttsErrorMessage' })
+        Sentry.captureException(
+          new Error('[AudioControls] audio load failure.')
+        )
+      })
+    })
+
+    return _prom
+  }
+
   // Playing audio
-  const audioPlayResolve = (_howl) =>
-    new Promise((resolve) => {
-      _howl?.play()
+  const audioPlayResolve = (_howl) => {
+    if (!_howl) return
+
+    const _prom = new Promise((resolve, reject) => {
+      _howl?.load()
+      if (_howl?.state() === 'loading' || _howl?.state() === 'unloaded') {
+        _howl.on('load', () => {
+          if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+        })
+      } else if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+
+      _howl?.on('playerror', (...args) => {
+        reject({ args })
+      })
+
+      setCurrentHowl(_howl)
       _howl?.once('end', () => {
         resolve(_howl)
       })
-      setCurrentHowl(_howl)
     })
+
+    _prom.catch((err) => {
+      setLoading(false)
+      Sentry.withScope((scope) => {
+        scope.setExtra('error', err)
+        notification({ type: 'error', messageKey: 'ttsErrorMessage' })
+        Sentry.captureException(
+          new Error('[AudioControls] audio playing failure.')
+        )
+      })
+    })
+
+    return _prom
+  }
 
   // Stop all audios
   const stopAllAudios = () => {
@@ -107,6 +159,15 @@ const AudioControls = ({
       findAllPlayingHowls.forEach((item) => item.stop())
     }
   }
+
+  useEffect(() => {
+    const isSupported = Howler.codecs('mp3')
+
+    if (!isSupported) {
+      notification({ type: 'error', msg: 'Audio format is not supported.' })
+      Sentry.captureException(new Error('[AudioControls] Mp3 not supported.'))
+    }
+  }, [])
 
   useEffect(() => {
     if (!audioSrc) return
@@ -125,7 +186,8 @@ const AudioControls = ({
             choiceAudio
           ).then((choice) => {
             setOptionHowl((prev) => ({ ...prev, [`choice_${i}`]: choice }))
-            audioLoad[i] = audioLoadResolve(optionUrls[item].optionAudioURL)
+            if (!optionUrls?.[item].optionAudioURL) return
+            audioLoad[i] = audioLoadResolve(optionUrls?.[item].optionAudioURL)
             audioLoad[i].then((val) => {
               setOptionHowl((prev) => ({ ...prev, [item]: val }))
             })
@@ -136,7 +198,8 @@ const AudioControls = ({
         })
       } else if (questionData.type === questionType.PASSAGE) {
         if (!questionData.paginated_content) {
-          audioLoadResolve(questionData.tts.content.contentAudioURL).then(
+          if (!questionData?.tts?.content.contentAudioURL) return
+          audioLoadResolve(questionData?.tts?.content.contentAudioURL).then(
             (contentAudio) => {
               setPageHowls([contentAudio])
               setLoading(false)
@@ -145,7 +208,7 @@ const AudioControls = ({
         } else {
           Promise.all(
             questionData.tts.pages.map((p) =>
-              audioLoadResolve(p.contentAudioURL)
+              audioLoadResolve(p?.contentAudioURL)
             )
           ).then((contentAudios) => {
             setPageHowls(contentAudios)
@@ -156,6 +219,7 @@ const AudioControls = ({
         setLoading(false)
       }
     })
+
     return () => {
       setCurrentPlayingDetails()
       stopAllAudios()
@@ -164,7 +228,10 @@ const AudioControls = ({
   }, [qId])
 
   const handlePlayPauseAudio = () => {
-    if (loading) return
+    if (loading || !currentHowl) {
+      return
+    }
+
     if (currentHowl?.playing()) {
       currentHowl.pause()
       currentHowl.isPaused = true
@@ -186,26 +253,38 @@ const AudioControls = ({
           for (const i in mapOptById) {
             const item = mapOptById[i]
             const choiceAudioHowl = optionHowl[`choice_${i}`]
-            await audioPlayResolve(choiceAudioHowl)
-            await audioPlayResolve(optionHowl[item])
+
+            if (choiceAudioHowl) await audioPlayResolve(choiceAudioHowl)
+            else
+              Sentry.captureException(
+                new Error(
+                  `[AudioControls] Option audio missing for choice_${i}`
+                )
+              )
+
+            if (optionHowl[item]) await audioPlayResolve(optionHowl[item])
+            else
+              Sentry.captureException(
+                new Error(`[AudioControls] Option audio missing for ${item}`)
+              )
           }
-          setCurrentPlayingDetails()
         }
         asyncPlay()
+        setCurrentPlayingDetails(qId)
       })
     } else if (questionData.type === questionType.PASSAGE) {
       if (page > 1) {
         audioPlayResolve(pageHowls[page - 1]).then(() =>
-          setCurrentPlayingDetails()
+          setCurrentPlayingDetails(qId)
         )
       } else {
         audioPlayResolve(stimulusHowl).then(async () => {
           await audioPlayResolve(pageHowls[page - 1])
-          setCurrentPlayingDetails()
+          setCurrentPlayingDetails(qId)
         })
       }
     } else {
-      audioPlayResolve(stimulusHowl).then(() => setCurrentPlayingDetails())
+      audioPlayResolve(stimulusHowl).then(() => setCurrentPlayingDetails(qId))
     }
   }
 
@@ -232,11 +311,12 @@ const AudioControls = ({
         {currentPlayingDetails.qId === qId ? (
           <IconAudioPause color={white} className="audio-pause" />
         ) : (
-          !loading && <IconPlayFilled color={white} className="audio-play" />
+          <IconPlayFilled color={white} className="audio-play" />
         )}
       </ControlButtons>
       <ControlButtons
         onClick={handleStopAudio}
+        loading={loading}
         disabled={currentPlayingDetails.qId !== qId}
         title="Stop"
       >
@@ -256,12 +336,10 @@ const AudioControls = ({
             PAUSE
           </>
         ) : (
-          !loading && (
-            <>
-              <IconPlayBig />
-              PLAY
-            </>
-          )
+          <>
+            <IconPlayBig />
+            PLAY
+          </>
         )}
       </AudioButton>
       <AudioButton

@@ -26,12 +26,12 @@ const buttonWrapperExtraStyle = css`
 
 export const Divider = styled.div`
   width: 0px;
-  border: 1px solid #dadae4;
+  border: ${({ hideMiddle }) => !hideMiddle && '1px solid #dadae4'};
   position: relative;
   background-color: ${(props) =>
     props.isCollapsed ? '#e5e5e5' : 'transparent'};
   border-radius: 10px;
-  z-index: 1;
+  z-index: 1000;
   height: 65vh;
   .button-wrapper {
     background: #a7b5c1;

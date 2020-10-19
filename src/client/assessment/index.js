@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
 import { compose } from 'redux'
 import { Spin } from 'antd'
@@ -27,7 +28,7 @@ const AssessmentPlayer = ({
   LCBPreviewModal,
   closeTestPreviewModal,
   submitPreviewTest,
-  isShowStudentWork = false,
+  isStudentReport = false,
   showTools,
   startAssessment,
   passages,
@@ -35,7 +36,6 @@ const AssessmentPlayer = ({
   studentReportModal,
   currentAssignmentId,
   currentAssignmentClass,
-  sharedType,
   ...restProps
 }) => {
   testId = preview ? testId : match.params.id
@@ -51,10 +51,9 @@ const AssessmentPlayer = ({
       demo,
       test,
       groupId: groupId || currentAssignmentClass,
-      isShowStudentWork,
+      isStudentReport,
       playlistId,
       currentAssignmentId,
-      sharedType,
     })
   }, [testId])
 
@@ -126,7 +125,7 @@ const AssessmentPlayer = ({
         preview
         demo={demo}
         showTools={showTools}
-        showScratchPad={isShowStudentWork}
+        isStudentReport={isStudentReport}
         passages={passages}
         studentReportModal={studentReportModal}
         {...restProps}

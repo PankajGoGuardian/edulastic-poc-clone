@@ -4,7 +4,6 @@ import EditItemPage from '../../itemDetail/editPage'
 import { SCORING_TYPE } from '../../../../constants/questionAuthoring'
 import PreviewItemPopup from '../../itemPreview'
 import { attemptTypes } from '../../../../constants/questionTypes'
-import validateSolutionBlockTests from '../common/validateSolutionBlockTests'
 
 const runMatrixPageTests = (queData) => {
   const editItem = new EditItemPage()
@@ -74,7 +73,7 @@ const runMatrixPageTests = (queData) => {
         .type(queData.formattext)
         .should('contain', queData.formattext)
 
-      question.getallSteam().should('have.length', 2)
+      question.getallSteam().should('be.have.length', 2)
     })
 
     it('[Tc_321] => set correct ans,multiple response,alternate', () => {
@@ -617,7 +616,7 @@ const runMatrixPageTests = (queData) => {
 
       question.selectAnswerChoice(queData.forScoringAltAns)
 
-      question.getPoints().type('{selectall}7')
+      question.getPoints().type('{selectall}16')
 
       const preview = question.header.preview()
 
@@ -641,10 +640,9 @@ const runMatrixPageTests = (queData) => {
         attemptTypes.ALTERNATE
       )
 
-      preview.checkScore('7/7')
+      preview.checkScore('16/16')
     })
   })
-  validateSolutionBlockTests(queData.group, queData.queType)
 }
 
 export default runMatrixPageTests

@@ -27,9 +27,11 @@ const PassageConfirmationModal = ({
       onCancel={closeModal}
     >
       <p>
-        <b>{`There are ${itemsCount} items in this passage. Would you like to ${
-          removing ? `remove` : `add`
-        } them ${removing ? `from` : `to`} your test`}</b>
+        <b>
+          {`There are ${itemsCount} items in this passage. Would you like to ${
+            removing ? `remove` : `add`
+          } them ${removing ? `from` : `to`} your test`}
+        </b>
       </p>
     </ConfirmationModal>
   )

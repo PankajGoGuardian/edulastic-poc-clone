@@ -61,6 +61,7 @@ const ResponseContainers = ({
       borderRadius: 5,
       display: 'flex',
       padding: '5px',
+      zIndex: 21,
     }
 
     return btnStyle
@@ -87,9 +88,7 @@ const ResponseContainers = ({
           index={index}
         >
           {container.label && (
-            <span className="sr-only" role="heading">
-              Drop target {container.label}
-            </span>
+            <span className="sr-only">Drop target {container.label}</span>
           )}
           <Container
             fontSize={fontSize}
@@ -101,7 +100,7 @@ const ResponseContainers = ({
             {answers.map((answer, item_index) => (
               <DragItem
                 style={dragItemStyle}
-                key={item_index}
+                key={answer.id}
                 data={{
                   option: answer,
                   fromContainerIndex: index,

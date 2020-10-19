@@ -161,6 +161,4 @@ export const TextAvatar = styled.div`
   align-items: center;
   justify-content: center;
   margin: auto;
-  text-transform: capitalize;
-  font-family: Arial, Helvetica, sans-serif;
 `

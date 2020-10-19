@@ -1,16 +1,16 @@
 import { get, keyBy, values, round, groupBy, isUndefined } from 'lodash'
 import next from 'immer'
-import { questionType } from '@edulastic/constants'
 import { responseDisplayOption } from './constants'
 import { replaceVariables } from '../../../assessment/utils/variables'
+import { questionType } from '@edulastic/constants'
 import { formatToMathAnswer } from '../../../assessment/widgets/MathFormula/components/CorrectAnswerBox'
 
-// format answers for doc based
+//format answers for doc based
 const formatAnswerForDocBased = (value, q, options = {}) => {
   return options[value]?.label || value?.value || value || '-'
 }
 
-// to format correct/user answer
+//to format correct/user answer
 export const formatAnswers = (
   data,
   options,
@@ -31,10 +31,9 @@ export const formatAnswers = (
   const answer = responses.map((item, index) => {
     if (isDocBased) {
       return formatAnswerForDocBased(item, q, options)
-    }
-    if (type === questionType.MULTIPLE_CHOICE) {
-      // to check if 'True or false' qType have more then 2 options and option label othern then 'True' or 'False'
-      // then considering it as standard multipleChoice type
+    } else if (type === questionType.MULTIPLE_CHOICE) {
+      //to check if 'True or false' qType have more then 2 options and option label othern then 'True' or 'False'
+      //then considering it as standard multipleChoice type
       if (
         title === 'True or false' &&
         Object.keys(options).length === 2 &&
@@ -43,8 +42,7 @@ export const formatAnswers = (
         return options[item].label || '-'
       }
       return String.fromCharCode(65 + Object.keys(options).indexOf(item))
-    }
-    if (type == questionType.MATH && title === 'Units') {
+    } else if (type == questionType.MATH && title === 'Units') {
       if (context === 'userResponse') {
         if (typeof item === 'string') {
           return item
@@ -59,17 +57,13 @@ export const formatAnswers = (
         return `${value}${unit || ''}`
       }
       return value
-    }
-    if (item?.value) {
+    } else if (item?.value) {
       return item?.value
-    }
-    if (options && item?.id && !isUndefined(item?.index)) {
+    } else if (options && item?.id && !isUndefined(item?.index)) {
       return options[item?.id][item?.index]
-    }
-    if (options && options[item]) {
+    } else if (options && options[item]) {
       return options[item].label
-    }
-    if (typeof item === 'string') {
+    } else if (typeof item === 'string') {
       return item
     }
     return '-'
@@ -77,7 +71,7 @@ export const formatAnswers = (
 
   let result = formatAnswertoDisplay(answer.length ? answer : '-', type, title)
 
-  // for qType = math, needs to reformat latex to correct format, so using formatToMathAnswer util function do this.
+  //for qType = math, needs to reformat latex to correct format, so using formatToMathAnswer util function do this.
   if (type === 'math' && result !== 'TEI') {
     result = Array.isArray(result)
       ? result.map((ans) => formatToMathAnswer(ans))
@@ -86,8 +80,7 @@ export const formatAnswers = (
 
   if (!viewMode) {
     return Array.isArray(result) ? result.join(', ') : result
-  }
-  if (Array.isArray(result)) {
+  } else if (Array.isArray(result)) {
     switch (q.type) {
       case questionType.EDITING_TASK:
       case questionType.CLOZE_DROP_DOWN:
@@ -103,7 +96,7 @@ export const formatAnswers = (
   return result
 }
 
-// use `replaceVariables` util function to replace variables from answers
+//use `replaceVariables` util function to replace variables from answers
 export const formatOptions = (q) => {
   const formattedQuestion = replaceVariables(q)
   let options = formattedQuestion.options
@@ -143,7 +136,7 @@ export const getQuestionTableData = (
       } = item
       const questions = item.data.questions || []
 
-      // for itemLevelScoring, all questions response needs to show in one row
+      //for itemLevelScoring, all questions response needs to show in one row
       // so, converted to one row
       if (itemLevelScoring) {
         const data = questions.reduce(
@@ -189,7 +182,7 @@ export const getQuestionTableData = (
         }
       }
 
-      // for other question type other the above mentioned
+      //for other question type other the above mentioned
       return next(questions, (arr) => {
         for (let i = 0; i < arr.length; i++) {
           const q = arr[i]
@@ -231,7 +224,7 @@ export const getChartAndStandardTableData = (
   )
   const questionActivities = get(studentResponse, 'data.questionActivities', [])
 
-  // formatting all mastery types
+  //formatting all mastery types
   const assignmentMastery = get(
     author_classboard_testActivity,
     'additionalData.assignmentMastery',
@@ -243,36 +236,36 @@ export const getChartAndStandardTableData = (
     total: questionActivities.length,
     fill: item.color,
   }))
-  const assignmentMasteryMap = keyBy(assignmentMasteryCopy, 'masteryLevel')
+  let assignmentMasteryMap = keyBy(assignmentMasteryCopy, 'masteryLevel')
 
   // contains all test standards to display
   const standardsTableData = groupBy(
     testItems.reduce((acc, item) => {
       const questions = item.data.questions
 
-      // fetching all uniq standards from questions
+      //fetching all uniq standards from questions
       const allStandards = questions.flatMap((q) => {
-        // finding all doamins from question alignment
+        //finding all doamins from question alignment
         const domains = (q.alignment || [])
           .map((ali) => ali.domains || [])
           .flat()
         const qActivity =
           questionActivities.filter((qa) => qa.qid === q.id)[0] || {}
 
-        // calculating performace percentage
+        //calculating performace percentage
         let { score = 0, maxScore } = qActivity
         if (!maxScore) {
           maxScore = q.validation?.validResponse?.score
         }
 
-        // formatting uniq standards from each domain
+        //formatting uniq standards from each domain
         return domains.flatMap((d) => {
           return (d.standards || []).map((std) => ({
             ...std,
             domain: d.name,
             question:
               typeof q.qLabel === 'string' ? q.qLabel?.substr(1) : q.qLabel,
-            performance,
+            performance: performance,
             score: round(score, 2),
             maxScore,
           }))
@@ -296,8 +289,8 @@ export const getChartAndStandardTableData = (
         )
         acc.performance = !isNaN(performance) ? performance : 0
 
-        // calculating mastery
-        const mastery = assignmentMastery.find((_item, index) => {
+        //calculating mastery
+        let mastery = assignmentMastery.find((_item, index) => {
           if (acc.performance >= _item.threshold) {
             return true
           }
@@ -320,8 +313,8 @@ export const getChartAndStandardTableData = (
   return { standardsTableData: data, chartData, assignmentMasteryMap }
 }
 
-// to return data for 'Your answer' and 'Correct Anser', as per question Type
-// Responses: 'ETI'/'CR'/<User response>
+//to return data for 'Your answer' and 'Correct Anser', as per question Type
+//Responses: 'ETI'/'CR'/<User response>
 export const formatAnswertoDisplay = (value, type, title) => {
   const matchedType = responseDisplayOption[type]
   if (matchedType) {

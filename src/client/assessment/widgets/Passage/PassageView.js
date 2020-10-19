@@ -68,7 +68,7 @@ const PassageView = ({
   clearUserWork,
   previewTab,
   passageTestItemID,
-  tabIndex,
+  widgetIndex,
   page,
   setPage,
 }) => {
@@ -77,8 +77,8 @@ const PassageView = ({
   const [selectHighlight, setSelectedHighlight] = useState(null)
   // use the userWork in author mode
   const _highlights = setHighlights
-    ? get(highlights, `[${tabIndex}]`, '')
-    : get(userWork, `[${tabIndex}]`, '')
+    ? get(highlights, `[${widgetIndex}]`, '')
+    : get(userWork, `[${widgetIndex}]`, '')
 
   const saveHistory = () => {
     let { innerHTML: highlightContent = '' } = mainContentsRef.current
@@ -91,16 +91,17 @@ const PassageView = ({
       highlightContent = highlightContent.replace(/input__math/g, '')
     }
 
-    const newHighlights = highlights || {}
     if (setHighlights) {
+      const newHighlights = highlights || {}
       // this is available only at student side
-      setHighlights({ ...newHighlights, [tabIndex]: highlightContent })
+      setHighlights({ ...newHighlights, [widgetIndex]: highlightContent })
     } else {
       // saving the highlights at author side
       // setHighlights is not available at author side
+      const newUserWork = userWork || {}
       saveUserWork({
         [passageTestItemID]: {
-          resourceId: { ...newHighlights, [tabIndex]: highlightContent },
+          resourceId: { ...newUserWork, [widgetIndex]: highlightContent },
         },
       })
     }
@@ -128,6 +129,8 @@ const PassageView = ({
     content = decodeHTML(content)
     if (isEmpty(_highlights)) {
       return content
+        ?.replace(/(<div (.*?)>)/g, '')
+        ?.replace(/(<\/div>)/g, '')
         ?.replace(/(<p>)/g, '')
         ?.replace(/(<\/p>)/g, '<br/>')
         ?.replace(/background-color: (.*?);/g, '')
@@ -208,6 +211,7 @@ const PassageView = ({
         <RefContext.Provider value={{ forwardedRef: mainContentsRef }}>
           <Stimulus
             id="mainContents"
+            className="passage-content"
             dangerouslySetInnerHTML={{ __html: content }}
             userSelect={!disableResponse}
           />

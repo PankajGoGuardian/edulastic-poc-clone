@@ -465,7 +465,6 @@ class CurriculumSequence extends Component {
       setShowRightPanel,
       toggleManageContent,
       checkPreviouslyCustomized,
-      isConfirmedCustomization,
     } = this.props
     const { authors } = destinationCurriculumSequence
     const canEdit =
@@ -480,7 +479,6 @@ class CurriculumSequence extends Component {
     // }
     const isAuthoringFlowReview = current === 'review'
     if (
-      !isConfirmedCustomization &&
       !isManageContentActive &&
       !canEdit &&
       !isStudent &&
@@ -1039,8 +1037,6 @@ const enhance = compose(
         state.curriculumSequence?.isVideoResourcePreviewModal,
       showRightPanel: state.curriculumSequence?.showRightPanel,
       customizeInDraft: state.curriculumSequence?.customizeInDraft,
-      isConfirmedCustomization:
-        state.curriculumSequence?.isConfirmedCustomization,
     }),
     {
       onGuideChange: changeGuideAction,

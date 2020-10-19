@@ -27,7 +27,6 @@ const Tags = ({
   isGrayTags,
   isCustomTags,
   flexWrap,
-  trigger = 'click',
 }) => {
   if (!tags.length) return null
 
@@ -74,7 +73,7 @@ const Tags = ({
           placement="bottomLeft"
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           content={popup}
-          trigger={trigger}
+          onClick={(e) => e.stopPropagation()}
         >
           <Label
             className={`${className} hidden-tags`}
@@ -94,14 +93,12 @@ Tags.propTypes = {
   labelStyle: PropTypes.object,
   type: PropTypes.string,
   show: PropTypes.number,
-  trigger: PropTypes.string,
 }
 
 Tags.defaultProps = {
   labelStyle: {},
   type: 'primary', // primary, secondary
   show: 2,
-  trigger: 'click',
 }
 
 export default Tags

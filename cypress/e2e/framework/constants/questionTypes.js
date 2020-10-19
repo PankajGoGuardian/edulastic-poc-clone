@@ -100,7 +100,6 @@ export const queColor = {
   BLUE_1: 'rgb(87, 107, 169)',
   BLUE_2: 'rgb(63, 132, 229)',
   BLUE_3: 'rgb(26, 115, 232)',
-  BLUE_4: 'rgb(190, 222, 255)',
   WHITE: 'rgb(255, 255, 255)',
   WHITE_1: 'rgb(248, 248, 248)',
   ORANGE: 'rgb(255, 165, 0)',
@@ -142,7 +141,6 @@ export const COLLECTION = {
   district: 'District Library',
   private: 'Private Library',
   public: 'Public Library',
-  edulastic: 'Edulastic Certified',
 }
 
 export const sortOptions = {
@@ -203,11 +201,4 @@ export const questionTypeMap = {
   'Video & Text': ['Video'],
   'Rulers & Calculators': ['Protractor'],
   Other: [],
-}
-
-export const CUSTOM_COLLECTIONS = {
-  AUTO_COLLECTION_1: '5e2af3ea1794ac07ba1c1021',
-  AUTO_COLLECTION_2: '5e2af3f41794ac07ba1c1022',
-  AUTO_COLLECTION_3: '5e2af3fe1794ac07ba1c1023',
-  AUTO_COLLECTION_4: '5e2af40a1794ac07ba1c1024',
 }

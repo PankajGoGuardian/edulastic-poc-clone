@@ -78,6 +78,7 @@ import {
   getDisableMarkAsAbsentSelector,
   getLCBStudentsList,
   getEnrollmentStatus,
+  getFirstQuestionEntitiesSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -111,6 +112,7 @@ import {
   SwitchBox,
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
+import { updateCliUserAction } from '../../../../student/Login/ducks'
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -180,7 +182,8 @@ class ClassBoard extends Component {
       match,
       studentUnselectAll,
       location,
-      isCliUser,
+      updateCliUser,
+      isCliUser: cliUserUpdated,
       history,
       setShowAllStudents,
     } = this.props
@@ -190,7 +193,11 @@ class ClassBoard extends Component {
     loadTestActivity(assignmentId, classId)
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
-    if (isCliUser) {
+    const cliUser = new URLSearchParams(window.location.search).has('cliUser')
+    if (cliUser) {
+      updateCliUser(true)
+    }
+    if (cliUserUpdated && !cliUser) {
       history.push({
         search: search ? `${search}&cliUser=true` : `?cliUser=true`,
         state,
@@ -787,7 +794,9 @@ class ClassBoard extends Component {
         messageKey: 'atleastOneStudentShouldBeSelectedToPrintResponse',
       })
     } else {
-      notification({ messageKey: 'youCanOnlyPrintAfterAssignmentBeenSubmited' })
+      notification({
+        messageKey: 'youCanOnlyPrintAfterAssignmentBeenSubmited',
+      })
     }
   }
 
@@ -851,6 +860,7 @@ class ClassBoard extends Component {
       loadTestActivity,
       isCliUser,
       isShowAllStudents,
+      firstQuestionEntities,
     } = this.props
 
     const {
@@ -895,7 +905,11 @@ class ClassBoard extends Component {
     }
     const selectedStudentsKeys = Object.keys(selectedStudents)
     const firstStudentId = get(
-      testActivity.filter((x) => !!x.testActivityId),
+      testActivity.filter(
+        (x) =>
+          x.UTASTATUS === testActivityStatus.SUBMITTED ||
+          x.UTASTATUS === testActivityStatus.START
+      ),
       [0, 'studentId'],
       false
     )
@@ -903,16 +917,14 @@ class ClassBoard extends Component {
       testActivity,
       selectedStudentId || firstStudentId
     )
-    const firstQuestionEntities = get(
-      testActivity,
-      [0, 'questionActivities'],
-      []
-    )
+
     const unselectedStudents = testActivity.filter(
       (x) => !selectedStudents[x.studentId]
     )
     const nobodyStarted = testActivity.every(
-      (activity) => activity.UTASTATUS === testActivityStatus.NOT_STARTED
+      ({ UTASTATUS }) =>
+        UTASTATUS === testActivityStatus.NOT_STARTED ||
+        UTASTATUS === testActivityStatus.ABSENT
     )
 
     const existingStudents = testActivity
@@ -973,7 +985,8 @@ class ClassBoard extends Component {
               </div>
             }
             okText="Yes, Submit"
-            canUndone
+            showConfirmationText
+            hideUndoneText
           />
         )}
         {showMarkAbsentPopup && (
@@ -1006,11 +1019,12 @@ class ClassBoard extends Component {
             placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="REMOVE"
+            hideUndoneText
             bodyText={
               <span>
                 You are about to remove the selected student(s) from this
-                assessment.Student&apos;s responses will be deleted. Do you
-                still want to proceed?
+                assignment. The selected student responses will be DELETED and
+                this action cannot be undone.
               </span>
             }
             okText="Yes, Remove"
@@ -1202,8 +1216,9 @@ class ClassBoard extends Component {
                       REDIRECT
                     </RedirectButton>
                     <Dropdown
-                      getPopupContainer={(triggerNode) =>
-                        triggerNode.parentNode}
+                      getPopupContainer={(triggerNode) => {
+                        return triggerNode.parentNode
+                      }}
                       overlay={
                         <DropMenu>
                           <FeaturesSwitch
@@ -1345,6 +1360,12 @@ class ClassBoard extends Component {
                     open={showAddStudentsPopup}
                     groupId={classId}
                     closePolicy={additionalData.closePolicy}
+                    classEndDate={
+                      additionalData.dueDate
+                        ? additionalData.dueDate
+                        : additionalData.endDate
+                    }
+                    serverTimeStamp={additionalData.ts}
                     assignmentId={assignmentId}
                     closePopup={this.handleHideAddStudentsPopup}
                     disabledList={existingStudents}
@@ -1585,10 +1606,9 @@ class ClassBoard extends Component {
                           classId: _classId,
                         } = match.params
 
-                        const {
-                          _id: qid,
-                          testItemId,
-                        } = testActivity[0].questionActivities[value]
+                        const { _id: qid, testItemId } = firstQuestionEntities[
+                          value
+                        ]
                         history.push(
                           `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
                             isCliUser ? '?cliUser=true' : ''
@@ -1660,6 +1680,7 @@ const enhance = compose(
         false
       ),
       activeAssignedStudents: getActiveAssignedStudents(state),
+      firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -1677,6 +1698,7 @@ const enhance = compose(
       markSubmitted: markSubmittedAction,
       downloadGradesResponse: downloadGradesResponseAction,
       setShowAllStudents: setShowAllStudentsAction,
+      updateCliUser: updateCliUserAction,
     }
   )
 )

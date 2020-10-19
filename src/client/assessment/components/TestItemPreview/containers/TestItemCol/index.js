@@ -2,12 +2,15 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Tabs, AnswerContext } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
-import { sortBy } from 'lodash'
+import { isEmpty, sortBy } from 'lodash'
 
 import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
 import QuestionWrapper from '../../../QuestionWrapper'
-
+import {
+  Scratchpad,
+  ScratchpadTool,
+} from '../../../../../common/components/Scratchpad'
 import { Container, WidgetContainer } from './styled/Container'
 import { MobileRightSide } from './styled/MobileRightSide'
 import { MobileLeftSide } from './styled/MobileLeftSide'
@@ -15,36 +18,11 @@ import { IconArrow } from './styled/IconArrow'
 import TabContainer from './TabContainer'
 
 class TestItemCol extends Component {
-  state = {
-    value: 0,
-  }
-
-  static propTypes = {
-    col: PropTypes.object.isRequired,
-    preview: PropTypes.string.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    showFeedback: PropTypes.bool,
-    multiple: PropTypes.bool,
-    style: PropTypes.object,
-    questions: PropTypes.object.isRequired,
-    qIndex: PropTypes.number,
-    LCBPreviewModal: PropTypes.bool.isRequired,
-    evaluation: PropTypes.object,
-    previousQuestionActivity: PropTypes.array,
-    previewTab: PropTypes.string.isRequired,
-    isDocBased: PropTypes.bool,
-    colCount: PropTypes.number.isRequired,
-    colIndex: PropTypes.number.isRequired,
-  }
-
-  static defaultProps = {
-    showFeedback: false,
-    multiple: false,
-    style: {},
-    qIndex: null,
-    previousQuestionActivity: [],
-    isDocBased: false,
-    evaluation: {},
+  constructor() {
+    super()
+    this.state = {
+      value: 0,
+    }
   }
 
   handleTabChange = (value) => {
@@ -56,13 +34,12 @@ class TestItemCol extends Component {
   renderTabContent = (
     widget,
     flowLayout,
-    itemIndex,
+    widgetIndex,
     showStackedView,
     lengthOfwidgets
   ) => {
     const {
       preview,
-      LCBPreviewModal,
       showFeedback,
       multiple,
       questions,
@@ -75,13 +52,17 @@ class TestItemCol extends Component {
       testReviewStyle = {},
       teachCherFeedBack,
       itemLevelScoring,
-      isStudentReport,
       isPassageWithQuestions,
-      isLCBView,
-      showScratchpadByDefault,
-      isStudentAttempt,
+      hasDrawingResponse,
       ...restProps
     } = this.props
+    const {
+      LCBPreviewModal,
+      isStudentAttempt,
+      isStudentReport,
+      isLCBView,
+      isFeedbackVisible,
+    } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question = questions[widget.reference]
     const prevQActivityForQuestion = previousQuestionActivity.find(
@@ -109,7 +90,6 @@ class TestItemCol extends Component {
       minHeight = '320px'
     }
 
-    // question false undefined false undefined undefined true true
     return (
       <TabContainer
         updatePositionToStore={
@@ -122,9 +102,9 @@ class TestItemCol extends Component {
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
         minHeight={minHeight}
-        itemIndex={itemIndex}
-        marginTop={itemIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
-        showBorder={!showScratchpadByDefault && isLCBView}
+        itemIndex={widgetIndex}
+        marginTop={widgetIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
+        showBorder={!hasDrawingResponse && isLCBView}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== 'resource'}
@@ -133,7 +113,7 @@ class TestItemCol extends Component {
           type={widget.type}
           view="preview"
           qIndex={qIndex}
-          itemIndex={itemIndex}
+          itemIndex={widgetIndex}
           previewTab={previewTab || preview}
           timespent={timespent}
           questionId={widget.reference}
@@ -141,7 +121,6 @@ class TestItemCol extends Component {
           noPadding
           noBoxShadow
           isFlex
-          isStudentReport={isStudentReport}
           flowLayout={flowLayout}
           prevQActivityForQuestion={prevQActivityForQuestion}
           LCBPreviewModal={LCBPreviewModal}
@@ -149,16 +128,89 @@ class TestItemCol extends Component {
           calculatedHeight={showStackedView || fullHeight ? '100%' : 'auto'}
           fullMode
           {...restProps}
-          showScratchpadByDefault={showScratchpadByDefault}
+          hasDrawingResponse={hasDrawingResponse}
           style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
-          tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
+          // widgetIndex was needed for passages if it has multiple tabs and widgets
+          widgetIndex={widgetIndex}
+          isStudentAttempt={isStudentAttempt}
+          isFeedbackVisible={isFeedbackVisible}
         />
-        {/*  on the student side, show feedback for each question only when item level scoring is off */}
+        {/* on the student side, show feedback for each question
+        only when item level scoring is off */}
         {isStudentReport &&
           !itemLevelScoring &&
           teachCherFeedBack(widget, null, null, showStackedView)}
       </TabContainer>
     )
+  }
+
+  get readyOnlyScratchpad() {
+    const { isLCBView, isStudentReport, LCBPreviewModal } = this.props
+    const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
+
+    return readyOnlyScratchpad
+  }
+
+  get showScratchpad() {
+    const {
+      hasDrawingResponse,
+      scratchPadMode,
+      colIndex,
+      colCount,
+      col,
+      isPrintPreview,
+      isLCBView,
+      isStudentAttempt,
+      isExpressGrader,
+      userWork: scratchpadData,
+      disableResponse: isAnswerModifiable,
+    } = this.props
+    const widgets =
+      (col?.tabs && !!col?.tabs?.length && isPrintPreview
+        ? sortBy(col?.widgets, ['tabIndex'])
+        : col?.widgets) || []
+    const hasResourceTypeQuestion = widgets.find(
+      (item) => item && item.widgetType === 'resource'
+    )
+    const shouldHideScratchpad = isLCBView && !!hasResourceTypeQuestion
+    // only show scratchpad in right panel and signle panel
+    let showScratchpad =
+      (scratchPadMode && colIndex === 1 && colCount > 1) ||
+      (scratchPadMode && colCount === 1)
+    // for drawing response, will render scratchpad in question component
+    showScratchpad =
+      showScratchpad && !shouldHideScratchpad && !hasDrawingResponse
+
+    // teacher view (LCB, ExpressGrader, etc)
+    if (!isStudentAttempt && showScratchpad) {
+      if (isExpressGrader && !isAnswerModifiable) {
+        // in ExpressGrade modal with editing response on,
+        // we will show scratchpad even though there is no data
+        return showScratchpad
+      }
+      // render scratchpad only if there is data.
+      return !isEmpty(scratchpadData)
+    }
+
+    // student view
+    return showScratchpad
+  }
+
+  get showScratchToolBar() {
+    const {
+      hasDrawingResponse,
+      scratchPadMode,
+      LCBPreviewModal,
+      disableResponse,
+      isExpressGrader,
+    } = this.props
+    let showScratchToolBar =
+      (scratchPadMode && !LCBPreviewModal && !hasDrawingResponse) ||
+      (!disableResponse && isExpressGrader && !hasDrawingResponse)
+    showScratchToolBar =
+      this.showScratchpad && showScratchToolBar && !this.readyOnlyScratchpad
+
+    return showScratchToolBar
   }
 
   render() {
@@ -168,23 +220,22 @@ class TestItemCol extends Component {
       windowWidth,
       colCount,
       colIndex,
-      testReviewStyle = {},
       isPassageWithQuestions,
+      colWidth,
+      userWork,
+      saveUserWork,
       ...restProps
     } = this.props
     const { value } = this.state
     const {
       showStackedView,
-      fullHeight,
-      isSingleQuestionView,
+      scratchpadDimensions,
       isPrintPreview,
+      isStudentAttempt,
+      isExpressGrader,
+      isStudentReport,
     } = restProps
-    const derivedWidth = showStackedView || isSingleQuestionView ? '100%' : null
-    const width = derivedWidth
-      ? '100%'
-      : restProps.showFeedback && colCount > 1 && colIndex === colCount - 1
-      ? `calc(${col?.dimension || '100%'} + 280px)`
-      : col?.dimension || 'auto'
+
     const widgets =
       (col?.tabs && !!col?.tabs?.length && isPrintPreview
         ? sortBy(col?.widgets, ['tabIndex'])
@@ -192,21 +243,18 @@ class TestItemCol extends Component {
 
     return (
       <Container
+        style={style}
+        value={value}
+        colWidth={colWidth}
+        showScratchpad={this.showScratchpad}
+        isStudentAttempt={isStudentAttempt}
+        isExpressGrader={isExpressGrader}
+        isStudentReport={isStudentReport}
         className={`test-item-col ${
           col?.tabs?.length ? 'test-item-tab-container' : ''
         }`}
-        value={value}
-        style={style}
-        width={width}
-        height={fullHeight ? '100%' : 'auto'}
-        showStackedView={showStackedView}
-        colCount={colCount}
-        hasCollapseButtons={
-          ['studentReport', 'studentPlayer'].includes(
-            restProps.viewComponent
-          ) && restProps.showCollapseBtn
-        }
       >
+        {this.showScratchToolBar && <ScratchpadTool />}
         {!isPrintPreview && (
           <>
             {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
@@ -243,14 +291,7 @@ class TestItemCol extends Component {
               )}
           </>
         )}
-        <WidgetContainer
-          data-cy="widgetContainer"
-          style={{
-            ...testReviewStyle,
-            height: showStackedView || fullHeight ? '100%' : 'auto',
-            alignItems: fullHeight && 'flex-start',
-          }}
-        >
+        <WidgetContainer data-cy="widgetContainer">
           {widgets
             .filter((widget) => widget.type !== questionType.SECTION_LABEL)
             .map((widget, i, arr) => (
@@ -287,10 +328,48 @@ class TestItemCol extends Component {
                   )}
               </React.Fragment>
             ))}
+          {this.showScratchpad && (
+            <Scratchpad
+              hideTools
+              data={userWork}
+              saveData={saveUserWork}
+              readOnly={this.readyOnlyScratchpad}
+              conatinerWidth={colWidth}
+              dimensions={scratchpadDimensions}
+            />
+          )}
         </WidgetContainer>
       </Container>
     )
   }
+}
+
+TestItemCol.propTypes = {
+  col: PropTypes.object.isRequired,
+  preview: PropTypes.string.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  showFeedback: PropTypes.bool,
+  multiple: PropTypes.bool,
+  style: PropTypes.object,
+  questions: PropTypes.object.isRequired,
+  qIndex: PropTypes.number,
+  LCBPreviewModal: PropTypes.bool.isRequired,
+  evaluation: PropTypes.object,
+  previousQuestionActivity: PropTypes.array,
+  previewTab: PropTypes.string.isRequired,
+  isDocBased: PropTypes.bool,
+  colCount: PropTypes.number.isRequired,
+  colIndex: PropTypes.number.isRequired,
+}
+
+TestItemCol.defaultProps = {
+  showFeedback: false,
+  multiple: false,
+  style: {},
+  qIndex: null,
+  previousQuestionActivity: [],
+  isDocBased: false,
+  evaluation: {},
 }
 
 TestItemCol.contextType = AnswerContext

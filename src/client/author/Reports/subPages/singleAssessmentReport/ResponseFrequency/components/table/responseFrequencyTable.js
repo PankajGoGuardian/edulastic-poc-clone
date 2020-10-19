@@ -52,24 +52,22 @@ export const ResponseFrequencyTable = ({
   }
 
   columns[4].sorter = (a, b) => {
-    const aSum =
-      (a.corr_cnt || 0) +
-      (a.incorr_cnt || 0) +
-      (a.skip_cnt || 0) +
-      (a.part_cnt || 0)
-    const bSum =
-      (b.corr_cnt || 0) +
-      (b.incorr_cnt || 0) +
-      (b.skip_cnt || 0) +
-      (b.part_cnt || 0)
-    const aCorrectP = ((a.corr_cnt / aSum) * 100).toFixed(0)
-    const bCorrectP = ((b.corr_cnt / bSum) * 100).toFixed(0)
-    return (aCorrectP || 0) - (bCorrectP || 0)
+    return a.total_score * b.total_max_score - b.total_score * a.total_max_score
   }
   columns[4].render = (data, record) => {
     const tooltipText = (rec) => () => {
-      const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = rec
+      const {
+        corr_cnt = 0,
+        incorr_cnt = 0,
+        skip_cnt = 0,
+        part_cnt = 0,
+        total_score = 0,
+        total_max_score = 0,
+      } = rec
       const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt
+      const averagePerformance = total_max_score
+        ? Math.round((total_score / total_max_score) * 100)
+        : 0
       return (
         <div>
           <Row type="flex" justify="start">
@@ -97,7 +95,7 @@ export const ResponseFrequencyTable = ({
           <Row type="flex" justify="start">
             <Col className="custom-table-tooltip-key">Performance: </Col>
             <Col className="custom-table-tooltip-value">
-              {Math.round((corr_cnt / sum) * 100)}%
+              {averagePerformance}%
             </Col>
           </Row>
           <Row type="flex" justify="start">
@@ -136,14 +134,13 @@ export const ResponseFrequencyTable = ({
       )
     }
 
-    const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record
-    const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt
-    let correct = ((corr_cnt / sum) * 100).toFixed(0)
-    if (isNaN(correct)) correct = 0
-
+    const { total_score = 0, total_max_score = 0 } = record
+    const averagePerformance = total_max_score
+      ? Math.round((total_score / total_max_score) * 100)
+      : 0
     return (
       <CustomTableTooltip
-        correct={correct}
+        correct={averagePerformance}
         correctThreshold={correctThreshold}
         placement="top"
         title={tooltipText(record)}
@@ -208,7 +205,7 @@ export const ResponseFrequencyTable = ({
         let isCorrect = true
         for (const key of slittedKeyArr) {
           for (let i = 0; i < record.options.length; i++) {
-            // IMPORTANT: double == instead of === cuz we need to compare number keys with string keys
+            // NOTE: comparison of number keys with string keys
             if (record.options[i].value == key) {
               str += numToAlp[i]
               const tmp = find(record.validation, (vstr) => key == vstr)

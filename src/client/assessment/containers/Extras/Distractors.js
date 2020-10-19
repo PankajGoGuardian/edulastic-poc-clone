@@ -59,7 +59,8 @@ const Distractors = ({
               onAdd={_add}
               onRemove={_remove}
               onChange={(index, e) =>
-                _change(`metadata.${prop}[${index}]`, e.target.value)}
+                _change(`metadata.${prop}[${index}]`, e.target.value)
+              }
             />
           </Col>
         </StyledRow>

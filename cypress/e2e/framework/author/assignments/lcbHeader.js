@@ -1,5 +1,3 @@
-import CypressHelper from '../../util/cypressHelpers'
-
 export default class LCBHeader {
   // *** ELEMENTS START ***
 
@@ -80,9 +78,15 @@ export default class LCBHeader {
   }
 
   clickOnUnassign = () => {
+    cy.server()
+    cy.route('DELETE', '**/assignments/**').as('unassign')
     this.getDropDown().click({ force: true })
     cy.get('[data-cy="unAssign"]').click({ force: true })
-    CypressHelper.unassignCommonActions()
+    this.getConfirmationInput().type('UNASSIGN')
+    this.submitConfirmationInput()
+    cy.wait('@unassign').then((xhr) =>
+      assert(xhr.status === 200, `verify close request ${xhr.status}`)
+    )
   }
 
   clickOnMarkAsDone = () => {

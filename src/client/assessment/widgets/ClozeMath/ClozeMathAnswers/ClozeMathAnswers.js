@@ -88,7 +88,7 @@ const ClozeMathAnswers = ({
     }
 
     newItem.validation.altResponses.push({
-      score: 1,
+      score: newItem?.validation?.validResponse?.score,
       value: mathValidAnswers,
       textinput: { value: inputValidAnswers },
       dropdown: { value: dropdownValidAnswers },
@@ -513,7 +513,7 @@ const ClozeMathAnswers = ({
       points={
         correctTab === 0
           ? get(item, 'validation.validResponse.score', 1)
-          : get(item, `validation.altResponses[${correctTab - 1}].score`, 1)
+          : get(item, `validation.altResponses[${correctTab - 1}].score`)
       }
       fillSections={fillSections}
       cleanSections={cleanSections}

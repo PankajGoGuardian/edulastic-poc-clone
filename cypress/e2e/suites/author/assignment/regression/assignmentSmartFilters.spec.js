@@ -1,6 +1,5 @@
 import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
 import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
-import { FolderPage } from '../../../../framework/author/folderPage'
 import TeacherSideBar from '../../../../framework/author/SideBarPage'
 import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
 import {
@@ -8,14 +7,12 @@ import {
   teacherSide,
   testTypes,
 } from '../../../../framework/constants/assignmentStatus'
-import CypressHelper from '../../../../framework/util/cypressHelpers'
 import FileHelper from '../../../../framework/util/fileHelper'
 
 const teacherSidebar = new TeacherSideBar()
 const authorAssignmentPage = new AuthorAssignmentPage()
 const lcb = new LiveClassboardPage()
 const testLibrary = new TestLibrary()
-const folderPage = new FolderPage()
 const { _ } = Cypress
 
 const classes = {
@@ -240,63 +237,55 @@ describe(`${FileHelper.getSpecName(
       teacherSidebar.clickOnDashboard()
       teacherSidebar.clickOnAssignment()
       authorAssignmentPage.smartFilter.expandFilter()
-      folderPage.getAllAssignment().then(() => {
-        folderPage.deleteAllFolders()
-        folderPage.clickAddNewFolderButton()
-        folderPage.setNewFolderName(folders[2])
-        folderPage.clickCreateNewFolderBuuton(folders[2])
+      cy.contains('ALL ASSIGNMENTS').then(() => {
+        // delete residue folders
+        if (Cypress.$(`[data-cy="${folders[1]}"]`).length > 0)
+          authorAssignmentPage.smartFilter.deleteFolder(`${folders[1]}`)
+        if (Cypress.$(`[data-cy="${folders[1]}-rename"]`).length > 0)
+          authorAssignmentPage.smartFilter.deleteFolder(`${folders[1]}-rename`)
+        if (Cypress.$(`[data-cy="${folders[3]}"]`).length > 0)
+          authorAssignmentPage.smartFilter.deleteFolder(`${folders[3]}`)
+        if (Cypress.$(`[data-cy="${folders[2]}"]`).length === 0)
+          authorAssignmentPage.smartFilter.createNewFolder(folders[2])
       })
     })
 
     it(`create new folder`, () => {
-      folderPage.clickAddNewFolderButton()
-      folderPage.setNewFolderName(folders[1])
-      folderPage.clickCreateNewFolderBuuton(folders[1])
+      authorAssignmentPage.smartFilter.createNewFolder(folders[1])
     })
 
     it(`rename empty folder`, () => {
-      folderPage.clickOnMoreOptionsByFolderName(folders[1])
-      folderPage.clickRenameFolder()
-      folderPage.setNewFolderName(`${folders[1]}-rename`)
-      folderPage.clickUpdateFolder(`${folders[1]}-rename`)
+      authorAssignmentPage.smartFilter.renameFolder(
+        folders[1],
+        `${folders[1]}-rename`
+      )
     })
 
     it(`delete empty folder`, () => {
-      folderPage.clickOnMoreOptionsByFolderName(`${folders[1]}-rename`)
-      folderPage.clickDeleteFolderInDropDown()
-      folderPage.clickDeleteFolder(`${folders[1]}-rename`)
+      authorAssignmentPage.smartFilter.deleteFolder(`${folders[1]}-rename`)
     })
 
     it(`rename to existing folder`, () => {
-      folderPage.clickAddNewFolderButton()
-      folderPage.setNewFolderName(folders[3])
-      folderPage.clickCreateNewFolderBuuton(folders[3])
-
-      folderPage.clickOnMoreOptionsByFolderName(folders[3])
-      folderPage.clickRenameFolder()
-
-      folderPage.setNewFolderName(folders[3])
-      folderPage.clickUpdateFolder(`${folders[3]}`, false)
+      authorAssignmentPage.smartFilter.createNewFolder(folders[3])
+      authorAssignmentPage.smartFilter.renameFolder(
+        folders[2],
+        folders[3],
+        false
+      )
     })
 
     it(`move assignment to folder`, () => {
       // select folder 2 before move
-      folderPage.clickOnFolderByName(folders[2])
+      authorAssignmentPage.smartFilter.clickOnFolderByName(folders[2])
       authorAssignmentPage.getClass().should('have.length', 0)
 
-      folderPage.clickOnAllAssignment()
+      authorAssignmentPage.smartFilter.clickOnAllAssignment()
       authorAssignmentPage.selectCheckBoxByTestName(testName)
-
-      folderPage.clickAddToFolderInDropDown()
-      CypressHelper.removeAllAntMessages()
-
-      folderPage.addToFolderByFolderName(folders[2])
-      CypressHelper.verifyAntMesssage(
-        `${testName} successfully moved to "${folders[2]}"`
-      )
+      authorAssignmentPage.smartFilter.moveToFolder(folders[2])
+      // authorAssignmentPage.selectCheckBoxByTestName(testName);
 
       // select all folder
-      folderPage.clickOnAllAssignment()
+      authorAssignmentPage.smartFilter.clickOnAllAssignment()
       authorAssignmentPage
         .getClass()
         .should('contain.text', classes[1].className)
@@ -304,7 +293,7 @@ describe(`${FileHelper.getSpecName(
         .and('have.length', 4)
 
       // select folder 2
-      folderPage.clickOnFolderByName(folders[2])
+      authorAssignmentPage.smartFilter.clickOnFolderByName(folders[2])
       authorAssignmentPage
         .getClass()
         .should('contain.text', classes[1].className)
@@ -312,33 +301,12 @@ describe(`${FileHelper.getSpecName(
         .and('have.length', 4)
     })
 
-    it(`move assignment to already moved folder`, () => {
-      folderPage.clickOnAllAssignment()
-      authorAssignmentPage.selectCheckBoxByTestName(testName)
-
-      folderPage.clickAddToFolderInDropDown()
-      folderPage.selectFolderByNameInPopUp(folders[2])
-
-      CypressHelper.removeAllAntMessages()
-      folderPage.getAddButtonInPopUp().click({ force: true })
-      CypressHelper.verifyAntMesssage(
-        `${testName} already exist in ${folders[2]} folder`
-      )
-    })
-
     // Should be able to delete used folder as per - EV-15966
     it(`delete used folder`, () => {
-      folderPage.clickCancelButtonInPopUp()
-      folderPage.clickOnMoreOptionsByFolderName(folders[2])
-      folderPage.clickDeleteFolderInDropDown()
-
-      cy.contains(
-        `${folders[2]} will get deleted but all tests will remain untouched. The tests can still be accessed from All Assignments.`
-      ).should('be.visible')
-      folderPage.clickDeleteFolder(folders[2])
+      authorAssignmentPage.smartFilter.deleteFolder(`${folders[2]}`)
 
       // assignments should be available in all assingment
-      folderPage.clickOnAllAssignment()
+      authorAssignmentPage.smartFilter.clickOnAllAssignment()
       authorAssignmentPage
         .getClass()
         .should('contain.text', classes[1].className)

@@ -70,7 +70,8 @@ const ClassSelector = ({
         <Select
           value={currentGroup}
           getPopupContainer={() =>
-            document.getElementById('class-dropdown-wrapper')}
+            document.getElementById('class-dropdown-wrapper')
+          }
           onChange={(value) => {
             changeClass(value)
           }}

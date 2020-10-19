@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-curly-newline */
 import { tabletWidth, white, themeColor } from '@edulastic/colors'
 import { MainHeader, EduButton, notification } from '@edulastic/common'
 import { roleuser, test as testConstants } from '@edulastic/constants'
@@ -20,7 +19,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
-import { get } from 'lodash'
 import {
   getUserFeatures,
   getUserId,
@@ -162,7 +160,6 @@ const TestPageHeader = ({
   playlistHasDraftTests,
   isCurator,
   hasCollectionAccess,
-  loadingComponents,
 }) => {
   let navButtons =
     buttons ||
@@ -181,8 +178,7 @@ const TestPageHeader = ({
   const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
 
   useEffect(() => {
-    /* TODO: As this component used also in playlist page, please call below api 
-    conditionally if no purpose of calling assignments list. */
+    // TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
     if (!creating && match?.params?.oldId) {
       fetchAssignments({
         testId: match?.params?.oldId,
@@ -321,7 +317,10 @@ const TestPageHeader = ({
       (test?.testContentVisibility === testContentVisibilityOptions.HIDDEN ||
         test?.testContentVisibility === testContentVisibilityOptions.GRADING)
     ) {
-      return notification({ type: 'warn', messageKey: 'viewOfItemsRestricted' })
+      return notification({
+        type: 'warn',
+        messageKey: 'viewOfItemsRestricted',
+      })
     }
     setShowPrintOptionPopup(true)
   }
@@ -468,11 +467,8 @@ const TestPageHeader = ({
                   data-cy="save"
                   onClick={onSave}
                   disabled={disableButtons}
-                  loading={loadingComponents.includes('saveButton')}
                 >
-                  {!loadingComponents.includes('saveButton') && (
-                    <IconDiskette />
-                  )}
+                  <IconDiskette />
                 </EduButton>
               )}
             {showShareButton &&
@@ -773,7 +769,6 @@ const enhance = compose(
       isLoadingData: shouldDisableSelector(state),
       testItems: getTestItemsSelector(state),
       isCurator: getIsCurator(state),
-      loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
     }),
     {
       publishForRegrade: publishForRegradeAction,

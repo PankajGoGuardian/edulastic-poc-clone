@@ -15,7 +15,7 @@ import {
   googleSSOLoginAction,
   cleverSSOLoginAction,
   msoSSOLoginAction,
-  classlinkSSOLoginAction,
+  atlasSSOLoginAction,
   googleLoginAction,
   getUserDataAction,
 } from '../Login/ducks'
@@ -27,7 +27,7 @@ class SsoLogin extends React.Component {
       googleSSOLogin,
       cleverSSOLogin,
       msoSSOLogin,
-      classlinkSSOLogin,
+      atlasSSOLogin,
     } = this.props
     const { addAccount, addAccountTo } = JSON.parse(
       sessionStorage.getItem('addAccountDetails') || '{}'
@@ -47,6 +47,10 @@ class SsoLogin extends React.Component {
       localStorage.removeItem('payloadForUserData')
     }
 
+    if (localStorage.getItem('thirdPartySignOnAdditionalRole') === "admin") {
+      payload.isAdmin = true
+    }
+
     if (path.includes('mso')) {
       msoSSOLogin(payload)
     } else if (path.includes('google')) {
@@ -58,7 +62,7 @@ class SsoLogin extends React.Component {
     } else if (path.includes('atlas')) {
       const state = qs.parse(location.search)?.state
       if (state) payload.state = JSON.parse(state)
-      classlinkSSOLogin(payload)
+      atlasSSOLogin(payload)
     }
   }
 
@@ -110,7 +114,7 @@ const enhance = compose(
       googleSSOLogin: googleSSOLoginAction,
       cleverSSOLogin: cleverSSOLoginAction,
       msoSSOLogin: msoSSOLoginAction,
-      classlinkSSOLogin: classlinkSSOLoginAction,
+      atlasSSOLogin: atlasSSOLoginAction,
       googleLogin: googleLoginAction,
       getUserData: getUserDataAction,
     }

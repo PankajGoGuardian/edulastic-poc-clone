@@ -4,7 +4,7 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, round } from 'lodash'
+import { get, round, isEqual } from 'lodash'
 import { IconClockCircularOutline } from '@edulastic/icons'
 
 import { withNamespaces } from '@edulastic/localization'
@@ -376,6 +376,32 @@ class QuestionWrapper extends Component {
     return userRole === 'teacher' && ttsUserIds.includes(key)
   }
 
+  shouldComponentUpdate(prevProps) {
+    const {
+      data: prevData,
+      windowWidth: prevWindowWidth,
+      windowHeight: prevWindowHeight,
+    } = prevProps
+    const {
+      data,
+      isLCBView,
+      isExpressGrader,
+      windowWidth,
+      windowHeight,
+    } = this.props
+    if (
+      isLCBView &&
+      !isExpressGrader &&
+      data?.activity &&
+      isEqual(prevData?.activity, data?.activity) &&
+      prevWindowHeight === windowHeight &&
+      prevWindowWidth === windowWidth
+    ) {
+      return false
+    }
+    return true
+  }
+
   render() {
     const {
       noPadding,
@@ -397,20 +423,15 @@ class QuestionWrapper extends Component {
       advancedAreOpen,
       userRole,
       disableResponse,
-      isStudentReport,
       showStudentWork,
-      LCBPreviewModal,
       showUserTTS,
       selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
       scrollContainer,
       loadScratchPad,
-      isQuestionView,
-      isExpressGrader,
       saveHintUsage,
       theme,
-      isLCBView,
       isGrade,
       enableMagnifier,
       playerSkinType = test.playerSkinValues.edulastic,
@@ -420,6 +441,12 @@ class QuestionWrapper extends Component {
       isItemsVisible,
       ...restProps
     } = this.props
+    const {
+      isExpressGrader,
+      isStudentReport,
+      isLCBView,
+      LCBPreviewModal,
+    } = restProps
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
     const { main, advanced, activeTab, page } = this.state
@@ -538,7 +565,7 @@ class QuestionWrapper extends Component {
           )}
           <div
             className="__print-question-main-wrapper"
-            style={{ height: '100%' }}
+            style={{ height: !isStudentReport && '100%' }}
           >
             <QuestionContainer
               className={`fr-view question-container question-container-id-${data.id}`}
@@ -584,7 +611,7 @@ class QuestionWrapper extends Component {
                   boxShadow: 'none',
                   paddingRight: layoutType === COMPACT ? '100px' : null,
                   border:
-                    isLCBView && !restProps.showScratchpadByDefault
+                    isLCBView && !restProps.hasDrawingResponse
                       ? '1px solid #DADAE4'
                       : null,
                 }}
@@ -622,7 +649,7 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                   />
-                  {!restProps.showScratchpadByDefault &&
+                  {!restProps.hasDrawingResponse &&
                     showFeedback &&
                     !isPrintPreview && (
                       <>

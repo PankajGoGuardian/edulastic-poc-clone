@@ -11,6 +11,7 @@ import {
   smallDesktopWidth,
   inputBorder,
   whiteSmoke,
+  themeColorBlue,
 } from '@edulastic/colors'
 
 const getBackground = ({ selected, checked, correct }) =>
@@ -23,6 +24,11 @@ export const QuestionChunk = styled.div`
   min-width: 150px;
   &:not(:last-child) {
     margin-bottom: 5px;
+  }
+
+  &:focus {
+    outline: 3px solid ${themeColorBlue};
+    outline-style: dashed;
   }
 
   .ant-radio-wrapper {
@@ -54,6 +60,10 @@ export const QuestionOption = styled.span`
     margin-right: 4px;
   }
   font-weight: bold;
+  &:focus {
+    outline: 3px solid ${themeColorBlue};
+    outline-style: dashed;
+  }
   @media (min-width: ${extraDesktopWidthMax}) {
     min-width: 32px;
     height: 32px;

@@ -187,7 +187,6 @@ export const PaginationWrapper = styled(Pagination)`
   padding: ${(props) => (props.type === 'tile' ? '20px 0' : '24px 32px')};
   padding-right: 55px;
   text-align: right;
-  margin-right: 20px;
 `
 
 export const StyleChangeWrapper = styled.div`

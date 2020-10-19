@@ -228,9 +228,9 @@ class SummaryBoard extends Component {
                 <ListContainer>
                   {commonMistakes.map((cm, index) => (
                     <MistakesListItem key={index}>
-                      <MistakesTitle>{`Q${index + 1} (N-RN.${
-                        index + 1
-                      })`}</MistakesTitle>
+                      <MistakesTitle>
+                        {`Q${index + 1} (N-RN.${index + 1})`}
+                      </MistakesTitle>
                       <MistakesValue>
                         {cm.wrong}
                         <img src={GraduateStudentIcon} alt="Student" />

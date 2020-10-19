@@ -1,17 +1,16 @@
-import {
-  greyThemeDark1,
-  themeColorLighter,
-  titleColor,
-} from '@edulastic/colors'
-import { round } from 'lodash'
-import moment from 'moment'
 import React, { useState } from 'react'
-import { Cell, Pie, PieChart, Sector } from 'recharts'
+import moment from 'moment'
 import styled from 'styled-components'
 import {
-  GraphDescription,
-  StyledProgress,
+  themeColorLighter,
+  greyThemeDark1,
+  titleColor,
+} from '@edulastic/colors'
+import { PieChart, Pie, Sector, Cell } from 'recharts'
+import {
   StyledProgressDiv,
+  StyledProgress,
+  GraphDescription,
 } from '../../../ClassBoard/components/ProgressGraph/styled'
 
 const renderActiveShape = (props) => {
@@ -95,19 +94,13 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
   let chartData = data?.filter(
     (ele) => ele?.tSpent !== 0 && !(ele?.hidden && isStudent)
   )
-  let percentCoverInPie = 0
 
   // find maxSliceIndex and set value = tSpent
   chartData = chartData?.map((ele, idx) => {
-    percentCoverInPie = round((ele.tSpent * 100) / totalTimeSpent)
     if (ele.tSpent > chartData[maxSliceIndex].tSpent) {
       maxSliceIndex = idx
     }
-    return {
-      ...ele,
-      value: ele?.tSpent,
-      showLabel: percentCoverInPie > 1,
-    }
+    return { ...ele, value: ele?.tSpent }
   })
 
   return chartData.length ? (
@@ -123,11 +116,11 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
           cy={130}
           innerRadius={60}
           outerRadius={78}
+          label={({ name }) => name}
           isAnimationActive={false} // Tradeoff: to show labels -  https://github.com/recharts/recharts/issues/929
           onMouseEnter={onPieEnter}
           onMouseLeave={() => setDefaultTimeSpent(true)}
           showTotalTime={showTotalTime}
-          label={({ name, showLabel }) => (showLabel ? name : null)}
         >
           {chartData?.map((m, dataIndex) => (
             <Cell

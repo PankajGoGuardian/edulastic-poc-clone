@@ -1,4 +1,4 @@
-import { Paper } from '@edulastic/common'
+import { FlexContainer, Paper } from '@edulastic/common'
 import {
   mobileWidth,
   themeColor,
@@ -32,8 +32,6 @@ export const ContentWrapper = styled.div`
 `
 
 export const TestItemCount = styled.div`
-  margin-left: 32px;
-  margin-bottom: 4px;
   color: ${title};
   font-size: 10px;
   font-weight: ${({ theme }) => theme.semiBold};
@@ -43,30 +41,29 @@ export const PassageNavigation = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 22px; // toggler width
   font-size: 11px;
   color: ${linkColor};
+
   .ant-pagination {
     margin: 0 10px;
-    &li {
-      .ant-pagination-item a {
-        color: ${linkColor};
+    .ant-pagination {
+      &-item,
+      &-prev,
+      &-next,
+      &-jump-prev,
+      &-jump-next {
+        height: 30px;
+        line-height: 30px;
       }
     }
-  }
-  .ant-btn {
-    box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-    margin-right: 10px;
-    border-radius: 4px;
-    color: ${themeColor};
-    height: 29px;
-    width: 75px;
-    font-size: 11px;
+    .anticon {
+      vertical-align: -0.12em;
+    }
   }
 `
 
-export const AddRemoveButtonWrapper = styled.div`
-  margin-left: 4px;
+export const AddRemoveButtonWrapper = styled(FlexContainer)`
+  margin-left: 0px;
 `
 
 export const ItemDetailWrapper = styled.div`

@@ -14,7 +14,7 @@ import { EduButton, SpinLoader, notification } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'
 
 import CsvTable from '../../../common/components/tables/CsvTable'
-import { StyledH3, StyledCard } from '../../../common/styled'
+import { StyledH3, StyledCard, NoDataContainer } from '../../../common/styled'
 import {
   UpperContainer,
   StyledDropDownContainer,
@@ -63,6 +63,7 @@ const PerformanceByStudents = ({
   filters,
   t,
   customStudentUserId,
+  isCliUser,
 }) => {
   const bandInfo =
     performanceBandProfiles.find(
@@ -214,6 +215,10 @@ const PerformanceByStudents = ({
     }
   }
 
+  if (settings.selectedTest && !settings.selectedTest.key) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
+  }
+
   return (
     <>
       {loading ? (
@@ -278,23 +283,25 @@ const PerformanceByStudents = ({
                 xl={12}
                 className="dropdown-container"
               >
-                <FeaturesSwitch
-                  inputFeatures="studentGroups"
-                  actionOnInaccessible="hidden"
-                >
-                  <StyledDropDownContainer>
-                    <EduButton
-                      style={{
-                        height: '31px',
-                        padding: '0 15px 0 10px',
-                        marginRight: '5px',
-                      }}
-                      onClick={handleAddToGroupClick}
-                    >
-                      <IconPlusCircle /> Add To Student Group
-                    </EduButton>
-                  </StyledDropDownContainer>
-                </FeaturesSwitch>
+                {!isCliUser && (
+                  <FeaturesSwitch
+                    inputFeatures="studentGroups"
+                    actionOnInaccessible="hidden"
+                  >
+                    <StyledDropDownContainer>
+                      <EduButton
+                        style={{
+                          height: '31px',
+                          padding: '0 15px 0 10px',
+                          marginRight: '5px',
+                        }}
+                        onClick={handleAddToGroupClick}
+                      >
+                        <IconPlusCircle /> Add To Student Group
+                      </EduButton>
+                    </StyledDropDownContainer>
+                  </FeaturesSwitch>
+                )}
                 <StyledDropDownContainer>
                   <ControlDropDown
                     prefix="Proficiency Band - "

@@ -268,7 +268,7 @@ describe(`${FileHelper.getSpecName(
         question.getResponsesBox()
       })
 
-      it(' > Check Transparent possible responses option', () => {
+      it(' > Check/uncheck Transparent possible responses', () => {
         question.getTransparentResponse().click({ force: true })
       })
 
@@ -583,7 +583,7 @@ describe(`${FileHelper.getSpecName(
         question.getResponsesBox()
       })
 
-      it(' > Check Transparent possible responses option', () => {
+      it(' > Check/uncheck Transparent possible responses', () => {
         question.getTransparentResponse().click({ force: true })
       })
 

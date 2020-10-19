@@ -37,15 +37,11 @@ class ItemListPage {
   getTagsById = (id) =>
     this.getItemContainerInlistById(id).find(`[class="Tags"]`).last()
 
-  getHiddenStandards = (id) => {
-    this.getItemContainerInlistById(id).then(($ele) => {
-      if (Cypress.$($ele).find('.hidden-tags').length > 0)
-        cy.wrap($ele)
-          .find('.hidden-tags')
-          .click({ force: true })
-          .then(() => cy.wait(500))
-    })
-  }
+  getHiddenStandards = (id) =>
+    this.getItemContainerInlistById(id)
+      .find('.ant-dropdown-trigger')
+      .trigger('mouseover')
+      .then(() => cy.wait(1000))
 
   getAllItemsInListContainer = () => cy.get('.fr-view')
 
@@ -259,19 +255,16 @@ class ItemListPage {
     let qType
     switch (key) {
       case queTypes.MULTIPLE_CHOICE_MULTIPLE:
-        qType = 'Multiple Choice'
+        qType = 'Multiple choice - multiple response'
         break
       case queTypes.ESSAY_RICH:
         qType = 'Essay with rich text'
         break
       case queTypes.CLOZE_DROP_DOWN:
-        qType = 'Text Drop Down'
+        qType = 'Cloze with Drop Down'
         break
       case queTypes.CLOZE_DRAG_DROP:
-        qType = 'Drag & Drop'
-        break
-      case queTypes.CHOICE_MATRIX_STANDARD:
-        qType = 'Matching Table'
+        qType = 'Cloze with Drag & Drop'
         break
       default:
         assert.fail(1, 2, 'failed to match que type key in question card')
@@ -287,16 +280,13 @@ class ItemListPage {
         qType = 'Multiple Choice'
         break
       case queTypes.ESSAY_RICH:
-        qType = 'Essay'
+        qType = 'Essay Rich Text'
         break
       case queTypes.CLOZE_DROP_DOWN:
-        qType = 'Text Drop Down'
+        qType = 'Cloze Drop Down'
         break
       case queTypes.CLOZE_DRAG_DROP:
-        qType = 'Drag & Drop'
-        break
-      case queTypes.CHOICE_MATRIX_STANDARD:
-        qType = 'Matching Table'
+        qType = 'Cloze Drag Drop'
         break
       default:
         assert.fail(1, 2, 'failed to match que type key in question drop down')
@@ -317,15 +307,7 @@ class ItemListPage {
   verifyQuestionTypeAllItemsInCurrentPage = (qType) => {
     const queType = this.mapQueTypeKeyToUITextInItemCard(qType)
     this.getAllItemsInListContainer().each(($ele) => {
-      cy.wrap($ele)
-        .find('[data-cy="ques-type"]')
-        .first()
-        .should((ele) =>
-          expect(
-            ele.text(),
-            `question type expected is ${qType} or 'passage'`
-          ).to.be.oneOf([queType, 'PASSAGE', 'MULTIPART'])
-        )
+      cy.wrap($ele).find('[data-cy="ques-type"]').should('have.text', queType)
     })
   }
 

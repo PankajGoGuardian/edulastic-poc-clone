@@ -35,7 +35,8 @@ class ResponseContainers extends Component {
                   size="large"
                   value={container.widthpx || 0}
                   onChange={(e) =>
-                    onChange({ index, prop: 'widthpx', value: +e.target.value })}
+                    onChange({ index, prop: 'widthpx', value: +e.target.value })
+                  }
                 />
               </Col>
               <Col md={12}>
@@ -49,7 +50,8 @@ class ResponseContainers extends Component {
                       index,
                       prop: 'heightpx',
                       value: +e.target.value,
-                    })}
+                    })
+                  }
                 />
               </Col>
             </Row>

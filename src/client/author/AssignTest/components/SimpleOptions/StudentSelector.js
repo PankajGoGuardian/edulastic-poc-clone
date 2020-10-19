@@ -104,7 +104,8 @@ const StudentsSelector = ({
               dropdownClassName="student-dropdown"
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
               maxTagPlaceholder={(omittedValues) =>
-                `+ ${omittedValues.length} Students ...`}
+                `+ ${omittedValues.length} Students ...`
+              }
               onSelect={updateStudents}
               onDeselect={handleRemoveStudents}
               treeData={[

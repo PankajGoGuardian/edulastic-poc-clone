@@ -2,8 +2,6 @@ import {
   secondaryTextColor,
   themeColor,
   themeColorLighter,
-  white,
-  themeColorBlue,
 } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
 import { IconCollapse2 } from '@edulastic/icons'
@@ -346,14 +344,8 @@ const StyledButton = styled(Button)`
   color: ${themeColor};
   border-color: ${themeColor};
   &:hover {
-    background: ${themeColorBlue};
-    color: ${white};
-    border-color: ${themeColorBlue};
-    svg > * {
-      fill: ${white};
-    }
+    color: ${themeColor};
   }
-
   &:focus {
     color: ${themeColor};
   }

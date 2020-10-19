@@ -150,6 +150,7 @@ export default class API {
     })
     this.instance.interceptors.request.use((_config) => {
       _config['client-epoch'] = Date.now().toString()
+      _config.headers['X-Client-Time'] = new Date().toISOString()
       const token =
         getParentsStudentToken(_config) || defaultToken || getAccessToken()
       if (token) {
@@ -168,6 +169,10 @@ export default class API {
       (response) => {
         const appVersion = process.env.__CLIENT_VERSION__ || 'NA'
         const serverAppVersion = response.headers['server-version'] || ''
+
+        // store the info in window object
+        window.__CLIENT_VERSION__ = appVersion
+        window.__SERVER_VERSION__ = serverAppVersion
 
         // if the server version is higher than the client version, then try to resync
         if (

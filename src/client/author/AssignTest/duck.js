@@ -4,7 +4,6 @@ import { createSelector } from 'reselect'
 import { createReducer, createAction } from 'redux-starter-kit'
 import {
   test as testConst,
-  roleuser,
   assignmentPolicyOptions,
 } from '@edulastic/constants'
 
@@ -91,6 +90,13 @@ export const assignmentSettings = createReducer(initialState, {
         testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
       state.openPolicy = assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
+    }
+    if (
+      state.scoringType === testConst.evalTypeLabels.PARTIAL_CREDIT &&
+      !state.penalty
+    ) {
+      state.scoringType =
+        testConst.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     }
   },
   [CLEAR_ASSIGNMENT_SETTINGS]: () => {

@@ -4,13 +4,13 @@ import Regrade from '../../../../../framework/author/tests/regrade/regrade'
 import {
   regradeOptions,
   studentSide,
-  teacherSide,
 } from '../../../../../framework/constants/assignmentStatus'
 import StudentTestPage from '../../../../../framework/student/studentTestPage'
 import AssignmentsPage from '../../../../../framework/student/assignmentsPage'
 import AuthorAssignmentPage from '../../../../../framework/author/assignments/AuthorAssignmentPage'
 import LiveClassboardPage from '../../../../../framework/author/assignments/LiveClassboardPage'
 import ReportsPage from '../../../../../framework/student/reportsPage'
+import CypressHelper from '../../../../../framework/util/cypressHelpers'
 
 describe(`>${FileHelper.getSpecName(
   Cypress.spec.name
@@ -73,7 +73,7 @@ describe(`>${FileHelper.getSpecName(
   before('> create test 2 tests', () => {
     cy.login('teacher', teacher)
     // testlibaryPage.createTest().then(id => {
-    testId1 = '5f352b0c2743b80008768e3c'
+    testId1 = '5f3106d6c77d650008a633e3'
     // });
   })
 
@@ -93,6 +93,8 @@ describe(`>${FileHelper.getSpecName(
     }
     */
     before('> assign without/with overiding', () => {
+      date = new Date()
+      date.setDate(date.getDate() + 1)
       cy.deleteAllAssignments('', teacher)
       testlibaryPage.searchAndClickTestCardById(testId1)
       testlibaryPage.clickOnDuplicate()
@@ -101,18 +103,21 @@ describe(`>${FileHelper.getSpecName(
 
         testlibaryPage.clickOnAssign()
         testlibaryPage.assignPage.selectClass(classes[0])
+        testlibaryPage.assignPage.setEndDate(date)
         testlibaryPage.assignPage.clickOnAssign().then((assignObj) => {
           assignmentId1 = assignObj[testId2]
 
           testlibaryPage.assignPage.visitAssignPageById(testId2)
           testlibaryPage.assignPage.selectClass(classes[1])
+          testlibaryPage.assignPage.setEndDate(date)
           testlibaryPage.assignPage.showOverRideSetting()
           testlibaryPage.assignPage.selectAnswerOnPaper()
           testlibaryPage.assignPage.clickOnAssign().then((assignObj) => {
             assignmentId2 = assignObj[testId2]
             ;[...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.IN_PROGRESS)
-              .forEach(({ email }) => {
+              .forEach((studentdata) => {
+                const { email } = studentdata
                 cy.login('student', email)
                 assignmentsPage.clickOnAssignmentButton()
                 studentTestPage.clickOnExitTest()
@@ -139,32 +144,48 @@ describe(`>${FileHelper.getSpecName(
         regrade.checkRadioByValue(regradeOptions.settings.excludeOveridden)
         regrade.applyRegrade()
       })
+
+      context(`> verify student side`, () => {
+        beforeEach('set browser date > due date', () => {
+          CypressHelper.setCustomBrowserDate({ dateToForward: 2 })
+        })
+        ;[...attemptsdata1, ...attemptsdata2].forEach((studentdata) => {
+          const { email, overidden, status } = studentdata
+          it(`> for student ${status} with '${
+            overidden ? '' : 'not '
+          }overidden' assignment`, () => {
+            const studentStatus =
+              status === studentSide.IN_PROGRESS
+                ? studentSide.GRADED
+                : studentSide.SUBMITTED
+            cy.login('student', email)
+            assignmentsPage.sidebar.clickOnGrades()
+            reportsPage.verifyStatusIs(studentStatus)
+          })
+        })
+      })
       ;[attemptsdata1, attemptsdata2].forEach((attemptData, ind) => {
         /* verify status of all students from both class */
         context(
           `> verify teacher side for '${ind === 0 ? '' : 'not '}overiden' test`,
           () => {
             before('> login click on lcb by assignment id', () => {
-              testlibaryPage.sidebar.clickOnAssignment()
-              authorAssignmentPage.clickOnLCBbyTestId(
-                versionedTest1,
-                ind === 0 ? assignmentId1 : assignmentId2
-              )
-              lcb.header.clickOnClose(true, false)
-
-              testlibaryPage.sidebar.clickOnDashboard()
-              testlibaryPage.sidebar.clickOnAssignment()
-              authorAssignmentPage.clickOnLCBbyTestId(
-                versionedTest1,
-                ind === 0 ? assignmentId1 : assignmentId2
+              CypressHelper.setCustomBrowserDate({ dateToForward: 2 }).then(
+                () => {
+                  if (ind === 0) cy.login('teacher', teacher)
+                  testlibaryPage.sidebar.clickOnAssignment()
+                  authorAssignmentPage.clickOnLCBbyTestId(
+                    versionedTest1,
+                    ind === 0 ? assignmentId1 : assignmentId2
+                  )
+                }
               )
             })
-
-            it(`> verify overall assignment staus in lcb, expected- ${teacherSide.IN_GRADING} `, () => {
-              lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING)
+            beforeEach('set browser date > due date', () => {
+              CypressHelper.setCustomBrowserDate({ dateToForward: 2 })
             })
-
-            attemptData.forEach(({ status, name }, ind) => {
+            attemptData.forEach((student, ind) => {
+              const { status, name } = student
               const studentStatus =
                 status === studentSide.IN_PROGRESS
                   ? studentSide.GRADED
@@ -172,23 +193,6 @@ describe(`>${FileHelper.getSpecName(
               it(`> verify staus in card view for ${status}(${name}), epxected- ${studentStatus}`, () => {
                 lcb.verifyStudentStatusIsByIndex(ind, studentStatus, true)
               })
-            })
-          }
-        )
-      })
-
-      context(`> verify assignment status at student side`, () => {
-        ;[...attemptsdata1, ...attemptsdata2].forEach(
-          ({ email, overidden, status }) => {
-            const studentStatus =
-              status === studentSide.IN_PROGRESS
-                ? studentSide.GRADED
-                : studentSide.SUBMITTED
-            const titleAdjust = overidden ? '' : 'not '
-            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expexted- ${studentStatus}`, () => {
-              cy.login('student', email)
-              assignmentsPage.sidebar.clickOnGrades()
-              reportsPage.verifyStatusIs(studentStatus)
             })
           }
         )
@@ -211,6 +215,8 @@ describe(`>${FileHelper.getSpecName(
     }
     */
     before('> assign without/with overiding', () => {
+      date = new Date()
+      date.setDate(date.getDate() + 1)
       cy.login('teacher', teacher)
       cy.deleteAllAssignments('', teacher)
       testlibaryPage.searchAndClickTestCardById(testId1)
@@ -224,18 +230,21 @@ describe(`>${FileHelper.getSpecName(
 
         testlibaryPage.clickOnAssign()
         testlibaryPage.assignPage.selectClass(classes[0])
+        testlibaryPage.assignPage.setEndDate(date)
         testlibaryPage.assignPage.clickOnAssign().then((assignObj) => {
           assignmentId1 = assignObj[testId3]
 
           testlibaryPage.assignPage.visitAssignPageById(testId3)
           testlibaryPage.assignPage.selectClass(classes[1])
+          testlibaryPage.assignPage.setEndDate(date)
           testlibaryPage.assignPage.showOverRideSetting()
           testlibaryPage.assignPage.deselectAnsweOnPaper()
           testlibaryPage.assignPage.clickOnAssign().then((assignObj) => {
             assignmentId2 = assignObj[testId3]
             ;[...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.IN_PROGRESS)
-              .forEach(({ email }) => {
+              .forEach((studentdata) => {
+                const { email } = studentdata
                 cy.login('student', email)
                 assignmentsPage.clickOnAssignmentButton()
                 studentTestPage.clickOnExitTest()
@@ -262,33 +271,44 @@ describe(`>${FileHelper.getSpecName(
         regrade.checkRadioByValue(regradeOptions.settings.chooseAll)
         regrade.applyRegrade()
       })
+
+      context(`> verify student side`, () => {
+        beforeEach('set browser date > due date', () => {
+          CypressHelper.setCustomBrowserDate({ dateToForward: 2 })
+        })
+        ;[...attemptsdata1, ...attemptsdata2].forEach((studentdata) => {
+          const { email, overidden, status } = studentdata
+          it(`> for student ${status} with '${
+            overidden ? '' : 'not '
+          }overidden' assignment`, () => {
+            const studentStatus =
+              status === studentSide.IN_PROGRESS
+                ? studentSide.GRADED
+                : studentSide.ABSENT
+            cy.login('student', email)
+            assignmentsPage.sidebar.clickOnGrades()
+            reportsPage.verifyStatusIs(studentStatus)
+          })
+        })
+      })
       ;[attemptsdata1, attemptsdata2].forEach((attemptData, ind) => {
         /* verify status of all students from both class */
         context(
           `> verify teacher side for '${ind === 0 ? '' : 'not '}overiden' test`,
           () => {
             before('> login click on lcb by assignment id', () => {
-              //  cy.login("teacher", teacher);
-              testlibaryPage.sidebar.clickOnAssignment()
-              authorAssignmentPage.clickOnLCBbyTestId(
-                versionedTest2,
-                ind === 0 ? assignmentId1 : assignmentId2
-              )
-              lcb.header.clickOnClose()
-
-              testlibaryPage.sidebar.clickOnDashboard()
+              cy.login('teacher', teacher)
               testlibaryPage.sidebar.clickOnAssignment()
               authorAssignmentPage.clickOnLCBbyTestId(
                 versionedTest2,
                 ind === 0 ? assignmentId1 : assignmentId2
               )
             })
-
-            it(`> verify overall assignment staus in lcb, expected- ${teacherSide.DONE} `, () => {
-              lcb.header.verifyAssignmentStatus(teacherSide.DONE)
+            beforeEach('set browser date > due date', () => {
+              CypressHelper.setCustomBrowserDate({ dateToForward: 2 })
             })
-
-            attemptData.forEach(({ status, name }, ind) => {
+            attemptData.forEach((student, ind) => {
+              const { status, name } = student
               const studentStatus =
                 status === studentSide.IN_PROGRESS
                   ? studentSide.GRADED
@@ -296,23 +316,6 @@ describe(`>${FileHelper.getSpecName(
               it(`> verify staus in card view for ${status}(${name}), epxected- ${studentStatus}`, () => {
                 lcb.verifyStudentStatusIsByIndex(ind, studentStatus, true)
               })
-            })
-          }
-        )
-      })
-
-      context(`> verify assignment status at student side`, () => {
-        ;[...attemptsdata1, ...attemptsdata2].forEach(
-          ({ email, overidden, status }) => {
-            const studentStatus =
-              status === studentSide.IN_PROGRESS
-                ? studentSide.GRADED
-                : studentSide.ABSENT
-            const titleAdjust = overidden ? '' : 'not '
-            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- ${studentStatus}`, () => {
-              cy.login('student', email)
-              assignmentsPage.sidebar.clickOnGrades()
-              reportsPage.verifyStatusIs(studentStatus)
             })
           }
         )

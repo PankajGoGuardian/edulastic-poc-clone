@@ -104,7 +104,7 @@ export const TextAreaInputStyled = styled((props) => (
 ))`
   &.ant-input {
     ${inputCommonStyle};
-    padding: ${(props) => props.padding || '15px'};
+    padding: 15px;
     ${(props) => props.style};
     &:focus,
     &:hover {

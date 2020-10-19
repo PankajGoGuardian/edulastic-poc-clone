@@ -13,7 +13,7 @@ import LiveClassboardPage from '../../../../../framework/author/assignments/Live
 
 describe(`>${FileHelper.getSpecName(
   Cypress.spec.name
-)}> regrade settings- 'calculator'`, () => {
+)}> regrade settings- 'calculator questions'`, () => {
   const testlibaryPage = new TestLibrary()
   const regrade = new Regrade()
   const studentTestPage = new StudentTestPage()
@@ -82,9 +82,9 @@ describe(`>${FileHelper.getSpecName(
 
   before('> create test 2 tests', () => {
     cy.login('teacher', teacher)
-    // testlibaryPage.createTest().then(id => {
-    test = '5f3a4414ad0cf300083359fe'
-    // });
+    testlibaryPage.createTest().then((id) => {
+      test = id
+    })
   })
 
   context(`> select '${regradeOptions.settings.excludeOveridden}'`, () => {
@@ -123,7 +123,8 @@ describe(`>${FileHelper.getSpecName(
             assignid2 = assignObj[test1]
             ;[...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.SUBMITTED)
-              .forEach(({ name, overidden }) => {
+              .forEach((studentdata) => {
+                const { name, overidden } = studentdata
                 testlibaryPage.sidebar.clickOnDashboard()
                 testlibaryPage.sidebar.clickOnAssignment()
                 authorAssignmentPage.clickOnLCBbyTestId(
@@ -135,7 +136,8 @@ describe(`>${FileHelper.getSpecName(
               })
             ;[...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.IN_PROGRESS)
-              .forEach(({ email }) => {
+              .forEach((studentdata) => {
+                const { email } = studentdata
                 cy.login('student', email)
                 assignmentsPage.clickOnAssignmentButton()
                 studentTestPage.clickOnExitTest()
@@ -163,16 +165,18 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify regraded calculator at student side`, () => {
+      context(`> verify student side`, () => {
         ;[...attemptsdata1, ...attemptsdata2]
           .filter(
             ({ status }) =>
               status === studentSide.IN_PROGRESS ||
               status === studentSide.NOT_STARTED
           )
-          .forEach(({ email, overidden, status }, index) => {
-            const titleAdjust = overidden ? '' : 'not '
-            it(`> for student ${status} with '${titleAdjust}overidden' assignment, expexted-'basic'`, () => {
+          .forEach((studentdata, index) => {
+            const { email, overidden, status } = studentdata
+            it(`> for student ${status} with '${
+              overidden ? '' : 'not '
+            }overidden' assignment`, () => {
               cy.login('student', email)
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1)
               studentTestPage.clickOnCalcuator()
@@ -201,7 +205,7 @@ describe(`>${FileHelper.getSpecName(
               lcb.clickOnRedirectSubmit()
             })
 
-            it("> verify reirected student, expected to have 'basic'", () => {
+            it('> verify student', () => {
               cy.login('student', studentdata[0].email)
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1, {
                 isFirstAttempt: false,
@@ -254,7 +258,8 @@ describe(`>${FileHelper.getSpecName(
             assignid2 = assignObj[test2]
             ;[...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.SUBMITTED)
-              .forEach(({ name, overidden }) => {
+              .forEach((studentdata) => {
+                const { name, overidden } = studentdata
                 testlibaryPage.sidebar.clickOnDashboard()
                 testlibaryPage.sidebar.clickOnAssignment()
                 authorAssignmentPage.clickOnLCBbyTestId(
@@ -266,7 +271,8 @@ describe(`>${FileHelper.getSpecName(
               })
             ;[...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.IN_PROGRESS)
-              .forEach(({ email }) => {
+              .forEach((studentdata) => {
+                const { email } = studentdata
                 cy.login('student', email)
                 assignmentsPage.clickOnAssignmentButton()
                 studentTestPage.clickOnExitTest()
@@ -294,13 +300,16 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify regraded calculator at student side`, () => {
+      context(`> verify student side`, () => {
         ;[...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.SUBMITTED)
-          .forEach(({ email, overidden, status }, index) => {
-            const titleAdjust = overidden ? '' : 'not '
-            it(`> for student ${status} with '${titleAdjust}overidden' assignment, expexted-'no calculator'`, () => {
+          .forEach((studentdata, index) => {
+            const { email, overidden, status } = studentdata
+            it(`> for student ${status} with '${
+              overidden ? '' : 'not '
+            }overidden' assignment`, () => {
               cy.login('student', email)
+
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2)
               studentTestPage.assertCalcType(CALCULATOR.NONE)
               studentTestPage.clickOnExitTest()
@@ -311,7 +320,7 @@ describe(`>${FileHelper.getSpecName(
         context(
           `> redirect '${index === 0 ? 'not ' : ''}overidden' assignment`,
           () => {
-            /* redirecting overidden assignment should not have calculator for both class students */
+            /* redirecting overidden assignment should not have calculatord for both class students */
             before('> click on lcb', () => {
               cy.login('teacher', teacher)
               testlibaryPage.sidebar.clickOnAssignment()
@@ -327,7 +336,7 @@ describe(`>${FileHelper.getSpecName(
               lcb.clickOnRedirectSubmit()
             })
 
-            it("> verify redirect student,expected-'no calculator'", () => {
+            it('> verify student', () => {
               cy.login('student', studentdata[0].email)
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2, {
                 isFirstAttempt: false,

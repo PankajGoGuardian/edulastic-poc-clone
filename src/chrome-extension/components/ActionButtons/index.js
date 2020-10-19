@@ -23,13 +23,7 @@ export const ReactionsButton = ({
   <TrayButtonOuter onClick={callback}>
     <TrayButton title="Select an Emoji" role="button">
       <TrayButtonBg />
-      <img
-        src={
-          process?.env?.TEST_ENV === 'app'
-            ? ThumbsUp
-            : 'chrome-extension://pgooajioclnllipfkmblccohmcphpnkc/img/raised-hand.png'
-        }
-      />
+      <img src="chrome-extension://pgooajioclnllipfkmblccohmcphpnkc/img/thumbs-up.png" />
     </TrayButton>
     {visible && <ReactionsDropdown />}
   </TrayButtonOuter>
@@ -86,13 +80,7 @@ const HandUpButtonComponent = ({
     <TrayButtonOuter>
       <TrayButton title="Raise your hand" role="button" onClick={raiseHand}>
         <TrayButtonBg />
-        <img
-          src={
-            process?.env?.TEST_ENV === 'app'
-              ? RaisedHand
-              : 'chrome-extension://pgooajioclnllipfkmblccohmcphpnkc/img/raised-hand.png'
-          }
-        />
+        <img src="chrome-extension://pgooajioclnllipfkmblccohmcphpnkc/img/raised-hand.png" />
       </TrayButton>
     </TrayButtonOuter>
   )

@@ -6,19 +6,33 @@ import styled from 'styled-components'
 import { lightGrey1, mobileWidthLarge } from '@edulastic/colors'
 import { Subtitle } from '@edulastic/common'
 
+function useLayoutEffectDebounced(func, values, time) {
+  useLayoutEffect(() => {
+    let db = setTimeout(() => {
+      func()
+    }, time)
+
+    return () => clearTimeout(db)
+  }, values)
+}
+
 const ChoiceContainer = ({ title, children, direction, choiceWidth }) => {
   const ContainerRef = useRef(null)
 
   const [containerHeight, setContainerHeight] = useState(140)
 
-  useLayoutEffect(() => {
-    setTimeout(() => {
-      if (ContainerRef.current) {
-        const { height } = ContainerRef.current.getBoundingClientRect()
-        setContainerHeight(height)
-      }
-    })
-  }, [ContainerRef.current])
+  useLayoutEffectDebounced(
+    () => {
+      setTimeout(() => {
+        if (ContainerRef.current) {
+          const { height } = ContainerRef.current.getBoundingClientRect()
+          setContainerHeight(height)
+        }
+      })
+    },
+    [ContainerRef.current],
+    2000
+  )
 
   return (
     <Container

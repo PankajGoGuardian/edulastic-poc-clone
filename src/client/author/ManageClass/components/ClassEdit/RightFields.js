@@ -282,9 +282,9 @@ const RightFields = ({
                 disabled={!!cleverId}
               >
                 {courseOptions.map((el) => (
-                  <Select.Option key={el._id} value={el._id}>{`${el.name} - ${
-                    el.number || ''
-                  }`}</Select.Option>
+                  <Select.Option key={el._id} value={el._id}>
+                    {`${el.name} - ${el.number || ''}`}
+                  </Select.Option>
                 ))}
               </SelectInputStyled>
             </FieldLabel>

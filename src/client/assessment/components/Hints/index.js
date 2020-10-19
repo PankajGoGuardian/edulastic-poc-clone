@@ -126,9 +126,9 @@ const Hints = ({
                   <HintItem data-cy="hint-subcontainer" key={value}>
                     <LabelWrapper>
                       <HintLabel>
-                        <Label data-cy="hint-count" marginBottom="0px">{`${
-                          index + 1
-                        }/${hintCount}`}</Label>
+                        <Label data-cy="hint-count" marginBottom="0px">
+                          {`${index + 1}/${hintCount}`}
+                        </Label>
                       </HintLabel>
                     </LabelWrapper>
 
@@ -146,7 +146,7 @@ const Hints = ({
                           data-cy="more-hint"
                           onClick={showMoreHints}
                         >
-                          + Get Another Hint {`${index + 2}/${hintCount}`}
+                          + Get Another Hint {`${index + 1}/${hintCount}`}
                         </ShowMoreHint>
                       )}
                     </div>

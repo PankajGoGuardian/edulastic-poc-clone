@@ -42,7 +42,9 @@ const Group = ({
         <Subtitle
           id={getFormattedAttrId(`${item?.title}-${groupHeadText}${index + 1}`)}
           margin="20px 0px 0px"
-        >{`${groupHeadText}${index + 1}`}</Subtitle>
+        >
+          {`${groupHeadText}${index + 1}`}
+        </Subtitle>
         <IconTrash onClick={onRemove(index)} />
       </FlexContainer>
       <Subtitle

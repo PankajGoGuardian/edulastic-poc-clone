@@ -11,7 +11,7 @@ import {
   Description,
   StyledAnchor,
   Title,
-} from '../../../TestPage/components/Setting/components/Container/styled'
+} from '../../../TestPage/components/Setting/components/MainSetting/styled'
 
 const { settingCategories } = playlists
 

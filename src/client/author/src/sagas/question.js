@@ -117,9 +117,6 @@ function* saveQuestionSaga() {
           backUrl: '/author/items',
           itemDetail: false,
           ...stateToFollow,
-          isTestFlow,
-          previousTestId,
-          regradeFlow,
         },
       })
     }

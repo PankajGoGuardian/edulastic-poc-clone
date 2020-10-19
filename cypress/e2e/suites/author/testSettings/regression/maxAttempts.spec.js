@@ -53,8 +53,7 @@ describe(`${FileHelper.getSpecName(
       cy.contains('Share With Others')
 
       // update the settings
-      testLibrary.visitTestById(testId)
-      testLibrary.header.clickOnSettings()
+      cy.visit(`author/tests/tab/settings/id/${testId}`)
       testLibrary.header.clickOnEditButton(true)
       // set max attempt
       testLibrary.testSettings.setMaxAttempt(maxAttempt)

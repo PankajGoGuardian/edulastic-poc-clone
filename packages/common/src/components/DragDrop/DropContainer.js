@@ -1,3 +1,4 @@
+import React, { useEffect, useContext, useCallback } from 'react'
 import {
   greyThemeLighter,
   themeColorBlue,
@@ -6,12 +7,12 @@ import {
 import { isObject } from 'lodash'
 import styled, { css, withTheme } from 'styled-components'
 import PropTypes from 'prop-types'
-import React, { useEffect } from 'react'
 import { useDrop } from 'react-dnd'
+import { DndStateContext } from './CustomDndProvider'
 
 const DropContainer = ({
   style,
-  drop,
+  drop: onDrop,
   hover,
   children,
   index,
@@ -21,7 +22,7 @@ const DropContainer = ({
   className,
   ...rest
 }) => {
-  const [{ isOver }, dropRef] = useDrop({
+  const [{ isOver }, drop] = useDrop({
     accept: 'item',
     drop(item, monitor) {
       if (monitor.didDrop()) {
@@ -36,27 +37,31 @@ const DropContainer = ({
         if (isObject(dimensions) && isObject(itemPos)) {
           itemRect = { ...dimensions, ...itemPos }
         }
-        drop({ data, itemRect, itemOffset }, index)
+        onDrop({ data, itemRect, itemOffset }, index)
       }
     },
-    // hover(item, monitor) {
-    //   const { data, size: itemRect } = item;
-    //   const itemOffset = monitor.getSourceClientOffset();
-    //   if (hover) {
-    //     // hover(data, itemRect, itemOffset);
-    //     hover(monitor.isOver({ shallow: true }));
-    //   }
-    // },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
   })
+  const {
+    state: { actived },
+    setItem,
+  } = useContext(DndStateContext)
+
+  const attach = useCallback((element) => drop(element), [drop])
 
   useEffect(() => {
     if (hover) {
       hover(isOver)
     }
   }, [hover, isOver])
+
+  useEffect(() => {
+    return () => {
+      setItem({ type: 'REMOVE_ACTIVE_DRAG_ITEM' })
+    }
+  }, [])
 
   const overrideBorderColor = isOver
     ? themeColorBlue
@@ -67,16 +72,41 @@ const DropContainer = ({
     background: style.background || greyThemeLighter,
   }
 
+  const onClickHandler = (e) => {
+    if (window.$ && window.isMobileDevice) {
+      const dragItems = jQuery('*[data-dnd="edu-dragitem"]').toArray()
+      const isInItemContainer = dragItems.some((itemCont) =>
+        itemCont.contains(e.target)
+      )
+
+      if (actived && !isInItemContainer) {
+        const { data, dimensions } = actived
+        onDrop(
+          {
+            data,
+            itemRect: dimensions,
+            itemOffset: { x: e.clientX, y: e.clientY },
+          },
+          index
+        )
+        setItem({ type: 'REMOVE_ACTIVE_DRAG_ITEM' })
+      }
+    }
+  }
+
   return (
     <Container
       {...rest}
       className={`${className} drop-target-box`}
-      ref={dropRef}
+      ref={attach}
       style={mergedStyle}
       id={`drop-container-${index}`}
       borderColor={overrideBorderColor}
       showHoverBorder={showHoverBorder}
       noBorder={noBorder}
+      onClick={onClickHandler}
+      hasActived={!!actived}
+      data-dnd="edu-droparea"
     >
       {children}
     </Container>
@@ -117,4 +147,5 @@ const Container = styled.div`
   border-radius: 2px;
   border-color: ${({ borderColor }) => borderColor};
   ${({ showHoverBorder }) => showHoverBorder && hoverStyle}
+  cursor: ${({ hasActived }) => hasActived && 'grabbing'};
 `

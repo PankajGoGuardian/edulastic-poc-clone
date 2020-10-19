@@ -162,7 +162,8 @@ class ClozeDropDown extends Component {
                         this.handleOptionsChange(
                           'shuffleOptions',
                           !shuffleOptions
-                        )}
+                        )
+                      }
                       checked={shuffleOptions}
                     >
                       {t('component.cloze.dropDown.shuffleoptions')}

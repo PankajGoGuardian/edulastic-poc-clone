@@ -566,8 +566,8 @@ class Display extends Component {
           style={{
             backgroundColor: 'transparent',
             boxShadow: 'none',
-            border: preview ? null : '1px solid lightgray',
           }}
+          noBorder
           question={item}
           setQuestionData={setQuestionData}
         />

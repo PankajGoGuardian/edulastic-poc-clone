@@ -219,7 +219,8 @@ const ShadingPreview = ({
                     width="320px"
                     value={Array.isArray(userAnswer?.[0]) ? 1 : userAnswer?.[0]}
                     onChange={(e) =>
-                      saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
+                      saveAnswer([e.target.value > 0 ? +e.target.value : 1])
+                    }
                   />
                 )}
               </>

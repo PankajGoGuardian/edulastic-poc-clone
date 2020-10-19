@@ -33,8 +33,6 @@ class StudentTestPage {
 
   getQueDropDown = () => cy.get('[data-cy="options"]').should('be.visible')
 
-  getQuestionDropDownList = () => cy.get('[data-cy="questionSelectOptions"]')
-
   getHint = () => cy.contains('hint').should('be.visible')
 
   getBookmark = () => cy.contains('bookmark').should('be.visible')
@@ -51,8 +49,6 @@ class StudentTestPage {
 
   // @questionNumber = "Q1" ; "Q2"
   clickOnReviewQuestion = (questionNumber) => {
-    cy.server()
-    cy.route('GET', '**/test/**').as('gettest')
     cy.get(`[data-cy="${questionNumber}"]`).click()
     cy.wait('@gettest')
   }
@@ -99,8 +95,6 @@ class StudentTestPage {
 
   getClozeTextInputByIndex = (index) => this.getAllClozeTextInput().eq(index)
 
-  getAllQuestionInDropDown = () => cy.get('[data-cy="question-in-dropdown"]')
-
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -116,7 +110,7 @@ class StudentTestPage {
 
     if (isExhausted)
       CypressHelper.verifyAntMesssage(
-        ' Check answer limit exceeded for the item.'
+        'Check answer limit exceeded for the item'
       )
     else
       cy.wait('@evaluation').then((xhr) =>
@@ -134,9 +128,9 @@ class StudentTestPage {
     cy.route('POST', '**/test-activity/**').as('saved')
     cy.wait(300)
     this.getNext().should('be.visible').click()
-    /*  if (isSkipped) {
-      this.clickOnSkipOnPopUp();
-    } */
+    if (isSkipped) {
+      this.clickOnSkipOnPopUp()
+    }
     if (!onlyPreview) return cy.wait('@saved')
   }
 
@@ -185,10 +179,7 @@ class StudentTestPage {
           .click({ force: true })
           .click({ force: true })
     })
-    cy.url().should('include', '/home/grades')
-    return cy
-      .get('[data-cy="status"]', { timeout: 120000 })
-      .should('be.visible')
+    return cy.url().should('include', '/home/grades')
   }
 
   clickOnMenuCheckAns = () => {
@@ -770,7 +761,7 @@ class StudentTestPage {
           const currentQue = parseInt($item.attr('data-cy').split('-')[1])
           const queToNavigate = index + 1
           cy.wrap($ele).click({ force: true })
-          // if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
+          if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp()
           cy.wait('@saved')
         })
       }
@@ -896,8 +887,13 @@ class StudentTestPage {
   }
 
   verifyNoOfQuestions = (NoOfQues) => {
-    this.getQueDropDown().as('question-dropdown').click({ force: true })
-    this.getQuestionDropDownList().should('have.length', NoOfQues)
+    this.getQueDropDown()
+      .as('question-dropdown')
+      .click({ force: true })
+      .parent()
+      .next()
+      .find('li')
+      .should('have.length', NoOfQues)
     cy.get('@question-dropdown').click({ force: true })
   }
 
@@ -917,9 +913,14 @@ class StudentTestPage {
         const currentQue = parseInt(txt.match(/(\d+)/)[0])
         const queToNavigate = index + 1
         if (!txt.includes(`Question ${queToNavigate}/`)) {
-          this.getQueDropDown().click({ force: true })
-          this.getQuestionDropDownList().eq(index).click({ force: true })
-          // if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
+          this.getQueDropDown()
+            .click({ force: true })
+            .parent()
+            .next()
+            .find('li')
+            .eq(index)
+            .click({ force: true })
+          if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp()
           cy.wait('@saved')
         }
       })
@@ -952,10 +953,10 @@ class StudentTestPage {
       .should(
         'contain.text',
         attemptType === attemptTypes.RIGHT
-          ? 'Correct'
+          ? 'Thats Correct'
           : attemptType === attemptTypes.PARTIAL_CORRECT
-          ? 'Partially Correct'
-          : 'Incorrect'
+          ? 'Thats Partially Correct'
+          : 'Thats Incorrect'
       )
 
   assertCalcType = (type) => {

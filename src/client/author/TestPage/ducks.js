@@ -86,10 +86,6 @@ import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
-import {
-  addLoadingComponentAction,
-  removeLoadingComponentAction,
-} from '../src/actions/authorUi'
 
 // constants
 
@@ -1490,8 +1486,7 @@ function* createTest(data) {
     omitedItems.push('freezeSettings')
   }
   const dataToSend = omit(data, omitedItems)
-  /* we are getting testItem ids only in payload from cart, 
-  but whole testItem Object from test library. */
+  // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups)
   const entity = yield call(testsApi.create, dataToSend)
   yield put({
@@ -1649,7 +1644,6 @@ function* updateTestSaga({ payload }) {
 }
 
 function* updateTestDocBasedSaga({ payload }) {
-  yield put(addLoadingComponentAction({ componentName: 'saveButton' }))
   try {
     const _questions =
       payload?.data?.itemGroups?.[0]?.items?.[0]?.data?.questions || []
@@ -1751,8 +1745,6 @@ function* updateTestDocBasedSaga({ payload }) {
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
-  } finally {
-    yield put(removeLoadingComponentAction({ componentName: 'saveButton' }))
   }
 }
 
@@ -1762,6 +1754,7 @@ function* updateRegradeDataSaga({ payload }) {
     yield call(testsApi.publishTest, payload.newTestId)
     yield call(assignmentApi.regrade, payload)
     notification({ type: 'success', messageKey: 'successUpdate' })
+    yield put(setEditEnableAction(false))
     yield put(push(`/author/regrade/${payload.newTestId}/success`))
   } catch (err) {
     const {
@@ -2145,7 +2138,10 @@ function* setTestDataAndUpdateSaga({ payload }) {
     } = err.response
     Sentry.captureException(err)
 
-    notification({ type: 'error', msg: errorMessage || 'Unable to save test.' })
+    notification({
+      type: 'error',
+      msg: errorMessage || 'Unable to save test.',
+    })
   }
 }
 
@@ -2341,14 +2337,18 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       receiveStandardsProficiencySuccessAction(standardsProficiencyProfiles)
     )
     yield put(setDefaultTestTypeProfilesAction(defaultTestSettings))
-    const performanceBand = getDefaultSettings({
-      testType: testEntity?.testType,
-      defaultTestProfiles,
-    })?.performanceBand
-    const standardGradingScale = getDefaultSettings({
-      testType: testEntity?.testType,
-      defaultTestProfiles,
-    })?.standardProficiency
+    const performanceBand =
+      testEntity?.performanceBand ||
+      getDefaultSettings({
+        testType: testEntity?.testType,
+        defaultTestProfiles,
+      })?.performanceBand
+    const standardGradingScale =
+      testEntity?.standardGradingScale ||
+      getDefaultSettings({
+        testType: testEntity?.testType,
+        defaultTestProfiles,
+      })?.standardProficiency
     const testData = yield select(getTestSelector)
     const userId = yield select(getUserId)
     const isAuthor = testData.authors?.some((author) => author._id === userId)
@@ -2379,12 +2379,23 @@ function* duplicateTestSaga({ payload }) {
   yield put(setTestsLoadingAction(true))
   const { onRegrade = false } = payload
   try {
-    const { _id, title, currentTab, isInEditAndRegrade = false } = payload
-    const data = yield call(assignmentApi.duplicateAssignment, {
+    const {
       _id,
       title,
-      isInEditAndRegrade,
-    })
+      currentTab,
+      isInEditAndRegrade = false,
+      redirectToNewTest = false,
+      cloneItems = false,
+    } = payload
+    const queryParams = { _id, title, isInEditAndRegrade, cloneItems }
+    const data = yield call(assignmentApi.duplicateAssignment, queryParams)
+    if (redirectToNewTest) {
+      // cloning from test review page or test library (non-regrade flow)
+      yield put(push(`/author/tests/${data._id}`))
+      yield put(setEditEnableAction(true))
+      yield put(setTestsLoadingAction(false))
+      return
+    }
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`))
     yield put(setTestsLoadingAction(false))
     yield put(receiveTestByIdAction(data._id, true))

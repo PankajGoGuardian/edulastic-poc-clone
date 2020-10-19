@@ -15,6 +15,8 @@ import {
   AnswerContext,
   ScrollContext,
   notification,
+  FlexContainer,
+  EduButton,
 } from '@edulastic/common'
 import {
   IconClose,
@@ -28,7 +30,6 @@ import ItemDetailContext, {
   DEFAULT,
 } from '@edulastic/common/src/contexts/ItemDetailContext'
 import questionTitle from '@edulastic/constants/const/questionTitle'
-import { themeColor } from '@edulastic/colors'
 import { MAX_MOBILE_WIDTH } from '../../../src/constants/others'
 import {
   changeViewAction,
@@ -120,11 +121,14 @@ const defaultEmptyItem = {
 }
 
 class Container extends Component {
-  state = {
-    showRemovePassageItemPopup: false,
-    showSettings: false,
-    collapseDirection: '',
-    showHints: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      showRemovePassageItemPopup: false,
+      showSettings: false,
+      collapseDirection: '',
+      showHints: false,
+    }
   }
 
   editModeContainerRef = React.createRef()
@@ -394,8 +398,21 @@ class Container extends Component {
   }
 
   handleDeleteWidget = (i) => (widgetIndex) => {
-    const { deleteWidget } = this.props
-    deleteWidget(i, widgetIndex)
+    const { deleteWidget, item = {}, location, match, isTestFlow } = this.props
+    const { _id: testItemId } = item
+    const { testId } = match.params
+
+    /**
+     * trying to replicate data being sent while saveItem
+     * src/client/author/ItemDetail/components/Container/index.js
+     */
+    const updateData = {
+      testItemId,
+      testId,
+      isTestFlow,
+      locationState: location?.state,
+    }
+    deleteWidget(i, widgetIndex, updateData)
   }
 
   handleDeletePassageWidget = (widgetIndex) => {
@@ -480,7 +497,6 @@ class Container extends Component {
           isMultipart={item.multipartItem}
           isAnswerBtnVisible={false}
           page="itemAuthoring"
-          passageNavigator={item.passageId && this.passageNavigator}
         />
       </PreviewContent>
     )
@@ -622,7 +638,8 @@ class Container extends Component {
       pathname: isTestFlow
         ? `/author/tests/${testId}/editItem/${_id}`
         : `/author/items/${_id}/item-detail`,
-      state: { isTestFlow, previousTestId, fadeSidebar },
+      // To stop view changes, while using pagination buttons
+      state: { isTestFlow, previousTestId, fadeSidebar, resetView: false },
     })
   }
 
@@ -730,20 +747,18 @@ class Container extends Component {
                   windowWidth={windowWidth}
                   onDeleteWidget={this.handleDeleteWidget(i)}
                   onEditWidget={this.handleEditWidget}
-                  onEditTabTitle={(tabIndex, value) =>
-                    updateTabTitle({ rowIndex: i, tabIndex, value })
-                  }
+                  onEditTabTitle={(tabIndex, value) => {
+                    return updateTabTitle({ rowIndex: i, tabIndex, value })
+                  }}
                   hideColumn={
                     (collapseLeft && !passageWithQuestions && i === 0) ||
                     (collapseRight && (i === 1 || passageWithQuestions))
                   }
                   isCollapsed={!!collapseDirection}
                   useTabsLeft={useTabsLeft}
-                  passageNavigator={
-                    passageWithQuestions && this.passageNavigator
-                  }
                   addItemToPassage={this.addItemToPassage}
                   showAddItemButton={showAddItemButton}
+                  isPassageWithQuestions={passageWithQuestions}
                 />
               </>
             ))}
@@ -754,6 +769,15 @@ class Container extends Component {
   }
 
   renderAuditTrailLogs = () => <QuestionAuditTrailLogs />
+
+  get closeModalButton() {
+    const { onModalClose } = this.props
+    return (
+      <ButtonClose onClick={onModalClose}>
+        <IconClose />
+      </ButtonClose>
+    )
+  }
 
   get breadCrumbs() {
     const { item, isTestFlow, match } = this.props
@@ -809,57 +833,55 @@ class Container extends Component {
       (item.canAddMultipleItems || item.isPassageWithQuestions) &&
       passage &&
       view !== 'metadata' && (
-        <Col>
+        <PassageNavigation>
           {passageTestItems.length > 1 && (
-            <Row>
-              <TestItemCount className="pagination-title">
-                {passageTestItems.length} ITEMS
-              </TestItemCount>
-            </Row>
+            <TestItemCount className="pagination-title">
+              {passageTestItems.length} ITEMS
+            </TestItemCount>
           )}
-          <Row>
-            <PassageNavigation>
-              {passageTestItems.length > 1 && (
-                <>
-                  <Pagination
-                    total={passageTestItems.length}
-                    pageSize={1}
-                    defaultCurrent={
-                      passageTestItems.findIndex((i) => i === item.versionId) +
-                      1
-                    }
-                    onChange={this.goToItem}
-                  />
-                </>
-              )}
-              {(!!widgetLength || passageTestItems.length > 1) &&
-                view === EDIT && (
-                  <AddRemoveButtonWrapper>
-                    <Button
-                      disabled={itemDeleting}
-                      onClick={this.handleRemoveItemRequest}
-                    >
-                      <span
-                        className="fa fa-minus-circle"
-                        style={{ color: themeColor }}
-                      />
-                      &nbsp;ITEM
-                    </Button>
-                    <Button
-                      disabled={itemDeleting}
-                      onClick={this.addItemToPassage}
-                    >
-                      <span
-                        className="fa fa-plus-circle"
-                        style={{ color: themeColor }}
-                      />
-                      &nbsp;ITEM
-                    </Button>
-                  </AddRemoveButtonWrapper>
+          {passageTestItems.length > 1 && (
+            <Pagination
+              total={passageTestItems.length}
+              pageSize={1}
+              defaultCurrent={
+                passageTestItems.findIndex((i) => i === item.versionId) + 1
+              }
+              onChange={this.goToItem}
+            />
+          )}
+          <AddRemoveButtonWrapper>
+            {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
+              <>
+                {passageTestItems.length > 1 && (
+                  <EduButton
+                    isGhost
+                    ml="0px"
+                    height="30px"
+                    disabled={itemDeleting}
+                    onClick={this.handleRemoveItemRequest}
+                  >
+                    <i className="fa fa-minus-circle" />
+                    &nbsp;ITEM
+                  </EduButton>
                 )}
-            </PassageNavigation>
-          </Row>
-        </Col>
+                <EduButton
+                  isGhost
+                  height="30px"
+                  disabled={itemDeleting}
+                  onClick={this.addItemToPassage}
+                >
+                  <i className="fa fa-plus-circle" />
+                  &nbsp;ITEM
+                </EduButton>
+              </>
+            )}
+            {view !== 'preview' && view !== 'auditTrail' && (
+              <EduButton ml="20px" isGhost height="30px" id="how-to-author">
+                How to author
+              </EduButton>
+            )}
+          </AddRemoveButtonWrapper>
+        </PassageNavigation>
       )
     )
   }
@@ -877,7 +899,6 @@ class Container extends Component {
       changePreview,
       windowWidth,
       modalItemId,
-      onModalClose,
       toggleSideBar,
       history,
       setItemLevelScoring,
@@ -1002,36 +1023,35 @@ class Container extends Component {
               itemStatus={item && item.status}
               showAuditTrail={!!item}
               withLabels
-              renderExtra={() =>
-                modalItemId && (
-                  <ButtonClose onClick={onModalClose}>
-                    <IconClose />
-                  </ButtonClose>
-                )
-              }
+              renderExtra={() => modalItemId && this.closeModalButton}
               renderRightSide={view === 'edit' ? this.renderButtons : () => {}}
             />
           </ItemHeader>
           <ContentWrapper data-cy="item-detail-container">
             <BreadCrumbBar>
-              <Col md={24}>
+              <Col span={8}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
                   <SecondHeadBar
                     itemId={item._id}
                     breadCrumbQType={breadCrumbQType}
                     breadcrumb={this.breadCrumbs}
-                  >
-                    {view === 'preview' && (
-                      <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-                        <div>{this.renderButtons()}</div>
-                      </RightActionButtons>
-                    )}
-                  </SecondHeadBar>
+                  />
                 ) : (
                   <BackLink onClick={history.goBack}>
                     Back to Item List
                   </BackLink>
                 )}
+              </Col>
+
+              <Col span={16}>
+                <FlexContainer alignItems="center" justifyContent="flex-end">
+                  {this.passageNavigator}
+                  {view === 'preview' && (
+                    <RightActionButtons>
+                      {this.renderButtons()}
+                    </RightActionButtons>
+                  )}
+                </FlexContainer>
               </Col>
             </BreadCrumbBar>
             {view === 'edit' && this.renderEdit()}
@@ -1157,11 +1177,7 @@ const enhance = compose(
 export default enhance(Container)
 
 const BreadCrumbBar = styled(Row)`
-  padding: 0px;
+  padding: 12px 0px 32px;
 `
 
-const RightActionButtons = styled(Col)`
-  div {
-    float: right;
-  }
-`
+const RightActionButtons = styled(FlexContainer)``

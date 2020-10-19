@@ -10,8 +10,6 @@ import {
   DIFFICULTY,
   DOK,
 } from '../../../../framework/constants/questionAuthoring'
-import { CUSTOM_COLLECTIONS } from '../../../../framework/constants/questionTypes'
-import CypressHelper from '../../../../framework/util/cypressHelpers'
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -29,7 +27,7 @@ describe(`${FileHelper.getSpecName(
     name: 'Test Item Group',
     grade: 'Kindergarten',
     subject: 'Math',
-    collections: commomonCollection,
+    collections: 'auto collection 1',
   }
 
   const commonStandardForAutoselect_1 = {
@@ -142,24 +140,23 @@ describe(`${FileHelper.getSpecName(
     email: 'content.editor.1@snapwiz.com',
     pass: 'snapwiz',
   }
+  const Teacher = {
+    email: 'teacher2.for.dynamic.test@snapwiz.com',
+    pass: 'snapwiz',
+  }
 
   const groups = {
     1: { items: [] },
     2: { items: [] },
     3: { items: [] },
   }
-  /* auto collection 2 */
+
   const itemsToCreate = ['MCQ_TF.7', 'MCQ_TF.8', 'MCQ_TF.9']
   const itemIds = []
-  const collectionid = CUSTOM_COLLECTIONS.AUTO_COLLECTION_2
 
   before('Login and create new items', () => {
-    cy.getAllTestsAndDelete(contEditor.email, contEditor.pass, undefined, {
-      collections: [collectionid],
-    })
-    cy.getAllItemsAndDelete(contEditor.email, contEditor.pass, undefined, {
-      collections: [collectionid],
-    })
+    cy.getAllTestsAndDelete(contEditor.email)
+    cy.getAllItemsAndDelete(contEditor.email)
     cy.login('publisher', contEditor.email, contEditor.pass)
     itemsToCreate.forEach((itemToCreate, index) => {
       item.createItem(itemToCreate, index).then((id) => {
@@ -170,6 +167,20 @@ describe(`${FileHelper.getSpecName(
       groups[1].items[0] = itemIds[0]
       groups[2].items[0] = itemIds[1]
       groups[3].items[0] = itemIds[2]
+    })
+  })
+  before('add tags', () => {
+    item.searchFilters.clearAll()
+    item.searchFilters.getAuthoredByMe()
+    itemIds.forEach((itemId, index) => {
+      item.clickOnViewItemById(itemId)
+      itemPreview.clickEditOnPreview()
+      editItemPage.header.metadata()
+      metadataPage.setTag(filterForAutoselect_1[index].tags)
+      metadataPage.setDOK(filterForAutoselect_1[index].dok)
+      metadataPage.setDifficulty(filterForAutoselect_1[index].difficulty)
+      metadataPage.header.save(true)
+      metadataPage.header.clickOnPublishItem()
     })
   })
 
@@ -202,6 +213,7 @@ describe(`${FileHelper.getSpecName(
     })
     context('>dok', () => {
       before('login', () => {
+        cy.deleteAllAssignments('', Teacher.email)
         cy.login('publisher', contEditor.email, contEditor.pass)
       })
       before('create test', () => {
@@ -231,6 +243,7 @@ describe(`${FileHelper.getSpecName(
     })
     context('>difficulty', () => {
       before('login', () => {
+        cy.deleteAllAssignments('', Teacher.email)
         cy.login('publisher', contEditor.email, contEditor.pass)
       })
       before('create test', () => {
@@ -260,6 +273,7 @@ describe(`${FileHelper.getSpecName(
     })
     context('>tags', () => {
       before('login', () => {
+        cy.deleteAllAssignments('', Teacher.email)
         cy.login('publisher', contEditor.email, contEditor.pass)
       })
       before('create test', () => {
@@ -285,46 +299,6 @@ describe(`${FileHelper.getSpecName(
             )
           }
         })
-      })
-    })
-    context('>edit metadata of existing item and verify filters', () => {
-      before('>change metadat', () => {
-        testLibraryPage.sidebar.clickOnItemBank()
-        item.searchFilters.clearAll()
-        item.searchFilters.getAuthoredByMe()
-
-        item.clickOnViewItemById(itemIds[0])
-        itemPreview.clickEditOnPreview()
-        editItemPage.header.metadata()
-
-        metadataPage.routeStandardSearch()
-        metadataPage.setStandard(
-          commonStandardForAutoselect_2.standardsToSelect
-        )
-
-        metadataPage.setTag(filterForAutoselect_1[1].tags)
-        metadataPage.setDOK(filterForAutoselect_1[1].dok)
-        metadataPage.setDifficulty(filterForAutoselect_1[1].difficulty)
-
-        metadataPage.header.save(true)
-        metadataPage.header.clickOnPublishItem()
-      })
-      before('>create test', () => {
-        testLibraryPage.createNewTestAndFillDetails(testData)
-        testLibraryPage.testSummary.header.clickOnAddItems()
-        testLibraryPage.testAddItem.clickOnGroupItem()
-      })
-
-      it(`>create dynamic group-1`, () => {
-        filterForAutoselect_1[1].deliveryCount = 2
-        groupItemsPage
-          .createDynamicTest(1, filterForAutoselect_1[1])
-          .then((itemsObj) => {
-            CypressHelper.checkObjectEquality(
-              itemsObj.map((e) => e._id),
-              itemIds.slice(0, 2)
-            )
-          })
       })
     })
   })

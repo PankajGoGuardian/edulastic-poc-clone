@@ -58,7 +58,8 @@ const Hints = ({
               onAdd={_add}
               onRemove={_remove}
               onChange={(index, value) =>
-                _change(`metadata.${prop}[${index}]`, value)}
+                _change(`metadata.${prop}[${index}]`, value)
+              }
             />
           </Col>
         </StyledRow>

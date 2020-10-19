@@ -2,10 +2,21 @@ set -e
 
 cd ~/edulastic-poc
 yarn install --frozen-lockfile --silent --non-interactive
+
 if [ $? -ne 0 ]
  then
   echo "Yarn install failed...exiting script"
   exit 1
+fi
+
+if [[ -z "${SKIP_PRETTIER_CHECK}" ]]; then
+  yarn run prettier:check
+
+  if [ $? -ne 0 ]
+  then
+    echo "Prettier check failed...exiting script"
+    exit 1
+  fi
 fi
 
 dir_name=build-$(date +"%d-%m-%y-%H-%M")

@@ -14,12 +14,12 @@ import {
 } from 'recharts'
 import { head, get, isEmpty, round, sumBy } from 'lodash'
 import {
-  dropZoneTitleColor,
   greyGraphstroke,
   incorrect,
   yellow1,
   white,
   themeColor,
+  skippedBarColor,
 } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -79,6 +79,7 @@ CustomTooltip.defaultProps = {
 }
 
 class QuestionViewContainer extends Component {
+  // eslint-disable-next-line react/static-property-placement
   static contextType = LCBScrollContext
 
   static getDerivedStateFromProps(nextProps, preState) {
@@ -308,7 +309,7 @@ class QuestionViewContainer extends Component {
                   style={{ cursor: 'pointer' }}
                   stackId="a"
                   dataKey="skipped"
-                  fill={dropZoneTitleColor}
+                  fill={skippedBarColor}
                   onClick={this.onClickChart}
                 />
                 <Bar

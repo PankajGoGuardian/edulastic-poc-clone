@@ -242,9 +242,11 @@ class AnnotationsRnd extends Component {
                 }}
                 size={{ height, width }}
                 onDragStop={(evt, d) =>
-                  this.handleAnnotationPosition(d, annotation.id)}
+                  this.handleAnnotationPosition(d, annotation.id)
+                }
                 onResizeStop={(e, dir, ref, delta) =>
-                  this.handleAnnotationSize(delta, annotation.id)}
+                  this.handleAnnotationSize(delta, annotation.id)
+                }
                 style={{
                   zIndex: isAbove ? 20 : 10,
                 }}

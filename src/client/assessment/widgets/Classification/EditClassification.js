@@ -387,7 +387,7 @@ const EditClassification = ({
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: getInitalAnswerMap(),
         })
 
@@ -679,7 +679,8 @@ const EditClassification = ({
                   handleItemChangeChange(
                     'duplicateResponses',
                     !duplicateResponses
-                  )}
+                  )
+                }
                 checked={!!duplicateResponses}
                 mb="20px"
               >
@@ -688,7 +689,8 @@ const EditClassification = ({
               <CheckboxLabel
                 className="additional-options"
                 onChange={() =>
-                  handleItemChangeChange('shuffleOptions', !shuffleOptions)}
+                  handleItemChangeChange('shuffleOptions', !shuffleOptions)
+                }
                 checked={!!shuffleOptions}
                 mb="20px"
               >
@@ -700,7 +702,8 @@ const EditClassification = ({
                   handleItemChangeChange(
                     'transparentPossibleResponses',
                     !transparentPossibleResponses
-                  )}
+                  )
+                }
                 checked={!!transparentPossibleResponses}
                 mb="20px"
               >
@@ -714,7 +717,8 @@ const EditClassification = ({
                   handleItemChangeChange(
                     'transparentBackgroundImage',
                     !transparentBackgroundImage
-                  )}
+                  )
+                }
                 checked={!!transparentBackgroundImage}
                 mb="20px"
               >

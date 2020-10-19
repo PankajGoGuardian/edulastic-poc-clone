@@ -1,6 +1,5 @@
 import CypressHelper from '../../../util/cypressHelpers'
 import TeacherSideBar from '../../SideBarPage'
-import Helpers from '../../../util/Helpers'
 
 export default class TestAssignPage {
   constructor() {
@@ -70,7 +69,7 @@ export default class TestAssignPage {
 
   // *** ACTIONS START ***
 
-  selectClassDropdown = () => cy.get('[data-cy = "selectClass"]').click({ force: true });
+  selectClassDropdown = () => cy.get('[data-cy = "selectClass"]').click()
 
   clickOnDropDownOptionByText = (option) => {
     cy.wait(500)
@@ -91,13 +90,6 @@ export default class TestAssignPage {
     cy.focused().blur()
   }
 
-  selectMultipleCLasses = (classes) => {
-    this.selectClassDropdown()
-    classes.forEach((className) => {
-      this.clickOnDropDownOptionByText(className)
-    })
-  }
-
   verifyNoClassesInDropDown = (className) => {
     this.selectClassDropdown().type(className)
     cy.get('.ant-empty-description').should('contain', 'No Data')
@@ -108,27 +100,21 @@ export default class TestAssignPage {
     this.clickOnDropDownOptionByText(type)
   }
 
-  selectStudent = (students, selectAllStudents = false) => {
+  selectStudent = (students) => {
     // cy.get('[data-cy="selectStudent"]').click();
     cy.contains('label', 'STUDENTS')
       .next()
       .should('not.have.class', 'ant-select-disabled')
       .click()
     cy.wait(1000)
-    if (selectAllStudents) {
-      this.clickOnSelectAllStudentButton()
-    } else if (Cypress._.isArray(students)) {
+    if (Cypress._.isArray(students)) {
       students.forEach((student) => {
         // this.clickOnDropDownOptionByText(student);
-        cy.get(
-          `[title="${Helpers.getFormattedFirstLastName(student)}"]`
-        ).click({ force: true })
+        cy.get(`[title="${student}"]`).click({ force: true })
       })
     } else {
       // this.clickOnDropDownOptionByText(students);
-      cy.get(`[title="${Helpers.getFormattedFirstLastName(students)}"]`).click({
-        force: true,
-      })
+      cy.get(`[title="${students}"]`).click({ force: true })
     }
     cy.focused().blur()
   }
@@ -137,16 +123,6 @@ export default class TestAssignPage {
 
   clickOnSpecificStudent = () =>
     cy.get('[data-cy="radioSpecificStudent"]').click()
-
-  clickOnSelectAllStudentButton = () =>
-    cy.get('[data-cy="selectAllButton"]').click()
-
-  clickonUnselectAllButton = () => {
-    cy.get('[data-cy="unselectAllButton"]').click()
-    cy.contains('label', 'STUDENTS')
-      .next()
-      .should('not.have.class', 'ant-select-selection__choice')
-  }
 
   // MAXIMUM ATTEMPTS ALLOWED
 
@@ -234,7 +210,7 @@ export default class TestAssignPage {
 
   clickOnEvalByType = (type) => {
     this.getEvalTypesDropDown().click({ force: true })
-    cy.get(`[data-cy = ${type}]`).click({ force: true })
+    cy.get(`[ data-cy=${type}]`).click({ force: true })
   }
 
   proceedWithDuplicate = () => cy.get('[data-cy="duplicate"]').click()
@@ -291,7 +267,7 @@ export default class TestAssignPage {
         assert(
           xhr.status === 409,
           `assigning the assignment - ${
-          xhr.status === 409 ? 'Warning' : JSON.stringify(xhr.responseBody)
+            xhr.status === 409 ? 'Warning' : JSON.stringify(xhr.responseBody)
           }`
         )
         if (duplicate.duplicate === true) this.proceedWithDuplicate()
@@ -303,7 +279,7 @@ export default class TestAssignPage {
         assert(
           xhr.status === 200,
           `assigning the assignment - ${
-          xhr.status === 200 ? 'success' : JSON.stringify(xhr.responseBody)
+            xhr.status === 200 ? 'success' : JSON.stringify(xhr.responseBody)
           }`
         )
         // TODO: will be fixed as per requirement(class id can be included)
@@ -316,7 +292,7 @@ export default class TestAssignPage {
       }
       return cy.wait(1).then(() => assignmentIdObj)
     }
-    return cy.wait(1) // TODO : temp fix to handle .then(). To revisit and refactor as per app behaviour.
+    return this
   }
 
   // OVER RIDE TEST SETTING
@@ -432,23 +408,8 @@ export default class TestAssignPage {
     cy.server()
     cy.route('POST', '**/api/group/search').as('classes')
     cy.visit(`/author/assignments/${id}`)
-    cy.wait('@classes', { timeout: 80000 })
+    cy.wait('@classes')
     cy.contains('OVERRIDE TEST SETTINGS')
-  }
-
-  assignTestWithoutOpening(classes, testID) {
-    this.visitAssignPageById(testID)
-    this.selectMultipleCLasses(classes)
-    const start = new Date()
-    start.setDate(start.getDate() + 1)
-    this.setStartDate(start)
-    this.clickOnAssign()
-  }
-
-  assignOpenTest(classes, testID) {
-    this.visitAssignPageById(testID)
-    this.selectMultipleCLasses(classes)
-    this.clickOnAssign()
   }
 
   verifyTimeAssignedForTest = (questionCount) =>
@@ -457,8 +418,7 @@ export default class TestAssignPage {
   verifyInfoAboutTestTime = () => {
     this.getAssignmentTimeSettingInfo().scrollIntoView().trigger('mouseover')
     cy.wait(500)
-    cy.get('.ant-tooltip-inner').should(
-      'contains.text',
+    cy.get('.ant-tooltip-inner').contains(
       'The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.'
     )
   }

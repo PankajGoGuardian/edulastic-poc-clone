@@ -19,7 +19,10 @@ import CsvTable from '../../../../../common/components/tables/CsvTable'
 import columnData from '../../static/json/tableColumns.json'
 
 export const AssessmentStatisticTable = (props) => {
-  const [tableType, setTableType] = useState({ key: 'school', title: 'School' })
+  const [tableType, setTableType] = useState({
+    key: 'school',
+    title: 'School',
+  })
   const { data, role, className, name, isCsvDownloading, isPrinting } = props
 
   if (role === 'teacher' && tableType.key !== 'class') {
@@ -42,6 +45,7 @@ export const AssessmentStatisticTable = (props) => {
       const obj = { ...__data[0], key }
 
       let maxAssessmentDate = 0
+      let maxDueDate = 0
       let sumTotalScore = 0
       let sumTotalMaxScore = 0
       let sumStudentsAbsent = 0
@@ -56,6 +60,7 @@ export const AssessmentStatisticTable = (props) => {
           totalScore = 0,
           totalMaxScore = 0,
           assessmentDate,
+          dueDate,
           studentsAbsent,
           studentsAssigned,
           studentsGraded,
@@ -69,6 +74,8 @@ export const AssessmentStatisticTable = (props) => {
 
         if (maxAssessmentDate < assessmentDate)
           maxAssessmentDate = assessmentDate
+
+        if (maxDueDate < dueDate) maxDueDate = dueDate
 
         sumStudentsAbsent += studentsAbsent
         sumStudentsAssigned += studentsAssigned
@@ -90,13 +97,15 @@ export const AssessmentStatisticTable = (props) => {
       if (sumTotalScore) {
         avgScore = (sumTotalScore / sumStudentsGraded || 0).toFixed(2)
       }
+
       const result = {
         ...obj,
         avgStudentScore,
         scoreVariance: scoreVariance.toFixed(2),
         scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
         avgScore,
-        assessmentDate: formatDate(maxAssessmentDate),
+        assessmentDate: formatDate(maxAssessmentDate, true),
+        dueDate: formatDate(maxDueDate, true),
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,
         studentsGraded: sumStudentsGraded,
@@ -135,11 +144,11 @@ export const AssessmentStatisticTable = (props) => {
       }
 
       if (_tableType.key === 'school' || role === 'teacher') {
-        columns[1].sorter = sortNumbers('avgStudentScore')
-        columns[1].render = (text) => `${text}%`
+        columns[6].sorter = sortNumbers('avgStudentScore')
+        columns[6].render = (text) => `${text}%`
       } else {
-        columns[2].sorter = sortNumbers('avgStudentScore')
-        columns[2].render = (text) => `${text}%`
+        columns[7].sorter = sortNumbers('avgStudentScore')
+        columns[7].render = (text) => `${text}%`
       }
     })
 
@@ -179,7 +188,7 @@ export const AssessmentStatisticTable = (props) => {
       <Row type="flex" justify="start" className="top-area">
         <Col className="top-area-col table-title">
           <StyledH3>
-            Assessment Statistics of {name} by{' '}
+            Assignment Statistics for {name} by{' '}
             <span className="stats-grouped-by">{tableType.title}</span>
           </StyledH3>
         </Col>

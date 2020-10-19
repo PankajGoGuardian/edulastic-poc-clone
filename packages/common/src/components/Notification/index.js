@@ -10,7 +10,7 @@ const defaultConf = {
   className: 'customized-notification',
   message: '',
   description: '',
-  type: 'error',
+  type: 'warn',
   buttonLink: '',
   buttonText: '',
   showButton: false,
@@ -41,8 +41,8 @@ const notification = (options) => {
     ? ''
     : i18n.t(`notifications:${messageKey}.description`)
 
-  if (restOptions.type === 'error') {
-    translatedMessage = `${translatedMessage} Please contact Edulastic support.`
+  if (restOptions.type === 'error' && translatedMessage !== 'Incorrect') {
+    translatedMessage = `${translatedMessage} Please try again later, or email support@edulastic.com.`
   }
 
   const config = {

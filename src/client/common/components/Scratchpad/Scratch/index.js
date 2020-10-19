@@ -20,6 +20,7 @@ import {
   toggleButtonsAction,
   updateEditModeAction,
   updateScratchpadAction,
+  setScratchpadRectAction,
 } from '../duck'
 import MathTool from './MathTool'
 import protractorImg from './assets/protractor.png'
@@ -58,6 +59,8 @@ const Scratchpad = ({
   hideTools,
   clearClicked, // this is from highlight image,
   hideData,
+  setScratchpadRect,
+  conatinerWidth,
 }) => {
   const [zwibbler, setZwibbler] = useState()
   const [clipBoard, updateClipBoard] = useState()
@@ -231,7 +234,7 @@ const Scratchpad = ({
   }, [editMode])
 
   const onClickHandler = () => {
-    if (zwibbler && !deleteMode) {
+    if (zwibbler && !deleteMode && !readOnly) {
       setSelectedNodes(
         zwibbler.getSelectedNodes().map((id) => {
           const {
@@ -290,10 +293,13 @@ const Scratchpad = ({
         })
       })
       setZwibbler(newZwibbler)
-      if (!readOnly) {
-        updateScratchpad({
-          width: zwibblerRef.current.clientWidth,
-          height: zwibblerRef.current.clientHeight,
+      if (isStudentAttempt && !readOnly) {
+        const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
+        setScratchpadRect({
+          top: zwibblerDomRect.top,
+          left: zwibblerDomRect.left,
+          width: zwibblerDomRect.width,
+          height: zwibblerDomRect.height,
         })
       }
     }
@@ -342,7 +348,20 @@ const Scratchpad = ({
     if (zwibbler) {
       zwibbler.resize()
     }
-  }, [width, height])
+  }, [width, height, conatinerWidth])
+
+  useEffect(() => {
+    if (isStudentAttempt && !readOnly && zwibbler && zwibblerRef.current) {
+      const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
+      zwibbler.resize()
+      setScratchpadRect({
+        top: zwibblerDomRect.top,
+        left: zwibblerDomRect.left,
+        width: zwibblerDomRect.width,
+        height: zwibblerDomRect.height,
+      })
+    }
+  }, [conatinerWidth])
 
   return (
     <ScratchpadContainer ref={zwibblerContainer} hideData={hideData}>
@@ -390,6 +409,7 @@ const EnhancedComponent = compose(
       setSelectedNodes: setSelectedNodesAction,
       updateEditMode: updateEditModeAction,
       updateScratchpad: updateScratchpadAction,
+      setScratchpadRect: setScratchpadRectAction,
     }
   )
 )(Scratchpad)

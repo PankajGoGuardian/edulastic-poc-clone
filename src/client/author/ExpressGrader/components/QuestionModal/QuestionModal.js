@@ -271,7 +271,7 @@ class QuestionModal extends React.Component {
         bodyStyle={{ background: '#f0f2f5', height: '100%', overflowY: 'auto' }}
       >
         {isVisibleModal && question && loaded && (
-          <>
+          <React.Fragment>
             <ScrollContext.Provider
               value={{ getScrollElement: () => this.containerRef?.current }}
             >
@@ -304,10 +304,11 @@ class QuestionModal extends React.Component {
                 toggleEditResponse={() =>
                   this.setState(({ editResponse }) => ({
                     editResponse: !editResponse,
-                  }))}
+                  }))
+                }
               />
             </BottomNavigationWrapper>
-          </>
+          </React.Fragment>
         )}
       </ModalWrapper>
     )

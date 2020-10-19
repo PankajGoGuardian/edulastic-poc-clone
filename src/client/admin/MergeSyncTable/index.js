@@ -89,9 +89,11 @@ const SyncEnableDisable = ({
   <DistrictNameDiv justifyContentSpaceBetween>
     <DistrictSpan>{districtName}</DistrictSpan>
     <FlexDiv>
-      <SyncMessage>{`${isClasslink ? 'Classlink' : 'Clever'} Sync is ${
-        syncEnabled ? 'enabled' : 'disabled'
-      }.`}</SyncMessage>
+      <SyncMessage>
+        {`${isClasslink ? 'Edlink' : 'Clever'} Sync is ${
+          syncEnabled ? 'enabled' : 'disabled'
+        }.`}
+      </SyncMessage>
       {SyncTypes.map((item) => (
         <Button
           style={item.style}
@@ -148,7 +150,7 @@ const MergeInitializeSyncForm = Form.create({ name: 'mergeInitiateSyncForm' })(
           <Form.Item>
             {getFieldDecorator('atlasId', {
               initialValue: '',
-            })(<Input placeholder="Classlink Id" style={{ width: 300 }} />)}
+            })(<Input placeholder="Edlink Id" style={{ width: 300 }} />)}
           </Form.Item>
         ) : (
           <Form.Item>
@@ -253,7 +255,7 @@ function MergeSyncTable({
           />
           <Tabs type="card" defaultActiveKey="mergeIds" animated>
             <TabPane
-              tab={`Merge ${isClasslink ? 'Classlink' : 'Clever'} Ids`}
+              tab={`Merge ${isClasslink ? 'Edlink' : 'Clever'} Ids`}
               key="mergeIds"
             >
               <MergeIdsTable
@@ -302,8 +304,10 @@ function MergeSyncTable({
                 orgType={rosterSyncConfig.orgType}
                 applyClassNamesSync={applyClassNamesSync}
                 classNamePattern={rosterSyncConfig.classNamePattern}
+                overrideClassName={rosterSyncConfig.overrideClassName}
                 disableFields={syncEnabled}
                 isClasslink={isClasslink}
+                isClever={!!cleverId}
               />
             </TabPane>
             <TabPane tab="Sync" key="sync">

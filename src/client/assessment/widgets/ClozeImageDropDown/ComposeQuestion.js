@@ -780,9 +780,11 @@ class ComposeQuestion extends Component {
                         onDragStop={(evt, d) => handleDragStop(d)}
                         onDrag={(evt, d) => this.handleDragging(d)}
                         onResizeStop={(e, direction, ref) =>
-                          this.handleResizeStop(ref)}
+                          this.handleResizeStop(ref)
+                        }
                         onResize={(e, direction, ref) =>
-                          this.handleResizing(ref)}
+                          this.handleResizing(ref)
+                        }
                         onResizeStart={this.handleResizeStart}
                       >
                         <MoveControlButton
@@ -900,7 +902,8 @@ class ComposeQuestion extends Component {
                           this.onItemPropChange(
                             'imageAlterText',
                             val.target.value
-                          )}
+                          )
+                        }
                       />
                     </Col>
                     <Col span={24}>
@@ -913,7 +916,8 @@ class ComposeQuestion extends Component {
                           <TextInputStyled
                             defaultValue={responseContainer.label}
                             onChange={(e) =>
-                              this.onResponseLabelChange(index, e.target.value)}
+                              this.onResponseLabelChange(index, e.target.value)
+                            }
                           />
                         </ResponsTextInputWrapper>
                       ))}

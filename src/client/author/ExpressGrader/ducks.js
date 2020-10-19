@@ -123,7 +123,10 @@ function* submitResponse({ payload }) {
       userResponse,
       scores,
     })
-    notification({ type: 'success', messageKey: 'updatedResponseSuccessfully' })
+    notification({
+      type: 'success',
+      messageKey: 'updatedResponseSuccessfully',
+    })
     const { questionActivities } = scoreRes
     yield put(
       gradebookTestItemAddAction(

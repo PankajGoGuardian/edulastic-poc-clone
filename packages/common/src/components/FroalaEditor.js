@@ -31,6 +31,7 @@ import {
   beforeUpload,
 } from '../helpers'
 import headings from './FroalaPlugins/headings'
+import customPastePlugin from './FroalaPlugins/customPastePlugin'
 
 import MathModal from './MathModal'
 
@@ -388,6 +389,8 @@ export const Placeholder = styled.div.attrs({
 
 //adds h1 & h2 buttons commands to froala editor.
 headings(FroalaEditor)
+// adds past event handler
+customPastePlugin(FroalaEditor)
 
 const getFixedPostion = (el) => {
   return {

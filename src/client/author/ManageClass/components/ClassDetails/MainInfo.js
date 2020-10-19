@@ -47,6 +47,8 @@ const MainInfo = ({
     googleCode,
     canvasCourseName = '',
     canvasCourseSectionName = '',
+    atlasId = '',
+    cleverId,
   } = entity
   const _grade =
     allGrades
@@ -75,6 +77,8 @@ const MainInfo = ({
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
               unarchiveClass={unarchiveClass}
+              atlasId={atlasId}
+              cleverId={cleverId}
             />
           </FlexDiv>
           <FlexDiv>

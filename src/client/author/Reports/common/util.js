@@ -4,7 +4,6 @@ import {
   groupBy,
   sumBy,
   includes,
-  filter,
   map,
   orderBy,
   round,
@@ -51,7 +50,7 @@ export const getVariance = (arr) => {
 
   sum = 0
   for (let i = 0; i < arr.length; i++) {
-    sum += Math.pow(arr[i] - mean, 2)
+    sum += (arr[i] - mean) ** 2
   }
 
   const variance = Number((sum / arr.length).toFixed(2))
@@ -134,6 +133,7 @@ export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
       ) {
         return true
       }
+      return false
     }),
     'groupId'
   )
@@ -212,7 +212,7 @@ export const getOverallScore = (metrics = []) =>
   )
 
 export const filterAccordingToRole = (columns, role) =>
-  filter(columns, (column) => !includes(column.hiddenFromRole, role))
+  columns.filter((column) => !includes(column.hiddenFromRole, role))
 
 export const addColors = (
   data = [],
@@ -352,5 +352,11 @@ export const getStudentAssignments = (
   return [...assignments, overallAssignmentDetail]
 }
 
-export const formatDate = (milliseconds) =>
-  milliseconds ? moment(parseInt(milliseconds)).format('MMM DD, YYYY') : 'N/A'
+export const formatDate = (milliseconds, showTime) => {
+  if (showTime && milliseconds) {
+    return moment(parseInt(milliseconds, 10)).format('MMM DD, YYYY, h:mm A')
+  }
+  return milliseconds
+    ? moment(parseInt(milliseconds, 10)).format('MMM DD, YYYY')
+    : 'NA'
+}

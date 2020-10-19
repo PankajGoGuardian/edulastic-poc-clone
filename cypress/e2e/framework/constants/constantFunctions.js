@@ -28,15 +28,3 @@ export function getMasteryStatus(standardPerformance) {
     ? MASTERY.ALMOST_MASTERED
     : MASTERY.NOT_MASTERED
 }
-
-export function getRandomStudent(className, studName, min, max) {
-  return getRandomClass(className, min, max) + studName + getNumberInRange(1, 5)
-}
-
-export function getRandomClass(className, min, max) {
-  return className + getNumberInRange(min, max)
-}
-
-export function getNumberInRange(min, max) {
-  return Math.floor(Math.random() * (max - min) + min).toString()
-}

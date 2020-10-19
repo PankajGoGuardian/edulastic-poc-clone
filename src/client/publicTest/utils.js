@@ -3,7 +3,7 @@ import { maxBy } from 'lodash'
 import { Modal } from 'antd'
 import { notification } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
-import { test as testConstants } from '@edulastic/constants'
+import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 
 const releaseGradeLabels = testConstants.releaseGradeLabels
 const ARCHIVED_TEST_MSG =
@@ -50,7 +50,8 @@ export const formatAssignment = (assignment) => {
       : {}
     ).closedDate
   }
-  const lastAttempt = maxBy(reports, (o) => parseInt(o.startDate, 10)) || {}
+  const lastAttempt =
+    maxBy(reports, (o) => parseInt(o.startDate, 10) || 0) || {}
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0
   const absent = lastAttempt.status == 2
@@ -128,7 +129,6 @@ const redirectToAssessmentPlayer = (
     testId,
     _id: assignmentId,
     testType,
-    maxAttempts = 1,
     timedAssignment,
     pauseAllowed,
     allowedTime,
@@ -141,7 +141,22 @@ const redirectToAssessmentPlayer = (
     releaseScore,
   } = assignment
   // if assignment is graded, then redirected to assignment review page
-  if (graded) {
+  const activeAssignments = assignment.class.filter(
+    (item) =>
+      item._id === classId &&
+      item.status !== 'DONE' &&
+      item.status !== 'ARCHIVED'
+  )
+  const { maxAttempts = 1 } =
+    maxBy(activeAssignments, 'maxAttempts') || assignment.maxAttempts
+  let isExpired = true
+  if (activeAssignments.length) {
+    const currentTime = assignment.ts
+    isExpired = activeAssignments.every(
+      (item) => currentTime > item.endDate || item.closed
+    )
+  }
+  if (graded && (isExpired || attemptCount === maxAttempts)) {
     if (releaseScore === releaseGradeLabels.DONT_RELEASE) {
       return history.push({
         pathname: '/home/grades',
@@ -155,7 +170,7 @@ const redirectToAssessmentPlayer = (
     })
   }
   // if end date is crossed, then redirect to student dashboard
-  if (endDate < Date.now()) {
+  if (endDate < assignment.ts) {
     return redirectToDashbord('EXPIRED', history)
   }
 
@@ -218,7 +233,10 @@ const redirectToAssessmentPlayer = (
       testActivityId: lastAttempt._id,
       classId,
     })
-  } else if (attemptCount < maxAttempts) {
+  } else if (
+    attemptCount < maxAttempts ||
+    lastAttempt.status === testActivityStatus.NOT_STARTED
+  ) {
     startAssignment({ testId, assignmentId, testType, classId })
   }
 }
@@ -265,4 +283,18 @@ export const redirectToStudentPage = (
     }
     redirectToDashbord(msgType, history)
   }
+}
+
+export const activeAssignmentClassIdentifiers = (assignmentsObj) => {
+  const assignments = assignmentsObj && Object.values(assignmentsObj)
+  if (!assignments.length) {
+    return {}
+  }
+  const classIdentifiers = {}
+  assignments.forEach((item) => {
+    item.class.forEach((item) => {
+      classIdentifiers[item.identifier] = true
+    })
+  })
+  return classIdentifiers
 }

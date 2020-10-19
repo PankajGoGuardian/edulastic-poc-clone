@@ -149,7 +149,10 @@ const PDFPreview = ({
       ref={previewContainer}
     >
       <PerfectScrollbar ref={forwardedRef} option={{ wheelSpeed: 0.6 }}>
-        <Droppable drop={handleDropQuestion}>
+        <Droppable
+          drop={handleDropQuestion}
+          className={`${currentAnnotationTool}-tool-selected`}
+        >
           {page.URL === 'blank' && <Preview onClick={handleRemoveHighlight} />}
 
           {page.URL !== 'blank' && (
@@ -176,7 +179,7 @@ const PDFPreview = ({
               {annotations
                 .filter(
                   (item) =>
-                    item.toolbarMode === 'question' && item.page === page.pageNo
+                    item.toolbarMode === 'question' && item.page === currentPage
                 )
                 .map(({ uuid, qIndex, x, y, questionId }) => (
                   <div

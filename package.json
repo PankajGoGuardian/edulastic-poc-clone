@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "12.30.0",
+  "version": "12.43.0",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -14,6 +14,7 @@
     ]
   },
   "scripts": {
+    "bump": "./bump.sh",
     "lint": "eslint src/**/*.js",
     "lint-fix": "eslint src/**/*.js --fix",
     "format": "prettier --write 'src/client/**/*.js' !src/client/public/**/*.js",
@@ -48,10 +49,14 @@
     "cy:generate-report": "marge --no-code --cdn=true -o=cypress/reports -f=Cypress_Test_Report --ts=fullDate cypress/reports/cypress-report.json",
     "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",
     "storybook": "STORYBOOK_ENABLED=1 NODE_ENV=development start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "prettier:path": "yarn prettier --write",
+    "prettier:check": "yarn prettier --check \"src/**/*.js|src/**/*.ts\"",
+    "prettier:format": "yarn prettier --write \"src/**/*.js|src/**/*.ts\""
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
+    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#5ec82d2905aa7e4bd9f28732ed811a636617f867",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
@@ -76,14 +81,13 @@
     "d3-array": "^2.0.3",
     "dotenv": "^8.2.0",
     "eslint-plugin-cypress": "^2.1.2",
-    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#6d7e39a8d8588d3ff32572e3e9a73af0a5199cca",
     "faker": "^4.1.0",
     "fetch-mock": "^7.2.5",
     "firebase": "^7.13.2",
     "font-awesome": "^4.7.0",
     "froala-editor": "3.1.0",
     "history": "^4.7.2",
-    "howler": "^2.1.2",
+    "howler": "^2.2.0",
     "html-webpack-plugin": "^4.3.0",
     "jsxgraph": "^0.99.7",
     "keyboardevent-key-polyfill": "^1.1.0",
@@ -211,6 +215,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.0.2",
     "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.2",
     "eslint-plugin-prettier": "^3.1.4",
     "file-loader": "^2.0.0",
@@ -275,12 +280,10 @@
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "*.{json,css,scss}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "jest": {

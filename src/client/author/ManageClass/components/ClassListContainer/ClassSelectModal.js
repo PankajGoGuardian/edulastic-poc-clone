@@ -304,7 +304,10 @@ const ClassSelectModal = ({
               if (type === 'clever') {
                 classList[index].course = course.key
               } else if (type === 'googleClassroom') {
-                classList[index].course = { id: course.key, name: course.label }
+                classList[index].course = {
+                  id: course.key,
+                  name: course.label,
+                }
               }
               setClassListData(classList)
             }}

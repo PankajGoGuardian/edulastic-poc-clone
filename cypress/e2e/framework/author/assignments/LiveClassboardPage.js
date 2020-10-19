@@ -8,8 +8,8 @@ import {
 import QuestionResponsePage from './QuestionResponsePage'
 import { attemptTypes, queColor } from '../../constants/questionTypes'
 import RediectPopup from './redirectPopupPage'
+import TeacherSideBar from '../SideBarPage'
 import LCBtestSettings from './lcbTestSettings'
-import Helpers from '../../util/Helpers'
 
 class LiveClassboardPage {
   constructor() {
@@ -29,13 +29,11 @@ class LiveClassboardPage {
   getCardIndex = (studentName) =>
     cy
       .get('[data-cy="studentName"]')
-      .contains(Helpers.getFormattedFirstLastName(studentName))
+      .contains(studentName)
       .then((ele) => Cypress.$('[data-cy="studentName"]').index(ele))
 
   getStudentCardByStudentName = (studentName) => {
-    const selector = `[data-cy="student-card-${Helpers.getFormattedFirstLastName(
-      studentName
-    )}"]`
+    const selector = `[data-cy="student-card-${studentName}"]`
     return cy.get(selector)
   }
 
@@ -97,23 +95,6 @@ class LiveClassboardPage {
       .get('[data-cy=studentnQuestionTab]')
       .find('[class^="PresentationToggleSwitch"]')
 
-  getAllAttemptContainersByStudentName = (stuName) =>
-    this.getStudentCardByStudentName(stuName).find(
-      '[data-cy="attempt-container"]'
-    )
-
-  getAttemptContainerByIndexByStudentName = (stuName, ind) =>
-    this.getAllAttemptContainersByStudentName(stuName).eq(ind)
-
-  getScoreOnAttemptContainerByIndexByStudentName = (stuName, ind) =>
-    this.getAttemptContainerByIndexByStudentName(stuName, ind).find('p').eq(0)
-
-  getPerfOnAttemptContainerByIndexByStudentName = (stuName, ind) =>
-    this.getAttemptContainerByIndexByStudentName(stuName, ind).find('p').eq(1)
-
-  getAttemptNoOnContainerByIndexByStudentName = (stuName, ind) =>
-    this.getAttemptContainerByIndexByStudentName(stuName, ind).find('p').eq(2)
-
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -132,18 +113,15 @@ class LiveClassboardPage {
   }
 
   clickonQuestionsTab = () => {
-    const randomString = Helpers.getRamdomString(2)
     cy.server()
-    cy.route('GET', /\bitem\b.*\bgroup\b/).as(
-      `getFirstQuestion-${randomString}`
-    )
-    cy.route('GET', '**/test/**').as(`get-test-data-${randomString}`)
+    cy.route('GET', /\bitem\b.*\bgroup\b/).as('getFirstQuestion')
+    cy.route('GET', '**/test/**').as('get-test-data')
     this.getQuestionsTab()
       .click({ force: true })
       .should('have.css', 'background-color', queColor.BLUE_2)
-    cy.wait(`@get-test-data-${randomString}`)
+    cy.wait('@get-test-data')
     return cy
-      .wait(`@getFirstQuestion-${randomString}`)
+      .wait('@getFirstQuestion')
       .then(
         (xhr) =>
           xhr.response.body.result[0] && xhr.response.body.result[0].testItemId
@@ -229,7 +207,7 @@ class LiveClassboardPage {
   }
 
   // REMOVE
-  clickOnRemove = (isAllow = true, isInProgress = false) => {
+  clickOnRemove = (isAllow = true) => {
     cy.server()
     cy.route('PUT', '**/remove-students').as('removeStudents')
     this.clickOnMore().then(() => cy.get('[data-cy="removeStudents"]').click())
@@ -241,9 +219,7 @@ class LiveClassboardPage {
       )
     } else {
       cy.contains(
-        isInProgress
-          ? 'In progress students can not be removed'
-          : 'You will not be able to remove selected student(s) as the status is graded'
+        'You will not be able to remove selected student(s) as the status is graded'
       ).should('be.visible')
     }
   }
@@ -306,9 +282,7 @@ class LiveClassboardPage {
     cy.url().should('include', `/author/classboard/${assignmnetId}/${classId}`)
 
   checkClassName(className) {
-    return cy.get('[data-cy=CurrentClassName]').then(($ele) => {
-      assert.equal($ele.text(), className, 'Class name does not match :')
-    })
+    return cy.get('[data-cy=CurrentClassName]').contains(className)
   }
 
   checkSummaryTabIsPresent() {
@@ -360,22 +334,11 @@ class LiveClassboardPage {
       .should('be.visible')
   }
 
-  checkSelectAllCheckboxOfStudent = () => {
-    cy.get('[data-cy=selectAllCheckbox]')
-      .closest(`span`)
-      .then(($ele) => {
-        if (!$ele.hasClass('ant-checkbox-checked')) cy.wrap($ele).click()
-      })
-  }
+  checkSelectAllCheckboxOfStudent = () =>
+    cy.get('[data-cy=selectAllCheckbox]').check({ force: true })
 
   uncheckSelectAllCheckboxOfStudent = () =>
     cy.get('[data-cy=selectAllCheckbox]').uncheck({ force: true })
-
-  clickAttemptContainerByIndexByName = (stuName, ind) => {
-    this.getAttemptContainerByIndexByStudentName(stuName, ind).click()
-    /* avoiding route for test activity */
-    cy.contains('Student Feedback!', { timeout: 60000 }).should('be.visible')
-  }
 
   checkStudentResponseIsDisplayed = () =>
     cy
@@ -399,22 +362,13 @@ class LiveClassboardPage {
     score,
     performance,
     queAttempt,
-    email,
-    isRedirected = false
+    email
   ) {
     const queCards = Object.keys(queAttempt).map((queNum) => queAttempt[queNum])
     this.getCardIndex(studentName).then((index) => {
       let [totalScore, maxScore] = score.split('/').map((ele) => ele.trim())
-      if (
-        [
-          studentSide.ABSENT,
-          studentSide.NOT_STARTED,
-          teacherSide.REDIRECTED,
-        ].indexOf(status) !== -1
-      ) {
+      if ([studentSide.ABSENT, studentSide.NOT_STARTED].indexOf(status) !== -1)
         totalScore = `-`
-        performance = '0%'
-      }
       /*  // TODO : remove log once flow is commplted
       console.log(
         "stduent stats :: ",
@@ -428,38 +382,23 @@ class LiveClassboardPage {
         email
       )
       this.verifyStudentStatusIsByIndex(index, status)
-      if (!isRedirected) {
-        this.verifyScoreByStudentIndex(index, totalScore, maxScore)
-        this.getStudentPerformanceByIndex(index).should(
-          'have.text',
-          performance
-        )
-      }
-      this.verifyQuestionCards(index, queCards, !isRedirected)
+      this.verifyScoreByStudentIndex(index, totalScore, maxScore)
+      this.getStudentPerformanceByIndex(index).should('have.text', performance)
+      this.verifyQuestionCards(index, queCards)
       if (
-        ([
-          studentSide.NOT_STARTED,
-          studentSide.ABSENT,
-          teacherSide.REDIRECTED,
-        ].indexOf(status) === -1 &&
-          !isRedirected) ||
-        (isRedirected && status == studentSide.GRADED)
+        [studentSide.NOT_STARTED, studentSide.ABSENT].indexOf(status) === -1
       ) {
         cy.server()
         cy.route('GET', '**/test-activity/**').as('test-activity')
         // this.getViewResponseByIndex(index)
         this.getViewResponseByStudentName(studentName)
-          .last()
           .should('be.exist')
           .click({ force: true })
           .then(() => {
             cy.wait('@test-activity')
             cy.get('.ant-select-selection-selected-value')
               .eq(0)
-              .should(
-                'have.text',
-                Helpers.getFormattedFirstLastName(studentName)
-              )
+              .should('have.text', studentName)
           })
         this.clickOnCardViewTab()
         // } else this.getViewResponseByIndex(index).should("not.be.exist");
@@ -480,10 +419,7 @@ class LiveClassboardPage {
     if (!isManualGraded)
       this.getStudentStatusByIndex(index).should(($ele) => {
         const studentStatus = Cypress.$($ele).text().toLowerCase().trim()
-        expect(
-          studentStatus,
-          `student status for card index ${index + 1}`
-        ).to.eq(
+        expect(studentStatus).to.eq(
           (status === asgnStatus.SUBMITTED
             ? asgnStatus.GRADED
             : status
@@ -493,10 +429,7 @@ class LiveClassboardPage {
     else
       this.getStudentStatusByIndex(index).should(($ele) => {
         const studentStatus = Cypress.$($ele).text().toLowerCase().trim()
-        expect(
-          studentStatus,
-          `student status for card index ${index + 1}`
-        ).to.eq(status.toLowerCase())
+        expect(studentStatus).to.eq(status.toLowerCase())
       })
   }
 
@@ -516,55 +449,47 @@ class LiveClassboardPage {
       cy.wrap(ele).find('div').should('have.length', queCount)
     })
 
-  verifyQuestionCards = (index, queCards, isVisible = true) => {
+  verifyQuestionCards = (index, queCards) => {
     this.getQuestionsByIndex(index).then((ele) => {
-      if (isVisible) {
-        queCards.forEach((que, qindex) => {
-          switch (que) {
-            case attemptTypes.RIGHT:
-              expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
-                queColor.RIGHT
-              )
-              break
+      queCards.forEach((que, qindex) => {
+        switch (que) {
+          case attemptTypes.RIGHT:
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.RIGHT
+            )
+            break
 
-            case attemptTypes.WRONG:
-              expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
-                queColor.WRONG
-              )
-              break
+          case attemptTypes.WRONG:
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.WRONG
+            )
+            break
 
-            case attemptTypes.PARTIAL_CORRECT:
-              expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
-                queColor.YELLOW
-              )
-              break
+          case attemptTypes.PARTIAL_CORRECT:
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.YELLOW
+            )
+            break
 
-            case attemptTypes.SKIP:
-              expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
-                queColor.SKIP
-              )
-              break
+          case attemptTypes.SKIP:
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.SKIP
+            )
+            break
 
-            case attemptTypes.MANUAL_GRADE:
-              expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
-                queColor.MANUAL_GRADE
-              )
-              break
+          case attemptTypes.MANUAL_GRADE:
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.MANUAL_GRADE
+            )
+            break
 
-            default:
-              expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
-                queColor.NO_ATTEMPT
-              )
-              break
-          }
-        })
-      } else {
-        // TODO: visiblity checks fails even element is not visible
-        //   expect(
-        //     Cypress.dom.isVisible(ele),
-        //     'verify question progress bar should not be visible'
-        //   ).to.be.false
-      }
+          default:
+            expect(ele.find('div').eq(qindex).css('background-color')).to.eq(
+              queColor.NO_ATTEMPT
+            )
+            break
+        }
+      })
     })
   }
 
@@ -614,7 +539,14 @@ class LiveClassboardPage {
     quePerformanceScore = `${Cypress._.round(sumAvgQuePerformance, 2)} / ${
       quePerformanceAllStudent.length
     }`
-    return { score, perf, perfValue, quePerformanceScore, totalScore, maxScore }
+    return {
+      score,
+      perf,
+      perfValue,
+      quePerformanceScore,
+      totalScore,
+      maxScore,
+    }
     // return stats;
   }
 
@@ -795,41 +727,6 @@ class LiveClassboardPage {
         $ele.text().replace(/\u00a0/g, ' '),
         `verify student card score for student index ${index + 1}`
       ).to.eq(`${totalScore} / ${maxScore}`)
-    )
-
-  showMulipleAttemptsByStuName = (stuName) => {
-    this.getStudentCardByStudentName(stuName)
-      .find('[data-cy="questions"]')
-      .parent()
-      .then(($heading) =>
-        cy.wrap($heading).trigger('mouseover', 'top', { force: true })
-      )
-      .then(() => cy.wait(1000))
-  }
-
-  verifyStudentPerfOnAttemptContainer = (stuName, attempIndex, per) =>
-    this.getPerfOnAttemptContainerByIndexByStudentName(
-      stuName,
-      attempIndex
-    ).should('have.text', per)
-
-  verifyAttemptNumberOnAttemptContainer = (stuName, attempIndex, cardIndex) =>
-    this.getAttemptNoOnContainerByIndexByStudentName(stuName, cardIndex).should(
-      'have.text',
-      `Attempt ${attempIndex}`
-    )
-
-  verifyStudentScoreOnAttemptContainer = (stuName, attempIndex, score) =>
-    this.getScoreOnAttemptContainerByIndexByStudentName(
-      stuName,
-      attempIndex
-    ).then(($ele) =>
-      expect(
-        $ele.text().replace(/\u00a0/g, ' '),
-        `verify student card score for student(${stuName}), for container index ${
-          attempIndex + 1
-        }`
-      ).to.eq(`${score}`)
     )
 
   // *** APPHELPERS END ***

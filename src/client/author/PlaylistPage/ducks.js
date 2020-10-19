@@ -399,7 +399,10 @@ function deleteModuleFromPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, (draft) => {
     if (payload !== undefined) {
       draft.modules.splice(payload, 1)
-      notification({ type: 'success', messageKey: 'moduleRemovedFromPlaylist' })
+      notification({
+        type: 'success',
+        messageKey: 'moduleRemovedFromPlaylist',
+      })
     } else {
       notification({ messageKey: 'moduleRemovedFromPlaylistErr' })
     }
@@ -802,7 +805,10 @@ function* createPlaylistSaga({ payload }) {
     yield put(createPlaylistSuccessAction(entity))
     yield put(replace(`/author/playlists/${entity._id}/edit${hash}`))
 
-    yield call(notification, { type: 'success', messageKey: 'playlistCreated' })
+    yield call(notification, {
+      type: 'success',
+      messageKey: 'playlistCreated',
+    })
   } catch (err) {
     yield call(notification, { messageKey: 'playlistCreateErr' })
     yield put(createPlaylistErrorAction('playlistCreateErr'))
@@ -838,7 +844,10 @@ function* updatePlaylistSaga({ payload }) {
 
     yield put(updatePlaylistSuccessAction(entity))
     if (!payload.hideNotification) {
-      yield call(notification, { type: 'success', messageKey: 'playlistSaved' })
+      yield call(notification, {
+        type: 'success',
+        messageKey: 'playlistSaved',
+      })
     }
     const newId = entity._id
     if (oldId !== newId && newId) {
@@ -881,7 +890,6 @@ function* publishPlaylistSaga({ payload }) {
       !get(data, 'collections', []).length
     ) {
       yield call(notification, {
-        type: 'warn',
         messageKey: 'publishPlaylistErrWithAssociated',
       })
       return
@@ -950,7 +958,10 @@ function* receiveSharedWithListSaga({ payload }) {
     )
     yield put(updateSharedWithListAction(coAuthors))
   } catch (e) {
-    yield call(notification, { type: 'error', messageKey: 'getSharedUsersErr' })
+    yield call(notification, {
+      type: 'error',
+      messageKey: 'getSharedUsersErr',
+    })
   }
 }
 

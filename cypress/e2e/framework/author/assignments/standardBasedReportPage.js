@@ -1,7 +1,6 @@
 import { studentSide } from '../../constants/assignmentStatus'
 import { attemptTypes } from '../../constants/questionTypes'
 import LiveClassboardPage from './LiveClassboardPage'
-import Helpers from '../../util/Helpers'
 
 export default class StandardBasedReportPage extends LiveClassboardPage {
   // *** ELEMENTS START ***
@@ -148,7 +147,7 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
             perfSum += perf
           })
 
-          cy.contains(Helpers.getFormattedFirstLastName(student))
+          cy.contains(student)
             .closest('tr')
             .as('studentrow')
             .find('td')

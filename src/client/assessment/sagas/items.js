@@ -28,6 +28,10 @@ import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
 import { getServerTs } from '../../student/utils'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
+import {
+  scratchpadDomRectSelector,
+  resetScratchpadDimensionsAction,
+} from '../../common/components/Scratchpad/duck'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -84,7 +88,7 @@ function* saveUserResponse({ payload }) {
       isPlaylist = false,
       callback,
       pausing,
-      extData,
+      questionId,
     } = payload
     const itemIndex = payload.itemId
     const assignmentsByIds = yield select(
@@ -183,17 +187,27 @@ function* saveUserResponse({ payload }) {
     const shuffles = {}
     const timesSpent = {}
     questions.forEach((question) => {
-      timesSpent[question] = ts / questions.length
+      if (isDocBased) {
+        if (questionId && question === questionId) {
+          timesSpent[questionId] = ts
+        } else {
+          timesSpent[question] = 0
+        }
+      } else {
+        timesSpent[question] = ts / questions.length
+      }
       itemAnswers[question] = answers[question]
       // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
-      if (
-        redirectPolicy ===
-          assignmentPolicyOptions.showPreviousAttemptOptions
-            .STUDENT_RESPONSE_AND_FEEDBACK &&
-        !answers[question] &&
-        !!userPrevAnswer[question]
-      ) {
+      const {
+        STUDENT_RESPONSE_AND_FEEDBACK,
+        SCORE_RESPONSE_AND_FEEDBACK,
+      } = assignmentPolicyOptions.showPreviousAttemptOptions
+      const hasPrevResponse = [
+        STUDENT_RESPONSE_AND_FEEDBACK,
+        SCORE_RESPONSE_AND_FEEDBACK,
+      ].includes(redirectPolicy)
+      if (hasPrevResponse && !answers[question] && !!userPrevAnswer[question]) {
         itemAnswers[question] = userPrevAnswer[question]
       }
       if (shuffledOptions[question]) {
@@ -220,21 +234,13 @@ function* saveUserResponse({ payload }) {
       bookmarked,
     }
 
-    if (!isEmpty(extData)) {
-      activity.extData = extData
-    }
-
     let userWorkData = { ..._userWork, scratchpad: false }
     let shouldSaveOrUpdateAttachment = false
     const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
 
     if (scratchPadUsed) {
-      const { height, width } = yield select((state) => state.scratchpad)
-      userWorkData = {
-        ...userWorkData,
-        scratchpad: true,
-        dimensions: { height, width },
-      }
+      const dimensions = yield select(scratchpadDomRectSelector)
+      userWorkData = { ...userWorkData, scratchpad: true, dimensions }
       shouldSaveOrUpdateAttachment = true
     }
     activity.userWork = userWorkData
@@ -292,10 +298,10 @@ function* saveUserResponse({ payload }) {
     if (payload?.urlToGo) {
       yield put(push({ pathname: payload.urlToGo, state: payload?.locState }))
     }
+    yield put(resetScratchpadDimensionsAction())
     if (shouldClearUserWork) {
       /**
-       * if we have two assignments one for practice
-       * and one for class assignment with same questions
+       * if we have two assignments one for practice and one for class assignment with same questions
        * need to clear user work in store after we click save and exit button
        * otherwise the store data remains and it is shown in the other assignment
        */

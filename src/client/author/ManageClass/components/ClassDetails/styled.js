@@ -75,7 +75,7 @@ export const StudentsTable = styled(EduTableStyled)`
           color: ${secondaryTextColor};
           &:last-child {
             padding: 0px;
-            width: 40px;
+            width: 10%;
             svg {
               display: none;
               width: auto;

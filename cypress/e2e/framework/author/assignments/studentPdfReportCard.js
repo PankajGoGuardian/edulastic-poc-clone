@@ -10,7 +10,6 @@ import {
   getPerformanceBandAndColor,
   getMasteryStatus,
 } from '../../constants/constantFunctions'
-import Helpers from '../../util/Helpers'
 
 const { _ } = Cypress
 
@@ -22,9 +21,7 @@ export default class StudentsReportCard {
 
   /* GET ELEMENTS START */
   getReportContainerByStudent = (studName) =>
-    cy
-      .get(`[data-cy="${Helpers.getFormattedFirstLastName(studName)}"]`)
-      .as('report-container-by-student-name')
+    cy.get(`[data-cy="${studName}"]`).as('report-container-by-student-name')
 
   selectedReportContainer = () => cy.get('@report-container-by-student-name')
 
@@ -137,10 +134,7 @@ export default class StudentsReportCard {
     this.getTestName().should('have.text', testname)
 
   verifyStudentName = (studentName) =>
-    this.getStudentName().should(
-      'contain.text',
-      Helpers.getFormattedFirstLastName(studentName)
-    )
+    this.getStudentName().should('contain.text', studentName)
 
   verifySubject = (subjects) =>
     this.getSubjects().should('have.text', subjects.join(', '))

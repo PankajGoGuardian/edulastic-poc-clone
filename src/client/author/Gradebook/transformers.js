@@ -77,12 +77,15 @@ export const TEST_TYPE_COLOR = {
   'common assessment': '#FF9100',
 }
 
-export const getFormattedName  = (
+export const getFormattedName = (
   firstName = '',
   middleName = '',
   lastName = ''
 ) => {
-  if ((!firstName && !lastName && !middleName) || (firstName && firstName === 'Anonymous')) {
+  if (
+    (!firstName && !lastName && !middleName) ||
+    (firstName && firstName === 'Anonymous')
+  ) {
     return 'Anonymous'
   }
   let fullName = ''

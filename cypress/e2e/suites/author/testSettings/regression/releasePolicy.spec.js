@@ -116,6 +116,9 @@ describe(`${FileHelper.getSpecName(
         cy.login('teacher', teacher, password)
         testLibrary.createTest('TEST_PREVIEW').then((id) => {
           testId = id
+          testLibrary.clickOnAssign()
+          testLibrary.assignPage.selectClass(className)
+          testLibrary.assignPage.clickOnAssign()
         })
       })
 
@@ -126,12 +129,15 @@ describe(`${FileHelper.getSpecName(
         it(`> teacher update release grade policy - ${releaseGradeTypes.DONT_RELEASE}`, () => {
           cy.login('teacher', teacher, password)
           cy.deleteAllAssignments(student, teacher)
-          testLibrary.searchAndClickTestCardById(testId)
-          testLibrary.clickOnDuplicate()
-          testLibrary.testSummary.setName(testdata.assignmentName)
+          testLibrary.sidebar.clickOnTestLibrary()
+          testLibrary.searchFilters.clearAll()
+          testLibrary.clickOnTestCardById(testId)
+          testLibrary.clickOnDetailsOfCard()
+          testLibrary.publishedToDraft()
           testLibrary.header.clickOnSettings()
           settings.setRealeasePolicy(releaseGradeTypes.DONT_RELEASE)
           settings.header.clickOnPublishButton()
+          cy.contains('Share With Others')
           testLibrary.clickOnAssign()
           testAssign.selectClass('Class')
           testAssign.clickOnAssign()
@@ -149,7 +155,7 @@ describe(`${FileHelper.getSpecName(
         })
 
         it('> verify stats on report page', () => {
-          report.validateAssignment(testdata.assignmentName, 'GRADED', 'REVIEW')
+          report.validateAssignment(testdata.assignmentName, 'GRADED')
           report.validateStats('1', '1/1')
         })
       })
@@ -164,15 +170,20 @@ describe(`${FileHelper.getSpecName(
         it(`> teacher update release grade policy - ${releaseGradeTypes.SCORE_ONLY}`, () => {
           cy.login('teacher', teacher, password)
           cy.deleteAllAssignments(student, teacher)
-          testLibrary.searchAndClickTestCardById(testId)
-          testLibrary.clickOnDuplicate()
-          testLibrary.testSummary.setName(testdata.assignmentName)
-          testLibrary.header.clickOnSettings()
-          settings.setRealeasePolicy(releaseGradeTypes.SCORE_ONLY)
-          settings.header.clickOnPublishButton()
-          testLibrary.clickOnAssign()
-          testAssign.selectClass('Class')
-          testAssign.clickOnAssign()
+          testLibrary.sidebar.clickOnTestLibrary()
+          testLibrary.searchFilters.clearAll()
+          testLibrary.clickOnTestCardById(testId)
+          testLibrary.clickOnDetailsOfCard()
+          testLibrary.publishedToDraftAssigned()
+          testLibrary.getVersionedTestID().then((id) => {
+            testId = id
+            testLibrary.header.clickOnSettings()
+            settings.setRealeasePolicy(releaseGradeTypes.SCORE_ONLY)
+            settings.header.clickOnPublishButton()
+            testLibrary.clickOnAssign()
+            testAssign.selectClass('Class')
+            testAssign.clickOnAssign()
+          })
         })
 
         it(`> attempt by ${stuName}`, () => {
@@ -188,7 +199,7 @@ describe(`${FileHelper.getSpecName(
 
         it('> verify stats on report page', () => {
           const { perfValue } = statsMap[stuName]
-          report.validateAssignment(testdata.assignmentName, 'GRADED', 'REVIEW')
+          report.validateAssignment(testdata.assignmentName, 'GRADED')
           report.validateStats('1', '1/1', undefined, perfValue)
         })
       })
@@ -205,15 +216,21 @@ describe(`${FileHelper.getSpecName(
           it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_RESPONSE}`, () => {
             cy.login('teacher', teacher, password)
             cy.deleteAllAssignments(student, teacher)
-            testLibrary.searchAndClickTestCardById(testId)
-            testLibrary.clickOnDuplicate()
-            testLibrary.testSummary.setName(testdata.assignmentName)
-            testLibrary.header.clickOnSettings()
-            settings.setRealeasePolicy(releaseGradeTypes.WITH_RESPONSE)
-            settings.header.clickOnPublishButton()
-            testLibrary.clickOnAssign()
-            testAssign.selectClass('Class')
-            testAssign.clickOnAssign()
+            testLibrary.sidebar.clickOnTestLibrary()
+            testLibrary.searchFilters.clearAll()
+            testLibrary.clickOnTestCardById(testId)
+            testLibrary.clickOnDetailsOfCard()
+            testLibrary.publishedToDraftAssigned()
+            testLibrary.getVersionedTestID().then((id) => {
+              testId = id
+              testLibrary.header.clickOnSettings()
+              settings.setRealeasePolicy(releaseGradeTypes.WITH_RESPONSE)
+              settings.header.clickOnPublishButton()
+              cy.contains('Share With Others')
+              testLibrary.clickOnAssign()
+              testAssign.selectClass('Class')
+              testAssign.clickOnAssign()
+            })
           })
 
           it(`> attempt by ${stuName}`, () => {
@@ -261,15 +278,21 @@ describe(`${FileHelper.getSpecName(
           it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_ANSWERS}`, () => {
             cy.login('teacher', teacher, password)
             cy.deleteAllAssignments(student, teacher)
-            testLibrary.searchAndClickTestCardById(testId)
-            testLibrary.clickOnDuplicate()
-            testLibrary.testSummary.setName(testdata.assignmentName)
-            testLibrary.header.clickOnSettings()
-            settings.setRealeasePolicy(releaseGradeTypes.WITH_ANSWERS)
-            settings.header.clickOnPublishButton()
-            testLibrary.clickOnAssign()
-            testAssign.selectClass('Class')
-            testAssign.clickOnAssign()
+            testLibrary.sidebar.clickOnTestLibrary()
+            testLibrary.searchFilters.clearAll()
+            testLibrary.clickOnTestCardById(testId)
+            testLibrary.clickOnDetailsOfCard()
+            testLibrary.publishedToDraftAssigned()
+            testLibrary.getVersionedTestID().then((id) => {
+              testId = id
+              testLibrary.header.clickOnSettings()
+              settings.setRealeasePolicy(releaseGradeTypes.WITH_ANSWERS)
+              settings.header.clickOnPublishButton()
+              cy.contains('Share With Others')
+              testLibrary.clickOnAssign()
+              testAssign.selectClass('Class')
+              testAssign.clickOnAssign()
+            })
           })
 
           it(`> attempt by ${stuName}`, () => {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withTheme } from 'styled-components'
 import { compose } from 'redux'
+import { isEqual } from 'lodash'
 
 import { fractionStringToNumber } from '../../../utils/helpers'
 import { CLEAR } from '../../../constants/constantsForQuestions'
@@ -56,8 +57,11 @@ const getSnapSize = (snapTo, axisDistance) => {
 }
 
 class GraphDisplay extends Component {
-  state = {
-    graphIsValid: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      graphIsValid: false,
+    }
   }
 
   componentDidMount() {
@@ -194,6 +198,30 @@ class GraphDisplay extends Component {
       default:
         return QuadrantsContainer
     }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    const { inLCB, isExpressGrader } = this.props
+    // a perf optimization done in LCB view to avoid unresponsive question view.
+    // without this, for every update graph re-rendering causing freezing
+    // we are checking graphData.activity,graphData.elements,bgShapes for change
+    // TODO: re-factor graph components to be more efficient in other parts of app
+    if (
+      inLCB &&
+      !isExpressGrader &&
+      this.props?.graphData &&
+      isEqual(
+        nextProps?.graphData?.activity,
+        this.props?.graphData?.activity
+      ) &&
+      isEqual(nextProps?.bgShapes, this.props?.bgShapes) &&
+      this.props.tReady === nextProps.tReady &&
+      this.props.windowHeight === nextProps.windowHeight
+    ) {
+      return false
+    }
+
+    return true
   }
 
   getGraphContainerProps = () => {

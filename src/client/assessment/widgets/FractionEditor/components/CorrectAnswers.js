@@ -104,7 +104,7 @@ const CorrectAnswers = ({
           )}
           size="default"
           value={get(item, 'validation.validResponse.score', 1)}
-          onBlur={handleCorrectAnswerPointsChange}
+          onChange={handleCorrectAnswerPointsChange}
           style={{ width: '140px', marginRight: '25px', background: '#F8F8FB' }}
         />
       </FlexContainer>

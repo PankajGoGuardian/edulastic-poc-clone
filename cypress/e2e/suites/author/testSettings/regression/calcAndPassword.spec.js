@@ -54,7 +54,7 @@ describe(`${FileHelper.getSpecName(
         cy.login('student', Student1.email, Student1.pass)
 
         assignmentsPage.clickOnAssigmentByTestId(OriginalTestId)
-        studentTestPage.assertCalcType('NONE')
+        studentTestPage.assertCalcType()
         studentTestPage.clickOnExitTest()
       })
     })

@@ -331,6 +331,8 @@ const MatchListPreview = ({
     fontWeight: theme.widgets.matchList.dragItemFontWeight,
     color: theme.widgets.matchList.dragItemColor,
     minWidth: dragItemMinWidth,
+    maxWidth: 335,
+    padding: '2px 12px',
     overflow: 'hidden',
     transform: 'translate3d(0px, 0px, 0px)',
     minHeight: flag !== 'ans' ? choiceMinHeight : '100%',
@@ -344,7 +346,7 @@ const MatchListPreview = ({
         ? direction.replace(/row/gi, 'column')
         : direction,
     alignItems: horizontallyAligned ? 'flex-start' : 'center',
-    width: isPrintPreview ? '100%' : horizontallyAligned ? 1050 : 750,
+    width: isPrintPreview ? 'max-content' : horizontallyAligned ? 1050 : 750,
   }
 
   const showEvaluate =

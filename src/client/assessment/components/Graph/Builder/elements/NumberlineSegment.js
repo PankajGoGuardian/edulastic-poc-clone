@@ -1,7 +1,6 @@
 import JXG from 'jsxgraph'
 import { Colors, CONSTANT } from '../config'
 import {
-  calcMeasure,
   findAvailableStackedSegmentPosition,
   getAvailablePositions,
   getClosestTick,
@@ -10,13 +9,76 @@ import {
 } from '../utils'
 import { defaultPointParameters } from '../settings'
 
-// Check if there an element inside after segment dragging, then find closest available space and put segment there
+// get point position on drog-drop
+const getUpdatedPoint = (
+  board,
+  point,
+  lastPosition,
+  availablePositions,
+  isSnap = true
+) => {
+  const isVertical = checkOrientation(board)
+  let currentPosition = isVertical ? point.Y() : point.X()
+  if (board.numberlineSnapToTicks && isSnap) {
+    currentPosition = getClosestTick(currentPosition, board.numberlineAxis)
+  }
+
+  if (
+    availablePositions.findIndex(
+      (pos) => currentPosition > pos.start && currentPosition < pos.end
+    ) > -1
+  ) {
+    return currentPosition
+  }
+
+  return lastPosition
+}
+
+// for segment drag-drop
+const getUpdatedPointsCoords = (
+  board,
+  position,
+  segment,
+  lastTruePositions,
+  availablePositions,
+  isSnap = true
+) => {
+  const { point1, point2 } = segment
+  const { point1X, point2X } = lastTruePositions
+  const isVertical = checkOrientation(board)
+
+  const newPoint1Position = getUpdatedPoint(
+    board,
+    point1,
+    point1X,
+    availablePositions,
+    isSnap
+  )
+
+  const newPoint2Position = getUpdatedPoint(
+    board,
+    point2,
+    point2X,
+    availablePositions,
+    isSnap
+  )
+
+  const coord1 = isVertical
+    ? [position, newPoint1Position]
+    : [newPoint1Position, position]
+  const coord2 = isVertical
+    ? [position, newPoint2Position]
+    : [newPoint2Position, position]
+
+  return [coord1, coord2]
+}
+// Check if there an element inside after segment dragging,
+// then find closest available space and put segment there
 const handleSegmentDrag = (board, segment, position, isStacked = false) => {
   let pointAvailablePositions = null
   let pointLastTruePosition = null
 
   let pointsLastTruePositions = null
-  let pointsLastPositions = null
   let availablePositions = null
 
   const isVertical = checkOrientation(board)
@@ -26,47 +88,45 @@ const handleSegmentDrag = (board, segment, position, isStacked = false) => {
       if (e.movementX === 0 && e.movementY === 0) {
         return
       }
-
-      let currentPosition = isVertical ? point.Y() : point.X()
-
-      if (board.numberlineSnapToTicks) {
-        currentPosition = getClosestTick(currentPosition, board.numberlineAxis)
-      }
-
-      if (
-        pointAvailablePositions.findIndex(
-          (pos) => currentPosition > pos.start && currentPosition < pos.end
-        ) > -1
-      ) {
-        pointLastTruePosition = currentPosition
-      }
-
+      const newPosition = getUpdatedPoint(
+        board,
+        point,
+        pointLastTruePosition,
+        pointAvailablePositions,
+        false
+      )
       const coord = isVertical
-        ? [position, pointLastTruePosition]
-        : [pointLastTruePosition, position]
+        ? [position, newPosition]
+        : [newPosition, position]
+
       point.setPosition(JXG.COORDS_BY_USER, coord)
       point.dragged = true
       board.dragged = true
     })
 
     point.on('up', () => {
-      pointAvailablePositions = null
-      pointLastTruePosition = null
       if (point.dragged) {
         point.dragged = false
-        const coord = isVertical ? [position, point.Y()] : [point.X(), position]
+        const newPosition = getUpdatedPoint(
+          board,
+          point,
+          pointLastTruePosition,
+          pointAvailablePositions
+        )
+        const coord = isVertical
+          ? [position, newPosition]
+          : [newPosition, position]
+
         point.setPosition(JXG.COORDS_BY_USER, coord)
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
       }
+      pointAvailablePositions = null
+      pointLastTruePosition = null
     })
 
     point.on('down', () => {
       pointLastTruePosition = point.X()
-      pointAvailablePositions = getAvailablePositions(
-        board,
-        segment,
-        board.stackResponses
-      )
+      pointAvailablePositions = getAvailablePositions(board, segment, isStacked)
       pointAvailablePositions = pointAvailablePositions.filter(
         (item) =>
           pointLastTruePosition > item.start && pointLastTruePosition < item.end
@@ -79,63 +139,47 @@ const handleSegmentDrag = (board, segment, position, isStacked = false) => {
       return
     }
 
-    let [delta] = calcMeasure(e.movementX, 0, board)
-    delta = +delta.toFixed(6)
-    pointsLastPositions.point1X += delta
-    pointsLastPositions.point2X += delta
-
-    let newPoint1X = pointsLastPositions.point1X
-    let newPoint2X = pointsLastPositions.point2X
-
-    if (board.numberlineSnapToTicks) {
-      newPoint1X = getClosestTick(newPoint1X, board.numberlineAxis)
-      const segmentLength = +(
-        pointsLastPositions.point2X - pointsLastPositions.point1X
-      ).toFixed(6)
-      newPoint2X = newPoint1X + segmentLength
-    }
-
-    if (
-      availablePositions.findIndex(
-        (pos) =>
-          newPoint1X > pos.start &&
-          newPoint1X < pos.end &&
-          newPoint2X > pos.start &&
-          newPoint2X < pos.end
-      ) > -1
-    ) {
-      pointsLastTruePositions.point1X = newPoint1X
-      pointsLastTruePositions.point2X = newPoint2X
-    }
-
-    segment.point1.setPosition(JXG.COORDS_BY_USER, [
-      pointsLastTruePositions.point1X,
+    const [coord1, coord2] = getUpdatedPointsCoords(
+      board,
       position,
-    ])
-    segment.point2.setPosition(JXG.COORDS_BY_USER, [
-      pointsLastTruePositions.point2X,
-      position,
-    ])
+      segment,
+      pointsLastTruePositions,
+      availablePositions,
+      false
+    )
+
+    segment.point1.setPosition(JXG.COORDS_BY_USER, coord1)
+    segment.point2.setPosition(JXG.COORDS_BY_USER, coord2)
     segment.dragged = true
     board.dragged = true
   })
 
   segment.on('up', () => {
-    pointsLastTruePositions = null
-    pointsLastPositions = null
-    availablePositions = null
     if (segment.dragged) {
       segment.dragged = false
+
+      const [coord1, coord2] = getUpdatedPointsCoords(
+        board,
+        position,
+        segment,
+        pointsLastTruePositions,
+        availablePositions
+      )
+
+      segment.point1.setPosition(JXG.COORDS_BY_USER, coord1)
+      segment.point2.setPosition(JXG.COORDS_BY_USER, coord2)
+
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
     }
+    pointsLastTruePositions = null
+    availablePositions = null
   })
 
   segment.on('down', () => {
-    pointsLastPositions = {
+    pointsLastTruePositions = {
       point1X: segment.point1.X(),
       point2X: segment.point2.X(),
     }
-    pointsLastTruePositions = { ...pointsLastPositions }
     availablePositions = getAvailablePositions(board, segment, isStacked)
   })
 }

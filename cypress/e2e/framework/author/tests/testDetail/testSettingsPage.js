@@ -44,7 +44,7 @@ export default class TestSettings {
   getMarkAsDoneManually = () =>
     cy.get('#mark-as-done').find('[value="manually"]')
 
-  getStudentPlayerskin = () => cy.get('[data-cy="playerSkinType"]')
+  getStudentPlayerSkin = () => cy.get('[data-cy="playerSkinType"]')
 
   getPerformanceBandDropDown = () =>
     cy.get('[data-cy="performance-band"]').find('.ant-select-selection')
@@ -72,10 +72,7 @@ export default class TestSettings {
     cy.get('.ant-select-dropdown-menu-item').contains('Static Password').click()
 
   enterStaticPassword = (pass) =>
-    cy
-      .get('[placeholder="Enter Password"]')
-      .should(($ele) => expect(Cypress.dom.isAttached($ele)).to.be.true)
-      .type(`{selectall}${pass}`)
+    cy.get('[placeholder="Enter Password"]').type(pass)
 
   clickOnDynamicPassword = () =>
     cy
@@ -202,7 +199,7 @@ export default class TestSettings {
     })
 
   selectStudentPlayerSkinByOption = (option) => {
-    // this.showAdvancedSettings();
+    this.showAdvancedSettings()
     this.getStudentPlayerskin().click({ force: true })
     this.selectOptionInDropDown(option)
   }
@@ -221,8 +218,7 @@ export default class TestSettings {
   verifyInfoAboutTestTime = () => {
     this.getAssignmentTimeSettingInfo().scrollIntoView().trigger('mouseover')
     cy.wait(500)
-    cy.get('.ant-tooltip-inner').should(
-      'contains.text',
+    cy.get('.ant-tooltip-inner').contains(
       'The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.'
     )
   }

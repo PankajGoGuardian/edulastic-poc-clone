@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-
+import { response as responseConstant } from '@edulastic/constants'
 import { white } from '@edulastic/colors'
 
 export const CheckBox = styled.div`
@@ -9,6 +9,7 @@ export const CheckBox = styled.div`
   height: ${(props) => props.height || 'auto'};
   min-height: ${(props) => props.height || '32px'};
   min-width: ${(props) => props.width || '140px'};
+  max-height: ${responseConstant.mathInputMaxHeight};
   margin: 0px 2px 0px 2px;
   font-weight: 700;
   align-items: center;

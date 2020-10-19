@@ -444,7 +444,8 @@ class QuadrantsMoreOptions extends Component {
                   this.handleCheckbox(
                     'displayPositionOnHover',
                     displayPositionOnHover
-                  )}
+                  )
+                }
                 checked={displayPositionOnHover}
                 textTransform="uppercase"
               >
@@ -455,7 +456,8 @@ class QuadrantsMoreOptions extends Component {
               <CheckboxLabel
                 name="drawLabelZero"
                 onChange={() =>
-                  this.handleCheckbox('drawLabelZero', drawLabelZero)}
+                  this.handleCheckbox('drawLabelZero', drawLabelZero)
+                }
                 checked={drawLabelZero}
                 textTransform="uppercase"
               >
@@ -466,7 +468,8 @@ class QuadrantsMoreOptions extends Component {
               <CheckboxLabel
                 name="layoutSnapto"
                 onChange={() =>
-                  this.handleCheckbox('layoutSnapto', layoutSnapto)}
+                  this.handleCheckbox('layoutSnapto', layoutSnapto)
+                }
                 checked={layoutSnapto}
                 textTransform="uppercase"
               >
@@ -481,7 +484,8 @@ class QuadrantsMoreOptions extends Component {
                     this.handleCheckbox(
                       'displayPositionPoint',
                       displayPositionPoint
-                    )}
+                    )
+                  }
                   checked={displayPositionPoint}
                   textTransform="uppercase"
                 >
@@ -675,7 +679,8 @@ class QuadrantsMoreOptions extends Component {
                   <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() =>
-                      this.handleCheckbox('xShowAxisLabel', xShowAxisLabel)}
+                      this.handleCheckbox('xShowAxisLabel', xShowAxisLabel)
+                    }
                     checked={xShowAxisLabel}
                   />
                 </Col>
@@ -683,7 +688,8 @@ class QuadrantsMoreOptions extends Component {
                   <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() =>
-                      this.handleCheckbox('xHideTicks', xHideTicks)}
+                      this.handleCheckbox('xHideTicks', xHideTicks)
+                    }
                     checked={xHideTicks}
                   />
                 </Col>
@@ -705,7 +711,8 @@ class QuadrantsMoreOptions extends Component {
                   <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() =>
-                      this.handleCheckbox('xCommaInLabel', xCommaInLabel)}
+                      this.handleCheckbox('xCommaInLabel', xCommaInLabel)
+                    }
                     checked={xCommaInLabel}
                   />
                 </Col>
@@ -713,7 +720,8 @@ class QuadrantsMoreOptions extends Component {
                   <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() =>
-                      this.handleCheckbox('xDrawLabel', xDrawLabel)}
+                      this.handleCheckbox('xDrawLabel', xDrawLabel)
+                    }
                     checked={xDrawLabel}
                   />
                 </Col>
@@ -813,7 +821,8 @@ class QuadrantsMoreOptions extends Component {
                   <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() =>
-                      this.handleCheckbox('yShowAxisLabel', yShowAxisLabel)}
+                      this.handleCheckbox('yShowAxisLabel', yShowAxisLabel)
+                    }
                     checked={yShowAxisLabel}
                   />
                 </Col>
@@ -821,7 +830,8 @@ class QuadrantsMoreOptions extends Component {
                   <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() =>
-                      this.handleCheckbox('yHideTicks', yHideTicks)}
+                      this.handleCheckbox('yHideTicks', yHideTicks)
+                    }
                     checked={yHideTicks}
                   />
                 </Col>
@@ -843,7 +853,8 @@ class QuadrantsMoreOptions extends Component {
                   <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() =>
-                      this.handleCheckbox('yCommaInLabel', yCommaInLabel)}
+                      this.handleCheckbox('yCommaInLabel', yCommaInLabel)
+                    }
                     checked={yCommaInLabel}
                   />
                 </Col>
@@ -851,7 +862,8 @@ class QuadrantsMoreOptions extends Component {
                   <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() =>
-                      this.handleCheckbox('yDrawLabel', yDrawLabel)}
+                      this.handleCheckbox('yDrawLabel', yDrawLabel)
+                    }
                     checked={yDrawLabel}
                   />
                 </Col>
@@ -1000,7 +1012,8 @@ class QuadrantsMoreOptions extends Component {
                   this.handleBgImgCheckbox(
                     'showShapePoints',
                     backgroundImage.showShapePoints
-                  )}
+                  )
+                }
                 checked={backgroundImage.showShapePoints}
               >
                 {t(

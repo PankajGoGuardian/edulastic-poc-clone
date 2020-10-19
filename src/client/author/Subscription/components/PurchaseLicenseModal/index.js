@@ -72,7 +72,10 @@ const PurchaseLicenseModal = (props) => {
           setCurrentModalState((prev) => prev + 1)
         }
       } else
-        notification({ type: 'warn', messageKey: 'pleaseChoosePurchaseOption' })
+        notification({
+          type: 'warn',
+          messageKey: 'pleaseChoosePurchaseOption',
+        })
       return
     }
 

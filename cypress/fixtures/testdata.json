@@ -650,7 +650,11 @@
                   "type": "table",
                   "horizontal_lines": false
                 },
-                "stems": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "stems": [
+                  "<p>FC Barcelona</p>",
+                  "<p>Real Madrid</p>",
+                  "<p>Pari SG</p>"
+                ],
                 "options": ["True", "False"],
                 "validation": {
                   "scoring_type": "exactMatch",
@@ -696,7 +700,11 @@
                 "title": "Choice matrix - inline",
                 "firstMount": true,
                 "options": ["True", "False"],
-                "stems": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "stems": [
+                  "<p>FC Barcelona</p>",
+                  "<p>Real Madrid</p>",
+                  "<p>Pari SG</p>"
+                ],
                 "stimulus": "<p>Q2 - <strong style=\"color: rgb(67, 75, 93); background-color: rgb(243, 243, 243);\">Choice Matrix - Inline</strong></p>",
                 "type": "choiceMatrix",
                 "ui_style": {
@@ -746,7 +754,11 @@
                 "title": "Choice matrix - labels",
                 "firstMount": true,
                 "options": ["True", "False"],
-                "stems": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "stems": [
+                  "<p>FC Barcelona</p>",
+                  "<p>Real Madrid</p>",
+                  "<p>Pari SG</p>"
+                ],
                 "stimulus": "<p>Q3 - <strong style=\"color: rgb(67, 75, 93); background-color: rgb(243, 243, 243);\">Choice Matrix - Labels</strong></p>",
                 "type": "choiceMatrix",
                 "ui_style": {
@@ -1008,7 +1020,11 @@
                 "type": "clozeImageDropDown",
                 "firstMount": true,
                 "stimulus": "<p><strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Q4 - Label Image With Drop Down</strong></p>",
-                "options": [["FC Barcelona", "Real Madrid"], ["Real Madrid", "Pari SG"], ["Pari SG", "FC Barcelona"]],
+                "options": [
+                  ["FC Barcelona", "Real Madrid"],
+                  ["Real Madrid", "Pari SG"],
+                  ["Pari SG", "FC Barcelona"]
+                ],
                 "validation": {
                   "scoring_type": "exactMatch",
                   "valid_response": {
@@ -1180,15 +1196,26 @@
                 "possible_response_groups": [
                   {
                     "title": "",
-                    "responses": ["Choice B", "Choice C", "Choice A", "Choice D"]
+                    "responses": [
+                      "Choice B",
+                      "Choice C",
+                      "Choice A",
+                      "Choice D"
+                    ]
                   }
                 ],
-                "possible_responses": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>"],
+                "possible_responses": [
+                  "<p>FC Barcelona</p>",
+                  "<p>Real Madrid</p>"
+                ],
                 "stimulus": "<p>Q2 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Classification</strong></p>",
                 "type": "classification",
                 "ui_style": {
                   "column_count": 2,
-                  "column_titles": ["<p>My First Team</p>", "<p>My Second Team</p>"],
+                  "column_titles": [
+                    "<p>My First Team</p>",
+                    "<p>My Second Team</p>"
+                  ],
                   "row_count": 1,
                   "row_titles": []
                 },
@@ -1241,15 +1268,27 @@
                     "responses": ["Choice B", "Choice C", "Choice A"]
                   }
                 ],
-                "possible_responses": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "possible_responses": [
+                  "<p>FC Barcelona</p>",
+                  "<p>Real Madrid</p>",
+                  "<p>Pari SG</p>"
+                ],
                 "type": "matchList",
                 "stimulus": "<p>Q3 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Match List</strong></p>",
-                "list": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "list": [
+                  "<p>FC Barcelona</p>",
+                  "<p>Real Madrid</p>",
+                  "<p>Pari SG</p>"
+                ],
                 "validation": {
                   "scoring_type": "exactMatch",
                   "valid_response": {
                     "score": 1,
-                    "value": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"]
+                    "value": [
+                      "<p>FC Barcelona</p>",
+                      "<p>Real Madrid</p>",
+                      "<p>Pari SG</p>"
+                    ]
                   },
                   "alt_responses": []
                 },
@@ -1285,7 +1324,11 @@
                 "title": "OrderList",
                 "type": "orderList",
                 "stimulus": "<p>Q4 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Orderlist</strong></p>",
-                "list": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "list": [
+                  "<p>FC Barcelona</p>",
+                  "<p>Real Madrid</p>",
+                  "<p>Pari SG</p>"
+                ],
                 "validation": {
                   "scoring_type": "exactMatch",
                   "valid_response": {

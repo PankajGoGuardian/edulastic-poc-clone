@@ -164,7 +164,6 @@ function* fetchTestsSaga() {
       loadedPage,
       filter,
       collection,
-      searchString,
     } = yield select((state) => state[sliceName])
     // Add authoredBy and sources once BE is fixed
 
@@ -178,7 +177,6 @@ function* fetchTestsSaga() {
               grades,
               filter,
               collections: collection === '' ? [] : [collection],
-              searchString,
             },
             page: loadedPage + 1,
             limit: LIMIT,

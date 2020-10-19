@@ -25,7 +25,6 @@ import {
 import {
   Button,
   ButtonContainer,
-  CanvasClassTable,
   ClassNameWrapper,
   Container,
   HeadingWrapper,
@@ -72,6 +71,7 @@ const CanvasBulkAddClass = ({
 
   useEffect(() => {
     if (institution) {
+      canvasCourseList = []
       getCanvasCourseListRequest(institution)
     }
   }, [institution])

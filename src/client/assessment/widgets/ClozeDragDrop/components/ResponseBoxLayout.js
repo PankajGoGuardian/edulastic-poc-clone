@@ -60,7 +60,7 @@ const ResponseBoxLayout = ({
           flexDirection={horizontallyAligned ? 'column' : 'row'}
           flexWrap={horizontallyAligned ? 'nowrap' : 'wrap'}
           justifyContent={horizontallyAligned ? 'center' : 'flex-start'}
-          alignItems="stretch"
+          alignItems="flex-start"
         >
           {hasGroupResponses && (
             <GroupWrapper horizontallyAligned={horizontallyAligned}>

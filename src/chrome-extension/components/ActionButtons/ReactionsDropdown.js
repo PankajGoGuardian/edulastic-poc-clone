@@ -12,7 +12,11 @@ const Reaction = ({ emoji, label, clickCallback }) => {
   const activeToneId = localStorage.getItem('edu-skinTone')
 
   return (
-    <div className="dropdown-outer" onClick={() => clickCallback(emoji)}>
+    <div
+      className="dropdown-outer"
+      role="button"
+      onClick={() => clickCallback(emoji)}
+    >
       <div className="dropdown-item" title={label}>
         {(EMOJI_BY_TONE[activeToneId] && EMOJI_BY_TONE[activeToneId][emoji]) ||
           EMOJI[emoji]}
@@ -42,8 +46,6 @@ const Reactions = [
 ]
 
 const ReactionsDropdown = ({ userData, addMessage, removeMessage, toneId }) => {
-  const { meetingID, userId, classId, fullname, avatar } = userData
-
   const socket = window['edu-meet']
 
   const clickCallback = (emoji) => {

@@ -6,7 +6,6 @@ import {
   greyThemeDark1,
   greyishBorder,
   lightGreySecondary,
-  themeColorBlue,
 } from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
@@ -80,15 +79,22 @@ const PrintTestModal = ({
       onCancel={onCancel}
       title="Print Test"
       footer={
-        <StyledFooter>
-          <EduButton isGhost data-cy="CANCEL" height="40px" onClick={onCancel}>
-            CANCEL
-          </EduButton>
-          ,
-          <EduButton height="40px" data-cy="PRINT" onClick={handleSubmit}>
-            PRINT
-          </EduButton>
-        </StyledFooter>
+        <>
+          <StyledFooter>
+            <EduButton
+              isGhost
+              data-cy="CANCEL"
+              height="40px"
+              onClick={onCancel}
+            >
+              CANCEL
+            </EduButton>
+
+            <EduButton height="40px" data-cy="PRINT" onClick={handleSubmit}>
+              PRINT
+            </EduButton>
+          </StyledFooter>
+        </>
       }
       width={626}
     >
@@ -194,10 +200,6 @@ const StyledInput = styled(Input)`
   border: 1px solid ${greyishBorder};
   background: ${lightGreySecondary};
   border-radius: 0;
-  &:focus,
-  &:hover {
-    border: 1px solid ${themeColorBlue};
-  }
 `
 
 const Info = styled.div`

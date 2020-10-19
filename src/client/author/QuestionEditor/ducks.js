@@ -477,7 +477,10 @@ function* saveQuestionSaga({
     const locationState = yield select((state) => state.router.location.state)
     updateItemWithAlignmentDetails(itemDetail, alignments)
     let currentQuestionIds = getQuestionIds(itemDetail)
-    const { rowIndex, tabIndex } = locationState || { rowIndex: 0, tabIndex: 1 }
+    const { rowIndex, tabIndex } = locationState || {
+      rowIndex: 0,
+      tabIndex: 1,
+    }
     const { id } = question
     const entity = {
       ...question,

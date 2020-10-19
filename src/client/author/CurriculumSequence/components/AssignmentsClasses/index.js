@@ -22,9 +22,6 @@ const AssignmentsClasses = ({
   assignmentRows,
   handleActionClick,
 }) => {
-  if (!assignmentRows.length) {
-    return null
-  }
   const data = assignmentRows?.map((assignment, index) => ({
     key: index,
     ...assignment,
@@ -152,7 +149,6 @@ const AssignmentsClasses = ({
       ),
     },
   ]
-
   return (
     <AssignmentsClassesContainer
       onClick={(e) => {

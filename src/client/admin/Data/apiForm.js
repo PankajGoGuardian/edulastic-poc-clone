@@ -177,7 +177,7 @@ export const apiForms = [
   },
   {
     id: 'delta-sync-atlas',
-    name: 'Trigger Classlink Delta Sync',
+    name: 'Trigger Edlink Delta Sync',
     endPoint: 'atlas/delta-sync',
     method: 'post',
     fields: [

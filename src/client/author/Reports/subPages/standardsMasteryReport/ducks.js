@@ -35,7 +35,7 @@ const initialState = {
     termId: '',
     subject: '',
     grades: ['K'],
-    domainIds: ['All'],
+    domainIds: 'All',
     // classSectionId: "",
     // assessmentType: ""
   },
@@ -43,7 +43,7 @@ const initialState = {
 
 export const reportSMRSettingsReducer = createReducer(initialState, {
   [SET_SMR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

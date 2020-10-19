@@ -9,7 +9,13 @@ import {
   get,
 } from 'lodash'
 import { helpers } from '@edulastic/common'
-import { test as testConstants, collections } from '@edulastic/constants'
+import {
+  test as testConstants,
+  collections,
+  question as questionConstants,
+} from '@edulastic/constants'
+
+const { sectionLabelType } = questionConstants
 
 const { nonPremiumCollections = {} } = collections
 
@@ -17,7 +23,7 @@ const { getQuestionLevelScore, getPoints } = helpers
 
 const getStandardWiseSummary = (question, point) => {
   let standardSummary
-  if (question) {
+  if (question && question.type !== sectionLabelType) {
     const points = point
     const alignment = get(question, 'alignment', [])
     standardSummary = flatMap(
@@ -25,7 +31,7 @@ const getStandardWiseSummary = (question, point) => {
       ({ domains, isEquivalentStandard = false, curriculumId }) =>
         flatMap(domains, ({ standards }) =>
           map(standards, ({ name }) => ({
-            curriculumId: `${curriculumId}`,
+            curriculumId,
             identifier: name,
             totalPoints: points,
             totalQuestions: 1,
@@ -53,7 +59,9 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
       : scoring[_id] ||
         (itemLevelScoring === true && itemLevelScore) ||
         maxScore
-    const questions = get(item, 'data.questions', [])
+    const questions = get(item, 'data.questions', []).filter(
+      ({ type }) => type !== sectionLabelType
+    )
     const itemTotalQuestions = questions.length
     const questionWisePoints = getQuestionLevelScore(
       { ...item, isLimitedDeliveryType },
@@ -75,7 +83,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
       const standardSumm = map(standardSummary, (objects, curriculumId) => {
         const obj = groupBy(objects, 'identifier')
         const standardObj = map(obj, (elements, identifier) => ({
-          curriculumId,
+          curriculumId: parseInt(curriculumId, 10),
           identifier,
           totalQuestions: sumBy(elements, 'totalQuestions'),
           totalPoints: sumBy(elements, 'totalPoints'),

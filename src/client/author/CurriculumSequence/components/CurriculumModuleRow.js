@@ -78,7 +78,6 @@ import {
   HideLinkLabel,
   CaretUp,
   Bullet,
-  MenuStyled,
 } from './styled'
 
 const { releaseGradeLabels } = testConstants
@@ -746,7 +745,7 @@ class ModuleRow extends Component {
                     : {}
 
                   const moreMenu = (
-                    <MenuStyled data-cy="assessmentItemMoreMenu">
+                    <Menu data-cy="assessmentItemMoreMenu">
                       <CaretUp className="fa fa-caret-up" />
                       {!isStudent && (
                         <Menu.Item
@@ -760,7 +759,8 @@ class ModuleRow extends Component {
                           onClick={() =>
                             togglePlaylistTestDetails({
                               id: moduleData?.contentId,
-                            })}
+                            })
+                          }
                         >
                           View Test Details
                         </Menu.Item>
@@ -777,7 +777,8 @@ class ModuleRow extends Component {
                         <Menu.Item
                           data-cy="show-differentiation"
                           onClick={() =>
-                            this.showDifferentiation(moduleData.contentId)}
+                            this.showDifferentiation(moduleData.contentId)
+                          }
                         >
                           DIfferentiation
                         </Menu.Item>
@@ -790,7 +791,8 @@ class ModuleRow extends Component {
                               moduleData.contentId,
                               assignmentRows,
                               module._id
-                            )}
+                            )
+                          }
                         >
                           Unassign
                         </Menu.Item>
@@ -801,7 +803,7 @@ class ModuleRow extends Component {
                         >
                           Remove
                         </Menu.Item> */}
-                    </MenuStyled>
+                    </Menu>
                   )
 
                   const showHideAssessmentButton = hasEditAccess &&

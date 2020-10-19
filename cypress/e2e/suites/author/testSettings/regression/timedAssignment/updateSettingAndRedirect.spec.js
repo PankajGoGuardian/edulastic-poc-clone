@@ -4,7 +4,6 @@ import AssignmentsPage from '../../../../../framework/student/assignmentsPage'
 import StudentTestPage from '../../../../../framework/student/studentTestPage'
 import AuthorAssignmentPage from '../../../../../framework/author/assignments/AuthorAssignmentPage'
 import LiveClassboardPage from '../../../../../framework/author/assignments/LiveClassboardPage'
-import { redirectType } from '../../../../../framework/constants/assignmentStatus'
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -58,7 +57,9 @@ describe(`${FileHelper.getSpecName(
         customtestid,
         customtestTime
       )
-      studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: 3 })
+      studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, {
+        time: 3,
+      })
 
       studentTestPage.waitWhileAttempt('00:00:10')
       studentTestPage
@@ -131,9 +132,6 @@ describe(`${FileHelper.getSpecName(
         liveClassboardPage.checkSelectAllCheckboxOfStudent()
         liveClassboardPage.clickOnRedirect()
         liveClassboardPage.verifyTimeWhileRedirectIs(10)
-        liveClassboardPage.redirectPopup.selectRedirectPolicy(
-          redirectType.FEEDBACK_ONLY
-        )
         liveClassboardPage.clickOnRedirectSubmit()
       })
 
@@ -210,7 +208,9 @@ describe(`${FileHelper.getSpecName(
         customtestid,
         customtestTime
       )
-      studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: 3 })
+      studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, {
+        time: 3,
+      })
 
       studentTestPage.waitWhileAttempt('00:00:10')
       studentTestPage
@@ -232,9 +232,6 @@ describe(`${FileHelper.getSpecName(
       liveClassboardPage.clickOnRedirect()
       liveClassboardPage.verifyTimeWhileRedirectIs(3)
       liveClassboardPage.updateTimeWhileRedirect(updatedtime)
-      liveClassboardPage.redirectPopup.selectRedirectPolicy(
-        redirectType.FEEDBACK_ONLY
-      )
       liveClassboardPage.clickOnRedirectSubmit()
     })
 

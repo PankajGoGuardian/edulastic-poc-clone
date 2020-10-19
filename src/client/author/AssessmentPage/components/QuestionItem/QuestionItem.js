@@ -48,29 +48,11 @@ import {
 const { DragItem } = DragDrop
 
 class QuestionItem extends React.Component {
-  static propTypes = {
-    index: PropTypes.number.isRequired,
-    data: PropTypes.object.isRequired,
-    onCreateOptions: PropTypes.func.isRequired,
-    onOpenEdit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    saveAnswer: PropTypes.func.isRequired,
-    evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-    userAnswer: PropTypes.any,
-    previewMode: PropTypes.string.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    highlighted: PropTypes.bool.isRequired,
-    answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-  }
-
-  static defaultProps = {
-    evaluation: undefined,
-    userAnswer: undefined,
-    answer: undefined,
-  }
-
-  state = {
-    dragging: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      dragging: false,
+    }
   }
 
   itemRef = React.createRef()
@@ -221,16 +203,30 @@ class QuestionItem extends React.Component {
       groupId,
       qId,
       clearHighlighted,
+      resetTimeSpentOnQuestion,
     } = this.props
 
     if (!evaluation) {
       evaluation = data?.activity?.evaluation
     }
 
-    const saveQuestionResponse = () =>
-      qId >= 0 &&
-      groupId &&
-      saveUserResponse(qId, 0, false, groupId, { pausing: false })
+    const saveQuestionResponse = () => {
+      if (qId >= 0 && groupId) {
+        const timeSpent =
+          Date.now() -
+          parseInt(
+            window.localStorage.getItem('docAssessmentLastTimestamp'),
+            10
+          )
+        saveUserResponse(qId, timeSpent, false, groupId, {
+          pausing: false,
+          questionId: data.id,
+        })
+        if (resetTimeSpentOnQuestion) {
+          resetTimeSpentOnQuestion()
+        }
+      }
+    }
 
     const props = {
       saveAnswer,
@@ -356,9 +352,12 @@ class QuestionItem extends React.Component {
       <>
         <DetailsContainer>
           <DetailTitle>Score:</DetailTitle>
-          <DetailContents>{`${
-            graded ? round(score, 2) : skipped ? 0 : ' '
-          }/${round(maxScore, 2)}`}</DetailContents>
+          <DetailContents>
+            {`${graded ? round(score, 2) : skipped ? 0 : ' '}/${round(
+              maxScore,
+              2
+            )}`}
+          </DetailContents>
         </DetailsContainer>
         {!!teacherComments?.text && (
           <DetailsContainer>
@@ -459,6 +458,27 @@ class QuestionItem extends React.Component {
       </QuestionItemWrapper>
     )
   }
+}
+
+QuestionItem.propTypes = {
+  index: PropTypes.number.isRequired,
+  data: PropTypes.object.isRequired,
+  onCreateOptions: PropTypes.func.isRequired,
+  onOpenEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  saveAnswer: PropTypes.func.isRequired,
+  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  userAnswer: PropTypes.any,
+  previewMode: PropTypes.string.isRequired,
+  viewMode: PropTypes.string.isRequired,
+  highlighted: PropTypes.bool.isRequired,
+  answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+}
+
+QuestionItem.defaultProps = {
+  evaluation: undefined,
+  userAnswer: undefined,
+  answer: undefined,
 }
 
 export default withAnswerSave(

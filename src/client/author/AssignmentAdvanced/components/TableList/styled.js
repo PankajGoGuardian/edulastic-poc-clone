@@ -9,7 +9,7 @@ import {
   tabletWidth,
   testTypeColor,
   lightGrey4,
-  themeColorBlue,
+  themeColor,
 } from '@edulastic/colors'
 
 const { assignmentStatusBg } = authorAssignment
@@ -169,16 +169,6 @@ export const ActionsWrapper = styled.div`
   justify-content: space-between;
   padding: 0;
   width: 80px;
-  svg {
-    @media (max-width: 1300px) {
-      width: 18px;
-      height: 18px;
-    }
-    @media (max-width: 920px) {
-      width: 15px;
-      height: 15px;
-    }
-  }
 `
 
 export const GreyFont = styled.span`
@@ -220,7 +210,7 @@ export const MoreOption = styled.div`
   align-items: center;
   & :hover {
     color: ${white};
-    background: ${themeColorBlue};
+    background: ${themeColor};
   }
 `
 

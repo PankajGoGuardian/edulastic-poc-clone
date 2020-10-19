@@ -6,7 +6,7 @@ import { Row, Col, Select } from 'antd'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 
 // constants
-import { themeColor, titleColor, themeColorBlue } from '@edulastic/colors'
+import { themeColor, titleColor } from '@edulastic/colors'
 import GroupsFilter from './GroupsFilter'
 
 const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
@@ -132,7 +132,4 @@ const StyledSpan = styled.span`
   font-size: ${(props) => (props.onClick ? '12px' : '13px')};
   font-weight: 600;
   cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
-  &:hover {
-    color: ${themeColorBlue};
-  }
 `

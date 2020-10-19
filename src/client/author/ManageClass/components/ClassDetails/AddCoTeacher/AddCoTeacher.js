@@ -153,12 +153,12 @@ class AddCoTeacher extends React.Component {
               userInfo.email !== el.email && (
                 <Select.Option key={index} value={el._id}>
                   <div>
-                    <span style={{ fontSize: '14px' }}>{`${el.firstName} ${
-                      el.lastName || ''
-                    }`}</span>
-                    <span style={{ fontSize: '12px' }}>{` (${
-                      el.email || el.username
-                    })`}</span>
+                    <span style={{ fontSize: '14px' }}>
+                      {`${el.firstName} ${el.lastName || ''}`}
+                    </span>
+                    <span style={{ fontSize: '12px' }}>
+                      {` (${el.email || el.username})`}
+                    </span>
                   </div>
                 </Select.Option>
               )

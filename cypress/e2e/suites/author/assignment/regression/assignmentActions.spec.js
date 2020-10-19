@@ -5,12 +5,12 @@ import TestAssignPage from '../../../../framework/author/tests/testDetail/testAs
 import AssignmentsPage from '../../../../framework/student/assignmentsPage'
 import StudentTestPage from '../../../../framework/student/studentTestPage'
 import Regrade from '../../../../framework/author/tests/regrade/regrade'
-import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
 import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
 import TestSummayTab from '../../../../framework/author/tests/testDetail/testSummaryTab'
 import { attemptTypes } from '../../../../framework/constants/questionTypes'
 import ItemListPage from '../../../../framework/author/itemList/itemListPage'
 import PreviewItemPopup from '../../../../framework/author/itemList/itemPreview'
+import ReportsPage from '../../../../framework/student/reportsPage'
 import FileHelper from '../../../../framework/util/fileHelper'
 import PlayListLibrary from '../../../../framework/author/playlist/playListLibrary'
 
@@ -33,19 +33,19 @@ describe(`${FileHelper.getSpecName(
   const assignmentsPage = new AssignmentsPage()
   const studentTestPage = new StudentTestPage()
   const testReviewTab = new TestReviewTab()
-  const lcb = new LiveClassboardPage()
   const testAddItemTab = new TestAddItemTab()
   const testAssignPage = new TestAssignPage()
   const testSummayTab = new TestSummayTab()
   const regrade = new Regrade()
   const item = new ItemListPage()
   const itemPreview = new PreviewItemPopup()
+  const reportsPage = new ReportsPage()
   const playlist = new PlayListLibrary()
 
   const authorAssignmentPage = new AuthorAssignmentPage()
   const newItemKey = 'MCQ_STD.default'
-  // const updatedPoints = '6'
-  // const isAssigned = true
+  const updatedPoints = '6'
+  const isAssigned = true
   const Teacher = {
     email: 'teacher.for.assign.actions@snapwiz.com',
     pass: 'snapwiz',
@@ -63,8 +63,6 @@ describe(`${FileHelper.getSpecName(
   const questionType = []
   const attempt = []
   const dropdownOptions = [
-    'add-to-folder',
-    'remove-from-folder',
     'assign',
     'duplicate',
     'preview',
@@ -73,7 +71,7 @@ describe(`${FileHelper.getSpecName(
     'release-grades',
     'summary-grades',
     'edit-Assignment',
-    // 'delete-Assignment', *unassign option removed
+    'delete-Assignment',
   ]
 
   let OriginalTestId
@@ -218,7 +216,7 @@ describe(`${FileHelper.getSpecName(
         it('> verify duplicate test', () => {
           testLibraryPage.verifyAbsenceOfIdInUrl(OriginalTestId)
           testSummayTab.header.clickOnReview()
-          itemIds.forEach((itemId) => testReviewTab.verifyQustionById(itemId))
+          itemIds.forEach((item) => testReviewTab.verifyQustionById(item))
           testReviewTab.verifySummary(
             itemKeysInTest.length,
             points.reduce((a, b) => a + b, 0)
@@ -233,7 +231,7 @@ describe(`${FileHelper.getSpecName(
         })
         it('> verify preview', () => {
           studentTestPage.verifyNoOfQuestions(itemKeysInTest.length)
-          itemKeysInTest.forEach((itemId, index) => {
+          itemKeysInTest.forEach((item, index) => {
             studentTestPage.attemptQuestion(
               questionType[index],
               attemptTypes.RIGHT,
@@ -255,18 +253,18 @@ describe(`${FileHelper.getSpecName(
             itemKeysInTest.length,
             points.reduce((a, b) => a + b, 0)
           )
-          itemIds.forEach((itemId) => testReviewTab.verifyQustionById(itemId))
+          itemIds.forEach((item) => testReviewTab.verifyQustionById(item))
           subjects.forEach((subject, index) =>
             testReviewTab.verifyGradeSubject(grades[index], subject)
           )
         })
-        itemKeysInTest.forEach((itemId, index) => {
-          it(`> verify in the review tabs-collapsed mode-${itemId}`, () => {
+        itemKeysInTest.forEach((item, index) => {
+          it(`> verify in the review tabs-collapsed mode-${item}`, () => {
             // Verify All questions' presence
             testReviewTab.verifyQustionById(itemIds[index])
             testReviewTab.asesrtPointsByid(itemIds[index], points[index])
           })
-          it(`> verify in the review tabs-expanded mode-${itemId}`, () => {
+          it(`> verify in the review tabs-expanded mode-${item}`, () => {
             testReviewTab.clickOnExpandRow()
             // Verify All questions' presence along with thier correct answers and points
             testReviewTab.verifyQustionById(itemIds[index])
@@ -282,30 +280,13 @@ describe(`${FileHelper.getSpecName(
           })
         })
       })
-
-      context('> assignment summary', () => {
-        before('> click reports summary button', () => {
-          cy.login('teacher', Teacher.email, Teacher.pass)
-          testLibraryPage.sidebar.clickOnAssignment()
-          authorAssignmentPage.clickAssignmentSummary()
-        })
-        it('> verify navigation', () => {
-          cy.url().should(
-            'contain',
-            `author/reports/performance-by-students/test/${OriginalTestId}`
-          )
-          cy.get('[title="Insights"]').should('exist')
-        })
-      })
-
       context('> edit test', () => {
-        /*  before('> create an item', () => {
+        before('> create an item', () => {
           item.createItem(newItemKey).then((id) => {
             // New Item Details
             newItemId = id
             testLibraryPage.sidebar.clickOnAssignment()
-            // TODO : below edit causing 403 in cleanup stage in automation, to be revert once https://snapwiz.atlassian.net/browse/EV-20572 is fixed
-            authorAssignmentPage.clickOnEditTest(true) // to remove 'true' later
+            authorAssignmentPage.clickOnEditTest()
             authorAssignmentPage.verifyEditTestURLUnAttempted(OriginalTestId)
           })
         })
@@ -336,10 +317,8 @@ describe(`${FileHelper.getSpecName(
           assignmentsPage.clickOnAssigmentByTestId(OriginalTestId)
           studentTestPage.verifyNoOfQuestions(itemKeysInTest.length)
           studentTestPage.clickOnExitTest()
-        }) */
-
-        // As per app changes https://snapwiz.atlassian.net/browse/EV-20572
-        it('> edit test after assign but before attempt - gets versioned and regrade', () => {
+        })
+        it('> edit test after attempt-regrade', () => {
           cy.login('teacher', Teacher.email, Teacher.pass)
           testLibraryPage.sidebar.clickOnAssignment()
           authorAssignmentPage.clickOnEditTest(true)
@@ -353,7 +332,6 @@ describe(`${FileHelper.getSpecName(
           testLibraryPage.header.clickRegradePublish()
           regrade.applyRegrade()
         })
-
         it('> verify after edit-regrade', () => {
           cy.login('student', Student1.email, Student1.pass)
           assignmentsPage.clickOnAssigmentByTestId(newTestId)
@@ -384,20 +362,30 @@ describe(`${FileHelper.getSpecName(
           reportsPage.verifyMaxScoreOfQueByIndex(itemIds.length - 1, points[itemIds.length - 1]);
         }); */
       })
-
-      // unasign dropdown option is removed from assignment page
-      context('> unassign from lcb', () => {
+      context('> assignment summary', () => {
+        before('> click reports summary button', () => {
+          cy.login('teacher', Teacher.email, Teacher.pass)
+          testLibraryPage.sidebar.clickOnAssignment()
+          authorAssignmentPage.clickAssignmentSummary()
+        })
+        it('> verify navigation', () => {
+          cy.url().should(
+            'contain',
+            `author/reports/performance-by-students/test/${newTestId}`
+          )
+          cy.get('[title="Insights"]').should('exist')
+        })
+      })
+      context('> unassign', () => {
         before('login as teacher and unassign', () => {
           cy.login('teacher', Teacher.email, Teacher.pass)
           testLibraryPage.sidebar.clickOnAssignment()
-          authorAssignmentPage.clickOnLCBbyTestId(newTestId)
-          lcb.header.clickOnUnassign()
+          authorAssignmentPage.clickOnUnassign()
         })
         it('> verify unassign', () => {
           cy.login('student', Student2.email, Student2.pass)
           assignmentsPage.sidebar.clickOnAssignment()
-          assignmentsPage.verifyPresenceOfTest(daTestId)
-          assignmentsPage.verifyAbsenceOfTest(newTestId)
+          assignmentsPage.verifyAbsenceOfTest(OriginalTestId)
         })
       })
     })
@@ -448,7 +436,7 @@ describe(`${FileHelper.getSpecName(
           .getOptionInDropDownByAttribute(option)
           .should('exist', `${option} in dropdown`)
       })
-      dropdownOptions.slice(dropdownOptions.length - 1).forEach((option) => {
+      dropdownOptions.slice(dropdownOptions.length - 2).forEach((option) => {
         authorAssignmentPage
           .getOptionInDropDownByAttribute(option)
           .should('not.exist', `${option} in dropdown`)

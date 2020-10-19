@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { find, isUndefined } from 'lodash'
 import { Popover } from 'antd'
 import { measureText } from '@edulastic/common'
+import { response as responseConstant } from '@edulastic/constants'
 
 import { IconWrapper } from './styled/IconWrapper'
 import { RightIcon } from './styled/RightIcon'
@@ -27,6 +28,8 @@ function combineUnitAndValue(userAnswer, isMath, unit) {
       : userAnswer.value
     : userAnswer?.unit || ''
 }
+
+const { mathInputMaxHeight } = responseConstant
 
 const CheckBoxedMathBox = ({ value, style }) => {
   const filedRef = useRef()
@@ -59,7 +62,6 @@ const CheckedBlock = ({
   type,
   isMath,
   width,
-  height,
   onInnerClick,
   showIndex,
   isPrintPreview = false,
@@ -93,9 +95,13 @@ const CheckedBlock = ({
    * as latex might have extra special characters for rendering math
    */
   const answer = isMath ? getMathTemplate(showValue) : showValue
-  const { width: textWidth } = measureText(answer, { padding: '0 0 0 11px' })
-  const availableWidth = textWidth - (showIndex ? 58 : 26)
-  const showPopover = textWidth > availableWidth
+  const { width: textWidth, height: textHeight } = measureText(answer, {
+    padding: '0 0 0 11px',
+    fontSize: '16px',
+  })
+  const availableWidth = (parseInt(width, 10) || 0) - (showIndex ? 58 : 26) // will show popover when availableHeight is not available or NaN
+  const showPopover =
+    textWidth > availableWidth || textHeight > mathInputMaxHeight
 
   const popoverContent = (isPopover) => (
     <CheckBox
@@ -103,7 +109,6 @@ const CheckedBlock = ({
       key={`input_${index}`}
       onClick={onInnerClick}
       width={isPopover ? null : width}
-      height={height}
     >
       {showIndex && (
         <span
@@ -126,11 +131,11 @@ const CheckedBlock = ({
           <CheckBoxedMathBox
             value={showValue}
             style={{
-              height: !isPopover && height,
               minWidth: 'unset',
               display: 'flex',
               alignItems: 'center',
               textAlign: 'left',
+              maxHeight: mathInputMaxHeight,
             }}
           />
         ) : (
@@ -160,18 +165,16 @@ CheckedBlock.propTypes = {
   id: PropTypes.string.isRequired,
   showIndex: PropTypes.bool,
   isMath: PropTypes.bool,
-  onInnerClick: PropTypes.func,
   width: PropTypes.string,
-  height: PropTypes.string,
+  onInnerClick: PropTypes.func,
 }
 
 CheckedBlock.defaultProps = {
   isMath: false,
   showIndex: false,
   userAnswer: '',
+  width: '120px',
   onInnerClick: () => {},
-  width: 120,
-  height: 'auto',
 }
 
 export default CheckedBlock

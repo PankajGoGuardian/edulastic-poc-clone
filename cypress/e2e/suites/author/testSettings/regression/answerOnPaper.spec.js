@@ -60,7 +60,7 @@ describe(`${FileHelper.getSpecName(
       testAssignPage.sidebar.clickOnAssignment()
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0)
       liveClassBoardPage.header.clickOnClose(true, false)
-      // cy.wait("@assignment");
+      cy.wait('@assignment')
       liveClassBoardPage
         .getSubmitSummary()
         .should('contain.text', `2 out of 2 Submitted`)
@@ -89,7 +89,7 @@ describe(`${FileHelper.getSpecName(
       liveClassBoardPage
         .getStudentPerformanceByIndex(0)
         .should('have.text', `100%`)
-      liveClassBoardPage.verifyScoreByStudentIndex(0, 4, 4)
+      liveClassBoardPage.getStudentScoreByIndex(0).should('have.text', `4 / 4`)
     })
   })
 })

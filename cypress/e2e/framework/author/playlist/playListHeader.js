@@ -1,7 +1,7 @@
 export default class PlayListHeader {
   // *** ELEMENTS START ***
 
-  getSummaryButton = () => cy.get('[data-cy="summary"]')
+  getSummaryButton = () => cy.get('[data-cy="description"]')
 
   getReviewButton = () => cy.get('[data-cy="review"]')
 
@@ -19,33 +19,27 @@ export default class PlayListHeader {
 
   getEdit = () => cy.get('[data-cy="edit-playlist"]')
 
-  getClone = () => cy.get('[data-cy="clone"]')
-
-  getOKInPopUp = () => cy.get('button').contains('span', 'Continue')
-
-  getRemoveFromFavoriteInDropDown = () =>
-    cy
-      .get('.ant-dropdown-menu-item')
-      .filter((i, $ele) => Cypress.dom.isVisible($ele))
-      .contains('Remove from Favorite')
-
-  getDeletePlaylist = () => cy.get('[data-cy="delete-playlist"]')
-
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
   getDropPlaylist = () => cy.get('[data-cy="drop-playlist"]')
 
-  clickOnDescription = () => this.getSummaryButton().click({ force: true })
+  clickOnDescription = () => {
+    this.getSummaryButton.click({ force: true })
+  }
 
-  clickOnReview = (newPlaylist = false) => {
+  clickOnAddTests = () => {
+    cy.server()
+    cy.route('POST', '**/search/**').as('search')
+    this.getAddTestsButton().click({ force: true })
+    return cy.wait('@search')
+  }
+
+  clickOnReview = () => {
     cy.server()
     cy.route('PUT', '**/playlists/*').as('savePlayList')
-    cy.route('POST', '**/search/tests').as('search-test-in-container')
     this.getReviewButton().click({ force: true })
-
-    if (!newPlaylist) return cy.wait('@savePlayList')
-    return cy.get('[data-cy="playlist-grade"]', { timeout: 20000 })
+    return cy.wait('@savePlayList')
   }
 
   clickOnSettings = () => {
@@ -63,7 +57,7 @@ export default class PlayListHeader {
     cy.wait('@publishPlaylist').then((xhr) => {
       expect(xhr.status).to.eq(200)
     })
-    return cy.get('[data-cy="module-name"]', { timeout: 20000 })
+    return cy.wait('@renderPlaylist')
   }
 
   clickOnSave = () => {
@@ -79,14 +73,9 @@ export default class PlayListHeader {
 
   clickOnUseThis = () => {
     cy.server()
-    cy.route('POST', '**/playlists/*/use-this').as('change-my-playlist')
-    cy.route('GET', '**/user-context?name=LAST_ACCESSED_PLAYLIST').as(
-      'get-my-playlist'
-    )
+    cy.route('GET', '**/playlists/*').as('use-this')
     this.getUseThisButton().click({ force: true })
-    cy.wait('@change-my-playlist').then((xhr) => expect(xhr.status).to.eq(200))
-    cy.wait('@get-my-playlist')
-    return cy.get('[data-cy="open-dropped-playlist"]', { timeout: 20000 })
+    return cy.wait('@use-this')
   }
 
   clickOnEdit = () => {
@@ -96,44 +85,20 @@ export default class PlayListHeader {
     return cy.wait('@editPlayList').then((xhr) => xhr)
   }
 
+  clickOnCustomization = () => {
+    cy.server()
+    cy.route('POST', '**/playlists/**').as('duplicatePlaylist')
+    cy.route('GET', '**/playlists/*').as('getPlayList')
+    this.getSaveButton().click()
+    cy.wait('@getPlayList')
+    return cy.wait('@duplicatePlaylist').then((xhr) => xhr)
+  }
+
   clickOnDropPlalist = () => {
     cy.server()
     cy.route('GET', '**/user-playlist-activity/*').as('getPlaylistUsers')
     this.getDropPlaylist().click()
     cy.wait('@getPlaylistUsers')
-  }
-
-  clickRemoveFromFavorite = () => {
-    cy.server()
-    cy.route('DELETE', '**/playlists/use/*').as('delete-from-fav')
-    this.getClone().next().click()
-    this.getRemoveFromFavoriteInDropDown().click({ force: true })
-    this.getOKInPopUp().click({ force: true })
-    cy.wait('@delete-from-fav')
-  }
-
-  clickOnClone = () => {
-    cy.server()
-    cy.route('POST', /duplicate/g).as('duplicate-playlist')
-    this.getClone().click({ force: true })
-    return cy.wait('@duplicate-playlist').then((xhr) => {
-      cy.saveplayListDetailToDelete(xhr.response.body.result._id)
-      return cy.wait(1).then(() => xhr.response.body.result._id)
-    })
-  }
-
-  clickDeletePlaylist = (id) => {
-    cy.server()
-    cy.route('DELETE', '**/playlists/*').as('delete-playlist')
-    this.getDeletePlaylist().click({ force: true })
-    this.getOKInPopUp().click({ force: true })
-    cy.wait('@delete-playlist').then((xhr) => {
-      expect(
-        xhr.status,
-        `deleting playlist ${xhr.status === 200 ? 'success' : 'failed'}`
-      ).to.eq(200)
-      if (id) cy.deletePlaylistEntry(id)
-    })
   }
 
   // *** ACTIONS END ***

@@ -28,7 +28,6 @@ import {
   mediumDesktopExactWidth,
   greyThemeLighter,
   smallDesktopWidth,
-  themeColorBlue,
   mobileWidthLarge,
 } from '@edulastic/colors'
 import { toggleSideBarAction } from './ducks'
@@ -567,7 +566,7 @@ const Menu = styled(AntMenu)`
         border: none;
         background-color: ${themeColor};
         &:hover {
-          background-color: ${themeColorBlue};
+          background-color: #fff;
           svg {
             fill: ${themeColor};
           }
@@ -706,7 +705,6 @@ const FooterDropDown = styled.div`
   ul {
     overflow: hidden;
     max-width: 100%;
-
     .ant-menu-item:not(.ant-menu-item-selected) svg {
       fill: ${(props) => props.theme.sideMenu.userInfoDropdownItemTextColor};
       &:hover,
@@ -738,10 +736,11 @@ const FooterDropDown = styled.div`
         height: 50px;
         background: ${(props) =>
           props.theme.sideMenu.userInfoDropdownItemBgColor};
-        &:hover {
-          background-color: ${themeColorBlue};
-          color: ${white};
-        }
+        /* &:hover,
+        &:focus {
+          background: ${(props) =>
+          props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
+        } */
         a {
           color: ${(props) =>
             props.theme.sideMenu.userInfoDropdownItemTextColor};

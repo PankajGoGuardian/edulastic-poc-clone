@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/prop-types */
 import { passageApi, testItemsApi } from '@edulastic/api'
 import { red, themeColor, white, title } from '@edulastic/colors'
@@ -65,6 +64,7 @@ import ScoreBlock from '../ScoreBlock'
 import AuthorTestItemPreview from './AuthorTestItemPreview'
 import {
   addPassageAction,
+  archivedItemsSelector,
   clearPreviewAction,
   duplicateTestItemPreviewRequestAction,
   getItemDetailSelectorForPreview,
@@ -113,10 +113,27 @@ class PreviewModal extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { item: newItem } = this.props
-    const { item: oldItem } = prevProps
+    const {
+      item: newItem,
+      archivedItems: oldArchivedItems,
+      updateCurrentItemFromPassagePagination,
+      passage,
+      clearPreview,
+    } = this.props
+    const { item: oldItem, archivedItems: newArchivedItems } = prevProps
     if (oldItem?.passageId !== newItem?.passageId && newItem?.passageId) {
       this.loadPassage(newItem.passageId)
+    }
+    /** Watching changes in "testsAddItems.archivedItems"
+     * and updating testItemPreview for passages
+     * */
+    if (oldArchivedItems?.length !== newArchivedItems?.length) {
+      const { testItems = [] } = passage || {}
+      if (testItems.length) {
+        updateCurrentItemFromPassagePagination(testItems[0])
+      } else {
+        clearPreview()
+      }
     }
   }
 
@@ -125,8 +142,7 @@ class PreviewModal extends React.Component {
     clearAnswers()
   }
 
-  // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { flag } = this.state
     const { isVisible } = nextProps
     if (isVisible && !flag) {
@@ -458,6 +474,9 @@ class PreviewModal extends React.Component {
       writableCollections,
     } = this.props
 
+    const { testItems = [] } = passage || {}
+    const hasMultipleTestItems = testItems.length > 1
+
     const {
       passageLoading,
       showHints,
@@ -506,6 +525,7 @@ class PreviewModal extends React.Component {
       allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
     )
     const disableEdit = item?.algoVariablesEnabled && isTestInRegrade
+    const itemHasAtleastOneQuestion = Object.keys(questions || {}).length > 0
 
     return (
       <PreviewModalWrapper
@@ -540,33 +560,29 @@ class PreviewModal extends React.Component {
           </FlexContainer>
 
           <ModalTopAction>
-            {!isDisableEdit && (
-              <>
-                {isPassage && showAddPassageItemToTestButton ? (
-                  <EduButton
-                    isBlue
-                    isGhost={!this.isAddOrRemove}
-                    height="28px"
-                    justifyContent="center"
-                    onClick={this.handleSelection}
-                  >
-                    {this.isAddOrRemove
-                      ? 'ADD PASSAGE TO TEST'
-                      : 'REMOVE FROM TEST'}
-                  </EduButton>
-                ) : (
-                  <EduButton
-                    isBlue
-                    height="28px"
-                    justifyContent="center"
-                    onClick={this.handleSelection}
-                  >
-                    {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
-                  </EduButton>
-                )}
-              </>
-            )}
-
+            {itemHasAtleastOneQuestion &&
+              (isPassage && showAddPassageItemToTestButton ? (
+                <EduButton
+                  isBlue
+                  isGhost={!this.isAddOrRemove}
+                  height="28px"
+                  justifyContent="center"
+                  onClick={this.handleSelection}
+                >
+                  {this.isAddOrRemove
+                    ? 'ADD PASSAGE TO TEST'
+                    : 'REMOVE FROM TEST'}
+                </EduButton>
+              ) : (
+                <EduButton
+                  isBlue
+                  height="28px"
+                  justifyContent="center"
+                  onClick={this.handleSelection}
+                >
+                  {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
+                </EduButton>
+              ))}
             <ButtonsWrapper
               justifyContent="flex-end"
               wrap="nowrap"
@@ -667,7 +683,9 @@ class PreviewModal extends React.Component {
                     height="28px"
                     width="28px"
                     onClick={this.handleDeleteItem}
-                    disabled={deleting}
+                    disabled={
+                      isPassage ? !hasMultipleTestItems || deleting : deleting
+                    }
                   >
                     <IconTrash title="Delete item" />
                     {/* <span>delete</span> */}
@@ -697,9 +715,9 @@ class PreviewModal extends React.Component {
                       title="Approve"
                       isGhost
                       height="28px"
-                      onClick={() =>
+                      onClick={() => {
                         this.handleApproveOrRejectSingleItem('published')
-                      }
+                      }}
                     >
                       <Icon type="check" color={themeColor} />
                       <span>Approve</span>
@@ -758,8 +776,7 @@ class PreviewModal extends React.Component {
                   toggleReportIssue={this.toggleReportIssue}
                   showHints={showHints}
                   allowDuplicate={allowDuplicate}
-                  /* Giving edit test item functionality to the user who 
-                  is a curator as curator can edit any test item. */
+                  /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
                   isEditable={
                     (isEditable && isOwner) ||
                     userFeatures.isCurator ||
@@ -852,6 +869,7 @@ const enhance = compose(
         userFeatures: getUserFeatures(state),
         deleting: getItemDeletingSelector(state),
         writableCollections: getWritableCollectionsSelector(state),
+        archivedItems: archivedItemsSelector(state),
       }
     },
     {

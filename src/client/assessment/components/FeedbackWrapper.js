@@ -9,8 +9,8 @@ import { get, isEmpty, round } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { PrintPreviewScore } from './printPreviewScore'
-import FeedbackRight from './FeedbackRight'
 import FeedBackContainer from './FeedBackContainer'
+import FeedbackRight from './FeedbackRight'
 import StudentReportFeedback from '../../student/TestAcitivityReport/components/StudentReportFeedback'
 import { TimeSpentWrapper } from './QuestionWrapper'
 
@@ -35,6 +35,8 @@ const FeedbackWrapper = ({
     questionType.PASSAGE,
     questionType.VIDEO,
   ].includes(data.type)
+
+  const { userResponse: previousUserResponse } = prevQActivityForQuestion || {}
 
   const { validation: { unscored: isPracticeQuestion = false } = {} } = data
 
@@ -99,7 +101,8 @@ const FeedbackWrapper = ({
             prevScore={prevScore}
             prevMaxScore={prevMaxScore}
             prevFeedback={prevFeedback}
-            itemId={data.id}
+            previousUserResponse={previousUserResponse}
+            qId={data.id}
           />
         )}
       {/* STUDENT REPORT PAGE FEEDBACK */}

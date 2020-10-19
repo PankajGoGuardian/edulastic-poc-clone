@@ -1516,6 +1516,10 @@ function* createTestSaga({ payload }) {
   }
 }
 
+function hasInvalidItem(testData) {
+  return testData.itemGroups.find((x) => x.items.find((_item) => !_item.itemId))
+}
+
 function* updateTestSaga({ payload }) {
   try {
     // dont set loading as true
@@ -1601,6 +1605,14 @@ function* updateTestSaga({ payload }) {
     }
 
     const testData = omit(payload.data, testFieldsToOmit)
+    if (hasInvalidItem(testData)) {
+      console.warn('test data has invalid item', testData)
+      Sentry.configureScope((scope) => {
+        scope.setExtra('testData', testData)
+        Sentry.captureException(new Error('testDataHasInvalidException'))
+      })
+      return
+    }
     const entity = yield call(testsApi.update, { ...payload, data: testData })
     if (isEmpty(entity)) {
       return

@@ -212,18 +212,9 @@ const ActionMenu = ({
             Release Scores
           </StyledLink>
         </Menu.Item>
-        <Menu.Item
-          data-cy="summary-grades"
-          key="summary-report"
-          disabled={
-            !(assignmentDetails.gradedCount || assignmentDetails.submittedCount)
-          }
-        >
+        <Menu.Item data-cy="summary-grades" key="summary-report">
           <Link
-            to={`/author/reports/assessment-summary/test/${getReportPathForAssignment(
-              currentTestId,
-              assignmentDetails
-            )}`}
+            to={`/author/reports/performance-by-students/test/${currentTestId}`}
           >
             <IconBarChart />
             <SpaceElement />

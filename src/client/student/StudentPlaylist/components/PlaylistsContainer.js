@@ -1,5 +1,5 @@
-import React, { useEffect, Suspense } from 'react'
-import { lazy } from '@loadable/component'
+import React, { useEffect } from 'react'
+import loadable from '@loadable/component'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
@@ -14,11 +14,12 @@ import { getLastPlayListSelector } from '../../../author/Playlist/ducks'
 import { getEnrollClassAction } from '../../ManageClass/ducks'
 
 import NoDataNotification from '../../../common/components/NoDataNotification'
-import Recommendations from './Recommendations'
 
-const CurriculumContainer = lazy(() =>
+const CurriculumContainer = loadable(() =>
   import('../../../author/CurriculumSequence')
 )
+
+const RecommendationsContainer = loadable(() => import('./Recommendations'))
 
 const PlaylistsContainer = ({
   match,
@@ -64,9 +65,11 @@ const PlaylistsContainer = ({
             }
             if (isLoading) return <Spin size="large" />
             return (
-              <Suspense fallback={<Progress />}>
-                <CurriculumContainer {...props} urlHasUseThis />
-              </Suspense>
+              <CurriculumContainer
+                fallback={<Progress />}
+                {...props}
+                urlHasUseThis
+              />
             )
           }}
         />
@@ -74,9 +77,7 @@ const PlaylistsContainer = ({
           exact
           path={`${match.url}/:playlistId/recommendations`}
           render={(props) => (
-            <Suspense fallback={<Progress />}>
-              <Recommendations {...props} />
-            </Suspense>
+            <RecommendationsContainer fallback={<Progress />} {...props} />
           )}
         />
       </Switch>

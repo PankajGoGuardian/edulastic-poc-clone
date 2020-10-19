@@ -1,5 +1,5 @@
-import React, { PureComponent, Suspense } from 'react'
-import { lazy } from '@loadable/component'
+import React, { PureComponent } from 'react'
+import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -97,7 +97,7 @@ import {
   resumeAssignmentAction,
 } from '../../../../student/Assignments/ducks'
 
-const ItemCloneModal = lazy(() => import('../ItemCloneConfirmationModal'))
+const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
 const { getDefaultImage } = testsApi
 const {
@@ -303,7 +303,7 @@ class Container extends PureComponent {
       resetPageState,
       setEditEnable,
     } = this.props
-    //disable edit on unmount
+    // disable edit on unmount
     setEditEnable(false)
     // clear test entity only on edit and regrade flow
     if (match.params.id) removeTestEntity()
@@ -1151,13 +1151,12 @@ class Container extends PureComponent {
           hasCollectionAccess={hasCollectionAccess}
         />
         {this.renderContent()}
-        <Suspense fallback={() => <Progress />}>
-          <ItemCloneModal
-            handleDuplicateTest={this.handleDuplicateTest}
-            visible={showCloneModal}
-            toggleVisibility={this.handleCloneModalVisibility}
-          />
-        </Suspense>
+        <ItemCloneModal
+          fallback={<Progress />}
+          handleDuplicateTest={this.handleDuplicateTest}
+          visible={showCloneModal}
+          toggleVisibility={this.handleCloneModalVisibility}
+        />
       </>
     )
   }

@@ -46,5 +46,9 @@ export default class RediectPopup {
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
+
+  getEffectiveAttempt = (attempt1, attempt2) => {
+    return { ...attempt1, ...attempt2 }
+  }
   // *** APPHELPERS END ***
 }

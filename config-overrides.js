@@ -201,6 +201,7 @@ module.exports = override(
       // add chunk split optimizations
       config.optimization = {
         ...(config.optimization || {}),
+        runtimeChunk: true,
         splitChunks: {
           chunks: 'all',
           maxInitialRequests: Infinity,
@@ -209,19 +210,15 @@ module.exports = override(
             author: {
               test: /[\\/]author[\\/]/,
               name: 'author',
-              chunks: 'all',
               enforce: true,
             },
             assessment: {
               test: /[\\/]assessment[\\/]/,
               name: 'assessment',
-              chunks: 'all',
               enforce: true,
             },
             vendor: {
               test: /[\\/]node_modules[\\/]((?!(react-pdf|jsxgraph|firebase|mathjs|ace-builds|react-jsx-parser|recharts)).*)[\\/]/,
-              chunks: 'all',
-              enforce: true,
               name(module) {
                 // get the name. E.g. node_modules/packageName/not/this/part.js
                 // or node_modules/packageName

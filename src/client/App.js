@@ -1,4 +1,4 @@
-import React, { Component, useEffect, Suspense } from 'react'
+import React, { Component, Suspense, useEffect } from 'react'
 import { capitalize, get, isUndefined, isEmpty } from 'lodash'
 import qs from 'qs'
 import PropTypes from 'prop-types'
@@ -9,7 +9,7 @@ import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import firebase from 'firebase/app'
 import { test, signUpState, roleuser } from '@edulastic/constants'
-import loadable from '@loadable/component'
+import { lazy } from '@loadable/component'
 import { OfflineNotifier, notification, DragDrop } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { Banner } from './common/components/Banner'
@@ -39,75 +39,34 @@ import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
-const AssessmentPlayer = loadable(() => import('./assessment/index'), {
-  fallback: <Loading />,
-})
-const TeacherSignup = loadable(
-  () => import('./student/Signup/components/TeacherContainer/Container'),
-  {
-    fallback: <Loading />,
-  }
+const AssessmentPlayer = lazy(() => import('./assessment/index'))
+const TeacherSignup = lazy(() =>
+  import('./student/Signup/components/TeacherContainer/Container')
 )
-const Auth = loadable(() => import('./Auth'), {
-  fallback: <Loading />,
-})
-const Invite = loadable(() => import('./Invite/index'), {
-  fallback: <Loading />,
-})
-const GetStarted = loadable(
-  () => import('./student/Signup/components/GetStartedContainer'),
-  {
-    fallback: <Loading />,
-  }
+const Auth = lazy(() => import('./Auth'))
+const Invite = lazy(() => import('./Invite/index'))
+const GetStarted = lazy(() =>
+  import('./student/Signup/components/GetStartedContainer')
 )
-const StudentSignup = loadable(
-  () => import('./student/Signup/components/StudentContainer'),
-  {
-    fallback: <Loading />,
-  }
+const StudentSignup = lazy(() =>
+  import('./student/Signup/components/StudentContainer')
 )
-const AdminSignup = loadable(
-  () => import('./student/Signup/components/AdminContainer/Container'),
-  {
-    fallback: <Loading />,
-  }
+const AdminSignup = lazy(() =>
+  import('./student/Signup/components/AdminContainer/Container')
 )
-const Dashboard = loadable(() => import('./student/app'), {
-  fallback: <Loading />,
-})
-const Author = loadable(() => import('./author/src/app'), {
-  fallback: <Loading />,
-})
-const Publisher = loadable(() => import('./publisher/app'), {
-  fallback: <Loading />,
-})
-const Admin = loadable(() => import('./admin/app'), {
-  fallback: <Loading />,
-})
-const RedirectToTest = loadable(() => import('./author/RedirectToTest'), {
-  fallback: <Loading />,
-})
-const DistrictRoutes = loadable(() => import('./districtRoutes/index'), {
-  fallback: <Loading />,
-})
-const ResetPassword = loadable(() => import('./resetPassword/index'), {
-  fallback: <Loading />,
-})
-const SetParentPassword = loadable(() => import('./SetParentPassword'), {
-  fallback: <Loading />,
-})
-const CLIAccessBanner = loadable(
-  () => import('./author/Dashboard/components/CLIAccessBanner'),
-  {
-    fallback: <Loading />,
-  }
+const Dashboard = lazy(() => import('./student/app'))
+const Author = lazy(() => import('./author/src/app'))
+const Publisher = lazy(() => import('./publisher/app'))
+const Admin = lazy(() => import('./admin/app'))
+const RedirectToTest = lazy(() => import('./author/RedirectToTest'))
+const DistrictRoutes = lazy(() => import('./districtRoutes/index'))
+const ResetPassword = lazy(() => import('./resetPassword/index'))
+const SetParentPassword = lazy(() => import('./SetParentPassword'))
+const CLIAccessBanner = lazy(() =>
+  import('./author/Dashboard/components/CLIAccessBanner')
 )
-const PublicTest = loadable(() => import('./publicTest/container'), {
-  fallback: <Loading />,
-})
-const AudioTagPlayer = loadable(() => import('./AudioTagPlayer'), {
-  fallback: <Loading />,
-})
+const PublicTest = lazy(() => import('./publicTest/container'))
+const AudioTagPlayer = lazy(() => import('./AudioTagPlayer'))
 const Loading = () => (
   <div>
     <Spin />
@@ -401,7 +360,7 @@ class App extends Component {
 
     const { showAppUpdate, canShowCliBanner } = this.state
     return (
-      <Suspense fallback={<Loading />}>
+      <div>
         {shouldWatch && <RealTimeCollectionWatch />}
         {userRole && (
           <CheckRoutePatternsEffectContainer
@@ -415,202 +374,207 @@ class App extends Component {
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />
         )}
-        <DragDrop.Provider>
-          {isProxyUser && (
-            <Banner
-              text={`You are currently acting as ${fullName} (${_userRole})`}
-              showButton
-              buttonText="Stop Acting as User"
-              onButtonClick={logout}
-            />
-          )}
-          <Switch>
-            {location.pathname.toLocaleLowerCase() !==
-              redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
-              <Redirect exact to={redirectRoute} />
-            ) : null}
-            <PrivateRoute
-              path="/author"
-              component={Author}
-              redirectPath={redirectRoute}
-              notifications={
-                roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                  ? [BulkActionNotificationListener]
-                  : roleuser.TEACHER === userRole
-                  ? [ClassSyncNotification]
-                  : null
-              }
-            />
-            <PrivateRoute
-              path="/publisher"
-              component={Publisher}
-              redirectPath={redirectRoute}
-            />
-            <PrivateRoute
-              path="/home"
-              component={Dashboard}
-              notifications={[NotificationListener]}
-              redirectPath={redirectRoute}
-            />
-            <PrivateRoute
-              path="/admin"
-              component={Admin}
-              redirectPath={redirectRoute}
-            />
-            <Route exact path="/kid" component={Kid} />
-            <LoggedOutRoute
-              exact
-              path="/resetPassword/"
-              component={ResetPassword}
-              redirectPath={defaultRoute}
-            />
-            <Route
-              exact
-              path="/public/parentInvitation/:code"
-              render={() => <SetParentPassword parentInvitation />}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              path="/district/:orgShortName"
-              component={DistrictRoutes}
-              redirectPath={defaultRoute}
-              orgType="district"
-            />
-            <LoggedOutRoute
-              path="/districtLogin/:orgShortName"
-              component={DistrictRoutes}
-              redirectPath={defaultRoute}
-              orgType="districtLogin"
-            />
-            <LoggedOutRoute
-              path="/school/:orgShortName"
-              component={DistrictRoutes}
-              redirectPath={defaultRoute}
-              orgType="school"
-            />
-            <LoggedOutRoute
-              path="/Signup"
-              component={TeacherSignup}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner/Signup"
-              component={TeacherSignup}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              path="/login"
-              component={Auth}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner"
-              component={Auth}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              path="/GetStarted"
-              component={GetStarted}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner/GetStarted"
-              component={GetStarted}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              path="/AdminSignup"
-              component={AdminSignup}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner/AdminSignup"
-              component={AdminSignup}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              path="/StudentSignup"
-              component={StudentSignup}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              exact
-              path="/partnerLogin/:partner/StudentSignup"
-              component={StudentSignup}
-              redirectPath={defaultRoute}
-            />
+        <Suspense fallback={<Loading />}>
+          <DragDrop.Provider>
+            {isProxyUser && (
+              <Banner
+                text={`You are currently acting as ${fullName} (${_userRole})`}
+                showButton
+                buttonText="Stop Acting as User"
+                onButtonClick={logout}
+              />
+            )}
+            <Switch>
+              {location.pathname.toLocaleLowerCase() !==
+                redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
+                <Redirect exact to={redirectRoute} />
+              ) : null}
+              <PrivateRoute
+                path="/author"
+                component={Author}
+                redirectPath={redirectRoute}
+                notifications={
+                  roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+                    ? [BulkActionNotificationListener]
+                    : roleuser.TEACHER === userRole
+                    ? [ClassSyncNotification]
+                    : null
+                }
+              />
+              <PrivateRoute
+                path="/publisher"
+                component={Publisher}
+                redirectPath={redirectRoute}
+              />
+              <PrivateRoute
+                path="/home"
+                component={Dashboard}
+                notifications={[NotificationListener]}
+                redirectPath={redirectRoute}
+              />
+              <PrivateRoute
+                path="/admin"
+                component={Admin}
+                redirectPath={redirectRoute}
+              />
+              <Route exact path="/kid" component={Kid} />
+              <LoggedOutRoute
+                exact
+                path="/resetPassword/"
+                component={ResetPassword}
+                redirectPath={defaultRoute}
+              />
+              <Route
+                exact
+                path="/public/parentInvitation/:code"
+                render={() => <SetParentPassword parentInvitation />}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                path="/district/:orgShortName"
+                component={DistrictRoutes}
+                redirectPath={defaultRoute}
+                orgType="district"
+              />
+              <LoggedOutRoute
+                path="/districtLogin/:orgShortName"
+                component={DistrictRoutes}
+                redirectPath={defaultRoute}
+                orgType="districtLogin"
+              />
+              <LoggedOutRoute
+                path="/school/:orgShortName"
+                component={DistrictRoutes}
+                redirectPath={defaultRoute}
+                orgType="school"
+              />
+              <LoggedOutRoute
+                path="/Signup"
+                component={TeacherSignup}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner/Signup"
+                component={TeacherSignup}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                path="/login"
+                component={Auth}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner"
+                component={Auth}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                path="/GetStarted"
+                component={GetStarted}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner/GetStarted"
+                component={GetStarted}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                path="/AdminSignup"
+                component={AdminSignup}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner/AdminSignup"
+                component={AdminSignup}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                path="/StudentSignup"
+                component={StudentSignup}
+                redirectPath={defaultRoute}
+              />
+              <LoggedOutRoute
+                exact
+                path="/partnerLogin/:partner/StudentSignup"
+                component={StudentSignup}
+                redirectPath={defaultRoute}
+              />
 
-            <PrivateRoute
-              path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
-              component={TestAttemptReview}
-            />
-            <Route
-              path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP />}
-            />
-            <Route
-              path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP />}
-            />
-            <Route
-              path={`/student/${ASSESSMENT}/:id`}
-              render={() => <AssessmentPlayer defaultAP />}
-            />
-            <PrivateRoute
-              path="/student/test-summary"
-              component={TestAttemptReview}
-            />
-            <Route
-              path="/student/seb-quit-confirm"
-              component={SebQuitConfirm}
-            />
-            <Route
-              path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP={false} />}
-            />
-            <Route
-              path={`/student/${PRACTICE}/:id`}
-              render={() => <AssessmentPlayer defaultAP={false} />}
-            />
-            <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
-            <Route
-              path="/v1/testItem/:id"
-              render={() => <TestItemDemoPlayer />}
-            />
-            <Route exact path="/fwd" render={() => <V1Redirect />} />
-            <Route path="/inviteTeacher" render={() => <Invite />} />
-            <Route path="/auth" render={() => <Auth />} />
-            {testRedirectRoutes.map((route) => (
-              <Route path={route} component={RedirectToTest} key={route} />
-            ))}
-            <Route
-              path="/public/view-test/:testId"
-              render={(props) => <PublicTest {...props} />}
-            />
-            <Route
-              path="/audio-test"
-              render={() => <AudioTagPlayer user={user?.user} />}
-            />
-            <Redirect exact to={defaultRoute} />
-          </Switch>
-        </DragDrop.Provider>
-        {cliBannerVisible &&
-          canShowCliBanner &&
-          !sessionStorage.cliBannerShown && (
-            <CLIAccessBanner
-              visible={cliBannerVisible && canShowCliBanner}
-              location={location}
-              onClose={() => {
-                this.setState({ canShowCliBanner: false })
-                sessionStorage.cliBannerShown = true
-              }}
-            />
-          )}
-      </Suspense>
+              <PrivateRoute
+                path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+                component={TestAttemptReview}
+              />
+              <Route
+                path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <Route
+                path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <Route
+                path={`/student/${ASSESSMENT}/:id`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <PrivateRoute
+                path="/student/test-summary"
+                component={TestAttemptReview}
+              />
+              <Route
+                path="/student/seb-quit-confirm"
+                component={SebQuitConfirm}
+              />
+              <Route
+                path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP={false} />}
+              />
+              <Route
+                path={`/student/${PRACTICE}/:id`}
+                render={() => <AssessmentPlayer defaultAP={false} />}
+              />
+              <Route
+                path="/public/test/:id"
+                render={() => <TestDemoPlayer />}
+              />
+              <Route
+                path="/v1/testItem/:id"
+                render={() => <TestItemDemoPlayer />}
+              />
+              <Route exact path="/fwd" render={() => <V1Redirect />} />
+              <Route path="/inviteTeacher" render={() => <Invite />} />
+              <Route path="/auth" render={() => <Auth />} />
+              {testRedirectRoutes.map((route) => (
+                <Route path={route} component={RedirectToTest} key={route} />
+              ))}
+              <Route
+                path="/public/view-test/:testId"
+                render={(props) => <PublicTest {...props} />}
+              />
+              <Route
+                path="/audio-test"
+                render={() => <AudioTagPlayer user={user?.user} />}
+              />
+              <Redirect exact to={defaultRoute} />
+            </Switch>
+          </DragDrop.Provider>
+          {cliBannerVisible &&
+            canShowCliBanner &&
+            !sessionStorage.cliBannerShown && (
+              <CLIAccessBanner
+                visible={cliBannerVisible && canShowCliBanner}
+                location={location}
+                onClose={() => {
+                  this.setState({ canShowCliBanner: false })
+                  sessionStorage.cliBannerShown = true
+                }}
+              />
+            )}
+        </Suspense>
+      </div>
     )
   }
 }

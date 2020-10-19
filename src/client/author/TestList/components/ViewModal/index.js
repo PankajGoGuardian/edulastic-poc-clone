@@ -1,5 +1,5 @@
-import React from 'react'
-import loadable from '@loadable/component'
+import React, { Suspense } from 'react'
+import { lazy } from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
 import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -73,7 +73,7 @@ import {
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
 import { getInterestedStandards } from '../../../dataUtils'
 
-const CloneOptions = loadable(() => import('./CloneOptions'))
+const CloneOptions = lazy(() => import('./CloneOptions'))
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -247,11 +247,12 @@ class ViewModal extends React.Component {
 
           <ModalColumn justify="center" ref={this.modalRef}>
             {showCloneOptions ? (
-              <CloneOptions
-                fallback={<Progress />}
-                hideOptions={this.hideCloneOptions}
-                onDuplicate={onDuplicate}
-              />
+              <Suspense fallback={() => <Progress />}>
+                <CloneOptions
+                  hideOptions={this.hideCloneOptions}
+                  onDuplicate={onDuplicate}
+                />
+              </Suspense>
             ) : (
               <>
                 {!publicAccess && (

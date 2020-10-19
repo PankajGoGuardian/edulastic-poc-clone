@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import loadable from '@loadable/component'
+import { lazy } from '@loadable/component'
 import { userApi, classApi } from '../api'
 import {
   updateUserAction,
   updateClassDataAction,
 } from '../reducers/ducks/edulastic'
 
-const ReactionTray = loadable(() => import('./ReactionTray'))
-const MessageWrapper = loadable(() => import('./MessageWrapper'))
+const ReactionTray = lazy(() => import('./ReactionTray'))
+const MessageWrapper = lazy(() => import('./MessageWrapper'))
 
 const Loading = (msg) => <h6>{msg}</h6>
 
@@ -41,11 +41,14 @@ const App = ({ authToken, updateUser, updateClassData }) => {
 
   return (
     <MainContainer>
-      <ReactionTray fallback={<Loading message="Loading Reaction Tray..." />} />
-
-      <MessageWrapper
-        fallback={<Loading message="Loading Message Wrapper..." />}
-      />
+      <Suspense fallback={() => <Loading message="Loading Reaction Tray..." />}>
+        <ReactionTray />
+      </Suspense>
+      <Suspense
+        fallback={() => <Loading message="Loading Message Wrapper..." />}
+      >
+        <MessageWrapper />
+      </Suspense>
     </MainContainer>
   )
 }

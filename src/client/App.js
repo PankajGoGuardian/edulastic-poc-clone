@@ -38,6 +38,13 @@ import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
+
+const Loading = () => (
+  <div>
+    <Spin />
+  </div>
+)
+
 // route wise splitting
 const AssessmentPlayer = loadable(() => import('./assessment/index'), {
   fallback: <Loading />,
@@ -108,11 +115,6 @@ const PublicTest = loadable(() => import('./publicTest/container'), {
 const AudioTagPlayer = loadable(() => import('./AudioTagPlayer'), {
   fallback: <Loading />,
 })
-const Loading = () => (
-  <div>
-    <Spin />
-  </div>
-)
 
 const query = qs.parse(window.location.search)
 if (query.token && query.userId && query.role) {

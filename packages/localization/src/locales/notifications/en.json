@@ -944,7 +944,7 @@
     "description": ""
   },
   "feedbackSuccessfullyUpdate": {
-    "message": "Feedback successully update",
+    "message": "Feedback successfully updated",
     "description": ""
   },
   "scoreSucessfullyUpdated": {
@@ -1759,8 +1759,8 @@
     "message": "Clever Login failed",
     "description": ""
   },
-  "classlinkLoginFailed": {
-    "message": "Classlink Login failed",
+  "atlasLoginFailed": {
+    "message": "Atlas Login failed",
     "description": ""
   },
   "failedToFetchUserData": {

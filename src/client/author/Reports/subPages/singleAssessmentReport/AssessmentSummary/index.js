@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
-import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
+import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
@@ -22,6 +22,13 @@ import {
   getReportsAssessmentSummaryLoader,
   setReportsAssesmentSummaryLoadingAction,
 } from './ducks'
+
+const CustomCliEmptyComponent = () => (
+  <Empty
+    description="Reports are not available for this test yet. Please try again later..."
+    style={{ marginTop: '25vh' }}
+  />
+)
 
 const AssessmentSummary = ({
   loading,
@@ -59,6 +66,12 @@ const AssessmentSummary = ({
         }
       }
       getAssessmentSummary(q)
+    } else if (settings.cliUser) {
+      // On first teacher launch no data is available to teacher
+      // Hide header tab(s) for cliUsers
+      setAssesmentSummaryLoading(false)
+      setShowHeader(false)
+      preventHeaderRender(true)
     }
   }, [settings])
 
@@ -66,21 +79,16 @@ const AssessmentSummary = ({
 
   const assessmentName = get(settings, 'selectedTest.title', '')
 
-  if (settings.selectedTest && !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
-  }
-
   if (loading) {
     return <SpinLoader position="fixed" />
   }
 
   if (settings.cliUser && !metricInfo?.length) {
-    return (
-      <Empty
-        description="Reports are not available for this test yet. Please try again later..."
-        style={{ marginTop: '25vh' }}
-      />
-    )
+    return <CustomCliEmptyComponent />
+  }
+
+  if (settings.selectedTest && !settings.selectedTest.key) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   return (

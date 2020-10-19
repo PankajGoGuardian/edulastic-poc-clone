@@ -11,6 +11,7 @@ import {
   withWindowSizes,
   notification,
   helpers,
+  toggleIntercomDisplay,
 } from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
@@ -108,7 +109,7 @@ class WorksheetComponent extends React.Component {
 
   componentDidMount() {
     const { saveUserWork, itemDetail, freeFormNotes } = this.props
-
+    toggleIntercomDisplay()
     const fromFreeFormNotes = {}
     if (itemDetail?._id) {
       for (const key in freeFormNotes) {

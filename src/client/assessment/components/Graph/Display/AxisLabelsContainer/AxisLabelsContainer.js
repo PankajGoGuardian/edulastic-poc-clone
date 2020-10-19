@@ -319,9 +319,9 @@ class AxisLabelsContainer extends PureComponent {
   updateValues() {
     const conf = this._graph.getMarks()
     const { setValue, setElementsStash, numberlineAxis, canvas } = this.props
-    const { ticksDistance, minorTicks } = numberlineAxis
+    const { ticksDistance, minorTicks, snapToTicks = false } = numberlineAxis
     const { xMin, xMax } = canvas
-    if (Array.isArray(conf)) {
+    if (snapToTicks && Array.isArray(conf)) {
       conf.forEach((obj) => {
         obj.position = roundPointToNearestValue({
           ticksDistance,

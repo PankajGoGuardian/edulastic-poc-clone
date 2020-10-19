@@ -247,6 +247,8 @@ class App extends Component {
     let redirectRoute = ''
     if (!publicPath) {
       const path = getWordsInURLPathName(location.pathname)
+      const urlSearch = new URLSearchParams(location.search)
+
       if (user && user.isAuthenticated) {
         const role = get(user, ['user', 'role'])
         if (role === 'teacher') {
@@ -315,10 +317,14 @@ class App extends Component {
         if (!getCurrentPath().includes('/login')) {
           localStorage.setItem('loginRedirectUrl', getCurrentPath())
         }
-        redirectRoute = '/login'
+
+        if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
+          redirectRoute = `/district/${urlSearch.get('shortName')}`
+        } else {
+          redirectRoute = '/login'
+        }
       }
     }
-
     /**
      * If error message is stored in the session storage, than we will display it
      * and remove it from the session storage.

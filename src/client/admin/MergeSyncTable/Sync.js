@@ -72,7 +72,7 @@ export default function Sync({
         >
           <Column title="School Name" dataIndex="name" key="name" />
           <Column
-            title={`School ${isClasslink ? 'Classlink' : 'Clever'} Id`}
+            title={`School ${isClasslink ? 'Edlink' : 'Clever'} Id`}
             dataIndex="id"
             key="schoolId"
           />

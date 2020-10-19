@@ -10,23 +10,14 @@ const type = {
   group: 'Groups',
 }
 
-const ClassSelector = ({
-  groups,
-  archiveGroups,
-  setClassGroups,
-  filterClass,
-  setFilterClass,
-  currentTab,
-}) => {
+const ClassSelector = ({ filterClass, setFilterClass, currentTab }) => {
   const currentType = type[currentTab]
 
   const handleActiveClassClick = () => {
     setFilterClass(options[0])
-    setClassGroups(groups)
   }
   const handleArchiveClassClick = () => {
     setFilterClass(options[1])
-    setClassGroups(archiveGroups)
   }
 
   const menu = (

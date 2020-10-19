@@ -498,6 +498,9 @@ export function flat2nestedConfig(config) {
                 acc[id].dimensions = dimensions
               }
             } else {
+              if (type === CONSTANT.TOOLS.POLYGON && !element.subElementsIds) {
+                element.subElementsIds = {}
+              }
               acc[id].points = getPointsFromFlatConfig(
                 type,
                 element.subElementsIds,

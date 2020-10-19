@@ -3,7 +3,7 @@ import {
   EduButton,
   TypeToConfirmModal,
   notification,
-  SimpleConfirmModal
+  SimpleConfirmModal,
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -160,10 +160,9 @@ const Header = ({
     </>
   )
 
-  const district = districtName ? `${districtName}, ` : '' ;
+  const district = districtName ? `${districtName}, ` : ''
 
-  const classDetail = name + "\n" +
-  district + institutionName;
+  const classDetail = `${name} \n ${district}${institutionName}`
 
   const handleCleverSync = () => {
     const classList = [{ ...selectedClass, course: selectedClass?.course?.id }]
@@ -206,7 +205,12 @@ const Header = ({
   }
 
   return (
-    <MainHeader Icon={IconManage} titleText={classDetail} titleMaxWidth="650px" headingText={classDetails}>
+    <MainHeader
+      Icon={IconManage}
+      titleText={classDetail}
+      titleMaxWidth="650px"
+      headingText={classDetails}
+    >
       <div style={{ display: 'flex', alignItems: 'right' }}>
         {showDropDown ? (
           <SelectStyled
@@ -337,9 +341,15 @@ const Header = ({
           </EduButton>
         )}
         {active !== 1 && (
-          <EduButton isBlue onClick={() => setShowUnarchiveModal(true)}>
-            UNARCHIVE
-          </EduButton>
+          <>
+            <EduButton isBlue onClick={() => getAssignmentsByClass(_id)()}>
+              <IconAssignment />
+              View Assignments
+            </EduButton>
+            <EduButton isBlue onClick={() => setShowUnarchiveModal(true)}>
+              UNARCHIVE
+            </EduButton>
+          </>
         )}
         {showUnarchiveModal && (
           <SimpleConfirmModal

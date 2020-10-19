@@ -91,13 +91,24 @@ const PublicTestPage = ({
             redirectToTestPreview(_test._id, isTestArchieved, isTestInDraft)
           }
         })
-        .catch(() => {
-          notification({
-            type: 'info',
-            messageKey: 'tryingToAccessPrivateTest',
-          })
+        .catch((err) => {
+          const { message, statusCode } = err?.response?.data || {}
+          if (message === 'Resource not available') {
+            notification({
+              type: 'error',
+              msg:
+                'You can no longer use this as sharing access has been revoked by author.',
+            })
+          } else {
+            notification({
+              type: 'info',
+              messageKey: 'tryingToAccessPrivateTest',
+            })
+          }
+
           if (role !== 'student' || role !== 'parent') {
-            redirectToTestPreview(testId)
+            if (statusCode === 403) history.push('/author/tests')
+            else redirectToTestPreview(testId)
           } else {
             // if got error redirect to login page
             history.push('/')

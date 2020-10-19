@@ -297,7 +297,14 @@ class Container extends PureComponent {
   }
 
   componentWillUnmount() {
-    const { match, removeTestEntity, resetPageState } = this.props
+    const {
+      match,
+      removeTestEntity,
+      resetPageState,
+      setEditEnable,
+    } = this.props
+    //disable edit on unmount
+    setEditEnable(false)
     // clear test entity only on edit and regrade flow
     if (match.params.id) removeTestEntity()
     resetPageState()

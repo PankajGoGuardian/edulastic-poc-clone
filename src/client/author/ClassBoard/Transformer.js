@@ -27,6 +27,7 @@ export const markQuestionLabel = (testItems) => {
     } else if (item.isDocBased) {
       item.data.questions = item.data.questions
         .filter((q) => q.type !== questionType.SECTION_LABEL)
+        .sort((a, b) => a.qIndex - b.qIndex)
         .map((q, qIndex) => ({
           ...q,
           qLabel: `Q${qIndex + 1}`,
@@ -157,20 +158,7 @@ export const getQuestionLabels = (testItemsData = []) => {
  * @returns {number}
  */
 const getMaxScoreFromQuestion = (question) => {
-  let possibleScores = [
-    DotProp.get(question, 'validation.validResponse.score', 0),
-  ]
-  const alternateResponses = DotProp.get(
-    question,
-    'validation.altResponses',
-    false
-  )
-  if (alternateResponses) {
-    possibleScores = possibleScores.concat(
-      alternateResponses.map((r) => r.score)
-    )
-  }
-  return Math.max(...possibleScores)
+  return get(question, 'validation.validResponse.score', 0)
 }
 
 /**

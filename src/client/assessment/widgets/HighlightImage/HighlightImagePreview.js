@@ -45,8 +45,8 @@ const HighlightImagePreview = ({
   const { width = 0, height = 0 } = image
 
   const imageContainerDimensions = {
-    width: max([image.x + width + 10, 700]),
-    height: max([image.y + height + 10, 600]),
+    width: max([+image.x + +width + 10, 700]),
+    height: max([+image.y + +height + 10, 600]),
   }
 
   const altText = image ? image.altText : ''
@@ -67,15 +67,16 @@ const HighlightImagePreview = ({
   )
 
   const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
+  const isAuthorPreview = viewComponent === 'editQuestion'
   let showDrawing =
     isLCBView ||
     isStudentReport ||
     isExpressGrader ||
-    viewComponent === 'editQuestion' ||
+    isAuthorPreview ||
     scratchPadMode
 
   if (showDrawing && !isStudentAttempt) {
-    if (isExpressGrader && !disableResponse) {
+    if ((isExpressGrader && !disableResponse) || isAuthorPreview) {
       showDrawing = true
     } else {
       // show scratchpad only if there is data

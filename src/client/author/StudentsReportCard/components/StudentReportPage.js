@@ -42,16 +42,6 @@ const LegendContainer = () => (
   </StyledLegendContainer>
 )
 
-function useLayoutEffectDebounced(func, values, time) {
-  useLayoutEffect(() => {
-    let db = setTimeout(() => {
-      func()
-    }, time)
-
-    return () => clearTimeout(db)
-  }, values)
-}
-
 const StudentReportPage = ({
   studentResponse,
   author_classboard_testActivity,
@@ -76,42 +66,38 @@ const StudentReportPage = ({
     })
   }, [testActivity.studentId])
 
-  useLayoutEffectDebounced(
-    () => {
-      setTimeout(() => {
-        setPerformanceBlockHeight(performanceRef.current?.clientHeight || 0)
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      setPerformanceBlockHeight(performanceRef.current?.clientHeight || 0)
 
-        // get questions table row height
-        const questionsElm =
-          document
-            .getElementById(`report-${testActivity.studentId}`)
-            ?.querySelectorAll(
-              '.student-report-card-question-table-container .ant-table-body > table > tbody > tr'
-            ) || []
-        const questionsDims = {}
-        questionsElm.forEach((elm, i) => (questionsDims[i] = elm.clientHeight))
-        setQuestionTableDims(questionsDims)
+      // get questions table row height
+      const questionsElm =
+        document
+          .getElementById(`report-${testActivity.studentId}`)
+          ?.querySelectorAll(
+            '.student-report-card-question-table-container .ant-table-body > table > tbody > tr'
+          ) || []
+      const questionsDims = {}
+      questionsElm.forEach((elm, i) => (questionsDims[i] = elm.clientHeight))
+      setQuestionTableDims(questionsDims)
 
-        // get standard table row height
-        const standardELms =
-          document
-            .getElementById(`report-${testActivity.studentId}`)
-            ?.querySelectorAll(
-              '.student-report-card-standard-table-container .ant-table-body > table > tbody > tr'
-            ) || []
-        const standardDims = {}
-        standardELms.forEach((elm, i) => (standardDims[i] = elm.clientHeight))
-        setStandardTableDims(standardDims)
-      }, 2000)
-    },
-    [
-      studentResponse,
-      author_classboard_testActivity,
-      testActivity,
-      mainContainerRef.current,
-    ],
-    3000
-  )
+      // get standard table row height
+      const standardELms =
+        document
+          .getElementById(`report-${testActivity.studentId}`)
+          ?.querySelectorAll(
+            '.student-report-card-standard-table-container .ant-table-body > table > tbody > tr'
+          ) || []
+      const standardDims = {}
+      standardELms.forEach((elm, i) => (standardDims[i] = elm.clientHeight))
+      setStandardTableDims(standardDims)
+    }, 2000)
+  }, [
+    studentResponse,
+    author_classboard_testActivity,
+    testActivity,
+    mainContainerRef.current,
+  ])
 
   const currentStudentResponse = {
     data: studentResponse.byStudentId[testActivity.studentId],
@@ -265,6 +251,7 @@ const StudentReportPage = ({
             performanceRef={performanceRef}
             className="hide-on-print"
             performanceBandsData={performanceBandsData}
+            author_classboard_testActivity={author_classboard_testActivity}
           />
         }
         {showQuestionsTable && !!data.questionTableData?.length && (
@@ -306,6 +293,7 @@ const StudentReportPage = ({
                 data={data}
                 className="hide-without-print"
                 performanceBandsData={performanceBandsData}
+                author_classboard_testActivity={author_classboard_testActivity}
               />
             )}
             {i !== 0 && (

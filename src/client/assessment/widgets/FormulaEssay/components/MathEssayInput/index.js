@@ -59,7 +59,7 @@ const MathEssayInput = ({
   }
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: disableResponse ? 'auto' : '100%' }}>
       <MathEssayInputContext.Provider
         value={{ textFormattingOptions, uiStyle }}
       >

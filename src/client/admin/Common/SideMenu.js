@@ -41,7 +41,7 @@ const siderMenuData = [
   },
   {
     icon: 'team',
-    label: 'Classlink Search',
+    label: 'Edlink Setup',
     href: '/admin/search/classlink',
   },
   {

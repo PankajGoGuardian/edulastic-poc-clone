@@ -46,12 +46,12 @@ import {
 export const LOGIN = '[auth] login'
 export const GOOGLE_LOGIN = '[auth] google login'
 export const CLEVER_LOGIN = '[auth] clever login'
-export const CLASSLINK_LOGIN = '[auth] classlink login'
+export const ATLAS_LOGIN = '[auth] atlas login'
 export const MSO_LOGIN = '[auth] mso login'
 export const GOOGLE_SSO_LOGIN = '[auth] google sso login'
 export const CLEVER_SSO_LOGIN = '[auth] clever sso login'
 export const MSO_SSO_LOGIN = '[auth] mso sso login'
-export const CLASSLINK_SSO_LOGIN = '[auth] classlink sso login'
+export const ATLAS_SSO_LOGIN = '[auth] atlas sso login'
 export const GET_USER_DATA = '[auth] get user data from sso response'
 export const SET_USER = '[auth] set user'
 export const SIGNUP = '[auth] signup'
@@ -156,11 +156,11 @@ export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
 export const googleLoginAction = createAction(GOOGLE_LOGIN)
 export const cleverLoginAction = createAction(CLEVER_LOGIN)
-export const classlinkLoginAction = createAction(CLASSLINK_LOGIN)
+export const atlasLoginAction = createAction(ATLAS_LOGIN)
 export const msoLoginAction = createAction(MSO_LOGIN)
 export const googleSSOLoginAction = createAction(GOOGLE_SSO_LOGIN)
 export const cleverSSOLoginAction = createAction(CLEVER_SSO_LOGIN)
-export const classlinkSSOLoginAction = createAction(CLASSLINK_SSO_LOGIN)
+export const atlasSSOLoginAction = createAction(ATLAS_SSO_LOGIN)
 export const getUserDataAction = createAction(GET_USER_DATA)
 export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN)
 export const setUserAction = createAction(SET_USER)
@@ -1381,7 +1381,7 @@ function* cleverSSOLogin({ payload }) {
   localStorage.removeItem('thirdPartySignOnGeneralSettings')
 }
 
-function* classlinkLogin({ payload }) {
+function* atlasLogin({ payload }) {
   const generalSettings = yield select(signupGeneralSettingsSelector)
   const params = {}
   if (generalSettings) {
@@ -1397,14 +1397,14 @@ function* classlinkLogin({ payload }) {
     if (payload) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
-    const res = yield call(authApi.classlinkLogin, params)
+    const res = yield call(authApi.atlasLogin, params)
     window.location.href = res
   } catch (e) {
-    notification({ messageKey: 'classlinkLoginFailed' })
+    notification({ messageKey: 'atlasLoginFailed' })
   }
 }
 
-function* classlinkSSOLogin({ payload }) {
+function* atlasSSOLogin({ payload }) {
   const _payload = { ...payload }
 
   let generalSettings = localStorage.getItem('thirdPartySignOnGeneralSettings')
@@ -1415,7 +1415,7 @@ function* classlinkSSOLogin({ payload }) {
   }
 
   try {
-    const res = yield call(authApi.classlinkSSOLogin, _payload)
+    const res = yield call(authApi.atlasSSOLogin, _payload)
     yield put(getUserDataAction(res))
   } catch (e) {
     if (
@@ -1430,7 +1430,7 @@ function* classlinkSSOLogin({ payload }) {
         })
       )
     } else {
-      notification({ msg: e?.data?.message || 'Classlink Login failed' })
+      notification({ msg: e?.data?.message || 'Atlas Login failed' })
       yield put(push(getSignOutUrl()))
     }
     removeSignOutUrl()
@@ -1808,11 +1808,11 @@ export function* watcherSaga() {
   yield takeLatest(CHANGE_CLASS, changeClass)
   yield takeLatest(GOOGLE_LOGIN, googleLogin)
   yield takeLatest(CLEVER_LOGIN, cleverLogin)
-  yield takeLatest(CLASSLINK_LOGIN, classlinkLogin)
+  yield takeLatest(ATLAS_LOGIN, atlasLogin)
   yield takeLatest(MSO_LOGIN, msoLogin)
   yield takeLatest(GOOGLE_SSO_LOGIN, googleSSOLogin)
   yield takeLatest(CLEVER_SSO_LOGIN, cleverSSOLogin)
-  yield takeLatest(CLASSLINK_SSO_LOGIN, classlinkSSOLogin)
+  yield takeLatest(ATLAS_SSO_LOGIN, atlasSSOLogin)
   yield takeLatest(GET_USER_DATA, getUserData)
   yield takeLatest(MSO_SSO_LOGIN, msoSSOLogin)
   yield takeLatest(UPDATE_USER_ROLE_REQUEST, updateUserRoleSaga)

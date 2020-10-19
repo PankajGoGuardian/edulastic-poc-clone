@@ -287,7 +287,7 @@ export default class QuestionResponsePage {
   verifyTotalScoreAndImprovement = (totalScore, maxScore, improvemnt) => {
     this.getTotalScore().should('have.text', `${totalScore}`)
     this.getMaxScore().should('have.text', `${maxScore}`)
-    if (improvemnt)
+    if (improvemnt === 0 || improvemnt)
       this.getImprovement().should(
         'have.text',
         `${Math.sign(improvemnt) == 1 ? '+' : ''}${improvemnt}`
@@ -309,6 +309,11 @@ export default class QuestionResponsePage {
       .closest('label')
       .find('input')
       .should('be.checked')
+
+  verifyLabelsUnChecked = (quecard) =>
+    this.getLabels(quecard).each((ele) =>
+      cy.wrap(ele).find('input').should('not.be.checked')
+    )
 
   verifyLabelClass = (quecard, choice, classs) =>
     this.getLabels(quecard)
@@ -705,6 +710,7 @@ export default class QuestionResponsePage {
             break
 
           case attemptTypes.SKIP:
+            this.verifyLabelsUnChecked(cy.get('@quecard'))
             break
 
           case attemptTypes.PARTIAL_CORRECT:

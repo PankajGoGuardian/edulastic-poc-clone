@@ -219,5 +219,13 @@
     "grade": ["Kindergarten"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_MULTI.5"]
+  },
+  "REDIRECTED": {
+    "name": "Test redirect Flow",
+    "grade": ["Grade 10"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.2", "MCQ_TF.2", "MCQ_TF.2", "MCQ_TF.2","MCQ_TF.2"]
   }
+
+
 }

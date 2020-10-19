@@ -283,6 +283,12 @@ const SingleAssessmentReportFilters = ({
     [SARFilterData, filters, testId]
   )
 
+  if (!processedTestIds.validTestId && processedTestIds.testIds.length) {
+    _setTestId(
+      processedTestIds.testIds[0].key ? processedTestIds.testIds[0].key : ''
+    )
+  }
+
   const onGoClick = () => {
     const settings = {
       filters: { ...filters },

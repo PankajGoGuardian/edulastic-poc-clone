@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Spin } from 'antd'
 import loadable from '@loadable/component'
 // eslint-disable-next-line
-import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { BLANK_URL } from '../Worksheet/Worksheet'
 import PdfStoreAdapter from './PdfStoreAdapter'
 
+const PDFJSANNOTATE = loadable.lib(() =>
+  import('@edulastic/ext-libs/src/pdf-annotate')
+)
 const PDFJSLIB = loadable.lib(() => import('pdfjs-dist/es5/build/pdf'))
-
-const { UI } = PDFJSAnnotate
 
 const PDFViewer = ({
   page,
@@ -26,9 +26,13 @@ const PDFViewer = ({
   const pageNumber = URL === BLANK_URL ? 1 : pageNo
   const viewerRef = useRef(null)
   const pdfLib = useRef(null)
+  const pdfAnnLib = useRef(null)
   const [pdfDocument, setPdfDocument] = useState(null)
 
   const clearAllTools = () => {
+    if (!pdfAnnLib.current) return
+
+    const { UI } = pdfAnnLib.current
     UI.disableUpdate()
     UI.disableEdit()
     UI.disablePen()
@@ -41,6 +45,10 @@ const PDFViewer = ({
   }
 
   const enableCurrentTool = (type) => {
+    if (!pdfAnnLib.current) return
+
+    const { UI } = pdfAnnLib.current
+
     const { size, color } =
       annotationToolsProperties[currentAnnotationTool] || {}
 
@@ -109,23 +117,31 @@ const PDFViewer = ({
   }
 
   useEffect(() => {
+    if (!pdfAnnLib.current) return
+
+    const { UI } = pdfAnnLib.current
     clearAllTools()
     if (!authoringMode) {
       UI.enableUpdate()
       return
     }
     enableCurrentTool(currentAnnotationTool)
-  }, [authoringMode, currentAnnotationTool, annotationToolsProperties])
+  }, [
+    authoringMode,
+    currentAnnotationTool,
+    annotationToolsProperties,
+    pdfAnnLib.current,
+  ])
 
   useEffect(() => {
     if (pdfLib.current)
       pdfLib.current.GlobalWorkerOptions.workerSrc =
         'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
+    if (pdfAnnLib.current) pdfAnnLib.current.setStoreAdapter(PdfStoreAdapter)
     if (!pdfDocument) {
       loadPdf()
     }
-    PDFJSAnnotate.setStoreAdapter(PdfStoreAdapter)
-  }, [])
+  }, [pdfLib.current, pdfAnnLib.current])
 
   useEffect(() => {
     /**
@@ -136,7 +152,12 @@ const PDFViewer = ({
       loadPdf()
     }
   }, [currentPage])
+
   useEffect(() => {
+    if (!pdfAnnLib.current) return
+
+    const { UI } = pdfAnnLib.current
+
     if (
       !docLoading &&
       pdfDocument &&
@@ -164,6 +185,7 @@ const PDFViewer = ({
     pdfScale,
     rotate,
     annotationsStack.length,
+    pdfAnnLib.current,
   ])
 
   if (docLoading) {
@@ -178,6 +200,7 @@ const PDFViewer = ({
     <>
       <div id="viewer" className="pdfViewer" ref={viewerRef} />
       <PDFJSLIB ref={pdfLib} />
+      <PDFJSANNOTATE ref={pdfAnnLib} />
     </>
   )
 }

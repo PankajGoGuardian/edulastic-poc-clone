@@ -244,6 +244,11 @@ const initialState = {
   isClassCodeModalOpen: false,
 }
 
+function* persistLoginState() {
+  const loginStore = yield select((state) => state) || {}
+  localStorage.setItem('loginState', JSON.stringify(loginStore))
+}
+
 const setUser = (state, { payload }) => {
   const defaultGrades =
     TokenStorage.getFromLocalStorage('defaultGrades') != null
@@ -749,6 +754,7 @@ function* login({ payload }) {
       }
     }
 
+    yield persistLoginState()
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {

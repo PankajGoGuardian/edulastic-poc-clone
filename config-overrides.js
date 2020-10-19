@@ -13,6 +13,20 @@ const path = require('path')
 const CopyPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
+const multipleEntry = require('react-app-rewire-multiple-entry')([
+  // Uncomment this entry when ready to test with app chunks
+  // {
+  //   entry: 'src/index.js',
+  //   template: 'public/index.html',
+  //   outPath: '/index.html',
+  // },
+  {
+    entry: 'src/login.js',
+    template: 'public/login.html',
+    outPath: '/login.html',
+  },
+])
+
 const packageJson = require('./package.json')
 
 /** Uncomment to have a copy of files written on disk */
@@ -23,6 +37,7 @@ const packageJson = require('./package.json')
 // const rootNodeModDir = path.resolve(__dirname, 'node_modules')
 
 module.exports = override(
+  multipleEntry.addMultiEntry,
   disableEsLint(),
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
   process.env.BUNDLE_VISUALIZE && addBundleVisualizer(),

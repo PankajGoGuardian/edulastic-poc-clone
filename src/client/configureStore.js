@@ -37,9 +37,10 @@ const composeEnhancers =
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     : compose
 
-export default () => {
+export default (initialState = {}, reducer = rootReducer, saga = rootSaga) => {
   store = createStore(
-    connectRouter(history)(rootReducer),
+    connectRouter(history)(reducer),
+    initialState,
     /**
      * to enable trace
      * composeWithDevTools({ trace: true, traceLimit: 15 })
@@ -49,7 +50,7 @@ export default () => {
     composeEnhancers(applyMiddleware(...middleware), reduxReset())
   )
 
-  sagaMiddleware.run(rootSaga)
+  sagaMiddleware.run(saga)
 
   return { store }
 }

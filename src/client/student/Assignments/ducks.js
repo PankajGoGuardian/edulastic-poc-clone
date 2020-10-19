@@ -357,7 +357,7 @@ export const getAllAssignmentsSelector = createSelector(
   reportsSelector,
   getCurrentGroup,
   getClassIds,
-  getUserId,
+  () => [], // REVERT: Temp Fix for Circular Dependancy
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     const classIdentifiers = values(assignmentsObj).flatMap((item) =>
       item.class.map((i) => i.identifier)

@@ -39,3 +39,7 @@ export default function* () {
     publicTestSaga(),
   ])
 }
+
+export function* loginSaga() {
+  yield all([authenticationSaga(), signupSaga()])
+}

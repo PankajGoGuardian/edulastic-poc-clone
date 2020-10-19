@@ -110,8 +110,11 @@ if (AppConfig.isSegmentEnabled) {
   })()
 }
 
+const loginState = JSON.parse(localStorage.getItem('loginState')) || {}
+localStorage.removeItem('loginState')
+
 // redux store
-const { store } = configureStore()
+const { store } = configureStore(loginState)
 
 const RootComp = () => (
   <I18nextProvider i18n={i18n}>

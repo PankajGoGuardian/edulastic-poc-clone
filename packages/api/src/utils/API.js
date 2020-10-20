@@ -151,6 +151,12 @@ export default class API {
       },
     })
     this.instance.interceptors.request.use((_config) => {
+      // there are some APIs which take more time than the others,
+      // such APIs are routed to another url which will use a aws lambda with much higher timeout
+      // some of the example APIs are in packages/api/src/reports.js
+      if (_config.useSlowApi) {
+        _config.baseURL = config.apis || _config.baseURL
+      }
       _config['client-epoch'] = Date.now().toString()
       _config.headers['X-Client-Time'] = new Date().toISOString()
       const token =

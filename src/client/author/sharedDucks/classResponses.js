@@ -28,7 +28,6 @@ import {
   RECEIVE_STUDENT_RESPONSE_SUCCESS,
   RECEIVE_STUDENT_RESPONSE_ERROR,
   RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST,
-  RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS,
   RECEIVE_CLASSSTUDENT_RESPONSE_ERROR,
   RECEIVE_FEEDBACK_RESPONSE_REQUEST,
   RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
@@ -41,6 +40,7 @@ import {
   RECEIVE_CLASS_QUESTION_ERROR,
   RESPONSE_ENTRY_SCORE_SUCCESS,
   UPDATE_STUDENT_TEST_ITEMS,
+  ADD_CLASS_STUDENT_RESPONSE,
 } from '../src/constants/actions'
 import { gradebookTestItemAddAction } from '../src/reducers/testActivity'
 
@@ -61,6 +61,8 @@ export const UPDATE_STUDENT_ACTIVITY_SCORE =
 export const updateStudentQuestionActivityScoreAction = createAction(
   UPDATE_STUDENT_ACTIVITY_SCORE
 )
+
+const addClassStudentRespnseAction = createAction(ADD_CLASS_STUDENT_RESPONSE)
 
 function* receiveClassResponseSaga({ payload }) {
   try {
@@ -270,19 +272,32 @@ function* receiveStudentResponseSaga({ payload }) {
 
 function* receiveClassStudentResponseSaga({ payload }) {
   try {
-    const classStudentResponse = []
-    for (let i = 0; i < payload.selectedActivities.length; i++) {
-      classStudentResponse.push(
-        yield call(classResponseApi.studentResponse, {
-          testActivityId: payload.selectedActivities[i],
-          groupId: payload.groupId,
+    const { groupId, selectedActivities } = payload
+    const classStudentResponse = yield all(
+      selectedActivities.map((x) =>
+        call(classResponseApi.studentResponse, { testActivityId: x, groupId })
+      )
+    )
+    for (let index = 0; index < classStudentResponse.length; index++) {
+      const value = classStudentResponse[index]
+      // doing adding response one by one instead of all at once to avoid freezing browser when too many students selected for printing
+      yield put(
+        addClassStudentRespnseAction({
+          value,
+          first: index === 0,
+          last: index === classStudentResponse.length - 1,
         })
       )
+      /**
+       *  a trick to right away render 1st student response.
+       *  otherwise, all students items would be batched and
+       *  rendered at the same time and it will take long time to see anything on screen.
+       *  Now this delay would give enough time for the react to render the first response
+       */
+      if (index === 0) {
+        yield delay(500)
+      }
     }
-    yield put({
-      type: RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS,
-      payload: classStudentResponse,
-    })
   } catch (err) {
     const errorMessage = 'Unable to retrieve class student response.'
     notification({ type: 'error', messageKey: 'receiveTestFailing' })

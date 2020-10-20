@@ -364,7 +364,7 @@ class App extends Component {
         if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
           redirectRoute = `/district/${urlSearch.get('shortName')}`
         } else {
-          redirectRoute = '/login'
+          window.location.replace('/login')
         }
       }
     }
@@ -499,11 +499,6 @@ class App extends Component {
               exact
               path="/partnerLogin/:partner/Signup"
               component={TeacherSignup}
-              redirectPath={defaultRoute}
-            />
-            <LoggedOutRoute
-              path="/login"
-              component={Auth}
               redirectPath={defaultRoute}
             />
             <LoggedOutRoute

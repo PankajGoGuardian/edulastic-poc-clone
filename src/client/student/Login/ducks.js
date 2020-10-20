@@ -244,9 +244,14 @@ const initialState = {
   isClassCodeModalOpen: false,
 }
 
-function* persistLoginState() {
-  const loginStore = yield select((state) => state) || {}
-  localStorage.setItem('loginState', JSON.stringify(loginStore))
+function* persistAuthStateAndRedirectTo(path) {
+  const { authorUi, signup: signUp, user } = yield select((state) => state) ||
+    {}
+  localStorage.setItem(
+    'authState',
+    JSON.stringify({ authorUi, signup: signUp, user })
+  )
+  window.location.replace(path)
 }
 
 const setUser = (state, { payload }) => {
@@ -745,7 +750,7 @@ function* login({ payload }) {
           yield put(push({ pathname: publicUrl, state: { isLoading: true } }))
         } else {
           localStorage.removeItem('loginRedirectUrl')
-          yield put(push(redirectUrl))
+          yield persistAuthStateAndRedirectTo(redirectUrl)
         }
       }
 
@@ -754,7 +759,6 @@ function* login({ payload }) {
       }
     }
 
-    yield persistLoginState()
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {

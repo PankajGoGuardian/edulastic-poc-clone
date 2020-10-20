@@ -14,16 +14,15 @@ const CopyPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const multipleEntry = require('react-app-rewire-multiple-entry')([
-  // Uncomment this entry when ready to test with app chunks
-  // {
-  //   entry: 'src/index.js',
-  //   template: 'public/index.html',
-  //   outPath: '/index.html',
-  // },
+  {
+    entry: 'src/index.js',
+    template: 'public/index.html',
+    outPath: '/index.html',
+  },
   {
     entry: 'src/login.js',
-    template: 'public/login.html',
-    outPath: '/login.html',
+    template: 'public/login/index.html',
+    outPath: '/login/index.html',
   },
 ])
 
@@ -176,11 +175,11 @@ module.exports = override(
 
     // chunking optimization
     if (!isProduction) {
-      config.output.filename = 'app.js'
+      config.output.filename = '[name].bundle.js'
       config.output.chunkFilename = '[name].chunk.js'
     } else {
       // config.devtool = false // disable sourcemaps on production
-      config.output.filename = 'app.[chunkhash:8].js'
+      config.output.filename = '[name].[chunkhash:8].js'
       config.output.chunkFilename = '[name].[chunkhash:8].chunk.js'
 
       // config.optimization = {

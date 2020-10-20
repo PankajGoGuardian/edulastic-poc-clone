@@ -110,8 +110,8 @@ if (AppConfig.isSegmentEnabled) {
   })()
 }
 
-const loginState = JSON.parse(localStorage.getItem('loginState')) || {}
-localStorage.removeItem('loginState')
+const loginState = JSON.parse(localStorage.getItem('authState')) || {}
+localStorage.removeItem('authState')
 
 // redux store
 const { store } = configureStore(loginState)

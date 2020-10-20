@@ -54,6 +54,8 @@ const Auth = ({
         return <Redirect exact to="/author/dashboard" />
       case roleuser.STUDENT:
         return <Redirect exact to="/home/assignments" />
+      default:
+        return <Redirect exact to="/author/dashboard" />
     }
   }
 

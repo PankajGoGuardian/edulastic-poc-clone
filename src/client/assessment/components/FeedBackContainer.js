@@ -75,6 +75,7 @@ const FeedBackContainer = ({
             answer: 'Prior Attempt',
             answerIcon: (
               <IconCorrect
+                data-cy="correct"
                 height={iconHeight}
                 width={iconHeight}
                 color={greenDark3}
@@ -85,6 +86,7 @@ const FeedBackContainer = ({
             answer: 'Prior Attempt',
             answerIcon: (
               <IconCorrect
+                data-cy="partialCorrect"
                 height={iconHeight}
                 width={iconHeight}
                 color={yellow}
@@ -94,7 +96,12 @@ const FeedBackContainer = ({
       : {
           answer: 'Prior Attempt',
           answerIcon: (
-            <IconWrong height={iconHeight2} width={iconHeight2} color={red} />
+            <IconWrong
+              data-cy="wrong"
+              height={iconHeight2}
+              width={iconHeight2}
+              color={red}
+            />
           ),
         }
   const isResponseVisible =

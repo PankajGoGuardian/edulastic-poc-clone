@@ -130,9 +130,9 @@ module.exports = override(
       })
     )
 
-    config.plugins.push(
-      new webpack.BannerPlugin({ banner: `${Date()} Copyright Snapwiz` })
-    )
+    // config.plugins.push(
+    //   new webpack.BannerPlugin({ banner: `${Date()} Copyright Snapwiz` })
+    // )
 
     if (!isProduction) {
       config.plugins.push(new ProgressBarPlugin())

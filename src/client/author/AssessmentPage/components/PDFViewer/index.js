@@ -100,6 +100,9 @@ const PDFViewer = ({
 
     if (!pdfLib.current) return
 
+    pdfLib.current.GlobalWorkerOptions.workerSrc =
+      'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
+
     const loadingTask = pdfLib.current.getDocument(URL)
     loadingTask.promise
       .then((_pdfDocument) => {
@@ -137,9 +140,6 @@ const PDFViewer = ({
   ])
 
   useEffect(() => {
-    if (pdfLib.current)
-      pdfLib.current.GlobalWorkerOptions.workerSrc =
-        'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
     if (pdfAnnLib.current) pdfAnnLib.current.setStoreAdapter(PdfStoreAdapter)
     if (!pdfDocument && pdfLib.current) {
       loadPdf()

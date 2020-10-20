@@ -167,6 +167,7 @@ export const RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST =
   '[classStudentResponse] receive list request'
 export const RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS =
   '[classStudentResponse] receive list success'
+export const ADD_CLASS_STUDENT_RESPONSE = '[classStudentResponse] add response'
 export const RECEIVE_CLASSSTUDENT_RESPONSE_ERROR =
   '[classStudentResponse] receive list error'
 export const RECEIVE_FEEDBACK_RESPONSE_REQUEST =

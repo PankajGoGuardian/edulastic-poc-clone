@@ -25,12 +25,10 @@ import {
   IconPencilEdit,
   IconAssignment,
   IconManage,
-  IconRemove,
 } from '@edulastic/icons'
 import IconArchive from '@edulastic/icons/src/IconArchive'
 import { canvasApi } from '@edulastic/api'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
-import { get } from 'lodash'
 import {
   Institution,
   DropMenu,
@@ -43,11 +41,6 @@ import {
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from '../ClassListContainer/ClassCreatePage'
 import AddCoTeacher from './AddCoTeacher/AddCoTeacher'
-import UpdateCoTeacher from './UpdateCoTeacher/UpdateCoTeacher'
-import {
-  getManageCoTeacherModalVisibleStateSelector,
-  showUpdateCoTeacherModalAction,
-} from '../../ducks'
 
 const Option = Select.Option
 
@@ -75,15 +68,10 @@ const Header = ({
   unarchiveClass,
   history,
   entity,
-  teachers,
-  showCoteacherModal,
-  setUpdateCoTeacherModal,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
   }
-
-  const coTeachers = teachers.filter((teacher) => teacher.status === 1) || []
 
   const handleError = (err) => {
     notification({ messageKey: 'googleLoginFailed' })
@@ -399,12 +387,13 @@ const Header = ({
                   <IconPlusCircle />
                   <span>Add a Co-Teacher</span>
                 </MenuItems>
-                {coTeachers && coTeachers.length > 1 && (
-                  <MenuItems onClick={() => setUpdateCoTeacherModal(true)}>
-                    <IconRemove />
-                    <span>Manage Co-Teacher</span>
-                  </MenuItems>
-                )}
+
+                {/*
+                <MenuItems>
+                  <IconRemove />
+                  <span>Remove a Co-Teacher</span>  //Hidden until functionality added
+                </MenuItems>
+              */}
                 <MenuItems onClick={getAssignmentsByClass(_id)}>
                   <IconAssignment />
                   <span>View Assignments</span>
@@ -425,12 +414,6 @@ const Header = ({
         type={type}
         selectedClass={selectedClass}
         handleCancel={() => toggleModal('addCoTeacher')}
-      />
-      <UpdateCoTeacher
-        isOpen={showCoteacherModal}
-        type={type}
-        selectedClass={selectedClass}
-        handleCancel={() => setUpdateCoTeacherModal(false)}
       />
       {showModal && (
         <TypeToConfirmModal
@@ -462,15 +445,8 @@ Header.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  connect(
-    (state) => ({
-      user: state?.user?.user,
-      teachers: get(state, 'teacherReducer.data', []),
-      showCoteacherModal: getManageCoTeacherModalVisibleStateSelector(state),
-    }),
-    {
-      setUpdateCoTeacherModal: showUpdateCoTeacherModalAction,
-    }
-  )
+  connect((state) => ({
+    user: state?.user?.user,
+  }))
 )
 export default enhance(Header)

@@ -334,7 +334,6 @@
     "users": "Users",
     "editclass": "Edit",
     "archiveclass": "Archive selected Class(es)",
-    "managecoteachers": "Manage Co-Teachers",
     "bulkedit": "Bulk Edit",
     "grade": "Grade",
     "subject": "Subject",
@@ -346,8 +345,6 @@
       "editclass": "Please select class to edit.",
       "singleeditclass": "Please select single class to edit.",
       "archiveclass": "Please select class to archive.",
-      "selectmultipleclass": "Please select single class to manage co-teacher(s).",
-      "selectoneclass": "Please select a class first.",
       "selectclass": "Please select atleast 1 class."
     },
     "components": {

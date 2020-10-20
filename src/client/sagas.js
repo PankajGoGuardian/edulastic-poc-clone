@@ -18,6 +18,7 @@ import { saga as customReportSaga } from './admin/Components/CustomReportContain
 import publisherSagas from './publisher/sagas'
 import { watcherSaga as resetPasswordSaga } from './SetParentPassword/ducks'
 import { publicTestSaga } from './publicTest'
+import dictionariesSaga from './author/src/sagas/dictionaries'
 
 export default function* () {
   yield all([
@@ -41,5 +42,5 @@ export default function* () {
 }
 
 export function* loginSaga() {
-  yield all([authenticationSaga(), signupSaga()])
+  yield all([authenticationSaga(), signupSaga(), dictionariesSaga()])
 }

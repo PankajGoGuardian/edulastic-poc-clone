@@ -10,6 +10,8 @@ import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
 
 const ASSETS_REFRESH_STAMP = 'assetsRefreshDateStamp'
 
+const ErrStatRegex = /5[0-9][0-9]/
+
 const getCurrentPath = () => {
   const location = window.location
   return `${location.pathname}${location.search}${location.hash}`
@@ -226,7 +228,7 @@ export default class API {
         err.response = data.response
 
         // log in to sentry, exclude low priority status
-        if (![400, 403].includes(err.status))
+        if (err.status && String(err.status).match(ErrStatRegex)) {
           Sentry.withScope((scope) => {
             const fingerPrint = getUrlFragment(reqUrl) || reqUrl
 
@@ -250,6 +252,7 @@ export default class API {
               JSON.stringify(data.response?.config?.data || {})
             )
           })
+        }
 
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {

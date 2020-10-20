@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { get, keyBy, isUndefined } from 'lodash'
 import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
-import { nonAutoGradableTypes } from '@edulastic/constants'
+import { nonAutoGradableTypes, test } from '@edulastic/constants'
 
 import { themes } from '../../../theme'
 import MainWrapper from './MainWrapper'
@@ -17,7 +17,10 @@ import {
   toggleBookmarkAction,
   bookmarksByIndexSelector,
 } from '../../sharedDucks/bookmark'
-import { getSkippedAnswerSelector } from '../../selectors/answers'
+import {
+  assignmentLevelSettingsSelector,
+  getSkippedAnswerSelector,
+} from '../../selectors/answers'
 import ReportIssuePopover from '../common/ReportIssuePopover'
 import { isZoomGreator } from '../../../common/utils/helpers'
 import SettingsModal from '../../../student/sharedComponents/SettingsModal'
@@ -48,6 +51,7 @@ class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props)
     const { settings } = props
+    const calcType = this.calculatorType
     this.state = {
       cloneCurrentItem: props.currentItem,
       testItemState: '',
@@ -55,7 +59,7 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
       history: 0,
-      calculateMode: `${settings.calcType}_${settings.calcProvider}`,
+      calculateMode: `${calcType}_${settings.calcProvider}`,
       currentToolMode: [0],
       enableCrossAction: false,
       minWidth: 480,
@@ -63,6 +67,21 @@ class AssessmentPlayerDefault extends React.Component {
       defaultHeaderHeight: 62,
     }
     this.scrollContainer = React.createRef()
+  }
+
+  get calculatorType() {
+    const {
+      settings: { calcType: testCalculatorType } = {},
+      assignmentSettings: { calcType: assignmentCalculatorType } = {},
+    } = this.props
+    let calculatorType = testCalculatorType
+    if (
+      assignmentCalculatorType &&
+      assignmentCalculatorType !== test.calculatorTypes.NONE
+    ) {
+      calculatorType = assignmentCalculatorType
+    }
+    return calculatorType
   }
 
   changeTool = (val) => {
@@ -379,6 +398,8 @@ class AssessmentPlayerDefault extends React.Component {
     if (isMobile) {
       headerStyleWidthZoom.padding = 0
     }
+
+    settings.calcType = this.calculatorType
 
     return (
       /**
@@ -721,6 +742,7 @@ const enhance = compose(
       timedAssignment: state.test?.settings?.timedAssignment,
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag,
+      assignmentSettings: assignmentLevelSettingsSelector(state),
     }),
     {
       changePreview: changePreviewAction,

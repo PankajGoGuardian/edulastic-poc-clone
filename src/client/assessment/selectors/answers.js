@@ -89,3 +89,13 @@ export const getSkippedAnswerSelector = createSelector(
     return skippedItems
   }
 )
+
+const studentAssignmentSelector = (state) => state?.studentAssignment
+
+export const assignmentLevelSettingsSelector = createSelector(
+  studentAssignmentSelector,
+  (studentAssignment = {}) => {
+    const { current, byId = {} } = studentAssignment
+    return byId[current] || {}
+  }
+)

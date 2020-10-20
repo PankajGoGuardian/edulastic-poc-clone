@@ -69,6 +69,7 @@ import Group3163 from '../assets/keyboardButtons/3163.svg'
 import Group6101 from '../assets/keyboardButtons/6101.svg'
 import Group3181 from '../assets/keyboardButtons/3181.svg'
 import Group3167 from '../assets/keyboardButtons/3167.svg'
+import Group3166 from '../assets/keyboardButtons/3166.svg'
 import Group3172 from '../assets/keyboardButtons/3172.svg'
 import Group3168 from '../assets/keyboardButtons/3168.svg'
 import Group1053 from '../assets/keyboardButtons/1053.svg'
@@ -1464,6 +1465,19 @@ export const TAB_BUTTONS = [
         label: (
           <CustomImage
             src={Group3167}
+            width={16}
+            height={16}
+            role="presentation"
+          />
+        ),
+        types: ['all'],
+        command: 'write',
+      },
+      {
+        handler: '\\ne',
+        label: (
+          <CustomImage
+            src={Group3166}
             width={16}
             height={16}
             role="presentation"

@@ -96,8 +96,7 @@ const PublicTestPage = ({
           if (message === 'Resource not available') {
             notification({
               type: 'error',
-              msg:
-                'You can no longer use this as sharing access has been revoked by author.',
+              messageKey: 'curriculumMakeApiErr',
             })
           } else {
             notification({

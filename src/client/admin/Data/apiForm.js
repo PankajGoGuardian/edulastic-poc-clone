@@ -347,4 +347,20 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'tts',
+    name: 'Text to speech',
+    endPoint: 'test/tts',
+    method: 'post',
+    fields: [
+      {
+        key: 'testId',
+        name: 'testId',
+        placeholder: 'Test id',
+        type: 'string',
+        displayName: 'Enter test ID',
+        required: true,
+      },
+    ],
+  },
 ]

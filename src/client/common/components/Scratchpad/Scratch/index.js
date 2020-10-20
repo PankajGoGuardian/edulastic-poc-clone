@@ -371,6 +371,7 @@ const Scratchpad = ({
         id="zwibbler-main"
         ref={zwibblerRef}
         onClick={onClickHandler}
+        onTouchStart={onClickHandler}
         hideToolBar={hideToolBar}
         readOnly={readOnly}
         height={height}

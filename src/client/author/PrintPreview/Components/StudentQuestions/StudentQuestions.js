@@ -178,7 +178,7 @@ class StudentQuestions extends Component {
   }
 }
 
-export default withRouter(StudentQuestions)
+export default withRouter(React.memo(StudentQuestions))
 
 StudentQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,

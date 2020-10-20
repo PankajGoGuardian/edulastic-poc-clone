@@ -206,14 +206,18 @@ const AudioControls = ({
             }
           )
         } else {
-          Promise.all(
-            questionData.tts.pages.map((p) =>
-              audioLoadResolve(p?.contentAudioURL)
-            )
-          ).then((contentAudios) => {
-            setPageHowls(contentAudios)
+          const pageAudio = questionData.tts.pages
+            .filter((p) => p?.contentAudioUrl)
+            .map((p) => audioLoadResolve(p?.contentAudioURL))
+
+          if (pageAudio.length) {
+            Promise.all(pageAudio).then((contentAudios) => {
+              setPageHowls(contentAudios)
+              setLoading(false)
+            })
+          } else {
             setLoading(false)
-          })
+          }
         }
       } else {
         setLoading(false)

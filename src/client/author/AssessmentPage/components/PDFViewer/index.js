@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Spin } from 'antd'
 import loadable from '@loadable/component'
+import pdfjs from 'pdfjs-dist/webpack'
 // eslint-disable-next-line
 import { BLANK_URL } from '../Worksheet/Worksheet'
 import PdfStoreAdapter from './PdfStoreAdapter'
 
+pdfjs.GlobalWorkerOptions.workerSrc =
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
+
 const PDFJSANNOTATE = loadable.lib(() =>
   import('@edulastic/ext-libs/src/pdf-annotate')
 )
-const PDFJSLIB = loadable.lib(() => import('pdfjs-dist/es5/build/pdf'))
+// const PDFJSLIB = loadable.lib(() => import('pdfjs-dist/webpack'))
 
 const PDFViewer = ({
   page,
@@ -25,7 +29,7 @@ const PDFViewer = ({
   const { pageNo, URL, rotate } = page
   const pageNumber = URL === BLANK_URL ? 1 : pageNo
   const viewerRef = useRef(null)
-  const pdfLib = useRef(null)
+  // const pdfLib = useRef(null)
   const pdfAnnLib = useRef(null)
   const [pdfDocument, setPdfDocument] = useState(null)
 
@@ -97,7 +101,10 @@ const PDFViewer = ({
     if (!docLoading) {
       setDocLoading(true)
     }
-    const loadingTask = pdfLib.current.getDocument(URL)
+
+    // if (!pdfjs) return
+
+    const loadingTask = pdfjs.getDocument(URL)
     loadingTask.promise
       .then((_pdfDocument) => {
         _pdfDocument
@@ -134,14 +141,11 @@ const PDFViewer = ({
   ])
 
   useEffect(() => {
-    if (pdfLib.current)
-      pdfLib.current.GlobalWorkerOptions.workerSrc =
-        'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
     if (pdfAnnLib.current) pdfAnnLib.current.setStoreAdapter(PdfStoreAdapter)
     if (!pdfDocument) {
       loadPdf()
     }
-  }, [pdfLib.current, pdfAnnLib.current])
+  }, [pdfAnnLib.current, pdfjs])
 
   useEffect(() => {
     /**
@@ -199,7 +203,7 @@ const PDFViewer = ({
   return (
     <>
       <div id="viewer" className="pdfViewer" ref={viewerRef} />
-      <PDFJSLIB ref={pdfLib} />
+      {/* <PDFJSLIB ref={pdfLib} /> */}
       <PDFJSANNOTATE ref={pdfAnnLib} />
     </>
   )

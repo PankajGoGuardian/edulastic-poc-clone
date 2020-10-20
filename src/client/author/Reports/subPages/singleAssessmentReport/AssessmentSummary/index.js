@@ -72,6 +72,8 @@ const AssessmentSummary = ({
       setAssesmentSummaryLoading(false)
       setShowHeader(false)
       preventHeaderRender(true)
+    } else if (settings.selectedTest && !settings.selectedTest.key) {
+      setAssesmentSummaryLoading(false)
     }
   }, [settings])
 

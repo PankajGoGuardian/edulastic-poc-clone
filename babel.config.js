@@ -23,6 +23,16 @@ babelPreset.plugins.push.apply(babelPreset.plugins, [
   'lodash',
   'react-require',
   '@loadable/babel-plugin',
+  [
+    require.resolve('babel-plugin-named-asset-import'),
+    {
+      loaderMap: {
+        svg: {
+          ReactComponent: '@svgr/webpack?-svgo,+titleProp,+ref![path]',
+        },
+      },
+    },
+  ],
 ])
 
 module.exports = babelPreset

@@ -22,13 +22,11 @@ const { testContentVisibility: testContentVisibilityOptions } = test
 
 const getReportPathForAssignment = (testId = '', assignment = {}) => {
   const q = {}
-  if (testId === assignment.testId) {
-    if (assignment.termId) {
-      q.termId = assignment.termId
-    }
-    if (assignment.testType) {
-      q.assessmentType = assignment.testType
-    }
+  if (assignment.termId) {
+    q.termId = assignment.termId
+  }
+  if (assignment.testType) {
+    q.assessmentType = assignment.testType
   }
   return `${testId}?${qs.stringify(q)}`
 }
@@ -212,9 +210,20 @@ const ActionMenu = ({
             Release Scores
           </StyledLink>
         </Menu.Item>
-        <Menu.Item data-cy="summary-grades" key="summary-report">
+        <Menu.Item
+          data-cy="summary-grades"
+          key="summary-report"
+          disabled={
+            // admin accounts do not have assignmentDetails
+            !isAdmin &&
+            !(assignmentDetails.gradedCount || assignmentDetails.submittedCount)
+          }
+        >
           <Link
-            to={`/author/reports/performance-by-students/test/${currentTestId}`}
+            to={`/author/reports/assessment-summary/test/${getReportPathForAssignment(
+              currentTestId,
+              assignmentDetails
+            )}`}
           >
             <IconBarChart />
             <SpaceElement />

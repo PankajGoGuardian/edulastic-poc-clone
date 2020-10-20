@@ -12,7 +12,7 @@ import 'font-awesome/css/font-awesome.css'
 import 'antd/dist/antd.css'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import { init as SentryInit } from '@sentry/browser'
-import { Integrations } from '@sentry/tracing'
+// import { Integrations } from '@sentry/tracing'
 import './client/index.css'
 import { updateSentryScope } from '@edulastic/api/src/utils/Storage'
 import App from './client/App'
@@ -23,14 +23,17 @@ import * as serviceWorker from './serviceWorker'
 
 if (AppConfig.sentryURI) {
   SentryInit({
-    whitelistUrls: [AppConfig.sentryWhiteListURLRegex],
+    allowUrls: [AppConfig.sentryWhiteListURLRegex],
+    sampleRate: 0.5,
+    maxBreadcrumbs: 30,
     dsn: AppConfig.sentryURI,
     release: AppConfig.appVersion,
     environment: AppConfig.appStage || 'development',
     maxValueLength: 600, // defaults to 250 chars, we will need more info recorded.
     ignoreErrors: AppConfig.sentryIgnoreErrors,
-    integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 0.1, // we sample only 10% of the data from clients.
+    denyUrls: AppConfig.sentryIgnoreUrls,
+    // integrations: [new Integrations.BrowserTracing()],
+    // tracesSampleRate: 0.1, // we sample only 10% of the data from clients.
   })
   updateSentryScope()
 }

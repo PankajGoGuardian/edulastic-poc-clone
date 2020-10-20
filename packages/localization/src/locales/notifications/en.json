@@ -264,8 +264,8 @@
     "description": ""
   },
   "curriculumMakeApiErr": {
-    "message": "You don't have access to view test details",
-    "description": "You can no longer use this as sharing access has been revoked by author."
+    "message": "You can no longer use this, as sharing access has been revoked by author.",
+    "description": ""
   },
   "curriculumMakeApiWarn": {
     "message": "Operation failed!",

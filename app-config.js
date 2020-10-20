@@ -16,8 +16,7 @@ const katexPath = `${thirdPartyLibPath}/katex/v0.11.1`
 const ttsChoicesPath = `${cdnURI}/tts`
 const desmosPath = `${thirdPartyLibPath}/desmos/v1.2`
 const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0`
-const sentryWhiteListURLRegex =
-  appEnv === 'production' ? /edulastic\.com/ : /snapwiz\.net/
+const sentryWhiteListURLRegex = /edulastic\.com|snapwiz\.net/
 const eduScientificCalcPath = `${thirdPartyLibPath}/ev2-scientificcalc`
 
 const sentryURI =
@@ -42,10 +41,65 @@ export const firebaseConfig = {
   projectId: process.env.POI_APP_FIREBASE_PROJECT_ID /* || "ev2-dev-88215" */,
 }
 
-const sentryIgnoreErrors = ['ResizeObserver loop limit exceeded']
+const sentryIgnoreErrors = [
+  // Random plugins/extensions
+  'top.GLOBALS',
+  // See: http://blog.errorception.com/2012/03/tale-of-unfindable-js-error.html
+  'originalCreateNotification',
+  'canvas.contentDocument',
+  'MyApp_RemoveAllHighlights',
+  'http://tt.epicplay.com',
+  "Can't find variable: ZiteReader",
+  'jigsaw is not defined',
+  'ComboSearch is not defined',
+  'http://loading.retry.widdit.com/',
+  'atomicFindClose',
+  // Facebook borked
+  'fb_xd_fragment',
+  // ISP "optimizing" proxy - `Cache-Control: no-transform` seems to reduce this. (thanks @acdha)
+  // See http://stackoverflow.com/questions/4113268/how-to-stop-javascript-injection-from-vodafone-proxy
+  'bmi_SafeAddOnload',
+  'EBCallBackMessageReceived',
+  // See http://toolbar.conduit.com/Developer/HtmlAndGadget/Methods/JSInjection.aspx
+  'conduitPage',
+  // edulastic FE specific
+  'ResizeObserver loop limit exceeded',
+  'invalid password',
+  'scrollTop',
+  'froala',
+  'getBoundingClientRect',
+  'Non-Error promise rejection',
+  'exceeded',
+  'quota',
+  'Quota',
+  'MouseEvent',
+  '/login',
+  '403',
+  '401',
+  'TokenExpire',
+  'expired',
+]
+const sentryIgnoreUrls = [
+  // Facebook flakiness
+  /graph\.facebook\.com/i,
+  // Facebook blocked
+  /connect\.facebook\.net\/en_US\/all\.js/i,
+  // Woopra flakiness
+  /eatdifferent\.com\.woopra-ns\.com/i,
+  /static\.woopra\.com\/js\/woopra\.js/i,
+  // Chrome extensions
+  /extensions\//i,
+  /^chrome:\/\//i,
+  // Other plugins
+  /127\.0\.0\.1:4001\/isrunning/i, // Cacaoweb
+  /webappstoolbarba\.texthelp\.com\//i,
+  /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
+  /\.ru/i,
+]
 
 export default {
   sentryIgnoreErrors,
+  sentryIgnoreUrls,
   appStage,
   appVersion,
   sentryURI,

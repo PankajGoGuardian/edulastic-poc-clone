@@ -50,6 +50,7 @@ import {
   TimedTestIndicator,
   TypeWrapper,
   IndicatorText,
+  TimedWrapper,
 } from './styled'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import WithDisableMessage from '../../../src/components/common/ToggleDisable'
@@ -212,6 +213,8 @@ const TableList = ({
             )}
             <TimedTestIndicator data-cy="type" type="p">
               {row.timedAssignment && (
+                /* Note: TimedWrapper used below is dummy. For whatever reason
+                antd designed in a way that children are supported to have type associated on component. */
                 <Tooltip
                   title={
                     <IndicatorText>
@@ -221,7 +224,9 @@ const TableList = ({
                   }
                   placement="right"
                 >
-                  <TimerIcon />
+                  <TimedWrapper>
+                    <TimerIcon />
+                  </TimedWrapper>
                 </Tooltip>
               )}
             </TimedTestIndicator>

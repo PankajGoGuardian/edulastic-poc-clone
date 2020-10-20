@@ -3,7 +3,15 @@ import {
   createSelector as createSelectorator,
 } from 'redux-starter-kit'
 import { takeLatest, put, call, all, select } from 'redux-saga/effects'
-import { values, groupBy, last, partial, maxBy as _maxBy, sortBy } from 'lodash'
+import {
+  values,
+  groupBy,
+  last,
+  partial,
+  maxBy as _maxBy,
+  sortBy,
+  get,
+} from 'lodash'
 import { createSelector } from 'reselect'
 import { normalize } from 'normalizr'
 import { push } from 'connected-react-router'
@@ -21,12 +29,7 @@ import {
 } from '@edulastic/constants'
 import { Effects, notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
-import {
-  getCurrentSchool,
-  fetchUserAction,
-  getUserRole,
-  getUserId,
-} from '../Login/ducks'
+import { getCurrentSchool, fetchUserAction, getUserRole } from '../Login/ducks'
 
 import { getCurrentGroup, getClassIds } from '../Reports/ducks'
 // external actions
@@ -193,6 +196,9 @@ export const transformAssignmentForRedirect = (
 export const assignmentsSelector = (state) => state.studentAssignment.byId
 const reportsById = (state) => state.studentReport.byId
 
+const getUserId = (state) =>
+  get(state, 'user.user._id') || get(state, 'user.currentChild')
+
 const reportsSelector = createSelector(reportsById, (reports) => {
   const filteredReports = {}
   if (!Object.keys(reports).length) {
@@ -357,7 +363,7 @@ export const getAllAssignmentsSelector = createSelector(
   reportsSelector,
   getCurrentGroup,
   getClassIds,
-  () => [], // REVERT: Temp Fix for Circular Dependancy
+  getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     const classIdentifiers = values(assignmentsObj).flatMap((item) =>
       item.class.map((i) => i.identifier)

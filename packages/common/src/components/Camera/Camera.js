@@ -5,7 +5,7 @@ import { FACING_MODES, IMAGE_TYPES } from 'jslib-html5-camera-photo'
 import { useLibCameraPhoto } from '../../customHooks/useLibCameraPhoto'
 import WhiteFlash from './WhiteFlash'
 import DisplayError from './DisplayError'
-import { playClickAudio, printCameraInfo } from '../../utils/CameraUtils'
+import clickSound from '../../utils/data/click-sound.base64.json'
 
 /*
  * This camera component is inspired by react-html5-camera-photo, modified according to our need.
@@ -64,6 +64,11 @@ function Camera({
     isMaxResolution
   )
 
+  const playClickAudio = () => {
+    const audio = new Audio(`data:audio/mp3;base64,${clickSound.base64}`)
+    audio.play()
+  }
+
   /*
    * ---- Functionalities from original library ---
    */
@@ -88,7 +93,7 @@ function Camera({
 
   useEffect(() => {
     if (cameraStopError) {
-      printCameraInfo(cameraStopError.message)
+      console.info('Camera Stop Error:', cameraStopError.message)
     }
   }, [cameraStopError])
 

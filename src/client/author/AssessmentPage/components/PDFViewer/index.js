@@ -97,6 +97,9 @@ const PDFViewer = ({
     if (!docLoading) {
       setDocLoading(true)
     }
+
+    if (!pdfLib.current) return
+
     const loadingTask = pdfLib.current.getDocument(URL)
     loadingTask.promise
       .then((_pdfDocument) => {
@@ -138,7 +141,7 @@ const PDFViewer = ({
       pdfLib.current.GlobalWorkerOptions.workerSrc =
         'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
     if (pdfAnnLib.current) pdfAnnLib.current.setStoreAdapter(PdfStoreAdapter)
-    if (!pdfDocument) {
+    if (!pdfDocument && pdfLib.current) {
       loadPdf()
     }
   }, [pdfLib.current, pdfAnnLib.current])
@@ -148,10 +151,14 @@ const PDFViewer = ({
      * If the doc's loaded AND loaded doc URL doesn't match with incomming URL
      * then load doc based on incomming URL
      */
-    if (pdfDocument && URL !== pdfDocument?._transport?._params?.url) {
+    if (
+      pdfDocument &&
+      URL !== pdfDocument?._transport?._params?.url &&
+      pdfLib.current
+    ) {
       loadPdf()
     }
-  }, [currentPage])
+  }, [currentPage, pdfLib.current])
 
   useEffect(() => {
     if (!pdfAnnLib.current) return

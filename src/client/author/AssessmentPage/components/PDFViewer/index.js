@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Spin } from 'antd'
 import loadable from '@loadable/component'
-import pdfjs from 'pdfjs-dist/es5/build/pdf'
+import pdfjs from 'pdfjs-dist/webpack'
 // eslint-disable-next-line
 import { BLANK_URL } from '../Worksheet/Worksheet'
 import PdfStoreAdapter from './PdfStoreAdapter'

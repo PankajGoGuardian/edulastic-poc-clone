@@ -249,8 +249,8 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   componentDidMount() {
-    const { isCliUser } = this.props;
-    hidePendoBanner(isCliUser);
+    const { isCliUser } = this.props
+    hidePendoBanner(isCliUser)
   }
 
   componentDidUpdate(previousProps) {
@@ -310,6 +310,7 @@ class AssessmentPlayerDefault extends React.Component {
       showMagnifier,
       handleMagnifier,
       enableMagnifier,
+      toggleCameraModal,
       scratchpadActivity,
       showHints,
       timedAssignment = false,
@@ -482,6 +483,7 @@ class AssessmentPlayerDefault extends React.Component {
             showMagnifier={showMagnifier}
             handleMagnifier={handleMagnifier}
             enableMagnifier={enableMagnifier}
+            toggleCameraModal={toggleCameraModal}
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}
@@ -730,7 +732,7 @@ const enhance = compose(
       timedAssignment: state.test?.settings?.timedAssignment,
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag,
-      isCliUser: get(state, "user.isCliUser", false)
+      isCliUser: get(state, 'user.isCliUser', false),
     }),
     {
       changePreview: changePreviewAction,

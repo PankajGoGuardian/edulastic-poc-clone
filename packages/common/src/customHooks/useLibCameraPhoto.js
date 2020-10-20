@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react'
 import LibCameraPhoto from 'jslib-html5-camera-photo'
 
+/*
+ * This hook is borrowed from react-html5-camera-photo.
+ * https://www.npmjs.com/package/react-html5-camera-photo
+ *
+ * No changes done by us in this
+ */
+
 let libCameraPhoto = null
 let needToClean = false
 

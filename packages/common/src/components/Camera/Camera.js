@@ -7,6 +7,16 @@ import WhiteFlash from './WhiteFlash'
 import DisplayError from './DisplayError'
 import { playClickAudio, printCameraInfo } from '../../utils/CameraUtils'
 
+/*
+ * This camera component is inspired by react-html5-camera-photo, modified according to our need.
+ * https://www.npmjs.com/package/react-html5-camera-photo
+ * Removals:
+ * 1. Coupling with internal button to take photos
+ * Additions:
+ * 1. Boolean prop to take photo using Camera
+ * 2. Delay counter to wait before auto capturing photo
+ * 3. Ability to return image as blob data
+ */
 const IMAGE_DATA_TYPE = {
   BLOB: 'Blob',
   DATA_URI: 'DataUri',
@@ -104,6 +114,7 @@ function Camera({
     }
 
     // Call the onTakePhoto callback once photo is taken.
+    // Blob functionality is added by us.
     if (typeof onTakePhoto === 'function') {
       if (IMAGE_DATA_TYPE.BLOB === imageDataType) {
         // get blob from dataUri.
@@ -133,7 +144,6 @@ function Camera({
   /*
    * ---- Custom added functionalities ---
    */
-
   // Function to handle countdown before taking photo.
   const handleDelayAndTakePhoto = () => {
     setIsDelayCounterVisible(true)
@@ -152,12 +162,18 @@ function Camera({
     clearInterval(delayCounterId)
     setIsDelayCounterVisible(false)
     handleTakePhoto()
+    // Reset currentDelayCount to initial value.
     setCurrentDelayCount(delayCount)
   }, [currentDelayCount])
 
   // Allows taking a pic using a boolean prop to Camera component.
   useEffect(() => {
     if (!isTakingPhoto) {
+      return
+    }
+
+    // If there is error in starting camera, don't try to take photo
+    if (cameraStartDisplayError) {
       return
     }
 

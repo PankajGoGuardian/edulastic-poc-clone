@@ -9,9 +9,11 @@ const CameraModal = ({
   onTakePhoto,
   delayCount,
   children,
+  isPhotoTakingDisabled,
   ...rest
 }) => {
   const [isTakingPhoto, setIsTakingPhoto] = useState(false)
+  const [hasCameraError, setHasCameraError] = useState(false)
 
   // Pass the imageData to callback and reset isTakingPhoto boolean.
   const handlePhoto = (imageData) => {
@@ -24,8 +26,11 @@ const CameraModal = ({
     onCancel()
     setIsTakingPhoto(false)
   }
-
+  const handleCameraError = () => setHasCameraError(true)
   const handleTakePhoto = () => setIsTakingPhoto(true)
+
+  const isTakePhotoButtonDisabled =
+    isPhotoTakingDisabled || isTakingPhoto || hasCameraError
 
   return (
     <ConfirmationModal
@@ -41,7 +46,7 @@ const CameraModal = ({
         <EduButton
           height="40px"
           onClick={handleTakePhoto}
-          disabled={isTakingPhoto}
+          disabled={isTakePhotoButtonDisabled}
         >
           TAKE PICTURE
         </EduButton>,
@@ -50,14 +55,15 @@ const CameraModal = ({
       {/* Unmount the camera when modal is closed, if not done even
       though modal is not visible Camera component keeps using the device
       camera in background */}
-      {isModalVisible ? (
+      {isModalVisible && (
         <Camera
           isTakingPhoto={isTakingPhoto}
           onTakePhoto={handlePhoto}
           delayCount={delayCount}
+          onCameraError={handleCameraError}
           {...rest}
         />
-      ) : null}
+      )}
       {children}
     </ConfirmationModal>
   )

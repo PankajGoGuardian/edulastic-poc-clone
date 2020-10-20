@@ -36,7 +36,7 @@ const ToolBar = ({
   toggleCameraModal,
   changeTool,
 }) => {
-  const { calcType, showMagnifier, enableScratchpad, hasCamera } = settings
+  const { calcType, showMagnifier, enableScratchpad } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   const toolbarHandler = (value) => () => {
@@ -104,7 +104,6 @@ const ToolBar = ({
       <ActionButton
         title="Camera"
         icon={<IconPhotoCamera />}
-        active={false}
         onClick={toggleCameraModal}
       />
     </Container>

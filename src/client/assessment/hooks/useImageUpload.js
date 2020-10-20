@@ -1,7 +1,6 @@
 /**
- * this is used to calculate dimensions of image if any inside a html template
- * input {string}
- * output {object} containing height and width of image
+ * This hook is used for uploading an image to user S3 folder.
+ * It accepts callback to be run after getting url for uploaded image.
  */
 
 import { useState } from 'react'

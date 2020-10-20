@@ -522,7 +522,6 @@ const AssessmentContainer = ({
 
   const handleMagnifier = () =>
     updateTestPlayer({ enableMagnifier: !enableMagnifier })
-
   const props = {
     saveCurrentAnswer,
     items,
@@ -661,6 +660,7 @@ const AssessmentContainer = ({
       <CameraModal
         isModalVisible={isCameraModalVisible}
         onCancel={toggleCameraModal}
+        isPhotoTakingDisabled={isImageUploading}
         onTakePhoto={uploadImage}
         delayCount={5}
       >

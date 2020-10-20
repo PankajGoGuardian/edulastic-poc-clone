@@ -1,7 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense, lazy } from 'react'
 import { EduButton } from '@edulastic/common'
-import Camera from '@edulastic/common/src/components/Camera'
+import { Spin } from 'antd'
 import { ConfirmationModal } from '../../../author/src/components/common/ConfirmationModal'
+
+const Camera = lazy(() =>
+  import(
+    /* webpackChunkName: "camera" */ '@edulastic/common/src/components/Camera'
+  )
+)
 
 const CameraModal = ({
   isModalVisible,
@@ -56,13 +62,15 @@ const CameraModal = ({
       though modal is not visible Camera component keeps using the device
       camera in background */}
       {isModalVisible && (
-        <Camera
-          isTakingPhoto={isTakingPhoto}
-          onTakePhoto={handlePhoto}
-          delayCount={delayCount}
-          onCameraError={handleCameraError}
-          {...rest}
-        />
+        <Suspense fallback={<Spin />}>
+          <Camera
+            isTakingPhoto={isTakingPhoto}
+            onTakePhoto={handlePhoto}
+            delayCount={delayCount}
+            onCameraError={handleCameraError}
+            {...rest}
+          />
+        </Suspense>
       )}
       {children}
     </ConfirmationModal>

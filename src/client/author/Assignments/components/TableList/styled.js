@@ -320,7 +320,3 @@ export const ExpandedTable = styled(Table)`
 export const IconExpand = styled(IconDownEmptyArrow)`
   cursor: pointer;
 `
-
-export const TimedWrapper = styled.div`
-  width: auto;
-`

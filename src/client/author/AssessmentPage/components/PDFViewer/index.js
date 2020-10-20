@@ -8,7 +8,7 @@ import PdfStoreAdapter from './PdfStoreAdapter'
 const PDFJSANNOTATE = loadable.lib(() =>
   import('@edulastic/ext-libs/src/pdf-annotate')
 )
-const PDFJSLIB = loadable.lib(() => import('pdfjs-dist/es5/build/pdf'))
+const PDFJSLIB = loadable.lib(() => import('pdfjs-dist/webpack'))
 
 const PDFViewer = ({
   page,

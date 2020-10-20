@@ -946,17 +946,33 @@ class StudentTestPage {
     this.getMaxScore().should('have.text', `${maxScore}`)
   }
 
-  verifyResponseEvaluation = (attemptType) =>
-    cy
-      .get('[data-cy="answerType"]')
+  clickOnFeedbackCaret = () => cy.get('[data-icon="caret-right"]').click()
+
+  verifyResponseEvaluation = (attemptType) => {
+    cy.get('[data-cy="answerType"]').should('have.text', 'Prior Attempt')
+
+    cy.get('[data-cy="answerIcon"] svg')
       .should(
-        'contain.text',
+        'have.attr',
+        'data-cy',
         attemptType === attemptTypes.RIGHT
-          ? 'Correct'
+          ? 'correct'
           : attemptType === attemptTypes.PARTIAL_CORRECT
-          ? 'Partially Correct'
-          : 'Incorrect'
+          ? 'partialCorrect'
+          : 'wrong'
       )
+      .and(
+        'have.css',
+        'color',
+        attemptType === attemptTypes.RIGHT
+          ? queColor.GREEN_9
+          : attemptType === attemptTypes.PARTIAL_CORRECT
+          ? queColor.YELLOW_1
+          : queColor.RED
+      )
+
+    this.clickOnFeedbackCaret()
+  }
 
   assertCalcType = (type) => {
     switch (type) {

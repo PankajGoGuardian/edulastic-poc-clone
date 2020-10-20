@@ -55,6 +55,7 @@ const PlayerHeader = ({
   previewPlayer,
   handleMagnifier,
   enableMagnifier,
+  toggleCameraModal,
   timedAssignment,
   utaId,
   groupId,
@@ -164,6 +165,7 @@ const PlayerHeader = ({
                     )}
                     handleMagnifier={handleMagnifier}
                     enableMagnifier={enableMagnifier}
+                    toggleCameraModal={toggleCameraModal}
                     timedAssignment={timedAssignment}
                     utaId={utaId}
                     groupId={groupId}

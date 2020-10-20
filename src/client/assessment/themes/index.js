@@ -20,6 +20,7 @@ import {
 import { themeColor } from '@edulastic/colors'
 
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
+import { saveUserWorkAction } from '../actions/userWork'
 import {
   finishTestAcitivityAction,
   setPasswordValidateStatusAction,
@@ -48,6 +49,8 @@ import { evaluateCurrentAnswersForPreviewAction } from '../sharedDucks/previewTe
 import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
+import CameraModal from './common/CameraModal'
+import useImageUpload from '../hooks/useImageUpload'
 
 const { playerSkinValues } = testConstants
 
@@ -101,6 +104,7 @@ const AssessmentContainer = ({
   history,
   changePreview,
   saveUserResponse: saveUserAnswer,
+  saveUserWork,
   evaluateAnswer: evaluate,
   match,
   url,
@@ -139,6 +143,7 @@ const AssessmentContainer = ({
   regradedRealtimeAssignment,
   testId,
   userId,
+  userWork,
   regradedAssignment,
   clearRegradeAssignment,
   setPasswordValidateStatus,
@@ -156,6 +161,35 @@ const AssessmentContainer = ({
     show: false,
   })
   const [showRegradedModal, setShowRegradedModal] = useState(false)
+  const [isCameraModalVisible, setIsCameraModalVisible] = useState(false)
+  const toggleCameraModal = () => setIsCameraModalVisible((value) => !value)
+  const saveQuestionWorkImageUrl = (questionWorkImageUrl) => {
+    const userWorkId = items[currentItem]?._id
+
+    // Add questionWorkImageUrl to all the questions of item
+    const newUserWork = Object.keys(userWork).reduce((acc, key) => {
+      acc[key] = {
+        ...userWork[key],
+        questionWorkImageUrl,
+      }
+
+      return acc
+    }, {})
+
+    // Update question item with question work image url.
+    saveUserWork({
+      [userWorkId]: newUserWork,
+    })
+
+    // Close the camera modal
+    setIsCameraModalVisible(false)
+  }
+
+  const [isImageUploading, uploadImage] = useImageUpload(
+    saveQuestionWorkImageUrl,
+    userId
+  )
+
   const isLast = () => currentItem === items.length - 1
   const isFirst = () => currentItem === 0
 
@@ -520,6 +554,7 @@ const AssessmentContainer = ({
     handleMagnifier,
     enableMagnifier,
     studentReportModal,
+    toggleCameraModal,
     ...restProps,
   }
 
@@ -624,6 +659,15 @@ const AssessmentContainer = ({
         />
       )}
       {playerComponent}
+      <CameraModal
+        isModalVisible={isCameraModalVisible}
+        onCancel={toggleCameraModal}
+        isPhotoTakingDisabled={isImageUploading}
+        onTakePhoto={uploadImage}
+        delayCount={5}
+      >
+        {isImageUploading && <Spin />}
+      </CameraModal>
     </AssessmentPlayerContext.Provider>
   )
 }
@@ -697,6 +741,7 @@ const enhance = compose(
     {
       saveUserResponse,
       evaluateAnswer,
+      saveUserWork: saveUserWorkAction,
       changePreview: changePreviewAction,
       finishTest: finishTestAcitivityAction,
       gotoItem: gotoItemAction,

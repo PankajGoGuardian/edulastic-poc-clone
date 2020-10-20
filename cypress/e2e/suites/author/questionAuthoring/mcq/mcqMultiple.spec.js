@@ -747,14 +747,14 @@ describe(`${FileHelper.getSpecName(
 
     it('Verify alternate answer', () => {
       question.header.edit()
-
+      question.getPoints().type('{selectall}2')
       question.checkChoiceSelected(queData.correct[0])
 
       question.checkChoiceSelected(queData.correct[1])
 
       question.deselectChoice(queData.alterate[0])
 
-      // add a alternate answer - score by default 1
+      // add a alternate answer - by default points taken from correct answer which is 2
       question.addAlternate()
 
       question.selectChoice(queData.alterate[0])
@@ -777,7 +777,7 @@ describe(`${FileHelper.getSpecName(
 
       question.selectAnswerChoice(queData.alterate[0])
       question.selectAnswerChoice(queData.alterate[1])
-      preview.checkScore('1/3')
+      preview.checkScore('2/2')
 
       cy.get('label.right')
         .should('have.length', 2)

@@ -389,7 +389,7 @@ export function updateGrid(grids, parameters) {
  */
 export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
   const { graphParameters } = boardParameters
-  const { size, coords } = bgImageParameters
+  const { size = [], coords = [] } = bgImageParameters
   const xSize = Math.abs(graphParameters.xMin) + Math.abs(graphParameters.xMax)
   const ySize = Math.abs(graphParameters.yMin) + Math.abs(graphParameters.yMax)
   const imageSize = [(xSize / 100) * size[0], (ySize / 100) * size[1]]

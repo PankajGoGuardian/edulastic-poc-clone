@@ -63,7 +63,8 @@ export const getFormattedCurriculums = (
     }
     return map
   }, {})
-  allCurriculums
+  allCurriculums = allCurriculums
+    .slice()
     .sort((a, b) =>
       a.curriculum.toUpperCase() > b.curriculum.toUpperCase() ? 1 : -1
     )

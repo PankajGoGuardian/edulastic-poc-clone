@@ -138,7 +138,8 @@ const SemverCompare = (a, b) => {
   return 0
 }
 
-const tokenUpdateHeader = 'x-token-refresh'
+const tokenUpdateHeader = 'x-token-refresh',
+  kidUpdateHeader = 'x-kid-refresh'
 
 export default class API {
   constructor(baseURL = config.api, defaultToken = false) {
@@ -175,6 +176,15 @@ export default class API {
         // store the info in window object
         window.__CLIENT_VERSION__ = appVersion
         window.__SERVER_VERSION__ = serverAppVersion
+        const updatedToken = response.headers[tokenUpdateHeader]
+        // const oldAccessToken = getAccessToken();
+        if (updatedToken) {
+          updateUserToken(updatedToken, response.headers[kidUpdateHeader])
+          // TODO: if needed , implement responding to access token changes
+          /* if (oldAccessToken && oldAccessToken != updatedToken) {
+            window.dispatchEvent(new Event('access-token-updated'));
+          } */
+        }
 
         // if the server version is higher than the client version, then try to resync
         if (
@@ -203,15 +213,6 @@ export default class API {
 
           const event = new Event('request-client-update')
           window.dispatchEvent(event)
-        }
-        const updatedToken = response.headers[tokenUpdateHeader]
-        // const oldAccessToken = getAccessToken();
-        if (updatedToken) {
-          updateUserToken(updatedToken)
-          // TODO: if needed , implement responding to access token changes
-          /* if (oldAccessToken && oldAccessToken != updatedToken) {
-            window.dispatchEvent(new Event('access-token-updated'));
-          } */
         }
         return response
       },

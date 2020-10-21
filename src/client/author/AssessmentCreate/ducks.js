@@ -22,6 +22,9 @@ import { getUserSelector, getUserRole } from '../src/selectors/user'
 
 const pdfjs = require('pdfjs-dist')
 
+pdfjs.GlobalWorkerOptions.workerSrc =
+        '//cdn.jsdelivr.net/npm/pdfjs-dist@2.1.266/build/pdf.worker.min.js'
+
 export const CREATE_ASSESSMENT_REQUEST =
   '[assessmentPage] create assessment request'
 export const CREATE_ASSESSMENT_SUCCESS =

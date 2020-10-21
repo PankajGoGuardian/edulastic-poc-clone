@@ -10,7 +10,7 @@ const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { setIn, getIn } = require('timm')
 const path = require('path')
-const CopyPlugin = require('copy-webpack-plugin')
+// const CopyPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const packageJson = require('./package.json')
@@ -119,16 +119,16 @@ module.exports = override(
 
     config.plugins.push(new MomentLocalesPlugin())
 
-    config.plugins.push(
-      new CopyPlugin({
-        patterns: [
-          {
-            from: 'node_modules/pdfjs-dist/build/pdf.worker.js',
-            to: 'pdf.worker.js',
-          },
-        ],
-      })
-    )
+    // config.plugins.push(
+    //   new CopyPlugin({
+    //     patterns: [
+    //       {
+    //         from: 'node_modules/pdfjs-dist/build/pdf.worker.js',
+    //         to: 'pdf.worker.js',
+    //       },
+    //     ],
+    //   })
+    // )
 
     // config.plugins.push(
     //   new webpack.BannerPlugin({ banner: `${Date()} Copyright Snapwiz` })

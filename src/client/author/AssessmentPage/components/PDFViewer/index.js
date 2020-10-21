@@ -7,6 +7,10 @@ import PdfStoreAdapter from './PdfStoreAdapter'
 
 const pdfjsLib = require('pdfjs-dist')
 
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.1.266/build/pdf.worker.min.js'
+
+
 const { UI } = PDFJSAnnotate
 
 const PDFViewer = ({
@@ -117,9 +121,6 @@ const PDFViewer = ({
   }, [authoringMode, currentAnnotationTool, annotationToolsProperties])
 
   useEffect(() => {
-    // IMPORTANT: this worker requires pdfjs-dist@2.1.266
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
     if (!pdfDocument) {
       loadPdf()
     }

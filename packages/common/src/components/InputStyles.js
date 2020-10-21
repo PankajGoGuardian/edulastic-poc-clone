@@ -40,7 +40,7 @@ const inputCommonStyle = {
   minHeight: (props) => props.height || '32px',
   padding: (props) => props.padding || '0px 15px',
   paddingRight: (props) => props.pr || '',
-  borderRadius: '2px',
+  borderRadius: (props) => props.borderRadius || '2px',
   fontWeight: '600',
   lineHeight: '1.38',
   outline: '0',

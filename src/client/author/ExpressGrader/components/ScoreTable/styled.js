@@ -58,8 +58,6 @@ export const TableData = styled(Table)`
   }
   .ant-table-tbody > tr > td > div {
     min-height: 35px;
-    padding-top: 7px;
-    padding-bottom: 7px;
     height: 100%;
     display: flex;
     align-items: center;

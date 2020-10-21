@@ -112,7 +112,7 @@ export const StudentButtonDiv = styled(Col)`
 `
 
 const StyledTabButton = styled.a`
-  height: 28px;
+  height: 24px;
   padding: 6px 15px;
   font-size: 11px;
   font-weight: 600;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { round } from 'lodash'
 import { StyledText, StyledWrapper } from './styled'
+import QuestionScoreCell from './QuestionScoreCell'
 import { Tooltip } from '../../../../common/utils/helpers'
 
 class QuestionScore extends Component {
@@ -12,13 +12,16 @@ class QuestionScore extends Component {
       showQuestionModal,
       isTest,
       scoreMode = true,
+      isGridEditOn,
+      groupId,
     } = this.props
     const isQuestion =
       question &&
       question.score !== undefined &&
       question.maxScore !== undefined
-    let { score: studentScore, graded, skipped, maxScore, responseToDisplay } =
-      question || {} // score, maxScore,
+    const { graded, skipped, maxScore, responseToDisplay } = question || {}
+    let { score: studentScore } = question || {} // score, maxScore,
+
     let answerStatus = null
     if (studentScore === maxScore && maxScore > 0) {
       answerStatus = 'correct'
@@ -38,18 +41,24 @@ class QuestionScore extends Component {
       studentScore = '-'
     }
     if (skipped) studentScore = 0
+
+    const onClickHandler = () => {
+      if (!isGridEditOn) {
+        showQuestionModal(question, tableData)
+      }
+    }
     return (
       <>
         {isTest ? (
-          <StyledWrapper
-            answerStatus={answerStatus}
-            onClick={() => showQuestionModal(question, tableData)}
-          >
+          <StyledWrapper answerStatus={answerStatus} onClick={onClickHandler}>
             {/* color={getScoreColor(score, maxScore)} */}
             {scoreMode ? (
-              <StyledText>
-                {graded || skipped ? round(studentScore, 2) : '-'}
-              </StyledText>
+              <QuestionScoreCell
+                groupId={groupId}
+                question={question}
+                studentScore={studentScore}
+                isGridEditOn={isGridEditOn}
+              />
             ) : (
               <Tooltip
                 title={

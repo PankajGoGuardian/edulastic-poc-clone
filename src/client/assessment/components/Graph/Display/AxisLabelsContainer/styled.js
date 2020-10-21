@@ -13,7 +13,8 @@ export const GraphWrapper = styled.div`
 `
 
 export const JSXBox = styled.div`
-  background-color: ${(props) => props.theme.widgets.chart.bgColor};
+  background-color: transparent !important;
+  z-index: 2;
   position: relative;
   overflow: hidden;
 

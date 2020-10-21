@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Rnd } from 'react-rnd'
@@ -196,7 +196,7 @@ class AnnotationsRnd extends Component {
   }
 
   render() {
-    const { question, disableDragging, isAbove, bounds } = this.props
+    const { question, disableDragging, bounds } = this.props
     if (!question || !question.annotations) return null
 
     const annotations = question.annotations || []
@@ -248,7 +248,7 @@ class AnnotationsRnd extends Component {
                   this.handleAnnotationSize(delta, annotation.id)
                 }
                 style={{
-                  zIndex: isAbove ? 20 : 10,
+                  zIndex: disableDragging ? 1 : 20,
                 }}
                 enableResizing={disableDragging ? resizeDisable : resizeEnable}
                 disableDragging={disableDragging}
@@ -278,13 +278,11 @@ AnnotationsRnd.propTypes = {
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   disableDragging: PropTypes.bool,
-  isAbove: PropTypes.bool,
   noBorder: PropTypes.bool,
 }
 
 AnnotationsRnd.defaultProps = {
   disableDragging: true,
-  isAbove: true,
   noBorder: false,
 }
 

@@ -145,7 +145,10 @@ function* createAssessmentSaga({ payload }) {
     return
   }
   try {
-    import('pdfjs-dist/es5/build/pdf').then((pdfjs) => {
+    import('pdfjs-dist').then((pdfjs) => {
+      console.log('++++pdfjs+++', pdfjs)
+      pdfjs.GlobalWorkerOptions.workerSrc =
+        '//cdn.jsdelivr.net/npm/pdfjs-dist@2.5.207/build/pdf.worker.min.js'
       if (fileURI) {
         const pdfLoadingTask = pdfjs.getDocument(fileURI)
         pdfLoadingTask.promise.then(({ numPages }) => {

@@ -11,10 +11,8 @@ const PDFJSANNOTATE = loadable.lib(() =>
 
 const pdfLib = require('pdfjs-dist')
 
-console.log('+++++PDFJSLIB+++++', pdfLib)
-
 pdfLib.GlobalWorkerOptions.workerSrc =
-  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
+  '//cdn.jsdelivr.net/npm/pdfjs-dist@2.5.207/build/pdf.worker.min.js'
 
 const PDFViewer = ({
   page,

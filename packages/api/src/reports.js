@@ -48,48 +48,56 @@ const fetchAssignments = () => api.callApi({ url: `/assignments` })
 
 const fetchResponseFrequency = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/response-frequency`,
     params: { ...params.requestFilters, testId: params.testId },
   })
 
 const fetchAssessmentSummaryReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/assessment-summary`,
     params: { ...params.requestFilters, testId: params.testId },
   })
 
 const fetchPeerPerformanceReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/peer-performance`,
     params: { ...params.requestFilters, testId: params.testId },
   })
 
 const fetchPerformanceByStandard = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/performance-by-standards`,
     params: { ...params.requestFilters, testId: params.testId },
   })
 
 const fetchPerformanceByStudentsReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/performance-by-students`,
     params: { ...params.requestFilters, testId: params.testId },
   })
 
 const fetchSARFilterData = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/filter/single-assessment`,
     params,
   })
 
 const fetchStandardsGradebookReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/standards-gradebook`,
     params,
   })
 
 const fetchStandardsPerformanceSummaryReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/standards-summary`,
     params,
   })
@@ -97,6 +105,7 @@ const fetchStandardsPerformanceSummaryReport = (params) =>
 const fetchStandardMasteryFilter = (params) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `/report/filter/standard-mastery`,
       params,
     })
@@ -111,60 +120,70 @@ const fetchStandardMasteryBrowseStandards = (params) =>
 
 const fetchQuestionAnalysisReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/question-analysis`,
     params: { ...params.requestFilters, testId: params.testId },
   })
 
 const fetchMARFilterData = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/filter/multiple-assessment`,
     params,
   })
 
 const fetchPeerProgressAnalysisReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/peer-progress-analysis`,
     params,
   })
 
 const fetchStudentProgressReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/student-progress`,
     params,
   })
 
 const fetchPerformanceOverTimeReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/performance-over-time`,
     params,
   })
 
 const fetchSPRFilterData = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/filter/student-profile`,
     params,
   })
 
 const fetchStudentMasteryProfileReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/student-mastery-profile`,
     params,
   })
 
 const fetchStudentAssessmentProfileReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/student-assessment-performance`,
     params,
   })
 
 const fetchStudentProfileSummaryReport = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/student-profile-summary`,
     params,
   })
 
 const fetchStudentList = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/students`,
     method: 'POST',
     data: params,
@@ -172,6 +191,7 @@ const fetchStudentList = (params) =>
 
 const fetchStudentStandards = (params) =>
   api.callApi({
+    useSlowApi: true,
     url: `/report/student-standard`,
     params,
   })
@@ -180,6 +200,7 @@ const fetchStudentPerformance = (params) => {
   const queryString = qs.stringify(params)
   return api
     .callApi({
+      useSlowApi: true,
       method: 'get',
       url: `/report/student-performance?${queryString}`,
     })

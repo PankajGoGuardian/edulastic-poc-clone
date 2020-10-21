@@ -75,8 +75,8 @@ describe(`> ${FileHelper.getSpecName(
 
   const testId = '5f89caa00994c9000820432c'
   const { itemKeys } = testData.REDIRECTED
-  const perfOfAttempt1 = lcb.getScoreAndPerformance(attempt1, questionTypeMap)
   lcb.getQuestionTypeMap(itemKeys, questiondata, questionTypeMap)
+  const perfOfAttempt1 = lcb.getScoreAndPerformance(attempt1, questionTypeMap)
 
   before('> create a test', () => {
     expect(

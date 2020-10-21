@@ -137,7 +137,9 @@ class AssignTest extends React.Component {
         fetchAssignments(testId)
       }
     }
-    if (testId) {
+    if (testId && isPlaylist) {
+      fetchTestByID(testId, null, null, true, match.params.playlistId)
+    } else if (testId) {
       fetchTestByID(testId)
     }
   }

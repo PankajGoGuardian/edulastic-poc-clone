@@ -7,7 +7,6 @@ import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
 import { finishTestAcitivityAction } from '../../actions/test'
-import { saveUserResponse } from '../../actions/items'
 
 const AssignmentTimeEndedAlert = ({
   isVisible,
@@ -17,18 +16,17 @@ const AssignmentTimeEndedAlert = ({
   history,
   utaId,
   match,
-  saveItemResponse,
 }) => {
   useEffect(() => {
     const { qid } = match.params || {}
     const lastTime = window.localStorage.assessmentLastTime || Date.now()
     const timeSpent = Date.now() - lastTime
-    saveItemResponse(qid, timeSpent, false, groupId, { pausing: false })
     autoSubmitTest({
       groupId,
       preventRouteChange: true,
       testActivityId: utaId,
       autoSubmit: true,
+      itemResponse: [qid, timeSpent, false, groupId, { pausing: false }],
     })
   }, [])
 
@@ -71,14 +69,12 @@ AssignmentTimeEndedAlert.propTypes = {
   autoSubmitTest: PropTypes.func.isRequired,
   groupId: PropTypes.string.isRequired,
   utaId: PropTypes.string.isRequired,
-  saveItemResponse: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
   withTheme,
   withRouter,
   connect(null, {
-    saveItemResponse: saveUserResponse,
     autoSubmitTest: finishTestAcitivityAction,
   })
 )

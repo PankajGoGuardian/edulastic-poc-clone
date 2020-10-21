@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Spin } from 'antd'
 import loadable from '@loadable/component'
-import pdfjs from 'pdfjs-dist/es5/build/pdf'
+import pdfjs from 'pdfjs-dist'
 // eslint-disable-next-line
 import { BLANK_URL } from '../Worksheet/Worksheet'
 import PdfStoreAdapter from './PdfStoreAdapter'
+
+pdfjs.GlobalWorkerOptions.workerSrc =
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
 
 const PDFJSANNOTATE = loadable.lib(() =>
   import('@edulastic/ext-libs/src/pdf-annotate')
@@ -139,9 +142,6 @@ const PDFViewer = ({
 
   useEffect(() => {
     if (pdfAnnLib.current) pdfAnnLib.current.setStoreAdapter(PdfStoreAdapter)
-    if (pdfjs)
-      pdfjs.GlobalWorkerOptions.workerSrc =
-        'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
     if (!pdfDocument) {
       loadPdf()
     }

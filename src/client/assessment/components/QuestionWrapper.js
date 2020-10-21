@@ -311,14 +311,15 @@ const getQuestion = (type) => {
 const { TEACHER, SCHOOL_ADMIN, DISTRICT_ADMIN } = roleuser
 
 class QuestionWrapper extends Component {
-  static contextType = ItemDetailContext
-
-  state = {
-    main: [],
-    advanced: [],
-    activeTab: 0,
-    shuffledOptsOrder: [],
-    page: 1,
+  constructor(props) {
+    super(props)
+    this.state = {
+      main: [],
+      advanced: [],
+      activeTab: 0,
+      shuffledOptsOrder: [],
+      page: 1,
+    }
   }
 
   setPage = (page) => this.setState({ page })
@@ -381,6 +382,7 @@ class QuestionWrapper extends Component {
       data: prevData,
       windowWidth: prevWindowWidth,
       windowHeight: prevWindowHeight,
+      userWork: prevUserWork,
     } = prevProps
     const {
       data,
@@ -388,11 +390,14 @@ class QuestionWrapper extends Component {
       isExpressGrader,
       windowWidth,
       windowHeight,
+      userWork,
     } = this.props
+
     if (
       isLCBView &&
       !isExpressGrader &&
       data?.activity &&
+      isEqual(prevUserWork, userWork) &&
       isEqual(prevData?.activity, data?.activity) &&
       prevWindowHeight === windowHeight &&
       prevWindowWidth === windowWidth
@@ -724,6 +729,8 @@ class QuestionWrapper extends Component {
     )
   }
 }
+
+QuestionWrapper.contextType = ItemDetailContext
 
 QuestionWrapper.propTypes = {
   setQuestionData: PropTypes.func.isRequired,

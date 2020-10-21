@@ -76,13 +76,16 @@ export default class CypressHelper {
     console.log('time here', dateTime)
     cy.wait(300)
     if (time) {
-      const datetimeToSet = Cypress.moment(dateTime).format(
-        'YYYY-MM-DD hh:mm:ss a'
-      )
+      const date = Cypress.moment(dateTime).format('YYYY-MM-DD')
+
+      const timeToSet = Cypress.moment(dateTime).format('hh:mm:ss a')
+
+      cy.get('.ant-calendar-date-input-wrap').find('input').clear()
+      cy.get('.ant-calendar-date-input-wrap').find('input').type(`${date}`)
       cy.get('.ant-calendar-date-input-wrap')
         .find('input')
-        .clear()
-        .type(`${datetimeToSet}`)
+        .type(` ${timeToSet}`, { force: true })
+
       cy.get('.ant-calendar-ok-btn').click({ force: true })
     } else {
       const [day, mon, date, year] = dateTime.toDateString().split(' ')

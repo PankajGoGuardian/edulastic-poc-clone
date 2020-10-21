@@ -257,57 +257,57 @@ Cypress.Commands.add(
   }
 )
 
+Cypress.Commands.add('getAllAssignments', (teacher, password) => {
+  return cy.setToken(teacher, password).then(() => {
+    return cy
+      .request({
+        url: `${BASE_URL}/assignments`,
+        method: 'GET',
+        headers: {
+          authorization: getAccessToken(),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ body }) => body)
+  })
+})
+
 Cypress.Commands.add(
   'deleteAllAssignments',
   (student, teacher, password = 'snapwiz', testsToExclude = []) => {
     const asgnIds = []
     const testAssign = []
-    let authToken
-    cy.request({
-      url: `${BASE_URL}/auth/login`,
-      method: 'POST',
-      body: { username: teacher, password },
-    }).then(({ body }) => {
-      authToken = body.result.token
 
-      cy.request({
-        url: `${BASE_URL}/assignments`,
-        method: 'GET',
-        headers: {
-          authorization: authToken,
-          'Content-Type': 'application/json',
-        },
-      }).then(({ body: responseBody }) => {
-        const assignments =
-          responseBody.result.assignments || responseBody.result
-        //const tests = responseBody.result.tests || []
-        assignments.forEach((asgnDO) => {
-          const assignment = {}
-          assignment._id = asgnDO._id
-          assignment.groupId = asgnDO.classId || asgnDO.class[0]._id
-          assignment.testID = asgnDO.testId
-          asgnIds.push(assignment)
+    cy.getAllAssignments(teacher, password).then((responseBody) => {
+      const assignments = responseBody.result.assignments || responseBody.result
+      // const tests = responseBody.result.tests || []
+      assignments.forEach((asgnDO) => {
+        const assignment = {}
+        assignment._id = asgnDO._id
+        assignment.groupId = asgnDO.classId || asgnDO.class[0]._id
+        assignment.testID = asgnDO.testId
+        asgnIds.push(assignment)
+      })
+      asgnIds.forEach((test) => {
+        if (testsToExclude.indexOf(test.testID) === -1) testAssign.push(test)
+      })
+      console.log('All Assignments = ', asgnIds)
+      console.log('All Tests = ', testAssign)
+      // TODO: FIX this once it is fixed in UI
+      testAssign.forEach((test) => {
+        cy.request({
+          url: `${BASE_URL}/assignments/${test._id}/group/${test.groupId}?testId=${test.testID}`, // added groupId as per API change
+          method: 'DELETE',
+          headers: {
+            authorization: getAccessToken(),
+            'Content-Type': 'application/json',
+          },
+          retryOnStatusCodeFailure: true,
+        }).then(({ body }) => {
+          console.log(`${test._id} :: `, body.result)
         })
-        asgnIds.forEach((test) => {
-          if (testsToExclude.indexOf(test.testID) === -1) testAssign.push(test)
-        })
-        console.log('All Assignments = ', asgnIds)
-        console.log('All Tests = ', testAssign)
-        // TODO: FIX this once it is fixed in UI
-        testAssign.forEach((test) => {
-           cy.request({
-             url: `${BASE_URL}/assignments/${test._id}/group/${test.groupId}?testId=${test.testID}`, // added groupId as per API change
-             method: "DELETE",
-             headers: {
-               authorization: authToken,
-               "Content-Type": "application/json"
-             },
-             retryOnStatusCodeFailure: true
-           }).then(({ body }) => {
-             console.log(`${test._id} :: `, body.result);
-           });
-         });
-        /* testAssign.forEach((test) => {
+      })
+      /* testAssign.forEach((test) => {
           cy.request({
             url: `${BASE_URL}/test/${test}/delete-assignments`,
             method: 'DELETE',
@@ -318,7 +318,6 @@ Cypress.Commands.add(
             retryOnStatusCodeFailure: true, // cause 502 intermittently and blocks complete suite, now will retry on such occurences
           })
         }) */
-      })
     })
   }
 )
@@ -470,5 +469,39 @@ Cypress.Commands.add(
   },
   (subject, length) => {
     cy.wrap(subject).type('{rightarrow}'.repeat(length), { force: true })
+  }
+)
+
+Cypress.Commands.add(
+  'getAssignmentIdentifier',
+  (teacher, password, assignmentId) => {
+    return cy.getAllAssignments(teacher, password).then((responseBody) => {
+      const assignments = responseBody.result.assignments || responseBody.result
+      // const tests = responseBody.result.tests || []
+      return assignments.filter(({ _id }) => _id === assignmentId)[0].identifier
+    })
+  }
+)
+
+Cypress.Commands.add(
+  'autoSubmitAssignment',
+  (teacher, password, assignmentId) => {
+    cy.getAssignmentIdentifier(teacher, password, assignmentId).then(
+      (identifier) => {
+        cy.request({
+          url: `${BASE_URL}/assignments/auto-submit-assignment`,
+          method: 'POST',
+          body: {
+            assignmentId,
+            identifier,
+          },
+          headers: {
+            authorization: getAccessToken(),
+            'Content-Type': 'application/json',
+          },
+          failOnStatusCode: false,
+        })
+      }
+    )
   }
 )

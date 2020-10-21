@@ -144,11 +144,11 @@ function* createAssessmentSaga({ payload }) {
     yield put(createAssessmentErrorAction({ error: errorMessage }))
     return
   }
+
   try {
     import('pdfjs-dist').then((pdfjs) => {
-      console.log('++++pdfjs+++', pdfjs)
       pdfjs.GlobalWorkerOptions.workerSrc =
-        '//cdn.jsdelivr.net/npm/pdfjs-dist@2.5.207/build/pdf.worker.min.js'
+        '//cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
       if (fileURI) {
         const pdfLoadingTask = pdfjs.getDocument(fileURI)
         pdfLoadingTask.promise.then(({ numPages }) => {

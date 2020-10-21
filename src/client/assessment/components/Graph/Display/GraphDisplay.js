@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withTheme } from 'styled-components'
 import { compose } from 'redux'
 import { isEqual } from 'lodash'
+import { defaultSymbols } from '@edulastic/constants'
 
 import { fractionStringToNumber } from '../../../utils/helpers'
 import { CLEAR } from '../../../constants/constantsForQuestions'
@@ -258,6 +259,8 @@ class GraphDisplay extends Component {
       elementsIsCorrect,
       advancedElementSettings,
       setQuestionData,
+      onChangeKeypad,
+      symbols,
     } = this.props
 
     const {
@@ -376,6 +379,8 @@ class GraphDisplay extends Component {
       advancedElementSettings,
       setQuestionData,
       graphData,
+      onChangeKeypad,
+      symbols,
     }
   }
 
@@ -832,6 +837,8 @@ GraphDisplay.propTypes = {
   elementsIsCorrect: PropTypes.bool,
   advancedElementSettings: PropTypes.bool,
   zoomLevel: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
 }
 
 GraphDisplay.defaultProps = {
@@ -849,6 +856,8 @@ GraphDisplay.defaultProps = {
   disableResponse: false,
   elementsIsCorrect: false,
   zoomLevel: 1,
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
 }
 
 const enhance = compose(

@@ -2,20 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Modal as AntModal } from 'antd'
 import styled from 'styled-components'
-import { math } from '@edulastic/constants'
+import { math, defaultSymbols } from '@edulastic/constants'
 import MathInput from '../MathInput'
 import KatexInput from '../KatexInput'
 import EduButton from '../EduButton'
 import FlexContainer from '../FlexContainer'
 
-const defaultSymbols = [
-  'basic',
-  'intermediate',
-  'advanced',
-  'units_si',
-  'units_us',
-  'all',
-]
 const { defaultNumberPad } = math
 
 const MathModal = ({
@@ -29,6 +21,7 @@ const MathModal = ({
   onSave,
   onClose,
   width,
+  onChangeKeypad,
 }) => {
   const mathInputRef = useRef(null)
   const [latex, setLatex] = useState(value || '')
@@ -89,6 +82,7 @@ const MathModal = ({
           value={latex}
           onInput={(newLatex) => onInput(newLatex)}
           onKeyDown={(evt) => onKeyDown(evt)}
+          onChangeKeypad={onChangeKeypad}
         />
       )}
     </Modal>
@@ -106,6 +100,7 @@ MathModal.propTypes = {
   value: PropTypes.string,
   onSave: PropTypes.func,
   onClose: PropTypes.func,
+  onChangeKeypad: PropTypes.func,
 }
 
 MathModal.defaultProps = {
@@ -119,6 +114,7 @@ MathModal.defaultProps = {
   showResponse: false,
   onSave: () => {},
   onClose: () => {},
+  onChangeKeypad: () => {},
 }
 
 export default MathModal

@@ -1,5 +1,6 @@
 const questionType = require('./const/questionType')
 const questionTitle = require('./const/questionTitle')
+const defaultSymbols = require('./const/defaultSymbols')
 const evaluationType = require('./const/evaluationType.js')
 const nonAutoGradableTypes = require('./const/nonAutoGradableTypes.js')
 const httpMessages = require('./const/httpMessage')
@@ -39,6 +40,7 @@ module.exports = {
   question,
   questionType,
   questionTitle,
+  defaultSymbols,
   evaluationType,
   nonAutoGradableTypes,
   evaluatorTypes,

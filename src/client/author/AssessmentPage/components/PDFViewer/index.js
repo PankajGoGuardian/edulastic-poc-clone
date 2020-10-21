@@ -8,7 +8,13 @@ import PdfStoreAdapter from './PdfStoreAdapter'
 const PDFJSANNOTATE = loadable.lib(() =>
   import('@edulastic/ext-libs/src/pdf-annotate')
 )
-const PDFJSLIB = loadable.lib(() => import('pdfjs-dist/es5/build/pdf.js'))
+
+const pdfLib = require('pdfjs-dist')
+
+console.log('+++++PDFJSLIB+++++', pdfLib)
+
+pdfLib.GlobalWorkerOptions.workerSrc =
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
 
 const PDFViewer = ({
   page,
@@ -25,7 +31,7 @@ const PDFViewer = ({
   const { pageNo, URL, rotate } = page
   const pageNumber = URL === BLANK_URL ? 1 : pageNo
   const viewerRef = useRef(null)
-  const pdfLib = useRef(null)
+  // const pdfLib = useRef(null)
   const pdfAnnLib = useRef(null)
   const [pdfDocument, setPdfDocument] = useState(null)
 
@@ -93,20 +99,14 @@ const PDFViewer = ({
     }
   }
 
-  useEffect(() => {
-    if (pdfLib.current)
-      pdfLib.current.GlobalWorkerOptions.workerSrc =
-        '//mozilla.github.io/pdf.js/build/pdf.worker.js'
-  }, [pdfLib.current])
-
   const loadPdf = () => {
     if (!docLoading) {
       setDocLoading(true)
     }
 
-    if (!pdfLib.current) return
+    if (!pdfLib) return
 
-    const loadingTask = pdfLib.current.getDocument(URL)
+    const loadingTask = pdfLib.getDocument(URL)
     loadingTask.promise
       .then((_pdfDocument) => {
         _pdfDocument
@@ -144,10 +144,10 @@ const PDFViewer = ({
 
   useEffect(() => {
     if (pdfAnnLib.current) pdfAnnLib.current.setStoreAdapter(PdfStoreAdapter)
-    if (!pdfDocument && pdfLib.current) {
+    if (!pdfDocument && pdfLib) {
       loadPdf()
     }
-  }, [pdfLib.current, pdfAnnLib.current])
+  }, [pdfLib, pdfAnnLib.current])
 
   useEffect(() => {
     /**
@@ -157,11 +157,11 @@ const PDFViewer = ({
     if (
       pdfDocument &&
       URL !== pdfDocument?._transport?._params?.url &&
-      pdfLib.current
+      pdfLib
     ) {
       loadPdf()
     }
-  }, [currentPage, pdfLib.current])
+  }, [currentPage, pdfLib])
 
   useEffect(() => {
     if (!pdfAnnLib.current) return
@@ -209,7 +209,7 @@ const PDFViewer = ({
   return (
     <>
       <div id="viewer" className="pdfViewer" ref={viewerRef} />
-      <PDFJSLIB ref={pdfLib} />
+      {/* <PDFJSLIB ref={pdfLib} /> */}
       <PDFJSANNOTATE ref={pdfAnnLib} />
     </>
   )

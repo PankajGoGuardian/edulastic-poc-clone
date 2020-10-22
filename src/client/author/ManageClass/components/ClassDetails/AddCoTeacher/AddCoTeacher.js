@@ -14,30 +14,15 @@ import { setClassAction } from '../../../ducks'
 import { getUserIdSelector, getUserOrgId } from '../../../../src/selectors/user'
 import { receiveTeachersListAction } from '../../../../Teacher/ducks'
 import { Description, Title } from './styled'
+import { fetchUsersListAction } from '../../../../sharedDucks/userDetails'
 
 class AddCoTeacher extends React.Component {
-  static propTypes = {
-    handleCancel: PropTypes.func.isRequired,
-    teachers: PropTypes.array.isRequired,
-    isOpen: PropTypes.bool,
-  }
-
-  static defaultProps = {
-    isOpen: false,
-  }
-
-  state = {
-    coTeacherId: null,
-    searchText: '',
-  }
-
-  componentDidMount() {
-    const { loadTeachers, userOrgId } = this.props
-    loadTeachers({
-      districtId: userOrgId,
-      role: 'teacher',
-      limit: 10000,
-    })
+  constructor() {
+    super()
+    this.state = {
+      coTeacherId: null,
+      searchText: '',
+    }
   }
 
   onChangeHandler = (id) => {
@@ -47,12 +32,25 @@ class AddCoTeacher extends React.Component {
     }))
   }
 
-  onSearchHandler = (value) => {
+  onSearchHandler = debounce((value) => {
     const searchText = value.trim()
     this.setState({
       searchText,
     })
-  }
+    if (searchText.length < 1) return
+    const { getUsers } = this.props
+    const searchBody = {
+      limit: 50,
+      page: 1,
+      type: 'INDIVIDUAL',
+      search: {
+        role: ['teacher'],
+        searchString: searchText,
+        status: 1,
+      },
+    }
+    getUsers(searchBody)
+  }, 1000)
 
   onAddCoTeacher = debounce(() => {
     const { coTeacherId } = this.state
@@ -97,7 +95,6 @@ class AddCoTeacher extends React.Component {
     const coTeachers = teachers.filter(
       (teacher) =>
         teacher._id !== primaryTeacherId &&
-        teacher.status === 1 &&
         (teacher.firstName?.includes(searchText) ||
           teacher.email?.includes(searchText))
     )
@@ -173,11 +170,29 @@ export default connect(
   (state) => ({
     userOrgId: getUserOrgId(state),
     userInfo: get(state.user, 'user', {}),
-    teachers: get(state, 'teacherReducer.data', []),
     primaryTeacherId: getUserIdSelector(state),
+    teachers: get(state, 'authorUserList.usersList', []).map(
+      ({ _source: { email, firstName, lastName }, _id }) => ({
+        email,
+        firstName,
+        lastName,
+        _id,
+      })
+    ),
   }),
   {
     loadTeachers: receiveTeachersListAction,
     setClass: setClassAction,
+    getUsers: fetchUsersListAction,
   }
 )(AddCoTeacher)
+
+AddCoTeacher.propTypes = {
+  handleCancel: PropTypes.func.isRequired,
+  teachers: PropTypes.array.isRequired,
+  isOpen: PropTypes.bool,
+}
+
+AddCoTeacher.defaultProps = {
+  isOpen: false,
+}

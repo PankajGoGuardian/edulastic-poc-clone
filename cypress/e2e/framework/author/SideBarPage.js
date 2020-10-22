@@ -1,3 +1,7 @@
+import SmartFilters from './assignments/smartFilters'
+
+const assignmentFilter = new SmartFilters()
+
 export default class TeacherSideBar {
   // *** ELEMENTS START ***
 
@@ -30,6 +34,11 @@ export default class TeacherSideBar {
       .click({ force: true })
       .click({ force: true })
     cy.wait('@assignment')
+
+    // select All years
+    assignmentFilter.expandFilter()
+    assignmentFilter.setYear('All years')
+    assignmentFilter.collapseFilter()
   }
 
   clickOnReport = () =>

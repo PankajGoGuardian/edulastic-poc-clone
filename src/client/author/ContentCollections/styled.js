@@ -16,11 +16,9 @@ import {
 export const CollectionTableContainer = styled.div`
   width: ${({ isCollectionSelected }) =>
     isCollectionSelected ? '35%' : '100%'};
-  margin-right: ${({ isCollectionSelected }) =>
-    isCollectionSelected ? '1%' : '0px'};
   background-color: ${white};
   border-radius: 8px;
-  padding: 20px;
+  padding: 20px 15px;
   display: inline-block;
   float: left;
   @media (max-width: ${smallDesktopWidth}) {
@@ -184,7 +182,7 @@ export const TablesWrapper = styled.div`
 
 export const PermissionTableContainer = styled(CollectionTableContainer)`
   padding-top: 5px;
-  width: 64%;
+  width: 65%;
   display: inline-block;
   .heading-container {
     > div:nth-child(odd) {
@@ -234,7 +232,6 @@ export const StatusText = styled.span`
 
 export const StyledScollBar = styled(PerfectScrollbar)`
   max-height: ${({ maxHeight }) => maxHeight}px;
-  margin-right: -15px;
   padding-right: 15px;
   overflow: hidden;
   @media (max-width: ${smallDesktopWidth}) {

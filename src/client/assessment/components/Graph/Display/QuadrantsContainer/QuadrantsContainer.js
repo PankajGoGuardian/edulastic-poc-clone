@@ -1,3 +1,4 @@
+import { defaultSymbols } from '@edulastic/constants'
 import React, { Fragment, PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -729,6 +730,8 @@ class GraphContainer extends PureComponent {
       graphData,
       setQuestionData,
       isPrintPreview,
+      onChangeKeypad,
+      symbols,
     } = this.props
     const { tools, drawingPrompt } = toolbar
     const {
@@ -839,6 +842,8 @@ class GraphContainer extends PureComponent {
                         : 0,
                       left: hasAnnotation ? 20 : 0,
                     }}
+                    onChangeKeypad={onChangeKeypad}
+                    symbols={symbols}
                   />
                   <GraphEditTools
                     side="right"
@@ -855,6 +860,8 @@ class GraphContainer extends PureComponent {
                         : 0,
                       left: hasAnnotation ? 20 : 0,
                     }}
+                    onChangeKeypad={onChangeKeypad}
+                    symbols={symbols}
                   />
                 </>
               )}
@@ -917,6 +924,8 @@ GraphContainer.propTypes = {
   changePreviewTab: PropTypes.func,
   elementsIsCorrect: PropTypes.bool,
   advancedElementSettings: PropTypes.bool,
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
 }
 
 GraphContainer.defaultProps = {
@@ -937,6 +946,8 @@ GraphContainer.defaultProps = {
   previewTab: CLEAR,
   changePreviewTab: () => {},
   elementsIsCorrect: false,
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
 }
 
 export default connect(

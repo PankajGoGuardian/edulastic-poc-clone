@@ -143,6 +143,7 @@ export const initialState = {
   status: 'INITIATE',
   jobIds: [],
   error: {},
+  permissionsTotalCount: 0,
 }
 
 // reducer
@@ -184,6 +185,7 @@ export const reducer = createReducer(initialState, {
   [FETCH_PERMISSIONS_SUCCESS]: (state, { payload }) => {
     state.fetchingPermissions = false
     state.permissions = payload.itemBankPermissions
+    state.permissionsTotalCount = payload.total
   },
   [FETCH_PERMISSIONS_FAILED]: (state) => {
     state.fetchingPermissions = false
@@ -320,11 +322,14 @@ function* fetchPermissionsRequestSaga({ payload }) {
 
 function* addPermissionRequestSaga({ payload }) {
   try {
-    yield call(collectionsApi.addPermission, payload)
-    yield put(fetchPermissionsRequestAction(payload.bankId))
+    const { data, paginationData } = payload
+    yield call(collectionsApi.addPermission, data)
+    yield put(
+      fetchPermissionsRequestAction({ _id: data.bankId, paginationData })
+    )
     notification({
       type: 'success',
-      msg: `Permission added successfully for ${payload.collectionName}.`,
+      msg: `Permission added successfully for ${data.collectionName}.`,
     })
   } catch (err) {
     console.error(err)
@@ -337,8 +342,11 @@ function* addPermissionRequestSaga({ payload }) {
 
 function* editPermissionRequestSaga({ payload }) {
   try {
-    yield call(collectionsApi.editPermission, payload)
-    yield put(fetchPermissionsRequestAction(payload.bankId))
+    const { data, paginationData } = payload
+    yield call(collectionsApi.editPermission, data)
+    yield put(
+      fetchPermissionsRequestAction({ _id: data.bankId, paginationData })
+    )
     notification({
       type: 'success',
       messageKey: 'persmissionEditedSuccessfully',
@@ -567,4 +575,9 @@ export const importingLoaderSelector = createSelector(
 export const signedUrlFetchingSelector = createSelector(
   stateSelector,
   (state) => state.signedUrlFetching
+)
+
+export const getPermissionsTotalCountSelector = createSelector(
+  stateSelector,
+  (state) => state.permissionsTotalCount
 )

@@ -79,7 +79,7 @@ export const getQuestionIds = (item) => {
   return questions
 }
 
-function* saveUserResponse({ payload }) {
+export function* saveUserResponse({ payload }) {
   try {
     const ts = payload.timeSpent || 0
     const {

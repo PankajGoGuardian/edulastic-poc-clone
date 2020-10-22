@@ -36,6 +36,8 @@ import {
   CLEAR_USER_WORK,
   SET_SAVE_USER_RESPONSE,
 } from '../constants/actions'
+import { saveUserResponse as saveUserResponseAction } from '../actions/items'
+import { saveUserResponse as saveUserResponseSaga } from './items'
 import { loadQuestionsAction } from '../actions/questions'
 import { loadBookmarkAction } from '../sharedDucks/bookmark'
 import {
@@ -582,6 +584,14 @@ function* loadPreviousResponses(payload) {
 
 function* submitTest({ payload }) {
   try {
+    const { itemResponse } = payload
+    if (itemResponse) {
+      const saveUserResponseActionObject = saveUserResponseAction(
+        ...itemResponse
+      )
+      yield call(saveUserResponseSaga, saveUserResponseActionObject)
+    }
+
     yield put({
       type: SET_SAVE_USER_RESPONSE,
       payload: true,

@@ -8,6 +8,7 @@ const prefix = '/assignments'
 const create = (data) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}`,
       method: 'post',
       data,
@@ -69,6 +70,7 @@ const fetchTeacherAssignments = ({
 }) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}&folderId=${folderId}`,
       method: 'get',
     })
@@ -123,6 +125,7 @@ const duplicateAssignment = ({
 const redirect = (assignmentId, data) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${assignmentId}/redirect`,
       method: 'POST',
       data,
@@ -132,6 +135,7 @@ const redirect = (assignmentId, data) =>
 const fetchAssignmentsSummary = ({ districtId = '', filters, sort }) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/district/${districtId}`,
       method: 'get',
       params: { ...filters, ...sort },
@@ -143,6 +147,7 @@ const fetchAssignmentsSummary = ({ districtId = '', filters, sort }) =>
 const fetchAssignmentsClassList = ({ districtId, testId, testType, termId }) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/district/${districtId}/test/${testId}?testType=${testType}&termId=${termId}`,
       method: 'get',
     })

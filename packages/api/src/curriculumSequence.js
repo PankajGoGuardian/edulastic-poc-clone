@@ -133,6 +133,7 @@ const fetchPlaylistMetrics = (data) => {
   const queryString = qs.stringify(data)
   return api
     .callApi({
+      useSlowApi: true,
       method: 'get',
       url: `/report/playlist-metrics?${queryString}`,
     })
@@ -143,6 +144,7 @@ const fetchPlaylistInsights = (data) => {
   const queryString = qs.stringify(data)
   return api
     .callApi({
+      useSlowApi: true,
       method: 'get',
       url: `/report/insights?${queryString}`,
     })

@@ -6,7 +6,6 @@ import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getOrgDataFromSARFilter } from '../common/filterDataDucks'
 
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST =
   '[reports] get reports question analysis request'
@@ -30,15 +29,10 @@ export const getQuestionAnalysisRequestAction = createAction(
 export const stateSelector = (state) =>
   state.reportReducer.reportQuestionAnalysisReducer
 
-const _getReportsQuestionAnalysis = createSelector(
+export const getReportsQuestionAnalysis = createSelector(
   stateSelector,
   (state) => state.questionAnalysis
 )
-
-export const getReportsQuestionAnalysis = (state) => ({
-  ..._getReportsQuestionAnalysis(state),
-  metaInfo: getOrgDataFromSARFilter(state),
-})
 
 export const getReportsQuestionAnalysisLoader = createSelector(
   stateSelector,
@@ -62,8 +56,8 @@ const initialState = {
 }
 
 export const reportQuestionAnalysisReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_QUESTION_ANALYSIS_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [GET_REPORTS_QUESTION_ANALYSIS_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS]: (state, { payload }) => {

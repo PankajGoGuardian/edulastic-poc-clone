@@ -90,10 +90,6 @@ export const getSAFFilterStandardsProficiencyProfiles = createSelector(
   (state) => get(state, 'SARFilterData.data.result.scaleInfo', [])
 )
 
-export const getOrgDataFromSARFilter = createSelector(stateSelector, (state) =>
-  get(state, 'SARFilterData.data.result.orgData', [])
-)
-
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //

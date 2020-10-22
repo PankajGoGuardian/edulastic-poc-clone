@@ -3,7 +3,6 @@ import { createSelector } from 'reselect'
 import { call, put, all, takeLatest, select } from 'redux-saga/effects'
 import nanoid from 'nanoid'
 import { push } from 'react-router-redux'
-// eslint-disable-next-line
 import produce from 'immer'
 import { get, without, omit } from 'lodash'
 
@@ -20,6 +19,11 @@ import {
   receiveTestByIdAction,
 } from '../TestPage/ducks'
 import { getUserSelector, getUserRole } from '../src/selectors/user'
+
+const pdfjs = require('pdfjs-dist')
+
+pdfjs.GlobalWorkerOptions.workerSrc =
+        '//cdn.jsdelivr.net/npm/pdfjs-dist@2.1.266/build/pdf.worker.min.js'
 
 export const CREATE_ASSESSMENT_REQUEST =
   '[assessmentPage] create assessment request'
@@ -144,39 +148,38 @@ function* createAssessmentSaga({ payload }) {
     yield put(createAssessmentErrorAction({ error: errorMessage }))
     return
   }
+
   try {
-    import('pdfjs-dist/es5/build/pdf').then((pdfjs) => {
-      if (fileURI) {
-        const pdfLoadingTask = pdfjs.getDocument(fileURI)
-        pdfLoadingTask.promise.then(({ numPages }) => {
-          amountOfPDFPages = numPages
+    if (fileURI) {
+      const pdfLoadingTask = pdfjs.getDocument(fileURI)
 
-          pageStructure = new Array(amountOfPDFPages)
-            .fill({
-              URL: fileURI,
-            })
-            .map((page, index) => ({
-              ...page,
-              pageNo: index + 1,
-            }))
-        })
-      } else {
-        const pdfLoadingTask = pdfjs.getDocument(defaultPageStructure[0].URL)
-        pdfLoadingTask.promise.then(({ numPages }) => {
-          amountOfPDFPages = numPages
+      const { numPages } = yield pdfLoadingTask.promise
+      amountOfPDFPages = numPages
 
-          pageStructure = new Array(amountOfPDFPages)
-            .fill({
-              URL: defaultPageStructure[0].URL,
-              pageId: helpers.uuid(),
-            })
-            .map((page, index) => ({
-              ...page,
-              pageNo: index + 1,
-            }))
+      pageStructure = new Array(amountOfPDFPages)
+        .fill({
+          URL: fileURI,
         })
-      }
-    })
+        .map((page, index) => ({
+          ...page,
+          pageNo: index + 1,
+        }))
+    } else {
+      const pdfLoadingTask = pdfjs.getDocument(defaultPageStructure[0].URL)
+
+      const { numPages } = yield pdfLoadingTask.promise
+      amountOfPDFPages = numPages
+
+      pageStructure = new Array(amountOfPDFPages)
+        .fill({
+          URL: defaultPageStructure[0].URL,
+          pageId: helpers.uuid(),
+        })
+        .map((page, index) => ({
+          ...page,
+          pageNo: index + 1,
+        }))
+    }
 
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector)

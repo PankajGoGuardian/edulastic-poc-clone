@@ -4,9 +4,11 @@ import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { Select } from 'antd'
 import { cloneDeep } from 'lodash'
+import produce from 'immer'
 
 import { TabContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { defaultSymbols } from '@edulastic/constants'
 
 import CorrectAnswers from '../CorrectAnswers'
 import GraphDisplay from './Display/GraphDisplay'
@@ -22,8 +24,11 @@ import { Row } from '../../styled/WidgetOptions/Row'
 import { Col } from '../../styled/WidgetOptions/Col'
 
 class GraphAnswers extends Component {
-  state = {
-    tab: 0,
+  constructor() {
+    super()
+    this.state = {
+      tab: 0,
+    }
   }
 
   handleTabChange = (tab) => {
@@ -58,22 +63,26 @@ class GraphAnswers extends Component {
 
   updateValidationValue = (value) => {
     const { question, setQuestionData } = this.props
-    const { validation, toolbar } = question
-    for (let i = 0; i < value.length; i++) {
-      if (
-        typeof value[i].label !== 'boolean' &&
-        typeof value[i].label !== 'undefined'
-      ) {
-        value[i].label = value[i].label
-          .replace(/<p>/g, '')
-          .replace(/<\/p>/g, '')
+
+    const newQuestion = produce(question, (draft) => {
+      const { validation, toolbar } = draft
+      for (let i = 0; i < value.length; i++) {
+        if (
+          typeof value[i].label !== 'boolean' &&
+          typeof value[i].label !== 'undefined'
+        ) {
+          value[i].label = value[i].label
+            .replace(/<p>/g, '')
+            .replace(/<\/p>/g, '')
+        }
       }
-    }
-    if (toolbar && toolbar.drawingPrompt) {
-      toolbar.drawingObjects = this.getDrawingObjects(value)
-    }
-    validation.validResponse.value = value
-    setQuestionData({ ...question, validation, toolbar })
+      if (toolbar && toolbar.drawingPrompt) {
+        toolbar.drawingObjects = this.getDrawingObjects(value)
+      }
+      validation.validResponse.value = value
+    })
+
+    setQuestionData(newQuestion)
   }
 
   updateAltValidationValue = (value, tabIndex) => {
@@ -209,7 +218,14 @@ class GraphAnswers extends Component {
   }
 
   render() {
-    const { graphData, view, previewTab, ...rest } = this.props
+    const {
+      graphData,
+      view,
+      previewTab,
+      onChangeKeypad,
+      symbols,
+      ...rest
+    } = this.props
     const { tab } = this.state
     const { validation } = graphData
     const points =
@@ -244,6 +260,8 @@ class GraphAnswers extends Component {
                 elements={graphData.validation.validResponse.value}
                 disableResponse={false}
                 item={graphData}
+                onChangeKeypad={onChangeKeypad}
+                symbols={symbols}
                 isCorrectAnsTab
               />
             </TabContainer>
@@ -265,6 +283,8 @@ class GraphAnswers extends Component {
                       disableResponse={false}
                       onChange={(val) => this.updateAltValidationValue(val, i)}
                       item={graphData}
+                      onChangeKeypad={onChangeKeypad}
+                      symbols={symbols}
                     />
                   </TabContainer>
                 )
@@ -291,6 +311,13 @@ GraphAnswers.propTypes = {
   getIgnoreRepeatedShapesOptions: PropTypes.func.isRequired,
   handleSelectIgnoreRepeatedShapes: PropTypes.func.isRequired,
   handleNumberlineChange: PropTypes.func.isRequired,
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
+}
+
+GraphAnswers.defaultProps = {
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
 }
 
 const enhance = compose(

@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { cloneDeep } from 'lodash'
+import { produce } from 'immer'
 import {
   CorrectAnswersContainer,
   Stimulus,
@@ -16,6 +17,7 @@ import {
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
+import { defaultSymbols } from '@edulastic/constants'
 import { getFontSize } from '../../utils/helpers'
 import { ContentArea } from '../../styled/ContentArea'
 import {
@@ -107,6 +109,15 @@ class Graph extends Component {
       default:
         return GraphQuadrants
     }
+  }
+
+  handleKeypadMode = (keypad = 'basic') => {
+    const { item, setQuestionData } = this.props
+    setQuestionData(
+      produce(item, (draft) => {
+        draft.symbols = [keypad]
+      })
+    )
   }
 
   getMoreOptionsComponent = () => {
@@ -411,6 +422,8 @@ class Graph extends Component {
       ...restProps
     } = this.props
 
+    const { symbols = defaultSymbols } = item
+
     const mapFontName = {
       extra_large: 'xlarge',
       huge: 'xxlarge',
@@ -481,6 +494,8 @@ class Graph extends Component {
                     this.handleSelectIgnoreRepeatedShapes
                   }
                   handleNumberlineChange={this.handleNumberlineChange}
+                  onChangeKeypad={this.handleKeypadMode}
+                  symbols={symbols}
                 />
               </Question>
 

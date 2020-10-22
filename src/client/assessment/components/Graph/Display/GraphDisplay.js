@@ -4,18 +4,36 @@ import { connect } from 'react-redux'
 import { withTheme } from 'styled-components'
 import { compose } from 'redux'
 import { isEqual } from 'lodash'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
+import { defaultSymbols } from '@edulastic/constants'
 
 import { fractionStringToNumber } from '../../../utils/helpers'
 import { CLEAR } from '../../../constants/constantsForQuestions'
-import { QuadrantsContainer } from './QuadrantsContainer'
-import { AxisLabelsContainer } from './AxisLabelsContainer'
-import { AxisSegmentsContainer } from './AxisSegmentsContainer'
 import { setQuestionDataAction } from '../../../../author/src/actions/question'
-import { PlacementContainer } from './PlacementContainer'
-import { NumberLinePlot } from './NumberLinePlot'
 import { smallestZoomLevel } from '../../../../common/utils/static/zoom'
 import { ifZoomed } from '../../../../common/utils/helpers'
 import { MIN_SNAP_SIZE } from '../Builder/config/constants'
+
+const QuadrantsContainer = loadable(() =>
+  import('./QuadrantsContainer/QuadrantsContainer')
+)
+
+const PlacementContainer = loadable(() =>
+  import('./PlacementContainer/PlacementContainer')
+)
+
+const AxisSegmentsContainer = loadable(() =>
+  import('./AxisSegmentsContainer/AxisSegmentsContainer')
+)
+
+const AxisLabelsContainer = loadable(() =>
+  import('./AxisLabelsContainer/AxisLabelsContainer')
+)
+
+const NumberLinePlot = loadable(() =>
+  import('./NumberLinePlot/NumberLinePlotContainer')
+)
 
 const graphDimensionsMultiplierHashMap = {
   sm: 1.5,
@@ -258,6 +276,8 @@ class GraphDisplay extends Component {
       elementsIsCorrect,
       advancedElementSettings,
       setQuestionData,
+      onChangeKeypad,
+      symbols,
     } = this.props
 
     const {
@@ -376,6 +396,8 @@ class GraphDisplay extends Component {
       advancedElementSettings,
       setQuestionData,
       graphData,
+      onChangeKeypad,
+      symbols,
     }
   }
 
@@ -769,9 +791,11 @@ class GraphDisplay extends Component {
         {graphIsValid ? (
           <div className="__prevent-page-break">
             {/* zoomLevel change css transform: scale() style,
-                after changing this style you need to do full reinit of component with jsxgraph object */}
+                after changing this style 
+                you need to do full reinit of component with jsxgraph object */}
             {zl === 1 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -779,6 +803,7 @@ class GraphDisplay extends Component {
             )}
             {zl === 1.5 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -786,6 +811,7 @@ class GraphDisplay extends Component {
             )}
             {zl === 1.75 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -793,6 +819,7 @@ class GraphDisplay extends Component {
             )}
             {zl === 2.5 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -800,6 +827,7 @@ class GraphDisplay extends Component {
             )}
             {zl === 3 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -832,6 +860,8 @@ GraphDisplay.propTypes = {
   elementsIsCorrect: PropTypes.bool,
   advancedElementSettings: PropTypes.bool,
   zoomLevel: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
 }
 
 GraphDisplay.defaultProps = {
@@ -849,6 +879,8 @@ GraphDisplay.defaultProps = {
   disableResponse: false,
   elementsIsCorrect: false,
   zoomLevel: 1,
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
 }
 
 const enhance = compose(

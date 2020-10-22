@@ -61,10 +61,14 @@ export function storeAccessToken(token, userId, role, _default = false) {
   }
 }
 
-export function updateUserToken(token) {
+export function updateUserToken(token, kid) {
   try {
-    const { _id: userId, role } = parseJwt(token)
-    storeAccessToken(token, userId, role)
+    const { _id: userId, role, districtId } = parseJwt(token)
+    storeAccessToken(token, userId, role, true)
+    selectAccessToken(userId, role) // in case role changed
+    if (kid) {
+      updateKID({ _id: userId, role, kid, districtId })
+    }
   } catch (e) {
     captureException(e)
   }
@@ -117,7 +121,7 @@ export const initKID = () => {
  * and sets the same to sentry scope
  * @param {*} user
  */
-export const updateKID = ({ _id, role, districtId, kid }) => {
+export function updateKID({ _id, role, districtId, kid }) {
   if (window.sessionStorage) {
     window.sessionStorage.kid = kid
     updateSentryScope({ _id, role, districtId, kid })

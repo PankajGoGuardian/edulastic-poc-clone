@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "12.45.0",
+  "version": "12.46.0",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -104,7 +104,7 @@
     "nanoid": "^2.1.10",
     "normalizr": "^3.3.0",
     "overlay-pslg": "^1.0.0",
-    "pdfjs-dist": "^2.5.207",
+    "pdfjs-dist": "2.1.266",
     "prop-types": "^15.6.2",
     "qs": "^6.7.0",
     "rc-color-picker": "^1.2.6",

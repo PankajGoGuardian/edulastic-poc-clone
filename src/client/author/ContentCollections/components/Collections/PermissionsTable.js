@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Tabs } from 'antd'
-import { get, isEqual } from 'lodash'
+import { Tabs, Tooltip } from 'antd'
+import { get, isEqual, debounce } from 'lodash'
 import moment from 'moment'
 import { themeColor } from '@edulastic/colors'
 import { IconPencilEdit } from '@edulastic/icons'
@@ -27,6 +27,7 @@ import {
   fetchPermissionsRequestAction,
   editPermissionRequestAction,
   deletePermissionRequestAction,
+  getPermissionsTotalCountSelector,
 } from '../../ducks'
 import { getUserRole, getUserOrgId } from '../../../src/selectors/user'
 
@@ -44,27 +45,40 @@ const PermissionsTable = ({
   deletePermissionRequest,
   userRole,
   userDistrictId,
+  permissionsTotalCount,
 }) => {
   const [showPermissionModal, setPermissionModalVisibility] = useState(false)
   const [selectedPermission, setSelectedPermission] = useState(null)
-  const [searchPermissionValue, setPermissionSearchValue] = useState('')
-  const [filteredPermissionList, setFilteredPermissionList] = useState([])
   const [tableMaxHeight, setTableMaxHeight] = useState(200)
   const [permissionTableRef, setPermissionTableRef] = useState(null)
+  const [paginationData, setPaginationData] = useState({
+    pageNo: 1,
+    recordsPerPage: 25,
+    searchString: '',
+  })
 
   useEffect(() => {
-    fetchPermissionsRequest(selectedCollection.bankId)
+    fetchPermissionsRequest({ _id: selectedCollection.bankId, paginationData })
   }, [selectedCollection])
 
   useEffect(() => {
     if (permissionTableRef) {
-      const tableMaxHeight =
+      const _tableMaxHeight =
         window.innerHeight -
         caluculateOffset(permissionTableRef._container) -
         40
-      setTableMaxHeight(tableMaxHeight)
+      setTableMaxHeight(_tableMaxHeight)
     }
   }, [permissionTableRef?._container?.offsetTop])
+
+  const handleEditPermission = (permission) => {
+    setSelectedPermission(permission)
+    setPermissionModalVisibility(true)
+  }
+
+  const handleDeactivatePermission = (id) => {
+    deletePermissionRequest({ bankId: selectedCollection.bankId, id })
+  }
 
   const columns = [
     {
@@ -75,7 +89,7 @@ const PermissionsTable = ({
       sorter: (a, b) => {
         const prev = get(a, 'orgName', '')
         const next = get(b, 'orgName', '')
-        return next.localeCompare(prev)
+        return next?.localeCompare(prev)
       },
     },
     {
@@ -90,6 +104,12 @@ const PermissionsTable = ({
       key: 'startDate',
       align: 'center',
       render: (value) => (value && moment(value).format('Do MMM, YYYY')) || '-',
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => {
+        const prev = get(a, 'startDate', 0)
+        const next = get(b, 'startDate', 0)
+        return prev - next
+      },
     },
     {
       title: 'End',
@@ -97,6 +117,11 @@ const PermissionsTable = ({
       key: 'endDate',
       align: 'center',
       render: (value) => (value && moment(value).format('Do MMM, YYYY')) || '-',
+      sorter: (a, b) => {
+        const prev = get(a, 'endDate', 0)
+        const next = get(b, 'endDate', 0)
+        return prev - next
+      },
     },
     {
       title: 'Status',
@@ -121,32 +146,27 @@ const PermissionsTable = ({
         )
           return (
             <div>
-              <span
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleEditPermission(record)}
-              >
-                <IconPencilEdit color={themeColor} />
-              </span>
-              <DeletePermissionButton
-                onClick={() => handleDeactivatePermission(record._id)}
-              >
-                <i className="fa fa-trash-o" aria-hidden="true" />
-              </DeletePermissionButton>
+              <Tooltip placement="topLeft" title="Edit Permission">
+                <span
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleEditPermission(record)}
+                >
+                  <IconPencilEdit color={themeColor} />
+                </span>
+              </Tooltip>
+              <Tooltip placement="topRight" title="Remove Permission">
+                <DeletePermissionButton
+                  onClick={() => handleDeactivatePermission(record._id)}
+                >
+                  <i className="fa fa-trash-o" aria-hidden="true" />
+                </DeletePermissionButton>
+              </Tooltip>
             </div>
           )
         return null
       },
     },
   ]
-
-  const handleEditPermission = (permission) => {
-    setSelectedPermission(permission)
-    setPermissionModalVisibility(true)
-  }
-
-  const handleDeactivatePermission = (id) => {
-    deletePermissionRequest({ bankId: selectedCollection.bankId, id })
-  }
 
   const handlePermissionModalResponse = (response) => {
     setPermissionModalVisibility(false)
@@ -157,24 +177,41 @@ const PermissionsTable = ({
         data: response,
       }
       if (selectedPermission) {
-        editPermissionRequest({ ...data, id: selectedPermission._id })
+        editPermissionRequest({
+          data: { ...data, id: selectedPermission._id },
+          paginationData,
+        })
       } else {
-        addPermissionRequest(data)
+        addPermissionRequest({ data, paginationData })
       }
     }
     setSelectedPermission(null)
   }
 
-  const handlePermissionSearch = (e) => {
-    const searchString = e.target.value
-    setPermissionSearchValue(searchString)
-    if (searchString) {
-      const filteredPermissions = permissions.filter((c) => {
-        const isPresent = c.orgName.search(new RegExp(searchString, 'i'))
-        if (isPresent < 0) return false
-        return true
+  const handlePermissionSearch = debounce((searchString) => {
+    const _paginationData = {
+      ...paginationData,
+      pageNo: 1,
+      searchString,
+    }
+    setPaginationData(_paginationData)
+    fetchPermissionsRequest({
+      _id: selectedCollection.bankId,
+      paginationData: _paginationData,
+    })
+  }, 400)
+
+  const handlePermissionTableChange = (pagination) => {
+    if (pagination) {
+      const _paginationData = {
+        ...paginationData,
+        pageNo: pagination.current,
+      }
+      setPaginationData(_paginationData)
+      fetchPermissionsRequest({
+        _id: selectedCollection.bankId,
+        paginationData: _paginationData,
       })
-      setFilteredPermissionList(filteredPermissions)
     }
   }
 
@@ -188,8 +225,10 @@ const PermissionsTable = ({
             </div>
             <div>
               <StyledSearch
-                placeholder="Search for an organization"
-                onChange={handlePermissionSearch}
+                placeholder="Search for District, School or User"
+                onChange={(e) => {
+                  handlePermissionSearch(e?.target?.value)
+                }}
               />
             </div>
             <div>
@@ -209,11 +248,14 @@ const PermissionsTable = ({
           >
             <StyledTable
               loading={isFetchingPermissions}
-              dataSource={
-                searchPermissionValue ? filteredPermissionList : permissions
-              }
+              dataSource={permissions}
               columns={columns}
-              pagination={false}
+              pagination={{
+                pageSize: paginationData.recordsPerPage,
+                total: permissionsTotalCount,
+                current: paginationData.pageNo,
+              }}
+              onChange={handlePermissionTableChange}
             />
           </StyledScollBar>
         </TabPane>
@@ -244,6 +286,7 @@ const PermissionsTableComponent = connect(
     permissions: getPermissionsSelector(state),
     userRole: getUserRole(state),
     userDistrictId: getUserOrgId(state),
+    permissionsTotalCount: getPermissionsTotalCountSelector(state),
   }),
   {
     fetchPermissionsRequest: fetchPermissionsRequestAction,

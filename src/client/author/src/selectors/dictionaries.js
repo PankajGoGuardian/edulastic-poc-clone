@@ -63,6 +63,7 @@ export const getFormattedCurriculums = (
     }
     return map
   }, {})
+
   allCurriculums = allCurriculums
     .slice()
     .sort((a, b) =>

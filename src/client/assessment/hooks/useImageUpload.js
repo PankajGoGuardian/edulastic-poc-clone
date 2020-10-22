@@ -5,49 +5,49 @@
 
 import { useState } from 'react'
 import { aws } from '@edulastic/constants'
-import { beforeUpload, notification } from '@edulastic/common'
-import { uploadToS3 } from '@edulastic/common/src/helpers'
+import { notification } from '@edulastic/common'
+import { uploadToS3 } from '../../author/src/utils/upload'
 
-const useImageUpload = (postUpload, userId) => {
-  const [isImageUploading, setIsImageUploading] = useState(false)
+const useFileUpload = (userId) => {
+  const [isFileUploading, setIsFileUploading] = useState(false)
 
-  const uploadImage = async (imageBlob) => {
+  const uploadFile = async (
+    file,
+    progressCallback,
+    cancelCallback,
+    validate,
+    postUploadCallback
+  ) => {
     try {
-      setIsImageUploading(true)
+      setIsFileUploading(true)
 
-      // Validate image type.
-      if (!imageBlob.type.match(/image/g)) {
-        notification({ messageKey: 'pleaseUploadFileInImageFormat' })
-        setIsImageUploading(false)
+      // Validate file to upload.
+      if (validate && typeof validate === 'function' && !validate(file)) {
+        setIsFileUploading(false)
         return
       }
 
-      // Validate image size.
-      if (!beforeUpload(imageBlob)) {
-        setIsImageUploading(false)
-        return
-      }
-
-      // Try to upload the image.
-      const imageUrl = await uploadToS3(
-        imageBlob,
+      const url = await uploadToS3(
+        file,
         `${aws.s3Folders.USER}`,
-        `${userId}`
+        `${userId}`,
+        progressCallback,
+        cancelCallback
       )
 
-      // Run any postUpload callback with resulting url.
+      // Run any postUploadCallback with resulting url.
       if (typeof postUpload === 'function') {
-        postUpload(imageUrl)
+        postUploadCallback(url)
       }
-      setIsImageUploading(false)
+      setIsFileUploading(false)
     } catch (e) {
-      notification({ messageKey: 'imageUploadErr' })
-      setIsImageUploading(false)
+      notification({ messageKey: 'uploadFailed' })
+      setIsFileUploading(false)
       console.log(e)
     }
   }
 
-  return [isImageUploading, uploadImage]
+  return [isFileUploading, uploadFile]
 }
 
-export default useImageUpload
+export default useFileUpload

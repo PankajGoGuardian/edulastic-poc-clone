@@ -49,7 +49,7 @@ import { evaluateCurrentAnswersForPreviewAction } from '../sharedDucks/previewTe
 import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
-import CameraModal from './common/CameraModal'
+import UserWorkUploadModal from './common/UserWorkUploadModal'
 import useImageUpload from '../hooks/useImageUpload'
 
 const { playerSkinValues } = testConstants
@@ -161,8 +161,13 @@ const AssessmentContainer = ({
     show: false,
   })
   const [showRegradedModal, setShowRegradedModal] = useState(false)
-  const [isCameraModalVisible, setIsCameraModalVisible] = useState(false)
-  const toggleCameraModal = () => setIsCameraModalVisible((value) => !value)
+  const [
+    isUserWorkUploadModalVisible,
+    setIsUserWorkUploadModalVisible,
+  ] = useState(false)
+  const toggleUserWorkUploadModal = () =>
+    setIsUserWorkUploadModalVisible((value) => !value)
+  const closeUserWorkUploadModal = () => setIsUserWorkUploadModalVisible(false)
   const saveQuestionWorkImageUrl = (questionWorkImageUrl) => {
     const userWorkId = items[currentItem]?._id
 
@@ -182,10 +187,10 @@ const AssessmentContainer = ({
     })
 
     // Close the camera modal
-    setIsCameraModalVisible(false)
+    setIsUserWorkUploadModalVisible(false)
   }
 
-  const [isImageUploading, uploadImage] = useImageUpload(
+  const [isFileUploading, uploadFile] = useImageUpload(
     saveQuestionWorkImageUrl,
     userId
   )
@@ -554,7 +559,7 @@ const AssessmentContainer = ({
     handleMagnifier,
     enableMagnifier,
     studentReportModal,
-    toggleCameraModal,
+    toggleCameraModal: toggleUserWorkUploadModal,
     ...restProps,
   }
 
@@ -614,6 +619,11 @@ const AssessmentContainer = ({
     )
   }
 
+  const userWorkCameraProps = {
+    delayCount: 3,
+    isPhotoTakingDisabled: isFileUploading,
+  }
+
   return (
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem }}
@@ -659,15 +669,19 @@ const AssessmentContainer = ({
         />
       )}
       {playerComponent}
-      <CameraModal
-        isModalVisible={isCameraModalVisible}
-        onCancel={toggleCameraModal}
-        isPhotoTakingDisabled={isImageUploading}
-        onTakePhoto={uploadImage}
-        delayCount={5}
-      >
-        {isImageUploading && <Spin />}
-      </CameraModal>
+      <UserWorkUploadModal
+        isModalVisible={isUserWorkUploadModalVisible}
+        onCancel={closeUserWorkUploadModal}
+        uploadFile={(...args) => {
+          console.log(test)
+          uploadFile(...args)
+        }}
+        onUploadFinished={(uris) => {
+          console.log(uris)
+          closeUserWorkUploadModal()
+        }}
+        {...userWorkCameraProps}
+      />
     </AssessmentPlayerContext.Provider>
   )
 }

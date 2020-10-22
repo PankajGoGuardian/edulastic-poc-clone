@@ -310,12 +310,6 @@ const activateUser = ({ userId, activate }) =>
     method: 'put',
   })
 
-const logout = () => 
-  api.callApi({
-    url: `${prefix}/logout`,
-    method: 'post'
-  })
-
 export default {
   getUser,
   fetchUsers,
@@ -350,5 +344,4 @@ export default {
   mergeUsers,
   updatePowerTeacherTools,
   activateUser,
-  logout
 }

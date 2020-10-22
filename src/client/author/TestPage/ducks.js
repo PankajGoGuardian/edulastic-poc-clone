@@ -1777,6 +1777,7 @@ function* updateRegradeDataSaga({ payload }) {
       type: 'error',
       msg: errorMessage || 'Unable to publish & regrade.',
     })
+    yield put(push('/author/assignments'))
   } finally {
     yield put(setRegradingStateAction(false))
   }

@@ -30,7 +30,7 @@ export default class TeacherManageClassPage {
     cy.route('GET', '**/enrollment/**').as('enrollment')
     this.getClassRowByName(className).click()
     cy.wait('@enrollment')
-    cy.wait('@searchUser')
+    // cy.wait('@searchUser')
   }
 
   getClassCode = (className) =>
@@ -450,7 +450,7 @@ export default class TeacherManageClassPage {
   unArchieveClassByName(className, success = true) {
     cy.route('POST', '**/search/users').as('searchUser')
     this.clickOnClassRowByName(className)
-    cy.wait('@searchUser')
+    // cy.wait('@searchUser')
     this.clickUnArchive(success)
   }
 

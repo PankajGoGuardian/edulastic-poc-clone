@@ -234,7 +234,7 @@ const PerformanceByStandards = ({
     analyzeBy === analyzeByMode.SCORE || analyzeBy === analyzeByMode.RAW_SCORE
       ? SimpleStackedBarChartContainer
       : SignedStackedBarChartContainer
-  
+
   if (settings.selectedTest && !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }

@@ -1163,7 +1163,7 @@ function* googleLogin({ payload }) {
       if (payload.role === 'teacher') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
         if (payload.isAdmin) {
-          localStorage.setItem('thirdPartySignOnAdditionalRole', "admin")
+          localStorage.setItem('thirdPartySignOnAdditionalRole', 'admin')
         }
         role = 'teacher'
       } else if (payload.role === 'student') {
@@ -1261,7 +1261,7 @@ function* msoLogin({ payload }) {
       if (payload.role === 'teacher') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
         if (payload.isAdmin) {
-          localStorage.setItem('thirdPartySignOnAdditionalRole', "admin")
+          localStorage.setItem('thirdPartySignOnAdditionalRole', 'admin')
         }
         role = 'teacher'
       } else if (payload.role === 'student') {

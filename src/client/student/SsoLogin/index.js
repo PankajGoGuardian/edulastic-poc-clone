@@ -47,7 +47,7 @@ class SsoLogin extends React.Component {
       localStorage.removeItem('payloadForUserData')
     }
 
-    if (localStorage.getItem('thirdPartySignOnAdditionalRole') === "admin") {
+    if (localStorage.getItem('thirdPartySignOnAdditionalRole') === 'admin') {
       payload.isAdmin = true
     }
 

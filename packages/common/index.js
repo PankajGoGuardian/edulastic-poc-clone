@@ -92,7 +92,7 @@ export { default as withWindowSizes } from './src/HOC/withWindowSizes'
 export { default as withWindowScroll } from './src/HOC/withWindowScroll'
 export { WithResources, useResources } from './src/HOC/withResources'
 export { withMathFormula as WithMathFormula } from './src/HOC/withMathFormula'
-export { scrollTo, offset } from './src/utils/DomUtils'
+export { scrollTo, offset, isDOMElement } from './src/utils/DomUtils'
 export {
   default as helpers,
   isMobileDevice,
@@ -114,6 +114,7 @@ export {
   getFormattedAttrId,
   toggleIntercomDisplay,
   sanitizeString,
+  getSanitizedProps,
 } from './src/helpers'
 
 // contexts

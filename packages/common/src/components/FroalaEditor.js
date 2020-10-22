@@ -616,7 +616,7 @@ const CustomEditor = ({
             const parent = range.commonAncestorContainer
             if (parent && range.startOffset === range.endOffset) {
               const cursorEl = parent.childNodes[range.startOffset - 1]
-              if (!cursorEl || !cursorEl.tagName) return
+              if (!$(cursorEl).length || !cursorEl || !cursorEl.tagName) return
 
               if (
                 [

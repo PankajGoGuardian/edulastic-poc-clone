@@ -16,12 +16,12 @@ import PropTypes from 'prop-types'
 
 const EduButton = ({ children, ...restProps }) => {
   const blacklistedPropsDOMElements = ['features', 'groupList']
-  const santizedProps = getSanitizedProps(
+  const sanitizedProps = getSanitizedProps(
     restProps,
     blacklistedPropsDOMElements
   )
   return (
-    <StyledButton type="primary" {...santizedProps}>
+    <StyledButton type="primary" {...sanitizedProps}>
       {children}
     </StyledButton>
   )

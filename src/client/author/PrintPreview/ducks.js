@@ -25,7 +25,7 @@ export const fetchPrintPreviewEssentialsAction = createAction(
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
 function* fetchPrintPreviewEssentials({ payload }) {
-  const { assignmentId, classId: groupId, selectedStudents } = payload
+  const { assignmentId, classId: groupId, selectedStudents = [] } = payload
   try {
     const _payload = { assignmentId, classId: groupId }
     yield call(receiveTestActivitySaga, { payload: _payload })
@@ -33,7 +33,7 @@ function* fetchPrintPreviewEssentials({ payload }) {
     const testActivity = yield select(getTestActivitySelector)
     const additionalData = yield select(getAdditionalDataSelector)
 
-    const { testId, classId } = additionalData
+    const { classId } = additionalData
 
     let selectedActivities = testActivity.filter(
       (item) => selectedStudents.includes(item.studentId) && item.testActivityId

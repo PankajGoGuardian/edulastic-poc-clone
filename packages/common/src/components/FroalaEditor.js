@@ -535,7 +535,7 @@ const CustomEditor = ({
   const specialCharactersSets = getSpecialCharacterSets(customCharacters)
   const initialConfig = Object.assign(
     {
-      key: process.env.POI_APP_FROALA_KEY,
+      key: process.env.REACT_APP_FROALA_KEY,
       imageInsertButtons: ['imageUpload'], // hide other image uplaod options
       imageDefaultDisplay: 'inline',
       linkAlwaysBlank: true, // adding to make link always open in blank

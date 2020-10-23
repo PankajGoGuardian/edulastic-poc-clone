@@ -71,7 +71,7 @@ import {
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import PassageConfirmationModal from '../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal'
 import Tags from '../../../src/components/common/Tags'
-import appConfig from '../../../../../../app-config'
+import appConfig from '../../../../../app-config'
 import SelectGroupModal from '../../../TestPage/components/AddItems/SelectGroupModal'
 import {
   getCollectionsSelector,

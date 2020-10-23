@@ -33,7 +33,7 @@ import Template from './Template'
 import ChoicesForDropDown from './ChoicesForDropDown'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import { StyledClozeMathWrapper } from './styled/StyledClozeMathWrapper'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 import Question from '../../components/Question'
 import QuestionOptions from '../ClozeImageDropDown/QuestionOptions'
 

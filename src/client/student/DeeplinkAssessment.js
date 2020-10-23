@@ -1,10 +1,8 @@
-// @ts-check
 import React, { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import queryString from 'query-string'
-
+import qs from 'qs'
 import { bootstrapAssessmentAction } from './Assignments/ducks'
 
 const DeepLink = ({ bootstrap, match }) => {
@@ -13,7 +11,7 @@ const DeepLink = ({ bootstrap, match }) => {
     const { testType, assignmentId, testActivityId, testId } = match.params
     // alert("rendering deeplink inside effect");
     const searchQuery = (window.location.search || '').replace(/&amp;/g, '&')
-    const query = queryString.parse(searchQuery)
+    const query = qs.parse(searchQuery, { ignoreQueryPrefix: true })
 
     bootstrap({
       testType,

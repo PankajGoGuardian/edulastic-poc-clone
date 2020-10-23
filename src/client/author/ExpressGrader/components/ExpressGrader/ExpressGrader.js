@@ -18,7 +18,7 @@ import {
   toggleIntercomDisplay,
   EduSwitchStyled,
 } from '@edulastic/common'
-import AppConfig from '../../../../../../app-config'
+import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
 import ScoreCard from '../ScoreCard/ScoreCard'
 import QuestionModal from '../QuestionModal/QuestionModal'

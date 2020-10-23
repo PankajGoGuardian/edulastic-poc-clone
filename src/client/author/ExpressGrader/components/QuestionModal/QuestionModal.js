@@ -67,7 +67,7 @@ class QuestionModal extends React.Component {
     document.addEventListener('keyup', this.keyListener, false)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { record, tableData } = nextProps
     const loaded = true
     const newcolIndex = record ? record.colIndex : null

@@ -1,8 +1,8 @@
 import { IconSend } from '@edulastic/icons'
-import queryString from 'query-string'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import qs from 'qs'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
   ControlBtn,
@@ -63,7 +63,7 @@ const PlayerHeader = ({
   groupId,
   location,
 }) => {
-  const query = queryString.parse(location.search)
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 

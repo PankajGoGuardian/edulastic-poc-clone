@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-
-import { FroalaEditor } from '@edulastic/common'
-
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
 import {
   ReportIssueContainer,
   ReportHeader,
@@ -14,6 +13,10 @@ import {
 import { reportContentErrorAction } from '../../../../TestPage/components/AddItems/ducks'
 import { submitReviewFeedbackAction } from '../../../../ItemList/ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 const ReportIssue = ({
   item,
@@ -91,6 +94,7 @@ const ReportIssue = ({
       </ReportHeader>
 
       <FroalaEditor
+        fallback={<Progress />}
         placeholder="Enter content issue..."
         onChange={setCommentValue}
         value={reportedComment}

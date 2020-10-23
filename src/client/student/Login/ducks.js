@@ -13,7 +13,7 @@ import {
   schoolApi,
 } from '@edulastic/api'
 import { roleuser } from '@edulastic/constants'
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import { fetchAssignmentsAction } from '../Assignments/ducks'
 import {

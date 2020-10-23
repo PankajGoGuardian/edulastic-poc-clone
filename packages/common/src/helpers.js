@@ -4,7 +4,7 @@ import { notification } from '@edulastic/common'
 import { fileApi } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../../src/app-config'
 
 export const ALPHABET = [
   'A',

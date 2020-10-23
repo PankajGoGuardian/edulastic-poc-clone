@@ -1,4 +1,3 @@
-// @ts-check
 import { API } from '@edulastic/api'
 import { useEffect, useState } from 'react'
 import mqtt from 'mqtt'

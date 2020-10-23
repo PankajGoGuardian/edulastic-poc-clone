@@ -64,7 +64,7 @@ class MathInput extends React.PureComponent {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { mathField } = this.state
     if (mathField && mathField.latex() !== nextProps.value) {
       mathField.latex(this.sanitizeLatex(nextProps.value))

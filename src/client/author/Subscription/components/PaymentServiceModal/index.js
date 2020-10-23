@@ -14,7 +14,7 @@ const PaymentServiceModal = (props) => {
     stripePaymentAction,
   } = props
 
-  const stripePubKey = process.env.POI_APP_STRIPE_PUBLIC_KEY
+  const stripePubKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
   if (!stripePubKey) return null
 
   return (

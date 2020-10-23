@@ -1,35 +1,38 @@
-const commonConfig = {
-  presets: [
-    [
-      'poi/babel',
-      {
-        targets: { chrome: '39' },
-      },
-    ],
-  ],
-  plugins: [
-    [
-      'import',
-      {
-        libraryName: 'antd',
-      },
-      'antd',
-    ],
-    'lodash',
-    '@babel/plugin-proposal-optional-chaining',
-    '@babel/plugin-proposal-nullish-coalescing-operator',
-    'babel-plugin-styled-components',
-  ],
-}
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
-module.exports = {
-  env: {
-    production: commonConfig,
+let babelPreset = require('babel-preset-react-app')()
 
-    // development environment
-    development: {
-      ...commonConfig,
-      plugins: [...commonConfig.plugins, 'react-refresh/babel'],
+babelPreset = { ...babelPreset }
+
+babelPreset.sourceType = 'unambiguous'
+
+babelPreset.plugins.push.apply(babelPreset.plugins, [
+  [
+    'import',
+    {
+      libraryName: 'antd',
     },
-  },
-}
+    'antd',
+  ],
+  [
+    'styled-components',
+    {
+      useDisplayName: false,
+    },
+  ],
+  'lodash',
+  'react-require',
+  '@loadable/babel-plugin',
+  [
+    require.resolve('babel-plugin-named-asset-import'),
+    {
+      loaderMap: {
+        svg: {
+          ReactComponent: '@svgr/webpack?-svgo,+titleProp,+ref![path]',
+        },
+      },
+    },
+  ],
+])
+
+module.exports = babelPreset

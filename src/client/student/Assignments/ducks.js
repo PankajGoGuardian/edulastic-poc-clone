@@ -455,7 +455,7 @@ function getSebUrl({
   groupId,
 }) {
   const token = TokenStorage.getAccessToken()
-  return `${process.env.POI_APP_API_URI.replace(
+  return `${process.env.REACT_APP_API_URI.replace(
     'http',
     'seb'
   )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}${

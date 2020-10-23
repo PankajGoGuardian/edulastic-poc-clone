@@ -416,20 +416,20 @@ export const getAssignmentsSelector = createSelector(
 export const assignmentsCountByFilerNameSelector = createSelector(
   getAllAssignmentsSelector,
   (assignments) => {
-    let IN_PROGRESS = 0
+    let _IN_PROGRESS = 0
     let NOT_STARTED = 0
     assignments.forEach((assignment) => {
       const attempts = (assignment.reports && assignment.reports.length) || 0
       if (attempts === 0) {
         NOT_STARTED++
       } else if (attempts > 0) {
-        IN_PROGRESS++
+        _IN_PROGRESS++
       }
     })
     return {
       ALL: assignments.length,
       NOT_STARTED,
-      IN_PROGRESS,
+      IN_PROGRESS: _IN_PROGRESS,
     }
   }
 )
@@ -671,7 +671,6 @@ function* startAssignment({ payload }) {
 
     // TODO:load previous responses if resume!!
   } catch (err) {
-    Sentry.captureException(err)
     const { status, data = {}, response = {} } = err
     console.error(
       '====== Assignment Failed ======',
@@ -687,6 +686,8 @@ function* startAssignment({ payload }) {
         'Assignment is not not available at the moment. Please contact your administrator.'
       notification({ msg: message })
       yield put(push('/home/assignments'))
+    } else {
+      Sentry.captureException(err)
     }
   } finally {
     yield put(

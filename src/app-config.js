@@ -78,6 +78,7 @@ const sentryIgnoreErrors = [
   '401',
   'TokenExpire',
   'expired',
+  "Cannot read property 'hasClass' of null",
 ]
 const sentryIgnoreUrls = [
   // Facebook flakiness

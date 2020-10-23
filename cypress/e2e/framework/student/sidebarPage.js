@@ -18,12 +18,16 @@ class SidebarPage {
     return cy.get('[data-cy="title"]').contains('Assignments')
   }
 
-  clickOnGrades = () => {
+  clickOnGrades = (isSubmitted = true) => {
     cy.get('[data-cy="Grades"]').click({ force: true }).click({ force: true })
     cy.get('[data-cy="title"]').contains('Grades')
-    return cy
-      .get('[data-cy="status"]', { timeout: 120000 })
-      .should('be.visible')
+    if (isSubmitted)
+      return cy
+        .get('[data-cy="status"]', { timeout: 120000 })
+        .should('be.visible')
+    return cy.contains(`You don't have any completed assignment`, {
+      timeout: 120000,
+    })
   }
 
   clickOnSkillMastery = () => {

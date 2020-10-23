@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+/* eslint-disable cypress/no-unnecessary-waiting */
 import SmartFilters from './smartFilters'
 import CypressHelper from '../../util/cypressHelpers'
 
@@ -37,6 +39,9 @@ class AuthorAssignmentPage {
 
   getClassByAssignmentRow = () =>
     cy.get('@assignmentRow').find('[data-cy="class"]')
+
+  getStatusByAssignmentRow = () =>
+    cy.get('@assignmentRow').find('[data-cy="status"]')
 
   getAllOptionsInDropDown = () =>
     cy.get('.ant-dropdown-placement-bottomRight').find('li')
@@ -373,7 +378,8 @@ class AuthorAssignmentPage {
     className,
     submitted = 0,
     total,
-    aType
+    aType,
+    status
   ) => {
     this.getAssignmentRowsTestById(testId)
     if (className) this.getClassByAssignmentRow().should('have.text', className)
@@ -383,6 +389,7 @@ class AuthorAssignmentPage {
         `${submitted} of ${total}`
       )
     if (aType) this.getAssignmentTypeByTestId(testId).should('have.text', aType)
+    if (status) this.getStatusByAssignmentRow().should('have.text', status)
   }
 
   // *** APPHELPERS END ***

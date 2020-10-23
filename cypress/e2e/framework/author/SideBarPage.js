@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import SmartFilters from './assignments/smartFilters'
 
 const assignmentFilter = new SmartFilters()
@@ -111,6 +112,10 @@ export default class TeacherSideBar {
   clickOnManageDistrict = () => {
     cy.get('[data-cy="Manage District').dblclick({ force: true })
     cy.get("[title='Manage District']")
+  }
+
+  clickOnGradeBook = () => {
+    cy.get('[data-cy="Gradebook"]').dblclick({ force: true })
   }
   // *** ACTIONS END ***
 

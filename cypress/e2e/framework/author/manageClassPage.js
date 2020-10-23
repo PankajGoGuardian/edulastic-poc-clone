@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import CypressHelper from '../util/cypressHelpers'
 import TeacherSideBar from './SideBarPage'
 
@@ -232,12 +233,18 @@ export default class TeacherManageClassPage {
       this.setEndDate(endDate)
       this.verifyEndDate(endDate)
     }
-    this.selectGrade(grade)
-    this.verifyGrade(grade)
-    this.selectSubject(subject)
-    this.verifySubject(subject)
-    this.selectStandardSets(standardSet)
-    this.verifyStandardSets(standardSet)
+    if (grade) {
+      this.selectGrade(grade)
+      this.verifyGrade(grade)
+    }
+    if (subject) {
+      this.selectSubject(subject)
+      this.verifySubject(subject)
+    }
+    if (standardSet) {
+      this.selectStandardSets(standardSet)
+      this.verifyStandardSets(standardSet)
+    }
   }
   // class list
   // adding students

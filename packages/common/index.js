@@ -112,6 +112,7 @@ export {
   getFormattedAttrId,
   toggleIntercomDisplay,
   sanitizeString,
+  isSEB,
 } from './src/helpers'
 
 // contexts

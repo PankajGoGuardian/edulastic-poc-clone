@@ -36,7 +36,7 @@ class LiveClassboardPage {
     const selector = `[data-cy="student-card-${Helpers.getFormattedFirstLastName(
       studentName
     )}"]`
-    return cy.get(selector)
+    return cy.get(selector, { timeout: 20000 })
   }
 
   getAllStudentStatus = () => cy.get('[data-cy="studentName"]').next()
@@ -113,6 +113,8 @@ class LiveClassboardPage {
 
   getAttemptNoOnContainerByIndexByStudentName = (stuName, ind) =>
     this.getAttemptContainerByIndexByStudentName(stuName, ind).find('p').eq(2)
+
+  getShowActiveStudentToggle = () => cy.get('[class^="EduSwitchStyled"]')
 
   // *** ELEMENTS END ***
 
@@ -295,6 +297,18 @@ class LiveClassboardPage {
   updateTimeWhileRedirect = (time) =>
     this.getTimewhileRedirect().type(`{selectall}${time}`)
 
+  enableShowActiveStudents = () =>
+    this.getShowActiveStudentToggle().then(($ele) => {
+      if (!$ele.hasClass('ant-switch-checked'))
+        cy.wrap($ele).click().should('have.class', 'ant-switch-checked')
+    })
+
+  disableShowActiveStudents = () =>
+    this.getShowActiveStudentToggle().then(($ele) => {
+      if ($ele.hasClass('ant-switch-checked'))
+        cy.wrap($ele).click().should('not.have.class', 'ant-switch-checked')
+    })
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -410,6 +424,7 @@ class LiveClassboardPage {
           studentSide.ABSENT,
           studentSide.NOT_STARTED,
           teacherSide.REDIRECTED,
+          studentSide.UNASSIGNED,
         ].indexOf(status) !== -1
       ) {
         totalScore = `-`
@@ -441,6 +456,7 @@ class LiveClassboardPage {
           studentSide.NOT_STARTED,
           studentSide.ABSENT,
           teacherSide.REDIRECTED,
+          studentSide.UNASSIGNED,
         ].indexOf(status) === -1 &&
           !isRedirected) ||
         (isRedirected && status == studentSide.GRADED)
@@ -831,6 +847,15 @@ class LiveClassboardPage {
         }`
       ).to.eq(`${score}`)
     )
+
+  verifyStudentCardCount = (cardCount) =>
+    cy
+      .get('[data-cy="studentName"]')
+      .should(($ele) =>
+        expect($ele, 'verifying student card count on lcb').to.have.length(
+          cardCount
+        )
+      )
 
   // *** APPHELPERS END ***
 }

@@ -260,6 +260,12 @@ class AssignmentsPage {
     this.verifyPresenceOfTest(oldtestid)
   }
 
+  verifyNoAssignments = () =>
+    cy.contains(
+      `You don't have any currently assigned or completed assignments`,
+      { timeout: 120000 }
+    )
+
   verifyAbsenceOfTest = (id) =>
     cy.get('body').should('not.have.descendants', `[data-cy="test-${id}"]`)
 

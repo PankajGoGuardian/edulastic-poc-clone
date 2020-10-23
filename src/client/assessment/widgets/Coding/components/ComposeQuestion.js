@@ -1,10 +1,11 @@
-import { FroalaEditor } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
 import produce from 'immer'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { compose } from 'redux'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
 import Question from '../../../components/Question'
 import { TextInputStyled } from '../../../styled/InputStyles'
 import { Subtitle } from '../../../styled/Subtitle'
@@ -12,6 +13,10 @@ import { Col } from '../../../styled/WidgetOptions/Col'
 import { Label } from '../../../styled/WidgetOptions/Label'
 import { Row } from '../../../styled/WidgetOptions/Row'
 import { updateVariables } from '../../../utils/variables'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 const ComposeQuestion = ({
   t,
@@ -72,6 +77,7 @@ const ComposeQuestion = ({
         </Col>
         <Col span={24}>
           <FroalaEditor
+            fallback={<Progress />}
             tag="textarea"
             placeholder={t('component.coding.questionPlaceholder')}
             value={item.stimulusBody}

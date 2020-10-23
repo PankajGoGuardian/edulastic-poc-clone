@@ -36,7 +36,7 @@ class SsoLogin extends React.Component {
     const path = location.pathname.split('/')
 
     const payload = {
-      code: qs.parse(location.search)['?code'],
+      code: qs.parse(location.search, { ignoreQueryPrefix: true }).code,
       edulasticRole: localStorage.getItem('thirdPartySignOnRole') || undefined,
       addAccountTo: addAccount ? addAccountTo : undefined,
     }
@@ -58,9 +58,13 @@ class SsoLogin extends React.Component {
         googleSSOLogin(payload)
       }
     } else if (path.includes('clever')) {
-      cleverSSOLogin({ ...payload, state: qs.parse(location.search).state })
+      cleverSSOLogin({
+        ...payload,
+        state: qs.parse(location.search, { ignoreQueryPrefix: true }).state,
+      })
     } else if (path.includes('atlas')) {
-      const state = qs.parse(location.search)?.state
+      const state = qs.parse(location.search, { ignoreQueryPrefix: true })
+        ?.state
       if (state) payload.state = JSON.parse(state)
       atlasSSOLogin(payload)
     }

@@ -1,4 +1,3 @@
-// @ts-check
 import React, { Component } from 'react'
 import { Icon, Row, Col } from 'antd'
 import { connect } from 'react-redux'

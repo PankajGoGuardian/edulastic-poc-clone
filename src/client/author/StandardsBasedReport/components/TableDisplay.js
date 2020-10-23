@@ -1,4 +1,3 @@
-// @ts-check
 import { smallDesktopWidth } from '@edulastic/colors'
 import { round, sum, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'

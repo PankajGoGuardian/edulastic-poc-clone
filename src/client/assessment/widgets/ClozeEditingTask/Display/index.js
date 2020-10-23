@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { isUndefined, mapValues, cloneDeep, orderBy } from 'lodash'
 import { withTheme } from 'styled-components'
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 
 import {
   helpers,

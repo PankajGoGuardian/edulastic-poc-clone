@@ -2,9 +2,9 @@
 // eslint-disable-next-line spaced-comment
 /// <reference types="Cypress"/>
 import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command'
+import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { userBuilder } from './generate'
 import LoginPage from '../e2e/framework/student/loginPage'
-import { getAccessToken } from '../../packages/api/src/utils/Storage'
 import { getMimetype } from './misc/mimeTypes'
 import DndSimulatorDataTransfer from './misc/dndSimulator'
 import FileHelper from '../e2e/framework/util/fileHelper'

@@ -1,7 +1,11 @@
 import React, { memo } from 'react'
 import PropTypes from 'prop-types'
-import { FroalaEditor } from '@edulastic/common'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
 
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 // TODO: decide what to do with first focus
 const QuestionTextArea = ({
   onChange,
@@ -20,6 +24,7 @@ const QuestionTextArea = ({
   sanitizeClipboardHtml,
 }) => (
   <FroalaEditor
+    fallback={<Progress />}
     placeholder={placeholder}
     onChange={onChange}
     value={value}

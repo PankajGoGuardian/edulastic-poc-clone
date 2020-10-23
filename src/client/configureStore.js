@@ -1,11 +1,10 @@
-import { createStore, applyMiddleware } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { createStore, applyMiddleware, compose } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { createBrowserHistory } from 'history'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
-import { createLogger } from 'redux-logger'
 import * as Sentry from '@sentry/browser'
 import reduxReset from 'redux-reset'
+
 import { getUserConfirmation } from './common/utils/helpers'
 
 import rootReducer from './reducers'
@@ -24,31 +23,32 @@ const middleware = [sagaMiddleware, routerMiddleware(history)]
 
 /* istanbul ignore next */
 if (process.env.NODE_ENV === 'development') {
-  middleware.push(createLogger({ collapsed: true }))
+  // enable redux-freeze
+  const reduxFreeze = require('redux-freeze') // eslint-disable-line global-require
+  middleware.push(reduxFreeze)
 }
 
 let store
+
+const composeEnhancers =
+  // process.env.NODE_ENV === 'development' &&
+  typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    : compose
 
 export default () => {
   store = createStore(
     connectRouter(history)(rootReducer),
     /**
      * to enable trace
-     * composeWithDevTools({ trace: true, traceLimit: 15 })(applyMiddleware(...middleware), reduxReset())
+     * composeWithDevTools({ trace: true, traceLimit: 15 })
+     * (applyMiddleware(...middleware), reduxReset())
      */
 
-    composeWithDevTools(applyMiddleware(...middleware), reduxReset())
+    composeEnhancers(applyMiddleware(...middleware), reduxReset())
   )
 
   sagaMiddleware.run(rootSaga)
-
-  if (process.env.NODE_ENV !== 'production') {
-    if (module.hot) {
-      module.hot.accept('./reducers', (reducer) => {
-        store.replaceReducer(reducer)
-      })
-    }
-  }
 
   return { store }
 }

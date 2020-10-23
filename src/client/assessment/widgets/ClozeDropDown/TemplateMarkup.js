@@ -12,12 +12,18 @@ import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import produce from 'immer'
 
 import { withNamespaces } from '@edulastic/localization'
-import { FroalaEditor } from '@edulastic/common'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
+
 import { updateVariables } from '../../utils/variables'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
 import { Subtitle } from '../../styled/Subtitle'
 import Question from '../../components/Question'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -152,6 +158,7 @@ class TemplateMarkup extends Component {
         </Subtitle>
 
         <FroalaEditor
+          fallback={<Progress />}
           data-cy="templateBox"
           toolbarId="cloze-dropdown-template-box"
           placeholder={t('component.cloze.dropDown.thisisstem')}

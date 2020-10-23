@@ -139,8 +139,7 @@ const fetchAssignmentsSummary = ({ districtId = '', filters, sort }) =>
       url: `${prefix}/district/${districtId}`,
       method: 'get',
       params: { ...filters, ...sort },
-      paramsSerializer: (params) =>
-        qs.stringify(params, { arrayFormat: 'comma' }),
+      paramsSerializer: (params) => qs.stringify(params, { comma: true }),
     })
     .then((result) => result.data.result)
 

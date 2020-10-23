@@ -25,7 +25,7 @@ const ResetPasswordPopup = (props) => {
   const { resetPasswordUser, requestingNewPassword } = user
 
   useEffect(() => {
-    const params = qs.parse(location.search.substring(1))
+    const params = qs.parse(window.location.search, { ignoreQueryPrefix: true })
     resetPasswordUserAction(params)
   }, [])
 
@@ -34,7 +34,9 @@ const ResetPasswordPopup = (props) => {
   }
 
   const onSubmit = (password) => {
-    const urlParams = qs.parse(location.search.substring(1))
+    const urlParams = qs.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })
     const params = {
       ...urlParams,
       password,

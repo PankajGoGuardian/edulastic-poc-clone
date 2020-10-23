@@ -1,4 +1,3 @@
-// @ts-check
 import React from 'react'
 import { connect } from 'react-redux'
 import { Switch, Redirect } from 'react-router-dom'

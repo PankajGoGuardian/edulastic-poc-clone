@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, Fragment } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { find, get, isEmpty, map, pickBy } from 'lodash'
-import queryString from 'query-string'
-
+import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Tooltip, Spin } from 'antd'
 
@@ -88,7 +87,7 @@ const SingleAssessmentReportFilters = ({
   useEffect(() => {
     if (MARFilterData !== prevMARFilterData) {
       const search = pickBy(
-        queryString.parse(location.search),
+        qs.parse(location.search, { ignoreQueryPrefix: true }),
         (f) => f !== 'All' && !isEmpty(f)
       )
       const termId =
@@ -119,7 +118,10 @@ const SingleAssessmentReportFilters = ({
   let dropDownData
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
-    let search = queryString.parse(location.search, { arrayFormat: 'index' })
+    let search = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+      indices: true,
+    })
 
     // get saved filters from backend
     const savedFilters = get(MARFilterData, 'data.result.reportFilters')
@@ -293,7 +295,7 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       [keyName]: selected.key,
     }
-    history.push(`${location.pathname}?${queryString.stringify(_filters)}`)
+    history.push(`${location.pathname}?${qs.stringify(_filters)}`)
     const q = pickBy(_filters, (f) => f !== 'All' && !isEmpty(f))
     getMARFilterData(q)
     setFilters(_filters)

@@ -1,4 +1,3 @@
-// @ts-check
 import { userApi, TokenStorage } from '@edulastic/api'
 import { message } from 'antd'
 import { FlexContainer, notification } from '@edulastic/common'

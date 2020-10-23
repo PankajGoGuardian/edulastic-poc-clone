@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from 'react'
-import queryString from 'query-string'
 import { connect } from 'react-redux'
 import { get, find, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
@@ -65,7 +64,7 @@ const StudentProfileReportsFilters = ({
 }) => {
   const splittedPath = location.pathname.split('/')
   const urlStudentId = splittedPath[splittedPath.length - 1]
-  const parsedQuery = queryString.parse(location.search)
+  const parsedQuery = qs.parse(location.search, { ignoreQueryPrefix: true })
 
   const {
     termId: urlTermId,

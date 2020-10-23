@@ -24,7 +24,7 @@ import { ContentArea } from '../../styled/ContentArea'
 import ChoicesForResponses from './ChoicesForResponses'
 import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 const EmptyWrapper = styled.div``

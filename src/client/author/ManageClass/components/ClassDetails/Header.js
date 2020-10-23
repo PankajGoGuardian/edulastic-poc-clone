@@ -250,7 +250,7 @@ const Header = ({
                 return (
                   <Option key={index} data-cy={`sync-option-${index}`}>
                     <GoogleLogin
-                      clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+                      clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                       buttonText="Sync with Google Classroom"
                       render={(renderProps) => (
                         <OptionWrapper onClick={renderProps.onClick}>
@@ -305,7 +305,7 @@ const Header = ({
                 </EduButton>
               ) : (
                 <GoogleLogin
-                  clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                   buttonText="Sync with Google Classroom"
                   render={(renderProps) => (
                     <EduButton isBlue isGhost onClick={renderProps.onClick}>

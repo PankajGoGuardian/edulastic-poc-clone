@@ -22,7 +22,7 @@ import Authoring from './Authoring'
 import CorrectAnswers from './CorrectAnswers'
 import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 class ClozeImageText extends Component {

@@ -42,10 +42,10 @@ export const getTestItemQuestions = (item) => {
   return []
 }
 // selectors
-const module = 'studentTestItems'
-export const getCurrentItemSelector = (state) => state[module].current
-export const getItemCountSelector = (state) => state[module].items.length
-export const getItemsSelector = (state) => state[module].items
+const _module = 'studentTestItems'
+export const getCurrentItemSelector = (state) => state[_module].current
+export const getItemCountSelector = (state) => state[_module].items.length
+export const getItemsSelector = (state) => state[_module].items
 export const getTestFeedbackSelector = (state) => state.testFeedback
 export const userWorkSelector = (state) => state.userWork.present
 

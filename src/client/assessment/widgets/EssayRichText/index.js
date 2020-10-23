@@ -9,7 +9,7 @@ import { replaceVariables } from '../../utils/variables'
 
 import EditEssayRichText from './EditEssayRichText'
 import EssayRichTextPreview from './EssayRichTextPreview'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 
 const EssayRichText = (props) => {
   const { item, view } = props

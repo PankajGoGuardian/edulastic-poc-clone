@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
 import { Spin } from 'antd'
 import { withRouter } from 'react-router'
-import qs from 'query-string'
 import { testsApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-
+import qs from 'qs'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../app-config'
 
 const RedirectToTest = ({ location: { search }, history, user }) => {
   const handleFailed = (e) => {
@@ -28,7 +27,7 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
     }
   }
   useEffect(() => {
-    const { eAId, aId } = qs.parse(search)
+    const { eAId, aId } = qs.parse(search, { ignoreQueryPrefix: true })
     const v1Id = eAId || aId
     let testId = v1Id
 

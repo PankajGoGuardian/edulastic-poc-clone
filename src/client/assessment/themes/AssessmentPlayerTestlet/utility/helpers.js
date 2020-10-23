@@ -10,6 +10,7 @@ import {
   isString,
   compact,
   flattenDeep,
+  round,
 } from 'lodash'
 import { questionType } from '@edulastic/constants'
 
@@ -47,7 +48,7 @@ const getLineFromExpression = (
       const _expression = expression.replace(new RegExp('x', 'g'), x)
       try {
         // eslint-disable-next-line no-eval
-        const y = eval(_expression)
+        const y = round(eval(_expression), 2)
         return getPoint(x, y, label)
       } catch (err) {
         return {}

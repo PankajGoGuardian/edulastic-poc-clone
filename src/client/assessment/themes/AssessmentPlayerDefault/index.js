@@ -310,7 +310,7 @@ class AssessmentPlayerDefault extends React.Component {
       showMagnifier,
       handleMagnifier,
       enableMagnifier,
-      toggleCameraModal,
+      toggleUserWorkUploadModal,
       scratchpadActivity,
       showHints,
       timedAssignment = false,
@@ -483,7 +483,7 @@ class AssessmentPlayerDefault extends React.Component {
             showMagnifier={showMagnifier}
             handleMagnifier={handleMagnifier}
             enableMagnifier={enableMagnifier}
-            toggleCameraModal={toggleCameraModal}
+            toggleUserWorkUploadModal={toggleUserWorkUploadModal}
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}

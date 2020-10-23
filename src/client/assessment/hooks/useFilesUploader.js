@@ -1,6 +1,8 @@
 /**
  * This hook is used for uploading a list of files with custom upload function.
  * It waits for all the files to uploaded and calls onUploadsFinishedCallback if provided.
+ * It uses internally uuid for all files to be used in callbacks since indexes might changed on
+ * file deletion by user.
  */
 
 import { useState, useRef } from 'react'
@@ -19,12 +21,25 @@ const useFilesUploader = (
   validateFile,
   onUploadsFinishedCallback
 ) => {
+  // Array of files to be uploaded, each file has unique uuid attached to it for reference
   const filesToUploadRef = useRef()
   const [isUploadingFiles, setIsUploadingFiles] = useState(false)
+  /* Mapping to storing file upload info. This is exposed to components using the hook
+   * {
+   *  [fileUuid]: {
+   *     name: 'name',
+   *     type: 'type',
+   *     size: 'size'
+   *     percent: <uploadDonePercent>,
+   *     source: <url of uploaded file>,
+   *     status: uploading|success|failed|cancelled|
+   *  }
+   * }
+   */
+  const [filesInfo, setFilesInfo] = useState({})
   // This is used to pass to any callback function since state can't be relied upon to have latest
   // changes due to batching.
   const filesInfoRef = useRef()
-  const [filesInfo, setFilesInfo] = useState({})
 
   const getValidFiles = (files) => {
     if (!validateFile || !isFunction(validateFile)) {
@@ -34,6 +49,7 @@ const useFilesUploader = (
     return files
       .filter((file) => validateFile(file))
       .map((file) => {
+        // Generate uuid for file.
         file.uuid = uuidv4()
         return file
       })
@@ -76,7 +92,6 @@ const useFilesUploader = (
       return
     }
 
-    console.log(filesInfo)
     // If this was the last file, run onAllUploadFinished callback
     if (isFunction(onUploadsFinishedCallback)) {
       onUploadsFinishedCallback([...Object.values(filesInfoRef.current)])
@@ -86,9 +101,7 @@ const useFilesUploader = (
   }
 
   const onUploadSuccess = (id, index) => (uri) => {
-    console.log(uri)
     updateFilesInfo(id, { status: UPLOAD_STATUS.SUCCESS, source: uri })
-    console.log(filesInfo)
     onUploadsFinished(index === filesToUploadRef.current.length - 1)
   }
 

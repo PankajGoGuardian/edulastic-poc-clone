@@ -552,7 +552,7 @@ const AssessmentContainer = ({
     handleMagnifier,
     enableMagnifier,
     studentReportModal,
-    toggleCameraModal: toggleUserWorkUploadModal,
+    toggleUserWorkUploadModal,
     ...restProps,
   }
 
@@ -662,7 +662,6 @@ const AssessmentContainer = ({
         onCancel={closeUserWorkUploadModal}
         uploadFile={uploadFile}
         onUploadFinished={(URIs) => {
-          console.log(URIs)
           saveUserWorkUploadURIs(URIs)
           closeUserWorkUploadModal()
         }}

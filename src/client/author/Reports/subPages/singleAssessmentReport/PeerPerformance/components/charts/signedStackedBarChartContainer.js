@@ -16,18 +16,15 @@ export const SignedStackedBarChartContainer = ({
   const aboveBelowStandard = 'aboveBelowStandard'
   const proficiencyBand = 'proficiencyBand'
 
-  const sortBandInfo = () => {
-    bandInfo.sort((a, b) => {
-      if (!a.aboveStandard && !b.aboveStandard) {
-        return b.threshold - a.threshold
-      }
-      return a.threshold - b.threshold
-    })
-  }
+  const sortBandInfo = (sortForLegend) =>
+    [...bandInfo].sort((a, b) =>
+      !a.aboveStandard && !b.aboveStandard && !sortForLegend
+        ? b.threshold - a.threshold
+        : a.threshold - b.threshold
+    )
 
   const dataParser = () => {
-    sortBandInfo()
-
+    const _bandInfo = sortBandInfo()
     const arr = data.map((item) => {
       if (
         filter[item[compareBy === 'group' ? 'groupId' : compareBy]] ||
@@ -37,32 +34,30 @@ export const SignedStackedBarChartContainer = ({
           item.fill_0 = getHSLFromRange1(100)
           item.fill_1 = getHSLFromRange1(0)
         } else if (analyseBy === proficiencyBand) {
-          for (let i = 0; i < bandInfo.length; i++) {
-            item[`fill_${i}`] = bandInfo[i].color
+          for (let i = 0; i < _bandInfo.length; i++) {
+            item[`fill_${i}`] = _bandInfo[i].color
           }
         }
       } else if (analyseBy === aboveBelowStandard) {
         item.fill_0 = '#cccccc'
         item.fill_1 = '#cccccc'
       } else if (analyseBy === proficiencyBand) {
-        for (let i = 0; i < bandInfo.length; i++) {
+        for (let i = 0; i < _bandInfo.length; i++) {
           item[`fill_${i}`] = '#cccccc'
         }
       }
       return { ...item }
     })
-
     return arr
   }
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      const { compareBy, compareBylabel } = payload[0].payload
-
+      const { compareBy: _compareBy, compareBylabel } = payload[0].payload
       return (
         <div>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">{`${idToName[compareBy]}: `}</Col>
+            <Col className="tooltip-key">{`${idToName[_compareBy]}: `}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
           <Row type="flex" justify="start">
@@ -141,17 +136,14 @@ export const SignedStackedBarChartContainer = ({
       }
     }
     if (analyseBy === proficiencyBand) {
-      sortBandInfo()
-      const barsData = []
-      for (const [index, value] of bandInfo.entries()) {
-        barsData.push({
-          key: `${value.name}Percentage`,
-          stackId: 'a',
-          fill: value.color,
-          unit: '%',
-          name: value.name,
-        })
-      }
+      const _bandInfo = sortBandInfo()
+      const barsData = _bandInfo.map((o) => ({
+        key: `${o.name}Percentage`,
+        stackId: 'a',
+        fill: o.color,
+        unit: '%',
+        name: o.name,
+      }))
       return {
         barsData,
         yAxisLabel: 'Below Standard                Above Standard',
@@ -160,7 +152,24 @@ export const SignedStackedBarChartContainer = ({
     return {}
   }
 
+  const getLegendPayload = () => {
+    if (analyseBy === proficiencyBand) {
+      const _bandInfo = sortBandInfo(true)
+      return _bandInfo.map((o) => ({
+        dataKey: `${o.name}Percentage`,
+        id: `${o.name}Percentage`,
+        value: o.name,
+        type: 'rect',
+        color: o.color,
+        inactive: false,
+      }))
+    }
+    // NOTE: undefined returned by default
+    // for payload to be generated automatically
+  }
+
   const chartSpecifics = getChartSpecifics()
+  const legendPayload = getLegendPayload()
 
   return (
     <SignedStackedBarChart
@@ -176,6 +185,7 @@ export const SignedStackedBarChartContainer = ({
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}
       filter={filter}
+      legendPayload={legendPayload}
     />
   )
 }

@@ -13,7 +13,7 @@ import {
   Legend,
   ReferenceLine,
 } from 'recharts'
-import { isEmpty, findLast, head } from 'lodash'
+import { isEmpty, findLast } from 'lodash'
 import styled from 'styled-components'
 import {
   StyledCustomChartTooltip,
@@ -82,6 +82,7 @@ export const SignedStackedBarChart = ({
   barsLabelFormatter = _barsLabelFormatter,
   referenceLine = 0,
   filter = {},
+  legendPayload,
 }) => {
   const page = pageSize || 7
   const [pagination, setPagination] = useState({
@@ -297,6 +298,7 @@ export const SignedStackedBarChart = ({
             verticalAlign="top"
             onMouseEnter={onLegendMouseEnter}
             onMouseLeave={onLegendMouseLeave}
+            payload={legendPayload}
           />
           <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           {barsData.map((bdItem, bdIndex) => {

@@ -8,7 +8,6 @@ import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
-import queryString from 'query-string'
 import ResponseFrequency from './ResponseFrequency'
 import AssessmentSummary from './AssessmentSummary'
 import PeerPerformance from './PeerPerformance'
@@ -66,15 +65,15 @@ const SingleAssessmentReportContainer = (props) => {
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
-  const [isCliUser, setCliUser] = useState(
-    cliUser || queryString.parse(location.search).cliUser
+  const [isCliUser] = useState(
+    cliUser || qs.parse(location.search, { ignoreQueryPrefix: true }).cliUser
   )
   const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS })
   const [selectedExtras, setSelectedExtras] = useState({
     ...INITIAL_DD_FILTERS,
   })
-  const [customStudentUserId, setCustomStudentUserId] = useState(
-    queryString.parse(location.search).customStudentUserId
+  const [customStudentUserId] = useState(
+    qs.parse(location.search, { ignoreQueryPrefix: true }).customStudentUserId
   )
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { fileApi } from '@edulastic/api'
 import { aws } from '@edulastic/constants'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 
 const s3Folders = Object.values(aws.s3Folders)
 /**

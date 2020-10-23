@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Document, Page } from 'react-pdf'
+import { Document, Page, pdfjs } from 'react-pdf'
 import { Dropdown, Menu, Modal } from 'antd'
-
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from './styled'
 import { BLANK_URL } from '../Worksheet/Worksheet'
+
+pdfjs.GlobalWorkerOptions.workerSrc =
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
 
 const createContextMenu = ({
   index,

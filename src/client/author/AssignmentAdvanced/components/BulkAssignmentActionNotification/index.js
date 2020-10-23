@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { uniqBy } from 'lodash'
-import * as qs from 'query-string'
+import qs from 'qs'
 import {
   FireBaseService as Fbs,
   notification as antdNotification,
@@ -38,7 +38,9 @@ const NotificationListener = ({
   const { termId = '' } = JSON.parse(
     sessionStorage.getItem('filters[Assignments]') || '{}'
   )
-  const { testType = '' } = qs.parse(location.search)
+  const { testType = '' } = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+  })
   if (testType) {
     const locationArray = location?.pathname?.split('/') || []
     districtId = locationArray[locationArray?.length - 2] || ''

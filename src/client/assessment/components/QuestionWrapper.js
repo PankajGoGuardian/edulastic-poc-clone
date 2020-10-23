@@ -61,7 +61,7 @@ import AudioControls from '../AudioControls'
 
 import { getFontSize } from '../utils/helpers'
 import PreviewRubricTable from '../../author/GradingRubric/Components/common/PreviewRubricTable'
-import { Coding } from '../widgets/Coding'
+// import { Coding } from '../widgets/Coding'
 
 import Hints from './Hints'
 import Explanation from './Common/Explanation'
@@ -299,8 +299,8 @@ const getQuestion = (type) => {
       return FractionEditor
     case questionType.SECTION_LABEL:
       return DummyQuestion
-    case questionType.CODING:
-      return Coding
+    // case questionType.CODING:
+    //   return Coding
     case questionType.UPLOAD_FILE:
       return UploadFile
     default:

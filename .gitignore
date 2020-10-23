@@ -25,6 +25,7 @@ public/testlets/
 # vi swap files
 *.sw*
 
+build/
 dist/
 src/chrome-extension/dist/
 commit-log*

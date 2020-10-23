@@ -38,7 +38,7 @@ class MainContainer extends Component {
     showModal: false,
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.item) {
       this.setState({ reference: nextProps.item._id })
     }

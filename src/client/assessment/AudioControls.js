@@ -20,7 +20,7 @@ import {
 
 import { curentPlayerDetailsSelector } from './selectors/test'
 import { setCurrentAudioDetailsAction } from './actions/test'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../app-config'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 

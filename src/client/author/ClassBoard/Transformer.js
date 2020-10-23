@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-// @ts-check
+
 import { keyBy, groupBy, get, values, flatten, isEmpty } from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import DotProp from 'dot-prop'

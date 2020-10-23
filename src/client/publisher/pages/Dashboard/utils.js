@@ -1,3 +1,4 @@
+import React from 'react'
 import { sum, reduce } from 'lodash'
 
 const defs = (

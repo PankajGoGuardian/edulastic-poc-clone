@@ -10,7 +10,7 @@ import {
   isEqual,
   omit,
 } from 'lodash'
-import * as qs from 'query-string'
+import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
@@ -270,7 +270,7 @@ class TestList extends Component {
     }
 
     // propagate filter from query params to the store (test.filters)
-    let searchParams = qs.parse(location.search)
+    let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     searchParams = this.typeCheck(searchParams, searchFilters)
     if (Object.keys(searchParams).length) {
       searchParams.curriculumId =

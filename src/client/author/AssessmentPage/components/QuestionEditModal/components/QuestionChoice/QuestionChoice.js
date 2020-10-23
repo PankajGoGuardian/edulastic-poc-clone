@@ -34,7 +34,7 @@ export default class QuestionChoice extends React.Component {
     this.setDefaultState(question)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { question: prevQuestion } = this.props
     const { question: nextQuestion } = nextProps
 

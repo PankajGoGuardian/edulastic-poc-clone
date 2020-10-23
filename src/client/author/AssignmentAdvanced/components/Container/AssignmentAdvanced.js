@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import qs from 'qs'
 import { find, isEmpty, get } from 'lodash'
 import { Dropdown } from 'antd'
-import * as qs from 'query-string'
 import { withWindowSizes, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { authorAssignment } from '@edulastic/colors'
@@ -83,7 +83,9 @@ class AssignmentAdvanced extends Component {
       loadAssignmentsSummary,
       assignmentsSummary,
     } = this.props
-    const { testType = '' } = qs.parse(location.search)
+    const { testType = '' } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
     const { termId = '' } = JSON.parse(
       sessionStorage.getItem('filters[Assignments]') || '{}'
     )
@@ -254,7 +256,9 @@ class AssignmentAdvanced extends Component {
     } = this.state
     const assingment =
       find(assignmentsSummary, (item) => item.testId === testId) || {}
-    const { testType = '' } = qs.parse(location.search)
+    const { testType = '' } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
     return (
       <div>
         {isHeaderAction && (

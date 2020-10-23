@@ -1,4 +1,3 @@
-// @ts-check
 import React, { useMemo } from 'react'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'

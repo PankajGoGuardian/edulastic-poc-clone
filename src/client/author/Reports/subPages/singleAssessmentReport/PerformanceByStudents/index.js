@@ -7,7 +7,6 @@ import { withNamespaces } from '@edulastic/localization'
 import { Row, Col } from 'antd'
 import { Redirect } from 'react-router-dom'
 import qs from 'qs'
-import queryString from 'query-string'
 
 // components
 import { EduButton, SpinLoader, notification } from '@edulastic/common'
@@ -201,7 +200,7 @@ const PerformanceByStudents = ({
     )
     if (studentData) {
       const { pathname, search } = window.location
-      const parseSearch = queryString.parse(search)
+      const parseSearch = qs.parse(search, { ignoreQueryPrefix: true })
       delete parseSearch.customStudentUserId
       const { assignmentId, groupId, testActivityId } = studentData
       return (

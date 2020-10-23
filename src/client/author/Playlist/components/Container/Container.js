@@ -3,10 +3,10 @@ import { greyLight1, greyThemeLight } from '@edulastic/colors'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
+import qs from 'qs'
 import { debounce, get, pick, isEqual } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import * as qs from 'query-string'
 import React, { Component } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
@@ -95,6 +95,7 @@ function getUrlFilter(filter) {
   }
   return ''
 }
+
 class TestList extends Component {
   static propTypes = {
     playlists: PropTypes.array.isRequired,
@@ -177,7 +178,7 @@ class TestList extends Component {
       ...sessionSortFilters,
     }
 
-    let searchParams = qs.parse(location.search)
+    let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     searchParams = this.typeCheck(searchParams, searchFilters)
 
     if (Object.keys(searchParams).length) {

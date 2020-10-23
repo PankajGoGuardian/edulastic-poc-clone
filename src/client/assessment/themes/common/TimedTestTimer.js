@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
-import { firestore } from 'firebase'
+import firebase from 'firebase/app'
+// Required for side-effects
+import 'firebase/firestore'
 import { Icon, notification } from 'antd'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
@@ -95,7 +97,7 @@ const TimedTestTimer = ({
         updateUtaTimeType === TIME_UPDATE_TYPE.START
       const isPasswordProtected =
         isPasswordValidated && updateUtaTimeType === TIME_UPDATE_TYPE.RESUME
-      const timeStamp = firestore.FieldValue.serverTimestamp()
+      const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
       if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
         let data = { startTime: timeStamp }
         if (updateUtaTimeType === TIME_UPDATE_TYPE.RESUME) {
@@ -131,7 +133,7 @@ const TimedTestTimer = ({
             const { timeSpent = 0 } = snapshot.data()
             const _syncOffset = uta.allowedTime - currentAssignmentTime || 0
             docRef.current.update({
-              lastResumed: firestore.FieldValue.serverTimestamp(),
+              lastResumed: firebase.firestore.FieldValue.serverTimestamp(),
               timeSpent: Math.max(timeSpent, _syncOffset),
             })
           })
@@ -168,7 +170,7 @@ const TimedTestTimer = ({
           const { timeSpent = 0 } = snapshot.data()
           const _syncOffset = uta.allowedTime - currentAssignmentTime || 0
           docRef.current.update({
-            lastResumed: firestore.FieldValue.serverTimestamp(),
+            lastResumed: firebase.firestore.FieldValue.serverTimestamp(),
             timeSpent: Math.max(timeSpent, _syncOffset),
           })
         })

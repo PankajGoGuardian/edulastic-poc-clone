@@ -5,7 +5,7 @@ import { RefContext } from '@edulastic/common'
 
 import { WithResources } from './withResources'
 import { replaceLatexesWithMathHtml } from '../utils/mathUtils'
-import AppConfig from '../../../../app-config'
+import AppConfig from '../../../../src/app-config'
 
 export const withMathFormula = (WrappedComponent) => {
   const MathFormulaWrapped = (props) => {

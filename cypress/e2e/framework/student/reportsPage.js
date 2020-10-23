@@ -106,7 +106,10 @@ class ReportsPage {
   verifyStatusIs = (status) =>
     this.getStatus().should(($ele) => {
       const studentStatus = Cypress.$($ele).text().toLowerCase().trim()
-      expect(studentStatus).to.eq(status.toLowerCase())
+      expect(
+        studentStatus,
+        'verify assingment status on student grade page'
+      ).to.eq(status.toLowerCase())
     })
 
   validateStats(attemptNum, attempt, score, percent, totalAttempt) {

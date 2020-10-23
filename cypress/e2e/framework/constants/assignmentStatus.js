@@ -26,6 +26,7 @@ export const studentSide = {
   GRADED: 'Graded',
   ABSENT: 'Absent',
   IN_GRADING: 'In Grading',
+  UNASSIGNED: 'Unassigned',
 }
 
 export const assignmentButtonsText = {

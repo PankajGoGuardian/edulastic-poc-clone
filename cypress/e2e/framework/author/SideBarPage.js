@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 export default class TeacherSideBar {
   // *** ELEMENTS START ***
 
@@ -102,6 +103,10 @@ export default class TeacherSideBar {
   clickOnManageDistrict = () => {
     cy.get('[data-cy="Manage District').dblclick({ force: true })
     cy.get("[title='Manage District']")
+  }
+
+  clickOnGradeBook = () => {
+    cy.get('[data-cy="Gradebook"]').dblclick({ force: true })
   }
   // *** ACTIONS END ***
 

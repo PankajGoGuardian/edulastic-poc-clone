@@ -98,7 +98,7 @@ class Helpers {
     domain = 'snapwiz.com',
     emailStringType = this.stringTypes().ALPHA_NUM
   ) {
-    const prefix = this.getRamdomString(12, emailStringType)
+    const prefix = this.getRamdomString(12, emailStringType).toLowerCase()
     return `${prefix}@${domain}`
   }
 

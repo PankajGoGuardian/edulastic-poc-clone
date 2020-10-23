@@ -41,7 +41,7 @@ export default function ClassNamePattern({
     }
     if (isClever) {
       Object.assign(data, {
-        overrideClassName: overrideClassNameState
+        overrideClassName: overrideClassNameState,
       })
     }
     applyClassNamesSync(data)
@@ -52,15 +52,15 @@ export default function ClassNamePattern({
 
   return (
     <>
-      {isClever &&
+      {isClever && (
         <CheckboxLabel
-          style={{margin: '10px 0px 20px 0px'}}
+          style={{ margin: '10px 0px 20px 0px' }}
           checked={overrideClassNameState}
           onChange={onOverrideChange}
         >
           Override Class Name
         </CheckboxLabel>
-      }
+      )}
       <h3>Edulastic Class Names</h3>
       <Select
         value={selectState}

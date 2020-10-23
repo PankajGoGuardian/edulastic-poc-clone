@@ -37,7 +37,6 @@ const SubHeader = ({
   atlasId,
   cleverId,
 }) => {
-  
   const { exitPath } = location?.state || {}
   const typeText = type !== 'class' ? 'Group' : 'Class'
   const studentCount = studentsList?.filter(
@@ -52,7 +51,6 @@ const SubHeader = ({
   const teacher = coTeachers.slice(0, 1)
   const otherTeachers = coTeachers.slice(1, lastTeacher)
   const otherTeacherNames = otherTeachers.join(', ')
-
 
   return (
     <ContainerHeader>

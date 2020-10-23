@@ -285,7 +285,7 @@ function* bulkSchoolsSubscribe({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload)
     if (result.success) {
-      notification({ type: 'success', msg: result.messag })
+      notification({ type: 'success', msg: result.message })
       yield put(
         manageSubscriptionsBySchool.actions.bulkSubscriptionSuccess(
           result.subscriptionResult
@@ -293,7 +293,7 @@ function* bulkSchoolsSubscribe({ payload }) {
       )
       yield put(manageSubscriptionsBySchool.actions.updateCurrentEditableRow())
     } else {
-      notification({ msg: result.messag })
+      notification({ msg: result.message })
     }
   } catch (err) {
     console.error(err)
@@ -304,9 +304,9 @@ function* upgradePartialPremiumUser({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload)
     if (result.success) {
-      notification({ type: 'success', msg: result.messag })
+      notification({ type: 'success', msg: result.message })
     } else {
-      notification({ msg: result.messag })
+      notification({ msg: result.message })
     }
   } catch (err) {
     console.error(err)

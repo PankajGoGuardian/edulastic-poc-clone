@@ -125,7 +125,7 @@ function* duplicateItemRequestSaga({ payload }) {
     const itemId = data.id
     let duplicatedItem = {}
     if (passage) {
-      // Current item selected in preview modal 
+      // Current item selected in preview modal
       // or all test items based on duplicateWholePassage (flag)
       const testItemsToDuplicate = duplicateWholePassage
         ? passage.testItems

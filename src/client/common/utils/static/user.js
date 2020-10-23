@@ -30,5 +30,5 @@ export const userPickFields = [
   'otherAccounts',
   'isPowerTeacher',
   'status',
-  'isAdmin'
+  'isAdmin',
 ]

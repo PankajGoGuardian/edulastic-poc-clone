@@ -7,6 +7,7 @@ import {
   EduButton,
   FireBaseService as Fbs,
   FlexContainer,
+  isSEB,
 } from '@edulastic/common'
 import { IconAccessibility, IconCircleLogout, IconSend } from '@edulastic/icons'
 import { Button } from 'antd'
@@ -31,6 +32,7 @@ export function useUtaPauseAllowed(utaId) {
   const utaPauseAllowed = uta?.pauseAllowed || false
   return uta ? utaPauseAllowed : undefined
 }
+const inSEB = isSEB()
 
 const SaveAndExit = ({
   finishTest,
@@ -51,7 +53,6 @@ const SaveAndExit = ({
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
   const currentVisibilityState = hideData ? 'show' : 'hide'
-
   return (
     <FlexContainer marginLeft="30px" alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
@@ -69,6 +70,7 @@ const SaveAndExit = ({
         </StyledButton>
       )}
       {showPause &&
+        !inSEB &&
         (previewPlayer ? (
           <>
             {!isCliUserPreview && (

@@ -79,7 +79,6 @@ const fetchTeacherAssignments = ({
 const regrade = (data) =>
   api
     .callApi({
-      useSlowApi: true,
       url: `${prefix}/regrade`,
       method: 'post',
       data,

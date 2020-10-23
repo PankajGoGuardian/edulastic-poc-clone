@@ -6,6 +6,8 @@ import { aws, question } from '@edulastic/constants'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
 import AppConfig from '../../../app-config'
 
+export const isSEB = () => window.navigator.userAgent.includes('SEB')
+
 export const ALPHABET = [
   'A',
   'B',

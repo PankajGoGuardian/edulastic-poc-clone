@@ -14,6 +14,7 @@ import {
   getTestEntitySelector,
   getTestSummarySelector,
 } from '../../../../ducks'
+import { getEquivalentStandards } from '../../../../../TestList/ducks'
 import { Photo, selectsData } from '../../../common'
 import {
   Container,
@@ -46,8 +47,9 @@ const ReviewSummary = ({
   collections = [],
   interestedCurriculums,
   windowWidth,
-  test: { itemGroups, metadata, alignment },
+  test: { itemGroups, metadata },
   summary,
+  alignment = [],
   hasRandomQuestions,
   isPublishers,
   collectionsToShow,
@@ -273,6 +275,7 @@ export default connect(
     test: getTestEntitySelector(state),
     hasRandomQuestions: hasRandomQuestionsSelector(state),
     summary: getTestSummarySelector(state),
+    alignment: getEquivalentStandards(state),
     collectionsToShow: getCollectionsToAddContent(state),
   }),
   null

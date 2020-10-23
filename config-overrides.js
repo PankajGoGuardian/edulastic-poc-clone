@@ -154,7 +154,6 @@ module.exports = override(
     if (process.env.QUICK_BUILD) {
       config.devtool = false
       config.output.sourceMap = false
-      config.output.minimize = false
     }
 
     // config.output.path = path.resolve(__dirname, 'dist')

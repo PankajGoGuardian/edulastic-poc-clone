@@ -100,7 +100,7 @@ const StudentsList = ({
       dataIndex: 'username',
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.username > b.username,
-      render: (username) => <span>{username}</span>,
+      render: (username) => <span data-cy={username}>{username}</span>,
       width: isPremium ? '20%' : '25%',
       align: 'left',
     },

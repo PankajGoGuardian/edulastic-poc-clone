@@ -13,16 +13,20 @@ const useFileUpload = (userId) => {
 
   const uploadFile = async (
     file,
+    validateFile,
     progressCallback,
     cancelCallback,
-    validate,
     postUploadCallback
   ) => {
     try {
       setIsFileUploading(true)
 
       // Validate file to upload.
-      if (validate && typeof validate === 'function' && !validate(file)) {
+      if (
+        validateFile &&
+        typeof validateFile === 'function' &&
+        !validateFile(file)
+      ) {
         setIsFileUploading(false)
         return
       }
@@ -36,7 +40,7 @@ const useFileUpload = (userId) => {
       )
 
       // Run any postUploadCallback with resulting url.
-      if (typeof postUpload === 'function') {
+      if (typeof postUploadCallback === 'function') {
         postUploadCallback(url)
       }
       setIsFileUploading(false)

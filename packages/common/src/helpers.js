@@ -94,7 +94,7 @@ function isBlobData(file) {
   return isBinary
 }
 
-export function convertBlobToFile(blob) {
+function convertBlobToFile(blob) {
   if (blob) {
     let fileExtension = 'png'
     const { type: fileType = '' } = blob

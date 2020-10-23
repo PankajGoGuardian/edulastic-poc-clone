@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Radio } from 'antd'
 import { FlexContainer } from '@edulastic/common'
-import CameraWithButtons from './CameraWithButtons'
-import FilesUploader from './FilesUploader'
+import { StyledRadioButton, StyledRadioGroup } from './styled'
+import CameraView from './CameraView'
+import FileUploadView from './FileUploadView'
 import { ConfirmationModal } from '../../../../author/src/components/common/ConfirmationModal'
 
 const UserWorkUploadModal = ({
@@ -10,25 +10,22 @@ const UserWorkUploadModal = ({
   onCancel,
   uploadFile,
   onUploadFinished,
-  cameraProps,
 }) => {
-  const [activeTab, setActiveTab] = useState(2)
-  const onChangeTab = (tabKey) => setActiveTab(tabKey)
+  const TAB_CAMERA = 'camera'
+  const TAB_DRAG_DROP = 'dragAndDrop'
+  const [activeTab, setActiveTab] = useState(TAB_CAMERA)
+  const handleChange = (e) => setActiveTab(e.target.value)
 
   const content =
-    activeTab === 1 ? (
-      <>
-        {isModalVisible && (
-          <CameraWithButtons
-            uploadFile={uploadFile}
-            onCancel={onCancel}
-            onUploadFinished={onUploadFinished}
-            {...cameraProps}
-          />
-        )}
-      </>
+    activeTab === TAB_CAMERA ? (
+      <CameraView
+        uploadFile={uploadFile}
+        onCancel={onCancel}
+        onUploadFinished={onUploadFinished}
+        delayCount={3}
+      />
     ) : (
-      <FilesUploader
+      <FileUploadView
         onCancel={onCancel}
         uploadFile={uploadFile}
         onUploadFinished={onUploadFinished}
@@ -40,23 +37,28 @@ const UserWorkUploadModal = ({
       title="Show your work"
       visible={isModalVisible}
       onCancel={onCancel}
+      destroyOnClose
       maskClosable={false}
       centered
-      footer={<></>}
+      footer={null}
     >
       <FlexContainer
         justifyContent="flex-start"
         flexDirection="column"
         width="100%"
       >
-        <Radio.Group
-          defaultValue="2"
-          onChange={onChangeTab}
+        <StyledRadioGroup
+          defaultValue={activeTab}
+          onChange={handleChange}
           buttonStyle="solid"
         >
-          <Radio.Button value="1">TAKE A PICTURE</Radio.Button>
-          <Radio.Button value="2">UPLOAD FILE</Radio.Button>
-        </Radio.Group>
+          <StyledRadioButton value={TAB_CAMERA}>
+            TAKE A PICTURE
+          </StyledRadioButton>
+          <StyledRadioButton value={TAB_DRAG_DROP}>
+            UPLOAD FILE
+          </StyledRadioButton>
+        </StyledRadioGroup>
         {content}
       </FlexContainer>
     </ConfirmationModal>

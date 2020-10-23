@@ -50,7 +50,7 @@ import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import UserWorkUploadModal from './common/UserWorkUploadModal'
-import useImageUpload from '../hooks/useImageUpload'
+import useUploadToS3 from '../hooks/useUploadToS3'
 
 const { playerSkinValues } = testConstants
 
@@ -168,18 +168,14 @@ const AssessmentContainer = ({
   const toggleUserWorkUploadModal = () =>
     setIsUserWorkUploadModalVisible((value) => !value)
   const closeUserWorkUploadModal = () => setIsUserWorkUploadModalVisible(false)
-  const saveQuestionWorkImageUrl = (questionWorkImageUrl) => {
+  const saveUserWorkUploadURIs = (URIs) => {
     const userWorkId = items[currentItem]?._id
 
-    // Add questionWorkImageUrl to all the questions of item
-    const newUserWork = Object.keys(userWork).reduce((acc, key) => {
-      acc[key] = {
-        ...userWork[key],
-        questionWorkImageUrl,
-      }
-
-      return acc
-    }, {})
+    const currentUserWork = userWork[userWorkId]
+    const currentUploads = currentUserWork ? currentUserWork.uploads : []
+    const newUploads = [...currentUploads, ...URIs]
+    // Add URIs to uploads
+    const newUserWork = { ...currentUserWork, uploads: newUploads }
 
     // Update question item with question work image url.
     saveUserWork({
@@ -190,10 +186,7 @@ const AssessmentContainer = ({
     setIsUserWorkUploadModalVisible(false)
   }
 
-  const [isFileUploading, uploadFile] = useImageUpload(
-    saveQuestionWorkImageUrl,
-    userId
-  )
+  const [, uploadFile] = useUploadToS3(userId)
 
   const isLast = () => currentItem === items.length - 1
   const isFirst = () => currentItem === 0
@@ -619,11 +612,6 @@ const AssessmentContainer = ({
     )
   }
 
-  const userWorkCameraProps = {
-    delayCount: 3,
-    isPhotoTakingDisabled: isFileUploading,
-  }
-
   return (
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem }}
@@ -672,15 +660,12 @@ const AssessmentContainer = ({
       <UserWorkUploadModal
         isModalVisible={isUserWorkUploadModalVisible}
         onCancel={closeUserWorkUploadModal}
-        uploadFile={(...args) => {
-          console.log(test)
-          uploadFile(...args)
-        }}
-        onUploadFinished={(uris) => {
-          console.log(uris)
+        uploadFile={uploadFile}
+        onUploadFinished={(URIs) => {
+          console.log(URIs)
+          saveUserWorkUploadURIs(URIs)
           closeUserWorkUploadModal()
         }}
-        {...userWorkCameraProps}
       />
     </AssessmentPlayerContext.Provider>
   )

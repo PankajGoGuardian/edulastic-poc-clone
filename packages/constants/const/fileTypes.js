@@ -7,6 +7,7 @@ export const XLS = 'application/vnd.ms-excel'
 export const XLSX =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 export const JPEG = 'image/jpeg'
+export const JPG = 'image/jpg'
 export const PNG = 'image/png'
 export const GIF = 'image/gif'
 export const HTML = 'text/html'

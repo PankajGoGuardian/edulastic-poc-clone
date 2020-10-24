@@ -80,10 +80,15 @@ const StudentProfileReportsFilters = ({
     [SPRFilterData, terms]
   )
   const coursesForTerm = useMemo(
-    () => courseOptions.filter((c) => c.termId === filters.termId),
+    () => [
+      {
+        title: 'All Courses',
+        key: 'All',
+      },
+      ...courseOptions.filter((c) => c.termId === filters.termId),
+    ],
     [courseOptions, filters.termId]
   )
-
   const defaultTermOption = useMemo(
     () => find(termOptions, (term) => term.key === defaultTerm),
     [termOptions, defaultTerm]
@@ -101,7 +106,7 @@ const StudentProfileReportsFilters = ({
       find(coursesForTerm, (course) => course.key === urlCourseId) ||
       coursesForTerm[0] ||
       {},
-    [coursesForTerm]
+    [coursesForTerm, urlCourseId]
   )
 
   const selectedGrade = useMemo(
@@ -283,6 +288,9 @@ const StudentProfileReportsFilters = ({
           selectCB={onStudentSelect}
           selectedStudent={student}
           selectedClasses={selectedClasses}
+          selectedSubject={selectedSubject}
+          selectedGrade={selectedGrade}
+          selectedCourse={selectedCourse}
         />
       </SearchField>
       {performanceBandRequired && (

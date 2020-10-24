@@ -26,6 +26,9 @@ const StudentAutoComplete = ({
   selectedStudent,
   selectedClasses,
   selectCB,
+  selectedSubject,
+  selectedGrade,
+  selectedCourse,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
 
@@ -51,8 +54,24 @@ const StudentAutoComplete = ({
     if (!isEmpty(institutionIds)) {
       q.institutionIds = institutionIds
     }
+    if (!isEmpty(selectedSubject) && selectedSubject.key !== 'All') {
+      q.subject = selectedSubject.key
+    }
+
+    if (!isEmpty(selectedGrade) && selectedGrade.key !== 'All') {
+      q.grade = selectedGrade.key
+    }
+    if (!isEmpty(selectedCourse) && selectedCourse.key !== 'All') {
+      q.courseId = selectedCourse.key
+    }
     return q
-  }, [searchTerms.text, selectedClasses])
+  }, [
+    searchTerms.text,
+    selectedClasses,
+    selectedSubject,
+    selectedGrade,
+    selectedCourse,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {

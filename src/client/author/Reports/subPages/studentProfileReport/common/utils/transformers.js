@@ -18,23 +18,6 @@ import {
 } from '../../../../common/util'
 import gradesMap from '../static/json/gradesMap.json'
 
-const getCourses = (classData) => {
-  const groupedByCourse = groupBy(
-    classData.filter((c) => !!c.courseId),
-    (c) => `${c.courseId}_${c.termId}`
-  )
-  return Object.values(groupedByCourse).map((course) => {
-    const courseId = course[0].courseId
-    return {
-      title:
-        course[0].courseName ||
-        `(Course ID: ${courseId.substring(courseId.length - 5)})`,
-      key: courseId,
-      termId: course[0].termId,
-    }
-  })
-}
-
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {
     return selectedStudent.title
@@ -42,21 +25,11 @@ export const getStudentName = (selectedStudent, studInfo) => {
   return `${studInfo.firstName || ''} ${studInfo.lastName || ''}`
 }
 
-const getTerms = (terms = []) =>
+export const getTermOptions = (terms = []) =>
   map(terms, (term) => ({
     title: term.name,
     key: term._id,
   }))
-
-export const getFilterOptions = (classData = [], terms = []) => {
-  const courseOptions = getCourses(classData)
-  const termOptions = getTerms(terms)
-
-  return {
-    courseOptions,
-    termOptions,
-  }
-}
 
 export const augementAssessmentChartData = (
   metricInfo = [],
@@ -139,10 +112,7 @@ export const getOverallMasteryCount = (records, maxScale) => {
   return masteredStandards.length
 }
 
-export const getStudentPerformancePieData = (
-  metricInfo = [],
-  scaleInfo = []
-) => {
+export const getStudentPerformancePieData = (metricInfo = []) => {
   const groupedByMastery = groupBy(
     metricInfo,
     (metric) => metric.scale.masteryLabel

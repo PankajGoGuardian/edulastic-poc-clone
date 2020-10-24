@@ -1,9 +1,7 @@
-import { takeEvery, call, all, put, select } from 'redux-saga/effects'
+import { takeEvery, call, all, put } from 'redux-saga/effects'
 import { createAction } from 'redux-starter-kit'
 import { classBoardApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
-import { getUserRole } from '../src/selectors/user'
 
 // constants
 export const BULK_OPEN_ASSIGNMENT = '[test assignments] bulk open'
@@ -138,16 +136,8 @@ function* bulkDownloadGradesAndResponsesSaga({ payload }) {
       testId,
       testType,
     }
-    const userRole = yield select(getUserRole)
     yield put(setAssignmentBulkActionStatus(true))
-    if (userRole === roleuser.TEACHER) {
-      notification({
-        type: 'info',
-        msg: 'Assessment responses are being processed for downloading',
-      })
-    } else {
-      notification({ type: 'info', msg: 'Starting Bulk Action Request' })
-    }
+    notification({ type: 'info', msg: 'Starting Bulk Action Request' })
     yield call(classBoardApi.bulkDownloadGrades, _payload)
   } catch (err) {
     console.error(err)

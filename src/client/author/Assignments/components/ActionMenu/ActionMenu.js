@@ -48,7 +48,6 @@ const ActionMenu = ({
   canEdit = true,
   userClassList,
   canUnassign = true,
-  handleDownloadResponses,
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -244,17 +243,6 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        <Menu.Item
-          data-cy="download-responses"
-          key="download-responses"
-          onClick={() => handleDownloadResponses(currentTestId)}
-        >
-          <StyledLink target="_blank" rel="noopener noreferrer">
-            <img alt="icon" src={classIcon} />
-            <SpaceElement />
-            Download Responses
-          </StyledLink>
-        </Menu.Item>
         {/** Hiding Unassign option for now, please uncomment it to get it back */}
         {/* {(isAssignmentOwner || isCoAuthor || isAdmin) && canUnassign && (
           <Menu.Item

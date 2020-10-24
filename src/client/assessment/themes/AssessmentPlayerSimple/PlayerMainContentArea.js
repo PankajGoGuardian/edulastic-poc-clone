@@ -107,6 +107,7 @@ const PlayerContentArea = ({
                 userWork={history}
                 saveAttachments={saveAttachments}
                 attachments={attachments}
+                viewComponent="practicePlayer"
                 evaluation={evaluation}
                 enableMagnifier={enableMagnifier}
                 changePreviewTab={changePreview}

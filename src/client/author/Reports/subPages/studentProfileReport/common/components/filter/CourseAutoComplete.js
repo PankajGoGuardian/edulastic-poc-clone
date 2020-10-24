@@ -96,7 +96,7 @@ const CourseAutoComplete = ({
     <AutoCompleteContainer>
       <AutoComplete
         getPopupContainer={(trigger) => trigger.parentNode}
-        placeholder=""
+        placeholder="All Courses"
         value={searchTerms.text}
         onSearch={onSearch}
         dataSource={dropdownData}

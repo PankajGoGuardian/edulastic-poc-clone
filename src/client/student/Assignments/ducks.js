@@ -686,7 +686,7 @@ function* startAssignment({ payload }) {
         'Assignment is not not available at the moment. Please contact your administrator.'
       notification({ msg: message })
       yield put(push('/home/assignments'))
-    } else {
+    } else if (![409, 302].includes(status)) {
       Sentry.captureException(err)
     }
   } finally {

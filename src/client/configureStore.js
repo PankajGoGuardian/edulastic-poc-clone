@@ -21,12 +21,9 @@ const sagaMiddleware = createSagaMiddleware({
 
 const middleware = [sagaMiddleware, routerMiddleware(history)]
 
-/* istanbul ignore next */
-if (process.env.NODE_ENV === 'development') {
-  // enable redux-freeze
-  const reduxFreeze = require('redux-freeze') // eslint-disable-line global-require
-  middleware.push(reduxFreeze)
-}
+const reduxFreeze = require('redux-freeze') // eslint-disable-line global-require
+
+middleware.push(reduxFreeze)
 
 let store
 

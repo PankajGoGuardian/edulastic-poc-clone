@@ -63,7 +63,7 @@ const StandardsPerformance = ({
   const [tableFilters, setTableFilters] = useState({
     masteryLevel: masteryLevelData[0],
     compareBy: compareByDataFiltered[0],
-    analyseBy: analyseByData[0],
+    analyseBy: analyseByData[3],
   })
 
   const [selectedDomains, setSelectedDomains] = useState([])

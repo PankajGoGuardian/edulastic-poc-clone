@@ -1,3 +1,7 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable prefer-const */
+/* eslint-disable max-len */
+/* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable class-methods-use-this */
 import LCBHeader from './lcbHeader'
 import {
@@ -299,14 +303,18 @@ class LiveClassboardPage {
 
   enableShowActiveStudents = () =>
     this.getShowActiveStudentToggle().then(($ele) => {
-      if (!$ele.hasClass('ant-switch-checked'))
+      if (!$ele.hasClass('ant-switch-checked')) {
         cy.wrap($ele).click().should('have.class', 'ant-switch-checked')
+        cy.wait(500)
+      }
     })
 
   disableShowActiveStudents = () =>
     this.getShowActiveStudentToggle().then(($ele) => {
-      if ($ele.hasClass('ant-switch-checked'))
+      if ($ele.hasClass('ant-switch-checked')) {
         cy.wrap($ele).click().should('not.have.class', 'ant-switch-checked')
+        cy.wait(500)
+      }
     })
 
   // *** ACTIONS END ***
@@ -484,14 +492,6 @@ class LiveClassboardPage {
     })
   }
 
-  // for performance on redirected student card on hover
-  verifyStudentCardRedirectedPerformance({
-    studentName,
-    attempt1,
-    attempt2,
-    attempt3,
-  }) {}
-
   verifyStudentStatusIsByIndex = (index, status, isManualGraded = false) => {
     if (!isManualGraded)
       this.getStudentStatusByIndex(index).should(($ele) => {
@@ -528,7 +528,7 @@ class LiveClassboardPage {
       .should('contain.text', student)
 
   verifyQuestion = (queCount) =>
-    cy.get('[data-cy="questions"]').each((ele, index, $all) => {
+    cy.get('[data-cy="questions"]').each((ele) => {
       cy.wrap(ele).find('div').should('have.length', queCount)
     })
 
@@ -595,7 +595,6 @@ class LiveClassboardPage {
     let score
     let perf
     let perfValue
-    let stats
     const quePerformanceAllStudent = []
     let quePerformanceScore
     let sumAvgQuePerformance = 0
@@ -606,15 +605,15 @@ class LiveClassboardPage {
         ? queTypeMap[queNum]
         : queTypeMap[item]
       // if (attempType === attemptTypes.RIGHT) totalScore += points;
-      const score = this.questionResponsePage.getScoreByAttempt(
+      const score_ = this.questionResponsePage.getScoreByAttempt(
         attemptData,
         points,
         queKey.split('.')[0],
         attempType
       )
-      totalScore += score
+      totalScore += score_
       maxScore += points
-      quePerformanceAllStudent.push(score / points)
+      quePerformanceAllStudent.push(score_ / points)
     })
 
     quePerformanceAllStudent.forEach((item) => {

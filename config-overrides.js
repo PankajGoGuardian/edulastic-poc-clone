@@ -82,7 +82,7 @@ module.exports = override(
         /** These are dev deps and only used in development.
          * Exclude from prod vendors */
         config.externals = {
-          'redux-freeze': 'redux-freeze',
+          // 'redux-freeze': 'redux-freeze',
           '@welldone-software/why-did-you-render':
             '@welldone-software/why-did-you-render',
         }

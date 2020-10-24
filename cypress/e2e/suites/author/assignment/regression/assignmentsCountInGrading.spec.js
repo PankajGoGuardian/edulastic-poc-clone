@@ -7,7 +7,10 @@ import StudentTestPage from '../../../../framework/student/studentTestPage'
 import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
 import ExpressGraderPage from '../../../../framework/author/assignments/expressGraderPage'
 import ReportsPage from '../../../../framework/student/reportsPage'
-import { teacherSide } from '../../../../framework/constants/assignmentStatus'
+import {
+  studentSide,
+  teacherSide,
+} from '../../../../framework/constants/assignmentStatus'
 import TeacherManageClassPage from '../../../../framework/author/manageClassPage'
 import Helpers from '../../../../framework/util/Helpers'
 import { attemptTypes } from '../../../../framework/constants/questionTypes'
@@ -38,30 +41,30 @@ describe(`${FileHelper.getSpecName(
   const students = {
     stu1: {
       name: `S1${Helpers.getRamdomString(5).toLowerCase()}`,
-      email: `s1${Helpers.getRamdomEmail()}`,
+      username: `s1${Helpers.getRamdomString(6).toLowerCase()}`,
       pass: 'snapwiz',
     },
     stu2: {
       name: `S2${Helpers.getRamdomString(5).toLowerCase()}`,
-      email: `s2${Helpers.getRamdomEmail()}`,
+      username: `s2${Helpers.getRamdomString(6).toLowerCase()}`,
       pass: 'snapwiz',
     },
     stu3: {
       name: `S3${Helpers.getRamdomString(5).toLowerCase()}`,
-      email: `s3${Helpers.getRamdomEmail()}`,
+      username: `s3${Helpers.getRamdomString(6).toLowerCase()}`,
       pass: 'snapwiz',
     },
   }
   const attemptData = {
     right: 'right',
   }
-  const existingAssignments = [
+  const existingAssignedTests = [
     '5f9144fa060fca0008ac84d1',
     '5f91458e00edb70008d379c6',
   ]
 
   const assignment1 = [
-    existingAssignments[0],
+    existingAssignedTests[0],
     existingClass,
     1,
     1,
@@ -69,7 +72,7 @@ describe(`${FileHelper.getSpecName(
     teacherSide.IN_GRADING,
   ]
   const assignment2 = [
-    existingAssignments[1],
+    existingAssignedTests[1],
     existingClass,
     0,
     1,
@@ -88,13 +91,13 @@ describe(`${FileHelper.getSpecName(
   })
 
   before('> create new class with one student', () => {
-    const { name, pass, email } = students.stu1
+    const { name, pass, username } = students.stu1
     testLibraryPage.sidebar.clickOnManageClass()
     teachermangeClass.clickOnCreateClass()
     teachermangeClass.fillClassDetails(className)
     teachermangeClass.clickOnSaveClass()
     teachermangeClass.clickOnAddStudent()
-    teachermangeClass.fillStudentDetails(email, name, pass)
+    teachermangeClass.fillStudentDetails(username, name, pass)
     teachermangeClass.clickOnAddUserButton()
 
     testLibraryPage.sidebar.clickOnManageClass()
@@ -118,7 +121,7 @@ describe(`${FileHelper.getSpecName(
     10. verify lcb/eg/grades book for new student
      */
     before('> assign test', () => {
-      cy.deleteAllAssignments('', Teacher, 'snapwiz', existingAssignments)
+      cy.deleteAllAssignments('', Teacher, 'snapwiz', existingAssignedTests)
       testLibraryPage.assignPage.visitAssignPageById(testId)
       testAssignPage.selectClass(className)
       testAssignPage.clickOnAssign()
@@ -130,25 +133,25 @@ describe(`${FileHelper.getSpecName(
     })
 
     before('> add new student in manage class', () => {
-      const { name, pass, email } = students.stu2
+      const { name, pass, username } = students.stu2
       testLibraryPage.sidebar.clickOnManageClass()
       teachermangeClass.clickOnClassRowByName(className)
       teachermangeClass.clickOnAddStudent()
-      teachermangeClass.fillStudentDetails(email, name, pass)
+      teachermangeClass.fillStudentDetails(username, name, pass)
       teachermangeClass.clickOnAddUserButton()
     })
 
     it('> add student to one existing class', () => {
-      const { email } = students.stu2
+      const { username } = students.stu2
       testLibraryPage.sidebar.clickOnManageClass()
       teachermangeClass.clickOnClassRowByName(existingClass)
       teachermangeClass.clickOnAddStudents()
       teachermangeClass.clickOnAddMultipleTab()
-      teachermangeClass.searchStudentAndAdd(email)
+      teachermangeClass.searchStudentAndAdd(username)
     })
 
     it('> login as new student and verify no assignments', () => {
-      cy.login('student', students.stu2.email)
+      cy.login('student', students.stu2.username)
       cy.contains(
         `You don't have any currently assigned or completed assignments.`
       )
@@ -179,7 +182,7 @@ describe(`${FileHelper.getSpecName(
 
     it('> add the new student to assignment', () => {
       totalStudents++
-      lcb.addOneStudent(students.stu2.email)
+      lcb.addOneStudent(students.stu2.username)
       lcb.header.clickOnExpressGraderTab()
 
       lcb.header.clickOnLCBTab()
@@ -189,7 +192,7 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> attempt by new student', () => {
-      cy.login('student', students.stu2.email)
+      cy.login('student', students.stu2.username)
       assignmentsPage.getAssignmentButton().should('have.length', 1)
       assignmentsPage.sidebar.clickOnGrades(false)
 
@@ -264,7 +267,7 @@ describe(`${FileHelper.getSpecName(
     10. verify lcb/eg/grades book for new student
      */
     before('> assign test', () => {
-      cy.deleteAllAssignments('', Teacher, 'snapwiz', existingAssignments)
+      cy.deleteAllAssignments('', Teacher, 'snapwiz', existingAssignedTests)
       testLibraryPage.assignPage.visitAssignPageById(testId)
       testAssignPage.selectClass(className)
       testAssignPage.clickOnAssign()
@@ -276,12 +279,12 @@ describe(`${FileHelper.getSpecName(
     })
 
     before('> sign up as new student class', () => {
-      const { name, pass, email } = students.stu3
+      const { name, pass, username } = students.stu3
       cy.clearToken()
       cy.visit('/login')
       signupPage.clickOnSignupLink()
       signupPage.clickOnStudent()
-      signupPage.fillStudentSignupForm(newClassCode, name, email, pass)
+      signupPage.fillStudentSignupForm(newClassCode, name, username, pass)
     })
 
     it('> verify no assignments, for signed up student', () => {
@@ -316,7 +319,7 @@ describe(`${FileHelper.getSpecName(
 
     it('> add the new student to assignment', () => {
       totalStudents++
-      lcb.addOneStudent(students.stu3.email)
+      lcb.addOneStudent(students.stu3.username)
       lcb.header.clickOnExpressGraderTab()
 
       lcb.header.clickOnLCBTab()
@@ -326,7 +329,7 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> attempt by new student', () => {
-      cy.login('student', students.stu3.email)
+      cy.login('student', students.stu3.username)
       assignmentsPage.sidebar.clickOnGrades(false)
       assignmentsPage.sidebar.clickOnAssignment()
       assignmentsPage.clickOnAssigmentByTestId(testId)
@@ -370,7 +373,7 @@ describe(`${FileHelper.getSpecName(
 
     it('> verify lcb card view for new student', () => {
       authorAssignmentPage.clickOnLCBbyTestId(testId)
-      lcb.verifySubmittedCount(3, 3)
+      lcb.verifySubmittedCount(totalStudents, totalStudents)
       lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING)
       lcb.getAllStudentStatus().should('have.length', totalStudents)
     })
@@ -398,6 +401,184 @@ describe(`${FileHelper.getSpecName(
         .should('exist')
         .click({ force: true })
       cy.contains('div', 'Default Test Automation').should('be.visible')
+    })
+  })
+
+  context('> when student removed from manage class', () => {
+    before('> assign test', () => {
+      cy.deleteAllAssignments('', Teacher, 'snapwiz', existingAssignedTests)
+      cy.login('teacher', Teacher)
+      testLibraryPage.assignPage.visitAssignPageById(testId)
+      testAssignPage.selectClass(className)
+      testAssignPage.clickOnAssign()
+
+      testLibraryPage.sidebar.clickOnAssignment()
+      authorAssignmentPage.clickOnLCBbyTestId(testId)
+      lcb.checkSelectAllCheckboxOfStudent()
+      lcb.clickOnMarkAsSubmit()
+      lcb.clickonQuestionsTab()
+      lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
+        students.stu1.name,
+        1
+      )
+    })
+
+    before('> remove one student from manage class', () => {
+      testLibraryPage.sidebar.clickOnManageClass()
+      teachermangeClass.clickOnClassRowByName(className)
+      teachermangeClass.selectStudentsAndRemove(students.stu1.username)
+    })
+
+    it('> verify assignments page', () => {
+      testLibraryPage.sidebar.clickOnAssignment()
+      authorAssignmentPage.verifyAssignmentRowByTestId(
+        testId,
+        className,
+        totalStudents,
+        totalStudents,
+        false,
+        teacherSide.IN_GRADING
+      )
+    })
+
+    it('> verify lcb card view for removed student', () => {
+      authorAssignmentPage.clickOnLCBbyTestId(testId)
+      lcb.verifySubmittedCount(totalStudents, totalStudents)
+      lcb.verifyStudentStatusIsByIndex(0, studentSide.GRADED)
+      lcb.verifyStudentCardCount(totalStudents)
+    })
+
+    it('> verify express grader view for removed student', () => {
+      lcb.header.clickOnExpressGraderTab()
+      expressGrader.getGridRowByStudent(students.stu1.name).should('be.visible')
+      expressGrader.verifyScoreAndPerformance('1/1', 100)
+    })
+
+    it('> verify grade book for removed student', () => {
+      testLibraryPage.sidebar.clickOnGradeBook()
+      cy.contains('a', students.stu1.name, { timeout: 120000 })
+        .should('exist')
+        .click({ force: true })
+      cy.contains('div', 'Default Test Automation').should('be.visible')
+    })
+
+    it('> verify grades page removed student', () => {
+      cy.login('student', students.stu1.username)
+      assignmentsPage.verifyNoAssignments()
+      assignmentsPage.sidebar.clickOnGrades()
+      reportsPage.verifyStatusIs(studentSide.GRADED)
+    })
+  })
+
+  context('> removing absent / graded students', () => {
+    before('> assign test', () => {
+      cy.deleteAllAssignments('', Teacher, 'snapwiz', existingAssignedTests)
+      cy.login('teacher', Teacher)
+      testLibraryPage.assignPage.visitAssignPageById(testId)
+      testLibraryPage.assignPage.selectClass(className)
+      testAssignPage.selectStudent([students.stu2.name, students.stu3.name])
+      testAssignPage.clickOnAssign()
+
+      testLibraryPage.sidebar.clickOnAssignment()
+      authorAssignmentPage.clickOnLCBbyTestId(testId)
+      lcb.selectCheckBoxByStudentName(students.stu2.name)
+      lcb.clickOnMarkAsSubmit()
+      lcb.checkSelectAllCheckboxOfStudent()
+      lcb.uncheckSelectAllCheckboxOfStudent()
+
+      lcb.selectCheckBoxByStudentName(students.stu3.name)
+      lcb.clickOnMarkAsAbsent()
+
+      testLibraryPage.sidebar.clickOnAssignment()
+      authorAssignmentPage.clickOnLCBbyTestId(testId)
+    })
+
+    it('> try removing absent student, should not allow', () => {
+      lcb.checkSelectAllCheckboxOfStudent()
+      lcb.uncheckSelectAllCheckboxOfStudent()
+      lcb.selectCheckBoxByStudentName(students.stu3.name)
+      lcb.clickOnRemove(false)
+      lcb.verifyStudentCardCount(2)
+    })
+
+    it('> try removing graded student, should not allow', () => {
+      lcb.checkSelectAllCheckboxOfStudent()
+      lcb.uncheckSelectAllCheckboxOfStudent()
+      lcb.selectCheckBoxByStudentName(students.stu2.name)
+      lcb.clickOnRemove(false)
+      lcb.verifyStudentCardCount(2)
+    })
+
+    it('> try removing graded+absent student, should not allow', () => {
+      lcb.checkSelectAllCheckboxOfStudent()
+      lcb.uncheckSelectAllCheckboxOfStudent()
+      lcb.selectCheckBoxByStudentName(students.stu2.name)
+      lcb.selectCheckBoxByStudentName(students.stu3.name)
+      lcb.clickOnRemove(false)
+      lcb.verifyStudentCardCount(2)
+    })
+    context('> add and remove the new student to assignment', () => {
+      before('> add removed student back to class', () => {
+        testLibraryPage.sidebar.clickOnManageClass()
+        teachermangeClass.clickOnClassRowByName(className)
+        teachermangeClass.clickOnAddStudents()
+        teachermangeClass.clickOnAddMultipleTab()
+        teachermangeClass.searchStudentAndAdd(students.stu1.username)
+      })
+      before('> add and remove student to assignmnets', () => {
+        testLibraryPage.sidebar.clickOnAssignment()
+        authorAssignmentPage.clickOnLCBbyTestId(testId)
+
+        lcb.addOneStudent(students.stu1.username)
+        lcb.header.clickOnExpressGraderTab()
+        lcb.header.clickOnLCBTab()
+
+        lcb.verifyStudentCardCount(totalStudents)
+        lcb.checkSelectAllCheckboxOfStudent()
+        lcb.uncheckSelectAllCheckboxOfStudent()
+
+        lcb.selectCheckBoxByStudentName(students.stu1.name)
+        lcb.clickOnRemove()
+        lcb.verifySubmittedCount(totalStudents - 2, totalStudents - 1)
+
+        lcb.header.clickOnExpressGraderTab()
+        lcb.header.clickOnLCBTab()
+        lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING)
+      })
+
+      it('> verify lcb card view', () => {
+        lcb.disableShowActiveStudents()
+        lcb.verifyStudentCardCount(3)
+        lcb.verifyStudentStatusIsByIndex(0, studentSide.UNASSIGNED)
+      })
+
+      it('> verify assignments page', () => {
+        testLibraryPage.sidebar.clickOnAssignment()
+        authorAssignmentPage.verifyAssignmentRowByTestId(
+          testId,
+          className,
+          1,
+          2,
+          false,
+          teacherSide.IN_GRADING
+        )
+      })
+
+      it('> verify grade book for removed student, should not present', () => {
+        testLibraryPage.sidebar.clickOnGradeBook()
+        cy.contains('a', students.stu2.name, { timeout: 120000 }).should(
+          'exist'
+        )
+        cy.contains('a', students.stu1.name, { timeout: 120000 }).should(
+          'not.exist'
+        )
+      })
+
+      it('> verify student assignmnets/grades page', () => {
+        cy.login('student', students.stu1.username)
+        assignmentsPage.verifyNoAssignments()
+        assignmentsPage.sidebar.clickOnGrades(false)
+      })
     })
   })
 })

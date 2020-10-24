@@ -51,7 +51,8 @@ export default class TeacherManageClassPage {
 
   getStudentTextArea = () => cy.get('#students')
 
-  getStudentRowByEmail = (email) => cy.get(`[data-row-key="${email}"]`)
+  getStudentRowByEmail = (email) =>
+    cy.get(`[data-cy="${email}"]`).closest('.ant-table-row-level-0')
 
   removeStudentButton = () =>
     cy.get('.ant-dropdown-menu-item').contains('Remove Student')

@@ -64,7 +64,14 @@
     "cypress/no-unnecessary-waiting": "warn",
     "react/jsx-closing-tag-location": 0,
     "react/jsx-indent": 0,
-    "react/jsx-props-no-spreading": 1,
+    "react/jsx-props-no-spreading": [
+      1,
+      {
+        "html": "enforce",
+        "custom": "ignore",
+        "explicitSpread": "enforce"
+      }
+    ],
     "prettier/prettier": [
       "error",
       {

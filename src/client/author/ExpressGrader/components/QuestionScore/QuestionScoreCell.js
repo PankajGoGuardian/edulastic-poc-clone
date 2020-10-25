@@ -31,7 +31,10 @@ const QuestionScoreCell = ({
   const handleBlur = () => {
     const updatedScore = toNumber(score)
     if (studentScore !== updatedScore) {
-      if ((!updatedScore || isNaN(updatedScore)) && updatedScore != 0) {
+      if (
+        ((!updatedScore || isNaN(updatedScore)) && updatedScore != 0) ||
+        updatedScore < 0
+      ) {
         notification({ type: 'warn', messageKey: 'scoreShouldNumber' })
         setScore(studentScore)
         return

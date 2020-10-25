@@ -13,7 +13,10 @@ import {
   canvasApi,
   realtimeApi,
 } from '@edulastic/api'
-import { signupSuccessAction } from '../Login/ducks'
+import {
+  persistAuthStateAndRedirectToAction,
+  signupSuccessAction,
+} from '../Login/ducks'
 import { getUser } from '../../author/src/selectors/user'
 
 import { userPickFields } from '../../common/utils/static/user'
@@ -507,6 +510,7 @@ function* saveSubjectGradeSaga({ payload }) {
       // setting user in store to put updated currentSignupState in store
       yield put(signupSuccessAction(finalUser))
     }
+    yield put(persistAuthStateAndRedirectToAction())
   } catch (err) {
     console.log('_err', err)
     notification({ messageKey: 'failedToUpdateUser' })
@@ -542,7 +546,6 @@ function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
     yield put({
       type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_FAILED,
     })
-    yield put(push('/login'))
   }
 }
 

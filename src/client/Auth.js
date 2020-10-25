@@ -1,12 +1,12 @@
 import React from 'react'
 import { lazy } from '@loadable/component'
 import PropTypes from 'prop-types'
-import { withRouter, Redirect } from 'react-router'
+import { withRouter } from 'react-router'
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { removeFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { roleuser } from '@edulastic/constants'
+import { removeFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { SelectRolePopup } from './student/SsoLogin/selectRolePopup'
 import { UnauthorizedPopup } from './student/SsoLogin/UnauthorizedPopup'
 import StudentSignup from './student/Signup/components/StudentContainer'
@@ -40,22 +40,26 @@ const Auth = ({
       '#register/close/admin',
     ].includes(location.hash)
   ) {
+    const currentPath = window.location.pathname
+    if (currentPath !== '/login' && !currentPath.startsWith('/auth')) {
+      window.history.pushState({}, null, '/login')
+    }
     window.location.hash = '#login'
   }
 
   if (isLoggedInForPrivateRoute(user)) {
     switch (user.user.role) {
       case roleuser.EDULASTIC_ADMIN:
-        return <Redirect exact to="/admin/search/clever" />
+        return window.location.replace('/admin/search/clever') || null
       case roleuser.DISTRICT_ADMIN:
       case roleuser.SCHOOL_ADMIN:
-        return <Redirect exact to="/author/assignments" />
+        return window.location.replace('/author/assignments') || null
       case roleuser.TEACHER:
-        return <Redirect exact to="/author/dashboard" />
+        return window.location.replace('/author/dashboard') || null
       case roleuser.STUDENT:
-        return <Redirect exact to="/home/assignments" />
+        return window.location.replace('/home/assignments') || null
       default:
-        return <Redirect exact to="/author/dashboard" />
+        return null
     }
   }
 

@@ -15,6 +15,7 @@ import {
 import { roleuser } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
+import roleType from '@edulastic/constants/const/roleType'
 import { fetchAssignmentsAction } from '../Assignments/ducks'
 import {
   receiveLastPlayListAction,
@@ -151,6 +152,9 @@ export const REMOVE_COLLECTION_PERMISSION = '[user] remove item bank permission'
 export const SET_CLI_USER = '[user] set cli user'
 export const TOGGLE_CLASS_CODE_MODAL = '[user] toggle class code modal'
 
+export const PERSIST_AUTH_STATE_AND_REDIRECT =
+  '[auth] persist auth entry state and request app bundle'
+
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
@@ -233,6 +237,10 @@ export const removeItemBankPermissionAction = createAction(
 export const updateCliUserAction = createAction(SET_CLI_USER)
 export const toggleClassCodeModalAction = createAction(TOGGLE_CLASS_CODE_MODAL)
 
+export const persistAuthStateAndRedirectToAction = createAction(
+  PERSIST_AUTH_STATE_AND_REDIRECT
+)
+
 const initialState = {
   addAccount: false,
   userId: null,
@@ -244,14 +252,69 @@ const initialState = {
   isClassCodeModalOpen: false,
 }
 
-function* persistAuthStateAndRedirectTo(path) {
-  const { authorUi, signup: signUp, user } = yield select((state) => state) ||
+function getValidRedirectRouteByRole(_url, user) {
+  const url = (_url || '').trim()
+  switch (user.role) {
+    case roleuser.TEACHER:
+      return url.match(/^\/author\//) ? url : '/author/dashboard'
+    case roleuser.STUDENT:
+      return url.match(/^\/home\//) ||
+        url.includes('/author/tests/tab/review/id/')
+        ? url
+        : '/home/assignments'
+    case roleuser.EDULASTIC_ADMIN:
+      return url.match(/^\/admin\//) ? url : '/admin/proxyUser'
+    case roleuser.EDULASTIC_CURATOR:
+      return url.match(/^\/author\//) ? url : '/author/items'
+    case roleuser.SCHOOL_ADMIN:
+      return url.match(/^\/author\//) ? url : '/author/assignments'
+    case roleuser.DISTRICT_ADMIN:
+      if ((user.permissions || []).includes('curator'))
+        return url.match(/^\/publisher\//) || url.match(/^\/author\//)
+          ? url
+          : '/publisher/dashboard'
+      return url.match(/^\/author\//) ? url : '/author/assignments'
+    default:
+      return url
+  }
+}
+
+const getRouteByGeneralRoute = (user) => {
+  switch (user.user.role) {
+    case roleuser.EDULASTIC_ADMIN:
+      return '/admin/search/clever'
+    case roleuser.DISTRICT_ADMIN:
+    case roleuser.SCHOOL_ADMIN:
+      return '/author/assignments'
+    case roleuser.TEACHER:
+      return '/author/dashboard'
+    case roleuser.STUDENT:
+      return '/home/assignments'
+    default:
+  }
+}
+
+function* persistAuthStateAndRedirectToSaga() {
+  const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
     {}
+
+  let redirectRoute = ''
+
+  const appRedirectPath = localStorage.getItem('appRedirectPath')
+
+  if (appRedirectPath && appRedirectPath !== '/login') {
+    redirectRoute = getValidRedirectRouteByRole(appRedirectPath, user)
+    localStorage.removeItem('appRedirectPath')
+  } else {
+    redirectRoute = getRouteByGeneralRoute(user)
+  }
+
   localStorage.setItem(
     'authState',
     JSON.stringify({ authorUi, signup: signUp, user })
   )
-  window.location.replace(path)
+
+  window.location.replace(redirectRoute)
 }
 
 const setUser = (state, { payload }) => {
@@ -646,33 +709,6 @@ function getCurrentFirebaseUser() {
   return firebase.auth().currentUser?.uid || undefined
 }
 
-function getValidRedirectRouteByRole(_url, user) {
-  const url = (_url || '').trim()
-  switch (user.role) {
-    case roleuser.TEACHER:
-      return url.match(/^\/author\//) ? url : '/author/dashboard'
-    case roleuser.STUDENT:
-      return url.match(/^\/home\//) ||
-        url.includes('/author/tests/tab/review/id/')
-        ? url
-        : '/home/assignments'
-    case roleuser.EDULASTIC_ADMIN:
-      return url.match(/^\/admin\//) ? url : '/admin/proxyUser'
-    case roleuser.EDULASTIC_CURATOR:
-      return url.match(/^\/author\//) ? url : '/author/items'
-    case roleuser.SCHOOL_ADMIN:
-      return url.match(/^\/author\//) ? url : '/author/assignments'
-    case roleuser.DISTRICT_ADMIN:
-      if ((user.permissions || []).includes('curator'))
-        return url.match(/^\/publisher\//) || url.match(/^\/author\//)
-          ? url
-          : '/publisher/dashboard'
-      return url.match(/^\/author\//) ? url : '/author/assignments'
-    default:
-      return url
-  }
-}
-
 function* login({ payload }) {
   yield put(addLoadingComponentAction({ componentName: 'loginButton' }))
   const _payload = { ...payload }
@@ -750,7 +786,6 @@ function* login({ payload }) {
           yield put(push({ pathname: publicUrl, state: { isLoading: true } }))
         } else {
           localStorage.removeItem('loginRedirectUrl')
-          yield persistAuthStateAndRedirectTo(redirectUrl)
         }
       }
 
@@ -924,9 +959,11 @@ function* signup({ payload }) {
       if (generalSettings) {
         setSignOutUrl(getDistrictSignOutUrl(generalSettings))
       }
-
-      // Important redirection code removed, redirect code already present in /src/client/App.js
-      // it receives new user props in each steps of teacher signup and for other roles
+      if (user.role === roleType.STUDENT) {
+        yield put(persistAuthStateAndRedirectToAction())
+      } else {
+        yield put(push('/Signup'))
+      }
     }
   } catch (err) {
     const { role } = payload
@@ -1853,4 +1890,8 @@ export function* watcherSaga() {
   )
   yield takeLatest(UPDATE_DEFAULT_SETTINGS_REQUEST, updateDefaultSettingsSaga)
   yield takeLatest(UPDATE_POWER_TEACHER_TOOLS_REQUEST, updatePowerTeacher)
+  yield takeLatest(
+    PERSIST_AUTH_STATE_AND_REDIRECT,
+    persistAuthStateAndRedirectToSaga
+  )
 }

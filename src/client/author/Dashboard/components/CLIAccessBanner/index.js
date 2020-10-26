@@ -36,7 +36,7 @@ const CLIAccessBanner = ({
     </Menu>
   )
 
-  const query = qs.parse(location.search)
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
   const isShowBanner = cliUser || isCliUser
 

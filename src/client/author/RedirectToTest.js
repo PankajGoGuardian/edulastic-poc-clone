@@ -27,7 +27,7 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
     }
   }
   useEffect(() => {
-    const { eAId, aId } = qs.parse(search)
+    const { eAId, aId } = qs.parse(search, { ignoreQueryPrefix: true })
     const v1Id = eAId || aId
     let testId = v1Id
 

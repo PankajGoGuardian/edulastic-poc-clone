@@ -7,7 +7,7 @@ import { get, isEqual } from 'lodash'
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { IconClockCircularOutline } from '@edulastic/icons'
-import { withWindowSizes } from '@edulastic/common'
+import { AssessmentPlayerContext, withWindowSizes } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 
 import { connect } from 'react-redux'
@@ -80,12 +80,9 @@ class TestItemPreview extends Component {
       isDocBased,
       isPassageWithQuestions,
       isStudentReport,
-      viewComponent,
       itemLevelScoring,
     } = this.props
-    const isStudentAttempt = ['studentPlayer', 'practicePlayer'].includes(
-      viewComponent
-    )
+    const { isStudentAttempt } = this.context
     let shouldShowFeedback
     let shouldTakeDimensionsFromStore
     switch (true) {
@@ -282,7 +279,6 @@ class TestItemPreview extends Component {
       isLCBView,
       isReviewTab,
       isExpressGrader,
-      viewComponent,
       isQuestionView,
       showStudentWork,
       timeSpent,
@@ -293,18 +289,15 @@ class TestItemPreview extends Component {
       isPrintPreview,
     } = restProps
 
-    const { isFeedbackVisible } = this.state
+    const { isFeedbackVisible, collapseDirection } = this.state
+    const { isStudentAttempt } = this.context
 
-    const { collapseDirection } = this.state
     const widgets = (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
     if (widgets.length === 0) {
       return null
     }
 
     const isSingleQuestionView = widgets.length === 1
-    const isStudentAttempt = ['studentPlayer', 'practicePlayer'].includes(
-      viewComponent
-    )
     const hideInternalOverflow =
       isLCBView || isQuestionView || isExpressGrader || isReviewTab
     const hasResourceTypeQuestion = widgets.find(
@@ -456,6 +449,8 @@ class TestItemPreview extends Component {
     )
   }
 }
+
+TestItemPreview.contextType = AssessmentPlayerContext
 
 TestItemPreview.propTypes = {
   cols: PropTypes.array.isRequired,

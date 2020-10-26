@@ -113,6 +113,7 @@ export {
   toggleIntercomDisplay,
   sanitizeString,
   getSanitizedProps,
+  isSEB,
 } from './src/helpers'
 
 // contexts

@@ -87,7 +87,7 @@ const SingleAssessmentReportFilters = ({
   useEffect(() => {
     if (MARFilterData !== prevMARFilterData) {
       const search = pickBy(
-        qs.parse(location.search),
+        qs.parse(location.search, { ignoreQueryPrefix: true }),
         (f) => f !== 'All' && !isEmpty(f)
       )
       const termId =
@@ -118,7 +118,10 @@ const SingleAssessmentReportFilters = ({
   let dropDownData
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
-    let search = qs.parse(location.search, { arrayFormat: 'index' })
+    let search = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+      indices: true,
+    })
 
     // get saved filters from backend
     const savedFilters = get(MARFilterData, 'data.result.reportFilters')

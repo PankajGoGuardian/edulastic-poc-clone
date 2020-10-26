@@ -17,7 +17,7 @@ const TeacherSignup = lazy(() =>
 
 const Invite = ({ user, location, history, getInviteDetailsAction }) => {
   useEffect(() => {
-    const queryParams = qs.parse(location.search.substring(1))
+    const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     const params = {
       uid: queryParams.uid,
     }

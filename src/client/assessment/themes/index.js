@@ -175,7 +175,7 @@ const AssessmentContainer = ({
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
         const token = TokenStorage.getAccessToken()
-        const sebUrl = `${process.env.POI_APP_API_URI.replace(
+        const sebUrl = `${process.env.REACT_APP_API_URI.replace(
           'http',
           'seb'
         )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${

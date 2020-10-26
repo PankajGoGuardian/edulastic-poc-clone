@@ -42,7 +42,7 @@ const StudentApp = ({
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
   useEffect(() => {
-    const searchParams = qs.parse(location.search)
+    const searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     if (searchParams.cliUser) {
       updateCliUser(true)
     }

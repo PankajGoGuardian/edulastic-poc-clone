@@ -35,7 +35,8 @@ class PrintPreview extends Component {
     } = this.props
     const { assignmentId, classId } = match.params
     const selectedStudents = qs.parse(location.search, {
-      arrayFormat: 'comma',
+      ignoreQueryPrefix: true,
+      comma: true,
     })
 
     let _selectedStudents

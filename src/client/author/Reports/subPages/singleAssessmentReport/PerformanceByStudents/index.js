@@ -200,7 +200,7 @@ const PerformanceByStudents = ({
     )
     if (studentData) {
       const { pathname, search } = window.location
-      const parseSearch = qs.parse(search)
+      const parseSearch = qs.parse(search, { ignoreQueryPrefix: true })
       delete parseSearch.customStudentUserId
       const { assignmentId, groupId, testActivityId } = studentData
       return (

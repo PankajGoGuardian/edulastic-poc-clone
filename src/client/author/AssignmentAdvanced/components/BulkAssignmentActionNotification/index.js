@@ -38,7 +38,9 @@ const NotificationListener = ({
   const { termId = '' } = JSON.parse(
     sessionStorage.getItem('filters[Assignments]') || '{}'
   )
-  const { testType = '' } = qs.parse(location.search)
+  const { testType = '' } = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+  })
   if (testType) {
     const locationArray = location?.pathname?.split('/') || []
     districtId = locationArray[locationArray?.length - 2] || ''

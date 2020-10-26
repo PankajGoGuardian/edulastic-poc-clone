@@ -83,7 +83,9 @@ class AssignmentAdvanced extends Component {
       loadAssignmentsSummary,
       assignmentsSummary,
     } = this.props
-    const { testType = '' } = qs.parse(location.search)
+    const { testType = '' } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
     const { termId = '' } = JSON.parse(
       sessionStorage.getItem('filters[Assignments]') || '{}'
     )
@@ -254,7 +256,9 @@ class AssignmentAdvanced extends Component {
     } = this.state
     const assingment =
       find(assignmentsSummary, (item) => item.testId === testId) || {}
-    const { testType = '' } = qs.parse(location.search)
+    const { testType = '' } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
     return (
       <div>
         {isHeaderAction && (

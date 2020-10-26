@@ -31,6 +31,7 @@ const getGroups = (body) =>
 const editGroup = ({ groupId, body }) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${groupId}`,
       method: 'put',
       data: body,

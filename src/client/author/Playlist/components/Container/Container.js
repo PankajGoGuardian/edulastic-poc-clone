@@ -178,7 +178,7 @@ class TestList extends Component {
       ...sessionSortFilters,
     }
 
-    let searchParams = qs.parse(location.search)
+    let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     searchParams = this.typeCheck(searchParams, searchFilters)
 
     if (Object.keys(searchParams).length) {

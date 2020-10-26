@@ -63,7 +63,7 @@ const PlayerHeader = ({
   groupId,
   location,
 }) => {
-  const query = qs.parse(location.search)
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 

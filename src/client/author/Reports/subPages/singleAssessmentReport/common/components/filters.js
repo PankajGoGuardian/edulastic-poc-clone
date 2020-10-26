@@ -123,7 +123,7 @@ const SingleAssessmentReportFilters = ({
   useEffect(() => {
     if (SARFilterData !== prevSARFilterData) {
       const search = pickBy(
-        qs.parse(location.search),
+        qs.parse(location.search, { ignoreQueryPrefix: true }),
         (f) => f !== 'All' && !isEmpty(f)
       )
       const termId =
@@ -141,7 +141,7 @@ const SingleAssessmentReportFilters = ({
   let processedTestIds
   let dropDownData
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
-    let search = qs.parse(location.search)
+    let search = qs.parse(location.search, { ignoreQueryPrefix: true })
     search.testId = getTestIdFromURL(location.pathname)
 
     // get saved filters from backend

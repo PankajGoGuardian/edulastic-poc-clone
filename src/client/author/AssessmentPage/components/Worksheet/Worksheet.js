@@ -726,6 +726,7 @@ class WorksheetComponent extends React.Component {
               currentAnnotationTool={currentAnnotationTool}
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
+              toggleIntercomDisplay={toggleIntercomDisplay}
             />
           </PDFViewerContainer>
 

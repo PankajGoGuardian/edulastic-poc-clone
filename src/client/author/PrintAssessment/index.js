@@ -75,7 +75,7 @@ function useTestFetch(testId, type, filterQuestions, assignmentId, groupId) {
 
 const PrintAssessment = ({ match, userRole, features, location }) => {
   const containerRef = useRef(null)
-  const query = _qs.parse(location.search)
+  const query = _qs.parse(location.search, { ignoreQueryPrefix: true })
   const { type, qs, assignmentId, groupId } = query
   const filterQuestions = type === 'custom' ? formatQuestionLists(qs) : []
   const { testId } = match.params

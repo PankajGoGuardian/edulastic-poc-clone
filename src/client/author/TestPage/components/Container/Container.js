@@ -4,10 +4,15 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
-import { withRouter, Prompt } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from 'lodash'
 import uuidv4 from 'uuid/v4'
-import { withWindowSizes, notification, Progress } from '@edulastic/common'
+import {
+  withWindowSizes,
+  notification,
+  Progress,
+  CustomPrompt,
+} from '@edulastic/common'
 import { test as testContants, roleuser } from '@edulastic/constants'
 import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
@@ -109,83 +114,20 @@ const {
 } = testContants
 
 class Container extends PureComponent {
-  propTypes = {
-    createTest: PropTypes.func.isRequired,
-    updateTest: PropTypes.func.isRequired,
-    receiveTestById: PropTypes.func.isRequired,
-    setData: PropTypes.func.isRequired,
-    setDefaultData: PropTypes.func.isRequired,
-    match: PropTypes.object.isRequired,
-    rows: PropTypes.array.isRequired,
-    creating: PropTypes.bool.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    test: PropTypes.object,
-    user: PropTypes.object,
-    isTestLoading: PropTypes.bool.isRequired,
-    clearSelectedItems: PropTypes.func.isRequired,
-    saveCurrentEditingTestId: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    currentTab: PropTypes.string,
-    testStatus: PropTypes.string,
-    userId: PropTypes.string,
-    updated: PropTypes.bool,
-    showWarningModal: PropTypes.bool,
-    proceedPublish: PropTypes.func.isRequired,
-    clearTestAssignments: PropTypes.func.isRequired,
-    editAssigned: PropTypes.bool,
-    createdItems: PropTypes.array,
-    setRegradeOldId: PropTypes.func.isRequired,
-    getDefaultTestSettings: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
-    userRole: PropTypes.string,
-    isReleaseScorePremium: PropTypes.bool,
-    receiveItemDetailById: PropTypes.func.isRequired,
-    questionsUpdated: PropTypes.bool,
-    getItemsSubjectAndGrade: PropTypes.func.isRequired,
-    itemsSubjectAndGrade: PropTypes.object,
-    collectionsToShow: PropTypes.array,
-    updateDefaultThumbnail: PropTypes.func.isRequired,
-    questions: PropTypes.array,
-    questionsById: PropTypes.object,
-    updateDocBasedTest: PropTypes.func.isRequired,
-    userFeatures: PropTypes.object.isRequired,
-    publishTest: PropTypes.func.isRequired,
-    duplicateTest: PropTypes.func.isRequired,
-    collections: PropTypes.array,
-    approveOrRejectSingleTestRequest: PropTypes.func.isRequired,
-  }
-
-  static defaultProps = {
-    test: null,
-    user: {},
-    currentTab: 'review',
-    testStatus: '',
-    userId: '',
-    updated: false,
-    showWarningModal: false,
-    editAssigned: false,
-    createdItems: [],
-    userRole: 'teacher',
-    isReleaseScorePremium: false,
-    questionsUpdated: false,
-    itemsSubjectAndGrade: {},
-    collectionsToShow: [],
-    questions: [],
-    questionsById: {},
-    collections: [],
+  constructor() {
+    super()
+    this.state = {
+      showModal: false,
+      showShareModal: false,
+      isShowFilter: true,
+      showCancelButton: false,
+      testLoaded: false,
+      disableAlert: false,
+      showCloneModal: false,
+    }
   }
 
   sebPasswordRef = React.createRef()
-
-  state = {
-    showModal: false,
-    showShareModal: false,
-    isShowFilter: true,
-    showCancelButton: false,
-    testLoaded: false,
-    disableAlert: false,
-    showCloneModal: false,
-  }
 
   gotoTab = (tab) => {
     const { history, match, location } = this.props
@@ -1097,12 +1039,23 @@ class Container extends PureComponent {
 
     return (
       <>
-        <Prompt
-          when={this.beforeUnload()}
-          message={(loc) =>
-            loc.pathname.startsWith('/author/tests') ||
-            'There are unsaved changes. Are you sure you want to leave?'
-          }
+        <CustomPrompt
+          when={!!updated}
+          onUnload
+          message={(loc = {}) => {
+            const { pathname = '' } = loc
+
+            const testFlowPath = RegExp('/author/tests/\\w*')
+            const allow =
+              testFlowPath.test(pathname) ||
+              pathname.startsWith('/author/assignments/')
+
+            if (allow) {
+              return true
+            }
+
+            return 'There are unsaved changes. Are you sure you want to leave?'
+          }}
         />
         {this.renderModal()}
         <ShareModal
@@ -1160,6 +1113,72 @@ class Container extends PureComponent {
       </>
     )
   }
+}
+
+Container.propTypes = {
+  createTest: PropTypes.func.isRequired,
+  updateTest: PropTypes.func.isRequired,
+  receiveTestById: PropTypes.func.isRequired,
+  setData: PropTypes.func.isRequired,
+  setDefaultData: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
+  rows: PropTypes.array.isRequired,
+  creating: PropTypes.bool.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  test: PropTypes.object,
+  user: PropTypes.object,
+  isTestLoading: PropTypes.bool.isRequired,
+  clearSelectedItems: PropTypes.func.isRequired,
+  saveCurrentEditingTestId: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  currentTab: PropTypes.string,
+  testStatus: PropTypes.string,
+  userId: PropTypes.string,
+  updated: PropTypes.bool,
+  showWarningModal: PropTypes.bool,
+  proceedPublish: PropTypes.func.isRequired,
+  clearTestAssignments: PropTypes.func.isRequired,
+  editAssigned: PropTypes.bool,
+  createdItems: PropTypes.array,
+  setRegradeOldId: PropTypes.func.isRequired,
+  getDefaultTestSettings: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
+  userRole: PropTypes.string,
+  isReleaseScorePremium: PropTypes.bool,
+  receiveItemDetailById: PropTypes.func.isRequired,
+  questionsUpdated: PropTypes.bool,
+  getItemsSubjectAndGrade: PropTypes.func.isRequired,
+  itemsSubjectAndGrade: PropTypes.object,
+  collectionsToShow: PropTypes.array,
+  updateDefaultThumbnail: PropTypes.func.isRequired,
+  questions: PropTypes.array,
+  questionsById: PropTypes.object,
+  updateDocBasedTest: PropTypes.func.isRequired,
+  userFeatures: PropTypes.object.isRequired,
+  publishTest: PropTypes.func.isRequired,
+  duplicateTest: PropTypes.func.isRequired,
+  collections: PropTypes.array,
+  approveOrRejectSingleTestRequest: PropTypes.func.isRequired,
+}
+
+Container.defaultProps = {
+  test: null,
+  user: {},
+  currentTab: 'review',
+  testStatus: '',
+  userId: '',
+  updated: false,
+  showWarningModal: false,
+  editAssigned: false,
+  createdItems: [],
+  userRole: 'teacher',
+  isReleaseScorePremium: false,
+  questionsUpdated: false,
+  itemsSubjectAndGrade: {},
+  collectionsToShow: [],
+  questions: [],
+  questionsById: {},
+  collections: [],
 }
 
 const enhance = compose(

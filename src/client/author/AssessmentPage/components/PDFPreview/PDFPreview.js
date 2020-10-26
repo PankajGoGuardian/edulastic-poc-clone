@@ -55,6 +55,7 @@ const PDFPreview = ({
   annotationToolsProperties,
   annotationsStack,
   isEditable,
+  toggleIntercomDisplay,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -77,6 +78,7 @@ const PDFPreview = ({
      * need to scroll to a particular question in assessment player
      * and to the particular page if the question dropped
      */
+    review && toggleIntercomDisplay()
     if (qid) {
       const questionAnnotation = annotations.find((x) => x.questionId === qid)
       if (questionAnnotation?.page) {

@@ -3,7 +3,7 @@ import { IconReport } from '@edulastic/icons'
 import { Spin } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { test as testConstants } from '@edulastic/constants'
+import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 import styled from 'styled-components'
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from 'react-redux'
@@ -32,6 +32,7 @@ import TestActivitySubHeader from './SubHeader'
 import ProgressGraph from '../../../common/components/ProgressGraph'
 import OverallFeedback from './OverallFeedback'
 
+const { ABSENT, NOT_STARTED } = testActivityStatus
 const { releaseGradeLabels } = testConstants
 const continueBtns = [
   releaseGradeLabels.WITH_ANSWERS,
@@ -189,7 +190,9 @@ const enhance = compose(
       testItems: getItemsSelector(state),
       questionActivities: getFeedbackTransformedSelector(state),
       testActivity: get(state, `[studentReport][testActivity]`, {}),
-      attempts: get(state, `testActivities`, []),
+      attempts: get(state, `testActivities`, []).filter(
+        ({ status }) => status !== ABSENT && status !== NOT_STARTED
+      ),
     }),
     {
       setCurrentItem: setCurrentItemAction,

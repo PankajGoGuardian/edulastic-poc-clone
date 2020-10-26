@@ -21,19 +21,18 @@ const sagaMiddleware = createSagaMiddleware({
 
 const middleware = [sagaMiddleware, routerMiddleware(history)]
 
-/* istanbul ignore next */
-if (process.env.NODE_ENV === 'development') {
-  // enable redux-freeze
-  const reduxFreeze = require('redux-freeze') // eslint-disable-line global-require
-  middleware.push(reduxFreeze)
-}
+// /* istanbul ignore next */
+// if (process.env.NODE_ENV === 'development') {
+//   // enable redux-freeze
+//   const reduxFreeze = require('redux-freeze') // eslint-disable-line global-require
+//   middleware.push(reduxFreeze)
+// }
 
 let store
 
 const composeEnhancers =
-  process.env.NODE_ENV === 'development' &&
-  typeof window === 'object' &&
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+  // process.env.NODE_ENV === 'development' &&
+  typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     : compose
 

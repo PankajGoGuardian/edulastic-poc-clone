@@ -69,7 +69,8 @@ const CLIAccessBanner = loadable(
   fallback
 )
 
-const query = qs.parse(window.location.search)
+const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
+
 if (query.token && query.userId && query.role) {
   TokenStorage.storeAccessToken(query.token, query.userId, query.role)
   TokenStorage.selectAccessToken(query.userId, query.role)

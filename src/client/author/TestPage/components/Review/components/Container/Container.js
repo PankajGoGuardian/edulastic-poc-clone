@@ -104,7 +104,9 @@ class Review extends PureComponent {
     // url = http://localhost:3001/author/tests/tab/review/id/testId/
     // ?token=value&firebaseToken=value&userId=value&role=teacher&itemBank=cli&showCLIBanner=1
     // &showAssingmentPreview=1
-    const { showAssignmentPreview } = qs.parse(window.location.search)
+    const { showAssignmentPreview } = qs.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })
     if (showAssignmentPreview) {
       this.setState({
         isTestPreviewModalVisible: true,

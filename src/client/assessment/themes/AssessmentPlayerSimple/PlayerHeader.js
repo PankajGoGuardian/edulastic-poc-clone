@@ -78,6 +78,7 @@ const PlayerHeader = ({
   const rightButtons = (
     <SaveAndExit
       utaId={utaId}
+      groupId={groupId}
       previewPlayer={previewPlayer}
       showZoomBtn
       finishTest={onOpenExitPopup}

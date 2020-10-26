@@ -53,7 +53,7 @@ Preview.propTypes = {
 class StudentQuestions extends Component {
   getTestItems() {
     const { currentStudent, questionActivities, location } = this.props
-    const { type, qs } = Qs.parse(location.search)
+    const { type, qs } = Qs.parse(location.search, { ignoreQueryPrefix: true })
     // convert query string to array format
     const formattedFilteredQs = formatQuestionLists(qs)
     let {

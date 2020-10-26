@@ -60,7 +60,7 @@ class PrintPreviewClass extends React.Component {
   render() {
     const appLoginUrl = `${window.location.origin}/login`
     const { selctedClass, students, location, user } = this.props
-    const query = qs.parse(location.search)
+    const query = qs.parse(location.search, { ignoreQueryPrefix: true })
     const { studentIds } = query
     const selectedStudent =
       studentIds && students

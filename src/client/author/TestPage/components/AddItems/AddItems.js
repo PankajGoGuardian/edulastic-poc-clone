@@ -137,7 +137,7 @@ class AddItems extends PureComponent {
       needToSetFilter,
       sort: initSort,
     } = this.props
-    const query = qs.parse(window.location.search)
+    const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
     let search = {}
     const sessionSort =
       JSON.parse(sessionStorage.getItem('sortBy[itemList]')) || {}

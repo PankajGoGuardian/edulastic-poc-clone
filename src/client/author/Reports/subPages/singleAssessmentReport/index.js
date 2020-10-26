@@ -65,13 +65,15 @@ const SingleAssessmentReportContainer = (props) => {
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
-  const [isCliUser] = useState(cliUser || qs.parse(location.search).cliUser)
+  const [isCliUser] = useState(
+    cliUser || qs.parse(location.search, { ignoreQueryPrefix: true }).cliUser
+  )
   const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS })
   const [selectedExtras, setSelectedExtras] = useState({
     ...INITIAL_DD_FILTERS,
   })
   const [customStudentUserId] = useState(
-    qs.parse(location.search).customStudentUserId
+    qs.parse(location.search, { ignoreQueryPrefix: true }).customStudentUserId
   )
 
   useEffect(() => {

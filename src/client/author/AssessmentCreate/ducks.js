@@ -3,7 +3,6 @@ import { createSelector } from 'reselect'
 import { call, put, all, takeLatest, select } from 'redux-saga/effects'
 import nanoid from 'nanoid'
 import { push } from 'react-router-redux'
-import pdfjs from 'pdfjs-dist'
 import produce from 'immer'
 import { get, without, omit } from 'lodash'
 
@@ -20,6 +19,11 @@ import {
   receiveTestByIdAction,
 } from '../TestPage/ducks'
 import { getUserSelector, getUserRole } from '../src/selectors/user'
+
+const pdfjs = require('pdfjs-dist')
+
+pdfjs.GlobalWorkerOptions.workerSrc =
+  '//cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
 
 export const CREATE_ASSESSMENT_REQUEST =
   '[assessmentPage] create assessment request'

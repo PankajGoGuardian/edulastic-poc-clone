@@ -119,7 +119,9 @@ const StandardsFilters = ({
 
   // get initial filters from url and orgData
   const getInitialFilters = () => {
-    const search = qs.parse(location.search.substring(1))
+    const search = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
     const defaultTermId =
       filters?.termId || get(user, 'orgData.defaultTermId', '')
     const urlSchoolYear =
@@ -229,7 +231,7 @@ const StandardsFilters = ({
     // allTestIds Received
     setPrevStandardsFilters(standardsFilters)
     if (standardsFilteresReceiveCount.current === 0) {
-      const search = qs.parse(location.search.substring(1))
+      const search = qs.parse(location.search, { ignoreQueryPrefix: true })
       // default filters
       const _filters = getInitialFilters()
       // filters fetched on page load

@@ -1661,7 +1661,7 @@ class Board {
    * settings::bgImageParameters
    * @see https://jsxgraph.org/docs/symbols/Image.html
    */
-  setBgImage(bgImageParameters) {
+  setBgImage(bgImageParameters = {}) {
     const bgImage = this.createElement('image', [
       bgImageParameters.urlImg,
       ...getImageCoordsByPercent(this.parameters, bgImageParameters),

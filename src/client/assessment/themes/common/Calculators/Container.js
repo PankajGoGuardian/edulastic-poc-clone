@@ -10,7 +10,7 @@ import { Spin } from 'antd'
 import BasicCalculator from './BasicCalculator'
 import EduScientificCalculator from './EduScientificCalculator'
 import CalculatorTitle from './components/CalculatorTitle'
-import AppConfig from '../../../../../../app-config'
+import AppConfig from '../../../../../app-config'
 
 const defaultRndPros = {
   geogebraCalculator: { x: 0, y: 0, width: 800, height: 635 },

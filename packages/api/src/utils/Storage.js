@@ -1,8 +1,8 @@
-// @ts-check
+ 
 import uuid from 'uuid/v4'
 import { configureScope, captureException } from '@sentry/browser'
 import { uniq } from 'lodash'
-import AppConfig from '../../../../app-config'
+import AppConfig from '../../../../src/app-config'
 
 const tokenKey = (userId, role) => `user:${userId}:role:${role}`
 

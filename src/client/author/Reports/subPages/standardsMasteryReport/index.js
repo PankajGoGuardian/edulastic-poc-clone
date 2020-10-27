@@ -94,10 +94,7 @@ const StandardsMasteryReportContainer = (props) => {
       return next(
         navigation.navigation[navigation.locToData[loc].group],
         (draft) => {
-          getNavigationTabLinks(
-            draft,
-            `?${qs.stringify(obj, { arrayFormat: 'comma' })}`
-          )
+          getNavigationTabLinks(draft, `?${qs.stringify(obj, { comma: true })}`)
         }
       )
     }
@@ -118,7 +115,7 @@ const StandardsMasteryReportContainer = (props) => {
       obj.testIds = gradebookSettings.selectedTest
         .map((items) => items.key)
         .join()
-      const path = qs.stringify(obj, { arrayFormat: 'comma' })
+      const path = qs.stringify(obj, { comma: true })
       history.push(`?${path}`)
     }
     firstRender.current = false

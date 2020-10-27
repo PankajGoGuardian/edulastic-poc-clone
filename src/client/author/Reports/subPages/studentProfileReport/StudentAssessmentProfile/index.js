@@ -25,20 +25,18 @@ import {
 } from './ducks'
 
 const StudentAssessmentProfile = ({
-  match,
   loading,
   settings,
   SPRFilterData,
   studentAssessmentProfile,
-  getStudentAssessmentProfileRequestAction,
+  getStudentAssessmentProfile,
   isCsvDownloading,
   bandInfoSelected: bandInfo,
   location,
   pageTitle,
-  history,
   t,
 }) => {
-  const { selectedStudent } = settings
+  const { selectedStudent, requestFilters } = settings
   const anonymousString = t('common.anonymous')
 
   const studentClassData = SPRFilterData?.data?.result?.studentClassData || []
@@ -48,19 +46,19 @@ const StudentAssessmentProfile = ({
   const rawData = get(studentAssessmentProfile, 'data.result', {})
 
   const [chartData, tableData] = useMemo(() => {
-    const chartData = augementAssessmentChartData(
+    const _chartData = augementAssessmentChartData(
       rawData.metricInfo,
       bandInfo,
       studentClassData
     )
-    const tableData = getData(rawData, chartData, bandInfo)
-    return [chartData, tableData]
+    const _tableData = getData(rawData, _chartData, bandInfo)
+    return [_chartData, _tableData]
   }, [rawData, bandInfo])
 
   useEffect(() => {
-    const { selectedStudent, requestFilters } = settings
+    // settings: { selectedStudent, requestFilters }
     if (selectedStudent.key && requestFilters.termId) {
-      getStudentAssessmentProfileRequestAction({
+      getStudentAssessmentProfile({
         ...requestFilters,
         studentId: selectedStudent.key,
       })
@@ -76,7 +74,7 @@ const StudentAssessmentProfile = ({
   const studentInformation = studentClassData[0] || {}
   const studentName = getStudentName(selectedStudent, studentInformation)
 
-  const onTestSelect = (item, record) =>
+  const onTestSelect = (item) =>
     setSelectedTests(toggleItem(selectedTests, item.uniqId))
   const onCsvConvert = (data) =>
     downloadCSV(
@@ -140,7 +138,7 @@ const withConnect = connect(
     bandInfoSelected: getBandInfoSelected(state),
   }),
   {
-    getStudentAssessmentProfileRequestAction,
+    getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
   }
 )
 

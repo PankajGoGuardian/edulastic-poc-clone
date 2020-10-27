@@ -87,7 +87,7 @@ const CreateClassPage = ({
         !isClassLink && <StyledP>OR</StyledP>}
       {allowGoogleLogin !== false && !cleverId && !isClassLink && (
         <GoogleLogin
-          clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
           render={(renderProps) => (
             <SyncClassDiv onClick={renderProps.onClick}>
               <IconGoogleClassroom />

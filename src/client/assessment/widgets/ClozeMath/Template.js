@@ -14,15 +14,18 @@ import {
   isEmpty,
   get,
 } from 'lodash'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-
 import { math } from '@edulastic/constants'
-import { FroalaEditor } from '@edulastic/common'
-
 // import { ToolbarContainer } from "../../styled/ToolbarContainer";
 // import { FroalaContainer } from "../../styled/FroalaContainer";
 import { Subtitle } from '../../styled/Subtitle'
 import Question from '../../components/Question'
+
+const FroalaEditor = loadable(() =>
+  import('@edulastic/common/src/components/FroalaEditor')
+)
 
 const { methods } = math
 
@@ -505,6 +508,7 @@ class Template extends Component {
         </Subtitle>
 
         <FroalaEditor
+          fallback={<Progress />}
           data-cy="templateBox"
           onChange={_updateTemplate}
           value={item.stimulus}

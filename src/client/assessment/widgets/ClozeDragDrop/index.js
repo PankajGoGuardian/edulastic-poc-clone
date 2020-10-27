@@ -30,7 +30,7 @@ import { replaceVariables, updateVariables } from '../../utils/variables'
 import { CheckContainer } from './styled/CheckContainer'
 import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 const EmptyWrapper = styled.div``

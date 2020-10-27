@@ -27,12 +27,12 @@ export const clearAssignmentSettingsAction = createAction(
 )
 
 // selectors
-const module = 'authorTestAssignments'
-const currentSelector = (state) => state[module].current
+const _moduld = 'authorTestAssignments'
+const currentSelector = (state) => state[_moduld].current
 
 export const testsSelector = (state) => state.tests
 
-export const getAssignmentsSelector = (state) => state[module].assignments
+export const getAssignmentsSelector = (state) => state[_moduld].assignments
 
 const classesData = (state) => state.classesReducer.data
 

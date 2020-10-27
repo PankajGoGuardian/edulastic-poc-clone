@@ -58,8 +58,11 @@ const getCol = (record = {}, domainId, analyseByKey, scaleInfo) => {
   if (colValue === 'N/A') {
     return colValue
   }
+  const bgColor =
+    (analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore') &&
+    getMasteryScoreColor(domain, scaleInfo)
   return (
-    <ColoredCell bgColor={getMasteryScoreColor(domain, scaleInfo)}>
+    <ColoredCell bgColor={bgColor}>
       {getColValue(record, domainId, analyseByKey, scaleInfo)}
     </ColoredCell>
   )

@@ -535,7 +535,7 @@ const CustomEditor = ({
   const specialCharactersSets = getSpecialCharacterSets(customCharacters)
   const initialConfig = Object.assign(
     {
-      key: process.env.POI_APP_FROALA_KEY,
+      key: process.env.REACT_APP_FROALA_KEY,
       imageInsertButtons: ['imageUpload'], // hide other image uplaod options
       imageDefaultDisplay: 'inline',
       linkAlwaysBlank: true, // adding to make link always open in blank
@@ -616,7 +616,7 @@ const CustomEditor = ({
             const parent = range.commonAncestorContainer
             if (parent && range.startOffset === range.endOffset) {
               const cursorEl = parent.childNodes[range.startOffset - 1]
-              if (!cursorEl || !cursorEl.tagName) return
+              if (!$(cursorEl).length || !cursorEl || !cursorEl.tagName) return
 
               if (
                 [

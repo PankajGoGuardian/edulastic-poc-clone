@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import qs from 'qs'
 import { compose } from 'redux'
-import queryString from 'query-string'
 import { mobileWidthMax } from '@edulastic/colors'
 import { PrintActionWrapper } from '@edulastic/common'
 import StudentQuestionContainer from '../StudentQuestionContiner/StudentQuestionContainer'
@@ -34,8 +34,9 @@ class PrintPreview extends Component {
       location,
     } = this.props
     const { assignmentId, classId } = match.params
-    const selectedStudents = queryString.parse(location.search, {
-      arrayFormat: 'comma',
+    const selectedStudents = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+      comma: true,
     })
 
     let _selectedStudents

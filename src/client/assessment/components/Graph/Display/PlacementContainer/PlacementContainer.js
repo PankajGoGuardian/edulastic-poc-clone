@@ -41,7 +41,7 @@ import {
 } from './styled'
 import Tools from '../../common/Tools'
 import DragDropValues from './DragDropValues'
-import AppConfig from '../../../../../../../app-config'
+import AppConfig from '../../../../../../app-config'
 
 const valueHeightHashMap = {
   1: {

@@ -20,7 +20,7 @@ import { Heading } from './styled/Heading'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
 import ColorPicker from './ColorPicker'
 import { ColorPickerContainer, Overlay } from './styled/ColorPicker'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 import { CLEAR } from '../../constants/constantsForQuestions'
 
 import HighlightPopover from './HighlightPopover'

@@ -11,7 +11,6 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import { markQuestionLabel } from '../../assessment/Transformer'
-import { UPDATE_TEST_DOC_BASED_REQUEST } from '../TestPage/ducks'
 
 // actions types
 export const LOAD_QUESTIONS = '[author questions] load questions'
@@ -45,6 +44,9 @@ export const deleteQuestionAction = createAction(DELETE_QUESTION)
 export const setRubricIdAction = createAction(SET_RUBRIC_ID)
 export const removeRubricIdAction = createAction(REMOVE_RUBRIC_ID)
 export const changeUpdatedFlagAction = createAction(CHANGE_UPDATE_FLAG)
+
+export const UPDATE_TEST_DOC_BASED_REQUEST =
+  '[tests] update doc based test request'
 // initialState
 const initialState = {
   byId: {},
@@ -224,7 +226,7 @@ export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
   '[itemDetail] set item level scoring'
 export const SET_QUESTION_SCORE = '[author questions] set question score'
 export const setQuestionScoreAction = createAction(SET_QUESTION_SCORE)
-const module = 'authorQuestions'
+const _module = 'authorQuestions'
 
 // reducer
 export default createReducer(initialState, {
@@ -278,10 +280,10 @@ export default createReducer(initialState, {
 
 // selectors
 
-export const getCurrentQuestionIdSelector = (state) => state[module].current
-export const getQuestionsSelector = (state) => state[module].byId
+export const getCurrentQuestionIdSelector = (state) => state[_module].current
+export const getQuestionsSelector = (state) => state[_module].byId
 export const getTestStateSelector = (state) => state.tests
-export const getAuthorQuestionSelector = (state) => state[module]
+export const getAuthorQuestionSelector = (state) => state[_module]
 
 export const getTestSelector = createSelector(
   getTestStateSelector,
@@ -331,7 +333,7 @@ export const getQuestionsArraySelector = createSelector(
 )
 
 export const getQuestionByIdSelector = (state, qId) =>
-  state[module].byId[qId] || {}
+  state[_module].byId[qId] || {}
 
 // get alignment of current question
 export const getQuestionAlignmentSelector = createSelector(

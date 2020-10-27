@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Menu } from 'antd'
 import Modal from 'react-responsive-modal'
+import qs from 'qs'
 import { get } from 'lodash'
-import queryString from 'query-string'
 import { logoutAction } from '../../../src/actions/auth'
 import CLILogo from '../../assets/svgs/cli-logo.svg'
 import {
@@ -36,7 +36,7 @@ const CLIAccessBanner = ({
     </Menu>
   )
 
-  const query = queryString.parse(location.search)
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
   const isShowBanner = cliUser || isCliUser
 

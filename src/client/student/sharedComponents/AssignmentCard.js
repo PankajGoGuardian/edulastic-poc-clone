@@ -63,14 +63,14 @@ const SafeBrowserButton = ({
 
   const token = TokenStorage.getAccessToken()
   let url
-  if (process.env.POI_APP_API_URI.startsWith('http')) {
-    url = `${process.env.POI_APP_API_URI.replace('http', 'seb').replace(
+  if (process.env.REACT_APP_API_URI.startsWith('http')) {
+    url = `${process.env.REACT_APP_API_URI.replace('http', 'seb').replace(
       'https',
       'seb'
     )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`
-  } else if (process.env.POI_APP_API_URI.startsWith('//')) {
+  } else if (process.env.REACT_APP_API_URI.startsWith('//')) {
     url = `${window.location.protocol.replace('http', 'seb')}${
-      process.env.POI_APP_API_URI
+      process.env.REACT_APP_API_URI
     }/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`
   } else {
     console.warn(`** can't figure out where to put seb protocol **`)

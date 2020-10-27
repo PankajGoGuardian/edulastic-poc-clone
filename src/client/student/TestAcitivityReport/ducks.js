@@ -109,7 +109,7 @@ function* loadTestActivityReport({ payload }) {
     yield put({
       type: REMOVE_ANSWERS,
     })
-    const [test, reports, activities] = yield all([
+    const [test, reports] = yield all([
       call(testsApi.getByIdMinimal, testId, {
         data: true,
         isReport: true,
@@ -117,8 +117,14 @@ function* loadTestActivityReport({ payload }) {
         groupId,
       }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
-      call(reportsApi.fetchReports, groupId, testId),
     ])
+    const { assignmentId } = reports.testActivity
+    const activities = yield call(
+      reportsApi.fetchReports,
+      groupId,
+      testId,
+      assignmentId
+    )
     const testItems = test.itemGroups.flatMap(
       (itemGroup) => itemGroup.items || []
     )

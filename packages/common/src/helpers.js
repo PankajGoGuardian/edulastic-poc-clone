@@ -1,10 +1,10 @@
 /* eslint-disable */
-import { get, round, isNaN, isString } from 'lodash'
+import { get, round, isNaN, isString, omit } from 'lodash'
 import { notification } from '@edulastic/common'
 import { fileApi } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../../src/app-config'
 
 export const isSEB = () => window.navigator.userAgent.includes('SEB')
 
@@ -943,6 +943,11 @@ export const sanitizeString = (str) =>
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
 
+// Used when we want to spread all the props(...rest) but some.
+export const getSanitizedProps = (props, blackListedProps) => {
+  return omit(props, blackListedProps)
+}
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,
@@ -967,4 +972,5 @@ export default {
   executePromisesInSequence,
   sanitizeString,
   uuid,
+  getSanitizedProps,
 }

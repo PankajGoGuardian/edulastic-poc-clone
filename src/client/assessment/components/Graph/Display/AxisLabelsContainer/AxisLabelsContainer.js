@@ -36,7 +36,7 @@ import {
   getAdjustedHeightAndWidth,
   getAdjustedV1AnnotationCoordinatesForRender,
 } from '../../common/utils'
-import AppConfig from '../../../../../../../app-config'
+import AppConfig from '../../../../../../app-config'
 import { roundPointToNearestValue } from '../Utils'
 
 const v1Dimenstions = {

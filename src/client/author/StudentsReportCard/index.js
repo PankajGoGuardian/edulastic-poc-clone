@@ -3,9 +3,8 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Moment from 'moment'
 import { get } from 'lodash'
-import queryString from 'query-string'
 import { PrintActionWrapper } from '@edulastic/common'
-
+import qs from 'qs'
 import { receiveTestActivitydAction } from '../src/actions/classBoard'
 import { getSortedTestActivitySelector } from '../ClassBoard/ducks'
 import StudentReportPage from './components/StudentReportPage'
@@ -25,9 +24,11 @@ const StudentsReportCard = ({
   const gradedTestActivities = testActivity.filter(
     (ta) => ta.status === 'submitted' && ta.graded === 'GRADED'
   )
-  let { options } = queryString.parse(location.search)
-  options = options.split(',').map((o) => o.trim())
-  options = options.reduce((acc, option) => {
+  let { options = '' } = qs.parse(location.search.substr(1), {
+    ignoreQueryPrefix: true,
+  })
+  options = options?.split(',')?.map((o) => o.trim())
+  options = options?.reduce((acc, option) => {
     acc[option] = true
     return acc
   }, {})

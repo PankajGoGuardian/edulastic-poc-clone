@@ -14,12 +14,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { replace, push } from 'connected-react-router'
-import {
-  SET_ASSIGNMENT,
-  SET_TEST_DATA,
-  getTestSelector,
-  getTestIdSelector,
-} from '../../ducks'
+import { getTestSelector, getTestIdSelector } from '../../ducks'
 import { formatAssignment } from './utils'
 import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
 import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
@@ -42,6 +37,8 @@ export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS =
 export const UPDATE_ASSIGN_FAIL_DATA = '[assignments] update error data'
 export const TOGGLE_DUPLICATE_ASSIGNMENT_POPUP =
   '[assignments] toggle duplicate assignmnts popup'
+export const SET_ASSIGNMENT = '[assignments] set assignment'
+export const SET_TEST_DATA = '[tests] set test data'
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT)

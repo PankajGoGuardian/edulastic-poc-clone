@@ -101,7 +101,7 @@ const StandardsGradebookTableComponent = ({
 }) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: 'all',
-    analyseBy: 'score(%)',
+    analyseBy: 'masteryScore',
     compareBy: role === 'teacher' ? 'studentId' : 'schoolId',
   })
 
@@ -218,10 +218,13 @@ const StandardsGradebookTableComponent = ({
     }
     const getCellContents = (props) => {
       const { printData } = props
+      const bgColor =
+        (_analyseBy === 'masteryLevel' || _analyseBy === 'masteryScore') &&
+        record.standardsInfo?.[index]?.color
       if (_compareBy === 'studentId') {
         return (
           <ColoredCell
-            bgColor={record.standardsInfo?.[index]?.color}
+            bgColor={bgColor}
             onClick={
               printData === 'N/A'
                 ? () => null
@@ -237,11 +240,7 @@ const StandardsGradebookTableComponent = ({
           </ColoredCell>
         )
       }
-      return (
-        <ColoredCell bgColor={record.standardsInfo?.[index]?.color}>
-          {printData}
-        </ColoredCell>
-      )
+      return <ColoredCell bgColor={bgColor}>{printData}</ColoredCell>
     }
 
     const printData = getDisplayValue(
@@ -406,7 +405,7 @@ const StandardsGradebookTableComponent = ({
               <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
                 <ControlDropDown
                   data={compareByDropDownData}
-                  by={compareByDropDownData[0]}
+                  by={tableDdFilters.compareBy}
                   prefix="Compare By"
                   selectCB={tableFilterDropDownCB}
                   comData="compareBy"
@@ -415,7 +414,7 @@ const StandardsGradebookTableComponent = ({
               <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={8}>
                 <ControlDropDown
                   data={dropDownFormat.analyseByDropDownData}
-                  by={dropDownFormat.analyseByDropDownData[0]}
+                  by={tableDdFilters.analyseBy}
                   prefix="Analyze By"
                   selectCB={tableFilterDropDownCB}
                   comData="analyseBy"

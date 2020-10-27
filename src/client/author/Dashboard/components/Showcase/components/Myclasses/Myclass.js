@@ -198,7 +198,7 @@ export default compose(
       defaultGrades: getInterestedGradesSelector(state),
       defaultSubjects: getInterestedSubjectsSelector(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
-      teacherData: get(state, 'dashboardTeacher.data', {}),
+      teacherData: get(state, 'dashboardTeacher.data', []),
     }),
     {
       fetchClassList: fetchClassListAction,

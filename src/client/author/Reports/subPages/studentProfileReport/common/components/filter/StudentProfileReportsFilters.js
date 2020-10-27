@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from 'react'
-import queryString from 'query-string'
 import { connect } from 'react-redux'
 import { get, find, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
@@ -7,6 +6,8 @@ import qs from 'qs'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import StudentAutoComplete from './StudentAutoComplete'
 import ClassAutoComplete from './ClassAutoComplete'
+import CourseAutoComplete from './CourseAutoComplete'
+
 import {
   getUserRole,
   getOrgDataSelector,
@@ -29,7 +30,7 @@ import {
   setSelectedClassAction,
   setStudentAction,
 } from '../../filterDataDucks'
-import { getFilterOptions } from '../../utils/transformers'
+import { getTermOptions } from '../../utils/transformers'
 import { getFullNameFromAsString } from '../../../../../../../common/utils/helpers'
 import {
   StyledFilterWrapper,
@@ -65,25 +66,17 @@ const StudentProfileReportsFilters = ({
 }) => {
   const splittedPath = location.pathname.split('/')
   const urlStudentId = splittedPath[splittedPath.length - 1]
-  const parsedQuery = queryString.parse(location.search)
+  const parsedQuery = qs.parse(location.search, { ignoreQueryPrefix: true })
 
   const {
     termId: urlTermId,
-    courseId: urlCourseId,
     grade: urlGrade,
     subject: urlSubject,
   } = parsedQuery
 
   const { studentClassData = [] } = get(SPRFilterData, 'data.result', {})
   const { terms = [] } = orgData
-  const { termOptions = [], courseOptions = [] } = useMemo(
-    () => getFilterOptions(studentClassData, terms),
-    [SPRFilterData, terms]
-  )
-  const coursesForTerm = useMemo(
-    () => courseOptions.filter((c) => c.termId === filters.termId),
-    [courseOptions, filters.termId]
-  )
+  const termOptions = useMemo(() => getTermOptions(terms), [terms])
 
   const defaultTermOption = useMemo(
     () => find(termOptions, (term) => term.key === defaultTerm),
@@ -96,13 +89,6 @@ const StudentProfileReportsFilters = ({
       defaultTermOption ||
       {},
     [termOptions]
-  )
-  const selectedCourse = useMemo(
-    () =>
-      find(coursesForTerm, (course) => course.key === urlCourseId) ||
-      coursesForTerm[0] ||
-      {},
-    [coursesForTerm]
   )
 
   const selectedGrade = useMemo(
@@ -158,7 +144,6 @@ const StudentProfileReportsFilters = ({
     const _filters = {
       ...filters,
       termId: selectedTerm.key,
-      courseId: selectedCourse.key,
       grade: selectedGrade.key,
       subject: selectedSubject.key,
       // uncomment after making changes to chart files
@@ -205,25 +190,6 @@ const StudentProfileReportsFilters = ({
     _onGoClick(settings)
   }
 
-  const handleTermChange = ({ key }) => {
-    const _coursesForTerm = courseOptions.filter((c) => c.termId === key)
-    const _course =
-      find(_coursesForTerm, (c) => c.key === filters.courseId) ||
-      _coursesForTerm[0] ||
-      {}
-    const obj = {
-      ...filters,
-      termId: key,
-      courseId: _course.key,
-    }
-    setFilters(obj)
-    const settings = {
-      filters: pickBy(obj, (f) => f !== 'All' && !isEmpty(f)),
-      selectedStudent: student,
-    }
-    _onGoClick(settings)
-  }
-
   return (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
@@ -233,7 +199,7 @@ const StudentProfileReportsFilters = ({
         <FilterLabel>School Year</FilterLabel>
         <ControlDropDown
           by={filters.termId}
-          selectCB={handleTermChange}
+          selectCB={(value) => handleFilterChange('termId', value)}
           data={termOptions}
           prefix="School Year"
           showPrefixOnSelected={false}
@@ -241,12 +207,9 @@ const StudentProfileReportsFilters = ({
       </SearchField>
       <SearchField>
         <FilterLabel>Course</FilterLabel>
-        <ControlDropDown
-          by={filters.courseId}
+        <CourseAutoComplete
+          selectedCourseId={filters.courseId}
           selectCB={(value) => handleFilterChange('courseId', value)}
-          data={coursesForTerm}
-          prefix="Courses"
-          showPrefixOnSelected={false}
         />
       </SearchField>
       <SearchField>
@@ -272,8 +235,9 @@ const StudentProfileReportsFilters = ({
       <SearchField>
         <FilterLabel>Class</FilterLabel>
         <ClassAutoComplete
-          grade={filters.grade !== 'All' && filters.grade}
-          subject={filters.subject !== 'All' && filters.subject}
+          selectedCourseId={filters.courseId}
+          selectedGrade={filters.grade !== 'All' && filters.grade}
+          selectedSubject={filters.subject !== 'All' && filters.subject}
           selectedClass={selectedClass}
           selectCB={setSelectedClass}
         />
@@ -281,9 +245,12 @@ const StudentProfileReportsFilters = ({
       <SearchField>
         <FilterLabel>Student</FilterLabel>
         <StudentAutoComplete
-          selectCB={onStudentSelect}
-          selectedStudent={student}
+          selectedCourseId={filters.courseId}
+          selectedGrade={filters.grade !== 'All' && filters.grade}
+          selectedSubject={filters.subject !== 'All' && filters.subject}
           selectedClasses={selectedClasses}
+          selectedStudent={student}
+          selectCB={onStudentSelect}
         />
       </SearchField>
       {performanceBandRequired && (

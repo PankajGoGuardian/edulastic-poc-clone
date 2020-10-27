@@ -10,11 +10,13 @@ import {
   largeDesktopWidth,
 } from '@edulastic/colors'
 import { Row, Col } from 'antd'
+import { testActivityStatus } from '@edulastic/constants'
 import { formatDateAndTime } from '../utils'
 import { Tooltip } from '../../common/utils/helpers'
 import { ReactComponent as FeedbackIcon } from '../assets/writing.svg'
 import OverallFeedbackModal from './OverallFeedbackModal'
 
+const { ABSENT, NOT_STARTED } = testActivityStatus
 const Attempt = ({
   data = {},
   type,
@@ -27,15 +29,19 @@ const Attempt = ({
 }) => {
   const [isOverallFeedback, setOverallFeedback] = useState(false)
 
-  const { maxScore = 0, score = 0, feedback } = data
+  const { maxScore = 0, score = 0, feedback, status } = data
   const percentage = (score / maxScore) * 100 || 0
-
   const btnWrapperSize =
     releaseScore === releaseGradeLabels.DONT_RELEASE
       ? 18
       : releaseScore === releaseGradeLabels.WITH_ANSWERS
       ? 6
       : 12
+  const showReviewButton =
+    type === 'reports' &&
+    activityReview &&
+    status !== ABSENT &&
+    status !== NOT_STARTED
   return (
     <>
       <AttemptsData>
@@ -66,7 +72,7 @@ const Attempt = ({
               </Tooltip>
             </FeedbackWrapper>
           )}
-          {type === 'reports' && activityReview ? (
+          {showReviewButton ? (
             <AnswerAndScoreReview sm={btnWrapperSize}>
               <ReviewBtn
                 to={`/home/class/${classId}/test/${data.testId}/testActivityReport/${data._id}`}

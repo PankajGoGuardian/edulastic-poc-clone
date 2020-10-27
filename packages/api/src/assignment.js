@@ -79,6 +79,7 @@ const fetchTeacherAssignments = ({
 const regrade = (data) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/regrade`,
       method: 'post',
       data,
@@ -139,8 +140,7 @@ const fetchAssignmentsSummary = ({ districtId = '', filters, sort }) =>
       url: `${prefix}/district/${districtId}`,
       method: 'get',
       params: { ...filters, ...sort },
-      paramsSerializer: (params) =>
-        qs.stringify(params, { arrayFormat: 'comma' }),
+      paramsSerializer: (params) => qs.stringify(params, { comma: true }),
     })
     .then((result) => result.data.result)
 

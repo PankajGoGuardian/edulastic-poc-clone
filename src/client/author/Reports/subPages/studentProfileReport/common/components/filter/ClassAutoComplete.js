@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { get, isEmpty } from 'lodash'
+import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
 import { AutoComplete, Input, Icon } from 'antd'
@@ -21,8 +21,9 @@ const ClassAutoComplete = ({
   classList,
   loading,
   loadClassList,
-  grade,
-  subject,
+  selectedCourseId,
+  selectedGrade,
+  selectedSubject,
   selectedClass,
   selectCB,
 }) => {
@@ -48,11 +49,14 @@ const ClassAutoComplete = ({
     if (userRole === roleuser.SCHOOL_ADMIN) {
       q.search.institutionIds = institutionIds
     }
-    if (grade) {
-      q.search.grades = [`${grade}`]
+    if (selectedCourseId) {
+      q.search.courseIds = [selectedCourseId]
     }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (selectedGrade) {
+      q.search.grades = [`${selectedGrade}`]
+    }
+    if (selectedSubject) {
+      q.search.subjects = [selectedSubject]
     }
     return q
   }, [searchTerms.text])
@@ -75,6 +79,11 @@ const ClassAutoComplete = ({
     }
   }
 
+  const loadClassListDebounced = useCallback(
+    debounce(loadClassList, 500, { trailing: true }),
+    []
+  )
+
   // effects
   useEffect(() => {
     if (!isEmpty(selectedClass)) {
@@ -84,7 +93,7 @@ const ClassAutoComplete = ({
   }, [])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
-      loadClassList(query)
+      loadClassListDebounced(query)
     }
   }, [searchTerms])
 

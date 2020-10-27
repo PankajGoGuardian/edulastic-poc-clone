@@ -1,4 +1,3 @@
-// @ts-check
 import React from 'react'
 import { Card, Input, Button, Layout } from 'antd'
 import { notification } from '@edulastic/common'

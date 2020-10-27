@@ -48,7 +48,7 @@ import {
   uploadToDriveAction,
 } from '../../../AssessmentCreate/ducks'
 import PDFAnnotationTools from '../PDFAnnotationTools'
-import AppConfig from '../../../../../../app-config'
+import AppConfig from '../../../../../app-config'
 
 const swap = (array, i, j) => {
   const copy = array.slice()
@@ -726,6 +726,7 @@ class WorksheetComponent extends React.Component {
               currentAnnotationTool={currentAnnotationTool}
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
+              toggleIntercomDisplay={toggleIntercomDisplay}
             />
           </PDFViewerContainer>
 

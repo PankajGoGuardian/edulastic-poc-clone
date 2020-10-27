@@ -123,26 +123,25 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   }
 
   setToggleToResponse = () =>
-    this.getResponseScoreToggleSwitch().then(($ele) => {
-      if ($ele.attr('aria-checked') === 'true')
-        cy.wrap($ele).click().should('not.have.class', 'ant-switch-checked')
-    })
+    this.getResponseScoreToggleSwitch()
+      .contains('div', 'Response')
+      .click({ force: true })
+      .should('have.css', 'background-color', queColor.BLUE_2)
 
   setToggleToScore = () =>
-    this.getResponseScoreToggleSwitch().then(($ele) => {
-      if ($ele.attr('aria-checked') === 'false')
-        cy.wrap($ele).click().should('have.class', 'ant-switch-checked')
-    })
+    this.getResponseScoreToggleSwitch()
+      .contains('div', 'Score')
+      .click({ force: true })
+      .should('have.css', 'background-color', queColor.BLUE_2)
 
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
   verifyToggleSetToResponse = () => {
-    this.getResponseScoreToggleSwitch().should(
-      'not.have.class',
-      'ant-switch-checked'
-    )
+    this.getResponseScoreToggleSwitch()
+      .contains('div', 'Response')
+      .should('have.css', 'background-color', queColor.BLUE_2)
   }
 
   verifyScoreAndPerformance = (score, perf) => {

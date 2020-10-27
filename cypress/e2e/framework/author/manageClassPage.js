@@ -72,7 +72,11 @@ export default class TeacherManageClassPage {
 
   getArchiveClassInDropDown = () => cy.get('li').contains('Archive Class')
 
-  getunArchiveButton = () => cy.get('span').contains('UNARCHIVE')
+  getunArchiveButton = () =>
+    cy
+      .get('[data-cy="header-left-container"]')
+      .next()
+      .contains('span', 'UNARCHIVE')
 
   getSchoolDropDown = () => cy.get(`#institutionId`)
 

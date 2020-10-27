@@ -492,15 +492,6 @@ describe(`${FileHelper.getSpecName(
       testLibraryPage.sidebar.clickOnAssignment()
       authorAssignmentPage.clickOnLCBbyTestId(testId)
     })
-
-    it('> try removing absent student, should not allow', () => {
-      lcb.checkSelectAllCheckboxOfStudent()
-      lcb.uncheckSelectAllCheckboxOfStudent()
-      lcb.selectCheckBoxByStudentName(students.stu3.name)
-      lcb.clickOnRemove(false)
-      lcb.verifyStudentCardCount(2)
-    })
-
     it('> try removing graded student, should not allow', () => {
       lcb.checkSelectAllCheckboxOfStudent()
       lcb.uncheckSelectAllCheckboxOfStudent()
@@ -516,6 +507,13 @@ describe(`${FileHelper.getSpecName(
       lcb.selectCheckBoxByStudentName(students.stu3.name)
       lcb.clickOnRemove(false)
       lcb.verifyStudentCardCount(2)
+    })
+    it('> try removing absent student, should allow', () => {
+      lcb.checkSelectAllCheckboxOfStudent()
+      lcb.uncheckSelectAllCheckboxOfStudent()
+      lcb.selectCheckBoxByStudentName(students.stu3.name)
+      lcb.clickOnRemove()
+      lcb.verifyStudentCardCount(1)
     })
     context('> add and remove the new student to assignment', () => {
       before('> add removed student back to class', () => {
@@ -539,7 +537,7 @@ describe(`${FileHelper.getSpecName(
 
         lcb.selectCheckBoxByStudentName(students.stu1.name)
         lcb.clickOnRemove()
-        lcb.verifySubmittedCount(totalStudents - 2, totalStudents - 1)
+        lcb.verifySubmittedCount(1, 1)
 
         lcb.header.clickOnExpressGraderTab()
         lcb.header.clickOnLCBTab()
@@ -558,7 +556,7 @@ describe(`${FileHelper.getSpecName(
           testId,
           className,
           1,
-          2,
+          1,
           false,
           teacherSide.IN_GRADING
         )

@@ -425,13 +425,16 @@ const { themeColor } = require('@edulastic/colors')
                   return fn
                     .apply(undefined, arguments)
                     .then(function (annotations) {
+                      let _annotations = annotations?.annotations
                       // TODO may be best to have this happen on the server
-                      if (annotations.annotations) {
-                        annotations.annotations.forEach(function (a) {
+                      if (_annotations && _annotations.length) {
+                        _annotations = [..._annotations].map(function (a) {
                           a.documentId = documentId
+
+                          return a
                         })
                       }
-                      return annotations
+                      return _annotations
                     })
                 }
               },
@@ -3247,9 +3250,13 @@ const { themeColor } = require('@edulastic/colors')
             .getStoreAdapter()
             .getAnnotations(documentId, pageNumber)
             .then(function (annotations) {
-              return annotations.annotations.filter(function (a) {
+              const _annotations = annotations?.annotations?.filter(function (
+                a
+              ) {
                 return a.type === type
               })
+
+              return _annotations || []
             })
             .then(function (annotations) {
               annotations.forEach(function (a) {
@@ -4981,7 +4988,7 @@ const { themeColor } = require('@edulastic/colors')
             var svg = page.querySelector('.annotationLayer')
             var canvas = page.querySelector('.canvasWrapper canvas')
             var canvasContext = canvas.getContext('2d', { alpha: false })
-            var viewport = pdfPage.getViewport(scale, rotate)
+            var viewport = pdfPage.getViewport({ scale, rotate })
             var transform = scalePage(pageNumber, viewport, canvasContext)
 
             // Render the page
@@ -4990,7 +4997,7 @@ const { themeColor } = require('@edulastic/colors')
                 canvasContext: canvasContext,
                 viewport: viewport,
                 transform: transform,
-              }),
+              }).promise,
               _PDFJSAnnotate2.default.render(svg, viewport, annotations),
             ])
               .then(function () {

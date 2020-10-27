@@ -119,7 +119,7 @@ class EditableLabel extends React.Component {
       if (isSpaceEnable)
         setProfileValue(
           valueName,
-          e.target.value.toString().replace(/\s\s+/g, ' ').trim()
+          e.target.value.toString().replace(/\s\s+/g, ' ')
         )
       else
         setProfileValue(valueName, e.target.value.toString().replace(/\s/g, ''))

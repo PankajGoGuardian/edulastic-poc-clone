@@ -11,13 +11,21 @@ import {
   themeColorBlue,
   themeColorHoverBlue,
 } from '@edulastic/colors'
+import { getSanitizedProps } from '@edulastic/common'
 import PropTypes from 'prop-types'
 
-const EduButton = ({ children, ...restProps }) => (
-  <StyledButton type="primary" {...restProps}>
-    {children}
-  </StyledButton>
-)
+const EduButton = ({ children, ...restProps }) => {
+  const blacklistedPropsDOMElements = ['features', 'groupList']
+  const sanitizedProps = getSanitizedProps(
+    restProps,
+    blacklistedPropsDOMElements
+  )
+  return (
+    <StyledButton type="primary" {...sanitizedProps}>
+      {children}
+    </StyledButton>
+  )
+}
 
 EduButton.propTypes = {
   btnType: PropTypes.string,

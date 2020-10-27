@@ -2406,6 +2406,7 @@ function* duplicateTestSaga({ payload }) {
       yield put(push(`/author/tests/${data._id}`))
       yield put(setEditEnableAction(true))
       yield put(setTestsLoadingAction(false))
+      yield put(receiveTestByIdAction(data._id, true))
       return
     }
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`))

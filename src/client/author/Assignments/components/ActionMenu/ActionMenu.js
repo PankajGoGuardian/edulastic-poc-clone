@@ -2,12 +2,11 @@ import React from 'react'
 import { Menu } from 'antd'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
-import { get } from 'lodash'
 import * as Sentry from '@sentry/browser'
 
 import { assignmentApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import { IconPrint, IconTrashAlt, IconBarChart } from '@edulastic/icons'
+import { IconPrint, IconBarChart } from '@edulastic/icons'
 import { roleuser, test } from '@edulastic/constants'
 
 import classIcon from '../../assets/manage-class.svg'
@@ -20,14 +19,10 @@ import DuplicateTest from './ItemClone'
 const { duplicateAssignment } = assignmentApi
 const { testContentVisibility: testContentVisibilityOptions } = test
 
-const getReportPathForAssignment = (testId = '', assignment = {}) => {
+const getReportPathForAssignment = (testId = '', assignment = {}, row = {}) => {
   const q = {}
-  if (assignment.termId) {
-    q.termId = assignment.termId
-  }
-  if (assignment.testType) {
-    q.assessmentType = assignment.testType
-  }
+  q.termId = assignment.termId || row.termId
+  q.assessmentType = assignment.testType || row.testType
   return `${testId}?${qs.stringify(q)}`
 }
 
@@ -37,7 +32,6 @@ const ActionMenu = ({
   history = {},
   showPreviewModal = false,
   toggleEditModal = () => {},
-  toggleDeleteModal = () => {},
   togglePrintModal = () => {},
   addItemToFolder = () => {},
   removeItemsFromFolder = () => {},
@@ -46,8 +40,7 @@ const ActionMenu = ({
   userRole = '',
   assignmentTest = {},
   canEdit = true,
-  userClassList,
-  canUnassign = true,
+  handleDownloadResponses,
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -117,14 +110,6 @@ const ActionMenu = ({
     }
     togglePrintModal(currentTestId, currentAssignmentId, currentClassId)
   }
-
-  // owner of the assignment
-  const assignmentOwnerId = get(assignmentDetails, 'assignedBy._id', '')
-
-  // current user and assignment owner is same: true
-  const isAssignmentOwner = (userId && userId === assignmentOwnerId) || false
-  const isCoAuthor =
-    userClassList?.some((c) => c?._id === assignmentDetails?.classId) || false
   const isAdmin =
     roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
   return (
@@ -222,7 +207,8 @@ const ActionMenu = ({
           <Link
             to={`/author/reports/assessment-summary/test/${getReportPathForAssignment(
               currentTestId,
-              assignmentDetails
+              assignmentDetails,
+              row
             )}`}
           >
             <IconBarChart />
@@ -243,6 +229,20 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
+        {userRole === roleuser.TEACHER && (
+          <Menu.Item
+            data-cy="download-responses"
+            key="download-responses"
+            onClick={() => handleDownloadResponses(currentTestId)}
+          >
+            <StyledLink target="_blank" rel="noopener noreferrer">
+              <img alt="icon" src={classIcon} />
+              <SpaceElement />
+              Download Responses
+            </StyledLink>
+          </Menu.Item>
+        )}
+
         {/** Hiding Unassign option for now, please uncomment it to get it back */}
         {/* {(isAssignmentOwner || isCoAuthor || isAdmin) && canUnassign && (
           <Menu.Item

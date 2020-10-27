@@ -82,6 +82,8 @@ export const CREATE_CLASS_FAILED = '[manageClass] creat a class failed'
 export const UPDATE_CLASS_REQUEST = '[manageClass] update a class request'
 export const UPDATE_CLASS_SUCCESS = '[manageClass] update a class success'
 export const UPDATE_CLASS_FAILED = '[manageClass] update a class failed'
+export const UPDATE_ARCHIVED_CLASS_FAILED =
+  '[manageClass] update archived class failed'
 
 export const FETCH_STUDENTS_BY_ID_REQUEST =
   '[manageClass] fetch students request by classId'
@@ -180,6 +182,9 @@ export const createClassSuccessAction = createAction(CREATE_CLASS_SUCCESS)
 export const updateClassAction = createAction(UPDATE_CLASS_REQUEST)
 export const updateClassSuccessAction = createAction(UPDATE_CLASS_SUCCESS)
 export const updateClassFailedAction = createAction(UPDATE_CLASS_FAILED)
+export const updateArchivedClassFailedAction = createAction(
+  UPDATE_ARCHIVED_CLASS_FAILED
+)
 
 export const fetchStudentsByIdAction = createAction(
   FETCH_STUDENTS_BY_ID_REQUEST
@@ -302,6 +307,7 @@ const initialState = {
   unarchivingClass: false,
   showCleverSyncModal: false,
   filterClass: 'Active',
+  showUpdateCoTeachersModal: false,
 }
 
 const setFilterClass = (state, { payload }) => {
@@ -377,6 +383,10 @@ const updateClassSuccess = (state, { payload }) => {
 const updateClassFailed = (state, { payload }) => {
   state.updating = false
   state.error = payload
+}
+
+const updateArchivedClassFailed = (state) => {
+  state.updating = false
 }
 
 const addStudentRequest = (state) => {
@@ -502,6 +512,7 @@ export default createReducer(initialState, {
   [UPDATE_CLASS_REQUEST]: updateClass,
   [UPDATE_CLASS_SUCCESS]: updateClassSuccess,
   [UPDATE_CLASS_FAILED]: updateClassFailed,
+  [UPDATE_ARCHIVED_CLASS_FAILED]: updateArchivedClassFailed,
   [ADD_STUDENT_REQUEST]: addStudentRequest,
   [ADD_STUDENT_SUCCESS]: addStudentSuccess,
   [ADD_STUDENT_FAILED]: addStudentFailed,
@@ -627,9 +638,19 @@ function* receiveUpdateClass({ payload }) {
       body: params,
       groupId: classId,
     })
-    const successMessage = 'Class details updated successfully!'
-    notification({ type: 'success', msg: successMessage })
-    yield put(updateClassSuccessAction(result))
+    if (result?.status === 400) {
+      notification({
+        type: 'warn',
+        msg:
+          `${result?.message}` ||
+          'Failed to update the class. Please try again later.',
+      })
+      yield put(updateArchivedClassFailedAction())
+    } else {
+      const successMessage = 'Class details updated successfully!'
+      notification({ type: 'success', msg: successMessage })
+      yield put(updateClassSuccessAction(result))
+    }
   } catch (error) {
     yield put(updateClassFailedAction(error))
   }
@@ -761,12 +782,18 @@ function* syncClass({ payload }) {
 
 function* syncClassUsingCode({ payload }) {
   try {
-    const { googleCode, groupId: classId, institutionId } = payload
+    const {
+      googleCode,
+      groupId: classId,
+      institutionId,
+      syncGoogleCoTeacher,
+    } = payload
     yield put(setSyncClassLoadingAction(true))
     yield call(googleApi.syncClass, {
       googleCode,
       groupId: classId,
       institutionId,
+      syncGoogleCoTeacher,
     })
     yield put(setSyncClassLoadingAction(false))
     notification({

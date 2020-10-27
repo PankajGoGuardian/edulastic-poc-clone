@@ -43,6 +43,7 @@ const PlayerHeader = ({
       finishTest={onOpenExitPopup}
       onSubmit={!previewPlayer ? onSubmit : null}
       utaId={utaId}
+      groupId={groupId}
     />
   )
 

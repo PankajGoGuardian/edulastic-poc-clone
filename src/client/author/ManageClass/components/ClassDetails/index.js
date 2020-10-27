@@ -8,7 +8,12 @@ import { red } from '@edulastic/colors'
 
 // components
 import { Input, Spin } from 'antd'
-import { MainContentWrapper, EduButton, notification } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  EduButton,
+  notification,
+  CheckboxLabel,
+} from '@edulastic/common'
 import Header from './Header'
 import MainInfo from './MainInfo'
 import StudentsList from './StudentsList'
@@ -62,7 +67,15 @@ const ClassDetails = ({
   isCleverUser,
 }) => {
   const { editPath, exitPath } = location?.state || {}
-  const { name, type, cleverId, institutionId, districtId } = selectedClass
+  const {
+    name,
+    type,
+    cleverId,
+    institutionId,
+    districtId,
+    syncGoogleCoTeacher = false,
+  } = selectedClass
+  const [coTeacherFlag, setCoTeacherFlag] = useState(syncGoogleCoTeacher)
   const typeText = type !== 'class' ? 'group' : 'class'
 
   // sync checks for institution
@@ -125,10 +138,15 @@ const ClassDetails = ({
         googleCode: googleCode.current.state.value,
         groupId: selectedClass._id,
         institutionId,
+        syncGoogleCoTeacher: coTeacherFlag,
       })
     } else {
       notification({ messageKey: 'enterValidGoogleClassroomCode' })
     }
+  }
+
+  const onCoTeacherChange = ({ target }) => {
+    setCoTeacherFlag(target.checked)
   }
 
   const closeGoogleSyncModal = () => {
@@ -236,6 +254,15 @@ const ClassDetails = ({
                 Enter a valid Google Classroom Code
               </div>
             )}
+            <CheckboxLabel
+              style={{ margin: '10px 0px 20px 0px' }}
+              checked={coTeacherFlag}
+              onChange={onCoTeacherChange}
+              disabled={disabled}
+            >
+              Enroll Co-Teacher (All teachers present in Google classroom will
+              share the same class)
+            </CheckboxLabel>
           </GoogleClassSyncModal>
           {showCanvasSyncModal && (
             <CanvasSyncModal
@@ -255,6 +282,7 @@ const ClassDetails = ({
               groupId={selectedClass._id}
               institutionId={institutionId}
               isFetchingCanvasData={isFetchingCanvasData}
+              syncCanvasCoTeacher={selectedClass.syncCanvasCoTeacher || false}
             />
           )}
           <div>

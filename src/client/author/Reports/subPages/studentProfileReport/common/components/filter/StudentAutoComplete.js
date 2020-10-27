@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { isEmpty } from 'lodash'
+import { isEmpty, debounce } from 'lodash'
 
 // components
 import { AutoComplete, Input, Icon } from 'antd'
@@ -23,8 +23,11 @@ const StudentAutoComplete = ({
   studentList,
   loading,
   loadStudentList,
-  selectedStudent,
+  selectedCourseId,
+  selectedGrade,
+  selectedSubject,
   selectedClasses,
+  selectedStudent,
   selectCB,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -51,8 +54,17 @@ const StudentAutoComplete = ({
     if (!isEmpty(institutionIds)) {
       q.institutionIds = institutionIds
     }
+    if (selectedCourseId) {
+      q.courseId = selectedCourseId
+    }
+    if (selectedGrade) {
+      q.grade = selectedGrade
+    }
+    if (selectedSubject) {
+      q.subject = selectedSubject
+    }
     return q
-  }, [searchTerms.text, selectedClasses])
+  }, [searchTerms.text])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -66,6 +78,11 @@ const StudentAutoComplete = ({
   const onBlur = () => {
     setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
   }
+
+  const loadStudentListDebounced = useCallback(
+    debounce(loadStudentList, 500, { trailing: true }),
+    []
+  )
 
   // effects
   useEffect(() => {
@@ -88,7 +105,7 @@ const StudentAutoComplete = ({
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
     }
-    loadStudentList(query)
+    loadStudentListDebounced(query)
   }, [selectedClasses])
 
   // build dropdown data

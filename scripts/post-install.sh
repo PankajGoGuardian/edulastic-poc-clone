@@ -1,7 +1,7 @@
 set -e
 
 cd ~/edulastic-poc
-yarn install --frozen-lockfile --silent --non-interactive
+yarn install --frozen-lockfile --silent --non-interactive --ignore-optional
 
 if [ $? -ne 0 ]
  then

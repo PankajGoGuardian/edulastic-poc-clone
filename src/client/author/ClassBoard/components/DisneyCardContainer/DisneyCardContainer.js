@@ -5,6 +5,7 @@ import { Col, Row, Spin } from 'antd'
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 import { withNamespaces } from '@edulastic/localization'
 import { compose } from 'redux'
 import { CheckboxLabel } from '@edulastic/common'
@@ -71,7 +72,8 @@ class DisneyCardContainer extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { testActivity, assignmentId, classId, isPresentationMode } = props
+    const { testActivity, match, isPresentationMode } = props
+    const { assignmentId, classId } = match.params
     return {
       testActivity:
         !state.isPresentationMode && isPresentationMode
@@ -99,15 +101,15 @@ class DisneyCardContainer extends Component {
       t,
       dueDate,
       detailedClasses,
-      classId,
       recentAttemptsGrouped,
       serverTimeStamp,
       showRefreshMessage,
       bulkAssignedCount,
       bulkAssignedCountProcessed,
       loadTestActivity,
-      assignmentId,
+      match,
     } = this.props
+    const { assignmentId, classId } = match.params
     const noDataNotification = () => (
       <>
         {showRefreshMessage && (
@@ -584,7 +586,8 @@ const withConnect = connect(
 
 export default compose(
   withNamespaces('classBoard'),
-  withConnect
+  withConnect,
+  withRouter
 )(DisneyCardContainer)
 
 const AttemptDiv = styled.div`

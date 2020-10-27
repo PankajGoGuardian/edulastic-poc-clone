@@ -46,7 +46,9 @@ if [ -d ".git" ]; then
 		git add package.json
 		git commit -m "chore: ${prefix} version from ${oldVersion} to ${version}"
 		git tag -a "v${version}" -m "Release - old:${oldVersion} new:${version}"
-		git push origin --tags
+		if [[ $* == *--push* ]]; then
+			git push origin --tags
+		fi
 	else
 		echo "Working copy clean! Nothing to commit."
 	fi

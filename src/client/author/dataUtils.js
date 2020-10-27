@@ -199,14 +199,16 @@ export const getInterestedStandards = (
     )
 
     standardData.forEach((standard) => {
-      const equivStandard = equivalentStandards.find((eqSt) =>
+      const equivStandards = equivalentStandards.filter((eqSt) =>
         curriculumIds.includes(eqSt.curriculumId)
       )
-      if (equivStandard) {
-        interestedStandards.push({
-          ...standard,
-          identifier: equivStandard.identifier,
-        })
+      if (equivStandards.length) {
+        for (let eqSt of equivStandards) {
+          interestedStandards.push({
+            ...standard,
+            identifier: eqSt.identifier,
+          })
+        }
       }
     })
   }

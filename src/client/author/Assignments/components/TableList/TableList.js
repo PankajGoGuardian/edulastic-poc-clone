@@ -61,6 +61,7 @@ import {
 import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
 import { ReactComponent as TimerIcon } from './assets/timer.svg'
 import { canEditTest } from '../../utils'
+import { bulkDownloadGradesAndResponsesAction } from '../../../AssignmentAdvanced/ducks'
 
 const convertTableData = (
   data,
@@ -151,6 +152,7 @@ const TableList = ({
   selectedItems,
   toggleAddItemFolderModal,
   toggleRemovalFolderModal,
+  bulkDownloadGradesAndResponses,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
   const [details, setdetails] = useState(true)
@@ -462,6 +464,15 @@ const TableList = ({
     }
   }
 
+  const handleDownloadResponses = (testId) => {
+    bulkDownloadGradesAndResponses({
+      data: {},
+      testId,
+      testType: null,
+      isResponseRequired: true,
+    })
+  }
+
   const columns = [
     {
       title: 'Assignment Name',
@@ -626,6 +637,8 @@ const TableList = ({
                 canUnassign: !(
                   row.hasAdminAssignments && userRole === roleuser.TEACHER
                 ),
+                handleDownloadResponses,
+                userRole,
               })}
               placement="bottomRight"
               trigger={['click']}
@@ -759,6 +772,7 @@ const enhance = compose(
       setItemsToFolder: setItemsMoveFolderAction,
       toggleRemovalFolderModal: toggleRemoveItemsFolderAction,
       toggleAddItemFolderModal: toggleMoveItemsFolderAction,
+      bulkDownloadGradesAndResponses: bulkDownloadGradesAndResponsesAction,
     }
   )
 )

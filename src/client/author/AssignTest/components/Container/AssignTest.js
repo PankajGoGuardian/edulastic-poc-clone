@@ -155,26 +155,27 @@ class AssignTest extends React.Component {
       isAssigning,
       assignmentSettings: assignment,
     } = this.props
+    let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
     if (isAssigning) return
     if (
-      assignment.passwordPolicy !==
+      updatedAssignment.passwordPolicy !==
       testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
-      delete assignment.passwordExpireIn
+      delete updatedAssignment.passwordExpireIn
     }
     if (
-      assignment.passwordPolicy &&
-      assignment.passwordPolicy !==
+      updatedAssignment.passwordPolicy &&
+      updatedAssignment.passwordPolicy !==
         testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
     ) {
-      delete assignment.assignmentPassword
+      delete updatedAssignment.assignmentPassword
     } else if (
-      assignment.passwordPolicy ===
+      updatedAssignment.passwordPolicy ===
         testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
-      assignment.assignmentPassword &&
-      (assignment?.assignmentPassword?.length < 6 ||
-        assignment?.assignmentPassword?.length > 25)
+      updatedAssignment.assignmentPassword &&
+      (updatedAssignment?.assignmentPassword?.length < 6 ||
+        updatedAssignment?.assignmentPassword?.length > 25)
     ) {
       notification({ messageKey: 'enterValidPassword' })
     }
@@ -185,7 +186,6 @@ class AssignTest extends React.Component {
     } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
       notification({ messageKey: 'dueDateShouldNotBeGreaterThanEndDate' })
     } else {
-      let updatedAssignment = { ...assignment }
       if (!selectedDateOption) {
         updatedAssignment = omit(updatedAssignment, ['dueDate'])
       }

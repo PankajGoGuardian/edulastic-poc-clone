@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { isEmpty, size, get } from 'lodash'
 import memoizeOne from 'memoize-one'
+import { Spin } from 'antd'
 
 // components
 import {
@@ -75,9 +76,24 @@ class ExpressGrader extends Component {
   }
 
   componentDidMount() {
-    const { loadTestActivity, match, testActivity, additionalData } = this.props
-    if (!size(testActivity) && isEmpty(additionalData)) {
-      const { assignmentId, classId } = match.params
+    const {
+      loadTestActivity,
+      match,
+      testActivity,
+      additionalData,
+      authorClassBoard,
+    } = this.props
+    const { assignmentId, classId } = match.params
+    let shouldLoadTestActivity = false
+    if (!size(testActivity) || isEmpty(additionalData)) {
+      shouldLoadTestActivity = true
+    } else if (
+      authorClassBoard.classId !== classId ||
+      authorClassBoard.assignmentId !== assignmentId
+    ) {
+      shouldLoadTestActivity = true
+    }
+    if (shouldLoadTestActivity) {
       loadTestActivity(assignmentId, classId)
     }
   }
@@ -145,6 +161,7 @@ class ExpressGrader extends Component {
       windowWidth,
       toggleScoreMode,
       scoreMode,
+      authorClassBoard,
     } = this.props
     const { isVisibleModal, record, tableData, isGridEditOn } = this.state
     const { assignmentId, classId, testActivityId } = match.params
@@ -168,67 +185,74 @@ class ExpressGrader extends Component {
             testActivityId={testActivityId}
             testActivity={testActivity}
           />
-          <MainContentWrapper padding="20px 30px 0px 30px">
-            <WithResources
-              resources={[
-                `${AppConfig.katexPath}/katex.min.css`,
-                `${AppConfig.katexPath}/katex.min.js`,
-              ]}
-              fallBack={<span />}
-            >
-              <StyledFlexContainer justifyContent="space-between">
-                <ClassBreadBrumb />
+          {authorClassBoard.loading ? (
+            <Spin style={{ position: 'fixed' }} />
+          ) : (
+            <MainContentWrapper padding="20px 30px 0px 30px">
+              <WithResources
+                resources={[
+                  `${AppConfig.katexPath}/katex.min.css`,
+                  `${AppConfig.katexPath}/katex.min.js`,
+                ]}
+                fallBack={<span />}
+              >
+                <StyledFlexContainer justifyContent="space-between">
+                  <ClassBreadBrumb />
 
-                <FlexContainer justifyContent="space-between">
-                  <ViewModeSwitch
-                    scoreMode={scoreMode}
-                    toggleScoreMode={toggleScoreMode}
-                  />
-                  <GridEditSwitch
-                    isGridEditOn={isGridEditOn}
-                    toggleGridEdit={this.toggleGridEdit}
-                    scoreMode={scoreMode}
-                  />
-                  <FlexContainer>
-                    <PresentationToggleSwitch groupId={classId} />
-                    <DownloadCSV />
+                  <FlexContainer justifyContent="space-between">
+                    <ViewModeSwitch
+                      scoreMode={scoreMode}
+                      toggleScoreMode={toggleScoreMode}
+                    />
+                    <GridEditSwitch
+                      isGridEditOn={isGridEditOn}
+                      toggleGridEdit={this.toggleGridEdit}
+                      scoreMode={scoreMode}
+                    />
+                    <FlexContainer>
+                      <PresentationToggleSwitch groupId={classId} />
+                      <DownloadCSV />
+                    </FlexContainer>
                   </FlexContainer>
-                </FlexContainer>
-              </StyledFlexContainer>
-              {!isMobile && (
-                <>
-                  <ScoreTable
+                </StyledFlexContainer>
+                {!isMobile && (
+                  <>
+                    <ScoreTable
+                      scoreMode={scoreMode}
+                      isGridEditOn={isGridEditOn}
+                      testActivity={testActivity}
+                      showQuestionModal={this.showQuestionModal}
+                      isPresentationMode={isPresentationMode}
+                      windowWidth={windowWidth}
+                      groupId={classId}
+                    />
+                    <ExpressGraderScoreColors />
+                  </>
+                )}
+
+                {isMobile && (
+                  <ScoreCard
                     scoreMode={scoreMode}
-                    isGridEditOn={isGridEditOn}
                     testActivity={testActivity}
-                    showQuestionModal={this.showQuestionModal}
-                    isPresentationMode={isPresentationMode}
-                    windowWidth={windowWidth}
-                    groupId={classId}
                   />
-                  <ExpressGraderScoreColors />
-                </>
-              )}
+                )}
 
-              {isMobile && (
-                <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />
-              )}
-
-              {isVisibleModal && (
-                <QuestionModal
-                  record={record}
-                  tableData={tableData}
-                  isVisibleModal={isVisibleModal}
-                  showQuestionModal={this.showQuestionModal}
-                  hideQuestionModal={this.hideQuestionModal}
-                  isPresentationMode={isPresentationMode}
-                  groupId={classId}
-                  windowWidth={windowWidth}
-                  scoreMode={scoreMode}
-                />
-              )}
-            </WithResources>
-          </MainContentWrapper>
+                {isVisibleModal && (
+                  <QuestionModal
+                    record={record}
+                    tableData={tableData}
+                    isVisibleModal={isVisibleModal}
+                    showQuestionModal={this.showQuestionModal}
+                    hideQuestionModal={this.hideQuestionModal}
+                    isPresentationMode={isPresentationMode}
+                    groupId={classId}
+                    windowWidth={windowWidth}
+                    scoreMode={scoreMode}
+                  />
+                )}
+              </WithResources>
+            </MainContentWrapper>
+          )}
         </div>
       </FeaturesSwitch>
     )
@@ -247,6 +271,7 @@ const enhance = compose(
         ['author_classboard_testActivity', 'presentationMode'],
         false
       ),
+      authorClassBoard: get(state, ['author_classboard_testActivity'], {}),
       scoreMode: state?.expressGraderReducer?.scoreMode,
     }),
     {

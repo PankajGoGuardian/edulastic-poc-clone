@@ -302,6 +302,7 @@ const initialState = {
   unarchivingClass: false,
   showCleverSyncModal: false,
   filterClass: 'Active',
+  showUpdateCoTeachersModal: false,
 }
 
 const setFilterClass = (state, { payload }) => {
@@ -761,12 +762,18 @@ function* syncClass({ payload }) {
 
 function* syncClassUsingCode({ payload }) {
   try {
-    const { googleCode, groupId: classId, institutionId } = payload
+    const {
+      googleCode,
+      groupId: classId,
+      institutionId,
+      syncGoogleCoTeacher,
+    } = payload
     yield put(setSyncClassLoadingAction(true))
     yield call(googleApi.syncClass, {
       googleCode,
       groupId: classId,
       institutionId,
+      syncGoogleCoTeacher,
     })
     yield put(setSyncClassLoadingAction(false))
     notification({

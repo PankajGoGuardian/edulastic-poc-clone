@@ -37,8 +37,12 @@ import {
   setClassNotFoundErrorAction,
   unarchiveClassAction,
   getCanvasFetchingStateSelector,
+  getGoogleAuthRequiredSelector,
+  setGoogleAuthenticationRequiredAction,
+  saveGoogleTokensAndRetrySyncAction,
 } from '../../ducks'
 import { getCleverLibraryUserSelector } from '../../../src/selectors/user'
+import ReauthenticateModal from './ReauthenticateModal'
 
 const ClassDetails = ({
   location,
@@ -65,6 +69,9 @@ const ClassDetails = ({
   unarchiveClass,
   isFetchingCanvasData,
   isCleverUser,
+  isGoogleAuthRequired,
+  setGoogleAuthenticationRequired,
+  saveGoogleTokensAndRetrySync,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -285,6 +292,20 @@ const ClassDetails = ({
               syncCanvasCoTeacher={selectedClass.syncCanvasCoTeacher || false}
             />
           )}
+          {isGoogleAuthRequired && (
+            <ReauthenticateModal
+              visible={isGoogleAuthRequired}
+              toggle={() => setGoogleAuthenticationRequired()}
+              handleLoginSuccess={(data) => {
+                saveGoogleTokensAndRetrySync({
+                  code: data.code,
+                  groupId: selectedClass._id,
+                  institutionId,
+                })
+              }}
+            />
+          )}
+
           <div>
             <Header
               onEdit={handleEditClick}
@@ -363,6 +384,7 @@ const enhance = compose(
       isCleverUser: getCleverLibraryUserSelector(state),
       classCodeError: getClassNotFoundError(state),
       isFetchingCanvasData: getCanvasFetchingStateSelector(state),
+      isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,
@@ -376,6 +398,8 @@ const enhance = compose(
       syncClassesWithClever: syncClassesWithCleverAction,
       setClassNotFoundError: setClassNotFoundErrorAction,
       unarchiveClass: unarchiveClassAction,
+      setGoogleAuthenticationRequired: setGoogleAuthenticationRequiredAction,
+      saveGoogleTokensAndRetrySync: saveGoogleTokensAndRetrySyncAction,
     }
   )
 )

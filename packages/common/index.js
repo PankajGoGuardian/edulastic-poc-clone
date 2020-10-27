@@ -114,6 +114,7 @@ export {
   sanitizeString,
   getSanitizedProps,
   isSEB,
+  getSanitizedProps,
 } from './src/helpers'
 
 // contexts

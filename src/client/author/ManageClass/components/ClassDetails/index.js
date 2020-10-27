@@ -258,7 +258,7 @@ const ClassDetails = ({
               style={{ margin: '10px 0px 20px 0px' }}
               checked={coTeacherFlag}
               onChange={onCoTeacherChange}
-              disabled={disabled}
+              disabled={selectedClass && selectedClass.googleCode && disabled}
             >
               Enroll Co-Teacher (All teachers present in Google classroom will
               share the same class)

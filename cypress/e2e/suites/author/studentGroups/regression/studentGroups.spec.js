@@ -28,23 +28,23 @@ const studentAssignment = new AssignmentsPage()
 const students = {
   1: {
     email: 'grstudent006@snapwiz.com',
-    studentName: 'Stgroup, Student060',
+    studentName: 'Stgroup, Student060'
   },
   2: {
     email: 'grstudent007@snapwiz.com',
-    studentName: 'Stgroup, Student070',
+    studentName: 'Stgroup, Student070'
   },
   3: {
     email: 'grstudent008@snapwiz.com',
-    studentName: 'Stgroup, Student080',
+    studentName: 'Stgroup, Student080'
   },
   4: {
     email: 'grstudent009@snapwiz.com',
-    studentName: 'Stgroup, Student090',
+    studentName: 'Stgroup, Student090'
   },
   5: {
     email: 'grstudent0010@snapwiz.com',
-    studentName: 'Stgroup, Student0010',
+    studentName: 'Stgroup, Student0010'
   },
 }
 
@@ -192,7 +192,7 @@ describe(`${FileHelper.getSpecName(
         manageGroup.verifyGroupRowDetails(groups[1].name, 4)
         manageGroup.clickOnGroupRowByName(groups[1].name)
           ;[...studentGroup1, ...studentGroup1Edit].forEach((student) =>
-            manageGroup.getStudentRow(student.email).should('be.exist')
+            manageGroup.getStudentRow(student.email, true)
           )
 
         it('> verify added students on teacher assignemnt/lcb', () => {
@@ -249,7 +249,7 @@ describe(`${FileHelper.getSpecName(
         // assignment count on manange group page can not be verifed as it takes 8~10 mins to sync up from redshift.
         manageGroup.verifyGroupRowDetails(groups[1].name, 3)
         manageGroup.clickOnGroupRowByName(groups[1].name)
-        manageGroup.getStudentRow(studentToRemove.email).should('not.exist')
+        manageGroup.getStudentRow(studentToRemove.email, false)
       })
 
       it('> verify remove students on teacher assignemnt/lcb', () => {
@@ -362,9 +362,7 @@ describe(`${FileHelper.getSpecName(
         // assignment count on manange group page can not be verifed as it takes 8~10 mins to sync up from redshift.
         manageGroup.verifyGroupRowDetails(groups[2].name, 1)
         manageGroup.clickOnGroupRowByName(groups[2].name)
-        manageGroup
-          .getStudentRow(`${studentToRemove.email}`)
-          .should('not.exist')
+        manageGroup.getStudentRow(studentToRemove.email, false)
       })
     })
 
@@ -404,7 +402,7 @@ describe(`${FileHelper.getSpecName(
         // assignment count on manange group page can not be verifed as it takes 8~10 mins to sync up from redshift.
         manageGroup.verifyGroupRowDetails(groups[2].name, 2)
         manageGroup.clickOnGroupRowByName(groups[2].name)
-        manageGroup.getStudentRow(`${studentToAdd.email}`).should('be.exist')
+        manageGroup.getStudentRow(`${studentToAdd.email}`, true)
       })
     })
   })

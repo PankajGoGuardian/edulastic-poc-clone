@@ -412,8 +412,11 @@ class LiveClassboardPage {
       `${submitted} out of ${total} Submitted`
     )
 
-  verifyAbsentCount = (absent) =>
-    this.getSubmitSummary().should('contain.text', `${absent} absent`)
+  verifyAbsentCount = (absent) => {
+    if (absent)
+      this.getSubmitSummary().should('contain.text', `${absent} absent`)
+    else this.getSubmitSummary().should('not.contain.text', 'absent')
+  }
 
   verifyStudentCard(
     studentName,

@@ -64,6 +64,16 @@ export const getCanvasFetchingStateSelector = createSelector(
   manageClassSelector,
   (state) => state.isFetchingCanvasData
 )
+
+export const getGoogleAuthRequiredSelector = createSelector(
+  manageClassSelector,
+  (state) => state.googleAuthenticationRequired
+)
+
+export const getGoogleClassCodeSelector = createSelector(
+  manageClassSelector,
+  (state) => state.googleClassCode
+)
 // action types
 
 export const FETCH_CLASS_LIST = '[manageClass] fetch google class'
@@ -165,6 +175,14 @@ export const REMOVE_CLASS_SYNC_NOTIFICATION =
 export const SET_CLEVER_SYNC_MODAL = '[manageClass] set clever sync modal'
 
 export const SET_FILTER_CLASS = '[manageClass] set filter class'
+
+export const SET_GOOGLE_AUTHENTICATION_REQUIRED =
+  '[manageClass] set google authentication required'
+
+export const SET_GOOGLE_CLASS_CODE = '[manageClass] set google class_code'
+
+export const SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC =
+  '[manageClass] save google tokens and retry sync'
 
 // action creators
 
@@ -282,6 +300,16 @@ export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL)
 
 export const setFilterClassAction = createAction(SET_FILTER_CLASS)
 
+export const setGoogleAuthenticationRequiredAction = createAction(
+  SET_GOOGLE_AUTHENTICATION_REQUIRED
+)
+
+export const setGoogleClassCodeAction = createAction(SET_GOOGLE_CLASS_CODE)
+
+export const saveGoogleTokensAndRetrySyncAction = createAction(
+  SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC
+)
+
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -308,6 +336,8 @@ const initialState = {
   showCleverSyncModal: false,
   filterClass: 'Active',
   showUpdateCoTeachersModal: false,
+  googleAuthenticationRequired: false,
+  googleClassCode: '',
 }
 
 const setFilterClass = (state, { payload }) => {
@@ -560,8 +590,13 @@ export default createReducer(initialState, {
     state.unarchivingClass = false
   },
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
-
   [SET_FILTER_CLASS]: setFilterClass,
+  [SET_GOOGLE_AUTHENTICATION_REQUIRED]: (state) => {
+    state.googleAuthenticationRequired = !state.googleAuthenticationRequired
+  },
+  [SET_GOOGLE_CLASS_CODE]: (state, { payload }) => {
+    state.googleClassCode = payload
+  },
 })
 
 function* fetchClassList({ payload }) {
@@ -789,21 +824,25 @@ function* syncClassUsingCode({ payload }) {
       syncGoogleCoTeacher,
     } = payload
     yield put(setSyncClassLoadingAction(true))
-    yield call(googleApi.syncClass, {
+    const result = yield call(googleApi.syncClass, {
       googleCode,
       groupId: classId,
       institutionId,
       syncGoogleCoTeacher,
     })
     yield put(setSyncClassLoadingAction(false))
-    notification({
-      type: 'success',
-      messageKey: 'googleClassImportInProgress',
-    })
+    if (result?.message === 'invalid_grant') {
+      yield put(setGoogleAuthenticationRequiredAction(true))
+      yield put(setGoogleClassCodeAction(payload.googleCode))
+    } else {
+      notification({
+        type: 'success',
+        messageKey: 'googleClassImportInProgress',
+      })
+    }
   } catch (err) {
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
-
     Sentry.captureException(err)
     if (errorMessage === 'No class found') {
       yield put(setClassNotFoundErrorAction(true))
@@ -955,6 +994,21 @@ function* removeClassSyncNotification() {
   }
 }
 
+function* saveGoogleTokensAndRetrySyncSaga({ payload }) {
+  try {
+    setGoogleAuthenticationRequiredAction()
+    const { code, ...classSyncData } = payload
+    yield call(googleApi.saveGoogleTokens, { code })
+    const googleCode = yield select(getGoogleClassCodeSelector)
+    yield put(SYNC_CLASS_USING_CODE, { ...classSyncData, googleCode })
+  } catch (err) {
+    Sentry.captureException(err)
+    notification({
+      msg: err?.response?.data?.message || `Class Sync failed`,
+    })
+  }
+}
+
 // watcher saga
 export function* watcherSaga() {
   yield all([
@@ -987,6 +1041,10 @@ export function* watcherSaga() {
     yield takeLatest(
       REMOVE_CLASS_SYNC_NOTIFICATION,
       removeClassSyncNotification
+    ),
+    yield takeLatest(
+      SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC,
+      saveGoogleTokensAndRetrySyncSaga
     ),
   ])
 }

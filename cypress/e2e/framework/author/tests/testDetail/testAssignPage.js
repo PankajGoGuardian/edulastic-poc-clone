@@ -431,7 +431,12 @@ export default class TestAssignPage {
   visitAssignPageById = (id) => {
     cy.server()
     cy.route('POST', '**/api/group/search').as('classes')
-    cy.visit(`/author/assignments/${id}`)
+    cy.get('body').then(() => {
+      if (Cypress.$('[data-cy="assign"]').length === 1)
+        cy.get('[data-cy="assign"]').click({ force: true })
+      else cy.visit(`/author/assignments/${id}`)
+    })
+
     cy.wait('@classes', { timeout: 80000 })
     cy.contains('OVERRIDE TEST SETTINGS')
   }

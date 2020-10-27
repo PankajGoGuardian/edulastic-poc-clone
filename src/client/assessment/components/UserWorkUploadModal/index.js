@@ -3,7 +3,7 @@ import { FlexContainer } from '@edulastic/common'
 import { StyledRadioButton, StyledRadioGroup } from './styled'
 import CameraView from './CameraView'
 import FileUploadView from './FileUploadView'
-import { ConfirmationModal } from '../../../../author/src/components/common/ConfirmationModal'
+import { ConfirmationModal } from '../../../author/src/components/common/ConfirmationModal'
 
 const UserWorkUploadModal = ({
   isModalVisible,

@@ -3,7 +3,7 @@ import { EduButton, notification } from '@edulastic/common'
 import { Spin } from 'antd'
 import { fileTypes } from '@edulastic/constants'
 import { Footer } from './styled'
-import useFilesUploader from '../../../hooks/useFilesUploader'
+import useFilesUploader from '../../hooks/useFilesUploader'
 
 const Camera = lazy(() =>
   import(

@@ -49,7 +49,7 @@ import { evaluateCurrentAnswersForPreviewAction } from '../sharedDucks/previewTe
 import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
-import UserWorkUploadModal from './common/UserWorkUploadModal'
+import UserWorkUploadModal from '../components/UserWorkUploadModal'
 import useUploadToS3 from '../hooks/useUploadToS3'
 
 const { playerSkinValues } = testConstants

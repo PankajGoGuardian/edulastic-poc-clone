@@ -3,11 +3,9 @@ import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import { isEmpty } from 'lodash'
 import { IconUpload } from '@edulastic/icons'
 import { fileTypes } from '@edulastic/constants'
-import useFilesUploader, {
-  UPLOAD_STATUS,
-} from '../../../hooks/useFilesUploader'
+import useFilesUploader, { UPLOAD_STATUS } from '../../hooks/useFilesUploader'
 import { Overlay, UploadDragger, Footer, Underlined } from './styled'
-import ProgressBar from '../../../widgets/UploadFile/components/ProgressBar'
+import ProgressBar from '../../widgets/UploadFile/components/ProgressBar'
 
 const allowedTypes = [
   fileTypes.JPEG,

@@ -47,7 +47,7 @@ if [ -d ".git" ]; then
 		git commit -m "chore: ${prefix} version from ${oldVersion} to ${version}"
 		git tag -a "v${version}" -m "Release - old:${oldVersion} new:${version}"
 		if [[ $* == *--push* ]]; then
-			git push origin --tags
+			git push origin && git push origin --tags
 		fi
 	else
 		echo "Working copy clean! Nothing to commit."

@@ -17667,7 +17667,7 @@ react-outside-event@^1.2.7:
   resolved "https://registry.yarnpkg.com/react-outside-event/-/react-outside-event-1.2.7.tgz#9055552998ec4f665b0fe1325718ff36fd210653"
   integrity sha1-kFVVKZjsT2ZbD+EyVxj/Nv0hBlM=
 
-react-pdf@^4.0.4:
+react-pdf@^4.1.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/react-pdf/-/react-pdf-4.2.0.tgz#b83a01eb070912522075b7a51aee7d63b2c912ed"
   integrity sha512-Ao44mZszfPwtCUsrXHtXnhM+czTvPxfG5wqssbWgj2onL70TKSOKGzQfCH4csCnNDOKji/Pc/s0Og70/VOE+Rg==

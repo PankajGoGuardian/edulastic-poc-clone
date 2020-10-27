@@ -83,7 +83,7 @@ class DistrictProfile extends Component {
           nces,
           announcement,
         },
-        (v) => v !== '' && v !== undefined
+        (v) => v !== '' && v !== undefined && v !== null
       )
 
       if (!districtProfile._id) {

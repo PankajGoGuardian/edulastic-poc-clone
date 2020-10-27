@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
@@ -6,7 +5,7 @@ import { withNamespaces } from '@edulastic/localization'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import { IconGraphRightArrow } from '@edulastic/icons'
-import { desktopWidth, smallDesktopWidth } from '@edulastic/colors'
+import { smallDesktopWidth } from '@edulastic/colors'
 import FlexContainer from '../common/FlexContainer'
 import Circle from '../common/Circle'
 
@@ -100,6 +99,7 @@ const Content = styled.div`
 
 const SidebarWrapper = styled.div`
   position: relative;
+  padding-top: 20px;
 `
 
 const Title = styled(Content)`
@@ -110,8 +110,8 @@ const Title = styled(Content)`
 
 export const MinimizeButton = styled.div`
   position: absolute;
-  top: -7px;
-  right: -15px;
+  top: 0px;
+  right: ${({ minimized }) => (minimized ? '-15px' : '-25px')};
   padding: 9px;
   z-index: 10;
   background: ${(props) =>

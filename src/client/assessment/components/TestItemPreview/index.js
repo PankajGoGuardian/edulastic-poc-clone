@@ -350,7 +350,6 @@ class TestItemPreview extends Component {
               ...style,
               padding: 0,
             }}
-            hideOverflow={isStudentAttempt || isExpressGrader}
             isCollapsed={!!collapseDirection}
             ref={this.containerRef}
             className="test-item-preview"

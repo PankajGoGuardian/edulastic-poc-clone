@@ -229,6 +229,7 @@ class TestItemCol extends Component {
     const { value } = this.state
     const {
       showStackedView,
+      viewComponent,
       scratchpadDimensions,
       isPrintPreview,
       isStudentAttempt,
@@ -246,6 +247,7 @@ class TestItemCol extends Component {
         style={style}
         value={value}
         colWidth={colWidth}
+        viewComponent={viewComponent}
         showScratchpad={this.showScratchpad}
         isStudentAttempt={isStudentAttempt}
         isExpressGrader={isExpressGrader}

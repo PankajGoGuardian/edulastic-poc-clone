@@ -178,7 +178,7 @@ export const FilterButton = styled(Button)`
   position: fixed;
   margin-left: -23px;
   margin-top: 8px;
-  z-index: 1;
+  z-index: 2;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   background: ${(props) =>
     props.showFilter ? themeColorBlue : white} !important;

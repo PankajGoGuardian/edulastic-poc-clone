@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { round, toNumber, isNaN } from 'lodash'
+import { round, toNumber, isNaN, isNull } from 'lodash'
 import { TextInputStyled, notification } from '@edulastic/common'
 import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
@@ -78,6 +78,55 @@ const QuestionScoreCell = ({
     return <StyledText>{graded || skipped ? round(score, 2) : '-'}</StyledText>
   }
 
+  const getCellElement = (element) => {
+    if (element.nodeName === 'TD' || element.nodeName === 'TH') {
+      return element
+    }
+    return getCellElement(element.parentElement)
+  }
+
+  /**
+   * @param {*} event KeyboardEvent from HTMLInputElement
+   */
+  const navigateGrid = (event) => {
+    const { key, target } = event
+    const currentCell = getCellElement(target)
+    if (!currentCell) {
+      return
+    }
+
+    let nextCell = null
+    let nextInput = null
+
+    if (key === 'ArrowLeft' && target.selectionStart === 0) {
+      nextCell = currentCell.previousElementSibling
+    } else if (key === 'ArrowUp') {
+      const prevSibling = currentCell.parentElement.previousElementSibling
+      if (!isNull(prevSibling)) {
+        nextCell = prevSibling.cells[currentCell.cellIndex]
+      }
+    } else if (
+      key === 'ArrowRight' &&
+      target.selectionStart >= target.value.length
+    ) {
+      nextCell = currentCell.nextElementSibling
+    } else if (key === 'ArrowDown') {
+      const nextSibling = currentCell.parentElement.nextElementSibling
+      if (!isNull(nextSibling)) {
+        nextCell = nextSibling.cells[currentCell.cellIndex]
+      }
+    }
+
+    if (!isNull(nextCell)) {
+      nextInput = nextCell.querySelector('input')
+    }
+
+    if (!isNull(nextInput)) {
+      target.blur()
+      nextInput.focus()
+    }
+  }
+
   return (
     <TextInputStyled
       height="35px"
@@ -87,6 +136,7 @@ const QuestionScoreCell = ({
       value={score}
       onBlur={handleBlur}
       onChange={handleChange}
+      onKeyDown={navigateGrid}
     />
   )
 }

@@ -18,6 +18,7 @@ export default class TeacherSideBar {
     cy.server()
     cy.route('POST', '**/search/courses').as('searchCourse')
     cy.get('[data-cy="Dashboard"]').click({ force: true })
+    this.clickOnConfirmPopUp()
     //  cy.wait("@searchCourse");
   }
 
@@ -25,6 +26,7 @@ export default class TeacherSideBar {
     cy.server()
     cy.route('POST', '**/playlists/search/').as('playListSearch')
     cy.get('[data-cy="Playlist"]').dblclick({ force: true })
+    this.clickOnConfirmPopUp()
     cy.wait('@playListSearch')
   }
 
@@ -34,6 +36,7 @@ export default class TeacherSideBar {
     cy.get('[data-cy="Assignments"]')
       .click({ force: true })
       .click({ force: true })
+    this.clickOnConfirmPopUp()
     cy.wait('@assignment')
 
     // select All years
@@ -42,11 +45,12 @@ export default class TeacherSideBar {
     assignmentFilter.collapseFilter()
   }
 
-  clickOnReport = () =>
-    cy
-      .get('[data-cy="Insights"]')
+  clickOnReport = () => {
+    cy.get('[data-cy="Insights"]')
       // .click({ force: true })
       .click({ force: true })
+    this.clickOnConfirmPopUp()
+  }
 
   clickOnManageClass = () => {
     cy.server()
@@ -54,6 +58,7 @@ export default class TeacherSideBar {
     cy.get('[data-cy="Manage Class"]')
       .click({ force: true })
       .click({ force: true })
+    this.clickOnConfirmPopUp()
     cy.wait('@getGroups')
     // cy.wait(2000); // UI renders slow
   }
@@ -76,6 +81,7 @@ export default class TeacherSideBar {
     cy.route('POST', '**browse-standards').as('search-standards-itembank')
     cy.wait(5000) // waiting for mongo to elastic search sync delay
     cy.get('[data-cy="Test"]').dblclick({ force: true })
+    this.clickOnConfirmPopUp()
     cy.wait('@searchTest')
   }
 
@@ -83,6 +89,7 @@ export default class TeacherSideBar {
     cy.server()
     cy.route('GET', '**/playlists/**').as('loadPlayContent')
     this.getFavouritePlaylist().dblclick({ force: true })
+    this.clickOnConfirmPopUp()
     if (isLoading) cy.wait('@loadPlayContent')
   }
 

@@ -13,7 +13,7 @@ const { _ } = Cypress
 const { LCB_3 } = require('../../../../../fixtures/testAuthoring')
 const questionData = require('../../../../../fixtures/questionAuthoring')
 
-const test = new StudentTestPage()
+const studentTestPage = new StudentTestPage()
 const lcb = new LiveClassboardPage()
 const authorAssignmentPage = new AuthorAssignmentPage()
 const testLibrary = new TestLibrary()
@@ -104,15 +104,26 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
   before(' > attempt by all students', () => {
     attemptsData.forEach((attempts) => {
       const { attempt, email, status } = attempts
-      test.attemptAssignment(email, status, attempt, questionTypeMap, password)
+      studentTestPage.attemptAssignment(
+        email,
+        status,
+        attempt,
+        questionTypeMap,
+        password
+      )
     })
   })
 
-  describe(`> redirect absent student`, () => {
+  describe.only(`> redirect absent student`, () => {
     const { stuName, email } = redirectTestData.redirect5
     const attempt1 = {
       ...lcb.getScoreAndPerformance(noattempt, questionTypeMap),
       attempt: noattempt,
+    }
+
+    const attempt2 = {
+      attempt: allRight,
+      ...lcb.getScoreAndPerformance(allRight, questionTypeMap),
     }
 
     before('login as teacher mark student absent', () => {
@@ -123,87 +134,170 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.clickOnMarkAsAbsent()
     })
 
-    it(' > redirect the student and verify card view', () => {
-      lcb.uncheckSelectAllCheckboxOfStudent()
-      lcb.clickOnRedirect()
-      lcb.redirectPopup.clickOnAbsentStudents()
-      // select redirect policy
-      lcb.clickOnRedirectSubmit()
-      lcb.verifyStudentCard(
-        stuName,
-        teacherSide.REDIRECTED,
-        attempt1.score,
-        attempt1.perf,
-        attempt1.attempt,
-        email,
-        true
-      )
-      lcb.verifyRedirectIcon(stuName)
-    })
-    ;[0, 1].forEach((i) => {
-      it(`> verify student card attempt view for attempt-${
-        !i ? 'not started(redirected)' : 'absent'
-      }`, () => {
-        const attempt = !i
-          ? {
-              perf: studentSide.NOT_STARTED,
-              score: `- / ${statsMap[stuName].maxScore}`,
-            }
-          : { perf: '0%', score: `- / ${statsMap[stuName].maxScore}` }
-        lcb.clickOnCardViewTab()
-        // lcb.showMulipleAttemptsByStuName(stuName) --> commenting since by-default multi attempt view should come now
-        lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score)
-        lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf)
-        lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i)
+    describe('redirect 1st attempt(absent) and verify', () => {
+      it(' > redirect and verify card view', () => {
+        lcb.uncheckSelectAllCheckboxOfStudent()
+        lcb.clickOnRedirect()
+        lcb.redirectPopup.clickOnAbsentStudents()
+        // select redirect policy
+        lcb.clickOnRedirectSubmit()
+        lcb.verifyStudentCard(
+          stuName,
+          teacherSide.REDIRECTED,
+          attempt1.score,
+          attempt1.perf,
+          attempt1.attempt,
+          email,
+          true
+        )
+        lcb.verifyRedirectIcon(stuName)
+      })
+
+      it(' > verify lcb assignment count', () => {
+        lcb.verifySubmittedCount(1, 3)
+        lcb.verifyAbsentCount(1)
+      })
+      ;[0, 1].forEach((i) => {
+        it(`> verify student card attempt view for attempt-${
+          !i ? 'not started(redirected)' : 'absent'
+        }`, () => {
+          const attempt = !i
+            ? {
+                perf: studentSide.NOT_STARTED,
+                score: `- / ${statsMap[stuName].maxScore}`,
+              }
+            : { perf: '0%', score: `- / ${statsMap[stuName].maxScore}` }
+          lcb.clickOnCardViewTab()
+          lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score)
+          lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf)
+          lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i)
+        })
+      })
+
+      it(` > verify student centric view for - ${stuName}-should be disabled`, () => {
+        lcb.clickOnStudentsTab()
+        lcb.verifyStudentCentricCard(stuName, undefined, undefined, false)
+      })
+
+      it(` > verify question centric view, should not have student card`, () => {
+        lcb.clickonQuestionsTab()
+        Object.keys(allRight).forEach((queNum) => {
+          lcb.questionResponsePage.selectQuestion(queNum)
+          lcb.questionResponsePage.verifyNoQuestionResponseCard(stuName)
+        })
+      })
+
+      it(' > verifying counts on assignement page', () => {
+        authorAssignmentPage.verifyStatus(teacherSide.IN_PROGRESS)
+        authorAssignmentPage.verifySubmitted(`1 of 3`)
+        authorAssignmentPage.verifyGraded('1')
       })
     })
 
-    it(` > verify student centric view for - ${stuName}-should be disabled`, () => {
-      lcb.clickOnStudentsTab()
-      lcb.verifyStudentCentricCard(stuName, undefined, undefined, false)
-    })
-
-    it(` > verify question centric view, should not have student card`, () => {
-      lcb.clickonQuestionsTab()
-      Object.keys(allRight).forEach((queNum) => {
-        lcb.questionResponsePage.selectQuestion(queNum)
-        lcb.questionResponsePage.verifyNoQuestionResponseCard(stuName)
+    describe(`> verify redirected attempt2 - ${stuName}`, () => {
+      it(' > attempt by redirected students and verify feedback is shown', () => {
+        cy.login('student', email, password)
+        studentTestPage.assignmentPage.clickOnAssignmentButton()
+        Object.keys(attempt2.attempt).forEach((queNum) => {
+          const [queType] = questionTypeMap[queNum].queKey.split('.')
+          const { attemptData } = questionTypeMap[queNum]
+          studentTestPage.attemptQuestion(
+            queType,
+            attempt2.attempt[queNum],
+            attemptData
+          )
+          studentTestPage.clickOnNext()
+        })
+        studentTestPage.submitTest()
       })
-    })
 
-    /*  // TODO : revisit here to confrim
-    it(` > verify student centric view,should be shown`, () => {
-      lcb.clickOnStudentsTab()
-      lcb.verifyStudentCentricCard(
-        stuName,
-        attempt1.attempt,
-        questionTypeMap,
-        true
-      )
-      // verify scores of current attemp and no improvement
-      lcb.questionResponsePage.verifyTotalScoreAndImprovement(
-        attempt1.totalScore,
-        attempt1.maxScore,
-        false
-      )
-    })
+      it(` > verify counts on teacher assignement page`, () => {
+        studentTestPage.clickOnExitTest()
+        cy.login('teacher', teacher, password)
+        teacherSidebar.clickOnAssignment()
+        authorAssignmentPage.verifySubmitted(`2 of 3`)
+        authorAssignmentPage.verifyGraded('2')
+      })
 
-    // TODO : revisit here to confrim
-    it(` > verify question centric view,should be shown`, () => {
-      lcb.clickonQuestionsTab()
-      _.keys(attempt1.attempt).forEach((queNum) => {
-        lcb.questionResponsePage.selectQuestion(queNum)
-        const { queKey, attemptData, points } = questionTypeMap[queNum]
-        lcb.questionResponsePage.verifyQuestionResponseCard(
-          points,
-          queKey,
-          attempt1.attempt[queNum],
-          attemptData,
-          false,
-          stuName
+      it(` > verify student card view after attempt2`, () => {
+        authorAssignmentPage.clcikOnPresenatationIconByIndex(0)
+        lcb.verifyStudentCard(
+          stuName,
+          studentSide.GRADED,
+          attempt2.score,
+          attempt2.perf,
+          attempt2.attempt,
+          email,
+          true
+        )
+        lcb.verifyRedirectIcon(stuName)
+      })
+
+      it(' > verify lcb assignment count', () => {
+        lcb.verifySubmittedCount(2, 3)
+        lcb.verifyAbsentCount(0)
+      })
+      ;[0, 1].forEach((i) => {
+        it(`> verify student card attempt view for attempt-${
+          i ? '2 not started' : '1 - absent'
+        }`, () => {
+          const attempt = !i ? attempt2 : { ...attempt1, score: '- / 7' }
+          lcb.clickOnCardViewTab()
+          lcb.verifyStudentScoreOnAttemptContainer(stuName, i, attempt.score)
+          lcb.verifyStudentPerfOnAttemptContainer(stuName, i, attempt.perf)
+          lcb.verifyAttemptNumberOnAttemptContainer(stuName, !i ? 2 : 1, i)
+        })
+      })
+
+      it(` > verify student centric view after attempt2`, () => {
+        lcb.clickOnStudentsTab()
+
+        // verify current attempt2
+        lcb.verifyStudentCentricCard(
+          stuName,
+          attempt2.attempt,
+          questionTypeMap,
+          true
+        )
+        // verify scores and improvement of current attempt2
+        lcb.questionResponsePage.verifyTotalScoreAndImprovement(
+          attempt2.totalScore,
+          attempt2.maxScore,
+          0
+        )
+
+        // verify previous attempt1
+        lcb.questionResponsePage.selectAttempt(1)
+        lcb.verifyStudentCentricCard(
+          stuName,
+          attempt1.attempt,
+          questionTypeMap,
+          true
+        )
+        // verify scores and improvement of previous attempt1
+        lcb.questionResponsePage.verifyTotalScoreAndImprovement(
+          attempt1.totalScore,
+          attempt1.maxScore,
+          0
         )
       })
-    }) */
+
+      it(` > verify question centric view after attempt2`, () => {
+        lcb.clickonQuestionsTab()
+        _.keys(attempt2.attempt).forEach((queNum) => {
+          lcb.questionResponsePage.selectQuestion(queNum)
+          const { queKey, attemptData, points } = questionTypeMap[queNum]
+          lcb.questionResponsePage.verifyQuestionResponseCard(
+            points,
+            queKey,
+            attempt2.attempt[queNum],
+            attemptData,
+            false,
+            stuName
+          )
+        })
+      })
+    })
   })
 
   describe(`> redirect entire class - status checks only`, () => {
@@ -301,7 +395,4 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       authorAssignmentPage.verifyStatus(teacherSide.IN_PROGRESS)
     })
   })
-
-  // TODO : add close date related redirect scenarios
-  // TODO : add scenarios with non gradable question - question create module need to implemented for this
 })

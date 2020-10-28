@@ -103,7 +103,7 @@ const Container = ({
   }
 
   return (
-    <>
+    <ThemeProvider theme={themes.default}>
       <Header userInfo={userInfo} logout={logout} />
       {signupStatus === 1 && (
         <JoinSchool
@@ -136,7 +136,7 @@ const Container = ({
           />
         </Col>
       )}
-    </>
+    </ThemeProvider>
   )
 }
 

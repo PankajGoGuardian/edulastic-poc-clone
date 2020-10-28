@@ -326,8 +326,7 @@ export const parseData = (rawData, filter) => {
         : d.gender.toLowerCase() === 'f'
         ? 'Female'
         : d.gender
-    const schoolName = !d.schoolName ? 'NA' : d.schoolName
-    return { ...d, gender, schoolName }
+    return { ...d, gender }
   })
   if (filter.compareBy === 'group') {
     data = transformMetricForStudentGroups(data, data)

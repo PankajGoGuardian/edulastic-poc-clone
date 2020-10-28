@@ -3,6 +3,7 @@ import {
   EduButton,
   TypeToConfirmModal,
   notification,
+  SimpleConfirmModal,
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -37,6 +38,8 @@ import {
   CaretUp,
   SelectStyled,
   OptionWrapper,
+  RightContent,
+  ClassLink,
 } from './styled'
 
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
@@ -76,6 +79,7 @@ const Header = ({
   teachers,
   showCoteacherModal,
   setUpdateCoTeacherModal,
+  unarchiveClass,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -105,9 +109,18 @@ const Header = ({
 
   const [isOpen, setModalStatus] = useState(modalStatus)
   const [sentReq, setReqStatus] = useState(false)
+  const [showUnarchiveModal, setShowUnarchiveModal] = useState(false)
 
   const toggleModal = (key) => {
     setModalStatus({ [key]: !isOpen[key] })
+  }
+
+  const handleUnarchiveClass = () => {
+    unarchiveClass({ groupId: _id, exitPath, isGroup: type !== 'class' })
+    setShowUnarchiveModal(false)
+  }
+  const handleUnarchiveClassCancel = () => {
+    setShowUnarchiveModal(false)
   }
 
   if (added && sentReq) {
@@ -331,6 +344,28 @@ const Header = ({
             Add Co-Teacher
           </EduButton>
         )}
+        <RightContent>
+          {active !== 1 && (
+            <ClassLink onClick={() => setShowUnarchiveModal(true)}>
+              UNARCHIVE
+            </ClassLink>
+          )}
+          {showUnarchiveModal && (
+            <SimpleConfirmModal
+              visible={showUnarchiveModal}
+              title={`Unarchive ${typeText}`}
+              description={
+                <p style={{ margin: '5px 0' }}>
+                  Are you sure you want to Unarchive{' '}
+                  <LightGreenSpan>{name}</LightGreenSpan>?
+                </p>
+              }
+              buttonText="Unarchive"
+              onProceed={handleUnarchiveClass}
+              onCancel={handleUnarchiveClassCancel}
+            />
+          )}
+        </RightContent>
         {active === 1 && (
           <Dropdown
             overlay={

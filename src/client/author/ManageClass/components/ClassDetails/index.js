@@ -271,6 +271,7 @@ const ClassDetails = ({
               syncClassesWithClever={syncClassesWithClever}
               archiveClass={archiveClass}
               entity={selectedClass}
+              unarchiveClass={unarchiveClass}
             />
           </div>
           <MainContentWrapper>

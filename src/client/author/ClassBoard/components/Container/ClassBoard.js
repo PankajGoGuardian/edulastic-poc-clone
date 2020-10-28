@@ -882,7 +882,7 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params
     const studentTestActivity =
       (studentResponse && studentResponse.testActivity) || {}
-    studentTestActivity.timeSpent = Math.floor(
+    const timeSpent = Math.floor(
       ((studentResponse &&
         studentResponse.questionActivities &&
         studentResponse.questionActivities.reduce((acc, qa) => {
@@ -1531,9 +1531,9 @@ class ClassBoard extends Component {
                                 textTransform: 'capitalize',
                               }}
                             >
-                              {`${Math.floor(
-                                studentTestActivity.timeSpent / 60
-                              )}:${studentTestActivity.timeSpent % 60}` || ''}
+                              {`${Math.floor(timeSpent / 60)}:${
+                                timeSpent % 60
+                              }` || ''}
                             </span>
                           </ScoreHeader>
                           <ScoreHeader style={{ fontSize: '12px' }}>

@@ -120,22 +120,27 @@ export function* receiveTestActivitySaga({ payload }) {
       ...payload,
       testId: additionalData.testId,
     })
+    const testItems = classResponse.itemGroups
+      .flatMap((itemGroup) => itemGroup.items || [])
+      .map((item) => {
+        item.data.questions = get(item, 'data.questions', []).map((q) => ({
+          ...q,
+        }))
+        return item
+      })
+    markQuestionLabel(testItems)
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
-      payload: classResponse,
+      payload: { ...classResponse, testItems },
     })
 
     const students = get(gradebookData, 'students', [])
     // the below methods mutates the gradebookData
-    classResponse.testItems = classResponse.itemGroups.flatMap(
-      (itemGroup) => itemGroup.items || []
-    )
     gradebookData.passageData = classResponse.passages
-    gradebookData.testItemsData = classResponse.testItems
-    gradebookData.testItemsDataKeyed = keyBy(classResponse.testItems, '_id')
+    gradebookData.testItemsData = testItems
+    gradebookData.testItemsDataKeyed = keyBy(testItems, '_id')
     gradebookData.test = classResponse
     gradebookData.endDate = additionalData.endDate
-    markQuestionLabel(gradebookData.testItemsData)
     transformTestItems(gradebookData)
     // attach fake data to students for presentation mode.
     const fakeData = createFakeData(students.length)

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { ThemeProvider } from 'styled-components'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { get } from 'lodash'
@@ -21,6 +22,7 @@ import {
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
 } from '../../../../author/ManageClass/ducks'
+import { themes } from '../../../../theme'
 
 const Container = ({
   user,
@@ -77,7 +79,7 @@ const Container = ({
 
   if (!isAuthenticated) {
     return (
-      <>
+      <ThemeProvider theme={themes.default}>
         <SignupForm
           image={
             generalSettings && isSignupUsingDaURL
@@ -96,7 +98,7 @@ const Container = ({
           invitedUser={invitedUser}
           invitedUserDetails={invitedUserDetails}
         />
-      </>
+      </ThemeProvider>
     )
   }
 

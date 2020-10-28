@@ -364,7 +364,16 @@ export const getIsNewItemSelector = createSelector(
 
 export const getItemDetailSelector = createSelector(stateSelector, (state) => {
   const item = state.item || {}
-  markQuestionLabel([item])
+  // creating a copy of questions before mutating them and mutate the copied
+  const questions = get(item, 'data,questions', []).map((q) => ({ ...q }))
+  const itemWithQuestionsCloned = {
+    ...item,
+    data: {
+      ...item.data,
+      questions,
+    },
+  }
+  markQuestionLabel([itemWithQuestionsCloned])
   return item
 })
 

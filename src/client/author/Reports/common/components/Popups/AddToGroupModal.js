@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import * as Sentry from '@sentry/browser'
 
 // components
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -15,6 +14,7 @@ import {
   withWindowSizes,
   notification,
   CustomModalStyled,
+  captureSentryException,
 } from '@edulastic/common'
 
 // api, ducks, helpers
@@ -182,7 +182,7 @@ const AddToGroupModal = ({
         const {
           data: { message: errorMessage },
         } = err.response
-        Sentry.captureException(err)
+        captureSentryException(err)
         notification({ msg: errorMessage })
       }
       setStudentsToRemove([])

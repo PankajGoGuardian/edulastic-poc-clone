@@ -1,8 +1,7 @@
 import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { assignmentApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { omitBy, isUndefined, isEmpty, invert, set, get, maxBy } from 'lodash'
 import {
   assignmentPolicyOptions,
@@ -165,7 +164,7 @@ function* loadAssignmentSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     yield put(slice.actions.stopLoading())
     notification({ msg: errorMessage || 'Loading assignment failed' })
   }
@@ -228,7 +227,7 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     yield put(slice.actions.updateAssignmentClassSettingsError())
     notification({
       msg: errorMessage || 'Updating assignment settings failed',

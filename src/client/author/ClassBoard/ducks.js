@@ -9,7 +9,7 @@ import {
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
 import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from 'lodash'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import {
   test,
   testActivity,
@@ -238,7 +238,7 @@ function* releaseScoreSaga({ payload }) {
       msg: 'Successfully updated the release score settings',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -259,7 +259,7 @@ function* markAsDoneSaga({ payload }) {
       msg: 'Successfully marked as done',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -302,7 +302,7 @@ function* openAssignmentSaga({ payload }) {
     }
     yield call(notification, { type: 'success', msg: 'Success' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -324,7 +324,7 @@ function* closeAssignmentSaga({ payload }) {
     yield put(receiveTestActivitydAction(payload.assignmentId, payload.classId))
     yield call(notification, { type: 'success', msg: 'Success' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -341,7 +341,7 @@ function* saveOverallFeedbackSaga({ payload }) {
     yield call(testActivityApi.saveOverallFeedback, payload)
     yield call(notification, { type: 'success', msg: 'feedback saved' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -361,7 +361,7 @@ function* markAbsentSaga({ payload }) {
       msg: 'Successfully marked as absent',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -384,7 +384,7 @@ function* markAsSubmittedSaga({ payload }) {
       msg: 'Successfully marked as submitted',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -407,7 +407,7 @@ function* togglePauseAssignment({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (errorMessage === 'Assignment does not exist anymore') {
       yield put(redirectToAssignmentsAction(''))
     }
@@ -427,7 +427,7 @@ function* fetchStudentsByClassSaga({ payload }) {
     )
     yield put(updateClassStudentsAction(students))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error('Receive students from class failed')
   }
 }
@@ -438,7 +438,7 @@ function* removeStudentsSaga({ payload }) {
     yield put(updateRemovedStudentsAction(students))
     yield call(notification, { type: 'success', msg: 'Successfully removed' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
     if (errorMessage === 'Assignment does not exist anymore') {
@@ -455,7 +455,7 @@ function* addStudentsSaga({ payload }) {
     yield call(classBoardApi.addStudents, payload)
     yield call(notification, { type: 'success', msg: 'Successfully added' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -478,7 +478,7 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     })
     yield put(setAllTestActivitiesForStudentAction(result))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
     if (errorMessage === 'Assignment does not exist anymore') {
@@ -499,7 +499,7 @@ function* downloadGradesAndResponseSaga({ payload }) {
     const fileName = `${testName}_${userName}.csv`
     downloadCSV(fileName, data)
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -536,7 +536,7 @@ function* canvasSyncGradesSaga({ payload }) {
       msg: 'Grades synced with canvas successfully.',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response

@@ -1,8 +1,7 @@
 import { takeEvery, put, all, select, call } from 'redux-saga/effects'
 import { isEmpty, values } from 'lodash'
 import { testItemsApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
+import { captureSentryException, notification } from '@edulastic/common'
 import { getQuestionIds } from './items'
 // actions
 import {
@@ -105,7 +104,7 @@ function* evaluateAnswers({ payload: groupId }) {
       })
     else notification({ messageKey: 'checkAnswerFail' })
     console.log(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 

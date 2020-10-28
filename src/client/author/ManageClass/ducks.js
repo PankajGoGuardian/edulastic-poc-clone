@@ -9,7 +9,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { get, findIndex, keyBy } from 'lodash'
 import {
   googleApi,
@@ -660,7 +660,7 @@ function* receiveCreateClassRequest({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     notification({ msg: errorMessage })
     yield put(createClassFailedAction({ message: errorMessage }))
   }
@@ -843,7 +843,7 @@ function* syncClassUsingCode({ payload }) {
   } catch (err) {
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (errorMessage === 'No class found') {
       yield put(setClassNotFoundErrorAction(true))
     } else {
@@ -863,7 +863,7 @@ function* getCanvasCourseListRequestSaga({ payload }) {
       yield put(getCanvasCourseListSuccessAction(courseList))
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put(getCanvasCourseListFailedAction())
     notification({ messageKey: 'failedToGetCourseList' })
@@ -878,7 +878,7 @@ function* getCanvasSectionListRequestSaga({ payload }) {
       notification({ type: 'info', messageKey: 'noCourseSectionFound' })
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put(getCanvasSectionListFailedAction())
     notification({ messageKey: 'failedToGetCourseSectionList' })
@@ -894,7 +894,7 @@ function* syncClassWithCanvasSaga({ payload }) {
     yield put(fetchStudentsByIdAction({ classId }))
     notification({ type: 'success', messageKey: 'syncWithCanvasIsComplete' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     notification({ messageKey: 'classSyncWithCanvasFailed' })
     yield put(setSyncClassLoadingAction(false))
@@ -912,7 +912,7 @@ function* fetchCleverClassListRequestSaga() {
       })
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put(fetchCleverClassListFailedAction())
     const errorMessage = err?.response?.data?.message
@@ -949,7 +949,7 @@ function* syncClassListWithCleverSaga({ payload }) {
       // no default
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     const errorMessage = err?.response?.data?.message
     if (err.status === 403 && errorMessage) {
@@ -973,7 +973,7 @@ function* unarchiveClass({ payload }) {
     if (exitPath) yield put(push('/'))
     yield put(push(exitPath || '/author/manageClass'))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put(unarchiveClassFailedAction())
     notification({

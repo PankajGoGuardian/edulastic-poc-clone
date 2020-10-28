@@ -3,7 +3,11 @@ import { get as _get, round } from 'lodash'
 import { testItemsApi } from '@edulastic/api'
 import { LOCATION_CHANGE, push } from 'connected-react-router'
 import { questionType } from '@edulastic/constants'
-import { Effects, notification } from '@edulastic/common'
+import {
+  captureSentryException,
+  Effects,
+  notification,
+} from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import { evaluateItem } from '../utils/evalution'
 import { hasEmptyAnswers } from '../../questionUtils'
@@ -105,7 +109,7 @@ function* createTestItemSaga({
     }
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'create item failed'
     notification({ msg: errorMessage })
     yield put({
@@ -124,7 +128,7 @@ function* updateTestItemSaga({ payload }) {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Update item is failed'
     notification({ msg: errorMessage })
     yield put({
@@ -207,7 +211,7 @@ function* evaluateAnswers({ payload }) {
     }
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage =
       err.message ||
       'Expression syntax is incorrect. Please refer to the help docs on what is allowed'
@@ -221,7 +225,7 @@ function* showAnswers() {
     // with check answer itself,it will save evaluation , we dont need this again.
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Show Answer Failed'
     notification({ msg: errorMessage })
   }

@@ -1,8 +1,11 @@
 import React from 'react'
-import { EduButton, notification } from '@edulastic/common'
+import {
+  captureSentryException,
+  EduButton,
+  notification,
+} from '@edulastic/common'
 import GoogleLogin from 'react-google-login'
 import { canvasApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
 import {
   IconPlusCircle,
   IconGoogleClassroom,
@@ -56,14 +59,14 @@ const CreateClassPage = ({
           })
           .catch((err) => {
             console.error('Error while authorizing', err)
-            Sentry.captureException(err)
+            captureSentryException(err)
             notification({ messageKey: 'errorOccuredWhileAuthorizing' })
           })
       } else {
         handleCanvasBulkSync()
       }
     } catch (err) {
-      Sentry.captureException(err)
+      captureSentryException(err)
       notification(
         err.status === 403 && err.response.data?.message
           ? {

@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { get, round, isNaN, isString, omit } from 'lodash'
 import { notification } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
 import { fileApi } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
@@ -948,6 +949,15 @@ export const getSanitizedProps = (props, blackListedProps) => {
   return omit(props, blackListedProps)
 }
 
+export const captureSentryException = (err) => {
+  // Ignore BE's business errors
+  if (!err || (err && [409, 302, 422].includes(err.status))) {
+    return
+  }
+
+  Sentry.captureException(err)
+}
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,
@@ -973,4 +983,5 @@ export default {
   sanitizeString,
   uuid,
   getSanitizedProps,
+  captureSentryException,
 }

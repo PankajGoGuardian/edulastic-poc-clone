@@ -19,8 +19,11 @@ import {
   testActivityStatus,
   assignmentStatusOptions,
 } from '@edulastic/constants'
-import { Effects, notification } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
+import {
+  captureSentryException,
+  Effects,
+  notification,
+} from '@edulastic/common'
 import {
   getCurrentSchool,
   fetchUserAction,
@@ -686,9 +689,8 @@ function* startAssignment({ payload }) {
         'Assignment is not not available at the moment. Please contact your administrator.'
       notification({ msg: message })
       yield put(push('/home/assignments'))
-    } else if (![409, 302].includes(status)) {
-      Sentry.captureException(err)
     }
+    captureSentryException(err)
   } finally {
     yield put(
       setIsActivityCreatingAction({ assignmentId: '', isLoading: false })

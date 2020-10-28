@@ -3,9 +3,8 @@ import { createSelector } from 'reselect'
 import { takeLatest, takeEvery, call, put, all } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { googleApi, groupApi, userApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
-import * as Sentry from '@sentry/browser'
 
 const RECEIVE_CLASSLIST_REQUEST = '[class] receive list request'
 const RECEIVE_CLASSLIST_SUCCESS = '[class] receive list success'
@@ -290,7 +289,7 @@ function* receiveClassListSaga({ payload }) {
     const hits = yield call(groupApi.getGroups, payload)
     yield put(receiveClassListSuccessAction(hits))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to fetch current class information.'
     notification({ type: 'error', msg: errorMessage })
     yield put(receiveClassListErrorAction({ error: errorMessage }))
@@ -303,7 +302,7 @@ function* updateClassSaga({ payload }) {
     yield put(updateClassSuccessAction(updateClassData))
     notification({ type: 'success', messageKey: 'classUpdatedSuccessfully' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to fetch update class information.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateClassErrorAction({ error: errorMessage }))
@@ -316,7 +315,7 @@ function* createClassSaga({ payload }) {
     yield put(createClassSuccessAction(createClass))
     notification({ type: 'success', messageKey: 'classCreatedSuccessfully' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to create class.'
     notification({ type: 'error', msg: errorMessage })
     yield put(createClassErrorAction({ error: errorMessage }))
@@ -330,7 +329,7 @@ function* deleteClassSaga({ payload }) {
     yield put(receiveClassListAction(payload.searchQuery))
     notification({ type: 'success', messageKey: 'selectedClassesArchived' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to delete the class group. Please try again.'
     notification({ msg: errorMessage })
     yield put(deleteClassErrorAction({ deleteError: errorMessage }))
@@ -342,7 +341,7 @@ function* receiveTeachersListSaga({ payload }) {
     const { result: teachersList } = yield call(userApi.fetchUsers, payload)
     yield put(receiveTeacherListSuccessAction(teachersList))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to gather teachers list.'
     notification({ type: 'error', msg: errorMessage })
     yield put(receiveTeacherListErrorAction({ error: errorMessage }))
@@ -356,7 +355,7 @@ function* bulkUpdateClassesSaga({ payload }) {
     yield put(bulkUpdateClassesSuccessAction(result))
     notification({ type: 'success', msg: result.message })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Something went wrong.'
     notification({ type: 'error', msg: errorMessage })
   }
@@ -373,7 +372,7 @@ function* archiveClassSaga({ payload }) {
     if (exitPath) yield put(push('/'))
     yield put(push(exitPath || '/author/manageClass'))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = `Unable to archive ${groupTypeText}.`
     notification({ type: 'error', msg: errorMessage })
     yield put(archiveClassErrorAction({ archiveError: errorMessage }))
@@ -394,7 +393,7 @@ function* saveHangoutEventSaga({ payload }) {
     notification({ type: 'success', msg: successMessage })
     yield put(saveHangoutEventSuccessAction({ savedGroup }))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save Google Meet event.'
     notification({ type: 'error', msg: errorMessage })
     yield put(saveHangoutEventErrorAction())
@@ -414,7 +413,7 @@ function* updateHangoutEventSaga({ payload }) {
     notification({ type: 'success', msg: successMessage })
     yield put(saveHangoutEventSuccessAction({ savedGroup }))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to update Hangouts event.'
     notification({ type: 'error', msg: errorMessage })
     yield put(saveHangoutEventErrorAction())

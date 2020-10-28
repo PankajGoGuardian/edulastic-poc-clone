@@ -4,6 +4,7 @@ import {
   TypeToConfirmModal,
   notification,
   SimpleConfirmModal,
+  captureSentryException,
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,7 +13,6 @@ import withRouter from 'react-router-dom/withRouter'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import * as Sentry from '@sentry/browser'
 
 // components
 import { Dropdown, Select } from 'antd'
@@ -139,7 +139,7 @@ const Header = ({
         syncCanvasModal()
       }
     } catch (err) {
-      Sentry.captureException(err)
+      captureSentryException(err)
       notification(
         err.status === 403 && err.response.data?.message
           ? {

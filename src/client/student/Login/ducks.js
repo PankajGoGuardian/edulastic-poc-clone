@@ -2,7 +2,7 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { pick, last, get, set } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { push } from 'connected-react-router'
 import {
   authApi,
@@ -1359,7 +1359,7 @@ function* cleverSSOLogin({ payload }) {
   } catch (err) {
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (
       errorMessage ===
       'User not yet authorized to use Edulastic. Please contact your district administrator!'

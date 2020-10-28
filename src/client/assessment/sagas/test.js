@@ -6,8 +6,11 @@ import {
 } from '@edulastic/api'
 import { takeEvery, call, all, put, select, take } from 'redux-saga/effects'
 import { Modal } from 'antd'
-import { notification, Effects } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
+import {
+  notification,
+  Effects,
+  captureSentryException,
+} from '@edulastic/common'
 import { push } from 'react-router-redux'
 import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from 'lodash'
 import produce from 'immer'
@@ -283,7 +286,7 @@ function* loadTest({ payload }) {
             yield put(setPasswordStatusAction('validation failed'))
           }
           console.log(err)
-          Sentry.captureException(err)
+          captureSentryException(err)
         }
       }
       yield put(setPasswordStatusAction(''))
@@ -540,7 +543,7 @@ function* loadTest({ payload }) {
       payload: false,
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     yield put({
       type: SET_TEST_LOADING_ERROR,
       payload: err,
@@ -578,7 +581,7 @@ function* loadPreviousResponses(payload) {
     })
   } catch (err) {
     console.log(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 
@@ -686,7 +689,7 @@ function* submitTest({ payload }) {
       )
     )
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
     if (err.status === 403) {

@@ -23,6 +23,7 @@ const TestActivityPreview = ({
   questionActivities,
   onClose,
   t,
+  previewModal,
 }) => {
   const passages = test?.passages || []
   const evaluations = questionActivities.reduce((acc, curr) => {
@@ -100,6 +101,7 @@ const TestActivityPreview = ({
         titleIcon={IconReport}
         titleText={title}
         showReviewResponses={false}
+        previewModal={previewModal}
       />
       <MainContentWrapper padding="0px 20px">
         <StudentPerformancePreview>

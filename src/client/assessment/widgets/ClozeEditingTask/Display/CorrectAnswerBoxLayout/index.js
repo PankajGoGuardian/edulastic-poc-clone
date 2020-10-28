@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { MathSpan, CorrectAnswersContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import produce from 'immer'
 import { getStemNumeration } from '../../../../utils/helpers'
 import { AnswersWrapper } from './styled/AnswerWrapper'
 
@@ -24,7 +25,9 @@ const CorrectAnswerBoxLayout = ({
     })
     return altLabels.toString()
   }
-  responseIds.sort((a, b) => a.index - b.index)
+  responseIds = produce(responseIds, (st) => {
+    st.sort((a, b) => a.index - b.index)
+  })
 
   return (
     <CorrectAnswersContainer

@@ -25,6 +25,7 @@ const Header = ({
   showReviewResponses,
   reviewResponses,
   onExit,
+  previewModal,
   ...rest
 }) => (
   <MainHeader
@@ -49,7 +50,7 @@ const Header = ({
         setShowClass={setShowClass}
       />
     )}
-    {(attempts.length > 1 || showReviewResponses) && (
+    {(attempts.length > 1 || showReviewResponses || previewModal) && (
       <FlexContainer>
         {attempts.length > 1 && <AttemptSelect attempts={attempts} />}
         {showReviewResponses && (

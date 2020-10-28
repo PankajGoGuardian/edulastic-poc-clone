@@ -257,7 +257,6 @@ class AssessmentPlayerDefault extends React.Component {
       moveToNext,
       moveToPrev,
       gotoQuestion,
-      settings,
       previewPlayer,
       scratchPad,
       attachments,
@@ -291,6 +290,7 @@ class AssessmentPlayerDefault extends React.Component {
       utaId,
       hasDrawingResponse,
     } = this.props
+    let { settings } = this.props
     const {
       testItemState,
       isToolbarModalVisible,
@@ -399,7 +399,7 @@ class AssessmentPlayerDefault extends React.Component {
       headerStyleWidthZoom.padding = 0
     }
 
-    settings.calcType = this.calculatorType
+    settings = { ...settings, calcType: this.calculatorType }
 
     return (
       /**

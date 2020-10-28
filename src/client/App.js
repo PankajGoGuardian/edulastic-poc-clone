@@ -112,6 +112,12 @@ const CLIAccessBanner = loadable(
 const PublicTest = loadable(() => import('./publicTest/container'), {
   fallback: <Loading />,
 })
+const AssignmentEmbedLink = loadable(
+  () => import('./assignmentEmbedLink/container'),
+  {
+    fallback: <Loading />,
+  }
+)
 const AudioTagPlayer = loadable(() => import('./AudioTagPlayer'), {
   fallback: <Loading />,
 })
@@ -222,18 +228,27 @@ class App extends Component {
   componentDidMount() {
     const { fetchUser, location } = this.props
     const publicPath = location.pathname.split('/').includes('public')
+    const embedLink = location.pathname.split('/').includes('embed')
     const ssoPath = location.pathname.split('/').includes('auth')
     const partnerPath = location.pathname.split('/').includes('partnerLogin')
     const isV1Redirect =
       location.pathname.includes('/fwd') ||
       isLocationInTestRedirectRoutes(location)
     const kidPath = location.pathname.includes('/kid')
-    if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect && !kidPath) {
+    if (
+      !embedLink &&
+      !publicPath &&
+      !ssoPath &&
+      !partnerPath &&
+      !isV1Redirect &&
+      !kidPath
+    ) {
       fetchUser({ addAccount: query.addAccount, userId: query.userId })
     } else if (
-      publicPath &&
-      (location.pathname.split('/').includes('view-test') ||
-        isLocationInTestRedirectRoutes(location)) &&
+      ((publicPath &&
+        (location.pathname.split('/').includes('view-test') ||
+          isLocationInTestRedirectRoutes(location))) ||
+        embedLink) &&
       TokenStorage.getAccessToken()
     ) {
       fetchUser()
@@ -275,6 +290,8 @@ class App extends Component {
       isLocationInTestRedirectRoutes(location) ||
       location.pathname.includes('/kid')
 
+    const embedLink = location.pathname.split('/').includes('embed')
+
     if (
       !publicPath &&
       user.authenticating &&
@@ -288,7 +305,7 @@ class App extends Component {
     const features = user?.user?.features || {}
     let defaultRoute = ''
     let redirectRoute = ''
-    if (!publicPath) {
+    if (!publicPath && !embedLink) {
       const path = getWordsInURLPathName(location.pathname)
       const urlSearch = new URLSearchParams(location.search)
 
@@ -592,6 +609,10 @@ class App extends Component {
             <Route
               path="/public/view-test/:testId"
               render={(props) => <PublicTest {...props} />}
+            />
+            <Route
+              path="/assignments/embed/:testId"
+              render={(props) => <AssignmentEmbedLink {...props} />}
             />
             <Route
               path="/audio-test"

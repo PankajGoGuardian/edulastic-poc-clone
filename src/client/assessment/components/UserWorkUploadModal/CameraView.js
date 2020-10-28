@@ -29,8 +29,13 @@ const CameraWithButtons = ({
 
   const onUploadSuccess = (filesInfo) => {
     setIsTakingPhoto(false)
-    const URI = filesInfo.map((fileInfo) => fileInfo.source)
-    onUploadFinished(URI)
+    const files = filesInfo.map(({ name, type, size, source }) => ({
+      name,
+      type,
+      size,
+      source,
+    }))
+    onUploadFinished(files)
   }
 
   const validateFile = ({ type, size }) => {
@@ -56,7 +61,7 @@ const CameraWithButtons = ({
   // Pass the imageData to callback and reset isTakingPhoto boolean.
   const handlePhotoData = (imageBlob) => {
     imageBlob.lastModifiedDate = new Date()
-    imageBlob.name = 'cameraPhoto.png'
+    imageBlob.name = 'user-work-photo.png'
     addFiles([imageBlob])
     uploadFiles()
   }

@@ -60,11 +60,15 @@ const FilesUploadView = ({ onCancel, uploadFile, onUploadFinished }) => {
       }
     }
 
-    const URIs = Object.keys(filesInfo)
-      .filter((key) => UPLOAD_STATUS.SUCCESS === filesInfo[key].status)
-      .map((key) => filesInfo[key].source)
-
-    onUploadFinished(URIs)
+    const filesToSave = Object.values(filesInfo).map(
+      ({ name, type, size, source }) => ({
+        name,
+        type,
+        size,
+        source,
+      })
+    )
+    onUploadFinished(filesToSave)
   }, [filesInfo])
 
   const handleChange = ({ file }) => addFiles([file])
@@ -101,8 +105,8 @@ const FilesUploadView = ({ onCancel, uploadFile, onUploadFinished }) => {
         <h3>
           <strong>DRAG & DROP YOUR FILE</strong>
         </h3>
-        or <Underlined>browse</Underlined> DOC, DOCX, XLS, XLSX, PDF, PNG, JPG,
-        JPEG, GIF (1024KB MAX.)
+        or <Underlined>browse</Underlined> DOC, XLS, PDF, PNG, JPG, GIF (1024KB
+        MAX.)
       </UploadDragger>
 
       {!isEmpty(uploadProgressArray) && (

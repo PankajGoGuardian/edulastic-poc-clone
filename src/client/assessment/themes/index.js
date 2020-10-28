@@ -49,7 +49,6 @@ import { evaluateCurrentAnswersForPreviewAction } from '../sharedDucks/previewTe
 import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
-import UserWorkUploadModal from '../components/UserWorkUploadModal'
 import useUploadToS3 from '../hooks/useUploadToS3'
 
 const { playerSkinValues } = testConstants
@@ -161,30 +160,6 @@ const AssessmentContainer = ({
     show: false,
   })
   const [showRegradedModal, setShowRegradedModal] = useState(false)
-  const [
-    isUserWorkUploadModalVisible,
-    setIsUserWorkUploadModalVisible,
-  ] = useState(false)
-  const toggleUserWorkUploadModal = () =>
-    setIsUserWorkUploadModalVisible((value) => !value)
-  const closeUserWorkUploadModal = () => setIsUserWorkUploadModalVisible(false)
-  const saveUserWorkUploadURIs = (URIs) => {
-    const userWorkId = items[currentItem]?._id
-
-    const currentUserWork = userWork[userWorkId]
-    const currentUploads = currentUserWork ? currentUserWork.uploads : []
-    const newUploads = [...currentUploads, ...URIs]
-    // Add URIs to uploads
-    const newUserWork = { ...currentUserWork, uploads: newUploads }
-
-    // Update question item with question work image url.
-    saveUserWork({
-      [userWorkId]: newUserWork,
-    })
-
-    // Close the camera modal
-    setIsUserWorkUploadModalVisible(false)
-  }
 
   const [, uploadFile] = useUploadToS3(userId)
 
@@ -552,7 +527,7 @@ const AssessmentContainer = ({
     handleMagnifier,
     enableMagnifier,
     studentReportModal,
-    toggleUserWorkUploadModal,
+    uploadToS3: uploadFile,
     ...restProps,
   }
 
@@ -657,15 +632,6 @@ const AssessmentContainer = ({
         />
       )}
       {playerComponent}
-      <UserWorkUploadModal
-        isModalVisible={isUserWorkUploadModalVisible}
-        onCancel={closeUserWorkUploadModal}
-        uploadFile={uploadFile}
-        onUploadFinished={(URIs) => {
-          saveUserWorkUploadURIs(URIs)
-          closeUserWorkUploadModal()
-        }}
-      />
     </AssessmentPlayerContext.Provider>
   )
 }

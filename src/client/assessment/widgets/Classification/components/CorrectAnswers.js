@@ -61,12 +61,12 @@ const CorrectAnswers = ({
                 </ColumnHeader>
               )}
               <AnswersContainer>
-                {answers.map((res, i) => (
+                {answers.map((answer, i) => (
                   <DragItem
                     {...dragItemProps}
                     dragHandle={false}
                     disableDrag
-                    item={res || ''}
+                    label={answer} // answer: string
                     key={`answer-${i}`}
                   />
                 ))}

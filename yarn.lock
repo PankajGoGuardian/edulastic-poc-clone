@@ -9567,10 +9567,10 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
-froala-editor@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-3.1.0.tgz#d05922abad32ae14a4bd5424a7451636554c5892"
-  integrity sha512-U5G4GIzKstl6dJJi3gvnKT5UHs5ef2/Qn9Q3sjXudQ1S+rno6mV5Je78YYrK02LBOskLkIZ06WijyetzBy68XQ==
+froala-editor@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-3.1.1.tgz#546f42b40b586c2811e1d70df9273203081a6e1b"
+  integrity sha512-1VYBEL5QN92Qmlvc1tgL6Ij55hMDXnkStv1c/MoNwdkTdK81W1JYmS4LaLFfUmva1Zvp5DWEM+G3G8+VyfvDEQ==
 
 from2@^2.1.0:
   version "2.3.0"
@@ -17540,13 +17540,13 @@ react-focus-lock@^2.1.0:
     use-callback-ref "^1.2.1"
     use-sidecar "^1.0.1"
 
-react-froala-wysiwyg@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-3.1.0.tgz#136c170bd1bbede9b260f95eecbe3a2072990dae"
-  integrity sha512-o0WSGb2bFVwUm/W+VYGwiySz0wsj5QAw+red/2AfZX8EYiSj0colAMneJ/KvTI8DiDRjM0EAraVC1KBpEOljsw==
+react-froala-wysiwyg@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-3.1.1.tgz#5156558a26547fc7e3ac1e289b9f4f06357fef0f"
+  integrity sha512-gNFcRELVaMLBkYGVEu8eVLypmwoeYO1vbliquPDZbsxwcOhjJjF0D7IyW0wYwN7WPvAWbVwNFZsBzUjsPhiqAA==
   dependencies:
     create-react-class "^15.5.2"
-    froala-editor "3.1.0"
+    froala-editor "3.1.1"
 
 react-google-login@^5.0.2:
   version "5.1.3"

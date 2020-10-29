@@ -37,19 +37,9 @@ const removeClassSyncNotification = () => {
     })
     .then((result) => result.data.result)
 }
-const saveGoogleTokens = (data) =>
-  api
-    .callApi({
-      url: `${prefix}/tokens`,
-      method: 'post',
-      data,
-    })
-    .then((result) => result?.data?.result)
-
 export default {
   getCourseList,
   syncClass,
   postGoogleClassRoomAnnouncement,
   removeClassSyncNotification,
-  saveGoogleTokens,
 }

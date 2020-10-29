@@ -574,26 +574,23 @@ class Display extends Component {
       </div>
     )
 
-    const renderImage = () =>
-      isPrintMode ? (
-        <img src={imageUrl} alt={imageAlterText} style={{ width: '100%' }} />
-      ) : (
-        <StyledPreviewImage
-          data-cy="imageInpreviewContainer"
-          imageSrc={imageUrl || ''}
-          width={imageWidth}
-          height={imageHeight}
-          alt={imageAlterText}
-          maxHeight={maxHeight}
-          maxWidth={maxWidth}
-          preview={preview}
-          style={{
-            position: 'absolute',
-            top: imageOptions.y || 0,
-            left: imageOptions.x || 0,
-          }}
-        />
-      )
+    const renderImage = () => (
+      <StyledPreviewImage
+        data-cy="imageInpreviewContainer"
+        imageSrc={imageUrl || ''}
+        width={imageWidth}
+        height={imageHeight}
+        alt={imageAlterText}
+        maxHeight={maxHeight}
+        maxWidth={maxWidth}
+        preview={preview}
+        style={{
+          position: 'absolute',
+          top: imageOptions.y || 0,
+          left: imageOptions.x || 0,
+        }}
+      />
+    )
 
     const maxResponseOffsetTop = responseContainers.reduce((max, resp) => {
       max = Math.max(max, resp.top + parseInt(resp.height, 10))
@@ -647,7 +644,6 @@ class Display extends Component {
           ? 1050
           : 750),
       flexDirection: isPrintMode ? 'column' : 'row',
-      width: isPrintMode && '100%',
     }
 
     const renderSnapItems = () =>
@@ -673,12 +669,12 @@ class Display extends Component {
       <StyledPreviewTemplateBox
         smallSize={smallSize}
         fontSize={fontSize}
-        height={isPrintMode ? '' : computedHeight}
+        height={computedHeight}
         maxWidth="100%"
       >
         <StyledPreviewContainer
           smallSize={smallSize}
-          width={isPrintMode ? '' : previewContainerWidth}
+          width={previewContainerWidth}
           data-cy="preview-contaniner"
           ref={this.previewContainerRef}
         >
@@ -696,7 +692,6 @@ class Display extends Component {
               dragItemStyle={dragItemStyle}
               fontSize={fontSize}
               onDrop={this.onDrop}
-              isPrintMode={isPrintMode}
               imageWidth={imageWidth}
               imageHeight={imageHeight}
               options={options}

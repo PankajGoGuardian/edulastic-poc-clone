@@ -30,7 +30,6 @@ import {
 import IconArchive from '@edulastic/icons/src/IconArchive'
 import { canvasApi } from '@edulastic/api'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
-import { get } from 'lodash'
 import {
   Institution,
   DropMenu,
@@ -75,7 +74,6 @@ const Header = ({
   unarchiveClass,
   history,
   entity,
-  teachers,
   showCoteacherModal,
   setUpdateCoTeacherModal,
 }) => {
@@ -83,7 +81,7 @@ const Header = ({
     fetchClassList({ data, showModal: false })
   }
 
-  const coTeachers = teachers.filter((teacher) => teacher.status === 1) || []
+  const coTeachers = selectedClass?.owners || []
 
   const handleError = (err) => {
     notification({ messageKey: 'googleLoginFailed' })
@@ -465,7 +463,6 @@ const enhance = compose(
   connect(
     (state) => ({
       user: state?.user?.user,
-      teachers: get(state, 'teacherReducer.data', []),
       showCoteacherModal: getManageCoTeacherModalVisibleStateSelector(state),
     }),
     {

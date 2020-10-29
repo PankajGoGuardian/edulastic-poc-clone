@@ -1552,6 +1552,7 @@
     axios "^0.18.0"
     fast-levenshtein "^2.0.6"
     immer "^2.1"
+    lodash "^4.17.20"
 
 "@emotion/cache@^10.0.27":
   version "10.0.29"
@@ -9571,11 +9572,6 @@ froala-editor@3.1.0:
   resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-3.1.0.tgz#d05922abad32ae14a4bd5424a7451636554c5892"
   integrity sha512-U5G4GIzKstl6dJJi3gvnKT5UHs5ef2/Qn9Q3sjXudQ1S+rno6mV5Je78YYrK02LBOskLkIZ06WijyetzBy68XQ==
 
-froala-editor@3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-3.2.2.tgz#7383565bfc80d5b89eaef2daf441bbf8cf4bc6e8"
-  integrity sha512-W7xK80FPf2okK/YgtWWnF00Q8qXS2MALGtSNcvf7lWBhh7sxRO3F8clOzVjI/ztS8orwfd2o/FwxcowMX5SJRg==
-
 from2@^2.1.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/from2/-/from2-2.3.0.tgz#8bfb5502bde4a4d36cfdeea007fcca21d7e382af"
@@ -13268,7 +13264,7 @@ lodash@4.17.15, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.15.0, lodash@^4.16.4, lo
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 
-"lodash@>=3.5 <5", lodash@^4, lodash@^4.17.19:
+"lodash@>=3.5 <5", lodash@^4, lodash@^4.17.19, lodash@^4.17.20:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
@@ -17544,13 +17540,13 @@ react-focus-lock@^2.1.0:
     use-callback-ref "^1.2.1"
     use-sidecar "^1.0.1"
 
-react-froala-wysiwyg@^3.2.2-1:
-  version "3.2.2-1"
-  resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-3.2.2-1.tgz#3e9804d07fe6ec8334709defb0d9782d1286fa96"
-  integrity sha512-vp8GqEkFXy0RK01R+lxLCGgYUVqY2WWKWVIlofxjecBlSGQpc7hC1xlrw8hEAFxW/nv28WoywtEyJoH2Z4fupA==
+react-froala-wysiwyg@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-3.1.0.tgz#136c170bd1bbede9b260f95eecbe3a2072990dae"
+  integrity sha512-o0WSGb2bFVwUm/W+VYGwiySz0wsj5QAw+red/2AfZX8EYiSj0colAMneJ/KvTI8DiDRjM0EAraVC1KBpEOljsw==
   dependencies:
     create-react-class "^15.5.2"
-    froala-editor "3.2.2"
+    froala-editor "3.1.0"
 
 react-google-login@^5.0.2:
   version "5.1.3"

@@ -691,6 +691,12 @@ export const getStudentCardStatus = (
 
   if (isEnrolled === false) {
     status.status = 'Not Enrolled'
+    if (UTASTATUS === ABSENT) {
+      status.status = 'Absent'
+    }
+    if (isAssigned === false) {
+      status.status = 'Unassigned'
+    }
     status.color = red
     return status
   }

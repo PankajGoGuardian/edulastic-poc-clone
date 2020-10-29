@@ -7,10 +7,10 @@ import {
   isArray,
   flatten,
   last,
-  isString,
   compact,
   flattenDeep,
   round,
+  get,
 } from 'lodash'
 import { questionType } from '@edulastic/constants'
 
@@ -126,16 +126,15 @@ const getSimpleTextAnswer = (testletResponseIds, testletResponses) => {
 const generateAnswers = {
   [questionType.CLOZE_DRAG_DROP](item, testletResponseIds, testletResponses) {
     const { options } = item
-    const data = testletResponseIds
-      .map((id) => {
-        const value = testletResponses[id]
-        const opIndex = ALPHABET.indexOf(value)
-        if (options[opIndex] && value) {
-          return options[opIndex].value
-        }
-        return false
-      })
-      .filter((x) => !!x)
+    const data = testletResponseIds.map((id) => {
+      const value = testletResponses[id]
+      const opIndex = ALPHABET.indexOf(value)
+      if (options[opIndex] && value) {
+        return options[opIndex].value
+      }
+      return false
+    })
+    // .filter((x) => !!x)
 
     return data
   },
@@ -296,28 +295,29 @@ const generateAnswers = {
     return getSimpleTextAnswer(testletResponseIds, testletResponses)
   },
   [questionType.TOKEN_HIGHLIGHT](item, testletResponseIds, testletResponses) {
-    const { templeWithTokens } = item
+    const tokens = get(item, 'templeWithTokens', []).map((x, i) => ({
+      ...x,
+      index: i,
+    }))
+
     const data = testletResponseIds
       .map((responseId) => {
         const value = testletResponses[responseId]
-        if (isArray(value)) {
-          const selections = value.map((v) => ALPHABET.indexOf(v))
-          return (templeWithTokens || []).map((el, i) => ({
-            value: el.value,
-            index: i,
-            selected:
-              selections && selections.length ? selections.includes(i) : false,
-          }))
-        }
-        if (isString(value)) {
-          const selected = ALPHABET.indexOf(value)
-          return (templeWithTokens || []).map((el, i) => ({
-            value: el.value,
-            index: i,
-            selected: selected === i,
-          }))
-        }
-        return null
+        const selections = isArray(value)
+          ? value.map((v) => ALPHABET.indexOf(v))
+          : [ALPHABET.indexOf(value)]
+        const userSelections = {}
+        tokens
+          .filter((x) => x.active)
+          .map((x, i) => {
+            userSelections[x.index] = selections.includes(i)
+          })
+
+        return tokens.map((x, i) => ({
+          index: i,
+          value: x.value,
+          selected: !!userSelections[i],
+        }))
       })
       .filter((d) => !!d)
     return last(data)

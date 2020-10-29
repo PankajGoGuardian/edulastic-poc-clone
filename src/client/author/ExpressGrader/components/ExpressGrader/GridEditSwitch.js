@@ -1,14 +1,21 @@
 import React, { useEffect } from 'react'
 import { EduSwitchStyled } from '@edulastic/common'
+import { connect } from 'react-redux'
 import { SwitchBox, SwitchLabel } from './styled'
+import { getIsGridEditEnabledSelector } from '../../../src/selectors/user'
 
-const GridEditSwitch = ({ isGridEditOn, toggleGridEdit, scoreMode }) => {
+const GridEditSwitch = ({
+  isGridEditOn,
+  toggleGridEdit,
+  scoreMode,
+  isGridEditEnabled,
+}) => {
   useEffect(() => {
     if (!scoreMode && isGridEditOn) {
       toggleGridEdit()
     }
   }, [scoreMode, isGridEditOn])
-
+  if (!isGridEditEnabled) return null
   return (
     <SwitchBox>
       <SwitchLabel>Grid Edit</SwitchLabel>
@@ -22,4 +29,6 @@ const GridEditSwitch = ({ isGridEditOn, toggleGridEdit, scoreMode }) => {
   )
 }
 
-export default GridEditSwitch
+export default connect((state) => ({
+  isGridEditEnabled: getIsGridEditEnabledSelector(state),
+}))(GridEditSwitch)

@@ -122,7 +122,7 @@
     "react-dom": "^16.13.1",
     "react-drag-and-drop": "^2.4.0",
     "react-dropzone": "^10.1.4",
-    "react-froala-wysiwyg": "^3.2.2-1",
+    "react-froala-wysiwyg": "3.1.0",
     "react-google-login": "^5.0.2",
     "react-icons": "^3.1.0",
     "react-joyride": "^2.0.5",

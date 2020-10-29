@@ -11,7 +11,7 @@ import {
   IconMagnify,
   IconProtactor,
   IconScratchPad,
-  IconPhotoCamera,
+  IconCloudUpload,
 } from '@edulastic/icons'
 import { Button } from 'antd'
 import PropTypes from 'prop-types'
@@ -33,7 +33,7 @@ const ToolBar = ({
   qType,
   handleMagnifier,
   enableMagnifier,
-  toggleCameraModal,
+  toggleUserWorkUploadModal,
   changeTool,
 }) => {
   const { calcType, showMagnifier, enableScratchpad } = settings
@@ -103,8 +103,8 @@ const ToolBar = ({
       )}
       <ActionButton
         title="Camera"
-        icon={<IconPhotoCamera />}
-        onClick={toggleCameraModal}
+        icon={<IconCloudUpload />}
+        onClick={toggleUserWorkUploadModal}
       />
     </Container>
   )

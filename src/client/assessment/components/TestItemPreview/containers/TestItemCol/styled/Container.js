@@ -28,3 +28,6 @@ export const WidgetContainer = styled.div`
   padding-top: 20px;
   ${({ style }) => style};
 `
+export const FilesViewContainer = styled.div`
+  padding: 35px;
+`

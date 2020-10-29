@@ -8,11 +8,16 @@ import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
 import QuestionWrapper from '../../../QuestionWrapper'
 
-import { Container, WidgetContainer } from './styled/Container'
+import {
+  Container,
+  WidgetContainer,
+  FilesViewContainer,
+} from './styled/Container'
 import { MobileRightSide } from './styled/MobileRightSide'
 import { MobileLeftSide } from './styled/MobileLeftSide'
 import { IconArrow } from './styled/IconArrow'
 import TabContainer from './TabContainer'
+import FilesView from '../../../../widgets/UploadFile/components/FilesView'
 
 class TestItemCol extends Component {
   state = {
@@ -80,6 +85,8 @@ class TestItemCol extends Component {
       isLCBView,
       showScratchpadByDefault,
       isStudentAttempt,
+      attachments,
+      saveAttachments,
       ...restProps
     } = this.props
     const timespent = widget.timespent !== undefined ? widget.timespent : null
@@ -108,6 +115,13 @@ class TestItemCol extends Component {
       // feedback wrapper is required minHeight 320 at least
       minHeight = '320px'
     }
+
+    const saveUpdatedAttachments = (index) => {
+      const newAttachments = attachments.filter((attachment, i) => i !== index)
+      saveAttachments(newAttachments)
+    }
+
+    const isAttachmentListVisible = attachments && attachments.length > 0
 
     // question false undefined false undefined undefined true true
     return (
@@ -157,6 +171,15 @@ class TestItemCol extends Component {
         {isStudentReport &&
           !itemLevelScoring &&
           teachCherFeedBack(widget, null, null, showStackedView)}
+        {isAttachmentListVisible && (
+          <FilesViewContainer>
+            <FilesView
+              files={attachments}
+              hideDelete={!isStudentAttempt}
+              onDelete={saveUpdatedAttachments}
+            />
+          </FilesViewContainer>
+        )}
       </TabContainer>
     )
   }

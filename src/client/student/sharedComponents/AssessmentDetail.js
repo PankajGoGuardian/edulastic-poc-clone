@@ -49,7 +49,7 @@ const AssessmentDetails = ({
       ? `${t('common.inProgress')} ${isPaused ? ' (PAUSED)' : ''}`
       : `${t('common.notStartedTag')} ${isPaused ? ' (PAUSED)' : ''}`
 
-  const { endDate } = lastAttempt
+  let { endDate } = lastAttempt
   const pastDueTag =
     isDueDate &&
     !absent &&
@@ -58,6 +58,10 @@ const AssessmentDetails = ({
       dueDate,
       endDate,
     })
+
+  if (endDate && dueDate && endDate > dueDate) {
+    endDate = dueDate
+  }
 
   return (
     <Wrapper>

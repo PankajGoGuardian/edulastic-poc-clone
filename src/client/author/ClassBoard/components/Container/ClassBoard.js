@@ -113,6 +113,7 @@ import {
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
+import { getSmallerTime } from '../../utils'
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -1557,9 +1558,12 @@ class ClassBoard extends Component {
                           <ScoreHeader style={{ fontSize: '12px' }}>
                             SUBMITTED ON :
                             <span style={{ color: black }}>
-                              {moment(studentTestActivity.endDate).format(
-                                'MMM DD, YYYY HH:mm'
-                              )}
+                              {moment(
+                                getSmallerTime(
+                                  studentTestActivity.endDate,
+                                  additionalData.endDate
+                                )
+                              ).format('MMM DD, YYYY HH:mm')}
                             </span>
                           </ScoreHeader>
                         </InfoWrapper>

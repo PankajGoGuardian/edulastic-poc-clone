@@ -70,17 +70,13 @@ export const transformMetricForStudentGroups = (groups, metricInfo) => {
   const studentGroupsMap = {}
   groups.forEach((group) => {
     if (group.groupType === 'custom') {
-      if (group.students) {
-        group.students.forEach((id) => {
-          if (!studentGroupsMap[id]) {
-            studentGroupsMap[id] = []
-          }
-          studentGroupsMap[id].push({
-            groupId: group.groupId,
-            groupName: group.groupName,
-          })
-        })
+      if (!studentGroupsMap[group.studentId]) {
+        studentGroupsMap[group.studentId] = []
       }
+      studentGroupsMap[group.studentId].push({
+        groupId: group.groupId,
+        groupName: group.groupName,
+      })
     }
   })
 

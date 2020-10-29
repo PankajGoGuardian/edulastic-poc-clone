@@ -1022,11 +1022,11 @@ function* removeClassSyncNotification() {
 
 function* saveGoogleTokensAndRetrySyncSaga({ payload }) {
   try {
-    setGoogleAuthenticationRequiredAction()
+    yield put(setGoogleAuthenticationRequiredAction())
     const { code, ...classSyncData } = payload
     yield call(googleApi.saveGoogleTokens, { code })
     const googleCode = yield select(getGoogleClassCodeSelector)
-    yield put(SYNC_CLASS_USING_CODE, { ...classSyncData, googleCode })
+    yield put(syncClassUsingCodeAction({ ...classSyncData, googleCode }))
   } catch (err) {
     Sentry.captureException(err)
     notification({

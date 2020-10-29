@@ -1351,9 +1351,9 @@ export function* updateItemDocBasedSaga({ payload }) {
       delete payload.data.data
     }
     const data = _omit(payload.data, ['authors', '__v'])
-    if (payload.testId) {
-      data.testId = testId
-    }
+    // if (payload.testId) {
+    //   data.testId = payload.testId
+    // }
 
     const questions = get(payload.data, ['data', 'questions'], [])
     const { testId, ...item } = yield call(

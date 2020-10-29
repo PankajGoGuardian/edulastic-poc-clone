@@ -138,20 +138,24 @@ const Settings = ({
       })
     }
 
+    const newSettings = {}
+
     // SimpleOptions onChange method has similar condition
     if (key === 'scoringType') {
       const penalty = value === evalTypeLabels.PARTIAL_CREDIT
-      assignmentSettings.penalty = penalty
-      tempTestSettings.penalty = penalty
+
+      newSettings.penalty = penalty
     }
 
     const newSettingsState = {
       ...assignmentSettings,
+      ...newSettings,
       [key]: value,
     }
 
     const newTempTestSettingsState = {
       ...tempTestSettings,
+      ...newSettings,
       [key]: value,
     }
     if (key === 'safeBrowser' && value === false) {

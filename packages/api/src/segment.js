@@ -133,7 +133,7 @@ const trackTeacherClickOnUpgradeSubscrition = ({ user }) => {
     userData.username = username
     if (allowedRoles.includes(role) && window.analytics) {
       window.analytics.track({
-        userId: `${_id}`,
+        userId: `${userId}`,
         event,
         properties: {
           ...userData,

@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import CypressHelper from '../util/cypressHelpers'
 import { DOK } from '../constants/questionAuthoring'
 import Helpers from '../util/Helpers'
@@ -110,6 +111,8 @@ export default class SearchFilters {
       force: true,
     })
     this.waitForSearchResponse()
+    this.setSortButtonInDescOrder()
+    this.setSortOption()
   }
 
   clickOnPreviouslyUsed = () => {
@@ -118,6 +121,8 @@ export default class SearchFilters {
       force: true,
     })
     this.waitForSearchResponse()
+    this.setSortButtonInDescOrder()
+    this.setSortOption()
   }
 
   setGrades = (grades) => {
@@ -146,6 +151,8 @@ export default class SearchFilters {
       force: true,
     })
     this.waitForSearchResponse()
+    this.setSortButtonInDescOrder()
+    this.setSortOption()
   }
 
   getEntireLibrary = () => {
@@ -154,6 +161,8 @@ export default class SearchFilters {
       force: true,
     })
     this.waitForSearchResponse()
+    this.setSortButtonInDescOrder()
+    this.setSortOption()
   }
 
   typeInSearchBox = (key) => {

@@ -308,8 +308,7 @@ class ClassQuestions extends Component {
 
               return { ...q }
             })
-            const [activity] =
-              qActivities.length > 0 ? qActivities : [undefined]
+            const [activity] = qActivities.length > 0 ? qActivities : [{}]
             return { ...question, activity, ...label }
           })
           .filter((x) => x)

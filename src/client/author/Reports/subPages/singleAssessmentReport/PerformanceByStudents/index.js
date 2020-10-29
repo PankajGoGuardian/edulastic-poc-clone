@@ -64,10 +64,15 @@ const PerformanceByStudents = ({
   customStudentUserId,
   isCliUser,
 }) => {
-  const bandInfo =
-    performanceBandProfiles.find(
-      (profile) => profile._id === selectedPerformanceBand
-    )?.performanceBand || performanceBandProfiles[0]?.performanceBand
+  const bandInfo = useMemo(
+    () =>
+      performanceBandProfiles.find(
+        (profile) => profile._id === selectedPerformanceBand
+      )?.performanceBand ||
+      performanceBandProfiles[0]?.performanceBand ||
+      [],
+    [settings]
+  )
 
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])

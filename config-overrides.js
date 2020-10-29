@@ -36,7 +36,7 @@ module.exports = override(
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
 
-    // config.module.rules[0].parser.requisreEnsure = true
+    config.module.rules[0].parser.requireEnsure = true
 
     // config.module.noParse = /pdfjs-dist/
 

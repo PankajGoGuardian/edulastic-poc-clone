@@ -80,7 +80,7 @@ const RedirectPopUp = ({
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents)
   const [qDeliveryState, setQDeliveryState] = useState('ALL')
   const [showPrevAttempt, setshowPrevAttempt] = useState(
-    isPremiumUser ? 'STUDENT_RESPONSE_AND_FEEDBACK' : 'FEEDBACK_ONLY'
+    'STUDENT_RESPONSE_AND_FEEDBACK'
   )
   const [allowedTime, setAllowedTime] = useState(
     additionalData.allowedTime || 1

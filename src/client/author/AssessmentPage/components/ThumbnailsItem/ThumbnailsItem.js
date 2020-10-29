@@ -6,7 +6,7 @@ import { ThumbnailsItemWrapper, PageNumber, PagePreview } from './styled'
 import { BLANK_URL } from '../Worksheet/Worksheet'
 
 pdfjs.GlobalWorkerOptions.workerSrc =
-  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.1.266/build/pdf.worker.min.js'
 
 const createContextMenu = ({
   index,

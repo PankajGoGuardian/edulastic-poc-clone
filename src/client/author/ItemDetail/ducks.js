@@ -30,7 +30,7 @@ import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { createAction } from 'redux-starter-kit'
 import { replace, push } from 'connected-react-router'
 import produce from 'immer'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import {
   loadQuestionsAction,
@@ -364,7 +364,16 @@ export const getIsNewItemSelector = createSelector(
 
 export const getItemDetailSelector = createSelector(stateSelector, (state) => {
   const item = state.item || {}
-  markQuestionLabel([item])
+  // creating a copy of questions before mutating them and mutate the copied
+  const questions = get(item, 'data,questions', []).map((q) => ({ ...q }))
+  const itemWithQuestionsCloned = {
+    ...item,
+    data: {
+      ...item.data,
+      questions,
+    },
+  }
+  markQuestionLabel([itemWithQuestionsCloned])
   return item
 })
 
@@ -989,7 +998,7 @@ function* receiveItemSaga({ payload }) {
     }
     yield put(setDictAlignmentFromQuestion(alignments))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     let msg = 'Unable to retrieve the item.'
     if (err.status === 404) {
       msg = 'Item not found'
@@ -1324,7 +1333,7 @@ export function* updateItemSaga({ payload }) {
       return
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     const errorMessage = 'Unable to save the item.'
     notification({ type: 'error', msg: errorMessage })
@@ -1396,7 +1405,7 @@ export function* updateItemDocBasedSaga({ payload }) {
     notification({ type: 'success', messageKey: 'itemSavedSuccess' })
     return { testId, ...item }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save the item.'
     notification({ type: 'error', msg: errorMessage })
     yield put({

@@ -17,7 +17,7 @@ import { v4 } from 'uuid'
 import { normalize, schema } from 'normalizr'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import {
   curriculumSequencesApi,
   assignmentApi,
@@ -1777,7 +1777,7 @@ function* unassignAssignmentsfromPlaylistSaga({ payload }) {
   } catch (err) {
     notification({ msg: 'Failed to unassign Assignment(s)' })
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 

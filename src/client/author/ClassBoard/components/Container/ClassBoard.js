@@ -113,6 +113,7 @@ import {
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
+import { getSmallerTime } from '../../utils'
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -882,7 +883,7 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params
     const studentTestActivity =
       (studentResponse && studentResponse.testActivity) || {}
-    studentTestActivity.timeSpent = Math.floor(
+    const timeSpent = Math.floor(
       ((studentResponse &&
         studentResponse.questionActivities &&
         studentResponse.questionActivities.reduce((acc, qa) => {
@@ -1531,9 +1532,9 @@ class ClassBoard extends Component {
                                 textTransform: 'capitalize',
                               }}
                             >
-                              {`${Math.floor(
-                                studentTestActivity.timeSpent / 60
-                              )}:${studentTestActivity.timeSpent % 60}` || ''}
+                              {`${Math.floor(timeSpent / 60)}:${
+                                timeSpent % 60
+                              }` || ''}
                             </span>
                           </ScoreHeader>
                           <ScoreHeader style={{ fontSize: '12px' }}>
@@ -1557,9 +1558,12 @@ class ClassBoard extends Component {
                           <ScoreHeader style={{ fontSize: '12px' }}>
                             SUBMITTED ON :
                             <span style={{ color: black }}>
-                              {moment(studentTestActivity.endDate).format(
-                                'MMM DD, YYYY HH:mm'
-                              )}
+                              {moment(
+                                getSmallerTime(
+                                  studentTestActivity.endDate,
+                                  additionalData.endDate
+                                )
+                              ).format('MMM DD, YYYY HH:mm')}
                             </span>
                           </ScoreHeader>
                         </InfoWrapper>

@@ -45,10 +45,15 @@ const PeerPerformance = ({
   settings,
   filters,
 }) => {
-  const bandInfo =
-    performanceBandProfiles.find(
-      (profile) => profile._id === selectedPerformanceBand
-    )?.performanceBand || performanceBandProfiles[0]?.performanceBand
+  const bandInfo = useMemo(
+    () =>
+      performanceBandProfiles.find(
+        (profile) => profile._id === selectedPerformanceBand
+      )?.performanceBand ||
+      performanceBandProfiles[0]?.performanceBand ||
+      [],
+    [settings]
+  )
 
   const [ddfilter, setDdFilter] = useState({
     ...filters,

@@ -425,16 +425,13 @@ const { themeColor } = require('@edulastic/colors')
                   return fn
                     .apply(undefined, arguments)
                     .then(function (annotations) {
-                      let _annotations = annotations?.annotations
                       // TODO may be best to have this happen on the server
-                      if (_annotations && _annotations.length) {
-                        _annotations = [..._annotations].map(function (a) {
+                      if (annotations.annotations) {
+                        annotations.annotations.forEach(function (a) {
                           a.documentId = documentId
-
-                          return a
                         })
                       }
-                      return _annotations
+                      return annotations
                     })
                 }
               },
@@ -1141,7 +1138,7 @@ const { themeColor } = require('@edulastic/colors')
           if (!svg) {
             return
           }
-          var elements = svg.querySelectorAll('svg[data-pdf-annotate-type]')
+          var elements = svg.querySelectorAll('[data-pdf-annotate-type]')
 
           // Find a target element within SVG
           for (var i = 0, l = elements.length; i < l; i++) {
@@ -2030,10 +2027,11 @@ const { themeColor } = require('@edulastic/colors')
             var width = parseInt(node.getAttribute('width'), 10)
             var height = parseInt(node.getAttribute('height'), 10)
             var path = node.querySelector('path')
+            var rect = node.querySelector('rect')
             var svg = path.parentNode
 
             // Scale width/height
-            ;[node, svg, path].forEach(function (n) {
+            ;[node, path, rect].forEach(function (n) {
               n.setAttribute(
                 'width',
                 parseInt(n.getAttribute('width'), 10) * viewport.scale
@@ -2044,11 +2042,7 @@ const { themeColor } = require('@edulastic/colors')
               )
             })
 
-            // Transform path but keep scale at 100% since it will be handled natively
-            transform(
-              path,
-              (0, _objectAssign2.default)({}, viewport, { scale: 1 })
-            )
+            transform(path, viewport)
 
             switch (viewport.rotation % 360) {
               case 90:
@@ -2378,25 +2372,42 @@ const { themeColor } = require('@edulastic/colors')
         }
 
         var SIZE = 25
-        var commentSvg = `<svg class="svg-icon" id="comment" width="25" height="25">
-          <rect id="svg_2" height="25.34537" width="25.31416" y="-0.17269" x="-0.15708" stroke-width="0" stroke="#EFA12C" fill="#EFA12C"/>
-          <path stroke="#ffffff" id="svg_1" stroke-width="0.5" fill="#ffffff" d="m5.96968,15.58726a7.20087,7.20087 0 0 1 -0.30932,-0.76781l-0.01549,0a7.2261,7.2261 0 0 1 6.53852,-9.5306l0,0a7.21843,7.21843 0 1 1 0.34661,14.42916a7.14054,7.14054 0 0 1 -3.07121,-0.69102c-3.76223,0.74368 -3.46937,0.69102 -3.55492,0.69102a0.61863,0.61863 0 0 1 -0.60656,-0.74037l0.67237,-3.39039z"/>
-        </svg>`
+        var D =
+          'm5.96968,15.58726a7.20087,7.20087 0 0 1 -0.30932,-0.76781l-0.01549,0a7.2261,7.2261 0 0 1 6.53852,-9.5306l0,0a7.21843,7.21843 0 1 1 0.34661,14.42916a7.14054,7.14054 0 0 1 -3.07121,-0.69102c-3.76223,0.74368 -3.46937,0.69102 -3.55492,0.69102a0.61863,0.61863 0 0 1 -0.60656,-0.74037l0.67237,-3.39039z'
 
         function renderPoint(a) {
-          var div = document.createElement('div')
-          div.innerHTML = commentSvg.trim()
+          var commentSvg = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'svg'
+          )
+          commentSvg.setAttribute('width', SIZE)
+          commentSvg.setAttribute('height', SIZE)
+          commentSvg.setAttribute('x', a.x)
+          commentSvg.setAttribute('y', a.y)
+          commentSvg.setAttribute('id', 'comment')
 
-          div.firstChild.setAttribute('x', a.x)
-          div.firstChild.setAttribute('y', a.y)
-          div.firstChild.setAttribute('stroke-width', 1)
-          div.firstChild.setAttribute('stroke', '#ff0')
+          var rect = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'rect'
+          )
+          rect.setAttribute('width', SIZE)
+          rect.setAttribute('height', SIZE)
+          rect.setAttribute('stroke', '#EFA12C')
+          rect.setAttribute('fill', '#EFA12C')
+          rect.setAttribute('stroke-width', 0)
 
-          div.setAttribute('width', 100)
-          div.setAttribute('height', 100)
-          div.style.background = '#ff0'
+          var path = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path'
+          )
+          path.setAttribute('d', D)
+          path.setAttribute('stroke-width', 0.5)
+          path.setAttribute('stroke', '#ffffff')
+          path.setAttribute('fill', '#ffffff')
 
-          return div.firstChild
+          commentSvg.appendChild(rect)
+          commentSvg.appendChild(path)
+          return commentSvg
         }
         module.exports = exports['default']
 
@@ -3250,13 +3261,9 @@ const { themeColor } = require('@edulastic/colors')
             .getStoreAdapter()
             .getAnnotations(documentId, pageNumber)
             .then(function (annotations) {
-              const _annotations = annotations?.annotations?.filter(function (
-                a
-              ) {
+              return annotations.annotations.filter(function (a) {
                 return a.type === type
               })
-
-              return _annotations || []
             })
             .then(function (annotations) {
               annotations.forEach(function (a) {
@@ -3822,7 +3829,11 @@ const { themeColor } = require('@edulastic/colors')
                           viewY += annotation.size
                         }
 
-                        if (type === 'point') {
+                        if (
+                          type === 'point' ||
+                          type === 'video' ||
+                          type === 'image'
+                        ) {
                           viewY = (0, _utils.scaleUp)(svg, { viewY: viewY })
                             .viewY
                         }
@@ -3838,7 +3849,11 @@ const { themeColor } = require('@edulastic/colors')
                         var modelX = parseInt(t.getAttribute('x'), 10) + deltaX
                         var viewX = modelX
 
-                        if (type === 'point') {
+                        if (
+                          type === 'point' ||
+                          type === 'video' ||
+                          type === 'image'
+                        ) {
                           viewX = (0, _utils.scaleUp)(svg, { viewX: viewX })
                             .viewX
                         }
@@ -4726,6 +4741,7 @@ const { themeColor } = require('@edulastic/colors')
           input.style.top = e.clientY + 'px'
           input.style.left = e.clientX + 'px'
           input.style.fontSize = _textSize + 'px'
+          input.style.zIndex = 1
 
           input.addEventListener('blur', handleInputBlur)
           input.addEventListener('keyup', handleInputKeyup)
@@ -4988,7 +5004,7 @@ const { themeColor } = require('@edulastic/colors')
             var svg = page.querySelector('.annotationLayer')
             var canvas = page.querySelector('.canvasWrapper canvas')
             var canvasContext = canvas.getContext('2d', { alpha: false })
-            var viewport = pdfPage.getViewport({ scale, rotate })
+            var viewport = pdfPage.getViewport(scale, rotate)
             var transform = scalePage(pageNumber, viewport, canvasContext)
 
             // Render the page
@@ -4997,7 +5013,7 @@ const { themeColor } = require('@edulastic/colors')
                 canvasContext: canvasContext,
                 viewport: viewport,
                 transform: transform,
-              }).promise,
+              }),
               _PDFJSAnnotate2.default.render(svg, viewport, annotations),
             ])
               .then(function () {

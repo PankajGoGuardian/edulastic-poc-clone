@@ -1,4 +1,9 @@
-import { OnWhiteBgLogo, notification, EduButton } from '@edulastic/common'
+import {
+  OnWhiteBgLogo,
+  notification,
+  EduButton,
+  CheckboxLabel,
+} from '@edulastic/common'
 import { IconCanvasBook } from '@edulastic/icons'
 import { Select } from 'antd'
 import { get, groupBy } from 'lodash'
@@ -58,6 +63,7 @@ const CanvasBulkAddClass = ({
   const [classes, setClasses] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [institution, setInstitution] = useState()
+  const [coTeacherFlag, setCoTeacherFlag] = useState(false)
 
   useEffect(() => {
     getDictCurriculums()
@@ -116,6 +122,7 @@ const CanvasBulkAddClass = ({
               canvasCourseSectionName: s.name,
               groupId: s.groupId || '',
               ...(s.alreadySynced ? { alreadySynced: true } : {}),
+              syncCanvasCoTeacher: s.syncCanvasCoTeacher,
             }
           })
           return sectionClasses
@@ -128,7 +135,17 @@ const CanvasBulkAddClass = ({
         (c) => `${c.canvasCode}_${c.canvasCourseSectionCode}`
       )
       setSelectedRows(allClassKeys)
-
+      const syncedClassCoTeacherFlag = canvasSectionList
+        .filter((o) => o.alreadySynced)
+        .map((o) => !!o.syncCanvasCoTeacher)
+      if (
+        !(
+          syncedClassCoTeacherFlag.includes(true) &&
+          syncedClassCoTeacherFlag.includes(false)
+        )
+      ) {
+        setCoTeacherFlag(syncedClassCoTeacherFlag[0])
+      }
       setIsLoading(false)
     }
   }, [canvasCourseList, canvasSectionList])
@@ -166,6 +183,10 @@ const CanvasBulkAddClass = ({
     }),
   }
 
+  const onCoTeacherChange = ({ target }) => {
+    setCoTeacherFlag(target.checked)
+  }
+
   const handleFinish = () => {
     if (!selectedRows.length) {
       notification({
@@ -179,6 +200,9 @@ const CanvasBulkAddClass = ({
 
     // setting default grades as Other (O) if grade is not selected by the user.
     selectedClasses = selectedClasses.map((c) => {
+      if (!c.alreadySynced) {
+        c.syncCanvasCoTeacher = coTeacherFlag
+      }
       delete c.alreadySynced
       return { ...c, grades: c.grades.length > 0 ? c.grades : ['O'] }
     })
@@ -375,6 +399,14 @@ const CanvasBulkAddClass = ({
           Course to create class in Edulastic.
         </p>
       </div>
+      <CheckboxLabel
+        style={{ margin: '10px 0px 20px 0px' }}
+        checked={coTeacherFlag}
+        onChange={onCoTeacherChange}
+      >
+        Enroll Co-Teacher (All teachers present in Canvas class will share the
+        same class)
+      </CheckboxLabel>
       {canvasAllowedInstitutions.length > 1 && (
         <div>
           <label>

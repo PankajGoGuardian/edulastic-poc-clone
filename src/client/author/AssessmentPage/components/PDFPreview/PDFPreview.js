@@ -23,6 +23,7 @@ const getNumberStyles = (x, y, scale) => ({
   position: 'absolute',
   top: `${y * scale}px`,
   left: `${x * scale}px`,
+  zIndex: 1000,
 })
 
 const { DragPreview } = DragDrop
@@ -101,6 +102,9 @@ const PDFPreview = ({
   useEffect(() => {
     // don't remove answers if student attempts -> saves and/or revisits the answers
     if (!testMode) removeAnswers()
+    if (viewMode !== 'edit') {
+      setCurrentAnnotationTool('cursor')
+    }
   }, [viewMode, testMode])
 
   const handleHighlight = (questionId) => () => {
@@ -223,12 +227,10 @@ const PDFPreview = ({
               </PDFZoomControl>
             )}
             <PDFZoomControl onClick={() => PDFScaleUp(0.1)}>
-              {' '}
-              &#43;{' '}
+              &#43;
             </PDFZoomControl>
             <PDFZoomControl onClick={() => PDFScaleDown(0.1)}>
-              {' '}
-              &minus;{' '}
+              &minus;
             </PDFZoomControl>
           </ZoomControlCotainer>
         ) : null}

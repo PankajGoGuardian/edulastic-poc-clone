@@ -125,10 +125,13 @@ class ListItem extends Component {
     }
   }
 
-  duplicate = async (e) => {
-    e && e.stopPropagation()
+  duplicate = async (cloneOption) => {
     const { history, item } = this.props
-    const duplicateTest = await assignmentApi.duplicateAssignment(item)
+    const duplicateTest = await assignmentApi.duplicateAssignment({
+      ...item,
+      redirectToNewTest: true,
+      cloneItems: cloneOption,
+    })
     history.push(`/author/tests/${duplicateTest._id}`)
   }
 
@@ -291,7 +294,6 @@ class ListItem extends Component {
         collectionName = sharedType
       }
     }
-
     const cardTitle = (
       <Header src={thumbnailData}>
         <Stars size="small" />

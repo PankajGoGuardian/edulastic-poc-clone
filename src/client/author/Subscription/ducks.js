@@ -1,10 +1,9 @@
 import { message } from 'antd'
 import moment from 'moment'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { subscriptionApi, paymentApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
 import { fetchUserAction } from '../../student/Login/ducks'
 
 const slice = createSlice({
@@ -135,7 +134,7 @@ function* handleStripePayment({ payload }) {
       Key: 'handle-payment',
     })
     console.error('ERROR WHILE PROCESSING PAYMENT : ', err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 
@@ -167,7 +166,7 @@ function* fetchUserSubscription() {
       slice.actions.updateUserSubscriptionStatus({ data: {}, error: err })
     )
     console.error('ERROR WHILE FETCHING USER SUBSCRIPTION : ', err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 

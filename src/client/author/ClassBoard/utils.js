@@ -143,3 +143,5 @@ export const getRedirectEndDate = (_class, dueDate) => {
   }
   return endDate
 }
+
+export const getSmallerTime = (t1, t2) => (t1 < t2 ? t1 : t2)

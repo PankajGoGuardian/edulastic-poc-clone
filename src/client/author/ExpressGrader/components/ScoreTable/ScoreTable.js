@@ -59,17 +59,6 @@ function getDataForTable(data) {
 }
 
 class ScoreTable extends Component {
-  static propTypes = {
-    showQuestionModal: PropTypes.func.isRequired,
-    testActivity: PropTypes.array,
-    isPresentationMode: PropTypes.bool,
-  }
-
-  static defaultProps = {
-    testActivity: {},
-    isPresentationMode: false,
-  }
-
   constructor() {
     super()
     this.state = {
@@ -84,7 +73,14 @@ class ScoreTable extends Component {
   }
 
   getColumnsForTable = (length, submittedLength) => {
-    const { showQuestionModal, isPresentationMode, scoreMode, t } = this.props
+    const {
+      showQuestionModal,
+      isPresentationMode,
+      scoreMode,
+      isGridEditOn,
+      groupId,
+      t,
+    } = this.props
 
     const columns = [
       {
@@ -200,6 +196,8 @@ class ScoreTable extends Component {
                   showQuestionModal={showQuestionModal}
                   isTest={isTest}
                   scoreMode={scoreMode}
+                  isGridEditOn={isGridEditOn}
+                  groupId={groupId}
                 />
               )
               return cell
@@ -232,7 +230,8 @@ class ScoreTable extends Component {
     }
     const scrollX = columnsLength * 100 + 300
     const scrollY = window.innerHeight - 250
-    const showY = columnData.length * 43 > scrollY // 40 sice of each cell in table + 3 overlapped padding
+    // 40 sice of each cell in table + 3 overlapped padding
+    const showY = columnData.length * 43 > scrollY
 
     return (
       <StyledCard bordered={false} marginBottom="0px">
@@ -251,6 +250,17 @@ class ScoreTable extends Component {
       </StyledCard>
     )
   }
+}
+
+ScoreTable.propTypes = {
+  showQuestionModal: PropTypes.func.isRequired,
+  testActivity: PropTypes.array,
+  isPresentationMode: PropTypes.bool,
+}
+
+ScoreTable.defaultProps = {
+  testActivity: {},
+  isPresentationMode: false,
 }
 
 export default withNamespaces('student')(ScoreTable)

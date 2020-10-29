@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Select, Spin } from 'antd'
-import { EduButton, notification } from '@edulastic/common'
+import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
 import styled from 'styled-components'
 import {
   backgroundGrey2,
@@ -25,10 +25,12 @@ const CanvasSyncModal = ({
   groupId,
   institutionId,
   isFetchingCanvasData,
+  syncCanvasCoTeacher,
 }) => {
   const [course, setCourse] = useState(canvasCode)
   const [section, setSection] = useState(canvasCourseSectionCode)
-  const [idDisabled, setIsDisabled] = useState(
+  const [coTeacherFlag, setCoTeacherFlag] = useState(syncCanvasCoTeacher)
+  const [isDisabled, setIsDisabled] = useState(
     !!canvasCode && !!canvasCourseSectionCode
   )
 
@@ -69,6 +71,7 @@ const CanvasSyncModal = ({
     getCanvasSectionListRequest({ institutionId, allCourseIds: [value] })
     setCourse(value)
     setSection('')
+    setCoTeacherFlag(false)
   }
 
   useEffect(() => {
@@ -81,6 +84,10 @@ const CanvasSyncModal = ({
       setSection(canvasSectionList?.[0]?.id || undefined)
     }
   }, [canvasSectionList])
+
+  const onCoTeacherChange = ({ target }) => {
+    setCoTeacherFlag(target.checked)
+  }
 
   const handleSync = () => {
     if (!course || !section) {
@@ -110,6 +117,7 @@ const CanvasSyncModal = ({
       sectionName,
       institutionId,
       districtId: user?.districtIds?.[0],
+      syncCanvasCoTeacher: coTeacherFlag,
     }
     syncClassWithCanvas(data)
   }
@@ -156,7 +164,7 @@ const CanvasSyncModal = ({
           value={+course || undefined}
           onChange={handleCourseChange}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          disabled={idDisabled}
+          disabled={isDisabled}
         >
           {canvasCourseList.map((c) => (
             <Select.Option key={c.id} value={+c.id}>
@@ -174,7 +182,7 @@ const CanvasSyncModal = ({
             setSection(value)
           }}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          disabled={idDisabled}
+          disabled={isDisabled}
           notFoundContent={
             activeCanvasClassSectionCode?.length ? (
               <div style={{ color: black }}>
@@ -190,6 +198,15 @@ const CanvasSyncModal = ({
           ))}
         </Select>
       </FieldWrapper>
+      <CheckboxLabel
+        style={{ margin: '10px 0px 20px 0px' }}
+        checked={coTeacherFlag}
+        onChange={onCoTeacherChange}
+        disabled={isDisabled}
+      >
+        Enroll Co-Teacher (All teachers present in Canvas class will share the
+        same class)
+      </CheckboxLabel>
     </StyledModal>
   )
 }

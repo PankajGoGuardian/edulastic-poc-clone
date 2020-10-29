@@ -8,8 +8,6 @@ export const Container = styled.div`
   justify-content: ${(props) =>
     props.isCollapsed ? 'space-between' : 'initial'};
   flex-grow: 1;
-  overflow: ${({ hideOverflow }) => (hideOverflow ? 'hidden' : `auto`)};
-  /* dont give overflow: auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598 */
   width: 100%;
   height: 100%;
 `

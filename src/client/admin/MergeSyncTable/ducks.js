@@ -1,11 +1,10 @@
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { put, takeEvery, call, all } from 'redux-saga/effects'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { adminApi } from '@edulastic/api'
 import _get from 'lodash.get'
 import { omit } from 'lodash'
-import * as Sentry from '@sentry/browser'
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = '[admin] SEARCH_EXISTING_DATA_API'
@@ -313,7 +312,7 @@ function* fetchSchoolsSync({ payload }) {
     const {
       data: { message: errMsg },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     notification({ msg: errMsg })
   }
 }

@@ -120,7 +120,32 @@ const unloadIntercom = ({ user }) => {
   }
 }
 
+const trackTeacherClickOnUpgradeSubscrition = ({ user }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+  if (user) {
+    const { role = '', _id, v1Id, username } = user
+    const userId = v1Id || _id
+    const event = 'upgrade initiated by teacher'
+    const category = 'Web Application'
+    const userData = getUserDetails(user)
+    userData.username = username
+    if (allowedRoles.includes(role) && window.analytics) {
+      window.analytics.track({
+        userId: `${_id}`,
+        event,
+        properties: {
+          ...userData,
+          category,
+        },
+      })
+    }
+  }
+}
+
 export default {
   unloadIntercom,
   analyticsIdentify,
+  trackTeacherClickOnUpgradeSubscrition,
 }

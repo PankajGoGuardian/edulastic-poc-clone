@@ -97,10 +97,11 @@ export default class QuestionChoice extends React.Component {
     )
   }
 
-  handleSetScore = (score) => {
+  handleSetScore = (_score) => {
     const { correctAnswers } = this.state
     const { onUpdate } = this.props
-
+    // eslint-disable-next-line no-restricted-properties
+    const score = window.isNaN(_score) || !_score ? 0 : _score
     this.setState({ score }, () => {
       const data = {
         validation: {

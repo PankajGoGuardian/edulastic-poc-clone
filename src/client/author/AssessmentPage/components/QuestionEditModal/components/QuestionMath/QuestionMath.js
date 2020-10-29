@@ -64,8 +64,10 @@ const QuestionMath = ({ onUpdate, question }) => {
     onUpdate(data)
   }
 
-  const handleScoreChange = (score) => {
+  const handleScoreChange = (_score) => {
     const { validResponse } = question.validation
+    // eslint-disable-next-line no-restricted-properties
+    const score = window.isNaN(_score) || !_score ? 0 : _score
     const data = {
       validation: {
         scoringType: EXACT_MATCH,

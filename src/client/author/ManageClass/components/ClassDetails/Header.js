@@ -448,12 +448,14 @@ const Header = ({
         selectedClass={selectedClass}
         handleCancel={() => toggleModal('addCoTeacher')}
       />
-      <UpdateCoTeacher
-        isOpen={showCoteacherModal}
-        type={type}
-        selectedClass={selectedClass}
-        handleCancel={() => setUpdateCoTeacherModal(false)}
-      />
+      {showCoteacherModal && (
+        <UpdateCoTeacher
+          isOpen={showCoteacherModal}
+          type={type}
+          selectedClass={selectedClass}
+          handleCancel={() => setUpdateCoTeacherModal(false)}
+        />
+      )}
       {showModal && (
         <TypeToConfirmModal
           modalVisible={showModal}

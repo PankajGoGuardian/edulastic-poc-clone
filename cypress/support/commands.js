@@ -166,12 +166,19 @@ Cypress.Commands.add(
         Cypress.$('.footerDropdown').click()
         // Cypress.$('[data-cy="footer-dropdown"]').click();
         cy.wait(1000).then(() => {
-          Cypress.$('[data-cy="signout"]').click()
+          if (Cypress.$('[data-cy="signout"]').length) {
+            cy.server()
+            cy.route('POST', '**/logout').as('logout')
+            cy.get('[data-cy="signout"]').click()
+            cy.wait('@logout')
+          }
         })
       }
     })
 
-    cy.clearToken()
+    cy.wait(1000).then(() => {
+      cy.clearToken()
+    })
     const login = new LoginPage()
     cy.wait(500).then(() => {
       cy.get('body').then(() => {

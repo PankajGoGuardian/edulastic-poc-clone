@@ -284,7 +284,8 @@ const RedirectPopUp = ({
                 disabledDate={disabledDueDate}
                 style={{ width: '100%', cursor: 'pointer' }}
                 value={dueDate}
-                showTime
+                showTime={{ use12Hours: true }}
+                format="YYYY-MM-DD hh:mm:ss a"
                 showToday={false}
                 onChange={(v) => setDueDate(v)}
               />
@@ -317,9 +318,10 @@ const RedirectPopUp = ({
               disabledDate={disabledEndDate}
               style={{ width: '100%', cursor: 'pointer' }}
               value={endDate}
-              showTime
               showToday={false}
               onChange={(v) => setEndDate(v)}
+              showTime={{ use12Hours: true }}
+              format="YYYY-MM-DD hh:mm:ss a"
             />
           </Col>
         </Row>

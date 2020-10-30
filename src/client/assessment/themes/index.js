@@ -24,6 +24,7 @@ import {
   AssessmentPlayerContext,
   useRealtimeV2,
   notification,
+  handleChromeOsSEB,
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 
@@ -182,6 +183,7 @@ const AssessmentContainer = ({
           groupId,
         })
         history.push('/home/assignments')
+        handleChromeOsSEB()
         window.location.href = sebUrl
       }
     }

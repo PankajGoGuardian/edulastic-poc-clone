@@ -5,6 +5,7 @@ import {
   EduButton,
   FlexContainer,
   MathFormulaDisplay,
+  handleChromeOsSEB,
 } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -70,7 +71,7 @@ const SafeBrowserButton = ({
   })
 
   return (
-    <SafeStartAssignButton href={url} assessment>
+    <SafeStartAssignButton href={url} onClick={handleChromeOsSEB} assessment>
       {startButtonText}
     </SafeStartAssignButton>
   )

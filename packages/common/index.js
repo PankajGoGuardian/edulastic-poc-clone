@@ -115,6 +115,7 @@ export {
   getSanitizedProps,
   isSEB,
   captureSentryException,
+  handleChromeOsSEB,
 } from './src/helpers'
 
 // contexts

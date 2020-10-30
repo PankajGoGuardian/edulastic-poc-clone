@@ -9,6 +9,15 @@ import AppConfig from '../../../src/app-config'
 
 export const isSEB = () => window.navigator.userAgent.includes('SEB')
 
+export function handleChromeOsSEB() {
+  const isChromeOs = /(CrOS)/.test(window.navigator.userAgent)
+  if (isChromeOs) {
+    alert(
+      `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`
+    )
+  }
+}
+
 export const ALPHABET = [
   'A',
   'B',

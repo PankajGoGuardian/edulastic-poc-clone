@@ -257,7 +257,6 @@ class AssessmentPlayerDefault extends React.Component {
       moveToNext,
       moveToPrev,
       gotoQuestion,
-      settings,
       previewPlayer,
       scratchPad,
       attachments,
@@ -291,6 +290,7 @@ class AssessmentPlayerDefault extends React.Component {
       utaId,
       hasDrawingResponse,
     } = this.props
+    let { settings } = this.props
     const {
       testItemState,
       isToolbarModalVisible,
@@ -399,7 +399,10 @@ class AssessmentPlayerDefault extends React.Component {
       headerStyleWidthZoom.padding = 0
     }
 
-    settings.calcType = this.calculatorType
+    const _settings = {
+      ...settings,
+      calcType: this.calculatorType,
+    }
 
     return (
       /**
@@ -431,7 +434,7 @@ class AssessmentPlayerDefault extends React.Component {
             moveToNext={moveToNext}
             showSettingIcon={showSettingIcon}
             answerChecksUsedForItem={answerChecksUsedForItem}
-            settings={settings}
+            settings={_settings}
             items={items}
             isNonAutoGradable={isNonAutoGradable}
             checkAnswer={() => this.changeTabItemState('check')}
@@ -475,7 +478,7 @@ class AssessmentPlayerDefault extends React.Component {
                 checkAnswer={() => this.changeTabItemState('check')}
                 windowWidth={windowWidth}
                 answerChecksUsedForItem={answerChecksUsedForItem}
-                settings={settings}
+                settings={_settings}
                 items={items}
                 currentItem={currentItem}
                 isNonAutoGradable={isNonAutoGradable}
@@ -497,7 +500,7 @@ class AssessmentPlayerDefault extends React.Component {
                 isVisible={isSubmitConfirmationVisible}
                 onClose={() => this.closeSubmitConfirmation()}
                 finishTest={this.finishTest}
-                settings={settings}
+                settings={_settings}
               />
             )}
             <Main
@@ -505,7 +508,7 @@ class AssessmentPlayerDefault extends React.Component {
               zoomed={isZoomApplied}
               zoomLevel={zoomLevel}
               headerHeight={headerHeight}
-              padding="0px 30px"
+              padding="20px 30px"
             >
               <SettingsModal />
               <ScrollContext.Provider

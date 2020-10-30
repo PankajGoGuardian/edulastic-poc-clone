@@ -8,7 +8,12 @@ import { red } from '@edulastic/colors'
 
 // components
 import { Input, Spin } from 'antd'
-import { MainContentWrapper, EduButton, notification } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  EduButton,
+  notification,
+  CheckboxLabel,
+} from '@edulastic/common'
 import Header from './Header'
 import MainInfo from './MainInfo'
 import StudentsList from './StudentsList'
@@ -32,8 +37,12 @@ import {
   setClassNotFoundErrorAction,
   unarchiveClassAction,
   getCanvasFetchingStateSelector,
+  getGoogleAuthRequiredSelector,
+  setGoogleAuthenticationRequiredAction,
+  saveGoogleTokensAndRetrySyncAction,
 } from '../../ducks'
 import { getCleverLibraryUserSelector } from '../../../src/selectors/user'
+import ReauthenticateModal from './ReauthenticateModal'
 
 const ClassDetails = ({
   location,
@@ -60,9 +69,20 @@ const ClassDetails = ({
   unarchiveClass,
   isFetchingCanvasData,
   isCleverUser,
+  isGoogleAuthRequired,
+  setGoogleAuthenticationRequired,
+  saveGoogleTokensAndRetrySync,
 }) => {
   const { editPath, exitPath } = location?.state || {}
-  const { name, type, cleverId, institutionId, districtId } = selectedClass
+  const {
+    name,
+    type,
+    cleverId,
+    institutionId,
+    districtId,
+    syncGoogleCoTeacher = false,
+  } = selectedClass
+  const [coTeacherFlag, setCoTeacherFlag] = useState(syncGoogleCoTeacher)
   const typeText = type !== 'class' ? 'group' : 'class'
 
   // sync checks for institution
@@ -125,10 +145,15 @@ const ClassDetails = ({
         googleCode: googleCode.current.state.value,
         groupId: selectedClass._id,
         institutionId,
+        syncGoogleCoTeacher: coTeacherFlag,
       })
     } else {
       notification({ messageKey: 'enterValidGoogleClassroomCode' })
     }
+  }
+
+  const onCoTeacherChange = ({ target }) => {
+    setCoTeacherFlag(target.checked)
   }
 
   const closeGoogleSyncModal = () => {
@@ -236,6 +261,15 @@ const ClassDetails = ({
                 Enter a valid Google Classroom Code
               </div>
             )}
+            <CheckboxLabel
+              style={{ margin: '10px 0px 20px 0px' }}
+              checked={coTeacherFlag}
+              onChange={onCoTeacherChange}
+              disabled={selectedClass && selectedClass.googleCode && disabled}
+            >
+              Enroll Co-Teacher (All teachers present in Google classroom will
+              share the same class)
+            </CheckboxLabel>
           </GoogleClassSyncModal>
           {showCanvasSyncModal && (
             <CanvasSyncModal
@@ -255,8 +289,23 @@ const ClassDetails = ({
               groupId={selectedClass._id}
               institutionId={institutionId}
               isFetchingCanvasData={isFetchingCanvasData}
+              syncCanvasCoTeacher={selectedClass.syncCanvasCoTeacher || false}
             />
           )}
+          {isGoogleAuthRequired && (
+            <ReauthenticateModal
+              visible={isGoogleAuthRequired}
+              toggle={() => setGoogleAuthenticationRequired()}
+              handleLoginSuccess={(data) => {
+                saveGoogleTokensAndRetrySync({
+                  code: data.code,
+                  groupId: selectedClass._id,
+                  institutionId,
+                })
+              }}
+            />
+          )}
+
           <div>
             <Header
               onEdit={handleEditClick}
@@ -272,6 +321,7 @@ const ClassDetails = ({
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
+              unarchiveClass={unarchiveClass}
             />
           </div>
           <MainContentWrapper>
@@ -335,6 +385,7 @@ const enhance = compose(
       isCleverUser: getCleverLibraryUserSelector(state),
       classCodeError: getClassNotFoundError(state),
       isFetchingCanvasData: getCanvasFetchingStateSelector(state),
+      isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,
@@ -348,6 +399,8 @@ const enhance = compose(
       syncClassesWithClever: syncClassesWithCleverAction,
       setClassNotFoundError: setClassNotFoundErrorAction,
       unarchiveClass: unarchiveClassAction,
+      setGoogleAuthenticationRequired: setGoogleAuthenticationRequiredAction,
+      saveGoogleTokensAndRetrySync: saveGoogleTokensAndRetrySyncAction,
     }
   )
 )

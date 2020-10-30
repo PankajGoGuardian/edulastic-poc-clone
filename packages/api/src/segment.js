@@ -7,7 +7,7 @@ const minFeatures = 5
 
 const getUserDetails = ({
   email,
-  userName: username,
+  username,
   role,
   orgData,
   clever = false,
@@ -120,7 +120,56 @@ const unloadIntercom = ({ user }) => {
   }
 }
 
+const trackTeacherClickOnUpgradeSubscription = ({ user }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+  if (user) {
+    const { role = '', _id, v1Id, username } = user
+    const userId = v1Id || _id
+    const event = 'upgrade initiated by teacher'
+    const category = 'Web Application'
+    const userData = getUserDetails(user)
+    if (role === 'teacher' && window.analytics) {
+      window.analytics.track({
+        userId: `${userId}`,
+        event,
+        properties: {
+          ...userData,
+          category,
+        },
+      })
+    }
+  }
+}
+
+const trackTeacherSignUp = ({ user }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+  if (user) {
+    const { role = '', _id, v1Id, username, isAdmin } = user
+    const event = isAdmin ? 'Administrator Signed Up' : 'Teacher Signed Up'
+    const userId = v1Id || _id
+    const category = 'Web Application'
+    if (role === 'teacher' && window.analytics) {
+      analyticsIdentify({ user })
+      const userData = getUserDetails(user)
+      window.analytics.track({
+        userId: `${userId}`,
+        event,
+        properties: {
+          ...userData,
+          category,
+        },
+      })
+    }
+  }
+}
+
 export default {
   unloadIntercom,
   analyticsIdentify,
+  trackTeacherClickOnUpgradeSubscription,
+  trackTeacherSignUp,
 }

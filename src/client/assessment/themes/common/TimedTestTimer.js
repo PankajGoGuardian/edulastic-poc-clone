@@ -99,16 +99,13 @@ const TimedTestTimer = ({
         isPasswordValidated && updateUtaTimeType === TIME_UPDATE_TYPE.RESUME
       const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
       if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
-        let data = { startTime: timeStamp }
+        let data = { startTime: timeStamp, status: UTA_STATUS.ACTIVE }
         if (updateUtaTimeType === TIME_UPDATE_TYPE.RESUME) {
           const timeStampType =
             !uta || uta?.startTime
               ? { lastResumed: timeStamp }
               : { startTime: timeStamp }
-          data = {
-            ...timeStampType,
-            status: UTA_STATUS.ACTIVE,
-          }
+          data = { ...timeStampType, status: UTA_STATUS.ACTIVE }
         }
         resetUpdateUtaType(null)
         docRef.current.update(data)

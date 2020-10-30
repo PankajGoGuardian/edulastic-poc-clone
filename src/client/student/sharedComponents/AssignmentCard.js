@@ -25,7 +25,6 @@ import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { first, maxBy, isNaN } from 'lodash'
 import { Row, Col, Icon, Modal } from 'antd'
-import { TokenStorage } from '@edulastic/api'
 import { maxDueDateFromClassess, getServerTs } from '../utils'
 
 //  components
@@ -40,6 +39,7 @@ import { ConfirmationModal } from '../../author/src/components/common/Confirmati
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSebUrl,
 } from '../Assignments/ducks'
 import { proxyRole } from '../Login/ducks'
 
@@ -61,26 +61,14 @@ const SafeBrowserButton = ({
     ? t('common.retake')
     : t('common.startAssignment')
 
-  const token = TokenStorage.getAccessToken()
-  let url
-  if (process.env.REACT_APP_API_URI.startsWith('http')) {
-    url = `${process.env.REACT_APP_API_URI.replace('http', 'seb').replace(
-      'https',
-      'seb'
-    )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`
-  } else if (process.env.REACT_APP_API_URI.startsWith('//')) {
-    url = `${window.location.protocol.replace('http', 'seb')}${
-      process.env.REACT_APP_API_URI
-    }/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`
-  } else {
-    console.warn(`** can't figure out where to put seb protocol **`)
-  }
+  const url = getSebUrl({
+    testId,
+    testType,
+    assignmentId,
+    testActivityId,
+    groupId: classId,
+  })
 
-  if (testActivityId) {
-    url += `/testActivity/${testActivityId}`
-  }
-
-  url += `/token/${token}/settings.seb?classId=${classId}`
   return (
     <SafeStartAssignButton href={url} assessment>
       {startButtonText}

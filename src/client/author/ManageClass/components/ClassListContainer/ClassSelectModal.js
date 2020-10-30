@@ -4,7 +4,7 @@ import { upperFirst, isEmpty } from 'lodash'
 
 // components
 import { Spin, Select, Input } from 'antd'
-import { EduButton, notification } from '@edulastic/common'
+import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
 import { IconClever, IconClose } from '@edulastic/icons'
 import {
   StyledSelect,
@@ -37,6 +37,7 @@ const ClassSelectModal = ({
   const [classListData, setClassListData] = useState([])
   const [selectedRows, setSelectedRows] = useState([])
   const [institutionId, setInstitutionId] = useState('')
+  const [coTeacherFlag, setCoTeacherFlag] = useState(false)
 
   // set classListData
   useEffect(() => {
@@ -73,13 +74,17 @@ const ClassSelectModal = ({
       setSelectedRows(classListToSync.map((c, i) => i))
     }
     if (type === 'googleClassroom') {
+      const syncedClassCoTeacherFlag = []
       setClassListData(
-        classListToSync.map((c, index) => {
+        (classListToSync || []).map((c, index) => {
           if (!c.grades) {
             c.grades = defaultGrades
           }
           if (!c.subject) {
             c.subject = defaultSubjects[0]
+          }
+          if (c.googleCode && c.active === 1) {
+            syncedClassCoTeacherFlag.push(!!c.syncGoogleCoTeacher)
           }
           return {
             ...c,
@@ -89,6 +94,14 @@ const ClassSelectModal = ({
         })
       )
       setSelectedRows(classListToSync.map((c, i) => i))
+      if (
+        !(
+          syncedClassCoTeacherFlag.includes(true) &&
+          syncedClassCoTeacherFlag.includes(false)
+        )
+      ) {
+        setCoTeacherFlag(syncedClassCoTeacherFlag[0])
+      }
     }
   }, [classListToSync])
 
@@ -107,9 +120,19 @@ const ClassSelectModal = ({
     } else if (type === 'googleClassroom' && !institutionId) {
       notification({ messageKey: 'pleaseSelectAnInstitution' })
     } else {
-      onSubmit({ classList, institutionId, refreshPage })
+      const classDataList = classList.map((o) => {
+        if (!o.googleCode) {
+          o.syncGoogleCoTeacher = coTeacherFlag
+        }
+        return o
+      })
+      onSubmit({ classList: classDataList, institutionId, refreshPage })
       onCancel()
     }
+  }
+
+  const onCoTeacherChange = ({ target }) => {
+    setCoTeacherFlag(target.checked)
   }
 
   const getColumns = () => {
@@ -399,6 +422,16 @@ const ClassSelectModal = ({
           </p>
           {type === 'googleClassroom' && allowedInstitutions.length > 1 && (
             <InstitutionSelection />
+          )}
+          {type === 'googleClassroom' && (
+            <CheckboxLabel
+              style={{ margin: '10px 0px 20px 0px' }}
+              checked={coTeacherFlag}
+              onChange={onCoTeacherChange}
+            >
+              Enroll Co-Teacher (All teachers present in Google classroom will
+              share the same class)
+            </CheckboxLabel>
           )}
         </>
       }

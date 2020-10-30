@@ -17,6 +17,7 @@ const DragItemContainer = ({
   multiRow,
   from,
   fromColumnId,
+  label,
   ...rest
 }) => {
   const itemProps = {
@@ -25,7 +26,7 @@ const DragItemContainer = ({
     preview,
     dragHandle,
     renderIndex,
-    item,
+    label: item.value || label, // label from CorrectAnswers
     ...rest,
   }
   const itemTo = {
@@ -51,7 +52,10 @@ const DragItemContainer = ({
 }
 
 DragItemContainer.propTypes = {
-  item: PropTypes.string.isRequired,
+  item: PropTypes.shape({
+    id: PropTypes.string,
+    value: PropTypes.string,
+  }),
   isDragging: PropTypes.bool.isRequired,
   preview: PropTypes.bool.isRequired,
   renderIndex: PropTypes.number.isRequired,
@@ -64,6 +68,7 @@ DragItemContainer.propTypes = {
   minWidth: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
+  label: PropTypes.string,
 }
 
 DragItemContainer.defaultProps = {
@@ -72,6 +77,8 @@ DragItemContainer.defaultProps = {
   dragHandle: false,
   valid: false,
   width: null,
+  item: {},
+  label: '',
 }
 
 const MainWrapper = styled.div`

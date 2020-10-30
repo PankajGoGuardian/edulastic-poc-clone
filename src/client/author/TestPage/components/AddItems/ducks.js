@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { libraryFilters } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
-import * as Sentry from '@sentry/browser'
 import {
   call,
   put,
@@ -381,7 +380,7 @@ function* receiveTestItemsSaga({
     })
     yield put(receiveTestItemsSuccess(items, count, page, limit))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrieve test items.'
     notification({ type: 'error', messageKey: 'receiveItemFailing' })
     yield put(receiveTestItemsError(errorMessage))
@@ -393,7 +392,7 @@ function* reportContentErrorSaga({ payload }) {
     yield call(contentErrorApi.reportContentError, payload)
     notification({ type: 'success', messageKey: 'issueReportedSuccessfully' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     notification({ messageKey: 'failedToReportIssue' })
   }
 }

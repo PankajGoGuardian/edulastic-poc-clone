@@ -308,11 +308,7 @@ class FeedbackRight extends Component {
   }
 
   handleRubricModal = (res) => {
-    const {
-      widget: {
-        activity: { rubricFeedback, score },
-      },
-    } = this.props
+    const { rubricFeedback, score } = this.props?.widget?.activity || {}
     this.setState({ showPreviewRubric: false })
     if (
       res &&

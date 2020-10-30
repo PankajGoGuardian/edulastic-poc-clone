@@ -2,9 +2,8 @@ import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { schoolApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { get, keyBy } from 'lodash'
-import * as Sentry from '@sentry/browser'
 
 const RECEIVE_SCHOOLS_REQUEST = '[school] receive data request'
 const RECEIVE_SCHOOLS_SUCCESS = '[school] receive data success'
@@ -307,7 +306,7 @@ function* updateSchoolApprovalRequestSaga({ payload }) {
   } catch (err) {
     notification({ msg: 'Failed to update School approval status' })
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 

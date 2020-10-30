@@ -4,6 +4,7 @@ import {
   TypeToConfirmModal,
   notification,
   SimpleConfirmModal,
+  captureSentryException,
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,7 +13,6 @@ import withRouter from 'react-router-dom/withRouter'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import * as Sentry from '@sentry/browser'
 
 // components
 import { Dropdown, Select } from 'antd'
@@ -25,6 +25,7 @@ import {
   IconPencilEdit,
   IconAssignment,
   IconManage,
+  IconRemove,
 } from '@edulastic/icons'
 import IconArchive from '@edulastic/icons/src/IconArchive'
 import { canvasApi } from '@edulastic/api'
@@ -36,11 +37,18 @@ import {
   CaretUp,
   SelectStyled,
   OptionWrapper,
+  RightContent,
+  ClassLink,
 } from './styled'
 
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from '../ClassListContainer/ClassCreatePage'
 import AddCoTeacher from './AddCoTeacher/AddCoTeacher'
+import UpdateCoTeacher from './UpdateCoTeacher/UpdateCoTeacher'
+import {
+  getManageCoTeacherModalVisibleStateSelector,
+  showUpdateCoTeacherModalAction,
+} from '../../ducks'
 
 const Option = Select.Option
 
@@ -68,10 +76,14 @@ const Header = ({
   unarchiveClass,
   history,
   entity,
+  showCoteacherModal,
+  setUpdateCoTeacherModal,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
   }
+
+  const coTeachers = selectedClass?.owners || []
 
   const handleError = (err) => {
     notification({ messageKey: 'googleLoginFailed' })
@@ -139,7 +151,7 @@ const Header = ({
         syncCanvasModal()
       }
     } catch (err) {
-      Sentry.captureException(err)
+      captureSentryException(err)
       notification(
         err.status === 403 && err.response.data?.message
           ? {
@@ -366,6 +378,28 @@ const Header = ({
             onCancel={handleUnarchiveClassCancel}
           />
         )}
+        <RightContent>
+          {active !== 1 && (
+            <ClassLink onClick={() => setShowUnarchiveModal(true)}>
+              UNARCHIVE
+            </ClassLink>
+          )}
+          {showUnarchiveModal && (
+            <SimpleConfirmModal
+              visible={showUnarchiveModal}
+              title={`Unarchive ${typeText}`}
+              description={
+                <p style={{ margin: '5px 0' }}>
+                  Are you sure you want to Unarchive{' '}
+                  <LightGreenSpan>{name}</LightGreenSpan>?
+                </p>
+              }
+              buttonText="Unarchive"
+              onProceed={handleUnarchiveClass}
+              onCancel={handleUnarchiveClassCancel}
+            />
+          )}
+        </RightContent>
         {active === 1 && (
           <Dropdown
             overlay={
@@ -387,13 +421,12 @@ const Header = ({
                   <IconPlusCircle />
                   <span>Add a Co-Teacher</span>
                 </MenuItems>
-
-                {/*
-                <MenuItems>
-                  <IconRemove />
-                  <span>Remove a Co-Teacher</span>  //Hidden until functionality added
-                </MenuItems>
-              */}
+                {coTeachers && coTeachers.length > 1 && (
+                  <MenuItems onClick={() => setUpdateCoTeacherModal(true)}>
+                    <IconRemove />
+                    <span>Manage Co-Teacher</span>
+                  </MenuItems>
+                )}
                 <MenuItems onClick={getAssignmentsByClass(_id)}>
                   <IconAssignment />
                   <span>View Assignments</span>
@@ -414,6 +447,12 @@ const Header = ({
         type={type}
         selectedClass={selectedClass}
         handleCancel={() => toggleModal('addCoTeacher')}
+      />
+      <UpdateCoTeacher
+        isOpen={showCoteacherModal}
+        type={type}
+        selectedClass={selectedClass}
+        handleCancel={() => setUpdateCoTeacherModal(false)}
       />
       {showModal && (
         <TypeToConfirmModal
@@ -445,8 +484,14 @@ Header.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  connect((state) => ({
-    user: state?.user?.user,
-  }))
+  connect(
+    (state) => ({
+      user: state?.user?.user,
+      showCoteacherModal: getManageCoTeacherModalVisibleStateSelector(state),
+    }),
+    {
+      setUpdateCoTeacherModal: showUpdateCoTeacherModalAction,
+    }
+  )
 )
 export default enhance(Header)

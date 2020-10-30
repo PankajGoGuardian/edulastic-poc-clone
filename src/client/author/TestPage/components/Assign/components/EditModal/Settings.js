@@ -140,7 +140,7 @@ const Settings = ({
 
       <StyledRowSettings gutter={16}>
         <Col span={16}>
-          <RowTitle>Safe Exam Browser/Kiosk Mode</RowTitle>
+          <RowTitle>Safe Exam Browser</RowTitle>
         </Col>
         <Col span={8}>
           <AlignSwitchRight

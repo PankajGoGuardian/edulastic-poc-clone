@@ -88,6 +88,12 @@ export function removeAccessToken(userId, role) {
   window.localStorage.removeItem(key)
 }
 
+export function getAccessTokenForUser(userId, role) {
+  const key = tokenKey(userId, role)
+  const oldTokens = JSON.parse(window.localStorage.getItem('tokens') || '[]')
+  return oldTokens.find((x) => x === key)
+}
+
 export function removeTokens() {
   window.localStorage.removeItem('tokens')
 }

@@ -2,7 +2,7 @@ import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { folderApi } from '@edulastic/api'
 import { get, omit } from 'lodash'
 import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { folderTypes } from '@edulastic/constants'
 import {
   RECEIVE_FOLDER_REQUEST,
@@ -126,7 +126,7 @@ function* receiveDeleteFolderRequest({ payload }) {
       payload: { folderId },
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Delete a folder failing'
     yield put({
       type: DELETE_FOLDER_ERROR,

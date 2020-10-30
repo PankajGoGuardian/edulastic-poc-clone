@@ -266,41 +266,22 @@ export const ClassCode = styled(Col)`
   font-weight: 700;
   color: ${secondaryTextColor};
   text-transform: uppercase;
-  span {
-    font-size: 18px;
-    color: ${themeColorLighter};
-    position: relative;
-    top: 2px;
-    margin-left: 10px;
-  }
-  @media (max-width: ${desktopWidth}) {
-    padding-right: 0px;
-  }
-`
-export const Studentscount = styled(Col)`
-  white-space: nowrap;
-  font-size: 12px;
-  font-weight: 700;
-  color: ${secondaryTextColor};
-  text-transform: uppercase;
-  span {
-    font-size: 18px;
-    color: ${themeColorLighter};
-    position: relative;
-    top: 1px;
-    margin-left: 10px;
-  }
-  @media (max-width: ${desktopWidth}) {
-    padding-right: 0px;
-  }
-`
-export const CoTeacher = styled(Studentscount)`
   display: flex;
-  width: 100%;
-  margin-top: 4px;
+  align-items: center;
+  span {
+    font-size: 18px;
+    color: ${themeColorLighter};
+    margin-left: 15px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    padding-right: 0px;
+  }
+`
+export const Studentscount = styled(ClassCode)``
+
+export const CoTeacher = styled(ClassCode)`
   span {
     font-size: 15px;
-    margin-top: -5px;
   }
 `
 export const PopCoTeachers = styled.div`
@@ -371,7 +352,7 @@ export const Image = styled.img`
 
 export const MidWrapper = styled(Row)`
   width: 100%;
-  margin-top: 10px;
+  margin: 5px 0px;
 `
 
 export const RightWrapper = styled.div`
@@ -386,23 +367,15 @@ export const FieldValue = styled.div`
   display: flex;
   font-weight: 550;
   color: ${cardTitleColor};
-  margin-top: 5px;
   display: flex;
   font-size: 14px;
   div {
     min-width: 80px;
     text-transform: uppercase;
     font-size: 12px;
-    margin-top: 10px;
-  }
-
-  &:first-child {
-    margin-top: 0px;
   }
   span {
-    margin-top: 7px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 0px 5px;
     color: ${secondaryTextColor};
   }
 
@@ -599,7 +572,6 @@ export const ClassInfoContainer = styled.div`
   width: calc(100% - 250px);
   height: auto;
   padding: 0 1.2rem;
-  margin-top: 10px;
 
   @media (min-width: ${extraDesktopWidthMax}) {
     padding: 0 30px;
@@ -610,6 +582,7 @@ export const ClassInfoContainer = styled.div`
 export const FlexDiv = styled.div`
   width: 100%;
   display: flex;
+  flex-direction: ${(props) => props.direction || 'row'};
 `
 
 export const SwitchBox = styled.span`

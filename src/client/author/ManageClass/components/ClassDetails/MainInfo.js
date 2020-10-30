@@ -30,7 +30,6 @@ const MainInfo = ({
   archiveClass,
   allowCanvasLogin,
   syncCanvasModal,
-  unarchiveClass,
 }) => {
   // eslint-disable-next-line max-len
   const {
@@ -47,8 +46,6 @@ const MainInfo = ({
     googleCode,
     canvasCourseName = '',
     canvasCourseSectionName = '',
-    atlasId = '',
-    cleverId,
   } = entity
   const _grade =
     allGrades
@@ -76,25 +73,23 @@ const MainInfo = ({
               archiveClass={archiveClass}
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
-              unarchiveClass={unarchiveClass}
-              atlasId={atlasId}
-              cleverId={cleverId}
             />
           </FlexDiv>
-          <FlexDiv>
+          <FlexDiv direction="column" style={{ marginTop: '10px' }}>
             <MidWrapper>
               <Col lg={6} md={12}>
                 <FieldValue>
                   <div>Grade</div>
                   <span>{`${_grade}`}</span>
                 </FieldValue>
+              </Col>
+              <Col lg={6} md={12}>
                 <FieldValue>
                   <div>Subject</div>
                   <span>{_subject.text}</span>
                 </FieldValue>
               </Col>
-
-              <Col lg={7} md={12}>
+              <Col lg={6} md={12}>
                 {type === 'class' && (
                   <FieldValue>
                     <div>Standard</div>
@@ -107,31 +102,42 @@ const MainInfo = ({
                     )}
                   </FieldValue>
                 )}
-                <FeaturesSwitch
-                  inputFeatures="selectCourse"
-                  actionOnInaccessible="hidden"
-                  key="selectCourse"
-                >
-                  <FieldValue>
-                    <div>Course</div>
-                    <span>{course && course.name}</span>
-                  </FieldValue>
-                </FeaturesSwitch>
               </Col>
-
+              <Col lg={6} md={12}>
+                {course && course.name && (
+                  <FeaturesSwitch
+                    inputFeatures="selectCourse"
+                    actionOnInaccessible="hidden"
+                    key="selectCourse"
+                  >
+                    <FieldValue>
+                      <div>Course</div>
+                      <span>{course && course.name}</span>
+                    </FieldValue>
+                  </FeaturesSwitch>
+                )}
+              </Col>
+            </MidWrapper>
+            <MidWrapper>
               {type === 'class' && (
-                <Col lg={6} md={12}>
-                  <FieldValue>
-                    <div>Start Date</div>
-                    <span>{moment(startDate).format('MMM DD, YYYY')}</span>
-                  </FieldValue>
-                  <FieldValue>
-                    <div>End Date</div>
-                    <span>{moment(endDate).format('MMM DD, YYYY')}</span>
-                  </FieldValue>
-                </Col>
+                <>
+                  <Col lg={6} md={12}>
+                    <FieldValue>
+                      <div>Start Date</div>
+                      <span>{moment(startDate).format('MMM DD, YYYY')}</span>
+                    </FieldValue>
+                  </Col>
+                  <Col lg={6} md={12}>
+                    <FieldValue>
+                      <div>End Date</div>
+                      <span>{moment(endDate).format('MMM DD, YYYY')}</span>
+                    </FieldValue>
+                  </Col>
+                </>
               )}
-              <Col lg={5} md={12}>
+            </MidWrapper>
+            <MidWrapper>
+              <Col lg={12}>
                 {type === 'class' && (
                   <>
                     {!!googleId && (
@@ -142,6 +148,8 @@ const MainInfo = ({
                     )}
                   </>
                 )}
+              </Col>
+              <Col lg={12}>
                 {!!lastSyncDate && (
                   <FieldValue>
                     <div>Last Sync</div>
@@ -149,14 +157,17 @@ const MainInfo = ({
                   </FieldValue>
                 )}
               </Col>
-
-              <Col lg={7}>
+            </MidWrapper>
+            <MidWrapper>
+              <Col lg={12}>
                 {!!canvasCourseSectionName && (
                   <FieldValue>
                     <div>Canvas Section</div>
                     <span>{canvasCourseSectionName}</span>
                   </FieldValue>
                 )}
+              </Col>
+              <Col lg={12}>
                 {type === 'class' && (
                   <FieldValue>
                     {!!canvasCourseName && (

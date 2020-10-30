@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -8,11 +7,6 @@ import { ScrollContext } from '@edulastic/common'
 import { test } from '@edulastic/constants'
 import TestItemPreview from '../../components/TestItemPreview'
 import PlayerFooter from './PlayerFooter'
-import {
-  IPAD_PORTRAIT_WIDTH,
-  IPAD_LANDSCAPE_WIDTH,
-  MAX_MOBILE_WIDTH,
-} from '../../constants/others'
 import { getEvaluationSelector } from '../../selectors/answers'
 import getZoomedResponsiveWidth from '../../utils/zoomedResponsiveWidth'
 
@@ -58,76 +52,70 @@ const PlayerContentArea = ({
   })
 
   return (
-    <Main>
-      <MainWrapper isSidebarVisible={isSidebarVisible} ref={scrollContainerRef}>
-        {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
-            Also, will use ScrollContext for auto-scroll on mobile */}
-        <ScrollContext.Provider
-          value={{ getScrollElement: () => scrollContainerRef.current }}
+    <Main ref={scrollContainerRef} zoomed={isZoomApplied} zoomLevel={zoomLevel}>
+      <ScrollContext.Provider
+        value={{ getScrollElement: () => scrollContainerRef.current }}
+      >
+        <MainContent
+          skin
+          responsiveWidth={responsiveWidth}
+          className="scrollable-main-wrapper"
         >
-          <MainContent
-            skin
-            zoomed={isZoomApplied}
-            zoomLevel={zoomLevel}
-            responsiveWidth={responsiveWidth}
-            className="scrollable-main-wrapper"
-          >
-            {testItemState === '' && (
-              <TestItemPreview
-                crossAction={crossAction}
-                setCrossAction={setCrossAction}
-                setHighlights={setHighlights}
-                cols={itemRows}
-                previewTab={previewTab}
-                questions={questions}
-                previousQuestionActivity={previousQuestionActivity}
-                showCollapseBtn
-                highlights={highlights}
-                scratchPadMode={scratchPadMode}
-                saveUserWork={saveUserWork}
-                userWork={history}
-                saveAttachments={saveAttachments}
-                attachments={attachments}
-                viewComponent="practicePlayer"
-                enableMagnifier={enableMagnifier}
-                updateScratchpadtoStore
-              />
-            )}
-            {testItemState === 'check' && (
-              <TestItemPreview
-                cols={itemRows}
-                previewTab="check"
-                preview="check"
-                questions={questions}
-                highlights={highlights}
-                previousQuestionActivity={previousQuestionActivity}
-                showCollapseBtn
-                scratchPadMode={scratchPadMode}
-                saveUserWork={saveUserWork}
-                userWork={history}
-                saveAttachments={saveAttachments}
-                attachments={attachments}
-                viewComponent="practicePlayer"
-                evaluation={evaluation}
-                enableMagnifier={enableMagnifier}
-                changePreviewTab={changePreview}
-              />
-            )}
-          </MainContent>
-        </ScrollContext.Provider>
-        {playerSkinType.toLowerCase() ===
-          test.playerSkinValues.edulastic.toLowerCase() && (
-          <PlayerFooter
-            isLast={isLast}
-            isFirst={isFirst}
-            moveToNext={moveToNext}
-            moveToPrev={moveToPrev}
-            isSidebarVisible={isSidebarVisible}
-            t={t}
-            unansweredQuestionCount={unansweredQuestionCount}
-          />
-        )}
-      </MainWrapper>
+          {testItemState === '' && (
+            <TestItemPreview
+              crossAction={crossAction}
+              setCrossAction={setCrossAction}
+              setHighlights={setHighlights}
+              cols={itemRows}
+              previewTab={previewTab}
+              questions={questions}
+              previousQuestionActivity={previousQuestionActivity}
+              showCollapseBtn
+              highlights={highlights}
+              scratchPadMode={scratchPadMode}
+              saveUserWork={saveUserWork}
+              userWork={history}
+              saveAttachments={saveAttachments}
+              attachments={attachments}
+              viewComponent="practicePlayer"
+              enableMagnifier={enableMagnifier}
+              updateScratchpadtoStore
+            />
+          )}
+          {testItemState === 'check' && (
+            <TestItemPreview
+              cols={itemRows}
+              previewTab="check"
+              preview="check"
+              questions={questions}
+              highlights={highlights}
+              previousQuestionActivity={previousQuestionActivity}
+              showCollapseBtn
+              scratchPadMode={scratchPadMode}
+              saveUserWork={saveUserWork}
+              userWork={history}
+              saveAttachments={saveAttachments}
+              attachments={attachments}
+              viewComponent="practicePlayer"
+              evaluation={evaluation}
+              enableMagnifier={enableMagnifier}
+              changePreviewTab={changePreview}
+            />
+          )}
+        </MainContent>
+      </ScrollContext.Provider>
+      {playerSkinType.toLowerCase() ===
+        test.playerSkinValues.edulastic.toLowerCase() && (
+        <PlayerFooter
+          isLast={isLast}
+          isFirst={isFirst}
+          moveToNext={moveToNext}
+          moveToPrev={moveToPrev}
+          isSidebarVisible={isSidebarVisible}
+          t={t}
+          unansweredQuestionCount={unansweredQuestionCount}
+        />
+      )}
     </Main>
   )
 }
@@ -158,9 +146,24 @@ const Main = styled.main`
   background-color: ${(props) =>
     props.theme.widgets.assessmentPlayers.mainBgColor};
   display: flex;
-  height: 100vh;
   box-sizing: border-box;
   overflow: hidden;
+
+  margin-top: 64px;
+  padding: ${({ zoomed, zoomLevel }) => {
+    if (zoomed) {
+      if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
+        return '20px'
+      }
+      if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
+        return '15px'
+      }
+      if (zoomLevel >= 2.5) {
+        return '10px'
+      }
+    }
+    return '20px'
+  }};
 `
 
 const MainContent = styled.div`
@@ -174,23 +177,9 @@ const MainContent = styled.div`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   display: flex;
-  overflow: auto; /* need auto to show scroll for lengthy content https://snapwiz.atlassian.net/browse/EV-13508 */
   width: 100%;
   flex-direction: column;
-  padding: ${({ zoomed, zoomLevel }) => {
-    if (zoomed) {
-      if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
-        return '20px'
-      }
-      if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
-        return '15px'
-      }
-      if (zoomLevel >= 2.5) {
-        return '10px'
-      }
-      return '0'
-    }
-  }};
+
   ${({ zoomLevel, responsiveWidth }) => {
     const zoomed = zoomLevel > 1 && zoomLevel !== undefined
     return `
@@ -204,29 +193,9 @@ const MainContent = styled.div`
     -webkit-touch-callout: none;
     user-select: none;
   }
+  position: relative;
 
   & input {
     user-select: text;
-  }
-
-  @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
-    margin: 30px 10px;
-  }
-`
-
-const MainWrapper = styled.div`
-  position: relative;
-  width: calc(100% - 80px);
-  margin-top: 60px;
-  height: calc(100vh - 150px);
-  display: flex;
-  overflow: hidden;
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
-    width: 100%;
-    margin-top: 65px;
-  }
-
-  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
-    margin-top: 75px;
   }
 `

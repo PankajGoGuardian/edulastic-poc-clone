@@ -105,6 +105,7 @@ export const ZoomControlCotainer = styled.div`
   margin-left: -12px;
   display: flex;
   flex-direction: column;
+  z-index: 1;
 
   svg {
     fill: ${white};

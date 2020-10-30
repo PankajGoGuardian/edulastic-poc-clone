@@ -10,8 +10,16 @@ export const Container = styled.div`
   background-color: ${(props) => props.isStudentAttempt && '#fff'};
   border-radius: ${(props) => props.isStudentAttempt && '8px'};
   margin-top: ${(props) => props.isStudentAttempt && '8px'};
-  min-height: ${(props) => props.isStudentAttempt && 'calc(100vh - 122px)'};
-  max-height: ${(props) => props.isStudentAttempt && 'calc(100vh - 122px)'};
+  min-height: ${(props) =>
+    props.isStudentAttempt &&
+    (props.viewComponent === 'practicePlayer'
+      ? 'calc(100vh - 180px)'
+      : 'calc(100vh - 122px)')};
+  max-height: ${(props) =>
+    props.isStudentAttempt &&
+    (props.viewComponent === 'practicePlayer'
+      ? 'calc(100vh - 180px)'
+      : 'calc(100vh - 122px)')};
   overflow: ${(props) =>
     props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
       ? 'auto'

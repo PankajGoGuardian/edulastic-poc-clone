@@ -81,7 +81,7 @@ const PerformanceByStandards = ({
           (s) => s._id === selectedStandardProficiencyProfile
         ) || standardProficiencyProfiles[0]
       )?.scale,
-    [selectedStandardProficiencyProfile, standardProficiencyProfiles]
+    [settings]
   )
 
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { test, questionType } from '@edulastic/constants'
+import { test } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -29,10 +29,12 @@ const AssessmentPlayerSkinWrapper = ({
     moveToPrev,
     changeTool,
     currentItem,
+    windowWidth,
     toggleToolsOpenStatus,
     hasDrawingResponse,
   } = restProps
 
+  const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
   useEffect(() => {
     const toolToggleFunc = toggleToolsOpenStatus || changeTool
     // 5 is Scratchpad mode
@@ -40,6 +42,10 @@ const AssessmentPlayerSkinWrapper = ({
       toolToggleFunc(5)
     }
   }, [currentItem])
+
+  useEffect(() => {
+    setSidebarVisible(!isPadMode)
+  }, [windowWidth])
 
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible)
@@ -121,11 +127,7 @@ const AssessmentPlayerSkinWrapper = ({
       playerSkinType.toLowerCase() ===
       test.playerSkinValues.edulastic.toLowerCase()
     ) {
-      if (isDocBased || defaultAP) {
-        return { width: '100%' }
-      }
       return {
-        margin: '40px 40px 0 40px',
         width: '100%',
       }
     }
@@ -231,15 +233,12 @@ const AssessmentPlayerSkinWrapper = ({
 }
 
 const Sidebar = styled.div`
-  width: ${({ isVisible }) => (isVisible ? 220 : 65)}px;
+  width: ${({ isVisible }) => (isVisible ? 220 : 0)}px;
   background-color: ${(props) =>
     props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${(props) => props.theme.widgets.assessmentPlayers.sidebarTextColor};
-  padding-top: ${({ isVisible }) => (isVisible ? '35px' : '68px')};
-  height: ${({ isVisible }) => (isVisible ? 'auto' : '100vh')};
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
-    display: none;
-  }
+  padding-top: 64px;
+  transition: all 0.3s ease;
 `
 
 const StyledMainContainer = styled.div`
@@ -250,11 +249,8 @@ const StyledMainContainer = styled.div`
       }
     }
     ${({ mainContainerStyle }) => mainContainerStyle};
-    @media (max-width: 768px) {
-      padding: 58px 0 0;
-    }
     .practice-player-footer {
-      left: ${({ isSidebarVisible }) => (isSidebarVisible ? '220px' : '65px')};
+      left: ${({ isSidebarVisible }) => (isSidebarVisible ? '220px' : '0px')};
     }
     .question-tab-container {
       height: fit-content !important;

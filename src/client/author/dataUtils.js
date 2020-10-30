@@ -1,6 +1,5 @@
 import React from 'react'
 import { get, keyBy, uniqBy, uniq, memoize } from 'lodash'
-import { getFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { questionType as questionTypes } from '@edulastic/constants'
 import { UserIcon } from './ItemList/components/Item/styled'
 import { EdulasticVerified } from './TestList/components/ListItem/styled'
@@ -203,7 +202,7 @@ export const getInterestedStandards = (
         curriculumIds.includes(eqSt.curriculumId)
       )
       if (equivStandards.length) {
-        for (let eqSt of equivStandards) {
+        for (const eqSt of equivStandards) {
           interestedStandards.push({
             ...standard,
             identifier: eqSt.identifier,
@@ -245,9 +244,9 @@ export const getDefaultInterests = () =>
   JSON.parse(sessionStorage.getItem('filters[globalSessionFilters]')) || {}
 
 export const sortTestItemQuestions = (testItems) => {
-  for (const [, item] of testItems.entries()) {
+  const sortedTestItems = testItems.map((item) => {
     if (!(item.data && item.data.questions)) {
-      continue
+      return item
     }
     // sort questions based on widegets
     const questions = keyBy(get(item, 'data.questions', []), 'id')
@@ -255,11 +254,18 @@ export const sortTestItemQuestions = (testItems) => {
       (acc, curr) => [...acc, ...curr.widgets],
       []
     )
-    item.data.questions = widgets
-      .map((widget) => questions[widget.reference])
-      .filter((q) => !!q)
-  }
-  return testItems
+    return {
+      ...item,
+      data: {
+        ...item.data,
+        questions: widgets
+          .map((widget) => questions[widget.reference])
+          .filter((q) => !!q),
+      },
+    }
+  })
+
+  return sortedTestItems
 }
 
 // Show premium label on items/tests/playlists

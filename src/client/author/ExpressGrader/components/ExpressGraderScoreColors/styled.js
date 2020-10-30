@@ -1,4 +1,10 @@
 import styled from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
+
+export const ExpressGraderLegend = styled(FlexContainer)`
+  position: absolute;
+  bottom: 8px;
+`
 
 export const Color = styled.div`
   background: ${({ color }) => color};

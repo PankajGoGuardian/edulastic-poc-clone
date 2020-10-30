@@ -92,22 +92,15 @@ const PublicTestPage = ({
           }
         })
         .catch((err) => {
-          const { message, statusCode } = err?.response?.data || {}
-          if (message === 'Resource not available') {
-            notification({
-              type: 'error',
-              messageKey: 'curriculumMakeApiErr',
-            })
-          } else {
+          const { message } = err?.response?.data || {}
+          if (message !== 'Resource not available') {
             notification({
               type: 'info',
               messageKey: 'tryingToAccessPrivateTest',
             })
           }
-
           if (role !== 'student' || role !== 'parent') {
-            if (statusCode === 403) history.push('/author/tests')
-            else redirectToTestPreview(testId)
+            redirectToTestPreview(testId)
           } else {
             // if got error redirect to login page
             history.push('/')

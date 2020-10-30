@@ -1,6 +1,6 @@
 import React from 'react'
 import { FlexContainer } from '@edulastic/common'
-import { Color, Label } from './styled'
+import { ExpressGraderLegend, Color, Label } from './styled'
 
 const colorLabelsMap = [
   {
@@ -33,11 +33,20 @@ const ColorLabel = ({ item }) => (
 )
 
 const ExpressGraderScoreColors = () => (
-  <FlexContainer padding="10px 0" width="600px" justifyContent="space-between">
-    {colorLabelsMap.map((item) => (
-      <ColorLabel item={item} />
-    ))}
-  </FlexContainer>
+  <ExpressGraderLegend
+    padding="10px 0"
+    width="calc(100% - 68px)"
+    justifyContent="space-between"
+  >
+    <FlexContainer>
+      {colorLabelsMap.map((item) => (
+        <ColorLabel item={item} />
+      ))}
+    </FlexContainer>
+    <FlexContainer>
+      <Label>Click on any score to open express grader</Label>
+    </FlexContainer>
+  </ExpressGraderLegend>
 )
 
 export default ExpressGraderScoreColors

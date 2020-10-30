@@ -225,7 +225,7 @@ const PrintAssessmentContainer = styled.div`
       margin: auto;
     }
     .responseboxContainer {
-      width: 100%;
+      width: auto;
     }
     .cloze-image-dropdown-response {
       overflow-x: hidden;

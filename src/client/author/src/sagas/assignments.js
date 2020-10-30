@@ -9,7 +9,7 @@ import {
 import { push } from 'connected-react-router'
 import { assignmentApi } from '@edulastic/api'
 import { omit, get, set, unset, pickBy, identity } from 'lodash'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 
@@ -53,7 +53,7 @@ function* receiveAssignmentClassList({ payload = {} }) {
       yield put(push('/author/assignments'))
     }
   } catch (error) {
-    Sentry.captureException(error)
+    captureSentryException(error)
     const errorMessage = 'Receive class list failing'
     let messageKey = 'receiveClasslistFailing'
     if (get(error, 'status') === 400) {
@@ -108,7 +108,7 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       }
     }
   } catch (error) {
-    Sentry.captureException(error)
+    captureSentryException(error)
     const errorMessage = 'Unable to retrive assignment summary.'
     notification({ type: 'error', messageKey: 'receiveTestFailing' })
     yield put({
@@ -134,7 +134,7 @@ function* receiveAssignmentsSaga({ payload = {} }) {
       })
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrieve assignment info.'
     notification({ type: 'error', messageKey: 'receiveTestFailing' })
     yield put({
@@ -246,7 +246,7 @@ function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
       notification({ msg: errorMessage })
     }
   } catch (error) {
-    Sentry.captureException(error)
+    captureSentryException(error)
     const errorMessage =
       error?.data?.message ||
       'Assignment failed to share with google classroom. Please try after sometime.'

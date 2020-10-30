@@ -113,6 +113,7 @@ import {
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
+import { getSmallerTime } from '../../utils'
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -571,13 +572,13 @@ class ClassBoard extends Component {
     const mapTestActivityByStudId = keyBy(testActivity, 'studentId')
     const inActiveStudentsSelected = (selectedStudentKeys || []).filter(
       (item) =>
-        mapTestActivityByStudId?.[item]?.isAssigned === false ||
-        mapTestActivityByStudId?.[item]?.isEnrolled === false
+        mapTestActivityByStudId?.[item]?.isAssigned === false &&
+        mapTestActivityByStudId?.[item]?.isEnrolled === true
     )
     if (inActiveStudentsSelected.length) {
       return notification({
         type: 'warn',
-        msg: `You can not mark removed or unerolled students as absent`,
+        msg: `You can not mark removed students as absent`,
       })
     }
     const selectedNotStartedStudents = (selectedStudentKeys || []).filter(
@@ -602,12 +603,7 @@ class ClassBoard extends Component {
   }
 
   handleShowRemoveStudentsModal = () => {
-    const {
-      selectedStudents,
-      testActivity,
-      assignmentStatus,
-      removedStudents,
-    } = this.props
+    const { selectedStudents, testActivity, assignmentStatus } = this.props
 
     if (assignmentStatus.toLowerCase() === 'done') {
       return notification({
@@ -615,17 +611,6 @@ class ClassBoard extends Component {
         msg: 'Cannot remove student(s) from a DONE assignment.',
       })
     }
-
-    const isRemovedStudentsSelected = removedStudents.some(
-      (item) => selectedStudents[item]
-    )
-    if (isRemovedStudentsSelected) {
-      return notification({
-        type: 'warn',
-        msg: 'Cannot remove unassigned students',
-      })
-    }
-    const mapTestActivityByStudId = keyBy(testActivity, 'studentId')
     const selectedStudentKeys = Object.keys(selectedStudents)
     if (!selectedStudentKeys.length) {
       return notification({
@@ -633,14 +618,14 @@ class ClassBoard extends Component {
         messageKey: 'atleastOneStudentToRemove',
       })
     }
-    const unEnrolledStudents = (selectedStudentKeys || []).filter(
-      (item) => mapTestActivityByStudId?.[item]?.isEnrolled === false
+    const mapTestActivityByStudId = keyBy(testActivity, 'studentId')
+    const isRemovedStudentsSelected = (selectedStudentKeys || []).some(
+      (item) => mapTestActivityByStudId?.[item]?.isAssigned === false
     )
-
-    if (unEnrolledStudents.length) {
+    if (isRemovedStudentsSelected) {
       return notification({
         type: 'warn',
-        msg: `You can not remove unerolled students`,
+        msg: 'Cannot remove unassigned students',
       })
     }
 
@@ -657,7 +642,9 @@ class ClassBoard extends Component {
       })
     }
     const isAnyBodyGraded = selectedStudentsEntity.some(
-      (item) => item.UTASTATUS === testActivityStatus.SUBMITTED && item.graded
+      (item) =>
+        item.UTASTATUS === testActivityStatus.SUBMITTED &&
+        item.graded === 'GRADED'
     )
     if (isAnyBodyGraded) {
       return notification({
@@ -882,7 +869,7 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params
     const studentTestActivity =
       (studentResponse && studentResponse.testActivity) || {}
-    studentTestActivity.timeSpent = Math.floor(
+    const timeSpent = Math.floor(
       ((studentResponse &&
         studentResponse.questionActivities &&
         studentResponse.questionActivities.reduce((acc, qa) => {
@@ -1531,9 +1518,9 @@ class ClassBoard extends Component {
                                 textTransform: 'capitalize',
                               }}
                             >
-                              {`${Math.floor(
-                                studentTestActivity.timeSpent / 60
-                              )}:${studentTestActivity.timeSpent % 60}` || ''}
+                              {`${Math.floor(timeSpent / 60)}:${
+                                timeSpent % 60
+                              }` || ''}
                             </span>
                           </ScoreHeader>
                           <ScoreHeader style={{ fontSize: '12px' }}>
@@ -1557,9 +1544,12 @@ class ClassBoard extends Component {
                           <ScoreHeader style={{ fontSize: '12px' }}>
                             SUBMITTED ON :
                             <span style={{ color: black }}>
-                              {moment(studentTestActivity.endDate).format(
-                                'MMM DD, YYYY HH:mm'
-                              )}
+                              {moment(
+                                getSmallerTime(
+                                  studentTestActivity.endDate,
+                                  additionalData.endDate
+                                )
+                              ).format('MMM DD, YYYY HH:mm')}
                             </span>
                           </ScoreHeader>
                         </InfoWrapper>

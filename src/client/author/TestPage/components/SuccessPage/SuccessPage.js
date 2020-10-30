@@ -228,6 +228,7 @@ class SuccessPage extends React.Component {
       published,
       history,
       syncWithGoogleClassroomInProgress,
+      classList,
     } = this.props
 
     const { isShareModalVisible, shareWithGCEnable } = this.state
@@ -335,9 +336,13 @@ class SuccessPage extends React.Component {
       (m) => m?._id === assignedPlaylistModuleId
     )
     const moduleTitle = _module?.title || ''
-
-    const { openPolicy } = assignment
-
+    let isGoogleClassroomAssigned = false
+    const { openPolicy, class: clazz = [] } = assignment
+    // check if any group assigned is google group
+    const assignedClassIds = clazz.map((o) => o._id)
+    if (classList.find((o) => assignedClassIds.includes(o._id) && o.googleId)) {
+      isGoogleClassroomAssigned = true
+    }
     return (
       <div>
         <ShareModal
@@ -551,7 +556,7 @@ class SuccessPage extends React.Component {
                     </TitleCopy>
                   </FlexShareBox>
                 </FlexWrapperUrlBox>
-                {isAssignSuccess && (
+                {isAssignSuccess && isGoogleClassroomAssigned && (
                   <FlexWrapperClassroomBox>
                     <FlexTitleBox>
                       <FlexShareTitle>
@@ -600,6 +605,7 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       regradedAssignments: getAssignmentsSelector(state),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
+      classList: get(state, 'user.user.orgData.classList', []),
     }),
     {
       fetchAssignmentById: receiveAssignmentByAssignmentIdAction,

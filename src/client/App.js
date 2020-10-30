@@ -47,27 +47,50 @@ const Loading = () => (
 const fallback = { fallback: <Loading /> }
 
 // route wise splitting
-const AssessmentPlayer = loadable(() => import('./assessment/index'), fallback)
-const Auth = loadable(() => import('./Auth'), fallback)
-const Invite = loadable(() => import('./Invite/index'), fallback)
-const Dashboard = loadable(() => import('./student/app'), fallback)
-const Author = loadable(() => import('./author/src/app'), fallback)
-const Publisher = loadable(() => import('./publisher/app'), fallback)
-const Admin = loadable(() => import('./admin/app'), fallback)
-const PublicTest = loadable(() => import('./publicTest/container'), fallback)
-const AudioTagPlayer = loadable(() => import('./AudioTagPlayer'), fallback)
-const RedirectToTest = loadable(
-  () => import('./author/RedirectToTest'),
-  fallback
-)
-const SetParentPassword = loadable(
-  () => import('./SetParentPassword'),
-  fallback
-)
+const AssessmentPlayer = loadable(() => import('./assessment/index'), {
+  fallback,
+})
+const Auth = loadable(() => import('./Auth'), {
+  fallback,
+})
+const Invite = loadable(() => import('./Invite/index'), {
+  fallback,
+})
+
+const Dashboard = loadable(() => import('./student/app'), {
+  fallback,
+})
+const Author = loadable(() => import('./author/src/app'), {
+  fallback,
+})
+const Publisher = loadable(() => import('./publisher/app'), {
+  fallback,
+})
+const Admin = loadable(() => import('./admin/app'), {
+  fallback,
+})
+const RedirectToTest = loadable(() => import('./author/RedirectToTest'), {
+  fallback,
+})
+const SetParentPassword = loadable(() => import('./SetParentPassword'), {
+  fallback,
+})
 const CLIAccessBanner = loadable(
   () => import('./author/Dashboard/components/CLIAccessBanner'),
   fallback
 )
+const PublicTest = loadable(() => import('./publicTest/container'), {
+  fallback,
+})
+const AssignmentEmbedLink = loadable(
+  () => import('./assignmentEmbedLink/container'),
+  {
+    fallback,
+  }
+)
+const AudioTagPlayer = loadable(() => import('./AudioTagPlayer'), {
+  fallback: <Loading />,
+})
 
 const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
 
@@ -190,6 +213,7 @@ const App = ({
   const currentPath = location.pathname
   const urlPathSplit = currentPath.split('/')
   const publicPath = urlPathSplit.includes('public')
+  const embedLink = location.pathname.split('/').includes('embed')
   const ssoPath = urlPathSplit.includes('auth')
   const partnerPath = urlPathSplit.includes('partnerLogin')
   const kidPath = currentPath.includes('/kid')
@@ -197,12 +221,20 @@ const App = ({
     currentPath.includes('/fwd') || isLocationInTestRedirectRoutes(location)
 
   useEffect(() => {
-    if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect && !kidPath) {
+    if (
+      !embedLink &&
+      !publicPath &&
+      !ssoPath &&
+      !partnerPath &&
+      !isV1Redirect &&
+      !kidPath
+    ) {
       fetchUser({ addAccount: query.addAccount, userId: query.userId })
     } else if (
-      publicPath &&
-      (location.pathname.split('/').includes('view-test') ||
-        isLocationInTestRedirectRoutes(location)) &&
+      ((publicPath &&
+        (location.pathname.split('/').includes('view-test') ||
+          isLocationInTestRedirectRoutes(location))) ||
+        embedLink) &&
       TokenStorage.getAccessToken()
     ) {
       fetchUser()
@@ -224,13 +256,11 @@ const App = ({
     return <Loading />
   }
 
-  const isPublicPath = publicPath || isV1Redirect || kidPath
-
   if (
-    !isPublicPath &&
+    !publicPath &&
     user.authenticating &&
     TokenStorage.getAccessToken() &&
-    !currentPath.includes('/auth/') &&
+    !location.pathname.includes('/auth/') &&
     !sessionStorage.getItem('addAccountDetails')
   ) {
     return <Loading />
@@ -239,8 +269,7 @@ const App = ({
   const features = user?.user?.features || {}
   let defaultRoute = ''
   let redirectRoute = ''
-
-  if (!publicPath) {
+  if (!publicPath && !embedLink) {
     const path = getWordsInURLPathName(location.pathname)
     const urlSearch = new URLSearchParams(location.search)
 
@@ -476,6 +505,10 @@ const App = ({
           <Route
             path="/public/view-test/:testId"
             render={(props) => <PublicTest {...props} />}
+          />
+          <Route
+            path="/assignments/embed/:testId"
+            render={(props) => <AssignmentEmbedLink {...props} />}
           />
           <Route
             path="/audio-test"

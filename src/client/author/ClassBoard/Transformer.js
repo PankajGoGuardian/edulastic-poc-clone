@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { keyBy, groupBy, get, values, flatten, isEmpty } from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
-import DotProp from 'dot-prop'
+import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
 import { red, yellow, themeColorLighter } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
@@ -386,19 +386,20 @@ export const transformGradeBookResponse = (
   /**
    * TODO: need to refactor
    */
-  testItemsData = testItemsData.map((testItem) => {
-    if (testItem.data) {
-      testItem.data.questions = testItem.data.questions.filter(
-        (q) => q.type !== questionType.SECTION_LABEL
-      )
-      testItem.rows = testItem.rows.map((row) => {
-        row.widgets = row.widgets.filter(
-          (w) => w.type !== questionType.SECTION_LABEL
+  testItemsData = produce(testItemsData, (draft) => {
+    draft.forEach((testItem) => {
+      if (testItem.data) {
+        testItem.data.questions = testItem.data.questions.filter(
+          (q) => q.type !== questionType.SECTION_LABEL
         )
-        return row
-      })
-    }
-    return testItem
+        testItem.rows = testItem.rows.map((row) => {
+          row.widgets = row.widgets.filter(
+            (w) => w.type !== questionType.SECTION_LABEL
+          )
+          return row
+        })
+      }
+    })
   })
 
   const serverTimeStamp = getServerTs({ ts })
@@ -689,6 +690,12 @@ export const getStudentCardStatus = (
 
   if (isEnrolled === false) {
     status.status = 'Not Enrolled'
+    if (UTASTATUS === ABSENT) {
+      status.status = 'Absent'
+    }
+    if (isAssigned === false) {
+      status.status = 'Unassigned'
+    }
     status.color = red
     return status
   }

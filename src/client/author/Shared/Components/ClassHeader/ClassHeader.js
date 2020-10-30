@@ -13,6 +13,8 @@ import {
 import {
   assignmentPolicyOptions,
   test as testContants,
+  testActivityStatus,
+  testActivity as testActivityConstants,
 } from '@edulastic/constants'
 import {
   IconBookMarkButton,
@@ -51,6 +53,7 @@ import {
   showPasswordButonSelector,
   showScoreSelector,
   getIsShowUnAssignSelector,
+  testActivtyLoadingSelector,
 } from '../../../ClassBoard/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import {
@@ -97,6 +100,7 @@ import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions
+const { gradingStatus } = testActivityConstants
 
 const classViewRoutesByActiveTabName = {
   classboard: 'classboard',
@@ -236,6 +240,25 @@ class ClassHeader extends Component {
   }
 
   toggleCloseModal = (value) => {
+    if (value === true) {
+      const {
+        additionalData: { testId },
+        closeAssignment,
+        testActivity,
+        isActivityLoading,
+        match,
+      } = this.props
+      if (isActivityLoading) return
+      const { SUBMITTED, ABSENT } = testActivityStatus
+      const isAllDone = testActivity.every(
+        ({ UTASTATUS }) => UTASTATUS === SUBMITTED || UTASTATUS === ABSENT
+      )
+      if (isAllDone) {
+        const { classId, assignmentId } = match.params
+        closeAssignment(assignmentId, classId, testId)
+        return
+      }
+    }
     this.setState({ isCloseModalVisible: value, modalInputVal: '' })
   }
 
@@ -259,7 +282,9 @@ class ClassHeader extends Component {
   onStudentReportCardsClick = () => {
     const { testActivity, toggleStudentReportCardPopUp } = this.props
     const isAnyBodyGraded = testActivity.some(
-      (item) => item.status === 'submitted' && item.graded === 'GRADED'
+      (item) =>
+        item.UTASTATUS === testActivityStatus.SUBMITTED &&
+        item.graded === gradingStatus.GRADED
     )
     if (isAnyBodyGraded) {
       toggleStudentReportCardPopUp(true)
@@ -765,6 +790,7 @@ const enhance = compose(
         state?.author_classboard_testActivity?.additionalData?.assignedBy?._id,
       userId: state?.user?.user?._id,
       isShowUnAssign: getIsShowUnAssignSelector(state),
+      isActivityLoading: testActivtyLoadingSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

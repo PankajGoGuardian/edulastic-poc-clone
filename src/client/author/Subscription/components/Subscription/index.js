@@ -18,6 +18,7 @@ import {
   PlanTitle,
   PlanDescription,
 } from './styled'
+import { segmentApi } from '@edulastic/api'
 
 const comparePlansData = [
   {
@@ -192,7 +193,10 @@ const Subscription = (props) => {
 
   const openComparePlanModal = () => setComparePlan(true)
   const closeComparePlansModal = () => setComparePlan(false)
-  const openPaymentServiceModal = () => setPaymentServiceModal(true)
+  const openPaymentServiceModal = () => {
+    setPaymentServiceModal(true)
+    segmentApi.trackTeacherClickOnUpgradeSubscription({ user })
+  }
   const closePaymentServiceModal = () => setPaymentServiceModal(false)
   const openHasLicenseKeyModal = () => setHasLicenseKeyModal(true)
   const closeHasLicenseKeyModal = () => setHasLicenseKeyModal(false)

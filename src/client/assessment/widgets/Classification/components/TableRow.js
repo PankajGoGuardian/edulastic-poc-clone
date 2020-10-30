@@ -179,7 +179,7 @@ const TableRow = ({
                   noPadding
                   {...dragItemSize}
                   from="column"
-                  item={(resp && resp.value) || ''}
+                  item={resp}
                   fromColumnId={column.id}
                 />
               )

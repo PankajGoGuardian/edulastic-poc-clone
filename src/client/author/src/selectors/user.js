@@ -3,6 +3,12 @@ import { createSelector } from 'reselect'
 import { roleuser } from '@edulastic/constants'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
 
+// Express grader enabling grid edit for selected districts
+const gridEditEnabledDistricts = {
+  // DSST Public Schools district
+  '5e4a3ce103b7ad09241750e4': true,
+}
+
 export const stateSelector = (state) => state.user
 
 export const getUserIdSelector = createSelector(stateSelector, (state) =>
@@ -113,6 +119,14 @@ export const getUserOrgData = createSelector(stateSelector, (state) =>
 
 export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.itemBanks', [])
+)
+
+export const getIsGridEditEnabledSelector = createSelector(
+  stateSelector,
+  (state) => {
+    const userDistricts = _get(state, 'user.districtIds', [])
+    return userDistricts.some((dId) => gridEditEnabledDistricts[dId])
+  }
 )
 
 export const getCollectionsSelector = createSelector(

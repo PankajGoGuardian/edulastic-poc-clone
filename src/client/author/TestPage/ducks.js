@@ -43,7 +43,11 @@ import nanoid from 'nanoid'
 import produce from 'immer'
 import * as Sentry from '@sentry/browser'
 
-import { helpers, notification } from '@edulastic/common'
+import {
+  captureSentryException,
+  helpers,
+  notification,
+} from '@edulastic/common'
 import { createGroupSummary } from './utils'
 import {
   SET_MAX_ATTEMPT,
@@ -1446,7 +1450,7 @@ function* receiveTestByIdSaga({ payload }) {
       })
     )
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.log({ err })
     const errorMessage = 'Unable to retrieve test info.'
     if (err.status === 403) {
@@ -1507,7 +1511,7 @@ function* createTestSaga({ payload }) {
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
     notification({ type: 'success', messageKey: 'testCreated' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.log({ err })
 
     const errorMessage = err?.data?.message || 'Failed to create test!'
@@ -1646,7 +1650,7 @@ function* updateTestSaga({ payload }) {
     }
     yield put(setTestsLoadingAction(false))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.log({ err })
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
@@ -1753,7 +1757,7 @@ function* updateTestDocBasedSaga({ payload }) {
       payload: { ...payload, data: newAssessment },
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
@@ -1772,7 +1776,7 @@ function* updateRegradeDataSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     notification({
       type: 'error',
       msg: errorMessage || 'Unable to publish & regrade.',
@@ -1796,7 +1800,7 @@ function* shareTestSaga({ payload }) {
     const {
       data: { message: errorMessage, invalidEmails = [] },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     const hasInvalidMails = invalidEmails.length > 0
     if (hasInvalidMails) {
       return notification({
@@ -2148,7 +2152,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
 
     notification({
       type: 'error',
@@ -2406,6 +2410,7 @@ function* duplicateTestSaga({ payload }) {
       yield put(push(`/author/tests/${data._id}`))
       yield put(setEditEnableAction(true))
       yield put(setTestsLoadingAction(false))
+      yield put(receiveTestByIdAction(data._id, true))
       return
     }
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`))
@@ -2415,7 +2420,7 @@ function* duplicateTestSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     yield put(setTestsLoadingAction(false))
     yield put(setEditEnableAction(false))
     if (onRegrade === true && err?.status === 403) {
@@ -2608,7 +2613,7 @@ function* fetchAutoselectGroupItemsSaga(payload) {
     const response = yield call(testItemsApi.getAutoSelectedItems, payload)
     return response.items.map((i) => ({ ...i, autoselectedItem: true }))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     notification({ messageKey: 'failedToFetchAutoselectItems' })
     return null
@@ -2631,7 +2636,7 @@ function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
     }
     yield put(setAutoselectItemsFetchingStatusAction(false))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     yield put(setAutoselectItemsFetchingStatusAction(false))
     console.error(err)
   }
@@ -2666,7 +2671,7 @@ export function* addAutoselectGroupItems({ payload: _test }) {
 
     return { ..._test, itemGroups }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
   }
 }

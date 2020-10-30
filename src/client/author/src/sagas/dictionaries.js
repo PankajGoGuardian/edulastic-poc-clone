@@ -1,7 +1,6 @@
 import { takeLatest, takeEvery, call, put, all } from 'redux-saga/effects'
 import { dictionariesApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import _ from 'lodash'
 import {
   RECEIVE_DICT_CURRICULUMS_REQUEST,
@@ -27,7 +26,7 @@ function* receiveCurriculumsSaga() {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrive curriculums.'
     notification({ type: 'error', msg: errorMessage })
     yield put({
@@ -53,7 +52,7 @@ function* receiveStandardsSaga({ payload }) {
     }
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrieve standards.'
     notification({ type: 'error', msg: errorMessage })
     yield put({

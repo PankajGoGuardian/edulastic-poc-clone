@@ -1,7 +1,11 @@
 import { takeLatest, call, put, all, select } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
-import * as Sentry from '@sentry/browser'
-import { uploadToS3, notification, Effects } from '@edulastic/common'
+import {
+  uploadToS3,
+  notification,
+  Effects,
+  captureSentryException,
+} from '@edulastic/common'
 import { maxBy, isEmpty } from 'lodash'
 import {
   itemsApi,
@@ -54,7 +58,7 @@ function* receiveItemSaga({ payload }) {
       payload: { item },
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put({
       type: RECEIVE_ITEM_ERROR,
@@ -315,7 +319,7 @@ export function* saveUserResponse({ payload }) {
   } catch (err) {
     yield put({ type: SAVE_USER_RESPONSE_ERROR })
     console.log(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (err.status === 403) {
       const { isPlaylist = false } = payload
       if (isPlaylist)
@@ -342,7 +346,7 @@ function* loadUserResponse({ payload }) {
       },
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureSentryException(e)
     notification({ messageKey: 'failedLoadingAnswer' })
   }
 }

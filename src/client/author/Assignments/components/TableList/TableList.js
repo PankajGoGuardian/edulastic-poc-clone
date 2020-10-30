@@ -638,6 +638,7 @@ const TableList = ({
                   row.hasAdminAssignments && userRole === roleuser.TEACHER
                 ),
                 handleDownloadResponses,
+                userRole,
               })}
               placement="bottomRight"
               trigger={['click']}

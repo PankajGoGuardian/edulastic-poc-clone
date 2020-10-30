@@ -47,9 +47,11 @@ export default class QuestionEssay extends React.Component {
     return null
   }
 
-  handleScoreChange = (score) => {
+  handleScoreChange = (_score) => {
     const { numberOfRows } = this.state
     const { onUpdate } = this.props
+    // eslint-disable-next-line no-restricted-properties
+    const score = window.isNaN(_score) || !_score ? 0 : _score
     this.setState({ score }, () => {
       const data = {
         validation: {

@@ -2,10 +2,9 @@ import React from 'react'
 import { Menu } from 'antd'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
-import * as Sentry from '@sentry/browser'
 
 import { assignmentApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { IconPrint, IconBarChart } from '@edulastic/icons'
 import { roleuser, test } from '@edulastic/constants'
 
@@ -86,7 +85,7 @@ const ActionMenu = ({
         const {
           data: { message: errorMessage },
         } = err.response
-        Sentry.captureException(err)
+        captureSentryException(err)
         notification({
           msg: errorMessage || 'User does not have duplicate permission.',
         })
@@ -229,17 +228,20 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        <Menu.Item
-          data-cy="download-responses"
-          key="download-responses"
-          onClick={() => handleDownloadResponses(currentTestId)}
-        >
-          <StyledLink target="_blank" rel="noopener noreferrer">
-            <img alt="icon" src={classIcon} />
-            <SpaceElement />
-            Download Responses
-          </StyledLink>
-        </Menu.Item>
+        {userRole === roleuser.TEACHER && (
+          <Menu.Item
+            data-cy="download-responses"
+            key="download-responses"
+            onClick={() => handleDownloadResponses(currentTestId)}
+          >
+            <StyledLink target="_blank" rel="noopener noreferrer">
+              <img alt="icon" src={classIcon} />
+              <SpaceElement />
+              Download Responses
+            </StyledLink>
+          </Menu.Item>
+        )}
+
         {/** Hiding Unassign option for now, please uncomment it to get it back */}
         {/* {(isAssignmentOwner || isCoAuthor || isAdmin) && canUnassign && (
           <Menu.Item

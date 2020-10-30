@@ -19,6 +19,7 @@ import publisherSagas from './publisher/sagas'
 import { watcherSaga as resetPasswordSaga } from './SetParentPassword/ducks'
 import { publicTestSaga } from './publicTest'
 import dictionariesSaga from './author/src/sagas/dictionaries'
+import { assignmentEmbedLinkSaga } from './assignmentEmbedLink'
 
 export default function* () {
   yield all([
@@ -38,6 +39,7 @@ export default function* () {
     StudentPlaylistSaga(),
     resetPasswordSaga(),
     publicTestSaga(),
+    assignmentEmbedLinkSaga(),
   ])
 }
 

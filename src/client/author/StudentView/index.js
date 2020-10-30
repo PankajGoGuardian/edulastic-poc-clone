@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { findIndex, isUndefined, get } from 'lodash'
@@ -41,7 +42,6 @@ import {
 import { setStudentViewFilterAction } from '../src/reducers/testActivity'
 // selectors
 import {
-  getAssignmentClassIdSelector,
   getClassQuestionSelector,
   getStudentResponseSelector,
   getTestItemsOrderSelector,
@@ -93,9 +93,10 @@ class StudentViewContainer extends Component {
       selectedStudent,
       loadStudentResponses,
       studentItems,
-      assignmentIdClassId: { classId } = {},
       currentTestActivityId = '',
+      match,
     } = nextProps
+    const { classId } = match?.params || {}
     const { selectedStudent: _selectedStudent } = preState || {}
 
     if (selectedStudent !== _selectedStudent) {
@@ -131,14 +132,12 @@ class StudentViewContainer extends Component {
   handleApply = () => {
     const {
       saveOverallFeedback,
-      assignmentIdClassId,
       studentResponse,
       updateOverallFeedback,
     } = this.props
-    const studentTestActivity = studentResponse && studentResponse.testActivity
-    const testActivityId = studentTestActivity && studentTestActivity._id
+    const { _id: testActivityId, groupId } = studentResponse?.testActivity || {}
     const feedback = this.feedbackRef.current.state.value
-    saveOverallFeedback(testActivityId, assignmentIdClassId.classId, {
+    saveOverallFeedback(testActivityId, groupId, {
       text: feedback,
     })
     updateOverallFeedback({ text: feedback })
@@ -381,11 +380,11 @@ class StudentViewContainer extends Component {
 }
 
 const enhance = compose(
+  withRouter,
   connect(
     (state) => ({
       classQuestion: getClassQuestionSelector(state),
       studentResponse: getStudentResponseSelector(state),
-      assignmentIdClassId: getAssignmentClassIdSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
       currentTestActivityId: getCurrentTestActivityIdSelector(state),
       isPresentationMode: get(
@@ -419,7 +418,6 @@ StudentViewContainer.propTypes = {
   isPresentationMode: PropTypes.bool,
   saveOverallFeedback: PropTypes.func.isRequired,
   updateOverallFeedback: PropTypes.func.isRequired,
-  assignmentIdClassId: PropTypes.array.isRequired,
   testItemsOrder: PropTypes.any.isRequired,
 }
 StudentViewContainer.defaultProps = {

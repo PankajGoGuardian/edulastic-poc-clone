@@ -1,7 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Input, Select, InputNumber, Button, message } from 'antd'
-import { notification } from '@edulastic/common'
+import {
+  notification,
+  TextInputStyled,
+  SelectInputStyled,
+  NumberInputStyled,
+  CheckboxLabel,
+  FieldLabel,
+  EduButton,
+} from '@edulastic/common'
 import { throttle } from 'lodash'
 import produce from 'immer'
 
@@ -12,21 +19,19 @@ import {
 } from '../../../../../../assessment/constants/constantsForQuestions'
 import {
   QuestionFormWrapper,
+  FormInline,
   FormGroup,
-  FormLabel,
-  Points,
 } from '../../common/QuestionForm'
 
 export default class QuestionText extends React.Component {
-  static propTypes = {
-    question: PropTypes.object.isRequired,
-    onUpdate: PropTypes.func.isRequired,
-  }
-
-  state = {
-    answer: '',
-    score: 1,
-    allow: EXACT_MATCH,
+  constructor(props) {
+    super(props)
+    this.state = {
+      answer: '',
+      score: 1,
+      allow: EXACT_MATCH,
+      matchCase: false,
+    }
   }
 
   componentDidMount() {
@@ -47,13 +52,14 @@ export default class QuestionText extends React.Component {
     const { validation } = question
     const {
       altResponses,
-      validResponse: { value, score, matchingRule },
+      validResponse: { value, score, matchingRule, matchCase },
     } = validation
 
     this.setState({
       answer: value,
       altResponses,
       score,
+      matchCase,
       allow: matchingRule || EXACT_MATCH,
     })
   }
@@ -79,14 +85,16 @@ export default class QuestionText extends React.Component {
     })
   }
 
-  handleScoreChange = (score) => {
-    let { answer, allow, altResponses } = this.state
+  handleScoreChange = (_score) => {
+    const { answer, allow, altResponses } = this.state
     const { onUpdate } = this.props
-    altResponses = produce(altResponses, (draft) => {
+    // eslint-disable-next-line no-restricted-properties
+    const score = window.isNaN(_score) || !_score ? 0 : _score
+    const newAltResponses = produce(altResponses, (draft) => {
       draft = draft.map((resp) => ({ ...resp, score }))
       return draft
     })
-    this.setState({ score, altResponses }, () => {
+    this.setState({ score, altResponses: newAltResponses }, () => {
       const data = {
         validation: {
           scoringType: EXACT_MATCH,
@@ -104,20 +112,48 @@ export default class QuestionText extends React.Component {
   }
 
   handleAllowChange = (allow) => {
-    let { score, answer, altResponses } = this.state
+    const { score, answer, altResponses } = this.state
     const { onUpdate } = this.props
 
-    altResponses = produce(altResponses, (draft) => {
+    const newAltResponses = produce(altResponses, (draft) => {
       draft = draft.map((resp) => ({ ...resp, matchingRule: allow }))
       return draft
     })
-    this.setState({ allow, altResponses }, () => {
+
+    this.setState({ allow, altResponses: newAltResponses }, () => {
       const data = {
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {
             value: answer,
             score,
+            matchingRule: allow,
+          },
+          altResponses,
+        },
+      }
+      onUpdate(data)
+    })
+  }
+
+  handleMatchCaseChange = (e) => {
+    const { onUpdate } = this.props
+    const { allow, score, answer, altResponses } = this.state
+    const { checked } = e.target
+
+    const newAltResponses = produce(altResponses, (draft) => {
+      draft = draft.map((resp) => ({ ...resp, matchCase: checked }))
+      return draft
+    })
+
+    this.setState({ matchCase: checked, altResponses: newAltResponses }, () => {
+      const data = {
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score,
+            value: answer,
+            matchCase: checked,
             matchingRule: allow,
           },
           altResponses,
@@ -141,14 +177,14 @@ export default class QuestionText extends React.Component {
   }
 
   handleSetAltAnswer = (index, { target: { value } }) => {
-    let { altResponses, answer, score, allow } = this.state
+    const { altResponses, answer, score, allow } = this.state
     const { onUpdate } = this.props
 
-    altResponses = produce(altResponses, (draft) => {
+    const newAltResponses = produce(altResponses, (draft) => {
       draft[index] = { ...draft[index], value }
       return draft
     })
-    this.setState({ altResponses }, () => {
+    this.setState({ altResponses: newAltResponses }, () => {
       const data = {
         validation: {
           scoringType: EXACT_MATCH,
@@ -165,14 +201,14 @@ export default class QuestionText extends React.Component {
   }
 
   handleRemoveAltResponse = (index) => {
-    let { altResponses, answer, score, allow } = this.state
+    const { altResponses, answer, score, allow } = this.state
     const { onUpdate } = this.props
 
-    altResponses = produce(altResponses, (draft) => {
+    const newAltResponses = produce(altResponses, (draft) => {
       draft.splice(index, 1)
       return draft
     })
-    this.setState({ altResponses }, () => {
+    this.setState({ altResponses: newAltResponses }, () => {
       const data = {
         validation: {
           scoringType: EXACT_MATCH,
@@ -189,68 +225,91 @@ export default class QuestionText extends React.Component {
   }
 
   render() {
-    const { answer, score, allow, altResponses = [] } = this.state
+    const { answer, score, allow, altResponses = [], matchCase } = this.state
     return (
       <QuestionFormWrapper>
         <FormGroup>
-          <FormLabel>Correct Answer</FormLabel>
-          <Input
-            style={{ width: 'calc(100% - 50px)', marginRight: '10px' }}
-            value={answer}
-            onChange={throttle(this.handleSetAnswer, 2000)}
-            autoFocus
-          />
-          <Button
-            style={{ width: '30px', padding: '7.5px' }}
-            onClick={this.handleCreateAltResponse}
-          >
-            <IconAddStudents />
-          </Button>
+          <FieldLabel>Correct Answer</FieldLabel>
+          <FormInline>
+            <TextInputStyled
+              value={answer}
+              onChange={throttle(this.handleSetAnswer, 2000)}
+              autoFocus
+            />
+            <EduButton
+              IconBtn
+              isGhost
+              height="32px"
+              onClick={this.handleCreateAltResponse}
+            >
+              <IconAddStudents />
+            </EduButton>
+          </FormInline>
         </FormGroup>
         {altResponses.map((altResp, index) => (
           <FormGroup key={index}>
-            <FormLabel>Alternate Answer {index + 1}</FormLabel>
-            <Input
-              value={altResp.value}
-              style={{ width: 'calc(100% - 50px)', marginRight: '10px' }}
-              onChange={throttle(
-                (val) => this.handleSetAltAnswer(index, val),
-                2000
-              )}
-            />
-            <Button
-              style={{ width: '30px', padding: '7.5px' }}
-              onClick={() => this.handleRemoveAltResponse(index)}
-            >
-              <IconTrash />
-            </Button>
+            <FieldLabel>Alternate Answer {index + 1}</FieldLabel>
+            <FormInline>
+              <TextInputStyled
+                value={altResp.value}
+                onChange={throttle(
+                  (val) => this.handleSetAltAnswer(index, val),
+                  2000
+                )}
+              />
+              <EduButton
+                IconBtn
+                isGhost
+                height="32px"
+                onClick={() => this.handleRemoveAltResponse(index)}
+              >
+                <IconTrash />
+              </EduButton>
+            </FormInline>
           </FormGroup>
         ))}
-        <FormGroup>
-          <FormLabel>Allow</FormLabel>
-          <Select
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            value={allow}
-            onChange={this.handleAllowChange}
-            style={{ width: '40%' }}
-          >
-            <Select.Option key={1} value={EXACT_MATCH}>
-              Exact Match
-            </Select.Option>
-            <Select.Option key={2} value={CONTAINS}>
-              Any Text Containing
-            </Select.Option>
-          </Select>
-        </FormGroup>
-        <FormGroup>
-          <InputNumber
-            min={0}
-            value={score}
-            onChange={this.handleScoreChange}
+        <FormInline>
+          <FormGroup width="50%">
+            <FieldLabel>Allow</FieldLabel>
+            <SelectInputStyled
+              value={allow}
+              height="32px"
+              onChange={this.handleAllowChange}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            >
+              <SelectInputStyled.Option key={1} value={EXACT_MATCH}>
+                Exact Match
+              </SelectInputStyled.Option>
+              <SelectInputStyled.Option key={2} value={CONTAINS}>
+                Any Text Containing
+              </SelectInputStyled.Option>
+            </SelectInputStyled>
+          </FormGroup>
+          <FormGroup width="50%" ml="16px">
+            <FieldLabel>Points</FieldLabel>
+            <NumberInputStyled
+              min={0}
+              value={score}
+              width="100%"
+              onChange={this.handleScoreChange}
+            />
+          </FormGroup>
+        </FormInline>
+        <FormGroup width="50%">
+          <FieldLabel display="inline" mr="16px">
+            Match Case
+          </FieldLabel>
+          <CheckboxLabel
+            checked={matchCase}
+            onChange={this.handleMatchCaseChange}
           />
-          <Points>Points</Points>
         </FormGroup>
       </QuestionFormWrapper>
     )
   }
+}
+
+QuestionText.propTypes = {
+  question: PropTypes.object.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 }

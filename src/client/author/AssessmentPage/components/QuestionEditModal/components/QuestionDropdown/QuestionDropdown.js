@@ -4,7 +4,6 @@ import { Select, InputNumber, Button } from 'antd'
 import { arrayMove } from 'react-sortable-hoc'
 import { ThemeProvider } from 'styled-components'
 
-import produce from 'immer'
 import { themes } from '../../../../../../theme'
 import { EXACT_MATCH } from '../../../../../../assessment/constants/constantsForQuestions'
 import SortableList from '../../../../../../assessment/components/SortableList'
@@ -107,8 +106,10 @@ export default class QuestionDropdown extends React.Component {
     })
   }
 
-  handleScoreChange = (score) => {
+  handleScoreChange = (_score) => {
     const { value } = this.state
+    // eslint-disable-next-line no-restricted-properties
+    const score = window.isNaN(_score) || !_score ? 0 : _score
     this.setState({ score }, () => {
       this.updateValidation(value, score)
     })

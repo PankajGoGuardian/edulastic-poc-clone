@@ -2,7 +2,7 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { pick, last, get, set } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { push } from 'connected-react-router'
 import {
   authApi,
@@ -953,6 +953,7 @@ function* signup({ payload }) {
       ) {
         yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken)
       }
+      yield call(segmentApi.trackTeacherSignUp, { user: result })
       yield put(signupSuccessAction(result))
       localStorage.removeItem('loginRedirectUrl')
 
@@ -1159,6 +1160,9 @@ function* logout() {
       window.close()
     } else {
       yield call(segmentApi.unloadIntercom, { user })
+      if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
+        yield call(userApi.logout)
+      }
       localStorage.clear()
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
@@ -1260,7 +1264,7 @@ function* googleSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const res = yield call(authApi.googleSSOLogin, _payload)
+    const { isNewUser, ...res } = yield call(authApi.googleSSOLogin, _payload)
     if (res.reAuthGoogle) {
       TokenStorage.storeInLocalStorage(
         'payloadForUserData',
@@ -1268,6 +1272,9 @@ function* googleSSOLogin({ payload }) {
       )
       window.location.href = '/auth/google'
     } else {
+      if (isNewUser) {
+        yield call(segmentApi.trackTeacherSignUp, { user: res })
+      }
       yield put(getUserDataAction(res))
     }
   } catch (e) {
@@ -1349,7 +1356,10 @@ function* msoSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const res = yield call(authApi.msoSSOLogin, _payload)
+    const { isNewUser, ...res } = yield call(authApi.msoSSOLogin, _payload)
+    if (isNewUser) {
+      yield call(segmentApi.trackTeacherSignUp, { user: res })
+    }
     yield put(getUserDataAction(res))
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'MSO Login failed')
@@ -1406,7 +1416,7 @@ function* cleverSSOLogin({ payload }) {
   } catch (err) {
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (
       errorMessage ===
       'User not yet authorized to use Edulastic. Please contact your district administrator!'

@@ -19,7 +19,7 @@ import App from './client/App'
 import configureStore, { history } from './client/configureStore'
 import AppConfig from './app-config'
 import { isMobileDevice, isIOS } from './client/platform'
-import * as serviceWorker from './serviceWorker'
+import * as serviceWorker from './service-worker-registration'
 
 if (AppConfig.sentryURI) {
   SentryInit({

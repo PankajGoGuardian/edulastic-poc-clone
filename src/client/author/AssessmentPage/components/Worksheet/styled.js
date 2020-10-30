@@ -89,6 +89,11 @@ export const PDFViewerContainer = styled.div`
   overflow-x: auto;
   padding: 0px 15px;
 
+  .pdfViewer {
+    position: relative;
+    z-index: 1;
+  }
+
   .pdfViewer .canvasWrapper {
     overflow: hidden;
   }

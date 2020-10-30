@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import { GoogleLogin } from 'react-google-login'
-import * as Sentry from '@sentry/browser'
 
 // components
 import {
@@ -11,6 +10,7 @@ import {
   MainHeader,
   HeaderTabs,
   notification,
+  captureSentryException,
 } from '@edulastic/common'
 import { canvasApi } from '@edulastic/api'
 import {
@@ -66,14 +66,14 @@ const Header = ({
           })
           .catch((err) => {
             console.error('Error while authorizing', err)
-            Sentry.captureException(err)
+            captureSentryException(err)
             notification({ messageKey: 'errorOccuredWhileAuthorizing' })
           })
       } else {
         handleCanvasBulkSync()
       }
     } catch (err) {
-      Sentry.captureException(err)
+      captureSentryException(err)
       notification(
         err.status === 403 && err.response.data?.message
           ? {

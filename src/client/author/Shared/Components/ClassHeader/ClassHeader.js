@@ -320,7 +320,6 @@ class ClassHeader extends Component {
       isShowStudentReportCardSettingPopup,
       toggleStudentReportCardPopUp,
       userId,
-      assignedById,
       windowWidth,
       canvasAllowedInstitutions,
       isCliUser,
@@ -442,11 +441,7 @@ class ClassHeader extends Component {
         <MenuItems
           data-cy="releaseScore"
           key="key2"
-          onClick={() =>
-            assignedById !== userId
-              ? notification({ messageKey: 'youAreNotAuthorizedToUpdate' })
-              : toggleReleaseGradePopUp(true)
-          }
+          onClick={() => toggleReleaseGradePopUp(true)}
         >
           Release Score
         </MenuItems>
@@ -786,8 +781,6 @@ const enhance = compose(
       isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(
         state
       ),
-      assignedById:
-        state?.author_classboard_testActivity?.additionalData?.assignedBy?._id,
       userId: state?.user?.user?._id,
       isShowUnAssign: getIsShowUnAssignSelector(state),
       isActivityLoading: testActivtyLoadingSelector(state),

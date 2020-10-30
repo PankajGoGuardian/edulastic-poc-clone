@@ -6,7 +6,7 @@ import { questionType } from '@edulastic/constants'
 import { Effects, notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import { evaluateItem } from '../utils/evalution'
-import { hasEmptyAnswers } from '../../questionUtils'
+import { hasEmptyAnswers } from '../../utils/answerValidator'
 
 import {
   CREATE_TEST_ITEM_REQUEST,

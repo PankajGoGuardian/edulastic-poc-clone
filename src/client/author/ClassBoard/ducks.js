@@ -120,7 +120,7 @@ export function* receiveTestActivitySaga({ payload }) {
       ...payload,
       testId: additionalData.testId,
     })
-    const testItems = classResponse.itemGroups
+    let testItems = classResponse.itemGroups
       .flatMap((itemGroup) => itemGroup.items || [])
       .map((item) => {
         item.data.questions = get(item, 'data.questions', []).map((q) => ({
@@ -128,7 +128,7 @@ export function* receiveTestActivitySaga({ payload }) {
         }))
         return item
       })
-    markQuestionLabel(testItems)
+    testItems = markQuestionLabel(testItems)
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
       payload: { ...classResponse, testItems },

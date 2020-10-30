@@ -506,7 +506,10 @@ function* loadTest({ payload }) {
         })
       }
     }
-    if (!isShowStudentWork) markQuestionLabel(testItems)
+
+    if (!isShowStudentWork) {
+      testItems = markQuestionLabel(testItems)
+    }
     let questions = getQuestions(testItems)
     if (test.passages) {
       const passageItems = test.passages.map((passage) => passage.data || [])

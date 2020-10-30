@@ -125,10 +125,10 @@ function* loadTestActivityReport({ payload }) {
       testId,
       assignmentId
     )
-    const testItems = test.itemGroups.flatMap(
+    let testItems = test.itemGroups.flatMap(
       (itemGroup) => itemGroup.items || []
     )
-    markQuestionLabel(testItems)
+    testItems = markQuestionLabel(testItems)
     const questions = getQuestions(test.itemGroups)
     const questionsWithActivities = questions.map((question) => {
       if (!question.activity) {

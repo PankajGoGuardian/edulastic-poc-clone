@@ -14,7 +14,9 @@ const DeepLink = ({ bootstrap, match }) => {
     const query = qs.parse(searchQuery, { ignoreQueryPrefix: true })
 
     bootstrap({
-      testType,
+      // while constructing seb url "common assessment" is converted to "common_assessment"
+      // so converting it back to "common assessment"
+      testType: (testType || '').split('_').join(' '),
       assignmentId,
       testActivityId,
       testId,

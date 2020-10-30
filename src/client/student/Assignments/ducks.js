@@ -450,7 +450,7 @@ function redirectToUrl(url) {
   window.location.href = url
 }
 
-function getSebUrl({
+export function getSebUrl({
   testId,
   testType,
   assignmentId,
@@ -458,12 +458,32 @@ function getSebUrl({
   groupId,
 }) {
   const token = TokenStorage.getAccessToken()
-  return `${process.env.REACT_APP_API_URI.replace(
-    'http',
-    'seb'
-  )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}${
-    testActivityId ? `/testActivity/${testActivityId}` : ``
-  }/token/${token}/settings.seb?classId=${groupId}`
+  // ideally a constant like testType should have been a single word not a double word
+  // like "common assessment" or a single word like just "common" and this two word
+  // seems to be causing problem when used in a url while launching the SEB
+  // so just transforming common assessment => common_assessment
+  // encodeURI/encodeURIComponent doesn't seem to work as well
+  const convertedType = (testType || '').split(' ').join('_')
+  let url
+  if (process.env.REACT_APP_API_URI.startsWith('http')) {
+    url = `${process.env.REACT_APP_API_URI.replace('http', 'seb').replace(
+      'https',
+      'seb'
+    )}/test-activity/seb/test/${testId}/type/${convertedType}/assignment/${assignmentId}`
+  } else if (process.env.REACT_APP_API_URI.startsWith('//')) {
+    url = `${window.location.protocol.replace('http', 'seb')}${
+      process.env.REACT_APP_API_URI
+    }/test-activity/seb/test/${testId}/type/${convertedType}/assignment/${assignmentId}`
+  } else {
+    console.warn(`** can't figure out where to put seb protocol **`)
+  }
+
+  if (testActivityId) {
+    url += `/testActivity/${testActivityId}`
+  }
+
+  url += `/token/${token}/settings.seb?classId=${groupId}`
+  return url
 }
 
 // sagas

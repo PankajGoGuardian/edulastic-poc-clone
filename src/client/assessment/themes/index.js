@@ -26,7 +26,6 @@ import {
   notification,
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
-import { TokenStorage } from '@edulastic/api'
 
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
@@ -57,6 +56,7 @@ import { evaluateCurrentAnswersForPreviewAction } from '../sharedDucks/previewTe
 import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
+import { getSebUrl } from '../../student/Assignments/ducks'
 
 const shouldAutoSave = (itemRows) => {
   if (!itemRows) {
@@ -174,15 +174,13 @@ const AssessmentContainer = ({
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
-        const token = TokenStorage.getAccessToken()
-        const sebUrl = `${process.env.REACT_APP_API_URI.replace(
-          'http',
-          'seb'
-        )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${
-          assignmentObj._id
-        }/testActivity/${
-          restProps.utaId
-        }/token/${token}/settings.seb?classId=${groupId}`
+        const sebUrl = getSebUrl({
+          testId,
+          testType,
+          assignmentId: assignmentObj._id,
+          testActivityId: restProps.utaId,
+          groupId,
+        })
         history.push('/home/assignments')
         window.location.href = sebUrl
       }

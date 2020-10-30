@@ -20,44 +20,43 @@ import { toggleSideBarAction } from '../../../../src/client/author/src/actions/t
 const MainHeader = ({
   children,
   headingText,
-  titleText ,
+  titleText,
   Icon,
   toggleSideBar,
   ...restProps
 }) => {
-
-const title= titleText ?  titleText : headingText;
+  const title = titleText || headingText
 
   return (
-  <HeaderWrapper {...restProps}>
-    <Affix
-      className="fixed-header"
-      style={{ position: 'fixed', top: 0, right: 0 }}
-    >
-      <Container {...restProps}>
-        <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-        {headingText && (
-          <HeaderLeftContainer
-            headingText={headingText}
-            {...restProps}
-            data-cy="header-left-container"
-          >
-            {Icon && (
-              <TitleIcon>
-                <Icon />
-              </TitleIcon>
-            )}
-            <TitleWrapper {...restProps} title={title} data-cy="title">
-              {headingText}
-            </TitleWrapper>
-            {restProps.headingSubContent}
-          </HeaderLeftContainer>
-        )}
-        {children}
-      </Container>
-    </Affix>
-  </HeaderWrapper>
-);
+    <HeaderWrapper {...restProps}>
+      <Affix
+        className="fixed-header"
+        style={{ position: 'fixed', top: 0, right: 0 }}
+      >
+        <Container {...restProps}>
+          <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
+          {headingText && (
+            <HeaderLeftContainer
+              headingText={headingText}
+              {...restProps}
+              data-cy="header-left-container"
+            >
+              {Icon && (
+                <TitleIcon>
+                  <Icon />
+                </TitleIcon>
+              )}
+              <TitleWrapper {...restProps} title={title} data-cy="title">
+                {headingText}
+              </TitleWrapper>
+              {restProps.headingSubContent}
+            </HeaderLeftContainer>
+          )}
+          {children}
+        </Container>
+      </Affix>
+    </HeaderWrapper>
+  )
 }
 
 MainHeader.propTypes = {

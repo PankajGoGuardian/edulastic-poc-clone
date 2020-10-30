@@ -2,7 +2,6 @@
 require('dotenv').config()
 const {
   override,
-  disableEsLint,
   addBundleVisualizer,
   adjustWorkbox,
 } = require('customize-cra')
@@ -10,6 +9,7 @@ const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { setIn, getIn } = require('timm')
 const path = require('path')
+const ESLintPlugin = require('eslint-webpack-plugin')
 // const CopyPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
@@ -23,7 +23,6 @@ const packageJson = require('./package.json')
 // const rootNodeModDir = path.resolve(__dirname, 'node_modules')
 
 module.exports = override(
-  disableEsLint(),
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
   process.env.BUNDLE_VISUALIZE && addBundleVisualizer(),
   adjustWorkbox((wb) =>
@@ -37,6 +36,10 @@ module.exports = override(
     /* eslint-disable no-param-reassign */
 
     config.module.rules[0].parser.requireEnsure = true
+
+    config.plugins = config.plugins.filter(
+      (plugin) => !(plugin instanceof ESLintPlugin)
+    )
 
     // config.module.noParse = /pdfjs-dist/
 
@@ -250,7 +253,6 @@ module.exports = override(
     // 	}
     // )
     /** Uncomment to have a copy of files written on disk */
-
     return config
   }
 )

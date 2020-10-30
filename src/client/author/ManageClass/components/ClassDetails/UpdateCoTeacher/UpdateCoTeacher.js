@@ -134,7 +134,10 @@ const UpdateCoTeacher = ({
               </span>
             </Teachers>
             {el.id === updatePrimaryId ? (
-              <Tooltip placement="top" title="Primary Teacher can't be removed.">
+              <Tooltip
+                placement="top"
+                title="Primary Teacher can't be removed."
+              >
                 <RemoveCol>
                   <IconClose color="#dddddd" height={10} width={10} />
                 </RemoveCol>

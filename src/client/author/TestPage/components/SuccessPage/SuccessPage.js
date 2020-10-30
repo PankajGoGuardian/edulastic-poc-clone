@@ -340,9 +340,7 @@ class SuccessPage extends React.Component {
     const { openPolicy, class: clazz = [] } = assignment
     // check if any group assigned is google group
     const assignedClassIds = clazz.map((o) => o._id)
-    if (
-      classList.find((o) => assignedClassIds.includes(o._id) && o.googleId)
-    ) {
+    if (classList.find((o) => assignedClassIds.includes(o._id) && o.googleId)) {
       isGoogleClassroomAssigned = true
     }
     return (

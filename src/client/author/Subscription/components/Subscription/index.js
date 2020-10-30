@@ -195,7 +195,7 @@ const Subscription = (props) => {
   const closeComparePlansModal = () => setComparePlan(false)
   const openPaymentServiceModal = () => {
     setPaymentServiceModal(true)
-    segmentApi.trackTeacherClickOnUpgradeSubscrition({ user })
+    segmentApi.trackTeacherClickOnUpgradeSubscription({ user })
   }
   const closePaymentServiceModal = () => setPaymentServiceModal(false)
   const openHasLicenseKeyModal = () => setHasLicenseKeyModal(true)

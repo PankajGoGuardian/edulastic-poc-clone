@@ -908,6 +908,7 @@ function* signup({ payload }) {
       ) {
         yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken)
       }
+      yield call(segmentApi.trackTeacherSignUp, { user: result })
       yield put(signupSuccessAction(result))
       localStorage.removeItem('loginRedirectUrl')
 
@@ -1216,7 +1217,7 @@ function* googleSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const res = yield call(authApi.googleSSOLogin, _payload)
+    const { isNewUser, ...res } = yield call(authApi.googleSSOLogin, _payload)
     if (res.reAuthGoogle) {
       TokenStorage.storeInLocalStorage(
         'payloadForUserData',
@@ -1224,6 +1225,9 @@ function* googleSSOLogin({ payload }) {
       )
       window.location.href = '/auth/google'
     } else {
+      if (isNewUser) {
+        yield call(segmentApi.trackTeacherSignUp, { user: res })
+      }
       yield put(getUserDataAction(res))
     }
   } catch (e) {
@@ -1305,7 +1309,10 @@ function* msoSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const res = yield call(authApi.msoSSOLogin, _payload)
+    const { isNewUser, ...res } = yield call(authApi.msoSSOLogin, _payload)
+    if (isNewUser) {
+      yield call(segmentApi.trackTeacherSignUp, { user: res })
+    }
     yield put(getUserDataAction(res))
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'MSO Login failed')

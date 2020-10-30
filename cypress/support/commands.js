@@ -192,6 +192,8 @@ Cypress.Commands.add(
     cy.route('GET', '**/api/user-context?name=RECENT_PLAYLISTS').as(
       'curatorDash'
     )
+    // TODO: temp work-around of clearing storage again before login to ensure no redirect url on storage
+    cy.clearToken()
     login.fillLoginForm(postData.username, postData.password)
     login.clickOnSignin()
     cy.wait('@auth')
@@ -295,18 +297,18 @@ Cypress.Commands.add(
         console.log('All Tests = ', testAssign)
         // TODO: FIX this once it is fixed in UI
         testAssign.forEach((test) => {
-           cy.request({
-             url: `${BASE_URL}/assignments/${test._id}/group/${test.groupId}?testId=${test.testID}`, // added groupId as per API change
-             method: "DELETE",
-             headers: {
-               authorization: authToken,
-               "Content-Type": "application/json"
-             },
-             retryOnStatusCodeFailure: true
-           }).then(({ body }) => {
-             console.log(`${test._id} :: `, body.result);
-           });
-         });
+          cy.request({
+            url: `${BASE_URL}/assignments/${test._id}/group/${test.groupId}?testId=${test.testID}`, // added groupId as per API change
+            method: 'DELETE',
+            headers: {
+              authorization: authToken,
+              'Content-Type': 'application/json',
+            },
+            retryOnStatusCodeFailure: true,
+          }).then(({ body }) => {
+            console.log(`${test._id} :: `, body.result)
+          })
+        })
         /* testAssign.forEach((test) => {
           cy.request({
             url: `${BASE_URL}/test/${test}/delete-assignments`,

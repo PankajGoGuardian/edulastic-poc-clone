@@ -198,7 +198,7 @@ const TestPageHeader = ({
       if (test.isDocBased) {
         const assessmentQuestions = get(
           test,
-          'itemGroups[0].items.data.questions',
+          'itemGroups[0].items[0].data.questions',
           []
         )
         if (!validateQuestionsForDocBased(assessmentQuestions)) {

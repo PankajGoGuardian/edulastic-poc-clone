@@ -19,6 +19,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
+import { get } from 'lodash'
 import {
   getUserFeatures,
   getUserId,
@@ -46,6 +47,7 @@ import {
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import { getIsCurator } from '../../../src/selectors/user'
+import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 
 const {
   statusConstants,
@@ -193,6 +195,16 @@ const TestPageHeader = ({
 
   const onRegradeConfirm = () => {
     if (validateTest(test)) {
+      if (test.isDocBased) {
+        const assessmentQuestions = get(
+          test,
+          'itemGroups[0].items[0].data.questions',
+          []
+        )
+        if (!validateQuestionsForDocBased(assessmentQuestions)) {
+          return
+        }
+      }
       publishForRegrade(test._id)
     }
   }

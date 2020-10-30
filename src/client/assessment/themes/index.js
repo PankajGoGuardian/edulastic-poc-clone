@@ -401,7 +401,8 @@ const AssessmentContainer = ({
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(
-            ({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
           ),
           index,
           context,
@@ -436,7 +437,8 @@ const AssessmentContainer = ({
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(
-            ({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
           ),
           index: Number(currentItem) + 1,
           context: 'next',

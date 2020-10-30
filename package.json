@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "12.51.1",
+  "version": "12.51.2",
   "private": true,
   "workspaces": [
     "packages/*"

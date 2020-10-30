@@ -28,4 +28,8 @@ module.exports = {
     SUBMITTED: 'submitted',
     IN_PROGRESS: 'inProgress',
   },
+  gradingStatus: {
+    GRADED: 'GRADED',
+    IN_GRADING: 'IN GRADING',
+  },
 }

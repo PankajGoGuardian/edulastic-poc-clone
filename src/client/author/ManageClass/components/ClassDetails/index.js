@@ -321,6 +321,7 @@ const ClassDetails = ({
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
+              unarchiveClass={unarchiveClass}
             />
           </div>
           <MainContentWrapper>

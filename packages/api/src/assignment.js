@@ -189,14 +189,6 @@ const syncWithGoogleClassroom = (data) =>
     })
     .then((result) => result.data.result)
 
-const fetchByTestId = (testId) =>
-  api
-    .callApi({
-      url: `${prefix}/test/${testId}`,
-      method: 'get',
-    })
-    .then((result) => result.data.result)
-
 export default {
   create,
   update,
@@ -216,5 +208,4 @@ export default {
   updateClassSettings,
   getDifferentiationStudentList,
   syncWithGoogleClassroom,
-  fetchByTestId,
 }

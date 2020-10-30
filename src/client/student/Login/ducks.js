@@ -1112,6 +1112,9 @@ function* logout() {
       window.close()
     } else {
       yield call(segmentApi.unloadIntercom, { user })
+      if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
+        yield call(userApi.logout)
+      }
       localStorage.clear()
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')

@@ -295,11 +295,7 @@ export const getQuestionsSelectorForReview = createSelector(
   (state) => {
     const testItems =
       state?.itemGroups?.flatMap((itemGroup) => itemGroup.items || []) || []
-    const testItemsLabeled = produce(testItems, (draft) => {
-      draft = markQuestionLabel(draft)
-
-      return draft
-    })
+    const testItemsLabeled = markQuestionLabel(testItems)
     const passages = get(state, 'tests.entity.passages', [])
     const questionsKeyed = testItemsLabeled.reduce((acc, item) => {
       const questions = get(item, 'data.questions', [])

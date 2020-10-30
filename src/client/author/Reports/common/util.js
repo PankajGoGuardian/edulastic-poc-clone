@@ -24,8 +24,8 @@ export const testTypeHashMap = {
 }
 
 export const percentage = (
-  numerator,
-  denominator,
+  numerator = 0,
+  denominator = 0,
   roundCalculation = false
 ) => {
   if (numerator == 0 && denominator == 0) {

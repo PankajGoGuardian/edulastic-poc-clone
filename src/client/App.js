@@ -44,7 +44,7 @@ const Loading = () => (
   </div>
 )
 
-const fallback = { fallback: <Loading /> }
+const fallback = () => <Loading />
 
 // route wise splitting
 const AssessmentPlayer = loadable(() => import('./assessment/index'), {

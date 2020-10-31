@@ -169,7 +169,7 @@ Cypress.Commands.add(
           if (Cypress.$('[data-cy="signout"]').length) {
             cy.server()
             cy.route('POST', '**/logout').as('logout')
-            cy.get('[data-cy="signout"]').click()
+            cy.get('[data-cy="signout"]').click({ force: true })
             cy.wait('@logout')
           }
         })

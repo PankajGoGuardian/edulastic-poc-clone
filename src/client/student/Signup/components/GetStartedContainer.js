@@ -50,7 +50,7 @@ const GetStarted = ({
   return (
     <RegistrationWrapper>
       {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
-        <Redirect exact to="/login" />
+        <Redirect exact to="/" />
       ) : null}
       <RegistrationBg
         src={

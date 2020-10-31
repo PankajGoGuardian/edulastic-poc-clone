@@ -83,7 +83,11 @@ const StudentComponent = ({
           justifyContent: 'center',
         }}
       >
-        <a href="http://edulastic-poc.snapwiz.net/login#login" target="_blank">
+        <a
+          href="http://edulastic-poc.snapwiz.net/"
+          rel="noreferrer"
+          target="_blank"
+        >
           Log In
         </a>
       </LoginBtn>

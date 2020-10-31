@@ -41,7 +41,7 @@ const AdminSignup = loadable(
 
 const AppLogin = () => (
   <Switch>
-    <Route exact path="/login" component={Auth} />
+    <Route exact path="/" component={Auth} />
     <Route exact path="/resetPassword/" component={ResetPassword} />
     <Route
       path="/district/:orgShortName"

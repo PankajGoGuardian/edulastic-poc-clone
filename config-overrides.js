@@ -13,6 +13,8 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 // const CopyPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
+const WriteFilePlugin = require('write-file-webpack-plugin')
+
 const multipleEntry = require('react-app-rewire-multiple-entry')([
   {
     entry: 'src/index.js',
@@ -175,10 +177,20 @@ module.exports = override(
 
     // config.output.path = path.resolve(__dirname, 'dist')
 
+    // https://webpack.js.org/guides/build-performance/#output-without-path-info
+    config.output.pathinfo = false
+    config.output.futureEmitAssets = false
+
     // chunking optimization
     if (!isProduction) {
       config.output.filename = '[name].bundle.js'
       config.output.chunkFilename = '[name].chunk.js'
+      config.plugins.push(
+        new WriteFilePlugin({
+          // Write only files that have ".html" extension.
+          test: /\.html/,
+        })
+      )
     } else {
       // config.devtool = false // disable sourcemaps on production
       config.output.filename = '[name].[chunkhash:8].js'

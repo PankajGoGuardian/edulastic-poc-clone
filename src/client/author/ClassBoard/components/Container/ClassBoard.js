@@ -79,6 +79,7 @@ import {
   getLCBStudentsList,
   getEnrollmentStatus,
   getFirstQuestionEntitiesSelector,
+  actionInProgressSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -841,6 +842,7 @@ class ClassBoard extends Component {
       disableMarkAbsent,
       hasRandomQuestions,
       isLoading,
+      actionInProgress,
       t,
       history,
       location,
@@ -914,9 +916,6 @@ class ClassBoard extends Component {
         UTASTATUS === testActivityStatus.ABSENT
     )
 
-    const existingStudents = testActivity
-      .filter((item) => item.isAssigned && item.enrollmentStatus === 1)
-      .map((item) => item.studentId)
     const disabledList = testActivity
       .filter((student) => {
         const endDate = additionalData.closedDate || additionalData.endDate
@@ -1241,6 +1240,7 @@ class ClassBoard extends Component {
 
                           <MenuItems
                             data-cy="addStudents"
+                            disabled={actionInProgress}
                             onClick={this.handleShowAddStudentsPopup}
                           >
                             <IconAddStudents />
@@ -1355,7 +1355,6 @@ class ClassBoard extends Component {
                     serverTimeStamp={additionalData.ts}
                     assignmentId={assignmentId}
                     closePopup={this.handleHideAddStudentsPopup}
-                    disabledList={existingStudents}
                   />
                 )}
               </>
@@ -1663,6 +1662,7 @@ const enhance = compose(
         state?.author_classboard_testActivity?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state),
+      actionInProgress: actionInProgressSelector(state),
       isCliUser: get(state, 'user.isCliUser', false),
       isShowAllStudents: get(
         state,

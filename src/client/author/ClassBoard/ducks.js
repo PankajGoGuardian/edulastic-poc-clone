@@ -74,7 +74,11 @@ import { downloadCSV } from '../Reports/common/util'
 import { getUserNameSelector } from '../src/selectors/user'
 import { getAllQids } from '../SummaryBoard/Transformer'
 import { getUserId, getUserRole } from '../../student/Login/ducks'
-import { setProgressStatusAction } from '../src/reducers/testActivity'
+import {
+  setAddedStudentsAction,
+  setLcbActionProgress,
+  setProgressStatusAction,
+} from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
 
 const {
@@ -457,8 +461,10 @@ function* removeStudentsSaga({ payload }) {
 
 function* addStudentsSaga({ payload }) {
   try {
+    yield put(setLcbActionProgress(true))
     yield call(classBoardApi.addStudents, payload)
     yield call(notification, { type: 'success', msg: 'Successfully added' })
+    yield put(setAddedStudentsAction(payload.students))
   } catch (err) {
     captureSentryException(err)
     const {
@@ -470,6 +476,8 @@ function* addStudentsSaga({ payload }) {
     yield call(notification, {
       msg: err.response.data.message || 'Add students failed',
     })
+  } finally {
+    yield put(setLcbActionProgress(false))
   }
 }
 
@@ -1109,6 +1117,27 @@ export const getPasswordPolicySelector = createSelector(
 export const testActivtyLoadingSelector = createSelector(
   stateTestActivitySelector,
   (state) => state.loading
+)
+
+export const actionInProgressSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.actionInProgress
+)
+
+export const addedStudentsSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.addedStudents
+)
+
+export const disabledAddStudentsList = createSelector(
+  getTestActivitySelector,
+  addedStudentsSelector,
+  (testActivities, addedStudents) => {
+    const existingStudents = testActivities
+      .filter((item) => item.isAssigned && item.enrollmentStatus === 1)
+      .map((item) => item.studentId)
+    return [...existingStudents, ...addedStudents]
+  }
 )
 
 export const showPasswordButonSelector = createSelector(

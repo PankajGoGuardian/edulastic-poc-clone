@@ -136,6 +136,7 @@ export const AssessmentStatisticTable = (props) => {
 
   const getColumns = (_tableType) =>
     next([...columnData[_tableType.key].columns], (columns) => {
+      columns[0].render = (text) => text || 'NA'
       if (role === 'teacher') {
         columns.splice(0, 1)
         columns[0].sorter = sortAlphabets('groupName')

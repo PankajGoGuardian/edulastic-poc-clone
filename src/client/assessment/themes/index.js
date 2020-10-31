@@ -24,6 +24,7 @@ import {
   AssessmentPlayerContext,
   useRealtimeV2,
   notification,
+  handleChromeOsSEB,
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 
@@ -182,6 +183,7 @@ const AssessmentContainer = ({
           groupId,
         })
         history.push('/home/assignments')
+        handleChromeOsSEB()
         window.location.href = sebUrl
       }
     }
@@ -401,7 +403,8 @@ const AssessmentContainer = ({
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(
-            ({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
           ),
           index,
           context,
@@ -436,7 +439,8 @@ const AssessmentContainer = ({
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(
-            ({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
           ),
           index: Number(currentItem) + 1,
           context: 'next',

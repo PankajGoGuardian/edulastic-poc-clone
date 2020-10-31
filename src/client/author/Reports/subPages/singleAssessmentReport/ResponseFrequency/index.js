@@ -1,6 +1,6 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
-import { get, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -15,6 +15,7 @@ import {
   getReportsResponseFrequencyLoader,
   getResponseFrequencyRequestAction,
 } from './ducks'
+import { getTestListSelector } from '../common/filterDataDucks'
 import jsonData from './static/json/data.json'
 
 const filterData = (data, filter) =>
@@ -29,11 +30,15 @@ const ResponseFrequency = ({
   responseFrequency: res,
   getResponseFrequency,
   settings,
+  testList,
 }) => {
   const [difficultItems, setDifficultItems] = useState(40)
   const [misunderstoodItems, setMisunderstoodItems] = useState(20)
-
   const [filter, setFilter] = useState({})
+
+  const selectedTest =
+    testList.find((t) => t._id === settings.selectedTest.key) || {}
+  const assessmentName = selectedTest.title || ''
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -44,7 +49,6 @@ const ResponseFrequency = ({
     }
   }, [settings])
 
-  const assessmentName = get(settings, 'selectedTest.title', '')
   const obj = useMemo(() => {
     let _obj = {
       metaData: {},
@@ -196,6 +200,7 @@ const enhance = connect(
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     responseFrequency: getReportsResponseFrequency(state),
+    testList: getTestListSelector(state),
   }),
   {
     getResponseFrequency: getResponseFrequencyRequestAction,

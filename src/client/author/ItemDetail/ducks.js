@@ -958,13 +958,13 @@ function* receiveItemSaga({ payload }) {
       yield put(updatePassageStructureAction(undefined))
     }
 
+    questions = [...questions, ...resources]
+
     // if there is only one question, set it as currentQuestionId, since
     // questionView will be loaded instead.
     if (questions.length === 1) {
       yield put(changeCurrentQuestionAction(questions[0].id))
     }
-
-    questions = [...questions, ...resources]
 
     questions = _keyBy(questions, 'id')
     if (get(payload, 'params.addItem', false)) {

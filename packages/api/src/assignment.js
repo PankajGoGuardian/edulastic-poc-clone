@@ -197,6 +197,15 @@ const fetchByTestId = (testId) =>
     })
     .then((result) => result.data.result)
 
+const searchAssignments = (data) =>
+  api
+    .callApi({
+      url: `search/assignments`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   create,
   update,
@@ -217,4 +226,5 @@ export default {
   getDifferentiationStudentList,
   syncWithGoogleClassroom,
   fetchByTestId,
+  searchAssignments,
 }

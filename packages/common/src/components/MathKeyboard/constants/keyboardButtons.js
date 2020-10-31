@@ -221,13 +221,14 @@ const BASIC = [
     command: 'write',
   },
   {
-    handler: '^',
+    handler: '{}^{}',
     labelcy: 'super',
     label: (
       <CustomImage src={Group942} role="presentation" width={30} height={28} />
     ),
     types: ['basic', 'intermediate'],
-    command: 'cmd',
+    command: 'write',
+    numToMove: 2,
   },
   {
     handler: '|',

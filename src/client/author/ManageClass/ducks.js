@@ -1035,12 +1035,19 @@ function* saveGoogleTokensAndRetrySyncSaga({ payload }) {
   }
 }
 
-// update co-teacher or ptimary teacher for the group
+// update co-teacher or primary teacher for the group
 function* updateGroupTeachers({ payload }) {
   yield put(addLoadingComponentAction({ componentName: 'updateButton' }))
   try {
-    yield call(groupApi.updateCoTeacher, payload)
+    const { removedTeacherIds = [] } = payload
+    const userId = yield select((state) => state.user.user._id || '')
+    const group = yield call(groupApi.updateCoTeacher, payload)
     yield put(showUpdateCoTeacherModalAction(false))
+    if (removedTeacherIds?.length && removedTeacherIds.includes(userId)) {
+      yield put(push('/author/manageClass'))
+    } else {
+      yield put(setClassAction(group))
+    }
     notification({
       type: 'success',
       msg: `Group co-teachers updated.`,

@@ -89,7 +89,7 @@ const UpdateCoTeacher = ({
       title="Manage Co-Teacher"
       visible={isOpen}
       footer={footer}
-      onCancel={() => handleCancel()}
+      onCancel={handleCancel}
       destroyOnClose
       textAlign="left"
       modalWidth="775px"

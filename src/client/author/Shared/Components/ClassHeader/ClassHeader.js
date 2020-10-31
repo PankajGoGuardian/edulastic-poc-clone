@@ -383,8 +383,7 @@ class ClassHeader extends Component {
             OPEN
           </EduButton>
         ) : (
-          assignmentStatusForDisplay !== 'DONE' &&
-          canPause && (
+          (isPaused || (assignmentStatusForDisplay !== 'DONE' && canPause)) && (
             <EduButton
               isBlue
               isGhost

@@ -2,6 +2,7 @@ import { test } from '@edulastic/constants'
 
 const { ASSESSMENT, PRACTICE, COMMON } = test.type
 const allGrades = [
+  { value: 'PK', text: 'PreKindergarten' },
   { value: 'K', text: 'Kindergarten' },
   { value: '1', text: 'Grade 1' },
   { value: '2', text: 'Grade 2' },

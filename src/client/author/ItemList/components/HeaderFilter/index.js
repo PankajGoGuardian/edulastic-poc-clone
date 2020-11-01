@@ -18,6 +18,8 @@ import selectsData from '../../../TestPage/components/common/selectsData'
 const gradeKeys = {
   O: 'Other',
   K: 'Kindergarten',
+  PK: 'PreKindergarten',
+  pk: 'PreKindergarten',
   o: 'Other',
   k: 'Kindergarten',
 }

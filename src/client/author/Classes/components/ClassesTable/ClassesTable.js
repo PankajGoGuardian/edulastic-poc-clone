@@ -83,6 +83,7 @@ const { Option } = Select
 
 const gradeOptions = []
 gradeOptions.push({ title: 'Kindergarten', value: 'K', disabled: false })
+gradeOptions.push({ title: 'PreKindergarten', value: 'PK', disabled: false })
 for (let i = 1; i <= 12; i++)
   gradeOptions.push({ title: `Grade ${i}`, value: `${i}`, disabled: false })
 gradeOptions.push({ title: 'Other', value: 'O', disabled: false })

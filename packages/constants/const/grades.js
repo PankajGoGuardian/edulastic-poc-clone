@@ -4,6 +4,10 @@ const GRADES_LIST = [
     value: 'All',
   },
   {
+    label: 'PreKindergarten',
+    value: 'PK',
+  },
+  {
     label: 'Kindergarten',
     value: 'K',
   },

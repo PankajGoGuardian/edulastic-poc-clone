@@ -261,8 +261,11 @@ class MetadataPage {
   verifySubjectAndGradeInStandardSearchOption = (subject, grade) => {
     const gra = []
     grade.forEach((gr) => {
-      if (gr === 'Kindergarten') gra.push('K')
-      else gra.push(gr.split(' ')[1])
+      if (gr === 'Kindergarten') {
+        gra.push('K')
+      } else if (gr === 'PreKindergarten') {
+        gra.push('PK')
+      } else gra.push(gr.split(' ')[1])
     })
 
     this.getStandardSearchOption().should(

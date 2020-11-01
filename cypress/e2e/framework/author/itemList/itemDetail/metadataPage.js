@@ -264,6 +264,7 @@ class MetadataPage {
       if (gr === 'Kindergarten') {
         gra.push('K')
       } else if (gr === 'PreKindergarten') {
+        // TK instead of PK for PreKindergarten is intentional
         gra.push('TK')
       } else gra.push(gr.split(' ')[1])
     })

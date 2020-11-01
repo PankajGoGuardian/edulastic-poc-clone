@@ -1,5 +1,6 @@
 import { questionType as questionTypes } from '@edulastic/constants'
 
+// TK instead of PK for PreKindergarten is intentional
 const filterData = [
   {
     mode: 'multiple',

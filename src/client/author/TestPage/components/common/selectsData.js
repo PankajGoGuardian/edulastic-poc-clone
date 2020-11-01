@@ -1,6 +1,8 @@
 import { test } from '@edulastic/constants'
 
 const { ASSESSMENT, PRACTICE, COMMON } = test.type
+
+// TK instead of PK for PreKindergarten is intentional
 const allGrades = [
   { value: 'TK', text: 'PreKindergarten' },
   { value: 'K', text: 'Kindergarten' },

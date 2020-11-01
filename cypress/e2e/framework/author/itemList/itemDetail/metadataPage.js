@@ -9,7 +9,21 @@ class MetadataPage {
   // *** ELEMENTS START ***
 
   getDropDownMenu = () =>
-    cy.get('.ant-select-dropdown-menu-item').should('not.contain', 'No Data')
+    cy
+      .get('.ant-select-dropdown-menu-item', { timeout: 20000 })
+      .should('not.contain', 'No Data')
+
+  selectDropDownOptionByText = (option) => {
+    this.getDropDownMenu().then(($ele) => {
+      cy.wrap(
+        $ele
+          // eslint-disable-next-line func-names
+          .filter(function () {
+            return Cypress.$(this).text() === option
+          })
+      ).click({ force: true })
+    })
+  }
 
   getSearchStandardSelect = () => cy.get('[data-cy="searchStandardSelect"]')
 
@@ -77,10 +91,14 @@ class MetadataPage {
       })
     if (Array.isArray(option))
       option.forEach((opt) => {
-        this.getDropDownMenu().contains(opt).click({ force: true })
+        this.selectDropDownOptionByText(opt)
+        // .contains(opt).click({ force: true })
         if (selector === 'grade-Select') this.waitForStandarSearch()
       })
-    else this.getDropDownMenu().contains(option).click({ force: true })
+    else {
+      this.selectDropDownOptionByText(option)
+      // contains(option).click({ force: true })
+    }
     cy.focused().blur()
   }
 

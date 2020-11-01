@@ -106,10 +106,15 @@ export const radioButtonUserData = {
   },
 }
 
+// TK instead of PK for PreKindergarten is intentional
 export const GRADES_LIST = [
   {
     label: 'All',
     value: 'All',
+  },
+  {
+    label: 'PreKindergarten',
+    value: 'TK',
   },
   {
     label: 'Kindergarten',

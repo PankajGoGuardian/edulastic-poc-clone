@@ -119,6 +119,9 @@ export const getStandardsListSelector = createSelector(
     )
     const mapElosByStandard = { other: [], kindergarten: [] }
     for (const item of elo) {
+      // TODO - not sure whats the purpose of this logic, but similar thing needs to be done for
+      // PreKindergarten if standards are added in Standards collection for grade PreKindergarten
+      // we don't have anything right now
       // Assuming that all the elo identifier starting with k will be kindergarten
       if (item?.identifier?.trim()?.toLowerCase()?.startsWith('k')) {
         mapElosByStandard.kindergarten.push(item)

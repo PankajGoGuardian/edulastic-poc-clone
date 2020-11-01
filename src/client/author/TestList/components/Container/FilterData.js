@@ -1,5 +1,6 @@
 import { questionType as questionTypes } from '@edulastic/constants'
 
+// TK instead of PK for PreKindergarten is intentional
 const filterData = [
   {
     mode: 'multiple',
@@ -8,6 +9,7 @@ const filterData = [
     placeholder: 'All Grades',
     onChange: 'grades',
     data: [
+      { value: 'TK', text: 'PreKindergarten' },
       { value: 'K', text: 'Kindergarten' },
       { value: '1', text: 'Grade 1' },
       { value: '2', text: 'Grade 2' },

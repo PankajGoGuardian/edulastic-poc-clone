@@ -169,19 +169,34 @@ export const createGroupSummary = (test) => {
   return summary
 }
 
-// Kidergarten should out put as the first grade and other should be the last grade.
+// TK instead of PK for PreKindergarten is intentional
+// PreKindergarten, Kindergarten should be first and Other should be last
 // Eg: grades = ["1","2","K","O"]
+// Order should be PreKindergarten, Kindergarten, 1...12, Other
+// TK, K, 1...12, O
 export const sortGrades = (grades) => {
   if (!grades || !grades.length) {
     return []
   }
   let sortedGrades = grades
-    .filter((item) => item !== 'K' && item !== 'O')
+    .filter((item) => {
+      const convertedGrade = (item || '').toLowerCase()
+      return (
+        convertedGrade !== 'k' &&
+        convertedGrade !== 'o' &&
+        convertedGrade !== 'tk'
+      )
+    })
     .sort((a, b) => a - b)
   if (grades.includes('K')) {
     sortedGrades = ['K', ...sortedGrades]
   } else if (grades.includes('k')) {
     sortedGrades = ['k', ...sortedGrades]
+  }
+  if (grades.includes('TK')) {
+    sortedGrades = ['TK', ...sortedGrades]
+  } else if (grades.includes('tk')) {
+    sortedGrades = ['tk', ...sortedGrades]
   }
   if (grades.includes('O')) {
     sortedGrades = [...sortedGrades, 'O']

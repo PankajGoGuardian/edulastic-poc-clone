@@ -30,6 +30,7 @@
   ],
   "grades": [
     { "key": "All", "title": "All Grades" },
+    { "key": "TK", "title": "PreKindergarten" },
     { "key": "K", "title": "Kindergarten" },
     { "key": "1", "title": "Grade 1" },
     { "key": "2", "title": "Grade 2" },

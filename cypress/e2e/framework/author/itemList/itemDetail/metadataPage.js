@@ -264,7 +264,7 @@ class MetadataPage {
       if (gr === 'Kindergarten') {
         gra.push('K')
       } else if (gr === 'PreKindergarten') {
-        gra.push('PK')
+        gra.push('TK')
       } else gra.push(gr.split(' ')[1])
     })
 

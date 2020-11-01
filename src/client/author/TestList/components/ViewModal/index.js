@@ -188,7 +188,7 @@ class ViewModal extends React.Component {
     }
 
     const gradesMap = {
-      PK: 'PreKindergarten',
+      TK: 'PreKindergarten',
       K: 'Kindergarten',
       1: 'Grade 1',
       2: 'Grade 2',

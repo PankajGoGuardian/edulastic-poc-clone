@@ -113,7 +113,7 @@ export const GRADES_LIST = [
   },
   {
     label: 'PreKindergarten',
-    value: 'PK',
+    value: 'TK',
   },
   {
     label: 'Kindergarten',

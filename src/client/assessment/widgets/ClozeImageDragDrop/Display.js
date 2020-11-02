@@ -710,15 +710,10 @@ class Display extends Component {
     )
 
     const checkboxTemplateBoxLayout = (
-      <StyledPreviewTemplateBox
-        fontSize={fontSize}
-        height={isPrintMode ? '' : computedHeight}
-      >
+      <StyledPreviewTemplateBox fontSize={fontSize} height={computedHeight}>
         <StyledPreviewContainer
-          width={isPrintMode ? '' : previewContainerWidth}
-          height={
-            isPrintMode ? '' : this.getCalculatedHeight(maxHeight, canvasHeight)
-          }
+          width={previewContainerWidth}
+          height={this.getCalculatedHeight(maxHeight, canvasHeight)}
           ref={this.previewContainerRef}
         >
           <CheckboxTemplateBoxLayout
@@ -738,7 +733,6 @@ class Display extends Component {
             showBorder={showBorder}
             showDropItemBorder={showDropItemBorder}
             isExpressGrader={isExpressGrader}
-            isPrintMode={isPrintMode}
             imageHeight={this.getCalculatedHeight(maxHeight, canvasHeight)}
             imageWidth={previewContainerWidth}
             fontSize={fontSize}
@@ -766,7 +760,6 @@ class Display extends Component {
         transparentResponses={transparentResponses}
         responseContainerPosition={responsecontainerposition}
         getHeading={getHeading}
-        isPrintMode={isPrintMode}
         {...choiceStyle}
       />
     )
@@ -797,7 +790,10 @@ class Display extends Component {
         <HorizontalScrollContext.Provider
           value={{ getScrollElement: () => this.displayWrapperRef.current }}
         >
-          <StyledDisplayContainer ref={this.displayWrapperRef}>
+          <StyledDisplayContainer
+            ref={this.displayWrapperRef}
+            isPrintMode={isPrintMode}
+          >
             <FlexContainer justifyContent="flex-start" alignItems="baseline">
               <QuestionLabelWrapper>
                 {showQuestionNumber && (

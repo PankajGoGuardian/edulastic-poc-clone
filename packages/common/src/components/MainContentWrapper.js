@@ -7,7 +7,9 @@ import {
   smallDesktopWidth,
 } from '@edulastic/colors'
 
-const MainContentWrapper = styled.div`
+const MainContentWrapper = styled.div.attrs(() => ({
+  id: 'main-content-wrapper',
+}))`
   overflow: auto;
   background: ${mainBgColor};
   padding: ${(props) => props.padding || '30px'};

@@ -1,0 +1,10 @@
+.theDiv {
+  max-height: 100vh !important;
+}
+
+@media print {
+  .theDiv {
+    border: solid 2px black;
+    max-height: none !important;
+  }
+}

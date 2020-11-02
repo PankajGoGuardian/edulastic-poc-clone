@@ -7,7 +7,6 @@ import { sortBy } from 'lodash'
 import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
 import QuestionWrapper from '../../../QuestionWrapper'
-
 import {
   Container,
   WidgetContainer,
@@ -18,6 +17,7 @@ import { MobileLeftSide } from './styled/MobileLeftSide'
 import { IconArrow } from './styled/IconArrow'
 import TabContainer from './TabContainer'
 import FilesView from '../../../../widgets/UploadFile/components/FilesView'
+import StudentWorkCollapse from '../../components/StudentWorkCollapse'
 
 class TestItemCol extends Component {
   state = {
@@ -87,6 +87,8 @@ class TestItemCol extends Component {
       isStudentAttempt,
       attachments,
       saveAttachments,
+      renderScratchPadImage,
+      isScratchpadImageMode,
       ...restProps
     } = this.props
     const timespent = widget.timespent !== undefined ? widget.timespent : null
@@ -121,7 +123,17 @@ class TestItemCol extends Component {
       saveAttachments(newAttachments)
     }
 
-    const isAttachmentListVisible = attachments && attachments.length > 0
+    const fileAttachments =
+      attachments &&
+      attachments.filter((attachment) => {
+        return !attachment.type.includes('image/')
+      })
+
+    const imageAttachments =
+      attachments &&
+      attachments.filter((attachment) => {
+        return attachment.type.includes('image/')
+      })
 
     // question false undefined false undefined undefined true true
     return (
@@ -156,6 +168,7 @@ class TestItemCol extends Component {
           noBoxShadow
           isFlex
           isStudentReport={isStudentReport}
+          isScratchpadImageMode={isScratchpadImageMode}
           flowLayout={flowLayout}
           prevQActivityForQuestion={prevQActivityForQuestion}
           LCBPreviewModal={LCBPreviewModal}
@@ -167,19 +180,30 @@ class TestItemCol extends Component {
           style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
           tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />
+        {!isScratchpadImageMode && !isStudentAttempt && (
+          <StudentWorkCollapse
+            imageAttachments={imageAttachments}
+            renderScratchPadImage={renderScratchPadImage}
+          />
+        )}
+
         {/*  on the student side, show feedback for each question only when item level scoring is off */}
-        {isStudentReport &&
+        {!isScratchpadImageMode &&
+          isStudentReport &&
           !itemLevelScoring &&
           teachCherFeedBack(widget, null, null, showStackedView)}
-        {isAttachmentListVisible && (
-          <FilesViewContainer>
-            <FilesView
-              files={attachments}
-              hideDelete={!isStudentAttempt}
-              onDelete={saveUpdatedAttachments}
-            />
-          </FilesViewContainer>
-        )}
+
+        {!isScratchpadImageMode &&
+          fileAttachments &&
+          fileAttachments.length > 0 && (
+            <FilesViewContainer>
+              <FilesView
+                files={fileAttachments}
+                hideDelete={!isStudentAttempt}
+                onDelete={saveUpdatedAttachments}
+              />
+            </FilesViewContainer>
+          )}
       </TabContainer>
     )
   }

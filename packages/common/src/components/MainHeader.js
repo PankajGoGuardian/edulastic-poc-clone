@@ -70,7 +70,9 @@ const enhance = compose(
 
 export default enhance(MainHeader)
 
-const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.div.attrs({
+  id: 'main-header',
+})`
   padding-top: ${(props) => props.height || props.theme.HeaderHeight.md}px;
 
   .ant-dropdown {

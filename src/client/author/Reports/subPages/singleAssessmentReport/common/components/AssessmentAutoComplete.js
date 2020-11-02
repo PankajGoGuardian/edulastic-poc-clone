@@ -24,6 +24,7 @@ const AssessmentAutoComplete = ({
   testList,
   loading,
   loadTestList,
+  firstLoad,
   termId,
   grade,
   subject,
@@ -48,7 +49,7 @@ const AssessmentAutoComplete = ({
       },
       aggregate: true,
     }
-    if (!selectedTest._id && selectedTestId) {
+    if (firstLoad && !selectedTest._id && selectedTestId) {
       q.search.testIds = [selectedTestId]
     }
     if (termId) {

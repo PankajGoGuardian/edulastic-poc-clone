@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import { CheckboxLabel } from '@edulastic/common'
 import { Button, DatePicker, Input, Radio, Select, Table } from 'antd'
 import { get } from 'lodash'
@@ -6,6 +7,7 @@ import { doValidate } from './apis'
 
 const Field = ({
   displayName,
+  labelStyle,
   type,
   validate,
   onChange,
@@ -15,9 +17,6 @@ const Field = ({
 }) => {
   const [response, setResponse] = useState()
   const [value, setValue] = useState()
-  useEffect(() => {
-    document.addEventListener('click', onDropdownVisibleChange)
-  }, [])
 
   const onDropdownVisibleChange = () => {
     const elm = document.querySelector(`.dropdown-custom-menu`)
@@ -29,6 +28,11 @@ const Field = ({
       document.removeEventListener('click', onDropdownVisibleChange)
     }
   }
+
+  useEffect(() => {
+    document.addEventListener('click', onDropdownVisibleChange)
+  }, [])
+
   const handleValidation = () => {
     setResponse([])
     onChange({})
@@ -67,14 +71,14 @@ const Field = ({
 
   const onChangeCheckbox = (e) => onChange(e.target.checked, rest.name)
   const handleOnChange = (e) => {
-    let value
+    let _value
     if (typeof e === 'object') {
-      value = e.target.value
+      _value = e.target.value
     } else {
-      value = e
+      _value = e
     }
-    onChange(value, rest.name)
-    setValue(value)
+    onChange(_value, rest.name)
+    setValue(_value)
   }
 
   const onChangeDate = (date) => onChange(date.toDate().getTime(), rest.name)
@@ -129,6 +133,7 @@ const Field = ({
       const display = validate?.response?.display || {}
       switch (display?.type) {
         case 'table':
+          // eslint-disable-next-line no-case-declarations
           const columns = display.fields.map((field) => {
             return {
               title: field.name,
@@ -171,11 +176,13 @@ const Field = ({
       }}
     >
       <div
-        style={{
-          fontSize: '15px',
-          fontWeight: 600,
-          marginBottom: '5px',
-        }}
+        style={
+          labelStyle || {
+            fontSize: '15px',
+            fontWeight: 600,
+            marginBottom: '5px',
+          }
+        }
       >
         {displayName}
       </div>

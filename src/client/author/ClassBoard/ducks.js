@@ -509,8 +509,15 @@ function* downloadGradesAndResponseSaga({ payload }) {
     const userName = yield select(getUserNameSelector)
     // eslint-disable-next-line no-use-before-define
     const testName = yield select(testNameSelector)
-    const fileName = `${testName}_${userName}.csv`
-    downloadCSV(fileName, data)
+    let fileName = `${testName}_${userName}`
+    const isNonASCIIChar = [...fileName].some(
+      (char) => char.charCodeAt(0) > 127
+    )
+    if (isNonASCIIChar) {
+      fileName = `${payload.assignmentId}_${payload.classId}`
+    }
+
+    downloadCSV(`${fileName}.csv`, data)
   } catch (err) {
     captureSentryException(err)
     const {

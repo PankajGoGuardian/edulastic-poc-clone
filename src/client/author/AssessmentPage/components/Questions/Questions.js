@@ -329,7 +329,7 @@ class Questions extends React.Component {
     const { addQuestion, list, isDocBased = false } = this.props
     const questions = list.filter((q) => q.type !== 'sectionLabel')
 
-    const lastQuestion = questions[questions.length - 1]
+    const lastQuestion = maxBy(questions, 'qIndex')
 
     const questionIndex =
       index ||

@@ -138,7 +138,6 @@ const columns = [
 ]
 const TableList = ({
   classList = [],
-  filterStatus,
   bulkOpenAssignmentRequest,
   bulkCloseAssignmentRequest,
   bulkPauseAssignmentRequest,
@@ -153,6 +152,9 @@ const TableList = ({
   bulkActionStatus,
   isHeaderAction,
   history,
+  pageNo,
+  totalAssignmentsClasses,
+  handlePagination,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
@@ -178,11 +180,8 @@ const TableList = ({
     allowedTime: data.allowedTime,
   })
   const rowData = useMemo(
-    () =>
-      classList
-        .filter((o) => (filterStatus ? o.status === filterStatus : true))
-        .map((data, index) => convertRowData(data, index)),
-    [classList, filterStatus]
+    () => classList.map((data, index) => convertRowData(data, index)),
+    [classList]
   )
 
   /**
@@ -193,7 +192,14 @@ const TableList = ({
     setSelectedRows([])
   }, [rowData])
 
-  const showPagination = rowData.length > 10
+  let showPagination = false
+  if (totalAssignmentsClasses > 10) {
+    showPagination = {
+      pageSize: 10,
+      total: totalAssignmentsClasses || rowData?.length || 0,
+      current: pageNo || 1,
+    }
+  }
 
   const handleSelectAll = (selected) => {
     if (selected) {
@@ -346,6 +352,7 @@ const TableList = ({
         columns={columns}
         dataSource={rowData}
         pagination={showPagination}
+        onChange={(pagination) => handlePagination(pagination?.current || 1)}
         rowSelection={rowSelection}
         loading={isLoadingAssignments}
         onRow={(row) => ({

@@ -142,17 +142,15 @@ export const augmentStandardMetaInfo = (
     const currentStandardRecords =
       groupedSkillsByStandard[standard.standardId] || []
     if (currentStandardRecords[0]) {
-      const rawScore = standard.totalScore || 0
-      const percentScore = percentage(rawScore, standard.maxScore)
-      const scale = getProficiencyBand(percentScore, scaleInfo)
+      const score = percentage(standard.totalScore, standard.maxScore)
+      const scale = getProficiencyBand(score, scaleInfo)
 
       return {
         ...standard,
         ...currentStandardRecords[0],
         masteryName: scale.masteryName,
-        totalScore: round(rawScore, 2),
-        score: round(percentScore),
-        scoreFormatted: `${round(percentScore)}%`,
+        score: round(score),
+        scoreFormatted: `${round(score)}%`,
         assessmentCount: 0,
         totalQuestions: 0,
         scale,

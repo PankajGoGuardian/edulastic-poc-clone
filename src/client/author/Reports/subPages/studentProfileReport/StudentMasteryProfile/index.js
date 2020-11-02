@@ -125,7 +125,6 @@ const StudentMasteryProfile = ({
     if (_selectedStudent.key && requestFilters.termId) {
       getStudentMasteryProfileRequest({
         ...requestFilters,
-        profileId: requestFilters.standardsProficiencyProfileId,
         studentId: _selectedStudent.key,
       })
     }

@@ -23,6 +23,9 @@ const ResponseContainers = ({
   dragItemStyle,
   onDrop,
   fontSize,
+  isPrintMode,
+  imageWidth,
+  imageHeight,
   options,
   backgroundColor = '',
 }) => {
@@ -36,11 +39,16 @@ const ResponseContainers = ({
     const height = isWrapText ? '35px' : container.height || '35px'
     const btnStyle = {
       position: 'absolute',
-      top,
-      left: responseContainerLeft,
+      top: isPrintMode ? `${(top / imageHeight) * 100}%` : top,
+      left: isPrintMode
+        ? `${(responseContainerLeft / imageWidth) * 100}%`
+        : responseContainerLeft,
       maxWidth: response.maxWidth,
-      width,
-      minHeight: height,
+      width: isPrintMode ? `${(width / imageWidth) * 100}%` : width,
+      minHeight:
+        isPrintMode && !`${height}`.includes('auto')
+          ? `${(height / imageHeight) * 100}%`
+          : height,
       background: transparentBackground
         ? 'transparent'
         : backgroundColor ||

@@ -4,7 +4,7 @@ import {
   roleuser,
   test as testConst,
 } from '@edulastic/constants'
-import { Col, Icon, Row, Select } from 'antd'
+import { Col, Icon, Row, Select, Tooltip } from 'antd'
 import produce from 'immer'
 import { curry, get, keyBy } from 'lodash'
 import * as moment from 'moment'
@@ -352,23 +352,35 @@ class SimpleOptions extends React.Component {
               <Row>
                 <Col span={24}>
                   <FieldLabel>OPEN POLICY</FieldLabel>
-                  <SelectInputStyled
-                    data-cy="selectOpenPolicy"
-                    placeholder="Please select"
-                    cache="false"
-                    value={assignment.openPolicy}
-                    onChange={changeField('openPolicy')}
-                    disabled={
+                  <Tooltip
+                    placement="top"
+                    title={
                       assignment.passwordPolicy ===
                       testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+                        ? 'To modify set Dynamic Password as OFF'
+                        : null
                     }
                   >
-                    {openPolicy.map(({ value, text }, index) => (
-                      <Select.Option key={index} value={value} data-cy="open">
-                        {text}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
+                    <SelectInputStyled
+                      data-cy="selectOpenPolicy"
+                      placeholder="Please select"
+                      cache="false"
+                      value={assignment.openPolicy}
+                      onChange={changeField('openPolicy')}
+                      disabled={
+                        assignment.passwordPolicy ===
+                        testConst.passwordPolicy
+                          .REQUIRED_PASSWORD_POLICY_DYNAMIC
+                      }
+                      title="To modify set Dynamic Password as OFF"
+                    >
+                      {openPolicy.map(({ value, text }, index) => (
+                        <Select.Option key={index} value={value} data-cy="open">
+                          {text}
+                        </Select.Option>
+                      ))}
+                    </SelectInputStyled>
+                  </Tooltip>
                 </Col>
               </Row>
             </Col>

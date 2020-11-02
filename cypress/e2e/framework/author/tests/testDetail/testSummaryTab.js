@@ -37,9 +37,18 @@ export default class TestSummayTab {
     this.getTestGradeSelect()
       .click({ force: true })
       .then(($ele) => {
-        cy.get('.ant-select-dropdown-menu-item')
-          .contains(grade)
-          .click({ force: true })
+        // cy.get('.ant-select-dropdown-menu-item')
+        //   .contains(grade)
+        //   .click({ force: true })
+        cy.get('.ant-select-dropdown-menu-item').then(($options) => {
+          cy.wrap(
+            $options
+              // eslint-disable-next-line func-names
+              .filter(function () {
+                return Cypress.$(this).text() === grade
+              })
+          ).click({ force: true })
+        })
         this.closeDropDowns($ele)
       })
   }

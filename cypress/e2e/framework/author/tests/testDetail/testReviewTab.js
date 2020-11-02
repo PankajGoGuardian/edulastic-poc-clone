@@ -31,7 +31,7 @@ export default class TestReviewTab {
   getMoveTo = () => cy.get('[data-cy="moveto"]')
 
   getPointsOnQueCardByid = (id) =>
-    this.getQueCardByItemIdInCollapsed(id).find('input')
+    this.getQueCardByItemIdInCollapsed(id).find('.ant-input-lg')
 
   getAllquestionInReview = () => cy.get('[data-cy="styled-wrapped-component"]')
 
@@ -52,6 +52,30 @@ export default class TestReviewTab {
       .next()
       .find('[data-cy="styled-wrapped-component"]')
 
+  getCheckBoxByItemId = (itemId, expanded = false) => {
+    if (expanded)
+      return this.getQueCardByItemIdInCollapsed(itemId).find(
+        '.ant-checkbox-input'
+      )
+
+    return this.getQueCardByItemIdInCollapsed(itemId)
+      .prev()
+      .find('.ant-checkbox-input')
+  }
+
+  getDragHandlerByItemId = (itemId) => {
+    return this.getQueCardByItemIdInCollapsed(itemId)
+      .prev()
+      .find('[stroke="currentColor"]')
+  }
+
+  getDeleteButtonByItemId = (itemid) =>
+    this.getQueCardByItemIdInCollapsed(itemid).find('[data-cy="delete"]')
+
+  getExpandButtonByItemId = (itemId) =>
+    this.getQueCardByItemIdInCollapsed(itemId).find('[title="Expand"]')
+
+  getRemoveSelected = () => cy.get('[data-cy="removeSelected"]')
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -73,23 +97,17 @@ export default class TestReviewTab {
   }
 
   clickOnCheckBoxByItemId = (itemId) => {
-    this.getQueCardByItemIdInCollapsed(itemId)
-      .parent()
-      .prev()
-      .find('.ant-checkbox-input')
-      .click({ force: true })
+    this.getCheckBoxByItemId(itemId).click({ force: true })
   }
 
-  clickOnRemoveSelected = () => cy.get('[data-cy="removeSelected"]').click()
+  clickOnRemoveSelected = () => this.getRemoveSelected().click()
 
   clickOnMoveTo = () => this.getMoveTo().click()
 
   clickOnExpandRow = () => cy.get('[data-cy="expand-rows"]').click()
 
   clickExpandByItemId = (id) =>
-    this.getQueCardByItemIdInCollapsed(id)
-      .find('[title="Expand"]')
-      .click({ force: true })
+    this.getExpandButtonByItemId(id).click({ force: true })
 
   clickOnCollapseRow = () => cy.get('[data-cy="collapse-rows"]').click()
 
@@ -153,6 +171,22 @@ export default class TestReviewTab {
       .contains(subject)
   }
 
+  verifyGrades = (grades) =>
+    this.getTestGradeSelect()
+      .find('.ant-select-selection__choice')
+      .should('have.length', grades.length)
+      .each(($ele, i) => {
+        cy.wrap($ele).should('contain', grades[i])
+      })
+
+  verifySubjects = (subjects) =>
+    this.getTestSubjectSelect()
+      .find('.ant-select-selection__choice')
+      .should('have.length', subjects.length)
+      .each(($ele, i) => {
+        cy.wrap($ele).should('contain', subjects[i])
+      })
+
   verifyItemByContent = (question) =>
     cy
       .get('[data-cy="styled-wrapped-component"]')
@@ -163,9 +197,7 @@ export default class TestReviewTab {
       )
 
   asesrtPointsByid = (id, points) => {
-    this.getQueCardByItemIdInCollapsed(id)
-      .find('.ant-input-lg')
-      .should('have.value', points.toString())
+    this.getPointsOnQueCardByid(id).should('have.value', points.toString())
   }
 
   verifyQustionById = (id) => {
@@ -173,11 +205,10 @@ export default class TestReviewTab {
   }
 
   verifyMovedQuestionById = (id, index) => {
-    this.getQueCardByItemIdInCollapsed(id).should(
-      'have.attr',
-      'data-cy-item-index',
-      (index - 1).toString()
-    )
+    this.getQueCardByItemIdInCollapsed(id)
+      .children()
+      .first()
+      .should('have.attr', 'data-cy-item-index', (index - 1).toString())
   }
 
   verifyNoOfItemsInGroupByNo = (group, itemCount) => {

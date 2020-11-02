@@ -5,6 +5,7 @@ import {
   queColor,
   questionTypeKey,
 } from '../../constants/questionTypes'
+import CypressHelper from '../../util/cypressHelpers'
 
 export default class PreviewItemPopup {
   constructor() {
@@ -28,6 +29,24 @@ export default class PreviewItemPopup {
     cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]')
 
   getEvaluationMessage = () => cy.get('.ant-message-custom-content')
+
+  getIdOnPreview = () => cy.get('[data-cy="item-id-on-preview"]')
+
+  getTeacherNameOnPreview = () => cy.get('[data-cy="teacher-name-on-preview"]')
+
+  getPointsOnPreview = () => cy.get('[data-cy="points-on-preview"]')
+
+  getDokOnPreview = () => cy.get('[data-cy="dok-on-preview"]')
+
+  getDifficultyOnPreview = () => cy.get('[data-cy="diff-on-preview"]')
+
+  getStandardsOnPreview = () => cy.get('[data-cy="standards-on-preview"]')
+
+  getTagsOnPreview = () => cy.get('[data-cy="tags-on-preview"]')
+
+  getRemoveFromTestButton = () => cy.contains('span', 'Remove from Test')
+
+  getAddToTestButton = () => cy.contains('span', 'Add To Test')
 
   // *** ELEMENTS END ***
 
@@ -347,8 +366,45 @@ export default class PreviewItemPopup {
             true
           )
         break
+      case questionTypeKey.ESSAY_RICH:
+        break
       default:
+        assert.fail(1, 2, 'question type did not match in item preview')
         break
     }
+  }
+
+  verifyItemIdOnPreview = (id) =>
+    this.getIdOnPreview().should('have.text', CypressHelper.getShortId(id))
+
+  verifyTeacherNameOnPreview = (name) =>
+    this.getTeacherNameOnPreview().should('have.text', name)
+
+  verifyPointsOnPreview = (points) =>
+    this.getPointsOnPreview().should('have.text', points.toString())
+
+  verifyDOkOnPreview = (dok) => this.getDokOnPreview().should('have.text', dok)
+
+  verifyDiffOnPreview = (diff) =>
+    this.getDifficultyOnPreview().should('have.text', diff)
+
+  verifyStandardsOnPreview = (standards) => {
+    this.getStandardsOnPreview()
+      .as('standard-row')
+      .find('span')
+      .should('have.length', standards.length)
+
+    standards.forEach((standard) =>
+      cy.get('@standard-row').find('span').contains(standard)
+    )
+  }
+
+  verifyTagsOnPreview = (tags) => {
+    this.getTagsOnPreview()
+      .as('tag-row')
+      .find('span')
+      .should('have.length', tags.length)
+
+    tags.forEach((tag) => cy.get('@tag-row').find('span').contains(tag))
   }
 }

@@ -92,6 +92,8 @@ export const convertData = (questionActivities, testItems) => {
         maxScore,
         timeSpent,
         pendingEvaluation,
+        practiceUsage,
+        correct,
       } = activity
       let { notStarted, skipped } = activity
       let skippedx = false
@@ -103,7 +105,7 @@ export const convertData = (questionActivities, testItems) => {
 
       if (!notStarted) {
         questionActivity.totalAttemps += 1
-      } else if (score > 0) {
+      } else if (score > 0 || (practiceUsage && graded) || skipped) {
         notStarted = false
       } else {
         questionActivity.notStartedNum += 1
@@ -123,7 +125,10 @@ export const convertData = (questionActivities, testItems) => {
         pendingEvaluation
       ) {
         questionActivity.manualGradedNum += 1
-      } else if (score === maxScore && !notStarted && score > 0) {
+      } else if (
+        (score === maxScore && !notStarted && score > 0) ||
+        (practiceUsage && correct)
+      ) {
         questionActivity.correctAttemps += 1
       } else if (score === 0 && !notStarted && maxScore > 0 && !skippedx) {
         questionActivity.incorrectAttemps += 1

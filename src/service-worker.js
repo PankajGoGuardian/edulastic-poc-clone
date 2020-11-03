@@ -11,7 +11,12 @@ import { clientsClaim } from 'workbox-core'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
-import { StaleWhileRevalidate } from 'workbox-strategies'
+import { StaleWhileRevalidate, NetworkFirst } from 'workbox-strategies'
+
+if (typeof workbox !== 'undefined')
+  workbox.setConfig({
+    debug: true,
+  })
 
 clientsClaim()
 
@@ -26,6 +31,11 @@ precacheAndRoute(self.__WB_MANIFEST)
 // https://developers.google.com/web/fundamentals/architecture/app-shell
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
 const apiRegex = new RegExp('/?(api|oauth)/.*', 'i')
+
+workbox.precaching.precacheAndRoute(self.__precacheManifest || [])
+
+registerRoute(apiRegex, new NetworkFirst())
+
 registerRoute(
   // Return false to exempt requests from being fulfilled by index.html.
   ({ request, url }) => {

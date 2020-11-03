@@ -72,9 +72,14 @@ const AssessmentAutoComplete = ({
     setSearchTerms({ ...searchTerms, text: value })
   }
   const onSelect = (key) => {
-    const value = testList.find((s) => s._id === key)?.title
-    setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-    selectCB({ key, title: value })
+    if (key) {
+      const value = testList.find((s) => s._id === key)?.title
+      setSearchTerms({ text: value, selectedText: value, selectedKey: key })
+      selectCB({ key, title: value })
+    } else {
+      setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
+      selectCB({ key: '', title: '' })
+    }
   }
   const onBlur = () => {
     // force fetch testList to reset assessment filter to previously selected test
@@ -109,6 +114,8 @@ const AssessmentAutoComplete = ({
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
       onSelect(testList[0]._id)
+    } else if (!firstLoad && !loading && !testList.length) {
+      onSelect()
     }
   }, [testList])
   useEffect(() => {

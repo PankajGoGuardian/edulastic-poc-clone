@@ -32,7 +32,7 @@ export const getReportsSARSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  selectedTest: { key: '', title: '' },
+  selectedTest: { key: '' },
   requestFilters: {
     termId: '',
     subject: '',
@@ -48,7 +48,7 @@ const initialState = {
 
 export const reportSARSettingsReducer = createReducer(initialState, {
   [SET_SAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

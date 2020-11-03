@@ -296,6 +296,13 @@ const getColumns = (
       width: 100,
       visibleOn: ['csv'],
     },
+    {
+      title: 'STUDENT NUMBER',
+      dataIndex: 'studentNumber',
+      key: 'studentNumber',
+      width: 100,
+      visibleOn: ['csv'],
+    },
   ]
 
   return columns.concat(

@@ -324,14 +324,27 @@ const StandardsGradebookTableComponent = ({
           </Link>
         ),
       },
-      {
-        title: 'SIS ID',
-        dataIndex: 'sisId',
-        width: 150,
-        key: 'sisId',
-        visibleOn: ['csv'],
-      },
     ]
+
+    if (tableDdFilters.compareBy === 'studentId') {
+      result = [
+        ...result,
+        {
+          title: 'SIS ID',
+          dataIndex: 'sisId',
+          width: 150,
+          key: 'sisId',
+          visibleOn: ['csv'],
+        },
+        {
+          title: 'STUDENT NUMBER',
+          dataIndex: 'studentNumber',
+          width: 150,
+          key: 'studentNumber',
+          visibleOn: ['csv'],
+        },
+      ]
+    }
 
     if (extraColsNeeded) {
       result = [

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { get } from 'lodash'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import { Row, Col } from 'antd'
@@ -43,7 +44,6 @@ import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterSelectedPerformanceBandProfile,
   getSAFFilterPerformanceBandProfiles,
-  getTestListSelector,
 } from '../common/filterDataDucks'
 
 import columns from './static/json/tableColumns.json'
@@ -57,7 +57,6 @@ const PerformanceByStudents = ({
   performanceByStudents,
   getPerformanceByStudents,
   settings,
-  testList,
   location = { pathname: '' },
   pageTitle,
   filters,
@@ -65,11 +64,6 @@ const PerformanceByStudents = ({
   customStudentUserId,
   isCliUser,
 }) => {
-  const selectedTest = testList.length
-    ? testList.find((test) => test._id === settings.selectedTest.key)
-    : {}
-  const assessmentName = selectedTest.title || ''
-
   const bandInfo = useMemo(
     () =>
       performanceBandProfiles.find(
@@ -83,10 +77,12 @@ const PerformanceByStudents = ({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState({})
+
   const [range, setRange] = useState({
     left: '',
     right: '',
   })
+
   const [pagination, setPagination] = useState({
     defaultPageSize: 50,
     current: 0,
@@ -171,6 +167,7 @@ const PerformanceByStudents = ({
     pageTitle,
     t
   )
+  const testName = get(settings, 'selectedTest.title', '')
 
   const checkedStudentsForModal = tableData
     .filter(
@@ -263,9 +260,7 @@ const PerformanceByStudents = ({
             <StyledCard style={{ width: '100%' }}>
               <Row type="flex" justify="start">
                 <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                  <StyledH3>
-                    Student score distribution | {assessmentName}
-                  </StyledH3>
+                  <StyledH3>Student score distribution | {testName}</StyledH3>
                 </Col>
               </Row>
               <Row type="flex" justify="start">
@@ -282,7 +277,7 @@ const PerformanceByStudents = ({
           <StyledCard>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <StyledH3>Student Performance | {assessmentName}</StyledH3>
+                <StyledH3>Student Performance | {testName}</StyledH3>
               </Col>
               <Col
                 xs={24}
@@ -375,7 +370,6 @@ const withConnect = connect(
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
     selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(state),
     performanceByStudents: getReportsPerformanceByStudents(state),
-    testList: getTestListSelector(state),
   }),
   {
     getPerformanceByStudents: getPerformanceByStudentsRequestAction,

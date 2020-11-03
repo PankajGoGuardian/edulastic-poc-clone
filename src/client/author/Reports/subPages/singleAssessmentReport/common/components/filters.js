@@ -4,16 +4,16 @@ import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Spin } from 'antd'
+import { Tooltip, Spin } from 'antd'
 
 import { roleuser } from '@edulastic/constants'
 
+import { AutocompleteDropDown } from '../../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
-import AssessmentAutoComplete from './AssessmentAutoComplete'
+import ClassAutoComplete from './ClassAutoComplete'
 import SchoolAutoComplete from './SchoolAutoComplete'
 import CourseAutoComplete from './CourseAutoComplete'
 import TeacherAutoComplete from './TeacherAutoComplete'
-import ClassAutoComplete from './ClassAutoComplete'
 import {
   StyledFilterWrapper,
   StyledGoButton,
@@ -24,11 +24,19 @@ import {
 } from '../../../../common/styled'
 
 import {
+  getDropDownData,
+  filteredDropDownData,
+  processTestIds,
+} from '../utils/transformers'
+
+import {
   getReportsSARFilterLoadingState,
   getSARFilterDataRequestAction,
   getReportsSARFilterData,
-  getFiltersAndTestIdSelector,
-  setFiltersOrTestIdAction,
+  getFiltersSelector,
+  setFiltersAction,
+  getTestIdSelector,
+  setTestIdAction,
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
 } from '../filterDataDucks'
@@ -58,11 +66,13 @@ const getTestIdFromURL = (url) => {
 const SingleAssessmentReportFilters = ({
   loading,
   SARFilterData,
+  filters,
+  testId,
   user,
   role,
   getSARFilterDataRequest,
-  filtersAndTestId: { filters, testId },
-  setFiltersOrTestId,
+  setFilters: _setFilters,
+  setTestId: _setTestId,
   onGoClick: _onGoClick,
   location,
   style,
@@ -80,14 +90,27 @@ const SingleAssessmentReportFilters = ({
   const [selectedClass, setSelectedClass] = useState(null)
   const [selectedGroup, setSelectedGroup] = useState(null)
 
+  const testDataOverflow = get(
+    SARFilterData,
+    'data.result.testDataOverflow',
+    false
+  )
   const performanceBandProfiles = get(SARFilterData, 'data.result.bandInfo', [])
   const standardProficiencyProfiles = get(
     SARFilterData,
     'data.result.scaleInfo',
     []
   )
+  const getTitleByTestId = (urlTestId) => {
+    const arr = get(SARFilterData, 'data.result.testData', [])
+    const item = arr.find((o) => o.testId === urlTestId)
 
-  const defaultTermId = get(user, 'orgData.defaultTermId', '')
+    if (item) {
+      return item.testName
+    }
+    return ''
+  }
+
   const schoolYear = useMemo(() => {
     let schoolYears = []
     const arr = get(user, 'orgData.terms', [])
@@ -95,7 +118,7 @@ const SingleAssessmentReportFilters = ({
       schoolYears = arr.map((item) => ({ key: item._id, title: item.name }))
     }
     return schoolYears
-  }, [user])
+  })
 
   useEffect(() => {
     if (SARFilterData !== prevSARFilterData) {
@@ -105,7 +128,7 @@ const SingleAssessmentReportFilters = ({
       )
       const termId =
         search.termId ||
-        defaultTermId ||
+        get(user, 'orgData.defaultTermId', '') ||
         (schoolYear.length ? schoolYear[0].key : '')
       const q = { ...search, termId }
       if (firstLoad && isEmpty(search)) {
@@ -115,6 +138,8 @@ const SingleAssessmentReportFilters = ({
     }
   }, [])
 
+  let processedTestIds
+  let dropDownData
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
     let search = qs.parse(location.search, { ignoreQueryPrefix: true })
     search.testId = getTestIdFromURL(location.pathname)
@@ -126,21 +151,27 @@ const SingleAssessmentReportFilters = ({
       user.role === roleuser.DISTRICT_ADMIN ||
       user.role === roleuser.SCHOOL_ADMIN
     ) {
-      search.assessmentType =
+      savedFilters.assessmentType =
         search.assessmentType ||
         savedFilters.assessmentType ||
         'common assessment'
     }
 
     if (firstLoad) {
+      // TODO: this needs to be changed
+      // when persistence is re-implemented for autocomplete components
       search = {
         termId: savedFilters.termId,
         subject: savedFilters.subject,
         grade: savedFilters.grade,
-        ...pickBy(search, (f) => f !== 'All' && !isEmpty(f)),
+        assessmentType: savedFilters.assessmentType,
+        ...search,
       }
     }
 
+    dropDownData = getDropDownData(SARFilterData, user)
+
+    const defaultTermId = get(user, 'orgData.defaultTermId', '')
     const urlSchoolYear =
       schoolYear.find((item) => item.key === search.termId) ||
       schoolYear.find((item) => item.key === defaultTermId) ||
@@ -163,7 +194,12 @@ const SingleAssessmentReportFilters = ({
       key: 'All',
       title: 'All Assignment Types',
     }
-    const urlTestId = search.testId || ''
+    const urlTestId = dropDownData.testIdArr.find(
+      (item) => item.key === search.testId
+    ) || {
+      key: '',
+      title: '',
+    }
 
     const obtainedFilters = {
       termId: urlSchoolYear.key,
@@ -176,26 +212,92 @@ const SingleAssessmentReportFilters = ({
       teacherId: search.teacherId || 'All',
       assessmentType: urlAssessmentType.key,
     }
-    const urlParams = { ...obtainedFilters }
 
+    dropDownData = filteredDropDownData(SARFilterData, user, obtainedFilters)
+    processedTestIds = processTestIds(
+      dropDownData,
+      obtainedFilters,
+      urlTestId.key,
+      role,
+      user
+    )
+
+    const urlParams = { ...obtainedFilters }
+    let filteredUrlTestId = urlTestId.key
+    if (
+      urlTestId.key !== processedTestIds.validTestId ||
+      urlTestId.key === ''
+    ) {
+      filteredUrlTestId = processedTestIds.testIds.length
+        ? processedTestIds.testIds[0].key
+        : ''
+    }
     if (role === 'teacher') {
       delete urlParams.schoolId
       delete urlParams.teacherId
     }
 
-    // set filters and testId
-    setFiltersOrTestId({ filters: urlParams, testId: urlTestId })
-    // update prevSARFilterData
+    _setFilters(urlParams)
+    _setTestId(filteredUrlTestId)
+
+    if (firstLoad) {
+      setFirstLoad(false)
+      _onGoClick({
+        selectedTest: {
+          key: filteredUrlTestId,
+          title: getTitleByTestId(filteredUrlTestId),
+        },
+        filters: urlParams,
+      })
+    }
+
     setPrevSARFilterData(SARFilterData)
   }
+
+  dropDownData = useMemo(
+    () => filteredDropDownData(SARFilterData, user, { ...filters }),
+    [SARFilterData, filters]
+  )
+
+  processedTestIds = useMemo(
+    () =>
+      processTestIds(
+        dropDownData,
+        {
+          termId: filters.termId,
+          subject: filters.subject,
+          grade: filters.grade,
+          courseId: filters.courseId,
+          classId: filters.classId,
+          groupId: filters.groupId,
+          schoolId: filters.schoolId,
+          teacherId: filters.teacherId,
+          assessmentType: filters.assessmentType,
+        },
+        testId,
+        role,
+        user
+      ),
+    [SARFilterData, filters, testId]
+  )
 
   const onGoClick = () => {
     const settings = {
       filters: { ...filters },
-      selectedTest: { key: testId },
+      selectedTest: { key: testId, title: getTitleByTestId(testId) },
     }
     setShowApply(false)
     _onGoClick(settings)
+  }
+
+  const setFilters = (_filters) => {
+    setShowApply(true)
+    _setFilters(_filters)
+  }
+
+  const setTestId = (_testId) => {
+    setShowApply(true)
+    _setTestId(_testId)
   }
 
   const getNewPathname = () => {
@@ -204,28 +306,26 @@ const SingleAssessmentReportFilters = ({
     return `${splitted.join('/')}/`
   }
 
-  const updateTestId = (selected) => {
-    const _testId = selected.key || ''
-    setFiltersOrTestId({ testId: _testId })
-    if (firstLoad) {
-      setFirstLoad(false)
-      _onGoClick({
-        filters: { ...filters },
-        selectedTest: { key: _testId },
-      })
-    } else {
-      setShowApply(true)
-    }
-  }
-
-  const updateFilterDropdownCB = (selected, keyName) => {
+  const updateFilterDropdownCB = (
+    selected,
+    keyName,
+    updateFilterData = true
+  ) => {
     const _filters = {
       ...filters,
       [keyName]: selected.key,
     }
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
-    setFiltersOrTestId({ filters: _filters })
-    setShowApply(true)
+    if (updateFilterData) {
+      history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
+      const q = pickBy(_filters, (f) => f !== 'All' && !isEmpty(f))
+      getSARFilterDataRequest(q)
+    }
+    setFilters(_filters)
+  }
+
+  const onTestIdChange = (selected) => {
+    const _testId = selected.key
+    setTestId(_testId)
   }
 
   const updateSearchableFilter = (selected, id, callback) => {
@@ -237,6 +337,22 @@ const SingleAssessmentReportFilters = ({
     () =>
       standardProficiencyProfiles.map((s) => ({ key: s._id, title: s.name })),
     [standardProficiencyProfiles]
+  )
+
+  const assessmentNameFilter = (
+    <SearchField>
+      <FilterLabel>Assessment Name</FilterLabel>
+      <AutocompleteDropDown
+        containerClassName="single-assessment-report-test-autocomplete"
+        data={(processedTestIds.testIds || []).map((t) => ({
+          ...t,
+          title: `${t.title} (ID: ${t.key?.substring(t.key.length - 5) || ''})`,
+        }))}
+        by={testId}
+        prefix="Assessment Name"
+        selectCB={onTestIdChange}
+      />
+    </SearchField>
   )
 
   return loading ? (
@@ -257,35 +373,19 @@ const SingleAssessmentReportFilters = ({
           <ControlDropDown
             by={filters.termId}
             selectCB={(e) => updateFilterDropdownCB(e, 'termId')}
-            data={schoolYear}
+            data={dropDownData.schoolYear}
             prefix="School Year"
             showPrefixOnSelected={false}
           />
         </SearchField>
-        {prevSARFilterData && (
-          <SearchField>
-            <FilterLabel>Assessment</FilterLabel>
-            <AssessmentAutoComplete
-              firstLoad={firstLoad}
-              termId={filters.termId}
-              grade={filters.grade !== 'All' && filters.grade}
-              subject={filters.subject !== 'All' && filters.subject}
-              assessmentType={
-                filters.assessmentType !== 'All' && filters.assessmentType
-              }
-              selectedTestId={testId || getTestIdFromURL(location.pathname)}
-              selectCB={updateTestId}
-            />
-          </SearchField>
-        )}
         <SearchField>
           <FilterLabel>Grade</FilterLabel>
-          <ControlDropDown
+          <AutocompleteDropDown
+            prefix="Grade"
+            className="custom-1-scrollbar"
             by={filters.grade}
             selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
             data={staticDropDownData.grades}
-            prefix="Grade"
-            showPrefixOnSelected={false}
           />
         </SearchField>
         <SearchField>
@@ -322,14 +422,23 @@ const SingleAssessmentReportFilters = ({
         )}
         <SearchField>
           <FilterLabel>Assessment Type</FilterLabel>
-          <ControlDropDown
+          <AutocompleteDropDown
+            prefix="Assessment Type"
             by={filters.assessmentType}
             selectCB={(e) => updateFilterDropdownCB(e, 'assessmentType')}
             data={staticDropDownData.assessmentType}
-            prefix="Assessment Type"
-            showPrefixOnSelected={false}
           />
         </SearchField>
+        {testDataOverflow ? (
+          <Tooltip
+            title="Year, Grade and Subject filters need to be selected to retrieve all assessments"
+            placement="right"
+          >
+            {assessmentNameFilter}
+          </Tooltip>
+        ) : (
+          assessmentNameFilter
+        )}
         {isStandardProficiencyRequired && (
           <SearchField>
             <FilterLabel>Standard Proficiency</FilterLabel>
@@ -411,7 +520,8 @@ const enhance = compose(
     (state) => ({
       loading: getReportsSARFilterLoadingState(state),
       SARFilterData: getReportsSARFilterData(state),
-      filtersAndTestId: getFiltersAndTestIdSelector(state),
+      filters: getFiltersSelector(state),
+      testId: getTestIdSelector(state),
       role: getUserRole(state),
       districtId: getUserOrgId(state),
       user: getUser(state),
@@ -427,7 +537,8 @@ const enhance = compose(
       getSARFilterDataRequest: getSARFilterDataRequestAction,
       loadPerformanceBand: receivePerformanceBandAction,
       loadStandardProficiency: receiveStandardsProficiencyAction,
-      setFiltersOrTestId: setFiltersOrTestIdAction,
+      setFilters: setFiltersAction,
+      setTestId: setTestIdAction,
       setPrevSARFilterData: setPrevSARFilterDataAction,
     }
   )

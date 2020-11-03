@@ -32,7 +32,6 @@ const fetchCustomHeader = {
     // Return the new request
     return new Request(request.url, {
       headers: myHeader,
-      credentials: 'include',
       mode: 'cors',
     })
   },

@@ -266,7 +266,6 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Assessment</FilterLabel>
             <AssessmentAutoComplete
-              firstLoad={firstLoad}
               termId={filters.termId}
               grade={filters.grade !== 'All' && filters.grade}
               subject={filters.subject !== 'All' && filters.subject}

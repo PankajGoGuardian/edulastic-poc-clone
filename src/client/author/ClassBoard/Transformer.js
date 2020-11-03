@@ -57,7 +57,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
       (testItemsDataKeyed[testItemId].data &&
         testItemsDataKeyed[testItemId].data.questions) ||
       []
-      const practiceUsage = isPracticeUsage(questions);
+    const practiceUsage = isPracticeUsage(questions)
     if (!questions.length) {
       qids = [
         ...qids,
@@ -78,10 +78,11 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           // .filter(x => !x.scoringDisabled)
           .map((x, index) => ({
             id: x.id,
-            maxScore:practiceUsage?0:
-              index === 0
-                ? testItemsDataKeyed[testItemId].itemLevelScore
-                : undefined,
+            maxScore: practiceUsage
+              ? 0
+              : index === 0
+              ? testItemsDataKeyed[testItemId].itemLevelScore
+              : undefined,
             weight: questions.length,
             disabled: x.scoringDisabled || index > 0,
             testItemId,
@@ -96,7 +97,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
         ...questions.map((x) => ({
           id: x.id,
           weight: 1,
-          maxScore:practiceUsage?0: get(x, ['validation', 'validResponse', 'score'], 0),
+          maxScore: practiceUsage
+            ? 0
+            : get(x, ['validation', 'validResponse', 'score'], 0),
           testItemId,
           qids: [x.id],
           qLabel: x.qLabel,
@@ -177,9 +180,9 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
     const questions = get(testItem, ['data', 'questions'], [])
     const questionIndex = questions.findIndex((x) => x.id === qid)
     const questionNeeded = questions[questionIndex]
-    const practiceUsage = isPracticeUsage(questions);
-    if(practiceUsage){
-      return 0;
+    const practiceUsage = isPracticeUsage(questions)
+    if (practiceUsage) {
+      return 0
     }
     if (questionNeeded) {
       // for item level scoring handle scores as whole instead of each questions
@@ -231,9 +234,9 @@ const getMaxScoreFromItem = (testItem) => {
   if (!testItem) {
     return total
   }
-  const practiceUsage = isPracticeUsage(testItem?.data?.questions || []);
-  if(practiceUsage){
-    return 0;
+  const practiceUsage = isPracticeUsage(testItem?.data?.questions || [])
+  if (practiceUsage) {
+    return 0
   }
   if (testItem?.itemLevelScoring) {
     return testItem.itemLevelScore || 0
@@ -591,17 +594,19 @@ export const transformGradeBookResponse = (
               el
             )
 
-            const isPracticeUsage = questionMaxScore === true && score === 0 && (graded || skipped);
+            const practiceUsage =
+              questionMaxScore === true && score === 0 && (graded || skipped)
             if (score > 0 && skipped) {
               skipped = false
             }
             if (_qids && _qids.length) {
-              correct = (score === questionMaxScore && score > 0) || (isPracticeUsage && correct)
+              correct =
+                (score === questionMaxScore && score > 0) ||
+                (practiceUsage && correct)
               if (!correct) {
                 partialCorrect = score > 0 && score <= questionMaxScore
               }
             }
-            console.log({isPracticeUsage,questionMaxScore,score,graded,skipped})
             return {
               ...(studentResponse ? remainingProps : {}),
               _id,
@@ -623,7 +628,7 @@ export const transformGradeBookResponse = (
               userId: studentId,
               qActId: currentQuestionActivity._id,
               scratchPad,
-              isPracticeUsage,
+              practiceUsage,
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],
                 userResponse,

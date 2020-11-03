@@ -54,7 +54,6 @@ import Group4065 from '../assets/keyboardButtons/4065.svg'
 // Operators
 import Group2737 from '../assets/keyboardButtons/2737.svg'
 import Group2735 from '../assets/keyboardButtons/2735.svg'
-import Group2736 from '../assets/keyboardButtons/2736.svg'
 import Group2788 from '../assets/keyboardButtons/2788.svg'
 // trignometry
 import Group2243 from '../assets/keyboardButtons/2243.svg'
@@ -136,9 +135,7 @@ const OPERATORS = [
   },
   {
     handler: '\\times',
-    label: (
-      <CustomImage src={Group2736} width={10} height={10} role="presentation" />
-    ),
+    label: '*',
     types: ['basic', 'basic_wo_number', 'intermediate'],
     command: 'write',
   },
@@ -410,9 +407,7 @@ const INTERMEDIATE_WO_NUMBER = [
   },
   {
     handler: '\\times',
-    label: (
-      <CustomImage src={Group2736} width={10} height={10} role="presentation" />
-    ),
+    label: '*',
     types: ['intermediate_wo_number'],
     command: 'write',
   },

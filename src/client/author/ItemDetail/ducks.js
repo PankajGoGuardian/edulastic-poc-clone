@@ -688,6 +688,30 @@ const removeTab = (state, payload) =>
     } else if (passage.structure.tabs.length >= payload) {
       passage.structure.tabs.splice(payload, 1)
     }
+    const { updatedWidgets, deletedWidgetIds } = (
+      passage?.structure?.widgets || []
+    ).reduce(
+      (acc, curr) => {
+        if (curr.tabIndex === payload) {
+          acc.deletedWidgetIds.push(curr.reference)
+        } else {
+          let { tabIndex } = curr
+          if (tabIndex > payload) {
+            tabIndex--
+          }
+          acc.updatedWidgets.push({ ...curr, tabIndex })
+        }
+        return acc
+      },
+      {
+        updatedWidgets: [],
+        deletedWidgetIds: [],
+      }
+    )
+    passage.structure.widgets = updatedWidgets
+    passage.data = passage.data.filter(
+      ({ id }) => !deletedWidgetIds.includes(id)
+    )
     return newState
   })
 

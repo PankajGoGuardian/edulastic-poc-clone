@@ -6,6 +6,7 @@ import {
   themeColorLighter,
   darkBlue2,
 } from '@edulastic/colors'
+import { isPracticeUsage } from '../../../author/ItemDetail/Transformer'
 
 export const NUMBER_OF_BARS = 10
 
@@ -92,10 +93,10 @@ export const convertData = (questionActivities, testItems) => {
         maxScore,
         timeSpent,
         pendingEvaluation,
-        practiceUsage,
         correct,
       } = activity
       let { notStarted, skipped } = activity
+      const practiceUsage = isPracticeUsage([question])
       let skippedx = false
 
       if (testItemId) {
@@ -105,7 +106,7 @@ export const convertData = (questionActivities, testItems) => {
 
       if (!notStarted) {
         questionActivity.totalAttemps += 1
-      } else if (score > 0 || (practiceUsage && graded) || skipped) {
+      } else if (score > 0 || practiceUsage) {
         notStarted = false
       } else {
         questionActivity.notStartedNum += 1
@@ -130,7 +131,12 @@ export const convertData = (questionActivities, testItems) => {
         (practiceUsage && correct)
       ) {
         questionActivity.correctAttemps += 1
-      } else if (score === 0 && !notStarted && maxScore > 0 && !skippedx) {
+      } else if (
+        score === 0 &&
+        !notStarted &&
+        (maxScore > 0 || practiceUsage) &&
+        !skippedx
+      ) {
         questionActivity.incorrectAttemps += 1
       } else if (score > 0 && score < maxScore) {
         questionActivity.partialAttempts += 1

@@ -15,7 +15,11 @@ import {
   addPlugins,
 } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
-import { StaleWhileRevalidate, NetworkFirst } from 'workbox-strategies'
+import {
+  StaleWhileRevalidate,
+  NetworkFirst,
+  NetworkOnly,
+} from 'workbox-strategies'
 
 clientsClaim()
 
@@ -47,6 +51,11 @@ precacheAndRoute(self.__WB_MANIFEST)
 // https://developers.google.com/web/fundamentals/architecture/app-shell
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
 const apiRegex = new RegExp('/?(api|oauth)/.*', 'i')
+
+// bypass /canvas route always
+registerRoute(({ url }) => {
+  return url.pathname.includes('/canvas/auth_code')
+}, new NetworkOnly())
 
 registerRoute(apiRegex, new NetworkFirst())
 

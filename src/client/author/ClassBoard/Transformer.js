@@ -603,7 +603,7 @@ export const transformGradeBookResponse = (
               el
             )
 
-            const isPracticeQ =
+            const practiceUsage =
               questionMaxScore === true && score === 0 && (graded || skipped)
             if (score > 0 && skipped) {
               skipped = false
@@ -611,18 +611,11 @@ export const transformGradeBookResponse = (
             if (_qids && _qids.length) {
               correct =
                 (score === questionMaxScore && score > 0) ||
-                (isPracticeQ && correct)
+                (practiceUsage && correct)
               if (!correct) {
                 partialCorrect = score > 0 && score <= questionMaxScore
               }
             }
-            console.log({
-              isPracticeQ,
-              questionMaxScore,
-              score,
-              graded,
-              skipped,
-            })
             return {
               ...(studentResponse ? remainingProps : {}),
               _id,
@@ -644,7 +637,7 @@ export const transformGradeBookResponse = (
               userId: studentId,
               qActId: currentQuestionActivity._id,
               scratchPad,
-              isPracticeUsage: isPracticeQ,
+              practiceUsage,
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],
                 userResponse,

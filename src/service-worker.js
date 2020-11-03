@@ -23,10 +23,14 @@ const fetchCustomHeader = {
   requestWillFetch: async ({ request }) => {
     // Check if it's from your domain
     const myHeader = new Headers(request.headers)
-    myHeader.append('origin', 'app.edulastic.com')
+    myHeader.append('Origin', 'https://app.edulastic.com')
 
     // Return the new request
-    return new Request(request.url, { headers: myHeader })
+    return new Request(request.url, {
+      headers: myHeader,
+      credentials: 'include',
+      mode: 'cors',
+    })
   },
 }
 

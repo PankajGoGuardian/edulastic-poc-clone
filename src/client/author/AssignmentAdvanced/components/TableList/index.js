@@ -193,10 +193,10 @@ const TableList = ({
   }, [rowData])
 
   let showPagination = false
-  if (totalAssignmentsClasses > 10) {
+  if (totalAssignmentsClasses > 100) {
     showPagination = {
-      pageSize: 10,
-      total: totalAssignmentsClasses || rowData?.length || 0,
+      pageSize: 100,
+      total: totalAssignmentsClasses || 0,
       current: pageNo || 1,
     }
   }
@@ -286,7 +286,11 @@ const TableList = ({
   const renderBulkActions = () => (
     <BulkActionsWrapper>
       <div>
-        <span data-cy="totalSelected">{selectedRows.length}</span>
+        <span data-cy="totalSelected">
+          {rowData.length > selectedRows.length
+            ? selectedRows.length
+            : totalAssignmentsClasses}
+        </span>
         <span>Class(es) Selected</span>
       </div>
       <BulkActionsButtonContainer>

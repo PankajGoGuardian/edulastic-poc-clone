@@ -1,6 +1,7 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
 import next from 'immer'
+import { get, isEmpty, groupBy, uniqBy, uniq } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -18,7 +19,6 @@ import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
   getSAFFilterSelectedPerformanceBandProfile,
-  getTestListSelector,
 } from '../common/filterDataDucks'
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
@@ -43,13 +43,8 @@ const PeerPerformance = ({
   peerPerformance,
   getPeerPerformance,
   settings,
-  testList,
   filters,
 }) => {
-  const selectedTest =
-    testList.find((t) => t._id === settings.selectedTest.key) || {}
-  const assessmentName = selectedTest.title || ''
-
   const bandInfo = useMemo(
     () =>
       performanceBandProfiles.find(
@@ -137,6 +132,8 @@ const PeerPerformance = ({
   const onResetClickCB = () => {
     setChartFilter({})
   }
+
+  const assessmentName = get(settings, 'selectedTest.title', '')
 
   if (settings.selectedTest && !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
@@ -264,7 +261,6 @@ const enhance = compose(
       ),
       performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
       peerPerformance: getReportsPeerPerformance(state),
-      testList: getTestListSelector(state),
     }),
     {
       getPeerPerformance: getPeerPerformanceRequestAction,

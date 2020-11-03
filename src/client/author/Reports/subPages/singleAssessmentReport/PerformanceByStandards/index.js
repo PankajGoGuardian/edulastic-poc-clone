@@ -29,7 +29,6 @@ import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterSelectedStandardsProficiencyProfile,
   getSAFFilterStandardsProficiencyProfiles,
-  getTestListSelector,
 } from '../common/filterDataDucks'
 import CardHeader, {
   CardDropdownWrapper,
@@ -64,8 +63,8 @@ const PerformanceByStandards = ({
   loading,
   report = {},
   getPerformanceByStandards,
+  match,
   settings,
-  testList,
   role,
   interestedCurriculums,
   isCsvDownloading,
@@ -96,10 +95,6 @@ const PerformanceByStandards = ({
 
   const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0
   const isViewByStandards = viewBy === viewByMode.STANDARDS
-
-  const selectedTest =
-    testList.find((t) => t._id === settings.selectedTest.key) || {}
-  const assessmentName = selectedTest.title || ''
 
   const reportWithFilteredSkills = useMemo(
     () =>
@@ -142,6 +137,13 @@ const PerformanceByStandards = ({
       return true
     }
   )
+
+  const getTitleByTestId = () => {
+    const {
+      selectedTest: { title: testTitle = '' },
+    } = settings
+    return testTitle
+  }
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -218,6 +220,10 @@ const PerformanceByStandards = ({
     filters
   )
 
+  const { testId } = match.params
+  const testName = getTitleByTestId(testId)
+  const assignmentInfo = `${testName}`
+
   const selectedStandardId = standardsDropdownData.find(
     (s) => `${s.key}` === `${standardId}`
   )
@@ -247,7 +253,7 @@ const PerformanceByStandards = ({
         <Row type="flex" justify="start">
           <Col xs={24} sm={24} md={12} lg={8} xl={12}>
             <StyledH3>
-              Performance by {capitalize(`${viewBy}s`)} | {assessmentName}
+              Performance by {capitalize(`${viewBy}s`)} | {assignmentInfo}
             </StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={16} xl={12}>
@@ -303,7 +309,7 @@ const PerformanceByStandards = ({
         <CardHeader>
           <CardTitle>
             {capitalize(viewBy)} Performance Analysis by{' '}
-            {findCompareByTitle(compareBy)} | {assessmentName}
+            {findCompareByTitle(compareBy)} | {assignmentInfo}
           </CardTitle>
           <CardDropdownWrapper>
             <ControlDropDown
@@ -345,6 +351,7 @@ PerformanceByStandards.propTypes = {
   loading: PropTypes.bool.isRequired,
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
+  match: PropTypes.object.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
   selectedStandardProficiencyProfile: PropTypes.string.isRequired,
   standardProficiencyProfiles: PropTypes.array.isRequired,
@@ -366,7 +373,6 @@ const enhance = connect(
     standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
       state
     ),
-    testList: getTestListSelector(state),
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction,

@@ -51,10 +51,7 @@ const ControlDropDown = ({
     let item = null
     if (data.length) {
       item = data.find((_item) => {
-        if (typeof selected === 'string' && _item.key === selected) {
-          return true
-        }
-        if (typeof selected === 'object' && _item.key === selected.key) {
+        if (_item.key === selected.key) {
           return true
         }
       })

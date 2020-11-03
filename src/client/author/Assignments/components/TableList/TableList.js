@@ -153,6 +153,7 @@ const TableList = ({
   toggleAddItemFolderModal,
   toggleRemovalFolderModal,
   bulkDownloadGradesAndResponses,
+  showEmbedLinkModal,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
   const [details, setdetails] = useState(true)
@@ -639,6 +640,7 @@ const TableList = ({
                 ),
                 handleDownloadResponses,
                 userRole,
+                showEmbedLinkModal,
               })}
               placement="bottomRight"
               trigger={['click']}

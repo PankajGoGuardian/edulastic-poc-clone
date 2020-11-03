@@ -857,6 +857,7 @@ class Container extends PureComponent {
 
   handlePublishTest = (assignFlow = false) => {
     const {
+      questions: assessmentQuestions,
       publishTest,
       test,
       match,
@@ -865,6 +866,9 @@ class Container extends PureComponent {
       setEditEnable,
     } = this.props
     const { _id } = test
+    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+      return
+    }
     if (this.validateTest(test)) {
       const newTest = this.modifyTest()
       publishTest({

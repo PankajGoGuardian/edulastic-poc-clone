@@ -86,6 +86,23 @@ const GradebookTable = styled(StyledTable)`
   }
 `
 
+const compareByStudentsColumns = [
+  {
+    title: 'SIS ID',
+    dataIndex: 'sisId',
+    width: 150,
+    key: 'sisId',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'STUDENT NUMBER',
+    dataIndex: 'studentNumber',
+    width: 150,
+    key: 'studentNumber',
+    visibleOn: ['csv'],
+  },
+]
+
 const StandardsGradebookTableComponent = ({
   filteredDenormalizedData,
   masteryScale,
@@ -324,14 +341,14 @@ const StandardsGradebookTableComponent = ({
           </Link>
         ),
       },
-      {
-        title: 'SIS ID',
-        dataIndex: 'sisId',
-        width: 150,
-        key: 'sisId',
-        visibleOn: ['csv'],
-      },
     ]
+
+    if (tableDdFilters.compareBy === 'studentId') {
+      let index = 1
+      for (const column of compareByStudentsColumns) {
+        result.splice(index++, 0, column)
+      }
+    }
 
     if (extraColsNeeded) {
       result = [

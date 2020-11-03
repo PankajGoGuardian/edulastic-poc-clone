@@ -150,6 +150,7 @@ export const parseTrendData = (
     const tests = {}
     const {
       sisId,
+      studentNumber,
       assignmentId,
       testActivityId,
       assessmentDate,
@@ -190,6 +191,7 @@ export const parseTrendData = (
       assessmentDate,
       startDate,
       sisId,
+      studentNumber,
       assignmentId,
       testActivityId,
       ...dInfo,

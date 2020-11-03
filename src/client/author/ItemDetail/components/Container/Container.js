@@ -24,7 +24,7 @@ import {
   IconChevronLeft,
 } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
-import { Layout, Button, Pagination } from 'antd'
+import { Row, Col, Layout, Button, Pagination } from 'antd'
 import ItemDetailContext, {
   COMPACT,
   DEFAULT,
@@ -1028,25 +1028,31 @@ class Container extends Component {
             />
           </ItemHeader>
           <ContentWrapper data-cy="item-detail-container">
-            <BreadCrumbBar justifyContent="space-between">
-              {windowWidth > MAX_MOBILE_WIDTH ? (
-                <SecondHeadBar
-                  itemId={item._id}
-                  breadCrumbQType={breadCrumbQType}
-                  breadcrumb={this.breadCrumbs}
-                />
-              ) : (
-                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-              )}
-
-              <FlexContainer alignItems="center" justifyContent="flex-end">
-                {this.passageNavigator}
-                {view === 'preview' && (
-                  <RightActionButtons>
-                    {this.renderButtons()}
-                  </RightActionButtons>
+            <BreadCrumbBar>
+              <Col span={8}>
+                {windowWidth > MAX_MOBILE_WIDTH ? (
+                  <SecondHeadBar
+                    itemId={item._id}
+                    breadCrumbQType={breadCrumbQType}
+                    breadcrumb={this.breadCrumbs}
+                  />
+                ) : (
+                  <BackLink onClick={history.goBack}>
+                    Back to Item List
+                  </BackLink>
                 )}
-              </FlexContainer>
+              </Col>
+
+              <Col span={16}>
+                <FlexContainer alignItems="center" justifyContent="flex-end">
+                  {this.passageNavigator}
+                  {view === 'preview' && (
+                    <RightActionButtons>
+                      {this.renderButtons()}
+                    </RightActionButtons>
+                  )}
+                </FlexContainer>
+              </Col>
             </BreadCrumbBar>
             {view === 'edit' && this.renderEdit()}
             {view === 'preview' && this.renderPreview()}
@@ -1170,7 +1176,7 @@ const enhance = compose(
 
 export default enhance(Container)
 
-const BreadCrumbBar = styled(FlexContainer)`
+const BreadCrumbBar = styled(Row)`
   padding: 12px 0px 32px;
 `
 

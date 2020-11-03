@@ -1,4 +1,5 @@
 import next from 'immer'
+import { map, sumBy } from 'lodash'
 import {
   getMaxScale,
   getOverallMasteryCount,
@@ -10,16 +11,12 @@ export const augmentDomainStandardMasteryData = (
   scaleInfo = []
 ) => {
   const maxScale = getMaxScale(scaleInfo)
-  return domains.map((domain) =>
-    next(domain, (draftDomain) => {
-      const { totalScoreSum, maxScoreSum } = domain.standards.reduce(
-        (res, ele) => ({
-          totalScoreSum: res.totalScoreSum + (Number(ele.totalScore) || 0),
-          maxScoreSum: res.maxScoreSum + (Number(ele.maxScore) || 0),
-        }),
-        { totalScoreSum: 0, maxScoreSum: 0 }
+  return map(domains, (domain) => {
+    return next(domain, (draftDomain) => {
+      const score = percentage(
+        sumBy(domain.standards, 'totalScore'),
+        sumBy(domain.standards, 'maxScore')
       )
-      const score = percentage(totalScoreSum, maxScoreSum)
       draftDomain.masteredCount = getOverallMasteryCount(
         domain.standards,
         maxScale
@@ -27,5 +24,5 @@ export const augmentDomainStandardMasteryData = (
       draftDomain.scale = getProficiencyBand(score, scaleInfo)
       draftDomain.score = score
     })
-  )
+  })
 }

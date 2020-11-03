@@ -1,6 +1,6 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
-import { isEmpty } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -22,7 +22,6 @@ import {
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader,
 } from './ducks'
-import { getTestListSelector } from '../common/filterDataDucks'
 import dropDownData from './static/json/dropDownData.json'
 import { getChartData, getTableData } from './utils/transformers'
 
@@ -33,16 +32,11 @@ const QuestionAnalysis = ({
   questionAnalysis,
   getQuestionAnalysis,
   settings,
-  testList,
 }) => {
   const [compareBy, setCompareBy] = useState(
     role === 'teacher' ? 'groupId' : 'schoolId'
   )
   const [chartFilter, setChartFilter] = useState({})
-
-  const selectedTest =
-    testList.find((t) => t._id === settings.selectedTest.key) || {}
-  const assessmentName = selectedTest.title || ''
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -64,7 +58,7 @@ const QuestionAnalysis = ({
 
   const { compareByDropDownData, dropDownKeyToLabel } = dropDownData
 
-  const updateCompareByCB = (event, selected) => {
+  const updateCompareByCB = (event, selected, comData) => {
     setCompareBy(selected.key)
   }
 
@@ -89,6 +83,8 @@ const QuestionAnalysis = ({
       </>
     )
   }
+
+  const assessmentName = get(settings, 'selectedTest.title', '')
 
   if (settings.selectedTest && !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
@@ -181,7 +177,6 @@ export default connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state),
-    testList: getTestListSelector(state),
   }),
   { getQuestionAnalysis: getQuestionAnalysisRequestAction }
 )(QuestionAnalysis)

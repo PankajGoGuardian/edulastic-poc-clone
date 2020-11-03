@@ -18,7 +18,6 @@ import { saga as customReportSaga } from './admin/Components/CustomReportContain
 import publisherSagas from './publisher/sagas'
 import { watcherSaga as resetPasswordSaga } from './SetParentPassword/ducks'
 import { publicTestSaga } from './publicTest'
-import { assignmentEmbedLinkSaga } from './assignmentEmbedLink'
 
 export default function* () {
   yield all([
@@ -38,6 +37,5 @@ export default function* () {
     StudentPlaylistSaga(),
     resetPasswordSaga(),
     publicTestSaga(),
-    assignmentEmbedLinkSaga(),
   ])
 }

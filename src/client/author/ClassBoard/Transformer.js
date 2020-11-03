@@ -7,6 +7,7 @@ import { getMathHtml } from '@edulastic/common'
 import { red, yellow, themeColorLighter } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
 import { getFormattedName } from '../Gradebook/transformers'
+import { isPracticeUsage } from '../ItemDetail/Transformer'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
@@ -56,6 +57,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
       (testItemsDataKeyed[testItemId].data &&
         testItemsDataKeyed[testItemId].data.questions) ||
       []
+      const practiceUsage = isPracticeUsage(questions);
     if (!questions.length) {
       qids = [
         ...qids,
@@ -76,7 +78,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           // .filter(x => !x.scoringDisabled)
           .map((x, index) => ({
             id: x.id,
-            maxScore:
+            maxScore:practiceUsage?0:
               index === 0
                 ? testItemsDataKeyed[testItemId].itemLevelScore
                 : undefined,
@@ -94,7 +96,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
         ...questions.map((x) => ({
           id: x.id,
           weight: 1,
-          maxScore: get(x, ['validation', 'validResponse', 'score'], 0),
+          maxScore:practiceUsage?0: get(x, ['validation', 'validResponse', 'score'], 0),
           testItemId,
           qids: [x.id],
           qLabel: x.qLabel,
@@ -175,7 +177,10 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
     const questions = get(testItem, ['data', 'questions'], [])
     const questionIndex = questions.findIndex((x) => x.id === qid)
     const questionNeeded = questions[questionIndex]
-
+    const practiceUsage = isPracticeUsage(questions);
+    if(practiceUsage){
+      return 0;
+    }
     if (questionNeeded) {
       // for item level scoring handle scores as whole instead of each questions
       if (testItem.itemLevelScoring && questionIndex === 0) {
@@ -225,6 +230,10 @@ const getMaxScoreFromItem = (testItem) => {
   let total = 0
   if (!testItem) {
     return total
+  }
+  const practiceUsage = isPracticeUsage(testItem?.data?.questions || []);
+  if(practiceUsage){
+    return 0;
   }
   if (testItem?.itemLevelScoring) {
     return testItem.itemLevelScore || 0
@@ -582,16 +591,17 @@ export const transformGradeBookResponse = (
               el
             )
 
+            const isPracticeUsage = questionMaxScore === true && score === 0 && (graded || skipped);
             if (score > 0 && skipped) {
               skipped = false
             }
             if (_qids && _qids.length) {
-              correct = score === questionMaxScore && score > 0
+              correct = (score === questionMaxScore && score > 0) || (isPracticeUsage && correct)
               if (!correct) {
                 partialCorrect = score > 0 && score <= questionMaxScore
               }
             }
-
+            console.log({isPracticeUsage,questionMaxScore,score,graded,skipped})
             return {
               ...(studentResponse ? remainingProps : {}),
               _id,
@@ -613,6 +623,7 @@ export const transformGradeBookResponse = (
               userId: studentId,
               qActId: currentQuestionActivity._id,
               scratchPad,
+              isPracticeUsage,
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],
                 userResponse,

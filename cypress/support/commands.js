@@ -15,7 +15,7 @@ const screenResolutions = Cypress.config('SCREEN_SIZES')
 const BASE_URL = Cypress.config('API_URL')
 const DEFAULT_USERS = {
   teacher: {
-    username: 'auto.teacher1@snapwiz.com',
+    username: 'auto.teacher2@snapwiz.com',
     password: 'snapwiz',
   },
   student: {

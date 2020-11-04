@@ -97,12 +97,9 @@ const PerformanceByStandards = ({
   const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0
   const isViewByStandards = viewBy === viewByMode.STANDARDS
 
-  const selectedTest = testList.find(
-    (t) => t._id === settings.selectedTest.key
-  ) || { title: '', _id: '' }
-  const assessmentName = `${
-    selectedTest.title
-  } (ID: ${selectedTest._id.substring(selectedTest._id.length - 5)})`
+  const selectedTest =
+    testList.find((t) => t._id === settings.selectedTest.key) || {}
+  const assessmentName = selectedTest.title || ''
 
   const reportWithFilteredSkills = useMemo(
     () =>

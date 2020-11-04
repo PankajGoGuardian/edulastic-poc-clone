@@ -31,7 +31,6 @@ import {
   setFiltersOrTestIdAction,
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
-  getTestListLoadingSelector,
 } from '../filterDataDucks'
 import {
   getUserRole,
@@ -58,7 +57,6 @@ const getTestIdFromURL = (url) => {
 
 const SingleAssessmentReportFilters = ({
   loading,
-  testListLoading,
   SARFilterData,
   user,
   role,
@@ -227,9 +225,7 @@ const SingleAssessmentReportFilters = ({
     }
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     setFiltersOrTestId({ filters: _filters })
-    // delay state change by 1 second
-    // to wait for the testList to start loading
-    setTimeout(() => setShowApply(true), 1000)
+    setShowApply(true)
   }
 
   const updateSearchableFilter = (selected, id, callback) => {
@@ -251,7 +247,7 @@ const SingleAssessmentReportFilters = ({
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
-        {showApply && !testListLoading && (
+        {showApply && (
           <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
         )}
       </GoButtonWrapper>
@@ -414,7 +410,6 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsSARFilterLoadingState(state),
-      testListLoading: getTestListLoadingSelector(state),
       SARFilterData: getReportsSARFilterData(state),
       filtersAndTestId: getFiltersAndTestIdSelector(state),
       role: getUserRole(state),

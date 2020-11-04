@@ -10,7 +10,8 @@ import { roleuser } from '@edulastic/constants'
 import { IconNotes, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Icon, Menu, Row, Select } from 'antd'
-import { cloneDeep, get, isEmpty } from 'lodash'
+import { get, isEmpty } from 'lodash'
+import { produce } from 'immer'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -441,14 +442,18 @@ class ClassesTable extends Component {
 
   changeFilterColumn = (value, key) => {
     const { filtersData } = this.state
-    // here we need to use cloneDeep since a simple spread operator mutates the state
-    const _filtersData = cloneDeep(filtersData)
-    _filtersData[key].filtersColumn = value
+    const _filtersData = produce(filtersData, (data) => {
+      data[key].filtersColumn = value
 
-    if (value === 'subjects' || value === 'grades' || value === 'active')
-      _filtersData[key].filtersValue = 'eq'
+      if (value === 'subjects' || value === 'grades' || value === 'active') {
+        data[key].filtersValue = 'eq'
+      }
+
+      return data
+    })
+
     // this is done so that we dont have multiple set states and we can avoid two renders
-    this.setState({ filtersData }, () => this.afterSetState(key))
+    this.setState({ filtersData: _filtersData }, () => this.afterSetState(key))
   }
 
   changeFilterValue = (value, key) => {

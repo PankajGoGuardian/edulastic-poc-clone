@@ -290,8 +290,6 @@ class App extends Component {
       isLocationInTestRedirectRoutes(location) ||
       location.pathname.includes('/kid')
 
-    const embedLink = location.pathname.split('/').includes('embed')
-
     if (
       !publicPath &&
       user.authenticating &&
@@ -305,7 +303,7 @@ class App extends Component {
     const features = user?.user?.features || {}
     let defaultRoute = ''
     let redirectRoute = ''
-    if (!publicPath && !embedLink) {
+    if (!publicPath) {
       const path = getWordsInURLPathName(location.pathname)
       const urlSearch = new URLSearchParams(location.search)
 
@@ -610,9 +608,10 @@ class App extends Component {
               path="/public/view-test/:testId"
               render={(props) => <PublicTest {...props} />}
             />
-            <Route
+            <PrivateRoute
               path="/assignments/embed/:testId"
-              render={(props) => <AssignmentEmbedLink {...props} />}
+              redirectPath={redirectRoute}
+              component={AssignmentEmbedLink}
             />
             <Route
               path="/audio-test"

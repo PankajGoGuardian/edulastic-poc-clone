@@ -429,11 +429,13 @@ export const StyledP = styled.p`
 
 export const NoDataContainer = styled.div`
   background: white;
+  color: ${fadedBlack};
   height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 17px;
+  font-size: 25px;
+  font-weight: 700;
 `
 
 export const CustomXAxisTickTooltipContainer = styled.div`

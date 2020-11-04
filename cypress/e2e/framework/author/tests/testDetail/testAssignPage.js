@@ -70,7 +70,7 @@ export default class TestAssignPage {
 
   // *** ACTIONS START ***
 
-  selectClassDropdown = () => cy.get('[data-cy = "selectClass"]').click({ force: true });
+  selectClassDropdown = () => cy.get('[data-cy = "selectClass"]').click()
 
   clickOnDropDownOptionByText = (option) => {
     cy.wait(500)
@@ -291,7 +291,7 @@ export default class TestAssignPage {
         assert(
           xhr.status === 409,
           `assigning the assignment - ${
-          xhr.status === 409 ? 'Warning' : JSON.stringify(xhr.responseBody)
+            xhr.status === 409 ? 'Warning' : JSON.stringify(xhr.responseBody)
           }`
         )
         if (duplicate.duplicate === true) this.proceedWithDuplicate()
@@ -303,7 +303,7 @@ export default class TestAssignPage {
         assert(
           xhr.status === 200,
           `assigning the assignment - ${
-          xhr.status === 200 ? 'success' : JSON.stringify(xhr.responseBody)
+            xhr.status === 200 ? 'success' : JSON.stringify(xhr.responseBody)
           }`
         )
         // TODO: will be fixed as per requirement(class id can be included)

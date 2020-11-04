@@ -15,7 +15,7 @@ const screenResolutions = Cypress.config('SCREEN_SIZES')
 const BASE_URL = Cypress.config('API_URL')
 const DEFAULT_USERS = {
   teacher: {
-    username: 'auto.teacher1@snapwiz.com',
+    username: 'auto.teacher2@snapwiz.com',
     password: 'snapwiz',
   },
   student: {
@@ -166,12 +166,19 @@ Cypress.Commands.add(
         Cypress.$('.footerDropdown').click()
         // Cypress.$('[data-cy="footer-dropdown"]').click();
         cy.wait(1000).then(() => {
-          Cypress.$('[data-cy="signout"]').click()
+          if (Cypress.$('[data-cy="signout"]').length) {
+            cy.server()
+            cy.route('POST', '**/logout').as('logout')
+            cy.get('[data-cy="signout"]').click({ force: true })
+            cy.wait('@logout')
+          }
         })
       }
     })
 
-    cy.clearToken()
+    cy.wait(1000).then(() => {
+      cy.clearToken()
+    })
     const login = new LoginPage()
     cy.wait(500).then(() => {
       cy.get('body').then(() => {
@@ -192,6 +199,8 @@ Cypress.Commands.add(
     cy.route('GET', '**/api/user-context?name=RECENT_PLAYLISTS').as(
       'curatorDash'
     )
+    // TODO: temp work-around of clearing storage again before login to ensure no redirect url on storage
+    cy.clearToken()
     login.fillLoginForm(postData.username, postData.password)
     login.clickOnSignin()
     cy.wait('@auth')
@@ -295,18 +304,18 @@ Cypress.Commands.add(
         console.log('All Tests = ', testAssign)
         // TODO: FIX this once it is fixed in UI
         testAssign.forEach((test) => {
-           cy.request({
-             url: `${BASE_URL}/assignments/${test._id}/group/${test.groupId}?testId=${test.testID}`, // added groupId as per API change
-             method: "DELETE",
-             headers: {
-               authorization: authToken,
-               "Content-Type": "application/json"
-             },
-             retryOnStatusCodeFailure: true
-           }).then(({ body }) => {
-             console.log(`${test._id} :: `, body.result);
-           });
-         });
+          cy.request({
+            url: `${BASE_URL}/assignments/${test._id}/group/${test.groupId}?testId=${test.testID}`, // added groupId as per API change
+            method: 'DELETE',
+            headers: {
+              authorization: authToken,
+              'Content-Type': 'application/json',
+            },
+            retryOnStatusCodeFailure: true,
+          }).then(({ body }) => {
+            console.log(`${test._id} :: `, body.result)
+          })
+        })
         /* testAssign.forEach((test) => {
           cy.request({
             url: `${BASE_URL}/test/${test}/delete-assignments`,

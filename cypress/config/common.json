@@ -9,6 +9,7 @@
   "modifyObstructiveCode": false,
   "requestTimeout": 60000,
   "responseTimeout": 60000,
+  "pageLoadTimeout": 120000,
   "reporter": "mocha-multi-reporters",
   "reporterOptions": {
     "configFile": "cypress/config/reporter-config.json"

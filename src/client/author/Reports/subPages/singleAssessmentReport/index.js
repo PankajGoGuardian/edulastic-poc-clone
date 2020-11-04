@@ -20,7 +20,6 @@ import { ControlDropDown } from '../../common/components/widgets/controlDropDown
 import { getNavigationTabLinks } from '../../common/util'
 
 import navigation from '../../common/static/json/navigation.json'
-import extraFilterData from './common/static/extraFilterData.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import {
@@ -28,6 +27,7 @@ import {
   getReportsSARSettings,
   resetSARSettingsAction,
 } from './ducks'
+import { getSAFilterDemographics } from './common/filterDataDucks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import {
@@ -62,6 +62,7 @@ const SingleAssessmentReportContainer = (props) => {
     cliUser,
     setShowHeader,
     preventHeaderRender,
+    demographics,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -183,7 +184,8 @@ const SingleAssessmentReportContainer = (props) => {
     'performance-by-students',
   ]
   const extraFilters = locList.includes(loc)
-    ? extraFilterData[loc].map((item) => (
+    ? demographics &&
+      demographics.map((item) => (
         <SearchField key={item.key}>
           <FilterLabel>{item.title}</FilterLabel>
           <ControlDropDown
@@ -308,6 +310,7 @@ const SingleAssessmentReportContainer = (props) => {
 const ConnectedSingleAssessmentReportContainer = connect(
   (state) => ({
     settings: getReportsSARSettings(state),
+    demographics: getSAFilterDemographics(state),
     cliUser: state.user?.isCliUser,
   }),
   {

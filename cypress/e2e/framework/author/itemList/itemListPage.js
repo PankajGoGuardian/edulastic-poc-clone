@@ -1,10 +1,8 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import MCQStandardPage from './questionType/mcq/mcqStandardPage'
 import ClozeWithTextPage from './questionType/fillInBlank/clozeWithTextPage'
 import EditItemPage from './itemDetail/editPage'
-import {
-  questionTypeKey as queTypes,
-  questionType,
-} from '../../constants/questionTypes'
+import { questionTypeKey as queTypes } from '../../constants/questionTypes'
 import MCQMultiplePage from './questionType/mcq/mcqMultiplePage'
 import MCQTrueFalsePage from './questionType/mcq/mcqTrueFalsePage'
 import MCQBlockLayoutPage from './questionType/mcq/mcqBlockLayoutPage'
@@ -42,7 +40,7 @@ class ItemListPage {
       if (Cypress.$($ele).find('.hidden-tags').length > 0)
         cy.wrap($ele)
           .find('.hidden-tags')
-          .click({ force: true })
+          .click({ force: true, multiple: true })
           .then(() => cy.wait(500))
     })
   }
@@ -262,16 +260,22 @@ class ItemListPage {
         qType = 'Multiple Choice'
         break
       case queTypes.ESSAY_RICH:
-        qType = 'Essay with rich text'
+        qType = 'Essay with Rich Text'
         break
       case queTypes.CLOZE_DROP_DOWN:
         qType = 'Text Drop Down'
+        break
+      case queTypes.CLOZE_TEXT:
+        qType = 'Text Entry'
         break
       case queTypes.CLOZE_DRAG_DROP:
         qType = 'Drag & Drop'
         break
       case queTypes.CHOICE_MATRIX_STANDARD:
         qType = 'Matching Table'
+        break
+      case queTypes.MATH_NUMERIC:
+        qType = 'Math'
         break
       default:
         assert.fail(1, 2, 'failed to match que type key in question card')
@@ -343,6 +347,51 @@ class ItemListPage {
     this.getAllItemsInListContainer().each(($ele) => {
       cy.wrap($ele).find('[data-cy="detail_index-0"]').contains(dok)
     })
+  }
+
+  getItemsMetadata = (itemKeys, filters, questionData, itemids) => {
+    itemKeys.forEach((item, ind) => {
+      const filtersObj = {}
+
+      const itemProps =
+        questionData[`${item.split('.')[0]}`][`${item.split('.')[1]}`]
+
+      filtersObj.standards = {}
+      filtersObj.standards.subject = itemProps.standards[0].subject
+      filtersObj.standards.standardSet = itemProps.standards[0].standardSet
+      filtersObj.standards.standard = itemProps.standards[0].standard
+      filtersObj.standards.grade = [itemProps.standards[0].grade]
+      if (itemProps.meta) {
+        if (itemProps.meta.dok) filtersObj.dok = itemProps.meta.dok
+        if (itemProps.meta.difficulty)
+          filtersObj.difficulty = itemProps.meta.difficulty
+        if (itemProps.meta.tags) filtersObj.tags = itemProps.meta.tags
+      }
+      if (itemids) filtersObj.id = itemids[ind]
+      filtersObj.queType = item.split('.')[0]
+      filters.push(filtersObj)
+    })
+  }
+
+  verifyQuestionTextByItemId = (itemid, text) =>
+    this.getItemById(itemid).should('contain', text)
+
+  verifyItemMetadataByItemId = (id, itemDetails) => {
+    const { dok, tags } = itemDetails
+    const { queType } = itemDetails
+    const { standard } = itemDetails.standards
+    this.getHiddenStandards(id)
+    if (standard)
+      standard.forEach((sta) => {
+        this.verifyContentById(id, sta)
+      })
+    if (dok) this.verifydokByItemId(id, dok)
+    if (tags)
+      tags.forEach((tag) => {
+        this.verifyContentById(id, tag)
+      })
+    if (queType) this.verifyQuestionTypeById(id, queType)
+    this.getQuestionTypeById(id).click({ force: true })
   }
   // *** APPHELPERS END ***
 }

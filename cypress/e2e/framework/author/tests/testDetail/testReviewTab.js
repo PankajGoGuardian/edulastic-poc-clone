@@ -245,5 +245,19 @@ export default class TestReviewTab {
         .then((val) => expect(val).to.be.oneOf(items))
     })
   }
+
+  verifyActionButtonsByItemId = (id, isDraftTest, isExpanded = false) => {
+    this.getExpandButtonByItemId(id).should('be.visible')
+    if (isDraftTest) {
+      this.getCheckBoxByItemId(id, isExpanded).should('exist')
+      if (!isExpanded) this.getDragHandlerByItemId(id).should('exist')
+      this.getDeleteButtonByItemId(id).should('be.visible')
+      this.getPointsOnQueCardByid(id).should('not.have.attr', 'disabled')
+    } else {
+      this.getCheckBoxByItemId(id, isExpanded).should('not.exist')
+      this.getDeleteButtonByItemId(id).should('not.exist')
+      this.getPointsOnQueCardByid(id).should('have.attr', 'disabled')
+    }
+  }
   // *** APPHELPERS END ***
 }

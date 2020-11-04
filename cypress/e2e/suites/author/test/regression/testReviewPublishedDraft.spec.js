@@ -188,39 +188,17 @@ describe(`${FileHelper.getSpecName(
           )
         })
         it(`> verify  ${item}-${index + 1} metadata`, () => {
-          const { dok, tags } = itemDetails[index]
-          const { queType } = itemDetails[index]
-          const { standard } = itemDetails[index].standards
-          itemListPage.getHiddenStandards(itemIds[index])
-          standard.forEach((sta) => {
-            itemListPage.verifyContentById(itemIds[index], sta)
-          })
-          itemListPage.verifydokByItemId(itemIds[index], dok)
-          tags.forEach((tag) => {
-            itemListPage.verifyContentById(itemIds[index], tag)
-          })
-          itemListPage.verifyQuestionTypeById(itemIds[index], queType)
-          itemListPage
-            .getQuestionTypeById(itemIds[index])
-            .click({ force: true })
+          itemListPage.verifyItemMetadataByItemId(
+            itemIds[index],
+            itemDetails[index]
+          )
         })
 
         it(`> verify  ${item}-${index + 1}, verify action buttons`, () => {
-          testLibraryPage.review
-            .getCheckBoxByItemId(itemIds[index])
-            .should('exist')
-          testLibraryPage.review
-            .getDragHandlerByItemId(itemIds[index])
-            .should('exist')
-          testLibraryPage.review
-            .getDeleteButtonByItemId(itemIds[index])
-            .should('be.visible')
-          testLibraryPage.review
-            .getPointsOnQueCardByid(itemIds[index])
-            .should('not.have.attr', 'disabled')
-          testLibraryPage.review
-            .getExpandButtonByItemId(itemIds[index])
-            .should('be.visible')
+          testLibraryPage.review.verifyActionButtonsByItemId(
+            itemIds[index],
+            true
+          )
         })
       })
     })
@@ -251,37 +229,18 @@ describe(`${FileHelper.getSpecName(
         })
 
         it(`> verify  ${item}-${index + 1} metadata`, () => {
-          const { dok, tags } = itemDetails[index]
-          const { queType } = itemDetails[index]
-          const { standard } = itemDetails[index].standards
-          itemListPage.getHiddenStandards(itemIds[index])
-          standard.forEach((sta) => {
-            itemListPage.verifyContentById(itemIds[index], sta)
-          })
-          itemListPage.verifydokByItemId(itemIds[index], dok)
-          tags.forEach((tag) => {
-            itemListPage.verifyContentById(itemIds[index], tag)
-          })
-          itemListPage.verifyQuestionTypeById(itemIds[index], queType)
-          itemListPage
-            .getQuestionTypeById(itemIds[index])
-            .click({ force: true })
+          itemListPage.verifyItemMetadataByItemId(
+            itemIds[index],
+            itemDetails[index]
+          )
         })
 
         it(`> verify  ${item}-${index + 1}, verify action buttons`, () => {
-          testLibraryPage.review
-            .getCheckBoxByItemId(itemIds[index], true)
-            .should('be.visible')
-          testLibraryPage.review
-            .getDeleteButtonByItemId(itemIds[index])
-            .should('be.visible')
-          testLibraryPage.review
-            .getPointsOnQueCardByid(itemIds[index])
-            .should('not.have.attr', 'disabled')
-          testLibraryPage.review
-            .getExpandButtonByItemId(itemIds[index])
-            .should('be.visible')
-
+          testLibraryPage.review.verifyActionButtonsByItemId(
+            itemIds[index],
+            true,
+            true
+          )
           testLibraryPage.review.clickExpandByItemId(itemIds[index])
         })
       })
@@ -346,71 +305,41 @@ describe(`${FileHelper.getSpecName(
         it(`> verify meta data on preview for "${item}-${index + 1} `, () => {
           itemListPage.itemPreview.closePreiview()
           testLibraryPage.review.previewQuestById(itemIds[index])
-          itemListPage.itemPreview.verifyItemIdOnPreview(itemIds[index])
-          itemListPage.itemPreview.verifyTeacherNameOnPreview('Teacher')
-          itemListPage.itemPreview.verifyPointsOnPreview(points)
-          itemListPage.itemPreview.verifyDOkOnPreview(dok)
-          itemListPage.itemPreview.verifyDiffOnPreview(difficulty)
-          itemListPage.itemPreview.verifyStandardsOnPreview(standards.standard)
-          itemListPage.itemPreview.verifyTagsOnPreview(tags)
-          itemListPage.itemPreview
-            .getEditOnPreview()
-            .should('not.have.attr', 'disabled')
-          itemListPage.itemPreview.getRemoveFromTestButton().should('exist')
-          itemListPage.itemPreview.getExpandOnPreview().should('exist')
+          itemListPage.itemPreview.verifyMetadataOnPreview(
+            itemIds[index],
+            'Teacher',
+            points,
+            dok,
+            difficulty,
+            standards.standard,
+            tags
+          )
+          itemListPage.itemPreview.verifyActionsButtonsOnPreview(true)
         })
         if (![questionTypeKey.ESSAY_RICH].includes(item.split('.')[0])) {
           it(`> verify show ans for "${item}-${index + 1} "`, () => {
-            itemListPage.itemPreview.clickOnClear()
-            itemListPage.itemPreview.clickOnShowAnsOnPreview()
-            itemListPage.itemPreview.verifyQuestionResponseCard(
+            itemListPage.itemPreview.verifyShowAnsOnPreview(
               itemsInTest[index],
-              attemptData,
-              attemptTypes.RIGHT,
-              true
+              attemptData
             )
           })
 
           it(`> verify right ans for "${item}-${index + 1} "`, () => {
             // Correct ans should have green bg-color
-            itemListPage.itemPreview.clickOnClear()
-            studentTestPage.attemptQuestion(
-              itemsInTest[index].split('.')[0],
-              attemptTypes.RIGHT,
-              attemptData
-            )
-            itemListPage.itemPreview.clickOnCheckAnsOnPreview()
-            itemListPage.itemPreview.verifyEvaluationScoreOnPreview(
+            itemListPage.itemPreview.attemptAndVerifyResponseOnPreview(
+              itemsInTest[index],
               attemptData,
               points,
-              itemsInTest[index],
-              attemptTypes.RIGHT
-            )
-            itemListPage.itemPreview.verifyQuestionResponseCard(
-              itemsInTest[index],
-              attemptData,
               attemptTypes.RIGHT
             )
           })
 
           it(`> verify wrong ans for "${item}-${index + 1} "`, () => {
             // Wrong ans should have red bg-color
-            itemListPage.itemPreview.clickOnClear()
-            studentTestPage.attemptQuestion(
-              itemsInTest[index].split('.')[0],
-              attemptTypes.WRONG,
-              attemptData
-            )
-            itemListPage.itemPreview.clickOnCheckAnsOnPreview()
-            itemListPage.itemPreview.verifyEvaluationScoreOnPreview(
+            itemListPage.itemPreview.attemptAndVerifyResponseOnPreview(
+              itemsInTest[index],
               attemptData,
               points,
-              itemsInTest[index],
-              attemptTypes.WRONG
-            )
-            itemListPage.itemPreview.verifyQuestionResponseCard(
-              itemsInTest[index],
-              attemptData,
               attemptTypes.WRONG
             )
           })
@@ -547,39 +476,18 @@ describe(`${FileHelper.getSpecName(
           )
         })
         it(`> verify  ${item}-${index + 1} metadata`, () => {
-          const { dok, tags } = itemDetails[index]
-          const { queType } = itemDetails[index]
-          const { standard } = itemDetails[index].standards
-          itemListPage.getHiddenStandards(itemIds[index])
-          standard.forEach((sta) => {
-            itemListPage.verifyContentById(itemIds[index], sta)
-          })
-          itemListPage.verifydokByItemId(itemIds[index], dok)
-          tags.forEach((tag) => {
-            itemListPage.verifyContentById(itemIds[index], tag)
-          })
-          itemListPage.verifyQuestionTypeById(itemIds[index], queType)
-          itemListPage
-            .getQuestionTypeById(itemIds[index])
-            .click({ force: true })
+          itemListPage.verifyItemMetadataByItemId(
+            itemIds[index],
+            itemDetails[index]
+          )
         })
 
         it(`> verify  ${item}-${index + 1}, verify action buttons`, () => {
-          testLibraryPage.review
-            .getCheckBoxByItemId(itemIds[index])
-            .should('not.exist')
-          testLibraryPage.review
-            .getDragHandlerByItemId(itemIds[index])
-            .should('not.exist')
-          testLibraryPage.review
-            .getDeleteButtonByItemId(itemIds[index])
-            .should('not.exist')
-          testLibraryPage.review
-            .getPointsOnQueCardByid(itemIds[index])
-            .should('have.attr', 'disabled')
-          testLibraryPage.review
-            .getExpandButtonByItemId(itemIds[index])
-            .should('be.visible')
+          testLibraryPage.review.verifyActionButtonsByItemId(
+            itemIds[index],
+            false,
+            false
+          )
         })
       })
     })
@@ -605,36 +513,18 @@ describe(`${FileHelper.getSpecName(
         })
 
         it(`> verify  ${item}-${index + 1} metadata`, () => {
-          const { dok, tags } = itemDetails[index]
-          const { queType } = itemDetails[index]
-          const { standard } = itemDetails[index].standards
-          itemListPage.getHiddenStandards(itemIds[index])
-          standard.forEach((sta) => {
-            itemListPage.verifyContentById(itemIds[index], sta)
-          })
-          itemListPage.verifydokByItemId(itemIds[index], dok)
-          tags.forEach((tag) => {
-            itemListPage.verifyContentById(itemIds[index], tag)
-          })
-          itemListPage.verifyQuestionTypeById(itemIds[index], queType)
-          itemListPage
-            .getQuestionTypeById(itemIds[index])
-            .click({ force: true })
+          itemListPage.verifyItemMetadataByItemId(
+            itemIds[index],
+            itemDetails[index]
+          )
         })
 
         it(`> verify  ${item}-${index + 1}, verify action buttons`, () => {
-          testLibraryPage.review
-            .getCheckBoxByItemId(itemIds[index], true)
-            .should('not.exist')
-          testLibraryPage.review
-            .getDeleteButtonByItemId(itemIds[index])
-            .should('not.exist')
-          testLibraryPage.review
-            .getPointsOnQueCardByid(itemIds[index])
-            .should('have.attr', 'disabled')
-          testLibraryPage.review
-            .getExpandButtonByItemId(itemIds[index])
-            .should('be.visible')
+          testLibraryPage.review.verifyActionButtonsByItemId(
+            itemIds[index],
+            false,
+            true
+          )
 
           testLibraryPage.review.clickExpandByItemId(itemIds[index])
         })
@@ -700,70 +590,41 @@ describe(`${FileHelper.getSpecName(
         it(`> verify meta data on preview for "${item}-${index + 1} `, () => {
           itemListPage.itemPreview.closePreiview()
           testLibraryPage.review.previewQuestById(itemIds[index])
-          itemListPage.itemPreview.verifyItemIdOnPreview(itemIds[index])
-          itemListPage.itemPreview.verifyTeacherNameOnPreview('Teacher')
-          itemListPage.itemPreview.verifyPointsOnPreview(points)
-          itemListPage.itemPreview.verifyDOkOnPreview(dok)
-          itemListPage.itemPreview.verifyDiffOnPreview(difficulty)
-          itemListPage.itemPreview.verifyStandardsOnPreview(standards.standard)
-          itemListPage.itemPreview.verifyTagsOnPreview(tags)
-          itemListPage.itemPreview.getEditOnPreview().should('not.exist')
-          itemListPage.itemPreview.getDisabledEditOnPreview()
-          itemListPage.itemPreview.getExpandOnPreview().should('exist')
-          itemListPage.itemPreview.getRemoveFromTestButton().should('not.exist')
+          itemListPage.itemPreview.verifyMetadataOnPreview(
+            itemIds[index],
+            'Teacher',
+            points,
+            dok,
+            difficulty,
+            standards.standard,
+            tags
+          )
+          itemListPage.itemPreview.verifyActionsButtonsOnPreview(false)
         })
         if (![questionTypeKey.ESSAY_RICH].includes(item.split('.')[0])) {
           it(`> verify show ans for "${item}-${index + 1} "`, () => {
-            itemListPage.itemPreview.clickOnClear()
-            itemListPage.itemPreview.clickOnShowAnsOnPreview()
-            itemListPage.itemPreview.verifyQuestionResponseCard(
+            itemListPage.itemPreview.verifyShowAnsOnPreview(
               itemsInTest[index],
-              attemptData,
-              attemptTypes.RIGHT,
-              true
+              attemptData
             )
           })
 
           it(`> verify right ans for "${item}-${index + 1} "`, () => {
             // Correct ans should have green bg-color
-            itemListPage.itemPreview.clickOnClear()
-            studentTestPage.attemptQuestion(
-              itemsInTest[index].split('.')[0],
-              attemptTypes.RIGHT,
-              attemptData
-            )
-            itemListPage.itemPreview.clickOnCheckAnsOnPreview()
-            itemListPage.itemPreview.verifyEvaluationScoreOnPreview(
+            itemListPage.itemPreview.attemptAndVerifyResponseOnPreview(
+              itemsInTest[index],
               attemptData,
               points,
-              itemsInTest[index],
-              attemptTypes.RIGHT
-            )
-            itemListPage.itemPreview.verifyQuestionResponseCard(
-              itemsInTest[index],
-              attemptData,
               attemptTypes.RIGHT
             )
           })
 
           it(`> verify wrong ans for "${item}-${index + 1} "`, () => {
             // Wrong ans should have red bg-color
-            itemListPage.itemPreview.clickOnClear()
-            studentTestPage.attemptQuestion(
-              itemsInTest[index].split('.')[0],
-              attemptTypes.WRONG,
-              attemptData
-            )
-            itemListPage.itemPreview.clickOnCheckAnsOnPreview()
-            itemListPage.itemPreview.verifyEvaluationScoreOnPreview(
+            itemListPage.itemPreview.attemptAndVerifyResponseOnPreview(
+              itemsInTest[index],
               attemptData,
               points,
-              itemsInTest[index],
-              attemptTypes.WRONG
-            )
-            itemListPage.itemPreview.verifyQuestionResponseCard(
-              itemsInTest[index],
-              attemptData,
               attemptTypes.WRONG
             )
           })

@@ -3,3 +3,4 @@
 /node_modules
 /src/client/public/vendors
 /packages/ext-libs
+/public/testlets

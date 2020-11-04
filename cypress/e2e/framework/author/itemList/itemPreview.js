@@ -19,7 +19,14 @@ export default class PreviewItemPopup {
   // Edit and Copy buuton on preview
   getEditOnPreview = () => cy.get('[title="Edit item"]')
 
+  getDisabledEditOnPreview = () =>
+    cy
+      .get('[title="Edit permission is restricted by the author"]')
+      .should('have.attr', 'disabled')
+
   getCopyOnPreview = () => cy.get('[title="Clone"]')
+
+  getExpandOnPreview = () => cy.get('[title="Expand"]')
 
   // text in edit item page
   getTextInEditItem = () =>

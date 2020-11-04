@@ -16,9 +16,9 @@ class ParentController extends MessageController {
     this.setTotalPage = null
     this.setQuestions = null
     this.setCurrentQuestion = null
-    this.unlockNext = null
+    this.setUnlockNext = null
     this.handleReponse = null
-    this.playerStateHandler = null
+    this.handleState = null
     this.setCurrentScoring = null
     this.handleLog = null
     this.submitTest = null
@@ -29,9 +29,9 @@ class ParentController extends MessageController {
     this.setTotalPage = callbacks.setTotalPage
     this.setQuestions = callbacks.setQuestions
     this.setCurrentQuestion = callbacks.setCurrentQuestion
-    this.unlockNext = callbacks.unlockNext
+    this.setUnlockNext = callbacks.setUnlockNext
     this.handleReponse = callbacks.handleReponse
-    this.playerStateHandler = callbacks.playerStateHandler
+    this.handleState = callbacks.handleTestletState
     this.setCurrentScoring = callbacks.setCurrentScoring
     this.handleLog = callbacks.handleLog
     this.submitTest = callbacks.submitTest
@@ -75,8 +75,8 @@ class ParentController extends MessageController {
   // get state data from testlet
   onState(state) {
     this.itemState = state
-    if (this.playerStateHandler) {
-      this.playerStateHandler(state, this.response)
+    if (this.handleState) {
+      this.handleState(state, this.response)
     }
   }
 
@@ -114,16 +114,21 @@ class ParentController extends MessageController {
     if (this.setCurrentQuestion) {
       this.setCurrentQuestion(page)
     }
-    if (this.playerStateHandler) {
+    if (this.handleState) {
       this.itemState.pageNum = page
-      this.playerStateHandler(this.itemState, this.response)
+      this.handleState(this.itemState, this.response)
     }
   }
 
   onCurrentPageID(currentScoring) {
     this.currentPageIds = JSON.parse(currentScoring)
     if (this.setCurrentScoring) {
-      this.setCurrentScoring(JSON.parse(currentScoring))
+      try {
+        this.setCurrentScoring(!!Object.keys(JSON.parse(currentScoring)).length)
+      } catch (error) {
+        console.log('Invalid currentScoring!')
+        this.setCurrentScoring(false)
+      }
     }
   }
 
@@ -139,8 +144,8 @@ class ParentController extends MessageController {
 
   //get version number from testlet
   onUnlockNext(flag) {
-    if (this.unlockNext) {
-      this.unlockNext(flag)
+    if (this.setUnlockNext) {
+      this.setUnlockNext(flag)
     }
   }
 

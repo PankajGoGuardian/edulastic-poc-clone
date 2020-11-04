@@ -18,7 +18,7 @@ import { registerRoute } from 'workbox-routing'
 import {
   StaleWhileRevalidate,
   NetworkFirst,
-  NetworkOnly,
+  // NetworkOnly,
 } from 'workbox-strategies'
 
 clientsClaim()
@@ -51,10 +51,11 @@ precacheAndRoute(self.__WB_MANIFEST)
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
 const apiRegex = new RegExp('/?(api|oauth)/.*', 'i')
 
-// bypass /canvas route always
-registerRoute(({ url }) => {
-  return url.pathname.includes('/canvas/auth_code')
-}, new NetworkOnly())
+/* bypass /canvas route always - Uncommenting this seems to fix the problem.
+ we need to figure out the root cause */
+// registerRoute(({ url }) => {
+//   return url.pathname.includes('/canvas/auth_code')
+// }, new NetworkOnly())
 
 registerRoute(apiRegex, new NetworkFirst())
 

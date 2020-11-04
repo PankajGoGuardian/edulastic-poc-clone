@@ -369,7 +369,7 @@ export default class PreviewItemPopup {
       case questionTypeKey.ESSAY_RICH:
         break
       default:
-        assert.fail(1, 2, 'question type did not match in item preview')
+        assert.fail(`question type ${quest} did not match in item preview`)
         break
     }
   }

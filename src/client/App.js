@@ -168,7 +168,7 @@ function isLocationInTestRedirectRoutes(loc) {
 function CheckRoutePatternsEffectContainer({ role, location, history }) {
   useEffect(() => {
     if (
-      role === 'student' &&
+      role === roleuser.STUDENT &&
       location.pathname.startsWith('/author') &&
       !location.pathname.startsWith('/author/tests/tab')
     ) {
@@ -181,8 +181,8 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
     ) {
       history.push('/admin')
     } else if (
-      role !== 'student' &&
-      role !== 'parent' &&
+      role !== roleuser.STUDENT &&
+      role !== roleuser.PARENT &&
       location.pathname.startsWith('/home')
     ) {
       history.push(
@@ -278,8 +278,7 @@ const App = ({
       !user.isAuthenticated &&
       (currentPath === '/' || currentPath.match(loggedOutRoutes))
     ) {
-      localStorage.setItem('appRedirectPath', getCurrentPath())
-      window.location.replace('/login')
+      window.location.replace('/')
     } else if (user && user.isAuthenticated) {
       const role = get(user, ['user', 'role'])
       if (role === 'teacher') {
@@ -353,7 +352,7 @@ const App = ({
       if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
         redirectRoute = `/district/${urlSearch.get('shortName')}`
       } else {
-        window.location.replace('/login')
+        window.location.replace('/')
       }
     }
   }

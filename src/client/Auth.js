@@ -5,7 +5,6 @@ import { withRouter } from 'react-router'
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { roleuser } from '@edulastic/constants'
 import { removeFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { SelectRolePopup } from './student/SsoLogin/selectRolePopup'
 import { UnauthorizedPopup } from './student/SsoLogin/UnauthorizedPopup'
@@ -14,6 +13,7 @@ import AdminSignup from './student/Signup/components/AdminContainer/Container'
 import TeacherSignup from './student/Signup/components/TeacherContainer/Container'
 
 import { isLoggedInForPrivateRoute } from './common/utils/helpers'
+import { persistAuthStateAndRedirectToAction } from './student/Login/ducks'
 
 const GetStarted = lazy(() =>
   import('./student/Signup/components/GetStartedContainer')
@@ -30,37 +30,10 @@ const Auth = ({
   districtPolicy,
   orgShortName,
   orgType,
+  persistAuthStateAndRedirectTo,
 }) => {
-  if (
-    ![
-      '#signup',
-      '#login',
-      '#register/close/student',
-      '#register/close/teacher',
-      '#register/close/admin',
-    ].includes(location.hash)
-  ) {
-    const currentPath = window.location.pathname
-    if (currentPath !== '/login' && !currentPath.startsWith('/auth')) {
-      window.history.pushState({}, null, '/login')
-    }
-    window.location.hash = '#login'
-  }
-
   if (isLoggedInForPrivateRoute(user)) {
-    switch (user.user.role) {
-      case roleuser.EDULASTIC_ADMIN:
-        return window.location.replace('/admin/search/clever') || null
-      case roleuser.DISTRICT_ADMIN:
-      case roleuser.SCHOOL_ADMIN:
-        return window.location.replace('/author/assignments') || null
-      case roleuser.TEACHER:
-        return window.location.replace('/author/dashboard') || null
-      case roleuser.STUDENT:
-        return window.location.replace('/home/assignments') || null
-      default:
-        return null
-    }
+    persistAuthStateAndRedirectTo()
   }
 
   if (location?.state?.showUnauthorized) {
@@ -141,7 +114,9 @@ const enhance = compose(
     (state) => ({
       user: get(state, 'user', null),
     }),
-    {}
+    {
+      persistAuthStateAndRedirectTo: persistAuthStateAndRedirectToAction,
+    }
   )
 )
 export default enhance(Auth)

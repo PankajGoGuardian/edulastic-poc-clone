@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import styled from 'styled-components'
 import { Modal, Button, Icon, Form, Input } from 'antd'
 import { get } from 'lodash'
@@ -17,7 +16,6 @@ const ResetPasswordPopup = (props) => {
   const {
     className,
     t,
-    history,
     resetPasswordAction,
     resetPasswordUserAction,
     user,
@@ -30,7 +28,7 @@ const ResetPasswordPopup = (props) => {
   }, [])
 
   const onCancel = () => {
-    history.push('/login')
+    window.location.replace('/')
   }
 
   const onSubmit = (password) => {

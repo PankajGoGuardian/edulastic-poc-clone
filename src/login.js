@@ -17,6 +17,7 @@ import configureStore, { history } from './client/configureStore'
 import AppConfig from './app-config'
 import { loginReducer } from './client/reducers'
 import { loginSaga } from './client/sagas'
+import { fetchUserAction } from './client/student/Login/ducks'
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -34,6 +35,8 @@ if (AppConfig.sentryURI) {
 
 // login - redux store
 const { store } = configureStore({}, loginReducer, loginSaga)
+
+store.dispatch(fetchUserAction())
 
 const RootComp = () => (
   <I18nextProvider i18n={i18n}>

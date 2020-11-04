@@ -300,11 +300,11 @@ function* persistAuthStateAndRedirectToSaga() {
 
   let redirectRoute = ''
 
-  const appRedirectPath = localStorage.getItem('appRedirectPath')
+  const appRedirectPath = localStorage.getItem('loginRedirectUrl')
 
-  if (appRedirectPath && appRedirectPath !== '/login') {
+  if (appRedirectPath && appRedirectPath !== '/') {
     redirectRoute = getValidRedirectRouteByRole(appRedirectPath, user)
-    localStorage.removeItem('appRedirectPath')
+    localStorage.removeItem('loginRedirectUrl')
   } else {
     redirectRoute = getRouteByGeneralRoute(user)
   }
@@ -784,8 +784,6 @@ function* login({ payload }) {
           const publicUrl = localStorage.getItem('publicUrlAccess')
           localStorage.removeItem('publicUrlAccess')
           yield put(push({ pathname: publicUrl, state: { isLoading: true } }))
-        } else {
-          localStorage.removeItem('loginRedirectUrl')
         }
       }
 
@@ -998,7 +996,7 @@ const getLoggedOutUrl = () => {
     return '/studentsignup'
   }
   if (
-    pathname === '/login' &&
+    pathname === '/' &&
     (window.location.hash.includes('register') ||
       window.location.hash.includes('signup'))
   ) {
@@ -1031,7 +1029,7 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher') {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
-  return '/login'
+  return '/'
 }
 
 export function* fetchUser({ payload }) {
@@ -1056,7 +1054,9 @@ export function* fetchUser({ payload }) {
           addAccountTo: payload.userId,
         })
       )
-      yield put(push('/login'))
+      if (!['/', '/login'].includes(window.location.pathname)) {
+        window.location.replace('/')
+      }
       return
     }
     const firebaseUser = yield call(getCurrentFirebaseUser)
@@ -1590,7 +1590,7 @@ function* resetPasswordUserSaga({ payload }) {
     if (res) {
       yield put({ type: RESET_PASSWORD_USER_SUCCESS, payload: res })
     } else {
-      yield put(push('/login'))
+      yield put(push('/'))
     }
   } catch (e) {
     notification({
@@ -1598,7 +1598,7 @@ function* resetPasswordUserSaga({ payload }) {
         ? e.response.data.message
         : 'Failed to user data.',
     })
-    yield put(push('/login'))
+    yield put(push('/'))
   }
 }
 
@@ -1796,7 +1796,7 @@ function* getInviteDetailsSaga({ payload }) {
     const result = yield call(authApi.getInvitedUserDetails, payload)
     yield put({ type: GET_INVITE_DETAILS_SUCCESS, payload: result })
   } catch (e) {
-    yield put(push('/login'))
+    yield put(push('/'))
   }
 }
 

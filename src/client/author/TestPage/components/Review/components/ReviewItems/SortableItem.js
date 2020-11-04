@@ -16,7 +16,7 @@ const Item = SortableElement((props) => {
           indx={data.key}
         />
       )}
-      <ReviewItemWrapper>
+      <ReviewItemWrapper data-cy={data.main.id}>
         <ReviewItem {...props} />
       </ReviewItemWrapper>
     </DragCrad>

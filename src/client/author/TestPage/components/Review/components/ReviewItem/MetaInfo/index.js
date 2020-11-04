@@ -64,7 +64,7 @@ const MetaInfo = ({
         {type && (
           <FlexContainer style={{ alignItems: 'center' }}>
             {type.map((t) => (
-              <MetaTag key={t} marginLeft="0px">
+              <MetaTag data-cy="ques-type" key={t} marginLeft="0px">
                 {t}
               </MetaTag>
             ))}
@@ -81,14 +81,15 @@ const MetaInfo = ({
         </TestStatusWrapper>
       </FlexContainer>
       <FlexContainer justifyContent="flex-end">
-        {dok && <DokStyled>{`DOK:${dok}`}</DokStyled>}
-        {renderAnalytics(by, IconUser)}
-        {renderAnalytics(id && id.substring(18), IconHash)}
+        {dok && <DokStyled data-cy="detail_index-0">{`DOK:${dok}`}</DokStyled>}
+        {renderAnalytics(by, IconUser, false, 1)}
+        {renderAnalytics(id && id.substring(18), IconHash, false, 2)}
         <AnalyticsItem>
           <IconShare color={darkGrey} width={15} height={15} />
           <MetaTitle>{analytics?.[0]?.usage || 0}</MetaTitle>
         </AnalyticsItem>
         <LikeIconStyled
+          data-cy="like-item"
           isLiked={isItemLiked}
           onClick={handleItemLike}
           style={{ marginLeft: '15px' }}

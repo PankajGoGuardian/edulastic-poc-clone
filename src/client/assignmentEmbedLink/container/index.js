@@ -18,7 +18,7 @@ import { redirectToStudentPage } from '../../publicTest/utils'
 const { STUDENT, TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = roleuser
 
 const AssignmentEmbedLink = ({
-  user,
+  user = {},
   match,
   fetchAssignmentsByTestId,
   fetchAssignmentsForStudent,
@@ -44,8 +44,7 @@ const AssignmentEmbedLink = ({
         assignments,
         history,
         startAssignment,
-        resumeAssignment,
-        test
+        resumeAssignment
       )
     }
   }, [loadingAssignments])

@@ -546,7 +546,7 @@ const TestPageHeader = ({
                 IconBtn
                 title="Edit Test"
                 disabled={editEnable || disableButtons}
-                data-cy="edit"
+                data-cy="edit-test"
                 onClick={() =>
                   isEdulasticCurator || isCurator
                     ? onEnableEdit()

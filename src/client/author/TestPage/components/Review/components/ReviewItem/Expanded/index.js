@@ -167,7 +167,6 @@ const Expanded = ({
         const qId = get(_item, `[0].widgets[0].reference`, null)
         return (
           <FlexContainer
-            data-cy={testItem._id}
             className="expanded-rows"
             justifyContent="space-between"
             alignItems="flex-start"

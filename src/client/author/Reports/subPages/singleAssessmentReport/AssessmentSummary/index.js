@@ -45,9 +45,12 @@ const AssessmentSummary = ({
   preventHeaderRender,
   setAssesmentSummaryLoading,
 }) => {
-  const selectedTest =
-    testList.find((t) => t._id === settings.selectedTest.key) || {}
-  const assessmentName = selectedTest.title || ''
+  const selectedTest = testList.find(
+    (t) => t._id === settings.selectedTest.key
+  ) || { title: '', _id: '' }
+  const assessmentName = `${
+    selectedTest.title
+  } (ID: ${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {

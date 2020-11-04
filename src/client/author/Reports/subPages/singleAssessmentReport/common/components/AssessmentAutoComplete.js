@@ -4,11 +4,11 @@ import styled from 'styled-components'
 import { debounce } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon } from 'antd'
-import { assignmentStatusOptions } from '@edulastic/constants'
+import { AutoComplete, Input, Icon, Tooltip } from 'antd'
+import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 
 // ducks
-import { getOrgDataSelector } from '../../../../../src/selectors/user'
+import { getUser } from '../../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
@@ -20,7 +20,7 @@ const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const AssessmentAutoComplete = ({
-  userOrgData,
+  user,
   testList,
   loading,
   loadTestList,
@@ -37,7 +37,8 @@ const AssessmentAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { districtIds } = userOrgData
+    const { role, orgData = {} } = user
+    const { districtIds, institutionIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
       limit: 25,
@@ -45,12 +46,16 @@ const AssessmentAutoComplete = ({
       search: {
         searchString: searchTerms.text,
         statuses: [IN_PROGRESS, IN_GRADING, DONE],
+        groupIds: [],
         districtId,
       },
       aggregate: true,
     }
     if (firstLoad && !selectedTest._id && selectedTestId) {
       q.search.testIds = [selectedTestId]
+    }
+    if (role === roleuser.SCHOOL_ADMIN && institutionIds?.length) {
+      q.institutionIds = institutionIds
     }
     if (termId) {
       q.search.termId = termId
@@ -143,26 +148,35 @@ const AssessmentAutoComplete = ({
       ]
     : []
 
+  const selectedTestLabel =
+    searchTerms.text === searchTerms.selectedText && selectedTest._id
+      ? `${selectedTest.title} (ID: ${selectedTest._id.substring(
+          selectedTest._id.length - 5
+        )})`
+      : ''
+
   return (
-    <AutoCompleteContainer>
-      <AutoComplete
-        getPopupContainer={(trigger) => trigger.parentNode}
-        placeholder="All Assessments"
-        value={searchTerms.text}
-        onSearch={onSearch}
-        dataSource={dropdownData}
-        onSelect={onSelect}
-        onBlur={onBlur}
-      >
-        <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
-      </AutoComplete>
-    </AutoCompleteContainer>
+    <Tooltip title={selectedTestLabel} placement="top">
+      <AutoCompleteContainer>
+        <AutoComplete
+          getPopupContainer={(trigger) => trigger.parentNode}
+          placeholder="All Assessments"
+          value={searchTerms.text}
+          onSearch={onSearch}
+          dataSource={dropdownData}
+          onSelect={onSelect}
+          onBlur={onBlur}
+        >
+          <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
+        </AutoComplete>
+      </AutoCompleteContainer>
+    </Tooltip>
   )
 }
 
 export default connect(
   (state) => ({
-    userOrgData: getOrgDataSelector(state),
+    user: getUser(state),
     testList: getTestListSelector(state),
     loading: getTestListLoadingSelector(state),
   }),

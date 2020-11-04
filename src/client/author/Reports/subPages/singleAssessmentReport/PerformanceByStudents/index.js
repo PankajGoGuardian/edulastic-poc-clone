@@ -65,10 +65,12 @@ const PerformanceByStudents = ({
   customStudentUserId,
   isCliUser,
 }) => {
-  const selectedTest = testList.length
-    ? testList.find((test) => test._id === settings.selectedTest.key)
-    : {}
-  const assessmentName = selectedTest.title || ''
+  const selectedTest = testList?.find(
+    (test) => test._id === settings.selectedTest.key
+  ) || { title: '', _id: '' }
+  const assessmentName = `${
+    selectedTest.title
+  } (ID: ${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
   const bandInfo = useMemo(
     () =>

@@ -9,7 +9,7 @@ export default class TestHeader {
 
   getPublishRegradeButton = () => cy.get('[data-cy="publish"]')
 
-  getEditTestButton = () => cy.get('[data-cy="edit-test"]')
+  getEditTestButton = () => cy.get('[data-cy="edit"]')
 
   getShareButton = () => cy.get('[data-cy="share"]')
 
@@ -28,18 +28,6 @@ export default class TestHeader {
   getTestAddItemHeader = () => cy.get('[data-cy="addItems"]')
 
   getWorkSheetHeader = () => cy.get('[data-cy="edit"]')
-
-  getPrintOptionInfo = () => cy.get('[data-cy="print-option-info"]')
-
-  getSelectQuestionsToPrint = () => cy.get('[data-cy="select-que-to-print"]')
-
-  getPrintCompleteTestRadio = () => cy.get('[value="complete"]')
-
-  getPrintPartialTestRadio = () => cy.get('[value="custom"]')
-
-  getPrintManualGradesRadio = () => cy.get('[value="manualGraded"]')
-
-  getDuplicateButtonInReview = () => cy.get('[data-cy="duplicate"]')
 
   // *** ELEMENTS END ***
 
@@ -140,11 +128,6 @@ export default class TestHeader {
   closeFilter = () =>
     cy.get('.anticon-close').last().find('svg').click({ force: true })
 
-  clickPrintTest = () => {
-    this.getPrintButton().click({ force: true })
-    cy.get('[value="complete"]')
-  }
-
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -178,8 +161,7 @@ export default class TestHeader {
     share = true,
     save = true,
     publish = true,
-    assign = true,
-    edit = true
+    assign = true
   ) => {
     if (print) this.getPrintButton().should('exist')
     else this.getPrintButton().should('not.exist')
@@ -191,33 +173,6 @@ export default class TestHeader {
     else this.getPublishRegradeButton().should('not.exist')
     if (assign) this.getAssignButton().should('exist')
     else this.getAssignButton().should('not.exist')
-    if (edit) this.getEditTestButton().should('exist')
-    else this.getEditTestButton().should('not.exist')
-  }
-
-  verifyPrintCompleteTestInfo = () => {
-    this.getPrintCompleteTestRadio().check().should('be.checked')
-    this.getPrintOptionInfo().should(
-      'contain',
-      'All the items in the test will be printed.'
-    )
-  }
-
-  verifyPrintPartialTestInfo = () => {
-    this.getPrintPartialTestRadio().check().should('be.checked')
-    this.getPrintOptionInfo().should(
-      'contain',
-      'Enter the item numbers in the below box to print'
-    )
-    cy.get('[placeholder="e.g. 1-4, 8, 11-13"]').should('be.visible')
-  }
-
-  verifyPrintManualGradesInfo = () => {
-    this.getPrintManualGradesRadio().check().should('be.checked')
-    this.getPrintOptionInfo().should(
-      'contain',
-      'Items that are marked as manual graded will be printed.'
-    )
   }
   // *** APPHELPERS END ***
 }

@@ -106,8 +106,8 @@
   "TEST_PREVIEW": {
     "name": "Test Review Flow",
     "grade": ["Grade 10"],
-    "subject": ["Mathematics"],
-    "itemKeys": ["MCQ_MULTI.2", "CHOICE_STD.1", "CLOZE_DROPDOWN.default", "CLOZE_TEXT.default", "MATH_NUMERIC.default","ESSAY_RICH.2"]
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_MULTI.2", "CHOICE_STD.1", "CLOZE_DROPDOWN.default", "CLOZE_TEXT.default", "MATH_NUMERIC.default"]
   },
   "STUDENT_ATTEMPT": {
     "name": "Test Assessment",

@@ -123,12 +123,7 @@
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
-      ], 
-      "meta": {
-        "difficulty": "Hard",
-        "dok": "Skill/Concept",
-        "tags": ["item tag 1","item tag 2"]
-      }
+      ]
     },
     "3": {
       "quetext": "This is MCQ_MULTI.3 question",
@@ -520,12 +515,7 @@
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
-      ], 
-      "meta": {
-        "difficulty": "Hard",
-        "dok": "Skill/Concept",
-        "tags": ["item tag 1"]
-      }
+      ]
     },
     "2": {
       "quetext": "This is CHOICE_STD.2 question",
@@ -727,7 +717,7 @@
   "CLOZE_TEXT": {
     "default": {
       "quetext": [
-        "This is CLOZE_TEXT.default question",".1st ",
+        "This is CLOZE_TEXT.default question.1st ",
         "INPUT",
         "2nd ",
         "INPUT",
@@ -748,11 +738,6 @@
           "grade": "Kindergarten"
         }
       ],
-      "meta": {
-        "dok": "Strategic Thinking",
-        "difficulty": "Easy",
-        "tags": ["item tag 1"]
-      },
       "attemptData": {
         "right": ["right-1", "right-2", "right-3", "right-4"],
         "wrong": ["wrong-1", "wrong-2", "wrong-3", "wrong-4"],
@@ -762,7 +747,7 @@
   },
   "CLOZE_DROPDOWN": {
     "default": {
-      "quetext": ["CLOZE_DROPDOWN.default",".1st- ", "INPUT", "2nd - ", "INPUT"],
+      "quetext": ["CLOZE_DROPDOWN.default.1st- ", "INPUT", "2nd - ", "INPUT"],
       "choices": {
         "INPUT_0": ["1.Choice-1", "1.Choice-2"],
         "INPUT_1": ["2.Choice-1", "2.Choice-2"]
@@ -782,15 +767,10 @@
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
-      ],
-      "meta": {
-        "dok": "Strategic Thinking",
-        "difficulty": "Easy",
-        "tags": ["item tag 1"]
-      }
+      ]
     },
     "1": {
-      "quetext": ["This is CLOZE_DROPDOWN.1" , "1st - ", "INPUT", " 2nd - ", "INPUT", " 3rd - ", "INPUT"],
+      "quetext": ["This is CLOZE_DROPDOWN.1 , 1st - ", "INPUT", " 2nd - ", "INPUT", " 3rd - ", "INPUT"],
       "choices": {
         "INPUT_0": ["1.Choice-1", "1.Choice-2", "1.Choice-3"],
         "INPUT_1": ["2.Choice-1", "2.Choice-2", "2.Choice-3"],
@@ -970,15 +950,11 @@
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["4.G.A.2", "4.G.A.1", "4.G.A.3", "4.MD.A.1"],
+          "standard": ["4.G.A.2", "4.G.A.1"],
           "standardSet": "Math - Common Core",
           "grade": "Grade 4"
         }
-      ], "meta": {
-        "dok": "Extended Thinking",
-        "tags": ["item tag 1"],
-        "difficulty": "Hard"
-      }
+      ]
     }
   }
 }

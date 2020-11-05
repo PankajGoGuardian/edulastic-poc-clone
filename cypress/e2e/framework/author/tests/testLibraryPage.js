@@ -35,7 +35,7 @@ export default class TestLibrary {
 
   getShareButtonPop = () => cy.get('[data-cy="share-button-pop"]')
 
-  getEditButton = () => cy.get('[data-cy="edit-test"]')
+  getEditButton = () => cy.get('[data-cy="edit"]')
 
   getVersionedTestID = () => cy.url().then((url) => url.split('/').reverse()[2])
 
@@ -146,9 +146,6 @@ export default class TestLibrary {
   getDoneButtonInAddingQuestion = () => cy.get('button').contains('DONE')
 
   getProceedButton = () => cy.get('button').contains('PROCEED')
-
-  getCollectionContainerInSuccessPage = () =>
-    cy.get('[class*="FlexShareWithBox"]')
 
   // *** ELEMENTS END ***
 
@@ -501,14 +498,12 @@ export default class TestLibrary {
     this.getSchoolRadio().should('not.be.enabled')
     this.getDistrictRadio().should('not.be.enabled')
     this.getPublicRadio().should('not.be.enabled')
-    this.getLinkRadio().should('not.be.enabled')
   }
 
   sharingEnabled = () => {
     this.getSchoolRadio().should('be.enabled')
     this.getDistrictRadio().should('be.enabled')
-    this.getPublicRadio().should('not.be.enabled')
-    this.getLinkRadio().should('be.enabled')
+    this.getPublicRadio().should('be.enabled')
   }
 
   sharingEnabledPublic = () => this.getPublicRadio().should('be.enabled')
@@ -522,29 +517,6 @@ export default class TestLibrary {
   getDistrictRadio = () => cy.get('[value="DISTRICT"]')
 
   getPublicRadio = () => cy.get('[value="PUBLIC"]')
-
-  getLinkRadio = () => cy.get('[value="LINK"]')
-
-  getIndividualRadio = () => cy.get('[value="INDIVIDUAL"]')
-
-  getTestLinkBox = () => cy.get('.ant-typography').find('div').first()
-
-  getCopyUrlButton = () => cy.get('.ant-typography-copy')
-
-  getCloneTestWithKeepingRefToItems = () =>
-    cy
-      .contains(
-        'span',
-        'Keep references to the original items - you can clone them individually later on'
-      )
-      .should('be.visible')
-      .prev()
-
-  getCloneTestWithNewItems = () =>
-    cy
-      .contains('span', 'Create a clone of all the items in the test upfront')
-      .should('be.visible')
-      .prev()
 
   assertUrl = (testId) => {
     cy.url()
@@ -615,13 +587,8 @@ export default class TestLibrary {
   visitTestById = (id) => {
     cy.server()
     cy.route('GET', '**/test/*/regrade-assignments').as('load-test-review')
-    cy.url().then((url) => {
-      if (!url.includes(`/tab/review/id/${id}`)) {
-        cy.visit(`/author/tests/tab/review/id/${id}`)
-        cy.wait('@load-test-review', { timeout: 120000 })
-      }
-    })
-    // increased 2 min timeout as needed to load multiple xhrs, timesout when running on remote
+    cy.visit(`/author/tests/tab/review/id/${id}`)
+    cy.wait('@load-test-review', { timeout: 120000 }) // increased 2 min timeout as needed to load multiple xhrs, timesout when running on remote
   }
 
   searchByCollection = (collection) => {
@@ -752,78 +719,5 @@ export default class TestLibrary {
 
         cy.wrap($ele).eq(2).should('have.text', `${points}`)
       })
-  }
-
-  verifyLinkShareOptions = (testId, isSuccesPage = false) => {
-    this.getTestLinkBox()
-      .should(
-        'have.attr',
-        'title',
-        `${Cypress.config('baseUrl')}author/tests/tab/review/id/${testId}`
-      )
-      .should(
-        'have.text',
-        `${Cypress.config('baseUrl')}author/tests/tab/review/id/${testId}`
-      )
-
-    // TODO: revisit this as currently pop-up is blocking suite on clicking
-    this.getCopyUrlButton().should('be.visible') /* .click() */
-
-    if (isSuccesPage)
-      this.getCollectionContainerInSuccessPage().contains(
-        'div',
-        'Private Library'
-      )
-  }
-
-  verifySharePopUp = (isDraft, testId) => {
-    cy.contains('h2', 'Share with others').should('be.visible')
-    cy.contains('div', 'Enter names or email addresses').should('exist')
-    this.getPermissionButton().should('be.visible')
-    this.getIndividualRadio().should('be.enabled')
-    if (isDraft) this.sharingDisabled()
-    else this.sharingEnabled()
-
-    if (!isDraft) this.verifyLinkShareOptions(testId)
-
-    cy.get('button').contains('Cancel').should('exist')
-    this.getShareButtonPop().should('be.visible')
-  }
-
-  verifyCloneTestPopUp = () => {
-    this.header.getDuplicateButtonInReview().click({ force: true })
-    cy.contains('How would you like to clone the test?')
-    this.getCloneTestWithKeepingRefToItems()
-      .should('be.visible')
-      .should('have.class', 'ant-radio-checked')
-    this.getCloneTestWithNewItems()
-  }
-
-  verifyTestEditPopUp = () => {
-    cy.contains(
-      'div',
-      'You are about to edit a test that has already been published. If you wish to edit this test,'
-    ).should('be.visible')
-    cy.contains(
-      'div',
-      'we will move this test to draft status. Do you want to proceed?'
-    ).should('be.visible')
-    cy.get('.ant-modal-content').find('[data-cy="CANCEL"]').should('exist')
-    cy.get('.ant-modal-content"').find('[data-cy="PROCEED"]').should('exist')
-  }
-
-  closePopUp = () => {
-    cy.get('body').then(() => {
-      if (Cypress.$('.ant-modal-close-x').length > 0) {
-        cy.get('body').type('{esc}')
-      }
-    })
-  }
-
-  closeTestAttemptSummary = () => {
-    cy.get('body').then(() => {
-      if (Cypress.$('.recharts-surface').length)
-        cy.contains('span', 'EXIT').click({ force: true })
-    })
   }
 }

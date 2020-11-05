@@ -59,6 +59,7 @@ import {
   getUserId,
   getUserRole,
   getGroupList,
+  getUserSchoolsListSelector,
 } from '../../../src/selectors/user'
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
@@ -245,6 +246,7 @@ class AssignmentAdvanced extends Component {
       bulkActionStatus,
       userRole,
       userClassList,
+      userSchoolsList,
     } = this.props
     const { testId } = match.params
     const {
@@ -356,6 +358,8 @@ class AssignmentAdvanced extends Component {
                 isLoadingAssignments={isLoadingAssignments}
                 bulkActionStatus={bulkActionStatus}
                 isHeaderAction={isHeaderAction}
+                userSchoolsList={userSchoolsList}
+                userRole={userRole}
               />
             </StyledCard>
           </TableWrapper>
@@ -395,6 +399,7 @@ const enhance = compose(
       bulkActionStatus: getBulkActionStatusSelector(state),
       userRole: getUserRole(state),
       userClassList: getGroupList(state),
+      userSchoolsList: getUserSchoolsListSelector(state),
     }),
     {
       setReleaseScore: releaseScoreAction,

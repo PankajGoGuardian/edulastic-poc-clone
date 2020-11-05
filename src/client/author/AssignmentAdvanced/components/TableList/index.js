@@ -5,7 +5,7 @@ import { groupBy } from 'lodash'
 import { Tooltip, Dropdown } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from '@edulastic/localization'
-import { test } from '@edulastic/constants'
+import { test, roleuser } from '@edulastic/constants'
 import { EduButton, notification } from '@edulastic/common'
 import { IconMoreHorizontal } from '@edulastic/icons'
 import presentationIcon from '../../assets/presentation.svg'
@@ -24,6 +24,7 @@ import {
   BulkActionsButtonContainer,
   MoreOption,
   AssessmentTypeWrapper,
+  ClassNameCell,
 } from './styled'
 import { Container as MoreOptionsContainer } from '../../../Assignments/components/ActionMenu/styled'
 import { TimedTestIndicator } from '../../../Assignments/components/TableList/styled'
@@ -44,7 +45,14 @@ const columns = [
       a.class.localeCompare(b.class, 'en', { ignorePunctuation: true }),
     width: '30%',
     align: 'left',
-    render: (text) => <div>{text}</div>,
+    render: (text, data) => (
+      <ClassNameCell>
+        <span>{text}</span>
+        {data.institutionName && (
+          <span className="schoolName">{data.institutionName}</span>
+        )}
+      </ClassNameCell>
+    ),
   },
   {
     title: 'Type',
@@ -153,11 +161,17 @@ const TableList = ({
   bulkActionStatus,
   isHeaderAction,
   history,
+  userSchoolsList = [],
+  userRole,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
     false
   )
+  let showSchoolName = true
+  if (userRole === roleuser.SCHOOL_ADMIN && userSchoolsList.length < 2) {
+    showSchoolName = false
+  }
   const convertRowData = (data, index) => ({
     class: data.name,
     type: data.testType,
@@ -176,6 +190,7 @@ const TableList = ({
     key: index,
     timedAssignment: data.timedAssignment,
     allowedTime: data.allowedTime,
+    institutionName: showSchoolName ? data.institutionName : false,
   })
   const rowData = useMemo(
     () =>

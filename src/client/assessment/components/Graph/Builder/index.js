@@ -2,6 +2,7 @@
 import JXG from 'jsxgraph'
 import { isNumber } from 'lodash'
 import getDefaultConfig, { CONSTANT } from './config'
+import * as Sentry from '@sentry/browser'
 import {
   Area,
   Circle,
@@ -293,7 +294,13 @@ class Board {
         this.creatingHandler = () => {}
         return
       default:
-        throw new Error('Unknown tool:', tool)
+        if (!tool) {
+          console.warn('No tool present', tool)
+          Sentry.captureException(new Error('noToolException'))
+        } else {
+          console.warn('unknown tool', tool)
+          Sentry.captureException(new Error('unknownToolException'))
+        }
     }
   }
 

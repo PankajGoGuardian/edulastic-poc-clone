@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { cloneDeep, isEqual, sortBy } from 'lodash'
 import produce from 'immer'
 
-import { WithResources } from '@edulastic/common'
+import { WithResources, notification } from '@edulastic/common'
 import { greyThemeDark3, darkGrey2 } from '@edulastic/colors'
 
 import {
@@ -708,12 +708,15 @@ class GraphContainer extends PureComponent {
 
   setTools = (tools) => {
     const { graphData, setQuestionData } = this.props
-
-    setQuestionData(
-      produce(graphData, (draft) => {
-        draft.toolbar.tools = tools
-      })
-    )
+    if (tools.length > 0) {
+      setQuestionData(
+        produce(graphData, (draft) => {
+          draft.toolbar.tools = tools
+        })
+      )
+    } else {
+      notification({ msg: 'at-least 1 tool required', type: 'warning' })
+    }
   }
 
   render() {

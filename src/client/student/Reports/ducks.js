@@ -139,10 +139,9 @@ const isReport = (assignment, classIds, userId) => {
       if (currentClass.closed !== undefined) return currentClass.closed
     }
   }
-  // End date is passed but dont show in report if UTA status is in progress
+  // End date is passed but dont show in report if UTA status is in progress  
   return (
-    attempts > 0 ||
-    (serverTimeStamp > endDate &&
+    attempts >= maxAttempts || (serverTimeStamp > endDate &&
       lastAttempt.status !== testActivityStatus.START)
   )
 }

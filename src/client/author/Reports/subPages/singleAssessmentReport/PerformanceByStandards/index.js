@@ -15,7 +15,6 @@ import {
   getInterestedCurriculumsSelector,
   getUserRole,
 } from '../../../../src/selectors/user'
-import { EmptyData } from '../../../common/components/emptyData'
 import { AutocompleteDropDown } from '../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import {
@@ -97,9 +96,12 @@ const PerformanceByStandards = ({
   const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0
   const isViewByStandards = viewBy === viewByMode.STANDARDS
 
-  const selectedTest =
-    testList.find((t) => t._id === settings.selectedTest.key) || {}
-  const assessmentName = selectedTest.title || ''
+  const selectedTest = testList.find(
+    (t) => t._id === settings.selectedTest.key
+  ) || { _id: '', title: '' }
+  const assessmentName = `${
+    selectedTest.title
+  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
   const reportWithFilteredSkills = useMemo(
     () =>
@@ -207,10 +209,6 @@ const PerformanceByStandards = ({
     setStandardId(selected.key)
   }
 
-  if (loading) {
-    return <SpinLoader position="fixed" />
-  }
-
   const [tableData, totalPoints] = analysisParseData(
     reportWithFilteredSkills,
     viewBy,
@@ -229,18 +227,12 @@ const PerformanceByStandards = ({
       ? SimpleStackedBarChartContainer
       : SignedStackedBarChartContainer
 
-  if (settings.selectedTest && !settings.selectedTest.key) {
+  if (loading) {
+    return <SpinLoader position="fixed" />
+  }
+  if (!report.metricInfo?.length || !report.studInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
-
-  if (!report.metricInfo.length || !report.studInfo.length) {
-    return (
-      <>
-        <EmptyData />
-      </>
-    )
-  }
-
   return (
     <>
       <StyledCard>

@@ -40,6 +40,7 @@ const ActionMenu = ({
   assignmentTest = {},
   canEdit = true,
   handleDownloadResponses,
+  showEmbedLinkModal = () => {},
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -256,6 +257,17 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )} */}
+        <Menu.Item
+          data-cy="embed-link"
+          key="embed-link"
+          onClick={() => showEmbedLinkModal(currentTestId)}
+        >
+          <StyledLink target="_blank" rel="noopener noreferrer">
+            <i className="fa fa-link" aria-hidden="true" />
+            <SpaceElement />
+            Embed Link
+          </StyledLink>
+        </Menu.Item>
       </StyledMenu>
     </Container>
   )

@@ -281,7 +281,7 @@ const App = ({
       window.location.replace('/')
     } else if (user && user.isAuthenticated) {
       const role = get(user, ['user', 'role'])
-      if (role === 'teacher') {
+      if (role === roleuser.TEACHER) {
         if (
           user.signupStatus === signUpState.DONE ||
           isUndefined(user.signupStatus)
@@ -505,9 +505,10 @@ const App = ({
             path="/public/view-test/:testId"
             render={(props) => <PublicTest {...props} />}
           />
-          <Route
+          <PrivateRoute
             path="/assignments/embed/:testId"
-            render={(props) => <AssignmentEmbedLink {...props} />}
+            redirectPath={redirectRoute}
+            component={AssignmentEmbedLink}
           />
           <Route
             path="/audio-test"

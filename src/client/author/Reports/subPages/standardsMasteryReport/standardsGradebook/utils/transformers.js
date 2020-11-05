@@ -476,6 +476,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       masteryName,
       color,
       sisId: groupedData[item][0].sisId,
+      studentNumber: groupedData[item][0].studentNumber,
       standardsInfo,
       testActivityId,
       assignmentId,

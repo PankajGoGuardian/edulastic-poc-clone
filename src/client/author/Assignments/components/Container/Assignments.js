@@ -55,6 +55,7 @@ import {
 import { getUserRole } from '../../../src/selectors/user'
 import EditTestModal from '../../../src/components/common/EditTestModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
+import TestLinkModal from '../TestLinkModal/TestLinkModal'
 
 import {
   toggleDeleteAssignmentModalAction,
@@ -79,6 +80,7 @@ class Assignments extends Component {
     openEditPopup: false,
     currentTestId: '',
     openPrintModal: false,
+    showTestLinkModal: false,
   }
 
   componentDidMount() {
@@ -260,6 +262,13 @@ class Assignments extends Component {
     })
   }
 
+  showEmbedLinkModal = (testId) => {
+    this.setState({
+      showTestLinkModal: true,
+      currentTestId: testId,
+    })
+  }
+
   render() {
     const {
       assignmentsByTestId,
@@ -281,6 +290,7 @@ class Assignments extends Component {
       currentAssignmentId,
       currentAssignmentClass,
       openPrintModal,
+      showTestLinkModal,
     } = this.state
     const { showFilter = false } = filterState
     const tabletWidth = 768
@@ -297,6 +307,13 @@ class Assignments extends Component {
           isUsed
           onCancel={() => this.toggleEditModal(false, '')}
           onOk={this.onEnableEdit}
+        />
+        <TestLinkModal
+          isVisible={showTestLinkModal}
+          toggleModal={() =>
+            this.setState({ showTestLinkModal: !showTestLinkModal })
+          }
+          testId={currentTestId}
         />
         {toggleDeleteAssignmentModalState ? (
           <DeleteAssignmentModal
@@ -374,9 +391,11 @@ class Assignments extends Component {
                           showPreviewModal={this.showPreviewModal}
                           showFilter={showFilter}
                           togglePrintModal={this.togglePrintModal}
+                          showEmbedLinkModal={this.showEmbedLinkModal}
                         />
                       ) : (
                         <TableList
+                          showEmbedLinkModal={this.showEmbedLinkModal}
                           assignmentsByTestId={assignmentsByTestId}
                           tests={tests}
                           toggleEditModal={this.toggleEditModal}

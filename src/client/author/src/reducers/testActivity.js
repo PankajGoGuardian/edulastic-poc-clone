@@ -46,6 +46,8 @@ export const REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT =
 export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT =
   '[gradebook] realtime gradebook update assignment'
 export const SET_PROGRESS_STATUS = '[gradebook] set progress status'
+export const LCB_ACTION_PROGRESS = '[gradebook] action progress tatus'
+export const SET_ADDED_STUDENTS = '[gradebook] action added students'
 /**
  * force rerendering the components that depends on
  * additional data thus checking
@@ -88,11 +90,14 @@ export const recalculateAdditionalDataAction = createAction(
 
 export const setStudentViewFilterAction = createAction(SET_STUDENT_VIEW_FILTER)
 export const setProgressStatusAction = createAction(SET_PROGRESS_STATUS)
+export const setLcbActionProgress = createAction(LCB_ACTION_PROGRESS)
 export const setShowAllStudentsAction = createAction(SET_SHOW_ALL_STUDENTS)
+export const setAddedStudentsAction = createAction(SET_ADDED_STUDENTS)
 
 const initialState = {
   entities: [],
   removedStudents: [],
+  addedStudents: [],
   classStudents: [],
   currentTestActivityId: '',
   allTestActivitiesForStudent: [],
@@ -102,6 +107,7 @@ const initialState = {
   viewPassword: false,
   studentViewFilter: null,
   isShowAllStudents: false,
+  actionInProgress: false,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -122,6 +128,7 @@ const reducer = (state = initialState, { type, payload }) => {
         entities: payload.entities,
         additionalData: payload.additionalData,
         removedStudents: payload.gradebookData.exStudents,
+        addedStudents: [],
       }
 
     case RECALCULATE_ADDITIONAL_DATA:
@@ -608,10 +615,20 @@ const reducer = (state = initialState, { type, payload }) => {
           return entity
         }),
       }
+    case SET_ADDED_STUDENTS:
+      return {
+        ...state,
+        addedStudents: [...state.addedStudents, ...payload],
+      }
     case SET_PROGRESS_STATUS:
       return {
         ...state,
         loading: payload,
+      }
+    case LCB_ACTION_PROGRESS:
+      return {
+        ...state,
+        actionInProgress: payload,
       }
     case SET_SHOW_ALL_STUDENTS:
       return {

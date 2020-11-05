@@ -120,7 +120,7 @@ const PrintTestModal = ({
 
         <Info>
           <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" />
-          <div style={{ marginLeft: '5px' }}>
+          <div data-cy="print-option-info" style={{ marginLeft: '5px' }}>
             {optionInfos[option].map((txt, i) => (
               <span key={i}>{txt}</span>
             ))}
@@ -128,6 +128,7 @@ const PrintTestModal = ({
         </Info>
         {option === 'custom' && (
           <StyledInput
+            data-cy="select-que-to-print"
             size="large"
             placeholder="e.g. 1-4, 8, 11-13"
             onChange={onChangeInput}

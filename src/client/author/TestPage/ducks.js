@@ -840,11 +840,18 @@ export const reducer = (state = initialState, { type, payload }) => {
     case DELETE_ANNOTATION: {
       const { entity = {} } = state
       const { annotations = [] } = entity
+      const payloadIndex = annotations.find((o) => o.questionId === payload)
+        ?.qIndex
       return {
         ...state,
         entity: {
           ...entity,
-          annotations: annotations.filter((o) => o.questionId !== payload),
+          annotations: annotations
+            .filter((o) => o.questionId !== payload)
+            .map((ann) => ({
+              ...ann,
+              qIndex: ann.qIndex > payloadIndex ? ann.qIndex - 1 : ann.qIndex,
+            })),
         },
       }
     }

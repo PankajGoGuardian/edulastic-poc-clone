@@ -37,6 +37,10 @@ class MathKeyboard extends React.PureComponent {
 
   static TAB_BUTTONS = TAB_BUTTONS
 
+  static TAB_BUTTONS_FLATTENED = (TAB_BUTTONS || []).flatMap(
+    (obj) => obj.buttons
+  )
+
   static NUMBER_PAD_ITEMS = NUMBER_PAD_ITEMS
 
   WITH_NUMBERS = [

@@ -574,23 +574,26 @@ class Display extends Component {
       </div>
     )
 
-    const renderImage = () => (
-      <StyledPreviewImage
-        data-cy="imageInpreviewContainer"
-        imageSrc={imageUrl || ''}
-        width={imageWidth}
-        height={imageHeight}
-        alt={imageAlterText}
-        maxHeight={maxHeight}
-        maxWidth={maxWidth}
-        preview={preview}
-        style={{
-          position: 'absolute',
-          top: imageOptions.y || 0,
-          left: imageOptions.x || 0,
-        }}
-      />
-    )
+    const renderImage = () =>
+      isPrintMode ? (
+        <img src={imageUrl} alt={imageAlterText} style={{ width: '100%' }} />
+      ) : (
+        <StyledPreviewImage
+          data-cy="imageInpreviewContainer"
+          imageSrc={imageUrl || ''}
+          width={imageWidth}
+          height={imageHeight}
+          alt={imageAlterText}
+          maxHeight={maxHeight}
+          maxWidth={maxWidth}
+          preview={preview}
+          style={{
+            position: 'absolute',
+            top: imageOptions.y || 0,
+            left: imageOptions.x || 0,
+          }}
+        />
+      )
 
     const maxResponseOffsetTop = responseContainers.reduce((max, resp) => {
       max = Math.max(max, resp.top + parseInt(resp.height, 10))
@@ -644,6 +647,7 @@ class Display extends Component {
           ? 1050
           : 750),
       flexDirection: isPrintMode ? 'column' : 'row',
+      width: isPrintMode && '100%',
     }
 
     const renderSnapItems = () =>
@@ -669,12 +673,12 @@ class Display extends Component {
       <StyledPreviewTemplateBox
         smallSize={smallSize}
         fontSize={fontSize}
-        height={computedHeight}
+        height={isPrintMode ? '' : computedHeight}
         maxWidth="100%"
       >
         <StyledPreviewContainer
           smallSize={smallSize}
-          width={previewContainerWidth}
+          width={isPrintMode ? '' : previewContainerWidth}
           data-cy="preview-contaniner"
           ref={this.previewContainerRef}
         >
@@ -692,6 +696,7 @@ class Display extends Component {
               dragItemStyle={dragItemStyle}
               fontSize={fontSize}
               onDrop={this.onDrop}
+              isPrintMode={isPrintMode}
               imageWidth={imageWidth}
               imageHeight={imageHeight}
               options={options}
@@ -705,15 +710,10 @@ class Display extends Component {
     )
 
     const checkboxTemplateBoxLayout = (
-      <StyledPreviewTemplateBox
-        fontSize={fontSize}
-        height={isPrintMode ? '' : computedHeight}
-      >
+      <StyledPreviewTemplateBox fontSize={fontSize} height={computedHeight}>
         <StyledPreviewContainer
-          width={isPrintMode ? '' : previewContainerWidth}
-          height={
-            isPrintMode ? '' : this.getCalculatedHeight(maxHeight, canvasHeight)
-          }
+          width={previewContainerWidth}
+          height={this.getCalculatedHeight(maxHeight, canvasHeight)}
           ref={this.previewContainerRef}
         >
           <CheckboxTemplateBoxLayout
@@ -733,7 +733,6 @@ class Display extends Component {
             showBorder={showBorder}
             showDropItemBorder={showDropItemBorder}
             isExpressGrader={isExpressGrader}
-            isPrintMode={isPrintMode}
             imageHeight={this.getCalculatedHeight(maxHeight, canvasHeight)}
             imageWidth={previewContainerWidth}
             fontSize={fontSize}
@@ -761,7 +760,6 @@ class Display extends Component {
         transparentResponses={transparentResponses}
         responseContainerPosition={responsecontainerposition}
         getHeading={getHeading}
-        isPrintMode={isPrintMode}
         {...choiceStyle}
       />
     )
@@ -792,7 +790,10 @@ class Display extends Component {
         <HorizontalScrollContext.Provider
           value={{ getScrollElement: () => this.displayWrapperRef.current }}
         >
-          <StyledDisplayContainer ref={this.displayWrapperRef}>
+          <StyledDisplayContainer
+            ref={this.displayWrapperRef}
+            isPrintMode={isPrintMode}
+          >
             <FlexContainer justifyContent="flex-start" alignItems="baseline">
               <QuestionLabelWrapper>
                 {showQuestionNumber && (

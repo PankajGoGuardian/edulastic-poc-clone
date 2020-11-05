@@ -58,6 +58,21 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
         }
       }
 
+      if (!res) {
+        const tabButtonKey = MathKeyboard.TAB_BUTTONS_FLATTENED.find(
+          (button) => {
+            const { handler } = button || {}
+            return handler === num
+          }
+        )
+        if (tabButtonKey) {
+          res = {
+            value: tabButtonKey.handler,
+            label: tabButtonKey.label,
+          }
+        }
+      }
+
       return res || { value: '', label: t('component.options.empty') }
     })
 

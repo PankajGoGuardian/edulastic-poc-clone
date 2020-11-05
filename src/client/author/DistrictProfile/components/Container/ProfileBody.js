@@ -375,7 +375,12 @@ class ProfileBody extends React.Component {
 
   getStandardSets = () => {
     const { interestedCurriculums } = this.state
-    const curriculums = interestedCurriculums.map((curriculum) => (
+    // remove duplicate objects with same name
+    const targetInterestedCurriculums = interestedCurriculums.filter(
+      (v, i, a) => a.findIndex((t) => t.name === v.name) === i
+    )
+
+    const curriculums = targetInterestedCurriculums.map((curriculum) => (
       <StyledTag id={curriculum._id}>
         {curriculum.name}
         <Icon

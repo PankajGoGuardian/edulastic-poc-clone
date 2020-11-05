@@ -1,10 +1,6 @@
 /* config-overrides.js */
 require('dotenv').config()
-const {
-  override,
-  addBundleVisualizer,
-  adjustWorkbox,
-} = require('customize-cra')
+const { override, addBundleVisualizer } = require('customize-cra')
 const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { setIn, getIn } = require('timm')
@@ -41,12 +37,6 @@ module.exports = override(
   multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
   process.env.BUNDLE_VISUALIZE && addBundleVisualizer(),
-  adjustWorkbox((wb) =>
-    Object.assign(wb, {
-      skipWaiting: true,
-      exclude: (wb.exclude || []).concat('index.html'),
-    })
-  ),
   (config) => {
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */

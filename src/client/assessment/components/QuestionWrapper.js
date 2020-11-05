@@ -228,8 +228,6 @@ export const EvaluationMessage = styled.div`
 
 const DummyQuestion = () => <></>
 
-
-
 const getQuestion = (type) => {
   switch (type) {
     case questionType.LINE_PLOT:
@@ -715,13 +713,14 @@ class QuestionWrapper extends Component {
                   )}
                   {(isLCBView ||
                     isExpressGrader ||
-                    restProps.previewTab === 'show') && (
-                    <Explanation
-                      isStudentReport={isStudentReport}
-                      question={data}
-                      isGrade={isGrade}
-                    />
-                  )}
+                    restProps.previewTab === 'show') &&
+                    !isPrintPreview && (
+                      <Explanation
+                        isStudentReport={isStudentReport}
+                        question={data}
+                        isGrade={isGrade}
+                      />
+                    )}
                 </StyledFlexContainer>
               </PaperWrapper>
             </QuestionContainer>

@@ -93,7 +93,7 @@ const StudentAutoComplete = ({
   }, [])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
-      loadStudentListDebounced(query)
+      loadStudentList(query)
     }
   }, [searchTerms])
   useEffect(() => {

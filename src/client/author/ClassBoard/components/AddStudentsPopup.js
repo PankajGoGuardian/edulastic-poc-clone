@@ -15,7 +15,7 @@ import {
   addStudentsAction,
   fetchClassStudentsAction,
 } from '../../src/actions/classBoard'
-import { classStudentsSelector } from '../ducks'
+import { classStudentsSelector, disabledAddStudentsList } from '../ducks'
 import { getUserName } from '../utils'
 import { BodyContainer } from './styled'
 
@@ -147,6 +147,7 @@ const AddStudentsPopup = ({
 export default connect(
   (state) => ({
     studentsList: classStudentsSelector(state),
+    disabledList: disabledAddStudentsList(state),
   }),
   {
     fetchGroupMembers: fetchClassStudentsAction,

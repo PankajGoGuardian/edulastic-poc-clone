@@ -209,6 +209,7 @@ class AdvancedTable extends Component {
             togglePrintModal,
             userClassList,
             assignmentsSummary,
+            showEmbedLinkModal,
           } = this.props
           const canEdit = canEditTest(row, userId)
           const assignmentTest = assignmentsSummary.find(
@@ -239,6 +240,7 @@ class AdvancedTable extends Component {
                   addItemToFolder: this.handleSelectRow(row),
                   removeItemsFromFolder: () =>
                     this.handleRemoveItemsFromFolder(row),
+                  showEmbedLinkModal,
                 })}
                 placement="bottomRight"
                 trigger={['click']}

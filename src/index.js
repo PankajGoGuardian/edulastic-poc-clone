@@ -134,4 +134,4 @@ if (window.Cypress) {
   window.store = store
 }
 
-serviceWorker.register()
+serviceWorker.unregister()

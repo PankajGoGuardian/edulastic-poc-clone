@@ -27,7 +27,7 @@ const columns = [
     dataIndex: 'maxScore',
     render: (_, record) => (
       <span>
-        {record.obtainedScore.toFixed(2)}/{record.maxScore}
+        {record.obtainedScore}/{record.maxScore}
       </span>
     ),
   },
@@ -54,6 +54,7 @@ const StudentAssignmentModal = ({
     <ConfirmationModal
       title={Title}
       centered
+      textAlign="left"
       visible={showModal}
       textAlign="center"
       onCancel={closeModal}

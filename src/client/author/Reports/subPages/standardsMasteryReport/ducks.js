@@ -34,7 +34,7 @@ const initialState = {
   requestFilters: {
     termId: '',
     subject: '',
-    grades: ['K'],
+    grades: ['TK'],
     domainIds: 'All',
     // classSectionId: "",
     // assessmentType: ""

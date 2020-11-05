@@ -114,7 +114,7 @@ const initialState = {
   filters: {
     termId: '',
     subject: '',
-    grades: ['K'],
+    grades: ['TK'],
     domainIds: 'All',
     profileId: '',
   },

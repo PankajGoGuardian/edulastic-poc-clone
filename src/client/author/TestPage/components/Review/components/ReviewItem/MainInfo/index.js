@@ -23,7 +23,6 @@ class MainInfo extends React.Component {
     return (
       <FlexContainer
         data-cy-item-index={index}
-        data-cy={data.id}
         style={{ justifyContent: 'space-between' }}
       >
         <Stimulus

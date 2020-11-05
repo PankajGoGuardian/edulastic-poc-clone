@@ -100,6 +100,10 @@ export const getTestListLoadingSelector = createSelector(
   (state) => state.testListLoading
 )
 
+export const getSAFilterDemographics = createSelector(stateSelector, (state) =>
+  get(state, 'SARFilterData.data.result.demographics', [])
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //

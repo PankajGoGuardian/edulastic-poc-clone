@@ -75,7 +75,6 @@ const StandardsPerformance = ({
       domainIds = [],
       grades = [],
       subject,
-      profileId,
       schoolId,
     } = requestFilters
     const modifiedFilter = next(ddfilter, (draft) => {
@@ -91,7 +90,6 @@ const StandardsPerformance = ({
       domainIds,
       grades: grades.join(','),
       subject,
-      profileId,
       compareBy: tableFilters.compareBy.key,
       ...modifiedFilter,
       schoolIds: schoolId || modifiedFilter.schoolId,

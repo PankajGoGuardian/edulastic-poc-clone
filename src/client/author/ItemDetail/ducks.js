@@ -688,6 +688,30 @@ const removeTab = (state, payload) =>
     } else if (passage.structure.tabs.length >= payload) {
       passage.structure.tabs.splice(payload, 1)
     }
+    const { updatedWidgets, deletedWidgetIds } = (
+      passage?.structure?.widgets || []
+    ).reduce(
+      (acc, curr) => {
+        if (curr.tabIndex === payload) {
+          acc.deletedWidgetIds.push(curr.reference)
+        } else {
+          let { tabIndex } = curr
+          if (tabIndex > payload) {
+            tabIndex--
+          }
+          acc.updatedWidgets.push({ ...curr, tabIndex })
+        }
+        return acc
+      },
+      {
+        updatedWidgets: [],
+        deletedWidgetIds: [],
+      }
+    )
+    passage.structure.widgets = updatedWidgets
+    passage.data = passage.data.filter(
+      ({ id }) => !deletedWidgetIds.includes(id)
+    )
     return newState
   })
 
@@ -1062,9 +1086,7 @@ export function* updateItemSaga({ payload }) {
       delete payload.data.data
     }
     const data = _omit(payload.data, ['authors', '__v'])
-    if (payload.testId) {
-      data.testId = testId
-    }
+
     const { itemLevelScoring, isPassageWithQuestions } = data
 
     // const questions = yield select(getQuestionsSelector);
@@ -1351,9 +1373,6 @@ export function* updateItemDocBasedSaga({ payload }) {
       delete payload.data.data
     }
     const data = _omit(payload.data, ['authors', '__v'])
-    if (payload.testId) {
-      data.testId = testId
-    }
 
     const questions = get(payload.data, ['data', 'questions'], [])
     const { testId, ...item } = yield call(

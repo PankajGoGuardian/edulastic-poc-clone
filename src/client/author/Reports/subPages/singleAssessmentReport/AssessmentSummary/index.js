@@ -45,9 +45,12 @@ const AssessmentSummary = ({
   preventHeaderRender,
   setAssesmentSummaryLoading,
 }) => {
-  const selectedTest =
-    testList.find((t) => t._id === settings.selectedTest.key) || {}
-  const assessmentName = selectedTest.title || ''
+  const selectedTest = testList.find(
+    (t) => t._id === settings.selectedTest.key
+  ) || { _id: '', title: '' }
+  const assessmentName = `${
+    selectedTest.title
+  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -87,15 +90,12 @@ const AssessmentSummary = ({
   if (loading) {
     return <SpinLoader position="fixed" />
   }
-
   if (settings.cliUser && !metricInfo?.length) {
     return <CustomCliEmptyComponent />
   }
-
-  if (settings.selectedTest && !settings.selectedTest.key) {
+  if (!metricInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
-
   return (
     <>
       <UpperContainer type="flex">

@@ -107,7 +107,6 @@ const StudentProfileSummary = ({
     if (_selectedStudent.key && requestFilters.termId) {
       getStudentProfileSummaryRequest({
         ...requestFilters,
-        profileId: requestFilters.standardsProficiencyProfileId,
         studentId: _selectedStudent.key,
       })
     }

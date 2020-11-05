@@ -70,7 +70,7 @@ const initialState = {
   filters: {
     termId: '',
     subject: 'All',
-    grades: ['K'],
+    grades: ['TK'],
     domainIds: ['All'],
     // classSectionId: "All",
     // assessmentType: "All"

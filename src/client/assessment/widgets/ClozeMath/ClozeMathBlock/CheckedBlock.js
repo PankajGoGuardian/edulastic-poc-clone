@@ -100,11 +100,8 @@ const CheckedBlock = ({
     fontSize: '16px',
   })
   const availableWidth = (parseInt(width, 10) || 0) - (showIndex ? 58 : 26) // will show popover when availableHeight is not available or NaN
-
-  // +15 is some extra height
   const showPopover =
-    textWidth > availableWidth ||
-    parseInt(textHeight, 10) + 15 > mathInputMaxHeight
+    textWidth > availableWidth || textHeight > mathInputMaxHeight
 
   const popoverContent = (isPopover) => (
     <CheckBox
@@ -138,8 +135,7 @@ const CheckedBlock = ({
               display: 'flex',
               alignItems: 'center',
               textAlign: 'left',
-              maxHeight: !isPopover && mathInputMaxHeight,
-              padding: isPopover && '4px 0px',
+              maxHeight: mathInputMaxHeight,
             }}
           />
         ) : (

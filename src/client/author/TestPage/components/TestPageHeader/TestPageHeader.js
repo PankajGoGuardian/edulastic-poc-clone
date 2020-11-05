@@ -19,7 +19,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
-import { get } from 'lodash'
 import {
   getUserFeatures,
   getUserId,
@@ -162,6 +161,7 @@ const TestPageHeader = ({
   playlistHasDraftTests,
   isCurator,
   hasCollectionAccess,
+  authorQuestionsById,
 }) => {
   let navButtons =
     buttons ||
@@ -196,11 +196,7 @@ const TestPageHeader = ({
   const onRegradeConfirm = () => {
     if (validateTest(test)) {
       if (test.isDocBased) {
-        const assessmentQuestions = get(
-          test,
-          'itemGroups[0].items[0].data.questions',
-          []
-        )
+        const assessmentQuestions = Object.values(authorQuestionsById || {})
         if (!validateQuestionsForDocBased(assessmentQuestions)) {
           return
         }
@@ -550,7 +546,7 @@ const TestPageHeader = ({
                 IconBtn
                 title="Edit Test"
                 disabled={editEnable || disableButtons}
-                data-cy="edit"
+                data-cy="edit-test"
                 onClick={() =>
                   isEdulasticCurator || isCurator
                     ? onEnableEdit()
@@ -781,6 +777,7 @@ const enhance = compose(
       isLoadingData: shouldDisableSelector(state),
       testItems: getTestItemsSelector(state),
       isCurator: getIsCurator(state),
+      authorQuestionsById: state.authorQuestions.byId,
     }),
     {
       publishForRegrade: publishForRegradeAction,

@@ -110,6 +110,21 @@ const makeStandardColumnConfig = (skill) => ({
 const getMasteryColorByScore = (score, scaleInfo) =>
   getMasteryLevel(score, scaleInfo, 'score').color
 
+const compareByStudentsColumns = [
+  {
+    title: 'SIS ID',
+    dataIndex: 'sisId',
+    key: 'sisId',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'STUDENT NUMBER',
+    dataIndex: 'studentNumber',
+    key: 'studentNumber',
+    visibleOn: ['csv'],
+  },
+]
+
 const PerformanceAnalysisTable = ({
   report,
   viewBy,
@@ -361,21 +376,24 @@ const PerformanceAnalysisTable = ({
     return standardColumnsData.filter(selectedItems).map(makeStandardColumn)
   }
 
-  const getAnalysisColumns = () => [
-    compareByColumns[compareBy],
-    makeOverallColumn(),
-    ...makeStandardColumns(tableData),
-    {
-      title: 'SIS ID',
-      dataIndex: 'sisId',
-      key: 'sisId',
-      visibleOn: ['csv'],
-    },
-  ]
+  const getAnalysisColumns = () => {
+    const cols = [
+      compareByColumns[compareBy],
+      makeOverallColumn(),
+      ...makeStandardColumns(tableData),
+    ]
+    if (compareBy === 'students') {
+      let index = 1
+      for (const column of compareByStudentsColumns) {
+        cols.splice(index++, 0, column)
+      }
+    }
+    return cols
+  }
 
   /**
    *
-   * converts table header string starting from 3rd column
+   * converts table header string starting from 4th column
    * From
    * "1-ESS1-2 POINTS - 1 50%"
    * TO
@@ -385,7 +403,7 @@ const PerformanceAnalysisTable = ({
     const splittedData = data.split('\n')
     const header = splittedData[0]
     const columns = header.split(',')
-    for (let i = 2; i < columns.length; i++) {
+    for (let i = 3; i < columns.length; i++) {
       const str = columns[i]
       const _str = str.toLocaleLowerCase()
       const indexOfPoints = _str.lastIndexOf('points')

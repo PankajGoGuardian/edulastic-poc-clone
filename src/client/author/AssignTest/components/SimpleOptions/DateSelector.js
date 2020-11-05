@@ -5,7 +5,7 @@ import {
   test as testConst,
   assignmentStatusOptions,
 } from '@edulastic/constants'
-import { Col, Row } from 'antd'
+import { Col, Row, Tooltip } from 'antd'
 import {
   FieldLabel,
   DatePickerStyled,
@@ -72,23 +72,35 @@ const DateSelector = ({
           <Row>
             <Col span={24}>
               <FieldLabel>{t('common.assignTest.openDateTitle')}</FieldLabel>
-              <DatePickerStyled
-                allowClear={false}
-                data-cy="startDate"
-                size="large"
-                style={{ width: '100%' }}
-                disabledDate={disabledStartDate}
-                showTime={{ use12Hours: true }}
-                format="YYYY-MM-DD hh:mm:ss a"
-                value={startDate}
-                placeholder={t('common.assignTest.openDatePlaceholder')}
-                onChange={changeField('startDate')}
-                disabled={
+              <Tooltip
+                placement="top"
+                title={
                   passwordPolicy ===
-                    testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
-                  (forClassLevel && status !== assignmentStatusOptions.NOT_OPEN)
+                  testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+                    ? 'To modify set Dynamic Password as OFF'
+                    : null
                 }
-              />
+              >
+                <DatePickerStyled
+                  allowClear={false}
+                  data-cy="startDate"
+                  size="large"
+                  style={{ width: '100%' }}
+                  disabledDate={disabledStartDate}
+                  showTime={{ use12Hours: true }}
+                  format="YYYY-MM-DD hh:mm:ss a"
+                  value={startDate}
+                  placeholder={t('common.assignTest.openDatePlaceholder')}
+                  onChange={changeField('startDate')}
+                  disabled={
+                    passwordPolicy ===
+                      testConst.passwordPolicy
+                        .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                    (forClassLevel &&
+                      status !== assignmentStatusOptions.NOT_OPEN)
+                  }
+                />
+              </Tooltip>
             </Col>
           </Row>
         </Col>

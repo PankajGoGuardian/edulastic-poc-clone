@@ -34,9 +34,6 @@ const CheckboxTemplateBox = ({
   isSnapFitValues,
   isExpressGrader,
   lessMinWidth,
-  imageWidth,
-  imageHeight,
-  isPrintMode = false,
   fontSize,
   isPrintPreview = false,
   options = [],
@@ -64,8 +61,8 @@ const CheckboxTemplateBox = ({
 
   const btnStyle = {
     widthpx: respWidth,
-    top: isPrintMode ? `${(respTop / imageHeight) * 100}%` : respTop,
-    left: isPrintMode ? `${(respLeft / imageWidth) * 100}%` : respLeft,
+    top: respTop,
+    left: respLeft,
     position: 'absolute',
     borderRadius: 5,
   }
@@ -98,8 +95,8 @@ const CheckboxTemplateBox = ({
 
   const dropContainerStyle = {
     ...btnStyle,
-    width: isPrintMode ? `${(respWidth / imageWidth) * 100}%` : respWidth,
-    height: isPrintMode ? `${(respHeight / imageHeight) * 100}%` : respHeight,
+    width: respWidth,
+    height: respHeight,
     minWidth: lessMinWidth
       ? parseInt(respWidth, 10) + 4
       : response.minWidthShowAnswer,
@@ -178,12 +175,12 @@ const CheckboxTemplateBox = ({
                 ? {
                     borderRadius: 5,
                     justifyContent: lessMinWidth ? 'flex-start' : 'center',
-                    width: isPrintMode ? '' : respWidth,
-                    height: isPrintMode ? '' : respHeight,
+                    width: respWidth,
+                    height: respHeight,
                   }
                 : {
-                    width: isPrintMode ? '' : respWidth,
-                    height: isPrintMode ? '' : respHeight,
+                    width: respWidth,
+                    height: respHeight,
                   }
             }
             isExpressGrader={isExpressGrader}

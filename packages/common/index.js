@@ -116,6 +116,7 @@ export {
   isSEB,
   captureSentryException,
   handleChromeOsSEB,
+  useLayoutEffectDebounced,
 } from './src/helpers'
 
 // contexts

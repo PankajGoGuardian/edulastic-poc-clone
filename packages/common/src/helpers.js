@@ -4,9 +4,20 @@ import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import { fileApi } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
+import { useLayoutEffect } from 'react'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
 import AppConfig from '../../../src/app-config'
 import { isPracticeUsage } from '../../../src/client/author/ItemDetail/Transformer'
+
+export function useLayoutEffectDebounced(func, values, time) {
+  useLayoutEffect(() => {
+    let db = setTimeout(() => {
+      func()
+    }, time)
+
+    return () => clearTimeout(db)
+  }, values)
+}
 
 export const isSEB = () => window.navigator.userAgent.includes('SEB')
 

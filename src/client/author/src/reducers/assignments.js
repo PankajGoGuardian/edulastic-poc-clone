@@ -43,6 +43,8 @@ const initialState = {
   isAdvancedView: false,
   syncWithGoogleClassroomInProgress: false,
   bulkActionInprogress: false,
+  totalAssignmentsClasses: 0,
+  assignmentStatusCounts: { notOpen: 0, inProgress: 0, inGrading: 0, done: 0 },
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -77,13 +79,25 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, loading: false, error: payload.error }
     case RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST:
       return { ...state, loading: true }
-    case RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS:
+    case RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS: {
+      const {
+        notOpen = 0,
+        inProgress = 0,
+        inGrading = 0,
+        done = 0,
+        total = 0,
+        assignments = [],
+        test = {},
+      } = payload?.entities || {}
       return {
         ...state,
         loading: false,
-        assignmentClassList: payload.entities.assignments,
-        currentTest: payload.entities.test,
+        assignmentClassList: assignments,
+        currentTest: test,
+        totalAssignmentsClasses: total,
+        assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
       }
+    }
     case RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR:
       return {
         ...state,

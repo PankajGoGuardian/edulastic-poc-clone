@@ -5,10 +5,7 @@ import { compose } from 'redux'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { get } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
-import {
-  isDistrictPolicyAllowed,
-  isDistrictPolicyAvailable,
-} from '../common/utils/helpers'
+import { isDistrictPolicyAllowed } from '../common/utils/helpers'
 
 import { getOrgDetailsByShortNameAndOrgTypeAction } from '../student/Signup/duck'
 
@@ -25,8 +22,7 @@ const StudentSignup = lazy(() =>
 
 const DistrictRoutes = ({
   match,
-  location,
-  getOrgDetailsByShortNameAndOrgTypeAction,
+  getOrgDetailsByShortNameAndOrgType,
   generalSettings,
   districtPolicy,
   districtUrlLoading,
@@ -36,7 +32,7 @@ const DistrictRoutes = ({
   const { orgShortName } = match.params
   const isSignupUsingDaURL = !!orgShortName
   useEffect(() => {
-    getOrgDetailsByShortNameAndOrgTypeAction({
+    getOrgDetailsByShortNameAndOrgType({
       data: {
         shortName: orgShortName,
         orgType: orgType === 'school' ? 'institution' : 'district',
@@ -149,7 +145,7 @@ const enhance = compose(
       districtUrlLoading: get(state, 'signup.districtUrlLoading', true),
     }),
     {
-      getOrgDetailsByShortNameAndOrgTypeAction,
+      getOrgDetailsByShortNameAndOrgType: getOrgDetailsByShortNameAndOrgTypeAction,
     }
   )
 )

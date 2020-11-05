@@ -294,6 +294,8 @@ const getRouteByGeneralRoute = (user) => {
   }
 }
 
+const loginPaths = ['/', '/resetPassword', '/districtLogin', '/district']
+
 function* persistAuthStateAndRedirectToSaga() {
   const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
     {}
@@ -1054,7 +1056,9 @@ export function* fetchUser({ payload }) {
           addAccountTo: payload.userId,
         })
       )
-      if (!['/', '/login'].includes(window.location.pathname)) {
+      if (
+        !loginPaths.some((path) => window.location.pathname.startsWith(path))
+      ) {
         window.location.replace('/')
       }
       return

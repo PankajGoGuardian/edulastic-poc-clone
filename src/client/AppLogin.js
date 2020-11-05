@@ -45,18 +45,15 @@ const AppLogin = () => (
     <Route exact path="/resetPassword/" component={ResetPassword} />
     <Route
       path="/district/:orgShortName"
-      component={DistrictRoutes}
-      orgType="district"
+      render={(props) => <DistrictRoutes orgType="district" {...props} />}
     />
     <Route
       path="/districtLogin/:orgShortName"
-      component={DistrictRoutes}
-      orgType="districtLogin"
+      render={(props) => <DistrictRoutes orgType="districtLogin" {...props} />}
     />
     <Route
       path="/school/:orgShortName"
-      component={DistrictRoutes}
-      orgType="school"
+      render={(props) => <DistrictRoutes orgType="school" {...props} />}
     />
     <Route path="/Signup" component={TeacherSignup} />
     <Route

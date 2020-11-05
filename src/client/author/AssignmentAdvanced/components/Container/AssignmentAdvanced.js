@@ -23,6 +23,7 @@ import {
   getCurrentTestSelector,
   getAssignmentsLoadingSelector,
   getBulkActionStatusSelector,
+  stateSelector,
 } from '../../../src/selectors/assignments'
 import ListHeader from '../../../src/components/common/ListHeader'
 import ActionMenu from '../../../Assignments/components/ActionMenu/ActionMenu'
@@ -73,6 +74,7 @@ class AssignmentAdvanced extends Component {
     filterStatus: '',
     isHeaderAction: false,
     openPrintModal: false,
+    pageNo: 1,
   }
 
   componentDidMount() {
@@ -83,6 +85,7 @@ class AssignmentAdvanced extends Component {
       loadAssignmentsSummary,
       assignmentsSummary,
     } = this.props
+    const { pageNo, filterStatus } = this.state
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
@@ -92,10 +95,15 @@ class AssignmentAdvanced extends Component {
     if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId })
     }
-    loadAssignmentsClassList({ districtId, testId, testType, termId })
+    loadAssignmentsClassList({
+      districtId,
+      testId,
+      testType,
+      termId,
+      pageNo,
+      status: filterStatus,
+    })
   }
-
-  handleCreate = () => {}
 
   onOpenReleaseScoreSettings = (testId) => {
     const { toggleReleaseGradePopUp } = this.props
@@ -103,9 +111,39 @@ class AssignmentAdvanced extends Component {
     this.setState({ currentTestId: testId })
   }
 
-  renderBreadcrumbs = (assingment) => {
-    const { filterStatus } = this.state
+  handleListSearch = () => {
+    const { match, location, loadAssignmentsClassList } = this.props
+    const { districtId, testId } = match.params
+    const { pageNo, filterStatus } = this.state
+    const { testType = '' } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
+    const { termId = '' } = JSON.parse(
+      sessionStorage.getItem('filters[Assignments]') || '{}'
+    )
+    loadAssignmentsClassList({
+      districtId,
+      testId,
+      testType,
+      termId,
+      pageNo,
+      status: filterStatus,
+    })
+  }
 
+  handlePagination = (pageNo) => {
+    this.setState({ pageNo }, () => this.handleListSearch())
+  }
+
+  handleFilterStatusChange = (filterStatus) => {
+    this.setState({ filterStatus, pageNo: 1 }, () => this.handleListSearch())
+  }
+
+  renderBreadcrumbs = () => {
+    const { filterStatus } = this.state
+    const {
+      assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
+    } = this?.props?.authorAssignmentsState || {}
     return (
       <FlexContainer>
         <div>
@@ -113,59 +151,70 @@ class AssignmentAdvanced extends Component {
           <StyledButton
             data-cy="allFilter"
             type="primary"
-            onClick={() => this.setState({ filterStatus: '' })}
+            onClick={() => this.handleFilterStatusChange('')}
           >
             All
           </StyledButton>
         </div>
         <Breadcrumbs>
           <Breadcrumb
-            handleClick={() => this.setState({ filterStatus: 'NOT OPEN' })}
+            title={notOpen ? null : 'Not Available'}
+            handleClick={() =>
+              notOpen ? this.handleFilterStatusChange('NOT_OPEN') : {}
+            }
             first
             color={
-              filterStatus === 'NOT OPEN'
+              filterStatus === 'NOT_OPEN'
                 ? 'white'
                 : assignmentStatusBg.NOT_OPEN
             }
-            bgColor={filterStatus === 'NOT OPEN' && assignmentStatusBg.NOT_OPEN}
+            bgColor={filterStatus === 'NOT_OPEN' && assignmentStatusBg.NOT_OPEN}
           >
-            <span data-cy="notOpenFilter">{assingment.notStarted || 0}</span>Not
-            Open
+            <span data-cy="notOpenFilter">{notOpen || 0}</span>
+            Not Open
           </Breadcrumb>
           <Breadcrumb
-            handleClick={() => this.setState({ filterStatus: 'IN PROGRESS' })}
+            title={inProgress ? null : 'Not Available'}
+            handleClick={() =>
+              inProgress ? this.handleFilterStatusChange('IN_PROGRESS') : {}
+            }
             color={
-              filterStatus === 'IN PROGRESS'
+              filterStatus === 'IN_PROGRESS'
                 ? 'white'
                 : assignmentStatusBg.IN_PROGRESS
             }
             bgColor={
-              filterStatus === 'IN PROGRESS' && assignmentStatusBg.IN_PROGRESS
+              filterStatus === 'IN_PROGRESS' && assignmentStatusBg.IN_PROGRESS
             }
           >
-            <span data-cy="inProgressFilter">{assingment.inProgress || 0}</span>
+            <span data-cy="inProgressFilter">{inProgress || 0}</span>
             In Progress
           </Breadcrumb>
           <Breadcrumb
-            handleClick={() => this.setState({ filterStatus: 'IN GRADING' })}
+            title={inGrading ? null : 'Not Available'}
+            handleClick={() =>
+              inGrading ? this.handleFilterStatusChange('IN_GRADING') : {}
+            }
             color={
-              filterStatus === 'IN GRADING'
+              filterStatus === 'IN_GRADING'
                 ? 'white'
                 : assignmentStatusBg.IN_GRADING
             }
             bgColor={
-              filterStatus === 'IN GRADING' && assignmentStatusBg.IN_GRADING
+              filterStatus === 'IN_GRADING' && assignmentStatusBg.IN_GRADING
             }
           >
-            <span data-cy="inGradingFilter">{assingment.inGrading || 0}</span>In
-            Grading
+            <span data-cy="inGradingFilter">{inGrading || 0}</span>In Grading
           </Breadcrumb>
           <Breadcrumb
-            handleClick={() => this.setState({ filterStatus: 'DONE' })}
+            title={done ? null : 'Not Available'}
+            handleClick={() =>
+              done ? this.handleFilterStatusChange('DONE') : {}
+            }
             color={filterStatus === 'DONE' ? 'white' : assignmentStatusBg.DONE}
             bgColor={filterStatus === 'DONE' && assignmentStatusBg.DONE}
           >
-            <span data-cy="doneFilter">{assingment.graded || 0}</span>Done
+            <span data-cy="doneFilter">{done || 0}</span>Done
           </Breadcrumb>
         </Breadcrumbs>
       </FlexContainer>
@@ -223,6 +272,14 @@ class AssignmentAdvanced extends Component {
 
   render() {
     const {
+      filterStatus,
+      openEditPopup,
+      isPreviewModalVisible,
+      isHeaderAction,
+      openPrintModal,
+      pageNo,
+    } = this.state
+    const {
       classList,
       assignmentsSummary,
       match,
@@ -245,15 +302,30 @@ class AssignmentAdvanced extends Component {
       bulkActionStatus,
       userRole,
       userClassList,
+      authorAssignmentsState = {},
     } = this.props
-    const { testId } = match.params
     const {
-      filterStatus,
-      openEditPopup,
-      isPreviewModalVisible,
-      isHeaderAction,
-      openPrintModal,
-    } = this.state
+      assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
+      totalAssignmentsClasses,
+    } = authorAssignmentsState || {}
+    let totalCountToShow
+    switch (filterStatus) {
+      case 'NOT_OPEN':
+        totalCountToShow = notOpen
+        break
+      case 'IN_PROGRESS':
+        totalCountToShow = inProgress
+        break
+      case 'IN_GRADING':
+        totalCountToShow = inGrading
+        break
+      case 'DONE':
+        totalCountToShow = done
+        break
+      default:
+        totalCountToShow = totalAssignmentsClasses
+    }
+    const { testId } = match.params
     const assingment =
       find(assignmentsSummary, (item) => item.testId === testId) || {}
     const { testType = '' } = qs.parse(location.search, {
@@ -332,7 +404,6 @@ class AssignmentAdvanced extends Component {
             <StyledCard>
               <TableList
                 classList={classList}
-                filterStatus={filterStatus}
                 rowKey={(recode) => recode.assignmentId}
                 bulkOpenAssignmentRequest={bulkOpenAssignmentRequest}
                 bulkCloseAssignmentRequest={bulkCloseAssignmentRequest}
@@ -356,6 +427,9 @@ class AssignmentAdvanced extends Component {
                 isLoadingAssignments={isLoadingAssignments}
                 bulkActionStatus={bulkActionStatus}
                 isHeaderAction={isHeaderAction}
+                pageNo={pageNo}
+                totalAssignmentsClasses={totalCountToShow}
+                handlePagination={this.handlePagination}
               />
             </StyledCard>
           </TableWrapper>
@@ -395,6 +469,7 @@ const enhance = compose(
       bulkActionStatus: getBulkActionStatusSelector(state),
       userRole: getUserRole(state),
       userClassList: getGroupList(state),
+      authorAssignmentsState: stateSelector(state),
     }),
     {
       setReleaseScore: releaseScoreAction,

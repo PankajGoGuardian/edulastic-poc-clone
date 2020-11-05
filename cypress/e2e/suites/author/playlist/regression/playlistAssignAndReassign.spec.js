@@ -158,7 +158,7 @@ describe(`${FileHelper.getSpecName(
 
           lcb.checkSelectAllCheckboxOfStudent()
           lcb.clickOnMarkAsSubmit()
-          lcb.header.clickOnClose()
+          lcb.header.clickOnClose(true, false)
         })
       })
 
@@ -272,7 +272,7 @@ describe(`${FileHelper.getSpecName(
 
         lcb.checkSelectAllCheckboxOfStudent()
         lcb.clickOnMarkAsSubmit()
-        lcb.header.clickOnClose()
+        lcb.header.clickOnClose(true, false)
       })
 
       it("> verify assignments rows in 'favourite playlist page'", () => {

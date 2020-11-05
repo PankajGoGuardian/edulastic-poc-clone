@@ -396,17 +396,11 @@ describe(`${FileHelper.getSpecName(
     before('> navigate to previously used playlist', () => {
       playlistlibraryPage.sidebar.clickOnDashboard()
       playlistlibraryPage.sidebar.clickOnPlayListLibrary()
-
+    })
+    beforeEach('> clear filters', () => {
       playlistlibraryPage.searchFilter.clearAll()
       playlistlibraryPage.searchFilter.clickOnPreviouslyUsed()
     })
-
-    it('> existing playlist', () => {
-      playlistlibraryPage
-        .getPlayListCardById(usedPlaylists[0])
-        .should('be.visible')
-    })
-
     it('> new playlist', () => {
       playlistlibraryPage
         .getPlayListCardById(usedPlaylists[1])
@@ -414,8 +408,16 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> playlist from entire library', () => {
+      playlistlibraryPage.searchFilter.typeInSearchBox(usedPlaylists[2])
       playlistlibraryPage
         .getPlayListCardById(usedPlaylists[2])
+        .should('be.visible')
+    })
+
+    it('> existing playlist', () => {
+      playlistlibraryPage.searchFilter.typeInSearchBox(usedPlaylists[0])
+      playlistlibraryPage
+        .getPlayListCardById(usedPlaylists[0])
         .should('be.visible')
     })
   })

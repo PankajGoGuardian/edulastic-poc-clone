@@ -529,9 +529,15 @@ describe(`${FileHelper.getSpecName(
       cy.url().should('contain', `${playlistId_2}/use-this`)
     })
 
+    it('> navigate and verify my playlist page', () => {
+      playlistlibraryPage.reviewTab.closeSwitchPlaylistWindow()
+      playlistlibraryPage.sidebar.clickOnPlayListLibrary()
+      playlistlibraryPage.sidebar.clickOnRecentUsedPlayList()
+      cy.url().should('contain', `${playlistId_2}/use-this`)
+    })
+
     it("> manage test dropdown 'Preview Test'", () => {
       /* 4. verify preview test in manage test dropdown */
-      playlistlibraryPage.reviewTab.closeSwitchPlaylistWindow()
       playlistlibraryPage.reviewTab
         .clickOnViewTestByTestByModule(1, 1, true)
         .then((test) => {

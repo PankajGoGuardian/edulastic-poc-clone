@@ -60,6 +60,7 @@ import {
   getUserId,
   getUserRole,
   getGroupList,
+  getUserSchoolsListSelector,
 } from '../../../src/selectors/user'
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
@@ -303,6 +304,7 @@ class AssignmentAdvanced extends Component {
       userRole,
       userClassList,
       authorAssignmentsState = {},
+      userSchoolsList,
     } = this.props
     const {
       assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
@@ -430,6 +432,8 @@ class AssignmentAdvanced extends Component {
                 pageNo={pageNo}
                 totalAssignmentsClasses={totalCountToShow}
                 handlePagination={this.handlePagination}
+                userSchoolsList={userSchoolsList}
+                userRole={userRole}
               />
             </StyledCard>
           </TableWrapper>
@@ -470,6 +474,7 @@ const enhance = compose(
       userRole: getUserRole(state),
       userClassList: getGroupList(state),
       authorAssignmentsState: stateSelector(state),
+      userSchoolsList: getUserSchoolsListSelector(state),
     }),
     {
       setReleaseScore: releaseScoreAction,

@@ -1,7 +1,5 @@
-import { createSelector } from 'reselect'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
@@ -85,7 +83,7 @@ export const reducer = createReducer(initialState, {
     state.updating = false
     state.data = payload
   },
-  [UPDATE_DISTRICT_PROFILE_ERROR]: (state) => {
+  [UPDATE_DISTRICT_PROFILE_ERROR]: (state, { payload }) => {
     state.updating = false
     state.updateError = payload.error
   },
@@ -128,8 +126,13 @@ function* updateDictrictProfileSaga({ payload }) {
     yield put(updateDistrictProfileSuccessAction(updateDistrictProfile))
     notification({ type: 'success', messageKey: 'profileChangeSaved' })
   } catch (err) {
-    const errorMessage = 'Unable to update District profile.'
-    notification({ type: 'error', msg: errorMessage })
+    let errorMessage = 'Unable to update District profile.'
+    let notificationType = 'error'
+    if (err && err.status === 400 && err.response?.data?.message) {
+      errorMessage = err.response.data.message
+      notificationType = 'warn'
+    }
+    notification({ type: notificationType, msg: errorMessage })
     yield put(updateDistrictProfileErrorAction({ error: errorMessage }))
   }
 }

@@ -13,8 +13,6 @@ import {
   questionTypeKey,
 } from '../../../../framework/constants/questionTypes'
 
-const questionData = require('../../../../../fixtures/questionAuthoring')
-
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
   const itemlist = new ItemListPage()
   const itemKeys = [
@@ -32,8 +30,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
   const filterAttr = Cypress._.values(
     itemlist.searchFilters.itemBankFilterAttrs
   )
-  const newItemids = []
-  const existingItemIds = []
 
   const filters = [
     {
@@ -98,19 +94,30 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       'snapwiz',
       filters.map((obj) => obj.id)
     )
-    /*  filters = []
+    /*   filters = []
     itemKeys.slice(0, 4).forEach((item, index) => {
       itemlist.createItem(item, index + 1).then((id) => {
-        existingItemIds.push(id)
+        const filtersObj = {}
+        cy.fixture('questionAuthoring').then((questionData) => {
+          const itemProps =
+            questionData[`${item.split('.')[0]}`][`${item.split('.')[1]}`]
+
+          filtersObj.standards = {}
+          filtersObj.standards.subject = itemProps.standards[0].subject
+          filtersObj.standards.standardSet = itemProps.standards[0].standardSet
+          filtersObj.standards.standard = itemProps.standards[0].standard
+          filtersObj.standards.grade = [itemProps.standards[0].grade]
+          if (itemProps.meta) {
+            if (itemProps.meta.dok) filtersObj.dok = itemProps.meta.dok
+            if (itemProps.meta.difficulty)
+              filtersObj.difficulty = itemProps.meta.difficulty
+            if (itemProps.meta.tags) filtersObj.tags = itemProps.meta.tags
+          }
+          filtersObj.id = id
+          filtersObj.queType = item.split('.')[0]
+          filters.push(filtersObj)
+        })
       })
-    })
-    cy.get('body').then(() => {
-      itemlist.getItemsMetadata(
-        itemKeys.slice(0,4),
-        filters,
-        questionData,
-        existingItemIds
-      )
     }) */
   })
 
@@ -121,16 +128,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
   before('> create new items', () => {
     itemKeys.slice(4).forEach((item, index) => {
       itemlist.createItem(item, index + 5).then((id) => {
-        newItemids.push(id)
+        const filtersObj = {}
+        cy.fixture('questionAuthoring').then((questionData) => {
+          const itemProps =
+            questionData[`${item.split('.')[0]}`][`${item.split('.')[1]}`]
+
+          filtersObj.standards = {}
+          filtersObj.standards.subject = itemProps.standards[0].subject
+          filtersObj.standards.standardSet = itemProps.standards[0].standardSet
+          filtersObj.standards.standard = itemProps.standards[0].standard
+          filtersObj.standards.grade = [itemProps.standards[0].grade]
+          if (itemProps.meta) {
+            if (itemProps.meta.dok) filtersObj.dok = itemProps.meta.dok
+            if (itemProps.meta.difficulty)
+              filtersObj.difficulty = itemProps.meta.difficulty
+            if (itemProps.meta.tags) filtersObj.tags = itemProps.meta.tags
+          }
+          filtersObj.id = id
+          filtersObj.queType = item.split('.')[0]
+          filters.push(filtersObj)
+        })
       })
-    })
-    cy.get('body').then(() => {
-      itemlist.getItemsMetadata(
-        itemKeys.slice(4),
-        filters,
-        questionData,
-        newItemids
-      )
     })
   })
 

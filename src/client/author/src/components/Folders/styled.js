@@ -135,6 +135,9 @@ export const FolderListItemTitle = styled.div`
   align-items: center;
   svg {
     margin: 0px 15px;
+    &:hover {
+      fill: ${themeColorBlue};
+    }
   }
   span {
     max-width: ${(props) => (props.ellipsis ? '125px' : '100%')};

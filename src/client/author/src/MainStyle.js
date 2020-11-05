@@ -162,14 +162,14 @@ export const MainContainer = styled.div`
         &-active {
           border: 1px solid ${themeColor};
           opacity: 0.75;
-          background: ${(props) => props.theme.themeColor};
-          border-color: ${(props) => props.theme.themeColor};
+          background: ${themeColorBlue};
+          border-color: ${themeColorBlue};
           a {
             color: white;
           }
           &:hover,
           &:focus {
-            background: ${(props) => props.theme.themeColor};
+            background: ${themeColorBlue};
             a {
               color: white;
             }

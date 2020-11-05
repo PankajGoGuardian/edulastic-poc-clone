@@ -139,7 +139,7 @@ const Folders = ({
       {showAllItems && (
         <FolderListItem data-cy="FOLDERS" leftBorder active>
           <FolderListItemTitle ellipsis title="Folders">
-            <IconFolders color={themeColor} />
+            <IconFolders />
             FOLDERS
             <AddFolderButton
               data-cy="addFolderButton"

@@ -6,12 +6,10 @@ import {
   questionTypeKey,
 } from '../../constants/questionTypes'
 import CypressHelper from '../../util/cypressHelpers'
-import StudentTestPage from '../../student/studentTestPage'
 
 export default class PreviewItemPopup {
   constructor() {
     this.qrp = new QuestionResponsePage()
-    this.studentTestPage = new StudentTestPage()
   }
 
   // *** ELEMENTS START ***
@@ -415,72 +413,5 @@ export default class PreviewItemPopup {
       .should('have.length', tags.length)
 
     tags.forEach((tag) => cy.get('@tag-row').find('span').contains(tag))
-  }
-
-  verifyMetadataOnPreview = (
-    id,
-    teacher,
-    points,
-    dok,
-    difficulty,
-    standard,
-    tags
-  ) => {
-    this.verifyItemIdOnPreview(id)
-    this.verifyTeacherNameOnPreview('Teacher')
-    this.verifyPointsOnPreview(points)
-    this.verifyDOkOnPreview(dok)
-    this.verifyDiffOnPreview(difficulty)
-    this.verifyStandardsOnPreview(standard)
-    this.verifyTagsOnPreview(tags)
-    this.getEditOnPreview().should('not.have.attr', 'disabled')
-    this.getRemoveFromTestButton().should('exist')
-    this.getExpandOnPreview().should('exist')
-  }
-
-  verifyActionsButtonsOnPreview = (isDraftTest) => {
-    this.getExpandOnPreview().should('exist')
-    this.getCopyOnPreview().should('exist')
-    if (isDraftTest) {
-      this.getEditOnPreview().should('not.have.attr', `disabled`)
-      this.getRemoveFromTestButton().should('exist')
-    } else {
-      this.getDisabledEditOnPreview()
-      this.getRemoveFromTestButton().should('not.exist')
-    }
-  }
-
-  verifyShowAnsOnPreview = (queType, attemptData) => {
-    this.clickOnClear()
-    this.clickOnShowAnsOnPreview()
-    this.verifyQuestionResponseCard(
-      queType,
-      attemptData,
-      attemptTypes.RIGHT,
-      true
-    )
-  }
-
-  attemptAndVerifyResponseOnPreview = (
-    queType,
-    attemptData,
-    points,
-    attemptType
-  ) => {
-    this.clickOnClear()
-    this.studentTestPage.attemptQuestion(
-      queType.split('.')[0],
-      attemptType,
-      attemptData
-    )
-    this.clickOnCheckAnsOnPreview()
-    if (points)
-      this.verifyEvaluationScoreOnPreview(
-        attemptData,
-        points,
-        queType,
-        attemptType
-      )
-    this.verifyQuestionResponseCard(queType, attemptData, attemptType)
   }
 }

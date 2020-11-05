@@ -375,24 +375,6 @@ class ItemListPage {
 
   verifyQuestionTextByItemId = (itemid, text) =>
     this.getItemById(itemid).should('contain', text)
-
-  verifyItemMetadataByItemId = (id, itemDetails) => {
-    const { dok, tags } = itemDetails
-    const { queType } = itemDetails
-    const { standard } = itemDetails.standards
-    this.getHiddenStandards(id)
-    if (standard)
-      standard.forEach((sta) => {
-        this.verifyContentById(id, sta)
-      })
-    if (dok) this.verifydokByItemId(id, dok)
-    if (tags)
-      tags.forEach((tag) => {
-        this.verifyContentById(id, tag)
-      })
-    if (queType) this.verifyQuestionTypeById(id, queType)
-    this.getQuestionTypeById(id).click({ force: true })
-  }
   // *** APPHELPERS END ***
 }
 

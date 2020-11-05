@@ -160,10 +160,11 @@ describe(`${FileHelper.getSpecName(
           studentTestPage.clickOnNext()
           studentTestPage.submitTest()
           reportsPage.getStatus()
-          assignmentsPage
-            .getReviewButtonById(testIds[index])
-            .should('not.exist')
           reportsPage.getScore().should('not.exist')
+          reportsPage.getReviewButton().click({ force: true })
+          cy.contains(
+            'Your responses are being reviewed by your teacher. Grades and feedback will be released shortly.'
+          )
         })
       })
     })

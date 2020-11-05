@@ -62,9 +62,73 @@ describe(`${FileHelper.getSpecName(
   context(
     `> playlist sharing to individual person with 'edit' and 'viewonly' permissions`,
     () => {
+      context("> multi share 'individual', sharing to multiple people", () => {
+        before('> share playlist', () => {
+          playlistlibraryPage.header.clickOnShare()
+
+          testlibraryPage.selectPeopletoshare(
+            dist1_school1[teacher2][email],
+            false
+          )
+          testlibraryPage.selectPeopletoshare(
+            dist1_school1[teacher3][email],
+            true
+          )
+        })
+
+        it("> assert the shared playlist 'by non onwer 1'", () => {
+          cy.login(
+            'teacher',
+            dist1_school1[teacher2][email],
+            dist1_school1[teacher2][pass]
+          )
+          playlistlibraryPage.sidebar.clickOnPlayListLibrary()
+
+          playlistlibraryPage.searchFilter.clearAll()
+          playlistlibraryPage.searchFilter.sharedWithMe()
+
+          playlistlibraryPage.searchFilter.typeInSearchBox(
+            CypressHelper.getShortId(playlistid)
+          )
+          playlistlibraryPage.clickOnPlayListCardById(playlistid)
+
+          playlistlibraryPage.reviewTab.clickExpandByModule(1)
+          playlistlibraryPage.verifyViewOnlyPermission(playlistid)
+        })
+
+        it(">assert the shared playlist 'by non owner 2'", () => {
+          cy.login(
+            'teacher',
+            dist1_school1[teacher3][email],
+            dist1_school1[teacher2][pass]
+          )
+          playlistlibraryPage.sidebar.clickOnPlayListLibrary()
+
+          playlistlibraryPage.searchFilter.clearAll()
+          playlistlibraryPage.searchFilter.sharedWithMe()
+
+          playlistlibraryPage.searchFilter.typeInSearchBox(
+            CypressHelper.getShortId(playlistid)
+          )
+          playlistlibraryPage
+            .getPlayListCardById(playlistid)
+            .should('be.visible')
+
+          playlistlibraryPage.searchFilter.clickOnGetCoAuthor()
+          playlistlibraryPage
+            .getPlayListCardById(playlistid)
+            .should('be.visible')
+
+          playlistlibraryPage.clickOnPlayListCardById(playlistid)
+          playlistlibraryPage.verifyEditPermission(playlistid)
+        })
+      })
       context("> with giving 'edit' permission", () => {
         before('> publish and share the published test', () => {
+          cy.login('teacher', Author[email], Author[pass])
+          playlistlibraryPage.seachAndClickPlayListById(playlistid)
           playlistlibraryPage.header.clickOnShare()
+          testlibraryPage.removeShare()
           testlibraryPage.selectPeopletoshare(
             dist1_school1[teacher2][email],
             true
@@ -146,73 +210,6 @@ describe(`${FileHelper.getSpecName(
           playlistlibraryPage.clickOnPlayListCardById(playlistid)
           playlistlibraryPage.reviewTab.clickExpandByModule(1)
           playlistlibraryPage.verifyViewOnlyPermission(playlistid)
-        })
-      })
-
-      context("> multi share 'individual', sharing to multiple people", () => {
-        before('> login as author and get playlist', () => {
-          cy.login('teacher', Author[email], Author[pass])
-          playlistlibraryPage.seachAndClickPlayListById(playlistid)
-        })
-        before('> share playlist', () => {
-          playlistlibraryPage.header.clickOnShare()
-          testlibraryPage.removeShare()
-
-          testlibraryPage.selectPeopletoshare(
-            dist1_school1[teacher2][email],
-            false
-          )
-          testlibraryPage.selectPeopletoshare(
-            dist1_school1[teacher3][email],
-            true
-          )
-        })
-
-        it("> assert the shared playlist 'by non onwer 1'", () => {
-          cy.login(
-            'teacher',
-            dist1_school1[teacher2][email],
-            dist1_school1[teacher2][pass]
-          )
-          playlistlibraryPage.sidebar.clickOnPlayListLibrary()
-
-          playlistlibraryPage.searchFilter.clearAll()
-          playlistlibraryPage.searchFilter.sharedWithMe()
-
-          playlistlibraryPage.searchFilter.typeInSearchBox(
-            CypressHelper.getShortId(playlistid)
-          )
-          playlistlibraryPage.clickOnPlayListCardById(playlistid)
-
-          playlistlibraryPage.reviewTab.clickExpandByModule(1)
-          playlistlibraryPage.verifyViewOnlyPermission(playlistid)
-        })
-
-        it(">assert the shared playlist 'by non owner 2'", () => {
-          cy.login(
-            'teacher',
-            dist1_school1[teacher3][email],
-            dist1_school1[teacher2][pass]
-          )
-          playlistlibraryPage.sidebar.clickOnPlayListLibrary()
-
-          playlistlibraryPage.searchFilter.clearAll()
-          playlistlibraryPage.searchFilter.sharedWithMe()
-
-          playlistlibraryPage.searchFilter.typeInSearchBox(
-            CypressHelper.getShortId(playlistid)
-          )
-          playlistlibraryPage
-            .getPlayListCardById(playlistid)
-            .should('be.visible')
-
-          playlistlibraryPage.searchFilter.clickOnGetCoAuthor()
-          playlistlibraryPage
-            .getPlayListCardById(playlistid)
-            .should('be.visible')
-
-          playlistlibraryPage.clickOnPlayListCardById(playlistid)
-          playlistlibraryPage.verifyEditPermission(playlistid)
         })
       })
     }

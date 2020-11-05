@@ -20,6 +20,14 @@ function* fetchAssignmentsByTestIdSaga({ payload }) {
     if (assignments.length > 0) {
       assignments.sort((a, b) => b.createdAt - a.createdAt)
       if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
+        const assignmentFilters = JSON.parse(
+          sessionStorage.getItem('filters[Assignments]') || '{}'
+        )
+        assignmentFilters.termId = assignments[0].termId
+        sessionStorage.setItem(
+          'filters[Assignments]',
+          JSON.stringify(assignmentFilters)
+        )
         yield put(
           push(
             `/author/assignments/${districtId}/${payload}?testType=${assignments[0].testType}`

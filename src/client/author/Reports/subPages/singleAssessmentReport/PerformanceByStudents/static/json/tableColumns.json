@@ -19,6 +19,18 @@
     "align": "left"
   },
   {
+    "title": "SIS ID",
+    "dataIndex": "sisId",
+    "key": "sisId",
+    "visibleOn": ["csv"]
+  },
+  {
+    "title": "STUDENT NUMBER",
+    "dataIndex": "studentNumber",
+    "key": "sistudentNumber",
+    "visibleOn": ["csv"]
+  },
+  {
     "title": "School",
     "sortable": true,
     "type": "name",
@@ -107,11 +119,5 @@
     "dataIndex": "studentScore",
     "key": "studentScore",
     "width": 250
-  },
-  {
-    "title": "SIS ID",
-    "dataIndex": "sisId",
-    "key": "sisId",
-    "visibleOn": ["csv"]
   }
 ]

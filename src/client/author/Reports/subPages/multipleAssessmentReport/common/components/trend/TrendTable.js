@@ -257,6 +257,20 @@ const getColumns = (
         return a[keyword].toLowerCase().localeCompare(b[keyword].toLowerCase())
       },
     },
+    {
+      title: 'SIS ID',
+      dataIndex: 'sisId',
+      key: 'sisId',
+      width: 100,
+      visibleOn: ['csv'],
+    },
+    {
+      title: 'STUDENT NUMBER',
+      dataIndex: 'studentNumber',
+      key: 'studentNumber',
+      width: 100,
+      visibleOn: ['csv'],
+    },
     ...customColumns,
     {
       key: 'trend',
@@ -288,13 +302,6 @@ const getColumns = (
       align: 'center',
       visibleOn: ['csv'],
       render: (trend) => capitalize(trend),
-    },
-    {
-      title: 'SIS ID',
-      dataIndex: 'sisId',
-      key: 'sisId',
-      width: 100,
-      visibleOn: ['csv'],
     },
   ]
 

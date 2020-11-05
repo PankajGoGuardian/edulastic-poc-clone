@@ -140,7 +140,7 @@ class AdvancedTable extends Component {
       },
       {
         title: 'Submitted',
-        dataIndex: 'inGradingStudents',
+        dataIndex: 'submittedStudents',
         sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,

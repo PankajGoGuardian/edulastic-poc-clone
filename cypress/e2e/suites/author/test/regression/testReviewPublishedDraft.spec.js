@@ -356,8 +356,9 @@ describe(`${FileHelper.getSpecName(
           itemListPage.itemPreview
             .getEditOnPreview()
             .should('not.have.attr', 'disabled')
-          itemListPage.itemPreview.getRemoveFromTestButton().should('exist')
-          itemListPage.itemPreview.getExpandOnPreview().should('exist')
+          itemListPage.itemPreview
+            .getRemoveFromTestButton()
+            .should('be.visible')
         })
         if (![questionTypeKey.ESSAY_RICH].includes(item.split('.')[0])) {
           it(`> verify show ans for "${item}-${index + 1} "`, () => {
@@ -707,9 +708,9 @@ describe(`${FileHelper.getSpecName(
           itemListPage.itemPreview.verifyDiffOnPreview(difficulty)
           itemListPage.itemPreview.verifyStandardsOnPreview(standards.standard)
           itemListPage.itemPreview.verifyTagsOnPreview(tags)
-          itemListPage.itemPreview.getEditOnPreview().should('not.exist')
-          itemListPage.itemPreview.getDisabledEditOnPreview()
-          itemListPage.itemPreview.getExpandOnPreview().should('exist')
+          itemListPage.itemPreview
+            .getEditOnPreview()
+            .should('have.attr', 'disabled')
           itemListPage.itemPreview.getRemoveFromTestButton().should('not.exist')
         })
         if (![questionTypeKey.ESSAY_RICH].includes(item.split('.')[0])) {

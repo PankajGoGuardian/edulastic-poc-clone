@@ -211,7 +211,7 @@ module.exports = override(
               enforce: true,
             },
             vendor: {
-              test: /[\\/]node_modules[\\/]((?!(react-pdf|jsxgraph|firebase|mathjs|ace-builds|react-jsx-parser|recharts)).*)[\\/]/,
+              test: /[\\/]node_modules[\\/]((?!(mathjs|ace-builds|react-jsx-parser|recharts)).*)((froala-editor|firebase|pdfjs-dist|jsx-graph|draft-js|react-pdf|lodash|react|redux|react-redux|redux-saga|reselect).*)[\\/]/,
               chunks: 'all',
               enforce: true,
               name(module) {

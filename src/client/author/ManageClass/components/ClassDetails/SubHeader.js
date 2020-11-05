@@ -7,7 +7,7 @@ import withRouter from 'react-router-dom/withRouter'
 import { compose } from 'redux'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { setAssignmentFiltersAction } from '../../../src/actions/assignments'
-import { getUserId } from '../../../src/selectors/user'
+import { getUserRole } from '../../../src/selectors/user'
 import {
   ClassCode,
   CodeWrapper,
@@ -18,25 +18,36 @@ import {
 } from './styled'
 
 const SubHeader = ({
+  selectedClass,
   code,
   type,
   owners = [],
   gradeSubject,
   studentsList,
-  userId,
   lastTeacher,
+  userRole,
 }) => {
+  const primaryTeacherId =
+    userRole === 'teacher'
+      ? selectedClass?.primaryTeacherId || selectedClass?.parent?.id
+      : selectedClass?._source?.primaryTeacherId ||
+        selectedClass?._source?.parent?.id
+
   const studentCount = studentsList?.filter(
     (stu) => stu.enrollmentStatus === 1 && stu.status === 1
   )?.length
   const totalStudent = studentCount < 10 ? `0${studentCount}` : studentCount
-  const coTeachers = owners
-    ? owners.filter((owner) => owner.id !== userId).map((owner) => owner.name)
-    : []
 
   const primaryTeacher = owners
-    .filter((owner) => owner.id === userId)
+    .filter((owner) => owner.id === primaryTeacherId)
     .map((owner) => owner.name)
+
+  const coTeachers = owners
+    ? owners
+        .filter((owner) => owner.id !== primaryTeacherId)
+        .map((owner) => owner.name)
+    : []
+
   const teacher = coTeachers.slice(0, 1)
   const otherTeachers = coTeachers.slice(1, lastTeacher)
   const otherTeacherNames = otherTeachers.join(', ')
@@ -95,7 +106,7 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => ({
-      userId: getUserId(state),
+      userRole: getUserRole(state),
       studentsList: get(state, 'manageClass.studentsList', []),
     }),
     {

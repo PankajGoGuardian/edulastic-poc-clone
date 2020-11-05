@@ -44,6 +44,7 @@ import {
   getUserThumbnail,
 } from '../../author/src/selectors/user'
 import { getAvatarName } from '../../author/ClassBoard/Transformer'
+import { ExclamationMark } from '../../author/ClassBoard/components/DisneyCardContainer/styled'
 
 const { TextArea } = Input
 
@@ -411,7 +412,10 @@ class FeedbackRight extends Component {
             responseLoading={studentResponseLoading}
           />
         )}
-        <StyledDivSec>
+        {
+          isPracticeQuestion ? <span title="Practice usage enabled">
+          <ExclamationMark />
+        </span> : ( <StyledDivSec>
           <ScoreInputWrapper>
             <ScoreInput
               data-cy="scoreInput"
@@ -431,6 +435,7 @@ class FeedbackRight extends Component {
             <TextPara>{_maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
+        )}
         {showGradingRubricButton && (
           <RubricsWrapper>
             <RubricsButton onClick={() => this.handleRubricAction()}>

@@ -13,8 +13,33 @@ import {
   get,
 } from 'lodash'
 import { questionType } from '@edulastic/constants'
+import AppConfig from '../../../../../app-config'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
+
+export const insertTestletMML = (useFrame) => {
+  if (useFrame) {
+    const head = useFrame.contentWindow.document.getElementsByTagName('head')[0]
+
+    // Define the script
+    const script = useFrame.contentWindow.document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = AppConfig.testletMathJax
+    script.text =
+      'MathJax.Hub.Config({extensions: ["tex2jax.js"], jax: ["input/TeX","output/HTML-CSS"]}); MathJax.Hub.Startup.onload();'
+
+    head.appendChild(script)
+
+    // Assign this testlet to be loaded with a local MML
+    const localMMLAttr = useFrame.contentWindow.document.createAttribute(
+      'data-testler'
+    )
+    localMMLAttr.value = 'true'
+    useFrame.contentWindow.document
+      .getElementsByTagName('body')[0]
+      .setAttributeNode(localMMLAttr)
+  }
+}
 
 const getLineFromExpression = (
   expressions,

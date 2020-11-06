@@ -1602,6 +1602,7 @@ function* updateTestSaga({ payload }) {
       payload.data.itemGroups,
       scoring
     )
+    console.log('>>>>>>>>>', payload.data.itemGroups)
 
     const role = yield select(getUserRole)
     if (role === roleuser.EDULASTIC_CURATOR) {

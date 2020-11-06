@@ -10,7 +10,7 @@ import {
   Block,
   RadioWrapper,
   RadioGroup,
-} from '../MainSetting/styled'
+} from '../Container/styled'
 
 const renderBodyContent = () => {
   const content = [

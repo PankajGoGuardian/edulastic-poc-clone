@@ -1,8 +1,9 @@
-import { questionType, question, customTags, math } from '@edulastic/constants'
+import { questionType, question, customTags } from '@edulastic/constants'
 import { get, isString, isEmpty, keys } from 'lodash'
 import striptags from 'striptags'
 import { templateHasImage } from '@edulastic/common'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
+import { hasEmptyAnswers } from './utils/answerValidator'
 
 const {
   EXPRESSION_MULTIPART,
@@ -13,7 +14,6 @@ const {
   PASSAGE,
   EDITING_TASK,
 } = questionType
-const { methods } = math
 
 export const isRichTextFieldEmpty = (text) => {
   if (!text) {
@@ -348,212 +348,6 @@ const itemHasIncompleteFields = (item) => {
     return emptyFieldsValidator[item.type](item)
   }
   return [false]
-}
-
-const answerValidator = {
-  generalValidator(answers) {
-    const hasEmpty = answers.some(
-      (answer) =>
-        isEmpty(answer.value) || answer.value.some((ans) => isEmpty(ans))
-    )
-    return hasEmpty
-  },
-  [questionType.CHOICE_MATRIX](answers) {
-    /**
-     * all rows should not be empty
-     * but, some rows can be empty
-     * @see  https://snapwiz.atlassian.net/browse/EV-13694
-     */
-    const hasEmpty = answers.some((answer) => isEmpty(answer.value))
-    // const hasEmpty = answers.some(answer => {
-    //   const { value = [] } = answer;
-    //   return isEmpty(value) || value.every(row => isEmpty(row));
-    // });
-    // return hasEmpty;
-    return isEmpty(answers) || hasEmpty
-  },
-  [questionType.MULTIPLE_CHOICE](answers) {
-    // able to save giving empty value as options from UI (fixed)
-    const hasEmpty = this.generalValidator(answers)
-    return hasEmpty
-  },
-  [questionType.CLOZE_TEXT](answers) {
-    const hasEmpty = answers.some(
-      (answer) =>
-        isEmpty(answer.value) || answer.value.some((ans) => isEmpty(ans.value))
-    )
-    return hasEmpty
-  },
-  [questionType.CLOZE_IMAGE_TEXT](answers) {
-    const hasEmpty = answers.some(
-      (answer) =>
-        isEmpty(answer.value) ||
-        keys(answer.value).some((id) => isEmpty(answer.value[id]))
-    )
-    return hasEmpty
-  },
-  [questionType.CLOZE_DROP_DOWN](answers) {
-    const hasEmpty = answers.some(
-      (answer) =>
-        isEmpty(answer.value) || answer.value.some((ans) => isEmpty(ans.value))
-    )
-    return hasEmpty
-  },
-  [questionType.CLOZE_IMAGE_DROP_DOWN](answers) {
-    const hasEmpty = answers.some(
-      (answer) =>
-        isEmpty(answer.value) ||
-        keys(answer.value).some((id) => isEmpty(answer.value[id]))
-    )
-    return hasEmpty
-  },
-  [questionType.CLOZE_DRAG_DROP](answers) {
-    const hasEmpty = this.generalValidator(answers)
-    return hasEmpty
-  },
-  [questionType.CLOZE_IMAGE_DRAG_DROP](answers) {
-    const hasEmpty = answers.some(
-      (answer) =>
-        isEmpty(answer.value) ||
-        answer.value.some((ans) => isEmpty(ans) || isEmpty(ans.optionIds))
-    )
-    return hasEmpty
-  },
-  [questionType.SORT_LIST](answers) {
-    const hasEmpty = answers.some((answer) => isEmpty(answer.value))
-    // needs update
-    // able to delete all options and able to save
-    return hasEmpty
-  },
-  [questionType.MATCH_LIST](answers) {
-    const hasEmpty = answers.some(
-      (ans) => isEmpty(ans) || Object.values(ans.value).some((a) => isEmpty(a))
-    )
-    return hasEmpty
-  },
-  [questionType.ORDER_LIST](answers) {
-    const hasEmpty = this[questionType.SORT_LIST](answers)
-    return hasEmpty
-  },
-  [questionType.CLASSIFICATION](answers) {
-    const values = answers.map((ans) => ans.value)
-    // all drop column area can not be empty at the same time.
-    const hasEmpty =
-      !values.length ||
-      values.some((val) => {
-        const responseIdArrays = Object.values(val)
-        return responseIdArrays.length
-          ? responseIdArrays.some((responses) => isEmpty(responses))
-          : true
-      })
-    return hasEmpty
-  },
-  [questionType.SHADING](answers) {
-    const hasEmpty = answers.some(
-      (answer) =>
-        isEmpty(answer.value) || answer.value.some((ans) => ans.length === 0)
-    )
-    return hasEmpty
-  },
-  [questionType.TOKEN_HIGHLIGHT](answers) {
-    const hasEmpty = this[questionType.SORT_LIST](answers)
-    return hasEmpty
-  },
-  [questionType.MATH](answers) {
-    if (!answers.length) return true
-
-    // check for empty answers
-    // if validation method is equivSyntax answer will be empty
-    const hasEmpty = answers.some((answer) => {
-      if (Array.isArray(answer.value)) {
-        return answer.value.some((ans) =>
-          ans.method !== methods.EQUIV_SYNTAX
-            ? isEmpty(ans) || isEmpty(ans.value)
-            : false
-        )
-      }
-      return answer.method !== methods.EQUIV_SYNTAX ? !answer.value : false // check for empty string value
-    })
-    return hasEmpty
-  },
-  [questionType.GRAPH](answers) {
-    const hasEmpty = this[questionType.SORT_LIST](answers)
-    return hasEmpty
-  },
-  [questionType.FRACTION_EDITOR](answers) {
-    const hasEmpty = answers.some((answer) => answer.value === undefined)
-    return hasEmpty
-  },
-  [questionType.EXPRESSION_MULTIPART](answers = []) {
-    // on removing the responses it does not remove from the validation
-    // math with unit we are able to save without providing unit
-    // TODO: fix it in UI maybe
-    const hasEmpty = answers.some((answer = {}) => {
-      const textInputs = answer.textinput?.value || [] // get all the text inputs
-      const dropdowns = answer.dropdown?.value || [] // get all the dropdown inputs
-      const mathInputs = (answer.value || []).flatMap((input) => input) // get all the math inputs
-      const mathUnitInputs = (answer.mathUnits?.value || []).filter(
-        (_answer) => !isEmpty(_answer)
-      ) // get all the mathUnit inputs
-      const textInputsAndDropdowns = [...textInputs, ...dropdowns] // combine text and dropdown as they can be validated together
-
-      // check for empty answers
-      // if validation method is equivSyntax answer will be empty
-      const hasEmptyMathAnswers = mathInputs.some((mathInput = {}) =>
-        mathInput.method !== methods.EQUIV_SYNTAX
-          ? isEmpty(mathInput) || isEmpty(mathInput.value)
-          : false
-      )
-      const hasEmptyMathUnitInputs = mathUnitInputs.some((input = {}) =>
-        input.method !== methods.EQUIV_SYNTAX
-          ? isEmpty(input.value) || isEmpty(input)
-          : false
-      )
-
-      /**
-       * dropdown and texts have similar structure for answers as in sort list
-       * get it validated from the sort list answer validator
-       */
-      const hasEmptyTextOrDropDown = this[questionType.SORT_LIST](
-        textInputsAndDropdowns
-      )
-
-      return (
-        hasEmptyTextOrDropDown || hasEmptyMathAnswers || hasEmptyMathUnitInputs
-      )
-    })
-    return hasEmpty
-  },
-  [questionType.SHORT_TEXT](answers) {
-    return this[questionType.SORT_LIST](answers)
-  },
-  [questionType.HOTSPOT](answers) {
-    return this[questionType.SORT_LIST](answers)
-  },
-  [questionType.EDITING_TASK](answers) {
-    // when there is no response box
-    return answers.some(
-      ({ value }) =>
-        isEmpty(value) ||
-        Object.values(value).some((v) =>
-          typeof v === 'string' ? !v.trim() : isEmpty(v)
-        )
-    )
-  },
-}
-
-// TODO create a list of all question types where validation is stored
-// check the structure of validation for all such question types
-// make the helper generic to support all such question types
-export const hasEmptyAnswers = (item) => {
-  if (questionType.manuallyGradableQn.includes(item.type)) return false
-  const correctAnswers = [
-    item?.validation?.validResponse,
-    ...(item?.validation?.altResponses || []),
-  ]
-  const hasEmpty = answerValidator[item.type]?.(correctAnswers)
-
-  return hasEmpty
 }
 
 /**

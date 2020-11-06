@@ -130,7 +130,11 @@ describe(`${FileHelper.getSpecName(
       authorAssignmentPage.clickOnLCBbyTestId(testId)
       lcb.checkSelectAllCheckboxOfStudent()
       lcb.clickOnMarkAsSubmit()
+
+      testLibraryPage.sidebar.clickOnAssignment()
+      authorAssignmentPage.clickOnLCBbyTestId(testId)
       lcb.header.clickOnClose(true, false)
+      
     })
 
     before('> add new student in manage class', () => {
@@ -283,6 +287,9 @@ describe(`${FileHelper.getSpecName(
       authorAssignmentPage.clickOnLCBbyTestId(testId)
       lcb.checkSelectAllCheckboxOfStudent()
       lcb.clickOnMarkAsSubmit()
+
+      testLibraryPage.sidebar.clickOnAssignment()
+      authorAssignmentPage.clickOnLCBbyTestId(testId)
       lcb.header.clickOnClose(true, false)
     })
 

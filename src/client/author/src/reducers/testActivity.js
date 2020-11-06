@@ -1,5 +1,5 @@
 import { createAction } from 'redux-starter-kit'
-import { keyBy, cloneDeep } from 'lodash'
+import { keyBy, cloneDeep, get } from 'lodash'
 import { produce } from 'immer'
 import { testActivityStatus } from '@edulastic/constants'
 import {
@@ -27,6 +27,7 @@ import {
   getMaxScoreOfQid,
   getResponseTobeDisplayed,
 } from '../../ClassBoard/Transformer'
+import { isPracticeUsage } from '../../ItemDetail/Transformer'
 
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD =
   '[gradebook] realtime test activity add'
@@ -365,6 +366,7 @@ const reducer = (state = initialState, { type, payload }) => {
       })
       return nextState
     case GRADEBOOK_TEST_ITEM_ADD:
+      const testItemsById = keyBy(get(state,"data.testItemsData",[]),"_id")
       nextState = produce(state, (_st) => {
         for (const {
           testActivityId,
@@ -375,7 +377,17 @@ const reducer = (state = initialState, { type, payload }) => {
           const entityIndex = _st.entities.findIndex(
             (x) => x.testActivityId === testActivityId
           )
-
+          const testItem = testItemsById[questionItem.testItemId]
+          const itemQuestions = get(testItem,"data.questions",[])
+          const practiceUsage = isPracticeUsage(itemQuestions)          
+          if(practiceUsage){
+            if(testItem.itemLevelScoring){
+              questionItem.practiceUsage = true
+            }else{
+              const currentQuestion = itemQuestions.find(({ id })=> id === questionItem._id) || {}
+              questionItem.practiceUsage = isPracticeUsage([currentQuestion])
+            }
+          }
           if (entityIndex != -1) {
             const itemIndex = _st.entities[
               entityIndex

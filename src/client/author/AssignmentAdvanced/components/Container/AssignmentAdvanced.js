@@ -61,6 +61,7 @@ import {
   getUserId,
   getUserRole,
   getGroupList,
+  getUserSchoolsListSelector,
 } from '../../../src/selectors/user'
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
@@ -303,6 +304,7 @@ class AssignmentAdvanced extends Component {
       bulkActionStatus,
       userRole,
       userClassList,
+      userSchoolsList,
       authorAssignmentsState = {},
       assignmentTestList,
     } = this.props
@@ -431,6 +433,8 @@ class AssignmentAdvanced extends Component {
                 isLoadingAssignments={isLoadingAssignments}
                 bulkActionStatus={bulkActionStatus}
                 isHeaderAction={isHeaderAction}
+                userSchoolsList={userSchoolsList}
+                userRole={userRole}
                 pageNo={pageNo}
                 totalAssignmentsClasses={totalCountToShow}
                 handlePagination={this.handlePagination}
@@ -474,6 +478,7 @@ const enhance = compose(
       bulkActionStatus: getBulkActionStatusSelector(state),
       userRole: getUserRole(state),
       userClassList: getGroupList(state),
+      userSchoolsList: getUserSchoolsListSelector(state),
       authorAssignmentsState: stateSelector(state),
       assignmentTestList: getAssignmentTestList(state),
     }),

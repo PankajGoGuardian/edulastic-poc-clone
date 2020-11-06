@@ -178,7 +178,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
     it('> verify status and try closing', () => {
       // closing should not be allowed as still evaluation needs to be done
       lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING)
-      lcb.header.clickOnClose()
+      lcb.header.clickOnClose(true, false)
       lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING)
     })
     it('> manual evaluation in question view', () => {
@@ -350,7 +350,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
     it('> verify status and try closing', () => {
       // closing is allowed as all ques are skipped ('evaluated')
       lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING)
-      lcb.header.clickOnClose()
+      lcb.header.clickOnClose(true, false)
       lcb.header.verifyAssignmentStatus(teacherSide.DONE)
     })
 

@@ -40,6 +40,7 @@ export default class TestReviewTab {
       .get('[data-cy="styled-wrapped-component"]')
       .eq(index)
       .parent()
+      .parent()
       .invoke('attr', 'data-cy')
 
   getQueContainer = () => cy.get('[data-cy="question-container"]')
@@ -240,6 +241,7 @@ export default class TestReviewTab {
     this.expandGroupByGroupIndex(group)
     this.getAllQuestionsByGroupIndex(group).each((question, index) => {
       cy.wrap(question)
+        .parent()
         .parent()
         .invoke('attr', 'data-cy')
         .then((val) => expect(val).to.be.oneOf(items))

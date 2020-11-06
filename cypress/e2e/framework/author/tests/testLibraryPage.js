@@ -759,11 +759,11 @@ export default class TestLibrary {
       .should(
         'have.attr',
         'title',
-        `${Cypress.config('baseUrl')}author/tests/tab/review/id/${testId}`
+        `${Cypress.config('baseUrl')}/author/tests/tab/review/id/${testId}`
       )
       .should(
         'have.text',
-        `${Cypress.config('baseUrl')}author/tests/tab/review/id/${testId}`
+        `${Cypress.config('baseUrl')}/author/tests/tab/review/id/${testId}`
       )
 
     // TODO: revisit this as currently pop-up is blocking suite on clicking

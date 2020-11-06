@@ -6,7 +6,7 @@ import { fileApi } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
 import AppConfig from '../../../src/app-config'
-import { isPracticeUsage } from '../../../src/client/author/ItemDetail/Transformer'
+import { getValidQuestionsScore, isFirstUnscored, isPracticeUsage } from '../../../src/client/author/ItemDetail/Transformer'
 
 export const isSEB = () => window.navigator.userAgent.includes('SEB')
 
@@ -497,28 +497,49 @@ const getPoints = (item) => {
   if (!item) {
     return 0
   }
+  const questions = get(item, ['data', 'questions'], []);
   if (item.itemLevelScoring && !isNaN(item.itemLevelScore)) {
+    const practiceUsage = isPracticeUsage(questions)
+    if(isFirstUnscored(questions)){
+      return 0;
+    }else if(practiceUsage){
+      return getValidQuestionsScore(questions) 
+    }
     return item.itemLevelScore
   }
 
-  return get(item, ['data', 'questions'], []).reduce(
-    (acc, q) =>
-      acc +
-      (q.scoringDisabled
-        ? 0
-        : get(q, ['validation', 'validResponse', 'score'], 0)),
-    0
+  return questions.reduce(
+    (acc, q) => {
+       const unscored = get(q, ['validation', 'unscored'], false);
+       const qScore = get(q, ['validation', 'validResponse', 'score'], 0)
+       return acc + ((q.scoringDisabled || unscored) ? 0 : qScore)
+     },
+     0
   )
 }
 
 const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
-  const practiceUsage = isPracticeUsage(questions);
+  const practiceUsage = isPracticeUsage(questions)
   const questionScore = {}
-  const maxScore = practiceUsage ? 0: newMaxScore || totalMaxScore
-  if (item.itemLevelScoring === true || item.isLimitedDeliveryType === true) {
+  const { itemLevelScoring, isLimitedDeliveryType } = item
+  let maxScore = newMaxScore || totalMaxScore
+  if(practiceUsage){
+    if(itemLevelScoring){
+      maxScore = 0
+    }else{
+      maxScore = getValidQuestionsScore(questions)
+    }
+  }
+  
+  if (itemLevelScoring === true || isLimitedDeliveryType === true) {
     questions?.forEach((o, i) => {
       if (i === 0) {
-        questionScore[o.id] = item.isLimitedDeliveryType ? 1 : maxScore
+        const unscored = get(o,'validation.unscored',false)
+        if(unscored){
+          questionScore[o.id] = 0
+        }else{
+          questionScore[o.id] = isLimitedDeliveryType ? 1 : maxScore
+        }
       } else {
         questionScore[o.id] = 0
       }
@@ -526,16 +547,21 @@ const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
   } else {
     let currentTotal = 0
     questions.forEach((o, i) => {
-      if (i === questions.length - 1) {
-        questionScore[o.id] = round(maxScore - currentTotal, 2)
-      } else {
-        const score = round(
-          get(o, ['validation', 'validResponse', 'score'], 0) *
-            (maxScore / totalMaxScore),
-          2
-        )
-        questionScore[o.id] = practiceUsage?0: score
-        currentTotal +=practiceUsage?0: score
+      const unscored = get(o,'validation.unscored',false)
+      if(unscored){
+        questionScore[o.id] = 0
+      }else{
+        if (i === questions.length - 1) {
+          questionScore[o.id] = round(maxScore - currentTotal, 2)
+        } else {
+          const score = round(
+            get(o, ['validation', 'validResponse', 'score'], 0) *
+              (maxScore / totalMaxScore),
+            2
+          )
+          questionScore[o.id] = unscored ? 0 : score
+          currentTotal += unscored ? 0 : score
+        }
       }
     })
   }

@@ -2,13 +2,7 @@ import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col, Select } from 'antd'
 import { uniqBy } from 'lodash'
-import {
-  notification,
-  FieldLabel,
-  SelectInputStyled,
-  TextInputStyled,
-  TextAreaInputStyled,
-} from '@edulastic/common'
+import { notification, FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { tagsApi } from '@edulastic/api'
 import { Container } from './styled/Container'
 import { ItemBody } from './styled/ItemBody'
@@ -29,13 +23,9 @@ const SecondBlock = ({
   t,
   onChangeTags,
   onQuestionDataSelect,
-  onChangeExternalData,
   depthOfKnowledge = '',
   authorDifficulty = '',
   bloomsTaxonomy = '',
-  testletQuestionId = '',
-  testletResponseIds = '',
-  testletAdditionalMetadata = '',
   tags = [],
   allTagsData,
   addNewTag,
@@ -45,7 +35,6 @@ const SecondBlock = ({
   highlightCollection,
   recentCollectionsList,
   collectionsToShow,
-  showAdditionalMeta,
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], 'tagName')
   const [searchValue, setSearchValue] = useState('')
@@ -123,14 +112,6 @@ const SecondBlock = ({
               )}
             </SelectInputStyled>
           </ItemBody>
-          <ItemBody>
-            <FieldLabel>{t('component.options.externalQuestionId')}</FieldLabel>
-            <TextInputStyled
-              data-cy="externalQuestionId"
-              value={testletQuestionId}
-              onChange={onChangeExternalData('testletQuestionId')}
-            />
-          </ItemBody>
         </Col>
         <Col md={6}>
           <ItemBody>
@@ -160,17 +141,6 @@ const SecondBlock = ({
               )}
             </SelectInputStyled>
           </ItemBody>
-          <ItemBody>
-            <FieldLabel>
-              {t('component.options.externalResponseIds')}
-            </FieldLabel>
-            <TextInputStyled
-              data-cy="externalResponseIds"
-              value={testletResponseIds}
-              maxLength={250}
-              onChange={onChangeExternalData('testletResponseIds')}
-            />
-          </ItemBody>
         </Col>
         <Col md={6}>
           <ItemBody>
@@ -193,19 +163,6 @@ const SecondBlock = ({
               ))}
             </SelectInputStyled>
           </ItemBody>
-          {showAdditionalMeta && (
-            <ItemBody>
-              <FieldLabel>
-                {t('component.options.additionalMetadata')}
-              </FieldLabel>
-              <TextAreaInputStyled
-                rows={4}
-                padding="6px 15px"
-                value={testletAdditionalMetadata}
-                onChange={onChangeExternalData('testletAdditionalMetadata')}
-              />
-            </ItemBody>
-          )}
         </Col>
 
         {(collectionsToShow.length > 0 ||

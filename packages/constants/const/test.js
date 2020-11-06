@@ -201,6 +201,5 @@ module.exports = {
     sbac: 'sbac',
     cmas: 'cmas',
     casspp: 'casspp',
-    testlet: 'testlet',
   },
 }

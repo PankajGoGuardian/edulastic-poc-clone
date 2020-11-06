@@ -93,7 +93,6 @@ export function* saveUserResponse({ payload }) {
       callback,
       pausing,
       questionId,
-      extData,
     } = payload
     const itemIndex = payload.itemId
     const assignmentsByIds = yield select(
@@ -239,10 +238,6 @@ export function* saveUserResponse({ payload }) {
       bookmarked,
     }
 
-    if (!isEmpty(extData)) {
-      activity.extData = extData
-    }
-
     let userWorkData = { ..._userWork, scratchpad: false }
     let shouldSaveOrUpdateAttachment = false
     const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
@@ -310,8 +305,7 @@ export function* saveUserResponse({ payload }) {
     yield put(resetScratchpadDimensionsAction())
     if (shouldClearUserWork) {
       /**
-       * if we have two assignments one for practice
-       * and one for class assignment with same questions
+       * if we have two assignments one for practice and one for class assignment with same questions
        * need to clear user work in store after we click save and exit button
        * otherwise the store data remains and it is shown in the other assignment
        */

@@ -25,12 +25,32 @@ import SubmitConfirmation from '../common/SubmitConfirmation'
 import { themes } from '../../../theme'
 
 class AssessmentPlayerTestlet extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showExitPopup: false,
-      currentTool: 0,
-    }
+  static propTypes = {
+    theme: PropTypes.object,
+    isLast: PropTypes.func.isRequired,
+    isFirst: PropTypes.func.isRequired,
+    moveToNext: PropTypes.func.isRequired,
+    moveToPrev: PropTypes.func.isRequired,
+    saveTestletLog: PropTypes.func.isRequired,
+    gotoQuestion: PropTypes.func.isRequired,
+    currentItem: PropTypes.any.isRequired,
+    items: PropTypes.any.isRequired,
+    title: PropTypes.string.isRequired,
+    evaluate: PropTypes.any.isRequired,
+    view: PropTypes.string.isRequired,
+    history: PropTypes.object.isRequired,
+    t: PropTypes.func.isRequired,
+    itemRows: PropTypes.any,
+  }
+
+  static defaultProps = {
+    theme: themes,
+    itemRows: [],
+  }
+
+  state = {
+    showExitPopup: false,
+    currentTool: 0,
   }
 
   openExitPopup = () => {
@@ -60,14 +80,14 @@ class AssessmentPlayerTestlet extends React.Component {
     this.setState({ currentTool: tool })
   }
 
-  submitAnswer = (uuid, timeSpent, groupId, extData) => {
+  submitAnswer = (uuid, timeSpent, groupId) => {
     const { items, saveUserAnswer } = this.props
     const currentItemIndex = findIndex(items, (item) =>
       get(item, 'data.questions', [])
         .map((q) => q.id)
         .includes(uuid)
     )
-    saveUserAnswer(currentItemIndex, timeSpent, false, groupId, extData)
+    saveUserAnswer(currentItemIndex, timeSpent, false, groupId)
   }
 
   saveTestletLog = (log) => {
@@ -84,7 +104,6 @@ class AssessmentPlayerTestlet extends React.Component {
       currentItem,
       selectedTheme = 'default',
       settings,
-      testletConfig,
       timedAssignment = false,
       previewPlayer,
       demo,
@@ -117,7 +136,6 @@ class AssessmentPlayerTestlet extends React.Component {
             onSubmitAnswer={this.submitAnswer}
             saveTestletLog={this.saveTestletLog}
             timedAssignment={timedAssignment}
-            testletConfig={testletConfig}
           />
           {(!previewPlayer || demo) && (
             <SubmitConfirmation
@@ -137,29 +155,6 @@ class AssessmentPlayerTestlet extends React.Component {
       </ThemeProvider>
     )
   }
-}
-
-AssessmentPlayerTestlet.propTypes = {
-  theme: PropTypes.object,
-  isLast: PropTypes.func.isRequired,
-  isFirst: PropTypes.func.isRequired,
-  moveToNext: PropTypes.func.isRequired,
-  moveToPrev: PropTypes.func.isRequired,
-  saveTestletLog: PropTypes.func.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
-  currentItem: PropTypes.any.isRequired,
-  items: PropTypes.any.isRequired,
-  title: PropTypes.string.isRequired,
-  evaluate: PropTypes.any.isRequired,
-  view: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
-  itemRows: PropTypes.any,
-}
-
-AssessmentPlayerTestlet.defaultProps = {
-  theme: themes,
-  itemRows: [],
 }
 
 export default connect(

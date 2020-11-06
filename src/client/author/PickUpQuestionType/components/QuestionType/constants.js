@@ -1560,8 +1560,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           validResponse: {
             score: 1,
             value: {
-              [uuids[0]]: '',
-              [uuids[1]]: '',
+              [uuids[0]]: defaultOptions[0],
+              [uuids[1]]: defaultOptions[2],
             },
           },
           altResponses: [],

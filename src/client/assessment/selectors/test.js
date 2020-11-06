@@ -92,12 +92,6 @@ export const curentPlayerDetailsSelector = createSelector(
 
 export const playerSkinTypeSelector = createSelector(stateSelector, (state) => {
   const { playerSkinType } = state
-
-  // TODO: need to remove once test APIs are done
-  if (playerSkinType === playerSkinValues.testlet) {
-    return playerSkinValues.testlet
-  }
-
   if (playerSkinType === playerSkinValues.cmas) {
     return playerSkinValues.parcc
   }

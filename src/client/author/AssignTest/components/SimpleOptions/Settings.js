@@ -39,10 +39,10 @@ import {
   Title,
   TimeSpentInput,
 } from './styled'
-import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
-import SubscriptionsBlock from '../../../TestPage/components/Setting/components/Container/SubscriptionsBlock'
+import StandardProficiencyTable from '../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable'
+import SubscriptionsBlock from '../../../TestPage/components/Setting/components/MainSetting/SubscriptionsBlock'
 
-import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
+import PeformanceBand from '../../../TestPage/components/Setting/components/MainSetting/PeformanceBand'
 
 import { getUserRole, getUserFeatures } from '../../../src/selectors/user'
 import TestTypeSelector from './TestTypeSelector'

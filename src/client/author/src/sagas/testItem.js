@@ -10,7 +10,7 @@ import {
 } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import { evaluateItem } from '../utils/evalution'
-import { hasEmptyAnswers } from '../../utils/answerValidator'
+import { hasEmptyAnswers } from '../../questionUtils'
 
 import {
   CREATE_TEST_ITEM_REQUEST,

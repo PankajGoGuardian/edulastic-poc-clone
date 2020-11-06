@@ -235,9 +235,12 @@ export default class AssignmentBulkActionsPage {
   }
 
   clickOpenActionButton = (impactClasses, totalclasses) => {
+    cy.server()
+    cy.route('POST', '**/bulk-open**').as('bulk-open')
     this.getOpenActionButton()
       .click()
       .then(() => {
+        cy.wait('@bulk-open')
         cy.get('.ant-notification-notice-message', { timeout: 20000 })
           .should('contain', 'Starting Bulk Action Request')
           .should('be.visible')
@@ -248,9 +251,12 @@ export default class AssignmentBulkActionsPage {
   }
 
   clickCloseActionButton = (impactClasses, totalclasses) => {
+    cy.server()
+    cy.route('POST', '**/bulk-close**').as('bulk-close')
     this.getCloseActionButton()
       .click()
       .then(() => {
+        cy.wait('@bulk-close')
         cy.get('.ant-notification-notice-message', { timeout: 20000 })
           .should('contain', 'Starting Bulk Action Request')
           .should('be.visible')
@@ -261,9 +267,12 @@ export default class AssignmentBulkActionsPage {
   }
 
   clickDoneActionButton = (impactClasses, totalclasses) => {
+    cy.server()
+    cy.route('POST', '**/bulk-mark-as-done**').as('bulk-mark-as-done')
     this.getDoneActionButton()
       .click()
       .then(() => {
+        cy.wait('@bulk-mark-as-done')
         cy.get('.ant-notification-notice-message', { timeout: 20000 })
           .should('contain', 'Starting Bulk Action Request')
           .should('be.visible')
@@ -273,7 +282,7 @@ export default class AssignmentBulkActionsPage {
       })
   }
 
-  clickUnassignActionButton = (impactClasses, totalclasses) => {
+  /* clickUnassignActionButton = (impactClasses, totalclasses) => {
     this.getMoreActionButton().trigger('mouseover')
     cy.contains('Unassign').click({ force: true })
     this.getConfirmationInput().type('UNASSIGN')
@@ -289,12 +298,15 @@ export default class AssignmentBulkActionsPage {
           `${impactClasses} out of ${totalclasses} classes Unassigned successfully.`
         )
       })
-  }
+  } */
 
   clickPauseActionButton = (impactClasses, totalclasses) => {
+    cy.server()
+    cy.route('POST', '**/bulk-pause**').as('bulk-pause')
     this.getPauseActionButton()
       .click()
       .then(() => {
+        cy.wait('@bulk-pause')
         cy.get('.ant-notification-notice-message', { timeout: 20000 })
           .should('contain', 'Starting Bulk Action Request')
           .should('be.visible')
@@ -304,23 +316,10 @@ export default class AssignmentBulkActionsPage {
       })
   }
 
-  clickCloseActionButton = (impactClasses, totalclasses) => {
-    this.getCloseActionButton()
-      .click()
-      .then(() => {
-        cy.get('.ant-notification-notice-message', { timeout: 20000 })
-          .should('contain', 'Starting Bulk Action Request')
-          .should('be.visible')
-        this.waitForBulkProcess(
-          `${impactClasses} out of ${totalclasses} classes Closed successfully.`
-        )
-      })
-  }
-
   waitForBulkProcess = (message) => {
     cy.server()
     cy.route('GET', '**/assignments/district/**').as('bulkProcess')
-    cy.get('.ant-notification-notice-message', { timeout: 45000 })
+    cy.get('.ant-notification-notice-message', { timeout: 60000 })
       .should('contain', message)
       .should('be.visible')
       .then(($ele) => {

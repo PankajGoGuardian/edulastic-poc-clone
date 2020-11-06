@@ -531,7 +531,7 @@ describe(`${FileHelper.getSpecName(
         lcb.header.clickOnExpressGraderTab()
         lcb.header.clickOnLCBTab()
 
-        lcb.verifyStudentCardCount(totalStudents)
+        lcb.verifyStudentCardCount(totalStudents - 1)
         lcb.checkSelectAllCheckboxOfStudent()
         lcb.uncheckSelectAllCheckboxOfStudent()
 

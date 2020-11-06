@@ -158,6 +158,8 @@ describe(`${FileHelper.getSpecName(
 
           lcb.checkSelectAllCheckboxOfStudent()
           lcb.clickOnMarkAsSubmit()
+          testlibraryPage.sidebar.clickOnAssignment()
+          authorAssignmentPage.clickOnLCBbyTestId(test, assignMentIdObj[test])
           lcb.header.clickOnClose(true, false)
         })
       })
@@ -272,6 +274,11 @@ describe(`${FileHelper.getSpecName(
 
         lcb.checkSelectAllCheckboxOfStudent()
         lcb.clickOnMarkAsSubmit()
+        testlibraryPage.sidebar.clickOnAssignment()
+        authorAssignmentPage.clickOnLCBbyTestId(
+          testIds[0],
+          assignMentIdObj[testIds[0]]
+        )
         lcb.header.clickOnClose(true, false)
       })
 

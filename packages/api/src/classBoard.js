@@ -134,73 +134,79 @@ const regeneratePassword = ({ assignmentId, classId, passwordExpireIn }) =>
     })
     .then((response) => response.data)
 
-const bulkOpenAssignment = ({ testId, data, testType }) =>
+const bulkOpenAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-open`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {},
+      params: Object.keys(data).length === 0 ? { testType, status } : {},
     })
     .then((response) => response.data)
 
-const bulkCloseAssignment = ({ testId, data, testType }) =>
+const bulkCloseAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-close`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {},
+      params: Object.keys(data).length === 0 ? { testType, status } : {},
     })
     .then((response) => response.data)
 
-const bulkPauseAssignment = ({ testId, data, testType }) =>
+const bulkPauseAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-pause`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {},
+      params: Object.keys(data).length === 0 ? { testType, status } : {},
     })
     .then((response) => response.data)
 
-const bulkMarkAsDoneAssignment = ({ testId, data, testType }) =>
+const bulkMarkAsDoneAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-mark-as-done`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {},
+      params: Object.keys(data).length === 0 ? { testType, status } : {},
     })
     .then((response) => response.data)
 
-const bulkReleaseScoreAssignment = ({ testId, data, testType }) =>
+const bulkReleaseScoreAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-release-score`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {},
+      params:
+        Object.keys(data.assignmentGroups).length === 0
+          ? { testType, status }
+          : {},
     })
     .then((response) => response.data)
 
-const bulkUnassignAssignment = ({ testId, data, testType }) =>
+const bulkUnassignAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-unassign`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {},
+      params: Object.keys(data).length === 0 ? { testType, status } : {},
     })
     .then((response) => response.data)
 
-const bulkDownloadGrades = ({ testId, data, testType }) =>
+const bulkDownloadGrades = ({ testId, data, testType, status }) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-download-grades-and-response`,
       data,
-      params: Object.keys(data).length === 0 ? { testType } : {},
+      params:
+        Object.keys(data.assignmentGroups).length === 0
+          ? { testType, status }
+          : {},
     })
     .then((response) => response.data)
 

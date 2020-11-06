@@ -129,7 +129,13 @@ function* bulkUnassignAssignmentSaga({ payload }) {
 
 function* bulkDownloadGradesAndResponsesSaga({ payload }) {
   try {
-    const { data, testId, testType, isResponseRequired = false } = payload
+    const {
+      data,
+      testId,
+      testType,
+      isResponseRequired = false,
+      status,
+    } = payload
     const _payload = {
       data: {
         assignmentGroups: data,
@@ -137,6 +143,7 @@ function* bulkDownloadGradesAndResponsesSaga({ payload }) {
       },
       testId,
       testType,
+      status,
     }
     const userRole = yield select(getUserRole)
     yield put(setAssignmentBulkActionStatus(true))

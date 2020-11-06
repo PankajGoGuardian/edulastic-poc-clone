@@ -591,6 +591,7 @@ export const transformGradeBookResponse = (
                 groupId,
                 score: 0,
                 qLabel,
+                practiceUsage: currentItem.itemLevelScoring ?  practiceUsage : unscored,
                 ...(submitted
                   ? { skipped: true, score: 0, maxScore: questionMaxScore }
                   : { notStarted: true, score: 0, maxScore: questionMaxScore }),
@@ -652,7 +653,7 @@ export const transformGradeBookResponse = (
               userId: studentId,
               qActId: currentQuestionActivity._id,
               scratchPad,
-              practiceUsage: unscored,
+              practiceUsage: currentItem.itemLevelScoring ?  practiceUsage : unscored,
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],
                 userResponse,

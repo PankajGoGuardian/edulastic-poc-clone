@@ -22,7 +22,10 @@ import {
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
 } from '../constants/actions'
 
-import { SET_BULK_ACTION_STATUS } from '../../AssignmentAdvanced/ducks'
+import {
+  SET_BULK_ACTION_STATUS,
+  SET_BULK_ACTION_TYPE,
+} from '../../AssignmentAdvanced/ducks'
 
 const initialState = {
   summaryEntities: [],
@@ -43,6 +46,7 @@ const initialState = {
   isAdvancedView: false,
   syncWithGoogleClassroomInProgress: false,
   bulkActionInprogress: false,
+  bulkActionType: '',
   totalAssignmentsClasses: 0,
   assignmentStatusCounts: { notOpen: 0, inProgress: 0, inGrading: 0, done: 0 },
 }
@@ -181,6 +185,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         bulkActionInprogress: payload,
+      }
+    case SET_BULK_ACTION_TYPE:
+      return {
+        ...state,
+        bulkActionType: payload,
       }
     default:
       return state

@@ -25,6 +25,7 @@ import {
   getBulkActionStatusSelector,
   stateSelector,
   getAssignmentTestList,
+  getBulkActionTypeSelector,
 } from '../../../src/selectors/assignments'
 import ListHeader from '../../../src/components/common/ListHeader'
 import ActionMenu from '../../../Assignments/components/ActionMenu/ActionMenu'
@@ -108,8 +109,12 @@ class AssignmentAdvanced extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { bulkActionStatus } = this.props
-    if (prevProps.bulkActionStatus !== bulkActionStatus && !bulkActionStatus) {
+    const { bulkActionStatus, bulkActionType } = this.props
+    if (
+      prevProps.bulkActionStatus !== bulkActionStatus &&
+      !bulkActionStatus &&
+      bulkActionType !== 'downloadGradesResponses'
+    ) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         filterStatus: '',
@@ -492,6 +497,7 @@ const enhance = compose(
       userSchoolsList: getUserSchoolsListSelector(state),
       authorAssignmentsState: stateSelector(state),
       assignmentTestList: getAssignmentTestList(state),
+      bulkActionType: getBulkActionTypeSelector(state),
     }),
     {
       setReleaseScore: releaseScoreAction,

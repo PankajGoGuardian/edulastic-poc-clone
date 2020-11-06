@@ -18,6 +18,7 @@ export const BULK_DOWNLOAD_GRADES_AND_RESPONSES =
   '[test assignments] bulk download grades and responses'
 export const SET_BULK_ACTION_STATUS =
   '[test assignments] set bulk action status'
+export const SET_BULK_ACTION_TYPE = '[test assignments] set bulk action type'
 
 // actions
 export const bulkOpenAssignmentAction = createAction(BULK_OPEN_ASSIGNMENT)
@@ -39,11 +40,14 @@ export const setAssignmentBulkActionStatus = createAction(
   SET_BULK_ACTION_STATUS
 )
 
+export const setAssignmentBulkActionType = createAction(SET_BULK_ACTION_TYPE)
+
 // saga
 function* bulkOpenAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkOpenAssignment, payload)
     yield put(setAssignmentBulkActionStatus(true))
+    yield put(setAssignmentBulkActionType('open'))
     notification({ type: 'info', msg: 'Starting Bulk Action Request' })
   } catch (err) {
     console.error(err)
@@ -58,6 +62,7 @@ function* bulkCloseAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkCloseAssignment, payload)
     yield put(setAssignmentBulkActionStatus(true))
+    yield put(setAssignmentBulkActionType('close'))
     notification({ type: 'info', msg: 'Starting Bulk Action Request' })
   } catch (err) {
     console.error(err)
@@ -72,6 +77,7 @@ function* bulkPauseAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkPauseAssignment, payload)
     yield put(setAssignmentBulkActionStatus(true))
+    yield put(setAssignmentBulkActionType('pause'))
     notification({ type: 'info', msg: 'Starting Bulk Action Request' })
   } catch (err) {
     console.error(err)
@@ -86,6 +92,7 @@ function* bulkMarkAsDoneAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkMarkAsDoneAssignment, payload)
     yield put(setAssignmentBulkActionStatus(true))
+    yield put(setAssignmentBulkActionType('markAsDone'))
     notification({ type: 'info', msg: 'Starting Bulk Action Request' })
   } catch (err) {
     console.error(err)
@@ -100,6 +107,7 @@ function* bulkReleaseScoreAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkReleaseScoreAssignment, payload)
     yield put(setAssignmentBulkActionStatus(true))
+    yield put(setAssignmentBulkActionType('releaseScore'))
     notification({ type: 'info', msg: 'Starting Bulk Action Request' })
   } catch (err) {
     console.error(err)
@@ -114,6 +122,7 @@ function* bulkUnassignAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkUnassignAssignment, payload)
     yield put(setAssignmentBulkActionStatus(true))
+    yield put(setAssignmentBulkActionType('unassign'))
     if (!payload.fromHomePage)
       notification({ type: 'info', msg: 'Starting Bulk Action Request' })
   } catch (err) {
@@ -156,6 +165,7 @@ function* bulkDownloadGradesAndResponsesSaga({ payload }) {
     }
     yield call(classBoardApi.bulkDownloadGrades, _payload)
     yield put(setAssignmentBulkActionStatus(true))
+    yield put(setAssignmentBulkActionType('downloadGradesResponses'))
   } catch (err) {
     console.error(err)
     const errorMessage =

@@ -15,7 +15,7 @@ export default class CypressHelper {
   }
 
   static selectMultipleSelectionDropDown = (attribute, option) => {
-    cy.get(`[data-cy=${attribute}]`).click()
+    cy.get(`[data-cy=${attribute}]`).click({ force: true })
     cy.wait(300) // allow list to expand
 
     cy.get('.ant-select-dropdown-menu-item').then(($ele) => {

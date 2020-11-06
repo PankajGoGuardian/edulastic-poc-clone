@@ -237,8 +237,8 @@ describe(`${FileHelper.getSpecName(
     })
 
     context('default view', () => {
-      it('verify response view is enabled', () => {
-        expressg.verifyToggleSetToResponse()
+      it('verify score view is enabled', () => {
+        expressg.verifyToggleSetToScore()
       })
     })
 

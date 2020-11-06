@@ -72,6 +72,8 @@ describe(`${FileHelper.getSpecName(
     'print-assignment',
     'release-grades',
     'summary-grades',
+    'download-responses',
+    'embed-link',
     'edit-Assignment',
     // 'delete-Assignment', *unassign option removed
   ]

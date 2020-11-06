@@ -99,7 +99,7 @@ class LiveClassboardPage {
   getPresentToggleSwitch = () =>
     cy
       .get('[data-cy=studentnQuestionTab]')
-      .find('[class^="PresentationToggleSwitch"]')
+      .find('[inputfeatures="presentationMode"]')
 
   getAllAttemptContainersByStudentName = (stuName) =>
     this.getStudentCardByStudentName(stuName).find(

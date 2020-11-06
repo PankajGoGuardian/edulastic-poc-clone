@@ -11,7 +11,7 @@ import ItemListPage from '../../../../framework/author/itemList/itemListPage'
 import { studentSide } from '../../../../framework/constants/assignmentStatus'
 import StudentsReportCard from '../../../../framework/author/assignments/studentPdfReportCard'
 
-const TEST = 'TEST_PREVIEW'
+const TEST = 'TEST_PREVIEW_1'
 const testData = require('../../../../../fixtures/testAuthoring')
 const quesData = require('../../../../../fixtures/questionAuthoring')
 

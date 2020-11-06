@@ -155,6 +155,7 @@ const TableList = ({
   pageNo,
   totalAssignmentsClasses,
   handlePagination,
+  filterStatus,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
@@ -241,6 +242,7 @@ const TableList = ({
       data: selectedRowsGroupByAssignment,
       testId: classList[0].testId,
       testType,
+      status: filterStatus,
     }
     if (type === 'open') bulkOpenAssignmentRequest(payload)
     else if (type === 'close') bulkCloseAssignmentRequest(payload)

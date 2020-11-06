@@ -24,6 +24,7 @@ import {
   getAssignmentsLoadingSelector,
   getBulkActionStatusSelector,
   stateSelector,
+  getAssignmentTestList,
 } from '../../../src/selectors/assignments'
 import ListHeader from '../../../src/components/common/ListHeader'
 import ActionMenu from '../../../Assignments/components/ActionMenu/ActionMenu'
@@ -303,6 +304,7 @@ class AssignmentAdvanced extends Component {
       userRole,
       userClassList,
       authorAssignmentsState = {},
+      assignmentTestList,
     } = this.props
     const {
       assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
@@ -327,7 +329,9 @@ class AssignmentAdvanced extends Component {
     }
     const { testId } = match.params
     const assingment =
-      find(assignmentsSummary, (item) => item.testId === testId) || {}
+      find(assignmentsSummary, (item) => item.testId === testId) ||
+      find(assignmentTestList, (item) => item.testId === testId) ||
+      {}
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
@@ -430,6 +434,7 @@ class AssignmentAdvanced extends Component {
                 pageNo={pageNo}
                 totalAssignmentsClasses={totalCountToShow}
                 handlePagination={this.handlePagination}
+                filterStatus={filterStatus}
               />
             </StyledCard>
           </TableWrapper>
@@ -470,6 +475,7 @@ const enhance = compose(
       userRole: getUserRole(state),
       userClassList: getGroupList(state),
       authorAssignmentsState: stateSelector(state),
+      assignmentTestList: getAssignmentTestList(state),
     }),
     {
       setReleaseScore: releaseScoreAction,

@@ -4,7 +4,7 @@ import { filter, isEmpty, isEqual } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import PlayerHeader from './PlayerHeader'
 import ParentController from './utility/parentController'
-import getUserResponse, { insertTestletMML } from './utility/helpers'
+import getUserResponse from './utility/helpers'
 import { MainContent, Main, OverlayDiv } from './styled'
 import Magnifier from '../../../common/components/Magnifier'
 
@@ -293,10 +293,6 @@ const PlayerContent = ({
     }
   }
 
-  const finishedLoadTestlet = () => {
-    insertTestletMML(frameRef.current)
-  }
-
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState
@@ -316,7 +312,6 @@ const PlayerContent = ({
         handleTestletState,
         handleLog: previewPlayer ? () => null : saveTestletLog,
         submitTest: nextQuestion,
-        finishedLoad: finishedLoadTestlet,
       })
       if (enableMagnifier) {
         setTimeout(showMagnifier, 1000)

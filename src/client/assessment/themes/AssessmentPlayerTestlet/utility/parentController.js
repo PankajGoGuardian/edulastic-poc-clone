@@ -22,7 +22,6 @@ class ParentController extends MessageController {
     this.setCurrentScoring = null
     this.handleLog = null
     this.submitTest = null
-    this.finishedLoad = null
   }
 
   /*********** set callback for updating React component and Redux */
@@ -36,7 +35,6 @@ class ParentController extends MessageController {
     this.setCurrentScoring = callbacks.setCurrentScoring
     this.handleLog = callbacks.handleLog
     this.submitTest = callbacks.submitTest
-    this.finishedLoad = callbacks.finishedLoad
   }
 
   /********************** call from testlet ************************/
@@ -52,9 +50,6 @@ class ParentController extends MessageController {
     this.getScreens()
     this.getVersion()
     this.getFrameVersion()
-    if (typeof this.finishedLoad === 'function') {
-      this.finishedLoad()
-    }
   }
 
   onLastPage() {

@@ -18,8 +18,6 @@ const desmosPath = `${thirdPartyLibPath}/desmos/v1.2`
 const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0`
 const sentryWhiteListURLRegex = /edulastic\.com|snapwiz\.net/
 const eduScientificCalcPath = `${thirdPartyLibPath}/ev2-scientificcalc`
-const testletMathJax =
-  'https://ws-preview.nextera.questarai.com/libs/NexteraMathJax.2.7.5/MathJax.js?config=MML_HTMLorMML-full.js'
 
 const sentryURI =
   process.env.REACT_APP_SENTRY_DSN || process.env.REACT_APP_SENTRY_URI
@@ -123,5 +121,4 @@ export default {
   thirdPartyLibPath,
   v1RedirectDecryptSalt,
   eduScientificCalcPath,
-  testletMathJax,
 }

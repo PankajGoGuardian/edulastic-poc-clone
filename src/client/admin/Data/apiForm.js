@@ -209,7 +209,7 @@ export const apiForms = [
       },
       {
         id: 'clever-delta-sync',
-        name: 'Trigger Clever Delta Sync',
+        name: 'Trigger Clever Delta Sync for All',
         endPoint: 'clever/delta-sync',
         method: 'post',
         fields: [

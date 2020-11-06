@@ -27,6 +27,22 @@ export const markQuestionLabel = (_testItemsData) => {
 }
 
 export const isPracticeUsage = (questions = []) => {
-  if(!Array.isArray(questions)) return false;
-  return questions.some(question=> get(question, 'validation.unscored', false));
-};
+  if(!Array.isArray(questions)) return false
+  return questions.some(question=> get(question, 'validation.unscored', false))
+}
+
+export const isFirstUnscored =  (questions = []) => {
+  if(!Array.isArray(questions)) return false
+  return get(questions, '0.validation.unscored', false)
+}
+
+export const getValidQuestionsScore = (questions = []) => {
+  if (!Array.isArray(questions)) {
+    return 0
+  }
+  return questions.reduce((acc,q) =>{
+    const unscored = get(q,'validation.unscored',false)
+    const qScore = unscored ? 0 : get(q, 'validation.validResponse.score', 0)
+    return acc + qScore
+  },0)
+}

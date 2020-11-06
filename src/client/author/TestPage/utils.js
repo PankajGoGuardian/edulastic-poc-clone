@@ -14,7 +14,7 @@ import {
   collections,
   question as questionConstants,
 } from '@edulastic/constants'
-import { isPracticeUsage } from '../ItemDetail/Transformer'
+import { getValidQuestionsScore, isPracticeUsage } from '../ItemDetail/Transformer'
 
 const { sectionLabelType } = questionConstants
 
@@ -65,7 +65,11 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
       itemPoints = 1
     }
     if (practiceUsage) {
-      itemPoints = 0
+      if(itemLevelScoring){
+        itemPoints = 0
+      }else{
+        itemPoints = getValidQuestionsScore(questions);
+      }
     }
     const itemTotalQuestions = questions.length
     const questionWisePoints = getQuestionLevelScore(

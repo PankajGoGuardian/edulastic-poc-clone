@@ -251,7 +251,7 @@ class AssignTest extends React.Component {
     let termId = ''
     if (value?.length) {
       const [initialClassId] = value
-      termId = groupById[initialClassId].termId
+      termId = groupById[initialClassId]?.termId
     }
     return {
       classData,

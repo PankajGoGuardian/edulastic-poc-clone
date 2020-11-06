@@ -145,7 +145,7 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
     if (filters) {
       state.filters = filters
     }
-    if (testId || testId === '') {
+    if (testId) {
       state.testId = testId
     }
   },

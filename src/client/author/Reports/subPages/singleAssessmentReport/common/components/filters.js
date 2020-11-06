@@ -268,11 +268,6 @@ const SingleAssessmentReportFilters = ({
             <AssessmentAutoComplete
               firstLoad={firstLoad}
               termId={filters.termId}
-              grade={filters.grade !== 'All' && filters.grade}
-              subject={filters.subject !== 'All' && filters.subject}
-              assessmentType={
-                filters.assessmentType !== 'All' && filters.assessmentType
-              }
               selectedTestId={testId || getTestIdFromURL(location.pathname)}
               selectCB={updateTestId}
             />

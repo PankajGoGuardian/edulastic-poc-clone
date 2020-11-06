@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import { EmptyData } from '../../../common/components/emptyData'
 import { StyledH3, StyledSlider, NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { StackedBarChartContainer } from './components/charts/stackedBarChartContainer'
@@ -36,9 +35,12 @@ const ResponseFrequency = ({
   const [misunderstoodItems, setMisunderstoodItems] = useState(20)
   const [filter, setFilter] = useState({})
 
-  const selectedTest =
-    testList.find((t) => t._id === settings.selectedTest.key) || {}
-  const assessmentName = selectedTest.title || ''
+  const selectedTest = testList.find(
+    (t) => t._id === settings.selectedTest.key
+  ) || { _id: '', title: '' }
+  const assessmentName = `${
+    selectedTest.title
+  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -98,86 +100,76 @@ const ResponseFrequency = ({
     setFilter({})
   }
 
-  if (settings.selectedTest && !settings.selectedTest.key) {
+  if (loading) {
+    return <SpinLoader position="fixed" />
+  }
+  if (isEmpty(res.metrics)) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
-
-  if (isEmpty(res) && !loading) {
-    return (
-      <>
-        <EmptyData />
-      </>
-    )
-  }
-
   return (
     <div>
-      {loading ? (
-        <SpinLoader position="fixed" />
-      ) : (
-        <StyledContainer type="flex">
-          <StyledCard>
-            <StyledH3>
-              Question Type performance for Assessment: {assessmentName}
-            </StyledH3>
-            <StackedBarChartContainer
-              data={obj.data}
-              assessment={obj.metaData}
-              filter={filter}
-              onBarClickCB={onBarClickCB}
-              onResetClickCB={onResetClickCB}
-            />
-          </StyledCard>
-          <StyledCard>
-            <Row type="flex" justify="center" className="question-area">
-              <Col className="question-container">
-                <p>What are the most difficult items?</p>
-                <p>Set threshold to warn if % correct falls below:</p>
-                <Row type="flex" justify="start" align="middle">
-                  <Col className="answer-slider-percentage">
-                    <span>{difficultItems}%</span>
-                  </Col>
-                  <Col className="answer-slider">
-                    <StyledSlider
-                      data-slider-id="difficult"
-                      defaultValue={difficultItems}
-                      onChange={onChangeDifficultSlider}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-              <Col className="question-container">
-                <p>What items are misunderstood?</p>
-                <p>
-                  Set threshold to warn if % frequency of an incorrect choice is
-                  above:
-                </p>
-                <Row type="flex" justify="start" align="middle">
-                  <Col className="answer-slider-percentage">
-                    <span>{misunderstoodItems}%</span>
-                  </Col>
-                  <Col className="answer-slider">
-                    <StyledSlider
-                      data-slider-id="misunderstood"
-                      defaultValue={misunderstoodItems}
-                      onChange={onChangeMisunderstoodSlider}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </StyledCard>
-          <ResponseFrequencyTable
-            data={filteredData}
-            columns={jsonData.columns}
+      <StyledContainer type="flex">
+        <StyledCard>
+          <StyledH3>
+            Question Type performance for Assessment: {assessmentName}
+          </StyledH3>
+          <StackedBarChartContainer
+            data={obj.data}
             assessment={obj.metaData}
-            correctThreshold={difficultItems}
-            incorrectFrequencyThreshold={misunderstoodItems}
-            isPrinting={isPrinting}
-            isCsvDownloading={isCsvDownloading}
+            filter={filter}
+            onBarClickCB={onBarClickCB}
+            onResetClickCB={onResetClickCB}
           />
-        </StyledContainer>
-      )}
+        </StyledCard>
+        <StyledCard>
+          <Row type="flex" justify="center" className="question-area">
+            <Col className="question-container">
+              <p>What are the most difficult items?</p>
+              <p>Set threshold to warn if % correct falls below:</p>
+              <Row type="flex" justify="start" align="middle">
+                <Col className="answer-slider-percentage">
+                  <span>{difficultItems}%</span>
+                </Col>
+                <Col className="answer-slider">
+                  <StyledSlider
+                    data-slider-id="difficult"
+                    defaultValue={difficultItems}
+                    onChange={onChangeDifficultSlider}
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col className="question-container">
+              <p>What items are misunderstood?</p>
+              <p>
+                Set threshold to warn if % frequency of an incorrect choice is
+                above:
+              </p>
+              <Row type="flex" justify="start" align="middle">
+                <Col className="answer-slider-percentage">
+                  <span>{misunderstoodItems}%</span>
+                </Col>
+                <Col className="answer-slider">
+                  <StyledSlider
+                    data-slider-id="misunderstood"
+                    defaultValue={misunderstoodItems}
+                    onChange={onChangeMisunderstoodSlider}
+                  />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </StyledCard>
+        <ResponseFrequencyTable
+          data={filteredData}
+          columns={jsonData.columns}
+          assessment={obj.metaData}
+          correctThreshold={difficultItems}
+          incorrectFrequencyThreshold={misunderstoodItems}
+          isPrinting={isPrinting}
+          isCsvDownloading={isCsvDownloading}
+        />
+      </StyledContainer>
     </div>
   )
 }

@@ -18,8 +18,8 @@ describe(`${FileHelper.getSpecName(
     queText: 'Select the correct option?',
     template: " is the world's largest democracy",
     correctAns: 'India',
-    choices: ['China', 'India', 'US'],
-    editedchoices: ['India', 'China', 'US'],
+    choices: ['China', 'India', 'US', 'Australia', 'Germany'],
+    editedchoices: ['India', 'China', 'US', 'Germany', 'Australia'],
     forScoring: ['Option 1', 'Option 2', 'Option 3'],
     extlink: 'www.testdomain.com',
     testtext: 'testtext',
@@ -231,8 +231,16 @@ describe(`${FileHelper.getSpecName(
         .then(() => {
           question.getTemplateEditor().find('response').should('be.visible')
         })
+      question.deleteAllChoices()
       queData.choices.forEach((ch, index) => {
-        question.getChoiceInputByIndex(index).type(`{selectall}${ch}`)
+        question
+          .getAddChoiceButton()
+          .click({ force: true })
+          .then(() => {
+            question.getChoiceInputByIndex(index).type(`{selectall}${ch}`)
+            question.getChoiceInputByIndex(index).should('have.text', ch)
+            question.getResponseItemByIndex(index).should('be.visible')
+          })
       })
 
       question.setAnswerToResponseBox(queData.choices[0], 0, 0)

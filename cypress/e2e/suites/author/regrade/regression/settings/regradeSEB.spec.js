@@ -28,7 +28,7 @@ describe(`>${FileHelper.getSpecName(
     status: studentSide.IN_PROGRESS,
     name: 'Stu1Class2',
   }
-  const test = '5f11507c2ea21a000808ae3d'
+  const test = '5f9b0b66236a280007dbe46a'
 
   let test1
   let test2

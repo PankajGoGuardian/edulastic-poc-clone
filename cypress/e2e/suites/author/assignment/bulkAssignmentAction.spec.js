@@ -1,23 +1,23 @@
-import TestAssignPage from '../../../../framework/author/tests/testDetail/testAssignPage'
-import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
+import TestAssignPage from '../../../framework/author/tests/testDetail/testAssignPage'
+import AuthorAssignmentPage from '../../../framework/author/assignments/AuthorAssignmentPage'
 import AssignmentBulkActionsPage, {
   filter,
   icons,
-} from '../../../../framework/author/assignments/AssignmentBulkActionsPage'
-import AssignmentsPage from '../../../../framework/student/assignmentsPage'
-import SidebarPage from '../../../../framework/student/sidebarPage'
-import FileHelper from '../../../../framework/util/fileHelper'
+} from '../../../framework/author/assignments/AssignmentBulkActionsPage'
+import AssignmentsPage from '../../../framework/student/assignmentsPage'
+import SidebarPage from '../../../framework/student/sidebarPage'
+import FileHelper from '../../../framework/util/fileHelper'
 import {
   getRandomClass,
   getRandomStudent,
-} from '../../../../framework/constants/constantFunctions'
-import TeacherSideBar from '../../../../framework/author/SideBarPage'
+} from '../../../framework/constants/constantFunctions'
+import TeacherSideBar from '../../../framework/author/SideBarPage'
 import {
   grades,
   teacherSide,
-} from '../../../../framework/constants/assignmentStatus'
-import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
-import ReportsPage from '../../../../framework/student/reportsPage'
+} from '../../../framework/constants/assignmentStatus'
+import LiveClassboardPage from '../../../framework/author/assignments/LiveClassboardPage'
+import ReportsPage from '../../../framework/student/reportsPage'
 // import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 // import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
 // import StudentTestPage from "../../../../framework/student/studentTestPage";

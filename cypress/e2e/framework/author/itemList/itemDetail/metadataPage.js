@@ -156,7 +156,7 @@ class MetadataPage {
 
   setTag = (tag) => {
     CypressHelper.selectDropDownByAttribute('tagsSelect', tag)
-    cy.focused().blur() // de-focus dropdown select
+    cy.get('body').type('{esc}') // de-focus dropdown select
   }
 
   setDOK = (dok) => {

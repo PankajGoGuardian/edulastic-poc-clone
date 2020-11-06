@@ -107,7 +107,13 @@
     "name": "Test Review Flow",
     "grade": ["Grade 10"],
     "subject": ["Mathematics"],
-    "itemKeys": ["MCQ_MULTI.2", "CHOICE_STD.1", "CLOZE_DROPDOWN.default", "CLOZE_TEXT.default", "MATH_NUMERIC.default","ESSAY_RICH.2"]
+    "itemKeys": ["MCQ_MULTI.2", "CHOICE_STD.1", "CLOZE_DROPDOWN.default", "CLOZE_TEXT.default", "MATH_NUMERIC.default"]
+  },
+  "TEST_PREVIEW_1": {
+    "name": "Test Review Flow",
+    "grade": ["Grade 10"],
+    "subject": ["Mathematics"],
+    "itemKeys": ["MCQ_MULTI.7", "CHOICE_STD.3", "CLOZE_DROPDOWN.2", "CLOZE_TEXT.1", "MATH_NUMERIC.1","ESSAY_RICH.2"]
   },
   "STUDENT_ATTEMPT": {
     "name": "Test Assessment",

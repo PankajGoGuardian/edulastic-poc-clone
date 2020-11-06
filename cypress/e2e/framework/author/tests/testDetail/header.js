@@ -179,7 +179,7 @@ export default class TestHeader {
     save = true,
     publish = true,
     assign = true,
-    edit = true
+    edit = false
   ) => {
     if (print) this.getPrintButton().should('exist')
     else this.getPrintButton().should('not.exist')

@@ -221,7 +221,7 @@ describe(`${FileHelper.getSpecName(
               testId,
               assignmentIds[status]
             )
-            lcb.header.clickOnClose()
+            lcb.header.clickOnClose(true, false)
             testLibrary.sidebar.clickOnAssignment()
           }
           authorAssignmentPage.smartFilter.setStatus(status)

@@ -35,7 +35,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   getResponseScoreToggleSwitch = () => cy.get('[data-cy="response-toggle"]')
 
-  getPresentToggleSwitch = () => cy.get('[class^="PresentationToggleSwitch"]')
+  getPresentToggleSwitch = () => cy.get('[inputfeatures="presentationMode"]')
 
   // *** ELEMENTS END ***
 
@@ -138,9 +138,9 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   // *** APPHELPERS START ***
 
-  verifyToggleSetToResponse = () => {
+  verifyToggleSetToScore = () => {
     this.getResponseScoreToggleSwitch()
-      .contains('div', 'Response')
+      .contains('div', 'Score')
       .should('have.css', 'background-color', queColor.BLUE_2)
   }
 

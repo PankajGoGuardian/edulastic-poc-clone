@@ -425,7 +425,9 @@ describe(`${FileHelper.getSpecName(
           true,
           true,
           false,
-          false
+          false,
+          true,
+          true
         )
       })
 

@@ -7,7 +7,10 @@ import { getMathHtml } from '@edulastic/common'
 import { red, yellow, themeColorLighter } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
 import { getFormattedName } from '../Gradebook/transformers'
-import { isPracticeUsage } from '../ItemDetail/Transformer'
+import {
+  getValidQuestionsScore,
+  isPracticeUsage,
+} from '../ItemDetail/Transformer'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
@@ -182,7 +185,10 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
     const questionNeeded = questions[questionIndex]
     const practiceUsage = isPracticeUsage(questions)
     if (practiceUsage) {
-      return 0
+      if (testItem.itemLevelScoring) {
+        return 0
+      }
+      return getValidQuestionsScore(questions)
     }
     if (questionNeeded) {
       // for item level scoring handle scores as whole instead of each questions
@@ -234,17 +240,22 @@ const getMaxScoreFromItem = (testItem) => {
   if (!testItem) {
     return total
   }
-  const practiceUsage = isPracticeUsage(testItem?.data?.questions || [])
+  const questions = get(testItem, 'data.questions', [])
+  const practiceUsage = isPracticeUsage(questions)
+  const { itemLevelScoring = false, itemLevelScore = 0 } = testItem
   if (practiceUsage) {
-    return 0
+    if (itemLevelScoring) {
+      return total
+    }
+    return getValidQuestionsScore(questions)
   }
-  if (testItem?.itemLevelScoring) {
-    return testItem.itemLevelScore || 0
+  if (itemLevelScoring) {
+    return itemLevelScore
   }
-  if (!testItem?.data?.questions) {
+  if (!questions.length) {
     return total
   }
-  for (const question of testItem?.data?.questions || []) {
+  for (const question of questions) {
     total += getMaxScoreFromQuestion(question)
   }
   return total
@@ -543,7 +554,10 @@ export const transformGradeBookResponse = (
             const currentQuestionActivity =
               questionActivitiesIndexed[el] ||
               questionActivitiesKeyedByItemId[testItemId]
-            const questionMaxScore =
+            const currentItem = testItemsDataKeyed[testItemId]
+            const questions = get(currentItem, 'data.questions', [])
+
+            let questionMaxScore =
               maxScore ||
               maxScore == 0 ||
               getMaxScoreOfQid(
@@ -551,6 +565,17 @@ export const transformGradeBookResponse = (
                 testItemsData,
                 currentQuestionActivity?.maxScore
               )
+            const practiceUsage = isPracticeUsage(questions)
+            if (currentItem && currentItem.itemLevelScoring && practiceUsage) {
+              questionMaxScore = 0
+            }
+            const currentQuestion = questions.find((q) => q.id === _id)
+            const unscored = get(currentQuestion, 'validation.unscored', false)
+            if (!currentItem.itemLevelScoring && practiceUsage) {
+              questionMaxScore = unscored
+                ? 0
+                : get(currentQuestion, 'validation.validResponse.score', 0)
+            }
 
             if (!currentQuestionActivity) {
               return {
@@ -594,15 +619,14 @@ export const transformGradeBookResponse = (
               el
             )
 
-            const practiceUsage =
-              questionMaxScore === true && score === 0 && (graded || skipped)
             if (score > 0 && skipped) {
               skipped = false
             }
+            console.log({ correct, unscored }, '===', { barLabel })
             if (_qids && _qids.length) {
-              correct =
-                (score === questionMaxScore && score > 0) ||
-                (practiceUsage && correct)
+              correct = unscored
+                ? correct
+                : score === questionMaxScore && score > 0
               if (!correct) {
                 partialCorrect = score > 0 && score <= questionMaxScore
               }
@@ -628,7 +652,7 @@ export const transformGradeBookResponse = (
               userId: studentId,
               qActId: currentQuestionActivity._id,
               scratchPad,
-              practiceUsage,
+              practiceUsage: unscored,
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],
                 userResponse,

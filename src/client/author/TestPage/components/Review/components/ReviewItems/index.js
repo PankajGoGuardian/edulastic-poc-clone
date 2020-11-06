@@ -6,6 +6,7 @@ import SortableList from './SortableList'
 import { getQuestionType } from '../../../../../dataUtils'
 import { StyledSpinnerContainer } from './styled'
 import { isPremiumContent } from '../../../../utils'
+import { isPracticeUsage } from '../../../../../ItemDetail/Transformer'
 
 const ReviewItems = ({
   items,
@@ -49,11 +50,12 @@ const ReviewItems = ({
   }
 
   const data = items.map((item, i) => {
+    const practiceUsage = isPracticeUsage(item?.data?.questions)
     const isScoringDisabled =
       (!!item?.data?.questions?.find((q) => q.rubrics) &&
         userFeatures.gradingrubrics) ||
       item.autoselectedItem ||
-      item.isLimitedDeliveryType
+      item.isLimitedDeliveryType || practiceUsage
 
     const main = {
       id: item._id,
@@ -63,6 +65,7 @@ const ReviewItems = ({
       title: item._id,
       isScoringDisabled,
       groupId: item.groupId,
+      practiceUsage
     }
 
     const meta = {

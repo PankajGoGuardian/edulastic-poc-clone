@@ -2,14 +2,12 @@ import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { find, isUndefined } from 'lodash'
 import { Popover } from 'antd'
-import { measureText } from '@edulastic/common'
 import { response as responseConstant } from '@edulastic/constants'
 
 import { IconWrapper } from './styled/IconWrapper'
 import { RightIcon } from './styled/RightIcon'
 import { WrongIcon } from './styled/WrongIcon'
 import { CheckBox } from './styled/CheckBox'
-import { getMathTemplate } from '../../../utils/variables'
 
 /**
  *
@@ -87,21 +85,14 @@ const CheckedBlock = ({
     checkBoxClass = evaluation[id] ? 'right' : 'wrong'
   }
 
-  const showValue = combineUnitAndValue(userAnswer, isMath, unit)
+  const answer = combineUnitAndValue(userAnswer, isMath, unit)
 
   /**
    * if its math or math with units, need to convert the latex string to actual math template
    * passing latex string to the function would give incorrect dimensions
    * as latex might have extra special characters for rendering math
    */
-  const answer = isMath ? getMathTemplate(showValue) : showValue
-  const { width: textWidth, height: textHeight } = measureText(answer, {
-    padding: '0 0 0 11px',
-    fontSize: '16px',
-  })
-  const availableWidth = (parseInt(width, 10) || 0) - (showIndex ? 58 : 26) // will show popover when availableHeight is not available or NaN
-  const showPopover =
-    textWidth > availableWidth || textHeight > mathInputMaxHeight
+  const showPopover = !!answer // show popover when answer is provided
 
   const popoverContent = (isPopover) => (
     <CheckBox
@@ -129,17 +120,18 @@ const CheckedBlock = ({
       >
         {isMath ? (
           <CheckBoxedMathBox
-            value={showValue}
+            value={answer}
             style={{
               minWidth: 'unset',
               display: 'flex',
               alignItems: 'center',
               textAlign: 'left',
-              maxHeight: mathInputMaxHeight,
+              maxHeight: !isPopover && mathInputMaxHeight,
+              padding: isPopover && '4px 0px',
             }}
           />
         ) : (
-          showValue
+          answer
         )}
       </span>
       {userAnswer && !isUndefined(evaluation[id]) && (

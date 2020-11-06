@@ -107,6 +107,17 @@ class AssignmentAdvanced extends Component {
     })
   }
 
+  componentDidUpdate(prevProps) {
+    const { bulkActionStatus } = this.props
+    if (prevProps.bulkActionStatus !== bulkActionStatus && !bulkActionStatus) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        filterStatus: '',
+        pageNo: 1,
+      })
+    }
+  }
+
   onOpenReleaseScoreSettings = (testId) => {
     const { toggleReleaseGradePopUp } = this.props
     toggleReleaseGradePopUp(true)

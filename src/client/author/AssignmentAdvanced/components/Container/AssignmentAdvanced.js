@@ -24,6 +24,8 @@ import {
   getAssignmentsLoadingSelector,
   getBulkActionStatusSelector,
   stateSelector,
+  getAssignmentTestList,
+  getBulkActionTypeSelector,
 } from '../../../src/selectors/assignments'
 import ListHeader from '../../../src/components/common/ListHeader'
 import ActionMenu from '../../../Assignments/components/ActionMenu/ActionMenu'
@@ -104,6 +106,21 @@ class AssignmentAdvanced extends Component {
       pageNo,
       status: filterStatus,
     })
+  }
+
+  componentDidUpdate(prevProps) {
+    const { bulkActionStatus, bulkActionType } = this.props
+    if (
+      prevProps.bulkActionStatus !== bulkActionStatus &&
+      !bulkActionStatus &&
+      bulkActionType !== 'downloadGradesResponses'
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        filterStatus: '',
+        pageNo: 1,
+      })
+    }
   }
 
   onOpenReleaseScoreSettings = (testId) => {
@@ -281,6 +298,14 @@ class AssignmentAdvanced extends Component {
       pageNo,
     } = this.state
     const {
+      filterStatus,
+      openEditPopup,
+      isPreviewModalVisible,
+      isHeaderAction,
+      openPrintModal,
+      pageNo,
+    } = this.state
+    const {
       classList,
       assignmentsSummary,
       match,
@@ -304,6 +329,7 @@ class AssignmentAdvanced extends Component {
       userRole,
       userClassList,
       authorAssignmentsState = {},
+      assignmentTestList,
       userSchoolsList,
     } = this.props
     const {
@@ -329,7 +355,9 @@ class AssignmentAdvanced extends Component {
     }
     const { testId } = match.params
     const assingment =
-      find(assignmentsSummary, (item) => item.testId === testId) || {}
+      find(assignmentsSummary, (item) => item.testId === testId) ||
+      find(assignmentTestList, (item) => item.testId === testId) ||
+      {}
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
@@ -432,6 +460,7 @@ class AssignmentAdvanced extends Component {
                 pageNo={pageNo}
                 totalAssignmentsClasses={totalCountToShow}
                 handlePagination={this.handlePagination}
+                filterStatus={filterStatus}
                 userSchoolsList={userSchoolsList}
                 userRole={userRole}
               />
@@ -474,6 +503,8 @@ const enhance = compose(
       userRole: getUserRole(state),
       userClassList: getGroupList(state),
       authorAssignmentsState: stateSelector(state),
+      assignmentTestList: getAssignmentTestList(state),
+      bulkActionType: getBulkActionTypeSelector(state),
       userSchoolsList: getUserSchoolsListSelector(state),
     }),
     {

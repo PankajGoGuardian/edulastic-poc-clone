@@ -163,6 +163,7 @@ const TableList = ({
   pageNo,
   totalAssignmentsClasses,
   handlePagination,
+  filterStatus,
   userSchoolsList = [],
   userRole,
 }) => {
@@ -256,6 +257,7 @@ const TableList = ({
       data: selectedRowsGroupByAssignment,
       testId: classList[0].testId,
       testType,
+      status: filterStatus,
     }
     if (type === 'open') bulkOpenAssignmentRequest(payload)
     else if (type === 'close') bulkCloseAssignmentRequest(payload)

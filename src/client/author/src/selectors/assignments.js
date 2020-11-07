@@ -56,6 +56,11 @@ export const getBulkActionStatusSelector = createSelector(
   (state) => state.bulkActionInprogress
 )
 
+export const getBulkActionTypeSelector = createSelector(
+  stateSelector,
+  (state) => state.bulkActionType
+)
+
 export const getTestsSelector = createSelector(
   getEntitiesSelector,
   getAssignmentsByTestSelector,

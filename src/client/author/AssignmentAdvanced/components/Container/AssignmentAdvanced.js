@@ -298,14 +298,6 @@ class AssignmentAdvanced extends Component {
       pageNo,
     } = this.state
     const {
-      filterStatus,
-      openEditPopup,
-      isPreviewModalVisible,
-      isHeaderAction,
-      openPrintModal,
-      pageNo,
-    } = this.state
-    const {
       classList,
       assignmentsSummary,
       match,

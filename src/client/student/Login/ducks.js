@@ -289,6 +289,7 @@ const getRouteByGeneralRoute = (user) => {
     case roleuser.TEACHER:
       return '/author/dashboard'
     case roleuser.STUDENT:
+    case roleuser.PARENT:
       return '/home/assignments'
     default:
   }
@@ -296,16 +297,27 @@ const getRouteByGeneralRoute = (user) => {
 
 const loginPaths = ['/', '/resetPassword', '/districtLogin', '/district']
 
-function* persistAuthStateAndRedirectToSaga() {
+const isPartOfLoginRoutes = (pathname) =>
+  !loginPaths.some((path) =>
+    (pathname || window.location.pathname).startsWith(path)
+  )
+
+function* persistAuthStateAndRedirectToSaga({ payload }) {
+  const { _redirectRoute } = payload || {}
   const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
     {}
 
-  let redirectRoute = ''
+  if (!user.user) return
+
+  let redirectRoute = _redirectRoute || ''
 
   const appRedirectPath = localStorage.getItem('loginRedirectUrl')
 
-  if (appRedirectPath && appRedirectPath !== '/') {
-    redirectRoute = getValidRedirectRouteByRole(appRedirectPath, user)
+  if (appRedirectPath && !isPartOfLoginRoutes(appRedirectPath)) {
+    redirectRoute = getValidRedirectRouteByRole(
+      appRedirectPath,
+      user.user || {}
+    )
     localStorage.removeItem('loginRedirectUrl')
   } else {
     redirectRoute = getRouteByGeneralRoute(user)
@@ -1056,9 +1068,7 @@ export function* fetchUser({ payload }) {
           addAccountTo: payload.userId,
         })
       )
-      if (
-        !loginPaths.some((path) => window.location.pathname.startsWith(path))
-      ) {
+      if (!isPartOfLoginRoutes()) {
         window.location.replace('/')
       }
       return

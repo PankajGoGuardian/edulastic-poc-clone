@@ -28,6 +28,7 @@ export const markQuestionLabel = (_testItemsData) => {
 }
 
 export const isPracticeUsage = (questions = []) => {
+  if (!Array.isArray(questions)) return false
   return questions.some((question) =>
     get(question, 'validation.unscored', false)
   )

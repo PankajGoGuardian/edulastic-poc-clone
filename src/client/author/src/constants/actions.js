@@ -177,6 +177,8 @@ export const CLEAR_FEEDBACK_RESPONSE =
   '[feedbackResonse] clear feedback response'
 export const RECEIVE_FEEDBACK_RESPONSE_ERROR =
   '[feedbackResponse] receive list error'
+export const RECEIVE_ATTACHMENTS_RESPONSE_REQUEST =
+  '[attachmentsResonse] receive attachments request'
 
 // Classboard
 export const RECEIVE_GRADEBOOK_REQUEST = '[gradebook] receive list request'

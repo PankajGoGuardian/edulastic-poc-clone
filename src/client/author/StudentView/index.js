@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { findIndex, isUndefined, get } from 'lodash'
+import { findIndex, isUndefined, get, throttle } from 'lodash'
 import { setAutoFreeze } from 'immer'
 import memoizeOne from 'memoize-one'
 import { Input, Tooltip } from 'antd'
@@ -11,12 +11,12 @@ import {
   scrollTo,
   EduButton,
   FieldLabel,
+  LCBScrollContext,
 } from '@edulastic/common'
 import { IconFeedback } from '@edulastic/icons'
 import { test } from '@edulastic/constants'
 import { white } from '@edulastic/colors'
 import {
-  StyledFlexContainer,
   AllButton,
   CorrectButton,
   WrongButton,
@@ -28,6 +28,8 @@ import {
   ScrollToTopButton,
   StyledModal,
   StyledFooter,
+  StyledFlexContainer,
+  ScoreWrapper,
 } from './styled'
 
 import ClassQuestions from '../ClassResponses/components/Container/ClassQuestions'
@@ -55,6 +57,8 @@ const _getquestionLabels = memoizeOne(getQuestionLabels)
 setAutoFreeze(false)
 
 class StudentViewContainer extends Component {
+  static contextType = LCBScrollContext
+
   state = {
     showFeedbackPopup: false,
     showTestletPlayer: false,
@@ -65,23 +69,32 @@ class StudentViewContainer extends Component {
 
   questionsContainerRef = React.createRef()
 
-  handleScroll = () => {
+  handleScroll = throttle(() => {
     const { hasStickyHeader } = this.state
     const elementTop =
       this.questionsContainerRef.current?.getBoundingClientRect().top || 0
-    if (elementTop < 100 && !hasStickyHeader) {
+    if (elementTop < 200 && !hasStickyHeader) {
       this.setState({ hasStickyHeader: true })
-    } else if (elementTop > 100 && hasStickyHeader) {
+    } else if (elementTop > 200 && hasStickyHeader) {
       this.setState({ hasStickyHeader: false })
+    }
+  }, 500)
+
+  componentWillUnmount() {
+    const { current } = this.context
+
+    if (current) {
+      current.removeEventListener('scroll', this.handleScroll)
     }
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll)
-  }
-
   componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll)
+    // get the current scroll context from LCBScrollContext
+    const { current } = this.context
+
+    if (current) {
+      current.addEventListener('scroll', this.handleScroll)
+    }
   }
 
   static getDerivedStateFromProps(nextProps, preState) {
@@ -157,6 +170,7 @@ class StudentViewContainer extends Component {
       testItemsOrder,
       filter,
       isCliUser,
+      renderStudentSelectList,
     } = this.props
 
     const {
@@ -174,8 +188,6 @@ class StudentViewContainer extends Component {
       }
       return studentId === userId
     })
-
-    const showStudentWorkButton = test.type.TESTLET === classResponse.testType
 
     // show the total count.
     const questionActivities = studentResponse?.questionActivities || []
@@ -195,6 +207,15 @@ class StudentViewContainer extends Component {
     const partiallyCorrectNumber = activeQuestions.filter(
       (x) => x.score > 0 && x.score < x.maxScore
     ).length
+
+    const { totalScore, maxScore } = activeQuestions.reduce(
+      (acc, x) => {
+        acc.totalScore += x.score
+        acc.maxScore += x.maxScore
+        return acc
+      },
+      { totalScore: 0, maxScore: 0 }
+    )
 
     const skippedNumber = activeQuestions.filter(
       (x) => x.skipped && x.score === 0
@@ -266,7 +287,7 @@ class StudentViewContainer extends Component {
           hasStickyHeader={hasStickyHeader}
           className="lcb-student-sticky-bar"
         >
-          <StudentButtonWrapper>
+          <StudentButtonWrapper hasAutoWidth={hasStickyHeader}>
             <StudentButtonDiv>
               <AllButton
                 active={filter === null}
@@ -305,14 +326,13 @@ class StudentViewContainer extends Component {
                 NOT GRADED ({notGradedNumber})
               </PartiallyCorrectButton>
             </StudentButtonDiv>
-            {showStudentWorkButton && (
-              <StyledStudentTabButton
-                onClick={() => this.setState({ showTestletPlayer: true })}
-              >
-                SHOW STUDENT WORK
-              </StyledStudentTabButton>
-            )}
           </StudentButtonWrapper>
+          {hasStickyHeader && (
+            <>
+              {renderStudentSelectList()}
+              <ScoreWrapper>{`${totalScore} / ${maxScore}`}</ScoreWrapper>
+            </>
+          )}
           {!isCliUser && (
             <GiveOverallFeedBackButton
               data-cy="overallFeedback"
@@ -356,7 +376,8 @@ class StudentViewContainer extends Component {
                 isPresentationMode={isPresentationMode}
                 showTestletPlayer={showTestletPlayer}
                 closeTestletPlayer={() =>
-                  this.setState({ showTestletPlayer: false })}
+                  this.setState({ showTestletPlayer: false })
+                }
                 isLCBView
               />
             </AnswerContext.Provider>
@@ -415,6 +436,7 @@ StudentViewContainer.propTypes = {
   updateOverallFeedback: PropTypes.func.isRequired,
   assignmentIdClassId: PropTypes.array.isRequired,
   testItemsOrder: PropTypes.any.isRequired,
+  renderStudentSelectList: PropTypes.func,
 }
 StudentViewContainer.defaultProps = {
   selectedStudent: '',

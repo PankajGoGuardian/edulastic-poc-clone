@@ -398,14 +398,12 @@ class QuestionWrapper extends Component {
       userRole,
       disableResponse,
       isStudentReport,
-      showStudentWork,
       LCBPreviewModal,
       showUserTTS,
       selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
       scrollContainer,
-      loadScratchPad,
       isQuestionView,
       isExpressGrader,
       saveHintUsage,
@@ -416,6 +414,7 @@ class QuestionWrapper extends Component {
       playerSkinType = test.playerSkinValues.edulastic,
       isPowerTeacher = false,
       isPremiumUser = false,
+      isScratchpadImageMode,
       features,
       isItemsVisible,
       ...restProps
@@ -622,32 +621,14 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                   />
-                  {!restProps.showScratchpadByDefault &&
+                  {!isScratchpadImageMode &&
+                    !restProps.showScratchpadByDefault &&
                     showFeedback &&
                     !isPrintPreview && (
                       <>
                         <TimeSpentWrapper
                           className={isStudentReport ? 'student-report' : ''}
                         >
-                          {!!showStudentWork && (
-                            <ShowUserWork
-                              style={{ marginRight: '1rem' }}
-                              onClickHandler={() => {
-                                // load the data from server and then show
-                                loadScratchPad({
-                                  testActivityId:
-                                    data?.activity?.testActivityId,
-                                  testItemId: data?.activity?.testItemId,
-                                  qActId:
-                                    data?.activity?.qActId ||
-                                    data?.activity?._id,
-                                  callback: () => showStudentWork(),
-                                })
-                              }}
-                            >
-                              Show student work
-                            </ShowUserWork>
-                          )}
                           {timeSpent && (
                             <>
                               <IconClockCircularOutline />
@@ -657,37 +638,42 @@ class QuestionWrapper extends Component {
                         </TimeSpentWrapper>
                       </>
                     )}
-                  {rubricDetails && studentReportFeedbackVisible && (
-                    <RubricTableWrapper>
-                      <span>Graded Rubric</span>
-                      <PreviewRubricTable
-                        data={rubricDetails}
-                        rubricFeedback={rubricFeedback}
-                        isDisabled
+                  {!isScratchpadImageMode &&
+                    rubricDetails &&
+                    studentReportFeedbackVisible && (
+                      <RubricTableWrapper>
+                        <span>Graded Rubric</span>
+                        <PreviewRubricTable
+                          data={rubricDetails}
+                          rubricFeedback={rubricFeedback}
+                          isDisabled
+                        />
+                      </RubricTableWrapper>
+                    )}
+                  {!isScratchpadImageMode &&
+                    view === 'preview' &&
+                    !isPrintPreview && (
+                      <Hints
+                        question={data}
+                        enableMagnifier={enableMagnifier}
+                        saveHintUsage={saveHintUsage}
+                        isStudent={userRole === 'student'}
+                        itemIndex={itemIndex}
+                        isLCBView={isLCBView}
+                        isExpressGrader={isExpressGrader}
+                        isStudentReport={isStudentReport}
                       />
-                    </RubricTableWrapper>
-                  )}
-                  {view === 'preview' && !isPrintPreview && (
-                    <Hints
-                      question={data}
-                      enableMagnifier={enableMagnifier}
-                      saveHintUsage={saveHintUsage}
-                      isStudent={userRole === 'student'}
-                      itemIndex={itemIndex}
-                      isLCBView={isLCBView}
-                      isExpressGrader={isExpressGrader}
-                      isStudentReport={isStudentReport}
-                    />
-                  )}
-                  {(isLCBView ||
-                    isExpressGrader ||
-                    restProps.previewTab === 'show') && (
-                    <Explanation
-                      isStudentReport={isStudentReport}
-                      question={data}
-                      isGrade={isGrade}
-                    />
-                  )}
+                    )}
+                  {!isScratchpadImageMode &&
+                    (isLCBView ||
+                      isExpressGrader ||
+                      restProps.previewTab === 'show') && (
+                      <Explanation
+                        isStudentReport={isStudentReport}
+                        question={data}
+                        isGrade={isGrade}
+                      />
+                    )}
                 </StyledFlexContainer>
               </PaperWrapper>
             </QuestionContainer>
@@ -777,7 +763,6 @@ const enhance = compose(
     {
       setQuestionData: setQuestionDataAction,
       handleAdvancedOpen: toggleAdvancedSections,
-      loadScratchPad: requestScratchPadAction,
     }
   )
 )

@@ -11,6 +11,8 @@ const SortBar = ({
   students,
   selectedStudent,
   isPresentationMode,
+  hasOnlySelectList,
+  selectStyle,
 }) => {
   const onSortChange = (testActivityId) => {
     if (testActivityId !== undefined) {
@@ -41,29 +43,38 @@ const SortBar = ({
   const user = isPresentationMode
     ? studentIcon(selected)
     : selected && selected.testActivityId
+
+  const studentSelectList = (
+    <StyledSelect
+      value={user}
+      onChange={onSortChange}
+      style={{ ...selectStyle }}
+    >
+      {students.map((student, index) => (
+        <Select.Option
+          key={index}
+          value={student.testActivityId || null}
+          disabled={
+            !valid(student) ||
+            student.UTASTATUS === testActivityStatus.NOT_STARTED
+          }
+        >
+          {isPresentationMode ? studentIcon(student) : student.studentName}
+        </Select.Option>
+      ))}
+    </StyledSelect>
+  )
+
+  if (hasOnlySelectList) {
+    return <Container>{studentSelectList}</Container>
+  }
+
   return (
     <>
       {students && students.filter(valid).length !== 0 && (
         <LegendContainer>
           <Legends />
-          <Container>
-            <StyledSelect value={user} onChange={onSortChange}>
-              {students.map((student, index) => (
-                <Select.Option
-                  key={index}
-                  value={student.testActivityId || null}
-                  disabled={
-                    !valid(student) ||
-                    student.UTASTATUS === testActivityStatus.NOT_STARTED
-                  }
-                >
-                  {isPresentationMode
-                    ? studentIcon(student)
-                    : student.studentName}
-                </Select.Option>
-              ))}
-            </StyledSelect>
-          </Container>
+          <Container>{studentSelectList}</Container>
         </LegendContainer>
       )}
     </>

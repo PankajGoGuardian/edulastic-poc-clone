@@ -1,11 +1,16 @@
-import React, { Component, useContext } from 'react'
+import React, { Component, useContext, memo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { keyBy as _keyBy, isEmpty, get } from 'lodash'
 // components
-import { AnswerContext } from '@edulastic/common'
+import {
+  AnswerContext,
+  VirtualList,
+  LCBScrollContext,
+  ScrollContext,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import produce from 'immer'
 import { Modal, Row, Col } from 'antd'
@@ -19,6 +24,8 @@ import AssessmentPlayerModal from '../../../Assignments/components/Container/Tes
 import { getRows } from '../../../sharedDucks/itemDetail'
 // styled wrappers
 import { StyledFlexContainer } from './styled'
+import { fetchItemAttachmentsAction } from '../../../sharedDucks/classResponses'
+// styled wrappers
 import {
   getDynamicVariablesSetIdForViewResponse,
   ttsUserIdSelector,
@@ -26,94 +33,152 @@ import {
 import Worksheet from '../../../AssessmentPage/components/Worksheet/Worksheet'
 import { ThemeButton } from '../../../src/components/common/ThemeButton'
 
-function Preview({
-  item,
-  qIndex,
-  studentId,
-  studentName,
-  evaluation,
-  showStudentWork,
-  passages,
-  isQuestionView,
-  isExpressGrader,
-  isLCBView,
-  questionActivity,
-  userWork,
-  t,
-}) {
-  const rows = getRows(item, false)
-  const questions = get(item, ['data', 'questions'], [])
-  const resources = get(item, ['data', 'resources'], [])
-  let questionsKeyed = {
-    ..._keyBy(questions, 'id'),
-    ..._keyBy(resources, 'id'),
-  }
-  let passage = {}
-  if (item.passageId && passages.length) {
-    passage = passages.find((p) => p._id === item.passageId) || {}
-    questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, 'id') }
-    rows[0] = passage.structure
-  }
-  const passageId = passage?._id
-  const answerContextConfig = useContext(AnswerContext)
-  const target = get(
+const Preview = memo(
+  ({
+    item,
+    qIndex,
+    studentId,
+    studentName,
+    evaluation,
+    showStudentWork,
+    passages,
+    isQuestionView,
+    isExpressGrader,
+    isLCBView,
     questionActivity,
-    isExpressGrader || isQuestionView ? '_id' : 'qActId',
-    ''
-  )
-  const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
-  const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item
-  const scoringProps = {
-    multipartItem,
-    itemLevelScoring,
-    isPassageWithQuestions,
-  }
-  const attachments = get(questionActivity, 'scratchPad.attachments', null)
-  const scratchpadDimensions = get(
-    questionActivity,
-    'scratchPad.dimensions',
-    null
-  )
+    userWork,
+    fetchScratchpad,
+    isScratchpadUsed,
+    isStudentWorkCollapseOpen,
+    toggleStudentWorkCollapse,
+    t,
+  }) => {
+    const rows = getRows(item, false)
+    const questions = get(item, ['data', 'questions'], [])
+    const resources = get(item, ['data', 'resources'], [])
+    let questionsKeyed = {
+      ..._keyBy(questions, 'id'),
+      ..._keyBy(resources, 'id'),
+    }
+    let passage = {}
+    if (item.passageId && passages.length) {
+      passage = passages.find((p) => p._id === item.passageId) || {}
+      questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, 'id') }
+      rows[0] = passage.structure
+    }
+    const passageId = passage?._id
+    const answerContextConfig = useContext(AnswerContext)
+    const target = get(
+      questionActivity,
+      isExpressGrader || isQuestionView ? '_id' : 'qActId',
+      ''
+    )
 
-  return (
-    <StyledFlexContainer
-      key={item._id}
-      data-cy="student-question-container"
-      className={`student-question-container-id-${studentId}`}
-    >
-      <TestItemPreview
-        showCollapseBtn
-        showFeedback
-        cols={rows}
-        isDocBased={item.isDocBased}
-        preview="show"
-        previewTab="show"
-        questions={questionsKeyed}
-        disableResponse={!answerContextConfig.isAnswerModifiable}
-        verticalDivider={item.verticalDivider}
-        scrolling={item.scrolling}
-        style={{ width: '100%' }}
-        qIndex={qIndex}
-        evaluation={evaluation}
-        showStudentWork={showStudentWork}
-        passageTestItemID={passageId}
-        isQuestionView={isQuestionView}
-        isExpressGrader={isExpressGrader}
-        isLCBView={isLCBView}
-        timeSpent={timeSpent}
-        attachments={attachments}
-        history={userWork[target]}
-        scratchpadDimensions={scratchpadDimensions}
-        saveHistory={() => {}}
-        {...scoringProps}
-        studentId={studentId}
-        studentName={studentName || t('common.anonymous')}
-        inLCB
-        itemId={item._id}
-      />
-    </StyledFlexContainer>
-  )
-}
+    const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
+    const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item
+    const scoringProps = {
+      multipartItem,
+      itemLevelScoring,
+      isPassageWithQuestions,
+    }
+    const attachments = get(questionActivity, 'scratchPad.attachments', null)
+    const scratchpadDimensions = get(
+      questionActivity,
+      'scratchPad.dimensions',
+      null
+    )
+
+    if (isScratchpadUsed && !userWork[target]) {
+      fetchScratchpad({
+        testActivityId: questionActivity.testActivityId,
+        questionActivities: [questionActivity],
+      })
+    }
+
+    const renderScratchPadImage = () => {
+      if (!isScratchpadUsed || !userWork[target]) {
+        return null
+      }
+
+      return (
+        <StyledFlexContainer
+          key={item._id}
+          data-cy="student-question-container"
+          className={`student-question-container-id-${studentId}`}
+        >
+          <TestItemPreview
+            showCollapseBtn
+            showFeedback
+            cols={rows}
+            isDocBased={item.isDocBased}
+            preview="show"
+            previewTab="show"
+            questions={questionsKeyed}
+            disableResponse={!answerContextConfig.isAnswerModifiable}
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
+            style={{ width: '800px', overflow: 'hidden', minHeight: '800px' }}
+            qIndex={qIndex}
+            evaluation={evaluation}
+            passageTestItemID={passageId}
+            isQuestionView={isQuestionView}
+            isExpressGrader={isExpressGrader}
+            isLCBView={isLCBView}
+            history={userWork[target]}
+            isScratchpadImageMode
+            scratchpadDimensions={scratchpadDimensions}
+            {...scoringProps}
+            studentId={studentId}
+            studentName={studentName || t('common.anonymous')}
+            inLCB
+            itemId={item._id}
+          />
+        </StyledFlexContainer>
+      )
+    }
+    return (
+      <StyledFlexContainer
+        key={item._id}
+        data-cy="student-question-container"
+        className={`student-question-container-id-${studentId}`}
+      >
+        <TestItemPreview
+          showCollapseBtn
+          showFeedback
+          cols={rows}
+          isDocBased={item.isDocBased}
+          preview="show"
+          previewTab="show"
+          questions={questionsKeyed}
+          disableResponse={!answerContextConfig.isAnswerModifiable}
+          verticalDivider={item.verticalDivider}
+          scrolling={item.scrolling}
+          style={{ width: '100%' }}
+          qIndex={qIndex}
+          evaluation={evaluation}
+          showStudentWork={showStudentWork}
+          passageTestItemID={passageId}
+          isQuestionView={isQuestionView}
+          isExpressGrader={isExpressGrader}
+          isLCBView={isLCBView}
+          timeSpent={timeSpent}
+          attachments={attachments}
+          history={userWork[target]}
+          isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+          toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+          renderScratchPadImage={renderScratchPadImage}
+          scratchpadDimensions={scratchpadDimensions}
+          saveHistory={() => {}}
+          {...scoringProps}
+          studentId={studentId}
+          studentName={studentName || t('common.anonymous')}
+          inLCB
+          itemId={item._id}
+        />
+      </StyledFlexContainer>
+    )
+  }
+)
 
 Preview.propTypes = {
   item: PropTypes.object.isRequired,
@@ -130,9 +195,16 @@ class ClassQuestions extends Component {
     showPlayerModal: false,
     selectedTestItem: [],
     showDocBasedPlayer: false,
+    isStudentWorkCollapseOpen: false,
   }
 
   static contextType = AnswerContext
+
+  toggleStudentWorkCollapse = () => {
+    this.setState(({ isStudentWorkCollapseOpen }) => ({
+      isStudentWorkCollapseOpen: !isStudentWorkCollapseOpen,
+    }))
+  }
 
   // show AssessmentPlayerModal
   showPlayerModal = () => {
@@ -391,8 +463,17 @@ class ClassQuestions extends Component {
       }
     })
 
+  questionPreviewGenerator = (index) => (
+    <Preview {...this.previewItems[index]} />
+  )
+
   render() {
-    const { showPlayerModal, selectedTestItem, showDocBasedPlayer } = this.state
+    const {
+      showPlayerModal,
+      selectedTestItem,
+      showDocBasedPlayer,
+      isStudentWorkCollapseOpen,
+    } = this.state
     const {
       questionActivities,
       currentStudent,
@@ -410,6 +491,7 @@ class ClassQuestions extends Component {
       isPresentationMode,
       t,
       ttsUserIds,
+      fetchItemAttachments,
     } = this.props
     const testItems = this.getTestItems()
     const { expressGrader: isExpressGrader = false } = this.context
@@ -424,7 +506,7 @@ class ClassQuestions extends Component {
       return acc
     }, {})
 
-    const testItemsPreview = testItems.map((item, index) => {
+    this.previewItems = testItems.map((item, index) => {
       let showStudentWork = null
       let scractchPadUsed = userWork[item._id]
 
@@ -441,29 +523,29 @@ class ClassQuestions extends Component {
         (act) => act.testItemId === item._id
       )
 
-      return (
-        <Preview
-          studentId={(currentStudent || {}).studentId}
-          ttsUserIds={ttsUserIds}
-          studentName={
-            (currentStudent || {})[
-              isPresentationMode ? 'fakeName' : 'studentName'
-            ]
-          }
-          key={index}
-          item={item}
-          passages={passages}
-          qIndex={qIndex || index}
-          evaluation={evaluationStatus}
-          showStudentWork={showStudentWork}
-          isQuestionView={isQuestionView}
-          isExpressGrader={isExpressGrader}
-          isLCBView={isLCBView}
-          questionActivity={questionActivity}
-          userWork={userWork}
-          t={t}
-        />
-      )
+      return {
+        studentId: (currentStudent || {}).studentId,
+        ttsUserIds,
+        studentName: (currentStudent || {})[
+          isPresentationMode ? 'fakeName' : 'studentName'
+        ],
+        isStudentWorkCollapseOpen,
+        toggleStudentWorkCollapse: this.toggleStudentWorkCollapse,
+        key: index,
+        item,
+        passages,
+        qIndex: qIndex || index,
+        evaluation: evaluationStatus,
+        showStudentWork,
+        isQuestionView,
+        isExpressGrader,
+        isLCBView,
+        questionActivity,
+        fetchScratchpad: fetchItemAttachments,
+        isScratchpadUsed: scractchPadUsed,
+        userWork,
+        t,
+      }
     })
     const test = showTestletPlayer
       ? {
@@ -548,7 +630,22 @@ class ClassQuestions extends Component {
             <Worksheet {...docBasedProps} studentWork />
           </StyledModal>
         ) : null}
-        {testItemsPreview}
+        {/* {testItemsPreview} */}
+        {/* static contextType is already used in this component for AnswerContext,
+        so using Context Consumer */}
+        <LCBScrollContext.Consumer>
+          {(scrollElementRef) => (
+            <ScrollContext.Provider
+              value={{ getScrollElement: () => scrollElementRef.current }}
+            >
+              <VirtualList
+                itemGenerator={this.questionPreviewGenerator}
+                itemCount={this.previewItems.length}
+                overscan={1500}
+              />
+            </ScrollContext.Provider>
+          )}
+        </LCBScrollContext.Consumer>
       </>
     )
   }
@@ -577,6 +674,7 @@ const withConnect = connect(
   {
     loadScratchPad: loadScratchPadAction,
     clearUserWork: clearUserWorkAction,
+    fetchItemAttachments: fetchItemAttachmentsAction,
   }
 )
 

@@ -952,6 +952,30 @@ class ClassBoard extends Component {
 
     const { showScoreImporvement } = this.state
 
+    const getStudentSelectList = (hasOnlySelectList = false) => (
+      <StudentSelect
+        data-cy="studentSelect"
+        style={{ width: '200px' }}
+        students={testActivity}
+        hasOnlySelectList={hasOnlySelectList}
+        selectedStudent={selectedStudentId}
+        studentResponse={qActivityByStudent}
+        handleChange={(value, _testActivityId) => {
+          setCurrentTestActivityId(_testActivityId)
+          getAllTestActivitiesForStudent({
+            studentId: value,
+            assignmentId,
+            groupId: classId,
+          })
+          this.setState({ selectedStudentId: value })
+          history.push(
+            `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
+          )
+        }}
+        isPresentationMode={isPresentationMode}
+      />
+    )
+
     return (
       <div>
         {showMarkSubmittedPopup && (
@@ -1203,7 +1227,8 @@ class ClassBoard extends Component {
                     </RedirectButton>
                     <Dropdown
                       getPopupContainer={(triggerNode) =>
-                        triggerNode.parentNode}
+                        triggerNode.parentNode
+                      }
                       overlay={
                         <DropMenu>
                           <FeaturesSwitch
@@ -1360,26 +1385,7 @@ class ClassBoard extends Component {
                 <>
                   <StudentGrapContainer>
                     <StyledCard bordered={false} paddingTop={15}>
-                      <StudentSelect
-                        data-cy="studentSelect"
-                        style={{ width: '200px' }}
-                        students={testActivity}
-                        selectedStudent={selectedStudentId}
-                        studentResponse={qActivityByStudent}
-                        handleChange={(value, _testActivityId) => {
-                          setCurrentTestActivityId(_testActivityId)
-                          getAllTestActivitiesForStudent({
-                            studentId: value,
-                            assignmentId,
-                            groupId: classId,
-                          })
-                          this.setState({ selectedStudentId: value })
-                          history.push(
-                            `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
-                          )
-                        }}
-                        isPresentationMode={isPresentationMode}
-                      />
+                      {getStudentSelectList(true)}
                       <GraphWrapper style={{ width: '100%', display: 'flex' }}>
                         <BarGraph
                           gradebook={gradebook}
@@ -1551,6 +1557,7 @@ class ClassBoard extends Component {
                     selectedStudent={selectedStudentId}
                     isPresentationMode={isPresentationMode}
                     isCliUser={isCliUser}
+                    renderStudentSelectList={() => getStudentSelectList(true)}
                   />
                 </>
               )}

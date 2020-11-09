@@ -72,6 +72,7 @@ export { StyledComponents }
 export { Effects }
 export { default as TypeToConfirmModal } from './src/components/TypeToConfirmModal'
 export { default as PremiumTag } from './src/components/PremiumTag/PremiumTag'
+export { default as VirtualList } from './src/components/VirtualList'
 export { default as Hints } from './src/components/Hints'
 export { default as ErrorHandler } from './src/components/ErrorHandler'
 export { default as OfflineNotifier } from './src/components/OfflineNotifier'

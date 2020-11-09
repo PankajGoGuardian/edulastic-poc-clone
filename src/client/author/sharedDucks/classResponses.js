@@ -41,6 +41,7 @@ import {
   RECEIVE_CLASS_QUESTION_ERROR,
   RESPONSE_ENTRY_SCORE_SUCCESS,
   UPDATE_STUDENT_TEST_ITEMS,
+  RECEIVE_ATTACHMENTS_RESPONSE_REQUEST,
 } from '../src/constants/actions'
 import { gradebookTestItemAddAction } from '../src/reducers/testActivity'
 
@@ -60,6 +61,10 @@ export const UPDATE_STUDENT_ACTIVITY_SCORE =
 // action creators
 export const updateStudentQuestionActivityScoreAction = createAction(
   UPDATE_STUDENT_ACTIVITY_SCORE
+)
+
+export const fetchItemAttachmentsAction = createAction(
+  RECEIVE_ATTACHMENTS_RESPONSE_REQUEST
 )
 
 function* receiveClassResponseSaga({ payload }) {
@@ -151,11 +156,11 @@ function getScratchpadUsedItemsFromActivities(actGroups = {}) {
     let showScratchByDefault
     let scratchUsed
     for (const activity of activities) {
-      if (activity.qType === questionType.HIGHLIGHT_IMAGE) {
-        showScratchByDefault = true
-      }
       if (activity?.scratchPad?.scratchpad === true) {
         scratchUsed = true
+      }
+      if (activity.qType === questionType.HIGHLIGHT_IMAGE) {
+        showScratchByDefault = true
       }
       if (scratchUsed && showScratchByDefault) {
         break
@@ -265,6 +270,25 @@ function* receiveStudentResponseSaga({ payload }) {
       type: RECEIVE_STUDENT_RESPONSE_ERROR,
       payload: { error: errorMessage },
     })
+  }
+}
+
+function* receiveAttachmentsResponseSaga({ payload }) {
+  try {
+    const test = payload.questionActivities.map(
+      ({ testActivityId, qActId, testItemId }) => ({
+        utaId: testActivityId,
+        uqaId: qActId,
+        testItemId,
+      })
+    )
+
+    yield call(getAttachmentsForItems, {
+      testActivityId: payload.testActivityId,
+      testItemsIdArray: test,
+    })
+  } catch (e) {
+    console.log(e)
   }
 }
 
@@ -553,6 +577,10 @@ export function* watcherSaga() {
     yield takeLatest(
       RECEIVE_FEEDBACK_RESPONSE_REQUEST,
       receiveFeedbackResponseSaga
+    ),
+    yield takeLatest(
+      RECEIVE_ATTACHMENTS_RESPONSE_REQUEST,
+      receiveAttachmentsResponseSaga
     ),
   ])
   const requestChan = yield actionChannel(UPDATE_STUDENT_ACTIVITY_SCORE)

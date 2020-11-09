@@ -37,7 +37,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
 `
 
 export const StudentButtonWrapper = styled(FlexContainer)`
-  width: calc(75% - 15px);
+  width: ${(props) => (props.hasAutoWidth ? 'auto' : 'calc(75% - 15px)')};
   justify-content: space-between;
   margin-bottom: 0px;
 
@@ -198,4 +198,9 @@ export const StyledFooter = styled.div`
     min-width: 150px;
     margin-top: 5px;
   }
+`
+
+export const ScoreWrapper = styled.div`
+  font-weight: bold;
+  font-size: 20px;
 `

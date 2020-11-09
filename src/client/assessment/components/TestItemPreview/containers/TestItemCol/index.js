@@ -7,7 +7,6 @@ import { sortBy } from 'lodash'
 import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
 import QuestionWrapper from '../../../QuestionWrapper'
-
 import {
   Container,
   WidgetContainer,
@@ -16,8 +15,10 @@ import {
 import { MobileRightSide } from './styled/MobileRightSide'
 import { MobileLeftSide } from './styled/MobileLeftSide'
 import { IconArrow } from './styled/IconArrow'
+import { StyleH2Heading } from './styled/Headings'
 import TabContainer from './TabContainer'
 import FilesView from '../../../../widgets/UploadFile/components/FilesView'
+import StudentWorkCollapse from '../../components/StudentWorkCollapse'
 
 class TestItemCol extends Component {
   state = {
@@ -87,6 +88,10 @@ class TestItemCol extends Component {
       isStudentAttempt,
       attachments,
       saveAttachments,
+      renderScratchPadImage,
+      isScratchpadImageMode,
+      isStudentWorkCollapseOpen,
+      toggleStudentWorkCollapse,
       ...restProps
     } = this.props
     const timespent = widget.timespent !== undefined ? widget.timespent : null
@@ -121,7 +126,11 @@ class TestItemCol extends Component {
       saveAttachments(newAttachments)
     }
 
-    const isAttachmentListVisible = attachments && attachments.length > 0
+    const imageAttachments =
+      attachments &&
+      attachments.filter((attachment) => {
+        return attachment.type.includes('image/')
+      })
 
     // question false undefined false undefined undefined true true
     return (
@@ -156,6 +165,7 @@ class TestItemCol extends Component {
           noBoxShadow
           isFlex
           isStudentReport={isStudentReport}
+          isScratchpadImageMode={isScratchpadImageMode}
           flowLayout={flowLayout}
           prevQActivityForQuestion={prevQActivityForQuestion}
           LCBPreviewModal={LCBPreviewModal}
@@ -167,19 +177,33 @@ class TestItemCol extends Component {
           style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
           tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />
+        {!isScratchpadImageMode && !isStudentAttempt && (
+          <StudentWorkCollapse
+            isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+            toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+            imageAttachments={imageAttachments}
+            renderScratchPadImage={renderScratchPadImage}
+          />
+        )}
+
+        {!isScratchpadImageMode && attachments && attachments.length > 0 && (
+          <>
+            <StyleH2Heading>Attachments</StyleH2Heading>
+            <FilesViewContainer>
+              <FilesView
+                files={attachments}
+                hideDelete={!isStudentAttempt}
+                onDelete={saveUpdatedAttachments}
+              />
+            </FilesViewContainer>
+          </>
+        )}
+
         {/*  on the student side, show feedback for each question only when item level scoring is off */}
-        {isStudentReport &&
+        {!isScratchpadImageMode &&
+          isStudentReport &&
           !itemLevelScoring &&
           teachCherFeedBack(widget, null, null, showStackedView)}
-        {isAttachmentListVisible && (
-          <FilesViewContainer>
-            <FilesView
-              files={attachments}
-              hideDelete={!isStudentAttempt}
-              onDelete={saveUpdatedAttachments}
-            />
-          </FilesViewContainer>
-        )}
       </TabContainer>
     )
   }

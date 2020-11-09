@@ -311,6 +311,7 @@ class TestItemPreview extends Component {
       theme,
       t,
       isCliUser,
+      isScratchpadImageMode,
       ...restProps
     } = this.props
     const {
@@ -374,14 +375,22 @@ class TestItemPreview extends Component {
 
     const shouldHideScratchpad = isLCBView && !!hasResourceTypeQuestion
     const scratchpadHeight = get(scratchpadDimensions, 'height', null)
+    const scratchpadWidth = get(scratchpadDimensions, 'width', null)
     if (
       scratchpadHeight &&
       !isStudentAttempt &&
       isLCBView &&
       isSingleQuestionView &&
-      style
+      style &&
+      // Condition in which scratch pad is shown
+      (isScratchpadImageMode ||
+        ((this.defaultScratchpadVisibility || scratchPadMode) &&
+          !shouldHideScratchpad))
     ) {
       style.height = scratchpadHeight + 20
+      if (isScratchpadImageMode && scratchpadWidth) {
+        style.width = scratchpadWidth
+      }
     }
 
     return (
@@ -470,6 +479,7 @@ class TestItemPreview extends Component {
                         height: fullHeight ? '100%' : 'auto',
                         paddingTop: 0,
                       }}
+                      isScratchpadImageMode={isScratchpadImageMode}
                       showStackedView={showStackedView}
                       isPassageWithQuestions={isPassageWithQuestions}
                       teachCherFeedBack={this.renderFeedback}
@@ -485,18 +495,20 @@ class TestItemPreview extends Component {
                 )
               })}
             </div>
-            {(this.defaultScratchpadVisibility || scratchPadMode) &&
-              !shouldHideScratchpad && (
-                <Scratchpad
-                  saveData={saveHistory}
-                  data={history}
-                  hideTools
-                  readOnly={readyOnlyScratchpad}
-                  dimensions={scratchpadDimensions}
-                />
-              )}
+            {(isScratchpadImageMode ||
+              ((this.defaultScratchpadVisibility || scratchPadMode) &&
+                !shouldHideScratchpad)) && (
+              <Scratchpad
+                saveData={saveHistory}
+                data={history}
+                hideTools
+                readOnly={readyOnlyScratchpad}
+                dimensions={scratchpadDimensions}
+              />
+            )}
           </Container>
-          {showScratchpadByDefault &&
+          {!isScratchpadImageMode &&
+            showScratchpadByDefault &&
             (isLCBView || isExpressGrader) &&
             history && (
               <TimeSpentWrapper margin="0px 12px 12px">
@@ -509,22 +521,23 @@ class TestItemPreview extends Component {
             )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
-        {((itemLevelScoring && isStudentReport) ||
-          (!isStudentReport && !isReviewTab)) && (
-          <>
-            {!isCliUser && (
-              <div
-                style={{
-                  position: 'relative',
-                  'min-width': !isPrintPreview && '265px',
-                }}
-                className="__print-feedback-main-wrapper"
-              >
-                {this.renderFeedbacks(showStackedView)}
-              </div>
-            )}
-          </>
-        )}
+        {!isScratchpadImageMode &&
+          ((itemLevelScoring && isStudentReport) ||
+            (!isStudentReport && !isReviewTab)) && (
+            <>
+              {!isCliUser && (
+                <div
+                  style={{
+                    position: 'relative',
+                    'min-width': !isPrintPreview && '265px',
+                  }}
+                  className="__print-feedback-main-wrapper"
+                >
+                  {this.renderFeedbacks(showStackedView)}
+                </div>
+              )}
+            </>
+          )}
       </ThemeProvider>
     )
   }

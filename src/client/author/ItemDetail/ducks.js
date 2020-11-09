@@ -1086,7 +1086,6 @@ export function* updateItemSaga({ payload }) {
       delete payload.data.data
     }
     const data = _omit(payload.data, ['authors', '__v'])
-
     const { itemLevelScoring, isPassageWithQuestions } = data
 
     // const questions = yield select(getQuestionsSelector);

@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { get, groupBy, forEach } from 'lodash'
 import { getTestSelector } from '../../ducks'
+import { isPracticeUsage } from '../../../ItemDetail/Transformer'
 
 // selector
 
@@ -15,13 +16,14 @@ export const getSummarySelector = createSelector(
   (state, scoring) => {
     const reduceTestItems = (acc, testItem) => {
       const questions = get(testItem, 'data.questions', [])
+      const practiceUsage = isPracticeUsage(testItem.data.questions)
       const res = questions.map((q) => {
         const item = scoring.testItems.find(({ id }) => testItem._id === id)
         const score = item && item.points ? item.points : 0
 
         return {
           id: q._id,
-          score,
+          score: practiceUsage ? 0 : score,
           standards: get(q, 'standardsMap.domains', []).reduce(
             (st, domain) => [...st, ...domain.standards],
             []

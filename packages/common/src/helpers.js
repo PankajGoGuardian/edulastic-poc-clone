@@ -7,6 +7,7 @@ import { aws, question } from '@edulastic/constants'
 import { useLayoutEffect } from 'react'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
 import AppConfig from '../../../src/app-config'
+import { isPracticeUsage } from '../../../src/client/author/ItemDetail/Transformer'
 
 export function useLayoutEffectDebounced(func, values, time) {
   useLayoutEffect(() => {
@@ -522,8 +523,9 @@ const getPoints = (item) => {
 }
 
 const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
+  const practiceUsage = isPracticeUsage(questions)
   const questionScore = {}
-  const maxScore = newMaxScore || totalMaxScore
+  const maxScore = practiceUsage ? 0 : newMaxScore || totalMaxScore
   if (item.itemLevelScoring === true || item.isLimitedDeliveryType === true) {
     questions?.forEach((o, i) => {
       if (i === 0) {
@@ -543,8 +545,8 @@ const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
             (maxScore / totalMaxScore),
           2
         )
-        questionScore[o.id] = score
-        currentTotal += score
+        questionScore[o.id] = practiceUsage ? 0 : score
+        currentTotal += practiceUsage ? 0 : score
       }
     })
   }

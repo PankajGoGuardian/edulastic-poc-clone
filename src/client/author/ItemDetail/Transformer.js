@@ -1,3 +1,5 @@
+import { get } from 'lodash'
+
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
 /**
@@ -13,6 +15,7 @@ export const markQuestionLabel = (_testItemsData) => {
       item.data.questions[0].qLabel = ''
       item.data.questions[0].qSubLabel = ''
       // item.data.questions[0].barLabel = `Q${i + 1}`;
+      console.log(i)
     } else {
       item.data.questions = item.data.questions.map((q, qIndex) => ({
         ...q,
@@ -22,4 +25,10 @@ export const markQuestionLabel = (_testItemsData) => {
       }))
     }
   }
+}
+
+export const isPracticeUsage = (questions = []) => {
+  return questions.some((question) =>
+    get(question, 'validation.unscored', false)
+  )
 }

@@ -60,7 +60,6 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
       (testItemsDataKeyed[testItemId].data &&
         testItemsDataKeyed[testItemId].data.questions) ||
       []
-    const practiceUsage = isPracticeUsage(questions)
     if (!questions.length) {
       qids = [
         ...qids,
@@ -81,11 +80,10 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           // .filter(x => !x.scoringDisabled)
           .map((x, index) => ({
             id: x.id,
-            maxScore: practiceUsage
-              ? 0
-              : index === 0
-              ? testItemsDataKeyed[testItemId].itemLevelScore
-              : undefined,
+            maxScore:
+              index === 0
+                ? testItemsDataKeyed[testItemId].itemLevelScore
+                : undefined,
             weight: questions.length,
             disabled: x.scoringDisabled || index > 0,
             testItemId,
@@ -100,9 +98,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
         ...questions.map((x) => ({
           id: x.id,
           weight: 1,
-          maxScore: practiceUsage
-            ? 0
-            : get(x, ['validation', 'validResponse', 'score'], 0),
+          maxScore: get(x, ['validation', 'validResponse', 'score'], 0),
           testItemId,
           qids: [x.id],
           qLabel: x.qLabel,
@@ -631,6 +627,7 @@ export const transformGradeBookResponse = (
                 partialCorrect = score > 0 && score <= questionMaxScore
               }
             }
+
             return {
               ...(studentResponse ? remainingProps : {}),
               _id,

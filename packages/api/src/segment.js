@@ -125,19 +125,16 @@ const trackTeacherClickOnUpgradeSubscription = ({ user }) => {
     return
   }
   if (user) {
-    const { role = '', _id, v1Id, username } = user
+    const { role = '', _id, v1Id } = user
     const userId = v1Id || _id
     const event = 'upgrade initiated by teacher'
     const category = 'Web Application'
     const userData = getUserDetails(user)
     if (role === 'teacher' && window.analytics) {
-      window.analytics.track({
+      window.analytics.track(event, {
         userId: `${userId}`,
-        event,
-        properties: {
-          ...userData,
-          category,
-        },
+        ...userData,
+        category,
       })
     }
   }
@@ -148,20 +145,17 @@ const trackTeacherSignUp = ({ user }) => {
     return
   }
   if (user) {
-    const { role = '', _id, v1Id, username, isAdmin } = user
+    const { role = '', _id, v1Id, isAdmin } = user
     const event = isAdmin ? 'Administrator Signed Up' : 'Teacher Signed Up'
     const userId = v1Id || _id
     const category = 'Web Application'
     if (role === 'teacher' && window.analytics) {
       analyticsIdentify({ user })
       const userData = getUserDetails(user)
-      window.analytics.track({
+      window.analytics.track(event, {
         userId: `${userId}`,
-        event,
-        properties: {
-          ...userData,
-          category,
-        },
+        ...userData,
+        category,
       })
     }
   }

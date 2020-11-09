@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
 import { compose } from 'redux'
 import { Spin } from 'antd'

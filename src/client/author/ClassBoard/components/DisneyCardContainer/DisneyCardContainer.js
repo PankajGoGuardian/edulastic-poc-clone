@@ -401,9 +401,8 @@ class DisneyCardContainer extends Component {
                           return <SquareColorBlue key={questionIndex} />
                         }
                         if (
-                          (questionAct.score === questionAct.maxScore &&
-                            questionAct.score > 0) ||
-                          (questionAct.practiceUsage && questionAct.correct)
+                          questionAct.score === questionAct.maxScore &&
+                          questionAct.score > 0
                         ) {
                           return <SquareColorDivGreen key={questionIndex} />
                         }

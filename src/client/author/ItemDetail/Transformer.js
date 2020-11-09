@@ -1,5 +1,3 @@
-import { get } from "lodash"
-
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
 /**

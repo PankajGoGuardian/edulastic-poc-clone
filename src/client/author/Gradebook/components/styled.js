@@ -87,7 +87,7 @@ export const RightArrow = styled(Arrow)`
 export const TableContainer = styled.div`
   max-height: 100%;
   width: ${(props) => (props.showFilter ? 'calc(100% - 240px)' : '100%')};
-  padding-left: ${(props) => (props.showFilter ? '30px' : '0px')};
+  padding-left: ${(props) => (props.showFilter ? '40px' : '20px')};
   .ant-spin {
     position: relative;
   }

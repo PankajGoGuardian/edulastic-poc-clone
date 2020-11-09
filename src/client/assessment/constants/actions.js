@@ -24,6 +24,8 @@ export const LOAD_PREVIOUS_RESPONSES_REQUEST =
 export const SET_RESUME_STATUS = '[test] set resume status'
 export const SET_TEST_LOADING_STATUS = '[test] set loading status'
 export const SET_TEST_LOADING_ERROR = '[test] set loading status error'
+export const SET_CHECK_ANSWER_PROGRESS_STATUS =
+  '[test] set check answer progress status'
 
 export const COUNT_CHECK_ANSWER = '[test] increase check answer count'
 export const SET_PASSWORD_VALIDATE_STATUS =

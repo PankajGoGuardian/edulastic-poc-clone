@@ -14,7 +14,6 @@ import {
   collections,
   question as questionConstants,
 } from '@edulastic/constants'
-import { isPracticeUsage } from '../ItemDetail/Transformer'
 
 const { sectionLabelType } = questionConstants
 
@@ -55,18 +54,14 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
   if (!items || !items.length) return summary
   for (const item of items) {
     const { itemLevelScoring, maxScore, itemLevelScore, _id } = item
+    const itemPoints = isLimitedDeliveryType
+      ? 1
+      : scoring[_id] ||
+        (itemLevelScoring === true && itemLevelScore) ||
+        maxScore
     const questions = get(item, 'data.questions', []).filter(
       ({ type }) => type !== sectionLabelType
     )
-    const practiceUsage = isPracticeUsage(questions)
-    let itemPoints =
-      scoring[_id] || (itemLevelScoring === true && itemLevelScore) || maxScore
-    if (isLimitedDeliveryType) {
-      itemPoints = 1
-    }
-    if (practiceUsage) {
-      itemPoints = 0
-    }
     const itemTotalQuestions = questions.length
     const questionWisePoints = getQuestionLevelScore(
       { ...item, isLimitedDeliveryType },

@@ -205,34 +205,22 @@ class QuestionViewContainer extends Component {
           }
           st.questionActivities
             .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
-            .forEach(
-              ({
-                skipped,
-                graded,
-                score,
-                maxScore,
-                practiceUsage,
-                correct,
-              }) => {
-                if (skipped) {
-                  stData.skipped += 1
-                } else if (graded === false) {
-                  stData.manuallyGraded += 1
-                } else if (
-                  (score === maxScore && score > 0) ||
-                  (practiceUsage && correct)
-                ) {
-                  stData.correct += 1
-                } else if (score > 0 && score < maxScore) {
-                  stData.pCorrect += 1
-                } else if (score === 0) {
-                  stData.wrong += 1
-                }
-                stData.score = score
-
-                return null
+            .forEach(({ skipped, graded, score, maxScore }) => {
+              if (skipped) {
+                stData.skipped += 1
+              } else if (graded === false) {
+                stData.manuallyGraded += 1
+              } else if (score === maxScore && score > 0) {
+                stData.correct += 1
+              } else if (score > 0 && score < maxScore) {
+                stData.pCorrect += 1
+              } else if (score === 0) {
+                stData.wrong += 1
               }
-            )
+              stData.score = score
+
+              return null
+            })
           return stData
         })
     }

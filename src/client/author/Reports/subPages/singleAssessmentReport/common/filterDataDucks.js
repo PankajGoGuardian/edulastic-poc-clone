@@ -129,7 +129,7 @@ const initialState = {
   testId: '',
   loading: false,
   testList: [],
-  testListLoading: false,
+  testListLoading: true,
 }
 
 export const reportSARFilterDataReducer = createReducer(initialState, {

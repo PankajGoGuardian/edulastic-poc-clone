@@ -25,7 +25,6 @@ import {
 } from '../ducks'
 import ShareModal from '../../src/components/common/ShareModal'
 import { CollectionsSelectModal } from '../../PlaylistPage/components/CollectionsSelectModal/collectionsSelectModal'
-import { fetchAndUpdatePlaylistAction } from '../../PlaylistPage/ducks'
 
 /**
  * @typedef {object} ModuleData
@@ -274,15 +273,6 @@ class CurriculumContainer extends Component {
     this.setState({ showShareModal: true })
   }
 
-  handleStatusChange = (value) => {
-    const { fetchAndUpdatePlaylist, match } = this.props
-    fetchAndUpdatePlaylist({
-      id: match.params.id || match.params.playlistId,
-      data: { status: value },
-      hideNotification: true,
-    })
-  }
-
   onShareModalChange = () => {
     const { showShareModal } = this.state
     this.setState({
@@ -397,7 +387,6 @@ class CurriculumContainer extends Component {
           okText="APPROVE"
         />
         <CurriculumSequence
-          handleStatusChange={this.handleStatusChange}
           onPublisherSave={savePublisher}
           onPublisherChange={changePublisher}
           selectContent={isContentExpanded}
@@ -486,8 +475,6 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(playlistDestinationReorderTestsAction(payload)),
   addIntoModule: (payload) =>
     dispatch(addItemIntoPlaylistModuleAction(payload)),
-  fetchAndUpdatePlaylist: (payload) =>
-    dispatch(fetchAndUpdatePlaylistAction(payload)),
 })
 
 const enhance = compose(

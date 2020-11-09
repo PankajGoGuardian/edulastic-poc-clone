@@ -17,7 +17,6 @@ import {
   updatePlaylistAction,
   setDefaultTestDataAction,
   getPlaylistSelector,
-  getIsPlaylistUpdatedSelector,
   getTestItemsRowsSelector,
   getTestsCreatingSelector,
   getTestsLoadingSelector,
@@ -75,12 +74,10 @@ class Container extends PureComponent {
     isTestLoading: PropTypes.bool.isRequired,
     clearSelectedItems: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    isUpdated: PropTypes.bool,
   }
 
   static defaultProps = {
     test: null,
-    isUpdated: false,
   }
 
   state = {
@@ -131,7 +128,7 @@ class Container extends PureComponent {
   }
 
   handleNavChange = (value) => () => {
-    const { playlist, isUpdated } = this.props
+    const { playlist } = this.props
     if (!playlist?.title?.trim()?.length) {
       return notification({ type: 'warn', messageKey: 'empyPlaylistName' })
     }
@@ -140,12 +137,7 @@ class Container extends PureComponent {
         showModal: true,
       })
     }
-
-    // Make the api call only if user has made any changes in playlist
-    if (isUpdated) {
-      this.handleSave(null, true)
-    }
-
+    this.handleSave(null, true)
     this.setState({
       current: value,
     })
@@ -190,7 +182,6 @@ class Container extends PureComponent {
     const extraCollections = (playlist.collections || []).filter(
       (c) => !orgCollectionIds.includes(c._id)
     )
-
     setData({
       ...playlist,
       collections: [...collectionArray, ...extraCollections],
@@ -566,7 +557,6 @@ const enhance = compose(
       userId: get(state, 'user.user._id', ''),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
-      isUpdated: getIsPlaylistUpdatedSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),
       isPublisherUser: isPublisherUserSelector(state),

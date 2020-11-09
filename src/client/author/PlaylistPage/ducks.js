@@ -36,10 +36,6 @@ export const CREATE_PLAYLIST_SUCCESS = '[playlists] create playlist success'
 export const CREATE_PLAYLIST_ERROR = '[playlists] create playlist error'
 
 export const UPDATE_PLAYLIST_REQUEST = '[playlists] update playlist request'
-export const FETCH_AND_UPDATE_PLAYLIST_REQUEST =
-  '[playlists] fetch and update playlist request'
-export const FETCH_AND_UPDATE_PLAYLIST_ERROR =
-  '[playlists] fetch and update playlist error'
 export const UPDATE_PLAYLIST_SUCCESS = '[playlists] update playlist success'
 export const UPDATE_PLAYLIST_ERROR = '[playlists] update playlist error'
 export const UPDATE_PLAYLIST = '[playlists] update playlist '
@@ -132,14 +128,6 @@ export const updatePlaylistAction = (id, data, hideNotification) => ({
   type: UPDATE_PLAYLIST_REQUEST,
   payload: { id, data, hideNotification },
 })
-
-export const fetchAndUpdatePlaylistAction = createAction(
-  FETCH_AND_UPDATE_PLAYLIST_REQUEST
-)
-
-export const fetchAndUpdatePlaylistErrorAction = createAction(
-  FETCH_AND_UPDATE_PLAYLIST_ERROR
-)
 
 export const updatePlaylistSuccessAction = (entity) => ({
   type: UPDATE_PLAYLIST_SUCCESS,
@@ -242,7 +230,6 @@ const initialState = {
   limit: 20,
   count: 0,
   loading: false,
-  updated: false,
   creating: false,
   sharedUsersList: [],
 }
@@ -512,38 +499,37 @@ export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case PLAYLIST_ADD_SUBRESOURCE: {
       const newEntity = addSubresource(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case PLAYLIST_REMOVE_SUBRESOURCE: {
       const newEntity = removeSubResource(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case ADD_MODULE: {
       const newEntity = addModuleToPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case UPDATE_MODULE: {
       const newEntity = updateModuleInPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case DELETE_MODULE: {
       const newEntity = deleteModuleFromPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case ORDER_MODULES: {
       const newEntity = resequenceModulesInPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case ORDER_TESTS: {
       const newEntity = resequenceTestsInModule(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case ADD_TEST_IN_PLAYLIST: {
       const newEntity = addTestToModule(state.entity, payload)
       return {
         ...state,
         entity: newEntity,
-        updated: true,
       }
     }
     case ADD_TEST_IN_PLAYLIST_BULK: {
@@ -551,24 +537,23 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: newEntity,
-        updated: true,
       }
     }
     case DELETE_TEST_FROM_PLAYLIST_BULK: {
       const newEntity = removeTestFromPlaylistBulk(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case REMOVE_TEST_FROM_MODULE: {
       const newEntity = removeTestFromPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case MOVE_CONTENT: {
       const newEntity = moveContentInPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case REMOVE_TEST_FROM_PLAYLIST: {
       const newEntity = removeTestFromPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case UPDATE_PLAYLIST: {
       return { ...state, entity: payload.updatedModule }
@@ -601,7 +586,6 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: { ...state.entity, ...entity },
-        updated: false,
         creating: false,
       }
     }
@@ -610,7 +594,6 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: { ...state.entity, ...dataRest },
-        updated: true,
       }
     }
     case CREATE_PLAYLIST_ERROR:
@@ -623,7 +606,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           ...payload.data,
         },
-        updated: true,
       }
     case UPDATE_TEST_IMAGE:
       return {
@@ -632,7 +614,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           thumbnail: payload.fileUrl,
         },
-        updated: true,
       }
     case SET_MAX_ATTEMPT:
       return {
@@ -641,7 +622,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           maxAttempts: payload.data,
         },
-        updated: true,
       }
     case SET_SAFE_BROWSE_PASSWORD:
       return {
@@ -650,7 +630,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           sebPassword: payload.data,
         },
-        updated: true,
       }
     case UPDATE_TEST_STATUS:
       return {
@@ -659,7 +638,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           status: payload,
         },
-        updated: true,
       }
     case CLEAR_TEST_DATA:
       return {
@@ -671,7 +649,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           subjects: [],
         },
         sharedUsersList: [],
-        updated: true,
       }
     case TEST_CREATE_SUCCESS:
       return {
@@ -690,7 +667,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           customize: payload,
         },
-        updated: true,
       }
     case CHANGE_PLAYLIST_THEME: {
       const { bgColor = themeColor, textColor = white } = payload
@@ -701,7 +677,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           bgColor,
           textColor,
         },
-        updated: true,
       }
     }
     case UPDATE_DEFAULT_PLAYLIST_THUMBNAIL: {
@@ -712,7 +687,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           thumbnail,
         },
-        updated: true,
       }
     }
     default:
@@ -723,11 +697,6 @@ export const reducer = (state = initialState, { type, payload }) => {
 // selectors
 
 export const stateSelector = (state) => state.playlist
-
-export const getIsPlaylistUpdatedSelector = createSelector(
-  stateSelector,
-  (state) => state.updated || false
-)
 
 export const getPlaylistSelector = createSelector(
   stateSelector,
@@ -901,23 +870,6 @@ function* updatePlaylistSaga({ payload }) {
   }
 }
 
-// Saga to update the playlist with new data by playlist id
-function* fetchAndUpdatePlaylistSaga({ payload }) {
-  try {
-    const { id, data, hideNotification } = payload
-    const entity = yield call(curriculumSequencesApi.getCurriculums, {
-      id,
-      data: true,
-    })
-    yield put(
-      updatePlaylistAction(entity._id, { ...entity, ...data }, hideNotification)
-    )
-  } catch (err) {
-    yield call(notification, { type: 'error', messageKey: 'updatePlaylistErr' })
-    yield put(fetchAndUpdatePlaylistErrorAction('updatePlaylistErr'))
-  }
-}
-
 function* shareTestSaga({ payload }) {
   try {
     yield call(contentSharingApi.shareContent, payload)
@@ -1030,10 +982,6 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_PLAYLIST_BY_ID_REQUEST, receivePlaylistByIdSaga),
     yield takeEvery(CREATE_PLAYLIST_REQUEST, createPlaylistSaga),
     yield takeEvery(UPDATE_PLAYLIST_REQUEST, updatePlaylistSaga),
-    yield takeEvery(
-      FETCH_AND_UPDATE_PLAYLIST_REQUEST,
-      fetchAndUpdatePlaylistSaga
-    ),
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(PLAYLIST_PUBLISH, publishPlaylistSaga),
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),

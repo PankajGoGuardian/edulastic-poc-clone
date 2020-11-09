@@ -137,10 +137,6 @@ if (query?.itemBank?.toUpperCase() === 'CANVAS') {
   sessionStorage.setItem('signupFlow', 'canvas')
 }
 
-if (query && query.cliUser && query.token) {
-  localStorage.setItem('cliAppRefreshUrl', window.location.href)
-}
-
 /**
  *  In case of redirection from canvas we might get errorDescription as query param which
  *  we have to display as error message and remove it from the url.
@@ -431,7 +427,7 @@ class App extends Component {
             history={history}
           />
         )}
-        <AppUpdate visible={showAppUpdate} isCliUser={user?.isCliUser} />
+        <AppUpdate visible={showAppUpdate} />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

@@ -10,6 +10,7 @@ import {
   testTypeColor,
   lightGrey4,
   themeColor,
+  lightGrey5,
 } from '@edulastic/colors'
 
 const { assignmentStatusBg } = authorAssignment
@@ -169,6 +170,16 @@ export const ActionsWrapper = styled.div`
   justify-content: space-between;
   padding: 0;
   width: 80px;
+  svg {
+    @media (max-width: 1300px) {
+      width: 18px;
+      height: 18px;
+    }
+    @media (max-width: 920px) {
+      width: 15px;
+      height: 15px;
+    }
+  }
 `
 
 export const GreyFont = styled.span`
@@ -217,4 +228,12 @@ export const MoreOption = styled.div`
 export const AssessmentTypeWrapper = styled.div`
   display: flex;
   justify-content: center;
+`
+export const ClassNameCell = styled.div`
+  display: flex;
+  flex-direction: column;
+  > .schoolName {
+    font-weight: 500;
+    color: ${lightGrey5};
+  }
 `

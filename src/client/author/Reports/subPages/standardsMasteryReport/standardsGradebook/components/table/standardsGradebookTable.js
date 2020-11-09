@@ -193,18 +193,24 @@ const StandardsGradebookTableComponent = ({
     standardName,
     standardId
   ) => (data, record) => {
-    const tooltipText = (rec) => (
+    const standardToRender =
+      record.standardsInfo[index]?.standardId === standardId
+        ? record.standardsInfo[index]
+        : record.standardsInfo.find((std) => std.standardId === standardId)
+    const tooltipText = (
       <div>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">
             {idToName[_compareBy]}:{' '}
           </Col>
-          <Col className="custom-table-tooltip-value">{rec.compareByLabel}</Col>
+          <Col className="custom-table-tooltip-value">
+            {record.compareByLabel}
+          </Col>
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Standard: </Col>
           <Col className="custom-table-tooltip-value">
-            {rec.standardsInfo[index]?.standardName}
+            {standardToRender?.standardName}
           </Col>
         </Row>
 
@@ -214,12 +220,12 @@ const StandardsGradebookTableComponent = ({
           </Col>
           {_analyseBy === 'rawScore' ? (
             <Col className="custom-table-tooltip-value">
-              {rec.standardsInfo[index]?.totalTotalScore}/
-              {rec.standardsInfo[index]?.totalMaxScore}
+              {standardToRender?.totalTotalScore}/
+              {standardToRender?.totalMaxScore}
             </Col>
           ) : (
             <Col className="custom-table-tooltip-value">
-              {rec.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}
+              {standardToRender?.[analyseByToKeyToRender[_analyseBy]]}
               {_analyseBy === 'score(%)' ? '%' : ''}
             </Col>
           )}
@@ -237,7 +243,7 @@ const StandardsGradebookTableComponent = ({
       const { printData } = props
       const bgColor =
         (_analyseBy === 'masteryLevel' || _analyseBy === 'masteryScore') &&
-        record.standardsInfo?.[index]?.color
+        standardToRender?.color
       if (_compareBy === 'studentId') {
         return (
           <ColoredCell
@@ -261,7 +267,7 @@ const StandardsGradebookTableComponent = ({
     }
 
     const printData = getDisplayValue(
-      record.standardsInfo[index],
+      standardToRender,
       _analyseBy,
       data,
       record
@@ -271,7 +277,7 @@ const StandardsGradebookTableComponent = ({
       <CustomTableTooltip
         printData={printData}
         placement="top"
-        title={tooltipText(record)}
+        title={tooltipText}
         getCellContents={getCellContents}
       />
     )

@@ -5,8 +5,9 @@ import React, {
   useState,
   useLayoutEffect,
 } from 'react'
+import { useLayoutEffectDebounced } from '@edulastic/common'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 
 import PerformanceBrand from './performanceBrand'
@@ -51,13 +52,15 @@ const StudentReportPage = ({
   sections,
   classResponse,
   performanceBandsData,
+  setLoaded,
+  index,
 }) => {
   const performanceRef = useRef()
   const mainContainerRef = useRef()
   const [performanceBlockHeight, setPerformanceBlockHeight] = useState(0)
   const [questionTableDims, setQuestionTableDims] = useState({})
   const [standardTableDims, setStandardTableDims] = useState({})
-
+  const dimensionsSetRef = useRef(false)
   useEffect(() => {
     loadStudentResponse({
       groupId,
@@ -66,43 +69,63 @@ const StudentReportPage = ({
     })
   }, [testActivity.studentId])
 
-  useLayoutEffect(() => {
-    setTimeout(() => {
-      setPerformanceBlockHeight(performanceRef.current?.clientHeight || 0)
-
-      // get questions table row height
-      const questionsElm =
-        document
-          .getElementById(`report-${testActivity.studentId}`)
-          ?.querySelectorAll(
-            '.student-report-card-question-table-container .ant-table-body > table > tbody > tr'
-          ) || []
-      const questionsDims = {}
-      questionsElm.forEach((elm, i) => (questionsDims[i] = elm.clientHeight))
-      setQuestionTableDims(questionsDims)
-
-      // get standard table row height
-      const standardELms =
-        document
-          .getElementById(`report-${testActivity.studentId}`)
-          ?.querySelectorAll(
-            '.student-report-card-standard-table-container .ant-table-body > table > tbody > tr'
-          ) || []
-      const standardDims = {}
-      standardELms.forEach((elm, i) => (standardDims[i] = elm.clientHeight))
-      setStandardTableDims(standardDims)
-    }, 2000)
-  }, [
-    studentResponse,
-    author_classboard_testActivity,
-    testActivity,
-    mainContainerRef.current,
-  ])
+  useLayoutEffectDebounced(
+    () => {
+      if (
+        studentResponse.byStudentId[testActivity.studentId] &&
+        !dimensionsSetRef.current
+      ) {
+        setTimeout(() => {
+          dimensionsSetRef.current = true
+          setPerformanceBlockHeight(performanceRef.current?.clientHeight || 0)
+          // get questions table row height
+          const questionsElm =
+            document
+              .getElementById(`report-${testActivity.studentId}`)
+              ?.querySelectorAll(
+                '.student-report-card-question-table-container .ant-table-body > table > tbody > tr'
+              ) || []
+          const questionsDims = {}
+          questionsElm.forEach(
+            (elm, i) => (questionsDims[i] = elm.clientHeight)
+          )
+          if (!isEmpty(questionsDims)) {
+            setQuestionTableDims(questionsDims)
+          }
+          // get standard table row height
+          const standardELms =
+            document
+              .getElementById(`report-${testActivity.studentId}`)
+              ?.querySelectorAll(
+                '.student-report-card-standard-table-container .ant-table-body > table > tbody > tr'
+              ) || []
+          const standardDims = {}
+          standardELms.forEach((elm, i) => (standardDims[i] = elm.clientHeight))
+          if (!isEmpty(standardDims)) {
+            setStandardTableDims(standardDims)
+          }
+        })
+      }
+    },
+    [
+      studentResponse,
+      author_classboard_testActivity,
+      testActivity,
+      mainContainerRef.current,
+    ],
+    2000
+  )
 
   const currentStudentResponse = {
     data: studentResponse.byStudentId[testActivity.studentId],
   }
   const testData = get(author_classboard_testActivity, 'data.test', {})
+
+  useEffect(() => {
+    if (testData && studentResponse?.byStudentId?.[testActivity?.studentId]) {
+      setLoaded(index)
+    }
+  }, [studentResponse?.byStudentId?.[testActivity?.studentId], testData])
 
   // memotized required for performance
   const data = useMemo(() => {
@@ -243,17 +266,16 @@ const StudentReportPage = ({
         data-cy={testActivity.studentName}
         ref={mainContainerRef}
       >
-        {
-          <PerformanceBrand
-            showPerformanceBand={showPerformanceBand}
-            testData={testData}
-            data={data}
-            performanceRef={performanceRef}
-            className="hide-on-print"
-            performanceBandsData={performanceBandsData}
-            author_classboard_testActivity={author_classboard_testActivity}
-          />
-        }
+        <PerformanceBrand
+          showPerformanceBand={showPerformanceBand}
+          testData={testData}
+          data={data}
+          performanceRef={performanceRef}
+          className="hide-on-print"
+          performanceBandsData={performanceBandsData}
+          author_classboard_testActivity={author_classboard_testActivity}
+        />
+
         {showQuestionsTable && !!data.questionTableData?.length && (
           <StyledTableWrapper className="student-report-card-question-table-container hide-on-print">
             <QuestionTableContainer
@@ -373,4 +395,4 @@ const enhance = connect(
   }
 )
 
-export default enhance(StudentReportPage)
+export default enhance(React.memo(StudentReportPage))

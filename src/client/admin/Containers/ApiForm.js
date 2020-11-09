@@ -10,6 +10,7 @@ import { submit } from '../Components/ApiForm/apis'
 import CreateAdmin from '../Components/CreateAdmin'
 import ActivateDeactivateUser from '../Components/ActivateDeactivateUser'
 import ApproveOrganisation from '../Components/ApproveOrganisation'
+import { flatten } from 'mathjs/src/utils/array'
 
 const CREATE_ADMIN = 'create-admin'
 const ACTIVATE_DEACTIVATE_USER = 'activate-deactivate-user'
@@ -22,9 +23,9 @@ const ApiForm = () => {
   const [orgData, setOrgData] = useState(null)
 
   const handleOnChange = (_id) => setId(_id)
-  const option = apiForms.find((ar) => ar.id === id)
+  let option = apiForms.find((ar) => ar.id === id)
 
-  const handleOnSave = (data) => {
+  const handleOnSave = (data, sectionId) => {
     if (option.id === CREATE_ADMIN) {
       adminApi.searchUpdateDistrict({ id: data.districtId }).then((res) => {
         if (res?.data?.length) {
@@ -34,6 +35,18 @@ const ApiForm = () => {
         }
       })
     } else {
+      if (id === 'delta-sync') {
+        option = apiForms.find((ar) => ar.id === id)
+        option =
+          (option.customSections || []).find((o) => o.id === sectionId) ||
+          option
+        data = option.fields.reduce((acc, o) => {
+          if (data[o.name]) {
+            acc[o.name] = data[o.name]
+          }
+          return acc
+        }, {})
+      }
       submit(data, option.endPoint, option.method).then((res) => {
         if (res?.result) {
           if (res.result.success || res.status === 200) {
@@ -93,10 +106,13 @@ const ApiForm = () => {
       </Select>
       {id && (
         <ApiFormsMain
-          fields={option.fields}
+          fields={
+            option.fields || flatten(option.customSections.map((o) => o.fields))
+          }
           name={option.name}
           handleOnSave={handleOnSave}
           note={option.note}
+          customSections={option.customSections}
         >
           {districtData && id === CREATE_ADMIN && (
             <CreateAdmin

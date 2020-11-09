@@ -5,6 +5,7 @@ import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Tooltip } from '../../../common/utils/helpers'
 
@@ -15,31 +16,41 @@ const TestButton = ({
   answerChecksUsedForItem,
   toggleBookmark,
   isBookmarked = false,
-}) => (
-  <Container>
-    <Tooltip placement="top" title="Bookmark">
-      <StyledButton onClick={toggleBookmark} active={isBookmarked}>
-        <StyledIconBookmark />
-        <span>{t('common.test.bookmark')}</span>
-      </StyledButton>
-    </Tooltip>
-    {settings.maxAnswerChecks > 0 && (
-      <Tooltip
-        placement="top"
-        title={
-          answerChecksUsedForItem >= settings.maxAnswerChecks
-            ? 'Usage limit exceeded'
-            : 'Check Answer'
-        }
-      >
-        <StyledButton onClick={checkAnswer} data-cy="checkAnswer">
-          <StyledIconCheck />
-          <span> {t('common.test.checkanswer')}</span>
+  checkAnswerInProgress,
+}) => {
+  const handleCheckAnswer = () => {
+    if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
+      return null
+    }
+    checkAnswer()
+  }
+  return (
+    <Container>
+      <Tooltip placement="top" title="Bookmark">
+        <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+          <StyledIconBookmark />
+          <span>{t('common.test.bookmark')}</span>
         </StyledButton>
       </Tooltip>
-    )}
+      {settings.maxAnswerChecks > 0 && (
+        <Tooltip
+          placement="top"
+          title={
+            checkAnswerInProgress
+              ? 'In progess'
+              : answerChecksUsedForItem >= settings.maxAnswerChecks
+              ? 'Usage limit exceeded'
+              : 'Check Answer'
+          }
+        >
+          <StyledButton onClick={handleCheckAnswer} data-cy="checkAnswer">
+            <StyledIconCheck />
+            <span> {t('common.test.checkanswer')}</span>
+          </StyledButton>
+        </Tooltip>
+      )}
 
-    {/* {showHintButton(questions) ? (
+      {/* {showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handletoggleHints}>
             <StyledIconLightBulb />
@@ -47,14 +58,19 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       ) : null} */}
-  </Container>
-)
+    </Container>
+  )
+}
 
 TestButton.propTypes = {
   t: PropTypes.func.isRequired,
 }
 
-const enhance = compose(withNamespaces('student'))
+const mapStateToProps = (state) => ({
+  checkAnswerInProgress: state?.test?.checkAnswerInProgress,
+})
+
+const enhance = compose(withNamespaces('student'), connect(mapStateToProps))
 
 export default enhance(TestButton)
 

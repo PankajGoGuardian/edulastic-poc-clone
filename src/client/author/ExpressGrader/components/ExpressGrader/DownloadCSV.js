@@ -5,7 +5,7 @@ import { IconPrint } from '@edulastic/icons'
 
 const DownloadCSV = () => {
   return (
-    <FlexContainer marginLeft="20px">
+    <FlexContainer marginLeft="20px" hidden>
       <PrintButton isGhost height="24px">
         <IconPrint />
         Print

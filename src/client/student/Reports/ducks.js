@@ -141,7 +141,7 @@ const isReport = (assignment, classIds, userId) => {
   }
   // End date is passed but dont show in report if UTA status is in progress
   return (
-    attempts > 0 ||
+    attempts >= maxAttempts ||
     (serverTimeStamp > endDate &&
       lastAttempt.status !== testActivityStatus.START)
   )

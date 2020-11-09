@@ -21,7 +21,6 @@ import { withNamespaces } from '@edulastic/localization'
 import { testActivityStatus } from '@edulastic/constants'
 import { Dropdown, Select } from 'antd'
 import { get, isEmpty, keyBy, round } from 'lodash'
-import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -114,7 +113,7 @@ import {
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
-import { getSmallerTime } from '../../utils'
+import { getSubmittedDate } from '../../utils'
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -1543,12 +1542,10 @@ class ClassBoard extends Component {
                           <ScoreHeader style={{ fontSize: '12px' }}>
                             SUBMITTED ON :
                             <span style={{ color: black }}>
-                              {moment(
-                                getSmallerTime(
-                                  studentTestActivity.endDate,
-                                  additionalData.endDate
-                                )
-                              ).format('MMM DD, YYYY HH:mm')}
+                              {getSubmittedDate(
+                                studentTestActivity.endDate,
+                                additionalData.endDate
+                              )}
                             </span>
                           </ScoreHeader>
                         </InfoWrapper>

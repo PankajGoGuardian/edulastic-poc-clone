@@ -160,18 +160,69 @@ export const apiForms = [
   },
   {
     id: 'delta-sync',
-    name: 'Trigger Clever Delta Sync',
-    endPoint: 'clever/delta-sync',
+    name: 'Trigger Clever Sync',
     method: 'post',
-    fields: [
+    customSections: [
       {
-        name: 'caution',
-        displayName: 'Caution',
-        message:
-          "Delta sync takes time to complete, so don't trigger it frequently.",
-        placeholder: '',
-        type: 'p',
-        required: false,
+        id: 'full-sync-for-class-section',
+        name: 'Trigger full Sync for a Class Section',
+        endPoint: 'clever/single-class-sync',
+        method: 'post',
+        fields: [
+          {
+            name: 'districtCleverId',
+            displayName: 'District CleverId',
+            placeholder: 'Enter District CleverId',
+            type: 'string',
+            required: true,
+          },
+          {
+            name: 'groupCleverId',
+            displayName: 'Clever ClassId',
+            placeholder: 'Enter Clever ClassId',
+            type: 'string',
+            required: true,
+          },
+        ],
+      },
+      {
+        id: 'clever-delta-sync-for-district',
+        name: 'Trigger Clever Delta Sync for District',
+        endPoint: 'clever/delta-sync-district',
+        method: 'post',
+        fields: [
+          {
+            name: 'cleverId',
+            displayName: 'District CleverId',
+            placeholder: 'Enter District CleverId',
+            type: 'string',
+            required: true,
+          },
+          {
+            name: 'eventId',
+            displayName: 'Clever EventId',
+            placeholder: 'Enter Clever EventId',
+            type: 'string',
+            required: true,
+          },
+        ],
+      },
+      {
+        id: 'clever-delta-sync',
+        name: 'Trigger Clever Delta Sync for All',
+        endPoint: 'clever/delta-sync',
+        method: 'post',
+        fields: [
+          {
+            name: 'caution',
+            displayName: 'Caution',
+            message:
+              "Delta sync takes time to complete, so don't trigger it frequently.",
+            placeholder: '',
+            type: 'p',
+            required: false,
+          },
+        ],
       },
     ],
   },
@@ -292,6 +343,32 @@ export const apiForms = [
         displayName: 'District ID',
         placeholder: 'Enter districtId',
         type: 'string',
+        required: true,
+      },
+    ],
+  },
+  {
+    id: 'archive-unarchive-classes',
+    name: 'Archive / Unarchive Classes',
+    endPoint: 'group/archive-tool',
+    method: 'post',
+    fields: [
+      {
+        name: 'groupIds',
+        displayName: 'Classes',
+        placeholder: 'Enter comma separated Class Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        key: 'archive',
+        name: 'archive',
+        placeholder: 'Archive/Unarchive',
+        type: 'radiogroup',
+        values: ['Archive', 'Unarchive'],
+        formatter: (value) => value === 'Archive',
+        defaultValue: 'Archive',
         required: true,
       },
     ],

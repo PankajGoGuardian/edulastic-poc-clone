@@ -10,7 +10,7 @@ import {
 import { IconExpandBox } from '@edulastic/icons'
 import { Select } from 'antd'
 import PropTypes from 'prop-types'
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { connect } from 'react-redux'
 import {
   getCurrentDistrictUsersAction,
@@ -165,6 +165,12 @@ const Search = ({
   )
   const isFolderSearch = filter === SMART_FILTERS.FOLDERS
 
+  const gradeRef = useRef()
+  const subjectRef = useRef()
+  const standardsRef = useRef()
+  const collectionRef = useRef()
+  const tagsRef = useRef()
+
   return (
     <MainFilterItems>
       {showModal && (
@@ -231,6 +237,9 @@ const Search = ({
                 value={grades}
                 onChange={onSearchFieldChange('grades')}
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                ref={gradeRef}
+                onSelect={() => gradeRef?.current?.blur()}
+                onDeselect={() => gradeRef?.current?.blur()}
               >
                 {selectsData.allGrades.map((el) => (
                   <Select.Option key={el.value} value={el.value}>
@@ -251,6 +260,9 @@ const Search = ({
                 size="large"
                 placeholder="All Subjects"
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                ref={subjectRef}
+                onSelect={() => subjectRef?.current?.blur()}
+                onDeselect={() => subjectRef?.current?.blur()}
               >
                 {selectsData.allSubjects.map((el) => (
                   <Select.Option key={el.value} value={el.value}>
@@ -317,6 +329,9 @@ const Search = ({
                     value={standardIds}
                     disabled={isStandardsDisabled}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    ref={standardsRef}
+                    onSelect={() => standardsRef?.current?.blur()}
+                    onDeselect={() => standardsRef?.current?.blur()}
                   >
                     {curriculumStandards.elo.map((el) => (
                       <Select.Option key={el._id} value={el._id}>
@@ -338,6 +353,9 @@ const Search = ({
                     value={_collections}
                     optionFilterProp="children"
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    ref={collectionRef}
+                    onSelect={() => collectionRef?.current?.blur()}
+                    onDeselect={() => collectionRef?.current?.blur()}
                   >
                     {collectionData.map((el) => (
                       <Select.Option key={el.value} value={el.value}>
@@ -430,6 +448,9 @@ const Search = ({
                         .indexOf(input.toLowerCase()) >= 0
                     }
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    ref={tagsRef}
+                    onSelect={() => tagsRef?.current?.blur()}
+                    onDeselect={() => tagsRef?.current?.blur()}
                   >
                     {allTagsData.map((el) => (
                       <Select.Option key={el._id} value={el._id}>

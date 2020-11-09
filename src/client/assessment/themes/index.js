@@ -15,7 +15,7 @@ import {
 } from 'lodash'
 import useInterval from '@use-it/interval'
 import {
-  test as testTypes,
+  test as testConstants,
   assignmentPolicyOptions,
   questionType,
   roleuser,
@@ -58,6 +58,8 @@ import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
+
+const { playerSkinValues } = testConstants
 
 const shouldAutoSave = (itemRows) => {
   if (!itemRows) {
@@ -593,10 +595,7 @@ const AssessmentContainer = ({
         {...props}
       />
     )
-  } else if (
-    testType === testTypes.type.TESTLET ||
-    test.testType === testTypes.type.TESTLET
-  ) {
+  } else if (playerSkinType === playerSkinValues.testlet) {
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
@@ -680,7 +679,6 @@ AssessmentContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
-  testletConfig: PropTypes.object,
   test: PropTypes.object,
   assignmentById: PropTypes.object,
   currentAssignment: PropTypes.string,
@@ -690,7 +688,6 @@ AssessmentContainer.propTypes = {
 AssessmentContainer.defaultProps = {
   docUrl: undefined,
   annotations: [],
-  testletConfig: {},
   test: {},
   assignmentById: {},
   currentAssignment: '',
@@ -707,7 +704,7 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
-      testletConfig: state.test.testletConfig,
+      testletConfig: state.test?.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(
         state,

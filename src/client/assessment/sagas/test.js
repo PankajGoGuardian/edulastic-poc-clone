@@ -12,9 +12,21 @@ import {
   captureSentryException,
 } from '@edulastic/common'
 import { push } from 'react-router-redux'
-import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from 'lodash'
+import {
+  keyBy as _keyBy,
+  groupBy,
+  get,
+  flatten,
+  cloneDeep,
+  set,
+  maxBy,
+} from 'lodash'
 import produce from 'immer'
-import { test as testContants, roleuser } from '@edulastic/constants'
+import {
+  test as testContants,
+  roleuser,
+  testActivityStatus,
+} from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
@@ -48,7 +60,11 @@ import {
   setPasswordStatusAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
-import { SET_RESUME_STATUS } from '../../student/Assignments/ducks'
+import {
+  getCurrentUserId,
+  SET_RESUME_STATUS,
+  transformAssignmentForRedirect,
+} from '../../student/Assignments/ducks'
 import {
   CLEAR_ITEM_EVALUATION,
   CHANGE_VIEW,
@@ -57,6 +73,8 @@ import { addAutoselectGroupItems } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
 import { setActiveAssignmentAction } from '../../student/sharedDucks/AssignmentModule/ducks'
+import { getClassIds } from '../../student/Reports/ducks'
+
 // import { checkClientTime } from "../../common/utils/helpers";
 
 const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants
@@ -682,15 +700,54 @@ function* submitTest({ payload }) {
       return
     }
 
-    if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
-      return yield put(push(`/home/grades`))
-    }
+    const assignmentId = yield select(
+      (state) => state.studentAssignment.current
+    )
 
-    return yield put(
-      push(
-        `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`
+    let [assignment, testActivities] = yield Promise.all([
+      assignmentApi.getById(assignmentId),
+      assignmentApi.fetchTestActivities(assignmentId, groupId),
+    ])
+    const userId = yield select(getCurrentUserId)
+    const classIds = yield select(getClassIds)
+    const reportsGroupedByClassIdentifier = groupBy(
+      testActivities,
+      'assignmentClassIdentifier'
+    )
+    const groupedReportsByAssignmentId = groupBy(
+      testActivities,
+      (item) => `${item.assignmentId}_${item.groupId}`
+    )
+    assignment = transformAssignmentForRedirect(
+      groupId,
+      userId,
+      classIds,
+      reportsGroupedByClassIdentifier,
+      groupedReportsByAssignmentId,
+      assignment
+    )
+    const attempts = testActivities.filter((el) =>
+      [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
+        el.status
       )
     )
+    let maxAttempt = assignment.class.find((item) => item._id == groupId)
+      ?.maxAttempts
+    if (!maxAttempt) {
+      maxAttempt = assignment.maxAttempts || 1
+    }
+
+    if (attempts.length >= maxAttempt) {
+      if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
+        return yield put(push(`/home/grades`))
+      }
+      return yield put(
+        push(
+          `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`
+        )
+      )
+    }
+    return yield put(push(`/home/assignments`))
   } catch (err) {
     captureSentryException(err)
     const { data = {} } = err.response || {}

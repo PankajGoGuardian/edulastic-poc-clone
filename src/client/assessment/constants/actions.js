@@ -24,6 +24,8 @@ export const LOAD_PREVIOUS_RESPONSES_REQUEST =
 export const SET_RESUME_STATUS = '[test] set resume status'
 export const SET_TEST_LOADING_STATUS = '[test] set loading status'
 export const SET_TEST_LOADING_ERROR = '[test] set loading status error'
+export const SET_CHECK_ANSWER_PROGRESS_STATUS =
+  '[test] set check answer progress status'
 
 export const COUNT_CHECK_ANSWER = '[test] increase check answer count'
 export const SET_PASSWORD_VALIDATE_STATUS =
@@ -47,6 +49,7 @@ export const SAVE_USER_RESPONSE_SUCCESS = '[items] save user response success'
 export const SAVE_USER_RESPONSE_ERROR = '[items] save user response error'
 export const LOAD_USER_RESPONSE = '[items] load user response'
 export const GOTO_ITEM = '[items] goto a particular item'
+export const SAVE_TESTLET_USER_RESPONSE = '[items] save testlet user response'
 
 // QuestionCommon
 export const QUESTIONCOMMON_UPDATE_QUESTIONS_LIST =

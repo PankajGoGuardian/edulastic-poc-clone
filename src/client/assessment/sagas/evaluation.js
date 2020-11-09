@@ -1,7 +1,14 @@
 import { takeEvery, put, all, select, call } from 'redux-saga/effects'
 import { isEmpty, values } from 'lodash'
-import { testItemsApi } from '@edulastic/api'
-import { captureSentryException, notification } from '@edulastic/common'
+
+import { testItemsApi, attchmentApi as attachmentApi } from '@edulastic/api'
+import {
+  captureSentryException,
+  notification,
+  uploadToS3,
+} from '@edulastic/common'
+import { aws } from '@edulastic/constants'
+
 import { getQuestionIds } from './items'
 // actions
 import {
@@ -9,16 +16,19 @@ import {
   ADD_ITEM_EVALUATION,
   CLEAR_ITEM_EVALUATION,
   COUNT_CHECK_ANSWER,
+  SET_CHECK_ANSWER_PROGRESS_STATUS,
 } from '../constants/actions'
 import { itemQuestionsSelector, answersForCheck } from '../selectors/test'
 import { CHANGE_PREVIEW, CHANGE_VIEW } from '../../author/src/constants/actions'
 import { getTypeAndMsgBasedOnScore } from '../../common/utils/helpers'
+import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 
 function* evaluateAnswers({ payload: groupId }) {
   try {
     yield put({
       type: CLEAR_ITEM_EVALUATION,
     })
+    yield put({ type: SET_CHECK_ANSWER_PROGRESS_STATUS, payload: true })
     const questionIds = yield select(itemQuestionsSelector)
     const allAnswers = yield select(answersForCheck)
     const answerIds = Object.keys(allAnswers)
@@ -50,7 +60,7 @@ function* evaluateAnswers({ payload: groupId }) {
         shuffles[question] = shuffledOptions[question]
       }
     })
-    const userWork = yield select(
+    const _userWork = yield select(
       ({ userWork }) => userWork.present[testItemId]
     )
     const activity = {
@@ -62,7 +72,46 @@ function* evaluateAnswers({ payload: groupId }) {
       shuffledOptions: shuffles,
       // TODO timeSpent:{}
     }
-    if (userWork) activity.userWork = userWork
+    let userWorkData = { ..._userWork, scratchpad: false }
+    if (_userWork) {
+      const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
+      if (scratchPadUsed) {
+        const dimensions = yield select(scratchpadDomRectSelector)
+        const userId = yield select((state) => state?.user?.user?._id)
+        const { testActivityId: userTestActivityId, isDocBased } = yield select(
+          (state) => state.test
+        )
+        if (scratchPadUsed) {
+          const fileData = isDocBased
+            ? {
+                ..._userWork.scratchpad,
+                name: `${userTestActivityId}_${userId}`,
+              }
+            : _userWork.scratchpad
+          const scratchpadUri = yield call(
+            uploadToS3,
+            fileData,
+            aws.s3Folders.DEFAULT
+          )
+          const update = {
+            data: { scratchpad: scratchpadUri },
+            referrerId: userTestActivityId,
+            userId,
+            type: 'scratchpad',
+            referrerType: 'TestActivityContent',
+            referrerId2: testItemId,
+            status: 'published',
+          }
+          const filter = {
+            referrerId: userTestActivityId,
+            referrerId2: testItemId,
+          }
+          yield call(attachmentApi.updateAttachment, { update, filter })
+          userWorkData = { ...userWorkData, scratchpad: true, dimensions }
+        }
+      }
+    }
+    activity.userWork = userWorkData
     const { evaluations, maxScore, score } = yield call(
       testItemsApi.evaluation,
       testItemId,
@@ -95,6 +144,7 @@ function* evaluateAnswers({ payload: groupId }) {
         itemId: testItemId,
       },
     })
+    yield put({ type: SET_CHECK_ANSWER_PROGRESS_STATUS, payload: false })
     notification({ type, msg: message })
   } catch (err) {
     if (err.status === 403)

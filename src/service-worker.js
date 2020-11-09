@@ -55,22 +55,26 @@ registerRoute(
   ({ request, url }) => {
     // If this isn't a navigation, skip.
     if (request.mode !== 'navigate') {
+      console.log('request register1', url)
       return false
     } // If this is a URL that starts with /_, skip.
-
     if (url.pathname.startsWith('/_')) {
+      console.log('request register2', url)
       return false
     } // If this looks like a URL for a resource, because it contains // a file extension, skip.
-
     if (
       url.pathname.match(fileExtensionRegexp) ||
       url.pathname.match(apiRegex)
     ) {
+      console.log('request register3', url)
       return false
     }
-
     // Return true to signal that we want to use the handler.
-    if (url.patch) return true
+    if (url.patch) {
+      console.log('request register4', url)
+      return true
+    }
+    console.log('request register5', url)
   },
   createHandlerBoundToURL(`${process.env.PUBLIC_URL}/index.html`)
 )

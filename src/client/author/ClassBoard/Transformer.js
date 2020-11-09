@@ -7,10 +7,6 @@ import { getMathHtml } from '@edulastic/common'
 import { red, yellow, themeColorLighter } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
 import { getFormattedName } from '../Gradebook/transformers'
-import {
-  getValidQuestionsScore,
-  isPracticeUsage,
-} from '../ItemDetail/Transformer'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
@@ -179,13 +175,6 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
     const questions = get(testItem, ['data', 'questions'], [])
     const questionIndex = questions.findIndex((x) => x.id === qid)
     const questionNeeded = questions[questionIndex]
-    const practiceUsage = isPracticeUsage(questions)
-    if (practiceUsage) {
-      if (testItem.itemLevelScoring) {
-        return 0
-      }
-      return getValidQuestionsScore(questions)
-    }
     if (questionNeeded) {
       // for item level scoring handle scores as whole instead of each questions
       if (testItem.itemLevelScoring && questionIndex === 0) {
@@ -236,22 +225,13 @@ const getMaxScoreFromItem = (testItem) => {
   if (!testItem) {
     return total
   }
-  const questions = get(testItem, 'data.questions', [])
-  const practiceUsage = isPracticeUsage(questions)
-  const { itemLevelScoring = false, itemLevelScore = 0 } = testItem
-  if (practiceUsage) {
-    if (itemLevelScoring) {
-      return total
-    }
-    return getValidQuestionsScore(questions)
+  if (testItem?.itemLevelScoring) {
+    return testItem.itemLevelScore || 0
   }
-  if (itemLevelScoring) {
-    return itemLevelScore
-  }
-  if (!questions.length) {
+  if (!testItem?.data?.questions) {
     return total
   }
-  for (const question of questions) {
+  for (const question of testItem?.data?.questions || []) {
     total += getMaxScoreFromQuestion(question)
   }
   return total
@@ -550,10 +530,7 @@ export const transformGradeBookResponse = (
             const currentQuestionActivity =
               questionActivitiesIndexed[el] ||
               questionActivitiesKeyedByItemId[testItemId]
-            const currentItem = testItemsDataKeyed[testItemId]
-            const questions = get(currentItem, 'data.questions', [])
-
-            let questionMaxScore =
+            const questionMaxScore =
               maxScore ||
               maxScore == 0 ||
               getMaxScoreOfQid(
@@ -561,17 +538,6 @@ export const transformGradeBookResponse = (
                 testItemsData,
                 currentQuestionActivity?.maxScore
               )
-            const practiceUsage = isPracticeUsage(questions)
-            if (currentItem && currentItem.itemLevelScoring && practiceUsage) {
-              questionMaxScore = 0
-            }
-            const currentQuestion = questions.find((q) => q.id === _id)
-            const unscored = get(currentQuestion, 'validation.unscored', false)
-            if (!currentItem.itemLevelScoring && practiceUsage) {
-              questionMaxScore = unscored
-                ? 0
-                : get(currentQuestion, 'validation.validResponse.score', 0)
-            }
 
             if (!currentQuestionActivity) {
               return {
@@ -618,11 +584,9 @@ export const transformGradeBookResponse = (
             if (score > 0 && skipped) {
               skipped = false
             }
-            console.log({ correct, unscored }, '===', { barLabel })
             if (_qids && _qids.length) {
-              correct = unscored
-                ? correct
-                : score === questionMaxScore && score > 0
+              correct =
+                (score === questionMaxScore && score > 0)
               if (!correct) {
                 partialCorrect = score > 0 && score <= questionMaxScore
               }
@@ -649,7 +613,6 @@ export const transformGradeBookResponse = (
               userId: studentId,
               qActId: currentQuestionActivity._id,
               scratchPad,
-              practiceUsage: unscored,
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],
                 userResponse,

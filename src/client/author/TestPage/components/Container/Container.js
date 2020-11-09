@@ -69,6 +69,7 @@ import {
   getCollectionsToAddContent,
   isOrganizationDistrictUserSelector,
   getWritableCollectionsSelector,
+  isOrganizationDistrictSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -176,6 +177,7 @@ class Container extends PureComponent {
       location: _location,
       fetchAssignmentsByTest,
       setEditEnable,
+      isOrganizationDA,
     } = this.props
     if (userRole !== roleuser.STUDENT) {
       const self = this
@@ -216,7 +218,10 @@ class Container extends PureComponent {
           userRole === roleuser.DISTRICT_ADMIN ||
           userRole === roleuser.SCHOOL_ADMIN
         ) {
-          setData({ testType: testContants.type.COMMON, freezeSettings: true })
+          setData({
+            testType: testContants.type.COMMON,
+            freezeSettings: !isOrganizationDA,
+          })
         }
         if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
           setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE })
@@ -1224,6 +1229,7 @@ const enhance = compose(
       editEnable: get(state, 'tests.editEnable'),
       pageNumber: state?.testsAddItems?.page || 1,
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
+      isOrganizationDA: isOrganizationDistrictSelector(state),
     }),
     {
       createTest: createTestAction,

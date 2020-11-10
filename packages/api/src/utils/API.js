@@ -138,8 +138,8 @@ const SemverCompare = (a, b) => {
   return 0
 }
 
-const tokenUpdateHeader = 'x-token-refresh',
-  kidUpdateHeader = 'x-kid-refresh'
+const tokenUpdateHeader = 'x-token-refresh'
+const kidUpdateHeader = 'x-kid-refresh'
 
 export default class API {
   constructor(baseURL = config.api, defaultToken = false) {
@@ -160,6 +160,7 @@ export default class API {
       }
       _config['client-epoch'] = Date.now().toString()
       _config.headers['X-Client-Time'] = new Date().toISOString()
+      _config.headers['X-Client-Tz-Offset'] = new Date().getTimezoneOffset()
       const token =
         getParentsStudentToken(_config) || defaultToken || getAccessToken()
       if (token) {

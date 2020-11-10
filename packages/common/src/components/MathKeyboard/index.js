@@ -13,26 +13,6 @@ import FullKeybord from './components/FullKeybord'
 import Keyboard from '../Keyboard'
 
 class MathKeyboard extends React.PureComponent {
-  static propTypes = {
-    symbols: PropTypes.array,
-    restrictKeys: PropTypes.array,
-    customKeys: PropTypes.array,
-    showResponse: PropTypes.bool,
-    showDropdown: PropTypes.bool,
-    onInput: PropTypes.func,
-    onChangeKeypad: PropTypes.func,
-  }
-
-  static defaultProps = {
-    symbols: [],
-    restrictKeys: [],
-    customKeys: [],
-    showResponse: false,
-    showDropdown: false,
-    onInput: () => null,
-    onChangeKeypad: () => null,
-  }
-
   static KEYBOARD_BUTTONS = KEYBOARD_BUTTONS
 
   static TAB_BUTTONS = TAB_BUTTONS
@@ -49,11 +29,14 @@ class MathKeyboard extends React.PureComponent {
     math.symbols[9].value,
   ]
 
-  state = {
-    type: '',
-    numberButtons: null,
-    selectOptions: [],
-    keyboardButtons: [],
+  constructor(props) {
+    super(props)
+    this.state = {
+      type: '',
+      numberButtons: null,
+      selectOptions: [],
+      keyboardButtons: [],
+    }
   }
 
   componentDidMount() {
@@ -168,6 +151,26 @@ class MathKeyboard extends React.PureComponent {
       </MathKeyboardContainer>
     )
   }
+}
+
+MathKeyboard.propTypes = {
+  symbols: PropTypes.array,
+  restrictKeys: PropTypes.array,
+  customKeys: PropTypes.array,
+  showResponse: PropTypes.bool,
+  showDropdown: PropTypes.bool,
+  onInput: PropTypes.func,
+  onChangeKeypad: PropTypes.func,
+}
+
+MathKeyboard.defaultProps = {
+  symbols: [],
+  restrictKeys: [],
+  customKeys: [],
+  showResponse: false,
+  showDropdown: false,
+  onInput: () => null,
+  onChangeKeypad: () => null,
 }
 
 export default MathKeyboard

@@ -103,30 +103,31 @@ export const compareByColumns = {
     dataIndex: 'race',
     key: 'race',
     sorter: lexicSort('race'),
-    render: capitalize,
+    render: (race) => (race ? capitalize(race) : '-'),
   },
   [compareByMode.GENDER]: {
     title: 'Gender',
     dataIndex: 'gender',
     key: 'gender',
+    render: (gender) => (gender ? capitalize(gender) : '-'),
   },
   [compareByMode.FRL_STATUS]: {
     title: 'FRL Status',
     dataIndex: 'frlStatus',
     key: 'frlStatus',
-    render: capitalize,
+    render: (status) => (status ? capitalize(status) : '-'),
   },
   [compareByMode.ELL_STATUS]: {
     title: 'ELL Status',
     dataIndex: 'ellStatus',
     key: 'ellStatus',
-    render: capitalize,
+    render: (status) => (status ? capitalize(status) : '-'),
   },
   [compareByMode.IEP_STATUS]: {
     title: 'IEP Status',
     dataIndex: 'iepStatus',
     key: 'iepStatus',
-    render: capitalize,
+    render: (status) => (status ? capitalize(status) : '-'),
   },
 }
 

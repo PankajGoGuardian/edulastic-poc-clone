@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV, toggleItem } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
@@ -22,10 +23,12 @@ import {
   getReportsStudentAssessmentProfile,
   getReportsStudentAssessmentProfileLoader,
   getStudentAssessmentProfileRequestAction,
+  getReportsStudentAssessmentProfileError,
 } from './ducks'
 
 const StudentAssessmentProfile = ({
   loading,
+  error,
   settings,
   SPRFilterData,
   studentAssessmentProfile,
@@ -87,6 +90,10 @@ const StudentAssessmentProfile = ({
     return <SpinLoader position="fixed" />
   }
 
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
   if (
     isEmpty(rawData) ||
     !rawData ||
@@ -134,6 +141,7 @@ const withConnect = connect(
   (state) => ({
     studentAssessmentProfile: getReportsStudentAssessmentProfile(state),
     loading: getReportsStudentAssessmentProfileLoader(state),
+    error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
     bandInfoSelected: getBandInfoSelected(state),

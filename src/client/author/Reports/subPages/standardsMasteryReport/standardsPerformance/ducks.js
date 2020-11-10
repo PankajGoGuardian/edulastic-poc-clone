@@ -39,6 +39,11 @@ export const getReportsStandardsPerformanceSummaryLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStandardsPerformanceSummaryError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -65,6 +70,7 @@ export const reportStandardsPerformanceSummaryReducer = createReducer(
       { payload }
     ) => {
       state.loading = false
+      state.error = false
       state.standardsPerformanceSummary = payload.standardsPerformanceSummary
     },
     [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR]: (
@@ -90,7 +96,15 @@ function* getReportsStandardsPerformanceSummaryRequest({ payload }) {
       payload
     )
     // const standardsPerformanceSummary = { data: tempData };
-
+    const dataSizeExceeded =
+      standardsPerformanceSummary?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR,
+        payload: { error: { ...standardsPerformanceSummary.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS,
       payload: { standardsPerformanceSummary },

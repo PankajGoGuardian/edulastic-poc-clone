@@ -40,6 +40,11 @@ export const getReportsPeerProgressAnalysisLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsPeerProgressAnalysisError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -61,6 +66,7 @@ export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
     { payload }
   ) => {
     state.loading = false
+    state.error = false
     state.peerProgressAnalysis = payload.peerProgressAnalysis
   },
   [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR]: (state, { payload }) => {
@@ -86,7 +92,15 @@ function* getReportsPeerProgressAnalysisRequest({ payload }) {
         groupIds,
       }
     )
-
+    const dataSizeExceeded =
+      peerProgressAnalysis?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR,
+        payload: { error: { ...peerProgressAnalysis.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS,
       payload: { peerProgressAnalysis },

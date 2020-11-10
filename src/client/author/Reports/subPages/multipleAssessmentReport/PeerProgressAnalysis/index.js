@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { roleuser } from '@edulastic/constants'
 import { getUserRole, getUserDetails } from '../../../../../student/Login/ducks'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import TrendStats from '../common/components/trend/TrendStats'
@@ -19,6 +20,7 @@ import {
   getPeerProgressAnalysisRequestAction,
   getReportsPeerProgressAnalysis,
   getReportsPeerProgressAnalysisLoader,
+  getReportsPeerProgressAnalysisError,
 } from './ducks'
 
 import dropDownData from './static/json/dropDownData.json'
@@ -83,6 +85,7 @@ const PeerProgressAnalysis = ({
   ddfilter,
   settings,
   loading,
+  error,
   role,
   user,
 }) => {
@@ -127,6 +130,10 @@ const PeerProgressAnalysis = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
   }
 
   const studentColumn = {
@@ -186,6 +193,7 @@ const enhance = connect(
   (state) => ({
     peerProgressAnalysis: getReportsPeerProgressAnalysis(state),
     loading: getReportsPeerProgressAnalysisLoader(state),
+    error: getReportsPeerProgressAnalysisError(state),
     role: getUserRole(state),
     user: getUserDetails(state),
     isCsvDownloading: getCsvDownloadingState(state),

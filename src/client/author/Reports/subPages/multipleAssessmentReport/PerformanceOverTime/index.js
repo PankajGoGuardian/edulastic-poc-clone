@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { getUserRole, getUserDetails } from '../../../../../student/Login/ducks'
 import { StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
 import { usefetchProgressHook } from '../common/hooks'
@@ -15,6 +16,7 @@ import {
   getPerformanceOverTimeRequestAction,
   getReportsPerformanceOverTime,
   getReportsPerformanceOverTimeLoader,
+  getReportsPerformanceOverError,
 } from './ducks'
 import { augmentTestData, parseData } from './utils/transformers'
 
@@ -25,6 +27,7 @@ const PerformanceOverTime = ({
   MARFilterData,
   settings,
   loading,
+  error,
   user,
 }) => {
   usefetchProgressHook(settings, getPerformanceOverTimeRequest, user)
@@ -44,6 +47,10 @@ const PerformanceOverTime = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
   }
 
   return (
@@ -80,6 +87,7 @@ const enhance = connect(
   (state) => ({
     performanceOverTime: getReportsPerformanceOverTime(state),
     loading: getReportsPerformanceOverTimeLoader(state),
+    error: getReportsPerformanceOverError(state),
     role: getUserRole(state),
     user: getUserDetails(state),
     isCsvDownloading: getCsvDownloadingState(state),

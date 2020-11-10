@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { roleuser } from '@edulastic/constants'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { DropDownContainer, StyledCard } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
   getFiltersSelector,
@@ -22,6 +23,7 @@ import {
   getReportsStandardsPerformanceSummary,
   getReportsStandardsPerformanceSummaryLoader,
   getStandardsPerformanceSummaryRequestAction,
+  getReportsStandardsPerformanceSummaryError,
 } from './ducks'
 import dropDownData from './static/json/dropDownData.json'
 import {
@@ -43,6 +45,7 @@ const StandardsPerformance = ({
   settings,
   role,
   loading,
+  error,
   selectedStandardProficiency,
   filters,
   ddfilter,
@@ -137,6 +140,10 @@ const StandardsPerformance = ({
     return <SpinLoader position="fixed" />
   }
 
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
   const tableFiltersOptions = {
     compareByData: compareByDataFiltered,
     analyseByData,
@@ -201,6 +208,7 @@ const enhance = connect(
   (state) => ({
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
     loading: getReportsStandardsPerformanceSummaryLoader(state),
+    error: getReportsStandardsPerformanceSummaryError(state),
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),

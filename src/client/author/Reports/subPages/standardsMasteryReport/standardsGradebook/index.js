@@ -11,6 +11,7 @@ import {
 } from '../../../../src/selectors/user'
 import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import { StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getStudentAssignments } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
@@ -27,6 +28,7 @@ import {
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
+  getReportsStandardsGradebookError,
 } from './ducks'
 import {
   getDenormalizedData,
@@ -43,6 +45,7 @@ const StandardsGradebook = ({
   role,
   settings,
   loading,
+  error,
   selectedStandardProficiency,
   filters,
   getStudentStandards,
@@ -132,57 +135,57 @@ const StandardsGradebook = ({
     setClickedStandard(undefined)
     setClickedStudentName(undefined)
   }
+  if (loading) {
+    return <SpinLoader position="fixed" />
+  }
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
 
   return (
     <div>
-      {loading ? (
-        <SpinLoader position="fixed" />
-      ) : (
-        <>
-          <UpperContainer>
-            <StyledCard>
-              <Row type="flex" justify="start">
-                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                  <StyledH3>Mastery Level Distribution Standards</StyledH3>
-                </Col>
-              </Row>
-              <Row>
-                <SignedStackBarChartContainer
-                  filteredDenormalizedData={filteredDenormalizedData}
-                  filters={ddfilter}
-                  chartFilter={chartFilter}
-                  masteryScale={masteryScale}
-                  role={role}
-                  onBarClickCB={onBarClickCB}
-                />
-              </Row>
-            </StyledCard>
-          </UpperContainer>
-          <TableContainer>
-            <StandardsGradebookTable
+      <UpperContainer>
+        <StyledCard>
+          <Row type="flex" justify="start">
+            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+              <StyledH3>Mastery Level Distribution Standards</StyledH3>
+            </Col>
+          </Row>
+          <Row>
+            <SignedStackBarChartContainer
               filteredDenormalizedData={filteredDenormalizedData}
-              masteryScale={masteryScale}
+              filters={ddfilter}
               chartFilter={chartFilter}
-              isCsvDownloading={isCsvDownloading}
+              masteryScale={masteryScale}
               role={role}
-              filters={filters}
-              handleOnClickStandard={handleOnClickStandard}
-              standardsData={standardsData}
-              location={location}
-              pageTitle={pageTitle}
+              onBarClickCB={onBarClickCB}
             />
-          </TableContainer>
-          {showStudentAssignmentModal && (
-            <StudentAssignmentModal
-              showModal={showStudentAssignmentModal}
-              closeModal={closeStudentAssignmentModal}
-              studentAssignmentsData={studentAssignmentsData}
-              studentName={clickedStudentName}
-              standardName={clickedStandard}
-              loadingStudentStandard={loadingStudentStandard}
-            />
-          )}
-        </>
+          </Row>
+        </StyledCard>
+      </UpperContainer>
+      <TableContainer>
+        <StandardsGradebookTable
+          filteredDenormalizedData={filteredDenormalizedData}
+          masteryScale={masteryScale}
+          chartFilter={chartFilter}
+          isCsvDownloading={isCsvDownloading}
+          role={role}
+          filters={filters}
+          handleOnClickStandard={handleOnClickStandard}
+          standardsData={standardsData}
+          location={location}
+          pageTitle={pageTitle}
+        />
+      </TableContainer>
+      {showStudentAssignmentModal && (
+        <StudentAssignmentModal
+          showModal={showStudentAssignmentModal}
+          closeModal={closeStudentAssignmentModal}
+          studentAssignmentsData={studentAssignmentsData}
+          studentName={clickedStudentName}
+          standardName={clickedStandard}
+          loadingStudentStandard={loadingStudentStandard}
+        />
       )}
     </div>
   )
@@ -192,6 +195,7 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsStandardsGradebookLoader(state),
+      error: getReportsStandardsGradebookError(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),

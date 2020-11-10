@@ -39,6 +39,11 @@ export const getReportsResponseFrequencyLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsResponseFrequencyError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -61,6 +66,7 @@ export const reportResponseFrequencyReducer = createReducer(initialState, {
   },
   [GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.responseFrequency = payload.responseFrequency
   },
   [GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_ERROR]: (state, { payload }) => {
@@ -85,9 +91,17 @@ function* getReportsResponseFrequencyRequest({ payload }) {
       payload.requestFilters?.groupIds?.join(',') ||
       payload.requestFilters?.groupId ||
       ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchResponseFrequency, payload)
+    const { data } = yield call(reportsApi.fetchResponseFrequency, payload)
+
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
+
     const responseFrequency = isEmpty(result) ? defaultReport : result
 
     yield put({

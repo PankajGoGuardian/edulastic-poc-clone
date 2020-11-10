@@ -39,6 +39,11 @@ export const getReportsQuestionAnalysisLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsQuestionAnalysisError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -62,6 +67,7 @@ export const reportQuestionAnalysisReducer = createReducer(initialState, {
   },
   [GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.questionAnalysis = payload.questionAnalysis
   },
   [GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR]: (state, { payload }) => {
@@ -86,9 +92,17 @@ function* getReportsQuestionAnalysisRequest({ payload }) {
       payload.requestFilters?.groupIds?.join(',') ||
       payload.requestFilters?.groupId ||
       ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchQuestionAnalysisReport, payload)
+    const { data } = yield call(reportsApi.fetchQuestionAnalysisReport, payload)
+
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
+
     const questionAnalysis = isEmpty(result) ? defaultReport : result
 
     yield put({

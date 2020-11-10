@@ -39,6 +39,11 @@ export const getReportsStudentAssessmentProfileLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStudentAssessmentProfileError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -62,6 +67,7 @@ export const reportStudentAssessmentProfileReducer = createReducer(
       { payload }
     ) => {
       state.loading = false
+      state.error = false
       state.studentAssessmentProfile = payload.studentAssessmentProfile
     },
     [GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR]: (
@@ -86,7 +92,15 @@ function* getReportsStudentAssessmentProfileRequest({ payload }) {
       reportsApi.fetchStudentAssessmentProfileReport,
       payload
     )
-
+    const dataSizeExceeded =
+      studentAssessmentProfile?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR,
+        payload: { error: { ...studentAssessmentProfile.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_SUCCESS,
       payload: { studentAssessmentProfile },

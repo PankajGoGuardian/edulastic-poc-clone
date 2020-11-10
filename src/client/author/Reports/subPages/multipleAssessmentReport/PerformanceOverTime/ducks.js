@@ -41,6 +41,11 @@ export const getReportsPerformanceOverTimeLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsPerformanceOverError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -59,6 +64,7 @@ export const reportPerformanceOverTimeReducer = createReducer(initialState, {
   },
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.performanceOverTime = payload.performanceOverTime
   },
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR]: (state, { payload }) => {
@@ -84,6 +90,15 @@ function* getReportsPerformanceOverTimeRequest({ payload }) {
         groupIds,
       }
     )
+    const dataSizeExceeded =
+      performanceOverTime?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR,
+        payload: { error: { ...performanceOverTime.data } },
+      })
+      return
+    }
     const selectedProfile = yield select(
       getReportsMARSelectedPerformanceBandProfile
     )

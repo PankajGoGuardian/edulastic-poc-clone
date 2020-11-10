@@ -56,11 +56,6 @@ function Preview({
   }
   const passageId = passage?._id
   const answerContextConfig = useContext(AnswerContext)
-  const target = get(
-    questionActivity,
-    isExpressGrader || isQuestionView ? '_id' : 'qActId',
-    ''
-  )
   const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
   const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item
   const scoringProps = {
@@ -103,7 +98,7 @@ function Preview({
         isLCBView={isLCBView}
         timeSpent={timeSpent}
         attachments={attachments}
-        userWork={userWork[target]}
+        userWork={userWork}
         scratchpadDimensions={scratchpadDimensions}
         saveUserWork={() => {}}
         {...scoringProps}
@@ -127,13 +122,14 @@ Preview.defaultProps = {
 }
 
 class ClassQuestions extends Component {
-  state = {
-    showPlayerModal: false,
-    selectedTestItem: [],
-    showDocBasedPlayer: false,
+  constructor() {
+    super()
+    this.state = {
+      showPlayerModal: false,
+      selectedTestItem: [],
+      showDocBasedPlayer: false,
+    }
   }
-
-  static contextType = AnswerContext
 
   // show AssessmentPlayerModal
   showPlayerModal = () => {
@@ -407,6 +403,7 @@ class ClassQuestions extends Component {
       isPresentationMode,
       t,
       ttsUserIds,
+      isStudentView,
     } = this.props
     const testItems = this.getTestItems()
     const { expressGrader: isExpressGrader = false } = this.context
@@ -424,7 +421,6 @@ class ClassQuestions extends Component {
     const testItemsPreview = testItems.map((item, index) => {
       let showStudentWork = null
       let scractchPadUsed = userWork[item._id]
-
       scractchPadUsed = item.data.questions.some(
         (question) => question?.activity?.scratchPad?.scratchpad
       )
@@ -457,7 +453,7 @@ class ClassQuestions extends Component {
           isExpressGrader={isExpressGrader}
           isLCBView={isLCBView}
           questionActivity={questionActivity}
-          userWork={userWork}
+          userWork={scractchPadUsed && userWork} // used to determine show student work button
           t={t}
         />
       )
@@ -520,6 +516,9 @@ class ClassQuestions extends Component {
           LCBPreviewModal
           questionActivities={questionActivities}
           testActivityId={testActivityId || currentStudent.testActivityId}
+          isQuestionView={isQuestionView}
+          isLCBView={isLCBView}
+          isStudentView={isStudentView}
         />
         {testData.isDocBased ? (
           <StyledModal
@@ -550,6 +549,8 @@ class ClassQuestions extends Component {
     )
   }
 }
+
+ClassQuestions.contextType = AnswerContext
 
 const withConnect = connect(
   (state, ownProps) => ({

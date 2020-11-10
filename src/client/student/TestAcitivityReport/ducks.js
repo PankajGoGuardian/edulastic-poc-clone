@@ -1,11 +1,15 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { takeEvery, put, call, all, fork } from 'redux-saga/effects'
-import { keyBy as _keyBy, isEmpty, orderBy } from 'lodash'
+import { keyBy as _keyBy, isEmpty, orderBy, keyBy } from 'lodash'
+import produce from 'immer'
+
 import {
   reportsApi,
   testsApi,
   attchmentApi as attachmentApi,
 } from '@edulastic/api'
+import questionType from '@edulastic/constants/const/questionType'
+
 import { setTestItemsAction, SET_CURRENT_ITEM } from '../sharedDucks/TestItem'
 import {
   setTestActivityAction,
@@ -39,17 +43,33 @@ export const loadTestActivityReportAction = createAction(
 export const setFeedbackReportAction = createAction(SET_FEEDBACK)
 export const setTestActivitiesAction = createAction(SET_TEST_ACTIVITIES)
 
-function* loadAttachmentsFromServer({ referrerId, referrerId2, qActId }) {
+function* loadAttachmentsFromServer({
+  referrerId,
+  referrerId2,
+  qActId: uqaId,
+  qid,
+}) {
   try {
-    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+    const filterQuery = {
       referrerId,
       referrerId2,
-    })
+    }
+    if (qid) {
+      filterQuery.referrerId3 = qid
+    }
+    const { attachments = [] } = yield call(
+      attachmentApi.loadAllAttachments,
+      filterQuery
+    )
     if (attachments.length > 0) {
       const scratchpadData = {}
       for (const attachment of attachments) {
-        const { data = {} } = attachment
-        scratchpadData[qActId] = data.scratchpad
+        const { data = {}, referrerId3 } = attachment
+        if (referrerId3 && referrerId3 === qid) {
+          scratchpadData[uqaId] = { [referrerId3]: data.scratchpad }
+        } else {
+          scratchpadData[uqaId] = data.scratchpad
+        }
       }
       yield put({ type: SAVE_USER_WORK, payload: scratchpadData })
     }
@@ -60,11 +80,12 @@ function* loadAttachmentsFromServer({ referrerId, referrerId2, qActId }) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(({ testItemId, qActId }) =>
+    testItemsIdArray.map(({ testItemId, qActId, qid, _id }) =>
       call(loadAttachmentsFromServer, {
         referrerId: testActivityId,
         referrerId2: testItemId,
-        qActId,
+        qActId: qActId || _id,
+        qid,
       })
     )
   )
@@ -144,12 +165,10 @@ function* loadTestActivityReport({ payload }) {
     })
     const { questionActivities = [] } = reports
     const { passages = [] } = test
-    const scratchpadUsedItems = questionActivities.reduce((items, activity) => {
-      if (activity?.scratchPad?.scratchpad === true) {
-        items.push({ testItemId: activity.testItemId, qActId: activity._id })
-      }
-      return items
-    }, [])
+    const scratchpadUsedItems = questionActivities.filter((activity) => {
+      const { scratchPad: { scratchpad = false } = {}, qType } = activity
+      return qType === questionType.HIGHLIGHT_IMAGE && scratchpad === true
+    })
 
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
@@ -162,9 +181,18 @@ function* loadTestActivityReport({ payload }) {
         passages,
       })
     }
-    const _testItems = testItems.filter(
-      ({ data = {} }) => data.questions.length
-    )
+    const qActsKeysByQid = keyBy(questionActivities, 'qid')
+    const _testItems = testItems
+      .filter(({ data = {} }) => data.questions?.length)
+      .map((item) =>
+        produce(item, (draft) => {
+          draft.data.questions.forEach((question) => {
+            if (qActsKeysByQid[question.id]) {
+              question.activity = qActsKeysByQid[question.id]
+            }
+          })
+        })
+      )
 
     yield put(loadQuestionsAction(_keyBy(questionsWithActivities, 'id')))
     yield put(receiveTestByIdSuccess(test))

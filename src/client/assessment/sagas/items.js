@@ -6,7 +6,7 @@ import {
   Effects,
   captureSentryException,
 } from '@edulastic/common'
-import { maxBy, isEmpty } from 'lodash'
+import { maxBy, isEmpty, isPlainObject } from 'lodash'
 import {
   itemsApi,
   testItemActivityApi,
@@ -81,6 +81,39 @@ export const getQuestionIds = (item) => {
     })
 
   return questions
+}
+
+function getFilterAndUpdateForAttachments({
+  uta,
+  itemId,
+  qId,
+  userId,
+  scratchpadUri,
+}) {
+  const update = {
+    data: { scratchpad: scratchpadUri },
+    referrerId: uta,
+    userId,
+    type: 'scratchpad',
+    referrerType: 'TestActivityContent',
+    referrerId2: itemId,
+    status: 'published',
+  }
+  const filter = {
+    referrerId: uta,
+    referrerId2: itemId,
+  }
+  if (qId) {
+    update.referrerId3 = qId
+    filter.referrerId3 = qId
+  }
+
+  return { update, filter }
+}
+
+async function getFileNameAndQidMap(qId, data, folder) {
+  const fileName = await uploadToS3(data, folder)
+  return { qId, fileName }
 }
 
 export function* saveUserResponse({ payload }) {
@@ -258,26 +291,41 @@ export function* saveUserResponse({ payload }) {
     if (shouldSaveOrUpdateAttachment) {
       const fileData = isDocBased
         ? { ..._userWork.scratchpad, name: `${userTestActivityId}_${userId}` }
-        : _userWork.scratchpad
-      const scratchpadUri = yield call(
-        uploadToS3,
-        fileData,
-        defaultUploadFolder
-      )
-      const update = {
-        data: { scratchpad: scratchpadUri },
-        referrerId: userTestActivityId,
-        userId,
-        type: 'scratchpad',
-        referrerType: 'TestActivityContent',
-        referrerId2: testItemId,
-        status: 'published',
+        : _userWork
+
+      // multiple scratchpad in item
+      if (isPlainObject(fileData?.scratchpad)) {
+        const listOfFilenameAndQuestionIdDict = yield all(
+          Object.entries(fileData.scratchpad).map(([qid, scratchpadData]) =>
+            call(getFileNameAndQidMap, qid, scratchpadData, defaultUploadFolder)
+          )
+        )
+        yield all(
+          listOfFilenameAndQuestionIdDict.map(({ qId, fileName }) => {
+            const { update, filter } = getFilterAndUpdateForAttachments({
+              uta: userTestActivityId,
+              itemId: testItemId,
+              userId,
+              qId,
+              scratchpadUri: fileName,
+            })
+            return call(attachmentApi.updateAttachment, { update, filter })
+          })
+        )
+      } else {
+        const scratchpadUri = yield call(
+          uploadToS3,
+          fileData.scratchpad,
+          defaultUploadFolder
+        )
+        const { update, filter } = getFilterAndUpdateForAttachments({
+          uta: userTestActivityId,
+          itemId: testItemId,
+          userId,
+          scratchpadUri,
+        })
+        yield call(attachmentApi.updateAttachment, { update, filter })
       }
-      const filter = {
-        referrerId: userTestActivityId,
-        referrerId2: testItemId,
-      }
-      yield call(attachmentApi.updateAttachment, { update, filter })
     }
     if (passageId) {
       const highlights = yield select(
@@ -357,10 +405,16 @@ function* loadUserResponse({ payload }) {
   }
 }
 
+const timeOut = process.env.NODE_ENV === 'development' ? 12000 : 8000
+
+/*
+  The race condition in Effects.throttleAction times out on slow connections/dev envs
+  TODO: to detect slow connections and increase the timeout maybe
+*/
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield Effects.throttleAction(8000, SAVE_USER_RESPONSE, saveUserResponse),
+    yield Effects.throttleAction(timeOut, SAVE_USER_RESPONSE, saveUserResponse),
     yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse),
   ])
 }

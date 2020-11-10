@@ -377,10 +377,7 @@ class CurriculumSequence extends Component {
     const {
       history,
       destinationCurriculumSequence: { _id },
-      handleStatusChange,
     } = this.props
-    // Change the list status to draft on edit
-    handleStatusChange('draft')
     return history.push({
       pathname: `/author/playlists/${_id}/edit`,
       state: { editFlow: true },
@@ -1088,7 +1085,6 @@ CurriculumSequence.propTypes = {
   selectContent: PropTypes.bool.isRequired,
   onDrop: PropTypes.func.isRequired,
   handleSavePlaylist: PropTypes.func.isRequired,
-  handleStatusChange: PropTypes.func,
   onBeginDrag: PropTypes.func.isRequired,
   isContentExpanded: PropTypes.bool.isRequired,
   recentPlaylists: PropTypes.array,
@@ -1097,7 +1093,6 @@ CurriculumSequence.propTypes = {
 CurriculumSequence.defaultProps = {
   expandedModules: [],
   recentPlaylists: [],
-  handleStatusChange: () => false,
 }
 
 const Wrapper = styled.div`

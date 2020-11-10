@@ -605,6 +605,7 @@ class Review extends PureComponent {
             owner={owner}
             addDuplicate={this.handleDuplicateItem}
             page="review"
+            testStatus={test.status}
             data={item}
             questions={questions}
             checkAnswer={() => checkAnswer(item)}

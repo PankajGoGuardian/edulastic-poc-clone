@@ -472,6 +472,7 @@ class PreviewModal extends React.Component {
       userRole,
       deleting,
       writableCollections,
+      testStatus = 'draft',
     } = this.props
 
     const { testItems = [] } = passage || {}
@@ -561,6 +562,7 @@ class PreviewModal extends React.Component {
 
           <ModalTopAction>
             {itemHasAtleastOneQuestion &&
+              testStatus !== 'published' &&
               (isPassage && showAddPassageItemToTestButton ? (
                 <EduButton
                   isBlue

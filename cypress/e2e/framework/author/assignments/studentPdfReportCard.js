@@ -85,8 +85,9 @@ export default class StudentsReportCard {
   getQuestionTableRowByIndex = (index) =>
     this.getQuestionTableBody().find(`[data-row-key="${index - 1}"]`)
 
+  // TODO: fix below back to data-cy attr once ui issue is resolved, EV-21749,  
   getStandardTableRowByStandard = (standard) =>
-    this.getStandardTableBody().find(`[data-cy="${standard}"]`).closest('tr')
+    this.getStandardTableBody().contains('td', standard).closest('tr')
 
   getEntryByIndexOfSelectedRow = (index) =>
     cy.get(`@${this.tablerowalias}`).find('td').eq(index)

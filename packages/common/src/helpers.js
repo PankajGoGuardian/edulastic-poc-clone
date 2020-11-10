@@ -543,7 +543,7 @@ const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
             (maxScore / totalMaxScore),
           2
         )
-        questionScore[o.id] =  score
+        questionScore[o.id] = score
         currentTotal += score
       }
     })
@@ -971,7 +971,7 @@ export const getSanitizedProps = (props, blackListedProps) => {
 
 export const captureSentryException = (err) => {
   // Ignore BE's business errors
-  if (!err || (err && [409, 302, 422].includes(err.status))) {
+  if (!err || (err && [409, 302, 422, 403].includes(err.status))) {
     return
   }
 

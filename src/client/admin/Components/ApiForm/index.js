@@ -4,8 +4,16 @@ import { Alert, Button, Form } from 'antd'
 import Field from './Field'
 import { FirstDiv, H2, OuterDiv } from '../../Common/StyledComponents'
 
-const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
+const ApiFormsMain = ({
+  fields,
+  name,
+  handleOnSave,
+  note = {},
+  children,
+  customSections,
+}) => {
   const [data, setData] = useState({})
+  const [currentId, setCurrentId] = useState('')
   const [errors, setErrors] = useState([])
 
   useEffect(() => {
@@ -30,7 +38,7 @@ const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
   const formatData = useMemo(
     () =>
       Object.keys(data).reduce((acc, key) => {
-        const field = fields.find((f) => f.name === key)
+        const field = (fields || []).find((f) => f.name === key)
         // assures only fields from selected category goes in API request
         if (field) {
           if (data[key] && field.formatter) {
@@ -44,8 +52,13 @@ const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
     [data]
   )
 
-  const onSave = () => {
-    const requiredFields = fields.filter((f) => f.required)
+  const onSave = (sectionId) => {
+    setCurrentId(sectionId)
+    const requiredFields = customSections
+      ? customSections
+          .find((o) => o.id === sectionId)
+          .fields.filter((f) => f.required)
+      : fields.filter((f) => f.required)
     const errorFields = requiredFields
       .filter((rf) => !data[rf.name])
       .map((f) => f.displayName || f.name)
@@ -53,47 +66,91 @@ const ApiFormsMain = ({ fields, name, handleOnSave, note = {}, children }) => {
       return setErrors(errorFields)
     }
     onCloseError()
-    handleOnSave(formatData)
+    handleOnSave(formatData, sectionId)
   }
 
   const { text, align, parentField } = note
 
   return (
-    <FormMainWrapper>
-      <OuterDiv>
-        <H2>{name}</H2>
-        <FirstDiv>
-          <Form style={{ width: '100%' }}>
-            {!!errors.length && (
-              <Alert
-                message={`${errors.join(', ')} fields are required`}
-                type="error"
-                closable
-                onClose={onCloseError}
-              />
-            )}
-            {fields.map((field) => (
-              <Field {...field} onChange={onChange} note={note} />
-            ))}
-            <ActionWrapper>
-              <Button type="primary" htmlType="submit" onClick={onSave}>
-                Submit
-              </Button>
-              {!!text && !parentField && (
-                <span
-                  className="note"
-                  style={
-                    align === 'left' ? { justifyContent: 'flex-start' } : {}
-                  }
-                >
-                  {text}
-                </span>
+    <FormMainWrapper style={{ marginTop: '15px' }}>
+      {!customSections && (
+        <OuterDiv>
+          <H2>{name}</H2>
+          <FirstDiv>
+            <Form style={{ width: '100%' }}>
+              {!!errors.length && (
+                <Alert
+                  message={`${errors.join(', ')} fields are required`}
+                  type="error"
+                  closable
+                  onClose={onCloseError}
+                />
               )}
-            </ActionWrapper>
-          </Form>
-        </FirstDiv>
-        {children}
-      </OuterDiv>
+              {fields.map((field) => (
+                <Field {...field} onChange={onChange} note={note} />
+              ))}
+              <ActionWrapper>
+                <Button type="primary" htmlType="submit" onClick={onSave}>
+                  Submit
+                </Button>
+                {!!text && !parentField && (
+                  <span
+                    className="note"
+                    style={
+                      align === 'left' ? { justifyContent: 'flex-start' } : {}
+                    }
+                  >
+                    {text}
+                  </span>
+                )}
+              </ActionWrapper>
+            </Form>
+          </FirstDiv>
+          {children}
+        </OuterDiv>
+      )}
+      {(customSections || []).map((section) => (
+        <OuterDiv>
+          <H2>{section.name}</H2>
+          <FirstDiv>
+            <Form style={{ width: '100%' }}>
+              {!!errors.length && currentId === section.id && (
+                <Alert
+                  message={`${errors?.join(', ')} ${
+                    errors?.length > 1 ? 'fields are' : 'field is'
+                  } required`}
+                  type="error"
+                  closable
+                  onClose={onCloseError}
+                />
+              )}
+              {(section.fields || []).map((field) => (
+                <Field {...field} onChange={onChange} note={note} />
+              ))}
+              <ActionWrapper>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={() => onSave(section.id)}
+                >
+                  Submit
+                </Button>
+                {!!section.text && !section.parentField && (
+                  <span
+                    className="note"
+                    style={
+                      align === 'left' ? { justifyContent: 'flex-start' } : {}
+                    }
+                  >
+                    {section.text}
+                  </span>
+                )}
+              </ActionWrapper>
+            </Form>
+          </FirstDiv>
+          {children}
+        </OuterDiv>
+      ))}
     </FormMainWrapper>
   )
 }

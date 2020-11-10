@@ -82,7 +82,10 @@ class InviteMultipleStudentModal extends Component {
       if (!err) {
         const { curSel } = this.state
         const studentsList = row.students
-          ? row.students.split(/;|\n/).filter((_o) => _o.trim().length)
+          ? row.students
+              .split(/;|\n/)
+              .filter((_o) => _o.trim().length)
+              .map((x) => x.replace('\t', ' '))
           : []
         if (studentsList.length) {
           inviteStudents({

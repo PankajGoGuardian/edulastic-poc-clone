@@ -54,14 +54,14 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
   if (!items || !items.length) return summary
   for (const item of items) {
     const { itemLevelScoring, maxScore, itemLevelScore, _id } = item
-    const itemPoints = isLimitedDeliveryType
-      ? 1
-      : scoring[_id] ||
-        (itemLevelScoring === true && itemLevelScore) ||
-        maxScore
     const questions = get(item, 'data.questions', []).filter(
       ({ type }) => type !== sectionLabelType
-    )
+    )    
+    let itemPoints =
+      scoring[_id] || (itemLevelScoring === true && itemLevelScore) || maxScore
+    if (isLimitedDeliveryType) {
+      itemPoints = 1
+    }
     const itemTotalQuestions = questions.length
     const questionWisePoints = getQuestionLevelScore(
       { ...item, isLimitedDeliveryType },

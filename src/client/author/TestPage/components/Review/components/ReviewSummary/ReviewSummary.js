@@ -121,7 +121,7 @@ const ReviewSummary = ({
         </InnerFlex>
 
         <InnerFlex>
-          <FieldLabel>Collections</FieldLabel>
+          <FieldLabel data-cy="collection-review">Collections</FieldLabel>
           <SelectInputStyled
             showArrow
             mode="multiple"
@@ -213,7 +213,7 @@ const ReviewSummary = ({
             interestedStandards.map(
               (data) =>
                 !data.isEquivalentStandard && (
-                  <TableBodyRow key={data.key}>
+                  <TableBodyRow data-cy={data.identifier} key={data.key}>
                     <TableBodyCol span={12}>
                       <Standard>{data.identifier}</Standard>
                     </TableBodyCol>

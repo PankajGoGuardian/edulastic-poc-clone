@@ -157,15 +157,26 @@ class ClassList extends React.Component {
   }
 
   handleClassTypeFilter = (key) => {
+    const { selectClass, classList, selectedClasses } = this.props
+    const _selectedClasses = classList
+      .filter(
+        (item) =>
+          (key === 'all' || item.type === key) &&
+          selectedClasses.includes(item._id)
+      )
+      .map((item) => item._id)
+    selectClass('class', _selectedClasses, classList)
     this.setState({ classType: key })
   }
 
   handleSelectAll = (checked) => {
     const { selectClass, classList } = this.props
-    const { filterClassIds } = this.state
+    const { filterClassIds, classType } = this.state
     let filterclassList = []
     if (checked) {
-      const selectedClasses = classList.map((item) => item._id)
+      const selectedClasses = classList
+        .filter((item) => classType === 'all' || item.type === classType)
+        .map((item) => item._id)
       selectClass('class', selectedClasses, classList)
       filterclassList = selectedClasses
     } else {
@@ -178,7 +189,7 @@ class ClassList extends React.Component {
 
   handleClassSelectFromDropDown = (value) => {
     const { classList, selectClass } = this.props
-    this.setState({ filterClassIds: value }, () =>
+    this.setState({ classType: 'all', filterClassIds: value }, () =>
       selectClass('class', value, classList)
     )
   }
@@ -227,7 +238,7 @@ class ClassList extends React.Component {
           ?.filter((i) => !!i)
       )?.length || 0
     const classesCount = selectedClassData?.filter(
-      ({ type }) => type === 'class'
+      ({ type }) => classType === 'all' || type === classType
     )?.length
     const studentsCount =
       selectedClassData?.reduce(
@@ -396,6 +407,8 @@ class ClassList extends React.Component {
               placeholder="All"
               onChange={this.handleClassTypeFilter}
               showSearch
+              value={classType}
+              disabled={filterClassIds.length}
               filterOption={(input, option) =>
                 option.props.children
                   .toLowerCase()

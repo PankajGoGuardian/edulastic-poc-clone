@@ -24,8 +24,8 @@ export const testTypeHashMap = {
 }
 
 export const percentage = (
-  numerator,
-  denominator,
+  numerator = 0,
+  denominator = 0,
   roundCalculation = false
 ) => {
   if (numerator == 0 && denominator == 0) {
@@ -208,7 +208,7 @@ export const processTeacherIds = (orgDataArr) => {
 export const getOverallScore = (metrics = []) =>
   roundedPercentage(
     sumBy(metrics, (item) => parseFloat(item.totalScore)),
-    sumBy(metrics, (item) => parseFloat(item.maxScore))
+    sumBy(metrics, (item) => parseFloat(item.maxScore || 1))
   )
 
 export const filterAccordingToRole = (columns, role) =>

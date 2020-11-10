@@ -1087,10 +1087,6 @@ export function* updateItemSaga({ payload }) {
     }
     const data = _omit(payload.data, ['authors', '__v'])
 
-    if (payload.testId && payload.testId !== 'undefined') {
-      data.testId = testId
-    }
-
     const { itemLevelScoring, isPassageWithQuestions } = data
 
     // const questions = yield select(getQuestionsSelector);

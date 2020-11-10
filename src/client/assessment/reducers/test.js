@@ -18,6 +18,7 @@ import {
   SHOW_HINTS,
   Hide_HINTS,
   SET_SAVE_USER_RESPONSE,
+  SET_CHECK_ANSWER_PROGRESS_STATUS,
 } from '../constants/actions'
 
 const initialState = {
@@ -41,6 +42,7 @@ const initialState = {
   },
   currentAssignmentTime: null,
   stopTimerFlag: false,
+  checkAnswerInProgress: false,
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -156,6 +158,8 @@ const test = (state = initialState, { payload, type }) => {
       return { ...state, showHints: false }
     case SET_SAVE_USER_RESPONSE:
       return { ...state, savingResponse: payload }
+    case SET_CHECK_ANSWER_PROGRESS_STATUS:
+      return { ...state, checkAnswerInProgress: payload }
     default:
       return state
   }

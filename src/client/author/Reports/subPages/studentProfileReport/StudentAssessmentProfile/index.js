@@ -60,6 +60,7 @@ const StudentAssessmentProfile = ({
     if (selectedStudent.key && requestFilters.termId) {
       getStudentAssessmentProfile({
         ...requestFilters,
+        profileId: requestFilters.standardsProficiencyProfileId,
         studentId: selectedStudent.key,
       })
     }

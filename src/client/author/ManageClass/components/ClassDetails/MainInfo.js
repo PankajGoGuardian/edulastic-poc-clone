@@ -73,6 +73,7 @@ const MainInfo = ({
               archiveClass={archiveClass}
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
+              selectedClass={entity}
             />
           </FlexDiv>
           <FlexDiv direction="column" style={{ marginTop: '10px' }}>

@@ -5,7 +5,7 @@ import { getAuthorCollectionMap } from '../../../../../src/client/author/dataUti
 
 const CollectionTag = ({ collectionName }) =>
   getAuthorCollectionMap()[collectionName] ? (
-    <HelperText>
+    <HelperText data-cy="item-collection">
       {getAuthorCollectionMap()[collectionName]?.displayName}
     </HelperText>
   ) : null

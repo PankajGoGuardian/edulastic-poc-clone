@@ -69,6 +69,7 @@ import {
   getCollectionsToAddContent,
   isOrganizationDistrictUserSelector,
   getWritableCollectionsSelector,
+  isOrganizationDistrictSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -176,6 +177,7 @@ class Container extends PureComponent {
       location: _location,
       fetchAssignmentsByTest,
       setEditEnable,
+      isOrganizationDA,
     } = this.props
     if (userRole !== roleuser.STUDENT) {
       const self = this
@@ -216,7 +218,10 @@ class Container extends PureComponent {
           userRole === roleuser.DISTRICT_ADMIN ||
           userRole === roleuser.SCHOOL_ADMIN
         ) {
-          setData({ testType: testContants.type.COMMON, freezeSettings: true })
+          setData({
+            testType: testContants.type.COMMON,
+            freezeSettings: !isOrganizationDA,
+          })
         }
         if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
           setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE })
@@ -733,7 +738,7 @@ class Container extends PureComponent {
       updateDocBasedTest,
     } = this.props
 
-    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+    if (test.isDocBased && !validateQuestionsForDocBased(assessmentQuestions)) {
       return
     }
     updateDocBasedTest(test._id, test, true)
@@ -855,6 +860,7 @@ class Container extends PureComponent {
 
   handlePublishTest = (assignFlow = false) => {
     const {
+      questions: assessmentQuestions,
       publishTest,
       test,
       match,
@@ -863,6 +869,9 @@ class Container extends PureComponent {
       setEditEnable,
     } = this.props
     const { _id } = test
+    if (test.isDocBased && !validateQuestionsForDocBased(assessmentQuestions)) {
+      return
+    }
     if (this.validateTest(test)) {
       const newTest = this.modifyTest()
       publishTest({
@@ -1218,6 +1227,7 @@ const enhance = compose(
       editEnable: get(state, 'tests.editEnable'),
       pageNumber: state?.testsAddItems?.page || 1,
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
+      isOrganizationDA: isOrganizationDistrictSelector(state),
     }),
     {
       createTest: createTestAction,

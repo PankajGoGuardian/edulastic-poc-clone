@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import next from 'immer'
 import styled from 'styled-components'
 import { Icon } from 'antd'
@@ -36,67 +36,80 @@ const StyledDomain = styled.div`
   width: 100px;
   margin: auto;
 `
+// column[0] = domains,
+// column[1] = standards
+// column[2] = question
+// column[3] = score
+// column[4] = performance
+// column[5] = masterySummary
+const columnsBase = next(tableColumnsData.standardsTable, (arr) => {
+  arr[0].render = (data, record, index) => {
+    return (
+      <StyledDomain>
+        <span style={{ color: greenDark }}>{data}</span>
+      </StyledDomain>
+    )
+  }
+  arr[1].render = (data, record, index) => (
+    <span data-cy={data} style={{ fontWeight: 'bold' }}>
+      {data}
+    </span>
+  )
+  arr[2].render = (data, record, index) => {
+    return data.map((q, i) => (
+      <>
+        <span key={q} style={{ color: themeColorLighter }}>
+          Q{q}
+        </span>
+        {i !== data.length - 1 && ', '}
+      </>
+    ))
+  }
+  arr[3].render = (data, record, index) => {
+    return `${data}/${record.maxScore}`
+  }
+  arr[4].render = (data, record, index) => {
+    return `${data}%`
+  }
+})
 
 export const StandardTableContainer = (props) => {
   const { dataSource, assignmentMasteryMap, columnsFlags } = props
-  // column[0] = domains,
-  // column[1] = standards
-  // column[2] = question
-  // column[3] = score
-  // column[4] = performance
-  // column[5] = masterySummary
-  const columns = next(tableColumnsData.standardsTable, (arr) => {
-    arr[0].render = (data, record, index) => {
-      return (
-        <StyledDomain>
-          <span style={{ color: greenDark }}>{data}</span>
-        </StyledDomain>
-      )
-    }
-    arr[1].render = (data, record, index) => (
-      <span data-cy={data} style={{ fontWeight: 'bold' }}>
-        {data}
-      </span>
-    )
-    arr[2].render = (data, record, index) => {
-      return data.map((q, i) => (
-        <>
-          <span key={q} style={{ color: themeColorLighter }}>
-            Q{q}
-          </span>
-          {i !== data.length - 1 && ', '}
-        </>
-      ))
-    }
-    arr[3].render = (data, record, index) => {
-      return `${data}/${record.maxScore}`
-    }
-    arr[4].render = (data, record, index) => {
-      return `${data}%`
-    }
-    arr[5].render = (data, record, index) => {
-      return (
-        <StyledMastery mastery={assignmentMasteryMap[data]}>
-          {data}
-        </StyledMastery>
-      )
-    }
-  })
 
-  // this checking which column to display/hide as per options selected
-  let _columns = [columns[0], columns[1], columns[2]]
-  if (columnsFlags.standardsPerformance) {
-    _columns = [..._columns, columns[3], columns[4]]
-  }
+  const columns_memoized = useMemo(() => {
+    const columns = [
+      ...tableColumnsData.standardsTable.slice(0, 5),
+      {
+        ...tableColumnsData.standardsTable[5],
+        render: (data, record, index) => {
+          return (
+            <StyledMastery mastery={assignmentMasteryMap[data]}>
+              {data}
+            </StyledMastery>
+          )
+        },
+      },
+    ]
+    // this checking which column to display/hide as per options selected
+    let _columns = [columns[0], columns[1], columns[2]]
+    if (columnsFlags.standardsPerformance) {
+      _columns = [..._columns, columns[3], columns[4]]
+    }
 
-  if (columnsFlags.masteryStatus) {
-    _columns = [..._columns, columns[5]]
-  }
+    if (columnsFlags.masteryStatus) {
+      _columns = [..._columns, columns[5]]
+    }
+    return _columns
+  }, [
+    assignmentMasteryMap,
+    !!columnsFlags.masteryStatus,
+    !!columnsFlags.standardsPerformance,
+  ])
 
   return (
     <StyledTable
       data-cy="report-standard-table"
-      columns={_columns}
+      columns={columns_memoized}
       dataSource={dataSource}
       rowKey="standardId"
       pagination={false}

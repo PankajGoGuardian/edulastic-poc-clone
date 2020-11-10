@@ -1,6 +1,5 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Empty } from 'antd'
-import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
@@ -22,6 +21,7 @@ import {
   getReportsAssessmentSummaryLoader,
   setReportsAssesmentSummaryLoadingAction,
 } from './ducks'
+import { getTestListSelector } from '../common/filterDataDucks'
 
 const CustomCliEmptyComponent = () => (
   <Empty
@@ -38,12 +38,20 @@ const AssessmentSummary = ({
   assessmentSummary,
   getAssessmentSummary,
   settings,
+  testList,
   user,
   match,
   setShowHeader,
   preventHeaderRender,
   setAssesmentSummaryLoading,
 }) => {
+  const selectedTest = testList.find(
+    (t) => t._id === settings.selectedTest.key
+  ) || { _id: '', title: '' }
+  const assessmentName = `${
+    selectedTest.title
+  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {}
@@ -79,20 +87,15 @@ const AssessmentSummary = ({
 
   const { bandInfo, metricInfo } = assessmentSummary
 
-  const assessmentName = get(settings, 'selectedTest.title', '')
-
   if (loading) {
     return <SpinLoader position="fixed" />
   }
-
   if (settings.cliUser && !metricInfo?.length) {
     return <CustomCliEmptyComponent />
   }
-
-  if (settings.selectedTest && !settings.selectedTest.key) {
+  if (!metricInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
-
   return (
     <>
       <UpperContainer type="flex">
@@ -157,6 +160,7 @@ const enhance = compose(
       role: getUserRole(state),
       assessmentSummary: getReportsAssessmentSummary(state),
       user: getUser(state),
+      testList: getTestListSelector(state),
     }),
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction,

@@ -175,7 +175,6 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
     const questions = get(testItem, ['data', 'questions'], [])
     const questionIndex = questions.findIndex((x) => x.id === qid)
     const questionNeeded = questions[questionIndex]
-
     if (questionNeeded) {
       // for item level scoring handle scores as whole instead of each questions
       if (testItem.itemLevelScoring && questionIndex === 0) {
@@ -586,7 +585,8 @@ export const transformGradeBookResponse = (
               skipped = false
             }
             if (_qids && _qids.length) {
-              correct = score === questionMaxScore && score > 0
+              correct =
+                (score === questionMaxScore && score > 0)
               if (!correct) {
                 partialCorrect = score > 0 && score <= questionMaxScore
               }

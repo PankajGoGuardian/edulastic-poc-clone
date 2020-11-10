@@ -1,7 +1,6 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
 import next from 'immer'
-import { get, isEmpty, groupBy, uniqBy, uniq } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -19,6 +18,7 @@ import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
   getSAFFilterSelectedPerformanceBandProfile,
+  getTestListSelector,
 } from '../common/filterDataDucks'
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
@@ -43,8 +43,16 @@ const PeerPerformance = ({
   peerPerformance,
   getPeerPerformance,
   settings,
+  testList,
   filters,
 }) => {
+  const selectedTest = testList.find(
+    (t) => t._id === settings.selectedTest.key
+  ) || { _id: '', title: '' }
+  const assessmentName = `${
+    selectedTest.title
+  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+
   const bandInfo = useMemo(
     () =>
       performanceBandProfiles.find(
@@ -133,102 +141,96 @@ const PeerPerformance = ({
     setChartFilter({})
   }
 
-  const assessmentName = get(settings, 'selectedTest.title', '')
-
-  if (settings.selectedTest && !settings.selectedTest.key) {
+  if (loading) {
+    return <SpinLoader position="fixed" />
+  }
+  if (!peerPerformance?.metricInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
-
   return (
     <div>
-      {loading ? (
-        <SpinLoader position="fixed" />
-      ) : (
-        <>
-          <UpperContainer>
-            <StyledCard>
-              <StyledSignedBarContainer>
-                <Row type="flex" justify="start">
-                  <Col xs={24} sm={24} md={12} lg={8} xl={12}>
-                    <StyledH3>
-                      Assessment Performance by {idToName[ddfilter.compareBy]} |{' '}
-                      {assessmentName}
-                    </StyledH3>
-                  </Col>
-                  <Col
-                    className="dropdown-container"
-                    xs={24}
-                    sm={24}
-                    md={12}
-                    lg={16}
-                    xl={12}
-                  >
-                    <ControlDropDown
-                      prefix="Analyze by"
-                      by={dropDownFormat.analyseByDropDownData[0]}
-                      selectCB={updateAnalyseByCB}
-                      data={dropDownFormat.analyseByDropDownData}
-                    />
-                    <ControlDropDown
-                      prefix="Compare by"
-                      style={{ marginLeft: 8 }}
-                      by={compareByDropDownData[0]}
-                      selectCB={updateCompareByCB}
-                      data={compareByDropDownData}
-                    />
-                  </Col>
-                </Row>
-                <div>
-                  {ddfilter.analyseBy === 'score(%)' ||
-                  ddfilter.analyseBy === 'rawScore' ? (
-                    // simple stacked bar-chart
-                    <SimpleStackedBarChartContainer
-                      data={parsedData.data}
-                      analyseBy={ddfilter.analyseBy}
-                      compareBy={ddfilter.compareBy}
-                      filter={chartFilter}
-                      assessmentName={assessmentName}
-                      onBarClickCB={onBarClickCB}
-                      onResetClickCB={onResetClickCB}
-                      bandInfo={bandInfo}
-                      role={role}
-                    />
-                  ) : (
-                    // signed stacked bar-chart
-                    <SignedStackedBarChartContainer
-                      data={parsedData.data}
-                      analyseBy={ddfilter.analyseBy}
-                      compareBy={ddfilter.compareBy}
-                      filter={chartFilter}
-                      assessmentName={assessmentName}
-                      onBarClickCB={onBarClickCB}
-                      onResetClickCB={onResetClickCB}
-                      bandInfo={bandInfo}
-                      role={role}
-                    />
-                  )}
-                </div>
-              </StyledSignedBarContainer>
-            </StyledCard>
-          </UpperContainer>
-          <TableContainer>
-            <StyledCard>
-              <PeerPerformanceTable
-                isCsvDownloading={isCsvDownloading}
-                columns={parsedData.columns}
-                dataSource={parsedData.data}
-                rowKey="compareBylabel"
-                filter={chartFilter}
-                analyseBy={ddfilter.analyseBy}
-                compareBy={ddfilter.compareBy}
-                assessmentName={assessmentName}
-                bandInfo={bandInfo}
-                role={role}
-              />
-            </StyledCard>
-          </TableContainer>
-        </>
-      )}
+      <UpperContainer>
+        <StyledCard>
+          <StyledSignedBarContainer>
+            <Row type="flex" justify="start">
+              <Col xs={24} sm={24} md={12} lg={8} xl={12}>
+                <StyledH3>
+                  Assessment Performance by {idToName[ddfilter.compareBy]} |{' '}
+                  {assessmentName}
+                </StyledH3>
+              </Col>
+              <Col
+                className="dropdown-container"
+                xs={24}
+                sm={24}
+                md={12}
+                lg={16}
+                xl={12}
+              >
+                <ControlDropDown
+                  prefix="Analyze by"
+                  by={dropDownFormat.analyseByDropDownData[0]}
+                  selectCB={updateAnalyseByCB}
+                  data={dropDownFormat.analyseByDropDownData}
+                />
+                <ControlDropDown
+                  prefix="Compare by"
+                  style={{ marginLeft: 8 }}
+                  by={compareByDropDownData[0]}
+                  selectCB={updateCompareByCB}
+                  data={compareByDropDownData}
+                />
+              </Col>
+            </Row>
+            <div>
+              {ddfilter.analyseBy === 'score(%)' ||
+              ddfilter.analyseBy === 'rawScore' ? (
+                // simple stacked bar-chart
+                <SimpleStackedBarChartContainer
+                  data={parsedData.data}
+                  analyseBy={ddfilter.analyseBy}
+                  compareBy={ddfilter.compareBy}
+                  filter={chartFilter}
+                  assessmentName={assessmentName}
+                  onBarClickCB={onBarClickCB}
+                  onResetClickCB={onResetClickCB}
+                  bandInfo={bandInfo}
+                  role={role}
+                />
+              ) : (
+                // signed stacked bar-chart
+                <SignedStackedBarChartContainer
+                  data={parsedData.data}
+                  analyseBy={ddfilter.analyseBy}
+                  compareBy={ddfilter.compareBy}
+                  filter={chartFilter}
+                  assessmentName={assessmentName}
+                  onBarClickCB={onBarClickCB}
+                  onResetClickCB={onResetClickCB}
+                  bandInfo={bandInfo}
+                  role={role}
+                />
+              )}
+            </div>
+          </StyledSignedBarContainer>
+        </StyledCard>
+      </UpperContainer>
+      <TableContainer>
+        <StyledCard>
+          <PeerPerformanceTable
+            isCsvDownloading={isCsvDownloading}
+            columns={parsedData.columns}
+            dataSource={parsedData.data}
+            rowKey="compareBylabel"
+            filter={chartFilter}
+            analyseBy={ddfilter.analyseBy}
+            compareBy={ddfilter.compareBy}
+            assessmentName={assessmentName}
+            bandInfo={bandInfo}
+            role={role}
+          />
+        </StyledCard>
+      </TableContainer>
     </div>
   )
 }
@@ -261,6 +263,7 @@ const enhance = compose(
       ),
       performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
       peerPerformance: getReportsPeerPerformance(state),
+      testList: getTestListSelector(state),
     }),
     {
       getPeerPerformance: getPeerPerformanceRequestAction,

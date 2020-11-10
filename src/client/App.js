@@ -137,6 +137,10 @@ if (query?.itemBank?.toUpperCase() === 'CANVAS') {
   sessionStorage.setItem('signupFlow', 'canvas')
 }
 
+if (query && query.cliUser && query.token) {
+  localStorage.setItem('cliAppRefreshUrl', window.location.href)
+}
+
 /**
  *  In case of redirection from canvas we might get errorDescription as query param which
  *  we have to display as error message and remove it from the url.
@@ -290,8 +294,6 @@ class App extends Component {
       isLocationInTestRedirectRoutes(location) ||
       location.pathname.includes('/kid')
 
-    const embedLink = location.pathname.split('/').includes('embed')
-
     if (
       !publicPath &&
       user.authenticating &&
@@ -305,7 +307,7 @@ class App extends Component {
     const features = user?.user?.features || {}
     let defaultRoute = ''
     let redirectRoute = ''
-    if (!publicPath && !embedLink) {
+    if (!publicPath) {
       const path = getWordsInURLPathName(location.pathname)
       const urlSearch = new URLSearchParams(location.search)
 
@@ -429,7 +431,7 @@ class App extends Component {
             history={history}
           />
         )}
-        <AppUpdate visible={showAppUpdate} />
+        <AppUpdate visible={showAppUpdate} isCliUser={user?.isCliUser} />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />
@@ -610,9 +612,10 @@ class App extends Component {
               path="/public/view-test/:testId"
               render={(props) => <PublicTest {...props} />}
             />
-            <Route
+            <PrivateRoute
               path="/assignments/embed/:testId"
-              render={(props) => <AssignmentEmbedLink {...props} />}
+              redirectPath={redirectRoute}
+              component={AssignmentEmbedLink}
             />
             <Route
               path="/audio-test"

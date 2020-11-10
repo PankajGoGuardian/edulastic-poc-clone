@@ -1261,7 +1261,7 @@ export const getDynamicVariablesSetIdForViewResponse = (state, studentId) => {
 export const getQIdsSelector = createSelector(
   stateTestActivitySelector,
   (state) => {
-    const testItemsData = get(state, 'data.test.testItems', [])
+    const testItemsData = get(state, 'data.testItemsData', [])
     if (testItemsData.length === 0) {
       return []
     }
@@ -1273,7 +1273,7 @@ export const getQIdsSelector = createSelector(
 export const getQLabelsSelector = createSelector(
   stateTestActivitySelector,
   (state) => {
-    const testItemsData = get(state, 'data.test.testItems', [])
+    const testItemsData = get(state, 'data.testItemsData', [])
     return getQuestionLabels(testItemsData)
   }
 )

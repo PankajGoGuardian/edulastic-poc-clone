@@ -144,4 +144,13 @@ export const getRedirectEndDate = (_class, dueDate) => {
   return endDate
 }
 
-export const getSmallerTime = (t1, t2) => (t1 < t2 ? t1 : t2)
+export const getSubmittedDate = (activityEndDate, classEndDate) => {
+  let endDate = activityEndDate || classEndDate
+  if (activityEndDate && classEndDate) {
+    endDate = activityEndDate < classEndDate ? activityEndDate : classEndDate
+  }
+  if (!endDate) {
+    return '-'
+  }
+  return moment(endDate).format('MMM DD, YYYY HH:mm')
+}

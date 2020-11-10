@@ -145,11 +145,18 @@ const fetchAssignmentsSummary = ({ districtId = '', filters, sort }) =>
     })
     .then((result) => result.data.result)
 
-const fetchAssignmentsClassList = ({ districtId, testId, testType, termId }) =>
+const fetchAssignmentsClassList = ({
+  districtId,
+  testId,
+  testType,
+  termId,
+  pageNo = 1,
+  status = '',
+}) =>
   api
     .callApi({
       useSlowApi: true,
-      url: `${prefix}/district/${districtId}/test/${testId}?testType=${testType}&termId=${termId}`,
+      url: `${prefix}/district/${districtId}/test/${testId}?testType=${testType}&termId=${termId}&pageNo=${pageNo}&status=${status}`,
       method: 'get',
     })
     .then((result) => result.data.result)
@@ -197,6 +204,15 @@ const fetchByTestId = (testId) =>
     })
     .then((result) => result.data.result)
 
+const searchAssignments = (data) =>
+  api
+    .callApi({
+      url: `search/assignments`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   create,
   update,
@@ -217,4 +233,5 @@ export default {
   getDifferentiationStudentList,
   syncWithGoogleClassroom,
   fetchByTestId,
+  searchAssignments,
 }

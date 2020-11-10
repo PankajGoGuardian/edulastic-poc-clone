@@ -28,6 +28,7 @@ import {
 import { getSelectedItems } from '../../../src/selectors/folder'
 import { canEditTest } from '../../utils'
 import ActionMenu from '../ActionMenu/ActionMenu'
+import Spinner from '../../../../common/components/Spinner'
 import {
   ActionDiv,
   AssignmentTD,
@@ -116,7 +117,18 @@ class AdvancedTable extends Component {
         sortOrder: false,
         onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 3) }),
         width: '8%',
-        render: (text) => <div> {text} </div>,
+        render: (text, data) => {
+          if (data.bulkAssignedCountProcessed < data.bulkAssignedCount) {
+            return (
+              <Tooltip placement="top" title="Assigning In Progress">
+                <div style={{ position: 'relative' }}>
+                  <Spinner size="18px" />
+                </div>
+              </Tooltip>
+            )
+          }
+          return <div> {text} </div>
+        },
       },
       {
         title: 'Not Started & Absent',
@@ -140,7 +152,7 @@ class AdvancedTable extends Component {
       },
       {
         title: 'Submitted',
-        dataIndex: 'inGradingStudents',
+        dataIndex: 'submittedStudents',
         sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
@@ -209,6 +221,7 @@ class AdvancedTable extends Component {
             togglePrintModal,
             userClassList,
             assignmentsSummary,
+            showEmbedLinkModal,
           } = this.props
           const canEdit = canEditTest(row, userId)
           const assignmentTest = assignmentsSummary.find(
@@ -239,6 +252,7 @@ class AdvancedTable extends Component {
                   addItemToFolder: this.handleSelectRow(row),
                   removeItemsFromFolder: () =>
                     this.handleRemoveItemsFromFolder(row),
+                  showEmbedLinkModal,
                 })}
                 placement="bottomRight"
                 trigger={['click']}

@@ -137,7 +137,7 @@ export const getFormattedName = (name) => {
 }
 
 export const getOverallScore = (metrics = []) =>
-  percentage(sumBy(metrics, 'totalScore'), sumBy(metrics, 'maxScore'))
+  percentage(sumBy(metrics, 'totalScore'), sumBy(metrics, 'maxScore') || 1)
 
 export const getOverallRawScore = (metrics = []) =>
   sumBy(metrics, 'totalScore') / metrics.length
@@ -148,7 +148,7 @@ const chartGetAverageScoreByStandards = (studentMetrics) => (standardId) => {
 
   // calculate average score for a standard by all it's students
   const totalScore = metricsList.reduce(
-    (score, current) => score + current.totalScore / current.maxScore,
+    (score, current) => score + current.totalScore / (current.maxScore || 1),
     0
   )
   const masteryScore = metricsList.reduce(

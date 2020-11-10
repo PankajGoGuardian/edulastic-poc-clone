@@ -1,5 +1,5 @@
 import { grey, themeColor, titleColor } from '@edulastic/colors'
-import { FieldLabel, FlexContainer, SelectInputStyled } from '@edulastic/common'
+import { FlexContainer } from '@edulastic/common'
 import {
   roleuser,
   test as testsConstants,
@@ -7,7 +7,6 @@ import {
   folderTypes,
 } from '@edulastic/constants'
 import { IconExpandBox } from '@edulastic/icons'
-import { Select } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -34,6 +33,7 @@ import {
 import { getAllTagsSelector } from '../../../TestPage/ducks'
 import { removeTestFromCartAction } from '../../ducks'
 import filterData from './FilterData'
+import FiltersSidebar from './FiltersSidebar'
 
 const filtersTitle = ['Grades', 'Subject', 'Status']
 const TestListFilters = ({
@@ -311,44 +311,11 @@ const TestListFilters = ({
                     <IconExpandBox onClick={handleSetShowModal} />
                   </IconExpandBoxWrapper>
                 )}
-                <FieldLabel>{filterItem.title}</FieldLabel>
-                <SelectStyled
-                  data-cy={filterItem.title}
-                  showSearch={filterItem.showSearch}
-                  onSearch={filterItem.onSearch && filterItem.onSearch}
-                  mode={filterItem.mode}
-                  size={filterItem.size}
-                  placeholder={filterItem.placeholder}
-                  filterOption={filterItem.filterOption}
-                  optionFilterProp={filterItem.optionFilterProp}
-                  defaultValue={
-                    filterItem.mode === 'multiple'
-                      ? undefined
-                      : filterItem.data[0] && filterItem.data[0].value
-                  }
-                  value={search[filterItem.onChange]}
-                  onChange={(value) => onChange(filterItem.onChange, value)}
-                  disabled={filterItem.disabled}
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                  margin="0px 0px 15px"
-                >
-                  {filterItem.data.map(({ value, text, disabled }, index1) => (
-                    <Select.Option
-                      value={value}
-                      key={index1}
-                      disabled={disabled}
-                    >
-                      {text}
-                    </Select.Option>
-                  ))}
-                  {isPublishers &&
-                    filterItem.title === 'Status' &&
-                    filterItem.publisherOptions.map(({ value, text }) => (
-                      <Select.Option value={value} key={value}>
-                        {text}
-                      </Select.Option>
-                    ))}
-                </SelectStyled>
+                <FiltersSidebar
+                  filterItem={filterItem}
+                  onChange={onChange}
+                  search={search}
+                />
               </FilterItemWrapper>
             </>
           )
@@ -437,15 +404,5 @@ const IconExpandBoxWrapper = styled.div`
     svg path {
       fill: ${grey};
     }
-  }
-`
-
-const SelectStyled = styled(SelectInputStyled)`
-  .ant-select-selection__placeholder {
-    padding-right: 18px;
-  }
-
-  .ant-select-selection {
-    cursor: pointer !important;
   }
 `

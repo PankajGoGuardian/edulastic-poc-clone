@@ -5,7 +5,7 @@ import { groupBy } from 'lodash'
 import { Tooltip, Dropdown } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from '@edulastic/localization'
-import { test } from '@edulastic/constants'
+import { test, roleuser } from '@edulastic/constants'
 import { EduButton, notification } from '@edulastic/common'
 import { IconMoreHorizontal } from '@edulastic/icons'
 import presentationIcon from '../../assets/presentation.svg'
@@ -24,6 +24,7 @@ import {
   BulkActionsButtonContainer,
   MoreOption,
   AssessmentTypeWrapper,
+  ClassNameCell,
 } from './styled'
 import { Container as MoreOptionsContainer } from '../../../Assignments/components/ActionMenu/styled'
 import { TimedTestIndicator } from '../../../Assignments/components/TableList/styled'
@@ -44,7 +45,14 @@ const columns = [
       a.class.localeCompare(b.class, 'en', { ignorePunctuation: true }),
     width: '30%',
     align: 'left',
-    render: (text) => <div>{text}</div>,
+    render: (text, data) => (
+      <ClassNameCell>
+        <span>{text}</span>
+        {data.institutionName && (
+          <span className="schoolName">{data.institutionName}</span>
+        )}
+      </ClassNameCell>
+    ),
   },
   {
     title: 'Type',
@@ -138,7 +146,6 @@ const columns = [
 ]
 const TableList = ({
   classList = [],
-  filterStatus,
   bulkOpenAssignmentRequest,
   bulkCloseAssignmentRequest,
   bulkPauseAssignmentRequest,
@@ -153,11 +160,21 @@ const TableList = ({
   bulkActionStatus,
   isHeaderAction,
   history,
+  userSchoolsList = [],
+  userRole,
+  pageNo,
+  totalAssignmentsClasses,
+  handlePagination,
+  filterStatus,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
     false
   )
+  let showSchoolName = true
+  if (userRole === roleuser.SCHOOL_ADMIN && userSchoolsList.length < 2) {
+    showSchoolName = false
+  }
   const convertRowData = (data, index) => ({
     class: data.name,
     type: data.testType,
@@ -176,13 +193,11 @@ const TableList = ({
     key: index,
     timedAssignment: data.timedAssignment,
     allowedTime: data.allowedTime,
+    institutionName: showSchoolName ? data.institutionName : false,
   })
   const rowData = useMemo(
-    () =>
-      classList
-        .filter((o) => (filterStatus ? o.status === filterStatus : true))
-        .map((data, index) => convertRowData(data, index)),
-    [classList, filterStatus]
+    () => classList.map((data, index) => convertRowData(data, index)),
+    [classList]
   )
 
   /**
@@ -193,7 +208,14 @@ const TableList = ({
     setSelectedRows([])
   }, [rowData])
 
-  const showPagination = rowData.length > 10
+  let showPagination = false
+  if (totalAssignmentsClasses > 100) {
+    showPagination = {
+      pageSize: 100,
+      total: totalAssignmentsClasses || 0,
+      current: pageNo || 1,
+    }
+  }
 
   const handleSelectAll = (selected) => {
     if (selected) {
@@ -235,6 +257,7 @@ const TableList = ({
       data: selectedRowsGroupByAssignment,
       testId: classList[0].testId,
       testType,
+      status: filterStatus,
     }
     if (type === 'open') bulkOpenAssignmentRequest(payload)
     else if (type === 'close') bulkCloseAssignmentRequest(payload)
@@ -280,7 +303,11 @@ const TableList = ({
   const renderBulkActions = () => (
     <BulkActionsWrapper>
       <div>
-        <span data-cy="totalSelected">{selectedRows.length}</span>
+        <span data-cy="totalSelected">
+          {rowData.length > selectedRows.length
+            ? selectedRows.length
+            : totalAssignmentsClasses}
+        </span>
         <span>Class(es) Selected</span>
       </div>
       <BulkActionsButtonContainer>
@@ -346,6 +373,7 @@ const TableList = ({
         columns={columns}
         dataSource={rowData}
         pagination={showPagination}
+        onChange={(pagination) => handlePagination(pagination?.current || 1)}
         rowSelection={rowSelection}
         loading={isLoadingAssignments}
         onRow={(row) => ({

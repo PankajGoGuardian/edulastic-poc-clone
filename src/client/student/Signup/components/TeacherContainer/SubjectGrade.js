@@ -9,7 +9,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { Button, Col, Form, Row, Select } from 'antd'
 import { find, get, isEmpty, map, mapKeys, pick } from 'lodash'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { createRef } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
@@ -34,6 +34,13 @@ const schoolIcon =
   '//cdn.edulastic.com/JS/webresources/images/as/signup-join-school-icon.png'
 
 class SubjectGrade extends React.Component {
+  constructor(props) {
+    super(props)
+    this.gradeRef = createRef()
+    this.subjectRef = createRef()
+    this.standardRef = createRef()
+  }
+
   state = {
     subjects: [],
     grades: [],
@@ -166,6 +173,9 @@ class SubjectGrade extends React.Component {
                         placeholder="Select a grade or multiple grades"
                         mode="multiple"
                         onChange={this.updateGrades}
+                        ref={this.gradeRef}
+                        onSelect={() => this.gradeRef?.current?.blur()}
+                        onDeselect={() => this.gradeRef?.current?.blur()}
                         showArrow
                       >
                         {filteredAllGrades.map((el) => (
@@ -192,6 +202,9 @@ class SubjectGrade extends React.Component {
                         size="large"
                         placeholder="Select a subject"
                         onChange={this.updateSubjects}
+                        ref={this.subjectRef}
+                        onSelect={() => this.subjectRef?.current?.blur()}
+                        onDeselect={() => this.subjectRef?.current?.blur()}
                         showArrow
                       >
                         {_allSubjects.map((el) => (
@@ -218,6 +231,9 @@ class SubjectGrade extends React.Component {
                         size="large"
                         placeholder="Select your standard sets"
                         mode="multiple"
+                        ref={this.standardRef}
+                        onSelect={() => this.standardRef?.current?.blur()}
+                        onDeselect={() => this.standardRef?.current?.blur()}
                         showArrow
                       >
                         {formattedCurriculums.map(

@@ -74,7 +74,7 @@ const usefetchProgressHook = (
         schoolIds,
       })
     }
-  }, [settings, compareBy.key, ddfilter])
+  }, [settings, compareBy.key])
 }
 
 const PeerProgressAnalysis = ({

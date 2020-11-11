@@ -348,32 +348,6 @@ export const apiForms = [
     ],
   },
   {
-    id: 'archive-unarchive-classes',
-    name: 'Archive / Unarchive Classes',
-    endPoint: 'group/archive-tool',
-    method: 'post',
-    fields: [
-      {
-        name: 'groupIds',
-        displayName: 'Classes',
-        placeholder: 'Enter comma separated Class Ids',
-        type: 'textarea',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
-        required: true,
-      },
-      {
-        key: 'archive',
-        name: 'archive',
-        placeholder: 'Archive/Unarchive',
-        type: 'radiogroup',
-        values: ['Archive', 'Unarchive'],
-        formatter: (value) => value === 'Archive',
-        defaultValue: 'Archive',
-        required: true,
-      },
-    ],
-  },
-  {
     id: 'activate-deactivate-user',
     name: 'Activate/Deactivate User',
     endPoint: 'user/user-details',

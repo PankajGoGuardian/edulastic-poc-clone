@@ -10,10 +10,16 @@ import {
   ADVANCED_ASSIGNMENT_VIEW,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+  SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
 } from '../constants/actions'
 
 export const googleSyncAssignmentAction = (payload) => ({
   type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
+  payload,
+})
+
+export const googleSyncAssignmentGradesAction = (payload) => ({
+  type: SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
   payload,
 })
 

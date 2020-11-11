@@ -68,6 +68,7 @@ import {
   REDIRECT_TO_ASSIGNMENTS,
   REGENERATE_PASSWORD,
   CANVAS_SYNC_GRADES,
+  CANVAS_SYNC_ASSIGNMENT,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -566,6 +567,24 @@ function* canvasSyncGradesSaga({ payload }) {
   }
 }
 
+function* canvasSyncAssignmentSaga({ payload }) {
+  try {
+    yield call(canvasApi.canvasAssignmentSync, payload)
+    yield call(notification, {
+      type: 'success',
+      msg: 'Assignment synced with canvas successfully.',
+    })
+  } catch (err) {
+    captureSentryException(err)
+    const {
+      data: { message: errorMessage },
+    } = err.response
+    yield call(notification, {
+      msg: errorMessage || 'Failed to sync assignment with canvas.',
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -589,6 +608,7 @@ export function* watcherSaga() {
     yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga),
     yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga),
     yield takeEvery(CANVAS_SYNC_GRADES, canvasSyncGradesSaga),
+    yield takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
   ])
 }
 

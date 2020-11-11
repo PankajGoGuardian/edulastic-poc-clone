@@ -227,6 +227,7 @@ export const UPDATE_PASSWORD_DETAILS =
   '[gradebook] update password details action'
 
 export const CANVAS_SYNC_GRADES = '[gradebook] sync grades with canvas'
+export const CANVAS_SYNC_ASSIGNMENT = '[gradebook] sync assignment with canvas'
 
 export const RECEIVE_TESTACTIVITY_REQUEST =
   '[testActivity] receive list request'

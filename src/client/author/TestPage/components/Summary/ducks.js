@@ -18,7 +18,6 @@ export const getSummarySelector = createSelector(
       const res = questions.map((q) => {
         const item = scoring.testItems.find(({ id }) => testItem._id === id)
         const score = item && item.points ? item.points : 0
-
         return {
           id: q._id,
           score,

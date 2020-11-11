@@ -77,9 +77,7 @@ const StudentFeedback = ({
     return userInitials
   }
 
-  const _maxScore = isPracticeQuestion ? '' : maxScore
   const feedbackTextByTeacher = get(feedback, 'text', 'No feedback provided')
-
   return (
     <FeedbackWrapper isStudentReport={isStudentReport}>
       <FeedbackText isStudentReport={isStudentReport}>
@@ -94,12 +92,17 @@ const StudentFeedback = ({
           <IconCheckWrapper>
             <IconCheck />
           </IconCheckWrapper>
-          <ScoreWrapper>
-            <Score data-cy="score">{_score}</Score>
-            <Total data-cy="maxscore">{_maxScore}</Total>
-          </ScoreWrapper>
+          {!isPracticeQuestion && (
+            <ScoreWrapper>
+              <Score data-cy="score">{_score}</Score>
+              <Total data-cy="maxscore">{maxScore}</Total>
+            </ScoreWrapper>
+          )}
           <Feedback>
-            <FeedbackGiven data-cy="feedback">
+            <FeedbackGiven
+              isPracticeQuestion={isPracticeQuestion}
+              data-cy="feedback"
+            >
               {feedbackTextByTeacher}
             </FeedbackGiven>
           </Feedback>
@@ -226,6 +229,7 @@ const FeedbackGiven = styled.div`
   padding: 0px 0px 0px 16px;
   color: #878282;
   font-size: 0.8rem;
+  ${(props) => props.isPracticeQuestion && `padding-left:30px;`}
 `
 
 const UserImg = styled.div`

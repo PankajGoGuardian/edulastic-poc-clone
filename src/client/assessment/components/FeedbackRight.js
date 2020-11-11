@@ -44,6 +44,7 @@ import {
   getUserThumbnail,
 } from '../../author/src/selectors/user'
 import { getAvatarName } from '../../author/ClassBoard/Transformer'
+import { ExclamationMark } from '../../author/ClassBoard/components/DisneyCardContainer/styled'
 
 const { TextArea } = Input
 
@@ -334,7 +335,6 @@ class FeedbackRight extends Component {
       rubricDetails,
       user,
       disabled,
-      isPracticeQuestion,
     } = this.props
     const {
       score,
@@ -351,7 +351,7 @@ class FeedbackRight extends Component {
         rubricDetails.criteria,
         (c) => maxBy(c.ratings, 'points').points
       )
-    const { rubricFeedback } = activity || {}
+    const { rubricFeedback, practiceUsage } = activity || {}
     const isError = rubricDetails ? rubricMaxScore < score : maxScore < score
     const isStudentName = studentName !== undefined && studentName.length !== 0
     let title
@@ -391,11 +391,8 @@ class FeedbackRight extends Component {
 
     const _maxScore = rubricMaxScore || maxScore
 
-    // TODO: uncomment when practice question scoring is implemented (EV-12869)
-    // if (isPracticeQuestion) {
-    //   _maxScore = "";
-    // }
 
+    console.log(activity,"==activity")
     const { studentResponseLoading, expressGrader } = this.context
     return (
       <StyledCardTwo
@@ -411,7 +408,10 @@ class FeedbackRight extends Component {
             responseLoading={studentResponseLoading}
           />
         )}
-        <StyledDivSec>
+        {
+          practiceUsage ? <span title="Practice usage enabled">
+          <ExclamationMark />
+        </span> : ( <StyledDivSec>
           <ScoreInputWrapper>
             <ScoreInput
               data-cy="scoreInput"
@@ -420,7 +420,7 @@ class FeedbackRight extends Component {
               value={_score}
               disabled={
                 isPresentationMode ||
-                isPracticeQuestion ||
+                practiceUsage ||
                 studentResponseLoading
               }
               ref={this.scoreInput}
@@ -431,6 +431,7 @@ class FeedbackRight extends Component {
             <TextPara>{_maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
+        )}
         {showGradingRubricButton && (
           <RubricsWrapper>
             <RubricsButton onClick={() => this.handleRubricAction()}>

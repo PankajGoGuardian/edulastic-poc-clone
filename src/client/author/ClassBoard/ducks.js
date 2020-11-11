@@ -732,6 +732,8 @@ export const getItemSummary = (
         barLabel,
         timeSpent,
         pendingEvaluation,
+        practiceUsage,
+        correct,
       } = _activity
 
       let { notStarted, skipped } = _activity
@@ -761,7 +763,7 @@ export const getItemSummary = (
       }
       if (!notStarted) {
         questionMap[_id].attemptsNum += 1
-      } else if (score > 0) {
+      } else if (score > 0 || (practiceUsage && graded) || skipped) {
         notStarted = false
       } else {
         questionMap[_id].notStartedNum += 1
@@ -780,9 +782,17 @@ export const getItemSummary = (
         pendingEvaluation
       ) {
         questionMap[_id].manualGradedNum += 1
-      } else if (score === maxScore && !notStarted && score > 0) {
+      } else if (
+        (score === maxScore && !notStarted && score > 0) ||
+        (practiceUsage && correct)
+      ) {
         questionMap[_id].correctNum += 1
-      } else if (score === 0 && !notStarted && maxScore > 0 && !skippedx) {
+      } else if (
+        score === 0 &&
+        !notStarted &&
+        (maxScore > 0 || practiceUsage) &&
+        !skippedx
+      ) {
         questionMap[_id].wrongNum += 1
       } else if (score > 0 && score < maxScore) {
         questionMap[_id].partialNum += 1

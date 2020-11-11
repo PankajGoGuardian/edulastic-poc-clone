@@ -103,7 +103,7 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       compareBy,
       compareBylabel: groupedData[data][0][idToLabel[compareBy]]
         ? groupedData[data][0][idToLabel[compareBy]]
-        : 'NA',
+        : '-',
       fill: getHSLFromRange1(avgStudentScorePercent),
       dFill: getHSLFromRange1(rawData.districtAvgPerf),
     }
@@ -161,7 +161,7 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       compareBy,
       compareBylabel: groupedData[data][0][idToLabel[compareBy]]
         ? groupedData[data][0][idToLabel[compareBy]]
-        : 'NA',
+        : '-',
       fill: getHSLFromRange1((avgStudentScore / maxScore) * 100),
       dFill: getHSLFromRange1(rawData.districtAvgPerf),
     }
@@ -229,7 +229,7 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
       compareBy,
       compareBylabel: groupedData[data][0][idToLabel[compareBy]]
         ? groupedData[data][0][idToLabel[compareBy]]
-        : 'NA',
+        : '-',
       fill_0: getHSLFromRange1(100),
       fill_1: getHSLFromRange1(0),
     }
@@ -309,7 +309,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       compareBy,
       compareBylabel: groupedData[data][0][idToLabel[compareBy]]
         ? groupedData[data][0][idToLabel[compareBy]]
-        : 'NA',
+        : '-',
     }
 
     return item

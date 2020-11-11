@@ -7,6 +7,7 @@ import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
@@ -20,6 +21,7 @@ import {
   getReportsAssessmentSummary,
   getReportsAssessmentSummaryLoader,
   setReportsAssesmentSummaryLoadingAction,
+  getReportsAssessmentSummaryError,
 } from './ducks'
 import { getTestListSelector } from '../common/filterDataDucks'
 
@@ -32,6 +34,7 @@ const CustomCliEmptyComponent = () => (
 
 const AssessmentSummary = ({
   loading,
+  error,
   isPrinting,
   isCsvDownloading,
   role,
@@ -93,6 +96,11 @@ const AssessmentSummary = ({
   if (settings.cliUser && !metricInfo?.length) {
     return <CustomCliEmptyComponent />
   }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
   if (!metricInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
@@ -155,6 +163,7 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsAssessmentSummaryLoader(state),
+      error: getReportsAssessmentSummaryError(state),
       isPrinting: getPrintingState(state),
       isCsvDownloading: getCsvDownloadingState(state),
       role: getUserRole(state),

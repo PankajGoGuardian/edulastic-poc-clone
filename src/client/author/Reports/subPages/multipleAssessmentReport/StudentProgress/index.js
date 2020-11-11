@@ -9,7 +9,7 @@ import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
 import TrendStats from '../common/components/trend/TrendStats'
 import TrendTable from '../common/components/trend/TrendTable'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
-
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import {
   downloadCSV,
   filterAccordingToRole,
@@ -23,6 +23,7 @@ import {
   getReportsStudentProgress,
   getReportsStudentProgressLoader,
   getStudentProgressRequestAction,
+  getReportsStudentProgressError,
 } from './ducks'
 import { useGetBandData } from './hooks'
 
@@ -59,6 +60,7 @@ const StudentProgress = ({
   isCsvDownloading,
   settings,
   loading,
+  error,
   role,
   user,
   filters,
@@ -137,6 +139,9 @@ const StudentProgress = ({
     return <SpinLoader position="fixed" />
   }
 
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
   const customTableColumns = filterAccordingToRole(tableColumns, role)
 
   const onTrendSelect = (trend) =>
@@ -254,6 +259,7 @@ const enhance = connect(
   (state) => ({
     studentProgress: getReportsStudentProgress(state),
     loading: getReportsStudentProgressLoader(state),
+    error: getReportsStudentProgressError(state),
     filters: getFiltersSelector(state),
     role: getUserRole(state),
     user: getUser(state),

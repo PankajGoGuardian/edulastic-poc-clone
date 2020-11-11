@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useLayoutEffect,
-} from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLayoutEffectDebounced } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { get, isEmpty } from 'lodash'
@@ -22,6 +16,7 @@ import {
 } from '../utils/transformers'
 
 import { StyledTableWrapper, StyledPage, StyledLegendContainer } from './styles'
+import { getInterestedCurriculumsSelector } from '../../src/selectors/user'
 
 const A4_HEIGHT = 1200
 const QUESTION_TABLE_MARGIN = 30
@@ -54,6 +49,7 @@ const StudentReportPage = ({
   performanceBandsData,
   setLoaded,
   index,
+  interestedCurriculums,
 }) => {
   const performanceRef = useRef()
   const mainContainerRef = useRef()
@@ -86,9 +82,9 @@ const StudentReportPage = ({
                 '.student-report-card-question-table-container .ant-table-body > table > tbody > tr'
               ) || []
           const questionsDims = {}
-          questionsElm.forEach(
-            (elm, i) => (questionsDims[i] = elm.clientHeight)
-          )
+          questionsElm.forEach((elm, i) => {
+            questionsDims[i] = elm.clientHeight
+          })
           if (!isEmpty(questionsDims)) {
             setQuestionTableDims(questionsDims)
           }
@@ -100,7 +96,9 @@ const StudentReportPage = ({
                 '.student-report-card-standard-table-container .ant-table-body > table > tbody > tr'
               ) || []
           const standardDims = {}
-          standardELms.forEach((elm, i) => (standardDims[i] = elm.clientHeight))
+          standardELms.forEach((elm, i) => {
+            standardDims[i] = elm.clientHeight
+          })
           if (!isEmpty(standardDims)) {
             setStandardTableDims(standardDims)
           }
@@ -135,7 +133,8 @@ const StudentReportPage = ({
     )
     const chartAndStandardTable = getChartAndStandardTableData(
       currentStudentResponse,
-      author_classboard_testActivity
+      author_classboard_testActivity,
+      interestedCurriculums
     )
     const studentName = testActivity.studentName
     const feedback = author_classboard_testActivity.data.testActivities?.find(
@@ -371,13 +370,13 @@ const StudentReportPage = ({
 }
 
 StudentReportPage.propTypes = {
-  studentResponse: PropTypes.object,
-  author_classboard_testActivity: PropTypes.object,
-  testActivity: PropTypes.object,
+  studentResponse: PropTypes.object.isRequired,
+  author_classboard_testActivity: PropTypes.object.isRequired,
+  testActivity: PropTypes.object.isRequired,
   groupId: PropTypes.string.isRequired,
   loadStudentResponse: PropTypes.func.isRequired,
-  sections: PropTypes.object,
-  classResponse: PropTypes.object,
+  sections: PropTypes.object.isRequired,
+  classResponse: PropTypes.object.isRequired,
 }
 
 const enhance = connect(
@@ -389,6 +388,7 @@ const enhance = connect(
       []
     ),
     entities: get(state, ['author_classboard_testActivity', 'entities'], []),
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
   }),
   {
     loadStudentResponse: receiveStudentResponseAction,

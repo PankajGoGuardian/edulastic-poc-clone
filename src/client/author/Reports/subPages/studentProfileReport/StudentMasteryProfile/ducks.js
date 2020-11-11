@@ -48,6 +48,11 @@ export const getReportsStudentMasteryProfileLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStudentMasteryProfileError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 export const getStudentStandardData = createSelector(
   stateSelector,
   (state) => state.studentStandard
@@ -81,6 +86,7 @@ export const reportStudentMasteryProfileReducer = createReducer(initialState, {
     { payload }
   ) => {
     state.loading = false
+    state.error = false
     state.studentMasteryProfile = payload.studentMasteryProfile
   },
   [GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_ERROR]: (state, { payload }) => {
@@ -111,7 +117,15 @@ function* getReportsStudentMasteryProfileRequest({ payload }) {
       reportsApi.fetchStudentMasteryProfileReport,
       payload
     )
-
+    const dataSizeExceeded =
+      studentMasteryProfile?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_ERROR,
+        payload: { error: { ...studentMasteryProfile.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_SUCCESS,
       payload: { studentMasteryProfile },

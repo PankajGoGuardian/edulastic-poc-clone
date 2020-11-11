@@ -39,6 +39,11 @@ export const getReportsStudentProfileSummaryLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStudentProfileSummaryError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -60,6 +65,7 @@ export const reportStudentProfileSummaryReducer = createReducer(initialState, {
     { payload }
   ) => {
     state.loading = false
+    state.error = false
     state.studentProfileSummary = payload.studentProfileSummary
   },
   [GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST_ERROR]: (state, { payload }) => {
@@ -80,7 +86,15 @@ function* getReportsStudentProfileSummaryRequest({ payload }) {
       reportsApi.fetchStudentProfileSummaryReport,
       payload
     )
-
+    const dataSizeExceeded =
+      studentProfileSummary?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST_ERROR,
+        payload: { error: { ...studentProfileSummary.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST_SUCCESS,
       payload: { studentProfileSummary },

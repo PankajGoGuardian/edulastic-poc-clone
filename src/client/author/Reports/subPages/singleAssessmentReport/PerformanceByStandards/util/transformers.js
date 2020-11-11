@@ -103,30 +103,31 @@ export const compareByColumns = {
     dataIndex: 'race',
     key: 'race',
     sorter: lexicSort('race'),
-    render: capitalize,
+    render: (race) => (race ? capitalize(race) : '-'),
   },
   [compareByMode.GENDER]: {
     title: 'Gender',
     dataIndex: 'gender',
     key: 'gender',
+    render: (gender) => (gender ? capitalize(gender) : '-'),
   },
   [compareByMode.FRL_STATUS]: {
     title: 'FRL Status',
     dataIndex: 'frlStatus',
     key: 'frlStatus',
-    render: capitalize,
+    render: (status) => (status ? capitalize(status) : '-'),
   },
   [compareByMode.ELL_STATUS]: {
     title: 'ELL Status',
     dataIndex: 'ellStatus',
     key: 'ellStatus',
-    render: capitalize,
+    render: (status) => (status ? capitalize(status) : '-'),
   },
   [compareByMode.IEP_STATUS]: {
     title: 'IEP Status',
     dataIndex: 'iepStatus',
     key: 'iepStatus',
-    render: capitalize,
+    render: (status) => (status ? capitalize(status) : '-'),
   },
 }
 
@@ -137,7 +138,7 @@ export const getFormattedName = (name) => {
 }
 
 export const getOverallScore = (metrics = []) =>
-  percentage(sumBy(metrics, 'totalScore'), sumBy(metrics, 'maxScore'))
+  percentage(sumBy(metrics, 'totalScore'), sumBy(metrics, 'maxScore') || 1)
 
 export const getOverallRawScore = (metrics = []) =>
   sumBy(metrics, 'totalScore') / metrics.length
@@ -148,7 +149,7 @@ const chartGetAverageScoreByStandards = (studentMetrics) => (standardId) => {
 
   // calculate average score for a standard by all it's students
   const totalScore = metricsList.reduce(
-    (score, current) => score + current.totalScore / current.maxScore,
+    (score, current) => score + current.totalScore / (current.maxScore || 1),
     0
   )
   const masteryScore = metricsList.reduce(

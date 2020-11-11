@@ -40,6 +40,11 @@ export const getReportsStudentProgressLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStudentProgressError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -58,6 +63,7 @@ export const reportStudentProgressReducer = createReducer(initialState, {
   },
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.studentProgress = payload.studentProgress
   },
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR]: (state, { payload }) => {
@@ -81,6 +87,14 @@ function* getReportsStudentProgressRequest({ payload }) {
       groupIds,
     })
 
+    const dataSizeExceeded = studentProgress?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR,
+        payload: { error: { ...studentProgress?.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS,
       payload: { studentProgress },

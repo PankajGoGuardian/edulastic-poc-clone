@@ -1,4 +1,4 @@
-import { set, round } from 'lodash'
+import { set, round, min } from 'lodash'
 import produce from 'immer'
 import { questionType } from '@edulastic/constants'
 import evaluators from './evaluators'
@@ -17,6 +17,7 @@ export const evaluateItem = async (
   const questionsNum = Object.keys(validations).filter(
     (x) => validations?.[x]?.validation
   ).length
+  let allCorrect = true
   for (const id of questionIds) {
     const answer = answers[id]
     if (validations && validations[id]) {
@@ -39,6 +40,9 @@ export const evaluateItem = async (
           },
           type
         )
+        if (allCorrect) {
+          allCorrect = score === maxScore
+        }
 
         results[id] = evaluation
         if (itemLevelScoring) {
@@ -59,7 +63,7 @@ export const evaluateItem = async (
     return {
       evaluation: results,
       maxScore: itemLevelScore,
-      score: totalScore > itemLevelScore ? itemLevelScore : totalScore,
+      score: min([itemLevelScore, allCorrect ? itemLevelScore : totalScore]),
     }
   }
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore }

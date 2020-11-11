@@ -39,6 +39,11 @@ export const getReportsPeerPerformanceLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsPeerPerformanceError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -64,6 +69,7 @@ export const reportPeerPerformanceReducer = createReducer(initialState, {
   },
   [GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.peerPerformance = payload.peerPerformance
   },
   [GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR]: (state, { payload }) => {
@@ -88,9 +94,17 @@ function* getReportsPeerPerformanceRequest({ payload }) {
       payload.requestFilters?.groupIds?.join(',') ||
       payload.requestFilters?.groupId ||
       ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchPeerPerformanceReport, payload)
+    const { data } = yield call(reportsApi.fetchPeerPerformanceReport, payload)
+
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
+
     const peerPerformance = isEmpty(result) ? defaultReport : result
 
     yield put({

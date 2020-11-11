@@ -48,6 +48,11 @@ export const getReportsStandardsGradebookLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStandardsGradebookError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 export const getStudentStandardData = createSelector(
   stateSelector,
   (state) => state.studentStandard
@@ -87,6 +92,7 @@ export const reportStandardsGradebookReducer = createReducer(initialState, {
   },
   [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.standardsGradebook = payload.standardsGradebook
   },
   [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR]: (state, { payload }) => {
@@ -117,6 +123,14 @@ function* getReportsStandardsGradebookRequest({ payload }) {
       reportsApi.fetchStandardsGradebookReport,
       payload
     )
+    const dataSizeExceeded = standardsGradebook?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR,
+        payload: { error: { ...standardsGradebook.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS,
       payload: { standardsGradebook },

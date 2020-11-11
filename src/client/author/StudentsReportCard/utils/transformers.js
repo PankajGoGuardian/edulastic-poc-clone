@@ -1,16 +1,32 @@
 import { get, keyBy, values, round, groupBy, isUndefined } from 'lodash'
 import next from 'immer'
+import { questionType } from '@edulastic/constants'
 import { responseDisplayOption } from './constants'
 import { replaceVariables } from '../../../assessment/utils/variables'
-import { questionType } from '@edulastic/constants'
 import { formatToMathAnswer } from '../../../assessment/widgets/MathFormula/components/CorrectAnswerBox'
 
-//format answers for doc based
+// format answers for doc based
 const formatAnswerForDocBased = (value, q, options = {}) => {
   return options[value]?.label || value?.value || value || '-'
 }
 
-//to format correct/user answer
+// to return data for 'Your answer' and 'Correct Anser', as per question Type
+// Responses: 'ETI'/'CR'/<User response>
+export const formatAnswertoDisplay = (value, type, title) => {
+  const matchedType = responseDisplayOption[type]
+  if (matchedType) {
+    if (
+      !matchedType.titles ||
+      (matchedType.titles && matchedType.titles.includes(title))
+    ) {
+      return matchedType.value
+    }
+    return value
+  }
+  return value
+}
+
+// to format correct/user answer
 export const formatAnswers = (
   data,
   options,
@@ -28,12 +44,13 @@ export const formatAnswers = (
     responses = [responses]
   }
 
-  const answer = responses.map((item, index) => {
+  const answer = responses.map((item) => {
     if (isDocBased) {
       return formatAnswerForDocBased(item, q, options)
-    } else if (type === questionType.MULTIPLE_CHOICE) {
-      //to check if 'True or false' qType have more then 2 options and option label othern then 'True' or 'False'
-      //then considering it as standard multipleChoice type
+    }
+    if (type === questionType.MULTIPLE_CHOICE) {
+      // to check if 'True or false' qType have more then 2 options and option label othern then 'True' or 'False'
+      // then considering it as standard multipleChoice type
       if (
         title === 'True or false' &&
         Object.keys(options).length === 2 &&
@@ -42,7 +59,8 @@ export const formatAnswers = (
         return options[item].label || '-'
       }
       return String.fromCharCode(65 + Object.keys(options).indexOf(item))
-    } else if (type == questionType.MATH && title === 'Units') {
+    }
+    if (type == questionType.MATH && title === 'Units') {
       if (context === 'userResponse') {
         if (typeof item === 'string') {
           return item
@@ -57,13 +75,17 @@ export const formatAnswers = (
         return `${value}${unit || ''}`
       }
       return value
-    } else if (item?.value) {
+    }
+    if (item?.value) {
       return item?.value
-    } else if (options && item?.id && !isUndefined(item?.index)) {
+    }
+    if (options && item?.id && !isUndefined(item?.index)) {
       return options[item?.id][item?.index]
-    } else if (options && options[item]) {
+    }
+    if (options && options[item]) {
       return options[item].label
-    } else if (typeof item === 'string') {
+    }
+    if (typeof item === 'string') {
       return item
     }
     return '-'
@@ -71,7 +93,7 @@ export const formatAnswers = (
 
   let result = formatAnswertoDisplay(answer.length ? answer : '-', type, title)
 
-  //for qType = math, needs to reformat latex to correct format, so using formatToMathAnswer util function do this.
+  // for qType = math, needs to reformat latex to correct format, so using formatToMathAnswer util function do this.
   if (type === 'math' && result !== 'TEI') {
     result = Array.isArray(result)
       ? result.map((ans) => formatToMathAnswer(ans))
@@ -80,7 +102,8 @@ export const formatAnswers = (
 
   if (!viewMode) {
     return Array.isArray(result) ? result.join(', ') : result
-  } else if (Array.isArray(result)) {
+  }
+  if (Array.isArray(result)) {
     switch (q.type) {
       case questionType.EDITING_TASK:
       case questionType.CLOZE_DROP_DOWN:
@@ -96,7 +119,7 @@ export const formatAnswers = (
   return result
 }
 
-//use `replaceVariables` util function to replace variables from answers
+// use `replaceVariables` util function to replace variables from answers
 export const formatOptions = (q) => {
   const formattedQuestion = replaceVariables(q)
   let options = formattedQuestion.options
@@ -128,15 +151,10 @@ export const getQuestionTableData = (
 
   const questionTableData = testItemsData
     .map((item) => {
-      const {
-        isPassageWithQuestions,
-        itemLevelScoring,
-        multipartItem,
-        itemLevelScore,
-      } = item
+      const { itemLevelScoring, itemLevelScore } = item
       const questions = item.data.questions || []
 
-      //for itemLevelScoring, all questions response needs to show in one row
+      // for itemLevelScoring, all questions response needs to show in one row
       // so, converted to one row
       if (itemLevelScoring) {
         const data = questions.reduce(
@@ -182,7 +200,7 @@ export const getQuestionTableData = (
         }
       }
 
-      //for other question type other the above mentioned
+      // for other question type other the above mentioned
       return next(questions, (arr) => {
         for (let i = 0; i < arr.length; i++) {
           const q = arr[i]
@@ -215,7 +233,8 @@ export const getQuestionTableData = (
 
 export const getChartAndStandardTableData = (
   studentResponse,
-  author_classboard_testActivity
+  author_classboard_testActivity,
+  interestedCurriculums = {}
 ) => {
   const testItems = get(
     author_classboard_testActivity,
@@ -224,7 +243,8 @@ export const getChartAndStandardTableData = (
   )
   const questionActivities = get(studentResponse, 'data.questionActivities', [])
 
-  //formatting all mastery types
+  const interestedCrclmById = keyBy(interestedCurriculums, '_id')
+  // formatting all mastery types
   const assignmentMastery = get(
     author_classboard_testActivity,
     'additionalData.assignmentMastery',
@@ -236,36 +256,41 @@ export const getChartAndStandardTableData = (
     total: questionActivities.length,
     fill: item.color,
   }))
-  let assignmentMasteryMap = keyBy(assignmentMasteryCopy, 'masteryLevel')
+  const assignmentMasteryMap = keyBy(assignmentMasteryCopy, 'masteryLevel')
 
   // contains all test standards to display
   const standardsTableData = groupBy(
     testItems.reduce((acc, item) => {
       const questions = item.data.questions
 
-      //fetching all uniq standards from questions
+      // fetching all uniq standards from questions
       const allStandards = questions.flatMap((q) => {
-        //finding all doamins from question alignment
+        // finding all doamins from question alignment which are not multistandard mapped
         const domains = (q.alignment || [])
+          .filter(
+            (el) =>
+              !el.isEquivalentStandard && interestedCrclmById[el.curriculumId]
+          )
           .map((ali) => ali.domains || [])
           .flat()
         const qActivity =
           questionActivities.filter((qa) => qa.qid === q.id)[0] || {}
 
-        //calculating performace percentage
-        let { score = 0, maxScore } = qActivity
+        // calculating performace percentage
+        const { score = 0 } = qActivity
+        let { maxScore } = qActivity
         if (!maxScore) {
           maxScore = q.validation?.validResponse?.score
         }
 
-        //formatting uniq standards from each domain
+        // formatting uniq standards from each domain
         return domains.flatMap((d) => {
           return (d.standards || []).map((std) => ({
             ...std,
             domain: d.name,
             question:
               typeof q.qLabel === 'string' ? q.qLabel?.substr(1) : q.qLabel,
-            performance: performance,
+            performance,
             score: round(score, 2),
             maxScore,
           }))
@@ -287,13 +312,14 @@ export const getChartAndStandardTableData = (
         const performance = Number(
           ((acc.score / acc.maxScore) * 100).toFixed(2)
         )
-        acc.performance = !isNaN(performance) ? performance : 0
+        acc.performance = !Number.isNaN(performance) ? performance : 0
 
-        //calculating mastery
-        let mastery = assignmentMastery.find((_item, index) => {
+        // calculating mastery
+        const mastery = assignmentMastery.find((_item) => {
           if (acc.performance >= _item.threshold) {
             return true
           }
+          return false
         })
         if (mastery) {
           assignmentMasteryMap[mastery.masteryLevel].count++
@@ -311,20 +337,4 @@ export const getChartAndStandardTableData = (
 
   const chartData = values(assignmentMasteryMap)
   return { standardsTableData: data, chartData, assignmentMasteryMap }
-}
-
-//to return data for 'Your answer' and 'Correct Anser', as per question Type
-//Responses: 'ETI'/'CR'/<User response>
-export const formatAnswertoDisplay = (value, type, title) => {
-  const matchedType = responseDisplayOption[type]
-  if (matchedType) {
-    if (
-      !matchedType.titles ||
-      (matchedType.titles && matchedType.titles.includes(title))
-    ) {
-      return matchedType.value
-    }
-    return value
-  }
-  return value
 }

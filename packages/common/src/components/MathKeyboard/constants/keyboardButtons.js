@@ -1061,10 +1061,10 @@ const UNITS_SI = [
     command: 'write',
   },
   {
-    handler: '\\text{m/}s^2',
+    handler: '\\text{m/}s^3',
     label: (
       <span role="presentation">
-        m/s<sup>2</sup>
+        m/s<sup>3</sup>
       </span>
     ),
     types: ['units_si'],

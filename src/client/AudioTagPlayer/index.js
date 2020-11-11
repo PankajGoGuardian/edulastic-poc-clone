@@ -145,12 +145,12 @@ const AudioTagPlayer = ({ user }) => {
         <PlayerBtnsContainer>
           {showPlayBtn ? (
             <PlayerBtn onClick={handlePlay}>
-              <i class="fa fa-play-circle"></i>
+              <i className="fa fa-play-circle" />
               {/* <span>PLAY</span> */}
             </PlayerBtn>
           ) : (
             <PlayerBtn onClick={handlePause}>
-              <i class="fa fa-pause-circle"></i>
+              <i className="fa fa-pause-circle" />
               {/* <span>PAUSE</span> */}
             </PlayerBtn>
           )}
@@ -170,6 +170,7 @@ const AudioTagPlayer = ({ user }) => {
         Browser - Audio Tag Player
       </Heading>
       <div style={{ marginTop: '30px' }}>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <audio ref={htmlAudioNode} controls src={AUDIO_URL}>
           Your browser does not support the
           <code>audio</code> element.

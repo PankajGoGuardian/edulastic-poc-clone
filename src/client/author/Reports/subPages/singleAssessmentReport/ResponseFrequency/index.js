@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { StyledH3, StyledSlider, NoDataContainer } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { StackedBarChartContainer } from './components/charts/stackedBarChartContainer'
 import { StyledCard, StyledContainer } from './components/styled'
@@ -13,6 +14,7 @@ import {
   getReportsResponseFrequency,
   getReportsResponseFrequencyLoader,
   getResponseFrequencyRequestAction,
+  getReportsResponseFrequencyError,
 } from './ducks'
 import { getTestListSelector } from '../common/filterDataDucks'
 import jsonData from './static/json/data.json'
@@ -24,6 +26,7 @@ const filterData = (data, filter) =>
 
 const ResponseFrequency = ({
   loading,
+  error,
   isPrinting,
   isCsvDownloading,
   responseFrequency: res,
@@ -103,6 +106,11 @@ const ResponseFrequency = ({
   if (loading) {
     return <SpinLoader position="fixed" />
   }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
   if (isEmpty(res.metrics)) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
@@ -189,6 +197,7 @@ ResponseFrequency.propTypes = {
 const enhance = connect(
   (state) => ({
     loading: getReportsResponseFrequencyLoader(state),
+    error: getReportsResponseFrequencyError(state),
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     responseFrequency: getReportsResponseFrequency(state),

@@ -16,6 +16,7 @@ import StudentAssignmentModal from '../../../common/components/Popups/studentAss
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledCard, NoDataContainer } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import {
   downloadCSV,
   getStudentAssignments,
@@ -40,6 +41,7 @@ import {
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
+  getReportsStudentMasteryProfileError,
 } from './ducks'
 
 const usefilterRecords = (records, domain) =>
@@ -68,6 +70,7 @@ const getTooltip = (payload) => {
 const StudentMasteryProfile = ({
   settings,
   loading,
+  error,
   SPRFilterData,
   isCsvDownloading,
   studentMasteryProfile,
@@ -141,6 +144,10 @@ const StudentMasteryProfile = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
   }
 
   const studentInformation = studInfo[0] || {}
@@ -263,6 +270,7 @@ const withConnect = connect(
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
     SPRFilterData: getReportsSPRFilterData(state),
     loading: getReportsStudentMasteryProfileLoader(state),
+    error: getReportsStudentMasteryProfileError(state),
     isCsvDownloading: getCsvDownloadingState(state),
     selectedStandardProficiency: getSelectedStandardProficiency(state),
     filters: getFiltersSelector(state),

@@ -719,10 +719,13 @@ class TeacherTable extends Component {
                       <Option value="other" disabled>
                         {t('common.selectcolumn')}
                       </Option>
-                      <Option value="username">Username</Option>
-                      <Option value="email">Email</Option>
-                      <Option value="status">Status</Option>
-                      <Option value="school">School</Option>
+                      <Option value="username">
+                        {t('users.student.username')}
+                      </Option>
+                      <Option value="email">{t('users.student.email')}</Option>
+                      <Option value="status">
+                        {t('users.schooladmin.status')}
+                      </Option>
                       {/* TO DO: Uncomment after backend is done */}
                       {/* <Option value="institutionNames">School</Option> */}
                     </SelectInputStyled>

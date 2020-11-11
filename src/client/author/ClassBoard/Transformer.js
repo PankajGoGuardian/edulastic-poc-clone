@@ -287,12 +287,14 @@ export function stripHtml(html) {
 
 const extractFunctions = {
   [questionType.MULTIPLE_CHOICE]: (question = {}, userResponse = []) =>
-    userResponse
-      .map((r) => question?.options?.findIndex((x) => x?.value === r))
-      .map((x) => alphabets[x]?.toUpperCase())
-      .join(','),
+    Array.isArray(userResponse)
+      ? userResponse
+          .map((r) => question?.options?.findIndex((x) => x?.value === r))
+          .map((x) => alphabets[x]?.toUpperCase())
+          .join(',')
+      : userResponse,
   [questionType.CLOZE_DRAG_DROP]: (question = {}, userResponse = []) =>
-    typeof userResponse === 'object'
+    Array.isArray(userResponse)
       ? userResponse
           .filter((x) => x)
           .map((r) => question?.options?.find((x) => x?.value === r)?.label)
@@ -301,7 +303,7 @@ const extractFunctions = {
           .join(',')
       : userResponse,
   [questionType.CLOZE_DROP_DOWN]: (question = {}, userResponse = []) =>
-    typeof userResponse === 'object'
+    Array.isArray(userResponse)
       ? userResponse
           .filter((x) => x)
           .map((x) => x?.value)
@@ -310,7 +312,7 @@ const extractFunctions = {
           .join(',')
       : userResponse,
   [questionType.CLOZE_TEXT]: (question = {}, userResponse = []) =>
-    typeof userResponse === 'object'
+    Array.isArray(userResponse)
       ? userResponse
           .filter((x) => x)
           .map((x) => x?.value)
@@ -347,12 +349,15 @@ const extractFunctions = {
 export function getResponseTobeDisplayed(
   testItem = {},
   userResponse,
-  questionId
+  questionId,
+  currentQuestionActivity
 ) {
   const question =
     (testItem.data?.questions || [])?.find((q) => q.id === questionId) || {}
   const qType = question.type
-
+  if (currentQuestionActivity?.skipped) {
+    return '-'
+  }
   if (
     testItem.data?.questions?.filter(
       (x) => x.type !== questionType.SECTION_LABEL
@@ -363,7 +368,11 @@ export function getResponseTobeDisplayed(
     return 'TEI'
   }
   if (extractFunctions[qType]) {
-    return extractFunctions[qType](question, userResponse)
+    return extractFunctions[qType](
+      question,
+      userResponse,
+      currentQuestionActivity
+    )
   }
   return userResponse ? 'TEI' : ''
 }
@@ -614,7 +623,8 @@ export const transformGradeBookResponse = (
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],
                 userResponse,
-                _id
+                _id,
+                currentQuestionActivity
               ),
               userResponse,
             }

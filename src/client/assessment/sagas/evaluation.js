@@ -45,6 +45,7 @@ function* evaluateAnswers({ payload: groupId }) {
     const validResponses = values(userResponse).filter((item) => !!item)
     // if user response is empty show toaster msg.
     if (isEmpty(validResponses)) {
+      yield put({ type: SET_CHECK_ANSWER_PROGRESS_STATUS, payload: false })
       return notification({
         type: 'warn',
         messageKey: 'attemptTheQuestonToCheckAnswer',

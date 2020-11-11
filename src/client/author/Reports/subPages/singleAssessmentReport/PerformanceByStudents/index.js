@@ -19,6 +19,7 @@ import {
   StyledTable,
   StyledCharWrapper,
 } from './components/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import SimpleBarChartContainer from './components/charts/SimpleBarChartContainer'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
@@ -37,6 +38,7 @@ import {
   getPerformanceByStudentsRequestAction,
   getReportsPerformanceByStudents,
   getReportsPerformanceByStudentsLoader,
+  getReportsPerformanceByStudentsError,
 } from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
 import { getCsvDownloadingState } from '../../../ducks'
@@ -50,6 +52,7 @@ import columns from './static/json/tableColumns.json'
 
 const PerformanceByStudents = ({
   loading,
+  error,
   isCsvDownloading,
   role,
   performanceBandProfiles,
@@ -227,6 +230,11 @@ const PerformanceByStudents = ({
   if (loading) {
     return <SpinLoader position="fixed" />
   }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
   if (!performanceByStudents.studentMetricInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
@@ -370,6 +378,7 @@ PerformanceByStudents.propTypes = {
 const withConnect = connect(
   (state) => ({
     loading: getReportsPerformanceByStudentsLoader(state),
+    error: getReportsPerformanceByStudentsError(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),

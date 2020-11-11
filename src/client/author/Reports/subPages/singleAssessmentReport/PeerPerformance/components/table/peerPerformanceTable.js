@@ -156,9 +156,14 @@ export const PeerPerformanceTable = ({
   }
 
   const tableData = useMemo(() => {
-    const arr = dataSource.filter(
-      (item) => filter[item[compareBy]] || Object.keys(filter).length === 0
-    )
+    const arr = dataSource
+      .filter(
+        (item) => filter[item[compareBy]] || Object.keys(filter).length === 0
+      )
+      .map((item) => {
+        item.compareBylabel = item[compareBy] || '-'
+        return item
+      })
     return arr
   }, [dataSource, filter])
 

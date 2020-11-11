@@ -39,6 +39,7 @@ import {
   REGENERATE_PASSWORD,
   UPDATE_PASSWORD_DETAILS,
   CANVAS_SYNC_GRADES,
+  CANVAS_SYNC_ASSIGNMENT,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -235,3 +236,4 @@ export const toggleViewPasswordAction = createAction(TOGGLE_VIEW_PASSWORD_MODAL)
 export const regeneratePasswordAction = createAction(REGENERATE_PASSWORD)
 export const updatePasswordDetailsAction = createAction(UPDATE_PASSWORD_DETAILS)
 export const canvasSyncGradesAction = createAction(CANVAS_SYNC_GRADES)
+export const canvasSyncAssignmentAction = createAction(CANVAS_SYNC_ASSIGNMENT)

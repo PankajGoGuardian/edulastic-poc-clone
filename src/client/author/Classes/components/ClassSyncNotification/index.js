@@ -25,6 +25,7 @@ import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
 
 const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
+const firestoreGoogleGradesSyncStatusCollection = 'GoogleGradeSyncStatus'
 const firestoreBulkActionCollection = 'AssignmentBulkActionEvents'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
 const ClassSyncNotificationListener = ({
@@ -41,6 +42,14 @@ const ClassSyncNotificationListener = ({
     (db) =>
       db
         .collection(firestoreGoogleClassSyncStatusCollection)
+        .where('userId', '==', `${user?._id}`),
+    [user?._id]
+  )
+
+  const gradesSyncNotifications = Fbs.useFirestoreRealtimeDocuments(
+    (db) =>
+      db
+        .collection(firestoreGoogleGradesSyncStatusCollection)
         .where('userId', '==', `${user?._id}`),
     [user?._id]
   )
@@ -124,6 +133,16 @@ const ClassSyncNotificationListener = ({
       showUserNotifications(userNotifications)
     }
   }, [userNotifications])
+
+  useEffect(() => {
+    uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {
+      const { status, message, success = false } = doc
+      if (status === 'completed') {
+        notification({ type: success ? 'success' : 'error', msg: message })
+        deleteNotificationDocument(doc.__id)
+      }
+    })
+  }, [gradesSyncNotifications])
 
   useEffect(() => {
     if (user && user.role === roleuser.TEACHER) {

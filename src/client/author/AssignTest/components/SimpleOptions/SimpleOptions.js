@@ -87,8 +87,11 @@ class SimpleOptions extends React.Component {
       features: { free, premium },
     } = this.props
     const { showSettings } = this.state
-    if (free && !premium && !showSettings) {
-      this.setState({ showSettings: true })
+    if (free && !premium) {
+      this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
+      if (!showSettings) {
+        this.setState({ showSettings: true })
+      }
     }
   }
 
@@ -109,6 +112,7 @@ class SimpleOptions extends React.Component {
       updateOptions,
       isReleaseScorePremium,
       userRole,
+      features: { free, premium },
     } = this.props
     if (field === 'class') {
       const { classData, termId } = onClassFieldChange(value, group)
@@ -148,6 +152,9 @@ class SimpleOptions extends React.Component {
               value === testConst.type.ASSESSMENT && isReleaseScorePremium
                 ? releaseGradeLabels.WITH_RESPONSE
                 : releaseGradeLabels.DONT_RELEASE
+            if (free && !premium) {
+              state.releaseScore = releaseGradeLabels.WITH_ANSWERS
+            }
             state.maxAttempts = 1
             state.maxAnswerChecks = 0
           } else {

@@ -531,17 +531,19 @@ export const imaginaryUnit = {
 }
 
 export const sine = {
-  handler: '\\sin',
+  handler: '\\sin\\left({}\\right)',
   label: <CustomImage src={Group2479} width={22} height={13} />,
   types: ['all'],
-  command: 'cmd',
+  command: 'write',
+  numToMove: 1,
 }
 
 export const arcsine = {
-  handler: '\\sin^{-1}',
+  handler: '\\sin^{-1}\\left({}\\right)',
   label: <CustomImage src={Group2251} width={37} height={14} />,
   types: ['all'],
   command: 'write',
+  numToMove: 1,
 }
 
 export const eulerNumber = {
@@ -553,17 +555,19 @@ export const eulerNumber = {
 }
 
 export const cosine = {
-  handler: '\\cos',
+  handler: '\\cos\\left({}\\right)',
   label: <CustomImage src={Group2481} width={24} height={9} />,
   types: ['all'],
-  command: 'cmd',
+  command: 'write',
+  numToMove: 1,
 }
 
 export const arccosine = {
-  handler: '\\cos^{-1}',
+  handler: '\\cos^{-1}\\left({}\\right)',
   label: <CustomImage src={Group2247} width={41} height={13} />,
   types: ['all'],
   command: 'write',
+  numToMove: 1,
 }
 
 export const infinity = {
@@ -574,10 +578,11 @@ export const infinity = {
 }
 
 export const tangent = {
-  handler: '\\tan',
+  handler: '\\tan\\left({}\\right)',
   label: <CustomImage src={Group2482} width={25} height={12} />,
   types: ['all'],
-  command: 'cmd',
+  command: 'write',
+  numToMove: 1,
 }
 
 export const arctangent = {
@@ -595,10 +600,11 @@ export const logSymbol = {
 }
 
 export const cotangent = {
-  handler: '\\cot',
+  handler: '\\cot\\left({}\\right)',
   label: <CustomImage src={Group2483} width={24} height={12} />,
   types: ['all'],
-  command: 'cmd',
+  command: 'write',
+  numToMove: 1,
 }
 
 export const arccot = {
@@ -2061,31 +2067,35 @@ export const ln_left = {
 }
 
 export const arcsecant = {
-  handler: '\\sec^{-1}',
+  handler: '\\sec^{-1}\\left({}\\right)',
   label: <CustomImage src={Group2249} width={40} height={13} />,
   types: ['all'],
   command: 'write',
+  numToMove: 1,
 }
 
 export const arccosecant = {
-  handler: '\\csc^{-1}',
+  handler: '\\csc^{-1}\\left({}\\right)',
   label: <CustomImage src={Group2245} width={38} height={12} />,
   types: ['all'],
   command: 'write',
+  numToMove: 1,
 }
 
 export const secant = {
-  handler: '\\sec',
+  handler: '\\sec\\left({}\\right)',
   label: <CustomImage src={Group3484} width={26} height={10} />,
   types: ['all'],
-  command: 'cmd',
+  command: 'write',
+  numToMove: 1,
 }
 
 export const cosecant = {
-  handler: '\\csc',
+  handler: '\\csc\\left({}\\right)',
   label: <CustomImage src={Group3485} width={25} height={10} />,
   types: ['all'],
-  command: 'cmd',
+  command: 'write',
+  numToMove: 1,
 }
 
 export const e_number = {

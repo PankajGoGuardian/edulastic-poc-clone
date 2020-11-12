@@ -789,3 +789,26 @@ export const getStudentCardStatus = (
   }
   return status
 }
+
+export const transformUQAData = (uqas, selectedItems) => {
+  const itemsById = keyBy(selectedItems, '_id')
+  return uqas.map((uqa) => {
+    let { practiceUsage = 'empty' } = uqa
+    const { testItemId, qid } = uqa
+    if (practiceUsage === 'empty') {
+      const currentUQAItem = itemsById[testItemId]
+      const questions = get(currentUQAItem, 'data.questions', [])
+      uqa.practiceUsage = false
+      if (currentUQAItem) {
+        if (currentUQAItem.itemLevelScoring) {
+          practiceUsage = isPracticeUsage(questions)
+        } else {
+          const currentQuestion = questions.find((q) => q.id === qid)
+          practiceUsage = isPracticeUsage([currentQuestion])
+        }
+        uqa.practiceUsage = practiceUsage
+      }
+    }
+    return uqa
+  })
+}

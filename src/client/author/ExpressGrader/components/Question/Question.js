@@ -14,6 +14,7 @@ import {
 } from '../../../ClassBoard/ducks'
 import ClassQuestions from '../../../ClassResponses/components/Container/ClassQuestions'
 import { getTeacherEditedScoreSelector } from '../../ducks'
+import { transformUQAData } from '../../../ClassBoard/Transformer'
 
 class Question extends Component {
   constructor() {
@@ -58,7 +59,6 @@ class Question extends Component {
       !studentResponseLoading
     ) {
       const {
-        record,
         loadStudentQuestionResponses,
         assignmentClassId: { assignmentId, classId },
       } = this.props
@@ -122,6 +122,7 @@ class Question extends Component {
         studentQuestions = [record]
       }
     }
+    studentQuestions = transformUQAData(studentQuestions, selectedItems)
 
     return (
       <AnswerContext.Provider

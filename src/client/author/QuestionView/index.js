@@ -30,7 +30,7 @@ import {
   LCBScrollContext,
 } from '@edulastic/common'
 import { testActivityStatus } from '@edulastic/constants'
-import { getAvatarName } from '../ClassBoard/Transformer'
+import { getAvatarName, transformUQAData } from '../ClassBoard/Transformer'
 
 import { StyledFlexContainer, StyledCard, TooltipContainer } from './styled'
 import StudentResponse from './component/studentResponses/studentResponse'
@@ -240,6 +240,7 @@ class QuestionViewContainer extends Component {
     if (isMobile) {
       data = data.slice(0, 2)
     }
+    const transformedUQAs = transformUQAData(classQuestion, filteredItems)
 
     return (
       <>
@@ -360,7 +361,7 @@ class QuestionViewContainer extends Component {
             ) {
               return null
             }
-            const qActivities = classQuestion.filter(
+            const qActivities = transformedUQAs.filter(
               ({ userId }) => userId === student.studentId
             )
             return (

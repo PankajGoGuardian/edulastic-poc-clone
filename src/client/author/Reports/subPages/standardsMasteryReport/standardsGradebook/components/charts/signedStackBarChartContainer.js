@@ -11,6 +11,8 @@ export const SignedStackBarChartContainer = ({
   masteryScale = [],
   role,
   onBarClickCB,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const chartData = useMemo(
     () => getChartData(filteredDenormalizedData, masteryScale, filters, role),
@@ -111,6 +113,8 @@ export const SignedStackBarChartContainer = ({
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}
       filter={chartFilter}
+      backendPagination={backendPagination}
+      setBackendPagination={setBackendPagination}
     />
   )
 }

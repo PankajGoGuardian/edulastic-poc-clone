@@ -91,15 +91,6 @@ export const getPrevStandardsFiltersSelector = createSelector(
   (state) => state.prevStandardsFilters
 )
 
-export const getSelectedStandardProficiency = createSelector(
-  getFiltersSelector,
-  getReportsStandardsFilters,
-  (filters, filtersData) => {
-    const scales = filtersData?.scaleInfo || []
-    return (scales.find((s) => s._id === filters.profileId) || scales[0])?.scale
-  }
-)
-
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -113,10 +104,12 @@ const initialState = {
   prevStandardsFilters: null,
   filters: {
     termId: '',
-    subject: '',
-    grades: ['TK'],
-    domainIds: 'All',
+    curriculumId: '',
+    grade: 'TK',
     profileId: '',
+    domainIds: [],
+    assessmentType: 'All',
+    showApply: false,
   },
   testIds: [],
   loading: false,
@@ -177,35 +170,6 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
-
-function* getReportsStandardsBrowseStandardsRequest({ payload }) {
-  try {
-    const { curriculumId = false } = payload
-    if (
-      curriculumId &&
-      typeof curriculumId === 'string' &&
-      curriculumId.length
-    ) {
-      payload.curriculumId = parseInt(curriculumId, 10)
-    }
-    const browseStandards = curriculumId
-      ? yield call(reportsApi.fetchStandardMasteryBrowseStandards, payload)
-      : { data: { result: [] } }
-    yield put({
-      type: GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS,
-      payload: { browseStandards },
-    })
-  } catch (error) {
-    console.log('err', error.stack)
-    const msg = 'Failed to fetch standards Please try again...'
-    notification({ msg })
-    yield put({
-      type: GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_ERROR,
-      payload: { error: msg },
-    })
-  }
-}
-
 function* getReportsStandardsFiltersRequest({ payload }) {
   try {
     const { filters: filterData = {}, ...rest } = yield call(
@@ -239,10 +203,6 @@ function* getReportsStandardsFiltersRequest({ payload }) {
 
 export function* reportStandardsFilterSaga() {
   yield all([
-    yield takeLatest(
-      GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST,
-      getReportsStandardsBrowseStandardsRequest
-    ),
     yield takeLatest(
       GET_REPORTS_STANDARDS_FILTERS_REQUEST,
       getReportsStandardsFiltersRequest

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { find, map } from 'lodash'
 import { Select } from 'antd'
@@ -15,7 +15,7 @@ const getOption = ({ props = {} }) => ({
 const buildDropDownData = (datum, selected, prefix) => {
   const arr = [
     <OptGroup key="group" label={prefix || ''}>
-      {datum.map((item, index) => {
+      {datum.map((item) => {
         const isSelected = find(
           selected,
           (selectedItem) => selectedItem.key == item.key

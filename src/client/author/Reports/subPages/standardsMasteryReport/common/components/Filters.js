@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, keyBy, uniqBy, pickBy } from 'lodash'
+import { get, isEmpty, uniqBy, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Select, Spin } from 'antd'
-import { SelectInputStyled } from '@edulastic/common'
+import { Spin } from 'antd'
 
 import { roleuser } from '@edulastic/constants'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
@@ -13,10 +12,9 @@ import { MultipleSelect } from '../../../../common/components/widgets/MultipleSe
 import { toggleItem } from '../../../../common/util'
 
 import {
-  getUserRole,
   getUser,
-  getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
+  getInterestedCurriculumsSelector,
 } from '../../../../../src/selectors/user'
 
 import {
@@ -24,19 +22,14 @@ import {
   getTestIdSelector,
   setFiltersAction,
   setTestIdAction,
-  getStandardsBrowseStandardsRequestAction,
-  getReportsStandardsBrowseStandards,
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
-  getPrevBrowseStandardsSelector,
   getPrevStandardsFiltersSelector,
-  setPrevBrowseStandardsAction,
   setPrevStandardsFiltersAction,
   getReportsStandardsFiltersLoader,
 } from '../filterDataDucks'
 
 import filtersDropDownData from '../static/json/filtersDropDownData.json'
-import { getDomains } from '../utils'
 import {
   StyledFilterWrapper,
   StyledGoButton,
@@ -46,56 +39,39 @@ import {
   FilterLabel,
 } from '../../../../common/styled'
 
-const DropdownFilters = ({ dataCy, onChange, value = '', options = [] }) => (
-  <SelectInputStyled
-    data-cy={dataCy}
-    onChange={onChange}
-    value={`${value}`}
-    optionFilterProp="children"
-    getPopupContainer={(triggerNode) => triggerNode.parentNode}
-    fontSize="11px"
-    arrowFontSize="11px"
-    height="34px"
-    padding="8px 18px"
-    noBorder
-    style={{ border: '1px solid #e5e5e5' }}
-  >
-    {options.map((data) => (
-      <Select.Option key={`${data.key}`} value={`${data.key}`}>
-        {data.title}
-      </Select.Option>
-    ))}
-  </SelectInputStyled>
-)
-
 const StandardsFilters = ({
-  loading,
-  filters,
-  testIds,
-  standardsFilters,
-  browseStandards,
   user,
-  interestedCurriculums,
-  interestedGrades,
-  getStandardsBrowseStandardsRequest,
-  getStandardsFiltersRequest,
-  setFilters: _setFilters,
-  setTestId: _setTestId,
-  onGoClick: _onGoClick,
-  setShowApply,
+  loc,
   location,
   style,
-  setPrevBrowseStandards,
-  setPrevStandardsFilters,
-  prevBrowseStandards,
-  prevStandardsFilters,
+  interestedGrades,
+  interestedCurriculums,
   extraFilter,
-  loc: _loc,
-  role,
+  loading,
+  filters,
+  setFilters,
+  testIds,
+  setTestId: _setTestId,
+  onGoClick: _onGoClick,
+  getStandardsFiltersRequest,
+  standardsFilters,
+  prevStandardsFilters,
+  setPrevStandardsFilters,
   showApply,
+  setShowApply,
 }) => {
-  const browseStandardsReceiveCount = useRef(0)
   const standardsFilteresReceiveCount = useRef(0)
+
+  const curriculumsList = useMemo(() => {
+    let _curriculums = []
+    if (interestedCurriculums.length) {
+      _curriculums = interestedCurriculums.map((item) => ({
+        key: `${item._id}`,
+        title: item.name,
+      }))
+    }
+    return _curriculums
+  }, [interestedCurriculums])
 
   const schoolYear = useMemo(() => {
     let _schoolYear = []
@@ -105,17 +81,6 @@ const StandardsFilters = ({
     }
     return _schoolYear
   }, [user])
-
-  const curriculums = useMemo(() => {
-    let _curriculums = []
-    if (interestedCurriculums.length) {
-      _curriculums = interestedCurriculums.map((item) => ({
-        key: item._id,
-        title: item.name,
-      }))
-    }
-    return _curriculums
-  }, [interestedCurriculums])
 
   // get initial filters from url and orgData
   const getInitialFilters = () => {
@@ -128,36 +93,29 @@ const StandardsFilters = ({
       schoolYear.find((item) => item.key === search.termId) ||
       schoolYear.find((item) => item.key === defaultTermId) ||
       (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
-    const urlSubject =
-      curriculums.find((item) => item.key === search.subject) ||
-      (curriculums[0] ? curriculums[0] : { key: '', title: '' })
-    const gradesKeys = keyBy(search.grades || interestedGrades)
-    let urlGrade = filtersDropDownData.grades.filter(
-      (item) => gradesKeys[item.key]
-    )
-    if (!urlGrade.length) {
-      urlGrade = [filtersDropDownData.grades[0]]
-    }
+    const urlCurriculum =
+      curriculumsList.find((item) => item.key === search.curriculumId) ||
+      curriculumsList[0]
+    search.grade = search.grade || interestedGrades[0]
+    const urlGrade =
+      filtersDropDownData.grades.find((item) => item.key === search.grade) ||
+      filtersDropDownData.grades[0]
+    const urlAssessmentType =
+      filtersDropDownData.assessmentTypes.find(
+        (item) => item.key === search.assessmentType
+      ) || filtersDropDownData.assessmentTypes[0]
     return {
       ...filters,
       termId: urlSchoolYear.key,
-      subject: urlSubject.key,
-      grades: urlGrade.map((item) => item.key),
+      curriculumId: urlCurriculum.key,
+      grade: urlGrade.key,
+      assessmentType: urlAssessmentType.key,
     }
   }
 
   useEffect(() => {
     const _filters = getInitialFilters()
-    _setFilters(_filters)
-    // fetch standards the first time report filters are loaded
-    if (browseStandards !== prevBrowseStandards) {
-      const q = {
-        curriculumId: _filters.subject || undefined,
-        grades: _filters.grades,
-      }
-      getStandardsBrowseStandardsRequest(q)
-    }
-    // fetch filters data each time report filters are loaded
+    setFilters(_filters)
     const _q = {
       termId: _filters.termId,
     }
@@ -170,45 +128,11 @@ const StandardsFilters = ({
   }, [])
 
   useEffect(() => {
-    if (isEmpty(standardsFilters?.filters)) {
-      _setFilters({
-        ...filters,
-        termId: filters.termId || get(user, 'orgData.defaultTermId', ''),
-      })
+    if (filters.showApply) {
+      setShowApply(true)
+      setFilters({ ...filters, showApply: false })
     }
-  }, [standardsFilters])
-
-  const scaleInfo = get(standardsFilters, 'scaleInfo', [])
-
-  const domains = useMemo(() => {
-    let _domains = [{ key: 'All', title: 'All Domains' }]
-    if (browseStandards && !isEmpty(browseStandards)) {
-      let tempArr = get(browseStandards, 'data.result', [])
-
-      let arr = []
-      if (tempArr.length) {
-        tempArr = getDomains(tempArr)
-        arr = tempArr.map((item) => ({
-          key: item.tloId,
-          title: item.tloIdentifier,
-        }))
-      }
-      _domains = _domains.concat(arr)
-    }
-    return _domains
-  }, [browseStandards])
-
-  if (browseStandards !== prevBrowseStandards && !isEmpty(browseStandards)) {
-    setPrevBrowseStandards(browseStandards)
-    // check if domainId in url is in the array if not select the first one
-    const urlDomainId = domains.length > 1 ? domains.slice(1) : domains
-    const _filters = {
-      ...filters,
-      domainIds: urlDomainId.map((item) => item.key).join(),
-    }
-    _setFilters(_filters)
-    browseStandardsReceiveCount.current++
-  }
+  }, [filters.showApply])
 
   const allTestIds = useMemo(() => {
     let arr = []
@@ -243,6 +167,7 @@ const StandardsFilters = ({
       const { testIds: onLoadTestIds, ...newFilters } = {
         ..._filters,
         ...onLoadFilters,
+        domainIds: [],
       }
       // check if testIds in url are valid (present in the array)
       const urlTestIds = onLoadTestIds?.length
@@ -254,15 +179,12 @@ const StandardsFilters = ({
       _setTestId(validTestIds)
       // checks to check if saved filters match the default
       const shouldUpdateSchoolYear = newFilters.termId !== filters.termId
-      const shouldUpdateDomains =
-        newFilters.subject !== filters.subject ||
-        newFilters.grades?.[0] !== filters.grades?.[0]
       // settings to fetch the page data
       const settings = {
         filters: { ...newFilters },
         selectedTest: validTestIds,
       }
-      _setFilters(newFilters)
+      setFilters(newFilters)
       // update standards filters for mismatch of saved filters
       if (shouldUpdateSchoolYear) {
         const q = { termId: newFilters.termId }
@@ -273,17 +195,8 @@ const StandardsFilters = ({
         }
         getStandardsFiltersRequest(q)
       }
-      if (shouldUpdateDomains) {
-        const q = {
-          curriculumId: newFilters.subject,
-          grades: newFilters.grades,
-        }
-        getStandardsBrowseStandardsRequest(q)
-      }
       // load page data
-      if (browseStandardsReceiveCount.current > 0) {
-        _onGoClick(settings)
-      }
+      _onGoClick(settings)
     }
     standardsFilteresReceiveCount.current++
   }
@@ -298,11 +211,6 @@ const StandardsFilters = ({
     _onGoClick(settings)
   }
 
-  const setFilters = (_filters) => {
-    setShowApply(true)
-    _setFilters(_filters)
-  }
-
   const setTestId = (_testId) => {
     setShowApply(true)
     _setTestId(_testId)
@@ -312,6 +220,7 @@ const StandardsFilters = ({
     const obj = {
       ...filters,
       termId: selected.key,
+      showApply: true,
     }
     setFilters(obj)
     const q = {
@@ -325,55 +234,13 @@ const StandardsFilters = ({
     getStandardsFiltersRequest(q)
   }
 
-  const updateSubjectDropDownCB = (selected) => {
-    const obj = {
+  const updateFilterDropdownCB = (selected, keyName) => {
+    const _filters = {
       ...filters,
-      subject: selected,
+      [keyName]: selected.key,
+      showApply: true,
     }
-    setFilters(obj)
-    const q = {
-      curriculumId: selected || undefined,
-      grades: obj.grades,
-    }
-    getStandardsBrowseStandardsRequest(q)
-  }
-
-  const updateGradeDropDownCB = (selected) => {
-    const obj = {
-      ...filters,
-      grades: [selected],
-    }
-    setFilters(obj)
-    const q = {
-      curriculumId: obj.subject || curriculums[0]?.key || undefined,
-      grades: [selected],
-    }
-    getStandardsBrowseStandardsRequest(q)
-  }
-
-  const updateStandardProficiencyDropDownCB = (selected) => {
-    const obj = {
-      ...filters,
-      profileId: selected.key,
-    }
-    setFilters(obj)
-  }
-
-  const updateDomainDropDownCB = (selected) => {
-    if (selected === 'All') {
-      const tempArr = domains.slice(1).map((item) => item.key)
-      const obj = {
-        ...filters,
-        domainIds: tempArr.join(),
-      }
-      setFilters(obj)
-    } else {
-      const obj = {
-        ...filters,
-        domainIds: selected,
-      }
-      setFilters(obj)
-    }
+    setFilters(_filters)
   }
 
   const onSelectTest = (test) => {
@@ -391,84 +258,12 @@ const StandardsFilters = ({
   }
 
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
+  const middleFilters = [...extraFilter]
+  const endFilters =
+    loc === 'standards-gradebook'
+      ? middleFilters.splice(middleFilters.length - 5)
+      : null
 
-  const selectedProficiencyId = useMemo(
-    () => scaleInfo.find((s) => s.default)?._id || '',
-    [scaleInfo]
-  )
-  const standardProficiencyList = useMemo(
-    () => scaleInfo.map((s) => ({ key: s._id, title: s.name })),
-    [scaleInfo]
-  )
-
-  const selectedDomain =
-    domains
-      .slice(1)
-      .map((item) => item.key)
-      .join() === filters.domainIds
-      ? 'All'
-      : filters.domainIds
-
-  const testNameFilter = (
-    <SearchField>
-      <FilterLabel>Assessment Name</FilterLabel>
-      <MultipleSelect
-        containerClassName="standards-gradebook-domain-autocomplete"
-        data={(allTestIds || []).map((t) => ({
-          ...t,
-          title: `${t.title} (ID: ${t.key?.substring(t.key.length - 5) || ''})`,
-        }))}
-        valueToDisplay={
-          testIds?.length > 1
-            ? { key: '', title: 'Multiple Assessment' }
-            : (testIds || []).map((t) => ({
-                ...t,
-                title: `${t.title} (ID: ${
-                  t.key?.substring(t.key.length - 5) || ''
-                })`,
-              }))
-        }
-        by={testIds}
-        prefix="Assessment Name"
-        onSelect={onSelectTest}
-        onChange={onChangeTest}
-        placeholder="All Assessments"
-      />
-    </SearchField>
-  )
-  const domainFilter = (
-    <SearchField>
-      <FilterLabel>Domain</FilterLabel>
-      <DropdownFilters
-        value={selectedDomain || domains[0]?.key}
-        onChange={updateDomainDropDownCB}
-        options={domains}
-      />
-    </SearchField>
-  )
-  const stdProficiencyFilter = (
-    <SearchField>
-      <FilterLabel>Standard Proficiency</FilterLabel>
-      <ControlDropDown
-        by={filters.profileId || selectedProficiencyId}
-        selectCB={updateStandardProficiencyDropDownCB}
-        data={standardProficiencyList}
-        prefix="Standard Proficiency"
-        showPrefixOnSelected={false}
-      />
-    </SearchField>
-  )
-  const withTestName = [...extraFilter]
-  // Re ordering the filters as per requirment
-  if (_loc === 'standards-gradebook') {
-    withTestName.unshift(testNameFilter, domainFilter, stdProficiencyFilter)
-  } else if (_loc === 'standards-performance-summary') {
-    const roleBasedPlaceMent = roleuser.DA_SA_ROLE_ARRAY.includes(role) ? 2 : 0
-    withTestName.splice(roleBasedPlaceMent, 0, testNameFilter, domainFilter)
-    withTestName.push(stdProficiencyFilter)
-  } else {
-    withTestName.push(testNameFilter, domainFilter, stdProficiencyFilter)
-  }
   return loading ? (
     <StyledFilterWrapper style={style}>
       <Spin />
@@ -494,22 +289,53 @@ const StandardsFilters = ({
         </SearchField>
         <SearchField>
           <FilterLabel>Grade</FilterLabel>
-          <DropdownFilters
-            className="custom-1-scrollbar"
-            value={filters.grades[0]}
-            onChange={updateGradeDropDownCB}
-            options={filtersDropDownData.grades}
+          <ControlDropDown
+            by={filters.grade}
+            selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
+            data={filtersDropDownData.grades}
+            prefix="Grade"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+        {middleFilters}
+        <SearchField>
+          <FilterLabel>Assessment Name</FilterLabel>
+          <MultipleSelect
+            containerClassName="standards-mastery-report-assessment-autocomplete"
+            data={(allTestIds || []).map((t) => ({
+              ...t,
+              title: `${t.title} (ID: ${
+                t.key?.substring(t.key.length - 5) || ''
+              })`,
+            }))}
+            valueToDisplay={
+              testIds?.length > 1
+                ? { key: '', title: 'Multiple Assessment' }
+                : (testIds || []).map((t) => ({
+                    ...t,
+                    title: `${t.title} (ID: ${
+                      t.key?.substring(t.key.length - 5) || ''
+                    })`,
+                  }))
+            }
+            by={testIds}
+            prefix="Assessment Name"
+            onSelect={onSelectTest}
+            onChange={onChangeTest}
+            placeholder="All Assessments"
           />
         </SearchField>
         <SearchField>
-          <FilterLabel>Subject</FilterLabel>
-          <DropdownFilters
-            value={filters.subject || curriculums[0]?.key}
-            onChange={updateSubjectDropDownCB}
-            options={curriculums}
+          <FilterLabel>Assessment Type</FilterLabel>
+          <ControlDropDown
+            by={filters.assessmentType}
+            selectCB={(e) => updateFilterDropdownCB(e, 'assessmentType')}
+            data={filtersDropDownData.assessmentTypes}
+            prefix="Assessment Type"
+            showPrefixOnSelected={false}
           />
         </SearchField>
-        {withTestName}
+        {endFilters}
       </PerfectScrollbar>
     </StyledFilterWrapper>
   )
@@ -519,23 +345,18 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsStandardsFiltersLoader(state),
-      browseStandards: getReportsStandardsBrowseStandards(state),
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
       testIds: getTestIdSelector(state) || [],
-      role: getUserRole(state),
       user: getUser(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
-      prevBrowseStandards: getPrevBrowseStandardsSelector(state),
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
     }),
     {
-      getStandardsBrowseStandardsRequest: getStandardsBrowseStandardsRequestAction,
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,
       setFilters: setFiltersAction,
       setTestId: setTestIdAction,
-      setPrevBrowseStandards: setPrevBrowseStandardsAction,
       setPrevStandardsFilters: setPrevStandardsFiltersAction,
     }
   )

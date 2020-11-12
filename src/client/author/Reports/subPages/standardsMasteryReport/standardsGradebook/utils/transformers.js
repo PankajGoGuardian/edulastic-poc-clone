@@ -556,10 +556,9 @@ export const groupedByStandard = (
       (sumBy(standardData, 'totalScore') / sumBy(standardData, 'maxScore')) *
         100
     )
-    const rawScore = `${sumBy(standardData, 'totalScore').toFixed(2)} / ${sumBy(
-      standardData,
-      'maxScore'
-    )}`
+    const rawScore = `${(sumBy(standardData, 'totalScore') || 0).toFixed(
+      2
+    )} / ${sumBy(standardData, 'maxScore')}`
     const masteryLevel = getMasteryLevel(masteryScore, scaleInfo).masteryLabel
 
     return {

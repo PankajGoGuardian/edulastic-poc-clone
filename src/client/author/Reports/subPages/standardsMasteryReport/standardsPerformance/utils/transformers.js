@@ -66,7 +66,7 @@ export const getOverallMasteryScore = (records) =>
       ).toFixed(2)
     : 0
 
-export const getMasteryLevel = (score, scaleInfo) => {
+export const getMasteryLevel = (score, scaleInfo = []) => {
   for (const obj of scaleInfo) {
     if (round(score) === obj.score) {
       return obj || getLeastMasteryLevel(scaleInfo)
@@ -89,7 +89,7 @@ export const getMaxMasteryScore = (scaleInfo = []) => {
   return maxMasteryScore
 }
 
-export const getMasteryLevelOptions = (scaleInfo) => {
+export const getMasteryLevelOptions = (scaleInfo = []) => {
   const options = [
     { key: 'all', title: 'All' },
     ...map(scaleInfo, (masteryLevel) => ({
@@ -105,7 +105,7 @@ export const groupedByDomain = (
   maxScore,
   scaleInfo = [],
   selectedDomains,
-  rawDomainData
+  skillInfo = []
 ) => {
   const domains = groupBy(metricInfo, 'domainId')
   return Object.keys(domains)
@@ -122,15 +122,13 @@ export const groupedByDomain = (
       const masteryLevel = getRecordMasteryLevel(domainData, scaleInfo)
         .masteryLabel
       const domainMetaInformation = find(
-        rawDomainData,
-        (rawDomain) => `${rawDomain.tloId}` === `${domainId}`
+        skillInfo,
+        (standard) => `${standard.domainId}` === `${domainId}`
       )
 
       return {
         domainId,
-        domainName: domainMetaInformation
-          ? domainMetaInformation.tloIdentifier
-          : '',
+        domainName: domainMetaInformation?.domain || '',
         masteryScore,
         diffMasteryScore: maxScore - round(masteryScore, 2),
         score,
@@ -155,23 +153,20 @@ const getFormattedName = (name) => {
 
 const getRowInfo = (dataSource, compareByKey, value) => {
   switch (compareByKey) {
-    case 'studentId':
-      return find(dataSource.studInfo, (student) => student.studentId === value)
     case 'teacherId':
     case 'schoolId':
       return find(dataSource.orgData, (org) => org[compareByKey] === value)
     case 'classId':
     case 'groupId':
       return find(dataSource.orgData, (org) => org[compareByKey] === value)
+    case 'studentId':
+    default:
+      return find(dataSource.studInfo, (student) => student.studentId === value)
   }
 }
 
 const getRowName = (compareByKey, rowInfo = {}) => {
   switch (compareByKey) {
-    case 'studentId':
-      return getFormattedName(
-        `${rowInfo.firstName || ''} ${rowInfo.lastName || ''}`
-      )
     case 'teacherId':
       return `${rowInfo.teacherName}`
     case 'schoolId':
@@ -179,6 +174,11 @@ const getRowName = (compareByKey, rowInfo = {}) => {
     case 'classId':
     case 'groupId':
       return `${rowInfo.groupName}`
+    case 'studentId':
+    default:
+      return getFormattedName(
+        `${rowInfo.firstName || ''} ${rowInfo.lastName || ''}`
+      )
   }
 }
 
@@ -191,7 +191,7 @@ export const getCompareByData = (metricInfo = [], compareBy, filterData) => {
 
   const compareByData = groupBy(metricInfo, compareByKey)
 
-  return Object.keys(compareByData).map((itemId, index) => {
+  return Object.keys(compareByData).map((itemId) => {
     const records = compareByData[itemId]
     const domainData = {}
 
@@ -277,8 +277,8 @@ export const getParsedData = (
   maxMasteryScore,
   tableFilters,
   selectedDomains,
-  rawDomainData,
-  filterData,
+  skillInfo,
+  filterData = [],
   scaleInfo = []
 ) => {
   return {
@@ -287,7 +287,7 @@ export const getParsedData = (
       maxMasteryScore,
       scaleInfo,
       selectedDomains,
-      rawDomainData
+      skillInfo
     ),
     tableData: getTableData(metricInfo, tableFilters, filterData, scaleInfo),
   }
@@ -295,19 +295,16 @@ export const getParsedData = (
 
 export const getDropDownData = (orgData = [], role = '') => {
   const [classIdsArr, groupIdsArr] = processClassAndGroupIds(orgData)
-
   let dropDownDataOptions = []
   let filterInitState = {}
 
   if (role !== 'teacher') {
     const schoolIds = processSchoolIds(orgData)
     const teacherIds = processTeacherIds(orgData)
-
     filterInitState = next(filterInitState, (draft) => {
       draft.schoolId = schoolIds[0]
       draft.teacherId = teacherIds[0]
     })
-
     dropDownDataOptions = next(dropDownDataOptions, (draft) => {
       draft.push(
         {
@@ -324,6 +321,10 @@ export const getDropDownData = (orgData = [], role = '') => {
     })
   }
 
+  filterInitState = next(filterInitState, (draft) => {
+    draft.classId = classIdsArr[0]
+    draft.groupId = groupIdsArr[0]
+  })
   dropDownDataOptions = next(dropDownDataOptions, (draft) => {
     draft.push(
       {
@@ -337,11 +338,6 @@ export const getDropDownData = (orgData = [], role = '') => {
         data: groupIdsArr,
       }
     )
-  })
-
-  filterInitState = next(filterInitState, (draft) => {
-    draft.classId = classIdsArr[0]
-    draft.groupId = groupIdsArr[0]
   })
 
   return [dropDownDataOptions, filterInitState]

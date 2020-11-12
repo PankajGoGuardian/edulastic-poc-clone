@@ -64,7 +64,7 @@ const SimpleStackedBarChartComponent = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
   xTickTooltipPosition = 460,
   xTickToolTipWidth = 110,
-  pageSize,
+  pageSize: _pageSize,
   data = [],
   yDomain = [0, 110],
   ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
@@ -92,11 +92,13 @@ const SimpleStackedBarChartComponent = ({
   isPrinting,
   printWidth,
   overflowStyle = 'hidden',
+  backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
+  setBackendPagination,
 }) => {
-  const page = pageSize || 7
+  const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
     startIndex: 0,
-    endIndex: page - 1,
+    endIndex: pageSize - 1,
   })
   const [copyData, setCopyData] = useState(null)
   const [barIndex, setBarIndex] = useState(null)
@@ -118,7 +120,7 @@ const SimpleStackedBarChartComponent = ({
   if (data !== copyData) {
     setPagination({
       startIndex: 0,
-      endIndex: page - 1,
+      endIndex: pageSize - 1,
     })
     setCopyData(data)
   }
@@ -128,8 +130,8 @@ const SimpleStackedBarChartComponent = ({
   const scrollLeft = () => {
     let diff
     if (pagination.startIndex > 0) {
-      if (pagination.startIndex >= page) {
-        diff = page
+      if (pagination.startIndex >= pageSize) {
+        diff = pageSize
       } else {
         diff = pagination.startIndex
       }
@@ -143,8 +145,8 @@ const SimpleStackedBarChartComponent = ({
   const scrollRight = () => {
     let diff
     if (pagination.endIndex < chartData.length - 1) {
-      if (chartData.length - 1 - pagination.endIndex >= page) {
-        diff = page
+      if (chartData.length - 1 - pagination.endIndex >= pageSize) {
+        diff = pageSize
       } else {
         diff = chartData.length - 1 - pagination.endIndex
       }
@@ -206,6 +208,28 @@ const SimpleStackedBarChartComponent = ({
     })
   }
 
+  // chart navigation visibility and control
+  const chartNavLeftVisibility = backendPagination
+    ? backendPagination.page > 1
+    : !(pagination.startIndex == 0)
+  const chartNavRightVisibility = backendPagination
+    ? backendPagination.page < backendPagination.pageCount
+    : !(chartData.length <= pagination.endIndex + 1)
+  const chartNavLeftClick = () =>
+    backendPagination
+      ? setBackendPagination({
+          ...backendPagination,
+          page: backendPagination.page - 1,
+        })
+      : scrollLeft()
+  const chartNavRightClick = () =>
+    backendPagination
+      ? setBackendPagination({
+          ...backendPagination,
+          page: backendPagination.page + 1,
+        })
+      : scrollRight()
+
   return (
     <StyledStackedBarChartContainer
       overflowStyle={overflowStyle}
@@ -227,9 +251,9 @@ const SimpleStackedBarChartComponent = ({
         icon="caret-left"
         IconBtn
         className="navigator navigator-left"
-        onClick={scrollLeft}
+        onClick={chartNavLeftClick}
         style={{
-          visibility: pagination.startIndex == 0 ? 'hidden' : 'visible',
+          visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
         }}
       />
       <StyledChartNavButton
@@ -238,10 +262,9 @@ const SimpleStackedBarChartComponent = ({
         icon="caret-right"
         IconBtn
         className="navigator navigator-right"
-        onClick={scrollRight}
+        onClick={chartNavRightClick}
         style={{
-          visibility:
-            chartData.length <= pagination.endIndex + 1 ? 'hidden' : 'visible',
+          visibility: chartNavRightVisibility ? 'visible' : 'hidden',
         }}
       />
       <CustomXAxisTickTooltipContainer

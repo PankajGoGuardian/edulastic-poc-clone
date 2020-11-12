@@ -287,21 +287,33 @@ const TokenHighlightPreview = ({
   }
 
   const handleSelectForExpressGrader = (tokenIndex) => () => {
-    const newAnswers = produce(answers, (draft) => {
+    const newAnswers = produce(userAnswer, (draft) => {
       let selectedItems = draft.filter((answer) => answer.selected).length
       const foundedItem = draft.find((elem) => elem.index === tokenIndex)
-      if (foundedItem && !foundedItem.selected) {
+
+      // teacher selected something which student did not previously select
+      if (!foundedItem) {
+        const missingElement = initialArray.find(
+          (elem) => elem.index === tokenIndex
+        )
+        if (
+          missingElement &&
+          (!item.maxSelection || selectedItems.length < item.maxSelection)
+        ) {
+          draft.push({ ...missingElement, selected: true })
+        }
+        return draft
+      }
+
+      if (!foundedItem.selected) {
         selectedItems++
       }
       if (item.maxSelection && selectedItems.length > item.maxSelection) {
         return draft
       }
-      if (foundedItem) {
-        foundedItem.selected = !foundedItem.selected
-      }
+      foundedItem.selected = !foundedItem.selected
     })
-    setAnswers(newAnswers)
-    saveAnswer(newAnswers)
+    saveAnswer(newAnswers.filter((answer) => answer.selected))
   }
 
   return (

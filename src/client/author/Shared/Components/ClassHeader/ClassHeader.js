@@ -523,7 +523,7 @@ class ClassHeader extends Component {
             key="key8"
             onClick={() =>
               this.handleAssignmentGradesSync({
-                assignmentIds: assignmentId,
+                assignmentId,
                 groupId: classId,
               })
             }

@@ -79,6 +79,8 @@ const {
   passwordPolicy: passwordPolicyValues,
   passwordPolicyOptions,
   playerSkinTypes,
+  SHOW_USER_WORK,
+  SHOW_USER_WORK_OPTIONS,
 } = testContants
 
 const { Option } = Select
@@ -362,7 +364,7 @@ class MainSetting extends Component {
       showMagnifier = true,
       timedAssignment,
       allowedTime,
-      enableScratchpad = true,
+      showUserWork = SHOW_USER_WORK.UPLOAD,
       freezeSettings = false,
       hasInstruction = false,
       instruction = '',
@@ -423,7 +425,6 @@ class MainSetting extends Component {
 
     const accessibilityData = [
       { key: 'showMagnifier', value: showMagnifier },
-      { key: 'enableScratchpad', value: enableScratchpad },
     ].filter((a) => features[a.key])
 
     const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -801,6 +802,42 @@ class MainSetting extends Component {
                       <Description>
                         Choose if student can use a calculator, also select the
                         type of calculator that would be shown to the students.
+                      </Description>
+                    </Col>
+                  </Row>
+                </Body>
+              </Block>
+            )}
+
+            {availableFeatures.includes(
+              'assessmentSuperPowersShowUserWork'
+            ) && (
+              <Block id="show-user-work" smallSize={isSmallSize}>
+                <Title>Show your work</Title>
+                <Body smallSize={isSmallSize}>
+                  <Row>
+                    <Col span={8}>
+                      <StyledRadioGroup
+                        disabled={!owner || !isEditable}
+                        onChange={this.updateFeatures('showUserWork')}
+                        value={showUserWork}
+                      >
+                        {SHOW_USER_WORK_OPTIONS.map((item) => (
+                          <RadioBtn
+                            data-cy={item.value}
+                            value={item.value}
+                            key={item.value}
+                          >
+                            {item.label}
+                          </RadioBtn>
+                        ))}
+                      </StyledRadioGroup>
+                    </Col>
+                    <Col span={16}>
+                      <Description>
+                        Allow students to show their work using the scratchpad,
+                        by using their webcam to take a picture or by uploading
+                        a document for each question
                       </Description>
                     </Col>
                   </Row>

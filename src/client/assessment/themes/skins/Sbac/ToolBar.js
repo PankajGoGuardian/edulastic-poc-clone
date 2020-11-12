@@ -7,12 +7,14 @@ import {
   IconClose,
   IconScratchPad,
   IconMagnify,
+  IconCloudUpload,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
+import { enableUpdate } from '@edulastic/ext-libs/src/pdf-annotate'
 
-const { calculatorTypes } = test
+const { calculatorTypes, SHOW_USER_WORK } = test
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 
@@ -26,6 +28,7 @@ const ToolBar = ({
   zoomLevel,
   isDocbased,
   handleMagnifier,
+  toggleUserWorkUploadModal,
   showMagnifier,
   enableMagnifier,
   timedAssignment,
@@ -41,7 +44,7 @@ const ToolBar = ({
     changeCaculateMode(value)
   }
 
-  const { calcType, enableScratchpad } = settings
+  const { calcType, showUserWork } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const handleZoomIn = () => {
     if (zoom !== zoomIndex.length - 1) {
@@ -89,13 +92,20 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      {!isDocbased && enableScratchpad && (
+      {!isDocbased && showUserWork === SHOW_USER_WORK.SCRATCHPAD && (
         <Tooltip placement="top" title="Scratch Pad">
           <StyledButton
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
           >
             <ScratchPadIcon />
+          </StyledButton>
+        </Tooltip>
+      )}
+      {!isDocbased && showUserWork === SHOW_USER_WORK.UPLOAD && (
+        <Tooltip placement="top" title="Upload Work">
+          <StyledButton onClick={toggleUserWorkUploadModal}>
+            <IconCloudUpload />
           </StyledButton>
         </Tooltip>
       )}

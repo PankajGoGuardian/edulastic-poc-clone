@@ -19,7 +19,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from '../../../common/utils/helpers'
 
-const { calculatorTypes } = test
+const { calculatorTypes, SHOW_USER_WORK } = test
 
 const ActionButton = ({ title, icon, ...rest }) => (
   <Tooltip placement="top" title={title}>
@@ -36,7 +36,7 @@ const ToolBar = ({
   toggleUserWorkUploadModal,
   changeTool,
 }) => {
-  const { calcType, showMagnifier, enableScratchpad } = settings
+  const { calcType, showMagnifier, showUserWork } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   const toolbarHandler = (value) => () => {
@@ -85,7 +85,7 @@ const ToolBar = ({
         onClick={toolbarHandler(4)}
         hidden
       />
-      {enableScratchpad && (
+      {showUserWork === SHOW_USER_WORK.SCRATCHPAD && (
         <ActionButton
           title="Scratch Pad"
           icon={<ScratchPadIcon />}
@@ -101,11 +101,13 @@ const ToolBar = ({
           onClick={handleMagnifier}
         />
       )}
-      <ActionButton
-        title="Camera"
-        icon={<IconCloudUpload />}
-        onClick={toggleUserWorkUploadModal}
-      />
+      {showUserWork === SHOW_USER_WORK.UPLOAD && (
+        <ActionButton
+          title="Camera"
+          icon={<IconCloudUpload />}
+          onClick={toggleUserWorkUploadModal}
+        />
+      )}
     </Container>
   )
 }

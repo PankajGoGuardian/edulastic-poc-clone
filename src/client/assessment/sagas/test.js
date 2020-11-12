@@ -284,7 +284,7 @@ function* loadTest({ payload }) {
       timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
       allowedTime: testActivity?.assignmentSettings?.allowedTime,
       pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
-      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
+      showUserWork: testActivity?.assignmentSettings?.showUserWork,
       enableSkipAlert: testActivity?.assignmentSettings?.enableSkipAlert,
       releaseScore: testActivity?.testActivity?.releaseScore,
     }

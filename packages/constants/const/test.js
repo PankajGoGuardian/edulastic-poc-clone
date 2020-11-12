@@ -15,6 +15,7 @@ module.exports = {
     { id: 'suffle-question', title: 'Shuffle Questions' },
     { id: 'show-answer-choice', title: 'Shuffle Answer Choice' },
     { id: 'show-calculator', title: 'Show Calculator' },
+    { id: 'show-user-work', title: 'Show Your Work' },
     { id: 'answer-on-paper', title: 'Answer on Paper' },
     { id: 'require-password', title: 'Require Password' },
     {
@@ -49,6 +50,7 @@ module.exports = {
     'suffle-question': 'assessmentSuperPowersShuffleQuestions',
     'show-answer-choice': 'assessmentSuperPowersShuffleAnswerChoice',
     'show-calculator': 'assessmentSuperPowersShowCalculator',
+    'show-user-work': 'assessmentSuperPowersShowUserWork',
     'answer-on-paper': 'assessmentSuperPowersAnswerOnPaper',
     'require-password': 'assessmentSuperPowersRequirePassword',
     'evaluation-method': 'assessmentSuperPowersEvaluationMethod',
@@ -121,7 +123,6 @@ module.exports = {
     // SHOW_FONT_SIZE: "Show Font Size",
     // SHOW_ZOOM: "Show Zoom",
     showMagnifier: 'MAGNIFIER',
-    enableScratchpad: 'SCRATCHPAD',
     enableSkipAlert: 'SKIP ALERT',
   },
   collectionDefaultFilter: [
@@ -204,4 +205,18 @@ module.exports = {
     casspp: 'casspp',
     testlet: 'testlet',
   },
+  SHOW_USER_WORK: {
+    SCRATCHPAD: 'SCRATCHPAD',
+    UPLOAD: 'UPLOAD',
+  },
+  SHOW_USER_WORK_OPTIONS: [
+    {
+      value: 'SCRATCHPAD',
+      label: 'Enable scratchpad ',
+    },
+    {
+      value: 'UPLOAD',
+      label: 'Enable picture capture and document upload',
+    },
+  ],
 }

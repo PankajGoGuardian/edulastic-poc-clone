@@ -67,6 +67,8 @@ const {
   passwordPolicyOptions,
   passwordPolicy: passwordPolicyValues,
   accessibilities,
+  SHOW_USER_WORK,
+  SHOW_USER_WORK_OPTIONS,
 } = test
 
 const { PARTIAL_CREDIT, PARTIAL_CREDIT_IGNORE_INCORRECT } = evalTypeLabels
@@ -243,14 +245,13 @@ const Settings = ({
     timedAssignment = tempTestSettings.timedAssignment,
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
-    enableScratchpad = tempTestSettings.enableScratchpad,
+    showUserWork = tempTestSettings.showUserWork,
     enableSkipAlert = tempTestSettings.enableSkipAlert || false,
   } = assignmentSettings
   const playerSkinType =
     assignmentSettings.playerSkinType || testSettings.playerSkinType
   const accessibilityData = [
     { key: 'showMagnifier', value: showMagnifier },
-    { key: 'enableScratchpad', value: enableScratchpad },
     { key: 'enableSkipAlert', value: enableSkipAlert },
   ].filter((a) => features[a.key])
 
@@ -527,6 +528,42 @@ const Settings = ({
           </FeaturesSwitch>
         )}
         {/* Show Calculator */}
+
+        {/* Show user work */}
+        {!hideClassLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersShowUserWork"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersShowUserWork"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Col span={12}>
+                <Label>SHOW YOUR WORK</Label>
+              </Col>
+              <Col span={12}>
+                <AlignRight
+                  disabled={freezeSettings}
+                  value={showUserWork}
+                  onChange={(e) =>
+                    overRideSettings('showUserWork', e.target.value)
+                  }
+                >
+                  {SHOW_USER_WORK_OPTIONS.map((item) => (
+                    <RadioBtn
+                      data-cy={item.value}
+                      value={item.value}
+                      key={item.value}
+                    >
+                      <Label>{item.label}</Label>
+                    </RadioBtn>
+                  ))}
+                </AlignRight>
+              </Col>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )}
+        {/* Show user work */}
 
         {/* Answer on Paper */}
         {!hideClassLevelOptions && (

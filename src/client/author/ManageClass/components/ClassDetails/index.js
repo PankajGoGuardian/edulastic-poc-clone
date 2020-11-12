@@ -321,6 +321,7 @@ const ClassDetails = ({
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
+              unarchiveClass={unarchiveClass}
             />
           </div>
           <MainContentWrapper>
@@ -377,7 +378,7 @@ const enhance = compose(
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn', false),
       allowCanvasLogin: get(state, 'user.user.orgData.allowCanvas', false),
       syncClassLoading: get(state, 'manageClass.syncClassLoading'),
-      classLoaded: get(state, 'manageClass.loaded'),
+      classLoaded: get(state, 'manageClass.classLoaded'),
       canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
       canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
       user: get(state, 'user.user', {}),

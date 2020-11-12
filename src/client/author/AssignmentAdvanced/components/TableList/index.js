@@ -295,8 +295,9 @@ const TableList = ({
       <MoreOption onClick={() => handleBulkAction('downloadResponses')}>
         Download Responses
       </MoreOption>
-      {/** Hiding Unassign option for now, plase uncomment it to get it back */}
-      {/* <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>Unassign</MoreOption> */}
+      <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>
+        Unassign
+      </MoreOption>
     </MoreOptionsContainer>
   )
 

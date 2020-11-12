@@ -63,6 +63,7 @@ import {
   googleSyncAssignmentGradesAction,
 } from '../../../src/actions/assignments'
 import {
+  canvasSyncAssignmentAction,
   canvasSyncGradesAction,
   closeAssignmentAction,
   markAsDoneAction,
@@ -342,6 +343,7 @@ class ClassHeader extends Component {
       canvasAllowedInstitutions,
       isCliUser,
       isShowUnAssign,
+      canvasSyncAssignment,
       studentsUTAData,
     } = this.props
     const {
@@ -498,6 +500,17 @@ class ClassHeader extends Component {
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
               key="key6"
+              onClick={() =>
+                canvasSyncAssignment({ assignmentId, groupId: classId })
+              }
+            >
+              Share on Canvas
+            </MenuItems>
+          )}
+        {showSyncGradesWithCanvasOption &&
+          assignmentStatusForDisplay !== 'NOT OPEN' && (
+            <MenuItems
+              key="key7"
               onClick={() =>
                 canvasSyncGrades({ assignmentId, groupId: classId })
               }
@@ -845,6 +858,7 @@ const enhance = compose(
       googleSyncAssignment: googleSyncAssignmentAction,
       googleSyncAssignmentGrades: googleSyncAssignmentGradesAction,
       toggleStudentReportCardPopUp: toggleStudentReportCardSettingsAction,
+      canvasSyncAssignment: canvasSyncAssignmentAction,
     }
   )
 )

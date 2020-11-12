@@ -68,7 +68,7 @@ const MultipleAssessmentReportContainer = (props) => {
   }, [showApply, _MARFilterData])
 
   useEffect(() => {
-    if (!showApply) {
+    if (showApply) {
       setDdFilter({ ...selectedExtras })
     }
   }, [showApply, selectedExtras])

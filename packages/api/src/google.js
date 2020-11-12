@@ -53,7 +53,7 @@ const syncGradesWithGoogleClassroom = (data) =>
       method: 'POST',
       data,
     })
-    .then((result) => result.data.result)
+    .then((result) => result.data)
 
 export default {
   getCourseList,

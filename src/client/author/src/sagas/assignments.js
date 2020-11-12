@@ -261,7 +261,7 @@ function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
 function* syncAssignmentGradesWithGoogleClassroomSaga({ payload }) {
   try {
     const res = yield call(googleApi.syncGradesWithGoogleClassroom, payload)
-    if (res.message) {
+    if (res?.message) {
       notification({ type: 'success', msg: res.message })
     } else {
       notification({

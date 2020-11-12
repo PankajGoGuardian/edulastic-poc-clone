@@ -287,21 +287,21 @@ const TokenHighlightPreview = ({
   }
 
   const handleSelectForExpressGrader = (tokenIndex) => () => {
-    saveAnswer(
-      produce(userAnswer, (draft) => {
-        let selectedItems = draft.filter((answer) => answer.selected).length
-        draft.forEach((elem) => {
-          if (elem.index === tokenIndex) {
-            if (!elem.selected) {
-              selectedItems += 1
-            }
-            if (selectedItems < item.maxSelection || !item.maxSelection) {
-              elem.selected = !elem.selected
-            }
-          }
-        })
-      })
-    )
+    const newAnswers = produce(answers, (draft) => {
+      let selectedItems = draft.filter((answer) => answer.selected).length
+      const foundedItem = draft.find((elem) => elem.index === tokenIndex)
+      if (foundedItem && !foundedItem.selected) {
+        selectedItems++
+      }
+      if (item.maxSelection && selectedItems.length > item.maxSelection) {
+        return draft
+      }
+      if (foundedItem) {
+        foundedItem.selected = !foundedItem.selected
+      }
+    })
+    setAnswers(newAnswers)
+    saveAnswer(newAnswers)
   }
 
   return (

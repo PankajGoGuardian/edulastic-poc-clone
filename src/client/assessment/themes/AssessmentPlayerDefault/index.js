@@ -290,7 +290,7 @@ class AssessmentPlayerDefault extends React.Component {
       utaId,
       hasDrawingResponse,
     } = this.props
-    let { settings } = this.props
+    const { settings } = this.props
     const {
       testItemState,
       isToolbarModalVisible,
@@ -409,7 +409,9 @@ class AssessmentPlayerDefault extends React.Component {
        * zoom only in student side, otherwise not
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
-      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel }}>
+      <ThemeProvider
+        theme={{ ...themeToPass, shouldZoom: true, zoomLevel, headerHeight }}
+      >
         <Container
           scratchPadMode={scratchPadMode}
           data-cy="assessment-player-default-wrapper"

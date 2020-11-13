@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import FileHelper from '../../../../../framework/util/fileHelper'
 import TestLibrary from '../../../../../framework/author/tests/testLibraryPage'
 import Regrade from '../../../../../framework/author/tests/regrade/regrade'
@@ -5,6 +6,7 @@ import {
   regradeOptions,
   studentSide,
   redirectType,
+  testTypes,
 } from '../../../../../framework/constants/assignmentStatus'
 import {
   attemptTypes,
@@ -159,8 +161,16 @@ tests:{
 
       /* attempt and keep student according to required status */
       ;[...attemptsdata1, ...attemptsdata2].forEach((attemptsdata) => {
-        const { email, status, attempt } = attemptsdata
-        studentTestPage.attemptAssignment(email, status, attempt, quetypeMap)
+        const { email, status, attempt, overidden } = attemptsdata
+        studentTestPage.attemptAssignment(
+          email,
+          status,
+          attempt,
+          quetypeMap,
+          'snapwiz',
+          testTypes.CLASS_ASSESSMENT,
+          overidden
+        )
       })
     })
     context('> edit settings and regrade', () => {
@@ -185,7 +195,7 @@ tests:{
         ;[...attemptsdata1, ...attemptsdata2].forEach(
           ({ email, status, overidden }, index) => {
             const [attempNum, attempCount] =
-              status === studentSide.SUBMITTED ? [2, '2'] : [1, '1']
+              status === studentSide.SUBMITTED ? [2, 2] : [1, 1]
             const [maxAllowedAttempts, titleAdjust] = overidden
               ? [initialMaxattempt, '']
               : [regardedMaxAttempt, 'not ']
@@ -194,14 +204,21 @@ tests:{
                 email,
                 studentSide.SUBMITTED,
                 attemptAfterRegrade,
-                quetypeMap
+                quetypeMap,
+                'snapwiz',
+                testTypes.CLASS_ASSESSMENT,
+                attempCount !== maxAllowedAttempts
               )
+
               /* verify attempt count(overidden test: 2, not overridden:3 ) according to assignment status and selected regrade option */
+              if (+attempCount !== +maxAllowedAttempts)
+                assignmentsPage.sidebar.clickOnAssignment()
+              else assignmentsPage.sidebar.clickOnGrades()
               reportsPage.validateStats(
                 attempNum,
                 `${attempCount}/${maxAllowedAttempts}`,
                 undefined,
-                '0'
+                attempCount !== maxAllowedAttempts ? undefined : '0'
               )
               if (status === studentSide.SUBMITTED && index === 1) {
                 assignmentsPage.sidebar.clickOnAssignment()
@@ -361,8 +378,16 @@ tests:{
 
       /* attempt and keep student according to required status */
       ;[...attemptsdata1, ...attemptsdata2].forEach((attemptsdata) => {
-        const { email, status, attempt } = attemptsdata
-        studentTestPage.attemptAssignment(email, status, attempt, quetypeMap)
+        const { email, status, attempt, overidden } = attemptsdata
+        studentTestPage.attemptAssignment(
+          email,
+          status,
+          attempt,
+          quetypeMap,
+          'snapwiz',
+          testTypes.CLASS_ASSESSMENT,
+          overidden
+        )
       })
     })
     context('> edit settings and regrade', () => {
@@ -387,7 +412,7 @@ tests:{
         ;[...attemptsdata1, ...attemptsdata2].forEach(
           ({ email, status, overidden }, index) => {
             const [attempNum, attempCount] =
-              status === studentSide.SUBMITTED ? [2, '2'] : [1, '1']
+              status === studentSide.SUBMITTED ? [2, 2] : [1, 1]
             const titleAdjust = overidden ? 'not ' : ''
             it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected-'${regardedMaxAttempt} times'`, () => {
               cy.login('student', email)
@@ -395,14 +420,21 @@ tests:{
                 email,
                 studentSide.SUBMITTED,
                 attemptAfterRegrade,
-                quetypeMap
+                quetypeMap,
+                'snapwiz',
+                testTypes.CLASS_ASSESSMENT,
+                attempCount !== regardedMaxAttempt
               )
               /* verify attempt count (overidden test: 3, not overridden:3 ) according to assignment status and selected regrade option */
+              if (attempCount !== regardedMaxAttempt)
+                assignmentsPage.sidebar.clickOnAssignment()
+              else assignmentsPage.sidebar.clickOnGrades()
+
               reportsPage.validateStats(
                 attempNum,
                 `${attempCount}/${regardedMaxAttempt}`,
                 undefined,
-                '0'
+                attempCount !== regardedMaxAttempt ? undefined : '0'
               )
             })
           }

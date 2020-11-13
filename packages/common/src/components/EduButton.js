@@ -47,6 +47,7 @@ const getStyle = ({
   IconBtn,
   ml,
   mr,
+  noBorder,
   style = {},
 }) => {
   const defaultStyle = {
@@ -63,6 +64,7 @@ const getStyle = ({
     textTransform: 'uppercase',
     width: width || (IconBtn ? '45px' : null),
     textShadow: 'none',
+    border: noBorder && '0px',
   }
   return { ...defaultStyle, ...style }
 }

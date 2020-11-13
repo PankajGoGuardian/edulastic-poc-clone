@@ -71,7 +71,7 @@ const MathModal = ({
             isGhost={!latexMode}
             onClick={switchMode}
           >
-            LATEX MODE
+            {!isEditable || latexMode ? 'KEYPAD MODE' : 'LATEX MODE'}
           </EduButton>
           <FlexContainer>
             <EduButton isGhost onClick={() => onClose()}>

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { TextInputStyled, FieldLabel, FlexContainer } from '@edulastic/common'
+import {
+  TextAreaInputStyled,
+  FieldLabel,
+  FlexContainer,
+} from '@edulastic/common'
 import { IconQuestionCircle } from '@edulastic/icons'
 import { withMathFormula } from '../../HOC/withMathFormula'
 import { getMathHtml } from '../../utils/mathUtils'
@@ -29,10 +33,11 @@ const KatexInput = ({ value, onInput }) => {
 
   return (
     <KatexInputWrapper>
-      <TextInputStyled
+      <TextAreaInputStyled
         value={latex}
         margin="0px 15px"
         width="calc(100% - 30px)"
+        autoSize={{ minRows: 1, maxRows: 5 }}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Enter math expressions in latex. See the examples for additional help."
       />

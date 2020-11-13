@@ -4,8 +4,11 @@ import { connect } from 'react-redux'
 import { keyBy, get } from 'lodash'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
+
 import { AnswerContext } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
+import questionType from '@edulastic/constants/const/questionType'
+
 import Work from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
 import AssignmentContentWrapper from '../../styled/assignmentContentWrapper'
 import TestItemPreview from '../../../assessment/components/TestItemPreview'
@@ -22,6 +25,7 @@ import {
   getQuestionsSelector,
 } from '../../../author/sharedDucks/questions'
 import { getEvaluationSelector } from '../../../assessment/selectors/answers'
+import { requestScratchPadAction } from '../../../author/ExpressGrader/ducks'
 
 const { releaseGradeLabels } = testConstants
 
@@ -37,6 +41,7 @@ const ReportListContent = ({
   evaluation,
   questionActivity,
   userWork,
+  loadScratchpadFromServer,
 }) => {
   const {
     isDocBased,
@@ -88,13 +93,32 @@ const ReportListContent = ({
 
   const { scratchPad: { attachments, dimensions } = {} } = questionActivity
 
+  const handleShowStudentWork = () => {
+    const hasDrawingResponse = (item?.data?.questions || []).some(
+      (question) => question?.type === questionType.HIGHLIGHT_IMAGE
+    )
+    if (hasDrawingResponse) {
+      setModal(true)
+    } else {
+      // load the scratchpad data and then open the modal
+      loadScratchpadFromServer({
+        testActivityId: testActivityById?._id,
+        testItemId: item?._id,
+        qActId: questionActivity?.[0]?._id,
+        callback: () => {
+          setModal(true)
+        },
+      })
+    }
+  }
+
   return (
     <AssignmentsContent flag={flag} hasCollapseButtons={hasCollapseButtons}>
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <AssignmentContentWrapper hasCollapseButtons={hasCollapseButtons}>
           <Wrapper>
             {hasUserWork && (
-              <Button onClick={() => setModal(true)}> Show My Work </Button>
+              <Button onClick={handleShowStudentWork}> Show My Work </Button>
             )}
 
             <TestItemPreview
@@ -154,7 +178,7 @@ export default connect(
     questionActivity: questionActivityFromFeedbackSelector(state),
     userWork: userWorkFromQuestionActivitySelector(state),
   }),
-  null
+  { loadScratchpadFromServer: requestScratchPadAction }
 )(ReportListContent)
 
 ReportListContent.propTypes = {

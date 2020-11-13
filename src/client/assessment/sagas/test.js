@@ -12,9 +12,13 @@ import {
   captureSentryException,
 } from '@edulastic/common'
 import { push } from 'react-router-redux'
-import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set, maxBy } from 'lodash'
+import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from 'lodash'
 import produce from 'immer'
-import { test as testContants, roleuser, testActivityStatus } from '@edulastic/constants'
+import {
+  test as testContants,
+  roleuser,
+  testActivityStatus,
+} from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
@@ -48,7 +52,11 @@ import {
   setPasswordStatusAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
-import { getCurrentUserId, SET_RESUME_STATUS, transformAssignmentForRedirect } from '../../student/Assignments/ducks'
+import {
+  getCurrentUserId,
+  SET_RESUME_STATUS,
+  transformAssignmentForRedirect,
+} from '../../student/Assignments/ducks'
 import {
   CLEAR_ITEM_EVALUATION,
   CHANGE_VIEW,
@@ -148,6 +156,22 @@ const getSettings = (test, testActivity, preview) => {
     closePolicy: assignmentSettings.closePolicy,
     releaseScore,
   }
+}
+
+function getScratchpadDataFromAttachments(attachments) {
+  const scratchPadData = {}
+  attachments.forEach((attachment) => {
+    if (attachment?.referrerId3) {
+      const { referrerId2: itemId, referrerId3: qId } = attachment
+      scratchPadData[itemId] = scratchPadData[itemId] || {
+        scratchpad: {},
+      }
+      scratchPadData[itemId].scratchpad[qId] = attachment.data.scratchpad
+    } else {
+      scratchPadData[attachment.referrerId2] = attachment.data
+    }
+  })
+  return scratchPadData
 }
 
 function* loadTest({ payload }) {
@@ -418,11 +442,7 @@ function* loadTest({ payload }) {
           referrerId: testActivityId,
         }
       )
-      const scratchPadData = {}
-      attachments.forEach((attachment) => {
-        scratchPadData[attachment.referrerId2] = attachment.data
-      })
-
+      const scratchPadData = getScratchpadDataFromAttachments(attachments)
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
@@ -444,7 +464,6 @@ function* loadTest({ payload }) {
           lastAttemptedQuestion = item
         }
       })
-
       if (Object.keys(scratchPadData).length) {
         yield put({
           type: LOAD_SCRATCH_PAD,
@@ -684,8 +703,11 @@ function* submitTest({ payload }) {
       return
     }
 
-    const assignmentId = yield select(state=>state.studentAssignment.current);
+    const assignmentId = yield select(
+      (state) => state.studentAssignment.current
+    )
 
+    // eslint-disable-next-line prefer-const
     let [assignment, testActivities] = yield Promise.all([
       assignmentApi.getById(assignmentId),
       assignmentApi.fetchTestActivities(assignmentId, groupId),
@@ -709,22 +731,23 @@ function* submitTest({ payload }) {
       assignment
     )
     const attempts = testActivities.filter((el) =>
-    [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
-      el.status
+      [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
+        el.status
+      )
     )
-  )
-  let maxAttempt = assignment.class.find(item=>item._id == groupId)?.maxAttempts;
-  if (!maxAttempt) {
-    maxAttempt = assignment.maxAttempts || 1
-  }
-
-  if (attempts.length >= maxAttempt) {
-    if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
-      return yield put(push(`/home/grades`))
+    let maxAttempt = assignment.class.find((item) => item._id == groupId)
+      ?.maxAttempts
+    if (!maxAttempt) {
+      maxAttempt = assignment.maxAttempts || 1
     }
-    return yield put(
-      push(
-        `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`
+
+    if (attempts.length >= maxAttempt) {
+      if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
+        return yield put(push(`/home/grades`))
+      }
+      return yield put(
+        push(
+          `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`
         )
       )
     }

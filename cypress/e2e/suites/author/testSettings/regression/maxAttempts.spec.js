@@ -89,7 +89,7 @@ describe(`${FileHelper.getSpecName(
         studentTest.attemptQuestion(queType, attempt1[queNum], attemptData)
         studentTest.clickOnNext()
       })
-      studentTest.submitTest()
+      studentTest.submitTest(true)
 
       sideBarPage.clickOnAssignment()
       // validate stats
@@ -110,7 +110,7 @@ describe(`${FileHelper.getSpecName(
         studentTest.attemptQuestion(queType, attempt2[queNum], attemptData)
         studentTest.clickOnNext()
       })
-      studentTest.submitTest()
+      studentTest.submitTest(true)
 
       sideBarPage.clickOnAssignment()
 

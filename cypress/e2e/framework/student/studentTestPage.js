@@ -176,7 +176,7 @@ class StudentTestPage {
     cy.wait('@testactivity')
   }
 
-  submitTest = () => {
+  submitTest = (isAttemptsPending = false) => {
     this.clickSubmitButton()
     cy.get('[data-cy="Grades"]')
     cy.url().then((url) => {
@@ -186,9 +186,11 @@ class StudentTestPage {
           .click({ force: true })
     })
     cy.url().should('include', '/home/grades')
-    return cy
-      .get('[data-cy="status"]', { timeout: 120000 })
-      .should('be.visible')
+    if (!isAttemptsPending)
+      return cy
+        .get('[data-cy="status"]', { timeout: 120000 })
+        .should('be.visible')
+    return cy.get('body')
   }
 
   clickOnMenuCheckAns = () => {
@@ -805,7 +807,8 @@ class StudentTestPage {
     attempt,
     questionTypeMap,
     password,
-    aType = 'CLASS_ASSESSMENT'
+    aType = 'CLASS_ASSESSMENT',
+    hasPendingAttempts = false
   ) => {
     if (status !== studentSide.NOT_STARTED) {
       cy.login('student', email, password)
@@ -832,7 +835,7 @@ class StudentTestPage {
         this.clickOnProceed();
       } */
       if (status === studentSide.SUBMITTED || status === studentSide.GRADED) {
-        this.submitTest()
+        this.submitTest(hasPendingAttempts)
         cy.contains('Grades').should('be.visible')
       }
     }

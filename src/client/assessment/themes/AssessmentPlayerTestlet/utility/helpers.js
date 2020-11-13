@@ -470,3 +470,15 @@ const getUserResponse = (item, responses) => {
 }
 
 export default getUserResponse
+
+export const getExtDataForQuestion = (item, responses) => {
+  const responseIds = convertStrToArr(item.testletResponseIds)
+  const questionExtData = {}
+  responseIds.forEach((id) => {
+    if (responses[id]) {
+      questionExtData[id] = responses[id]
+    }
+  })
+
+  return questionExtData
+}

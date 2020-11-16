@@ -673,8 +673,8 @@ function getScratchpadWork(questions = [], userWorkData = {}, target) {
     (acc, curr) => {
       const { activity: { qActId, _id } = {} } = curr
       const key = target === 'qActId' ? qActId : _id
-      if (key) {
-        acc.data[key] = { ...userWorkData[key] }
+      if (key && userWorkData?.[key]) {
+        acc.data[key] = userWorkData?.[key]
       }
       return acc
     },

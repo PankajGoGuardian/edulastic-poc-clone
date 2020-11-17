@@ -96,7 +96,7 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
     !isAdmin &&
     (test?.testContentVisibility === testContentVisibilityOptions.HIDDEN ||
       test?.testContentVisibility === testContentVisibilityOptions.GRADING)
-
+  const questions = test.questions.filter((q) => q.type)
   return (
     <>
       <PrintActionWrapper />
@@ -116,9 +116,9 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
           <span> Created By {test?.createdBy?.name} </span> <br />
         </StyledHeader>
         <hr />
-        {!isContentHidden ? (
+        {!isContentHidden && questions.length ? (
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-            {test.questions.map((question, index) => {
+            {questions.map((question, index) => {
               const questionHeight =
                 question.type == 'clozeImageDropDown'
                   ? { minHeight: '500px' }
@@ -167,6 +167,10 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
               </StyledAnswerWrapper>
             )}
           </AnswerContext.Provider>
+        ) : !questions.length && !isContentHidden ? (
+          <div style={{ textAlign: 'center' }}>
+            <b>You are not authorized to view the test content.</b>
+          </div>
         ) : (
           <div>
             <b>

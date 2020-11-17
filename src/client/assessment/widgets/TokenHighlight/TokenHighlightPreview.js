@@ -45,6 +45,7 @@ const TokenHighlightPreview = ({
   theme,
   showQuestionNumber,
   disableResponse,
+  clearClicked,
   mode,
   t,
 }) => {
@@ -179,6 +180,12 @@ const TokenHighlightPreview = ({
     }
   }, [userAnswer])
 
+  useEffect(() => {
+    if (clearClicked) {
+      setAnswers(initialArray)
+    }
+  }, [clearClicked])
+
   const handleSelect = (i) => () => {
     const newAnswers = cloneDeep(answers)
     const foundedItem = newAnswers.find((elem) => elem.index === i)
@@ -210,12 +217,12 @@ const TokenHighlightPreview = ({
     return [...resultArray]
   }
 
-  const getClass = (index) =>
-    answers.find((elem) => elem.index === index) &&
-    answers.find((elem) => elem.index === index).selected
+  const getClass = (index) => {
+    return answers.find((elem) => elem.index === index) &&
+      answers.find((elem) => elem.index === index).selected
       ? 'active-word token answer'
       : 'token answer'
-
+  }
   const preview = previewTab === CHECK || previewTab === SHOW || smallSize
 
   const rightAnswers = validate()

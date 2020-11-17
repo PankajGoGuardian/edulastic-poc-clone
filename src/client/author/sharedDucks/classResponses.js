@@ -87,18 +87,31 @@ function* receiveClassResponseSaga({ payload }) {
 
 function* loadAttachmentsFromServer(filter) {
   try {
-    const { referrerId, referrerId2, uqaId } = filter
+    const { referrerId, referrerId2, uqaId, qid } = filter
     // TODO
     // perf optimisation
     // call the api only if data is not present in the store
-    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+    const filterQuery = {
       referrerId,
       referrerId2,
-    })
+    }
+    let { attachments = [] } = yield call(
+      attachmentApi.loadAllAttachments,
+      filterQuery
+    )
+
+    if (attachments.length > 1) {
+      attachments = attachments.filter((a) => a.referrerId3 === qid)
+    }
+
     const scratchpadData = {}
     for (const attachment of attachments) {
-      const { data } = attachment
-      scratchpadData[uqaId] = data.scratchpad
+      const { data, referrerId3 } = attachment
+      if (referrerId3) {
+        scratchpadData[uqaId] = { [referrerId3]: data.scratchpad }
+      } else {
+        scratchpadData[uqaId] = data.scratchpad
+      }
     }
     yield put({ type: SAVE_USER_WORK, payload: scratchpadData })
   } catch (error) {
@@ -108,11 +121,12 @@ function* loadAttachmentsFromServer(filter) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(({ testItemId, uqaId }) =>
+    testItemsIdArray.map(({ testItemId, uqaId, _id, qid }) =>
       call(loadAttachmentsFromServer, {
         referrerId: testActivityId,
         referrerId2: testItemId,
-        uqaId,
+        uqaId: uqaId || _id,
+        qid,
       })
     )
   )
@@ -146,49 +160,23 @@ function* loadPassagesForItems({ testActivityId, passages }) {
   )
 }
 
-function getScratchpadUsedItemsFromActivities(actGroups = {}) {
-  const items = []
-  Object.keys(actGroups).forEach((key) => {
-    const activities = actGroups[key]
-    let showScratchByDefault
-    let scratchUsed
-    for (const activity of activities) {
-      if (activity.qType === questionType.HIGHLIGHT_IMAGE) {
-        showScratchByDefault = true
-      }
-      if (activity?.scratchPad?.scratchpad === true) {
-        scratchUsed = true
-      }
-      if (scratchUsed && showScratchByDefault) {
-        break
-      }
-    }
-    if (scratchUsed && showScratchByDefault) {
-      items.push({
-        utaId: activities[0].testActivityId,
-        uqaId: activities[0]._id,
-        testItemId: key,
-      })
-    }
-  })
-  return items
-}
-
 function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(
       classResponseApi.studentResponse,
       payload
     )
-    const { questionActivities = [] } = studentResponse
-
+    const { questionActivities: uqas = [] } = studentResponse
+    const sc = uqas.filter(
+      (uqa) =>
+        uqa?.scratchPad?.scratchpad &&
+        uqa.qType === questionType.HIGHLIGHT_IMAGE
+    )
     // student view LCB
-    const actGroups = groupBy(questionActivities, 'testItemId')
-    const scratchpadUsedItems = getScratchpadUsedItemsFromActivities(actGroups)
 
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
-      testItemsIdArray: scratchpadUsedItems,
+      testItemsIdArray: sc,
     })
 
     const originalData = yield select(
@@ -370,32 +358,18 @@ function* receiveStudentQuestionSaga({ payload }) {
       }
     }
     if (feedbackResponse) {
-      const scratchpadUsedItems = []
+      let scratchpadUsedItems = []
+      const scratchpadUsed = (obj) =>
+        obj.qType === questionType.HIGHLIGHT_IMAGE &&
+        obj?.scratchPad?.scratchpad === true
       if (Array.isArray(feedbackResponse)) {
         // multipart item
-        const scratchpadUsed = (obj) => obj?.scratchPad?.scratchpad === true
-        const idObjMapper = (obj) => {
-          const { _id: uqaId, testItemId, testActivityId } = obj
-          return { uqaId, testItemId, testActivityId }
-        }
-        const [item] = feedbackResponse.filter(scratchpadUsed).map(idObjMapper)
-        if (item) {
-          scratchpadUsedItems.push(item)
-        }
+        scratchpadUsedItems = feedbackResponse.filter(scratchpadUsed)
       } else if (isPlainObject(feedbackResponse)) {
         // item having single question
-        const {
-          qType,
-          scratchPad = {},
-          _id: uqaId,
-          testItemId,
-          testActivityId,
-        } = feedbackResponse
-        if (
-          qType === questionType.HIGHLIGHT_IMAGE &&
-          scratchPad.scratchpad === true
-        ) {
-          scratchpadUsedItems.push({ uqaId, testItemId, testActivityId })
+        const { _id: uqaId, testItemId, testActivityId, qid } = feedbackResponse
+        if (scratchpadUsed(feedbackResponse)) {
+          scratchpadUsedItems = [{ uqaId, testItemId, testActivityId, qid }]
         }
       }
       if (scratchpadUsedItems.length > 0) {
@@ -449,21 +423,20 @@ function* receiveClassQuestionSaga({ payload }) {
       )
     }
 
-    let scratchpadUsedItems = []
-    const actGroupByUser = groupBy(feedbackResponse, 'userId')
-
-    Object.keys(actGroupByUser).forEach((key) => {
-      const groupByItem = groupBy(actGroupByUser[key], 'testItemId')
-      const curritems = getScratchpadUsedItemsFromActivities(groupByItem)
-      scratchpadUsedItems = scratchpadUsedItems.concat(curritems)
-    })
-
-    for (const item of scratchpadUsedItems) {
-      yield fork(getAttachmentsForItems, {
-        testActivityId: item.utaId,
-        testItemsIdArray: [item],
-      })
-    }
+    const sc = yield feedbackResponse.filter(
+      (uqa) =>
+        uqa?.scratchPad?.scratchpad &&
+        uqa.qType === questionType.HIGHLIGHT_IMAGE
+    )
+    const scGrouped = yield groupBy(sc, 'testActivityId')
+    yield all(
+      Object.keys(scGrouped).map((utaId) =>
+        fork(getAttachmentsForItems, {
+          testActivityId: utaId,
+          testItemsIdArray: scGrouped[utaId],
+        })
+      )
+    )
     feedbackResponse = feedbackResponse.map((x) => {
       if (x.graded === false) {
         Object.assign(x, { score: 0 })

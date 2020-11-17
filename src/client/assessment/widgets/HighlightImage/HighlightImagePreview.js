@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   Stimulus,
@@ -8,7 +8,7 @@ import {
   QuestionSubLabel,
   QuestionContentWrapper,
 } from '@edulastic/common'
-import { isEmpty, max } from 'lodash'
+import { isEmpty, max, isPlainObject } from 'lodash'
 import { PREVIEW } from '../../constants/constantsForQuestions'
 import { PreviewContainer } from './styled/PreviewContainer'
 import DEFAULT_IMAGE from '../../assets/highlightImageBackground.svg'
@@ -49,6 +49,26 @@ const HighlightImagePreview = ({
     height: max([+image.y + +height + 10, 600]),
   }
 
+  const scratchpadData = useMemo(() => {
+    if (isPlainObject(userWork)) {
+      if (
+        (isLCBView || LCBPreviewModal || isExpressGrader || isStudentReport) &&
+        item?.activity
+      ) {
+        const {
+          activity: { qActId, qid, _id },
+        } = item
+        const key = qActId || _id
+        if (isPlainObject(userWork?.[key])) {
+          return userWork[key]?.[qid] || {}
+        }
+        return userWork?.[key] || {}
+      }
+      return userWork[item?.id] || {}
+    }
+    return userWork
+  }, [userWork, item])
+
   const altText = image ? image.altText : ''
   const file = image ? image.source : ''
 
@@ -81,7 +101,7 @@ const HighlightImagePreview = ({
     } else {
       // show scratchpad only if there is data
       //  in teacher view (LCB, ExpressGrader, etc)
-      showDrawing = !isEmpty(userWork)
+      showDrawing = !isEmpty(scratchpadData)
     }
   }
 
@@ -94,6 +114,12 @@ const HighlightImagePreview = ({
     imageContainerDimensions.width + 51, // 51 is current question label width,
     scratchpadDimensions?.width,
   ])
+
+  const handleSaveData = (data) => {
+    if (typeof saveUserWork === 'function') {
+      saveUserWork({ userWorkData: data, questionId: item.id })
+    }
+  }
 
   return (
     <>
@@ -113,9 +139,9 @@ const HighlightImagePreview = ({
               width: scratchpadWidth,
               height: scratchpadDimensions?.height,
             }}
-            saveData={saveUserWork}
+            saveData={handleSaveData}
             conatinerWidth={colWidth}
-            data={userWork}
+            data={scratchpadData}
           />
         )}
         <FlexContainer justifyContent="flex-start" alignItems="baseline">

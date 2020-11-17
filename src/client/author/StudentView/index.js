@@ -363,6 +363,7 @@ class StudentViewContainer extends Component {
                 }
                 testActivityId={studentResponse?.testActivity?._id}
                 isLCBView
+                isStudentView
               />
             </AnswerContext.Provider>
           )}

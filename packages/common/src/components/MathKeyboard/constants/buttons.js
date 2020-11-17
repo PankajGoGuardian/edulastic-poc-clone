@@ -586,10 +586,11 @@ export const tangent = {
 }
 
 export const arctangent = {
-  handler: '\\tan^{-1}',
+  handler: '\\tan^{-1}\\left({}\\right)',
   label: <CustomImage src={Group2243} width={39} height={12} />,
   types: ['all'],
   command: 'write',
+  numToMove: 1,
 }
 
 export const logSymbol = {

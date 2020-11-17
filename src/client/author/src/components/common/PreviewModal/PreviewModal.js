@@ -348,6 +348,9 @@ class PreviewModal extends React.Component {
       notification({ type: 'success', messageKey: 'itemRemovedTest' })
     }
     setTestItems(keys)
+    if (page === 'review' && keys.length === 0) {
+      this.closeModal()
+    }
   }
 
   get isAddOrRemove() {

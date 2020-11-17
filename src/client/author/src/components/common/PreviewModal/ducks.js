@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
 import { call, put, all, takeEvery, select } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
-import { get } from 'lodash'
+import { get, last } from 'lodash'
 import { testItemsApi, passageApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
@@ -65,7 +65,10 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
   } else {
     console.warn('unknown page type ', page)
   }
-  const item = testItems.find((x) => x._id === id)
+  let item = testItems.find((x) => x._id === id)
+  if (!item && page === 'review' && testItems.length) {
+    item = last(testItems)
+  }
   if (item?.multipartItem) {
     // markQuestionLabel([item]);
   }

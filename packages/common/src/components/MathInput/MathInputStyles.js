@@ -10,7 +10,7 @@ import { Rnd } from 'react-rnd'
 export const MathInputStyles = styled.div`
   min-width: ${({ width, fullWidth }) =>
     width || (fullWidth ? '100%' : 'fit-content')};
-  height: ${({ height }) => height || 'auto'};
+  min-height: ${({ height }) => height || 'auto'};
   background: ${({ background }) => background};
   position: relative;
 

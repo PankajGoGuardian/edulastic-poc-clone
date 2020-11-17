@@ -94,7 +94,7 @@ export const questionActivityFromFeedbackSelector = createSelector(
   (item, questionActivities) => {
     if (item) {
       const questionActivity =
-        questionActivities.find((act) => act.testItemId === item._id) || {}
+        questionActivities.filter((act) => act.testItemId === item._id) || {}
       return questionActivity
     }
     return {}
@@ -104,12 +104,15 @@ export const questionActivityFromFeedbackSelector = createSelector(
 export const userWorkFromQuestionActivitySelector = createSelector(
   questionActivityFromFeedbackSelector,
   userWorkSelector,
-  (questionActivity, userWork) => {
-    if (questionActivity) {
-      return userWork[questionActivity._id]
-    }
+  (questionActivities = [], userWork) => {
+    const scratchPadData = (questionActivities || []).reduce((acc, curr) => {
+      if (userWork[curr._id]) {
+        acc[curr._id] = userWork[curr._id]
+      }
+      return acc
+    }, {})
 
-    return {}
+    return scratchPadData
   }
 )
 

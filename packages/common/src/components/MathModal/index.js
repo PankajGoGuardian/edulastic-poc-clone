@@ -25,12 +25,14 @@ const MathModal = ({
 }) => {
   const mathInputRef = useRef(null)
   const [latex, setLatex] = useState(value || '')
+  const [latexMode, setLatextMode] = useState(false)
 
   useEffect(() => {
     if (show) {
       if (mathInputRef.current) {
         mathInputRef.current.setFocus()
       }
+      setLatextMode(false)
       setLatex(value)
     }
   }, [show])
@@ -43,6 +45,11 @@ const MathModal = ({
     if (evt.which === 13) {
       onSave(latex)
     }
+  }
+
+  const switchMode = (evt) => {
+    setLatextMode(!latexMode)
+    evt?.target?.blur()
   }
 
   return (
@@ -58,18 +65,29 @@ const MathModal = ({
         style: { overflow: 'auto', display: show ? 'block' : 'none' },
       }}
       footer={
-        <FlexContainer justifyContent="flex-start">
-          <EduButton isGhost onClick={() => onClose()}>
-            CANCEL
+        <FlexContainer justifyContent="space-between">
+          <EduButton
+            noBorder={!latexMode}
+            isGhost={!latexMode}
+            onClick={switchMode}
+          >
+            {!isEditable || latexMode ? 'KEYPAD MODE' : 'LATEX MODE'}
           </EduButton>
-          <EduButton type="primary" onClick={() => onSave(latex)}>
-            OK
-          </EduButton>
+          <FlexContainer>
+            <EduButton isGhost onClick={() => onClose()}>
+              CANCEL
+            </EduButton>
+            <EduButton type="primary" onClick={() => onSave(latex)}>
+              OK
+            </EduButton>
+          </FlexContainer>
         </FlexContainer>
       }
     >
-      {!isEditable && <KatexInput value={latex} onInput={onInput} />}
-      {isEditable && (
+      {(!isEditable || latexMode) && (
+        <KatexInput value={latex} onInput={onInput} />
+      )}
+      {!latexMode && isEditable && (
         <MathInput
           ref={mathInputRef}
           fullWidth

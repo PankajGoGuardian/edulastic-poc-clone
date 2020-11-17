@@ -33,11 +33,11 @@ const initialState = {
   selectedTest: [],
   requestFilters: {
     termId: '',
-    subject: '',
-    grades: ['TK'],
-    domainIds: 'All',
-    // classSectionId: "",
-    // assessmentType: ""
+    curriculumId: '',
+    grade: 'TK',
+    profileId: '',
+    domainIds: [],
+    assessmentType: '',
   },
 }
 

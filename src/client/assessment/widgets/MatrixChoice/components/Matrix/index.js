@@ -45,11 +45,11 @@ const Matrix = (props) => {
       checked = response.value[responseId]
     }
 
-    const handleChange = (e) => {
+    const handleChange = () => {
       const checkData = {
         columnIndex,
         rowIndex,
-        checked: e.target.checked,
+        checked: !checked,
       }
 
       onCheck(checkData)

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import chunk from 'lodash/chunk'
 import cloneDeep from 'lodash/cloneDeep'
+import flattenDeep from 'lodash/flattenDeep'
+import { math as mathConstant } from '@edulastic/constants'
 import NumberKeyboard from './NumberKeyboard'
 import {
   Container,
@@ -13,10 +15,13 @@ import {
   Label,
 } from './styled'
 
+const { symbols } = mathConstant
+
 const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
   const [boards, updateBoards] = useState({})
   const [current, updateCurrent] = useState(0)
   const numOfKeys = btns.length
+  const showNumbers = numbers && current === 0
 
   useEffect(() => {
     const keybuttons = cloneDeep(btns)
@@ -32,6 +37,7 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
 
     if (fullKeybord) {
       keysPerRow = 8
+      limitRow = 4
     }
 
     if (fullKeybord && numbers) {
@@ -43,10 +49,12 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
       keysPerRow = 4
     }
 
-    if (type === 'intermediate' && numbers) {
+    if (type === symbols[2].value && numbers) {
       limitRow = 5
     }
-
+    if (type === symbols[3].value) {
+      limitRow = 4
+    }
     const rows = chunk(keybuttons, keysPerRow)
     updateBoards(chunk(rows, limitRow))
     updateCurrent(0)
@@ -72,18 +80,24 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
     }
   }
 
-  const currentBoard = boards[current] || []
+  let currentBoard = boards[current] || []
+  if (!showNumbers && fullKeybord) {
+    currentBoard = chunk(flattenDeep(currentBoard), 8)
+  }
 
   return (
     <Container>
       <PrevButton onClick={onClickPrev} hidden={current <= 0} />
-      {numbers && <NumberKeyboard buttons={numbers} onInput={onInput} />}
-      <SymbolsWrapper data-cy="virtual-keyboard-buttons" isVertical={!!numbers}>
+      {showNumbers && <NumberKeyboard buttons={numbers} onInput={onInput} />}
+      <SymbolsWrapper
+        data-cy="virtual-keyboard-buttons"
+        isVertical={!!showNumbers}
+      >
         {currentBoard.map((row, rowIndex) => (
           <Row
             key={rowIndex}
             data-cy={`button-row-${rowIndex}`}
-            isVertical={!!numbers}
+            isVertical={!!showNumbers}
           >
             {row.map(({ label, handler, command = 'cmd', numToMove }, i) => {
               let fontRate = 1
@@ -95,7 +109,7 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
                 <Button
                   key={i}
                   fontSizeRate={fontRate}
-                  isVertical={!!numbers}
+                  isVertical={!!showNumbers}
                   onClick={handleClick(handler, command, numToMove)}
                   data-cy={`virtual-keyboard-${handler}`}
                 >

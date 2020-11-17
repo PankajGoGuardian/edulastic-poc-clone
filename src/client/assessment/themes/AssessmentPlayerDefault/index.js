@@ -187,9 +187,20 @@ class AssessmentPlayerDefault extends React.Component {
     if (sourceId === 'resourceId') {
       userWorkId = passage._id
     }
+    const scratchpadData = {}
+    if (sourceId === 'scratchpad' && data.questionId) {
+      const { questionId, userWorkData } = data
+      // keep all other question data in scratchpad
+      scratchpadData[sourceId] = {
+        ...(userWork[sourceId] || {}),
+        [questionId]: userWorkData,
+      }
+    } else {
+      scratchpadData[sourceId] = data
+    }
 
     saveUserWork({
-      [userWorkId]: { ...userWork, [sourceId]: data },
+      [userWorkId]: { ...(userWork || {}), ...scratchpadData },
     })
   }
 
@@ -289,8 +300,9 @@ class AssessmentPlayerDefault extends React.Component {
       groupId,
       utaId,
       hasDrawingResponse,
+      studentReportModal,
     } = this.props
-    let { settings } = this.props
+    const { settings } = this.props
     const {
       testItemState,
       isToolbarModalVisible,
@@ -409,7 +421,9 @@ class AssessmentPlayerDefault extends React.Component {
        * zoom only in student side, otherwise not
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
-      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel }}>
+      <ThemeProvider
+        theme={{ ...themeToPass, shouldZoom: true, zoomLevel, headerHeight }}
+      >
         <Container
           scratchPadMode={scratchPadMode}
           data-cy="assessment-player-default-wrapper"
@@ -562,6 +576,7 @@ class AssessmentPlayerDefault extends React.Component {
                       isStudentReport={isStudentReport}
                       itemId={item._id}
                       itemLevelScoring={item.itemLevelScoring}
+                      studentReportModal={studentReportModal}
                     />
                   )}
                   {testItemState === 'check' && (
@@ -596,6 +611,7 @@ class AssessmentPlayerDefault extends React.Component {
                       enableMagnifier={enableMagnifier}
                       itemId={item._id}
                       itemLevelScoring={item.itemLevelScoring}
+                      studentReportModal={studentReportModal}
                     />
                   )}
                 </MainWrapper>
@@ -654,13 +670,47 @@ AssessmentPlayerDefault.defaultProps = {
   theme: themes,
 }
 
+function getScratchpadWork(questions = [], userWorkData = {}, target) {
+  return questions.reduce(
+    (acc, curr) => {
+      const { activity: { qActId, _id } = {} } = curr
+      const key = target === 'qActId' ? qActId : _id
+      if (key && userWorkData?.[key]) {
+        acc.data[key] = userWorkData?.[key]
+      }
+      return acc
+    },
+    { data: {} }
+  )
+}
+
+function getScratchpadWorkForStudentReport({ userWork, uqas }) {
+  const data = (uqas?.[0] || []).reduce(
+    (acc, curr) => {
+      if (userWork[curr._id]) {
+        acc.data[curr._id] = userWork[curr._id]
+      }
+      return acc
+    },
+    { data: {} }
+  )
+  if (Array.isArray(uqas) && uqas.length > 0) {
+    data.dimensions = { ...uqas[0].scratchPad?.dimensions }
+  }
+  return data
+}
+
 function getScratchPadfromActivity(state, props) {
   const {
     LCBPreviewModal = false,
     studentReportModal = false,
     questionActivities = [],
     testActivityId = '',
+    hasDrawingResponse,
+    isStudentView,
   } = props
+
+  let acts = questionActivities
   if (LCBPreviewModal || studentReportModal) {
     const { userWork, studentTestItems } = state
     let items
@@ -668,23 +718,42 @@ function getScratchPadfromActivity(state, props) {
     if (studentReportModal) {
       items = studentTestItems.items
       currentItem = studentTestItems.current
+      acts = acts[0]
     } else {
       items = props.items
       currentItem = props.currentItem
     }
     const itemId = items[currentItem]._id
     const questionActivity =
-      questionActivities.find(
+      acts.find(
         (act) =>
           act.testItemId === itemId && act.testActivityId === testActivityId
       ) || {}
     const { scratchPad: { dimensions } = {} } = questionActivity
+    if (hasDrawingResponse) {
+      if (studentReportModal) {
+        return getScratchpadWorkForStudentReport({
+          userWork: get(state, ['userWork', 'present']),
+          uqas: questionActivities,
+          item: items?.[currentItem] || {},
+          hasDrawingResponse,
+        })
+      }
+      const target = isStudentView ? 'qActId' : '_id'
+      const data = getScratchpadWork(
+        get(items, [currentItem, 'data', 'questions'], []),
+        get(state, ['userWork', 'present']),
+        target
+      )
+      data.dimensions = dimensions
+      return data
+    }
     questionActivity.qActId = questionActivity.qActId || questionActivity._id
     const userWorkData = userWork.present[questionActivity.qActId] || {}
     const scratchPadData = { data: userWorkData, dimensions }
     return scratchPadData
   }
-  return null
+  return {}
 }
 
 const enhance = compose(

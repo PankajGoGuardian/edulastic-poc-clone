@@ -12,15 +12,7 @@ import {
   captureSentryException,
 } from '@edulastic/common'
 import { push } from 'react-router-redux'
-import {
-  keyBy as _keyBy,
-  groupBy,
-  get,
-  flatten,
-  cloneDeep,
-  set,
-  maxBy,
-} from 'lodash'
+import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from 'lodash'
 import produce from 'immer'
 import {
   test as testContants,
@@ -164,6 +156,22 @@ const getSettings = (test, testActivity, preview) => {
     closePolicy: assignmentSettings.closePolicy,
     releaseScore,
   }
+}
+
+function getScratchpadDataFromAttachments(attachments) {
+  const scratchPadData = {}
+  attachments.forEach((attachment) => {
+    if (attachment?.referrerId3) {
+      const { referrerId2: itemId, referrerId3: qId } = attachment
+      scratchPadData[itemId] = scratchPadData[itemId] || {
+        scratchpad: {},
+      }
+      scratchPadData[itemId].scratchpad[qId] = attachment.data.scratchpad
+    } else {
+      scratchPadData[attachment.referrerId2] = attachment.data
+    }
+  })
+  return scratchPadData
 }
 
 function* loadTest({ payload }) {
@@ -434,11 +442,7 @@ function* loadTest({ payload }) {
           referrerId: testActivityId,
         }
       )
-      const scratchPadData = {}
-      attachments.forEach((attachment) => {
-        scratchPadData[attachment.referrerId2] = attachment.data
-      })
-
+      const scratchPadData = getScratchpadDataFromAttachments(attachments)
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
@@ -460,7 +464,6 @@ function* loadTest({ payload }) {
           lastAttemptedQuestion = item
         }
       })
-
       if (Object.keys(scratchPadData).length) {
         yield put({
           type: LOAD_SCRATCH_PAD,
@@ -704,6 +707,7 @@ function* submitTest({ payload }) {
       (state) => state.studentAssignment.current
     )
 
+    // eslint-disable-next-line prefer-const
     let [assignment, testActivities] = yield Promise.all([
       assignmentApi.getById(assignmentId),
       assignmentApi.fetchTestActivities(assignmentId, groupId),

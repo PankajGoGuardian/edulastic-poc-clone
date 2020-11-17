@@ -45,6 +45,7 @@ const TokenHighlightPreview = ({
   theme,
   showQuestionNumber,
   disableResponse,
+  clearClicked,
   mode,
   t,
 }) => {
@@ -179,6 +180,12 @@ const TokenHighlightPreview = ({
     }
   }, [userAnswer])
 
+  useEffect(() => {
+    if (clearClicked) {
+      setAnswers(initialArray)
+    }
+  }, [clearClicked])
+
   const handleSelect = (i) => () => {
     const newAnswers = cloneDeep(answers)
     const foundedItem = newAnswers.find((elem) => elem.index === i)
@@ -210,12 +217,12 @@ const TokenHighlightPreview = ({
     return [...resultArray]
   }
 
-  const getClass = (index) =>
-    answers.find((elem) => elem.index === index) &&
-    answers.find((elem) => elem.index === index).selected
+  const getClass = (index) => {
+    return answers.find((elem) => elem.index === index) &&
+      answers.find((elem) => elem.index === index).selected
       ? 'active-word token answer'
       : 'token answer'
-
+  }
   const preview = previewTab === CHECK || previewTab === SHOW || smallSize
 
   const rightAnswers = validate()
@@ -287,21 +294,33 @@ const TokenHighlightPreview = ({
   }
 
   const handleSelectForExpressGrader = (tokenIndex) => () => {
-    saveAnswer(
-      produce(userAnswer, (draft) => {
-        let selectedItems = draft.filter((answer) => answer.selected).length
-        draft.forEach((elem) => {
-          if (elem.index === tokenIndex) {
-            if (!elem.selected) {
-              selectedItems += 1
-            }
-            if (selectedItems < item.maxSelection || !item.maxSelection) {
-              elem.selected = !elem.selected
-            }
-          }
-        })
-      })
-    )
+    const newAnswers = produce(userAnswer, (draft) => {
+      let selectedItems = draft.filter((answer) => answer.selected).length
+      const foundedItem = draft.find((elem) => elem.index === tokenIndex)
+
+      // teacher selected something which student did not previously select
+      if (!foundedItem) {
+        const missingElement = initialArray.find(
+          (elem) => elem.index === tokenIndex
+        )
+        if (
+          missingElement &&
+          (!item.maxSelection || selectedItems.length < item.maxSelection)
+        ) {
+          draft.push({ ...missingElement, selected: true })
+        }
+        return draft
+      }
+
+      if (!foundedItem.selected) {
+        selectedItems++
+      }
+      if (item.maxSelection && selectedItems.length > item.maxSelection) {
+        return draft
+      }
+      foundedItem.selected = !foundedItem.selected
+    })
+    saveAnswer(newAnswers.filter((answer) => answer.selected))
   }
 
   return (

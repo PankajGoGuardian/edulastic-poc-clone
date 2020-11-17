@@ -2066,9 +2066,9 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@edulastic/evaluators@git+ssh://git@github.com/snapwiz/edu-eval.git#2370753ff65da2c5998f546e142d68b3293ff053":
+"@edulastic/evaluators@git+ssh://git@github.com/snapwiz/edu-eval.git#dc5efe34ea10e8511e8170a09ca862fa47b768c1":
   version "0.1.0"
-  resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#2370753ff65da2c5998f546e142d68b3293ff053"
+  resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#dc5efe34ea10e8511e8170a09ca862fa47b768c1"
   dependencies:
     axios "^0.18.0"
     fast-levenshtein "^2.0.6"

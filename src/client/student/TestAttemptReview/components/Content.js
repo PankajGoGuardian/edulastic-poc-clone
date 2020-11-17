@@ -57,7 +57,10 @@ class SummaryTest extends Component {
   }
 
   goToQuestion = (testId, testActivityId, q) => () => {
-    const { history, items, match, test } = this.props
+    const { history, items, match, test, submitingResponse } = this.props
+    if (submitingResponse) {
+      return
+    }
     const { assessmentType, groupId } = match.params
     let targetItemIndex = items.reduce((acc, item, index) => {
       if (item.data.questions.some(({ id }) => id === q)) acc = index
@@ -260,6 +263,7 @@ const enhance = compose(
       assignments: getAssignmentsSelector(state),
       test: state.test,
       items: state.test.items,
+      submitingResponse: state.test.savingResponse,
       assignmentId: get(
         state,
         'author_classboard_testActivity.assignmentId',

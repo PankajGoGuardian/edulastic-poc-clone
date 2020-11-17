@@ -20,9 +20,9 @@ const MatrixCell = ({
   let input
 
   if (isMultiple) {
-    input = <StyledCheckbox checked={checked} onChange={onChange} />
+    input = <StyledCheckbox checked={checked} />
   } else {
-    input = <StyledRadio checked={checked} onChange={onChange} />
+    input = <StyledRadio checked={checked} />
   }
 
   return (
@@ -30,6 +30,7 @@ const MatrixCell = ({
       smallSize={smallSize}
       correct={checked && correct}
       isPrintPreview={isPrintPreview}
+      onClick={onChange}
     >
       {input}
       {type === 'inline' && (

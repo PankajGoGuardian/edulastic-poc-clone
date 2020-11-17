@@ -19,6 +19,7 @@ export const Wrapper = styled.div`
     !props.isPrintPreview && getCellColor(props.correct, props.theme)};
   padding: ${(props) => (props.smallSize ? 1 : 16)}px;
   position: relative;
+  cursor: pointer;
   .inline-label {
     margin-right: ${({ isPrintPreview }) => (isPrintPreview ? '0px' : '10px')};
   }

@@ -153,8 +153,20 @@ class AssessmentPlayerSimple extends React.Component {
     if (sourceId === 'resourceId') {
       userWorkId = passage._id
     }
+    const scratchpadData = {}
+    if (sourceId === 'scratchpad' && data.questionId) {
+      const { questionId, userWorkData } = data
+      // keep all other question data in scratchpad
+      scratchpadData[sourceId] = {
+        ...(userWork[sourceId] || {}),
+        [questionId]: userWorkData,
+      }
+    } else {
+      scratchpadData[sourceId] = data
+    }
+
     saveUserWork({
-      [userWorkId]: { ...userWork, [sourceId]: data },
+      [userWorkId]: { ...(userWork || {}), ...scratchpadData },
     })
   }
 

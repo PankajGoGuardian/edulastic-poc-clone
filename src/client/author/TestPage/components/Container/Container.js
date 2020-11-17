@@ -287,7 +287,7 @@ class Container extends PureComponent {
         const testItemId =
           typeof testItem === 'object' ? testItem._id : testItem
         if (testItemId) {
-          receiveItemDetailById(testItemId)
+          receiveItemDetailById(testItemId, { testId: test._id })
         }
       }
       const { editAssigned = false } = history.location.state || {}

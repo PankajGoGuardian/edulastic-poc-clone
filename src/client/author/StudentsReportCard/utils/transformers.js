@@ -288,8 +288,7 @@ export const getChartAndStandardTableData = (
           return (d.standards || []).map((std) => ({
             ...std,
             domain: d.name,
-            question:
-              typeof q.qLabel === 'string' ? q.qLabel?.substr(1) : q.qLabel,
+            question: typeof q.qLabel === 'string' ? q.qLabel : `Q${q.qLabel}`,
             performance,
             score: round(score, 2),
             maxScore,

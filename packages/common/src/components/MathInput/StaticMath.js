@@ -2,7 +2,8 @@ import React, { useRef, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { math } from '@edulastic/constants'
 import { MathKeyboard, reformatMathInputLatex, offset } from '@edulastic/common'
-import { MathInputStyles, DraggableKeyboard, EmptyDiv } from './MathInputStyles'
+import { MathInputStyles, EmptyDiv } from './MathInputStyles'
+import Draggable from './Draggable'
 
 import { WithResources } from '../../HOC/withResources'
 import AppConfig from '../../../../../src/app-config'
@@ -220,7 +221,7 @@ const StaticMath = ({
     setInnerFieldValues(innerValues)
   }, [innerValues])
 
-  const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : DraggableKeyboard
+  const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : Draggable
 
   return (
     <MathInputStyles

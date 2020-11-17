@@ -636,7 +636,9 @@ class ClassQuestions extends Component {
         <LCBScrollContext.Consumer>
           {(scrollElementRef) => (
             <ScrollContext.Provider
-              value={{ getScrollElement: () => scrollElementRef.current }}
+              value={{
+                getScrollElement: () => scrollElementRef?.current || window,
+              }}
             >
               <VirtualList
                 itemGenerator={this.questionPreviewGenerator}

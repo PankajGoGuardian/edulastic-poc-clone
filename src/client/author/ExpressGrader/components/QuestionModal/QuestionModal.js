@@ -1,7 +1,11 @@
 import React, { createRef } from 'react'
 import PropTypes from 'prop-types'
 
-import { ScrollContext, notification } from '@edulastic/common'
+import {
+  ScrollContext,
+  LCBScrollContext,
+  notification,
+} from '@edulastic/common'
 import { message } from 'antd'
 import { get, isEmpty, values } from 'lodash'
 import { connect } from 'react-redux'
@@ -271,7 +275,7 @@ class QuestionModal extends React.Component {
         bodyStyle={{ background: '#f0f2f5', height: '100%', overflowY: 'auto' }}
       >
         {isVisibleModal && question && loaded && (
-          <>
+          <LCBScrollContext.Provider value={this.containerRef}>
             <ScrollContext.Provider
               value={{ getScrollElement: () => this.containerRef?.current }}
             >
@@ -304,10 +308,11 @@ class QuestionModal extends React.Component {
                 toggleEditResponse={() =>
                   this.setState(({ editResponse }) => ({
                     editResponse: !editResponse,
-                  }))}
+                  }))
+                }
               />
             </BottomNavigationWrapper>
-          </>
+          </LCBScrollContext.Provider>
         )}
       </ModalWrapper>
     )

@@ -221,7 +221,17 @@ module.exports = override(
         ...(config.optimization || {}),
         splitChunks: {
           chunks: 'all',
+          maxInitialRequests: Infinity,
+          minSize: 0,
           cacheGroups: {
+            author: {
+              test: /[\\/]author[\\/]/,
+              name: 'author',
+            },
+            assessment: {
+              test: /[\\/]assessment[\\/]/,
+              name: 'assessment',
+            },
             vendor: {
               test: /[\\/]node_modules[\\/]((?!(mathjs|ace-builds|react-jsx-parser|recharts)).*)((froala-editor|firebase|pdfjs-dist|jsx-graph|draft-js|react-pdf|lodash|react|redux|react-redux|redux-saga|reselect).*)[\\/]/,
               chunks: 'all',

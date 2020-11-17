@@ -272,8 +272,9 @@ function* syncAssignmentGradesWithGoogleClassroomSaga({ payload }) {
   } catch (err) {
     captureSentryException(err)
     notification({
-      type: 'error',
-      msg: 'Failed to share grades to Google Classroom',
+      msg:
+        err?.response?.data?.message ||
+        'Failed to share grades to Google Classroom',
     })
     console.error(err)
   }

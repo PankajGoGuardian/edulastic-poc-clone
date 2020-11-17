@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import chunk from 'lodash/chunk'
 import cloneDeep from 'lodash/cloneDeep'
 import flattenDeep from 'lodash/flattenDeep'
+import { math as mathConstant } from '@edulastic/constants'
 import NumberKeyboard from './NumberKeyboard'
 import {
   Container,
@@ -13,6 +14,8 @@ import {
   Button,
   Label,
 } from './styled'
+
+const { symbols } = mathConstant
 
 const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
   const [boards, updateBoards] = useState({})
@@ -46,10 +49,12 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
       keysPerRow = 4
     }
 
-    if (type === 'intermediate' && numbers) {
+    if (type === symbols[2].value && numbers) {
       limitRow = 5
     }
-
+    if (type === symbols[3].value) {
+      limitRow = 4
+    }
     const rows = chunk(keybuttons, keysPerRow)
     updateBoards(chunk(rows, limitRow))
     updateCurrent(0)

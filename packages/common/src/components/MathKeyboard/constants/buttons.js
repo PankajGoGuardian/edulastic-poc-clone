@@ -1563,7 +1563,7 @@ export const greek_o = {
   command: 'cmd',
 }
 
-export const piSymbole = {
+export const piSymbol = {
   handler: '\\pi',
   label: <CustomImage src={Path3437} width={15} height={13} />,
   types: ['all'],

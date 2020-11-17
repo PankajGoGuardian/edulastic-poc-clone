@@ -222,24 +222,6 @@ module.exports = override(
         splitChunks: {
           chunks: 'initial',
           cacheGroups: {
-            login: {
-              test: /[\\/]login[\\/]/,
-              name: 'login',
-              chunks: 'all',
-              enforce: true,
-            },
-            author: {
-              test: /[\\/]author[\\/]/,
-              name: 'author',
-              chunks: 'all',
-              enforce: true,
-            },
-            assessment: {
-              test: /[\\/]assessment[\\/]/,
-              name: 'assessment',
-              chunks: 'all',
-              enforce: true,
-            },
             vendor: {
               test: /[\\/]node_modules[\\/]((?!(mathjs|ace-builds|react-jsx-parser|recharts)).*)((froala-editor|firebase|pdfjs-dist|jsx-graph|draft-js|react-pdf|lodash|react|redux|react-redux|redux-saga|reselect).*)[\\/]/,
               chunks: 'all',

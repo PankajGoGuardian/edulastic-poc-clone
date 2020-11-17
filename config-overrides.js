@@ -220,10 +220,14 @@ module.exports = override(
       config.optimization = {
         ...(config.optimization || {}),
         splitChunks: {
-          chunks: 'all',
-          maxInitialRequests: Infinity,
-          minSize: 0,
+          chunks: 'initial',
           cacheGroups: {
+            login: {
+              test: /[\\/]login[\\/]/,
+              name: 'login',
+              chunks: 'all',
+              enforce: true,
+            },
             author: {
               test: /[\\/]author[\\/]/,
               name: 'author',

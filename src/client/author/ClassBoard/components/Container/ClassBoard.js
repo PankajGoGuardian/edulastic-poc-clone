@@ -1020,6 +1020,7 @@ class ClassBoard extends Component {
             onProceed={this.gotoPrintView}
             onCancel={this.closePrintModal}
             currentTestId={additionalData.testId}
+            assignmentId={assignmentId}
           />
         )}
         <HooksContainer

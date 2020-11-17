@@ -88,10 +88,12 @@ function* getPerformanceByStandardsSaga({ payload }) {
       payload.requestFilters?.groupIds?.join(',') ||
       payload.requestFilters?.groupId ||
       ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchPerformanceByStandard, payload)
-
+    const { data } = yield call(reportsApi.fetchPerformanceByStandard, payload)
+    if (data && data?.dataSizeExceeded) {
+      yield put(getPerformanceByStandardsErrorAction({ error: { ...data } }))
+      return
+    }
+    const { result } = data
     const report = isEmpty(result) ? defaultReport : result
 
     yield put(getPerformanceByStandardsSuccessAction({ report }))

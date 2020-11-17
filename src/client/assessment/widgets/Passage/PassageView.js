@@ -127,13 +127,13 @@ const PassageView = ({
   const getContent = () => {
     let { content } = item
     content = decodeHTML(content)
+    // _highlights are user work
     if (isEmpty(_highlights)) {
       return content
         ?.replace(/(<div (.*?)>)/g, '')
         ?.replace(/(<\/div>)/g, '')
         ?.replace(/(<p>)/g, '')
         ?.replace(/(<\/p>)/g, '<br/>')
-        ?.replace(/background-color: (.*?);/g, '')
     }
     return _highlights
   }

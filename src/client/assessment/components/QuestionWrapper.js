@@ -304,7 +304,7 @@ const getQuestion = (type) => {
     case questionType.UPLOAD_FILE:
       return UploadFile
     default:
-      return null
+      return () => null
   }
 }
 

@@ -7,7 +7,7 @@ import {
   select,
 } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
-import { assignmentApi } from '@edulastic/api'
+import { assignmentApi, googleApi } from '@edulastic/api'
 import { omit, get, set, unset, pickBy, identity } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -31,6 +31,7 @@ import {
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
+  SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
 } from '../constants/actions'
 import { getUserRole } from '../selectors/user'
 
@@ -257,6 +258,27 @@ function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   }
 }
 
+function* syncAssignmentGradesWithGoogleClassroomSaga({ payload }) {
+  try {
+    const res = yield call(googleApi.syncGradesWithGoogleClassroom, payload)
+    if (res?.message) {
+      notification({ type: 'success', msg: res.message })
+    } else {
+      notification({
+        type: 'success',
+        msg: 'Grades are being shared to Google Classroom',
+      })
+    }
+  } catch (err) {
+    captureSentryException(err)
+    notification({
+      type: 'error',
+      msg: 'Failed to share grades to Google Classroom',
+    })
+    console.error(err)
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ASSIGNMENTS_REQUEST, receiveAssignmentsSaga),
@@ -280,6 +302,10 @@ export default function* watcherSaga() {
     yield takeEvery(
       SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
       syncAssignmentWithGoogleClassroomSaga
+    ),
+    yield takeEvery(
+      SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
+      syncAssignmentGradesWithGoogleClassroomSaga
     ),
   ])
 }

@@ -421,7 +421,9 @@ class AssessmentPlayerDefault extends React.Component {
        * zoom only in student side, otherwise not
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
-      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel }}>
+      <ThemeProvider
+        theme={{ ...themeToPass, shouldZoom: true, zoomLevel, headerHeight }}
+      >
         <Container
           scratchPadMode={scratchPadMode}
           data-cy="assessment-player-default-wrapper"
@@ -673,8 +675,8 @@ function getScratchpadWork(questions = [], userWorkData = {}, target) {
     (acc, curr) => {
       const { activity: { qActId, _id } = {} } = curr
       const key = target === 'qActId' ? qActId : _id
-      if (key) {
-        acc.data[key] = { ...userWorkData[key] }
+      if (key && userWorkData?.[key]) {
+        acc.data[key] = userWorkData?.[key]
       }
       return acc
     },

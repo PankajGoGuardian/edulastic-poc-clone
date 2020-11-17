@@ -238,6 +238,8 @@ const StandardsGradebookTableComponent = ({
       studentId: record.studentId,
       standardId,
       profileId: filters.profileId,
+      assessmentType:
+        filters.assessmentType === 'All' ? '' : filters.assessmentType,
     }
     const getCellContents = (props) => {
       const { printData } = props
@@ -249,14 +251,14 @@ const StandardsGradebookTableComponent = ({
           <ColoredCell
             bgColor={bgColor}
             onClick={
-              printData === 'N/A'
-                ? () => null
-                : () =>
+              printData !== 'N/A'
+                ? () =>
                     handleOnClickStandard(
                       obj,
                       standardName,
                       record.compareByLabel
                     )
+                : null
             }
           >
             {printData}

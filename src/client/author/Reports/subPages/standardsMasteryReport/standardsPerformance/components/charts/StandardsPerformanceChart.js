@@ -17,7 +17,7 @@ const StandardsPerformanceChart = ({
   filterOptions,
   onFilterChange,
   maxMasteryScore,
-  rawDomainData,
+  skillInfo,
   scaleInfo,
   ...chartProps
 }) => {
@@ -27,15 +27,15 @@ const StandardsPerformanceChart = ({
     const [domain = {}] = _data
     const { payload = {} } = domain
     const domainInfo =
-      find(rawDomainData, (d) => `${d.tloId}` === `${payload.domainId}`) || {}
+      find(skillInfo, (d) => `${d.domainId}` === `${payload.domainId}`) || {}
     const studentCount = sumBy(payload.records, (record) =>
       parseInt(record.totalStudents, 10)
     )
 
     return (
       <div>
-        <BarTooltipRow title="Domain: " value={payload.domainName} />
-        <BarTooltipRow title="Description: " value={domainInfo.description} />
+        <BarTooltipRow title="Domain: " value={domainInfo.domain} />
+        <BarTooltipRow title="Description: " value={domainInfo.domainName} />
         <BarTooltipRow
           title="Avg Mastery Score: "
           value={payload.masteryScore}

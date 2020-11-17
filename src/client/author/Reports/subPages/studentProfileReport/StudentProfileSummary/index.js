@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
@@ -31,6 +32,7 @@ import {
   getReportsStudentProfileSummary,
   getReportsStudentProfileSummaryLoader,
   getStudentProfileSummaryRequestAction,
+  getReportsStudentProfileSummaryError,
 } from './ducks'
 
 const getTooltip = (payload) => {
@@ -55,6 +57,7 @@ const getTooltip = (payload) => {
 
 const StudentProfileSummary = ({
   loading,
+  error,
   settings,
   isCsvDownloading,
   SPRFilterData,
@@ -134,6 +137,10 @@ const StudentProfileSummary = ({
 
   if (loading || reportsSPRFilterLoadingState) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
   }
 
   if (
@@ -219,6 +226,7 @@ const withConnect = connect(
   (state) => ({
     studentProfileSummary: getReportsStudentProfileSummary(state),
     loading: getReportsStudentProfileSummaryLoader(state),
+    error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
     bandInfoSelected: getBandInfoSelected(state),

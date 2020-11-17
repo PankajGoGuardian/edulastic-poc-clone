@@ -40,6 +40,8 @@ export const SET_ACTIVITY_CREATING =
   '[studentAssignments] set test activity creating'
 export const TOGGLE_UTA_TIME_UPDATE_REQUIRED =
   '[studentAssignments] toggle - uta time update required'
+export const SET_SHOW_RETAKE_MODAL_STATE =
+  '[studentAssignments] set show retake modal state'
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING)
@@ -66,6 +68,9 @@ export const setIsActivityCreatingAction = createAction(SET_ACTIVITY_CREATING)
 export const utaStartTimeUpdateRequired = createAction(
   TOGGLE_UTA_TIME_UPDATE_REQUIRED
 )
+export const setShowRetakeModalAction = createAction(
+  SET_SHOW_RETAKE_MODAL_STATE
+)
 
 // initial State
 const initialState = {
@@ -82,6 +87,7 @@ const initialState = {
     isLoading: false,
   },
   updateUtaTimeType: null,
+  showRetakeModal: false,
 }
 
 // reducers
@@ -165,6 +171,9 @@ export default createReducer(initialState, {
   },
   [TOGGLE_UTA_TIME_UPDATE_REQUIRED]: (state, { payload }) => {
     state.updateUtaTimeType = payload
+  },
+  [SET_SHOW_RETAKE_MODAL_STATE]: (state, { payload }) => {
+    state.showRetakeModal = payload
   },
 })
 

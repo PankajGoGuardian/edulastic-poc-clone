@@ -60,8 +60,10 @@ import {
   googleSyncAssignmentAction,
   toggleReleaseScoreSettingsAction,
   toggleStudentReportCardSettingsAction,
+  googleSyncAssignmentGradesAction,
 } from '../../../src/actions/assignments'
 import {
+  canvasSyncAssignmentAction,
   canvasSyncGradesAction,
   closeAssignmentAction,
   markAsDoneAction,
@@ -100,7 +102,10 @@ import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions
-const { gradingStatus } = testActivityConstants
+const {
+  gradingStatus,
+  authorAssignmentConstants: { assignmentStatus: assignmentStatusConstants },
+} = testActivityConstants
 
 const classViewRoutesByActiveTabName = {
   classboard: 'classboard',
@@ -293,6 +298,20 @@ class ClassHeader extends Component {
     }
   }
 
+  handleAssignmentGradesSync = (data) => {
+    const { googleSyncAssignmentGrades, additionalData } = this.props
+    if (
+      additionalData.releaseScore ===
+      testContants.releaseGradeTypes.DONT_RELEASE
+    ) {
+      return notification({
+        msg:
+          'Please update release score policy to sync grades to Google Classroom',
+      })
+    }
+    googleSyncAssignmentGrades(data)
+  }
+
   render() {
     const {
       t,
@@ -324,6 +343,8 @@ class ClassHeader extends Component {
       canvasAllowedInstitutions,
       isCliUser,
       isShowUnAssign,
+      canvasSyncAssignment,
+      studentsUTAData,
     } = this.props
     const {
       visible,
@@ -370,6 +391,15 @@ class ClassHeader extends Component {
 
     const isSmallDesktop = windowWidth <= parseInt(smallDesktopWidth, 10)
     const loading = _classId !== classId
+
+    const showGoogleGradeSyncOption =
+      groupGoogleId &&
+      assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
+      studentsUTAData.some(
+        (uta) =>
+          uta.graded === gradingStatus.GRADED ||
+          uta.UTASTATUS === testActivityStatus.SUBMITTED
+      )
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -471,15 +501,39 @@ class ClassHeader extends Component {
             <MenuItems
               key="key6"
               onClick={() =>
+                canvasSyncAssignment({ assignmentId, groupId: classId })
+              }
+            >
+              Share on Canvas
+            </MenuItems>
+          )}
+        {showSyncGradesWithCanvasOption &&
+          assignmentStatusForDisplay !== 'NOT OPEN' && (
+            <MenuItems
+              key="key7"
+              onClick={() =>
                 canvasSyncGrades({ assignmentId, groupId: classId })
               }
             >
               Canvas Grade Sync
             </MenuItems>
           )}
+        {showGoogleGradeSyncOption && (
+          <MenuItems
+            key="key8"
+            onClick={() =>
+              this.handleAssignmentGradesSync({
+                assignmentId,
+                groupId: classId,
+              })
+            }
+          >
+            Sync Grades to Google Classroom
+          </MenuItems>
+        )}
         {groupGoogleId && (
           <MenuItems
-            key="key7"
+            key="key9"
             onClick={() =>
               googleSyncAssignment({
                 assignmentIds: [assignmentId],
@@ -763,6 +817,11 @@ const enhance = compose(
         ['author_classboard_testActivity', 'data', 'status'],
         ''
       ),
+      studentsUTAData: get(
+        state,
+        ['author_classboard_testActivity', 'entities'],
+        []
+      ),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       notStartedStudents: notStartedStudentsSelector(state),
       inProgressStudents: inProgressStudentsSelector(state),
@@ -797,7 +856,9 @@ const enhance = compose(
       toggleViewPassword: toggleViewPasswordAction,
       canvasSyncGrades: canvasSyncGradesAction,
       googleSyncAssignment: googleSyncAssignmentAction,
+      googleSyncAssignmentGrades: googleSyncAssignmentGradesAction,
       toggleStudentReportCardPopUp: toggleStudentReportCardSettingsAction,
+      canvasSyncAssignment: canvasSyncAssignmentAction,
     }
   )
 )

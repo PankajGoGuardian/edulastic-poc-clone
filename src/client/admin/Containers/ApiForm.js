@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { Select } from 'antd'
 import { notification } from '@edulastic/common'
-import { adminApi } from '@edulastic/api'
+import { adminApi, enrollmentApi } from '@edulastic/api'
 
+import { flatten } from 'mathjs/src/utils/array'
+import { regexJs } from '@edulastic/constants'
 import { apiForms } from '../Data/apiForm'
 import ApiFormsMain from '../Components/ApiForm'
 
@@ -10,22 +12,51 @@ import { submit } from '../Components/ApiForm/apis'
 import CreateAdmin from '../Components/CreateAdmin'
 import ActivateDeactivateUser from '../Components/ActivateDeactivateUser'
 import ApproveOrganisation from '../Components/ApproveOrganisation'
-import { flatten } from 'mathjs/src/utils/array'
+import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
 
 const CREATE_ADMIN = 'create-admin'
 const ACTIVATE_DEACTIVATE_USER = 'activate-deactivate-user'
 const APPROVE_SCHOOL_DISTRICT = 'approve-school-district'
+const API_OPTIONS = {
+  manageClass: 'manageClass',
+}
 
 const ApiForm = () => {
   const [id, setId] = useState()
   const [districtData, setDistrictData] = useState(null)
   const [userData, setUserData] = useState([])
   const [orgData, setOrgData] = useState(null)
-
+  const [showUpdateCoTeacher, setShowUpdateCoTeacher] = useState(false)
+  const [selectedClass, setSelectedClass] = useState([])
   const handleOnChange = (_id) => setId(_id)
   let option = apiForms.find((ar) => ar.id === id)
-
+  const handleClassSearch = async ({ classId }) => {
+    if (regexJs.validMongoId.test(classId)) {
+      try {
+        await enrollmentApi.fetch(classId).then((response) => {
+          if (response && response.group) {
+            setSelectedClass(response.group)
+            return setShowUpdateCoTeacher(true)
+          }
+          throw new Error('No results found')
+        })
+      } catch (e) {
+        notification({
+          type: 'warning',
+          msg: 'No results found',
+        })
+      }
+    } else {
+      notification({
+        type: 'warning',
+        msg: 'Sorry, No search results found for this ID',
+      })
+    }
+  }
   const handleOnSave = (data, sectionId) => {
+    if (id === API_OPTIONS.manageClass) {
+      return handleClassSearch(data, sectionId)
+    }
     if (option.id === CREATE_ADMIN) {
       adminApi.searchUpdateDistrict({ id: data.districtId }).then((res) => {
         if (res?.data?.length) {
@@ -133,6 +164,13 @@ const ApiForm = () => {
             />
           )}
         </ApiFormsMain>
+      )}
+      {showUpdateCoTeacher && (
+        <UpdateCoTeacher
+          isOpen={showUpdateCoTeacher}
+          selectedClass={selectedClass}
+          handleCancel={() => setShowUpdateCoTeacher(false)}
+        />
       )}
     </div>
   )

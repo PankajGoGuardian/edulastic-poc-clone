@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { getUserRole } from '../../../../../student/Login/ducks'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import { SimpleStackedBarWithLineChartContainer } from './componenets/charts/simpleStackedBarWithLineChartContainer'
 import {
@@ -19,6 +20,7 @@ import {
   getQuestionAnalysisRequestAction,
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader,
+  getReportsQuestionAnalysisError,
 } from './ducks'
 import { getTestListSelector } from '../common/filterDataDucks'
 import dropDownData from './static/json/dropDownData.json'
@@ -26,6 +28,7 @@ import { getChartData, getTableData } from './utils/transformers'
 
 const QuestionAnalysis = ({
   loading,
+  error,
   isCsvDownloading,
   role,
   questionAnalysis,
@@ -86,6 +89,11 @@ const QuestionAnalysis = ({
   if (loading) {
     return <SpinLoader position="fixed" />
   }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
   if (!questionAnalysis.metricInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
@@ -165,6 +173,7 @@ QuestionAnalysis.propTypes = {
 export default connect(
   (state) => ({
     loading: getReportsQuestionAnalysisLoader(state),
+    error: getReportsQuestionAnalysisError(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state),

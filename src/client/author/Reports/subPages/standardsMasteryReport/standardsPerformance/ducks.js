@@ -1,7 +1,6 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
@@ -39,6 +38,11 @@ export const getReportsStandardsPerformanceSummaryLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStandardsPerformanceSummaryError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -53,11 +57,8 @@ const initialState = {
 export const reportStandardsPerformanceSummaryReducer = createReducer(
   initialState,
   {
-    [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-    [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST]: (
-      state,
-      { payload }
-    ) => {
+    [RESET_ALL_REPORTS]: (state) => (state = initialState),
+    [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST]: (state) => {
       state.loading = true
     },
     [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS]: (
@@ -65,6 +66,7 @@ export const reportStandardsPerformanceSummaryReducer = createReducer(
       { payload }
     ) => {
       state.loading = false
+      state.error = false
       state.standardsPerformanceSummary = payload.standardsPerformanceSummary
     },
     [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR]: (
@@ -90,7 +92,15 @@ function* getReportsStandardsPerformanceSummaryRequest({ payload }) {
       payload
     )
     // const standardsPerformanceSummary = { data: tempData };
-
+    const dataSizeExceeded =
+      standardsPerformanceSummary?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR,
+        payload: { error: { ...standardsPerformanceSummary.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS,
       payload: { standardsPerformanceSummary },

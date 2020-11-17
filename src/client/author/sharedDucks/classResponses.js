@@ -95,17 +95,19 @@ function* loadAttachmentsFromServer(filter) {
       referrerId,
       referrerId2,
     }
-    if (qid) {
-      filterQuery.referrerId3 = qid
-    }
-    const { attachments = [] } = yield call(
+    let { attachments = [] } = yield call(
       attachmentApi.loadAllAttachments,
       filterQuery
     )
+
+    if (attachments.length > 1) {
+      attachments = attachments.filter((a) => a.referrerId3 === qid)
+    }
+
     const scratchpadData = {}
     for (const attachment of attachments) {
       const { data, referrerId3 } = attachment
-      if (referrerId3 && referrerId3 === qid) {
+      if (referrerId3) {
         scratchpadData[uqaId] = { [referrerId3]: data.scratchpad }
       } else {
         scratchpadData[uqaId] = data.scratchpad

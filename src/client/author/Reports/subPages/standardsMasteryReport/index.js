@@ -1,4 +1,3 @@
-/* eslint-disable array-callback-return */
 import React, { useEffect, useRef, useMemo, useState } from 'react'
 import { Route, Link } from 'react-router-dom'
 import next from 'immer'
@@ -87,7 +86,7 @@ const StandardsMasteryReportContainer = (props) => {
     if (navigation.locToData[loc]) {
       const arr = Object.keys(filt)
       const obj = {}
-      arr.map((item) => {
+      arr.forEach((item) => {
         const val = filt[item] === '' ? 'All' : filt[item]
         obj[item] = val
       })
@@ -108,7 +107,7 @@ const StandardsMasteryReportContainer = (props) => {
     if (!firstRender.current) {
       const obj = {}
       const arr = Object.keys(gradebookSettings.requestFilters)
-      arr.map((item) => {
+      arr.forEach((item) => {
         if (gradebookSettings.requestFilters[item] === '') {
           obj[item] = 'All'
         } else {
@@ -192,10 +191,10 @@ const StandardsMasteryReportContainer = (props) => {
     })
   }
 
-  const onStandardsGradebookGoClick = (_settings) => {
+  const onGoClick = (_settings) => {
     const obj = {}
     const arr = Object.keys(_settings.filters)
-    arr.map((item) => {
+    arr.forEach((item) => {
       if (_settings.filters[item] === 'All') {
         obj[item] = ''
       } else {
@@ -259,7 +258,7 @@ const StandardsMasteryReportContainer = (props) => {
   return (
     <FlexContainer alignItems="flex-start">
       <StandardsFilters
-        onGoClick={onStandardsGradebookGoClick}
+        onGoClick={onGoClick}
         loc={loc}
         history={history}
         location={location}
@@ -281,7 +280,6 @@ const StandardsMasteryReportContainer = (props) => {
             return (
               <StandardsGradebook
                 {..._props}
-                role={role}
                 pageTitle={loc}
                 ddfilter={ddfilter}
                 settings={gradebookSettings}

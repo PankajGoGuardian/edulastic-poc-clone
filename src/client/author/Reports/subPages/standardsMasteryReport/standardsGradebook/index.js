@@ -3,19 +3,17 @@ import { Col, Row } from 'antd'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { isEmpty, get } from 'lodash'
+import { get } from 'lodash'
 import { roleuser } from '@edulastic/constants'
-import {
-  getInterestedCurriculumsSelector,
-  getUser,
-} from '../../../../src/selectors/user'
+import { getUser } from '../../../../src/selectors/user'
 import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import { StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getStudentAssignments } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
   getFiltersSelector,
-  getSelectedStandardProficiency,
+  getReportsStandardsFilters,
 } from '../common/filterDataDucks'
 import { getMaxMasteryScore } from '../standardsPerformance/utils/transformers'
 import { SignedStackBarChartContainer } from './components/charts/signedStackBarChartContainer'
@@ -27,6 +25,7 @@ import {
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
+  getReportsStandardsGradebookError,
 } from './ducks'
 import {
   getDenormalizedData,
@@ -40,10 +39,10 @@ const StandardsGradebook = ({
   standardsGradebook,
   getStandardsGradebookRequest,
   isCsvDownloading,
-  role,
   settings,
   loading,
-  selectedStandardProficiency,
+  error,
+  standardsFilters,
   filters,
   getStudentStandards,
   studentStandardData,
@@ -53,36 +52,55 @@ const StandardsGradebook = ({
   ddfilter,
   user,
 }) => {
+  const userRole = get(user, 'role', '')
+  const standardsCount = get(
+    standardsGradebook,
+    'data.result.standardsCount',
+    0
+  )
+  const scaleInfo = get(standardsFilters, 'scaleInfo', [])
+  const selectedScale =
+    (
+      scaleInfo.find((s) => s._id === settings.requestFilters.profileId) ||
+      scaleInfo[0]
+    )?.scale || []
+  const studentAssignmentsData = useMemo(
+    () => getStudentAssignments(selectedScale, studentStandardData),
+    [selectedScale, studentStandardData]
+  )
+  const [pageFilters, setPageFilters] = useState({ page: 1, pageSize: 10 })
   const [chartFilter, setChartFilter] = useState({})
-
   const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(
     false
   )
   const [clickedStandard, setClickedStandard] = useState(undefined)
   const [clickedStudentName, setClickedStudentName] = useState(undefined)
 
-  const studentAssignmentsData = useMemo(
-    () =>
-      getStudentAssignments(selectedStandardProficiency, studentStandardData),
-    [selectedStandardProficiency, studentStandardData]
-  )
+  const getGradebookQuery = () => {
+    const q = {
+      testIds: settings.selectedTest.map((test) => test.key).join(),
+      ...settings.requestFilters,
+      domainIds: (settings.requestFilters.domainIds || []).join(),
+      schoolIds: settings.requestFilters.schoolId,
+      page: 1,
+      pageSize: pageFilters.pageSize,
+    }
+    if (userRole === roleuser.SCHOOL_ADMIN) {
+      q.schoolIds = q.schoolIds || get(user, 'institutionIds', []).join(',')
+    }
+    return q
+  }
+
   useEffect(() => {
-    if (settings.requestFilters.termId && settings.requestFilters.domainIds) {
-      const q = {
-        testIds: settings.selectedTest.map((test) => test.key).join(),
-        ...settings.requestFilters,
-        grades: (settings.requestFilters.grades || []).join(),
-        schoolIds: settings.requestFilters.schoolId,
-      }
-      if (
-        isEmpty(q.schoolId) &&
-        get(user, 'role', '') === roleuser.SCHOOL_ADMIN
-      ) {
-        q.schoolIds = get(user, 'institutionIds', []).join(',')
-      }
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [settings])
+
+  useEffect(() => {
+    const q = { ...getGradebookQuery(), ...pageFilters }
+    if (q.termId) {
       getStandardsGradebookRequest(q)
     }
-  }, [settings])
+  }, [pageFilters])
 
   const denormalizedData = useMemo(
     () => getDenormalizedData(standardsGradebook),
@@ -90,8 +108,8 @@ const StandardsGradebook = ({
   )
 
   const filteredDenormalizedData = useMemo(
-    () => getFilteredDenormalizedData(denormalizedData, ddfilter, role),
-    [denormalizedData, ddfilter, role]
+    () => getFilteredDenormalizedData(denormalizedData, ddfilter, userRole),
+    [denormalizedData, ddfilter, userRole]
   )
 
   const onBarClickCB = (key) => {
@@ -104,7 +122,7 @@ const StandardsGradebook = ({
     setChartFilter(_chartFilter)
   }
 
-  const masteryScale = selectedStandardProficiency || []
+  const masteryScale = selectedScale || []
   const maxMasteryScore = getMaxMasteryScore(masteryScale)
 
   const standardsData = useMemo(
@@ -132,57 +150,63 @@ const StandardsGradebook = ({
     setClickedStandard(undefined)
     setClickedStudentName(undefined)
   }
+  if (loading) {
+    return <SpinLoader position="fixed" />
+  }
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
 
   return (
     <div>
-      {loading ? (
-        <SpinLoader position="fixed" />
-      ) : (
-        <>
-          <UpperContainer>
-            <StyledCard>
-              <Row type="flex" justify="start">
-                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                  <StyledH3>Mastery Level Distribution Standards</StyledH3>
-                </Col>
-              </Row>
-              <Row>
-                <SignedStackBarChartContainer
-                  filteredDenormalizedData={filteredDenormalizedData}
-                  filters={ddfilter}
-                  chartFilter={chartFilter}
-                  masteryScale={masteryScale}
-                  role={role}
-                  onBarClickCB={onBarClickCB}
-                />
-              </Row>
-            </StyledCard>
-          </UpperContainer>
-          <TableContainer>
-            <StandardsGradebookTable
+      <UpperContainer>
+        <StyledCard>
+          <Row type="flex" justify="start">
+            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+              <StyledH3>Mastery Level Distribution Standards</StyledH3>
+            </Col>
+          </Row>
+          <Row>
+            <SignedStackBarChartContainer
               filteredDenormalizedData={filteredDenormalizedData}
-              masteryScale={masteryScale}
+              filters={ddfilter}
               chartFilter={chartFilter}
-              isCsvDownloading={isCsvDownloading}
-              role={role}
-              filters={filters}
-              handleOnClickStandard={handleOnClickStandard}
-              standardsData={standardsData}
-              location={location}
-              pageTitle={pageTitle}
+              masteryScale={masteryScale}
+              role={userRole}
+              onBarClickCB={onBarClickCB}
+              backendPagination={{
+                ...pageFilters,
+                pageCount:
+                  Math.ceil(standardsCount / pageFilters.pageSize) || 1,
+              }}
+              setBackendPagination={setPageFilters}
             />
-          </TableContainer>
-          {showStudentAssignmentModal && (
-            <StudentAssignmentModal
-              showModal={showStudentAssignmentModal}
-              closeModal={closeStudentAssignmentModal}
-              studentAssignmentsData={studentAssignmentsData}
-              studentName={clickedStudentName}
-              standardName={clickedStandard}
-              loadingStudentStandard={loadingStudentStandard}
-            />
-          )}
-        </>
+          </Row>
+        </StyledCard>
+      </UpperContainer>
+      <TableContainer>
+        <StandardsGradebookTable
+          filteredDenormalizedData={filteredDenormalizedData}
+          masteryScale={masteryScale}
+          chartFilter={chartFilter}
+          isCsvDownloading={isCsvDownloading}
+          role={userRole}
+          filters={filters}
+          handleOnClickStandard={handleOnClickStandard}
+          standardsData={standardsData}
+          location={location}
+          pageTitle={pageTitle}
+        />
+      </TableContainer>
+      {showStudentAssignmentModal && (
+        <StudentAssignmentModal
+          showModal={showStudentAssignmentModal}
+          closeModal={closeStudentAssignmentModal}
+          studentAssignmentsData={studentAssignmentsData}
+          studentName={clickedStudentName}
+          standardName={clickedStandard}
+          loadingStudentStandard={loadingStudentStandard}
+        />
       )}
     </div>
   )
@@ -192,9 +216,9 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsStandardsGradebookLoader(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state),
+      error: getReportsStandardsGradebookError(state),
       isCsvDownloading: getCsvDownloadingState(state),
-      selectedStandardProficiency: getSelectedStandardProficiency(state),
+      standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
       studentStandardData: getStudentStandardData(state),
       loadingStudentStandard: getStudentStandardLoader(state),

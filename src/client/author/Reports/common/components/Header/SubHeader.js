@@ -1,8 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
+
 import { EduButton } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 import Breadcrumb from '../../../../src/components/Breadcrumb'
+
+import StandardsMasteryRowFilters from '../../../subPages/standardsMasteryReport/common/components/RowFilters'
 
 const SubHeader = ({
   breadcrumbsData,
@@ -16,6 +19,8 @@ const SubHeader = ({
   }
 
   const isShowBreadcrumb = title !== 'Standard Reports'
+  const showStandardFilters =
+    title === 'Standards Performance Summary' || title === 'Standards Gradebook'
 
   return (
     <SecondaryHeader
@@ -28,7 +33,9 @@ const SubHeader = ({
           <Breadcrumb data={breadcrumbsData} style={{ position: 'unset' }} />
         ) : null}
       </HeaderTitle>
-      {onRefineResultsCB ? (
+      {onRefineResultsCB && showStandardFilters ? (
+        <StandardsMasteryRowFilters pageTitle={title} showFilter={showFilter} />
+      ) : onRefineResultsCB ? (
         <StyledButton isGhost={!showFilter} onClick={_onRefineResultsCB}>
           <IconFilter width={15} height={15} />
           FILTERS

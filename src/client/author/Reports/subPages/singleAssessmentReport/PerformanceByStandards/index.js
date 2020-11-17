@@ -24,6 +24,7 @@ import {
   StyledSignedBarContainer,
   NoDataContainer,
 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterSelectedStandardsProficiencyProfile,
@@ -41,6 +42,7 @@ import {
   getPerformanceByStandardsAction,
   getPerformanceByStandardsLoadingSelector,
   getPerformanceByStandardsReportSelector,
+  getPerformanceByStandardsErrorSelector,
 } from './ducks'
 import dropDownFormat from './static/json/dropDownFormat.json'
 import {
@@ -61,6 +63,7 @@ const findCompareByTitle = (key = '') => {
 
 const PerformanceByStandards = ({
   loading,
+  error,
   report = {},
   getPerformanceByStandards,
   settings,
@@ -230,6 +233,11 @@ const PerformanceByStandards = ({
   if (loading) {
     return <SpinLoader position="fixed" />
   }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
   if (!report.metricInfo?.length || !report.studInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
@@ -348,6 +356,7 @@ PerformanceByStandards.propTypes = {
 const enhance = connect(
   (state) => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
+    error: getPerformanceByStandardsErrorSelector(state),
     role: getUserRole(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),

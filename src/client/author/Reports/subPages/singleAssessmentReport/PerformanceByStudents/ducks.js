@@ -39,6 +39,11 @@ export const getReportsPerformanceByStudentsLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsPerformanceByStudentsError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -69,6 +74,7 @@ export const reportPerformanceByStudentsReducer = createReducer(initialState, {
     { payload }
   ) => {
     state.loading = false
+    state.error = false
     state.performanceByStudents = payload.performanceByStudents
   },
   [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_ERROR]: (state, { payload }) => {
@@ -93,9 +99,18 @@ function* getReportsPerformanceByStudentsRequest({ payload }) {
       payload.requestFilters?.groupIds?.join(',') ||
       payload.requestFilters?.groupId ||
       ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchPerformanceByStudentsReport, payload)
+    const { data } = yield call(
+      reportsApi.fetchPerformanceByStudentsReport,
+      payload
+    )
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
     const performanceByStudents = isEmpty(result) ? defaultReport : result
 
     yield put({

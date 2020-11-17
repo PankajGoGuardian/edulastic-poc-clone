@@ -50,6 +50,7 @@ const DragItem = ({
 
         setItemData({
           ...itemData,
+          data,
           dimensions,
         })
         drag(element)

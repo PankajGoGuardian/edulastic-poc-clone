@@ -1,19 +1,17 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
 import next from 'immer'
-import { filter, get, includes, isEmpty } from 'lodash'
+import { filter, get } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { roleuser } from '@edulastic/constants'
-import { getUserRole, getUser } from '../../../../src/selectors/user'
+import { getUser } from '../../../../src/selectors/user'
 import { DropDownContainer, StyledCard } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
   getFiltersSelector,
-  getReportsStandardsBrowseStandards,
   getReportsStandardsFilters,
-  getSelectedStandardProficiency,
-  getStandardsFiltersRequestAction,
 } from '../common/filterDataDucks'
 import StandardsPerformanceChart from './components/charts/StandardsPerformanceChart'
 import { StyledInnerRow, StyledRow } from './components/styled'
@@ -22,6 +20,7 @@ import {
   getReportsStandardsPerformanceSummary,
   getReportsStandardsPerformanceSummaryLoader,
   getStandardsPerformanceSummaryRequestAction,
+  getReportsStandardsPerformanceSummaryError,
 } from './ducks'
 import dropDownData from './static/json/dropDownData.json'
 import {
@@ -36,28 +35,29 @@ const { compareByData, analyseByData } = dropDownData
 
 const StandardsPerformance = ({
   standardsPerformanceSummary,
-  browseStandards,
   standardsFilters,
   getStandardsPerformanceSummaryRequest,
   isCsvDownloading,
   settings,
-  role,
   loading,
-  selectedStandardProficiency,
+  error,
   filters,
   ddfilter,
   user,
 }) => {
-  const filterData = standardsFilters || []
-  const scaleInfo = selectedStandardProficiency || []
-  const rawDomainData = get(browseStandards, 'data.result', [])
-  const maxMasteryScore = getMaxMasteryScore(scaleInfo)
-  const masteryLevelData = getMasteryLevelOptions(scaleInfo)
-
+  const userRole = get(user, 'role', '')
+  const scaleInfo = get(standardsFilters, 'scaleInfo', [])
+  const selectedScale =
+    (
+      scaleInfo.find((s) => s._id === settings.requestFilters.profileId) ||
+      scaleInfo[0]
+    )?.scale || []
+  const maxMasteryScore = getMaxMasteryScore(selectedScale)
+  const masteryLevelData = getMasteryLevelOptions(selectedScale)
   // filter compareBy options according to role
   const compareByDataFiltered = filter(
     compareByData,
-    (option) => !includes(option.hiddenFromRole, role)
+    (option) => !option.hiddenFromRole?.includes(userRole)
   )
 
   const [tableFilters, setTableFilters] = useState({
@@ -65,20 +65,18 @@ const StandardsPerformance = ({
     compareBy: compareByDataFiltered[0],
     analyseBy: analyseByData[3],
   })
-
+  // support for domain filtering from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 1,
+    pageSize: 10,
+  })
   const [selectedDomains, setSelectedDomains] = useState([])
 
-  useEffect(() => {
-    const { requestFilters = {} } = settings
-    const {
-      termId = '',
-      domainIds = [],
-      grades = [],
-      subject,
-      profileId,
-      schoolId,
-    } = requestFilters
-    const modifiedFilter = next(ddfilter, (draft) => {
+  // function to generate query for standards performance
+  const getPerformanceSummaryQuery = () => {
+    const { requestFilters = {}, selectedTest } = settings
+    const { domainIds, schoolId } = requestFilters
+    const modifiedFilters = next(ddfilter, (draft) => {
       Object.keys(draft).forEach((key) => {
         const _keyData =
           typeof draft[key] === 'object' ? draft[key].key : draft[key]
@@ -86,29 +84,38 @@ const StandardsPerformance = ({
       })
     })
     const q = {
-      testIds: settings.selectedTest.map((test) => test.key).join(),
-      termId,
-      domainIds,
-      grades: grades.join(','),
-      subject,
-      profileId,
+      ...requestFilters,
+      domainIds: (domainIds || []).join(),
+      testIds: selectedTest.map((test) => test.key).join(),
       compareBy: tableFilters.compareBy.key,
-      ...modifiedFilter,
-      schoolIds: schoolId || modifiedFilter.schoolId,
+      ...modifiedFilters,
+      schoolIds: schoolId || modifiedFilters.schoolId,
+      page: 1,
+      pageSize: pageFilters.pageSize,
     }
-    if (isEmpty(schoolId) && get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
-      q.schoolIds = get(user, 'institutionIds', []).join(',')
+    if (userRole === roleuser.SCHOOL_ADMIN) {
+      q.schoolIds = q.schoolIds || get(user, 'institutionIds', []).join(',')
     }
-    if (termId) {
-      getStandardsPerformanceSummaryRequest(q)
-    }
+    return q
+  }
+
+  useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
   }, [settings, tableFilters.compareBy.key, ddfilter])
 
+  useEffect(() => {
+    const q = { ...getPerformanceSummaryQuery(), ...pageFilters }
+    if (q.termId) {
+      getStandardsPerformanceSummaryRequest(q)
+    }
+  }, [pageFilters])
+
   const res = get(standardsPerformanceSummary, 'data.result', {})
+
   const overallMetricMasteryScore = getOverallMasteryScore(res.metricInfo || [])
   const overallMetricMasteryLevel = getMasteryLevel(
     overallMetricMasteryScore,
-    scaleInfo
+    selectedScale
   )
 
   const { domainsData, tableData } = useMemo(
@@ -118,29 +125,32 @@ const StandardsPerformance = ({
         maxMasteryScore,
         tableFilters,
         selectedDomains,
-        rawDomainData,
-        filterData,
-        scaleInfo
+        res.skillInfo,
+        standardsFilters,
+        selectedScale
       ),
     [
       res,
       maxMasteryScore,
-      filterData,
+      standardsFilters,
       selectedDomains,
       tableFilters,
-      rawDomainData,
-      scaleInfo,
+      selectedScale,
     ]
   )
-
-  if (loading) {
-    return <SpinLoader position="fixed" />
-  }
 
   const tableFiltersOptions = {
     compareByData: compareByDataFiltered,
     analyseByData,
     masteryLevelData,
+  }
+
+  if (loading) {
+    return <SpinLoader position="fixed" />
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
   }
 
   return (
@@ -175,9 +185,14 @@ const StandardsPerformance = ({
           selectedDomains={selectedDomains}
           setSelectedDomains={setSelectedDomains}
           filterValues={ddfilter}
-          rawDomainData={rawDomainData}
+          skillInfo={res.skillInfo}
           maxMasteryScore={maxMasteryScore}
-          scaleInfo={scaleInfo}
+          scaleInfo={selectedScale}
+          backendPagination={{
+            ...pageFilters,
+            pageCount: Math.ceil(res.domainsCount / pageFilters.pageSize) || 1,
+          }}
+          setBackendPagination={setPageFilters}
         />
       </StyledCard>
       <StyledCard>
@@ -187,7 +202,7 @@ const StandardsPerformance = ({
           tableFilters={tableFilters}
           tableFiltersOptions={tableFiltersOptions}
           domainsData={domainsData}
-          scaleInfo={scaleInfo}
+          scaleInfo={selectedScale}
           selectedDomains={selectedDomains}
           isCsvDownloading={isCsvDownloading}
           filters={filters}
@@ -201,17 +216,14 @@ const enhance = connect(
   (state) => ({
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
     loading: getReportsStandardsPerformanceSummaryLoader(state),
-    browseStandards: getReportsStandardsBrowseStandards(state),
+    error: getReportsStandardsPerformanceSummaryError(state),
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    role: getUserRole(state),
     user: getUser(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state),
   }),
   {
     getStandardsPerformanceSummaryRequest: getStandardsPerformanceSummaryRequestAction,
-    getStandardsFiltersRequestAction,
   }
 )
 

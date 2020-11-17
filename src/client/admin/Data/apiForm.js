@@ -456,4 +456,20 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'manageClass',
+    name: 'Manage Teacher in Class',
+    endPoint: '',
+    method: '',
+    fields: [
+      {
+        key: 'classId',
+        name: 'classId',
+        placeholder: 'Class id',
+        type: 'string',
+        displayName: 'Enter Class ID',
+        required: true,
+      },
+    ],
+  },
 ]

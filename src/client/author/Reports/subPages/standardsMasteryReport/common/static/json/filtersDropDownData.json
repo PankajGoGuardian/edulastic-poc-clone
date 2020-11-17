@@ -35,7 +35,7 @@
     { "key": "12", "title": "Grade 12" },
     { "key": "O", "title": "Other" }
   ],
-  "assessmentType": [
+  "assessmentTypes": [
     { "key": "All", "title": "All Assessment Types" },
     { "key": "common assessment", "title": "Common" },
     { "key": "assessment", "title": "Class" },

@@ -292,7 +292,7 @@ export const curateGradebookData = (
     assignmentsCount,
     studentsCount,
   } = gradebookData
-  const { assessments: assessmentsList, groups: groupsList } = filtersData
+  const { assessments: assessmentsList } = filtersData
   const mappedAssessmentsById = keyBy(assessmentsList, '_id')
 
   // group test-activity by assignmentId
@@ -315,11 +315,8 @@ export const curateGradebookData = (
     // update assessments for the curated student
     assignments.forEach((a) => {
       // check for test-activity belonging to the curated student
-      const groupIdsList = groupsList.map((g) => g.id)
       const taGroup = taGroups[a._id]?.filter(
-        (ta) =>
-          ta.userId === sId &&
-          (ta.groupId === classId || groupIdsList.includes(ta.groupId))
+        (ta) => ta.userId === sId && ta.groupId === classId
       )
       const taCurated = taGroup?.length && getCuratedTestActivity(taGroup)
       if (taCurated) {

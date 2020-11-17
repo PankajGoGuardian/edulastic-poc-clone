@@ -75,7 +75,6 @@ const columnsBase = next(tableColumnsData.standardsTable, (arr) => {
 
 export const StandardTableContainer = (props) => {
   const { dataSource, assignmentMasteryMap, columnsFlags } = props
-
   const columns_memoized = useMemo(() => {
     const columns = [
       ...tableColumnsData.standardsTable.slice(0, 5),
@@ -90,6 +89,9 @@ export const StandardTableContainer = (props) => {
         },
       },
     ]
+    columns[2].render = (data) => {
+      return `${data}`
+    }
     // this checking which column to display/hide as per options selected
     let _columns = [columns[0], columns[1], columns[2]]
     if (columnsFlags.standardsPerformance) {

@@ -58,11 +58,20 @@ export const GoButtonWrapper = styled.div`
 `
 
 export const StyledFilterWrapper = styled.div`
-  margin-right: 16px;
-  width: 230px;
-  flex-shrink: 0;
-  height: calc(100vh - 250px);
-  position: relative;
+  ${({ isRowFilter }) =>
+    isRowFilter
+      ? `
+    width: 60%;
+    display: flex;
+    justify-content: flex-end;
+  `
+      : `
+    margin-right: 16px;
+    width: 230px;
+    flex-shrink: 0;
+    height: calc(100vh - 250px);
+    position: relative;
+  `}
 
   .ant-select-selection {
     &__rendered {
@@ -561,7 +570,7 @@ export const ApplyFitlerLabel = styled(FieldLabel)`
 
 export const ColoredCell = styled.div`
   background-color: ${({ bgColor }) => bgColor};
-
+  cursor: ${({ onClick }) => (onClick ? 'pointer' : 'default')};
   @media print {
     background-color: ${({ bgColor }) => bgColor};
     -webkit-print-color-adjust: exact;

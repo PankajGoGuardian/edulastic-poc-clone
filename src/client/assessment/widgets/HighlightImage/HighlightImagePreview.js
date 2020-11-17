@@ -59,7 +59,10 @@ const HighlightImagePreview = ({
           activity: { qActId, qid, _id },
         } = item
         const key = qActId || _id
-        return userWork[key]?.[qid] || {}
+        if (isPlainObject(userWork?.[key])) {
+          return userWork[key]?.[qid] || {}
+        }
+        return userWork?.[key] || {}
       }
       return userWork[item?.id] || {}
     }

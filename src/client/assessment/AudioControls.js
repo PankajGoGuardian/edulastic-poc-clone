@@ -1,61 +1,35 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable prefer-promise-reject-errors */
-import React, { useState, useEffect, useMemo } from 'react'
-import { Button } from 'antd'
-import { Howl, Howler } from 'howler'
-import styled, { css } from 'styled-components'
-import { connect } from 'react-redux'
-import * as Sentry from '@sentry/browser'
-
-import { questionType } from '@edulastic/constants'
+import { white } from '@edulastic/colors'
 import { EduButton, notification } from '@edulastic/common'
-import { themeColor, white } from '@edulastic/colors'
+import { questionType } from '@edulastic/constants'
 import {
-  IconPlayFilled,
   IconAudioPause,
+  IconExclamationMark,
+  IconPlayBig,
+  IconPlayFilled,
   IconStop,
   IconStopCircle,
-  IconPlayBig,
 } from '@edulastic/icons'
-
-import { curentPlayerDetailsSelector } from './selectors/test'
-import { setCurrentAudioDetailsAction } from './actions/test'
+import * as Sentry from '@sentry/browser'
+import { Tooltip } from 'antd'
+import { Howl, Howler } from 'howler'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import styled, { css } from 'styled-components'
 import AppConfig from '../../app-config'
+import { setCurrentAudioDetailsAction } from './actions/test'
+import { curentPlayerDetailsSelector } from './selectors/test'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
-
-const ControlButtons = styled(Button)`
-  width: 40px;
-  height: 40px;
-  padding: 12px;
-  margin-right: 10px;
-  transition: none;
-  background: ${themeColor};
-  position: relative;
-  z-index: 1020;
-  &.ant-btn[disabled] {
-    background: ${themeColor};
-  }
-  &:hover,
-  &:focus,
-  &:active {
-    background: ${themeColor};
-  }
-
-  i {
-    position: absolute;
-    left: 13px;
-    top: 12px;
-  }
-  &.ant-btn.ant-btn-loading {
-    pointer-events: all;
-    cursor: default;
-  }
-`
 
 const AudioButton = styled(EduButton)`
   position: relative;
   z-index: 998;
+  &.ant-btn.ant-btn-primary.not-supported {
+    background: white;
+    border: 1px solid #de0b83;
+  }
 `
 
 const AudioControls = ({
@@ -292,6 +266,8 @@ const AudioControls = ({
     }
   }
 
+  const isSupported = Howler.codecs('mp3')
+
   const handleStopAudio = () => {
     currentHowl?.stop()
     setCurrentPlayingDetails()
@@ -301,59 +277,74 @@ const AudioControls = ({
     : currentPlayingDetails.qId === qId
     ? 'Pause'
     : 'Play'
-  return !btnWithText ? (
+  return (
     <AudioButtonsWrapper
       btnWithText={btnWithText}
       hideVisibility={hideVisibility}
       className={className}
     >
-      <ControlButtons
-        onClick={handlePlayPauseAudio}
-        loading={loading}
-        title={playPauseToolTip}
-      >
-        {currentPlayingDetails.qId === qId ? (
-          <IconAudioPause color={white} className="audio-pause" />
-        ) : (
-          <IconPlayFilled color={white} className="audio-play" />
-        )}
-      </ControlButtons>
-      <ControlButtons
-        onClick={handleStopAudio}
-        loading={loading}
-        disabled={currentPlayingDetails.qId !== qId}
-        title="Stop"
-      >
-        <IconStop color={white} className="audio-stop" />
-      </ControlButtons>
-    </AudioButtonsWrapper>
-  ) : (
-    <AudioButtonsWrapper
-      btnWithText={btnWithText}
-      hideVisibility={hideVisibility}
-      className={className}
-    >
-      <AudioButton height="40px" onClick={handlePlayPauseAudio}>
-        {currentPlayingDetails.qId === qId ? (
-          <>
-            <IconAudioPause />
-            PAUSE
-          </>
-        ) : (
-          <>
-            <IconPlayBig />
-            PLAY
-          </>
-        )}
-      </AudioButton>
-      <AudioButton
-        height="40px"
-        onClick={handleStopAudio}
-        disabled={currentPlayingDetails.qId !== qId}
-      >
-        <IconStopCircle />
-        STOP
-      </AudioButton>
+      {isSupported ? (
+        <>
+          <AudioButton
+            title={!btnWithText ? playPauseToolTip : ''}
+            loading={loading}
+            height="40px"
+            IconBtn={!btnWithText}
+            onClick={handlePlayPauseAudio}
+          >
+            {currentPlayingDetails.qId === qId ? (
+              <>
+                {btnWithText ? (
+                  <>
+                    <IconAudioPause /> PAUSE
+                  </>
+                ) : (
+                  <IconAudioPause color={white} className="audio-pause" />
+                )}
+              </>
+            ) : (
+              <>
+                {btnWithText ? (
+                  <>
+                    <IconPlayBig /> PLAY
+                  </>
+                ) : (
+                  <IconPlayFilled color={white} className="audio-play" />
+                )}
+              </>
+            )}
+          </AudioButton>
+          <AudioButton
+            title={!btnWithText ? 'Stop' : ''}
+            loading={loading}
+            height="40px"
+            IconBtn={!btnWithText}
+            onClick={handleStopAudio}
+            disabled={currentPlayingDetails.qId !== qId}
+          >
+            <>
+              {btnWithText ? (
+                <>
+                  <IconStopCircle /> STOP
+                </>
+              ) : (
+                <IconStop color={white} className="audio-stop" />
+              )}
+            </>
+          </AudioButton>
+        </>
+      ) : (
+        <Tooltip title="MP3 playback is not supported in this browser">
+          <AudioButton
+            height="40px"
+            IconBtn={!btnWithText}
+            className="not-supported"
+            disabled
+          >
+            <IconExclamationMark width={20} height={20} color={white} />
+          </AudioButton>
+        </Tooltip>
+      )}
     </AudioButtonsWrapper>
   )
 }

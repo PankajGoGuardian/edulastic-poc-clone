@@ -14,6 +14,7 @@ import {
   StyledSignedBarContainer,
   NoDataContainer,
 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
@@ -28,6 +29,7 @@ import {
   getPeerPerformanceRequestAction,
   getReportsPeerPerformance,
   getReportsPeerPerformanceLoader,
+  getReportsPeerPerformanceError,
 } from './ducks'
 import columns from './static/json/tableColumns.json'
 import { idToName, parseData } from './util/transformers'
@@ -36,6 +38,7 @@ import { idToName, parseData } from './util/transformers'
 
 const PeerPerformance = ({
   loading,
+  error,
   isCsvDownloading,
   role,
   performanceBandProfiles,
@@ -144,6 +147,11 @@ const PeerPerformance = ({
   if (loading) {
     return <SpinLoader position="fixed" />
   }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
   if (!peerPerformance?.metricInfo?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
@@ -256,6 +264,7 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsPeerPerformanceLoader(state),
+      error: getReportsPeerPerformanceError(state),
       isCsvDownloading: getCsvDownloadingState(state),
       role: getUserRole(state),
       selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(

@@ -58,6 +58,7 @@ import { userWorkSelector } from '../../student/sharedDucks/TestItem'
 import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
+import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 
 const { playerSkinValues } = testConstants
 
@@ -223,9 +224,11 @@ const AssessmentContainer = ({
   }, [qid])
 
   useEffect(() => {
+    const { setCheckAnswerInProgress } = restProps
     lastTime.current = Date.now()
     window.localStorage.assessmentLastTime = lastTime.current
     gotoItem(currentItem)
+    setCheckAnswerInProgress(false)
   }, [currentItem])
 
   useEffect(() => {
@@ -744,6 +747,7 @@ const enhance = compose(
       setPasswordValidateStatus: setPasswordValidateStatusAction,
       fetchAssignments: fetchAssignmentsAction,
       evaluateForPreview: evaluateCurrentAnswersForPreviewAction,
+      setCheckAnswerInProgress: setCheckAnswerInProgressStatusAction,
     }
   )
 )

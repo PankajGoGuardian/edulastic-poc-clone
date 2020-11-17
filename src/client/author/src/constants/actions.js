@@ -227,6 +227,7 @@ export const UPDATE_PASSWORD_DETAILS =
   '[gradebook] update password details action'
 
 export const CANVAS_SYNC_GRADES = '[gradebook] sync grades with canvas'
+export const CANVAS_SYNC_ASSIGNMENT = '[gradebook] sync assignment with canvas'
 
 export const RECEIVE_TESTACTIVITY_REQUEST =
   '[testActivity] receive list request'
@@ -296,6 +297,8 @@ export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR =
 export const TOGGLE_STUDENT_REPORT_CARD_SETTINGS =
   '[assignments] show student report card popup'
 
+export const SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST =
+  '[LCB] sync assignment grades with google classroom request'
 // answers
 export const CLEAR_ANSWERS = '[answers] clear answers'
 

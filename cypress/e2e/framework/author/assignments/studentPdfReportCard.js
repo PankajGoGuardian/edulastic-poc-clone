@@ -199,7 +199,7 @@ export default class StudentsReportCard {
       })
   }
 
-  verifyEntryByIndexOfSelectedRow = (index, data, delimeter = ', ') => {
+  verifyEntryByIndexOfSelectedRow = (index, data, delimeter = ',') => {
     if (Array.isArray(data))
       this.getEntryByIndexOfSelectedRow(index).should(
         'contain.text',

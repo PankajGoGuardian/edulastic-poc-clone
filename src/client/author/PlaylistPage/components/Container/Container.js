@@ -273,7 +273,14 @@ class Container extends PureComponent {
   }
 
   renderContent = () => {
-    const { playlist, setData, isTestLoading, history, userId } = this.props
+    const {
+      playlist,
+      setData,
+      isTestLoading,
+      history,
+      userId,
+      isEditPage,
+    } = this.props
     const modules = playlist.modules.map((m) => {
       const data = m.data.map((d) => omit(d, ['hidden']))
       m.data = data
@@ -336,6 +343,7 @@ class Container extends PureComponent {
             onChangeSubjects={this.handleChangeSubject}
             onBeginDrag={this.onBeginDrag}
             history={history}
+            isEditPage={isEditPage}
             onDrop={this.onDrop}
             current={current}
             onSortEnd={this.onSortEnd}

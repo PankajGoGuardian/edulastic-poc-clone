@@ -741,6 +741,7 @@ export const createBlankTest = () => ({
   ],
   passages: [],
   freezeSettings: false,
+  playerSkinType: 'edulastic',
 })
 
 const initialState = {

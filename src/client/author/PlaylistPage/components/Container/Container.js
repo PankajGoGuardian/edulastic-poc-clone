@@ -229,7 +229,7 @@ class Container extends PureComponent {
     })
   }
 
-  onDrop = (toModuleIndex, item, fromContentBlock) => {
+  onDrop = (toModuleIndex, item, afterIndex) => {
     if (item) {
       const {
         fromModuleIndex,
@@ -239,8 +239,8 @@ class Container extends PureComponent {
       } = this.state
       const { moveContentInPlaylist } = this.props
 
-      if (fromContentBlock) {
-        moveContentInPlaylist({ toModuleIndex, testItem: item })
+      if (item.fromPlaylistTestsBox) {
+        moveContentInPlaylist({ toModuleIndex, testItem: item, afterIndex })
       } else {
         moveContentInPlaylist({
           fromContentId,

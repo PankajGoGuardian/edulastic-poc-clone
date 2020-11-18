@@ -9,7 +9,6 @@ import { replaceLatexesWithMathHtml } from './utils/mathUtils'
 import AppConfig from '../../../src/app-config'
 import {
   getValidQuestionsScore,
-  isFirstUnscored,
   isPracticeUsage,
 } from '../../../src/client/author/ItemDetail/Transformer'
 
@@ -515,10 +514,8 @@ const getPoints = (item) => {
   const questions = get(item, ['data', 'questions'], [])
   if (item.itemLevelScoring && !isNaN(item.itemLevelScore)) {
     const practiceUsage = isPracticeUsage(questions)
-    if (isFirstUnscored(questions)) {
+    if (practiceUsage) {
       return 0
-    } else if (practiceUsage) {
-      return getValidQuestionsScore(questions)
     }
     return item.itemLevelScore
   }

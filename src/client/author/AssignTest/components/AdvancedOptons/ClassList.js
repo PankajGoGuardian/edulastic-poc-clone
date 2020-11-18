@@ -9,7 +9,10 @@ import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
 import { get, curry, isEmpty, find, uniq } from 'lodash'
 import { receiveClassListAction } from '../../../Classes/ducks'
-import { getClassListSelector } from '../../duck'
+import {
+  getAssignedClassesByIdSelector,
+  getClassListSelector,
+} from '../../duck'
 import {
   getUserOrgId,
   getSchoolsByUserRoleSelector,
@@ -170,12 +173,16 @@ class ClassList extends React.Component {
   }
 
   handleSelectAll = (checked) => {
-    const { selectClass, classList } = this.props
+    const { selectClass, classList, assignedClassesById } = this.props
     const { filterClassIds, classType } = this.state
     let filterclassList = []
     if (checked) {
       const selectedClasses = classList
-        .filter((item) => classType === 'all' || item.type === classType)
+        .filter(
+          (item) =>
+            (classType === 'all' || item.type === classType) &&
+            !assignedClassesById[item._id]
+        )
         .map((item) => item._id)
       selectClass('class', selectedClasses, classList)
       filterclassList = selectedClasses
@@ -202,9 +209,9 @@ class ClassList extends React.Component {
       selectClass,
       selectedClasses,
       tagList,
+      assignedClassesById,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
-
     const tableData = classList
       .filter((item) => {
         if (!filterClassIds.length)
@@ -227,6 +234,13 @@ class ClassList extends React.Component {
         }
       },
       onSelectAll: this.handleSelectAll,
+      getCheckboxProps: (record) => {
+        if (record && record.key && assignedClassesById[record.key]) {
+          return {
+            disabled: true,
+          }
+        }
+      },
     }
 
     const selectedClassData =
@@ -510,6 +524,7 @@ const enhance = compose(
       courseList: getCourseListSelector(state),
       test: getTestSelector(state),
       tagList: getAllTagsSelector(state, 'group'),
+      assignedClassesById: getAssignedClassesByIdSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,

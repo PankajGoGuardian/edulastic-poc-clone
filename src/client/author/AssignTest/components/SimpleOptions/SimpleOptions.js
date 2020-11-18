@@ -19,6 +19,7 @@ import {
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
 } from '../../../TestPage/ducks'
+import { getAssignedClassesByIdSelector } from '../../duck'
 import { getListOfActiveStudents } from '../../utils'
 import ClassSelector from './ClassSelector'
 import DateSelector from './DateSelector'
@@ -303,6 +304,7 @@ class SimpleOptions extends React.Component {
       selectedDateOption,
       freezeSettings,
       features,
+      assignedClassesById,
     } = this.props
     const changeField = curry(this.onChange)
     let { openPolicy } = selectsData
@@ -329,6 +331,7 @@ class SimpleOptions extends React.Component {
               fetchStudents={fetchStudents}
               selectedGroups={classIds}
               group={group}
+              assignedClassesById={assignedClassesById}
             />
             <StudentSelector
               selectedGroups={classIds}
@@ -457,4 +460,5 @@ export default connect((state) => ({
   features: getUserFeatures(state),
   isReleaseScorePremium: getReleaseScorePremiumSelector(state),
   freezeSettings: getIsOverrideFreezeSelector(state),
+  assignedClassesById: getAssignedClassesByIdSelector(state),
 }))(SimpleOptions)

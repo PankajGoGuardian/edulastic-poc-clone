@@ -10,7 +10,13 @@ const dropdownStyle = {
   boxShadow: '0 3px 10px 0 rgba(0, 0, 0, 0.1)',
 }
 
-const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
+const ClassSelector = ({
+  onChange,
+  fetchStudents,
+  selectedGroups,
+  group,
+  assignedClassesById,
+}) => (
   <>
     <Col span={12}>
       <FieldLabel>CLASS/GROUP SECTION</FieldLabel>
@@ -39,6 +45,7 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
             key={data._id}
             value={data._id}
             name={data.name}
+            disabled={!!assignedClassesById[data._id]}
           >
             <Tooltip
               placement="left"

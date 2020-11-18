@@ -1,6 +1,0 @@
-{
-  "baseUrl": "https://edulasticv2-uat.snapwiz.net",
-  "env": {
-    "ENVIRONMENT": "uat"
-  }
-}

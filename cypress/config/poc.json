@@ -1,6 +1,0 @@
-{
-  "baseUrl": "https://edulastic-poc.snapwiz.net",
-  "env": {
-    "ENVIRONMENT": "poc"
-  }
-}

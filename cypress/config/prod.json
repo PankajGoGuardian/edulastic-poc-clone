@@ -1,6 +1,0 @@
-{
-  "baseUrl": "https://v2.edulastic.com",
-  "env": {
-    "ENVIRONMENT": "prod"
-  }
-}

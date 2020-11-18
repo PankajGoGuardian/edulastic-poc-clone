@@ -52,6 +52,7 @@ export const getPassageSelector = createSelector(
 export const getItemDetailSelectorForPreview = (state, id, page) => {
   let testItems = []
   const testItemPreview = get(state, 'testItemPreview.item', {})
+  const nextItemId = get(state, 'tests.nextItemId', null)
   if (testItemPreview && testItemPreview.data) {
     return get(state, 'testItemPreview.item')
   }
@@ -67,7 +68,10 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
   }
   let item = testItems.find((x) => x._id === id)
   if (!item && page === 'review' && testItems.length) {
-    item = last(testItems)
+    item = testItems.find((x) => x._id === nextItemId)
+    if (!item) {
+      item = last(testItems)
+    }
   }
   if (item?.multipartItem) {
     // markQuestionLabel([item]);

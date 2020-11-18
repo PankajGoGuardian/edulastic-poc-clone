@@ -279,11 +279,13 @@ export const UPDATE_TEST_ITEM_LIKE_COUNT =
 export const RESET_UPDATED_TEST_STATE = '[test] reset test updated state'
 export const SET_UPDATING_TEST_FOR_REGRADE_STATE =
   '[test] set updating test for regrade state'
+export const SET_NEXT_PREVIEW_ITEM = '[test] set next preview item'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER)
 export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS)
+export const setNextPreviewItemAction = createAction(SET_NEXT_PREVIEW_ITEM)
 export const updateDefaultThumbnailAction = createAction(
   UPDATE_TEST_DEFAULT_IMAGE
 )
@@ -770,6 +772,7 @@ const initialState = {
   annotationToolsProperties: {},
   annotationsStack: [],
   updatingTestForRegrade: false,
+  nextItemId: null,
 }
 
 export const testTypeAsProfileNameType = {
@@ -1252,6 +1255,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         updatingTestForRegrade: payload,
+      }
+    case SET_NEXT_PREVIEW_ITEM:
+      return {
+        ...state,
+        nextItemId: payload,
       }
     default:
       return state

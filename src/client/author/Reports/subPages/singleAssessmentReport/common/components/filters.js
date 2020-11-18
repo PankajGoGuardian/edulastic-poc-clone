@@ -14,6 +14,7 @@ import SchoolAutoComplete from './SchoolAutoComplete'
 import CourseAutoComplete from './CourseAutoComplete'
 import TeacherAutoComplete from './TeacherAutoComplete'
 import ClassAutoComplete from './ClassAutoComplete'
+import GroupsAutoComplete from './GroupsAutoComplete'
 import {
   StyledFilterWrapper,
   StyledGoButton,
@@ -262,17 +263,6 @@ const SingleAssessmentReportFilters = ({
             showPrefixOnSelected={false}
           />
         </SearchField>
-        {prevSARFilterData && (
-          <SearchField>
-            <FilterLabel>Assessment</FilterLabel>
-            <AssessmentAutoComplete
-              firstLoad={firstLoad}
-              termId={filters.termId}
-              selectedTestId={testId || getTestIdFromURL(location.pathname)}
-              selectCB={updateTestId}
-            />
-          </SearchField>
-        )}
         <SearchField>
           <FilterLabel>Grade</FilterLabel>
           <ControlDropDown
@@ -293,6 +283,35 @@ const SingleAssessmentReportFilters = ({
             showPrefixOnSelected={false}
           />
         </SearchField>
+        <SearchField>
+          <FilterLabel>Course</FilterLabel>
+          <CourseAutoComplete
+            selectedCourseId={filters.courseId !== 'All' && filters.courseId}
+            selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Assessment Type</FilterLabel>
+          <ControlDropDown
+            by={filters.assessmentType}
+            selectCB={(e) => updateFilterDropdownCB(e, 'assessmentType')}
+            data={staticDropDownData.assessmentType}
+            prefix="Assessment Type"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+        {prevSARFilterData && (
+          <SearchField>
+            <FilterLabel>Assessment</FilterLabel>
+            <AssessmentAutoComplete
+              filters={filters}
+              firstLoad={firstLoad}
+              termId={filters.termId}
+              selectedTestId={testId || getTestIdFromURL(location.pathname)}
+              selectCB={updateTestId}
+            />
+          </SearchField>
+        )}
         {role !== 'teacher' && (
           <>
             <SearchField>
@@ -315,16 +334,6 @@ const SingleAssessmentReportFilters = ({
             </SearchField>
           </>
         )}
-        <SearchField>
-          <FilterLabel>Assessment Type</FilterLabel>
-          <ControlDropDown
-            by={filters.assessmentType}
-            selectCB={(e) => updateFilterDropdownCB(e, 'assessmentType')}
-            data={staticDropDownData.assessmentType}
-            prefix="Assessment Type"
-            showPrefixOnSelected={false}
-          />
-        </SearchField>
         {isStandardProficiencyRequired && (
           <SearchField>
             <FilterLabel>Standard Proficiency</FilterLabel>
@@ -364,13 +373,6 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
         )}
         <SearchField>
-          <FilterLabel>Course</FilterLabel>
-          <CourseAutoComplete
-            selectedCourseId={filters.courseId !== 'All' && filters.courseId}
-            selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
-          />
-        </SearchField>
-        <SearchField>
           <FilterLabel>Class</FilterLabel>
           <ClassAutoComplete
             grade={filters.grade !== 'All' && filters.grade}
@@ -384,12 +386,11 @@ const SingleAssessmentReportFilters = ({
         </SearchField>
         <SearchField>
           <FilterLabel>Group</FilterLabel>
-          <ClassAutoComplete
-            type="custom"
+          <GroupsAutoComplete
             grade={filters.grade !== 'All' && filters.grade}
             subject={filters.subject !== 'All' && filters.subject}
             school={filters.schoolId !== 'All' && filters.schoolId}
-            selectedClass={selectedGroup}
+            selectedGroup={selectedGroup}
             selectCB={(e) => {
               updateSearchableFilter(e, 'groupId', setSelectedGroup)
             }}

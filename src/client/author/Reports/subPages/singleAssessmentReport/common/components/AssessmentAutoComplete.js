@@ -28,6 +28,7 @@ const AssessmentAutoComplete = ({
   termId,
   selectedTestId,
   selectCB,
+  filters,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
@@ -44,6 +45,11 @@ const AssessmentAutoComplete = ({
         searchString: searchTerms.text,
         statuses: [IN_PROGRESS, IN_GRADING, DONE],
         districtId,
+        grades: filters.grade === 'All' ? [] : [filters.grade],
+        subjects: filters.subject === 'All' ? [] : [filters.subject],
+        testTypes:
+          filters.assessmentType === 'All' ? [] : [filters.assessmentType],
+        courseIds: filters.courseId === 'All' ? [] : [filters.courseId],
       },
       aggregate: true,
     }

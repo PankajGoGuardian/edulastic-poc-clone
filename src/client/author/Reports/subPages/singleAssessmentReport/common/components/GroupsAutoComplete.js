@@ -8,51 +8,56 @@ import { AutoComplete, Input, Icon } from 'antd'
 import { roleuser } from '@edulastic/constants'
 
 // ducks
-import { getOrgDataSelector } from '../../../../../src/selectors/user'
+import { getUser } from '../../../../../src/selectors/user'
 import {
-  getTeachersListSelector,
-  receiveTeachersListAction,
-} from '../../../../../Teacher/ducks'
+  receiveGroupListAction,
+  getGroupListSelector,
+} from '../../../../../Groups/ducks'
 
-const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
+const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
-const transformTeacherList = (list) => {
-  return list.map((t) => ({
-    ...t,
-    name: [t.firstName, t.middleName, t.lastName]
-      .filter((n) => n)
-      .join(' ')
-      .trim(),
-  }))
-}
-
-const TeacherAutoComplete = ({
-  userOrgData,
-  teacherList: teacherListRaw,
+const GroupsAutoComplete = ({
+  userDetails,
+  groupList,
   loading,
-  loadTeacherList,
+  loadGroupList,
+  grade,
+  subject,
   school: institutionId,
-  selectedTeacherId,
+  selectedGroup,
   selectCB,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
 
-  const teacherList = transformTeacherList(teacherListRaw)
-
   // build search query
   const query = useMemo(() => {
-    const { districtIds } = userOrgData
+    const { institutionIds, role: userRole, orgData, _id: userId } = userDetails
+    const { districtIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
       limit: 25,
       page: 1,
       districtId,
-      search: { name: searchTerms.text },
-      role: roleuser.TEACHER,
+      search: {
+        name: searchTerms.text,
+        type: ['custom'],
+      },
     }
-    if (institutionId) {
-      q.search.institutionId = institutionId
+    if (userRole === roleuser.TEACHER) {
+      q.search.teachers = [{ type: 'eq', value: userId }]
+    }
+    if (userRole === roleuser.DISTRICT_ADMIN && institutionId) {
+      q.search.institutionIds = [institutionId]
+    }
+    if (userRole === roleuser.SCHOOL_ADMIN) {
+      q.search.institutionIds = institutionId ? [institutionId] : institutionIds
+    }
+    if (grade) {
+      q.search.grades = [`${grade}`]
+    }
+    if (subject) {
+      q.search.subjects = [subject]
     }
     return q
   }, [searchTerms.text])
@@ -62,9 +67,8 @@ const TeacherAutoComplete = ({
     setSearchTerms({ ...searchTerms, text: value })
   }
   const onSelect = (key) => {
-    const value = (searchTerms.text ? teacherList : searchResult).find(
-      (s) => s._id === key
-    )?.name
+    const value = (searchTerms.text ? groupList[key] : searchResult[key])
+      ._source.name
     setSearchTerms({ text: value, selectedText: value, selectedKey: key })
     selectCB({ key, title: value })
   }
@@ -76,36 +80,38 @@ const TeacherAutoComplete = ({
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
   }
-  const loadTeacherListDebounced = useCallback(
-    debounce(loadTeacherList, 500, { trailing: true }),
+  const loadGroupListDebounced = useCallback(
+    debounce(loadGroupList, 500, { trailing: true }),
     []
   )
-  const getDefaultTeacherList = () => {
+  const getDefaultGroupList = () => {
     if (isEmpty(searchResult)) {
-      loadTeacherListDebounced(query)
+      loadGroupListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
     if (isEmpty(searchResult)) {
-      setSearchResult(transformTeacherList(teacherListRaw))
+      setSearchResult(groupList)
     }
-  }, [teacherListRaw])
+  }, [groupList])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
-      loadTeacherListDebounced(query)
+      loadGroupListDebounced(query)
     }
   }, [searchTerms])
 
   // build dropdown data
   const dropdownData = [
-    <AutoComplete.OptGroup key="teacherList" label="Teachers [Type to search]">
-      {(searchTerms.text ? teacherList : searchResult).map((item) => (
-        <AutoComplete.Option key={item._id} title={item.name}>
-          {item.name}
-        </AutoComplete.Option>
-      ))}
+    <AutoComplete.OptGroup key="groupList" label="Groups [Type to search]">
+      {Object.values(searchTerms.text ? groupList : searchResult).map(
+        (item) => (
+          <AutoComplete.Option key={item._id} title={item._source.name}>
+            {item._source.name}
+          </AutoComplete.Option>
+        )
+      )}
     </AutoComplete.OptGroup>,
   ]
 
@@ -113,13 +119,13 @@ const TeacherAutoComplete = ({
     <AutoCompleteContainer>
       <AutoComplete
         getPopupContainer={(trigger) => trigger.parentNode}
-        placeholder="All Teachers"
+        placeholder="All Groups"
         value={searchTerms.text}
         onSearch={onSearch}
         dataSource={dropdownData}
         onSelect={onSelect}
         onBlur={onBlur}
-        onFocus={() => getDefaultTeacherList()}
+        onFocus={() => getDefaultGroupList()}
       >
         <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
       </AutoComplete>
@@ -129,14 +135,14 @@ const TeacherAutoComplete = ({
 
 export default connect(
   (state) => ({
-    userOrgData: getOrgDataSelector(state),
-    teacherList: getTeachersListSelector(state),
-    loading: get(state, ['teacherReducer', 'loading'], false),
+    userDetails: getUser(state),
+    groupList: getGroupListSelector(state),
+    loading: get(state, ['groupsReducer', 'loading'], false),
   }),
   {
-    loadTeacherList: receiveTeachersListAction,
+    loadGroupList: receiveGroupListAction,
   }
-)(TeacherAutoComplete)
+)(GroupsAutoComplete)
 
 const AutoCompleteContainer = styled.div`
   .ant-select-auto-complete {

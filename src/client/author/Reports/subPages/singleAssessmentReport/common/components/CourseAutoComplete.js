@@ -24,6 +24,7 @@ const CourseAutoComplete = ({
   selectCB,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const [searchResult, setSearchResult] = useState([])
 
   // build search query
   const query = useMemo(() => {
@@ -46,7 +47,9 @@ const CourseAutoComplete = ({
     setSearchTerms({ ...searchTerms, text: value })
   }
   const onSelect = (key) => {
-    const value = courseList.find((c) => c._id === key)?.name
+    const value = (searchTerms.text ? courseList : searchResult).find(
+      (c) => c._id === key
+    )?.name
     setSearchTerms({ text: value, selectedText: value, selectedKey: key })
     selectCB({ key, title: value })
   }
@@ -58,18 +61,22 @@ const CourseAutoComplete = ({
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
   }
-
-  // effects
-  useEffect(() => {
-    if (!isEmpty(selectedCourseId)) {
-      const { _id, name } = courseList.find((t) => t._id === selectedCourseId)
-      setSearchTerms({ text: name, selectedText: name, selectedKey: _id })
-    }
-  }, [selectedCourseId])
   const loadCourseListDebounced = useCallback(
     debounce(loadCourseList, 500, { trailing: true }),
     []
   )
+  const getDefaultCourseList = () => {
+    if (isEmpty(searchResult)) {
+      loadCourseListDebounced(query)
+    }
+  }
+
+  // effects
+  useEffect(() => {
+    if (isEmpty(searchResult)) {
+      setSearchResult(courseList)
+    }
+  }, [courseList])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadCourseListDebounced(query)
@@ -77,20 +84,17 @@ const CourseAutoComplete = ({
   }, [searchTerms])
 
   // build dropdown data
-  const dropdownData = searchTerms.text
-    ? [
-        <AutoComplete.OptGroup
-          key="courseList"
-          label="Courses [Type to search]"
-        >
-          {Object.values(courseList).map((item) => (
-            <AutoComplete.Option key={item._id} title={item.name}>
-              {item.name}
-            </AutoComplete.Option>
-          ))}
-        </AutoComplete.OptGroup>,
-      ]
-    : []
+  const dropdownData = [
+    <AutoComplete.OptGroup key="courseList" label="Courses [Type to search]">
+      {Object.values(searchTerms.text ? courseList : searchResult).map(
+        (item) => (
+          <AutoComplete.Option key={item._id} title={item.name}>
+            {item.name}
+          </AutoComplete.Option>
+        )
+      )}
+    </AutoComplete.OptGroup>,
+  ]
 
   return (
     <AutoCompleteContainer>
@@ -102,6 +106,7 @@ const CourseAutoComplete = ({
         dataSource={dropdownData}
         onSelect={onSelect}
         onBlur={onBlur}
+        onFocus={() => getDefaultCourseList()}
       >
         <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
       </AutoComplete>

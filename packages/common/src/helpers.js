@@ -20,13 +20,18 @@ export function useLayoutEffectDebounced(func, values, time) {
 
 export const isSEB = () => window.navigator.userAgent.includes('SEB')
 
-export function handleChromeOsSEB() {
+export function handleChromeOsSEB(e) {
   const isChromeOs = /(CrOS)/.test(window.navigator.userAgent)
   if (isChromeOs) {
-    alert(
-      `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`
-    )
+    if (e) {
+      e.preventDefault()
+    }
+    notification({
+      msg: `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`,
+      duration: 7,
+    })
   }
+  return isChromeOs
 }
 
 export const ALPHABET = [

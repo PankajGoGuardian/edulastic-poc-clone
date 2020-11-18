@@ -571,8 +571,9 @@ function* startAssignment({ payload }) {
         groupId: classId,
       })
       yield put(push(`/home/assignments`))
-      handleChromeOsSEB()
-      yield call(redirectToUrl(sebUrl))
+      if (!handleChromeOsSEB()) {
+        yield call(redirectToUrl(sebUrl))
+      }
       return
     }
 
@@ -896,15 +897,16 @@ function* launchAssignment({ payload }) {
       if (lastActivity && lastActivity.status === 0) {
         if (safeBrowser && !isSEB()) {
           yield put(push(`/home/assignments`))
-          handleChromeOsSEB()
-          const sebUrl = getSebUrl({
-            testId,
-            testType,
-            testActivityId: lastActivity._id,
-            assignmentId,
-            groupId,
-          })
-          yield call(redirectToUrl, sebUrl)
+          if (!handleChromeOsSEB()) {
+            const sebUrl = getSebUrl({
+              testId,
+              testType,
+              testActivityId: lastActivity._id,
+              assignmentId,
+              groupId,
+            })
+            yield call(redirectToUrl, sebUrl)
+          }
         } else {
           yield put(
             resumeAssignmentAction({

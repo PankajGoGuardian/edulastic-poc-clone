@@ -126,6 +126,7 @@ const Preview = memo(
             isLCBView={isLCBView}
             history={userWork[target]}
             isScratchpadImageMode
+            isScratchpadUsed={isScratchpadUsed}
             scratchpadDimensions={scratchpadDimensions}
             {...scoringProps}
             studentId={studentId}

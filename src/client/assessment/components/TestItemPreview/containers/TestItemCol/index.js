@@ -92,6 +92,7 @@ class TestItemCol extends Component {
       isScratchpadImageMode,
       isStudentWorkCollapseOpen,
       toggleStudentWorkCollapse,
+      isScratchpadUsed,
       ...restProps
     } = this.props
     const timespent = widget.timespent !== undefined ? widget.timespent : null
@@ -127,10 +128,11 @@ class TestItemCol extends Component {
     }
 
     const imageAttachments =
-      attachments &&
-      attachments.filter((attachment) => {
-        return attachment.type.includes('image/')
-      })
+      (attachments &&
+        attachments.filter((attachment) => {
+          return attachment.type.includes('image/')
+        })) ||
+      []
 
     // question false undefined false undefined undefined true true
     return (
@@ -177,14 +179,16 @@ class TestItemCol extends Component {
           style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
           tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />
-        {!isScratchpadImageMode && !isStudentAttempt && (
-          <StudentWorkCollapse
-            isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-            toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-            imageAttachments={imageAttachments}
-            renderScratchPadImage={renderScratchPadImage}
-          />
-        )}
+        {!isScratchpadImageMode &&
+          !isStudentAttempt &&
+          (isScratchpadUsed || imageAttachments.length > 0) && (
+            <StudentWorkCollapse
+              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+              toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+              imageAttachments={imageAttachments}
+              renderScratchPadImage={renderScratchPadImage}
+            />
+          )}
 
         {!isScratchpadImageMode && attachments && attachments.length > 0 && (
           <>

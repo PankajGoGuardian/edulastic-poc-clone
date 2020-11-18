@@ -127,6 +127,8 @@ function* duplicateItemRequestSaga({ payload }) {
     const { passage } = payload
     const itemId = data.id
     let duplicatedItem = {}
+    const isEditEnable = yield select((state) => get(state, 'tests.editEnable'))
+    const isTestEditing = test.status === 'draft' || isEditEnable
     if (passage) {
       // Current item selected in preview modal
       // or all test items based on duplicateWholePassage (flag)
@@ -136,12 +138,19 @@ function* duplicateItemRequestSaga({ payload }) {
         ? [currentItem]
         : []
       // To duplicate passage we require passageId and testItemsIds
-      const duplicatedPassage = yield call(passageApi.duplicate, {
+      const passageDuplicateParams = {
         passageId: passage?._id,
         testItemIds: testItemsToDuplicate,
-        testId,
-      })
-      if (duplicateWholePassage && testId) {
+      }
+
+      if (isTestEditing) {
+        passageDuplicateParams.testId = testId
+      }
+      const duplicatedPassage = yield call(
+        passageApi.duplicate,
+        passageDuplicateParams
+      )
+      if (duplicateWholePassage && testId && isTestEditing) {
         yield put(receiveTestByIdAction(testId, true))
         notification({
           msg: `${testItemsToDuplicate.length} items added to test`,
@@ -155,8 +164,7 @@ function* duplicateItemRequestSaga({ payload }) {
     } else {
       duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId)
     }
-    const isEditEnable = yield select((state) => get(state, 'tests.editEnable'))
-    if (isTest && !(test.status === 'draft' || isEditEnable)) {
+    if (isTest && !isTestEditing) {
       return yield put(
         push({
           pathname: `/author/items/${duplicatedItem._id}/item-detail`,

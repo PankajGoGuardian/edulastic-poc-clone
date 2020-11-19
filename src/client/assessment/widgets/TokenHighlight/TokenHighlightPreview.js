@@ -45,7 +45,6 @@ const TokenHighlightPreview = ({
   theme,
   showQuestionNumber,
   disableResponse,
-  clearClicked,
   mode,
   t,
 }) => {
@@ -175,16 +174,10 @@ const TokenHighlightPreview = ({
   useEffect(() => {
     if (view === EDIT && !isCheck) {
       setAnswers(validArray)
-    } else if (isEmpty(userAnswer) && !isCheck) {
+    } else if (isEmpty(userAnswer)) {
       setAnswers(initialArray)
     }
   }, [userAnswer])
-
-  useEffect(() => {
-    if (clearClicked) {
-      setAnswers(initialArray)
-    }
-  }, [clearClicked])
 
   const handleSelect = (i) => () => {
     const newAnswers = cloneDeep(answers)

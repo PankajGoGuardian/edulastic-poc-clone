@@ -92,6 +92,13 @@ function* getReportsQuestionAnalysisRequest({ payload }) {
       payload.requestFilters?.groupIds?.join(',') ||
       payload.requestFilters?.groupId ||
       ''
+    payload.requestFilters.assessmentTypes =
+      payload.requestFilters?.assessmentTypes?.join(',') || ''
+
+    payload.requestFilters.grade = payload.requestFilters.studentGrade
+    payload.requestFilters.courseId = payload.requestFilters.studentCourseId
+    payload.requestFilters.subject = payload.requestFilters.studentSubject
+
     const { data } = yield call(reportsApi.fetchQuestionAnalysisReport, payload)
 
     if (data && data?.dataSizeExceeded) {

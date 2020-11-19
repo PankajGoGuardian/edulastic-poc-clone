@@ -47,8 +47,7 @@ const AssessmentAutoComplete = ({
         districtId,
         grades: filters.grade === 'All' ? [] : [filters.grade],
         subjects: filters.subject === 'All' ? [] : [filters.subject],
-        testTypes:
-          filters.assessmentType === 'All' ? [] : [filters.assessmentType],
+        testTypes: filters.assessmentTypes || [],
         courseIds: filters.courseId === 'All' ? [] : [filters.courseId],
       },
       aggregate: true,

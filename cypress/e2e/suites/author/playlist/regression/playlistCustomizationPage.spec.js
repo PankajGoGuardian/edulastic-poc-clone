@@ -509,33 +509,6 @@ describe(`${FileHelper.getSpecName(
       cy.url().should('contain', playlistId_2)
     })
 
-    it('> switch playlist', () => {
-      /* 2. switch to playlist created in previous context and verify id in url */
-      playlistlibraryPage.reviewTab.clickOpenDroppedPlaylist()
-      playlistlibraryPage.reviewTab.clickOnViewPlaylistById(playlistId_1)
-      cy.url().should('contain', `${playlistId_1}/use-this`)
-    })
-
-    it('> remove from favourites', () => {
-      /* 3. remove playlist created in previous context from fav using dropdown in header and verify in switch tab and current url
-      it should navigate to prev used playlist(created in this context) */
-      playlistlibraryPage.header.clickRemoveFromFavorite()
-      cy.url().should('not.contain', `${playlistId_1}/use-this`)
-      playlistlibraryPage.reviewTab.clickOpenDroppedPlaylist()
-      playlistlibraryPage.reviewTab.getPlaylistCardById(playlistId_2)
-      playlistlibraryPage.reviewTab
-        .getPlaylistCardById(playlistId_1)
-        .should('not.exist')
-      cy.url().should('contain', `${playlistId_2}/use-this`)
-    })
-
-    it('> navigate and verify my playlist page', () => {
-      playlistlibraryPage.reviewTab.closeSwitchPlaylistWindow()
-      playlistlibraryPage.sidebar.clickOnPlayListLibrary()
-      playlistlibraryPage.sidebar.clickOnRecentUsedPlayList()
-      cy.url().should('contain', `${playlistId_2}/use-this`)
-    })
-
     it("> manage test dropdown 'Preview Test'", () => {
       /* 4. verify preview test in manage test dropdown */
       playlistlibraryPage.reviewTab
@@ -626,6 +599,36 @@ describe(`${FileHelper.getSpecName(
       ;[testIds[0], testIds[1], testIds[3]].forEach((id) => {
         assignmentsPage.getAssignmentByTestId(id).should('exist')
       })
+    })
+
+    it('> switch playlist', () => {
+      /* 2. switch to playlist created in previous context and verify id in url */
+      cy.login('teacher', teacher.email, teacher.pass)
+      playlistlibraryPage.sidebar.clickOnRecentUsedPlayList()
+      playlistlibraryPage.reviewTab.clickOpenDroppedPlaylist()
+      playlistlibraryPage.reviewTab.clickOnViewPlaylistById(playlistId_1)
+      cy.url().should('contain', `${playlistId_1}/use-this`)
+    })
+
+    it('> remove from favourites', () => {
+      /* 3. remove playlist created in previous context from fav using dropdown in header and verify in switch tab and current url
+      it should navigate to prev used playlist(created in this context) */
+      playlistlibraryPage.header.clickRemoveFromFavorite()
+      cy.url().should('not.contain', `${playlistId_1}/use-this`)
+      playlistlibraryPage.reviewTab.clickOpenDroppedPlaylist()
+      playlistlibraryPage.reviewTab.getPlaylistCardById(playlistId_2)
+      playlistlibraryPage.reviewTab
+        .getPlaylistCardById(playlistId_1)
+        .should('not.exist')
+      cy.url().should('contain', `${playlistId_2}/use-this`)
+    })
+
+    it('> navigate and verify my playlist page', () => {
+      playlistlibraryPage.reviewTab.closeSwitchPlaylistWindow()
+      playlistlibraryPage.sidebar.clickOnPlayListLibrary()
+      playlistlibraryPage.sidebar.clickOnItemBank()
+      playlistlibraryPage.sidebar.clickOnRecentUsedPlayList()
+      cy.url().should('contain', `${playlistId_2}/use-this`)
     })
   })
 })

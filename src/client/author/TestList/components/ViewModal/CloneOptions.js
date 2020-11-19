@@ -30,7 +30,7 @@ function CloneOptions({ hideOptions, onDuplicate }) {
       <FlexContainer flexDirection="column" mt="10px">
         <RadioLabelGroup value={cloneOption} onChange={handleChange}>
           <RadioLabel value="no">
-            Keep references to the original items you can clone them
+            Keep references to the original items - you can clone them
             individually later on
           </RadioLabel>
           <RadioLabel value="yes">

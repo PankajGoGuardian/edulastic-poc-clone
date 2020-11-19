@@ -519,6 +519,7 @@ class Setting extends Component {
                   <AdvancedButton
                     onClick={this.advancedHandler}
                     show={showAdvancedOption}
+                    data-cy="advanced-option"
                   >
                     {showAdvancedOption
                       ? 'HIDE ADVANCED OPTIONS'

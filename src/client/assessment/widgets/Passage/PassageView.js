@@ -69,16 +69,22 @@ const PassageView = ({
   previewTab,
   passageTestItemID,
   widgetIndex,
+  viewComponent,
   page,
   setPage,
 }) => {
   const mainContentsRef = useRef()
   const [isOpen, toggleOpen] = useState(false)
   const [selectHighlight, setSelectedHighlight] = useState(null)
-  // use the userWork in author mode
-  const _highlights = setHighlights
-    ? get(highlights, `[${widgetIndex}]`, '')
-    : get(userWork, `[${widgetIndex}]`, '')
+
+  const isAuthorPreviewMode =
+    viewComponent === 'editQuestion' ||
+    viewComponent === 'authorPreviewPopup' ||
+    viewComponent === 'ItemDetail'
+
+  const _highlights = isAuthorPreviewMode
+    ? get(userWork, `[${widgetIndex}]`, '')
+    : get(highlights, `[${widgetIndex}]`, '')
 
   const saveHistory = () => {
     let { innerHTML: highlightContent = '' } = mainContentsRef.current

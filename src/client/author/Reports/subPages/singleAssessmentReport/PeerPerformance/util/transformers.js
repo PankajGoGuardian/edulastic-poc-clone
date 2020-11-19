@@ -329,7 +329,7 @@ export const parseData = (rawData, filter) => {
     return { ...d, gender }
   })
   if (filter.compareBy === 'group') {
-    data = transformMetricForStudentGroups(data, data)
+    data = transformMetricForStudentGroups(rawData.studentGroupInfo, data)
     compareBy = 'groupId'
   }
   const filteredData = filterData(data, filter)

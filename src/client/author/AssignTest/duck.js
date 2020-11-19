@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import { get } from 'lodash'
+import { get, keyBy } from 'lodash'
 import { createSelector } from 'reselect'
 import { createReducer, createAction } from 'redux-starter-kit'
 import {
@@ -33,6 +33,27 @@ const currentSelector = (state) => state[_moduld].current
 export const testsSelector = (state) => state.tests
 
 export const getAssignmentsSelector = (state) => state[_moduld].assignments
+
+export const testStateSelector = (state) => state.tests
+
+export const getTestSelector = createSelector(
+  testStateSelector,
+  (state) => state.entity
+)
+
+export const getAssignedClassesByIdSelector = createSelector(
+  getAssignmentsSelector,
+  getTestSelector,
+  (assignments, test) => {
+    const assignedClasses = assignments
+      .flatMap((item) => get(item, 'class', []))
+      .filter((item) => item.students && item.students.length === 0)
+    if (test.testType === testConst.type.COMMON) {
+      return keyBy(assignedClasses, '_id')
+    }
+    return {}
+  }
+)
 
 const classesData = (state) => state.classesReducer.data
 

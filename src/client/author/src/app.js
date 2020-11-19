@@ -468,7 +468,7 @@ const Author = ({
                   <Route
                     exact
                     path="/author/playlists/:id/edit"
-                    render={(props) => <PlaylistPage {...props} />}
+                    render={(props) => <PlaylistPage {...props} isEditPage />}
                   />
                   <Route
                     exact

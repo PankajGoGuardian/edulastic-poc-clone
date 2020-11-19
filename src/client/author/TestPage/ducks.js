@@ -277,11 +277,15 @@ export const UPDATE_TEST_LIKE_COUNT = '[test] update test like count'
 export const UPDATE_TEST_ITEM_LIKE_COUNT =
   '[test] update test review item like count'
 export const RESET_UPDATED_TEST_STATE = '[test] reset test updated state'
+export const SET_UPDATING_TEST_FOR_REGRADE_STATE =
+  '[test] set updating test for regrade state'
+export const SET_NEXT_PREVIEW_ITEM = '[test] set next preview item'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER)
 export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS)
+export const setNextPreviewItemAction = createAction(SET_NEXT_PREVIEW_ITEM)
 export const updateDefaultThumbnailAction = createAction(
   UPDATE_TEST_DEFAULT_IMAGE
 )
@@ -345,6 +349,9 @@ export const updateTestItemLikeCountAction = createAction(
   UPDATE_TEST_ITEM_LIKE_COUNT
 )
 export const resetUpdatedStateAction = createAction(RESET_UPDATED_TEST_STATE)
+export const setUpdatingTestForRegradeStateAction = createAction(
+  SET_UPDATING_TEST_FOR_REGRADE_STATE
+)
 
 export const receiveTestByIdAction = (
   id,
@@ -736,6 +743,7 @@ export const createBlankTest = () => ({
   ],
   passages: [],
   freezeSettings: false,
+  playerSkinType: 'edulastic',
 })
 
 const initialState = {
@@ -763,6 +771,8 @@ const initialState = {
   currentAnnotationTool: 'cursor',
   annotationToolsProperties: {},
   annotationsStack: [],
+  updatingTestForRegrade: false,
+  nextItemId: null,
 }
 
 export const testTypeAsProfileNameType = {
@@ -1241,6 +1251,16 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         updated: false,
       }
+    case SET_UPDATING_TEST_FOR_REGRADE_STATE:
+      return {
+        ...state,
+        updatingTestForRegrade: payload,
+      }
+    case SET_NEXT_PREVIEW_ITEM:
+      return {
+        ...state,
+        nextItemId: payload,
+      }
     default:
       return state
   }
@@ -1663,6 +1683,7 @@ function* updateTestSaga({ payload }) {
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
     yield put(setTestsLoadingAction(false))
+    yield put(setUpdatingTestForRegradeStateAction(false))
   }
 }
 
@@ -1768,6 +1789,7 @@ function* updateTestDocBasedSaga({ payload }) {
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
+    yield put(setUpdatingTestForRegradeStateAction(false))
   }
 }
 
@@ -1924,6 +1946,7 @@ function* publishTestSaga({ payload }) {
  */
 function* publishForRegrade({ payload }) {
   try {
+    yield put(setUpdatingTestForRegradeStateAction(true))
     const _test = yield select(getTestSelector)
     if (_test.isUsed && !test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
@@ -1944,10 +1967,12 @@ function* publishForRegrade({ payload }) {
         state: locationState,
       })
     )
+    yield put(setUpdatingTestForRegradeStateAction(false))
   } catch (error) {
     Sentry.captureException(error)
     console.error(error)
     notification({ msg: error?.data?.message || 'publish failed.' })
+    yield put(setUpdatingTestForRegradeStateAction(false))
   }
 }
 

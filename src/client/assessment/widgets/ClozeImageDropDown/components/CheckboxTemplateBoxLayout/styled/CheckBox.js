@@ -7,7 +7,7 @@ const boxBgColor = css`
     if (checked === undefined && correct === undefined) {
       return theme.checkbox.boxBgColor
     }
-    if (checked === false) {
+    if (checked === false || checked === undefined) {
       return theme.checkbox.noAnswerBgColor
     }
     if (checked && !correct) {
@@ -25,7 +25,7 @@ const indexBoxBgColor = css`
     if (checked === undefined && correct === undefined) {
       return theme.checkbox.boxBgColor
     }
-    if (checked === false) {
+    if (checked === false || checked === undefined) {
       return theme.checkbox.noAnswerIconColor
     }
     if (checked && !correct) {

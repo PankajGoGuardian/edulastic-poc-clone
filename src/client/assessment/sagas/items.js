@@ -312,7 +312,7 @@ export function* saveUserResponse({ payload }) {
             return call(attachmentApi.updateAttachment, { update, filter })
           })
         )
-      } else {
+      } else if (fileData?.scratchpad) {
         const scratchpadUri = yield call(
           uploadToS3,
           fileData.scratchpad,

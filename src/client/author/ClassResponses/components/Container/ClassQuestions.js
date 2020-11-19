@@ -70,6 +70,13 @@ function Preview({
     null
   )
 
+  const testActivityId = get(questionActivity, 'testActivityId', '')
+  const highlights = get(
+    userWork,
+    `[${passageId}][${testActivityId}].resourceId`,
+    {}
+  )
+
   return (
     <StyledFlexContainer
       key={item._id}
@@ -99,6 +106,7 @@ function Preview({
         timeSpent={timeSpent}
         attachments={attachments}
         userWork={userWork}
+        highlights={highlights}
         scratchpadDimensions={scratchpadDimensions}
         saveUserWork={() => {}}
         {...scoringProps}

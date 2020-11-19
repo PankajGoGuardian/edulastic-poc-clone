@@ -1,5 +1,5 @@
 import { EduButton, CustomModalStyled } from '@edulastic/common'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { roleuser } from '@edulastic/constants'
 import {
@@ -37,6 +37,14 @@ const DeleteAssignmentModal = ({
 }) => {
   const [confirmText, setConfirmText] = useState('')
   const [unassignConfirmation, setUnassignConfirmation] = useState(false)
+
+  useEffect(() => {
+    if (!toggleDeleteAssignmentModalState) {
+      setConfirmText('')
+      setUnassignConfirmation(false)
+    }
+  }, [toggleDeleteAssignmentModalState])
+
   const handleUnassign = () => {
     if (confirmText.toLocaleLowerCase() === 'unassign') {
       if (unassignConfirmation) {

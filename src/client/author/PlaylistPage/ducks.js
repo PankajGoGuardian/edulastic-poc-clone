@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
 import { call, put, all, takeEvery, select } from 'redux-saga/effects'
 import { push, replace } from 'connected-react-router'
-import { omit, get, set } from 'lodash'
+import { omit, get, set, isNumber } from 'lodash'
 import {
   curriculumSequencesApi,
   contentSharingApi,
@@ -296,6 +296,7 @@ const moveContentInPlaylist = (playlist, payload) => {
     fromModuleIndex,
     fromContentIndex,
     testItem,
+    afterIndex,
   } = payload
   let newPlaylist
   if (!toContentIndex && fromModuleIndex >= 0) {
@@ -339,7 +340,11 @@ const moveContentInPlaylist = (playlist, payload) => {
       const newItem = omit(testItem, attrsToOmit)
 
       newPlaylist = produce(playlist, (draft) => {
-        draft.modules[toModuleIndex].data.push(newItem)
+        if (isNumber(afterIndex) && afterIndex >= 0) {
+          draft.modules[toModuleIndex].data.splice(afterIndex + 1, 0, newItem)
+        } else {
+          draft.modules[toModuleIndex].data.push(newItem)
+        }
       })
     } else {
       notification({

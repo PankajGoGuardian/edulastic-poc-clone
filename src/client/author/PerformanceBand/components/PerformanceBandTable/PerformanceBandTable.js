@@ -297,7 +297,7 @@ export class PerformanceBandTable extends React.Component {
         parseInt(dataSource[key].from) + value <=
           parseInt(dataSource[key].to) ||
         parseInt(dataSource[key].from) + value >=
-          parseInt(dataSource[key - 1].from)
+          parseInt(dataSource[key - 1].from) - 1
       ) {
         return
       }
@@ -379,10 +379,8 @@ export class PerformanceBandTable extends React.Component {
 
   handleAdd = () => {
     const { dataSource } = this.state
-    const keyArray = []
-    for (let i = 0; i < dataSource.length; i++) {
-      keyArray.push(dataSource[i].key)
-    }
+    const keyArray = dataSource.map(item=> item.key )
+    const totalBands = dataSource.length
 
     const newData = {
       key: Math.max(...keyArray) + 1,
@@ -392,15 +390,21 @@ export class PerformanceBandTable extends React.Component {
       from: 0,
       to: 0,
     }
-
-    dataSource[dataSource.length - 1].to =
-      dataSource[dataSource.length - 1].from - 1
+    const withNewBandValues = dataSource.map((item, i)=> {
+      if(i === totalBands - 1){
+        return {
+          ...item,
+          to: item.from - 1
+        }
+      }
+      return item
+    })
 
     this.setState({
-      editingKey: dataSource[dataSource.length - 1].key,
-      isChangeState: true,
+      editingKey: withNewBandValues[totalBands - 1].key,
+      isChangeState: true,    
     })
-    this.props.setPerformanceBandData([...dataSource, newData])
+    this.props.setPerformanceBandData([...withNewBandValues, newData])
   }
 
   handleSave = (row) => {
@@ -411,7 +415,7 @@ export class PerformanceBandTable extends React.Component {
       ...item,
       ...row,
     })
-    newData[newData.length - 1].from = newData[newData.length - 2].to
+    newData[newData.length - 1].from = newData[newData.length - 2].to - 1
 
     this.setState({
       editingKey: -1,

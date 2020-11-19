@@ -32,6 +32,7 @@ import { districtAdminSaga } from '../../DistrictAdmin'
 import { schoolAdminSaga } from '../../SchoolAdmin'
 import { coursesSaga } from '../../Courses'
 import { classesSaga } from '../../Classes'
+import { groupsSaga } from '../../Groups'
 import folderSaga from './folder'
 import { interestedStandardsSaga } from '../../InterestedStandards'
 import { playlistSaga } from '../../Playlist'
@@ -87,6 +88,7 @@ const authorSagas = [
   schoolAdminSaga(),
   coursesSaga(),
   classesSaga(),
+  groupsSaga(),
   folderSaga(),
   playlistSaga(),
   playlistPageSaga(),

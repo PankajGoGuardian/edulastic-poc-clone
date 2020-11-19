@@ -56,6 +56,7 @@ import Group6101 from '../assets/keyboardButtons/6101.svg'
 import Group3181 from '../assets/keyboardButtons/3181.svg'
 import Group1030 from '../assets/keyboardButtons/1030.svg'
 import Group1043 from '../assets/keyboardButtons/1043.svg'
+import Group943 from '../assets/keyboardButtons/943.svg'
 
 import Path3512 from '../assets/units/Path3512.svg'
 import Path3530 from '../assets/units/Path3530.svg'
@@ -447,6 +448,15 @@ export const exponentBase = {
   numToMove: 2,
 }
 
+export const subscriptBase = {
+  handler: '{{}}_{}',
+  labelcy: 'super',
+  label: <CustomImage src={Group943} width={30} height={28} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 2,
+}
+
 export const sqrt = {
   handler: '\\sqrt',
   labelcy: 'sqrt',
@@ -586,11 +596,10 @@ export const tangent = {
 }
 
 export const arctangent = {
-  handler: '\\tan^{-1}\\left({}\\right)',
+  handler: '\\tan^{-1}',
   label: <CustomImage src={Group2243} width={39} height={12} />,
   types: ['all'],
   command: 'write',
-  numToMove: 1,
 }
 
 export const logSymbol = {
@@ -1564,7 +1573,7 @@ export const greek_o = {
   command: 'cmd',
 }
 
-export const piSymbole = {
+export const piSymbol = {
   handler: '\\pi',
   label: <CustomImage src={Path3437} width={15} height={13} />,
   types: ['all'],

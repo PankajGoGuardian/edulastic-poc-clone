@@ -134,7 +134,6 @@ describe(`${FileHelper.getSpecName(
       testLibraryPage.sidebar.clickOnAssignment()
       authorAssignmentPage.clickOnLCBbyTestId(testId)
       lcb.header.clickOnClose(true, false)
-      
     })
 
     before('> add new student in manage class', () => {
@@ -496,7 +495,7 @@ describe(`${FileHelper.getSpecName(
 
       lcb.selectCheckBoxByStudentName(students.stu3.name)
       lcb.clickOnMarkAsAbsent()
-
+      lcb.clickonQuestionsTab()
       lcb.header.clickOnClose(true, false)
       testLibraryPage.sidebar.clickOnAssignment()
       authorAssignmentPage.clickOnLCBbyTestId(testId)
@@ -505,7 +504,7 @@ describe(`${FileHelper.getSpecName(
       lcb.checkSelectAllCheckboxOfStudent()
       lcb.uncheckSelectAllCheckboxOfStudent()
       lcb.selectCheckBoxByStudentName(students.stu2.name)
-      lcb.clickOnRemove(false)
+      lcb.clickOnRemove(false, false, true)
       lcb.verifyStudentCardCount(2)
     })
 
@@ -514,15 +513,15 @@ describe(`${FileHelper.getSpecName(
       lcb.uncheckSelectAllCheckboxOfStudent()
       lcb.selectCheckBoxByStudentName(students.stu2.name)
       lcb.selectCheckBoxByStudentName(students.stu3.name)
-      lcb.clickOnRemove(false)
+      lcb.clickOnRemove(false, false, true)
       lcb.verifyStudentCardCount(2)
     })
-    it('> try removing absent student, should allow', () => {
+    it('> try removing absent student, should not allow', () => {
       lcb.checkSelectAllCheckboxOfStudent()
       lcb.uncheckSelectAllCheckboxOfStudent()
       lcb.selectCheckBoxByStudentName(students.stu3.name)
-      lcb.clickOnRemove()
-      lcb.verifyStudentCardCount(1)
+      lcb.clickOnRemove(false, false, true)
+      lcb.verifyStudentCardCount(2)
     })
     context('> add and remove the new student to assignment', () => {
       before('> add removed student back to class', () => {
@@ -546,7 +545,8 @@ describe(`${FileHelper.getSpecName(
 
         lcb.selectCheckBoxByStudentName(students.stu1.name)
         lcb.clickOnRemove()
-        lcb.verifySubmittedCount(1, 1)
+        lcb.verifySubmittedCount(1, 2)
+        lcb.verifyAbsentCount(1)
 
         lcb.header.clickOnExpressGraderTab()
         lcb.header.clickOnLCBTab()
@@ -565,7 +565,7 @@ describe(`${FileHelper.getSpecName(
           testId,
           className,
           1,
-          1,
+          2,
           false,
           teacherSide.IN_GRADING
         )

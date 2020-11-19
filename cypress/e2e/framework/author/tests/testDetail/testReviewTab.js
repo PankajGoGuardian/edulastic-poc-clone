@@ -172,13 +172,19 @@ export default class TestReviewTab {
       .contains(subject)
   }
 
-  verifyGrades = (grades) =>
+  verifyGrades = (grades) => {
+    if (grades.includes('Kindergarten'))
+      grades = Cypress._.union(grades, ['PreKindergarten'])
+    if (grades.includes('PreKindergarten'))
+      grades = Cypress._.union(grades, ['Kindergarten'])
     this.getTestGradeSelect()
       .find('.ant-select-selection__choice')
       .should('have.length', grades.length)
-      .each(($ele, i) => {
-        cy.wrap($ele).should('contain', grades[i])
-      })
+      .as('selected-grades')
+    grades.forEach((grade) => {
+      cy.get('@selected-grades').should('contain', grade)
+    })
+  }
 
   verifySubjects = (subjects) =>
     this.getTestSubjectSelect()

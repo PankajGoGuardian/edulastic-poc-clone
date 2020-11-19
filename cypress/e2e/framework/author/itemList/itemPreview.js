@@ -433,9 +433,6 @@ export default class PreviewItemPopup {
     this.verifyDiffOnPreview(difficulty)
     this.verifyStandardsOnPreview(standard)
     this.verifyTagsOnPreview(tags)
-    this.getEditOnPreview().should('not.have.attr', 'disabled')
-    this.getRemoveFromTestButton().should('exist')
-    this.getExpandOnPreview().should('exist')
   }
 
   verifyActionsButtonsOnPreview = (isDraftTest) => {

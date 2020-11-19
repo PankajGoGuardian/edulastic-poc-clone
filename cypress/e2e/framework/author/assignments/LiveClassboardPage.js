@@ -235,7 +235,11 @@ class LiveClassboardPage {
   }
 
   // REMOVE
-  clickOnRemove = (isAllow = true, isInProgress = false) => {
+  clickOnRemove = (
+    isAllow = true,
+    isInProgress = false,
+    isAssigmentStatusIsDone = false
+  ) => {
     cy.server()
     cy.route('PUT', '**/remove-students').as('removeStudents')
     this.clickOnMore().then(() => cy.get('[data-cy="removeStudents"]').click())
@@ -249,6 +253,8 @@ class LiveClassboardPage {
       cy.contains(
         isInProgress
           ? 'In progress students can not be removed'
+          : isAssigmentStatusIsDone
+          ? 'Cannot remove student(s) from a DONE assignment.'
           : 'You will not be able to remove selected student(s) as the status is graded'
       ).should('be.visible')
     }

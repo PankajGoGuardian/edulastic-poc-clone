@@ -284,11 +284,12 @@ const OPERATORS = [plusButton, minusButton, asterisk, divide]
 // keypad mode buttons
 
 const BASIC = [
-  equalSymbol,
+  ...OPERATORS,
   strictLess,
   strictGreater,
   parentheses,
   brackets,
+  fraction,
   mixedFraction,
   exponentBase,
   distance,

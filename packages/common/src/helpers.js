@@ -966,17 +966,15 @@ export const toggleIntercomDisplay = () => {
   }
 }
 
-export const hasMediaDevice = (callback, deviceKind) => {
+export const hasMediaDevice = async (deviceKind) => {
   let mediaDevices = navigator.mediaDevices
   if (!mediaDevices || !mediaDevices.enumerateDevices) {
-    callback(false)
-    return
+    return false
   }
 
-  mediaDevices.enumerateDevices().then((devices) => {
-    const hasMediaDevice = devices.some((device) => device.kind === deviceKind)
-    callback(hasMediaDevice)
-  })
+  const devices = await mediaDevices.enumerateDevices()
+
+  return devices.some((device) => device.kind === deviceKind)
 }
 
 /** A small utiltiy to help Resolve promises sequentially */

@@ -132,3 +132,14 @@ export const getMaxScoreFromCurrentItem = (state) => {
     0
   )
 }
+
+export const highlightsStudentReportSelector = createSelector(
+  userWorkSelector,
+  getItemSelector,
+  (state) => get(state, `[studentReport][testActivity]`, {}),
+  (userWork, item, testActivity) => {
+    const { passageId } = item
+    const { _id: testActivityId } = testActivity
+    return get(userWork, `[${passageId}][${testActivityId}].resourceId`, '')
+  }
+)

@@ -39,6 +39,7 @@ function Preview({
   isLCBView,
   questionActivity,
   userWork,
+  scractchPadUsed,
   t,
 }) {
   const rows = getRows(item, false)
@@ -105,7 +106,7 @@ function Preview({
         isLCBView={isLCBView}
         timeSpent={timeSpent}
         attachments={attachments}
-        userWork={userWork}
+        userWork={scractchPadUsed && userWork} // used to determine show student work button
         highlights={highlights}
         scratchpadDimensions={scratchpadDimensions}
         saveUserWork={() => {}}
@@ -461,7 +462,8 @@ class ClassQuestions extends Component {
           isExpressGrader={isExpressGrader}
           isLCBView={isLCBView}
           questionActivity={questionActivity}
-          userWork={scractchPadUsed && userWork} // used to determine show student work button
+          scractchPadUsed={scractchPadUsed}
+          userWork={userWork} // used to determine show student work button
           t={t}
         />
       )

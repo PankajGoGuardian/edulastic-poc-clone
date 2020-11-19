@@ -1589,7 +1589,10 @@ function* publishTestItemSaga({ payload }) {
             state: { isAuthoredNow: true },
           })
         )
-        return
+        return notification({
+          type: 'success',
+          msg: 'Item is saved in item bank',
+        })
       }
       if (redirectTestId) {
         yield delay(1500)

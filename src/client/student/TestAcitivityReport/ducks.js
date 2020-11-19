@@ -100,7 +100,9 @@ function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
     const passageData = {}
     for (const attachment of attachments) {
       const { data } = attachment
-      passageData[referrerId2] = data
+      passageData[referrerId2] = {
+        [referrerId]: data,
+      }
     }
     yield put({ type: SAVE_USER_WORK, payload: passageData })
   } catch (error) {

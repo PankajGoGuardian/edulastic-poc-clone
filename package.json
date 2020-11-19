@@ -14,6 +14,7 @@
     ]
   },
   "scripts": {
+    "testme": "no-op",
     "bump": "./bump.sh",
     "lint": "eslint src/**/*.js",
     "lint-fix": "eslint src/**/*.js --fix",

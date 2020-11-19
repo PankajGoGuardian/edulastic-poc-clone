@@ -20,7 +20,7 @@ export function browserPrefixToKey(prop, prefix) {
   return prefix ? `${prefix}${kebabToTitleCase(prop)}` : prop
 }
 
-export function getPrefix(prop) {
+export function getPrefix(prop = 'transform') {
   // Checking specifically for 'window.document' is for pseudo-browser server-side
   // environments that define 'window' as the global context.
   // E.g. React-rails (see https://github.com/reactjs/react-rails/pull/84)

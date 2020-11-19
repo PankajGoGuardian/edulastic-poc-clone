@@ -71,6 +71,7 @@ const PeerPerformance = ({
     analyseBy: 'score(%)',
     compareBy: role === 'teacher' ? 'groupId' : 'schoolId',
   })
+  const [chartFilter, setChartFilter] = useState({})
 
   useEffect(() => {
     setDdFilter({
@@ -78,8 +79,6 @@ const PeerPerformance = ({
       ...filters,
     })
   }, [filters])
-
-  const [chartFilter, setChartFilter] = useState({})
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -177,14 +176,14 @@ const PeerPerformance = ({
               >
                 <ControlDropDown
                   prefix="Analyze by"
-                  by={dropDownFormat.analyseByDropDownData[0]}
+                  by={ddfilter.analyseBy}
                   selectCB={updateAnalyseByCB}
                   data={dropDownFormat.analyseByDropDownData}
                 />
                 <ControlDropDown
                   prefix="Compare by"
                   style={{ marginLeft: 8 }}
-                  by={compareByDropDownData[0]}
+                  by={ddfilter.compareBy}
                   selectCB={updateCompareByCB}
                   data={compareByDropDownData}
                 />
@@ -247,6 +246,7 @@ const reportPropType = PropTypes.shape({
   districtAvg: PropTypes.number,
   districtAvgPerf: PropTypes.number,
   metricInfo: PropTypes.array,
+  studentGroupInfo: PropTypes.array,
 })
 
 PeerPerformance.propTypes = {

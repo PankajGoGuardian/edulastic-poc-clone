@@ -182,7 +182,7 @@ export const parseTrendData = (
         compareBy
       )
     ) {
-      dInfo[compareBy] = isEmpty(metricId) ? 'NA' : metricId
+      dInfo[compareBy] = isEmpty(metricId) || metricId === 'NA' ? '-' : metricId
     }
     return {
       tests,

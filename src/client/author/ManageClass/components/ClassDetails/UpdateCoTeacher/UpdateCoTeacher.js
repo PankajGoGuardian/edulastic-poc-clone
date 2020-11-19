@@ -1,4 +1,5 @@
 import { CustomModalStyled, EduButton } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import { IconClose } from '@edulastic/icons'
 import { Tooltip } from 'antd'
 import { get } from 'lodash'
@@ -24,7 +25,7 @@ const UpdateCoTeacher = ({
   updateCoTeacher,
 }) => {
   const primaryTeacherId =
-    userRole === 'teacher'
+    userRole === roleuser.TEACHER || userRole === roleuser.EDULASTIC_ADMIN
       ? selectedClass?.primaryTeacherId || selectedClass?.parent?.id
       : selectedClass?._source?.primaryTeacherId ||
         selectedClass?._source?.parent?.id
@@ -32,7 +33,10 @@ const UpdateCoTeacher = ({
   const getSelectedOwners = () => {
     let selectedOwners = []
     const { _source } = selectedClass
-    if (userRole === 'teacher') {
+    if (
+      userRole === roleuser.TEACHER ||
+      userRole === roleuser.EDULASTIC_ADMIN
+    ) {
       selectedOwners = selectedClass.owners
     } else {
       selectedOwners = _source.owners

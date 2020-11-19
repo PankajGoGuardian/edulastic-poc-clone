@@ -49,6 +49,7 @@ const SortableItem = sortableElement((props) => {
     handleTestsSort,
     isReview,
     urlHasUseThis,
+    isEditPage,
     summaryData,
     playlistMetrics,
     playlistClassList,
@@ -99,6 +100,7 @@ const SortableItem = sortableElement((props) => {
           customize={customize}
           handleTestsSort={handleTestSort}
           urlHasUseThis={urlHasUseThis}
+          isEditPage={isEditPage}
           isManageContentActive={isManageContentActive}
           summaryData={summaryData}
           playlistMetrics={playlistMetrics}

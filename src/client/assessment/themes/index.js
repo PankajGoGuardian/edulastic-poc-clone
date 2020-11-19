@@ -186,8 +186,9 @@ const AssessmentContainer = ({
           groupId,
         })
         history.push('/home/assignments')
-        handleChromeOsSEB()
-        window.location.href = sebUrl
+        if (!handleChromeOsSEB()) {
+          window.location.href = sebUrl
+        }
       }
     }
   })

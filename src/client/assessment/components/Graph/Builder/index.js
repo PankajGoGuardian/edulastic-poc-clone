@@ -1,6 +1,6 @@
 /* eslint-disable */
 import JXG from 'jsxgraph'
-import { isNumber } from 'lodash'
+import { isNumber, cloneDeep } from 'lodash'
 import getDefaultConfig, { CONSTANT } from './config'
 import * as Sentry from '@sentry/browser'
 import {
@@ -131,7 +131,7 @@ class Board {
 
     this.$board = JXG.JSXGraph.initBoard(
       id,
-      mergeParams(getDefaultConfig(), this.parameters)
+      mergeParams(cloneDeep(getDefaultConfig()), this.parameters)
     )
     this.$board.setZoom(1, 1)
 

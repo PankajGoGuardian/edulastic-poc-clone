@@ -496,6 +496,7 @@ class Container extends Component {
           item={item}
           isMultipart={item.multipartItem}
           isAnswerBtnVisible={false}
+          viewComponent="ItemDetail"
           page="itemAuthoring"
         />
       </PreviewContent>

@@ -96,7 +96,6 @@ const PerformanceByStandards = ({
   const [selectedStandards, setSelectedStandards] = useState([])
   const [selectedDomains, setSelectedDomains] = useState([])
 
-  const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0
   const isViewByStandards = viewBy === viewByMode.STANDARDS
 
   const selectedTest = testList.find(
@@ -255,7 +254,7 @@ const PerformanceByStandards = ({
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
                   prefix="View By"
-                  by={dropDownFormat.viewByDropDownData[0]}
+                  by={viewBy}
                   selectCB={handleViewByChange}
                   data={dropDownFormat.viewByDropDownData}
                 />
@@ -264,7 +263,7 @@ const PerformanceByStandards = ({
                 <ControlDropDown
                   style={{ marginLeft: 8 }}
                   prefix="Analyze By"
-                  by={dropDownFormat.analyzeByDropDownData[0]}
+                  by={analyzeBy}
                   selectCB={handleAnalyzeByChange}
                   data={dropDownFormat.analyzeByDropDownData}
                 />
@@ -308,7 +307,7 @@ const PerformanceByStandards = ({
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="Compare By"
-              by={filteredDropDownData[compareByIndex]}
+              by={compareBy}
               selectCB={handleCompareByChange}
               data={filteredDropDownData}
             />

@@ -12,7 +12,6 @@ import { getUser } from '../../../../../src/selectors/user'
 import {
   receiveClassListAction,
   getClassListSelector,
-  clearClassListAction,
 } from '../../../../../Classes/ducks'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
@@ -22,16 +21,14 @@ const ClassAutoComplete = ({
   classList,
   loading,
   loadClassList,
-  clearClassList,
   grade,
   subject,
   school: institutionId,
   selectedClass,
   selectCB,
-  type = 'class',
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
-  const [isFocus, setIsFocus] = useState(false)
+  const [searchResult, setSearchResult] = useState([])
 
   // build search query
   const query = useMemo(() => {
@@ -44,7 +41,7 @@ const ClassAutoComplete = ({
       districtId,
       search: {
         name: searchTerms.text,
-        type: [type],
+        type: ['class'],
       },
     }
     if (userRole === roleuser.TEACHER) {
@@ -70,7 +67,8 @@ const ClassAutoComplete = ({
     setSearchTerms({ ...searchTerms, text: value })
   }
   const onSelect = (key) => {
-    const value = classList[key]._source.name
+    const value = (searchTerms.text ? classList[key] : searchResult[key])
+      ._source.name
     setSearchTerms({ text: value, selectedText: value, selectedKey: key })
     selectCB({ key, title: value })
   }
@@ -81,21 +79,23 @@ const ClassAutoComplete = ({
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
-    setIsFocus(false)
-    clearClassList()
   }
-
-  // effects
-  useEffect(() => {
-    if (!isEmpty(selectedClass)) {
-      const { key, title } = selectedClass
-      setSearchTerms({ text: title, selectedText: title, selectedKey: key })
-    }
-  }, [selectedClass])
   const loadClassListDebounced = useCallback(
     debounce(loadClassList, 500, { trailing: true }),
     []
   )
+  const getDefaultClassList = () => {
+    if (isEmpty(searchResult)) {
+      loadClassListDebounced(query)
+    }
+  }
+
+  // effects
+  useEffect(() => {
+    if (isEmpty(searchResult)) {
+      setSearchResult(classList)
+    }
+  }, [classList])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadClassListDebounced(query)
@@ -103,36 +103,31 @@ const ClassAutoComplete = ({
   }, [searchTerms])
 
   // build dropdown data
-  const dropdownData = searchTerms.text
-    ? [
-        <AutoComplete.OptGroup
-          key="classList"
-          label={`${type === 'class' ? 'Classes' : 'Groups'} [Type to search]`}
-        >
-          {Object.values(classList).map((item) => (
-            <AutoComplete.Option key={item._id} title={item._source.name}>
-              {item._source.name}
-            </AutoComplete.Option>
-          ))}
-        </AutoComplete.OptGroup>,
-      ]
-    : []
+  const dropdownData = [
+    <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
+      {Object.values(searchTerms.text ? classList : searchResult).map(
+        (item) => (
+          <AutoComplete.Option key={item._id} title={item._source.name}>
+            {item._source.name}
+          </AutoComplete.Option>
+        )
+      )}
+    </AutoComplete.OptGroup>,
+  ]
 
   return (
     <AutoCompleteContainer>
       <AutoComplete
         getPopupContainer={(trigger) => trigger.parentNode}
-        placeholder={type === 'class' ? 'All Classes' : 'All Groups'}
+        placeholder="All Classes"
         value={searchTerms.text}
         onSearch={onSearch}
         dataSource={dropdownData}
         onSelect={onSelect}
         onBlur={onBlur}
-        onFocus={() => setIsFocus(true)}
+        onFocus={() => getDefaultClassList()}
       >
-        <Input
-          suffix={<Icon type={loading && isFocus ? 'loading' : 'search'} />}
-        />
+        <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
       </AutoComplete>
     </AutoCompleteContainer>
   )
@@ -146,7 +141,6 @@ export default connect(
   }),
   {
     loadClassList: receiveClassListAction,
-    clearClassList: clearClassListAction,
   }
 )(ClassAutoComplete)
 

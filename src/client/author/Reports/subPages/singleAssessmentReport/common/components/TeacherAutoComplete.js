@@ -16,6 +16,16 @@ import {
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
+const transformTeacherList = (list) => {
+  return list.map((t) => ({
+    ...t,
+    name: [t.firstName, t.middleName, t.lastName]
+      .filter((n) => n)
+      .join(' ')
+      .trim(),
+  }))
+}
+
 const TeacherAutoComplete = ({
   userOrgData,
   teacherList: teacherListRaw,
@@ -26,14 +36,9 @@ const TeacherAutoComplete = ({
   selectCB,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const [searchResult, setSearchResult] = useState([])
 
-  const teacherList = teacherListRaw.map((t) => ({
-    ...t,
-    name: [t.firstName, t.middleName, t.lastName]
-      .filter((n) => n)
-      .join(' ')
-      .trim(),
-  }))
+  const teacherList = transformTeacherList(teacherListRaw)
 
   // build search query
   const query = useMemo(() => {
@@ -57,7 +62,9 @@ const TeacherAutoComplete = ({
     setSearchTerms({ ...searchTerms, text: value })
   }
   const onSelect = (key) => {
-    const value = teacherList.find((s) => s._id === key)?.name
+    const value = (searchTerms.text ? teacherList : searchResult).find(
+      (s) => s._id === key
+    )?.name
     setSearchTerms({ text: value, selectedText: value, selectedKey: key })
     selectCB({ key, title: value })
   }
@@ -69,18 +76,22 @@ const TeacherAutoComplete = ({
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
   }
-
-  // effects
-  useEffect(() => {
-    if (!isEmpty(selectedTeacherId)) {
-      const { _id, name } = teacherList.find((t) => t._id === selectedTeacherId)
-      setSearchTerms({ text: name, selectedText: name, selectedKey: _id })
-    }
-  }, [selectedTeacherId])
   const loadTeacherListDebounced = useCallback(
     debounce(loadTeacherList, 500, { trailing: true }),
     []
   )
+  const getDefaultTeacherList = () => {
+    if (isEmpty(searchResult)) {
+      loadTeacherListDebounced(query)
+    }
+  }
+
+  // effects
+  useEffect(() => {
+    if (isEmpty(searchResult)) {
+      setSearchResult(transformTeacherList(teacherListRaw))
+    }
+  }, [teacherListRaw])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadTeacherListDebounced(query)
@@ -88,20 +99,15 @@ const TeacherAutoComplete = ({
   }, [searchTerms])
 
   // build dropdown data
-  const dropdownData = searchTerms.text
-    ? [
-        <AutoComplete.OptGroup
-          key="teacherList"
-          label="Teachers [Type to search]"
-        >
-          {teacherList.map((item) => (
-            <AutoComplete.Option key={item._id} title={item.name}>
-              {item.name}
-            </AutoComplete.Option>
-          ))}
-        </AutoComplete.OptGroup>,
-      ]
-    : []
+  const dropdownData = [
+    <AutoComplete.OptGroup key="teacherList" label="Teachers [Type to search]">
+      {(searchTerms.text ? teacherList : searchResult).map((item) => (
+        <AutoComplete.Option key={item._id} title={item.name}>
+          {item.name}
+        </AutoComplete.Option>
+      ))}
+    </AutoComplete.OptGroup>,
+  ]
 
   return (
     <AutoCompleteContainer>
@@ -113,6 +119,7 @@ const TeacherAutoComplete = ({
         dataSource={dropdownData}
         onSelect={onSelect}
         onBlur={onBlur}
+        onFocus={() => getDefaultTeacherList()}
       >
         <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
       </AutoComplete>

@@ -40,6 +40,7 @@ import { districtAdminReducer } from '../../DistrictAdmin'
 import { schoolAdminReducer } from '../../SchoolAdmin'
 import { coursesReducer } from '../../Courses'
 import { classesReducer } from '../../Classes'
+import { groupsReducer } from '../../Groups'
 import folder from './folder'
 import { interestedStandardsReducer } from '../../InterestedStandards'
 import { playlists } from '../../Playlist'
@@ -104,6 +105,7 @@ const authorReducers = {
   schoolAdminReducer,
   coursesReducer,
   classesReducer,
+  groupsReducer,
   folder,
   playlist,
   playlists,

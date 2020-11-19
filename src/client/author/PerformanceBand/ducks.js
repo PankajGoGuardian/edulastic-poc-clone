@@ -90,10 +90,10 @@ export const getPerformanceBandList = createSelector(
           name: 'Proficient',
           aboveOrAtStandard: true,
           from: 100,
-          to: 70,
+          to: 71,
           key: 0,
         },
-        { name: 'Basic', aboveOrAtStandard: true, from: 70, to: 50, key: 1 },
+        { name: 'Basic', aboveOrAtStandard: true, from: 70, to: 51, key: 1 },
         {
           name: 'Below Basic',
           aboveOrAtStandard: true,

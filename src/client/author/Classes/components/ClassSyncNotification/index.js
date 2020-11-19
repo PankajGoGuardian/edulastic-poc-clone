@@ -63,9 +63,9 @@ const ClassSyncNotificationListener = ({
     [user?._id]
   )
 
-  const deleteNotificationDocument = (docId) => {
+  const deleteNotificationDocument = (docId, collectionName) => {
     Fbs.db
-      .collection(firestoreBulkActionCollection)
+      .collection(collectionName)
       .doc(docId)
       .delete()
       .catch((err) => console.error(err))
@@ -117,7 +117,7 @@ const ClassSyncNotificationListener = ({
      */
     if (e?.target?.tagName.toLowerCase() === 'a') {
       closeFirebaseNotification(docId)
-      deleteNotificationDocument(docId)
+      deleteNotificationDocument(docId, firestoreBulkActionCollection)
     }
   }
 
@@ -137,9 +137,13 @@ const ClassSyncNotificationListener = ({
   useEffect(() => {
     uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {
       const { status, message, success = false } = doc
-      if (status === 'completed') {
+      if (status === 'completed' && !notificationIds.includes(doc.__id)) {
         notification({ type: success ? 'success' : 'error', msg: message })
-        deleteNotificationDocument(doc.__id)
+        setNotificationIds([...notificationIds, doc.__id])
+        deleteNotificationDocument(
+          doc.__id,
+          firestoreGoogleGradesSyncStatusCollection
+        )
       }
     })
   }, [gradesSyncNotifications])
@@ -174,7 +178,10 @@ const ClassSyncNotificationListener = ({
                 notificationPosition: 'bottomRight',
                 notificationKey: doc.__id,
                 onCloseNotification: () => {
-                  deleteNotificationDocument(doc.__id)
+                  deleteNotificationDocument(
+                    doc.__id,
+                    firestoreBulkActionCollection
+                  )
                 },
                 onButtonClick: (e) => {
                   onNotificationClick(e, doc.__id)
@@ -188,7 +195,7 @@ const ClassSyncNotificationListener = ({
 
           if (statusCode !== 200) {
             // if status is initiated and we are displaying, delete the notification document from firebase
-            deleteNotificationDocument(doc.__id)
+            deleteNotificationDocument(doc.__id, firestoreBulkActionCollection)
           }
           setBulkActionStatus(false)
         }

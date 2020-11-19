@@ -46,6 +46,7 @@ import {
 } from '../../../../TestPage/components/AddItems/ducks'
 import {
   getTestSelector,
+  setNextPreviewItemAction,
   setTestDataAndUpdateAction,
   updateTestAndNavigateAction,
 } from '../../../../TestPage/ducks'
@@ -322,6 +323,7 @@ class PreviewModal extends React.Component {
       item,
       setTestItems,
       page,
+      setNextPreviewItem,
     } = this.props
 
     if (page === 'itemList') {
@@ -343,11 +345,27 @@ class PreviewModal extends React.Component {
       setDataAndSave({ addToTest: true, item })
       notification({ type: 'success', messageKey: 'itemAddedTest' })
     } else {
+      if (page === 'review') {
+        const testItems = test.itemGroups.flatMap((group) => group.items || [])
+        let itemFound = false
+        for (const ele of testItems) {
+          if (itemFound) {
+            setNextPreviewItem(ele._id)
+            break
+          }
+          if (ele._id === item._id) {
+            itemFound = true
+          }
+        }
+      }
       keys = (keys || []).filter((key) => key !== item?._id)
       setDataAndSave({ addToTest: false, item: { _id: item?._id } })
       notification({ type: 'success', messageKey: 'itemRemovedTest' })
     }
     setTestItems(keys)
+    if (page === 'review' && keys.length === 0) {
+      this.closeModal()
+    }
   }
 
   get isAddOrRemove() {
@@ -890,6 +908,7 @@ const enhance = compose(
       duplicateTestItem: duplicateTestItemPreviewRequestAction,
       deleteItem: deleteItemAction,
       approveOrRejectSingleItem: approveOrRejectSingleItemAction,
+      setNextPreviewItem: setNextPreviewItemAction,
     }
   )
 )

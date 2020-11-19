@@ -162,6 +162,7 @@ const TestPageHeader = ({
   isCurator,
   hasCollectionAccess,
   authorQuestionsById,
+  isUpdatingTestForRegrade,
 }) => {
   let navButtons =
     buttons ||
@@ -622,7 +623,7 @@ const TestPageHeader = ({
                   title="Regrade Test"
                   data-cy="publish"
                   onClick={handleRegrade}
-                  disabled={disableButtons}
+                  disabled={disableButtons || isUpdatingTestForRegrade}
                 >
                   REGRADE
                 </EduButton>
@@ -778,6 +779,7 @@ const enhance = compose(
       testItems: getTestItemsSelector(state),
       isCurator: getIsCurator(state),
       authorQuestionsById: state.authorQuestions.byId,
+      isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
     }),
     {
       publishForRegrade: publishForRegradeAction,

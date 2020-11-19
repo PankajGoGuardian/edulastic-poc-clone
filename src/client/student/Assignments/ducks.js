@@ -2,7 +2,7 @@ import {
   createAction,
   createSelector as createSelectorator,
 } from 'redux-starter-kit'
-import { takeLatest, put, call, all, select } from 'redux-saga/effects'
+import { takeLatest, put, call, all, select, take } from 'redux-saga/effects'
 import { values, groupBy, last, partial, maxBy as _maxBy, sortBy } from 'lodash'
 import { createSelector } from 'reselect'
 import { normalize } from 'normalizr'
@@ -43,6 +43,7 @@ import {
   setConfirmationForTimedAssessmentAction,
   setIsActivityCreatingAction,
   utaStartTimeUpdateRequired,
+  setShowRetakeModalAction,
 } from '../sharedDucks/AssignmentModule/ducks'
 
 import {
@@ -75,6 +76,7 @@ export const LAUNCH_ASSIGNMENT_FROM_LINK =
   '[studentAssignemnts] launch assignment from link'
 export const REDIRECT_TO_DASHBOARD =
   '[studentAssignments] redirect to dashboard'
+export const RETAKE_MODAL_RESPONSE = '[assessment] retake modal response'
 
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA)
@@ -87,6 +89,7 @@ export const launchAssignmentFromLinkAction = createAction(
   LAUNCH_ASSIGNMENT_FROM_LINK
 )
 export const redirectToDashboardAction = createAction(REDIRECT_TO_DASHBOARD)
+export const retakeModalResponseAction = createAction(RETAKE_MODAL_RESPONSE)
 
 const getAssignmentClassId = (assignment, groupId, classIds) => {
   if (groupId) {
@@ -232,6 +235,10 @@ export const assignmentIdsByTestIdSelector = createSelector(
 
 export const filterSelector = (state) => state.studentAssignment.filter
 export const stateSelector = (state) => state.studentAssignment
+export const getShowRetakeModalSelector = createSelector(
+  stateSelector,
+  (state) => state.showRetakeModal
+)
 
 const getAssignmentClassStatus = (assignment, classId) => {
   const statusMap = {
@@ -564,8 +571,9 @@ function* startAssignment({ payload }) {
         groupId: classId,
       })
       yield put(push(`/home/assignments`))
-      handleChromeOsSEB()
-      yield call(redirectToUrl(sebUrl))
+      if (!handleChromeOsSEB()) {
+        yield call(redirectToUrl(sebUrl))
+      }
       return
     }
 
@@ -879,18 +887,26 @@ function* launchAssignment({ payload }) {
         instruction,
         safeBrowser = false,
       } = assignment
+      const assignmentClass = assignment.class.filter(
+        (c) =>
+          c.redirect !== true &&
+          c._id === groupId &&
+          (!c.students.length ||
+            (c.students.length && c.students.includes(userId)))
+      )
       if (lastActivity && lastActivity.status === 0) {
         if (safeBrowser && !isSEB()) {
           yield put(push(`/home/assignments`))
-          handleChromeOsSEB()
-          const sebUrl = getSebUrl({
-            testId,
-            testType,
-            testActivityId: lastActivity._id,
-            assignmentId,
-            groupId,
-          })
-          yield call(redirectToUrl, sebUrl)
+          if (!handleChromeOsSEB()) {
+            const sebUrl = getSebUrl({
+              testId,
+              testType,
+              testActivityId: lastActivity._id,
+              assignmentId,
+              groupId,
+            })
+            yield call(redirectToUrl, sebUrl)
+          }
         } else {
           yield put(
             resumeAssignmentAction({
@@ -904,8 +920,8 @@ function* launchAssignment({ payload }) {
         }
       } else {
         let maxAttempt
-        if (assignment.maxAttempts) {
-          maxAttempt = assignment.maxAttempts
+        if (assignmentClass[0].maxAttempts) {
+          maxAttempt = assignmentClass[0].maxAttempts
         } else {
           const test = yield call(testsApi.getByIdMinimal, testId)
           maxAttempt = test.maxAttempts
@@ -916,9 +932,18 @@ function* launchAssignment({ payload }) {
           )
         )
         if (
-          maxAttempt > attempts.length &&
+          maxAttempt > attempts.length ||
           lastActivity.status === testActivityStatus.NOT_STARTED
         ) {
+          if (!resume && attempts.length > 0) {
+            yield put(setShowRetakeModalAction(true))
+            const { payload: res } = yield take(RETAKE_MODAL_RESPONSE)
+            yield put(setShowRetakeModalAction(false))
+            if (!res) {
+              yield put(push(`/home/grades`))
+              return
+            }
+          }
           if (!resume && timedAssignment) {
             yield put(setConfirmationForTimedAssessmentAction(assignment))
             return

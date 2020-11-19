@@ -39,8 +39,14 @@ const SubHeader = ({
   const totalStudent = studentCount < 10 ? `0${studentCount}` : studentCount
 
   const primaryTeacher = owners
-    .filter((owner) => owner.id === primaryTeacherId)
-    .map((owner) => owner.name)
+    ? owners
+        .filter((owner) => owner.id === primaryTeacherId)
+        .map((owner) => owner.name)
+    : []
+
+  const formatPrimaryTeacher = primaryTeacher.map((teacher) =>
+    teacher.split(', ').reverse().join(' ')
+  )
 
   const coTeachers = owners
     ? owners
@@ -48,8 +54,12 @@ const SubHeader = ({
         .map((owner) => owner.name)
     : []
 
-  const teacher = coTeachers.slice(0, 1)
-  const otherTeachers = coTeachers.slice(1, lastTeacher)
+  const formatCoteacherNames = coTeachers.map((coteacher) =>
+    coteacher.split(', ').reverse().join(' ')
+  )
+
+  const teacher = formatCoteacherNames.slice(0, 3).join(', ')
+  const otherTeachers = formatCoteacherNames.slice(3, lastTeacher)
   const otherTeacherNames = otherTeachers.join(', ')
 
   return (
@@ -63,11 +73,11 @@ const SubHeader = ({
             TOTAL STUDENTS <span>{totalStudent || 0}</span>
           </Studentscount>
           {primaryTeacher && (
-            <CoTeacher lg={6} span={24}>
-              TEACHER <span>{primaryTeacher}</span>
+            <CoTeacher lg={12} span={24}>
+              TEACHER <span>{formatPrimaryTeacher}</span>
             </CoTeacher>
           )}
-          <Col lg={6} span={24}>
+          <Col lg={24} span={24}>
             {coTeachers && coTeachers.length ? (
               <FeaturesSwitch
                 inputFeatures="addCoTeacher"

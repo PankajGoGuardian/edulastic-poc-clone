@@ -392,7 +392,6 @@ class FeedbackRight extends Component {
     const _maxScore = rubricMaxScore || maxScore
 
 
-    console.log(activity,"==activity")
     const { studentResponseLoading, expressGrader } = this.context
     return (
       <StyledCardTwo

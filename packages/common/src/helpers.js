@@ -6,7 +6,20 @@ import { fileApi } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
 import AppConfig from '../../../src/app-config'
-import { getValidQuestionsScore, isFirstUnscored, isPracticeUsage } from '../../../src/client/author/ItemDetail/Transformer'
+import {
+  getValidQuestionsScore,
+  isPracticeUsage,
+} from '../../../src/client/author/ItemDetail/Transformer'
+
+export function useLayoutEffectDebounced(func, values, time) {
+  useLayoutEffect(() => {
+    let db = setTimeout(() => {
+      func()
+    }, time)
+
+    return () => clearTimeout(db)
+  }, values)
+}
 
 export const isSEB = () => window.navigator.userAgent.includes('SEB')
 
@@ -500,10 +513,8 @@ const getPoints = (item) => {
   const questions = get(item, ['data', 'questions'], []);
   if (item.itemLevelScoring && !isNaN(item.itemLevelScore)) {
     const practiceUsage = isPracticeUsage(questions)
-    if(isFirstUnscored(questions)){
-      return 0;
-    }else if(practiceUsage){
-      return getValidQuestionsScore(questions) 
+    if (practiceUsage) {
+      return 0
     }
     return item.itemLevelScore
   }

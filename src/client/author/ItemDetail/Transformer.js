@@ -31,11 +31,6 @@ export const isPracticeUsage = (questions = []) => {
   return questions.some(question=> get(question, 'validation.unscored', false))
 }
 
-export const isFirstUnscored =  (questions = []) => {
-  if(!Array.isArray(questions)) return false
-  return get(questions, '0.validation.unscored', false)
-}
-
 export const getValidQuestionsScore = (questions = []) => {
   if (!Array.isArray(questions)) {
     return 0

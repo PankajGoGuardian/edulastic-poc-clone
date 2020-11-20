@@ -1217,6 +1217,7 @@ class Setting extends Component {
                         <Title>Student Player Skin</Title>
                         <Body smallSize={isSmallSize}>
                           <SelectInputStyled
+                            data-cy="playerSkinType"
                             value={
                               playerSkinType ===
                               playerSkinTypes.edulastic.toLowerCase()

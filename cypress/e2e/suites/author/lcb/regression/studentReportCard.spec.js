@@ -151,7 +151,7 @@ describe(`${FileHelper.getSpecName(
   })
 
   before('> login as srudent ans attempt test', () => {
-    students.forEach((st, index) => {
+    students.slice(0,1).forEach((st, index) => {
       const { attempt } = attemptData[index]
       studentTestPage.attemptAssignment(
         students[index].email,
@@ -171,7 +171,7 @@ describe(`${FileHelper.getSpecName(
     Cypress._.keys(manualGradeItems).forEach((questNo) => {
       lcb.clickonQuestionsTab()
       lcb.questionResponsePage.selectQuestion(questNo)
-      students.forEach((student, studentindex) => {
+      students.slice(0,1).forEach((student, studentindex) => {
         const score = lcb.questionResponsePage.getScoreByAttempt(
           questionTypeMap[questNo].attemptData,
           questionTypeMap[questNo].points,

@@ -173,7 +173,7 @@ class ClassList extends React.Component {
   }
 
   handleSelectAll = (checked) => {
-    const { selectClass, classList, assignedClassesById } = this.props
+    const { selectClass, classList, assignedClassesById, testType } = this.props
     const { filterClassIds, classType } = this.state
     let filterclassList = []
     if (checked) {
@@ -181,7 +181,7 @@ class ClassList extends React.Component {
         .filter(
           (item) =>
             (classType === 'all' || item.type === classType) &&
-            !assignedClassesById[item._id]
+            !assignedClassesById[testType][item._id]
         )
         .map((item) => item._id)
       selectClass('class', selectedClasses, classList)
@@ -210,6 +210,7 @@ class ClassList extends React.Component {
       selectedClasses,
       tagList,
       assignedClassesById,
+      testType,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
     const tableData = classList
@@ -235,7 +236,7 @@ class ClassList extends React.Component {
       },
       onSelectAll: this.handleSelectAll,
       getCheckboxProps: (record) => {
-        if (record && record.key && assignedClassesById[record.key]) {
+        if (record && record.key && assignedClassesById[testType][record.key]) {
           return {
             disabled: true,
           }
@@ -456,7 +457,11 @@ class ClassList extends React.Component {
               value={filterClassIds}
             >
               {classList.map(({ name, _id }) => (
-                <Select.Option key={name} value={_id}>
+                <Select.Option
+                  key={name}
+                  value={_id}
+                  disabled={assignedClassesById[testType][_id]}
+                >
                   {name}
                 </Select.Option>
               ))}

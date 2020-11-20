@@ -25,7 +25,10 @@ import {
 } from '../../../sharedDucks/groups'
 import ListHeader from '../../../src/components/common/ListHeader'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
-import { saveAssignmentAction } from '../../../TestPage/components/Assign/ducks'
+import {
+  loadAssignmentsAction,
+  saveAssignmentAction,
+} from '../../../TestPage/components/Assign/ducks'
 import {
   getDefaultTestSettingsAction,
   getTestSelector,
@@ -145,8 +148,9 @@ class AssignTest extends React.Component {
   }
 
   componentWillUnmount() {
-    const { clearAssignmentSettings } = this.props
+    const { clearAssignmentSettings, setAssignments } = this.props
     clearAssignmentSettings()
+    setAssignments([])
   }
 
   handleAssign = () => {
@@ -395,6 +399,7 @@ const enhance = compose(
       loadClassList: receiveClassListAction,
       fetchStudents: fetchGroupMembersAction,
       fetchAssignments: fetchAssignmentsAction,
+      setAssignments: loadAssignmentsAction,
       saveAssignment: saveAssignmentAction,
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,

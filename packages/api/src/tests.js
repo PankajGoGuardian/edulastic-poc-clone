@@ -137,6 +137,14 @@ const deleteTest = (testId) =>
     })
     .then((result) => result.data)
 
+const getTestIdFromVersionId = (versionId) =>
+  api
+    .callApi({
+      url: `${prefix}/version/${versionId}`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
 export default {
   getAll,
   getById,
@@ -152,4 +160,5 @@ export default {
   getDefaultTestSettings,
   deleteAssignments,
   deleteTest,
+  getTestIdFromVersionId,
 }

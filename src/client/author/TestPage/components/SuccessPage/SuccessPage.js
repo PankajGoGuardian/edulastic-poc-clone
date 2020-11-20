@@ -238,10 +238,10 @@ class SuccessPage extends React.Component {
     let shareUrl = ''
     if (this.getHighPriorityShared === 'Public' && !isPlaylist) {
       shareUrl = `${window.location.origin}/public/view-test/${_id}`
+    } else if (isPlaylist) {
+      shareUrl = `${window.location.origin}/author/playlists/${_id}`
     } else {
-      shareUrl = `${window.location.origin}/author/${
-        isPlaylist ? 'playlists' : 'tests/tab/review/id'
-      }/${_id}`
+      shareUrl = `${window.location.origin}/author/tests/verid/${test?.versionId}`
     }
     const currentClass = (assignment.class && assignment.class[0]) || {}
     const assignmentStatus =
@@ -354,6 +354,7 @@ class SuccessPage extends React.Component {
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}
+          testVersionId={test?.versionId}
         />
         <ListHeader
           title={(_module && _module.title) || title}

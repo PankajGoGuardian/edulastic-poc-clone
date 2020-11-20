@@ -47,6 +47,7 @@ import {
   updateLastUsedCollectionListAction,
   removeTestEntityAction,
   setEditEnableAction,
+  getTestIdFromVersionIdAction,
 } from '../../ducks'
 import {
   clearSelectedItemsAction,
@@ -178,7 +179,12 @@ class Container extends PureComponent {
       fetchAssignmentsByTest,
       setEditEnable,
       isOrganizationDA,
+      isVersionFlow,
+      getTestIdFromVersionId,
     } = this.props
+
+    const { versionId, id } = match.params
+
     if (userRole !== roleuser.STUDENT) {
       const self = this
       const { showCancelButton = false, editAssigned = false } =
@@ -204,10 +210,12 @@ class Container extends PureComponent {
           notification({ type: 'success', msg })
         }
       }
-
-      if (match.params.id && match.params.id != 'undefined') {
+      if (isVersionFlow && versionId && versionId != 'undefined') {
         this.setState({ testLoaded: false })
-        receiveTestById(match.params.id, true, editAssigned)
+        getTestIdFromVersionId(versionId)
+      } else if (id && id != 'undefined') {
+        this.setState({ testLoaded: false })
+        receiveTestById(id, true, editAssigned)
       } else if (!_location?.state?.persistStore) {
         // currently creating test do nothing
         this.gotoTab('description')
@@ -233,13 +241,13 @@ class Container extends PureComponent {
       }
 
       if (editAssigned) {
-        setRegradeOldId(match.params.id)
+        setRegradeOldId(id)
       } else {
         setRegradeOldId('')
       }
       if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
     } else {
-      fetchAssignmentsByTest({ testId: match.params.id })
+      fetchAssignmentsByTest({ testId: id })
     }
   }
 
@@ -1003,6 +1011,7 @@ class Container extends PureComponent {
       subjects,
       itemGroups,
       isDocBased,
+      versionId,
     } = test
     const hasCollectionAccess = allowContentEditCheck(
       test.collections,
@@ -1069,6 +1078,7 @@ class Container extends PureComponent {
           shareLabel="TEST URL"
           isVisible={showShareModal}
           testId={testId}
+          testVersionId={versionId}
           hasPremiumQuestion={hasPremiumQuestion}
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
@@ -1256,6 +1266,7 @@ const enhance = compose(
       resumeAssignment: resumeAssignmentAction,
       setEditEnable: setEditEnableAction,
       resetPageState: resetPageStateAction,
+      getTestIdFromVersionId: getTestIdFromVersionIdAction,
     }
   )
 )

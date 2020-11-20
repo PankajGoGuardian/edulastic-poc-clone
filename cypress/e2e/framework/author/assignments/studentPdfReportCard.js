@@ -410,7 +410,7 @@ export default class StudentsReportCard {
 
       standardTableDataByStudent[
         `${standard}`
-      ].score = `${standardTableDataByStudent[standard].obtain}/${standardTableDataByStudent[standard].max}`
+      ].score = `${standardTableDataByStudent[standard].obtain} / ${standardTableDataByStudent[standard].max}`
 
       const perf =
         (standardTableDataByStudent[`${standard}`].obtain /
@@ -418,7 +418,7 @@ export default class StudentsReportCard {
         100
 
       standardTableDataByStudent[`${standard}`].standardPerf =
-        perf % 1 !== 0 ? `${perf.toFixed(2)}%` : `${parseInt(perf, 10)}%`
+        perf % 1 !== 0 ? `${perf.toFixed(2)}` : `${parseInt(perf, 10)}`
 
       standardTableDataByStudent[
         `${standard}`

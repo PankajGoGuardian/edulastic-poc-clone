@@ -1386,6 +1386,7 @@ class ClassBoard extends Component {
                           )
                         }}
                         isPresentationMode={isPresentationMode}
+                        isCliUser={isCliUser}
                       />
                       <GraphWrapper style={{ width: '100%', display: 'flex' }}>
                         <BarGraph

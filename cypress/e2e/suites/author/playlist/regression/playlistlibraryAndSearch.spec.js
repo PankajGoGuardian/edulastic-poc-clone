@@ -147,6 +147,8 @@ describe(`${FileHelper.getSpecName(
           })
       })
 
+      /*   
+      Invalid scenario confirmed by pankaj
       it("> search by 'grade'", () => {
         metadata
           .slice(0, 2)
@@ -162,6 +164,7 @@ describe(`${FileHelper.getSpecName(
               .should('have.length', 2)
           })
       })
+      */
 
       it("> search by 'id'", () => {
         metadata
@@ -333,7 +336,7 @@ describe(`${FileHelper.getSpecName(
       })
 
       it("> using 'grades'", () => {
-        const randomGrade = _.shuffle(_.values(grades).slice(0, 11))[0]
+        const randomGrade = _.shuffle(_.values(grades).slice(0, 14))[0]
         const standards = { grade: [randomGrade] }
         playlistlibraryPage.searchFilter.setFilters({ standards }, false)
 
@@ -371,7 +374,7 @@ describe(`${FileHelper.getSpecName(
       })
 
       it("> using 'grades+subjects'", () => {
-        const randomGrade = _.shuffle(_.values(grades).slice(0, 11))[0]
+        const randomGrade = _.shuffle(_.values(grades).slice(0, 14))[0]
         const standards = { subject: subjects.MATH, grade: [randomGrade] }
         playlistlibraryPage.searchFilter.setFilters({ standards }, false)
 

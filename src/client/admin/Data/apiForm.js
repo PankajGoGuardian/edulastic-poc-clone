@@ -350,8 +350,6 @@ export const apiForms = [
   {
     id: 'archive-unarchive-classes',
     name: 'Archive / Unarchive Classes',
-    endPoint: 'group/archive-tool',
-    method: 'post',
     fields: [
       {
         name: 'groupIds',

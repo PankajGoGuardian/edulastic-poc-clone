@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Select } from 'antd'
 import { notification } from '@edulastic/common'
-import { adminApi, enrollmentApi } from '@edulastic/api'
+import { adminApi, groupApi, enrollmentApi } from '@edulastic/api'
 
 import { flatten } from 'mathjs/src/utils/array'
 import { regexJs } from '@edulastic/constants'
@@ -15,6 +15,7 @@ import ApproveOrganisation from '../Components/ApproveOrganisation'
 import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
 
 const CREATE_ADMIN = 'create-admin'
+const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
 const ACTIVATE_DEACTIVATE_USER = 'activate-deactivate-user'
 const APPROVE_SCHOOL_DISTRICT = 'approve-school-district'
 const API_OPTIONS = {
@@ -57,7 +58,16 @@ const ApiForm = () => {
     if (id === API_OPTIONS.manageClass) {
       return handleClassSearch(data, sectionId)
     }
-    if (option.id === CREATE_ADMIN) {
+    if (option.id === ARCHIVE_UNARCHIVE_CLASSES) {
+      groupApi
+        .archiveUnarchiveClasses({
+          archive: data.archive,
+          groupIds: data.groupIds,
+        })
+        .then((res) => {
+          notification({ type: res?.type || 'success', msg: res?.message })
+        })
+    } else if (option.id === CREATE_ADMIN) {
       adminApi.searchUpdateDistrict({ id: data.districtId }).then((res) => {
         if (res?.data?.length) {
           setDistrictData(res.data[0])

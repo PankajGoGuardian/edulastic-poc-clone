@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import { get, keyBy } from 'lodash'
+import { get, groupBy, keyBy } from 'lodash'
 import { createSelector } from 'reselect'
 import { createReducer, createAction } from 'redux-starter-kit'
 import {
@@ -43,15 +43,22 @@ export const getTestSelector = createSelector(
 
 export const getAssignedClassesByIdSelector = createSelector(
   getAssignmentsSelector,
-  getTestSelector,
-  (assignments, test) => {
-    const assignedClasses = assignments
-      .flatMap((item) => get(item, 'class', []))
-      .filter((item) => item.students && item.students.length === 0)
-    if (test.testType === testConst.type.COMMON) {
-      return keyBy(assignedClasses, '_id')
+  (assignments) => {
+    const assignmentsByTestType = groupBy(assignments, 'testType')
+    const { COMMON, ASSESSMENT, PRACTICE, TESTLET } = testConst.type
+    const assignedClassesByTestType = {
+      [COMMON]: {},
+      [ASSESSMENT]: {},
+      [PRACTICE]: {},
+      [TESTLET]: {},
     }
-    return {}
+    for (const [key, value] of Object.entries(assignmentsByTestType)) {
+      const assignedClasses = value
+        .flatMap((item) => get(item, 'class', []))
+        .filter((item) => item.students && item.students.length === 0)
+      assignedClassesByTestType[key] = keyBy(assignedClasses, '_id') || {}
+    }
+    return assignedClassesByTestType
   }
 )
 

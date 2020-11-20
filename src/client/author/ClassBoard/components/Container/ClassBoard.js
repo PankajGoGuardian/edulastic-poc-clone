@@ -5,6 +5,7 @@ import {
   notification,
   EduSwitchStyled,
   LCBScrollContext,
+  BackTop,
 } from '@edulastic/common'
 import {
   IconAddStudents,
@@ -149,6 +150,7 @@ class ClassBoard extends Component {
       selectedNotStartedStudents: [],
       showScoreImporvement: false,
       hasStickyHeader: false,
+      toggleBackTopIcon: false,
     }
   }
 
@@ -812,6 +814,15 @@ class ClassBoard extends Component {
     }
   }
 
+  backTopScroll = () => {
+    const elementTop = this.MainContentWrapperRef?.current?.scrollTop || 0
+    if (elementTop < 100) {
+      this.setState({ toggleBackTopIcon: false })
+    } else {
+      this.setState({ toggleBackTopIcon: true })
+    }
+  }
+
   render() {
     const {
       gradebook,
@@ -866,6 +877,7 @@ class ClassBoard extends Component {
       showMarkSubmittedPopup,
       openPrintModal,
       hasStickyHeader,
+      toggleBackTopIcon,
     } = this.state
     const { assignmentId, classId } = match.params
     const studentTestActivity =
@@ -1042,7 +1054,10 @@ class ClassBoard extends Component {
           testActivity={testActivity}
           isCliUser={isCliUser}
         />
-        <MainContentWrapper ref={this.MainContentWrapperRef}>
+        <MainContentWrapper
+          ref={this.MainContentWrapperRef}
+          onScroll={this.backTopScroll}
+        >
           <LCBScrollContext.Provider value={this.MainContentWrapperRef}>
             <StyledFlexContainer justifyContent="space-between">
               <ClassBreadBrumb
@@ -1561,6 +1576,9 @@ class ClassBoard extends Component {
                     isPresentationMode={isPresentationMode}
                     isCliUser={isCliUser}
                   />
+                  {toggleBackTopIcon && (
+                    <BackTop toggleBackTopIcon={toggleBackTopIcon} />
+                  )}
                 </>
               )}
             {selectedTab === 'questionView' &&
@@ -1609,6 +1627,9 @@ class ClassBoard extends Component {
                         })
                       }}
                     />
+                    {toggleBackTopIcon && (
+                      <BackTop toggleBackTopIcon={toggleBackTopIcon} />
+                    )}
                   </QuestionContainer>
                 </>
               )}

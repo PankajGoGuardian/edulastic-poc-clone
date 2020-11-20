@@ -33,6 +33,7 @@ export {
   TextAreaInputStyled,
   FieldLabel,
 } from './src/components/InputStyles'
+export { default as BackTop } from './src/components/BackTop'
 export { EduTableStyled } from './src/components/EduTableStyled'
 export { LikeIconStyled } from './src/components/LikeIconStyled'
 export { EduSwitchStyled } from './src/components/EduSwitchStyled'

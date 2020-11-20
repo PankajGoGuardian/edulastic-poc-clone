@@ -461,6 +461,38 @@ export const apiForms = [
     ],
   },
   {
+    id: 'update-user',
+    name: 'Update User',
+    endPoint: 'user/user-details',
+    method: 'post',
+    fields: [
+      {
+        key: 'username',
+        name: 'username',
+        displayName: 'Username',
+        placeholder: 'Enter Username',
+        type: 'string',
+      },
+      {
+        key: 'Or',
+        displayName: 'Or',
+        labelStyle: {
+          'text-align': 'center',
+          'font-weight': 'bold',
+          'font-size': '16px',
+          'padding-top': '15px',
+        },
+      },
+      {
+        key: 'userId',
+        name: 'userId',
+        displayName: 'User Id',
+        placeholder: 'Enter User Id',
+        type: 'string',
+      },
+    ],
+  },
+  {
     id: 'approve-school-district',
     name: 'Approve School/District',
     endPoint: 'school/district-School-Details',

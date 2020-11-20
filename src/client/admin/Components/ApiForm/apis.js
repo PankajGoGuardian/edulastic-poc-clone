@@ -12,7 +12,9 @@ export const doValidate = (params, endpoint, method = 'post') =>
       params: method === 'get' ? params : {},
     })
     .then(({ data }) => data)
-    .catch(({ data: errorData }) => notification({ msg: errorData.message }))
+    .catch(({ data: errorData }) =>
+      notification({ msg: errorData?.message || 'Something went wrong' })
+    )
 
 export const submit = (params, endpoint, method) =>
   api

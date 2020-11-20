@@ -310,6 +310,13 @@ const activateUser = ({ userId, activate }) =>
     method: 'put',
   })
 
+const updateUsername = ({ username, userId, newUsername }) =>
+  api.callApi({
+    url: `/admin-tool/username`,
+    method: 'put',
+    data: { username, userId, newUsername },
+  })
+
 const logout = () =>
   api.callApi({
     url: `${prefix}/logout`,
@@ -350,5 +357,6 @@ export default {
   mergeUsers,
   updatePowerTeacherTools,
   activateUser,
+  updateUsername,
   logout,
 }

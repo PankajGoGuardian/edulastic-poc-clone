@@ -44,6 +44,7 @@ export const testTypes = {
 }
 
 export const grades = {
+  PREKINDERGARTEN: 'PreKindergarten',
   KINDERGARTEN: 'Kindergarten',
   GRADE_1: 'Grade 1',
   GRADE_2: 'Grade 2',

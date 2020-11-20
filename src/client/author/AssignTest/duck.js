@@ -53,10 +53,12 @@ export const getAssignedClassesByIdSelector = createSelector(
       [TESTLET]: {},
     }
     for (const [key, value] of Object.entries(assignmentsByTestType)) {
-      const assignedClasses = value
-        .flatMap((item) => get(item, 'class', []))
-        .filter((item) => item.students && item.students.length === 0)
-      assignedClassesByTestType[key] = keyBy(assignedClasses, '_id') || {}
+      if (key === COMMON) {
+        const assignedClasses = value
+          .flatMap((item) => get(item, 'class', []))
+          .filter((item) => item.students && item.students.length === 0)
+        assignedClassesByTestType[key] = keyBy(assignedClasses, '_id') || {}
+      }
     }
     return assignedClassesByTestType
   }

@@ -1659,13 +1659,7 @@ function* updateInterestedCurriculumsSaga({ payload }) {
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED })
     console.error(e)
-    if (e.status === 403 && e.response.data?.message) {
-      notification({
-        msg: e.response.data.message,
-      })
-    } else {
-      notification({ messageKey: 'failedToUploadStandardSets' })
-    }
+    notification({ messageKey: 'failedToUploadStandardSets' })
   }
 }
 

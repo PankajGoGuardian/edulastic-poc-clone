@@ -44,7 +44,7 @@ const HelperToolTip = ({ optionKey, large }) => {
   return (
     <Wrapper>
       {hasHelperText && (
-        <Popover content={content} placement="right">
+        <Popover content={content} placement="right" zIndex={1500}>
           <InfoIcon />
         </Popover>
       )}

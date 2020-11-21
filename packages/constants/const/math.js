@@ -208,7 +208,7 @@ const methodOptions = {
 // need to create finalised constants for the keys
 const methodOptionsGrouped = {
   [methods.EQUIV_SYMBOLIC]: {
-    'STUDENT’S RESPONSE SHOULD BE: ': [
+    'STUDENT ANSWER MUST BE': [
       'isSimplified',
       'isMixedFraction',
       'isImproperFraction',
@@ -217,7 +217,7 @@ const methodOptionsGrouped = {
       'isRationalized',
       'requireIntervalNotation',
     ],
-    'INTERPRET THE VALUES AS: ': [
+    'INTERPRET THE ANSWER AS': [
       'automatic',
       'interpretAsSet',
       'interpretAsInterval',
@@ -257,6 +257,73 @@ const methodOptionsGrouped = {
   // [methods.EQUIV_SYNTAX]: {
   //   Default: ["notExpected", "syntax", "argument", "rule"]
   // }
+}
+
+const interpretOptions = [
+  'automatic',
+  'interpretAsSet',
+  'interpretAsInterval',
+  'interpretAsNumber',
+  'interpretAsList',
+]
+const evaluationSettings = {
+  [methods.EQUIV_SYMBOLIC]: {
+    'STUDENT ANSWER MUST BE': [
+      'isSimplified',
+      'isMixedFraction',
+      'isImproperFraction',
+      'isRationalized',
+      'isFactorised',
+      'isExpanded',
+      'isExponentialForm',
+      'tolerance',
+      'requireIntervalNotation',
+      'numberType',
+      'integerType',
+      'isDecimal',
+      'scientificType',
+      'significantDecimalPlaces',
+      'isIn',
+      'satisfies',
+      'compareSides',
+      'isLineStandardForm',
+      'isLineSlopeInterceptForm',
+      'isLinePointSlopeForm',
+      'isQuadraticStandardForm',
+      'isPolynomialStandardForm',
+      'isPolynomalFactoredForm',
+      'isConicStandardForm',
+      'isParabolaVertexForm',
+    ],
+    'INTERPRET THE ANSWER AS': [
+      'interpret',
+      'setDecimalSeparator',
+      'setThousandsSeparator',
+      'allowEulersNumber',
+      'complexType',
+      'interpretTrigArgAsDegree',
+      'interpretAsImaginary',
+    ],
+    MISCELLANEOUS: [
+      'ignoreCase',
+      'allowedVariables',
+      'allowNumericOnly',
+      'ignoreAlphabeticCharacters',
+      'allowedUnits',
+      'useTemplate',
+    ],
+  },
+  [methods.EQUIV_LITERAL]: [
+    'ignoreTrailingZeros',
+    'ignoreOrder',
+    'ignoreCoefficientOfOne',
+    'literalIgnoreLeadingAndTrailingSpaces',
+    'inverseResult',
+    'setDecimalSeparator',
+    'setThousandsSeparator',
+    'allowedVariables',
+    'ignoreCase',
+  ],
 }
 
 const characterMapButtons = [
@@ -359,4 +426,6 @@ module.exports = {
   characterMapButtons,
   defaultNumberPad,
   methodOptionsGrouped,
+  evaluationSettings,
+  interpretOptions,
 }

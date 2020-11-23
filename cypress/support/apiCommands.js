@@ -205,12 +205,15 @@ Cypress.Commands.add(
 Cypress.Commands.add('saveItemDetailToDelete', (itemId) => {
   if (itemId) {
     cy.readFile(`${deleteTestDataFile}`).then((json) => {
+      const token = getAccessToken()
       if (!json.testItems) json.testItems = []
-      const item = {
-        _id: itemId,
-        authToken: getAccessToken(),
-      }
-      json.testItems.push(item)
+      if (!Cypress._.isArray(itemId)) itemId = [itemId]
+      itemId.forEach((item) => {
+        json.testItems.push({
+          _id: item,
+          authToken: token,
+        })
+      })
       cy.writeFile(`${deleteTestDataFile}`, json)
     })
   }

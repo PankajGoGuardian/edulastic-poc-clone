@@ -175,7 +175,7 @@ const TokenHighlightPreview = ({
   useEffect(() => {
     if (view === EDIT && !isCheck) {
       setAnswers(validArray)
-    } else if (isEmpty(userAnswer) && !isCheck) {
+    } else if (isEmpty(userAnswer)) {
       setAnswers(initialArray)
     }
   }, [userAnswer])

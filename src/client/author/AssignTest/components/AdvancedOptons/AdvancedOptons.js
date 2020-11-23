@@ -222,12 +222,16 @@ class AdvancedOptons extends React.Component {
           <ClassSelectorLabel>
             Assign this to
             <p>
-              {'Please select classes to assign this assessment.'}
-              {'Options on the left can be used to filter the list of classes.'}
+              Please select classes to assign this assessment. Options on the
+              left can be used to filter the list of classes.
             </p>
           </ClassSelectorLabel>
 
-          <ClassList selectedClasses={classIds} selectClass={this.onChange} />
+          <ClassList
+            selectedClasses={classIds}
+            selectClass={this.onChange}
+            testType={assignment.testType || testSettings.testType}
+          />
         </InitOptions>
       </OptionConationer>
     )

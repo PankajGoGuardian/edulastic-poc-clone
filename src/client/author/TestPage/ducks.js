@@ -280,6 +280,7 @@ export const RESET_UPDATED_TEST_STATE = '[test] reset test updated state'
 export const SET_UPDATING_TEST_FOR_REGRADE_STATE =
   '[test] set updating test for regrade state'
 export const SET_NEXT_PREVIEW_ITEM = '[test] set next preview item'
+export const GET_TESTID_FROM_VERSIONID = '[test] get testId from versionId'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -351,6 +352,9 @@ export const updateTestItemLikeCountAction = createAction(
 export const resetUpdatedStateAction = createAction(RESET_UPDATED_TEST_STATE)
 export const setUpdatingTestForRegradeStateAction = createAction(
   SET_UPDATING_TEST_FOR_REGRADE_STATE
+)
+export const getTestIdFromVersionIdAction = createAction(
+  GET_TESTID_FROM_VERSIONID
 )
 
 export const receiveTestByIdAction = (
@@ -2727,6 +2731,19 @@ function* toggleTestLikeSaga({ payload }) {
   }
 }
 
+function* getTestIdFromVersionIdSaga({ payload }) {
+  try {
+    const { testId } = yield call(testsApi.getTestIdFromVersionId, payload)
+    if (testId) {
+      yield put(push(`/author/tests/tab/review/id/${testId}`))
+      yield put(receiveTestByIdAction(testId, true, false))
+    }
+  } catch (err) {
+    Sentry.captureException(err)
+    console.error(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
@@ -2756,5 +2773,6 @@ export function* watcherSaga() {
     ),
     yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
     yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
+    yield takeLatest(GET_TESTID_FROM_VERSIONID, getTestIdFromVersionIdSaga),
   ])
 }

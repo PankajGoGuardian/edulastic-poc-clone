@@ -143,6 +143,16 @@ const updateCoTeacher = (data) =>
     })
     .then((result) => result.data.result)
 
+const archiveUnarchiveClasses = ({ archive, groupIds }) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: 'admin-tool/archive-class',
+      method: 'post',
+      data: { archive, groupIds },
+    })
+    .then((result) => result.data.result)
+
 export default {
   fetchMyGroups,
   fetchMyArchiveGroups,
@@ -160,4 +170,5 @@ export default {
   updateHangoutEvent,
   unarchiveClass,
   updateCoTeacher,
+  archiveUnarchiveClasses,
 }

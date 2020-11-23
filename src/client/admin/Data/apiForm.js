@@ -350,8 +350,6 @@ export const apiForms = [
   {
     id: 'archive-unarchive-classes',
     name: 'Archive / Unarchive Classes',
-    endPoint: 'group/archive-tool',
-    method: 'post',
     fields: [
       {
         name: 'groupIds',
@@ -374,6 +372,54 @@ export const apiForms = [
     ],
   },
   {
+    id: 'move-teacher',
+    name: 'Move Teacher',
+    endPoint: 'admin-tool/move-teacher',
+    method: 'post',
+    fields: [
+      {
+        name: 'srcSchoolId',
+        displayName: 'Source School Id',
+        placeholder: 'Enter Source School Id',
+        type: 'string',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'desSchoolId',
+        displayName: 'Destination School Id',
+        placeholder: 'Enter Destination School Id',
+        type: 'string',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'srcDistrictId',
+        displayName: 'Source District Id',
+        placeholder: 'Enter Source District Id',
+        type: 'string',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'desDistrictId',
+        displayName: 'Destination District Id',
+        placeholder: 'Enter Destination District Id',
+        type: 'string',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'teacherIds',
+        displayName: 'Teacher Id(s)',
+        placeholder: 'Enter comma separated teacher Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+    ],
+  },
+  {
     id: 'activate-deactivate-user',
     name: 'Activate/Deactivate User',
     endPoint: 'user/user-details',
@@ -388,6 +434,38 @@ export const apiForms = [
         defaultValue: 'Deactivate',
         formatter: (value) => value === 'Activate',
       },
+      {
+        key: 'username',
+        name: 'username',
+        displayName: 'Username',
+        placeholder: 'Enter Username',
+        type: 'string',
+      },
+      {
+        key: 'Or',
+        displayName: 'Or',
+        labelStyle: {
+          'text-align': 'center',
+          'font-weight': 'bold',
+          'font-size': '16px',
+          'padding-top': '15px',
+        },
+      },
+      {
+        key: 'userId',
+        name: 'userId',
+        displayName: 'User Id',
+        placeholder: 'Enter User Id',
+        type: 'string',
+      },
+    ],
+  },
+  {
+    id: 'update-user',
+    name: 'Update User',
+    endPoint: 'user/user-details',
+    method: 'post',
+    fields: [
       {
         key: 'username',
         name: 'username',

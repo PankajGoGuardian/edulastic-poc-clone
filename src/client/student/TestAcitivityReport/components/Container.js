@@ -17,6 +17,7 @@ import {
   itemHasUserWorkSelector,
   questionActivityFromFeedbackSelector,
   userWorkFromQuestionActivitySelector,
+  highlightsStudentReportSelector,
 } from '../../sharedDucks/TestItem'
 import { getTestEntitySelector } from '../../../author/TestPage/ducks'
 import TestPreviewModal from '../../../author/Assignments/components/Container/TestPreviewModal'
@@ -41,6 +42,7 @@ const ReportListContent = ({
   evaluation,
   questionActivity,
   userWork,
+  highlights,
   loadScratchpadFromServer,
 }) => {
   const {
@@ -137,6 +139,7 @@ const ReportListContent = ({
               viewComponent="studentReport"
               evaluation={evaluation}
               passageTestItemID={passageId}
+              highlights={highlights}
               userWork={userWork}
               attachments={attachments}
               scratchpadDimensions={dimensions}
@@ -177,6 +180,7 @@ export default connect(
     evaluation: getEvaluationSelector(state, {}),
     questionActivity: questionActivityFromFeedbackSelector(state),
     userWork: userWorkFromQuestionActivitySelector(state),
+    highlights: highlightsStudentReportSelector(state),
   }),
   { loadScratchpadFromServer: requestScratchPadAction }
 )(ReportListContent)

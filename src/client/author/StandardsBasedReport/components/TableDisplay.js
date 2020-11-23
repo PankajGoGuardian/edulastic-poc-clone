@@ -198,7 +198,7 @@ class TableDisplay extends Component {
         className: 'performance-column',
         sorter: (a, b) => (a.masterySummary || 0) - (b.masterySummary || 0),
         render: (text) => (
-          <PerformanceSummary>{round(text, 2) || 0}</PerformanceSummary>
+          <PerformanceSummary>{round(text, 2) || 0}%</PerformanceSummary>
         ),
         defaultSortOrder: 'descend',
       },
@@ -213,7 +213,7 @@ class TableDisplay extends Component {
       (act) => act.status === 'submitted'
     ).length
     const data = standards.map((std, index) => {
-      const perfomancePercentage = this.getPerfomancePercentage(std)
+      const _perfomancePercentage = this.getPerfomancePercentage(std)
       return {
         key: index + 1,
         stdId: std._id,
@@ -225,8 +225,8 @@ class TableDisplay extends Component {
               .map((id) => labels[id].barLabel)
           ),
         ].join(','),
-        masterySummary: perfomancePercentage,
-        performanceSummary: perfomancePercentage,
+        masterySummary: _perfomancePercentage,
+        performanceSummary: _perfomancePercentage,
         icon: submittedLength ? (
           stdId === std._id ? (
             <div>

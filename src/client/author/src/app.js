@@ -220,6 +220,10 @@ const StartAssignment = loadable(
   }
 )
 
+const Collaboration = loadable(() => import('../../author/Collaboration'), {
+  fallback: <Progress />,
+})
+
 // eslint-disable-next-line react/prop-types
 const Author = ({
   match,
@@ -776,10 +780,14 @@ const Author = ({
                   />
                   <Route exact path="/author/courses" component={Courses} />
                   <Route exact path="/author/classes" component={Classes} />
-                  <Route exact path="/author/groups" component={Groups} />
                   <Route
                     exact
                     path="/author/groups/createClass"
+                    component={ClassCreate}
+                  />
+                  <Route
+                    exact
+                    path="/author/groups/students/createClass"
                     component={ClassCreate}
                   />
                   <Route
@@ -791,6 +799,30 @@ const Author = ({
                     exact
                     path="/author/groups/edit/:classId"
                     component={ClassEdit}
+                  />
+                  <Route
+                    exact
+                    path="/author/groups"
+                    render={(props) => (
+                      <Groups tab="collaborations" {...props} />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/groups/collaborations"
+                    render={(props) => (
+                      <Groups tab="collaborations" {...props} />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/groups/students"
+                    render={(props) => <Groups tab="students" {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/collaborations/:id"
+                    component={Collaboration}
                   />
                   <Route
                     exact

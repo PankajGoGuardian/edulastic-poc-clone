@@ -3,9 +3,11 @@ import {
   mobileWidthMax,
   smallDesktopWidth,
   themeColor,
+  greyLight1,
   themeColorLighter,
   title,
   white,
+  textColor,
 } from '@edulastic/colors'
 import { Card } from '@edulastic/common'
 import { Button, Form, Input, Modal, Pagination, Select, Table } from 'antd'
@@ -397,5 +399,26 @@ export const StyledSelect = styled(Select)`
     svg {
       fill: ${themeColor};
     }
+  }
+`
+export const ClickableComponent = styled.div`
+  border: 2px dashed ${greyLight1};
+  padding: 20px;
+  cursor: pointer;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  svg {
+    margin: 0 15px 10px 0;
+  }
+
+  p {
+    color: ${textColor};
+    font-size: 14px;
+    margin: 6px;
   }
 `

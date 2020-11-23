@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 
 // components
+import { roleuser } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
 import {
   MainWrapper,
@@ -11,7 +13,8 @@ import {
   StyledLayout,
 } from '../../../admin/Common/StyledComponents'
 import AdminHeader from '../../src/components/common/AdminHeader/AdminHeader'
-import GroupListContainer from './GroupListContainer'
+import CollaborationGroups from './CollaborationGroups'
+import StudentGroups from './StudentGroups'
 
 // ducks
 import { getUserRole, getUserOrgId } from '../../src/selectors/user'
@@ -27,61 +30,15 @@ import { unarchiveClassAction } from '../../ManageClass/ducks'
 
 const menuActive = { mainMenu: 'groups', subMenu: '' }
 
-const Container = ({
-  t,
-  match,
-  history,
-  userRole,
-  districtId,
-  loading,
-  groups,
-  archivedGroups,
-  fetchGroups,
-  fetchArchiveGroups,
-  archiveGroup,
-  unarchiveGroup,
-}) => {
-  const [showActive, setShowActive] = useState(true)
-  const [studentGroups, setStudentGroups] = useState([])
-
-  useEffect(() => {
-    if (showActive) {
-      fetchGroups()
-    } else {
-      fetchArchiveGroups()
-    }
-  }, [showActive])
-
-  useEffect(() => {
-    setStudentGroups(
-      (showActive ? groups : archivedGroups)
-        .filter(({ _id, type }) => _id && type === 'custom')
-        .map((g) => ({
-          ...g,
-          name: g.name || '-',
-          studentCount: g.studentCount || 0,
-        }))
-    )
-  }, [groups, archivedGroups])
-
+const Container = ({ history, loading, tab, userRole }) => {
+  const showCollaborationsTab =
+    userRole === roleuser.DISTRICT_ADMIN && tab === 'collaborations'
   return (
     <MainWrapper>
       <AdminHeader active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout loading={loading}>
-          <GroupListContainer
-            t={t}
-            match={match}
-            history={history}
-            userRole={userRole}
-            districtId={districtId}
-            loading={loading}
-            studentGroups={studentGroups}
-            showActive={showActive}
-            setShowActive={setShowActive}
-            archiveGroup={archiveGroup}
-            unarchiveGroup={unarchiveGroup}
-          />
+          {showCollaborationsTab ? <CollaborationGroups /> : <StudentGroups />}
         </StyledLayout>
       </StyledContent>
     </MainWrapper>
@@ -89,6 +46,7 @@ const Container = ({
 }
 
 const enhance = compose(
+  withRouter,
   withNamespaces('manageDistrict'),
   connect(
     (state) => ({
@@ -112,7 +70,4 @@ export default enhance(Container)
 Container.propTypes = {
   userRole: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  groups: PropTypes.array.isRequired,
-  fetchGroups: PropTypes.func.isRequired,
-  fetchArchiveGroups: PropTypes.func.isRequired,
 }

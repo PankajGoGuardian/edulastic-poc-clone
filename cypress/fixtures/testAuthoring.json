@@ -231,7 +231,11 @@
     "grade": ["Grade 10"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_TF.2", "MCQ_TF.2", "MCQ_TF.2", "MCQ_TF.2","MCQ_TF.2"]
+  },
+  "TEST_CLONE": {
+    "name": "Test clone",
+    "grade": ["Grade 8"],
+    "subject": ["Mathematics"],
+    "itemKeys": ["CLOZE_DROPDOWN.2", "ESSAY_RICH.3"]
   }
-
-
 }

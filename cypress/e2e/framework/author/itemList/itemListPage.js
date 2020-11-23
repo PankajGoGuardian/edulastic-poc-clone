@@ -118,6 +118,13 @@ class ItemListPage {
 
   addItemById = (id) => this.getAddButtonById(id).click({ force: true })
 
+  getTotalNoOfItems = () =>
+    this.getTotalNoOfItemsInUI()
+      .invoke('text')
+      .then((txt) => {
+        return parseInt(txt, 10)
+      })
+
   // *** ACTIONS END ***
   // *** APPHELPERS START ***
 
@@ -231,12 +238,10 @@ class ItemListPage {
 
   verifyTotalPagesAndTotalQuestions = () =>
     this.searchFilters.getTotalNoOfItemsInBank().then((count) =>
-      this.getTotalNoOfItemsInUI()
-        .invoke('text')
-        .then((txt) => {
-          expect(parseInt(txt, 10)).to.be.greaterThan(count - 25)
-          expect(parseInt(txt, 10)).to.be.lessThan(count + 25)
-        })
+      this.getTotalNoOfItems().then((txt) => {
+        expect(txt).to.be.greaterThan(count - 25)
+        expect(txt).to.be.lessThan(count + 25)
+      })
     )
 
   verifyQuestionTypeById = (id, type) => {

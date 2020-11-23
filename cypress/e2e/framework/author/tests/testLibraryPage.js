@@ -150,6 +150,8 @@ export default class TestLibrary {
   getCollectionContainerInSuccessPage = () =>
     cy.get('[class*="FlexShareWithBox"]')
 
+  getContinueCloneButton = () => cy.contains('span', 'Continue to clone')
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -217,21 +219,23 @@ export default class TestLibrary {
       })
   }
 
-  createTest = (key = 'default', publish = true) => {
+  createTest = (key = 'default', publish = true, itemIds = false) => {
     const testSummary = new TestSummary()
     const testAddItem = new TestAddItem()
     const itemListPage = new ItemListPage()
 
     return cy.fixture('testAuthoring').then((testData) => {
       const test = testData[key]
-      this.items = []
-      test.itemKeys.forEach(async (itemKey, index) => {
-        const _id = await promisify(itemListPage.createItem(itemKey, index))
-        // .then(_id => {
-        // const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
-        this.items.push(_id)
-        // });
-      })
+      if (!itemIds) {
+        this.items = []
+        test.itemKeys.forEach(async (itemKey, index) => {
+          const _id = await promisify(itemListPage.createItem(itemKey, index))
+          // .then(_id => {
+          // const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
+          this.items.push(_id)
+          // });
+        })
+      } else this.items = itemIds
 
       // create new test
       this.sidebar.clickOnTestLibrary()
@@ -303,11 +307,13 @@ export default class TestLibrary {
     cy.wait(1000)
   }
 
+  clickCloneInTestCardPopUp = () => cy.contains('CLONE').click({ force: true })
+
   clickOnDuplicate = () => {
     cy.route('POST', '**/test/**').as('duplicateTest')
     cy.route('GET', '**/test/*/assignments').as('getTest')
-    cy.contains('CLONE').click({ force: true })
-    cy.contains('span', 'Continue to clone').click({ force: true })
+    this.clickCloneInTestCardPopUp()
+    this.getContinueCloneButton().click({ force: true })
     cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
     // cy.wait("@getTest");
   }
@@ -406,14 +412,14 @@ export default class TestLibrary {
           assert(xhr.status === 200, 'Test drafted')
         )
       })
-    cy.wait(5000)
+    return cy.get('[data-cy-item-index="0"]', { timeout: 30000 })
   }
 
   duplicateTestInReview = () => {
     cy.server()
     cy.route('POST', '**/test/**').as('duplicateTest')
     this.getDuplicateButtonInReview().should('be.visible').click()
-    cy.contains('span', 'Continue to clone').click({ force: true })
+    this.getContinueCloneButton().click({ force: true })
     cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
   }
 
@@ -532,19 +538,37 @@ export default class TestLibrary {
   getCopyUrlButton = () => cy.get('.ant-typography-copy')
 
   getCloneTestWithKeepingRefToItems = () =>
-    cy
-      .contains(
-        'span',
-        'Keep references to the original items - you can clone them individually later on'
-      )
-      .should('be.visible')
-      .prev()
+    cy.get('[data-cy="with-original-item"]').should('be.visible')
 
   getCloneTestWithNewItems = () =>
-    cy
-      .contains('span', 'Create a clone of all the items in the test upfront')
-      .should('be.visible')
-      .prev()
+    cy.get('[data-cy="with-new-item"]').should('be.visible')
+
+  selectCloneOptionAndCloneTest = (withItems = false) => {
+    cy.server()
+    cy.route('POST', /duplicate/).as('clone-test')
+    if (withItems) this.getCloneTestWithNewItems().click()
+    else this.getCloneTestWithKeepingRefToItems().click()
+
+    this.getContinueCloneButton().click({ force: true })
+
+    return cy.wait('@clone-test').then((xhr) => {
+      const testId = xhr.response.body.result._id
+      cy.saveTestDetailToDelete(testId)
+      expect(xhr.status).to.eq(200)
+      if (withItems) {
+        const itemIds = xhr.response.body.result.itemGroups[0].items.map(
+          ({ itemId }) => itemId
+        )
+        cy.saveItemDetailToDelete(itemIds)
+        return cy.wait(1).then(() => {
+          return { testId, itemIds }
+        })
+      }
+      return cy.wait(1).then(() => {
+        return testId
+      })
+    })
+  }
 
   assertUrl = (testId) => {
     cy.url()
@@ -759,11 +783,11 @@ export default class TestLibrary {
       .should(
         'have.attr',
         'title',
-        `${Cypress.config('baseUrl')}/author/tests/tab/review/id/${testId}`
+        `${Cypress.config('baseUrl')}/author/tests/tab/verid/${testId}`
       )
       .should(
         'have.text',
-        `${Cypress.config('baseUrl')}/author/tests/tab/review/id/${testId}`
+        `${Cypress.config('baseUrl')}/author/tests/tab/verid/${testId}`
       )
 
     // TODO: revisit this as currently pop-up is blocking suite on clicking
@@ -825,5 +849,61 @@ export default class TestLibrary {
       if (Cypress.$('.recharts-surface').length)
         cy.contains('span', 'EXIT').click({ force: true })
     })
+  }
+
+  verifyDraftTestHeaders = () => {
+    this.header.verifyHeaders(true, true, true, true)
+    this.header
+      .getTestSummaryHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testSummary.getTestGradeSelect().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestAddItemHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testAddItem.searchFilters.getSearchTextBox().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestSettingsHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testSettings.getAnsOnPaperSwitch().should('exist')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestReviewHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.review.getTestSubjectSelect().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+  }
+
+  verifyPublishedTestHeaders = () => {
+    this.header.verifyHeaders(true, true, true, true)
+    this.header
+      .getTestSummaryHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testSummary.getTestGradeSelect().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestAddItemHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testAddItem.searchFilters.getSearchTextBox().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestSettingsHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testSettings.getAnsOnPaperSwitch().should('exist')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestReviewHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.review.getTestSubjectSelect().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
   }
 }

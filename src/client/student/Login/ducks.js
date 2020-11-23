@@ -551,6 +551,16 @@ export const getClasses = createSelector(
 
 export const getCurrentGroup = createSelector(
   ['user.user.orgData.defaultClass'],
+  (r) => {
+    if (r === 'archive') {
+      return ''
+    }
+    return r
+  }
+)
+
+export const getCurrentGroupExactValue = createSelector(
+  ['user.user.orgData.defaultClass'],
   (r) => r
 )
 

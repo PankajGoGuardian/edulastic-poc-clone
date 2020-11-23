@@ -3,7 +3,7 @@ import {
   createSelector as createSelectorator,
 } from 'redux-starter-kit'
 import { takeEvery, put, call, all, select } from 'redux-saga/effects'
-import { values, groupBy, last, maxBy } from 'lodash'
+import { values, groupBy, last, maxBy, get } from 'lodash'
 import { createSelector } from 'reselect'
 import { normalize } from 'normalizr'
 import { assignmentApi, reportsApi } from '@edulastic/api'
@@ -23,11 +23,17 @@ import {
   reportSchema,
 } from '../sharedDucks/ReportsModule/ducks'
 import { getServerTs } from '../utils'
+import { getCurrentTerm } from '../../author/src/selectors/user'
 
 // constants
 export const getCurrentGroup = createSelectorator(
   ['user.user.orgData.defaultClass'],
-  (r) => r
+  (r) => {
+    if (r === 'archive') {
+      return ''
+    }
+    return r
+  }
 )
 
 export const getClassIds = createSelectorator(
@@ -51,13 +57,17 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA)
 
 // sagas
 // fetch and load assignments and reports for the student
-function* fetchAssignments({ payload }) {
+function* fetchAssignments() {
   try {
     const groupId = yield select(getCurrentGroup)
     yield put(setAssignmentsLoadingAction())
+    const termId = yield select(getCurrentTerm)
+    const groupStatus = yield select((state) =>
+      get(state, 'studentAssignment.groupStatus', 'all')
+    )
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, payload),
-      call(reportsApi.fetchReports, groupId),
+      call(assignmentApi.fetchAssigned, groupId, '', groupStatus, termId),
+      call(reportsApi.fetchReports, groupId, '', '', groupStatus),
     ])
 
     // normalize assignments
@@ -139,9 +149,10 @@ const isReport = (assignment, classIds, userId) => {
       if (currentClass.closed !== undefined) return currentClass.closed
     }
   }
-  // End date is passed but dont show in report if UTA status is in progress  
+  // End date is passed but dont show in report if UTA status is in progress
   return (
-    attempts >= maxAttempts || (serverTimeStamp > endDate &&
+    attempts >= maxAttempts ||
+    (serverTimeStamp > endDate &&
       lastAttempt.status !== testActivityStatus.START)
   )
 }
@@ -176,7 +187,7 @@ export const getAllAssignmentsSelector = createSelector(
   currentUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     const classIdentifiers = values(assignmentsObj).flatMap((item) =>
-      item.class.map((item) => item.identifier)
+      item.class.map((c) => c.identifier)
     )
     const reports = values(reportsObj).filter((item) =>
       classIdentifiers.includes(item.assignmentClassIdentifier)

@@ -1,13 +1,17 @@
 import React from 'react'
 import { produce } from 'immer'
 import styled from 'styled-components'
+import { withNamespaces } from '@edulastic/localization'
 import { RadioGrp, RadioBtn } from '@edulastic/common'
 import { math as mathConstants } from '@edulastic/constants'
 import { separatorColor } from '@edulastic/colors'
 import LabelWithHelper from './LabelWithHelper'
+import { HeadingLabel } from './InlineCheckOptions'
 
-const { interpretOptions } = mathConstants
-const Interpret = ({ options, optionKey, onChange }) => {
+const { subEvaluationSettingsGrouped } = mathConstants
+const Interpret = ({ t, options, optionKey, onChange, inline }) => {
+  const interpretOptions = subEvaluationSettingsGrouped[optionKey]
+
   const onClickRadioHandler = (opt) => () => {
     const newOptions = produce(options, (draft) => {
       if (!draft[opt] && opt !== 'automatic') {
@@ -33,14 +37,17 @@ const Interpret = ({ options, optionKey, onChange }) => {
     ) || 'automatic'
 
   return (
-    <InterpretWrapper>
+    <InterpretWrapper noBorder={inline}>
+      {inline && (
+        <HeadingLabel>{t(`component.math.${optionKey}`)}</HeadingLabel>
+      )}
       <RadioGrp name={optionKey} value={selected}>
         {interpretOptions.map((opt) => (
           <RadioBtn
-            vertical
             key={opt}
             value={opt}
             mb="20px"
+            vertical={!inline}
             checked={opt === selected}
             onClick={onClickRadioHandler(opt)}
           >
@@ -52,10 +59,10 @@ const Interpret = ({ options, optionKey, onChange }) => {
   )
 }
 
-export default Interpret
+export default withNamespaces('assessment')(Interpret)
 
 const InterpretWrapper = styled.div`
-  margin-bottom: 20px;
-  border-bottom: 1px solid;
+  margin-bottom: ${({ noBorder }) => !noBorder && '20px'};
+  border-bottom: ${({ noBorder }) => !noBorder && '1px solid'};
   border-color: ${separatorColor};
 `

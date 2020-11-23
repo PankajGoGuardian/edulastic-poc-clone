@@ -55,7 +55,7 @@ const MathEquivalentOptions = ({
 export default MathEquivalentOptions
 
 const Tabs = styled(AntTabs)`
-  margin: 15px -32px 0px;
+  margin: 0px -32px 0px;
 
   .ant-tabs-nav-scroll {
     text-align: center;
@@ -70,7 +70,7 @@ const Tabs = styled(AntTabs)`
   }
 `
 const TabPanel = styled(TabPane)`
-  padding: 4px 30px 0px;
+  padding: 4px 0px 0px 30px;
   max-height: 78vh;
   overflow: auto;
 `

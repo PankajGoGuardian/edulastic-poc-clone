@@ -4,6 +4,11 @@ import { keys, isArray, isEmpty, isString } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey9, greyThemeLight } from '@edulastic/colors'
 
+const separators = [
+  { value: ',', label: 'commna' },
+  { value: '.', label: 'dot' },
+  { value: ' ', label: 'space' },
+]
 const EnabledSettings = ({ t, options }) => {
   const optionsToShow = useMemo(() => {
     const optionKeys = keys(options)
@@ -11,10 +16,23 @@ const EnabledSettings = ({ t, options }) => {
       .map((key) => {
         if (options[key]) {
           if (isArray(options[key]) && !isEmpty(options[key])) {
-            return `${options[key].join(',')} ${t(`component.math.${key}`)}`
+            const labels = options[key].map((x) => {
+              const separator = separators.find((s) => s.value === x)
+              if (separator) {
+                return separator.label
+              }
+              return x
+            })
+            return `"${labels.join(',')}" ${t(`component.math.${key}`)}`
           }
           if (isString(options[key])) {
-            return `${options[key]} ${t(`component.math.${key}`)}`
+            let label = options[key]
+            const separator = separators.find((s) => s.value === options[key])
+            if (separator) {
+              label = separator.label
+            }
+
+            return `"${label}" ${t(`component.math.${key}`)}`
           }
           return t(`component.math.${key}`)
         }
@@ -26,7 +44,7 @@ const EnabledSettings = ({ t, options }) => {
   return (
     <Container>
       <ul>
-        {optionsToShow.map((opt) => (
+        {['Mathematically Equivalent'].concat(optionsToShow).map((opt) => (
           <li key={opt}>{opt}</li>
         ))}
       </ul>

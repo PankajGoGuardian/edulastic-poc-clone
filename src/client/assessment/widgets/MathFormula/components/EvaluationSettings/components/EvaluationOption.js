@@ -3,14 +3,23 @@ import CheckOption from './CheckOption'
 import InputOption from './InputOption'
 import DropdownSingle from './DropdownSingle'
 import DropdownArray from './DropdownArray'
-import Interpret from './Interpret'
+import RadioOption from './RadioOption'
 import AllowedVariables from './AllowedVariables'
 import Units from './Units'
+import InlineCheckOptions from './InlineCheckOptions'
+import MultipleValues from './MultipleValues'
 
 const textStyle = ['tolerance', 'isIn', 'satisfies']
 const numberStyle = ['significantDecimalPlaces']
 const dropdownSingleOpt = ['setDecimalSeparator']
 const dropdownArray = ['setThousandsSeparator']
+const radioStyle = ['interpret', 'numberFormat']
+const inlineOptions = [
+  'fractionForms',
+  'expressionForms',
+  'accuracyForms',
+  'equationForms',
+]
 
 const EvaluationOption = ({
   options,
@@ -67,9 +76,14 @@ const EvaluationOption = ({
       />
     )
   }
-  if (optionKey === 'interpret') {
+  if (radioStyle.includes(optionKey)) {
     return (
-      <Interpret optionKey={optionKey} options={options} onChange={onChange} />
+      <RadioOption
+        optionKey={optionKey}
+        options={options}
+        onChange={onChange}
+        inline={optionKey === 'numberFormat'}
+      />
     )
   }
   if (optionKey === 'allowedUnits') {
@@ -81,6 +95,24 @@ const EvaluationOption = ({
         optionKey={optionKey}
         options={{ useTemplate }}
         onChange={onChangeAllowedOptions}
+      />
+    )
+  }
+  if (optionKey === 'multipleValues') {
+    return (
+      <MultipleValues
+        optionKey={optionKey}
+        options={options}
+        onChange={onChangeOption}
+      />
+    )
+  }
+  if (inlineOptions.includes(optionKey)) {
+    return (
+      <InlineCheckOptions
+        optionKey={optionKey}
+        options={options}
+        onChange={onChangeOption}
       />
     )
   }

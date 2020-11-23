@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { SelectInputStyled, FieldLabel } from '@edulastic/common'
 import { math as mathConstants } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
+import { greyThemeDark5 } from '@edulastic/colors'
 
 const { methods } = mathConstants
 const compareOptions = Object.keys(methods)
@@ -15,11 +16,14 @@ const CompareOption = ({ t, method, onChange }) => {
 
   return (
     <CompareOptionContainer>
-      <FieldLabel>{t('component.math.compareUsing')}</FieldLabel>
+      <FieldLabel display="inline-block" mr="32px">
+        {t('component.math.evaluationBased')}
+      </FieldLabel>
       <SelectInputStyled
         data-cy="method-selection-dropdown"
         size="large"
         value={method}
+        width="250px"
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         onChange={handleChange}
       >
@@ -33,6 +37,9 @@ const CompareOption = ({ t, method, onChange }) => {
           </Option>
         ))}
       </SelectInputStyled>
+      <FieldLabel mt="12px" color={greyThemeDark5}>
+        with the following options:
+      </FieldLabel>
     </CompareOptionContainer>
   )
 }

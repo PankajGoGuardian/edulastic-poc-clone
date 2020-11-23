@@ -259,41 +259,48 @@ const methodOptionsGrouped = {
   // }
 }
 
-const interpretOptions = [
+const interpret = [
   'automatic',
   'interpretAsSet',
   'interpretAsInterval',
   'interpretAsNumber',
   'interpretAsList',
 ]
+const fractionForms = [
+  'isSimplified',
+  'isMixedFraction',
+  'isImproperFraction',
+  'isRationalized',
+]
+const expressionForms = ['isFactorised', 'isExpanded']
+const numberFormat = [
+  'integerType',
+  // 'numberType',
+  'scientificType',
+  'isDecimal',
+  'isExponentialForm',
+]
+const accuracyForms = ['tolerance', 'significantDecimalPlaces']
+const multipleValues = ['requireIntervalNotation', 'isIn', 'satisfies']
+const equationForms = [
+  'isLineStandardForm',
+  'isLineSlopeInterceptForm',
+  'isLinePointSlopeForm',
+  'isQuadraticStandardForm',
+  'isPolynomialStandardForm',
+  'isPolynomalFactoredForm',
+  'isConicStandardForm',
+  'isParabolaVertexForm',
+]
 const evaluationSettings = {
   [methods.EQUIV_SYMBOLIC]: {
     'STUDENT ANSWER MUST BE': [
-      'isSimplified',
-      'isMixedFraction',
-      'isImproperFraction',
-      'isRationalized',
-      'isFactorised',
-      'isExpanded',
-      'isExponentialForm',
-      'tolerance',
-      'requireIntervalNotation',
-      'numberType',
-      'integerType',
-      'isDecimal',
-      'scientificType',
-      'significantDecimalPlaces',
-      'isIn',
-      'satisfies',
-      'compareSides',
-      'isLineStandardForm',
-      'isLineSlopeInterceptForm',
-      'isLinePointSlopeForm',
-      'isQuadraticStandardForm',
-      'isPolynomialStandardForm',
-      'isPolynomalFactoredForm',
-      'isConicStandardForm',
-      'isParabolaVertexForm',
+      'fractionForms',
+      'expressionForms',
+      'numberFormat',
+      'accuracyForms',
+      'multipleValues',
+      'equationForms',
     ],
     'INTERPRET THE ANSWER AS': [
       'interpret',
@@ -310,7 +317,8 @@ const evaluationSettings = {
       'allowNumericOnly',
       'ignoreAlphabeticCharacters',
       'allowedUnits',
-      'useTemplate',
+      'compareSides',
+      // 'useTemplate',
     ],
   },
   [methods.EQUIV_LITERAL]: [
@@ -324,6 +332,16 @@ const evaluationSettings = {
     'allowedVariables',
     'ignoreCase',
   ],
+}
+
+const subEvaluationSettingsGrouped = {
+  interpret,
+  fractionForms,
+  expressionForms,
+  numberFormat,
+  accuracyForms,
+  multipleValues,
+  equationForms,
 }
 
 const characterMapButtons = [
@@ -427,5 +445,5 @@ module.exports = {
   defaultNumberPad,
   methodOptionsGrouped,
   evaluationSettings,
-  interpretOptions,
+  subEvaluationSettingsGrouped,
 }

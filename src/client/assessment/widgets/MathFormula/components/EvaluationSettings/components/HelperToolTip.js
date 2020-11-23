@@ -1,43 +1,36 @@
 import React, { useMemo } from 'react'
 import { Popover } from 'antd'
 import styled from 'styled-components'
-import { isArray, isEmpty, keys } from 'lodash'
+import { isEmpty } from 'lodash'
+import { MathSpan, FieldLabel } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import { IconCharInfo } from '@edulastic/icons'
-import texts from './helperTexts.json'
 
-const HelperToolTip = ({ optionKey, large }) => {
+const replaceLatexTemplate = (str) => {
+  return str.replace(
+    /#{(.*?)#}/g,
+    '<span class="input__math" data-latex="$1"></span>'
+  )
+}
+
+const HelperToolTip = ({ t, optionKey, large }) => {
   const text = useMemo(() => {
+    let _text = t(`component.math.helperText.${optionKey}`)
     if (!optionKey) {
-      return texts.defaultText
+      _text = ''
     }
-    return texts[optionKey] || {}
+
+    return replaceLatexTemplate(_text)
   }, [])
 
   const hasHelperText = !isEmpty(text)
 
   const content = (
     <ContentWrapper large={large}>
-      {text.description && (
-        <Desc mb={isArray(text.expamples) ? '10px' : '0px'}>
-          {text.description}
-        </Desc>
+      {optionKey && (
+        <OptionLabel>{t(`component.math.${optionKey}`)}</OptionLabel>
       )}
-      {isArray(text.expamples) &&
-        text.expamples.map((exam, index) => (
-          <ExampleWrapper key={index}>
-            {keys(exam).map((key) => (
-              <LatexField key={key}>
-                <span className="title">{key}:</span>
-                <span className="latex">{exam[key]}</span>
-              </LatexField>
-            ))}
-          </ExampleWrapper>
-        ))}
-      {text.description1 && (
-        <Desc mb="0px" mt="10px">
-          {text.description1}
-        </Desc>
-      )}
+      {text && <Desc text={text} />}
     </ContentWrapper>
   )
 
@@ -52,7 +45,7 @@ const HelperToolTip = ({ optionKey, large }) => {
   )
 }
 
-export default HelperToolTip
+export default withNamespaces('assessment')(HelperToolTip)
 
 const Wrapper = styled.span`
   position: relative;
@@ -71,23 +64,18 @@ const ContentWrapper = styled.div`
   padding: 6px 8px;
   color: ${({ theme }) => theme.questionTextColor};
   max-width: ${({ large }) => (large ? '450px' : '350px')};
-`
 
-const Desc = styled.p`
-  margin-bottom: ${({ mb }) => mb};
-  margin-top: ${({ mt }) => mt};
-`
-
-const LatexField = styled.div`
-  .title {
-    font-weight: 600;
-    text-transform: capitalize;
-  }
-  .latex {
-    margin-left: 4px;
+  .katex {
+    .text {
+      font-size: 0.85em;
+    }
   }
 `
 
-const ExampleWrapper = styled.div`
-  margin-top: 8px;
+const OptionLabel = styled(FieldLabel)`
+  font-weight: 700;
 `
+
+const Desc = styled(MathSpan).attrs(({ text }) => ({
+  dangerouslySetInnerHTML: { __html: text },
+}))``

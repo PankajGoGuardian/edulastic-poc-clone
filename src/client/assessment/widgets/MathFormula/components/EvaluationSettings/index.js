@@ -49,7 +49,11 @@ const EvaluationSettings = ({
   return (
     <Container>
       <FlexContainer width="fit-content" alignItems="center">
-        <LabelWithHelper label="Evaluation Settings" large />
+        <LabelWithHelper
+          large
+          optionKey="evaluationSettings"
+          label="Evaluation Settings"
+        />
         <EduButton height="28px" ml="20px" onClick={showSettingDrawer}>
           Change
         </EduButton>

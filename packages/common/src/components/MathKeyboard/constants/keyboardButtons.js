@@ -285,7 +285,10 @@ const OPERATORS = [plusButton, minusButton, asterisk, divide]
 // keypad mode buttons
 
 const BASIC = [
-  ...OPERATORS,
+  plusButton,
+  minusButton,
+  multiplication,
+  divide,
   strictLess,
   strictGreater,
   parentheses,

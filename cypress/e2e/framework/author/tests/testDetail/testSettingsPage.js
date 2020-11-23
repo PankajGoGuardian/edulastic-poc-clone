@@ -202,7 +202,7 @@ export default class TestSettings {
     })
 
   selectStudentPlayerSkinByOption = (option) => {
-    // this.showAdvancedSettings();
+    this.showAdvancedSettings()
     this.getStudentPlayerskin().click({ force: true })
     this.selectOptionInDropDown(option)
   }

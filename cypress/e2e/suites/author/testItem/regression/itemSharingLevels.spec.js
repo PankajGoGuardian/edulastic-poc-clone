@@ -1,12 +1,11 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable prefer-const */
 import TeacherSideBar from '../../../../framework/author/SideBarPage'
-import SearchFilters from '../../../../framework/author/searchFiltersPage'
 import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
 import ItemListPage from '../../../../framework/author/itemList/itemListPage'
-import PreviewItemPopup from '../../../../framework/author/itemList/itemPreview'
 import MCQTrueFalsePage from '../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage'
 import FileHelper from '../../../../framework/util/fileHelper'
+import { COLLECTION } from '../../../../framework/constants/questionTypes'
 
 const TEST = 'LCB_2'
 const testData = require('../../../../../fixtures/testAuthoring')
@@ -24,10 +23,8 @@ describe(`${FileHelper.getSpecName(
   Cypress.spec.name
 )} >>item sharing using published test`, () => {
   const techersidebar = new TeacherSideBar()
-  const searchFilters = new SearchFilters()
   const testLibrary = new TestLibrary()
   const itemListPage = new ItemListPage()
-  const previewItem = new PreviewItemPopup()
   const mcqTrueFalsePage = new MCQTrueFalsePage()
   let Author
   let itemIds
@@ -65,8 +62,8 @@ describe(`${FileHelper.getSpecName(
       })
       before('>share the test', () => {
         techersidebar.clickOnTestLibrary()
-        searchFilters.clearAll()
-        searchFilters.getAuthoredByMe()
+        itemListPage.searchFilters.clearAll()
+        itemListPage.searchFilters.getAuthoredByMe()
         testLibrary.clickOnTestCardById(test_id)
         testLibrary.clickOnDetailsOfCard()
         testLibrary.header.clickOnShare()
@@ -80,14 +77,13 @@ describe(`${FileHelper.getSpecName(
           DIST1_SCHOOL1[TEACHER2][PASS]
         )
         testLibrary.sidebar.clickOnItemBank()
-        itemListPage.searchFilters.clearAll()
-        itemListPage.searchFilters.sharedWithMe()
         itemKeysInTest.forEach((item, index) => {
-          itemListPage.searchFilters.typeInSearchBox(itemIds[index])
+          itemListPage.searchFilters.clearAll()
+          itemListPage.searchFilters.setCollection(COLLECTION.school)
           itemListPage.verifyPresenceOfItemById(itemIds[index])
           itemListPage.clickOnViewItemById(itemIds[index])
-          previewItem.verifyNoEditCloneOption(itemIds[index])
-          previewItem.clickOnCopyItemOnPreview()
+          itemListPage.itemPreview.verifyNoEditCloneOption(itemIds[index])
+          itemListPage.itemPreview.clickOnCopyItemOnPreview()
           mcqTrueFalsePage.updatePoints('15')
           mcqTrueFalsePage.header.saveAndgetId(true).then((id) => {
             expect(id).not.eq(itemIds[index])
@@ -103,12 +99,23 @@ describe(`${FileHelper.getSpecName(
           `expected clone to happen successfully`
         ).to.have.lengthOf(1)
         itemListPage.searchFilters.clearAll()
-        clonedItem.forEach((cloned) => {
-          itemListPage.searchFilters.typeInSearchBox(cloned)
+        ;[...itemIds, ...clonedItem].forEach((cloned) => {
           itemListPage.verifyPresenceOfItemById(cloned)
           itemListPage.getViewItemById(cloned).should('exist')
         })
         clonedItem.length = 0
+      })
+
+      it('> verify no change at owner side', () => {
+        cy.login('teacher', Author[EMAIL], Author[PASS])
+        testLibrary.sidebar.clickOnItemBank()
+        itemListPage.searchFilters.clearAll()
+        itemListPage.searchFilters.getAuthoredByMe()
+        itemKeysInTest.forEach((item, index) => {
+          itemListPage.itemPreview.closePreiview()
+          itemListPage.clickOnViewItemById(itemIds[index])
+          itemListPage.itemPreview.verifyPointsOnPreview('2')
+        })
       })
     })
 
@@ -126,7 +133,7 @@ describe(`${FileHelper.getSpecName(
         itemKeysInTest.forEach((item, index) => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
-          previewItem.clickOnEditItemOnPreview();
+          itemListPage.itemPreview.clickOnEditItemOnPreview();
           mcqTrueFalsePage.getPoints().should("have.value", "2");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
@@ -134,8 +141,8 @@ describe(`${FileHelper.getSpecName(
       });
       it(">removesharing with school", () => {
         techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
+         itemListPage.searchFilters.clearAll();
+         itemListPage.searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
@@ -172,8 +179,8 @@ describe(`${FileHelper.getSpecName(
 
       before('>sharing at district level', () => {
         techersidebar.clickOnTestLibrary()
-        searchFilters.clearAll()
-        searchFilters.getAuthoredByMe()
+        itemListPage.searchFilters.clearAll()
+        itemListPage.searchFilters.getAuthoredByMe()
         testLibrary.clickOnTestCardById(test_id)
         testLibrary.clickOnDetailsOfCard()
         testLibrary.header.clickOnShare()
@@ -190,14 +197,13 @@ describe(`${FileHelper.getSpecName(
           DIST1_SCHOOL2[TEACHER2][PASS]
         )
         testLibrary.sidebar.clickOnItemBank()
-        itemListPage.searchFilters.clearAll()
-        itemListPage.searchFilters.sharedWithMe()
         itemKeysInTest.forEach((item, index) => {
-          itemListPage.searchFilters.typeInSearchBox(itemIds[index])
+          itemListPage.searchFilters.clearAll()
+          itemListPage.searchFilters.setCollection(COLLECTION.district)
           itemListPage.verifyPresenceOfItemById(itemIds[index])
           itemListPage.clickOnViewItemById(itemIds[index])
-          previewItem.verifyNoEditCloneOption(itemIds[index])
-          previewItem.clickOnCopyItemOnPreview()
+          itemListPage.itemPreview.verifyNoEditCloneOption(itemIds[index])
+          itemListPage.itemPreview.clickOnCopyItemOnPreview()
           mcqTrueFalsePage.updatePoints('15')
           mcqTrueFalsePage.header.saveAndgetId(true).then((id) => {
             expect(id).not.eq(itemIds[index])
@@ -213,12 +219,23 @@ describe(`${FileHelper.getSpecName(
           `expected clone to happen successfully`
         ).to.have.lengthOf(1)
         itemListPage.searchFilters.clearAll()
-        clonedItem.forEach((cloned) => {
-          itemListPage.searchFilters.typeInSearchBox(cloned)
+        ;[...itemIds, ...clonedItem].forEach((cloned) => {
           itemListPage.verifyPresenceOfItemById(cloned)
           itemListPage.getViewItemById(cloned).should('exist')
         })
         clonedItem.length = 0
+      })
+
+      it('> verify no change at owner side', () => {
+        cy.login('teacher', Author[EMAIL], Author[PASS])
+        testLibrary.sidebar.clickOnItemBank()
+        itemListPage.searchFilters.clearAll()
+        itemListPage.searchFilters.getAuthoredByMe()
+        itemKeysInTest.forEach((item, index) => {
+          itemListPage.itemPreview.closePreiview()
+          itemListPage.clickOnViewItemById(itemIds[index])
+          itemListPage.itemPreview.verifyPointsOnPreview('2')
+        })
       })
     })
 
@@ -230,13 +247,14 @@ describe(`${FileHelper.getSpecName(
         cy.login("teacher", Author[EMAIL], Author[PASS]);
       });
       it(">verify change", () => {
+        cy.login("teacher", Author[EMAIL], Author[PASS])
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
         itemKeysInTest.forEach((item, index) => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
-          previewItem.clickOnEditItemOnPreview();
+          itemListPage.itemPreview.clickOnEditItemOnPreview();
           mcqTrueFalsePage.getPoints().should("have.value", "2");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
@@ -244,8 +262,8 @@ describe(`${FileHelper.getSpecName(
       });
       it(">remove-sharing with district", () => {
         techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
+         itemListPage.searchFilters.clearAll();
+         itemListPage.searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
@@ -282,8 +300,8 @@ describe(`${FileHelper.getSpecName(
       });
       before(">share the test", () => {
         techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
+         itemListPage.searchFilters.clearAll();
+         itemListPage.searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
@@ -302,8 +320,8 @@ describe(`${FileHelper.getSpecName(
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
-          previewItem.verifyNoEditCloneOption(itemIds[index]);
-          previewItem.clickOnCopyItemOnPreview();
+          itemListPage.itemPreview.verifyNoEditCloneOption(itemIds[index]);
+          itemListPage.itemPreview.clickOnCopyItemOnPreview();
           mcqTrueFalsePage.updatePoints("15");
           mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             expect(id).not.eq(itemIds[index]);
@@ -333,8 +351,8 @@ describe(`${FileHelper.getSpecName(
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
-          previewItem.verifyNoEditCloneOption(itemIds[index]);
-          previewItem.clickOnCopyItemOnPreview();
+          itemListPage.itemPreview.verifyNoEditCloneOption(itemIds[index]);
+          itemListPage.itemPreview.clickOnCopyItemOnPreview();
           mcqTrueFalsePage.updatePoints("15");
           mcqTrueFalsePage.header.saveAndgetId(true).then(id => {
             itemListPage.getItemIdByURL();
@@ -369,7 +387,7 @@ describe(`${FileHelper.getSpecName(
         itemKeysInTest.forEach((item, index) => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
-          previewItem.clickOnEditItemOnPreview();
+          itemListPage.itemPreview.clickOnEditItemOnPreview();
           mcqTrueFalsePage.getPoints().should("have.value", "2");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
@@ -377,8 +395,8 @@ describe(`${FileHelper.getSpecName(
       });
       it(">remove-sharing with public", () => {
         techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
+         itemListPage.searchFilters.clearAll();
+         itemListPage.searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
@@ -408,7 +426,7 @@ describe(`${FileHelper.getSpecName(
         cy.login("teacher", DIST1_SCHOOL2[TEACHER1][EMAIL], DIST1_SCHOOL2[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
-        // itemListPage.searchFilters.sharedWithMe();
+        itemListPage.searchFilters.sharedWithMe();
         itemKeysInTest.forEach((item, index) => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.verifyPresenceOfItemById(itemIds[index]);

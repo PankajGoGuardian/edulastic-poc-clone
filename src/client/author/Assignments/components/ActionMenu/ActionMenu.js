@@ -22,6 +22,8 @@ const getReportPathForAssignment = (testId = '', assignment = {}, row = {}) => {
   const q = {}
   q.termId = assignment.termId || row.termId
   q.assessmentType = assignment.testType || row.testType
+  q.subject = 'All'
+  q.grade = 'All'
   return `${testId}?${qs.stringify(q)}`
 }
 

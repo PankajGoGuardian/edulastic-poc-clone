@@ -1,11 +1,5 @@
 /* eslint-disable lines-between-class-members */
-import TestLibrary from '../testLibraryPage'
-
 export default class Regrade {
-  constructor() {
-    this.testLibrary = new TestLibrary()
-  }
-
   // *** ELEMENTS START ***
   getCancelRegrade = () => cy.get('[data-cy="cancelRegrade"]')
 
@@ -28,7 +22,11 @@ export default class Regrade {
         .eq(0)
         .click({ force: true })
       if (EditFromAssgntsPage)
-        cy.wait('@published').then((xhr) => this.testLibrary.saveTestId(xhr))
+        cy.wait('@published').then((xhr) => {
+          assert(xhr.status === 200, 'regrading test')
+          const testId = xhr.response.body.result._id
+          cy.saveTestDetailToDelete(testId)
+        })
       else cy.wait('@published')
       cy.wait('@published')
     } else {
@@ -38,7 +36,11 @@ export default class Regrade {
         .eq(1)
         .click({ force: true })
       if (EditFromAssgntsPage)
-        cy.wait('@published').then((xhr) => this.testLibrary.saveTestId(xhr))
+        cy.wait('@published').then((xhr) => {
+          assert(xhr.status === 200, 'regrading test')
+          const testId = xhr.response.body.result._id
+          cy.saveTestDetailToDelete(testId)
+        })
       cy.wait('@assignments')
     }
   }
@@ -48,7 +50,7 @@ export default class Regrade {
     cy.route('POST', '**/assignments/regrade').as('regrade')
     cy.get("[data-cy='applyRegrade']").click({ force: true })
     cy.wait('@regrade').then((xhr) => expect(xhr.status).to.eq(200))
-    cy.contains('Success!')
+    cy.contains('Success!', { timeout: 120000 })
   }
 
   canclelRegrade = () => {

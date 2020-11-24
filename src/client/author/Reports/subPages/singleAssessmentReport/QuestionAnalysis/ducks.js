@@ -95,6 +95,12 @@ function* getReportsQuestionAnalysisRequest({ payload }) {
     payload.requestFilters.assessmentTypes =
       payload.requestFilters?.assessmentTypes?.join(',') || ''
 
+    payload.requestFilters.teacherIds =
+      payload.requestFilters?.teacherIds?.join(',') || ''
+
+    payload.requestFilters.schoolIds =
+      payload.requestFilters?.schoolIds?.join(',') || ''
+
     payload.requestFilters.grade = payload.requestFilters.studentGrade
     payload.requestFilters.courseId = payload.requestFilters.studentCourseId
     payload.requestFilters.subject = payload.requestFilters.studentSubject

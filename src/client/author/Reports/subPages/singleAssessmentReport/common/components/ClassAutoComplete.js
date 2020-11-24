@@ -23,7 +23,7 @@ const ClassAutoComplete = ({
   loadClassList,
   grade,
   subject,
-  school: institutionId,
+  schools,
   selectedClass,
   selectCB,
 }) => {
@@ -32,7 +32,7 @@ const ClassAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { institutionIds, role: userRole, orgData, _id: userId } = userDetails
+    const { role: userRole, orgData, _id: userId } = userDetails
     const { districtIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
@@ -47,11 +47,12 @@ const ClassAutoComplete = ({
     if (userRole === roleuser.TEACHER) {
       q.search.teachers = [{ type: 'eq', value: userId }]
     }
-    if (userRole === roleuser.DISTRICT_ADMIN && institutionId) {
-      q.search.institutionIds = [institutionId]
-    }
-    if (userRole === roleuser.SCHOOL_ADMIN) {
-      q.search.institutionIds = institutionId ? [institutionId] : institutionIds
+    if (
+      (userRole === roleuser.DISTRICT_ADMIN ||
+        userRole === roleuser.SCHOOL_ADMIN) &&
+      !isEmpty(schools)
+    ) {
+      q.search.institutionIds = schools
     }
     if (grade) {
       q.search.grades = [`${grade}`]

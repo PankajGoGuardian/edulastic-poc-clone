@@ -166,15 +166,15 @@ const SingleAssessmentReportFilters = ({
       courseId: search.courseId || 'All',
       classId: search.classId || 'All',
       groupId: search.groupId || 'All',
-      schoolId: search.schoolId || 'All',
-      teacherId: search.teacherId || 'All',
+      schoolIds: search.schoolIds || [],
+      teacherIds: search.teacherIds || [],
       assessmentTypes: search.assessmentTypes || [],
     }
     const urlParams = { ...obtainedFilters }
 
     if (role === 'teacher') {
-      delete urlParams.schoolId
-      delete urlParams.teacherId
+      delete urlParams.schoolIds
+      delete urlParams.teacherIds
     }
 
     // set filters and testId
@@ -312,19 +312,15 @@ const SingleAssessmentReportFilters = ({
           {role !== 'teacher' && (
             <>
               <SearchField>
-                <FilterLabel>School</FilterLabel>
                 <SchoolAutoComplete
-                  selectedSchoolId={filters.schoolId}
-                  selectCB={(e) => updateFilterDropdownCB(e, 'schoolId')}
+                  selectedSchoolIds={filters.schoolIds}
+                  selectCB={(e) => updateFilterDropdownCB(e, 'schoolIds')}
                 />
               </SearchField>
               <SearchField>
-                <FilterLabel>Teacher</FilterLabel>
                 <TeacherAutoComplete
-                  selectedTeacherId={
-                    filters.teacherId !== 'All' && filters.teacherId
-                  }
-                  selectCB={(e) => updateFilterDropdownCB(e, 'teacherId')}
+                  selectedTeacherIds={filters.teacherIds}
+                  selectCB={(e) => updateFilterDropdownCB(e, 'teacherIds')}
                 />
               </SearchField>
             </>
@@ -361,7 +357,7 @@ const SingleAssessmentReportFilters = ({
             <ClassAutoComplete
               grade={filters.grade !== 'All' && filters.grade}
               subject={filters.subject !== 'All' && filters.subject}
-              school={filters.schoolId !== 'All' && filters.schoolId}
+              schools={filters.schoolIds}
               selectedClass={selectedClass}
               selectCB={(e) => {
                 updateSearchableFilter(e, 'classId', setSelectedClass)
@@ -373,7 +369,7 @@ const SingleAssessmentReportFilters = ({
             <GroupsAutoComplete
               grade={filters.grade !== 'All' && filters.grade}
               subject={filters.subject !== 'All' && filters.subject}
-              school={filters.schoolId !== 'All' && filters.schoolId}
+              schools={filters.schoolIds}
               selectedGroup={selectedGroup}
               selectCB={(e) => {
                 updateSearchableFilter(e, 'groupId', setSelectedGroup)

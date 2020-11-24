@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { values } from 'lodash'
+import { isUndefined, values } from 'lodash'
 import {
   SelectInputStyled,
   TextInputStyled,
@@ -23,6 +23,16 @@ const FormatRule = ({ t, onChangeOption, options }) => {
   const onSelectSyntaxOption = (val) => {
     onChangeOption('syntax', val)
   }
+
+  useEffect(() => {
+    if (
+      syntaxes.DECIMAL !== options.syntax &&
+      syntaxes.STANDARD_FORM !== options.syntax &&
+      !isUndefined(options.argument)
+    ) {
+      onChangeOption('argument', undefined)
+    }
+  }, [options.syntax])
 
   return (
     <Container>

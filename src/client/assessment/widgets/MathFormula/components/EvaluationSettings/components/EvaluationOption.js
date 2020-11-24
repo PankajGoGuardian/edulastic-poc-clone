@@ -13,13 +13,8 @@ const textStyle = ['tolerance', 'isIn', 'satisfies']
 const numberStyle = ['significantDecimalPlaces']
 const dropdownSingleOpt = ['setDecimalSeparator']
 const dropdownArray = ['setThousandsSeparator']
-const radioStyle = ['interpret', 'numberFormat']
-const inlineOptions = [
-  'fractionForms',
-  'expressionForms',
-  'accuracyForms',
-  'equationForms',
-]
+const radioStyle = ['interpret', 'equationForms', 'numberFormat']
+const inlineOptions = ['fractionForms', 'expressionForms', 'accuracyForms']
 
 const EvaluationOption = ({
   options,
@@ -82,7 +77,6 @@ const EvaluationOption = ({
         optionKey={optionKey}
         options={options}
         onChange={onChange}
-        inline={optionKey === 'numberFormat'}
       />
     )
   }

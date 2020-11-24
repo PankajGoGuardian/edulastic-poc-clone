@@ -75,6 +75,7 @@ const EvaluationSettings = ({
       </CustomDrawer>
       <EnabledSettings
         options={options}
+        method={method}
         useTemplate={useTemplate}
         allowNumericOnly={allowNumericOnly}
         allowedVariables={allowedVariables}

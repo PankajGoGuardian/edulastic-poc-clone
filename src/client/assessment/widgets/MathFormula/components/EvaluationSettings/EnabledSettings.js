@@ -1,19 +1,41 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { keys, isArray, isEmpty, isString } from 'lodash'
+import { math as mathConstants } from '@edulastic/constants'
+
+import { keys, isArray, isEmpty, isString, values } from 'lodash'
+
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey9, greyThemeLight } from '@edulastic/colors'
 
+const { syntaxes } = mathConstants
 const separators = [
-  { value: ',', label: 'commna' },
+  { value: ',', label: 'comma' },
   { value: '.', label: 'dot' },
   { value: ' ', label: 'space' },
 ]
-const EnabledSettings = ({ t, options }) => {
+const EnabledSettings = ({
+  t,
+  options,
+  method,
+  allowNumericOnly,
+  allowedVariables,
+}) => {
+  const syntaxOptions = values(syntaxes).map((syntax) => ({
+    value: syntax,
+    label: t(`component.math.${syntax}`),
+  }))
+
   const optionsToShow = useMemo(() => {
     const optionKeys = keys(options)
-    return optionKeys
+    const optsLables = optionKeys
       .map((key) => {
+        if (key === 'syntax') {
+          const syntax = syntaxOptions.find((x) => x.value === options[key])
+          if (syntax) {
+            return syntax.label
+          }
+          return false
+        }
         if (options[key]) {
           if (isArray(options[key]) && !isEmpty(options[key])) {
             const labels = options[key].map((x) => {
@@ -39,12 +61,21 @@ const EnabledSettings = ({ t, options }) => {
         return false
       })
       .filter((x) => !!x)
-  }, [options])
+    if (allowNumericOnly) {
+      optsLables.push(t('component.math.allowNumericOnly'))
+    }
+    if (!isEmpty(allowedVariables)) {
+      optsLables.push(
+        `${allowedVariables} ${t('component.math.allowedVariables')}`
+      )
+    }
+    return optsLables
+  }, [options, allowNumericOnly, allowedVariables])
 
   return (
     <Container>
       <ul>
-        {['Mathematically Equivalent'].concat(optionsToShow).map((opt) => (
+        {[t(`component.math.${method}`)].concat(optionsToShow).map((opt) => (
           <li key={opt}>{opt}</li>
         ))}
       </ul>

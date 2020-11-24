@@ -21,6 +21,7 @@ const StyledRadioBtn = styled(Radio)`
   font-size: ${(props) => props.theme.smallFontSize};
   text-align: left;
   position: relative;
+  width: ${({ width }) => width};
   &.ant-radio-wrapper {
     & + .ant-radio-wrapper {
       margin-left: 0px;

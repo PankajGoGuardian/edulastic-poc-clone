@@ -9,8 +9,12 @@ import LabelWithHelper from './LabelWithHelper'
 import { HeadingLabel } from './InlineCheckOptions'
 
 const { subEvaluationSettingsGrouped } = mathConstants
-const Interpret = ({ t, options, optionKey, onChange, inline }) => {
+const Interpret = ({ t, options, optionKey, onChange }) => {
   const interpretOptions = subEvaluationSettingsGrouped[optionKey]
+
+  const showHeading =
+    optionKey === 'equationForms' || optionKey === 'numberFormat'
+  const buttonWidth = optionKey === 'equationForms' ? 'calc(50% - 8px)' : null
 
   const onClickRadioHandler = (opt) => () => {
     const newOptions = produce(options, (draft) => {
@@ -37,8 +41,8 @@ const Interpret = ({ t, options, optionKey, onChange, inline }) => {
     ) || 'automatic'
 
   return (
-    <InterpretWrapper noBorder={inline}>
-      {inline && (
+    <RadioGroupWrapper noBorder={showHeading}>
+      {showHeading && (
         <HeadingLabel>{t(`component.math.${optionKey}`)}</HeadingLabel>
       )}
       <RadioGrp name={optionKey} value={selected}>
@@ -47,21 +51,22 @@ const Interpret = ({ t, options, optionKey, onChange, inline }) => {
             key={opt}
             value={opt}
             mb="20px"
-            vertical={!inline}
+            vertical={!showHeading}
             checked={opt === selected}
+            width={buttonWidth}
             onClick={onClickRadioHandler(opt)}
           >
             <LabelWithHelper optionKey={opt} />
           </RadioBtn>
         ))}
       </RadioGrp>
-    </InterpretWrapper>
+    </RadioGroupWrapper>
   )
 }
 
 export default withNamespaces('assessment')(Interpret)
 
-const InterpretWrapper = styled.div`
+const RadioGroupWrapper = styled.div`
   margin-bottom: ${({ noBorder }) => !noBorder && '20px'};
   border-bottom: ${({ noBorder }) => !noBorder && '1px solid'};
   border-color: ${separatorColor};

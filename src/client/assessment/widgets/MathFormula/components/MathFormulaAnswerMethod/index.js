@@ -82,10 +82,11 @@ const MathFormulaAnswerMethod = ({
       warningMsg = 'Expanded and Factored cannot be combined together'
     } else if (
       selectedOptions.isMixedFraction &&
-      selectedOptions.isSimplified
+      selectedOptions.isImproperFraction
     ) {
       flag = true
-      warningMsg = 'Simplified and Mixed Fraction cannot be combined together'
+      warningMsg =
+        'Mixed Fraction and Improper fraction cannot be combined together'
     }
     return [flag, warningMsg]
   }

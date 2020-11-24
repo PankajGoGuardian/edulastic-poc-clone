@@ -1,10 +1,11 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react'
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
 import { AutoComplete, Input, Icon } from 'antd'
+import MultiSelectSearch from '../../../../common/components/widgets/MultiSelectSearch'
 
 // ducks
 import { getOrgDataSelector } from '../../../../../src/selectors/user'
@@ -20,9 +21,10 @@ const SchoolAutoComplete = ({
   schoolList,
   loading,
   loadSchoolList,
-  selectedSchoolId,
   selectCB,
+  selectedSchoolId,
 }) => {
+  const schoolFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
 
@@ -83,6 +85,14 @@ const SchoolAutoComplete = ({
   }, [searchTerms])
 
   // build dropdown data
+  // const dropdownData = (searchTerms.text ? schoolList : searchResult).map(
+  //   (item) => {
+  //     return {
+  //       key: item._id,
+  //       title: item.name,
+  //     }
+  //   }
+  // )
   const dropdownData = [
     <AutoComplete.OptGroup key="schoolList" label="Schools [Type to search]">
       {(searchTerms.text ? schoolList : searchResult).map((item) => (
@@ -94,6 +104,17 @@ const SchoolAutoComplete = ({
   ]
 
   return (
+    // <MultiSelectSearch
+    //   label="School"
+    //   el={schoolFilterRef}
+    //   onChange={(e) => selectCB(e)}
+    //   onSearch={onSearch}
+    //   onBlur={onBlur}
+    //   onFocus={getDefaultSchoolList}
+    //   value={selectedSchoolId}
+    //   options={dropdownData}
+    //   loading={loading}
+    // />
     <AutoCompleteContainer>
       <AutoComplete
         getPopupContainer={(trigger) => trigger.parentNode}

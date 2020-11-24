@@ -25,7 +25,7 @@ describe(`${FileHelper.getSpecName(
 
   const { itemKeys } = STUDENT_ATTEMPT
   const questionTypeMap = lcb.getQuestionTypeMap(itemKeys, questionData, {})
-  const testid = '5ef634dddbb4080007c17061'
+  const testid = '5fbd12a3cee22b000878a039'
   before('> test creation', () => {
     cy.deleteAllAssignments(student, teacher)
     cy.login('teacher', teacher, password)

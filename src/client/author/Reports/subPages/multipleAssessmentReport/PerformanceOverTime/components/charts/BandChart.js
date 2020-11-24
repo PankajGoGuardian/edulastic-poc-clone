@@ -74,7 +74,7 @@ const getChartSpecifics = (analyseBy, bandInfo) => {
       barsData.push({
         key: `${value.name} Percentage`,
         stackId: 'a',
-        fill: getHSLFromRange1(round((100 / (bandInfo.length - 1)) * index)),
+        fill: value.color,
         unit: '%',
         name: value.name,
       })

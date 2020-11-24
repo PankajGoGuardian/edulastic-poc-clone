@@ -28,7 +28,7 @@ describe(`${FileHelper.getSpecName(
     const RED = 'rgb(253, 224, 232)'
     const GREEN = 'rgb(226, 252, 243)'
     const CLEAR = 'rgb(216, 219, 222)'
-    const BLUE = 'rgba(216, 219, 222, 0.5)'
+    const MAGENTA = 'rgb(255, 0, 255)'
 
     context(' > Create basic question and validate.', () => {
       before('visit items page and select question type', () => {
@@ -243,7 +243,7 @@ describe(`${FileHelper.getSpecName(
               if (index < maxSelectionValue) {
                 cy.get('@item')
                   .should('have.css', 'background-color')
-                  .and('eq', BLUE)
+                  .and('eq', MAGENTA)
               } else {
                 cy.get('@item')
                   .should('have.css', 'background-color')
@@ -270,7 +270,7 @@ describe(`${FileHelper.getSpecName(
 
               cy.get('@item')
                 .should('have.css', 'background-color')
-                .and('eq', BLUE)
+                .and('eq', MAGENTA)
             })
         })
         // it(" > should be able to check and uncheck hover state option", () => {

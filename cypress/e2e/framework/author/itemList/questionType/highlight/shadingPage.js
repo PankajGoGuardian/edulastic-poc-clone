@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable class-methods-use-this */
 import EditToolBar from '../common/editToolBar'
 import Header from '../../itemDetail/header'
@@ -142,7 +143,7 @@ class ShadingPage {
         .find(`ul > li`)
         .eq(index)
         .should('have.css', 'background-color')
-        .and('eq', queColor.SHADING_SELECT)
+        .and('eq', queColor.SHADING_SELECT_1)
     } else {
       this.getShades()
         .eq(1)
@@ -173,7 +174,7 @@ class ShadingPage {
         .find(`ul > li`)
         .eq(index)
         .should('have.css', 'background-color')
-        .and('eq', queColor.SHADING_SELECT)
+        .and('eq', queColor.SHADING_SELECT_1)
     } else {
       this.getShades()
         .eq(0)
@@ -186,7 +187,7 @@ class ShadingPage {
         .find(`ul > li`)
         .eq(index)
         .should('have.css', 'background-color')
-        .and('eq', queColor.SHADING_SELECT)
+        .and('eq', queColor.SHADING_SELECT_1)
     }
   }
 
@@ -297,7 +298,6 @@ class ShadingPage {
   }
 
   selectMethod(option) {
-    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`
     cy.get('body')
       .contains('Method')
       .parent()
@@ -362,7 +362,7 @@ class ShadingPage {
           .eq(cell)
           .click()
           .should('have.css', 'background-color')
-          .and('eq', queColor.SHADING_SELECT)
+          .and('eq', queColor.SHADING_SELECT_1)
       })
     } else {
       hideArray.forEach((cell) => {

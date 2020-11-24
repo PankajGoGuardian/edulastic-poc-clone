@@ -281,6 +281,7 @@ export const SET_UPDATING_TEST_FOR_REGRADE_STATE =
   '[test] set updating test for regrade state'
 export const SET_NEXT_PREVIEW_ITEM = '[test] set next preview item'
 export const GET_TESTID_FROM_VERSIONID = '[test] get testId from versionId'
+export const SET_REGRADE_FIRESTORE_DOC_ID = '[test] set regrade firestore docId'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -335,6 +336,9 @@ export const setAutoselectItemsFetchingStatusAction = createAction(
   SET_AUTOSELECT_ITEMS_FETCHING_STATUS
 )
 export const setRegradingStateAction = createAction(SET_REGRADING_STATE)
+export const setRegradeFirestoreDocId = createAction(
+  SET_REGRADE_FIRESTORE_DOC_ID
+)
 export const setEditEnableAction = createAction(SET_EDIT_ENABLE)
 export const setCurrentAnnotationToolAction = createAction(
   SET_CURRENT_ANNOTATION_TOOL
@@ -482,6 +486,11 @@ export const playlistStateSelector = (state) => state.playlist
 export const getPassageItemsCountSelector = createSelector(
   stateSelector,
   (state) => state.passageItems.length
+)
+
+export const getRegradeFirebaseDocIdSelector = createSelector(
+  stateSelector,
+  (state) => state.regradeFirestoreDocId
 )
 
 export const getTestSelector = createSelector(
@@ -777,6 +786,7 @@ const initialState = {
   annotationsStack: [],
   updatingTestForRegrade: false,
   nextItemId: null,
+  regradeFirestoreDocId: '',
 }
 
 export const testTypeAsProfileNameType = {
@@ -1264,6 +1274,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         nextItemId: payload,
+      }
+    case SET_REGRADE_FIRESTORE_DOC_ID:
+      return {
+        ...state,
+        regradeFirestoreDocId: payload,
       }
     default:
       return state
@@ -1801,10 +1816,12 @@ function* updateRegradeDataSaga({ payload }) {
   try {
     yield put(setRegradingStateAction(true))
     yield call(testsApi.publishTest, payload.newTestId)
-    yield call(assignmentApi.regrade, payload)
-    notification({ type: 'success', messageKey: 'successUpdate' })
-    yield put(setEditEnableAction(false))
-    yield put(push(`/author/regrade/${payload.newTestId}/success`))
+    const { message, firestoreDocId } = yield call(
+      assignmentApi.regrade,
+      payload
+    )
+    yield put(setRegradeFirestoreDocId(firestoreDocId))
+    notification({ type: 'info', msg: message })
   } catch (err) {
     const {
       data: { message: errorMessage },
@@ -1814,6 +1831,7 @@ function* updateRegradeDataSaga({ payload }) {
       type: 'error',
       msg: errorMessage || 'Unable to publish & regrade.',
     })
+    yield put(setRegradeFirestoreDocId(''))
   } finally {
     yield put(setRegradingStateAction(false))
   }

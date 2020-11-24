@@ -88,15 +88,16 @@ const RealTimeV2HookWrapper = ({
   testId,
   regradedAssignment,
   regradedRealtimeAssignment,
+  groupId,
 }) => {
   let topics = [
     `student_assessment:user:${userId}`,
-    `student_assessment:test:${testId}`,
+    `student_assessment:test:${testId}:group:${groupId}`,
   ]
   if (regradedAssignment?.newTestId) {
     topics = [
       ...topics,
-      `student_assessment:test:${regradedAssignment?.newTestId}`,
+      `student_assessment:test:${regradedAssignment?.newTestId}:group:${groupId}`,
     ]
   }
   useRealtimeV2(topics, {
@@ -662,6 +663,7 @@ const AssessmentContainer = ({
         <RealTimeV2HookWrapper
           userId={userId}
           testId={testId}
+          groupId={groupId}
           regradedAssignment={regradedAssignment}
           regradedRealtimeAssignment={regradedRealtimeAssignment}
         />

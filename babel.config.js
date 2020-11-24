@@ -37,4 +37,10 @@ babelPreset.plugins.push.apply(babelPreset.plugins, [
   ],
 ])
 
+babelPreset.env = {
+  "test": {
+    "plugins": [ "istanbul" ]
+  }
+}
+
 module.exports = babelPreset

@@ -1,6 +1,8 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
+/* eslint-disable max-len */
 import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
 import TestReviewTab from '../../../../framework/author/tests/testDetail/testReviewTab'
-import TestAddItemTab from '../../../../framework/author/tests/testDetail/testAddItemTab'
+// import TestAddItemTab from '../../../../framework/author/tests/testDetail/testAddItemTab'
 import TestAssignPage from '../../../../framework/author/tests/testDetail/testAssignPage'
 import AssignmentsPage from '../../../../framework/student/assignmentsPage'
 import StudentTestPage from '../../../../framework/student/studentTestPage'
@@ -9,7 +11,7 @@ import LiveClassboardPage from '../../../../framework/author/assignments/LiveCla
 import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
 import TestSummayTab from '../../../../framework/author/tests/testDetail/testSummaryTab'
 import { attemptTypes } from '../../../../framework/constants/questionTypes'
-import ItemListPage from '../../../../framework/author/itemList/itemListPage'
+// import ItemListPage from '../../../../framework/author/itemList/itemListPage'
 import PreviewItemPopup from '../../../../framework/author/itemList/itemPreview'
 import FileHelper from '../../../../framework/util/fileHelper'
 import PlayListLibrary from '../../../../framework/author/playlist/playListLibrary'
@@ -21,7 +23,7 @@ const ITEMS = testData[TEST].itemKeys
 const grades = testData[TEST].grade
 const subjects = testData[TEST].subject
 const daTestId = '5edf954e53e7f00008aefc43'
-let newItemId
+// let newItemId
 const itemKeysInTest = []
 ITEMS.forEach((ele) => {
   itemKeysInTest.push(ele.split('.')[0])
@@ -34,16 +36,16 @@ describe(`${FileHelper.getSpecName(
   const studentTestPage = new StudentTestPage()
   const testReviewTab = new TestReviewTab()
   const lcb = new LiveClassboardPage()
-  const testAddItemTab = new TestAddItemTab()
+  // const testAddItemTab = new TestAddItemTab()
   const testAssignPage = new TestAssignPage()
   const testSummayTab = new TestSummayTab()
   const regrade = new Regrade()
-  const item = new ItemListPage()
+  // const item = new ItemListPage()
   const itemPreview = new PreviewItemPopup()
   const playlist = new PlayListLibrary()
 
   const authorAssignmentPage = new AuthorAssignmentPage()
-  const newItemKey = 'MCQ_STD.default'
+  // const newItemKey = 'MCQ_STD.default'
   // const updatedPoints = '6'
   // const isAssigned = true
   const Teacher = {
@@ -289,14 +291,19 @@ describe(`${FileHelper.getSpecName(
         before('> click reports summary button', () => {
           cy.login('teacher', Teacher.email, Teacher.pass)
           testLibraryPage.sidebar.clickOnAssignment()
-          authorAssignmentPage.clickAssignmentSummary()
+          authorAssignmentPage.clickActionsBytestid(OriginalTestId)
         })
-        it('> verify navigation', () => {
-          cy.url().should(
+        it('> verify reportr summary navigation', () => {
+          authorAssignmentPage
+            .getOptionInDropDownByAttribute(dropdownOptions[8])
+            .should('have.attr', 'aria-disabled', 'true')
+          /* 
+          Above will be enabled after 7-10 min, after atleast one student is graded
+            cy.url().should(
             'contain',
             `author/reports/performance-by-students/test/${OriginalTestId}`
           )
-          cy.get('[title="Insights"]').should('exist')
+          cy.get('[title="Insights"]').should('exist') */
         })
       })
 

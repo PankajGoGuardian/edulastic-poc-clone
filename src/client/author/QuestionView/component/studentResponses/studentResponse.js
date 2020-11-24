@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { testActivity, testActivityStatus } from '@edulastic/constants'
+import { throttle } from 'lodash'
 import {
   CircularDiv,
   ResponseCard,
@@ -16,15 +17,19 @@ const StudentResponse = ({
   onClick,
   isPresentationMode,
 }) => {
+  const [isSticky, setIsSticky] = useState(false)
+
   const showFakeUser = (student) => (
     <i className={`fa fa-${student.icon}`} style={{ color: student.color }} />
   )
   const containerRef = useRef(null)
+  const elementHeightRef = useRef(null)
 
   useEffect(() => {
     if (containerRef?.current) {
       const MainContentWrapper = containerRef.current.parentElement
-      const setPosition = () => {
+      elementHeightRef.current = containerRef.current.clientHeight
+      const setPosition = throttle(() => {
         if (
           MainContentWrapper.scrollTop > 330 &&
           !Array.from(containerRef.current.classList).includes(
@@ -32,6 +37,7 @@ const StudentResponse = ({
           )
         ) {
           containerRef.current.classList.add('fixed-response-sub-header')
+          setIsSticky(true)
         } else if (
           MainContentWrapper.scrollTop <= 330 &&
           Array.from(containerRef.current.classList).includes(
@@ -39,37 +45,41 @@ const StudentResponse = ({
           )
         ) {
           containerRef.current.classList.remove('fixed-response-sub-header')
+          setIsSticky(false)
         }
-      }
+      }, 200)
       MainContentWrapper.addEventListener('scroll', setPosition)
       return () => MainContentWrapper.removeEventListener('scroll', setPosition)
     }
   }, [containerRef])
 
   return (
-    <div ref={containerRef}>
-      <StyledFlexContainer>
-        <ResponseCard>
-          <ResponseCardTitle>Student Responses</ResponseCardTitle>
-          {_testActivity
-            .filter(
-              ({ status, UTASTATUS }) =>
-                [SUBMITTED, IN_PROGRESS].includes(status) &&
-                UTASTATUS !== testActivityStatus.NOT_STARTED
-            )
-            .map((student, index) => (
-              <CircularDiv
-                onClick={() => onClick(student.studentId)}
-                key={index}
-              >
-                {isPresentationMode
-                  ? showFakeUser(student)
-                  : getAvatarName(student.studentName)}
-              </CircularDiv>
-            ))}
-        </ResponseCard>
-      </StyledFlexContainer>
-    </div>
+    <>
+      <div ref={containerRef}>
+        <StyledFlexContainer>
+          <ResponseCard>
+            <ResponseCardTitle>Student Responses</ResponseCardTitle>
+            {_testActivity
+              .filter(
+                ({ status, UTASTATUS }) =>
+                  [SUBMITTED, IN_PROGRESS].includes(status) &&
+                  UTASTATUS !== testActivityStatus.NOT_STARTED
+              )
+              .map((student, index) => (
+                <CircularDiv
+                  onClick={() => onClick(student.studentId)}
+                  key={index}
+                >
+                  {isPresentationMode
+                    ? showFakeUser(student)
+                    : getAvatarName(student.studentName)}
+                </CircularDiv>
+              ))}
+          </ResponseCard>
+        </StyledFlexContainer>
+      </div>
+      {isSticky && <div style={{ height: `${elementHeightRef.current}px` }} />}
+    </>
   )
 }
 

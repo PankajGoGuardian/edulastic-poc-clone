@@ -16,9 +16,10 @@ export const doValidate = (params, endpoint, method = 'post') =>
       notification({ msg: errorData?.message || 'Something went wrong' })
     )
 
-export const submit = (params, endpoint, method) =>
+export const submit = (params, endpoint, method, isSlowApi) =>
   api
     .callApi({
+      useSlowApi: isSlowApi,
       url: endpoint,
       method,
       data: params,

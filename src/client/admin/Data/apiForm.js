@@ -376,6 +376,7 @@ export const apiForms = [
     name: 'Move Teacher',
     endPoint: 'admin-tool/move-teacher',
     method: 'post',
+    slowApi: true,
     fields: [
       {
         name: 'srcSchoolId',

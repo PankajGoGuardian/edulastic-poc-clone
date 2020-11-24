@@ -57,6 +57,7 @@ const ApiForm = () => {
     }
   }
   const handleOnSave = (data, sectionId) => {
+    const isSlowApi = option.slowApi || false
     if (id === API_OPTIONS.manageClass) {
       return handleClassSearch(data, sectionId)
     }
@@ -90,7 +91,7 @@ const ApiForm = () => {
           return acc
         }, {})
       }
-      submit(data, option.endPoint, option.method).then((res) => {
+      submit(data, option.endPoint, option.method, isSlowApi).then((res) => {
         if (res?.result) {
           if (res.result.success || res.status === 200) {
             if (

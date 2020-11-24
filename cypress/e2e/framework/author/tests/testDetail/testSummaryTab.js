@@ -34,16 +34,34 @@ export default class TestSummayTab {
     if (clear) {
       this.clearGrades()
     }
-    this.getTestGradeSelect().click({ force: true })
-    cy.get('.ant-select-dropdown-menu-item')
-      .contains(grade)
+    this.getTestGradeSelect()
       .click({ force: true })
-    this.getTestGradeSelect().find('input').type('{esc}', { force: true })
+      .then(($ele) => {
+        // cy.get('.ant-select-dropdown-menu-item')
+        //   .contains(grade)
+        //   .click({ force: true })
+        cy.get('.ant-select-dropdown-menu-item').then(($options) => {
+          cy.wrap(
+            $options
+              // eslint-disable-next-line func-names
+              .filter(function () {
+                return Cypress.$(this).text() === grade
+              })
+          ).click({ force: true })
+        })
+        this.closeDropDowns($ele)
+      })
   }
 
-  setName = (testname) => {
-    this.getTestName().clear().type(testname)
-  }
+  setName = (testname) =>
+    this.getTestName()
+      .as('text-box')
+      .invoke('attr', 'value')
+      .then((val) => {
+        cy.get('@text-box')
+          .type(`{backspace}`.repeat(val.length + 1))
+          .type(`{selectall}${testname}`)
+      })
 
   setDescription = (description) =>
     this.getTestDescription().clear().type(description)
@@ -58,12 +76,14 @@ export default class TestSummayTab {
     if (clear) {
       this.clearSubjects()
     }
-    this.getTestSubjectSelect().click({ force: true })
-    cy.get('.ant-select-dropdown-menu-item')
-      .contains(subject)
+    this.getTestSubjectSelect()
       .click({ force: true })
-    this.header.clickOnDescription()
-    // cy.focused().blur();
+      .then(($ele) => {
+        cy.get('.ant-select-dropdown-menu-item')
+          .contains(subject)
+          .click({ force: true })
+        this.closeDropDowns($ele)
+      })
   }
 
   selectCollection = (collection, clear = false) => {
@@ -73,12 +93,14 @@ export default class TestSummayTab {
           cy.wrap($ele.find('.anticon-close')).click({ multiple: true })
       })
     }
-    this.getTestCollectionSelect().click({ force: true })
-    cy.get('.ant-select-dropdown-menu-item')
-      .contains(collection)
+    this.getTestCollectionSelect()
       .click({ force: true })
-    this.header.clickOnDescription()
-    // cy.focused().blur();
+      .then(($ele) => {
+        cy.get('.ant-select-dropdown-menu-item')
+          .contains(collection)
+          .click({ force: true })
+        this.closeDropDowns($ele)
+      })
   }
 
   addTags = (tags) => {
@@ -111,5 +133,9 @@ export default class TestSummayTab {
       .find('li.ant-select-selection__choice')
       .should('contain', subject)
   }
+
+  closeDropDowns = (textBar) =>
+    cy.wrap(textBar).find('input').type('{esc}', { force: true })
+
   // *** APPHELPERS END ***
 }

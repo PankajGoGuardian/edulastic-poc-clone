@@ -1,6 +1,5 @@
 import CypressHelper from '../../util/cypressHelpers'
-import TeacherSideBar from '../SideBarPage'
-import TeacherManageClassPage from '../manageClassPage'
+import Helpers from '../../util/Helpers'
 
 export default class GroupPopup {
   // *** ELEMENTS START ***
@@ -19,7 +18,9 @@ export default class GroupPopup {
   getSelectedStudentsContainer = () => cy.get('[data-cy="students-left"]')
 
   getSelectedStudentByName = (studentName) =>
-    this.getSelectedStudentsContainer().find(`[data-cy="${studentName}"]`)
+    this.getSelectedStudentsContainer().find(
+      `[data-cy="${(studentName)}"]`
+    )
 
   getGroupStudentByName = (studentName) =>
     this.getStudentsAlreadyInGroupContainer().find(`[data-cy="${studentName}"]`)
@@ -43,7 +44,7 @@ export default class GroupPopup {
 
   clickOnCancelGroupCreation = () => cy.get('[data-cy="cancelGroup"]').click()
 
-  clickOnUpdate = (isNew = true) => {
+  clickOnUpdate = () => {
     cy.server()
     cy.route('POST', '**/group').as('saveGroup')
     cy.route('POST', '**/enrollment/student').as('addEnrollment')

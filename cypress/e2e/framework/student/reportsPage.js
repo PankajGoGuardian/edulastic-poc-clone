@@ -46,15 +46,19 @@ class ReportsPage {
   getAttemptsByTestId = (id) =>
     this.getTestCardByTesyId(id).find('[data-cy="attemptClick"]')
 
+  getQUestionInStudentReportPage = () =>
+    cy.get('.recharts-layer').eq(0).find('tspan').contains('Q1')
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
   clickOnReviewButtonButton() {
-    cy.server()
-    cy.route('GET', '**/test-activity/**').as('testactivity')
     this.getReviewButton().should('be.visible').click({ force: true })
-    cy.wait('@testactivity')
+    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 }).click({
+      force: true,
+    })
+    cy.get('[data-cy="questionNumber"]', { timeout: 60000 })
   }
 
   selectQuestion = (queNum) => {
@@ -71,7 +75,16 @@ class ReportsPage {
     this.getTestCardByTesyId(id)
       .find('[data-cy="reviewButton"]')
       .click({ force: true })
-    cy.get('[data-cy="questionNumber"]')
+
+    cy.get('[data-cy="view-response-in-header"]', { timeout: 60000 }).click({
+      force: true,
+    })
+
+    cy.get('[data-cy="questionNumber"]', { timeout: 60000 })
+  }
+
+  verifyReviewPaused = () => {
+    this.getReviewButton().contains('PAUSED').should('exist')
   }
 
   // *** ACTIONS END ***
@@ -93,7 +106,10 @@ class ReportsPage {
   verifyStatusIs = (status) =>
     this.getStatus().should(($ele) => {
       const studentStatus = Cypress.$($ele).text().toLowerCase().trim()
-      expect(studentStatus).to.eq(status.toLowerCase())
+      expect(
+        studentStatus,
+        'verify assingment status on student grade page'
+      ).to.eq(status.toLowerCase())
     })
 
   validateStats(attemptNum, attempt, score, percent, totalAttempt) {

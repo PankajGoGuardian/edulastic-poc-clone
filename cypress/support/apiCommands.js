@@ -1,15 +1,18 @@
+/* eslint-disable func-names */
+/* eslint-disable cypress/no-unnecessary-waiting */
+/* eslint-disable no-shadow */
 /// <reference types="Cypress"/>
 
 import uuidv4 from 'uuid/v4'
-import { getAccessToken } from '@edulastic/api/src/utils/Storage'
-
+import { getAccessToken } from '../../packages/api/src/utils/Storage'
 
 const ENV = Cypress.env('ENVIRONMENT') || 'local'
+const AGENT = Cypress.env('AGENT') ? `-${Cypress.env('AGENT')}` : ''
 const BASE_URL = Cypress.config('API_URL')
 
 const { _ } = Cypress
 const fixtureFolderPath = 'cypress/fixtures'
-const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData-${ENV}.json`
+const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData-${ENV}${AGENT}.json`
 const daCredential = {
   username: 'da.automation@snapwiz.com',
   password: 'automation',
@@ -202,12 +205,15 @@ Cypress.Commands.add(
 Cypress.Commands.add('saveItemDetailToDelete', (itemId) => {
   if (itemId) {
     cy.readFile(`${deleteTestDataFile}`).then((json) => {
+      const token = getAccessToken()
       if (!json.testItems) json.testItems = []
-      const item = {
-        _id: itemId,
-        authToken: getAccessToken(),
-      }
-      json.testItems.push(item)
+      if (!Cypress._.isArray(itemId)) itemId = [itemId]
+      itemId.forEach((item) => {
+        json.testItems.push({
+          _id: item,
+          authToken: token,
+        })
+      })
       cy.writeFile(`${deleteTestDataFile}`, json)
     })
   }
@@ -274,10 +280,7 @@ Cypress.Commands.add('deleteTestData', () => {
         // remove school assigned to user
         if (testData.schools) {
           testData.schools.forEach((school) => {
-            cy.deleteSchool({
-              authToken: school.authToken,
-              deleteBody: school,
-            })
+            cy.deleteSchool({ authToken: school.authToken, deleteBody: school })
           })
           delete testData.schools
         }
@@ -357,8 +360,9 @@ Cypress.Commands.add('deleteTestData', () => {
 
 Cypress.Commands.add('createTestDataFile', () => {
   cy.task('readFileContent', deleteTestDataFile).then((fileContent) => {
-    const testData = fileContent !== null ? JSON.parse(fileContent) : {}
-    cy.writeFile(deleteTestDataFile, testData)
+    if (fileContent === null) {
+      cy.writeFile(deleteTestDataFile, {})
+    }
   })
 })
 
@@ -501,9 +505,9 @@ Cypress.Commands.add('saveSchoolToDelete', (schoolJson) => {
 
 Cypress.Commands.add(
   'getAllTestsAndDelete',
-  (publisher, password = 'snapwiz', testsToExclude = []) => {
+  (publisher, password = 'snapwiz', testsToExclude = [], filters = {}) => {
     cy.setToken(publisher, password).then(() => {
-      cy.getAllOwnTests().then((testIds) => {
+      cy.getAllOwnTests(filters).then((testIds) => {
         // console.log("all tests - authored by me : ", testIds);
         testIds.forEach((testObj) => {
           if (!testsToExclude.includes(testObj._id)) cy.deleteTest(testObj)
@@ -515,9 +519,9 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'getAllItemsAndDelete',
-  (publisher, password = 'snapwiz', itemsToExclude = []) => {
+  (publisher, password = 'snapwiz', itemsToExclude = [], filters = {}) => {
     cy.setToken(publisher, password).then(() => {
-      cy.getAllOwnItems().then((itemIds) => {
+      cy.getAllOwnItems(filters).then((itemIds) => {
         // console.log("all items - authored by me : ", itemIds);
         itemIds.forEach((itemObj) => {
           if (!itemsToExclude.includes(itemObj._id)) cy.deleteItem(itemObj)
@@ -527,90 +531,180 @@ Cypress.Commands.add(
   }
 )
 
-Cypress.Commands.add('getAllOwnTests', (access_token = getAccessToken()) => {
-  const testIds = []
-  return cy
-    .request({
-      url: `${BASE_URL}/search/tests`,
-      method: 'POST',
-      body: {
-        search: {
-          questionType: '',
-          depthOfKnowledge: '',
-          authorDifficulty: '',
-          collections: [],
-          curriculumId: '',
-          status: '',
-          standardIds: [],
-          grades: [],
-          subject: '',
-          tags: [],
-          searchString: [],
-          filter: 'AUTHORED_BY_ME',
-          createdAt: '',
+Cypress.Commands.add(
+  'getAllOwnTests',
+  (filters = {}, access_token = getAccessToken()) => {
+    const testIds = []
+    /* filters:{
+    collections:[collection_1_id,collection_2_id....]
+  } */
+    const { collections = [] } = filters
+    return cy
+      .request({
+        url: `${BASE_URL}/search/tests`,
+        method: 'POST',
+        body: {
+          search: {
+            questionType: '',
+            depthOfKnowledge: '',
+            authorDifficulty: '',
+            collections,
+            curriculumId: '',
+            status: '',
+            standardIds: [],
+            grades: [],
+            subject: '',
+            tags: [],
+            searchString: [],
+            filter: 'AUTHORED_BY_ME',
+            createdAt: '',
+          },
+          page: 1,
+          limit: NO_ITEMS_TO_DELETE,
         },
-        page: 1,
-        limit: NO_ITEMS_TO_DELETE,
-      },
-      headers: {
-        authorization: access_token,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(({ body }) => {
-      const tests = body.result.hits.hits
-      tests.forEach((testObj) => {
-        const test = {}
-        test._id = testObj._id
-        test.authToken = access_token
-        testIds.push(test)
+        headers: {
+          authorization: access_token,
+          'Content-Type': 'application/json',
+        },
       })
-    })
-    .then(() => testIds)
+      .then(({ body }) => {
+        const tests = body.result.hits.hits
+        tests.forEach((testObj) => {
+          const test = {}
+          test._id = testObj._id
+          test.authToken = access_token
+          testIds.push(test)
+        })
+      })
+      .then(() => testIds)
+  }
+)
+
+Cypress.Commands.add(
+  'getAllOwnItems',
+  (filters = {}, access_token = getAccessToken()) => {
+    const itemIds = []
+    /* filters:{
+    collections:[collection_1_id,collection_2_id....]
+  } */
+    const { collections = [] } = filters
+    return cy
+      .request({
+        url: `${BASE_URL}/search/items`,
+        method: 'POST',
+        body: {
+          search: {
+            subject: [],
+            curriculumId: '',
+            standardIds: [],
+            questionType: '',
+            depthOfKnowledge: '',
+            authorDifficulty: '',
+            collections,
+            status: '',
+            grades: [],
+            tags: [],
+            authoredByIds: [],
+            filter: 'AUTHORED_BY_ME',
+            createdAt: '',
+          },
+          sort: {
+            sortBy: 'recency',
+            sortDir: 'desc',
+          },
+          page: 1,
+          limit: NO_ITEMS_TO_DELETE,
+        },
+        headers: {
+          authorization: access_token,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ body }) => {
+        const tests = body.result.hits.hits
+        tests.forEach((testObj) => {
+          const item = {}
+          item._id = testObj._id
+          item.authToken = access_token
+          itemIds.push(item)
+        })
+      })
+      .then(() => itemIds)
+  }
+)
+
+Cypress.Commands.add('deletePlaylistEntry', (playlistId) => {
+  cy.readFile(`${deleteTestDataFile}`).then((dataToDelete) => {
+    if (dataToDelete.playlist) {
+      const newPlaylist = dataToDelete.playlist.filter(
+        (ele) => ele._id !== playlistId
+      )
+      delete dataToDelete.playlist
+      dataToDelete.playlist = newPlaylist
+      cy.writeFile(`${deleteTestDataFile}`, dataToDelete)
+    }
+  })
 })
 
-Cypress.Commands.add('getAllOwnItems', (access_token = getAccessToken()) => {
-  const itemIds = []
-  return cy
-    .request({
-      url: `${BASE_URL}/search/items`,
-      method: 'POST',
-      body: {
-        search: {
-          subject: [],
-          curriculumId: '',
-          standardIds: [],
-          questionType: '',
-          depthOfKnowledge: '',
-          authorDifficulty: '',
-          collections: [],
-          status: '',
-          grades: [],
-          tags: [],
-          authoredByIds: [],
-          filter: 'AUTHORED_BY_ME',
-          createdAt: '',
-        },
-        sort: {
-          sortBy: 'recency',
-          sortDir: 'desc',
-        },
-        page: 1,
-        limit: NO_ITEMS_TO_DELETE,
-      },
-      headers: {
-        authorization: access_token,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(({ body }) => {
-      const tests = body.result.hits.hits
-      tests.forEach((testObj) => {
-        const item = {}
-        item._id = testObj._id
-        item.authToken = access_token
-        itemIds.push(item)
+Cypress.Commands.add(
+  'getAllPlaylistsAndDelete',
+  (publisher, password = 'snapwiz', playlistsToExclude = [], filters = {}) => {
+    cy.setToken(publisher, password).then(() => {
+      cy.getAllOwnPlaylists(filters).then((playlists) => {
+        playlists.forEach((playlistObj) => {
+          if (!playlistsToExclude.includes(playlistObj._id))
+            cy.deletePlayList(playlistObj)
+        })
       })
     })
-    .then(() => itemIds)
-})
+  }
+)
+
+Cypress.Commands.add(
+  'getAllOwnPlaylists',
+  (filters = {}, access_token = getAccessToken()) => {
+    const playlistids = []
+    const { collections = [] } = filters
+    /* filters:{
+    collections:[collection_1_id,collection_2_id....]
+  } */
+    return cy
+      .request({
+        url: `${BASE_URL}/playlists/search/`,
+        method: 'POST',
+        body: {
+          search: {
+            collections,
+            createdAt: '',
+            filter: 'AUTHORED_BY_ME',
+            grades: [],
+            searchString: [],
+            status: '',
+            subject: [],
+            tags: [],
+            type: '',
+          },
+          sort: {
+            sortBy: 'recency',
+            sortDir: 'desc',
+          },
+          page: 1,
+          limit: NO_ITEMS_TO_DELETE,
+        },
+        headers: {
+          authorization: access_token,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ body }) => {
+        const playlists = body.result.hits.hits
+        playlists.forEach((testObj) => {
+          const playlist = {}
+          playlist._id = testObj._id
+          playlist.authToken = access_token
+          playlistids.push(playlist)
+        })
+      })
+      .then(() => playlistids)
+  }
+)

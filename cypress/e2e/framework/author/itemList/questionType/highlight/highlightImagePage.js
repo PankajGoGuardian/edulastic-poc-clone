@@ -33,7 +33,7 @@ class HighlightImage {
   getQuestionText = () => cy.get('[contenteditable="true"]').first()
 
   changeImageWidth = (width) => {
-    cy.get('[placeholder="Width (px)"]')
+    cy.get('[data-cy="image-width-input"]')
       .click()
       .clear()
       .type('{selectall}')
@@ -43,7 +43,7 @@ class HighlightImage {
   }
 
   changeImageHeight = (height) => {
-    cy.get('[placeholder="Height (px)"]')
+    cy.get('[data-cy="image-height-input"]')
       .click()
       .clear()
       .type('{selectall}')
@@ -54,7 +54,6 @@ class HighlightImage {
 
   addImageAlternative = (altText) => {
     cy.get('[data-cy="image-alternative-input"]')
-      .find('.ant-input')
       .click()
       .clear()
       .type(altText)

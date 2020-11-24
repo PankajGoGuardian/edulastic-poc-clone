@@ -126,29 +126,32 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[...attemptsdata1, ...attemptsdata2].forEach(
-          ({ email, overidden, status }, index) => {
-            it(`> for student ${status} with '${
-              overidden ? '' : 'not '
-            }overidden' assignment`, () => {
-              const maxChecks = overidden ? checkAns1 : checkAns2
-              cy.login('student', email)
-              assignmentsPage.clickOnAssignmentButton()
-              for (let i = 0; i < maxChecks; i++) {
-                studentTestPage.attemptQuestion(
-                  queData.queKey,
-                  attemptTypes.RIGHT,
-                  queData.attemptData
-                )
-                studentTestPage.checkAnsValidateAsRight()
-              }
-              studentTestPage.clickOnCheckAns(true)
-              studentTestPage.clickOnExitTest()
-            })
-          }
-        )
-      })
+      context(
+        `> verify regrdaded no of check ans attempts at student side`,
+        () => {
+          ;[...attemptsdata1, ...attemptsdata2].forEach(
+            ({ email, overidden, status }, index) => {
+              const [titleAdjust, maxChecks] = overidden
+                ? ['', checkAns1]
+                : ['not ', checkAns2]
+              it(`> for student ${status} with '${titleAdjust}overidden' assignment, expected-'${maxChecks} times'`, () => {
+                cy.login('student', email)
+                assignmentsPage.clickOnAssignmentButton()
+                for (let i = 0; i < maxChecks; i++) {
+                  studentTestPage.attemptQuestion(
+                    queData.queKey,
+                    attemptTypes.RIGHT,
+                    queData.attemptData
+                  )
+                  studentTestPage.checkAnsValidateAsRight()
+                }
+                studentTestPage.clickOnCheckAns(true)
+                studentTestPage.clickOnExitTest()
+              })
+            }
+          )
+        }
+      )
     })
   })
 
@@ -184,8 +187,7 @@ describe(`>${FileHelper.getSpecName(
         testlibaryPage.assignPage.clickOnAssign()
         ;[...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status === studentSide.IN_PROGRESS)
-          .forEach((studentdata) => {
-            const { email } = studentdata
+          .forEach(({ email }) => {
             cy.login('student', email)
             assignmentsPage.clickOnAssignmentButton()
             studentTestPage.clickOnExitTest()
@@ -208,27 +210,30 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[...attemptsdata1, ...attemptsdata2].forEach((studentdata, index) => {
-          const { email, overidden, status } = studentdata
-          it(`> for student ${status} with '${
-            overidden ? '' : 'not '
-          }overidden' assignment`, () => {
-            cy.login('student', email)
-            assignmentsPage.clickOnAssignmentButton()
-            for (let i = 0; i < checkAns2; i++) {
-              studentTestPage.attemptQuestion(
-                queData.queKey,
-                attemptTypes.RIGHT,
-                queData.attemptData
-              )
-              studentTestPage.checkAnsValidateAsRight()
+      context(
+        `> verify regraded no of check ans attempts at student side`,
+        () => {
+          ;[...attemptsdata1, ...attemptsdata2].forEach(
+            ({ email, overidden, status }, index) => {
+              const titleAdjust = overidden ? '' : 'not '
+              it(`> for student ${status} with '${titleAdjust}overidden' assignment,exected- '${checkAns2} times'`, () => {
+                cy.login('student', email)
+                assignmentsPage.clickOnAssignmentButton()
+                for (let i = 0; i < checkAns2; i++) {
+                  studentTestPage.attemptQuestion(
+                    queData.queKey,
+                    attemptTypes.RIGHT,
+                    queData.attemptData
+                  )
+                  studentTestPage.checkAnsValidateAsRight()
+                }
+                studentTestPage.clickOnCheckAns(true)
+                studentTestPage.clickOnExitTest()
+              })
             }
-            studentTestPage.clickOnCheckAns(true)
-            studentTestPage.clickOnExitTest()
-          })
-        })
-      })
+          )
+        }
+      )
     })
   })
 })

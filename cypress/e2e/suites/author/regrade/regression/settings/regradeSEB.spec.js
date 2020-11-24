@@ -7,8 +7,6 @@ import {
 } from '../../../../../framework/constants/assignmentStatus'
 import StudentTestPage from '../../../../../framework/student/studentTestPage'
 import AssignmentsPage from '../../../../../framework/student/assignmentsPage'
-import LiveClassboardPage from '../../../../../framework/author/assignments/LiveClassboardPage'
-import AuthorAssignmentPage from '../../../../../framework/author/assignments/AuthorAssignmentPage'
 
 describe(`>${FileHelper.getSpecName(
   Cypress.spec.name
@@ -17,8 +15,6 @@ describe(`>${FileHelper.getSpecName(
   const regrade = new Regrade()
   const studentTestPage = new StudentTestPage()
   const assignmentsPage = new AssignmentsPage()
-  const lcb = new LiveClassboardPage()
-  const authorAssignmentPage = new AuthorAssignmentPage()
 
   const classes = ['Class-1', 'Class-2']
   const teacher = 'teacher.regrade.seb@snapwiz.com'
@@ -32,11 +28,10 @@ describe(`>${FileHelper.getSpecName(
     status: studentSide.IN_PROGRESS,
     name: 'Stu1Class2',
   }
-  const test = '5f11507c2ea21a000808ae3d'
+  const test = '5fb622f2c879ac0007da3522'
 
   let test1
   let test2
-  let assignid2
   let versionedTest1
   let versionedTest2
 
@@ -73,9 +68,7 @@ describe(`>${FileHelper.getSpecName(
         testlibaryPage.assignPage.selectClass(classes[1])
         testlibaryPage.assignPage.showOverRideSetting()
         testlibaryPage.assignPage.setSafeExamBrowser('123465')
-        testlibaryPage.assignPage.clickOnAssign().then((assignobj) => {
-          assignid2 = assignobj[test1]
-        })
+        testlibaryPage.assignPage.clickOnAssign()
         ;[attemptsdata1, attemptsdata2].forEach((attemptsdata, index) => {
           const { email } = attemptsdata
           cy.login('student', email)
@@ -108,12 +101,10 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[attemptsdata1, attemptsdata2].forEach((attemptsdata, index) => {
-          it(`> for student ${attemptsdata.status} with '${
-            index === 0 ? 'not ' : ''
-          }overidden' assignment`, () => {
-            const { email } = attemptsdata
+      context(`> verify regraded SEB at student side`, () => {
+        ;[attemptsdata1, attemptsdata2].forEach(({ status, email }, index) => {
+          const titleAdjust = index === 0 ? 'not ' : ''
+          it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected-'SEB icon to present'`, () => {
             cy.login('student', email)
             assignmentsPage.getStatus()
             assignmentsPage
@@ -197,12 +188,10 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[attemptsdata1, attemptsdata2].forEach((attemptsdata, index) => {
-          it(`> for student ${attemptsdata.status} with '${
-            index === 1 ? 'not ' : ''
-          }overidden' assignment`, () => {
-            const { email } = attemptsdata
+      context(`> verify regraded SEB at student side`, () => {
+        ;[attemptsdata1, attemptsdata2].forEach(({ status, email }, index) => {
+          const titleAdjust = index === 1 ? 'not ' : ''
+          it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected-'SEB icon to not present'`, () => {
             cy.login('student', email)
             assignmentsPage.getStatus()
             cy.wait(500)

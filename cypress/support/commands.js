@@ -2,9 +2,9 @@
 // eslint-disable-next-line spaced-comment
 /// <reference types="Cypress"/>
 import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command'
-import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { userBuilder } from './generate'
 import LoginPage from '../e2e/framework/student/loginPage'
+import { getAccessToken } from '../../packages/api/src/utils/Storage'
 import { getMimetype } from './misc/mimeTypes'
 import DndSimulatorDataTransfer from './misc/dndSimulator'
 import FileHelper from '../e2e/framework/util/fileHelper'
@@ -15,7 +15,7 @@ const screenResolutions = Cypress.config('SCREEN_SIZES')
 const BASE_URL = Cypress.config('API_URL')
 const DEFAULT_USERS = {
   teacher: {
-    username: 'auto.teacher1@snapwiz.com',
+    username: 'auto.teacher2@snapwiz.com',
     password: 'snapwiz',
   },
   student: {
@@ -166,12 +166,19 @@ Cypress.Commands.add(
         Cypress.$('.footerDropdown').click()
         // Cypress.$('[data-cy="footer-dropdown"]').click();
         cy.wait(1000).then(() => {
-          Cypress.$('[data-cy="signout"]').click()
+          if (Cypress.$('[data-cy="signout"]').length) {
+            cy.server()
+            cy.route('POST', '**/logout').as('logout')
+            cy.get('[data-cy="signout"]').click({ force: true })
+            cy.wait('@logout')
+          }
         })
       }
     })
 
-    cy.clearToken()
+    cy.wait(1000).then(() => {
+      cy.clearToken()
+    })
     const login = new LoginPage()
     cy.wait(500).then(() => {
       cy.get('body').then(() => {
@@ -185,13 +192,15 @@ Cypress.Commands.add(
     cy.server()
     cy.route('GET', '**/test-activity/**').as(`testActivity${++login_index}`)
     cy.route('GET', '**curriculum**').as('apiLoad')
-    cy.route('GET', '**assignments**').as('assignment')
+    cy.route('GET', '**assignments**').as(`assignment-${login_index}`)
     cy.route('POST', '**/auth/**').as('auth')
     cy.route('POST', '**/search/courses').as('searchCourse')
     cy.route('GET', '**/dashboard/**').as('teacherDashboard')
     cy.route('GET', '**/api/user-context?name=RECENT_PLAYLISTS').as(
       'curatorDash'
     )
+    // TODO: temp work-around of clearing storage again before login to ensure no redirect url on storage
+    cy.clearToken()
     login.fillLoginForm(postData.username, postData.password)
     login.clickOnSignin()
     cy.wait('@auth')
@@ -200,10 +209,14 @@ Cypress.Commands.add(
       case 'teacher':
         cy.wait('@teacherDashboard')
         cy.wait('@searchCourse')
+        cy.get('[data-cy="Item Bank"]', { timeout: 120000 })
         break
+
       case 'student':
-        cy.wait(`@testActivity${login_index}`, { timeout: 45000 })
+        cy.wait(`@assignment-${login_index}`, { timeout: 120000 })
+        cy.wait(`@testActivity${login_index}`, { timeout: 120000 })
         break
+
       case 'publisher':
       case 'curator':
         cy.wait('@curatorDash')
@@ -211,6 +224,7 @@ Cypress.Commands.add(
       default:
         break
     }
+    cy.route('GET', '**assignments**').as('assignment')
     // conditionally closing pendo guide if pops up
     if (Cypress.$('._pendo-close-guide').length > 0) {
       Cypress.$('._pendo-close-guide').click()
@@ -275,33 +289,34 @@ Cypress.Commands.add(
       }).then(({ body: responseBody }) => {
         const assignments =
           responseBody.result.assignments || responseBody.result
-        const tests = responseBody.result.tests || []
+        //const tests = responseBody.result.tests || []
         assignments.forEach((asgnDO) => {
           const assignment = {}
           assignment._id = asgnDO._id
           assignment.groupId = asgnDO.classId || asgnDO.class[0]._id
+          assignment.testID = asgnDO.testId
           asgnIds.push(assignment)
         })
-        tests.forEach((test) => {
-          if (testsToExclude.indexOf(test._id) === -1) testAssign.push(test._id)
+        asgnIds.forEach((test) => {
+          if (testsToExclude.indexOf(test.testID) === -1) testAssign.push(test)
         })
         console.log('All Assignments = ', asgnIds)
         console.log('All Tests = ', testAssign)
         // TODO: FIX this once it is fixed in UI
-        // asgnIds.forEach(({ _id, groupId }) => {
-        //   cy.request({
-        //     url: `${BASE_URL}/assignments/${_id}/group/${groupId}`, // added groupId as per API change
-        //     method: "DELETE",
-        //     headers: {
-        //       authorization: authToken,
-        //       "Content-Type": "application/json"
-        //     }
-        //   }).then(({ body }) => {
-        //     console.log(`${_id} :: `, body.result);
-        //   });
-        // });
-
         testAssign.forEach((test) => {
+          cy.request({
+            url: `${BASE_URL}/assignments/${test._id}/group/${test.groupId}?testId=${test.testID}`, // added groupId as per API change
+            method: 'DELETE',
+            headers: {
+              authorization: authToken,
+              'Content-Type': 'application/json',
+            },
+            retryOnStatusCodeFailure: true,
+          }).then(({ body }) => {
+            console.log(`${test._id} :: `, body.result)
+          })
+        })
+        /* testAssign.forEach((test) => {
           cy.request({
             url: `${BASE_URL}/test/${test}/delete-assignments`,
             method: 'DELETE',
@@ -311,7 +326,7 @@ Cypress.Commands.add(
             },
             retryOnStatusCodeFailure: true, // cause 502 intermittently and blocks complete suite, now will retry on such occurences
           })
-        })
+        }) */
       })
     })
   }

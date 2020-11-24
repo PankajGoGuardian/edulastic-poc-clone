@@ -16,7 +16,7 @@ import ReportsPage from '../../../../../framework/student/reportsPage'
 
 describe(`>${FileHelper.getSpecName(
   Cypress.spec.name
-)}> regrade settings- 'shuffle questions'`, () => {
+)}> regrade settings- 'evaluation methods'`, () => {
   const testlibaryPage = new TestLibrary()
   const regrade = new Regrade()
   const studentTestPage = new StudentTestPage()
@@ -145,15 +145,16 @@ describe(`>${FileHelper.getSpecName(
         testlibaryPage.assignPage.clickOnAssign().then((assignObj) => {
           assignmentId2 = assignObj[testId2]
         })
-        ;[...attemptsdata1, ...attemptsdata2].forEach((studentdata) => {
-          const { email, status, attempt } = studentdata
-          studentTestPage.attemptAssignment(
-            email,
-            status,
-            attempt,
-            questionTypeMap
-          )
-        })
+        ;[...attemptsdata1, ...attemptsdata2].forEach(
+          ({ email, status, attempt }) => {
+            studentTestPage.attemptAssignment(
+              email,
+              status,
+              attempt,
+              questionTypeMap
+            )
+          }
+        )
       })
     })
 
@@ -177,31 +178,31 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[...attemptsdata1, ...attemptsdata2].forEach((studentdata, index) => {
-          const { email, overidden, status } = studentdata
-          const score = overidden ? '1' : '0'
-          const percent = overidden ? '50' : '0'
-          it(`> for student ${status} with '${
-            overidden ? '' : 'not '
-          }overidden' assignment`, () => {
-            cy.login('student', email)
-            if (status !== studentSide.SUBMITTED) {
-              assignmentsPage.clickOnAssigmentByTestId(versionedTest1)
-              if (status === studentSide.NOT_STARTED)
-                studentTestPage.attemptQuestion(
-                  questionTypeMap.Q1.queKey,
-                  attempt.Q1,
-                  questionTypeMap.Q1.attemptData
-                )
-              studentTestPage.clickOnNext()
-              studentTestPage.submitTest()
-            } else assignmentsPage.sidebar.clickOnGrades()
-            reports.validateStats(1, '1/1', `${score}/2`, percent)
-            reports.clickOnReviewButtonButton()
-            reports.getAchievedScore().should('have.text', score)
-          })
-        })
+      context(`> verify regraded eval method at student side`, () => {
+        ;[...attemptsdata1, ...attemptsdata2].forEach(
+          ({ email, overidden, status }, index) => {
+            const [score, percent, titleAdjust, evalMethod] = overidden
+              ? ['1', '50', '', EVAL_METHODS.PARTIAL]
+              : ['0', '0', 'not ', EVAL_METHODS.ALL_OR_NOTHING]
+            it(`> for student ${status} with '${titleAdjust}overidden' assignment, expected-'${evalMethod.toLowerCase()}'`, () => {
+              cy.login('student', email)
+              if (status !== studentSide.SUBMITTED) {
+                assignmentsPage.clickOnAssigmentByTestId(versionedTest1)
+                if (status === studentSide.NOT_STARTED)
+                  studentTestPage.attemptQuestion(
+                    questionTypeMap.Q1.queKey,
+                    attempt.Q1,
+                    questionTypeMap.Q1.attemptData
+                  )
+                studentTestPage.clickOnNext()
+                studentTestPage.submitTest()
+              } else assignmentsPage.sidebar.clickOnGrades()
+              reports.validateStats(1, '1/1', `${score}/2`, percent)
+              reports.clickOnReviewButtonButton()
+              reports.getAchievedScore().should('have.text', score)
+            })
+          }
+        )
       })
       ;[attemptsdata1, attemptsdata2].forEach((studentdata, ind) => {
         context(
@@ -220,10 +221,9 @@ describe(`>${FileHelper.getSpecName(
 
             it('> verify card view', () => {
               studentdata.forEach(({ overidden }, ind) => {
-                const score = overidden ? '1' : '0'
-                const attempt = overidden
-                  ? attemptTypes.PARTIAL_CORRECT
-                  : attemptTypes.WRONG
+                const [score, attempt] = overidden
+                  ? ['1', attemptTypes.PARTIAL_CORRECT]
+                  : ['0', attemptTypes.WRONG]
 
                 lcb.verifyScoreByStudentIndex(ind, score, 2)
                 lcb.verifyQuestionCards(ind, [attempt])
@@ -267,10 +267,9 @@ describe(`>${FileHelper.getSpecName(
               lcb.header.clickOnExpressGraderTab()
               expressGraderPage.setToggleToScore()
               studentdata.forEach(({ name, overidden }) => {
-                const score = overidden ? '1' : '0'
-                const attempType = overidden
-                  ? attemptTypes.PARTIAL_CORRECT
-                  : attemptTypes.WRONG
+                const [score, attempType] = overidden
+                  ? ['1', attemptTypes.PARTIAL_CORRECT]
+                  : ['0', attemptTypes.WRONG]
                 expressGraderPage.getGridRowByStudent(name)
                 expressGraderPage
                   .getScoreforQueNum('Q1')
@@ -362,29 +361,29 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[...attemptsdata1, ...attemptsdata2].forEach((studentdata, index) => {
-          const { email, overidden, status } = studentdata
-          it(`> for student ${status} with '${
-            overidden ? '' : 'not '
-          }overidden' assignment`, () => {
-            cy.login('student', email)
-            if (status !== studentSide.SUBMITTED) {
-              assignmentsPage.clickOnAssigmentByTestId(versionedTest2)
-              if (status === studentSide.NOT_STARTED)
-                studentTestPage.attemptQuestion(
-                  questionTypeMap.Q1.queKey,
-                  attempt.Q1,
-                  questionTypeMap.Q1.attemptData
-                )
-              studentTestPage.clickOnNext()
-              studentTestPage.submitTest()
-            } else assignmentsPage.sidebar.clickOnGrades()
-            reports.validateStats(1, '1/1', '0/2', '0')
-            reports.clickOnReviewButtonButton()
-            reports.getAchievedScore().should('have.text', '0')
-          })
-        })
+      context(`> verify regraded eval method at student side`, () => {
+        ;[...attemptsdata1, ...attemptsdata2].forEach(
+          ({ email, overidden, status }, index) => {
+            const titleAdjust = overidden ? '' : 'not '
+            it(`> for student ${status} with '${titleAdjust}overidden' assignment, expected-'all_or_nothing'`, () => {
+              cy.login('student', email)
+              if (status !== studentSide.SUBMITTED) {
+                assignmentsPage.clickOnAssigmentByTestId(versionedTest2)
+                if (status === studentSide.NOT_STARTED)
+                  studentTestPage.attemptQuestion(
+                    questionTypeMap.Q1.queKey,
+                    attempt.Q1,
+                    questionTypeMap.Q1.attemptData
+                  )
+                studentTestPage.clickOnNext()
+                studentTestPage.submitTest()
+              } else assignmentsPage.sidebar.clickOnGrades()
+              reports.validateStats(1, '1/1', '0/2', '0')
+              reports.clickOnReviewButtonButton()
+              reports.getAchievedScore().should('have.text', '0')
+            })
+          }
+        )
       })
       ;[attemptsdata1, attemptsdata2].forEach((studentdata, ind) => {
         context(

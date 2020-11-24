@@ -104,8 +104,7 @@ describe(`>${FileHelper.getSpecName(
             assignmentid2 = assignObj[testId2]
             ;[...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.SUBMITTED)
-              .forEach((studentdata) => {
-                const { name, overidden } = studentdata
+              .forEach(({ name, overidden }) => {
                 testlibaryPage.sidebar.clickOnDashboard()
                 testlibaryPage.sidebar.clickOnAssignment()
                 authorAssignmentPage.clickOnLCBbyTestId(
@@ -203,8 +202,7 @@ describe(`>${FileHelper.getSpecName(
             assignmentid2 = assignObj[testId3]
             ;[...attemptsdata1, ...attemptsdata2]
               .filter(({ status }) => status === studentSide.SUBMITTED)
-              .forEach((studentdata) => {
-                const { name, overidden } = studentdata
+              .forEach(({ name, overidden }) => {
                 testlibaryPage.sidebar.clickOnDashboard()
                 testlibaryPage.sidebar.clickOnAssignment()
                 authorAssignmentPage.clickOnLCBbyTestId(

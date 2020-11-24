@@ -210,7 +210,7 @@ describe(`${FileHelper.getSpecName(
     testLibrary.searchFilters.clearAll()
     testLibrary.searchFilters.getAuthoredByMe()
 
-    itemListPage.getCreateTest().should('not.be.visible')
+    itemListPage.getCreateTest().should('have.attr', 'disabled')
     existingItems.forEach((item) => {
       itemListPage.addItemById(item)
     })

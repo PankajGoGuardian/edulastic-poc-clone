@@ -131,7 +131,8 @@ export function reportVerificationFunction({
             updatedheaders.forEach((header, ind) => {
               studentReportsCardPage.verifyEntryByIndexOfSelectedRow(
                 ind + 1,
-                rowdata[header]
+                rowdata[header],
+                ', '
               )
             })
           })
@@ -161,7 +162,8 @@ export function reportVerificationFunction({
             updatedheaders.forEach((header, ind) => {
               studentReportsCardPage.verifyEntryByIndexOfSelectedRow(
                 ind + 1,
-                rowdata[header]
+                rowdata[header],
+                ','
               )
             })
           })

@@ -98,9 +98,17 @@ const AudioControls = ({
       _howl?.load()
       if (_howl?.state() === 'loading' || _howl?.state() === 'unloaded') {
         _howl.on('load', () => {
-          if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+          stopAllAudios()
+          setTimeout(() => {
+            if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+          }, 200)
         })
-      } else if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+      } else if (!_howl?.playing(_howl?._idRef)) {
+        stopAllAudios()
+        setTimeout(() => {
+          _howl._idRef = _howl?.play()
+        }, 200)
+      }
 
       _howl?.on('playerror', (...args) => {
         reject({ args })
@@ -209,6 +217,8 @@ const AudioControls = ({
     if (loading || !currentHowl) {
       return
     }
+    // stopAllAudios()
+    console.log('going to play', currentHowl, currentHowl._idRef)
 
     if (currentHowl?.playing()) {
       currentHowl.pause()
@@ -220,7 +230,6 @@ const AudioControls = ({
       currentHowl.isPaused = false
       return setCurrentPlayingDetails(qId)
     }
-    stopAllAudios()
     setCurrentPlayingDetails(qId)
 
     if (questionData.type === questionType.MULTIPLE_CHOICE) {

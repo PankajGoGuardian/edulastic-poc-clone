@@ -1584,6 +1584,7 @@ class ClassBoard extends Component {
             {selectedTab === 'questionView' &&
               !isEmpty(testActivity) &&
               !isEmpty(classResponse) &&
+              !isLoading &&
               (selectedQuestion || selectedQuestion === 0) && (
                 <>
                   <QuestionContainer

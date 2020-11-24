@@ -71,7 +71,7 @@ const ClozeMath = ({
   ) {
     actualPreviewMode = 'clear'
   }
-
+  console.log(item)
   const { col } = restProps
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, (draft) => {

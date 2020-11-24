@@ -1,4 +1,4 @@
-import { get, keyBy, values, round, groupBy, isUndefined } from 'lodash'
+import { get, keyBy, values, round, groupBy, isUndefined, uniq } from 'lodash'
 import next from 'immer'
 import { questionType } from '@edulastic/constants'
 import { responseDisplayOption } from './constants'
@@ -303,7 +303,7 @@ export const getChartAndStandardTableData = (
 
   const data = Object.values(standardsTableData).flatMap((std) => {
     // this is to add score or maxScore of all questions belongs to same standard
-    const formatScore = std.reduce(
+    let formatScore = std.reduce(
       (acc, s) => {
         acc.question.push(s.question)
         acc.score += s.score
@@ -328,6 +328,7 @@ export const getChartAndStandardTableData = (
       },
       { question: [], score: 0, maxScore: 0 }
     )
+    formatScore = { ...formatScore, question: uniq(formatScore.question) }
     return {
       ...std[0],
       ...formatScore,

@@ -519,6 +519,7 @@ class Setting extends Component {
                   <AdvancedButton
                     onClick={this.advancedHandler}
                     show={showAdvancedOption}
+                    data-cy="advanced-option"
                   >
                     {showAdvancedOption
                       ? 'HIDE ADVANCED OPTIONS'
@@ -1216,6 +1217,7 @@ class Setting extends Component {
                         <Title>Student Player Skin</Title>
                         <Body smallSize={isSmallSize}>
                           <SelectInputStyled
+                            data-cy="playerSkinType"
                             value={
                               playerSkinType ===
                               playerSkinTypes.edulastic.toLowerCase()

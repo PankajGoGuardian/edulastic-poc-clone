@@ -92,6 +92,9 @@ export const StandardTableContainer = (props) => {
     columns[2].render = (data) => {
       return `${data}`
     }
+    columns[3].render = (data, record) => {
+      return `${data} / ${record.maxScore}`
+    }
     // this checking which column to display/hide as per options selected
     let _columns = [columns[0], columns[1], columns[2]]
     if (columnsFlags.standardsPerformance) {

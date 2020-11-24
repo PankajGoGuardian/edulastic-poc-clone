@@ -42,6 +42,8 @@ export const TOGGLE_UTA_TIME_UPDATE_REQUIRED =
   '[studentAssignments] toggle - uta time update required'
 export const SET_SHOW_RETAKE_MODAL_STATE =
   '[studentAssignments] set show retake modal state'
+export const SET_SELECTED_GROUP_STATUS =
+  '[studentAssignments] set selected group status'
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING)
@@ -51,6 +53,9 @@ export const setFilterAction = createAction(SET_FILTER)
 export const addRealtimeAssignmentAction = createAction(ADD_ASSIGNMENT_REALTIME)
 export const rerenderAssignmentsAction = createAction(RERENDER_ASSIGNMENTS)
 export const removeAssignmentAction = createAction(REMOVE_ASSIGNMENT)
+export const setSelectedGroupStatusAction = createAction(
+  SET_SELECTED_GROUP_STATUS
+)
 export const regradedRealtimeAssignmentAction = createAction(
   REGRADE_ASSIGNMENT_REALTIME
 )
@@ -88,6 +93,7 @@ const initialState = {
   },
   updateUtaTimeType: null,
   showRetakeModal: false,
+  groupStatus: 'all',
 }
 
 // reducers
@@ -174,6 +180,9 @@ export default createReducer(initialState, {
   },
   [SET_SHOW_RETAKE_MODAL_STATE]: (state, { payload }) => {
     state.showRetakeModal = payload
+  },
+  [SET_SELECTED_GROUP_STATUS]: (state, { payload }) => {
+    state.groupStatus = payload
   },
 })
 

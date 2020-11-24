@@ -318,6 +318,7 @@ class ShareModal extends React.Component {
       features,
       userRole,
       hasPlaylistEditAccess = true,
+      testVersionId,
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -330,11 +331,12 @@ class ShareModal extends React.Component {
       !isPlaylist
     ) {
       sharableURL = `${window.location.origin}/public/view-test/${testId}`
+    } else if (isPlaylist) {
+      sharableURL = `${window.location.origin}/author/playlists/${testId}`
     } else {
-      sharableURL = `${window.location.origin}/author/${
-        isPlaylist ? 'playlists' : 'tests/tab/review/id'
-      }/${testId}`
+      sharableURL = `${window.location.origin}/author/tests/verid/${testVersionId}`
     }
+
     const { districts = [{}], schools } = userOrgData
     // share modal is not for student so we can get
     const [{ districtName = '' }] = districts

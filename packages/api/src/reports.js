@@ -4,12 +4,18 @@ import qs from 'qs'
 const api = new API()
 const prefix = '/test-activity/summary'
 
-const fetchReports = (groupId = '', testId = '', assignmentId = '') => {
+const fetchReports = (
+  groupId = '',
+  testId = '',
+  assignmentId = '',
+  groupStatus = 'all'
+) => {
   const config = {
     url: `${prefix}`,
     method: 'get',
     params: {
       groupId,
+      groupStatus,
       testId,
       assignmentId,
     },

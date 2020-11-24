@@ -551,6 +551,16 @@ export const getClasses = createSelector(
 
 export const getCurrentGroup = createSelector(
   ['user.user.orgData.defaultClass'],
+  (r) => {
+    if (r === 'archive') {
+      return ''
+    }
+    return r
+  }
+)
+
+export const getCurrentGroupExactValue = createSelector(
+  ['user.user.orgData.defaultClass'],
   (r) => r
 )
 
@@ -1659,13 +1669,7 @@ function* updateInterestedCurriculumsSaga({ payload }) {
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED })
     console.error(e)
-    if (e.status === 403 && e.response.data?.message) {
-      notification({
-        msg: e.response.data.message,
-      })
-    } else {
-      notification({ messageKey: 'failedToUploadStandardSets' })
-    }
+    notification({ messageKey: 'failedToUploadStandardSets' })
   }
 }
 

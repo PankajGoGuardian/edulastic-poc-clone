@@ -90,14 +90,18 @@ const StudentAutoComplete = ({
       const { key, title } = selectedStudent
       setSearchTerms({ text: title, selectedText: title, selectedKey: key })
     }
-  }, [])
+  }, [selectedStudent])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadStudentListDebounced(query)
     }
   }, [searchTerms])
   useEffect(() => {
-    if (!searchTerms.selectedText && studentList[0]) {
+    if (
+      !searchTerms.selectedText &&
+      !searchTerms.selectedKey &&
+      studentList[0]
+    ) {
       onSelect(studentList[0]._id)
     }
   }, [studentList])

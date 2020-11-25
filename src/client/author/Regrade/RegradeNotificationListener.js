@@ -10,6 +10,7 @@ import {
   getRegradeFirebaseDocIdSelector,
   setEditEnableAction,
   setRegradeFirestoreDocId,
+  setRegradingStateAction,
 } from '../TestPage/ducks'
 
 const collectionName = 'RegradeAssignments'
@@ -19,6 +20,7 @@ const NotificationListener = ({
   history,
   setEditEnable,
   setFirestoreDocId,
+  setRegradingState,
 }) => {
   const userNotification = Fbs.useFirestoreRealtimeDocument(
     (db) => db.collection(collectionName).doc(docId),
@@ -37,14 +39,19 @@ const NotificationListener = ({
     if (userNotification) {
       const { error, processStatus, newTestId } = userNotification
       if (processStatus === 'DONE' && !error) {
-        antdNotification({ type: 'success', messageKey: 'successUpdate' })
+        antdNotification({
+          type: 'success',
+          msg: 'Assignment regrade is successful',
+        })
         setEditEnable(false)
+        setRegradingState(false)
         deleteNotificationDocument()
         history.push(`/author/regrade/${newTestId}/success`)
       } else if (error) {
         antdNotification({ type: 'error', msg: error })
         deleteNotificationDocument()
         setEditEnable(false)
+        setRegradingState(false)
       }
     }
   }, [userNotification])
@@ -52,6 +59,7 @@ const NotificationListener = ({
   useEffect(() => {
     return () => {
       setFirestoreDocId('')
+      setRegradingState(false)
     }
   }, [])
 
@@ -67,6 +75,7 @@ export default compose(
     {
       setEditEnable: setEditEnableAction,
       setFirestoreDocId: setRegradeFirestoreDocId,
+      setRegradingState: setRegradingStateAction,
     }
   )
 )(NotificationListener)

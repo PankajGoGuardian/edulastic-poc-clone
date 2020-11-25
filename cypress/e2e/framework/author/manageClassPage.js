@@ -98,8 +98,10 @@ export default class TeacherManageClassPage {
     cy.contains('Add To Group').click()
   }
 
-  clickOnClassRowByName = (className) =>
+  clickOnClassRowByName = (className) => {
     this.getClassRowByName(className).click()
+    cy.get('[data-cy="actions"]', { timeout: 120000 })
+  }
 
   selectStudentCheckBoxByEmail = (email) =>
     this.getStudentRowByEmail(email).find('input').click({ force: true })
@@ -213,7 +215,10 @@ export default class TeacherManageClassPage {
       clazz.institutionIds = [institutionId]
       console.log('new class created with _id - ', _id)
       cy.saveClassDetailToDelete(clazz)
-      if (!isGroup) cy.url().should('contain', _id)
+      if (!isGroup) {
+        cy.url().should('contain', _id)
+        cy.get('[data-cy="actions"]', { timeout: 120000 })
+      }
     })
   }
 

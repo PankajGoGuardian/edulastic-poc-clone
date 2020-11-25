@@ -334,6 +334,7 @@ class MathInput extends React.PureComponent {
       restrictKeys,
       customKeys,
       isDocbasedSection = false,
+      dynamicVariableInput,
     } = this.props
 
     const {
@@ -410,6 +411,7 @@ class MathInput extends React.PureComponent {
               onInput={(key, command, numToMove) =>
                 this.onInput(key, command, numToMove)
               }
+              dynamicVariableInput={dynamicVariableInput}
             />
           </MathKeyboardWrapper>
         )}
@@ -423,7 +425,7 @@ MathInput.propTypes = {
   alwaysHideKeyboard: PropTypes.bool,
   defaultFocus: PropTypes.bool,
   onInput: PropTypes.func.isRequired,
-  symbols: PropTypes.array.isRequired,
+  symbols: PropTypes.array,
   numberPad: PropTypes.array.isRequired,
   onInnerFieldClick: PropTypes.func,
   showDropdown: PropTypes.bool,
@@ -459,6 +461,7 @@ MathInput.defaultProps = {
   onChangeKeypad: () => {},
   fullWidth: false,
   className: '',
+  symbols: [],
 }
 
 export default MathInput

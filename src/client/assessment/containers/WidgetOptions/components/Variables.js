@@ -3,15 +3,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { cloneDeep, get, has, isEmpty, difference, shuffle } from 'lodash'
-import { Input, Select, Table } from 'antd'
+import { Select, Table } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { variableTypes, math } from '@edulastic/constants'
 import { MathInput, MathFormulaDisplay } from '@edulastic/common'
-import {
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-} from '@edulastic/colors'
+import { extraDesktopWidthMax } from '@edulastic/colors'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
   getQuestionDataSelector,
@@ -33,18 +30,10 @@ import Spinner from './Spinner'
 import ErrorText from './ErrorText'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
 
-const symbols = ['basic', 'matrices', 'general', 'units_si', 'units_us']
 const { defaultNumberPad } = math
 
 const InlineLabel = styled(Label)`
   display: inline-block;
-`
-
-const CombinationInput = styled(Input)`
-  display: inline-block;
-  width: 70px;
-  margin-left: 10px;
-  margin-right: 10px;
 `
 
 const DynamicText = styled.div`
@@ -53,10 +42,6 @@ const DynamicText = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
   }
-`
-
-const VariableLabel = styled(Label)`
-  text-transform: none;
 `
 
 class Variables extends Component {
@@ -521,7 +506,7 @@ class Variables extends Component {
                     <Col md={10}>
                       <MathInput
                         ref={mathFieldRef}
-                        symbols={symbols}
+                        dynamicVariableInput
                         fullWidth
                         showDropdown
                         numberPad={defaultNumberPad}

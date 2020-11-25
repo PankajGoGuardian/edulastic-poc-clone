@@ -93,27 +93,6 @@ export const reportAssessmentSummaryReducer = createReducer(initialState, {
 
 function* getReportsAssessmentSummaryRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
-    payload.requestFilters.assessmentTypes =
-      payload.requestFilters?.assessmentTypes?.join(',') || ''
-
-    payload.requestFilters.schoolIds =
-      payload.requestFilters?.schoolIds?.join(',') || ''
-
-    payload.requestFilters.teacherIds =
-      payload.requestFilters?.teacherIds?.join(',') || ''
-
-    payload.requestFilters.grade = payload.requestFilters.studentGrade
-    payload.requestFilters.courseId = payload.requestFilters.studentCourseId
-    payload.requestFilters.subject = payload.requestFilters.studentSubject
-
     const { data } = yield call(
       reportsApi.fetchAssessmentSummaryReport,
       payload

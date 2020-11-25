@@ -2,19 +2,32 @@ import { pullAllBy } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+
+import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+
 import { Header, SubHeader } from './common/components/Header'
 import StandardReport from './components/StandardReport'
 import navigation from './common/static/json/navigation.json'
 import { PrintableScreen } from './common/styled'
 import CustomReports from './components/customReport'
 import CustomReportIframe from './components/customReport/customReportIframe'
+import SharedReports from './components/sharedReports'
 import {
   getCsvDownloadingState,
   getPrintingState,
+  setSharingStateAction,
   setCsvDownloadingStateAction,
   setPrintingStateAction,
 } from './ducks'
+import {
+  getTeacherGroupsAction,
+  getSharedReportList,
+  getSharedReportsLoader,
+  getSharedReportsAction,
+} from './components/sharedReports/ducks'
+import { getUserRole } from '../src/selectors/user'
 import { MultipleAssessmentReportContainer } from './subPages/multipleAssessmentReport'
 import { SingleAssessmentReportContainer } from './subPages/singleAssessmentReport'
 import { StandardsMasteryReportContainer } from './subPages/standardsMasteryReport'
@@ -22,7 +35,16 @@ import { StudentProfileReportContainer } from './subPages/studentProfileReport'
 import ClassCreate from '../ManageClass/components/ClassCreate'
 
 const Container = (props) => {
-  const { isCsvDownloading, isPrinting, match, isCliUser } = props
+  const {
+    isCsvDownloading,
+    isPrinting,
+    match,
+    isCliUser,
+    showCustomReport,
+    userRole,
+    loadingSharedReports,
+    sharedReportList,
+  } = props
   const [showHeader, setShowHeader] = useState(true)
   const [hideHeader, setHideHeader] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
@@ -44,6 +66,12 @@ const Container = (props) => {
       props.setPrintingStateAction(false)
     }
 
+    if (userRole === roleuser.DISTRICT_ADMIN) {
+      props.fetchTeacherGroups()
+    } else {
+      props.fetchSharedReports()
+    }
+
     return () => {
       window.onbeforeprint = () => {}
       window.onafterprint = () => {}
@@ -59,7 +87,7 @@ const Container = (props) => {
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS BEGIN |-----|-----|-----|-----|----- //
 
   const onShareClickCB = () => {
-    console.log('not implemented yet')
+    props.setSharingStateAction(true)
   }
 
   const onPrintClickCB = () => {
@@ -142,6 +170,10 @@ const Container = (props) => {
 
   const expandFilter = showFilter
 
+  if (loadingSharedReports) {
+    return <Spin size="small" />
+  }
+
   return (
     <PrintableScreen>
       <Route
@@ -161,6 +193,9 @@ const Container = (props) => {
           activeNavigationKey={reportType}
           hideSideMenu={isCliUser}
           isCliUser={isCliUser}
+          userRole={userRole}
+          showCustomReport={showCustomReport}
+          showSharedReport={sharedReportList.length}
         />
       )}
       <MainContentWrapper>
@@ -290,6 +325,18 @@ const Container = (props) => {
             )
           }}
         />
+        <Route
+          path="/author/reports/shared-reports/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <SharedReports
+                {..._props}
+                setDynamicBreadcrumb={setDynamicBreadcrumb}
+              />
+            )
+          }}
+        />
       </MainContentWrapper>
     </PrintableScreen>
   )
@@ -300,11 +347,18 @@ const enhance = connect(
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     premium: state?.user?.user?.features?.premium,
+    showCustomReport: state?.user?.user?.features?.customReport,
     isCliUser: state?.user?.isCliUser,
+    userRole: getUserRole(state),
+    sharedReportList: getSharedReportList(state),
+    loadingSharedReports: getSharedReportsLoader(state),
   }),
   {
+    setSharingStateAction,
     setPrintingStateAction,
     setCsvDownloadingStateAction,
+    fetchSharedReports: getSharedReportsAction,
+    fetchTeacherGroups: getTeacherGroupsAction,
   }
 )
 

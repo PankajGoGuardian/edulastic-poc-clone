@@ -80,27 +80,6 @@ function* getPerformanceByStandardsSaga({ payload }) {
     'Failed to fetch performance by standards, please try again'
 
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
-    payload.requestFilters.assessmentTypes =
-      payload.requestFilters?.assessmentTypes?.join(',') || ''
-
-    payload.requestFilters.teacherIds =
-      payload.requestFilters?.teacherIds?.join(',') || ''
-    
-    payload.requestFilters.schoolIds =
-      payload.requestFilters?.schoolIds?.join(',') || ''
-
-    payload.requestFilters.grade = payload.requestFilters.studentGrade
-    payload.requestFilters.courseId = payload.requestFilters.studentCourseId
-    payload.requestFilters.subject = payload.requestFilters.studentSubject
-
     const { data } = yield call(reportsApi.fetchPerformanceByStandard, payload)
     if (data && data?.dataSizeExceeded) {
       yield put(getPerformanceByStandardsErrorAction({ error: { ...data } }))

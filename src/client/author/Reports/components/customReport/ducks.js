@@ -2,7 +2,6 @@ import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { all, call, put, takeLatest } from 'redux-saga/effects'
 import { customReportApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 
 const GET_CUSTOM_REPORT_STATE_REQUEST = '[reports] get custom reports request'
@@ -135,8 +134,6 @@ export function* getCustomReportURLRequest({ payload }) {
 export function* customReportSaga() {
   yield all([
     yield takeLatest(GET_CUSTOM_REPORT_STATE_REQUEST, getCustomReportRequest),
-  ])
-  yield all([
     yield takeLatest(GET_CUSTOM_REPORT_URL_REQUEST, getCustomReportURLRequest),
   ])
 }

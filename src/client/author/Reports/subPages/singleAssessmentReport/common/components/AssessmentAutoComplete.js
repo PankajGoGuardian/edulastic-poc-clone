@@ -45,10 +45,17 @@ const AssessmentAutoComplete = ({
         searchString: searchTerms.text,
         statuses: [IN_PROGRESS, IN_GRADING, DONE],
         districtId,
-        grades: filters.grade === 'All' ? [] : [filters.grade],
-        subjects: filters.subject === 'All' ? [] : [filters.subject],
+        grades:
+          !filters.grade || filters.grade === 'All' ? [] : [filters.grade],
+        subjects:
+          !filters.subject || filters.subject === 'All'
+            ? []
+            : [filters.subject],
         testTypes: filters.assessmentTypes || [],
-        courseIds: filters.courseId === 'All' ? [] : [filters.courseId],
+        courseIds:
+          !filters.courseId || filters.courseId === 'All'
+            ? []
+            : [filters.courseId],
       },
       aggregate: true,
     }

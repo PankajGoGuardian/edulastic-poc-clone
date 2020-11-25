@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { EduButton } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
 import Breadcrumb from '../../../../src/components/Breadcrumb'
 
 import StandardsMasteryRowFilters from '../../../subPages/standardsMasteryReport/common/components/RowFilters'
@@ -13,11 +11,6 @@ const SubHeader = ({
   title,
   showFilter,
 }) => {
-  const _onRefineResultsCB = (event) => {
-    event.target.blur()
-    onRefineResultsCB(event, !showFilter)
-  }
-
   const isShowBreadcrumb = title !== 'Standard Reports'
   const showStandardFilters =
     title === 'Standards Performance Summary' || title === 'Standards Gradebook'
@@ -35,21 +28,12 @@ const SubHeader = ({
       </HeaderTitle>
       {onRefineResultsCB && showStandardFilters ? (
         <StandardsMasteryRowFilters pageTitle={title} showFilter={showFilter} />
-      ) : onRefineResultsCB ? (
-        <StyledButton isGhost={!showFilter} onClick={_onRefineResultsCB}>
-          <IconFilter width={15} height={15} />
-          FILTERS
-        </StyledButton>
       ) : null}
     </SecondaryHeader>
   )
 }
 
 export default SubHeader
-
-const StyledButton = styled(EduButton)`
-  height: 28px;
-`
 
 const HeaderTitle = styled.div`
   h1 {

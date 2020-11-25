@@ -40,9 +40,6 @@ import {
   getUser,
 } from '../../../../../src/selectors/user'
 
-import { receivePerformanceBandAction } from '../../../../../PerformanceBand/ducks'
-import { receiveStandardsProficiencyAction } from '../../../../../StandardsProficiency/ducks'
-
 import staticDropDownData from '../static/staticDropDownData.json'
 
 const getTestIdFromURL = (url) => {
@@ -78,6 +75,7 @@ const SingleAssessmentReportFilters = ({
   setShowApply,
   firstLoad,
   setFirstLoad,
+  reportId,
 }) => {
   const assessmentTypeRef = useRef()
   const [selectedClass, setSelectedClass] = useState(null)
@@ -101,7 +99,15 @@ const SingleAssessmentReportFilters = ({
   }, [user])
 
   useEffect(() => {
-    if (SARFilterData !== prevSARFilterData) {
+    if (reportId) {
+      getSARFilterDataRequest({ reportId })
+      const search = qs.parse(location.search, { ignoreQueryPrefix: true })
+      const _testId = getTestIdFromURL(location.pathname)
+      setFiltersOrTestId({
+        filters: { ...filters, ...search },
+        testId: _testId,
+      })
+    } else if (SARFilterData !== prevSARFilterData) {
       const search = pickBy(
         qs.parse(location.search, { ignoreQueryPrefix: true }),
         (f) => f !== 'All' && !isEmpty(f)
@@ -120,65 +126,70 @@ const SingleAssessmentReportFilters = ({
 
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
     let search = qs.parse(location.search, { ignoreQueryPrefix: true })
-    search.testId = getTestIdFromURL(location.pathname)
-
-    // get saved filters from backend
-    const savedFilters = get(SARFilterData, 'data.result.reportFilters')
-    // select common assessment as default if assessment type is not set for admins
-    if (
-      user.role === roleuser.DISTRICT_ADMIN ||
-      user.role === roleuser.SCHOOL_ADMIN
-    ) {
-      search.assessmentTypes = search.assessmentTypes ||
-        savedFilters.assessmentTypes || ['common assessment']
-    }
-
-    if (firstLoad) {
-      search = {
-        termId: savedFilters.termId,
-        subject: savedFilters.subject,
-        grade: savedFilters.grade,
-        ...pickBy(search, (f) => f !== 'All' && !isEmpty(f)),
+    const _testId = getTestIdFromURL(location.pathname)
+    if (reportId) {
+      _onGoClick({
+        filters: { ...search },
+        selectedTest: { key: _testId },
+      })
+      setShowApply(false)
+    } else {
+      // get saved filters from backend
+      const savedFilters = get(SARFilterData, 'data.result.reportFilters')
+      // select common assessment as default if assessment type is not set for admins
+      if (
+        user.role === roleuser.DISTRICT_ADMIN ||
+        user.role === roleuser.SCHOOL_ADMIN
+      ) {
+        search.assessmentTypes = search.assessmentTypes ||
+          savedFilters.assessmentTypes || ['common assessment']
       }
-    }
+      if (firstLoad) {
+        search = {
+          termId: savedFilters.termId,
+          subject: savedFilters.subject,
+          grade: savedFilters.grade,
+          ...pickBy(search, (f) => f !== 'All' && !isEmpty(f)),
+        }
+      }
+      const urlSchoolYear =
+        schoolYear.find((item) => item.key === search.termId) ||
+        schoolYear.find((item) => item.key === defaultTermId) ||
+        (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
+      const urlSubject = staticDropDownData.subjects.find(
+        (item) => item.key === search.subject
+      ) || {
+        key: 'All',
+        title: 'All Subjects',
+      }
+      const urlGrade = staticDropDownData.grades.find(
+        (item) => item.key === search.grade
+      ) || {
+        key: 'All',
+        title: 'All Grades',
+      }
+      const urlTestId = _testId || ''
+      const obtainedFilters = {
+        termId: urlSchoolYear.key,
+        subject: urlSubject.key,
+        grade: urlGrade.key,
+        courseId: search.courseId || 'All',
+        classId: search.classId || 'All',
+        groupId: search.groupId || 'All',
+        schoolIds: search.schoolIds || [],
+        teacherIds: search.teacherIds || [],
+        assessmentTypes: search.assessmentTypes || [],
+      }
+      const urlParams = { ...obtainedFilters }
 
-    const urlSchoolYear =
-      schoolYear.find((item) => item.key === search.termId) ||
-      schoolYear.find((item) => item.key === defaultTermId) ||
-      (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
-    const urlSubject = staticDropDownData.subjects.find(
-      (item) => item.key === search.subject
-    ) || {
-      key: 'All',
-      title: 'All Subjects',
-    }
-    const urlGrade = staticDropDownData.grades.find(
-      (item) => item.key === search.grade
-    ) || {
-      key: 'All',
-      title: 'All Grades',
-    }
-    const urlTestId = search.testId || ''
-    const obtainedFilters = {
-      termId: urlSchoolYear.key,
-      subject: urlSubject.key,
-      grade: urlGrade.key,
-      courseId: search.courseId || 'All',
-      classId: search.classId || 'All',
-      groupId: search.groupId || 'All',
-      schoolIds: search.schoolIds || [],
-      teacherIds: search.teacherIds || [],
-      assessmentTypes: search.assessmentTypes || [],
-    }
-    const urlParams = { ...obtainedFilters }
+      if (role === 'teacher') {
+        delete urlParams.schoolIds
+        delete urlParams.teacherIds
+      }
 
-    if (role === 'teacher') {
-      delete urlParams.schoolIds
-      delete urlParams.teacherIds
+      // set filters and testId
+      setFiltersOrTestId({ filters: urlParams, testId: urlTestId })
     }
-
-    // set filters and testId
-    setFiltersOrTestId({ filters: urlParams, testId: urlTestId })
     // update prevSARFilterData
     setPrevSARFilterData(SARFilterData)
   }
@@ -201,7 +212,9 @@ const SingleAssessmentReportFilters = ({
   const updateTestId = (selected) => {
     const _testId = selected.key || ''
     setFiltersOrTestId({ testId: _testId })
-    if (firstLoad) {
+    if (reportId) {
+      setFirstLoad(false)
+    } else if (firstLoad) {
       setFirstLoad(false)
       _onGoClick({
         filters: { ...filters },
@@ -450,8 +463,6 @@ const enhance = compose(
     }),
     {
       getSARFilterDataRequest: getSARFilterDataRequestAction,
-      loadPerformanceBand: receivePerformanceBandAction,
-      loadStandardProficiency: receiveStandardsProficiencyAction,
       setFiltersOrTestId: setFiltersOrTestIdAction,
       setPrevSARFilterData: setPrevSARFilterDataAction,
     }

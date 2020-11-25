@@ -67,7 +67,11 @@ const PerformanceByStudents = ({
   t,
   customStudentUserId,
   isCliUser,
+  sharedReport,
 }) => {
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
   const selectedTest = testList?.find(
     (test) => test._id === settings.selectedTest.key
   ) || { _id: '', title: '' }
@@ -99,9 +103,10 @@ const PerformanceByStudents = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getPerformanceByStudents(q)
     }
   }, [settings])
@@ -171,7 +176,7 @@ const PerformanceByStudents = ({
   const _columns = getColumns(
     columns,
     res && res.testName,
-    role,
+    userRole,
     location,
     pageTitle,
     t
@@ -301,7 +306,7 @@ const PerformanceByStudents = ({
               xl={12}
               className="dropdown-container"
             >
-              {!isCliUser && (
+              {!isCliUser && !sharedReport?._id && (
                 <FeaturesSwitch
                   inputFeatures="studentGroups"
                   actionOnInaccessible="hidden"

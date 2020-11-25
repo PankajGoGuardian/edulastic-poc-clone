@@ -114,6 +114,7 @@ const initialState = {
   SARFilterData: {},
   prevSARFilterData: null,
   filters: {
+    reportId: '',
     termId: '',
     subject: 'All',
     studentSubject: 'All',

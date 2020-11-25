@@ -223,6 +223,17 @@ function* loadTestActivityReport({ payload }) {
       }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
     ])
+
+    reports.questionActivities = reports.questionActivities.map((qa) => {
+      if (qa.autoGrade === false && qa.score === undefined) {
+        return {
+          ...qa,
+          graded: false,
+        }
+      }
+      return qa
+    })
+
     const { assignmentId, releaseScore } = reports.testActivity
     const activities = yield call(
       reportsApi.fetchReports,

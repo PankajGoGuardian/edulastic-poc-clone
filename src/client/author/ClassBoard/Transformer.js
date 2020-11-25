@@ -581,6 +581,7 @@ export const transformGradeBookResponse = (
               pendingEvaluation,
               scratchPad,
               userResponse,
+              autoGrade,
               ...remainingProps
             } = currentQuestionActivity
             skipped = getSkippedStatusOfQuestion(
@@ -594,11 +595,15 @@ export const transformGradeBookResponse = (
               skipped = false
             }
             if (_qids && _qids.length) {
-              correct =
-                (score === questionMaxScore && score > 0)
+              correct = score === questionMaxScore && score > 0
               if (!correct) {
                 partialCorrect = score > 0 && score <= questionMaxScore
               }
+            }
+
+            let _graded = graded
+            if (autoGrade === false && score === undefined) {
+              _graded = false
             }
 
             return {
@@ -615,7 +620,7 @@ export const transformGradeBookResponse = (
               testItemId,
               qids: _qids,
               testActivityId,
-              graded,
+              graded: _graded,
               qLabel,
               barLabel,
               pendingEvaluation,

@@ -146,9 +146,9 @@ const SingleAssessmentReportFilters = ({
       }
       if (firstLoad) {
         search = {
-          termId: savedFilters.termId,
-          subject: savedFilters.subject,
-          grade: savedFilters.grade,
+          termId: search.termId || savedFilters.termId,
+          subject: search.subject || savedFilters.subject,
+          grade: search.grade || savedFilters.grade,
           ...pickBy(search, (f) => f !== 'All' && !isEmpty(f)),
         }
       }

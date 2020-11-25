@@ -23,6 +23,14 @@
     "message": "image upload failed",
     "description": ""
   },
+  "fileUploadErr": {
+    "message": "File upload failed",
+    "description": ""
+  },
+  "fileTypeErr": {
+    "message": "Unsupported file type",
+    "description": ""
+  },
   "videoUploadErr": {
     "message": "Video upload failed",
     "description": ""

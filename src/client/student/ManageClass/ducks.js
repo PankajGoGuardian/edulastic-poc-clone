@@ -4,7 +4,6 @@ import { all, takeEvery, call, put } from 'redux-saga/effects'
 import { enrollmentApi } from '@edulastic/api'
 import { get } from 'lodash'
 import { notification } from '@edulastic/common'
-import { message } from 'antd'
 
 export const RESET_ENROLLED_CLASSES =
   '[manage class] reset all enrolled classes'
@@ -43,7 +42,7 @@ const initialState = {
   error: null,
 }
 
-const resetEnrolledClassList = (state, { payload }) => {
+const resetEnrolledClassList = (state) => {
   state.allClasses = []
   state.filteredClasses = []
   state.loading = true
@@ -97,8 +96,7 @@ function* getEnrollClass() {
   try {
     const res = yield call(enrollmentApi.fetchStudentEnrollClass)
     const { result } = res.data
-    const activeClasses = result.filter((c) => c.active === 1)
-    yield put(setFilterClassAction(activeClasses))
+    yield put(setFilterClassAction(result))
     yield put(getEnrollClassActionSuccess(result))
   } catch (e) {
     yield put(getEnrollClassActionFail())

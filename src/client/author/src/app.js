@@ -623,6 +623,12 @@ const Author = ({
 
                   <Route
                     exact
+                    path="/author/tests/verid/:versionId"
+                    render={(props) => <TestPage isVersionFlow {...props} />}
+                  />
+
+                  <Route
+                    exact
                     path="/author/tests/:testId/createItem/:itemId"
                     render={(props) => <ItemDetail isTestFlow {...props} />}
                   />

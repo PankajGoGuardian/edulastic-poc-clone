@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Select } from 'antd'
 import { notification } from '@edulastic/common'
-import { adminApi, enrollmentApi } from '@edulastic/api'
+import { adminApi, groupApi, enrollmentApi } from '@edulastic/api'
 
 import { flatten } from 'mathjs/src/utils/array'
 import { regexJs } from '@edulastic/constants'
@@ -11,11 +11,14 @@ import ApiFormsMain from '../Components/ApiForm'
 import { submit } from '../Components/ApiForm/apis'
 import CreateAdmin from '../Components/CreateAdmin'
 import ActivateDeactivateUser from '../Components/ActivateDeactivateUser'
+import UpdateUser from '../Components/UpdateUser'
 import ApproveOrganisation from '../Components/ApproveOrganisation'
 import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
 
 const CREATE_ADMIN = 'create-admin'
+const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
 const ACTIVATE_DEACTIVATE_USER = 'activate-deactivate-user'
+const UPDATE_USER = 'update-user'
 const APPROVE_SCHOOL_DISTRICT = 'approve-school-district'
 const API_OPTIONS = {
   manageClass: 'manageClass',
@@ -54,10 +57,20 @@ const ApiForm = () => {
     }
   }
   const handleOnSave = (data, sectionId) => {
+    const isSlowApi = option.slowApi || false
     if (id === API_OPTIONS.manageClass) {
       return handleClassSearch(data, sectionId)
     }
-    if (option.id === CREATE_ADMIN) {
+    if (option.id === ARCHIVE_UNARCHIVE_CLASSES) {
+      groupApi
+        .archiveUnarchiveClasses({
+          archive: data.archive,
+          groupIds: data.groupIds,
+        })
+        .then((res) => {
+          notification({ type: res?.type || 'success', msg: res?.message })
+        })
+    } else if (option.id === CREATE_ADMIN) {
       adminApi.searchUpdateDistrict({ id: data.districtId }).then((res) => {
         if (res?.data?.length) {
           setDistrictData(res.data[0])
@@ -78,10 +91,13 @@ const ApiForm = () => {
           return acc
         }, {})
       }
-      submit(data, option.endPoint, option.method).then((res) => {
+      submit(data, option.endPoint, option.method, isSlowApi).then((res) => {
         if (res?.result) {
           if (res.result.success || res.status === 200) {
-            if (option.id === ACTIVATE_DEACTIVATE_USER) {
+            if (
+              option.id === ACTIVATE_DEACTIVATE_USER ||
+              option.id === UPDATE_USER
+            ) {
               setUserData(res.result)
               if (!res.result.length) {
                 notification({
@@ -156,6 +172,9 @@ const ApiForm = () => {
               userData={userData}
               clearUserData={clearUserData}
             />
+          )}
+          {userData.length > 0 && id === UPDATE_USER && (
+            <UpdateUser userData={userData} clearUserData={clearUserData} />
           )}
           {orgData && id === APPROVE_SCHOOL_DISTRICT && (
             <ApproveOrganisation

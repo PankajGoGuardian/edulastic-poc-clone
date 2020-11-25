@@ -773,6 +773,33 @@ const CustomEditor = ({
             }
           }
         },
+        'file.beforeUpload': function (files = []) {
+          const file = files[0]
+
+          if (!file) {
+            this.popups.hideAll()
+            notification({ messageKey: 'fileUploadErr' })
+            return false
+          }
+
+          // currently supporting only pdf through file upload
+          if (file.type !== 'application/pdf') {
+            this.popups.hideAll()
+            notification({ messageKey: 'fileTypeErr' })
+            return false
+          }
+
+          uploadToS3(file, aws.s3Folders.DEFAULT)
+            .then((url) => {
+              this.file.insert(url, file.name)
+            })
+            .catch((e) => {
+              console.error(e)
+              this.popups.hideAll()
+              notification({ messageKey: 'fileUploadErr' })
+            })
+          return false
+        },
         'commands.after': function (cmd) {
           if (cmd === 'moreText') {
             this.toolbarExpanded = !this.toolbarExpanded

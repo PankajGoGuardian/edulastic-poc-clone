@@ -29,11 +29,11 @@ function CloneOptions({ hideOptions, onDuplicate }) {
       <SubtitleText>How would you like to clone the test?</SubtitleText>
       <FlexContainer flexDirection="column" mt="10px">
         <RadioLabelGroup value={cloneOption} onChange={handleChange}>
-          <RadioLabel value="no">
+          <RadioLabel data-cy="with-original-item" value="no">
             Keep references to the original items you can clone them
             individually later on
           </RadioLabel>
-          <RadioLabel value="yes">
+          <RadioLabel data-cy="with-new-item" value="yes">
             Create a clone of all the items in the test upfront
           </RadioLabel>
         </RadioLabelGroup>

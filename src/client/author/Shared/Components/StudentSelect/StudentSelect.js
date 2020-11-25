@@ -11,6 +11,7 @@ const SortBar = ({
   students,
   selectedStudent,
   isPresentationMode,
+  isCliUser,
 }) => {
   const onSortChange = (testActivityId) => {
     if (testActivityId !== undefined) {
@@ -47,23 +48,25 @@ const SortBar = ({
         <LegendContainer>
           <Legends />
           <Container>
-            <StyledSelect value={user} onChange={onSortChange}>
-              {students.map((student, index) => (
-                <Select.Option
-                  key={index}
-                  value={student.testActivityId || null}
-                  disabled={
-                    !valid(student) ||
-                    student.UTASTATUS === testActivityStatus.NOT_STARTED ||
-                    student.UTASTATUS === testActivityStatus.ABSENT
-                  }
-                >
-                  {isPresentationMode
-                    ? studentIcon(student)
-                    : student.studentName}
-                </Select.Option>
-              ))}
-            </StyledSelect>
+            {!isCliUser && (
+              <StyledSelect value={user} onChange={onSortChange}>
+                {students.map((student, index) => (
+                  <Select.Option
+                    key={index}
+                    value={student.testActivityId || null}
+                    disabled={
+                      !valid(student) ||
+                      student.UTASTATUS === testActivityStatus.NOT_STARTED ||
+                      student.UTASTATUS === testActivityStatus.ABSENT
+                    }
+                  >
+                    {isPresentationMode
+                      ? studentIcon(student)
+                      : student.studentName}
+                  </Select.Option>
+                ))}
+              </StyledSelect>
+            )}
           </Container>
         </LegendContainer>
       )}

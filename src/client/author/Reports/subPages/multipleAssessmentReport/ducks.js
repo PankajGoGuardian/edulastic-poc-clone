@@ -39,6 +39,7 @@ const initialState = {
     courseId: '',
     groupId: '',
     schoolId: '',
+    schoolIds: [],
     teacherId: '',
     assessmentType: '',
     testIds: '',

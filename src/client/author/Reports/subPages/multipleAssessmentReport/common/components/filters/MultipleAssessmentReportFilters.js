@@ -86,16 +86,15 @@ const SingleAssessmentReportFilters = ({
   })
 
   useEffect(() => {
+    const search = pickBy(
+      qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
+      (f) => f !== 'All' && !isEmpty(f)
+    )
     if (reportId) {
       getMARFilterDataRequest({ reportId })
-      const search = qs.parse(location.search, { ignoreQueryPrefix: true })
       _setFilters({ ...filters, ...search })
       _setTestId([])
     } else if (MARFilterData !== prevMARFilterData) {
-      const search = pickBy(
-        qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
-        (f) => f !== 'All' && !isEmpty(f)
-      )
       const termId =
         search.termId ||
         get(user, 'orgData.defaultTermId', '') ||
@@ -104,7 +103,7 @@ const SingleAssessmentReportFilters = ({
       if (firstLoad && isEmpty(search)) {
         q.firstLoad = true
       }
-      if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
+      if (role === roleuser.SCHOOL_ADMIN) {
         q.schoolIds = get(user, 'institutionIds', []).join(',')
       }
       getMARFilterDataRequest(q)
@@ -122,10 +121,10 @@ const SingleAssessmentReportFilters = ({
   let dropDownData
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
-    let search = qs.parse(location.search, {
-      ignoreQueryPrefix: true,
-      indices: true,
-    })
+    let search = pickBy(
+      qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
+      (f) => f !== 'All' && !isEmpty(f)
+    )
     if (reportId) {
       _onGoClick({ selectedTest: [], filters: { ...filters, ...search } })
       setFirstLoad(false)
@@ -237,7 +236,9 @@ const SingleAssessmentReportFilters = ({
       }
       _setFilters(urlParams)
       _setTestId(urlTestIds)
-
+      if (role === roleuser.SCHOOL_ADMIN) {
+        urlParams.schoolIds = get(user, 'institutionIds', [])
+      }
       if (firstLoad) {
         setFirstLoad(false)
         _onGoClick({ selectedTest: urlTestIds, filters: urlParams })
@@ -277,6 +278,9 @@ const SingleAssessmentReportFilters = ({
     const settings = {
       filters: { ...filters },
       selectedTest: testIds,
+    }
+    if (role === roleuser.SCHOOL_ADMIN) {
+      settings.filters.schoolIds = get(user, 'institutionIds', [])
     }
     _onGoClick(settings)
   }

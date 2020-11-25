@@ -2,6 +2,7 @@ import { pullAllBy } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+import qs from 'qs'
 
 import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
@@ -155,6 +156,13 @@ const Container = (props) => {
         navigationItems,
       }
     }
+    const breadcrumbInfo = [...navigation.locToData[loc].breadcrumb]
+    const isSharedReport = !!qs.parse(props.location.search, {
+      ignoreQueryPrefix: true,
+    }).reportId
+    if (isSharedReport) {
+      breadcrumbInfo[0] = navigation.locToData['shared-reports'].breadcrumb[0]
+    }
     return {
       loc,
       group: navigation.locToData[loc].group,
@@ -163,8 +171,9 @@ const Container = (props) => {
       onPrintClickCB,
       onDownloadCSVClickCB,
       onRefineResultsCB,
-      breadcrumbData: navigation.locToData[loc].breadcrumb,
+      breadcrumbData: breadcrumbInfo,
       navigationItems,
+      isSharedReport,
     }
   })
 
@@ -205,6 +214,7 @@ const Container = (props) => {
             onRefineResultsCB={headerSettings.onRefineResultsCB}
             showFilter={expandFilter}
             title={headerSettings.title}
+            isSharedReport={headerSettings.isSharedReport}
           />
         )}
         {reportType === 'custom-reports' ? (

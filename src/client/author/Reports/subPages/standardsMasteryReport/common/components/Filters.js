@@ -59,6 +59,7 @@ const StandardsFilters = ({
   setPrevStandardsFilters,
   showApply,
   setShowApply,
+  reportId,
 }) => {
   const standardsFilteresReceiveCount = useRef(0)
 
@@ -114,17 +115,24 @@ const StandardsFilters = ({
   }
 
   useEffect(() => {
-    const _filters = getInitialFilters()
-    setFilters(_filters)
-    const _q = {
-      termId: _filters.termId,
+    const search = pickBy(
+      qs.parse(location.search, { ignoreQueryPrefix: true }),
+      (f) => f !== 'All' && !isEmpty(f)
+    )
+    if (reportId) {
+      getStandardsFiltersRequest({ reportId })
+      setFilters({ ...filters, ...search })
+    } else {
+      const _filters = getInitialFilters()
+      setFilters({ ..._filters, ...search })
+      const q = {
+        termId: _filters.termId,
+      }
+      if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
+        q.schoolIds = get(user, 'institutionIds', []).join(',')
+      }
+      getStandardsFiltersRequest(q)
     }
-    if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
-      Object.assign(_q, {
-        schoolIds: get(user, 'institutionIds', []).join(','),
-      })
-    }
-    getStandardsFiltersRequest(_q)
   }, [])
 
   useEffect(() => {
@@ -152,10 +160,17 @@ const StandardsFilters = ({
   }, [standardsFilters])
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
-    // allTestIds Received
     setPrevStandardsFilters(standardsFilters)
-    if (standardsFilteresReceiveCount.current === 0) {
-      const search = qs.parse(location.search, { ignoreQueryPrefix: true })
+    const search = pickBy(
+      qs.parse(location.search, { ignoreQueryPrefix: true }),
+      (f) => f !== 'All' && !isEmpty(f)
+    )
+    if (reportId) {
+      _onGoClick({
+        filters: { ...filters, ...search },
+        selectedTest: [],
+      })
+    } else if (standardsFilteresReceiveCount.current === 0) {
       // default filters
       const _filters = getInitialFilters()
       // filters fetched on page load
@@ -189,11 +204,12 @@ const StandardsFilters = ({
       if (shouldUpdateSchoolYear) {
         const q = { termId: newFilters.termId }
         if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
-          Object.assign(q, {
-            schoolIds: get(user, 'institutionIds', []).join(','),
-          })
+          q.schoolIds = get(user, 'institutionIds', []).join(',')
         }
         getStandardsFiltersRequest(q)
+      }
+      if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
+        settings.filters.schoolIds = get(user, 'institutionIds', [])
       }
       // load page data
       _onGoClick(settings)
@@ -206,6 +222,9 @@ const StandardsFilters = ({
     const settings = {
       filters: { ...filters },
       selectedTest: testIds,
+    }
+    if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
+      settings.filters.schoolIds = get(user, 'institutionIds', [])
     }
     setShowApply(false)
     _onGoClick(settings)

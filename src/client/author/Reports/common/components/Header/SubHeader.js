@@ -10,6 +10,7 @@ const SubHeader = ({
   onRefineResultsCB,
   title,
   showFilter,
+  isSharedReport,
 }) => {
   const isShowBreadcrumb = title !== 'Standard Reports'
   const showStandardFilters =
@@ -26,7 +27,7 @@ const SubHeader = ({
           <Breadcrumb data={breadcrumbsData} style={{ position: 'unset' }} />
         ) : null}
       </HeaderTitle>
-      {onRefineResultsCB && showStandardFilters ? (
+      {!isSharedReport && onRefineResultsCB && showStandardFilters ? (
         <StandardsMasteryRowFilters pageTitle={title} showFilter={showFilter} />
       ) : null}
     </SecondaryHeader>

@@ -99,19 +99,18 @@ const SingleAssessmentReportFilters = ({
   }, [user])
 
   useEffect(() => {
+    const search = pickBy(
+      qs.parse(location.search, { ignoreQueryPrefix: true }),
+      (f) => f !== 'All' && !isEmpty(f)
+    )
     if (reportId) {
       getSARFilterDataRequest({ reportId })
-      const search = qs.parse(location.search, { ignoreQueryPrefix: true })
       const _testId = getTestIdFromURL(location.pathname)
       setFiltersOrTestId({
         filters: { ...filters, ...search },
         testId: _testId,
       })
     } else if (SARFilterData !== prevSARFilterData) {
-      const search = pickBy(
-        qs.parse(location.search, { ignoreQueryPrefix: true }),
-        (f) => f !== 'All' && !isEmpty(f)
-      )
       const termId =
         search.termId ||
         defaultTermId ||
@@ -125,11 +124,14 @@ const SingleAssessmentReportFilters = ({
   }, [])
 
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
-    let search = qs.parse(location.search, { ignoreQueryPrefix: true })
+    let search = pickBy(
+      qs.parse(location.search, { ignoreQueryPrefix: true }),
+      (f) => f !== 'All' && !isEmpty(f)
+    )
     const _testId = getTestIdFromURL(location.pathname)
     if (reportId) {
       _onGoClick({
-        filters: { ...search },
+        filters: { ...filters, ...search },
         selectedTest: { key: _testId },
       })
       setShowApply(false)
@@ -149,7 +151,7 @@ const SingleAssessmentReportFilters = ({
           termId: search.termId || savedFilters.termId,
           subject: search.subject || savedFilters.subject,
           grade: search.grade || savedFilters.grade,
-          ...pickBy(search, (f) => f !== 'All' && !isEmpty(f)),
+          ...search,
         }
       }
       const urlSchoolYear =

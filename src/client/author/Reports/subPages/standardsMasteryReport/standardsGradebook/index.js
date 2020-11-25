@@ -1,24 +1,19 @@
-import { SpinLoader } from '@edulastic/common'
-import { Col, Row } from 'antd'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get } from 'lodash'
-import { roleuser } from '@edulastic/constants'
-import { getUser } from '../../../../src/selectors/user'
+
+import { Col, Row } from 'antd'
+import { SpinLoader } from '@edulastic/common'
 import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
-import { StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getStudentAssignments } from '../../../common/util'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getFiltersSelector,
-  getReportsStandardsFilters,
-} from '../common/filterDataDucks'
-import { getMaxMasteryScore } from '../standardsPerformance/utils/transformers'
+import { StyledCard, StyledH3 } from '../../../common/styled'
 import { SignedStackBarChartContainer } from './components/charts/signedStackBarChartContainer'
 import { TableContainer, UpperContainer } from './components/styled'
 import { StandardsGradebookTable } from './components/table/standardsGradebookTable'
+
+import { getCsvDownloadingState } from '../../../ducks'
+import { getReportsStandardsFilters } from '../common/filterDataDucks'
 import {
   getReportsStandardsGradebookLoader,
   getStandardsGradebookRequestAction,
@@ -27,6 +22,9 @@ import {
   getStudentStandardsAction,
   getReportsStandardsGradebookError,
 } from './ducks'
+
+import { getStudentAssignments } from '../../../common/util'
+import { getMaxMasteryScore } from '../standardsPerformance/utils/transformers'
 import {
   getDenormalizedData,
   getFilteredDenormalizedData,
@@ -43,16 +41,15 @@ const StandardsGradebook = ({
   loading,
   error,
   standardsFilters,
-  filters,
   getStudentStandards,
   studentStandardData,
   loadingStudentStandard,
   location,
   pageTitle,
   ddfilter,
-  user,
+  userRole,
+  sharedReport,
 }) => {
-  const userRole = get(user, 'role', '')
   const standardsCount = get(
     standardsGradebook,
     'data.result.standardsCount',
@@ -78,15 +75,9 @@ const StandardsGradebook = ({
 
   const getGradebookQuery = () => {
     const q = {
-      testIds: settings.selectedTest.map((test) => test.key).join(),
       ...settings.requestFilters,
-      domainIds: (settings.requestFilters.domainIds || []).join(),
-      schoolIds: settings.requestFilters.schoolId,
       page: 1,
       pageSize: pageFilters.pageSize,
-    }
-    if (userRole === roleuser.SCHOOL_ADMIN) {
-      q.schoolIds = q.schoolIds || get(user, 'institutionIds', []).join(',')
     }
     return q
   }
@@ -97,7 +88,7 @@ const StandardsGradebook = ({
 
   useEffect(() => {
     const q = { ...getGradebookQuery(), ...pageFilters }
-    if (q.termId) {
+    if (q.termId || q.reportId) {
       getStandardsGradebookRequest(q)
     }
   }, [pageFilters])
@@ -191,7 +182,7 @@ const StandardsGradebook = ({
           chartFilter={chartFilter}
           isCsvDownloading={isCsvDownloading}
           role={userRole}
-          filters={filters}
+          filters={sharedReport?.filters || settings.requestFilters}
           handleOnClickStandard={handleOnClickStandard}
           standardsData={standardsData}
           location={location}
@@ -219,10 +210,8 @@ const enhance = compose(
       error: getReportsStandardsGradebookError(state),
       isCsvDownloading: getCsvDownloadingState(state),
       standardsFilters: getReportsStandardsFilters(state),
-      filters: getFiltersSelector(state),
       studentStandardData: getStudentStandardData(state),
       loadingStudentStandard: getStudentStandardLoader(state),
-      user: getUser(state),
     }),
     {
       getStandardsGradebookRequest: getStandardsGradebookRequestAction,

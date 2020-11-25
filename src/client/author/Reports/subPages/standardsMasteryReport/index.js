@@ -4,19 +4,15 @@ import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { get, isEmpty } from 'lodash'
+
 import { FlexContainer } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
-
 import StandardsGradebook from './standardsGradebook'
 import StandardsPerfromance from './standardsPerformance'
-
 import StandardsFilters from './common/components/Filters'
-import { getNavigationTabLinks } from '../../common/util'
+import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
-import navigation from '../../common/static/json/navigation.json'
-
-import { setSMRSettingsAction, getReportsSMRSettings } from './ducks'
-import { resetAllReportsAction } from '../../common/reportsRedux'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
   ReportContaner,
   SearchField,
@@ -24,19 +20,27 @@ import {
   FilterButton,
 } from '../../common/styled'
 
+import { setSMRSettingsAction, getReportsSMRSettings } from './ducks'
+import { resetAllReportsAction } from '../../common/reportsRedux'
 import { getReportsStandardsGradebook } from './standardsGradebook/ducks'
-import dropDownFormat from './standardsGradebook/static/json/dropDownFormat.json'
-import {
-  getUserRole,
-  getInterestedCurriculumsSelector,
-} from '../../../src/selectors/user'
-import { getFilterDropDownData } from './standardsGradebook/utils/transformers'
-import { getDropDownData } from './standardsPerformance/utils/transformers'
 import {
   getReportsStandardsFilters,
   getFiltersSelector,
 } from './common/filterDataDucks'
-import NoDataNotification from '../../../../common/components/NoDataNotification'
+import { getSharingState, setSharingStateAction } from '../../ducks'
+import { getSharedReportList } from '../../components/sharedReports/ducks'
+import {
+  getUserRole,
+  getInterestedCurriculumsSelector,
+} from '../../../src/selectors/user'
+
+import { getNavigationTabLinks } from '../../common/util'
+import { transformFiltersForSMR } from './common/utils'
+import { getFilterDropDownData } from './standardsGradebook/utils/transformers'
+import { getDropDownData } from './standardsPerformance/utils/transformers'
+
+import navigation from '../../common/static/json/navigation.json'
+import dropDownFormat from './standardsGradebook/static/json/dropDownFormat.json'
 
 const standardsMasteryReports = {
   'standards-gradebook': 'Standards Gradebook',
@@ -45,7 +49,7 @@ const standardsMasteryReports = {
 
 const StandardsMasteryReportContainer = (props) => {
   const {
-    gradebookSettings,
+    settings,
     setSMRSettings,
     resetAllReports,
     premium,
@@ -63,24 +67,33 @@ const StandardsMasteryReportContainer = (props) => {
     filters,
     interestedCurriculums,
     showApply,
+    sharingState,
+    setSharingState,
+    sharedReportList,
   } = props
 
   const firstRender = useRef(true)
 
-  useEffect(
-    () => () => {
-      console.log('Standards Mastery Report Component Unmount')
-      resetAllReports()
-    },
-    []
-  )
-
   useEffect(() => {
     setSMRSettings({
-      ...gradebookSettings,
+      ...settings,
       requestFilters: { ...(filters || standardsFilters?.filters) },
     })
+    return () => {
+      console.log('Standards Mastery Report Component Unmount')
+      resetAllReports()
+    }
   }, [])
+
+  const [reportId] = useState(
+    qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
+  )
+
+  const [sharedReport, userRole] = useMemo(() => {
+    const _sharedReport = sharedReportList.find((s) => s._id === reportId)
+    const _userRole = _sharedReport?.sharedBy?.role || role
+    return [_sharedReport, _userRole]
+  }, [reportId, sharedReportList])
 
   const computeChartNavigationLinks = (filt) => {
     if (navigation.locToData[loc]) {
@@ -106,29 +119,28 @@ const StandardsMasteryReportContainer = (props) => {
   useEffect(() => {
     if (!firstRender.current) {
       const obj = {}
-      const arr = Object.keys(gradebookSettings.requestFilters)
+      const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
-        if (gradebookSettings.requestFilters[item] === '') {
+        if (settings.requestFilters[item] === '') {
           obj[item] = 'All'
         } else {
-          obj[item] = gradebookSettings.requestFilters[item]
+          obj[item] = settings.requestFilters[item]
         }
       })
-      obj.testIds = gradebookSettings.selectedTest
-        .map((items) => items.key)
-        .join()
+      obj.testIds = settings.selectedTest.map((items) => items.key).join()
+      obj.reportId = reportId || obj.reportId
       const path = qs.stringify(obj, { arrayFormat: 'comma' })
       history.push(`?${path}`)
     }
     firstRender.current = false
 
     const computedChartNavigatorLinks = computeChartNavigationLinks(
-      gradebookSettings.requestFilters
+      settings.requestFilters
     )
     updateNavigation(
       !premium ? [computedChartNavigatorLinks[1]] : computedChartNavigatorLinks
     )
-  }, [gradebookSettings])
+  }, [settings])
 
   const setShowApply = (status) => {
     onRefineResultsCB(null, status, 'applyButton')
@@ -158,15 +170,15 @@ const StandardsMasteryReportContainer = (props) => {
     if (!isEmpty(_standardsGradebook)) {
       const ddTeacherInfo = _standardsGradebook.teacherInfo
       const temp = next(dropDownFormat.filterDropDownData, () => {})
-      return getFilterDropDownData(ddTeacherInfo, role).concat(temp)
+      return getFilterDropDownData(ddTeacherInfo, userRole).concat(temp)
     }
     return dropDownFormat.filterDropDownData
   }, [standardsGradebook])
 
   const orgData = get(standardsFilters, 'orgData', [])
   const [dynamicDropDownData, filterInitState] = useMemo(
-    () => getDropDownData(orgData, role),
-    [orgData, dropDownFormat.filterDropDownData, role]
+    () => getDropDownData(orgData, userRole),
+    [orgData, dropDownFormat.filterDropDownData, userRole]
   )
   const [ddfilterForPerformance, setDdFilterForPerformance] = useState(
     filterInitState
@@ -201,15 +213,15 @@ const StandardsMasteryReportContainer = (props) => {
         obj[item] = _settings.filters[item]
       }
     })
-
     setSMRSettings({
-      ...gradebookSettings,
+      ...settings,
       selectedTest: _settings.selectedTest,
       requestFilters: { ...obj },
     })
-
-    setDdFilterForPerformance({ ...tempDdfilterForPerformance })
-    setDdFilter({ ...tempDdfilter })
+    if (!reportId) {
+      setDdFilterForPerformance({ ...tempDdfilterForPerformance })
+      setDdFilter({ ...tempDdfilter })
+    }
   }
 
   let extraFilters = []
@@ -255,8 +267,34 @@ const StandardsMasteryReportContainer = (props) => {
     )
   }
 
+  const transformedSettings = useMemo(() => {
+    const _settings = { ...settings }
+    if (loc === 'standards-performance-summary') {
+      _settings.ddfilter = ddfilterForPerformance
+    }
+    const _requestFilters = transformFiltersForSMR(_settings)
+    return { ...settings, requestFilters: _requestFilters }
+  }, [settings, ddfilterForPerformance])
+
+  useEffect(() => {
+    if (sharedReport?.ddfilter) {
+      setDdFilter(ddfilter)
+    }
+  }, [sharedReport])
+
   return (
     <FlexContainer alignItems="flex-start">
+      {sharingState && (
+        <ShareReportModal
+          reportType={loc}
+          reportFilters={{
+            ...transformedSettings.requestFilters,
+            ddfilter,
+          }}
+          showModal={sharingState}
+          setShowModal={setSharingState}
+        />
+      )}
       <StandardsFilters
         onGoClick={onGoClick}
         loc={loc}
@@ -267,10 +305,13 @@ const StandardsMasteryReportContainer = (props) => {
         showApply={showApply}
         setShowApply={setShowApply}
         extraFilter={extraFilters}
+        reportId={reportId}
       />
-      <FilterButton showFilter={showFilter} onClick={toggleFilter}>
-        <IconFilter />
-      </FilterButton>
+      {!reportId ? (
+        <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+          <IconFilter />
+        </FilterButton>
+      ) : null}
       <ReportContaner showFilter={showFilter}>
         <Route
           exact
@@ -282,8 +323,10 @@ const StandardsMasteryReportContainer = (props) => {
                 {..._props}
                 pageTitle={loc}
                 ddfilter={ddfilter}
-                settings={gradebookSettings}
+                settings={transformedSettings}
                 standardsGradebook={standardsGradebook}
+                sharedReport={sharedReport}
+                userRole={userRole}
               />
             )
           }}
@@ -296,8 +339,8 @@ const StandardsMasteryReportContainer = (props) => {
             return (
               <StandardsPerfromance
                 {..._props}
-                settings={gradebookSettings}
-                ddfilter={ddfilterForPerformance}
+                settings={transformedSettings}
+                userRole={userRole}
               />
             )
           }}
@@ -312,13 +355,16 @@ const ConnectedStandardsMasteryReportContainer = connect(
     role: getUserRole(state),
     standardsFilters: getReportsStandardsFilters(state),
     standardsGradebook: getReportsStandardsGradebook(state),
-    gradebookSettings: getReportsSMRSettings(state),
+    settings: getReportsSMRSettings(state),
     filters: getFiltersSelector(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
+    sharingState: getSharingState(state),
+    sharedReportList: getSharedReportList(state),
   }),
   {
     setSMRSettings: setSMRSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setSharingState: setSharingStateAction,
   }
 )(StandardsMasteryReportContainer)
 

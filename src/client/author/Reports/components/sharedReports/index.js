@@ -24,6 +24,7 @@ const SharedReportsContainer = ({
         )
         break
       case report.reportGroupType.MULTIPLE_ASSESSMENT_REPORT:
+      case report.reportGroupType.STANDARDS_MASTERY_REPORT:
         history.push(`/author/reports/${reportType}?reportId=${_id}`)
         break
       case report.reportGroupType.STUDENT_PROFILE_REPORT:
@@ -40,6 +41,11 @@ const SharedReportsContainer = ({
   const sharedReportsData = useMemo(
     () =>
       sharedReportList.map((sharedReport) => {
+        /**
+         * example:
+         * reportGroupTypeTitle = 'Single Assessment Report'
+         * reportGroupType = 'single-assessment-report'
+         */
         const reportGroupTypeTitle =
           navigation.locToData[sharedReport.reportType]?.groupTitle || '-'
         const reportGroupType = reportGroupTypeTitle

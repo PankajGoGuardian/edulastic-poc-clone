@@ -287,6 +287,7 @@ describe(`${FileHelper.getSpecName(
       manageClass.selectArchieveClass()
       manageClass.goToLastPage()
       manageClass.unArchieveClassByName(rejoinClassName)
+      manageClass.selectActiveClass()
       manageClass.verifyClassRowVisibleByName(rejoinClassName)
     })
   })

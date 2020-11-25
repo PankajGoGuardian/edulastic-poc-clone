@@ -105,6 +105,7 @@ describe(`${FileHelper.getSpecName(
     })
 
     beforeEach('reset all filters', () => {
+      authorAssignmentPage.smartFilter.expandFilter()
       authorAssignmentPage.smartFilter.routeAPI()
       authorAssignmentPage.smartFilter.resetAll()
     })
@@ -221,9 +222,10 @@ describe(`${FileHelper.getSpecName(
               testId,
               assignmentIds[status]
             )
-            lcb.header.clickOnClose(true, false)
+            lcb.header.clickOnClose()
             testLibrary.sidebar.clickOnAssignment()
           }
+          authorAssignmentPage.smartFilter.expandFilter()
           authorAssignmentPage.smartFilter.setStatus(status)
           authorAssignmentPage
             .getClass()

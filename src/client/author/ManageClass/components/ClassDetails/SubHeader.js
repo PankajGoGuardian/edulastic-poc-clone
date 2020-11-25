@@ -1,5 +1,5 @@
 import { Col, Tooltip } from 'antd'
-import { get } from 'lodash'
+import { get, compact } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import connect from 'react-redux/lib/connect/connect'
@@ -39,24 +39,24 @@ const SubHeader = ({
   const totalStudent = studentCount < 10 ? `0${studentCount}` : studentCount
 
   const primaryTeacher = owners
-    ? owners
-        .filter((owner) => owner.id === primaryTeacherId)
-        .map((owner) => owner.name)
+    ? compact(
+        owners
+          .filter((owner) => owner.id === primaryTeacherId)
+          .map((owner) => owner.name || owner.email)
+      )
     : []
 
-  const formatPrimaryTeacher = primaryTeacher.map((teacher) =>
-    teacher.split(', ').reverse().join(' ')
-  )
+  const formatPrimaryTeacher = primaryTeacher.map((teacher) => teacher)
 
   const coTeachers = owners
-    ? owners
-        .filter((owner) => owner.id !== primaryTeacherId)
-        .map((owner) => owner.name)
+    ? compact(
+        owners
+          .filter((owner) => owner.id !== primaryTeacherId)
+          .map((owner) => owner.name || owner.email)
+      )
     : []
 
-  const formatCoteacherNames = coTeachers.map((coteacher) =>
-    coteacher.split(', ').reverse().join(' ')
-  )
+  const formatCoteacherNames = coTeachers.map((coteacher) => coteacher)
 
   const teacher = formatCoteacherNames.slice(0, 3).join(', ')
   const otherTeachers = formatCoteacherNames.slice(3, lastTeacher)

@@ -35,9 +35,13 @@ const QuestionAnalysis = ({
   getQuestionAnalysis,
   settings,
   testList,
+  sharedReport,
 }) => {
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
   const [compareBy, setCompareBy] = useState(
-    role === 'teacher' ? 'groupId' : 'schoolId'
+    userRole === 'teacher' ? 'groupId' : 'schoolId'
   )
   const [chartFilter, setChartFilter] = useState({})
 
@@ -50,9 +54,10 @@ const QuestionAnalysis = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getQuestionAnalysis(q)
     }
   }, [settings])
@@ -121,14 +126,14 @@ const QuestionAnalysis = ({
                 <Col>
                   <StyledH3>
                     Detailed Performance Analysis{' '}
-                    {role !== 'teacher'
+                    {userRole !== 'teacher'
                       ? `By ${dropDownKeyToLabel[compareBy]}`
                       : ''}{' '}
                     | {assessmentName}
                   </StyledH3>
                 </Col>
                 <Col>
-                  {role !== 'teacher' ? (
+                  {userRole!== 'teacher' ? (
                     <ControlDropDown
                       prefix="Compare by"
                       by={compareByDropDownData[0]}
@@ -145,7 +150,7 @@ const QuestionAnalysis = ({
                 tableData={tableData}
                 compareBy={compareBy}
                 filter={chartFilter}
-                role={role}
+                role={userRole}
                 compareByTitle={dropDownKeyToLabel[compareBy]}
               />
             </Col>

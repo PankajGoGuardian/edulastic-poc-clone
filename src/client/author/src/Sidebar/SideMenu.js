@@ -41,6 +41,7 @@ import {
   IconSignoutHighlight,
   IconInterface,
   IconSwitchUser,
+  IconUsers,
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -164,6 +165,7 @@ class SideMenu extends Component {
       features,
       isOrganizationDistrict,
       userRole,
+      isSidebarCollapsed,
     } = this.props
 
     let _menuItems = cloneDeep(menuItems)
@@ -217,7 +219,31 @@ class SideMenu extends Component {
     if (item1.divider) {
       return [myPlayListItem, ..._menuItems]
     }
-    return [item1, myPlayListItem, ...rest]
+    const collaborationItem = []
+    if (userRole === roleuser.TEACHER && features.showCollaborationGroups) {
+      collaborationItem.push({
+        label: 'Collaboration Groups',
+        icon: () => (
+          // TODO: replace this terrible icon with better one
+          <IconUsers
+            width="30px"
+            height="22px"
+            style={{
+              marginRight: !isSidebarCollapsed && '20px',
+              marginTop: '5px',
+              marginLeft: '-4px',
+            }}
+          />
+        ),
+        path: 'author/collaborations',
+        allowedPathPattern: [
+          /author\/collaborations/,
+          /author\/collaborations\/.{24}/,
+        ],
+        role: ['teacher'],
+      })
+    }
+    return [item1, myPlayListItem, ...rest, ...collaborationItem]
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`

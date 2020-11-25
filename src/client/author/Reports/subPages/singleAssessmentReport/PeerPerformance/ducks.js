@@ -86,14 +86,6 @@ export const reportPeerPerformanceReducer = createReducer(initialState, {
 
 function* getReportsPeerPerformanceRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
     const { data } = yield call(reportsApi.fetchPeerPerformanceReport, payload)
 
     if (data && data?.dataSizeExceeded) {

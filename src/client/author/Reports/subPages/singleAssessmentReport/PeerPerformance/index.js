@@ -48,7 +48,11 @@ const PeerPerformance = ({
   settings,
   testList,
   filters,
+  sharedReport,
 }) => {
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
   const selectedTest = testList.find(
     (t) => t._id === settings.selectedTest.key
   ) || { _id: '', title: '' }
@@ -69,7 +73,7 @@ const PeerPerformance = ({
   const [ddfilter, setDdFilter] = useState({
     ...filters,
     analyseBy: 'score(%)',
-    compareBy: role === 'teacher' ? 'groupId' : 'schoolId',
+    compareBy: userRole === 'teacher' ? 'groupId' : 'schoolId',
   })
   const [chartFilter, setChartFilter] = useState({})
 
@@ -82,9 +86,10 @@ const PeerPerformance = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getPeerPerformance(q)
     }
   }, [settings])
@@ -94,7 +99,7 @@ const PeerPerformance = ({
     dropDownFormat.compareByDropDownData,
     (tempCompareBy) => {
       tempCompareBy.splice(3, 0, { key: 'group', title: 'Student Group' })
-      if (role === 'teacher') {
+      if (userRole === 'teacher') {
         tempCompareBy.splice(0, 2)
       }
     }
@@ -202,7 +207,7 @@ const PeerPerformance = ({
                   onBarClickCB={onBarClickCB}
                   onResetClickCB={onResetClickCB}
                   bandInfo={bandInfo}
-                  role={role}
+                  role={userRole}
                 />
               ) : (
                 // signed stacked bar-chart
@@ -215,7 +220,7 @@ const PeerPerformance = ({
                   onBarClickCB={onBarClickCB}
                   onResetClickCB={onResetClickCB}
                   bandInfo={bandInfo}
-                  role={role}
+                  role={userRole}
                 />
               )}
             </div>
@@ -234,7 +239,7 @@ const PeerPerformance = ({
             compareBy={ddfilter.compareBy}
             assessmentName={assessmentName}
             bandInfo={bandInfo}
-            role={role}
+            role={userRole}
           />
         </StyledCard>
       </TableContainer>

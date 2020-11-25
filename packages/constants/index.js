@@ -36,6 +36,7 @@ const collections = require('./const/collections')
 const sortOptions = require('./const/sortOptions')
 const folderTypes = require('./const/folderTypes')
 const regexJs = require('./const/regex.js')
+const report = require('./const/report.js')
 
 module.exports = {
   question,
@@ -76,4 +77,5 @@ module.exports = {
   sortOptions,
   folderTypes,
   regexJs,
+  report,
 }

@@ -447,6 +447,8 @@
   "group": {
     "name": "Group Name",
     "students": "Students",
+    "groupMembers": "Members",
+    "createdAt": "Created Date",
     "createGroup": "CREATE NEW GROUP",
     "showActive": "Show Active Groups",
     "archiveGroups": "Archive Selected Group(s)",

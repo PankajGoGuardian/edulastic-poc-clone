@@ -76,7 +76,11 @@ const PerformanceByStandards = ({
   location,
   pageTitle,
   filters,
+  sharedReport,
 }) => {
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
   const scaleInfo = useMemo(
     () =>
       (
@@ -90,7 +94,7 @@ const PerformanceByStandards = ({
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
   const [compareBy, setCompareBy] = useState(
-    role === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
+    userRole === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
   )
   const [standardId, setStandardId] = useState('')
   const [selectedStandards, setSelectedStandards] = useState([])
@@ -141,7 +145,7 @@ const PerformanceByStandards = ({
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(
     (o) => {
       if (o.allowedRoles) {
-        return o.allowedRoles.includes(role)
+        return o.allowedRoles.includes(userRole)
       }
       return true
     }
@@ -149,9 +153,10 @@ const PerformanceByStandards = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getPerformanceByStandards(q)
     }
   }, [settings])

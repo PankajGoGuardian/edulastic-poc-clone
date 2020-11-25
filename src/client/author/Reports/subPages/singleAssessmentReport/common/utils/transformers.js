@@ -1,6 +1,18 @@
-/**
- * TODO: verify the usage and fix this function for student groups
- */
+export const transformFiltersForSAR = (requestFilters) => ({
+  ...requestFilters,
+  classIds:
+    requestFilters?.classIds?.join(',') || requestFilters?.classId || '',
+  groupIds:
+    requestFilters?.groupIds?.join(',') || requestFilters?.groupId || '',
+  assessmentTypes: requestFilters?.assessmentTypes?.join(',') || '',
+  teacherIds: requestFilters?.teacherIds?.join(',') || '',
+  schoolIds: requestFilters?.schoolIds?.join(',') || '',
+  grade: requestFilters.studentGrade,
+  courseId: requestFilters.studentCourseId,
+  subject: requestFilters.studentSubject,
+  profileId: requestFilters.performanceBandProfile,
+})
+
 export const transformMetricForStudentGroups = (
   studentGroupInfo = [],
   metricInfo = []

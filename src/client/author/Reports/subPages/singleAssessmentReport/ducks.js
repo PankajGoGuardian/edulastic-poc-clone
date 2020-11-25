@@ -34,6 +34,7 @@ export const getReportsSARSettings = createSelector(
 const initialState = {
   selectedTest: { key: '' },
   requestFilters: {
+    reportId: '',
     termId: '',
     subject: '',
     grade: '',

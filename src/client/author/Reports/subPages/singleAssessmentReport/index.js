@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
 import next from 'immer'
 import qs from 'qs'
@@ -16,8 +16,10 @@ import PerformanceByStudents from './PerformanceByStudents'
 import QuestionAnalysis from './QuestionAnalysis'
 
 import SingleAssessmentReportFilters from './common/components/filters'
+import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import { getNavigationTabLinks } from '../../common/util'
+import { transformFiltersForSAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
@@ -28,6 +30,8 @@ import {
   resetSARSettingsAction,
 } from './ducks'
 import { getSAFilterDemographics } from './common/filterDataDucks'
+import { getSharingState, setSharingStateAction } from '../../ducks'
+import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import {
@@ -63,6 +67,9 @@ const SingleAssessmentReportContainer = (props) => {
     setShowHeader,
     preventHeaderRender,
     demographics,
+    sharingState,
+    setSharingState,
+    sharedReportList,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -75,6 +82,22 @@ const SingleAssessmentReportContainer = (props) => {
   })
   const [customStudentUserId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).customStudentUserId
+  )
+  const [reportId] = useState(
+    qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
+  )
+
+  const sharedReport = useMemo(
+    () => sharedReportList.find((s) => s._id === reportId),
+    [reportId, sharedReportList]
+  )
+
+  const transformedSettings = useMemo(
+    () => ({
+      ...settings,
+      requestFilters: transformFiltersForSAR(settings.requestFilters),
+    }),
+    [settings]
   )
 
   useEffect(() => {
@@ -205,11 +228,23 @@ const SingleAssessmentReportContainer = (props) => {
     >
       <>
         {firstLoad && <Spin size="large" />}
+        {sharingState && (
+          <ShareReportModal
+            reportType={loc}
+            reportFilters={{
+              ...transformedSettings.requestFilters,
+              testId: transformedSettings.selectedTest.key,
+            }}
+            showModal={sharingState}
+            setShowModal={setSharingState}
+          />
+        )}
         <FlexContainer
           alignItems="flex-start"
           display={firstLoad ? 'none' : 'flex'}
         >
           <SingleAssessmentReportFilters
+            reportId={reportId}
             onGoClick={onGoClick}
             loc={loc}
             history={history}
@@ -224,17 +259,21 @@ const SingleAssessmentReportContainer = (props) => {
               '/author/reports/performance-by-standards',
             ].find((x) => window.location.pathname.startsWith(x))}
             extraFilters={extraFilters}
-            style={showFilter ? { display: 'block' } : { display: 'none' }}
+            style={
+              reportId || !showFilter
+                ? { display: 'none' }
+                : { display: 'block' }
+            }
             showApply={showApply}
             setShowApply={setShowApply}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
           />
-          {!isCliUser && (
+          {!isCliUser && !reportId ? (
             <FilterButton showFilter={showFilter} onClick={toggleFilter}>
               <IconFilter />
             </FilterButton>
-          )}
+          ) : null}
           <ReportContaner showFilter={showFilter}>
             <Route
               exact
@@ -242,9 +281,10 @@ const SingleAssessmentReportContainer = (props) => {
               render={(_props) => (
                 <AssessmentSummary
                   {..._props}
-                  settings={settings}
+                  settings={transformedSettings}
                   setShowHeader={setShowHeader}
                   preventHeaderRender={preventHeaderRender}
+                  sharedReport={sharedReport}
                 />
               )}
             />
@@ -254,8 +294,9 @@ const SingleAssessmentReportContainer = (props) => {
               render={(_props) => (
                 <PeerPerformance
                   {..._props}
-                  settings={settings}
+                  settings={transformedSettings}
                   filters={ddfilter}
+                  sharedReport={sharedReport}
                 />
               )}
             />
@@ -263,14 +304,18 @@ const SingleAssessmentReportContainer = (props) => {
               exact
               path="/author/reports/question-analysis/test/:testId?"
               render={(_props) => (
-                <QuestionAnalysis {..._props} settings={settings} />
+                <QuestionAnalysis
+                  {..._props}
+                  settings={transformedSettings}
+                  sharedReport={sharedReport}
+                />
               )}
             />
             <Route
               exact
               path="/author/reports/response-frequency/test/:testId?"
               render={(_props) => (
-                <ResponseFrequency {..._props} settings={settings} />
+                <ResponseFrequency {..._props} settings={transformedSettings} />
               )}
             />
             <Route
@@ -279,9 +324,10 @@ const SingleAssessmentReportContainer = (props) => {
               render={(_props) => (
                 <PerformanceByStandards
                   {..._props}
-                  settings={settings}
+                  settings={transformedSettings}
                   pageTitle={loc}
                   filters={ddfilter}
+                  sharedReport={sharedReport}
                 />
               )}
             />
@@ -292,11 +338,12 @@ const SingleAssessmentReportContainer = (props) => {
                 <PerformanceByStudents
                   {..._props}
                   showFilter={showFilter}
-                  settings={settings}
+                  settings={transformedSettings}
                   pageTitle={loc}
                   filters={ddfilter}
                   customStudentUserId={customStudentUserId}
                   isCliUser={isCliUser}
+                  sharedReport={sharedReport}
                 />
               )}
             />
@@ -312,12 +359,15 @@ const ConnectedSingleAssessmentReportContainer = connect(
     settings: getReportsSARSettings(state),
     demographics: getSAFilterDemographics(state),
     cliUser: state.user?.isCliUser,
+    sharingState: getSharingState(state),
+    sharedReportList: getSharedReportList(state),
   }),
   {
     setSARSettings: setSARSettingsAction,
     resetAllReports: resetAllReportsAction,
     updateCliUser: updateCliUserAction,
     resetSARSettings: resetSARSettingsAction,
+    setSharingState: setSharingStateAction,
   }
 )(SingleAssessmentReportContainer)
 

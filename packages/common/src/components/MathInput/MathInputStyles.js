@@ -26,6 +26,7 @@ export const MathInputStyles = styled.div`
       width ? 'unset' : !noPadding && '5px 15px'};
     align-items: center;
     padding-right: 25px;
+    padding-left: 8px;
 
     &.clear {
       background: ${(props) => props.theme.common.mathInputMathClearBgColor};
@@ -73,9 +74,6 @@ export const MathInputStyles = styled.div`
     .mq-root-block {
       font-size: ${({ fontSize }) => `${fontSize || 'inherit'}`};
       padding-top: 5px;
-      * {
-        font-style: unset;
-      }
     }
   }
 

@@ -208,7 +208,7 @@ const methodOptions = {
 // need to create finalised constants for the keys
 const methodOptionsGrouped = {
   [methods.EQUIV_SYMBOLIC]: {
-    'STUDENT’S RESPONSE SHOULD BE: ': [
+    'STUDENT ANSWER MUST BE': [
       'isSimplified',
       'isMixedFraction',
       'isImproperFraction',
@@ -217,7 +217,7 @@ const methodOptionsGrouped = {
       'isRationalized',
       'requireIntervalNotation',
     ],
-    'INTERPRET THE VALUES AS: ': [
+    'INTERPRET THE ANSWER AS': [
       'automatic',
       'interpretAsSet',
       'interpretAsInterval',
@@ -257,6 +257,91 @@ const methodOptionsGrouped = {
   // [methods.EQUIV_SYNTAX]: {
   //   Default: ["notExpected", "syntax", "argument", "rule"]
   // }
+}
+
+const interpret = [
+  'automatic',
+  'interpretAsSet',
+  'interpretAsInterval',
+  'interpretAsNumber',
+  'interpretAsList',
+]
+const fractionForms = [
+  'isSimplified',
+  'isMixedFraction',
+  'isImproperFraction',
+  'isRationalized',
+]
+const expressionForms = ['isFactorised', 'isExpanded']
+const numberFormat = [
+  'integerType',
+  // 'numberType',
+  'scientificType',
+  'isDecimal',
+  'isExponentialForm',
+]
+const accuracyForms = ['tolerance', 'significantDecimalPlaces']
+const multipleValues = ['requireIntervalNotation', 'isIn', 'satisfies']
+const equationForms = [
+  'isLineStandardForm',
+  'isLineSlopeInterceptForm',
+  'isLinePointSlopeForm',
+  'isQuadraticStandardForm',
+  'isPolynomialStandardForm',
+  'isPolynomalFactoredForm',
+  'isConicStandardForm',
+  'isParabolaVertexForm',
+]
+const evaluationSettings = {
+  [methods.EQUIV_SYMBOLIC]: {
+    'STUDENT ANSWER MUST BE': [
+      'fractionForms',
+      'expressionForms',
+      'numberFormat',
+      'accuracyForms',
+      'multipleValues',
+      'equationForms',
+    ],
+    'INTERPRET THE ANSWER AS': [
+      'interpret',
+      'setDecimalSeparator',
+      'setThousandsSeparator',
+      'allowEulersNumber',
+      // 'complexType',
+      'interpretTrigArgAsDegree',
+      'interpretAsImaginary',
+    ],
+    MISCELLANEOUS: [
+      'ignoreCase',
+      'allowedVariables',
+      'allowNumericOnly',
+      'ignoreAlphabeticCharacters',
+      // 'allowedUnits',
+      'compareSides',
+      // 'useTemplate',
+    ],
+  },
+  [methods.EQUIV_LITERAL]: [
+    'ignoreTrailingZeros',
+    'ignoreOrder',
+    'ignoreCoefficientOfOne',
+    'literalIgnoreLeadingAndTrailingSpaces',
+    // 'inverseResult',
+    'setDecimalSeparator',
+    'setThousandsSeparator',
+    'allowedVariables',
+    'ignoreCase',
+  ],
+}
+
+const subEvaluationSettingsGrouped = {
+  interpret,
+  fractionForms,
+  expressionForms,
+  numberFormat,
+  accuracyForms,
+  multipleValues,
+  equationForms,
 }
 
 const characterMapButtons = [
@@ -359,4 +444,6 @@ module.exports = {
   characterMapButtons,
   defaultNumberPad,
   methodOptionsGrouped,
+  evaluationSettings,
+  subEvaluationSettingsGrouped,
 }

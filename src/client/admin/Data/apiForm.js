@@ -252,7 +252,9 @@ export const apiForms = [
       text: '**Power tools can be enabled for DA, SA and Teachers',
       parentField: 'usernames',
       position: 'bottom',
-      align: 'right',
+      style: {
+        float: 'right',
+      },
     },
     fields: [
       {
@@ -499,6 +501,16 @@ export const apiForms = [
     name: 'Update User',
     endPoint: 'user/user-details',
     method: 'post',
+    note: {
+      text: 'Note: Updating the username will reflect same in email',
+      parentField: 'userId',
+      position: 'bottom',
+      style: {
+        width: '100%',
+        padding: '5px 0px',
+        display: 'inline-block',
+      },
+    },
     fields: [
       {
         key: 'username',

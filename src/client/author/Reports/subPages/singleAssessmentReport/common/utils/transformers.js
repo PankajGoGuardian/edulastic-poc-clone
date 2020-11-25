@@ -1,12 +1,16 @@
-export const transformFiltersForSAR = (requestFilters) => ({
+const getFormattedString = (prop) => (prop ? Array.from(prop).join(',') : '')
+
+export const transformFiltersForSAR = (requestFilters = {}) => ({
   ...requestFilters,
-  classIds:
-    requestFilters?.classIds?.join(',') || requestFilters?.classId || '',
-  groupIds:
-    requestFilters?.groupIds?.join(',') || requestFilters?.groupId || '',
-  assessmentTypes: requestFilters?.assessmentTypes?.join(',') || '',
-  teacherIds: requestFilters?.teacherIds?.join(',') || '',
-  schoolIds: requestFilters?.schoolIds?.join(',') || '',
+  classIds: getFormattedString(
+    requestFilters.classIds || requestFilters.classId
+  ),
+  groupIds: getFormattedString(
+    requestFilters.groupIds || requestFilters.groupId
+  ),
+  assessmentTypes: getFormattedString(requestFilters.assessmentTypes),
+  teacherIds: getFormattedString(requestFilters.teacherIds),
+  schoolIds: getFormattedString(requestFilters.schoolIds),
   grade: requestFilters.studentGrade,
   courseId: requestFilters.studentCourseId,
   subject: requestFilters.studentSubject,

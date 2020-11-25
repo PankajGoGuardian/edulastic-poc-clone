@@ -18,6 +18,7 @@ export const getReportsSPRSettings = createSelector(
 const defaultStudent = { key: '', title: '' }
 const defaultFilters = {
   termId: '',
+  reportId: '',
   courseId: '',
   grade: '',
   subject: '',

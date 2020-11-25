@@ -26,8 +26,12 @@ const SharedReportsContainer = ({
       case report.reportGroupType.MULTIPLE_ASSESSMENT_REPORT:
         history.push(`/author/reports/${reportType}?reportId=${_id}`)
         break
-      case report.reportGroupType.STANDARDS_MASTERY_REPORT:
       case report.reportGroupType.STUDENT_PROFILE_REPORT:
+        history.push(
+          `/author/reports/${reportType}/student/${filters.studentId}?termId=${filters.termId}&reportId=${_id}`
+        )
+        break
+      case report.reportGroupType.STANDARDS_MASTERY_REPORT:
       default:
       // do nothing
     }

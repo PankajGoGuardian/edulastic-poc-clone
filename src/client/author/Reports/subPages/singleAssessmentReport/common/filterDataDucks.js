@@ -126,7 +126,7 @@ const initialState = {
     groupId: 'All',
     schoolIds: [],
     teacherIds: [],
-    assessmentType: [],
+    assessmentTypes: '',
     performanceBandProfile: '',
     standardsProficiencyProfile: '',
   },

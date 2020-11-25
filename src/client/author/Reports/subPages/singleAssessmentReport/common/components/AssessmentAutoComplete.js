@@ -51,7 +51,8 @@ const AssessmentAutoComplete = ({
           !filters.subject || filters.subject === 'All'
             ? []
             : [filters.subject],
-        testTypes: filters.assessmentTypes || [],
+        testTypes:
+          (filters.assessmentTypes && filters.assessmentTypes.split(',')) || [],
         courseIds:
           !filters.courseId || filters.courseId === 'All'
             ? []

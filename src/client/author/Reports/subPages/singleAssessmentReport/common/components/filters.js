@@ -143,8 +143,11 @@ const SingleAssessmentReportFilters = ({
         user.role === roleuser.DISTRICT_ADMIN ||
         user.role === roleuser.SCHOOL_ADMIN
       ) {
-        search.assessmentTypes = search.assessmentTypes ||
-          savedFilters.assessmentTypes || ['common assessment']
+        search.assessmentTypes =
+          search.assessmentTypes ||
+          (savedFilters.assessmentTypes &&
+            savedFilters.assessmentTypes.join(',')) ||
+          'common assessment'
       }
       if (firstLoad) {
         search = {
@@ -180,7 +183,7 @@ const SingleAssessmentReportFilters = ({
         groupId: search.groupId || 'All',
         schoolIds: search.schoolIds || [],
         teacherIds: search.teacherIds || [],
-        assessmentTypes: search.assessmentTypes || [],
+        assessmentTypes: search.assessmentTypes || 'common assessment',
       }
       const urlParams = { ...obtainedFilters }
 
@@ -227,10 +230,10 @@ const SingleAssessmentReportFilters = ({
     }
   }
 
-  const updateFilterDropdownCB = (selected, keyName) => {
+  const updateFilterDropdownCB = (selected, keyName, hasKey = false) => {
     const _filters = {
       ...filters,
-      [keyName]: isArray(selected) ? selected : selected.key,
+      [keyName]: hasKey ? selected : selected.key,
     }
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     setFiltersOrTestId({ filters: _filters })
@@ -247,7 +250,6 @@ const SingleAssessmentReportFilters = ({
       standardProficiencyProfiles.map((s) => ({ key: s._id, title: s.name })),
     [standardProficiencyProfiles]
   )
-
   return loading ? (
     <StyledFilterWrapper style={style}>
       <Spin />
@@ -303,8 +305,14 @@ const SingleAssessmentReportFilters = ({
             <MultiSelectDropdown
               label="Assessment Type"
               el={assessmentTypeRef}
-              onChange={(e) => updateFilterDropdownCB(e, 'assessmentTypes')}
-              value={filters.assessmentTypes}
+              onChange={(e) =>
+                updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
+              }
+              value={
+                filters.assessmentTypes
+                  ? filters.assessmentTypes.split(',')
+                  : []
+              }
               options={staticDropDownData.assessmentType.filter(
                 (a) => a.key !== 'All'
               )}

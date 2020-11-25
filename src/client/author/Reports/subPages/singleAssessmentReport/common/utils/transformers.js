@@ -8,7 +8,7 @@ export const transformFiltersForSAR = (requestFilters = {}) => ({
   groupIds: getFormattedString(
     requestFilters.groupIds || requestFilters.groupId
   ),
-  assessmentTypes: getFormattedString(requestFilters.assessmentTypes),
+  assessmentTypes: requestFilters?.assessmentTypes || '',
   teacherIds: getFormattedString(requestFilters.teacherIds),
   schoolIds: getFormattedString(requestFilters.schoolIds),
   grade: requestFilters.studentGrade,

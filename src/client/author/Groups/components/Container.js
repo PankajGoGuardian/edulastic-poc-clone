@@ -30,9 +30,13 @@ import { unarchiveClassAction } from '../../ManageClass/ducks'
 
 const menuActive = { mainMenu: 'groups', subMenu: '' }
 
-const Container = ({ history, loading, tab, userRole }) => {
+const Container = ({ history, loading, tab, userRole, premium }) => {
   const showCollaborationsTab =
-    userRole === roleuser.DISTRICT_ADMIN && tab === 'collaborations'
+    [...roleuser.DA_SA_ROLE_ARRAY, roleuser.EDULASTIC_ADMIN].includes(
+      userRole
+    ) &&
+    tab === 'collaborations' &&
+    premium
   return (
     <MainWrapper>
       <AdminHeader active={menuActive} history={history} />
@@ -55,6 +59,7 @@ const enhance = compose(
       loading: groupsLoadingSelector(state),
       groups: getGroupsSelector(state),
       archivedGroups: getArchiveGroupsSelector(state),
+      premium: state.user.user?.features?.premium,
     }),
     {
       fetchGroups: fetchGroupsAction,

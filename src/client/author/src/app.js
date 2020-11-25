@@ -224,6 +224,13 @@ const Collaboration = loadable(() => import('../../author/Collaboration'), {
   fallback: <Progress />,
 })
 
+const MemberCollaboration = loadable(
+  () => import('../../author/Groups/MemberCollaboration'),
+  {
+    fallback: <Progress />,
+  }
+)
+
 // eslint-disable-next-line react/prop-types
 const Author = ({
   match,
@@ -813,6 +820,11 @@ const Author = ({
                     render={(props) => (
                       <Groups tab="collaborations" {...props} />
                     )}
+                  />
+                  <Route
+                    exact
+                    path="/author/collaborations"
+                    component={MemberCollaboration}
                   />
                   <Route
                     exact

@@ -6,10 +6,10 @@ import { SubHeaderWrapper, StyledTabPane, StyledSubMenu } from './styled'
 
 import { getUserRole } from '../../../selectors/user'
 
-const AdminHeader = (props) => {
-  const { active, role, history } = props
-
-  const isDistrictAdmin = role === roleuser.DISTRICT_ADMIN
+const AdminHeader = ({ active, role, history, premium }) => {
+  const isDistrictAdmin =
+    [...roleuser.DA_SA_ROLE_ARRAY, roleuser.EDULASTIC_ADMIN].includes(role) &&
+    premium
 
   const onSubTab = (key) => {
     if (key === 'Collaboration-Groups') {
@@ -47,6 +47,7 @@ const AdminHeader = (props) => {
 export default connect(
   (state) => ({
     role: getUserRole(state),
+    premium: state.user.user?.features?.premium,
   }),
   {}
 )(AdminHeader)

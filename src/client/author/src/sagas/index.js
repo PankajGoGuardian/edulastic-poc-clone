@@ -53,6 +53,7 @@ import { mergeUsersSaga } from '../../MergeUsers'
 import { gradebookSaga } from '../../Gradebook'
 import { advancedAssignmentsSaga } from '../../AssignmentAdvanced'
 import { watcherSaga as previewModalSaga } from '../components/common/PreviewModal/ducks'
+import { collaborationGroupSaga } from '../../Collaboration/index'
 
 const authorSagas = [
   itemsSaga(),
@@ -110,6 +111,7 @@ const authorSagas = [
   gradebookSaga(),
   previewModalSaga(),
   advancedAssignmentsSaga(),
+  collaborationGroupSaga(),
 ]
 
 export default authorSagas

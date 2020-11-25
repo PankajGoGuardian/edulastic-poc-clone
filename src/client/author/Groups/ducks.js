@@ -17,6 +17,8 @@ const FETCH_COLLABORATION_GROUP_SUCCESS =
 const FETCH_COLLABORATION_GROUP_ERROR =
   '[group] fetch collaboration group - error'
 const CREATE_COLLABORATION_GROUP = '[group] create collaboration group'
+const ARCHIVE_COLLABORATION_GROUP = '[group] archive collaboration group'
+const RESET_COLLABORATION_GROUP = '[group] reset collaboration group state'
 
 /** Actions */
 export const receiveGroupListAction = createAction(RECEIVE_GROUPLIST_REQUEST)
@@ -39,6 +41,12 @@ export const fetchCollaborationGroupsErrorAction = createAction(
 export const createCollaborationGroupAction = createAction(
   CREATE_COLLABORATION_GROUP
 )
+export const archiveCollaborationGroupAction = createAction(
+  ARCHIVE_COLLABORATION_GROUP
+)
+export const resetCollaborationGroupsAction = createAction(
+  RESET_COLLABORATION_GROUP
+)
 
 /** Selectors */
 const stateGroupSelector = (state) => state.groupsReducer
@@ -49,6 +57,10 @@ export const getGroupListSelector = createSelector(
 export const collaborationGroupSelector = createSelector(
   stateGroupSelector,
   (state) => state.collaborationGroupsData
+)
+export const groupsLoadingSelector = createSelector(
+  stateGroupSelector,
+  (state) => state.loading
 )
 
 /** Reducers */
@@ -87,6 +99,7 @@ export const reducer = createReducer(initialState, {
     state.loading = false
     state.error = payload.error
   },
+  [RESET_COLLABORATION_GROUP]: () => initialState,
 })
 
 /** Sagas */
@@ -136,10 +149,28 @@ function* createCollaborationGroup({ payload }) {
   }
 }
 
+function* archiveCollaborationGroup({ payload }) {
+  try {
+    yield call(collaborationApi.archiveGroup, payload.id)
+    yield call(fetchCollaborationGroups)
+    notification({
+      type: 'success',
+      msg: `"${payload.name}" collaboration group archived successfully`,
+    })
+  } catch (err) {
+    captureSentryException(err)
+    notification({
+      type: 'error',
+      msg: 'Unable to archive collaboration group.',
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_GROUPLIST_REQUEST, receiveGroupListSaga),
     yield takeLatest(FETCH_COLLABORATION_GROUP, fetchCollaborationGroups),
     yield takeLatest(CREATE_COLLABORATION_GROUP, createCollaborationGroup),
+    yield takeLatest(ARCHIVE_COLLABORATION_GROUP, archiveCollaborationGroup),
   ])
 }

@@ -11,22 +11,13 @@ import {
 } from '@edulastic/common'
 import { createCollaborationGroupAction } from '../ducks'
 
-const btnStyle = {
-  borderRadius: 100,
-}
-
-const Footer = ({ handleCancel, handleCreate }) => (
+const Footer = ({ handleCancel, handleAction, isEditMode }) => (
   <FlexContainer justifyContent="flex-end">
-    <EduButton isGhost style={btnStyle} onClick={handleCancel}>
+    <EduButton isGhost onClick={handleCancel}>
       Cancel
     </EduButton>
-    <EduButton
-      key="submit"
-      type="primary"
-      onClick={handleCreate}
-      style={btnStyle}
-    >
-      Create Group
+    <EduButton key="submit" type="primary" onClick={handleAction}>
+      {isEditMode ? 'Update Group Name' : 'Create Group'}
     </EduButton>
   </FlexContainer>
 )
@@ -36,10 +27,14 @@ const CreateCollabGroupModel = ({
   handleCancel,
   createGroup,
   districtId,
+  isEditMode,
+  name = '',
+  updateGroupNameRequest,
+  groupId,
 }) => {
-  const [groupName, setGroupName] = useState('')
+  const [groupName, setGroupName] = useState(name)
 
-  const handleCreate = () => {
+  const handleAction = () => {
     if (!groupName) {
       notification({
         type: 'warning',
@@ -48,16 +43,23 @@ const CreateCollabGroupModel = ({
       return
     }
 
-    createGroup({ name: groupName, districtId })
+    if (isEditMode) {
+      updateGroupNameRequest({ groupId, data: { name: groupName } })
+      handleCancel()
+    } else createGroup({ name: groupName, districtId })
   }
 
   return (
     <Modal
-      title={<h3>Group Creation</h3>}
+      title={<h3>{isEditMode ? 'Update Group' : 'Group Creation'}</h3>}
       visible={visible}
       onCancel={handleCancel}
       footer={
-        <Footer handleCreate={handleCreate} handleCancel={handleCancel} />
+        <Footer
+          handleAction={handleAction}
+          handleCancel={handleCancel}
+          isEditMode={isEditMode}
+        />
       }
     >
       <Label>Group Name</Label>

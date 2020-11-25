@@ -12,6 +12,7 @@ const CollaborationGroupsTable = ({
   handleEditGroup,
   handleShowGroup,
   setArchiveModalProps,
+  hideEditableInstances,
 }) => {
   // prevent button click to propagate to row click
   const safeClick = (func) => (e) => {
@@ -43,29 +44,30 @@ const CollaborationGroupsTable = ({
     {
       dataIndex: '_id',
       align: 'right',
-      render: (_, { _id, name }) => (
-        <div style={{ whiteSpace: 'nowrap', padding: '0 10px' }}>
-          <StyledTableButton
-            onClick={safeClick(() => handleEditGroup(_id))}
-            title="Edit"
-          >
-            <Tooltip title="Edit">
-              <IconPencilEdit color={themeColor} />
-            </Tooltip>
-          </StyledTableButton>
+      render: (_, { _id, name }) =>
+        hideEditableInstances ? null : (
+          <div style={{ whiteSpace: 'nowrap', padding: '0 10px' }}>
+            <StyledTableButton
+              onClick={safeClick(() => handleEditGroup(_id))}
+              title="Edit"
+            >
+              <Tooltip title="Edit">
+                <IconPencilEdit color={themeColor} />
+              </Tooltip>
+            </StyledTableButton>
 
-          <StyledTableButton
-            title="Archive"
-            onClick={safeClick(() =>
-              setArchiveModalProps({ visible: true, _id, name })
-            )}
-          >
-            <Tooltip title="Archive">
-              <IconTrash color={themeColor} />
-            </Tooltip>
-          </StyledTableButton>
-        </div>
-      ),
+            <StyledTableButton
+              title="Archive"
+              onClick={safeClick(() =>
+                setArchiveModalProps({ visible: true, _id, name })
+              )}
+            >
+              <Tooltip title="Archive">
+                <IconTrash color={themeColor} />
+              </Tooltip>
+            </StyledTableButton>
+          </div>
+        ),
     },
   ]
 

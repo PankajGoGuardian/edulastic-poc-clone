@@ -1,12 +1,10 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getClassAndGroupIds } from '../common/utils/transformers'
 
 const GET_REPORTS_STUDENT_PROGRESS_REQUEST =
   '[reports] get reports student progress request'
@@ -57,8 +55,8 @@ const initialState = {
 }
 
 export const reportStudentProgressReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_STUDENT_PROGRESS_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [GET_REPORTS_STUDENT_PROGRESS_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -80,13 +78,10 @@ export const reportStudentProgressReducer = createReducer(initialState, {
 
 function* getReportsStudentProgressRequest({ payload }) {
   try {
-    const { classIds, groupIds } = getClassAndGroupIds(payload)
-    const studentProgress = yield call(reportsApi.fetchStudentProgressReport, {
-      ...payload,
-      classIds,
-      groupIds,
-    })
-
+    const studentProgress = yield call(
+      reportsApi.fetchStudentProgressReport,
+      payload
+    )
     const dataSizeExceeded = studentProgress?.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {
       yield put({

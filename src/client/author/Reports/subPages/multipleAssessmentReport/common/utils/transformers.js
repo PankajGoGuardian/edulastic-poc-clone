@@ -21,6 +21,11 @@ export const getClassAndGroupIds = (payload) => {
   return { classIds, groupIds }
 }
 
+export const transformFiltersForMAR = (requestFilters) => ({
+  ...requestFilters,
+  ...getClassAndGroupIds(requestFilters),
+})
+
 const processSchoolYear = (user) => {
   let schoolYear = []
   const arr = get(user, 'orgData.terms', [])

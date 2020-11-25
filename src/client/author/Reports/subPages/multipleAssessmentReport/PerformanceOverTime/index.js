@@ -1,14 +1,12 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
 import { filter, get, includes } from 'lodash'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { getUserRole, getUserDetails } from '../../../../../student/Login/ducks'
 import { StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
-import { usefetchProgressHook } from '../common/hooks'
 import analyseByData from '../common/static/json/analyseByDropDown.json'
 import ProgressChart from './components/charts/ProgressChart'
 import PerformanceOverTimeTable from './components/table/PerformanceOvetTimeTable'
@@ -28,9 +26,14 @@ const PerformanceOverTime = ({
   settings,
   loading,
   error,
-  user,
 }) => {
-  usefetchProgressHook(settings, getPerformanceOverTimeRequest, user)
+  useEffect(() => {
+    const { requestFilters = {} } = settings
+    const { termId, reportId } = requestFilters
+    if (termId || reportId) {
+      getPerformanceOverTimeRequest({ ...requestFilters })
+    }
+  }, [settings])
 
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0])
   const [selectedTests, setSelectedTests] = useState([])
@@ -88,8 +91,6 @@ const enhance = connect(
     performanceOverTime: getReportsPerformanceOverTime(state),
     loading: getReportsPerformanceOverTimeLoader(state),
     error: getReportsPerformanceOverError(state),
-    role: getUserRole(state),
-    user: getUserDetails(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),
   {

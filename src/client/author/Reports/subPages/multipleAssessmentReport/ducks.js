@@ -32,6 +32,7 @@ export const getReportsMARSettings = createSelector(
 const initialState = {
   selectedTest: [{ key: '', title: '' }],
   requestFilters: {
+    reportId: '',
     termId: '',
     subject: '',
     grade: '',
@@ -46,7 +47,7 @@ const initialState = {
 
 export const reportMARSettingsReducer = createReducer(initialState, {
   [SET_MAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

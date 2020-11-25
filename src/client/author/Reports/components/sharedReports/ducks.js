@@ -143,7 +143,7 @@ function* shareReportSaga({ payload }) {
     yield call(sharedReportApi.createSharedReport, payload)
     notification({
       type: 'success',
-      msg: `Shared report successfully`,
+      msg: 'Shared report successfully',
     })
   } catch (err) {
     notification({ msg: 'Failed to share report' })

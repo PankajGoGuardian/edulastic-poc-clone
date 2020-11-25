@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import qs from 'qs'
 
 import { Result, Spin } from 'antd'
 import { report } from '@edulastic/constants'
@@ -21,11 +20,14 @@ const SharedReportsContainer = ({
     switch (reportGroupType) {
       case report.reportGroupType.SINGLE_ASSESSMENT_REPORT:
         history.push(
-          `/author/reports/${reportType}/test/${
-            filters.testId
-          }?reportId=${_id}&${qs.stringify(filters)}`
+          `/author/reports/${reportType}/test/${filters.testId}?reportId=${_id}`
         )
         break
+      case report.reportGroupType.MULTIPLE_ASSESSMENT_REPORT:
+        history.push(`/author/reports/${reportType}?reportId=${_id}`)
+        break
+      case report.reportGroupType.STANDARDS_MASTERY_REPORT:
+      case report.reportGroupType.STUDENT_PROFILE_REPORT:
       default:
       // do nothing
     }

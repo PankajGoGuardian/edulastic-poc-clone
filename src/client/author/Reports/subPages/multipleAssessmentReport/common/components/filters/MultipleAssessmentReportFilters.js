@@ -67,6 +67,7 @@ const SingleAssessmentReportFilters = ({
   setShowApply,
   firstLoad,
   setFirstLoad,
+  reportId,
 }) => {
   const testDataOverflow = get(
     MARFilterData,
@@ -85,9 +86,14 @@ const SingleAssessmentReportFilters = ({
   })
 
   useEffect(() => {
-    if (MARFilterData !== prevMARFilterData) {
+    if (reportId) {
+      getMARFilterDataRequest({ reportId })
+      const search = qs.parse(location.search, { ignoreQueryPrefix: true })
+      _setFilters({ ...filters, ...search })
+      _setTestId([])
+    } else if (MARFilterData !== prevMARFilterData) {
       const search = pickBy(
-        qs.parse(location.search, { ignoreQueryPrefix: true }),
+        qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
         (f) => f !== 'All' && !isEmpty(f)
       )
       const termId =
@@ -99,9 +105,7 @@ const SingleAssessmentReportFilters = ({
         q.firstLoad = true
       }
       if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
-        Object.assign(q, {
-          schoolIds: get(user, 'institutionIds', []).join(','),
-        })
+        q.schoolIds = get(user, 'institutionIds', []).join(',')
       }
       getMARFilterDataRequest(q)
     }
@@ -122,127 +126,124 @@ const SingleAssessmentReportFilters = ({
       ignoreQueryPrefix: true,
       indices: true,
     })
-
-    // get saved filters from backend
-    const savedFilters = get(MARFilterData, 'data.result.reportFilters')
-    // select common assessment as default if assessment type is not set for admins
-    if (
-      user.role === roleuser.DISTRICT_ADMIN ||
-      user.role === roleuser.SCHOOL_ADMIN
-    ) {
-      savedFilters.assessmentType =
-        search.assessmentType ||
-        savedFilters.assessmentType ||
-        'common assessment'
-    }
-
-    if (firstLoad) {
-      search = { ...savedFilters, ...search }
-    }
-
-    dropDownData = getDropDownData(MARFilterData, user)
-    const defaultTermId = get(user, 'orgData.defaultTermId', '')
-    const urlSchoolYear =
-      schoolYear.find((item) => item.key === search.termId) ||
-      schoolYear.find((item) => item.key === defaultTermId) ||
-      (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
-    const urlSubject = staticDropDownData.subjects.find(
-      (item) => item.key === search.subject
-    ) || {
-      key: 'All',
-      title: 'All Subjects',
-    }
-    const urlGrade = staticDropDownData.grades.find(
-      (item) => item.key === search.grade
-    ) || {
-      key: 'All',
-      title: 'All Grades',
-    }
-    const urlCourseId = dropDownData.courses.find(
-      (item) => item.key === search.courseId
-    ) || {
-      key: 'All',
-      title: 'All Courses',
-    }
-    const urlClassId = dropDownData.classes.find(
-      (item) => item.key === search.classId
-    ) || {
-      key: 'All',
-      title: 'All Classes',
-    }
-    const urlGroupId = dropDownData.groups.find(
-      (item) => item.key === search.groupId
-    ) || {
-      key: 'All',
-      title: 'All Groups',
-    }
-    let urlSchoolId = { key: 'All', title: 'All Schools' }
-    let urlTeacherId = { key: 'All', title: 'All Teachers' }
-    if (role !== roleuser.TEACHER) {
-      urlSchoolId = dropDownData.schools.find(
-        (item) => item.key === search.schoolId
-      ) || {
-        key: 'All',
-        title: 'All Schools',
-      }
-      urlTeacherId = dropDownData.teachers.find(
-        (item) => item.key === search.teacherId
-      ) || {
-        key: 'All',
-        title: 'All Teachers',
-      }
-    }
-    const urlAssessmentType = staticDropDownData.assessmentType.find(
-      (item) => item.key === search.assessmentType
-    ) || {
-      key: 'All',
-      title: 'All Assignment Types',
-    }
-
-    const testIdsArr = [].concat(search.testIds?.split(',') || [])
-
-    let urlTestIds = testIdsArr
-      .map((key) => find(dropDownData.testIdArr, (test) => test.key == key))
-      .filter((item) => item)
-
-    const obtainedFilters = {
-      termId: urlSchoolYear.key,
-      subject: urlSubject.key,
-      grade: urlGrade.key,
-      courseId: urlCourseId.key,
-      classId: urlClassId.key,
-      groupId: urlGroupId.key,
-      schoolId: urlSchoolId.key,
-      teacherId: urlTeacherId.key,
-      assessmentType: urlAssessmentType.key,
-      testIds: urlTestIds.length ? urlTestIds.join(',') : '',
-    }
-
-    dropDownData = filteredDropDownData(MARFilterData, user, obtainedFilters)
-
-    processedTestIds = processTestIds(dropDownData, obtainedFilters, '', role)
-
-    const urlParams = { ...obtainedFilters }
-
-    if (role === roleuser.TEACHER) {
-      delete urlParams.schoolId
-      delete urlParams.teacherId
-    }
-
-    if (firstLoad) {
-      urlTestIds = urlTestIds?.filter((t) => t).length
-        ? urlTestIds
-        : (processedTestIds?.testIds || []).slice(0, 10)
-    }
-
-    _setFilters(urlParams)
-    _setTestId(urlTestIds)
-
-    if (firstLoad) {
+    if (reportId) {
+      _onGoClick({ selectedTest: [], filters: { ...filters, ...search } })
       setFirstLoad(false)
-      _onGoClick({ selectedTest: urlTestIds, filters: urlParams })
-    }
+    } else {
+      // get saved filters from backend
+      const savedFilters = get(MARFilterData, 'data.result.reportFilters')
+      // select common assessment as default if assessment type is not set for admins
+      if (
+        user.role === roleuser.DISTRICT_ADMIN ||
+        user.role === roleuser.SCHOOL_ADMIN
+      ) {
+        savedFilters.assessmentType =
+          search.assessmentType ||
+          savedFilters.assessmentType ||
+          'common assessment'
+      }
+      if (firstLoad) {
+        search = { ...savedFilters, ...search }
+      }
+      dropDownData = getDropDownData(MARFilterData, user)
+      const defaultTermId = get(user, 'orgData.defaultTermId', '')
+      const urlSchoolYear =
+        schoolYear.find((item) => item.key === search.termId) ||
+        schoolYear.find((item) => item.key === defaultTermId) ||
+        (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
+      const urlSubject = staticDropDownData.subjects.find(
+        (item) => item.key === search.subject
+      ) || {
+        key: 'All',
+        title: 'All Subjects',
+      }
+      const urlGrade = staticDropDownData.grades.find(
+        (item) => item.key === search.grade
+      ) || {
+        key: 'All',
+        title: 'All Grades',
+      }
+      const urlCourseId = dropDownData.courses.find(
+        (item) => item.key === search.courseId
+      ) || {
+        key: 'All',
+        title: 'All Courses',
+      }
+      const urlClassId = dropDownData.classes.find(
+        (item) => item.key === search.classId
+      ) || {
+        key: 'All',
+        title: 'All Classes',
+      }
+      const urlGroupId = dropDownData.groups.find(
+        (item) => item.key === search.groupId
+      ) || {
+        key: 'All',
+        title: 'All Groups',
+      }
+      let urlSchoolId = { key: 'All', title: 'All Schools' }
+      let urlTeacherId = { key: 'All', title: 'All Teachers' }
+      if (role !== roleuser.TEACHER) {
+        urlSchoolId = dropDownData.schools.find(
+          (item) => item.key === search.schoolId
+        ) || {
+          key: 'All',
+          title: 'All Schools',
+        }
+        urlTeacherId = dropDownData.teachers.find(
+          (item) => item.key === search.teacherId
+        ) || {
+          key: 'All',
+          title: 'All Teachers',
+        }
+      }
+      const urlAssessmentType = staticDropDownData.assessmentType.find(
+        (item) => item.key === search.assessmentType
+      ) || {
+        key: 'All',
+        title: 'All Assignment Types',
+      }
 
+      const testIdsArr = [].concat(search.testIds?.split(',') || [])
+      let urlTestIds = testIdsArr
+        .map((key) => find(dropDownData.testIdArr, (test) => test.key == key))
+        .filter((item) => item)
+
+      const obtainedFilters = {
+        termId: urlSchoolYear.key,
+        subject: urlSubject.key,
+        grade: urlGrade.key,
+        courseId: urlCourseId.key,
+        classId: urlClassId.key,
+        groupId: urlGroupId.key,
+        schoolId: urlSchoolId.key,
+        teacherId: urlTeacherId.key,
+        assessmentType: urlAssessmentType.key,
+        testIds: urlTestIds.length ? urlTestIds.join(',') : '',
+      }
+      dropDownData = filteredDropDownData(MARFilterData, user, obtainedFilters)
+      processedTestIds = processTestIds(dropDownData, obtainedFilters, '', role)
+
+      const urlParams = { ...obtainedFilters }
+
+      if (role === roleuser.TEACHER) {
+        delete urlParams.schoolId
+        delete urlParams.teacherId
+      }
+      if (firstLoad) {
+        urlTestIds = urlTestIds?.filter((t) => t).length
+          ? urlTestIds
+          : (processedTestIds?.testIds || []).slice(0, 10)
+      }
+      _setFilters(urlParams)
+      _setTestId(urlTestIds)
+
+      if (firstLoad) {
+        setFirstLoad(false)
+        _onGoClick({ selectedTest: urlTestIds, filters: urlParams })
+      }
+    }
+    // update prevMARFilterData
     setPrevMARFilterData(MARFilterData)
   }
 

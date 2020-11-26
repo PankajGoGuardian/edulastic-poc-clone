@@ -52,10 +52,10 @@ const TeacherAutoComplete = ({
       role: roleuser.TEACHER,
     }
     if (institutionId) {
-      q.search.institutionId = institutionId
+      q.institutionId = institutionId
     }
     return q
-  }, [searchTerms.text])
+  }, [searchTerms.text, institutionId])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -64,7 +64,6 @@ const TeacherAutoComplete = ({
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
-      selectCB({ key: '', title: '' })
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
@@ -90,6 +89,11 @@ const TeacherAutoComplete = ({
       loadTeacherListDebounced(query)
     }
   }, [searchTerms])
+  useEffect(() => {
+    setSearchTerms(DEFAULT_SEARCH_TERMS)
+    selectCB([])
+    setSearchResult([])
+  }, [institutionId])
 
   const dropdownData = (searchTerms.text ? teacherList : searchResult).map(
     (item) => {

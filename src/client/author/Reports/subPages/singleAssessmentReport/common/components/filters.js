@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy, isArray } from 'lodash'
+import { get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Spin } from 'antd'
@@ -349,6 +349,7 @@ const SingleAssessmentReportFilters = ({
                   selectedTeacherIds={
                     filters.teacherIds ? filters.teacherIds.split(',') : []
                   }
+                  school={filters.schoolIds}
                   selectCB={(e) =>
                     updateFilterDropdownCB(e.join(','), 'teacherIds', true)
                   }
@@ -388,9 +389,7 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Class</FilterLabel>
             <ClassAutoComplete
-              grade={filters.grade !== 'All' && filters.grade}
-              subject={filters.subject !== 'All' && filters.subject}
-              schools={filters.schoolIds}
+              filters={filters}
               selectedClass={selectedClass}
               selectCB={(e) => {
                 updateSearchableFilter(e, 'classId', setSelectedClass)
@@ -400,9 +399,7 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Group</FilterLabel>
             <GroupsAutoComplete
-              grade={filters.grade !== 'All' && filters.grade}
-              subject={filters.subject !== 'All' && filters.subject}
-              schools={filters.schoolIds}
+              filters={filters}
               selectedGroup={selectedGroup}
               selectCB={(e) => {
                 updateSearchableFilter(e, 'groupId', setSelectedGroup)

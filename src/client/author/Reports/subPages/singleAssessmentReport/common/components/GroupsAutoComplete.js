@@ -21,11 +21,8 @@ const GroupsAutoComplete = ({
   groupList,
   loading,
   loadGroupList,
-  grade,
-  subject,
-  schools,
-  selectedGroup,
   selectCB,
+  filters,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
@@ -50,18 +47,28 @@ const GroupsAutoComplete = ({
     if (
       (userRole === roleuser.DISTRICT_ADMIN ||
         userRole === roleuser.SCHOOL_ADMIN) &&
-      !isEmpty(schools)
+      !isEmpty(filters.schoolIds)
     ) {
-      q.search.institutionIds = schools ? schools.split(',') : []
+      q.search.institutionIds = filters.schoolIds
+        ? filters.schoolIds.split(',')
+        : []
     }
-    if (grade) {
-      q.search.grades = [`${grade}`]
+    if (filters.studentGrade !== 'All' && filters.studentGrade) {
+      q.search.grades = [filters.studentGrade]
     }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (filters.studentSubject !== 'All' && filters.studentSubject) {
+      q.search.subjects = [filters.studentSubject]
     }
     return q
-  }, [searchTerms.text])
+  }, [
+    searchTerms.text,
+    filters.schoolIds,
+    filters.teacherIds,
+    filters.studentSubject,
+    filters.studentGrade,
+    filters.studentCourseId,
+    filters.classId,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -102,6 +109,16 @@ const GroupsAutoComplete = ({
       loadGroupListDebounced(query)
     }
   }, [searchTerms])
+  useEffect(() => {
+    setSearchResult([])
+  }, [
+    filters.schoolIds,
+    filters.teacherIds,
+    filters.studentSubject,
+    filters.studentGrade,
+    filters.studentCourseId,
+    filters.classId,
+  ])
 
   // build dropdown data
   const dropdownData = [

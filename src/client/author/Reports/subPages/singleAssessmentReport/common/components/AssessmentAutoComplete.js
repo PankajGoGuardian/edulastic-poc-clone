@@ -70,7 +70,15 @@ const AssessmentAutoComplete = ({
       q.search.termId = termId
     }
     return q
-  }, [searchTerms.text, selectedTestId, termId])
+  }, [
+    searchTerms.text,
+    selectedTestId,
+    termId,
+    filters.grade,
+    filters.subject,
+    filters.courseId,
+    filters.assessmentTypes,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -108,14 +116,8 @@ const AssessmentAutoComplete = ({
       setSearchTerms({ text: title, selectedText: title, selectedKey: _id })
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS, selectedKey: selectedTestId })
-      loadTestListDebounced(query)
     }
   }, [selectedTestId])
-  useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
-      loadTestListDebounced(query)
-    }
-  }, [searchTerms])
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
       onSelect(testList[0]._id)
@@ -127,9 +129,21 @@ const AssessmentAutoComplete = ({
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
     }
-    loadTestListDebounced(query)
-  }, [termId])
-
+  }, [
+    termId,
+    filters.grade,
+    filters.subject,
+    filters.courseId,
+    filters.assessmentTypes,
+  ])
+  useEffect(() => {
+    if (
+      (!searchTerms.text && !searchTerms.selectedText) ||
+      searchTerms.text !== searchTerms.selectedText
+    ) {
+      loadTestListDebounced(query)
+    }
+  }, [query])
   // build dropdown data
   const dropdownData = searchTerms.text
     ? [

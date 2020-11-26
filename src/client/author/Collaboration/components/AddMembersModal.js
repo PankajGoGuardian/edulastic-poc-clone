@@ -78,8 +78,10 @@ const AddMembersModal = ({
   }, [searchString, gradesSelected, subjectsSelected, schoolsSelected])
 
   useEffect(() => {
-    setSelectedUsers([])
-    setSelectAll(false)
+    const selectedUsersInCurrentSearch = selectedUsers.filter((x) =>
+      Object.keys(usersKeyedById).includes(x._id)
+    )
+    setSelectAll(selectedUsersInCurrentSearch.length === userList.length)
   }, [userList, alreadyAddedUsers])
 
   const handleAddMembers = () => {
@@ -89,13 +91,12 @@ const AddMembersModal = ({
         groupMembers: [],
       },
     }
-    selectedUsers.forEach((userId) => {
-      if (!alreadyAddedUsers.includes(userId)) {
-        const user = usersKeyedById[userId]
+    selectedUsers.forEach((user) => {
+      if (!alreadyAddedUsers.includes(user._id)) {
         payload.data.groupMembers.push({
           name: user.name,
           userName: user.username,
-          userId,
+          userId: user._id,
           isAdmin: false,
         })
       }
@@ -129,7 +130,17 @@ const AddMembersModal = ({
 
   const onUserSelect = (value) => {
     const users = difference(value, alreadyAddedUsers)
-    setSelectedUsers(users)
+    const currentUserListById = Object.keys(usersKeyedById)
+    const selectedUsersNotInCurrentSearch = selectedUsers.filter(
+      (x) => !currentUserListById.includes(x._id)
+    )
+    const selectedUsersInCurrentSearch = users.map((x) => usersKeyedById[x])
+    const newSelectedUsers = [
+      ...selectedUsersNotInCurrentSearch,
+      ...selectedUsersInCurrentSearch,
+    ]
+
+    setSelectedUsers(newSelectedUsers)
     if (isEqual(users, usersCanBeAdded)) {
       setSelectAll(true)
     } else {
@@ -139,11 +150,20 @@ const AddMembersModal = ({
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll)
+    const users = difference(Object.keys(usersKeyedById), alreadyAddedUsers)
+    const currentUserListById = Object.keys(usersKeyedById)
+    const selectedUsersNotInCurrentSearch = selectedUsers.filter(
+      (x) => !currentUserListById.includes(x._id)
+    )
     if (!selectAll) {
-      const users = difference(Object.keys(usersKeyedById), alreadyAddedUsers)
-      setSelectedUsers(users)
+      const selectedUsersInCurrentSearch = users.map((x) => usersKeyedById[x])
+      const newSelectedUsers = [
+        ...selectedUsersNotInCurrentSearch,
+        ...selectedUsersInCurrentSearch,
+      ]
+      setSelectedUsers(newSelectedUsers)
     } else {
-      setSelectedUsers([])
+      setSelectedUsers(selectedUsersNotInCurrentSearch)
     }
   }
 
@@ -250,7 +270,10 @@ const AddMembersModal = ({
               <Checkbox.Group
                 style={{ width: '100%' }}
                 onChange={onUserSelect}
-                value={[...selectedUsers, ...alreadyAddedUsers]}
+                value={[
+                  ...selectedUsers.map((x) => x._id),
+                  ...alreadyAddedUsers,
+                ]}
               >
                 {userList.map(({ _id, name }) => (
                   <Checkbox

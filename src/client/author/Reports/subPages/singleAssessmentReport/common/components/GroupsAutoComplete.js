@@ -52,7 +52,7 @@ const GroupsAutoComplete = ({
         userRole === roleuser.SCHOOL_ADMIN) &&
       !isEmpty(schools)
     ) {
-      q.search.institutionIds = schools
+      q.search.institutionIds = schools ? schools.split(',') : []
     }
     if (grade) {
       q.search.grades = [`${grade}`]

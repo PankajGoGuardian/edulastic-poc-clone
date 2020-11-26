@@ -5,6 +5,8 @@ import TokenHighlightPage from '../../../../framework/author/itemList/questionTy
 import PreviewItemPage from '../../../../framework/author/itemList/itemDetail/previewPage'
 import FileHelper from '../../../../framework/util/fileHelper'
 import Helpers from '../../../../framework/util/Helpers'
+import ScoringBlock from '../../../../framework/author/itemList/questionType/common/scoringBlock'
+import validateSolutionBlockTests from '../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests'
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -26,7 +28,7 @@ describe(`${FileHelper.getSpecName(
     testtext: 'testtext',
     formula: 's=ar^2',
   }
-
+  const scoringBlockPage = new ScoringBlock()
   const question = new TokenHighlightPage()
   const editItem = new EditItemPage()
   const preview = new PreviewItemPage()
@@ -306,6 +308,30 @@ describe(`${FileHelper.getSpecName(
     afterEach(() => {
       editItem.header.edit()
     })
+    describe(' > Scoring', () => {
+      before(() => {
+        editItem.showAdvancedOptions()
+      })
+      it(' > add instruction and check on preview page', () => {
+        scoringBlockPage.verifyAddInstructions('instruction')
+        question.header.preview()
+        question.header
+          .preview()
+          .getInstructionText()
+          .should('contain', 'instruction')
+      })
+      it(' > remove instruction and check on preview page', () => {
+        scoringBlockPage.verifyAddInstructions('instruction')
+        question.header.preview()
+        question.header
+          .preview()
+          .getInstructionText()
+          .should('contain', 'instruction')
+        editItem.header.edit()
+        scoringBlockPage.clickOngetEnableScoringInstructions()
+        question.header.preview().getInstructionIcon().should('not.be.visible')
+      })
+    })
 
     describe(' > Layout', () => {
       before(() => {
@@ -404,6 +430,9 @@ describe(`${FileHelper.getSpecName(
 
         question.header.edit()
       })
+    })
+    describe(' > Hint and solution block testing', () => {
+      validateSolutionBlockTests(queData.group, queData.queType)
     })
   })
 })

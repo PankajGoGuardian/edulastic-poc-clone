@@ -164,7 +164,7 @@ const Members = ({
           value={memberSearchString}
         />
         {isAdmin && (
-          <StyledSelect placeholder="Action" width="330px" value="Action">
+          <StyledSelect placeholder="Actions" width="330px" value="Actions">
             {Object.values(memberActions).map((text) => (
               <StyledSelect.Option
                 key={text}

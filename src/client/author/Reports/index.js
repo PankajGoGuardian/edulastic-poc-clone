@@ -6,7 +6,6 @@ import qs from 'qs'
 
 import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
 
 import { Header, SubHeader } from './common/components/Header'
 import StandardReport from './components/StandardReport'
@@ -23,12 +22,11 @@ import {
   setPrintingStateAction,
 } from './ducks'
 import {
-  getTeacherGroupsAction,
+  getCollaborativeGroupsAction,
   getSharedReportList,
   getSharedReportsLoader,
   getSharedReportsAction,
 } from './components/sharedReports/ducks'
-import { getUserRole } from '../src/selectors/user'
 import { MultipleAssessmentReportContainer } from './subPages/multipleAssessmentReport'
 import { SingleAssessmentReportContainer } from './subPages/singleAssessmentReport'
 import { StandardsMasteryReportContainer } from './subPages/standardsMasteryReport'
@@ -42,7 +40,6 @@ const Container = (props) => {
     match,
     isCliUser,
     showCustomReport,
-    userRole,
     loadingSharedReports,
     sharedReportList,
   } = props
@@ -67,11 +64,8 @@ const Container = (props) => {
       props.setPrintingStateAction(false)
     }
 
-    if (userRole === roleuser.DISTRICT_ADMIN) {
-      props.fetchTeacherGroups()
-    } else {
-      props.fetchSharedReports()
-    }
+    props.fetchCollaborationGroups()
+    props.fetchSharedReports()
 
     return () => {
       window.onbeforeprint = () => {}
@@ -80,7 +74,11 @@ const Container = (props) => {
   }, [])
 
   useEffect(() => {
-    if (reportType === 'standard-reports' || reportType === 'custom-reports') {
+    if (
+      reportType === 'standard-reports' ||
+      reportType === 'custom-reports' ||
+      reportType === 'shared-reports'
+    ) {
       setNavigationItems(navigation.navigation[groupName])
     }
   }, [reportType])
@@ -128,7 +126,10 @@ const Container = (props) => {
     let loc = props?.match?.params?.reportType
     if (
       !loc ||
-      (loc && (loc === 'standard-reports' || loc === 'custom-reports'))
+      (loc &&
+        (loc === 'standard-reports' ||
+          loc === 'custom-reports' ||
+          loc === 'shared-reports'))
     ) {
       loc = !loc ? reportType : loc
       const breadcrumbInfo = navigation.locToData[loc].breadcrumb
@@ -157,9 +158,10 @@ const Container = (props) => {
       }
     }
     const breadcrumbInfo = [...navigation.locToData[loc].breadcrumb]
-    const isSharedReport = !!qs.parse(props.location.search, {
+    const reportId = qs.parse(props.location.search, {
       ignoreQueryPrefix: true,
     }).reportId
+    const isSharedReport = !!(reportId && reportId.toLowerCase() !== 'all')
     if (isSharedReport) {
       breadcrumbInfo[0] = navigation.locToData['shared-reports'].breadcrumb[0]
     }
@@ -202,9 +204,9 @@ const Container = (props) => {
           activeNavigationKey={reportType}
           hideSideMenu={isCliUser}
           isCliUser={isCliUser}
-          userRole={userRole}
           showCustomReport={showCustomReport}
           showSharedReport={sharedReportList.length}
+          isSharedReport={headerSettings.isSharedReport}
         />
       )}
       <MainContentWrapper>
@@ -339,12 +341,7 @@ const Container = (props) => {
           path="/author/reports/shared-reports/"
           render={(_props) => {
             setShowHeader(true)
-            return (
-              <SharedReports
-                {..._props}
-                setDynamicBreadcrumb={setDynamicBreadcrumb}
-              />
-            )
+            return <SharedReports {..._props} />
           }}
         />
       </MainContentWrapper>
@@ -359,7 +356,6 @@ const enhance = connect(
     premium: state?.user?.user?.features?.premium,
     showCustomReport: state?.user?.user?.features?.customReport,
     isCliUser: state?.user?.isCliUser,
-    userRole: getUserRole(state),
     sharedReportList: getSharedReportList(state),
     loadingSharedReports: getSharedReportsLoader(state),
   }),
@@ -368,7 +364,7 @@ const enhance = connect(
     setPrintingStateAction,
     setCsvDownloadingStateAction,
     fetchSharedReports: getSharedReportsAction,
-    fetchTeacherGroups: getTeacherGroupsAction,
+    fetchCollaborationGroups: getCollaborativeGroupsAction,
   }
 )
 

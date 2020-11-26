@@ -4,23 +4,25 @@ import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
 import next from 'immer'
 import qs from 'qs'
+
 import { FlexContainer } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
-import { getNavigationTabLinks } from '../../common/util'
-
-import navigation from '../../common/static/json/navigation.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
-
 import StudentMasteryProfile from './StudentMasteryProfile'
 import StudentAssessmentProfile from './StudentAssessmentProfile'
 import StudentProfileSummary from './StudentProfileSummary'
 import StudentProfileReportsFilters from './common/components/filter/StudentProfileReportsFilters'
+import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 
 import { setSPRSettingsAction, getReportsSPRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { ReportContaner, FilterButton } from '../../common/styled'
 import { getSharingState, setSharingStateAction } from '../../ducks'
-import ShareReportModal from '../../common/components/Popups/ShareReportModal'
+import { getSharedReportList } from '../../components/sharedReports/ducks'
+
+import navigation from '../../common/static/json/navigation.json'
+
+import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForSPR } from './common/utils/transformers'
 
 const StudentProfileReportContainer = (props) => {
@@ -37,10 +39,16 @@ const StudentProfileReportContainer = (props) => {
     resetAllReports,
     sharingState,
     setSharingState,
+    sharedReportList,
   } = props
 
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
+  )
+
+  const sharedReport = useMemo(
+    () => sharedReportList.find((s) => s._id === reportId),
+    [reportId, sharedReportList]
   )
 
   useEffect(
@@ -168,6 +176,7 @@ const StudentProfileReportContainer = (props) => {
                 <StudentMasteryProfile
                   {..._props}
                   settings={transformedSettings}
+                  sharedReport={sharedReport}
                 />
               )}
             />
@@ -179,6 +188,7 @@ const StudentProfileReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   pageTitle={loc}
+                  sharedReport={sharedReport}
                 />
               )}
             />
@@ -190,6 +200,7 @@ const StudentProfileReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   pageTitle={loc}
+                  sharedReport={sharedReport}
                 />
               )}
             />
@@ -204,6 +215,7 @@ const enhance = connect(
   (state) => ({
     settings: getReportsSPRSettings(state),
     sharingState: getSharingState(state),
+    sharedReportList: getSharedReportList(state),
   }),
   {
     setSPRSettings: setSPRSettingsAction,

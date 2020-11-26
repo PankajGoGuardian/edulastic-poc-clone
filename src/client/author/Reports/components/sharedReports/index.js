@@ -9,12 +9,21 @@ import { StyledContainer } from '../../common/styled'
 
 import navigation from '../../common/static/json/navigation.json'
 
-import { getSharedReportsLoader, getSharedReportList } from './ducks'
+import {
+  getSharedReportsLoader,
+  getSharedReportList,
+  archiveReportAction,
+  getCollaborativeGroupList,
+} from './ducks'
+import { getUserIdSelector } from '../../../src/selectors/user'
 
 const SharedReportsContainer = ({
+  collaborativeGroupList = [],
   sharedReportList = [],
+  archiveReport,
   isLoading,
   history,
+  currentUserId,
 }) => {
   const showReport = ({ _id, reportGroupType, reportType, filters }) => {
     switch (reportGroupType) {
@@ -32,34 +41,45 @@ const SharedReportsContainer = ({
           `/author/reports/${reportType}/student/${filters.studentId}?termId=${filters.termId}&reportId=${_id}`
         )
         break
-      case report.reportGroupType.STANDARDS_MASTERY_REPORT:
       default:
       // do nothing
     }
   }
 
-  const sharedReportsData = useMemo(
-    () =>
-      sharedReportList.map((sharedReport) => {
-        /**
-         * example:
-         * reportGroupTypeTitle = 'Single Assessment Report'
-         * reportGroupType = 'single-assessment-report'
-         */
-        const reportGroupTypeTitle =
-          navigation.locToData[sharedReport.reportType]?.groupTitle || '-'
-        const reportGroupType = reportGroupTypeTitle
-          .toLowerCase()
-          .split(' ')
-          .join('-')
-        return {
-          ...sharedReport,
-          reportGroupType,
-          reportGroupTypeTitle,
-        }
-      }),
-    [sharedReportList]
-  )
+  const sharedReportsData = useMemo(() => {
+    // collaborative groups mapping where the current user is group admin
+    const isCGAdmin = {}
+    collaborativeGroupList.forEach((cg) => {
+      const currentUserAsMember = cg.groupMembers.find(
+        (u) => u._id === currentUserId
+      )
+      isCGAdmin[cg._id] = currentUserAsMember?.isAdmin
+    })
+    // append reportGroupType and group admin flag for shared reports
+    return sharedReportList.map((sharedReport) => {
+      // reportGroupTypeTitle = 'Single Assessment Report'
+      // => reportGroupType = 'single-assessment-report'
+      const reportGroupTypeTitle =
+        navigation.locToData[sharedReport.reportType]?.groupTitle || '-'
+      const reportGroupType = reportGroupTypeTitle
+        .toLowerCase()
+        .split(' ')
+        .join('-')
+      /**
+       * TODO: uncomment below code and add backend support
+       * if groupAdmin is allowed to archive shared reports
+       */
+      // const isGroupAdmin = !!sharedReport.sharedWith.filter(
+      //   (cg) => isCGAdmin[cg._id]
+      // ).length
+      return {
+        ...sharedReport,
+        // isGroupAdmin,
+        reportGroupType,
+        reportGroupTypeTitle,
+      }
+    })
+  }, [sharedReportList, collaborativeGroupList])
 
   return (
     <StyledContainer>
@@ -69,6 +89,8 @@ const SharedReportsContainer = ({
         <SharedReportsTable
           sharedReportsData={sharedReportsData}
           showReport={showReport}
+          archiveReport={archiveReport}
+          currentUserId={currentUserId}
         />
       ) : (
         <Result title="No report found" />
@@ -84,10 +106,14 @@ SharedReportsContainer.propTypes = {
 
 const enhance = connect(
   (state) => ({
+    currentUserId: getUserIdSelector(state),
     isLoading: getSharedReportsLoader(state),
     sharedReportList: getSharedReportList(state),
+    collaborativeGroupList: getCollaborativeGroupList(state),
   }),
-  {}
+  {
+    archiveReport: archiveReportAction,
+  }
 )
 
 export default enhance(SharedReportsContainer)

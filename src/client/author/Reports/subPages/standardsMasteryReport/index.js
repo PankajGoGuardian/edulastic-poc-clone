@@ -128,7 +128,7 @@ const StandardsMasteryReportContainer = (props) => {
         }
       })
       obj.testIds = settings.selectedTest.map((items) => items.key).join()
-      obj.reportId = reportId || obj.reportId
+      obj.reportId = reportId || ''
       const path = qs.stringify(obj, { arrayFormat: 'comma' })
       history.push(`?${path}`)
     }
@@ -325,8 +325,8 @@ const StandardsMasteryReportContainer = (props) => {
                 ddfilter={ddfilter}
                 settings={transformedSettings}
                 standardsGradebook={standardsGradebook}
-                sharedReport={sharedReport}
                 userRole={userRole}
+                sharedReport={sharedReport}
               />
             )
           }}
@@ -341,6 +341,7 @@ const StandardsMasteryReportContainer = (props) => {
                 {..._props}
                 settings={transformedSettings}
                 userRole={userRole}
+                sharedReport={sharedReport}
               />
             )
           }}

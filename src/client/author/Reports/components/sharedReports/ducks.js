@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
-import { all, call, put, takeLatest } from 'redux-saga/effects'
+import { all, call, select, put, takeLatest } from 'redux-saga/effects'
 
 import { collaborationApi, sharedReportApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
@@ -11,21 +11,29 @@ const GET_SHARED_REPORTS_REQUEST_SUCCESS =
 const GET_SHARED_REPORTS_REQUEST_ERROR =
   '[reports] get shared reports request error'
 
-const GET_TEACHER_GROUPS_REQUEST = '[reports] get teacher groups request'
-const GET_TEACHER_GROUPS_REQUEST_SUCCESS =
-  '[reports] get teacher groups request success'
-const GET_TEACHER_GROUPS_REQUEST_ERROR =
-  '[reports] get teacher groups request error'
+const GET_COLLABORATIVE_GROUPS_REQUEST =
+  '[reports] get collaborative groups request'
+const GET_COLLABORATIVE_GROUPS_REQUEST_SUCCESS =
+  '[reports] get collaborative groups request success'
+const GET_COLLABORATIVE_GROUPS_REQUEST_ERROR =
+  '[reports] get collaborative groups request error'
 
 const SHARE_REPORT_REQUEST = '[reports] share report request'
+
+const ARCHIVE_REPORT_REQUEST = '[reports] archive report request'
+const ARCHIVED_REPORT_REQUEST_SUCCESS =
+  '[reports] archive report request success'
 // const SHARE_REPORT_REQUEST_SUCCESS = '[reports] share report request success'
 // const SHARE_REPORT_REQUEST_ERROR = '[reports] share report request error'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getSharedReportsAction = createAction(GET_SHARED_REPORTS_REQUEST)
-export const getTeacherGroupsAction = createAction(GET_TEACHER_GROUPS_REQUEST)
+export const getCollaborativeGroupsAction = createAction(
+  GET_COLLABORATIVE_GROUPS_REQUEST
+)
 export const shareReportAction = createAction(SHARE_REPORT_REQUEST)
+export const archiveReportAction = createAction(ARCHIVE_REPORT_REQUEST)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -45,14 +53,14 @@ export const getSharedReportList = createSelector(
   (state) => state.sharedReportList
 )
 
-export const getTeacherGroupsLoader = createSelector(
+export const getCollaborativeGroupsLoader = createSelector(
   stateSelector,
-  (state) => state.loadingTeacherGroups
+  (state) => state.loadingCollaborativeGroups
 )
 
-export const getTeacherGroupList = createSelector(
+export const getCollaborativeGroupList = createSelector(
   stateSelector,
-  (state) => state.teacherGroupList
+  (state) => state.collaborativeGroupList
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -64,8 +72,8 @@ export const getTeacherGroupList = createSelector(
 const initialState = {
   sharedReportList: [],
   loading: false,
-  teacherGroupList: [],
-  loadingTeacherGroups: false,
+  collaborativeGroupList: [],
+  loadingCollaborativeGroups: false,
 }
 
 export const sharedReportsReducer = createReducer(initialState, {
@@ -80,16 +88,19 @@ export const sharedReportsReducer = createReducer(initialState, {
     state.loading = false
     state.error = payload.error
   },
-  [GET_TEACHER_GROUPS_REQUEST]: (state) => {
-    state.loadingTeacherGroups = true
+  [GET_COLLABORATIVE_GROUPS_REQUEST]: (state) => {
+    state.loadingCollaborativeGroups = true
   },
-  [GET_TEACHER_GROUPS_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loadingTeacherGroups = false
-    state.teacherGroupList = payload
+  [GET_COLLABORATIVE_GROUPS_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.loadingCollaborativeGroups = false
+    state.collaborativeGroupList = payload
   },
-  [GET_TEACHER_GROUPS_REQUEST_ERROR]: (state, { payload }) => {
-    state.loadingTeacherGroups = false
+  [GET_COLLABORATIVE_GROUPS_REQUEST_ERROR]: (state, { payload }) => {
+    state.loadingCollaborativeGroups = false
     state.error = payload.error
+  },
+  [ARCHIVED_REPORT_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.sharedReportList = payload
   },
 })
 
@@ -119,20 +130,20 @@ export function* getSharedReportsRequest({ payload }) {
   }
 }
 
-function* getTeacherGroupsRequest() {
+function* getCollaborativeGroupsRequest() {
   try {
-    const { result: teacherGroupList } = yield call(
+    const { result: collaborativeGroupList } = yield call(
       collaborationApi.fetchGroups
     )
     yield put({
-      type: GET_TEACHER_GROUPS_REQUEST_SUCCESS,
-      payload: teacherGroupList,
+      type: GET_COLLABORATIVE_GROUPS_REQUEST_SUCCESS,
+      payload: collaborativeGroupList,
     })
   } catch (err) {
     const msg = 'Failed to fetch collaboration groups'
     notification({ msg })
     yield put({
-      type: GET_TEACHER_GROUPS_REQUEST_ERROR,
+      type: GET_COLLABORATIVE_GROUPS_REQUEST_ERROR,
       payload: { error: msg },
     })
   }
@@ -150,11 +161,37 @@ function* shareReportSaga({ payload }) {
   }
 }
 
+function* archiveReportSaga({ payload }) {
+  try {
+    const result = yield call(sharedReportApi.archiveSharedReport, payload)
+    if (result && payload?.id) {
+      const sharedReportList = yield select(getSharedReportList)
+      const filteredList = sharedReportList.filter(
+        (report) => report._id !== payload.id
+      )
+      yield put({
+        type: ARCHIVED_REPORT_REQUEST_SUCCESS,
+        payload: filteredList,
+      })
+      notification({
+        type: 'success',
+        msg: 'Archived report successfully',
+      })
+    }
+  } catch (err) {
+    notification({ msg: 'Failed to archive report' })
+  }
+}
+
 export function* sharedReportsSaga() {
   yield all([
     yield takeLatest(GET_SHARED_REPORTS_REQUEST, getSharedReportsRequest),
-    yield takeLatest(GET_TEACHER_GROUPS_REQUEST, getTeacherGroupsRequest),
+    yield takeLatest(
+      GET_COLLABORATIVE_GROUPS_REQUEST,
+      getCollaborativeGroupsRequest
+    ),
     yield takeLatest(SHARE_REPORT_REQUEST, shareReportSaga),
+    yield takeLatest(ARCHIVE_REPORT_REQUEST, archiveReportSaga),
   ])
 }
 

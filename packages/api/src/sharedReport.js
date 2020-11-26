@@ -14,17 +14,16 @@ const createSharedReport = (data) =>
     .then((result) => result.data.result)
 
 /* TODO: check the API and change accordingly */
-const updateSharedReport = (data) =>
+const updateSharedReport = ({ id, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/${data.id}`,
+      url: `${prefix}/${id}`,
       method: 'put',
       data,
     })
     .then((result) => result.data.result)
 
-/* TODO: check the API and change accordingly */
-const deleteSharedReport = ({ id }) =>
+const archiveSharedReport = ({ id }) =>
   api
     .callApi({
       url: `${prefix}/${id}`,
@@ -44,6 +43,6 @@ const getSharedReports = (params) =>
 export default {
   createSharedReport,
   updateSharedReport,
-  deleteSharedReport,
+  archiveSharedReport,
   getSharedReports,
 }

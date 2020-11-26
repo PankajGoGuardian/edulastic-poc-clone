@@ -50,6 +50,13 @@ const StandardsGradebook = ({
   userRole,
   sharedReport,
 }) => {
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+    [sharedReport]
+  )
   const standardsCount = get(
     standardsGradebook,
     'data.result.standardsCount',
@@ -58,8 +65,10 @@ const StandardsGradebook = ({
   const scaleInfo = get(standardsFilters, 'scaleInfo', [])
   const selectedScale =
     (
-      scaleInfo.find((s) => s._id === settings.requestFilters.profileId) ||
-      scaleInfo[0]
+      scaleInfo.find(
+        (s) =>
+          s._id === (sharedReportFilters || settings.requestFilters).profileId
+      ) || scaleInfo[0]
     )?.scale || []
   const studentAssignmentsData = useMemo(
     () => getStudentAssignments(selectedScale, studentStandardData),
@@ -129,7 +138,7 @@ const StandardsGradebook = ({
   const handleOnClickStandard = (params, standard, studentName) => {
     getStudentStandards({
       ...params,
-      testIds: settings.selectedTest.map((test) => test.key).join(),
+      testIds: (sharedReportFilters || settings.requestFilters).testIds,
     })
     setClickedStandard(standard)
     setStudentAssignmentModal(true)
@@ -182,7 +191,7 @@ const StandardsGradebook = ({
           chartFilter={chartFilter}
           isCsvDownloading={isCsvDownloading}
           role={userRole}
-          filters={sharedReport?.filters || settings.requestFilters}
+          filters={sharedReportFilters || settings.requestFilters}
           handleOnClickStandard={handleOnClickStandard}
           standardsData={standardsData}
           location={location}

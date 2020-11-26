@@ -24,12 +24,7 @@ import {
 } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
-import {
-  getFiltersSelector,
-  getReportsSPRFilterData,
-  getSelectedStandardProficiency,
-  getStudentSelector,
-} from '../common/filterDataDucks'
+import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
 import { getGrades, getStudentName } from '../common/utils/transformers'
 import StudentPerformanceSummary from './common/components/table/StudentPerformanceSummary'
@@ -75,23 +70,40 @@ const StudentMasteryProfile = ({
   isCsvDownloading,
   studentMasteryProfile,
   getStudentMasteryProfileRequest,
-  selectedStandardProficiency,
-  filters,
   getStudentStandards,
   studentStandardData,
-  selectedStudent,
   loadingStudentStandard,
+  sharedReport,
   t,
 }) => {
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+    [sharedReport]
+  )
+
+  const { studentClassData = [], scaleInfo: scales = [] } = get(
+    SPRFilterData,
+    'data.result',
+    {}
+  )
+
+  const scaleInfo = (
+    scales.find(
+      (x) =>
+        x._id === (sharedReportFilters || settings.requestFilters).profileId
+    ) || scales[0]
+  )?.scale
+
+  const studentClassInformation = studentClassData[0] || {}
+
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(
     studentMasteryProfile,
     'data.result',
     {}
   )
-  const scaleInfo = selectedStandardProficiency
-
-  const studentClassData = SPRFilterData?.data?.result?.studentClassData || []
-  const studentClassInformation = studentClassData[0] || {}
 
   const [selectedDomain, setSelectedDomain] = useState({
     key: 'All',
@@ -124,12 +136,10 @@ const StudentMasteryProfile = ({
   const [clickedStandard, setClickedStandard] = useState(undefined)
 
   useEffect(() => {
-    const { selectedStudent: _selectedStudent, requestFilters } = settings
-    if (_selectedStudent.key && requestFilters.termId) {
+    if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentMasteryProfileRequest({
-        ...requestFilters,
-        profileId: requestFilters.standardsProficiencyProfileId,
-        studentId: _selectedStudent.key,
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
       })
     }
   }, [settings])
@@ -151,7 +161,10 @@ const StudentMasteryProfile = ({
   }
 
   const studentInformation = studInfo[0] || {}
-  const studentName = getStudentName(selectedStudent, studentInformation)
+  const studentName = getStudentName(
+    settings.selectedStudent,
+    studentInformation
+  )
 
   const anonymousString = t('common.anonymous')
 
@@ -243,8 +256,7 @@ const StudentMasteryProfile = ({
             data: filteredStandards,
             selectedMastery,
             handleOnClickStandard,
-            filters,
-            termId: settings.requestFilters.termId,
+            filters: sharedReportFilters || settings.requestFilters,
           }}
           expandAllRows={expandRows}
           setExpandAllRows={(flag) => setExpandRows(flag)}
@@ -272,10 +284,7 @@ const withConnect = connect(
     loading: getReportsStudentMasteryProfileLoader(state),
     error: getReportsStudentMasteryProfileError(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state),
-    filters: getFiltersSelector(state),
     studentStandardData: getStudentStandardData(state),
-    selectedStudent: getStudentSelector(state),
     loadingStudentStandard: getStudentStandardLoader(state),
   }),
   {

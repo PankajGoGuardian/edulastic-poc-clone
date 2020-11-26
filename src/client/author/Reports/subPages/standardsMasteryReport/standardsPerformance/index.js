@@ -39,12 +39,22 @@ const StandardsPerformance = ({
   loading,
   error,
   userRole,
+  sharedReport,
 }) => {
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+    [sharedReport]
+  )
   const scaleInfo = get(standardsFilters, 'scaleInfo', [])
   const selectedScale =
     (
-      scaleInfo.find((s) => s._id === settings.requestFilters.profileId) ||
-      scaleInfo[0]
+      scaleInfo.find(
+        (s) =>
+          s._id === (sharedReportFilters || settings.requestFilters).profileId
+      ) || scaleInfo[0]
     )?.scale || []
   const maxMasteryScore = getMaxMasteryScore(selectedScale)
   const masteryLevelData = getMasteryLevelOptions(selectedScale)
@@ -182,7 +192,9 @@ const StandardsPerformance = ({
           scaleInfo={selectedScale}
           selectedDomains={selectedDomains}
           isCsvDownloading={isCsvDownloading}
-          selectedTermId={settings?.requestFilters?.termId || ''}
+          selectedTermId={
+            (sharedReportFilters || settings?.requestFilters)?.termId || ''
+          }
         />
       </StyledCard>
     </DropDownContainer>

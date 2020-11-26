@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
 import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
-import { roleuser } from '@edulastic/constants'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
 
@@ -19,9 +18,9 @@ const CustomizedHeaderWrapper = ({
   activeNavigationKey = '',
   hideSideMenu,
   isCliUser,
-  userRole,
   showCustomReport,
   showSharedReport,
+  isSharedReport,
   t,
 }) => {
   const _onShareClickCB = () => {
@@ -84,7 +83,7 @@ const CustomizedHeaderWrapper = ({
         inputFeatures="shareReports"
         actionOnInaccessible="hidden"
       >
-        {onShareClickCB && userRole === roleuser.DISTRICT_ADMIN ? (
+        {onShareClickCB && !isSharedReport ? (
           <ActionButton
             isBlue
             isGhost

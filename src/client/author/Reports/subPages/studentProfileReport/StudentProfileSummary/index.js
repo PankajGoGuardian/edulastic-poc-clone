@@ -15,9 +15,7 @@ import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
 import {
-  getBandInfoSelected,
   getReportsSPRFilterData,
-  getSelectedStandardProficiency,
   getReportsSPRFilterLoadingState,
 } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
@@ -63,32 +61,57 @@ const StudentProfileSummary = ({
   SPRFilterData,
   studentProfileSummary,
   getStudentProfileSummaryRequest,
-  bandInfoSelected,
-  selectedStandardProficiency,
   location,
   pageTitle,
   history,
-  t,
   reportsSPRFilterLoadingState,
+  sharedReport,
+  t,
 }) => {
-  const { selectedStudent } = settings
-  const bandInfo = bandInfoSelected
-  const scaleInfo = selectedStandardProficiency
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+    [sharedReport]
+  )
+
+  const {
+    studentClassData = [],
+    bandInfo: bands = [],
+    scaleInfo: scales = [],
+  } = get(SPRFilterData, 'data.result', {})
+
+  const bandInfo = (
+    bands.find(
+      (x) =>
+        x._id ===
+        (sharedReportFilters || settings.requestFilters)
+          .performanceBandProfileId
+    ) || bands[0]
+  )?.performanceBand
+
+  const scaleInfo = (
+    scales.find(
+      (x) =>
+        x._id === (sharedReportFilters || settings.requestFilters).profileId
+    ) || scales[0]
+  )?.scale
+
+  const studentClassInfo = studentClassData[0] || {}
 
   const studentProfileSummaryData = get(
     studentProfileSummary,
     'data.result',
     {}
   )
-
   const {
     asessmentMetricInfo = [],
     studInfo = [],
     skillInfo = [],
     metricInfo = [],
   } = studentProfileSummaryData
-  const { studentClassData = [] } = get(SPRFilterData, 'data.result', {})
-  const studentClassInfo = studentClassData[0] || {}
+
   const data = useMemo(
     () => augementAssessmentChartData(asessmentMetricInfo, bandInfo),
     [asessmentMetricInfo, bandInfo]
@@ -106,12 +129,10 @@ const StudentProfileSummary = ({
   )
 
   useEffect(() => {
-    const { selectedStudent: _selectedStudent, requestFilters } = settings
-    if (_selectedStudent.key && requestFilters.termId) {
+    if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentProfileSummaryRequest({
-        ...requestFilters,
-        profileId: requestFilters.standardsProficiencyProfileId,
-        studentId: _selectedStudent.key,
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
       })
     }
   }, [settings])
@@ -155,8 +176,10 @@ const StudentProfileSummary = ({
   }
 
   const studentInformation = studInfo[0] || {}
-
-  const studentName = getStudentName(selectedStudent, studentInformation)
+  const studentName = getStudentName(
+    settings.selectedStudent,
+    studentInformation
+  )
   const anonymousString = t('common.anonymous')
 
   const onCsvConvert = (_data) =>
@@ -229,8 +252,6 @@ const withConnect = connect(
     error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    bandInfoSelected: getBandInfoSelected(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state),
     reportsSPRFilterLoadingState: getReportsSPRFilterLoadingState(state),
   }),
   {

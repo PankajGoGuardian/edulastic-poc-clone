@@ -234,6 +234,7 @@ const StandardsGradebookTableComponent = ({
     )
 
     const obj = {
+      reportId: filters.reportId,
       termId: filters.termId,
       studentId: record.studentId,
       standardId,

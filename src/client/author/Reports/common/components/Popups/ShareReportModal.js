@@ -9,7 +9,7 @@ import { themeColor, lightGreySecondary } from '@edulastic/colors'
 import { MultipleSelect } from '../widgets/MultipleSelect'
 
 import {
-  getTeacherGroupList,
+  getCollaborativeGroupList,
   shareReportAction,
 } from '../../../components/sharedReports/ducks'
 
@@ -18,13 +18,13 @@ const ShareReportModal = ({
   reportFilters,
   showModal,
   setShowModal,
-  teacherGroups,
+  collaborativeGroups,
   shareReport,
   sharedWithType = report.sharedWithType.COLLABORATION_GROUP,
 }) => {
   const dropdownData =
     sharedWithType === report.sharedWithType.COLLABORATION_GROUP
-      ? teacherGroups.map(({ _id: key, name: title }) => ({
+      ? collaborativeGroups.map(({ _id: key, name: title }) => ({
           key,
           title,
         }))
@@ -118,9 +118,9 @@ const ShareReportModal = ({
               data={dropdownData}
               by={selected}
               valueToDisplay={selected}
-              prefix="Teacher Group"
+              prefix="Collaboration Group"
               onSelect={onSelect}
-              placeholder="Select teacher group(s)"
+              placeholder="Select collaborative group(s)"
               dropdownStyle={{ zIndex: '1025' }}
             />
           </DropdownContainer>
@@ -132,7 +132,7 @@ const ShareReportModal = ({
 
 const enhance = connect(
   (state) => ({
-    teacherGroups: getTeacherGroupList(state),
+    collaborativeGroups: getCollaborativeGroupList(state),
   }),
   {
     shareReport: shareReportAction,

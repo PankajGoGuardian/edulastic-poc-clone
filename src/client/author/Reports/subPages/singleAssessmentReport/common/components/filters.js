@@ -359,7 +359,7 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Grade</FilterLabel>
             <ControlDropDown
-              by={filters.grade}
+              by={filters.studentGrade}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentGrade')}
               data={staticDropDownData.grades}
               prefix="Grade"
@@ -369,7 +369,7 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Subject</FilterLabel>
             <ControlDropDown
-              by={filters.subject}
+              by={filters.studentSubject}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentSubject')}
               data={staticDropDownData.subjects}
               prefix="Subject"
@@ -379,7 +379,9 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Course</FilterLabel>
             <CourseAutoComplete
-              selectedCourseId={filters.courseId !== 'All' && filters.courseId}
+              selectedCourseId={
+                filters.studentCourseId !== 'All' && filters.studentCourseId
+              }
               selectCB={(e) => updateFilterDropdownCB(e, 'studentCourseId')}
             />
           </SearchField>

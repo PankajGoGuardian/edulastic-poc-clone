@@ -2,12 +2,12 @@ const getFormattedString = (prop) => (prop ? Array.from(prop).join(',') : '')
 
 export const transformFiltersForSAR = (requestFilters = {}) => ({
   ...requestFilters,
-  classIds: getFormattedString(
-    requestFilters.classIds || requestFilters.classId
-  ),
-  groupIds: getFormattedString(
-    requestFilters.groupIds || requestFilters.groupId
-  ),
+  classIds: requestFilters.classIds
+    ? getFormattedString(requestFilters.classIds)
+    : requestFilters.classId,
+  groupIds: requestFilters.groupIds
+    ? getFormattedString(requestFilters.groupIds)
+    : requestFilters.groupId,
   assessmentTypes: requestFilters?.assessmentTypes || '',
   teacherIds: requestFilters.teacherIds,
   schoolIds: requestFilters.schoolIds,

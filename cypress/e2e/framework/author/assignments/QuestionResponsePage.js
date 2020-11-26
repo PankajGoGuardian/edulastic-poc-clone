@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import {
   questionTypeKey as queTypes,
   attemptTypes,
@@ -70,12 +71,17 @@ export default class QuestionResponsePage {
     cy.wait(500) // detachment problem
   }
 
+  clickOnAttemptSelect = () => {
+    cy.get('[data-cy="attemptSelect"]').click({ force: true })
+    cy.wait(500)
+  }
+
   selectAttempt = (attemptNum) => {
     let index = -1
     const attempt = `Attempt ${attemptNum} `
     cy.server()
     cy.route('GET', '**/test-activity/**').as('test-activity')
-    cy.get('[data-cy="attemptSelect"]').click({ force: true })
+    this.clickOnAttemptSelect()
 
     CypressHelper.getDropDownList((list) => {
       index = list.indexOf(attempt)

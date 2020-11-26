@@ -114,7 +114,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
     })
   })
 
-  describe.only(`> redirect absent student`, () => {
+  describe(`> redirect absent student`, () => {
     const { stuName, email } = redirectTestData.redirect5
     const attempt1 = {
       ...lcb.getScoreAndPerformance(noattempt, questionTypeMap),
@@ -155,7 +155,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
 
       it(' > verify lcb assignment count', () => {
         lcb.verifySubmittedCount(1, 3)
-        lcb.verifyAbsentCount(1)
       })
       ;[0, 1].forEach((i) => {
         it(`> verify student card attempt view for attempt-${
@@ -188,6 +187,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       })
 
       it(' > verifying counts on assignement page', () => {
+        testLibrary.sidebar.clickOnAssignment()
         authorAssignmentPage.verifyStatus(teacherSide.IN_PROGRESS)
         authorAssignmentPage.verifySubmitted(`1 of 3`)
         authorAssignmentPage.verifyGraded('1')
@@ -252,7 +252,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       it(` > verify student centric view after attempt2`, () => {
         lcb.clickOnStudentsTab()
 
-        // verify current attempt2
+        // verify current attempt2 and attempt1 will be disabled
         lcb.verifyStudentCentricCard(
           stuName,
           attempt2.attempt,
@@ -265,21 +265,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
           attempt2.maxScore,
           0
         )
-
-        // verify previous attempt1
-        lcb.questionResponsePage.selectAttempt(1)
-        lcb.verifyStudentCentricCard(
-          stuName,
-          attempt1.attempt,
-          questionTypeMap,
-          true
-        )
-        // verify scores and improvement of previous attempt1
-        lcb.questionResponsePage.verifyTotalScoreAndImprovement(
-          attempt1.totalScore,
-          attempt1.maxScore,
-          0
-        )
+        lcb.questionResponsePage.clickOnAttemptSelect()
+        lcb.questionResponsePage
+          .getDropDownMenu()
+          .contains(`Attempt 1`)
+          .should('have.class', 'ant-select-dropdown-menu-item-disabled')
       })
 
       it(` > verify question centric view after attempt2`, () => {
@@ -319,9 +309,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       cy.contains(className)
       lcb.checkSelectAllCheckboxOfStudent()
       lcb.clickOnMarkAsSubmit()
-      lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING)
       teacherSidebar.clickOnAssignment()
       authorAssignmentPage.verifyStatus(teacherSide.IN_GRADING)
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0)
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING)
     })
 
     it(' > redirect class and verify student cards', () => {

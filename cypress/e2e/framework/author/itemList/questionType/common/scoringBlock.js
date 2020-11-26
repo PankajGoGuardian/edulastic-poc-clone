@@ -42,7 +42,6 @@ class ScoringBlock {
     this.getEnableScoringInstructions()
       .parent()
       .then((ele) => {
-        console.log(`${ele.hasClass('ant-checkbox ant-checkbox-checked')}`)
         if (!ele.hasClass('ant-checkbox ant-checkbox-checked'))
           this.clickOngetEnableScoringInstructions()
       })
@@ -59,12 +58,9 @@ class ScoringBlock {
 
   verifyAddInstructions = (value) => {
     this.checkEnableScoringInstructions()
-    return this.getEnableScoringInstructions()
+    return cy
+      .get('#froalaToolbarContainer-scoringInstructions')
       .parent()
-      .parent()
-      .parent()
-      .parent()
-      .next()
       .find('[contenteditable="true"]')
       .type(value)
       .should('contain', value)

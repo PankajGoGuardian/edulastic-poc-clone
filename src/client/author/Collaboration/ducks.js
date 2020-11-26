@@ -114,8 +114,9 @@ function* fetchUsersSaga({ payload }) {
 function* addMembersSaga({ payload }) {
   try {
     yield put(setAddingMembersStateAction(true))
-    const data = yield call(collaborationApi.addMembers, payload)
-    yield put(setGroupDataAction(data))
+    yield call(collaborationApi.addMembers, payload)
+    yield put(fetchCollaborationGroupsAction())
+    yield put(fetchGroupByIdAction(payload.groupId))
     yield put(setAddingMembersStateAction(false))
     notification({
       type: 'success',

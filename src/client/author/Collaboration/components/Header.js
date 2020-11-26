@@ -27,15 +27,13 @@ const Header = ({
     <MainHeader
       Icon={headingText ? UsersIcon : ''}
       titleText={headingText || 'loading...'}
-      headingText={
-        <>
-          <span>{headingText || 'loading...'}</span>
-          {isAdmin && (
-            <EditIconWrapper onClick={onTitleClick}>
-              <EditIcon />
-            </EditIconWrapper>
-          )}
-        </>
+      headingText={headingText || 'loading...'}
+      headingSubContent={
+        isAdmin ? (
+          <EditIconWrapper onClick={onTitleClick}>
+            <EditIcon />
+          </EditIconWrapper>
+        ) : null
       }
     >
       {/* <StyledTabs>

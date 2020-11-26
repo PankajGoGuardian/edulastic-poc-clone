@@ -181,8 +181,8 @@ const SingleAssessmentReportFilters = ({
         courseId: search.courseId || 'All',
         classId: search.classId || 'All',
         groupId: search.groupId || 'All',
-        schoolIds: search.schoolIds || [],
-        teacherIds: search.teacherIds || [],
+        schoolIds: search.schoolIds || '',
+        teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || 'common assessment',
       }
       const urlParams = { ...obtainedFilters }
@@ -230,10 +230,10 @@ const SingleAssessmentReportFilters = ({
     }
   }
 
-  const updateFilterDropdownCB = (selected, keyName, hasKey = false) => {
+  const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     const _filters = {
       ...filters,
-      [keyName]: hasKey ? selected : selected.key,
+      [keyName]: multiple ? selected : selected.key,
     }
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     setFiltersOrTestId({ filters: _filters })
@@ -336,14 +336,22 @@ const SingleAssessmentReportFilters = ({
             <>
               <SearchField>
                 <SchoolAutoComplete
-                  selectedSchoolIds={filters.schoolIds}
-                  selectCB={(e) => updateFilterDropdownCB(e, 'schoolIds')}
+                  selectedSchoolIds={
+                    filters.schoolIds ? filters.schoolIds.split(',') : []
+                  }
+                  selectCB={(e) =>
+                    updateFilterDropdownCB(e.join(','), 'schoolIds', true)
+                  }
                 />
               </SearchField>
               <SearchField>
                 <TeacherAutoComplete
-                  selectedTeacherIds={filters.teacherIds}
-                  selectCB={(e) => updateFilterDropdownCB(e, 'teacherIds')}
+                  selectedTeacherIds={
+                    filters.teacherIds ? filters.teacherIds.split(',') : []
+                  }
+                  selectCB={(e) =>
+                    updateFilterDropdownCB(e.join(','), 'teacherIds', true)
+                  }
                 />
               </SearchField>
             </>

@@ -30,6 +30,45 @@ class ScoringBlock {
   getMinScore = () => cy.get('[data-cy=minscore]').should('be.visible')
 
   getMaxScore = () => cy.get('[data-cy="maxscore"]').should('be.visible')
+
+  getEnableScoringInstructions = () =>
+    cy.get('[data-cy="isScoringInstructionsEnabled"]').should('be.visible')
+
+  clickOngetEnableScoringInstructions = () => {
+    this.getEnableScoringInstructions().click({ force: true })
+  }
+
+  checkEnableScoringInstructions = () => {
+    this.getEnableScoringInstructions()
+      .parent()
+      .then((ele) => {
+        console.log(`${ele.hasClass('ant-checkbox ant-checkbox-checked')}`)
+        if (!ele.hasClass('ant-checkbox ant-checkbox-checked'))
+          this.clickOngetEnableScoringInstructions()
+      })
+  }
+
+  unCheckEnableScoringInstructions = () => {
+    this.getEnableScoringInstructions()
+      .parent()
+      .then((ele) => {
+        if (ele.hasClass('ant-checkbox ant-checkbox-checked'))
+          this.clickOngetEnableScoringInstructions()
+      })
+  }
+
+  verifyAddInstructions = (value) => {
+    this.checkEnableScoringInstructions()
+    return this.getEnableScoringInstructions()
+      .parent()
+      .parent()
+      .parent()
+      .parent()
+      .next()
+      .find('[contenteditable="true"]')
+      .type(value)
+      .should('contain', value)
+  }
 }
 
 export default ScoringBlock

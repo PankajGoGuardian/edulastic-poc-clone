@@ -328,7 +328,7 @@ describe(`${FileHelper.getSpecName(
           .getInstructionText()
           .should('contain', 'instruction')
         editItem.header.edit()
-        scoringBlockPage.clickOngetEnableScoringInstructions()
+        scoringBlockPage.unCheckEnableScoringInstructions()
         question.header.preview().getInstructionIcon().should('not.be.visible')
       })
     })

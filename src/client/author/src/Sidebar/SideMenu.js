@@ -995,7 +995,7 @@ const Menu = styled(AntMenu)`
     }
   }
 
-  @media (max-height: 600px) {
+  @media (max-height: 780px) {
     overflow: auto;
     height: calc(100vh - 190px);
     &::-webkit-scrollbar {

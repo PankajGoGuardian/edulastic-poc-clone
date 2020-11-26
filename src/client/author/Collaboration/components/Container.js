@@ -68,13 +68,12 @@ const Container = ({
 
   const membersList = groupDetails.groupMembers || []
 
+  const isOwner = groupDetails?.createdBy?._id === userId
+
   const isAdmin =
     membersList.find((x) => x._id === userId)?.isAdmin ||
-    [
-      roleuser.DISTRICT_ADMIN,
-      roleuser.EDULASTIC_ADMIN,
-      roleuser.SCHOOL_ADMIN,
-    ].includes(role)
+    [roleuser.DISTRICT_ADMIN, roleuser.EDULASTIC_ADMIN].includes(role) ||
+    isOwner
 
   return (
     <>

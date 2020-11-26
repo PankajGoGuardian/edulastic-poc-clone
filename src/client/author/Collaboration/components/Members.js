@@ -31,8 +31,8 @@ const tableColumns = (handleRemoveMember, handleMemberClick, isAdmin) => {
     },
     {
       title: 'Username',
-      dataIndex: 'userName',
-      key: 'userName',
+      dataIndex: 'username',
+      key: 'username',
     },
     {
       title: 'Membership',
@@ -90,7 +90,7 @@ const Members = ({
       membersList.filter(
         (m) =>
           m.name.toLowerCase().includes(memberSearchString) ||
-          m.userName.toLowerCase().includes(memberSearchString)
+          m.username.toLowerCase().includes(memberSearchString)
       ),
     [membersList, memberSearchString]
   )

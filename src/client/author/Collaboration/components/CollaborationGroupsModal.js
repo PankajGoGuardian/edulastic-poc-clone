@@ -85,7 +85,7 @@ const CollaborationGroupsModal = ({
       addMembershipTo,
       groupMember: {
         name: userData.name,
-        userName: userData.userName,
+        username: userData.username,
         _id: userData._id,
         isAdmin: false,
       },

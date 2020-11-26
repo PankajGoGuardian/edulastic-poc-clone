@@ -95,7 +95,7 @@ const AddMembersModal = ({
       if (!alreadyAddedUsers.includes(user._id)) {
         payload.data.groupMembers.push({
           name: user.name,
-          userName: user.username,
+          username: user.username,
           userId: user._id,
           isAdmin: false,
         })

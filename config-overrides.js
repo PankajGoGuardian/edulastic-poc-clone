@@ -210,8 +210,14 @@ module.exports = override(
               chunks: 'all',
               enforce: true,
             },
+            'vendor-react': {
+              test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
+              name: 'vendor-react',
+              chunks: 'all',
+              enforce: true,
+            },
             vendor: {
-              test: /[\\/]node_modules[\\/]((?!(mathjs|ace-builds|react-jsx-parser|recharts)).*)((froala-editor|firebase|pdfjs-dist|jsx-graph|draft-js|react-pdf|lodash|react|redux|react-redux|redux-saga|reselect).*)[\\/]/,
+              test: /[\\/]node_modules[\\/]((?!(mathjs|ace-builds|react-jsx-parser|recharts)).*)((froala-editor|firebase|pdfjs-dist|jsx-graph|draft-js|react-pdf).*)[\\/]/,
               chunks: 'all',
               enforce: true,
               name(module) {

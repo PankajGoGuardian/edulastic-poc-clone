@@ -89,6 +89,7 @@ const AssignmentCard = memo(
     user: { role: userRole, _id: userId },
     proxyUserRole,
     highlightMode,
+    index,
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
@@ -201,6 +202,12 @@ const AssignmentCard = memo(
     if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
       maxAttempts = reports.length
     }
+
+    useEffect(() => {
+      if (index <= 2 && reports.length > 0 && maxAttempts > 1) {
+        setShowAttempts(true)
+      }
+    }, [index])
     const startTest = () => {
       // On start check if assignment is expired or not
       if (endDate && serverTimeStamp > endDate) {

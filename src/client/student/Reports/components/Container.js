@@ -57,13 +57,14 @@ const Content = ({
             description="You don't have any completed assignment."
           />
         ) : (
-          assignments.map((item) => (
+          assignments.map((item, i) => (
             <AssignmentCard
               key={`${item._id}_${item.classId}`}
               data={item}
               classId={item.classId}
               type="reports"
               highlightMode={item._id === highlightAssignment}
+              index={i}
             />
           ))
         )}

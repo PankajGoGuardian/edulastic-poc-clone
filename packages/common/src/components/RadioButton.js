@@ -17,9 +17,11 @@ export const RadioBtn = ({ children, ...props }) => (
 
 const StyledRadioBtn = styled(Radio)`
   margin-bottom: ${({ mb }) => mb || '0px'};
+  display: ${({ vertical }) => (vertical ? 'block' : '')};
   font-size: ${(props) => props.theme.smallFontSize};
   text-align: left;
   position: relative;
+  width: ${({ width }) => width};
   &.ant-radio-wrapper {
     & + .ant-radio-wrapper {
       margin-left: 0px;

@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
-import { produce } from 'immer'
 import { get } from 'lodash'
 import {
   MathInput,
@@ -18,40 +16,18 @@ import { mobileWidth } from '@edulastic/colors'
 import { Label } from '../../../../styled/WidgetOptions/Label'
 
 import { IconTrash } from '../../styled/IconTrash'
-import ThousandsSeparators from './options/ThousandsSeparators'
-import { Rule } from './options/Rule'
-import Units from './options/Units'
-import { AdditionalToggle, AdditionalContainer } from './styled/Additional'
 import { Container } from './styled/Container'
 import { StyledRow } from './styled/StyledRow'
 import { MathInputWrapper } from './styled/MathInputWrapper'
 
-import {
-  AllowedVariables,
-  CheckOption,
-  DecimalSeparator,
-  Field,
-  SignificantDecimalPlaces,
-  Tolerance,
-  UnitsDropdown,
-  DefaultKeyPadMode,
-  CustomUnit,
-} from './options'
-import { SelectInputStyled } from '../../../../styled/InputStyles'
+import { Field, UnitsDropdown, DefaultKeyPadMode, CustomUnit } from './options'
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
-import { RadioLabel, RadioLabelGroup } from '../../../../styled/RadioWithLabel'
+import EvaluationSettings from '../EvaluationSettings'
 
-const {
-  methods: methodsConst,
-  methodOptions: methodOptionsConst,
-  methodOptionsGrouped,
-} = math
-
-const methods = Object.keys(methodsConst)
+const { methods: methodsConst, methodOptions: methodOptionsConst } = math
 
 const MathFormulaAnswerMethod = ({
-  id,
   onChange,
   onDelete,
   method,
@@ -66,7 +42,6 @@ const MathFormulaAnswerMethod = ({
   style = {},
   keypadOffset,
   allowedVariables,
-  toggleAdditional,
   showDefaultMode,
   labelValue,
   renderExtra,
@@ -107,22 +82,14 @@ const MathFormulaAnswerMethod = ({
       warningMsg = 'Expanded and Factored cannot be combined together'
     } else if (
       selectedOptions.isMixedFraction &&
-      selectedOptions.isSimplified
+      selectedOptions.isImproperFraction
     ) {
       flag = true
-      warningMsg = 'Simplified and Mixed Fraction cannot be combined together'
+      warningMsg =
+        'Mixed Fraction and Improper fraction cannot be combined together'
     }
     return [flag, warningMsg]
   }
-
-  /**
-   * key value pair
-   * key: id of input box
-   * value: true/false
-   */
-  const showAdditional = isClozeMath
-    ? get(item, `showAdditional`, {})
-    : get(item, `showAdditional`, false)
 
   /**
    * Stores validation data (answer) of testItem
@@ -146,396 +113,7 @@ const MathFormulaAnswerMethod = ({
     onChange('options', newOptions)
   }
 
-  const handleChangeThousandsSeparator = ({ val, ind }) => {
-    if (!val) {
-      changeOptions('setThousandsSeparator', null)
-      return
-    }
-    let newSetThousandsSeparator = ['']
-
-    if (options.setThousandsSeparator && options.setThousandsSeparator.length) {
-      newSetThousandsSeparator = [...options.setThousandsSeparator]
-    }
-
-    newSetThousandsSeparator[ind] = val
-    changeOptions('setThousandsSeparator', newSetThousandsSeparator)
-  }
-
-  const handleAddThousandsSeparator = () => {
-    let newSeparators = []
-    if (options.setThousandsSeparator && options.setThousandsSeparator.length) {
-      newSeparators = [...options.setThousandsSeparator]
-    }
-    changeOptions('setThousandsSeparator', [...newSeparators, ''])
-  }
-
-  const handleDeleteThousandsSeparator = (ind) => {
-    const newSetThousandsSeparator = [...options.setThousandsSeparator]
-    newSetThousandsSeparator.splice(ind, 1)
-    changeOptions('setThousandsSeparator', newSetThousandsSeparator)
-  }
   const methodOptions = methodOptionsConst && methodOptionsConst[method]
-  const eToLowerCase = (label) =>
-    label.replace("'e'", '<span style="text-transform: lowercase">\'e\'</span>')
-
-  const renderMethodsOptions = (_methodOptions) =>
-    _methodOptions.map((methodOption) => {
-      switch (methodOption) {
-        case 'isSimpleFraction':
-          return (
-            <CheckOption
-              dataCy="answer-is-simple-fraction"
-              optionKey="isSimpleFraction"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.isSimpleFraction')}
-            />
-          )
-        case 'isMixedFraction':
-          return (
-            <CheckOption
-              dataCy="answer-is-mixed-fraction"
-              optionKey="isMixedFraction"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.isMixedFraction')}
-            />
-          )
-        case 'isImproperFraction':
-          return (
-            <CheckOption
-              dataCy="answer-is-improper-fraction"
-              optionKey="isImproperFraction"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.isImproperFraction')}
-            />
-          )
-        case 'isExpanded':
-          return (
-            <CheckOption
-              dataCy="answer-is-expanded"
-              optionKey="isExpanded"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.isExpanded')}
-            />
-          )
-        case 'isFactorised':
-          return (
-            <CheckOption
-              dataCy="answer-is-factorised"
-              optionKey="isFactorised"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.isFactorised')}
-            />
-          )
-        case 'isSimplified':
-          return (
-            <CheckOption
-              dataCy="answer-is-simplified"
-              optionKey="isSimplified"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.isSimplified')}
-            />
-          )
-        case 'ignoreCoefficientOfOne':
-          return (
-            <CheckOption
-              dataCy="answer-ignore-coefficient-of-one"
-              optionKey="ignoreCoefficientOfOne"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.ignoreCoefficientOfOne')}
-            />
-          )
-        case 'ignoreTrailingZeros':
-          return (
-            <CheckOption
-              dataCy="answer-ignore-trailing-zeros"
-              optionKey="ignoreTrailingZeros"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.ignoreTrailingZeros')}
-            />
-          )
-        case 'ignoreLeadingAndTrailingSpaces':
-          return (
-            <CheckOption
-              dataCy="answer-ignore-leading-and-trailing-spaces"
-              optionKey="ignoreLeadingAndTrailingSpaces"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.ignoreLeadingAndTrailingSpaces')}
-            />
-          )
-        case 'literalIgnoreLeadingAndTrailingSpaces':
-          return (
-            <CheckOption
-              dataCy="answer-ignore-leading-and-trailing-spaces"
-              optionKey="ignoreLeadingAndTrailingSpaces"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.literalIgnoreLeadingAndTrailingSpaces')}
-            />
-          )
-        case 'isDecimal':
-          return (
-            <CheckOption
-              dataCy="answer-is-decimal"
-              optionKey="isDecimal"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.isDecimal')}
-            />
-          )
-        case 'ignoreOrder':
-          return (
-            <CheckOption
-              dataCy="answer-ignore-order"
-              optionKey="ignoreOrder"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.ignoreOrder')}
-            />
-          )
-        case 'allowEulersNumber':
-          return (
-            <CheckOption
-              dataCy="answer-allow-eulers-number"
-              optionKey="allowEulersNumber"
-              options={options}
-              onChange={changeOptions}
-              label={eToLowerCase(t('component.math.treatEAsEulersNumber'))}
-            />
-          )
-        case 'compareSides':
-          return (
-            <CheckOption
-              dataCy="answer-compare-sides"
-              optionKey="compareSides"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.compareSides')}
-            />
-          )
-        case 'treatMultipleSpacesAsOne':
-          return (
-            <CheckOption
-              dataCy="answer-treat-multiple-spaces-as-one"
-              optionKey="treatMultipleSpacesAsOne"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.treatMultipleSpacesAsOne')}
-            />
-          )
-        case 'literalTreatMultipleSpacesAsOne':
-          return (
-            <CheckOption
-              dataCy="answer-treat-multiple-spaces-as-one"
-              optionKey="treatMultipleSpacesAsOne"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.literalTreatMultipleSpacesAsOne')}
-            />
-          )
-        case 'inverseResult':
-          return (
-            <CheckOption
-              dataCy="answer-inverse-result"
-              optionKey="inverseResult"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.inverseResult')}
-            />
-          )
-        case 'tolerance':
-          return <Tolerance options={options} onChange={changeOptions} />
-        case 'significantDecimalPlaces':
-          return (
-            <SignificantDecimalPlaces
-              options={options}
-              onChange={changeOptions}
-            />
-          )
-        case 'setThousandsSeparator':
-          return (
-            <ThousandsSeparators
-              separators={options.setThousandsSeparator}
-              onChange={handleChangeThousandsSeparator}
-              onAdd={handleAddThousandsSeparator}
-              onDelete={handleDeleteThousandsSeparator}
-            />
-          )
-        case 'setDecimalSeparator':
-          return <DecimalSeparator options={options} onChange={changeOptions} />
-        case 'allowedUnits':
-          return <Units options={options} onChange={changeOptions} />
-        case 'allowNumericOnly':
-          return (
-            <CheckOption
-              dataCy="answer-allow-numeric-only"
-              optionKey="allowNumericOnly"
-              options={{ allowNumericOnly }}
-              onChange={onChangeAllowedOptions}
-              label={t('component.math.allowNumericOnly')}
-            />
-          )
-        case 'allowedVariables':
-          return (
-            <AllowedVariables
-              allowedVariables={allowedVariables}
-              onChange={onChangeAllowedOptions}
-            />
-          )
-        case 'interpretAsSet':
-          return (
-            <RadioLabel
-              dataCy="answer-set-evaluation"
-              optionKey="interpretAsSet"
-              options={options}
-              onChange={changeOptions}
-            >
-              {t('component.math.interpretAsSet')}
-            </RadioLabel>
-          )
-        case 'interpretAsInterval':
-          return (
-            <RadioLabel
-              dataCy="answer-set-Interval"
-              optionKey="interpretAsInterval"
-              options={options}
-              onChange={changeOptions}
-            >
-              {t('component.math.interpretAsInterval')}
-            </RadioLabel>
-          )
-        case 'interpretAsNumber':
-          return (
-            <CheckOption
-              dataCy="answer-set-Number"
-              optionKey="interpretAsNumber"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.interpretAsNumber')}
-            />
-          )
-        case 'interpretTrigArgAsDegree':
-          return (
-            <CheckOption
-              dataCy="interpret-as-degree"
-              optionKey="interpretTrigArgAsDegree"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.interpretTrigArgAsDegree')}
-            />
-          )
-        case 'interpretAsList':
-          return (
-            <CheckOption
-              dataCy="answer-list-evaluation"
-              optionKey="interpretAsList"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.interpretAsList')}
-            />
-          )
-        case 'isRationalized':
-          return (
-            <CheckOption
-              dataCy="answer-rationalized"
-              optionKey="isRationalized"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.isRationalized')}
-            />
-          )
-        case 'requireIntervalNotation':
-          return (
-            <CheckOption
-              // Todo: dataCy
-              optionKey="requireIntervalNotation"
-              options={options}
-              onChange={changeOptions}
-              label={t('component.math.requireIntervalNotation')}
-            />
-          )
-        default:
-          return null
-      }
-    })
-
-  const onClickRadioHandler = (opt) => () => {
-    const newOptions = produce(options, (draft) => {
-      const radioLabelOptions =
-        methodOptionsGrouped.equivSymbolic['INTERPRET THE VALUES AS: ']
-      if (!draft[opt] && opt !== 'automatic') {
-        draft[opt] = true
-      } else {
-        delete draft[opt]
-      }
-
-      Object.keys(draft).forEach((key) => {
-        if (radioLabelOptions.includes(key)) {
-          if (key !== opt) {
-            // remove all other radio options which were selected previously
-            delete draft[key]
-          }
-        }
-      })
-    })
-    onChange('options', newOptions)
-  }
-
-  const renderRadioMethodOptions = (name, radioOptions) => {
-    const optionsKeyed = Object.keys(options)
-    const radioLabelOptions =
-      methodOptionsGrouped.equivSymbolic['INTERPRET THE VALUES AS: ']
-    const selected =
-      optionsKeyed.find(
-        (key) => radioLabelOptions.includes(key) && options[key] === true
-      ) || 'automatic'
-    return (
-      <Col>
-        <RadioLabelGroup name={name} value={selected}>
-          {radioOptions.map((opt) => (
-            <RadioLabel
-              key={opt}
-              value={opt}
-              checked={opt === selected}
-              onClick={onClickRadioHandler(opt)}
-            >
-              {t(`component.math.${opt}`)}
-            </RadioLabel>
-          ))}
-        </RadioLabelGroup>
-      </Col>
-    )
-  }
-
-  const renderMethodsOptionsGrouped = () => {
-    const groupedMethodOptions = methodOptionsGrouped[method]
-    if (groupedMethodOptions) {
-      return Object.keys(groupedMethodOptions).map((key) => {
-        const _options =
-          key === 'INTERPRET THE VALUES AS: '
-            ? renderRadioMethodOptions(key, groupedMethodOptions[key])
-            : renderMethodsOptions(groupedMethodOptions[key])
-        return (
-          <Row gutter={24} marginLeft="0 !important" marginBottom="1em">
-            <Col>
-              <Label marginBottom="1em"> {key}</Label>
-              {_options}
-            </Col>
-          </Row>
-        )
-      })
-    }
-    return null
-  }
-
   const restrictKeys = allowedVariables
     ? allowedVariables.split(',').map((segment) => segment.trim())
     : []
@@ -675,79 +253,18 @@ const MathFormulaAnswerMethod = ({
           )}
         </StyledRow>
       )}
-      <AdditionalToggle
-        active={isClozeMath ? showAdditional[id] : showAdditional}
-        onClick={() =>
-          toggleAdditional(
-            isClozeMath ? !showAdditional[id] : !showAdditional,
-            id,
-            isClozeMath
-          )
-        }
-      >
-        {t('component.math.additionalOptions')}
-      </AdditionalToggle>
-      {(isClozeMath ? showAdditional[id] : showAdditional) ? (
-        <AdditionalContainer>
-          <Row gutter={24}>
-            <Col span={10}>
-              <Label>{t('component.math.compareUsing')}</Label>
-              <SelectInputStyled
-                data-cy="method-selection-dropdown"
-                size="large"
-                value={method}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                onChange={(val) => onChange('method', val)}
-              >
-                {methods.map((methodKey) => (
-                  <Select.Option
-                    data-cy={`method-selection-dropdown-list-${methodKey}`}
-                    key={methodKey}
-                    value={methodsConst[methodKey]}
-                  >
-                    {t(`component.math.${methodsConst[methodKey]}`)}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
-            </Col>
-            <Col span={14}>
-              {methodOptions?.includes('rule') && (
-                <Rule
-                  onChange={changeOptions}
-                  t={t}
-                  syntax={options.syntax}
-                  argument={options.argument}
-                />
-              )}
-            </Col>
-          </Row>
-          {renderMethodsOptionsGrouped()}
-          <Row gutter={48}>
-            <Col>
-              {item?.templateDisplay ? (
-                <CheckOption
-                  dataCy="use-template"
-                  optionKey="useTemplate"
-                  options={{ useTemplate }}
-                  onChange={onChangeAllowedOptions}
-                  label="Use template"
-                />
-              ) : null}
-            </Col>
-          </Row>
 
-          {/* {index + 1 === answer.length && (
-            <AdditionalContainerRule>
-              <AdditionalAddRule
-                onClick={onAddIndex >= 0 ? () => onAdd(onAddIndex) : onAdd}
-                data-cy="add-new-method"
-              >
-                {`+ ${t("component.math.chainAnotherEvaluationRule")}`}
-              </AdditionalAddRule>
-            </AdditionalContainerRule>
-          )} */}
-        </AdditionalContainer>
-      ) : null}
+      <EvaluationSettings
+        method={method}
+        options={options}
+        allowNumericOnly={allowNumericOnly}
+        allowedVariables={allowedVariables}
+        onChangeMethod={onChange}
+        changeOptions={changeOptions}
+        onChangeAllowedOptions={onChangeAllowedOptions}
+        templateDisplay={item?.templateDisplay}
+        useTemplate={useTemplate}
+      />
     </Container>
   )
 }

@@ -1832,7 +1832,6 @@ function* updateRegradeDataSaga({ payload }) {
       msg: errorMessage || 'Unable to publish & regrade.',
     })
     yield put(setRegradeFirestoreDocId(''))
-  } finally {
     yield put(setRegradingStateAction(false))
   }
 }

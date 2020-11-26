@@ -151,17 +151,14 @@ const getSimpleTextAnswer = (testletResponseIds, testletResponses) => {
 const generateAnswers = {
   [questionType.CLOZE_DRAG_DROP](item, testletResponseIds, testletResponses) {
     const { options } = item
-    const data = testletResponseIds
-      .map((id) => {
-        const value = testletResponses[id]
-        const opIndex = ALPHABET.indexOf(value)
-        if (options[opIndex] && value) {
-          return options[opIndex].value
-        }
-        return false
-      })
-      .filter((x) => !!x)
-
+    const data = testletResponseIds.map((id) => {
+      const value = testletResponses[id]
+      const opIndex = ALPHABET.indexOf(value)
+      if (options[opIndex] && value) {
+        return options[opIndex].value
+      }
+      return undefined
+    })
     return data
   },
   [questionType.CLOZE_IMAGE_DRAG_DROP](

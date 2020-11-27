@@ -38,7 +38,7 @@ const CollaborationGroupsModal = ({
   const filteredGroupList = useMemo(
     () =>
       collaborationGroupList.filter((g) =>
-        g.name.toLowerCase().includes(searchString)
+        g.name.toLowerCase().includes(searchString.toLowerCase())
       ),
     [collaborationGroupList, searchString]
   )

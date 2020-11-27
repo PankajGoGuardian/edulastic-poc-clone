@@ -89,8 +89,8 @@ const Members = ({
     () =>
       membersList.filter(
         (m) =>
-          m.name.toLowerCase().includes(memberSearchString) ||
-          m.username.toLowerCase().includes(memberSearchString)
+          m.name.toLowerCase().includes(memberSearchString.toLowerCase()) ||
+          m.username.toLowerCase().includes(memberSearchString.toLowerCase())
       ),
     [membersList, memberSearchString]
   )

@@ -79,7 +79,7 @@ const CollaborationGroups = ({
 
   const breadcrumbData = getBreadcrumbData(userRole)
   const filteredGroups = collabGroups.filter(({ name }) =>
-    name.toLowerCase().includes(searchName)
+    name.toLowerCase().includes(searchName.toLowerCase())
   )
 
   const handleCancelCreateGroup = () => setShowCreateGroup(false)

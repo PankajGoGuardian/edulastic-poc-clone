@@ -193,6 +193,12 @@ const AddMembersModal = ({
               mode="multiple"
               value={gradesSelected}
               onChange={(data) => setGrades(data)}
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option?.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
+              }
             >
               {allGrades.map(({ value, text }) => (
                 <StyledSelect.Option value={value}>{text}</StyledSelect.Option>
@@ -208,6 +214,12 @@ const AddMembersModal = ({
               mode="multiple"
               value={subjectsSelected}
               onChange={(data) => setSubjects(data)}
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option?.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
+              }
             >
               {allSubjects.map(({ value, text }) => (
                 <StyledSelect.Option value={value}>{text}</StyledSelect.Option>
@@ -223,6 +235,12 @@ const AddMembersModal = ({
               mode="multiple"
               value={schoolsSelected}
               onChange={(data) => setSchools(data)}
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option?.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
+              }
             >
               {schoolList.map(({ name, _id }) => (
                 <StyledSelect.Option value={_id}>{name}</StyledSelect.Option>

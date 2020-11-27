@@ -167,17 +167,14 @@ describe(`>${FileHelper.getSpecName(
       })
       ;[...attemptsdata1, ...attemptsdata2]
         .filter(({ status }) => status !== studentSide.SUBMITTED)
-        .forEach(({ email, status, overidden }, index) => {
-          it(`> verify for ${status} student '${
+        .forEach(({ email, name, status, overidden }, index) => {
+          it(`>student -${name}, verify for ${status} student '${
             index === 1 ? '' : 'not '
           }overidden' assignment`, () => {
             cy.login('student', email)
-            const option =
-              status === studentSide.IN_PROGRESS
-                ? {}
-                : overidden
-                ? { pass: staticPassword_1 }
-                : { pass: dynamicPassword }
+            const option = overidden
+              ? { pass: staticPassword_1 }
+              : { pass: dynamicPassword }
             assignmentsPage.clickOnAssigmentByTestId(versionedTest1, option)
             studentTestPage.clickOnExitTest()
           })
@@ -272,15 +269,12 @@ describe(`>${FileHelper.getSpecName(
       })
       ;[...attemptsdata1, ...attemptsdata2]
         .filter(({ status }) => status !== studentSide.SUBMITTED)
-        .forEach(({ email, status, overidden }) => {
-          it(`> verify for ${status} student '${
+        .forEach(({ email, name, status, overidden }) => {
+          it(`>student -${name}, verify for ${status} student '${
             overidden ? '' : 'not '
           }overidden' assignment`, () => {
             cy.login('student', email)
-            const option =
-              status === studentSide.IN_PROGRESS
-                ? {}
-                : { pass: staticPassword_1 }
+            const option = { pass: staticPassword_1 }
             assignmentsPage.clickOnAssigmentByTestId(versionedTest2, option)
             studentTestPage.clickOnExitTest()
           })

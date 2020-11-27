@@ -12,7 +12,7 @@ class LoginPage {
   // *** ACTIONS START ***
 
   fillLoginForm = (email, password) => {
-    this.getEmail().clear().type(email)
+    this.getEmail().clear().type(email, { timeout: 20000 })
     this.getPassword().clear().type(password)
   }
 

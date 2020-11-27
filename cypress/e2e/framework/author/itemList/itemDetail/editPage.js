@@ -144,6 +144,7 @@ class EditItemPage {
     cy.wait(1000)
     this.header.preview()
     this.header.edit()
+    cy.get('[contenteditable="true"]', { timeout: 60000 })
     // TODO : to be removed above once app issue is fixed
   }
 

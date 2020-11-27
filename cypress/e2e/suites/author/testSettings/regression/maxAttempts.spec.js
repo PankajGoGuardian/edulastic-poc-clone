@@ -53,7 +53,8 @@ describe(`${FileHelper.getSpecName(
       cy.contains('Share With Others')
 
       // update the settings
-      cy.visit(`author/tests/tab/settings/id/${testId}`)
+      testLibrary.visitTestById(testId)
+      testLibrary.header.clickOnSettings()
       testLibrary.header.clickOnEditButton(true)
       // set max attempt
       testLibrary.testSettings.setMaxAttempt(maxAttempt)
@@ -88,7 +89,7 @@ describe(`${FileHelper.getSpecName(
         studentTest.attemptQuestion(queType, attempt1[queNum], attemptData)
         studentTest.clickOnNext()
       })
-      studentTest.submitTest()
+      studentTest.submitTest(true)
 
       sideBarPage.clickOnAssignment()
       // validate stats
@@ -109,7 +110,7 @@ describe(`${FileHelper.getSpecName(
         studentTest.attemptQuestion(queType, attempt2[queNum], attemptData)
         studentTest.clickOnNext()
       })
-      studentTest.submitTest()
+      studentTest.submitTest(true)
 
       sideBarPage.clickOnAssignment()
 

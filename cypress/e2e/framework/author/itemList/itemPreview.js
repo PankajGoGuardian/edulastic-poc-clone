@@ -5,10 +5,13 @@ import {
   queColor,
   questionTypeKey,
 } from '../../constants/questionTypes'
+import CypressHelper from '../../util/cypressHelpers'
+import StudentTestPage from '../../student/studentTestPage'
 
 export default class PreviewItemPopup {
   constructor() {
     this.qrp = new QuestionResponsePage()
+    this.studentTestPage = new StudentTestPage()
   }
 
   // *** ELEMENTS START ***
@@ -18,7 +21,14 @@ export default class PreviewItemPopup {
   // Edit and Copy buuton on preview
   getEditOnPreview = () => cy.get('[title="Edit item"]')
 
+  getDisabledEditOnPreview = () =>
+    cy
+      .get('[title="Edit permission is restricted by the author"]')
+      .should('have.attr', 'disabled')
+
   getCopyOnPreview = () => cy.get('[title="Clone"]')
+
+  getExpandOnPreview = () => cy.get('[title="Expand"]')
 
   // text in edit item page
   getTextInEditItem = () =>
@@ -28,6 +38,24 @@ export default class PreviewItemPopup {
     cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]')
 
   getEvaluationMessage = () => cy.get('.ant-message-custom-content')
+
+  getIdOnPreview = () => cy.get('[data-cy="item-id-on-preview"]')
+
+  getTeacherNameOnPreview = () => cy.get('[data-cy="teacher-name-on-preview"]')
+
+  getPointsOnPreview = () => cy.get('[data-cy="points-on-preview"]')
+
+  getDokOnPreview = () => cy.get('[data-cy="dok-on-preview"]')
+
+  getDifficultyOnPreview = () => cy.get('[data-cy="diff-on-preview"]')
+
+  getStandardsOnPreview = () => cy.get('[data-cy="standards-on-preview"]')
+
+  getTagsOnPreview = () => cy.get('[data-cy="tags-on-preview"]')
+
+  getRemoveFromTestButton = () => cy.contains('span', 'Remove from Test')
+
+  getAddToTestButton = () => cy.contains('span', 'Add To Test')
 
   // *** ELEMENTS END ***
 
@@ -347,8 +375,109 @@ export default class PreviewItemPopup {
             true
           )
         break
+      case questionTypeKey.ESSAY_RICH:
+        break
       default:
+        assert.fail(`question type ${quest} did not match in item preview`)
         break
     }
+  }
+
+  verifyItemIdOnPreview = (id) =>
+    this.getIdOnPreview().should('have.text', CypressHelper.getShortId(id))
+
+  verifyTeacherNameOnPreview = (name) =>
+    this.getTeacherNameOnPreview().should('have.text', name)
+
+  verifyPointsOnPreview = (points) =>
+    this.getPointsOnPreview().should('have.text', points.toString())
+
+  verifyDOkOnPreview = (dok) => this.getDokOnPreview().should('have.text', dok)
+
+  verifyDiffOnPreview = (diff) =>
+    this.getDifficultyOnPreview().should('have.text', diff)
+
+  verifyStandardsOnPreview = (standards) => {
+    this.getStandardsOnPreview()
+      .as('standard-row')
+      .find('span')
+      .should('have.length', standards.length)
+
+    standards.forEach((standard) =>
+      cy.get('@standard-row').find('span').contains(standard)
+    )
+  }
+
+  verifyTagsOnPreview = (tags) => {
+    this.getTagsOnPreview()
+      .as('tag-row')
+      .find('span')
+      .should('have.length', tags.length)
+
+    tags.forEach((tag) => cy.get('@tag-row').find('span').contains(tag))
+  }
+
+  verifyMetadataOnPreview = (
+    id,
+    teacher,
+    points,
+    dok,
+    difficulty,
+    standard,
+    tags
+  ) => {
+    this.verifyItemIdOnPreview(id)
+    this.verifyTeacherNameOnPreview('Teacher')
+    this.verifyPointsOnPreview(points)
+    this.verifyDOkOnPreview(dok)
+    this.verifyDiffOnPreview(difficulty)
+    this.verifyStandardsOnPreview(standard)
+    this.verifyTagsOnPreview(tags)
+  }
+
+  verifyActionsButtonsOnPreview = (isDraftTest) => {
+    this.getExpandOnPreview().should('exist')
+    this.getCopyOnPreview().should('exist')
+    if (isDraftTest) {
+      this.getEditOnPreview().should('not.have.attr', `disabled`)
+      this.getRemoveFromTestButton().should('exist')
+    } else {
+      this.getDisabledEditOnPreview()
+      this.getRemoveFromTestButton().should('not.exist')
+    }
+  }
+
+  verifyShowAnsOnPreview = (queType, attemptData) => {
+    this.clickOnClear()
+    this.clickOnShowAnsOnPreview()
+    this.verifyQuestionResponseCard(
+      queType,
+      attemptData,
+      attemptTypes.RIGHT,
+      true
+    )
+  }
+
+  attemptAndVerifyResponseOnPreview = (
+    queType,
+    attemptData,
+    points,
+    attemptType
+  ) => {
+    this.clickOnClear()
+    this.studentTestPage.attemptQuestion(
+      queType.split('.')[0],
+      attemptType,
+      attemptData
+    )
+    this.clickOnCheckAnsOnPreview()
+    if (points)
+      this.verifyEvaluationScoreOnPreview(
+        attemptData,
+        points,
+        queType,
+        attemptType
+      )
+    this.verifyQuestionResponseCard(queType, attemptData, attemptType)
   }
 }

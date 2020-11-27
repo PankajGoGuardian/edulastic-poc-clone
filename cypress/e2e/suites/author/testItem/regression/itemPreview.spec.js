@@ -8,6 +8,7 @@ import ItemListPage from '../../../../framework/author/itemList/itemListPage'
 import MCQTrueFalsePage from '../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage'
 import PreviewItemPopup from '../../../../framework/author/itemList/itemPreview'
 import FileHelper from '../../../../framework/util/fileHelper'
+import CypressHelper from '../../../../framework/util/cypressHelpers'
 
 const TEST = 'TEST_PREVIEW'
 const testData = require('../../../../../fixtures/testAuthoring')
@@ -81,7 +82,9 @@ describe(`${FileHelper.getSpecName(
       })
       itemsInTest.forEach((item, index) => {
         it(`Verify Show Ans for item No:${item} ${index + 1}`, () => {
-          itemListPage.searchFilters.typeInSearchBox(itemIds[index])
+          itemListPage.searchFilters.typeInSearchBox(
+            CypressHelper.getShortId(itemIds[index])
+          )
           itemListPage.clickOnViewItemById(itemIds[index], questText[index])
           itemPreview.clickOnShowAnsOnPreview()
           itemPreview.verifyQuestionResponseCard(
@@ -106,7 +109,9 @@ describe(`${FileHelper.getSpecName(
       itemsInTest.forEach((item, index) => {
         it(`Verify Right Ans for Item No:${item} ${index + 1}`, () => {
           // Correct ans should have green bg-color
-          itemListPage.searchFilters.typeInSearchBox(itemIds[index])
+          itemListPage.searchFilters.typeInSearchBox(
+            CypressHelper.getShortId(itemIds[index])
+          )
           itemListPage.clickOnViewItemById(itemIds[index], questText[index])
           // testReviewTab.attemptQuestion(itemsInTest[index], attemptData[index], attemptTypes.RIGHT);
           studentTestPage.attemptQuestion(
@@ -141,7 +146,9 @@ describe(`${FileHelper.getSpecName(
       })
       itemsInTest.forEach((item, index) => {
         it(`Verify Wrong Ans for Item No:${item} ${index + 1}`, () => {
-          itemListPage.searchFilters.typeInSearchBox(itemIds[index])
+          itemListPage.searchFilters.typeInSearchBox(
+            CypressHelper.getShortId(itemIds[index])
+          )
           itemListPage.clickOnViewItemById(itemIds[index], questText[index])
           // Wrong ans should have red bg-color
           studentTestPage.attemptQuestion(
@@ -178,7 +185,9 @@ describe(`${FileHelper.getSpecName(
       })
 
       it(`Verify Edit for Item`, () => {
-        itemListPage.searchFilters.typeInSearchBox(itemIds[0])
+        itemListPage.searchFilters.typeInSearchBox(
+          CypressHelper.getShortId(itemIds[0])
+        )
         itemListPage.clickOnViewItemById(itemIds[0], questText[0])
         itemPreview.clickEditOnPreview()
         mcqTrueFalsePage.updatePoints(EDITED_POINTS[0])
@@ -195,10 +204,12 @@ describe(`${FileHelper.getSpecName(
         testLibraryPage.sidebar.clickOnItemBank()
         itemListPage.searchFilters.clearAll()
         itemListPage.searchFilters.getAuthoredByMe()
-        itemListPage.searchFilters.typeInSearchBox(itemIds[0])
+        itemListPage.searchFilters.typeInSearchBox(
+          CypressHelper.getShortId(itemIds[0])
+        )
         itemListPage.clickOnViewItemById(itemIds[0], questText[0])
         itemPreview.clickOnEditItemOnPreview()
-        mcqTrueFalsePage.getPoints().should('have.value', points[0].toString())
+        mcqTrueFalsePage.getPoints().should('have.value', `${points[0]}.0`)
         editItemPage.header.save(true)
         editItemPage.header.clickOnPublishItem()
       })
@@ -215,7 +226,9 @@ describe(`${FileHelper.getSpecName(
       })
 
       it(`Verify Copy for Item`, () => {
-        itemListPage.searchFilters.typeInSearchBox(itemIds[0])
+        itemListPage.searchFilters.typeInSearchBox(
+          CypressHelper.getShortId(itemIds[0])
+        )
         itemListPage.clickOnViewItemById(itemIds[0], questText[0])
         points.push(EDITED_POINTS[0])
         itemPreview.clickOnCopyItemOnPreview()
@@ -234,13 +247,15 @@ describe(`${FileHelper.getSpecName(
         itemListPage.searchFilters.clearAll()
         itemListPage.searchFilters.getAuthoredByMe()
 
-        itemListPage.searchFilters.typeInSearchBox(itemIds[itemsInTest.length])
+        itemListPage.searchFilters.typeInSearchBox(
+          CypressHelper.getShortId(itemIds[itemsInTest.length])
+        )
         itemListPage.clickOnViewItemById(
           itemIds[itemsInTest.length],
           questText[0]
         )
         itemPreview.clickOnEditItemOnPreview()
-        mcqTrueFalsePage.getPoints().should('have.value', points[0].toString())
+        mcqTrueFalsePage.getPoints().should('have.value', `${points[0]}.0`)
         editItemPage.header.save(true)
         editItemPage.header.clickOnPublishItem()
         itemListPage.sidebar.clickOnTestLibrary()
@@ -254,7 +269,9 @@ describe(`${FileHelper.getSpecName(
       })
 
       it(`Verify Delete for Item No`, () => {
-        itemListPage.searchFilters.typeInSearchBox(itemIds[itemsInTest.length])
+        itemListPage.searchFilters.typeInSearchBox(
+          CypressHelper.getShortId(itemIds[itemsInTest.length])
+        )
         itemListPage.clickOnViewItemById(
           itemIds[itemsInTest.length],
           questText[0]
@@ -265,7 +282,9 @@ describe(`${FileHelper.getSpecName(
         itemListPage.sidebar.clickOnItemBank()
         itemListPage.searchFilters.clearAll()
         itemListPage.searchFilters.getAuthoredByMe()
-        itemListPage.searchFilters.typeInSearchBox(itemIds[itemsInTest.length])
+        itemListPage.searchFilters.typeInSearchBox(
+          CypressHelper.getShortId(itemIds[itemsInTest.length])
+        )
         cy.contains('Items Not Available')
       })
     })
@@ -296,7 +315,9 @@ describe(`${FileHelper.getSpecName(
       })
       itemsInTest.forEach((item, index) => {
         it(`Verify Show Ans for Item NO:${item} ${index + 1}`, () => {
-          testAddItemTab.searchFilters.typeInSearchBox(itemIds[index])
+          testAddItemTab.searchFilters.typeInSearchBox(
+            CypressHelper.getShortId(itemIds[index])
+          )
           testAddItemTab.itemListPage.clickOnItemText()
           itemPreview.clickOnShowAnsOnPreview()
           itemPreview.verifyQuestionResponseCard(
@@ -318,7 +339,9 @@ describe(`${FileHelper.getSpecName(
       itemsInTest.forEach((item, index) => {
         it(`Verify Right Ans for Item No:${item} ${index + 1}`, () => {
           // Correct ans should have green bg-color
-          testAddItemTab.searchFilters.typeInSearchBox(itemIds[index])
+          testAddItemTab.searchFilters.typeInSearchBox(
+            CypressHelper.getShortId(itemIds[index])
+          )
           itemListPage.clickOnItemText()
           studentTestPage.attemptQuestion(
             item,
@@ -349,7 +372,9 @@ describe(`${FileHelper.getSpecName(
       })
       itemsInTest.forEach((item, index) => {
         it(`Verify Wrong Ans for Item No:${item} ${index + 1}`, () => {
-          testAddItemTab.searchFilters.typeInSearchBox(itemIds[index])
+          testAddItemTab.searchFilters.typeInSearchBox(
+            CypressHelper.getShortId(itemIds[index])
+          )
           // Wrong ans should have red bg-color
           itemListPage.clickOnItemText()
           studentTestPage.attemptQuestion(
@@ -382,7 +407,9 @@ describe(`${FileHelper.getSpecName(
       it(`Verify Edit for Item`, () => {
         testAddItemTab.searchFilters.clearAll()
         testAddItemTab.searchFilters.getAuthoredByMe()
-        testAddItemTab.searchFilters.typeInSearchBox(itemIds[0])
+        testAddItemTab.searchFilters.typeInSearchBox(
+          CypressHelper.getShortId(itemIds[0])
+        )
         testAddItemTab.itemListPage.clickOnItemText()
         itemPreview.clickEditOnPreview()
         // itemPreview.verifyItemUrlWhileEdit(testId, itemIds[0]);
@@ -407,7 +434,9 @@ describe(`${FileHelper.getSpecName(
       it(`Verify Copy for Item`, () => {
         testAddItemTab.searchFilters.clearAll()
         testAddItemTab.searchFilters.getAuthoredByMe()
-        testAddItemTab.searchFilters.typeInSearchBox(itemIds[0])
+        testAddItemTab.searchFilters.typeInSearchBox(
+          CypressHelper.getShortId(itemIds[0])
+        )
         testAddItemTab.itemListPage.clickOnItemText()
         itemPreview.clickOnCopyItemOnPreview()
         // Copy automatically include new item in test
@@ -439,7 +468,7 @@ describe(`${FileHelper.getSpecName(
       })
       it(`Verify Delete for Item`, () => {
         testAddItemTab.searchFilters.typeInSearchBox(
-          itemIds[itemsInTest.length]
+          CypressHelper.getShortId(itemIds[itemsInTest.length])
         )
         testAddItemTab.itemListPage.clickOnItemText()
         itemPreview.clickOnDeleteOnPreview(true)

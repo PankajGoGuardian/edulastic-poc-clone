@@ -413,9 +413,10 @@ describe(`${FileHelper.getSpecName(
     /* Earlier used classes separately where student is part of 2 classes, Here Assigning at the same time */
     before('Login and UnAssign', () => {
       cy.login('teacher', Teacher.email, Teacher.pass)
+      cy.deleteAllAssignments(Student1Class1.email, Teacher.email)
       assignCountForClass1 = 0
-      testLibraryPage.sidebar.clickOnAssignment()
-      authorAssignmentPage.clickOnUnassign()
+      // testLibraryPage.sidebar.clickOnAssignment()
+      // authorAssignmentPage.clickOnUnassign()
     })
     it('Assign- No Duplicate', () => {
       testAssignPage.visitAssignPageById(OriginalTestId)
@@ -432,7 +433,7 @@ describe(`${FileHelper.getSpecName(
             .should('have.length', assignCountForClass1)
         })
     })
-    it('Verify Assigned', () => {
+    it('Verify Assignment- not present in student login', () => {
       cy.login('student', Student4Class1Class3.email, Student4Class1Class3.pass)
       assignmentsPage.verifyAbsenceOfTest(OriginalTestId)
     })
@@ -455,7 +456,7 @@ describe(`${FileHelper.getSpecName(
             .should('have.length', assignCountForClass1 + assignCountForClass3)
         })
     })
-    it('Verify Assigned', () => {
+    it('Verify Assignment- present in student login ', () => {
       cy.login('student', Student4Class1Class3.email, Student4Class1Class3.pass)
       assignmentsPage.verifyPresenceOfTest(OriginalTestId)
       assignmentsPage

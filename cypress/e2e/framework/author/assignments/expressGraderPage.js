@@ -5,6 +5,7 @@ import {
 } from '../../constants/questionTypes'
 import LiveClassboardPage from './LiveClassboardPage'
 import StudentTestPage from '../../student/studentTestPage'
+import Helpers from '../../util/Helpers'
 
 const TEI_Attempt = 'TEI'
 const CR_Questions = 'Constructed Response'
@@ -23,7 +24,10 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   // *** ELEMENTS START ***
 
   getGridRowByStudent = (student) =>
-    cy.contains('div', student).closest('tr').as(this.rowAlias)
+    cy
+      .contains('div', Helpers.getFormattedFirstLastName(student))
+      .closest('tr')
+      .as(this.rowAlias)
 
   getScoreInputBox = () => cy.get('[data-cy="scoreInput"]')
 
@@ -31,7 +35,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   getResponseScoreToggleSwitch = () => cy.get('[data-cy="response-toggle"]')
 
-  getPresentToggleSwitch = () => cy.get('[class^="PresentationToggleSwitch"]')
+  getPresentToggleSwitch = () => cy.get('[inputfeatures="presentationMode"]')
 
   // *** ELEMENTS END ***
 
@@ -119,26 +123,25 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   }
 
   setToggleToResponse = () =>
-    this.getResponseScoreToggleSwitch().then(($ele) => {
-      if ($ele.attr('aria-checked') === 'true')
-        cy.wrap($ele).click().should('not.have.class', 'ant-switch-checked')
-    })
+    this.getResponseScoreToggleSwitch()
+      .contains('div', 'Response')
+      .click({ force: true })
+      .should('have.css', 'background-color', queColor.BLUE_2)
 
   setToggleToScore = () =>
-    this.getResponseScoreToggleSwitch().then(($ele) => {
-      if ($ele.attr('aria-checked') === 'false')
-        cy.wrap($ele).click().should('have.class', 'ant-switch-checked')
-    })
+    this.getResponseScoreToggleSwitch()
+      .contains('div', 'Score')
+      .click({ force: true })
+      .should('have.css', 'background-color', queColor.BLUE_2)
 
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
-  verifyToggleSetToResponse = () => {
-    this.getResponseScoreToggleSwitch().should(
-      'not.have.class',
-      'ant-switch-checked'
-    )
+  verifyToggleSetToScore = () => {
+    this.getResponseScoreToggleSwitch()
+      .contains('div', 'Score')
+      .should('have.css', 'background-color', queColor.BLUE_2)
   }
 
   verifyScoreAndPerformance = (score, perf) => {
@@ -188,7 +191,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
             ? attemptData[attemptType]
             : [attemptData[attemptType]]
           studentResponse =
-            attemptType === attemptTypes.SKIP
+            attemptType === attemptTypes.SKIP ||
+            attemptType === attemptTypes.MANUAL_GRADE
               ? skippedResponse
               : studentResponseByAttempt
                   .map((ele) => choices.indexOf(ele))
@@ -288,6 +292,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
         ? queColor.RED_2
         : attemptType === attemptTypes.PARTIAL_CORRECT
         ? queColor.ORANGE_2
+        : attemptType === attemptTypes.MANUAL_GRADE
+        ? queColor.BLUE_4
         : queColor.GREY_1
     this.getCellforQueNum(queNum).should('have.css', 'background-color', color)
   }
@@ -560,18 +566,29 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       })
   }
 
-  updateResponse = (questionType, attemptType, attemptData) => {
+  updateResponse = (
+    questionType,
+    attemptType,
+    attemptData,
+    isLastQuestion = false
+  ) => {
     // TODO: implement logic to reset previous attempt, currently should use question with no attempt
     cy.server()
     cy.route('PUT', '**/response-entry-and-score').as('responseEntry')
     this.attemptQuestion(questionType, attemptType, attemptData)
     cy.contains('span', 'NEXT QUESTION').click()
-    cy.wait('@responseEntry').then((xhr) =>
-      expect(
-        xhr.status,
-        `verify api requests for updating response for the question type - ${questionType}`
-      ).to.eq(200)
-    )
+    if (isLastQuestion) {
+      cy.contains(
+        'Congratulations. You have finished grading all students!'
+      ).should('be.visible')
+    } else {
+      cy.wait('@responseEntry').then((xhr) =>
+        expect(
+          xhr.status,
+          `verify api requests for updating response for the question type - ${questionType}`
+        ).to.eq(200)
+      )
+    }
   }
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>

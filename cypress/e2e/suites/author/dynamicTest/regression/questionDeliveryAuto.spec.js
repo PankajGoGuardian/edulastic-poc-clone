@@ -10,9 +10,11 @@ import StudentTestPage from '../../../../framework/student/studentTestPage'
 import {
   attemptTypes,
   deliverType as DELIVERY_TYPE,
+  CUSTOM_COLLECTIONS,
 } from '../../../../framework/constants/questionTypes'
 import CypressHelper from '../../../../framework/util/cypressHelpers'
 import StandardBasedReportPage from '../../../../framework/author/assignments/standardBasedReportPage'
+import { redirectType } from '../../../../framework/constants/assignmentStatus'
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const testLibraryPage = new TestLibrary()
@@ -24,11 +26,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const studentTestPage = new StudentTestPage()
   const sbr = new StandardBasedReportPage()
 
+  const collection = 'auto collection 1'
   const testData = {
     name: 'Test Item Group',
     grade: 'Kindergarten',
     subject: 'Math',
-    collections: 'auto collection 1',
+    collections: collection,
   }
 
   const filterForAutoselect1 = {
@@ -38,7 +41,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       grade: ['Kindergarten'],
       standardsToSelect: ['K.CC.A.1'],
     },
-    collection: 'auto collection 1',
+    collection,
     deliveryCount: 1,
   }
   const filterForAutoselect2 = {
@@ -48,7 +51,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       grade: ['Kindergarten'],
       standardsToSelect: ['K.CC.A.2'],
     },
-    collection: 'auto collection 1',
+    collection,
     deliveryCount: 1,
   }
 
@@ -67,18 +70,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     pass: 'snapwiz',
   }
   const Teacher = {
-    email: 'teacher2.for.dynamic.test@snapwiz.com',
+    email: 'teacher.auto.test@snapwiz.com',
     pass: 'snapwiz',
   }
+
   const students = [
     {
       name: 'Student1',
-      email: 'student1.group.question.delivery@snapwiz.com',
+      email: 'student1.delivery.auto@snapwiz.com',
       pass: 'snapwiz',
     },
     {
       name: 'Student2',
-      email: 'student2.group.question.delivery@snapwiz.com',
+      email: 'student2.delivery.auto@snapwiz.com',
       pass: 'snapwiz',
     },
   ]
@@ -96,7 +100,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const attempData = { right: 'right', wrong: 'wrong' }
 
   let groups = {}
-
+  /* auto collection 1 */
   const items = [
     'MCQ_TF.5',
     'MCQ_TF.5',
@@ -109,10 +113,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   ]
   const itemIds = []
   let testID
+  const collectionid = CUSTOM_COLLECTIONS.AUTO_COLLECTION_1
 
   before('Login and create new items', () => {
-    cy.getAllTestsAndDelete(contEditor.email)
-    cy.getAllItemsAndDelete(contEditor.email)
+    cy.getAllTestsAndDelete(contEditor.email, contEditor.pass, undefined, {
+      collections: [collectionid],
+    })
+    cy.getAllItemsAndDelete(contEditor.email, contEditor.pass, undefined, {
+      collections: [collectionid],
+    })
     cy.login('publisher', contEditor.email, contEditor.pass)
     items.forEach((itemToCreate, index) => {
       item.createItem(itemToCreate, index).then((id) => {
@@ -246,6 +255,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           lcb.clickOnCardViewTab()
           lcb.checkSelectAllCheckboxOfStudent()
           lcb.clickOnRedirect()
+          lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
           lcb.clickOnRedirectSubmit()
         })
         it('> login as each student attempt and verify item delivered sequence for redirected test', () => {

@@ -10,6 +10,7 @@ import {
 import { attemptTypes } from '../../../../framework/constants/questionTypes'
 import MCQMultiplePage from '../../../../framework/author/itemList/questionType/mcq/mcqMultiplePage'
 import BarGraph from '../../../../framework/author/assignments/barGraphs'
+import PreviewItemPopup from '../../../../framework/author/itemList/itemPreview'
 import ExpressGraderPage from '../../../../framework/author/assignments/expressGraderPage'
 import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
 import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
@@ -17,7 +18,6 @@ import AssignmentsPage from '../../../../framework/student/assignmentsPage'
 import StudentTestPage from '../../../../framework/student/studentTestPage'
 import ReportsPage from '../../../../framework/student/reportsPage'
 import CypressHelper from '../../../../framework/util/cypressHelpers'
-import PreviewItemPopup from '../../../../framework/author/itemList/itemPreview'
 
 const { MCQ_MULTI } = require('../../../../../fixtures/questionAuthoring')
 
@@ -39,23 +39,23 @@ describe(`${FileHelper.getSpecName(
   const reportsPage = new ReportsPage()
 
   const Teacher = {
-    username: 'teacher.regrade.edited.updateans@snapwiz.com',
+    username: 'teacher.regrade.edited.updateeval@snapwiz.com',
     password: 'snapwiz',
   }
   const students = {
     Student1: {
       name: 'Student1',
-      email: 'student1.updateans.regrade@snapwiz.com',
+      email: 'student1.updateeval@snapwiz.com',
       pass: 'snapwiz',
     },
     Student2: {
       name: 'Student2',
-      email: 'student2.updateans.regrade@snapwiz.com',
+      email: 'student2.updateeval@snapwiz.com',
       pass: 'snapwiz',
     },
     Student3: {
       name: 'Student3',
-      email: 'student3.updateans.regrade@snapwiz.com',
+      email: 'student3.updateeval@snapwiz.com',
       pass: 'snapwiz',
     },
   }
@@ -66,7 +66,7 @@ describe(`${FileHelper.getSpecName(
     student: {
       Submitted: {
         'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'restore-grading': { right: 0, wrong: 2, skip: 0, partialCorrect: 1 },
+        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
         'manual-grading': {
           right: '',
           wrong: '',
@@ -75,31 +75,31 @@ describe(`${FileHelper.getSpecName(
         },
       },
       'In Progress': {
-        'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'manual-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
+        'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
+        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
+        'manual-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
       },
       'Not Started': {
-        'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'manual-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
+        'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
+        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
+        'manual-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
       },
     },
     teacher: {
       Submitted: {
         'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'restore-grading': { right: 0, wrong: 2, skip: 0, partialCorrect: 1 },
+        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
         'manual-grading': { right: 0, wrong: 0, skip: 0, partialCorrect: 0 },
       },
       'In Progress': {
-        'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'manual-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
+        'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
+        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
+        'manual-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
       },
       'Not Started': {
-        'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
-        'manual-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 1 },
+        'skip-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
+        'restore-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
+        'manual-grading': { right: 2, wrong: 0, skip: 0, partialCorrect: 0.5 },
       },
     },
   }
@@ -110,16 +110,17 @@ describe(`${FileHelper.getSpecName(
   const assignedtestids = []
   const versionedtestids = []
   const testname = 'REGRADE_EDITED_ITEM'
-  const oldCorrectAns = MCQ_MULTI['5'].setAns.correct
-  const newCorrectAns = MCQ_MULTI['6'].setAns.correct
   const attemptsData = []
   const queCentric = {}
 
-  let attemptData = MCQ_MULTI['5'].attemptData
-  const updatedAttempData = MCQ_MULTI['6'].attemptData
+  const attemptData = MCQ_MULTI['5'].attemptData
   let itemId
   let testid
-  let updatedAttempt
+
+  regrade_Options.forEach(() => {
+    assignedtestids.push([])
+    versionedtestids.push([])
+  })
 
   before('create tests', () => {
     cy.getAllTestsAndDelete(Teacher.username)
@@ -137,13 +138,9 @@ describe(`${FileHelper.getSpecName(
       testLibraryPage.header.clickOnPublishButton()
     })
   })
-  describe(`> regrade 'edited item' by 'updating correct ans at item level'`, () => {
-    before('> duplicate, assign and attempt the test', () => {
-      regrade_Options.forEach(() => {
-        assignedtestids.push([])
-        versionedtestids.push([])
-      })
 
+  describe(`> regrade 'edited item' by 'updating evaluation at item level'`, () => {
+    before('> duplicate and  assign', () => {
       regrade_Options.forEach((regOption, ind) => {
         attemptType.forEach((attType) => {
           testLibraryPage.searchAndClickTestCardById(testid)
@@ -158,7 +155,7 @@ describe(`${FileHelper.getSpecName(
         })
       })
     })
-    before('> duplicate, assign and attempt the test', () => {
+    before('> attempt the test', () => {
       assignmentStatus.forEach((status, ind) => {
         if (status !== studentSide.NOT_STARTED) {
           cy.login(
@@ -206,9 +203,8 @@ describe(`${FileHelper.getSpecName(
             testLibraryPage.review.clickOnExpandRow()
             testLibraryPage.review.previewQuestById(itemId)
             testLibraryPage.review.previewItemPopUp.clickEditOnPreview()
-            mcqMultiplePage.setCorrectAns(oldCorrectAns)
-            mcqMultiplePage.setCorrectAns(newCorrectAns)
-            attemptData = updatedAttempData
+            mcqMultiplePage.clickOnAdvancedOptions()
+            mcqMultiplePage.getPanalty().type(`{selectall}1`, { force: true })
             mcqMultiplePage.header.saveAndgetId(true).then((itemversion) => {
               cy.saveItemDetailToDelete(itemversion)
             })
@@ -312,25 +308,6 @@ describe(`${FileHelper.getSpecName(
                             assignmentStatus.indexOf(studentSide.SUBMITTED)
                           ].attempt.Q1 = attemptTypes.PARTIAL_CORRECT
                       }
-                      updatedAttempt = attempt
-
-                      if (
-                        assignmentStatus.indexOf(studentSide.SUBMITTED) !== -1
-                      ) {
-                        if (
-                          attempt !== attemptTypes.PARTIAL_CORRECT &&
-                          attempt !== attemptTypes.SKIP
-                        )
-                          updatedAttempt =
-                            attempt === attemptTypes.RIGHT
-                              ? attemptTypes.WRONG
-                              : attemptTypes.RIGHT
-                        if (option === regradeOptions.edited.AUTO_POINTS)
-                          attemptsData[
-                            assignmentStatus.indexOf(studentSide.SUBMITTED)
-                          ].attempt.Q1 = updatedAttempt
-                      }
-
                       optionsIndex = _.values(regradeOptions.edited).indexOf(
                         option
                       )
@@ -358,15 +335,12 @@ describe(`${FileHelper.getSpecName(
                         ['Q1']
                       )
 
-                      status === studentSide.SUBMITTED
-                        ? lcb.verifyQuestionCards(statusIndex, [
-                            option === regradeOptions.edited.MANUAL_POINTS
-                              ? attemptTypes.MANUAL_GRADE
-                              : option === regradeOptions.edited.AUTO_POINTS
-                              ? updatedAttempt
-                              : attempt,
-                          ])
-                        : lcb.verifyQuestionCards(statusIndex, [attempt])
+                      lcb.verifyQuestionCards(statusIndex, [
+                        option === regradeOptions.edited.MANUAL_POINTS &&
+                        status === studentSide.SUBMITTED
+                          ? attemptTypes.MANUAL_GRADE
+                          : attempt,
+                      ])
                     })
 
                     it('> verify student centric view', () => {
@@ -390,9 +364,7 @@ describe(`${FileHelper.getSpecName(
                       itemPreview.verifyQuestionResponseCard(
                         'MCQ_MULTI',
                         attemptData,
-                        status === studentSide.SUBMITTED
-                          ? updatedAttempt
-                          : attempt
+                        attempt
                       )
                       barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(
                         attemptsData[statusIndex],
@@ -420,9 +392,7 @@ describe(`${FileHelper.getSpecName(
                       itemPreview.verifyQuestionResponseCard(
                         'MCQ_MULTI',
                         attemptData,
-                        status === studentSide.SUBMITTED
-                          ? updatedAttempt
-                          : attempt,
+                        attempt,
                         false,
                         statusIndex
                       )

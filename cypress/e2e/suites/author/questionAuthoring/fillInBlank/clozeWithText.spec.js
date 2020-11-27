@@ -227,7 +227,7 @@ describe(`${FileHelper.getSpecName(
               .type(ans)
               .should('have.value', ans)
           })
-          preview.checkScore('1/2')
+          preview.checkScore('2/2')
         })
       }
     )

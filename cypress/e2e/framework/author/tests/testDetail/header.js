@@ -9,7 +9,7 @@ export default class TestHeader {
 
   getPublishRegradeButton = () => cy.get('[data-cy="publish"]')
 
-  getEditTestButton = () => cy.get('[data-cy="edit"]')
+  getEditTestButton = () => cy.get('[data-cy="edit-test"]')
 
   getShareButton = () => cy.get('[data-cy="share"]')
 
@@ -29,12 +29,25 @@ export default class TestHeader {
 
   getWorkSheetHeader = () => cy.get('[data-cy="edit"]')
 
+  getPrintOptionInfo = () => cy.get('[data-cy="print-option-info"]')
+
+  getSelectQuestionsToPrint = () => cy.get('[data-cy="select-que-to-print"]')
+
+  getPrintCompleteTestRadio = () => cy.get('[value="complete"]')
+
+  getPrintPartialTestRadio = () => cy.get('[value="custom"]')
+
+  getPrintManualGradesRadio = () => cy.get('[value="manualGraded"]')
+
+  getDuplicateButtonInReview = () => cy.get('[data-cy="duplicate"]')
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
   clickOnDescription = () => {
     this.getTestSummaryHeader().click({ force: true })
+    cy.get('[data-cy="testname"]').should('be.visible')
     return new TestSummayTab()
   }
 
@@ -52,9 +65,14 @@ export default class TestHeader {
     return new TestReviewTab()
   }
 
-  clickOnSettings = () => this.getTestSettingsHeader().click()
+  clickOnSettings = () => {
+    this.getTestSettingsHeader().click()
+    cy.get('#test-type')
+  }
 
   clickOnEditButton = (confirmation = false) => {
+    cy.server()
+    cy.route('PUT', '**/test/**').as('saveTest')
     this.getEditTestButton().click()
     if (confirmation) {
       cy.contains('PROCEED').click()
@@ -83,7 +101,7 @@ export default class TestHeader {
   clickOnPublishButton = () => {
     cy.server()
     cy.route('PUT', '**/test/**/publish').as('published')
-    cy.route('POST', '**/districts/*/users').as('share-test')
+    cy.route('POST', '**/search/tests').as('search-test-after-publish')
     this.clickRegradePublish()
     return cy.wait('@published').then((xhr) => {
       expect(xhr.status).to.eq(200)
@@ -91,12 +109,12 @@ export default class TestHeader {
 
       if (Cypress.$('[data-cy="Assignments"]').length === 1) {
         // there is significant delay in gettting the success page in app, hence increasing the timeout.
-        return cy.contains('Share With Others', { timeout: 20000 }).then(() => {
-          return JSON.stringify(xhr.url).split('/').reverse()[1]
-        })
+        return cy
+          .contains('Share With Others', { timeout: 20000 })
+          .then(() => JSON.stringify(xhr.url).split('/').reverse()[1])
       }
       return cy
-        .wait('@share-test')
+        .wait('@search-test-after-publish')
         .then(() => JSON.stringify(xhr.url).split('/').reverse()[1])
     })
   }
@@ -121,6 +139,11 @@ export default class TestHeader {
 
   closeFilter = () =>
     cy.get('.anticon-close').last().find('svg').click({ force: true })
+
+  clickPrintTest = () => {
+    this.getPrintButton().click({ force: true })
+    cy.get('[value="complete"]')
+  }
 
   // *** ACTIONS END ***
 
@@ -155,7 +178,8 @@ export default class TestHeader {
     share = true,
     save = true,
     publish = true,
-    assign = true
+    assign = true,
+    edit = false
   ) => {
     if (print) this.getPrintButton().should('exist')
     else this.getPrintButton().should('not.exist')
@@ -167,6 +191,33 @@ export default class TestHeader {
     else this.getPublishRegradeButton().should('not.exist')
     if (assign) this.getAssignButton().should('exist')
     else this.getAssignButton().should('not.exist')
+    if (edit) this.getEditTestButton().should('exist')
+    else this.getEditTestButton().should('not.exist')
+  }
+
+  verifyPrintCompleteTestInfo = () => {
+    this.getPrintCompleteTestRadio().check().should('be.checked')
+    this.getPrintOptionInfo().should(
+      'contain',
+      'All the items in the test will be printed.'
+    )
+  }
+
+  verifyPrintPartialTestInfo = () => {
+    this.getPrintPartialTestRadio().check().should('be.checked')
+    this.getPrintOptionInfo().should(
+      'contain',
+      'Enter the item numbers in the below box to print'
+    )
+    cy.get('[placeholder="e.g. 1-4, 8, 11-13"]').should('be.visible')
+  }
+
+  verifyPrintManualGradesInfo = () => {
+    this.getPrintManualGradesRadio().check().should('be.checked')
+    this.getPrintOptionInfo().should(
+      'contain',
+      'Items that are marked as manual graded will be printed.'
+    )
   }
   // *** APPHELPERS END ***
 }

@@ -1,5 +1,7 @@
-import TestAddItemTab from '../tests/testDetail/testAddItemTab'
+/* eslint-disable func-names */
+/* eslint-disable cypress/no-unnecessary-waiting */
 import SmartFilters from './smartFilters'
+import CypressHelper from '../../util/cypressHelpers'
 
 class AuthorAssignmentPage {
   constructor() {
@@ -38,6 +40,9 @@ class AuthorAssignmentPage {
   getClassByAssignmentRow = () =>
     cy.get('@assignmentRow').find('[data-cy="class"]')
 
+  getStatusByAssignmentRow = () =>
+    cy.get('@assignmentRow').find('[data-cy="status"]')
+
   getAllOptionsInDropDown = () =>
     cy.get('.ant-dropdown-placement-bottomRight').find('li')
 
@@ -69,20 +74,13 @@ class AuthorAssignmentPage {
       .uncheck()
   }
 
-  clickOnEllipsis(index) {
-    return cy.get('.ant-pagination-item-ellipsis').eq(`${index}`).click()
-  }
+  clickOnEllipsis = (index) =>
+    cy.get('.ant-pagination-item-ellipsis').eq(`${index}`).click()
 
-  clickOnPageIndex(index) {
-    return cy.get(`.ant-pagination-item-${index}`).click()
-  }
+  clickOnPageIndex = (index) => cy.get(`.ant-pagination-item-${index}`).click()
 
-  clickOnButtonToShowAllClassByIndex(index) {
-    return cy
-      .get('[data-cy=ButtonToShowAllClasses]')
-      .eq(index)
-      .click({ force: true })
-  }
+  clickOnButtonToShowAllClassByIndex = (index) =>
+    cy.get('[data-cy=ButtonToShowAllClasses]').eq(index).click({ force: true })
 
   clcikOnPresenatationIconByIndex = (index, assignmentNum = 0) => {
     cy.server()
@@ -112,7 +110,9 @@ class AuthorAssignmentPage {
 
     this.clickOnActions()
 
-    this.getOptionInDropDownByAttribute('duplicate').click({ force: true })
+    this.getOptionInDropDownByAttribute('duplicate').click()
+
+    cy.contains('Continue to clone').click()
 
     return cy.wait('@duplicate').then((xhr) => {
       expect(xhr.status).to.eq(200)
@@ -174,17 +174,11 @@ class AuthorAssignmentPage {
   }
 
   clickOnUnassign = () => {
-    cy.server()
-    cy.route('DELETE', '**/delete-assignments').as('deleteAssignments')
     this.clickOnActions()
     this.getOptionInDropDownByAttribute('delete-Assignment').click({
       force: true,
     })
-    cy.get('.ant-modal-content').find('input').type('UNASSIGN', { force: true })
-    cy.get('.ant-modal-content')
-      .find('[ data-cy="submitConfirm"]')
-      .click({ force: true })
-    cy.wait('@deleteAssignments')
+    CypressHelper.unassignCommonActions()
   }
 
   clickOnReleaseGrade = () =>
@@ -244,8 +238,46 @@ class AuthorAssignmentPage {
     else cy.url().should('contain', 'author/classboard/')
     cy.wait('@assignment')
     return cy
-      .get('[data-cy="studentName"]')
+      .get('[data-cy="studentName"]', { timeout: 30000 })
       .should('have.length.greaterThan', 0)
+  }
+
+  clickOnLCBbyClassAndTestId = (testId, className) => {
+    this.expandTestRowsByTestId(testId)
+    cy.server()
+    cy.route('GET', '**/assignments/**').as('assignment')
+    if (className) {
+      this.getAssignmentRowsTestById(testId)
+        .find(`[data-cy="class"]`)
+        .each(($test) => {
+          if ($test.text() == className) {
+            cy.wrap($test)
+              .closest(`tr`)
+              .find('[data-cy="lcb"]')
+              .click({ force: true })
+          }
+        })
+    }
+    cy.url().should('contain', `author/classboard/`)
+    cy.wait('@assignment')
+    return cy
+      .get('[data-cy="studentName"]', { timeout: 30000 })
+      .should('have.length.greaterThan', 0)
+  }
+
+  verifyAssignmentStatusOfClass = (testId, className, status) => {
+    this.expandTestRowsByTestId(testId)
+    cy.contains(className).then(($className) => {
+      cy.wrap($className)
+        .closest('tr')
+        .find(`[data-cy="status"]`)
+        .should(`have.text`, status)
+    })
+    /* this.getAssignmentRowsTestById(testId).find(`[data-cy="class"]`).each($test =>{
+      if($test.text()==className){
+        cy.wrap($test).closest(`tr`).find('[data-cy="status"]').should(`have.text`,status)
+      }
+    }) */
   }
 
   clickOnExpressGraderByTestId = (testId, assignmentid) => {
@@ -290,6 +322,30 @@ class AuthorAssignmentPage {
     // cy.wait("@load-summary");
   }
 
+  filterByTestType = (testType) => {
+    this.smartFilter.expandFilter()
+    this.setTesttype(testType)
+  }
+
+  setTesttype = (testType) => {
+    cy.server()
+    cy.route('GET', /assignments/g).as('filter-assigments')
+    this.smartFilter.getTestType().click()
+    cy.get('.ant-select-dropdown-menu-item').then(($ele) => {
+      cy.wrap(
+        $ele.filter(function () {
+          return Cypress.$(this).text() === testType
+        })
+      )
+        .click({ force: true })
+        .then(() => {
+          // cy.get(`tbody > tr >td`,{timeout:15000})
+          cy.wait('@filter-assigments')
+        })
+    })
+    cy.focused().blur()
+  }
+
   clickChoosefromPlaylistButton = () =>
     this.getChooseFromPlaylistsButton().click({ force: true })
 
@@ -312,6 +368,7 @@ class AuthorAssignmentPage {
     cy.wait(5000).then(() =>
       cy.url().then((newUrl) => {
         // expect(newUrl).to.include(`/${oldTestId}/editAssigned`);
+        // expect(newUrl).to.include(`tests/tab/review/id/${oldTestId}`);
         expect(newUrl).to.include(`tests/tab/review/id/${oldTestId}`)
       })
     )
@@ -321,7 +378,8 @@ class AuthorAssignmentPage {
     className,
     submitted = 0,
     total,
-    aType
+    aType,
+    status
   ) => {
     this.getAssignmentRowsTestById(testId)
     if (className) this.getClassByAssignmentRow().should('have.text', className)
@@ -331,6 +389,7 @@ class AuthorAssignmentPage {
         `${submitted} of ${total}`
       )
     if (aType) this.getAssignmentTypeByTestId(testId).should('have.text', aType)
+    if (status) this.getStatusByAssignmentRow().should('have.text', status)
   }
 
   // *** APPHELPERS END ***

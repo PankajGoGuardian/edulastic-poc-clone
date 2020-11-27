@@ -8,7 +8,7 @@ import {
   releaseGradeTypes,
 } from '../../../../framework/constants/assignmentStatus'
 import { attemptTypes } from '../../../../framework/constants/questionTypes'
-
+import MCQMultiplePage from '../../../../framework/author/itemList/questionType/mcq/mcqMultiplePage'
 import BarGraph from '../../../../framework/author/assignments/barGraphs'
 import PreviewItemPopup from '../../../../framework/author/itemList/itemPreview'
 import ExpressGraderPage from '../../../../framework/author/assignments/expressGraderPage'
@@ -27,6 +27,7 @@ describe(`${FileHelper.getSpecName(
   Cypress.spec.name
 )}> test editing with applying regrade 'edited item'`, () => {
   const testLibraryPage = new TestLibrary()
+  const mcqMultiplePage = new MCQMultiplePage()
   const regrade = new Regrade()
   const barGraphs = new BarGraph()
   const itemPreview = new PreviewItemPopup()
@@ -38,23 +39,23 @@ describe(`${FileHelper.getSpecName(
   const reportsPage = new ReportsPage()
 
   const Teacher = {
-    username: 'teacher.regrade.review.updatepoints@snapwiz.com',
+    username: 'teacher.regrade.edited.updatepoints@snapwiz.com',
     password: 'snapwiz',
   }
   const students = {
     Student1: {
       name: 'Student1',
-      email: 'student1.review.regrade@snapwiz.com',
+      email: 'student1.updatepoints.regrade@snapwiz.com',
       pass: 'snapwiz',
     },
     Student2: {
       name: 'Student2',
-      email: 'student2.review.regrade@snapwiz.com',
+      email: 'student2.updatepoints.regrade@snapwiz.com',
       pass: 'snapwiz',
     },
     Student3: {
       name: 'Student3',
-      email: 'student3.review.regrade@snapwiz.com',
+      email: 'student3.updatepoints.regrade@snapwiz.com',
       pass: 'snapwiz',
     },
   }
@@ -103,7 +104,7 @@ describe(`${FileHelper.getSpecName(
     },
   }
 
-  const attemptType = [attemptTypes.RIGHT, attemptTypes.PARTIAL_CORRECT]
+  const attemptType = [attemptTypes.RIGHT, attemptTypes.WRONG]
   const assignmentStatus = [studentSide.SUBMITTED, studentSide.IN_PROGRESS]
   const regrade_Options = _.values(regradeOptions.edited)
   const assignedtestids = []
@@ -113,15 +114,20 @@ describe(`${FileHelper.getSpecName(
   const attemptsData = []
   const queCentric = {}
 
-  let updatedAttempt
   let itemId
   let testid
+
+  regrade_Options.forEach(() => {
+    assignedtestids.push([])
+    versionedtestids.push([])
+  })
 
   before('create tests', () => {
     cy.getAllTestsAndDelete(Teacher.username)
     cy.getAllItemsAndDelete(Teacher.username)
     cy.deleteAllAssignments('', Teacher.username)
     cy.login('teacher', Teacher.username, Teacher.password)
+
     testLibraryPage.createTest(testname, false).then((id) => {
       ;[itemId] = testLibraryPage.items
       testid = id
@@ -133,13 +139,8 @@ describe(`${FileHelper.getSpecName(
     })
   })
 
-  describe(`> regrade 'edited item' by 'updating points at test level'`, () => {
-    before('> duplicate and assign test', () => {
-      regrade_Options.forEach(() => {
-        assignedtestids.push([])
-        versionedtestids.push([])
-      })
-
+  describe(`> regrade 'edited item' by 'updating points at item level'`, () => {
+    before('> duplicate and  assign', () => {
       regrade_Options.forEach((regOption, ind) => {
         attemptType.forEach((attType) => {
           testLibraryPage.searchAndClickTestCardById(testid)
@@ -184,7 +185,6 @@ describe(`${FileHelper.getSpecName(
         }
       })
     })
-
     regrade_Options.forEach((option, optionsIndex) => {
       context(`> edit item and apply '${option}'`, () => {
         before('> login as teacher', () => {
@@ -199,7 +199,14 @@ describe(`${FileHelper.getSpecName(
               versionedtestids[optionsIndex].push(versionedtest)
             })
 
-            testLibraryPage.review.updatePointsByID(itemId, data.points)
+            testLibraryPage.review.clickOnExpandRow()
+            testLibraryPage.review.previewQuestById(itemId)
+            testLibraryPage.review.previewItemPopUp.clickEditOnPreview()
+            mcqMultiplePage.updatePoints(data.points)
+            mcqMultiplePage.header.saveAndgetId(true).then((itemversion) => {
+              cy.saveItemDetailToDelete(itemversion)
+            })
+
             testLibraryPage.header.clickRegradePublish()
             regrade.checkRadioByValue(option)
             regrade.applyRegrade()
@@ -299,7 +306,6 @@ describe(`${FileHelper.getSpecName(
                             assignmentStatus.indexOf(studentSide.SUBMITTED)
                           ].attempt.Q1 = attemptTypes.PARTIAL_CORRECT
                       }
-
                       optionsIndex = _.values(regradeOptions.edited).indexOf(
                         option
                       )

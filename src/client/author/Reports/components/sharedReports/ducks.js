@@ -19,12 +19,13 @@ const GET_COLLABORATIVE_GROUPS_REQUEST_ERROR =
   '[reports] get collaborative groups request error'
 
 const SHARE_REPORT_REQUEST = '[reports] share report request'
+const SHARE_REPORT_REQUEST_SUCCESS = '[reports] share report request success'
+const SHARE_REPORT_REQUEST_ERROR = '[reports] share report request error'
 
 const ARCHIVE_REPORT_REQUEST = '[reports] archive report request'
-const ARCHIVED_REPORT_REQUEST_SUCCESS =
+const ARCHIVE_REPORT_REQUEST_SUCCESS =
   '[reports] archive report request success'
-// const SHARE_REPORT_REQUEST_SUCCESS = '[reports] share report request success'
-// const SHARE_REPORT_REQUEST_ERROR = '[reports] share report request error'
+const ARCHIVE_REPORT_REQUEST_ERROR = '[reports] archive report request error'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -99,8 +100,18 @@ export const sharedReportsReducer = createReducer(initialState, {
     state.loadingCollaborativeGroups = false
     state.error = payload.error
   },
-  [ARCHIVED_REPORT_REQUEST_SUCCESS]: (state, { payload }) => {
+  [SHARE_REPORT_REQUEST_SUCCESS]: (state, { payload }) => {
     state.sharedReportList = payload
+  },
+  [SHARE_REPORT_REQUEST_ERROR]: (state, { payload }) => {
+    state.error = payload.error
+  },
+  [ARCHIVE_REPORT_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.sharedReportList = payload
+  },
+  [ARCHIVE_REPORT_REQUEST_ERROR]: (state, { payload }) => {
+    state.loadingCollaborativeGroups = false
+    state.error = payload.error
   },
 })
 
@@ -151,13 +162,26 @@ function* getCollaborativeGroupsRequest() {
 
 function* shareReportSaga({ payload }) {
   try {
-    yield call(sharedReportApi.createSharedReport, payload)
+    const sharedReport = yield call(sharedReportApi.createSharedReport, payload)
+    if (sharedReport?._id) {
+      // add newly shared report to shared report list
+      const sharedReportList = yield select(getSharedReportList)
+      yield put({
+        type: SHARE_REPORT_REQUEST_SUCCESS,
+        payload: [...sharedReportList, sharedReport],
+      })
+    }
     notification({
       type: 'success',
       msg: 'Shared report successfully',
     })
   } catch (err) {
-    notification({ msg: 'Failed to share report' })
+    const msg = 'Failed to share report'
+    notification({ msg })
+    yield put({
+      type: SHARE_REPORT_REQUEST_ERROR,
+      payload: { error: msg },
+    })
   }
 }
 
@@ -165,21 +189,27 @@ function* archiveReportSaga({ payload }) {
   try {
     const result = yield call(sharedReportApi.archiveSharedReport, payload)
     if (result && payload?.id) {
+      // remove archived report from shared report list
       const sharedReportList = yield select(getSharedReportList)
       const filteredList = sharedReportList.filter(
         (report) => report._id !== payload.id
       )
       yield put({
-        type: ARCHIVED_REPORT_REQUEST_SUCCESS,
+        type: ARCHIVE_REPORT_REQUEST_SUCCESS,
         payload: filteredList,
       })
-      notification({
-        type: 'success',
-        msg: 'Archived report successfully',
-      })
     }
+    notification({
+      type: 'success',
+      msg: 'Archived report successfully',
+    })
   } catch (err) {
-    notification({ msg: 'Failed to archive report' })
+    const msg = 'Failed to archive report'
+    notification({ msg })
+    yield put({
+      type: ARCHIVE_REPORT_REQUEST_ERROR,
+      payload: { error: msg },
+    })
   }
 }
 

@@ -190,6 +190,10 @@ const PerformanceByStudents = ({
     t
   )
 
+  const columnData = isCliUser
+    ? _columns.filter((col) => col.title !== 'Due Date')
+    : _columns
+
   const checkedStudentsForModal = tableData
     .filter(
       (d) =>
@@ -348,7 +352,7 @@ const PerformanceByStudents = ({
               <CsvTable
                 isCsvDownloading={isCsvDownloading}
                 onCsvConvert={onCsvConvert}
-                columns={_columns}
+                columns={columnData}
                 dataSource={tableData}
                 rowSelection={rowSelection}
                 colouredCellsNo={4}

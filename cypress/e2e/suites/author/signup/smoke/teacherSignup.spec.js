@@ -59,7 +59,7 @@ describe(`${FileHelper.getSpecName(
     signupPage.clickOnSignupLink()
     signupPage.clickOnTeacher()
     signupPage.fillTeacherSignupForm(name, randomEmail, password)
-    signupPage.closeWelcomePopUp()
+    // signupPage.closeWelcomePopUp()
 
     // search by zip
     signupPage.searchAndSelectSchool(zip).then(() => {
@@ -108,7 +108,7 @@ describe(`${FileHelper.getSpecName(
     signupPage.clickOnSignupLink()
     signupPage.clickOnTeacher()
     signupPage.fillTeacherSignupForm(name, randomEmail, password)
-    signupPage.closeWelcomePopUp()
+    // signupPage.closeWelcomePopUp()
 
     // request new school
     signupPage.clickOnRequestNewSchoolLink()
@@ -155,7 +155,7 @@ describe(`${FileHelper.getSpecName(
     signupPage.clickOnSignupLink()
     signupPage.clickOnTeacher()
     signupPage.fillTeacherSignupForm(name, randomEmail, password)
-    signupPage.closeWelcomePopUp()
+    // signupPage.closeWelcomePopUp()
 
     // request new school and district
 
@@ -193,7 +193,7 @@ describe(`${FileHelper.getSpecName(
     signupPage.clickOnSignupLink()
     signupPage.clickOnTeacher()
     signupPage.fillTeacherSignupForm(name, randomEmail, password)
-    signupPage.closeWelcomePopUp()
+    // signupPage.closeWelcomePopUp()
 
     // select home school
     signupPage.clickOnHomeSchool()

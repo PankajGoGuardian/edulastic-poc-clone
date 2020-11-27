@@ -1,4 +1,5 @@
 import { buffers } from 'redux-saga'
+import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import * as moment from 'moment'
 import { message } from 'antd'
@@ -92,6 +93,8 @@ export const SET_SELECTED_ITEMS_FOR_ASSIGN =
   '[curriculum-sequence] set selected items for assign'
 export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT =
   '[curriculum-sequence] set selected items for assign init'
+export const SET_RECOMMENDATIONS_TO_ASSIGN =
+  '[curriculum-sequence] recommendations to assign'
 export const SET_DATA_FOR_ASSIGN_INIT =
   '[curriculum-sequence] set data for assign init'
 export const SET_DATA_FOR_ASSIGN = '[curriculum-sequence] set data for assign'
@@ -241,6 +244,9 @@ export const toggleAddContentAction = createAction(TOGGLE_ADD_CONTENT)
 export const createAssignmentNowAction = createAction(CREATE_ASSIGNMENT_NOW)
 export const setSelectedItemsForAssignAction = createAction(
   SET_SELECTED_ITEMS_FOR_ASSIGN_INIT
+)
+export const setRecommendationsToAssignAction = createAction(
+  SET_RECOMMENDATIONS_TO_ASSIGN
 )
 export const setDataForAssignAction = createAction(SET_DATA_FOR_ASSIGN_INIT)
 export const addContentToCurriculumSequenceAction = createAction(
@@ -454,6 +460,11 @@ export const getDifferentiationWorkLoadingStateSelector = (state) =>
 
 export const getWorkStatusDataSelector = (state) =>
   state.curriculumSequence.workStatusData
+
+export const getRecommendationsToAssignSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.recommendationsToAssign
+)
 
 const getPublisher = (state) => {
   if (!state.curriculumSequence) return ''
@@ -1612,6 +1623,7 @@ function* fetchDifferentiationWorkSaga({ payload }) {
 
 function* addRecommendationsSaga({ payload }) {
   try {
+    yield put(setRecommendationsToAssignAction({ isAssigning: true }))
     let response = null
     if (Array.isArray(payload)) {
       for (const payloadItem of payload) {
@@ -1629,6 +1641,13 @@ function* addRecommendationsSaga({ payload }) {
       assignmentId: payload.assignmentId,
       groupId: payload.groupId,
     })
+    yield put(
+      setRecommendationsToAssignAction({
+        isAssigning: false,
+        isRecommendationAssignView: false,
+        recommendations: [],
+      })
+    )
     yield put(updateWorkStatusDataAction(statusData))
     const workData = yield select(getDifferentiationWorkSelector)
     const structuredData = structureWorkData(workData, statusData)
@@ -2005,6 +2024,13 @@ const initialState = {
   showRightPanel: true,
   customizeInDraft: false,
   currentAssignmentIds: [],
+
+  isConfirmedCustomization: false,
+  recommendationsToAssign: {
+    isRecommendationAssignView: false,
+    isAssigning: false,
+    recommendations: [],
+  },
 }
 
 /**
@@ -2222,6 +2248,27 @@ const setSelectedItemsForAssignReducer = (state, { payload }) => {
     state.selectedItemsForAssign.push(payload)
   } else if (Array.isArray(payload)) {
     state.selectedItemsForAssign = payload
+  }
+}
+
+/**
+ * @param {State} state
+ * @param {Object<String, String>} args
+ * @param {Object} [args.payload]
+ */
+const setRecommendationsToAssignReducer = (state, { payload }) => {
+  if (!payload) {
+    return
+  }
+
+  const recommendationsToAssign = { ...state.recommendationsToAssign }
+
+  return {
+    ...state,
+    recommendationsToAssign: {
+      ...recommendationsToAssign,
+      ...payload,
+    },
   }
 }
 
@@ -2451,6 +2498,7 @@ export default createReducer(initialState, {
   [TOGGLE_ADD_CONTENT]: toggleAddContentReducer,
   [CREATE_ASSIGNMENT_OK]: createAssignmentReducer,
   [SET_SELECTED_ITEMS_FOR_ASSIGN]: setSelectedItemsForAssignReducer,
+  [SET_RECOMMENDATIONS_TO_ASSIGN]: setRecommendationsToAssignReducer,
   [SET_DATA_FOR_ASSIGN]: setDataForAssignReducer,
   [REMOVE_ITEM_FROM_UNIT]: removeItemFromUnitReducer,
   [ADD_NEW_UNIT]: addNewUnitReducer,

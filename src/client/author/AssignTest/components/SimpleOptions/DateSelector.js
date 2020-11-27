@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 // import PropTypes from "prop-types";
+import PropTypes from 'prop-types'
 import {
   test as testConst,
   assignmentStatusOptions,
@@ -32,6 +33,7 @@ const DateSelector = ({
   selectedOption,
   showOpenDueAndCloseDate,
   t,
+  hasStartDate,
 }) => {
   const disabledStartDate = (_startDate) => {
     if (!_startDate || !endDate) {
@@ -68,19 +70,21 @@ const DateSelector = ({
   return (
     <>
       <StyledRow gutter={32} mb="15px">
-        <Col span={colSpan}>
-          <Row>
-            <Col span={24}>
-              <FieldLabel>{t('common.assignTest.openDateTitle')}</FieldLabel>
-              <Tooltip
-                placement="top"
-                title={
-                  passwordPolicy ===
-                  testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-                    ? 'To modify set Dynamic Password as OFF'
-                    : null
-                }
-              >
+        {hasStartDate && (
+          <Col span={colSpan}>
+            <Row>
+              <Col span={24}>
+                <FieldLabel>{t('common.assignTest.openDateTitle')}</FieldLabel>
+                <Tooltip
+                  placement="top"
+                  title={
+                    passwordPolicy ===
+                    testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+                      ? 'To modify set Dynamic Password as OFF'
+                      : null
+                  }
+                >
+                </Tooltip>
                 <DatePickerStyled
                   allowClear={false}
                   data-cy="startDate"
@@ -100,10 +104,10 @@ const DateSelector = ({
                       status !== assignmentStatusOptions.NOT_OPEN)
                   }
                 />
-              </Tooltip>
-            </Col>
-          </Row>
-        </Col>
+              </Col>
+            </Row>
+          </Col>
+        )}
         {!!showDueDatePicker && (
           <Col span={colSpan}>
             <Row>
@@ -182,4 +186,11 @@ const DateSelector = ({
   )
 }
 
+DateSelector.propTypes = {
+  hasStartDate: PropTypes.bool,
+}
+
+DateSelector.defaultProps = {
+  hasStartDate: true,
+}
 export default withNamespaces('author')(DateSelector)

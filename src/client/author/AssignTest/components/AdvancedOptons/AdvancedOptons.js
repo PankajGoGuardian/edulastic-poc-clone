@@ -40,6 +40,7 @@ class AdvancedOptons extends React.Component {
     assignment: PropTypes.object.isRequired,
     testSettings: PropTypes.object.isRequired,
     updateOptions: PropTypes.func.isRequired,
+    isAssignRecommendations: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -168,7 +169,12 @@ class AdvancedOptons extends React.Component {
   updateStudents = (studentList) => this.onChange('students', studentList)
 
   render() {
-    const { testSettings = {}, assignment, updateOptions } = this.props
+    const {
+      testSettings = {},
+      assignment,
+      updateOptions,
+      isAssignRecommendations,
+    } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
     const { showSettings, _releaseGradeKeys } = this.state
     const changeField = curry(this.onChange)
@@ -219,19 +225,23 @@ class AdvancedOptons extends React.Component {
             />
           )}
 
-          <ClassSelectorLabel>
-            Assign this to
-            <p>
-              Please select classes to assign this assessment. Options on the
-              left can be used to filter the list of classes.
-            </p>
-          </ClassSelectorLabel>
-
-          <ClassList
-            selectedClasses={classIds}
-            selectClass={this.onChange}
-            testType={assignment.testType || testSettings.testType}
-          />
+          {!isAssignRecommendations && (
+            <>
+              <ClassSelectorLabel>
+                Assign this to
+                <p>
+                  {'Please select classes to assign this assessment.'}
+                  {
+                    'Options on the left can be used to filter the list of classes.'
+                  }
+                </p>
+              </ClassSelectorLabel>
+              <ClassList
+                selectedClasses={classIds}
+                selectClass={this.onChange}
+              />
+            </>
+          )}
         </InitOptions>
       </OptionConationer>
     )

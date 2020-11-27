@@ -9,10 +9,7 @@ import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV, toggleItem } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
-import {
-  getBandInfoSelected,
-  getReportsSPRFilterData,
-} from '../common/filterDataDucks'
+import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import {
   augementAssessmentChartData,
   getStudentName,
@@ -34,15 +31,37 @@ const StudentAssessmentProfile = ({
   studentAssessmentProfile,
   getStudentAssessmentProfile,
   isCsvDownloading,
-  bandInfoSelected: bandInfo,
   location,
   pageTitle,
+  sharedReport,
   t,
 }) => {
-  const { selectedStudent, requestFilters } = settings
   const anonymousString = t('common.anonymous')
 
-  const studentClassData = SPRFilterData?.data?.result?.studentClassData || []
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+      !!sharedReport?._id,
+    ],
+    [sharedReport]
+  )
+
+  const { studentClassData = [], bandInfo: bands = [] } = get(
+    SPRFilterData,
+    'data.result',
+    {}
+  )
+
+  const bandInfo = (
+    bands.find(
+      (x) =>
+        x._id ===
+        (sharedReportFilters || settings.requestFilters)
+          .performanceBandProfileId
+    ) || bands[0]
+  )?.performanceBand
 
   const [selectedTests, setSelectedTests] = useState([])
 
@@ -59,12 +78,10 @@ const StudentAssessmentProfile = ({
   }, [rawData, bandInfo])
 
   useEffect(() => {
-    // settings: { selectedStudent, requestFilters }
-    if (selectedStudent.key && requestFilters.termId) {
+    if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentAssessmentProfile({
-        ...requestFilters,
-        profileId: requestFilters.standardsProficiencyProfileId,
-        studentId: selectedStudent.key,
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
       })
     }
   }, [settings])
@@ -76,7 +93,10 @@ const StudentAssessmentProfile = ({
     schoolAvg = [],
   } = rawData
   const studentInformation = studentClassData[0] || {}
-  const studentName = getStudentName(selectedStudent, studentInformation)
+  const studentName = getStudentName(
+    settings.selectedStudent,
+    studentInformation
+  )
 
   const onTestSelect = (item) =>
     setSelectedTests(toggleItem(selectedTests, item.uniqId))
@@ -131,6 +151,7 @@ const StudentAssessmentProfile = ({
           selectedTests={selectedTests}
           location={location}
           pageTitle={pageTitle}
+          isSharedReport={isSharedReport}
         />
       </StyledCard>
     </>
@@ -144,7 +165,6 @@ const withConnect = connect(
     error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    bandInfoSelected: getBandInfoSelected(state),
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,

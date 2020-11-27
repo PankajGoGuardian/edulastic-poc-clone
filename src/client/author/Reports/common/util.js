@@ -90,8 +90,8 @@ export const getDropDownTestIds = (arr) => {
 }
 
 export const filterData = (data, filter) => {
-  const filteredData = data.filter((item) => {
-    if (
+  const filteredData = data.filter(
+    (item) =>
       (item.gender.toLowerCase() === filter.gender.toLowerCase() ||
         filter.gender === 'all') &&
       (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() ||
@@ -102,11 +102,7 @@ export const filterData = (data, filter) => {
         filter.iepStatus === 'all') &&
       (item.race.toLowerCase() === filter.race.toLowerCase() ||
         filter.race === 'all')
-    ) {
-      return true
-    }
-    return false
-  })
+  )
   return filteredData
 }
 

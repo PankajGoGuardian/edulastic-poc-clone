@@ -28,6 +28,7 @@ export const NoDataBox = styled.div`
   justify-content: center;
   align-items: center;
   padding: 30px;
+  cursor: ${({ cursor }) => cursor || 'auto'};
   img {
     width: ${(props) => (props.svgWidth ? props.svgWidth : '50px')};
     margin-bottom: 15px;

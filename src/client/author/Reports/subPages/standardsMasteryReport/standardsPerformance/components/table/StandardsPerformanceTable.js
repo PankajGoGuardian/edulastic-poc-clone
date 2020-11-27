@@ -120,7 +120,7 @@ export const getColumns = (
   domains,
   scaleInfo,
   selectedDomains,
-  filters = {},
+  selectedTermId,
   t
 ) => {
   const filteredDomains = filter(
@@ -159,7 +159,7 @@ export const getColumns = (
       render: (data, record) =>
         compareBy.title === 'Student' ? (
           <Link
-            to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
+            to={`/author/reports/student-profile-summary/student/${record.id}?termId=${selectedTermId}`}
           >
             {data || t('common.anonymous')}
           </Link>
@@ -196,7 +196,7 @@ const StandardsPerformanceTable = ({
   scaleInfo,
   selectedDomains,
   isCsvDownloading,
-  filters = {},
+  selectedTermId,
   t,
   ...tableProps
 }) => {
@@ -206,7 +206,7 @@ const StandardsPerformanceTable = ({
     domainsData,
     scaleInfo,
     selectedDomains,
-    filters,
+    selectedTermId,
     t
   )
 

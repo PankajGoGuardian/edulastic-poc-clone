@@ -27,7 +27,6 @@ import {
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
-  getSAFFilterSelectedStandardsProficiencyProfile,
   getSAFFilterStandardsProficiencyProfiles,
   getTestListSelector,
 } from '../common/filterDataDucks'
@@ -71,17 +70,29 @@ const PerformanceByStandards = ({
   role,
   interestedCurriculums,
   isCsvDownloading,
-  selectedStandardProficiencyProfile,
   standardProficiencyProfiles,
   location,
   pageTitle,
   filters,
+  sharedReport,
 }) => {
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const scaleInfo = useMemo(
     () =>
       (
         standardProficiencyProfiles.find(
-          (s) => s._id === selectedStandardProficiencyProfile
+          (s) =>
+            s._id ===
+            (sharedReportFilters || settings.requestFilters)
+              .standardsProficiencyProfile
         ) || standardProficiencyProfiles[0]
       )?.scale,
     [settings]
@@ -90,7 +101,7 @@ const PerformanceByStandards = ({
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
   const [compareBy, setCompareBy] = useState(
-    role === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
+    userRole === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
   )
   const [standardId, setStandardId] = useState('')
   const [selectedStandards, setSelectedStandards] = useState([])
@@ -141,7 +152,7 @@ const PerformanceByStandards = ({
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(
     (o) => {
       if (o.allowedRoles) {
-        return o.allowedRoles.includes(role)
+        return o.allowedRoles.includes(userRole)
       }
       return true
     }
@@ -149,9 +160,10 @@ const PerformanceByStandards = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getPerformanceByStandards(q)
     }
   }, [settings])
@@ -345,7 +357,6 @@ PerformanceByStandards.propTypes = {
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
-  selectedStandardProficiencyProfile: PropTypes.string.isRequired,
   standardProficiencyProfiles: PropTypes.array.isRequired,
   interestedCurriculums: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
@@ -360,9 +371,6 @@ const enhance = connect(
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(
-      state
-    ),
     standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
       state
     ),

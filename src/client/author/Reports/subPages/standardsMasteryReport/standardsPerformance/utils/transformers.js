@@ -339,6 +339,5 @@ export const getDropDownData = (orgData = [], role = '') => {
       }
     )
   })
-
   return [dropDownDataOptions, filterInitState]
 }

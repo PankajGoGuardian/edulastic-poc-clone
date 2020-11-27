@@ -139,6 +139,7 @@ const initialState = {
     subject: 'All',
     performanceBandProfileId: '',
     standardsProficiencyProfileId: '',
+    reportId: '',
   },
   student: {
     key: '',

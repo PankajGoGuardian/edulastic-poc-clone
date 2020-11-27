@@ -41,6 +41,7 @@ import {
   IconSignoutHighlight,
   IconInterface,
   IconSwitchUser,
+  IconUsers,
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -164,6 +165,7 @@ class SideMenu extends Component {
       features,
       isOrganizationDistrict,
       userRole,
+      isSidebarCollapsed,
     } = this.props
 
     let _menuItems = cloneDeep(menuItems)
@@ -197,8 +199,33 @@ class SideMenu extends Component {
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       _menuItems = _menuItems.filter((i) => libraryItems.includes(i.label))
     }
+    const collaborationItem = []
+    if (userRole === roleuser.TEACHER && features.showCollaborationGroups) {
+      collaborationItem.push({
+        label: 'Collaboration Groups',
+        icon: () => (
+          // TODO: replace this terrible icon with better one
+          <IconUsers
+            width="30px"
+            height="22px"
+            style={{
+              marginRight: !isSidebarCollapsed && '20px',
+              marginTop: '5px',
+              marginLeft: '-4px',
+            }}
+          />
+        ),
+        path: 'author/collaborations',
+        allowedPathPattern: [
+          /author\/collaborations/,
+          /author\/collaborations\/.{24}/,
+        ],
+        role: ['teacher'],
+      })
+    }
 
-    if (!lastPlayList || !lastPlayList.value) return _menuItems
+    if (!lastPlayList || !lastPlayList.value)
+      return [..._menuItems, ...collaborationItem]
 
     const [item1, ...rest] = _menuItems
     const { _id = '' } = lastPlayList.value || {}
@@ -215,9 +242,9 @@ class SideMenu extends Component {
       path: `author/playlists/playlist/${_id}/use-this`,
     }
     if (item1.divider) {
-      return [myPlayListItem, ..._menuItems]
+      return [myPlayListItem, ..._menuItems, ...collaborationItem]
     }
-    return [item1, myPlayListItem, ...rest]
+    return [item1, myPlayListItem, ...rest, ...collaborationItem]
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
@@ -969,7 +996,7 @@ const Menu = styled(AntMenu)`
     }
   }
 
-  @media (max-height: 600px) {
+  @media (max-height: 780px) {
     overflow: auto;
     height: calc(100vh - 190px);
     &::-webkit-scrollbar {

@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
-import { map } from 'lodash'
+import { map, isEmpty } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
@@ -11,11 +11,13 @@ import { FlexContainer } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
 import { getNavigationTabLinks } from '../../common/util'
+import { transformFiltersForMAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
 import extraFilterData from './common/static/extraFilterData.json'
 
 import MultipleAssessmentReportFilters from './common/components/filters/MultipleAssessmentReportFilters'
+import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import PeerProgressAnalysis from './PeerProgressAnalysis'
 import StudentProgress from './StudentProgress'
@@ -24,6 +26,9 @@ import PerformanceOverTime from './PerformanceOverTime'
 import { setMARSettingsAction, getReportsMARSettings } from './ducks'
 import { getReportsMARFilterData } from './common/filterDataDucks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
+import { getSharingState, setSharingStateAction } from '../../ducks'
+import { getSharedReportList } from '../../components/sharedReports/ducks'
+
 import {
   FilterButton,
   ReportContaner,
@@ -46,12 +51,31 @@ const MultipleAssessmentReportContainer = (props) => {
     updateNavigation,
     onRefineResultsCB,
     MARFilterData: _MARFilterData,
+    sharingState,
+    setSharingState,
+    sharedReportList,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
   const [MARFilterData, setMARFilterData] = useState({})
   const [ddfilter, setDdFilter] = useState({})
   const [selectedExtras, setSelectedExtras] = useState({})
+  const [reportId] = useState(
+    qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
+  )
+
+  const sharedReport = useMemo(
+    () => sharedReportList.find((s) => s._id === reportId),
+    [reportId, sharedReportList]
+  )
+
+  const transformedSettings = useMemo(
+    () => ({
+      ...settings,
+      requestFilters: transformFiltersForMAR(settings.requestFilters),
+    }),
+    [settings]
+  )
 
   useEffect(
     () => () => {
@@ -60,6 +84,12 @@ const MultipleAssessmentReportContainer = (props) => {
     },
     []
   )
+
+  useEffect(() => {
+    if (!isEmpty(sharedReport?.filters?.ddfilter)) {
+      setDdFilter({ ...sharedReport.filters.ddfilter })
+    }
+  }, [sharedReport])
 
   useEffect(() => {
     if (!showApply) {
@@ -184,11 +214,23 @@ const MultipleAssessmentReportContainer = (props) => {
   return (
     <>
       {firstLoad && <Spin size="large" />}
+      {sharingState && (
+        <ShareReportModal
+          reportType={pageTitle}
+          reportFilters={{
+            ...transformedSettings.requestFilters,
+            ddfilter,
+          }}
+          showModal={sharingState}
+          setShowModal={setSharingState}
+        />
+      )}
       <FlexContainer
         alignItems="flex-start"
         display={firstLoad ? 'none' : 'flex'}
       >
         <MultipleAssessmentReportFilters
+          reportId={reportId}
           onGoClick={onGoClick}
           loc={pageTitle}
           history={history}
@@ -198,16 +240,20 @@ const MultipleAssessmentReportContainer = (props) => {
             '/author/reports/student-progress',
             '/author/reports/performance-over-time',
           ].find((x) => window.location.pathname.startsWith(x))}
-          style={showFilter ? { display: 'block' } : { display: 'none' }}
+          style={
+            reportId || !showFilter ? { display: 'none' } : { display: 'block' }
+          }
           extraFilter={extraFilters}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
         />
-        <FilterButton showFilter={showFilter} onClick={toggleFilter}>
-          <IconFilter />
-        </FilterButton>
+        {!reportId ? (
+          <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+            <IconFilter />
+          </FilterButton>
+        ) : null}
         <ReportContaner showFilter={showFilter}>
           <Route
             exact
@@ -217,9 +263,10 @@ const MultipleAssessmentReportContainer = (props) => {
               return (
                 <PeerProgressAnalysis
                   {..._props}
-                  settings={settings}
+                  settings={transformedSettings}
                   ddfilter={ddfilter}
                   MARFilterData={MARFilterData}
+                  sharedReport={sharedReport}
                 />
               )
             }}
@@ -232,10 +279,11 @@ const MultipleAssessmentReportContainer = (props) => {
               return (
                 <StudentProgress
                   {..._props}
-                  settings={settings}
+                  settings={transformedSettings}
                   pageTitle={pageTitle}
                   ddfilter={ddfilter}
                   MARFilterData={MARFilterData}
+                  sharedReport={sharedReport}
                 />
               )
             }}
@@ -248,9 +296,10 @@ const MultipleAssessmentReportContainer = (props) => {
               return (
                 <PerformanceOverTime
                   {..._props}
-                  settings={settings}
+                  settings={transformedSettings}
                   ddfilter={ddfilter}
                   MARFilterData={MARFilterData}
+                  sharedReport={sharedReport}
                 />
               )
             }}
@@ -265,10 +314,13 @@ const ConnectedMultipleAssessmentReportContainer = connect(
   (state) => ({
     settings: getReportsMARSettings(state),
     MARFilterData: getReportsMARFilterData(state),
+    sharingState: getSharingState(state),
+    sharedReportList: getSharedReportList(state),
   }),
   {
     setMARSettings: setMARSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setSharingState: setSharingStateAction,
   }
 )(MultipleAssessmentReportContainer)
 

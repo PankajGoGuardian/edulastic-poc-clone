@@ -18,6 +18,7 @@ const TrendStats = ({
   renderFilters,
   heading,
   handleAddToGroupClick,
+  isSharedReport,
 }) => {
   const trends = Object.keys(trendTypes)
 
@@ -40,7 +41,7 @@ const TrendStats = ({
               justifyContent: 'flex-end',
             }}
           >
-            {!!handleAddToGroupClick && (
+            {!!handleAddToGroupClick && !isSharedReport && (
               <FeaturesSwitch
                 inputFeatures="studentGroups"
                 actionOnInaccessible="hidden"

@@ -11,7 +11,8 @@
           "title": "ASSESSMENT SUMMARY"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "peer-performance": {
       "title": "Sub-group Performance",
@@ -24,7 +25,8 @@
           "title": "SUB-GROUP PERFORMANCE"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "question-analysis": {
       "title": "Question Analysis",
@@ -37,7 +39,8 @@
           "title": "QUESTION ANALYSIS"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "response-frequency": {
       "title": "Response Frequency",
@@ -50,7 +53,8 @@
           "title": "RESPONSE FREQUENCY"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "performance-by-standards": {
       "title": "Performance by Standards",
@@ -63,7 +67,8 @@
           "title": "PERFORMANCE BY STANDARDS"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "performance-by-students": {
       "title": "Performance by Students",
@@ -76,7 +81,8 @@
           "title": "PERFORMANCE BY STUDENTS"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "standards-performance-summary": {
       "title": "Standards Performance Summary",
@@ -89,7 +95,8 @@
           "title": "STANDARDS PERFORMANCE SUMMARY"
         }
       ],
-      "group": "standardsMasteryReport"
+      "group": "standardsMasteryReport",
+      "groupTitle": "Standards Mastery Report"
     },
     "standards-gradebook": {
       "title": "Standards Gradebook",
@@ -102,7 +109,8 @@
           "title": "STANDARDS GRADEBOOK"
         }
       ],
-      "group": "standardsMasteryReport"
+      "group": "standardsMasteryReport",
+      "groupTitle": "Standards Mastery Report"
     },
     "performance-over-time": {
       "title": "Performance Over Time",
@@ -115,7 +123,8 @@
           "title": "PERFORMANCE OVER TIME"
         }
       ],
-      "group": "multipleAssessmentReport"
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
     },
     "peer-progress-analysis": {
       "title": "Peer Progress Analysis",
@@ -128,7 +137,8 @@
           "title": "PEER PROGRESS ANALYSIS"
         }
       ],
-      "group": "multipleAssessmentReport"
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
     },
     "student-progress": {
       "title": "Student progress",
@@ -141,7 +151,8 @@
           "title": "STUDENT PROGRESS"
         }
       ],
-      "group": "multipleAssessmentReport"
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
     },
     "student-profile-summary": {
       "title": "Student Profile Summary",
@@ -154,7 +165,8 @@
           "title": "STUDENT PROFILE SUMMARY"
         }
       ],
-      "group": "studentProfileReport"
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
     },
     "student-mastery-profile": {
       "title": "Student Mastery Profile",
@@ -167,7 +179,8 @@
           "title": "STUDENT MASTERY PROFILE"
         }
       ],
-      "group": "studentProfileReport"
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
     },
     "student-assessment-profile": {
       "title": "Student Assessment Profile",
@@ -180,7 +193,8 @@
           "title": "STUDENT ASSESSMENT PROFILE"
         }
       ],
-      "group": "studentProfileReport"
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
     },
     "standard-reports": {
       "title": "Standard Reports",
@@ -198,6 +212,16 @@
         {
           "title": "CUSTOM REPORTS",
           "to": "/author/reports/custom-reports"
+        }
+      ],
+      "group": "mainReport"
+    },
+    "shared-reports": {
+      "title": "Shared Reports",
+      "breadcrumb": [
+        {
+          "title": "SHARED REPORTS",
+          "to": "/author/reports/shared-reports"
         }
       ],
       "group": "mainReport"
@@ -292,6 +316,11 @@
         "key": "custom-reports",
         "title": "CUSTOM REPORTS",
         "location": "/author/reports/custom-reports/"
+      },
+      {
+        "key": "shared-reports",
+        "title": "SHARED REPORTS",
+        "location": "/author/reports/shared-reports/"
       }
     ]
   }

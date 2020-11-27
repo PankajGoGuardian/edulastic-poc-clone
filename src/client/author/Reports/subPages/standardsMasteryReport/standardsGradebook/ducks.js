@@ -1,7 +1,6 @@
-import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
@@ -86,8 +85,8 @@ const initialState = {
 }
 
 export const reportStandardsGradebookReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS]: (state, { payload }) => {

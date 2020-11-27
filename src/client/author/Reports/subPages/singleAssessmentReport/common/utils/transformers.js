@@ -1,6 +1,22 @@
-/**
- * TODO: verify the usage and fix this function for student groups
- */
+const getFormattedString = (prop) => (prop ? Array.from(prop).join(',') : '')
+
+export const transformFiltersForSAR = (requestFilters = {}) => ({
+  ...requestFilters,
+  classIds: requestFilters.classIds
+    ? getFormattedString(requestFilters.classIds)
+    : requestFilters.classId,
+  groupIds: requestFilters.groupIds
+    ? getFormattedString(requestFilters.groupIds)
+    : requestFilters.groupId,
+  assessmentTypes: requestFilters?.assessmentTypes || '',
+  teacherIds: requestFilters.teacherIds,
+  schoolIds: requestFilters.schoolIds,
+  grade: requestFilters.studentGrade,
+  courseId: requestFilters.studentCourseId,
+  subject: requestFilters.studentSubject,
+  profileId: requestFilters.performanceBandProfile,
+})
+
 export const transformMetricForStudentGroups = (
   studentGroupInfo = [],
   metricInfo = []

@@ -58,7 +58,10 @@ const Container = ({
   const breadcrumbData = [
     {
       title: 'COLLABORATION GROUPS',
-      to: '/author/groups/collaborations',
+      to:
+        role === roleuser.TEACHER
+          ? '/author/collaborations'
+          : '/author/groups/collaborations',
     },
     {
       title: groupDetails?.name?.toUpperCase() || 'GROUP',

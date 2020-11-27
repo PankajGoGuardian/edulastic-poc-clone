@@ -697,7 +697,7 @@ export const getItemSummary = (
     for (const itemId of Object.keys(originalQuestionActivitiesGrouped)) {
       const manuallyGradedPresent = originalQuestionActivitiesGrouped[
         itemId
-      ].find((x) => x.graded === false)
+      ].find((x) => !x.graded && !x.skipped)
       /**
        * even if at-least 1 questionActivity with graded false
        * and itemLevelScoring is enabled,
@@ -727,7 +727,7 @@ export const getItemSummary = (
         testItemId,
         score,
         maxScore,
-        graded,
+        graded = false,
         qLabel,
         barLabel,
         timeSpent,

@@ -380,7 +380,7 @@ class FeedbackRight extends Component {
     let _score = adaptiveRound(score || 0)
     if (
       activity &&
-      activity.graded === false &&
+      !activity.graded &&
       (activity.score === 0 || isUndefined(activity.score)) &&
       !score &&
       !changed &&

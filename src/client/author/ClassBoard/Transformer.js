@@ -432,7 +432,7 @@ export const transformGradeBookResponse = (
   for (const itemId of Object.keys(questionActivitiesGrouped)) {
     const notGradedQuestionActivities = questionActivitiesGrouped[
       itemId
-    ].filter((x) => x.graded === false)
+    ].filter((x) => !x.graded && !x.skipped)
 
     const { itemLevelScoring } = testItemsDataKeyed[itemId]
     if (itemLevelScoring) {
@@ -577,7 +577,7 @@ export const transformGradeBookResponse = (
               // eslint-disable-next-line no-shadow
               score,
               // eslint-disable-next-line no-shadow
-              graded,
+              graded = false,
               pendingEvaluation,
               scratchPad,
               userResponse,
@@ -601,7 +601,7 @@ export const transformGradeBookResponse = (
               }
             }
 
-            let _graded = graded
+            let _graded = graded && !skipped
             if (autoGrade === false && score === undefined) {
               _graded = false
             }

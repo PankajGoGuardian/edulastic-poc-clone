@@ -395,7 +395,7 @@ class DisneyCardContainer extends Component {
                           )
                         }
                         if (
-                          questionAct.graded === false ||
+                          !questionAct.graded ||
                           questionAct.pendingEvaluation
                         ) {
                           return <SquareColorBlue key={questionIndex} />

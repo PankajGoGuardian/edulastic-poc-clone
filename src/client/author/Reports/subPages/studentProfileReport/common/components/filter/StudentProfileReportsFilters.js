@@ -63,6 +63,7 @@ const StudentProfileReportsFilters = ({
   setSelectedClass,
   defaultTerm,
   history,
+  reportId,
 }) => {
   const splittedPath = location.pathname.split('/')
   const urlStudentId = splittedPath[splittedPath.length - 1]
@@ -146,6 +147,7 @@ const StudentProfileReportsFilters = ({
       termId: selectedTerm.key,
       grade: selectedGrade.key,
       subject: selectedSubject.key,
+      reportId,
       // uncomment after making changes to chart files
       // performanceBandProfileId: selectedProfile,
       // standardsProficiencyProfileId: selectedScale

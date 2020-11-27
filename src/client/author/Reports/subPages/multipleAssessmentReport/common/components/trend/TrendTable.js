@@ -164,7 +164,8 @@ const getColumns = (
   filters = {},
   isCellClickable,
   location,
-  pageTitle
+  pageTitle,
+  isSharedReport
 ) => {
   const groupedTests = groupBy(testData, 'testId')
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
@@ -243,7 +244,7 @@ const getColumns = (
       className: 'class-name-column',
       dataIndex: compareByMap[compareBy.key],
       render: (data, record) =>
-        compareBy.key === 'student' ? (
+        compareBy.key === 'student' && !isSharedReport ? (
           <Link
             to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
           >
@@ -330,6 +331,7 @@ const TrendTable = ({
   isCellClickable,
   location,
   pageTitle,
+  isSharedReport,
 }) => {
   const columns = getColumns(
     testData,
@@ -341,7 +343,8 @@ const TrendTable = ({
     filters,
     isCellClickable,
     location,
-    pageTitle
+    pageTitle,
+    isSharedReport
   )
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
 

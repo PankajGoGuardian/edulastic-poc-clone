@@ -275,9 +275,9 @@ const getDisplayValue = (columnType, text) => {
 }
 
 const getCellContents = ({ printData, colorKey, ...restProps }) => {
-  const { columnKey, record, pageTitle, location } = restProps
+  const { columnKey, record, pageTitle, location, isSharedReport } = restProps
 
-  if (columnKey === 'studentScore') {
+  if (columnKey === 'studentScore' && !isSharedReport) {
     return (
       <ColoredCell bgColor={getHSLFromRange1(parseInt(colorKey, 10))}>
         <Link
@@ -306,7 +306,8 @@ const getColorCell = (
   columnType,
   assessmentName,
   location = {},
-  pageTitle
+  pageTitle,
+  isSharedReport
 ) => (text, record) => {
   const toolTipText = (_record) => {
     let lastItem = {
@@ -357,6 +358,7 @@ const getColorCell = (
       record={record}
       location={location}
       pageTitle={pageTitle}
+      isSharedReport={isSharedReport}
     />
   )
 }
@@ -367,6 +369,7 @@ export const getColumns = (
   role,
   location,
   pageTitle,
+  isSharedReport,
   t
 ) => {
   const filteredColumns = filterAccordingToRole(columns, role)
@@ -375,7 +378,8 @@ export const getColumns = (
   return next(filteredColumns, (columnsDraft) => {
     columnsDraft[1].render = (data, record) => {
       const { pathname, search } = window.location
-      return record.totalScore || record.totalScore === 0 ? (
+      return (record.totalScore || record.totalScore === 0) &&
+        !isSharedReport ? (
         <Link
           to={{
             pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
@@ -394,7 +398,7 @@ export const getColumns = (
     // column 5 defined assessmentScore
     columnsDraft[5].render = (data, record) => {
       if (data === 'Absent') return data
-      return (
+      return !isSharedReport ? (
         <Link
           style={{ color: reportLinkColor }}
           to={{
@@ -406,6 +410,8 @@ export const getColumns = (
         >
           {data}
         </Link>
+      ) : (
+        data
       )
     }
     forEach(columnsDraft, (column) => {
@@ -418,7 +424,8 @@ export const getColumns = (
           column.type,
           assessmentName,
           location,
-          pageTitle
+          pageTitle,
+          isSharedReport
         )
       }
     })

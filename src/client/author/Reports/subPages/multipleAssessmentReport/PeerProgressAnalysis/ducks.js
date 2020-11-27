@@ -1,12 +1,10 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getClassAndGroupIds } from '../common/utils/transformers'
 
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST =
   '[reports] get reports peer progress analysis request'
@@ -57,8 +55,8 @@ const initialState = {
 }
 
 export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS]: (
@@ -83,14 +81,9 @@ export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
 
 function* getReportsPeerProgressAnalysisRequest({ payload }) {
   try {
-    const { classIds, groupIds } = getClassAndGroupIds(payload)
     const peerProgressAnalysis = yield call(
       reportsApi.fetchPeerProgressAnalysisReport,
-      {
-        ...payload,
-        classIds,
-        groupIds,
-      }
+      payload
     )
     const dataSizeExceeded =
       peerProgressAnalysis?.data?.dataSizeExceeded || false

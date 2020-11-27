@@ -556,6 +556,32 @@ export const FilterButton = styled(Button)`
   }
 `
 
+export const FilterButtonClear = styled(Button)`
+  min-width: 35px;
+  min-height: 25px;
+  border: none;
+  margin-right: ${({ showFilter }) => (showFilter ? 0 : 10)}px;
+  margin-top: -4px;
+  margin-left: ${({ showFilter }) => (showFilter ? -80 : 0)}px;
+  padding: 5px 2px 2px;
+  box-shadow: none;
+
+  &:focus,
+  &:hover {
+    outline: unset;
+  }
+
+  svg {
+    fill: ${({ showFilter }) =>
+      showFilter ? '#1AB395' : '#434b5d'} !important;
+    width: 20px;
+    height: 20px;
+  }
+  @media print {
+    display: none;
+  }
+`
+
 export const SearchField = styled.div`
   margin-bottom: 10px;
   padding-right: 15px;

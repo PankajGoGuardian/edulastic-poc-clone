@@ -84,14 +84,6 @@ export const reportQuestionAnalysisReducer = createReducer(initialState, {
 
 function* getReportsQuestionAnalysisRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
     const { data } = yield call(reportsApi.fetchQuestionAnalysisReport, payload)
 
     if (data && data?.dataSizeExceeded) {

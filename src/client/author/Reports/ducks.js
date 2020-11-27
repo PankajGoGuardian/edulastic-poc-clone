@@ -89,12 +89,18 @@ import {
   customReportReducer,
   customReportSaga,
 } from './components/customReport/ducks'
+import {
+  sharedReportsReducer,
+  sharedReportsSaga,
+} from './components/sharedReports/ducks'
 
+const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
 const SET_CSV_DOWNLOADING_STATE = '[reports] set csv download state'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const setSharingStateAction = createAction(SET_SHARING_STATE)
 export const setPrintingStateAction = createAction(SET_PRINTING_STATE)
 export const setCsvDownloadingStateAction = createAction(
   SET_CSV_DOWNLOADING_STATE
@@ -107,6 +113,11 @@ export const setCsvDownloadingStateAction = createAction(
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
 export const stateSelector = (state) => state.reportReducer.reports
+
+export const getSharingState = createSelector(
+  stateSelector,
+  (state) => state.isSharing
+)
 
 export const getPrintingState = createSelector(
   stateSelector,
@@ -125,10 +136,14 @@ export const getCsvDownloadingState = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
+  isSharing: false,
   isPrinting: false,
 }
 
 const reports = createReducer(initialState, {
+  [SET_SHARING_STATE]: (state, { payload }) => {
+    state.isSharing = payload
+  },
   [SET_PRINTING_STATE]: (state, { payload }) => {
     state.isPrinting = payload
   },
@@ -166,6 +181,7 @@ export const reportReducer = combineReducers({
   reportStandardsPerformanceSummaryReducer,
   reportStandardsGradebookReducer,
   customReportReducer,
+  sharedReportsReducer,
 })
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
@@ -198,6 +214,7 @@ export function* reportSaga(params) {
     reportStandardsPerformanceSummarySaga(),
     reportStandardsGradebookSaga(),
     customReportSaga(),
+    sharedReportsSaga(),
   ])
 }
 

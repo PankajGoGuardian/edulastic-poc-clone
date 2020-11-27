@@ -52,6 +52,7 @@ export const QuestionAnalysisTable = ({
   role,
   isCsvDownloading,
   compareByTitle,
+  isSharedReport,
 }) => {
   const colouredCells = (compareByType, index) => (text, record) => {
     const tooltipText = (_compareByType, _record, _index) => (
@@ -126,7 +127,9 @@ export const QuestionAnalysisTable = ({
     }
     rawColumns[0].render = (text, record) => {
       const { pathname, search } = window.location
-      return (
+      return isSharedReport ? (
+        text
+      ) : (
         <Link
           to={{
             pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.questionId}`,

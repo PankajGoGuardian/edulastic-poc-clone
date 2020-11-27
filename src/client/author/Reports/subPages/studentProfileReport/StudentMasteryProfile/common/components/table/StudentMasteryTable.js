@@ -37,7 +37,7 @@ const renderToolTipColumn = (columnName) => (value, record) => {
   )
 }
 
-const getColumns = (handleOnClickStandard, filters, termId) => {
+const getColumns = (handleOnClickStandard, filters) => {
   const columns = [
     {
       title: 'Standard',
@@ -47,10 +47,10 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       width: 150,
       render: (data, record) => {
         const obj = {
-          termId: filters.termId || termId,
+          termId: filters.termId,
           studentId: record.studentId,
           standardId: record.standardId,
-          profileId: filters.standardsProficiencyProfileId,
+          profileId: filters.profileId,
         }
         return (
           <ReStyledTag
@@ -88,10 +88,10 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       dataIndex: 'masteryName',
       render: (data, record) => {
         const obj = {
-          termId: filters.termId || termId,
+          termId: filters.termId,
           studentId: record.studentId,
           standardId: record.standardId,
-          profileId: filters.standardsProficiencyProfileId,
+          profileId: filters.profileId,
         }
         return (
           <StyledSpan
@@ -163,7 +163,6 @@ const StudentMasteryTable = ({
   onCsvConvert,
   handleOnClickStandard,
   filters,
-  termId,
 }) => {
   const filteredStandards = filter(
     data,
@@ -173,7 +172,7 @@ const StudentMasteryTable = ({
       (!parentRow || String(parentRow.domainId) === String(standard.domainId))
   )
 
-  const _columns = getColumns(handleOnClickStandard, filters, termId)
+  const _columns = getColumns(handleOnClickStandard, filters)
 
   return (
     <Row>

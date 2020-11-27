@@ -1,5 +1,5 @@
 import { Col, Row } from 'antd'
-import { capitalize, groupBy, map, values } from 'lodash'
+import { capitalize, groupBy, map, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -250,6 +250,8 @@ const getColumns = (
           >
             {data}
           </Link>
+        ) : compareBy.key === 'school' && isEmpty(data) ? (
+          '-'
         ) : (
           data
         ),

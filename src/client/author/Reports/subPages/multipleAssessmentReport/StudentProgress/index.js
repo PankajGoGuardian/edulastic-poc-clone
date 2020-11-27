@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { get, head, toLower } from 'lodash'
+import { get, head, toLower, isEmpty } from 'lodash'
 
 import { SpinLoader, notification } from '@edulastic/common'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
@@ -80,7 +80,8 @@ const StudentProgress = ({
   const bandInfo =
     profiles.find(
       (profile) =>
-        profile._id === (sharedReportFilters || settings.requestFilters).profileId
+        profile._id ===
+        (sharedReportFilters || settings.requestFilters).profileId
     )?.performanceBand ||
     profiles[0]?.performanceBand ||
     DefaultBandInfo
@@ -165,7 +166,11 @@ const StudentProgress = ({
   const onCsvConvert = (_data) => downloadCSV(`Student Progress.csv`, _data)
 
   const dataSource = data
-    .map((d) => ({ ...d, studentName: getFormattedName(d.studentName) }))
+    .map((d) => ({
+      ...d,
+      studentName: getFormattedName(d.studentName),
+      schoolName: isEmpty(d.schoolName) ? '-' : d.schoolName,
+    }))
     .sort((a, b) =>
       a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
     )
@@ -258,7 +263,7 @@ const StudentProgress = ({
               <>
                 <TableTooltipRow
                   title={`School Name : `}
-                  value={record.schoolName}
+                  value={record.schoolName || `-`}
                 />
                 <TableTooltipRow
                   title={`Teacher Name : `}

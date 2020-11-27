@@ -160,7 +160,7 @@ export const normaliseTableData = (rawData, data) => {
         `${studentMetric.firstName || ''} ${studentMetric.lastName || ''}`
       ),
       proficiencyBand,
-      school: relatedGroup.schoolName,
+      school: relatedGroup.schoolName || '-',
       teacher: relatedGroup.teacherName,
       groupName: relatedGroup.groupName,
       schoolAvg: round(relatedSchool.schoolAvgPerf || 0),

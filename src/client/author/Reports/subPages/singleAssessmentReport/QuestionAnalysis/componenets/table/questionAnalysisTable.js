@@ -62,7 +62,7 @@ export const QuestionAnalysisTable = ({
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">
-            {comparedByToToolTipLabel[_compareByType].name}:{' '}
+            {comparedByToToolTipLabel[_compareByType].name}:{'  -'}
           </Col>
           <Col className="custom-table-tooltip-value">
             {
@@ -167,7 +167,7 @@ export const QuestionAnalysisTable = ({
     if (compareBy === 'schoolId') {
       for (const [index, item] of tableData[0].comparedBySchool.entries()) {
         const col = {
-          title: item.schoolName,
+          title: item.schoolName || '-',
           dataIndex: item.schoolId,
           key: item.schoolId,
           width: 150,

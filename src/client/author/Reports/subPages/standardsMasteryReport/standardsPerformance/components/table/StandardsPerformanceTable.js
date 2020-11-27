@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { sumBy, includes, filter } from 'lodash'
+import { sumBy, includes, filter, isEmpty } from 'lodash'
 import next from 'immer'
 import { Row, Col } from 'antd'
 import styled from 'styled-components'
@@ -77,7 +77,10 @@ const getColorCell = (
 ) => (_, record) => {
   const toolTipText = (rec) => (
     <div>
-      <TableTooltipRow title={`${compareBy.title}: `} value={rec.name} />
+      <TableTooltipRow
+        title={`${compareBy.title}: `}
+        value={rec.name === '' || rec.name === 'undefined' ? '-' : rec.name}
+      />
       <TableTooltipRow title="Domain: " value={domainName} />
       <TableTooltipRow
         title={`${getAnalyseByTitle(analyseByKey)}: `}
@@ -163,6 +166,9 @@ export const getColumns = (
           >
             {data || t('common.anonymous')}
           </Link>
+        ) : compareBy.key === 'school' &&
+          (isEmpty(data) || data === 'undefined') ? (
+          '-'
         ) : (
           data
         ),

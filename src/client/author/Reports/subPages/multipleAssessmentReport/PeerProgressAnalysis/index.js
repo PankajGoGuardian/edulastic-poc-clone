@@ -1,5 +1,5 @@
 import { SpinLoader } from '@edulastic/common'
-import { capitalize, get, head } from 'lodash'
+import { capitalize, get, head, isEmpty } from 'lodash'
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { getUserRole } from '../../../../../student/Login/ducks'
@@ -159,7 +159,7 @@ const PeerProgressAnalysis = ({
             />
             <TableTooltipRow
               title={`${capitalize(compareBy.title)} : `}
-              value={record[compareByMap[compareBy.key]]}
+              value={record[compareByMap[compareBy.key]] || '-'}
             />
           </>
         )}

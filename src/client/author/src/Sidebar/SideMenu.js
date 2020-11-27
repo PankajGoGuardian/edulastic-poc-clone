@@ -199,26 +199,6 @@ class SideMenu extends Component {
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       _menuItems = _menuItems.filter((i) => libraryItems.includes(i.label))
     }
-
-    if (!lastPlayList || !lastPlayList.value) return _menuItems
-
-    const [item1, ...rest] = _menuItems
-    const { _id = '' } = lastPlayList.value || {}
-    const myPlayListItem = {
-      label: 'My Playlist',
-      icon: IconPlaylist,
-      allowedPathPattern: [
-        /playlists\/playlist\/.{24}\/use-this/,
-        /playlists\/insights\/.{24}\/use-this/,
-        /playlists\/differentiation\/.{24}\/use-this/,
-        /playlists\/assignments\/.{24}\/.{24}/,
-        /playlists\/assignments\/.{24}\/.{24}\/.{24}/,
-      ],
-      path: `author/playlists/playlist/${_id}/use-this`,
-    }
-    if (item1.divider) {
-      return [myPlayListItem, ..._menuItems]
-    }
     const collaborationItem = []
     if (userRole === roleuser.TEACHER && features.showCollaborationGroups) {
       collaborationItem.push({
@@ -242,6 +222,27 @@ class SideMenu extends Component {
         ],
         role: ['teacher'],
       })
+    }
+
+    if (!lastPlayList || !lastPlayList.value)
+      return [..._menuItems, ...collaborationItem]
+
+    const [item1, ...rest] = _menuItems
+    const { _id = '' } = lastPlayList.value || {}
+    const myPlayListItem = {
+      label: 'My Playlist',
+      icon: IconPlaylist,
+      allowedPathPattern: [
+        /playlists\/playlist\/.{24}\/use-this/,
+        /playlists\/insights\/.{24}\/use-this/,
+        /playlists\/differentiation\/.{24}\/use-this/,
+        /playlists\/assignments\/.{24}\/.{24}/,
+        /playlists\/assignments\/.{24}\/.{24}\/.{24}/,
+      ],
+      path: `author/playlists/playlist/${_id}/use-this`,
+    }
+    if (item1.divider) {
+      return [myPlayListItem, ..._menuItems, ...collaborationItem]
     }
     return [item1, myPlayListItem, ...rest, ...collaborationItem]
   }

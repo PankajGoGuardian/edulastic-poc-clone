@@ -46,7 +46,8 @@ const StyledModal = styled(Modal)`
       display: ${(props) => (props.centerContent ? 'flex' : 'block')};
       align-items: center;
       background: transparent;
-      padding: 25px 0px;
+      padding: ${(props) =>
+        props.bodyPadding ? props.bodyPadding : '25px 0px'};
 
       & > h4 {
         color: ${title};

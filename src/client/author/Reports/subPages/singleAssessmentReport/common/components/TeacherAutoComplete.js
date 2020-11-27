@@ -80,7 +80,7 @@ const TeacherAutoComplete = ({
 
   // effects
   useEffect(() => {
-    if (isEmpty(searchResult)) {
+    if (isEmpty(searchResult) || !searchTerms.text) {
       setSearchResult(transformTeacherList(teacherListRaw))
     }
   }, [teacherListRaw])
@@ -111,9 +111,9 @@ const TeacherAutoComplete = ({
       onChange={(e) => selectCB(e)}
       onSearch={onSearch}
       onBlur={onBlur}
-      onFocus={getDefaultTeacherList}
+      onFocus={() => getDefaultTeacherList()}
       value={selectedTeacherIds}
-      options={dropdownData}
+      options={!loading ? dropdownData : []}
       loading={loading}
     />
   )

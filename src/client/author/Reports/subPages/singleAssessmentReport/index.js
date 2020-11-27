@@ -38,7 +38,7 @@ import {
   ReportContaner,
   SearchField,
   FilterLabel,
-  FilterButton,
+  FilterButtonClear,
 } from '../../common/styled'
 
 const INITIAL_DD_FILTERS = {
@@ -270,9 +270,9 @@ const SingleAssessmentReportContainer = (props) => {
             setFirstLoad={setFirstLoad}
           />
           {!isCliUser && !reportId ? (
-            <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+            <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
               <IconFilter />
-            </FilterButton>
+            </FilterButtonClear>
           ) : null}
           <ReportContaner showFilter={showFilter}>
             <Route

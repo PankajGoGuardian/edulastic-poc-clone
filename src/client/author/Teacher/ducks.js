@@ -2,7 +2,6 @@ import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { userApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 
 const RECEIVE_TEACHERLIST_REQUEST = '[teacher] receive list request'

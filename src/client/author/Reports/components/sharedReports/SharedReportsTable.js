@@ -44,11 +44,12 @@ const SharedReportsTable = ({
       title: 'Shared By',
       key: 'sharedBy',
       dataIndex: 'sharedBy',
-      render: ({ name }) => name,
-      sorter: (a, b) =>
-        a.sharedBy.name
-          .toLowerCase()
-          .localeCompare(b.sharedBy.name.toLowerCase()),
+      render: ({ _id, name }) => (_id === currentUserId ? 'me' : name),
+      sorter: (a, b) => {
+        const aName = a.sharedBy._id === currentUserId ? 'me' : a.sharedBy.name
+        const bName = b.sharedBy._id === currentUserId ? 'me' : b.sharedBy.name
+        return aName.toLowerCase().localeCompare(bName.toLowerCase())
+      },
     },
     {
       title: 'Shared With',

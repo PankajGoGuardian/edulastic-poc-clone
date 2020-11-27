@@ -168,7 +168,7 @@ function* shareReportSaga({ payload }) {
       const sharedReportList = yield select(getSharedReportList)
       yield put({
         type: SHARE_REPORT_REQUEST_SUCCESS,
-        payload: [...sharedReportList, sharedReport],
+        payload: [sharedReport, ...sharedReportList],
       })
     }
     notification({

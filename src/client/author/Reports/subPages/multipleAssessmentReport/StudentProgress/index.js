@@ -17,7 +17,6 @@ import {
 } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import { getUserRole } from '../../../../src/selectors/user'
-import { getFiltersSelector } from '../common/filterDataDucks'
 import {
   getReportsStudentProgress,
   getReportsStudentProgressLoader,
@@ -61,21 +60,28 @@ const StudentProgress = ({
   loading,
   error,
   role,
-  filters,
   pageTitle,
   location,
   ddfilter,
   sharedReport,
 }) => {
-  const [userRole, isSharedReport] = useMemo(
-    () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
+  const [userRole, sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+      !!sharedReport?._id,
+    ],
     [sharedReport]
   )
   const profiles = MARFilterData?.data?.result?.bandInfo || []
 
   const bandInfo =
-    profiles.find((profile) => profile._id === filters.profileId)
-      ?.performanceBand ||
+    profiles.find(
+      (profile) =>
+        profile._id === (sharedReportFilters || settings.requestFilters).profileId
+    )?.performanceBand ||
     profiles[0]?.performanceBand ||
     DefaultBandInfo
 
@@ -222,7 +228,7 @@ const StudentProgress = ({
         )}
       />
       <TrendTable
-        filters={filters}
+        filters={sharedReportFilters || settings.requestFilters}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         data={dataSource}
@@ -272,7 +278,6 @@ const enhance = connect(
     studentProgress: getReportsStudentProgress(state),
     loading: getReportsStudentProgressLoader(state),
     error: getReportsStudentProgressError(state),
-    filters: getFiltersSelector(state),
     role: getUserRole(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),

@@ -18,7 +18,6 @@ import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
-  getSAFFilterSelectedPerformanceBandProfile,
   getTestListSelector,
 } from '../common/filterDataDucks'
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
@@ -42,7 +41,6 @@ const PeerPerformance = ({
   isCsvDownloading,
   role,
   performanceBandProfiles,
-  selectedPerformanceBand,
   peerPerformance,
   getPeerPerformance,
   settings,
@@ -50,9 +48,15 @@ const PeerPerformance = ({
   filters,
   sharedReport,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const selectedTest = testList.find(
     (t) => t._id === settings.selectedTest.key
   ) || { _id: '', title: '' }
@@ -63,7 +67,9 @@ const PeerPerformance = ({
   const bandInfo = useMemo(
     () =>
       performanceBandProfiles.find(
-        (profile) => profile._id === selectedPerformanceBand
+        (profile) =>
+          profile._id ===
+          (sharedReportFilters || settings.requestFilters).profileId
       )?.performanceBand ||
       performanceBandProfiles[0]?.performanceBand ||
       [],
@@ -260,7 +266,6 @@ PeerPerformance.propTypes = {
   role: PropTypes.string.isRequired,
   peerPerformance: reportPropType.isRequired,
   performanceBandProfiles: PropTypes.array.isRequired,
-  selectedPerformanceBand: PropTypes.string.isRequired,
   getPeerPerformance: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
 }
@@ -272,9 +277,6 @@ const enhance = compose(
       error: getReportsPeerPerformanceError(state),
       isCsvDownloading: getCsvDownloadingState(state),
       role: getUserRole(state),
-      selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(
-        state
-      ),
       performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
       peerPerformance: getReportsPeerPerformance(state),
       testList: getTestListSelector(state),

@@ -43,7 +43,6 @@ import {
 import { getUserRole } from '../../../../../student/Login/ducks'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
-  getSAFFilterSelectedPerformanceBandProfile,
   getSAFFilterPerformanceBandProfiles,
   getTestListSelector,
 } from '../common/filterDataDucks'
@@ -56,7 +55,6 @@ const PerformanceByStudents = ({
   isCsvDownloading,
   role,
   performanceBandProfiles,
-  selectedPerformanceBand,
   performanceByStudents,
   getPerformanceByStudents,
   settings,
@@ -69,8 +67,14 @@ const PerformanceByStudents = ({
   isCliUser,
   sharedReport,
 }) => {
-  const [userRole, isSharedReport] = useMemo(
-    () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
+  const [userRole, sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+      !!sharedReport?._id,
+    ],
     [sharedReport]
   )
   const selectedTest = testList?.find(
@@ -83,7 +87,9 @@ const PerformanceByStudents = ({
   const bandInfo = useMemo(
     () =>
       performanceBandProfiles.find(
-        (profile) => profile._id === selectedPerformanceBand
+        (profile) =>
+          profile._id ===
+          (sharedReportFilters || settings.requestFilters).profileId
       )?.performanceBand ||
       performanceBandProfiles[0]?.performanceBand ||
       [],
@@ -376,7 +382,6 @@ PerformanceByStudents.propTypes = {
   isCsvDownloading: PropTypes.bool.isRequired,
   role: PropTypes.string.isRequired,
   performanceBandProfiles: PropTypes.array.isRequired,
-  selectedPerformanceBand: PropTypes.string.isRequired,
   performanceByStudents: reportPropType.isRequired,
   getPerformanceByStudents: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
@@ -389,7 +394,6 @@ const withConnect = connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
-    selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(state),
     performanceByStudents: getReportsPerformanceByStudents(state),
     testList: getTestListSelector(state),
   }),

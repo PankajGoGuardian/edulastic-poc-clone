@@ -27,7 +27,6 @@ import {
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import {
-  getSAFFilterSelectedStandardsProficiencyProfile,
   getSAFFilterStandardsProficiencyProfiles,
   getTestListSelector,
 } from '../common/filterDataDucks'
@@ -71,21 +70,29 @@ const PerformanceByStandards = ({
   role,
   interestedCurriculums,
   isCsvDownloading,
-  selectedStandardProficiencyProfile,
   standardProficiencyProfiles,
   location,
   pageTitle,
   filters,
   sharedReport,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const scaleInfo = useMemo(
     () =>
       (
         standardProficiencyProfiles.find(
-          (s) => s._id === selectedStandardProficiencyProfile
+          (s) =>
+            s._id ===
+            (sharedReportFilters || settings.requestFilters)
+              .standardsProficiencyProfile
         ) || standardProficiencyProfiles[0]
       )?.scale,
     [settings]
@@ -350,7 +357,6 @@ PerformanceByStandards.propTypes = {
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
-  selectedStandardProficiencyProfile: PropTypes.string.isRequired,
   standardProficiencyProfiles: PropTypes.array.isRequired,
   interestedCurriculums: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
@@ -365,9 +371,6 @@ const enhance = connect(
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(
-      state
-    ),
     standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
       state
     ),

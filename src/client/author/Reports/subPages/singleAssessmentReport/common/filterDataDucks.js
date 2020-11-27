@@ -70,19 +70,9 @@ export const getReportsSARFilterLoadingState = createSelector(
   (state) => state.loading
 )
 
-export const getSAFFilterSelectedPerformanceBandProfile = createSelector(
-  stateSelector,
-  (state) => state.filters.performanceBandProfile
-)
-
 export const getSAFFilterPerformanceBandProfiles = createSelector(
   stateSelector,
   (state) => get(state, 'SARFilterData.data.result.bandInfo', [])
-)
-
-export const getSAFFilterSelectedStandardsProficiencyProfile = createSelector(
-  stateSelector,
-  (state) => state.filters.standardsProficiencyProfile
 )
 
 export const getSAFFilterStandardsProficiencyProfiles = createSelector(

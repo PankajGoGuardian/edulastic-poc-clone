@@ -3,12 +3,8 @@ import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {
-  MathInputStyles,
-  DraggableKeyboard,
-  EmptyDiv,
-  KeyboardIcon,
-} from './MathInputStyles'
+import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
+import Draggable from './Draggable'
 
 const { EMBED_RESPONSE } = math
 
@@ -348,9 +344,7 @@ class MathInput extends React.PureComponent {
       mathFieldFocus &&
       !hideKeyboardByDefault
 
-    const MathKeyboardWrapper = alwaysShowKeyboard
-      ? EmptyDiv
-      : DraggableKeyboard
+    const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : Draggable
 
     return (
       <MathInputStyles

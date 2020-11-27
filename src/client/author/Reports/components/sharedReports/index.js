@@ -49,36 +49,47 @@ const SharedReportsContainer = ({
   const sharedReportsData = useMemo(() => {
     // collaborative groups mapping where the current user is group admin
     const isCGAdmin = {}
+    const collaborativeGroupIds = []
     collaborativeGroupList.forEach((cg) => {
       const currentUserAsMember = cg.groupMembers.find(
         (u) => u._id === currentUserId
       )
       isCGAdmin[cg._id] = currentUserAsMember?.isAdmin
+      collaborativeGroupIds.push(cg._id)
     })
     // append reportGroupType and group admin flag for shared reports
-    return sharedReportList.map((sharedReport) => {
-      // reportGroupTypeTitle = 'Single Assessment Report'
-      // => reportGroupType = 'single-assessment-report'
-      const reportGroupTypeTitle =
-        navigation.locToData[sharedReport.reportType]?.groupTitle || '-'
-      const reportGroupType = reportGroupTypeTitle
-        .toLowerCase()
-        .split(' ')
-        .join('-')
-      /**
-       * TODO: uncomment below code and add backend support
-       * if groupAdmin is allowed to archive shared reports
-       */
-      // const isGroupAdmin = !!sharedReport.sharedWith.filter(
-      //   (cg) => isCGAdmin[cg._id]
-      // ).length
-      return {
-        ...sharedReport,
-        // isGroupAdmin,
-        reportGroupType,
-        reportGroupTypeTitle,
-      }
-    })
+    return sharedReportList
+      .map((sharedReport) => {
+        // reportGroupTypeTitle = 'Single Assessment Report'
+        // => reportGroupType = 'single-assessment-report'
+        const reportGroupTypeTitle =
+          navigation.locToData[sharedReport.reportType]?.groupTitle || '-'
+        const reportGroupType = reportGroupTypeTitle
+          .toLowerCase()
+          .split(' ')
+          .join('-')
+        const sharedWith = sharedReport.sharedWith
+          .filter((cg) => collaborativeGroupIds.includes(cg._id))
+          .sort((a, b) =>
+            a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+          )
+        const sharedWithNamesStr = sharedWith.map(({ name }) => name).join(', ')
+        /**
+         * TODO: uncomment below code and add backend support
+         * if groupAdmin is allowed to archive shared reports
+         */
+        // const isGroupAdmin = !!sharedWith.filter(
+        //   (cg) => isCGAdmin[cg._id]
+        // ).length
+        return {
+          ...sharedReport,
+          sharedWith,
+          sharedWithNamesStr,
+          reportGroupType,
+          reportGroupTypeTitle,
+        }
+      })
+      .sort((a, b) => b.createdAt - a.createdAt)
   }, [sharedReportList, collaborativeGroupList])
 
   return (

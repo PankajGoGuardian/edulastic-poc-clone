@@ -29,14 +29,16 @@ const SharedReportsTable = ({
       key: 'title',
       dataIndex: 'title',
       sorter: (a, b) =>
-        a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+        a.title.toLowerCase().localeCompare(b.title.toLowerCase()),
     },
     {
       title: 'Report Type',
       key: 'reportGroupTypeTitle',
       dataIndex: 'reportGroupTypeTitle',
       sorter: (a, b) =>
-        a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+        a.reportGroupTypeTitle
+          .toLowerCase()
+          .localeCompare(b.reportGroupTypeTitle.toLowerCase()),
     },
     {
       title: 'Shared By',
@@ -44,15 +46,16 @@ const SharedReportsTable = ({
       dataIndex: 'sharedBy',
       render: ({ name }) => name,
       sorter: (a, b) =>
-        a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+        a.sharedBy.name
+          .toLowerCase()
+          .localeCompare(b.sharedBy.name.toLowerCase()),
     },
     {
       title: 'Shared With',
-      key: 'sharedWith',
-      dataIndex: 'sharedWith',
-      render: (data) => (data || []).map(({ name }) => name).join(', '),
+      key: 'sharedWithNamesStr',
+      dataIndex: 'sharedWithNamesStr',
       sorter: (a, b) =>
-        a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+        a.sharedWithNamesStr.localeCompare(b.sharedWithNamesStr),
     },
     {
       title: 'Date',

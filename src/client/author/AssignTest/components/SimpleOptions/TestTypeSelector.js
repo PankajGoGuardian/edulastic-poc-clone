@@ -31,17 +31,20 @@ const TestTypeSelector = ({
       onChange={onAssignmentTypeChange}
       value={testType}
       disabled={disabled}
+      getPopupContainer={(node) => node.parentNode}
     >
       {isAdmin && !districtPermissions.includes('publisher') && (
         <Select.Option key={COMMON} value={COMMON}>
           Common Assessment
         </Select.Option>
       )}
-      {Object.keys(testTypes).map((key) => (
-        <Select.Option key={key} value={key}>
-          {testTypes[key]}
-        </Select.Option>
-      ))}
+      {Object.keys(testTypes).map((key) => {
+        return (
+          <Select.Option key={key} value={key}>
+            {testTypes[key]}
+          </Select.Option>
+        )
+      })}
     </StyledSelect>
   )
 

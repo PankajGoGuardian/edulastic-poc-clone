@@ -1635,6 +1635,7 @@ function* addRecommendationsSaga({ payload }) {
     } else {
       response = yield call(recommendationsApi.acceptRecommendations, payload)
     }
+
     payload = Array.isArray(payload) ? payload[0] : payload
     yield put(updateFetchWorkLoadingStateAction(true))
     const statusData = yield call(recommendationsApi.getRecommendationsStatus, {
@@ -2258,7 +2259,7 @@ const setSelectedItemsForAssignReducer = (state, { payload }) => {
  */
 const setRecommendationsToAssignReducer = (state, { payload }) => {
   if (!payload) {
-    return
+    return state
   }
 
   const recommendationsToAssign = { ...state.recommendationsToAssign }

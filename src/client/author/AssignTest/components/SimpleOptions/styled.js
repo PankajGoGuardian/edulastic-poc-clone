@@ -12,13 +12,17 @@ import {
   white,
 } from '@edulastic/colors'
 import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { EduSwitchStyled } from '@edulastic/common'
 
 const RadioGroup = Radio.Group
 
 export const OptionConationer = styled.div`
-  min-height: 80vh;
+  ${({ hasMinHeight = true }) =>
+    hasMinHeight &&
+    css`
+      min-height: 80vh;
+    `}
   display: flex;
   justify-content: center;
   align-items: center;
@@ -411,6 +415,13 @@ export const Title = styled.div`
   font-weight: 700;
   letter-spacing: 0.3px;
   color: ${secondaryTextColor};
+`
+
+export const StyledLink = styled.span`
+  font-size: 15px;
+  color: ${themeColor};
+  cursor: pointer;
+  text-decoration: underline;
 `
 
 export const TimeSpentInput = styled(Input)`

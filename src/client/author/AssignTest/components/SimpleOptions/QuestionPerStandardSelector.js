@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
 import React from 'react'
-import { Col } from 'antd'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 
 const QuestionPerStandardSelector = ({
@@ -8,17 +6,18 @@ const QuestionPerStandardSelector = ({
   questionPerStandard,
   options,
 }) => (
-  <Col span={12}>
+  <>
     <FieldLabel>QUESTIONS PER STANDARD</FieldLabel>
     <SelectInputStyled
       data-cy="selectQuestionPerStandard"
-      placeholder="Select number of questions for each standard"
+      placeholder="Questions per standard"
       onChange={onChange}
       value={questionPerStandard}
+      getPopupContainer={(node) => node.parentNode}
     >
-      {options.map(({ value: val, label }) => (
+      {options.map(({ val, label }) => (
         <SelectInputStyled.Option
-          data-cy={`selectQuestionPerStandard${val}`}
+          data-cy={`selectQuestionPerStandard-${val}`}
           key={val}
           value={val}
         >
@@ -26,7 +25,7 @@ const QuestionPerStandardSelector = ({
         </SelectInputStyled.Option>
       ))}
     </SelectInputStyled>
-  </Col>
+  </>
 )
 
 export default QuestionPerStandardSelector

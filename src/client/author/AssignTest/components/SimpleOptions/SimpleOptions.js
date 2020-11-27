@@ -24,6 +24,7 @@ import ClassSelector from './ClassSelector'
 import DateSelector from './DateSelector'
 import Settings from './Settings'
 import StudentSelector from './StudentSelector'
+import QuestionPerStandardSelector from './QuestionPerStandardSelector'
 import {
   InitOptions,
   OptionConationer,
@@ -314,6 +315,10 @@ class SimpleOptions extends React.Component {
     const studentOfSelectedClass = getListOfActiveStudents(students, classIds)
     const showOpenDueAndCloseDate =
       !isAssignRecommendations && features.assignTestEnableOpenDueAndCloseDate
+    const questionPerStandardOptions = [...Array(8)].map((_, i) => ({
+      val: i + 1,
+      label: i + 1,
+    }))
 
     return (
       <OptionConationer>
@@ -418,6 +423,20 @@ class SimpleOptions extends React.Component {
               />
             </Col>
           </StyledRow>
+          {isAssignRecommendations && (
+            <StyledRow gutter={32} mb="25px">
+              <Col span={12}>
+                <QuestionPerStandardSelector
+                  onChange={changeField('questionPerStandard')}
+                  questionPerStandard={
+                    assignment.questionPerStandard ||
+                    testSettings.questionPerStandard
+                  }
+                  options={questionPerStandardOptions}
+                />
+              </Col>
+            </StyledRow>
+          )}
           <StyledRowButton gutter={32}>
             <Col>
               <SettingsBtn onClick={this.toggleSettings}>

@@ -73,6 +73,10 @@ const AssignRecommendations = ({
   }, [])
 
   const handleAssign = () => {
+    if (recommendationsToAssign.isAssigning) {
+      return
+    }
+
     const updatedAssignmentSettings = produce(assignmentSettings, (draft) => {
       if (
         draft.passwordPolicy !==

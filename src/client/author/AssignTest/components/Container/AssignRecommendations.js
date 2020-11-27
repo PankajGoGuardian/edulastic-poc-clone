@@ -91,6 +91,8 @@ const AssignRecommendations = ({
       ) {
         delete draft.assignmentPassword
       }
+      draft.startDate = moment(draft.startDate).valueOf()
+      draft.endDate = moment(draft.endDate).valueOf()
     })
 
     if (

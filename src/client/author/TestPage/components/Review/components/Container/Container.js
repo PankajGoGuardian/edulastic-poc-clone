@@ -282,6 +282,19 @@ class Review extends PureComponent {
     }
   }
 
+  completeMoveTestItems = (items) => {
+    const { test, setData } = this.props
+    if (test.itemGroups.length > 1) {
+      console.log(items)
+    } else {
+      setData(
+        produce(test, (draft) => {
+          draft.itemGroups[0].items = items
+        })
+      )
+    }
+  }
+
   handleMoveTo = (newIndex) => {
     const { test } = this.props
     const oldIndex = test.itemGroups
@@ -480,6 +493,10 @@ class Review extends PureComponent {
         title: current,
         to: '',
       },
+      {
+        title: test.title,
+        to: '',
+      },
     ]
 
     const isSmallSize = windowWidth > 993 ? 1 : 0
@@ -559,6 +576,7 @@ class Review extends PureComponent {
                 onChangePoints={this.handleChangePoints}
                 handlePreview={this.handlePreviewTestItem}
                 moveTestItems={this.moveTestItems}
+                onCompleteMoveItem={this.completeMoveTestItems}
                 removeTestItem={this.handleRemoveOne}
                 getContainer={() => this.containerRef.current}
                 setSelected={this.setSelected}

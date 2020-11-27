@@ -12,6 +12,7 @@ import {
   IconSend,
   IconSettings,
   IconShare,
+  IconTestBank,
 } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { memo, useEffect, useState } from 'react'
@@ -419,9 +420,11 @@ const TestPageHeader = ({
           headingText={
             title || (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
           }
+          Icon={IconTestBank}
           headingSubContent={headingSubContent}
-          flexDirection="column"
-          alignItems="flex-start"
+          titleMarginTop="10px"
+          flexDirection="row"
+          alignItems="center"
           titleMaxWidth="250px"
         >
           <TestPageNav
@@ -432,7 +435,11 @@ const TestPageHeader = ({
             showPublishButton={!showShareButton || showPublishButton}
           />
 
-          <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
+          <RightFlexContainer
+            childMarginRight="5"
+            justifyContent="flex-end"
+            mt="12px"
+          >
             {showShareButton &&
               !isPlaylist &&
               !isDocBased &&

@@ -5,6 +5,7 @@ import { title, themeColor } from '@edulastic/colors'
 export const DragCrad = styled.div`
   display: flex;
   align-items: center;
+  padding-left: ${({ noPadding }) => !noPadding && '30px'};
 `
 
 export const DragHandler = styled.div`
@@ -16,7 +17,7 @@ export const DragHandler = styled.div`
 export const ReviewItemWrapper = styled.div`
   padding: 16px;
   border-bottom: 1px solid #e8e8e8;
-  width: calc(100% - 30px);
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'calc(100% - 30px)')};
   background: white;
 
   &:first-child {

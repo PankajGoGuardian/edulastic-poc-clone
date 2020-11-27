@@ -1,13 +1,13 @@
-import { SpinLoader } from '@edulastic/common'
-import { Col, Row } from 'antd'
-import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import { getUserRole } from '../../../../../student/Login/ducks'
+import PropTypes from 'prop-types'
+
+import { Col, Row } from 'antd'
+import { SpinLoader } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState } from '../../../ducks'
 import { SimpleStackedBarWithLineChartContainer } from './componenets/charts/simpleStackedBarWithLineChartContainer'
 import {
   StyledCard,
@@ -16,6 +16,9 @@ import {
   UpperContainer,
 } from './componenets/styled'
 import { QuestionAnalysisTable } from './componenets/table/questionAnalysisTable'
+
+import { getUserRole } from '../../../../../student/Login/ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getQuestionAnalysisRequestAction,
   getReportsQuestionAnalysis,
@@ -23,8 +26,10 @@ import {
   getReportsQuestionAnalysisError,
 } from './ducks'
 import { getTestListSelector } from '../common/filterDataDucks'
-import dropDownData from './static/json/dropDownData.json'
+
 import { getChartData, getTableData } from './utils/transformers'
+
+import dropDownData from './static/json/dropDownData.json'
 
 const QuestionAnalysis = ({
   loading,
@@ -37,11 +42,12 @@ const QuestionAnalysis = ({
   testList,
   sharedReport,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, isSharedReport] = useMemo(
+    () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
+    [sharedReport]
+  )
   const [compareBy, setCompareBy] = useState(
-    userRole === 'teacher' ? 'groupId' : 'schoolId'
+    userRole === roleuser.TEACHER ? 'groupId' : 'schoolId'
   )
   const [chartFilter, setChartFilter] = useState({})
 
@@ -126,14 +132,14 @@ const QuestionAnalysis = ({
                 <Col>
                   <StyledH3>
                     Detailed Performance Analysis{' '}
-                    {userRole !== 'teacher'
+                    {userRole !== roleuser.TEACHER
                       ? `By ${dropDownKeyToLabel[compareBy]}`
                       : ''}{' '}
                     | {assessmentName}
                   </StyledH3>
                 </Col>
                 <Col>
-                  {userRole!== 'teacher' ? (
+                  {userRole !== roleuser.TEACHER ? (
                     <ControlDropDown
                       prefix="Compare by"
                       by={compareByDropDownData[0]}
@@ -152,6 +158,7 @@ const QuestionAnalysis = ({
                 filter={chartFilter}
                 role={userRole}
                 compareByTitle={dropDownKeyToLabel[compareBy]}
+                isSharedReport={isSharedReport}
               />
             </Col>
           </Row>

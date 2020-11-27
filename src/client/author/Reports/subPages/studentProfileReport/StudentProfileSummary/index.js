@@ -68,11 +68,13 @@ const StudentProfileSummary = ({
   sharedReport,
   t,
 }) => {
-  const sharedReportFilters = useMemo(
-    () =>
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
       sharedReport?._id
         ? { ...sharedReport.filters, reportId: sharedReport?._id }
         : null,
+      !!sharedReport?._id,
+    ],
     [sharedReport]
   )
 
@@ -138,24 +140,24 @@ const StudentProfileSummary = ({
   }, [settings])
 
   const _onBarClickCB = (key, args) => {
-    history.push({
-      pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
-      state: {
-        // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-        breadCrumb: [
-          {
-            title: 'INSIGHTS',
-            to: '/author/reports',
-          },
-          {
-            title: pageTitle,
-            to: `${location.pathname}${location.search}`,
-          },
-        ],
-      },
-    })
+    !isSharedReport &&
+      history.push({
+        pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
+        state: {
+          // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+          breadCrumb: [
+            {
+              title: 'INSIGHTS',
+              to: '/author/reports',
+            },
+            {
+              title: pageTitle,
+              to: `${location.pathname}${location.search}`,
+            },
+          ],
+        },
+      })
   }
-
   if (loading || reportsSPRFilterLoadingState) {
     return <SpinLoader position="fixed" />
   }
@@ -216,7 +218,7 @@ const StudentProfileSummary = ({
             studentInformation={studentClassInfo}
             xTickTooltipPosition={400}
             onBarClickCB={_onBarClickCB}
-            isBarClickable
+            isBarClickable={!isSharedReport}
             printWidth={700}
           />
         </Card>

@@ -50,11 +50,13 @@ const StandardsGradebook = ({
   userRole,
   sharedReport,
 }) => {
-  const sharedReportFilters = useMemo(
-    () =>
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
       sharedReport?._id
         ? { ...sharedReport.filters, reportId: sharedReport?._id }
         : null,
+      !!sharedReport?._id,
+    ],
     [sharedReport]
   )
   const standardsCount = get(
@@ -196,6 +198,7 @@ const StandardsGradebook = ({
           standardsData={standardsData}
           location={location}
           pageTitle={pageTitle}
+          isSharedReport={isSharedReport}
         />
       </TableContainer>
       {showStudentAssignmentModal && (

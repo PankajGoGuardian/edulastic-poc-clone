@@ -38,11 +38,13 @@ const StudentAssessmentProfile = ({
 }) => {
   const anonymousString = t('common.anonymous')
 
-  const sharedReportFilters = useMemo(
-    () =>
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
       sharedReport?._id
         ? { ...sharedReport.filters, reportId: sharedReport?._id }
         : null,
+      !!sharedReport?._id,
+    ],
     [sharedReport]
   )
 
@@ -149,6 +151,7 @@ const StudentAssessmentProfile = ({
           selectedTests={selectedTests}
           location={location}
           pageTitle={pageTitle}
+          isSharedReport={isSharedReport}
         />
       </StyledCard>
     </>

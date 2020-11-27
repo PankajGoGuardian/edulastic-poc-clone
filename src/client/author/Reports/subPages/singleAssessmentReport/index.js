@@ -315,7 +315,11 @@ const SingleAssessmentReportContainer = (props) => {
               exact
               path="/author/reports/response-frequency/test/:testId?"
               render={(_props) => (
-                <ResponseFrequency {..._props} settings={transformedSettings} />
+                <ResponseFrequency
+                  {..._props}
+                  settings={transformedSettings}
+                  sharedReport={sharedReport}
+                />
               )}
             />
             <Route

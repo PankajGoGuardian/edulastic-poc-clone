@@ -1,15 +1,17 @@
-import { SpinLoader } from '@edulastic/common'
-import { Col, Row } from 'antd'
-import { isEmpty } from 'lodash'
-import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { isEmpty } from 'lodash'
+
+import { Col, Row } from 'antd'
+import { SpinLoader } from '@edulastic/common'
 import { StyledH3, StyledSlider, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { StackedBarChartContainer } from './components/charts/stackedBarChartContainer'
 import { StyledCard, StyledContainer } from './components/styled'
 import { ResponseFrequencyTable } from './components/table/responseFrequencyTable'
+
+import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import {
   getReportsResponseFrequency,
   getReportsResponseFrequencyLoader,
@@ -17,6 +19,7 @@ import {
   getReportsResponseFrequencyError,
 } from './ducks'
 import { getTestListSelector } from '../common/filterDataDucks'
+
 import jsonData from './static/json/data.json'
 
 const filterData = (data, filter) =>
@@ -33,7 +36,9 @@ const ResponseFrequency = ({
   getResponseFrequency,
   settings,
   testList,
+  sharedReport,
 }) => {
+  const isSharedReport = !!sharedReport?._id
   const [difficultItems, setDifficultItems] = useState(40)
   const [misunderstoodItems, setMisunderstoodItems] = useState(20)
   const [filter, setFilter] = useState({})
@@ -177,6 +182,7 @@ const ResponseFrequency = ({
           incorrectFrequencyThreshold={misunderstoodItems}
           isPrinting={isPrinting}
           isCsvDownloading={isCsvDownloading}
+          isSharedReport={isSharedReport}
         />
       </StyledContainer>
     </div>

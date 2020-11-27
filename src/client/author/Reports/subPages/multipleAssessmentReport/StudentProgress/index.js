@@ -67,9 +67,10 @@ const StudentProgress = ({
   ddfilter,
   sharedReport,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, isSharedReport] = useMemo(
+    () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
+    [sharedReport]
+  )
   const profiles = MARFilterData?.data?.result?.bandInfo || []
 
   const bandInfo =
@@ -212,7 +213,7 @@ const StudentProgress = ({
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
         handleAddToGroupClick={handleAddToGroupClick}
-        isSharedReport={!!sharedReport?._id}
+        isSharedReport={isSharedReport}
         renderFilters={() => (
           <AnalyseByFilter
             onFilterChange={setAnalyseBy}
@@ -235,6 +236,7 @@ const StudentProgress = ({
         isCellClickable
         location={location}
         pageTitle={pageTitle}
+        isSharedReport={isSharedReport}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow

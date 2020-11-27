@@ -69,9 +69,10 @@ const PerformanceByStudents = ({
   isCliUser,
   sharedReport,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, isSharedReport] = useMemo(
+    () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
+    [sharedReport]
+  )
   const selectedTest = testList?.find(
     (test) => test._id === settings.selectedTest.key
   ) || { _id: '', title: '' }
@@ -179,6 +180,7 @@ const PerformanceByStudents = ({
     userRole,
     location,
     pageTitle,
+    isSharedReport,
     t
   )
 
@@ -212,7 +214,7 @@ const PerformanceByStudents = ({
   // it will check if student have assignment for this test
   // then redirect to lcb student veiw
   // or show notification
-  if (customStudentUserId && !loading) {
+  if (customStudentUserId && !loading && !isSharedReport) {
     const studentData = tableData.find(
       (d) => d.externalId === customStudentUserId
     )
@@ -306,7 +308,7 @@ const PerformanceByStudents = ({
               xl={12}
               className="dropdown-container"
             >
-              {!isCliUser && !sharedReport?._id && (
+              {!isCliUser && !isSharedReport && (
                 <FeaturesSwitch
                   inputFeatures="studentGroups"
                   actionOnInaccessible="hidden"

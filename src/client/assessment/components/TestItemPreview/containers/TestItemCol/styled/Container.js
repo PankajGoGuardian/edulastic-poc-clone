@@ -76,4 +76,5 @@ export const WidgetContainer = styled.div`
   align-items: flex-start;
   position: relative;
   flex-grow: 1;
+  min-height: max-content; // to fix height issue with safari
 `

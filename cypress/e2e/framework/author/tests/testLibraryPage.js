@@ -412,7 +412,7 @@ export default class TestLibrary {
           assert(xhr.status === 200, 'Test drafted')
         )
       })
-    return cy.get('[data-cy-item-index="0"]', { timeout: 30000 })
+    return cy.get('[data-cy-item-index="1"]', { timeout: 30000 })
   }
 
   duplicateTestInReview = () => {
@@ -595,7 +595,7 @@ export default class TestLibrary {
     return cy
       .url()
       .should('contain', '/old/')
-      .then(() => cy.get('[data-cy-item-index="0"]'))
+      .then(() => cy.get('[data-cy-item-index="1"]'))
       .then(() => {
         this.getVersionedTestID().then((id) => cy.saveTestDetailToDelete(id))
       })

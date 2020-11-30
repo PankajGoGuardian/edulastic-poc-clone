@@ -215,7 +215,7 @@ export default class TestReviewTab {
     this.getQueCardByItemIdInCollapsed(id)
       .children()
       .first()
-      .should('have.attr', 'data-cy-item-index', (index - 1).toString())
+      .should('have.attr', 'data-cy-item-index', index.toString())
   }
 
   verifyNoOfItemsInGroupByNo = (group, itemCount) => {

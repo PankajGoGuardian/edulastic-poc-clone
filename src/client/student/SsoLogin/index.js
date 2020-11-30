@@ -18,6 +18,7 @@ import {
   atlasSSOLoginAction,
   googleLoginAction,
   getUserDataAction,
+  newselaSSOLoginAction,
 } from '../Login/ducks'
 
 class SsoLogin extends React.Component {
@@ -28,6 +29,7 @@ class SsoLogin extends React.Component {
       cleverSSOLogin,
       msoSSOLogin,
       atlasSSOLogin,
+      newselaSSOLogin,
     } = this.props
     const { addAccount, addAccountTo } = JSON.parse(
       sessionStorage.getItem('addAccountDetails') || '{}'
@@ -67,6 +69,11 @@ class SsoLogin extends React.Component {
         ?.state
       if (state) payload.state = JSON.parse(state)
       atlasSSOLogin(payload)
+    } else if (path.includes('newsela')) {
+      const state = qs.parse(location.search, { ignoreQueryPrefix: true })
+        ?.state
+      if (state) payload.state = JSON.parse(state)
+      newselaSSOLogin(payload)
     }
   }
 
@@ -121,6 +128,7 @@ const enhance = compose(
       atlasSSOLogin: atlasSSOLoginAction,
       googleLogin: googleLoginAction,
       getUserData: getUserDataAction,
+      newselaSSOLogin: newselaSSOLoginAction,
     }
   )
 )

@@ -146,6 +146,15 @@ const updateInvitedUserDetails = (data) =>
     })
     .then((result) => result.data.result)
 
+const newselaLogin = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/callback-sso/newsela`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   login,
   signup,
@@ -164,4 +173,5 @@ export default {
   validateClassCode,
   getInvitedUserDetails,
   updateInvitedUserDetails,
+  newselaLogin,
 }

@@ -52,6 +52,7 @@ export const GOOGLE_SSO_LOGIN = '[auth] google sso login'
 export const CLEVER_SSO_LOGIN = '[auth] clever sso login'
 export const MSO_SSO_LOGIN = '[auth] mso sso login'
 export const ATLAS_SSO_LOGIN = '[auth] atlas sso login'
+export const NEWSELA_SSO_LOGIN = '[auth] newsela sso login'
 export const GET_USER_DATA = '[auth] get user data from sso response'
 export const SET_USER = '[auth] set user'
 export const SIGNUP = '[auth] signup'
@@ -161,6 +162,7 @@ export const msoLoginAction = createAction(MSO_LOGIN)
 export const googleSSOLoginAction = createAction(GOOGLE_SSO_LOGIN)
 export const cleverSSOLoginAction = createAction(CLEVER_SSO_LOGIN)
 export const atlasSSOLoginAction = createAction(ATLAS_SSO_LOGIN)
+export const newselaSSOLoginAction = createAction(NEWSELA_SSO_LOGIN)
 export const getUserDataAction = createAction(GET_USER_DATA)
 export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN)
 export const setUserAction = createAction(SET_USER)
@@ -1459,6 +1461,31 @@ function* atlasSSOLogin({ payload }) {
   localStorage.removeItem('thirdPartySignOnGeneralSettings')
 }
 
+function* handleNewselaRedirect({ payload }) {
+  try {
+    const res = yield call(authApi.newselaLogin, payload)
+    yield put(getUserDataAction(res))
+  } catch (e) {
+    if (
+      e?.response?.data?.message ===
+      'User not yet authorized to use Edulastic. Please contact your district administrator!'
+    ) {
+      yield put(
+        push({
+          pathname: getSignOutUrl(),
+          state: { showUnauthorized: true },
+          hash: '#login',
+        })
+      )
+    } else {
+      notification({ msg: e?.data?.message || 'Newsela Login failed' })
+      yield put(push(getSignOutUrl()))
+    }
+    removeSignOutUrl()
+  }
+  localStorage.removeItem('thirdPartySignOnRole')
+}
+
 function* getUserData({ payload: res }) {
   try {
     const { firebaseAuthToken } = res
@@ -1833,6 +1860,7 @@ export function* watcherSaga() {
   yield takeLatest(GOOGLE_SSO_LOGIN, googleSSOLogin)
   yield takeLatest(CLEVER_SSO_LOGIN, cleverSSOLogin)
   yield takeLatest(ATLAS_SSO_LOGIN, atlasSSOLogin)
+  yield takeLatest(NEWSELA_SSO_LOGIN, handleNewselaRedirect)
   yield takeLatest(GET_USER_DATA, getUserData)
   yield takeLatest(MSO_SSO_LOGIN, msoSSOLogin)
   yield takeLatest(UPDATE_USER_ROLE_REQUEST, updateUserRoleSaga)

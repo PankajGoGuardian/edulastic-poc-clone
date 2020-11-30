@@ -22,6 +22,7 @@ import {
   receiveCurrentPlaylistMetrics,
   playlistDestinationReorderTestsAction,
   addItemIntoPlaylistModuleAction,
+  resequenceModulesCSAction,
 } from '../ducks'
 import ShareModal from '../../src/components/common/ShareModal'
 import { CollectionsSelectModal } from '../../PlaylistPage/components/CollectionsSelectModal/collectionsSelectModal'
@@ -321,6 +322,11 @@ class CurriculumContainer extends Component {
     )
   }
 
+  onSortEnd = (indexes) => {
+    const { resequenceModules } = this.props
+    resequenceModules(indexes)
+  }
+
   render() {
     const {
       windowWidth,
@@ -345,6 +351,7 @@ class CurriculumContainer extends Component {
       handleShare,
       onShareModalChange,
       collapseExpandModule,
+      onSortEnd,
     } = this
 
     const { sourceCurriculumSequence } = this.getSourceDestinationCurriculum()
@@ -399,6 +406,7 @@ class CurriculumContainer extends Component {
           onShareClick={handleShare}
           windowWidth={windowWidth}
           onDrop={onDrop}
+          onSortEnd={onSortEnd}
           match={match}
           mode={mode}
           loading={loading}
@@ -434,6 +442,7 @@ CurriculumContainer.propTypes = {
   searchCurriculumSequences: PropTypes.func.isRequired,
   moveContentInPlaylist: PropTypes.func.isRequired,
   toggleAddContent: PropTypes.func.isRequired,
+  resequenceModules: PropTypes.func.isRequired,
 }
 
 CurriculumContainer.defaultProps = {
@@ -475,6 +484,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(playlistDestinationReorderTestsAction(payload)),
   addIntoModule: (payload) =>
     dispatch(addItemIntoPlaylistModuleAction(payload)),
+  resequenceModules: (payload) => dispatch(resequenceModulesCSAction(payload)),
 })
 
 const enhance = compose(

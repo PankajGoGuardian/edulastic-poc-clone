@@ -554,6 +554,7 @@ export const getTestItemsSelector = createSelector(
               ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM,
           })) || []
       ) || []
+    console.log(testItems)
     testItems = sortTestItemQuestions(testItems)
     return testItems
   }

@@ -19,7 +19,8 @@ const ReviewItems = ({
   owner,
   onChangePoints,
   handlePreview,
-  removeTestItem,
+  removeSingle,
+  removeMultiple,
   onCompleteMoveItem,
   // moveTestItems,
   setSelected,
@@ -35,11 +36,11 @@ const ReviewItems = ({
   const container = getContainer()
   if (!container) return null
 
-  const handleCheckboxChange = (index, checked) => {
+  const handleCheckboxChange = (itemId, checked) => {
     if (checked) {
-      setSelected([...selected, index])
+      setSelected([...selected, itemId])
     } else {
-      const newSelected = selected.filter((item) => item !== index)
+      const newSelected = selected.filter((id) => id !== itemId)
       setSelected(newSelected)
     }
   }
@@ -116,7 +117,8 @@ const ReviewItems = ({
         selected={selected}
         questions={questions}
         rows={rows}
-        removeItem={removeTestItem}
+        removeSingle={removeSingle}
+        removeMultiple={removeMultiple}
         getContainer={getContainer}
         itemGroups={itemGroups}
         isPublishers={isPublishers}

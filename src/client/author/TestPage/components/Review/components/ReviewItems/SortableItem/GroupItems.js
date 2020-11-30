@@ -40,7 +40,7 @@ const GroupItems = SortableContainer((props) => {
   }, [minimize, items])
 
   return (
-    <GroupItemsContainer>
+    <GroupItemsContainer minimize={minimize}>
       <DragCrad noPadding={!minimize} data-cy="group-drag-card">
         {minimize && <DragHandle indx={indexStr} isEditable={isEditable} />}
         <div className="group-items">
@@ -77,13 +77,14 @@ const GroupItemsContainer = styled.div`
   position: relative;
 
   & .group-items {
-    width: 100%;
+    flex-shrink: 0;
+    width: ${({ minimize }) => (minimize ? 'calc(100% - 30px)' : '100%')};
   }
 `
 
 const PlusButton = styled(EduButton)`
-  width: 18px;
-  height: 18px;
+  width: 18px !important;
+  height: 18px !important;
   top: 50%;
   border-radius: 50%;
   position: absolute;
@@ -102,9 +103,9 @@ const GroupLine = styled.div`
   border: ${({ minimize }) => !minimize && '1px solid'};
   border-color: ${greyThemeLight};
   position: absolute;
-  top: 2.6em;
+  top: 2em;
   left: 9px;
-  bottom: 5.2em;
+  bottom: 4.9em;
   border-right: 0px;
   border-radius: 4px 0px 0px 4px;
 `

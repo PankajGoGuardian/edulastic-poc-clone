@@ -18,7 +18,7 @@ const PassageConfirmationModal = ({
       height="40px"
       width="200px"
     >
-      No, I will select
+      {removing ? 'No, remove current item' : 'No, I will select'}
     </EduButton>,
     <EduButton onClick={() => handleResponse(true)} height="40px" width="200px">
       Yes, {removing ? `Remove` : `Add`} all
@@ -38,7 +38,11 @@ const PassageConfirmationModal = ({
       <ModalHeader>
         <ModalHeaderTitle>
           <IconAlert width={28} height={24} />
-          <span>Add passage item to test</span>
+          {removing ? (
+            <span>Remove passage item(s) from test</span>
+          ) : (
+            <span>Add passage item(s) to test</span>
+          )}
         </ModalHeaderTitle>
         <EduButton
           IconBtn

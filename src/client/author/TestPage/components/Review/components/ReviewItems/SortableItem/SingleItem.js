@@ -11,7 +11,7 @@ const SortableItem = SortableElement((props) => {
       {!expand && !hideHanlde && (
         <DragHandle isEditable={isEditable} indx={item.indx} />
       )}
-      <ReviewItemWrapper data-cy={item.id} fullWidth={hideHanlde}>
+      <ReviewItemWrapper data-cy={item._id} fullWidth={hideHanlde}>
         <ReviewItem {...props} />
       </ReviewItemWrapper>
     </DragCrad>

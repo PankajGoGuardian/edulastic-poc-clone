@@ -45,7 +45,7 @@ const Expanded = ({
   onSelect,
   onDelete,
   collapsRow,
-  checked,
+  selected,
   points: pointsProp,
 }) => {
   /**
@@ -108,7 +108,9 @@ const Expanded = ({
             flexDirection="column"
             justifyContent="center"
           >
-            <CheckboxLabel checked={checked} onChange={onSelect} />
+            {isEditable && (
+              <CheckboxLabel checked={selected} onChange={onSelect} />
+            )}
           </FlexContainer>
         )}
         <FlexContainer>
@@ -177,7 +179,7 @@ const Expanded = ({
                   justifyContent="center"
                 >
                   {isEditable && (
-                    <CheckboxLabel checked={checked} onChange={onSelect} />
+                    <CheckboxLabel checked={selected} onChange={onSelect} />
                   )}
                 </FlexContainer>
               )}

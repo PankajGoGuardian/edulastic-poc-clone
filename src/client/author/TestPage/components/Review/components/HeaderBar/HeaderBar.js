@@ -63,11 +63,7 @@ const HeaderBar = ({
     <Container windowWidth={windowWidth} hasStickyHeader={hasStickyHeader}>
       {owner && isEditable ? (
         <Item>
-          <CheckboxLabel
-            data-cy="selectAllCh"
-            onChange={onSelectAll}
-            labelFontSize="9px"
-          >
+          <CheckboxLabel data-cy="selectAllCh" onChange={onSelectAll}>
             Select All
           </CheckboxLabel>
         </Item>
@@ -78,27 +74,25 @@ const HeaderBar = ({
       )}
       <MobileButtomContainer style={{ display: 'flex' }}>
         <EduButton
-          height="20px"
+          height="32px"
           data-cy="viewAsStudent"
-          fontSize="9px"
-          isBlue
+          isGhost
           onClick={onShowTestPreview}
           color="primary"
         >
-          <IconEye width={12} height={12} />
+          <IconEye color={themeColor} width={12} height={12} />
           {windowWidth > 767 && <span>View as Student</span>}
         </EduButton>
         {owner && isEditable && (
           <EduButton
-            height="20px"
-            fontSize="9px"
+            height="32px"
             isGhost
             data-cy="removeSelected"
             disabled={disableRMbtns}
             onClick={!disableRMbtns ? onRemoveSelected : () => null}
             color="primary"
           >
-            <IconClose color={themeColor} width={9} height={9} />
+            <IconClose color={themeColor} width={12} height={12} />
             {windowWidth > 767 && <span>Remove Selected</span>}
           </EduButton>
         )}
@@ -107,8 +101,7 @@ const HeaderBar = ({
             <EduButton
               data-cy="moveto"
               disabled={disableRMbtns}
-              height="20px"
-              fontSize="9px"
+              height="32px"
               isGhost
               onClick={!disableRMbtns ? handleMoveTo : () => null}
               color="primary"
@@ -128,8 +121,7 @@ const HeaderBar = ({
         )}
         <EduButton
           data-cy={setCollapse ? 'expand-rows' : 'collapse-rows'}
-          height="20px"
-          fontSize="9px"
+          height="32px"
           isGhost
           onClick={onCollapse}
           color="primary"
@@ -146,7 +138,7 @@ const HeaderBar = ({
 
         {windowWidth < 1200 && (
           <EduButton
-            height="20px"
+            height="32px"
             isGhost
             style={{
               background: !isShowSummary ? themeColor : '',
@@ -156,7 +148,6 @@ const HeaderBar = ({
             }}
             onClick={toggleSummary}
             color="primary"
-            fontSize="9px"
           >
             <IconDescription
               color={isShowSummary ? themeColor : white}

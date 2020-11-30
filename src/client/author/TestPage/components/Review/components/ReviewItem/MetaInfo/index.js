@@ -53,38 +53,24 @@ const MetaInfo = ({
 
   return (
     <FlexContainer
-      mt="15px"
       justifyContent="space-between"
-      alignItems="flex-end"
+      style={{ width: '100%', paddingTop: '15px' }}
     >
       <FlexContainer>
-        {!isPublisherUser && !!isPremium && (
-          <PremiumTag key="premium" mr="16px">
-            Premium
-          </PremiumTag>
-        )}
         {item && item.data && (
-          <Standards
-            item={item}
-            search={{ curriculumId: '' }}
-            reviewpage
-            margin="0px"
-            labelStyle={{ marginBottom: 0 }}
-          />
+          <Standards item={item} search={{ curriculumId: '' }} reviewpage />
         )}
-        <Tags
-          tags={tags}
-          show={1}
-          margin="0px"
-          labelStyle={{ marginBottom: 0 }}
-        />
+        <Tags tags={tags} show={1} />
         {type && (
-          <FlexContainer alignItems="center">
+          <FlexContainer style={{ alignItems: 'center' }}>
             {type.map((t) => (
               <MetaTag data-cy="ques-type" key={t} marginLeft="0px">
                 {t}
               </MetaTag>
             ))}
+            {!isPublisherUser && !!isPremium && (
+              <PremiumTag key="premium">Premium</PremiumTag>
+            )}
           </FlexContainer>
         )}
         <CollectionTag collectionName={item?.collectionName} />
@@ -94,7 +80,7 @@ const MetaInfo = ({
           )}
         </TestStatusWrapper>
       </FlexContainer>
-      <FlexContainer justifyContent="flex-end" alignItems="flex-end">
+      <FlexContainer justifyContent="flex-end">
         {dok && <DokStyled data-cy="detail_index-0">{`DOK:${dok}`}</DokStyled>}
         {renderAnalytics(by, IconUser, false, 1)}
         {renderAnalytics(id && id.substring(18), IconHash, false, 2)}
@@ -106,8 +92,7 @@ const MetaInfo = ({
           data-cy="like-item"
           isLiked={isItemLiked}
           onClick={handleItemLike}
-          height="20px"
-          ml="15px"
+          style={{ marginLeft: '15px' }}
         >
           <IconHeart
             color={isItemLiked ? '#ca481e' : darkGrey}

@@ -1,14 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
-import {
-  helpers,
-  WithMathFormula,
-  FlexContainer,
-  CheckboxLabel,
-  NumberInputStyled,
-} from '@edulastic/common'
+import { helpers, WithMathFormula, FlexContainer } from '@edulastic/common'
 import { Stimulus } from './styled'
+import { PointsInput } from '../styled'
 import Actions from '../Actions'
 
 class MainInfo extends React.Component {
@@ -22,12 +17,9 @@ class MainInfo extends React.Component {
       onChangePoints,
       expandRow,
       onDelete,
-      onSelect,
-      checked,
       isScoringDisabled = false,
     } = this.props
     const newHtml = helpers.sanitizeForReview(data.stimulus) || ''
-
     return (
       <FlexContainer
         data-cy-item-index={index}
@@ -39,28 +31,25 @@ class MainInfo extends React.Component {
           style={{ position: 'relative' }}
         />
         <FlexContainer
+          style={{ width: '200px' }}
           flexDirection="column"
           alignItems="flex-end"
           justifyContent="flex-end"
         >
-          <FlexContainer flexDirection="row" alignItems="center">
+          <FlexContainer flexDirection="row" style={{ margin: 0 }}>
             <Actions
               onPreview={() => handlePreview(data.id)}
               onCollapseExpandRow={expandRow}
               onDelete={onDelete}
               isEditable={isEditable}
             />
-            <NumberInputStyled
-              width="60px"
-              value={data.points}
-              margin="0px 0px 0px 5px"
-              padding="0px 12px"
+            <PointsInput
+              size="large"
+              type="number"
               disabled={!owner || !isEditable || isScoringDisabled}
-              onChange={(value) => onChangePoints(data.id, value)}
+              value={data.points}
+              onChange={(e) => onChangePoints(data.id, +e.target.value)}
             />
-            {isEditable && (
-              <CheckboxLabel checked={checked} ml="8px" onChange={onSelect} />
-            )}
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>

@@ -1,17 +1,10 @@
-/* eslint-disable array-callback-return */
 import React from 'react'
 import { connect } from 'react-redux'
 import { keyBy } from 'lodash'
 import { getInterestedCurriculumsSelector } from '../../../src/selectors/user'
 import Tags from '../../../src/components/common/Tags'
 
-const Standards = ({
-  item,
-  interestedCurriculums,
-  search,
-  margin,
-  labelStyle,
-}) => {
+const Standards = ({ item, interestedCurriculums, search }) => {
   const { curriculumId, standardIds } = search
   const domains = []
   let standards = []
@@ -20,12 +13,12 @@ const Standards = ({
       if (!question.alignment || !question.alignment.length) return
       // removing all multiStandard mappings
       const authorAlignments = question.alignment.filter(
-        (_item) =>
-          (!_item.isEquivalentStandard ||
+        (item) =>
+          (!item.isEquivalentStandard ||
             interestedCurriculums.some(
-              (interested) => interested._id === _item.curriculumId
+              (interested) => interested._id === item.curriculumId
             )) &&
-          _item.curriculumId
+          item.curriculumId
       )
 
       // pick alignments matching with interested curriculums
@@ -69,8 +62,6 @@ const Standards = ({
     <Tags
       tags={standards.map((_item) => ({ ..._item, tagName: _item.name }))}
       show={2}
-      labelStyle={labelStyle}
-      margin={margin}
     />
   ) : null
 }

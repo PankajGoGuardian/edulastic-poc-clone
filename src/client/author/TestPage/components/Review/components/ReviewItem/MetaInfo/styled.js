@@ -26,14 +26,13 @@ export const TypeContainer = styled.div`
 `
 
 export const MetaTag = styled(Tag)`
-  height: 20px;
+  height: 30px;
   background: ${themeLightGrayBgColor};
   border: none;
   color: ${greyDarken};
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 8px;
-  line-height: 1.5;
+  font-size: 10px;
   margin-right: 3px;
   padding: 4px 10px;
   &:first-child {

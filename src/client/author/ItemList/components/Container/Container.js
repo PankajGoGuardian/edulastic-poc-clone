@@ -533,14 +533,15 @@ class Contaier extends Component {
           <ListItems isShowFilter={isShowFilter}>
             <Element>
               <MobileFilterIcon>
-                {this.renderFilterIcon(isShowFilter)}
+                {' '}
+                {this.renderFilterIcon(isShowFilter)}{' '}
               </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
                 {loading && <Spin size="large" />}
                 <>
                   <ItemsMenu>
                     <PaginationInfo>
-                      <span>{count}</span>
+                      <span>{count}</span>{' '}
                       <span>{t('author:component.item.itemsFound')}</span>
                     </PaginationInfo>
                     <HeaderFilter

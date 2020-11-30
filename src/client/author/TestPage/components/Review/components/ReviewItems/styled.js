@@ -5,20 +5,18 @@ import { title, themeColor } from '@edulastic/colors'
 export const DragCrad = styled.div`
   display: flex;
   align-items: center;
-  padding-left: ${({ noPadding }) => !noPadding && '30px'};
 `
 
 export const DragHandler = styled.div`
-  width: 36px;
+  width: 30px;
   cursor: move;
   text-align: center;
 `
 
 export const ReviewItemWrapper = styled.div`
-  padding: 14px 16px;
+  padding: 16px;
   border-bottom: 1px solid #e8e8e8;
-  flex-shrink: 0;
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'calc(100% - 30px)')};
+  width: calc(100% - 30px);
   background: white;
 
   &:first-child {

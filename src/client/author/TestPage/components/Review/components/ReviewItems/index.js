@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Spin } from 'antd'
-import produce from 'immer'
-import { flatten, groupBy, isArray, omit } from 'lodash'
+import { get } from 'lodash'
+import { helpers } from '@edulastic/common'
 import SortableList from './SortableList'
+import { getQuestionType } from '../../../../../dataUtils'
 import { StyledSpinnerContainer } from './styled'
+import { isPremiumContent } from '../../../../utils'
 
 const ReviewItems = ({
   items,
@@ -19,10 +21,8 @@ const ReviewItems = ({
   owner,
   onChangePoints,
   handlePreview,
-  removeSingle,
-  removeMultiple,
-  onCompleteMoveItem,
-  // moveTestItems,
+  removeTestItem,
+  moveTestItems,
   setSelected,
   selected,
   questions,
@@ -36,71 +36,77 @@ const ReviewItems = ({
   const container = getContainer()
   if (!container) return null
 
-  const handleCheckboxChange = (itemId, checked) => {
+  const audioStatus = (item) => {
+    const _questions = get(item, 'data.questions', [])
+    const getAllTTS = _questions.filter((ite) => ite.tts).map((ite) => ite.tts)
+    const audio = {}
+    if (getAllTTS.length) {
+      const ttsSuccess =
+        getAllTTS.filter((ite) => ite.taskStatus !== 'COMPLETED').length === 0
+      audio.ttsSuccess = ttsSuccess
+    }
+    return audio
+  }
+
+  const data = items.map((item, i) => {
+    const isScoringDisabled =
+      (!!item?.data?.questions?.find((q) => q.rubrics) &&
+        userFeatures.gradingrubrics) ||
+      item.autoselectedItem ||
+      item.isLimitedDeliveryType
+
+    const main = {
+      id: item._id,
+      points: item.isLimitedDeliveryType
+        ? 1
+        : scoring[item._id] || helpers.getPoints(item),
+      title: item._id,
+      isScoringDisabled,
+      groupId: item.groupId,
+    }
+
+    const meta = {
+      id: item._id,
+      by: get(item, ['createdBy', 'name'], ''),
+      analytics: item?.analytics || [],
+      type: getQuestionType(item),
+      points: scoring[item._id] || helpers.getPoints(item),
+      item,
+      isPremium: isPremiumContent(item?.collections || []),
+      standards: standards[item._id],
+      audio: audioStatus(item),
+      tags: item.tags,
+      dok:
+        item.data &&
+        item.data.questions &&
+        (item.data.questions.find((e) => e.depthOfKnowledge) || {})
+          .depthOfKnowledge,
+    }
+
+    if (item.data && item.data.questions && item.data.questions.length) {
+      main.stimulus = item.data.questions[0].stimulus
+    }
+
+    return {
+      key: i,
+      main,
+      meta,
+    }
+  })
+
+  const handleCheckboxChange = (index, checked) => {
     if (checked) {
-      setSelected([...selected, itemId])
+      setSelected([...selected, index])
     } else {
-      const newSelected = selected.filter((id) => id !== itemId)
+      const newSelected = selected.filter((item) => item !== index)
       setSelected(newSelected)
     }
-  }
-
-  const groupedItems = useMemo(() => {
-    const groupByPassageId = groupBy(items, 'passageId')
-    const _items = items
-      .map((item) => {
-        if (!item.passageId) {
-          return item
-        }
-        const grouped = groupByPassageId[item.passageId]
-        delete groupByPassageId[item.passageId]
-
-        if (grouped && grouped.length <= 1) {
-          return item
-        }
-
-        return grouped
-      })
-      .filter((x) => !!x)
-
-    let indx = 0
-    const reIndexItems = (ite) => {
-      return ite.map((x) => {
-        if (isArray(x)) {
-          return reIndexItems(x)
-        }
-        indx++
-        return { ...x, indx }
-      })
-    }
-
-    return reIndexItems(_items)
-  }, [items])
-
-  const moveSingleItems = ({ oldIndex, newIndex }) => {
-    const updatedItems = flatten(
-      produce(groupedItems, (draft) => {
-        const [removed] = draft.splice(oldIndex, 1)
-        draft.splice(newIndex, 0, removed)
-      })
-    ).map((x) => omit(x, ['indx', 'selected']))
-    onCompleteMoveItem(updatedItems)
-  }
-
-  const moveGroupItems = (groupIndex) => ({ oldIndex, newIndex }) => {
-    const updatedItems = flatten(
-      produce(groupedItems, (draft) => {
-        const [removed] = draft[groupIndex].splice(oldIndex, 1)
-        draft[groupIndex].splice(newIndex, 0, removed)
-      })
-    ).map((x) => omit(x, ['indx', 'selected']))
-    onCompleteMoveItem(updatedItems)
   }
 
   return (
     <>
       <SortableList
-        items={groupedItems}
+        items={data}
         useDragHandle
         passagesKeyed={passagesKeyed}
         onChangePoints={onChangePoints}
@@ -109,16 +115,14 @@ const ReviewItems = ({
         isCollapse={isCollapse}
         mobile={!isSmallSize}
         owner={owner}
-        onSortEnd={moveSingleItems}
-        onSortGroup={moveGroupItems}
+        onSortEnd={moveTestItems}
         lockToContainerEdges
         lockOffset={['10%', '10%']}
         onSelect={handleCheckboxChange}
         selected={selected}
         questions={questions}
         rows={rows}
-        removeSingle={removeSingle}
-        removeMultiple={removeMultiple}
+        removeItem={removeTestItem}
         getContainer={getContainer}
         itemGroups={itemGroups}
         isPublishers={isPublishers}
@@ -126,8 +130,6 @@ const ReviewItems = ({
         isPowerPremiumAccount={isPowerPremiumAccount}
         showGroupsPanel={showGroupsPanel}
         scoring={scoring}
-        userFeatures={userFeatures}
-        standards={standards}
       />
 
       {isFetchingAutoselectItems && (

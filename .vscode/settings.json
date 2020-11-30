@@ -53,10 +53,5 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "eslint.options": {
-    "rules": {
-      "react/jsx-props-no-spreading": 0
-    }
   }
 }

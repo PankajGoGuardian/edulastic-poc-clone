@@ -23,7 +23,6 @@ const HeaderTabs = ({
   icon,
   linkLabel,
   history,
-  hideIcon,
   ...restProps
 }) => {
   const handleOnClick = () => {
@@ -46,7 +45,7 @@ const HeaderTabs = ({
       data-cy={dataCy}
       {...restProps}
     >
-      <StyledAnchor isActive={isActive} hasIcon={!!icon} hideIcon={hideIcon}>
+      <StyledAnchor isActive={isActive} hasIcon={!!icon}>
         {icon}
         <LinkLabel hasIcon={!!icon}>{linkLabel}</LinkLabel>
       </StyledAnchor>
@@ -111,9 +110,9 @@ export const StyledAnchor = styled.div`
   border: 1px solid ${(props) => (props.isActive ? '#2f4151' : '#E5E5E5')};
   border-bottom-color: ${(props) => props.isActive && white};
   width: auto;
-  padding: 0px 32px 0px 16px;
+  padding: 0px 40px;
   text-align: center;
-  height: ${(props) => (props.isActive ? '43px' : '42px')};
+  height: ${(props) => (props.isActive ? '51px' : '50px')};
   margin: 0 2px;
   margin-bottom: ${(props) => (props.isActive ? '-1px' : '0px')};
   border-radius: 4px 4px 0px 0px;
@@ -121,8 +120,8 @@ export const StyledAnchor = styled.div`
   position: relative;
   svg {
     fill: ${(props) => (props.isActive ? '#2F4151' : '#87929B')};
-    margin-right: 12px;
-    display: ${({ hideIcon }) => hideIcon && 'none'};
+    margin-right: 20px;
+    display: none;
     &:hover {
       fill: ${(props) => (props.isActive ? '#2F4151' : '#87929B')};
     }

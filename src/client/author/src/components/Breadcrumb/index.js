@@ -4,24 +4,22 @@ import PropTypes from 'prop-types'
 import { Breadcrumb } from 'antd'
 import styled, { css } from 'styled-components'
 
-import { linkColor, themeColor } from '@edulastic/colors'
+import { secondaryTextColor, linkColor, themeColor } from '@edulastic/colors'
 
 const BreadCrumb = (props) => {
-  const { data, style, ellipsis, hasStickyHeader } = props
+  const { data, style, ellipsis } = props
 
   return (
     <Container
       ellipsis={ellipsis}
       style={style}
-      hasStickyHeader={hasStickyHeader}
+      hasStickyHeader={props.hasStickyHeader}
     >
       <Breadcrumb>
         {Array.isArray(data) &&
           data.map((breadCrumb = {}, index) => (
             <Breadcrumb.Item key={`bread${index}`}>
-              {index !== data.length - 1 &&
-              breadCrumb.state &&
-              breadCrumb.to ? (
+              {index !== data.length - 1 && breadCrumb.state ? (
                 <Link
                   to={{ pathname: breadCrumb.to, state: breadCrumb.state }}
                   onClick={breadCrumb.onClick}
@@ -33,9 +31,7 @@ const BreadCrumb = (props) => {
                     }}
                   />
                 </Link>
-              ) : index !== data.length - 1 &&
-                !breadCrumb.state &&
-                breadCrumb.to ? (
+              ) : index !== data.length - 1 && !breadCrumb.state ? (
                 <Link to={breadCrumb.to} onClick={breadCrumb.onClick}>
                   <span
                     dangerouslySetInnerHTML={{

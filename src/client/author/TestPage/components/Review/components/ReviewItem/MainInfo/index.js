@@ -56,7 +56,7 @@ class MainInfo extends React.Component {
               margin="0px 0px 0px 5px"
               padding="0px 12px"
               disabled={!owner || !isEditable || isScoringDisabled}
-              onChange={(e) => onChangePoints(data.id, +e.target.value)}
+              onChange={(value) => onChangePoints(data.id, value)}
             />
             {isEditable && (
               <CheckboxLabel checked={checked} ml="8px" onChange={onSelect} />

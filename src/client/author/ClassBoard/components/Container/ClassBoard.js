@@ -952,7 +952,10 @@ class ClassBoard extends Component {
 
     const { showScoreImporvement } = this.state
 
-    const getStudentSelectList = (hasOnlySelectList = false) => (
+    const getStudentSelectList = (
+      hasOnlySelectList = false,
+      hasUserAvatar = false
+    ) => (
       <StudentSelect
         data-cy="studentSelect"
         style={{ width: '200px' }}
@@ -973,6 +976,7 @@ class ClassBoard extends Component {
           )
         }}
         isPresentationMode={isPresentationMode}
+        hasUserAvatar={hasUserAvatar}
       />
     )
 
@@ -1385,7 +1389,7 @@ class ClassBoard extends Component {
                 <>
                   <StudentGrapContainer>
                     <StyledCard bordered={false} paddingTop={15}>
-                      {getStudentSelectList(true)}
+                      {getStudentSelectList(false)}
                       <GraphWrapper style={{ width: '100%', display: 'flex' }}>
                         <BarGraph
                           gradebook={gradebook}
@@ -1557,7 +1561,9 @@ class ClassBoard extends Component {
                     selectedStudent={selectedStudentId}
                     isPresentationMode={isPresentationMode}
                     isCliUser={isCliUser}
-                    renderStudentSelectList={() => getStudentSelectList(true)}
+                    renderStudentSelectList={() =>
+                      getStudentSelectList(true, true)
+                    }
                   />
                 </>
               )}

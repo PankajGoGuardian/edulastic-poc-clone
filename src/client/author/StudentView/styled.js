@@ -23,7 +23,7 @@ export const FixedHeaderStyle = css`
   z-index: 999;
   width: auto;
   height: ${(props) => props.theme.HeaderHeight.xs}px;
-  box-shadow: 1px 8px 11px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid black;
   padding: 10px 30px;
 `
 

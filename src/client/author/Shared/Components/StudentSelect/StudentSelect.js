@@ -4,13 +4,15 @@ import { find } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Fragment } from 'react'
 import { testActivityStatus } from '@edulastic/constants'
-import { Container, StyledSelect } from './styled'
+import { Container, StyledSelect, UserAvatar } from './styled'
+import { getAvatarName } from '../../../ClassBoard/Transformer'
 
 const SortBar = ({
   handleChange,
   students,
   selectedStudent,
   isPresentationMode,
+  hasUserAvatar,
   hasOnlySelectList,
   selectStyle,
 }) => {
@@ -49,19 +51,37 @@ const SortBar = ({
       value={user}
       onChange={onSortChange}
       style={{ ...selectStyle }}
+      getPopupContainer={(node) => node.parentNode}
     >
-      {students.map((student, index) => (
-        <Select.Option
-          key={index}
-          value={student.testActivityId || null}
-          disabled={
-            !valid(student) ||
-            student.UTASTATUS === testActivityStatus.NOT_STARTED
-          }
-        >
-          {isPresentationMode ? studentIcon(student) : student.studentName}
-        </Select.Option>
-      ))}
+      {students.map((student, index) => {
+        let studentDisplay
+
+        if (hasUserAvatar) {
+          studentDisplay = (
+            <>
+              <UserAvatar>{getAvatarName(student.studentName)}</UserAvatar>
+              {student.studentName}
+            </>
+          )
+        } else if (isPresentationMode) {
+          studentDisplay = studentIcon(student)
+        } else {
+          studentDisplay = student.studentName
+        }
+
+        return (
+          <Select.Option
+            key={index}
+            value={student.testActivityId || null}
+            disabled={
+              !valid(student) ||
+              student.UTASTATUS === testActivityStatus.NOT_STARTED
+            }
+          >
+            {studentDisplay}
+          </Select.Option>
+        )
+      })}
     </StyledSelect>
   )
 

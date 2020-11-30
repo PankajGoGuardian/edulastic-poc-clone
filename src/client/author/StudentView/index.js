@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { findIndex, isUndefined, get, throttle } from 'lodash'
+import { findIndex, isUndefined, get, throttle, round } from 'lodash'
 import { setAutoFreeze } from 'immer'
 import memoizeOne from 'memoize-one'
 import { Input, Tooltip } from 'antd'
@@ -330,7 +330,9 @@ class StudentViewContainer extends Component {
           {hasStickyHeader && (
             <>
               {renderStudentSelectList()}
-              <ScoreWrapper>{`${totalScore} / ${maxScore}`}</ScoreWrapper>
+              <ScoreWrapper>
+                {round(totalScore, 2) || 0} / {round(maxScore, 2) || 0}
+              </ScoreWrapper>
             </>
           )}
           {!isCliUser && (

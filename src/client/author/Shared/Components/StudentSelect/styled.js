@@ -1,6 +1,6 @@
-import { Select } from 'antd'
+import { Select, Avatar } from 'antd'
 import styled from 'styled-components'
-import { themeColor } from '@edulastic/colors'
+import { themeColor, themeColorTagsBg } from '@edulastic/colors'
 
 export const Container = styled.div`
   display: flex;
@@ -46,4 +46,19 @@ export const StyledSelect = styled(Select)`
       box-shadow: unset;
     }
   }
+`
+
+export const UserAvatar = styled(Avatar)`
+  background-color: ${themeColorTagsBg};
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  border-radius: 50%;
+  color: ${themeColor};
+  font-weight: 600;
+  margin-right: 10px;
+  margin-bottom: 2px;
+  font-size: 14px;
+  text-transform: uppercase;
 `

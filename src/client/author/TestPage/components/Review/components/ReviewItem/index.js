@@ -84,10 +84,10 @@ const ReviewItem = ({
   }, [item])
 
   const handleSelect = (e) => {
-    onSelect(item.indx, e.target.checked)
+    onSelect(item._id, e.target.checked)
   }
 
-  const checked = selected?.includes(item.indx)
+  const checked = selected?.includes(item._id)
 
   return (
     <>

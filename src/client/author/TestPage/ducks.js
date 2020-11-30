@@ -541,8 +541,9 @@ export const getItemGroupsSelector = createSelector(
 )
 
 export const getTestItemsSelector = createSelector(
-  getItemGroupsSelector,
-  (itemGroups) => {
+  getTestEntitySelector,
+  (_test) => {
+    const itemGroups = _test.itemGroups || []
     let testItems =
       itemGroups.flatMap(
         (itemGroup) =>

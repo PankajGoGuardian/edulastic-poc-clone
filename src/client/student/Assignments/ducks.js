@@ -61,7 +61,6 @@ import {
 import { clearOrderOfOptionsInStore } from '../../assessment/actions/assessmentPlayer'
 import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
-import { getCurrentTerm } from '../../author/src/selectors/user'
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type
 const { DONE, ARCHIVED, NOT_OPEN, IN_PROGRESS } = assignmentStatusOptions
@@ -511,12 +510,11 @@ function* fetchAssignments() {
     const groupId = yield select(getCurrentGroup)
     const userId = yield select(getCurrentUserId)
     const classIds = yield select(getClassIds)
-    const termId = yield select(getCurrentTerm)
     const groupStatus = yield select((state) =>
       get(state, 'studentAssignment.groupStatus', 'all')
     )
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId, '', groupStatus, termId),
+      call(assignmentApi.fetchAssigned, groupId, '', groupStatus),
       call(reportsApi.fetchReports, groupId, '', '', groupStatus),
     ])
 

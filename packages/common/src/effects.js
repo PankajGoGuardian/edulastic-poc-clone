@@ -1,4 +1,3 @@
- 
 import {
   call,
   put,
@@ -42,6 +41,11 @@ export function throttleAction(ms, action, task) {
 
       if ('taskResult' in raceResult) {
         /* const discarded = */ yield flush(throttleChannel)
+      } else if (
+        'timeout' in raceResult &&
+        window.localStorage.getItem('assessmentLastTime')
+      ) {
+        window.localStorage.setItem('assessmentLastTime', Date.now())
       }
     }
   })

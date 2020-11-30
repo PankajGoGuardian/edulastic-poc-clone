@@ -84,6 +84,7 @@ const getFormattedLink = (record, location, pageTitle, value) => (
 
 const getCol = (
   text,
+  isSharedReport,
   backgroundColor,
   columnKey,
   location,
@@ -91,7 +92,7 @@ const getCol = (
   record
 ) => {
   let value = text === undefined || text === null ? 'N/A' : `${text}%`
-  if (columnKey === 'score') {
+  if (columnKey === 'score' && !isSharedReport) {
     value = getFormattedLink(record, location, pageTitle, value)
   }
   return (
@@ -101,7 +102,7 @@ const getCol = (
   )
 }
 
-const tableColumns = (location, pageTitle) => [
+const tableColumns = (location, pageTitle, isSharedReport) => [
   {
     title: 'Assessment Name',
     dataIndex: 'testName',
@@ -109,13 +110,16 @@ const tableColumns = (location, pageTitle) => [
     align: 'left',
     fixed: 'left',
     width: 180,
-    render: (data, record) => (
-      <Link
-        to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
-      >
-        {data}
-      </Link>
-    ),
+    render: (data, record) =>
+      !isSharedReport ? (
+        <Link
+          to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
+        >
+          {data}
+        </Link>
+      ) : (
+        data
+      ),
   },
   {
     title: 'Assessment Type',
@@ -144,7 +148,9 @@ const tableColumns = (location, pageTitle) => [
     width: 90,
     key: 'rawScore',
     render: (data, record) =>
-      getFormattedLink(record, location, pageTitle, data),
+      !isSharedReport
+        ? getFormattedLink(record, location, pageTitle, data)
+        : data,
   },
   {
     title: 'District (Avg. Score%)',
@@ -166,8 +172,8 @@ const tableColumns = (location, pageTitle) => [
   },
 ]
 
-const getColumns = (studentName = '', location, pageTitle) => [
-  ...tableColumns(location, pageTitle),
+const getColumns = (studentName = '', location, pageTitle, isSharedReport) => [
+  ...tableColumns(location, pageTitle, isSharedReport),
   {
     title: 'Student (Score%)',
     dataIndex: 'score',
@@ -177,7 +183,7 @@ const getColumns = (studentName = '', location, pageTitle) => [
     sorter: (a, b) => a.score - b.score,
     render: (score, record) => {
       if (isNaN(score) && score !== null) {
-        return getCol(score, '#cccccc')
+        return getCol(score, isSharedReport, '#cccccc')
       }
 
       const toolTipText = () => (
@@ -224,6 +230,7 @@ const getColumns = (studentName = '', location, pageTitle) => [
           getCellContents={() =>
             getCol(
               score,
+              isSharedReport,
               getHSLFromRange1(score),
               'score',
               location,
@@ -245,8 +252,9 @@ const AssessmentTable = ({
   onCsvConvert,
   location,
   pageTitle,
+  isSharedReport,
 }) => {
-  const columns = getColumns(studentName, location, pageTitle)
+  const columns = getColumns(studentName, location, pageTitle, isSharedReport)
 
   const filteredData = filter(data, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true

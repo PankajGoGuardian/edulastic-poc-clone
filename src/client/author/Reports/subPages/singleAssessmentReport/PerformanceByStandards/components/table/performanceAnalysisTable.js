@@ -333,7 +333,7 @@ const PerformanceAnalysisTable = ({
               <div>
                 <TableTooltipRow
                   title={`${compareByColumn.title}: `}
-                  value={getColValue(compareBy, record)}
+                  value={getColValue(compareBy, record) || ' -'}
                 />
                 <TableTooltipRow
                   title={`${

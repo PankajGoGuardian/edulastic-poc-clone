@@ -6,7 +6,7 @@ import {
   StyledTable as Table,
   StyledCustomChartTooltip as CustomChartTooltip,
 } from '../../../../common/styled'
-import { AssessmentStatisticTable } from './table/assessmentStatisticTable'
+import AssessmentStatisticTable from './table/assessmentStatisticTable'
 
 export const UpperContainer = styled(FlexContainer)`
   @media print {

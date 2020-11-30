@@ -1,5 +1,5 @@
 import { Col, Row } from 'antd'
-import { capitalize, groupBy, map, values } from 'lodash'
+import { capitalize, groupBy, map, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -164,7 +164,8 @@ const getColumns = (
   filters = {},
   isCellClickable,
   location,
-  pageTitle
+  pageTitle,
+  isSharedReport
 ) => {
   const groupedTests = groupBy(testData, 'testId')
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
@@ -243,12 +244,14 @@ const getColumns = (
       className: 'class-name-column',
       dataIndex: compareByMap[compareBy.key],
       render: (data, record) =>
-        compareBy.key === 'student' ? (
+        compareBy.key === 'student' && !isSharedReport ? (
           <Link
             to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
           >
             {data}
           </Link>
+        ) : compareBy.key === 'school' && isEmpty(data) ? (
+          '-'
         ) : (
           data
         ),
@@ -330,6 +333,7 @@ const TrendTable = ({
   isCellClickable,
   location,
   pageTitle,
+  isSharedReport,
 }) => {
   const columns = getColumns(
     testData,
@@ -341,7 +345,8 @@ const TrendTable = ({
     filters,
     isCellClickable,
     location,
-    pageTitle
+    pageTitle,
+    isSharedReport
   )
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
 

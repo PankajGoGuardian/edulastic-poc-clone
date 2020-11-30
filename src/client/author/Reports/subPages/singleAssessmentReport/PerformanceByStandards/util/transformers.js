@@ -64,7 +64,7 @@ export const compareByColumns = {
     key: 'schoolId',
     align: 'left',
     sorter: lexicSort('schoolName'),
-    render: (schoolId, school) => school.schoolName,
+    render: (schoolId, school) => school.schoolName || '-',
   },
   [compareByMode.TEACHER]: {
     title: 'Teacher',

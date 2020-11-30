@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { Row, Col } from 'antd'
 import { groupBy, uniqBy } from 'lodash'
 import next from 'immer'
+import qs from 'qs'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
 import { StyledTable } from '../styled'
 
 import {
@@ -18,12 +21,23 @@ import CsvTable from '../../../../../common/components/tables/CsvTable'
 
 import columnData from '../../static/json/tableColumns.json'
 
-export const AssessmentStatisticTable = (props) => {
+const AssessmentStatisticTable = (props) => {
   const [tableType, setTableType] = useState({
     key: 'school',
     title: 'School',
   })
-  const { data, role, className, name, isCsvDownloading, isPrinting } = props
+  const {
+    data,
+    role,
+    className,
+    name,
+    isCsvDownloading,
+    isPrinting,
+    location,
+  } = props
+
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true })
+  const { cliUser } = query
 
   if (role === 'teacher' && tableType.key !== 'class') {
     const o = { key: 'class', title: 'Class' }
@@ -138,7 +152,8 @@ export const AssessmentStatisticTable = (props) => {
     next([...columnData[_tableType.key].columns], (columns) => {
       columns[0].render = (text) => text || '-'
       if (role === 'teacher') {
-        columns.splice(0, 1)
+        columns?.splice(0, 1)
+        cliUser && columns.splice(2, 1)
         columns[0].sorter = sortAlphabets('groupName')
       } else {
         columns[0].sorter = sortAlphabets('schoolId')
@@ -219,6 +234,10 @@ export const AssessmentStatisticTable = (props) => {
     </div>
   )
 }
+
+const enhance = compose(withRouter)
+
+export default enhance(AssessmentStatisticTable)
 
 const StyledControlDropDownContainer = styled(Col)`
   display: flex;

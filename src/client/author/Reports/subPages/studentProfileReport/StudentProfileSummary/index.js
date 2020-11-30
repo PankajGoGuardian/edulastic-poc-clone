@@ -15,9 +15,7 @@ import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
 import {
-  getBandInfoSelected,
   getReportsSPRFilterData,
-  getSelectedStandardProficiency,
   getReportsSPRFilterLoadingState,
 } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
@@ -63,32 +61,59 @@ const StudentProfileSummary = ({
   SPRFilterData,
   studentProfileSummary,
   getStudentProfileSummaryRequest,
-  bandInfoSelected,
-  selectedStandardProficiency,
   location,
   pageTitle,
   history,
-  t,
   reportsSPRFilterLoadingState,
+  sharedReport,
+  t,
 }) => {
-  const { selectedStudent } = settings
-  const bandInfo = bandInfoSelected
-  const scaleInfo = selectedStandardProficiency
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+      !!sharedReport?._id,
+    ],
+    [sharedReport]
+  )
+
+  const {
+    studentClassData = [],
+    bandInfo: bands = [],
+    scaleInfo: scales = [],
+  } = get(SPRFilterData, 'data.result', {})
+
+  const bandInfo = (
+    bands.find(
+      (x) =>
+        x._id ===
+        (sharedReportFilters || settings.requestFilters)
+          .performanceBandProfileId
+    ) || bands[0]
+  )?.performanceBand
+
+  const scaleInfo = (
+    scales.find(
+      (x) =>
+        x._id === (sharedReportFilters || settings.requestFilters).profileId
+    ) || scales[0]
+  )?.scale
+
+  const studentClassInfo = studentClassData[0] || {}
 
   const studentProfileSummaryData = get(
     studentProfileSummary,
     'data.result',
     {}
   )
-
   const {
     asessmentMetricInfo = [],
     studInfo = [],
     skillInfo = [],
     metricInfo = [],
   } = studentProfileSummaryData
-  const { studentClassData = [] } = get(SPRFilterData, 'data.result', {})
-  const studentClassInfo = studentClassData[0] || {}
+
   const data = useMemo(
     () => augementAssessmentChartData(asessmentMetricInfo, bandInfo),
     [asessmentMetricInfo, bandInfo]
@@ -106,35 +131,33 @@ const StudentProfileSummary = ({
   )
 
   useEffect(() => {
-    const { selectedStudent: _selectedStudent, requestFilters } = settings
-    if (_selectedStudent.key && requestFilters.termId) {
+    if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentProfileSummaryRequest({
-        ...requestFilters,
-        profileId: requestFilters.standardsProficiencyProfileId,
-        studentId: _selectedStudent.key,
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
       })
     }
   }, [settings])
 
   const _onBarClickCB = (key, args) => {
-    history.push({
-      pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
-      state: {
-        // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-        breadCrumb: [
-          {
-            title: 'INSIGHTS',
-            to: '/author/reports',
-          },
-          {
-            title: pageTitle,
-            to: `${location.pathname}${location.search}`,
-          },
-        ],
-      },
-    })
+    !isSharedReport &&
+      history.push({
+        pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
+        state: {
+          // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+          breadCrumb: [
+            {
+              title: 'INSIGHTS',
+              to: '/author/reports',
+            },
+            {
+              title: pageTitle,
+              to: `${location.pathname}${location.search}`,
+            },
+          ],
+        },
+      })
   }
-
   if (loading || reportsSPRFilterLoadingState) {
     return <SpinLoader position="fixed" />
   }
@@ -155,8 +178,10 @@ const StudentProfileSummary = ({
   }
 
   const studentInformation = studInfo[0] || {}
-
-  const studentName = getStudentName(selectedStudent, studentInformation)
+  const studentName = getStudentName(
+    settings.selectedStudent,
+    studentInformation
+  )
   const anonymousString = t('common.anonymous')
 
   const onCsvConvert = (_data) =>
@@ -193,7 +218,7 @@ const StudentProfileSummary = ({
             studentInformation={studentClassInfo}
             xTickTooltipPosition={400}
             onBarClickCB={_onBarClickCB}
-            isBarClickable
+            isBarClickable={!isSharedReport}
             printWidth={700}
           />
         </Card>
@@ -229,8 +254,6 @@ const withConnect = connect(
     error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    bandInfoSelected: getBandInfoSelected(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state),
     reportsSPRFilterLoadingState: getReportsSPRFilterLoadingState(state),
   }),
   {

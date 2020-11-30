@@ -15,6 +15,9 @@ import {
 } from '../../../common/styled'
 import Breadcrumb from '../../src/components/Breadcrumb'
 import StudentGroupsTable from './StudentGroupsTable'
+import AdminSubHeader from '../../src/components/common/AdminSubHeader/GroupSubHeader'
+
+const menuActive = { mainMenu: 'Groups', subMenu: 'Student-Groups' }
 
 const GroupListContainer = ({
   t,
@@ -109,7 +112,7 @@ const GroupListContainer = ({
       <SubHeaderWrapper>
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </SubHeaderWrapper>
-
+      <AdminSubHeader active={menuActive} history={history} />
       <StyledFilterDiv>
         <LeftFilterDiv width={60}>
           <SearchInputStyled

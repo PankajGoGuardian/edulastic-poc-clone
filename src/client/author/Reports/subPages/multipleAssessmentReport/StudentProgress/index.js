@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { get, head, toLower } from 'lodash'
+import { get, head, toLower, isEmpty } from 'lodash'
 
 import { SpinLoader, notification } from '@edulastic/common'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
@@ -16,9 +16,7 @@ import {
   getFormattedName,
 } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
-import { getUserRole, getUser } from '../../../../src/selectors/user'
-import { getFiltersSelector } from '../common/filterDataDucks'
-import { usefetchProgressHook } from '../common/hooks'
+import { getUserRole } from '../../../../src/selectors/user'
 import {
   getReportsStudentProgress,
   getReportsStudentProgressLoader,
@@ -62,21 +60,40 @@ const StudentProgress = ({
   loading,
   error,
   role,
-  user,
-  filters,
   pageTitle,
   location,
   ddfilter,
+  sharedReport,
 }) => {
+  const [userRole, sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+      !!sharedReport?._id,
+    ],
+    [sharedReport]
+  )
   const profiles = MARFilterData?.data?.result?.bandInfo || []
 
   const bandInfo =
-    profiles.find((profile) => profile._id === filters.profileId)
-      ?.performanceBand ||
+    profiles.find(
+      (profile) =>
+        profile._id ===
+        (sharedReportFilters || settings.requestFilters).profileId
+    )?.performanceBand ||
     profiles[0]?.performanceBand ||
     DefaultBandInfo
 
-  usefetchProgressHook(settings, getStudentProgressRequest, user)
+  useEffect(() => {
+    const { requestFilters = {} } = settings
+    const { termId, reportId } = requestFilters
+    if (termId || reportId) {
+      getStudentProgressRequest({ ...requestFilters })
+    }
+  }, [settings])
+
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
 
   const [selectedTrend, setSelectedTrend] = useState('')
@@ -142,14 +159,18 @@ const StudentProgress = ({
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
   }
-  const customTableColumns = filterAccordingToRole(tableColumns, role)
+  const customTableColumns = filterAccordingToRole(tableColumns, userRole)
 
   const onTrendSelect = (trend) =>
     setSelectedTrend(trend === selectedTrend ? '' : trend)
   const onCsvConvert = (_data) => downloadCSV(`Student Progress.csv`, _data)
 
   const dataSource = data
-    .map((d) => ({ ...d, studentName: getFormattedName(d.studentName) }))
+    .map((d) => ({
+      ...d,
+      studentName: getFormattedName(d.studentName),
+      schoolName: isEmpty(d.schoolName) ? '-' : d.schoolName,
+    }))
     .sort((a, b) =>
       a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
     )
@@ -203,6 +224,7 @@ const StudentProgress = ({
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
         handleAddToGroupClick={handleAddToGroupClick}
+        isSharedReport={isSharedReport}
         renderFilters={() => (
           <AnalyseByFilter
             onFilterChange={setAnalyseBy}
@@ -211,7 +233,7 @@ const StudentProgress = ({
         )}
       />
       <TrendTable
-        filters={filters}
+        filters={sharedReportFilters || settings.requestFilters}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         data={dataSource}
@@ -225,13 +247,14 @@ const StudentProgress = ({
         isCellClickable
         location={location}
         pageTitle={pageTitle}
+        isSharedReport={isSharedReport}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow
               title={`Student Name : `}
               value={record.studentName}
             />
-            {role === 'teacher' ? (
+            {userRole === 'teacher' ? (
               <TableTooltipRow
                 title={`Class Name : `}
                 value={record.groupName}
@@ -240,7 +263,7 @@ const StudentProgress = ({
               <>
                 <TableTooltipRow
                   title={`School Name : `}
-                  value={record.schoolName}
+                  value={record.schoolName || `-`}
                 />
                 <TableTooltipRow
                   title={`Teacher Name : `}
@@ -260,9 +283,7 @@ const enhance = connect(
     studentProgress: getReportsStudentProgress(state),
     loading: getReportsStudentProgressLoader(state),
     error: getReportsStudentProgressError(state),
-    filters: getFiltersSelector(state),
     role: getUserRole(state),
-    user: getUser(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),
   {

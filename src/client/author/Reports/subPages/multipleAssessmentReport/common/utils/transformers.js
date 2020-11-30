@@ -5,20 +5,33 @@ import {
   processFilteredClassAndGroupIds,
 } from '../../../../common/util'
 
-export const getClassAndGroupIds = (payload) => {
+export const transformFiltersForMAR = (requestFilters) => {
   let classIds = ''
   let groupIds = ''
-  if (payload?.classIds && Array.isArray(payload?.classIds)) {
-    classIds = payload.classIds.join(',')
-  } else if (payload?.classId) {
-    classIds = payload.classId
+  let schoolIds = ''
+  if (requestFilters?.classIds && Array.isArray(requestFilters?.classIds)) {
+    classIds = requestFilters.classIds.join(',')
+  } else if (requestFilters?.classId) {
+    classIds = requestFilters.classId
   }
-  if (payload?.groupIds && Array.isArray(payload?.groupIds)) {
-    groupIds = payload.groupIds.join(',')
-  } else if (payload?.groupId) {
-    groupIds = payload.groupId
+  if (requestFilters?.groupIds && Array.isArray(requestFilters?.groupIds)) {
+    groupIds = requestFilters.groupIds.join(',')
+  } else if (requestFilters?.groupId) {
+    groupIds = requestFilters.groupId
   }
-  return { classIds, groupIds }
+  if (requestFilters?.schoolIds && Array.isArray(requestFilters?.schoolIds)) {
+    schoolIds = requestFilters.schoolIds.join(',')
+  }
+  if (requestFilters?.schoolId) {
+    // overwrite schoolIds if schoolId is selected
+    schoolIds = requestFilters.schoolId
+  }
+  return {
+    ...requestFilters,
+    classIds,
+    groupIds,
+    schoolIds,
+  }
 }
 
 const processSchoolYear = (user) => {

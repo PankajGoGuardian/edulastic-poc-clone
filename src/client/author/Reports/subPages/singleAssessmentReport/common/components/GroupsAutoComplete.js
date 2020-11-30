@@ -21,18 +21,15 @@ const GroupsAutoComplete = ({
   groupList,
   loading,
   loadGroupList,
-  grade,
-  subject,
-  school: institutionId,
-  selectedGroup,
   selectCB,
+  filters,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
 
   // build search query
   const query = useMemo(() => {
-    const { institutionIds, role: userRole, orgData, _id: userId } = userDetails
+    const { role: userRole, orgData, _id: userId } = userDetails
     const { districtIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
@@ -47,20 +44,31 @@ const GroupsAutoComplete = ({
     if (userRole === roleuser.TEACHER) {
       q.search.teachers = [{ type: 'eq', value: userId }]
     }
-    if (userRole === roleuser.DISTRICT_ADMIN && institutionId) {
-      q.search.institutionIds = [institutionId]
+    if (
+      (userRole === roleuser.DISTRICT_ADMIN ||
+        userRole === roleuser.SCHOOL_ADMIN) &&
+      !isEmpty(filters.schoolIds)
+    ) {
+      q.search.institutionIds = filters.schoolIds
+        ? filters.schoolIds.split(',')
+        : []
     }
-    if (userRole === roleuser.SCHOOL_ADMIN) {
-      q.search.institutionIds = institutionId ? [institutionId] : institutionIds
+    if (filters.studentGrade !== 'All' && filters.studentGrade) {
+      q.search.grades = [filters.studentGrade]
     }
-    if (grade) {
-      q.search.grades = [`${grade}`]
-    }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (filters.studentSubject !== 'All' && filters.studentSubject) {
+      q.search.subjects = [filters.studentSubject]
     }
     return q
-  }, [searchTerms.text])
+  }, [
+    searchTerms.text,
+    filters.schoolIds,
+    filters.teacherIds,
+    filters.studentSubject,
+    filters.studentGrade,
+    filters.studentCourseId,
+    filters.classId,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -101,6 +109,16 @@ const GroupsAutoComplete = ({
       loadGroupListDebounced(query)
     }
   }, [searchTerms])
+  useEffect(() => {
+    setSearchResult([])
+  }, [
+    filters.schoolIds,
+    filters.teacherIds,
+    filters.studentSubject,
+    filters.studentGrade,
+    filters.studentCourseId,
+    filters.classId,
+  ])
 
   // build dropdown data
   const dropdownData = [

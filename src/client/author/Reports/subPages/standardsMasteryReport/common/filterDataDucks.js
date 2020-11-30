@@ -103,6 +103,7 @@ const initialState = {
   prevBrowseStandards: null,
   prevStandardsFilters: null,
   filters: {
+    reportId: '',
     termId: '',
     curriculumId: '',
     grade: 'TK',

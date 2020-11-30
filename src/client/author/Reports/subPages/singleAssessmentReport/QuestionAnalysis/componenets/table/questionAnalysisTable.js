@@ -52,6 +52,7 @@ export const QuestionAnalysisTable = ({
   role,
   isCsvDownloading,
   compareByTitle,
+  isSharedReport,
 }) => {
   const colouredCells = (compareByType, index) => (text, record) => {
     const tooltipText = (_compareByType, _record, _index) => (
@@ -61,7 +62,7 @@ export const QuestionAnalysisTable = ({
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">
-            {comparedByToToolTipLabel[_compareByType].name}:{' '}
+            {comparedByToToolTipLabel[_compareByType].name}:{'  -'}
           </Col>
           <Col className="custom-table-tooltip-value">
             {
@@ -126,7 +127,9 @@ export const QuestionAnalysisTable = ({
     }
     rawColumns[0].render = (text, record) => {
       const { pathname, search } = window.location
-      return (
+      return isSharedReport ? (
+        text
+      ) : (
         <Link
           to={{
             pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.questionId}`,
@@ -164,7 +167,7 @@ export const QuestionAnalysisTable = ({
     if (compareBy === 'schoolId') {
       for (const [index, item] of tableData[0].comparedBySchool.entries()) {
         const col = {
-          title: item.schoolName,
+          title: item.schoolName || '-',
           dataIndex: item.schoolId,
           key: item.schoolId,
           width: 150,

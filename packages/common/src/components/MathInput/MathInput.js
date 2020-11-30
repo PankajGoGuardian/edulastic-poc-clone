@@ -1,4 +1,4 @@
-import { MathKeyboard, reformatMathInputLatex, offset } from '@edulastic/common'
+import { MathKeyboard, reformatMathInputLatex } from '@edulastic/common'
 import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
@@ -126,25 +126,29 @@ class MathInput extends React.PureComponent {
 
   getKeyboardPosition() {
     const { symbols } = this.props
-    const { top, left, height: inputH } = offset(this.containerRef.current) || {
-      left: 0,
-      top: 0,
-    }
+    const {
+      top,
+      left,
+      height: inputH,
+    } = this.containerRef.current.getBoundingClientRect()
+
     const { width, height: keyboardH } = math.symbols.find(
       (x) => x.value === symbols[0]
     ) || { width: 0, height: 0 }
 
-    let x = window.innerWidth - left - width
-    if (x > 0) {
-      x = 0
+    // 8 is margin between math keyboard and math input
+    let x = left
+    let y = top + inputH + 4
+
+    const xdiff = window.innerWidth - left - width
+
+    if (xdiff < 0) {
+      x -= xdiff
     }
 
-    let y = window.innerHeight - top - keyboardH - inputH
-    if (y < 0) {
-      // 8 is margin between math keyboard and math input
-      y = -keyboardH - 8
-    } else {
-      y = inputH + 8
+    const ydiff = window.innerHeight - y - keyboardH
+    if (ydiff < 0) {
+      y = y - keyboardH - inputH - 8
     }
 
     return { x, y }
@@ -272,8 +276,9 @@ class MathInput extends React.PureComponent {
 
   onClickMathField = () => {
     const { hideKeyboardByDefault } = this.state
+    const keyboardPosition = this.getKeyboardPosition()
     if (!hideKeyboardByDefault) {
-      this.setState({ mathFieldFocus: true }, this.focus)
+      this.setState({ mathFieldFocus: true, keyboardPosition }, this.focus)
     }
   }
 
@@ -391,7 +396,7 @@ class MathInput extends React.PureComponent {
         {(visibleKeypad || alwaysShowKeyboard) && (
           <MathKeyboardWrapper
             className="input__keyboard"
-            default={keyboardPosition}
+            position={keyboardPosition}
           >
             <MathKeyboard
               symbols={symbols}

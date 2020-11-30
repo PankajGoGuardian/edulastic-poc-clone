@@ -134,7 +134,6 @@ class Scoring extends Component {
     const questionTitle = item?.title || questionData?.title
 
     const onChange = (value) => {
-      console.log({ value })
       handleChangeValidation('validResponse', {
         score: +value,
       })

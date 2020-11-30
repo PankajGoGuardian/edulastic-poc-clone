@@ -384,11 +384,14 @@ class Item extends Component {
     } = this.props
     const removing = this.isRemovingForAuthoring()
     this.setState({ passageConfirmModalVisible: false })
-    // add all the passage items to test.
+
     if (value) {
+      // add all the passage items to test.
       notification({
         type: 'success',
-        messageKey: removing ? 'itemRemovedTest' : 'itemAddedTest',
+        msg: removing
+          ? `${passageItems.length} Item(s) removed from test`
+          : `${passageItems.length} Item(s) added to test`,
       })
       return setAndSavePassageItems({ passageItems, page, remove: removing })
     }

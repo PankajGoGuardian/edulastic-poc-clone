@@ -92,6 +92,7 @@ class Review extends PureComponent {
   }
 
   componentDidMount() {
+    console.log('component is mounted')
     this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
     const { test, addItemsToAutoselectGroupsRequest } = this.props
     const hasAutoSelectItems = test.itemGroups.some(
@@ -130,8 +131,8 @@ class Review extends PureComponent {
     newData.itemGroups = produce(newData.itemGroups, (itemGroups) => {
       itemGroups
         .flatMap((itemGroup) => itemGroup.items || [])
-        .map((item, i) => {
-          if (values.includes(i)) {
+        .map((item) => {
+          if (values.includes(item._id)) {
             item.selected = true
           } else {
             item.selected = false
@@ -143,11 +144,14 @@ class Review extends PureComponent {
   }
 
   handleSelectAll = (e) => {
-    const { rows } = this.props
+    const { test } = this.props
     const { checked } = e.target
-
     if (checked) {
-      this.setSelected(rows.map((row, i) => i))
+      this.setSelected(
+        test.itemGroups
+          .flatMap((itemGroup) => itemGroup.items || [])
+          .map((item) => item._id)
+      )
     } else {
       this.setSelected([])
     }
@@ -192,14 +196,13 @@ class Review extends PureComponent {
     })
   }
 
-  handleRemoveOne = (indx) => {
+  handleRemoveOne = (itemId) => {
     const { test, setData, setTestItems } = this.props
     const newData = cloneDeep(test)
 
     const itemsSelected = newData.itemGroups
       .flatMap((itemGroup) => itemGroup.items || [])
-      .filter((_, index) => index === indx)
-      .find((item) => item._id)
+      .find((item) => item._id === itemId)
 
     if (!itemsSelected) {
       return notification({
@@ -227,6 +230,42 @@ class Review extends PureComponent {
 
     setTestItems(testItems.map((item) => item._id))
     setData(newData)
+  }
+
+  handleRemoveMultiple = (itemIds) => {
+    if (isEmpty(itemIds)) {
+      return notification({
+        type: 'warn',
+        messageKey: 'pleaseSelectAtleastOneQuestion',
+      })
+    }
+    const { test, setData, setTestItems } = this.props
+    const newData = cloneDeep(test)
+
+    newData.itemGroups = newData.itemGroups.map((itemGroup) => ({
+      ...itemGroup,
+      items: itemGroup.items.filter(
+        (testItem) => !itemIds.includes(testItem._id)
+      ),
+    }))
+
+    newData.scoring.testItems = newData.scoring.testItems.filter((item) => {
+      const foundItem = newData.itemGroups
+        .flatMap((itemGroup) => itemGroup.items || [])
+        .find(({ id }) => id === item._id)
+
+      return !(foundItem && itemIds.includes(foundItem._id))
+    })
+    const testItems = newData.itemGroups.flatMap(
+      (itemGroup) => itemGroup.items || []
+    )
+
+    setTestItems(testItems.map((item) => item._id))
+    setData(newData)
+    notification({
+      type: 'success',
+      msg: `${itemIds.length} item(s) removed successfully`,
+    })
   }
 
   handleCollapse = () => {
@@ -478,9 +517,9 @@ class Review extends PureComponent {
 
     const selected = test?.itemGroups
       ?.flatMap((itemGroup) => itemGroup?.items || [])
-      .reduce((acc, element, i) => {
+      .reduce((acc, element) => {
         if (element.selected) {
-          acc.push(i)
+          acc.push(element._id)
         }
         return acc
       }, [])
@@ -577,7 +616,8 @@ class Review extends PureComponent {
                 handlePreview={this.handlePreviewTestItem}
                 moveTestItems={this.moveTestItems}
                 onCompleteMoveItem={this.completeMoveTestItems}
-                removeTestItem={this.handleRemoveOne}
+                removeSingle={this.handleRemoveOne}
+                removeMultiple={this.handleRemoveMultiple}
                 getContainer={() => this.containerRef.current}
                 setSelected={this.setSelected}
                 selected={selected}

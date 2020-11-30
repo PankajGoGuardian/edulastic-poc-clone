@@ -26,7 +26,7 @@ export default (props) => {
   const toggleExpandRow = () => toggleExpand(!expand)
 
   const handleDelete = () => {
-    removeItem(item.indx)
+    removeItem(item._id)
   }
 
   useEffect(() => {

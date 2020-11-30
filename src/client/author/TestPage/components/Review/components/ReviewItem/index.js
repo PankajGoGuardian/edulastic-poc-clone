@@ -84,10 +84,10 @@ const ReviewItem = ({
   }, [item])
 
   const handleSelect = (e) => {
-    onSelect(item.indx, e.target.checked)
+    onSelect(item._id, e.target.checked)
   }
 
-  const checked = selected?.includes(item.indx)
+  const checked = selected?.includes(item._id)
 
   return (
     <>
@@ -98,7 +98,7 @@ const ReviewItem = ({
           checked={checked}
           onSelect={handleSelect}
           isEditable={isEditable}
-          item={rows[item.indx]}
+          item={rows[item.indx - 1]}
           testItem={data.meta.item}
           points={data.main.points}
           onChangePoints={onChangePoints}

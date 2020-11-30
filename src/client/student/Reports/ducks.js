@@ -23,7 +23,6 @@ import {
   reportSchema,
 } from '../sharedDucks/ReportsModule/ducks'
 import { getServerTs } from '../utils'
-import { getCurrentTerm } from '../../author/src/selectors/user'
 
 // constants
 export const getCurrentGroup = createSelectorator(
@@ -61,12 +60,11 @@ function* fetchAssignments() {
   try {
     const groupId = yield select(getCurrentGroup)
     yield put(setAssignmentsLoadingAction())
-    const termId = yield select(getCurrentTerm)
     const groupStatus = yield select((state) =>
       get(state, 'studentAssignment.groupStatus', 'all')
     )
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId, '', groupStatus, termId),
+      call(assignmentApi.fetchAssigned, groupId, '', groupStatus),
       call(reportsApi.fetchReports, groupId, '', '', groupStatus),
     ])
 

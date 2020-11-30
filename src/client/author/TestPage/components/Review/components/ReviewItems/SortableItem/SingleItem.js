@@ -6,6 +6,7 @@ import { DragCrad, ReviewItemWrapper } from '../styled'
 
 const SortableItem = SortableElement((props) => {
   const { item, isEditable, expand, hideHanlde } = props
+  console.log(item, props)
   return (
     <DragCrad data-cy="drag-card" noPadding={hideHanlde}>
       {!expand && !hideHanlde && (

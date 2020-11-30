@@ -62,6 +62,9 @@ const GroupsAutoComplete = ({
     if (filters.studentSubject !== 'All' && filters.studentSubject) {
       q.search.subjects = [filters.studentSubject]
     }
+    if (filters.studentCourseId !== 'All') {
+      q.search.courseIds = [filters.studentCourseId]
+    }
     return q
   }, [
     searchTerms.text,

@@ -232,7 +232,7 @@ class Container extends PureComponent {
           })
         }
         if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
-          setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE })
+          setData({ releaseScore: releaseGradeLabels.WITH_ANSWERS })
         }
       }
       if (showCancelButton) {

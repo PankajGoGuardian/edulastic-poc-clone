@@ -98,61 +98,7 @@ describe(`${FileHelper.getSpecName(
   context('>review draft test', () => {
     context('> verify header action buttons', () => {
       it('> verify tabs and navigations', () => {
-        testLibraryPage.header.verifyHeaders(true, true, true, true)
-        testLibraryPage.header
-          .getTestSummaryHeader()
-          .should('not.have.css', 'cursor', 'not-allowed')
-          .click({ force: true })
-        testLibraryPage.testSummary.getTestGradeSelect().should('be.visible')
-        testLibraryPage.header.verifyHeaderActionButtons(
-          true,
-          true,
-          true,
-          true,
-          true,
-          false
-        )
-        testLibraryPage.header
-          .getTestAddItemHeader()
-          .should('not.have.css', 'cursor', 'not-allowed')
-          .click({ force: true })
-        testLibraryPage.testAddItem.searchFilters
-          .getSearchTextBox()
-          .should('be.visible')
-        testLibraryPage.header.verifyHeaderActionButtons(
-          true,
-          true,
-          true,
-          true,
-          true,
-          false
-        )
-        testLibraryPage.header
-          .getTestSettingsHeader()
-          .should('not.have.css', 'cursor', 'not-allowed')
-          .click({ force: true })
-        testLibraryPage.testSettings.getAnsOnPaperSwitch().should('exist')
-        testLibraryPage.header.verifyHeaderActionButtons(
-          true,
-          true,
-          true,
-          true,
-          true,
-          false
-        )
-        testLibraryPage.header
-          .getTestReviewHeader()
-          .should('not.have.css', 'cursor', 'not-allowed')
-          .click({ force: true })
-        testLibraryPage.review.getTestSubjectSelect().should('be.visible')
-        testLibraryPage.header.verifyHeaderActionButtons(
-          true,
-          true,
-          true,
-          true,
-          true,
-          false
-        )
+        testLibraryPage.verifyDraftTestHeaders()
       })
 
       it('> verify print test pop-up', () => {
@@ -389,28 +335,7 @@ describe(`${FileHelper.getSpecName(
     it('> verify tabs and navigations', () => {
       testLibraryPage.closePopUp()
       testLibraryPage.seachTestAndGotoReviewById(testId)
-      testLibraryPage.header.verifyHeaders(true, true, true, true)
-      testLibraryPage.header
-        .getTestSummaryHeader()
-        .should('have.css', 'cursor', 'not-allowed')
-        .click({ force: true })
-      testLibraryPage.header
-        .getTestAddItemHeader()
-        .should('have.css', 'cursor', 'not-allowed')
-        .click({ force: true })
-      testLibraryPage.review.getTestSubjectSelect().should('be.visible')
-      testLibraryPage.header
-        .getTestSettingsHeader()
-        .should('not.have.css', 'cursor', 'not-allowed')
-        .click({ force: true })
-      testLibraryPage.testSettings.getAnsOnPaperSwitch().should('exist')
-
-      testLibraryPage.header
-        .getTestReviewHeader()
-        .should('not.have.css', 'cursor', 'not-allowed')
-        .click({ force: true })
-      testLibraryPage.review.getTestSubjectSelect().should('be.visible')
-
+      testLibraryPage.verifyPublishedTestHeaders()
       testLibraryPage.review.getMoveTo().should('not.exist')
       testLibraryPage.review.getRemoveSelected().should('not.exist')
     })

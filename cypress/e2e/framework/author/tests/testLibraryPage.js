@@ -783,11 +783,11 @@ export default class TestLibrary {
       .should(
         'have.attr',
         'title',
-        `${Cypress.config('baseUrl')}/author/tests/tab/verid/${testId}`
+        `${Cypress.config('baseUrl')}/author/tests/verid/${testId}`
       )
       .should(
         'have.text',
-        `${Cypress.config('baseUrl')}/author/tests/tab/verid/${testId}`
+        `${Cypress.config('baseUrl')}/author/tests/verid/${testId}`
       )
 
     // TODO: revisit this as currently pop-up is blocking suite on clicking
@@ -819,7 +819,7 @@ export default class TestLibrary {
     cy.contains('How would you like to clone the test?')
     this.getCloneTestWithKeepingRefToItems()
       .should('be.visible')
-      .should('have.class', 'ant-radio-checked')
+      .should('be.checked')
     this.getCloneTestWithNewItems()
   }
 
@@ -883,27 +883,24 @@ export default class TestLibrary {
     this.header.verifyHeaders(true, true, true, true)
     this.header
       .getTestSummaryHeader()
-      .should('not.have.css', 'cursor', 'not-allowed')
+      .should('have.css', 'cursor', 'not-allowed')
       .click({ force: true })
-    this.testSummary.getTestGradeSelect().should('be.visible')
-    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
     this.header
       .getTestAddItemHeader()
-      .should('not.have.css', 'cursor', 'not-allowed')
+      .should('have.css', 'cursor', 'not-allowed')
       .click({ force: true })
-    this.testAddItem.searchFilters.getSearchTextBox().should('be.visible')
-    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.review.getTestSubjectSelect().should('be.visible')
     this.header
       .getTestSettingsHeader()
       .should('not.have.css', 'cursor', 'not-allowed')
       .click({ force: true })
     this.testSettings.getAnsOnPaperSwitch().should('exist')
-    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header.verifyHeaderActionButtons(true, true, false, false, true, true)
     this.header
       .getTestReviewHeader()
       .should('not.have.css', 'cursor', 'not-allowed')
       .click({ force: true })
     this.review.getTestSubjectSelect().should('be.visible')
-    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header.verifyHeaderActionButtons(true, true, false, false, true, true)
   }
 }

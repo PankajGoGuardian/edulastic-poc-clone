@@ -273,7 +273,6 @@ const ManageContentBlock = (props) => {
               previewTest={() => showPreviewModal(test._id)}
               status={test?.status}
               testType={test?.testType}
-              versionId={test.versionId}
             />
           )
         })

@@ -39,7 +39,6 @@ const ResourceItem = ({
   previewTest,
   status,
   testType,
-  versionId,
 }) => {
   const standardIdentifiers = (summary?.standards || []).map(
     (x) => x.identifier
@@ -57,7 +56,6 @@ const ResourceItem = ({
       data,
       status,
       testType,
-      versionId,
     },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1,

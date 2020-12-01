@@ -1,6 +1,20 @@
 {
   "name": "edulastic",
   "version": "12.57.2",
+  "sideEffects":[
+    "!(**/ducks.js)",
+    "!(**/duck.js)",
+    "!(**/sharedDucks/**)",
+    "!(**/sagas/**)",
+    "!(**/reducers/**)",
+    "!(**/sagas.js)",
+    "!(**/loginSagas.js)",
+    "!(**/reducers.js)",
+    "!(**/src/(sagas|selectors|reducers|utils|styles|actions)/**)",
+    "!(**/utils/**)",
+    "!(**/common/**)"
+
+  ],
   "private": true,
   "workspaces": [
     "packages/*"
@@ -24,7 +38,7 @@
     "build:extension": "webpack --config src/chrome-extension/webpack.config.js",
     "start": "APP_MODE_DEV=1 react-app-rewired start",
     "build": "NODE_ENV=production react-app-rewired build",
-    "buildwlimit": "NODE_ENV=production react-app-rewired --max_old_space_size=4096 build",
+    "buildwlimit": "NODE_ENV=production react-app-rewired --max_old_space_size=5096 build",
     "build:login2": "webpack --config src/webpack.login.config.js",
     "prod-serve": "serve -s build -p 3001",
     "test": "jest --coverage && ava",

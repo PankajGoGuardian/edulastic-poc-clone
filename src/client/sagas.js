@@ -21,6 +21,7 @@ import { publicTestSaga } from './publicTest'
 import dictionariesSaga from './author/src/sagas/dictionaries'
 import { assignmentEmbedLinkSaga } from './assignmentEmbedLink'
 
+/*#__PURE__*/
 export default function* () {
   yield all([
     answerSaga(),
@@ -43,6 +44,7 @@ export default function* () {
   ])
 }
 
+/*#__PURE__*/
 export function* loginSaga() {
   yield all([authenticationSaga(), signupSaga(), dictionariesSaga()])
 }

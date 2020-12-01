@@ -11,7 +11,7 @@ const SortableItem = SortableElement((props) => {
       {!expand && !groupMinimized && (
         <DragHandle isEditable={isEditable} indx={item.indx} />
       )}
-      <ReviewItemWrapper data-cy={item.id} fullWidth={groupMinimized}>
+      <ReviewItemWrapper data-cy={item._id} fullWidth={groupMinimized}>
         <ReviewItem {...props} />
       </ReviewItemWrapper>
     </DragCrad>

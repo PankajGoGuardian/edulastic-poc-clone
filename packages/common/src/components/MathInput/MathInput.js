@@ -132,8 +132,12 @@ class MathInput extends React.PureComponent {
       height: inputH,
     } = this.containerRef.current.getBoundingClientRect()
 
+    // dynamic variable formula input does not pass keyboard type(styles)
+    // so in this case, need to use `basic` mode
+    // @see: https://snapwiz.atlassian.net/browse/EV-21988
+
     const { width, height: keyboardH } = math.symbols.find(
-      (x) => x.value === symbols[0]
+      (x) => x.value === (symbols[0] || 'basic')
     ) || { width: 0, height: 0 }
 
     // 8 is margin between math keyboard and math input

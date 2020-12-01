@@ -53,10 +53,6 @@ const AssessmentAutoComplete = ({
             : [filters.subject],
         testTypes:
           (filters.assessmentTypes && filters.assessmentTypes.split(',')) || [],
-        courseIds:
-          !filters.courseId || filters.courseId === 'All'
-            ? []
-            : [filters.courseId],
       },
       aggregate: true,
     }
@@ -76,7 +72,6 @@ const AssessmentAutoComplete = ({
     termId,
     filters.grade,
     filters.subject,
-    filters.courseId,
     filters.assessmentTypes,
   ])
 
@@ -129,13 +124,7 @@ const AssessmentAutoComplete = ({
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
     }
-  }, [
-    termId,
-    filters.grade,
-    filters.subject,
-    filters.courseId,
-    filters.assessmentTypes,
-  ])
+  }, [termId, filters.grade, filters.subject, filters.assessmentTypes])
   useEffect(() => {
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||

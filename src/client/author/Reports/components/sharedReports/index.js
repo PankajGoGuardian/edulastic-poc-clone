@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Result, Spin } from 'antd'
+import { TypeToConfirmModal } from '@edulastic/common'
 import { report } from '@edulastic/constants'
 import SharedReportsTable from './SharedReportsTable'
 import { StyledContainer } from '../../common/styled'
@@ -25,6 +26,20 @@ const SharedReportsContainer = ({
   history,
   currentUserId,
 }) => {
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const [reportToArchive, setReportToArchive] = useState({})
+
+  useEffect(() => setShowConfirmationModal(!!reportToArchive._id), [
+    reportToArchive,
+  ])
+
+  const handleArchiveReport = () => {
+    if (reportToArchive._id) {
+      archiveReport({ id: reportToArchive._id })
+    }
+    setReportToArchive({})
+  }
+
   const showReport = ({ _id, reportGroupType, reportType, filters }) => {
     switch (reportGroupType) {
       case report.reportGroupType.SINGLE_ASSESSMENT_REPORT:
@@ -94,13 +109,22 @@ const SharedReportsContainer = ({
 
   return (
     <StyledContainer>
+      <TypeToConfirmModal
+        modalVisible={showConfirmationModal}
+        title="Revoke Sharing"
+        handleOnOkClick={handleArchiveReport}
+        wordToBeTyped="REVOKE"
+        primaryLabel="Are you sure you want to revoke sharing of the following report?"
+        secondaryLabel={reportToArchive.title}
+        closeModal={() => setReportToArchive({})}
+      />
       {isLoading ? (
         <Spin size="small" />
       ) : sharedReportList.length ? (
         <SharedReportsTable
           sharedReportsData={sharedReportsData}
           showReport={showReport}
-          archiveReport={archiveReport}
+          setReportToArchive={setReportToArchive}
           currentUserId={currentUserId}
         />
       ) : (

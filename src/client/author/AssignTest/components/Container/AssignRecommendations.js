@@ -11,7 +11,7 @@ import * as moment from 'moment'
 import { connect } from 'react-redux'
 import produce from 'immer'
 import ListHeader from '../../../src/components/common/ListHeader'
-import { getUserRole } from '../../../src/selectors/user'
+import { getUserRole, getCurrentTerm } from '../../../src/selectors/user'
 import { getDefaultTestSettingsAction } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -21,11 +21,18 @@ import {
 import {
   getRecommendationsToAssignSelector,
   addRecommendationsAction,
+  setRecommendationsToAssignAction,
 } from '../../../CurriculumSequence/ducks'
 import SimpleOptionsModal from '../SimpleOptions/SimpleOptionsModal'
 import SimpleOptions from '../SimpleOptions/SimpleOptions'
 import AdvancedOptions from '../AdvancedOptons/AdvancedOptons'
-import { Container } from './styled'
+import {
+  Anchor,
+  TextAnchor,
+  Container,
+  FullFlexContainer,
+  PaginationInfo,
+} from './styled'
 
 const { ASSESSMENT, COMMON } = testConst.type
 
@@ -34,10 +41,12 @@ const AssignRecommendations = ({
   assignmentSettings,
   addRecommendations,
   testSettings,
+  termId,
   getDefaultTestSettings,
   updateAssignmentSettings,
   clearAssignmentSettings,
   recommendationsToAssign,
+  setRecommendationsToAssign,
   defaultTestProfiles,
   isModalView,
   isModalVisible,
@@ -65,6 +74,7 @@ const AssignRecommendations = ({
           assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
       testType: isAdmin ? COMMON : ASSESSMENT,
       playerSkinType: testSettings.playerSkinType,
+      termId,
     }
 
     updateAssignmentSettings(updatedAssignment)
@@ -150,6 +160,10 @@ const AssignRecommendations = ({
   }
 
   const title = recommendationsToAssign.recommendations[0]?.resourceTitle
+  const handleTextAnchorClick = () =>
+    setRecommendationsToAssign({
+      isRecommendationAssignView: false,
+    })
 
   return (
     <>
@@ -161,6 +175,16 @@ const AssignRecommendations = ({
         renderButton={renderHeaderButton}
       />
       <Container>
+        <FullFlexContainer justifyContent="space-between">
+          <PaginationInfo>
+            &lt;{' '}
+            <TextAnchor onClick={handleTextAnchorClick}>
+              Differentation
+            </TextAnchor>
+            &nbsp;/&nbsp;
+            <Anchor>Assign</Anchor>
+          </PaginationInfo>
+        </FullFlexContainer>
         {isAdvancedView ? (
           <AdvancedOptions
             assignment={assignmentSettings}
@@ -186,6 +210,7 @@ export default connect(
   (state) => ({
     testSettings: getTestEntitySelector(state),
     userRole: getUserRole(state),
+    termId: getCurrentTerm(state),
     recommendationsToAssign: getRecommendationsToAssignSelector(state),
     assignmentSettings: state.assignmentSettings,
   }),
@@ -194,6 +219,7 @@ export default connect(
     updateAssignmentSettings: updateAssingnmentSettingsAction,
     clearAssignmentSettings: clearAssignmentSettingsAction,
     addRecommendations: addRecommendationsAction,
+    setRecommendationsToAssign: setRecommendationsToAssignAction,
   }
 )(AssignRecommendations)
 
@@ -211,6 +237,7 @@ AssignRecommendations.propTypes = {
   isModalVisible: PropTypes.bool,
   toggleModal: PropTypes.func,
   onClickFullSettings: PropTypes.func,
+  setRecommendationsToAssign: PropTypes.func.isRequired,
 }
 
 AssignRecommendations.defaultProps = {

@@ -86,6 +86,7 @@ const SimpleOptionsModal = ({
       okText="ASSIGN"
       cancelText="CANCEL"
       textAlign="left"
+      destroyOnClose
       centered
     >
       <OptionConationer hasMinHeight={false}>

@@ -90,8 +90,6 @@ const TeacherAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
-    setSearchTerms(DEFAULT_SEARCH_TERMS)
-    selectCB([])
     setSearchResult([])
   }, [institutionId])
 

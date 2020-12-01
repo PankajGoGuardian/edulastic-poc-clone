@@ -235,6 +235,11 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       [keyName]: multiple ? selected : selected.key,
     }
+    if (keyName === 'schoolIds' && filters.schoolIds !== selected) {
+      _filters.teacherIds = ''
+      _filters.groupId = 'All'
+      _filters.classId = 'All'
+    }
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     setFiltersOrTestId({ filters: _filters })
     setShowApply(true)

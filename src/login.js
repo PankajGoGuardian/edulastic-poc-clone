@@ -11,12 +11,12 @@ import 'antd/dist/antd.css'
 import { init as SentryInit } from '@sentry/browser'
 import { Integrations } from '@sentry/tracing'
 import './client/index.css'
-import { updateSentryScope } from '@edulastic/api/src/utils/Storage'
+//import { updateSentryScope } from '@edulastic/api/src/utils/Storage'
 import AppLogin from './client/AppLogin'
-import configureStore, { history } from './client/configureStore'
+//import configureStore, { history } from './client/configureStore'
 import AppConfig from './app-config'
-import { loginReducer } from './client/reducers'
-import { loginSaga } from './client/sagas'
+//import { loginReducer } from './client/reducers'
+import { loginSaga } from './client/loginSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
 
 if (AppConfig.sentryURI) {
@@ -30,18 +30,19 @@ if (AppConfig.sentryURI) {
     integrations: [new Integrations.BrowserTracing()],
     tracesSampleRate: 0.1, // we sample only 10% of the data from clients.
   })
-  updateSentryScope()
+  //updateSentryScope()
 }
 
 // login - redux store
-const { store } = configureStore({}, loginReducer, loginSaga)
+// const { store } = configureStore({}, loginReducer, loginSaga)
 
-store.dispatch(fetchUserAction())
-
+// store.dispatch(fetchUserAction())
+//const r1=loginReducer //l1=loginSaga;
+const l1=loginSaga;
 const RootComp = () => (
   <I18nextProvider i18n={i18n}>
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
+    <Provider>
+      <ConnectedRouter>
         <Suspense fallback={<Spin />}>
           <AppLogin />
         </Suspense>

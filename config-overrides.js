@@ -36,7 +36,7 @@ const packageJson = require('./package.json')
 module.exports = override(
   multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
-  process.env.BUNDLE_VISUALIZE && addBundleVisualizer(),
+  (process.env.BUNDLE_VISUALIZE||true) && addBundleVisualizer({generateStatsFile:true}),
   (config) => {
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
@@ -148,14 +148,14 @@ module.exports = override(
     } else {
       config.plugins.push(
         new ScriptExtHtmlWebpackPlugin({
-          defaultAttribute: 'defer',
+          //defaultAttribute: 'defer',
           async: /froala-editor|firebase|pdfjs-dist|jsx-graph|mathjs|draft-js/,
           // preload: {
           //   test: /\.js$/,
           //   chunks: 'async',
           // },
         })
-      )
+      ) 
     }
 
     /* eslint-enable no-param-reassign */

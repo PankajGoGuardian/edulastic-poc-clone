@@ -177,7 +177,6 @@ function getScratchpadDataFromAttachments(attachments) {
 function* loadTest({ payload }) {
   const {
     testActivityId,
-    testId,
     preview = false,
     demo = false,
     test: testData = {},
@@ -186,6 +185,8 @@ function* loadTest({ payload }) {
     playlistId,
     currentAssignmentId,
   } = payload
+
+  let { testId } = payload
   try {
     if (!preview && !testActivityId) {
       // we don't have a testActivityId for non-preview, lets throw error to short circuit
@@ -214,6 +215,11 @@ function* loadTest({ payload }) {
       payload: true,
     })
     yield put(setPasswordValidateStatusAction(false))
+
+    if (playlistId) {
+      const resp = yield call(testsApi.getTestIdFromVersionId, testId)
+      testId = resp.testId
+    }
 
     yield put({
       type: SET_TEST_ID,

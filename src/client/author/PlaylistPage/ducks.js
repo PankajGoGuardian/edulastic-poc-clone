@@ -328,8 +328,12 @@ const moveContentInPlaylist = (playlist, payload) => {
       (x) => x?.contentId === testItem.id
     )
     if (!itemExistsInModule) {
-      set(testItem, 'contentId', testItem.id)
-      const attrsToOmit = ['id', 'type', 'fromPlaylistTestsBox']
+      set(
+        testItem,
+        'contentId',
+        testItem.contentType === 'test' ? testItem.versionId : testItem.id
+      )
+      const attrsToOmit = ['id', 'type', 'fromPlaylistTestsBox', 'versionId']
 
       if (testItem.contentType === 'test') {
         attrsToOmit.push(...['contentDescription', 'contentUrl'])

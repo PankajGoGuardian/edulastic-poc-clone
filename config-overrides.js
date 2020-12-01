@@ -5,8 +5,6 @@ const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { setIn, getIn } = require('timm')
 const path = require('path')
-const ESLintPlugin = require('eslint-webpack-plugin')
-// const CopyPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 const packageJson = require('./package.json')
@@ -27,9 +25,9 @@ module.exports = override(
 
     config.module.rules[0].parser.requireEnsure = true
 
-    config.plugins = config.plugins.filter(
-      (plugin) => !(plugin instanceof ESLintPlugin)
-    )
+    config.plugins = config.plugins.filter((plugin) => {
+      return !(plugin.constructor.name === 'ESLintWebpackPlugin')
+    })
 
     // config.module.noParse = /pdfjs-dist/
 

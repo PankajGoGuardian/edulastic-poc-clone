@@ -1,26 +1,26 @@
-import TestAssignPage from '../../../framework/author/tests/testDetail/testAssignPage'
-import AuthorAssignmentPage from '../../../framework/author/assignments/AuthorAssignmentPage'
+import TestAssignPage from '../../../../framework/author/tests/testDetail/testAssignPage'
+import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
 import AssignmentBulkActionsPage, {
   filter,
   icons,
-} from '../../../framework/author/assignments/AssignmentBulkActionsPage'
-import AssignmentsPage from '../../../framework/student/assignmentsPage'
-import SidebarPage from '../../../framework/student/sidebarPage'
-import FileHelper from '../../../framework/util/fileHelper'
-import TeacherSideBar from '../../../framework/author/SideBarPage'
+} from '../../../../framework/author/assignments/AssignmentBulkActionsPage'
+import AssignmentsPage from '../../../../framework/student/assignmentsPage'
+import SidebarPage from '../../../../framework/student/sidebarPage'
+import FileHelper from '../../../../framework/util/fileHelper'
+import TeacherSideBar from '../../../../framework/author/SideBarPage'
 import {
   grades,
   teacherSide,
-} from '../../../framework/constants/assignmentStatus'
+} from '../../../../framework/constants/assignmentStatus'
 import {
   getRandomClass,
   getRandomStudent,
-} from '../../../framework/constants/constantFunctions'
-import LiveClassboardPage from '../../../framework/author/assignments/LiveClassboardPage'
-import ReportsPage from '../../../framework/student/reportsPage'
+} from '../../../../framework/constants/constantFunctions'
+import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
+import ReportsPage from '../../../../framework/student/reportsPage'
 
-// import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-// import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
+// import TestLibrary from "../../../framework/author/tests/testLibraryPage";
+// import TeacherManageClassPage from "../../../framework/author/manageClassPage";
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -40,13 +40,18 @@ describe(`${FileHelper.getSpecName(
   // const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
 
   let notOpenClasses
+  let numberOfnotOpen = '0'
+  let numberOfInProgress = '0'
+  let numberOfInGrading = '0'
+  let numberOfDone = '0'
 
   const classData = {
     className: ['Auto_class_'],
     grade: grades.GRADE_10,
     subject: 'Mathematics',
     standardSet: 'Math - Common Core',
-    testID: '5f524262b628db00085f6c82',
+    testID: '5fa51000d17df100089121b1',
+    assignmentName: 'Default Test Automation',
   }
 
   const studData = {
@@ -87,7 +92,7 @@ describe(`${FileHelper.getSpecName(
         manageClass.fillStudentDetails(username, studName, studData.password);
         manageClass.clickOnAddUserButton();
       }
-    }  
+    }   
     // Create a test
     testLibraryPage.createTest().then(id => {
       classData.testID = id 
@@ -104,7 +109,7 @@ describe(`${FileHelper.getSpecName(
         notOpenClasses.push(classData.className + i.toString())
       }
       testAssignPage.assignTestWithoutOpening(notOpenClasses, classData.testID)
-      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      cy.login('schoolAdmin', Teacher.adminEmail, Teacher.adminPass)
     })
 
     it("> Open 'not started' assignments :", () => {
@@ -112,35 +117,28 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(0,15).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickOpenActionButton('15', '15')
+      numberOfnotOpen = '15'
+      numberOfInProgress = '15'
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_PROGRESS
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
+      notOpenClasses.slice(0,15).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.IN_PROGRESS
           )
       })
 
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.NOT_OPEN,
+        numberOfnotOpen
+      )
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.IN_PROGRESS,
+        numberOfInProgress
+      )
 
       cy.login('teacher', Teacher.email, Teacher.pass)
       sideBarPage.clickOnAssignment()
@@ -178,37 +176,21 @@ describe(`${FileHelper.getSpecName(
         studData.password
       )
       // NOT OPEN assignment should not be listed now
-      // studAssignmentPage.verifyAssignmentIslocked()
       studAssignmentPage.getAssignmentButton().should('not.be.visible')
     })
 
     it("> Pause 'in progress' assignments :", () => {
-      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      cy.login('schoolAdmin', Teacher.adminEmail, Teacher.adminPass)
       sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(0,15).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickPauseActionButton('15', '15')
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_PROGRESS_PAUSED
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
+      notOpenClasses.slice(0,15).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.IN_PROGRESS_PAUSED
@@ -219,6 +201,7 @@ describe(`${FileHelper.getSpecName(
       bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
 
       cy.login('teacher', Teacher.email, Teacher.pass)
+      sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
@@ -259,35 +242,20 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> Open Paused assignments :', () => {
-      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      cy.login('schoolAdmin', Teacher.adminEmail, Teacher.adminPass)
       sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(0,15).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickOpenActionButton('15', '15')
 
       bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
       bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_PROGRESS
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
+      notOpenClasses.slice(0,15).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.IN_PROGRESS
@@ -296,53 +264,35 @@ describe(`${FileHelper.getSpecName(
     })
 
     it("> Pause 'in grading' assignments:", () => {
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) {
-          sideBarPage.clickOnAssignment()
-          authorAssignmentPage.filterByTestType('All')
-          bulkActionPage.clickTestByID(classData.testID)
-          bulkActionPage.clickIconByClassName(icons.LCB, className)
-          lcbPage.checkSelectAllCheckboxOfStudent()
-          lcbPage.clickOnMarkAsSubmit()
-        } else if (index > 9 && index < 15) {
-          sideBarPage.clickOnAssignment()
-          authorAssignmentPage.filterByTestType('All')
-          bulkActionPage.clickTestByID(classData.testID)
-          bulkActionPage.clickNextPage()
-          bulkActionPage.clickIconByClassName(icons.LCB, className)
-          lcbPage.checkSelectAllCheckboxOfStudent()
-          lcbPage.clickOnMarkAsSubmit()
-        }
-      })
-
       sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(0,15).forEach((className) => {
+          bulkActionPage.clickIconByClassName(icons.LCB, className)
+          lcbPage.checkSelectAllCheckboxOfStudent()
+          lcbPage.clickOnMarkAsSubmit()
+          lcbPage.clickOnAssignmentLink(classData.assignmentName)
       })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
-          bulkActionPage.selectClassByClassName(className)
+
+      numberOfInProgress = '0'
+      numberOfInGrading = '15'
+
+      notOpenClasses.slice(0,15).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
 
       bulkActionPage.clickPauseActionButton('15', '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.NOT_OPEN,
+        numberOfnotOpen
+      )
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.IN_GRADING,
+        numberOfInGrading
+      )
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_GRADING_PAUSED
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
+      notOpenClasses.slice(0,15).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.IN_GRADING_PAUSED
@@ -350,6 +300,7 @@ describe(`${FileHelper.getSpecName(
       })
 
       cy.login('teacher', Teacher.email, Teacher.pass)
+      sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.verifyAssignmentStatusOfClass(
         classData.testID,
@@ -390,38 +341,29 @@ describe(`${FileHelper.getSpecName(
     })
 
     it("> Open 'in-grading-paused' assignments :", () => {
-      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      cy.login('schoolAdmin', Teacher.adminEmail, Teacher.adminPass)
       sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(0,15).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
 
       bulkActionPage.clickOpenActionButton('15', '15')
       /* inGradinClasses.forEach((className)=>{
         bulkActionPage.verifyAssignmentStatusOfClass(className,teacherSide.DONE)
       }) */
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.IN_GRADING, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.NOT_OPEN,
+        numberOfnotOpen
+      )
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.IN_GRADING,
+        numberOfInGrading
+      )
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_GRADING
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
+      notOpenClasses.slice(0,15).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.IN_GRADING
@@ -430,33 +372,24 @@ describe(`${FileHelper.getSpecName(
     })
 
     it("> Close 'in-grading' assignments :", () => {
+      sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10) bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(0,15).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
 
       bulkActionPage.clickCloseActionButton('15', '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
+      numberOfDone = '15'
+      numberOfInGrading = '0'
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.NOT_OPEN,
+        numberOfnotOpen
+      )
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, numberOfDone)
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index < 10)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.DONE
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 9 && index < 15)
+      notOpenClasses.slice(0,15).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.DONE
@@ -469,32 +402,18 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20)
-          bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30)
+      notOpenClasses.slice(15,30).forEach((className) => {
           bulkActionPage.selectClassByClassName(className)
       })
 
       bulkActionPage.clickCloseActionButton('0', '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.NOT_OPEN,
+        numberOfnotOpen
+      )
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, numberOfDone)
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.NOT_OPEN
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30)
+      notOpenClasses.slice(15,30).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.NOT_OPEN
@@ -507,32 +426,18 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20)
-          bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30)
+      notOpenClasses.slice(15,30).forEach((className) => {
           bulkActionPage.selectClassByClassName(className)
       })
 
       bulkActionPage.clickDoneActionButton('0', '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '15')
+      bulkActionPage.verifyNumberofClassesInFilter(
+        filter.NOT_OPEN,
+        numberOfnotOpen
+      )
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, numberOfDone)
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.NOT_OPEN
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30)
+      notOpenClasses.slice(15,30).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.NOT_OPEN
@@ -545,63 +450,26 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20)
-          bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30)
+      notOpenClasses.slice(15,30).forEach((className) => {
           bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickOpenActionButton('15', '15')
 
-      sideBarPage.clickOnReport()
-      sideBarPage.clickOnAssignment()
-      authorAssignmentPage.filterByTestType('All')
-      bulkActionPage.clickTestByID(classData.testID)
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20)
-          bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30)
+      notOpenClasses.slice(15,30).forEach((className) => {
           bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickPauseActionButton('15', '15')
 
-      sideBarPage.clickOnReport()
-      sideBarPage.clickOnAssignment()
-      authorAssignmentPage.filterByTestType('All')
-      bulkActionPage.clickTestByID(classData.testID)
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20)
-          bulkActionPage.selectClassByClassName(className)
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30)
+      notOpenClasses.slice(15,30).forEach((className) => {
           bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickCloseActionButton('15', '15')
+      numberOfDone = '30'
+      numberOfInGrading = '0'
 
-      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, '30')
+      bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, numberOfDone)
 
-      bulkActionPage.clickPreviousPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 14 && index < 20)
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.DONE
-          )
-      })
-      bulkActionPage.clickNextPage()
-      notOpenClasses.forEach((className, index) => {
-        if (index > 19 && index < 30)
+      notOpenClasses.slice(15,30).forEach((className) => {
           bulkActionPage.verifyAssignmentStatusOfClass(
             className,
             teacherSide.DONE

@@ -196,6 +196,7 @@ Cypress.Commands.add(
     cy.route('POST', '**/auth/**').as('auth')
     cy.route('POST', '**/search/courses').as('searchCourse')
     cy.route('GET', '**/dashboard/**').as('teacherDashboard')
+    cy.route('GET', '**/district-policy/**').as('district')
     cy.route('GET', '**/api/user-context?name=RECENT_PLAYLISTS').as(
       'curatorDash'
     )
@@ -215,6 +216,10 @@ Cypress.Commands.add(
       case 'student':
         cy.wait(`@assignment-${login_index}`, { timeout: 120000 })
         cy.wait(`@testActivity${login_index}`, { timeout: 120000 })
+        break
+      
+      case 'schoolAdmin':
+        cy.wait(`@district`, { timeout: 120000 })
         break
 
       case 'publisher':

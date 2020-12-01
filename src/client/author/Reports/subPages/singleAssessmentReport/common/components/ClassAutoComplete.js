@@ -115,6 +115,7 @@ const ClassAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
+    setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
   }, [
     filters.schoolIds,

@@ -73,7 +73,6 @@ const GroupsAutoComplete = ({
     filters.studentSubject,
     filters.studentGrade,
     filters.studentCourseId,
-    filters.classId,
   ])
 
   // handle autocomplete actions
@@ -116,6 +115,7 @@ const GroupsAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
+    setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
   }, [
     filters.schoolIds,
@@ -123,7 +123,6 @@ const GroupsAutoComplete = ({
     filters.studentSubject,
     filters.studentGrade,
     filters.studentCourseId,
-    filters.classId,
   ])
 
   // build dropdown data

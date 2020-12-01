@@ -54,6 +54,51 @@ const getTestIdFromURL = (url) => {
   return ''
 }
 
+const studentFiltersDefaultValues = [
+  {
+    key: 'schoolIds',
+    value: '',
+  },
+  {
+    key: 'teacherIds',
+    value: '',
+  },
+  {
+    key: '',
+    nestedFilters: [
+      {
+        key: 'classId',
+        value: 'All',
+      },
+      {
+        key: 'groupId',
+        value: 'All',
+      },
+    ],
+  },
+]
+
+const resetFilter = (filtersToReset, prevFilters) => {
+  for (const filter of filtersToReset) {
+    if (filter.nestedFilters) {
+      resetFilter(filter.nestedFilters, prevFilters)
+    } else {
+      prevFilters[filter.key] = filter.value
+    }
+  }
+}
+
+const resetStudentFilters = (prevFilters, key, selected, multiple) => {
+  const index = studentFiltersDefaultValues.findIndex((s) => s.key === key)
+  if (
+    index !== -1 &&
+    prevFilters[key] !== (multiple ? selected : selected.key)
+  ) {
+    const filtersToReset = studentFiltersDefaultValues.slice(index + 1)
+    resetFilter(filtersToReset, prevFilters)
+  }
+}
+
 const SingleAssessmentReportFilters = ({
   loading,
   SARFilterData,
@@ -231,15 +276,9 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
-    const _filters = {
-      ...filters,
-      [keyName]: multiple ? selected : selected.key,
-    }
-    if (keyName === 'schoolIds' && filters.schoolIds !== selected) {
-      _filters.teacherIds = ''
-      _filters.groupId = 'All'
-      _filters.classId = 'All'
-    }
+    const _filters = { ...filters }
+    resetStudentFilters(_filters, keyName, selected, multiple)
+    _filters[keyName] = multiple ? selected : selected.key
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     setFiltersOrTestId({ filters: _filters })
     setShowApply(true)

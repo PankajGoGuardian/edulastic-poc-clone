@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { getMathHtml } from '@edulastic/common'
 import { math as mathConstants } from '@edulastic/constants'
 
 import { keys, isArray, isEmpty, isString, values } from 'lodash'
@@ -29,14 +30,16 @@ const EnabledSettings = ({
     const optionKeys = keys(options)
     const optsLables = optionKeys
       .map((key) => {
+        let label = ''
         if (key === 'syntax') {
           const syntax = syntaxOptions.find((x) => x.value === options[key])
           if (syntax) {
-            return syntax.label
+            label = syntax.label
           }
-          return false
-        }
-        if (options[key]) {
+        } else if (key === 'unit') {
+          const mathHtml = getMathHtml(options[key] || '')
+          label = `${mathHtml} ${t(`component.math.${key}`)}`
+        } else if (options[key]) {
           if (isArray(options[key]) && !isEmpty(options[key])) {
             const labels = options[key].map((x) => {
               const separator = separators.find((s) => s.value === x)
@@ -45,38 +48,47 @@ const EnabledSettings = ({
               }
               return x
             })
-            return `"${labels.join(',')}" ${t(`component.math.${key}`)}`
-          }
-          if (isString(options[key])) {
-            let label = options[key]
+            label = `"${labels.join(',')}" ${t(`component.math.${key}`)}`
+          } else if (isString(options[key])) {
+            label = options[key]
             const separator = separators.find((s) => s.value === options[key])
             if (separator) {
               label = separator.label
             }
 
-            return `"${label}" ${t(`component.math.${key}`)}`
+            label = `"${label}" ${t(`component.math.${key}`)}`
+          } else {
+            label = t(`component.math.${key}`)
           }
-          return t(`component.math.${key}`)
+        }
+        if (label) {
+          return { key, label }
         }
         return false
       })
       .filter((x) => !!x)
     if (allowNumericOnly) {
-      optsLables.push(t('component.math.allowNumericOnly'))
+      optsLables.push({
+        key: 'allowNumericOnly',
+        label: t('component.math.allowNumericOnly'),
+      })
     }
     if (!isEmpty(allowedVariables)) {
-      optsLables.push(
-        `${allowedVariables} ${t('component.math.allowedVariables')}`
-      )
+      optsLables.push({
+        key: 'allowedVariables',
+        label: `${allowedVariables} ${t('component.math.allowedVariables')}`,
+      })
     }
-    return optsLables
+    return [
+      { key: 'evaluationMethod', label: t(`component.math.${method}`) },
+    ].concat(optsLables)
   }, [options, allowNumericOnly, allowedVariables])
 
   return (
     <Container>
       <ul>
-        {[t(`component.math.${method}`)].concat(optionsToShow).map((opt) => (
-          <li key={opt}>{opt}</li>
+        {optionsToShow.map((op) => (
+          <li key={op.key} dangerouslySetInnerHTML={{ __html: op.label }} />
         ))}
       </ul>
     </Container>

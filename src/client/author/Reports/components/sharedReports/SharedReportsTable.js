@@ -20,7 +20,7 @@ const safeClick = (func) => (e) => {
 const SharedReportsTable = ({
   sharedReportsData,
   showReport,
-  archiveReport,
+  setReportToArchive,
   currentUserId,
 }) => {
   const columns = [
@@ -44,11 +44,12 @@ const SharedReportsTable = ({
       title: 'Shared By',
       key: 'sharedBy',
       dataIndex: 'sharedBy',
-      render: ({ name }) => name,
-      sorter: (a, b) =>
-        a.sharedBy.name
-          .toLowerCase()
-          .localeCompare(b.sharedBy.name.toLowerCase()),
+      render: ({ _id, name }) => (_id === currentUserId ? 'me' : name),
+      sorter: (a, b) => {
+        const aName = a.sharedBy._id === currentUserId ? 'me' : a.sharedBy.name
+        const bName = b.sharedBy._id === currentUserId ? 'me' : b.sharedBy.name
+        return aName.toLowerCase().localeCompare(bName.toLowerCase())
+      },
     },
     {
       title: 'Shared With',
@@ -68,7 +69,7 @@ const SharedReportsTable = ({
       key: '_id',
       dataIndex: '_id',
       align: 'right',
-      render: (id, { isGroupAdmin, sharedBy }) => (
+      render: (_id, { title, isGroupAdmin, sharedBy }) => (
         <div style={{ whiteSpace: 'nowrap', padding: '0 10px' }}>
           {/* TODO: Uncomment to update shared report */}
           {/* {sharedBy._id === currentUserId ? (
@@ -80,10 +81,10 @@ const SharedReportsTable = ({
           ) : null} */}
           {isGroupAdmin || sharedBy._id === currentUserId ? (
             <StyledTableButton
-              title="Archive"
-              onClick={safeClick(() => archiveReport({ id }))}
+              title="Revoke Sharing"
+              onClick={safeClick(() => setReportToArchive({ _id, title }))}
             >
-              <Tooltip title="Archive">
+              <Tooltip title="Revoke Sharing">
                 <IconTrash color={themeColor} />
               </Tooltip>
             </StyledTableButton>

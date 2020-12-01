@@ -98,7 +98,7 @@ const MultipleAssessmentReportContainer = (props) => {
   }, [showApply, _MARFilterData])
 
   useEffect(() => {
-    if (showApply) {
+    if (!showApply) {
       setDdFilter({ ...selectedExtras })
     }
   }, [showApply, selectedExtras])
@@ -145,6 +145,7 @@ const MultipleAssessmentReportContainer = (props) => {
             : settings.requestFilters[item]
         obj[item] = val
       })
+      obj.reportId = reportId || ''
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
@@ -265,7 +266,6 @@ const MultipleAssessmentReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   ddfilter={ddfilter}
-                  MARFilterData={MARFilterData}
                   sharedReport={sharedReport}
                 />
               )
@@ -298,7 +298,6 @@ const MultipleAssessmentReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   ddfilter={ddfilter}
-                  MARFilterData={MARFilterData}
                   sharedReport={sharedReport}
                 />
               )

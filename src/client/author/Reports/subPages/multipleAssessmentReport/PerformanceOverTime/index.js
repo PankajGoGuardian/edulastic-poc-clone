@@ -16,13 +16,12 @@ import {
   getReportsPerformanceOverTimeLoader,
   getReportsPerformanceOverError,
 } from './ducks'
-import { augmentTestData, parseData } from './utils/transformers'
+import { parseData } from './utils/transformers'
 
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequest,
   performanceOverTime,
   isCsvDownloading,
-  MARFilterData,
   settings,
   loading,
   error,
@@ -39,9 +38,8 @@ const PerformanceOverTime = ({
   const [selectedTests, setSelectedTests] = useState([])
 
   const rawData = get(performanceOverTime, 'data.result', {})
-  const { testData = [] } = get(MARFilterData, 'data.result', {})
   const dataWithTestInfo = filter(
-    augmentTestData(parseData(rawData), testData),
+    parseData(rawData),
     (test) => test.testName && test.testName !== 'N/A' // filter out tests without testName
   )
   const filteredTableData = filter(dataWithTestInfo, (test) =>

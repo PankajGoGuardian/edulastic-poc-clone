@@ -155,7 +155,6 @@ const getCellAttributes = (test = {}, analyseBy = {}) => {
 }
 
 const getColumns = (
-  testData = [],
   rawMetric = [],
   analyseBy = '',
   compareBy = {},
@@ -167,21 +166,16 @@ const getColumns = (
   pageTitle,
   isSharedReport
 ) => {
-  const groupedTests = groupBy(testData, 'testId')
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
-
   const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
-    const currentTestGroup = groupedTests[testId] || {}
-    const test = currentTestGroup[0] || {}
-    const assessmentName = (test && test.testName) || ''
-    const { startDate } =
+    const { startDate, testName = 'N/A' } =
       groupedAvailableTests[testId].reduce((ele, res) =>
         ele.startDate > res.startDate ? ele : res
       ) || {}
 
     return {
       key: testId,
-      title: assessmentName,
+      title: testName,
       startDate,
       align: 'center',
       className: 'normal-text',
@@ -202,7 +196,7 @@ const getColumns = (
 
         const toolTipText = () => (
           <div>
-            <TableTooltipRow title="Assessment Name: " value={assessmentName} />
+            <TableTooltipRow title="Assessment Name: " value={testName} />
             {toolTipContent(record, value)}
             <TableTooltipRow
               title={`${capitalize(analyseBy.title)} : `}
@@ -282,19 +276,12 @@ const getColumns = (
       width: 150,
       align: 'center',
       visibleOn: ['browser'],
-      render: (tests, record) => {
-        const augmentedTests = map(tests, (test, testId) => {
-          const currentTestGroup = groupedTests[testId] || {}
-          const currentTest = currentTestGroup[0] || {}
-          const currentTestName = currentTest.testName || ''
-
-          return {
-            ...test,
-            testName: currentTestName,
-          }
-        }).sort((a, b) => a.records[0].startDate - b.records[0].startDate)
-
-        return <TrendColumn type={record.trend} tests={augmentedTests} />
+      render: (tests, { testName, trend }) => {
+        const augmentedTests = map(tests, (test) => ({
+          ...test,
+          testName,
+        })).sort((a, b) => a.records[0].startDate - b.records[0].startDate)
+        return <TrendColumn type={trend} tests={augmentedTests} />
       },
     },
     {
@@ -322,7 +309,6 @@ const TrendTable = ({
   data,
   rowSelection,
   rawMetric,
-  testData,
   analyseBy,
   compareBy,
   customColumns,
@@ -336,7 +322,6 @@ const TrendTable = ({
   isSharedReport,
 }) => {
   const columns = getColumns(
-    testData,
     rawMetric,
     analyseBy,
     compareBy,
@@ -379,7 +364,6 @@ const optionShape = PropTypes.shape({
 })
 
 TrendTable.propTypes = {
-  testData: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
   rawMetric: PropTypes.array.isRequired,
   analyseBy: optionShape,

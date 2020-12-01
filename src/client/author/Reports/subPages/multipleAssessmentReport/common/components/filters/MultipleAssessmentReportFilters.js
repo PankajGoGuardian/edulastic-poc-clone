@@ -58,7 +58,6 @@ const SingleAssessmentReportFilters = ({
   setTestId: _setTestId,
   onGoClick: _onGoClick,
   location,
-  history,
   setPrevMARFilterData,
   prevMARFilterData,
   performanceBandRequired,
@@ -110,13 +109,6 @@ const SingleAssessmentReportFilters = ({
     }
   }, [])
 
-  const getMARFilterData = (_filters) => {
-    let schoolIds = ''
-    if (get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
-      schoolIds = get(user, 'institutionIds', []).join(',')
-    }
-    getMARFilterDataRequest({ ..._filters, schoolIds })
-  }
   let processedTestIds
   let dropDownData
 
@@ -300,9 +292,6 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       [keyName]: selected.key,
     }
-    history.push(`${location.pathname}?${qs.stringify(_filters)}`)
-    const q = pickBy(_filters, (f) => f !== 'All' && !isEmpty(f))
-    getMARFilterData(q)
     setFilters(_filters)
   }
 

@@ -1,5 +1,5 @@
 import { SpinLoader } from '@edulastic/common'
-import { capitalize, get, head, isEmpty } from 'lodash'
+import { capitalize, get, head } from 'lodash'
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { getUserRole } from '../../../../../student/Login/ducks'
@@ -53,7 +53,6 @@ const PeerProgressAnalysis = ({
   getPeerProgressAnalysisRequest,
   peerProgressAnalysis,
   isCsvDownloading,
-  MARFilterData,
   ddfilter,
   settings,
   loading,
@@ -81,13 +80,16 @@ const PeerProgressAnalysis = ({
     }
   }, [settings, ddfilter, compareBy.key])
 
-  const { metricInfo = [] } = get(peerProgressAnalysis, 'data.result', {})
-  const { orgData = [], testData = [] } = get(MARFilterData, 'data.result', [])
+  const { metricInfo = [], metaInfo = [] } = get(
+    peerProgressAnalysis,
+    'data.result',
+    {}
+  )
 
   const [parsedData, trendCount] = parseTrendData(
     metricInfo,
     compareBy.key,
-    orgData,
+    metaInfo,
     selectedTrend
   )
 
@@ -145,7 +147,6 @@ const PeerProgressAnalysis = ({
         isCsvDownloading={isCsvDownloading}
         heading="How well are student sub-groups progressing ?"
         data={parsedData}
-        testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}

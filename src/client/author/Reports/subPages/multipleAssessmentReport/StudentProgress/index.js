@@ -75,7 +75,7 @@ const StudentProgress = ({
     ],
     [sharedReport]
   )
-  const profiles = MARFilterData?.data?.result?.bandInfo || []
+  const profiles = get(MARFilterData, 'data.result.bandInfo', [])
 
   const bandInfo =
     profiles.find(
@@ -143,11 +143,11 @@ const StudentProgress = ({
     setMetricInfo(filteredInfo)
   }, [ddfilter])
 
-  const { orgData = [], testData = [] } = get(MARFilterData, 'data.result', {})
+  const metaInfo = get(studentProgress, 'data.result.metaInfo', [])
   const [data, trendCount] = useGetBandData(
     metricInfo,
     compareBy.key,
-    orgData,
+    metaInfo,
     selectedTrend,
     bandInfo
   )
@@ -238,7 +238,6 @@ const StudentProgress = ({
         isCsvDownloading={isCsvDownloading}
         data={dataSource}
         rowSelection={rowSelection}
-        testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}

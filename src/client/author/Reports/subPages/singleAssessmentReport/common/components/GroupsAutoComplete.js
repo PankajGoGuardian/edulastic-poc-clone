@@ -29,7 +29,7 @@ const GroupsAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { role: userRole, orgData, _id: userId } = userDetails
+    const { role: userRole, orgData } = userDetails
     const { districtIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
@@ -40,9 +40,12 @@ const GroupsAutoComplete = ({
         name: searchTerms.text,
         type: ['custom'],
       },
+      queryType: 'OR',
     }
-    if (userRole === roleuser.TEACHER) {
-      q.search.teachers = [{ type: 'eq', value: userId }]
+    if (filters.teacherIds) {
+      q.search.teachers = filters.teacherIds
+        .split(',')
+        .map((t) => ({ type: 'cont', value: t }))
     }
     if (
       (userRole === roleuser.DISTRICT_ADMIN ||

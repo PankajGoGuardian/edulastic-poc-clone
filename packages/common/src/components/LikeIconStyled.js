@@ -3,7 +3,8 @@ import styled from 'styled-components'
 
 export const LikeIconStyled = styled.div`
   max-width: 60px;
-  height: 24px;
+  height: ${({ height }) => height || '24px'};
+  margin-left: ${({ ml }) => ml};
   padding-left: 24px;
   position: relative;
   display: inline-flex;

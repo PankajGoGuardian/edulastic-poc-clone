@@ -41,7 +41,7 @@ const Attempt = ({
   return (
     <>
       <AttemptsData>
-        <RowData>
+        <RowData data-cy="attempt-rows-expanded">
           <AnswerAndScore sm={6} date>
             <span data-cy="date">{formatDateAndTime(data.createdAt)}</span>
           </AnswerAndScore>

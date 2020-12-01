@@ -263,7 +263,7 @@ const SingleAssessmentReportFilters = ({
         )}
       </GoButtonWrapper>
       <PerfectScrollbar>
-        <Collapsable header="find the assessment" defaultActiveKey="0">
+        <Collapsable header="find the test" defaultActiveKey="0">
           <SearchField>
             <FilterLabel>School Year</FilterLabel>
             <ControlDropDown
@@ -275,35 +275,28 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Grade</FilterLabel>
+            <FilterLabel>Test Grade</FilterLabel>
             <ControlDropDown
               by={filters.grade}
               selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
               data={staticDropDownData.grades}
-              prefix="Grade"
+              prefix="Test Grade"
               showPrefixOnSelected={false}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Subject</FilterLabel>
+            <FilterLabel>Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
               selectCB={(e) => updateFilterDropdownCB(e, 'subject')}
               data={staticDropDownData.subjects}
-              prefix="Subject"
+              prefix="Test Subject"
               showPrefixOnSelected={false}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Course</FilterLabel>
-            <CourseAutoComplete
-              selectedCourseId={filters.courseId !== 'All' && filters.courseId}
-              selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
-            />
-          </SearchField>
-          <SearchField>
             <MultiSelectDropdown
-              label="Assessment Type"
+              label="Test Type"
               el={assessmentTypeRef}
               onChange={(e) =>
                 updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
@@ -320,7 +313,7 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           {prevSARFilterData && (
             <SearchField>
-              <FilterLabel>Assessment</FilterLabel>
+              <FilterLabel>Test</FilterLabel>
               <AssessmentAutoComplete
                 filters={filters}
                 firstLoad={firstLoad}

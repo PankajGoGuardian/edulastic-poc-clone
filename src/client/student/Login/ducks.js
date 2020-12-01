@@ -47,6 +47,7 @@ export const LOGIN = '[auth] login'
 export const GOOGLE_LOGIN = '[auth] google login'
 export const CLEVER_LOGIN = '[auth] clever login'
 export const ATLAS_LOGIN = '[auth] atlas login'
+export const NEWSELA_LOGIN = '[auth] newsela login'
 export const MSO_LOGIN = '[auth] mso login'
 export const GOOGLE_SSO_LOGIN = '[auth] google sso login'
 export const CLEVER_SSO_LOGIN = '[auth] clever sso login'
@@ -158,6 +159,7 @@ export const loginAction = createAction(LOGIN)
 export const googleLoginAction = createAction(GOOGLE_LOGIN)
 export const cleverLoginAction = createAction(CLEVER_LOGIN)
 export const atlasLoginAction = createAction(ATLAS_LOGIN)
+export const newselaLoginAction = createAction(NEWSELA_LOGIN)
 export const msoLoginAction = createAction(MSO_LOGIN)
 export const googleSSOLoginAction = createAction(GOOGLE_SSO_LOGIN)
 export const cleverSSOLoginAction = createAction(CLEVER_SSO_LOGIN)
@@ -1426,6 +1428,28 @@ function* atlasLogin({ payload }) {
   }
 }
 
+function* newselaLogin({ payload }) {
+  const generalSettings = yield select(signupGeneralSettingsSelector)
+  const params = {}
+  if (generalSettings) {
+    localStorage.setItem(
+      'thirdPartySignOnGeneralSettings',
+      JSON.stringify(generalSettings)
+    )
+    setSignOutUrl(getDistrictSignOutUrl(generalSettings))
+  }
+
+  try {
+    if (payload) {
+      localStorage.setItem('thirdPartySignOnRole', payload)
+    }
+    const res = yield call(authApi.newselaLogin, params)
+    window.location.href = res
+  } catch (e) {
+    notification({ messageKey: 'newselaLoginFailed' })
+  }
+}
+
 function* atlasSSOLogin({ payload }) {
   const _payload = { ...payload }
 
@@ -1463,7 +1487,7 @@ function* atlasSSOLogin({ payload }) {
 
 function* handleNewselaRedirect({ payload }) {
   try {
-    const res = yield call(authApi.newselaLogin, payload)
+    const res = yield call(authApi.newselaSSOLogin, payload)
     yield put(getUserDataAction(res))
   } catch (e) {
     if (
@@ -1856,6 +1880,7 @@ export function* watcherSaga() {
   yield takeLatest(GOOGLE_LOGIN, googleLogin)
   yield takeLatest(CLEVER_LOGIN, cleverLogin)
   yield takeLatest(ATLAS_LOGIN, atlasLogin)
+  yield takeLatest(NEWSELA_LOGIN, newselaLogin)
   yield takeLatest(MSO_LOGIN, msoLogin)
   yield takeLatest(GOOGLE_SSO_LOGIN, googleSSOLogin)
   yield takeLatest(CLEVER_SSO_LOGIN, cleverSSOLogin)

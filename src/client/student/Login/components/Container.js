@@ -26,12 +26,14 @@ import googleIcon from '../../assets/google-btn.svg'
 import classlinkIcon from '../../assets/classlink-icon.png'
 import schoologyIcon from '../../assets/schoology.png'
 import icon365 from '../../assets/icons8-office-365.svg'
+import newselaIcon from '../../assets/newsela.png'
 import {
   cleverLoginAction,
   googleLoginAction,
   loginAction,
   msoLoginAction,
   atlasLoginAction,
+  newselaLoginAction,
   getIsClassCodeModalOpen,
   toggleClassCodeModalAction,
 } from '../ducks'
@@ -114,6 +116,7 @@ class LoginContainer extends React.Component {
       googleLogin,
       cleverLogin,
       atlasLogin,
+      newselaLogin,
       msoLogin,
       loadingComponents,
       isClassCodeModalOpen,
@@ -248,6 +251,27 @@ class LoginContainer extends React.Component {
                           className="schoology-icon"
                         />
                         {t('common.schoologysigninbtn')}
+                      </ThirdPartyLoginBtn>
+                    ) : null}
+                    {true ||
+                    isDistrictPolicyAllowed(
+                      isSignupUsingDaURL,
+                      districtPolicy,
+                      'newselaSignOn'
+                    ) ? (
+                      <ThirdPartyLoginBtn
+                        span={20}
+                        offset={2}
+                        onClick={() => {
+                          newselaLogin('teacher')
+                        }}
+                      >
+                        <img
+                          src={newselaIcon}
+                          alt=""
+                          className="newsela-icon"
+                        />
+                        {t('common.newselasigninbtn')}
                       </ThirdPartyLoginBtn>
                     ) : null}
                   </FormHead>
@@ -389,6 +413,7 @@ const enhance = compose(
       msoLogin: msoLoginAction,
       login: loginAction,
       atlasLogin: atlasLoginAction,
+      newselaLogin: newselaLoginAction,
       toggleClassCodeModal: toggleClassCodeModalAction,
     }
   )
@@ -481,6 +506,12 @@ const ThirdPartyLoginBtn = styled(Col)`
     width: 14px;
   }
   .classlink-icon {
+    transform: scale(1.5);
+    margin-top: 2px;
+    margin-left: 1px;
+  }
+
+  .newsela-icon {
     transform: scale(1.5);
     margin-top: 2px;
     margin-left: 1px;

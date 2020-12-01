@@ -217,7 +217,7 @@ module.exports = override(
       // }
 
       // add chunk split optimizations
-      config.optimization = {
+      /* config.optimization = {
         ...(config.optimization || {}),
         splitChunks: {
           chunks: 'all',
@@ -249,7 +249,7 @@ module.exports = override(
             },
           },
         },
-      }
+      } */
     }
 
     /** Uncomment to have a copy of files written on disk */

@@ -24,6 +24,7 @@ import {
   addItemIntoPlaylistModuleAction,
 } from '../ducks'
 import ShareModal from '../../src/components/common/ShareModal'
+import AssignRecommendations from '../../AssignTest'
 import { CollectionsSelectModal } from '../../PlaylistPage/components/CollectionsSelectModal/collectionsSelectModal'
 
 /**
@@ -362,6 +363,12 @@ class CurriculumContainer extends Component {
 
     // check Current user's edit permission
     const hasEditAccess = this.checkWritePermission()
+
+    const { recommendationsToAssign } = curriculumSequences
+
+    if (recommendationsToAssign.isRecommendationAssignView) {
+      return <AssignRecommendations isAssignRecommendations />
+    }
 
     return (
       <>

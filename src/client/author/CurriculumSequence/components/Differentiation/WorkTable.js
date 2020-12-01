@@ -101,7 +101,8 @@ function OuterDropContainer({ children }) {
 
 const InnerWorkTable = ({
   type,
-  addRecommendations,
+  setRecommendationsToAssign,
+  toggleAssignModal,
   selectedData,
   differentiationStudentList,
   data = [],
@@ -415,6 +416,7 @@ const InnerWorkTable = ({
       })
     if (!filteredStudentList.length)
       return notification({ messageKey: 'pleaseSelectMastery' })
+
     const recommendations = []
     const selectedRowsData = selectedRows.map((x) => data[x])
     const groupByResources = groupBy(selectedRowsData, ({ resources }) =>
@@ -475,9 +477,10 @@ const InnerWorkTable = ({
       }
     }
 
-    if (recommendations.length) {
-      addRecommendations(recommendations)
-    }
+    setRecommendationsToAssign({
+      recommendations,
+    })
+    toggleAssignModal(true)
   }
 
   const studentList = (

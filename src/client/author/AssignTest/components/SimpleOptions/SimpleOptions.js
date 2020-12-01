@@ -24,6 +24,7 @@ import ClassSelector from './ClassSelector'
 import DateSelector from './DateSelector'
 import Settings from './Settings'
 import StudentSelector from './StudentSelector'
+import QuestionPerStandardSelector from './QuestionPerStandardSelector'
 import {
   InitOptions,
   OptionConationer,
@@ -43,15 +44,6 @@ export const nonPremiumReleaseGradeKeys = ['DONT_RELEASE', 'WITH_ANSWERS']
 
 const { releaseGradeLabels, evalTypeLabels } = testConst
 class SimpleOptions extends React.Component {
-  static propTypes = {
-    group: PropTypes.array.isRequired,
-    assignment: PropTypes.object.isRequired,
-    students: PropTypes.array.isRequired,
-    testSettings: PropTypes.object.isRequired,
-    fetchStudents: PropTypes.func.isRequired,
-    updateOptions: PropTypes.func.isRequired,
-  }
-
   constructor(props) {
     super(props)
     this.state = {
@@ -303,6 +295,7 @@ class SimpleOptions extends React.Component {
       selectedDateOption,
       freezeSettings,
       features,
+      isAssignRecommendations,
     } = this.props
     const changeField = curry(this.onChange)
     let { openPolicy } = selectsData
@@ -320,38 +313,46 @@ class SimpleOptions extends React.Component {
     }
     const classIds = get(assignment, 'class', []).map((item) => item._id)
     const studentOfSelectedClass = getListOfActiveStudents(students, classIds)
+    const showOpenDueAndCloseDate =
+      !isAssignRecommendations && features.assignTestEnableOpenDueAndCloseDate
+    const questionPerStandardOptions = [...Array(8)].map((_, i) => ({
+      val: i + 1,
+      label: i + 1,
+    }))
+
     return (
       <OptionConationer>
         <InitOptions>
-          <StyledRow gutter={32}>
-            <ClassSelector
-              onChange={changeField('class')}
-              fetchStudents={fetchStudents}
-              selectedGroups={classIds}
-              group={group}
-            />
-            <StudentSelector
-              selectedGroups={classIds}
-              students={studentOfSelectedClass}
-              groups={group}
-              updateStudents={this.updateStudents}
-              selectAllStudents={this.selectAllStudents}
-              unselectAllStudents={this.unselectAllStudents}
-              handleRemoveStudents={this.handleRemoveStudents}
-            />
-          </StyledRow>
+          {!isAssignRecommendations && (
+            <StyledRow gutter={32}>
+              <ClassSelector
+                onChange={changeField('class')}
+                fetchStudents={fetchStudents}
+                selectedGroups={classIds}
+                group={group}
+              />
+              <StudentSelector
+                selectedGroups={classIds}
+                students={studentOfSelectedClass}
+                groups={group}
+                updateStudents={this.updateStudents}
+                selectAllStudents={this.selectAllStudents}
+                unselectAllStudents={this.unselectAllStudents}
+                handleRemoveStudents={this.handleRemoveStudents}
+              />
+            </StyledRow>
+          )}
 
           <DateSelector
             startDate={assignment.startDate}
             endDate={assignment.endDate}
             dueDate={assignment.dueDate}
+            hasStartDate={!isAssignRecommendations}
             changeField={changeField}
             passwordPolicy={assignment.passwordPolicy}
             changeRadioGrop={changeDateSelection}
             selectedOption={selectedDateOption}
-            showOpenDueAndCloseDate={
-              features.assignTestEnableOpenDueAndCloseDate
-            }
+            showOpenDueAndCloseDate={showOpenDueAndCloseDate}
           />
 
           <StyledRow gutter={32} mb="15px">
@@ -422,6 +423,20 @@ class SimpleOptions extends React.Component {
               />
             </Col>
           </StyledRow>
+          {isAssignRecommendations && (
+            <StyledRow gutter={32} mb="25px">
+              <Col span={12}>
+                <QuestionPerStandardSelector
+                  onChange={changeField('questionPerStandard')}
+                  questionPerStandard={
+                    assignment.questionPerStandard ||
+                    testSettings.questionPerStandard
+                  }
+                  options={questionPerStandardOptions}
+                />
+              </Col>
+            </StyledRow>
+          )}
           <StyledRowButton gutter={32}>
             <Col>
               <SettingsBtn onClick={this.toggleSettings}>
@@ -450,6 +465,22 @@ class SimpleOptions extends React.Component {
       </OptionConationer>
     )
   }
+}
+
+SimpleOptions.propTypes = {
+  assignment: PropTypes.object.isRequired,
+  testSettings: PropTypes.object.isRequired,
+  updateOptions: PropTypes.func.isRequired,
+  isAssignRecommendations: PropTypes.bool.isRequired,
+  group: PropTypes.array,
+  students: PropTypes.array,
+  fetchStudents: PropTypes.func,
+}
+
+SimpleOptions.defaultProps = {
+  group: [],
+  students: [],
+  fetchStudents: () => false,
 }
 
 export default connect((state) => ({

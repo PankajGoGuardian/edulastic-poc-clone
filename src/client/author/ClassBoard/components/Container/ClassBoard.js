@@ -815,10 +815,11 @@ class ClassBoard extends Component {
   }
 
   backTopScroll = () => {
+    const { toggleBackTopIcon } = this.state
     const elementTop = this.MainContentWrapperRef?.current?.scrollTop || 0
-    if (elementTop < 100) {
+    if (elementTop < 100 && toggleBackTopIcon) {
       this.setState({ toggleBackTopIcon: false })
-    } else {
+    } else if (!toggleBackTopIcon && elementTop >= 100) {
       this.setState({ toggleBackTopIcon: true })
     }
   }

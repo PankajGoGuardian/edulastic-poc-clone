@@ -71,8 +71,19 @@ class Draggable extends React.Component {
   }
 
   onDragStart = (e) => {
-    e.stopPropagation()
-    e.preventDefault()
+    const { disabled } = this.props
+
+    const thisNode = this.findDOMNode()
+    const { ownerDocument } = thisNode
+
+    if (disabled || !(e.target instanceof ownerDocument.defaultView.Node)) {
+      return
+    }
+
+    // Prevent scrolling on mobile devices, like ipad/iphone.
+    // Important that this is after handle/cancel.
+    if (e.type === 'touchstart') e.preventDefault()
+
     if (this.mounted === false) {
       return
     }

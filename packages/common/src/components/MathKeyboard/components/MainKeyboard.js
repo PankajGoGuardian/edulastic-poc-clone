@@ -87,7 +87,11 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
 
   return (
     <Container>
-      <PrevButton onClick={onClickPrev} hidden={current <= 0} />
+      <PrevButton
+        onClick={onClickPrev}
+        onTouchEnd={onClickPrev}
+        hidden={current <= 0}
+      />
       {showNumbers && <NumberKeyboard buttons={numbers} onInput={onInput} />}
       <SymbolsWrapper
         data-cy="virtual-keyboard-buttons"
@@ -111,6 +115,7 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
                   fontSizeRate={fontRate}
                   isVertical={!!showNumbers}
                   onClick={handleClick(handler, command, numToMove)}
+                  onTouchEnd={handleClick(handler, command, numToMove)}
                   data-cy={`virtual-keyboard-${handler}`}
                 >
                   <Label>{label}</Label>
@@ -122,6 +127,7 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
       </SymbolsWrapper>
       <NextButton
         onClick={onClickNext}
+        onTouchEnd={onClickNext}
         hidden={boards.length <= 0 || current >= boards.length - 1}
       />
     </Container>

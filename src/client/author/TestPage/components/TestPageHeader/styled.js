@@ -5,11 +5,12 @@ import {
   themeColor,
   white,
   textColor,
-  draftColor,
+  lightGrey,
   publishedColor,
   desktopWidth,
   mobileWidthLarge,
   tabletWidth,
+  greyDarken,
 } from '@edulastic/colors'
 import { IconShare } from '@edulastic/icons'
 
@@ -63,11 +64,13 @@ export const TestStatus = styled(Status)`
   margin-top: 0;
   color: ${(props) => (props.mode === 'embedded' ? white : textColor)};
   background: ${(props) => (props.mode === 'embedded' ? textColor : white)};
+  width: 60px;
+  height: 20px;
   font-weight: 600;
   margin-left: 0px;
   &.draft {
-    background: ${draftColor};
-    color: white;
+    background: ${lightGrey};
+    color: ${greyDarken};
   }
   &.published {
     background: ${publishedColor};

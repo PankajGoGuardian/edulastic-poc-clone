@@ -49,6 +49,8 @@ import {
   setNextPreviewItemAction,
   setTestDataAndUpdateAction,
   updateTestAndNavigateAction,
+  setPassageItemsAction,
+  setAndSavePassageItemsAction,
 } from '../../../../TestPage/ducks'
 import { clearAnswersAction } from '../../../actions/answers'
 import { changePreviewAction, changeViewAction } from '../../../actions/view'
@@ -97,16 +99,19 @@ class PreviewModal extends React.Component {
     }
   }
 
-  loadPassage(id) {
+  loadPassage(passageId) {
     /**
      * FIXME: move this to redux-saga
      */
-    const { addPassage } = this.props
+    const { addPassage, setPassageTestItems } = this.props
     this.setState({ passageLoading: true })
     try {
-      passageApi.getById(id).then((response) => {
+      passageApi.getById(passageId).then((response) => {
         addPassage(response)
         this.setState({ passageLoading: false })
+      })
+      testItemsApi.getPassageItems(passageId).then((passageItems) => {
+        setPassageTestItems(passageItems)
       })
     } catch (e) {
       this.setState({ passageLoading: false })
@@ -368,6 +373,21 @@ class PreviewModal extends React.Component {
     }
   }
 
+  handleAddAllPassageItems = () => {
+    const {
+      passageItems,
+      passage,
+      page,
+      selectedRows,
+      setAndSavePassageItems,
+    } = this.props
+    const passageTestItems = get(passage, 'testItems', [])
+
+    const isAdding = passageTestItems.some((x) => !selectedRows.includes(x))
+
+    setAndSavePassageItems({ passageItems, page, remove: !isAdding })
+  }
+
   get isAddOrRemove() {
     const { item, selectedRows } = this.props
     if (selectedRows && selectedRows.length) {
@@ -491,6 +511,7 @@ class PreviewModal extends React.Component {
       deleting,
       writableCollections,
       testStatus = 'draft',
+      selectedRows,
     } = this.props
 
     const { testItems = [] } = passage || {}
@@ -528,6 +549,10 @@ class PreviewModal extends React.Component {
         : rows
     const passageTestItems = get(passage, 'testItems', [])
     const isPassage = passage && passageTestItems.length
+    const hasPassageItemToAdd = passageTestItems.some(
+      (x) => !selectedRows.includes(x)
+    )
+
     if (!!item?.passageId && !!passage) {
       allWidgets = { ...allWidgets, ...keyBy(passage.data, 'id') }
     }
@@ -545,6 +570,9 @@ class PreviewModal extends React.Component {
     )
     const disableEdit = item?.algoVariablesEnabled && isTestInRegrade
     const itemHasAtleastOneQuestion = Object.keys(questions || {}).length > 0
+    const showAddItemToTestButton =
+      itemHasAtleastOneQuestion && testStatus !== 'published'
+    const isLoading = loading || item === null || passageLoading
 
     return (
       <PreviewModalWrapper
@@ -578,21 +606,33 @@ class PreviewModal extends React.Component {
             />
           </FlexContainer>
 
-          <ModalTopAction>
-            {itemHasAtleastOneQuestion &&
-              testStatus !== 'published' &&
+          <ModalTopAction hidden={isLoading}>
+            {showAddItemToTestButton &&
               (isPassage && showAddPassageItemToTestButton ? (
-                <EduButton
-                  isBlue
-                  isGhost={!this.isAddOrRemove}
-                  height="28px"
-                  justifyContent="center"
-                  onClick={this.handleSelection}
-                >
-                  {this.isAddOrRemove
-                    ? 'ADD PASSAGE TO TEST'
-                    : 'REMOVE FROM TEST'}
-                </EduButton>
+                <>
+                  <EduButton
+                    isBlue
+                    height="28px"
+                    justifyContent="center"
+                    onClick={this.handleSelection}
+                  >
+                    {this.isAddOrRemove
+                      ? 'ADD CURRENT ITEM'
+                      : 'REMOVE CURRENT ITEM'}
+                  </EduButton>
+                  {isPassage > 1 && (
+                    <EduButton
+                      isGhost
+                      height="28px"
+                      justifyContent="center"
+                      onClick={this.handleAddAllPassageItems}
+                    >
+                      {hasPassageItemToAdd
+                        ? `Add all(${isPassage}) items`
+                        : `Remove all(${isPassage}) items`}
+                    </EduButton>
+                  )}
+                </>
               ) : (
                 <EduButton
                   isBlue
@@ -774,60 +814,57 @@ class PreviewModal extends React.Component {
           </ModalTopAction>
         </HeadingWrapper>
         <ModalContentArea>
-          <QuestionWrapper padding="0px">
-            {loading || item === null || passageLoading ? (
-              <ProgressContainer>
-                <Spin tip="" />
-              </ProgressContainer>
-            ) : (
-              <>
-                <AuthorTestItemPreview
-                  cols={allRows}
-                  preview={preview}
-                  previewTab={preview}
-                  verticalDivider={item.verticalDivider}
-                  scrolling={item.scrolling}
-                  style={{ width: '100%' }}
-                  questions={allWidgets}
-                  viewComponent="authorPreviewPopup"
-                  handleCheckAnswer={checkAnswer}
-                  handleShowAnswer={showAnswer}
-                  handleShowHints={this.toggleHints}
-                  toggleReportIssue={this.toggleReportIssue}
-                  showHints={showHints}
-                  allowDuplicate={allowDuplicate}
-                  /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
-                  isEditable={
-                    (isEditable && isOwner) ||
-                    userFeatures.isCurator ||
-                    userRole === roleuser.EDULASTIC_CURATOR
-                  }
-                  isPassage={isPassage}
-                  passageTestItems={passageTestItems}
-                  handleDuplicateTestItem={this.handleDuplicateTestItem}
-                  editTestItem={this.editTestItem}
-                  clearView={this.clearView}
-                  goToItem={this.goToItem}
-                  isAnswerBtnVisible={isAnswerBtnVisible}
-                  item={item}
-                  page={page}
-                  fullModal={fullModal}
-                  showCollapseBtn
-                  changePreviewTab={changePreviewMode}
-                  onlySratchpad={onlySratchpad}
-                  isTestInRegrade={isTestInRegrade}
-                  closeModal={this.closeModal}
-                />
-                {/* we may need to bring hint button back */}
-                {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
-                {showReportIssueField && (
-                  <ReportIssue
-                    textareaRows="3"
-                    item={item}
-                    toggleReportIssue={this.toggleReportIssue}
-                  />
-                )}
-              </>
+          {isLoading && (
+            <ProgressContainer>
+              <Spin tip="" />
+            </ProgressContainer>
+          )}
+          <QuestionWrapper hidden={isLoading}>
+            <AuthorTestItemPreview
+              cols={allRows}
+              preview={preview}
+              previewTab={preview}
+              verticalDivider={item.verticalDivider}
+              scrolling={item.scrolling}
+              style={{ width: '100%' }}
+              questions={allWidgets}
+              viewComponent="authorPreviewPopup"
+              handleCheckAnswer={checkAnswer}
+              handleShowAnswer={showAnswer}
+              handleShowHints={this.toggleHints}
+              toggleReportIssue={this.toggleReportIssue}
+              showHints={showHints}
+              allowDuplicate={allowDuplicate}
+              /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
+              isEditable={
+                (isEditable && isOwner) ||
+                userFeatures.isCurator ||
+                userRole === roleuser.EDULASTIC_CURATOR
+              }
+              isPassage={isPassage}
+              passageTestItems={passageTestItems}
+              handleDuplicateTestItem={this.handleDuplicateTestItem}
+              editTestItem={this.editTestItem}
+              clearView={this.clearView}
+              goToItem={this.goToItem}
+              isAnswerBtnVisible={isAnswerBtnVisible}
+              item={item}
+              page={page}
+              fullModal={fullModal}
+              showCollapseBtn
+              changePreviewTab={changePreviewMode}
+              onlySratchpad={onlySratchpad}
+              isTestInRegrade={isTestInRegrade}
+              closeModal={this.closeModal}
+            />
+            {/* we may need to bring hint button back */}
+            {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
+            {showReportIssueField && (
+              <ReportIssue
+                textareaRows="3"
+                item={item}
+                toggleReportIssue={this.toggleReportIssue}
+              />
             )}
           </QuestionWrapper>
         </ModalContentArea>
@@ -888,6 +925,7 @@ const enhance = compose(
         testAssignments: getAssignmentsSelector(state),
         userFeatures: getUserFeatures(state),
         deleting: getItemDeletingSelector(state),
+        passageItems: state.tests.passageItems,
         writableCollections: getWritableCollectionsSelector(state),
         archivedItems: archivedItemsSelector(state),
       }
@@ -909,6 +947,8 @@ const enhance = compose(
       deleteItem: deleteItemAction,
       approveOrRejectSingleItem: approveOrRejectSingleItemAction,
       setNextPreviewItem: setNextPreviewItemAction,
+      setPassageTestItems: setPassageItemsAction,
+      setAndSavePassageItems: setAndSavePassageItemsAction,
     }
   )
 )
@@ -985,6 +1025,7 @@ const HeadingWrapper = styled.div`
 `
 
 const ModalTopAction = styled(FlexContainer)`
+  visibility: ${({ hidden }) => hidden && 'hidden'};
   justify-content: flex-end;
 `
 
@@ -1010,6 +1051,7 @@ export const PlusIcon = styled.div`
 const QuestionWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  visibility: ${({ hidden }) => hidden && 'hidden'};
   .report {
     flex: 0 0 100%;
   }
@@ -1018,4 +1060,5 @@ const QuestionWrapper = styled.div`
 const ModalContentArea = styled.div`
   border-radius: 0px;
   padding: 0px 30px;
+  height: 70vh;
 `

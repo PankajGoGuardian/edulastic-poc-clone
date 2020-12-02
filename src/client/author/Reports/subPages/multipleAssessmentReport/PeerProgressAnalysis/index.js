@@ -60,25 +60,46 @@ const PeerProgressAnalysis = ({
   role,
   sharedReport,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const compareByData = [...getCompareByOptions(userRole), ...options]
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
   const [selectedTrend, setSelectedTrend] = useState('')
+  // support for pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 1,
+    pageSize: 25,
+  })
 
   useEffect(() => {
-    const { requestFilters = {} } = settings
-    const { termId, reportId } = requestFilters
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [settings, ddfilter, compareBy.key])
+
+  useEffect(() => {
+    const { termId, reportId } = settings.requestFilters
     if (termId || reportId) {
       getPeerProgressAnalysisRequest({
         compareBy: compareBy.key,
-        ...requestFilters,
+        ...settings.requestFilters,
         ...ddfilter,
+        ...pageFilters,
       })
     }
-  }, [settings, ddfilter, compareBy.key])
+  }, [pageFilters])
+
+  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
+    .testIds
+  const selectedTestIdsCount = selectedTestIdsStr
+    ? selectedTestIdsStr.split(',').length
+    : 0
 
   const { metricInfo = [], metaInfo = [] } = get(
     peerProgressAnalysis,
@@ -152,6 +173,11 @@ const PeerProgressAnalysis = ({
         ddfilter={ddfilter}
         rawMetric={metricInfo}
         customColumns={[studentColumn]}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: selectedTestIdsCount,
+        }}
+        setBackendPagination={setPageFilters}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow

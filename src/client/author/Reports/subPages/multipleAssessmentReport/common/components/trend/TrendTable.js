@@ -19,6 +19,7 @@ import dropDownData from '../../static/json/dropDownData.json'
 import { reportLinkColor } from '../../utils/constants'
 import { compareByMap } from '../../utils/trend'
 import TrendColumn from './TrendColumn'
+import BackendPagination from '../BackendPagination'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -320,6 +321,8 @@ const TrendTable = ({
   location,
   pageTitle,
   isSharedReport,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const columns = getColumns(
     rawMetric,
@@ -354,6 +357,10 @@ const TrendTable = ({
           tableToRender={StyledTable}
         />
       </TableContainer>
+      <BackendPagination
+        backendPagination={backendPagination}
+        setBackendPagination={setBackendPagination}
+      />
     </StyledCard>
   )
 }

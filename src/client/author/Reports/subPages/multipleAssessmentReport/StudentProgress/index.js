@@ -86,16 +86,30 @@ const StudentProgress = ({
     profiles[0]?.performanceBand ||
     DefaultBandInfo
 
+  // support for pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 1,
+    pageSize: 25,
+  })
+
   useEffect(() => {
-    const { requestFilters = {} } = settings
-    const { termId, reportId } = requestFilters
-    if (termId || reportId) {
-      getStudentProgressRequest({ ...requestFilters })
-    }
+    setPageFilters({ ...pageFilters, page: 1 })
   }, [settings])
 
-  const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
+  useEffect(() => {
+    const { termId, reportId } = settings.requestFilters
+    if (termId || reportId) {
+      getStudentProgressRequest({ ...settings.requestFilters, ...pageFilters })
+    }
+  }, [pageFilters])
 
+  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
+    .testIds
+  const selectedTestIdsCount = selectedTestIdsStr
+    ? selectedTestIdsStr.split(',').length
+    : 0
+
+  const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [selectedTrend, setSelectedTrend] = useState('')
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
@@ -247,6 +261,11 @@ const StudentProgress = ({
         location={location}
         pageTitle={pageTitle}
         isSharedReport={isSharedReport}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: selectedTestIdsCount,
+        }}
+        setBackendPagination={setPageFilters}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow

@@ -23,6 +23,8 @@ const ScoreChart = ({
   onBarClickCB,
   selectedTests,
   onResetClickCB,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const xDataKey = 'uniqId'
   const dataWithColors = addColors(data, selectedTests, xDataKey, 'score')
@@ -33,6 +35,8 @@ const ScoreChart = ({
         return `${round(score)}%`
       case 'rawScore':
         return ''
+      default:
+      // do nothing
     }
   }
 
@@ -54,12 +58,14 @@ const ScoreChart = ({
             </tspan>
           </>
         )
+      default:
+      // do nothing
     }
   }
 
-  const getXTickText = (payload, data) => {
+  const getXTickText = (payload, _data) => {
     const currentBarData =
-      find(data, (item) => item[xDataKey] === payload.value) || {}
+      find(_data, (item) => item[xDataKey] === payload.value) || {}
     return currentBarData.testName || ''
   }
 
@@ -111,6 +117,8 @@ const ScoreChart = ({
       onBarClickCB={_onBarClickCB}
       onResetClickCB={onResetClickCB}
       filter={selectedTests}
+      backendPagination={backendPagination}
+      setBackendPagination={setBackendPagination}
     />
   )
 }

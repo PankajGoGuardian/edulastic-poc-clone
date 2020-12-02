@@ -847,7 +847,7 @@
       "value": "Value",
       "ariaLabel": "ARIA label",
       "ignoreLeadingAndTrailingSpaces": "Ignore leading and trailing spaces",
-      "literalIgnoreLeadingAndTrailingSpaces": "Ignore extra white spaces",
+      "ignoreLeadingAndTrailingSpaces": "Ignore extra white spaces",
       "treatMultipleSpacesAsOne": "Treat extra spaces as one",
       "literalTreatMultipleSpacesAsOne": "Treat extra spaces as one",
       "rule": "Rule",
@@ -984,7 +984,7 @@
         "ignoreTrailingZeros": "",
         "ignoreOrder": "",
         "ignoreCoefficientOfOne": "",
-        "literalIgnoreLeadingAndTrailingSpaces": "",
+        "ignoreLeadingAndTrailingSpaces": "",
         "inverseResult": "",
         "applyRule": "",
         "automatic": ""

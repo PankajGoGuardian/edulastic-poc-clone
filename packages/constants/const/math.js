@@ -288,7 +288,7 @@ const equationForms = [
   'isLinePointSlopeForm',
   'isQuadraticStandardForm',
   'isPolynomialStandardForm',
-  'isPolynomalFactoredForm',
+  'isPolynomialFactoredForm',
   'isConicStandardForm',
   'isParabolaVertexForm',
 ]

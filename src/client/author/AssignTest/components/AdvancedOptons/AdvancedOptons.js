@@ -239,6 +239,7 @@ class AdvancedOptons extends React.Component {
               <ClassList
                 selectedClasses={classIds}
                 selectClass={this.onChange}
+                testType={assignment.testType || testSettings.testType}
               />
             </>
           )}

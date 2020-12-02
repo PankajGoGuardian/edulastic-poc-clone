@@ -58,6 +58,7 @@ const SingleAssessmentReportFilters = ({
   setTestId: _setTestId,
   onGoClick: _onGoClick,
   location,
+  history,
   setPrevMARFilterData,
   prevMARFilterData,
   performanceBandRequired,
@@ -292,6 +293,7 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       [keyName]: selected.key,
     }
+    history.push(`${location.pathname}?${qs.stringify(_filters)}`)
     setFilters(_filters)
   }
 

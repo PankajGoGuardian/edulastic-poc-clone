@@ -74,6 +74,7 @@ const AssignRecommendations = ({
           assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
       testType: isAdmin ? COMMON : ASSESSMENT,
       playerSkinType: testSettings.playerSkinType,
+      questionPerStandard: assignmentSettings.questionPerStandard,
       termId,
     }
 
@@ -100,6 +101,12 @@ const AssignRecommendations = ({
           testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
       ) {
         delete draft.assignmentPassword
+      }
+      if (
+        draft.scoringType ===
+        testConst.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      ) {
+        draft.scoringType = testConst.evalTypeLabels.PARTIAL_CREDIT
       }
       draft.startDate = moment(draft.startDate).valueOf()
       draft.endDate = moment(draft.endDate).valueOf()

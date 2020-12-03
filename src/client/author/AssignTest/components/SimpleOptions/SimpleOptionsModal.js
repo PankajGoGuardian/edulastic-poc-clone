@@ -123,7 +123,7 @@ const SimpleOptionsModal = ({
           <StyledRow gutter={32} mb="15px">
             <Col span={12}>
               <StyledLink onClick={onClickFullSettings}>
-                Full settings
+                Show all assign options
               </StyledLink>
             </Col>
           </StyledRow>

@@ -1657,7 +1657,7 @@ function* addRecommendationsSaga({ payload }) {
     yield put(updateFetchWorkLoadingStateAction(false))
   } catch (err) {
     console.error(err)
-    setRecommendationsToAssignAction({ isAssigning: false })
+    yield put(setRecommendationsToAssignAction({ isAssigning: false }))
     yield call(notification, { msg: err.response.data.message })
   }
 }

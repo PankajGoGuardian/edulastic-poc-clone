@@ -8,11 +8,11 @@ import { AutoComplete, Input, Icon } from 'antd'
 import { roleuser } from '@edulastic/constants'
 
 // ducks
-import { getUser } from '../../../../../src/selectors/user'
+import { getUser } from '../../../../src/selectors/user'
 import {
   receiveGroupListAction,
   getGroupListSelector,
-} from '../../../../../Groups/ducks'
+} from '../../../../Groups/ducks'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 

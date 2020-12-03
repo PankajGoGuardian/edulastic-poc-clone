@@ -11,14 +11,17 @@ import { StackedBarChartContainer } from './components/charts/stackedBarChartCon
 import { StyledCard, StyledContainer } from './components/styled'
 import { ResponseFrequencyTable } from './components/table/responseFrequencyTable'
 
-import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
+import {
+  getCsvDownloadingState,
+  getPrintingState,
+  getTestListSelector,
+} from '../../../ducks'
 import {
   getReportsResponseFrequency,
   getReportsResponseFrequencyLoader,
   getResponseFrequencyRequestAction,
   getReportsResponseFrequencyError,
 } from './ducks'
-import { getTestListSelector } from '../common/filterDataDucks'
 
 import jsonData from './static/json/data.json'
 

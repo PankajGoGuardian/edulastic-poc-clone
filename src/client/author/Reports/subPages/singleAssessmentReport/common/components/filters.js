@@ -11,11 +11,11 @@ import { ControlDropDown } from '../../../../common/components/widgets/controlDr
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
 import { Collapsable } from '../../../../common/components/widgets/Collapsable'
 import AssessmentAutoComplete from './AssessmentAutoComplete'
-import SchoolAutoComplete from './SchoolAutoComplete'
-import CourseAutoComplete from './CourseAutoComplete'
-import TeacherAutoComplete from './TeacherAutoComplete'
-import ClassAutoComplete from './ClassAutoComplete'
-import GroupsAutoComplete from './GroupsAutoComplete'
+import SchoolAutoComplete from '../../../../common/components/autocompletes/SchoolAutoComplete'
+import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
+import TeacherAutoComplete from '../../../../common/components/autocompletes/TeacherAutoComplete'
+import ClassAutoComplete from '../../../../common/components/autocompletes/ClassAutoComplete'
+import GroupsAutoComplete from '../../../../common/components/autocompletes/GroupsAutoComplete'
 import {
   StyledFilterWrapper,
   StyledGoButton,
@@ -39,6 +39,7 @@ import {
   getUserOrgId,
   getUser,
 } from '../../../../../src/selectors/user'
+import { resetStudentFilters } from '../../../../common/util'
 
 import staticDropDownData from '../static/staticDropDownData.json'
 
@@ -52,51 +53,6 @@ const getTestIdFromURL = (url) => {
     }
   }
   return ''
-}
-
-const studentFiltersDefaultValues = [
-  {
-    key: 'schoolIds',
-    value: '',
-  },
-  {
-    key: 'teacherIds',
-    value: '',
-  },
-  {
-    key: '',
-    nestedFilters: [
-      {
-        key: 'classId',
-        value: 'All',
-      },
-      {
-        key: 'groupId',
-        value: 'All',
-      },
-    ],
-  },
-]
-
-const resetFilter = (filtersToReset, prevFilters) => {
-  for (const filter of filtersToReset) {
-    if (filter.nestedFilters) {
-      resetFilter(filter.nestedFilters, prevFilters)
-    } else {
-      prevFilters[filter.key] = filter.value
-    }
-  }
-}
-
-const resetStudentFilters = (prevFilters, key, selected, multiple) => {
-  const index = studentFiltersDefaultValues.findIndex((s) => s.key === key)
-  if (
-    index !== -1 &&
-    prevFilters[key] !== (multiple ? selected : selected.key)
-  ) {
-    const filtersToReset = studentFiltersDefaultValues.slice(index + 1)
-    resetFilter(filtersToReset, prevFilters)
-  }
 }
 
 const SingleAssessmentReportFilters = ({
@@ -228,7 +184,7 @@ const SingleAssessmentReportFilters = ({
         groupId: search.groupId || 'All',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        assessmentTypes: search.assessmentTypes || 'common assessment',
+        assessmentTypes: search.assessmentTypes || '',
       }
       const urlParams = { ...obtainedFilters }
 
@@ -346,7 +302,7 @@ const SingleAssessmentReportFilters = ({
                 updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
               }
               value={
-                filters.assessmentTypes
+                filters.assessmentTypes && filters.assessmentTypes !== 'All'
                   ? filters.assessmentTypes.split(',')
                   : []
               }

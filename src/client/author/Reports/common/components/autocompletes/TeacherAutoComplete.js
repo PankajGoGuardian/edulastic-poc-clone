@@ -4,14 +4,14 @@ import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
 import { roleuser } from '@edulastic/constants'
-import MultiSelectSearch from '../../../../common/components/widgets/MultiSelectSearch'
+import MultiSelectSearch from '../widgets/MultiSelectSearch'
 
 // ducks
-import { getOrgDataSelector } from '../../../../../src/selectors/user'
+import { getOrgDataSelector } from '../../../../src/selectors/user'
 import {
   getTeachersListSelector,
   receiveTeachersListAction,
-} from '../../../../../Teacher/ducks'
+} from '../../../../Teacher/ducks'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 

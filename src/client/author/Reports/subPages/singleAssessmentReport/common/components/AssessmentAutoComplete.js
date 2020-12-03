@@ -13,7 +13,7 @@ import {
   receiveTestListAction,
   getTestListSelector,
   getTestListLoadingSelector,
-} from '../filterDataDucks'
+} from '../../../../ducks'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 

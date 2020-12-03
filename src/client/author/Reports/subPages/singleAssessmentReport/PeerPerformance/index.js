@@ -15,11 +15,8 @@ import {
   NoDataContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getSAFFilterPerformanceBandProfiles,
-  getTestListSelector,
-} from '../common/filterDataDucks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getSAFFilterPerformanceBandProfiles } from '../common/filterDataDucks'
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
 import { TableContainer, UpperContainer } from './components/styled'

@@ -179,7 +179,7 @@ const MultipleAssessmentReportContainer = (props) => {
       setMARSettings({
         requestFilters: {
           ...obj,
-          testIds: map(selectedTest, (test) => test.key).join(),
+          testIds: map(selectedTest, (test) => test).join(),
         },
       })
     }

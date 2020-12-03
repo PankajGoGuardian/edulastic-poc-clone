@@ -25,11 +25,8 @@ import {
   NoDataContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getSAFFilterStandardsProficiencyProfiles,
-  getTestListSelector,
-} from '../common/filterDataDucks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getSAFFilterStandardsProficiencyProfiles } from '../common/filterDataDucks'
 import CardHeader, {
   CardDropdownWrapper,
   CardTitle,

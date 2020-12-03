@@ -7,11 +7,11 @@ import { get, isEmpty, debounce } from 'lodash'
 import { AutoComplete, Input, Icon } from 'antd'
 
 // ducks
-import { getUser } from '../../../../../src/selectors/user'
+import { getUser } from '../../../../src/selectors/user'
 import {
   receiveCourseListAction,
   getCourseListSelector,
-} from '../../../../../Courses/ducks'
+} from '../../../../Courses/ducks'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
@@ -20,7 +20,6 @@ const CourseAutoComplete = ({
   courseList,
   loading,
   loadCourseList,
-  selectedCourseId,
   selectCB,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)

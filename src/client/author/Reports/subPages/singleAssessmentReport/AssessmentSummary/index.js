@@ -8,7 +8,11 @@ import { withRouter } from 'react-router-dom'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
+import {
+  getCsvDownloadingState,
+  getPrintingState,
+  getTestListSelector,
+} from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
 import {
@@ -23,7 +27,6 @@ import {
   setReportsAssesmentSummaryLoadingAction,
   getReportsAssessmentSummaryError,
 } from './ducks'
-import { getTestListSelector } from '../common/filterDataDucks'
 
 const CustomCliEmptyComponent = () => (
   <Empty

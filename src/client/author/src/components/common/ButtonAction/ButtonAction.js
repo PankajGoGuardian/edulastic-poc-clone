@@ -55,8 +55,9 @@ class ButtonAction extends Component {
       showPublishButton,
       showSettingsButton,
       isShowAnswerVisible,
-      handleShowHints,
-      showHints,
+      hideScoreBlock,
+      // handleShowHints,
+      // showHints,
     } = this.props
     return (
       <Container showPublishButton={showPublishButton}>
@@ -73,7 +74,7 @@ class ButtonAction extends Component {
         )}
         {view === 'preview' && (
           <PreviewBar>
-            <ScoreBlock />
+            {!hideScoreBlock && <ScoreBlock />}
             {/* we may need to bring hint button back */}
             {/* <RightActionButton
               style={showHints ? { background: themeColor } : null}
@@ -140,6 +141,7 @@ ButtonAction.propTypes = {
   showPublishButton: PropTypes.bool,
   showSettingsButton: PropTypes.bool,
   isShowAnswerVisible: PropTypes.bool,
+  hideScoreBlock: PropTypes.bool,
 }
 
 ButtonAction.defaultProps = {
@@ -148,6 +150,7 @@ ButtonAction.defaultProps = {
   allowedAttempts: null,
   showSettingsButton: true,
   isShowAnswerVisible: true,
+  hideScoreBlock: false,
 }
 
 const enhance = compose(

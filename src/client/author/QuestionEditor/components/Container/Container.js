@@ -364,11 +364,19 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const { view, question, authorQuestions, preview } = this.props
+    const {
+      view,
+      question,
+      authorQuestions,
+      preview,
+      itemFromState = {},
+    } = this.props
     const { showHints } = this.state
     const { checkAnswerButton = false, checkAttempts = 1 } =
       question.validation || {}
-
+    const { multipartItem = false, itemLevelScoring = false } =
+      itemFromState || {}
+    const hideScoreBlock = multipartItem && itemLevelScoring
     const isShowAnswerVisible =
       authorQuestions &&
       !constantsQuestionType.manuallyGradableQn.includes(authorQuestions.type)
@@ -388,6 +396,7 @@ class Container extends Component {
         previewTab={preview}
         showSettingsButton={false}
         isShowAnswerVisible={isShowAnswerVisible}
+        hideScoreBlock={hideScoreBlock}
       />
     )
   }

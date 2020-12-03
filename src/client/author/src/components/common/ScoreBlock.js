@@ -49,11 +49,12 @@ const Wrapper = styled.div`
 
 const ScoreBlock = ({ score, maxScore, showScore, customStyle }) => {
   const [type, status] = getTypeAndMsgBasedOnScore(score, maxScore)
+
   return showScore ? (
     <Wrapper customStyle={customStyle} scoreType={status} data-cy="scoreBlock">
-      <div>{score !== 0 ? <IconCheck /> : <IconClose />}</div>
+      <div>{status !== 'Incorrect' ? <IconCheck /> : <IconClose />}</div>
       <div data-cy="score" type={type}>
-        {status} ({score}/{maxScore})
+        {status} {score}/{maxScore}
       </div>
     </Wrapper>
   ) : null

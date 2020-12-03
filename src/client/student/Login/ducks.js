@@ -1009,6 +1009,11 @@ export function* fetchUser({ payload }) {
         localStorage.setItem('loginRedirectUrl', getCurrentPath())
       }
       yield put(push(getLoggedOutUrl()))
+      // Capture referrer when no access-token
+      const referrer = window.document.referrer
+      if (!window.localStorage.getItem('originalreferrer') && referrer) {
+        window.localStorage.setItem('originalreferrer', referrer)
+      }
       return
     }
     if (payload && payload.addAccount === 'true') {

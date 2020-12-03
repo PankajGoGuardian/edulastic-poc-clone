@@ -81,6 +81,7 @@ import {
   setProgressStatusAction,
 } from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
+import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
 
 const {
   authorAssignmentConstants: {
@@ -561,6 +562,10 @@ function* canvasSyncGradesSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
+    if (errorMessage === 'Not shared with canvas') {
+      yield put(setShowCanvasShareAction(true))
+      return
+    }
     yield call(notification, {
       msg: errorMessage || 'Failed to sync grades with canvas.',
     })

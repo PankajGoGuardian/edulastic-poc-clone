@@ -20,7 +20,7 @@ import {
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { testActivityStatus } from '@edulastic/constants'
-import { Dropdown, Select } from 'antd'
+import { Dropdown, Select, notification as antNotification } from 'antd'
 import { get, isEmpty, keyBy, round } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -36,6 +36,7 @@ import PresentationToggleSwitch from '../../../Shared/Components/PresentationTog
 import StudentSelect from '../../../Shared/Components/StudentSelect/StudentSelect'
 // actions
 import {
+  canvasSyncAssignmentAction,
   downloadGradesResponseAction,
   getAllTestActivitiesForStudentAction,
   markAbsentAction,
@@ -54,6 +55,7 @@ import {
   gradebookSetSelectedAction,
   gradebookUnSelectAllAction,
   gradebookUnSelectStudentAction,
+  setShowCanvasShareAction,
 } from '../../../src/reducers/gradeBook'
 import StudentContainer from '../../../StudentView'
 // ducks
@@ -116,6 +118,11 @@ import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 
+const NotificationComponent = (props) => {
+  notification(props)
+  return null
+}
+
 class ClassBoard extends Component {
   constructor(props) {
     super(props)
@@ -176,7 +183,10 @@ class ClassBoard extends Component {
   }
 
   componentWillUnmount() {
+    const { setShowCanvasShare } = this.props
     window.removeEventListener('scroll', this.handleScroll)
+    setShowCanvasShare(false)
+    antNotification.destroy()
   }
 
   componentDidMount() {
@@ -861,6 +871,9 @@ class ClassBoard extends Component {
       isCliUser,
       isShowAllStudents,
       firstQuestionEntities,
+      showCanvasShare,
+      canvasSyncAssignment,
+      setShowCanvasShare,
     } = this.props
 
     const {
@@ -964,6 +977,32 @@ class ClassBoard extends Component {
 
     return (
       <div>
+        {showCanvasShare && (
+          <NotificationComponent
+            msg={
+              <span>
+                Assignment is not available on Canvas to share grades. Click{' '}
+                <a
+                  onClick={() => {
+                    setShowCanvasShare(false)
+                    canvasSyncAssignment({ assignmentId, groupId: classId })
+                    antNotification.destroy()
+                  }}
+                >
+                  here
+                </a>{' '}
+                to share the assignment first.
+              </span>
+            }
+            onClose={() => {
+              setShowCanvasShare(false)
+            }}
+            placement="bottomRight"
+            duration={0}
+            className="notification"
+            visibility={showCanvasShare}
+          />
+        )}
         {showMarkSubmittedPopup && (
           <ConfirmationModal
             title="Mark as Submitted"
@@ -1656,6 +1695,11 @@ const enhance = compose(
         ['author_classboard_gradebook', 'selectedStudents'],
         {}
       ),
+      showCanvasShare: get(
+        state,
+        ['author_classboard_gradebook', 'showCanvasShare'],
+        false
+      ),
       allStudents: getLCBStudentsList(state),
       testItemsData: get(
         state,
@@ -1711,6 +1755,8 @@ const enhance = compose(
       downloadGradesResponse: downloadGradesResponseAction,
       setShowAllStudents: setShowAllStudentsAction,
       updateCliUser: updateCliUserAction,
+      canvasSyncAssignment: canvasSyncAssignmentAction,
+      setShowCanvasShare: setShowCanvasShareAction,
     }
   )
 )

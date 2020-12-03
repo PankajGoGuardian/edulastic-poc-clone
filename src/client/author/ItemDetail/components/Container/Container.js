@@ -828,7 +828,6 @@ class Container extends Component {
     const { item, passage, rows, view, itemDeleting } = this.props
     const widgetLength = get(rows, [0, 'widgets'], []).length
     const passageTestItems = this.passageItems
-
     return (
       // isPassageWithQuestions fallback condition to show/hide pagination
       (item.canAddMultipleItems || item.isPassageWithQuestions) &&

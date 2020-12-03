@@ -193,7 +193,11 @@ class Container extends Component {
       false
     )
     if (isPassageWithQuestions) {
-      return savePassage({ isTestFlow, isEditFlow, testId })
+      return savePassage({
+        isTestFlow,
+        isEditFlow,
+        testId: testId || history?.location?.state?.testId,
+      })
     }
 
     saveQuestion(testId, isTestFlow, isEditFlow)
@@ -528,6 +532,7 @@ class Container extends Component {
       proceedSave,
       hasUnsavedChanges,
     } = this.props
+    console.log('match params', this.props.match.params)
     if (!question) {
       const backUrl = get(history, 'location.state.backUrl', '')
       if (backUrl.includes('pickup-questiontype')) {

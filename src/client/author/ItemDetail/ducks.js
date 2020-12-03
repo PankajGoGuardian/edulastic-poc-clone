@@ -1715,7 +1715,9 @@ function* convertToPassageWithQuestions({ payload }) {
           isPassageWithQuestions: true,
           canAddMultipleItems: !!canAddMultipleItems,
           backUrl,
+          testItemId: itemId,
           tabIndex: 0,
+          testId,
         },
       })
     )
@@ -1784,8 +1786,20 @@ function* savePassage({ payload }) {
       return
     }
 
+    /*
+     * in test flow, until test is not created, testId comes as "undefined" in string
+     * do no pass it to API as testId argument
+     * @see https://snapwiz.atlassian.net/browse/EV-19517
+     */
+    const hasValidTestId = payload.testId && payload.testId !== 'undefined'
+    const testIdParam = hasValidTestId ? payload.testId : null
+
     if (currentItem._id === 'new') {
-      const item = yield call(testItemsApi.create, _omit(currentItem, '_id'))
+      const item = yield call(
+        testItemsApi.create,
+        _omit(currentItem, '_id'),
+        ...(testIdParam ? [{ testId: testIdParam }] : [])
+      )
       yield put({
         type: RECEIVE_ITEM_DETAIL_SUCCESS,
         payload: { item },
@@ -1799,14 +1813,6 @@ function* savePassage({ payload }) {
       draft.testItems = uniq([...draft.testItems, currentItemId])
     })
     yield put(updatePassageStructureAction(modifiedPassage))
-
-    /*
-     * in test flow, until test is not created, testId comes as "undefined" in string
-     * do no pass it to API as testId argument
-     * @see https://snapwiz.atlassian.net/browse/EV-19517
-     */
-    const hasValidTestId = payload.testId && payload.testId !== 'undefined'
-    const testIdParam = hasValidTestId ? payload.testId : null
 
     // only update the item if its not new, since new item already has the passageId added while creating.
     yield all([
@@ -1888,7 +1894,9 @@ function* addWidgetToPassage({ payload }) {
         state: {
           isPassageWithQuestions: true,
           backUrl,
+          testItemId: itemId,
           tabIndex,
+          testId,
           canAddMultipleItems: !!canAddMultipleItems, // location state prop getting used by savePassage saga
         },
       })

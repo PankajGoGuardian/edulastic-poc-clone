@@ -34,7 +34,8 @@ const composeEnhancers =
   // process.env.NODE_ENV === 'development' &&
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    : compose
+    : //  ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({trace:true,traceLimit:30})
+      compose
 
 export default () => {
   store = createStore(

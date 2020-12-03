@@ -1147,7 +1147,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {
           ...state.entity,
-          passages: [...state.entity.passages, payload],
+          passages: [...(state.entity.passages || []), payload],
         },
       }
     case UPDATE_CREATING:

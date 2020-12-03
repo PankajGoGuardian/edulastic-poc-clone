@@ -359,6 +359,7 @@ class AssignTest extends React.Component {
               testSettings={testSettings}
               onClassFieldChange={this.onClassFieldChange}
               defaultTestProfiles={defaultTestProfiles}
+              isAssignRecommendations={false}
             />
           ) : (
             <SimpleOptions
@@ -371,6 +372,7 @@ class AssignTest extends React.Component {
               onClassFieldChange={this.onClassFieldChange}
               changeDateSelection={this.changeDateSelection}
               selectedDateOption={selectedDateOption}
+              isAssignRecommendations={false}
             />
           )}
         </Container>

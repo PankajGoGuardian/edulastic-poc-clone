@@ -17,6 +17,7 @@ const HeaderKeyboard = ({ onInput }) => {
           <Button
             key={i}
             onClick={handleClick(handler, command, numToMove)}
+            onTouchStart={handleClick(handler, command, numToMove)}
             data-cy={`header-keyboard-${handler}`}
           >
             <Label>{label}</Label>

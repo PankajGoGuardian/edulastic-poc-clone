@@ -388,8 +388,8 @@ export const apiForms = [
       },
       {
         name: 'teacherIdsDestination',
-        displayName: 'Teacher Ids Destination',
-        placeholder: 'Enter Teacher Ids Destination',
+        displayName: 'Teacher Id Destination',
+        placeholder: 'Enter Teacher Id Destination',
         type: 'string',
         formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
@@ -411,6 +411,14 @@ export const apiForms = [
     method: 'post',
     slowApi: true,
     fields: [
+      {
+        name: 'teacherIds',
+        displayName: 'Teacher Id(s)',
+        placeholder: 'Enter comma separated Teacher Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
       {
         name: 'srcSchoolId',
         displayName: 'Source School Id',
@@ -440,14 +448,6 @@ export const apiForms = [
         displayName: 'Destination District Id',
         placeholder: 'Enter Destination District Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
-        required: true,
-      },
-      {
-        name: 'teacherIds',
-        displayName: 'Teacher Id(s)',
-        placeholder: 'Enter comma separated teacher Ids',
-        type: 'textarea',
         formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },

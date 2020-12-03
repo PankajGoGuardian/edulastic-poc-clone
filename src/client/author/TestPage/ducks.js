@@ -99,7 +99,7 @@ const {
   completionTypes,
   releaseGradeLabels,
   calculators,
-  evalTypes,
+  evalTypeLabels,
   passwordPolicy,
 } = test
 const testItemStatusConstants = {
@@ -549,8 +549,9 @@ export const getItemGroupsSelector = createSelector(
 )
 
 export const getTestItemsSelector = createSelector(
-  getItemGroupsSelector,
-  (itemGroups) => {
+  getTestEntitySelector,
+  (_test) => {
+    const itemGroups = _test.itemGroups || []
     let testItems =
       itemGroups.flatMap(
         (itemGroup) =>
@@ -1419,7 +1420,8 @@ const getAssignSettings = ({
     !isPlaylist &&
     features.free &&
     !features.premium &&
-    entity.createdBy._id !== userId
+    entity.createdBy._id !== userId &&
+    !entity.freezeSettings
   ) {
     settings.testType = ASSESSMENT
     settings.maxAttempts = 1
@@ -1431,7 +1433,7 @@ const getAssignSettings = ({
     settings.calcType = calculators.NONE
     settings.answerOnPaper = false
     settings.maxAnswerChecks = 0
-    settings.scoringType = evalTypes.PARTIAL_CREDIT
+    settings.scoringType = evalTypeLabels.PARTIAL_CREDIT
     settings.penalty = false
     settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
   }

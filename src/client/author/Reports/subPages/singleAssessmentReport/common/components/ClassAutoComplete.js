@@ -29,7 +29,7 @@ const ClassAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { role: userRole, orgData, _id: userId } = userDetails
+    const { role: userRole, orgData } = userDetails
     const { districtIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
@@ -40,9 +40,12 @@ const ClassAutoComplete = ({
         name: searchTerms.text,
         type: ['class'],
       },
+      queryType: 'OR',
     }
-    if (userRole === roleuser.TEACHER) {
-      q.search.teachers = [{ type: 'eq', value: userId }]
+    if (filters.teacherIds) {
+      q.search.teachers = filters.teacherIds
+        .split(',')
+        .map((t) => ({ type: 'cont', value: t }))
     }
     if (
       (userRole === roleuser.DISTRICT_ADMIN ||
@@ -58,6 +61,9 @@ const ClassAutoComplete = ({
     }
     if (filters.studentSubject !== 'All' && filters.studentSubject) {
       q.search.subjects = [filters.studentSubject]
+    }
+    if (filters.studentCourseId !== 'All' && filters.studentCourseId) {
+      q.search.courseIds = [filters.studentCourseId]
     }
     return q
   }, [
@@ -109,6 +115,7 @@ const ClassAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
+    setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
   }, [
     filters.schoolIds,

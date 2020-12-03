@@ -29,7 +29,7 @@ const GroupsAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { role: userRole, orgData, _id: userId } = userDetails
+    const { role: userRole, orgData } = userDetails
     const { districtIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
@@ -40,9 +40,12 @@ const GroupsAutoComplete = ({
         name: searchTerms.text,
         type: ['custom'],
       },
+      queryType: 'OR',
     }
-    if (userRole === roleuser.TEACHER) {
-      q.search.teachers = [{ type: 'eq', value: userId }]
+    if (filters.teacherIds) {
+      q.search.teachers = filters.teacherIds
+        .split(',')
+        .map((t) => ({ type: 'cont', value: t }))
     }
     if (
       (userRole === roleuser.DISTRICT_ADMIN ||
@@ -59,6 +62,9 @@ const GroupsAutoComplete = ({
     if (filters.studentSubject !== 'All' && filters.studentSubject) {
       q.search.subjects = [filters.studentSubject]
     }
+    if (filters.studentCourseId !== 'All' && filters.studentCourseId) {
+      q.search.courseIds = [filters.studentCourseId]
+    }
     return q
   }, [
     searchTerms.text,
@@ -67,7 +73,6 @@ const GroupsAutoComplete = ({
     filters.studentSubject,
     filters.studentGrade,
     filters.studentCourseId,
-    filters.classId,
   ])
 
   // handle autocomplete actions
@@ -110,6 +115,7 @@ const GroupsAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
+    setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
   }, [
     filters.schoolIds,
@@ -117,7 +123,6 @@ const GroupsAutoComplete = ({
     filters.studentSubject,
     filters.studentGrade,
     filters.studentCourseId,
-    filters.classId,
   ])
 
   // build dropdown data

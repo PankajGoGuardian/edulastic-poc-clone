@@ -54,6 +54,51 @@ const getTestIdFromURL = (url) => {
   return ''
 }
 
+const studentFiltersDefaultValues = [
+  {
+    key: 'schoolIds',
+    value: '',
+  },
+  {
+    key: 'teacherIds',
+    value: '',
+  },
+  {
+    key: '',
+    nestedFilters: [
+      {
+        key: 'classId',
+        value: 'All',
+      },
+      {
+        key: 'groupId',
+        value: 'All',
+      },
+    ],
+  },
+]
+
+const resetFilter = (filtersToReset, prevFilters) => {
+  for (const filter of filtersToReset) {
+    if (filter.nestedFilters) {
+      resetFilter(filter.nestedFilters, prevFilters)
+    } else {
+      prevFilters[filter.key] = filter.value
+    }
+  }
+}
+
+const resetStudentFilters = (prevFilters, key, selected, multiple) => {
+  const index = studentFiltersDefaultValues.findIndex((s) => s.key === key)
+  if (
+    index !== -1 &&
+    prevFilters[key] !== (multiple ? selected : selected.key)
+  ) {
+    const filtersToReset = studentFiltersDefaultValues.slice(index + 1)
+    resetFilter(filtersToReset, prevFilters)
+  }
+}
+
 const SingleAssessmentReportFilters = ({
   loading,
   SARFilterData,
@@ -183,7 +228,7 @@ const SingleAssessmentReportFilters = ({
         groupId: search.groupId || 'All',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        assessmentTypes: search.assessmentTypes || 'common assessment',
+        assessmentTypes: search.assessmentTypes || '',
       }
       const urlParams = { ...obtainedFilters }
 
@@ -231,10 +276,9 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
-    const _filters = {
-      ...filters,
-      [keyName]: multiple ? selected : selected.key,
-    }
+    const _filters = { ...filters }
+    resetStudentFilters(_filters, keyName, selected, multiple)
+    _filters[keyName] = multiple ? selected : selected.key
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     setFiltersOrTestId({ filters: _filters })
     setShowApply(true)
@@ -263,7 +307,7 @@ const SingleAssessmentReportFilters = ({
         )}
       </GoButtonWrapper>
       <PerfectScrollbar>
-        <Collapsable header="find the assessment" defaultActiveKey="0">
+        <Collapsable header="find the test" defaultActiveKey="0">
           <SearchField>
             <FilterLabel>School Year</FilterLabel>
             <ControlDropDown
@@ -275,43 +319,36 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Grade</FilterLabel>
+            <FilterLabel>Test Grade</FilterLabel>
             <ControlDropDown
               by={filters.grade}
               selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
               data={staticDropDownData.grades}
-              prefix="Grade"
+              prefix="Test Grade"
               showPrefixOnSelected={false}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Subject</FilterLabel>
+            <FilterLabel>Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
               selectCB={(e) => updateFilterDropdownCB(e, 'subject')}
               data={staticDropDownData.subjects}
-              prefix="Subject"
+              prefix="Test Subject"
               showPrefixOnSelected={false}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Course</FilterLabel>
-            <CourseAutoComplete
-              selectedCourseId={filters.courseId !== 'All' && filters.courseId}
-              selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
-            />
-          </SearchField>
-          <SearchField>
             <MultiSelectDropdown
-              label="Assessment Type"
+              label="Test Type"
               el={assessmentTypeRef}
               onChange={(e) =>
                 updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
               }
               value={
-                filters.assessmentTypes
-                  ? filters.assessmentTypes.split(',')
-                  : []
+                !(filters.assessmentTypes || filters.assessmentTypes === 'All')
+                  ? []
+                  : filters.assessmentTypes.split(',')
               }
               options={staticDropDownData.assessmentType.filter(
                 (a) => a.key !== 'All'
@@ -320,7 +357,7 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           {prevSARFilterData && (
             <SearchField>
-              <FilterLabel>Assessment</FilterLabel>
+              <FilterLabel>Test</FilterLabel>
               <AssessmentAutoComplete
                 filters={filters}
                 firstLoad={firstLoad}

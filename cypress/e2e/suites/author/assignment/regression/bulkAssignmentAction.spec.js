@@ -1,23 +1,23 @@
-import TestAssignPage from '../../../framework/author/tests/testDetail/testAssignPage'
-import AuthorAssignmentPage from '../../../framework/author/assignments/AuthorAssignmentPage'
+import TestAssignPage from '../../../../framework/author/tests/testDetail/testAssignPage'
+import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
 import AssignmentBulkActionsPage, {
   filter,
   icons,
-} from '../../../framework/author/assignments/AssignmentBulkActionsPage'
-import AssignmentsPage from '../../../framework/student/assignmentsPage'
-import SidebarPage from '../../../framework/student/sidebarPage'
-import FileHelper from '../../../framework/util/fileHelper'
+} from '../../../../framework/author/assignments/AssignmentBulkActionsPage'
+import AssignmentsPage from '../../../../framework/student/assignmentsPage'
+import SidebarPage from '../../../../framework/student/sidebarPage'
+import FileHelper from '../../../../framework/util/fileHelper'
 import {
   getRandomClass,
   getRandomStudent,
-} from '../../../framework/constants/constantFunctions'
-import TeacherSideBar from '../../../framework/author/SideBarPage'
+} from '../../../../framework/constants/constantFunctions'
+import TeacherSideBar from '../../../../framework/author/SideBarPage'
 import {
   grades,
   teacherSide,
-} from '../../../framework/constants/assignmentStatus'
-import LiveClassboardPage from '../../../framework/author/assignments/LiveClassboardPage'
-import ReportsPage from '../../../framework/student/reportsPage'
+} from '../../../../framework/constants/assignmentStatus'
+import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
+import ReportsPage from '../../../../framework/student/reportsPage'
 // import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 // import TeacherManageClassPage from "../../../../framework/author/manageClassPage";
 // import StudentTestPage from "../../../../framework/student/studentTestPage";
@@ -49,6 +49,7 @@ describe(`${FileHelper.getSpecName(
     subject: 'Mathematics',
     standardSet: 'Math - Common Core',
     testID: '5f3675476f69560008838126',
+    assignmentName: 'Default Test Automation',
   }
 
   const studData = {
@@ -128,6 +129,7 @@ describe(`${FileHelper.getSpecName(
         )
         lcbPage.checkSelectAllCheckboxOfStudent()
         lcbPage.clickOnMarkAsSubmit()
+        cy.wait(500)
       })
 
       // Assign test and close - Done
@@ -142,12 +144,9 @@ describe(`${FileHelper.getSpecName(
           classData.testID,
           className
         )
-        lcbPage.checkSelectAllCheckboxOfStudent()
-        lcbPage.clickOnMarkAsSubmit()
-        cy.wait(500)
         lcbPage.header.clickOnClose()
       })
-      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      cy.login('schoolAdmin', Teacher.adminEmail, Teacher.adminPass)
     })
 
     it('> Assignment Page data', () => {
@@ -160,10 +159,10 @@ describe(`${FileHelper.getSpecName(
         'Default Test Automation',
         '20',
         '100',
-        '50',
+        '75',
         '0',
-        '0',
-        '50'
+        '25',
+        '25'
       )
     })
 
@@ -181,7 +180,6 @@ describe(`${FileHelper.getSpecName(
       bulkActionPage.selectClassByClassName('Auto_class_1', true)
       bulkActionPage.selectClassByClassName('Auto_class_2', true)
       bulkActionPage.verifyTotalClassesSelected('2')
-      bulkActionPage.clickNextPage()
       bulkActionPage.selectClassByRowNumber(0)
       bulkActionPage.selectClassByRowNumber(1)
       bulkActionPage.verifyTotalClassesSelected('4')
@@ -195,13 +193,13 @@ describe(`${FileHelper.getSpecName(
       bulkActionPage.filterBy(filter.NOT_OPEN)
       bulkActionPage.verifyNumberofClassesFiltered('5')
       bulkActionPage.verifyFilteredClasses(notOpenClasses)
+      cy.wait(500)
       bulkActionPage.verifyFilterAndStatusColor(filter.NOT_OPEN)
-
-      bulkActionPage.filterBy(filter.ALL)
-      bulkActionPage.verifyNumberofClassesFiltered('10')
     })
 
     it('> In Progress filter', () => {
+      bulkActionPage.filterBy(filter.ALL)
+      bulkActionPage.verifyNumberofClassesFiltered('20')
       bulkActionPage.verifyNumberofClassesInFilter(
         filter.IN_PROGRESS,
         inProgressClasses.length.toString()
@@ -209,13 +207,13 @@ describe(`${FileHelper.getSpecName(
       bulkActionPage.filterBy(filter.IN_PROGRESS)
       bulkActionPage.verifyNumberofClassesFiltered('5')
       bulkActionPage.verifyFilteredClasses(inProgressClasses)
+      cy.wait(500)
       bulkActionPage.verifyFilterAndStatusColor(filter.IN_PROGRESS)
-
-      bulkActionPage.filterBy(filter.ALL)
-      bulkActionPage.verifyNumberofClassesFiltered('10')
     })
 
     it('> In Grading filter', () => {
+      bulkActionPage.filterBy(filter.ALL)
+      bulkActionPage.verifyNumberofClassesFiltered('20')
       bulkActionPage.verifyNumberofClassesInFilter(
         filter.IN_GRADING,
         inGradinClasses.length.toString()
@@ -223,13 +221,13 @@ describe(`${FileHelper.getSpecName(
       bulkActionPage.filterBy(filter.IN_GRADING)
       bulkActionPage.verifyNumberofClassesFiltered('5')
       bulkActionPage.verifyFilteredClasses(inGradinClasses)
+      cy.wait(500)
       bulkActionPage.verifyFilterAndStatusColor(filter.IN_GRADING)
-
-      bulkActionPage.filterBy(filter.ALL)
-      bulkActionPage.verifyNumberofClassesFiltered('10')
     })
 
     it('> Done filter', () => {
+      bulkActionPage.filterBy(filter.ALL)
+      bulkActionPage.verifyNumberofClassesFiltered('20')
       bulkActionPage.verifyNumberofClassesInFilter(
         filter.DONE,
         doneClasses.length.toString()
@@ -237,20 +235,19 @@ describe(`${FileHelper.getSpecName(
       bulkActionPage.filterBy(filter.DONE)
       bulkActionPage.verifyNumberofClassesFiltered('5')
       bulkActionPage.verifyFilteredClasses(doneClasses)
+      cy.wait(500)
       bulkActionPage.verifyFilterAndStatusColor(filter.DONE)
-
-      bulkActionPage.filterBy(filter.ALL)
-      bulkActionPage.verifyNumberofClassesFiltered('10')
     })
 
     it('> Navigate to LCB', () => {
+      bulkActionPage.filterBy(filter.ALL)
+      bulkActionPage.verifyNumberofClassesFiltered('20')
       bulkActionPage.clickIconByClassName(icons.LCB, notOpenClasses[0])
       lcbPage.checkClassName(notOpenClasses[0])
     })
 
     it('> Navigate to Express grader', () => {
-      sideBarPage.clickOnAssignment()
-      bulkActionPage.clickTestByID(classData.testID)
+      lcbPage.clickOnAssignmentLink(classData.assignmentName)
       bulkActionPage.clickIconByClassName(
         icons.EXPRESS_GRADER,
         notOpenClasses[0]
@@ -259,6 +256,7 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> Navigate to Reports', () => {
+      sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       bulkActionPage.clickTestByID(classData.testID)
       bulkActionPage.clickIconByClassName(icons.REPORTS, notOpenClasses[0])
@@ -279,7 +277,7 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> Open all assignments :', () => {
-      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      cy.login('schoolAdmin', Teacher.adminEmail, Teacher.adminPass)
       sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
@@ -332,7 +330,7 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> Pause all assignments :', () => {
-      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      cy.login('schoolAdmin', Teacher.adminEmail, Teacher.adminPass)
       sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
@@ -385,7 +383,7 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> Close all assignments :', () => {
-      cy.login('', Teacher.adminEmail, Teacher.adminPass)
+      cy.login('schoolAdmin', Teacher.adminEmail, Teacher.adminPass)
       sideBarPage.clickOnReport()
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')

@@ -18,7 +18,11 @@ import { EduSwitchStyled } from '@edulastic/common'
 const RadioGroup = Radio.Group
 
 export const OptionConationer = styled.div`
-  min-height: 80vh;
+  ${({ hasMinHeight = true }) =>
+    hasMinHeight &&
+    `
+      min-height: 80vh;
+    `}
   display: flex;
   justify-content: center;
   align-items: center;
@@ -411,6 +415,13 @@ export const Title = styled.div`
   font-weight: 700;
   letter-spacing: 0.3px;
   color: ${secondaryTextColor};
+`
+
+export const StyledLink = styled.span`
+  font-size: 15px;
+  color: ${themeColor};
+  cursor: pointer;
+  text-decoration: underline;
 `
 
 export const TimeSpentInput = styled(Input)`

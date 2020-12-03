@@ -43,7 +43,10 @@ const KeyboardHeader = ({
           </SelectInputStyled>
         )}
         {showResponse && (
-          <ResponseBtn onClick={handleClickResponseButton}>
+          <ResponseBtn
+            onClick={handleClickResponseButton}
+            onTouchEnd={handleClickResponseButton}
+          >
             <span className="response-embed">
               <span className="response-embed__char">R</span>
               <span className="response-embed__text">Response</span>

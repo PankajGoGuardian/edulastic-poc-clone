@@ -599,6 +599,7 @@ class Container extends Component {
         <QuestionContentWrapper
           data-cy="question-editor-container"
           ref={this.scrollContainer}
+          zIndex="1"
         >
           {this.renderQuestion()}
         </QuestionContentWrapper>

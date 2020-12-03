@@ -10,14 +10,6 @@ import {
 } from '../../ducks'
 import DescriptionTextArea from '../../../../assessment/components/QuestionTextArea'
 
-const normalizeHtml = (htmlText) => {
-  if (htmlText && typeof htmlText === 'string') {
-    const normalized = htmlText.replace(/<.*?>/g, '').trim()
-    return normalized ? `<p>${normalized}</p>` : normalized
-  }
-  return htmlText
-}
-
 const TextInput = ({
   id,
   parentId,
@@ -46,7 +38,7 @@ const TextInput = ({
     } else if (componentFor === 'Rating') {
       if (
         (textType === 'number' &&
-          ((!isNaN(parseFloat(value)) && value >= 0) || value === '')) ||
+          ((!Number.isNaN(Number(value)) && value >= 0) || value === '')) ||
         ['text', 'textarea'].includes(textType)
       ) {
         nextState = produce(currentRubricData, (draftState) => {
@@ -84,7 +76,7 @@ const TextInput = ({
           value={currentValue}
           placeholder={isEditable ? 'Enter Description' : ''}
           toolbarId={`rubric-rating-description-${id}`}
-          onChange={(value) => handleChange(normalizeHtml(value))}
+          onChange={(value) => handleChange(value)}
           readOnly={false}
           toolbarSize="SM"
           buttons={['bold', 'italic', 'underline', 'formatUL']}

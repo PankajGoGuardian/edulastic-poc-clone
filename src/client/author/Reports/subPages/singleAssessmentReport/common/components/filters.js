@@ -183,7 +183,7 @@ const SingleAssessmentReportFilters = ({
         groupId: search.groupId || 'All',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        assessmentTypes: search.assessmentTypes || 'common assessment',
+        assessmentTypes: search.assessmentTypes || '',
       }
       const urlParams = { ...obtainedFilters }
 
@@ -309,9 +309,9 @@ const SingleAssessmentReportFilters = ({
                 updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
               }
               value={
-                filters.assessmentTypes
-                  ? filters.assessmentTypes.split(',')
-                  : []
+                !(filters.assessmentTypes || filters.assessmentTypes === 'All')
+                  ? []
+                  : filters.assessmentTypes.split(',')
               }
               options={staticDropDownData.assessmentType.filter(
                 (a) => a.key !== 'All'

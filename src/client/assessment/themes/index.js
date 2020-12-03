@@ -530,6 +530,20 @@ const AssessmentContainer = ({
     }
   }, 1000 * 30)
 
+  useEffect(() => {
+    const cb = (event) => {
+      event.preventDefault()
+      saveProgress()
+      // Older browsers supported custom message
+      event.returnValue = ''
+    }
+
+    window.addEventListener('beforeunload', cb)
+    return () => {
+      window.removeEventListener('beforeunload', cb)
+    }
+  }, [qid])
+
   const handleMagnifier = () =>
     updateTestPlayer({ enableMagnifier: !enableMagnifier })
   const props = {

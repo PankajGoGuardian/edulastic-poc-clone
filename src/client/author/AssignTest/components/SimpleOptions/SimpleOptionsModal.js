@@ -77,6 +77,10 @@ const SimpleOptionsModal = ({
     recommendationsToAssign.recommendations,
   ])
 
+  const isRecommendingStandards = recommendationsToAssign.recommendations.some(
+    (recommendation) => recommendation.standardIdentifiers
+  )
+
   return (
     <ConfirmationModal
       title="Assign Recommendations"
@@ -108,18 +112,21 @@ const SimpleOptionsModal = ({
               />
             </Col>
           </StyledRow>
-          <StyledRow gutter={32} mb="25px">
-            <Col span={12}>
-              <QuestionPerStandardSelector
-                onChange={onChange('questionPerStandard')}
-                questionPerStandard={
-                  assignment.questionPerStandard ||
-                  testSettings.questionPerStandard
-                }
-                options={questionPerStandardOptions}
-              />
-            </Col>
-          </StyledRow>
+          {isRecommendingStandards && (
+            <StyledRow gutter={32} mb="25px">
+              <Col span={12}>
+                <QuestionPerStandardSelector
+                  onChange={onChange('questionPerStandard')}
+                  questionPerStandard={
+                    assignment.questionPerStandard ||
+                    testSettings.questionPerStandard
+                  }
+                  options={questionPerStandardOptions}
+                />
+              </Col>
+            </StyledRow>
+          )}
+
           <StyledRow gutter={32} mb="15px">
             <Col span={12}>
               <StyledLink onClick={onClickFullSettings}>

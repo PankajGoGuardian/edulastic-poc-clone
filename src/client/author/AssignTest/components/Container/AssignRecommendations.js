@@ -172,6 +172,10 @@ const AssignRecommendations = ({
       isRecommendationAssignView: false,
     })
 
+  const isRecommendingStandards = recommendationsToAssign.recommendations.some(
+    (recommendation) => recommendation.standardIdentifiers
+  )
+
   return (
     <>
       <ListHeader
@@ -206,6 +210,7 @@ const AssignRecommendations = ({
             testSettings={testSettings}
             updateOptions={updateAssignmentSettings}
             isAssignRecommendations
+            isRecommendingStandards={isRecommendingStandards}
           />
         )}
       </Container>

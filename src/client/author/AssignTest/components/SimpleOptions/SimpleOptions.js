@@ -296,6 +296,7 @@ class SimpleOptions extends React.Component {
       freezeSettings,
       features,
       isAssignRecommendations,
+      isRecommendingStandards,
     } = this.props
     const changeField = curry(this.onChange)
     let { openPolicy } = selectsData
@@ -423,7 +424,7 @@ class SimpleOptions extends React.Component {
               />
             </Col>
           </StyledRow>
-          {isAssignRecommendations && (
+          {isAssignRecommendations && isRecommendingStandards && (
             <StyledRow gutter={32} mb="25px">
               <Col span={12}>
                 <QuestionPerStandardSelector
@@ -472,6 +473,7 @@ SimpleOptions.propTypes = {
   testSettings: PropTypes.object.isRequired,
   updateOptions: PropTypes.func.isRequired,
   isAssignRecommendations: PropTypes.bool.isRequired,
+  isRecommendingStandards: PropTypes.bool,
   group: PropTypes.array,
   students: PropTypes.array,
   fetchStudents: PropTypes.func,
@@ -481,6 +483,7 @@ SimpleOptions.defaultProps = {
   group: [],
   students: [],
   fetchStudents: () => false,
+  isRecommendingStandards: false,
 }
 
 export default connect((state) => ({

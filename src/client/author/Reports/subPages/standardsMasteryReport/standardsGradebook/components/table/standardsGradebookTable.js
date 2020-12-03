@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
-import { isEmpty } from 'lodash'
+import { isEmpty, flatMap, keyBy } from 'lodash'
 import styled from 'styled-components'
 import next from 'immer'
 import { withNamespaces } from '@edulastic/localization'
@@ -368,7 +368,12 @@ const StandardsGradebookTableComponent = ({
     if (extraColsNeeded) {
       result = [
         ...result,
-        ...filteredTableData[0].standardsInfo.map((item, index) => ({
+        ...Object.values(
+          keyBy(
+            flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
+            'standardId'
+          )
+        ).map((item, index) => ({
           title: (
             <>
               <span>{item.standardName}</span>

@@ -53,10 +53,15 @@ export const getAssignedClassesByIdSelector = createSelector(
       [TESTLET]: {},
     }
     for (const [key, value] of Object.entries(assignmentsByTestType)) {
-      if (key === COMMON) {
+      if (key === COMMON && !value.archived) {
         const assignedClasses = value
           .flatMap((item) => get(item, 'class', []))
-          .filter((item) => item.students && item.students.length === 0)
+          .filter(
+            (item) =>
+              item.students &&
+              item.students.length === 0 &&
+              item.status !== 'ARCHIVED'
+          )
         assignedClassesByTestType[key] = keyBy(assignedClasses, '_id') || {}
       }
     }

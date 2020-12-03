@@ -1420,7 +1420,8 @@ const getAssignSettings = ({
     !isPlaylist &&
     features.free &&
     !features.premium &&
-    entity.createdBy._id !== userId
+    entity.createdBy._id !== userId &&
+    !entity.freezeSettings
   ) {
     settings.testType = ASSESSMENT
     settings.maxAttempts = 1

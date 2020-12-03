@@ -33,6 +33,7 @@ import {
   getIsOverrideFreezeSelector,
 } from '../../../TestPage/ducks'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
+import { getAssignedClassesByIdSelector } from '../../duck'
 
 const { releaseGradeLabels } = testConst
 class AdvancedOptons extends React.Component {
@@ -90,6 +91,7 @@ class AdvancedOptons extends React.Component {
       isReleaseScorePremium,
       userRole,
       defaultTestProfiles,
+      assignedClassesById,
     } = this.props
     if (field === 'class') {
       const { classData, termId } = onClassFieldChange(value, groups)
@@ -140,6 +142,11 @@ class AdvancedOptons extends React.Component {
               : releaseGradeLabels.DONT_RELEASE
         } else {
           state.releaseScore = releaseGradeLabels.WITH_ANSWERS
+        }
+        if (value === testConst.type.COMMON) {
+          state.class = state.class.filter(
+            (item) => !assignedClassesById[value][item._id]
+          )
         }
       }
       if (field === 'passwordPolicy') {
@@ -230,10 +237,8 @@ class AdvancedOptons extends React.Component {
               <ClassSelectorLabel>
                 Assign this to
                 <p>
-                  {'Please select classes to assign this assessment.'}
-                  {
-                    'Options on the left can be used to filter the list of classes.'
-                  }
+                  Please select classes to assign this assessment. Options on
+                  the left can be used to filter the list of classes.
                 </p>
               </ClassSelectorLabel>
               <ClassList
@@ -254,4 +259,5 @@ export default connect((state) => ({
   isReleaseScorePremium: getReleaseScorePremiumSelector(state),
   defaultTestProfiles: defaultTestTypeProfilesSelector(state),
   freezeSettings: getIsOverrideFreezeSelector(state),
+  assignedClassesById: getAssignedClassesByIdSelector(state),
 }))(AdvancedOptons)

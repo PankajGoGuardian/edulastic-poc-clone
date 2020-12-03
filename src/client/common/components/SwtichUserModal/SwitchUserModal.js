@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { Modal } from 'antd'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
-import { IconPlusCircle } from '@edulastic/icons'
+import { IconCheck, IconPlusCircle } from '@edulastic/icons'
+import { green, red } from '@edulastic/colors'
 
 const Button = styled(EduButton)`
   border: none;
@@ -63,22 +64,33 @@ const SwitchUserModal = ({
       <p>Select the role you want to switch</p>
       <div style={{ 'margin-top': '16px' }}>
         {Object.keys(roles).map((role) => {
-          const users = otherAccounts.filter(
-            (acc) => acc.role === role && acc._id !== userId
-          )
+          const users = otherAccounts.filter((acc) => acc.role === role)
           return (
             !!users.length &&
             users.map((user) => (
               <StyledDiv
+                padding={5}
                 key={`${user._id}_${user.role}`}
                 role={role}
-                onClick={() => switchUser(user._id, personId)}
+                onClick={
+                  user._id === userId
+                    ? () => {}
+                    : () => {
+                        switchUser(user._id, personId)
+                      }
+                }
               >
+                {user._id === userId && (
+                  <IconCheck color={green} width={20} height={15} />
+                )}
                 <div style={{ 'font-size': '16px', 'font-weight': '600' }}>
                   <p>{roles[user.role]}</p>
                 </div>
                 <div>
                   <p>{user.username}</p>
+                  <p style={{ color: red }}>{`( ${user.districtNames.join(
+                    ', '
+                  )}, ${user.schoolNames.join(', ')} )`}</p>
                 </div>
               </StyledDiv>
             ))

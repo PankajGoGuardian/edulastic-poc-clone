@@ -214,7 +214,9 @@ const JoinSchool = ({
 
   const fetchSchool = (searchText) => {
     if (searchText && searchText.length >= 3) {
-      if (isSignupUsingDaURL || districtId) {
+      if (fromUserProfile) {
+        searchSchool({ ipZipCode, email, searchText, isApproved: true })
+      } else if (isSignupUsingDaURL || districtId) {
         searchSchoolByDistrict({
           districtId,
           currentSignUpState,
@@ -238,7 +240,9 @@ const JoinSchool = ({
   const handleSearch = debounce((keyword) => fetchSchool(keyword), 500)
 
   useEffect(() => {
-    if (isSignupUsingDaURL || districtId) {
+    if (fromUserProfile) {
+      searchSchool({ ipZipCode, email, isApproved: true })
+    } else if (isSignupUsingDaURL || districtId) {
       searchSchoolByDistrict({
         districtId,
         currentSignUpState,

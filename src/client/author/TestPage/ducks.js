@@ -99,7 +99,7 @@ const {
   completionTypes,
   releaseGradeLabels,
   calculators,
-  evalTypes,
+  evalTypeLabels,
   passwordPolicy,
 } = test
 const testItemStatusConstants = {
@@ -1433,7 +1433,7 @@ const getAssignSettings = ({
     settings.calcType = calculators.NONE
     settings.answerOnPaper = false
     settings.maxAnswerChecks = 0
-    settings.scoringType = evalTypes.PARTIAL_CREDIT
+    settings.scoringType = evalTypeLabels.PARTIAL_CREDIT
     settings.penalty = false
     settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
   }

@@ -1116,9 +1116,13 @@ export const isItemVisibiltySelector = createSelector(
   getAdditionalDataSelector,
   getUserId,
   getAssignedBySelector,
-  (state, additionalData, userId, assignedBy) => {
+  getUserRole,
+  (state, additionalData, userId, assignedBy, role) => {
     const assignmentStatus = state?.data?.status
     const contentVisibility = additionalData?.testContentVisibility
+    if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
+      return true
+    }
     // For assigned by user content will be always visible.
     if (userId === assignedBy?._id) {
       return true

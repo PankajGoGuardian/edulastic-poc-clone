@@ -302,9 +302,9 @@ const SingleAssessmentReportFilters = ({
                 updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
               }
               value={
-                filters.assessmentTypes && filters.assessmentTypes !== 'All'
-                  ? filters.assessmentTypes.split(',')
-                  : []
+                !(filters.assessmentTypes || filters.assessmentTypes === 'All')
+                  ? []
+                  : filters.assessmentTypes.split(',')
               }
               options={staticDropDownData.assessmentType.filter(
                 (a) => a.key !== 'All'

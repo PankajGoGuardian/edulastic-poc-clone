@@ -31,7 +31,7 @@ const uiConfig = {
 const youtubeVideoDetails = {
   [MCQ_STANDARD]: {
     title: `Authoring ${MCQ_STANDARD} question`,
-    videoId: 'UrqcZ1-YxzE',
+    videoId: 'mvVjnpWAqKM',
     uiConfig,
   },
   [MCQ_TRUE_OR_FALSE]: {
@@ -72,11 +72,6 @@ const youtubeVideoDetails = {
   [CLOZE_TEXT]: {
     title: `Authoring ${CLOZE_TEXT} question`,
     videoId: '2LhYFb7sOPQ',
-    uiConfig,
-  },
-  [MCQ_TRUE_OR_FALSE]: {
-    title: `Authoring ${MCQ_TRUE_OR_FALSE} question`,
-    videoId: 'lt5jSu3E220',
     uiConfig,
   },
   [CLASSIFICATION]: {

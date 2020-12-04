@@ -25,6 +25,8 @@ const ReviewItem = ({
   userFeatures,
   scoring,
   standards,
+  groupMinimized,
+  groupPoints,
 }) => {
   const audioStatus = (_item) => {
     const _questions = get(_item, 'data.questions', [])
@@ -110,6 +112,8 @@ const ReviewItem = ({
           onDelete={onDelete}
           isScoringDisabled={data.main.isScoringDisabled}
           scoring={scoring}
+          groupMinimized={groupMinimized}
+          groupPoints={groupPoints}
         />
       )}
       {!expand && (
@@ -125,6 +129,8 @@ const ReviewItem = ({
           onChangePoints={onChangePoints}
           isScoringDisabled={data.main.isScoringDisabled}
           expandRow={toggleExpandRow}
+          groupMinimized={groupMinimized}
+          groupPoints={groupPoints}
         />
       )}
       <MetaInfo data={data.meta} />

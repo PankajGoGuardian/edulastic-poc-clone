@@ -25,8 +25,11 @@ class MainInfo extends React.Component {
       onSelect,
       checked,
       isScoringDisabled = false,
+      groupPoints,
+      groupMinimized,
     } = this.props
     const newHtml = helpers.sanitizeForReview(data.stimulus) || ''
+    const points = groupMinimized ? groupPoints : data.points
 
     return (
       <FlexContainer
@@ -52,10 +55,12 @@ class MainInfo extends React.Component {
             />
             <NumberInputStyled
               width="60px"
-              value={data.points}
+              value={points}
               margin="0px 0px 0px 5px"
               padding="0px 12px"
-              disabled={!owner || !isEditable || isScoringDisabled}
+              disabled={
+                !owner || !isEditable || isScoringDisabled || groupMinimized
+              }
               onChange={(value) => onChangePoints(data.id, value)}
             />
             {isEditable && (

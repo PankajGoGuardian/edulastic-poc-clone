@@ -6,11 +6,11 @@ import {
   AnswerContext,
   helpers,
   CheckboxLabel,
+  NumberInputStyled,
 } from '@edulastic/common'
 import TestItemPreview from '../../../../../../../assessment/components/TestItemPreview'
 import { PointsLabel } from './styled'
 import Actions from '../Actions'
-import { PointsInput } from '../styled'
 
 const transformItemRow = ([row], qid) => [
   {
@@ -47,6 +47,8 @@ const Expanded = ({
   collapsRow,
   checked,
   points: pointsProp,
+  groupPoints,
+  groupMinimized,
 }) => {
   /**
    * @type {{item:Object,question:Object}[]}
@@ -83,8 +85,8 @@ const Expanded = ({
     points = get(scoring, `questionLevel.${testItem._id}`, questionLevelScoring)
   }
 
-  const handleChangePoint = (qid) => (e) => {
-    const questionScore = +e.target.value
+  const handleChangePoint = (qid) => (value) => {
+    const questionScore = value
     if (!testItem.itemLevelScoring && qid) {
       const updatedPoints = { ...points, [qid]: questionScore }
       const itemScore = Object.values(updatedPoints).reduce(
@@ -113,7 +115,7 @@ const Expanded = ({
         )}
         <FlexContainer>
           <Actions
-            style={{ marginBottom: 8, width: 100 }}
+            style={{ marginBottom: 8, width: 108 }}
             onPreview={() => onPreview(metaInfoData.id)}
             onCollapseExpandRow={collapsRow}
             onDelete={onDelete}
@@ -122,13 +124,15 @@ const Expanded = ({
           />
           <FlexContainer flexDirection="column">
             <PointsLabel>Points</PointsLabel>
-            <PointsInput
+            <NumberInputStyled
               data-cy="pointsd"
-              size="large"
-              type="number"
-              disabled={!owner || !isEditable || isScoringDisabled}
-              value={pointsProp}
-              onChange={(e) => onChangePoints(metaInfoData.id, +e.target.value)}
+              width="108px"
+              padding="0px 12px"
+              disabled={
+                !owner || !isEditable || isScoringDisabled || groupMinimized
+              }
+              value={groupMinimized ? groupPoints : pointsProp}
+              onChange={(value) => onChangePoints(metaInfoData.id, value)}
             />
           </FlexContainer>
         </FlexContainer>
@@ -215,18 +219,20 @@ const Expanded = ({
             >
               <FlexContainer flexDirection="column" style={{ margin: 0 }}>
                 <PointsLabel>Points</PointsLabel>
-                <PointsInput
-                  size="large"
-                  type="number"
+                <NumberInputStyled
                   min={0}
-                  disabled={!owner || !isEditable || isScoringDisabled}
-                  value={points?.[qId] || points}
+                  width="108px"
+                  padding="0px 12px"
+                  disabled={
+                    !owner || !isEditable || isScoringDisabled || groupMinimized
+                  }
+                  value={groupMinimized ? groupPoints : points?.[qId] || points}
                   onChange={handleChangePoint(qId)}
                 />
               </FlexContainer>
               {index === 0 && (
                 <Actions
-                  style={{ marginTop: 8, width: 100 }}
+                  style={{ marginTop: 8, width: 108 }}
                   onPreview={() => onPreview(metaInfoData.id)}
                   onCollapseExpandRow={collapsRow}
                   onDelete={onDelete}

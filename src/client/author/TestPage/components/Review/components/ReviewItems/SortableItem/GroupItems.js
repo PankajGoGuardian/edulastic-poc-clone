@@ -6,7 +6,7 @@ import {
   SortableElement,
 } from 'react-sortable-hoc'
 import { IconPlus, IconMinusRounded } from '@edulastic/icons'
-import { EduButton } from '@edulastic/common'
+import { EduButton, helpers } from '@edulastic/common'
 import { first, last } from 'lodash'
 import { greyThemeLight } from '@edulastic/colors'
 import SingleItem from './SingleItem'
@@ -17,9 +17,18 @@ const DragHandle = SortableHandle(DragHandleComponent)
 
 const GroupItems = SortableContainer((props) => {
   // items is always an array of passage items
-  const { items, isEditable } = props
+  const { items, isEditable, scoring } = props
   const [localItems, setLocalItems] = useState([])
   const [minimize, setMinimize] = useState(true)
+
+  const groupPoints = items.reduce(
+    (acc, curr) =>
+      acc +
+      (curr.isLimitedDeliveryType
+        ? 1
+        : scoring[curr._id] || helpers.getPoints(curr)),
+    0
+  )
 
   const toggleMinizeGroup = () => {
     setMinimize(!minimize)
@@ -50,7 +59,8 @@ const GroupItems = SortableContainer((props) => {
               {...props}
               item={ite}
               index={index}
-              hideHanlde={minimize}
+              groupPoints={groupPoints}
+              groupMinimized={minimize}
               disabled={minimize}
             />
           ))}

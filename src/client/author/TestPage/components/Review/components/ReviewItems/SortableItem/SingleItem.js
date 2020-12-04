@@ -5,13 +5,13 @@ import DragHandle from './DragHandle'
 import { DragCrad, ReviewItemWrapper } from '../styled'
 
 const SortableItem = SortableElement((props) => {
-  const { item, isEditable, expand, hideHanlde } = props
+  const { item, isEditable, expand, groupMinimized } = props
   return (
-    <DragCrad data-cy="drag-card" noPadding={hideHanlde}>
-      {!expand && !hideHanlde && (
+    <DragCrad data-cy="drag-card" noPadding={groupMinimized}>
+      {!expand && !groupMinimized && (
         <DragHandle isEditable={isEditable} indx={item.indx} />
       )}
-      <ReviewItemWrapper data-cy={item.id} fullWidth={hideHanlde}>
+      <ReviewItemWrapper data-cy={item.id} fullWidth={groupMinimized}>
         <ReviewItem {...props} />
       </ReviewItemWrapper>
     </DragCrad>

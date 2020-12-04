@@ -220,7 +220,7 @@ export const getQuestionTableData = (
           q.isCorrect = qActivity?.score
           q.correct = qActivity?.correct
           q.partialCorrect = qActivity?.partialCorrect
-          q.questionNumber = `${q.barLabel?.substr(1)}${q.qSubLabel || ''}`
+          q.questionNumber = `${q.barLabel?.substr(1)}`
           totalScore += q.maxScore
           obtainedScore += q.score
         }
@@ -288,7 +288,10 @@ export const getChartAndStandardTableData = (
           return (d.standards || []).map((std) => ({
             ...std,
             domain: d.name,
-            question: typeof q.qLabel === 'string' ? q.qLabel : `Q${q.qLabel}`,
+            question:
+              typeof q.qLabel === 'string'
+                ? q.qLabel
+                : `Q${q.barLabel?.substr(1)}`,
             performance,
             score: round(score, 2),
             maxScore,

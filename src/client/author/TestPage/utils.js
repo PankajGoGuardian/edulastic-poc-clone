@@ -102,7 +102,9 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
         ({ id }) => questionWisePoints[id]
       )
     }
-    summary.totalPoints = Number((summary.totalPoints + itemPoints).toFixed(2))
+    summary.totalPoints = Number(
+      (summary.totalPoints + parseFloat(itemPoints)).toFixed(2)
+    )
     summary.totalQuestions += itemTotalQuestions
   }
   return summary

@@ -57,7 +57,7 @@ class MainInfo extends React.Component {
               width="60px"
               value={points}
               margin="0px 0px 0px 5px"
-              padding="0px 12px"
+              padding="0px 4px"
               disabled={
                 !owner || !isEditable || isScoringDisabled || groupMinimized
               }

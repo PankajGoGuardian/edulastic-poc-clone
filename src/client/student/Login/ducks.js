@@ -150,6 +150,8 @@ export const ADD_COLLECTION_PERMISSION = '[user] update item bank permission'
 export const REMOVE_COLLECTION_PERMISSION = '[user] remove item bank permission'
 export const SET_CLI_USER = '[user] set cli user'
 export const TOGGLE_CLASS_CODE_MODAL = '[user] toggle class code modal'
+export const TOGGLE_IMAGES_BLOCKED_NOTIFICATION =
+  '[user] toggle images blocked notification'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -232,6 +234,9 @@ export const removeItemBankPermissionAction = createAction(
 )
 export const updateCliUserAction = createAction(SET_CLI_USER)
 export const toggleClassCodeModalAction = createAction(TOGGLE_CLASS_CODE_MODAL)
+export const toggleImageBlockNotificationAction = createAction(
+  TOGGLE_IMAGES_BLOCKED_NOTIFICATION
+)
 
 const initialState = {
   addAccount: false,
@@ -242,6 +247,7 @@ const initialState = {
   currentChild: null,
   isCliUser: false,
   isClassCodeModalOpen: false,
+  isImageBlockNotification: false,
 }
 
 const setUser = (state, { payload }) => {
@@ -534,6 +540,9 @@ export default createReducer(initialState, {
   },
   [TOGGLE_CLASS_CODE_MODAL]: (state, { payload }) => {
     state.isClassCodeModalOpen = payload
+  },
+  [TOGGLE_IMAGES_BLOCKED_NOTIFICATION]: (state, { payload }) => {
+    state.isImageBlockNotification = payload
   },
 })
 

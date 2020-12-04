@@ -147,7 +147,7 @@ class MathInput extends React.PureComponent {
     const xdiff = window.innerWidth - left - width
 
     if (xdiff < 0) {
-      x -= xdiff
+      x += xdiff
     }
 
     const ydiff = window.innerHeight - y - keyboardH

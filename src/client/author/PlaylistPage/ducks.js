@@ -298,47 +298,61 @@ const moveContentInPlaylist = (playlist, payload) => {
     testItem,
     afterIndex,
   } = payload
-  let newPlaylist
-  if (!toContentIndex && fromModuleIndex >= 0) {
-    newPlaylist = produce(playlist, (draft) => {
-      if (toModuleIndex !== 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelect' })
-      }
-      if (draft.modules[toModuleIndex] && draft.modules[fromModuleIndex]) {
-        draft.modules[toModuleIndex].data.push(
-          draft.modules[fromModuleIndex].data[fromContentIndex]
-        )
-        draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
-      }
+  let newPlaylist = playlist
+
+  // If no valid destination module.
+  if (
+    (toModuleIndex !== 0 && !toModuleIndex) ||
+    !playlist.modules?.[toModuleIndex]
+  ) {
+    notification({ messageKey: 'invalidModuleSelect' })
+    return newPlaylist
+  }
+
+  // If valid fromModuleIndex but module is not present in playlist
+  if (fromModuleIndex >= 0 && !playlist.modules?.[fromModuleIndex]) {
+    return newPlaylist
+  }
+
+  const newItem =
+    fromModuleIndex >= 0
+      ? playlist.modules[fromModuleIndex]?.data[fromContentIndex]
+      : testItem
+
+  // If the item is already present in destination module
+  const isItemExistingInModule = playlist.modules[toModuleIndex]?.data?.some(
+    (x) => x?.contentId === (newItem.id || newItem.contentId)
+  )
+
+  if (isItemExistingInModule) {
+    notification({
+      msg: `Dropped ${
+        newItem.contentType === 'test' ? 'Test' : 'Resource'
+      } already exists in this module`,
     })
-  } else if (fromModuleIndex >= 0) {
+
+    return newPlaylist
+  }
+
+  if (fromModuleIndex >= 0) {
     newPlaylist = produce(playlist, (draft) => {
-      if (toModuleIndex !== 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelect' })
+      if (!toContentIndex) {
+        // Move item to different module
+        draft.modules[toModuleIndex].data.push(newItem)
+      } else {
+        // Move item in same module
+        draft.modules[toModuleIndex].data.splice(toContentIndex, 0, newItem)
       }
-      draft.modules[toModuleIndex].data.splice(
-        toContentIndex,
-        0,
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      )
+
       draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
     })
   } else if (testItem) {
-    const itemExistsInModule = playlist.modules?.[toModuleIndex]?.data?.find(
-      (x) => x?.contentId === testItem.id
-    )
-    if (!itemExistsInModule) {
-      set(testItem, 'contentId', testItem.id)
-      const attrsToOmit = ['id', 'type', 'fromPlaylistTestsBox']
+    // Moving item from test search to a module
+    set(testItem, 'contentId', testItem.id)
+    const attrsToOmit = ['id', 'type', 'fromPlaylistTestsBox']
 
-      if (testItem.contentType === 'test') {
-        attrsToOmit.push(...['contentDescription', 'contentUrl'])
-      } else {
-        attrsToOmit.push('standardIdentifiers')
-      }
-
-      const newItem = omit(testItem, attrsToOmit)
-
+    if (testItem.contentType === 'test') {
+      attrsToOmit.push(...['contentDescription', 'contentUrl'])
       newPlaylist = produce(playlist, (draft) => {
         if (isNumber(afterIndex) && afterIndex >= 0) {
           draft.modules[toModuleIndex].data.splice(afterIndex + 1, 0, newItem)
@@ -347,16 +361,20 @@ const moveContentInPlaylist = (playlist, payload) => {
         }
       })
     } else {
-      notification({
-        msg: `Dropped ${
-          testItem.contentType === 'test' ? 'Test' : 'Resource'
-        } already exists in this module`,
-      })
-      newPlaylist = playlist
+      attrsToOmit.push('standardIdentifiers')
     }
-  } else {
-    newPlaylist = playlist
+
+    const newTestItem = omit(testItem, attrsToOmit)
+
+    newPlaylist = produce(playlist, (draft) => {
+      if (isNumber(afterIndex) && afterIndex >= 0) {
+        draft.modules[toModuleIndex].data.splice(afterIndex + 1, 0, newTestItem)
+      } else {
+        draft.modules[toModuleIndex].data.push(newTestItem)
+      }
+    })
   }
+
   return newPlaylist
 }
 

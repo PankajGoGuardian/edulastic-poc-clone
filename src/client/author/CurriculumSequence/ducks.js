@@ -1670,29 +1670,53 @@ const moveContentInPlaylist = (state, { payload }) => {
     fromContentIndex,
   } = payload
   let newPlaylist
-  if (!toContentIndex) {
-    newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelected' })
-      }
-      draft.modules[toModuleIndex].data.push(
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      )
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
-    })
-  } else {
-    newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelected' })
-      }
-      draft.modules[toModuleIndex].data.splice(
-        toContentIndex,
-        0,
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      )
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
-    })
+  // If no valid destination module.
+  if (
+    (toModuleIndex !== 0 && !toModuleIndex) ||
+    !state.destinationCurriculumSequence.modules?.[toModuleIndex]
+  ) {
+    notification({ messageKey: 'invalidModuleSelect' })
+    return state
   }
+
+  // If valid fromModuleIndex but module is not present in playlist
+  if (
+    fromModuleIndex >= 0 &&
+    !state.destinationCurriculumSequence.modules?.[fromModuleIndex]
+  ) {
+    return newPlaylist
+  }
+
+  const newItem =
+    state.destinationCurriculumSequence.modules[fromModuleIndex].data[
+      fromContentIndex
+    ]
+  const isItemExistingInModule = state.destinationCurriculumSequence.modules[
+    toModuleIndex
+  ]?.data?.some((x) => x?.contentId === newItem?.contentId)
+
+  if (isItemExistingInModule) {
+    notification({
+      msg: `Dropped ${
+        newItem.contentType === 'test' ? 'Test' : 'Resource'
+      } already exists in this module`,
+    })
+
+    return state
+  }
+
+  newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
+    if (!toContentIndex) {
+      // Move item to different module
+      draft.modules[toModuleIndex].data.push(newItem)
+    } else {
+      // Move item in same module
+      draft.modules[toModuleIndex].data.splice(toContentIndex, 0, newItem)
+    }
+
+    draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
+  })
+
   return {
     ...state,
     destinationCurriculumSequence: {

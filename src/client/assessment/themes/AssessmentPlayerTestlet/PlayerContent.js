@@ -4,7 +4,10 @@ import { filter, isEmpty, isEqual } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import PlayerHeader from './PlayerHeader'
 import ParentController from './utility/parentController'
-import getUserResponse, { insertTestletMML } from './utility/helpers'
+import getUserResponse, {
+  insertTestletMML,
+  getExtDataForQuestion,
+} from './utility/helpers'
 import { MainContent, Main, OverlayDiv } from './styled'
 import Magnifier from '../../../common/components/Magnifier'
 
@@ -222,7 +225,12 @@ const PlayerContent = ({
 
           eduQuestions.forEach((eduQuestion) => {
             if (eduQuestion) {
-              extData[eduQuestion.id] = { [scoringId]: response[scoringId] }
+              extData[eduQuestion.id] = {
+                [scoringId]: getExtDataForQuestion(
+                  eduQuestion,
+                  response[scoringId]
+                ),
+              }
               const timeSpent = Date.now() - lastTime.current
               onSubmitAnswer(eduQuestion.id, timeSpent, groupId, { extData })
             }

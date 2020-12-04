@@ -424,7 +424,6 @@ export const apiForms = [
         displayName: 'Source School Id',
         placeholder: 'Enter Source School Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
       {
@@ -432,7 +431,6 @@ export const apiForms = [
         displayName: 'Destination School Id',
         placeholder: 'Enter Destination School Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
       {
@@ -440,7 +438,6 @@ export const apiForms = [
         displayName: 'Source District Id',
         placeholder: 'Enter Source District Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
       {
@@ -448,7 +445,6 @@ export const apiForms = [
         displayName: 'Destination District Id',
         placeholder: 'Enter Destination District Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
     ],

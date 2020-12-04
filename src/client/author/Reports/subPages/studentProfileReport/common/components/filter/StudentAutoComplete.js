@@ -23,7 +23,7 @@ const StudentAutoComplete = ({
   studentList,
   loading,
   loadStudentList,
-  selectedCourseId,
+  selectedCourseIds,
   selectedGrade,
   selectedSubject,
   selectedClasses,
@@ -49,13 +49,13 @@ const StudentAutoComplete = ({
       q.search.searchString = searchTerms.text
     }
     if (!isEmpty(selectedClasses)) {
-      q.search.groupIds = selectedClasses
+      q.search.groupIds = selectedClasses.split(',')
     }
     if (!isEmpty(institutionIds)) {
       q.institutionIds = institutionIds
     }
-    if (selectedCourseId) {
-      q.courseId = selectedCourseId
+    if (selectedCourseIds) {
+      q.courseIds = selectedCourseIds.split(',')
     }
     if (selectedGrade) {
       q.grade = selectedGrade
@@ -64,7 +64,7 @@ const StudentAutoComplete = ({
       q.subject = selectedSubject
     }
     return q
-  }, [searchTerms.text])
+  }, [searchTerms.text, selectedClasses, selectedCourseIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -110,7 +110,7 @@ const StudentAutoComplete = ({
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
     }
     loadStudentListDebounced(query)
-  }, [selectedClasses])
+  }, [selectedClasses, selectedCourseIds, selectedGrade, selectedSubject])
 
   // build dropdown data
   const dropdownData = searchTerms.text

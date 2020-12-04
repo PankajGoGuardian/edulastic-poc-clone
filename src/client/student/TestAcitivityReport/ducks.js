@@ -9,6 +9,7 @@ import {
   groupBy,
 } from 'lodash'
 import produce from 'immer'
+import { push } from 'connected-react-router'
 
 import {
   reportsApi,
@@ -20,7 +21,9 @@ import {
   questionType,
   testActivityStatus,
   test as testConstants,
+  roleuser,
 } from '@edulastic/constants'
+import { notification } from '@edulastic/common'
 
 import { setTestItemsAction, SET_CURRENT_ITEM } from '../sharedDucks/TestItem'
 import {
@@ -45,6 +48,7 @@ import {
   transformAssignmentForRedirect,
 } from '../Assignments/ducks'
 import { getClassIds } from '../Reports/ducks'
+import { getUserRole } from '../../author/src/selectors/user'
 
 export const LOAD_TEST_ACTIVITY_REPORT =
   '[studentReports] load testActivity  report'
@@ -359,7 +363,17 @@ function* loadTestActivityReport({ payload }) {
       payload: allAnswers,
     })
   } catch (e) {
-    console.log(e)
+    const role = yield select(getUserRole)
+    if (e.status === 404 && role === roleuser.STUDENT) {
+      yield put(push(`/home/grades`))
+      return notification({
+        msg:
+          e?.response?.data?.message || 'No active Assignments/Activity found',
+      })
+    }
+    return notification({
+      msg: e?.response?.data?.message || 'Something went wrong',
+    })
   }
 }
 

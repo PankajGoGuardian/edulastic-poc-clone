@@ -22,10 +22,14 @@ import {
 import {
   fetchUserAction,
   isProxyUser as isProxyUserSelector,
+  toggleImageBlockNotificationAction,
 } from './student/Login/ducks'
 import TestDemoPlayer from './author/TestDemoPlayer'
 import TestItemDemoPlayer from './author/TestItemDemoPlayer'
-import { getWordsInURLPathName } from './common/utils/helpers'
+import {
+  getWordsInURLPathName,
+  isImagesBlockedByBrowser,
+} from './common/utils/helpers'
 import LoggedOutRoute from './common/components/loggedOutRoute'
 import PrivateRoute from './common/components/privateRoute'
 import V1Redirect from './author/V1Redirect'
@@ -36,6 +40,7 @@ import ClassSyncNotification from './author/Classes/components/ClassSyncNotifica
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
+import ImagesBlocked from './common/components/ImagesBlocked'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 
@@ -239,7 +244,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { fetchUser, location } = this.props
+    const {
+      fetchUser,
+      location,
+      isImageBlockNotification,
+      toggleImageBlockNotification,
+    } = this.props
     const publicPath = location.pathname.split('/').includes('public')
     const embedLink = location.pathname.split('/').includes('embed')
     const ssoPath = location.pathname.split('/').includes('auth')
@@ -271,6 +281,16 @@ class App extends Component {
         showAppUpdate: true,
       })
     })
+    isImagesBlockedByBrowser().then((flag) => {
+      if (flag && !isImageBlockNotification) {
+        toggleImageBlockNotification(true)
+      }
+    })
+  }
+
+  handleImageNotificationClose = () => {
+    const { toggleImageBlockNotification } = this.props
+    toggleImageBlockNotification(false)
   }
 
   render() {
@@ -287,6 +307,7 @@ class App extends Component {
       logout,
       isProxyUser,
       shouldWatch,
+      isImageBlockNotification,
     } = this.props
     if (
       location.hash.includes('#renderResource/close/') ||
@@ -449,6 +470,10 @@ class App extends Component {
           />
         )}
         <AppUpdate visible={showAppUpdate} isCliUser={user?.isCliUser} />
+        <ImagesBlocked
+          visible={isImageBlockNotification}
+          onClose={this.handleImageNotificationClose}
+        />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />
@@ -678,10 +703,12 @@ const enhance = compose(
       fullName: getUserNameSelector({ user }),
       isProxyUser: isProxyUserSelector({ user }),
       shouldWatch: shouldWatchCollectionUpdates({ user }),
+      isImageBlockNotification: user.isImageBlockNotification,
     }),
     {
       fetchUser: fetchUserAction,
       logout: logoutAction,
+      toggleImageBlockNotification: toggleImageBlockNotificationAction,
     }
   )
 )

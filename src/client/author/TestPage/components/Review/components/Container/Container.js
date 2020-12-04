@@ -9,6 +9,8 @@ import {
   set,
   findIndex,
   isEmpty,
+  flatten,
+  isArray,
 } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -63,6 +65,7 @@ import {
 import TestPreviewModal from '../../../../../Assignments/components/Container/TestPreviewModal'
 import ReviewItems from '../ReviewItems'
 import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
+import { groupTestItemsByPassageId } from '../helper'
 
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
@@ -92,7 +95,6 @@ class Review extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('component is mounted')
     this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
     const { test, addItemsToAutoselectGroupsRequest } = this.props
     const hasAutoSelectItems = test.itemGroups.some(
@@ -335,11 +337,25 @@ class Review extends PureComponent {
   }
 
   handleMoveTo = (newIndex) => {
-    const { test } = this.props
-    const oldIndex = test.itemGroups
-      .flatMap(({ items }) => items)
-      .findIndex((item) => item.selected)
-    this.moveTestItems({ oldIndex, newIndex })
+    const { test, setData } = this.props
+
+    setData(
+      produce(test, (draft) => {
+        draft.itemGroups = draft.itemGroups.map((itemGroup) => {
+          const groupedItems = groupTestItemsByPassageId(itemGroup.items)
+          const oldIndex = groupedItems.findIndex((item) => {
+            if (isArray(item)) {
+              return item.some((ite) => ite.selected)
+            }
+            return item.selected
+          })
+          const [removed] = groupedItems.splice(oldIndex, 1)
+          groupedItems.splice(newIndex, 0, removed)
+          itemGroup.items = flatten(groupedItems)
+          return itemGroup
+        })
+      })
+    )
   }
 
   handleChangePoints = (testItemId, itemScore, questionLevelScore) => {
@@ -552,6 +568,7 @@ class Review extends PureComponent {
     const passagesKeyed = keyBy(passages, '_id')
     const isPublishers =
       userFeatures.isPublisherAuthor || userFeatures.isCurator
+    const groupedItems = groupTestItemsByPassageId(testItems)
 
     return (
       <MainContentWrapper ref={this.containerRef}>
@@ -575,7 +592,7 @@ class Review extends PureComponent {
                   />
                   <HeaderBar
                     onSelectAll={this.handleSelectAll}
-                    itemTotal={testItems.length}
+                    itemTotal={groupedItems.length}
                     selectedItems={selected}
                     onRemoveSelected={this.handleRemoveSelected}
                     onCollapse={this.handleCollapse}
@@ -603,7 +620,7 @@ class Review extends PureComponent {
               ref={this.listWrapperRef}
             >
               <ReviewItems
-                items={testItems}
+                items={groupedItems}
                 scoring={test.scoring}
                 standards={standards}
                 userFeatures={userFeatures}

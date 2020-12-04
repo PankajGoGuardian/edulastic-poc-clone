@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Spin } from 'antd'
 import produce from 'immer'
-import { flatten, groupBy, isArray, omit } from 'lodash'
+import { flatten, isArray, omit } from 'lodash'
 import SortableList from './SortableList'
 import { StyledSpinnerContainer } from './styled'
 
@@ -45,24 +45,7 @@ const ReviewItems = ({
     }
   }
 
-  const groupedItems = useMemo(() => {
-    const groupByPassageId = groupBy(items, 'passageId')
-    const _items = items
-      .map((item) => {
-        if (!item.passageId) {
-          return item
-        }
-        const grouped = groupByPassageId[item.passageId]
-        delete groupByPassageId[item.passageId]
-
-        if (grouped && grouped.length <= 1) {
-          return item
-        }
-
-        return grouped
-      })
-      .filter((x) => !!x)
-
+  const itemsWithIndex = useMemo(() => {
     let indx = 0
     const reIndexItems = (ite) => {
       return ite.map((x) => {
@@ -74,12 +57,12 @@ const ReviewItems = ({
       })
     }
 
-    return reIndexItems(_items)
+    return reIndexItems(items)
   }, [items])
 
   const moveSingleItems = ({ oldIndex, newIndex }) => {
     const updatedItems = flatten(
-      produce(groupedItems, (draft) => {
+      produce(itemsWithIndex, (draft) => {
         const [removed] = draft.splice(oldIndex, 1)
         draft.splice(newIndex, 0, removed)
       })
@@ -89,7 +72,7 @@ const ReviewItems = ({
 
   const moveGroupItems = (groupIndex) => ({ oldIndex, newIndex }) => {
     const updatedItems = flatten(
-      produce(groupedItems, (draft) => {
+      produce(itemsWithIndex, (draft) => {
         const [removed] = draft[groupIndex].splice(oldIndex, 1)
         draft[groupIndex].splice(newIndex, 0, removed)
       })
@@ -100,7 +83,7 @@ const ReviewItems = ({
   return (
     <>
       <SortableList
-        items={groupedItems}
+        items={itemsWithIndex}
         useDragHandle
         passagesKeyed={passagesKeyed}
         onChangePoints={onChangePoints}

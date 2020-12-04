@@ -41,11 +41,8 @@ import {
   getReportsPerformanceByStudentsError,
 } from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getSAFFilterPerformanceBandProfiles,
-  getTestListSelector,
-} from '../common/filterDataDucks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getSAFFilterPerformanceBandProfiles } from '../common/filterDataDucks'
 
 import columns from './static/json/tableColumns.json'
 

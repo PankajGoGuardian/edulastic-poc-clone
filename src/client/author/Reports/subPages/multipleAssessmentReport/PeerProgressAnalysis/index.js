@@ -1,5 +1,5 @@
 import { SpinLoader } from '@edulastic/common'
-import { capitalize, get, head, isEmpty } from 'lodash'
+import { capitalize, get, head } from 'lodash'
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { getUserRole } from '../../../../../student/Login/ducks'
@@ -53,7 +53,6 @@ const PeerProgressAnalysis = ({
   getPeerProgressAnalysisRequest,
   peerProgressAnalysis,
   isCsvDownloading,
-  MARFilterData,
   ddfilter,
   settings,
   loading,
@@ -61,33 +60,57 @@ const PeerProgressAnalysis = ({
   role,
   sharedReport,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const compareByData = [...getCompareByOptions(userRole), ...options]
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
   const [selectedTrend, setSelectedTrend] = useState('')
+  // support for pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 1,
+    pageSize: 25,
+  })
 
   useEffect(() => {
-    const { requestFilters = {} } = settings
-    const { termId, reportId } = requestFilters
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [settings, ddfilter, compareBy.key])
+
+  useEffect(() => {
+    const { termId, reportId } = settings.requestFilters
     if (termId || reportId) {
       getPeerProgressAnalysisRequest({
         compareBy: compareBy.key,
-        ...requestFilters,
+        ...settings.requestFilters,
         ...ddfilter,
+        ...pageFilters,
       })
     }
-  }, [settings, ddfilter, compareBy.key])
+  }, [pageFilters])
 
-  const { metricInfo = [] } = get(peerProgressAnalysis, 'data.result', {})
-  const { orgData = [], testData = [] } = get(MARFilterData, 'data.result', [])
+  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
+    .testIds
+  const selectedTestIdsCount = selectedTestIdsStr
+    ? selectedTestIdsStr.split(',').length
+    : 0
+
+  const { metricInfo = [], metaInfo = [] } = get(
+    peerProgressAnalysis,
+    'data.result',
+    {}
+  )
 
   const [parsedData, trendCount] = parseTrendData(
     metricInfo,
     compareBy.key,
-    orgData,
+    metaInfo,
     selectedTrend
   )
 
@@ -145,12 +168,16 @@ const PeerProgressAnalysis = ({
         isCsvDownloading={isCsvDownloading}
         heading="How well are student sub-groups progressing ?"
         data={parsedData}
-        testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}
         rawMetric={metricInfo}
         customColumns={[studentColumn]}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: selectedTestIdsCount,
+        }}
+        setBackendPagination={setPageFilters}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow

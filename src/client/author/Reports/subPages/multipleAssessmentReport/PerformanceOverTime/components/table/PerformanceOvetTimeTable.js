@@ -17,6 +17,7 @@ import {
   downloadCSV,
 } from '../../../../../common/util'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
+import BackendPagination from '../../../common/components/BackendPagination'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -181,7 +182,12 @@ const getColumns = () => {
   return [...staticFields, ...dynamicColumns]
 }
 
-const PerformanceOverTimeTable = ({ dataSource, isCsvDownloading }) => {
+const PerformanceOverTimeTable = ({
+  dataSource,
+  isCsvDownloading,
+  backendPagination,
+  setBackendPagination,
+}) => {
   const onCsvConvert = (data) => downloadCSV(`Performance Over Time.csv`, data)
 
   return (
@@ -195,6 +201,11 @@ const PerformanceOverTimeTable = ({ dataSource, isCsvDownloading }) => {
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}
+        pagination={false}
+      />
+      <BackendPagination
+        backendPagination={backendPagination}
+        setBackendPagination={setBackendPagination}
       />
     </StyledCard>
   )

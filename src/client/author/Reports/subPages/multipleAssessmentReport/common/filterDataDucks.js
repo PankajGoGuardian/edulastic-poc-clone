@@ -90,13 +90,16 @@ const initialState = {
     reportId: '',
     termId: '',
     subject: 'All',
+    studentSubject: 'All',
     grade: 'All',
+    studentGrade: 'All',
     courseId: 'All',
+    studentCourseId: 'All',
     classId: 'All',
     groupId: 'All',
-    schoolId: 'All',
-    teacherId: 'All',
-    assessmentType: 'All',
+    schoolIds: '',
+    teacherIds: '',
+    assessmentTypes: '',
     /**
      * performanceBandProfile
      */

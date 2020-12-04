@@ -18,14 +18,13 @@ import {
 import { QuestionAnalysisTable } from './componenets/table/questionAnalysisTable'
 
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
 import {
   getQuestionAnalysisRequestAction,
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader,
   getReportsQuestionAnalysisError,
 } from './ducks'
-import { getTestListSelector } from '../common/filterDataDucks'
 
 import { getChartData, getTableData } from './utils/transformers'
 

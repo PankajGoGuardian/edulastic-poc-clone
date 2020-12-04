@@ -149,6 +149,7 @@ const SingleAssessmentReportContainer = (props) => {
             : settings.requestFilters[item]
         obj[item] = val
       })
+      obj.reportId = reportId || ''
       if (isCliUser) {
         obj.cliUser = true
       }

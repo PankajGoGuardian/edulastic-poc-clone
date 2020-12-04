@@ -1,7 +1,7 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
 import { filter, get, includes } from 'lodash'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -16,32 +16,56 @@ import {
   getReportsPerformanceOverTimeLoader,
   getReportsPerformanceOverError,
 } from './ducks'
-import { augmentTestData, parseData } from './utils/transformers'
+import { parseData } from './utils/transformers'
 
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequest,
   performanceOverTime,
   isCsvDownloading,
-  MARFilterData,
   settings,
   loading,
   error,
+  sharedReport,
 }) => {
-  useEffect(() => {
-    const { requestFilters = {} } = settings
-    const { termId, reportId } = requestFilters
-    if (termId || reportId) {
-      getPerformanceOverTimeRequest({ ...requestFilters })
-    }
-  }, [settings])
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    [sharedReport]
+  )
 
+  // support for pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 1,
+    pageSize: 10,
+  })
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0])
   const [selectedTests, setSelectedTests] = useState([])
 
+  useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [settings])
+
+  useEffect(() => {
+    const { termId, reportId } = settings.requestFilters
+    if (termId || reportId) {
+      getPerformanceOverTimeRequest({
+        ...settings.requestFilters,
+        ...pageFilters,
+      })
+    }
+  }, [pageFilters])
+
+  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
+    .testIds
+  const selectedTestIdsCount = selectedTestIdsStr
+    ? selectedTestIdsStr.split(',').length
+    : 0
+
   const rawData = get(performanceOverTime, 'data.result', {})
-  const { testData = [] } = get(MARFilterData, 'data.result', {})
   const dataWithTestInfo = filter(
-    augmentTestData(parseData(rawData), testData),
+    parseData(rawData),
     (test) => test.testName && test.testName !== 'N/A' // filter out tests without testName
   )
   const filteredTableData = filter(dataWithTestInfo, (test) =>
@@ -76,11 +100,22 @@ const PerformanceOverTime = ({
           selectedItems={selectedTests}
           setSelectedItems={setSelectedTests}
           bandInfo={rawData.bandInfo}
+          backendPagination={{
+            ...pageFilters,
+            pageCount:
+              Math.ceil(selectedTestIdsCount / pageFilters.pageSize) || 1,
+          }}
+          setBackendPagination={setPageFilters}
         />
       </StyledCard>
       <PerformanceOverTimeTable
         isCsvDownloading={isCsvDownloading}
         dataSource={filteredTableData}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: selectedTestIdsCount,
+        }}
+        setBackendPagination={setPageFilters}
       />
     </>
   )

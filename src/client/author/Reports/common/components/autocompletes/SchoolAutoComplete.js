@@ -3,14 +3,14 @@ import { connect } from 'react-redux'
 import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
-import MultiSelectSearch from '../../../../common/components/widgets/MultiSelectSearch'
+import MultiSelectSearch from '../widgets/MultiSelectSearch'
 
 // ducks
-import { getOrgDataSelector } from '../../../../../src/selectors/user'
+import { getOrgDataSelector } from '../../../../src/selectors/user'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
-} from '../../../../../Schools/ducks'
+} from '../../../../Schools/ducks'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 

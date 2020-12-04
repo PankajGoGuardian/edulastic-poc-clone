@@ -28,6 +28,7 @@ import SimpleOptions from '../SimpleOptions/SimpleOptions'
 import AdvancedOptions from '../AdvancedOptons/AdvancedOptons'
 import {
   Anchor,
+  AnchorLink,
   TextAnchor,
   Container,
   FullFlexContainer,
@@ -47,6 +48,7 @@ const AssignRecommendations = ({
   clearAssignmentSettings,
   recommendationsToAssign,
   setRecommendationsToAssign,
+  playlistId,
   defaultTestProfiles,
   isModalView,
   isModalVisible,
@@ -167,7 +169,7 @@ const AssignRecommendations = ({
   }
 
   const title = recommendationsToAssign.recommendations[0]?.resourceTitle
-  const handleTextAnchorClick = () =>
+  const handleAnchorClick = () =>
     setRecommendationsToAssign({
       isRecommendationAssignView: false,
     })
@@ -189,9 +191,14 @@ const AssignRecommendations = ({
         <FullFlexContainer justifyContent="space-between">
           <PaginationInfo>
             &lt;{' '}
-            <TextAnchor onClick={handleTextAnchorClick}>
-              Differentation
-            </TextAnchor>
+            <AnchorLink
+              onClick={handleAnchorClick}
+              to={`/author/playlists/playlist/${playlistId}/use-this`}
+            >
+              My Playlist
+            </AnchorLink>
+            &nbsp;/&nbsp;
+            <TextAnchor onClick={handleAnchorClick}>Differentation</TextAnchor>
             &nbsp;/&nbsp;
             <Anchor>Assign</Anchor>
           </PaginationInfo>
@@ -244,6 +251,7 @@ AssignRecommendations.propTypes = {
   clearAssignmentSettings: PropTypes.func.isRequired,
   recommendationsToAssign: PropTypes.object.isRequired,
   testSettings: PropTypes.object.isRequired,
+  playlistId: PropTypes.string.isRequired,
   defaultTestProfiles: PropTypes.object,
   isModalView: PropTypes.bool,
   isModalVisible: PropTypes.bool,

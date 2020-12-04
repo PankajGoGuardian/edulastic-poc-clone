@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { cloneDeep, get } from 'lodash'
+import { cloneDeep, get, isEmpty } from 'lodash'
 import { Select, Icon } from 'antd'
 import styled, { withTheme } from 'styled-components'
 import { themeColor, themeColorTagsBg } from '@edulastic/colors'
@@ -62,12 +62,17 @@ class Scoring extends Component {
     updateRubricData(null)
   }
 
-  handleViewRubric = async (id) => {
+  handleViewRubric = (id) => async () => {
     const { updateRubricData } = this.props
-    await rubricsApi.getRubricsById(id).then((res) => {
-      updateRubricData(res[0])
-      this.handleRubricAction('VIEW RUBRIC')
-    })
+    try {
+      const rubrics = await rubricsApi.getRubricsById(id)
+      if (!isEmpty(rubrics)) {
+        updateRubricData(rubrics)
+        this.handleRubricAction('VIEW RUBRIC')
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
@@ -340,9 +345,7 @@ class Scoring extends Component {
         {questionData.rubrics && userFeatures.gradingrubrics && (
           <RubricsContainer>
             <StyledTag>
-              <span
-                onClick={() => this.handleViewRubric(questionData.rubrics._id)}
-              >
+              <span onClick={this.handleViewRubric(questionData.rubrics._id)}>
                 {questionData.rubrics.name}
               </span>
               <span onClick={() => dissociateRubricFromQuestion()}>

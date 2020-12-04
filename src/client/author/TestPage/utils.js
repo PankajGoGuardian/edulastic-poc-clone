@@ -86,7 +86,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
           curriculumId: parseInt(curriculumId, 10),
           identifier,
           totalQuestions: sumBy(elements, 'totalQuestions'),
-          totalPoints: Number(sumBy(elements, 'totalPoints').toFixed(2)),
+          totalPoints: roundOff(sumBy(elements, 'totalPoints')),
           isEquivalentStandard: !some(elements, [
             'isEquivalentStandard',
             false,
@@ -97,18 +97,21 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
       summary.standards = flatten(standardSumm)
     } else {
       summary.noStandards.totalQuestions += questions.length
-      summary.noStandards.totalPoints += sumBy(
-        questions,
-        ({ id }) => questionWisePoints[id]
+      summary.noStandards.totalPoints = roundOff(
+        summary.noStandards.totalPoints +
+          sumBy(questions, ({ id }) => questionWisePoints[id])
       )
     }
-    summary.totalPoints = Number(
+    summary.totalPoints = roundOff(
       (summary.totalPoints + parseFloat(itemPoints)).toFixed(2)
     )
     summary.totalQuestions += itemTotalQuestions
   }
   return summary
 }
+
+const roundOff = (number) =>
+  number ? Number(Number(number).toFixed(2)) : number
 
 export const createGroupSummary = (test) => {
   const summary = {

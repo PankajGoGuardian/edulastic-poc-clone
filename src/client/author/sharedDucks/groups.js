@@ -1,6 +1,13 @@
 import { createAction, createReducer } from 'redux-starter-kit'
+import { createSelector } from 'reselect'
 import { takeEvery, takeLatest, put, call, select } from 'redux-saga/effects'
 import { groupApi, enrollmentApi } from '@edulastic/api'
+
+const userStatus = {
+  ARCHIVED: 0,
+  ACTIVE: 1,
+  DISABLE: 2,
+}
 
 // actions
 export const FETCH_GROUPS = '[author groups] fetch owned groups'
@@ -112,6 +119,11 @@ export const getArchiveGroupsSelector = (state) =>
   state[_module].isLoading ? [] : state[_module].archiveGroups
 export const getStudentsSelector = (state) =>
   state[_module].isLoading ? [] : state[_module].students
+
+export const getActiveStudentsSelector = createSelector(
+  getStudentsSelector,
+  (students) => students.filter((item) => item.status === userStatus.ACTIVE)
+)
 
 export const getLoadedGroupsSelector = (state) => state[_module].loadedGroups
 export const groupsLoadingSelector = (state) => state[_module].isLoading

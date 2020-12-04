@@ -20,8 +20,8 @@ import {
 } from '../../../PlaylistPage/ducks'
 import {
   fetchGroupMembersAction,
-  getStudentsSelector,
   resetStudentAction,
+  getActiveStudentsSelector,
 } from '../../../sharedDucks/groups'
 import ListHeader from '../../../src/components/common/ListHeader'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
@@ -387,7 +387,7 @@ const enhance = compose(
     (state) => ({
       classList: getClassListSelector(state),
       assignments: getAssignmentsSelector(state),
-      students: getStudentsSelector(state),
+      students: getActiveStudentsSelector(state),
       testSettings: getTestEntitySelector(state),
       userOrgId: getUserOrgId(state),
       playlist: getPlaylistSelector(state),

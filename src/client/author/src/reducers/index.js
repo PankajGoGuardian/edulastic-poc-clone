@@ -40,6 +40,7 @@ import { districtAdminReducer } from '../../DistrictAdmin'
 import { schoolAdminReducer } from '../../SchoolAdmin'
 import { coursesReducer } from '../../Courses'
 import { classesReducer } from '../../Classes'
+import { groupsReducer } from '../../Groups'
 import folder from './folder'
 import { interestedStandardsReducer } from '../../InterestedStandards'
 import { playlists } from '../../Playlist'
@@ -61,6 +62,7 @@ import testPlayer from '../../sharedDucks/testPlayer'
 import { feedback } from './feedback'
 import { mergeUsersReducer } from '../../MergeUsers'
 import { gradebookReducer } from '../../Gradebook'
+import collaborationGroup from '../../Collaboration/ducks'
 
 const authorReducers = {
   authorUi,
@@ -104,6 +106,7 @@ const authorReducers = {
   schoolAdminReducer,
   coursesReducer,
   classesReducer,
+  groupsReducer,
   folder,
   playlist,
   playlists,
@@ -126,6 +129,7 @@ const authorReducers = {
   feedback,
   mergeUsersReducer,
   gradebookReducer,
+  collaborationGroup,
 }
 
 export default authorReducers

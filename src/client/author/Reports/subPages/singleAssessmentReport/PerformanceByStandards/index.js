@@ -25,12 +25,8 @@ import {
   NoDataContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getSAFFilterSelectedStandardsProficiencyProfile,
-  getSAFFilterStandardsProficiencyProfiles,
-  getTestListSelector,
-} from '../common/filterDataDucks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getSAFFilterStandardsProficiencyProfiles } from '../common/filterDataDucks'
 import CardHeader, {
   CardDropdownWrapper,
   CardTitle,
@@ -71,17 +67,29 @@ const PerformanceByStandards = ({
   role,
   interestedCurriculums,
   isCsvDownloading,
-  selectedStandardProficiencyProfile,
   standardProficiencyProfiles,
   location,
   pageTitle,
   filters,
+  sharedReport,
 }) => {
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const scaleInfo = useMemo(
     () =>
       (
         standardProficiencyProfiles.find(
-          (s) => s._id === selectedStandardProficiencyProfile
+          (s) =>
+            s._id ===
+            (sharedReportFilters || settings.requestFilters)
+              .standardsProficiencyProfile
         ) || standardProficiencyProfiles[0]
       )?.scale,
     [settings]
@@ -90,13 +98,12 @@ const PerformanceByStandards = ({
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
   const [compareBy, setCompareBy] = useState(
-    role === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
+    userRole === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
   )
   const [standardId, setStandardId] = useState('')
   const [selectedStandards, setSelectedStandards] = useState([])
   const [selectedDomains, setSelectedDomains] = useState([])
 
-  const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0
   const isViewByStandards = viewBy === viewByMode.STANDARDS
 
   const selectedTest = testList.find(
@@ -142,7 +149,7 @@ const PerformanceByStandards = ({
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(
     (o) => {
       if (o.allowedRoles) {
-        return o.allowedRoles.includes(role)
+        return o.allowedRoles.includes(userRole)
       }
       return true
     }
@@ -150,9 +157,10 @@ const PerformanceByStandards = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getPerformanceByStandards(q)
     }
   }, [settings])
@@ -255,7 +263,7 @@ const PerformanceByStandards = ({
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
                   prefix="View By"
-                  by={dropDownFormat.viewByDropDownData[0]}
+                  by={viewBy}
                   selectCB={handleViewByChange}
                   data={dropDownFormat.viewByDropDownData}
                 />
@@ -264,7 +272,7 @@ const PerformanceByStandards = ({
                 <ControlDropDown
                   style={{ marginLeft: 8 }}
                   prefix="Analyze By"
-                  by={dropDownFormat.analyzeByDropDownData[0]}
+                  by={analyzeBy}
                   selectCB={handleAnalyzeByChange}
                   data={dropDownFormat.analyzeByDropDownData}
                 />
@@ -308,7 +316,7 @@ const PerformanceByStandards = ({
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="Compare By"
-              by={filteredDropDownData[compareByIndex]}
+              by={compareBy}
               selectCB={handleCompareByChange}
               data={filteredDropDownData}
             />
@@ -346,7 +354,6 @@ PerformanceByStandards.propTypes = {
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
-  selectedStandardProficiencyProfile: PropTypes.string.isRequired,
   standardProficiencyProfiles: PropTypes.array.isRequired,
   interestedCurriculums: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
@@ -361,9 +368,6 @@ const enhance = connect(
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(
-      state
-    ),
     standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
       state
     ),

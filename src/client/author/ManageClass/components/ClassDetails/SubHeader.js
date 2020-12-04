@@ -1,5 +1,5 @@
 import { Col, Tooltip } from 'antd'
-import { get } from 'lodash'
+import { get, compact } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import connect from 'react-redux/lib/connect/connect'
@@ -39,17 +39,27 @@ const SubHeader = ({
   const totalStudent = studentCount < 10 ? `0${studentCount}` : studentCount
 
   const primaryTeacher = owners
-    .filter((owner) => owner.id === primaryTeacherId)
-    .map((owner) => owner.name)
-
-  const coTeachers = owners
-    ? owners
-        .filter((owner) => owner.id !== primaryTeacherId)
-        .map((owner) => owner.name)
+    ? compact(
+        owners
+          .filter((owner) => owner.id === primaryTeacherId)
+          .map((owner) => owner.name || owner.email)
+      )
     : []
 
-  const teacher = coTeachers.slice(0, 1)
-  const otherTeachers = coTeachers.slice(1, lastTeacher)
+  const formatPrimaryTeacher = primaryTeacher.map((teacher) => teacher)
+
+  const coTeachers = owners
+    ? compact(
+        owners
+          .filter((owner) => owner.id !== primaryTeacherId)
+          .map((owner) => owner.name || owner.email)
+      )
+    : []
+
+  const formatCoteacherNames = coTeachers.map((coteacher) => coteacher)
+
+  const teacher = formatCoteacherNames.slice(0, 3).join(', ')
+  const otherTeachers = formatCoteacherNames.slice(3, lastTeacher)
   const otherTeacherNames = otherTeachers.join(', ')
 
   return (
@@ -63,11 +73,11 @@ const SubHeader = ({
             TOTAL STUDENTS <span>{totalStudent || 0}</span>
           </Studentscount>
           {primaryTeacher && (
-            <CoTeacher lg={6} span={24}>
-              TEACHER <span>{primaryTeacher}</span>
+            <CoTeacher lg={12} span={24}>
+              TEACHER <span>{formatPrimaryTeacher}</span>
             </CoTeacher>
           )}
-          <Col lg={6} span={24}>
+          <Col lg={24} span={24}>
             {coTeachers && coTeachers.length ? (
               <FeaturesSwitch
                 inputFeatures="addCoTeacher"

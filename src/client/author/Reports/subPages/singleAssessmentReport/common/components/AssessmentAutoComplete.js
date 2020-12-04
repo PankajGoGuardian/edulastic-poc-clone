@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { debounce } from 'lodash'
+import { debounce, isEmpty } from 'lodash'
 
 // components & constants
 import { AutoComplete, Input, Icon, Tooltip } from 'antd'
@@ -13,7 +13,7 @@ import {
   receiveTestListAction,
   getTestListSelector,
   getTestListLoadingSelector,
-} from '../filterDataDucks'
+} from '../../../../ducks'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
@@ -28,6 +28,7 @@ const AssessmentAutoComplete = ({
   termId,
   selectedTestId,
   selectCB,
+  filters,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
@@ -44,6 +45,14 @@ const AssessmentAutoComplete = ({
         searchString: searchTerms.text,
         statuses: [IN_PROGRESS, IN_GRADING, DONE],
         districtId,
+        grades:
+          !filters.grade || filters.grade === 'All' ? [] : [filters.grade],
+        subjects:
+          !filters.subject || filters.subject === 'All'
+            ? []
+            : [filters.subject],
+        testTypes:
+          (filters.assessmentTypes && filters.assessmentTypes.split(',')) || [],
       },
       aggregate: true,
     }
@@ -57,7 +66,14 @@ const AssessmentAutoComplete = ({
       q.search.termId = termId
     }
     return q
-  }, [searchTerms.text, selectedTestId, termId])
+  }, [
+    searchTerms.text,
+    selectedTestId,
+    termId,
+    filters.grade,
+    filters.subject,
+    filters.assessmentTypes,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -95,14 +111,8 @@ const AssessmentAutoComplete = ({
       setSearchTerms({ text: title, selectedText: title, selectedKey: _id })
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS, selectedKey: selectedTestId })
-      loadTestListDebounced(query)
     }
   }, [selectedTestId])
-  useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
-      loadTestListDebounced(query)
-    }
-  }, [searchTerms])
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
       onSelect(testList[0]._id)
@@ -114,9 +124,15 @@ const AssessmentAutoComplete = ({
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
     }
-    loadTestListDebounced(query)
-  }, [termId])
-
+  }, [termId, filters.grade, filters.subject, filters.assessmentTypes])
+  useEffect(() => {
+    if (
+      (!searchTerms.text && !searchTerms.selectedText) ||
+      searchTerms.text !== searchTerms.selectedText
+    ) {
+      loadTestListDebounced(query)
+    }
+  }, [query])
   // build dropdown data
   const dropdownData = searchTerms.text
     ? [
@@ -124,13 +140,19 @@ const AssessmentAutoComplete = ({
           key="testList"
           label="Assessments [Type to search]"
         >
-          {testList.map((item) => (
-            <AutoComplete.Option key={item._id} title={item.title}>
-              {`${item.title} (ID:${
-                item._id.substring(item._id.length - 5) || ''
-              })`}
-            </AutoComplete.Option>
-          ))}
+          {isEmpty(testList)
+            ? [
+                <AutoComplete.Option disabled key={0} title="no data found">
+                  No Data Found
+                </AutoComplete.Option>,
+              ]
+            : testList.map((item) => (
+                <AutoComplete.Option key={item._id} title={item.title}>
+                  {`${item.title} (ID:${
+                    item._id.substring(item._id.length - 5) || ''
+                  })`}
+                </AutoComplete.Option>
+              ))}
         </AutoComplete.OptGroup>,
       ]
     : []

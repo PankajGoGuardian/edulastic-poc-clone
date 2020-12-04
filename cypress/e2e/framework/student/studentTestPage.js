@@ -33,6 +33,8 @@ class StudentTestPage {
 
   getQueDropDown = () => cy.get('[data-cy="options"]').should('be.visible')
 
+  getQuestionDropDownList = () => cy.get('[data-cy="questionSelectOptions"]')
+
   getHint = () => cy.contains('hint').should('be.visible')
 
   getBookmark = () => cy.contains('bookmark').should('be.visible')
@@ -49,6 +51,8 @@ class StudentTestPage {
 
   // @questionNumber = "Q1" ; "Q2"
   clickOnReviewQuestion = (questionNumber) => {
+    cy.server()
+    cy.route('GET', '**/test/**').as('gettest')
     cy.get(`[data-cy="${questionNumber}"]`).click()
     cy.wait('@gettest')
   }
@@ -95,6 +99,8 @@ class StudentTestPage {
 
   getClozeTextInputByIndex = (index) => this.getAllClozeTextInput().eq(index)
 
+  getAllQuestionInDropDown = () => cy.get('[data-cy="question-in-dropdown"]')
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -110,7 +116,7 @@ class StudentTestPage {
 
     if (isExhausted)
       CypressHelper.verifyAntMesssage(
-        'Check answer limit exceeded for the item'
+        ' Check answer limit exceeded for the item.'
       )
     else
       cy.wait('@evaluation').then((xhr) =>
@@ -170,7 +176,7 @@ class StudentTestPage {
     cy.wait('@testactivity')
   }
 
-  submitTest = () => {
+  submitTest = (isAttemptsPending = false) => {
     this.clickSubmitButton()
     cy.get('[data-cy="Grades"]')
     cy.url().then((url) => {
@@ -179,7 +185,12 @@ class StudentTestPage {
           .click({ force: true })
           .click({ force: true })
     })
-    return cy.url().should('include', '/home/grades')
+    cy.url().should('include', '/home/grades')
+    if (!isAttemptsPending)
+      return cy
+        .get('[data-cy="status"]', { timeout: 120000 })
+        .should('be.visible')
+    return cy.get('body')
   }
 
   clickOnMenuCheckAns = () => {
@@ -796,7 +807,8 @@ class StudentTestPage {
     attempt,
     questionTypeMap,
     password,
-    aType = 'CLASS_ASSESSMENT'
+    aType = 'CLASS_ASSESSMENT',
+    hasPendingAttempts = false
   ) => {
     if (status !== studentSide.NOT_STARTED) {
       cy.login('student', email, password)
@@ -823,7 +835,7 @@ class StudentTestPage {
         this.clickOnProceed();
       } */
       if (status === studentSide.SUBMITTED || status === studentSide.GRADED) {
-        this.submitTest()
+        this.submitTest(hasPendingAttempts)
         cy.contains('Grades').should('be.visible')
       }
     }
@@ -887,13 +899,8 @@ class StudentTestPage {
   }
 
   verifyNoOfQuestions = (NoOfQues) => {
-    this.getQueDropDown()
-      .as('question-dropdown')
-      .click({ force: true })
-      .parent()
-      .next()
-      .find('li')
-      .should('have.length', NoOfQues)
+    this.getQueDropDown().as('question-dropdown').click({ force: true })
+    this.getQuestionDropDownList().should('have.length', NoOfQues)
     cy.get('@question-dropdown').click({ force: true })
   }
 
@@ -913,13 +920,8 @@ class StudentTestPage {
         const currentQue = parseInt(txt.match(/(\d+)/)[0])
         const queToNavigate = index + 1
         if (!txt.includes(`Question ${queToNavigate}/`)) {
-          this.getQueDropDown()
-            .click({ force: true })
-            .parent()
-            .next()
-            .find('li')
-            .eq(index)
-            .click({ force: true })
+          this.getQueDropDown().click({ force: true })
+          this.getQuestionDropDownList().eq(index).click({ force: true })
           if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp()
           cy.wait('@saved')
         }
@@ -947,17 +949,33 @@ class StudentTestPage {
     this.getMaxScore().should('have.text', `${maxScore}`)
   }
 
-  verifyResponseEvaluation = (attemptType) =>
-    cy
-      .get('[data-cy="answerType"]')
+  clickOnFeedbackCaret = () => cy.get('[data-icon="caret-right"]').click()
+
+  verifyResponseEvaluation = (attemptType) => {
+    cy.get('[data-cy="answerType"]').should('have.text', 'Prior Attempt')
+
+    cy.get('[data-cy="answerIcon"] svg')
       .should(
-        'contain.text',
+        'have.attr',
+        'data-cy',
         attemptType === attemptTypes.RIGHT
-          ? 'Thats Correct'
+          ? 'correct'
           : attemptType === attemptTypes.PARTIAL_CORRECT
-          ? 'Thats Partially Correct'
-          : 'Thats Incorrect'
+          ? 'partialCorrect'
+          : 'wrong'
       )
+      .and(
+        'have.css',
+        'color',
+        attemptType === attemptTypes.RIGHT
+          ? queColor.GREEN_9
+          : attemptType === attemptTypes.PARTIAL_CORRECT
+          ? queColor.YELLOW_1
+          : queColor.RED
+      )
+
+    this.clickOnFeedbackCaret()
+  }
 
   assertCalcType = (type) => {
     switch (type) {

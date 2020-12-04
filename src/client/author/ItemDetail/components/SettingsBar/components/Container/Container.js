@@ -216,8 +216,6 @@ class Container extends Component {
               <Col>
                 <EduSwitchStyled
                   checked={itemLevelScoring}
-                  checkedChildren="on"
-                  unCheckedChildren="off"
                   onChange={(v) => {
                     setItemLevelScoring(v)
                   }}

@@ -559,7 +559,7 @@ const Settings = ({
         {/* Answer on Paper */}
 
         {/* Require Password */}
-        {!hideTestLevelOptions && (
+        {!hideClassLevelOptions && (
           <FeaturesSwitch
             inputFeatures="assessmentSuperPowersRequirePassword"
             actionOnInaccessible="hidden"
@@ -574,7 +574,7 @@ const Settings = ({
                 <Row>
                   <Col span={24}>
                     <SelectInputStyled
-                      disabled={forClassLevel || freezeSettings}
+                      disabled={freezeSettings}
                       placeholder="Please select"
                       cache="false"
                       value={passwordPolicy}
@@ -598,7 +598,7 @@ const Settings = ({
                     test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
                     <Col span={24}>
                       <Password
-                        disabled={forClassLevel || freezeSettings}
+                        disabled={freezeSettings}
                         onChange={(e) =>
                           overRideSettings('assignmentPassword', e.target.value)
                         }
@@ -616,7 +616,7 @@ const Settings = ({
                     test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
                     <Col span={24}>
                       <Input
-                        disabled={forClassLevel || freezeSettings}
+                        disabled={freezeSettings}
                         required
                         type="number"
                         onChange={handleUpdatePasswordExpireIn}

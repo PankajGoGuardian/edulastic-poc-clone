@@ -32,12 +32,14 @@ export const getReportsSMRSettings = createSelector(
 const initialState = {
   selectedTest: [],
   requestFilters: {
+    reportId: '',
     termId: '',
     curriculumId: '',
     grade: 'TK',
     profileId: '',
     domainIds: [],
     assessmentType: '',
+    schoolIds: [],
   },
 }
 

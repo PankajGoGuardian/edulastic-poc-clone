@@ -93,7 +93,15 @@ import { sortTestItemQuestions } from '../dataUtils'
 
 // constants
 
-const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = test
+const {
+  ITEM_GROUP_TYPES,
+  ITEM_GROUP_DELIVERY_TYPES,
+  completionTypes,
+  releaseGradeLabels,
+  calculators,
+  evalTypeLabels,
+  passwordPolicy,
+} = test
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
   DRAFT: 'draft',
@@ -277,11 +285,17 @@ export const UPDATE_TEST_LIKE_COUNT = '[test] update test like count'
 export const UPDATE_TEST_ITEM_LIKE_COUNT =
   '[test] update test review item like count'
 export const RESET_UPDATED_TEST_STATE = '[test] reset test updated state'
+export const SET_UPDATING_TEST_FOR_REGRADE_STATE =
+  '[test] set updating test for regrade state'
+export const SET_NEXT_PREVIEW_ITEM = '[test] set next preview item'
+export const GET_TESTID_FROM_VERSIONID = '[test] get testId from versionId'
+export const SET_REGRADE_FIRESTORE_DOC_ID = '[test] set regrade firestore docId'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER)
 export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS)
+export const setNextPreviewItemAction = createAction(SET_NEXT_PREVIEW_ITEM)
 export const updateDefaultThumbnailAction = createAction(
   UPDATE_TEST_DEFAULT_IMAGE
 )
@@ -330,6 +344,9 @@ export const setAutoselectItemsFetchingStatusAction = createAction(
   SET_AUTOSELECT_ITEMS_FETCHING_STATUS
 )
 export const setRegradingStateAction = createAction(SET_REGRADING_STATE)
+export const setRegradeFirestoreDocId = createAction(
+  SET_REGRADE_FIRESTORE_DOC_ID
+)
 export const setEditEnableAction = createAction(SET_EDIT_ENABLE)
 export const setCurrentAnnotationToolAction = createAction(
   SET_CURRENT_ANNOTATION_TOOL
@@ -345,6 +362,12 @@ export const updateTestItemLikeCountAction = createAction(
   UPDATE_TEST_ITEM_LIKE_COUNT
 )
 export const resetUpdatedStateAction = createAction(RESET_UPDATED_TEST_STATE)
+export const setUpdatingTestForRegradeStateAction = createAction(
+  SET_UPDATING_TEST_FOR_REGRADE_STATE
+)
+export const getTestIdFromVersionIdAction = createAction(
+  GET_TESTID_FROM_VERSIONID
+)
 
 export const receiveTestByIdAction = (
   id,
@@ -473,6 +496,11 @@ export const getPassageItemsCountSelector = createSelector(
   (state) => state.passageItems.length
 )
 
+export const getRegradeFirebaseDocIdSelector = createSelector(
+  stateSelector,
+  (state) => state.regradeFirestoreDocId
+)
+
 export const getTestSelector = createSelector(
   stateSelector,
   (state) => state.entity
@@ -521,8 +549,9 @@ export const getItemGroupsSelector = createSelector(
 )
 
 export const getTestItemsSelector = createSelector(
-  getItemGroupsSelector,
-  (itemGroups) => {
+  getTestEntitySelector,
+  (_test) => {
+    const itemGroups = _test.itemGroups || []
     let testItems =
       itemGroups.flatMap(
         (itemGroup) =>
@@ -736,6 +765,7 @@ export const createBlankTest = () => ({
   ],
   passages: [],
   freezeSettings: false,
+  playerSkinType: 'edulastic',
 })
 
 const initialState = {
@@ -763,6 +793,9 @@ const initialState = {
   currentAnnotationTool: 'cursor',
   annotationToolsProperties: {},
   annotationsStack: [],
+  updatingTestForRegrade: false,
+  nextItemId: null,
+  regradeFirestoreDocId: '',
 }
 
 export const testTypeAsProfileNameType = {
@@ -1123,7 +1156,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {
           ...state.entity,
-          passages: [...state.entity.passages, payload],
+          passages: [...(state.entity.passages || []), payload],
         },
       }
     case UPDATE_CREATING:
@@ -1241,6 +1274,21 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         updated: false,
       }
+    case SET_UPDATING_TEST_FOR_REGRADE_STATE:
+      return {
+        ...state,
+        updatingTestForRegrade: payload,
+      }
+    case SET_NEXT_PREVIEW_ITEM:
+      return {
+        ...state,
+        nextItemId: payload,
+      }
+    case SET_REGRADE_FIRESTORE_DOC_ID:
+      return {
+        ...state,
+        regradeFirestoreDocId: payload,
+      }
     default:
       return state
   }
@@ -1323,6 +1371,75 @@ export const getTestCreatedItemsSelector = createSelector(
   stateSelector,
   (state) => get(state, 'createdItems', [])
 )
+
+const setTime = (userRole) => {
+  const addDate = userRole !== 'teacher' ? 28 : 7
+  return moment()
+    .add('days', addDate)
+    .set({ hour: 23, minute: 0, second: 0, millisecond: 0 })
+}
+
+const getAssignSettings = ({
+  userRole,
+  entity,
+  userId,
+  features,
+  isPlaylist,
+}) => {
+  const testType = entity?.testType
+  const { ASSESSMENT, COMMON, PRACTICE } = testConst.type
+  const isAdmin =
+    userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
+  const settings = {
+    startDate: moment(),
+    class: [],
+    endDate: setTime(userRole),
+    passwordPolicy: entity.passwordPolicy,
+    passwordExpireIn: entity.passwordExpireIn,
+    assignmentPassword: entity.assignmentPassword,
+    timedAssignment: entity.timedAssignment,
+  }
+
+  if (isAdmin) {
+    settings.testType = testType === PRACTICE ? PRACTICE : COMMON
+    settings.openPolicy =
+      assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+  }
+
+  if (!isAdmin) {
+    settings.testType = testType || ASSESSMENT
+    settings.openPolicy = assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
+  }
+
+  if (entity.timedAssignment) {
+    settings.allowedTime = entity.allowedTime || 10 * 60 * 1000
+    settings.pauseAllowed = entity.pauseAllowed || false
+  }
+
+  if (
+    !isPlaylist &&
+    features.free &&
+    !features.premium &&
+    entity.createdBy._id !== userId &&
+    !entity.freezeSettings
+  ) {
+    settings.testType = ASSESSMENT
+    settings.maxAttempts = 1
+    settings.markAsDone = completionTypes.AUTOMATICALLY
+    settings.releaseScore = releaseGradeLabels.DONT_RELEASE
+    settings.safeBrowser = false
+    settings.shuffleAnswers = false
+    settings.shuffleQuestions = false
+    settings.calcType = calculators.NONE
+    settings.answerOnPaper = false
+    settings.maxAnswerChecks = 0
+    settings.scoringType = evalTypeLabels.PARTIAL_CREDIT
+    settings.penalty = false
+    settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
+  }
+
+  return settings
+}
 
 // saga
 function* receiveTestByIdSaga({ payload }) {
@@ -1411,51 +1528,16 @@ function* receiveTestByIdSaga({ payload }) {
       yield put(updateDefaultThumbnailAction(thumbnail))
     }
 
-    const setTime = (userRole) => {
-      const addDate = userRole !== 'teacher' ? 28 : 7
-      return moment()
-        .add('days', addDate)
-        .set({ hour: 23, minute: 0, second: 0, millisecond: 0 })
-    }
-
     const userRole = yield select(getUserRole)
-
-    const testType = entity?.testType
-    const { ASSESSMENT, COMMON, PRACTICE } = testConst.type
-
-    const isAdmin =
-      userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
-    const testTypeDefault = isAdmin
-      ? testType === PRACTICE
-        ? PRACTICE
-        : COMMON
-      : testType || ASSESSMENT
-    let updateForTimedAssignment = { timedAssignment: entity?.timedAssignment }
-    if (entity?.timedAssignment) {
-      updateForTimedAssignment = {
-        ...updateForTimedAssignment,
-        allowedTime: entity?.allowedTime || 10 * 60 * 1000,
-        pauseAllowed: entity?.pauseAllowed || false,
-      }
-    }
-    yield put(
-      updateAssingnmentSettingsAction({
-        startDate: moment(),
-        class: [],
-        testType: testTypeDefault,
-        endDate: setTime(userRole),
-
-        openPolicy:
-          userRole === roleuser.DISTRICT_ADMIN ||
-          userRole === roleuser.SCHOOL_ADMIN
-            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
-            : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
-        passwordPolicy: entity.passwordPolicy,
-        passwordExpireIn: entity.passwordExpireIn,
-        ...updateForTimedAssignment,
-        assignmentPassword: entity.assignmentPassword,
-      })
-    )
+    const features = yield select(getUserFeatures)
+    const assignSettings = getAssignSettings({
+      userRole,
+      entity,
+      userId,
+      isPlaylist: payload.isPlaylist,
+      features,
+    })
+    yield put(updateAssingnmentSettingsAction(assignSettings))
   } catch (err) {
     captureSentryException(err)
     console.log({ err })
@@ -1471,16 +1553,18 @@ function* receiveTestByIdSaga({ payload }) {
 }
 
 function* createTest(data) {
-  const { title, passwordPolicy } = data
+  const { title, passwordPolicy: _passwordPolicy } = data
 
   if (title !== undefined && !title.trim().length) {
     return notification({ messageKey: 'nameShouldNotEmpty' })
   }
-  if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
+  if (_passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
     delete data.assignmentPassword
   }
 
-  if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+  if (
+    _passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+  ) {
     delete data.passwordExpireIn
   }
   const omitedItems = [
@@ -1663,6 +1747,7 @@ function* updateTestSaga({ payload }) {
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
     yield put(setTestsLoadingAction(false))
+    yield put(setUpdatingTestForRegradeStateAction(false))
   }
 }
 
@@ -1768,6 +1853,7 @@ function* updateTestDocBasedSaga({ payload }) {
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
+    yield put(setUpdatingTestForRegradeStateAction(false))
   }
 }
 
@@ -1775,10 +1861,12 @@ function* updateRegradeDataSaga({ payload }) {
   try {
     yield put(setRegradingStateAction(true))
     yield call(testsApi.publishTest, payload.newTestId)
-    yield call(assignmentApi.regrade, payload)
-    notification({ type: 'success', messageKey: 'successUpdate' })
-    yield put(setEditEnableAction(false))
-    yield put(push(`/author/regrade/${payload.newTestId}/success`))
+    const { message, firestoreDocId } = yield call(
+      assignmentApi.regrade,
+      payload
+    )
+    yield put(setRegradeFirestoreDocId(firestoreDocId))
+    notification({ type: 'info', msg: message })
   } catch (err) {
     const {
       data: { message: errorMessage },
@@ -1788,7 +1876,7 @@ function* updateRegradeDataSaga({ payload }) {
       type: 'error',
       msg: errorMessage || 'Unable to publish & regrade.',
     })
-  } finally {
+    yield put(setRegradeFirestoreDocId(''))
     yield put(setRegradingStateAction(false))
   }
 }
@@ -1924,6 +2012,7 @@ function* publishTestSaga({ payload }) {
  */
 function* publishForRegrade({ payload }) {
   try {
+    yield put(setUpdatingTestForRegradeStateAction(true))
     const _test = yield select(getTestSelector)
     if (_test.isUsed && !test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
@@ -1944,10 +2033,12 @@ function* publishForRegrade({ payload }) {
         state: locationState,
       })
     )
+    yield put(setUpdatingTestForRegradeStateAction(false))
   } catch (error) {
     Sentry.captureException(error)
     console.error(error)
     notification({ msg: error?.data?.message || 'publish failed.' })
+    yield put(setUpdatingTestForRegradeStateAction(false))
   }
 }
 
@@ -2702,6 +2793,19 @@ function* toggleTestLikeSaga({ payload }) {
   }
 }
 
+function* getTestIdFromVersionIdSaga({ payload }) {
+  try {
+    const { testId } = yield call(testsApi.getTestIdFromVersionId, payload)
+    if (testId) {
+      yield put(push(`/author/tests/tab/review/id/${testId}`))
+      yield put(receiveTestByIdAction(testId, true, false))
+    }
+  } catch (err) {
+    Sentry.captureException(err)
+    console.error(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
@@ -2731,5 +2835,6 @@ export function* watcherSaga() {
     ),
     yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
     yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
+    yield takeLatest(GET_TESTID_FROM_VERSIONID, getTestIdFromVersionIdSaga),
   ])
 }

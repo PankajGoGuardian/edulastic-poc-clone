@@ -201,7 +201,7 @@ describe(`${FileHelper.getSpecName(
         liveClassboardPage.header.clickOnOpenPause()
       })
 
-      it(">verify student side-'assignment is paused'", () => {
+      it(">verify student side-'assignment is open'", () => {
         cy.login('student', user.student1, user.pass)
         studentAssignmentsPage.clickOnAssigmentByTestId(customtestid)
         studentTestPage.waitWhileAttempt('00:00:10')

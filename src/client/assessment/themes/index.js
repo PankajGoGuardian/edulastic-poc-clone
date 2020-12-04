@@ -88,15 +88,16 @@ const RealTimeV2HookWrapper = ({
   testId,
   regradedAssignment,
   regradedRealtimeAssignment,
+  groupId,
 }) => {
   let topics = [
     `student_assessment:user:${userId}`,
-    `student_assessment:test:${testId}`,
+    `student_assessment:test:${testId}:group:${groupId}`,
   ]
   if (regradedAssignment?.newTestId) {
     topics = [
       ...topics,
-      `student_assessment:test:${regradedAssignment?.newTestId}`,
+      `student_assessment:test:${regradedAssignment?.newTestId}:group:${groupId}`,
     ]
   }
   useRealtimeV2(topics, {
@@ -186,8 +187,9 @@ const AssessmentContainer = ({
           groupId,
         })
         history.push('/home/assignments')
-        handleChromeOsSEB()
-        window.location.href = sebUrl
+        if (!handleChromeOsSEB()) {
+          window.location.href = sebUrl
+        }
       }
     }
   })
@@ -528,6 +530,20 @@ const AssessmentContainer = ({
     }
   }, 1000 * 30)
 
+  useEffect(() => {
+    const cb = (event) => {
+      event.preventDefault()
+      saveProgress()
+      // Older browsers supported custom message
+      event.returnValue = ''
+    }
+
+    window.addEventListener('beforeunload', cb)
+    return () => {
+      window.removeEventListener('beforeunload', cb)
+    }
+  }, [qid])
+
   const handleMagnifier = () =>
     updateTestPlayer({ enableMagnifier: !enableMagnifier })
   const props = {
@@ -661,6 +677,7 @@ const AssessmentContainer = ({
         <RealTimeV2HookWrapper
           userId={userId}
           testId={testId}
+          groupId={groupId}
           regradedAssignment={regradedAssignment}
           regradedRealtimeAssignment={regradedRealtimeAssignment}
         />

@@ -5,6 +5,7 @@ import {
   notification,
   EduSwitchStyled,
   LCBScrollContext,
+  BackTop,
 } from '@edulastic/common'
 import {
   IconAddStudents,
@@ -19,7 +20,7 @@ import {
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { testActivityStatus } from '@edulastic/constants'
-import { Dropdown, Select } from 'antd'
+import { Dropdown, Select, notification as antNotification } from 'antd'
 import { get, isEmpty, keyBy, round } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -35,6 +36,7 @@ import PresentationToggleSwitch from '../../../Shared/Components/PresentationTog
 import StudentSelect from '../../../Shared/Components/StudentSelect/StudentSelect'
 // actions
 import {
+  canvasSyncAssignmentAction,
   downloadGradesResponseAction,
   getAllTestActivitiesForStudentAction,
   markAbsentAction,
@@ -53,6 +55,7 @@ import {
   gradebookSetSelectedAction,
   gradebookUnSelectAllAction,
   gradebookUnSelectStudentAction,
+  setShowCanvasShareAction,
 } from '../../../src/reducers/gradeBook'
 import StudentContainer from '../../../StudentView'
 // ducks
@@ -115,6 +118,11 @@ import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 
+const NotificationComponent = (props) => {
+  notification(props)
+  return null
+}
+
 class ClassBoard extends Component {
   constructor(props) {
     super(props)
@@ -149,6 +157,7 @@ class ClassBoard extends Component {
       selectedNotStartedStudents: [],
       showScoreImporvement: false,
       hasStickyHeader: false,
+      toggleBackTopIcon: false,
     }
   }
 
@@ -174,7 +183,10 @@ class ClassBoard extends Component {
   }
 
   componentWillUnmount() {
+    const { setShowCanvasShare } = this.props
     window.removeEventListener('scroll', this.handleScroll)
+    setShowCanvasShare(false)
+    antNotification.destroy()
   }
 
   componentDidMount() {
@@ -812,6 +824,16 @@ class ClassBoard extends Component {
     }
   }
 
+  backTopScroll = () => {
+    const { toggleBackTopIcon } = this.state
+    const elementTop = this.MainContentWrapperRef?.current?.scrollTop || 0
+    if (elementTop < 100 && toggleBackTopIcon) {
+      this.setState({ toggleBackTopIcon: false })
+    } else if (!toggleBackTopIcon && elementTop >= 100) {
+      this.setState({ toggleBackTopIcon: true })
+    }
+  }
+
   render() {
     const {
       gradebook,
@@ -849,6 +871,9 @@ class ClassBoard extends Component {
       isCliUser,
       isShowAllStudents,
       firstQuestionEntities,
+      showCanvasShare,
+      canvasSyncAssignment,
+      setShowCanvasShare,
     } = this.props
 
     const {
@@ -866,6 +891,7 @@ class ClassBoard extends Component {
       showMarkSubmittedPopup,
       openPrintModal,
       hasStickyHeader,
+      toggleBackTopIcon,
     } = this.state
     const { assignmentId, classId } = match.params
     const studentTestActivity =
@@ -951,6 +977,32 @@ class ClassBoard extends Component {
 
     return (
       <div>
+        {showCanvasShare && (
+          <NotificationComponent
+            msg={
+              <span>
+                Assignment is not available on Canvas to share grades. Click{' '}
+                <a
+                  onClick={() => {
+                    setShowCanvasShare(false)
+                    canvasSyncAssignment({ assignmentId, groupId: classId })
+                    antNotification.destroy()
+                  }}
+                >
+                  here
+                </a>{' '}
+                to share the assignment first.
+              </span>
+            }
+            onClose={() => {
+              setShowCanvasShare(false)
+            }}
+            placement="bottomRight"
+            duration={0}
+            className="notification"
+            visibility={showCanvasShare}
+          />
+        )}
         {showMarkSubmittedPopup && (
           <ConfirmationModal
             title="Mark as Submitted"
@@ -1042,7 +1094,10 @@ class ClassBoard extends Component {
           testActivity={testActivity}
           isCliUser={isCliUser}
         />
-        <MainContentWrapper ref={this.MainContentWrapperRef}>
+        <MainContentWrapper
+          ref={this.MainContentWrapperRef}
+          onScroll={this.backTopScroll}
+        >
           <LCBScrollContext.Provider value={this.MainContentWrapperRef}>
             <StyledFlexContainer justifyContent="space-between">
               <ClassBreadBrumb
@@ -1386,6 +1441,7 @@ class ClassBoard extends Component {
                           )
                         }}
                         isPresentationMode={isPresentationMode}
+                        isCliUser={isCliUser}
                       />
                       <GraphWrapper style={{ width: '100%', display: 'flex' }}>
                         <BarGraph
@@ -1560,11 +1616,15 @@ class ClassBoard extends Component {
                     isPresentationMode={isPresentationMode}
                     isCliUser={isCliUser}
                   />
+                  {toggleBackTopIcon && (
+                    <BackTop toggleBackTopIcon={toggleBackTopIcon} />
+                  )}
                 </>
               )}
             {selectedTab === 'questionView' &&
               !isEmpty(testActivity) &&
               !isEmpty(classResponse) &&
+              !isLoading &&
               (selectedQuestion || selectedQuestion === 0) && (
                 <>
                   <QuestionContainer
@@ -1608,6 +1668,9 @@ class ClassBoard extends Component {
                         })
                       }}
                     />
+                    {toggleBackTopIcon && (
+                      <BackTop toggleBackTopIcon={toggleBackTopIcon} />
+                    )}
                   </QuestionContainer>
                 </>
               )}
@@ -1631,6 +1694,11 @@ const enhance = compose(
         state,
         ['author_classboard_gradebook', 'selectedStudents'],
         {}
+      ),
+      showCanvasShare: get(
+        state,
+        ['author_classboard_gradebook', 'showCanvasShare'],
+        false
       ),
       allStudents: getLCBStudentsList(state),
       testItemsData: get(
@@ -1687,6 +1755,8 @@ const enhance = compose(
       downloadGradesResponse: downloadGradesResponseAction,
       setShowAllStudents: setShowAllStudentsAction,
       updateCliUser: updateCliUserAction,
+      canvasSyncAssignment: canvasSyncAssignmentAction,
+      setShowCanvasShare: setShowCanvasShareAction,
     }
   )
 )

@@ -24,7 +24,7 @@ class ClozeWithTextPage {
     return this
   }
 
-  getPoints = () => cy.get('#text-entry-points')
+  getPoints = () => cy.get(`[data-cy="points"]`)
 
   getAlternates = () => cy.get('[data-cy="tabs"]').contains('span', 'Alternate')
 
@@ -47,6 +47,12 @@ class ClozeWithTextPage {
       .clear()
       .type(input)
       .should('have.value', input)
+    cy.wait(500)
+    cy.get('.ant-popover').each(($add) => {
+      if (!$add.hasClass('ant-popover-hidden')) {
+        cy.wrap($add).click()
+      }
+    })
   }
 
   selectRoundingType(option) {

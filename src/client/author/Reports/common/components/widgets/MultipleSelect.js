@@ -51,9 +51,10 @@ const MultipleSelect = ({
   data = [],
   comData,
   placeholder = '',
+  dropdownStyle,
 }) => {
   const selected = [].concat(by) // convert selected value to an array even if an object is passed
-  const _displayValue = [].concat(valueToDisplay) || selected
+  const _displayValue = [].concat(valueToDisplay || selected)
   const dataSource = buildDropDownData(data, selected, prefix)
 
   const _onChange = (values, items) => onChange(map(items, getOption), comData)
@@ -72,6 +73,7 @@ const MultipleSelect = ({
         value={map(_displayValue, (item) => item.title)}
         placeholder={placeholder}
         mode="multiple"
+        dropdownStyle={dropdownStyle}
       >
         {dataSource}
       </Select>

@@ -81,7 +81,7 @@ export function testRunner(
     })
 
     it('> verify stats on report page', () => {
-      report.validateAssignment(assignmentName, 'GRADED')
+      report.validateAssignment(assignmentName, 'GRADED', 'REVIEW')
       report.validateStats('1', '1/1')
     })
   })
@@ -112,7 +112,7 @@ export function testRunner(
 
     it('> verify stats on report page', () => {
       const { perfValue } = statsMap[stuName]
-      report.validateAssignment(assignmentName, 'GRADED')
+      report.validateAssignment(assignmentName, 'GRADED', 'REVIEW')
       report.validateStats('1', '1/1', undefined, perfValue)
     })
   })
@@ -313,6 +313,7 @@ export function testRunner(
         sidebarPage.clickOnGrades()
         report.validateStats('1', '1/1', score, perfValue)
         report.clickOnReviewButtonButton()
+        // report.getQUestionInStudentReportPage().click()
         Object.keys(updatedAttempt).forEach((queNum) => {
           const attemptType = updatedAttempt[queNum]
           report.selectQuestion(queNum)

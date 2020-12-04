@@ -24,7 +24,7 @@ import {
   IconChevronLeft,
 } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
-import { Row, Col, Layout, Button, Pagination } from 'antd'
+import { Layout, Button, Pagination } from 'antd'
 import ItemDetailContext, {
   COMPACT,
   DEFAULT,
@@ -828,7 +828,6 @@ class Container extends Component {
     const { item, passage, rows, view, itemDeleting } = this.props
     const widgetLength = get(rows, [0, 'widgets'], []).length
     const passageTestItems = this.passageItems
-
     return (
       // isPassageWithQuestions fallback condition to show/hide pagination
       (item.canAddMultipleItems || item.isPassageWithQuestions) &&
@@ -1029,31 +1028,25 @@ class Container extends Component {
             />
           </ItemHeader>
           <ContentWrapper data-cy="item-detail-container">
-            <BreadCrumbBar>
-              <Col span={8}>
-                {windowWidth > MAX_MOBILE_WIDTH ? (
-                  <SecondHeadBar
-                    itemId={item._id}
-                    breadCrumbQType={breadCrumbQType}
-                    breadcrumb={this.breadCrumbs}
-                  />
-                ) : (
-                  <BackLink onClick={history.goBack}>
-                    Back to Item List
-                  </BackLink>
-                )}
-              </Col>
+            <BreadCrumbBar justifyContent="space-between">
+              {windowWidth > MAX_MOBILE_WIDTH ? (
+                <SecondHeadBar
+                  itemId={item._id}
+                  breadCrumbQType={breadCrumbQType}
+                  breadcrumb={this.breadCrumbs}
+                />
+              ) : (
+                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              )}
 
-              <Col span={16}>
-                <FlexContainer alignItems="center" justifyContent="flex-end">
-                  {this.passageNavigator}
-                  {view === 'preview' && (
-                    <RightActionButtons>
-                      {this.renderButtons()}
-                    </RightActionButtons>
-                  )}
-                </FlexContainer>
-              </Col>
+              <FlexContainer alignItems="center" justifyContent="flex-end">
+                {this.passageNavigator}
+                {view === 'preview' && (
+                  <RightActionButtons>
+                    {this.renderButtons()}
+                  </RightActionButtons>
+                )}
+              </FlexContainer>
             </BreadCrumbBar>
             {view === 'edit' && this.renderEdit()}
             {view === 'preview' && this.renderPreview()}
@@ -1177,7 +1170,7 @@ const enhance = compose(
 
 export default enhance(Container)
 
-const BreadCrumbBar = styled(Row)`
+const BreadCrumbBar = styled(FlexContainer)`
   padding: 12px 0px 32px;
 `
 

@@ -292,6 +292,10 @@ const Scratchpad = ({
           canUndo: newZwibbler.canUndo(),
         })
       })
+      newZwibbler.on('paste', () => {
+        // preventing pasting of images currently
+        return false
+      })
       setZwibbler(newZwibbler)
       if (isStudentAttempt && !readOnly) {
         const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()

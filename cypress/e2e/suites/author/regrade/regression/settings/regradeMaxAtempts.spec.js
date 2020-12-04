@@ -1,11 +1,17 @@
+/* eslint-disable max-len */
 import FileHelper from '../../../../../framework/util/fileHelper'
 import TestLibrary from '../../../../../framework/author/tests/testLibraryPage'
 import Regrade from '../../../../../framework/author/tests/regrade/regrade'
 import {
   regradeOptions,
   studentSide,
+  redirectType,
+  testTypes,
 } from '../../../../../framework/constants/assignmentStatus'
-import { attemptTypes } from '../../../../../framework/constants/questionTypes'
+import {
+  attemptTypes,
+  questionTypeMap,
+} from '../../../../../framework/constants/questionTypes'
 import StudentTestPage from '../../../../../framework/student/studentTestPage'
 import AssignmentsPage from '../../../../../framework/student/assignmentsPage'
 import ReportsPage from '../../../../../framework/student/reportsPage'
@@ -54,13 +60,29 @@ describe(`>${FileHelper.getSpecName(
     },
   }
   const attemptsdata1 = [
-    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class1[1] },
-    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class1[2] },
+    {
+      attempt: { Q1: attemptTypes.RIGHT },
+      ...students.class1[1],
+      overidden: false,
+    },
+    {
+      attempt: { Q1: attemptTypes.RIGHT },
+      ...students.class1[2],
+      overidden: false,
+    },
   ]
 
   const attemptsdata2 = [
-    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class2[1] },
-    { attempt: { Q1: attemptTypes.RIGHT }, ...students.class2[2] },
+    {
+      attempt: { Q1: attemptTypes.RIGHT },
+      ...students.class2[1],
+      overidden: true,
+    },
+    {
+      attempt: { Q1: attemptTypes.RIGHT },
+      ...students.class2[2],
+      overidden: true,
+    },
   ]
 
   const quetypeMap = {
@@ -70,7 +92,7 @@ describe(`>${FileHelper.getSpecName(
     },
   }
   const attemptAfterRegrade = { Q1: attemptTypes.WRONG }
-  const test = '5f0dae1897ac060008638370'
+  const test = '5fc4a8cc1cbc390008484019'
   let test1
   let test2
   const initialMaxattempt = 2
@@ -139,8 +161,16 @@ tests:{
 
       /* attempt and keep student according to required status */
       ;[...attemptsdata1, ...attemptsdata2].forEach((attemptsdata) => {
-        const { email, status, attempt } = attemptsdata
-        studentTestPage.attemptAssignment(email, status, attempt, quetypeMap)
+        const { email, status, attempt, overidden } = attemptsdata
+        studentTestPage.attemptAssignment(
+          email,
+          status,
+          attempt,
+          quetypeMap,
+          'snapwiz',
+          testTypes.CLASS_ASSESSMENT,
+          overidden
+        )
       })
     })
     context('> edit settings and regrade', () => {
@@ -161,27 +191,34 @@ tests:{
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[attemptsdata1, attemptsdata2].forEach((attemptData, index) => {
-          attemptData.forEach((attemptsdata) => {
-            it(`> for student ${attemptsdata.status} with '${
-              index === 0 ? 'not ' : ''
-            }overidden' assignment`, () => {
-              const { email, status } = attemptsdata
+      context(`> verify regraded max attempts at student side`, () => {
+        ;[...attemptsdata1, ...attemptsdata2].forEach(
+          ({ email, status, overidden }, index) => {
+            const [attempNum, attempCount] =
+              status === studentSide.SUBMITTED ? [2, 2] : [1, 1]
+            const [maxAllowedAttempts, titleAdjust] = overidden
+              ? [initialMaxattempt, '']
+              : [regardedMaxAttempt, 'not ']
+            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- '${maxAllowedAttempts} times'`, () => {
               studentTestPage.attemptAssignment(
                 email,
                 studentSide.SUBMITTED,
                 attemptAfterRegrade,
-                quetypeMap
+                quetypeMap,
+                'snapwiz',
+                testTypes.CLASS_ASSESSMENT,
+                attempCount !== maxAllowedAttempts
               )
+
               /* verify attempt count(overidden test: 2, not overridden:3 ) according to assignment status and selected regrade option */
+              if (+attempCount !== +maxAllowedAttempts)
+                assignmentsPage.sidebar.clickOnAssignment()
+              else assignmentsPage.sidebar.clickOnGrades()
               reportsPage.validateStats(
-                attemptsdata.status === studentSide.SUBMITTED ? 2 : 1,
-                `${attemptsdata.status === studentSide.SUBMITTED ? '2' : '1'}/${
-                  index === 0 ? 3 : 2
-                }`,
+                attempNum,
+                `${attempCount}/${maxAllowedAttempts}`,
                 undefined,
-                '0'
+                attempCount !== maxAllowedAttempts ? undefined : '0'
               )
               if (status === studentSide.SUBMITTED && index === 1) {
                 assignmentsPage.sidebar.clickOnAssignment()
@@ -190,8 +227,8 @@ tests:{
                 )
               }
             })
-          })
-        })
+          }
+        )
       })
 
       context('> verify teacher side for not overidden assignment', () => {
@@ -209,34 +246,37 @@ tests:{
         })
         it('> verify student centric', () => {
           lcb.clickOnStudentsTab()
+          const { queKey, attemptData } = quetypeMap.Q1
           attemptsdata1.forEach((stu, ind) => {
             lcb.questionResponsePage.selectStudent(stu.name)
             if (stu.status === studentSide.SUBMITTED)
               lcb.questionResponsePage.selectAttempt(2)
             lcb.questionResponsePage.verifyQuestionResponseCard(
               2,
-              quetypeMap.Q1.queKey,
+              queKey,
               attemptTypes.WRONG,
-              quetypeMap.Q1.attemptData,
+              attemptData,
               true,
               0
             )
           })
         })
         it('> verify question centric', () => {
+          const { queKey, attemptData } = quetypeMap.Q1
           lcb.clickonQuestionsTab()
-          attemptsdata1.forEach((stu, ind) => {
+          attemptsdata1.forEach(({ name }, ind) => {
             lcb.questionResponsePage.verifyQuestionResponseCard(
               2,
-              quetypeMap.Q1.queKey,
+              queKey,
               attemptTypes.WRONG,
-              quetypeMap.Q1.attemptData,
-              false,
-              stu.name
+              attemptData,
+              0,
+              name
             )
           })
         })
         it('> verify exress grader', () => {
+          const { queKey, attemptData } = quetypeMap.Q1
           lcb.header.clickOnExpressGraderTab()
 
           expressGraderPage.setToggleToScore()
@@ -246,8 +286,8 @@ tests:{
               'Q1',
               2,
               attemptTypes.WRONG,
-              quetypeMap.Q1.attemptData,
-              quetypeMap.Q1.queKey
+              attemptData,
+              queKey
             )
           })
 
@@ -268,9 +308,10 @@ tests:{
         it('> redirect student', () => {
           lcb.selectCheckBoxByStudentName(attemptsdata2[0].name)
           lcb.clickOnRedirect()
+          lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
           lcb.clickOnRedirectSubmit()
         })
-        it('> verify student', () => {
+        it('> verify redirected student,', () => {
           cy.login('student', attemptsdata2[0].email)
           assignmentsPage.clickOnAssigmentByTestId(versionedTest1, {
             isFirstAttempt: false,
@@ -282,7 +323,7 @@ tests:{
           )
           studentTestPage.clickOnNext()
           studentTestPage.submitTest()
-          reportsPage.validateStats(1, `1/3`, undefined, '0')
+          reportsPage.validateStats(3, `3/3`, undefined, '0')
           assignmentsPage.sidebar.clickOnAssignment()
           cy.contains(
             "You don't have any currently assigned or completed assignments."
@@ -337,8 +378,16 @@ tests:{
 
       /* attempt and keep student according to required status */
       ;[...attemptsdata1, ...attemptsdata2].forEach((attemptsdata) => {
-        const { email, status, attempt } = attemptsdata
-        studentTestPage.attemptAssignment(email, status, attempt, quetypeMap)
+        const { email, status, attempt, overidden } = attemptsdata
+        studentTestPage.attemptAssignment(
+          email,
+          status,
+          attempt,
+          quetypeMap,
+          'snapwiz',
+          testTypes.CLASS_ASSESSMENT,
+          overidden
+        )
       })
     })
     context('> edit settings and regrade', () => {
@@ -355,36 +404,41 @@ tests:{
         testlibaryPage.testSettings.setMaxAttempt(regardedMaxAttempt)
         testlibaryPage.header.clickRegradePublish()
         /* select to include overidden test */
-        regrade.checkRadioByValue(regradeOptions.settings.excludeOveridden)
+        regrade.checkRadioByValue(regradeOptions.settings.chooseAll)
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[attemptsdata1, attemptsdata2].forEach((attemptData, index) => {
-          attemptData.forEach((attemptsdata) => {
-            it(`> for student ${attemptsdata.status} with '${
-              index === 0 ? 'not ' : ''
-            }overidden' assignment`, () => {
-              const { email, status } = attemptsdata
+      context(`> verify regraded max attempts at student side`, () => {
+        ;[...attemptsdata1, ...attemptsdata2].forEach(
+          ({ email, status, overidden }, index) => {
+            const [attempNum, attempCount] =
+              status === studentSide.SUBMITTED ? [2, 2] : [1, 1]
+            const titleAdjust = overidden ? 'not ' : ''
+            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected-'${regardedMaxAttempt} times'`, () => {
               cy.login('student', email)
               studentTestPage.attemptAssignment(
                 email,
                 studentSide.SUBMITTED,
                 attemptAfterRegrade,
-                quetypeMap
+                quetypeMap,
+                'snapwiz',
+                testTypes.CLASS_ASSESSMENT,
+                attempCount !== regardedMaxAttempt
               )
               /* verify attempt count (overidden test: 3, not overridden:3 ) according to assignment status and selected regrade option */
+              if (attempCount !== regardedMaxAttempt)
+                assignmentsPage.sidebar.clickOnAssignment()
+              else assignmentsPage.sidebar.clickOnGrades()
+
               reportsPage.validateStats(
-                status === studentSide.SUBMITTED ? 2 : 1,
-                `${
-                  status === studentSide.SUBMITTED ? '2' : '1'
-                }/${regardedMaxAttempt}`,
+                attempNum,
+                `${attempCount}/${regardedMaxAttempt}`,
                 undefined,
-                '0'
+                attempCount !== regardedMaxAttempt ? undefined : '0'
               )
             })
-          })
-        })
+          }
+        )
       })
       ;[attemptsdata1, attemptsdata2].forEach((attemptData, ind) => {
         /* verify latest response in lcb for both students */
@@ -406,6 +460,7 @@ tests:{
               })
             })
             it('> verify student centric', () => {
+              const { queKey, attemptData: aData } = quetypeMap.Q1
               lcb.clickOnStudentsTab()
               attemptData.forEach((stu, ind) => {
                 lcb.questionResponsePage.selectStudent(stu.name)
@@ -413,28 +468,30 @@ tests:{
                   lcb.questionResponsePage.selectAttempt(2)
                 lcb.questionResponsePage.verifyQuestionResponseCard(
                   2,
-                  quetypeMap.Q1.queKey,
+                  queKey,
                   attemptTypes.WRONG,
-                  quetypeMap.Q1.attemptData,
+                  aData,
                   true,
                   0
                 )
               })
             })
             it('> verify question centric', () => {
+              const { queKey, attemptData: aData } = quetypeMap.Q1
               lcb.clickonQuestionsTab()
-              attemptData.forEach((stu, ind) => {
+              attemptData.forEach(({ name }, ind) => {
                 lcb.questionResponsePage.verifyQuestionResponseCard(
                   2,
-                  quetypeMap.Q1.queKey,
+                  queKey,
                   attemptTypes.WRONG,
-                  quetypeMap.Q1.attemptData,
-                  false,
-                  stu.name
+                  aData,
+                  0,
+                  name
                 )
               })
             })
             it('> verify exress grader', () => {
+              const { queKey, attemptData: aData } = quetypeMap.Q1
               lcb.header.clickOnExpressGraderTab()
 
               expressGraderPage.setToggleToScore()
@@ -444,8 +501,8 @@ tests:{
                   'Q1',
                   2,
                   attemptTypes.WRONG,
-                  quetypeMap.Q1.attemptData,
-                  quetypeMap.Q1.queKey
+                  aData,
+                  queKey
                 )
               })
 

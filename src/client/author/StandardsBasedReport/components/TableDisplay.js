@@ -152,6 +152,7 @@ class TableDisplay extends Component {
       testActivities,
       qids,
       labels,
+      testStandardsEmpty,
     } = this.props
     const questionsColumn = hasRandomQuestions
       ? []
@@ -248,12 +249,16 @@ class TableDisplay extends Component {
         <NoDataNotification
           heading="Standard based report not available"
           description={
-            <>
-              Standard Based Report can be generated based on the Interested
-              Standards. To setup please go to{' '}
-              <Link to="/author/profile">My Profile</Link> and select your
-              Interested Standards.
-            </>
+            testStandardsEmpty ? (
+              `Standard Based Report cannot be generated as there are no standards associated with the items in the test.`
+            ) : (
+              <>
+                Standard Based Report can be generated based on the Interested
+                Standards. To setup please go to{' '}
+                <Link to="/author/profile">My Profile</Link> and select your
+                Interested Standards.
+              </>
+            )
           }
         />
       )

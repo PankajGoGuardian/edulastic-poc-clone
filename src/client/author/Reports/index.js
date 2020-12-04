@@ -2,19 +2,31 @@ import { pullAllBy } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+import qs from 'qs'
+
+import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
+
 import { Header, SubHeader } from './common/components/Header'
 import StandardReport from './components/StandardReport'
 import navigation from './common/static/json/navigation.json'
 import { PrintableScreen } from './common/styled'
 import CustomReports from './components/customReport'
 import CustomReportIframe from './components/customReport/customReportIframe'
+import SharedReports from './components/sharedReports'
 import {
   getCsvDownloadingState,
   getPrintingState,
+  setSharingStateAction,
   setCsvDownloadingStateAction,
   setPrintingStateAction,
 } from './ducks'
+import {
+  getCollaborativeGroupsAction,
+  getSharedReportList,
+  getSharedReportsLoader,
+  getSharedReportsAction,
+} from './components/sharedReports/ducks'
 import { MultipleAssessmentReportContainer } from './subPages/multipleAssessmentReport'
 import { SingleAssessmentReportContainer } from './subPages/singleAssessmentReport'
 import { StandardsMasteryReportContainer } from './subPages/standardsMasteryReport'
@@ -22,7 +34,15 @@ import { StudentProfileReportContainer } from './subPages/studentProfileReport'
 import ClassCreate from '../ManageClass/components/ClassCreate'
 
 const Container = (props) => {
-  const { isCsvDownloading, isPrinting, match, isCliUser } = props
+  const {
+    isCsvDownloading,
+    isPrinting,
+    match,
+    isCliUser,
+    showCustomReport,
+    loadingSharedReports,
+    sharedReportList,
+  } = props
   const [showHeader, setShowHeader] = useState(true)
   const [hideHeader, setHideHeader] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
@@ -44,6 +64,9 @@ const Container = (props) => {
       props.setPrintingStateAction(false)
     }
 
+    props.fetchCollaborationGroups()
+    props.fetchSharedReports()
+
     return () => {
       window.onbeforeprint = () => {}
       window.onafterprint = () => {}
@@ -51,7 +74,11 @@ const Container = (props) => {
   }, [])
 
   useEffect(() => {
-    if (reportType === 'standard-reports' || reportType === 'custom-reports') {
+    if (
+      reportType === 'standard-reports' ||
+      reportType === 'custom-reports' ||
+      reportType === 'shared-reports'
+    ) {
       setNavigationItems(navigation.navigation[groupName])
     }
   }, [reportType])
@@ -59,7 +86,7 @@ const Container = (props) => {
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS BEGIN |-----|-----|-----|-----|----- //
 
   const onShareClickCB = () => {
-    console.log('not implemented yet')
+    props.setSharingStateAction(true)
   }
 
   const onPrintClickCB = () => {
@@ -99,7 +126,10 @@ const Container = (props) => {
     let loc = props?.match?.params?.reportType
     if (
       !loc ||
-      (loc && (loc === 'standard-reports' || loc === 'custom-reports'))
+      (loc &&
+        (loc === 'standard-reports' ||
+          loc === 'custom-reports' ||
+          loc === 'shared-reports'))
     ) {
       loc = !loc ? reportType : loc
       const breadcrumbInfo = navigation.locToData[loc].breadcrumb
@@ -127,6 +157,14 @@ const Container = (props) => {
         navigationItems,
       }
     }
+    const breadcrumbInfo = [...navigation.locToData[loc].breadcrumb]
+    const reportId = qs.parse(props.location.search, {
+      ignoreQueryPrefix: true,
+    }).reportId
+    const isSharedReport = !!(reportId && reportId.toLowerCase() !== 'all')
+    if (isSharedReport) {
+      breadcrumbInfo[0] = navigation.locToData['shared-reports'].breadcrumb[0]
+    }
     return {
       loc,
       group: navigation.locToData[loc].group,
@@ -135,12 +173,17 @@ const Container = (props) => {
       onPrintClickCB,
       onDownloadCSVClickCB,
       onRefineResultsCB,
-      breadcrumbData: navigation.locToData[loc].breadcrumb,
+      breadcrumbData: breadcrumbInfo,
       navigationItems,
+      isSharedReport,
     }
   })
 
   const expandFilter = showFilter
+
+  if (loadingSharedReports) {
+    return <Spin size="small" />
+  }
 
   return (
     <PrintableScreen>
@@ -161,6 +204,9 @@ const Container = (props) => {
           activeNavigationKey={reportType}
           hideSideMenu={isCliUser}
           isCliUser={isCliUser}
+          showCustomReport={showCustomReport}
+          showSharedReport={sharedReportList.length}
+          isSharedReport={headerSettings.isSharedReport}
         />
       )}
       <MainContentWrapper>
@@ -170,6 +216,7 @@ const Container = (props) => {
             onRefineResultsCB={headerSettings.onRefineResultsCB}
             showFilter={expandFilter}
             title={headerSettings.title}
+            isSharedReport={headerSettings.isSharedReport}
           />
         )}
         {reportType === 'custom-reports' ? (
@@ -290,6 +337,13 @@ const Container = (props) => {
             )
           }}
         />
+        <Route
+          path="/author/reports/shared-reports/"
+          render={(_props) => {
+            setShowHeader(true)
+            return <SharedReports {..._props} />
+          }}
+        />
       </MainContentWrapper>
     </PrintableScreen>
   )
@@ -300,11 +354,17 @@ const enhance = connect(
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     premium: state?.user?.user?.features?.premium,
+    showCustomReport: state?.user?.user?.features?.customReport,
     isCliUser: state?.user?.isCliUser,
+    sharedReportList: getSharedReportList(state),
+    loadingSharedReports: getSharedReportsLoader(state),
   }),
   {
+    setSharingStateAction,
     setPrintingStateAction,
     setCsvDownloadingStateAction,
+    fetchSharedReports: getSharedReportsAction,
+    fetchCollaborationGroups: getCollaborativeGroupsAction,
   }
 )
 

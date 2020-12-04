@@ -4,6 +4,7 @@ import Regrade from '../../../../../framework/author/tests/regrade/regrade'
 import {
   regradeOptions,
   studentSide,
+  redirectType,
 } from '../../../../../framework/constants/assignmentStatus'
 import { attemptTypes } from '../../../../../framework/constants/questionTypes'
 import StudentTestPage from '../../../../../framework/student/studentTestPage'
@@ -146,8 +147,7 @@ describe(`>${FileHelper.getSpecName(
         })
         ;[...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.NOT_STARTED)
-          .forEach((studentdata) => {
-            const { email, status, attempt, overidden } = studentdata
+          .forEach(({ email, status, attempt }) => {
             studentTestPage.attemptAssignment(
               email,
               status,
@@ -176,142 +176,146 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[...attemptsdata1, ...attemptsdata2]
-          .filter(
-            ({ status }) =>
-              status === studentSide.IN_PROGRESS ||
-              status === studentSide.NOT_STARTED
-          )
-          .forEach((studentdata, index) => {
-            const { email, overidden, status } = studentdata
-            it(`> for student ${status} with '${
-              overidden ? '' : 'not '
-            }overidden' assignment`, () => {
-              const attemptChoiceOrder = []
-              cy.login('student', email)
-              assignmentsPage.clickOnAssigmentByTestId(versionedTest1)
-              studentTestPage
-                .getAllChoices()
-                .should('contain', originalSequence[2])
-              studentTestPage
-                .getAllChoices()
-                .each(($ele) => attemptChoiceOrder.push($ele.text().trim()))
-                .then(() => {
-                  overidden || status === studentSide.NOT_STARTED
-                    ? CypressHelper.checkObjectInEquality(
-                        attemptChoiceOrder,
-                        originalSequence
-                      )
-                    : CypressHelper.checkObjectEquality(
-                        attemptChoiceOrder,
-                        originalSequence
-                      )
-                })
-              if (status === studentSide.NOT_STARTED)
-                studentTestPage.attemptQuestion(
-                  queData.queKey.split('.')[0],
-                  attemptTypes.RIGHT,
-                  queData.attemptData
-                )
-              else
-                studentTestPage.verifyQuestionResponseRetained(
-                  queData.queKey.split('.')[0],
-                  attemptTypes.RIGHT,
-                  queData.attemptData
-                )
-              studentTestPage.clickOnNext()
-              studentTestPage.submitTest()
-            })
-          })
-      })
-      ;[attemptsdata1, attemptsdata2].forEach((studentdata, ind) => {
-        context('> verify teacher side for not overidden assignment', () => {
-          before('> login and click on lcb by assignment id', () => {
-            cy.login('teacher', teacher)
-            testlibaryPage.sidebar.clickOnAssignment()
-            authorAssignmentPage.clickOnLCBbyTestId(
-              versionedTest1,
-              ind === 0 ? assignid1 : assignid2
-            )
-          })
-
-          it('> verify card view', () => {
-            studentdata.forEach((stu, ind) => {
-              lcb.verifyScoreByStudentIndex(ind, 2, 2)
-              lcb.verifyQuestionCards(ind, _.values(stu.attempt))
-            })
-          })
-
-          it('> verify student centric', () => {
-            lcb.clickOnStudentsTab()
-            studentdata.forEach((stu, ind) => {
-              lcb.questionResponsePage.selectStudent(stu.name)
-              lcb.questionResponsePage
-                .getLabels(lcb.questionResponsePage.getQuestionContainer(0))
-                .each(($ele, i) =>
-                  cy.wrap($ele).should('contain.text', originalSequence[i])
-                )
-              lcb.questionResponsePage.verifyQuestionResponseCard(
-                queData.points,
-                queData.queKey,
-                attemptTypes.RIGHT,
-                queData.attemptData,
-                true,
-                0
-              )
-            })
-          })
-
-          it('> verify question centric', () => {
-            lcb.clickonQuestionsTab()
-            studentdata.forEach((stu, ind) => {
-              lcb.questionResponsePage
-                .getLabels(
-                  lcb.questionResponsePage.getQuestionContainerByStudent(
-                    stu.name
+      context(
+        `> verify regraded shuffled choice at setting student side`,
+        () => {
+          ;[...attemptsdata1, ...attemptsdata2]
+            .filter(({ status }) => status !== studentSide.SUBMITTED)
+            .forEach(({ email, overidden, status }, index) => {
+              const titleAdjust = overidden ? '' : 'not '
+              const shuffled =
+                overidden || status === studentSide.NOT_STARTED ? '' : 'not '
+              it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- '${shuffled}have shuffle'`, () => {
+                const attemptChoiceOrder = []
+                cy.login('student', email)
+                assignmentsPage.clickOnAssigmentByTestId(versionedTest1)
+                studentTestPage
+                  .getAllChoices()
+                  .should('contain', originalSequence[2])
+                studentTestPage
+                  .getAllChoices()
+                  .each(($ele) => attemptChoiceOrder.push($ele.text().trim()))
+                  .then(() => {
+                    overidden || status === studentSide.NOT_STARTED
+                      ? CypressHelper.checkObjectInEquality(
+                          attemptChoiceOrder,
+                          originalSequence
+                        )
+                      : CypressHelper.checkObjectEquality(
+                          attemptChoiceOrder,
+                          originalSequence
+                        )
+                  })
+                if (status === studentSide.NOT_STARTED)
+                  studentTestPage.attemptQuestion(
+                    queData.queKey.split('.')[0],
+                    attemptTypes.RIGHT,
+                    queData.attemptData
                   )
-                )
-                .each(($ele, i) =>
-                  cy.wrap($ele).should('contain.text', originalSequence[i])
-                )
-              lcb.questionResponsePage.verifyQuestionResponseCard(
-                queData.points,
-                queData.queKey,
-                attemptTypes.RIGHT,
-                queData.attemptData,
-                false,
-                stu.name
+                else
+                  studentTestPage.verifyQuestionResponseRetained(
+                    queData.queKey.split('.')[0],
+                    attemptTypes.RIGHT,
+                    queData.attemptData
+                  )
+                studentTestPage.clickOnNext()
+                studentTestPage.submitTest()
+              })
+            })
+        }
+      )
+      ;[attemptsdata1, attemptsdata2].forEach((studentdata, ind) => {
+        context(
+          `> verify teacher side for ${
+            ind === 0 ? 'not ' : ''
+          }overidden assignment`,
+          () => {
+            before('> login and click on lcb by assignment id', () => {
+              cy.login('teacher', teacher)
+              testlibaryPage.sidebar.clickOnAssignment()
+              authorAssignmentPage.clickOnLCBbyTestId(
+                versionedTest1,
+                ind === 0 ? assignid1 : assignid2
               )
             })
-          })
 
-          it('> verify exress grader', () => {
-            const { attemptData, queKey } = queData
-            lcb.header.clickOnExpressGraderTab()
+            it('> verify card view', () => {
+              studentdata.forEach((stu, ind) => {
+                lcb.verifyScoreByStudentIndex(ind, 2, 2)
+                lcb.verifyQuestionCards(ind, _.values(stu.attempt))
+              })
+            })
 
-            studentdata.forEach((stu, ind) => {
-              expressGraderPage.setToggleToScore()
-              expressGraderPage.getGridRowByStudent(stu.name)
-              _.keys(attempt).forEach((que, ind) => {
-                expressGraderPage.verifyScoreForStudent(
-                  que,
-                  2,
-                  _.values(attempt)[ind],
-                  attemptData,
-                  queKey
+            it('> verify student centric', () => {
+              const { queKey, attemptData: aData, points } = queData
+              lcb.clickOnStudentsTab()
+              studentdata.forEach((stu, ind) => {
+                lcb.questionResponsePage.selectStudent(stu.name)
+                lcb.questionResponsePage
+                  .getLabels(lcb.questionResponsePage.getQuestionContainer(0))
+                  .each(($ele, i) =>
+                    cy.wrap($ele).should('contain.text', originalSequence[i])
+                  )
+                lcb.questionResponsePage.verifyQuestionResponseCard(
+                  points,
+                  queKey,
+                  attemptTypes.RIGHT,
+                  aData,
+                  true,
+                  0
                 )
               })
-
-              expressGraderPage.setToggleToResponse()
-              expressGraderPage.verifyResponseGrid(
-                attempt,
-                questionTypeMap,
-                stu.name
-              )
             })
-          })
-        })
+
+            it('> verify question centric', () => {
+              const { queKey, attemptData: aData, points } = queData
+              lcb.clickonQuestionsTab()
+              studentdata.forEach(({ name }, ind) => {
+                lcb.questionResponsePage
+                  .getLabels(
+                    lcb.questionResponsePage.getQuestionContainerByStudent(name)
+                  )
+                  .each(($ele, i) =>
+                    cy.wrap($ele).should('contain.text', originalSequence[i])
+                  )
+                lcb.questionResponsePage.verifyQuestionResponseCard(
+                  points,
+                  queKey,
+                  attemptTypes.RIGHT,
+                  aData,
+                  0,
+                  name
+                )
+              })
+            })
+
+            it('> verify exress grader', () => {
+              const { attemptData, queKey } = queData
+              lcb.header.clickOnExpressGraderTab()
+
+              studentdata.forEach((stu, ind) => {
+                expressGraderPage.setToggleToScore()
+                expressGraderPage.getGridRowByStudent(stu.name)
+                _.keys(attempt).forEach((que, ind) => {
+                  expressGraderPage.verifyScoreForStudent(
+                    que,
+                    2,
+                    _.values(attempt)[ind],
+                    attemptData,
+                    queKey
+                  )
+                })
+
+                expressGraderPage.setToggleToResponse()
+                expressGraderPage.verifyResponseGrid(
+                  attempt,
+                  questionTypeMap,
+                  stu.name
+                )
+              })
+            })
+          }
+        )
       })
       ;[attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(
@@ -330,10 +334,11 @@ describe(`>${FileHelper.getSpecName(
             it('> redirect student', () => {
               lcb.selectCheckBoxByStudentName(studentdata[0].name)
               lcb.clickOnRedirect()
+              lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
               lcb.clickOnRedirectSubmit()
             })
 
-            it('> verify student', () => {
+            it('> verify student,expected to have shuffle', () => {
               const attemptChoiceOrder = []
               cy.login('student', studentdata[0].email)
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1, {
@@ -400,8 +405,7 @@ describe(`>${FileHelper.getSpecName(
         })
         ;[...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.NOT_STARTED)
-          .forEach((studentdata) => {
-            const { email, status, attempt } = studentdata
+          .forEach(({ email, status, attempt }) => {
             studentTestPage.attemptAssignment(
               email,
               status,
@@ -430,140 +434,149 @@ describe(`>${FileHelper.getSpecName(
         regrade.applyRegrade()
       })
 
-      context(`> verify student side`, () => {
-        ;[...attemptsdata1, ...attemptsdata2]
-          .filter(({ status }) => status !== studentSide.SUBMITTED)
-          .forEach((studentdata, index) => {
-            const { email, overidden, status } = studentdata
-            it(`> for student ${status} with '${
-              overidden ? '' : 'not '
-            }overidden' assignment`, () => {
-              const attemptChoiceOrder = []
-              cy.login('student', email)
+      context(
+        `> verify regraded shuffled choice at setting student side`,
+        () => {
+          ;[...attemptsdata1, ...attemptsdata2]
+            .filter(({ status }) => status !== studentSide.SUBMITTED)
+            .forEach(({ email, overidden, status }, index) => {
+              const titleAdjust = overidden ? '' : 'not '
+              const shuffled =
+                !overidden && status === studentSide.IN_PROGRESS ? '' : 'not '
+              it(`> for student ${status} with '${titleAdjust}overidden' assignment,expected- '${shuffled}have shuffle'`, () => {
+                const attemptChoiceOrder = []
+                const { queKey, attemptData } = queData
+                cy.login('student', email)
 
-              assignmentsPage.clickOnAssigmentByTestId(versionedTest2)
-              studentTestPage
-                .getAllChoices()
-                .should('contain', originalSequence[2])
-              studentTestPage
-                .getAllChoices()
-                .each(($ele) => attemptChoiceOrder.push($ele.text().trim()))
-                .then(() => {
-                  !overidden && status === studentSide.IN_PROGRESS
-                    ? CypressHelper.checkObjectInEquality(
-                        attemptChoiceOrder,
-                        originalSequence
-                      )
-                    : CypressHelper.checkObjectEquality(
-                        attemptChoiceOrder,
-                        originalSequence
-                      )
-                })
+                assignmentsPage.clickOnAssigmentByTestId(versionedTest2)
+                studentTestPage
+                  .getAllChoices()
+                  .should('contain', originalSequence[2])
+                studentTestPage
+                  .getAllChoices()
+                  .each(($ele) => attemptChoiceOrder.push($ele.text().trim()))
+                  .then(() => {
+                    !overidden && status === studentSide.IN_PROGRESS
+                      ? CypressHelper.checkObjectInEquality(
+                          attemptChoiceOrder,
+                          originalSequence
+                        )
+                      : CypressHelper.checkObjectEquality(
+                          attemptChoiceOrder,
+                          originalSequence
+                        )
+                  })
 
-              if (status === studentSide.NOT_STARTED)
-                studentTestPage.attemptQuestion(
-                  queData.queKey.split('.')[0],
-                  attemptTypes.RIGHT,
-                  queData.attemptData
-                )
-              else
-                studentTestPage.verifyQuestionResponseRetained(
-                  queData.queKey.split('.')[0],
-                  attemptTypes.RIGHT,
-                  queData.attemptData
-                )
-              studentTestPage.clickOnNext()
-              studentTestPage.submitTest()
-            })
-          })
-      })
-      ;[attemptsdata1, attemptsdata2].forEach((studentdata, ind) => {
-        context('> verify teacher side for not overidden assignment', () => {
-          before('> login and click on lcb by assignment id', () => {
-            cy.login('teacher', teacher)
-            testlibaryPage.sidebar.clickOnAssignment()
-            authorAssignmentPage.clickOnLCBbyTestId(
-              versionedTest2,
-              ind === 0 ? assignid1 : assignid2
-            )
-          })
-
-          it('> verify card view', () => {
-            studentdata.forEach((stu, ind) => {
-              lcb.verifyScoreByStudentIndex(ind, 2, 2)
-              lcb.verifyQuestionCards(ind, _.values(stu.attempt))
-            })
-          })
-
-          it('> verify student centric', () => {
-            lcb.clickOnStudentsTab()
-            studentdata.forEach((stu, ind) => {
-              lcb.questionResponsePage.selectStudent(stu.name)
-              lcb.questionResponsePage
-                .getLabels(lcb.questionResponsePage.getQuestionContainer(0))
-                .each(($ele, i) =>
-                  cy.wrap($ele).should('contain.text', originalSequence[i])
-                )
-              lcb.questionResponsePage.verifyQuestionResponseCard(
-                queData.points,
-                queData.queKey,
-                attemptTypes.RIGHT,
-                queData.attemptData,
-                true,
-                0
-              )
-            })
-          })
-
-          it('> verify question centric', () => {
-            lcb.clickonQuestionsTab()
-            studentdata.forEach((stu, ind) => {
-              lcb.questionResponsePage
-                .getLabels(
-                  lcb.questionResponsePage.getQuestionContainerByStudent(
-                    stu.name
+                if (status === studentSide.NOT_STARTED)
+                  studentTestPage.attemptQuestion(
+                    queData.queKey.split('.')[0],
+                    attemptTypes.RIGHT,
+                    queData.attemptData
                   )
-                )
-                .each(($ele, i) =>
-                  cy.wrap($ele).should('contain.text', originalSequence[i])
-                )
-              lcb.questionResponsePage.verifyQuestionResponseCard(
-                queData.points,
-                queData.queKey,
-                attemptTypes.RIGHT,
-                queData.attemptData,
-                false,
-                stu.name
+                else
+                  studentTestPage.verifyQuestionResponseRetained(
+                    queKey.split('.')[0],
+                    attemptTypes.RIGHT,
+                    attemptData
+                  )
+                studentTestPage.clickOnNext()
+                studentTestPage.submitTest()
+              })
+            })
+        }
+      )
+      ;[attemptsdata1, attemptsdata2].forEach((studentdata, ind) => {
+        context(
+          `> verify teacher side for '${
+            ind === 0 ? 'not ' : ''
+          }overidden' assignment`,
+          () => {
+            before('> login and click on lcb by assignment id', () => {
+              if (ind === 0) cy.login('teacher', teacher)
+              testlibaryPage.sidebar.clickOnAssignment()
+              authorAssignmentPage.clickOnLCBbyTestId(
+                versionedTest2,
+                ind === 0 ? assignid1 : assignid2
               )
             })
-          })
 
-          it('> verify exress grader', () => {
-            const { attemptData, queKey } = queData
-            lcb.header.clickOnExpressGraderTab()
+            it('> verify card view', () => {
+              studentdata.forEach((stu, ind) => {
+                lcb.verifyScoreByStudentIndex(ind, 2, 2)
+                lcb.verifyQuestionCards(ind, _.values(stu.attempt))
+              })
+            })
 
-            studentdata.forEach((stu, ind) => {
-              expressGraderPage.setToggleToScore()
-              expressGraderPage.getGridRowByStudent(stu.name)
-              _.keys(attempt).forEach((que, ind) => {
-                expressGraderPage.verifyScoreForStudent(
-                  que,
-                  2,
-                  _.values(attempt)[ind],
-                  attemptData,
-                  queKey
+            it('> verify student centric', () => {
+              const { queKey, attemptData: aData, points } = queData
+              lcb.clickOnStudentsTab()
+              studentdata.forEach(({ name }, ind) => {
+                lcb.questionResponsePage.selectStudent(name)
+                lcb.questionResponsePage
+                  .getLabels(lcb.questionResponsePage.getQuestionContainer(0))
+                  .each(($ele, i) =>
+                    cy.wrap($ele).should('contain.text', originalSequence[i])
+                  )
+                lcb.questionResponsePage.verifyQuestionResponseCard(
+                  points,
+                  queKey,
+                  attemptTypes.RIGHT,
+                  aData,
+                  true,
+                  0
                 )
               })
-
-              expressGraderPage.setToggleToResponse()
-              expressGraderPage.verifyResponseGrid(
-                attempt,
-                questionTypeMap,
-                stu.name
-              )
             })
-          })
-        })
+
+            it('> verify question centric', () => {
+              const { queKey, attemptData: aData, points } = queData
+              lcb.clickonQuestionsTab()
+              studentdata.forEach(({ name }, ind) => {
+                lcb.questionResponsePage
+                  .getLabels(
+                    lcb.questionResponsePage.getQuestionContainerByStudent(name)
+                  )
+                  .each(($ele, i) =>
+                    cy.wrap($ele).should('contain.text', originalSequence[i])
+                  )
+                lcb.questionResponsePage.verifyQuestionResponseCard(
+                  points,
+                  queKey,
+                  attemptTypes.RIGHT,
+                  aData,
+                  0,
+                  name
+                )
+              })
+            })
+
+            it('> verify exress grader', () => {
+              const { attemptData, queKey } = queData
+              lcb.header.clickOnExpressGraderTab()
+
+              studentdata.forEach((stu, ind) => {
+                expressGraderPage.setToggleToScore()
+                expressGraderPage.getGridRowByStudent(stu.name)
+                _.keys(attempt).forEach((que, ind) => {
+                  expressGraderPage.verifyScoreForStudent(
+                    que,
+                    2,
+                    _.values(attempt)[ind],
+                    attemptData,
+                    queKey
+                  )
+                })
+
+                expressGraderPage.setToggleToResponse()
+                expressGraderPage.verifyResponseGrid(
+                  attempt,
+                  questionTypeMap,
+                  stu.name
+                )
+              })
+            })
+          }
+        )
       })
       ;[attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(
@@ -582,10 +595,11 @@ describe(`>${FileHelper.getSpecName(
             it('> redirect student', () => {
               lcb.selectCheckBoxByStudentName(studentdata[0].name)
               lcb.clickOnRedirect()
+              lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
               lcb.clickOnRedirectSubmit()
             })
 
-            it('> verify student', () => {
+            it('> verify student, expected not to have shuffle', () => {
               const attemptChoiceOrder = []
               cy.login('student', studentdata[0].email)
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2, {

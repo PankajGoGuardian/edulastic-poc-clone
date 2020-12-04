@@ -70,6 +70,7 @@ export const queColor = {
   NO_ATTEMPT: 'rgb(229, 229, 229)',
   MANUAL_GRADE: 'rgb(56, 150, 190)',
   YELLOW: 'rgb(253, 204, 59)',
+  YELLOW_1: 'rgb(254, 190, 0)',
   CLEAR_DAY: 'rgb(225, 251, 242)',
   PLAIN_RED: 'rgb(255, 0, 0)',
   RED: 'rgb(255, 0, 87)',
@@ -88,6 +89,7 @@ export const queColor = {
   GREEN_6: 'rgb(66, 209, 132)',
   GREEN_7: 'rgb(132, 205, 54)',
   GREEN_8: 'rgb(54, 210, 156)',
+  GREEN_9: 'rgb(39, 148, 122)',
   LIGHT_GREEN: 'rgb(226, 252, 243)',
   LIGHT_GREEN1: 'rgba(31, 227, 161, 0.118)',
   LIGHT_GREY: 'rgb(211, 211, 211)',
@@ -100,6 +102,7 @@ export const queColor = {
   BLUE_1: 'rgb(87, 107, 169)',
   BLUE_2: 'rgb(63, 132, 229)',
   BLUE_3: 'rgb(26, 115, 232)',
+  BLUE_4: 'rgb(190, 222, 255)',
   WHITE: 'rgb(255, 255, 255)',
   WHITE_1: 'rgb(248, 248, 248)',
   ORANGE: 'rgb(255, 165, 0)',
@@ -141,6 +144,7 @@ export const COLLECTION = {
   district: 'District Library',
   private: 'Private Library',
   public: 'Public Library',
+  edulastic: 'Edulastic Certified',
 }
 
 export const sortOptions = {
@@ -201,4 +205,11 @@ export const questionTypeMap = {
   'Video & Text': ['Video'],
   'Rulers & Calculators': ['Protractor'],
   Other: [],
+}
+
+export const CUSTOM_COLLECTIONS = {
+  AUTO_COLLECTION_1: '5e2af3ea1794ac07ba1c1021',
+  AUTO_COLLECTION_2: '5e2af3f41794ac07ba1c1022',
+  AUTO_COLLECTION_3: '5e2af3fe1794ac07ba1c1023',
+  AUTO_COLLECTION_4: '5e2af40a1794ac07ba1c1024',
 }

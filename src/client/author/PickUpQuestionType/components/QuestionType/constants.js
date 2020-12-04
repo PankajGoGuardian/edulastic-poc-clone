@@ -943,7 +943,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'edit',
       cardImage: WSEssayPlainText,
       data: {
-        title: 'Essay with Plain Text',
+        title: questionTitle.ESSAY_PLAIN_TEXT,
         stimulus: '',
         type: questionType.ESSAY_PLAIN_TEXT,
         showCopy: true,
@@ -962,7 +962,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'edit',
       cardImage: WSShortText,
       data: {
-        title: 'Short Text',
+        title: questionTitle.SHORT_TEXT,
         stimulus: '',
         type: questionType.SHORT_TEXT,
         validation: {
@@ -1027,7 +1027,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'multiple-choice',
       cardImage: MCMultipleResponses,
       data: {
-        title: 'Multiple Selection',
+        title: questionTitle.MCQ_MULTIPLE_RESPONSE,
         type: questionType.MULTIPLE_CHOICE,
         stimulus: '',
         uiStyle: {
@@ -1083,7 +1083,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'multiple-choice',
       cardImage: MCBlockLayout,
       data: {
-        title: 'Multiple Choice - Block Layout',
+        title: questionTitle.MCQ_BLOCK_LAYOUT,
         type: questionType.MULTIPLE_CHOICE,
         stimulus: '',
         uiStyle: {
@@ -1113,7 +1113,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'classify',
       cardImage: CMSortList,
       data: {
-        title: 'Sort List',
+        title: questionTitle.SORT_LIST,
         firstMount: true,
         type: questionType.SORT_LIST,
         stimulus: '',
@@ -1139,7 +1139,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'classify',
       cardImage: CMClassification,
       data: {
-        title: 'Classification',
+        title: questionTitle.CLASSIFICATION,
         firstMount: true,
         groupPossibleResponses: false,
         possibleResponseGroups: [
@@ -1211,7 +1211,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'classify',
       cardImage: CMMatch,
       data: {
-        title: 'Match the following',
+        title: questionTitle.MATCH_LIST,
         firstMount: true,
         groupPossibleResponses: false,
         possibleResponseGroups: [
@@ -1284,7 +1284,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'multiple-choice',
       cardImage: MCMatrixStandard,
       data: {
-        title: 'Match Table - Standard',
+        title: questionTitle.CHOICE_MATRIX_STANDARD,
         firstMount: true,
         type: questionType.CHOICE_MATRIX,
         stimulus: '',
@@ -1317,7 +1317,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'multiple-choice',
       cardImage: MCMatrixInline,
       data: {
-        title: 'Match Table - Inline',
+        title: questionTitle.CHOICE_MATRIX_INLINE,
         firstMount: true,
         options: ['True', 'False'],
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
@@ -1349,7 +1349,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: 'multiple-choice',
       cardImage: MCMatrixLabels,
       data: {
-        title: 'Match Table - Labels',
+        title: questionTitle.CHOICE_MATRIX_LABELS,
         firstMount: true,
         options: ['True', 'False'],
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
@@ -1383,7 +1383,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeDragDrop,
       stimulus: '',
       data: {
-        title: 'Drag & Drop',
+        title: questionTitle.CLOZE_DRAG_DROP,
         stimulus: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
         uiStyle: {
@@ -1418,7 +1418,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeDropDown,
       stimulus: 'Pick the right options in the dropdown below',
       data: {
-        title: 'Text Drop Down',
+        title: questionTitle.CLOZE_DROP_DOWN,
         type: questionType.CLOZE_DROP_DOWN,
         stimulus: `<p>Pick the right options in the dropdown below.</p><p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${uuids[0]} contenteditable="false"></textdropdown>&nbsp;and&nbsp;<textdropdown responseindex="2" id=${uuids[1]} contenteditable="false"></textdropdown>&nbsp;</p>`,
         responseIds: [
@@ -1455,7 +1455,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeText,
       stimulus: 'Fill blank boxes with the right answer.',
       data: {
-        title: 'Text Entry',
+        title: questionTitle.CLOZE_TEXT,
         type: questionType.CLOZE_TEXT,
         stimulus: `<p>Fill blank boxes with the right answer.</p><p>Sample question text with <textinput responseindex="1" id=${uuids[0]} contenteditable="false" /></textinput>&nbsp;and<textinput responseindex="2" contenteditable="false" id=${uuids[1]}/></textinput>&nbsp;</p>`,
         uiStyle: {
@@ -1492,7 +1492,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeImgDragDrop,
       stimulus: '',
       data: {
-        title: 'Label Image with Drag & Drop',
+        title: questionTitle.CLOZE_IMAGE_DRAG_DROP,
         type: questionType.CLOZE_IMAGE_DRAG_DROP,
         firstMount: true,
         stimulus: 'Sample image background with an overlaid drop area(s)',
@@ -1543,7 +1543,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         background: '#0288d1',
       },
       data: {
-        title: 'Label Image with Drop Down',
+        title: questionTitle.CLOZE_IMAGE_DROP_DOWN,
         type: questionType.CLOZE_IMAGE_DROP_DOWN,
         firstMount: true,
         stimulus: 'Sample image background with overlaid drop downs',
@@ -1596,7 +1596,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeImgText,
       stimulus: '',
       data: {
-        title: 'Label Image with Text',
+        title: questionTitle.CLOZE_IMAGE_TEXT,
         type: questionType.CLOZE_IMAGE_TEXT,
         stimulus: 'Sample image background with overlaid text fields',
         options: [],
@@ -1665,7 +1665,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeEditingTask,
       stimulus: 'Pick the right options in the dropdown below',
       data: {
-        title: 'Editing Task',
+        title: questionTitle.EDITING_TASK,
         type: questionType.EDITING_TASK,
         stimulus: `
           <p>Pick the right options in the dropdown below.</p>
@@ -2521,7 +2521,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: MTCombinationClozeText,
       stimulus: '',
       data: {
-        title: 'Math, Text & Dropdown',
+        title: questionTitle.EXPRESSION_MULTIPART,
         stimulus:
           '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;,&nbsp;<mathunit contenteditable="false"></mathunit>&nbsp;</p>',
         templateDisplay: true,

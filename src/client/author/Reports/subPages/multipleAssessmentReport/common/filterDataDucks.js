@@ -1,7 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { groupBy } from 'lodash'
@@ -88,15 +87,19 @@ const initialState = {
   MARFilterData: {},
   prevMARFilterData: null,
   filters: {
+    reportId: '',
     termId: '',
     subject: 'All',
+    studentSubject: 'All',
     grade: 'All',
+    studentGrade: 'All',
     courseId: 'All',
+    studentCourseId: 'All',
     classId: 'All',
     groupId: 'All',
-    schoolId: 'All',
-    teacherId: 'All',
-    assessmentType: 'All',
+    schoolIds: '',
+    teacherIds: '',
+    assessmentTypes: '',
     /**
      * performanceBandProfile
      */
@@ -109,19 +112,18 @@ const initialState = {
 const setFiltersReducer = (state, { payload }) => {
   if (payload.filters && payload.orgDataArr) {
     const byGroupId = groupBy(
-      payload.orgDataArr.filter((item, index) => {
-        if (
-          item.groupId &&
-          (item.grade === payload.filters.grade ||
-            payload.filters.grade === 'All') &&
-          (item.subject === payload.filters.subject ||
-            payload.filters.subject === 'All') &&
-          (item.courseId === payload.filters.courseId ||
-            payload.filters.courseId === 'All')
-        ) {
-          return true
-        }
-      }),
+      payload.orgDataArr.filter(
+        (item) =>
+          !!(
+            item.groupId &&
+            (item.grade === payload.filters.grade ||
+              payload.filters.grade === 'All') &&
+            (item.subject === payload.filters.subject ||
+              payload.filters.subject === 'All') &&
+            (item.courseId === payload.filters.courseId ||
+              payload.filters.courseId === 'All')
+          )
+      ),
       'groupId'
     )
     // map filtered class ids & custom group ids by group type
@@ -151,7 +153,7 @@ const setTestIdReducer = (state, { payload }) => {
 }
 
 export const reportMARFilterDataReducer = createReducer(initialState, {
-  [GET_REPORTS_MAR_FILTER_DATA_REQUEST]: (state, { payload }) => {
+  [GET_REPORTS_MAR_FILTER_DATA_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -164,7 +166,7 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: setFiltersReducer,
   [SET_TEST_ID]: setTestIdReducer,
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [SET_REPORTS_PREV_MAR_FILTER_DATA]: (state, { payload }) => {
     state.prevMARFilterData = payload
   },

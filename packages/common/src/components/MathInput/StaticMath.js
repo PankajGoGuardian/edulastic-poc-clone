@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { math } from '@edulastic/constants'
-import { MathKeyboard, reformatMathInputLatex, offset } from '@edulastic/common'
-import { MathInputStyles, DraggableKeyboard, EmptyDiv } from './MathInputStyles'
+import { MathKeyboard, reformatMathInputLatex } from '@edulastic/common'
+import { MathInputStyles, EmptyDiv } from './MathInputStyles'
+import Draggable from './Draggable'
 
 import { WithResources } from '../../HOC/withResources'
 import AppConfig from '../../../../../src/app-config'
@@ -88,22 +89,29 @@ const StaticMath = ({
   }
 
   const getKeyboardPosition = (el) => {
-    const { top, left, height: inputH } = offset(el) || { left: 0, top: 0 }
+    const { top, left, height: inputH } = el.getBoundingClientRect()
+
+    // dynamic variable formula input does not pass keyboard type(styles)
+    // so in this case, need to use `basic` mode
+    // @see: https://snapwiz.atlassian.net/browse/EV-21988
+
     const { width, height: keyboardH } = math.symbols.find(
-      (x) => x.value === symbols[0]
+      (x) => x.value === (symbols[0] || 'basic')
     ) || { width: 0, height: 0 }
 
-    let x = window.innerWidth - left - width
-    if (x > 0) {
-      x = 0
+    // 8 is margin between math keyboard and math input
+    let x = left
+    let y = top + inputH + 4
+
+    const xdiff = window.innerWidth - left - width
+
+    if (xdiff < 0) {
+      x += xdiff
     }
 
-    let y = window.innerHeight - top - (keyboardH - 50) - inputH
-    if (y < 0) {
-      // 8 is margin between math keyboard and math input
-      y = -(keyboardH - 50) - 8
-    } else {
-      y = inputH + 8
+    const ydiff = window.innerHeight - y - keyboardH
+    if (ydiff < 0) {
+      y = y - keyboardH - inputH - 8
     }
 
     return { x, y }
@@ -220,7 +228,7 @@ const StaticMath = ({
     setInnerFieldValues(innerValues)
   }, [innerValues])
 
-  const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : DraggableKeyboard
+  const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : Draggable
 
   return (
     <MathInputStyles

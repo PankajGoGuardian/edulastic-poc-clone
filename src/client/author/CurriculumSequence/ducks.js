@@ -1,4 +1,5 @@
 import { buffers } from 'redux-saga'
+import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import * as moment from 'moment'
 import { message } from 'antd'
@@ -92,6 +93,8 @@ export const SET_SELECTED_ITEMS_FOR_ASSIGN =
   '[curriculum-sequence] set selected items for assign'
 export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT =
   '[curriculum-sequence] set selected items for assign init'
+export const SET_RECOMMENDATIONS_TO_ASSIGN =
+  '[curriculum-sequence] recommendations to assign'
 export const SET_DATA_FOR_ASSIGN_INIT =
   '[curriculum-sequence] set data for assign init'
 export const SET_DATA_FOR_ASSIGN = '[curriculum-sequence] set data for assign'
@@ -241,6 +244,9 @@ export const toggleAddContentAction = createAction(TOGGLE_ADD_CONTENT)
 export const createAssignmentNowAction = createAction(CREATE_ASSIGNMENT_NOW)
 export const setSelectedItemsForAssignAction = createAction(
   SET_SELECTED_ITEMS_FOR_ASSIGN_INIT
+)
+export const setRecommendationsToAssignAction = createAction(
+  SET_RECOMMENDATIONS_TO_ASSIGN
 )
 export const setDataForAssignAction = createAction(SET_DATA_FOR_ASSIGN_INIT)
 export const addContentToCurriculumSequenceAction = createAction(
@@ -454,6 +460,11 @@ export const getDifferentiationWorkLoadingStateSelector = (state) =>
 
 export const getWorkStatusDataSelector = (state) =>
   state.curriculumSequence.workStatusData
+
+export const getRecommendationsToAssignSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.recommendationsToAssign
+)
 
 const getPublisher = (state) => {
   if (!state.curriculumSequence) return ''
@@ -1612,6 +1623,7 @@ function* fetchDifferentiationWorkSaga({ payload }) {
 
 function* addRecommendationsSaga({ payload }) {
   try {
+    yield put(setRecommendationsToAssignAction({ isAssigning: true }))
     let response = null
     if (Array.isArray(payload)) {
       for (const payloadItem of payload) {
@@ -1623,12 +1635,20 @@ function* addRecommendationsSaga({ payload }) {
     } else {
       response = yield call(recommendationsApi.acceptRecommendations, payload)
     }
+
     payload = Array.isArray(payload) ? payload[0] : payload
     yield put(updateFetchWorkLoadingStateAction(true))
     const statusData = yield call(recommendationsApi.getRecommendationsStatus, {
       assignmentId: payload.assignmentId,
       groupId: payload.groupId,
     })
+    yield put(
+      setRecommendationsToAssignAction({
+        isAssigning: false,
+        isRecommendationAssignView: false,
+        recommendations: [],
+      })
+    )
     yield put(updateWorkStatusDataAction(statusData))
     const workData = yield select(getDifferentiationWorkSelector)
     const structuredData = structureWorkData(workData, statusData)
@@ -1637,6 +1657,7 @@ function* addRecommendationsSaga({ payload }) {
     yield put(updateFetchWorkLoadingStateAction(false))
   } catch (err) {
     console.error(err)
+    yield put(setRecommendationsToAssignAction({ isAssigning: false }))
     yield call(notification, { msg: err.response.data.message })
   }
 }
@@ -1649,29 +1670,53 @@ const moveContentInPlaylist = (state, { payload }) => {
     fromContentIndex,
   } = payload
   let newPlaylist
-  if (!toContentIndex) {
-    newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelected' })
-      }
-      draft.modules[toModuleIndex].data.push(
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      )
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
-    })
-  } else {
-    newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelected' })
-      }
-      draft.modules[toModuleIndex].data.splice(
-        toContentIndex,
-        0,
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      )
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
-    })
+  // If no valid destination module.
+  if (
+    (toModuleIndex !== 0 && !toModuleIndex) ||
+    !state.destinationCurriculumSequence.modules?.[toModuleIndex]
+  ) {
+    notification({ messageKey: 'invalidModuleSelect' })
+    return state
   }
+
+  // If valid fromModuleIndex but module is not present in playlist
+  if (
+    fromModuleIndex >= 0 &&
+    !state.destinationCurriculumSequence.modules?.[fromModuleIndex]
+  ) {
+    return newPlaylist
+  }
+
+  const newItem =
+    state.destinationCurriculumSequence.modules[fromModuleIndex].data[
+      fromContentIndex
+    ]
+  const isItemExistingInModule = state.destinationCurriculumSequence.modules[
+    toModuleIndex
+  ]?.data?.some((x) => x?.contentId === newItem?.contentId)
+
+  if (isItemExistingInModule) {
+    notification({
+      msg: `Dropped ${
+        newItem.contentType === 'test' ? 'Test' : 'Resource'
+      } already exists in this module`,
+    })
+
+    return state
+  }
+
+  newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
+    if (!toContentIndex) {
+      // Move item to different module
+      draft.modules[toModuleIndex].data.push(newItem)
+    } else {
+      // Move item in same module
+      draft.modules[toModuleIndex].data.splice(toContentIndex, 0, newItem)
+    }
+
+    draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
+  })
+
   return {
     ...state,
     destinationCurriculumSequence: {
@@ -2005,6 +2050,13 @@ const initialState = {
   showRightPanel: true,
   customizeInDraft: false,
   currentAssignmentIds: [],
+
+  isConfirmedCustomization: false,
+  recommendationsToAssign: {
+    isRecommendationAssignView: false,
+    isAssigning: false,
+    recommendations: [],
+  },
 }
 
 /**
@@ -2222,6 +2274,27 @@ const setSelectedItemsForAssignReducer = (state, { payload }) => {
     state.selectedItemsForAssign.push(payload)
   } else if (Array.isArray(payload)) {
     state.selectedItemsForAssign = payload
+  }
+}
+
+/**
+ * @param {State} state
+ * @param {Object<String, String>} args
+ * @param {Object} [args.payload]
+ */
+const setRecommendationsToAssignReducer = (state, { payload }) => {
+  if (!payload) {
+    return state
+  }
+
+  const recommendationsToAssign = { ...state.recommendationsToAssign }
+
+  return {
+    ...state,
+    recommendationsToAssign: {
+      ...recommendationsToAssign,
+      ...payload,
+    },
   }
 }
 
@@ -2451,6 +2524,7 @@ export default createReducer(initialState, {
   [TOGGLE_ADD_CONTENT]: toggleAddContentReducer,
   [CREATE_ASSIGNMENT_OK]: createAssignmentReducer,
   [SET_SELECTED_ITEMS_FOR_ASSIGN]: setSelectedItemsForAssignReducer,
+  [SET_RECOMMENDATIONS_TO_ASSIGN]: setRecommendationsToAssignReducer,
   [SET_DATA_FOR_ASSIGN]: setDataForAssignReducer,
   [REMOVE_ITEM_FROM_UNIT]: removeItemFromUnitReducer,
   [ADD_NEW_UNIT]: addNewUnitReducer,

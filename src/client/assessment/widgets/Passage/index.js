@@ -31,7 +31,7 @@ const PassageWrapper = styled(Paper).attrs(() => ({
     flowLayout ? 'unset' : `0 3px 10px 0 ${boxShadowDefault}`};
   position: relative;
   text-align: justify;
-  word-break: break-all;
+  word-break: break-word;
 `
 
 const Passage = ({

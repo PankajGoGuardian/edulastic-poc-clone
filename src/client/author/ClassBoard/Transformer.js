@@ -580,6 +580,7 @@ export const transformGradeBookResponse = (
               pendingEvaluation,
               scratchPad,
               userResponse,
+              autoGrade,
               ...remainingProps
             } = currentQuestionActivity
             skipped = getSkippedStatusOfQuestion(
@@ -599,6 +600,11 @@ export const transformGradeBookResponse = (
               }
             }
 
+            let _graded = graded
+            if (autoGrade === false && score === undefined) {
+              _graded = false
+            }
+
             return {
               ...(studentResponse ? remainingProps : {}),
               _id,
@@ -613,7 +619,7 @@ export const transformGradeBookResponse = (
               testItemId,
               qids: _qids,
               testActivityId,
-              graded,
+              graded: _graded,
               qLabel,
               barLabel,
               pendingEvaluation,

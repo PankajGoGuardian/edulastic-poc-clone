@@ -257,7 +257,7 @@ export const ClassLink = styled.span`
 
 export const CodeWrapper = styled(Row)`
   width: 100%;
-  justify-content: space-between;
+  justify-content: end;
 `
 
 export const ClassCode = styled(Col)`

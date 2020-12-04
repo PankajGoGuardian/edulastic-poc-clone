@@ -274,14 +274,14 @@ export function PerformanceBandAlt(props) {
             name: 'Proficient',
             aboveOrAtStandard: true,
             from: 100,
-            to: 70,
+            to: 71,
           },
           {
             color: '#576BA9',
             name: 'Basic',
             aboveOrAtStandard: true,
             from: 70,
-            to: 50,
+            to: 51,
           },
           {
             color: '#F39300',

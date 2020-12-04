@@ -27,24 +27,24 @@ const studentAssignment = new AssignmentsPage()
 
 const students = {
   1: {
-    email: 'student.1.studentgroup@snapwiz.com',
-    studentName: 'studentGroup, student.1',
+    email: 'grstudent006@snapwiz.com',
+    studentName: 'Stgroup, Student060',
   },
   2: {
-    email: 'student.0.studentgroup@snapwiz.com',
-    studentName: 'studentGroup, student.0',
+    email: 'grstudent007@snapwiz.com',
+    studentName: 'Stgroup, Student070',
   },
   3: {
-    email: 'student.3.studentgroup@snapwiz.com',
-    studentName: 'studentGroup, student.3',
+    email: 'grstudent008@snapwiz.com',
+    studentName: 'Stgroup, Student080',
   },
   4: {
-    email: 'student.4.studentgroup@snapwiz.com',
-    studentName: 'studentGroup, student.4',
+    email: 'grstudent009@snapwiz.com',
+    studentName: 'Stgroup, Student090',
   },
   5: {
-    email: 'student.5.studentgroup@snapwiz.com',
-    studentName: 'studentGroup, student.5',
+    email: 'grstudent0010@snapwiz.com',
+    studentName: 'Stgroup, Student0010',
   },
 }
 
@@ -70,15 +70,15 @@ const groups = {
   },
 }
 
-const teacher = 'teacher.studentgroup@automation.com'
-const password = 'automation'
+const teacher = 'teacher@studentgroup.com'
+const password = 'snapwiz'
 const classNameEdit = 'Automation Class - StudentGroup'
-const testIdForReport = '5f2410926390ea0008f47387'
+const testIdForReport = '5f7edc92e91a2a0007311695'
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
 )} >> Student Groups`, () => {
-  const testId = '5f24169e2016b90008b3438b'
+  const testId = '5f7eb99abd78b10009a202ee'
   const studentGroup1 = [students[1], students[2]]
   const studentGroup1Edit = [students[3], students[4]]
   const studentGroup2 = [students[3], students[4]]
@@ -101,7 +101,7 @@ describe(`${FileHelper.getSpecName(
     })
 
     it('> select student from report and create group', () => {
-      // selecting student 1 and 2 and creating new group
+      //selecting student 1 and 2 and creating new group
       pbsReport.selectStudentByName(students[1].studentName)
       pbsReport.selectStudentByName(students[2].studentName)
       pbsReport.clickOnActionAddToGroup()
@@ -192,7 +192,7 @@ describe(`${FileHelper.getSpecName(
         manageGroup.verifyGroupRowDetails(groups[1].name, 4)
         manageGroup.clickOnGroupRowByName(groups[1].name)
         ;[...studentGroup1, ...studentGroup1Edit].forEach((student) =>
-          manageGroup.getStudentRow(student.email).should('be.exist')
+          manageGroup.getStudentRow(student.email, true)
         )
 
         it('> verify added students on teacher assignemnt/lcb', () => {
@@ -249,7 +249,7 @@ describe(`${FileHelper.getSpecName(
         // assignment count on manange group page can not be verifed as it takes 8~10 mins to sync up from redshift.
         manageGroup.verifyGroupRowDetails(groups[1].name, 3)
         manageGroup.clickOnGroupRowByName(groups[1].name)
-        manageGroup.getStudentRow(studentToRemove.email).should('not.exist')
+        manageGroup.getStudentRow(studentToRemove.email, false)
       })
 
       it('> verify remove students on teacher assignemnt/lcb', () => {
@@ -349,22 +349,20 @@ describe(`${FileHelper.getSpecName(
       })
 
       it('verify removal in LCB and student group', () => {
-        // EXPECTED: after removing a student from assingned group, test should still be assigned to that student
+        // EXPECTED: after removing a student from assingned group, ttest will not be available to the removed student
         sideBar.clickOnAssignment()
         authorAssignmentPage.clickOnLCBbyTestId(testId)
         authorAssignmentPage
           .getAllStudentCard()
-          .should('have.length', 2)
-          .and('contain.text', studentToRemove.studentName)
+          .should('have.length', 1)
+          .and('not.contain.text', studentToRemove.studentName)
 
         sideBar.clickOnManageClass()
         manageGroup.clickOnGroupTab()
         // assignment count on manange group page can not be verifed as it takes 8~10 mins to sync up from redshift.
         manageGroup.verifyGroupRowDetails(groups[2].name, 1)
         manageGroup.clickOnGroupRowByName(groups[2].name)
-        manageGroup
-          .getStudentRow(`${studentToRemove.email}`)
-          .should('not.exist')
+        manageGroup.getStudentRow(studentToRemove.email, false)
       })
     })
 
@@ -388,7 +386,7 @@ describe(`${FileHelper.getSpecName(
           testId,
           groups[2].name,
           0,
-          3
+          2
         )
         // verify on lcb
         authorAssignmentPage.clickOnLCBbyTestId(testId)
@@ -404,7 +402,7 @@ describe(`${FileHelper.getSpecName(
         // assignment count on manange group page can not be verifed as it takes 8~10 mins to sync up from redshift.
         manageGroup.verifyGroupRowDetails(groups[2].name, 2)
         manageGroup.clickOnGroupRowByName(groups[2].name)
-        manageGroup.getStudentRow(`${studentToAdd.email}`).should('be.exist')
+        manageGroup.getStudentRow(`${studentToAdd.email}`, true)
       })
     })
   })
@@ -499,14 +497,15 @@ describe(`${FileHelper.getSpecName(
 
   context('Assigning test to 2 group having a common student', () => {
     context('Assigning tests to two groups together - with duplicate', () => {
+      const classestobeassigned = [groups[4].name, groups[3].name]
+
       before('Delete all assignments', () => {
         cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport])
         cy.login('teacher', teacher, password)
       })
       it('assign test to 2 groups, common student', () => {
         testLibrary.assignPage.visitAssignPageById(testId)
-        testLibrary.assignPage.selectClass(groups[3].name)
-        testLibrary.assignPage.selectClass(groups[4].name)
+        testLibrary.assignPage.selectMultipleCLasses(classestobeassigned)
         testLibrary.assignPage.clickOnAssign({ duplicate: true })
       })
 
@@ -527,6 +526,7 @@ describe(`${FileHelper.getSpecName(
     context(
       'Assign test to two groups together - with cancel duplicate',
       () => {
+        const classestobeassigned = [groups[4].name, groups[3].name]
         before('Delete all assignments', () => {
           cy.deleteAllAssignments(undefined, teacher, password, [
             testIdForReport,
@@ -535,8 +535,7 @@ describe(`${FileHelper.getSpecName(
         })
         it('Assign test with cancel duplicate', () => {
           testLibrary.assignPage.visitAssignPageById(testId)
-          testLibrary.assignPage.selectClass(groups[3].name)
-          testLibrary.assignPage.selectClass(groups[4].name)
+          testLibrary.assignPage.selectMultipleCLasses(classestobeassigned)
           testLibrary.assignPage.clickOnAssign({
             duplicate: false,
             willNotAssign: true,
@@ -595,7 +594,7 @@ describe(`${FileHelper.getSpecName(
       sideBar.clickOnManageClass()
       manageGroup.clickOnGroupTab()
       manageGroup.clickOnGroupRowByName(groups[4].name)
-      manageClass.clickOnEditClass()
+      manageClass.clickOnEditGroup()
       manageGroup.fillGroupDetail(editGroupValues)
       manageGroup.clickOnUpdateClass()
     })
@@ -604,7 +603,7 @@ describe(`${FileHelper.getSpecName(
       sideBar.clickOnManageClass()
       manageGroup.clickOnGroupTab()
       manageGroup.clickOnGroupRowByName(editGroupValues.name)
-      manageClass.clickOnEditClass()
+      manageClass.clickOnEditGroup()
       manageGroup.verifyGroupDetails(editGroupValues)
     })
   })

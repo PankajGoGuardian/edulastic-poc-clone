@@ -7,7 +7,6 @@ import { keyBy } from 'lodash'
 import { getReportsMARSelectedPerformanceBandProfile } from '../common/filterDataDucks'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getClassAndGroupIds } from '../common/utils/transformers'
 
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST =
   '[reports] get reports performance over time request'
@@ -81,14 +80,9 @@ export const reportPerformanceOverTimeReducer = createReducer(initialState, {
 
 function* getReportsPerformanceOverTimeRequest({ payload }) {
   try {
-    const { classIds, groupIds } = getClassAndGroupIds(payload)
     const performanceOverTime = yield call(
       reportsApi.fetchPerformanceOverTimeReport,
-      {
-        ...payload,
-        classIds,
-        groupIds,
-      }
+      payload
     )
     const dataSizeExceeded =
       performanceOverTime?.data?.dataSizeExceeded || false

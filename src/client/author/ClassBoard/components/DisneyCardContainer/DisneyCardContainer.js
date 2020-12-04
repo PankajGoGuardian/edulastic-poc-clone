@@ -207,7 +207,7 @@ class DisneyCardContainer extends Component {
               })
             : null
         const responseLink = student.testActivityId &&
-          status.status !== 'Absent' &&
+          student.UTASTATUS !== ABSENT &&
           student.UTASTATUS !== NOT_STARTED && (
             <PagInfo
               data-cy="viewResponse"

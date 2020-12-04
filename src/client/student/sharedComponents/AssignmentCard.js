@@ -89,6 +89,7 @@ const AssignmentCard = memo(
     user: { role: userRole, _id: userId },
     proxyUserRole,
     highlightMode,
+    index,
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
@@ -201,6 +202,12 @@ const AssignmentCard = memo(
     if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
       maxAttempts = reports.length
     }
+
+    useEffect(() => {
+      if (index <= 2 && reports.length > 0 && maxAttempts > 1) {
+        setShowAttempts(true)
+      }
+    }, [index])
     const startTest = () => {
       // On start check if assignment is expired or not
       if (endDate && serverTimeStamp > endDate) {
@@ -344,37 +351,22 @@ const AssignmentCard = memo(
 
     const isValidAttempt = attempted
 
-    const getColSize = () => {
-      let colsCount = 1
-
-      if (isValidAttempt) {
-        colsCount += 1
-      }
-
-      if (type == 'assignment') {
-        return colsCount
-      }
-
-      return 4
-    }
-
     const onRetakeModalConfirm = () => {
       setShowRetakeModal(false)
       setRetakeConfirmation(true)
       startTest()
     }
 
-    const selectedColSize = 24 / getColSize(type)
     let btnWrapperSize = 24
     if (type !== 'assignment') {
       btnWrapperSize = releaseScore === releaseGradeLabels.DONT_RELEASE ? 18 : 6
     } else if (isValidAttempt) {
-      btnWrapperSize = 12
+      btnWrapperSize = 18
     }
 
     const ScoreDetail = (
       <>
-        <AnswerAndScore xs={selectedColSize}>
+        <AnswerAndScore xs={6}>
           {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
             <>
               <span data-cy="score">
@@ -385,7 +377,7 @@ const AssignmentCard = memo(
             </>
           )}
         </AnswerAndScore>
-        <AnswerAndScore xs={selectedColSize}>
+        <AnswerAndScore xs={6}>
           <span data-cy="percent">{Math.round(scorePercentage)}%</span>
           <Title>{t('common.score')}</Title>
         </AnswerAndScore>
@@ -462,7 +454,7 @@ const AssignmentCard = memo(
                 {isValidAttempt && (
                   <>
                     <Attempts
-                      xs={selectedColSize}
+                      xs={6}
                       onClick={() => {
                         if (maxAttempts > 1) {
                           toggleAttemptsView()
@@ -487,7 +479,6 @@ const AssignmentCard = memo(
                 )}
                 {StartButtonContainer && (
                   <StyledActionButton
-                    isAssignment={type == 'assignment'}
                     isValidAttempt={isValidAttempt}
                     sm={btnWrapperSize}
                   >
@@ -644,8 +635,8 @@ const StyledActionButton = styled(AnswerAndScore)`
     align-items: center;
   }
 
-  align-items: ${({ isValidAttempt, isAssignment }) =>
-    !isValidAttempt || isAssignment ? 'flex-end' : 'center'};
+  align-items: ${({ isValidAttempt }) =>
+    !isValidAttempt ? 'flex-end' : 'center'};
   justify-content: center;
 `
 

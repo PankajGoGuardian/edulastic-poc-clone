@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import CypressHelper from '../util/cypressHelpers'
 import TeacherSideBar from './SideBarPage'
 
@@ -29,8 +30,11 @@ export default class TeacherManageClassPage {
     cy.route('GET', '**/enrollment/**').as('enrollment')
     this.getClassRowByName(className).click()
     cy.wait('@enrollment')
-    cy.wait('@searchUser')
+    // cy.wait('@searchUser')
   }
+
+  getClassCode = (className) =>
+    this.getClassRowByName(className).find('td > span').eq(1).invoke('text')
 
   getClassRowDetails = (className) =>
     this.getClassRowByName(className)
@@ -47,7 +51,8 @@ export default class TeacherManageClassPage {
 
   getStudentTextArea = () => cy.get('#students')
 
-  getStudentRowByEmail = (email) => cy.get(`[data-row-key="${email}"]`)
+  getStudentRowByEmail = (email) =>
+    cy.get(`[data-cy="${email}"]`).closest('.ant-table-row-level-0')
 
   removeStudentButton = () =>
     cy.get('.ant-dropdown-menu-item').contains('Remove Student')
@@ -63,9 +68,15 @@ export default class TeacherManageClassPage {
 
   getEditClassInDropDown = () => cy.get('li').contains('Edit Class')
 
+  getEditGroupInDropDown = () => cy.get('li').contains('Edit Group')
+
   getArchiveClassInDropDown = () => cy.get('li').contains('Archive Class')
 
-  getunArchiveButton = () => cy.get('span').contains('UNARCHIVE')
+  getunArchiveButton = () =>
+    cy
+      .get('[data-cy="header-left-container"]')
+      .next()
+      .contains('span', 'UNARCHIVE')
 
   getSchoolDropDown = () => cy.get(`#institutionId`)
 
@@ -87,8 +98,10 @@ export default class TeacherManageClassPage {
     cy.contains('Add To Group').click()
   }
 
-  clickOnClassRowByName = (className) =>
+  clickOnClassRowByName = (className) => {
     this.getClassRowByName(className).click()
+    cy.get('[data-cy="actions"]', { timeout: 120000 })
+  }
 
   selectStudentCheckBoxByEmail = (email) =>
     this.getStudentRowByEmail(email).find('input').click({ force: true })
@@ -98,6 +111,11 @@ export default class TeacherManageClassPage {
   clickOnEditClass = () => {
     this.clickHeaderDropDown()
     this.getEditClassInDropDown().click({ force: true })
+  }
+
+  clickOnEditGroup = () => {
+    this.clickHeaderDropDown()
+    this.getEditGroupInDropDown().click({ force: true })
   }
 
   clickOnUpdateClass = () => {
@@ -114,8 +132,7 @@ export default class TeacherManageClassPage {
   clickonRemoveStudentButton = () =>
     this.removeStudentButton().click({ force: true })
 
-  clickOnRemoveStudentPopupTextbox = () =>
-    cy.get('[class *= "ant-input styled"]').click()
+  clickOnRemoveStudentPopupTextbox = () => cy.get('.ant-input').click()
 
   clickOnRemoveButtonInPopUp = () =>
     cy.contains('span', 'Yes, Remove Student(s)').click({ force: true })
@@ -198,7 +215,10 @@ export default class TeacherManageClassPage {
       clazz.institutionIds = [institutionId]
       console.log('new class created with _id - ', _id)
       cy.saveClassDetailToDelete(clazz)
-      if (!isGroup) cy.url().should('contain', _id)
+      if (!isGroup) {
+        cy.url().should('contain', _id)
+        cy.get('[data-cy="actions"]', { timeout: 120000 })
+      }
     })
   }
 
@@ -223,12 +243,18 @@ export default class TeacherManageClassPage {
       this.setEndDate(endDate)
       this.verifyEndDate(endDate)
     }
-    this.selectGrade(grade)
-    this.verifyGrade(grade)
-    this.selectSubject(subject)
-    this.verifySubject(subject)
-    this.selectStandardSets(standardSet)
-    this.verifyStandardSets(standardSet)
+    if (grade) {
+      this.selectGrade(grade)
+      this.verifyGrade(grade)
+    }
+    if (subject) {
+      this.selectSubject(subject)
+      this.verifySubject(subject)
+    }
+    if (standardSet) {
+      this.selectStandardSets(standardSet)
+      this.verifyStandardSets(standardSet)
+    }
   }
   // class list
   // adding students
@@ -429,7 +455,7 @@ export default class TeacherManageClassPage {
   unArchieveClassByName(className, success = true) {
     cy.route('POST', '**/search/users').as('searchUser')
     this.clickOnClassRowByName(className)
-    cy.wait('@searchUser')
+    // cy.wait('@searchUser')
     this.clickUnArchive(success)
   }
 
@@ -456,7 +482,7 @@ export default class TeacherManageClassPage {
     }
   }
 
-  goToLastPage() {
+  goToLastPage = () => {
     cy.get('body').then(($body) => {
       if ($body.find('.ant-table-pagination > li').length > 0) {
         cy.get('[title="Next Page"]').prev().click()

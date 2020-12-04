@@ -73,6 +73,7 @@ const FeedbackWrapper = ({
       shouldTakeDimensionsFromStore={shouldTakeDimensionsFromStore}
       dimensions={dimensions}
       className="__print-feedback-wrapper"
+      isStudentReport={isStudentReport}
     >
       {showFeedback &&
         !isPassageOrVideoType &&
@@ -145,7 +146,8 @@ const StyledFeedbackWrapper = styled.div`
   align-self: normal;
   padding-bottom: 10px;
   min-width: ${({ minWidth }) => minWidth};
-  ${({ shouldTakeDimensionsFromStore, dimensions }) =>
+  ${({ shouldTakeDimensionsFromStore, dimensions, isStudentReport }) =>
+    !isStudentReport &&
     shouldTakeDimensionsFromStore &&
     dimensions &&
     `

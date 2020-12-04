@@ -7,9 +7,13 @@ import { Select } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
+import { test as testConst } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq } from 'lodash'
 import { receiveClassListAction } from '../../../Classes/ducks'
-import { getClassListSelector } from '../../duck'
+import {
+  getAssignedClassesByIdSelector,
+  getClassListSelector,
+} from '../../duck'
 import {
   getUserOrgId,
   getSchoolsByUserRoleSelector,
@@ -120,7 +124,8 @@ class ClassList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { test } = this.props
+    const { test, testType } = this.props
+    const { filterClassIds } = this.state
     if (prevProps.test._id !== test._id) {
       const { subjects = [], grades = [] } = test
       // eslint-disable-next-line react/no-did-update-set-state
@@ -134,7 +139,14 @@ class ClassList extends React.Component {
           },
         }),
         this.loadClassList
-      )
+      ) // eslint-disable-line
+    }
+    if (
+      prevProps.testType !== testType &&
+      testType === testConst.type.COMMON &&
+      filterClassIds.length
+    ) {
+      this.setState({ filterClassIds: [] }) // eslint-disable-line
     }
   }
 
@@ -170,12 +182,16 @@ class ClassList extends React.Component {
   }
 
   handleSelectAll = (checked) => {
-    const { selectClass, classList } = this.props
+    const { selectClass, classList, assignedClassesById, testType } = this.props
     const { filterClassIds, classType } = this.state
     let filterclassList = []
     if (checked) {
       const selectedClasses = classList
-        .filter((item) => classType === 'all' || item.type === classType)
+        .filter(
+          (item) =>
+            (classType === 'all' || item.type === classType) &&
+            !assignedClassesById[testType][item._id]
+        )
         .map((item) => item._id)
       selectClass('class', selectedClasses, classList)
       filterclassList = selectedClasses
@@ -202,9 +218,10 @@ class ClassList extends React.Component {
       selectClass,
       selectedClasses,
       tagList,
+      assignedClassesById,
+      testType,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
-
     const tableData = classList
       .filter((item) => {
         if (!filterClassIds.length)
@@ -227,6 +244,13 @@ class ClassList extends React.Component {
         }
       },
       onSelectAll: this.handleSelectAll,
+      getCheckboxProps: (record) => {
+        if (record && record.key && assignedClassesById[testType][record.key]) {
+          return {
+            disabled: true,
+          }
+        }
+      },
     }
 
     const selectedClassData =
@@ -442,7 +466,11 @@ class ClassList extends React.Component {
               value={filterClassIds}
             >
               {classList.map(({ name, _id }) => (
-                <Select.Option key={name} value={_id}>
+                <Select.Option
+                  key={name}
+                  value={_id}
+                  disabled={assignedClassesById[testType][_id]}
+                >
                   {name}
                 </Select.Option>
               ))}
@@ -510,6 +538,7 @@ const enhance = compose(
       courseList: getCourseListSelector(state),
       test: getTestSelector(state),
       tagList: getAllTagsSelector(state, 'group'),
+      assignedClassesById: getAssignedClassesByIdSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,

@@ -251,12 +251,17 @@ class ModuleRow extends Component {
       removeItemFromDestinationPlaylist,
       urlHasUseThis,
       customizeInDraft,
+      isEditPage,
+      hasEditAccess,
     } = this.props
 
-    if (urlHasUseThis || customizeInDraft) {
-      removeItemFromDestinationPlaylist({ moduleIndex, itemId })
-    } else {
+    // isEditPage is true for /edit playlist route. Used to differentiate between /:id and /:id/edit pages
+    if (isEditPage && hasEditAccess) {
       removeItemFromUnit({ moduleIndex, itemId })
+    } else if (urlHasUseThis || customizeInDraft || hasEditAccess) {
+      // urlHasUseThis is ysed for /use-this route, customizeInDraft is used for user having
+      // view access, hasEditAccess is for users having edit access
+      removeItemFromDestinationPlaylist({ moduleIndex, itemId })
     }
   }
 
@@ -983,6 +988,7 @@ class ModuleRow extends Component {
                       </AssignmentButton>
 
                       {mode === 'embedded' &&
+                      status !== 'published' &&
                       (hasEditAccess || customizeInDraft) ? (
                         <IconActionButton
                           data-cy="assignmentDeleteOptionsIcon"

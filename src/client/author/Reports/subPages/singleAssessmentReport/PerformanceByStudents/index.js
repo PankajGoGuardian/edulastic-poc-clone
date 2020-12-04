@@ -41,12 +41,8 @@ import {
   getReportsPerformanceByStudentsError,
 } from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getSAFFilterSelectedPerformanceBandProfile,
-  getSAFFilterPerformanceBandProfiles,
-  getTestListSelector,
-} from '../common/filterDataDucks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getSAFFilterPerformanceBandProfiles } from '../common/filterDataDucks'
 
 import columns from './static/json/tableColumns.json'
 
@@ -56,7 +52,6 @@ const PerformanceByStudents = ({
   isCsvDownloading,
   role,
   performanceBandProfiles,
-  selectedPerformanceBand,
   performanceByStudents,
   getPerformanceByStudents,
   settings,
@@ -67,7 +62,18 @@ const PerformanceByStudents = ({
   t,
   customStudentUserId,
   isCliUser,
+  sharedReport,
 }) => {
+  const [userRole, sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+      !!sharedReport?._id,
+    ],
+    [sharedReport]
+  )
   const selectedTest = testList?.find(
     (test) => test._id === settings.selectedTest.key
   ) || { _id: '', title: '' }
@@ -78,7 +84,9 @@ const PerformanceByStudents = ({
   const bandInfo = useMemo(
     () =>
       performanceBandProfiles.find(
-        (profile) => profile._id === selectedPerformanceBand
+        (profile) =>
+          profile._id ===
+          (sharedReportFilters || settings.requestFilters).profileId
       )?.performanceBand ||
       performanceBandProfiles[0]?.performanceBand ||
       [],
@@ -99,9 +107,10 @@ const PerformanceByStudents = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getPerformanceByStudents(q)
     }
   }, [settings])
@@ -171,11 +180,16 @@ const PerformanceByStudents = ({
   const _columns = getColumns(
     columns,
     res && res.testName,
-    role,
+    userRole,
     location,
     pageTitle,
+    isSharedReport,
     t
   )
+
+  const columnData = isCliUser
+    ? _columns.filter((col) => col.title !== 'Due Date')
+    : _columns
 
   const checkedStudentsForModal = tableData
     .filter(
@@ -207,7 +221,7 @@ const PerformanceByStudents = ({
   // it will check if student have assignment for this test
   // then redirect to lcb student veiw
   // or show notification
-  if (customStudentUserId && !loading) {
+  if (customStudentUserId && !loading && !isSharedReport) {
     const studentData = tableData.find(
       (d) => d.externalId === customStudentUserId
     )
@@ -301,7 +315,7 @@ const PerformanceByStudents = ({
               xl={12}
               className="dropdown-container"
             >
-              {!isCliUser && (
+              {!isCliUser && !isSharedReport && (
                 <FeaturesSwitch
                   inputFeatures="studentGroups"
                   actionOnInaccessible="hidden"
@@ -335,7 +349,7 @@ const PerformanceByStudents = ({
               <CsvTable
                 isCsvDownloading={isCsvDownloading}
                 onCsvConvert={onCsvConvert}
-                columns={_columns}
+                columns={columnData}
                 dataSource={tableData}
                 rowSelection={rowSelection}
                 colouredCellsNo={4}
@@ -369,7 +383,6 @@ PerformanceByStudents.propTypes = {
   isCsvDownloading: PropTypes.bool.isRequired,
   role: PropTypes.string.isRequired,
   performanceBandProfiles: PropTypes.array.isRequired,
-  selectedPerformanceBand: PropTypes.string.isRequired,
   performanceByStudents: reportPropType.isRequired,
   getPerformanceByStudents: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
@@ -382,7 +395,6 @@ const withConnect = connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
-    selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(state),
     performanceByStudents: getReportsPerformanceByStudents(state),
     testList: getTestListSelector(state),
   }),

@@ -44,7 +44,7 @@ const PublicTestPage = ({
   fetchUser,
 }) => {
   const { testId } = match.params
-  const [showPreviewModal, setShowPreviewModal] = useState(false)
+  const [showPreviewModal, setShowPreviewModal] = useState(true)
   const [publicTest, setPublicTest] = useState()
 
   const redirectToTestPreview = (
@@ -179,14 +179,15 @@ const PublicTestPage = ({
 
   return !isLoading ? (
     <StyledMainWrapper>
-      <ViewModal
+      {/* Hiding test details modal for now */}
+      {/* <ViewModal
         item={test}
         modalView={false}
         publicAccess
         assign={assignTest}
         status={test.status}
         previewLink={handleShowPreviewModal}
-      />
+      /> */}
       {showPreviewModal && (
         <TestPreviewModal
           isModalVisible
@@ -203,6 +204,7 @@ const PublicTestPage = ({
 
 const StyledMainWrapper = styled.div`
   width: 50%;
+  min-width: 690px;
   margin: auto;
   margin-top: 20px;
   .scrollbar-container {

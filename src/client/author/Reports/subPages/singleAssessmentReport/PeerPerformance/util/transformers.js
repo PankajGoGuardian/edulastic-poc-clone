@@ -1,4 +1,4 @@
-import { groupBy, minBy, cloneDeep, countBy, uniq } from 'lodash'
+import { groupBy, minBy, cloneDeep, countBy, uniq, isEmpty } from 'lodash'
 import { testActivityStatus } from '@edulastic/constants'
 import { getHSLFromRange1 } from '../../../../common/util'
 import { transformMetricForStudentGroups } from '../../common/utils/transformers'
@@ -84,7 +84,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
     const schoolName = uniq(
-      groupedData[data].map((o) => o.schoolName).filter((txt) => txt)
+      groupedData[data]
+        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
+        .filter((txt) => txt)
     ).join(', ')
 
     item = {
@@ -329,7 +331,7 @@ export const parseData = (rawData, filter) => {
     return { ...d, gender }
   })
   if (filter.compareBy === 'group') {
-    data = transformMetricForStudentGroups(data, data)
+    data = transformMetricForStudentGroups(rawData.studentGroupInfo, data)
     compareBy = 'groupId'
   }
   const filteredData = filterData(data, filter)

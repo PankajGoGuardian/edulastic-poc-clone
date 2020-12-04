@@ -43,9 +43,15 @@ class MathKeyboard extends React.PureComponent {
     this.setKeyboardButtons()
   }
 
-  componentDidUpdate(prevProps) {
-    const { symbols } = this.props
+  componentDidUpdate(prevProps, prevState) {
+    const { symbols, dynamicVariableInput } = this.props
     const { symbols: prevSymbols } = prevProps
+    const { type } = this.state
+    const { type: prevType } = prevState
+
+    if (dynamicVariableInput && type !== prevType) {
+      this.setKeyboardButtons(type)
+    }
 
     if (symbols[0] !== prevSymbols[0]) {
       this.setKeyboardButtons()
@@ -62,9 +68,9 @@ class MathKeyboard extends React.PureComponent {
     })
   }
 
-  setKeyboardButtons() {
+  setKeyboardButtons(keypadType) {
     const { restrictKeys, customKeys, symbols } = this.props
-    const type = symbols[0]
+    const type = symbols[0] || keypadType || 'basic'
 
     const isCustomMode = isObject(type)
 
@@ -124,7 +130,6 @@ class MathKeyboard extends React.PureComponent {
       docBasedKeypadStyles,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
-
     return (
       <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
         <KeyboardHeader
@@ -161,6 +166,7 @@ MathKeyboard.propTypes = {
   showDropdown: PropTypes.bool,
   onInput: PropTypes.func,
   onChangeKeypad: PropTypes.func,
+  dynamicVariableInput: PropTypes.bool,
 }
 
 MathKeyboard.defaultProps = {
@@ -171,6 +177,7 @@ MathKeyboard.defaultProps = {
   showDropdown: false,
   onInput: () => null,
   onChangeKeypad: () => null,
+  dynamicVariableInput: false,
 }
 
 export default MathKeyboard

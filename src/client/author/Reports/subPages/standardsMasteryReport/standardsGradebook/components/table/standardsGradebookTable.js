@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
-import { isEmpty } from 'lodash'
+import { isEmpty, flatMap, keyBy } from 'lodash'
 import styled from 'styled-components'
 import next from 'immer'
 import { withNamespaces } from '@edulastic/localization'
@@ -114,6 +114,7 @@ const StandardsGradebookTableComponent = ({
   standardsData,
   location,
   pageTitle,
+  isSharedReport,
   t,
 }) => {
   const [tableDdFilters, setTableDdFilters] = useState({
@@ -301,14 +302,14 @@ const StandardsGradebookTableComponent = ({
             .toLowerCase()
             .localeCompare(b.compareByLabel.toLowerCase()),
         render: (data, record) =>
-          record.compareBy === 'studentId' ? (
+          record.compareBy === 'studentId' && !isSharedReport ? (
             <Link
               to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}
             >
               {record.compareByLabel || t('common.anonymous')}
             </Link>
           ) : (
-            record.compareByLabel
+            record.compareByLabel || t('common.anonymous')
           ),
       },
       {
@@ -321,33 +322,39 @@ const StandardsGradebookTableComponent = ({
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy]
           return a[key] - b[key]
         },
-        render: (data, record) => (
-          <Link
-            style={{ color: reportLinkColor }}
-            to={{
-              pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-              state: {
-                // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-                breadCrumb: [
-                  {
-                    title: 'INSIGHTS',
-                    to: '/author/reports',
-                  },
-                  {
-                    title: pageTitle,
-                    to: `${location.pathname}${location.search}`,
-                  },
-                ],
-              },
-            }}
-          >
-            {tableDdFilters.analyseBy === 'score(%)'
+        render: (data, record) => {
+          const dataToRender =
+            tableDdFilters.analyseBy === 'score(%)'
               ? `${data}%`
               : tableDdFilters.analyseBy === 'rawScore'
               ? `${data}/${record.totalMaxScore}`
-              : data}
-          </Link>
-        ),
+              : data
+          return !isSharedReport ? (
+            <Link
+              style={{ color: reportLinkColor }}
+              to={{
+                pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+                state: {
+                  // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+                  breadCrumb: [
+                    {
+                      title: 'INSIGHTS',
+                      to: '/author/reports',
+                    },
+                    {
+                      title: pageTitle,
+                      to: `${location.pathname}${location.search}`,
+                    },
+                  ],
+                },
+              }}
+            >
+              {dataToRender}
+            </Link>
+          ) : (
+            dataToRender
+          )
+        },
       },
     ]
 
@@ -361,7 +368,12 @@ const StandardsGradebookTableComponent = ({
     if (extraColsNeeded) {
       result = [
         ...result,
-        ...filteredTableData[0].standardsInfo.map((item, index) => ({
+        ...Object.values(
+          keyBy(
+            flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
+            'standardId'
+          )
+        ).map((item, index) => ({
           title: (
             <>
               <span>{item.standardName}</span>

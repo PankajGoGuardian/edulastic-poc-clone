@@ -161,6 +161,11 @@ export default class API {
       _config['client-epoch'] = Date.now().toString()
       _config.headers['X-Client-Time'] = new Date().toISOString()
       _config.headers['X-Client-Tz-Offset'] = new Date().getTimezoneOffset()
+      if (window.localStorage.getItem('originalreferrer')) {
+        _config.headers['X-Orig-Referrer'] = window.localStorage.getItem(
+          'originalreferrer'
+        )
+      }
       const token =
         getParentsStudentToken(_config) || defaultToken || getAccessToken()
       if (token) {

@@ -4,12 +4,14 @@ import {
   attemptTypes,
   questionTypeKey as queTypes,
   queColor,
+  questionTypeKey,
 } from '../../constants/questionTypes'
 import { REPORT_HEADERS } from '../../constants/assignmentStatus'
 import {
   getPerformanceBandAndColor,
   getMasteryStatus,
 } from '../../constants/constantFunctions'
+import Helpers from '../../util/Helpers'
 
 const { _ } = Cypress
 
@@ -21,7 +23,9 @@ export default class StudentsReportCard {
 
   /* GET ELEMENTS START */
   getReportContainerByStudent = (studName) =>
-    cy.get(`[data-cy="${studName}"]`).as('report-container-by-student-name')
+    cy
+      .get(`[data-cy="${Helpers.getFormattedFirstLastName(studName)}"]`)
+      .as('report-container-by-student-name')
 
   selectedReportContainer = () => cy.get('@report-container-by-student-name')
 
@@ -82,8 +86,9 @@ export default class StudentsReportCard {
   getQuestionTableRowByIndex = (index) =>
     this.getQuestionTableBody().find(`[data-row-key="${index - 1}"]`)
 
+  // TODO: fix below back to data-cy attr once ui issue is resolved, EV-21749,
   getStandardTableRowByStandard = (standard) =>
-    this.getStandardTableBody().find(`[data-cy="${standard}"]`).closest('tr')
+    this.getStandardTableBody().contains('td', standard).closest('tr')
 
   getEntryByIndexOfSelectedRow = (index) =>
     cy.get(`@${this.tablerowalias}`).find('td').eq(index)
@@ -134,7 +139,10 @@ export default class StudentsReportCard {
     this.getTestName().should('have.text', testname)
 
   verifyStudentName = (studentName) =>
-    this.getStudentName().should('contain.text', studentName)
+    this.getStudentName().should(
+      'contain.text',
+      Helpers.getFormattedFirstLastName(studentName)
+    )
 
   verifySubject = (subjects) =>
     this.getSubjects().should('have.text', subjects.join(', '))
@@ -192,13 +200,30 @@ export default class StudentsReportCard {
       })
   }
 
-  verifyEntryByIndexOfSelectedRow = (index, data, delimeter = ', ') => {
-    if (Array.isArray(data))
-      this.getEntryByIndexOfSelectedRow(index).should(
-        'contain.text',
-        data.join(`${delimeter}`)
-      )
-    else this.getEntryByIndexOfSelectedRow(index).should('contain.text', data)
+  verifyEntryByIndexOfSelectedRow = (
+    index,
+    data,
+    delimeter,
+    message,
+    queType = false
+  ) => {
+    const cellData = (_.isArray(data)
+      ? data.join(`${delimeter}`)
+      : data
+    ).toString()
+
+    switch (queType) {
+      case questionTypeKey.MATH_NUMERIC:
+        this.getEntryByIndexOfSelectedRow(index).should((ele) =>
+          expect(ele, message).to.contain.text(cellData)
+        )
+        break
+      default:
+        this.getEntryByIndexOfSelectedRow(index).should((ele) =>
+          expect(ele, message).to.have.text(cellData)
+        )
+        break
+    }
   }
 
   verifyQuestionTableHeaders = ({ questionHeaderOptions }) => {
@@ -403,7 +428,7 @@ export default class StudentsReportCard {
 
       standardTableDataByStudent[
         `${standard}`
-      ].score = `${standardTableDataByStudent[standard].obtain}/${standardTableDataByStudent[standard].max}`
+      ].score = `${standardTableDataByStudent[standard].obtain} / ${standardTableDataByStudent[standard].max}`
 
       const perf =
         (standardTableDataByStudent[`${standard}`].obtain /
@@ -411,7 +436,7 @@ export default class StudentsReportCard {
         100
 
       standardTableDataByStudent[`${standard}`].standardPerf =
-        perf % 1 !== 0 ? `${perf.toFixed(2)}%` : `${parseInt(perf, 10)}%`
+        perf % 1 !== 0 ? `${perf.toFixed(2)}` : `${parseInt(perf, 10)}`
 
       standardTableDataByStudent[
         `${standard}`

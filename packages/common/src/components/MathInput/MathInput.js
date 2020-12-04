@@ -1,14 +1,10 @@
-import { MathKeyboard, reformatMathInputLatex, offset } from '@edulastic/common'
+import { MathKeyboard, reformatMathInputLatex } from '@edulastic/common'
 import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {
-  MathInputStyles,
-  DraggableKeyboard,
-  EmptyDiv,
-  KeyboardIcon,
-} from './MathInputStyles'
+import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
+import Draggable from './Draggable'
 
 const { EMBED_RESPONSE } = math
 
@@ -130,25 +126,33 @@ class MathInput extends React.PureComponent {
 
   getKeyboardPosition() {
     const { symbols } = this.props
-    const { top, left, height: inputH } = offset(this.containerRef.current) || {
-      left: 0,
-      top: 0,
-    }
+    const {
+      top,
+      left,
+      height: inputH,
+    } = this.containerRef.current.getBoundingClientRect()
+
+    // dynamic variable formula input does not pass keyboard type(styles)
+    // so in this case, need to use `basic` mode
+    // @see: https://snapwiz.atlassian.net/browse/EV-21988
+
     const { width, height: keyboardH } = math.symbols.find(
-      (x) => x.value === symbols[0]
+      (x) => x.value === (symbols[0] || 'basic')
     ) || { width: 0, height: 0 }
 
-    let x = window.innerWidth - left - width
-    if (x > 0) {
-      x = 0
+    // 8 is margin between math keyboard and math input
+    let x = left
+    let y = top + inputH + 4
+
+    const xdiff = window.innerWidth - left - width
+
+    if (xdiff < 0) {
+      x += xdiff
     }
 
-    let y = window.innerHeight - top - keyboardH - inputH
-    if (y < 0) {
-      // 8 is margin between math keyboard and math input
-      y = -keyboardH - 8
-    } else {
-      y = inputH + 8
+    const ydiff = window.innerHeight - y - keyboardH
+    if (ydiff < 0) {
+      y = y - keyboardH - inputH - 8
     }
 
     return { x, y }
@@ -276,8 +280,9 @@ class MathInput extends React.PureComponent {
 
   onClickMathField = () => {
     const { hideKeyboardByDefault } = this.state
+    const keyboardPosition = this.getKeyboardPosition()
     if (!hideKeyboardByDefault) {
-      this.setState({ mathFieldFocus: true }, this.focus)
+      this.setState({ mathFieldFocus: true, keyboardPosition }, this.focus)
     }
   }
 
@@ -334,6 +339,7 @@ class MathInput extends React.PureComponent {
       restrictKeys,
       customKeys,
       isDocbasedSection = false,
+      dynamicVariableInput,
     } = this.props
 
     const {
@@ -347,9 +353,7 @@ class MathInput extends React.PureComponent {
       mathFieldFocus &&
       !hideKeyboardByDefault
 
-    const MathKeyboardWrapper = alwaysShowKeyboard
-      ? EmptyDiv
-      : DraggableKeyboard
+    const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : Draggable
 
     return (
       <MathInputStyles
@@ -397,7 +401,7 @@ class MathInput extends React.PureComponent {
         {(visibleKeypad || alwaysShowKeyboard) && (
           <MathKeyboardWrapper
             className="input__keyboard"
-            default={keyboardPosition}
+            position={keyboardPosition}
           >
             <MathKeyboard
               symbols={symbols}
@@ -410,6 +414,7 @@ class MathInput extends React.PureComponent {
               onInput={(key, command, numToMove) =>
                 this.onInput(key, command, numToMove)
               }
+              dynamicVariableInput={dynamicVariableInput}
             />
           </MathKeyboardWrapper>
         )}
@@ -423,7 +428,7 @@ MathInput.propTypes = {
   alwaysHideKeyboard: PropTypes.bool,
   defaultFocus: PropTypes.bool,
   onInput: PropTypes.func.isRequired,
-  symbols: PropTypes.array.isRequired,
+  symbols: PropTypes.array,
   numberPad: PropTypes.array.isRequired,
   onInnerFieldClick: PropTypes.func,
   showDropdown: PropTypes.bool,
@@ -459,6 +464,7 @@ MathInput.defaultProps = {
   onChangeKeypad: () => {},
   fullWidth: false,
   className: '',
+  symbols: [],
 }
 
 export default MathInput

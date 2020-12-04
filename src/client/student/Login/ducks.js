@@ -638,6 +638,16 @@ export const getClasses = createSelector(
 
 export const getCurrentGroup = createSelector(
   ['user.user.orgData.defaultClass'],
+  (r) => {
+    if (r === 'archive') {
+      return ''
+    }
+    return r
+  }
+)
+
+export const getCurrentGroupExactValue = createSelector(
+  ['user.user.orgData.defaultClass'],
   (r) => r
 )
 
@@ -1058,6 +1068,11 @@ export function* fetchUser({ payload }) {
         localStorage.setItem('loginRedirectUrl', getCurrentPath())
       }
       yield put(push(getLoggedOutUrl()))
+      // Capture referrer when no access-token
+      const referrer = window.document.referrer
+      if (!window.localStorage.getItem('originalreferrer') && referrer) {
+        window.localStorage.setItem('originalreferrer', referrer)
+      }
       return
     }
     if (payload && payload.addAccount === 'true') {

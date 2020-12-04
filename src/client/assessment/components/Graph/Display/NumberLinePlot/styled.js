@@ -180,7 +180,7 @@ export const JSXBox = styled.div`
   overflow: hidden;
   border: 1px solid #e8e8e8;
   border-radius: 0;
-  margin: ${(props) => (props.margin ? `${props.margin}px` : 'auto')};
+  margin: ${(props) => props.margin && `${props.margin}px`};
 `
 
 export const DropdownMenu = styled.ul`

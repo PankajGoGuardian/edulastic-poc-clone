@@ -331,7 +331,7 @@ const UseExisting = ({
                     <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
                   </CustomStyleBtn>
                 )}
-                {currentRubricData?.createdBy._id === user?._id && (
+                {currentRubricData?.createdBy?._id === user?._id && (
                   <>
                     <CustomStyleBtn
                       style={btnStyle}

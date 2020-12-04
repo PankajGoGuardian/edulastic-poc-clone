@@ -11,22 +11,19 @@ function getConfigurationByFile(file) {
 module.exports = (on, config) => {
   addMatchImageSnapshotPlugin(on, config)
 
-  on('before:browser:launch', (browser = {}, args) => {
-    if (browser.name === 'chrome') {
-      args.push('--cast-initial-screen-width=1920')
-      args.push('--cast-initial-screen-height=1080')
-      args.push('--start-fullscreen')
-
-      return args
+  on('before:browser:launch', (browser = {}, launchOptions) => {
+    if (browser.family === 'chromium' && browser.name !== 'electron') {
+      launchOptions.args.push('--window-size=1920,1080')
+      launchOptions.args.push('--start-fullscreen')
+      launchOptions.args.push('--disable-dev-shm-usage')
     }
 
     if (browser.name === 'electron') {
-      args.width = 1920
-      args.height = 1080
-      args.fullscreen = true
-
-      return args
+      launchOptions.preferences.width = 1920
+      launchOptions.preferences.height = 1080
+      launchOptions.preferences.fullscreen = true
     }
+    return launchOptions
   })
 
   on('task', {

@@ -4,6 +4,7 @@ import { reportVerificationFunction } from '../../../../framework/author/assignm
 import {
   REPORT_HEADERS,
   studentSide,
+  redirectType,
 } from '../../../../framework/constants/assignmentStatus'
 import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
 import StudentTestPage from '../../../../framework/student/studentTestPage'
@@ -481,6 +482,7 @@ describe(`${FileHelper.getSpecName(
       lcb.clickOnCardViewTab()
       lcb.selectCheckBoxByStudentName(students[1].name)
       lcb.clickOnRedirect()
+      lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
       lcb.clickOnRedirectSubmit()
     })
     before('> login as student2 and attempt test', () => {

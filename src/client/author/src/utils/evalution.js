@@ -1,6 +1,5 @@
 import { set, round, min } from 'lodash'
 import produce from 'immer'
-import { questionType } from '@edulastic/constants'
 import evaluators from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
 

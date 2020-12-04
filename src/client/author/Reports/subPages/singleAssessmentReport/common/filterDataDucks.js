@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { get } from 'lodash'
 
-import { reportsApi, assignmentApi } from '@edulastic/api'
+import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
@@ -21,12 +21,6 @@ const SET_REPORTS_PREV_SAR_FILTER_DATA =
 
 const SET_FILTERS_OR_TEST_ID = '[reports] set sar filters or testId'
 
-const RECEIVE_TEST_LIST_REQUEST = '[reports] receive test list request'
-const RECEIVE_TEST_LIST_REQUEST_SUCCESS =
-  '[reports] receive test list request success'
-const RECEIVE_TEST_LIST_REQUEST_ERROR =
-  '[reports] receive test list request request error'
-
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getSARFilterDataRequestAction = createAction(
@@ -38,8 +32,6 @@ export const setPrevSARFilterDataAction = createAction(
 )
 
 export const setFiltersOrTestIdAction = createAction(SET_FILTERS_OR_TEST_ID)
-
-export const receiveTestListAction = createAction(RECEIVE_TEST_LIST_REQUEST)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -70,34 +62,14 @@ export const getReportsSARFilterLoadingState = createSelector(
   (state) => state.loading
 )
 
-export const getSAFFilterSelectedPerformanceBandProfile = createSelector(
-  stateSelector,
-  (state) => state.filters.performanceBandProfile
-)
-
 export const getSAFFilterPerformanceBandProfiles = createSelector(
   stateSelector,
   (state) => get(state, 'SARFilterData.data.result.bandInfo', [])
 )
 
-export const getSAFFilterSelectedStandardsProficiencyProfile = createSelector(
-  stateSelector,
-  (state) => state.filters.standardsProficiencyProfile
-)
-
 export const getSAFFilterStandardsProficiencyProfiles = createSelector(
   stateSelector,
   (state) => get(state, 'SARFilterData.data.result.scaleInfo', [])
-)
-
-export const getTestListSelector = createSelector(
-  stateSelector,
-  (state) => state.testList
-)
-
-export const getTestListLoadingSelector = createSelector(
-  stateSelector,
-  (state) => state.testListLoading
 )
 
 export const getSAFilterDemographics = createSelector(stateSelector, (state) =>
@@ -114,22 +86,24 @@ const initialState = {
   SARFilterData: {},
   prevSARFilterData: null,
   filters: {
+    reportId: '',
     termId: '',
     subject: 'All',
+    studentSubject: 'All',
     grade: 'All',
+    studentGrade: 'All',
     courseId: 'All',
+    studentCourseId: 'All',
     classId: 'All',
     groupId: 'All',
-    schoolId: 'All',
-    teacherId: 'All',
-    assessmentType: 'All',
+    schoolIds: '',
+    teacherIds: '',
+    assessmentTypes: '',
     performanceBandProfile: '',
     standardsProficiencyProfile: '',
   },
   testId: '',
   loading: false,
-  testList: [],
-  testListLoading: true,
 }
 
 export const reportSARFilterDataReducer = createReducer(initialState, {
@@ -160,18 +134,6 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
   [SET_REPORTS_PREV_SAR_FILTER_DATA]: (state, { payload }) => {
     state.prevSARFilterData = payload
   },
-  [RECEIVE_TEST_LIST_REQUEST]: (state) => {
-    state.testListLoading = true
-  },
-  [RECEIVE_TEST_LIST_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.testListLoading = false
-    state.testList = payload.testList
-  },
-  [RECEIVE_TEST_LIST_REQUEST_ERROR]: (state, { payload }) => {
-    state.testListLoading = false
-    state.testList = []
-    state.error = payload.error
-  },
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
@@ -198,42 +160,12 @@ function* getReportsSARFilterDataRequest({ payload }) {
   }
 }
 
-export function* receiveTestListSaga({ payload }) {
-  try {
-    const searchResult = yield call(assignmentApi.searchAssignments, payload)
-    const assignmentBuckets = get(
-      searchResult,
-      'aggregations.buckets.buckets',
-      []
-    )
-    const testList = assignmentBuckets
-      .map(({ key: _id, assignments }) => {
-        const hits = get(assignments, 'hits.hits', [])
-        const title = get(hits[0], '_source.title', '')
-        return { _id, title }
-      })
-      .filter(({ _id, title }) => _id && title)
-    yield put({
-      type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
-      payload: { testList },
-    })
-  } catch (error) {
-    const msg = 'Failed to receive tests dropdown data. Please try again...'
-    notification({ msg })
-    yield put({
-      type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
-      payload: { error: msg },
-    })
-  }
-}
-
 export function* reportSARFilterDataSaga() {
   yield all([
     yield takeLatest(
       GET_REPORTS_SAR_FILTER_DATA_REQUEST,
       getReportsSARFilterDataRequest
     ),
-    yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
   ])
 }
 

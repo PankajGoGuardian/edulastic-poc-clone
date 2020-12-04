@@ -10,10 +10,12 @@ import StudentTestPage from '../../../../framework/student/studentTestPage'
 import {
   attemptTypes,
   deliverType as DELIVERY_TYPE,
+  CUSTOM_COLLECTIONS,
 } from '../../../../framework/constants/questionTypes'
 import CypressHelper from '../../../../framework/util/cypressHelpers'
 import StandardBasedReportPage from '../../../../framework/author/assignments/standardBasedReportPage'
 import TestSettings from '../../../../framework/author/tests/testDetail/testSettingsPage'
+import { redirectType } from '../../../../framework/constants/assignmentStatus'
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const testLibraryPage = new TestLibrary()
@@ -30,15 +32,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     name: 'Test Item Group',
     grade: 'Kindergarten',
     subject: 'Math',
-    collections: 'auto collection 1',
+    collections: 'auto collection 4',
   }
   const quesType = 'MCQ_TF'
   const quesText = ' - This is MCQ_TF'
+  /* auto collection 4 */
   const items = [
-    'MCQ_TF.3',
-    'MCQ_TF.3',
-    'MCQ_TF.3',
-    'MCQ_TF.3',
+    'MCQ_TF.4',
+    'MCQ_TF.4',
+    'MCQ_TF.4',
+    'MCQ_TF.4',
     'MCQ_TF.4',
     'MCQ_TF.4',
     'MCQ_TF.4',
@@ -62,18 +65,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     pass: 'snapwiz',
   }
   const Teacher = {
-    email: 'teacher2.for.dynamic.test@snapwiz.com',
+    email: 'teacher3.for.dynamic.test@snapwiz.com',
     pass: 'snapwiz',
   }
   const students = [
     {
       name: 'Student1',
-      email: 'student1.group.question.delivery@snapwiz.com',
+      email: 'stu1.group.delivery@snapwiz.com',
       pass: 'snapwiz',
     },
     {
       name: 'Student2',
-      email: 'student2.group.question.delivery@snapwiz.com',
+      email: 'stu2.group.delivery@snapwiz.com',
       pass: 'snapwiz',
     },
   ]
@@ -87,10 +90,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     '-Expected items to be delivered in different order for  both students-',
   ]
   let groups = {}
+  const collectionid = CUSTOM_COLLECTIONS.AUTO_COLLECTION_4
 
   before('> login and create new items', () => {
-    cy.getAllTestsAndDelete(contEditor.email)
-    cy.getAllItemsAndDelete(contEditor.email)
+    cy.getAllTestsAndDelete(contEditor.email, contEditor.pass, undefined, {
+      collections: [collectionid],
+    })
+    cy.getAllItemsAndDelete(contEditor.email, contEditor.pass, undefined, {
+      collections: [collectionid],
+    })
     cy.login('publisher', contEditor.email, contEditor.pass)
     items.forEach((itemToCreate, index) => {
       item.createItem(itemToCreate, index).then((id) => {
@@ -581,6 +589,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           lcb.clickOnCardViewTab()
           lcb.checkSelectAllCheckboxOfStudent()
           lcb.clickOnRedirect()
+          lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
           lcb.clickOnRedirectSubmit()
         })
         it('> login as each student attempt and verify item delivered sequence for redirected test', () => {

@@ -15,10 +15,11 @@ import {
   fetchDifferentiationStudentListAction,
   getDifferentiationStudentListSelector,
   fetchDifferentiationWorkAction,
-  addRecommendationsAction,
+  setRecommendationsToAssignAction,
   getDifferentiationWorkSelector,
   getDifferentiationWorkLoadingStateSelector,
   getWorkStatusDataSelector,
+  getRecommendationsToAssignSelector,
   addTestToDifferentationAction,
   addResourceToDifferentiationAction,
   addSubResourceToTestInDiffAction,
@@ -27,6 +28,7 @@ import {
 import ManageContentBlock from '../ManageContentBlock'
 import { HideRightPanel } from '../CurriculumRightPanel'
 import { ContentContainer } from '../CurriculumSequence'
+import AssignTest from '../../../AssignTest'
 
 const Differentiation = ({
   termId,
@@ -38,7 +40,8 @@ const Differentiation = ({
   receiveAssignments,
   fetchDifferentiationStudentList,
   fetchDifferentiationWork,
-  addRecommendations,
+  setRecommendationsToAssign,
+  recommendationsToAssign,
   addTestToDifferentiation,
   addResourceToDifferentiation,
   addSubResourceToTestInDiff,
@@ -54,7 +57,10 @@ const Differentiation = ({
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
   const [testData, setTestData] = useState([])
   const [selectedTest, setSelectedTest] = useState()
+  const [isAssignModalVisible, setIsAssignModalVisible] = useState(false)
   const showManageContent = activeRightPanel === 'manageContent'
+
+  const toggleAssignModal = (value) => setIsAssignModalVisible(value)
 
   const openManageContentPanel = (e) => {
     e.target.blur()
@@ -177,7 +183,8 @@ const Differentiation = ({
 
   const workTableCommonProps = {
     differentiationStudentList,
-    addRecommendations,
+    setRecommendationsToAssign,
+    recommendationsToAssign,
     selectedData: selectedClass,
     isFetchingWork,
     addTestToDifferentiation,
@@ -186,6 +193,7 @@ const Differentiation = ({
     setEmbeddedVideoPreviewModal,
     showResource,
     removeSubResource,
+    toggleAssignModal,
   }
 
   return (
@@ -314,6 +322,17 @@ const Differentiation = ({
           </div>
         )}
       </StyledFlexContainer>
+      {isAssignModalVisible && (
+        <AssignTest
+          isAssignRecommendations
+          isModalView
+          toggleModal={toggleAssignModal}
+          isModalVisible={isAssignModalVisible}
+          onClickFullSettings={() =>
+            setRecommendationsToAssign({ isRecommendationAssignView: true })
+          }
+        />
+      )}
     </StyledFlexContainer>
   )
 }
@@ -326,6 +345,7 @@ const enhance = compose(
       assignments: getAssignmentsSelector(state),
       differentiationStudentList: getDifferentiationStudentListSelector(state),
       differentiationWork: getDifferentiationWorkSelector(state),
+      recommendationsToAssign: getRecommendationsToAssignSelector(state),
       isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
       workStatusData: getWorkStatusDataSelector(state),
     }),
@@ -333,7 +353,7 @@ const enhance = compose(
       receiveAssignments: receiveAssignmentsAction,
       fetchDifferentiationStudentList: fetchDifferentiationStudentListAction,
       fetchDifferentiationWork: fetchDifferentiationWorkAction,
-      addRecommendations: addRecommendationsAction,
+      setRecommendationsToAssign: setRecommendationsToAssignAction,
       addTestToDifferentiation: addTestToDifferentationAction,
       addResourceToDifferentiation: addResourceToDifferentiationAction,
       addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,

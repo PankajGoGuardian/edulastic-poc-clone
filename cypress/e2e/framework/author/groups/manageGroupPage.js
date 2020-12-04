@@ -17,7 +17,22 @@ export default class ManageGroupPage extends TeacherManageClassPage {
         return { name, students, assignments }
       })
 
-  getStudentRow = (email) => cy.get(`[data-row-key="${email}"]`)
+  //getStudentRow = (email) => cy.get(`[data-row-key="${email}"]`)
+
+  getStudentRow = (email, exist = true) => {
+    if (exist == true)
+      cy.get('.ant-table-tbody')
+        .contains('span', `${email}`)
+        .parent()
+        .parent()
+        .children()
+        .eq(0)
+    else {
+      cy.get('.ant-table-tbody')
+        .contains('span', `${email}`)
+        .should('not.exist')
+    }
+  }
 
   // *** ELEMENTS END ***
 

@@ -7,9 +7,11 @@ import { fetchAssignmentsAction } from '../TestPage/components/Assign/ducks'
 import {
   setRegradeSettingsDataAction,
   getRegradingSelector,
+  getRegradeFirebaseDocIdSelector,
 } from '../TestPage/ducks'
 import Header from './Header'
 import MainContent from './MainContent'
+import RegradeNotificationListener from './RegradeNotificationListener'
 import { SecondHeader } from './styled'
 
 const Regrade = ({
@@ -20,6 +22,7 @@ const Regrade = ({
   districtId,
   history,
   isRegrading,
+  regradeFirebaseDocId,
 }) => {
   const { oldTestId, newTestId } = match.params
   const { state: _locationState } = history.location
@@ -100,6 +103,7 @@ const Regrade = ({
         regradeSettings={regradeSettings}
         onUpdateSettings={onUpdateSettings}
       />
+      {regradeFirebaseDocId && <RegradeNotificationListener />}
     </>
   )
 }
@@ -114,6 +118,7 @@ export default withRouter(
       ),
       districtId: get(state, ['user', 'user', 'orgData', 'districtIds', 0]),
       isRegrading: getRegradingSelector(state),
+      regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
     }),
     {
       getAssignmentsByTestId: fetchAssignmentsAction,

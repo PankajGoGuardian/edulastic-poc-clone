@@ -1,33 +1,50 @@
-/**
- * TODO: verify the usage and fix this function for student groups
- */
-export const transformMetricForStudentGroups = (groups, metricInfo) => {
-  const studentGroupsMap = {}
-  groups.forEach((group) => {
-    if (group.groupType === 'custom') {
-      if (!studentGroupsMap[group.studentId]) {
-        studentGroupsMap[group.studentId] = []
-      }
-      studentGroupsMap[group.studentId].push({
-        groupId: group.groupId,
-        groupName: group.groupName,
+const getFormattedString = (prop) => (prop ? Array.from(prop).join(',') : '')
+
+export const transformFiltersForSAR = (requestFilters = {}) => ({
+  ...requestFilters,
+  classIds: requestFilters.classIds
+    ? getFormattedString(requestFilters.classIds)
+    : requestFilters.classId,
+  groupIds: requestFilters.groupIds
+    ? getFormattedString(requestFilters.groupIds)
+    : requestFilters.groupId,
+  grade: requestFilters.studentGrade,
+  courseId: requestFilters.studentCourseId,
+  subject: requestFilters.studentSubject,
+  profileId: requestFilters.performanceBandProfile,
+})
+
+export const transformMetricForStudentGroups = (
+  studentGroupInfo = [],
+  metricInfo = []
+) => {
+  const studentToGroupsMap = {}
+  // curate studentId to groups mapping
+  studentGroupInfo.forEach((group) => {
+    if (group.groupType === 'custom' && group.students?.length) {
+      group.students.forEach((studentId) => {
+        if (!studentToGroupsMap[studentId]) {
+          studentToGroupsMap[studentId] = []
+        }
+        studentToGroupsMap[studentId].push({
+          groupId: group.groupId,
+          groupName: group.groupName,
+        })
       })
     }
   })
 
-  // filter student based on student groups
-  // and replace group info with student group info in meticInfo
-  const metics = []
-  metricInfo.forEach((info) => {
-    if (studentGroupsMap[info.studentId]) {
-      metics.push(
-        ...studentGroupsMap[info.studentId].map(({ groupId, groupName }) => ({
-          ...info,
-          groupId,
-          groupName,
-        }))
-      )
+  // replace group info with student group info in metricInfo
+  const transformedMetrics = []
+  metricInfo.forEach((studentMetric) => {
+    const studentGroupList = studentToGroupsMap[studentMetric.studentId]
+    if (studentGroupList) {
+      const studentGroupMetrics = studentGroupList.map((studentGroup) => ({
+        ...studentMetric,
+        ...studentGroup,
+      }))
+      transformedMetrics.push(...studentGroupMetrics)
     }
   })
-  return metics
+  return transformedMetrics
 }

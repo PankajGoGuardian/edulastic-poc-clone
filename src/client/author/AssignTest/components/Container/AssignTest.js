@@ -20,12 +20,15 @@ import {
 } from '../../../PlaylistPage/ducks'
 import {
   fetchGroupMembersAction,
-  getStudentsSelector,
   resetStudentAction,
+  getActiveStudentsSelector,
 } from '../../../sharedDucks/groups'
 import ListHeader from '../../../src/components/common/ListHeader'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
-import { saveAssignmentAction } from '../../../TestPage/components/Assign/ducks'
+import {
+  loadAssignmentsAction,
+  saveAssignmentAction,
+} from '../../../TestPage/components/Assign/ducks'
 import {
   getDefaultTestSettingsAction,
   getTestSelector,
@@ -145,8 +148,9 @@ class AssignTest extends React.Component {
   }
 
   componentWillUnmount() {
-    const { clearAssignmentSettings } = this.props
+    const { clearAssignmentSettings, setAssignments } = this.props
     clearAssignmentSettings()
+    setAssignments([])
   }
 
   handleAssign = () => {
@@ -355,6 +359,7 @@ class AssignTest extends React.Component {
               testSettings={testSettings}
               onClassFieldChange={this.onClassFieldChange}
               defaultTestProfiles={defaultTestProfiles}
+              isAssignRecommendations={false}
             />
           ) : (
             <SimpleOptions
@@ -367,6 +372,7 @@ class AssignTest extends React.Component {
               onClassFieldChange={this.onClassFieldChange}
               changeDateSelection={this.changeDateSelection}
               selectedDateOption={selectedDateOption}
+              isAssignRecommendations={false}
             />
           )}
         </Container>
@@ -381,7 +387,7 @@ const enhance = compose(
     (state) => ({
       classList: getClassListSelector(state),
       assignments: getAssignmentsSelector(state),
-      students: getStudentsSelector(state),
+      students: getActiveStudentsSelector(state),
       testSettings: getTestEntitySelector(state),
       userOrgId: getUserOrgId(state),
       playlist: getPlaylistSelector(state),
@@ -395,6 +401,7 @@ const enhance = compose(
       loadClassList: receiveClassListAction,
       fetchStudents: fetchGroupMembersAction,
       fetchAssignments: fetchAssignmentsAction,
+      setAssignments: loadAssignmentsAction,
       saveAssignment: saveAssignmentAction,
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,

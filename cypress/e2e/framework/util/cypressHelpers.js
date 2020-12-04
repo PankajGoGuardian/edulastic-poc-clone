@@ -15,7 +15,7 @@ export default class CypressHelper {
   }
 
   static selectMultipleSelectionDropDown = (attribute, option) => {
-    cy.get(`[data-cy=${attribute}]`).click()
+    cy.get(`[data-cy=${attribute}]`).click({ force: true })
     cy.wait(300) // allow list to expand
 
     cy.get('.ant-select-dropdown-menu-item').then(($ele) => {
@@ -113,7 +113,7 @@ export default class CypressHelper {
     )
   }
 
-  static getShortId = (item) => item.slice(item.length - 5)
+  static getShortId = (item) => item.slice(item.length - 6)
 
   static checkObjectEquality = (obj1, obj2, message = 'Equal') => {
     expect(obj1, `${obj1} ${message} ${obj2}`).to.deep.eq(obj2)
@@ -133,9 +133,37 @@ export default class CypressHelper {
   static verifyAntMesssage = (msg) =>
     cy
       .get('.ant-notification-notice-message')
-      .should('contain', msg)
+      .filter((i, ele) => Cypress.$(ele).text() === msg)
       .should('be.visible')
       .then(($ele) => {
         $ele.detach()
       })
+
+  static removeAllAntMessages = () =>
+    cy.get('body').then(() => {
+      if (Cypress.$('.ant-notification-notice-message').length)
+        Cypress.$('.ant-notification-notice-message').detach()
+      cy.get('.ant-notification-notice-message').should('have.length', 0)
+    })
+
+  static unassignCommonActions = () => {
+    cy.server()
+    cy.route('DELETE', /assignments/g).as('unassign')
+
+    cy.get('[data-cy="confirmationInput"]').type('UNASSIGN', { force: true })
+    cy.get('[data-cy="submitConfirm"]').click({ force: true })
+
+    cy.contains(
+      'This action will delete the data for the entire class for this assignment. Do you want to continue?'
+    ).should('be.visible')
+    cy.wait(1000)
+
+    cy.get('[data-cy="submitConfirm"]')
+      .should('have.length', 1)
+      .click({ force: true })
+
+    cy.wait('@unassign').then((xhr) =>
+      assert(xhr.status === 200, `verify unassign request ${xhr.status}`)
+    )
+  }
 }

@@ -81,6 +81,7 @@ import {
   setProgressStatusAction,
 } from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
+import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
 
 const {
   authorAssignmentConstants: {
@@ -561,6 +562,10 @@ function* canvasSyncGradesSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
+    if (errorMessage === 'Not shared with canvas') {
+      yield put(setShowCanvasShareAction(true))
+      return
+    }
     yield call(notification, {
       msg: errorMessage || 'Failed to sync grades with canvas.',
     })
@@ -1111,9 +1116,13 @@ export const isItemVisibiltySelector = createSelector(
   getAdditionalDataSelector,
   getUserId,
   getAssignedBySelector,
-  (state, additionalData, userId, assignedBy) => {
+  getUserRole,
+  (state, additionalData, userId, assignedBy, role) => {
     const assignmentStatus = state?.data?.status
     const contentVisibility = additionalData?.testContentVisibility
+    if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
+      return true
+    }
     // For assigned by user content will be always visible.
     if (userId === assignedBy?._id) {
       return true

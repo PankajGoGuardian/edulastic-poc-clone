@@ -16,7 +16,7 @@ export const FieldLabel = styled.label`
   font-stretch: ${(props) => props.theme.widgetOptions.labelFontStretch};
   line-height: 1.38;
   text-align: left;
-  color: ${(props) => props.theme.widgetOptions.labelColor};
+  color: ${(props) => props.color || props.theme.widgetOptions.labelColor};
   display: ${(props) => (props.display ? props.display : 'block')};
   text-transform: uppercase;
   margin-top: ${(props) => props.mt || '0px'};

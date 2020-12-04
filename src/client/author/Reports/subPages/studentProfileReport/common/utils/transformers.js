@@ -204,3 +204,8 @@ export const getGrades = (studInfo = []) =>
   uniq(studInfo.flatMap((s = {}) => (s.grades ? s.grades.split(',') : [])))
     .map((grade) => gradesMap[grade])
     .join()
+
+export const transformFiltersForSPR = (requestFilters = {}) => ({
+  ...requestFilters,
+  profileId: requestFilters.standardsProficiencyProfileId,
+})

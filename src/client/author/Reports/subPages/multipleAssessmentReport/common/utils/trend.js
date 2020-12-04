@@ -86,27 +86,27 @@ export const getCompareByOptions = (role = '') =>
 export const augmentWithData = (
   metricInfo = [],
   compareBy = '',
-  dataSource = []
+  metaInfo = []
 ) => {
   switch (compareBy) {
     case 'school':
       return map(metricInfo, (metric) => {
         const relatedSchool =
-          find(dataSource, (school) => metric.id === school.schoolId) || {}
+          find(metaInfo, (school) => metric.id === school.schoolId) || {}
 
         return { ...metric, ...relatedSchool }
       })
     case 'group':
       return map(metricInfo, (metric) => {
         const relatedGroup =
-          find(dataSource, (school) => metric.id === school.groupId) || {}
+          find(metaInfo, (school) => metric.id === school.groupId) || {}
 
         return { ...metric, ...relatedGroup }
       })
     case 'teacher':
       return map(metricInfo, (metric) => {
         const relatedTeacher =
-          find(dataSource, (school) => metric.id === school.teacherId) || {}
+          find(metaInfo, (school) => metric.id === school.teacherId) || {}
 
         return { ...metric, ...relatedTeacher }
       })
@@ -138,78 +138,6 @@ export const augmentWithData = (
   }
 }
 
-export const parseTrendData = (
-  metricInfo = [],
-  compareBy = '',
-  orgData = [],
-  selectedTrend = ''
-) => {
-  const groupedMetric = groupByCompareKey(metricInfo, compareBy)
-  const parsedGroupedMetric = map(groupedMetric, (value, metricId) => {
-    const groupByTests = groupBy(value, 'testId')
-    const tests = {}
-    const {
-      sisId,
-      studentNumber,
-      assignmentId,
-      testActivityId,
-      assessmentDate,
-      startDate,
-    } = value[0]
-
-    forEach(groupByTests, (value, key) => {
-      const studentCountKey =
-        compareBy === 'group' ? 'studentCount' : 'totalStudentCount'
-      const maxStudents =
-        maxBy(value, (item) => parseInt(item[studentCountKey] || 0)) || {}
-      const { sanitizedRecords, allAbsent } = sanitizeNullNumberFields(value, [
-        'totalScore',
-        'maxScore',
-      ])
-      tests[key] = {
-        records: value,
-        allAbsent,
-        score: getOverallScore(sanitizedRecords),
-        rawScore: `${(sumBy(sanitizedRecords, 'totalScore') || 0).toFixed(
-          2
-        )} / ${sumBy(sanitizedRecords, 'maxScore')}`,
-        studentCount: parseInt(maxStudents[studentCountKey]) || 0,
-      }
-    })
-    const dInfo = {}
-    if (
-      ['race', 'gender', 'ellStatus', 'iepStatus', 'frlStatus'].includes(
-        compareBy
-      )
-    ) {
-      dInfo[compareBy] = isEmpty(metricId) ? 'NA' : metricId
-    }
-    return {
-      tests,
-      studentCount: maxBy(values(tests), 'studentCount').studentCount,
-      id: metricId,
-      assessmentDate,
-      startDate,
-      sisId,
-      studentNumber,
-      assignmentId,
-      testActivityId,
-      ...dInfo,
-    }
-  })
-
-  const [dataWithTrend, trendCount] = calculateTrend(parsedGroupedMetric)
-  const augmentedData = augmentWithData(dataWithTrend, compareBy, orgData)
-  const filteredTrendData = filter(augmentedData, (record) =>
-    selectedTrend ? record.trend === selectedTrend : true
-  )
-  const sortedFilteredTrendData = orderBy(
-    filteredTrendData,
-    [compareByMap[compareBy]],
-    ['asc']
-  )
-  return [sortedFilteredTrendData, trendCount]
-}
 
 export const calculateTrend = (groupedData) => {
   const counts = {
@@ -282,4 +210,79 @@ export const calculateTrend = (groupedData) => {
   })
 
   return [dataWithTrend, counts]
+}
+
+export const parseTrendData = (
+  metricInfo = [],
+  compareBy = '',
+  metaInfo = [],
+  selectedTrend = ''
+) => {
+  const groupedMetric = groupByCompareKey(metricInfo, compareBy)
+  const parsedGroupedMetric = map(groupedMetric, (metric, metricId) => {
+    const groupByTests = groupBy(metric, 'testId')
+    const tests = {}
+    const {
+      sisId,
+      studentNumber,
+      assignmentId,
+      testActivityId,
+      assessmentDate,
+      startDate,
+      testName,
+    } = metric[0]
+
+    forEach(groupByTests, (value, key) => {
+      const studentCountKey =
+        compareBy === 'group' ? 'studentCount' : 'totalStudentCount'
+      const maxStudents =
+        maxBy(value, (item) => parseInt(item[studentCountKey] || 0, 10)) || {}
+      const { sanitizedRecords, allAbsent } = sanitizeNullNumberFields(value, [
+        'totalScore',
+        'maxScore',
+      ])
+      tests[key] = {
+        records: value,
+        allAbsent,
+        score: getOverallScore(sanitizedRecords),
+        rawScore: `${(sumBy(sanitizedRecords, 'totalScore') || 0).toFixed(
+          2
+        )} / ${sumBy(sanitizedRecords, 'maxScore')}`,
+        studentCount: parseInt(maxStudents[studentCountKey], 10) || 0,
+      }
+    })
+    const dInfo = {}
+    if (
+      ['race', 'gender', 'ellStatus', 'iepStatus', 'frlStatus'].includes(
+        compareBy
+      )
+    ) {
+      dInfo[compareBy] = isEmpty(metricId) || metricId === 'NA' ? '-' : metricId
+    }
+    return {
+      tests,
+      studentCount: maxBy(values(tests), 'studentCount').studentCount,
+      id: metricId,
+      assessmentDate,
+      startDate,
+      sisId,
+      studentNumber,
+      assignmentId,
+      testActivityId,
+      testName,
+      ...dInfo,
+    }
+  })
+
+  const [dataWithTrend, trendCount] = calculateTrend(parsedGroupedMetric)
+  const augmentedData = augmentWithData(dataWithTrend, compareBy, metaInfo)
+  const filteredTrendData = filter(augmentedData, (record) =>
+    selectedTrend ? record.trend === selectedTrend : true
+  )
+  const sortedFilteredTrendData = orderBy(
+    filteredTrendData,
+    [compareByMap[compareBy]],
+    ['asc']
+  )
+  return [sortedFilteredTrendData, trendCount]
 }

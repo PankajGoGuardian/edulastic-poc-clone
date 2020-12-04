@@ -1,9 +1,8 @@
 import { SpinLoader } from '@edulastic/common'
-import { capitalize, get, head, isEmpty } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import { capitalize, get, head } from 'lodash'
+import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { roleuser } from '@edulastic/constants'
-import { getUserRole, getUserDetails } from '../../../../../student/Login/ducks'
+import { getUserRole } from '../../../../../student/Login/ducks'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV } from '../../../common/util'
@@ -50,65 +49,68 @@ const options = [
   },
 ]
 
-const usefetchProgressHook = (
-  settings,
-  compareBy,
-  ddfilter,
-  fetchAction,
-  user
-) => {
-  useEffect(() => {
-    const { requestFilters = {} } = settings
-    const { termId = '', schoolId } = requestFilters
-    let schoolIds = ''
-    if (isEmpty(schoolId) && get(user, 'role', '') === roleuser.SCHOOL_ADMIN) {
-      schoolIds = get(user, 'institutionIds', []).join(',')
-    } else {
-      schoolIds = schoolId
-    }
-    if (termId) {
-      fetchAction({
-        compareBy: compareBy.key,
-        ...requestFilters,
-        ...ddfilter,
-        schoolIds,
-      })
-    }
-  }, [settings, compareBy.key])
-}
-
 const PeerProgressAnalysis = ({
   getPeerProgressAnalysisRequest,
   peerProgressAnalysis,
   isCsvDownloading,
-  MARFilterData,
   ddfilter,
   settings,
   loading,
   error,
   role,
-  user,
+  sharedReport,
 }) => {
-  const compareByData = [...getCompareByOptions(role), ...options]
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
+  const compareByData = [...getCompareByOptions(userRole), ...options]
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
   const [selectedTrend, setSelectedTrend] = useState('')
+  // support for pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 1,
+    pageSize: 25,
+  })
 
-  usefetchProgressHook(
-    settings,
-    compareBy,
-    ddfilter,
-    getPeerProgressAnalysisRequest,
-    user
+  useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [settings, ddfilter, compareBy.key])
+
+  useEffect(() => {
+    const { termId, reportId } = settings.requestFilters
+    if (termId || reportId) {
+      getPeerProgressAnalysisRequest({
+        compareBy: compareBy.key,
+        ...settings.requestFilters,
+        ...ddfilter,
+        ...pageFilters,
+      })
+    }
+  }, [pageFilters])
+
+  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
+    .testIds
+  const selectedTestIdsCount = selectedTestIdsStr
+    ? selectedTestIdsStr.split(',').length
+    : 0
+
+  const { metricInfo = [], metaInfo = [] } = get(
+    peerProgressAnalysis,
+    'data.result',
+    {}
   )
-
-  const { metricInfo = [] } = get(peerProgressAnalysis, 'data.result', {})
-  const { orgData = [], testData = [] } = get(MARFilterData, 'data.result', [])
 
   const [parsedData, trendCount] = parseTrendData(
     metricInfo,
     compareBy.key,
-    orgData,
+    metaInfo,
     selectedTrend
   )
 
@@ -166,12 +168,16 @@ const PeerProgressAnalysis = ({
         isCsvDownloading={isCsvDownloading}
         heading="How well are student sub-groups progressing ?"
         data={parsedData}
-        testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}
         rawMetric={metricInfo}
         customColumns={[studentColumn]}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: selectedTestIdsCount,
+        }}
+        setBackendPagination={setPageFilters}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow
@@ -180,7 +186,7 @@ const PeerProgressAnalysis = ({
             />
             <TableTooltipRow
               title={`${capitalize(compareBy.title)} : `}
-              value={record[compareByMap[compareBy.key]]}
+              value={record[compareByMap[compareBy.key]] || '-'}
             />
           </>
         )}
@@ -195,7 +201,6 @@ const enhance = connect(
     loading: getReportsPeerProgressAnalysisLoader(state),
     error: getReportsPeerProgressAnalysisError(state),
     role: getUserRole(state),
-    user: getUserDetails(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),
   {

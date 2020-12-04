@@ -1,7 +1,10 @@
 import LiveClassboardPage from '../../../../framework/author/assignments/LiveClassboardPage'
 import TeacherSideBar from '../../../../framework/author/SideBarPage'
 import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
-import { assignmentButtonsText } from '../../../../framework/constants/assignmentStatus'
+import {
+  assignmentButtonsText,
+  releaseGradeTypes,
+} from '../../../../framework/constants/assignmentStatus'
 import AssignmentsPage from '../../../../framework/student/assignmentsPage'
 import ReportsPage from '../../../../framework/student/reportsPage'
 import SidebarPage from '../../../../framework/student/sidebarPage'
@@ -36,7 +39,6 @@ describe(`${FileHelper.getSpecName(
   const password = 'snapwiz'
   const className = 'Automation Class - maxAttempts teacher.1'
   const maxAttempt = 3
-  let testId
 
   const attempt1 = { Q1: 'wrong', Q2: 'wrong', Q3: 'wrong' }
   const attempt2 = { Q1: 'right', Q2: 'wrong', Q3: 'right' }
@@ -48,18 +50,15 @@ describe(`${FileHelper.getSpecName(
     cy.login('teacher', teacher, password)
     // creating test
     cy.deleteAllAssignments(student, teacher, password)
-    testLibrary.createTest('TEST_SETTING').then((id) => {
-      testId = id
-      cy.contains('Share With Others')
-
+    testLibrary.createTest('TEST_SETTING', false).then(() => {
       // update the settings
-      cy.visit(`author/tests/tab/settings/id/${testId}`)
-      testLibrary.header.clickOnEditButton(true)
+      testLibrary.header.clickOnSettings()
       // set max attempt
       testLibrary.testSettings.setMaxAttempt(maxAttempt)
+      testLibrary.testSettings.setRealeasePolicy(
+        releaseGradeTypes.WITH_RESPONSE
+      )
       testLibrary.header.clickOnPublishButton()
-      cy.contains('Share With Others')
-
       //  assign as class assessment
       testLibrary.clickOnAssign()
 
@@ -88,7 +87,7 @@ describe(`${FileHelper.getSpecName(
         studentTest.attemptQuestion(queType, attempt1[queNum], attemptData)
         studentTest.clickOnNext()
       })
-      studentTest.submitTest()
+      studentTest.submitTest(true)
 
       sideBarPage.clickOnAssignment()
       // validate stats
@@ -109,7 +108,7 @@ describe(`${FileHelper.getSpecName(
         studentTest.attemptQuestion(queType, attempt2[queNum], attemptData)
         studentTest.clickOnNext()
       })
-      studentTest.submitTest()
+      studentTest.submitTest(true)
 
       sideBarPage.clickOnAssignment()
 

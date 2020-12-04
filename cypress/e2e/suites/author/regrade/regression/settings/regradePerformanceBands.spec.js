@@ -9,6 +9,7 @@ import AuthorAssignmentPage from '../../../../../framework/author/assignments/Au
 import LiveClassboardPage from '../../../../../framework/author/assignments/LiveClassboardPage'
 import { attemptTypes } from '../../../../../framework/constants/questionTypes'
 import StudentsReportCard from '../../../../../framework/author/assignments/studentPdfReportCard'
+import ExpressGraderPage from '../../../../../framework/author/assignments/expressGraderPage'
 
 describe(`>${FileHelper.getSpecName(
   Cypress.spec.name
@@ -18,6 +19,7 @@ describe(`>${FileHelper.getSpecName(
   const authorAssignmentPage = new AuthorAssignmentPage()
   const lcb = new LiveClassboardPage()
   const pdfReportCard = new StudentsReportCard()
+  const expressGrader = new ExpressGraderPage()
 
   const { _ } = Cypress
   const classes = ['Class-1', 'Class-2']
@@ -170,11 +172,16 @@ describe(`>${FileHelper.getSpecName(
                 lcb.clickOnMarkAsSubmit()
                 cy.wait('@assignment')
 
-                lcb.clickonQuestionsTab()
+                lcb.header.clickOnExpressGraderTab()
+                expressGrader.getGridRowByStudent(name)
+                expressGrader.getScoreforQueNum(`Q1`).click()
                 lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
                   name,
-                  scores.right
+                  scores.right,
+                  undefined,
+                  true
                 )
+                expressGrader.clickOnExit()
               })
           })
         })
@@ -195,30 +202,66 @@ describe(`>${FileHelper.getSpecName(
           /* select to eclude overidden test */
           regrade.checkRadioByValue(regradeOptions.settings.excludeOveridden)
           regrade.applyRegrade()
-          ;[...attemptsdata1, ...attemptsdata2]
-            .filter(({ status }) => status !== studentSide.SUBMITTED)
-            .forEach(({ name, overidden, attempt }) => {
-              testlibaryPage.sidebar.clickOnAssignment()
-              authorAssignmentPage.clickOnLCBbyTestId(
-                versionedTest1,
-                overidden ? assignmentid2 : assignmentid1
-              )
-              lcb.selectCheckBoxByStudentName(name)
-              lcb.clickOnMarkAsSubmit()
-              cy.wait('@assignment')
-
-              lcb.clickonQuestionsTab()
-              lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
-                name,
-                scores[attempt]
-              )
-            })
         })
       })
-      ;[attemptsdata1, attemptsdata2].forEach((studentdata) => {
+
+      before('> update score for not overidden class', () => {
+        const studentsToUpdate = attemptsdata1.filter(
+          ({ status }) => status !== studentSide.SUBMITTED
+        )
+        testlibaryPage.sidebar.clickOnAssignment()
+        authorAssignmentPage.clickOnLCBbyTestId(versionedTest1, assignmentid1)
+
+        studentsToUpdate.forEach(({ name }) =>
+          lcb.selectCheckBoxByStudentName(name)
+        )
+        lcb.clickOnMarkAsSubmit()
+        cy.wait('@assignment')
+
+        lcb.header.clickOnExpressGraderTab()
+        studentsToUpdate.forEach(({ name, attempt }) => {
+          expressGrader.getGridRowByStudent(name)
+          expressGrader.getScoreforQueNum(`Q1`).click()
+          lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
+            name,
+            scores[attempt],
+            undefined,
+            true
+          )
+          expressGrader.clickOnExit()
+        })
+      })
+
+      before('> update score for overidden class', () => {
+        const studentsToUpdate = attemptsdata2.filter(
+          ({ status }) => status !== studentSide.SUBMITTED
+        )
+        testlibaryPage.sidebar.clickOnAssignment()
+        authorAssignmentPage.clickOnLCBbyTestId(versionedTest1, assignmentid2)
+
+        studentsToUpdate.forEach(({ name }) =>
+          lcb.selectCheckBoxByStudentName(name)
+        )
+        lcb.clickOnMarkAsSubmit()
+        cy.wait('@assignment')
+
+        lcb.header.clickOnExpressGraderTab()
+        studentsToUpdate.forEach(({ name, attempt }) => {
+          expressGrader.getGridRowByStudent(name)
+          expressGrader.getScoreforQueNum(`Q1`).click()
+          lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
+            name,
+            scores[attempt],
+            undefined,
+            true
+          )
+          expressGrader.clickOnExit()
+        })
+      })
+      ;[attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(
           `> verify lcb/reports '${
-            studentdata[0].overidden === 0 ? 'not ' : ''
+            studentdata[0].overidden ? '' : 'not '
           }overidden' assignment`,
           () => {
             before('> click on lcb', () => {
@@ -232,7 +275,7 @@ describe(`>${FileHelper.getSpecName(
               )
             })
 
-            it('> verify performance band in lcb settings', () => {
+            it(`>${index} verify regraded performance band in lcb settings `, () => {
               const band = studentdata[0].overidden
                 ? overiddenBand
                 : regradedBand
@@ -241,18 +284,19 @@ describe(`>${FileHelper.getSpecName(
               lcb.settings.verifySelectedPerformanceBand(band)
             })
 
-            context('> verify reports', () => {
+            context('> verify regraded bands in pdf-reports', () => {
               before('> click reports in drop down', () => {
                 lcb.header.clickOnLCBTab()
                 lcb.header.clickStudentReportInDropDown()
                 pdfReportCard.clickReportGeanerateButton()
               })
               studentdata.forEach(({ status, name, attempt }) => {
-                it(`> for student ${status}`, () => {
-                  const band = studentdata[0].overidden
-                    ? overiddenBand
-                    : regradedBand
-                  const bands = performanceBand[band]
+                const band = studentdata[0].overidden
+                  ? overiddenBand
+                  : regradedBand
+
+                const bands = performanceBand[band]
+                it(`>${name} - student ${status},expected- '${bands[attempt]}'`, () => {
                   pdfReportCard.getReportContainerByStudent(name)
                   pdfReportCard
                     .getPerformanceBand()
@@ -315,11 +359,16 @@ describe(`>${FileHelper.getSpecName(
                 lcb.clickOnMarkAsSubmit()
                 cy.wait('@assignment')
 
-                lcb.clickonQuestionsTab()
+                lcb.header.clickOnExpressGraderTab()
+                expressGrader.getGridRowByStudent(name)
+                expressGrader.getScoreforQueNum(`Q1`).click()
                 lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
                   name,
-                  scores.right
+                  scores.right,
+                  undefined,
+                  true
                 )
+                expressGrader.clickOnExit()
               })
           })
         })
@@ -340,30 +389,66 @@ describe(`>${FileHelper.getSpecName(
           /* select to eclude overidden test */
           regrade.checkRadioByValue(regradeOptions.settings.chooseAll)
           regrade.applyRegrade()
-          ;[...attemptsdata1, ...attemptsdata2]
-            .filter(({ status }) => status !== studentSide.SUBMITTED)
-            .forEach(({ name, overidden, attempt }) => {
-              testlibaryPage.sidebar.clickOnAssignment()
-              authorAssignmentPage.clickOnLCBbyTestId(
-                versionedTest2,
-                overidden ? assignmentid2 : assignmentid1
-              )
-              lcb.selectCheckBoxByStudentName(name)
-              lcb.clickOnMarkAsSubmit()
-              cy.wait('@assignment')
-
-              lcb.clickonQuestionsTab()
-              lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
-                name,
-                scores[attempt]
-              )
-            })
         })
       })
-      ;[attemptsdata1, attemptsdata2].forEach((studentdata) => {
+
+      before('> update score for not overidden class', () => {
+        const studentsToUpdate = attemptsdata1.filter(
+          ({ status }) => status !== studentSide.SUBMITTED
+        )
+        testlibaryPage.sidebar.clickOnAssignment()
+        authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, assignmentid1)
+
+        studentsToUpdate.forEach(({ name }) =>
+          lcb.selectCheckBoxByStudentName(name)
+        )
+        lcb.clickOnMarkAsSubmit()
+        cy.wait('@assignment')
+
+        lcb.header.clickOnExpressGraderTab()
+        studentsToUpdate.forEach(({ name, attempt }) => {
+          expressGrader.getGridRowByStudent(name)
+          expressGrader.getScoreforQueNum(`Q1`).click()
+          lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
+            name,
+            scores[attempt],
+            undefined,
+            true
+          )
+          expressGrader.clickOnExit()
+        })
+      })
+
+      before('> update score for overidden class', () => {
+        const studentsToUpdate = attemptsdata2.filter(
+          ({ status }) => status !== studentSide.SUBMITTED
+        )
+        testlibaryPage.sidebar.clickOnAssignment()
+        authorAssignmentPage.clickOnLCBbyTestId(versionedTest2, assignmentid2)
+
+        studentsToUpdate.forEach(({ name }) =>
+          lcb.selectCheckBoxByStudentName(name)
+        )
+        lcb.clickOnMarkAsSubmit()
+        cy.wait('@assignment')
+
+        lcb.header.clickOnExpressGraderTab()
+        studentsToUpdate.forEach(({ name, attempt }) => {
+          expressGrader.getGridRowByStudent(name)
+          expressGrader.getScoreforQueNum(`Q1`).click()
+          lcb.questionResponsePage.updateScoreAndFeedbackForStudent(
+            name,
+            scores[attempt],
+            undefined,
+            true
+          )
+          expressGrader.clickOnExit()
+        })
+      })
+      ;[attemptsdata1, attemptsdata2].forEach((studentdata, index) => {
         context(
           `> verify lcb/reports '${
-            studentdata[0].overidden === 0 ? 'not ' : ''
+            studentdata[0].overidden ? 'not ' : ''
           }overidden' assignment`,
           () => {
             before('> click on lcb', () => {
@@ -378,21 +463,21 @@ describe(`>${FileHelper.getSpecName(
               )
             })
 
-            it('> verify performance band in lcb settings', () => {
+            it(`>${index} verify regraded performance band in lcb settings`, () => {
               lcb.header.clickLCBSettings()
               lcb.settings.showTestLevelSettings()
               lcb.settings.verifySelectedPerformanceBand(regradedBand)
             })
 
-            context('> verify reports', () => {
+            context('> verify regraded bands in pdf-reports', () => {
               before('> click reports in drop down', () => {
                 lcb.header.clickOnLCBTab()
                 lcb.header.clickStudentReportInDropDown()
                 pdfReportCard.clickReportGeanerateButton()
               })
               studentdata.forEach(({ status, name, attempt }) => {
-                it(`> for student ${status}`, () => {
-                  const bands = performanceBand[regradedBand]
+                const bands = performanceBand[regradedBand]
+                it(`>${name} - student ${status}, expected- ${bands[attempt]}`, () => {
                   pdfReportCard.getReportContainerByStudent(name)
                   pdfReportCard
                     .getPerformanceBand()

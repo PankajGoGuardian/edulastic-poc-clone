@@ -15,6 +15,30 @@ import next from 'immer'
 import moment from 'moment'
 import calcMethod from './static/json/calcMethod.json'
 
+const studentFiltersDefaultValues = [
+  {
+    key: 'schoolIds',
+    value: '',
+  },
+  {
+    key: 'teacherIds',
+    value: '',
+  },
+  {
+    key: '',
+    nestedFilters: [
+      {
+        key: 'classId',
+        value: 'All',
+      },
+      {
+        key: 'groupId',
+        value: 'All',
+      },
+    ],
+  },
+]
+
 export const testTypeHashMap = {
   practice: 'practice',
   common: 'common',
@@ -90,8 +114,8 @@ export const getDropDownTestIds = (arr) => {
 }
 
 export const filterData = (data, filter) => {
-  const filteredData = data.filter((item) => {
-    if (
+  const filteredData = data.filter(
+    (item) =>
       (item.gender.toLowerCase() === filter.gender.toLowerCase() ||
         filter.gender === 'all') &&
       (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() ||
@@ -102,11 +126,7 @@ export const filterData = (data, filter) => {
         filter.iepStatus === 'all') &&
       (item.race.toLowerCase() === filter.race.toLowerCase() ||
         filter.race === 'all')
-    ) {
-      return true
-    }
-    return false
-  })
+  )
   return filteredData
 }
 
@@ -359,4 +379,25 @@ export const formatDate = (milliseconds, showTime) => {
   return milliseconds
     ? moment(parseInt(milliseconds, 10)).format('MMM DD, YYYY')
     : 'NA'
+}
+
+const resetFilter = (filtersToReset, prevFilters) => {
+  for (const filter of filtersToReset) {
+    if (filter.nestedFilters) {
+      resetFilter(filter.nestedFilters, prevFilters)
+    } else {
+      prevFilters[filter.key] = filter.value
+    }
+  }
+}
+
+export const resetStudentFilters = (prevFilters, key, selected, multiple) => {
+  const index = studentFiltersDefaultValues.findIndex((s) => s.key === key)
+  if (
+    index !== -1 &&
+    prevFilters[key] !== (multiple ? selected : selected.key)
+  ) {
+    const filtersToReset = studentFiltersDefaultValues.slice(index + 1)
+    resetFilter(filtersToReset, prevFilters)
+  }
 }

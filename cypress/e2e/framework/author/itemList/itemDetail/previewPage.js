@@ -17,6 +17,10 @@ class PreviewItemPage {
 
   getScore = () => cy.get('[data-cy="score"]')
 
+  getInstructionIcon = () => cy.get('[class="fa fa-info-circle"]')
+
+  getInstructionText = () => this.getInstructionIcon().next()
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***

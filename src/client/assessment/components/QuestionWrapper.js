@@ -524,7 +524,7 @@ class QuestionWrapper extends Component {
     const { rubrics: rubricDetails } = data
     const rubricFeedback = data?.activity?.rubricFeedback
 
-    const { calculatedHeight, fullHeight } = restProps
+    const { calculatedHeight, fullHeight, showBorder } = restProps
     let openAdvancedOptions = false
 
     if (
@@ -615,10 +615,7 @@ class QuestionWrapper extends Component {
                   display: 'flex',
                   boxShadow: 'none',
                   paddingRight: layoutType === COMPACT ? '100px' : null,
-                  border:
-                    isLCBView && !restProps.hasDrawingResponse
-                      ? '1px solid #DADAE4'
-                      : null,
+                  border: showBorder ? '1px solid #DADAE4' : null,
                 }}
                 flowLayout={
                   type === questionType.CODING && view === 'preview'

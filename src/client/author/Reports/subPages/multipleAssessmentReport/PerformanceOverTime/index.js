@@ -1,14 +1,12 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
 import { filter, get, includes } from 'lodash'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { getUserRole, getUserDetails } from '../../../../../student/Login/ducks'
 import { StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
-import { usefetchProgressHook } from '../common/hooks'
 import analyseByData from '../common/static/json/analyseByDropDown.json'
 import ProgressChart from './components/charts/ProgressChart'
 import PerformanceOverTimeTable from './components/table/PerformanceOvetTimeTable'
@@ -18,27 +16,56 @@ import {
   getReportsPerformanceOverTimeLoader,
   getReportsPerformanceOverError,
 } from './ducks'
-import { augmentTestData, parseData } from './utils/transformers'
+import { parseData } from './utils/transformers'
 
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequest,
   performanceOverTime,
   isCsvDownloading,
-  MARFilterData,
   settings,
   loading,
   error,
-  user,
+  sharedReport,
 }) => {
-  usefetchProgressHook(settings, getPerformanceOverTimeRequest, user)
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    [sharedReport]
+  )
 
+  // support for pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 1,
+    pageSize: 10,
+  })
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0])
   const [selectedTests, setSelectedTests] = useState([])
 
+  useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [settings])
+
+  useEffect(() => {
+    const { termId, reportId } = settings.requestFilters
+    if (termId || reportId) {
+      getPerformanceOverTimeRequest({
+        ...settings.requestFilters,
+        ...pageFilters,
+      })
+    }
+  }, [pageFilters])
+
+  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
+    .testIds
+  const selectedTestIdsCount = selectedTestIdsStr
+    ? selectedTestIdsStr.split(',').length
+    : 0
+
   const rawData = get(performanceOverTime, 'data.result', {})
-  const { testData = [] } = get(MARFilterData, 'data.result', {})
   const dataWithTestInfo = filter(
-    augmentTestData(parseData(rawData), testData),
+    parseData(rawData),
     (test) => test.testName && test.testName !== 'N/A' // filter out tests without testName
   )
   const filteredTableData = filter(dataWithTestInfo, (test) =>
@@ -73,11 +100,22 @@ const PerformanceOverTime = ({
           selectedItems={selectedTests}
           setSelectedItems={setSelectedTests}
           bandInfo={rawData.bandInfo}
+          backendPagination={{
+            ...pageFilters,
+            pageCount:
+              Math.ceil(selectedTestIdsCount / pageFilters.pageSize) || 1,
+          }}
+          setBackendPagination={setPageFilters}
         />
       </StyledCard>
       <PerformanceOverTimeTable
         isCsvDownloading={isCsvDownloading}
         dataSource={filteredTableData}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: selectedTestIdsCount,
+        }}
+        setBackendPagination={setPageFilters}
       />
     </>
   )
@@ -88,8 +126,6 @@ const enhance = connect(
     performanceOverTime: getReportsPerformanceOverTime(state),
     loading: getReportsPerformanceOverTimeLoader(state),
     error: getReportsPerformanceOverError(state),
-    role: getUserRole(state),
-    user: getUserDetails(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),
   {

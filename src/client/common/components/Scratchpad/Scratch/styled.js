@@ -32,4 +32,8 @@ export const ZwibblerMain = styled.div`
   & .zwibbler-overlay {
     outline: none !important;
   }
+
+  & .zwibbler-text-area {
+    resize: both;
+  }
 `

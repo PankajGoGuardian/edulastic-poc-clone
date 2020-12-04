@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { sumBy, includes, filter } from 'lodash'
+import { sumBy, includes, filter, isEmpty } from 'lodash'
 import next from 'immer'
 import { Row, Col } from 'antd'
 import styled from 'styled-components'
@@ -77,7 +77,10 @@ const getColorCell = (
 ) => (_, record) => {
   const toolTipText = (rec) => (
     <div>
-      <TableTooltipRow title={`${compareBy.title}: `} value={rec.name} />
+      <TableTooltipRow
+        title={`${compareBy.title}: `}
+        value={rec.name === '' || rec.name === 'undefined' ? '-' : rec.name}
+      />
       <TableTooltipRow title="Domain: " value={domainName} />
       <TableTooltipRow
         title={`${getAnalyseByTitle(analyseByKey)}: `}
@@ -120,7 +123,7 @@ export const getColumns = (
   domains,
   scaleInfo,
   selectedDomains,
-  filters = {},
+  selectedTermId,
   t
 ) => {
   const filteredDomains = filter(
@@ -159,10 +162,13 @@ export const getColumns = (
       render: (data, record) =>
         compareBy.title === 'Student' ? (
           <Link
-            to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
+            to={`/author/reports/student-profile-summary/student/${record.id}?termId=${selectedTermId}`}
           >
             {data || t('common.anonymous')}
           </Link>
+        ) : compareBy.key === 'school' &&
+          (isEmpty(data) || data === 'undefined') ? (
+          '-'
         ) : (
           data
         ),
@@ -196,7 +202,7 @@ const StandardsPerformanceTable = ({
   scaleInfo,
   selectedDomains,
   isCsvDownloading,
-  filters = {},
+  selectedTermId,
   t,
   ...tableProps
 }) => {
@@ -206,7 +212,7 @@ const StandardsPerformanceTable = ({
     domainsData,
     scaleInfo,
     selectedDomains,
-    filters,
+    selectedTermId,
     t
   )
 

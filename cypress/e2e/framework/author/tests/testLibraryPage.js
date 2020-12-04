@@ -35,7 +35,7 @@ export default class TestLibrary {
 
   getShareButtonPop = () => cy.get('[data-cy="share-button-pop"]')
 
-  getEditButton = () => cy.get('[data-cy="edit"]')
+  getEditButton = () => cy.get('[data-cy="edit-test"]')
 
   getVersionedTestID = () => cy.url().then((url) => url.split('/').reverse()[2])
 
@@ -111,14 +111,16 @@ export default class TestLibrary {
       this.getTestCardById(id).find('button').contains('More')
     )
 
-  getAllTestCardsInCurrentPage = () =>
-    cy.get('[data-cy="test-id"]').closest('.ant-card').parent()
+  getAllTestCardsInCurrentPage = () => cy.get('[data-cy="test-title"]')
 
   getTestCardInCurrentPageByIndex = (index) =>
     this.getAllTestCardsInCurrentPage().eq(index)
 
   getTestIdOfCardInCurrentPageByIndex = (index) =>
-    this.getTestCardInCurrentPageByIndex(index).invoke('attr', 'data-cy')
+    this.getTestCardInCurrentPageByIndex(index)
+      .closest('.ant-card')
+      .parent()
+      .invoke('attr', 'data-cy')
 
   getCloseTestCardPopUpButton = () =>
     cy.get(`button[class^="styles_closeButton"]`)
@@ -144,6 +146,11 @@ export default class TestLibrary {
   getDoneButtonInAddingQuestion = () => cy.get('button').contains('DONE')
 
   getProceedButton = () => cy.get('button').contains('PROCEED')
+
+  getCollectionContainerInSuccessPage = () =>
+    cy.get('[class*="FlexShareWithBox"]')
+
+  getContinueCloneButton = () => cy.contains('span', 'Continue to clone')
 
   // *** ELEMENTS END ***
 
@@ -212,21 +219,23 @@ export default class TestLibrary {
       })
   }
 
-  createTest = (key = 'default', publish = true) => {
+  createTest = (key = 'default', publish = true, itemIds = false) => {
     const testSummary = new TestSummary()
     const testAddItem = new TestAddItem()
     const itemListPage = new ItemListPage()
 
     return cy.fixture('testAuthoring').then((testData) => {
       const test = testData[key]
-      this.items = []
-      test.itemKeys.forEach(async (itemKey, index) => {
-        const _id = await promisify(itemListPage.createItem(itemKey, index))
-        // .then(_id => {
-        // const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
-        this.items.push(_id)
-        // });
-      })
+      if (!itemIds) {
+        this.items = []
+        test.itemKeys.forEach(async (itemKey, index) => {
+          const _id = await promisify(itemListPage.createItem(itemKey, index))
+          // .then(_id => {
+          // const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
+          this.items.push(_id)
+          // });
+        })
+      } else this.items = itemIds
 
       // create new test
       this.sidebar.clickOnTestLibrary()
@@ -298,10 +307,13 @@ export default class TestLibrary {
     cy.wait(1000)
   }
 
+  clickCloneInTestCardPopUp = () => cy.contains('CLONE').click({ force: true })
+
   clickOnDuplicate = () => {
     cy.route('POST', '**/test/**').as('duplicateTest')
     cy.route('GET', '**/test/*/assignments').as('getTest')
-    cy.contains('CLONE').click({ force: true })
+    this.clickCloneInTestCardPopUp()
+    this.getContinueCloneButton().click({ force: true })
     cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
     // cy.wait("@getTest");
   }
@@ -400,13 +412,14 @@ export default class TestLibrary {
           assert(xhr.status === 200, 'Test drafted')
         )
       })
-    cy.wait(5000)
+    return cy.get('[data-cy-item-index="1"]', { timeout: 30000 })
   }
 
   duplicateTestInReview = () => {
     cy.server()
     cy.route('POST', '**/test/**').as('duplicateTest')
     this.getDuplicateButtonInReview().should('be.visible').click()
+    this.getContinueCloneButton().click({ force: true })
     cy.wait('@duplicateTest').then((xhr) => this.saveTestId(xhr))
   }
 
@@ -494,12 +507,14 @@ export default class TestLibrary {
     this.getSchoolRadio().should('not.be.enabled')
     this.getDistrictRadio().should('not.be.enabled')
     this.getPublicRadio().should('not.be.enabled')
+    this.getLinkRadio().should('not.be.enabled')
   }
 
   sharingEnabled = () => {
     this.getSchoolRadio().should('be.enabled')
     this.getDistrictRadio().should('be.enabled')
-    this.getPublicRadio().should('be.enabled')
+    this.getPublicRadio().should('not.be.enabled')
+    this.getLinkRadio().should('be.enabled')
   }
 
   sharingEnabledPublic = () => this.getPublicRadio().should('be.enabled')
@@ -513,6 +528,47 @@ export default class TestLibrary {
   getDistrictRadio = () => cy.get('[value="DISTRICT"]')
 
   getPublicRadio = () => cy.get('[value="PUBLIC"]')
+
+  getLinkRadio = () => cy.get('[value="LINK"]')
+
+  getIndividualRadio = () => cy.get('[value="INDIVIDUAL"]')
+
+  getTestLinkBox = () => cy.get('.ant-typography').find('div').first()
+
+  getCopyUrlButton = () => cy.get('.ant-typography-copy')
+
+  getCloneTestWithKeepingRefToItems = () =>
+    cy.get('[data-cy="with-original-item"]').should('be.visible')
+
+  getCloneTestWithNewItems = () =>
+    cy.get('[data-cy="with-new-item"]').should('be.visible')
+
+  selectCloneOptionAndCloneTest = (withItems = false) => {
+    cy.server()
+    cy.route('POST', /duplicate/).as('clone-test')
+    if (withItems) this.getCloneTestWithNewItems().click()
+    else this.getCloneTestWithKeepingRefToItems().click()
+
+    this.getContinueCloneButton().click({ force: true })
+
+    return cy.wait('@clone-test').then((xhr) => {
+      const testId = xhr.response.body.result._id
+      cy.saveTestDetailToDelete(testId)
+      expect(xhr.status).to.eq(200)
+      if (withItems) {
+        const itemIds = xhr.response.body.result.itemGroups[0].items.map(
+          ({ itemId }) => itemId
+        )
+        cy.saveItemDetailToDelete(itemIds)
+        return cy.wait(1).then(() => {
+          return { testId, itemIds }
+        })
+      }
+      return cy.wait(1).then(() => {
+        return testId
+      })
+    })
+  }
 
   assertUrl = (testId) => {
     cy.url()
@@ -539,7 +595,7 @@ export default class TestLibrary {
     return cy
       .url()
       .should('contain', '/old/')
-      .then(() => cy.get('[data-cy-item-index="0"]'))
+      .then(() => cy.get('[data-cy-item-index="1"]'))
       .then(() => {
         this.getVersionedTestID().then((id) => cy.saveTestDetailToDelete(id))
       })
@@ -583,8 +639,13 @@ export default class TestLibrary {
   visitTestById = (id) => {
     cy.server()
     cy.route('GET', '**/test/*/regrade-assignments').as('load-test-review')
-    cy.visit(`/author/tests/tab/review/id/${id}`)
-    cy.wait('@load-test-review')
+    cy.url().then((url) => {
+      if (!url.includes(`/tab/review/id/${id}`)) {
+        cy.visit(`/author/tests/tab/review/id/${id}`)
+        cy.wait('@load-test-review', { timeout: 120000 })
+      }
+    })
+    // increased 2 min timeout as needed to load multiple xhrs, timesout when running on remote
   }
 
   searchByCollection = (collection) => {
@@ -622,11 +683,11 @@ export default class TestLibrary {
 
   verifyStandardsOnTestCardById = (id, standards) => {
     this.getStandardsByTestId(id).then(($ele) => {
-      if ($ele.find('.ant-dropdown-trigger').length > 0)
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find('.ant-dropdown-trigger')
+          .find('.hidden-tags')
           .last()
-          .trigger('mouseover')
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
     })
     standards.forEach((sta) =>
@@ -636,11 +697,11 @@ export default class TestLibrary {
 
   verifyTagsOnTestCardById = (id, tags) => {
     this.getStandardsByTestId(id).then(($ele) => {
-      if ($ele.find('.ant-dropdown-trigger').length > 0)
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find('.ant-dropdown-trigger')
+          .find('.hidden-tags')
           .first()
-          .trigger('mouseover')
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
     })
     tags.forEach((sta) =>
@@ -650,10 +711,10 @@ export default class TestLibrary {
 
   verifyGradesOnTestCardPopUp = (grades) => {
     this.getGradesOnTestCardPopUp().then(($ele) => {
-      if ($ele.find('.ant-dropdown-trigger').length > 0)
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find('.ant-dropdown-trigger')
-          .trigger('mouseover')
+          .find('.hidden-tags')
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
     })
     grades.forEach((grade) => {
@@ -663,14 +724,27 @@ export default class TestLibrary {
 
   verifySubjectsOnTestCardPopUp = (subjects) =>
     this.getTestSubjectsOnTestCardPopUp().then(($ele) => {
-      if ($ele.find('.ant-dropdown-trigger').length > 0)
+      if ($ele.find('.hidden-tags').length > 0)
         cy.wrap($ele)
-          .find('.ant-dropdown-trigger')
-          .trigger('mouseover')
+          .find('.hidden-tags')
+          .trigger(`mouseover`)
           .then(() => cy.wait(500))
 
       subjects.forEach((sub) => {
         this.getTestSubjectsOnTestCardPopUp().find('span').contains(sub)
+      })
+    })
+
+  verifyTagsOnTestCardPopUp = (tags) =>
+    this.getTestTagsOnTestCardPopUp().then(($ele) => {
+      if ($ele.find('.hidden-tags').length > 0)
+        cy.wrap($ele)
+          .find('.hidden-tags')
+          .trigger(`mouseover`)
+          .then(() => cy.wait(500))
+
+      tags.forEach((tag) => {
+        this.getTestTagsOnTestCardPopUp().find('span').contains(tag)
       })
     })
 
@@ -702,5 +776,131 @@ export default class TestLibrary {
 
         cy.wrap($ele).eq(2).should('have.text', `${points}`)
       })
+  }
+
+  verifyLinkShareOptions = (testId, isSuccesPage = false) => {
+    this.getTestLinkBox()
+      .should(
+        'have.attr',
+        'title',
+        `${Cypress.config('baseUrl')}/author/tests/verid/${testId}`
+      )
+      .should(
+        'have.text',
+        `${Cypress.config('baseUrl')}/author/tests/verid/${testId}`
+      )
+
+    // TODO: revisit this as currently pop-up is blocking suite on clicking
+    this.getCopyUrlButton().should('be.visible') /* .click() */
+
+    if (isSuccesPage)
+      this.getCollectionContainerInSuccessPage().contains(
+        'div',
+        'Private Library'
+      )
+  }
+
+  verifySharePopUp = (isDraft, testId) => {
+    cy.contains('h2', 'Share with others').should('be.visible')
+    cy.contains('div', 'Enter names or email addresses').should('exist')
+    this.getPermissionButton().should('be.visible')
+    this.getIndividualRadio().should('be.enabled')
+    if (isDraft) this.sharingDisabled()
+    else this.sharingEnabled()
+
+    if (!isDraft) this.verifyLinkShareOptions(testId)
+
+    cy.get('button').contains('Cancel').should('exist')
+    this.getShareButtonPop().should('be.visible')
+  }
+
+  verifyCloneTestPopUp = () => {
+    this.header.getDuplicateButtonInReview().click({ force: true })
+    cy.contains('How would you like to clone the test?')
+    this.getCloneTestWithKeepingRefToItems()
+      .should('be.visible')
+      .should('be.checked')
+    this.getCloneTestWithNewItems()
+  }
+
+  verifyTestEditPopUp = () => {
+    cy.contains(
+      'div',
+      'You are about to edit a test that has already been published. If you wish to edit this test,'
+    ).should('be.visible')
+    cy.contains(
+      'div',
+      'we will move this test to draft status. Do you want to proceed?'
+    ).should('be.visible')
+    cy.get('.ant-modal-content').find('[data-cy="CANCEL"]').should('exist')
+    cy.get('.ant-modal-content"').find('[data-cy="PROCEED"]').should('exist')
+  }
+
+  closePopUp = () => {
+    cy.get('body').then(() => {
+      if (Cypress.$('.ant-modal-close-x').length > 0) {
+        cy.get('body').type('{esc}')
+      }
+    })
+  }
+
+  closeTestAttemptSummary = () => {
+    cy.get('body').then(() => {
+      if (Cypress.$('.recharts-surface').length)
+        cy.contains('span', 'EXIT').click({ force: true })
+    })
+  }
+
+  verifyDraftTestHeaders = () => {
+    this.header.verifyHeaders(true, true, true, true)
+    this.header
+      .getTestSummaryHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testSummary.getTestGradeSelect().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestAddItemHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testAddItem.searchFilters.getSearchTextBox().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestSettingsHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testSettings.getAnsOnPaperSwitch().should('exist')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+    this.header
+      .getTestReviewHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.review.getTestSubjectSelect().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, true, true, true, false)
+  }
+
+  verifyPublishedTestHeaders = () => {
+    this.header.verifyHeaders(true, true, true, true)
+    this.header
+      .getTestSummaryHeader()
+      .should('have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.header
+      .getTestAddItemHeader()
+      .should('have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.review.getTestSubjectSelect().should('be.visible')
+    this.header
+      .getTestSettingsHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.testSettings.getAnsOnPaperSwitch().should('exist')
+    this.header.verifyHeaderActionButtons(true, true, false, false, true, true)
+    this.header
+      .getTestReviewHeader()
+      .should('not.have.css', 'cursor', 'not-allowed')
+      .click({ force: true })
+    this.review.getTestSubjectSelect().should('be.visible')
+    this.header.verifyHeaderActionButtons(true, true, false, false, true, true)
   }
 }

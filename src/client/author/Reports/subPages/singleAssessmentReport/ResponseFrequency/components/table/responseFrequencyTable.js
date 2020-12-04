@@ -18,6 +18,7 @@ export const ResponseFrequencyTable = ({
   data: dataSource,
   correctThreshold,
   incorrectFrequencyThreshold,
+  isSharedReport,
 }) => {
   /**
    * set column details for frequency table
@@ -27,7 +28,9 @@ export const ResponseFrequencyTable = ({
     Number(a.qLabel.substring(1)) - Number(b.qLabel.substring(1))
   columns[0].render = (text, record) => {
     const { pathname, search } = window.location
-    return (
+    return isSharedReport ? (
+      text
+    ) : (
       <Link
         to={{
           pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.uid}`,
@@ -52,7 +55,10 @@ export const ResponseFrequencyTable = ({
   }
 
   columns[4].sorter = (a, b) => {
-    return a.total_score * b.total_max_score - b.total_score * a.total_max_score
+    return (
+      a.total_score / (a.total_max_score || 1) -
+      b.total_score / (b.total_max_score || 1)
+    )
   }
   columns[4].render = (data, record) => {
     const tooltipText = (rec) => () => {

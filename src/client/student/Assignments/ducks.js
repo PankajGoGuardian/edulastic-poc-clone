@@ -3,7 +3,15 @@ import {
   createSelector as createSelectorator,
 } from 'redux-starter-kit'
 import { takeLatest, put, call, all, select, take } from 'redux-saga/effects'
-import { values, groupBy, last, partial, maxBy as _maxBy, sortBy } from 'lodash'
+import {
+  values,
+  groupBy,
+  last,
+  partial,
+  maxBy as _maxBy,
+  sortBy,
+  get,
+} from 'lodash'
 import { createSelector } from 'reselect'
 import { normalize } from 'normalizr'
 import { push } from 'connected-react-router'
@@ -506,9 +514,12 @@ function* fetchAssignments() {
     const groupId = yield select(getCurrentGroup)
     const userId = yield select(getCurrentUserId)
     const classIds = yield select(getClassIds)
+    const groupStatus = yield select((state) =>
+      get(state, 'studentAssignment.groupStatus', 'all')
+    )
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId),
-      call(reportsApi.fetchReports, groupId),
+      call(assignmentApi.fetchAssigned, groupId, '', groupStatus),
+      call(reportsApi.fetchReports, groupId, '', '', groupStatus),
     ])
 
     const reportsGroupedByClassIdentifier = groupBy(
@@ -575,8 +586,9 @@ function* startAssignment({ payload }) {
         groupId: classId,
       })
       yield put(push(`/home/assignments`))
-      handleChromeOsSEB()
-      yield call(redirectToUrl(sebUrl))
+      if (!handleChromeOsSEB()) {
+        yield call(redirectToUrl(sebUrl))
+      }
       return
     }
 
@@ -900,15 +912,16 @@ function* launchAssignment({ payload }) {
       if (lastActivity && lastActivity.status === 0) {
         if (safeBrowser && !isSEB()) {
           yield put(push(`/home/assignments`))
-          handleChromeOsSEB()
-          const sebUrl = getSebUrl({
-            testId,
-            testType,
-            testActivityId: lastActivity._id,
-            assignmentId,
-            groupId,
-          })
-          yield call(redirectToUrl, sebUrl)
+          if (!handleChromeOsSEB()) {
+            const sebUrl = getSebUrl({
+              testId,
+              testType,
+              testActivityId: lastActivity._id,
+              assignmentId,
+              groupId,
+            })
+            yield call(redirectToUrl, sebUrl)
+          }
         } else {
           yield put(
             resumeAssignmentAction({

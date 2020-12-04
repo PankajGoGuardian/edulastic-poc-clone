@@ -122,7 +122,10 @@ const columns = [
     dataIndex: 'action',
     width: '8%',
     render: (_, row) => (
-      <ActionsWrapper data-cy="PresentationIcon">
+      <ActionsWrapper
+        data-cy="PresentationIcon"
+        onClick={(e) => e.stopPropagation()}
+      >
         <Tooltip placement="bottom" title="Live Class Board">
           <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
             <Icon data-cy="lcb" src={presentationIcon} alt="Images" />

@@ -1,11 +1,5 @@
 import styled from 'styled-components'
-import {
-  mobileWidth,
-  greyThemeLight,
-  greyishBorder,
-  boxShadowDefault,
-} from '@edulastic/colors'
-import { Rnd } from 'react-rnd'
+import { mobileWidth, greyThemeLight, greyishBorder } from '@edulastic/colors'
 
 export const MathInputStyles = styled.div`
   min-width: ${({ width, fullWidth }) =>
@@ -32,6 +26,7 @@ export const MathInputStyles = styled.div`
       width ? 'unset' : !noPadding && '5px 15px'};
     align-items: center;
     padding-right: 25px;
+    padding-left: 8px;
 
     &.clear {
       background: ${(props) => props.theme.common.mathInputMathClearBgColor};
@@ -79,9 +74,6 @@ export const MathInputStyles = styled.div`
     .mq-root-block {
       font-size: ${({ fontSize }) => `${fontSize || 'inherit'}`};
       padding-top: 5px;
-      * {
-        font-style: unset;
-      }
     }
   }
 
@@ -161,15 +153,6 @@ export const MathInputStyles = styled.div`
       flex-direction: column;
     }
   }
-`
-
-export const DraggableKeyboard = styled(Rnd).attrs((props) => ({
-  disableDragging: props.disableDragging,
-  enableResizing: false,
-}))`
-  box-shadow: ${boxShadowDefault};
-  position: ${({ disableDragging }) => !disableDragging && 'fixed !important'};
-  z-index: 1100;
 `
 
 export const EmptyDiv = styled.div``

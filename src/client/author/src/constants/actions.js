@@ -228,6 +228,8 @@ export const UPDATE_PASSWORD_DETAILS =
 
 export const CANVAS_SYNC_GRADES = '[gradebook] sync grades with canvas'
 export const CANVAS_SYNC_ASSIGNMENT = '[gradebook] sync assignment with canvas'
+export const SET_SHOW_CANVAS_SHARE =
+  '[gradebook] set show canvas share notification'
 
 export const RECEIVE_TESTACTIVITY_REQUEST =
   '[testActivity] receive list request'

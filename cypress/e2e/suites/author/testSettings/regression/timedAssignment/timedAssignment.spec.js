@@ -1,9 +1,7 @@
-import FileHelper from '../../../../../framework/util/fileHelper'
 import TestLibrary from '../../../../../framework/author/tests/testLibraryPage'
 import AssignmentsPage from '../../../../../framework/student/assignmentsPage'
-import CypressHelper from '../../../../../framework/util/cypressHelpers'
 import StudentTestPage from '../../../../../framework/student/studentTestPage'
-import { queColor } from '../../../../../framework/constants/questionTypes'
+import FileHelper from '../../../../../framework/util/fileHelper'
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -24,7 +22,6 @@ describe(`${FileHelper.getSpecName(
   const defaultTests = ['default', 'EDIT_ASSIGNED_TEST_REGRADE']
   const defaultTestItems = [1, 3]
 
-  let startTime
   let customtestid
   let defaultTestids = []
 
@@ -40,18 +37,19 @@ describe(`${FileHelper.getSpecName(
         })
       })
       defaultTests.forEach((test, index) => {
-        it(">set time limit as on-'default'", () => {
+        it(`>set time limit as on-'default' - ${index}`, () => {
           testlibraryPage.seachTestAndGotoReviewById(defaultTestids[index])
           testlibraryPage.header.clickOnSettings()
           testlibraryPage.testSettings.setAssignmentTime()
           testlibraryPage.testSettings.verifyTimeAssignedForTest(
             defaultTestItems[index]
           )
-          testlibraryPage.testSettings.getAllowExit().should('not.be.checked')
+          // Allow exist should be enabled by default as per https://snapwiz.atlassian.net/browse/EV-20319
+          testlibraryPage.testSettings.getAllowExit().should('be.checked')
           testlibraryPage.testSettings.verifyInfoAboutTestTime()
           testlibraryPage.header.clickOnPublishButton()
         })
-        it('>assign the test', () => {
+        it(`>assign the test - ${index}`, () => {
           testlibraryPage.clickOnAssign()
           testlibraryPage.assignPage.selectClass('Class')
           testlibraryPage.assignPage.clickOnAssign()
@@ -79,7 +77,7 @@ describe(`${FileHelper.getSpecName(
         })
       })
       defaultTests.forEach((test, index) => {
-        it(">set time limit as on-'default'", () => {
+        it(`>set time limit as on-'default' - ${index}`, () => {
           testlibraryPage.visitTestById(defaultTestids[index])
           testlibraryPage.header.clickOnAssign()
           testlibraryPage.assignPage.showOverRideSetting()
@@ -87,9 +85,10 @@ describe(`${FileHelper.getSpecName(
           testlibraryPage.assignPage.verifyTimeAssignedForTest(
             defaultTestItems[index]
           )
-          testlibraryPage.assignPage.getAllowExit().should('not.be.checked')
+          // Allow exit should be enabled as per https://snapwiz.atlassian.net/browse/EV-20319
+          testlibraryPage.assignPage.getAllowExit().should('be.checked')
         })
-        it('>assign the test', () => {
+        it(`>assign the test - ${index}`, () => {
           testlibraryPage.assignPage.verifyInfoAboutTestTime()
           testlibraryPage.assignPage.selectClass('Class')
           testlibraryPage.assignPage.clickOnAssign()

@@ -1,20 +1,20 @@
+/* eslint-disable no-loop-func */
 import TeacherSideBar from '../SideBarPage'
 import SearchFilters from '../searchFiltersPage'
 import TestSummayTab from '../tests/testDetail/testSummaryTab'
 import PlayListHeader from './playListHeader'
-import PlayListAddTest from './playListAddTestTab'
 import PlayListReview from './playListReview'
 import CypressHelper from '../../util/cypressHelpers'
 import PlaylistCustom from './playListCustomizationPage'
 import PlayListAssign from './playListAssignPage'
 
+const { _ } = Cypress
 export default class PlayListLibrary {
   constructor() {
     this.sidebar = new TeacherSideBar()
     this.searchFilter = new SearchFilters()
     this.playListSummary = new TestSummayTab()
     this.header = new PlayListHeader()
-    this.addTestTab = new PlayListAddTest()
     this.reviewTab = new PlayListReview()
     this.playlistCustom = new PlaylistCustom()
     this.playListAssign = new PlayListAssign()
@@ -40,6 +40,15 @@ export default class PlayListLibrary {
 
   getPLaylistLibraryTitle = () => cy.get('[title="Playlist"]')
 
+  getEnterPlaylistDescription = () =>
+    cy
+      .get('[id="froalaToolbarContainer-playlist-description"]')
+      .parent()
+      .find('[contenteditable="true"]')
+
+  getDescriptionOnPlaylistCardById = (id) =>
+    this.getPlayListCardById(id).find('[data-cy="styled-wrapped-component"]')
+
   // *** ELEMENTS END ***
   // *** ACTIONS START ***
 
@@ -62,7 +71,10 @@ export default class PlayListLibrary {
   clickOnPlayListCardById = (testId) => {
     cy.server()
     cy.route('GET', '**/playlists/*').as('playListLoad')
-    this.getPlayListCardById(testId).click()
+    this.getPlayListCardById(testId)
+      .find('[data-cy="test-title"]')
+      .should((ele) => expect(Cypress.dom.isAttached(ele)).to.be.true)
+      .click()
     cy.wait('@playListLoad')
   }
 
@@ -72,6 +84,22 @@ export default class PlayListLibrary {
         if (!button.hasClass('.ant-switch-checked')) cy.wrap(button).click()
       } else if (button.hasClass('.ant-switch-checked')) cy.wrap(button).click()
     })
+
+  clickOnCloneOnCardByPlaylistId = (id) => {
+    cy.server()
+    cy.route('POST', /duplicate/g).as('duplicate-playlist-in-library')
+    this.getPlayListCardById(id)
+      .find('.ant-card-head-title')
+      .trigger('mouseover')
+    cy.get('@testcard').find('button').contains('clone').click({ force: true })
+    return cy.wait('@duplicate-playlist-in-library').then((xhr) => {
+      cy.saveplayListDetailToDelete(xhr.response.body.result._id)
+      return cy.wait(1).then(() => xhr.response.body.result._id)
+    })
+  }
+
+  setPlaylistDescription = (desc) =>
+    this.getEnterPlaylistDescription().type(desc, { force: true })
 
   // *** ACTIONS END ***
 
@@ -100,11 +128,15 @@ export default class PlayListLibrary {
   checkforNonExistanceOfPlayList = (playlistid) =>
     cy.get('body').should('not.have.descendants', `[data-cy="${playlistid}"]`)
 
-  seachAndClickPlayListById = (id, draft = false) => {
+  searchPlaylistById = (id, draft = false) => {
     this.sidebar.clickOnPlayListLibrary()
     this.searchFilter.clearAll()
     if (draft) this.searchFilter.getAuthoredByMe()
     this.searchFilter.typeInSearchBox(id)
+  }
+
+  seachAndClickPlayListById = (id, draft = false) => {
+    this.searchPlaylistById(id, draft)
     this.clickOnPlayListCardById(id)
   }
 
@@ -120,30 +152,42 @@ export default class PlayListLibrary {
   }
 
   createPlayList = (playListData, NoOfModules = 1) => {
+    const { name, grade, subject, tags, collection, description } = playListData
+    let playlistid
     this.sidebar.clickOnPlayListLibrary()
     this.clickOnNewPlayList()
-    this.playListSummary.setName(playListData.name)
-    this.playListSummary.selectGrade(playListData.grade, true)
-    this.playListSummary.selectSubject(playListData.subject, true)
+    this.playListSummary.setName(name)
+    this.playListSummary.selectGrade(grade, true)
+    this.playListSummary.selectSubject(subject, true)
+    if (playListData.tags) this.playListSummary.addTags(tags, true)
     if (playListData.collection)
-      this.playListSummary.selectCollection(playListData.collection, true)
+      this.playListSummary.selectCollection(collection, true)
+    if (playListData.description) this.setPlaylistDescription(description)
 
-    this.header.clickOnAddTests()
-    this.addTestTab.clickOnManageModule()
-
-    for (let i = 0; i < NoOfModules; i++) {
-      if (i !== 0) this.addTestTab.clickOnAddModule()
-      // TODO review and add module group name specific tests, adding group name to unblock the current flow, since its mandatory field now.
-      this.addTestTab.setModuleGroupNameByModule(i + 1, `module-group-${i + 1}`)
-      this.addTestTab.setModuleName(i + 1, `module-${i + 1}`)
-      this.addTestTab.setModuleId(i + 1, `mod${i + 1}`)
-      this.addTestTab.clickOnSaveByModule(i + 1)
+    this.header.clickOnReview(true)
+    this.reviewTab.clickOpenCustomizationTab()
+    for (let i = 1; i <= NoOfModules; i++) {
+      this.reviewTab.clickAddNewModule()
+      this.reviewTab.setModuleDetails(
+        `module-${i}`,
+        `m${i}`,
+        `module-group-${i}`
+      )
+      if (i === 1)
+        this.reviewTab.addModule(true).then((id) => {
+          playlistid = id
+        })
+      else this.reviewTab.addModule()
     }
-    return this.addTestTab.clickOnDone(true)
+    return cy.wait(1).then(() => playlistid)
   }
 
-  createPlayListWithTests = (playListData) => {
-    /* const playListData = {
+  createPlayListWithTests = (playListData) =>
+    this.createPlayList(
+      playListData.metadata,
+      _.keys(playListData.moduledata).length
+    ).then((id) => {
+      /* const playListData = {
       metadata: {
         name: "Play List",
         grade: "Grade 10",
@@ -154,18 +198,17 @@ export default class PlayListLibrary {
         module2:[...testids]
       }
     }; */
-    return this.createPlayList(
-      playListData.metadata,
-      Cypress._.keys(playListData.moduledata).length
-    ).then((id) => {
-      this.searchFilter.clearAll()
-      this.searchFilter.getAuthoredByMe()
-      Cypress._.values(playListData.moduledata).forEach((tests, mod) => {
-        this.addTestTab.bulkAddByModule(tests, mod + 1)
+      this.reviewTab.searchContainer.setFilters({
+        subject: 'Mathematics',
+        authoredByme: true,
+      })
+      _.values(playListData.moduledata).forEach((tests, mod) => {
+        tests.forEach((test) => {
+          this.reviewTab.dragTestFromSearchToModule(mod + 1, test)
+        })
       })
       return this.header.clickOnPublish().then(() => id)
     })
-  }
 
   clickDropDownByClass = (text) => {
     this.checkDropByClass()
@@ -179,9 +222,12 @@ export default class PlayListLibrary {
     cy.wait('@search-students')
   }
 
-  searchAndClickOnDropDownByStudent = (name, clas) => {
+  searchAndClickOnDropDownByStudent = (name) => {
     this.checkDropByStudent()
     CypressHelper.selectDropDownByAttribute('selectStudent', name)
   }
+
+  verifyDescriptionOnPlaylistById = (id, desc) =>
+    this.getDescriptionOnPlaylistCardById(id).should('have.text', desc)
   // *** APPHELPERS END ***
 }

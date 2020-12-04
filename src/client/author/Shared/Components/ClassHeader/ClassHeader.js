@@ -614,6 +614,7 @@ class ClassHeader extends Component {
                   : ''}
                 <div>
                   {!!(dueDate || endDate) &&
+                    !isCliUser &&
                     `(Due on ${moment(dueOnDate).format('MMM DD, YYYY')})`}
                 </div>
               </StyledParaSecond>

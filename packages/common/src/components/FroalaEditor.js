@@ -186,7 +186,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
 const defaultCharacterSets = [
   {
     title: 'spanish',
-    char: 's',
+    char: 'es',
     list: [
       {
         char: '&aacute;',
@@ -251,6 +251,222 @@ const defaultCharacterSets = [
       {
         char: '&iquest;',
         desc: 'INVERTED QUESTION MARK',
+      },
+    ],
+  },
+  {
+    title: 'german',
+    char: 'de',
+    list: [
+      {
+        char: '&Auml;',
+        desc: 'Capital A-umlaut',
+      },
+      {
+        char: '&auml;',
+        desc: 'Lowercase a-umlaut',
+      },
+      {
+        char: '&Eacute;',
+        desc: 'Capital E-acute',
+      },
+      {
+        char: '&eacute;',
+        desc: 'Lowercase E-acute',
+      },
+      {
+        char: '&Ouml;',
+        desc: 'Capital O-umlaut',
+      },
+      {
+        char: '&ouml;',
+        desc: 'Lowercase o-umlaut',
+      },
+      {
+        char: '&Uuml;',
+        desc: 'Capital U-umlaut',
+      },
+      {
+        char: '&uuml;',
+        desc: 'Lowercase u-umlaut',
+      },
+      {
+        char: '&szlig;',
+        desc: 'SZ ligature',
+      },
+      {
+        char: '&laquo;',
+        desc: 'Left angle quotes',
+      },
+      {
+        char: '&raquo;',
+        desc: 'Right angle quotes',
+      },
+      {
+        char: '&bdquo;',
+        desc: 'Left lower quotes',
+      },
+      {
+        char: '&#8220;',
+        desc: 'Left quotes',
+      },
+      {
+        char: '&#8221;',
+        desc: 'Right quotes',
+      },
+      {
+        char: '&deg;',
+        desc: 'Degree sign (Grad)',
+      },
+      {
+        char: '&euro;',
+        desc: 'Euro',
+      },
+      {
+        char: '&pound;',
+        desc: 'Pound Sterling',
+      },
+    ],
+  },
+  {
+    title: 'french',
+    char: 'fr',
+    list: [
+      {
+        char: '&Agrave;',
+        desc: 'Capital A-grave',
+      },
+      {
+        char: '&agrave;',
+        desc: 'Lowercase a-grave',
+      },
+      {
+        char: '&Acirc;',
+        desc: 'Capital A-circumflex',
+      },
+      {
+        char: '&acirc;',
+        desc: 'Lowercase a-circumflex',
+      },
+      {
+        char: '&AElig;',
+        desc: 'Capital AE Ligature',
+      },
+      {
+        char: '&aelig;',
+        desc: 'Lowercase AE Ligature',
+      },
+      {
+        char: '&Ccedil;',
+        desc: 'Capital C-cedilla',
+      },
+      {
+        char: '&ccedil;',
+        desc: 'Lowercase c-cedilla',
+      },
+      {
+        char: '&Egrave;',
+        desc: 'Capital E-grave',
+      },
+      {
+        char: '&egrave;',
+        desc: 'Lowercase e-grave',
+      },
+      {
+        char: '&Eacute;',
+        desc: 'Capital E-acute',
+      },
+      {
+        char: '&eacute;',
+        desc: 'Lowercase e-acute',
+      },
+      {
+        char: '&Ecirc;',
+        desc: 'Capital E-circumflex',
+      },
+      {
+        char: '&ecirc;',
+        desc: 'Lowercase e-circumflex',
+      },
+      {
+        char: '&Euml;',
+        desc: 'Capital E-umlaut',
+      },
+      {
+        char: '&euml;',
+        desc: 'Lowercase e-umlaut',
+      },
+      {
+        char: '&Icirc;',
+        desc: 'Capital I-circumflex',
+      },
+      {
+        char: '&icirc;',
+        desc: 'Lowercase i-circumflex',
+      },
+      {
+        char: '&Iuml;',
+        desc: 'Capital I-umlaut',
+      },
+      {
+        char: '&iuml;',
+        desc: 'Lowercase i-umlaut',
+      },
+      {
+        char: '&Ocirc;',
+        desc: 'Capital O-circumflex',
+      },
+      {
+        char: '&ocirc;',
+        desc: 'Lowercase o-circumflex',
+      },
+      {
+        char: '&OElig;',
+        desc: 'Capital OE ligature',
+      },
+      {
+        char: '&oelig;',
+        desc: 'Lowercase oe ligature',
+      },
+      {
+        char: '&Ugrave;',
+        desc: 'Capital U-grave',
+      },
+      {
+        char: '&ugrave;',
+        desc: 'Lowercase u-grave',
+      },
+      {
+        char: '&Ucirc;',
+        desc: 'Capital U-circumflex',
+      },
+      {
+        char: '&ucirc;',
+        desc: 'Lowercase u-circumflex',
+      },
+      {
+        char: '&Uuml;',
+        desc: 'Capital U-umlaut',
+      },
+      {
+        char: '&uuml;',
+        desc: 'Lowercase u-umlaut',
+      },
+      {
+        char: '&laquo;',
+        desc: 'Left angle quotes',
+      },
+      {
+        char: '&raquo;',
+        desc: 'Right angle quotes',
+      },
+      {
+        char: '&euro;',
+        desc: 'Euro',
+      },
+      {
+        char: '&#8355',
+        desc: 'Franc',
       },
     ],
   },
@@ -772,6 +988,33 @@ const CustomEditor = ({
               this.toolbar.hide()
             }
           }
+        },
+        'file.beforeUpload': function (files = []) {
+          const file = files[0]
+
+          if (!file) {
+            this.popups.hideAll()
+            notification({ messageKey: 'fileUploadErr' })
+            return false
+          }
+
+          // currently supporting only pdf through file upload
+          if (file.type !== 'application/pdf') {
+            this.popups.hideAll()
+            notification({ messageKey: 'fileTypeErr' })
+            return false
+          }
+
+          uploadToS3(file, aws.s3Folders.DEFAULT)
+            .then((url) => {
+              this.file.insert(url, file.name)
+            })
+            .catch((e) => {
+              console.error(e)
+              this.popups.hideAll()
+              notification({ messageKey: 'fileUploadErr' })
+            })
+          return false
         },
         'commands.after': function (cmd) {
           if (cmd === 'moreText') {

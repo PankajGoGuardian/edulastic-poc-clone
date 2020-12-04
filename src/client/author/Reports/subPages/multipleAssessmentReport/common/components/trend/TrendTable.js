@@ -1,5 +1,5 @@
 import { Col, Row } from 'antd'
-import { capitalize, groupBy, map, values } from 'lodash'
+import { capitalize, groupBy, map, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -19,6 +19,7 @@ import dropDownData from '../../static/json/dropDownData.json'
 import { reportLinkColor } from '../../utils/constants'
 import { compareByMap } from '../../utils/trend'
 import TrendColumn from './TrendColumn'
+import BackendPagination from '../BackendPagination'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -155,7 +156,6 @@ const getCellAttributes = (test = {}, analyseBy = {}) => {
 }
 
 const getColumns = (
-  testData = [],
   rawMetric = [],
   analyseBy = '',
   compareBy = {},
@@ -164,23 +164,19 @@ const getColumns = (
   filters = {},
   isCellClickable,
   location,
-  pageTitle
+  pageTitle,
+  isSharedReport
 ) => {
-  const groupedTests = groupBy(testData, 'testId')
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
-
   const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
-    const currentTestGroup = groupedTests[testId] || {}
-    const test = currentTestGroup[0] || {}
-    const assessmentName = (test && test.testName) || ''
-    const { startDate } =
+    const { startDate, testName = 'N/A' } =
       groupedAvailableTests[testId].reduce((ele, res) =>
         ele.startDate > res.startDate ? ele : res
       ) || {}
 
     return {
       key: testId,
-      title: assessmentName,
+      title: testName,
       startDate,
       align: 'center',
       className: 'normal-text',
@@ -201,7 +197,7 @@ const getColumns = (
 
         const toolTipText = () => (
           <div>
-            <TableTooltipRow title="Assessment Name: " value={assessmentName} />
+            <TableTooltipRow title="Assessment Name: " value={testName} />
             {toolTipContent(record, value)}
             <TableTooltipRow
               title={`${capitalize(analyseBy.title)} : `}
@@ -243,12 +239,14 @@ const getColumns = (
       className: 'class-name-column',
       dataIndex: compareByMap[compareBy.key],
       render: (data, record) =>
-        compareBy.key === 'student' ? (
+        compareBy.key === 'student' && !isSharedReport ? (
           <Link
             to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
           >
             {data}
           </Link>
+        ) : compareBy.key === 'school' && isEmpty(data) ? (
+          '-'
         ) : (
           data
         ),
@@ -279,19 +277,12 @@ const getColumns = (
       width: 150,
       align: 'center',
       visibleOn: ['browser'],
-      render: (tests, record) => {
-        const augmentedTests = map(tests, (test, testId) => {
-          const currentTestGroup = groupedTests[testId] || {}
-          const currentTest = currentTestGroup[0] || {}
-          const currentTestName = currentTest.testName || ''
-
-          return {
-            ...test,
-            testName: currentTestName,
-          }
-        }).sort((a, b) => a.records[0].startDate - b.records[0].startDate)
-
-        return <TrendColumn type={record.trend} tests={augmentedTests} />
+      render: (tests, { testName, trend }) => {
+        const augmentedTests = map(tests, (test) => ({
+          ...test,
+          testName,
+        })).sort((a, b) => a.records[0].startDate - b.records[0].startDate)
+        return <TrendColumn type={trend} tests={augmentedTests} />
       },
     },
     {
@@ -319,7 +310,6 @@ const TrendTable = ({
   data,
   rowSelection,
   rawMetric,
-  testData,
   analyseBy,
   compareBy,
   customColumns,
@@ -330,9 +320,11 @@ const TrendTable = ({
   isCellClickable,
   location,
   pageTitle,
+  isSharedReport,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const columns = getColumns(
-    testData,
     rawMetric,
     analyseBy,
     compareBy,
@@ -341,7 +333,8 @@ const TrendTable = ({
     filters,
     isCellClickable,
     location,
-    pageTitle
+    pageTitle,
+    isSharedReport
   )
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
 
@@ -362,8 +355,13 @@ const TrendTable = ({
           isCsvDownloading={isCsvDownloading}
           scroll={{ x: '100%' }}
           tableToRender={StyledTable}
+          pagination={false}
         />
       </TableContainer>
+      <BackendPagination
+        backendPagination={backendPagination}
+        setBackendPagination={setBackendPagination}
+      />
     </StyledCard>
   )
 }
@@ -374,7 +372,6 @@ const optionShape = PropTypes.shape({
 })
 
 TrendTable.propTypes = {
-  testData: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
   rawMetric: PropTypes.array.isRequired,
   analyseBy: optionShape,

@@ -4,6 +4,7 @@ import {
   RECEIVE_GRADEBOOK_REQUEST,
   RECEIVE_GRADEBOOK_SUCCESS,
   RECEIVE_GRADEBOOK_ERROR,
+  SET_SHOW_CANVAS_SHARE,
 } from '../constants/actions'
 
 export const GRADEBOOK_SELECT_STUDENT = '[gradebook] select student'
@@ -19,11 +20,12 @@ export const gradebookUnSelectStudentAction = createAction(
 )
 export const gradebookUnSelectAllAction = createAction(GRADEBOOK_UN_SELECTALL)
 export const gradebookSetSelectedAction = createAction(GRADEBOOK_SET_SELECTED)
-
+export const setShowCanvasShareAction = createAction(SET_SHOW_CANVAS_SHARE)
 const initialState = {
   entities: {},
   error: null,
   loading: false,
+  showCanvasShare: false,
   selectedStudents: {},
 }
 
@@ -39,7 +41,7 @@ const reducer = (state = initialState, { type, payload }) => {
       }
     case RECEIVE_GRADEBOOK_ERROR:
       return { ...state, loading: false, error: payload.error }
-    case GRADEBOOK_SELECT_STUDENT:
+    case GRADEBOOK_SELECT_STUDENT: {
       if (!Array.isArray(payload)) {
         return {
           ...state,
@@ -54,7 +56,7 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         selectedStudents: { ...state.selectedStudents, ...students },
       }
-
+    }
     case GRADEBOOK_UNSELECT_STUDENT:
       return {
         ...state,
@@ -70,6 +72,12 @@ const reducer = (state = initialState, { type, payload }) => {
           {}
         ),
       }
+    case SET_SHOW_CANVAS_SHARE: {
+      return {
+        ...state,
+        showCanvasShare: payload,
+      }
+    }
     default:
       return state
   }

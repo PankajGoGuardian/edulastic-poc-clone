@@ -1,6 +1,10 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
-import { all } from 'redux-saga/effects'
+import { all, call, put, takeEvery } from 'redux-saga/effects'
+import { notification } from 'antd'
+import { get } from 'lodash'
+
+import { assignmentApi } from '@edulastic/api'
 
 import {
   reportAssignmentsReducer,
@@ -89,17 +93,29 @@ import {
   customReportReducer,
   customReportSaga,
 } from './components/customReport/ducks'
+import {
+  sharedReportsReducer,
+  sharedReportsSaga,
+} from './components/sharedReports/ducks'
 
+const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
 const SET_CSV_DOWNLOADING_STATE = '[reports] set csv download state'
 
+const RECEIVE_TEST_LIST_REQUEST = '[reports] receive test list request'
+const RECEIVE_TEST_LIST_REQUEST_SUCCESS =
+  '[reports] receive test list request success'
+const RECEIVE_TEST_LIST_REQUEST_ERROR =
+  '[reports] receive test list request request error'
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const setSharingStateAction = createAction(SET_SHARING_STATE)
 export const setPrintingStateAction = createAction(SET_PRINTING_STATE)
 export const setCsvDownloadingStateAction = createAction(
   SET_CSV_DOWNLOADING_STATE
 )
-
+export const receiveTestListAction = createAction(RECEIVE_TEST_LIST_REQUEST)
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -107,6 +123,11 @@ export const setCsvDownloadingStateAction = createAction(
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
 export const stateSelector = (state) => state.reportReducer.reports
+
+export const getSharingState = createSelector(
+  stateSelector,
+  (state) => state.isSharing
+)
 
 export const getPrintingState = createSelector(
   stateSelector,
@@ -118,6 +139,16 @@ export const getCsvDownloadingState = createSelector(
   (state) => state.isCsvDownloading
 )
 
+export const getTestListSelector = createSelector(
+  stateSelector,
+  (state) => state.testList
+)
+
+export const getTestListLoadingSelector = createSelector(
+  stateSelector,
+  (state) => state.testListLoading
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -125,15 +156,33 @@ export const getCsvDownloadingState = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
+  isSharing: false,
   isPrinting: false,
+  testList: [],
+  testListLoading: true,
 }
 
 const reports = createReducer(initialState, {
+  [SET_SHARING_STATE]: (state, { payload }) => {
+    state.isSharing = payload
+  },
   [SET_PRINTING_STATE]: (state, { payload }) => {
     state.isPrinting = payload
   },
   [SET_CSV_DOWNLOADING_STATE]: (state, { payload }) => {
     state.isCsvDownloading = payload
+  },
+  [RECEIVE_TEST_LIST_REQUEST]: (state) => {
+    state.testListLoading = true
+  },
+  [RECEIVE_TEST_LIST_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.testListLoading = false
+    state.testList = payload.testList
+  },
+  [RECEIVE_TEST_LIST_REQUEST_ERROR]: (state, { payload }) => {
+    state.testListLoading = false
+    state.testList = []
+    state.error = payload.error
   },
 })
 
@@ -166,6 +215,7 @@ export const reportReducer = combineReducers({
   reportStandardsPerformanceSummaryReducer,
   reportStandardsGradebookReducer,
   customReportReducer,
+  sharedReportsReducer,
 })
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
@@ -173,6 +223,35 @@ export const reportReducer = combineReducers({
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
+
+export function* receiveTestListSaga({ payload }) {
+  try {
+    const searchResult = yield call(assignmentApi.searchAssignments, payload)
+    const assignmentBuckets = get(
+      searchResult,
+      'aggregations.buckets.buckets',
+      []
+    )
+    const testList = assignmentBuckets
+      .map(({ key: _id, assignments }) => {
+        const hits = get(assignments, 'hits.hits', [])
+        const title = get(hits[0], '_source.title', '')
+        return { _id, title }
+      })
+      .filter(({ _id, title }) => _id && title)
+    yield put({
+      type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
+      payload: { testList },
+    })
+  } catch (error) {
+    const msg = 'Failed to receive tests dropdown data. Please try again...'
+    notification({ msg })
+    yield put({
+      type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
+      payload: { error: msg },
+    })
+  }
+}
 
 export function* reportSaga(params) {
   yield all([
@@ -198,6 +277,8 @@ export function* reportSaga(params) {
     reportStandardsPerformanceSummarySaga(),
     reportStandardsGradebookSaga(),
     customReportSaga(),
+    sharedReportsSaga(),
+    yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
   ])
 }
 

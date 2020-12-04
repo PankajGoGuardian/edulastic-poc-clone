@@ -1,14 +1,18 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Empty } from 'antd'
 import PropTypes from 'prop-types'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
+import {
+  getCsvDownloadingState,
+  getPrintingState,
+  getTestListSelector,
+} from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
 import {
@@ -23,7 +27,6 @@ import {
   setReportsAssesmentSummaryLoadingAction,
   getReportsAssessmentSummaryError,
 } from './ducks'
-import { getTestListSelector } from '../common/filterDataDucks'
 
 const CustomCliEmptyComponent = () => (
   <Empty
@@ -47,7 +50,11 @@ const AssessmentSummary = ({
   setShowHeader,
   preventHeaderRender,
   setAssesmentSummaryLoading,
+  sharedReport,
 }) => {
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
   const selectedTest = testList.find(
     (t) => t._id === settings.selectedTest.key
   ) || { _id: '', title: '' }
@@ -57,15 +64,9 @@ const AssessmentSummary = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      const {
-        performanceBandProfile,
-        ...requestFilters
-      } = settings.requestFilters
-      q.requestFilters = {
-        ...requestFilters,
-        profileId: performanceBandProfile,
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
       }
       if (settings.cliUser && q.testId) {
         const { testId } = match.params
@@ -111,7 +112,7 @@ const AssessmentSummary = ({
           <Stats
             name={assessmentName}
             data={metricInfo}
-            role={role}
+            role={userRole}
             user={user}
           />
         </StyledCard>
@@ -125,11 +126,11 @@ const AssessmentSummary = ({
       <TableContainer>
         <Col>
           <StyledCard>
-            {role ? (
+            {userRole ? (
               <StyledAssessmentStatisticTable
                 name={assessmentName}
                 data={metricInfo}
-                role={role}
+                role={userRole}
                 isPrinting={isPrinting}
                 isCsvDownloading={isCsvDownloading}
               />

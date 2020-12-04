@@ -80,14 +80,6 @@ function* getPerformanceByStandardsSaga({ payload }) {
     'Failed to fetch performance by standards, please try again'
 
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
     const { data } = yield call(reportsApi.fetchPerformanceByStandard, payload)
     if (data && data?.dataSizeExceeded) {
       yield put(getPerformanceByStandardsErrorAction({ error: { ...data } }))

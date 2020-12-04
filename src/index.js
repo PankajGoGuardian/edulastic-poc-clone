@@ -132,6 +132,7 @@ ReactDOM.render(<RootComp />, document.getElementById('react-app'))
 
 if (window.Cypress) {
   window.store = store
+  serviceWorker.unregister()
+} else {
+  serviceWorker.register()
 }
-
-serviceWorker.register()

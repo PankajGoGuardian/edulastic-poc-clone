@@ -9,9 +9,11 @@ import {
   IconPencilEdit,
   IconPrint,
   IconReview,
+  IconTick,
   IconSend,
   IconSettings,
   IconShare,
+  IconTestBank,
 } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { memo, useEffect, useState } from 'react'
@@ -65,7 +67,7 @@ export const navButtonsTest = [
     text: 'Add Items',
   },
   {
-    icon: <IconReview color={white} width={24} height={24} />,
+    icon: <IconTick color={white} width={16} height={16} />,
     value: 'review',
     text: 'Review',
   },
@@ -162,6 +164,7 @@ const TestPageHeader = ({
   isCurator,
   hasCollectionAccess,
   authorQuestionsById,
+  isUpdatingTestForRegrade,
 }) => {
   let navButtons =
     buttons ||
@@ -418,9 +421,11 @@ const TestPageHeader = ({
           headingText={
             title || (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
           }
+          Icon={IconTestBank}
           headingSubContent={headingSubContent}
-          flexDirection="column"
-          alignItems="flex-start"
+          titleMarginTop="10px"
+          flexDirection="row"
+          alignItems="center"
           titleMaxWidth="250px"
         >
           <TestPageNav
@@ -431,7 +436,11 @@ const TestPageHeader = ({
             showPublishButton={!showShareButton || showPublishButton}
           />
 
-          <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
+          <RightFlexContainer
+            childMarginRight="5"
+            justifyContent="flex-end"
+            mt="12px"
+          >
             {showShareButton &&
               !isPlaylist &&
               !isDocBased &&
@@ -622,7 +631,7 @@ const TestPageHeader = ({
                   title="Regrade Test"
                   data-cy="publish"
                   onClick={handleRegrade}
-                  disabled={disableButtons}
+                  disabled={disableButtons || isUpdatingTestForRegrade}
                 >
                   REGRADE
                 </EduButton>
@@ -778,6 +787,7 @@ const enhance = compose(
       testItems: getTestItemsSelector(state),
       isCurator: getIsCurator(state),
       authorQuestionsById: state.authorQuestions.byId,
+      isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
     }),
     {
       publishForRegrade: publishForRegradeAction,

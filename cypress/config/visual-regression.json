@@ -10,11 +10,7 @@
     "configFile": "cypress/config/reporter-config.json"
   },
   "video": false,
-  "SCREEN_SIZES": [
-    [1600, 900],
-    [1366, 768],
-    [1024, 650]
-  ],
+  "SCREEN_SIZES": [[1600, 900], [1366, 768], [1024, 650]],
   "env": {
     "ENVIRONMENT": "poc"
   }

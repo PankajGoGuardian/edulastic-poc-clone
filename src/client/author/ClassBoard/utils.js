@@ -145,7 +145,7 @@ export const getRedirectEndDate = (_class, dueDate) => {
 }
 
 export const getSubmittedDate = (activityEndDate, classEndDate) => {
-  let endDate = activityEndDate || classEndDate
+  let endDate = activityEndDate
   if (activityEndDate && classEndDate) {
     endDate = activityEndDate < classEndDate ? activityEndDate : classEndDate
   }

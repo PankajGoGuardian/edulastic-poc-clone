@@ -86,7 +86,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
           curriculumId: parseInt(curriculumId, 10),
           identifier,
           totalQuestions: sumBy(elements, 'totalQuestions'),
-          totalPoints: sumBy(elements, 'totalPoints'),
+          totalPoints: Number(sumBy(elements, 'totalPoints').toFixed(2)),
           isEquivalentStandard: !some(elements, [
             'isEquivalentStandard',
             false,
@@ -102,7 +102,9 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
         ({ id }) => questionWisePoints[id]
       )
     }
-    summary.totalPoints += itemPoints
+    summary.totalPoints = Number(
+      (summary.totalPoints + parseFloat(itemPoints)).toFixed(2)
+    )
     summary.totalQuestions += itemTotalQuestions
   }
   return summary

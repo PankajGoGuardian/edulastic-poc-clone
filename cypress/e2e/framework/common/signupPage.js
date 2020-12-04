@@ -91,6 +91,8 @@ class SignupPage {
 
   clickOnHomeSchool = () => this.getHomeSchool().click()
 
+  closeWelcomePopUp = () => cy.get('._pendo-close-guide').click()
+
   // new school
 
   clickOnReqNewSchool = () => {

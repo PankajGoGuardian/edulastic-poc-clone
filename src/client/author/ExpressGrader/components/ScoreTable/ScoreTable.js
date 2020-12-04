@@ -156,9 +156,10 @@ class ScoreTable extends Component {
             student.questionActivities[index] &&
             !student.questionActivities[index]?.notStarted
           ) {
-            successScore +=
-              student.questionActivities[index].score /
-              student.questionActivities[index].maxScore
+            const { score = 0, maxScore = 0 } =
+              student.questionActivities[index] || {}
+            const uqaAvg = score / maxScore
+            successScore += Number.isNaN(uqaAvg) ? 0 : uqaAvg
           }
         })
       const averageScore = successScore

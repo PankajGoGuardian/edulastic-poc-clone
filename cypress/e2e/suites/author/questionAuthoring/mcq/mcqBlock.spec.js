@@ -1,4 +1,3 @@
-// / <reference types="Cypress" />
 import EditItemPage from '../../../../framework/author/itemList/itemDetail/editPage'
 import MCQBlockLayoutPage from '../../../../framework/author/itemList/questionType/mcq/mcqBlockLayoutPage'
 import FileHelper from '../../../../framework/util/fileHelper'
@@ -47,79 +46,6 @@ describe(`${FileHelper.getSpecName(
         .clear()
         .type(queData.queText)
         .should('contain', queData.queText)
-      /* 
-      // add ext link
-      question.getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      question.getQuestionEditor().find('p')
-        .makeSelection();
-
-      question.editToolBar.link()
-        .click();
-
-      cy.focused().type(queData.extlink)
-        .type('{enter}');
-
-      question.getQuestionEditor()
-        .contains(queData.formattext)
-        .should('have.attr', 'href', queData.extlink);
-
-      // add formula
-      question.getQuestionEditor()
-        .clear()
-        .type(queData.formula);
-
-      question.getQuestionEditor().find('p')
-        .makeSelection();
-
-      question.editToolBar.formula()
-        .click();
-
-      cy.focused()
-        .type(queData.formula)
-        .type('{enter}');
-
-      question.getQuestionEditor()
-        .find('.ql-formula')
-        .should('have.attr', 'data-value', queData.formula);
- */
-      /* // add formatting
-      question
-        .getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      formates.forEach(formate => {
-        const text = queData.formattext;
-        const { sel, tag } = formate;
-
-        question
-          .getQuestionEditor()
-          .find("p")
-          .makeSelection();
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .contains(tag, text)
-          .should("have.length", 1);
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .find(tag)
-          .should("not.be.exist");
-      }); */
     })
 
     it(' > [Tc_302]:test => Multiple choices options', () => {
@@ -189,49 +115,21 @@ describe(`${FileHelper.getSpecName(
 
     it(' > [Tc_304]:test => Advanced Options', () => {
       question.clickOnAdvancedOptions()
-
-      // scoring
-      // question.getMaxScore().verifyNumInput(1);
-
-      /*  question
-        .getEnableAutoScoring()
-        .click()
-        .then($el => {
-          cy.wrap($el).should("have.class", "ant-checkbox-checked");
-
-          question
-            .getCheckAnswerCheckbox()
-            .click()
-            .should("have.class", "ant-checkbox-checked")
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
- */
       question.selectScoringType(SCORING_TYPE.PARTIAL)
 
       question.getPanalty().verifyNumInput(0.5)
-
-      // question.getCheckAnsAttempt().verifyNumInput(1);
-      // question.getMinScore().verifyNumInput(1);
 
       question
         .getUnscore()
         .click()
         .then(($el2) => {
           cy.wrap($el2).should('have.class', 'ant-checkbox-checked')
-
-          // question.getMinScore().should("have.attr", "disabled");
         })
 
       question
         .getUnscore()
         .click()
         .should('not.have.class', 'ant-checkbox-checked')
-      // });
-
-      /* question
-        .getEnableAutoScoring()
-        .click()
-        .should("not.have.class", "ant-checkbox-checked"); */
     })
 
     it(' > [Tc_305]:test => Display', () => {
@@ -307,79 +205,6 @@ describe(`${FileHelper.getSpecName(
         .clear()
         .type(queData.queText)
         .should('contain', queData.queText)
-      /*    
-      // add ext link
-      question.getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      question.getQuestionEditor().find('p')
-        .makeSelection();
-
-      question.editToolBar.link()
-        .click();
-
-      cy.focused().type(queData.extlink)
-        .type('{enter}');
-
-      question.getQuestionEditor()
-        .contains(queData.formattext)
-        .should('have.attr', 'href', queData.extlink);
-
-      // add formula
-      question.getQuestionEditor()
-        .clear()
-        .type(queData.formula);
-
-      question.getQuestionEditor().find('p')
-        .makeSelection();
-
-      question.editToolBar.formula()
-        .click();
-
-      cy.focused()
-        .type(queData.formula)
-        .type('{enter}');
-
-      question.getQuestionEditor()
-        .find('.ql-formula')
-        .should('have.attr', 'data-value', queData.formula);
-    */
-      /* // add formatting
-      question
-        .getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      formates.forEach(formate => {
-        const text = queData.formattext;
-        const { sel, tag } = formate;
-
-        question
-          .getQuestionEditor()
-          .find("p")
-          .makeSelection();
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .contains(tag, text)
-          .should("have.length", 1);
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .find(tag)
-          .should("not.be.exist");
-      }); */
     })
 
     it(' > [Tc_309]:test => Multiple choices options', () => {
@@ -443,47 +268,21 @@ describe(`${FileHelper.getSpecName(
     })
 
     it(' > [Tc_311]:test => Advanced Options', () => {
-      // scoring
-      // question.getMaxScore().verifyNumInput(1);
-
-      /*   question
-        .getEnableAutoScoring()
-        .click()
-        .then($el => {
-          cy.wrap($el).should("have.class", "ant-checkbox-checked");
-
-          question
-            .getCheckAnswerCheckbox()
-            .click()
-            .should("have.class", "ant-checkbox-checked")
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
- */
       question.selectScoringType(SCORING_TYPE.PARTIAL)
 
       question.getPanalty().verifyNumInput(0.5)
-      // question.getCheckAnsAttempt().verifyNumInput(1);
-      // question.getMinScore().verifyNumInput(1);
 
       question
         .getUnscore()
         .click()
         .then(($el2) => {
           cy.wrap($el2).should('have.class', 'ant-checkbox-checked')
-
-          // question.getMinScore().should("have.attr", "disabled");
         })
 
       question
         .getUnscore()
         .click()
         .should('not.have.class', 'ant-checkbox-checked')
-      // });
-
-      /*  question
-        .getEnableAutoScoring()
-        .click()
-        .should("not.have.class", "ant-checkbox-checked"); */
     })
 
     it(' > [Tc_312]:test => Display', () => {
@@ -538,7 +337,9 @@ describe(`${FileHelper.getSpecName(
 
       preview.getClear().click()
 
-      preview.getShowAnswer().click({ force: true })
+      preview.getShowAnswer().click({
+        force: true,
+      })
 
       preview.getClear().click()
 
@@ -584,19 +385,9 @@ describe(`${FileHelper.getSpecName(
 
       it(' > [mcq_block_test1]:test => Create question with 2 correct ans and validate with exact & partial match', () => {
         question.header.edit()
-        // .getEditButton()
-        // .click();
-
-        // advanced
-        // question.clickOnAdvancedOptions();
-
-        // question.getEnableAutoScoring().click();
 
         // >> exact match
         question.selectScoringType(SCORING_TYPE.EXACT)
-
-        // save
-        // question.header.save();
 
         // preview and show ans
         const preview = question.header.preview()
@@ -605,7 +396,9 @@ describe(`${FileHelper.getSpecName(
           .getShowAnswer()
           .click()
           .then(() => {
-            question.checkHighlight({ wrong: true })
+            question.checkHighlight({
+              wrong: true,
+            })
             question.checkHighlightData({
               color: 'right',
               length: 2,
@@ -617,7 +410,9 @@ describe(`${FileHelper.getSpecName(
           .getClear()
           .click()
           .then(() => {
-            question.checkHighlight({ both: true })
+            question.checkHighlight({
+              both: true,
+            })
           })
 
         // give correct ans and validate
@@ -627,7 +422,9 @@ describe(`${FileHelper.getSpecName(
 
         preview.checkScore('1/1')
 
-        question.checkHighlight({ wrong: true })
+        question.checkHighlight({
+          wrong: true,
+        })
 
         question.checkHighlightData({
           color: 'right',
@@ -639,7 +436,9 @@ describe(`${FileHelper.getSpecName(
           .getClear()
           .click()
           .then(() => {
-            question.checkHighlight({ both: true })
+            question.checkHighlight({
+              both: true,
+            })
           })
 
         // give partial wrong ans and check
@@ -665,22 +464,21 @@ describe(`${FileHelper.getSpecName(
           .getClear()
           .click()
           .then(() => {
-            question.checkHighlight({ both: true })
+            question.checkHighlight({
+              both: true,
+            })
           })
 
         // give no ans and check
         preview.checkScore('0/1')
 
-        question.checkHighlight({ both: true })
+        question.checkHighlight({
+          both: true,
+        })
         // partial match
         preview.header.edit()
 
-        // question.clickOnAdvancedOptions();
-
         question.selectScoringType(SCORING_TYPE.PARTIAL)
-
-        // save
-        // question.header.save();
 
         // show ans
         question.header.preview()
@@ -689,7 +487,9 @@ describe(`${FileHelper.getSpecName(
           .getShowAnswer()
           .click()
           .then(() => {
-            question.checkHighlight({ wrong: true })
+            question.checkHighlight({
+              wrong: true,
+            })
 
             question.checkHighlightData({
               color: 'right',
@@ -702,7 +502,9 @@ describe(`${FileHelper.getSpecName(
           .getClear()
           .click()
           .then(() => {
-            question.checkHighlight({ both: true })
+            question.checkHighlight({
+              both: true,
+            })
           })
 
         // give correct ans and validate
@@ -710,7 +512,9 @@ describe(`${FileHelper.getSpecName(
         question.selectAnswerChoice(queData.alterate[0])
 
         preview.checkScore('1/1')
-        question.checkHighlight({ wrong: true })
+        question.checkHighlight({
+          wrong: true,
+        })
         question.checkHighlightData({
           color: 'right',
           length: 2,
@@ -721,7 +525,9 @@ describe(`${FileHelper.getSpecName(
           .getClear()
           .click()
           .then(() => {
-            question.checkHighlight({ both: true })
+            question.checkHighlight({
+              both: true,
+            })
           })
 
         // give partial wrong ans and check
@@ -747,13 +553,17 @@ describe(`${FileHelper.getSpecName(
           .getClear()
           .click()
           .then(() => {
-            question.checkHighlight({ both: true })
+            question.checkHighlight({
+              both: true,
+            })
           })
 
         // give no ans and check
         preview.checkScore('0/1')
 
-        question.checkHighlight({ both: true })
+        question.checkHighlight({
+          both: true,
+        })
       })
     }
   )
@@ -804,13 +614,17 @@ describe(`${FileHelper.getSpecName(
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
 
       // give correct ans and validate
       question.selectAnswerChoice(queData.correct[0])
       preview.checkScore('1/1')
-      question.checkHighlight({ wrong: true })
+      question.checkHighlight({
+        wrong: true,
+      })
       question.checkHighlightData({
         color: 'right',
         length: 1,
@@ -820,7 +634,9 @@ describe(`${FileHelper.getSpecName(
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
 
       // give wrong ans and check
@@ -831,12 +647,16 @@ describe(`${FileHelper.getSpecName(
         length: 1,
         choices: [queData.choices[1]],
       })
-      question.checkHighlight({ right: true })
+      question.checkHighlight({
+        right: true,
+      })
       preview
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
 
       // give no ans and check
@@ -873,7 +693,9 @@ describe(`${FileHelper.getSpecName(
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
 
       // give correct ans and validate
@@ -891,7 +713,9 @@ describe(`${FileHelper.getSpecName(
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
 
       // give wrong answer and validate
@@ -944,7 +768,9 @@ describe(`${FileHelper.getSpecName(
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
       // give all correct answer and validate
 
@@ -976,7 +802,7 @@ describe(`${FileHelper.getSpecName(
 
       question.checkChoiceNotSelected(queData.alterate[0])
 
-      // add a alternate answer - score by default 1
+      // add a alternate answer -points, by default taken from correct answer which is 2
       question.addAlternate()
 
       question.selectChoice(queData.alterate[0])
@@ -1003,7 +829,7 @@ describe(`${FileHelper.getSpecName(
 
       question.selectAnswerChoice(queData.alterate[0])
       question.selectAnswerChoice(queData.alterate[1])
-      preview.checkScore('1/2')
+      preview.checkScore('2/2')
 
       question.checkHighlightData({
         color: 'right',
@@ -1013,7 +839,7 @@ describe(`${FileHelper.getSpecName(
 
       // set alternate answer point as 2
       question.header.edit()
-      question.getPoints().type('{selectall}1')
+      question.getPoints().type('{selectall}3')
       question.selectAlternatetab()
       question.getPoints().type('{selectall}2')
 
@@ -1024,7 +850,7 @@ describe(`${FileHelper.getSpecName(
       question.header.preview()
       question.selectAnswerChoice(queData.alterate[0])
       question.selectAnswerChoice(queData.choices[4])
-      preview.checkScore('1/2')
+      preview.checkScore('1/3')
 
       question.checkHighlightData({
         color: 'right',
@@ -1047,7 +873,7 @@ describe(`${FileHelper.getSpecName(
 
       question.checkChoiceSelected(queData.correct[1])
       // change the score to 2
-      question.getPoints().type('{selectall}2')
+      question.getPoints().type('{selectall}3')
       question.selectScoringType(SCORING_TYPE.PARTIAL)
       question.getPanalty().type('{selectall}1')
 
@@ -1055,37 +881,43 @@ describe(`${FileHelper.getSpecName(
       question.header.preview()
       question.selectAnswerChoice(queData.correct[0])
       question.selectAnswerChoice(queData.alterate[0])
-      preview.checkScore('0.5/2')
+      preview.checkScore('1/3')
 
       preview
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
       // case 2
       question.selectAnswerChoice(queData.correct[0])
       question.selectAnswerChoice(queData.correct[1])
       question.selectAnswerChoice(queData.alterate[0])
-      preview.checkScore('1.5/2')
+      preview.checkScore('2.5/3')
 
       preview
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
       // case 3
       question.selectAnswerChoice(queData.correct[0])
       question.selectAnswerChoice(queData.alterate[0])
       question.selectAnswerChoice(queData.alterate[1])
-      preview.checkScore('0/2')
+      preview.checkScore('1.5/3')
 
       preview
         .getClear()
         .click()
         .then(() => {
-          question.checkHighlight({ both: true })
+          question.checkHighlight({
+            both: true,
+          })
         })
 
       // case 4

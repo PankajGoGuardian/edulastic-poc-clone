@@ -19,7 +19,6 @@ import OverallFeedbackModal from './OverallFeedbackModal'
 const { ABSENT, NOT_STARTED } = testActivityStatus
 const Attempt = ({
   data = {},
-  type,
   activityReview,
   releaseScore,
   releaseGradeLabels,
@@ -38,33 +37,29 @@ const Attempt = ({
       ? 6
       : 12
   const showReviewButton =
-    type === 'reports' &&
-    activityReview &&
-    status !== ABSENT &&
-    status !== NOT_STARTED
+    activityReview && status !== ABSENT && status !== NOT_STARTED
   return (
     <>
       <AttemptsData>
-        <RowData pagetype={type === 'reports'}>
-          <AnswerAndScore sm={type === 'assignment' ? 12 : 6} date>
+        <RowData data-cy="attempt-rows-expanded">
+          <AnswerAndScore sm={6} date>
             <span data-cy="date">{formatDateAndTime(data.createdAt)}</span>
           </AnswerAndScore>
-          {type !== 'assignment' &&
-            releaseScore !== releaseGradeLabels.DONT_RELEASE && (
-              <>
-                {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
-                  <AnswerAndScore sm={6}>
-                    <span data-cy="score">
-                      {Math.round(score * 100) / 100}/
-                      {Math.round(maxScore * 100) / 100}
-                    </span>
-                  </AnswerAndScore>
-                )}
+          {releaseScore !== releaseGradeLabels.DONT_RELEASE && (
+            <>
+              {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
                 <AnswerAndScore sm={6}>
-                  <span data-cy="percentage">{Math.round(percentage)}%</span>
+                  <span data-cy="score">
+                    {Math.round(score * 100) / 100}/
+                    {Math.round(maxScore * 100) / 100}
+                  </span>
                 </AnswerAndScore>
-              </>
-            )}
+              )}
+              <AnswerAndScore sm={6}>
+                <span data-cy="percentage">{Math.round(percentage)}%</span>
+              </AnswerAndScore>
+            </>
+          )}
           {feedback && (
             <FeedbackWrapper onClick={() => setOverallFeedback(true)}>
               <Tooltip title="Assignment Feedback">
@@ -72,7 +67,7 @@ const Attempt = ({
               </Tooltip>
             </FeedbackWrapper>
           )}
-          {showReviewButton ? (
+          {showReviewButton && (
             <AnswerAndScoreReview sm={btnWrapperSize}>
               <ReviewBtn
                 to={`/home/class/${classId}/test/${data.testId}/testActivityReport/${data._id}`}
@@ -80,8 +75,6 @@ const Attempt = ({
                 <span data-cy="review">REVIEW</span>
               </ReviewBtn>
             </AnswerAndScoreReview>
-          ) : (
-            type !== 'reports' && <EmptyScoreBox />
           )}
         </RowData>
         <OverallFeedbackModal
@@ -141,12 +134,6 @@ const AnswerAndScoreReview = styled(AnswerAndScore)`
   }
   @media screen and (max-width: ${mobileWidthMax}) {
     width: 33%;
-  }
-`
-
-const EmptyScoreBox = styled(AnswerAndScoreReview)`
-  @media screen and (max-width: 1024px) {
-    display: none !important;
   }
 `
 

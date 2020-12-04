@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import {
   subject,
   grades as GRADES,
@@ -44,12 +45,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
     'ESSAY_RICH.5',
   ]
   const allItemIds = [
-    '5ef9e0cbbdb4670008918fcc',
-    '5ef9e0f5001ccf00089aa924',
-    '5ef9e11ebdb4670008918fd1',
-    '5ef9e14bdd76ba0007172288',
-    '5ef9e1827defa0000735450a',
-    '5ef9e1c4fa583c000763bdc9',
+    '5f859e5279058500085d4cd5',
+    '5f859e78247e5c0007452fac',
+    '5f859eab79058500085d4cdb',
+    '5f859eea9540490007c4a267',
+    '5f859f32a054eb000775ff03',
+    '5f859f839540490007c4a26b',
   ]
 
   const alltags = [
@@ -69,7 +70,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.default', 'ESSAY_RICH.2', 'ESSAY_RICH.5'],
       name: 'test_1',
       description: 'This is test_1',
-      id: '5ef9e308dd76ba000717229b',
+      id: '5f85a2ae247e5c0007452fbc',
     },
     test_2: {
       subjects: ['ELA', 'Mathematics'],
@@ -78,7 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.1', 'ESSAY_RICH.3', 'ESSAY_RICH.5'],
       name: 'test_2',
       description: 'This is test_2',
-      id: '5ef9e327dd76ba00071722a0',
+      id: '5f85a2d89540490007c4a292',
     },
     test_3: {
       subjects: ['ELA', 'Mathematics'],
@@ -87,7 +88,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.default', 'ESSAY_RICH.2', 'ESSAY_RICH.3'],
       name: 'test_3',
       description: 'This is test_3',
-      id: '5ef9e34b7defa0000735450f',
+      id: '5f85a3099540490007c4a299',
     },
     test_4: {
       subjects: ['ELA', 'Mathematics'],
@@ -96,7 +97,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.2', 'ESSAY_RICH.4', 'ESSAY_RICH.1'],
       name: 'test_4',
       description: 'This is test_4',
-      id: '5ef9e3717defa00007354515',
+      id: '5f85a345a054eb000775ff15',
     },
     test_5: {
       subjects: ['ELA', 'Mathematics'],
@@ -111,7 +112,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.default', 'ESSAY_RICH.3', 'ESSAY_RICH.1'],
       name: 'test_5',
       description: 'This is test_5',
-      id: '5ef9e3aec0931b00085c59ea',
+      id: '5f85a3a0a054eb000775ff1d',
     },
     test_6: {
       subjects: ['ELA', 'Mathematics'],
@@ -120,52 +121,52 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ['ESSAY_RICH.1', 'ESSAY_RICH.2', 'ESSAY_RICH.3'],
       name: 'test_6',
       description: 'This is test_6',
-      id: '5ef9e3e3c0931b00085c59ef',
+      id: '5f85a4019540490007c4a2a2',
     },
   }
 
   before('> create all items', () => {
     cy.login('Teacher', teacher)
-    /*  allItems.forEach((item, index) => {
-      itemListPage.createItem(item, index).then(id => allItemIds.push(id));
-    }); */
+    /* allItems.forEach((item, index) => {
+      itemListPage.createItem(item, index).then((id) => allItemIds.push(id))
+    }) */
   })
 
-  /*  before("> create the tests", () => {
-    cy.getAllTestsAndDelete(teacher);
-    _.entries(testData).forEach(entry => {
+  /*  before('> create the tests', () => {
+    cy.getAllTestsAndDelete(teacher)
+    _.entries(testData).forEach((entry) => {
       testLibraryPage.createNewTestAndFillDetails({
         name: entry[0],
         grade: entry[1].grades,
         subject: entry[1].subjects,
         tags: entry[1].tags,
-        description: entry[1].description
-      });
-      testLibraryPage.header.clickOnAddItems();
-      testLibraryPage.testAddItem.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
+        description: entry[1].description,
+      })
+      testLibraryPage.header.clickOnAddItems()
+      testLibraryPage.testAddItem.searchFilters.clearAll()
+      testLibraryPage.searchFilters.getAuthoredByMe()
 
-      cy.server();
-      cy.route("POST", "**api/test").as("create-test");
+      cy.server()
+      cy.route('POST', '**api/test').as('create-test')
       entry[1].items.forEach((item, ind) => {
-        const itemToAdd = allItemIds[allItems.indexOf(item)];
+        const itemToAdd = allItemIds[allItems.indexOf(item)]
         // testLibraryPage.testAddItem.searchFilters.typeInSearchBox(itemToAdd);
-        testLibraryPage.testAddItem.addItemById(itemToAdd);
+        testLibraryPage.testAddItem.addItemById(itemToAdd)
         if (ind === 0)
-          cy.wait("@create-test").then(xhr => {
+          cy.wait('@create-test').then((xhr) => {
             // testLibraryPage.saveTestId(xhr);
-            testData[entry[0]].id = xhr.response.body.result._id;
-            testData.name = entry[0];
-          });
-      });
-      testLibraryPage.header.clickOnPublishButton();
-    });
-  }); */
+            testData[entry[0]].id = xhr.response.body.result._id
+            testData.name = entry[0]
+          })
+      })
+      testLibraryPage.header.clickOnPublishButton()
+    })
+  }) */
 
-  /* before("> write results", () => {
-    testData.itms = allItemIds;
-    cy.writeFile("tests.json", testData);
-  }); */
+  /*  before('> write results', () => {
+    testData.itms = allItemIds
+    cy.writeFile('tests.json', testData)
+  }) */
 
   before('> get standards', () => {
     _.keys(testData).forEach((tests) => {
@@ -286,6 +287,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
   context('> test card in pop up view', () => {
     before('> search and get test', () => {
       studentTestPage.clickOnExitTest(true)
+      testLibraryPage.sidebar.clickOnDashboard()
+      testLibraryPage.sidebar.clickOnTestLibrary()
+
       currentTestKey = _.shuffle(_.keys(testData))[0]
       const { id } = testData[currentTestKey]
       testLibraryPage.clickOnTileView()
@@ -301,10 +305,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
         COLLECTION.private.split(' ')[0].toUpperCase()
       )
     })
-    it('> verify grade and subject', () => {
-      const { testGrades, subjects } = testData[currentTestKey]
+    it('> verify grade,tags and subject', () => {
+      const { testGrades, subjects, tags } = testData[currentTestKey]
       testLibraryPage.verifyGradesOnTestCardPopUp(testGrades)
       testLibraryPage.verifySubjectsOnTestCardPopUp(subjects)
+      testLibraryPage.verifyTagsOnTestCardPopUp(tags)
     })
 
     it('> verify total items and points', () => {
@@ -339,6 +344,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
     it('> assign button', () => {
       cy.deleteAllAssignments(undefined, teacher)
       studentTestPage.clickOnExitTest(true)
+      testLibraryPage.sidebar.clickOnDashboard()
+      testLibraryPage.sidebar.clickOnTestLibrary()
+
+      const { id } = testData[currentTestKey]
+      testLibraryPage.clickOnTileView()
+      testLibraryPage.searchFilters.clearAll()
+      testLibraryPage.searchFilters.typeInSearchBox(id)
+      testLibraryPage.clickOnTestCardById(id)
+
       testLibraryPage.clickAssignOnTestCardPopUp()
       testLibraryPage.assignPage.selectClass('Class')
       testLibraryPage.assignPage.clickOnAssign()
@@ -436,7 +450,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
 
       it('> standard set', () => {
         const customFilter = {
-          standards: { subject: subject.ELA, standardSet: 'ELA - Common Core' },
+          standards: {
+            subject: subject.MATH,
+            standardSet: 'Math - Common Core',
+          },
         }
         const filteredTest = _.values(testData).filter(
           (a) =>
@@ -453,9 +470,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       it('> standard', () => {
         const customFilter = {
           standards: {
-            subject: subject.ELA,
-            standardSet: 'ELA - Common Core',
-            standard: ['CCRA.L.1'],
+            subject: subject.MATH,
+            standardSet: 'Math - Common Core',
+            standard: ['4.G.A.2'],
           },
         }
         const filteredTest = _.values(testData).filter(
@@ -516,8 +533,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
         const customFilter = {
           standards: {
             grade: [GRADES.KINDERGARTEN],
-            subject: subject.ELA,
-            standardSet: 'ELA - Common Core',
+            subject: subject.MATH,
+            standardSet: 'Math - Common Core',
           },
         }
         const filteredTest = _.values(testData).filter(
@@ -603,6 +620,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
 
     context('> entire library', () => {
       beforeEach('> clear filters', () => {
+        testLibraryPage.clickOnTileView()
         testLibraryPage.searchFilters.clearAll()
         randomIndices = []
         for (let i = 0; i < testsTobeVerified; i++) {
@@ -731,10 +749,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
           testLibraryPage
             .getTestIdOfCardInCurrentPageByIndex(index)
             .then((id) => {
-              testLibraryPage.verifyCollectionOnTestCardbyId(
-                id,
-                COLLECTION.public.split(' ')[0].toUpperCase()
-              )
+              testLibraryPage
+                .getCollectionByTestId(id)
+                .should((ele) =>
+                  expect(ele.text().split(',')[0].toLowerCase()).to.be.oneOf([
+                    COLLECTION.public.split(' ')[0].toLowerCase(),
+                    COLLECTION.edulastic.toLowerCase(),
+                  ])
+                )
               testLibraryPage.clickOnTestCardById(id)
               testLibraryPage.verifyGradesOnTestCardPopUp(
                 customFilter.standards.grade

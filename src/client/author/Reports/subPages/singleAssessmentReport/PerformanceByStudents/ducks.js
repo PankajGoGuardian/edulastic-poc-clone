@@ -91,14 +91,6 @@ export const reportPerformanceByStudentsReducer = createReducer(initialState, {
 
 function* getReportsPerformanceByStudentsRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
     const { data } = yield call(
       reportsApi.fetchPerformanceByStudentsReport,
       payload

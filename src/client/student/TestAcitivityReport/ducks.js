@@ -1,14 +1,29 @@
 import { createAction, createReducer } from 'redux-starter-kit'
-import { takeEvery, put, call, all, fork } from 'redux-saga/effects'
-import { keyBy as _keyBy, isEmpty, orderBy, keyBy } from 'lodash'
+import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects'
+import {
+  keyBy as _keyBy,
+  isEmpty,
+  orderBy,
+  keyBy,
+  maxBy,
+  groupBy,
+} from 'lodash'
 import produce from 'immer'
+import { push } from 'connected-react-router'
 
 import {
   reportsApi,
   testsApi,
   attchmentApi as attachmentApi,
+  assignmentApi,
 } from '@edulastic/api'
-import questionType from '@edulastic/constants/const/questionType'
+import {
+  questionType,
+  testActivityStatus,
+  test as testConstants,
+  roleuser,
+} from '@edulastic/constants'
+import { notification } from '@edulastic/common'
 
 import { setTestItemsAction, SET_CURRENT_ITEM } from '../sharedDucks/TestItem'
 import {
@@ -28,6 +43,12 @@ import {
 } from '../../author/TestPage/ducks'
 import { markQuestionLabel } from '../../assessment/Transformer'
 import { loadQuestionsAction } from '../../author/sharedDucks/questions'
+import {
+  getCurrentUserId,
+  transformAssignmentForRedirect,
+} from '../Assignments/ducks'
+import { getClassIds } from '../Reports/ducks'
+import { getUserRole } from '../../author/src/selectors/user'
 
 export const LOAD_TEST_ACTIVITY_REPORT =
   '[studentReports] load testActivity  report'
@@ -100,7 +121,9 @@ function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
     const passageData = {}
     for (const attachment of attachments) {
       const { data } = attachment
-      passageData[referrerId2] = data
+      passageData[referrerId2] = {
+        [referrerId]: data,
+      }
     }
     yield put({ type: SAVE_USER_WORK, payload: passageData })
   } catch (error) {
@@ -117,6 +140,71 @@ function* loadPassagesForItems({ testActivityId, passages }) {
       })
     )
   )
+}
+
+function* checkAssessmentExpiredDetails({
+  assignmentId,
+  groupId,
+  test,
+  activities,
+}) {
+  try {
+    let assignment = yield call(assignmentApi.getById, assignmentId)
+    const testActivities = isEmpty(activities)
+      ? yield call(assignmentApi.fetchTestActivities, assignmentId, groupId)
+      : activities
+    const userId = yield select(getCurrentUserId)
+    const classIds = yield select(getClassIds)
+    const reportsGroupedByClassIdentifier = groupBy(
+      testActivities,
+      'assignmentClassIdentifier'
+    )
+    const groupedReportsByAssignmentId = groupBy(
+      testActivities,
+      (item) => `${item.assignmentId}_${item.groupId}`
+    )
+    assignment = transformAssignmentForRedirect(
+      groupId,
+      userId,
+      classIds,
+      reportsGroupedByClassIdentifier,
+      groupedReportsByAssignmentId,
+      assignment
+    )
+    const assignmentClass = assignment.class.filter(
+      (c) =>
+        c.redirect !== true &&
+        c._id === groupId &&
+        (!c.students.length ||
+          (c.students.length && c.students.includes(userId)))
+    )
+    const userClassList = assignment.class.filter(
+      (c) =>
+        c._id === groupId &&
+        (!c.students.length ||
+          (c.students.length && c.students.includes(userId)))
+    )
+    const { endDate } = maxBy(userClassList, 'endDate') || {}
+    let maxAttempts
+    if (assignmentClass[0].maxAttempts) {
+      maxAttempts = assignmentClass[0].maxAttempts
+    } else {
+      maxAttempts = test.maxAttempts
+    }
+    const attempts = testActivities.filter((el) =>
+      [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
+        el.status
+      )
+    )
+    return {
+      maxAttempts,
+      attempts: attempts.length,
+      endDate,
+      serverTimeStamp: assignment.ts,
+    }
+  } catch (e) {
+    console.warn('Something went wrong', e)
+  }
 }
 
 function* loadTestActivityReport({ payload }) {
@@ -139,13 +227,42 @@ function* loadTestActivityReport({ payload }) {
       }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
     ])
-    const { assignmentId } = reports.testActivity
+
+    reports.questionActivities = reports.questionActivities.map((qa) => {
+      if (qa.autoGrade === false && qa.score === undefined) {
+        return {
+          ...qa,
+          graded: false,
+        }
+      }
+      return qa
+    })
+
+    const { assignmentId, releaseScore } = reports.testActivity
     const activities = yield call(
       reportsApi.fetchReports,
       groupId,
       testId,
       assignmentId
     )
+    if (releaseScore === testConstants.releaseGradeLabels.WITH_ANSWERS) {
+      const { attempts, maxAttempts, endDate, serverTimeStamp } = yield call(
+        checkAssessmentExpiredDetails,
+        {
+          assignmentId,
+          groupId,
+          test,
+          activities,
+        }
+      )
+      if (attempts < maxAttempts) {
+        reports.testActivity.releaseScore =
+          testConstants.releaseGradeLabels.WITH_RESPONSE
+      }
+      if (endDate <= serverTimeStamp) {
+        reports.testActivity.releaseScore = releaseScore
+      }
+    }
     let testItems = test.itemGroups.flatMap(
       (itemGroup) => itemGroup.items || []
     )
@@ -246,7 +363,17 @@ function* loadTestActivityReport({ payload }) {
       payload: allAnswers,
     })
   } catch (e) {
-    console.log(e)
+    const role = yield select(getUserRole)
+    if (e.status === 404 && role === roleuser.STUDENT) {
+      yield put(push(`/home/grades`))
+      return notification({
+        msg:
+          e?.response?.data?.message || 'No active Assignments/Activity found',
+      })
+    }
+    return notification({
+      msg: e?.response?.data?.message || 'Something went wrong',
+    })
   }
 }
 

@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import { get } from 'lodash'
+import { get, groupBy, keyBy } from 'lodash'
 import { createSelector } from 'reselect'
 import { createReducer, createAction } from 'redux-starter-kit'
 import {
@@ -33,6 +33,41 @@ const currentSelector = (state) => state[_moduld].current
 export const testsSelector = (state) => state.tests
 
 export const getAssignmentsSelector = (state) => state[_moduld].assignments
+
+export const testStateSelector = (state) => state.tests
+
+export const getTestSelector = createSelector(
+  testStateSelector,
+  (state) => state.entity
+)
+
+export const getAssignedClassesByIdSelector = createSelector(
+  getAssignmentsSelector,
+  (assignments) => {
+    const assignmentsByTestType = groupBy(assignments, 'testType')
+    const { COMMON, ASSESSMENT, PRACTICE, TESTLET } = testConst.type
+    const assignedClassesByTestType = {
+      [COMMON]: {},
+      [ASSESSMENT]: {},
+      [PRACTICE]: {},
+      [TESTLET]: {},
+    }
+    for (const [key, value] of Object.entries(assignmentsByTestType)) {
+      if (key === COMMON && !value.archived) {
+        const assignedClasses = value
+          .flatMap((item) => get(item, 'class', []))
+          .filter(
+            (item) =>
+              item.students &&
+              item.students.length === 0 &&
+              item.status !== 'ARCHIVED'
+          )
+        assignedClassesByTestType[key] = keyBy(assignedClasses, '_id') || {}
+      }
+    }
+    return assignedClassesByTestType
+  }
+)
 
 const classesData = (state) => state.classesReducer.data
 

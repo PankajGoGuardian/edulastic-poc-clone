@@ -15,12 +15,8 @@ import {
   NoDataContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getSAFFilterPerformanceBandProfiles,
-  getSAFFilterSelectedPerformanceBandProfile,
-  getTestListSelector,
-} from '../common/filterDataDucks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getSAFFilterPerformanceBandProfiles } from '../common/filterDataDucks'
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
 import { TableContainer, UpperContainer } from './components/styled'
@@ -42,13 +38,22 @@ const PeerPerformance = ({
   isCsvDownloading,
   role,
   performanceBandProfiles,
-  selectedPerformanceBand,
   peerPerformance,
   getPeerPerformance,
   settings,
   testList,
   filters,
+  sharedReport,
 }) => {
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const selectedTest = testList.find(
     (t) => t._id === settings.selectedTest.key
   ) || { _id: '', title: '' }
@@ -59,7 +64,9 @@ const PeerPerformance = ({
   const bandInfo = useMemo(
     () =>
       performanceBandProfiles.find(
-        (profile) => profile._id === selectedPerformanceBand
+        (profile) =>
+          profile._id ===
+          (sharedReportFilters || settings.requestFilters).profileId
       )?.performanceBand ||
       performanceBandProfiles[0]?.performanceBand ||
       [],
@@ -69,8 +76,9 @@ const PeerPerformance = ({
   const [ddfilter, setDdFilter] = useState({
     ...filters,
     analyseBy: 'score(%)',
-    compareBy: role === 'teacher' ? 'groupId' : 'schoolId',
+    compareBy: userRole === 'teacher' ? 'groupId' : 'schoolId',
   })
+  const [chartFilter, setChartFilter] = useState({})
 
   useEffect(() => {
     setDdFilter({
@@ -79,13 +87,12 @@ const PeerPerformance = ({
     })
   }, [filters])
 
-  const [chartFilter, setChartFilter] = useState({})
-
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getPeerPerformance(q)
     }
   }, [settings])
@@ -95,7 +102,7 @@ const PeerPerformance = ({
     dropDownFormat.compareByDropDownData,
     (tempCompareBy) => {
       tempCompareBy.splice(3, 0, { key: 'group', title: 'Student Group' })
-      if (role === 'teacher') {
+      if (userRole === 'teacher') {
         tempCompareBy.splice(0, 2)
       }
     }
@@ -177,14 +184,14 @@ const PeerPerformance = ({
               >
                 <ControlDropDown
                   prefix="Analyze by"
-                  by={dropDownFormat.analyseByDropDownData[0]}
+                  by={ddfilter.analyseBy}
                   selectCB={updateAnalyseByCB}
                   data={dropDownFormat.analyseByDropDownData}
                 />
                 <ControlDropDown
                   prefix="Compare by"
                   style={{ marginLeft: 8 }}
-                  by={compareByDropDownData[0]}
+                  by={ddfilter.compareBy}
                   selectCB={updateCompareByCB}
                   data={compareByDropDownData}
                 />
@@ -203,7 +210,7 @@ const PeerPerformance = ({
                   onBarClickCB={onBarClickCB}
                   onResetClickCB={onResetClickCB}
                   bandInfo={bandInfo}
-                  role={role}
+                  role={userRole}
                 />
               ) : (
                 // signed stacked bar-chart
@@ -216,7 +223,7 @@ const PeerPerformance = ({
                   onBarClickCB={onBarClickCB}
                   onResetClickCB={onResetClickCB}
                   bandInfo={bandInfo}
-                  role={role}
+                  role={userRole}
                 />
               )}
             </div>
@@ -235,7 +242,7 @@ const PeerPerformance = ({
             compareBy={ddfilter.compareBy}
             assessmentName={assessmentName}
             bandInfo={bandInfo}
-            role={role}
+            role={userRole}
           />
         </StyledCard>
       </TableContainer>
@@ -247,6 +254,7 @@ const reportPropType = PropTypes.shape({
   districtAvg: PropTypes.number,
   districtAvgPerf: PropTypes.number,
   metricInfo: PropTypes.array,
+  studentGroupInfo: PropTypes.array,
 })
 
 PeerPerformance.propTypes = {
@@ -255,7 +263,6 @@ PeerPerformance.propTypes = {
   role: PropTypes.string.isRequired,
   peerPerformance: reportPropType.isRequired,
   performanceBandProfiles: PropTypes.array.isRequired,
-  selectedPerformanceBand: PropTypes.string.isRequired,
   getPeerPerformance: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
 }
@@ -267,9 +274,6 @@ const enhance = compose(
       error: getReportsPeerPerformanceError(state),
       isCsvDownloading: getCsvDownloadingState(state),
       role: getUserRole(state),
-      selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(
-        state
-      ),
       performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
       peerPerformance: getReportsPeerPerformance(state),
       testList: getTestListSelector(state),

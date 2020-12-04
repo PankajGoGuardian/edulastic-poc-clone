@@ -193,7 +193,11 @@ class Container extends Component {
       false
     )
     if (isPassageWithQuestions) {
-      return savePassage({ isTestFlow, isEditFlow, testId })
+      return savePassage({
+        isTestFlow,
+        isEditFlow,
+        testId: testId || history?.location?.state?.testId,
+      })
     }
 
     saveQuestion(testId, isTestFlow, isEditFlow)
@@ -364,11 +368,19 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const { view, question, authorQuestions, preview } = this.props
+    const {
+      view,
+      question,
+      authorQuestions,
+      preview,
+      itemFromState = {},
+    } = this.props
     const { showHints } = this.state
     const { checkAnswerButton = false, checkAttempts = 1 } =
       question.validation || {}
-
+    const { multipartItem = false, itemLevelScoring = false } =
+      itemFromState || {}
+    const hideScoreBlock = multipartItem && itemLevelScoring
     const isShowAnswerVisible =
       authorQuestions &&
       !constantsQuestionType.manuallyGradableQn.includes(authorQuestions.type)
@@ -388,6 +400,7 @@ class Container extends Component {
         previewTab={preview}
         showSettingsButton={false}
         isShowAnswerVisible={isShowAnswerVisible}
+        hideScoreBlock={hideScoreBlock}
       />
     )
   }
@@ -528,6 +541,7 @@ class Container extends Component {
       proceedSave,
       hasUnsavedChanges,
     } = this.props
+    
     if (!question) {
       const backUrl = get(history, 'location.state.backUrl', '')
       if (backUrl.includes('pickup-questiontype')) {
@@ -599,6 +613,7 @@ class Container extends Component {
         <QuestionContentWrapper
           data-cy="question-editor-container"
           ref={this.scrollContainer}
+          zIndex="1"
         >
           {this.renderQuestion()}
         </QuestionContentWrapper>

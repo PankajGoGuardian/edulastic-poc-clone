@@ -55,7 +55,8 @@ class AddTeacherModal extends React.Component {
       })
       if (
         checkUserResponse.userExists &&
-        checkUserResponse.role === 'teacher'
+        checkUserResponse.role === 'teacher' &&
+        !checkUserResponse.isAnotherDistrict
       ) {
         this.setState({
           emailValidate: {

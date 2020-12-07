@@ -9,7 +9,6 @@ import { Tooltip, Spin } from 'antd'
 import { notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 
-import { AutocompleteDropDown } from '../../../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import { Collapsable } from '../../../../../common/components/widgets/Collapsable'
 import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
@@ -294,12 +293,13 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           <SearchField>
             <FilterLabel>Grade</FilterLabel>
-            <AutocompleteDropDown
+            <ControlDropDown
               prefix="Grade"
               className="custom-1-scrollbar"
               by={filters.grade}
               selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
               data={staticDropDownData.grades}
+              showPrefixOnSelected={false}
             />
           </SearchField>
           <SearchField>
@@ -368,12 +368,13 @@ const SingleAssessmentReportFilters = ({
           )}
           <SearchField>
             <FilterLabel>Grade</FilterLabel>
-            <AutocompleteDropDown
+            <ControlDropDown
               prefix="Grade"
               className="custom-1-scrollbar"
               by={filters.studentGrade}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentGrade')}
               data={staticDropDownData.grades}
+              showPrefixOnSelected={false}
             />
           </SearchField>
           <SearchField>

@@ -133,7 +133,6 @@ class TestItemCol extends Component {
           widgetIndex={widgetIndex}
           isStudentAttempt={isStudentAttempt}
           isFeedbackVisible={isFeedbackVisible}
-          showBorder={!showTabBorder}
         />
         {/* on the student side, show feedback for each question
         only when item level scoring is off */}

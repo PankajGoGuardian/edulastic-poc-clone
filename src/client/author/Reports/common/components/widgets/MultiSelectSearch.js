@@ -7,13 +7,13 @@ const MultiSelectSearch = ({
   label,
   onChange,
   onSearch,
-  onBlur,
+  onBlur = () => {},
   value,
   options,
   dataCy,
   el,
   loading,
-  onFocus,
+  onFocus = () => {},
 }) => (
   <>
     <FilterLabel>{label}</FilterLabel>

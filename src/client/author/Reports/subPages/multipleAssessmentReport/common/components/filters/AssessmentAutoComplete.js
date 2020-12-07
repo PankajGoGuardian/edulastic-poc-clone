@@ -61,7 +61,6 @@ const AssessmentAutoComplete = ({
     return q
   }, [
     searchTerms.text,
-    selectedTestIds,
     filters.termId,
     filters.grade,
     filters.subject,
@@ -80,16 +79,6 @@ const AssessmentAutoComplete = ({
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
       selectCB()
-    }
-  }
-  const onBlur = () => {
-    // force fetch testList to reset assessment filter to previously selected test
-    if (searchTerms.text !== searchTerms.selectedText) {
-      setSearchTerms({
-        ...searchTerms,
-        selectedText: '',
-        text: searchTerms.selectedText,
-      })
     }
   }
   const loadTestListDebounced = useCallback(
@@ -132,7 +121,6 @@ const AssessmentAutoComplete = ({
       el={assessmentFilterRef}
       onChange={(e) => selectCB(e)}
       onSearch={onSearch}
-      onBlur={onBlur}
       value={selectedTestIds}
       options={!loading ? dropdownData : []}
       loading={loading}

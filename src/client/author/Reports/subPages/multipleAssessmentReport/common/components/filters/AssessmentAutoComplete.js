@@ -122,7 +122,9 @@ const AssessmentAutoComplete = ({
   // build dropdown data
   const dropdownData = testList.map((item) => ({
     key: item._id,
-    title: item.title,
+    title: `${item.title} (ID: ${
+      item._id?.substring(item._id.length - 5) || ''
+    })`,
   }))
   return (
     <MultiSelectSearch

@@ -36,7 +36,8 @@ const packageJson = require('./package.json')
 module.exports = override(
   multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
-  process.env.BUNDLE_VISUALIZE && addBundleVisualizer(),
+  process.env.BUNDLE_VISUALIZE &&
+    addBundleVisualizer({ generateStatsFile: true }),
   (config) => {
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
@@ -148,7 +149,7 @@ module.exports = override(
     } else {
       config.plugins.push(
         new ScriptExtHtmlWebpackPlugin({
-          defaultAttribute: 'defer',
+          // defaultAttribute: 'defer',
           async: /froala-editor|firebase|pdfjs-dist|jsx-graph|mathjs|draft-js/,
           // preload: {
           //   test: /\.js$/,
@@ -217,6 +218,7 @@ module.exports = override(
       // }
 
       // add chunk split optimizations
+      /*
       config.optimization = {
         ...(config.optimization || {}),
         splitChunks: {
@@ -256,6 +258,7 @@ module.exports = override(
           },
         },
       }
+      */
     }
 
     /** Uncomment to have a copy of files written on disk */

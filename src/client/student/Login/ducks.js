@@ -2,16 +2,23 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { pick, last, get, set } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
-import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException } from '@edulastic/common/src/sentryHelpers';
+import notification from '@edulastic/common/src/components/Notification';
 import { push } from 'connected-react-router'
-import {
-  authApi,
-  userApi,
-  TokenStorage,
-  settingsApi,
-  segmentApi,
-  schoolApi,
-} from '@edulastic/api'
+// import {
+//   authApi,
+//   userApi,
+//   TokenStorage,
+//   settingsApi,
+//   segmentApi,
+//   schoolApi,
+// } from '@edulastic/api'
+import authApi from '@edulastic/api/src/auth';
+import userApi from '@edulastic/api/src/user';
+import settingsApi from '@edulastic/api/src/settings';
+import segmentApi from '@edulastic/api/src/segment';
+import schoolApi from '@edulastic/api/src/school';
+import * as TokenStorage from '@edulastic/api/src/utils/Storage';
 import { roleuser } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'

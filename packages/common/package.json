@@ -1,6 +1,7 @@
 {
   "name": "@edulastic/common",
   "version": "1.0.0",
+  "sideEffects": false,
   "description": "",
   "main": "index.js",
   "keywords": [],

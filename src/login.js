@@ -13,10 +13,10 @@ import { Integrations } from '@sentry/tracing'
 import './client/index.css'
 import { updateSentryScope } from '@edulastic/api/src/utils/Storage'
 import AppLogin from './client/AppLogin'
-import configureStore, { history } from './client/configureStore'
+import configureStore, { history } from './client/configureStoreLogin'
 import AppConfig from './app-config'
-import { loginReducer } from './client/reducers'
-import { loginSaga } from './client/sagas'
+import { loginReducer } from './client/loginReducers'
+import { loginSaga } from './client/loginSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
 
 if (AppConfig.sentryURI) {

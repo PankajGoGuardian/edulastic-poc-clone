@@ -1,18 +1,24 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { get, pick } from 'lodash'
-import { notification } from '@edulastic/common'
+import  notification  from '@edulastic/common/src/components/Notification'
 import mqtt from 'mqtt'
 import produce from 'immer'
 import { push } from 'connected-react-router'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
-import {
-  schoolApi,
-  userApi,
-  settingsApi,
-  TokenStorage,
-  canvasApi,
-  realtimeApi,
-} from '@edulastic/api'
+// import {
+//   schoolApi,
+//   userApi,
+//   settingsApi,
+//   TokenStorage,
+//   canvasApi,
+//   realtimeApi,
+// } from '@edulastic/api'
+import schoolApi from '@edulastic/api/src/school';
+import userApi from '@edulastic/api/src/user';
+import settingsApi from '@edulastic/api/src/settings';
+import canvasApi from '@edulastic/api/src/canvas';
+import realtimeApi from '@edulastic/api/src/realtime';
+import * as TokenStorage from '@edulastic/api/src/utils/Storage';
 import {
   persistAuthStateAndRedirectToAction,
   signupSuccessAction,

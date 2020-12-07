@@ -104,7 +104,7 @@ const QuestionAnalysis = ({
     return <DataSizeExceeded />
   }
 
-  if (!questionAnalysis.metricInfo?.length) {
+  if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

@@ -246,7 +246,11 @@ const PerformanceByStandards = ({
     return <DataSizeExceeded />
   }
 
-  if (!report.metricInfo?.length || !report.studInfo?.length) {
+  if (
+    !report.metricInfo?.length ||
+    !report.studInfo?.length ||
+    !settings.selectedTest.key
+  ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

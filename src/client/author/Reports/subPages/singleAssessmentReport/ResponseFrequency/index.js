@@ -120,7 +120,7 @@ const ResponseFrequency = ({
     return <DataSizeExceeded />
   }
 
-  if (isEmpty(res.metrics)) {
+  if (isEmpty(res.metrics) || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

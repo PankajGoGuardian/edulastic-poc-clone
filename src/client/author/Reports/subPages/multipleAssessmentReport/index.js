@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
-import { map, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
@@ -179,7 +179,7 @@ const MultipleAssessmentReportContainer = (props) => {
       setMARSettings({
         requestFilters: {
           ...obj,
-          testIds: map(selectedTest, (test) => test).join(),
+          testIds: selectedTest.join(','),
         },
       })
     }

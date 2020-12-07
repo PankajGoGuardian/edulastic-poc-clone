@@ -171,9 +171,7 @@ const SingleAssessmentReportFilters = ({
         urlSchoolIds = search.schoolIds || ''
         urlTeacherIds = search.teacherIds || ''
       }
-
-      const testIdsArr = [].concat(search.testIds?.split(',') || [])
-      const urlTestIds = testIdsArr.filter((item) => item)
+      const urlTestIds = search.testIds ? search.testIds.split(',') : []
 
       const obtainedFilters = {
         termId: urlSchoolYear.key,
@@ -250,8 +248,10 @@ const SingleAssessmentReportFilters = ({
   }
 
   const onSelectTest = (selectedTestIds) => {
+    const _selectedTestIds =
+      typeof selectedTestIds === 'string' ? [selectedTestIds] : selectedTestIds
     if (selectedTestIds.length !== 0) {
-      setTestId(selectedTestIds)
+      setTestId(_selectedTestIds)
     } else {
       notification({ type: 'warn', msg: `Selection cannot be empty` })
     }

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import i18n, { I18nextProvider } from '@edulastic/localization'
 import { ConnectedRouter } from 'connected-react-router'
-import { Spin } from 'antd'
+import  Spin  from 'antd/es/spin'
 
 import 'font-awesome/css/font-awesome.css'
 import 'antd/dist/antd.css'

@@ -5,11 +5,13 @@ import { Col, Spin } from 'antd'
 import produce from 'immer'
 import moment from 'moment'
 import { connect } from 'react-redux'
+import { EduButton } from '@edulastic/common'
+import { IconExpandBox } from '@edulastic/icons'
 import { getUserRole } from '../../../src/selectors/user'
 import { getReleaseScorePremiumSelector } from '../../../TestPage/ducks'
 import { getRecommendationsToAssignSelector } from '../../../CurriculumSequence/ducks'
 import DateSelector from './DateSelector'
-import { OptionConationer, InitOptions, StyledRow, StyledLink } from './styled'
+import { OptionConationer, StyledRow, StyledLink } from './styled'
 import TestTypeSelector from './TestTypeSelector'
 import QuestionPerStandardSelector from './QuestionPerStandardSelector'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
@@ -85,56 +87,66 @@ const SimpleOptionsModal = ({
     <ConfirmationModal
       title="Assign Recommendations"
       visible={isModalVisible}
-      onOk={handleAssign}
-      onCancel={() => toggleModal(false)}
-      okText="ASSIGN"
-      cancelText="CANCEL"
       textAlign="left"
       destroyOnClose
+      onCancel={() => toggleModal(false)}
       centered
+      padding="25px 40px"
+      footer={[
+        <EduButton
+          height="40px"
+          isGhost
+          key="cancelButton"
+          onClick={() => toggleModal(false)}
+        >
+          NO, CANCEL
+        </EduButton>,
+        <EduButton height="40px" key="okButton" onClick={handleAssign}>
+          YES, ASSIGN
+        </EduButton>,
+      ]}
     >
-      <OptionConationer hasMinHeight={false}>
-        <InitOptions>
-          <DateSelector
-            startDate={assignment.startDate}
-            endDate={assignment.endDate}
-            changeField={onChange}
-            passwordPolicy={assignment.passwordPolicy}
-            hasStartDate={false}
-            showOpenDueAndCloseDate={false}
-          />
-          <StyledRow gutter={32} mb="15px">
-            <Col span={12}>
-              <TestTypeSelector
-                userRole={userRole}
-                testType={assignment.testType || testSettings.testType}
-                onAssignmentTypeChange={onChange('testType')}
+      <OptionConationer display="block" hasMinHeight={false}>
+        <DateSelector
+          dateCol={24}
+          startDate={assignment.startDate}
+          endDate={assignment.endDate}
+          changeField={onChange}
+          passwordPolicy={assignment.passwordPolicy}
+          hasStartDate={false}
+          showOpenDueAndCloseDate={false}
+        />
+        <StyledRow mb="15px">
+          <Col span={24}>
+            <TestTypeSelector
+              userRole={userRole}
+              testType={assignment.testType || testSettings.testType}
+              onAssignmentTypeChange={onChange('testType')}
+            />
+          </Col>
+        </StyledRow>
+        {isRecommendingStandards && (
+          <StyledRow mb="15px">
+            <Col span={24}>
+              <QuestionPerStandardSelector
+                onChange={onChange('questionPerStandard')}
+                questionPerStandard={
+                  assignment.questionPerStandard ||
+                  testSettings.questionPerStandard
+                }
+                options={questionPerStandardOptions}
               />
             </Col>
           </StyledRow>
-          {isRecommendingStandards && (
-            <StyledRow gutter={32} mb="25px">
-              <Col span={12}>
-                <QuestionPerStandardSelector
-                  onChange={onChange('questionPerStandard')}
-                  questionPerStandard={
-                    assignment.questionPerStandard ||
-                    testSettings.questionPerStandard
-                  }
-                  options={questionPerStandardOptions}
-                />
-              </Col>
-            </StyledRow>
-          )}
+        )}
 
-          <StyledRow gutter={32} mb="15px">
-            <Col span={12}>
-              <StyledLink onClick={onClickFullSettings}>
-                Show all assign options
-              </StyledLink>
-            </Col>
-          </StyledRow>
-        </InitOptions>
+        <StyledRow mb="15px">
+          <Col span={24}>
+            <StyledLink onClick={onClickFullSettings}>
+              SHOW ALL ASSIGN OPTIONS <IconExpandBox />
+            </StyledLink>
+          </Col>
+        </StyledRow>
         {recommendationsToAssign.isAssigning && <Spin />}
       </OptionConationer>
     </ConfirmationModal>

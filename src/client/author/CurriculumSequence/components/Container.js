@@ -367,7 +367,12 @@ class CurriculumContainer extends Component {
     const { recommendationsToAssign } = curriculumSequences
 
     if (recommendationsToAssign.isRecommendationAssignView) {
-      return <AssignRecommendations isAssignRecommendations />
+      return (
+        <AssignRecommendations
+          isAssignRecommendations
+          playlistId={match.params.id || match.params.playlistId}
+        />
+      )
     }
 
     return (

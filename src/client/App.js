@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { Component, useEffect, Suspense } from 'react'
 import { capitalize, get, isUndefined, isEmpty } from 'lodash'
 import qs from 'qs'
 import PropTypes from 'prop-types'
@@ -22,10 +22,15 @@ import {
 import {
   fetchUserAction,
   isProxyUser as isProxyUserSelector,
+  toggleImageBlockNotificationAction,
 } from './student/Login/ducks'
 import TestDemoPlayer from './author/TestDemoPlayer'
 import TestItemDemoPlayer from './author/TestItemDemoPlayer'
-import { getWordsInURLPathName } from './common/utils/helpers'
+import {
+  getWordsInURLPathName,
+  isImagesBlockedByBrowser,
+} from './common/utils/helpers'
+import LoggedOutRoute from './common/components/loggedOutRoute'
 import PrivateRoute from './common/components/privateRoute'
 import V1Redirect from './author/V1Redirect'
 import Kid from './kid/app'
@@ -35,6 +40,7 @@ import ClassSyncNotification from './author/Classes/components/ClassSyncNotifica
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
+import ImagesBlocked from './common/components/ImagesBlocked'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 
@@ -44,48 +50,77 @@ const Loading = () => (
   </div>
 )
 
-const fallback = () => <Loading />
-
 // route wise splitting
 const AssessmentPlayer = loadable(() => import('./assessment/index'), {
-  fallback,
+  fallback: <Loading />,
 })
+const TeacherSignup = loadable(
+  () => import('./student/Signup/components/TeacherContainer/Container'),
+  {
+    fallback: <Loading />,
+  }
+)
 const Auth = loadable(() => import('./Auth'), {
-  fallback,
+  fallback: <Loading />,
 })
 const Invite = loadable(() => import('./Invite/index'), {
-  fallback,
+  fallback: <Loading />,
 })
-
+const GetStarted = loadable(
+  () => import('./student/Signup/components/GetStartedContainer'),
+  {
+    fallback: <Loading />,
+  }
+)
+const StudentSignup = loadable(
+  () => import('./student/Signup/components/StudentContainer'),
+  {
+    fallback: <Loading />,
+  }
+)
+const AdminSignup = loadable(
+  () => import('./student/Signup/components/AdminContainer/Container'),
+  {
+    fallback: <Loading />,
+  }
+)
 const Dashboard = loadable(() => import('./student/app'), {
-  fallback,
+  fallback: <Loading />,
 })
 const Author = loadable(() => import('./author/src/app'), {
-  fallback,
+  fallback: <Loading />,
 })
 const Publisher = loadable(() => import('./publisher/app'), {
-  fallback,
+  fallback: <Loading />,
 })
 const Admin = loadable(() => import('./admin/app'), {
-  fallback,
+  fallback: <Loading />,
 })
 const RedirectToTest = loadable(() => import('./author/RedirectToTest'), {
-  fallback,
+  fallback: <Loading />,
+})
+const DistrictRoutes = loadable(() => import('./districtRoutes/index'), {
+  fallback: <Loading />,
+})
+const ResetPassword = loadable(() => import('./resetPassword/index'), {
+  fallback: <Loading />,
 })
 const SetParentPassword = loadable(() => import('./SetParentPassword'), {
-  fallback,
+  fallback: <Loading />,
 })
 const CLIAccessBanner = loadable(
   () => import('./author/Dashboard/components/CLIAccessBanner'),
-  fallback
+  {
+    fallback: <Loading />,
+  }
 )
 const PublicTest = loadable(() => import('./publicTest/container'), {
-  fallback,
+  fallback: <Loading />,
 })
 const AssignmentEmbedLink = loadable(
   () => import('./assignmentEmbedLink/container'),
   {
-    fallback,
+    fallback: <Loading />,
   }
 )
 const AudioTagPlayer = loadable(() => import('./AudioTagPlayer'), {
@@ -93,7 +128,6 @@ const AudioTagPlayer = loadable(() => import('./AudioTagPlayer'), {
 })
 
 const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
-
 if (query.token && query.userId && query.role) {
   TokenStorage.storeAccessToken(query.token, query.userId, query.role)
   TokenStorage.selectAccessToken(query.userId, query.role)
@@ -159,12 +193,6 @@ const testRedirectRoutes = [
   '#renderResource/close/',
   '/#assessmentQuestions/close/',
 ]
-
-const loggedOutRoutes = new RegExp(
-  '(/login)|(/resetPassword)|(/districtLogin)|(/district)|(/school)|(/Signup)|(/partnerLogin)|(/GetStarted)|(/AdminSignup)|(/StudentSignup)',
-  'ig'
-)
-
 const getCurrentPath = () => {
   const location = window.location
   return `${location.pathname}${location.search}${location.hash}`
@@ -181,7 +209,7 @@ function isLocationInTestRedirectRoutes(loc) {
 function CheckRoutePatternsEffectContainer({ role, location, history }) {
   useEffect(() => {
     if (
-      role === roleuser.STUDENT &&
+      role === 'student' &&
       location.pathname.startsWith('/author') &&
       !location.pathname.startsWith('/author/tests/tab')
     ) {
@@ -194,8 +222,8 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
     ) {
       history.push('/admin')
     } else if (
-      role !== roleuser.STUDENT &&
-      role !== roleuser.PARENT &&
+      role !== 'student' &&
+      role !== 'parent' &&
       location.pathname.startsWith('/home')
     ) {
       history.push(
@@ -206,34 +234,30 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
   return null
 }
 
-const pathIncludes = (str) =>
-  window.location.pathname.toLocaleLowerCase().includes(str)
+class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      showAppUpdate: false,
+      canShowCliBanner: true,
+    }
+  }
 
-const App = ({
-  user,
-  tutorial,
-  location,
-  history,
-  fullName,
-  logout,
-  isProxyUser,
-  shouldWatch,
-  fetchUser,
-}) => {
-  const [showAppUpdate, setShowAppUpdate] = useState(false)
-  const [canShowCliBanner, setCanShowCliBanner] = useState(false)
-
-  const currentPath = location.pathname
-  const urlPathSplit = currentPath.split('/')
-  const publicPath = urlPathSplit.includes('public')
-  const embedLink = location.pathname.split('/').includes('embed')
-  const ssoPath = urlPathSplit.includes('auth')
-  const partnerPath = urlPathSplit.includes('partnerLogin')
-  const kidPath = currentPath.includes('/kid')
-  const isV1Redirect =
-    currentPath.includes('/fwd') || isLocationInTestRedirectRoutes(location)
-
-  useEffect(() => {
+  componentDidMount() {
+    const {
+      fetchUser,
+      location,
+      isImageBlockNotification,
+      toggleImageBlockNotification,
+    } = this.props
+    const publicPath = location.pathname.split('/').includes('public')
+    const embedLink = location.pathname.split('/').includes('embed')
+    const ssoPath = location.pathname.split('/').includes('auth')
+    const partnerPath = location.pathname.split('/').includes('partnerLogin')
+    const isV1Redirect =
+      location.pathname.includes('/fwd') ||
+      isLocationInTestRedirectRoutes(location)
+    const kidPath = location.pathname.includes('/kid')
     if (
       !embedLink &&
       !publicPath &&
@@ -252,48 +276,73 @@ const App = ({
     ) {
       fetchUser()
     }
-
-    window.addEventListener('request-client-update', () =>
-      setShowAppUpdate(true)
-    )
-  }, [])
-
-  const cliBannerVisible = sessionStorage.cliBannerVisible || false
-
-  if (
-    location.hash.includes('#renderResource/close/') ||
-    location.hash.includes('#assessmentQuestions/close/')
-  ) {
-    const v1Id = location.hash.split('/')[2]
-    history.push(`/d/ap?eAId=${v1Id}`)
-    return <Loading />
+    window.addEventListener('request-client-update', () => {
+      this.setState({
+        showAppUpdate: true,
+      })
+    })
+    isImagesBlockedByBrowser().then((flag) => {
+      if (flag && !isImageBlockNotification) {
+        toggleImageBlockNotification(true)
+      }
+    })
   }
 
-  if (
-    !publicPath &&
-    user.authenticating &&
-    TokenStorage.getAccessToken() &&
-    !location.pathname.includes('/auth/') &&
-    !sessionStorage.getItem('addAccountDetails')
-  ) {
-    return <Loading />
+  handleImageNotificationClose = () => {
+    const { toggleImageBlockNotification } = this.props
+    toggleImageBlockNotification(false)
   }
 
-  const features = user?.user?.features || {}
-  let defaultRoute = ''
-  let redirectRoute = ''
-  if (!publicPath && !embedLink) {
-    const path = getWordsInURLPathName(location.pathname)
-    const urlSearch = new URLSearchParams(location.search)
+  render() {
+    const cliBannerVisible = sessionStorage.cliBannerVisible || false
+    /**
+     * NOTE:  this logic would be called multiple times, even after redirect
+     */
+    const {
+      user,
+      tutorial,
+      location,
+      history,
+      fullName,
+      logout,
+      isProxyUser,
+      shouldWatch,
+      isImageBlockNotification,
+    } = this.props
+    if (
+      location.hash.includes('#renderResource/close/') ||
+      location.hash.includes('#assessmentQuestions/close/')
+    ) {
+      const v1Id = location.hash.split('/')[2]
+      history.push(`/d/ap?eAId=${v1Id}`)
+      return <Loading />
+    }
+
+    const publicPath =
+      location.pathname.split('/').includes('public') ||
+      location.pathname.includes('/fwd') ||
+      isLocationInTestRedirectRoutes(location) ||
+      location.pathname.includes('/kid')
 
     if (
-      user &&
-      !user.isAuthenticated &&
-      (currentPath === '/' || currentPath.match(loggedOutRoutes))
+      !publicPath &&
+      user.authenticating &&
+      TokenStorage.getAccessToken() &&
+      !location.pathname.includes('/auth/') &&
+      !sessionStorage.getItem('addAccountDetails')
     ) {
-      window.location.replace('/')
-    } else if (user && user.isAuthenticated) {
-      // Clear referrer once userId available
+      return <Loading />
+    }
+
+    const features = user?.user?.features || {}
+    let defaultRoute = ''
+    let redirectRoute = ''
+    if (!publicPath) {
+      const path = getWordsInURLPathName(location.pathname)
+      const urlSearch = new URLSearchParams(location.search)
+
+      if (user && user.isAuthenticated) {
+        // Clear referrer once userId available
         if (
           user &&
           (user.userId || user.user?._id) &&
@@ -301,255 +350,337 @@ const App = ({
         ) {
           window.localStorage.removeItem('originalreferrer')
         }
-      const role = get(user, ['user', 'role'])
-      if (role === roleuser.TEACHER) {
-        if (
-          user.signupStatus === signUpState.DONE ||
-          isUndefined(user.signupStatus)
-        ) {
-          if (features.isPublisherAuthor) {
-            defaultRoute = 'author/items'
+        const role = get(user, ['user', 'role'])
+        if (role === 'teacher') {
+          if (
+            user.signupStatus === signUpState.DONE ||
+            isUndefined(user.signupStatus)
+          ) {
+            if (features.isPublisherAuthor) {
+              defaultRoute = 'author/items'
+            } else {
+              defaultRoute = '/author/dashboard'
+            }
+          } else if (
+            path[0] &&
+            path[0].toLocaleLowerCase() === 'district' &&
+            path[1]
+          ) {
+            redirectRoute = `/district/${path[1]}/signup`
           } else {
-            defaultRoute = '/author/dashboard'
+            redirectRoute = '/Signup'
           }
+        } else if (role === 'edulastic-admin') {
+          defaultRoute = '/admin'
+        } else if (role === 'student' || role === 'parent') {
+          defaultRoute = '/home/assignments'
+        } else if (role === 'district-admin' || role === 'school-admin') {
+          if (features.isCurator) {
+            defaultRoute = '/publisher/dashboard'
+          } else {
+            // redirecting da & sa to assignments after login as their dashboard page is not implemented
+            defaultRoute = '/author/assignments'
+          }
+        } else if (role === 'edulastic-curator') {
+          defaultRoute = '/author/tests'
         } else if (
-          path[0] &&
-          path[0].toLocaleLowerCase() === 'district' &&
-          path[1]
+          user.user &&
+          (user.user.googleId || user.user.msoId || user.user.cleverId)
         ) {
-          redirectRoute = `/district/${path[1]}/signup`
-        } else {
-          redirectRoute = '/Signup'
+          defaultRoute = '/auth'
         }
-      } else if (role === 'edulastic-admin') {
-        defaultRoute = '/admin'
-      } else if (role === 'student' || role === 'parent') {
-        defaultRoute = '/home/assignments'
-      } else if (role === 'district-admin' || role === 'school-admin') {
-        if (features.isCurator) {
-          defaultRoute = '/publisher/dashboard'
-        } else {
-          // redirecting da & sa to assignments after login as their dashboard page is not implemented
-          defaultRoute = '/author/assignments'
-        }
-      } else if (role === 'edulastic-curator') {
-        defaultRoute = '/author/tests'
+        // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (
-        user.user &&
-        (user.user.googleId || user.user.msoId || user.user.cleverId)
+        !(
+          location.pathname.toLocaleLowerCase().includes('/getstarted') ||
+          location.pathname.toLocaleLowerCase().includes('/signup') ||
+          location.pathname.toLocaleLowerCase().includes('/studentsignup') ||
+          location.pathname.toLocaleLowerCase().includes('/adminsignup') ||
+          (path[0] &&
+            ['district', 'school', 'districtlogin'].includes(
+              path[0].toLocaleLowerCase()
+            )) ||
+          location.pathname.toLocaleLowerCase().includes('/partnerlogin/') ||
+          location.pathname.toLocaleLowerCase().includes('/fwd') ||
+          location.pathname.toLocaleLowerCase().includes('/resetpassword') ||
+          location.pathname.toLocaleLowerCase().includes('/inviteteacher') ||
+          // third-party auth
+          location.pathname.toLocaleLowerCase().includes('/auth/mso') ||
+          location.pathname.toLocaleLowerCase().includes('/auth/clever') ||
+          location.pathname.toLocaleLowerCase().includes('/auth/google') ||
+          location.pathname.toLocaleLowerCase().includes('/auth/atlas')
+        )
       ) {
-        defaultRoute = '/auth'
-      }
-      // TODO: handle the rest of the role routes (district-admin,school-admin)
-    } else if (
-      !(
-        pathIncludes('/getstarted') ||
-        pathIncludes('/signup') ||
-        pathIncludes('/studentsignup') ||
-        pathIncludes('/adminsignup') ||
-        (path[0] &&
-          ['district', 'school', 'districtlogin'].includes(
-            path[0].toLocaleLowerCase()
-          )) ||
-        pathIncludes('/partnerlogin/') ||
-        pathIncludes('/fwd') ||
-        pathIncludes('/resetpassword') ||
-        pathIncludes('/inviteteacher') ||
-        // third-party auth
-        pathIncludes('/auth/mso') ||
-        pathIncludes('/auth/clever') ||
-        pathIncludes('/auth/google') ||
-        pathIncludes('/auth/atlas')
-      )
-    ) {
-      if (pathIncludes('/home')) {
-        localStorage.setItem('thirdPartySignOnRole', roleuser.STUDENT)
-      }
+        if (location.pathname.toLocaleLowerCase().includes('/home')) {
+          localStorage.setItem('thirdPartySignOnRole', roleuser.STUDENT)
+        }
+        if (!getCurrentPath().includes('/login')) {
+          localStorage.setItem('loginRedirectUrl', getCurrentPath())
+        }
 
-      if (!pathIncludes('/login')) {
-        localStorage.setItem('loginRedirectUrl', getCurrentPath())
-      }
-
-      if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
-        redirectRoute = `/district/${urlSearch.get('shortName')}`
-      } else {
-        window.location.replace('/')
+        if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
+          redirectRoute = `/district/${urlSearch.get('shortName')}`
+        } else {
+          redirectRoute = '/login'
+        }
       }
     }
-  }
+    /**
+     * If error message is stored in the session storage, than we will display it
+     * and remove it from the session storage.
+     */
+    if (sessionStorage.getItem('errorMessage')) {
+      notification({ msg: sessionStorage.getItem('errorMessage') })
+      sessionStorage.removeItem('errorMessage')
+    }
 
-  /**
-   * If error message is stored in the session storage, than we will display it
-   * and remove it from the session storage.
-   */
-  if (sessionStorage.getItem('errorMessage')) {
-    notification({ msg: sessionStorage.getItem('errorMessage') })
-    sessionStorage.removeItem('errorMessage')
-  }
+    const userRole = user?.user?.role || ''
 
-  const userRole = user?.user?.role || ''
-
-  let _userRole = null
-
-  switch (userRole) {
-    case roleuser.TEACHER:
+    let _userRole = null
+    if (userRole === roleuser.TEACHER) {
       _userRole = 'Teacher'
-      break
-    case roleuser.SCHOOL_ADMIN:
+    } else if (userRole === roleuser.SCHOOL_ADMIN) {
       _userRole = 'School-Admin'
-      break
-    case roleuser.DISTRICT_ADMIN:
+    } else if (userRole === roleuser.DISTRICT_ADMIN) {
       _userRole = 'District-Admin'
-      break
-    case roleuser.STUDENT:
+    } else if (userRole === roleuser.STUDENT) {
       _userRole = 'Student'
-      break
-    case roleuser.EDULASTIC_CURATOR:
+    } else if (userRole === roleuser.EDULASTIC_CURATOR) {
       _userRole = 'Edulastic Curator'
-      break
-    default:
+    } else {
       _userRole = capitalize(userRole)
-      break
-  }
+    }
 
-  if (features.isCurator) {
-    _userRole = 'Content Approver'
-  } else if (features.isPublisherAuthor) {
-    _userRole = 'Content Author'
-  }
+    if (features.isCurator) {
+      _userRole = 'Content Approver'
+    } else if (features.isPublisherAuthor) {
+      _userRole = 'Content Author'
+    }
+    // signup routes hidden till org reference is not done
 
-  return (
-    <Suspense fallback={<Loading />}>
-      {shouldWatch && <RealTimeCollectionWatch />}
-      {userRole && (
-        <CheckRoutePatternsEffectContainer
-          role={userRole}
-          location={location}
-          history={history}
-        />
-      )}
-      <AppUpdate visible={showAppUpdate} isCliUser={user?.isCliUser} />
-      <OfflineNotifier />
-      {tutorial && (
-        <Joyride continuous showProgress showSkipButton steps={tutorial} />
-      )}
-      <DragDrop.Provider>
-        {isProxyUser && (
-          <Banner
-            text={`You are currently acting as ${fullName} (${_userRole})`}
-            showButton
-            buttonText="Stop Acting as User"
-            onButtonClick={logout}
+    const { showAppUpdate, canShowCliBanner } = this.state
+    return (
+      <Suspense fallback={<Loading />}>
+        {shouldWatch && <RealTimeCollectionWatch />}
+        {userRole && (
+          <CheckRoutePatternsEffectContainer
+            role={userRole}
+            location={location}
+            history={history}
           />
         )}
-        <Switch>
-          {currentPath.toLocaleLowerCase() !==
-            redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
-            <Redirect exact to={redirectRoute} />
-          ) : null}
-          <PrivateRoute
-            path="/author"
-            component={Author}
-            redirectPath={redirectRoute}
-            notifications={
-              roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                ? [BulkActionNotificationListener]
-                : roleuser.TEACHER === userRole
-                ? [ClassSyncNotification]
-                : null
-            }
-          />
-          <PrivateRoute
-            path="/publisher"
-            component={Publisher}
-            redirectPath={redirectRoute}
-          />
-          <PrivateRoute
-            path="/home"
-            component={Dashboard}
-            notifications={[NotificationListener]}
-            redirectPath={redirectRoute}
-          />
-          <PrivateRoute
-            path="/admin"
-            component={Admin}
-            redirectPath={redirectRoute}
-          />
-          <Route exact path="/kid" component={Kid} />
-          <Route
-            exact
-            path="/public/parentInvitation/:code"
-            render={() => <SetParentPassword parentInvitation />}
-            redirectPath={defaultRoute}
-          />
-          <PrivateRoute
-            path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
-            component={TestAttemptReview}
-          />
-          <Route
-            path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
-            render={() => <AssessmentPlayer defaultAP />}
-          />
-          <Route
-            path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
-            render={() => <AssessmentPlayer defaultAP />}
-          />
-          <Route
-            path={`/student/${ASSESSMENT}/:id`}
-            render={() => <AssessmentPlayer defaultAP />}
-          />
-          <PrivateRoute
-            path="/student/test-summary"
-            component={TestAttemptReview}
-          />
-          <Route path="/student/seb-quit-confirm" component={SebQuitConfirm} />
-          <Route
-            path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
-            render={() => <AssessmentPlayer defaultAP={false} />}
-          />
-          <Route
-            path={`/student/${PRACTICE}/:id`}
-            render={() => <AssessmentPlayer defaultAP={false} />}
-          />
-          <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
-          <Route
-            path="/v1/testItem/:id"
-            render={() => <TestItemDemoPlayer />}
-          />
-          <Route exact path="/fwd" render={() => <V1Redirect />} />
-          <Route path="/inviteTeacher" render={() => <Invite />} />
-          <Route path="/auth" render={() => <Auth />} />
-          {testRedirectRoutes.map((route) => (
-            <Route path={route} component={RedirectToTest} key={route} />
-          ))}
-          <Route
-            path="/public/view-test/:testId"
-            render={(props) => <PublicTest {...props} />}
-          />
-          <PrivateRoute
-            path="/assignments/embed/:testId"
-            redirectPath={redirectRoute}
-            component={AssignmentEmbedLink}
-          />
-          <Route
-            path="/audio-test"
-            render={() => <AudioTagPlayer user={user?.user} />}
-          />
-          <Redirect exact to={defaultRoute} />
-        </Switch>
-      </DragDrop.Provider>
-      {cliBannerVisible && canShowCliBanner && !sessionStorage.cliBannerShown && (
-        <CLIAccessBanner
-          visible={cliBannerVisible && canShowCliBanner}
-          location={location}
-          onClose={() => {
-            setCanShowCliBanner(false)
-            sessionStorage.cliBannerShown = true
-          }}
+        <AppUpdate visible={showAppUpdate} isCliUser={user?.isCliUser} />
+        <ImagesBlocked
+          visible={isImageBlockNotification}
+          onClose={this.handleImageNotificationClose}
         />
-      )}
-    </Suspense>
-  )
+        <OfflineNotifier />
+        {tutorial && (
+          <Joyride continuous showProgress showSkipButton steps={tutorial} />
+        )}
+        <DragDrop.Provider>
+          {isProxyUser && (
+            <Banner
+              text={`You are currently acting as ${fullName} (${_userRole})`}
+              showButton
+              buttonText="Stop Acting as User"
+              onButtonClick={logout}
+            />
+          )}
+          <Switch>
+            {location.pathname.toLocaleLowerCase() !==
+              redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
+              <Redirect exact to={redirectRoute} />
+            ) : null}
+            <PrivateRoute
+              path="/author"
+              component={Author}
+              redirectPath={redirectRoute}
+              notifications={
+                roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+                  ? [BulkActionNotificationListener]
+                  : roleuser.TEACHER === userRole
+                  ? [ClassSyncNotification]
+                  : null
+              }
+            />
+            <PrivateRoute
+              path="/publisher"
+              component={Publisher}
+              redirectPath={redirectRoute}
+            />
+            <PrivateRoute
+              path="/home"
+              component={Dashboard}
+              notifications={[NotificationListener]}
+              redirectPath={redirectRoute}
+            />
+            <PrivateRoute
+              path="/admin"
+              component={Admin}
+              redirectPath={redirectRoute}
+            />
+            <Route exact path="/kid" component={Kid} />
+            <LoggedOutRoute
+              exact
+              path="/resetPassword/"
+              component={ResetPassword}
+              redirectPath={defaultRoute}
+            />
+            <Route
+              exact
+              path="/public/parentInvitation/:code"
+              render={() => <SetParentPassword parentInvitation />}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              path="/district/:orgShortName"
+              component={DistrictRoutes}
+              redirectPath={defaultRoute}
+              orgType="district"
+            />
+            <LoggedOutRoute
+              path="/districtLogin/:orgShortName"
+              component={DistrictRoutes}
+              redirectPath={defaultRoute}
+              orgType="districtLogin"
+            />
+            <LoggedOutRoute
+              path="/school/:orgShortName"
+              component={DistrictRoutes}
+              redirectPath={defaultRoute}
+              orgType="school"
+            />
+            <LoggedOutRoute
+              path="/Signup"
+              component={TeacherSignup}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/Signup"
+              component={TeacherSignup}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              path="/login"
+              component={Auth}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner"
+              component={Auth}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              path="/GetStarted"
+              component={GetStarted}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/GetStarted"
+              component={GetStarted}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              path="/AdminSignup"
+              component={AdminSignup}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/AdminSignup"
+              component={AdminSignup}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              path="/StudentSignup"
+              component={StudentSignup}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/StudentSignup"
+              component={StudentSignup}
+              redirectPath={defaultRoute}
+            />
+
+            <PrivateRoute
+              path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+              component={TestAttemptReview}
+            />
+            <Route
+              path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+              render={() => <AssessmentPlayer defaultAP />}
+            />
+            <Route
+              path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+              render={() => <AssessmentPlayer defaultAP />}
+            />
+            <Route
+              path={`/student/${ASSESSMENT}/:id`}
+              render={() => <AssessmentPlayer defaultAP />}
+            />
+            <PrivateRoute
+              path="/student/test-summary"
+              component={TestAttemptReview}
+            />
+            <Route
+              path="/student/seb-quit-confirm"
+              component={SebQuitConfirm}
+            />
+            <Route
+              path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+              render={() => <AssessmentPlayer defaultAP={false} />}
+            />
+            <Route
+              path={`/student/${PRACTICE}/:id`}
+              render={() => <AssessmentPlayer defaultAP={false} />}
+            />
+            <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
+            <Route
+              path="/v1/testItem/:id"
+              render={() => <TestItemDemoPlayer />}
+            />
+            <Route exact path="/fwd" render={() => <V1Redirect />} />
+            <Route path="/inviteTeacher" render={() => <Invite />} />
+            <Route path="/auth" render={() => <Auth />} />
+            {testRedirectRoutes.map((route) => (
+              <Route path={route} component={RedirectToTest} key={route} />
+            ))}
+            <Route
+              path="/public/view-test/:testId"
+              render={(props) => <PublicTest {...props} />}
+            />
+            <PrivateRoute
+              path="/assignments/embed/:testId"
+              redirectPath={redirectRoute}
+              component={AssignmentEmbedLink}
+            />
+            <Route
+              path="/audio-test"
+              render={() => <AudioTagPlayer user={user?.user} />}
+            />
+            <Redirect exact to={defaultRoute} />
+          </Switch>
+        </DragDrop.Provider>
+        {cliBannerVisible &&
+          canShowCliBanner &&
+          !sessionStorage.cliBannerShown && (
+            <CLIAccessBanner
+              visible={cliBannerVisible && canShowCliBanner}
+              location={location}
+              onClose={() => {
+                this.setState({ canShowCliBanner: false })
+                sessionStorage.cliBannerShown = true
+              }}
+            />
+          )}
+      </Suspense>
+    )
+  }
 }
 
 App.propTypes = {
@@ -572,10 +703,12 @@ const enhance = compose(
       fullName: getUserNameSelector({ user }),
       isProxyUser: isProxyUserSelector({ user }),
       shouldWatch: shouldWatchCollectionUpdates({ user }),
+      isImageBlockNotification: user.isImageBlockNotification,
     }),
     {
       fetchUser: fetchUserAction,
       logout: logoutAction,
+      toggleImageBlockNotification: toggleImageBlockNotificationAction,
     }
   )
 )

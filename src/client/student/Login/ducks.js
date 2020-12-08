@@ -2,8 +2,8 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { pick, last, get, set } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
-import { captureSentryException } from '@edulastic/common/src/sentryHelpers';
-import notification from '@edulastic/common/src/components/Notification';
+import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
+import notification from '@edulastic/common/src/components/Notification'
 import { push } from 'connected-react-router'
 // import {
 //   authApi,
@@ -13,12 +13,12 @@ import { push } from 'connected-react-router'
 //   segmentApi,
 //   schoolApi,
 // } from '@edulastic/api'
-import authApi from '@edulastic/api/src/auth';
-import userApi from '@edulastic/api/src/user';
-import settingsApi from '@edulastic/api/src/settings';
-import segmentApi from '@edulastic/api/src/segment';
-import schoolApi from '@edulastic/api/src/school';
-import * as TokenStorage from '@edulastic/api/src/utils/Storage';
+import authApi from '@edulastic/api/src/auth'
+import userApi from '@edulastic/api/src/user'
+import settingsApi from '@edulastic/api/src/settings'
+import segmentApi from '@edulastic/api/src/segment'
+import schoolApi from '@edulastic/api/src/school'
+import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { roleuser } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
@@ -158,6 +158,8 @@ export const ADD_COLLECTION_PERMISSION = '[user] update item bank permission'
 export const REMOVE_COLLECTION_PERMISSION = '[user] remove item bank permission'
 export const SET_CLI_USER = '[user] set cli user'
 export const TOGGLE_CLASS_CODE_MODAL = '[user] toggle class code modal'
+export const TOGGLE_IMAGES_BLOCKED_NOTIFICATION =
+  '[user] toggle images blocked notification'
 
 export const PERSIST_AUTH_STATE_AND_REDIRECT =
   '[auth] persist auth entry state and request app bundle'
@@ -243,6 +245,9 @@ export const removeItemBankPermissionAction = createAction(
 )
 export const updateCliUserAction = createAction(SET_CLI_USER)
 export const toggleClassCodeModalAction = createAction(TOGGLE_CLASS_CODE_MODAL)
+export const toggleImageBlockNotificationAction = createAction(
+  TOGGLE_IMAGES_BLOCKED_NOTIFICATION
+)
 
 export const persistAuthStateAndRedirectToAction = createAction(
   PERSIST_AUTH_STATE_AND_REDIRECT
@@ -257,6 +262,7 @@ const initialState = {
   currentChild: null,
   isCliUser: false,
   isClassCodeModalOpen: false,
+  isImageBlockNotification: false,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -628,6 +634,9 @@ export default createReducer(initialState, {
   },
   [TOGGLE_CLASS_CODE_MODAL]: (state, { payload }) => {
     state.isClassCodeModalOpen = payload
+  },
+  [TOGGLE_IMAGES_BLOCKED_NOTIFICATION]: (state, { payload }) => {
+    state.isImageBlockNotification = payload
   },
 })
 

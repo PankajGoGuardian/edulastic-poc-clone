@@ -419,9 +419,10 @@ export const transformGradeBookResponse = (
   )
   const testItemsDataKeyed = keyBy(testItemsData, '_id')
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed)
-  const testMaxScore = testItemsData.reduce(
-    (prev, cur) => prev + getMaxScoreFromItem(cur),
-    0
+  const testMaxScore = Number(
+    Number(
+      testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0)
+    ).toFixed(2)
   )
   const questionActivitiesGrouped = groupBy(
     testQuestionActivities,

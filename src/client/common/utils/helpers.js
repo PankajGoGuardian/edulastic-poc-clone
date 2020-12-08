@@ -437,3 +437,50 @@ export const checkClientTime = (meta = {}) => {
     }
   })
 }
+
+// Converts any given blob into a base64 encoded string.
+const convertBlobToBase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onerror = reject
+    reader.onload = () => {
+      resolve(reader.result)
+    }
+    reader.readAsDataURL(blob)
+  })
+}
+
+const handleOnLoad = (image) =>
+  new Promise((resolve) => {
+    image.onload = () => resolve(image.naturalWidth)
+    // if images are blocked onload is never called
+    setTimeout(() => !image.complete && resolve(0), 1000)
+  })
+
+export const isImagesBlockedByBrowser = async () => {
+  try {
+    let renderedImage = document.querySelector('img')
+    // if image tag is rendered then check for naturalWidth
+    if (renderedImage) {
+      return !renderedImage.naturalWidth
+    }
+    // else fetch 1x1 image and try rendering it in background
+    const image = document.createElement('img')
+    const fetchResult = await fetch(
+      'https://cdn.edulastic.com/default/edu-logo.png'
+    )
+    const id = 'customRenderedEduImage'
+    const src = await convertBlobToBase64(await fetchResult.blob())
+    image.setAttribute('src', src)
+    image.setAttribute('id', id)
+    image.style.display = 'none'
+    document.body.appendChild(image)
+    renderedImage = document.getElementById(id)
+    if (renderedImage) {
+      const naturalWidth = await handleOnLoad(renderedImage)
+      return !naturalWidth
+    }
+  } catch (error) {
+    console.warn(error)
+  }
+}

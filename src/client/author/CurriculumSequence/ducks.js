@@ -1569,12 +1569,19 @@ function structureWorkData(workData, statusData, firstLoad = false) {
         })
       } else {
         draft[type].forEach((i) => {
-          const currentStatus = currentStatusArray.find(
-            (s) =>
-              (s.derivedFrom === 'STANDARDS' &&
-                s.standardIdentifiers.includes(i.standardIdentifier)) ||
-              (s.derivedFrom === 'TESTS' && s.resourceId === i.testId)
-          )
+          const currentStatus = currentStatusArray.find((s) => {
+            const isStandardRecommended =
+              s.derivedFrom === 'STANDARDS' &&
+              s.standardIdentifiers.includes(i.standardIdentifier) &&
+              (!s.skillIdentifiers ||
+                s.skillIdentifiers.includes(i.skillIdentifier))
+
+            const isTestRecommended =
+              s.derivedFrom === 'TESTS' && s.resourceId === i.testId
+
+            return isStandardRecommended || isTestRecommended
+          })
+
           if (currentStatus) {
             const { masteryRange, studentTestActivities, users } = currentStatus
             i.status = 'ADDED'

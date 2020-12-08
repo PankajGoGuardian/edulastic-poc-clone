@@ -235,10 +235,8 @@ const SingleAssessmentReportFilters = ({
 
   const onChangePerformanceBand = (selected) => {
     const _filters = {
-      filters: {
-        ...filters,
-        profileId: selected.key,
-      },
+      ...filters,
+      profileId: selected.key,
     }
     setFilters(_filters)
   }

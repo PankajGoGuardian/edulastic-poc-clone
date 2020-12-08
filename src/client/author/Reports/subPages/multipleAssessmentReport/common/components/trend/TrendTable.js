@@ -355,7 +355,7 @@ const TrendTable = ({
           isCsvDownloading={isCsvDownloading}
           scroll={{ x: '100%' }}
           tableToRender={StyledTable}
-          pagination={false}
+          pagination={isCsvDownloading ? undefined : false}
         />
       </TableContainer>
       <BackendPagination

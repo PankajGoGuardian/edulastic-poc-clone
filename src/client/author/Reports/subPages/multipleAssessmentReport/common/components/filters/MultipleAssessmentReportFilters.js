@@ -200,10 +200,6 @@ const SingleAssessmentReportFilters = ({
       if (role === roleuser.SCHOOL_ADMIN) {
         urlParams.schoolIds = get(user, 'institutionIds', [])
       }
-      if (firstLoad) {
-        setFirstLoad(false)
-        _onGoClick({ selectedTest: urlTestIds, filters: urlParams })
-      }
     }
     // update prevMARFilterData
     setPrevMARFilterData(MARFilterData)
@@ -252,11 +248,18 @@ const SingleAssessmentReportFilters = ({
       typeof selectedTestIds === 'string' ? [selectedTestIds] : selectedTestIds
     if (selectedTestIds.length !== 0) {
       setTestId(_selectedTestIds)
+      if (firstLoad) {
+        setFirstLoad(false)
+        _onGoClick({
+          filters: { ...filters },
+          selectedTest: _selectedTestIds,
+        })
+      }
     } else {
       notification({ type: 'warn', msg: `Selection cannot be empty` })
     }
   }
-  const assessmentNameFilter = (
+  const assessmentNameFilter = prevMARFilterData ? (
     <SearchField>
       <AssessmentAutoComplete
         filters={filters}
@@ -266,7 +269,10 @@ const SingleAssessmentReportFilters = ({
         selectCB={onSelectTest}
       />
     </SearchField>
+  ) : (
+    <></>
   )
+
   return loading ? (
     <StyledFilterWrapper style={style}>
       <Spin />

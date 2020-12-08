@@ -7,7 +7,6 @@ import styled, { withTheme, css } from 'styled-components'
 import { cloneDeep, debounce, isEmpty } from 'lodash'
 import { message } from 'antd'
 import { notification } from '@edulastic/common'
-import Editor from 'react-froala-wysiwyg'
 import uuid from 'uuid/v4'
 import { withMathFormula } from '../HOC/withMathFormula'
 import { aws, math } from '@edulastic/constants'
@@ -18,11 +17,6 @@ import {
   greyThemeLighter,
   smallDesktopWidth,
 } from '@edulastic/colors'
-import FroalaEditor from 'froala-editor'
-import 'froala-editor/js/plugins.pkgd.min.js'
-import 'froala-editor/css/plugins.pkgd.min.css'
-import 'froala-editor/css/froala_editor.pkgd.min.css'
-// froala.min.css is loaded at index as it required for preview as well.
 
 import {
   uploadToS3,
@@ -43,7 +37,147 @@ import {
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 
-// register custom math buttton
+const NoneDiv = styled.div`
+  position: absolute;
+  opacity: 0;
+`
+
+const BackgroundStyleWrapper = styled.div.attrs({
+  className: 'froala-wrapper',
+})`
+  position: relative;
+  width: 100%;
+  display: block;
+  font-size: ${(props) => props.fontSize || props.theme.fontSize};
+  .fr-box.fr-basic .fr-wrapper {
+    background: ${(props) => props.backgroundColor || 'rgb(255, 255, 255)'};
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 13px;
+  }
+
+  .fr-wrapper {
+    ${({ centerContent }) => {
+      if (centerContent) {
+        return `.fr-element p,
+        &.show-placeholder .fr-placeholder{
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          overflow-wrap: break-word;
+          img{
+            margin:auto;
+            display:block;
+          }
+        }        
+        `
+      }
+    }}
+  }
+
+  ${({ border }) => {
+    if (border === 'border') {
+      return `
+        .fr {
+          &-box {
+            background: ${greyThemeLighter};
+            min-height: 102px;
+            border-radius: 2px;
+            border: 1px solid ${greyThemeLight};
+            display: flex;
+          }
+          &-wrapper {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+          }
+          &-view {
+            width: 100%;
+            min-height: 100%;
+            padding: 8px 14px;
+            overflow: auto;
+          }
+        }
+      `
+    } else {
+      /**
+       * need to show scroll if math content overflows
+       * @see https://snapwiz.atlassian.net/browse/EV-10575
+       */
+      return `
+      .fr-box {
+          max-width: 100%;
+          overflow-x: auto;
+          overflow-y: hidden;
+        }
+      `
+    }
+  }}
+
+  ${({ editorHeight }) => {
+    if (editorHeight > 40) {
+      return `
+        .fr {
+          &-box {
+            height: ${editorHeight}px;
+            overflow-x: auto;
+            overflow-y: hidden;
+          }
+        }
+      `
+    }
+  }}
+`
+
+const toolbarInlineStyle = css`
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 100%;
+  z-index: 1000;
+`
+
+export const ToolbarContainer = styled.div`
+  ${({ toolbarInline }) => toolbarInline && toolbarInlineStyle}
+  .fr-toolbar .fr-command.fr-btn {
+    margin: 0 2px !important;
+  }
+
+  .fr-toolbar.fr-top {
+    border-radius: 2px !important;
+    border: 1px solid #cccccc !important;
+    left: 0 !important;
+    top: 0 !important;
+  }
+`
+
+// if (border === "border") {
+export const Placeholder = styled.div.attrs({
+  className: 'froala-placeholder',
+})`
+  position: absolute;
+  top: ${(props) =>
+    (props.border === 'border' ? 20 : 0) +
+    (props.toolbarExpanded ? 50 : 0) +
+    'px'};
+  left: ${(props) => (props.border === 'border' ? '23px' : 0)};
+  right: 0;
+  opacity: 0.7;
+  color: #cccccc;
+  z-index: 1;
+`
+
+async function getFroalaEditor(){
+  const  Editor = await import('react-froala-wysiwyg');
+  const FroalaEditor = await import('froala-editor'); 
+  await Promise.all([
+    import('froala-editor/js/plugins.pkgd.min.js'),
+    import('froala-editor/css/plugins.pkgd.min.css'),
+    import('froala-editor/css/froala_editor.pkgd.min.css')
+  ])
+
+  // register custom math buttton
 FroalaEditor.DefineIconTemplate(
   'math',
   `
@@ -471,137 +605,6 @@ const defaultCharacterSets = [
     ],
   },
 ]
-
-const NoneDiv = styled.div`
-  position: absolute;
-  opacity: 0;
-`
-
-const BackgroundStyleWrapper = styled.div.attrs({
-  className: 'froala-wrapper',
-})`
-  position: relative;
-  width: 100%;
-  display: block;
-  font-size: ${(props) => props.fontSize || props.theme.fontSize};
-  .fr-box.fr-basic .fr-wrapper {
-    background: ${(props) => props.backgroundColor || 'rgb(255, 255, 255)'};
-  }
-  @media (max-width: ${smallDesktopWidth}) {
-    font-size: 13px;
-  }
-
-  .fr-wrapper {
-    ${({ centerContent }) => {
-      if (centerContent) {
-        return `.fr-element p,
-        &.show-placeholder .fr-placeholder{
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          align-items: center;
-          overflow-wrap: break-word;
-          img{
-            margin:auto;
-            display:block;
-          }
-        }        
-        `
-      }
-    }}
-  }
-
-  ${({ border }) => {
-    if (border === 'border') {
-      return `
-        .fr {
-          &-box {
-            background: ${greyThemeLighter};
-            min-height: 102px;
-            border-radius: 2px;
-            border: 1px solid ${greyThemeLight};
-            display: flex;
-          }
-          &-wrapper {
-            width: 100%;
-            min-height: 100%;
-            display: flex;
-          }
-          &-view {
-            width: 100%;
-            min-height: 100%;
-            padding: 8px 14px;
-            overflow: auto;
-          }
-        }
-      `
-    } else {
-      /**
-       * need to show scroll if math content overflows
-       * @see https://snapwiz.atlassian.net/browse/EV-10575
-       */
-      return `
-      .fr-box {
-          max-width: 100%;
-          overflow-x: auto;
-          overflow-y: hidden;
-        }
-      `
-    }
-  }}
-
-  ${({ editorHeight }) => {
-    if (editorHeight > 40) {
-      return `
-        .fr {
-          &-box {
-            height: ${editorHeight}px;
-            overflow-x: auto;
-            overflow-y: hidden;
-          }
-        }
-      `
-    }
-  }}
-`
-
-const toolbarInlineStyle = css`
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  bottom: 100%;
-  z-index: 1000;
-`
-
-export const ToolbarContainer = styled.div`
-  ${({ toolbarInline }) => toolbarInline && toolbarInlineStyle}
-  .fr-toolbar .fr-command.fr-btn {
-    margin: 0 2px !important;
-  }
-
-  .fr-toolbar.fr-top {
-    border-radius: 2px !important;
-    border: 1px solid #cccccc !important;
-    left: 0 !important;
-    top: 0 !important;
-  }
-`
-
-// if (border === "border") {
-export const Placeholder = styled.div.attrs({
-  className: 'froala-placeholder',
-})`
-  position: absolute;
-  top: ${(props) =>
-    (props.border === 'border' ? 20 : 0) +
-    (props.toolbarExpanded ? 50 : 0) +
-    'px'};
-  left: ${(props) => (props.border === 'border' ? '23px' : 0)};
-  right: 0;
-  opacity: 0.7;
-  color: #cccccc;
-  z-index: 1;
-`
 
 //adds h1 & h2 buttons commands to froala editor.
 headings(FroalaEditor)
@@ -1499,5 +1502,7 @@ const enhance = compose(
     advancedAreOpen: state?.assessmentplayerQuestions?.advancedAreOpen,
   }))
 )
+return enhance(CustomEditor);
+}
 
-export default enhance(CustomEditor)
+export default React.lazy(()=> getFroalaEditor());

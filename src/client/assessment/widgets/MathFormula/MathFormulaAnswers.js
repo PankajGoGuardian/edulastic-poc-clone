@@ -97,7 +97,11 @@ class MathFormulaAnswers extends React.Component {
     )
   }
 
-  handleChangePoints = (points) => {
+  handleChangePoints = (score) => {
+    if (!(score > 0)) {
+      return
+    }
+    const points = parseFloat(score, 10)
     const { item, setQuestionData } = this.props
     const { currentTab } = this.state
     setQuestionData(

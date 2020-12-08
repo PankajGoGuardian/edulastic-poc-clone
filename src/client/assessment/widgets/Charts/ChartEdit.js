@@ -174,12 +174,16 @@ const ChartEdit = ({
   }
 
   const handlePointsChange = (val) => {
+    if (!(val > 0)) {
+      return
+    }
+    const points = parseFloat(val, 10)
     setQuestionData(
       produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.score = val
+          draft.validation.validResponse.score = points
         } else {
-          draft.validation.altResponses[currentTab - 1].score = val
+          draft.validation.altResponses[currentTab - 1].score = points
         }
       })
     )

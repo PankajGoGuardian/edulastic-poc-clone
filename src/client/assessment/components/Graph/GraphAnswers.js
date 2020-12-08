@@ -146,7 +146,13 @@ class GraphAnswers extends Component {
     })
   }
 
-  handleChangePoints = (points) => {
+  handleChangePoints = (score) => {
+    if (!(score > 0)) {
+      return
+    }
+
+    const points = parseFloat(score, 10)
+
     const { tab } = this.state
     if (tab === 0) {
       this.handleUpdateCorrectScore(points)

@@ -134,8 +134,12 @@ class Scoring extends Component {
     const questionTitle = item?.title || questionData?.title
 
     const onChange = (value) => {
+      if (!(value > 0)) {
+        return
+      }
+      const points = parseFloat(value, 10)
       handleChangeValidation('validResponse', {
-        score: +value,
+        score: points,
       })
     }
 

@@ -143,7 +143,11 @@ const OrderList = ({
     )
   }
 
-  const handleUpdatePoints = (points) => {
+  const handleUpdatePoints = (score) => {
+    if (!(score > 0)) {
+      return
+    }
+    const points = parseFloat(score, 10)
     setQuestionData(
       produce(item, (draft) => {
         if (correctTab === 0) {

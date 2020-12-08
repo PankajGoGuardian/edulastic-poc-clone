@@ -244,17 +244,13 @@ const SingleAssessmentReportFilters = ({
   const onSelectTest = (selectedTestIds) => {
     const _selectedTestIds =
       typeof selectedTestIds === 'string' ? [selectedTestIds] : selectedTestIds
-    if (selectedTestIds.length !== 0) {
-      setTestId(_selectedTestIds)
-      if (firstLoad) {
-        setFirstLoad(false)
-        _onGoClick({
-          filters: { ...filters },
-          selectedTest: _selectedTestIds,
-        })
-      }
-    } else {
-      notification({ type: 'warn', msg: `Selection cannot be empty` })
+    setTestId(_selectedTestIds)
+    if (firstLoad && !isEmpty(_selectedTestIds)) {
+      setFirstLoad(false)
+      _onGoClick({
+        filters: { ...filters },
+        selectedTest: _selectedTestIds,
+      })
     }
   }
   const assessmentNameFilter = prevMARFilterData ? (

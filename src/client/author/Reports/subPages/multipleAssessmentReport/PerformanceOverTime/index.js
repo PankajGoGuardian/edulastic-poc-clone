@@ -1,9 +1,9 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
-import { filter, get, includes } from 'lodash'
+import { filter, get, includes, isEmpty } from 'lodash'
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { StyledCard, StyledH3 } from '../../../common/styled'
+import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
@@ -74,6 +74,10 @@ const PerformanceOverTime = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (isEmpty(selectedTestIdsStr)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (error && error.dataSizeExceeded) {

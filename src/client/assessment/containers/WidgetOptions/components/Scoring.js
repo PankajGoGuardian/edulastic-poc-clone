@@ -176,7 +176,14 @@ class Scoring extends Component {
                 {t('component.options.automarkable')}
               </CheckboxLabel>
             </Col>
-            {isAutomarkChecked && (
+            {/* TODO Enable this when when we implement it.
+              Handle this scenario:
+                Enable unscore.
+                Disable isAutomarkChecked.
+                Observe the autoscore will be still true 
+                Make it false whenver isAutomarkChecked changes to false
+            */}
+            {/* {isAutomarkChecked && (
               <Col md={12}>
                 <CheckboxLabel
                   data-cy="unscoredChk"
@@ -190,7 +197,7 @@ class Scoring extends Component {
                   {t('component.options.unscored')}
                 </CheckboxLabel>
               </Col>
-            )}
+            )} */}
           </Row>
         )}
 

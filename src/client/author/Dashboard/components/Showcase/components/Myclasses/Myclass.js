@@ -5,11 +5,26 @@ import { compose } from 'redux'
 import { get } from 'lodash'
 
 // components
-import { Col, Row, Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
+import { Row, Spin } from 'antd'
+import {
+  DarkLogo,
+  MainContentWrapper,
+  OnDarkBgLogo,
+  OnWhiteBgLogo,
+  WhiteLogo,
+} from '@edulastic/common'
 import { title } from '@edulastic/colors'
+import { IconItemGroup } from '@edulastic/icons'
 import { TextWrapper } from '../../../styledComponents'
-import { CardBox } from './styled'
+import {
+  CardBox,
+  CardContainer,
+  FeatureContentWrapper,
+  BundleContainer,
+  Top,
+  Mid,
+  Bottom,
+} from './styled'
 import CardImage from './components/CardImage/cardImage'
 import CardTextContent from './components/CardTextContent/cardTextContent'
 import CreateClassPage from './components/CreateClassPage/createClassPage'
@@ -110,9 +125,77 @@ const MyClasses = ({
     (c) => c.active === 1 && c.type === 'class'
   )
   const ClassCards = allActiveClasses.map((item) => (
-    <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6} key={item._id}>
+    <CardContainer key={item._id}>
       <Card data={item} />
-    </Col>
+    </CardContainer>
+  ))
+
+  const bundleHandler = () => {
+    history.push('/author/tests')
+  }
+
+  const bundles = [
+    {
+      id: 1,
+      status: 'free',
+      itemsCount: 40,
+      bgImage:
+        'transparent linear-gradient(236deg, #0d9c8c 0%, #095592 100%) 0% 0% no-repeat padding-box',
+      logoImage: <OnWhiteBgLogo />,
+      description: 'Lorem ipsum dolor sit amet dolor sit amet',
+    },
+    {
+      id: 2,
+      status: '',
+      itemsCount: 40,
+      bgImage:
+        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
+      logoImage: <OnDarkBgLogo />,
+      description: 'Lorem ipsum dolor sit amet dolor sit amet',
+    },
+    {
+      id: 3,
+      status: '',
+      itemsCount: 40,
+      bgImage:
+        'transparent linear-gradient(236deg, #6F0027 0%, #C52229 100%) 0% 0% no-repeat padding-box',
+      logoImage: <WhiteLogo />,
+      description: 'Lorem ipsum dolor sit amet dolor sit amet',
+    },
+    {
+      id: 3,
+      status: 'premium',
+      itemsCount: 40,
+      bgImage:
+        'transparent linear-gradient(236deg, #45B1C5 0%, #9ED0D9 100%) 0% 0% no-repeat padding-box',
+      logoImage: <DarkLogo />,
+      description: 'Lorem ipsum dolor sit amet dolor sit amet',
+    },
+  ]
+
+  const FeatureContentCards = bundles.map((bundle) => (
+    <BundleContainer
+      onClick={bundleHandler}
+      bgImage={bundle.bgImage}
+      key={bundle.id}
+    >
+      <Top>
+        {bundle.status && (
+          <span className={`custom-badge ${bundle.status}-badge`}>
+            {bundle.status === 'premium' ? '$ ' : ''}
+            {bundle.status}
+          </span>
+        )}
+        {bundle.itemsCount && (
+          <span className="custom-badge">
+            <IconItemGroup />
+            {bundle.itemsCount} ITEMS
+          </span>
+        )}
+      </Top>
+      <Mid>{bundle.logoImage && <div> {bundle.logoImage} </div>}</Mid>
+      <Bottom>{bundle.description && <div> {bundle.description} </div>}</Bottom>
+    </BundleContainer>
   ))
 
   const isClassLink =
@@ -144,7 +227,12 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
-      <TextWrapper size="20px" color={title} style={{ marginBottom: '1rem' }}>
+      <TextWrapper
+        fw="bold"
+        size="16px"
+        color={title}
+        style={{ marginBottom: '1rem' }}
+      >
         My Classes
       </TextWrapper>
       {loading ? (
@@ -163,8 +251,19 @@ const MyClasses = ({
           isClassLink={isClassLink}
         />
       ) : (
-        <Row gutter={20}>{ClassCards}</Row>
+        <div>{ClassCards}</div>
       )}
+      <FeatureContentWrapper>
+        <TextWrapper
+          fw="bold"
+          size="16px"
+          color={title}
+          style={{ marginBottom: '1rem' }}
+        >
+          Featured Content Bundles
+        </TextWrapper>
+        <div>{FeatureContentCards}</div>
+      </FeatureContentWrapper>
       <Launch />
     </MainContentWrapper>
   )

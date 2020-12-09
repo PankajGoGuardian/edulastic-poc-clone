@@ -12,9 +12,7 @@ import {
   IconWrapper,
   TextDiv,
   SpanLeftMargin,
-  SpanRightMargin,
   RowWrapperGrade,
-  RowWrapperSTudentCount,
   StyledRow,
 } from './styled'
 import cardImg from '../../../../../../assets/images/cardImg.png'
@@ -41,7 +39,13 @@ const CardImage = ({ data, history }) => {
               </IconWrapper>
             </StyledRow>
             <RowWrapperGrade>
-              <TextWrapper color="#FFFFFF" size="12px" fw="600" minTwo>
+              <TextWrapper
+                color="#FFFFFF"
+                rfs="12px"
+                size="13px"
+                fw="600"
+                minTwo
+              >
                 {grades.length ? (
                   <>
                     <span data-cy="grades">Grades</span>{' '}
@@ -65,16 +69,17 @@ const CardImage = ({ data, history }) => {
                 )}
               </TextWrapper>
             </RowWrapperGrade>
-            <RowWrapperSTudentCount>
+            <RowWrapperGrade>
               <TextWrapper
                 data-cy="studentCount"
                 color="#FFFFFF"
+                rfs="11px"
                 size="12px"
                 fw="600"
               >
                 {studentCount || 0} {studentCount > 1 ? 'Students' : 'Student'}
               </TextWrapper>
-            </RowWrapperSTudentCount>
+            </RowWrapperGrade>
           </Col>
         </Row>
       </OverlayText>

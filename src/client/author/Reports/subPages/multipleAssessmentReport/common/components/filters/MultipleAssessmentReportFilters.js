@@ -153,28 +153,31 @@ const SingleAssessmentReportFilters = ({
         key: 'All',
         title: 'All Grades',
       }
-      const urlCourseId = search.courseId || 'All'
-      const urlClassId = search.classId || 'All'
-      const urlGroupId = search.groupId || 'All'
-      let urlSchoolIds = ''
-      let urlTeacherIds = ''
-      if (role !== roleuser.TEACHER) {
-        urlSchoolIds = search.schoolIds || ''
-        urlTeacherIds = search.teacherIds || ''
+      const urlStudentSubject = staticDropDownData.subjects.find(
+        (item) => item.key === search.studentSubject
+      ) || {
+        key: 'All',
+        title: 'All Subjects',
+      }
+      const urlStudentGrade = staticDropDownData.grades.find(
+        (item) => item.key === search.studentGrade
+      ) || {
+        key: 'All',
+        title: 'All Grades',
       }
 
       const obtainedFilters = {
         termId: urlSchoolYear.key,
         subject: urlSubject.key,
-        studentSubject: urlSubject.key,
         grade: urlGrade.key,
-        studentGrade: urlGrade.key,
-        courseId: urlCourseId,
-        studentCourseId: urlCourseId,
-        classId: urlClassId,
-        groupId: urlGroupId,
-        schoolIds: urlSchoolIds,
-        teacherIds: urlTeacherIds,
+        studentSubject: urlStudentSubject.key,
+        studentGrade: urlStudentGrade.key,
+        studentCourseId: search.studentCourseId || 'All',
+        courseId: search.courseId || 'All',
+        classId: search.classId || 'All',
+        groupId: search.groupId || 'All',
+        schoolIds: search.schoolIds || '',
+        teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
       }
 

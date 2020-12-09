@@ -94,7 +94,7 @@ export const getFiltersSelector = createSelector(
 
 export const getSelectedClassSelector = createSelector(
   stateSelector,
-  (state) => state.selectedClassIds
+  (state) => state.selectedClass
 )
 
 export const getStudentSelector = createSelector(
@@ -134,7 +134,7 @@ const initialState = {
   prevSPRFilterData: null,
   filters: {
     termId: '',
-    courseIds: '',
+    courseId: '',
     grade: 'All',
     subject: 'All',
     performanceBandProfileId: '',
@@ -145,7 +145,10 @@ const initialState = {
     key: '',
     title: '',
   },
-  selectedClassIds: '',
+  selectedClass: {
+    key: '',
+    title: '',
+  },
   loading: false,
 }
 
@@ -168,7 +171,7 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
     state.student = payload
   },
   [SET_SELECTED_CLASS]: (state, { payload }) => {
-    state.selectedClassIds = payload
+    state.selectedClass = payload
   },
   [SET_REPORTS_PREV_SPR_FILTER_DATA]: (state, { payload }) => {
     state.prevSPRFilterData = payload

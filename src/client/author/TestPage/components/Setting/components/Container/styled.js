@@ -13,7 +13,13 @@ import {
   greyThemeLighter,
 } from '@edulastic/colors'
 import { Paper } from '@edulastic/common'
-import { Anchor, Button, Col, Input, Radio, Select, Table } from 'antd'
+import Anchor from "antd/es/anchor";
+import Button from "antd/es/button";
+import Col from "antd/es/col";
+import Input from "antd/es/input";
+import Radio from "antd/es/radio";
+import Select from "antd/es/select";
+import Table from "antd/es/table";
 import styled from 'styled-components'
 
 export const Container = styled(Paper)`

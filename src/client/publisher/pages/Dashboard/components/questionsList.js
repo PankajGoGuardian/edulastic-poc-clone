@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Icon } from 'antd'
+import Icon from "antd/es/icon";
 
 import { black, fadedBlack, someGreyColor1, green } from '@edulastic/colors'
 

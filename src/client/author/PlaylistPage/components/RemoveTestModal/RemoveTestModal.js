@@ -1,6 +1,7 @@
 import { lightGreySecondary } from '@edulastic/colors'
 import { EduButton, notification } from '@edulastic/common'
-import { Input, message } from 'antd'
+import Input from "antd/es/input";
+import message from "antd/es/message";
 import PropTypes from 'prop-types'
 import React from 'react'
 import Modal from 'react-responsive-modal'

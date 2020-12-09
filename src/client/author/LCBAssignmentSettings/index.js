@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { Col, Icon, Row, Select, Tooltip } from 'antd'
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
+import Tooltip from "antd/es/tooltip";
 import moment from 'moment'
 import {
   test as testConst,

@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
 import { compose } from 'redux'
 import { isEmpty } from 'lodash'
-import { Menu, Dropdown } from 'antd'
+import Menu from "antd/es/menu";
+import Dropdown from "antd/es/dropdown";
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import {

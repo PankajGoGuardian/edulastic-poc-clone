@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import { withRouter } from 'react-router'
 import { testsApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'

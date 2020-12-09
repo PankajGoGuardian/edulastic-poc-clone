@@ -21,7 +21,8 @@ import {
   mobileWidthLarge,
 } from '@edulastic/colors'
 import { roleuser } from '@edulastic/constants'
-import { Modal, Spin } from 'antd'
+import Modal from "antd/es/modal";
+import Spin from "antd/es/spin";
 
 import { getCurrentGroup, getUserFeatures } from '../../../student/Login/ducks'
 import { getFilteredClassesSelector } from '../../../student/ManageClass/ducks'

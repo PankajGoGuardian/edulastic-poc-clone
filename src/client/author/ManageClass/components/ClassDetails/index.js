@@ -6,8 +6,8 @@ import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { red } from '@edulastic/colors'
 
-// components
-import { Input, Spin } from 'antd'
+import Input from "antd/es/input";
+import Spin from "antd/es/spin";
 import {
   MainContentWrapper,
   EduButton,

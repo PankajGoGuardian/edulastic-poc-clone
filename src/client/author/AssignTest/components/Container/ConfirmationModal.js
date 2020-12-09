@@ -1,6 +1,6 @@
 import { EduButton } from '@edulastic/common'
 import { IconDownload } from '@edulastic/icons'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { compose } from 'redux'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'

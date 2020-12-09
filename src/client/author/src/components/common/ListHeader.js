@@ -14,7 +14,7 @@ import { IconMoreVertical, IconPlusCircle } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown } from 'antd'
+import Dropdown from "antd/es/dropdown";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'

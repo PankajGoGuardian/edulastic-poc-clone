@@ -4,7 +4,7 @@ import { delay } from 'redux-saga'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 
 import { courseApi } from '@edulastic/api'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import { groupBy, get } from 'lodash'
 

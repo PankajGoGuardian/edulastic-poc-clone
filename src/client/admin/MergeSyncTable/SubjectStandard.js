@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { IconAddItems, IconTrash } from '@edulastic/icons'
 
 import { Table, Button } from '../Common/StyledComponents'

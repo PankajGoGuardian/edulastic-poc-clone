@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon } from 'antd'
+import Icon from "antd/es/icon";
 
 import {
   fadedGrey,

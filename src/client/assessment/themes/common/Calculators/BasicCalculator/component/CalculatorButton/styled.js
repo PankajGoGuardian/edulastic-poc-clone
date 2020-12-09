@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 
 export const StyledDiv = styled.div`
   width: ${(props) => (props.wide ? '50%' : '25%')};

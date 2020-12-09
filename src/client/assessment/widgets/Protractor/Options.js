@@ -1,7 +1,7 @@
 import { beforeUpload } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
-import { Upload } from 'antd'
+import Upload from "antd/es/upload";
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { uploadToS3 } from '../../../author/src/utils/upload'

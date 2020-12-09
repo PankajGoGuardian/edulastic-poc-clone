@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { IconFilter } from '@edulastic/icons'
 import { FilterButtonContainer } from './styled'
 import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'

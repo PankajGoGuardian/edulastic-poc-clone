@@ -1,5 +1,6 @@
 import React from 'react'
-import { Table, Spin } from 'antd'
+import Table from "antd/es/table";
+import Spin from "antd/es/spin";
 import styled from 'styled-components'
 import { ConfirmationModal } from '../../../../src/components/common/ConfirmationModal'
 

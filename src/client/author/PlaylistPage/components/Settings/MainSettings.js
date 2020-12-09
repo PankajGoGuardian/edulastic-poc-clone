@@ -1,7 +1,9 @@
 import { themeColor } from '@edulastic/colors'
 import { EduSwitchStyled } from '@edulastic/common'
 import { playlists } from '@edulastic/constants'
-import { Anchor, Col, Row } from 'antd'
+import Anchor from "antd/es/anchor";
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import React from 'react'
 import styled from 'styled-components'
 import {

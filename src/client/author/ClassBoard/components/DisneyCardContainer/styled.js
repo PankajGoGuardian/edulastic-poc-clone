@@ -1,4 +1,6 @@
-import { Pagination, Card, Col } from 'antd'
+import Pagination from "antd/es/pagination";
+import Card from "antd/es/card";
+import Col from "antd/es/col";
 import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
 import {

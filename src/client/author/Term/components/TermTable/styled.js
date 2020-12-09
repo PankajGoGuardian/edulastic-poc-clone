@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Pagination } from 'antd'
+import Pagination from "antd/es/pagination";
 
 export const StyledTableContainer = styled.div`
   display: flex;

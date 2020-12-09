@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Icon } from 'antd'
+import Icon from "antd/es/icon";
 import { get, isEqual } from 'lodash'
 import { themeColorLight, red } from '@edulastic/colors'
 import { StyledTable, StyledScollBar, StatusText } from '../../styled'

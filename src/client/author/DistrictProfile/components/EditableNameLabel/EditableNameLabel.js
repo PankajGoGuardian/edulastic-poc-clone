@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
-import { Icon, Input } from 'antd'
+import Icon from "antd/es/icon";
+import Input from "antd/es/input";
 import { StyledFormItem, LabelContainer, StyledP } from './styled'
 
 class EditableNameLabel extends React.Component {

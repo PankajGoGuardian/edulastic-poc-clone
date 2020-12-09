@@ -1,4 +1,4 @@
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/checkbox";
 import styled from 'styled-components'
 import { themes } from '../../../../../theme'
 

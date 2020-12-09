@@ -8,7 +8,7 @@ import {
   folderTypes,
 } from '@edulastic/constants'
 import { IconExpandBox } from '@edulastic/icons'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import PropTypes from 'prop-types'
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { connect } from 'react-redux'

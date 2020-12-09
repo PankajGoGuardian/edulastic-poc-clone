@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Select, InputNumber, Button } from 'antd'
+import Select from "antd/es/select";
+import InputNumber from "antd/es/input-number";
+import Button from "antd/es/button";
 import { arrayMove } from 'react-sortable-hoc'
 import { ThemeProvider } from 'styled-components'
 

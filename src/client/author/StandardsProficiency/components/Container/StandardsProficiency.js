@@ -5,7 +5,10 @@ import {
   FieldLabel,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Icon, Input, Row } from 'antd'
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
+import Input from "antd/es/input";
+import Row from "antd/es/row";
 import { get, upperFirst } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'

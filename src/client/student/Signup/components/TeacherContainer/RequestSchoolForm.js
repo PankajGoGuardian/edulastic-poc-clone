@@ -1,6 +1,9 @@
 import { countryApi } from '@edulastic/api'
 import { SelectInputStyled, TextInputStyled } from '@edulastic/common'
-import { Col, Form, Row, Select } from 'antd'
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import { debounce, get } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'

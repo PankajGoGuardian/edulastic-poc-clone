@@ -10,7 +10,7 @@ import {
   redDark,
   white,
 } from '@edulastic/colors'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 
 const OuterContainer = styled.div`
   display: flex;

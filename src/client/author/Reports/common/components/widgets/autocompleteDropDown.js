@@ -1,6 +1,9 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useRef } from 'react'
-import { AutoComplete, Input, Icon, Empty } from 'antd'
+import AutoComplete from "antd/es/auto-complete";
+import Input from "antd/es/input";
+import Icon from "antd/es/icon";
+import Empty from "antd/es/empty";
 import styled from 'styled-components'
 
 import { black, lightGreySecondary, themeColor } from '@edulastic/colors'

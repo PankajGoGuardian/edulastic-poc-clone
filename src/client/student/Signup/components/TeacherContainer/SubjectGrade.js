@@ -6,7 +6,11 @@ import {
   white,
 } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { Button, Col, Form, Row, Select } from 'antd'
+import Button from "antd/es/button";
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import { find, get, isEmpty, map, mapKeys, pick } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { createRef } from 'react'

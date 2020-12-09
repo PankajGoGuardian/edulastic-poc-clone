@@ -1,4 +1,4 @@
-import { Modal } from 'antd'
+import Modal from "antd/es/modal";
 import styled from 'styled-components'
 
 export const ModalWrapper = styled(Modal)`

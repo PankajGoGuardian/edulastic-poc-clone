@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import i18n, { withNamespaces } from '@edulastic/localization'
 
 import { Label } from '../../../styled/WidgetOptions/Label'

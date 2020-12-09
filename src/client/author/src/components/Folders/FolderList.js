@@ -7,7 +7,8 @@ import {
   IconPencilEdit,
 } from '@edulastic/icons'
 import { orderBy } from 'lodash'
-import { Dropdown, Icon } from 'antd'
+import Dropdown from "antd/es/dropdown";
+import Icon from "antd/es/icon";
 import {
   getFoldersSelector,
   getSelectedItems,

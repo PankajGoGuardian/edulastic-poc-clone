@@ -1,7 +1,7 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
 import { connect } from 'react-redux'
 import { find, lowerCase } from 'lodash'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 import { EduButton, CustomModalStyled, notification } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import {

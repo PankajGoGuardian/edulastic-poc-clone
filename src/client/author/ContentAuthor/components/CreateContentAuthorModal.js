@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import { Form, Input, Row, Col } from 'antd'
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 
 import { authApi } from '@edulastic/api'
 import {

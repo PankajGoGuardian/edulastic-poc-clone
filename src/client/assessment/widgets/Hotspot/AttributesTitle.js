@@ -1,7 +1,8 @@
 import { FlexContainer, Tab, Tabs } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Row } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import produce from 'immer'
 import PropTypes from 'prop-types'
 import ColorPicker from 'rc-color-picker'

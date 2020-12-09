@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
-import { Divider } from 'antd'
+import Divider from "antd/es/divider";
 import styled from 'styled-components'
 import { yellow, greenDark3, red } from '@edulastic/colors'
 import { IconCorrect, IconWrong, IconCarets } from '@edulastic/icons'

@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { isEmpty, debounce } from 'lodash'
 
-// components
-import { AutoComplete, Input, Icon } from 'antd'
+import AutoComplete from "antd/es/auto-complete";
+import Input from "antd/es/input";
+import Icon from "antd/es/icon";
 
 // ducks
 import { getOrgDataSelector } from '../../../../../../src/selectors/user'

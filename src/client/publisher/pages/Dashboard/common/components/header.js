@@ -1,7 +1,7 @@
 import { MainHeader } from '@edulastic/common'
 import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { IconClockDashboard } from '@edulastic/icons'
-import { Col } from 'antd'
+import Col from "antd/es/col";
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'

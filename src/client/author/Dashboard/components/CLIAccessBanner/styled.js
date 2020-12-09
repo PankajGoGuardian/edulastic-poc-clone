@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
-import { Icon as AntIcon } from 'antd'
+import AntIcon from "antd/es/icon";
 import { OnDarkBgLogo } from '@edulastic/common'
 
 export const EduLogo = styled(OnDarkBgLogo)`

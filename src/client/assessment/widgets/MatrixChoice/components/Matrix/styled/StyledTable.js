@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Table } from 'antd'
+import Table from "antd/es/table";
 import {
   mobileWidth,
   desktopWidth,

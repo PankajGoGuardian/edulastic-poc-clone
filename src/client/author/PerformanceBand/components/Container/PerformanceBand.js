@@ -5,7 +5,10 @@ import {
   notification,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Icon, Input, Row } from 'antd'
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
+import Input from "antd/es/input";
+import Row from "antd/es/row";
 import { IconPlusCircle } from '@edulastic/icons'
 import { get, upperFirst } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'

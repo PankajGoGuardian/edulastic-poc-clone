@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Row, Col, Card, Avatar } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Card from "antd/es/card";
+import Avatar from "antd/es/avatar";
 
 import {
   white,

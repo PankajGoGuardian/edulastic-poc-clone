@@ -6,7 +6,8 @@ import {
   tabletWidth,
 } from '@edulastic/colors'
 import { Card, FlexContainer } from '@edulastic/common'
-import { Radio, Switch } from 'antd'
+import Radio from "antd/es/radio";
+import Switch from "antd/es/switch";
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 

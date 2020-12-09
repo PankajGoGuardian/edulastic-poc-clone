@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Modal } from 'antd'
+import Modal from "antd/es/modal";
 import AssessmentPlayer from '../../../../assessment'
 import TestActivityPreview from './TestActivityPreview'
 import { finishedPreviewTestAction } from '../../../../assessment/sharedDucks/previewTest'

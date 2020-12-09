@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { round, intersection, filter, map } from 'lodash'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { greyThemeDark1 } from '@edulastic/colors'
 import { StyledTable, StyledSpan } from '../../styled'
 import { TooltipTag, TooltipTagContainer } from './TooltipTag'

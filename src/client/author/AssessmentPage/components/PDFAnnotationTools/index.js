@@ -1,6 +1,6 @@
 import React from 'react'
 import ColorPicker from 'rc-color-picker'
-import { InputNumber } from 'antd'
+import InputNumber from "antd/es/input-number";
 import { FlexContainer } from '@edulastic/common'
 import { ANNOTATION_TOOLS } from './ToolsData'
 import {

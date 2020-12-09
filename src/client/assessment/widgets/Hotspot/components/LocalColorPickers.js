@@ -1,6 +1,8 @@
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Row, Select } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import PropTypes from 'prop-types'
 import ColorPicker from 'rc-color-picker'
 import React, { Fragment } from 'react'

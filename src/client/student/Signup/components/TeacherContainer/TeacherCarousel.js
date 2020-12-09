@@ -1,5 +1,8 @@
 import { fadedGreen, themeColor } from '@edulastic/colors'
-import { Button, Carousel, Icon, Tooltip } from 'antd'
+import Button from "antd/es/button";
+import Carousel from "antd/es/carousel";
+import Icon from "antd/es/icon";
+import Tooltip from "antd/es/tooltip";
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'

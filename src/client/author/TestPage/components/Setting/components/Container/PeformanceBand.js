@@ -1,6 +1,6 @@
 import { themeColor } from '@edulastic/colors'
 import { CheckboxLabel, SelectInputStyled } from '@edulastic/common'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'

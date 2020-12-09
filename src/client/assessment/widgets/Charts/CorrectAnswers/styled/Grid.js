@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Row as AntdRow } from 'antd'
+import AntdRow from "antd/es/row";
 
 export const Row = styled(AntdRow)`
   margin-bottom: 10px;

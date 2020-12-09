@@ -5,7 +5,8 @@ import * as Sentry from '@sentry/browser'
 import firebase from 'firebase/app'
 // Required for side-effects
 import 'firebase/firestore'
-import { Icon, notification } from 'antd'
+import Icon from "antd/es/icon";
+import notification from "antd/es/notification";
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import moment from 'moment'

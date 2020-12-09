@@ -1,6 +1,10 @@
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { DatePicker, Form, Icon, Input, Table } from 'antd'
+import DatePicker from "antd/es/date-picker";
+import Form from "antd/es/form";
+import Icon from "antd/es/icon";
+import Input from "antd/es/input";
+import Table from "antd/es/table";
 import { get } from 'lodash'
 import * as moment from 'moment'
 import React from 'react'

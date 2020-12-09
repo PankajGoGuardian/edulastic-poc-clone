@@ -25,7 +25,10 @@ import { test as testConstants } from '@edulastic/constants'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { first, maxBy, isNaN } from 'lodash'
-import { Row, Col, Icon, Modal } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
+import Modal from "antd/es/modal";
 import { maxDueDateFromClassess, getServerTs } from '../utils'
 
 //  components

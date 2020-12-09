@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Popover, Tooltip } from 'antd'
+import Popover from "antd/es/popover";
+import Tooltip from "antd/es/tooltip";
 
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'

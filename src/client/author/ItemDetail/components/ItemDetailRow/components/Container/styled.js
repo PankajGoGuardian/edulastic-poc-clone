@@ -1,7 +1,7 @@
 import { FlexContainer, Paper } from '@edulastic/common'
 import { themeColor, mobileWidth, greyThemeDark2 } from '@edulastic/colors'
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 
 export const Content = styled(Paper)`
   left: 0;

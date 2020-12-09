@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { themeColor, tabletWidth } from '@edulastic/colors'
 
 import { connect } from 'react-redux'

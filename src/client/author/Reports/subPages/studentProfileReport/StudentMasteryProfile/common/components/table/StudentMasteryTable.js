@@ -1,7 +1,8 @@
 import React from 'react'
 import { intersection, filter } from 'lodash'
 import PropTypes from 'prop-types'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { greyThemeDark1, themeColorLight } from '@edulastic/colors'
 import TableTooltipRow from '../../../../../../common/components/tooltip/TableTooltipRow'
 import { CustomTableTooltip } from '../../../../../../common/components/customTableTooltip'

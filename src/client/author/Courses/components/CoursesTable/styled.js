@@ -1,5 +1,8 @@
 import styled from 'styled-components'
-import { Button, Checkbox, Pagination, Icon } from 'antd'
+import Button from "antd/es/button";
+import Checkbox from "antd/es/checkbox";
+import Pagination from "antd/es/pagination";
+import Icon from "antd/es/icon";
 import { mainTextColor, grey } from '@edulastic/colors'
 import { SelectInputStyled } from '@edulastic/common'
 import { StyledTable } from '../../../../common/styled'

@@ -6,7 +6,7 @@ import {
   TextInputStyled,
   EduButton,
 } from '@edulastic/common'
-import { Form } from 'antd'
+import Form from "antd/es/form";
 import { produce } from 'immer'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import next from 'immer'
 import styled from 'styled-components'
-import { Icon } from 'antd'
+import Icon from "antd/es/icon";
 import { lightGreen5, themeColorLighter, greenDark } from '@edulastic/colors'
 import { StyledTable } from './styles'
 import tableColumnsData from '../utils/tableColumnData.json'

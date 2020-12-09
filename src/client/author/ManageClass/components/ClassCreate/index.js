@@ -5,7 +5,9 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { capitalize, isEmpty, find, get, pickBy, identity } from 'lodash'
-import { Form, Spin, Row } from 'antd'
+import Form from "antd/es/form";
+import Spin from "antd/es/spin";
+import Row from "antd/es/row";
 import { withNamespaces } from '@edulastic/localization'
 // actions
 import { getDictCurriculumsAction } from '../../../src/actions/dictionaries'

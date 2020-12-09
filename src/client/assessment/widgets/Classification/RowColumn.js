@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import produce from 'immer'
 import { arrayMove } from 'react-sortable-hoc'
 import { connect } from 'react-redux'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { withTheme } from 'styled-components'
 import { compose } from 'redux'
 import uuid from 'uuid/v4'

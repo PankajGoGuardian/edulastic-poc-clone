@@ -15,14 +15,12 @@ import {
 import { get, cloneDeep, some } from 'lodash'
 import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import {
-  Layout,
-  Menu as AntMenu,
-  Row,
-  Dropdown,
-  Icon as AntIcon,
-  Popover,
-} from 'antd'
+import Layout from "antd/es/layout";
+import AntMenu from "antd/es/menu";
+import Row from "antd/es/row";
+import Dropdown from "antd/es/dropdown";
+import AntIcon from "antd/es/icon";
+import Popover from "antd/es/popover";
 import styled from 'styled-components'
 import {
   IconLogoCompact,

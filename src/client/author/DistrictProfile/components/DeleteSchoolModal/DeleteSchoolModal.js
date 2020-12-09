@@ -5,7 +5,9 @@ import {
   white,
   whiteSmoke,
 } from '@edulastic/colors'
-import { Button, Form, Input } from 'antd'
+import Button from "antd/es/button";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
 import React, { useState } from 'react'
 import { compose } from 'redux'
 import styled from 'styled-components'

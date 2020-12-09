@@ -5,7 +5,8 @@ import {
 } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
 import { IconCollapse2 } from '@edulastic/icons'
-import { Avatar, Button } from 'antd'
+import Avatar from "antd/es/avatar";
+import Button from "antd/es/button";
 import { filter, get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'

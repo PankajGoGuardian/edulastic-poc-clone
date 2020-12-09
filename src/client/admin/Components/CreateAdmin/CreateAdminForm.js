@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { Col, Form, Row, Select, Spin, Input } from 'antd'
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
+import Spin from "antd/es/spin";
+import Input from "antd/es/input";
 import { authApi, schoolApi, userApi } from '@edulastic/api'
 import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
 import { validateEmail } from '../../../common/utils/helpers'

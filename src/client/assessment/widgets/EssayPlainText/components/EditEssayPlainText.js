@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
 
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 
 import { withNamespaces } from '@edulastic/localization'
 import { CheckboxLabel } from '@edulastic/common'

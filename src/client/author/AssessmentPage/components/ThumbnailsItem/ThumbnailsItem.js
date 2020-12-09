@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Document, Page, pdfjs } from 'react-pdf'
-import { Dropdown, Menu, Modal } from 'antd'
+import Dropdown from "antd/es/dropdown";
+import Menu from "antd/es/menu";
+import Modal from "antd/es/modal";
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from './styled'
 import { BLANK_URL } from '../Worksheet/Worksheet'
 

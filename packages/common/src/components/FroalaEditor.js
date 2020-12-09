@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme, css } from 'styled-components'
 import { cloneDeep, debounce, isEmpty } from 'lodash'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import uuid from 'uuid/v4'
 import { withMathFormula } from '../HOC/withMathFormula'

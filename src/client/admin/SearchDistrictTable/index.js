@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Input, Popconfirm, Spin } from 'antd'
+import Input from "antd/es/input";
+import Popconfirm from "antd/es/popconfirm";
+import Spin from "antd/es/spin";
 import { notification } from '@edulastic/common'
 import { IconPencilEdit, IconTrash, IconCaretDown } from '@edulastic/icons'
 import { Table, Button, FlexColumn } from '../Common/StyledComponents'

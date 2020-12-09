@@ -1,4 +1,4 @@
-import { Collapse } from 'antd'
+import Collapse from "antd/es/collapse";
 import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'

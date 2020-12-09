@@ -7,7 +7,8 @@ import {
   EduButton,
 } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
-import { Empty, Typography } from 'antd'
+import Empty from "antd/es/empty";
+import Typography from "antd/es/typography";
 import PropTypes from 'prop-types'
 import React, { useMemo, useState } from 'react'
 import Dropzone from 'react-dropzone'

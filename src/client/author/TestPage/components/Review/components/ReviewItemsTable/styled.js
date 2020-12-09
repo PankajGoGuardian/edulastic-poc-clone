@@ -1,4 +1,4 @@
-import { Table } from 'antd'
+import Table from "antd/es/table";
 import styled from 'styled-components'
 
 export const ReviewTableWrapper = styled(Table)`

@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Icon, Menu } from 'antd'
+import Icon from "antd/es/icon";
+import Menu from "antd/es/menu";
 import { get } from 'lodash'
 import { IconUser } from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

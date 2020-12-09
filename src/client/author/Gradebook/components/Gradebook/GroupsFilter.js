@@ -1,7 +1,8 @@
 import React from 'react'
 
-// components
-import { Row, Col, Tooltip } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Tooltip from "antd/es/tooltip";
 import {
   IconFolderAll,
   IconFolderDeactive,

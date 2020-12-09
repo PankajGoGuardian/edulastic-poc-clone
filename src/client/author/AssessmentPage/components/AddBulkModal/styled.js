@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { InputNumber } from 'antd'
+import InputNumber from "antd/es/input-number";
 import { Paper } from '@edulastic/common'
 import { ModalTitle } from '../../common/Modal'
 import { FormGroup } from '../QuestionEditModal/common/QuestionForm'

@@ -1,6 +1,6 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import { testActivityApi, attchmentApi as attachmentApi } from '@edulastic/api'
 import { createSelector } from 'reselect'

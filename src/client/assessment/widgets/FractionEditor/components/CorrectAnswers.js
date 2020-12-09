@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 import get from 'lodash/get'
 import PropTypes from 'prop-types'
 import produce from 'immer'

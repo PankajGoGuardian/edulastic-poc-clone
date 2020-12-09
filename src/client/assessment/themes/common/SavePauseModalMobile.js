@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 
 const SavePauseModalMobile = ({ isVisible, onClose, onExitClick }) => (
   <Modal

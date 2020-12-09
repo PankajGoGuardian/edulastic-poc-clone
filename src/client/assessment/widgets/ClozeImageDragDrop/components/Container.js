@@ -1,6 +1,6 @@
 import React from 'react'
 import { measureTextWithImage } from '@edulastic/common'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import styled from 'styled-components'
 
 // eslint-disable-next-line max-len

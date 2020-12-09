@@ -16,7 +16,13 @@ import {
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { IconClose, IconShare } from '@edulastic/icons'
-import { Col, Row, Select, Spin, Typography, Modal, AutoComplete } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
+import Spin from "antd/es/spin";
+import Typography from "antd/es/typography";
+import Modal from "antd/es/modal";
+import AutoComplete from "antd/es/auto-complete";
 import { debounce, get as _get, isUndefined } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

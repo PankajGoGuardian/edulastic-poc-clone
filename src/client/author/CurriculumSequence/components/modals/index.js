@@ -1,5 +1,8 @@
 import React, { Fragment } from 'react'
-import { Button, Cascader, Input, Modal } from 'antd'
+import Button from "antd/es/button";
+import Cascader from "antd/es/cascader";
+import Input from "antd/es/input";
+import Modal from "antd/es/modal";
 import styled from 'styled-components'
 import { desktopWidth } from '@edulastic/colors'
 

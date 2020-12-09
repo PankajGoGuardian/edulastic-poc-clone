@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { SelectInputStyled } from '@edulastic/common'
 import { FilterLabel } from '../../styled'
 

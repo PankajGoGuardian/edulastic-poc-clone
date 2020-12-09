@@ -5,8 +5,9 @@ import styled from 'styled-components'
 // hoc
 import { withNamespaces } from 'react-i18next'
 
-// components
-import { Row, Layout, Spin } from 'antd'
+import Row from "antd/es/row";
+import Layout from "antd/es/layout";
+import Spin from "antd/es/spin";
 import { MainContentWrapper, MainHeader, EduButton } from '@edulastic/common'
 import { IconClockDashboard, IconHangouts } from '@edulastic/icons'
 import { white, themeColor } from '@edulastic/colors'

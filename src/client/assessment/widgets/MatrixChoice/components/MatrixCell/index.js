@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Checkbox, Radio } from 'antd'
+import Checkbox from "antd/es/checkbox";
+import Radio from "antd/es/radio";
 
 import { Wrapper } from './styled/Wrapper'
 import { InlineLabel } from './styled/InlineLabel'

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 
 const { TextArea } = Input
 

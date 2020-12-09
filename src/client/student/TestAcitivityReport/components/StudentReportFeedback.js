@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/tooltip";
 import { get } from 'lodash'
 import { IconCheck } from '@edulastic/icons'
 import { white } from '@edulastic/colors'

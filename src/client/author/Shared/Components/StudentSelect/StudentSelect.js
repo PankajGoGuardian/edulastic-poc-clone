@@ -1,5 +1,5 @@
 import { LegendContainer, Legends } from '@edulastic/common'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { find } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Fragment } from 'react'

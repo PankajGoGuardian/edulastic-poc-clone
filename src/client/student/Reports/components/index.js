@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Layout, Spin } from 'antd'
+import Layout from "antd/es/layout";
+import Spin from "antd/es/spin";
 
 // components
 import { IconReport } from '@edulastic/icons'

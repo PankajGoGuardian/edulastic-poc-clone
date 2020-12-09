@@ -1,5 +1,6 @@
 import { test as testConst, roleuser } from '@edulastic/constants'
-import { Col, Select } from 'antd'
+import Col from "antd/es/col";
+import Select from "antd/es/select";
 import * as moment from 'moment'
 import React from 'react'
 import { connect } from 'react-redux'

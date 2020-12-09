@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import {

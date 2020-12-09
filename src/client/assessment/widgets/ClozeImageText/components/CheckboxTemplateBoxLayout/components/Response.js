@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import { measureText } from '@edulastic/common'
 import { response } from '@edulastic/constants'
 import { white } from '@edulastic/colors'

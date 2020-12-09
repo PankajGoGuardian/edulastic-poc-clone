@@ -7,7 +7,7 @@ import {
   white,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
-import { Radio } from 'antd'
+import Radio from "antd/es/radio";
 
 export const RadioGrp = Radio.Group
 

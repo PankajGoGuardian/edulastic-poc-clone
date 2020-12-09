@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { get } from 'lodash'
 import { CSVLink } from 'react-csv'
 
-import { Icon } from 'antd'
+import Icon from "antd/es/icon";
 import {
   uploadCSVAction,
   removeCourseOfUploadedAction,

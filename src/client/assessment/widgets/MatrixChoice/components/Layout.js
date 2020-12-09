@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Select, Input, Checkbox } from 'antd'
+import Select from "antd/es/select";
+import Input from "antd/es/input";
+import Checkbox from "antd/es/checkbox";
 import { compose } from 'redux'
 import { withTheme } from 'styled-components'
 

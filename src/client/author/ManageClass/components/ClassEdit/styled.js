@@ -5,7 +5,9 @@ import {
   title,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { Button, Col, Row } from 'antd'
+import Button from "antd/es/button";
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import { MainContentWrapper } from '@edulastic/common'
 
 export const StyledFlexContainer = styled(Row)``

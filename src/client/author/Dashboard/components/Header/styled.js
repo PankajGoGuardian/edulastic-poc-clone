@@ -1,6 +1,7 @@
 import { linkColor1, themeColor, white } from '@edulastic/colors'
 import { IconLock as LockIcon, IconPlusCircle } from '@edulastic/icons'
-import { Button, Typography } from 'antd'
+import Button from "antd/es/button";
+import Typography from "antd/es/typography";
 import styled from 'styled-components'
 
 const { Text } = Typography

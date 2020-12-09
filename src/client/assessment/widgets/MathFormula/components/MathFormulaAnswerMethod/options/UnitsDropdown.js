@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Radio, Select } from 'antd'
+import Radio from "antd/es/radio";
+import Select from "antd/es/select";
 import { get, isObject } from 'lodash'
 
 import { MathKeyboard } from '@edulastic/common'

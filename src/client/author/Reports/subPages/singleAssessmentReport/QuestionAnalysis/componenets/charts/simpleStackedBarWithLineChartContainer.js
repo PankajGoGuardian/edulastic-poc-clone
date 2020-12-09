@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { maxBy } from 'lodash'
 import { ticks } from 'd3-array'
 import { themeColor } from '@edulastic/colors'

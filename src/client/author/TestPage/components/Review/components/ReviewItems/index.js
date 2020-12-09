@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import produce from 'immer'
 import { flatten, isArray, omit } from 'lodash'
 import SortableList from './SortableList'

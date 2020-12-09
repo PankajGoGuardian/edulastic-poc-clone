@@ -5,7 +5,7 @@ import {
   notification,
   SelectInputStyled,
 } from '@edulastic/common'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { debounce, get, isNull } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

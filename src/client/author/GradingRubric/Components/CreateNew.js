@@ -1,4 +1,7 @@
-import { Col, Form, Icon, Input } from 'antd'
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Icon from "antd/es/icon";
+import Input from "antd/es/input";
 import produce from 'immer'
 import React from 'react'
 import { connect } from 'react-redux'

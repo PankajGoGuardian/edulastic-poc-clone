@@ -1,4 +1,4 @@
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import { createSlice } from 'redux-starter-kit'
 import { takeLatest, call, put } from 'redux-saga/effects'

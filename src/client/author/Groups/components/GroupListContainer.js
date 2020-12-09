@@ -2,8 +2,7 @@ import { CheckboxLabel, EduButton, TypeToConfirmModal } from '@edulastic/common'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { roleuser } from '@edulastic/constants'
-// components
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import React, { useState } from 'react'
 import { StyledFilterDiv } from '../../../admin/Common/StyledComponents'
 import {

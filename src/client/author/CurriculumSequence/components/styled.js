@@ -17,7 +17,8 @@ import {
   themeColorBlue,
 } from '@edulastic/colors'
 import { ProgressBar, MathFormulaDisplay } from '@edulastic/common'
-import { Col, Modal } from 'antd'
+import Col from "antd/es/col";
+import Modal from "antd/es/modal";
 import styled, { css } from 'styled-components'
 import { StyledLabel } from '../../Reports/common/styled'
 

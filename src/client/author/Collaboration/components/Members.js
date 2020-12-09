@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { EduButton, notification } from '@edulastic/common'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/tooltip";
 import { IconPlus, IconTrash } from '@edulastic/icons'
 import NoDataNotification from './NoDataNotification'
 import { StyledTable } from '../../../common/styled'

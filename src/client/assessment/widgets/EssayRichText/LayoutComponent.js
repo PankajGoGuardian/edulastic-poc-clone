@@ -4,7 +4,7 @@ import produce from 'immer'
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/checkbox";
 
 import { withNamespaces } from '@edulastic/localization'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'

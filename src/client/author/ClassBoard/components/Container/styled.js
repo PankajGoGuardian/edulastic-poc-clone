@@ -1,4 +1,8 @@
-import { Card, Checkbox, Button, Menu, Col } from 'antd'
+import Card from "antd/es/card";
+import Checkbox from "antd/es/checkbox";
+import Button from "antd/es/button";
+import Menu from "antd/es/menu";
+import Col from "antd/es/col";
 import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
 import {

@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Select, Row, Input } from 'antd'
+import Select from "antd/es/select";
+import Row from "antd/es/row";
+import Input from "antd/es/input";
 
 export const SubjectContainer = styled.div`
   max-height: 300px;

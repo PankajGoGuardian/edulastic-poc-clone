@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { find, get } from 'lodash'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import PropTypes from 'prop-types'
 import { measureText } from '@edulastic/common'
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { notification } from '@edulastic/common'
 import { adminApi, groupApi, enrollmentApi } from '@edulastic/api'
 

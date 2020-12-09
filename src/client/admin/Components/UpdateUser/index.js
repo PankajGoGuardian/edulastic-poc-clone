@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import moment from 'moment'
-import { Col, Input, Radio } from 'antd'
+import Col from "antd/es/col";
+import Input from "antd/es/input";
+import Radio from "antd/es/radio";
 
 import { EduButton, notification } from '@edulastic/common'
 import { userApi } from '@edulastic/api'

@@ -1,6 +1,7 @@
 // selectors
 import { test } from '@edulastic/constants'
-import { Col, Radio } from 'antd'
+import Col from "antd/es/col";
+import Radio from "antd/es/radio";
 import React, { useState } from 'react'
 import styled from 'styled-components'
 // components

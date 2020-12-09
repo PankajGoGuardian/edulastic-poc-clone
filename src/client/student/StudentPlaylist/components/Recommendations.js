@@ -11,7 +11,11 @@ import {
 import { curriculumSequencesApi } from '@edulastic/api'
 import { ProgressBar, notification } from '@edulastic/common'
 import { testActivityStatus } from '@edulastic/constants'
-import { Button, Col, Row, Spin, Tooltip } from 'antd'
+import Button from "antd/es/button";
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Spin from "antd/es/spin";
+import Tooltip from "antd/es/tooltip";
 import { isEmpty, last, pick } from 'lodash'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'

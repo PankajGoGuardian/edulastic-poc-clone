@@ -1,5 +1,7 @@
 import React from 'react'
-import { Row, Col, Tooltip } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Tooltip from "antd/es/tooltip";
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { IconArrowRight } from '@edulastic/icons'

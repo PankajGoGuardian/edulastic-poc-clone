@@ -4,7 +4,10 @@ import { themeColor, white } from '@edulastic/colors'
 import { FlexContainer, notification } from '@edulastic/common'
 import { test as testsConstants } from '@edulastic/constants'
 import { IconFilter, IconPlus } from '@edulastic/icons'
-import { Dropdown, Empty, Menu, Spin } from 'antd'
+import Dropdown from "antd/es/dropdown";
+import Empty from "antd/es/empty";
+import Menu from "antd/es/menu";
+import Spin from "antd/es/spin";
 import { pick, uniq } from 'lodash'
 import React, { useCallback, useEffect, useState } from 'react'
 import { connect } from 'react-redux'

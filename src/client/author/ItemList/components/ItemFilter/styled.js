@@ -12,7 +12,10 @@ import {
   themeColor,
 } from '@edulastic/colors'
 import { TextField } from '@edulastic/common'
-import { Affix, Icon, Input, Row } from 'antd'
+import Affix from "antd/es/affix";
+import Icon from "antd/es/icon";
+import Input from "antd/es/input";
+import Row from "antd/es/row";
 import Modal from 'react-responsive-modal'
 import styled from 'styled-components'
 

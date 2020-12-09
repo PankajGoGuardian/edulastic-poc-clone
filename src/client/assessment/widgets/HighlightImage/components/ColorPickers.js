@@ -1,5 +1,6 @@
 import React from 'react'
-import { Col, Row } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import PropTypes from 'prop-types'
 import ColorPicker from 'rc-color-picker'
 import { withTheme } from 'styled-components'

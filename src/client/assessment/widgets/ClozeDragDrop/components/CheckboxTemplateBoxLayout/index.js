@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { measureText, DragDrop } from '@edulastic/common'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import { response as dimensions } from '@edulastic/constants'
 import { getStemNumeration } from '../../../../utils/helpers'
 import getImageDimensionsHook from '../../../../hooks/imageDimensions'

@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Layout, Button } from 'antd'
+import Layout from "antd/es/layout";
+import Button from "antd/es/button";
 import { themeColor, white } from '@edulastic/colors'
 
 export const Wrapper = styled(Layout)`

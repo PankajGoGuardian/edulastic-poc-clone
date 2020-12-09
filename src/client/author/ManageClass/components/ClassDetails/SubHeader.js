@@ -1,4 +1,5 @@
-import { Col, Tooltip } from 'antd'
+import Col from "antd/es/col";
+import Tooltip from "antd/es/tooltip";
 import { get, compact } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

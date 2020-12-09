@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Col } from 'antd'
+import Col from "antd/es/col";
 import { greyish, title, themeColorLighter } from '@edulastic/colors'
 
 const StatItem = ({ heading, value, fontSize }) => (

@@ -5,7 +5,11 @@ import {
   white,
 } from '@edulastic/colors'
 import { OnWhiteBgLogo } from '@edulastic/common'
-import { Col, Dropdown, Icon as AntIcon, Menu, Row } from 'antd'
+import Col from "antd/es/col";
+import Dropdown from "antd/es/dropdown";
+import AntIcon from "antd/es/icon";
+import Menu from "antd/es/menu";
+import Row from "antd/es/row";
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'

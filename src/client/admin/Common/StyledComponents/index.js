@@ -4,15 +4,13 @@ import {
   mobileWidthMax,
 } from '@edulastic/colors'
 import { IconLogoCompact } from '@edulastic/icons'
-import {
-  Button as AntdButton,
-  Dropdown,
-  Input,
-  Layout,
-  Pagination,
-  Select,
-  Spin,
-} from 'antd'
+import AntdButton from "antd/es/button";
+import Dropdown from "antd/es/dropdown";
+import Input from "antd/es/input";
+import Layout from "antd/es/layout";
+import Pagination from "antd/es/pagination";
+import Select from "antd/es/select";
+import Spin from "antd/es/spin";
 import styled from 'styled-components'
 import { StyledTable as AntdTable } from '../../../common/styled'
 

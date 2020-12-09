@@ -4,7 +4,7 @@ import { get, find } from 'lodash'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/tooltip";
 
 import { MainContentWrapper } from '@edulastic/common'
 import ClassSelector from './ClassSelector'

@@ -7,7 +7,9 @@ import {
   CustomModalStyled,
   RadioBtn,
 } from '@edulastic/common'
-import { Col, Row, Spin } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Spin from "antd/es/spin";
 import PropTypes from 'prop-types'
 import React, { useMemo, useState } from 'react'
 import { setDefaultInterests } from '../../../author/dataUtils'

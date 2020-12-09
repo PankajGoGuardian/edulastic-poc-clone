@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Card, TextInputStyled } from '@edulastic/common'
-import { Drawer } from 'antd'
+import Drawer from "antd/es/drawer";
 
 export const StandardReportWrapper = styled.div`
   position: relative;

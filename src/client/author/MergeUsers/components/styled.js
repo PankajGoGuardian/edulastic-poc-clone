@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-// components
-import { Modal, Table } from 'antd'
+import Modal from "antd/es/modal";
+import Table from "antd/es/table";
 
 // constants
 import {

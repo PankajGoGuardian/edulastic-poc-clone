@@ -6,7 +6,7 @@ import { Rnd } from 'react-rnd'
 import { WithResources } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { white, boxShadowDefault } from '@edulastic/colors'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import BasicCalculator from './BasicCalculator'
 import EduScientificCalculator from './EduScientificCalculator'
 import CalculatorTitle from './components/CalculatorTitle'

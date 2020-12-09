@@ -5,7 +5,8 @@ import produce from 'immer'
 import { notification } from '@edulastic/common'
 import { curry } from 'lodash'
 import * as moment from 'moment'
-import { Col, Icon } from 'antd'
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
 import {
   test as testConst,
   assignmentPolicyOptions,

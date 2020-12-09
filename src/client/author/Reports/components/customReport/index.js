@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { Result, Spin } from 'antd'
+import Result from "antd/es/result";
+import Spin from "antd/es/spin";
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { StyledContainer } from '../../common/styled'

@@ -6,7 +6,10 @@ import {
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { IconCorrect } from '@edulastic/icons'
-import { Col, Form, Row, Select } from 'antd'
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import { get } from 'lodash'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'

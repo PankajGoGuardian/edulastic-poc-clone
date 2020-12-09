@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 
 import { EduButton } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'

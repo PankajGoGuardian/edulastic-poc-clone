@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'antd'
+import Modal from "antd/es/modal";
 import PropTypes from 'prop-types'
 import { youtubeVideoDetails } from '@edulastic/constants'
 

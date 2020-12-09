@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { Row } from 'antd'
+import Row from "antd/es/row";
 import { get } from 'lodash'
 import { greyishDarker1 } from '@edulastic/colors'
 import { roleuser } from '@edulastic/constants'

@@ -1,5 +1,7 @@
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
-import { Col, Row, Select } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import React from 'react'
 import { connect } from 'react-redux'
 import { getFormattedCurriculumsSelector } from '../../../author/src/selectors/dictionaries'

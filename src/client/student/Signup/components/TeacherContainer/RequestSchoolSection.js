@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get } from 'lodash'
 import styled from 'styled-components'
-import { Form } from 'antd'
+import Form from "antd/es/form";
 import { withNamespaces } from '@edulastic/localization'
 import { EduButton, notification } from '@edulastic/common'
 import { userApi } from '@edulastic/api'

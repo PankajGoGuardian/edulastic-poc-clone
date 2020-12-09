@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Spin } from 'antd'
+import Icon from "antd/es/icon";
+import Spin from "antd/es/spin";
 import { EduButton, SearchInputStyled } from '@edulastic/common'
 import ContentSubHeader from '../../../src/components/common/AdminSubHeader/ContentSubHeader'
 import { CollectionsTable } from './CollectionsTable'

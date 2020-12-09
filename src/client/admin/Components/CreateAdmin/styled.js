@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Row as AntdRow, Select } from 'antd'
+import AntdRow from "antd/es/row";
+import Select from "antd/es/select";
 import { ButtonsContainer, ModalFormItem } from '../../../common/styled'
 
 export const SecondDiv = styled.div`

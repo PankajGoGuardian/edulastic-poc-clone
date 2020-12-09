@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 import { StyledSubtitle } from './styled'
 
 const InputText = ({ title, onChange, value, placeholder }) => {

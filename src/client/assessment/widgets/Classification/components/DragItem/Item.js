@@ -4,7 +4,7 @@ import { measureText, QuestionContext } from '@edulastic/common'
 import { templateHasMath } from '@edulastic/common/src/helpers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 
 import { IconBox } from './styled/IconBox'
 import { IconCheck } from './styled/IconCheck'

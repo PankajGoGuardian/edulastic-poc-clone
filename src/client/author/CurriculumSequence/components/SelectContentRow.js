@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Menu } from 'antd'
+import Menu from "antd/es/menu";
 import { mobileWidth, lightBlue, white } from '@edulastic/colors'
 import {
   toggleCheckedUnitItemAction,

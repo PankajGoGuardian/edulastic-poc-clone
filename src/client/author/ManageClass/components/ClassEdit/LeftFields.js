@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Col } from 'antd'
+import Col from "antd/es/col";
 import { StyledFlexContainer } from './styled'
 import { FieldLabel } from './components'
 import Tags from './Tags'

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Input, Popover } from 'antd'
+import Input from "antd/es/input";
+import Popover from "antd/es/popover";
 import { response as responseDimensions } from '@edulastic/constants'
 import { measureText, TextInputStyled } from '@edulastic/common'
 

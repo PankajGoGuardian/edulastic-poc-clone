@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Col, Row } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import { fadedBlack, greyishDarker1 } from '@edulastic/colors'
 
 export const StyledChartContainer = styled.div`

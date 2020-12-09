@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Input, Radio } from 'antd'
+import Input from "antd/es/input";
+import Radio from "antd/es/radio";
 import { isUndefined } from 'lodash'
 
 import { QuestionOption, QuestionChunk } from '../../common/Form'

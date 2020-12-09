@@ -3,7 +3,8 @@ import styled, { withTheme } from 'styled-components'
 import moment from 'moment'
 import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
-import { Button, Row } from 'antd'
+import Button from "antd/es/button";
+import Row from "antd/es/row";
 import { withNamespaces } from '@edulastic/localization'
 import { assignmentPolicyOptions } from '@edulastic/constants'
 import ColWithZoom from '../../../common/components/ColWithZoom'

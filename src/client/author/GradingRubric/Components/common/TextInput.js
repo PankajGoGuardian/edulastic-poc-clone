@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 import produce from 'immer'
 import styled from 'styled-components'
 import { backgroundGrey } from '@edulastic/colors'

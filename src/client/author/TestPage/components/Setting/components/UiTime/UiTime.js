@@ -1,5 +1,8 @@
 import React from 'react'
-import { Row, Col, Radio, Select } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Radio from "antd/es/radio";
+import Select from "antd/es/select";
 import styled from 'styled-components'
 import { CommonText, RowWrapper, ContentWrapper } from './styled'
 import {

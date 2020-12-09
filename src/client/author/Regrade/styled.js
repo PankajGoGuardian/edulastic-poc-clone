@@ -1,4 +1,5 @@
-import { Table, Button } from 'antd'
+import Table from "antd/es/table";
+import Button from "antd/es/button";
 import { white, themeColor, mediumDesktopExactWidth } from '@edulastic/colors'
 import styled from 'styled-components'
 

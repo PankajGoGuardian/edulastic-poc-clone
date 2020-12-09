@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Button, Radio } from 'antd'
+import Button from "antd/es/button";
+import Radio from "antd/es/radio";
 import styled from 'styled-components'
 import { white, borderGrey3 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'

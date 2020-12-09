@@ -1,7 +1,8 @@
 import { largeDesktopWidth } from '@edulastic/colors'
 import { useRealtimeV2 } from '@edulastic/common'
 import useInterval from '@use-it/interval'
-import { Layout, Spin } from 'antd'
+import Layout from "antd/es/layout";
+import Spin from "antd/es/spin";
 import { get, values } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect } from 'react'

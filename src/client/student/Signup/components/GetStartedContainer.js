@@ -8,7 +8,9 @@ import {
 } from '@edulastic/colors'
 import { OnDarkBgLogo } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Form, Row } from 'antd'
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Row from "antd/es/row";
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Link, Redirect } from 'react-router-dom'

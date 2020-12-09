@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { compose } from 'redux'
 import { cloneDeep, findIndex, clamp } from 'lodash'
 import { withTheme } from 'styled-components'

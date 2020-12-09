@@ -1,4 +1,4 @@
-import { Upload } from 'antd'
+import Upload from "antd/es/upload";
 import styled from 'styled-components'
 
 const UpdateImageButton = styled(Upload.Dragger)`

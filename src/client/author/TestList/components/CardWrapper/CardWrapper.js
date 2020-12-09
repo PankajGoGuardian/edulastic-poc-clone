@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Col } from 'antd'
+import Col from "antd/es/col";
 import { getTestAuthorName, getPlaylistAuthorName } from '../../../dataUtils'
 import Item from '../Item/Item'
 import ListItem from '../ListItem/ListItem'

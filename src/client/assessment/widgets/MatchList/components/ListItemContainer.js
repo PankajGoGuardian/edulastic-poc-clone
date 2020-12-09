@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import { measureText } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import { ListItem } from '../styled/ListItem'

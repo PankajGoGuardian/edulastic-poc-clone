@@ -15,7 +15,11 @@ import {
   IconAssignment,
   IconDynamic,
 } from '@edulastic/icons'
-import { Icon, Select, Tooltip, Col, Row } from 'antd'
+import Icon from "antd/es/icon";
+import Select from "antd/es/select";
+import Tooltip from "antd/es/tooltip";
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import { find } from 'lodash'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'

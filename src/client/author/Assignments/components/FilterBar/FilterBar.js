@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Dropdown, Select } from 'antd'
+import Dropdown from "antd/es/dropdown";
+import Select from "antd/es/select";
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 

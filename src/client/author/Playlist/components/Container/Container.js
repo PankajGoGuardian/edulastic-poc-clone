@@ -2,7 +2,10 @@ import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { greyLight1, greyThemeLight } from '@edulastic/colors'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
-import { Button, Input, Row, Spin } from 'antd'
+import Button from "antd/es/button";
+import Input from "antd/es/input";
+import Row from "antd/es/row";
+import Spin from "antd/es/spin";
 import qs from 'qs'
 import { debounce, get, pick, isEqual } from 'lodash'
 import moment from 'moment'

@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Card, Table, Progress } from 'antd'
+import Card from "antd/es/card";
+import Table from "antd/es/table";
+import Progress from "antd/es/progress";
 import { themes } from '../../../../theme'
 
 const classBoardTheme = themes.default.classboard

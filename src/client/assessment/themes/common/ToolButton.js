@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 
 const ToolButton = styled(Button)`
   height: ${(props) => props.theme.default.headerToolbarButtonWidth};

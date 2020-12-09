@@ -1,7 +1,7 @@
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { IconClose } from '@edulastic/icons'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/tooltip";
 import { get } from 'lodash'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'

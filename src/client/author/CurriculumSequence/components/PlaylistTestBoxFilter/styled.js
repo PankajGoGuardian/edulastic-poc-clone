@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/checkbox";
 import { title, themeColor } from '@edulastic/colors'
 
 export const FilterContainer = styled.div`

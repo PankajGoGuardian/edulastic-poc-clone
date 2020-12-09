@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { keyBy, get } from 'lodash'
 import PropTypes from 'prop-types'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 
 import { AnswerContext } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'

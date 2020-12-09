@@ -20,7 +20,7 @@ import React, { memo, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { Modal } from 'antd'
+import Modal from "antd/es/modal";
 import {
   getUserFeatures,
   getUserId,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { connect } from 'react-redux'
 import { EduButton } from '@edulastic/common'
 import { ConfirmationModal } from './ConfirmationModal'

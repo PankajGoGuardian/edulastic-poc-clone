@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon } from 'antd'
+import Icon from "antd/es/icon";
 
 const IconCaretLeft = (props) => (
   <Icon type="caret-left" theme="filled" {...props} />

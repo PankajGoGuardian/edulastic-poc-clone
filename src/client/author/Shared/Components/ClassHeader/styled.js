@@ -8,7 +8,11 @@ import {
   themeColor,
   white,
 } from '@edulastic/colors'
-import { Button, Icon, Menu, Popconfirm, Switch } from 'antd'
+import Button from "antd/es/button";
+import Icon from "antd/es/icon";
+import Menu from "antd/es/menu";
+import Popconfirm from "antd/es/popconfirm";
+import Switch from "antd/es/switch";
 import styled, { css } from 'styled-components'
 import { themes } from '../../../../theme'
 import { StyledTable as Table } from '../../../Reports/common/styled'

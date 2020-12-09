@@ -6,7 +6,7 @@ import { compose } from 'redux'
 import { IconPhotoCamera } from '@edulastic/icons'
 import { aws } from '@edulastic/constants'
 import { withWindowSizes, beforeUpload } from '@edulastic/common'
-import { Upload } from 'antd'
+import Upload from "antd/es/upload";
 import { white, themeColorBlue } from '@edulastic/colors'
 import { uploadToS3 } from '../../../src/utils/upload'
 import { uploadTestImageAction } from '../../../src/actions/uploadTestImage'

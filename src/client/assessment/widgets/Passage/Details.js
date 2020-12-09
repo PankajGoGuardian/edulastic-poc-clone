@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { arrayMove } from 'react-sortable-hoc'
 import produce from 'immer'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { withNamespaces } from '@edulastic/localization'
 
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'

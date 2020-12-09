@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { EduButton, notification } from '@edulastic/common'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 import styled from 'styled-components'
 import { red, green } from '@edulastic/colors'
 

@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import { Icon, Row, Col } from 'antd'
+import Icon from "antd/es/icon";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 
 class FocusInput extends Component {
   constructor(props) {

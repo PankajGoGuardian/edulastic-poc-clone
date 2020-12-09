@@ -1,6 +1,6 @@
 import { tagsApi } from '@edulastic/api'
 import { SelectInputStyled, notification } from '@edulastic/common'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { uniq } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'

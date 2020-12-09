@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { white } from '@edulastic/colors'
 
 export const Container = styled.div`

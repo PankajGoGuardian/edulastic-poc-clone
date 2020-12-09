@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Pagination } from 'antd'
+import Pagination from "antd/es/pagination";
 
 import { white, themeColor } from '@edulastic/colors'
 

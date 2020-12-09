@@ -1,5 +1,7 @@
 import React from 'react'
-import { Form, Input, Icon } from 'antd'
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Icon from "antd/es/icon";
 import { IconUser } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
 import { StyledModal, Title, ActionButton, Field, FooterDiv } from './styled'

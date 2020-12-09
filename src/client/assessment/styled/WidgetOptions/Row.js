@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Row as AntRow } from 'antd'
+import AntRow from "antd/es/row";
 
 import { mobileWidth } from '@edulastic/colors'
 

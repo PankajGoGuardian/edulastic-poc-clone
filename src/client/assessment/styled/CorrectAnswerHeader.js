@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { InputNumber } from 'antd'
+import InputNumber from "antd/es/input-number";
 import { greyThemeLight } from '@edulastic/colors'
 
 export const CorrectAnswerHeader = styled.div`

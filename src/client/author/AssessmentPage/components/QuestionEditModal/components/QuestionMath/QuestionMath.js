@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { InputNumber } from 'antd'
+import InputNumber from "antd/es/input-number";
 import { cloneDeep } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 

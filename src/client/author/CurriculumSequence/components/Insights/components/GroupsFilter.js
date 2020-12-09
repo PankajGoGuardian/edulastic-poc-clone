@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Tooltip } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Tooltip from "antd/es/tooltip";
 import styled from 'styled-components'
 
 import { greyThemeDark1, fadedGrey, themeColor } from '@edulastic/colors'

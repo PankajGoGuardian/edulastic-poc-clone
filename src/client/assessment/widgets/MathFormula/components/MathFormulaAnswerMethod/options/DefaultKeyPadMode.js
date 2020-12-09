@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { withNamespaces } from '@edulastic/localization'
 import { math } from '@edulastic/constants'
 import { SelectInputStyled } from '../../../../../styled/InputStyles'

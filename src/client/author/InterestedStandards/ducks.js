@@ -3,7 +3,7 @@ import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { get, keyBy } from 'lodash'
 import { settingsApi } from '@edulastic/api'
 import { roleuser } from '@edulastic/constants'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import { getUserRole } from '../src/selectors/user'
 

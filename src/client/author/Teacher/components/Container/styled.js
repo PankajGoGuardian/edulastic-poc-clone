@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Layout, Spin } from 'antd'
+import Layout from "antd/es/layout";
+import Spin from "antd/es/spin";
 
 const { Content } = Layout
 

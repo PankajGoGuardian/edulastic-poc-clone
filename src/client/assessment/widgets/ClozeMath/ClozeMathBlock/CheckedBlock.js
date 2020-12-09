@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { find, isUndefined } from 'lodash'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import { response as responseConstant } from '@edulastic/constants'
 
 import { IconWrapper } from './styled/IconWrapper'

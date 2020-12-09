@@ -2,7 +2,8 @@ import { themeColor, title } from '@edulastic/colors'
 import { Button, CheckboxLabel, EduSwitchStyled } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Row } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import ReactOutsideEvent from 'react-outside-event'

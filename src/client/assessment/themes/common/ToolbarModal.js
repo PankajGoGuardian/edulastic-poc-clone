@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Modal } from 'antd'
+import Button from "antd/es/button";
+import Modal from "antd/es/modal";
 import { get } from 'lodash'
 import { showHintButton } from '../../utils/test'
 

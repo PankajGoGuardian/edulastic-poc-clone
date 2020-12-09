@@ -1,5 +1,5 @@
 import React from 'react'
-import { Radio } from 'antd'
+import Radio from "antd/es/radio";
 import styled from 'styled-components'
 import { darkBlue } from '@edulastic/colors'
 import { getStemNumeration } from '../../utils/helpers'

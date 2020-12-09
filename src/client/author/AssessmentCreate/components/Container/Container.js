@@ -5,7 +5,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import qs from 'qs'
 import PropTypes from 'prop-types'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import { debounce } from 'lodash'
 import { MainHeader, MainContentWrapper, notification } from '@edulastic/common'
 

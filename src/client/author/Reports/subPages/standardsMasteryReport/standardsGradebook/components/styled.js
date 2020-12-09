@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Col } from 'antd'
+import Col from "antd/es/col";
 import { themeColor, themeColorLight } from '@edulastic/colors'
 import { StyledTable as Table } from '../../../../common/styled'
 

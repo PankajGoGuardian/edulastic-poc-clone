@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { Form } from 'antd'
+import Form from "antd/es/form";
 import { EduButton, CustomModalStyled } from '@edulastic/common'
 import { resetPasswordRequestAction } from '../../../ducks'
 import { getUserOrgData } from '../../../../src/selectors/user'

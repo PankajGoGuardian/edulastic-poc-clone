@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import { debounce, concat, find, isEmpty, filter } from 'lodash'
 
 import * as moment from 'moment'
-import { Col, Input, Select, DatePicker } from 'antd'
+import Col from "antd/es/col";
+import Input from "antd/es/input";
+import Select from "antd/es/select";
+import DatePicker from "antd/es/date-picker";
 import {
   TextInputStyled,
   DatePickerStyled,

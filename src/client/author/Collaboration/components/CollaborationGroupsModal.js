@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { Modal } from 'antd'
+import Modal from "antd/es/modal";
 import { omitBy, isEmpty } from 'lodash'
 import { EduButton, notification } from '@edulastic/common'
 import { StyledTable } from '../../../common/styled'

@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get } from 'lodash'
 
-import { Col, Row } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import { SpinLoader } from '@edulastic/common'
 import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'

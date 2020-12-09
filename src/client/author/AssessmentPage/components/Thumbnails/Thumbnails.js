@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Dropdown, Menu } from 'antd'
+import Dropdown from "antd/es/dropdown";
+import Menu from "antd/es/menu";
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import {

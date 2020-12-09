@@ -1,5 +1,6 @@
 import React from 'react'
-import { message, Tooltip } from 'antd'
+import message from "antd/es/message";
+import Tooltip from "antd/es/tooltip";
 import { notification } from '@edulastic/common'
 
 const WithDisableMessage = ({ children, disabled, errMessage }) => {

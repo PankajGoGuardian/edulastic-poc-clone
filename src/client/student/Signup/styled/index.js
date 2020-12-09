@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Col, Row, Button } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Button from "antd/es/button";
 import {
   white,
   darkBlue1,

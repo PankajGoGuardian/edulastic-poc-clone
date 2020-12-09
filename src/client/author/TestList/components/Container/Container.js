@@ -15,7 +15,11 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import moment from 'moment'
-import { Button, Row, Spin, Dropdown, Menu } from 'antd'
+import Button from "antd/es/button";
+import Row from "antd/es/row";
+import Spin from "antd/es/spin";
+import Dropdown from "antd/es/dropdown";
+import Menu from "antd/es/menu";
 import Modal from 'react-responsive-modal'
 import { withWindowSizes, FlexContainer, notification } from '@edulastic/common'
 import { IconList, IconTile, IconTestBank } from '@edulastic/icons'

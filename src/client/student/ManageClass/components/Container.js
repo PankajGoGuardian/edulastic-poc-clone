@@ -6,8 +6,12 @@ import styled from 'styled-components'
 // hoc
 import { withNamespaces } from '@edulastic/localization'
 
-// components
-import { Button, Col, Input, Modal, Row, Spin } from 'antd'
+import Button from "antd/es/button";
+import Col from "antd/es/col";
+import Input from "antd/es/input";
+import Modal from "antd/es/modal";
+import Row from "antd/es/row";
+import Spin from "antd/es/spin";
 import { MainHeader, EduButton, MainContentWrapper } from '@edulastic/common'
 import { IconPlus, IconManage } from '@edulastic/icons'
 import {

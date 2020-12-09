@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { IconFilter } from '@edulastic/icons'
 import { white, themeColorBlue } from '@edulastic/colors'
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 
 class FilterToggleBtn extends Component {
   render() {

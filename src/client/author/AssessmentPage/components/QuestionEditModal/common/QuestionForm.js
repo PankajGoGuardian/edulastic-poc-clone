@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import { Paper } from '@edulastic/common'
 import { secondaryTextColor, themeColor } from '@edulastic/colors'
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/checkbox";
 
 export const QuestionFormWrapper = styled(Paper)`
   border-radius: 4px;

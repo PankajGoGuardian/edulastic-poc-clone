@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { Modal, Checkbox, Tooltip, Spin } from 'antd'
+import Modal from "antd/es/modal";
+import Checkbox from "antd/es/checkbox";
+import Tooltip from "antd/es/tooltip";
+import Spin from "antd/es/spin";
 import { keyBy, difference, isEqual, omitBy, isEmpty, debounce } from 'lodash'
 import { EduButton } from '@edulastic/common'
 import {

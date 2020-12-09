@@ -6,7 +6,7 @@ import {
   themeColorTagsBg,
 } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
-import { Card } from 'antd'
+import Card from "antd/es/card";
 
 export const PaginationInfo = styled.div`
   font-weight: bold;

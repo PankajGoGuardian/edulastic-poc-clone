@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import styled from 'styled-components'
 import { IconLogout } from '@edulastic/icons'
 

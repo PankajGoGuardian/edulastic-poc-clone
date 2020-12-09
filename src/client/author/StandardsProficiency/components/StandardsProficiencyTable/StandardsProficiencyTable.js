@@ -1,5 +1,10 @@
 import React from 'react'
-import { Form, Icon, Radio, Button, message, Row } from 'antd'
+import Form from "antd/es/form";
+import Icon from "antd/es/icon";
+import Radio from "antd/es/radio";
+import Button from "antd/es/button";
+import message from "antd/es/message";
+import Row from "antd/es/row";
 import { EduButton, notification, RadioBtn } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'

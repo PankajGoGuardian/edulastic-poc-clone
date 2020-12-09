@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import { connect } from 'react-redux'
 import { get, groupBy } from 'lodash'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 
 import {
   StyledDropDownContainer,

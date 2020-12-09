@@ -6,7 +6,8 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { sumBy } from 'lodash'
 
-import { Select, message } from 'antd'
+import Select from "antd/es/select";
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import {
   UploadTitle,

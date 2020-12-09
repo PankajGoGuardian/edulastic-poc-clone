@@ -7,7 +7,10 @@ import {
 } from '@edulastic/common'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Icon, Row, Select } from 'antd'
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import { get, isEmpty } from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'

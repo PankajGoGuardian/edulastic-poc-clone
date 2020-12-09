@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import { notification } from '@edulastic/common'
 import styled from 'styled-components'
 import { greyLight1 } from '@edulastic/colors'

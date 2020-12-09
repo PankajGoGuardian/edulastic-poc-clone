@@ -4,7 +4,8 @@ import styled from 'styled-components'
 
 import { Select, notification } from '@edulastic/common'
 import { response, ChoiceDimensions } from '@edulastic/constants'
-import { Input, message } from 'antd'
+import Input from "antd/es/input";
+import message from "antd/es/message";
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
 import { withNamespaces } from '@edulastic/localization'

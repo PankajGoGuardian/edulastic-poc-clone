@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Card, Button, Input } from 'antd'
+import Card from "antd/es/card";
+import Button from "antd/es/button";
+import Input from "antd/es/input";
 
 const { TextArea } = Input
 

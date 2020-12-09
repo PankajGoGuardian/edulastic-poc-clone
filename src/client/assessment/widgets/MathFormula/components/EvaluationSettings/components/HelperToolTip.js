@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import styled from 'styled-components'
 import { isEmpty } from 'lodash'
 import { MathSpan, FieldLabel } from '@edulastic/common'

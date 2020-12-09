@@ -1,6 +1,7 @@
 import React from 'react'
 import { capitalize } from 'lodash'
-import { Button, Table } from 'antd'
+import Button from "antd/es/button";
+import Table from "antd/es/table";
 import { deleteRed, themeColor } from '@edulastic/colors'
 import { IconPencilEdit } from '@edulastic/icons'
 import styled from 'styled-components'

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { cloneDeep, get, has, isEmpty, difference, shuffle } from 'lodash'
-import { Select, Table } from 'antd'
+import Select from "antd/es/select";
+import Table from "antd/es/table";
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { variableTypes, math } from '@edulastic/constants'

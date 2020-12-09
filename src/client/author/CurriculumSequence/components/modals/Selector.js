@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Select, Col, Spin } from 'antd'
+import Select from "antd/es/select";
+import Col from "antd/es/col";
+import Spin from "antd/es/spin";
 import { StyledRow, ColLabel, StyledSelect, Label } from './styled'
 
 const Selector = ({

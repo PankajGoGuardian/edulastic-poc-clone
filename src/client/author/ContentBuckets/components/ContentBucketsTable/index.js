@@ -1,7 +1,7 @@
 import { EduButton, SearchInputStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/tooltip";
 import { debounce, get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'

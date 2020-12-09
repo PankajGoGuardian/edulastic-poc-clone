@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Radio, Input, Col } from 'antd'
+import Radio from "antd/es/radio";
+import Input from "antd/es/input";
+import Col from "antd/es/col";
 import { title } from '@edulastic/colors'
 import { StyledTable as Table } from '../../../../common/styled'
 import { ThemeButton } from '../../../src/components/common/ThemeButton'

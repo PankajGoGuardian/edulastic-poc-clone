@@ -6,7 +6,10 @@ import { compose } from 'redux'
 
 // components
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Row, Col, Spin, Select } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Spin from "antd/es/spin";
+import Select from "antd/es/select";
 import { IconPlusCircle, IconCorrect, IconCarets } from '@edulastic/icons'
 import {
   SelectInputStyled,

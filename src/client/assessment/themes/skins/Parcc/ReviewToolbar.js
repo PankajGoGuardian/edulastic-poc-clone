@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { IconDescription } from '@edulastic/icons'
-import { Menu } from 'antd'
+import Menu from "antd/es/menu";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FlexContainer } from '@edulastic/common'

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { test, questionType } from '@edulastic/constants'
 import { IconCalculator, IconClose, IconScratchPad } from '@edulastic/icons'
 import { extraDesktopWidthMax, white } from '@edulastic/colors'

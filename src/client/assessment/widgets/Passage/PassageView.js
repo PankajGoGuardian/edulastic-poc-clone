@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { isEmpty, get } from 'lodash'
 import PropTypes from 'prop-types'
-import { Pagination } from 'antd'
+import Pagination from "antd/es/pagination";
 import {
   Stimulus,
   WithResources,

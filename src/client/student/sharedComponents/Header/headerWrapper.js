@@ -12,7 +12,10 @@ import {
   themeColor,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { Affix, Layout, Row, Col } from 'antd'
+import Affix from "antd/es/affix";
+import Layout from "antd/es/layout";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { toggleSideBarAction } from '../../Sidebar/ducks'
 
 const HeaderWrapper = ({ children, toggleSideBar, isDocBased }) => (

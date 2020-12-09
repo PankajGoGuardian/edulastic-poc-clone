@@ -19,7 +19,8 @@ import {
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import { IconHeart, IconId, IconUser, IconUsers } from '@edulastic/icons'
-import { Tag, Button } from 'antd'
+import Tag from "antd/es/tag";
+import Button from "antd/es/button";
 import styled, { css } from 'styled-components'
 
 const Style = css`

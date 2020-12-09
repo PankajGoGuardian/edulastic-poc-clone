@@ -15,7 +15,8 @@ import {
 } from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
-import { Modal, Button } from 'antd'
+import Modal from "antd/es/modal";
+import Button from "antd/es/button";
 
 import {
   setTestDataAction,

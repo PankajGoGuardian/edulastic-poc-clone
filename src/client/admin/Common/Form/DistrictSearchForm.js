@@ -1,5 +1,6 @@
 import React from 'react'
-import { AutoComplete, Form } from 'antd'
+import AutoComplete from "antd/es/auto-complete";
+import Form from "antd/es/form";
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import SearchDistrictByIdName from './SearchDistrictByIdName'

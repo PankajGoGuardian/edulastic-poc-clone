@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Dropdown, Menu, Icon } from 'antd'
+import Button from "antd/es/button";
+import Dropdown from "antd/es/dropdown";
+import Menu from "antd/es/menu";
+import Icon from "antd/es/icon";
 
 import { IconDiskette } from '@edulastic/icons'
 import { FlexContainer, EduButton } from '@edulastic/common'

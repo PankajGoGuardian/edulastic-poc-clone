@@ -1,5 +1,7 @@
 import { CustomModalStyled, EduButton } from '@edulastic/common'
-import { Col, Form, Row } from 'antd'
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Row from "antd/es/row";
 import React, { Component } from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import { PlaceHolderText, StyledTextArea, TextWrapper } from './styled'

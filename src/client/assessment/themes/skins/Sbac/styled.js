@@ -1,5 +1,8 @@
 import styled from 'styled-components'
-import { Button, Dropdown, Icon, Progress } from 'antd'
+import Button from "antd/es/button";
+import Dropdown from "antd/es/dropdown";
+import Icon from "antd/es/icon";
+import Progress from "antd/es/progress";
 import { themes } from '../../../../theme'
 import { FlexContainer } from '../../common'
 

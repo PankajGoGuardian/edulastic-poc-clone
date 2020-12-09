@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Select, Button } from 'antd'
+import Select from "antd/es/select";
+import Button from "antd/es/button";
 
 import { secondaryTextColor } from '@edulastic/colors'
 

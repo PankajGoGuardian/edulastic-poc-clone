@@ -2,7 +2,10 @@ import { themeColor, white } from '@edulastic/colors'
 import { OnDarkBgLogo, withWindowSizes, notification } from '@edulastic/common'
 import { IconLock, IconMail, IconUser } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Form, Input, message } from 'antd'
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import message from "antd/es/message";
 import { isEmpty, trim } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

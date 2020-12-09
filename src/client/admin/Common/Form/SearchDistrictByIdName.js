@@ -1,5 +1,10 @@
 import React from 'react'
-import { Form, Input, Icon, Radio, AutoComplete, Spin } from 'antd'
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Icon from "antd/es/icon";
+import Radio from "antd/es/radio";
+import AutoComplete from "antd/es/auto-complete";
+import Spin from "antd/es/spin";
 import styled from 'styled-components'
 import { radioButtondata } from '../../Data'
 import { Button } from '../StyledComponents'

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
 import { compose } from 'redux'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import { connect } from 'react-redux'
 import { get, isEmpty } from 'lodash'
 import { withRouter } from 'react-router-dom'

@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Table, Card, Progress } from 'antd'
+import Table from "antd/es/table";
+import Card from "antd/es/card";
+import Progress from "antd/es/progress";
 
 import {
   white,

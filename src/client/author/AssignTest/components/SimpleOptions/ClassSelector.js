@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import { Col, Select, Tooltip } from 'antd'
+import Col from "antd/es/col";
+import Select from "antd/es/select";
+import Tooltip from "antd/es/tooltip";
 import styled from 'styled-components'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'

@@ -1,5 +1,8 @@
 import styled from 'styled-components'
-import { Popover, Icon, Modal, Checkbox } from 'antd'
+import Popover from "antd/es/popover";
+import Icon from "antd/es/icon";
+import Modal from "antd/es/modal";
+import Checkbox from "antd/es/checkbox";
 
 import { mobileWidth, tabletWidth, themeColor, white } from '@edulastic/colors'
 

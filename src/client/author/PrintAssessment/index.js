@@ -3,7 +3,8 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import _qs from 'qs'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { withRouter } from 'react-router-dom'
 import { testsApi } from '@edulastic/api'
 import {

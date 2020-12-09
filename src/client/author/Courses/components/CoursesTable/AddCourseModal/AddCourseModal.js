@@ -4,7 +4,9 @@ import {
   FieldLabel,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row } from 'antd'
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Row from "antd/es/row";
 import { get } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'

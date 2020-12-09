@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { withNamespaces } from '@edulastic/localization'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import PropTypes from 'prop-types'
 import useInterval from '@use-it/interval'
 import { connect } from 'react-redux'

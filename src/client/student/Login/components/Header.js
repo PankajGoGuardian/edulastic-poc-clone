@@ -7,7 +7,10 @@ import {
 } from '@edulastic/colors'
 import { OnDarkBgLogo } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Button, Col, Row, Tooltip } from 'antd'
+import Button from "antd/es/button";
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Tooltip from "antd/es/tooltip";
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router-dom'

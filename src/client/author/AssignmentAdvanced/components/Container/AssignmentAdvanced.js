@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import qs from 'qs'
 import { find, isEmpty, get } from 'lodash'
-import { Dropdown } from 'antd'
+import Dropdown from "antd/es/dropdown";
 import { withWindowSizes, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { authorAssignment } from '@edulastic/colors'

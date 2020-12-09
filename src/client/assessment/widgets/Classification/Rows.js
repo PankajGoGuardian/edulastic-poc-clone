@@ -4,7 +4,9 @@ import ReactDOM from 'react-dom'
 import produce from 'immer'
 import { arrayMove } from 'react-sortable-hoc'
 import { connect } from 'react-redux'
-import { Row, Col, Select } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Select from "antd/es/select";
 import { withTheme } from 'styled-components'
 import { compose } from 'redux'
 

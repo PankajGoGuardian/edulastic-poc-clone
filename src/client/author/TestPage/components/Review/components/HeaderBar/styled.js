@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Checkbox, Button } from 'antd'
+import Checkbox from "antd/es/checkbox";
+import Button from "antd/es/button";
 
 import { FlexContainer } from '@edulastic/common'
 import {

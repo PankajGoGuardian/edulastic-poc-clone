@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { ChromePicker } from 'react-color'
 
-import { Col } from 'antd'
+import Col from "antd/es/col";
 import { MainTitle } from '../Sidebar/styled'
 import {
   SummaryTextArea,

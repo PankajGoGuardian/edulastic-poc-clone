@@ -3,7 +3,10 @@ import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Spin, message, Modal, Button } from 'antd'
+import Spin from "antd/es/spin";
+import message from "antd/es/message";
+import Modal from "antd/es/modal";
+import Button from "antd/es/button";
 import {
   isUndefined,
   get,

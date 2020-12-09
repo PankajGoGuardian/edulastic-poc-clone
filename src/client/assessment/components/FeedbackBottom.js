@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 
 import { connect } from 'react-redux'
 import { compose } from 'redux'

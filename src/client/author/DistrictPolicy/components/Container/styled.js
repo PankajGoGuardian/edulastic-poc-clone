@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Spin, Row, Button } from 'antd'
+import Spin from "antd/es/spin";
+import Row from "antd/es/row";
+import Button from "antd/es/button";
 import { mediumDesktopExactWidth } from '@edulastic/colors'
 
 export const DistrictPolicyDiv = styled.div`

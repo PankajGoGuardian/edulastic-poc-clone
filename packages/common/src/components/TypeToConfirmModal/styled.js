@@ -6,7 +6,9 @@ import {
   secondaryTextColor,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { Input, Col, Button } from 'antd'
+import Input from "antd/es/input";
+import Col from "antd/es/col";
+import Button from "antd/es/button";
 import { ConfirmationModal } from '../../../../../src/client/author/src/components/common/ConfirmationModal'
 
 export const LightGreenSpan = styled.span`

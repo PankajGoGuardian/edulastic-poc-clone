@@ -11,7 +11,10 @@ import { IconPencilEdit } from '@edulastic/icons'
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Collapse, Icon, Input, Select } from 'antd'
+import Collapse from "antd/es/collapse";
+import Icon from "antd/es/icon";
+import Input from "antd/es/input";
+import Select from "antd/es/select";
 import { isEqual, keyBy, maxBy, pick } from 'lodash'
 import nanoid from 'nanoid'
 import React, { useEffect, useState } from 'react'

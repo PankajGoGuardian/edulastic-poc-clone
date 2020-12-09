@@ -15,7 +15,7 @@ import {
 } from '@edulastic/colors'
 import { IconSearch } from '@edulastic/icons'
 import { SelectInputStyled } from '@edulastic/common'
-import { Modal } from 'antd'
+import Modal from "antd/es/modal";
 import styled from 'styled-components'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 

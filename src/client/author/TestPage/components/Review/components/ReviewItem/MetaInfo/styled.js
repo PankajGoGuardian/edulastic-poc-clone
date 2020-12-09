@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Tag } from 'antd'
+import Tag from "antd/es/tag";
 
 import { greenDark, greyDarken, themeLightGrayBgColor } from '@edulastic/colors'
 

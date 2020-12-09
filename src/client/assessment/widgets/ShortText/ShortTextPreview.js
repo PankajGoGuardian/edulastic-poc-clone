@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
 import { get, isEmpty } from 'lodash'

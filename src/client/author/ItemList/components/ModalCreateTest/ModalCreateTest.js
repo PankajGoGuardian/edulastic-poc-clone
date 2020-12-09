@@ -2,7 +2,10 @@ import React, { useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Input, message, Row, Col } from 'antd'
+import Input from "antd/es/input";
+import message from "antd/es/message";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { notification } from '@edulastic/common'
 
 import Modal from '../../../src/components/common/Modal'

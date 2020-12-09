@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { themeColor, fadedBlack, extraDesktopWidthMax } from '@edulastic/colors'
 import {
   StyledTable as Table,

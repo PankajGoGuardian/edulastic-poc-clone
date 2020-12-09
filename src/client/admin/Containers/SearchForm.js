@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form } from 'antd'
+import Form from "antd/es/form";
 
 import SearchDistrictByIdName from '../Common/Form/SearchDistrictByIdName'
 

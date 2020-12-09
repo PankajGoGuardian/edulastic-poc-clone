@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Input, Modal } from 'antd'
+import Input from "antd/es/input";
+import Modal from "antd/es/modal";
 import {
   Label,
   EduButton,

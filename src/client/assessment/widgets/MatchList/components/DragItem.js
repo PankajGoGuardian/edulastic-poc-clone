@@ -1,5 +1,5 @@
 import React, { Fragment, useRef, useEffect, useState } from 'react'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import { MathFormulaDisplay, measureText, DragDrop } from '@edulastic/common'
 import { Index } from '../styled/Index'
 import { IconClose } from '../styled/IconClose'

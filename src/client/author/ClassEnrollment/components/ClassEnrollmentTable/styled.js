@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { grey } from '@edulastic/colors'
 import { StyledTable as Table } from '../../../../admin/Common/StyledComponents'
 

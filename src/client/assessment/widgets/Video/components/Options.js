@@ -5,7 +5,7 @@ import { compose } from 'redux'
 import { withTheme } from 'styled-components'
 
 import { videoTypes } from '@edulastic/constants'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 
 import { IconEdit, IconPlus } from '@edulastic/icons'
 import { updateVariables } from '../../../utils/variables'

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Col as AntCol } from 'antd'
+import AntCol from "antd/es/col";
 
 export const Col = styled(AntCol)`
   margin-bottom: ${(props) =>

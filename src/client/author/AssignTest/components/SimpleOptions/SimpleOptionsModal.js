@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { test as testConst } from '@edulastic/constants'
-import { Col, Spin } from 'antd'
+import Col from "antd/es/col";
+import Spin from "antd/es/spin";
 import produce from 'immer'
 import moment from 'moment'
 import { connect } from 'react-redux'

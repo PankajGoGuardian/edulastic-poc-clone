@@ -1,5 +1,5 @@
 import React from 'react'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import PropTypes from 'prop-types'
 
 import { response } from '@edulastic/constants'

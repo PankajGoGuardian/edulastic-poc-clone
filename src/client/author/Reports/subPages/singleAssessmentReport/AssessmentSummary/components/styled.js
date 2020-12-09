@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Row } from 'antd'
+import Row from "antd/es/row";
 import { FlexContainer } from '@edulastic/common'
 import { fadedBlack, extraDesktopWidthMax } from '@edulastic/colors'
 import {

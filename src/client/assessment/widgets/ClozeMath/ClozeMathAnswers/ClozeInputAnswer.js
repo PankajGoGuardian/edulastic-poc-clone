@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Collapse, Icon } from 'antd'
+import Collapse from "antd/es/collapse";
+import Icon from "antd/es/icon";
 import {
   greyThemeLighter,
   greyThemeDark2,

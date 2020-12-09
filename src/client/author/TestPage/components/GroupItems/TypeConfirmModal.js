@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { white, themeColor } from '@edulastic/colors'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 const TypeConfirmModal = ({

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Collapse, Icon } from 'antd'
+import Collapse from "antd/es/collapse";
+import Icon from "antd/es/icon";
 import styled from 'styled-components'
 
 const { Panel } = Collapse

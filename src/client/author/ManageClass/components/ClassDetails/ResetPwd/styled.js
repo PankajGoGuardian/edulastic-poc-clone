@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Button, Input } from 'antd'
+import Button from "antd/es/button";
+import Input from "antd/es/input";
 import { linkColor, themeColor } from '@edulastic/colors'
 import { ConfirmationModal } from '../../../../src/components/common/ConfirmationModal'
 

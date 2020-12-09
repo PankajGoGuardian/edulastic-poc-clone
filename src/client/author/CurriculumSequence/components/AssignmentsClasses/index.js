@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Avatar, Table } from 'antd'
+import Avatar from "antd/es/avatar";
+import Table from "antd/es/table";
 import {
   titleColor,
   white,

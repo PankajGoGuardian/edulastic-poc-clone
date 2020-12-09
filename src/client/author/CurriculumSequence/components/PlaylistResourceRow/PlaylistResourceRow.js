@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { themeColor } from '@edulastic/colors'
 import { IconTrash } from '@edulastic/icons'
 import { connect } from 'react-redux'

@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { Form, Input, Row, Col, Select, Button, Modal } from 'antd'
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Select from "antd/es/select";
+import Button from "antd/es/button";
+import Modal from "antd/es/modal";
 
 import { ModalFormItem } from './styled'
 

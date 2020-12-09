@@ -2,7 +2,9 @@ import { EduButton } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { IMAGE_LIST_DEFAULT_WIDTH } from '@edulastic/constants/const/imageConstants'
 import { withNamespaces } from '@edulastic/localization'
-import { Checkbox, Col, Row } from 'antd'
+import Checkbox from "antd/es/checkbox";
+import Col from "antd/es/col";
+import Row from "antd/es/row";
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import ReactDOM from 'react-dom'

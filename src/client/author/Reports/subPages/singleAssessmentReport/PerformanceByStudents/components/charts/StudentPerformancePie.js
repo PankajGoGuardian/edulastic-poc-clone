@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import { groupBy } from 'lodash'
 import { PieChart, Pie, Cell, Tooltip } from 'recharts'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import styled from 'styled-components'
 import { StyledCustomChartTooltip } from '../../../AssessmentSummary/components/styled'
 

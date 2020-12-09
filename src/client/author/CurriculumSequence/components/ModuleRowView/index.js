@@ -1,5 +1,8 @@
 import React, { Fragment } from 'react'
-import { Dropdown, Icon, Menu, Col } from 'antd'
+import Dropdown from "antd/es/dropdown";
+import Icon from "antd/es/icon";
+import Menu from "antd/es/menu";
+import Col from "antd/es/col";
 import { IconMoreVertical, IconVerified } from '@edulastic/icons'
 import { lightGrey5, themeColor, themeColorLighter } from '@edulastic/colors'
 import { removeCommentsFromHtml } from '@edulastic/common/src/helpers'

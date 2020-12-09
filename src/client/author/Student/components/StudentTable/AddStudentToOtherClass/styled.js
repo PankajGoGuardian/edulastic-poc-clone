@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Modal, Button, Form as AntdForm } from 'antd'
+import Modal from "antd/es/modal";
+import Button from "antd/es/button";
+import AntdForm from "antd/es/form";
 import { lightGrey3, themeColor, white } from '@edulastic/colors'
 
 export const StyledModal = styled(Modal)`

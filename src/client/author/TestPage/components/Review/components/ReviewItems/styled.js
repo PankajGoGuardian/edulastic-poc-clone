@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Checkbox, Collapse } from 'antd'
+import Checkbox from "antd/es/checkbox";
+import Collapse from "antd/es/collapse";
 import { title, themeColor } from '@edulastic/colors'
 
 export const DragCrad = styled.div`

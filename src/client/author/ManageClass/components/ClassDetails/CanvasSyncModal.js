@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Select, Spin } from 'antd'
+import Button from "antd/es/button";
+import Select from "antd/es/select";
+import Spin from "antd/es/spin";
 import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
 import styled from 'styled-components'
 import {

@@ -1,5 +1,8 @@
 import React from 'react'
-import { Card, Input, Button, Layout } from 'antd'
+import Card from "antd/es/card";
+import Input from "antd/es/input";
+import Button from "antd/es/button";
+import Layout from "antd/es/layout";
 import { notification } from '@edulastic/common'
 import styled from 'styled-components'
 import { proxyUser } from '../../author/authUtils'

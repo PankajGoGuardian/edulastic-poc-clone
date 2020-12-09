@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Card, Button } from 'antd'
+import Card from "antd/es/card";
+import Button from "antd/es/button";
 import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
 import { mobileWidth, themeColor } from '@edulastic/colors'

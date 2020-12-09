@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
-// components
-import { Radio, Tooltip } from 'antd'
+import Radio from "antd/es/radio";
+import Tooltip from "antd/es/tooltip";
 import { IconClose } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
 import { StyledModal, StyledTable } from './styled'

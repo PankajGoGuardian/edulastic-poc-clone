@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { isUndefined, last, get, isEmpty, keyBy } from 'lodash'
-import { Tooltip as AntDTooltip, Modal } from 'antd'
+import AntDTooltip from "antd/es/tooltip";
+import Modal from "antd/es/modal";
 import { notification } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import { signUpState, test as testConst } from '@edulastic/constants'

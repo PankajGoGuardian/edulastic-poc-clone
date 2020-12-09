@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { white } from '@edulastic/colors'
 import { IconCalculator } from '@edulastic/icons'
 

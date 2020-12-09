@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Row, Col, Icon } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
 import {
   cardTitleColor,
   white,

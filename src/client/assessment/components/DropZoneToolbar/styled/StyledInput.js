@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 
 export const StyledInput = styled(Input)`
   text-align: ${({ textAlign }) => textAlign || 'center'};

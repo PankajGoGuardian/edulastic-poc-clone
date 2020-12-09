@@ -1,6 +1,6 @@
 import React from 'react'
 import { maxBy } from 'lodash'
-import { Modal } from 'antd'
+import Modal from "antd/es/modal";
 import { notification } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import { test as testConstants, testActivityStatus } from '@edulastic/constants'

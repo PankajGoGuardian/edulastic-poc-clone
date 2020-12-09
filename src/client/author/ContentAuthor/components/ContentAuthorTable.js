@@ -7,7 +7,10 @@ import {
   SelectInputStyled,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Icon, Select, Row, Col } from 'antd'
+import Icon from "antd/es/icon";
+import Select from "antd/es/select";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { get, isEmpty } from 'lodash'
 import React, { Component } from 'react'
 import { GiDominoMask } from 'react-icons/gi'

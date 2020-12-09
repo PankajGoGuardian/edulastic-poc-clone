@@ -15,12 +15,12 @@ module.exports = function transformer(file, api) {
   return j(file.source)
     .find(j.ImportDeclaration, { source: { value: 'antd' } })
     .forEach((path) => {
-      const importedValues = path.value.specifiers.map((x) => x.imported.name)
+      const importedValues = path.value.specifiers.map(x => [x.local.name,x.imported.name]);
       j(path).replaceWith(
-        importedValues.map((x) =>
+        importedValues.map(([localName,name]) =>
           j.importDeclaration(
-            [j.importDefaultSpecifier(j.identifier(x))],
-            j.literal(`antd/es/${x}`)
+            [j.importDefaultSpecifier(j.identifier(localName))],
+            j.literal(`antd/es/${name.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').replace(/^-/,'').toLowerCase()}`)
           )
         )
       )

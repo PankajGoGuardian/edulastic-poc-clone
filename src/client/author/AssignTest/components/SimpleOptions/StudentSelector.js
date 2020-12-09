@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
-import { TreeSelect, Tooltip } from 'antd'
+import TreeSelect from "antd/es/tree-select";
+import Tooltip from "antd/es/tooltip";
 import { keyBy, groupBy, sortBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState, useMemo, useEffect } from 'react'

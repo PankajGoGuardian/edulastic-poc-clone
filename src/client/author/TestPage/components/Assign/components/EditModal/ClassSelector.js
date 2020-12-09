@@ -1,5 +1,6 @@
 import React from 'react'
-import { Select, Col } from 'antd'
+import Select from "antd/es/select";
+import Col from "antd/es/col";
 
 import { StyledRow, StyledRowLabel } from './styled'
 

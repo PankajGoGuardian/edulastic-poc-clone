@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 import { roleuser } from '@edulastic/constants'

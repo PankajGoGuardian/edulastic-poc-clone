@@ -13,7 +13,11 @@ import {
   RadioBtn,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { Col, Row, Select, Spin, Radio } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
+import Spin from "antd/es/spin";
+import Radio from "antd/es/radio";
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'

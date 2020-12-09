@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { cloneDeep, get } from 'lodash'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
 import {

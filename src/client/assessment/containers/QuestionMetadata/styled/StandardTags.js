@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { white } from '@edulastic/colors'
-import { Tag } from 'antd'
+import Tag from "antd/es/tag";
 
 const StandardTags = styled(Tag)`
   color: ${white};

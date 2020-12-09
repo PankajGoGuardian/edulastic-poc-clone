@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { upperFirst, isEmpty } from 'lodash'
 
-// components
-import { Spin, Select, Input } from 'antd'
+import Spin from "antd/es/spin";
+import Select from "antd/es/select";
+import Input from "antd/es/input";
 import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
 import { IconClever, IconClose } from '@edulastic/icons'
 import {

@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Card, Table, Tag } from 'antd'
+import Card from "antd/es/card";
+import Table from "antd/es/table";
+import Tag from "antd/es/tag";
 import {
   secondaryTextColor,
   smallDesktopWidth,

@@ -1,5 +1,5 @@
 import { secondaryTextColor, grey } from '@edulastic/colors'
-import { DatePicker } from 'antd'
+import DatePicker from "antd/es/date-picker";
 import styled from 'styled-components'
 
 export const Container = styled.div`

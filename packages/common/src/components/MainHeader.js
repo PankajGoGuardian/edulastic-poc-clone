@@ -9,7 +9,7 @@ import {
   mobileWidthMax,
 } from '@edulastic/colors'
 import { MenuIcon } from '@edulastic/common'
-import { Affix } from 'antd'
+import Affix from "antd/es/affix";
 import { PropTypes } from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'

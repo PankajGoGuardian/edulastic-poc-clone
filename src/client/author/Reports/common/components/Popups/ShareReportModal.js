@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
-import { Row, Col, Input } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Input from "antd/es/input";
 import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
 import { report } from '@edulastic/constants'
 import { themeColor, lightGreySecondary } from '@edulastic/colors'

@@ -1,4 +1,6 @@
-import { Row, Rate, Button } from 'antd'
+import Row from "antd/es/row";
+import Rate from "antd/es/rate";
+import Button from "antd/es/button";
 import styled from 'styled-components'
 
 export const Greencard = styled.div`

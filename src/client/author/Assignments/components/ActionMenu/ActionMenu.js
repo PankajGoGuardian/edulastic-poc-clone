@@ -1,5 +1,5 @@
 import React from 'react'
-import { Menu } from 'antd'
+import Menu from "antd/es/menu";
 import { Link } from 'react-router-dom'
 import qs from 'qs'
 

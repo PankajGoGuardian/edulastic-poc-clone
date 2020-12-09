@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactOutsideEvent from 'react-outside-event'
 import { EduButton, FlexContainer } from '@edulastic/common'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 import { Container } from './styled'
 
 class Prompt extends Component {

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Tabs } from 'antd'
+import Tabs from "antd/es/tabs";
 import {
   themeColor,
   white,

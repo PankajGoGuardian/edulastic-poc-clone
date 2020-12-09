@@ -8,7 +8,12 @@ import {
 } from '@edulastic/colors'
 import { MainContentWrapper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Button, Form, Icon, Input, Table, Tag } from 'antd'
+import Button from "antd/es/button";
+import Form from "antd/es/form";
+import Icon from "antd/es/icon";
+import Input from "antd/es/input";
+import Table from "antd/es/table";
+import Tag from "antd/es/tag";
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'

@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Input, Col } from 'antd'
+import Input from "antd/es/input";
+import Col from "antd/es/col";
 
 export const LightBlueSpan = styled.span`
   color: #1890ff;

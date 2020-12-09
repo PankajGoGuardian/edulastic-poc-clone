@@ -2,7 +2,9 @@ import React, { useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import get from 'lodash/get'
-import { Tag, Input, Popover } from 'antd'
+import Tag from "antd/es/tag";
+import Input from "antd/es/input";
+import Popover from "antd/es/popover";
 import { response as responseDimensions, math } from '@edulastic/constants'
 import { dashBorderColor, white } from '@edulastic/colors'
 import FlexContainer from '@edulastic/common/src/components/FlexContainer'

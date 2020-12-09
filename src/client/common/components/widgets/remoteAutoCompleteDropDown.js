@@ -1,5 +1,6 @@
 import { black, themeColor, white } from '@edulastic/colors'
-import { AutoComplete, Icon } from 'antd'
+import AutoComplete from "antd/es/auto-complete";
+import Icon from "antd/es/icon";
 import { some } from 'lodash'
 import React, { useImperativeHandle, useRef, useState } from 'react'
 import styled from 'styled-components'

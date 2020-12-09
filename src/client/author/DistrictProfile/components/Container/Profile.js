@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Layout } from 'antd'
+import Layout from "antd/es/layout";
 // components
 import ProfileHeader from './Header'
 import ProfileBody from './ProfileBody'

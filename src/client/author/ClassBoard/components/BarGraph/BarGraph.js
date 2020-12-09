@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { get, groupBy, isEmpty, last } from 'lodash'
 import { ticks } from 'd3-array'
 import { connect } from 'react-redux'

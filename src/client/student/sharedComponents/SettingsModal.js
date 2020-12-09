@@ -8,7 +8,8 @@ import {
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import { IconSelectCaretDown } from '@edulastic/icons'
-import { Button, Select } from 'antd'
+import Button from "antd/es/button";
+import Select from "antd/es/select";
 import React from 'react'
 import { connect } from 'react-redux'
 import styled, { withTheme } from 'styled-components'

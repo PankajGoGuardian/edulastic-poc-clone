@@ -1,5 +1,6 @@
 import React, { useRef, useState, useLayoutEffect } from 'react'
-import { Tag, Popover } from 'antd'
+import Tag from "antd/es/tag";
+import Popover from "antd/es/popover";
 import styled, { css } from 'styled-components'
 
 const StandardSearchModalHeader = ({ standards, selectedCurriculam }) => {

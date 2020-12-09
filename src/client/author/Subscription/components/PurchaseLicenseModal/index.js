@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Input, Radio, message } from 'antd'
+import Input from "antd/es/input";
+import Radio from "antd/es/radio";
+import message from "antd/es/message";
 import { FlexContainer, notification } from '@edulastic/common'
 import { greyishBorder, lightGreySecondary } from '@edulastic/colors'
 import { StyledPurchaseLicenseModal, Title } from './styled'

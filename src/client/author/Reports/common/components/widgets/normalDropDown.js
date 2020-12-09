@@ -1,5 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react'
-import { Button, Dropdown, Menu, Icon } from 'antd'
+import Button from "antd/es/button";
+import Dropdown from "antd/es/dropdown";
+import Menu from "antd/es/menu";
+import Icon from "antd/es/icon";
 import styled from 'styled-components'
 import { partial } from 'lodash'
 

@@ -1,5 +1,8 @@
 import React, { Fragment } from 'react'
-import { Dropdown, Menu, Col, Icon } from 'antd'
+import Dropdown from "antd/es/dropdown";
+import Menu from "antd/es/menu";
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
 import { Link } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'

@@ -1,6 +1,10 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useCallback } from 'react'
-import { Button, Dropdown, Menu, Icon, Empty } from 'antd'
+import Button from "antd/es/button";
+import Dropdown from "antd/es/dropdown";
+import Menu from "antd/es/menu";
+import Icon from "antd/es/icon";
+import Empty from "antd/es/empty";
 import styled from 'styled-components'
 import { partial } from 'lodash'
 import { fadedGrey, lightGreySecondary, themeColor } from '@edulastic/colors'

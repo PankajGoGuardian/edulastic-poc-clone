@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Radio, Modal, Input, Alert } from 'antd'
+import Radio from "antd/es/radio";
+import Modal from "antd/es/modal";
+import Input from "antd/es/input";
+import Alert from "antd/es/alert";
 import { EduButton, FlexContainer } from '@edulastic/common'
 import {
   greyThemeDark1,

@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Input } from 'antd'
+import Input from "antd/es/input";
 import PropTypes from 'prop-types'
 import { withTheme } from 'styled-components'
 

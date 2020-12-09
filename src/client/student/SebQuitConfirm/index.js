@@ -1,5 +1,6 @@
 import React from 'react'
-import { Button, Col } from 'antd'
+import Button from "antd/es/button";
+import Col from "antd/es/col";
 import styled from 'styled-components'
 
 const SebQuitConfirm = () => (

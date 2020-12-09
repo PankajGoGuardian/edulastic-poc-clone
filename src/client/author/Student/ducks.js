@@ -2,7 +2,7 @@ import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { all, call, put, takeEvery } from 'redux-saga/effects'
 import { userApi } from '@edulastic/api'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 
 import { receiveAdminDataAction } from '../SchoolAdmin/ducks'

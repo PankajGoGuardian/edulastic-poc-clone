@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom'
 import { keyBy, round } from 'lodash'
 import moment from 'moment'
 
-// components
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/tooltip";
 import { FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {

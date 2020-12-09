@@ -1,5 +1,5 @@
 import { SelectInputStyled } from '@edulastic/common'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 import { find, indexOf } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useRef } from 'react'

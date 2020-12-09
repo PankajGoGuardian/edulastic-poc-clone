@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Select, Input } from 'antd'
+import Select from "antd/es/select";
+import Input from "antd/es/input";
 import { TextField } from '@edulastic/common'
 import styled from 'styled-components'
 

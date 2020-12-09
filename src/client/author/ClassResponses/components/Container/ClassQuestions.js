@@ -8,7 +8,9 @@ import { keyBy as _keyBy, isEmpty, get } from 'lodash'
 import { AnswerContext } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import produce from 'immer'
-import { Modal, Row, Col } from 'antd'
+import Modal from "antd/es/modal";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
 import {
   loadScratchPadAction,

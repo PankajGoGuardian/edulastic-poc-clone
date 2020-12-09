@@ -12,7 +12,7 @@ import {
   IconStopCircle,
 } from '@edulastic/icons'
 import * as Sentry from '@sentry/browser'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/tooltip";
 import { Howl, Howler } from 'howler'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'

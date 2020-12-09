@@ -11,7 +11,11 @@ import {
 } from '@edulastic/common/src/components/InputStyles'
 import { IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Icon, Menu, Row, Select } from 'antd'
+import Col from "antd/es/col";
+import Icon from "antd/es/icon";
+import Menu from "antd/es/menu";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import { get, identity, isEmpty, pickBy, unset } from 'lodash'
 import * as moment from 'moment'
 import React, { Component } from 'react'

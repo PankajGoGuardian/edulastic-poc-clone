@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Card } from 'antd'
+import Card from "antd/es/card";
 import { FlexContainer } from '@edulastic/common'
 import { IconChevronLeft } from '@edulastic/icons'
 import {

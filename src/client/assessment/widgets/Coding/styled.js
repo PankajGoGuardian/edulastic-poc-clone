@@ -9,7 +9,12 @@ import {
   lightGreySecondary,
   green,
 } from '@edulastic/colors'
-import { Button, Table, Tabs, Radio, Modal, Form } from 'antd'
+import Button from "antd/es/button";
+import Table from "antd/es/table";
+import Tabs from "antd/es/tabs";
+import Radio from "antd/es/radio";
+import Modal from "antd/es/modal";
+import Form from "antd/es/form";
 import { StyledPaperWrapper } from '../../styled/Widget'
 
 export const SubtitleContainer = styled.div`

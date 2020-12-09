@@ -1,5 +1,8 @@
 import styled from 'styled-components'
-import { Layout, Spin, Button, Typography } from 'antd'
+import Layout from "antd/es/layout";
+import Spin from "antd/es/spin";
+import Button from "antd/es/button";
+import Typography from "antd/es/typography";
 
 import {
   white,

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import * as moment from 'moment'
 import NoDataNotification from '../../common/components/NoDataNotification'
 import { getIsloadingAssignmentSelector } from '../TestPage/components/Assign/ducks'

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Modal, Table } from 'antd'
+import Modal from "antd/es/modal";
+import Table from "antd/es/table";
 import { ThemeButton } from '../../../src/components/common/ThemeButton'
 
 const AddMultipleStudentsInfoModal = ({

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import qs from 'qs'
 import { ErrorHandler } from '@edulastic/common'
 import styled, { ThemeProvider } from 'styled-components'
-import { Layout } from 'antd'
+import Layout from "antd/es/layout";
 import { connect } from 'react-redux'
 import { mobileWidthLarge } from '@edulastic/colors'
 // import { getZoomedTheme } from "./zoomTheme";

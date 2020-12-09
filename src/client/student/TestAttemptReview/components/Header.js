@@ -1,7 +1,10 @@
 import React, { memo } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Affix, Layout, Row, Col } from 'antd'
+import Affix from "antd/es/affix";
+import Layout from "antd/es/layout";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { IconLogout } from '@edulastic/icons'
 
 import {

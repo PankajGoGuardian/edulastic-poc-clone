@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import * as moment from 'moment'
-import { DatePicker, Col } from 'antd'
+import DatePicker from "antd/es/date-picker";
+import Col from "antd/es/col";
 import { StyledRow, StyledRowLabel } from './styled'
 
 const DateSelector = ({ startDate, endDate, changeField }) => {

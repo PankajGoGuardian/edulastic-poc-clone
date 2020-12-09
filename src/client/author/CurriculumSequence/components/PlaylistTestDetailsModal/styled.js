@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Modal } from 'antd'
+import Modal from "antd/es/modal";
 import { white, mainBgColor, title, themeColor } from '@edulastic/colors'
 
 export const ModalWrapper = styled(Modal)`

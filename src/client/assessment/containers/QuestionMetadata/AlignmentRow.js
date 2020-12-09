@@ -3,7 +3,9 @@ import {
   storeInLocalStorage,
 } from '@edulastic/api/src/utils/Storage'
 import { FieldLabel, SelectInputStyled, EduButton } from '@edulastic/common'
-import { Col, Row, Select } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import { get, pick as _pick } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Fragment, useEffect, useState, useRef } from 'react'

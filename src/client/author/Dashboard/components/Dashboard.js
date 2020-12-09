@@ -1,5 +1,5 @@
 import React from 'react'
-import { Layout } from 'antd'
+import Layout from "antd/es/layout";
 import HeaderSection from './Header/Header'
 import MainContent from './Showcase/showcase'
 import SideContent from './SideContent/Sidecontent'

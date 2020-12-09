@@ -2,7 +2,7 @@ import { themeColor, darkGrey } from '@edulastic/colors'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import { test as TEST } from '@edulastic/constants'
 import { IconLock, IconPencilEdit } from '@edulastic/icons'
-import { Divider } from 'antd'
+import Divider from "antd/es/divider";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

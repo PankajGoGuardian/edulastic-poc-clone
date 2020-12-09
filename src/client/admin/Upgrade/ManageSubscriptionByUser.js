@@ -1,5 +1,10 @@
 import React from 'react'
-import { Row, Col, Form, Radio, Input, Button } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Form from "antd/es/form";
+import Radio from "antd/es/radio";
+import Input from "antd/es/input";
+import Button from "antd/es/button";
 import moment from 'moment'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
 import { radioButtonUserData } from '../Data'

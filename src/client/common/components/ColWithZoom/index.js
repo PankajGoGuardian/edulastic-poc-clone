@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Col } from 'antd'
+import Col from "antd/es/col";
 
 const ColWithZoom = ({
   theme,

@@ -5,7 +5,7 @@ import { compose } from 'redux'
 import { withTheme } from 'styled-components'
 import { videoTypes } from '@edulastic/constants'
 
-import { Input } from 'antd'
+import Input from "antd/es/input";
 import { FlexContainer, Button } from '@edulastic/common'
 import { updateVariables } from '../../../utils/variables'
 import FileSelectModal from './FileSelectModal'

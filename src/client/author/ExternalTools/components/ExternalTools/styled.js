@@ -1,4 +1,7 @@
-import { Input, List, Row, Col } from 'antd'
+import Input from "antd/es/input";
+import List from "antd/es/list";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import styled from 'styled-components'
 import {
   themeColor,

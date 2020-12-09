@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Row, Col } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { find, keyBy, omitBy, isEmpty, isNaN } from 'lodash'
 import { StyledCard, StyledTable } from '../styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'

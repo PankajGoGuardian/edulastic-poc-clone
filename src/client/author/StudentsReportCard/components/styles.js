@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Row, Table } from 'antd'
+import Row from "antd/es/row";
+import Table from "antd/es/table";
 import {
   grey,
   lightGrey9,

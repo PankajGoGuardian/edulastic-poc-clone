@@ -1,4 +1,4 @@
-import { Switch } from 'antd'
+import Switch from "antd/es/switch";
 import styled from 'styled-components'
 import { themeColorBlue, white } from '@edulastic/colors'
 

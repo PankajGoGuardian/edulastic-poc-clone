@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Icon } from 'antd'
+import Icon from "antd/es/icon";
 
 export const SelectSuffixIcon = styled(Icon)`
   color: ${(props) => props.theme.questionMetadata.selectSuffixIconColor};

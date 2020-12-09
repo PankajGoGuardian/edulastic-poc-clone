@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Progress as AntProgress } from 'antd'
+import AntProgress from "antd/es/progress";
 import { FlexContainer, LegendContainer, EduButton } from '@edulastic/common'
 import {
   white,

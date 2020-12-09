@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Select } from 'antd'
+import Select from "antd/es/select";
 
 import { withNamespaces } from '@edulastic/localization'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'

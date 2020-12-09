@@ -2,7 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { Button, Tabs as AntdTabs, Form, Input } from 'antd'
+import Button from "antd/es/button";
+import AntdTabs from "antd/es/tabs";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
 import { FirstDiv, FlexDiv, H2, OuterDiv } from '../Common/StyledComponents'
 import {
   DeltaSync,

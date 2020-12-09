@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Rnd } from 'react-rnd'
 import produce from 'immer'
-import { Popover } from 'antd'
+import Popover from "antd/es/popover";
 import { Ellipsis, MathSpan, measureText } from '@edulastic/common'
 import { getAdjustedV1AnnotationCoordinatesForDB } from '../Graph/common/utils'
 

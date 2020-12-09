@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
-import { Alert, Button, Form } from 'antd'
+import Alert from "antd/es/alert";
+import Button from "antd/es/button";
+import Form from "antd/es/form";
 import Field from './Field'
 import { FirstDiv, H2, OuterDiv } from '../../Common/StyledComponents'
 

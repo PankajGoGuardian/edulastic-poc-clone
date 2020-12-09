@@ -13,7 +13,9 @@ import {
   SHORT_TEXT,
   TRUE_OR_FALSE,
 } from '@edulastic/constants/const/questionType'
-import { Col, Row, Select } from 'antd'
+import Col from "antd/es/col";
+import Row from "antd/es/row";
+import Select from "antd/es/select";
 import PropTypes from 'prop-types'
 import React from 'react'
 import { selectsData } from '../../../TestPage/components/common'

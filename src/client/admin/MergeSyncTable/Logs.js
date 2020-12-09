@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Icon } from 'antd'
+import Button from "antd/es/button";
+import Icon from "antd/es/icon";
 import { Table, StyledFilterInput } from '../Common/StyledComponents'
 
 const { Column } = Table

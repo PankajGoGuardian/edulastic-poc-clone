@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { notification } from '@edulastic/common'
-import {
-  Layout,
-  Button,
-  Icon,
-  Form,
-  Input,
-  Row,
-  Col,
-  Spin,
-  message,
-} from 'antd'
+import Layout from "antd/es/layout";
+import Button from "antd/es/button";
+import Icon from "antd/es/icon";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Spin from "antd/es/spin";
+import message from "antd/es/message";
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { connect } from 'react-redux'

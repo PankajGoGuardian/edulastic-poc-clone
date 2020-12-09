@@ -14,7 +14,7 @@ import {
   white,
 } from '@edulastic/colors'
 import { Button, Card, FlexContainer } from '@edulastic/common'
-import { Typography } from 'antd'
+import Typography from "antd/es/typography";
 import styled from 'styled-components'
 
 const { Paragraph } = Typography

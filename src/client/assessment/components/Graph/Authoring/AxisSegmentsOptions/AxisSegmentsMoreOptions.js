@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
-import { message, Select } from 'antd'
+import message from "antd/es/message";
+import Select from "antd/es/select";
 import { withNamespaces } from '@edulastic/localization'
 import { Checkbox, notification } from '@edulastic/common'
 

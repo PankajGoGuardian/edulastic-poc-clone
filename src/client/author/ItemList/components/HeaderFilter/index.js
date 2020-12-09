@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Tag, Popover } from 'antd'
+import Tag from "antd/es/tag";
+import Popover from "antd/es/popover";
 import styled, { css } from 'styled-components'
 import {
   test as testsConstants,

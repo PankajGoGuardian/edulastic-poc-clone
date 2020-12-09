@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 import { roleuser } from '@edulastic/constants'
 import { withRouter } from 'react-router-dom'
 import Header from './Header'

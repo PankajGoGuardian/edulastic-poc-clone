@@ -1,5 +1,10 @@
 import styled from 'styled-components'
-import { Input, Row, Icon, Col, Button, Modal } from 'antd'
+import Input from "antd/es/input";
+import Row from "antd/es/row";
+import Icon from "antd/es/icon";
+import Col from "antd/es/col";
+import Button from "antd/es/button";
+import Modal from "antd/es/modal";
 import {
   themeColor,
   lightGrey3,

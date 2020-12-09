@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon } from 'antd'
+import Menu from "antd/es/menu";
+import Icon from "antd/es/icon";
 import styled from 'styled-components'
 import { IconFolders } from '@edulastic/icons'
 import {

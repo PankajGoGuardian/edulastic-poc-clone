@@ -9,7 +9,10 @@ import {
   themeColor,
 } from '@edulastic/colors'
 import { Card, FlexContainer } from '@edulastic/common'
-import { Affix, Input, Pagination, Modal } from 'antd'
+import Affix from "antd/es/affix";
+import Input from "antd/es/input";
+import Pagination from "antd/es/pagination";
+import Modal from "antd/es/modal";
 import styled from 'styled-components'
 
 export const ScrollBox = styled.div`

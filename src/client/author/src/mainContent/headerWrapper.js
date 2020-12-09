@@ -6,7 +6,7 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
-import { Affix } from 'antd'
+import Affix from "antd/es/affix";
 
 class HeaderWrapper extends Component {
   render = () => {

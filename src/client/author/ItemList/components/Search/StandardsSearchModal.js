@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Modal } from 'antd'
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Modal from "antd/es/modal";
 import styled from 'styled-components'
 import {
   Paper,

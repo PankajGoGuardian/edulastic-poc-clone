@@ -20,7 +20,13 @@ import {
 import { Paper, EduTableStyled, SelectInputStyled } from '@edulastic/common'
 import { IconManage } from '@edulastic/icons'
 import IconArchive from '@edulastic/icons/src/IconArchive'
-import { Button, Divider, Icon, Menu, Modal, Row, Col } from 'antd'
+import Button from "antd/es/button";
+import Divider from "antd/es/divider";
+import Icon from "antd/es/icon";
+import Menu from "antd/es/menu";
+import Modal from "antd/es/modal";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 

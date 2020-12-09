@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Table, Button } from 'antd'
+import Table from "antd/es/table";
+import Button from "antd/es/button";
 import { testActivity } from '@edulastic/constants'
 import {
   white,

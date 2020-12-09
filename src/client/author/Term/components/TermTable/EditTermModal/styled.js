@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Modal, Form, DatePicker } from 'antd'
+import Modal from "antd/es/modal";
+import Form from "antd/es/form";
+import DatePicker from "antd/es/date-picker";
 
 export const StyledModal = styled(Modal)``
 

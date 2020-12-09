@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import styled, { withTheme } from 'styled-components'
 import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
-import { Button } from 'antd'
+import Button from "antd/es/button";
 import { finishTestAcitivityAction } from '../../actions/test'
 
 const AssignmentTimeEndedAlert = ({

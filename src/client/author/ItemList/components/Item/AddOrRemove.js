@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/tooltip";
 
 import { AddRemoveBtnContainer } from './styled'
 

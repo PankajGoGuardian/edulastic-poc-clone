@@ -1,6 +1,6 @@
 import { tabletWidth } from '@edulastic/colors'
 import { ErrorHandler } from '@edulastic/common'
-import { Layout } from 'antd'
+import Layout from "antd/es/layout";
 import React from 'react'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'

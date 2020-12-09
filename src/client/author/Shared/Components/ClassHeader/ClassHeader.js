@@ -25,7 +25,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown } from 'antd'
+import Dropdown from "antd/es/dropdown";
 import { get } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'

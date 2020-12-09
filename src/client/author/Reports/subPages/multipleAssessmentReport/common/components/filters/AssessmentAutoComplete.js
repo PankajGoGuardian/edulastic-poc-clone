@@ -13,7 +13,7 @@ import {
   getTestListLoadingSelector,
 } from '../../../../../ducks'
 
-const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
+const { DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
 const AssessmentAutoComplete = ({
@@ -39,7 +39,7 @@ const AssessmentAutoComplete = ({
       page: 1,
       search: {
         searchString: searchTerms.text,
-        statuses: [IN_PROGRESS, IN_GRADING, DONE],
+        statuses: [DONE],
         districtId,
         grades:
           !filters.grade || filters.grade === 'All' ? [] : [filters.grade],
@@ -54,6 +54,9 @@ const AssessmentAutoComplete = ({
     }
     if (role === roleuser.SCHOOL_ADMIN && institutionIds?.length) {
       q.search.institutionIds = institutionIds
+    }
+    if (firstLoad && selectedTestIds.length) {
+      q.search.testIds = selectedTestIds
     }
     if (filters.termId) {
       q.search.termId = filters.termId
@@ -75,7 +78,7 @@ const AssessmentAutoComplete = ({
     if (key) {
       const value = testList.find((s) => s._id === key)?.title
       setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-      selectCB(key)
+      selectCB([key])
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
       selectCB([])
@@ -117,9 +120,18 @@ const AssessmentAutoComplete = ({
   }))
   return (
     <MultiSelectSearch
-      label="Assessment"
+      label="Test"
+      placeholder="Select a test"
       el={assessmentFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(selected) =>
+        selectCB(
+          !selected.length
+            ? []
+            : typeof selected === 'string'
+            ? [selected]
+            : selected
+        )
+      }
       onSearch={onSearch}
       value={selectedTestIds}
       options={!loading ? dropdownData : []}

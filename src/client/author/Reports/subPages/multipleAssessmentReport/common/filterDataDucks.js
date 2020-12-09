@@ -105,7 +105,7 @@ const initialState = {
      */
     profileId: '',
   },
-  testId: '',
+  testId: [],
   loading: false,
 }
 

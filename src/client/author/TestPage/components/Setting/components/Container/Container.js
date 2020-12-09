@@ -455,9 +455,6 @@ class Setting extends Component {
       edulastic,
     }
 
-    // TODO: check publisher here to add/remove testlet option into skinTypes
-    skinTypes[playerSkinValues.testlet] = 'ETS Testlet Player'
-
     const accessibilityData = [
       { key: 'showMagnifier', value: showMagnifier },
       { key: 'enableScratchpad', value: enableScratchpad },

@@ -28,6 +28,7 @@ const AssessmentAutoComplete = ({
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const [updateSelection, setUpdateSelection] = useState(false)
 
   // build search query
   const query = useMemo(() => {
@@ -74,14 +75,14 @@ const AssessmentAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
-  const onSelect = (key) => {
+  const onSelect = (key, fallbackSelection) => {
     if (key) {
       const value = testList.find((s) => s._id === key)?.title
       setSearchTerms({ text: value, selectedText: value, selectedKey: key })
       selectCB([key])
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
-      selectCB(selectedTestIds)
+      selectCB(fallbackSelection)
     }
   }
   const loadTestListDebounced = useCallback(
@@ -92,14 +93,20 @@ const AssessmentAutoComplete = ({
   // effects
   useEffect(() => {
     if (!selectedTestIds.length && testList.length) {
-      onSelect(testList[0]._id)
+      onSelect(testList[0]._id, [])
+    } else if (updateSelection) {
+      onSelect(testList[0]?._id, [])
+      setUpdateSelection(false)
     } else if (!loading && !testList.length) {
-      onSelect()
+      onSelect(null, selectedTestIds)
     }
   }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
+    }
+    if (selectedTestIds.length) {
+      setUpdateSelection(true)
     }
   }, [filters.termId, filters.grade, filters.subject, filters.assessmentTypes])
   useEffect(() => {
@@ -118,6 +125,7 @@ const AssessmentAutoComplete = ({
       item._id?.substring(item._id.length - 5) || ''
     })`,
   }))
+
   return (
     <MultiSelectSearch
       label="Test"

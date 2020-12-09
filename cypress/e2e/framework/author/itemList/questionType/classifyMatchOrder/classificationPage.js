@@ -2,6 +2,7 @@
 import EditToolBar from '../common/editToolBar'
 import Header from '../../itemDetail/header'
 import Helpers from '../../../../util/Helpers'
+import CypressHelper from '../../../../util/cypressHelpers'
 
 class ClassificationPage {
   constructor() {
@@ -41,19 +42,35 @@ class ClassificationPage {
     cy.get(`[data-cy="deletecolumns${index}"]`)
 
   getRowTitleInptuList = () =>
-    cy.get('[data-cy="row-container"]').find('div .ql-editor')
+    cy.get('[data-cy="row-container"]').find('[contenteditable="true"]')
 
   getRowTitleInputByIndex = (index) =>
-    cy.get('[data-cy="row-container"]').find('fr-element').eq(index)
+    cy
+      .get('[data-cy="row-container"]')
+      .find('[contenteditable="true"]')
+      .eq(index)
 
   getRowAddButton = () =>
     cy
-      .get('[data-cy="row-container"]')
-      .contains('span', 'Add new row')
+      .get('[data-cy="classification-row-dropdown"]')
       .parent()
       .should('be.visible')
 
   getRowDeleteByIndex = (index) => cy.get(`[data-cy="deleterows${index}"]`)
+
+  getChoiceDeleteByIndex = (index) => cy.get(`[data-cy="deletegroup${index}"]`)
+
+  deleteAllchoices = () => {
+    cy.get('#classification-possible-responses')
+      .parent()
+      .parent()
+      .find('[data-cy^="deletegroup"]')
+      .then((choices) => {
+        for (let i = choices.length - 1; i >= 0; i--) {
+          this.getChoiceDeleteByIndex(i).click()
+        }
+      })
+  }
 
   getGroupResponsesCheckbox = () =>
     cy
@@ -74,6 +91,13 @@ class ClassificationPage {
     return group.contains('span', 'Add new choice').closest('button')
   }
 
+  getAddNewChoiceButton = () => {
+    return cy
+      .get('[data-cy="addButton"]')
+      .contains('span', 'Add new choice')
+      .closest('button')
+  }
+
   getChoiceListByGroup = (index) => {
     const group = this.getGroupContainerByIndex(index)
     return group.find('[data-cy="group-choices"]').children().first().children()
@@ -92,6 +116,12 @@ class ClassificationPage {
       .find('[contenteditable="true"]')
   }
 
+  getChoiceEditor = (index) =>
+    cy
+      .get(`#froalaToolbarContainer-quill-sortable-itemgroup${index}`)
+      .parent()
+      .find('[contenteditable="true"]')
+
   getDragDropBox = () => cy.contains('h3', 'Drag & Drop the answer').next()
 
   getAddNewGroupButton = () =>
@@ -103,16 +133,22 @@ class ClassificationPage {
     cy.get(`[data-cy="drag-drop-item-${index}"]`)
 
   getDragDropBoardByIndex = (index) =>
-    cy.get(`[data-cy="drag-drop-board-${index}"]`).find('>div')
+    cy.get(`#drop-container-${index}`).find('[data-dnd="edu-dragitem"]')
 
   addAlternate = () => {
     cy.get('[data-cy="alternate"]').should('be.visible').click()
     return this
   }
 
+  getShowDragHandel = () => cy.get(`[data-cy="showDragHandle"]`)
+
+  getDuplicatedResponses = () => cy.get(`[data-cy="duplicateResponses"]`)
+
+  getShuffleOptions = () => cy.get(`[data-cy="shuffleOptions"]`)
+
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`
-    cy.get('[data-cy="scoringType"]').should('be.visible').click()
+    cy.get('[data-cy="scoringType"]').click({ force: true })
 
     cy.get(selectOp).should('be.visible').click()
 
@@ -125,8 +161,7 @@ class ClassificationPage {
 
   getPanalty = () => cy.get('[data-cy="penalty"]').should('be.visible')
 
-  getEnableAutoScoring = () =>
-    cy.contains('Enable auto scoring').children().eq(0).should('be.visible')
+  getEnableAutoScoring = () => cy.get('[data-cy="autoscoreChk"]')
 
   getMinScore = () => cy.get('[data-cy=minscore]').should('be.visible')
 
@@ -214,20 +249,34 @@ class ClassificationPage {
   }
 
   getRowTitlesWidthInput() {
-    return Helpers.getElement('classification-row-dropdown')
+    return Helpers.getElement('rowTitleWidth').next().should('be.visible')
   }
 
   getRowHeaderInput() {
-    return Helpers.getElement('rowHeaderInput').next()
+    return cy
+      .get('[data-cy="rowHeaderInput"]')
+      .parent()
+      .find('[contenteditable="true"]')
     // .find(".ql-editor");
   }
 
   getMaximumResponsesPerCellInput() {
-    return Helpers.getElement('maximumResponsesPerCellInput')
+    return Helpers.getElement('maximumResponsesPerCellInput').next()
   }
 
   getRowMinHeightInput() {
-    return Helpers.getElement('rowMinHeightInput')
+    return Helpers.getElement('minHeightOption').next()
+  }
+
+  getQuestionText = () => cy.get('[contenteditable="true"]').first()
+
+  checkGetEnableAutoScoring = () => {
+    this.getEnableAutoScoring()
+      .parent()
+      .then((ele) => {
+        if (!ele.hasClass('ant-checkbox-checked'))
+          this.getEnableAutoScoring().click({ force: true })
+      })
   }
 
   checkFontSize(fontSize) {
@@ -244,12 +293,8 @@ class ClassificationPage {
     this.header.preview()
 
     this.getClassificationPreview()
-      .find('div[data-cy="drag-drop-board-0"]')
-      .should('have.css', 'width')
-      .and('eq', width)
-
-    this.getClassificationPreview()
-      .find('div[data-cy="drag-drop-board-1"]')
+      .find('[data-cy="rowTitle"]')
+      .find('[data-cy="styled-wrapped-component"]')
       .should('have.css', 'width')
       .and('eq', width)
 
@@ -260,12 +305,16 @@ class ClassificationPage {
     this.header.preview()
 
     this.getClassificationPreview()
-      .find('div[data-cy="drag-drop-board-0"]')
+      .find('.classification-preview-wrapper-response')
+      .find('[data-dnd="edu-droparea"]')
+      .eq(0)
       .should('have.css', 'min-height')
       .and('eq', height)
 
     this.getClassificationPreview()
-      .find('div[data-cy="drag-drop-board-1"]')
+      .find('.classification-preview-wrapper-response')
+      .find('[data-dnd="edu-droparea"]')
+      .eq(1)
       .should('have.css', 'min-height')
       .and('eq', height)
 
@@ -311,6 +360,117 @@ class ClassificationPage {
     }
 
     this.header.edit()
+  }
+
+  selectDropDownByAttributeAndBlock = (attribute, block, option) => {
+    cy.get(`[data-cy=${attribute}]`).click({ force: true })
+    // cy.wait(300) // allow list to expand
+
+    cy.get(`[data-cy=${block}]`)
+      .find('.ant-select-dropdown-menu-item')
+      .then(($ele) => {
+        cy.wrap(
+          $ele
+            // eslint-disable-next-line func-names
+            .filter(function () {
+              return Cypress.$(this).text() === option
+            })
+        ).click({ force: true })
+      })
+  }
+
+  checkShowDragHandel = () => {
+    this.getShowDragHandel()
+      .parent()
+      .then((ele) => {
+        if (!ele.hasClass('ant-checkbox-checked')) {
+          this.getShowDragHandel().click({ force: true })
+        }
+      })
+  }
+
+  unCheckShowDragHandel = () => {
+    this.getShowDragHandel()
+      .parent()
+      .then((ele) => {
+        if (ele.hasClass('ant-checkbox-checked')) {
+          this.getShowDragHandel().click({ force: true })
+        }
+      })
+  }
+
+  checkDuplicatedResponses = () => {
+    this.getDuplicatedResponses()
+      .parent()
+      .then((ele) => {
+        if (!ele.hasClass('ant-checkbox-checked')) {
+          this.getDuplicatedResponses().click({ force: true })
+        }
+      })
+  }
+
+  unCheckDuplicatedResponses = () => {
+    this.getDuplicatedResponses()
+      .parent()
+      .then((ele) => {
+        if (ele.hasClass('ant-checkbox-checked')) {
+          this.getDuplicatedResponses().click({ force: true })
+        }
+      })
+  }
+
+  checkShuffleOptions = () => {
+    this.getShuffleOptions()
+      .parent()
+      .then((ele) => {
+        if (!ele.hasClass('ant-checkbox-checked')) {
+          this.getShuffleOptions().click({ force: true })
+        }
+      })
+  }
+
+  unCheckShuffleOptions = () => {
+    this.getShuffleOptions()
+      .parent()
+      .then((ele) => {
+        if (ele.hasClass('ant-checkbox-checked')) {
+          this.getShuffleOptions().click({ force: true })
+        }
+      })
+  }
+
+  verifyDragHandel = () => {
+    this.checkShowDragHandel()
+    cy.get('[class^="ChoiceContainer__Container"]')
+      .find('[data-icon="arrows-alt"]')
+      .should('have.length', 4)
+    this.getDragDropItemByIndex(1)
+      .find('[data-icon="arrows-alt"]')
+      .should('be.visible')
+  }
+
+  verifyShuffleChoices = (choices, shuffled = true) => {
+    const shuffledChoices = []
+    cy.get('[class^="ChoiceContainer__Container"]')
+      .find('[data-cy="styled-wrapped-component"]')
+      .then(($ele) => {
+        for (let i = 0; i < $ele.length; i++) {
+          shuffledChoices.push($ele[i].textContent)
+          console.log($ele[i].textContent)
+        }
+      })
+    if (shuffled)
+      CypressHelper.checkObjectInEquality(
+        choices,
+        shuffledChoices,
+        'choices are shuffled'
+      )
+    else
+      CypressHelper.checkObjectEquality(
+        choices,
+        shuffledChoices,
+        'choices are not shuffled'
+      )
   }
 }
 

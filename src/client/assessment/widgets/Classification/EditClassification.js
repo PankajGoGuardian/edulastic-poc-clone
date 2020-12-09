@@ -674,6 +674,7 @@ const EditClassification = ({
                 onChange={() => onUiChange('showDragHandle')(!showDragHandle)}
                 checked={!!showDragHandle}
                 mb="20px"
+                data-cy="showDragHandle"
               >
                 {t('component.cloze.imageDragDrop.showdraghandle')}
               </CheckboxLabel>
@@ -687,6 +688,7 @@ const EditClassification = ({
                 }
                 checked={!!duplicateResponses}
                 mb="20px"
+                data-cy="duplicateResponses"
               >
                 {t('component.cloze.imageDragDrop.duplicatedresponses')}
               </CheckboxLabel>
@@ -697,6 +699,7 @@ const EditClassification = ({
                 }
                 checked={!!shuffleOptions}
                 mb="20px"
+                data-cy="shuffleOptions"
               >
                 {t('component.cloze.imageDragDrop.shuffleoptions')}
               </CheckboxLabel>

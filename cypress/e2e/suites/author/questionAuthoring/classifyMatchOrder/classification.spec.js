@@ -1,10 +1,12 @@
 import EditItemPage from '../../../../framework/author/itemList/itemDetail/editPage'
-import ItemListPage from '../../../../framework/author/itemList/itemListPage'
+// import ItemListPage from '../../../../framework/author/itemList/itemListPage'
 import ClassificationPage from '../../../../framework/author/itemList/questionType/classifyMatchOrder/classificationPage'
 import FileHelper from '../../../../framework/util/fileHelper'
 import Helpers from '../../../../framework/util/Helpers'
-import CypressHelper from '../../../../framework/util/cypressHelpers'
+// import CypressHelper from '../../../../framework/util/cypressHelpers'
 import { questionType } from '../../../../framework/constants/questionTypes'
+import validateSolutionBlockTests from '../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests'
+import ScoringBlock from '../../../../framework/author/itemList/questionType/common/scoringBlock'
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -17,6 +19,7 @@ describe(`${FileHelper.getSpecName(
     correctAns: 'India',
     choices: ['China', 'India'],
     forScoring: ['Choice B', 'Choice C', 'Choice A', 'Choice D'],
+    forDuplicateResponse: ['China', 'India', 'Pakistan', 'Japan', 'Australia'],
     extlink: 'www.testdomain.com',
     testtext: 'testtext',
     formula: 's=ar^2',
@@ -27,12 +30,13 @@ describe(`${FileHelper.getSpecName(
     points: 2,
   }
 
+  const scoringBlockPage = new ScoringBlock()
   const question = new ClassificationPage()
   const editItem = new EditItemPage()
-  const itemList = new ItemListPage()
+  // const itemList = new ItemListPage()
   let preview
 
-  let testItemId
+  // let testItemId
 
   before(() => {
     cy.login()
@@ -277,7 +281,11 @@ describe(`${FileHelper.getSpecName(
       })
 
       it(' > Add new column', () => {
-        CypressHelper.selectDropDownByAttribute('coloumn-dropdown-list-2', '3')
+        question.selectDropDownByAttributeAndBlock(
+          'classification-column-dropdown',
+          'column-container',
+          '3'
+        )
         question
           .getColumnTitleInptuList()
           .should('have.length', queData.columnTitles.length + 1)
@@ -289,10 +297,7 @@ describe(`${FileHelper.getSpecName(
       })
 
       it(' > Delete existing column', () => {
-        question
-          .getColumnDeleteByIndex(queData.columnTitles.length)
-          .click()
-          .should('not.exist')
+        question.getColumnDeleteByIndex(queData.columnTitles.length).click()
 
         question
           .getColumnTitleInptuList()
@@ -315,7 +320,7 @@ describe(`${FileHelper.getSpecName(
           .then(() => {
             question
               .getRowTitleInptuList()
-              .should('have.length', queData.rowTitles.length + 1)
+              .should('have.length', queData.rowTitles.length)
               .last()
               .click()
               .clear()
@@ -326,22 +331,17 @@ describe(`${FileHelper.getSpecName(
 
       it(' > Edit the row names for existing', () => {
         question
-          .getRowTitleInputByIndex(1)
-          .click()
+          .getRowTitleInputByIndex(0)
+          .click({ force: true })
           .clear()
           .type(queData.rowTitles[0])
           .should('contain', queData.rowTitles[0])
       })
 
       it(' > Delete existing / newly created rows', () => {
-        question
-          .getRowDeleteByIndex(queData.rowTitles.length)
-          .click()
-          .should('not.exist')
+        question.getRowDeleteByIndex(queData.rowTitles.length - 1).click()
 
-        question
-          .getRowTitleInptuList()
-          .should('have.length', queData.rowTitles.length)
+        question.getRowTitleInptuList().should('not.exist')
       })
     })
 
@@ -420,8 +420,8 @@ describe(`${FileHelper.getSpecName(
       it(' > Drag and drop the answer choices inside the box', () => {
         queData.choices.forEach((ch, index) => {
           question
-            .getDragDropItemByIndex(0)
-            .customDragDrop(`#drag-drop-board-${index}`)
+            .getDragDropItemByIndex(1)
+            .customDragDrop(`#drop-container-${index}`)
           question.getDragDropBoardByIndex(index).contains('p', ch)
         })
       })
@@ -439,26 +439,27 @@ describe(`${FileHelper.getSpecName(
 
     context(' > TC_62 => Save question', () => {
       it(' > Click on save button', () => {
+        question.getQuestionText().type(`{selectall}${queData.queText}`)
         question.header.save()
         cy.url().should('contain', 'item-detail')
       })
     })
 
     context(' > TC_63 => Preview Items', () => {
-      it(' > Click on preview', () => {
+      it(' > Click on preview and attempt', () => {
         preview = editItem.header.preview()
-        cy.get('body').contains('span', 'Check Answer')
+        cy.get('[data-cy="check-answer-btn"]').should('be.exist')
 
         queData.choices.forEach((ch, index) => {
           question
-            .getDragDropItemByIndex(index)
-            .customDragDrop(`#drag-drop-board-${index}`)
+            .getDragDropItemByIndex(1)
+            .customDragDrop(`#drop-container-${index}`)
           question.getDragDropBoardByIndex(index).contains('p', ch)
         })
       })
 
       it(' > Click on Check answer', () => {
-        preview.checkScore('2/2')
+        preview.checkScore('1.5/1.5')
       })
 
       it(' > Click on Show Answers', () => {
@@ -536,206 +537,209 @@ describe(`${FileHelper.getSpecName(
       })
 
       it(' > Add new column', () => {
+        question.selectDropDownByAttributeAndBlock(
+          'classification-column-dropdown',
+          'column-container',
+          '3'
+        )
         question
-          .getColumnAddButton()
-          .click()
-          .then(() => {
-            question
-              .getColumnTitleInptuList()
-              .should('have.length', queData.columnTitles.length + 1)
-              .last()
-              .click()
-              .clear()
-              .type('Last')
-              .should('contain', 'Last')
-          })
+          .getColumnTitleInptuList()
+          .should('have.length', queData.columnTitles.length + 1)
       })
 
       it(' > Delete existing column', () => {
-        question
-          .getColumnDeleteByIndex(queData.columnTitles.length)
-          .click()
-          .should('not.exist')
+        question.getColumnDeleteByIndex(queData.columnTitles.length).click()
 
         question
           .getColumnTitleInptuList()
           .should('have.length', queData.columnTitles.length)
       })
     })
+  })
 
-    context(' > TC_67 => Row titles', () => {
-      before('Should have existing titles', () => {
-        question.getRowAddButton().click()
-        question
-          .getRowTitleInptuList()
-          .should('have.length', queData.rowTitles.length)
-      })
-
-      it(' > Add new row', () => {
-        question
-          .getRowAddButton()
-          .click()
-          .then(() => {
-            question
-              .getRowTitleInptuList()
-              .should('have.length', queData.rowTitles.length + 1)
-              .last()
-              .click()
-              .clear()
-              .type('Last')
-              .should('contain', 'Last')
-          })
-      })
-
-      it(' > Edit the row names for existing', () => {
-        question
-          .getRowTitleInputByIndex(1)
-          .click()
-          .clear()
-          .type(queData.rowTitles[0])
-          .should('contain', queData.rowTitles[0])
-      })
-
-      it(' > Delete existing / newly created rows', () => {
-        question
-          .getRowDeleteByIndex(queData.rowTitles.length)
-          .click()
-          .should('not.exist')
-
-        question
-          .getRowTitleInptuList()
-          .should('have.length', queData.rowTitles.length)
-      })
+  context(' > TC_67 => Row titles', () => {
+    before('Should have existing titles', () => {
+      question.getRowAddButton().click()
+      question
+        .getRowTitleInptuList()
+        .should('have.length', queData.rowTitles.length)
     })
 
-    context(' > TC_68 => Group possible responses', () => {
-      it(' > Check the group possible responses checkbox', () => {
-        question.getGroupResponsesCheckbox().click()
-
-        question.getGroupResponsesCheckbox().find('input').should('be.checked')
-
-        question.getGroupContainerByIndex(0).should('be.visible')
-      })
-
-      it(' > Enter the title of group', () => {
-        question
-          .getTitleInputByIndex(0)
-          .clear()
-          .type('Group1')
-          .should('have.value', 'Group1')
-      })
-
-      it(' > Add/Delete new choices', () => {
-        question
-          .getChoiceListByGroup(0)
-          .each(($el, index, $list) => {
-            const cusIndex = $list.length - (index + 1)
-            question.deleteChoiceByGroup(0, cusIndex)
-          })
-          .should('have.length', 0)
-
-        queData.choices.forEach((ch, index) => {
-          question.getAddNewChoiceByIndex(0).should('be.visible').click()
+    it(' > Add new row', () => {
+      question
+        .getRowAddButton()
+        .click()
+        .then(() => {
           question
-            .getChoiceEditorByGroup(0, index)
-            .type(`{selectall}${ch}`)
-            .should('be.visible')
-          question.getDragDropBox().contains('p', ch).should('be.visible')
+            .getRowTitleInptuList()
+            .should('have.length', queData.rowTitles.length)
+            .last()
+            .click()
+            .clear()
+            .type('Last')
+            .should('contain', 'Last')
         })
-      })
-
-      it(' > Add new group', () => {
-        question
-          .getAddNewGroupButton()
-          .click()
-          .then(() => {
-            question.getGroupContainerByIndex(1).should('be.visible')
-          })
-      })
-
-      it(' > Delete group', () => {
-        question
-          .getGroupContainerByIndex(1)
-          .contains('div', 'Group 2')
-          .parent()
-          .next()
-          .should('be.visible')
-          .click()
-          .then(() => {
-            question.getGroupContainerByIndex(1).should('not.exist')
-          })
-      })
     })
 
-    context(' > TC_69 => Set Correct Answer(s)', () => {
-      it(' > Update Points', () => {
-        question
-          .getPontsInput()
-          .focus()
-          .clear()
-          .type('{selectall}1')
-          .should('have.value', '1')
-          .type('{uparrow}')
-          .should('have.value', '1.5')
-          .blur()
-      })
-
-      it(' > Drag and drop the answer choices inside the box', () => {
-        queData.choices.forEach((ch, index) => {
-          question
-            .getDragDropItemByIndex(0)
-            .customDragDrop(`#drag-drop-board-${index}`)
-          question.getDragDropBoardByIndex(index).contains('p', ch)
-        })
-      })
-
-      it(' > Click on + symbol', () => {
-        question.addAlternate()
-        question
-          .getAddedAlternate()
-          .then(($el) => {
-            cy.wrap($el).should('be.visible').click()
-          })
-          .should('not.exist')
-      })
+    it(' > Edit the row names for existing', () => {
+      question
+        .getRowTitleInputByIndex(0)
+        .click({ force: true })
+        .clear()
+        .type(queData.rowTitles[0])
+        .should('contain', queData.rowTitles[0])
     })
 
-    context(' > TC_70 => Save question', () => {
-      it(' > Click on save button', () => {
-        question.header.save()
-        cy.url().should('contain', 'item-detail')
-      })
+    it(' > Delete existing / newly created rows', () => {
+      question.getRowDeleteByIndex(queData.rowTitles.length - 1).click()
+
+      question.getRowTitleInptuList().should('not.exist')
     })
   })
 
-  context(' > Delete the question after creation', () => {
+  context(' > TC_68 => Group possible responses', () => {
+    it(' > Check the group possible responses checkbox', () => {
+      question.getGroupResponsesCheckbox().click()
+
+      question.getGroupResponsesCheckbox().find('input').should('be.checked')
+
+      question.getGroupContainerByIndex(0).should('be.visible')
+    })
+
+    it(' > Enter the title of group', () => {
+      question
+        .getTitleInputByIndex(0)
+        .clear()
+        .type('Group1')
+        .should('have.value', 'Group1')
+    })
+
+    it(' > Add/Delete new choices', () => {
+      question
+        .getChoiceListByGroup(0)
+        .each(($el, index, $list) => {
+          const cusIndex = $list.length - (index + 1)
+          question.deleteChoiceByGroup(0, cusIndex)
+        })
+        .should('have.length', 0)
+
+      queData.choices.forEach((ch, index) => {
+        question.getAddNewChoiceByIndex(0).should('be.visible').click()
+        question
+          .getChoiceEditorByGroup(0, index)
+          .type(`{selectall}${ch}`)
+          .should('be.visible')
+        question.getDragDropBox().contains('p', ch).should('be.visible')
+      })
+    })
+
+    it(' > Add new group', () => {
+      question
+        .getAddNewGroupButton()
+        .click()
+        .then(() => {
+          question.getGroupContainerByIndex(1).should('be.visible')
+        })
+    })
+
+    it(' > Delete group', () => {
+      question
+        .getGroupContainerByIndex(1)
+        .contains('div', 'Group 2')
+        .parent()
+        .next()
+        .should('be.visible')
+        .click()
+        .then(() => {
+          question.getGroupContainerByIndex(1).should('not.exist')
+        })
+    })
+  })
+
+  context(' > TC_69 => Set Correct Answer(s)', () => {
+    it(' > Update Points', () => {
+      question
+        .getPontsInput()
+        .focus()
+        .clear()
+        .type('{selectall}1')
+        .should('have.value', '1')
+        .type('{uparrow}')
+        .should('have.value', '1.5')
+        .blur()
+    })
+
+    it(' > Drag and drop the answer choices inside the box', () => {
+      queData.choices.forEach((ch, index) => {
+        question
+          .getDragDropItemByIndex(1)
+          .customDragDrop(`#drop-container-${index}`)
+        question.getDragDropBoardByIndex(index).contains('p', ch)
+      })
+    })
+
+    it(' > Click on + symbol', () => {
+      question.addAlternate()
+      question
+        .getAddedAlternate()
+        .then(($el) => {
+          cy.wrap($el).should('be.visible').click()
+        })
+        .should('not.exist')
+    })
+  })
+
+  context(' > TC_70 => Save question', () => {
+    it(' > Click on save button', () => {
+      question.getQuestionText().type(`{selectall}${queData.queText}`)
+
+      question.header.save()
+      cy.url().should('contain', 'item-detail')
+    })
+  })
+
+  /* context(' > Delete the question after creation', () => {
     context(' > Tc_71 => Delete option', () => {
       before(() => {
         editItem.createNewItem()
         // add new question
         editItem.chooseQuestion(queData.group, queData.queType)
-        editItem.header.save()
-      })
+        question.getQuestionText().type(`{selectall}${queData.queText}`)
+        queData.choices.forEach((ch, index) => {
+          question
+            .getDragDropItemByIndex(0)
+            .customDragDrop(`#drop-container-${index}`)
 
-      it(' > Click on delete button in Item Details page', () => {
-        editItem
-          .getDelButton()
-          .should('have.length', 1)
-          .click()
-          .should('have.length', 0)
-      })
+          editItem.header.save()
+        })
 
-      it(' > After delete, UI should not break', () => {
-        editItem.getEditButton().should('be.visible')
+        it(' > Click on delete button in Item Details page', () => {
+          editItem
+            .getDelButton()
+            .should('have.length', 1)
+            .click()
+            .should('have.length', 0)
+        })
+
+        it(' > After delete, UI should not break', () => {
+          editItem.getEditButton().should('be.visible')
+        })
       })
     })
-  })
-
+*/
   context(' > Scoring block tests', () => {
     before('visit items page and select question type', () => {
       editItem.createNewItem()
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType)
+      editItem.header.edit()
+      editItem.showAdvancedOptions()
+      question.getQuestionText().type(`{selectall}${queData.queText}`)
+      queData.choices.forEach((ch, index) => {
+        question
+          .getDragDropItemByIndex(index)
+          .customDragDrop(`#drop-container-${index}`)
+      })
     })
 
     afterEach(() => {
@@ -743,8 +747,6 @@ describe(`${FileHelper.getSpecName(
       preiview.getClear().click()
 
       question.header.edit()
-
-      // question.clickOnAdvancedOptions();
     })
 
     /*  it(" > test score with max score", () => {
@@ -767,7 +769,7 @@ describe(`${FileHelper.getSpecName(
          });
      }); */
 
-    it(' > test score with min score if attemted', () => {
+    /* it(' > test score with min score if attemted', () => {
       question.getMaxScore().clear()
 
       question.getEnableAutoScoring().click()
@@ -784,12 +786,33 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          cy.get('body').children().should('contain', 'score: 2/12')
+          cy.get('body').children().should('contain', 'score: 1.5/1.5')
         })
+    })
+    */
+    it(' > add instruction and check on preview page', () => {
+      scoringBlockPage.verifyAddInstructions('instruction')
+      question.header.preview()
+      question.header
+        .preview()
+        .getInstructionText()
+        .should('contain', 'instruction')
+    })
+    it(' > remove instruction and check on preview page', () => {
+      scoringBlockPage.verifyAddInstructions('instruction')
+      question.header.preview()
+      question.header
+        .preview()
+        .getInstructionText()
+        .should('contain', 'instruction')
+      editItem.header.edit()
+      scoringBlockPage.unCheckEnableScoringInstructions()
+      question.header.preview().getInstructionIcon().should('not.be.visible')
     })
 
     it(' > test score with partial match and penalty', () => {
-      question.getMinScore().clear()
+      question.checkGetEnableAutoScoring()
+      question.getPontsInput().clear().type('12{del}')
 
       question.selectScoringType('Partial match')
 
@@ -800,15 +823,68 @@ describe(`${FileHelper.getSpecName(
       queData.forScoring.forEach((choice, index) => {
         question
           .getDragDropItemByIndex(index)
-          .customDragDrop(`#drag-drop-board-${index < 2 ? 0 : 1}`)
+          .customDragDrop(`#drop-container-${index < 2 ? 0 : 1}`)
       })
-
-      preiview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          cy.get('body').children().should('contain', 'score: 4/12')
-        })
+      preiview.checkScore('4/12')
     })
   })
+  context(' > Possible responses', () => {
+    before('visit items page and select question type', () => {
+      editItem.createNewItem()
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType)
+      question.header.edit()
+    })
+    afterEach(() => {
+      const preiview = question.header.preview()
+      preiview.getClear().click()
+
+      question.header.edit()
+    })
+    it('Check SHOW DRAG HANDLE and verify', () => {
+      question.verifyDragHandel()
+      question.header.preview()
+      question
+        .getDragDropItemByIndex(1)
+        .find('[data-icon="arrows-alt"]')
+        .should('be.visible')
+    })
+    it('unCheck SHOW DRAG HANDLE and verify', () => {
+      question.unCheckShowDragHandel()
+      question.header.preview()
+      question
+        .getDragDropItemByIndex(1)
+        .find('[data-icon="arrows-alt"]')
+        .should('not.be.visible')
+      editItem.header.edit()
+    })
+
+    it('Check DuplicatedResponses and verify', () => {
+      question.checkDuplicatedResponses()
+      question.getDragDropItemByIndex(1).customDragDrop(`#drop-container-${1}`)
+      question.getDragDropItemByIndex(1).customDragDrop(`#drop-container-${0}`)
+      question.getDragDropItemByIndex(1).should('be.visible')
+      question.header.preview()
+      question.getDragDropItemByIndex(1).customDragDrop(`#drop-container-${1}`)
+      question.getDragDropItemByIndex(1).customDragDrop(`#drop-container-${0}`)
+      question.getDragDropItemByIndex(1).should('be.visible')
+    })
+
+    it('Check Shuffle Response and verify', () => {
+      question.deleteAllchoices()
+      queData.forDuplicateResponse.forEach((ch, index) => {
+        question.getAddNewChoiceButton().should('be.visible').click()
+        question
+          .getChoiceEditor(index)
+          .type(`{selectall}${ch}`)
+          .should('be.visible')
+        question.getDragDropBox().contains('p', ch).should('be.visible')
+      })
+      question.checkShuffleOptions()
+      question.verifyShuffleChoices(queData.forDuplicateResponse)
+      question.header.preview()
+      question.verifyShuffleChoices(queData.forDuplicateResponse)
+    })
+  })
+  validateSolutionBlockTests(queData.group, queData.queType)
 })

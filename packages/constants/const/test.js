@@ -194,6 +194,7 @@ module.exports = {
     sbac: 'SBAC',
     cmas: 'Colorado - CMAS',
     casspp: 'California - CASSPP',
+    testlet: 'ETS Testlet Player',
   },
   playerSkinValues: {
     edulastic: 'edulastic',

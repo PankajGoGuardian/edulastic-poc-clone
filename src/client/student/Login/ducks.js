@@ -1140,7 +1140,13 @@ function* logout() {
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }
+      const version = localStorage.getItem('dashboardVersion')
+      const configurableTiles = localStorage.getItem('configurableTiles')
       localStorage.clear()
+      if (version && configurableTiles) {
+        localStorage.setItem('configurableTiles', configurableTiles)
+        localStorage.setItem('dashboardVersion', version)
+      }
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')

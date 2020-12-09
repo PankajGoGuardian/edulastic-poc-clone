@@ -22,7 +22,7 @@ import {
   PopoverWrapper,
   UpgradeBtn,
 } from './styled'
-import { launchHangoutOpen } from '../../duck'
+import { launchHangoutOpen } from '../../ducks'
 
 const getContent = ({ setvisible, needsRenewal }) => (
   <FlexContainer width="475px" alignItems="flex-start">

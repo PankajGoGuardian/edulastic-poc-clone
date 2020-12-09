@@ -1,15 +1,18 @@
+import qs from 'qs'
 import API from './utils/API'
 
 const api = new API()
 const prefix = '/config-tiles'
 
-const fetchTiles = () =>
-  api
+const fetchTiles = (version) => {
+  const queryString = qs.stringify(version)
+  return api
     .callApi({
-      url: `${prefix}`,
+      url: `${prefix}?${queryString}`,
       method: 'get',
     })
     .then((result) => result.data.result)
+}
 
 const fetchTileById = (id) =>
   api

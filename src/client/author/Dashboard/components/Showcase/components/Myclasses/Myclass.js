@@ -30,7 +30,7 @@ import {
   getCanvasSectionListRequestAction,
   setShowCleverSyncModalAction,
 } from '../../../../../ManageClass/ducks'
-import { receiveTeacherDashboardAction } from '../../../../duck'
+import { receiveTeacherDashboardAction } from '../../../../ducks'
 import {
   getGoogleAllowedInstitionPoliciesSelector,
   getCanvasAllowedInstitutionPoliciesSelector,

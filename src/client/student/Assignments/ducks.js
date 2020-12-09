@@ -109,7 +109,7 @@ const getClassIds = createSelectorator(['user.user.orgData.classList'], (cls) =>
   (cls || []).map((cl) => cl._id)
 )
 
-const getUserId = createSelector(
+const getUserId = createSelectorator(
   ['user.user._id', 'user.currentChild'],
   (_id, currentChild) => _id || currentChild
 )

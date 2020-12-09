@@ -130,13 +130,9 @@ const SingleAssessmentReportFilters = ({
       }
       if (firstLoad) {
         search = {
-          ...savedFilters,
-          teacherIds: !isEmpty(savedFilters.teacherIds)
-            ? savedFilters.teacherIds.join(',')
-            : '',
-          schoolIds: !isEmpty(savedFilters.schoolIds)
-            ? savedFilters.schoolIds.join(',')
-            : '',
+          termId: search.termId || savedFilters.termId,
+          subject: search.subject || savedFilters.subject,
+          grade: search.grade || savedFilters.grade,
           ...search,
         }
       }

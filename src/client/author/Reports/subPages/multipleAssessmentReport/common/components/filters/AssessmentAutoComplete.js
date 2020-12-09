@@ -81,7 +81,7 @@ const AssessmentAutoComplete = ({
       selectCB([key])
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
-      selectCB([])
+      selectCB(selectedTestIds)
     }
   }
   const loadTestListDebounced = useCallback(
@@ -91,7 +91,7 @@ const AssessmentAutoComplete = ({
 
   // effects
   useEffect(() => {
-    if (!searchTerms.selectedText && testList.length) {
+    if (!selectedTestIds.length && testList.length) {
       onSelect(testList[0]._id)
     } else if (!loading && !testList.length) {
       onSelect()

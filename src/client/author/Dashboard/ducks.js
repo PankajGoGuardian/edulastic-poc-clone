@@ -44,7 +44,7 @@ const initialState = {
   loading: false,
   isLaunchHangoutOpen: false,
   configurableTiles: JSON.parse(
-    localStorage.getItem('configurableTiles') || '[]'
+    localStorage.getItem('author:dashboard:tiles') || '[]'
   ),
 }
 

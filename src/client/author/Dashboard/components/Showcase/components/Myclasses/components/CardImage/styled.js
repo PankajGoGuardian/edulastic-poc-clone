@@ -24,15 +24,17 @@ export const OverlayText = styled.div`
   font-weight: bold;
 `
 export const IconWrapper = styled.div`
-  width: 24px;
-  height: 24px;
-  padding: 0.5rem;
-  border-radius: 50%;
-  background: ${white};
-  cursor: pointer;
   position: absolute;
   top: 0px;
   right: 2px;
+  display: flex;
+`
+export const CircleBtn = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: ${(props) => props.bg || white};
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,7 +47,7 @@ export const TextDiv = styled.p`
   overflow: hidden;
   white-space: nowrap;
   font-weight: bold;
-  padding-right: 50px;
+  padding-right: 60px;
 `
 export const SpanLeftMargin = styled.span`
   margin-left: 0.5rem;

@@ -8,7 +8,12 @@ import { Popover, Tooltip } from 'antd'
 
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
-import { IconClockDashboard, IconHangouts, IconManage } from '@edulastic/icons'
+import {
+  IconClockDashboard,
+  IconHangouts,
+  IconManage,
+  IconPlusCircle,
+} from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
@@ -90,18 +95,20 @@ const HeaderSection = ({
             <IconHangouts color={themeColor} height={21} width={19} />
           </StyledEduButton>
         </Tooltip>
-        <Tooltip title="Manage Class">
-          <Link to="/author/manageClass">
-            <EduButton
-              IconBtn
-              isBlue
-              style={{ marginLeft: '5px' }}
-              data-cy="manageClass"
-            >
-              <IconManage />
-            </EduButton>
-          </Link>
-        </Tooltip>
+        <Link to="/author/manageClass/createClass">
+          <EduButton
+            isBlue
+            style={{ marginLeft: '5px' }}
+            data-cy="createNewClass"
+          >
+            <IconPlusCircle width={16} height={16} /> CREATE NEW CLASS
+          </EduButton>
+        </Link>
+        <Link to="/author/manageClass">
+          <EduButton isBlue style={{ marginLeft: '5px' }} data-cy="manageClass">
+            <IconManage /> Manage Class
+          </EduButton>
+        </Link>
         {showPopup && (
           <PopoverWrapper>
             <Popover

@@ -6,23 +6,14 @@ import { get } from 'lodash'
 
 // components
 import { Row, Spin } from 'antd'
-import {
-  DarkLogo,
-  MainContentWrapper,
-  OnDarkBgLogo,
-  OnWhiteBgLogo,
-  WhiteLogo,
-} from '@edulastic/common'
+import { MainContentWrapper } from '@edulastic/common'
 import { title } from '@edulastic/colors'
-import { IconItemGroup } from '@edulastic/icons'
 import { TextWrapper } from '../../../styledComponents'
 import {
   CardBox,
   CardContainer,
   FeatureContentWrapper,
   BundleContainer,
-  Top,
-  Mid,
   Bottom,
 } from './styled'
 import CardImage from './components/CardImage/cardImage'
@@ -137,38 +128,26 @@ const MyClasses = ({
   const bundles = [
     {
       id: 1,
-      status: 'free',
-      itemsCount: 40,
       bgImage:
         'transparent linear-gradient(236deg, #0d9c8c 0%, #095592 100%) 0% 0% no-repeat padding-box',
-      logoImage: <OnWhiteBgLogo />,
       description: 'Lorem ipsum dolor sit amet dolor sit amet',
     },
     {
       id: 2,
-      status: '',
-      itemsCount: 40,
       bgImage:
         'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
-      logoImage: <OnDarkBgLogo />,
       description: 'Lorem ipsum dolor sit amet dolor sit amet',
     },
     {
       id: 3,
-      status: '',
-      itemsCount: 40,
       bgImage:
         'transparent linear-gradient(236deg, #6F0027 0%, #C52229 100%) 0% 0% no-repeat padding-box',
-      logoImage: <WhiteLogo />,
       description: 'Lorem ipsum dolor sit amet dolor sit amet',
     },
     {
-      id: 3,
-      status: 'premium',
-      itemsCount: 40,
+      id: 4,
       bgImage:
         'transparent linear-gradient(236deg, #45B1C5 0%, #9ED0D9 100%) 0% 0% no-repeat padding-box',
-      logoImage: <DarkLogo />,
       description: 'Lorem ipsum dolor sit amet dolor sit amet',
     },
   ]
@@ -179,7 +158,7 @@ const MyClasses = ({
       bgImage={bundle.bgImage}
       key={bundle.id}
     >
-      <Top>
+      {/* <Top>
         {bundle.status && (
           <span className={`custom-badge ${bundle.status}-badge`}>
             {bundle.status === 'premium' ? '$ ' : ''}
@@ -193,7 +172,7 @@ const MyClasses = ({
           </span>
         )}
       </Top>
-      <Mid>{bundle.logoImage && <div> {bundle.logoImage} </div>}</Mid>
+      <Mid>{bundle.logoImage && <div> {bundle.logoImage} </div>}</Mid> */}
       <Bottom>{bundle.description && <div> {bundle.description} </div>}</Bottom>
     </BundleContainer>
   ))
@@ -262,7 +241,7 @@ const MyClasses = ({
         >
           Featured Content Bundles
         </TextWrapper>
-        <div>{FeatureContentCards}</div>
+        <div style={{ display: 'flex' }}>{FeatureContentCards}</div>
       </FeatureContentWrapper>
       <Launch />
     </MainContentWrapper>

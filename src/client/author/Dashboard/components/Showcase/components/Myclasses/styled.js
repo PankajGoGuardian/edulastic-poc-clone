@@ -18,7 +18,8 @@ export const FeatureContentWrapper = styled.div`
 export const BundleContainer = styled.div`
   width: 241px;
   height: 169px;
-  display: inline-block;
+  display: flex;
+  align-items: flex-end;
   margin: 0px 10px 10px 0px;
   border-radius: 10px;
   background: ${(props) => props.bgImage || `url(${props.bgImage})`};
@@ -28,7 +29,7 @@ export const BundleContainer = styled.div`
   color: ${white};
   cursor: pointer;
 `
-export const Top = styled.div`
+/* export const Top = styled.div`
   display: flex;
   justify-content: flex-end;
   .custom-badge {
@@ -64,7 +65,7 @@ export const Mid = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+` */
 
 export const Bottom = styled.div`
   font-size: 13px;

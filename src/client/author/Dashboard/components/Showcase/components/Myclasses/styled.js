@@ -15,6 +15,27 @@ export const CardBox = styled.div``
 export const FeatureContentWrapper = styled.div`
   margin-top: 20px;
 `
+export const BannerSlider = styled.div`
+  white-space: nowrap;
+  margin-bottom: 20px;
+  overflow: auto;
+`
+
+export const Slides = styled.div`
+  height: 200px;
+  width: 490px;
+  margin-right: 15px;
+  background: ${(props) => props.bgImage || `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  color: ${white};
+  cursor: pointer;
+  display: inline-block;
+  &:last-child {
+    margin-right: 0px;
+  }
+`
+
 export const BundleContainer = styled.div`
   width: 241px;
   height: 169px;
@@ -29,43 +50,6 @@ export const BundleContainer = styled.div`
   color: ${white};
   cursor: pointer;
 `
-/* export const Top = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  .custom-badge {
-    background: #e8eef2;
-    color: #5c809e;
-    font-size: 8px;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    border-radius: 5px;
-    margin-left: 5px;
-    text-align: center;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-
-    svg {
-      fill: #5c809e;
-      margin-right: 8px;
-      width: 10px;
-      height: 10px;
-    }
-
-    &.premium-badge {
-      background: #feb63a;
-      color: #ffffff;
-    }
-  }
-`
-
-export const Mid = styled.div`
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-` */
 
 export const Bottom = styled.div`
   font-size: 13px;

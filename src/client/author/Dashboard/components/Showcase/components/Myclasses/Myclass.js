@@ -6,7 +6,7 @@ import { get } from 'lodash'
 
 // components
 import { Row, Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
+import { FlexContainer, MainContentWrapper } from '@edulastic/common'
 import { title } from '@edulastic/colors'
 import { TextWrapper } from '../../../styledComponents'
 import {
@@ -15,6 +15,8 @@ import {
   FeatureContentWrapper,
   BundleContainer,
   Bottom,
+  BannerSlider,
+  Slides,
 } from './styled'
 import CardImage from './components/CardImage/cardImage'
 import CardTextContent from './components/CardTextContent/cardTextContent'
@@ -128,25 +130,25 @@ const MyClasses = ({
   const bundles = [
     {
       id: 1,
-      bgImage:
+      imageUrl:
         'transparent linear-gradient(236deg, #0d9c8c 0%, #095592 100%) 0% 0% no-repeat padding-box',
       description: 'Lorem ipsum dolor sit amet dolor sit amet',
     },
     {
       id: 2,
-      bgImage:
+      imageUrl:
         'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
       description: 'Lorem ipsum dolor sit amet dolor sit amet',
     },
     {
       id: 3,
-      bgImage:
+      imageUrl:
         'transparent linear-gradient(236deg, #6F0027 0%, #C52229 100%) 0% 0% no-repeat padding-box',
       description: 'Lorem ipsum dolor sit amet dolor sit amet',
     },
     {
       id: 4,
-      bgImage:
+      imageUrl:
         'transparent linear-gradient(236deg, #45B1C5 0%, #9ED0D9 100%) 0% 0% no-repeat padding-box',
       description: 'Lorem ipsum dolor sit amet dolor sit amet',
     },
@@ -155,26 +157,43 @@ const MyClasses = ({
   const FeatureContentCards = bundles.map((bundle) => (
     <BundleContainer
       onClick={bundleHandler}
-      bgImage={bundle.bgImage}
+      bgImage={bundle.imageUrl}
       key={bundle.id}
     >
-      {/* <Top>
-        {bundle.status && (
-          <span className={`custom-badge ${bundle.status}-badge`}>
-            {bundle.status === 'premium' ? '$ ' : ''}
-            {bundle.status}
-          </span>
-        )}
-        {bundle.itemsCount && (
-          <span className="custom-badge">
-            <IconItemGroup />
-            {bundle.itemsCount} ITEMS
-          </span>
-        )}
-      </Top>
-      <Mid>{bundle.logoImage && <div> {bundle.logoImage} </div>}</Mid> */}
       <Bottom>{bundle.description && <div> {bundle.description} </div>}</Bottom>
     </BundleContainer>
+  ))
+
+  const bannerSlides = [
+    {
+      id: 1,
+      imageUrl:
+        'transparent linear-gradient(236deg, #0d9c8c 0%, #095592 100%) 0% 0% no-repeat padding-box',
+    },
+    {
+      id: 2,
+      imageUrl:
+        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
+    },
+    {
+      id: 3,
+      imageUrl:
+        'transparent linear-gradient(236deg, #6F0027 0%, #C52229 100%) 0% 0% no-repeat padding-box',
+    },
+    {
+      id: 4,
+      imageUrl:
+        'transparent linear-gradient(236deg, #45B1C5 0%, #9ED0D9 100%) 0% 0% no-repeat padding-box',
+    },
+    {
+      id: 5,
+      imageUrl:
+        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
+    },
+  ]
+
+  const Banner = bannerSlides.map((slide) => (
+    <Slides bgImage={slide.imageUrl} key={slide._id} />
   ))
 
   const isClassLink =
@@ -206,6 +225,7 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
+      <BannerSlider>{Banner}</BannerSlider>
       <TextWrapper
         fw="bold"
         size="16px"
@@ -241,7 +261,9 @@ const MyClasses = ({
         >
           Featured Content Bundles
         </TextWrapper>
-        <div style={{ display: 'flex' }}>{FeatureContentCards}</div>
+        <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+          {FeatureContentCards}
+        </FlexContainer>
       </FeatureContentWrapper>
       <Launch />
     </MainContentWrapper>

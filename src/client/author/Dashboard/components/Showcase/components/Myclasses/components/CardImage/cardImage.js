@@ -60,13 +60,7 @@ const CardImage = ({ data, history }) => {
               </IconWrapper>
             </StyledRow>
             <RowWrapperGrade>
-              <TextWrapper
-                color="#FFFFFF"
-                rfs="12px"
-                size="13px"
-                fw="600"
-                minTwo
-              >
+              <TextWrapper color={white} rfs="12px" size="13px" fw="600" minTwo>
                 {grades.length ? (
                   <>
                     <span data-cy="grades">Grades</span>{' '}
@@ -93,7 +87,7 @@ const CardImage = ({ data, history }) => {
             <RowWrapperGrade>
               <TextWrapper
                 data-cy="studentCount"
-                color="#FFFFFF"
+                color={white}
                 rfs="11px"
                 size="12px"
                 fw="600"

@@ -158,12 +158,12 @@ const PerformanceByStandards = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters },
+        requestFilters: { ...settings.requestFilters, compareBy },
         testId: settings.selectedTest.key,
       }
       getPerformanceByStandards(q)
     }
-  }, [settings])
+  }, [settings, compareBy])
 
   const setSelectedData = ({ defaultStandardId }) => {
     const _defaultStandardId =

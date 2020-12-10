@@ -509,6 +509,12 @@ const BackgroundStyleWrapper = styled.div.attrs({
         `
       }
     }}
+    .fr-view {
+      > p {
+        padding: 0px !important;
+        text-indent: 0pt !important;
+      }
+    }
   }
 
   ${({ border }) => {

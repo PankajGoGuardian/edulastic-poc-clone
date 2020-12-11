@@ -120,7 +120,6 @@ const MyClasses = ({
   const handleFeatureClick = (prop) => {
     const entries = prop.reduce((a, c) => ({ ...a, ...c }), {})
     const filter = qs.stringify(entries)
-    console.log('filter', prop, entries)
     history.push(`/author/tests?${filter}`)
   }
 
@@ -139,25 +138,17 @@ const MyClasses = ({
   const bannerLength = (BANNER || []).length
 
   const Banner = (BANNER || []).map((slide, index) => (
-    <>
-      <Slides
-        className={bannerLength === index + 1 ? 'last' : ''}
-        bgImage={slide.imageUrl}
-        key={slide._id}
-      />
-      <Slides
-        className={bannerLength === index + 1 ? 'last' : ''}
-        bgImage={slide.imageUrl}
-        key={slide._id}
-      />
-    </>
+    <Slides
+      className={bannerLength === index + 1 ? 'last' : ''}
+      bgImage={slide.imageUrl}
+      key={slide._id}
+    />
   ))
 
   const ref = useRef(null)
 
   const scroll = (scrollOffset) => {
     ref.current.scrollLeft += scrollOffset
-    console.log('leftScroll', ref, ref.current.scrollLeft)
   }
 
   const isClassLink =

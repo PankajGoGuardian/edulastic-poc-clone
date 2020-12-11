@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Button, Spin } from 'antd'
+import Button from "antd/es/Button";
+import Spin from "antd/es/Spin";
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { getDistrictDataSelector } from '../../Upgrade/ducks'

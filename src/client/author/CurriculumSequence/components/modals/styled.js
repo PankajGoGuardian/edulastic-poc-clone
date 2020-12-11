@@ -1,4 +1,7 @@
-import { Select, Col, Row, Radio } from 'antd'
+import Select from "antd/es/Select";
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Radio from "antd/es/Radio";
 import styled from 'styled-components'
 import {
   white,

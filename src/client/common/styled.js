@@ -8,7 +8,13 @@ import {
   white,
 } from '@edulastic/colors'
 import { Card } from '@edulastic/common'
-import { Button, Form, Input, Modal, Pagination, Select, Table } from 'antd'
+import Button from "antd/es/Button";
+import Form from "antd/es/Form";
+import Input from "antd/es/Input";
+import Modal from "antd/es/Modal";
+import Pagination from "antd/es/Pagination";
+import Select from "antd/es/Select";
+import Table from "antd/es/Table";
 import styled from 'styled-components'
 
 export const StyledCard = styled(Card)`

@@ -2,8 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
-// components
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/Tooltip";
 import { withNamespaces } from '@edulastic/localization'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import { StyledTable, StyledTableCell } from '../styled'

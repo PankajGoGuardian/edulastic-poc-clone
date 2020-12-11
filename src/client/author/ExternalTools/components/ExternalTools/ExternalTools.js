@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Col } from 'antd'
+import Col from "antd/es/Col";
 import { EduButton, SearchInputStyled } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'

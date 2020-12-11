@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get } from 'lodash'
 
-// components
-import { Col, Row, Spin } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Spin from "antd/es/Spin";
 import { MainContentWrapper } from '@edulastic/common'
 import { title } from '@edulastic/colors'
 import { TextWrapper } from '../../../styledComponents'

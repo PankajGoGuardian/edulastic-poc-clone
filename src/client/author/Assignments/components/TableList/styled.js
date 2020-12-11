@@ -13,7 +13,9 @@ import {
 } from '@edulastic/colors'
 import { testActivity } from '@edulastic/constants'
 import { IconDownEmptyArrow } from '@edulastic/icons'
-import { Button, Table, Tag } from 'antd'
+import Button from "antd/es/Button";
+import Table from "antd/es/Table";
+import Tag from "antd/es/Tag";
 import styled from 'styled-components'
 import { EduTableStyled } from '@edulastic/common'
 

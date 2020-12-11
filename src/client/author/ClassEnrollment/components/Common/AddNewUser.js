@@ -8,8 +8,10 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import { IconUser } from '@edulastic/icons'
-// components
-import { Collapse, Icon, Select, Spin } from 'antd'
+import Collapse from "antd/es/Collapse";
+import Icon from "antd/es/Icon";
+import Select from "antd/es/Select";
+import Spin from "antd/es/Spin";
 import { get, isEmpty } from 'lodash'
 import React from 'react'
 import { isEmailValid, nameValidator } from '../../../../common/utils/helpers'

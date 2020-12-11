@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Tabs as AntTabs, Tooltip } from 'antd'
+import AntTabs from "antd/es/Tabs";
+import Tooltip from "antd/es/Tooltip";
 import MainKeyboard from './MainKeyboard'
 import { TAB_BUTTONS } from '../constants/keyboardButtons'
 

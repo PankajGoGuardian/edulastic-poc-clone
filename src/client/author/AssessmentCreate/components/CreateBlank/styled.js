@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { darkGrey, themeColor, white } from '@edulastic/colors'
 import CardComponent from '../../../AssignmentCreate/common/CardComponent'
 

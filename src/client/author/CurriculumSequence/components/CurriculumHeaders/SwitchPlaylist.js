@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import { connect } from 'react-redux'
 import {
   extraDesktopWidthMax,

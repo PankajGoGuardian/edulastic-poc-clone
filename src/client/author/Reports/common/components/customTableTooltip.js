@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/Tooltip";
 import styled from 'styled-components'
 import { black } from '@edulastic/colors'
 

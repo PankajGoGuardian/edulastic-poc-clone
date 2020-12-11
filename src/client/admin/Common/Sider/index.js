@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Layout } from 'antd'
+import Layout from "antd/es/Layout";
 import PropTypes from 'prop-types'
 
 const { Sider } = Layout

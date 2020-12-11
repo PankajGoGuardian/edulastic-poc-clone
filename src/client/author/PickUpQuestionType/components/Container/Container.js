@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import uuid from 'uuid/v4'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Menu } from 'antd'
+import Menu from "antd/es/Menu";
 import { questionType } from '@edulastic/constants'
 import { PaddingDiv, withWindowSizes, notification } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'

@@ -3,7 +3,7 @@ import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { withRouter } from 'react-router-dom'
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from 'lodash'
 import uuidv4 from 'uuid/v4'

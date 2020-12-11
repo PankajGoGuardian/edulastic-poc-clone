@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { round, shuffle, get } from 'lodash'
-import { Col, Row, Spin } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Spin from "antd/es/Spin";
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { connect } from 'react-redux'

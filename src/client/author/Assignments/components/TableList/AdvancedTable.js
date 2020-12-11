@@ -1,7 +1,10 @@
 import { EduButton, FlexContainer, CheckboxLabel } from '@edulastic/common'
 import { test } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
-import { Dropdown, Spin, Tooltip, Menu } from 'antd'
+import Dropdown from "antd/es/Dropdown";
+import Spin from "antd/es/Spin";
+import Tooltip from "antd/es/Tooltip";
+import Menu from "antd/es/Menu";
 import produce from 'immer'
 import { get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'

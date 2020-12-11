@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Row, Col, Card, Button } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Card from "antd/es/Card";
+import Button from "antd/es/Button";
 import { IconCircleCheck, IconCalculator } from '@edulastic/icons'
 import { white, themeColor } from '@edulastic/colors'
 import Header from './Header'

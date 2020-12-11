@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import { Row, Col, Card } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Card from "antd/es/Card";
 import { get, head } from 'lodash'
 import { TooltipContainer } from './styled'
 

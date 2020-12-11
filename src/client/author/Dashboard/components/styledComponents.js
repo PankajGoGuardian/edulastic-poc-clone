@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Typography, Icon } from 'antd'
+import Typography from "antd/es/Typography";
+import Icon from "antd/es/Icon";
 import { extraDesktopWidthMax } from '@edulastic/colors'
 
 const { Text } = Typography

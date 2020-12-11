@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 
 const SpinLoader = ({ position, height }) => (
   <SpinWrapper position={position} height={height}>

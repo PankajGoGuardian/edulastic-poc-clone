@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { isEmpty, size, get } from 'lodash'
 import memoizeOne from 'memoize-one'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 
 // components
 import {

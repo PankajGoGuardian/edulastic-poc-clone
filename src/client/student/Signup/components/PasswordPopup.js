@@ -1,5 +1,8 @@
 import React from 'react'
-import { Modal, Input, Row, Col } from 'antd'
+import Modal from "antd/es/Modal";
+import Input from "antd/es/Input";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'

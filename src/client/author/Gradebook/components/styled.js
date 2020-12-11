@@ -2,7 +2,8 @@ import styled from 'styled-components'
 
 // components
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Table, Col } from 'antd'
+import Table from "antd/es/Table";
+import Col from "antd/es/Col";
 import { Button } from '@edulastic/common'
 import { IconGraphRightArrow as Arrow } from '@edulastic/icons'
 

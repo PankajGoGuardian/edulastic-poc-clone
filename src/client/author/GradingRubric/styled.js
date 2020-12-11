@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Input, Col, Table } from 'antd'
+import Input from "antd/es/Input";
+import Col from "antd/es/Col";
+import Table from "antd/es/Table";
 import {
   themeColor,
   white,

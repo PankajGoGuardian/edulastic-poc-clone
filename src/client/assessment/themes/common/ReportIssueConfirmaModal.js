@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import styled from 'styled-components'
 import { themeColor, white } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'

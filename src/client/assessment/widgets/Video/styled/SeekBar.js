@@ -1,7 +1,7 @@
 import React from 'react'
 import { withMediaProps } from 'react-media-player'
 
-import { Slider } from 'antd'
+import Slider from "antd/es/Slider";
 
 const SeekBar = ({ style, media }) => {
   const _handleChange = (value) => {

@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Spin, Select } from 'antd'
+import Spin from "antd/es/Spin";
+import Select from "antd/es/Select";
 
 export const StyledDescription = styled.p`
   text-align: center;

@@ -5,7 +5,8 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Select } from 'antd'
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
 import { keyBy } from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'

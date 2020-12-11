@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row } from 'antd'
+import Row from "antd/es/Row";
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import analyseByData from '../../static/json/analyseByDropDown.json'
 

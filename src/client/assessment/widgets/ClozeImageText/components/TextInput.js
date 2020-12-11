@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { math } from '@edulastic/constants'
 import styled from 'styled-components'
-import { Input } from 'antd'
+import Input from "antd/es/Input";
 import { isEmpty } from 'lodash'
 
 import NumberPad from '../../../components/NumberPad'

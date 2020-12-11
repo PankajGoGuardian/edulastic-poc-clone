@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Tooltip, Spin } from 'antd'
+import Tooltip from "antd/es/Tooltip";
+import Spin from "antd/es/Spin";
 
 import { notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'

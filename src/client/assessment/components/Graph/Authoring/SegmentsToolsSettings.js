@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { Row } from '../../../styled/WidgetOptions/Row'
 import { Col } from '../../../styled/WidgetOptions/Col'

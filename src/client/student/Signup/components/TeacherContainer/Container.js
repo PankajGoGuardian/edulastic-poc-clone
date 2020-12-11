@@ -5,7 +5,7 @@ import { ThemeProvider } from 'styled-components'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { get } from 'lodash'
-import { Col } from 'antd'
+import Col from "antd/es/Col";
 import { notification } from '@edulastic/common'
 import { canvasApi } from '@edulastic/api'
 import Header from './Header'

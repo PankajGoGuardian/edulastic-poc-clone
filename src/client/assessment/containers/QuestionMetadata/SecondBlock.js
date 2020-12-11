@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Select } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
 import { uniqBy } from 'lodash'
 import {
   notification,

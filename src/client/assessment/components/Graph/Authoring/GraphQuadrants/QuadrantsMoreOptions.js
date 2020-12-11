@@ -1,7 +1,7 @@
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
 import { evaluationType } from '@edulastic/constants'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { compose } from 'redux'

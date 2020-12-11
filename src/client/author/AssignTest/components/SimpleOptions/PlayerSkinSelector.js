@@ -1,5 +1,6 @@
 import { test } from '@edulastic/constants'
-import { Col, Select } from 'antd'
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
 import React from 'react'
 import {
   ColLabel,

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { themeColor } from '@edulastic/colors'
 
 export const BrowseButton = styled(Button)`

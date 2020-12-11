@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { Input, Dropdown, Menu, Icon } from 'antd'
+import Input from "antd/es/Input";
+import Dropdown from "antd/es/Dropdown";
+import Menu from "antd/es/Menu";
+import Icon from "antd/es/Icon";
 import {
   StyledFormItem,
   ScoreColorSpan,

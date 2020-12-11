@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import CancelApplyActions from './CancelApplyActions'
 import { CLASS_NAME_PATTERN_CONFIG, DISABLE_SUBMIT_TITLE } from '../Data'
 import { CheckboxLabel } from '@edulastic/common'

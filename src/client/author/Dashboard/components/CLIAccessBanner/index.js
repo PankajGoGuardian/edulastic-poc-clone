@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Dropdown, Menu } from 'antd'
+import Dropdown from "antd/es/Dropdown";
+import Menu from "antd/es/Menu";
 import Modal from 'react-responsive-modal'
 import qs from 'qs'
 import { get } from 'lodash'

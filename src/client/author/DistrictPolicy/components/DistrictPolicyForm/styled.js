@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Row, Button, Form } from 'antd'
+import Row from "antd/es/Row";
+import Button from "antd/es/Button";
+import Form from "antd/es/Form";
 import { themeColor, textColor } from '@edulastic/colors'
 
 export const StyledFormDiv = styled.div`

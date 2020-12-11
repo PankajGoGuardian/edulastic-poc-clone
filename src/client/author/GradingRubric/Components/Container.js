@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Row } from 'antd'
+import Row from "antd/es/Row";
 import { updateRubricDataAction, getCurrentRubricDataSelector } from '../ducks'
 import CreateNew from './CreateNew'
 import UseExisting from './UseExisting'

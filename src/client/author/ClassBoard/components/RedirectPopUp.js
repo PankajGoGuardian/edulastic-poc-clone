@@ -11,7 +11,9 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import { test as testContants } from '@edulastic/constants'
-import { Col, Row, Select } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
 import { some, get } from 'lodash'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'

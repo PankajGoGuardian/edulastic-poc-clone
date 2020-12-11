@@ -12,7 +12,10 @@ import {
 } from '@edulastic/colors'
 import { EduButton, Card, FieldLabel } from '@edulastic/common'
 import { Text } from '@vx/text'
-import { Col, Slider, Table, Button } from 'antd'
+import Col from "antd/es/Col";
+import Slider from "antd/es/Slider";
+import Table from "antd/es/Table";
+import Button from "antd/es/Button";
 import styled from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
 

@@ -1,5 +1,10 @@
 import styled from 'styled-components'
-import { Button, Modal, Icon, Spin, Table, Alert } from 'antd'
+import Button from "antd/es/Button";
+import Modal from "antd/es/Modal";
+import Icon from "antd/es/Icon";
+import Spin from "antd/es/Spin";
+import Table from "antd/es/Table";
+import Alert from "antd/es/Alert";
 
 export const StyledModal = styled(Modal)`
   .ant-modal-body {

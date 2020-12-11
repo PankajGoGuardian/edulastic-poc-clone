@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Col, Tooltip } from 'antd'
+import Col from "antd/es/Col";
+import Tooltip from "antd/es/Tooltip";
 import styled from 'styled-components'
 import { mobileWidthMax, linkColor } from '@edulastic/colors'
 import { getAdditionalDataSelector } from '../../ClassBoard/ducks'

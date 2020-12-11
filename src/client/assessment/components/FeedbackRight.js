@@ -13,7 +13,9 @@ import {
   EduButton,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Avatar, Card, Input } from 'antd'
+import Avatar from "antd/es/Avatar";
+import Card from "antd/es/Card";
+import Input from "antd/es/Input";
 import {
   get,
   isEqual,

@@ -1,5 +1,6 @@
 import { SpinLoader } from '@edulastic/common'
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import next from 'immer'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'

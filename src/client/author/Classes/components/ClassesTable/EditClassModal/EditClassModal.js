@@ -7,7 +7,10 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row, Select } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
 import { debounce, uniq, uniqBy } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'

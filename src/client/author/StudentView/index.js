@@ -6,7 +6,8 @@ import PropTypes from 'prop-types'
 import { findIndex, isUndefined, get } from 'lodash'
 import { setAutoFreeze } from 'immer'
 import memoizeOne from 'memoize-one'
-import { Input, Tooltip } from 'antd'
+import Input from "antd/es/Input";
+import Tooltip from "antd/es/Tooltip";
 import {
   AnswerContext,
   scrollTo,

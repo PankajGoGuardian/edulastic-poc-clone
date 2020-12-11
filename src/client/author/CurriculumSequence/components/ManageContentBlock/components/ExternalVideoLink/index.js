@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import { Title, StyledInput } from '../common/commonStyles'

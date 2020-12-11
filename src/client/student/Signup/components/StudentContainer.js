@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Col, Form, Input, message } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Input from "antd/es/Input";
+import message from "antd/es/message";
 import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
 import { trim, isEmpty } from 'lodash'

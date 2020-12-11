@@ -3,7 +3,8 @@ import {
   DatePickerStyled,
   SelectInputStyled,
 } from '@edulastic/common'
-import { Col, Select } from 'antd'
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
 import { debounce, filter, isArray, isEmpty } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'

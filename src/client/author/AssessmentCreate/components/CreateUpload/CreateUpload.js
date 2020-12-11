@@ -2,7 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { IconUpload, IconGdrive, IconCloudUpload } from '@edulastic/icons'
 import { formatBytes, notification } from '@edulastic/common'
-import { Progress, Icon, Button, Spin } from 'antd'
+import Progress from "antd/es/Progress";
+import Icon from "antd/es/Icon";
+import Button from "antd/es/Button";
+import Spin from "antd/es/Spin";
 import { themeColor } from '@edulastic/colors'
 import {
   Container,

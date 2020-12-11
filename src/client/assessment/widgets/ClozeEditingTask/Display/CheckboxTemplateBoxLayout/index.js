@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { find } from 'lodash'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import { response } from '@edulastic/constants'
 import { measureText } from '@edulastic/common'
 

@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Input, InputNumber, Radio } from 'antd'
+import Input from "antd/es/Input";
+import InputNumber from "antd/es/InputNumber";
+import Radio from "antd/es/Radio";
 import { throttle, isArray } from 'lodash'
 
 import { inputBgGrey, inputBorder } from '@edulastic/colors'

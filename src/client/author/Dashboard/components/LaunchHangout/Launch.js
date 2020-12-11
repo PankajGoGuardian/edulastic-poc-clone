@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import { getLaunchHangoutStatus, launchHangoutClose } from '../../duck'
 import HangoutsModal from '../../../../student/Assignments/components/HangoutsModal'

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useRef } from 'react'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 
 import { MathSpan, SelectInputStyled } from '@edulastic/common'
 import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'

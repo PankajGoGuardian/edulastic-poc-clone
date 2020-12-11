@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { get, isEqual } from 'lodash'
 import { connect } from 'react-redux'
-import { Icon, Tooltip } from 'antd'
+import Icon from "antd/es/Icon";
+import Tooltip from "antd/es/Tooltip";
 import { themeColor } from '@edulastic/colors'
 import { IconPencilEdit } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'

@@ -7,7 +7,10 @@ import {
   themeColor,
   lightGrey9,
 } from '@edulastic/colors'
-import { Input, Col, Modal, Button } from 'antd'
+import Input from "antd/es/Input";
+import Col from "antd/es/Col";
+import Modal from "antd/es/Modal";
+import Button from "antd/es/Button";
 
 export const LightGreenSpan = styled.span`
   color: ${themeColor};

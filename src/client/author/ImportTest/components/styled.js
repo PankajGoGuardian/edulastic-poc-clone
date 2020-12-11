@@ -8,7 +8,8 @@ import {
   themeColor,
   white,
 } from '@edulastic/colors'
-import { Button, Upload } from 'antd'
+import Button from "antd/es/Button";
+import Upload from "antd/es/Upload";
 import TextWrapper from '../../AssignmentCreate/common/TextWrapper'
 
 export const uploadIconStyle = {

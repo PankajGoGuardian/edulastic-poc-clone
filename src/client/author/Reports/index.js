@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
 import qs from 'qs'
 
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { MainContentWrapper } from '@edulastic/common'
 
 import { Header, SubHeader } from './common/components/Header'

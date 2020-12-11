@@ -20,7 +20,9 @@ import {
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { testActivityStatus } from '@edulastic/constants'
-import { Dropdown, Select, notification as antNotification } from 'antd'
+import Dropdown from "antd/es/Dropdown";
+import Select from "antd/es/Select";
+import antNotification from "antd/es/notification";
 import { get, isEmpty, keyBy, round } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'

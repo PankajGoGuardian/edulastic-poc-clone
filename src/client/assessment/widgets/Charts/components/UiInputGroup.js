@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Input } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Input from "antd/es/Input";
 
 import { WidgetSubHeading } from '../../../styled/Widget'
 import { ColContainer } from '../../../styled/ColContainer'

@@ -7,7 +7,7 @@ import {
   notification,
 } from '@edulastic/common'
 import { red } from '@edulastic/colors'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { TextAreaInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'

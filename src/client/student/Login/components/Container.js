@@ -10,7 +10,12 @@ import {
 } from '@edulastic/colors'
 import { IconLock, IconMail } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
+import Button from "antd/es/Button";
+import Checkbox from "antd/es/Checkbox";
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Input from "antd/es/Input";
+import Row from "antd/es/Row";
 import { trim, get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

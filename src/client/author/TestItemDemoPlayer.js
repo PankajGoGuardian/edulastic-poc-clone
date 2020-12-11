@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { message, Button } from 'antd'
+import message from "antd/es/message";
+import Button from "antd/es/Button";
 import { notification } from '@edulastic/common'
 import { compose } from 'redux'
 import { connect } from 'react-redux'

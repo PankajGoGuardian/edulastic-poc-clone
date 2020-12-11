@@ -4,7 +4,10 @@ import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Row, Col, Tooltip, Collapse } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Tooltip from "antd/es/Tooltip";
+import Collapse from "antd/es/Collapse";
 import moment from 'moment'
 import { withWindowSizes, EduButton } from '@edulastic/common'
 import { smallDesktopWidth, themeColor } from '@edulastic/colors'

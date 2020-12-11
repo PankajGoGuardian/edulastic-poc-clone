@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { cloneDeep, get } from 'lodash'
-import { Select, Icon } from 'antd'
+import Select from "antd/es/Select";
+import Icon from "antd/es/Icon";
 import styled, { withTheme } from 'styled-components'
 import { themeColor, themeColorTagsBg } from '@edulastic/colors'
 

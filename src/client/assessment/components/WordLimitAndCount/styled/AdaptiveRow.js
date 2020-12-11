@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Row } from 'antd'
+import Row from "antd/es/Row";
 import { mobileWidth } from '@edulastic/colors'
 
 export const AdaptiveRow = styled(Row)`

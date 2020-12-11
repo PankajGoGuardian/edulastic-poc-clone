@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, DatePicker, Input, Select, Row } from 'antd'
+import Form from "antd/es/Form";
+import Button from "antd/es/Button";
+import DatePicker from "antd/es/DatePicker";
+import Input from "antd/es/Input";
+import Select from "antd/es/Select";
+import Row from "antd/es/Row";
 import moment from 'moment'
 import { IconEdit } from '@edulastic/icons'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'

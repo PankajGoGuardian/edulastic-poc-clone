@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { IconExpandArrowIn, IconExpandArrowOut } from '@edulastic/icons'

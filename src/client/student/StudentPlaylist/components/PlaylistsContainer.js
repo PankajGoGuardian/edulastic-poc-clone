@@ -4,7 +4,8 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Layout, Spin } from 'antd'
+import Layout from "antd/es/Layout";
+import Spin from "antd/es/Spin";
 
 import { Progress } from '@edulastic/common'
 

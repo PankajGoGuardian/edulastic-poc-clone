@@ -1,6 +1,6 @@
 import { MainContentWrapper, EduButton, FlexContainer } from '@edulastic/common'
 import { IconReport } from '@edulastic/icons'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import { test as testConstants, testActivityStatus } from '@edulastic/constants'

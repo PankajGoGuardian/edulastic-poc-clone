@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Tabs } from 'antd'
+import Tabs from "antd/es/Tabs";
 import {
   ManageSubscriptionByDistrict,
   ManageSubscriptionByUser,

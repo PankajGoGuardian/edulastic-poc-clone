@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Input, Col } from 'antd'
+import Input from "antd/es/Input";
+import Col from "antd/es/Col";
 import { StyledModal } from '../../../../../common/styled'
 
 const { TextArea } = Input

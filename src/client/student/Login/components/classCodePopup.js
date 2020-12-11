@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Input } from 'antd'
+import Input from "antd/es/Input";
 
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { lightGrey, lightGrey9 } from '@edulastic/colors'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'antd'
+import Modal from "antd/es/Modal";
 import { connect } from 'react-redux'
 import { FlexContainer, notification } from '@edulastic/common'
 import ModuleForm from './components/ManageModulesModal/ModuleForm'

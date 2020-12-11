@@ -8,7 +8,7 @@ import { test } from '@edulastic/constants'
 import styled from 'styled-components'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Row } from 'antd'
+import Row from "antd/es/Row";
 import { extraDesktopWidth } from '@edulastic/colors'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'

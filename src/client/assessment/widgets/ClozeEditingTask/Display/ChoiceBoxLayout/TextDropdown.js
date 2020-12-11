@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Select as AntSelect } from 'antd'
+import AntSelect from "antd/es/Select";
 import { lightBlue1 } from '@edulastic/colors'
 import { MathSpan } from '@edulastic/common'
 import { subOptions } from '../../constants'

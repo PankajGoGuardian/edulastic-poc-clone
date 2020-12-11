@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { white, secondaryTextColor } from '@edulastic/colors'
 import { IconPencilEdit, IconCheck, IconClose } from '@edulastic/icons'
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/Checkbox";
 import {
   StyledTable,
   StyledModal,

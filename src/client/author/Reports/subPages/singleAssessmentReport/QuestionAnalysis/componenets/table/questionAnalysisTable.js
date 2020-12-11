@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import next from 'immer'
 import { Link } from 'react-router-dom'
 

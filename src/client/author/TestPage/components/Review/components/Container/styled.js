@@ -8,7 +8,8 @@ import {
   extraDesktopWidthMax,
   grey,
 } from '@edulastic/colors'
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 
 export const ReviewPageContainer = styled.div`
   padding: 20px 30px;

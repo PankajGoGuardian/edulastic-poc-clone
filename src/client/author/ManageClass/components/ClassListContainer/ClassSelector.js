@@ -1,5 +1,6 @@
 import React from 'react'
-import { Menu, Icon } from 'antd'
+import Menu from "antd/es/Menu";
+import Icon from "antd/es/Icon";
 import { themeColor } from '@edulastic/colors'
 import { ClassSelect, ClassStatusButton, ClassStatusDropdown } from './styled'
 

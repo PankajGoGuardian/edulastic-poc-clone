@@ -1,5 +1,8 @@
 import { roleuser } from '@edulastic/constants'
-import { Col, Form, Icon, Popover } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Icon from "antd/es/Icon";
+import Popover from "antd/es/Popover";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

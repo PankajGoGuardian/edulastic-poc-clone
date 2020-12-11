@@ -1,4 +1,4 @@
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import React, { useContext } from 'react'
 import styled from 'styled-components'
 import { LCBScrollContext } from '@edulastic/common'

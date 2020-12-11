@@ -1,6 +1,7 @@
 import React from 'react'
 import Moment from 'moment'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import { round } from 'lodash'
 import { StyledCard } from '../../Reports/common/styled'
 import {

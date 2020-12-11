@@ -1,5 +1,9 @@
 import styled from 'styled-components'
-import { Layout, Spin, Row, Button, Radio } from 'antd'
+import Layout from "antd/es/Layout";
+import Spin from "antd/es/Spin";
+import Row from "antd/es/Row";
+import Button from "antd/es/Button";
+import Radio from "antd/es/Radio";
 import { mediumDesktopExactWidth } from '@edulastic/colors'
 
 const { Content } = Layout

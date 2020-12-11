@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { themeColor } from '@edulastic/colors'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { IconEye, IconClose } from '@edulastic/icons'
 import { connect } from 'react-redux'
 import {

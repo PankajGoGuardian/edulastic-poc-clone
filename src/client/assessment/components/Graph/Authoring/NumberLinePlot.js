@@ -4,7 +4,9 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import produce from 'immer'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-import { Select, Col, Row as AntdRow } from 'antd'
+import Select from "antd/es/Select";
+import Col from "antd/es/Col";
+import AntdRow from "antd/es/Row";
 import styled from 'styled-components'
 import { TextField } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'

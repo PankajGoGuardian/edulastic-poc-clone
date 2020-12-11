@@ -7,7 +7,7 @@ import { withTheme } from 'styled-components'
 import produce from 'immer'
 import uuid from 'uuid/v4'
 import { arrayMove } from 'react-sortable-hoc'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import { withNamespaces } from '@edulastic/localization'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { PaddingDiv } from '@edulastic/common'

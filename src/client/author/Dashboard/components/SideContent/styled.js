@@ -1,4 +1,7 @@
-import { Col, Divider, Icon, Button } from 'antd'
+import Col from "antd/es/Col";
+import Divider from "antd/es/Divider";
+import Icon from "antd/es/Icon";
+import Button from "antd/es/Button";
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import styled from 'styled-components'
 import {

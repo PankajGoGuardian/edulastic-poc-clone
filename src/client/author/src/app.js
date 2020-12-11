@@ -4,7 +4,8 @@ import loadable from '@loadable/component'
 import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled, { ThemeProvider } from 'styled-components'
-import { Layout, Spin } from 'antd'
+import Layout from "antd/es/Layout";
+import Spin from "antd/es/Spin";
 import { connect } from 'react-redux'
 import { Progress, ErrorHandler } from '@edulastic/common'
 import { tabletWidth, mainBgColor } from '@edulastic/colors'

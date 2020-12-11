@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { isObject } from 'lodash'
 import { math } from '@edulastic/constants'
 import { MathKeyboard, Keyboard, FlexContainer } from '@edulastic/common'

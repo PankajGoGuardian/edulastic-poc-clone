@@ -19,7 +19,9 @@ import {
 } from '@edulastic/icons'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Icon, Modal, Spin } from 'antd'
+import Icon from "antd/es/Icon";
+import Modal from "antd/es/Modal";
+import Spin from "antd/es/Spin";
 import { get, intersection, keyBy, uniq } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

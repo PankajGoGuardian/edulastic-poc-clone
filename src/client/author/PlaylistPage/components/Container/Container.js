@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { withRouter } from 'react-router-dom'
 import { isObject as _isObject, uniq as _uniq, get, omit } from 'lodash'
 import { withWindowSizes, notification } from '@edulastic/common'

@@ -1,5 +1,6 @@
 import { CheckboxLabel } from '@edulastic/common'
-import { Form, Select } from 'antd'
+import Form from "antd/es/Form";
+import Select from "antd/es/Select";
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { FlexColumn } from '../Common/StyledComponents'

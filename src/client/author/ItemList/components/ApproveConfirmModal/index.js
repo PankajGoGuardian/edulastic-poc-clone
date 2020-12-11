@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
 import { lightGrey9 } from '@edulastic/colors'
-import { Table, Tooltip } from 'antd'
+import Table from "antd/es/Table";
+import Tooltip from "antd/es/Tooltip";
 import { IconInfo } from '@edulastic/icons'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import {

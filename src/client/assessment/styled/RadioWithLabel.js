@@ -8,7 +8,7 @@ import {
   greyThemeLight,
   white,
 } from '@edulastic/colors'
-import { Radio } from 'antd'
+import Radio from "antd/es/Radio";
 
 export const RadioLabelGroup = styled(Radio.Group)`
   margin-top: ${({ mt }) => mt || '0px'};

@@ -7,7 +7,7 @@ import {
   themeColorBlue,
   greyThemeLight,
 } from '@edulastic/colors'
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/Checkbox";
 
 export const CheckboxStyle = styled(Checkbox)`
   width: ${({ width }) => width || 'unset'};

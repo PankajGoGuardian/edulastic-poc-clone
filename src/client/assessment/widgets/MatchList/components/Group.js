@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Input } from 'antd'
+import Input from "antd/es/Input";
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import PropTypes from 'prop-types'
 import { withTheme } from 'styled-components'

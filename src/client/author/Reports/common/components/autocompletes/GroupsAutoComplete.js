@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { get, isEmpty, debounce } from 'lodash'
 
-// components & constants
-import { AutoComplete, Input, Icon } from 'antd'
+import AutoComplete from "antd/es/AutoComplete";
+import Input from "antd/es/Input";
+import Icon from "antd/es/Icon";
 import { roleuser } from '@edulastic/constants'
 
 // ducks

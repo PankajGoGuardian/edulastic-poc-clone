@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { parse as qsParse } from 'qs'
 import { connect } from 'react-redux'
 import { fetchV1RedirectAction } from '../student/Login/ducks'

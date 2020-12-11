@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Input, Button } from 'antd'
+import Input from "antd/es/Input";
+import Button from "antd/es/Button";
 import { withTheme } from 'styled-components'
 import { IconUpload } from '@edulastic/icons'
 import { StyledSubtitle } from './styled'

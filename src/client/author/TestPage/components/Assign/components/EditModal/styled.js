@@ -1,5 +1,10 @@
 import styled, { css } from 'styled-components'
-import { Row, Radio, Col, Modal, Select, Input } from 'antd'
+import Row from "antd/es/Row";
+import Radio from "antd/es/Radio";
+import Col from "antd/es/Col";
+import Modal from "antd/es/Modal";
+import Select from "antd/es/Select";
+import Input from "antd/es/Input";
 import { EduButton, FlexContainer, EduSwitchStyled } from '@edulastic/common'
 import { white, themeColor, lightGrey, mainTextColor } from '@edulastic/colors'
 

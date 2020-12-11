@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/Tooltip";
 import { themeColor } from '@edulastic/colors'
 import { IconTrash } from '@edulastic/icons'
 import {

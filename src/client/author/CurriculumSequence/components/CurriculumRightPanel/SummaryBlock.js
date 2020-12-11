@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/Tooltip";
 import { ProgressBar } from '@edulastic/common'
 import {
   desktopWidth,

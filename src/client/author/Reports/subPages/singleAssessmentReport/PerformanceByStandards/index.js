@@ -1,5 +1,6 @@
 import { SpinLoader } from '@edulastic/common'
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import next from 'immer'
 import {
   capitalize,

@@ -1,4 +1,4 @@
-import { message } from 'antd'
+import message from "antd/es/message";
 import moment from 'moment'
 import { captureSentryException, notification } from '@edulastic/common'
 import { createSlice } from 'redux-starter-kit'

@@ -1,5 +1,6 @@
 import { SpinLoader } from '@edulastic/common'
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import { filter, get, includes } from 'lodash'
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'

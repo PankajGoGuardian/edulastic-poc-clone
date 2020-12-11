@@ -6,7 +6,9 @@ import {
   SelectInputStyled,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { Col, Row, Select } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'

@@ -5,7 +5,7 @@ import {
   test as testConst,
 } from '@edulastic/constants'
 import { IconAssignment } from '@edulastic/icons'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { get, isEmpty, keyBy, omit } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'

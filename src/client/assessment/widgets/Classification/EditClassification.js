@@ -19,7 +19,7 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 
-import { Upload } from 'antd'
+import Upload from "antd/es/Upload";
 import { aws, clozeImage } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import CorrectAnswers from '../../components/CorrectAnswers'

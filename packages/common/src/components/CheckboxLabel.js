@@ -6,7 +6,7 @@ import {
   greyThemeLight,
   white,
 } from '@edulastic/colors'
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/Checkbox";
 
 export const CheckBoxGrp = Checkbox.Group
 

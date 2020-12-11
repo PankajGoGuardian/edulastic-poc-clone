@@ -6,7 +6,9 @@ import {
   test as testConst,
   assignmentStatusOptions,
 } from '@edulastic/constants'
-import { Col, Row, Tooltip } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Tooltip from "antd/es/Tooltip";
 import {
   FieldLabel,
   DatePickerStyled,

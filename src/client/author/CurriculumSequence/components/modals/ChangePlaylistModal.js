@@ -1,6 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Row, Col, Modal, Avatar, Tooltip } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Modal from "antd/es/Modal";
+import Avatar from "antd/es/Avatar";
+import Tooltip from "antd/es/Tooltip";
 import { Card } from '@edulastic/common'
 import { IconPlaylist, IconGraduationCap, IconBook } from '@edulastic/icons'
 import {

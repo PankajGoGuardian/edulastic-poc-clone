@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Result, Spin } from 'antd'
+import Result from "antd/es/Result";
+import Spin from "antd/es/Spin";
 import { TypeToConfirmModal } from '@edulastic/common'
 import { report } from '@edulastic/constants'
 import SharedReportsTable from './SharedReportsTable'

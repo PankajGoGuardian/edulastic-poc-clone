@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Button, Dropdown, Menu, Icon } from 'antd'
+import Button from "antd/es/Button";
+import Dropdown from "antd/es/Dropdown";
+import Menu from "antd/es/Menu";
+import Icon from "antd/es/Icon";
 import { themeColor, white } from '@edulastic/colors'
 import { IconFilter } from '@edulastic/icons'
 import { NormalDropDown } from './normalDropDown'

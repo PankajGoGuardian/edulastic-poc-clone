@@ -2,7 +2,10 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Moment from 'moment'
-import { Progress, Layout, Row, Col } from 'antd'
+import Progress from "antd/es/Progress";
+import Layout from "antd/es/Layout";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import { get, round } from 'lodash'
 import { PrintActionWrapper } from '@edulastic/common'
 import qs from 'qs'

@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Row as AntdRow, Col, Form, Select, Button, AutoComplete } from 'antd'
+import AntdRow from "antd/es/Row";
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Select from "antd/es/Select";
+import Button from "antd/es/Button";
+import AutoComplete from "antd/es/AutoComplete";
 import moment from 'moment'
 import styled from 'styled-components'
 import SearchDistrictByIdName from '../Common/Form/SearchDistrictByIdName'

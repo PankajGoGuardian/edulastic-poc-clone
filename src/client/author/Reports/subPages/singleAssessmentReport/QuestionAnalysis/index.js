@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'

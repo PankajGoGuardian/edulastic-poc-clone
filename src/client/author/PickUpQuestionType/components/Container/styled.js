@@ -12,7 +12,8 @@ import {
 } from '@edulastic/colors'
 import Modal from 'react-responsive-modal'
 import { Link } from 'react-router-dom'
-import { Menu, Affix } from 'antd'
+import Menu from "antd/es/Menu";
+import Affix from "antd/es/Affix";
 import { MainContentWrapper } from '@edulastic/common'
 
 export const Content = styled.div`

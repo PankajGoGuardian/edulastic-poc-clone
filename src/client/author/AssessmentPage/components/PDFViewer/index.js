@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 
 import { BLANK_URL } from '../Worksheet/Worksheet'

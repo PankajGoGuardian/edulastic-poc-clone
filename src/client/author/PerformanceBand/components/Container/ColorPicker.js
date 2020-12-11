@@ -2,7 +2,10 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { themeColor, sectionBorder } from '@edulastic/colors'
 
-import { Popover, Row, Col, Icon } from 'antd'
+import Popover from "antd/es/Popover";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Icon from "antd/es/Icon";
 
 const StyledIcon = styled(Icon)`
   vertical-align: middle;

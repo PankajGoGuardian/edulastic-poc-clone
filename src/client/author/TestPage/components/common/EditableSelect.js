@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { IconCheck, IconPencilEdit } from '@edulastic/icons'
 import { greenDark, green } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'

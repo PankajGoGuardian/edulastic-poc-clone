@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import { Form, Button as AntdButton, Select, Input } from 'antd'
+import Form from "antd/es/Form";
+import AntdButton from "antd/es/Button";
+import Select from "antd/es/Select";
+import Input from "antd/es/Input";
 import moment from 'moment'
 import { IconAddItems, IconTrash } from '@edulastic/icons'
 import { notification } from '@edulastic/common'

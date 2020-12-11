@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import { MathFormulaDisplay, measureText } from '@edulastic/common'
 
 import { getStemNumeration } from '../../../../utils/helpers'

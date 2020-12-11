@@ -4,7 +4,7 @@ import {
   EduButton,
   TextInputStyled,
 } from '@edulastic/common'
-import { Form } from 'antd'
+import Form from "antd/es/Form";
 import React from 'react'
 import styled from 'styled-components'
 import { StyledClassName } from '../../../../Classes/components/ClassesTable/ArchiveClassModal/styled'

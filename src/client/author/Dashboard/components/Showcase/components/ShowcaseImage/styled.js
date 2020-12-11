@@ -1,4 +1,5 @@
-import { Row, Icon } from 'antd'
+import Row from "antd/es/Row";
+import Icon from "antd/es/Icon";
 import styled from 'styled-components'
 
 export const ShowcaseContainer = styled.div`

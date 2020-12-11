@@ -1,5 +1,8 @@
 import styled from 'styled-components'
-import { Row, Input, Button, Form } from 'antd'
+import Row from "antd/es/Row";
+import Input from "antd/es/Input";
+import Button from "antd/es/Button";
+import Form from "antd/es/Form";
 import { white, tabletWidth } from '@edulastic/colors'
 
 const { TextArea } = Input

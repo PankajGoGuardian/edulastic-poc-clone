@@ -1,6 +1,6 @@
 import { EduButton } from '@edulastic/common'
 import { IconSaveNew, IconPencilEdit } from '@edulastic/icons'
-import { Layout } from 'antd'
+import Layout from "antd/es/Layout";
 import { get, pickBy } from 'lodash'
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'

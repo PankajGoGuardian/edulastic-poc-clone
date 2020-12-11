@@ -1,7 +1,8 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import { isEmpty, flatMap, keyBy } from 'lodash'
 import styled from 'styled-components'
 import next from 'immer'

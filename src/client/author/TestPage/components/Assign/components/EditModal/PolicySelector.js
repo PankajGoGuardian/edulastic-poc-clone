@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Col, Select } from 'antd'
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
 import { StyledRow, StyledRowLabel } from './styled'
 import { selectsData } from '../../../common'
 

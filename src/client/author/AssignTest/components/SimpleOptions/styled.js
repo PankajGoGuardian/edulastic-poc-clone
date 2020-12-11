@@ -11,7 +11,14 @@ import {
   title,
   white,
 } from '@edulastic/colors'
-import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
+import Button from "antd/es/Button";
+import Col from "antd/es/Col";
+import DatePicker from "antd/es/DatePicker";
+import Input from "antd/es/Input";
+import Radio from "antd/es/Radio";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
+import Table from "antd/es/Table";
 import styled from 'styled-components'
 import { EduSwitchStyled } from '@edulastic/common'
 

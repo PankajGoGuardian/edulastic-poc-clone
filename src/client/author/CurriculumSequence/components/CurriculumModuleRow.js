@@ -12,7 +12,11 @@ import {
   IconVisualization,
   IconTrash,
 } from '@edulastic/icons'
-import { Avatar, Button, Dropdown, Menu, Col } from 'antd'
+import Avatar from "antd/es/Avatar";
+import Button from "antd/es/Button";
+import Dropdown from "antd/es/Dropdown";
+import Menu from "antd/es/Menu";
+import Col from "antd/es/Col";
 import moment from 'moment'
 import produce from 'immer'
 import PropTypes from 'prop-types'

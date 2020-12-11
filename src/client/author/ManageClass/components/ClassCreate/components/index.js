@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import * as moment from 'moment'
-import { Form } from 'antd'
+import Form from "antd/es/Form";
 import { Field, Optional, Label } from './styled'
 
 export const FieldLabel = ({

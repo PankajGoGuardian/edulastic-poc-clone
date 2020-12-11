@@ -1,5 +1,6 @@
 import React from 'react'
-import { Tag, Icon } from 'antd'
+import Tag from "antd/es/Tag";
+import Icon from "antd/es/Icon";
 import { greenDark, darkBlue, lightBlue } from '@edulastic/colors'
 
 export function renderSubscriptionType(subscription = {}) {

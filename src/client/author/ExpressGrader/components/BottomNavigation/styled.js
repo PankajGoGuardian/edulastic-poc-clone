@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { smallDesktopWidth, themeColor, white } from '@edulastic/colors'
 
 export const NavigationWrapper = styled.div`

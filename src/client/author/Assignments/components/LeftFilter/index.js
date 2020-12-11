@@ -4,7 +4,7 @@ import { IconGroup, IconClass } from '@edulastic/icons'
 import { roleuser, folderTypes } from '@edulastic/constants'
 import { faArchive } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { get, identity, pickBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

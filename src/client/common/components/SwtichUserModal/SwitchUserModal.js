@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Modal } from 'antd'
+import Modal from "antd/es/Modal";
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'

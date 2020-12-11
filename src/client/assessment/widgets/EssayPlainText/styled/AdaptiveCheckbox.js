@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/Checkbox";
 import { mobileWidth } from '@edulastic/colors'
 
 export const AdaptiveCheckbox = styled(Checkbox)`

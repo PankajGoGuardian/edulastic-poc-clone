@@ -1,6 +1,6 @@
 import React from 'react'
 import { measureTextWithImage } from '@edulastic/common'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import styled from 'styled-components'
 
 import { PopoverContent } from './PopoverContent'

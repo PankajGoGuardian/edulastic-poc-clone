@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { termApi } from '@edulastic/api'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 
 import {

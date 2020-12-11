@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
 import { get } from 'lodash'
-import { Checkbox } from 'antd'
+import Checkbox from "antd/es/Checkbox";
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 

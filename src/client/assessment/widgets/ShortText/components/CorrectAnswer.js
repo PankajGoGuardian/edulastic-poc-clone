@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Select, Row } from 'antd'
+import Select from "antd/es/Select";
+import Row from "antd/es/Row";
 import { compose } from 'redux'
 
 import { withNamespaces } from '@edulastic/localization'

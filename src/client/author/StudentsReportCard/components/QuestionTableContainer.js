@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import next from 'immer'
 import styled from 'styled-components'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import { MathFormulaDisplay } from '@edulastic/common'
 import { StyledTable } from './styles'
 import tableColumnsData from '../utils/tableColumnData.json'

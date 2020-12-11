@@ -16,7 +16,11 @@ import {
   themeColorBlue,
 } from '@edulastic/colors'
 import { SelectInputStyled } from '@edulastic/common'
-import { Button, Table, Select, Icon, Dropdown } from 'antd'
+import Button from "antd/es/Button";
+import Table from "antd/es/Table";
+import Select from "antd/es/Select";
+import Icon from "antd/es/Icon";
+import Dropdown from "antd/es/Dropdown";
 import { IconPlusCircle } from '@edulastic/icons'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 

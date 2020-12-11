@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Table, Input, Tabs } from 'antd'
+import Table from "antd/es/Table";
+import Input from "antd/es/Input";
+import Tabs from "antd/es/Tabs";
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import {
   white,

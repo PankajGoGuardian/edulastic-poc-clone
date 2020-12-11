@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Tabs } from 'antd'
+import Tabs from "antd/es/Tabs";
 
 import { withNamespaces } from '@edulastic/localization'
 import { StyledTable, StyledTabs } from '../styled'

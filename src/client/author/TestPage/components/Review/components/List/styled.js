@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Button, Input, Checkbox } from 'antd'
+import Button from "antd/es/Button";
+import Input from "antd/es/Input";
+import Checkbox from "antd/es/Checkbox";
 import {
   grey,
   themeColor,

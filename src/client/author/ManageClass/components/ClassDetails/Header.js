@@ -14,8 +14,8 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 
-// components
-import { Dropdown, Select } from 'antd'
+import Dropdown from "antd/es/Dropdown";
+import Select from "antd/es/Select";
 
 import GoogleLogin from 'react-google-login'
 import {

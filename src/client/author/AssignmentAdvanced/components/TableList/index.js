@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { groupBy } from 'lodash'
-import { Tooltip, Dropdown } from 'antd'
+import Tooltip from "antd/es/Tooltip";
+import Dropdown from "antd/es/Dropdown";
 import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from '@edulastic/localization'
 import { test, roleuser } from '@edulastic/constants'

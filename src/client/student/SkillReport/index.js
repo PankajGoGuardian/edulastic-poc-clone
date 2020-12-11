@@ -1,6 +1,6 @@
 import { MainContentWrapper } from '@edulastic/common'
 import { IconBarChart } from '@edulastic/icons'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'

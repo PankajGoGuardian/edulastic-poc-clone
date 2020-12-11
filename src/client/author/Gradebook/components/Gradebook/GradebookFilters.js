@@ -1,8 +1,9 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
-// components
-import { Row, Col, Select } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 
 // constants

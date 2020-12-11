@@ -1,5 +1,7 @@
 import React from 'react'
-import { Form, Input, DatePicker } from 'antd'
+import Form from "antd/es/Form";
+import Input from "antd/es/Input";
+import DatePicker from "antd/es/DatePicker";
 import styled from 'styled-components'
 import moment from 'moment'
 import { HeadingSpan } from '../StyledComponents/upgradePlan'

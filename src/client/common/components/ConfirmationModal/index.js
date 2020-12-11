@@ -3,7 +3,8 @@ import {
   EduButton,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import { extraDesktopWidth } from '@edulastic/colors'
 import styled from 'styled-components'
 import React from 'react'

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import { CorrectAnswersContainer, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { getStemNumeration } from '../../../../utils/helpers'

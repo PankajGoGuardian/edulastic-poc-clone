@@ -10,7 +10,10 @@ import {
   StyledComponents,
   CustomModalStyled,
 } from '@edulastic/common'
-import { Form, Icon, Select, Table } from 'antd'
+import Form from "antd/es/Form";
+import Icon from "antd/es/Icon";
+import Select from "antd/es/Select";
+import Table from "antd/es/Table";
 import { debounce, uniq } from 'lodash'
 import moment from 'moment'
 import React, { useState } from 'react'

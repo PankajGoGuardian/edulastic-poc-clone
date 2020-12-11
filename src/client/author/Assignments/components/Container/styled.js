@@ -1,4 +1,5 @@
-import { Radio, Switch } from 'antd'
+import Radio from "antd/es/Radio";
+import Switch from "antd/es/Switch";
 import styled from 'styled-components'
 
 import {

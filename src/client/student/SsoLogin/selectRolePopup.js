@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Modal, Button, Icon, Input, Form } from 'antd'
+import Modal from "antd/es/Modal";
+import Button from "antd/es/Button";
+import Icon from "antd/es/Icon";
+import Input from "antd/es/Input";
+import Form from "antd/es/Form";
 import { get, trim } from 'lodash'
 import { white, greenDark, orange } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'

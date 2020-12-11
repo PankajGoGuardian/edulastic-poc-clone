@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Col, Radio } from 'antd'
+import Col from "antd/es/Col";
+import Radio from "antd/es/Radio";
 
 import { withNamespaces } from '@edulastic/localization'
 

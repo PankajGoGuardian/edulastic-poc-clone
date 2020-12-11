@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Button, Input, Cascader, message } from 'antd'
+import Button from "antd/es/Button";
+import Input from "antd/es/Input";
+import Cascader from "antd/es/Cascader";
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import { desktopWidth } from '@edulastic/colors'
 import { ThemeButton } from '../../../src/components/common/ThemeButton'

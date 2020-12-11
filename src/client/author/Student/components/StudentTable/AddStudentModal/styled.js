@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Form } from 'antd'
+import Form from "antd/es/Form";
 
 export const ModalFormItem = styled(Form.Item)`
   display: flex;

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { InputNumber } from 'antd'
+import InputNumber from "antd/es/InputNumber";
 
 import { EXACT_MATCH } from '../../../../../../assessment/constants/constantsForQuestions'
 import {

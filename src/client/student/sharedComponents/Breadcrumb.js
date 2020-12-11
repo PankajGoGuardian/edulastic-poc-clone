@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Breadcrumb, Icon } from 'antd'
+import Breadcrumb from "antd/es/Breadcrumb";
+import Icon from "antd/es/Icon";
 import styled from 'styled-components'
 
 const BreadCrumb = (props) => {

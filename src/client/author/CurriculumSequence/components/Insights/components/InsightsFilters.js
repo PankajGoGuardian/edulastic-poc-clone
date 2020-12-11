@@ -1,5 +1,9 @@
 import React from 'react'
-import { Row, Col, Select, Checkbox, Tooltip } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
+import Checkbox from "antd/es/Checkbox";
+import Tooltip from "antd/es/Tooltip";
 import styled from 'styled-components'
 import { greyThemeDark1, themeColor, titleColor } from '@edulastic/colors'
 import { IconInfo } from '@edulastic/icons'

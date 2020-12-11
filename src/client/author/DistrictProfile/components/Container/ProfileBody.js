@@ -21,7 +21,12 @@ import {
   EduSwitchStyled,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Form, Icon, Input, Select, Tag, Modal } from 'antd'
+import Form from "antd/es/Form";
+import Icon from "antd/es/Icon";
+import Input from "antd/es/Input";
+import Select from "antd/es/Select";
+import Tag from "antd/es/Tag";
+import Modal from "antd/es/Modal";
 import produce from 'immer'
 import { isEqual, map, omit, get } from 'lodash'
 import PropTypes from 'prop-types'

@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
-import { Progress, Row, Col } from 'antd'
+import Progress from "antd/es/Progress";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import styled from 'styled-components'
 import {
   greenDark,

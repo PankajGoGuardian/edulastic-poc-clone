@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { sumBy, round } from 'lodash'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/Tooltip";
 import { lightGreen4, themeColor } from '@edulastic/colors'
 import BarGraph from '../BarGraph/BarGraph'
 import {

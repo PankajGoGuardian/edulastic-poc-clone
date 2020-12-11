@@ -3,7 +3,10 @@ import { beforeUpload, PaddingDiv, notification } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { aws, clozeImage } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
-import { Dropdown, InputNumber, Select, Upload } from 'antd'
+import Dropdown from "antd/es/Dropdown";
+import InputNumber from "antd/es/InputNumber";
+import Select from "antd/es/Select";
+import Upload from "antd/es/Upload";
 import produce from 'immer'
 import { get, isUndefined, maxBy } from 'lodash'
 import PropTypes from 'prop-types'

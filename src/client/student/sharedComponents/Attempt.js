@@ -9,7 +9,8 @@ import {
   smallDesktopWidth,
   largeDesktopWidth,
 } from '@edulastic/colors'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import { testActivityStatus } from '@edulastic/constants'
 import { formatDateAndTime } from '../utils'
 import { Tooltip } from '../../common/utils/helpers'

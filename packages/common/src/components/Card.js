@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Card } from 'antd'
+import Card from "antd/es/Card";
 
 export default styled(Card)`
   border: none;

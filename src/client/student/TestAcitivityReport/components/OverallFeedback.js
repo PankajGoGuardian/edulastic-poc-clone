@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/Tooltip";
 import { get, round } from 'lodash'
 import { FlexContainer } from '@edulastic/common'
 import { IconCheck } from '@edulastic/icons'

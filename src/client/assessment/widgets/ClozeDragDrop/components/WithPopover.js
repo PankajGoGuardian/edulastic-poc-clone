@@ -1,5 +1,5 @@
 import React from 'react'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import PropTypes from 'prop-types'
 
 import { measureTextWithImage, MathSpan } from '@edulastic/common'

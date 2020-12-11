@@ -6,7 +6,11 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row, Select, Spin } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
+import Spin from "antd/es/Spin";
 import { debounce, get, uniq } from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'

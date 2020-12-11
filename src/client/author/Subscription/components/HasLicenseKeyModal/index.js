@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Input, message } from 'antd'
+import Input from "antd/es/Input";
+import message from "antd/es/message";
 import {
   themeColor,
   greyishBorder,

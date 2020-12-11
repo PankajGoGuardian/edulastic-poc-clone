@@ -1,6 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Menu, Dropdown, Button, message, Tooltip } from 'antd'
+import Menu from "antd/es/Menu";
+import Dropdown from "antd/es/Dropdown";
+import Button from "antd/es/Button";
+import message from "antd/es/message";
+import Tooltip from "antd/es/Tooltip";
 import { IconDownEmptyArrow, IconArrowLeft } from '@edulastic/icons'
 import { FlexContainer } from '@edulastic/common'
 

@@ -1,6 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Modal, Row, Col, Spin, Select, Checkbox } from 'antd'
+import Modal from "antd/es/Modal";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Spin from "antd/es/Spin";
+import Select from "antd/es/Select";
+import Checkbox from "antd/es/Checkbox";
 import { IconClose } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
 import GoogleLogin from 'react-google-login'

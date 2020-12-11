@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Radio } from 'antd'
+import Radio from "antd/es/Radio";
 
 export const StyledRadioGroup = styled(Radio.Group)`
   .ant-radio-wrapper {

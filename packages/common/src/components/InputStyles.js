@@ -5,7 +5,10 @@ import {
   themeColor,
   themeColorBlue,
 } from '@edulastic/colors'
-import { DatePicker, Input, InputNumber, Select } from 'antd'
+import DatePicker from "antd/es/DatePicker";
+import Input from "antd/es/Input";
+import InputNumber from "antd/es/InputNumber";
+import Select from "antd/es/Select";
 import React from 'react'
 import styled from 'styled-components'
 

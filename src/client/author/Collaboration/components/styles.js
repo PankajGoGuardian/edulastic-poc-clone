@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Input, Select } from 'antd'
+import Input from "antd/es/Input";
+import Select from "antd/es/Select";
 import { IconUsers, IconEdit } from '@edulastic/icons'
 import {
   darkGrey,

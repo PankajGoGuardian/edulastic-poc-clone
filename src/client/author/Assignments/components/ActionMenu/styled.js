@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Menu, Button } from 'antd'
+import Menu from "antd/es/Menu";
+import Button from "antd/es/Button";
 
 import { white, mobileWidth, themeColor } from '@edulastic/colors'
 

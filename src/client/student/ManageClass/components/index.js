@@ -1,4 +1,5 @@
-import { Layout, Spin } from 'antd'
+import Layout from "antd/es/Layout";
+import Spin from "antd/es/Spin";
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'

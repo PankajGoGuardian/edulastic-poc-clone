@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useRef } from 'react'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { withNamespaces } from '@edulastic/localization'
 import { IconBookmark, IconSend } from '@edulastic/icons'
 import styled from 'styled-components'

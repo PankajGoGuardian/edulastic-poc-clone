@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Col, Icon } from 'antd'
+import Col from "antd/es/Col";
+import Icon from "antd/es/Icon";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClone, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import {

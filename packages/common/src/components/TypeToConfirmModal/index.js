@@ -3,7 +3,8 @@ import {
   EduButton,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { ErrorMessage, LightGreenSpan, StyledCol, StyledP } from './styled'

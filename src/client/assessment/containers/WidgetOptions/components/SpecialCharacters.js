@@ -1,5 +1,6 @@
 import React from 'react'
-import { Checkbox, Input } from 'antd'
+import Checkbox from "antd/es/Checkbox";
+import Input from "antd/es/Input";
 import { cloneDeep } from 'lodash'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'

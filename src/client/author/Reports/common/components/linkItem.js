@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import { PremiumLabel } from '@edulastic/common'
 import { themeColorLight } from '@edulastic/colors'
 

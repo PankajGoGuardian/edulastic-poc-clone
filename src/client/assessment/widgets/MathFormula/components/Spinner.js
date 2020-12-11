@@ -1,5 +1,5 @@
 import React from 'react'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 
 import styled from 'styled-components'
 import { lightFadedBlack } from '@edulastic/colors'

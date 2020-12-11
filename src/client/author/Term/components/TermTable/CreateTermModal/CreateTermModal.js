@@ -5,7 +5,9 @@ import {
   FieldLabel,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Row from "antd/es/Row";
 import * as moment from 'moment'
 import React from 'react'
 import { ModalFormItem } from './styled'

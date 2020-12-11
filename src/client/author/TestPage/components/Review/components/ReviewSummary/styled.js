@@ -8,7 +8,8 @@ import {
   smallDesktopWidth,
 } from '@edulastic/colors'
 import { Paper } from '@edulastic/common'
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import styled from 'styled-components'
 import { SummarySelect } from '../../../Summary/common/SummaryForm'
 import { MainTitle } from '../../../Summary/components/Sidebar/styled'

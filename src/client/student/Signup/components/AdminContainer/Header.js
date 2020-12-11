@@ -5,7 +5,11 @@ import {
   white,
 } from '@edulastic/colors'
 import { OnWhiteBgLogo } from '@edulastic/common'
-import { Col, Dropdown, Icon as AntIcon, Menu, Row } from 'antd'
+import Col from "antd/es/Col";
+import Dropdown from "antd/es/Dropdown";
+import AntIcon from "antd/es/Icon";
+import Menu from "antd/es/Menu";
+import Row from "antd/es/Row";
 import { get } from 'lodash'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'

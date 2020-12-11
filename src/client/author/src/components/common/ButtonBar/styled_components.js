@@ -8,7 +8,9 @@ import {
   greyThemeDark2,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { Button, Menu, Dropdown } from 'antd'
+import Button from "antd/es/Button";
+import Menu from "antd/es/Menu";
+import Dropdown from "antd/es/Dropdown";
 
 export const Container = styled.div`
   display: flex;

@@ -1,5 +1,7 @@
 import { FieldLabel, FlexContainer, SelectInputStyled } from '@edulastic/common'
-import { Row, Select, Input } from 'antd'
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
+import Input from "antd/es/Input";
 import PropTypes from 'prop-types'
 import React, { useMemo } from 'react'
 import { connect } from 'react-redux'

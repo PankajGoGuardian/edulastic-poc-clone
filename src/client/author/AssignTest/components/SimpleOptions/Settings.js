@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Radio, Select, Icon, Input, Tooltip, Modal } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Radio from "antd/es/Radio";
+import Select from "antd/es/Select";
+import Icon from "antd/es/Icon";
+import Input from "antd/es/Input";
+import Tooltip from "antd/es/Tooltip";
+import Modal from "antd/es/Modal";
 import {
   green,
   red,

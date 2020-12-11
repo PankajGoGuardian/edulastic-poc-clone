@@ -5,7 +5,8 @@ import { get } from 'lodash'
 
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import { updateVariables } from '../../utils/variables'
 
 import { Subtitle } from '../../styled/Subtitle'

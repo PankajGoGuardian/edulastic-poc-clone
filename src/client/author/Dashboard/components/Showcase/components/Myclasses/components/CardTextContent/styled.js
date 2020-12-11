@@ -5,7 +5,9 @@ import {
   cardTitleColor,
   themeColorLighter,
 } from '@edulastic/colors'
-import { Row, Col, Icon } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Icon from "antd/es/Icon";
 
 export const IconWrapper = styled.div`
   width: 42px;

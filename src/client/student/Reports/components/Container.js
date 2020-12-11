@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Layout, Spin } from 'antd'
+import Layout from "antd/es/Layout";
+import Spin from "antd/es/Spin";
 import { get } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'

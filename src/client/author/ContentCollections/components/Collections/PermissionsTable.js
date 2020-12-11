@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Tabs, Tooltip } from 'antd'
+import Tabs from "antd/es/Tabs";
+import Tooltip from "antd/es/Tooltip";
 import { get, isEqual, debounce } from 'lodash'
 import moment from 'moment'
 import { themeColor } from '@edulastic/colors'

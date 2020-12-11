@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
-import { Row, Input, Select } from 'antd'
+import Row from "antd/es/Row";
+import Input from "antd/es/Input";
+import Select from "antd/es/Select";
 
 export const StyledContentRow = styled(Row)`
   display: flex;

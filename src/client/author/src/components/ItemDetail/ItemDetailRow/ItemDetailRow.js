@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 
 import { mobileWidth, themeColor, white } from '@edulastic/colors'
 import { FlexContainer, Tabs, Paper } from '@edulastic/common'

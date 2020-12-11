@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router'
 
-// components
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser } from '@edulastic/constants'
 import { EduButton, TypeToConfirmModal } from '@edulastic/common'

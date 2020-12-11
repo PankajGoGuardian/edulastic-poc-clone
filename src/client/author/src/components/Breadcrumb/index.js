@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Breadcrumb } from 'antd'
+import Breadcrumb from "antd/es/Breadcrumb";
 import styled, { css } from 'styled-components'
 
 import { linkColor, themeColor } from '@edulastic/colors'

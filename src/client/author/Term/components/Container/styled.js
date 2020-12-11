@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Layout, Spin } from 'antd'
+import Layout from "antd/es/Layout";
+import Spin from "antd/es/Spin";
 import { mediumDesktopExactWidth } from '@edulastic/colors'
 
 const { Content } = Layout

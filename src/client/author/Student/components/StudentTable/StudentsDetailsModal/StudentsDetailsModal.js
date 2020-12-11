@@ -4,7 +4,10 @@ import { compose } from 'redux'
 import { get, isEmpty } from 'lodash'
 
 import { withNamespaces } from '@edulastic/localization'
-import { Row, Col, Modal, Table } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Modal from "antd/es/Modal";
+import Table from "antd/es/Table";
 import { themeColor } from '@edulastic/colors'
 import { StyledStatusIcon, StatusDiv } from './styled'
 import { ThemeButton } from '../../../../src/components/common/ThemeButton'

@@ -8,7 +8,9 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import { IconUser } from '@edulastic/icons'
-import { Collapse, Icon, Select } from 'antd'
+import Collapse from "antd/es/Collapse";
+import Icon from "antd/es/Icon";
+import Select from "antd/es/Select";
 import { get, identity, isEmpty, pickBy, unset } from 'lodash'
 import moment from 'moment'
 import React from 'react'

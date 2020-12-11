@@ -24,7 +24,9 @@ import {
   IconChevronLeft,
 } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
-import { Layout, Button, Pagination } from 'antd'
+import Layout from "antd/es/Layout";
+import Button from "antd/es/Button";
+import Pagination from "antd/es/Pagination";
 import ItemDetailContext, {
   COMPACT,
   DEFAULT,

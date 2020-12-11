@@ -1,5 +1,7 @@
 import React from 'react'
-import { Avatar, Col, Row } from 'antd'
+import Avatar from "antd/es/Avatar";
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 

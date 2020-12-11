@@ -1,7 +1,7 @@
 import { find } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
-import { Col } from 'antd'
+import Col from "antd/es/Col";
 import React from 'react'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import defaultImage from '../../../src/assets/manageclass/abstract.jpg'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { FlexContainer } from '@edulastic/common'
 import styled from 'styled-components'
 import { themes } from '../../../../theme'

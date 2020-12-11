@@ -1,4 +1,5 @@
-import { Input, Select } from 'antd'
+import Input from "antd/es/Input";
+import Select from "antd/es/Select";
 import styled from 'styled-components'
 import {
   greyThemeLight,

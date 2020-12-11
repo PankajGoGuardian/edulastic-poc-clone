@@ -13,7 +13,8 @@ import {
   IconClose,
 } from '@edulastic/icons'
 import { get } from 'lodash'
-import { Row, Icon } from 'antd'
+import Row from "antd/es/Row";
+import Icon from "antd/es/Icon";
 import { withNamespaces } from '@edulastic/localization'
 import { question, test as testContants, roleuser } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'

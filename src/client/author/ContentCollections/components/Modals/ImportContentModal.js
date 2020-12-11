@@ -19,7 +19,11 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { Button, Icon, Select, Spin, Upload } from 'antd'
+import Button from "antd/es/Button";
+import Icon from "antd/es/Icon";
+import Select from "antd/es/Select";
+import Spin from "antd/es/Spin";
+import Upload from "antd/es/Upload";
 import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'

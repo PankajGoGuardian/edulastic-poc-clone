@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Col, Select, Radio } from 'antd'
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
+import Radio from "antd/es/Radio";
 import { StyledRowLabel, StyledRow } from './styled'
 
 const RadioGroup = Radio.Group

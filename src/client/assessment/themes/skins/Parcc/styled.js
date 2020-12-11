@@ -1,5 +1,9 @@
 import styled from 'styled-components'
-import { Popover, Button, Dropdown, Menu, Icon } from 'antd'
+import Popover from "antd/es/Popover";
+import Button from "antd/es/Button";
+import Dropdown from "antd/es/Dropdown";
+import Menu from "antd/es/Menu";
+import Icon from "antd/es/Icon";
 import { smallDesktopWidth } from '@edulastic/colors'
 import { themes } from '../../../../theme'
 

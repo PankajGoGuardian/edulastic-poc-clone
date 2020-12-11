@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import { v4 } from 'uuid'
 import produce from 'immer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

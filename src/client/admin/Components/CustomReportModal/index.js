@@ -1,6 +1,11 @@
 import { schoolApi } from '@edulastic/api'
 import { EduSwitchStyled } from '@edulastic/common'
-import { Col, Form, Input, Row, Select, Spin } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Input from "antd/es/Input";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
+import Spin from "antd/es/Spin";
 import CheckboxGroup from 'antd/es/checkbox/Group'
 import TextArea from 'antd/es/input/TextArea'
 import React from 'react'

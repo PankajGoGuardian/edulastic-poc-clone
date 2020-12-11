@@ -1,6 +1,6 @@
 import { themeColor } from '@edulastic/colors'
 import { EduButton, TextInputStyled } from '@edulastic/common'
-import { Form } from 'antd'
+import Form from "antd/es/Form";
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { ConfirmationModal } from '../../../../src/components/common/ConfirmationModal'

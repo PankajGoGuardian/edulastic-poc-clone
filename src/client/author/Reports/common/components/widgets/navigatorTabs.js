@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import styled from 'styled-components'
 import { themeColor, black, darkGrey, grey } from '@edulastic/colors'
 

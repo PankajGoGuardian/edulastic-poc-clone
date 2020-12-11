@@ -1,6 +1,11 @@
 /* eslint-disable default-case */
 import { CheckboxLabel } from '@edulastic/common'
-import { Button, DatePicker, Input, Radio, Select, Table } from 'antd'
+import Button from "antd/es/Button";
+import DatePicker from "antd/es/DatePicker";
+import Input from "antd/es/Input";
+import Radio from "antd/es/Radio";
+import Select from "antd/es/Select";
+import Table from "antd/es/Table";
 import { get } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { doValidate } from './apis'

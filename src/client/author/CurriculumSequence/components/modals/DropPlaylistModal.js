@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Modal, Button, Radio } from 'antd'
+import Modal from "antd/es/Modal";
+import Button from "antd/es/Button";
+import Radio from "antd/es/Radio";
 import styled from 'styled-components'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { isEmpty, uniqBy } from 'lodash'

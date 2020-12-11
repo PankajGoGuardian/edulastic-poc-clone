@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from 'react'
-import { Checkbox, Row, Col } from 'antd'
+import Checkbox from "antd/es/Checkbox";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import PropTypes from 'prop-types'
 
 import { withNamespaces } from '@edulastic/localization'

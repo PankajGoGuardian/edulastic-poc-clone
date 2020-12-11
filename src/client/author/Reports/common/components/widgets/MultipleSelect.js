@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { find, map } from 'lodash'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { StyledAutocompleteDropDownContainer } from '../../styled'
 
 const Option = Select.Option

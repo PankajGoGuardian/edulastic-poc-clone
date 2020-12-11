@@ -5,7 +5,10 @@ import { connect } from 'react-redux'
 import styled, { ThemeProvider, css } from 'styled-components'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
-import { Row, Col, Button, Spin } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Button from "antd/es/Button";
+import Spin from "antd/es/Spin";
 import { withRouter } from 'react-router-dom'
 import { get } from 'lodash'
 import { IconSend } from '@edulastic/icons'

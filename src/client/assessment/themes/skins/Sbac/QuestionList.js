@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu } from 'antd'
+import Menu from "antd/es/Menu";
 import { StyledDropdown, StyledIcon } from './styled'
 
 const QuestionList = ({ options = [], currentItem = 0, gotoQuestion }) => {

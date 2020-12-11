@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Col } from 'antd'
+import Col from "antd/es/Col";
 import { StyledFlexContainer } from './styled'
 import { FieldLabel } from './components'
 import Tags from './components/Tags'

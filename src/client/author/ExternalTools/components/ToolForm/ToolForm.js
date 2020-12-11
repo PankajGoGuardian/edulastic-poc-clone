@@ -1,5 +1,6 @@
 import React from 'react'
-import { Col, Icon } from 'antd'
+import Col from "antd/es/Col";
+import Icon from "antd/es/Icon";
 import { StyledColRight, StyledRow, StyledListItem } from './styled'
 
 export const ToolForm = ({ data, deleteData, onEdit }) => {

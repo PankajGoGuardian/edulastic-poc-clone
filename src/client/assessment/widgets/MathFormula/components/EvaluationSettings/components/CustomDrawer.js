@@ -1,5 +1,5 @@
 import React from 'react'
-import { Drawer } from 'antd'
+import Drawer from "antd/es/Drawer";
 import { FlexContainer } from '@edulastic/common'
 import { SettingHeader, CloseIcon } from '../styled'
 

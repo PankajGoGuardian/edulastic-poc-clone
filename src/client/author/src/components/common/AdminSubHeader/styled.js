@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Tabs } from 'antd'
+import Tabs from "antd/es/Tabs";
 
 export const SubHeaderWrapper = styled.div`
   width: 100%;

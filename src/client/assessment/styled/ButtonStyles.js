@@ -6,7 +6,7 @@ import {
   themeColor,
   themeColorHoverBlue,
 } from '@edulastic/colors'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 
 export const CustomStyleBtn = styled(Button)`
   &.ant-btn {

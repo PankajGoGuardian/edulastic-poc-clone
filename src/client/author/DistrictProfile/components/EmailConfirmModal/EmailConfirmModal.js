@@ -1,6 +1,7 @@
 import React from 'react'
 import { compose } from 'redux'
-import { Button, Form } from 'antd'
+import Button from "antd/es/Button";
+import Form from "antd/es/Form";
 import styled from 'styled-components'
 import { themeColor, whiteSmoke, numBtnColors, white } from '@edulastic/colors'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'

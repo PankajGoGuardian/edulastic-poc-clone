@@ -1,5 +1,5 @@
 import { SelectInputStyled } from '@edulastic/common'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { get } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'

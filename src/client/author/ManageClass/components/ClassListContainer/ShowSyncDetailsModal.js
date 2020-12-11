@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Table, Button } from 'antd'
+import Modal from "antd/es/Modal";
+import Table from "antd/es/Table";
+import Button from "antd/es/Button";
 import { lightGrey, themeColor, white } from '@edulastic/colors'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { FlexContainer } from './styled'

@@ -6,7 +6,9 @@ import {
   FroalaEditor,
   notification,
 } from '@edulastic/common'
-import { Col, Row, Select } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
 import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { createRef, useEffect, useMemo, useState } from 'react'

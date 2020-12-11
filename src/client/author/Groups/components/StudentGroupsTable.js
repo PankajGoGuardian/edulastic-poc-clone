@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/Tooltip";
 import { themeColor } from '@edulastic/colors'
 import { IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { StyledTable, StyledTableButton } from '../../../common/styled'

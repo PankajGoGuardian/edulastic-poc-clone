@@ -1,5 +1,10 @@
 import styled from 'styled-components'
-import { Layout, Spin, Input, List, Col, Row } from 'antd'
+import Layout from "antd/es/Layout";
+import Spin from "antd/es/Spin";
+import Input from "antd/es/Input";
+import List from "antd/es/List";
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import {
   themeColor,
   white,

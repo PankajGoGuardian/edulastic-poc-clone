@@ -2,7 +2,8 @@ import { withWindowSizes } from '@edulastic/common'
 import { IconItemLibrary } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser, sortOptions } from '@edulastic/constants'
-import { Pagination, Spin } from 'antd'
+import Pagination from "antd/es/Pagination";
+import Spin from "antd/es/Spin";
 import { debounce, omit, isEqual } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'

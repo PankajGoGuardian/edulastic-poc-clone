@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
-import { Row, Col, Tooltip } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Tooltip from "antd/es/Tooltip";
 import { IconPlusCircle, IconGraphRightArrow } from '@edulastic/icons'
 import { themeColorLight, cardTitleColor, themeColor } from '@edulastic/colors'
 import {

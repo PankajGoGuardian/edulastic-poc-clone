@@ -5,7 +5,10 @@ import {
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Col, Form, Icon, Pagination } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Icon from "antd/es/Icon";
+import Pagination from "antd/es/Pagination";
 import produce from 'immer'
 import { maxBy, sumBy, uniqBy, debounce } from 'lodash'
 import { notification } from '@edulastic/common'

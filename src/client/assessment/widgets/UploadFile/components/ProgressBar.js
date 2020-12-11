@@ -1,6 +1,6 @@
 import React, { useMemo, Fragment } from 'react'
 import styled from 'styled-components'
-import { Progress } from 'antd'
+import Progress from "antd/es/Progress";
 import PropTypes from 'prop-types'
 import { round } from 'lodash'
 import { FlexContainer } from '@edulastic/common'

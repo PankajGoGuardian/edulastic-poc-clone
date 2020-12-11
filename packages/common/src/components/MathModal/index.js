@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Modal as AntModal } from 'antd'
+import AntModal from "antd/es/Modal";
 import styled from 'styled-components'
 import { math, defaultSymbols } from '@edulastic/constants'
 import MathInput from '../MathInput'

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { IconClose, IconCalculator, IconMagnify } from '@edulastic/icons'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { Tooltip } from '../../../common/utils/helpers'
 
 const Tools = ({

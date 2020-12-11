@@ -6,7 +6,9 @@ import qs from 'qs'
 import { get } from 'lodash'
 import styled from 'styled-components'
 
-import { Modal, Row, Col } from 'antd'
+import Modal from "antd/es/Modal";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 
 import { EduButton } from '@edulastic/common'
 import { darkGrey2 } from '@edulastic/colors'

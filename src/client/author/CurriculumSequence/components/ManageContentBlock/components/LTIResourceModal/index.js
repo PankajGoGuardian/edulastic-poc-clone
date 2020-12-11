@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { message, Select } from 'antd'
+import message from "antd/es/message";
+import Select from "antd/es/Select";
 import { notification } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import { Title, StyledInput, StyledSelect } from '../common/commonStyles'

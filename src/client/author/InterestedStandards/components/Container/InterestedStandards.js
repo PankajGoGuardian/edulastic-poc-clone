@@ -1,6 +1,8 @@
 import { CheckboxLabel, EduButton } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { Col, Icon, Row } from 'antd'
+import Col from "antd/es/Col";
+import Icon from "antd/es/Icon";
+import Row from "antd/es/Row";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'

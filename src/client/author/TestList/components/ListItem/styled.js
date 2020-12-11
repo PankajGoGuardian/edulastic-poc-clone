@@ -10,7 +10,9 @@ import {
 } from '@edulastic/colors'
 import { Card } from '@edulastic/common'
 import IconELogo from '@edulastic/icons/src/IconELogo'
-import { Col, Rate, Row } from 'antd'
+import Col from "antd/es/Col";
+import Rate from "antd/es/Rate";
+import Row from "antd/es/Row";
 import styled from 'styled-components'
 import {
   testStatusBackgroundColor as backgroundColor,

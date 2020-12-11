@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { tabletWidth } from '@edulastic/colors'
-import { InputNumber } from 'antd'
+import InputNumber from "antd/es/InputNumber";
 
 export const MaxRespCountInput = styled(InputNumber)`
   width: 180px;

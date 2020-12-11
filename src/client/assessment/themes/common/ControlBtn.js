@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 
 const Back = styled(Button)`
   width: ${(props) => (props.next ? (props.skin ? '58px' : '187px') : '58px')};

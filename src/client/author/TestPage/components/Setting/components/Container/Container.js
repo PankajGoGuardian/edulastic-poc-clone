@@ -4,7 +4,11 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { get } from 'lodash'
-import { Anchor, Col, Row, Select, Tooltip } from 'antd'
+import Anchor from "antd/es/Anchor";
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
+import Tooltip from "antd/es/Tooltip";
 import {
   blueBorder,
   green,

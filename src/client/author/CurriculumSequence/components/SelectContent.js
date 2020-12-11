@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { Dropdown, Menu, Icon, Input } from 'antd'
+import Dropdown from "antd/es/Dropdown";
+import Menu from "antd/es/Menu";
+import Icon from "antd/es/Icon";
+import Input from "antd/es/Input";
 import {
   themeColorLight,
   largeDesktopWidth,

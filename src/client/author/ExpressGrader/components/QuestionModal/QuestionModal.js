@@ -2,7 +2,7 @@ import React, { createRef } from 'react'
 import PropTypes from 'prop-types'
 
 import { ScrollContext, notification } from '@edulastic/common'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { get, isEmpty, values } from 'lodash'
 import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'

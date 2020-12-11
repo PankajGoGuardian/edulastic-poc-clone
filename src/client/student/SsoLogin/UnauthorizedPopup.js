@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Modal } from 'antd'
+import Modal from "antd/es/Modal";
 import { white } from '@edulastic/colors'
 
 const UnauthorizedPopup = (props) => {

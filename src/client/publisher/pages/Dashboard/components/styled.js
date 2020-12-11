@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { black, fadedBlack, extraDesktopWidthMax } from '@edulastic/colors'
 
 export const StyledH4 = styled.h4`

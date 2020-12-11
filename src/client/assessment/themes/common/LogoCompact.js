@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
 import { white } from '@edulastic/colors'
 import { IconLogoCompact } from '@edulastic/icons'
-import { Tooltip } from 'antd'
+import Tooltip from "antd/es/Tooltip";
 import {
   MAX_MOBILE_WIDTH,
   IPAD_PORTRAIT_WIDTH,

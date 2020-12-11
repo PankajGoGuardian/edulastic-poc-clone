@@ -1,5 +1,5 @@
 import { mobileWidth } from '@edulastic/colors'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import styled from 'styled-components'
 
 export const AdaptiveSelect = styled(Select)`

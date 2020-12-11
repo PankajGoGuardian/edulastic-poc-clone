@@ -10,7 +10,7 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { Button, CustomModalStyled } from '@edulastic/common'
-import { Menu } from 'antd'
+import Menu from "antd/es/Menu";
 import styled from 'styled-components'
 
 export const FoldersListWrapper = styled.ul`

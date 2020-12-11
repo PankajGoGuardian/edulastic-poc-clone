@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { InputNumber, Modal, Row, Col, Divider } from 'antd'
+import InputNumber from "antd/es/InputNumber";
+import Modal from "antd/es/Modal";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Divider from "antd/es/Divider";
 
 const Label = styled.label`
   color: #314659;

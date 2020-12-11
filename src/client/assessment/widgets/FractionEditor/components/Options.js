@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Select, Modal } from 'antd'
+import Select from "antd/es/Select";
+import Modal from "antd/es/Modal";
 import { notification } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 

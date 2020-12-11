@@ -7,7 +7,11 @@ import { Link, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import styled, { withTheme } from 'styled-components'
-import { Layout, Menu as AntMenu, Row, Icon as AntIcon, Dropdown } from 'antd'
+import Layout from "antd/es/Layout";
+import AntMenu from "antd/es/Menu";
+import Row from "antd/es/Row";
+import AntIcon from "antd/es/Icon";
+import Dropdown from "antd/es/Dropdown";
 import {
   IconLogoCompact,
   IconClockDashboard,

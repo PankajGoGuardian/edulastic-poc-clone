@@ -4,7 +4,8 @@ import produce from 'immer'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 
 import { withNamespaces } from '@edulastic/localization'
 import { updateVariables } from '../../utils/variables'

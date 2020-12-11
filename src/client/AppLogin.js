@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import loadable from '@loadable/component'
-import { Spin } from 'antd'
+import Spin from "antd/es/spin";
 
 const Loading = () => (
   <div>

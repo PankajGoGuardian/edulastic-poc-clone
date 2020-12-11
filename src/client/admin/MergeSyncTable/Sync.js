@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Radio, Button } from 'antd'
+import Radio from "antd/es/Radio";
+import Button from "antd/es/Button";
 import { Table } from '../Common/StyledComponents'
 
 const { Group: RadioGroup } = Radio

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import PropTypes from 'prop-types'
 import {
   cloneDeep,

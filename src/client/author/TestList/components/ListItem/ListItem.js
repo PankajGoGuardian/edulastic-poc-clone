@@ -26,7 +26,7 @@ import {
   IconPlus,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col } from 'antd'
+import Col from "antd/es/Col";
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'

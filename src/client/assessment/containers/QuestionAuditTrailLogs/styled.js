@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 import { Paper } from '@edulastic/common'
 import { mobileWidth, mainBgColor, white, themeColor } from '@edulastic/colors'
-import { Layout, Spin, Button } from 'antd'
+import Layout from "antd/es/Layout";
+import Spin from "antd/es/Spin";
+import Button from "antd/es/Button";
 import { StyledTable } from '../../../common/styled'
 import PreviewModal from '../../../author/src/components/common/PreviewModal'
 

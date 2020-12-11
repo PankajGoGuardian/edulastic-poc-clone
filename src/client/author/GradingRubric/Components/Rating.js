@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import produce from 'immer'
 import { RatingContaner, DeleteRating } from '../styled'
 import TextInput from './common/TextInput'

@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Col, Modal, Row, Spin } from 'antd'
+import Col from "antd/es/Col";
+import Modal from "antd/es/Modal";
+import Row from "antd/es/Row";
+import Spin from "antd/es/Spin";
 import { IconClose } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
 import { darkGrey2, greyThemeDark1 } from '@edulastic/colors'

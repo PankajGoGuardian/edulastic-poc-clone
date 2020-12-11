@@ -5,7 +5,10 @@ import { isEmpty, get, capitalize } from 'lodash'
 
 // components
 import { Link } from 'react-router-dom'
-import { Spin, Pagination, Row, Avatar } from 'antd'
+import Spin from "antd/es/Spin";
+import Pagination from "antd/es/Pagination";
+import Row from "antd/es/Row";
+import Avatar from "antd/es/Avatar";
 import {
   MainHeader,
   MainContentWrapper,

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { roleuser } from '@edulastic/constants'
 
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Button, Radio, Row } from 'antd'
+import Button from "antd/es/Button";
+import Radio from "antd/es/Radio";
+import Row from "antd/es/Row";
 import styled from 'styled-components'
 
 import { EduButton } from '@edulastic/common'

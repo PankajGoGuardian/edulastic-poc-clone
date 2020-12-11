@@ -1,7 +1,9 @@
 import { themeColor, white } from '@edulastic/colors'
 import { withWindowSizes } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
-import { Col, Row, Spin } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
+import Spin from "antd/es/Spin";
 import { get } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'

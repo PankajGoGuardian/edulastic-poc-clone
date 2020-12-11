@@ -1,6 +1,6 @@
 import { mobileWidth, tabletWidth } from '@edulastic/colors'
 import styled from 'styled-components'
-import { Table } from 'antd'
+import Table from "antd/es/Table";
 
 export const TableData = styled(Table)`
   text-align: center;

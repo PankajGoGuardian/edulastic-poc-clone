@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import * as moment from 'moment'
 import { get, unset, split, isEmpty, pick, pickBy, identity } from 'lodash'
-import { Dropdown } from 'antd'
+import Dropdown from "antd/es/Dropdown";
 
 import { enrollmentApi } from '@edulastic/api'
 import {

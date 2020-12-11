@@ -4,7 +4,10 @@ import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { get, debounce, find } from 'lodash'
-import { Row, Col, Breadcrumb, Icon } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Breadcrumb from "antd/es/Breadcrumb";
+import Icon from "antd/es/Icon";
 import styled, { css } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { IconClose } from '@edulastic/icons'

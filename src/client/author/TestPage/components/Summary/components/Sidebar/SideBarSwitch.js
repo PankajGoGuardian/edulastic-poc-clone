@@ -1,5 +1,6 @@
 import React from 'react'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import styled from 'styled-components'
 import { Paper } from '@edulastic/common'
 

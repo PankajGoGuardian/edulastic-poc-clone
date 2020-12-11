@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Tag, Popover } from 'antd'
+import Tag from "antd/es/Tag";
+import Popover from "antd/es/Popover";
 
 import {
   darkBlue,

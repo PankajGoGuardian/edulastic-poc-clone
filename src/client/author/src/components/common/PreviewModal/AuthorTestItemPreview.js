@@ -9,7 +9,7 @@ import {
 import { questionType } from '@edulastic/constants'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Pagination } from 'antd'
+import Pagination from "antd/es/Pagination";
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'

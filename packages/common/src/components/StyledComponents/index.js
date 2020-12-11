@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Table } from 'antd'
+import Table from "antd/es/Table";
 
 export const OnHoverTable = styled(Table)`
   .ant-table-row {

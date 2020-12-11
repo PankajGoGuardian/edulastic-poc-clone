@@ -1,7 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Col, Icon, Tooltip } from 'antd'
+import Col from "antd/es/Col";
+import Icon from "antd/es/Icon";
+import Tooltip from "antd/es/Tooltip";
 import {
   white,
   testTypeColor,

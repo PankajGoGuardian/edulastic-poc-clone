@@ -7,7 +7,10 @@ import {
   white,
   backgrounds,
 } from '@edulastic/colors'
-import { DatePicker, Row, Select, Table } from 'antd'
+import DatePicker from "antd/es/DatePicker";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
+import Table from "antd/es/Table";
 import styled from 'styled-components'
 
 export const OptionConationer = styled.div`

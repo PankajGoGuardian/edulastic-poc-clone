@@ -4,7 +4,9 @@ import {
   EduButton,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Row from "antd/es/Row";
 import React from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import { validateEmail } from '../../../../../common/utils/helpers'

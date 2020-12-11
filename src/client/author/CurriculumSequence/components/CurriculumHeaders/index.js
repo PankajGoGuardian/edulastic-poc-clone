@@ -4,7 +4,10 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { roleuser } from '@edulastic/constants'
-import { Tooltip, Modal, Dropdown, Menu } from 'antd'
+import Tooltip from "antd/es/Tooltip";
+import Modal from "antd/es/Modal";
+import Dropdown from "antd/es/Dropdown";
+import Menu from "antd/es/Menu";
 import { FlexContainer, EduButton, MainHeader } from '@edulastic/common'
 import {
   smallDesktopWidth,

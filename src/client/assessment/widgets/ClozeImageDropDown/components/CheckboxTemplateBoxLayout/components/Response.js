@@ -1,6 +1,6 @@
 import React from 'react'
 import Proptypes from 'prop-types'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import { measureText, MathSpan } from '@edulastic/common'
 import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'
 import { Pointer } from '../../../../../styled/Pointer'

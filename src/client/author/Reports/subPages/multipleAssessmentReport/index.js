@@ -6,7 +6,7 @@ import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { FlexContainer } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 

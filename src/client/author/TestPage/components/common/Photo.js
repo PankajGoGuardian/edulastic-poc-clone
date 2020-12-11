@@ -4,7 +4,9 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { IconPhotoCamera } from '@edulastic/icons'
 import { aws } from '@edulastic/constants'
-import { Upload, Spin, message } from 'antd'
+import Upload from "antd/es/Upload";
+import Spin from "antd/es/Spin";
+import message from "antd/es/message";
 import { white, greyishDarker2, themeColorBlue } from '@edulastic/colors'
 import { beforeUpload, notification } from '@edulastic/common'
 import { uploadToS3 } from '../../../src/utils/upload'

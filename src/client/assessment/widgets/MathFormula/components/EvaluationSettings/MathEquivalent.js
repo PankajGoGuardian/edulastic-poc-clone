@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Tabs as AntTabs } from 'antd'
+import AntTabs from "antd/es/Tabs";
 import { keys } from 'lodash'
 import { FieldLabel } from '@edulastic/common'
 import styled from 'styled-components'

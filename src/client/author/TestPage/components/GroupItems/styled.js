@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Row, Radio, Button } from 'antd'
+import Row from "antd/es/Row";
+import Radio from "antd/es/Radio";
+import Button from "antd/es/Button";
 import {
   boxShadowDefault,
   white,

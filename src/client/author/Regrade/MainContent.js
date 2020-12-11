@@ -1,5 +1,6 @@
 import React from 'react'
-import { Radio, Row } from 'antd'
+import Radio from "antd/es/Radio";
+import Row from "antd/es/Row";
 import { Container, InputsWrapper, OptionTitle } from './styled'
 import AssignmentsTable from './Table'
 

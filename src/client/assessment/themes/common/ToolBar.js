@@ -12,7 +12,7 @@ import {
   IconProtactor,
   IconScratchPad,
 } from '@edulastic/icons'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'

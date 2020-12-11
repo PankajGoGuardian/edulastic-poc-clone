@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Row, Col, List } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import List from "antd/es/List";
 import { lightGreySecondary, sectionBorder } from '@edulastic/colors'
 
 export const StyledColRight = styled(Col)`

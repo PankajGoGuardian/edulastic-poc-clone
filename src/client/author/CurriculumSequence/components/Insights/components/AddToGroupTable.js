@@ -1,7 +1,14 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Row, Col, Table, Menu, Dropdown, Button, Checkbox, Icon } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Table from "antd/es/Table";
+import Menu from "antd/es/Menu";
+import Dropdown from "antd/es/Dropdown";
+import Button from "antd/es/Button";
+import Checkbox from "antd/es/Checkbox";
+import Icon from "antd/es/Icon";
 import { map, round } from 'lodash'
 import { IconBarChart } from '@edulastic/icons'
 import { themeColor, greyThemeDark1 } from '@edulastic/colors'

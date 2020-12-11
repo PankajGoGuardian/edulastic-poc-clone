@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 
 import { withNamespaces } from '@edulastic/localization'
 import { math } from '@edulastic/constants'

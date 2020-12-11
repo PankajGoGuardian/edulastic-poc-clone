@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components'
-import { Table, Slider, Select } from 'antd'
+import Table from "antd/es/Table";
+import Slider from "antd/es/Slider";
+import Select from "antd/es/Select";
 import { FlexContainer } from '@edulastic/common'
 import {
   smallDesktopWidth,

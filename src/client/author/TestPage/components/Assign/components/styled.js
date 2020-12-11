@@ -1,4 +1,4 @@
-import { Table } from 'antd'
+import Table from "antd/es/Table";
 import styled from 'styled-components'
 import { secondaryTextColor, white } from '@edulastic/colors'
 

@@ -5,7 +5,7 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 
 export const Title = styled.h1`
   color: white;

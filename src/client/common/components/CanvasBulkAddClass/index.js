@@ -5,7 +5,7 @@ import {
   CheckboxLabel,
 } from '@edulastic/common'
 import { IconCanvasBook } from '@edulastic/icons'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import { get, groupBy } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'

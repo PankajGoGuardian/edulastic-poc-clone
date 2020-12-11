@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Collapse, Icon } from 'antd'
+import Collapse from "antd/es/Collapse";
+import Icon from "antd/es/Icon";
 import { get } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { response as defaultResponse } from '@edulastic/constants'

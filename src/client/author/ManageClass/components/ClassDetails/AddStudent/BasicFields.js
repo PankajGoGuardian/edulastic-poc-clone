@@ -2,7 +2,7 @@ import { userApi } from '@edulastic/api'
 import { red, themeColor } from '@edulastic/colors'
 import { FieldLabel, TextInputStyled } from '@edulastic/common'
 import { IconHash, IconLock, IconMail, IconUser } from '@edulastic/icons'
-import { Form } from 'antd'
+import Form from "antd/es/Form";
 import { get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'

@@ -1,4 +1,5 @@
-import { Progress, Tag } from 'antd'
+import Progress from "antd/es/Progress";
+import Tag from "antd/es/Tag";
 import styled from 'styled-components'
 import { mobileWidthLarge, themeColor } from '@edulastic/colors'
 

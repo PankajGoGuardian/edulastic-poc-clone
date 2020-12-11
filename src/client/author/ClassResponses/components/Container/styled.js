@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import { mobileWidth } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
-import { Card, Button } from 'antd'
+import Card from "antd/es/Card";
+import Button from "antd/es/Button";
 
 export const PaginationInfo = styled.div`
   font-weight: bold;

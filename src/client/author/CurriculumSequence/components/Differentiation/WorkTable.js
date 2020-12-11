@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useDrop } from 'react-dnd'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import { groupBy, compact, isEmpty } from 'lodash'
 import { EduButton, FlexContainer, notification } from '@edulastic/common' //  ProgressBar,
 import { IconUser } from '@edulastic/icons'

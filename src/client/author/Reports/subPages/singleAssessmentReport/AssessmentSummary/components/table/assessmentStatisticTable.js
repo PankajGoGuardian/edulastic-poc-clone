@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import styled from 'styled-components'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import { groupBy, uniqBy } from 'lodash'
 import next from 'immer'
 import qs from 'qs'

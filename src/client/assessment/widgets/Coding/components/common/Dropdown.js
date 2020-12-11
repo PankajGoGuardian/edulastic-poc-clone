@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 
 import { StyledSubtitle } from './styled'
 

@@ -4,7 +4,10 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row, Select } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
 import React from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../common/styled'
 

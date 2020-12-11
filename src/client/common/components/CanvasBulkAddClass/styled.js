@@ -1,4 +1,6 @@
-import { Table, Row, Modal } from 'antd'
+import Table from "antd/es/Table";
+import Row from "antd/es/Row";
+import Modal from "antd/es/Modal";
 import styled from 'styled-components'
 import { themeColor, white, backgroundGrey2 } from '@edulastic/colors'
 

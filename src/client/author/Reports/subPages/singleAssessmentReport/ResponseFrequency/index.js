@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import { SpinLoader } from '@edulastic/common'
 import { StyledH3, StyledSlider, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'

@@ -1,5 +1,7 @@
 import * as React from 'react'
-import { Button, Icon, Select } from 'antd'
+import Button from "antd/es/Button";
+import Icon from "antd/es/Icon";
+import Select from "antd/es/Select";
 import PropTypes from 'prop-types'
 import { isObject, compact } from 'lodash'
 

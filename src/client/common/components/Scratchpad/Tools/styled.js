@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
-import { Button, Select } from 'antd'
+import Button from "antd/es/Button";
+import Select from "antd/es/Select";
 import { white, secondaryTextColor, smallDesktopWidth } from '@edulastic/colors'
 import icons from './assets/images/icons.png'
 

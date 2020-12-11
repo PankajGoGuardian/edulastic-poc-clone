@@ -5,7 +5,10 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import { IconUser } from '@edulastic/icons'
-import { Form, Icon, Spin, Table } from 'antd'
+import Form from "antd/es/Form";
+import Icon from "antd/es/Icon";
+import Spin from "antd/es/Spin";
+import Table from "antd/es/Table";
 import { get } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import ConfirmationModal from '../../../../../common/components/ConfirmationModal'

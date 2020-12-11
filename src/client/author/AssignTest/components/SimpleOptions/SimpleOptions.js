@@ -4,7 +4,11 @@ import {
   roleuser,
   test as testConst,
 } from '@edulastic/constants'
-import { Col, Icon, Row, Select, Tooltip } from 'antd'
+import Col from "antd/es/Col";
+import Icon from "antd/es/Icon";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
+import Tooltip from "antd/es/Tooltip";
 import produce from 'immer'
 import { curry, get, keyBy } from 'lodash'
 import * as moment from 'moment'

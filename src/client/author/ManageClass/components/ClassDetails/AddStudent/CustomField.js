@@ -1,6 +1,6 @@
 import { userApi } from '@edulastic/api'
 import { FieldLabel } from '@edulastic/common'
-import { Form } from 'antd'
+import Form from "antd/es/Form";
 import { get, includes } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

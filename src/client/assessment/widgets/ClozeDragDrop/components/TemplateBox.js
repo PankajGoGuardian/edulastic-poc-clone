@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 import styled from 'styled-components'
 import { greyThemeLight } from '@edulastic/colors'
 import { DragDrop, MathSpan, measureText } from '@edulastic/common'

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import { set } from 'lodash'
 import { createAction, createReducer } from 'redux-starter-kit'

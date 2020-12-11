@@ -1,5 +1,7 @@
 import React from 'react'
-import { Select, Col, Row } from 'antd'
+import Select from "antd/es/Select";
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 
 import { test } from '@edulastic/constants'
 import { StyledRow, StyledRowLabel, TestTypeDropDown } from './styled'

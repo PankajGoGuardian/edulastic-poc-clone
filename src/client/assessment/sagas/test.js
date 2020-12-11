@@ -5,7 +5,7 @@ import {
   attchmentApi as attachmentApi,
 } from '@edulastic/api'
 import { takeEvery, call, all, put, select, take } from 'redux-saga/effects'
-import { Modal } from 'antd'
+import Modal from "antd/es/Modal";
 import {
   notification,
   Effects,

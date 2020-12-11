@@ -1,4 +1,4 @@
-import { Upload } from 'antd'
+import Upload from "antd/es/Upload";
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 

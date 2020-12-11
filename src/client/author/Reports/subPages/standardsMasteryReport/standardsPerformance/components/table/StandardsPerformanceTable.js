@@ -2,7 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { sumBy, includes, filter, isEmpty } from 'lodash'
 import next from 'immer'
-import { Row, Col } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import {

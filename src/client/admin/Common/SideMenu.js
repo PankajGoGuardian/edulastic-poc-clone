@@ -12,7 +12,10 @@ import {
   IconSignoutHighlight,
   IconSwitchUser,
 } from '@edulastic/icons'
-import { Dropdown, Icon, Layout, Menu } from 'antd'
+import Dropdown from "antd/es/Dropdown";
+import Icon from "antd/es/Icon";
+import Layout from "antd/es/Layout";
+import Menu from "antd/es/Menu";
 import { get } from 'lodash'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'

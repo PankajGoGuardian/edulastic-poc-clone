@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Progress } from 'antd'
+import Progress from "antd/es/Progress";
 import {
   greyThemeDark1,
   extraDesktopWidthMax,

@@ -1,16 +1,14 @@
 import { themeColor, white } from '@edulastic/colors'
 import { CheckboxLabel, notification } from '@edulastic/common'
-import {
-  Col,
-  Form,
-  Icon,
-  Input,
-  InputNumber,
-  message,
-  Row,
-  Slider,
-  Table,
-} from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Icon from "antd/es/Icon";
+import Input from "antd/es/Input";
+import InputNumber from "antd/es/InputNumber";
+import message from "antd/es/message";
+import Row from "antd/es/Row";
+import Slider from "antd/es/Slider";
+import Table from "antd/es/Table";
 import produce from 'immer'
 import { get } from 'lodash'
 import React from 'react'

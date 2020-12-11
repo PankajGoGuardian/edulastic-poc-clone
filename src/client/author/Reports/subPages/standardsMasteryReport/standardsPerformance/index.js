@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { filter, get } from 'lodash'
 
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import { SpinLoader } from '@edulastic/common'
 import { DropDownContainer, StyledCard } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'

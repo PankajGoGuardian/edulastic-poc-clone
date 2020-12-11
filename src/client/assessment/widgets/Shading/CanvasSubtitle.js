@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
-import { Input } from 'antd'
+import Input from "antd/es/Input";
 import { compose } from 'redux'
 import { withTheme } from 'styled-components'
 

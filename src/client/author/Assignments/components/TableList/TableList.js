@@ -4,7 +4,10 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { get, isEmpty } from 'lodash'
 import { Link, withRouter } from 'react-router-dom'
-import { Dropdown, Tooltip, Spin, Menu } from 'antd'
+import Dropdown from "antd/es/Dropdown";
+import Tooltip from "antd/es/Tooltip";
+import Spin from "antd/es/Spin";
+import Menu from "antd/es/Menu";
 import { withNamespaces } from '@edulastic/localization'
 import { test as testConstants, roleuser } from '@edulastic/constants'
 

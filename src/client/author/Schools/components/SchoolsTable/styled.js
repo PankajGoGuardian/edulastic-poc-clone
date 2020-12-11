@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Icon, Button } from 'antd'
+import Icon from "antd/es/Icon";
+import Button from "antd/es/Button";
 import { StyledTable } from '../../../../common/styled'
 
 export const StyledSchoolTable = styled(StyledTable)`

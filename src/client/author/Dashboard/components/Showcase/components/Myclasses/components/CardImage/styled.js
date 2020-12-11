@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Row } from 'antd'
+import Row from "antd/es/Row";
 import { white } from '@edulastic/colors'
 
 export const Image = styled.img`

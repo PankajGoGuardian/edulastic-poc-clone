@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 import { TextField, EduButton } from '@edulastic/common'
 import { white, title, greyScoreCardTitleColor } from '@edulastic/colors'
-import { Select, Row as AntdRow, Col as AntdCol } from 'antd'
+import Select from "antd/es/Select";
+import AntdRow from "antd/es/Row";
+import AntdCol from "antd/es/Col";
 
 export const ColumnLabel = styled.div`
   text-transform: uppercase;

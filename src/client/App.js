@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import Joyride from 'react-joyride'
 import firebase from 'firebase/app'
 import { test, signUpState, roleuser } from '@edulastic/constants'

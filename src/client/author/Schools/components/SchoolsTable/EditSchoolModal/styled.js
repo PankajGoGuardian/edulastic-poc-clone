@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 
 export const StyledDescription = styled.p`
   text-align: center;

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import Modal from 'react-responsive-modal'
 import styled from 'styled-components'
-import { Row, Col, Button } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Button from "antd/es/Button";
 
 class TestConfirmation extends Component {
   constructor(props) {

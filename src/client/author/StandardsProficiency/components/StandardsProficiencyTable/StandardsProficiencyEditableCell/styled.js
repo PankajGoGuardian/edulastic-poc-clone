@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { Form, Menu, Input } from 'antd'
+import Form from "antd/es/Form";
+import Menu from "antd/es/Menu";
+import Input from "antd/es/Input";
 
 export const StyledFormItem = styled(Form.Item)`
   margin: 0;

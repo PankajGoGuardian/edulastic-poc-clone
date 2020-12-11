@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Form, DatePicker } from 'antd'
+import Form from "antd/es/Form";
+import DatePicker from "antd/es/DatePicker";
 
 export const ModalFormItem = styled(Form.Item)`
   .ant-form-item-control-wrapper {

@@ -1,6 +1,7 @@
 import { FieldLabel } from '@edulastic/common'
 import { roleuser, test } from '@edulastic/constants'
-import { Col, Select } from 'antd'
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
 import React from 'react'
 import { connect } from 'react-redux'
 import { StyledRow, StyledRowSelect, StyledSelect } from './styled'

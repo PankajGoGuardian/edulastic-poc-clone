@@ -1,6 +1,8 @@
 import { TextField } from '@edulastic/common'
 import styled from 'styled-components'
-import { Select, Input, Checkbox } from 'antd'
+import Select from "antd/es/Select";
+import Input from "antd/es/Input";
+import Checkbox from "antd/es/Checkbox";
 import { createStandardTextStyle } from '../../utils/helpers'
 
 export const StyledTextField = styled(TextField)`

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { List, Popover, Input } from 'antd'
+import List from "antd/es/List";
+import Popover from "antd/es/Popover";
+import Input from "antd/es/Input";
 import { isEqual } from 'lodash'
 import { white, themeColor } from '@edulastic/colors'
 import { IconSearch } from '@edulastic/icons'

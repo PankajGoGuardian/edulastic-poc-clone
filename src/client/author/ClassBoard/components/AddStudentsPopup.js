@@ -7,7 +7,8 @@ import {
   SelectInputStyled,
 } from '@edulastic/common'
 import { assignmentPolicyOptions } from '@edulastic/constants'
-import { Row, Select } from 'antd'
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'

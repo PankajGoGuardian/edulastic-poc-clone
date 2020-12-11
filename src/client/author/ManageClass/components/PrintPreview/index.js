@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import { Table } from 'antd'
+import Table from "antd/es/Table";
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { get, isInteger, floor, isEmpty } from 'lodash'

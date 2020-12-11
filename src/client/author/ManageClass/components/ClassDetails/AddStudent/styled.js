@@ -3,7 +3,8 @@ import {
   lightGreySecondary,
   themeColor,
 } from '@edulastic/colors'
-import { Button, Form } from 'antd'
+import Button from "antd/es/Button";
+import Form from "antd/es/Form";
 import styled from 'styled-components'
 import { ConfirmationModal } from '../../../../src/components/common/ConfirmationModal'
 

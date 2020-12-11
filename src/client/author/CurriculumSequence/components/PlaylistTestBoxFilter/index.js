@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import { Select, Icon } from 'antd'
+import Select from "antd/es/Select";
+import Icon from "antd/es/Icon";
 import { FlexContainer } from '@edulastic/common'
 import SELECT_DATA from '../../../TestPage/components/common/selectsData'
 import { FILTERS } from '../ManageContentBlock/ducks'

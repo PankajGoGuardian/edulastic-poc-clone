@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { Form, Input, Row, Col } from 'antd'
+import Form from "antd/es/Form";
+import Input from "antd/es/Input";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
 
 import {
   ButtonsContainer,

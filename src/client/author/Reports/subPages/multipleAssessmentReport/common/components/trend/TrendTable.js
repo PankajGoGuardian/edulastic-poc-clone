@@ -1,4 +1,5 @@
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import { capitalize, groupBy, map, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

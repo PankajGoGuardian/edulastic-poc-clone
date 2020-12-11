@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import { white, black, red, blue, highlightColors } from '@edulastic/colors'
 
 const ColorPicker = ({ selectColor, bg }) => {

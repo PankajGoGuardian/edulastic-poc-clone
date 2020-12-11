@@ -1,5 +1,5 @@
 import { ErrorHandler } from '@edulastic/common'
-import { Layout } from 'antd'
+import Layout from "antd/es/Layout";
 import React, { useState } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components'

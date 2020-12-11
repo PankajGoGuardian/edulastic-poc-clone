@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { get, isEmpty, pullAt } from 'lodash'
 import * as moment from 'moment'
 
-// components
-import { Spin, Tooltip } from 'antd'
+import Spin from "antd/es/Spin";
+import Tooltip from "antd/es/Tooltip";
 import { GiDominoMask } from 'react-icons/gi'
 import { IconClose, IconCorrect, IconExclamationMark } from '@edulastic/icons'
 import { lightBlue3 } from '@edulastic/colors'

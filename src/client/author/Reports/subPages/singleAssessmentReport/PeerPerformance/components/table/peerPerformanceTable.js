@@ -1,4 +1,5 @@
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import next from 'immer'
 import { sumBy } from 'lodash'
 import React, { useMemo } from 'react'

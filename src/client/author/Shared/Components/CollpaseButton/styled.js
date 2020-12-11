@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 
 export const StyledCollapseButton = styled(Button)`
   position: absolute;

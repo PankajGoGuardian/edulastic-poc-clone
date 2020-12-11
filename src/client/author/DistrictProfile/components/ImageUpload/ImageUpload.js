@@ -5,7 +5,7 @@ import { aws, roleuser } from '@edulastic/constants'
 import { notification } from '@edulastic/common'
 import { IconPhotoCamera } from '@edulastic/icons'
 import { white } from '@edulastic/colors'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { setImageUploadingStatusAction } from '../../ducks'
 
 import {

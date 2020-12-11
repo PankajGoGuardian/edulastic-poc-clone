@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
-import { Button, Modal } from 'antd'
+import Button from "antd/es/Button";
+import Modal from "antd/es/Modal";
 import { IconEdit } from '@edulastic/icons'
 import { FlexContainer } from '@edulastic/common'
 import {

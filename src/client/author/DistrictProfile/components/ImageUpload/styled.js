@@ -4,7 +4,8 @@ import {
   largeDesktopWidth,
   themeColorBlue,
 } from '@edulastic/colors'
-import { Button, Icon } from 'antd'
+import Button from "antd/es/Button";
+import Icon from "antd/es/Icon";
 import styled from 'styled-components'
 
 export const StyledUploadContainer = styled.div`

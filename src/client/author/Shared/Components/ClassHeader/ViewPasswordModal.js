@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import useInterval from '@use-it/interval'
-import { Typography } from 'antd'
+import Typography from "antd/es/Typography";
 import styled from 'styled-components'
 import moment from 'moment'
 import { test } from '@edulastic/constants'

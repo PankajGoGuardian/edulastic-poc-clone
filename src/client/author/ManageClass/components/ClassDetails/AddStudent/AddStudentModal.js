@@ -1,7 +1,10 @@
 import { enrollmentApi } from '@edulastic/api'
 import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
 import { IconUser } from '@edulastic/icons'
-import { Collapse, Form, Icon, Spin } from 'antd'
+import Collapse from "antd/es/Collapse";
+import Form from "antd/es/Form";
+import Icon from "antd/es/Icon";
+import Spin from "antd/es/Spin";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

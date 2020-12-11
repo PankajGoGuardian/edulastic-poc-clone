@@ -6,7 +6,7 @@ import { uploadToS3, notification } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
 import { groupBy } from 'lodash'
 
-import { message } from 'antd'
+import message from "antd/es/message";
 
 export const UPLOAD_STATUS = {
   STANDBY: 'STANDBY',

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import { EduSwitchStyled } from '@edulastic/common'
 import {
   Link,

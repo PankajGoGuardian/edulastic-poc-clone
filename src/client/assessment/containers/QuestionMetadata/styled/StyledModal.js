@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Modal } from 'antd'
+import Modal from "antd/es/Modal";
 
 export const StyledModal = styled(Modal)`
   min-width: 70%;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { themeColor, white } from '@edulastic/colors'
 import { BannerDiv } from './styled'
 

@@ -2,7 +2,7 @@ import { buffers } from 'redux-saga'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import * as moment from 'moment'
-import { message } from 'antd'
+import message from "antd/es/message";
 import {
   takeLatest,
   takeEvery,

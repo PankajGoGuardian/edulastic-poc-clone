@@ -1,6 +1,6 @@
 import { backgrounds, labelGrey, secondaryTextColor } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'

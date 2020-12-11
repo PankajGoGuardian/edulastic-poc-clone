@@ -10,7 +10,7 @@ import {
   isSEB,
 } from '@edulastic/common'
 import { IconAccessibility, IconCircleLogout, IconSend } from '@edulastic/icons'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

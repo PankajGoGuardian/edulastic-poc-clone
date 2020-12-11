@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
-import { Radio } from 'antd'
+import Radio from "antd/es/Radio";
 import unset from 'lodash/unset'
 import { withNamespaces } from '@edulastic/localization'
 

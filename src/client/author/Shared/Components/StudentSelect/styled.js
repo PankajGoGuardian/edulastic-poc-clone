@@ -1,4 +1,4 @@
-import { Select } from 'antd'
+import Select from "antd/es/Select";
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 

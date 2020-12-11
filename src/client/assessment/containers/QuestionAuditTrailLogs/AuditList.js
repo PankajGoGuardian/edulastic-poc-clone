@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { get } from 'lodash'
 import moment from 'moment'
 

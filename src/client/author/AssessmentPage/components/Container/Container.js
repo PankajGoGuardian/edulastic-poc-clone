@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import { isEmpty, get } from 'lodash'
 import { white } from '@edulastic/colors'
 import {

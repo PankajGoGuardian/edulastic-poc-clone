@@ -1,7 +1,7 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import styled from 'styled-components'
-import { Layout } from 'antd'
+import Layout from "antd/es/Layout";
 
 // components
 import Header from './Header'

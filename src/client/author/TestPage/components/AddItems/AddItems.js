@@ -4,7 +4,8 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
-import { Pagination, Spin } from 'antd'
+import Pagination from "antd/es/Pagination";
+import Spin from "antd/es/Spin";
 import { roleuser, sortOptions } from '@edulastic/constants'
 import {
   withWindowSizes,

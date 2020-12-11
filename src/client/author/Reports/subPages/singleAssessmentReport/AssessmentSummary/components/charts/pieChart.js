@@ -1,5 +1,6 @@
 import { fadedBlack } from '@edulastic/colors'
-import { Col, Row } from 'antd'
+import Col from "antd/es/Col";
+import Row from "antd/es/Row";
 import { sumBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useMemo, useState } from 'react'

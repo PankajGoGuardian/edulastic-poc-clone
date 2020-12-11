@@ -3,7 +3,9 @@ import next from 'immer'
 
 import styled from 'styled-components'
 import { get, isNaN } from 'lodash'
-import { Row, Col, Tag } from 'antd'
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Tag from "antd/es/Tag";
 
 import {
   darkGrey,

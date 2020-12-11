@@ -1,6 +1,9 @@
 import React from 'react'
 import { CSVLink } from 'react-csv'
-import { Button, Upload, Icon, Modal } from 'antd'
+import Button from "antd/es/Button";
+import Upload from "antd/es/Upload";
+import Icon from "antd/es/Icon";
+import Modal from "antd/es/Modal";
 import { Table } from '../Common/StyledComponents'
 import { mapCountAsType, DISABLE_SUBMIT_TITLE } from '../Data'
 

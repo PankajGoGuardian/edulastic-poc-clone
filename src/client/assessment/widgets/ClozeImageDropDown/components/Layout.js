@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Select, Input } from 'antd'
+import Select from "antd/es/Select";
+import Input from "antd/es/Input";
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Icon } from 'antd'
+import Icon from "antd/es/Icon";
 import { MathInput, MathSpan } from '@edulastic/common'
 
 import { getFontSize } from '../../../../../../utils/helpers'

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Card } from 'antd'
+import Card from "antd/es/Card";
 
 export const PrintPreviewBack = styled.div`
   width: 100%;

@@ -6,7 +6,7 @@ import {
   white,
 } from '@edulastic/colors'
 import { IconClose, IconPencilEdit } from '@edulastic/icons'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import PropTypes from 'prop-types'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'

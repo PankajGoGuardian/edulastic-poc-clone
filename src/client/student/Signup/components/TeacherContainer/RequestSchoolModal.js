@@ -6,7 +6,7 @@ import {
 } from '@edulastic/colors'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Form } from 'antd'
+import Form from "antd/es/Form";
 import { find, get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

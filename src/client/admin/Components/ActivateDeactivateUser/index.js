@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import moment from 'moment'
-import { Radio } from 'antd'
+import Radio from "antd/es/Radio";
 
 import { EduButton, notification } from '@edulastic/common'
 import { userApi } from '@edulastic/api'

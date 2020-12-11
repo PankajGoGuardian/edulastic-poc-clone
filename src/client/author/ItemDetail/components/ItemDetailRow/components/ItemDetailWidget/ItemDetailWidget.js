@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Button } from 'antd'
+import Button from "antd/es/Button";
 import { get } from 'lodash'
 import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { white } from '@edulastic/colors'

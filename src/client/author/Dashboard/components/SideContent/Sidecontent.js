@@ -1,7 +1,9 @@
 import { themeColor, white } from '@edulastic/colors'
 import { OnWhiteBgLogo, CustomModalStyled } from '@edulastic/common'
 import { IconPlayFilled } from '@edulastic/icons'
-import { Col, Icon, Row } from 'antd'
+import Col from "antd/es/Col";
+import Icon from "antd/es/Icon";
+import Row from "antd/es/Row";
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'

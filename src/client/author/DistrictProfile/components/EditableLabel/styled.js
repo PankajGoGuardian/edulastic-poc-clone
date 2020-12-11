@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Form, Input } from 'antd'
+import Form from "antd/es/Form";
+import Input from "antd/es/Input";
 
 export const EditableLabelDiv = styled.div`
   display: flex;

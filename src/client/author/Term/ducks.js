@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
-import { message } from 'antd'
+import message from "antd/es/message";
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import * as moment from 'moment'

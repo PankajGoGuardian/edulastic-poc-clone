@@ -1,5 +1,9 @@
 import React from 'react'
-import { Form, Row, Col, Select, Spin } from 'antd'
+import Form from "antd/es/Form";
+import Row from "antd/es/Row";
+import Col from "antd/es/Col";
+import Select from "antd/es/Select";
+import Spin from "antd/es/Spin";
 import { authApi, schoolApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
 import {

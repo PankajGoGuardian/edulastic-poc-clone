@@ -9,7 +9,12 @@ import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { roleuser } from '@edulastic/constants'
 import { IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Form, Icon, Menu, Row, Select } from 'antd'
+import Col from "antd/es/Col";
+import Form from "antd/es/Form";
+import Icon from "antd/es/Icon";
+import Menu from "antd/es/Menu";
+import Row from "antd/es/Row";
+import Select from "antd/es/Select";
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'

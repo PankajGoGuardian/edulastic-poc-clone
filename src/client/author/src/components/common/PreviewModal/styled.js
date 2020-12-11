@@ -9,7 +9,10 @@ import {
   smallDesktopWidth,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { Button, Icon, Typography, Input } from 'antd'
+import Button from "antd/es/Button";
+import Icon from "antd/es/Icon";
+import Typography from "antd/es/Typography";
+import Input from "antd/es/Input";
 
 const { Text } = Typography
 

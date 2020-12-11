@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Col } from 'antd'
+import Col from "antd/es/Col";
 
 import { withRouter } from 'react-router'
 import Breadcrumb from '../../sharedComponents/Breadcrumb'

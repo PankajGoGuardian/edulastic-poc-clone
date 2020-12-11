@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, FlexContainer, notification } from '@edulastic/common'
-import { message } from 'antd'
+import message from "antd/es/message";
 import {
   fetchAssignmentsAction,
   deleteAssignmentAction,

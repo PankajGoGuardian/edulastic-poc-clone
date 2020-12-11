@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Card, Table } from 'antd'
+import Card from "antd/es/Card";
+import Table from "antd/es/Table";
 
 export default class Score extends Component {
   constructor() {

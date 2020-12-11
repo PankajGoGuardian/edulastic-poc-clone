@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'antd'
+import Modal from "antd/es/Modal";
 import styled from 'styled-components'
 import CanvasBulkAddClass from '../../../../common/components/CanvasBulkAddClass'
 

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Col } from 'antd'
+import Col from "antd/es/Col";
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from 'react-i18next'

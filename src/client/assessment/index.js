@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { compose } from 'redux'
-import { Spin } from 'antd'
+import Spin from "antd/es/Spin";
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'

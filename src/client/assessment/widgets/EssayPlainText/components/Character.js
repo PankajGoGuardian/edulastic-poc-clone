@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Popover } from 'antd'
+import Popover from "antd/es/Popover";
 
 import { ToolbarItem } from '../styled/ToolbarItem'
 import CharacterMap from '../../../components/CharacterMap'

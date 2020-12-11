@@ -312,10 +312,13 @@ class AuthorTestItemPreview extends Component {
 
   renderRightButtons = () => {
     const { isPassage, item, goToItem, passageTestItems, page } = this.props
+    const { collapseDirection } = this.state
+    const showButtons = collapseDirection !== 'right'
 
     return (
       <>
         {isPassage &&
+          showButtons &&
           passageTestItems.length > 1 &&
           (page === 'addItems' || page === 'itemList') && (
             <PassageNavigation>
@@ -389,7 +392,7 @@ class AuthorTestItemPreview extends Component {
       isPassage,
       ...restProps
     } = this.props
-    const { value, isEnableScratchpad } = this.state
+    const { value, isEnableScratchpad, collapseDirection } = this.state
     const { createdBy, data = {}, maxScore, _id } = item
     const { questions = [] } = data
     const [firstQuestion = {}] = questions
@@ -408,7 +411,10 @@ class AuthorTestItemPreview extends Component {
     } = firstQuestion
 
     const hasTabs =
-      col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH
+      col.tabs &&
+      !!col.tabs.length &&
+      windowWidth >= MAX_MOBILE_WIDTH &&
+      collapseDirection === 'left'
 
     let subCount = 0
     const columns = (

@@ -17,7 +17,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: space-between;
   width: ${({ width }) => width || '100%'};
-  transition: width 0.5s;
+  transition: width 0.3s;
   &.scratchpad-wrapper {
     input {
       position: absolute;

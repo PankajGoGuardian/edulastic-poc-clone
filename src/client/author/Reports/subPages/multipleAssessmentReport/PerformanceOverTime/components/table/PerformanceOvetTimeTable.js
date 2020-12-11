@@ -201,7 +201,7 @@ const PerformanceOverTimeTable = ({
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}
-        pagination={false}
+        pagination={isCsvDownloading ? undefined : false}
       />
       <BackendPagination
         backendPagination={backendPagination}

@@ -5,15 +5,16 @@ import { FilterLabel } from '../../styled'
 
 const MultiSelectSearch = ({
   label,
+  placeholder,
   onChange,
   onSearch,
-  onBlur,
+  onBlur = () => {},
   value,
   options,
   dataCy,
   el,
   loading,
-  onFocus,
+  onFocus = () => {},
 }) => (
   <>
     <FilterLabel>{label}</FilterLabel>
@@ -21,7 +22,7 @@ const MultiSelectSearch = ({
       showSearch
       loading={loading}
       data-cy={dataCy}
-      placeholder={`All ${label}`}
+      placeholder={placeholder}
       mode="multiple"
       ref={el}
       onChange={onChange}

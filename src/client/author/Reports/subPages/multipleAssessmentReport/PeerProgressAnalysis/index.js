@@ -1,11 +1,12 @@
 import { SpinLoader } from '@edulastic/common'
-import { capitalize, get, head } from 'lodash'
+import { capitalize, get, head, isEmpty } from 'lodash'
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { getUserRole } from '../../../../../student/Login/ducks'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV } from '../../../common/util'
+import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import TrendStats from '../common/components/trend/TrendStats'
 import TrendTable from '../common/components/trend/TrendTable'
@@ -132,6 +133,10 @@ const PeerProgressAnalysis = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (isEmpty(selectedTestIdsStr)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (error && error.dataSizeExceeded) {

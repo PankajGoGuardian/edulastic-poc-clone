@@ -15,6 +15,7 @@ import {
   filterAccordingToRole,
   getFormattedName,
 } from '../../../common/util'
+import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import { getUserRole } from '../../../../src/selectors/user'
 import {
@@ -136,6 +137,10 @@ const StudentProgress = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (isEmpty(selectedTestIdsStr)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (error && error.dataSizeExceeded) {

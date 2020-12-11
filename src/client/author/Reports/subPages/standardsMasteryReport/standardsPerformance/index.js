@@ -110,6 +110,7 @@ const StandardsPerformance = ({
     () =>
       getParsedData(
         res.metricInfo,
+        res.studInfo,
         maxMasteryScore,
         tableFilters,
         selectedDomains,

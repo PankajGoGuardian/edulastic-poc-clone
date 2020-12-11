@@ -42,6 +42,14 @@ const getByIdMinimal = (id, params = {}) =>
     })
     .then((result) => result.data.result)
 
+const getSummary = (id) =>
+  api
+    .callApi({
+      url: `${prefix}/${id}/summary`,
+      method: 'get',
+    })
+    .then((result) => result.data)
+
 const create = (data) =>
   api
     .callApi({
@@ -161,4 +169,5 @@ export default {
   deleteAssignments,
   deleteTest,
   getTestIdFromVersionId,
+  getSummary,
 }

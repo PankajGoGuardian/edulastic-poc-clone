@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -86,6 +86,10 @@ const MyClasses = ({
   dashboardTiles,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
+  const [showRightArrow, setShowRightArrow] = useState(false)
+  const [showLeftArrow, setShowLeftArrow] = useState(true)
+
+  let scrollBarRef
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -138,17 +142,28 @@ const MyClasses = ({
   const bannerLength = (BANNER || []).length
 
   const Banner = (BANNER || []).map((slide, index) => (
-    <Slides
-      className={bannerLength === index + 1 ? 'last' : ''}
-      bgImage={slide.imageUrl}
-      key={slide._id}
-    />
+    <>
+      <Slides bgImage={slide.imageUrl} key={slide._id} />
+      <Slides bgImage={slide.imageUrl} key={slide._id} />
+      <Slides
+        className={bannerLength === index + 1 ? 'last' : ''}
+        bgImage={slide.imageUrl}
+        key={slide._id}
+      />
+    </>
   ))
 
-  const ref = useRef(null)
-
-  const scroll = (scrollOffset) => {
-    ref.current.scrollLeft += scrollOffset
+  const handleScroll = (scrollOffset) => {
+    scrollBarRef._container.scrollLeft += scrollOffset
+    const { x } = scrollBarRef._ps.reach
+    if (scrollBarRef._container.scrollLeft === 0) {
+      setShowRightArrow(false)
+    } else if (x === 'end') {
+      setShowLeftArrow(false)
+    } else {
+      setShowRightArrow(true)
+      setShowLeftArrow(true)
+    }
   }
 
   const isClassLink =
@@ -181,14 +196,28 @@ const MyClasses = ({
         institutionId={institutionIds[0]}
       />
       <SliderContainer>
-        <PrevButton onClick={() => scroll(-100)}>
-          <IconChevronLeft color={white} width="32px" height="32px" />
-        </PrevButton>
-        <NextButton onClick={() => scroll(100)}>
-          <IconChevronLeft color={white} width="32px" height="32px" />
-        </NextButton>
-        <ScrollbarContainer ref={ref}>
-          <PerfectScrollbar>{Banner}</PerfectScrollbar>
+        {showRightArrow && (
+          <PrevButton className="prev" onClick={() => handleScroll(-200)}>
+            <IconChevronLeft color={white} width="32px" height="32px" />
+          </PrevButton>
+        )}
+        {showLeftArrow && (
+          <NextButton className="next" onClick={() => handleScroll(200)}>
+            <IconChevronLeft color={white} width="32px" height="32px" />
+          </NextButton>
+        )}
+        <ScrollbarContainer>
+          <PerfectScrollbar
+            ref={(ref) => {
+              scrollBarRef = ref
+            }}
+            option={{
+              suppressScrollY: true,
+              useBothWheelAxes: true,
+            }}
+          >
+            {Banner}
+          </PerfectScrollbar>
         </ScrollbarContainer>
       </SliderContainer>
       <TextWrapper

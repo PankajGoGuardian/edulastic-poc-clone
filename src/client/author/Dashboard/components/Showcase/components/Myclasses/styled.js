@@ -17,13 +17,26 @@ export const FeatureContentWrapper = styled.div`
 `
 export const SliderContainer = styled.div`
   position: relative;
+  .prev,
+  .next {
+    display: none;
+  }
+  &:hover {
+    .prev,
+    .next {
+      display: block;
+    }
+  }
 `
 
 export const ScrollbarContainer = styled.div`
   white-space: nowrap;
   margin-bottom: 20px;
+  transition: 0.2s;
   .scrollbar-container {
     width: calc(100vw - 140px);
+    transition: 0.2s;
+    padding-bottom: 7px;
   }
 `
 export const PrevButton = styled.div`

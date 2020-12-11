@@ -105,6 +105,7 @@ const TeacherAutoComplete = ({
   return (
     <MultiSelectSearch
       label="Teacher"
+      placeholder="All Teacher"
       el={teacherFilterRef}
       onChange={(e) => selectCB(e)}
       onSearch={onSearch}

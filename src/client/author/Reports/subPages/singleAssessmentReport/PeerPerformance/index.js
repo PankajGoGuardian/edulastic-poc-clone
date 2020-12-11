@@ -159,7 +159,7 @@ const PeerPerformance = ({
     return <DataSizeExceeded />
   }
 
-  if (!peerPerformance?.metricInfo?.length) {
+  if (!peerPerformance?.metricInfo?.length || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

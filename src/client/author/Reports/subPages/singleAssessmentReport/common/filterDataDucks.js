@@ -1,4 +1,4 @@
-import { takeLatest, takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { get } from 'lodash'
@@ -123,9 +123,7 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
     if (filters) {
       state.filters = filters
     }
-    if (testId) {
-      state.testId = testId
-    }
+    state.testId = testId
   },
   [RESET_REPORTS_SAR_FILTER_DATA]: (state) => {
     state.SARFilterData = {}

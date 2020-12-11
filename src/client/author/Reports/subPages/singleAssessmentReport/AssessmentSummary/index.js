@@ -102,7 +102,7 @@ const AssessmentSummary = ({
     return <DataSizeExceeded />
   }
 
-  if (!metricInfo?.length) {
+  if (!metricInfo?.length || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

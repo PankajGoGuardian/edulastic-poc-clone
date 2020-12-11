@@ -88,6 +88,7 @@ const SchoolAutoComplete = ({
   return (
     <MultiSelectSearch
       label="School"
+      placeholder="All School"
       el={schoolFilterRef}
       onChange={(e) => selectCB(e)}
       onSearch={onSearch}

@@ -573,21 +573,21 @@ class PreviewModal extends React.Component {
     const showAddItemToTestButton =
       itemHasAtleastOneQuestion && testStatus !== 'published'
     const isLoading = loading || item === null || passageLoading
+    const isMobile = isSmallSize || fullModal
 
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 0 }}
         wrapClassName="preview-full-modal"
-        isSmallSize={isSmallSize}
-        width={isSmallSize || fullModal ? '100%' : '75%'}
-        height={isSmallSize || fullModal ? '100%' : null}
+        width={isMobile ? '100%' : '75%'}
+        height={isMobile ? '100%' : null}
         visible={isVisible}
         closable={false}
         onCancel={this.closeModal}
         footer={null}
         centered
         className="noOverFlowModal"
-        fullModal={fullModal}
+        isMobile={isMobile}
       >
         {this.navigationButtonVisibile && this.navigationBtns()}
         <HeadingWrapper>
@@ -813,7 +813,7 @@ class PreviewModal extends React.Component {
             </EduButton>
           </ModalTopAction>
         </HeadingWrapper>
-        <ModalContentArea>
+        <ModalContentArea isMobile={isMobile}>
           {isLoading && (
             <ProgressContainer>
               <Spin tip="" />
@@ -850,7 +850,7 @@ class PreviewModal extends React.Component {
               isAnswerBtnVisible={isAnswerBtnVisible}
               item={item}
               page={page}
-              fullModal={fullModal}
+              isMobile={isMobile}
               showCollapseBtn
               changePreviewTab={changePreviewMode}
               onlySratchpad={onlySratchpad}
@@ -964,13 +964,12 @@ const ProgressContainer = styled.div`
 `
 
 const PreviewModalWrapper = styled(Modal)`
-  height: ${({ isSmallSize }) => (isSmallSize ? '100%' : 'auto')};
-  border-radius: ${({ fullModal }) => (fullModal ? '0px' : '5px')};
+  height: ${({ isMobile }) => (isMobile ? '100%' : 'auto')};
+  border-radius: ${({ isMobile }) => (isMobile ? '0px' : '5px')};
   background: #f7f7f7;
   top: 30px;
   padding: 0px;
   position: relative;
-  margin: ${({ fullModal }) => (fullModal ? '0px' : '20px auto')};
 
   .ant-modal-content {
     background: transparent;
@@ -1060,5 +1059,5 @@ const QuestionWrapper = styled.div`
 const ModalContentArea = styled.div`
   border-radius: 0px;
   padding: 0px 30px;
-  height: 70vh;
+  height: ${({ isMobile }) => (isMobile ? 'calc(100vh - 100px)' : '70vh')};
 `

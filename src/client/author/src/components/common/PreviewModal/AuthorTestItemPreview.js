@@ -334,8 +334,8 @@ class AuthorTestItemPreview extends Component {
     )
   }
 
-  getScrollContainerProps = (showScratch) => {
-    const { page, fullModal, viewComponent, isPassage } = this.props
+  getScrollContainerProps = (showScratch, hasTabs) => {
+    const { page, isMobile, viewComponent } = this.props
     const commonProps = {
       style: {
         overflow: 'auto',
@@ -348,10 +348,12 @@ class AuthorTestItemPreview extends Component {
     // 90px is scratchpad toolbox height
     if (viewComponent === 'authorPreviewPopup') {
       const tempHeight =
-        isPassage && fullModal
-          ? 'calc(100vh - 160px)'
-          : fullModal
+        hasTabs && isMobile
+          ? 'calc(100vh - 138px)'
+          : isMobile
           ? 'calc(100vh - 100px)'
+          : hasTabs
+          ? 'calc(70vh - 38px)'
           : '70vh'
       commonProps.style.height = showScratch
         ? `calc(${tempHeight} - 90px)`
@@ -383,7 +385,6 @@ class AuthorTestItemPreview extends Component {
       windowWidth,
       onlySratchpad,
       viewComponent,
-      fullModal,
       item,
       isPassage,
       ...restProps
@@ -406,10 +407,13 @@ class AuthorTestItemPreview extends Component {
       tags,
     } = firstQuestion
 
+    const hasTabs =
+      col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH
+
     let subCount = 0
     const columns = (
       <>
-        {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
+        {hasTabs && (
           <Tabs value={value} onChange={this.handleTabChange}>
             {col.tabs.map((tab, tabIndex) => (
               <Tabs.Tab
@@ -444,7 +448,7 @@ class AuthorTestItemPreview extends Component {
         {showScratch && isEnableScratchpad && <ScratchpadTool />}
         <WidgetContainer
           alignItems="flex-start"
-          {...this.getScrollContainerProps(showScratch)}
+          {...this.getScrollContainerProps(showScratch, hasTabs)}
         >
           <ScratchpadAndWidgetWrapper>
             {showScratch && isEnableScratchpad && (
@@ -652,7 +656,7 @@ class AuthorTestItemPreview extends Component {
 
 AuthorTestItemPreview.defaultProps = {
   showFeedback: false,
-  fullModal: false,
+  isMobile: false,
   verticalDivider: false,
   scrolling: false,
   style: { padding: 0, display: 'flex' },

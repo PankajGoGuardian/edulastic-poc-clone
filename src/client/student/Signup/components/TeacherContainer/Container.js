@@ -11,6 +11,7 @@ import { canvasApi } from '@edulastic/api'
 import Header from './Header'
 import JoinSchool from './JoinSchool'
 import SignupForm from './SignupForm'
+import AddSchoolAndGradeModal from './AddSchoolAndGradeModal'
 import SubjectGradeForm from './SubjectGrade'
 import teacherBg from '../../../assets/bg-teacher.png'
 import { getPartnerKeyFromUrl } from '../../../../common/utils/helpers'
@@ -39,6 +40,9 @@ const Container = ({
   canvasSectionList,
   orgType,
   institutionIds,
+  isModalView,
+  isModalVisible,
+  toggleModal,
 }) => {
   const { isAuthenticated, signupStatus } = user
   const allowCanvas = sessionStorage.getItem('signupFlow') === 'canvas'
@@ -77,7 +81,9 @@ const Container = ({
     setSchool(value)
   }
 
+  console.log('signup container')
   if (!isAuthenticated) {
+    console.log('signup form')
     return (
       <ThemeProvider theme={themes.default}>
         <SignupForm
@@ -99,6 +105,22 @@ const Container = ({
           invitedUserDetails={invitedUserDetails}
         />
       </ThemeProvider>
+    )
+  }
+
+  if (isModalView) {
+    return (
+      <AddSchoolAndGradeModal
+        user={user}
+        districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
+        isSignupUsingDaURL={isSignupUsingDaURL}
+        generalSettings={generalSettings}
+        districtPolicy={districtPolicy}
+        orgShortName={orgShortName}
+        orgType={orgType}
+        isVisible={isModalVisible}
+        handleCancel={() => toggleModal(false)}
+      />
     )
   }
 
@@ -143,11 +165,17 @@ const Container = ({
 Container.propTypes = {
   user: PropTypes.object,
   logout: PropTypes.func,
+  isModalView: PropTypes.bool,
+  isModalVisible: PropTypes.bool,
+  toggleModal: PropTypes.func,
 }
 
 Container.defaultProps = {
   user: null,
   logout: () => null,
+  isModalView: false,
+  isModalVisible: false,
+  toggleModal: () => null,
 }
 
 const enhance = compose(

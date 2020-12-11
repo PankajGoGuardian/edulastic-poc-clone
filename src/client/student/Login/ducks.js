@@ -12,7 +12,7 @@ import {
   segmentApi,
   schoolApi,
 } from '@edulastic/api'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, signUpState } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import { fetchAssignmentsAction } from '../Assignments/ducks'
@@ -656,6 +656,7 @@ function getCurrentFirebaseUser() {
 }
 
 function getValidRedirectRouteByRole(_url, user) {
+  console.log('test')
   const url = (_url || '').trim()
   switch (user.role) {
     case roleuser.TEACHER:
@@ -928,7 +929,38 @@ function* signup({ payload }) {
         yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken)
       }
       yield call(segmentApi.trackTeacherSignUp, { user: result })
-      yield put(signupSuccessAction(result))
+
+      if (
+        role === 'teacher' &&
+        sessionStorage.getItem('signupFlow') !== 'canvas'
+      ) {
+        const userPayload = {
+          data: {
+            email: user.email,
+            currentSignUpState: 'ACCESS_WITHOUT_SCHOOL',
+          },
+          userId: user._id,
+        }
+
+        const userUpdateResult = yield call(userApi.updateUser, userPayload)
+        if (userUpdateResult && userUpdateResult.token) {
+          TokenStorage.storeAccessToken(
+            userUpdateResult.token,
+            userUpdateResult._id,
+            userUpdateResult.role,
+            true
+          )
+          TokenStorage.selectAccessToken(
+            userUpdateResult._id,
+            userUpdateResult.role
+          )
+        }
+        const updatedUser = pick(userUpdateResult, userPickFields)
+        yield put(signupSuccessAction(updatedUser))
+      } else {
+        yield put(signupSuccessAction(result))
+      }
+
       localStorage.removeItem('loginRedirectUrl')
 
       if (generalSettings) {

@@ -353,7 +353,7 @@ class App extends Component {
         const role = get(user, ['user', 'role'])
         if (role === 'teacher') {
           if (
-            user.signupStatus === signUpState.DONE ||
+            user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
             isUndefined(user.signupStatus)
           ) {
             if (features.isPublisherAuthor) {
@@ -459,6 +459,8 @@ class App extends Component {
     // signup routes hidden till org reference is not done
 
     const { showAppUpdate, canShowCliBanner } = this.state
+    console.log('defaultRoute', defaultRoute)
+    console.log('redirectRoute', redirectRoute)
     return (
       <Suspense fallback={<Loading />}>
         {shouldWatch && <RealTimeCollectionWatch />}
@@ -647,9 +649,12 @@ class App extends Component {
             <Route exact path="/fwd" render={() => <V1Redirect />} />
             <Route path="/inviteTeacher" render={() => <Invite />} />
             <Route path="/auth" render={() => <Auth />} />
-            {testRedirectRoutes.map((route) => (
-              <Route path={route} component={RedirectToTest} key={route} />
-            ))}
+            {testRedirectRoutes.map((route) => {
+              console.log('here')
+              return (
+                <Route path={route} component={RedirectToTest} key={route} />
+              )
+            })}
             <Route
               path="/public/view-test/:testId"
               render={(props) => <PublicTest {...props} />}

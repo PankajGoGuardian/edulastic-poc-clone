@@ -6,7 +6,7 @@ import React from 'react'
 import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
 
-const { EMBED_RESPONSE } = math
+const { EMBED_RESPONSE, keyboardMethods } = math
 
 class MathInput extends React.PureComponent {
   state = {
@@ -137,7 +137,7 @@ class MathInput extends React.PureComponent {
     // @see: https://snapwiz.atlassian.net/browse/EV-21988
 
     const { width, height: keyboardH } = math.symbols.find(
-      (x) => x.value === (symbols[0] || 'basic')
+      (x) => x.value === (symbols[0] || keyboardMethods.BASIC)
     ) || { width: 0, height: 0 }
 
     // 8 is margin between math keyboard and math input
@@ -360,7 +360,8 @@ class MathInput extends React.PureComponent {
         fullWidth={fullWidth}
         className={className}
         fontStyle={
-          symbols[0] === 'units_si' || symbols[0] === 'units_us'
+          symbols[0] === keyboardMethods.UNITS_SI ||
+          symbols[0] === keyboardMethods.UNITS_US
             ? 'normal'
             : 'italic'
         }

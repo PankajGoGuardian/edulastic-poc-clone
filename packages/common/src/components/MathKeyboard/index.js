@@ -24,9 +24,9 @@ class MathKeyboard extends React.PureComponent {
   static NUMBER_PAD_ITEMS = NUMBER_PAD_ITEMS
 
   WITH_NUMBERS = [
-    math.symbols[0].value,
-    math.symbols[2].value,
-    math.symbols[9].value,
+    math.keyboardMethods.BASIC,
+    math.keyboardMethods.INTERMEDIATE,
+    math.keyboardMethods.ALL_BUTTONS,
   ]
 
   constructor(props) {
@@ -70,7 +70,7 @@ class MathKeyboard extends React.PureComponent {
 
   setKeyboardButtons(keypadType) {
     const { restrictKeys, customKeys, symbols } = this.props
-    const type = symbols[0] || keypadType || 'basic'
+    const type = symbols[0] || keypadType || math.keyboardMethods.BASIC
 
     const isCustomMode = isObject(type)
 

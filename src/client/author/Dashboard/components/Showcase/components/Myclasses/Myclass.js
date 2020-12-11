@@ -128,8 +128,10 @@ const MyClasses = ({
   }
 
   const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
+  const bannerSlides = BANNER || []
+  const testBundle = TEST_BUNDLE || []
 
-  const FeatureContentCards = (TEST_BUNDLE || []).map((bundle) => (
+  const FeatureContentCards = testBundle.map((bundle) => (
     <BundleContainer
       onClick={() => handleFeatureClick(bundle.config.filters || [])}
       bgImage={bundle.imageUrl}
@@ -139,9 +141,9 @@ const MyClasses = ({
     </BundleContainer>
   ))
 
-  const bannerLength = (BANNER || []).length
+  const bannerLength = bannerSlides.length
 
-  const Banner = (BANNER || []).map((slide, index) => (
+  const Banner = bannerSlides.map((slide, index) => (
     <Slides
       className={bannerLength === index + 1 ? 'last' : ''}
       bgImage={slide.imageUrl}

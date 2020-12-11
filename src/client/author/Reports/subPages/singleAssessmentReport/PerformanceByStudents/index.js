@@ -249,7 +249,10 @@ const PerformanceByStudents = ({
     return <DataSizeExceeded />
   }
 
-  if (!performanceByStudents.studentMetricInfo?.length) {
+  if (
+    !performanceByStudents.studentMetricInfo?.length ||
+    !settings.selectedTest.key
+  ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

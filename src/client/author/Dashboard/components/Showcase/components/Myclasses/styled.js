@@ -15,10 +15,28 @@ export const CardBox = styled.div``
 export const FeatureContentWrapper = styled.div`
   margin-top: 20px;
 `
+export const SliderContainer = styled.div`
+  position: relative;
+`
+
 export const BannerSlider = styled.div`
   white-space: nowrap;
   margin-bottom: 20px;
   overflow: auto;
+`
+export const PrevButton = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+`
+export const NextButton = styled.div`
+  position: absolute;
+  top: 47%;
+  right: 10px;
+  transform: translateY(-50%) rotate(180deg);
+  cursor: pointer;
 `
 
 export const Slides = styled.div`

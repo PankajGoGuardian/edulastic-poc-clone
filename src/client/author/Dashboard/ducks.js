@@ -88,7 +88,8 @@ function* receiveTeacherDashboardSaga() {
 function* fetchDashboardTilesSaga() {
   try {
     const version = localStorage.getItem('author:dashboard:version')
-    const result = yield call(configurableTilesApi.fetchTiles(+version))
+    const result = yield call(configurableTilesApi.fetchTiles, +version)
+    console.log('result', result)
     if (!version || version !== result.version) {
       yield put(setDashboardTiles(result.data))
       localStorage.setItem(
@@ -98,6 +99,7 @@ function* fetchDashboardTilesSaga() {
       localStorage.setItem('author:dashboard:version', result.version)
     }
   } catch (err) {
+    console.log('err', err)
     const errorMessage = 'Unable to fetch dashboard details.'
     notification({ type: 'error', msg: errorMessage })
     yield put(receiveTeacherDashboardErrorAction({ error: errorMessage }))

@@ -7,7 +7,8 @@ import { get } from 'lodash'
 // components
 import { Row, Spin } from 'antd'
 import { FlexContainer, MainContentWrapper } from '@edulastic/common'
-import { title } from '@edulastic/colors'
+import { title, white } from '@edulastic/colors'
+import { IconChevronLeft } from '@edulastic/icons'
 import { TextWrapper } from '../../../styledComponents'
 import {
   CardBox,
@@ -17,6 +18,9 @@ import {
   Bottom,
   BannerSlider,
   Slides,
+  PrevButton,
+  NextButton,
+  SliderContainer,
 } from './styled'
 import CardImage from './components/CardImage/cardImage'
 import CardTextContent from './components/CardTextContent/cardTextContent'
@@ -90,6 +94,7 @@ const MyClasses = ({
   showCleverSyncModal,
   setShowCleverSyncModal,
   teacherData,
+  dashboardTiles,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
@@ -127,74 +132,33 @@ const MyClasses = ({
     history.push('/author/tests')
   }
 
-  const bundles = [
-    {
-      id: 1,
-      imageUrl:
-        'transparent linear-gradient(236deg, #0d9c8c 0%, #095592 100%) 0% 0% no-repeat padding-box',
-      description: 'Lorem ipsum dolor sit amet dolor sit amet',
-    },
-    {
-      id: 2,
-      imageUrl:
-        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
-      description: 'Lorem ipsum dolor sit amet dolor sit amet',
-    },
-    {
-      id: 3,
-      imageUrl:
-        'transparent linear-gradient(236deg, #6F0027 0%, #C52229 100%) 0% 0% no-repeat padding-box',
-      description: 'Lorem ipsum dolor sit amet dolor sit amet',
-    },
-    {
-      id: 4,
-      imageUrl:
-        'transparent linear-gradient(236deg, #45B1C5 0%, #9ED0D9 100%) 0% 0% no-repeat padding-box',
-      description: 'Lorem ipsum dolor sit amet dolor sit amet',
-    },
-  ]
+  const bundleTiles = dashboardTiles.filter(
+    (tile) => tile.type === 'TEST_BUNDLE'
+  )
 
-  const FeatureContentCards = bundles.map((bundle) => (
+  const FeatureContentCards = bundleTiles.map((bundle) => (
     <BundleContainer
       onClick={bundleHandler}
       bgImage={bundle.imageUrl}
-      key={bundle.id}
+      key={bundle._id}
     >
       <Bottom>{bundle.description && <div> {bundle.description} </div>}</Bottom>
     </BundleContainer>
   ))
 
-  const bannerSlides = [
-    {
-      id: 1,
-      imageUrl:
-        'transparent linear-gradient(236deg, #0d9c8c 0%, #095592 100%) 0% 0% no-repeat padding-box',
-    },
-    {
-      id: 2,
-      imageUrl:
-        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
-    },
-    {
-      id: 3,
-      imageUrl:
-        'transparent linear-gradient(236deg, #6F0027 0%, #C52229 100%) 0% 0% no-repeat padding-box',
-    },
-    {
-      id: 4,
-      imageUrl:
-        'transparent linear-gradient(236deg, #45B1C5 0%, #9ED0D9 100%) 0% 0% no-repeat padding-box',
-    },
-    {
-      id: 5,
-      imageUrl:
-        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
-    },
-  ]
+  const bannerTiles = dashboardTiles.filter((tile) => tile.type === 'BANNER')
 
-  const Banner = bannerSlides.map((slide) => (
+  const Banner = bannerTiles.map((slide) => (
     <Slides bgImage={slide.imageUrl} key={slide._id} />
   ))
+
+  const prevSlide = () => {
+    console.log('prev')
+  }
+
+  const nextSlide = () => {
+    console.log('next')
+  }
 
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
@@ -225,7 +189,15 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
-      <BannerSlider>{Banner}</BannerSlider>
+      <SliderContainer>
+        <PrevButton onClick={prevSlide}>
+          <IconChevronLeft color={white} width="32px" height="32px" />
+        </PrevButton>
+        <NextButton onClick={nextSlide}>
+          <IconChevronLeft color={white} width="32px" height="32px" />
+        </NextButton>
+        <BannerSlider>{Banner}</BannerSlider>
+      </SliderContainer>
       <TextWrapper
         fw="bold"
         size="16px"

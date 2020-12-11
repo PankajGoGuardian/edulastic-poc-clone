@@ -102,6 +102,7 @@ export const CardTextContent = ({ data, history }) => {
               <TextWrapper
                 data-cy="assignmentTitle"
                 color={cardTitleColor}
+                rfs="12px"
                 size="12px"
                 mb="22px"
               >

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, groupBy } from 'lodash'
 
 // components
 import { Row, Spin } from 'antd'
@@ -132,11 +132,9 @@ const MyClasses = ({
     history.push('/author/tests')
   }
 
-  const bundleTiles = dashboardTiles.filter(
-    (tile) => tile.type === 'TEST_BUNDLE'
-  )
+  const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
 
-  const FeatureContentCards = bundleTiles.map((bundle) => (
+  const FeatureContentCards = TEST_BUNDLE.map((bundle) => (
     <BundleContainer
       onClick={bundleHandler}
       bgImage={bundle.imageUrl}
@@ -146,9 +144,7 @@ const MyClasses = ({
     </BundleContainer>
   ))
 
-  const bannerTiles = dashboardTiles.filter((tile) => tile.type === 'BANNER')
-
-  const Banner = bannerTiles.map((slide) => (
+  const Banner = BANNER.map((slide) => (
     <Slides bgImage={slide.imageUrl} key={slide._id} />
   ))
 

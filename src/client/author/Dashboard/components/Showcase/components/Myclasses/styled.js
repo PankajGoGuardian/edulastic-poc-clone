@@ -43,12 +43,12 @@ export const Slides = styled.div`
   height: 200px;
   width: 490px;
   margin-right: 15px;
-  background: ${(props) => props.bgImage || `url(${props.bgImage})`};
   background-size: 100% 100%;
   background-position: top left;
   color: ${white};
   cursor: pointer;
   display: inline-block;
+  background: ${(props) => `url(${props.bgImage})`};
   &:last-child {
     margin-right: 0px;
   }
@@ -61,10 +61,10 @@ export const BundleContainer = styled.div`
   align-items: flex-end;
   margin: 0px 10px 10px 0px;
   border-radius: 10px;
-  background: ${(props) => props.bgImage || `url(${props.bgImage})`};
   background-size: 100% 100%;
   background-position: top left;
   padding: 12px 20px;
+  background: ${(props) => `url(${props.bgImage})`};
   color: ${white};
   cursor: pointer;
 `

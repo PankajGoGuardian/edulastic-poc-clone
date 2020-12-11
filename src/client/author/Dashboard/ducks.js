@@ -89,14 +89,13 @@ function* fetchDashboardTilesSaga() {
   try {
     const version = localStorage.getItem('author:dashboard:version')
     const result = yield call(configurableTilesApi.fetchTiles, +version)
-    console.log('result', result)
     if (!version || version !== result.version) {
       yield put(setDashboardTiles(result.data))
       localStorage.setItem(
         'author:dashboard:tiles',
         JSON.stringify(result.data)
       )
-      localStorage.setItem('author:dashboard:version', result.version)
+      localStorage.setItem('author:dashboard:version', +result.version)
     }
   } catch (err) {
     console.log('err', err)

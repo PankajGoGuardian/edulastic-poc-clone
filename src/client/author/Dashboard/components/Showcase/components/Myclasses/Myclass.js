@@ -3,15 +3,15 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, groupBy } from 'lodash'
+import qs from 'qs'
 
 // components
-import { Row, Spin } from 'antd'
+import { Spin } from 'antd'
 import { FlexContainer, MainContentWrapper } from '@edulastic/common'
 import { title, white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
 import { TextWrapper } from '../../../styledComponents'
 import {
-  CardBox,
   CardContainer,
   FeatureContentWrapper,
   BundleContainer,
@@ -22,13 +22,11 @@ import {
   NextButton,
   SliderContainer,
 } from './styled'
-import CardImage from './components/CardImage/cardImage'
-import CardTextContent from './components/CardTextContent/cardTextContent'
+
 import CreateClassPage from './components/CreateClassPage/createClassPage'
 import Launch from '../../../LaunchHangout/Launch'
 import ClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import CanvasClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
-// static data
 
 // ducks
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
@@ -52,17 +50,7 @@ import {
 } from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
-
-const Card = ({ data }) => (
-  <CardBox data-cy={data.name}>
-    <Row>
-      <CardImage data={data} />
-    </Row>
-    <Row>
-      <CardTextContent data={data} />
-    </Row>
-  </CardBox>
-)
+import Card from './components/Card'
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -128,15 +116,18 @@ const MyClasses = ({
     </CardContainer>
   ))
 
-  const bundleHandler = () => {
-    history.push('/author/tests')
+  const handleFeatureClick = (prop) => {
+    const entries = prop.reduce((a, c) => ({ ...a, ...c }), {})
+    const filter = qs.stringify(entries)
+    console.log('filter', prop, entries)
+    history.push(`/author/tests?${filter}`)
   }
 
   const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
 
   const FeatureContentCards = TEST_BUNDLE.map((bundle) => (
     <BundleContainer
-      onClick={bundleHandler}
+      onClick={() => handleFeatureClick(bundle.config.filters || [])}
       bgImage={bundle.imageUrl}
       key={bundle._id}
     >

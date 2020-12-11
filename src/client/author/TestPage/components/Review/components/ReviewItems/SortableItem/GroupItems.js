@@ -17,7 +17,7 @@ const DragHandle = SortableHandle(DragHandleComponent)
 
 const GroupItems = SortableContainer((props) => {
   // items is always an array of passage items
-  const { items, isEditable, scoring } = props
+  const { items, isEditable, scoring, groupId, showGroupsPanel } = props
   const [localItems, setLocalItems] = useState([])
   const [minimize, setMinimize] = useState(true)
 
@@ -53,17 +53,23 @@ const GroupItems = SortableContainer((props) => {
       <DragCrad noPadding={!minimize} data-cy="group-drag-card">
         {minimize && <DragHandle indx={indexStr} isEditable={isEditable} />}
         <div className="group-items">
-          {localItems.map((ite, index) => (
-            <SingleItem
-              key={ite._id}
-              {...props}
-              item={ite}
-              index={index}
-              groupPoints={groupPoints}
-              groupMinimized={minimize}
-              disabled={minimize}
-            />
-          ))}
+          {localItems.map((ite, index) => {
+            if (showGroupsPanel && groupId && groupId !== ite.groupId) {
+              return null
+            }
+            return (
+              <SingleItem
+                key={ite._id}
+                {...props}
+                item={ite}
+                index={index}
+                groupPoints={groupPoints}
+                groupMinimized={minimize}
+                hideHanlde={minimize}
+                disabled={minimize}
+              />
+            )
+          })}
         </div>
       </DragCrad>
 

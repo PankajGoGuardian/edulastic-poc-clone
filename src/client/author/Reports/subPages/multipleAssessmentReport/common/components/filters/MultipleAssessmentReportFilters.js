@@ -293,7 +293,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Grade</FilterLabel>
+            <FilterLabel>Test Grade</FilterLabel>
             <AutocompleteDropDown
               prefix="Grade"
               className="custom-1-scrollbar"
@@ -303,7 +303,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Subject</FilterLabel>
+            <FilterLabel>Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
               selectCB={(e) => updateFilterDropdownCB(e, 'subject')}
@@ -314,7 +314,7 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           <SearchField>
             <MultiSelectDropdown
-              label="Assessment Type"
+              label="Test Type"
               el={assessmentTypesRef}
               onChange={(e) =>
                 updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
@@ -340,7 +340,7 @@ const SingleAssessmentReportFilters = ({
             assessmentNameFilter
           )}
         </Collapsable>
-        <Collapsable header="student filter">
+        <Collapsable header="class filter">
           {role !== roleuser.TEACHER && (
             <>
               <SearchField>

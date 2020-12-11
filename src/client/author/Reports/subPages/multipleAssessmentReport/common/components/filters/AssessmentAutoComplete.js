@@ -126,7 +126,7 @@ const AssessmentAutoComplete = ({
   }))
   return (
     <MultiSelectSearch
-      label="Assessment"
+      label="Test"
       el={assessmentFilterRef}
       onChange={(e) => selectCB(e)}
       onSearch={onSearch}

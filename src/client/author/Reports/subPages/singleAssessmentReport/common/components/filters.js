@@ -324,7 +324,7 @@ const SingleAssessmentReportFilters = ({
             </SearchField>
           )}
         </Collapsable>
-        <Collapsable header="student filter">
+        <Collapsable header="class filter">
           {role !== 'teacher' && (
             <>
               <SearchField>

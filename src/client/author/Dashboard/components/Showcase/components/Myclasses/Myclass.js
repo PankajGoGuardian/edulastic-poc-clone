@@ -142,15 +142,11 @@ const MyClasses = ({
   const bannerLength = (BANNER || []).length
 
   const Banner = (BANNER || []).map((slide, index) => (
-    <>
-      <Slides bgImage={slide.imageUrl} key={slide._id} />
-      <Slides bgImage={slide.imageUrl} key={slide._id} />
-      <Slides
-        className={bannerLength === index + 1 ? 'last' : ''}
-        bgImage={slide.imageUrl}
-        key={slide._id}
-      />
-    </>
+    <Slides
+      className={bannerLength === index + 1 ? 'last' : ''}
+      bgImage={slide.imageUrl}
+      key={slide._id}
+    />
   ))
 
   const handleScroll = (scrollOffset) => {

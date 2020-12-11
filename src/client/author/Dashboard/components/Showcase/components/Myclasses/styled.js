@@ -19,10 +19,12 @@ export const SliderContainer = styled.div`
   position: relative;
 `
 
-export const BannerSlider = styled.div`
+export const ScrollbarContainer = styled.div`
   white-space: nowrap;
   margin-bottom: 20px;
-  overflow: auto;
+  .scrollbar-container {
+    width: calc(100vw - 140px);
+  }
 `
 export const PrevButton = styled.div`
   position: absolute;
@@ -30,27 +32,29 @@ export const PrevButton = styled.div`
   left: 10px;
   transform: translateY(-50%);
   cursor: pointer;
+  z-index: 5;
 `
-export const NextButton = styled.div`
-  position: absolute;
+export const NextButton = styled(PrevButton)`
   top: 47%;
+  left: auto;
   right: 10px;
   transform: translateY(-50%) rotate(180deg);
-  cursor: pointer;
 `
 
 export const Slides = styled.div`
   height: 200px;
   width: 490px;
   margin-right: 15px;
-  background-size: 100% 100%;
-  background-position: top left;
   color: ${white};
   cursor: pointer;
   display: inline-block;
-  background: ${(props) => `url(${props.bgImage})`};
+  background-image: ${(props) => `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  background-repeat: no-repeat;
+  &.last,
   &:last-child {
-    margin-right: 0px;
+    margin-right: 0px !important;
   }
 `
 
@@ -61,12 +65,13 @@ export const BundleContainer = styled.div`
   align-items: flex-end;
   margin: 0px 10px 10px 0px;
   border-radius: 10px;
-  background-size: 100% 100%;
-  background-position: top left;
   padding: 12px 20px;
-  background: ${(props) => `url(${props.bgImage})`};
   color: ${white};
   cursor: pointer;
+  background-image: ${(props) => `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  background-repeat: no-repeat;
 `
 
 export const Bottom = styled.div`

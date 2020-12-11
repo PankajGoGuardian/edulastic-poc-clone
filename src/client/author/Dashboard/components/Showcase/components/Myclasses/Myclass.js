@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -10,13 +10,14 @@ import { Spin } from 'antd'
 import { FlexContainer, MainContentWrapper } from '@edulastic/common'
 import { title, white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { TextWrapper } from '../../../styledComponents'
 import {
   CardContainer,
   FeatureContentWrapper,
   BundleContainer,
   Bottom,
-  BannerSlider,
+  ScrollbarContainer,
   Slides,
   PrevButton,
   NextButton,
@@ -125,7 +126,7 @@ const MyClasses = ({
 
   const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
 
-  const FeatureContentCards = TEST_BUNDLE.map((bundle) => (
+  const FeatureContentCards = (TEST_BUNDLE || []).map((bundle) => (
     <BundleContainer
       onClick={() => handleFeatureClick(bundle.config.filters || [])}
       bgImage={bundle.imageUrl}
@@ -135,16 +136,28 @@ const MyClasses = ({
     </BundleContainer>
   ))
 
-  const Banner = BANNER.map((slide) => (
-    <Slides bgImage={slide.imageUrl} key={slide._id} />
+  const bannerLength = (BANNER || []).length
+
+  const Banner = (BANNER || []).map((slide, index) => (
+    <>
+      <Slides
+        className={bannerLength === index + 1 ? 'last' : ''}
+        bgImage={slide.imageUrl}
+        key={slide._id}
+      />
+      <Slides
+        className={bannerLength === index + 1 ? 'last' : ''}
+        bgImage={slide.imageUrl}
+        key={slide._id}
+      />
+    </>
   ))
 
-  const prevSlide = () => {
-    console.log('prev')
-  }
+  const ref = useRef(null)
 
-  const nextSlide = () => {
-    console.log('next')
+  const scroll = (scrollOffset) => {
+    ref.current.scrollLeft += scrollOffset
+    console.log('leftScroll', ref, ref.current.scrollLeft)
   }
 
   const isClassLink =
@@ -177,13 +190,15 @@ const MyClasses = ({
         institutionId={institutionIds[0]}
       />
       <SliderContainer>
-        <PrevButton onClick={prevSlide}>
+        <PrevButton onClick={() => scroll(-100)}>
           <IconChevronLeft color={white} width="32px" height="32px" />
         </PrevButton>
-        <NextButton onClick={nextSlide}>
+        <NextButton onClick={() => scroll(100)}>
           <IconChevronLeft color={white} width="32px" height="32px" />
         </NextButton>
-        <BannerSlider>{Banner}</BannerSlider>
+        <ScrollbarContainer ref={ref}>
+          <PerfectScrollbar>{Banner}</PerfectScrollbar>
+        </ScrollbarContainer>
       </SliderContainer>
       <TextWrapper
         fw="bold"

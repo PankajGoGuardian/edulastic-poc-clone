@@ -98,7 +98,6 @@ function* fetchDashboardTilesSaga() {
       localStorage.setItem('author:dashboard:version', +result.version)
     }
   } catch (err) {
-    console.log('err', err)
     const errorMessage = 'Unable to fetch dashboard details.'
     notification({ type: 'error', msg: errorMessage })
     yield put(receiveTeacherDashboardErrorAction({ error: errorMessage }))

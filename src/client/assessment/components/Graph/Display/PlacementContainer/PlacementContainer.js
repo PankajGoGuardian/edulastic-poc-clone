@@ -675,6 +675,7 @@ class PlacementContainer extends PureComponent {
                       showBorder={hasAnnotation}
                       isPrintPreview={isPrintPreview}
                       style={{ width: layout.width, height: layout.height }}
+                      dragDropWidth="auto"
                     />
                   </DropContainer>
                 </div>

@@ -1,18 +1,15 @@
-import qs from 'qs'
 import API from './utils/API'
 
 const api = new API()
 const prefix = '/config-tiles'
 
-const fetchTiles = (version) => {
-  const queryString = qs.stringify(version)
-  return api
+const fetchTiles = (version) =>
+  api
     .callApi({
-      url: `${prefix}?${queryString}`,
+      url: `${prefix}/${version}`,
       method: 'get',
     })
-    .then((result) => result.data.result)
-}
+    .then((result) => result.data)
 
 const fetchTileById = (id) =>
   api
@@ -20,7 +17,7 @@ const fetchTileById = (id) =>
       url: `${prefix}/${id}`,
       method: 'get',
     })
-    .then((result) => result.data.result)
+    .then((result) => result.data)
 
 const createTile = (data) =>
   api
@@ -29,7 +26,7 @@ const createTile = (data) =>
       method: 'post',
       data,
     })
-    .then((result) => result.data.result)
+    .then((result) => result.data)
 
 const updateTile = (id, data) =>
   api
@@ -38,7 +35,7 @@ const updateTile = (id, data) =>
       method: 'put',
       data,
     })
-    .then((result) => result.data.result)
+    .then((result) => result.data)
 
 const removeTile = (id) =>
   api
@@ -46,7 +43,7 @@ const removeTile = (id) =>
       url: `${prefix}/${id}`,
       method: 'delete',
     })
-    .then((result) => result.data.result)
+    .then((result) => result.data)
 
 export default {
   fetchTiles,

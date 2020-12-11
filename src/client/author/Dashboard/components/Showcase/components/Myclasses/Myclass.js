@@ -2,29 +2,32 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, groupBy } from 'lodash'
+import qs from 'qs'
 
 // components
-import { Row, Spin } from 'antd'
+import { Spin } from 'antd'
 import { FlexContainer, MainContentWrapper } from '@edulastic/common'
-import { title } from '@edulastic/colors'
+import { title, white } from '@edulastic/colors'
+import { IconChevronLeft } from '@edulastic/icons'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { TextWrapper } from '../../../styledComponents'
 import {
-  CardBox,
   CardContainer,
   FeatureContentWrapper,
   BundleContainer,
   Bottom,
-  BannerSlider,
+  ScrollbarContainer,
   Slides,
+  PrevButton,
+  NextButton,
+  SliderContainer,
 } from './styled'
-import CardImage from './components/CardImage/cardImage'
-import CardTextContent from './components/CardTextContent/cardTextContent'
+
 import CreateClassPage from './components/CreateClassPage/createClassPage'
 import Launch from '../../../LaunchHangout/Launch'
 import ClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import CanvasClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
-// static data
 
 // ducks
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
@@ -48,17 +51,7 @@ import {
 } from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
-
-const Card = ({ data }) => (
-  <CardBox data-cy={data.name}>
-    <Row>
-      <CardImage data={data} />
-    </Row>
-    <Row>
-      <CardTextContent data={data} />
-    </Row>
-  </CardBox>
-)
+import Card from './components/Card'
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -90,8 +83,13 @@ const MyClasses = ({
   showCleverSyncModal,
   setShowCleverSyncModal,
   teacherData,
+  dashboardTiles,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
+  const [showRightArrow, setShowRightArrow] = useState(false)
+  const [showLeftArrow, setShowLeftArrow] = useState(true)
+
+  let scrollBarRef
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -123,78 +121,48 @@ const MyClasses = ({
     </CardContainer>
   ))
 
-  const bundleHandler = () => {
-    history.push('/author/tests')
+  const handleFeatureClick = (prop) => {
+    const entries = prop.reduce((a, c) => ({ ...a, ...c }), {})
+    const filter = qs.stringify(entries)
+    history.push(`/author/tests?${filter}`)
   }
 
-  const bundles = [
-    {
-      id: 1,
-      imageUrl:
-        'transparent linear-gradient(236deg, #0d9c8c 0%, #095592 100%) 0% 0% no-repeat padding-box',
-      description: 'Lorem ipsum dolor sit amet dolor sit amet',
-    },
-    {
-      id: 2,
-      imageUrl:
-        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
-      description: 'Lorem ipsum dolor sit amet dolor sit amet',
-    },
-    {
-      id: 3,
-      imageUrl:
-        'transparent linear-gradient(236deg, #6F0027 0%, #C52229 100%) 0% 0% no-repeat padding-box',
-      description: 'Lorem ipsum dolor sit amet dolor sit amet',
-    },
-    {
-      id: 4,
-      imageUrl:
-        'transparent linear-gradient(236deg, #45B1C5 0%, #9ED0D9 100%) 0% 0% no-repeat padding-box',
-      description: 'Lorem ipsum dolor sit amet dolor sit amet',
-    },
-  ]
+  const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
+  const bannerSlides = BANNER || []
+  const testBundle = TEST_BUNDLE || []
 
-  const FeatureContentCards = bundles.map((bundle) => (
+  const FeatureContentCards = testBundle.map((bundle) => (
     <BundleContainer
-      onClick={bundleHandler}
+      onClick={() => handleFeatureClick(bundle.config.filters || [])}
       bgImage={bundle.imageUrl}
-      key={bundle.id}
+      key={bundle._id}
     >
       <Bottom>{bundle.description && <div> {bundle.description} </div>}</Bottom>
     </BundleContainer>
   ))
 
-  const bannerSlides = [
-    {
-      id: 1,
-      imageUrl:
-        'transparent linear-gradient(236deg, #0d9c8c 0%, #095592 100%) 0% 0% no-repeat padding-box',
-    },
-    {
-      id: 2,
-      imageUrl:
-        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
-    },
-    {
-      id: 3,
-      imageUrl:
-        'transparent linear-gradient(236deg, #6F0027 0%, #C52229 100%) 0% 0% no-repeat padding-box',
-    },
-    {
-      id: 4,
-      imageUrl:
-        'transparent linear-gradient(236deg, #45B1C5 0%, #9ED0D9 100%) 0% 0% no-repeat padding-box',
-    },
-    {
-      id: 5,
-      imageUrl:
-        'transparent linear-gradient(236deg, #003A6A 0%, #095592 100%) 0% 0% no-repeat padding-box',
-    },
-  ]
+  const bannerLength = bannerSlides.length
 
-  const Banner = bannerSlides.map((slide) => (
-    <Slides bgImage={slide.imageUrl} key={slide._id} />
+  const Banner = bannerSlides.map((slide, index) => (
+    <Slides
+      className={bannerLength === index + 1 ? 'last' : ''}
+      bgImage={slide.imageUrl}
+      key={slide._id}
+    />
   ))
+
+  const handleScroll = (scrollOffset) => {
+    scrollBarRef._container.scrollLeft += scrollOffset
+    const { x } = scrollBarRef._ps.reach
+    if (scrollBarRef._container.scrollLeft === 0) {
+      setShowRightArrow(false)
+    } else if (x === 'end') {
+      setShowLeftArrow(false)
+    } else {
+      setShowRightArrow(true)
+      setShowLeftArrow(true)
+    }
+  }
 
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
@@ -225,7 +193,31 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
-      <BannerSlider>{Banner}</BannerSlider>
+      <SliderContainer>
+        {showRightArrow && (
+          <PrevButton className="prev" onClick={() => handleScroll(-200)}>
+            <IconChevronLeft color={white} width="32px" height="32px" />
+          </PrevButton>
+        )}
+        {showLeftArrow && (
+          <NextButton className="next" onClick={() => handleScroll(200)}>
+            <IconChevronLeft color={white} width="32px" height="32px" />
+          </NextButton>
+        )}
+        <ScrollbarContainer>
+          <PerfectScrollbar
+            ref={(ref) => {
+              scrollBarRef = ref
+            }}
+            option={{
+              suppressScrollY: true,
+              useBothWheelAxes: true,
+            }}
+          >
+            {Banner}
+          </PerfectScrollbar>
+        </ScrollbarContainer>
+      </SliderContainer>
       <TextWrapper
         fw="bold"
         size="16px"

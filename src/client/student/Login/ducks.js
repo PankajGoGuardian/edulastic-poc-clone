@@ -12,7 +12,7 @@ import {
   segmentApi,
   schoolApi,
 } from '@edulastic/api'
-import { roleuser, signUpState } from '@edulastic/constants'
+import { roleuser } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import { fetchAssignmentsAction } from '../Assignments/ducks'
@@ -656,7 +656,6 @@ function getCurrentFirebaseUser() {
 }
 
 function getValidRedirectRouteByRole(_url, user) {
-  console.log('test')
   const url = (_url || '').trim()
   switch (user.role) {
     case roleuser.TEACHER:

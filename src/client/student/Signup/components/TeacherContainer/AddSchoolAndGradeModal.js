@@ -4,6 +4,7 @@ import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { CustomModalStyled } from '@edulastic/common'
+import { signUpState } from '@edulastic/constants'
 import JoinSchool from './JoinSchool'
 import SubjectGradeForm from './SubjectGrade'
 
@@ -16,16 +17,19 @@ const AddSchoolAndGradeModal = ({
   orgType,
   isVisible,
   handleCancel,
-  title,
+  onCompleteSignup,
 }) => {
   const userInfo = get(user, 'user', {})
 
+  if (user.signupStatus === signUpState.DONE) {
+    onCompleteSignup()
+  }
+
   return (
     <CustomModalStyled
-      width="700px"
-      title={title}
       visible={isVisible}
       footer={null}
+      width="900px"
       onCancel={handleCancel}
       centered
     >
@@ -39,11 +43,13 @@ const AddSchoolAndGradeModal = ({
           orgShortName={orgShortName}
           orgType={orgType}
           allowCanvas={false}
+          hasMinHeight={false}
         />
       ) : (
         <SubjectGradeForm
           userInfo={userInfo}
           districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
+          hasMinHeight={false}
         />
       )}
     </CustomModalStyled>
@@ -52,9 +58,10 @@ const AddSchoolAndGradeModal = ({
 
 AddSchoolAndGradeModal.propTypes = {
   user: PropTypes.object.isRequired,
+  isVisible: PropTypes.bool.isRequired,
+  handleCancel: PropTypes.func.isRequired,
+  onCompleteSignup: PropTypes.func.isRequired,
 }
-
-AddSchoolAndGradeModal.defaultProps = {}
 
 const enhance = compose(
   connect((state) => ({

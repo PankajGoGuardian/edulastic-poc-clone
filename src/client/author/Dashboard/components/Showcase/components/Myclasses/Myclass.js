@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, groupBy } from 'lodash'
+import { get, groupBy, debounce } from 'lodash'
 import qs from 'qs'
 
 // components
@@ -11,6 +11,7 @@ import { FlexContainer, MainContentWrapper } from '@edulastic/common'
 import { title, white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
 import PerfectScrollbar from 'react-perfect-scrollbar'
+import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
 import { TextWrapper } from '../../../styledComponents'
 import {
   CardContainer,
@@ -86,10 +87,9 @@ const MyClasses = ({
   dashboardTiles,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
-  const [showRightArrow, setShowRightArrow] = useState(false)
-  const [showLeftArrow, setShowLeftArrow] = useState(true)
+  const [modalVisible, setModalVisible] = useState(false)
 
-  let scrollBarRef
+  const scrollBarRef = useRef(null)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -131,6 +131,20 @@ const MyClasses = ({
   const bannerSlides = BANNER || []
   const testBundle = TEST_BUNDLE || []
 
+  const actionConstantMap = {
+    BANNER_GET_STARTED: 0,
+  }
+
+  const bannerActionHandler = (actionConstant) => {
+    switch (actionConstant) {
+      case actionConstantMap.BANNER_GET_STARTED:
+        setModalVisible(true)
+        break
+      default:
+        break
+    }
+  }
+
   const FeatureContentCards = testBundle.map((bundle) => (
     <BundleContainer
       onClick={() => handleFeatureClick(bundle.config.filters || [])}
@@ -143,32 +157,61 @@ const MyClasses = ({
 
   const bannerLength = bannerSlides.length
 
-  const Banner = bannerSlides.map((slide, index) => (
+  const Banner = [
+    ...bannerSlides,
+    ...bannerSlides,
+    ...bannerSlides,
+    ...bannerSlides,
+    ...bannerSlides,
+    ...bannerSlides,
+    ...bannerSlides,
+  ].map((slide, index) => (
     <Slides
       className={bannerLength === index + 1 ? 'last' : ''}
       bgImage={slide.imageUrl}
       key={slide._id}
+      onClick={() => bannerActionHandler(slide.config.filters?.[0]?.action)}
     />
   ))
 
-  const handleScroll = (scrollOffset) => {
-    scrollBarRef._container.scrollLeft += scrollOffset
-    const { x } = scrollBarRef._ps.reach
-    if (scrollBarRef._container.scrollLeft === 0) {
-      setShowRightArrow(false)
-    } else if (x === 'end') {
-      setShowLeftArrow(false)
+  const handleScroll = debounce((sign) => {
+    if (sign) {
+      scrollBarRef.current._container.scrollTo({
+        left:
+          scrollBarRef.current._container.scrollLeft +
+          scrollBarRef.current._container.clientWidth,
+        behavior: 'smooth',
+      })
     } else {
-      setShowRightArrow(true)
-      setShowLeftArrow(true)
+      scrollBarRef.current._container.scrollTo({
+        left:
+          scrollBarRef.current._container.scrollLeft -
+          scrollBarRef.current._container.clientWidth,
+        behavior: 'smooth',
+      })
     }
-  }
+  }, 300)
 
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
 
+  const bannerScrollLeft = () => handleScroll(true)
+  const bannerScrollRight = () => handleScroll(false)
+
   return (
     <MainContentWrapper padding="30px">
+      {modalVisible && (
+        <ConfirmationModal
+          title="Demo Modal"
+          centered
+          textAlign="left"
+          visible={modalVisible}
+          footer={null}
+          onCancel={() => setModalVisible(false)}
+        >
+          Demo Modal for Banner Action
+        </ConfirmationModal>
+      )}
       <ClassSelectModal
         type="clever"
         visible={showCleverSyncModal}
@@ -194,21 +237,15 @@ const MyClasses = ({
         institutionId={institutionIds[0]}
       />
       <SliderContainer>
-        {showRightArrow && (
-          <PrevButton className="prev" onClick={() => handleScroll(-200)}>
-            <IconChevronLeft color={white} width="32px" height="32px" />
-          </PrevButton>
-        )}
-        {showLeftArrow && (
-          <NextButton className="next" onClick={() => handleScroll(200)}>
-            <IconChevronLeft color={white} width="32px" height="32px" />
-          </NextButton>
-        )}
+        <PrevButton className="prev" onClick={bannerScrollRight}>
+          <IconChevronLeft color={white} width="32px" height="32px" />
+        </PrevButton>
+        <NextButton className="next" onClick={bannerScrollLeft}>
+          <IconChevronLeft color={white} width="32px" height="32px" />
+        </NextButton>
         <ScrollbarContainer>
           <PerfectScrollbar
-            ref={(ref) => {
-              scrollBarRef = ref
-            }}
+            ref={scrollBarRef}
             option={{
               suppressScrollY: true,
               useBothWheelAxes: true,

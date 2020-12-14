@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
-import { map, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
@@ -24,7 +24,10 @@ import StudentProgress from './StudentProgress'
 import PerformanceOverTime from './PerformanceOverTime'
 
 import { setMARSettingsAction, getReportsMARSettings } from './ducks'
-import { getReportsMARFilterData } from './common/filterDataDucks'
+import {
+  getReportsMARFilterData,
+  getMAFilterDemographics,
+} from './common/filterDataDucks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
@@ -54,6 +57,7 @@ const MultipleAssessmentReportContainer = (props) => {
     sharingState,
     setSharingState,
     sharedReportList,
+    demographics,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -179,7 +183,7 @@ const MultipleAssessmentReportContainer = (props) => {
       setMARSettings({
         requestFilters: {
           ...obj,
-          testIds: map(selectedTest, (test) => test).join(),
+          testIds: selectedTest.join(','),
         },
       })
     }
@@ -199,7 +203,8 @@ const MultipleAssessmentReportContainer = (props) => {
     'student-progress',
   ]
   const extraFilters = pageTitleList.includes(pageTitle)
-    ? filterlist.map((item) => (
+    ? demographics &&
+      demographics.map((item) => (
         <SearchField key={item.key}>
           <FilterLabel>{item.title}</FilterLabel>
           <ControlDropDown
@@ -311,6 +316,7 @@ const MultipleAssessmentReportContainer = (props) => {
 
 const ConnectedMultipleAssessmentReportContainer = connect(
   (state) => ({
+    demographics: getMAFilterDemographics(state),
     settings: getReportsMARSettings(state),
     MARFilterData: getReportsMARFilterData(state),
     sharingState: getSharingState(state),

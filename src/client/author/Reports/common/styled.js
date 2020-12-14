@@ -443,8 +443,9 @@ export const NoDataContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 25px;
+  font-size: ${({ fontSize }) => fontSize || '25px'};
   font-weight: 700;
+  text-align: 'center';
 `
 
 export const CustomXAxisTickTooltipContainer = styled.div`

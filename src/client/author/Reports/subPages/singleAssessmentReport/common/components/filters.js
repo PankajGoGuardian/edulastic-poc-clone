@@ -220,13 +220,13 @@ const SingleAssessmentReportFilters = ({
     setFiltersOrTestId({ testId: _testId })
     if (reportId) {
       setFirstLoad(false)
-    } else if (firstLoad) {
+    } else if (firstLoad && selected.key) {
       setFirstLoad(false)
       _onGoClick({
         filters: { ...filters },
         selectedTest: { key: _testId },
       })
-    } else {
+    } else if (selected.key) {
       setShowApply(true)
     }
   }
@@ -324,7 +324,7 @@ const SingleAssessmentReportFilters = ({
             </SearchField>
           )}
         </Collapsable>
-        <Collapsable header="student filter">
+        <Collapsable header="class filter">
           {role !== 'teacher' && (
             <>
               <SearchField>

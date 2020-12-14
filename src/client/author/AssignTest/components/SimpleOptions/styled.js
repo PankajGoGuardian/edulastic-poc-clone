@@ -7,6 +7,7 @@ import {
   red,
   secondaryTextColor,
   themeColor,
+  themeColorBlue,
   themeColorLight,
   title,
   white,
@@ -23,7 +24,7 @@ export const OptionConationer = styled.div`
     `
       min-height: 80vh;
     `}
-  display: flex;
+  display: ${(props) => props.display || 'flex'};
   justify-content: center;
   align-items: center;
   margin-top: ${window.innerHeight <= 780 && '24px'};
@@ -418,10 +419,20 @@ export const Title = styled.div`
 `
 
 export const StyledLink = styled.span`
-  font-size: 15px;
-  color: ${themeColor};
+  margin-top: 15px;
+  font-size: 13px;
+  color: #888888;
   cursor: pointer;
-  text-decoration: underline;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  svg {
+    margin-left: 15px;
+    fill: ${themeColorBlue};
+    path {
+      fill: ${themeColorBlue};
+    }
+  }
 `
 
 export const TimeSpentInput = styled(Input)`

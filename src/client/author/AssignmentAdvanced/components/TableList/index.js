@@ -49,7 +49,9 @@ const columns = [
       <ClassNameCell>
         <span>{text}</span>
         {data.institutionName && (
-          <span className="schoolName">{data.institutionName}</span>
+          <span className="schoolName">
+            {data.teacherName} / {data.institutionName}
+          </span>
         )}
       </ClassNameCell>
     ),
@@ -197,6 +199,7 @@ const TableList = ({
     timedAssignment: data.timedAssignment,
     allowedTime: data.allowedTime,
     institutionName: showSchoolName ? data.institutionName : false,
+    teacherName: data.teacherName || '',
   })
   const rowData = useMemo(
     () => classList.map((data, index) => convertRowData(data, index)),

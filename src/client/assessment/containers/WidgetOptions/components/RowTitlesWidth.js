@@ -7,7 +7,9 @@ import CommonInput from './common/CommonInput'
 
 const RowTitlesWidth = ({ t, type, ...restProps }) => (
   <>
-    <Label>{t('component.options.rowTitlesWidth')}</Label>
+    <Label data-cy="rowTitleWidth">
+      {t('component.options.rowTitlesWidth')}
+    </Label>
     <CommonInput data-cy="rowTitlesWidthInput" type={type} {...restProps} />
   </>
 )

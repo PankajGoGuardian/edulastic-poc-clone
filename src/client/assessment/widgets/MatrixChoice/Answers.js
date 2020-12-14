@@ -57,7 +57,11 @@ class Answers extends Component {
     )
   }
 
-  handleChangePoints = (points) => {
+  handleChangePoints = (score) => {
+    if (!(score > 0)) {
+      return
+    }
+    const points = parseFloat(score, 10)
     const { item, setQuestionData } = this.props
     const { correctTab } = this.state
     const isAlt = correctTab > 0

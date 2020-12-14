@@ -167,7 +167,7 @@ const Field = ({
     }
   }
 
-  const { text, parentField, position, align } = note
+  const { text, parentField, position, style } = note
 
   return (
     <div
@@ -187,13 +187,13 @@ const Field = ({
         {displayName}
       </div>
       {rest.name === parentField && position === 'top' && (
-        <span className="note" style={{ float: align }}>
+        <span className="note" style={style}>
           {text}
         </span>
       )}
       {renderElement()}
       {rest.name === parentField && position === 'bottom' && (
-        <span className="note" style={{ float: align }}>
+        <span className="note" style={style}>
           {text}
         </span>
       )}

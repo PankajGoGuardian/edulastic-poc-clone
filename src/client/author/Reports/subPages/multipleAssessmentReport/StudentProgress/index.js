@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { get, head, toLower, isEmpty } from 'lodash'
+import { get, head, isEmpty } from 'lodash'
 
 import { SpinLoader, notification } from '@edulastic/common'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
@@ -15,6 +15,7 @@ import {
   filterAccordingToRole,
   getFormattedName,
 } from '../../../common/util'
+import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import { getUserRole } from '../../../../src/selectors/user'
 import {
@@ -24,6 +25,7 @@ import {
   getReportsStudentProgressError,
 } from './ducks'
 import { useGetBandData } from './hooks'
+import { filterMetricInfoByDDFilters } from './utils/transformers'
 
 import dropDownData from './static/json/dropDownData.json'
 import tableColumns from './static/json/tableColumns.json'
@@ -122,44 +124,11 @@ const StudentProgress = ({
     setMetricInfo(get(studentProgress, 'data.result.metricInfo', []))
   }, [studentProgress])
 
-  useEffect(() => {
-    const filteredInfo = get(
-      studentProgress,
-      'data.result.metricInfo',
-      []
-    ).filter((info) => {
-      if (ddfilter.gender !== 'all' && ddfilter.gender !== info.gender) {
-        return false
-      }
-      if (
-        ddfilter.frlStatus !== 'all' &&
-        toLower(ddfilter.frlStatus) !== toLower(info.frlStatus)
-      ) {
-        return false
-      }
-      if (
-        ddfilter.ellStatus !== 'all' &&
-        toLower(ddfilter.ellStatus) !== toLower(info.ellStatus)
-      ) {
-        return false
-      }
-      if (
-        ddfilter.iepStatus !== 'all' &&
-        toLower(ddfilter.iepStatus) !== toLower(info.iepStatus)
-      ) {
-        return false
-      }
-      if (ddfilter.race !== 'all' && ddfilter.race !== info.race) {
-        return false
-      }
-      return true
-    })
-    setMetricInfo(filteredInfo)
-  }, [ddfilter])
+  const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
 
   const metaInfo = get(studentProgress, 'data.result.metaInfo', [])
   const [data, trendCount] = useGetBandData(
-    metricInfo,
+    filteredInfo,
     compareBy.key,
     metaInfo,
     selectedTrend,
@@ -168,6 +137,10 @@ const StudentProgress = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (isEmpty(selectedTestIdsStr)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (error && error.dataSizeExceeded) {
@@ -255,7 +228,7 @@ const StudentProgress = ({
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}
-        rawMetric={metricInfo}
+        rawMetric={filteredInfo}
         customColumns={customTableColumns}
         isCellClickable
         location={location}

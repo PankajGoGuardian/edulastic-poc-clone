@@ -261,42 +261,62 @@ import Group8825 from '../assets/calculus/8825.svg'
 
 export const one = {
   value: '1',
+  handler: '1',
+  command: 'write',
   label: <CustomImage src={number1} width={6} height={14} />,
 }
 export const two = {
   value: '2',
+  handler: '2',
+  command: 'write',
   label: <CustomImage src={number2} width={8} height={14} />,
 }
 export const three = {
   value: '3',
+  handler: '3',
+  command: 'write',
   label: <CustomImage src={number3} width={8} height={14} />,
 }
 export const four = {
   value: '4',
+  handler: '4',
+  command: 'write',
   label: <CustomImage src={number4} width={10} height={15} />,
 }
 export const five = {
   value: '5',
+  handler: '5',
+  command: 'write',
   label: <CustomImage src={number5} width={8} height={14} />,
 }
 export const six = {
   value: '6',
+  handler: '6',
+  command: 'write',
   label: <CustomImage src={number6} width={8} height={14} />,
 }
 export const seven = {
   value: '7',
+  handler: '7',
+  command: 'write',
   label: <CustomImage src={number7} width={8} height={14} />,
 }
 export const eight = {
   value: '8',
+  handler: '8',
+  command: 'write',
   label: <CustomImage src={number8} width={8} height={14} />,
 }
 export const nine = {
   value: '9',
+  handler: '9',
+  command: 'write',
   label: <CustomImage src={number9} width={8} height={14} />,
 }
 export const zero = {
   value: '0',
+  handler: '0',
+  command: 'write',
   label: <CustomImage src={number0} width={8} height={14} />,
 }
 export const dotDecimal = {

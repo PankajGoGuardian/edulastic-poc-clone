@@ -13,7 +13,7 @@ import {
   getTestListLoadingSelector,
 } from '../../../../../ducks'
 
-const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
+const { DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
 const AssessmentAutoComplete = ({
@@ -28,6 +28,7 @@ const AssessmentAutoComplete = ({
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const [updateSelection, setUpdateSelection] = useState(false)
 
   // build search query
   const query = useMemo(() => {
@@ -39,7 +40,7 @@ const AssessmentAutoComplete = ({
       page: 1,
       search: {
         searchString: searchTerms.text,
-        statuses: [IN_PROGRESS, IN_GRADING, DONE],
+        statuses: [DONE],
         districtId,
         grades:
           !filters.grade || filters.grade === 'All' ? [] : [filters.grade],
@@ -55,13 +56,15 @@ const AssessmentAutoComplete = ({
     if (role === roleuser.SCHOOL_ADMIN && institutionIds?.length) {
       q.search.institutionIds = institutionIds
     }
+    if (firstLoad && selectedTestIds.length) {
+      q.search.testIds = selectedTestIds
+    }
     if (filters.termId) {
       q.search.termId = filters.termId
     }
     return q
   }, [
     searchTerms.text,
-    selectedTestIds,
     filters.termId,
     filters.grade,
     filters.subject,
@@ -72,24 +75,14 @@ const AssessmentAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
-  const onSelect = (key) => {
+  const onSelect = (key, fallbackSelection) => {
     if (key) {
       const value = testList.find((s) => s._id === key)?.title
       setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-      selectCB(key)
+      selectCB([key])
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
-      selectCB()
-    }
-  }
-  const onBlur = () => {
-    // force fetch testList to reset assessment filter to previously selected test
-    if (searchTerms.text !== searchTerms.selectedText) {
-      setSearchTerms({
-        ...searchTerms,
-        selectedText: '',
-        text: searchTerms.selectedText,
-      })
+      selectCB(fallbackSelection)
     }
   }
   const loadTestListDebounced = useCallback(
@@ -99,15 +92,21 @@ const AssessmentAutoComplete = ({
 
   // effects
   useEffect(() => {
-    if (!searchTerms.selectedText && testList.length) {
-      onSelect(testList[0]._id)
-    } else if (firstLoad && !loading && !testList.length) {
-      onSelect()
+    if (!selectedTestIds.length && testList.length) {
+      onSelect(testList[0]._id, [])
+    } else if (updateSelection) {
+      onSelect(testList[0]?._id, [])
+      setUpdateSelection(false)
+    } else if (!loading && !testList.length) {
+      onSelect(null, selectedTestIds)
     }
   }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
+    }
+    if (selectedTestIds.length) {
+      setUpdateSelection(true)
     }
   }, [filters.termId, filters.grade, filters.subject, filters.assessmentTypes])
   useEffect(() => {
@@ -122,15 +121,26 @@ const AssessmentAutoComplete = ({
   // build dropdown data
   const dropdownData = testList.map((item) => ({
     key: item._id,
-    title: item.title,
+    title: `${item.title} (ID: ${
+      item._id?.substring(item._id.length - 5) || ''
+    })`,
   }))
+
   return (
     <MultiSelectSearch
-      label="Assessment"
+      label="Test"
+      placeholder="Select a test"
       el={assessmentFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(selected) =>
+        selectCB(
+          !selected.length
+            ? []
+            : typeof selected === 'string'
+            ? [selected]
+            : selected
+        )
+      }
       onSearch={onSearch}
-      onBlur={onBlur}
       value={selectedTestIds}
       options={!loading ? dropdownData : []}
       loading={loading}

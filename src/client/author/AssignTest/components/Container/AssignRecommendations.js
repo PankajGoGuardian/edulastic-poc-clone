@@ -63,9 +63,15 @@ const AssignRecommendations = ({
 
     getDefaultTestSettings()
 
+    const testType = assignmentSettings.testType
+      ? assignmentSettings.testType
+      : isAdmin
+      ? COMMON
+      : ASSESSMENT
+
     const updatedAssignment = {
       startDate: moment(),
-      endDate: moment().add('days', 7),
+      endDate: assignmentSettings.endDate || moment().add('days', 7),
       openPolicy: isAdmin
         ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
         : assignmentSettings.openPolicy ||
@@ -74,7 +80,7 @@ const AssignRecommendations = ({
         ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
         : assignmentSettings.closePolicy ||
           assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
-      testType: isAdmin ? COMMON : ASSESSMENT,
+      testType,
       playerSkinType: testSettings.playerSkinType,
       questionPerStandard: assignmentSettings.questionPerStandard,
       termId,

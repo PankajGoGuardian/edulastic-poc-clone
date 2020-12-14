@@ -151,7 +151,7 @@ const getFormattedName = (name) => {
   return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
-const getRowInfo = (dataSource, compareByKey, value) => {
+const getRowInfo = (dataSource, studInfo, compareByKey, value) => {
   switch (compareByKey) {
     case 'teacherId':
     case 'schoolId':
@@ -161,7 +161,7 @@ const getRowInfo = (dataSource, compareByKey, value) => {
       return find(dataSource.orgData, (org) => org[compareByKey] === value)
     case 'studentId':
     default:
-      return find(dataSource.studInfo, (student) => student.studentId === value)
+      return find(studInfo, (student) => student.studentId === value)
   }
 }
 
@@ -182,7 +182,12 @@ const getRowName = (compareByKey, rowInfo = {}) => {
   }
 }
 
-export const getCompareByData = (metricInfo = [], compareBy, filterData) => {
+export const getCompareByData = (
+  metricInfo = [],
+  studInfo = [],
+  compareBy,
+  filterData
+) => {
   const compareByKey = getCompareByKey(compareBy)
 
   if (!compareByKey) {
@@ -199,7 +204,7 @@ export const getCompareByData = (metricInfo = [], compareBy, filterData) => {
       domainData[domain.domainId] = domain
     })
 
-    const rowInfo = getRowInfo(filterData, compareByKey, itemId) || {}
+    const rowInfo = getRowInfo(filterData, studInfo, compareByKey, itemId) || {}
 
     return {
       id: itemId,
@@ -213,12 +218,14 @@ export const getCompareByData = (metricInfo = [], compareBy, filterData) => {
 
 export const getTableData = (
   metricInfo = [],
+  studInfo = [],
   appliedFilters,
   filterData,
   scaleInfo = []
 ) => {
   const compareByData = getCompareByData(
     metricInfo,
+    studInfo,
     appliedFilters.compareBy.key,
     filterData
   )
@@ -274,6 +281,7 @@ export const getOverallValue = (record = [], analyseByKey, scaleInfo) => {
 
 export const getParsedData = (
   metricInfo,
+  studInfo,
   maxMasteryScore,
   tableFilters,
   selectedDomains,
@@ -289,7 +297,13 @@ export const getParsedData = (
       selectedDomains,
       skillInfo
     ),
-    tableData: getTableData(metricInfo, tableFilters, filterData, scaleInfo),
+    tableData: getTableData(
+      metricInfo,
+      studInfo,
+      tableFilters,
+      filterData,
+      scaleInfo
+    ),
   }
 }
 

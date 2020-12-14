@@ -415,7 +415,7 @@ class AuthorTestItemPreview extends Component {
       col.tabs &&
       !!col.tabs.length &&
       windowWidth >= MAX_MOBILE_WIDTH &&
-      collapseDirection === 'left'
+      (collapseDirection === 'right' || !collapseDirection)
 
     let subCount = 0
     const columns = (

@@ -5,15 +5,9 @@ import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Popover, Tooltip } from 'antd'
-
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
-import {
-  IconClockDashboard,
-  IconHangouts,
-  IconManage,
-  IconPlusCircle,
-} from '@edulastic/icons'
+import { IconClockDashboard, IconHangouts, IconManage } from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
@@ -28,6 +22,7 @@ import {
   UpgradeBtn,
 } from './styled'
 import { launchHangoutOpen } from '../../ducks'
+import CreateClassButton from '../../../ManageClass/components/CreateClassButton'
 
 const getContent = ({ setvisible, needsRenewal }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -62,6 +57,7 @@ const HeaderSection = ({
   subscription,
 }) => {
   const { subEndDate, subType } = subscription || {}
+
   useEffect(() => {
     fetchUserSubscriptionStatus()
   }, [])
@@ -95,15 +91,10 @@ const HeaderSection = ({
             <IconHangouts color={themeColor} height={21} width={19} />
           </StyledEduButton>
         </Tooltip>
-        <Link to="/author/manageClass/createClass">
-          <EduButton
-            isBlue
-            style={{ marginLeft: '5px' }}
-            data-cy="createNewClass"
-          >
-            <IconPlusCircle width={16} height={16} /> CREATE NEW CLASS
-          </EduButton>
-        </Link>
+        <CreateClassButton
+          style={{ marginLeft: '5px' }}
+          redirectRoute="/author/manageClass/createClass"
+        />
         <Link to="/author/manageClass">
           <EduButton isBlue style={{ marginLeft: '5px' }} data-cy="manageClass">
             <IconManage /> Manage Class

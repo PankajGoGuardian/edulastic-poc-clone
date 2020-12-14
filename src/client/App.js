@@ -353,6 +353,7 @@ class App extends Component {
         const role = get(user, ['user', 'role'])
         if (role === 'teacher') {
           if (
+            user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
             user.signupStatus === signUpState.DONE ||
             isUndefined(user.signupStatus)
           ) {
@@ -647,9 +648,11 @@ class App extends Component {
             <Route exact path="/fwd" render={() => <V1Redirect />} />
             <Route path="/inviteTeacher" render={() => <Invite />} />
             <Route path="/auth" render={() => <Auth />} />
-            {testRedirectRoutes.map((route) => (
-              <Route path={route} component={RedirectToTest} key={route} />
-            ))}
+            {testRedirectRoutes.map((route) => {
+              return (
+                <Route path={route} component={RedirectToTest} key={route} />
+              )
+            })}
             <Route
               path="/public/view-test/:testId"
               render={(props) => <PublicTest {...props} />}

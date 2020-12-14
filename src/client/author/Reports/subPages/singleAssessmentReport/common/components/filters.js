@@ -343,6 +343,8 @@ const SingleAssessmentReportFilters = ({
                     filters.teacherIds ? filters.teacherIds.split(',') : []
                   }
                   school={filters.schoolIds}
+                  testId={testId}
+                  termId={filters.termId}
                   selectCB={(e) =>
                     updateFilterDropdownCB(e.join(','), 'teacherIds', true)
                   }

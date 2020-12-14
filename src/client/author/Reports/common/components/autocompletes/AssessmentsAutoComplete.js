@@ -4,14 +4,14 @@ import { debounce } from 'lodash'
 
 // components & constants
 import { roleuser, assignmentStatusOptions } from '@edulastic/constants'
-import MultiSelectSearch from '../../../../../common/components/widgets/MultiSelectSearch'
+import MultiSelectSearch from '../widgets/MultiSelectSearch'
 // ducks
-import { getUser } from '../../../../../../src/selectors/user'
+import { getUser } from '../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
   getTestListLoadingSelector,
-} from '../../../../../ducks'
+} from '../../../ducks'
 
 const { DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
@@ -24,11 +24,9 @@ const AssessmentAutoComplete = ({
   selectedTestIds,
   selectCB,
   filters,
-  firstLoad,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
-  const [updateSelection, setUpdateSelection] = useState(false)
 
   // build search query
   const query = useMemo(() => {
@@ -56,9 +54,6 @@ const AssessmentAutoComplete = ({
     if (role === roleuser.SCHOOL_ADMIN && institutionIds?.length) {
       q.search.institutionIds = institutionIds
     }
-    if (firstLoad && selectedTestIds.length) {
-      q.search.testIds = selectedTestIds
-    }
     if (filters.termId) {
       q.search.termId = filters.termId
     }
@@ -75,38 +70,14 @@ const AssessmentAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
-  const onSelect = (key, fallbackSelection) => {
-    if (key) {
-      const value = testList.find((s) => s._id === key)?.title
-      setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-      selectCB([key])
-    } else {
-      setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
-      selectCB(fallbackSelection)
-    }
-  }
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
     []
   )
 
-  // effects
-  useEffect(() => {
-    if (!selectedTestIds.length && testList.length) {
-      onSelect(testList[0]._id, [])
-    } else if (updateSelection) {
-      onSelect(testList[0]?._id, [])
-      setUpdateSelection(false)
-    } else if (!loading && !testList.length) {
-      onSelect(null, selectedTestIds)
-    }
-  }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
-    }
-    if (selectedTestIds.length) {
-      setUpdateSelection(true)
     }
   }, [filters.termId, filters.grade, filters.subject, filters.assessmentTypes])
   useEffect(() => {
@@ -129,7 +100,7 @@ const AssessmentAutoComplete = ({
   return (
     <MultiSelectSearch
       label="Test"
-      placeholder="Select a test"
+      placeholder="All Tests"
       el={assessmentFilterRef}
       onChange={(selected) =>
         selectCB(

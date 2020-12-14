@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect'
-import { cloneDeep } from 'lodash'
 import { test as testConstants } from '@edulastic/constants'
 import { getAnswersListSelector } from './answers'
 
@@ -31,14 +30,22 @@ export const currentQuestions = createSelector(currentItemSelector, (item) => {
   }, [])
 })
 
+export const answersByQId = (answers, testItemId) => {
+  const newAnswers = {}
+  Object.keys(answers).forEach((key) => {
+    const [itemId, qId] = key.split('_')
+    if (testItemId === itemId) {
+      // updating answer key as qId itself as it is for a single item evaluation.
+      newAnswers[qId] = answers[key]
+    }
+  })
+  return newAnswers
+}
+
 export const answersForCheck = createSelector(
   getAnswersListSelector,
-  currentQuestions,
-  (answers) => {
-    const newAnswers = cloneDeep(answers)
-
-    return newAnswers
-  }
+  currentItemSelector,
+  (answers, item) => answersByQId(answers, item._id)
 )
 
 export const itemQuestionsSelector = createSelector(

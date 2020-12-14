@@ -1,8 +1,9 @@
 import { SET_ANSWER, REMOVE_ANSWERS } from '../constants/actions'
 
-export const setUserAnswerAction = (questionId, data) => ({
+export const setUserAnswerAction = (itemId, questionId, data) => ({
   type: SET_ANSWER,
   payload: {
+    itemId,
     id: questionId,
     data,
   },

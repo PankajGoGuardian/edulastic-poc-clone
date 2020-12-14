@@ -57,6 +57,7 @@ const PDFPreview = ({
   annotationsStack,
   isEditable,
   toggleIntercomDisplay,
+  itemId,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -200,7 +201,7 @@ const PDFPreview = ({
                       questionIndex={qIndex}
                       review={review}
                       data={questionsById[questionId]}
-                      answer={answersById[questionId]}
+                      answer={answersById[`${itemId}_${questionId}`]}
                       previewMode={viewMode === 'edit' ? 'clear' : previewMode}
                       onDragStart={() => {
                         setCurrentAnnotationTool('cursor')
@@ -212,6 +213,7 @@ const PDFPreview = ({
                       annotations
                       pdfPreview
                       zoom={pdfScale}
+                      itemId={itemId}
                     />
                   </div>
                 ))}

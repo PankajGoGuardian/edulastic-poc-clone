@@ -578,6 +578,7 @@ class WorksheetComponent extends React.Component {
       currentPage: _currentPageInProps,
       match = {},
       groupId,
+      itemDetail,
     } = this.props
 
     const {
@@ -740,6 +741,7 @@ class WorksheetComponent extends React.Component {
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
               toggleIntercomDisplay={toggleIntercomDisplay}
+              itemId={itemDetail?._id}
             />
           </PDFViewerContainer>
 
@@ -765,6 +767,7 @@ class WorksheetComponent extends React.Component {
             groupId={groupId}
             qId={qid}
             clearHighlighted={this.clearHighlighted}
+            itemId={itemDetail?._id}
           />
         </WorksheetWrapper>
       </div>

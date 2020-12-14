@@ -74,6 +74,7 @@ import {
   getUserIdSelector,
   getUserId,
   getIsCurator,
+  getUserSignupStatusSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -2415,7 +2416,21 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     }
     let defaultTestSettings = {}
     if (role !== roleuser.EDULASTIC_CURATOR) {
-      defaultTestSettings = yield call(testsApi.getDefaultTestSettings, payload)
+      const currentSignupState = yield select((state) =>
+        getUserSignupStatusSelector(state)
+      )
+      if (role === roleuser.TEACHER && currentSignupState == 5) {
+        const userId = yield select((state) => getUserIdSelector(state))
+        defaultTestSettings = yield call(testsApi.getDefaultTestSettings, {
+          orgId: userId,
+          params: { orgType: 'teacher' },
+        })
+      } else {
+        defaultTestSettings = yield call(
+          testsApi.getDefaultTestSettings,
+          payload
+        )
+      }
     } else {
       const { performanceBand, standardGradingScale } = testEntity
       const performanceBandProfiles = [performanceBand]

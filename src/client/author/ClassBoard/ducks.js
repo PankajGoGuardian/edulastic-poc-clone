@@ -5,6 +5,7 @@ import {
   enrollmentApi,
   classResponseApi,
   canvasApi,
+  utilityApi,
 } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
@@ -69,6 +70,7 @@ import {
   REGENERATE_PASSWORD,
   CANVAS_SYNC_GRADES,
   CANVAS_SYNC_ASSIGNMENT,
+  FETCH_SERVER_TIME,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -79,6 +81,7 @@ import {
   setAddedStudentsAction,
   setLcbActionProgress,
   setProgressStatusAction,
+  updateServerTimeAction,
 } from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
 import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
@@ -541,6 +544,7 @@ function* regeneratePasswordSaga({ payload }) {
         assignmentPassword: data.assignmentPassword,
         passwordExpireTime: data.passwordExpireTime,
         passwordExpireIn: data.passwordExpireIn,
+        ts: data.ts,
       })
     )
   } catch (e) {
@@ -590,6 +594,15 @@ function* canvasSyncAssignmentSaga({ payload }) {
   }
 }
 
+function* fetchServerTimeSaga() {
+  try {
+    const ts = yield call(utilityApi.fetchServerTime)
+    yield put(updateServerTimeAction(ts))
+  } catch (err) {
+    captureSentryException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -614,6 +627,7 @@ export function* watcherSaga() {
     yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga),
     yield takeEvery(CANVAS_SYNC_GRADES, canvasSyncGradesSaga),
     yield takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
+    yield takeEvery(FETCH_SERVER_TIME, fetchServerTimeSaga),
   ])
 }
 

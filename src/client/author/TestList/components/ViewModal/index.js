@@ -21,6 +21,7 @@ import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import Modal from 'react-responsive-modal'
+import signUpState from '@edulastic/constants/const/signUpState'
 import { StyledSelect } from '../../../../common/styled'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import Tags from '../../../src/components/common/Tags'
@@ -31,6 +32,7 @@ import {
   isPublisherUserSelector,
   getWritableCollectionsSelector,
   getInterestedCurriculumsSelector,
+  getUserSignupStatusSelector,
 } from '../../../src/selectors/user'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 import {
@@ -154,6 +156,7 @@ class ViewModal extends React.Component {
       collectionName,
       interestedCurriculums,
       writableCollections,
+      userSignupStatus,
     } = this.props
     const {
       title = '',
@@ -361,17 +364,18 @@ class ViewModal extends React.Component {
                     {!publicAccess && <IconEye />}
                     Preview
                   </EduButton>
-                  {publicAccess && (
-                    <EduButton
-                      height="40px"
-                      width="100%"
-                      justifyContent="center"
-                      data-cy="assign-button"
-                      onClick={assign}
-                    >
-                      <span>ASSIGN</span>
-                    </EduButton>
-                  )}
+                  {publicAccess &&
+                    userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
+                      <EduButton
+                        height="40px"
+                        width="100%"
+                        justifyContent="center"
+                        data-cy="assign-button"
+                        onClick={assign}
+                      >
+                        <span>ASSIGN</span>
+                      </EduButton>
+                    )}
                   {permission !== 'VIEW' &&
                     !isEdulasticCurator &&
                     !publicAccess &&
@@ -391,7 +395,8 @@ class ViewModal extends React.Component {
                   {status === 'published' &&
                     !isEdulasticCurator &&
                     !publicAccess &&
-                    !isPublisherUser && (
+                    !isPublisherUser &&
+                    userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
                       <EduButton
                         height="40px"
                         width="100%"
@@ -617,6 +622,7 @@ class ViewModal extends React.Component {
 
 export default connect(
   (state) => ({
+    userSignupStatus: getUserSignupStatusSelector(state),
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),

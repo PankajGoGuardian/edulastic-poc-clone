@@ -15,6 +15,7 @@ import {
   notification,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import signUpState from '@edulastic/constants/const/signUpState'
 import { IconClose, IconShare } from '@edulastic/icons'
 import { Col, Row, Select, Spin, Typography, Modal, AutoComplete } from 'antd'
 import { debounce, get as _get, isUndefined } from 'lodash'
@@ -39,7 +40,11 @@ import {
   receiveSharedWithListAction,
   sendTestShareAction,
 } from '../../../../TestPage/ducks'
-import { getOrgDataSelector, getUserRole } from '../../../selectors/user'
+import {
+  getOrgDataSelector,
+  getUserRole,
+  getUserSignupStatusSelector,
+} from '../../../selectors/user'
 import { RadioInputWrapper } from '../RadioInput'
 
 const { Paragraph } = Typography
@@ -319,6 +324,7 @@ class ShareModal extends React.Component {
       userRole,
       hasPlaylistEditAccess = true,
       testVersionId,
+      userSignupStatus,
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -353,6 +359,7 @@ class ShareModal extends React.Component {
       ? shareTypeKeyForDa
       : shareTypeKeys
     ).filter((k) => (isPlaylist && k !== sharedKeysObj.LINK) || !isPlaylist)
+
     return (
       <SharingModal
         width="700px"
@@ -432,7 +439,9 @@ class ShareModal extends React.Component {
                       ((features.isCurator ||
                         features.isPublisherAuthor ||
                         !hasPlaylistEditAccess) &&
-                        item === 'PUBLIC')
+                        item === 'PUBLIC') ||
+                      (userSignupStatus === signUpState.ACCESS_WITHOUT_SCHOOL &&
+                        item !== 'INDIVIDUAL')
                     }
                   >
                     {shareTypes[item]}
@@ -558,6 +567,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       userOrgData: getOrgDataSelector(state),
       userRole: getUserRole(state),
+      userSignupStatus: getUserSignupStatusSelector(state),
     }),
     {
       getUsers: fetchUsersListAction,

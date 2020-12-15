@@ -26,7 +26,10 @@ import {
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
-import { getSAFFilterStandardsProficiencyProfiles } from '../common/filterDataDucks'
+import {
+  getSAFFilterStandardsProficiencyProfiles,
+  setStandardMasteryProfileAction,
+} from '../common/filterDataDucks'
 import CardHeader, {
   CardDropdownWrapper,
   CardTitle,
@@ -72,6 +75,7 @@ const PerformanceByStandards = ({
   pageTitle,
   filters,
   sharedReport,
+  setStandardMasteryProfile,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -90,10 +94,14 @@ const PerformanceByStandards = ({
             s._id ===
             (sharedReportFilters || settings.requestFilters)
               .standardsProficiencyProfile
-        ) || standardProficiencyProfiles[0]
+        ) || report?.scaleInfo
       )?.scale,
-    [settings]
+    [settings, report]
   )
+
+  useEffect(() => {
+    setStandardMasteryProfile(report?.scaleInfo || {})
+  }, [report])
 
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
@@ -379,6 +387,7 @@ const enhance = connect(
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction,
+    setStandardMasteryProfile: setStandardMasteryProfileAction,
   }
 )
 

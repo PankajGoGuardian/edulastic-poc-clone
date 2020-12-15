@@ -21,6 +21,9 @@ const SET_REPORTS_PREV_SAR_FILTER_DATA =
 
 const SET_FILTERS_OR_TEST_ID = '[reports] set sar filters or testId'
 
+const SET_PERFORMANCE_BAND_PROFILE = '[reports] set sar peformance band profile'
+const SET_STANDARD_MANTERY_PROFILE = '[reports] set sar standard matery profile'
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getSARFilterDataRequestAction = createAction(
@@ -32,6 +35,14 @@ export const setPrevSARFilterDataAction = createAction(
 )
 
 export const setFiltersOrTestIdAction = createAction(SET_FILTERS_OR_TEST_ID)
+
+export const setPerformanceBandProfileAction = createAction(
+  SET_PERFORMANCE_BAND_PROFILE
+)
+
+export const setStandardMasteryProfileAction = createAction(
+  SET_STANDARD_MANTERY_PROFILE
+)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -74,6 +85,16 @@ export const getSAFFilterStandardsProficiencyProfiles = createSelector(
 
 export const getSAFilterDemographics = createSelector(stateSelector, (state) =>
   get(state, 'SARFilterData.data.result.demographics', [])
+)
+
+export const getPerformanceBandProfile = createSelector(
+  stateSelector,
+  (state) => state.performanceBandProfile
+)
+
+export const getStandardManteryScale = createSelector(
+  stateSelector,
+  (state) => state.standardsProficiencyProfile
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -131,6 +152,12 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [SET_REPORTS_PREV_SAR_FILTER_DATA]: (state, { payload }) => {
     state.prevSARFilterData = payload
+  },
+  [SET_PERFORMANCE_BAND_PROFILE]: (state, { payload }) => {
+    state.performanceBandProfile = payload
+  },
+  [SET_STANDARD_MANTERY_PROFILE]: (state, { payload }) => {
+    state.standardsProficiencyProfile = payload
   },
 })
 

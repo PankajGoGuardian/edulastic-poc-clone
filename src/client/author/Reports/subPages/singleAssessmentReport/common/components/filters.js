@@ -33,6 +33,8 @@ import {
   setFiltersOrTestIdAction,
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
+  getPerformanceBandProfile,
+  getStandardManteryScale,
 } from '../filterDataDucks'
 import {
   getUserRole,
@@ -77,6 +79,8 @@ const SingleAssessmentReportFilters = ({
   firstLoad,
   setFirstLoad,
   reportId,
+  selectedPerformanceBandProfile,
+  selectedStandardManteryScale,
 }) => {
   const assessmentTypeRef = useRef()
   const [selectedClass, setSelectedClass] = useState(null)
@@ -410,6 +414,7 @@ const SingleAssessmentReportFilters = ({
                 <ControlDropDown
                   by={
                     filters.standardsProficiencyProfile ||
+                    selectedStandardManteryScale?._id ||
                     standardProficiencyProfiles[0]?._id
                   }
                   selectCB={(e) =>
@@ -432,6 +437,7 @@ const SingleAssessmentReportFilters = ({
                   by={{
                     key:
                       filters.performanceBandProfile ||
+                      selectedPerformanceBandProfile?._id ||
                       performanceBandProfiles[0]?._id,
                   }}
                   selectCB={(e) =>
@@ -472,6 +478,8 @@ const enhance = compose(
         state?.standardsProficiencyReducer?.data || [],
       standardProficiencyLoading:
         state?.standardsProficiencyReducer?.loading || [],
+      selectedPerformanceBandProfile: getPerformanceBandProfile(state),
+      selectedStandardManteryScale: getStandardManteryScale(state),
     }),
     {
       getSARFilterDataRequest: getSARFilterDataRequestAction,

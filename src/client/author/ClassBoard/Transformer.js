@@ -166,18 +166,14 @@ const getMaxScoreFromQuestion = (question) => {
  * @param {string} qid
  * @param {Object[]} testItemsData
  */
-export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => (
-  testItemId
-) => {
+export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
   if (!qid) {
     return qActivityMaxScore || 1
   }
   // TODO: Need to make it more efficient . no need to loop through all items
   for (const testItem of testItemsData) {
     const questions = get(testItem, ['data', 'questions'], [])
-    const questionIndex = questions.findIndex(
-      (x) => x.id === qid && (!testItemId || testItem._id === testItemId)
-    )
+    const questionIndex = questions.findIndex((x) => x.id === qid)
     const questionNeeded = questions[questionIndex]
     if (questionNeeded) {
       // for item level scoring handle scores as whole instead of each questions
@@ -544,7 +540,7 @@ export const transformGradeBookResponse = (
                 _id,
                 testItemsData,
                 currentQuestionActivity?.maxScore
-              )(testItemId)
+              )
 
             if (!currentQuestionActivity) {
               return {

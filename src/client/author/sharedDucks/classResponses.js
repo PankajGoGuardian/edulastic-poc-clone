@@ -344,7 +344,7 @@ function* receiveStudentQuestionSaga({ payload }) {
   try {
     // express grader
     let feedbackResponse
-    if (payload.callItemLevel) {
+    if (payload.testItemId) {
       feedbackResponse = yield call(
         classResponseApi.receiveStudentItemQuestionResponse,
         payload
@@ -419,7 +419,6 @@ function* receiveClassQuestionSaga({ payload }) {
         payload
       )
     } else {
-      // TODO: Need analyse and remove this api and conditions. I could find the instance using it.
       feedbackResponse = yield call(
         classResponseApi.questionClassQuestionResponse,
         payload

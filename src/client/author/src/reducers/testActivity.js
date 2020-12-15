@@ -326,30 +326,24 @@ const reducer = (state = initialState, { type, payload }) => {
         /**
          * @type string[]
          */
-        const removedQuestions = payload
+        const questionIds = payload
         const questionIdsMaxScore = {}
-        for (const { qid, testItemId } of removedQuestions) {
-          questionIdsMaxScore[`${testItemId}_${qid}`] = getMaxScoreOfQid(
+        for (const qid of questionIds) {
+          questionIdsMaxScore[qid] = getMaxScoreOfQid(
             qid,
             _st.data.testItemsData
-          )(testItemId)
+          )
         }
         for (const _entity of _st.entities) {
           const matchingQids = _entity.questionActivities.filter((x) =>
-            removedQuestions.some(
-              (r) => r.qid === x._id && r.testItemId === x.testItemId
-            )
+            questionIds.includes(x._id)
           )
           _entity.maxScore -= matchingQids.reduce(
-            (prev, qid, testItemId) =>
-              prev + (questionIdsMaxScore[`${testItemId}_${qid}`] || 0),
+            (prev, qid) => prev + (questionIdsMaxScore[qid] || 0),
             0
           )
           _entity.questionActivities = _entity.questionActivities.filter(
-            (x) =>
-              !removedQuestions.some(
-                (r) => r.qid === x._id && r.testItemId === x.testItemId
-              )
+            (x) => !questionIds.includes(x._id)
           )
         }
       })

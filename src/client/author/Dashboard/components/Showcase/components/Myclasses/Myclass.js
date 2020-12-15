@@ -11,7 +11,7 @@ import { FlexContainer, MainContentWrapper } from '@edulastic/common'
 import { title, white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import bannerActions from '@edulastic/constants/const/bannerActions'
+import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import { TextWrapper } from '../../../styledComponents'
 import {
   CardContainer,
@@ -23,6 +23,9 @@ import {
   PrevButton,
   NextButton,
   SliderContainer,
+  LearnMore,
+  SlideContainer,
+  SlideDescription,
 } from './styled'
 
 import CreateClassPage from './components/CreateClassPage/createClassPage'
@@ -133,8 +136,7 @@ const MyClasses = ({
   const testBundle = TEST_BUNDLE || []
 
   const handleInAppRedirect = (data) => {
-    const entries = data.filters?.reduce((a, c) => ({ ...a, ...c }), {})
-    const filter = qs.stringify(entries)
+    const filter = qs.stringify(data.filters)
     history.push(`/author/${data.contentType}?${filter}`)
   }
 
@@ -144,15 +146,16 @@ const MyClasses = ({
 
   const bannerActionHandler = (filter = {}) => {
     // NOTE: Actions might need further refactor
-    switch (filter.action) {
+    const { action, data } = filter
+    switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
-        setShowBannerModal(filter.data)
+        setShowBannerModal(data)
         break
       case bannerActions.BANNER_APP_REDIRECT:
-        handleInAppRedirect(filter)
+        handleInAppRedirect(data)
         break
       case bannerActions.BANNER_EXTERNAL_REDIRECT:
-        handleExternalRedirect(filter)
+        handleExternalRedirect(data)
         break
       default:
         break
@@ -172,12 +175,17 @@ const MyClasses = ({
   const bannerLength = bannerSlides.length
 
   const Banner = bannerSlides.map((slide, index) => (
-    <Slides
-      className={bannerLength === index + 1 ? 'last' : ''}
-      bgImage={slide.imageUrl}
+    <SlideContainer
       key={slide._id}
       onClick={() => bannerActionHandler(slide.config.filters[0])}
-    />
+    >
+      <LearnMore>LEARN MORE</LearnMore>
+      <SlideDescription>{slide.description}</SlideDescription>
+      <Slides
+        className={bannerLength === index + 1 ? 'last' : ''}
+        bgImage={slide.imageUrl}
+      />
+    </SlideContainer>
   ))
 
   const handleScroll = debounce((isScrollLeft) => {

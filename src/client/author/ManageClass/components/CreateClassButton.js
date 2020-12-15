@@ -2,9 +2,10 @@ import React, { useState, Fragment } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
+import { Spin } from 'antd'
 import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
-import { EduButton, Progress } from '@edulastic/common'
+import { EduButton } from '@edulastic/common'
 import { signUpState } from '@edulastic/constants'
 import { IconPlusCircle } from '@edulastic/icons'
 import { getUser } from '../../src/selectors/user'
@@ -12,7 +13,7 @@ import { getUser } from '../../src/selectors/user'
 const TeacherSignup = loadable(
   () => import('../../../student/Signup/components/TeacherContainer/Container'),
   {
-    fallback: <Progress />,
+    fallback: <Spin />,
   }
 )
 

@@ -11,7 +11,7 @@ import { FlexContainer, MainContentWrapper } from '@edulastic/common'
 import { title, white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
+import bannerActions from '@edulastic/constants/const/bannerActions'
 import { TextWrapper } from '../../../styledComponents'
 import {
   CardContainer,
@@ -87,7 +87,6 @@ const MyClasses = ({
   dashboardTiles,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
-  const [modalVisible, setModalVisible] = useState(false)
 
   const scrollBarRef = useRef(null)
 
@@ -131,14 +130,10 @@ const MyClasses = ({
   const bannerSlides = BANNER || []
   const testBundle = TEST_BUNDLE || []
 
-  const actionConstantMap = {
-    BANNER_GET_STARTED: 0,
-  }
-
   const bannerActionHandler = (actionConstant) => {
     switch (actionConstant) {
-      case actionConstantMap.BANNER_GET_STARTED:
-        setModalVisible(true)
+      case bannerActions.BANNER_GET_STARTED:
+        // TODO: Implement action handlers once data is populated in DB
         break
       default:
         break
@@ -157,15 +152,7 @@ const MyClasses = ({
 
   const bannerLength = bannerSlides.length
 
-  const Banner = [
-    ...bannerSlides,
-    ...bannerSlides,
-    ...bannerSlides,
-    ...bannerSlides,
-    ...bannerSlides,
-    ...bannerSlides,
-    ...bannerSlides,
-  ].map((slide, index) => (
+  const Banner = bannerSlides.map((slide, index) => (
     <Slides
       className={bannerLength === index + 1 ? 'last' : ''}
       bgImage={slide.imageUrl}
@@ -174,22 +161,16 @@ const MyClasses = ({
     />
   ))
 
-  const handleScroll = debounce((sign) => {
-    if (sign) {
-      scrollBarRef.current._container.scrollTo({
-        left:
-          scrollBarRef.current._container.scrollLeft +
-          scrollBarRef.current._container.clientWidth,
-        behavior: 'smooth',
-      })
-    } else {
-      scrollBarRef.current._container.scrollTo({
-        left:
-          scrollBarRef.current._container.scrollLeft -
-          scrollBarRef.current._container.clientWidth,
-        behavior: 'smooth',
-      })
-    }
+  const handleScroll = debounce((isScrollLeft) => {
+    const scrollContainer = scrollBarRef.current._container
+    const { scrollLeft, clientWidth } = scrollContainer
+    const delta = isScrollLeft
+      ? scrollLeft + clientWidth
+      : scrollLeft - scrollLeft
+    scrollContainer.scrollTo({
+      left: delta,
+      behavior: 'smooth',
+    })
   }, 300)
 
   const isClassLink =
@@ -197,26 +178,16 @@ const MyClasses = ({
 
   const bannerScrollLeft = () => handleScroll(true)
   const bannerScrollRight = () => handleScroll(false)
+  const closeCleverSyncModal = () => setShowCleverSyncModal(false)
+  const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
 
   return (
     <MainContentWrapper padding="30px">
-      {modalVisible && (
-        <ConfirmationModal
-          title="Demo Modal"
-          centered
-          textAlign="left"
-          visible={modalVisible}
-          footer={null}
-          onCancel={() => setModalVisible(false)}
-        >
-          Demo Modal for Banner Action
-        </ConfirmationModal>
-      )}
       <ClassSelectModal
         type="clever"
         visible={showCleverSyncModal}
         onSubmit={syncCleverClassList}
-        onCancel={() => setShowCleverSyncModal(false)}
+        onCancel={closeCleverSyncModal}
         loading={loadingCleverClassList}
         classListToSync={cleverClassList}
         courseList={courseList}
@@ -228,7 +199,7 @@ const MyClasses = ({
       />
       <CanvasClassSelectModal
         visible={showCanvasSyncModal}
-        onCancel={() => setShowCanvasSyncModal(false)}
+        onCancel={closeCanvasSyncModal}
         user={user}
         getCanvasCourseListRequest={getCanvasCourseListRequest}
         getCanvasSectionListRequest={getCanvasSectionListRequest}

@@ -53,6 +53,7 @@ import {
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
 import Card from './components/Card'
+import EmbeddedVideoPreviewModal from '../../../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -87,6 +88,7 @@ const MyClasses = ({
   dashboardTiles,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
+  const [showBannerModal, setShowBannerModal] = useState(null)
 
   const scrollBarRef = useRef(null)
 
@@ -130,10 +132,27 @@ const MyClasses = ({
   const bannerSlides = BANNER || []
   const testBundle = TEST_BUNDLE || []
 
-  const bannerActionHandler = (actionConstant) => {
-    switch (actionConstant) {
-      case bannerActions.BANNER_GET_STARTED:
-        // TODO: Implement action handlers once data is populated in DB
+  const handleInAppRedirect = (data) => {
+    const entries = data.filters?.reduce((a, c) => ({ ...a, ...c }), {})
+    const filter = qs.stringify(entries)
+    history.push(`/author/${data.contentType}?${filter}`)
+  }
+
+  const handleExternalRedirect = (data) => {
+    window.open(data.externalUrl, '_blank')
+  }
+
+  const bannerActionHandler = (filter = {}) => {
+    // NOTE: Actions might need further refactor
+    switch (filter.action) {
+      case bannerActions.BANNER_DISPLAY_IN_MODAL:
+        setShowBannerModal(filter.data)
+        break
+      case bannerActions.BANNER_APP_REDIRECT:
+        handleInAppRedirect(filter)
+        break
+      case bannerActions.BANNER_EXTERNAL_REDIRECT:
+        handleExternalRedirect(filter)
         break
       default:
         break
@@ -157,7 +176,7 @@ const MyClasses = ({
       className={bannerLength === index + 1 ? 'last' : ''}
       bgImage={slide.imageUrl}
       key={slide._id}
-      onClick={() => bannerActionHandler(slide.config.filters?.[0]?.action)}
+      onClick={() => bannerActionHandler(slide.config.filters[0])}
     />
   ))
 
@@ -180,6 +199,7 @@ const MyClasses = ({
   const bannerScrollRight = () => handleScroll(false)
   const closeCleverSyncModal = () => setShowCleverSyncModal(false)
   const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
+  const handleBannerModalClose = () => setShowBannerModal(null)
 
   return (
     <MainContentWrapper padding="30px">
@@ -266,6 +286,12 @@ const MyClasses = ({
         </FlexContainer>
       </FeatureContentWrapper>
       <Launch />
+      {showBannerModal && (
+        <EmbeddedVideoPreviewModal
+          closeCallback={handleBannerModalClose}
+          isVisible={showBannerModal}
+        />
+      )}
     </MainContentWrapper>
   )
 }

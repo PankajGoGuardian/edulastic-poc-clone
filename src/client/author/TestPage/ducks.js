@@ -293,6 +293,9 @@ export const GET_TESTID_FROM_VERSIONID = '[test] get testId from versionId'
 export const SET_REGRADE_FIRESTORE_DOC_ID = '[test] set regrade firestore docId'
 export const SET_CORRECT_PSSAGE_ITEMS_CREATED =
   '[test] set correct passage items data in created items'
+export const SET_SHARING_CONTENT_STATE = '[test] set sharing content state'
+export const UPDATE_EMAIL_NOTIFICATION_DATA =
+  '[test] update email notification data'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -370,6 +373,12 @@ export const setUpdatingTestForRegradeStateAction = createAction(
 )
 export const getTestIdFromVersionIdAction = createAction(
   GET_TESTID_FROM_VERSIONID
+)
+export const setSharingContentStateAction = createAction(
+  SET_SHARING_CONTENT_STATE
+)
+export const updateEmailNotificationDataAction = createAction(
+  UPDATE_EMAIL_NOTIFICATION_DATA
 )
 
 export const receiveTestByIdAction = (
@@ -600,6 +609,26 @@ export const getTestIdSelector = createSelector(
   (state) => state.entity && state.entity._id
 )
 
+export const getContentSharingStateSelector = createSelector(
+  stateSelector,
+  (state) => state.isSharingContent
+)
+
+export const getShouldSendEmailStateSelector = createSelector(
+  stateSelector,
+  (state) => state.sendEmailNotification
+)
+
+export const getShowMessageBodyStateSelector = createSelector(
+  stateSelector,
+  (state) => state.showMessageBody
+)
+
+export const getEmailNotificationMessageSelector = createSelector(
+  stateSelector,
+  (state) => state.notificationMessage
+)
+
 export const getTestsCreatingSelector = createSelector(
   stateSelector,
   (state) => state.creating
@@ -802,6 +831,10 @@ const initialState = {
   updatingTestForRegrade: false,
   nextItemId: null,
   regradeFirestoreDocId: '',
+  isSharingContent: false,
+  sendEmailNotification: false,
+  showMessageBody: false,
+  notificationMessage: '',
 }
 
 export const testTypeAsProfileNameType = {
@@ -1301,6 +1334,16 @@ export const reducer = (state = initialState, { type, payload }) => {
         createdItems: state.createdItems.map(
           (i) => payload.find((it) => it._id === i._id) || i
         ),
+      }
+    case SET_SHARING_CONTENT_STATE:
+      return {
+        ...state,
+        isSharingContent: payload,
+      }
+    case UPDATE_EMAIL_NOTIFICATION_DATA:
+      return {
+        ...state,
+        ...payload,
       }
     default:
       return state
@@ -1900,11 +1943,20 @@ function* updateRegradeDataSaga({ payload }) {
 
 function* shareTestSaga({ payload }) {
   try {
+    yield put(setSharingContentStateAction(true))
     yield call(contentSharingApi.shareContent, payload)
     yield put(
       receiveSharedWithListAction({
         contentId: payload.contentId,
         contentType: payload.data.contentType,
+      })
+    )
+    yield put(setSharingContentStateAction(false))
+    yield put(
+      updateEmailNotificationDataAction({
+        sendEmailNotification: false,
+        showMessageBody: false,
+        notificationMessage: '',
       })
     )
     notification({ type: 'success', messageKey: 'sharedPlaylist' })
@@ -1919,7 +1971,7 @@ function* shareTestSaga({ payload }) {
         msg: `Invalid mails found (${invalidEmails.join(', ')})`,
       })
     }
-
+    yield put(setSharingContentStateAction(false))
     notification({ msg: errorMessage || 'Sharing failed' })
   }
 }

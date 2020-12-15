@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
-import { pick, last, get, set, isBoolean } from 'lodash'
+import { pick, last, get, set } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
 import { captureSentryException, notification } from '@edulastic/common'
@@ -152,10 +152,6 @@ export const SET_CLI_USER = '[user] set cli user'
 export const TOGGLE_CLASS_CODE_MODAL = '[user] toggle class code modal'
 export const TOGGLE_IMAGES_BLOCKED_NOTIFICATION =
   '[user] toggle images blocked notification'
-export const TOGGLE_ROLE_CONFIRMATION =
-  '[user] toggle student signing up as teacher'
-export const TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION =
-  '[user] toggle multiple account notification'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -241,12 +237,6 @@ export const toggleClassCodeModalAction = createAction(TOGGLE_CLASS_CODE_MODAL)
 export const toggleImageBlockNotificationAction = createAction(
   TOGGLE_IMAGES_BLOCKED_NOTIFICATION
 )
-export const toggleRoleConfirmationPopupAction = createAction(
-  TOGGLE_ROLE_CONFIRMATION
-)
-export const toggleMultipleAccountNotificationAction = createAction(
-  TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION
-)
 
 const initialState = {
   addAccount: false,
@@ -258,10 +248,6 @@ const initialState = {
   isCliUser: false,
   isClassCodeModalOpen: false,
   isImageBlockNotification: false,
-  isRoleConfirmation: false,
-  isMultipleAccountNotification: !localStorage.getItem(
-    'isMultipleAccountNotification'
-  ),
 }
 
 const setUser = (state, { payload }) => {
@@ -557,17 +543,6 @@ export default createReducer(initialState, {
   },
   [TOGGLE_IMAGES_BLOCKED_NOTIFICATION]: (state, { payload }) => {
     state.isImageBlockNotification = payload
-  },
-  [TOGGLE_ROLE_CONFIRMATION]: (state, { payload }) => {
-    if (isBoolean(payload)) {
-      state.isRoleConfirmation = payload
-    } else {
-      state.isRoleConfirmation = true
-      state.email = payload
-    }
-  },
-  [TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION]: (state, { payload }) => {
-    state.isMultipleAccountNotification = payload
   },
 })
 
@@ -1177,7 +1152,6 @@ function* logout() {
       yield put({ type: 'RESET' })
       yield put(push(getSignOutUrl()))
       removeSignOutUrl()
-      yield put(toggleMultipleAccountNotificationAction(true))
     }
   } catch (e) {
     console.log(e)
@@ -1253,12 +1227,6 @@ function* googleLogin({ payload }) {
 function* googleSSOLogin({ payload }) {
   const _payload = { ...payload }
 
-  const isAllowed = localStorage.getItem('studentRoleConfirmation')
-  if (isAllowed) {
-    _payload.isTeacherAllowed = true
-    localStorage.removeItem('studentRoleConfirmation')
-  }
-
   let generalSettings = localStorage.getItem('thirdPartySignOnGeneralSettings')
   if (generalSettings) {
     generalSettings = JSON.parse(generalSettings)
@@ -1288,12 +1256,6 @@ function* googleSSOLogin({ payload }) {
     }
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'Google Login failed')
-    if (e.status === 409) {
-      const email = get(e, 'response.data.email', 'Email')
-      yield put(toggleRoleConfirmationPopupAction(email))
-      notification({ msg: errorMessage })
-      return
-    }
     if (errorMessage === 'signInUserNotFound') {
       yield put(push(getStartedUrl()))
       notification({ type: 'warn', messageKey: 'signInUserNotFound' })

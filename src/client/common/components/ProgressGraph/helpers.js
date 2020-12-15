@@ -6,6 +6,9 @@ import {
   themeColorLighter,
   darkBlue2,
 } from '@edulastic/colors'
+import { testActivityStatus as testActivityStatusConstants } from '@edulastic/constants'
+
+const { SUBMITTED } = testActivityStatusConstants
 
 export const NUMBER_OF_BARS = 10
 
@@ -47,7 +50,11 @@ export const bars = {
   },
 }
 
-export const convertData = (questionActivities, testItems) => {
+export const convertData = (
+  questionActivities,
+  testItems,
+  testActivityStatus
+) => {
   let maxAttemps = 0
   let maxTimeSpent = 0
   let data = []
@@ -83,6 +90,7 @@ export const convertData = (questionActivities, testItems) => {
 
       const activity = activitiesByQid[question.id]
       if (isEmpty(activity)) {
+        questionActivity.skippedNum = testActivityStatus === SUBMITTED ? 1 : 0
         return questionActivity
       }
       const {

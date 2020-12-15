@@ -24,7 +24,7 @@ const ProgressGraph = ({
   isCliUser,
   dontRelease = false,
 }) => {
-  const { score, maxScore, endDate } = testActivity
+  const { score, maxScore, endDate, status } = testActivity
   const scorePercentage = round((score / maxScore) * 100, 2) || 0
   const totalTimeSpent = (questionActivities || []).reduce((total, current) => {
     total += current.timeSpent
@@ -91,6 +91,7 @@ const ProgressGraph = ({
             onClickBar={onClickBar}
             testItems={testItems}
             isGreyBar={isGreyBar}
+            testActivityStatus={status}
           />
         </BarGraphContainer>
       )}

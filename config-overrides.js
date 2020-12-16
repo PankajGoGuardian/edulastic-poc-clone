@@ -280,18 +280,22 @@ module.exports = override(
             default: {
               reuseExistingChunk: true,
             },
-            'vendor-react': {
-              test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
-              name: 'vendor-react',
-              chunks: 'all',
-              enforce: true,
-            },
-            'vendor-common': {
-              test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
-              name: 'vendor-common',
-              chunks: 'all',
-              enforce: true,
-            },
+            commons: {
+              name: 'commons',
+              chunks: 'initial',
+            } /*
+           'vendor-react': {
+            test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
+            name: 'vendor-react',
+            chunks: 'all',
+            enforce: true,
+          },
+          'vendor-common': {
+            test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
+            name: 'vendor-common',
+            chunks: 'all',
+            enforce: true,
+          }, */,
           },
         },
       }

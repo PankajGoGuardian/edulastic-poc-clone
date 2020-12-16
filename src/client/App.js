@@ -149,10 +149,13 @@ if (query && query.cliUser && query.token) {
 // Capture forwarded referrer from edulastic.com
 if (
   query &&
-  query.referrer &&
+  (query.referrer || query.itemBank) &&
   !window.localStorage.getItem('originalreferrer')
 ) {
-  window.localStorage.setItem('originalreferrer', query.referrer)
+  window.localStorage.setItem(
+    'originalreferrer',
+    query.referrer || query.itemBank
+  )
 }
 
 /**

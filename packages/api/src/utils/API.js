@@ -274,7 +274,11 @@ export default class API {
             })
             // Needs proper fixing, patching it to fix infinite reload
             const loginRedirectUrl = localStorage.getItem('loginRedirectUrl')
+            const originalreferrer = window.localStorage.getItem(
+              'originalreferrer'
+            )
             localStorage.clear()
+            window.localStorage.setItem('originalreferrer', originalreferrer)
             localStorage.setItem('loginRedirectUrl', loginRedirectUrl)
             if (
               !window.location.pathname

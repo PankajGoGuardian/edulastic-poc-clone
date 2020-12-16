@@ -81,9 +81,7 @@ const Container = ({
     setSchool(value)
   }
 
-  console.log('signup container')
   if (!isAuthenticated) {
-    console.log('signup form')
     return (
       <ThemeProvider theme={themes.default}>
         <SignupForm

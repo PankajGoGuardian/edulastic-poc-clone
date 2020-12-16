@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
@@ -21,9 +21,11 @@ const AddSchoolAndGradeModal = ({
 }) => {
   const userInfo = get(user, 'user', {})
 
-  if (user.signupStatus === signUpState.DONE) {
-    onCompleteSignup()
-  }
+  useEffect(() => {
+    if (user.signupStatus === signUpState.DONE) {
+      onCompleteSignup()
+    }
+  }, [user.signupStatus])
 
   return (
     <CustomModalStyled

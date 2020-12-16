@@ -319,6 +319,7 @@ const BASIC_WO_NUMBER = [
 ]
 
 const INTERMEDIATE = [
+  divide,
   multiplication,
   plusMinus,
   greaterEqual,

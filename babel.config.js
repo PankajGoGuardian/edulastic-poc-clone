@@ -10,22 +10,21 @@ babelPreset.sourceType = 'unambiguous'
 
 babelPreset.plugins.push.apply(babelPreset.plugins, [
   [
-    'transform-imports',
+    "transform-imports",
     {
-      '@edulastic/icons': {
-        transform: '@edulastic/icons/src/${member}',
-        preventFullImport: true,
+      "@edulastic/icons": {
+        "transform": "@edulastic/icons/src/${member}",
+        "preventFullImport": true
       },
-      antd: {
-        transform: (importName) => {
-          return `antd/es/${importName
-            .replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2')
-            .replace(/^-/, '')
-            .toLowerCase()}`
+      /*
+      "antd":{
+        "transform": (importName) => {
+          return `antd/es/${importName.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').replace(/^-/,'').toLowerCase()}`
         },
-        preventFullImport: true,
-      },
-    },
+        "preventFullImport": true
+      } */
+    }
+
   ],
   [
     'styled-components',

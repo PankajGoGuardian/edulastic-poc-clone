@@ -45,12 +45,13 @@ const columns = [
       a.class.localeCompare(b.class, 'en', { ignorePunctuation: true }),
     width: '30%',
     align: 'left',
-    render: (text, data) => (
+    render: (text, { teacherName, institutionName }) => (
       <ClassNameCell>
         <span>{text}</span>
-        {data.institutionName && (
-          <span className="schoolName">{data.institutionName}</span>
-        )}
+        <span className="schoolName">
+          {teacherName}
+          {institutionName ? ` / ${institutionName}` : ''}
+        </span>
       </ClassNameCell>
     ),
   },
@@ -197,6 +198,7 @@ const TableList = ({
     timedAssignment: data.timedAssignment,
     allowedTime: data.allowedTime,
     institutionName: showSchoolName ? data.institutionName : false,
+    teacherName: data.teacherName || '',
   })
   const rowData = useMemo(
     () => classList.map((data, index) => convertRowData(data, index)),

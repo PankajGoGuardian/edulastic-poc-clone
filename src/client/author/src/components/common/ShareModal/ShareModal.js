@@ -5,6 +5,7 @@ import {
   themeColor,
   whiteSmoke,
   mobileWidthMax,
+  red,
 } from '@edulastic/colors'
 import {
   EduButton,
@@ -17,7 +18,17 @@ import {
 import { roleuser } from '@edulastic/constants'
 import signUpState from '@edulastic/constants/const/signUpState'
 import { IconClose, IconShare } from '@edulastic/icons'
-import { Col, Row, Select, Spin, Typography, Modal, AutoComplete } from 'antd'
+import {
+  Col,
+  Row,
+  Select,
+  Spin,
+  Typography,
+  Modal,
+  AutoComplete,
+  Checkbox,
+  Input,
+} from 'antd'
 import { debounce, get as _get, isUndefined } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -39,11 +50,17 @@ import {
   getUserListSelector,
   receiveSharedWithListAction,
   sendTestShareAction,
+  getContentSharingStateSelector,
+  getShouldSendEmailStateSelector,
+  getShowMessageBodyStateSelector,
+  getEmailNotificationMessageSelector,
+  updateEmailNotificationDataAction,
 } from '../../../../TestPage/ducks'
 import {
   getOrgDataSelector,
   getUserRole,
   getUserSignupStatusSelector,
+  getUserNameSelector,
 } from '../../../selectors/user'
 import { RadioInputWrapper } from '../RadioInput'
 
@@ -145,8 +162,15 @@ class ShareModal extends React.Component {
   }
 
   radioHandler = (e) => {
-    this.setState({ sharedType: e.target.value })
-    const { hasPlaylistEditAccess } = this.props
+    this.setState({
+      sharedType: e.target.value,
+    })
+    const { hasPlaylistEditAccess, updateEmailNotificationData } = this.props
+    updateEmailNotificationData({
+      sendEmailNotification: false,
+      showMessageBody: false,
+      notificationMessage: '',
+    })
     if (e.target.value !== sharedKeysObj.INDIVIDUAL || !hasPlaylistEditAccess) {
       this.setState({
         permission: 'VIEW',
@@ -222,7 +246,17 @@ class ShareModal extends React.Component {
 
   handleShare = () => {
     const { currentUser, sharedType, permission, searchString } = this.state
-    const { shareTest, testId, sharedUsersList, isPlaylist } = this.props
+    const {
+      shareTest,
+      testId,
+      sharedUsersList,
+      isPlaylist,
+      testVersionId,
+      authorName,
+      sendEmailNotification,
+      showMessageBody,
+      notificationMessage,
+    } = this.props
     const isExisting = sharedUsersList.some(
       (item) => item._userId === currentUser._userId
     )
@@ -264,6 +298,21 @@ class ShareModal extends React.Component {
       permission,
       contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
     }
+    if (sharedType === sharedKeysObj.INDIVIDUAL && sendEmailNotification) {
+      data.sendEmailNotification = sendEmailNotification
+      data.authorName = authorName
+      if (testVersionId) {
+        data.testVersionId = testVersionId
+      }
+      if (showMessageBody) {
+        if (!notificationMessage)
+          return notification({
+            type: 'warn',
+            msg: 'Please enter the message that you want to send the users',
+          })
+        data.notificationMessage = notificationMessage
+      }
+    }
     shareTest({ data, contentId: testId })
     // do it in a slight delay so that at the moment of blur it should not show warning
     setTimeout(() => {
@@ -299,6 +348,28 @@ class ShareModal extends React.Component {
     return `${data.email && data.email !== 'null' ? ` (${data.email})` : ''}`
   }
 
+  toggleSendNotification = (e) => {
+    const { updateEmailNotificationData } = this.props
+    updateEmailNotificationData({
+      sendEmailNotification: e.target.checked,
+      showMessageBody: false,
+      notificationMessage: '',
+    })
+  }
+
+  toggleMessageBody = () => {
+    const { showMessageBody, updateEmailNotificationData } = this.props
+    updateEmailNotificationData({
+      showMessageBody: !showMessageBody,
+      notificationMessage: '',
+    })
+  }
+
+  handleMessageChange = ({ target: { value } }) => {
+    const { updateEmailNotificationData } = this.props
+    updateEmailNotificationData({ notificationMessage: value })
+  }
+
   render() {
     const {
       sharedType,
@@ -325,6 +396,9 @@ class ShareModal extends React.Component {
       hasPlaylistEditAccess = true,
       testVersionId,
       userSignupStatus,
+      sendEmailNotification,
+      showMessageBody,
+      notificationMessage,
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -433,13 +507,13 @@ class ShareModal extends React.Component {
                     disabled={
                       // disabling public sharing for all
                       // TODO: enable it back when needed
-                      item === shareTypeKeys[0] ||
-                      (!isPublished && item !== shareTypeKeys[3]) ||
-                      (item === shareTypeKeys[0] && hasPremiumQuestion) ||
-                      ((features.isCurator ||
-                        features.isPublisherAuthor ||
-                        !hasPlaylistEditAccess) &&
-                        item === 'PUBLIC') ||
+                      ((!isPublished &&
+                        item !== shareTypeKeys[3] &&
+                        item !== shareTypeKeys[0]) ||
+                      hasPremiumQuestion ||
+                      features.isCurator ||
+                      features.isPublisherAuthor ||
+                      !hasPlaylistEditAccess)  ||
                       (userSignupStatus === signUpState.ACCESS_WITHOUT_SCHOOL &&
                         item !== 'INDIVIDUAL')
                     }
@@ -488,7 +562,7 @@ class ShareModal extends React.Component {
                     style={{
                       position: 'absolute',
                       left: 0,
-                      top: 45,
+                      top: 40,
                       color: '#f5222d',
                     }}
                   >
@@ -518,6 +592,32 @@ class ShareModal extends React.Component {
               </IndividualSelectInputStyled>
             </FlexContainer>
           </PeopleBlock>
+          {sharedType === sharedKeysObj.INDIVIDUAL && (
+            <NotificationBlock color={showMessageBody ? red : themeColor}>
+              <div>
+                <Checkbox
+                  onChange={this.toggleSendNotification}
+                  checked={sendEmailNotification}
+                >
+                  Send Email Notification
+                </Checkbox>
+                {sendEmailNotification && (
+                  <span onClick={this.toggleMessageBody}>
+                    {showMessageBody ? '-Discard Message' : '-Add Message'}
+                  </span>
+                )}
+              </div>
+              {showMessageBody && (
+                <Input.TextArea
+                  placeholder="Enter Message"
+                  autoSize={{ minRows: 3, maxRows: 6 }}
+                  value={notificationMessage}
+                  onChange={this.handleMessageChange}
+                />
+              )}
+            </NotificationBlock>
+          )}
+
           <DoneButtonContainer>
             <EduButton
               height="32px"
@@ -568,6 +668,11 @@ const enhance = compose(
       userOrgData: getOrgDataSelector(state),
       userRole: getUserRole(state),
       userSignupStatus: getUserSignupStatusSelector(state),
+      sharingState: getContentSharingStateSelector(state),
+      authorName: getUserNameSelector(state),
+      sendEmailNotification: getShouldSendEmailStateSelector(state),
+      showMessageBody: getShowMessageBodyStateSelector(state),
+      notificationMessage: getEmailNotificationMessageSelector(state),
     }),
     {
       getUsers: fetchUsersListAction,
@@ -575,6 +680,7 @@ const enhance = compose(
       shareTest: sendTestShareAction,
       getSharedUsers: receiveSharedWithListAction,
       deleteShared: deleteSharedUserAction,
+      updateEmailNotificationData: updateEmailNotificationDataAction,
     }
   )
 )
@@ -650,6 +756,20 @@ const PeopleBlock = styled.div`
 
   .ant-radio {
     margin-right: 5px;
+  }
+`
+const NotificationBlock = styled.div`
+  margin-top: 15px;
+  .ant-checkbox-wrapper {
+    font-weight: 600;
+    & + span {
+      display: inline-block;
+      color: ${({ color }) => color};
+      cursor: pointer;
+    }
+  }
+  > textarea {
+    margin-top: 10px;
   }
 `
 

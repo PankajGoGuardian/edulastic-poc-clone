@@ -91,7 +91,7 @@ class PrintPreviewClass extends React.Component {
       <>
         <PrintActionWrapper />
         <PrintPreviewBack>
-          <PrintPreviewContainer>
+          <PrintPreviewContainer height="auto">
             <Title />
             <ParagraphDiv>
               <BoldText>{`Congratulations ${teacherName} - your class roster is now ready for class ${className}.`}</BoldText>

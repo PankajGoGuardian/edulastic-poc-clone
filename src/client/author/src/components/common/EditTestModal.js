@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { EduButton } from '@edulastic/common'
 import { ConfirmationModal } from './ConfirmationModal'
 
@@ -18,8 +18,8 @@ const EditTestModal = ({ visible, onCancel, onOk, isUsed = false }) => (
     ]}
   >
     {isUsed
-      ? `This test is already assigned to students. Edit will create a new version of this test and other users won’t
-    be able to view this test until you publish it. Do you wish to proceed?`
+      ? `Edit will move the test to Draft and other users won’t be able to view 
+      this test in Library until you publish it. Do you wish to proceed?`
       : `You are about to edit a test that has already been published. If you wish to edit this test,
      we will move this test to draft status. Do you want to proceed?`}
   </ConfirmationModal>

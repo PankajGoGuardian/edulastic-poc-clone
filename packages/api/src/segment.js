@@ -21,6 +21,7 @@ const getUserDetails = ({
     districtId = '',
     districtName: district = '',
     districtState: state = '',
+    districtCountry: country = '',
     v1Id,
   } = districts?.[0] || {}
   const schoolId =
@@ -42,6 +43,7 @@ const getUserDetails = ({
     districtId: v1Id || districtId,
     district,
     state,
+    country,
     isAdmin,
   }
 }

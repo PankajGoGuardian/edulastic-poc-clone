@@ -267,7 +267,7 @@ const CardDetails = React.memo(styled(Col)`
 `)
 
 const CardTitle = React.memo(styled.div`
-  display: inline-flex;
+  display: flex;
   overflow: visible;
   font-family: ${(props) => props.theme.assignment.cardTitleFontFamily};
   font-size: ${(props) => props.theme.assignment.cardTitleFontSize};
@@ -376,7 +376,7 @@ const SafeExamIcon = React.memo(styled.img`
 
 const TestType = React.memo(styled.span`
   font-family: ${(props) => props.theme.assignment.cardTitleFontFamily};
-  width: 20px;
+  min-width: 20px;
   height: 20px;
   background: ${(props) =>
     props.type ? testTypeColor[props.type] : testTypeColor.assessment};

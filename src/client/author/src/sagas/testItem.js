@@ -40,6 +40,7 @@ import {
   CHANGE_CURRENT_QUESTION,
   getCurrentQuestionSelector,
 } from '../../sharedDucks/questions'
+import { answersByQId } from '../../../assessment/selectors/test'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -159,9 +160,13 @@ function* evaluateAnswers({ payload }) {
       !item.isDocBased
     ) {
       const answers = yield select((state) => _get(state, 'answers', []))
-      const { evaluation, score, maxScore } = yield evaluateItem(answers, {
-        [question?.id]: question,
-      })
+      const answersByQids = answersByQId(answers, item._id)
+      const { evaluation, score, maxScore } = yield evaluateItem(
+        answersByQids,
+        {
+          [question?.id]: question,
+        }
+      )
 
       yield put({
         type: ADD_ITEM_EVALUATION,
@@ -186,8 +191,9 @@ function* evaluateAnswers({ payload }) {
       const items = yield select((state) => state.itemDetail.item)
       const { itemLevelScore = 0, itemLevelScoring = false } = items || {}
       const questions = yield select(getQuestionsSelector)
+      const answersByQids = answersByQId(answers, items._id)
       const { evaluation, score, maxScore } = yield evaluateItem(
-        answers,
+        answersByQids,
         questions,
         itemLevelScoring,
         itemLevelScore

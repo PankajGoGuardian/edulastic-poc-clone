@@ -48,6 +48,7 @@ export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT =
 export const SET_PROGRESS_STATUS = '[gradebook] set progress status'
 export const LCB_ACTION_PROGRESS = '[gradebook] action progress tatus'
 export const SET_ADDED_STUDENTS = '[gradebook] action added students'
+export const UPDATE_SERVER_TIME = '[gradebook] update server time'
 /**
  * force rerendering the components that depends on
  * additional data thus checking
@@ -93,6 +94,7 @@ export const setProgressStatusAction = createAction(SET_PROGRESS_STATUS)
 export const setLcbActionProgress = createAction(LCB_ACTION_PROGRESS)
 export const setShowAllStudentsAction = createAction(SET_SHOW_ALL_STUDENTS)
 export const setAddedStudentsAction = createAction(SET_ADDED_STUDENTS)
+export const updateServerTimeAction = createAction(UPDATE_SERVER_TIME)
 
 const initialState = {
   entities: [],
@@ -473,6 +475,7 @@ const reducer = (state = initialState, { type, payload }) => {
         assignmentPassword = state?.additionalData?.assignmentPassword,
         passwordExpireTime = state?.additionalData?.passwordExpireTime,
         passwordExpireIn = state?.additionalData?.passwordExpireIn,
+        ts = state?.additionalData?.ts,
       } = payload
       return {
         ...state,
@@ -481,6 +484,16 @@ const reducer = (state = initialState, { type, payload }) => {
           assignmentPassword,
           passwordExpireTime,
           passwordExpireIn,
+          ts,
+        },
+      }
+    }
+    case UPDATE_SERVER_TIME: {
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          ts: payload,
         },
       }
     }

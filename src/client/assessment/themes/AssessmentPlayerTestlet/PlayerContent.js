@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Fragment } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { filter, isEmpty, isEqual } from 'lodash'
 import { withRouter } from 'react-router-dom'
@@ -222,7 +222,6 @@ const PlayerContent = ({
           if (isEmpty(eduQuestions)) {
             continue
           }
-
           eduQuestions.forEach((eduQuestion) => {
             if (eduQuestion) {
               extData[eduQuestion.id] = {
@@ -270,15 +269,17 @@ const PlayerContent = ({
     }
     const { currentPageIds, response } = frameController
     for (const scoringId in currentPageIds) {
-      if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
-        const eduQuestions = getEduQuestions(scoringId.trim())
+      if (
+        Object.prototype.hasOwnProperty.call(currentPageIds, scoringId.trim())
+      ) {
+        const eduQuestions = getEduQuestions()
         if (isEmpty(eduQuestions)) {
           continue
         }
         eduQuestions.forEach((eduQuestion) => {
           const data = getUserResponse(eduQuestion, response)
           if (!previewPlayer && !isEmpty(data)) {
-            setUserAnswer(eduQuestion.id, data)
+            setUserAnswer(scoringId.trim(), eduQuestion.id, data)
           }
         })
       }

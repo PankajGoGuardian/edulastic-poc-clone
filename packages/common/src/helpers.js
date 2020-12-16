@@ -576,6 +576,16 @@ export const clearSelection = () => {
   }
 }
 
+export const getRangeAtFirst = () => {
+  const selection = getSelection()
+  if (!selection.rangeCount) {
+    console.log('Unable to find a native DOM range from the current selection.')
+    return
+  }
+
+  return selection.getRangeAt(0)
+}
+
 /**
  *
  * @param {string} className class name of new element, default is 'token active-word
@@ -585,14 +595,14 @@ export const clearSelection = () => {
 export const highlightSelectedText = (
   className = 'token active-word',
   tag = 'span',
-  style
+  style,
+  prevRange = null
 ) => {
-  const selection = getSelection()
-  if (!selection.rangeCount) {
-    console.log('Unable to find a native DOM range from the current selection.')
+  const range = prevRange || getRangeAtFirst()
+  if (!range) {
     return
   }
-  const range = selection.getRangeAt(0)
+
   const {
     endContainer,
     endOffset,
@@ -600,6 +610,7 @@ export const highlightSelectedText = (
     startOffset,
     commonAncestorContainer,
   } = range
+
   if (startOffset === endOffset) {
     clearSelection()
     return

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import PropTypes from 'prop-types'
 import { getSelectionRect } from '@edulastic/common'
@@ -40,28 +40,34 @@ const getStyles = ({
 const HighlightPopover = ({
   children,
   isOpen,
-  selectionEl,
+  getContainer,
   onTextUnselect,
   onTextSelect,
+  onMouseUp,
 }) => {
   const [containerStyle, updateContainerStyle] = useState(null)
   const [isPressed, toggleIsPressed] = useState(false)
   const [isTextSelected, toggleIsTextSelected] = useState(false)
+  const container = getContainer()
 
-  let selectionElement = document.body
-  if (selectionEl) {
-    selectionElement = selectionEl
-  }
+  const mouseClickHandler = useCallback(
+    (e) => {
+      if (container && !container.contains(e.target)) {
+        onTextUnselect && onTextUnselect()
+      }
+    },
+    [container]
+  )
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     const browserSelection = document.getSelection()
     const selectionPosition = getSelectionRect(window)
     if (
       selectionPosition != null &&
-      selectionElement != null &&
+      container != null &&
       browserSelection != null &&
-      selectionElement.contains(browserSelection.anchorNode) === true &&
-      selectionElement.contains(browserSelection.focusNode) === true
+      container.contains(browserSelection.anchorNode) === true &&
+      container.contains(browserSelection.focusNode) === true
     ) {
       if (browserSelection.isCollapsed === false) {
         onTextSelect && onTextSelect()
@@ -84,40 +90,65 @@ const HighlightPopover = ({
       onTextUnselect && onTextUnselect()
       toggleIsTextSelected(false)
     }
-  }
+  }, [container])
 
-  const mouseDownHandler = () => {
-    updatePosition()
-    toggleIsPressed(true)
-  }
-
-  const mouseUpHandler = () => {
+  const mouseUpHandler = useCallback(() => {
+    onMouseUp()
     updatePosition()
     toggleIsPressed(false)
-  }
+    document.removeEventListener('mouseup', mouseUpHandler)
+    document.removeEventListener('touchend', mouseUpHandler, {
+      passive: false,
+    })
+
+    container.removeEventListener('mousemove', updatePosition)
+    container.removeEventListener('touchmove', updatePosition, {
+      passive: false,
+    })
+  }, [container])
+
+  const mouseDownHandler = useCallback(() => {
+    updatePosition()
+    toggleIsPressed(true)
+
+    document.addEventListener('mouseup', mouseUpHandler)
+    document.addEventListener('touchend', mouseUpHandler, { passive: false })
+
+    container.addEventListener('mousemove', updatePosition)
+    container.addEventListener('touchmove', updatePosition, {
+      passive: false,
+    })
+  }, [container])
 
   useEffect(() => {
-    selectionElement.addEventListener('mousemove', updatePosition)
-    selectionElement.addEventListener('mousedown', mouseDownHandler)
-    document.addEventListener('mouseup', mouseUpHandler)
-
-    return () => {
-      selectionElement.removeEventListener('mousemove', updatePosition)
-      selectionElement.removeEventListener('mousedown', mouseDownHandler)
-      document.removeEventListener('mouseup', mouseUpHandler)
+    if (container) {
+      document.addEventListener('click', mouseClickHandler)
+      container.addEventListener('mousedown', mouseDownHandler)
+      container.addEventListener('touchstart', mouseDownHandler, {
+        passive: false,
+      })
     }
-  }, [selectionElement])
+    return () => {
+      if (container) {
+        document.removeEventListener('click', mouseClickHandler)
+        container.removeEventListener('mousedown', mouseDownHandler)
+        container.removeEventListener('touchstart', mouseDownHandler, {
+          passive: false,
+        })
+      }
+    }
+  }, [container])
 
   let style = {}
   if (containerStyle !== null) {
     style = { ...containerStyle, pointerEvents: isPressed ? 'none' : 'auto' }
   }
 
-  const content = isOpen && containerStyle && (
-    <div style={style} data-cy="color-picker">
-      {children}
-    </div>
-  )
+  // This makes it flexible to use whatever element is wanted (div, ul, etc)
+  const content =
+    isOpen &&
+    containerStyle &&
+    React.cloneElement(React.Children.only(children), { style })
 
   return createPortal(content, document.body)
 }
@@ -132,7 +163,7 @@ HighlightPopover.propTypes = {
 
 HighlightPopover.defaultProps = {
   isOpen: false,
-  selectionEl: document.body,
+  selectionEl: null,
   onTextSelect: () => null,
   onTextUnselect: () => null,
 }

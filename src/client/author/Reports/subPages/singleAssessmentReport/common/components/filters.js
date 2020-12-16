@@ -10,7 +10,7 @@ import { roleuser } from '@edulastic/constants'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
 import { Collapsable } from '../../../../common/components/widgets/Collapsable'
-import AssessmentAutoComplete from './AssessmentAutoComplete'
+import AssessmentAutoComplete from '../../../../common/components/autocompletes/AssessmentAutoComplete'
 import SchoolAutoComplete from '../../../../common/components/autocompletes/SchoolAutoComplete'
 import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
 import TeacherAutoComplete from '../../../../common/components/autocompletes/TeacherAutoComplete'
@@ -33,6 +33,8 @@ import {
   setFiltersOrTestIdAction,
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
+  getPerformanceBandProfile,
+  getStandardManteryScale,
 } from '../filterDataDucks'
 import {
   getUserRole,
@@ -77,6 +79,8 @@ const SingleAssessmentReportFilters = ({
   firstLoad,
   setFirstLoad,
   reportId,
+  selectedPerformanceBandProfile,
+  selectedStandardManteryScale,
 }) => {
   const assessmentTypeRef = useRef()
   const [selectedClass, setSelectedClass] = useState(null)
@@ -220,13 +224,13 @@ const SingleAssessmentReportFilters = ({
     setFiltersOrTestId({ testId: _testId })
     if (reportId) {
       setFirstLoad(false)
-    } else if (firstLoad) {
+    } else if (firstLoad && selected.key) {
       setFirstLoad(false)
       _onGoClick({
         filters: { ...filters },
         selectedTest: { key: _testId },
       })
-    } else {
+    } else if (selected.key) {
       setShowApply(true)
     }
   }
@@ -324,7 +328,7 @@ const SingleAssessmentReportFilters = ({
             </SearchField>
           )}
         </Collapsable>
-        <Collapsable header="student filter">
+        <Collapsable header="class filter">
           {role !== 'teacher' && (
             <>
               <SearchField>
@@ -343,6 +347,8 @@ const SingleAssessmentReportFilters = ({
                     filters.teacherIds ? filters.teacherIds.split(',') : []
                   }
                   school={filters.schoolIds}
+                  testId={testId}
+                  termId={filters.termId}
                   selectCB={(e) =>
                     updateFilterDropdownCB(e.join(','), 'teacherIds', true)
                   }
@@ -408,6 +414,7 @@ const SingleAssessmentReportFilters = ({
                 <ControlDropDown
                   by={
                     filters.standardsProficiencyProfile ||
+                    selectedStandardManteryScale?._id ||
                     standardProficiencyProfiles[0]?._id
                   }
                   selectCB={(e) =>
@@ -430,6 +437,7 @@ const SingleAssessmentReportFilters = ({
                   by={{
                     key:
                       filters.performanceBandProfile ||
+                      selectedPerformanceBandProfile?._id ||
                       performanceBandProfiles[0]?._id,
                   }}
                   selectCB={(e) =>
@@ -470,6 +478,8 @@ const enhance = compose(
         state?.standardsProficiencyReducer?.data || [],
       standardProficiencyLoading:
         state?.standardsProficiencyReducer?.loading || [],
+      selectedPerformanceBandProfile: getPerformanceBandProfile(state),
+      selectedStandardManteryScale: getStandardManteryScale(state),
     }),
     {
       getSARFilterDataRequest: getSARFilterDataRequestAction,

@@ -92,6 +92,7 @@ import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
+import { answersByQId } from '../../assessment/selectors/test'
 
 // constants
 
@@ -292,6 +293,11 @@ export const SET_UPDATING_TEST_FOR_REGRADE_STATE =
 export const SET_NEXT_PREVIEW_ITEM = '[test] set next preview item'
 export const GET_TESTID_FROM_VERSIONID = '[test] get testId from versionId'
 export const SET_REGRADE_FIRESTORE_DOC_ID = '[test] set regrade firestore docId'
+export const SET_CORRECT_PSSAGE_ITEMS_CREATED =
+  '[test] set correct passage items data in created items'
+export const SET_SHARING_CONTENT_STATE = '[test] set sharing content state'
+export const UPDATE_EMAIL_NOTIFICATION_DATA =
+  '[test] update email notification data'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -369,6 +375,12 @@ export const setUpdatingTestForRegradeStateAction = createAction(
 )
 export const getTestIdFromVersionIdAction = createAction(
   GET_TESTID_FROM_VERSIONID
+)
+export const setSharingContentStateAction = createAction(
+  SET_SHARING_CONTENT_STATE
+)
+export const updateEmailNotificationDataAction = createAction(
+  UPDATE_EMAIL_NOTIFICATION_DATA
 )
 
 export const receiveTestByIdAction = (
@@ -483,6 +495,9 @@ export const setDefaultTestTypeProfilesAction = createAction(
 )
 export const deleteAnnotationAction = createAction(DELETE_ANNOTATION)
 export const setUndoStackAction = createAction(SET_ANNOTATIONS_STACK)
+export const setCorrectPassageItemsCreatedAction = createAction(
+  SET_CORRECT_PSSAGE_ITEMS_CREATED
+)
 
 export const defaultImage =
   'https://cdn2.edulastic.com/default/default-test-1.jpg'
@@ -594,6 +609,26 @@ export const getTestStatusSelector = createSelector(
 export const getTestIdSelector = createSelector(
   stateSelector,
   (state) => state.entity && state.entity._id
+)
+
+export const getContentSharingStateSelector = createSelector(
+  stateSelector,
+  (state) => state.isSharingContent
+)
+
+export const getShouldSendEmailStateSelector = createSelector(
+  stateSelector,
+  (state) => state.sendEmailNotification
+)
+
+export const getShowMessageBodyStateSelector = createSelector(
+  stateSelector,
+  (state) => state.showMessageBody
+)
+
+export const getEmailNotificationMessageSelector = createSelector(
+  stateSelector,
+  (state) => state.notificationMessage
 )
 
 export const getTestsCreatingSelector = createSelector(
@@ -798,6 +833,10 @@ const initialState = {
   updatingTestForRegrade: false,
   nextItemId: null,
   regradeFirestoreDocId: '',
+  isSharingContent: false,
+  sendEmailNotification: false,
+  showMessageBody: false,
+  notificationMessage: '',
 }
 
 export const testTypeAsProfileNameType = {
@@ -1291,6 +1330,23 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         regradeFirestoreDocId: payload,
       }
+    case SET_CORRECT_PSSAGE_ITEMS_CREATED:
+      return {
+        ...state,
+        createdItems: state.createdItems.map(
+          (i) => payload.find((it) => it._id === i._id) || i
+        ),
+      }
+    case SET_SHARING_CONTENT_STATE:
+      return {
+        ...state,
+        isSharingContent: payload,
+      }
+    case UPDATE_EMAIL_NOTIFICATION_DATA:
+      return {
+        ...state,
+        ...payload,
+      }
     default:
       return state
   }
@@ -1307,7 +1363,11 @@ export const getQuestions = (itemGroups = []) => {
   for (const itemGroup of itemGroups) {
     for (const item of itemGroup.items) {
       const { questions = [], resources = [] } = item.data || {}
-      allQuestions.push(...questions, ...resources)
+      const questionsWithItemId = [...questions, ...resources].map((q) => ({
+        ...q,
+        testItemId: item._id,
+      }))
+      allQuestions.push(...questionsWithItemId)
     }
   }
   return allQuestions
@@ -1885,11 +1945,20 @@ function* updateRegradeDataSaga({ payload }) {
 
 function* shareTestSaga({ payload }) {
   try {
+    yield put(setSharingContentStateAction(true))
     yield call(contentSharingApi.shareContent, payload)
     yield put(
       receiveSharedWithListAction({
         contentId: payload.contentId,
         contentType: payload.data.contentType,
+      })
+    )
+    yield put(setSharingContentStateAction(false))
+    yield put(
+      updateEmailNotificationDataAction({
+        sendEmailNotification: false,
+        showMessageBody: false,
+        notificationMessage: '',
       })
     )
     notification({ type: 'success', messageKey: 'sharedPlaylist' })
@@ -1904,7 +1973,7 @@ function* shareTestSaga({ payload }) {
         msg: `Invalid mails found (${invalidEmails.join(', ')})`,
       })
     }
-
+    yield put(setSharingContentStateAction(false))
     notification({ msg: errorMessage || 'Sharing failed' })
   }
 }
@@ -2094,17 +2163,23 @@ function* setTestDataAndUpdateSaga({ payload }) {
       })
     }
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
-    const { addToTest, item } = payload
+    const { addToTest, item, passageItems = [] } = payload
     if (addToTest) {
+      if (passageItems?.length) {
+        yield put(setCorrectPassageItemsCreatedAction(passageItems))
+      }
+      const items = uniqBy([...passageItems, item], '_id')
       newTest = produce(newTest, (draft) => {
         // add only items that are already not present
-        if (
-          !draft?.itemGroups?.[currentGroupIndex]?.items?.find(
-            (x) => x._id === item._id
-          )
-        ) {
-          draft.itemGroups[currentGroupIndex].items.push(item)
-        }
+        items.forEach((i) => {
+          if (
+            !draft?.itemGroups?.[currentGroupIndex]?.items?.find(
+              (x) => x._id === i._id
+            )
+          ) {
+            draft.itemGroups[currentGroupIndex].items.push(i)
+          }
+        })
       })
     } else {
       newTest = produce(newTest, (draft) => {
@@ -2267,8 +2342,9 @@ function* getEvaluation(testItemId, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
+  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answers,
+    answersByQids,
     questions,
     itemLevelScoring,
     newScore || itemLevelScore
@@ -2279,8 +2355,9 @@ function* getEvaluationFromItem(testItem, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
+  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answers,
+    answersByQids,
     questions,
     itemLevelScoring,
     newScore || itemLevelScore

@@ -209,19 +209,16 @@ const ReviewSummary = ({
             <TableHeaderCol span={6}>Q&apos;s</TableHeaderCol>
             <TableHeaderCol span={6}>Points</TableHeaderCol>
           </Row>
-          {summary &&
-            interestedStandards.map(
-              (data) =>
-                !data.isEquivalentStandard && (
-                  <TableBodyRow data-cy={data.identifier} key={data.key}>
-                    <TableBodyCol span={12}>
-                      <Standard>{data.identifier}</Standard>
-                    </TableBodyCol>
-                    <TableBodyCol span={6}>{data.totalQuestions}</TableBodyCol>
-                    <TableBodyCol span={6}>{data.totalPoints}</TableBodyCol>
-                  </TableBodyRow>
-                )
-            )}
+          {summary?.standards?.length &&
+            summary.standards.map((data) => (
+              <TableBodyRow data-cy={data.identifier} key={data.key}>
+                <TableBodyCol span={12}>
+                  <Standard>{data.identifier}</Standard>
+                </TableBodyCol>
+                <TableBodyCol span={6}>{data.totalQuestions}</TableBodyCol>
+                <TableBodyCol span={6}>{data.totalPoints}</TableBodyCol>
+              </TableBodyRow>
+            ))}
           {summary?.noStandards?.totalQuestions > 0 && (
             <TableBodyRow key="noStandard">
               <TableBodyCol span={12}>

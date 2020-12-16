@@ -20,20 +20,18 @@ import { StyledRadioGroup } from './styled'
 const fields = {
   _id: 'User ID',
   firstName: 'First Name',
+  middleName: 'Middle Name',
   lastName: 'Last Name',
   email: 'Email',
   username: 'Username',
   role: 'Role',
   cleverId: 'Clever ID',
-  openIdProvider: 'Open ID Provider',
-}
-
-const openIdMap = {
-  google: 'googleId',
+  googleId: 'Google ID',
+  canvasId: 'Canvas ID',
+  atlasId: 'Atlas ID',
   mso365: 'msoId',
-  canvas: 'canvasId',
-  clever: 'cleverId',
   cli: 'cliId',
+  openIdProvider: 'Open ID Provider',
 }
 
 const UpdateUser = (props) => {
@@ -105,13 +103,6 @@ const UpdateUser = (props) => {
                     )}
                   </Row>
                 ))}
-                <Row>
-                  <HeadingSpan>Open ID:</HeadingSpan>
-                  <ValueSpan>
-                    {data[openIdMap[data?.openIdProvider?.toLowerCase()]] ||
-                      '-'}
-                  </ValueSpan>
-                </Row>
                 {data.subscription && (
                   <>
                     <Row>

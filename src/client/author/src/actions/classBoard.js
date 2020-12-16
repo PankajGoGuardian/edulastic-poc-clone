@@ -40,6 +40,7 @@ import {
   UPDATE_PASSWORD_DETAILS,
   CANVAS_SYNC_GRADES,
   CANVAS_SYNC_ASSIGNMENT,
+  FETCH_SERVER_TIME,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -237,3 +238,4 @@ export const regeneratePasswordAction = createAction(REGENERATE_PASSWORD)
 export const updatePasswordDetailsAction = createAction(UPDATE_PASSWORD_DETAILS)
 export const canvasSyncGradesAction = createAction(CANVAS_SYNC_GRADES)
 export const canvasSyncAssignmentAction = createAction(CANVAS_SYNC_ASSIGNMENT)
+export const fetchServerTimeAction = createAction(FETCH_SERVER_TIME)

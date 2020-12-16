@@ -1,11 +1,12 @@
 import { SpinLoader } from '@edulastic/common'
-import { capitalize, get, head } from 'lodash'
+import { capitalize, get, head, isEmpty } from 'lodash'
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { getUserRole } from '../../../../../student/Login/ducks'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV } from '../../../common/util'
+import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import TrendStats from '../common/components/trend/TrendStats'
 import TrendTable from '../common/components/trend/TrendTable'
@@ -60,15 +61,9 @@ const PeerProgressAnalysis = ({
   role,
   sharedReport,
 }) => {
-  const [userRole, sharedReportFilters] = useMemo(
-    () => [
-      sharedReport?.sharedBy?.role || role,
-      sharedReport?._id
-        ? { ...sharedReport.filters, reportId: sharedReport._id }
-        : null,
-    ],
-    [sharedReport]
-  )
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
   const compareByData = [...getCompareByOptions(userRole), ...options]
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
@@ -95,13 +90,7 @@ const PeerProgressAnalysis = ({
     }
   }, [pageFilters])
 
-  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
-    .testIds
-  const selectedTestIdsCount = selectedTestIdsStr
-    ? selectedTestIdsStr.split(',').length
-    : 0
-
-  const { metricInfo = [], metaInfo = [] } = get(
+  const { metricInfo = [], metaInfo = [], testsCount = 0 } = get(
     peerProgressAnalysis,
     'data.result',
     {}
@@ -132,6 +121,10 @@ const PeerProgressAnalysis = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (isEmpty(metricInfo)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (error && error.dataSizeExceeded) {
@@ -175,7 +168,7 @@ const PeerProgressAnalysis = ({
         customColumns={[studentColumn]}
         backendPagination={{
           ...pageFilters,
-          itemsCount: selectedTestIdsCount,
+          itemsCount: testsCount,
         }}
         setBackendPagination={setPageFilters}
         toolTipContent={(record) => (

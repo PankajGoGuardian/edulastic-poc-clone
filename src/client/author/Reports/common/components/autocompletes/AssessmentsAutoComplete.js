@@ -4,16 +4,16 @@ import { debounce } from 'lodash'
 
 // components & constants
 import { roleuser, assignmentStatusOptions } from '@edulastic/constants'
-import MultiSelectSearch from '../../../../../common/components/widgets/MultiSelectSearch'
+import MultiSelectSearch from '../widgets/MultiSelectSearch'
 // ducks
-import { getUser } from '../../../../../../src/selectors/user'
+import { getUser } from '../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
   getTestListLoadingSelector,
-} from '../../../../../ducks'
+} from '../../../ducks'
 
-const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
+const { DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
 const AssessmentAutoComplete = ({
@@ -24,7 +24,6 @@ const AssessmentAutoComplete = ({
   selectedTestIds,
   selectCB,
   filters,
-  firstLoad,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -39,7 +38,7 @@ const AssessmentAutoComplete = ({
       page: 1,
       search: {
         searchString: searchTerms.text,
-        statuses: [IN_PROGRESS, IN_GRADING, DONE],
+        statuses: [DONE],
         districtId,
         grades:
           !filters.grade || filters.grade === 'All' ? [] : [filters.grade],
@@ -61,7 +60,6 @@ const AssessmentAutoComplete = ({
     return q
   }, [
     searchTerms.text,
-    selectedTestIds,
     filters.termId,
     filters.grade,
     filters.subject,
@@ -72,39 +70,11 @@ const AssessmentAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
-  const onSelect = (key) => {
-    if (key) {
-      const value = testList.find((s) => s._id === key)?.title
-      setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-      selectCB(key)
-    } else {
-      setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
-      selectCB()
-    }
-  }
-  const onBlur = () => {
-    // force fetch testList to reset assessment filter to previously selected test
-    if (searchTerms.text !== searchTerms.selectedText) {
-      setSearchTerms({
-        ...searchTerms,
-        selectedText: '',
-        text: searchTerms.selectedText,
-      })
-    }
-  }
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
     []
   )
 
-  // effects
-  useEffect(() => {
-    if (!searchTerms.selectedText && testList.length) {
-      onSelect(testList[0]._id)
-    } else if (firstLoad && !loading && !testList.length) {
-      onSelect()
-    }
-  }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
@@ -122,15 +92,26 @@ const AssessmentAutoComplete = ({
   // build dropdown data
   const dropdownData = testList.map((item) => ({
     key: item._id,
-    title: item.title,
+    title: `${item.title} (ID: ${
+      item._id?.substring(item._id.length - 5) || ''
+    })`,
   }))
+
   return (
     <MultiSelectSearch
-      label="Assessment"
+      label="Test"
+      placeholder="All Tests"
       el={assessmentFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(selected) =>
+        selectCB(
+          !selected.length
+            ? []
+            : typeof selected === 'string'
+            ? [selected]
+            : selected
+        )
+      }
       onSearch={onSearch}
-      onBlur={onBlur}
       value={selectedTestIds}
       options={!loading ? dropdownData : []}
       loading={loading}

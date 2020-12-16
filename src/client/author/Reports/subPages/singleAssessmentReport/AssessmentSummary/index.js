@@ -27,6 +27,7 @@ import {
   setReportsAssesmentSummaryLoadingAction,
   getReportsAssessmentSummaryError,
 } from './ducks'
+import { setPerformanceBandProfileAction } from '../common/filterDataDucks'
 
 const CustomCliEmptyComponent = () => (
   <Empty
@@ -51,6 +52,7 @@ const AssessmentSummary = ({
   preventHeaderRender,
   setAssesmentSummaryLoading,
   sharedReport,
+  setPerformanceBandProfile,
 }) => {
   const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
     sharedReport,
@@ -89,6 +91,10 @@ const AssessmentSummary = ({
     }
   }, [settings])
 
+  useEffect(() => {
+    setPerformanceBandProfile(assessmentSummary?.bandInfo || {})
+  }, [assessmentSummary])
+
   const { bandInfo, metricInfo } = assessmentSummary
 
   if (loading) {
@@ -102,7 +108,7 @@ const AssessmentSummary = ({
     return <DataSizeExceeded />
   }
 
-  if (!metricInfo?.length) {
+  if (!metricInfo?.length || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (
@@ -120,7 +126,7 @@ const AssessmentSummary = ({
           <StyledH3 textAlign="center">
             Students in Performance Bands (%)
           </StyledH3>
-          <SimplePieChart data={bandInfo} />
+          <SimplePieChart data={bandInfo.performanceBand} />
         </StyledCard>
       </UpperContainer>
       <TableContainer>
@@ -175,6 +181,7 @@ const enhance = compose(
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction,
       setAssesmentSummaryLoading: setReportsAssesmentSummaryLoadingAction,
+      setPerformanceBandProfile: setPerformanceBandProfileAction,
     }
   )
 )

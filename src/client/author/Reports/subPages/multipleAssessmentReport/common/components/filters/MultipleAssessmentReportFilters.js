@@ -4,16 +4,14 @@ import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Tooltip, Spin } from 'antd'
+import { Spin } from 'antd'
 
-import { notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 
-import { AutocompleteDropDown } from '../../../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import { Collapsable } from '../../../../../common/components/widgets/Collapsable'
 import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
-import AssessmentAutoComplete from './AssessmentAutoComplete'
+import AssessmentsAutoComplete from '../../../../../common/components/autocompletes/AssessmentsAutoComplete'
 import CourseAutoComplete from '../../../../../common/components/autocompletes/CourseAutoComplete'
 import ClassAutoComplete from '../../../../../common/components/autocompletes/ClassAutoComplete'
 import GroupsAutoComplete from '../../../../../common/components/autocompletes/GroupsAutoComplete'
@@ -56,7 +54,7 @@ const SingleAssessmentReportFilters = ({
   style,
   getMARFilterDataRequest,
   setFilters: _setFilters,
-  setTestId: _setTestId,
+  setTestId,
   onGoClick: _onGoClick,
   location,
   history,
@@ -71,11 +69,6 @@ const SingleAssessmentReportFilters = ({
   reportId,
 }) => {
   const assessmentTypesRef = useRef()
-  const testDataOverflow = get(
-    MARFilterData,
-    'data.result.testDataOverflow',
-    false
-  )
   const profiles = get(MARFilterData, 'data.result.bandInfo', [])
 
   const schoolYear = useMemo(() => {
@@ -95,7 +88,7 @@ const SingleAssessmentReportFilters = ({
     if (reportId) {
       getMARFilterDataRequest({ reportId })
       _setFilters({ ...filters, ...search })
-      _setTestId([])
+      setTestId([])
     } else if (MARFilterData !== prevMARFilterData) {
       const termId =
         search.termId ||
@@ -119,7 +112,6 @@ const SingleAssessmentReportFilters = ({
     )
     if (reportId) {
       _onGoClick({ selectedTest: [], filters: { ...filters, ...search } })
-      setFirstLoad(false)
     } else {
       // get saved filters from backend
       const savedFilters = get(MARFilterData, 'data.result.reportFilters')
@@ -136,13 +128,9 @@ const SingleAssessmentReportFilters = ({
       }
       if (firstLoad) {
         search = {
-          ...savedFilters,
-          teacherIds: !isEmpty(savedFilters.teacherIds)
-            ? savedFilters.teacherIds.join(',')
-            : '',
-          schoolIds: !isEmpty(savedFilters.schoolIds)
-            ? savedFilters.schoolIds.join(',')
-            : '',
+          termId: search.termId || savedFilters.termId,
+          subject: search.subject || savedFilters.subject,
+          grade: search.grade || savedFilters.grade,
           ...search,
         }
       }
@@ -163,33 +151,32 @@ const SingleAssessmentReportFilters = ({
         key: 'All',
         title: 'All Grades',
       }
-      const urlCourseId = search.courseId || 'All'
-      const urlClassId = search.classId || 'All'
-      const urlGroupId = search.groupId || 'All'
-      let urlSchoolIds = ''
-      let urlTeacherIds = ''
-      if (role !== roleuser.TEACHER) {
-        urlSchoolIds = search.schoolIds || ''
-        urlTeacherIds = search.teacherIds || ''
+      const urlStudentSubject = staticDropDownData.subjects.find(
+        (item) => item.key === search.studentSubject
+      ) || {
+        key: 'All',
+        title: 'All Subjects',
       }
-
-      const testIdsArr = [].concat(search.testIds?.split(',') || [])
-      const urlTestIds = testIdsArr.filter((item) => item)
+      const urlStudentGrade = staticDropDownData.grades.find(
+        (item) => item.key === search.studentGrade
+      ) || {
+        key: 'All',
+        title: 'All Grades',
+      }
 
       const obtainedFilters = {
         termId: urlSchoolYear.key,
         subject: urlSubject.key,
-        studentSubject: urlSubject.key,
         grade: urlGrade.key,
-        studentGrade: urlGrade.key,
-        courseId: urlCourseId,
-        studentCourseId: urlCourseId,
-        classId: urlClassId,
-        groupId: urlGroupId,
-        schoolIds: urlSchoolIds,
-        teacherIds: urlTeacherIds,
+        studentSubject: urlStudentSubject.key,
+        studentGrade: urlStudentGrade.key,
+        studentCourseId: search.studentCourseId || 'All',
+        courseId: search.courseId || 'All',
+        classId: search.classId || 'All',
+        groupId: search.groupId || 'All',
+        schoolIds: search.schoolIds || '',
+        teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
-        testIds: urlTestIds.length ? urlTestIds.join(',') : '',
       }
 
       const urlParams = { ...obtainedFilters }
@@ -198,26 +185,33 @@ const SingleAssessmentReportFilters = ({
         delete urlParams.schoolIds
         delete urlParams.teacherIds
       }
+      // set filters and testId
       _setFilters(urlParams)
-      _setTestId(urlTestIds)
-      if (role === roleuser.SCHOOL_ADMIN) {
-        urlParams.schoolIds = get(user, 'institutionIds', [])
-      }
-      if (firstLoad) {
-        setFirstLoad(false)
-        _onGoClick({ selectedTest: urlTestIds, filters: urlParams })
-      }
+      // TODO: enable selection of testIds from url and saved filters
+      // const urlTestIds = search.testIds ? search.testIds.split(',') : []
+      // setTestId(urlTestIds)
+      setTestId([])
+      _onGoClick({
+        filters: { ...urlParams },
+        selectedTest: [],
+      })
     }
+    setFirstLoad(false)
     // update prevMARFilterData
     setPrevMARFilterData(MARFilterData)
   }
 
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
 
-  const onGoClick = () => {
+  const onGoClick = (_settings = {}) => {
     const settings = {
       filters: { ...filters },
       selectedTest: testIds,
+      ..._settings,
+    }
+    if (role === roleuser.SCHOOL_ADMIN) {
+      settings.filters.schoolIds =
+        settings.filters.schoolIds || get(user, 'institutionIds', []).join(',')
     }
     _onGoClick(settings)
   }
@@ -225,11 +219,6 @@ const SingleAssessmentReportFilters = ({
   const setFilters = (_filters) => {
     setShowApply(true)
     _setFilters(_filters)
-  }
-
-  const setTestId = (_testIds) => {
-    setShowApply(true)
-    _setTestId(_testIds)
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
@@ -242,32 +231,17 @@ const SingleAssessmentReportFilters = ({
 
   const onChangePerformanceBand = (selected) => {
     const _filters = {
-      filters: {
-        ...filters,
-        profileId: selected.key,
-      },
+      ...filters,
+      profileId: selected.key,
     }
     setFilters(_filters)
   }
 
   const onSelectTest = (selectedTestIds) => {
-    if (selectedTestIds.length !== 0) {
-      setTestId(selectedTestIds)
-    } else {
-      notification({ type: 'warn', msg: `Selection cannot be empty` })
-    }
+    setTestId(selectedTestIds)
+    setShowApply(true)
   }
-  const assessmentNameFilter = (
-    <SearchField>
-      <AssessmentAutoComplete
-        filters={filters}
-        firstLoad={firstLoad}
-        termId={filters.termId}
-        selectedTestIds={testIds}
-        selectCB={onSelectTest}
-      />
-    </SearchField>
-  )
+
   return loading ? (
     <StyledFilterWrapper style={style}>
       <Spin />
@@ -293,17 +267,18 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Grade</FilterLabel>
-            <AutocompleteDropDown
+            <FilterLabel>Test Grade</FilterLabel>
+            <ControlDropDown
               prefix="Grade"
               className="custom-1-scrollbar"
               by={filters.grade}
               selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
               data={staticDropDownData.grades}
+              showPrefixOnSelected={false}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Subject</FilterLabel>
+            <FilterLabel>Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
               selectCB={(e) => updateFilterDropdownCB(e, 'subject')}
@@ -314,7 +289,7 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           <SearchField>
             <MultiSelectDropdown
-              label="Assessment Type"
+              label="Test Type"
               el={assessmentTypesRef}
               onChange={(e) =>
                 updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
@@ -329,18 +304,19 @@ const SingleAssessmentReportFilters = ({
               )}
             />
           </SearchField>
-          {testDataOverflow ? (
-            <Tooltip
-              title="Year, Grade and Subject filters need to be selected to retrieve all assessments"
-              placement="right"
-            >
-              {assessmentNameFilter}
-            </Tooltip>
-          ) : (
-            assessmentNameFilter
+          {prevMARFilterData && (
+            <SearchField>
+              <AssessmentsAutoComplete
+                filters={filters}
+                firstLoad={firstLoad}
+                termId={filters.termId}
+                selectedTestIds={testIds}
+                selectCB={onSelectTest}
+              />
+            </SearchField>
           )}
         </Collapsable>
-        <Collapsable header="student filter">
+        <Collapsable header="class filter">
           {role !== roleuser.TEACHER && (
             <>
               <SearchField>
@@ -368,12 +344,13 @@ const SingleAssessmentReportFilters = ({
           )}
           <SearchField>
             <FilterLabel>Grade</FilterLabel>
-            <AutocompleteDropDown
+            <ControlDropDown
               prefix="Grade"
               className="custom-1-scrollbar"
               by={filters.studentGrade}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentGrade')}
               data={staticDropDownData.grades}
+              showPrefixOnSelected={false}
             />
           </SearchField>
           <SearchField>

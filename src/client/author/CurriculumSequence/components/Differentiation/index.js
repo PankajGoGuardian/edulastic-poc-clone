@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -61,6 +61,7 @@ const Differentiation = ({
   const [testData, setTestData] = useState([])
   const [isAssignModalVisible, setIsAssignModalVisible] = useState(false)
   const showManageContent = activeRightPanel === 'manageContent'
+  const isInitialMount = useRef(true)
 
   const toggleAssignModal = (value) => setIsAssignModalVisible(value)
   const {
@@ -124,7 +125,6 @@ const Differentiation = ({
       const lastTestData = specificTest || last(testDataGenerated)
 
       if (lastTestData) {
-        setDifferentiationSelectedData({ testId: lastTestData._id })
         let currentTestClasses = _assignmentsByTestId[lastTestData._id].map(
           (a) => ({
             classId: a.classId,
@@ -142,14 +142,23 @@ const Differentiation = ({
         })
 
         setClassList(currentTestClasses)
-        setDifferentiationSelectedData({
-          class: selectedClass || currentTestClasses[0],
-        })
+
+        if (selectedTest !== lastTestData._id || !selectedClass) {
+          setDifferentiationSelectedData({
+            testId: lastTestData._id,
+            class: selectedClass || currentTestClasses[0],
+          })
+        }
       }
     }
   }, [assignments])
 
   useEffect(() => {
+    // Avoid loading data on first render.
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
     if (selectedClass && selectedTest) {
       fetchDifferentiationStudentList({
         assignmentId: selectedClass.assignmentId,
@@ -164,8 +173,6 @@ const Differentiation = ({
   }, [differentiationSelectedData])
 
   const handleAssignmentChange = (value) => {
-    setDifferentiationSelectedData({ testId: value })
-
     let selectedTestClasses = assignmentsByTestId[value].map((a) => ({
       classId: a.classId,
       assignmentId: a._id,
@@ -181,7 +188,7 @@ const Differentiation = ({
     })
 
     setClassList(selectedTestClasses)
-    setDifferentiationSelectedData({ class: null })
+    setDifferentiationSelectedData({ testId: value, class: null })
   }
 
   const handleClassChange = (value, option) => {

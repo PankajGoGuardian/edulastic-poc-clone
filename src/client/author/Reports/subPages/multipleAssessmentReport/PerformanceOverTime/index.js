@@ -1,9 +1,9 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
-import { filter, get, includes } from 'lodash'
-import React, { useState, useEffect, useMemo } from 'react'
+import { filter, get, includes, isEmpty } from 'lodash'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { StyledCard, StyledH3 } from '../../../common/styled'
+import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
 import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
@@ -25,16 +25,7 @@ const PerformanceOverTime = ({
   settings,
   loading,
   error,
-  sharedReport,
 }) => {
-  const sharedReportFilters = useMemo(
-    () =>
-      sharedReport?._id
-        ? { ...sharedReport.filters, reportId: sharedReport._id }
-        : null,
-    [sharedReport]
-  )
-
   // support for pagination from backend
   const [pageFilters, setPageFilters] = useState({
     page: 1,
@@ -57,13 +48,8 @@ const PerformanceOverTime = ({
     }
   }, [pageFilters])
 
-  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
-    .testIds
-  const selectedTestIdsCount = selectedTestIdsStr
-    ? selectedTestIdsStr.split(',').length
-    : 0
-
   const rawData = get(performanceOverTime, 'data.result', {})
+  const testsCount = rawData.testsCount || 0
   const dataWithTestInfo = filter(
     parseData(rawData),
     (test) => test.testName && test.testName !== 'N/A' // filter out tests without testName
@@ -74,6 +60,10 @@ const PerformanceOverTime = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (isEmpty(dataWithTestInfo)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (error && error.dataSizeExceeded) {
@@ -102,8 +92,7 @@ const PerformanceOverTime = ({
           bandInfo={rawData.bandInfo}
           backendPagination={{
             ...pageFilters,
-            pageCount:
-              Math.ceil(selectedTestIdsCount / pageFilters.pageSize) || 1,
+            pageCount: Math.ceil(testsCount / pageFilters.pageSize) || 1,
           }}
           setBackendPagination={setPageFilters}
         />
@@ -113,7 +102,7 @@ const PerformanceOverTime = ({
         dataSource={filteredTableData}
         backendPagination={{
           ...pageFilters,
-          itemsCount: selectedTestIdsCount,
+          itemsCount: testsCount,
         }}
         setBackendPagination={setPageFilters}
       />

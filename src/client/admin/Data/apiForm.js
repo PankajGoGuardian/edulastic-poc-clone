@@ -393,7 +393,6 @@ export const apiForms = [
         displayName: 'Teacher Id Destination',
         placeholder: 'Enter Teacher Id Destination',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
       {
@@ -401,7 +400,6 @@ export const apiForms = [
         displayName: 'District Id',
         placeholder: 'Enter District Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
     ],

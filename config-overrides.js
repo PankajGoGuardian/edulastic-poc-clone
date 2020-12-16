@@ -37,7 +37,10 @@ module.exports = override(
   multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
   process.env.BUNDLE_VISUALIZE &&
-    addBundleVisualizer({ generateStatsFile: true }),
+    addBundleVisualizer({
+      generateStatsFile: true,
+      reportFilename: 'public/report.html',
+    }),
   (config) => {
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
@@ -162,10 +165,8 @@ module.exports = override(
     config.module.rules.push({
       loader: 'webpack-ant-icon-loader',
       enforce: 'pre',
-      include: [
-        require.resolve('@ant-design/icons/lib/dist')
-      ]
-    });
+      include: [require.resolve('@ant-design/icons/lib/dist')],
+    })
 
     /* eslint-enable no-param-reassign */
 

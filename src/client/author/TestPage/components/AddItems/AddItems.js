@@ -150,7 +150,7 @@ class AddItems extends PureComponent {
 
     if (needToSetFilter) {
       const {
-        subject = interestedSubjects?.[0] || '',
+        subject = interestedSubjects?.[0],
         grades = interestedGrades || [],
         curriculumId = firstCurriculum?.subject === interestedSubjects?.[0]
           ? firstCurriculum?._id
@@ -168,7 +168,7 @@ class AddItems extends PureComponent {
         ...initSearch,
         ...sessionFilters,
         ...applyAuthoredFilter,
-        subject: selectedSubjects[0] || subject,
+        subject: selectedSubjects[0] || subject || [],
         grades: uniq([...selectedGrades, ...grades]),
         curriculumId: parseInt(curriculumId, 10) || '',
       }

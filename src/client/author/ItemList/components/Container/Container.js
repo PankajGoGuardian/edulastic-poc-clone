@@ -115,7 +115,7 @@ class Contaier extends Component {
       sort: initSort = {},
     } = this.props
     const {
-      subject = interestedSubjects || [],
+      subject = interestedSubjects,
       grades = interestedGrades || [],
       curriculumId = firstCurriculum &&
       firstCurriculum.subject === interestedSubjects?.[0]
@@ -141,7 +141,7 @@ class Contaier extends Component {
       ...initSearch,
       ...sessionFilters,
       ...applyAuthoredFilter,
-      subject,
+      subject: subject || [],
       grades,
       curriculumId: parseInt(curriculumId, 10) || '',
     }

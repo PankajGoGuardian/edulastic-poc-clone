@@ -284,7 +284,7 @@ module.exports = override(
           },
           'vendor-common': {
             test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
-            name: 'vendor-react',
+            name: 'vendor-common',
             chunks: 'all',
             enforce: true,
           },

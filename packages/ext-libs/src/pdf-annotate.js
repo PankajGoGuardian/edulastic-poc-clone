@@ -1869,7 +1869,7 @@ const { themeColor } = require('@edulastic/colors')
          *    - fulfilled: SVGElement
          *    - rejected: Error
          */
-        function render(svg, viewport, data) {
+        function render(svg, viewport, data, authoringMode) {
           return new Promise(function (resolve, reject) {
             // Reset the content of the SVG
             svg.innerHTML = ''
@@ -1899,7 +1899,7 @@ const { themeColor } = require('@edulastic/colors')
 
             // Append annotation to svg
             data.annotations.forEach(function (a) {
-              ;(0, _appendChild2.default)(svg, a, viewport)
+              ;(0, _appendChild2.default)(svg, a, viewport, authoringMode)
             })
 
             resolve(svg)
@@ -2076,7 +2076,7 @@ const { themeColor } = require('@edulastic/colors')
          * @param {Object} viewport The page's viewport data
          * @return {SVGElement} A node that was created and appended by this function
          */
-        function appendChild(svg, annotation, viewport) {
+        function appendChild(svg, annotation, viewport, authoringMode) {
           if (!viewport) {
             viewport = JSON.parse(
               svg.getAttribute('data-pdf-annotate-viewport')
@@ -2116,6 +2116,9 @@ const { themeColor } = require('@edulastic/colors')
             // Set attributes
             child.setAttribute('data-pdf-annotate-id', annotation.uuid)
             child.setAttribute('data-pdf-annotate-type', annotation.type)
+            if (authoringMode) {
+              child.setAttribute('data-view-mode', 'edit')
+            }
             child.setAttribute('aria-hidden', true)
 
             svg.appendChild(transform(child, viewport))
@@ -2384,7 +2387,7 @@ const { themeColor } = require('@edulastic/colors')
           commentSvg.setAttribute('height', SIZE)
           commentSvg.setAttribute('x', a.x)
           commentSvg.setAttribute('y', a.y)
-          commentSvg.setAttribute('id', 'comment')
+          commentSvg.setAttribute('data-annotate-type', 'comment')
 
           var rect = document.createElementNS(
             'http://www.w3.org/2000/svg',
@@ -2552,6 +2555,7 @@ const { themeColor } = require('@edulastic/colors')
             'text'
           )
 
+          text.setAttribute('data-annotate-type', 'textBox')
           ;(0, _setAttributes2.default)(text, {
             x: a.x,
             y: a.y + (parseInt(a.size, 10) || 0),
@@ -4988,6 +4992,7 @@ const { themeColor } = require('@edulastic/colors')
           var pdfDocument = renderOptions.pdfDocument
           var scale = renderOptions.scale
           var rotate = renderOptions.rotate
+          var authoringMode = renderOptions.authoringMode
 
           // Load the page and annotations
 
@@ -5014,7 +5019,12 @@ const { themeColor } = require('@edulastic/colors')
                 viewport: viewport,
                 transform: transform,
               }),
-              _PDFJSAnnotate2.default.render(svg, viewport, annotations),
+              _PDFJSAnnotate2.default.render(
+                svg,
+                viewport,
+                annotations,
+                authoringMode
+              ),
             ])
               .then(function () {
                 // Text content is needed for a11y, but is also necessary for creating
@@ -5191,7 +5201,7 @@ const { themeColor } = require('@edulastic/colors')
           return obj && obj.__esModule ? obj : { default: obj }
         }
         var SIZE = 25
-        var videoSvg = `<svg class="svg-icon" id="video" width="25" height="25">
+        var videoSvg = `<svg class="svg-icon" data-annotate-type="video" width="25" height="25">
           <rect id="svg_7" height="25.34268" width="25.18643" y="-0.21763" x="-0.10918" stroke-opacity="0" stroke-width="null" stroke="#1AB395" fill="#1AB395"/>          
           <g stroke="null" id="svg_6">
             <g stroke="null" id="svg_1">
@@ -5413,7 +5423,7 @@ const { themeColor } = require('@edulastic/colors')
           return obj && obj.__esModule ? obj : { default: obj }
         }
         var SIZE = 25
-        var imageSvg = `<svg class="svg-icon" id="image" width="25" height="25">
+        var imageSvg = `<svg class="svg-icon" data-annotate-type="image" width="25" height="25">
           <rect id="svg_6" height="25.20663" width="25.24921" y="-0.05995" x="-0.12507" stroke-opacity="0" stroke-width="null" stroke="#E53F61" fill="#E53F61"/>
           <g stroke="null" id="svg_7">
           <g stroke="null" id="svg_2">
@@ -5725,6 +5735,7 @@ const { themeColor } = require('@edulastic/colors')
           dragStartX = void 0,
           dragStartY = void 0
         var OVERLAY_BORDER_SIZE = 3
+        var editMode = false
 
         /**
          * Create an overlay for editing an annotation.
@@ -5732,6 +5743,7 @@ const { themeColor } = require('@edulastic/colors')
          * @param {Element} target The annotation element to apply overlay for
          */
 
+        // ------------------------ Video edit start ------------------------------------------ //
         function createVideoUpdateOverlay(target) {
           destroyVideoUpdateOverlay()
 
@@ -5742,6 +5754,7 @@ const { themeColor } = require('@edulastic/colors')
 
           var documentId = _getMetadata2.documentId
           var annotationId = target.getAttribute('data-pdf-annotate-id')
+          var isEditable = target.getAttribute('data-view-mode') === 'edit'
 
           var videoContent = void 0
 
@@ -5771,12 +5784,21 @@ const { themeColor } = require('@edulastic/colors')
 
               overlay.style.background = '#fff'
 
+              var editVideoInput = `
+              <div id="edu-edit-annotate-video" style="padding-top: 12px;">
+                <span>Copy and paste the video embed code<a href="https://support.google.com/youtube/answer/171780?hl=en" target="_blank">Help</a>:</span>
+                <br/>
+                <input id="video-edit-input" type="url" placeholder="Paste video embed code here" type="text" class="ant-input" value='${videoContent}' style="width: calc(100% - 70px);margin-top: 12px;">
+                <button id="edu-annotate-edit-video" class="ant-btn ant-btn-primary">Save</button>
+                <br/>
+              </div>`
+
               overlay.innerHTML = `
               <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
               <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
-                <span class="ant-modal-close-x" style="height: 30px;", width: 30x; line-height: 30px;>
+                <span class="ant-modal-close-x">
                   <span role="img" aria-label="close" class="anticon anticon-close ant-modal-close-icon">
-                    <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                    <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true" fill="#434B5D">
                       <path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path>
                     </svg>
                   </span>
@@ -5786,9 +5808,10 @@ const { themeColor } = require('@edulastic/colors')
               <div class="ant-modal-header" style="height: 30px; border: none;">
                 <br/>
               </div>
-                <div class="ant-modal-body">
-                ${videoContent}
-                </div>
+              <div class="ant-modal-body">
+                <div id="edu-annoate-video-view">${videoContent}</div>
+                ${isEditable ? editVideoInput : ''}
+              </div>
               </div>
               `
 
@@ -5797,10 +5820,43 @@ const { themeColor } = require('@edulastic/colors')
               var closeBtn = document.getElementById('edu-annotate-close')
               closeBtn.addEventListener('click', destroyVideoUpdateOverlay)
 
+              if (isEditable) {
+                var videoInput = document.getElementById('video-edit-input')
+                var saveBtn = document.getElementById('edu-annotate-edit-video')
+                videoInput.addEventListener('keyup', handleChangeVideoInput)
+                videoInput.addEventListener('change', handleChangeVideoInput)
+                saveBtn.addEventListener('click', () =>
+                  handleUpdateVideo(annotation[0], documentId)
+                )
+              }
+
               document.addEventListener('click', handleDocumentClick)
               document.addEventListener('keyup', handleDocumentKeyup)
               document.addEventListener('mousedown', handleDocumentMousedown)
             })
+        }
+
+        function handleChangeVideoInput() {
+          var videoInput = document.getElementById('video-edit-input')
+          var videoView = document.getElementById('edu-annoate-video-view')
+
+          var updatedContent = videoInput.value
+          videoView.innerHTML = updatedContent
+        }
+
+        function handleUpdateVideo(annotation, documentId) {
+          var videoInput = document.getElementById('video-edit-input')
+          var updatedContent = videoInput.value
+
+          if (updatedContent && annotation) {
+            var updatedAnnotation = {
+              ...annotation,
+              content: updatedContent,
+            }
+            _PDFJSAnnotate2.default
+              .getStoreAdapter()
+              .editAnnotation(documentId, annotation.uuid, updatedAnnotation)
+          }
         }
 
         function destroyVideoUpdateOverlay() {
@@ -5817,6 +5873,7 @@ const { themeColor } = require('@edulastic/colors')
           ;(0, _utils.enableUserSelect)()
         }
 
+        // ------------------------ Image edit start ------------------------------------------ //
         function createImageUpdateOverlay(target) {
           destroyImageUpdateOverlay()
 
@@ -5827,6 +5884,7 @@ const { themeColor } = require('@edulastic/colors')
 
           var documentId = _getMetadata2.documentId
           var annotationId = target.getAttribute('data-pdf-annotate-id')
+          var isEditable = target.getAttribute('data-view-mode') === 'edit'
 
           var imageContent = void 0
 
@@ -5854,6 +5912,15 @@ const { themeColor } = require('@edulastic/colors')
 
               overlay.style.background = '#fff'
 
+              var footerControls = `
+              <div class="ant-modal-footer" style="border: none; padding: 0 10px 10px 0">
+                <input type="file" accept="image/*"  id="BtnReplaceImageHidden" name="files" style="display: none;" />
+                <label class="ant-btn ant-btn-primary ant-btn-sm" for="BtnReplaceImageHidden" id="edu-replace-image">
+                  Replace Image
+                </label>
+              </div>
+            `
+
               overlay.innerHTML = `
               <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
               <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
@@ -5865,13 +5932,13 @@ const { themeColor } = require('@edulastic/colors')
                   </span>
                 </span>
               </button>
-              
               <div class="ant-modal-header" style="height: 30px; border: none;">
                 <br/>
               </div>
                 <div class="ant-modal-body">
-                <img style="max-width: 400px; max-height: 300px; width: 100%;" src="${imageContent}"/>
+                  <img id="edu-pdf-image-view" style="max-width: 400px; max-height: 300px; width: 100%;" src="${imageContent}"/>
                 </div>
+                ${isEditable ? footerControls : ''}
               </div>
               `
 
@@ -5880,10 +5947,47 @@ const { themeColor } = require('@edulastic/colors')
               var closeBtn = document.getElementById('edu-annotate-close')
               closeBtn.addEventListener('click', destroyImageUpdateOverlay)
 
+              if (isEditable) {
+                var upload = document.getElementById('BtnReplaceImageHidden')
+                upload.addEventListener('change', () =>
+                  handleImageChange(annotation[0], documentId)
+                )
+              }
+
               document.addEventListener('click', handleDocumentClick)
               document.addEventListener('keyup', handleDocumentKeyup)
               document.addEventListener('mousedown', handleDocumentMousedown)
             })
+        }
+
+        function handleImageChange(annotation, documentId) {
+          var upload = document.getElementById('BtnReplaceImageHidden')
+          var image = document.getElementById('edu-pdf-image-view')
+
+          if (upload?.files?.[0]) {
+            uploadToS3(upload.files[0], aws.s3Folders.DEFAULT)
+              .then((fileUri) => {
+                if (image) {
+                  image.setAttribute('src', fileUri)
+                  if (annotation) {
+                    var updatedAnnotation = {
+                      ...annotation,
+                      content: fileUri,
+                    }
+                    _PDFJSAnnotate2.default
+                      .getStoreAdapter()
+                      .editAnnotation(
+                        documentId,
+                        annotation.uuid,
+                        updatedAnnotation
+                      )
+                  }
+                }
+              })
+              .catch(() => {
+                console.log('Some Error Occured while uploading the file ')
+              })
+          }
         }
 
         function destroyImageUpdateOverlay() {
@@ -5899,19 +6003,19 @@ const { themeColor } = require('@edulastic/colors')
           document.removeEventListener('mouseup', handleDocumentMouseup)
           ;(0, _utils.enableUserSelect)()
         }
+        // ------------------------ Image EDIT END ------------------------------------------ //
 
-        var editMode = false
-
+        // ------------------------ Comment edit start ------------------------------------------ //
         function createCommentUpdateOverlay(target) {
           destroyCommentUpdateOverlay()
 
           var svg = target.parentElement
-          var annotationId = target.getAttribute('data-target-id')
-
           var _getMetadata2 = (0, _utils.getMetadata)(svg)
 
           var documentId = _getMetadata2.documentId
           var annotationId = target.getAttribute('data-pdf-annotate-id')
+
+          var isEditable = target.getAttribute('data-view-mode') === 'edit'
 
           var commentContent = void 0
 
@@ -5955,16 +6059,20 @@ const { themeColor } = require('@edulastic/colors')
                 <br/>
               </div>
                 <div class="ant-modal-body">
-                <textarea style="color: #000;" rows="5" class="ant-input" ${
-                  !editMode && 'disabled'
-                }>${commentContent}</textarea>
+                ${
+                  isEditable
+                    ? `<textarea id="edu-annotate-commen-edit-box" style="color: #000;" rows="5" class="ant-input">${commentContent}</textarea>`
+                    : `<textarea style="color: #000;" rows="5" class="ant-input" disabled>${commentContent}</textarea>`
+                }
                 </div>
-
-                 
                 <div class="ant-modal-footer" style="border: none; padding: 0 10px 10px 0">
-                  <span><button id="edu-annotate-edit" class="ant-btn ant-btn-primary">${
-                    editMode ? 'Save' : 'Edit'
-                  }</button></span>
+                  <span>
+                  ${
+                    isEditable
+                      ? `<button id="edu-annotate-edit" class="ant-btn ant-btn-primary">Save</button>`
+                      : ''
+                  }
+                  </span>
                 </div>
               </div>
               `
@@ -5974,8 +6082,12 @@ const { themeColor } = require('@edulastic/colors')
               var closeBtn = document.getElementById('edu-annotate-close')
               closeBtn.addEventListener('click', destroyCommentUpdateOverlay)
 
-              var editBtn = document.getElementById('edu-annotate-edit')
-              editBtn.addEventListener('click', () => handleClick(target))
+              if (isEditable) {
+                var editBtn = document.getElementById('edu-annotate-edit')
+                editBtn.addEventListener('click', () =>
+                  updateComment(annotation, documentId)
+                )
+              }
 
               document.addEventListener('click', handleDocumentClick)
               document.addEventListener('keyup', handleDocumentKeyup)
@@ -5983,21 +6095,22 @@ const { themeColor } = require('@edulastic/colors')
             })
         }
 
-        function handleClick(target) {
-          if (editMode) {
-            disableEdit()
-          } else {
-            enableEdit()
+        function updateComment(annotations = [], documentId) {
+          var commentBox = document.getElementById(
+            'edu-annotate-commen-edit-box'
+          )
+          var comment = commentBox.value
+          var annotation = annotations[0]
+          if (annotation) {
+            var updatedAnnotation = {
+              ...annotation,
+              content: comment,
+            }
+            _PDFJSAnnotate2.default
+              .getStoreAdapter()
+              .editAnnotation(documentId, annotation.uuid, updatedAnnotation)
           }
-          createCommentUpdateOverlay(target)
-        }
-
-        function enableEdit() {
-          editMode = true
-        }
-
-        function disableEdit() {
-          editMode = false
+          destroyCommentUpdateOverlay()
         }
 
         function destroyCommentUpdateOverlay() {
@@ -6013,6 +6126,116 @@ const { themeColor } = require('@edulastic/colors')
           document.removeEventListener('mousemove', handleDocumentMousemove)
           document.removeEventListener('mouseup', handleDocumentMouseup)
           ;(0, _utils.enableUserSelect)()
+        }
+        // ------------------------ Comment edit end ------------------------------------------ //
+
+        // ------------------------ textBox edit start ------------------------------------------ //
+        function createTextBoxUpdateOverlay(target) {
+          destroyTextBoxUpdateOverlay()
+
+          var isEditable = target.getAttribute('data-view-mode') === 'edit'
+          // show edit modal only authoring mode
+          if (!isEditable) {
+            return
+          }
+
+          var svg = target.parentElement
+          var _getMetadata2 = (0, _utils.getMetadata)(svg)
+          var documentId = _getMetadata2.documentId
+          var annotationId = target.getAttribute('data-pdf-annotate-id')
+
+          _PDFJSAnnotate2.default
+            .getStoreAdapter()
+            .getAnnotation(documentId, annotationId)
+            .then(function (annotation) {
+              overlay = document.createElement('div')
+              var parentNode = (0, _utils.findSVGContainer)(target).parentNode
+              var rect = (0, _utils.getAnnotationRect)(target)
+              var styleLeft = rect.left - OVERLAY_BORDER_SIZE
+              var styleTop = rect.top + OVERLAY_BORDER_SIZE + 24
+              var conent = annotation.content
+
+              overlay.setAttribute('id', 'pdf-annotate-update-overlay')
+              overlay.setAttribute('data-target-id', annotationId)
+              overlay.style.boxSizing = 'content-box'
+              overlay.style.position = 'absolute'
+              overlay.style.top = styleTop + 'px'
+              overlay.style.left = styleLeft + 'px'
+              overlay.style.width = '300px'
+              overlay.style.background = '#fff'
+
+              overlay.innerHTML = `
+              <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
+              <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
+                <span class="ant-modal-close-x" style="height: 30px;", width: 30x; line-height: 30px;>
+                  <span role="img" aria-label="close" class="anticon anticon-close ant-modal-close-icon">
+                    <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                      <path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path>
+                    </svg>
+                  </span>
+                </span>
+              </button>
+              <div class="ant-modal-header" style="height: 30px; border: none;"><br/></div>
+                <div class="ant-modal-body">
+                ${`<textarea id="edu-annotate-text-edit-box" style="color: #000;" rows="5" class="ant-input">${conent}</textarea>`}
+                </div>
+                <div class="ant-modal-footer" style="border: none; padding: 0 10px 10px 0">
+                  <button id="edu-annotate-edit" class="ant-btn ant-btn-primary">Save</button>
+                </div>
+              </div>
+              `
+              parentNode.appendChild(overlay)
+
+              var closeBtn = document.getElementById('edu-annotate-close')
+              closeBtn.addEventListener('click', destroyTextBoxUpdateOverlay)
+              var editBtn = document.getElementById('edu-annotate-edit')
+              editBtn.addEventListener('click', () =>
+                updatedTextBox(annotation, documentId)
+              )
+              document.addEventListener('click', handleDocumentClick)
+              document.addEventListener('keyup', handleDocumentKeyup)
+              document.addEventListener('mousedown', handleDocumentMousedown)
+            })
+        }
+
+        function destroyTextBoxUpdateOverlay() {
+          disableEdit()
+          if (overlay) {
+            overlay.parentNode.removeChild(overlay)
+            overlay = null
+          }
+
+          document.removeEventListener('click', handleDocumentClick)
+          document.removeEventListener('keyup', handleDocumentKeyup)
+          document.removeEventListener('mousedown', handleDocumentMousedown)
+          document.removeEventListener('mousemove', handleDocumentMousemove)
+          document.removeEventListener('mouseup', handleDocumentMouseup)
+          ;(0, _utils.enableUserSelect)()
+        }
+
+        function updatedTextBox(annotation, documentId) {
+          var textBox = document.getElementById('edu-annotate-text-edit-box')
+          var updatedCconent = textBox.value
+
+          if (annotation) {
+            var updatedAnnotation = {
+              ...annotation,
+              content: updatedCconent,
+            }
+            _PDFJSAnnotate2.default
+              .getStoreAdapter()
+              .editAnnotation(documentId, annotation.uuid, updatedAnnotation)
+          }
+          destroyTextBoxUpdateOverlay()
+        }
+        // ------------------------ textBox edit end ------------------------------------------ //
+
+        function enableEdit() {
+          editMode = true
+        }
+
+        function disableEdit() {
+          editMode = false
         }
 
         /**
@@ -6309,10 +6532,11 @@ const { themeColor } = require('@edulastic/colors')
           destroyVideoUpdateOverlay()
           destroyImageUpdateOverlay()
           destroyCommentUpdateOverlay()
+          destroyTextBoxUpdateOverlay()
         }
 
         function handleAnnotationUpdateClick(target) {
-          switch (target.getAttribute('id')) {
+          switch (target.getAttribute('data-annotate-type')) {
             case 'comment':
               createCommentUpdateOverlay(target)
               break
@@ -6321,6 +6545,9 @@ const { themeColor } = require('@edulastic/colors')
               break
             case 'video':
               createVideoUpdateOverlay(target)
+              break
+            case 'textBox':
+              createTextBoxUpdateOverlay(target)
               break
             default:
               destroyAllOverlay()

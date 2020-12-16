@@ -54,7 +54,6 @@ const PDFPreview = ({
   currentAnnotationTool,
   setCurrentAnnotationTool,
   annotationToolsProperties,
-  annotationsStack,
   isEditable,
   toggleIntercomDisplay,
   itemId,
@@ -171,7 +170,7 @@ const PDFPreview = ({
               setOriginalDimensions={calculateInitScale}
               currentAnnotationTool={currentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
-              annotationsStack={annotationsStack}
+              annotations={annotations}
               currentPage={currentPage}
               authoringMode={viewMode === 'edit'}
             />
@@ -257,7 +256,6 @@ PDFPreview.defaultProps = {
 export default connect(
   (state) => ({
     previewMode: getPreviewSelector(state),
-    annotationsStack: state.tests.annotationsStack,
   }),
   {
     removeAnswers: removeUserAnswerAction,

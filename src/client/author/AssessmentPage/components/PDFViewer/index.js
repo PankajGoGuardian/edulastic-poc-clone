@@ -20,7 +20,7 @@ const PDFViewer = ({
   setOriginalDimensions,
   currentAnnotationTool,
   annotationToolsProperties,
-  annotationsStack,
+  annotations,
   currentPage,
   authoringMode,
 }) => {
@@ -96,7 +96,6 @@ const PDFViewer = ({
         _pdfDocument
           .getPage(pageNumber)
           .then((_page) => {
-            console.log('_page', _page)
             const viewport = _page.getViewport({ scale: 1 })
             setOriginalDimensions({
               width: viewport.width,
@@ -135,6 +134,7 @@ const PDFViewer = ({
       loadPdf()
     }
   }, [currentPage])
+
   useEffect(() => {
     if (
       !docLoading &&
@@ -152,6 +152,7 @@ const PDFViewer = ({
         pdfDocument,
         scale: pdfScale || 1.33,
         rotate: rotate || 0,
+        authoringMode,
       }
       UI.renderPage(pageNumber, RENDER_OPTIONS)
     }
@@ -162,7 +163,7 @@ const PDFViewer = ({
     currentPage,
     pdfScale,
     rotate,
-    annotationsStack.length,
+    annotations,
   ])
 
   if (docLoading) {

@@ -1,5 +1,5 @@
 import JXG from 'jsxgraph'
-import { isEqual } from 'lodash'
+import { flattenDeep, isEqual, max, min } from 'lodash'
 import { parse } from 'mathjs'
 import { CONSTANT } from '../config'
 import {
@@ -29,6 +29,23 @@ import {
 
 const jxgType = 100
 
+const AVAILABLE_TYPES = [
+  JXG.OBJECT_TYPE_CIRCLE,
+  JXG.OBJECT_TYPE_CONIC,
+  JXG.OBJECT_TYPE_LINE,
+  JXG.OBJECT_TYPE_POLYGON,
+  Exponent.jxgType,
+  Hyperbola.jxgType,
+  Logarithm.jxgType,
+  Parabola.jxgType,
+  Parabola2.jxgType,
+  Polynom.jxgType,
+  Secant.jxgType,
+  Sin.jxgType,
+  Tangent.jxgType,
+  Equation.jxgType,
+]
+
 function rnd(num) {
   return +num.toFixed(3)
 }
@@ -40,6 +57,134 @@ function getColorParams(color) {
     highlightStrokeColor: color,
     highlightFillColor: '#fff',
   }
+}
+
+function getFunctions(shapes) {
+  const funcs = shapes
+    .filter((el) => AVAILABLE_TYPES.includes(el.type) && !el.latexIsBroken)
+    .map((item) => {
+      if (item.latex) {
+        // fix apiLatex if not fixed already
+        const apiLatex = getEquationFromApiLatex(item.apiLatex)
+        item.fixedLatex = item.fixedLatex || fixApiLatex(apiLatex)
+        // parse & evaluate the math equation
+        const func = parse(item.fixedLatex.latexFunc)
+        return (x, y) => func.eval({ x, y }) > 0
+      }
+
+      switch (item.type) {
+        case JXG.OBJECT_TYPE_CIRCLE: {
+          const { points } = Circle.getConfig(item)
+          const func = getCircleFunc(
+            { x: points[0].x, y: points[0].y },
+            { x: points[1].x, y: points[1].y }
+          )
+          return (x, y) => func(x, y) > 0
+        }
+        case JXG.OBJECT_TYPE_CONIC: {
+          const { points } = Ellipse.getConfig(item)
+          const func = getEllipseFunc(
+            { x: points[0].x, y: points[0].y },
+            { x: points[1].x, y: points[1].y },
+            { x: points[2].x, y: points[2].y }
+          )
+          return (x, y) => func(x, y) > 0
+        }
+        case JXG.OBJECT_TYPE_LINE: {
+          const func = getLineFunc(
+            { x: item.point1.X(), y: item.point1.Y() },
+            { x: item.point2.X(), y: item.point2.Y() }
+          )
+          return (x, y) => func(x, y) > 0
+        }
+        case JXG.OBJECT_TYPE_POLYGON: {
+          const vertices = Object.values(item.ancestors).map((anc) => ({
+            x: anc.X(),
+            y: anc.Y(),
+          }))
+          return (x, y) => isInPolygon({ x, y }, vertices)
+        }
+        case Exponent.jxgType: {
+          const points = Object.values(item.ancestors)
+          return (x, y) => y > Exponent.makeCallback(...points)(x)
+        }
+        case Hyperbola.jxgType: {
+          const { points } = Hyperbola.getConfig(item)
+          const func = getHyperbolaFunc(
+            { x: points[0].x, y: points[0].y },
+            { x: points[1].x, y: points[1].y },
+            { x: points[2].x, y: points[2].y }
+          )
+          return (x, y) => func(x, y) > 0
+        }
+        case Logarithm.jxgType: {
+          const points = Object.values(item.ancestors)
+          return (x, y) => y > Logarithm.makeCallback(...points)(x)
+        }
+        case Parabola.jxgType: {
+          const points = Object.values(item.ancestors)
+          return (x, y) =>
+            Parabola.makeCallbackY(...points)(x) >
+            Parabola.makeCallbackX(...points)(y)
+        }
+        case Parabola2.jxgType: {
+          const points = Object.values(item.ancestors)
+          const func = getParabolaFunc(
+            { x: points[0].X(), y: points[0].Y() },
+            { x: points[1].X(), y: points[1].Y() },
+            { x: points[2].X(), y: points[2].Y() }
+          )
+          return (x, y) => func(x, y) > 0
+        }
+        case Polynom.jxgType: {
+          const points = Object.values(item.ancestors)
+          return (x, y) => y > Polynom.makeCallback(...points)(x)
+        }
+        case Secant.jxgType: {
+          const points = Object.values(item.ancestors)
+          return (x, y) => y > Secant.makeCallback(...points)(x)
+        }
+        case Sin.jxgType: {
+          const points = Object.values(item.ancestors)
+          return (x, y) => y > Sin.makeCallback(...points)(x)
+        }
+        case Tangent.jxgType: {
+          const points = Object.values(item.ancestors)
+          return (x, y) => y > Tangent.makeCallback(...points)(x)
+        }
+        default:
+          return () => true
+      }
+    })
+  return funcs
+}
+
+// return [xMax, xMin, yMax, yMin]
+function getAreaBounding(lines) {
+  const xGroup = flattenDeep(lines.map(({ p1, p2 }) => [p1.x, p2.x]))
+  const yGroup = flattenDeep(lines.map(({ p1, p2 }) => [p1.y, p2.y]))
+  return [max(xGroup), min(xGroup), max(yGroup), min(yGroup)]
+}
+
+function getExistAreaBoundings(board) {
+  const existAreaBoundingBoxes = board.elements
+    .filter((x) => x.type === jxgType)
+    .map((area) => {
+      const { shadingAreaLines } = area
+      const lines = shadingAreaLines.map((line) => ({
+        p1: {
+          x: line.point1.X(),
+          y: line.point1.Y(),
+        },
+        p2: {
+          x: line.point2.X(),
+          y: line.point2.Y(),
+        },
+      }))
+
+      return getAreaBounding(lines)
+    })
+  return existAreaBoundingBoxes
 }
 
 function getAreaByPoint({ usrX, usrY }, [xMin, yMax, xMax, yMin], funcs) {
@@ -560,120 +705,7 @@ function updateShading(board, areaPoint, shapes) {
   const usrX = rnd(areaPoint.X())
   const usrY = rnd(areaPoint.Y())
 
-  const availableTypes = [
-    JXG.OBJECT_TYPE_CIRCLE,
-    JXG.OBJECT_TYPE_CONIC,
-    JXG.OBJECT_TYPE_LINE,
-    JXG.OBJECT_TYPE_POLYGON,
-    Exponent.jxgType,
-    Hyperbola.jxgType,
-    Logarithm.jxgType,
-    Parabola.jxgType,
-    Parabola2.jxgType,
-    Polynom.jxgType,
-    Secant.jxgType,
-    Sin.jxgType,
-    Tangent.jxgType,
-    Equation.jxgType,
-  ]
-
-  const funcs = shapes
-    .filter((el) => availableTypes.includes(el.type) && !el.latexIsBroken)
-    .map((item) => {
-      if (item.latex) {
-        // fix apiLatex if not fixed already
-        const apiLatex = getEquationFromApiLatex(item.apiLatex)
-        item.fixedLatex = item.fixedLatex || fixApiLatex(apiLatex)
-        // parse & evaluate the math equation
-        const func = parse(item.fixedLatex.latexFunc)
-        return (x, y) => func.eval({ x, y }) > 0
-      }
-
-      switch (item.type) {
-        case JXG.OBJECT_TYPE_CIRCLE: {
-          const { points } = Circle.getConfig(item)
-          const func = getCircleFunc(
-            { x: points[0].x, y: points[0].y },
-            { x: points[1].x, y: points[1].y }
-          )
-          return (x, y) => func(x, y) > 0
-        }
-        case JXG.OBJECT_TYPE_CONIC: {
-          const { points } = Ellipse.getConfig(item)
-          const func = getEllipseFunc(
-            { x: points[0].x, y: points[0].y },
-            { x: points[1].x, y: points[1].y },
-            { x: points[2].x, y: points[2].y }
-          )
-          return (x, y) => func(x, y) > 0
-        }
-        case JXG.OBJECT_TYPE_LINE: {
-          const func = getLineFunc(
-            { x: item.point1.X(), y: item.point1.Y() },
-            { x: item.point2.X(), y: item.point2.Y() }
-          )
-          return (x, y) => func(x, y) > 0
-        }
-        case JXG.OBJECT_TYPE_POLYGON: {
-          const vertices = Object.values(item.ancestors).map((anc) => ({
-            x: anc.X(),
-            y: anc.Y(),
-          }))
-          return (x, y) => isInPolygon({ x, y }, vertices)
-        }
-        case Exponent.jxgType: {
-          const points = Object.values(item.ancestors)
-          return (x, y) => y > Exponent.makeCallback(...points)(x)
-        }
-        case Hyperbola.jxgType: {
-          const { points } = Hyperbola.getConfig(item)
-          const func = getHyperbolaFunc(
-            { x: points[0].x, y: points[0].y },
-            { x: points[1].x, y: points[1].y },
-            { x: points[2].x, y: points[2].y }
-          )
-          return (x, y) => func(x, y) > 0
-        }
-        case Logarithm.jxgType: {
-          const points = Object.values(item.ancestors)
-          return (x, y) => y > Logarithm.makeCallback(...points)(x)
-        }
-        case Parabola.jxgType: {
-          const points = Object.values(item.ancestors)
-          return (x, y) =>
-            Parabola.makeCallbackY(...points)(x) >
-            Parabola.makeCallbackX(...points)(y)
-        }
-        case Parabola2.jxgType: {
-          const points = Object.values(item.ancestors)
-          const func = getParabolaFunc(
-            { x: points[0].X(), y: points[0].Y() },
-            { x: points[1].X(), y: points[1].Y() },
-            { x: points[2].X(), y: points[2].Y() }
-          )
-          return (x, y) => func(x, y) > 0
-        }
-        case Polynom.jxgType: {
-          const points = Object.values(item.ancestors)
-          return (x, y) => y > Polynom.makeCallback(...points)(x)
-        }
-        case Secant.jxgType: {
-          const points = Object.values(item.ancestors)
-          return (x, y) => y > Secant.makeCallback(...points)(x)
-        }
-        case Sin.jxgType: {
-          const points = Object.values(item.ancestors)
-          return (x, y) => y > Sin.makeCallback(...points)(x)
-        }
-        case Tangent.jxgType: {
-          const points = Object.values(item.ancestors)
-          return (x, y) => y > Tangent.makeCallback(...points)(x)
-        }
-        default:
-          return () => true
-      }
-    })
-
+  const funcs = getFunctions(shapes)
   // const points = getAreaByPoint({ usrX, usrY }, board.$board.getBoundingBox(), funcs);
   const lines = getAreaLinesByPoint({ usrX, usrY }, board, funcs)
   // const shadingArea = renderArea(board, points, 0.3, areaPoint.visProp.strokecolor);
@@ -726,6 +758,17 @@ function create(board, object, settings = {}) {
   return areaPoint
 }
 
+function canDrawAreaByPoint(board, { x, y }) {
+  const funcs = getFunctions(board.elements)
+  const lines = getAreaLinesByPoint({ usrX: x, usrY: y }, board, funcs)
+  const newAreaBounding = getAreaBounding(lines)
+  const existingBoundings = getExistAreaBoundings(board)
+  const isSameArea = existingBoundings.some((bounding) =>
+    isEqual(bounding, newAreaBounding)
+  )
+  return !isSameArea
+}
+
 function onHandler() {
   return (board, event) => {
     const coords = board.getCoords(event).usrCoords
@@ -733,7 +776,9 @@ function onHandler() {
       x: coords[1],
       y: coords[2],
     }
-    return create(board, object)
+    if (canDrawAreaByPoint(board, object)) {
+      return create(board, object)
+    }
   }
 }
 

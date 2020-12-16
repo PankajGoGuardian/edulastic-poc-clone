@@ -1,22 +1,37 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, groupBy, debounce } from 'lodash'
+import qs from 'qs'
 
 // components
-import { Col, Row, Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
-import { title } from '@edulastic/colors'
+import { Spin } from 'antd'
+import { FlexContainer, MainContentWrapper } from '@edulastic/common'
+import { title, white } from '@edulastic/colors'
+import { IconChevronLeft } from '@edulastic/icons'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import { TextWrapper } from '../../../styledComponents'
-import { CardBox } from './styled'
-import CardImage from './components/CardImage/cardImage'
-import CardTextContent from './components/CardTextContent/cardTextContent'
+import {
+  CardContainer,
+  FeatureContentWrapper,
+  BundleContainer,
+  Bottom,
+  ScrollbarContainer,
+  Slides,
+  PrevButton,
+  NextButton,
+  SliderContainer,
+  LearnMore,
+  SlideContainer,
+  SlideDescription,
+} from './styled'
+
 import CreateClassPage from './components/CreateClassPage/createClassPage'
 import Launch from '../../../LaunchHangout/Launch'
 import ClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import CanvasClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
-// static data
 
 // ducks
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
@@ -30,7 +45,7 @@ import {
   getCanvasSectionListRequestAction,
   setShowCleverSyncModalAction,
 } from '../../../../../ManageClass/ducks'
-import { receiveTeacherDashboardAction } from '../../../../duck'
+import { receiveTeacherDashboardAction } from '../../../../ducks'
 import {
   getGoogleAllowedInstitionPoliciesSelector,
   getCanvasAllowedInstitutionPoliciesSelector,
@@ -40,17 +55,8 @@ import {
 } from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
-
-const Card = ({ data }) => (
-  <CardBox data-cy={data.name}>
-    <Row>
-      <CardImage data={data} />
-    </Row>
-    <Row>
-      <CardTextContent data={data} />
-    </Row>
-  </CardBox>
-)
+import Card from './components/Card'
+import EmbeddedVideoPreviewModal from '../../../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -82,8 +88,12 @@ const MyClasses = ({
   showCleverSyncModal,
   setShowCleverSyncModal,
   teacherData,
+  dashboardTiles,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
+  const [showBannerModal, setShowBannerModal] = useState(null)
+
+  const scrollBarRef = useRef(null)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -110,13 +120,94 @@ const MyClasses = ({
     (c) => c.active === 1 && c.type === 'class'
   )
   const ClassCards = allActiveClasses.map((item) => (
-    <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6} key={item._id}>
+    <CardContainer key={item._id}>
       <Card data={item} />
-    </Col>
+    </CardContainer>
   ))
+
+  const handleFeatureClick = (prop) => {
+    const entries = prop.reduce((a, c) => ({ ...a, ...c }), {})
+    const filter = qs.stringify(entries)
+    history.push(`/author/tests?${filter}`)
+  }
+
+  const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
+  const bannerSlides = BANNER || []
+  const testBundle = TEST_BUNDLE || []
+
+  const handleInAppRedirect = (data) => {
+    const filter = qs.stringify(data.filters)
+    history.push(`/author/${data.contentType}?${filter}`)
+  }
+
+  const handleExternalRedirect = (data) => {
+    window.open(data.externalUrl, '_blank')
+  }
+
+  const bannerActionHandler = (filter = {}) => {
+    // NOTE: Actions might need further refactor
+    const { action, data } = filter
+    switch (+action) {
+      case bannerActions.BANNER_DISPLAY_IN_MODAL:
+        setShowBannerModal(data)
+        break
+      case bannerActions.BANNER_APP_REDIRECT:
+        handleInAppRedirect(data)
+        break
+      case bannerActions.BANNER_EXTERNAL_REDIRECT:
+        handleExternalRedirect(data)
+        break
+      default:
+        break
+    }
+  }
+
+  const FeatureContentCards = testBundle.map((bundle) => (
+    <BundleContainer
+      onClick={() => handleFeatureClick(bundle.config.filters || [])}
+      bgImage={bundle.imageUrl}
+      key={bundle._id}
+    >
+      <Bottom>{bundle.description && <div> {bundle.description} </div>}</Bottom>
+    </BundleContainer>
+  ))
+
+  const bannerLength = bannerSlides.length
+
+  const Banner = bannerSlides.map((slide, index) => (
+    <SlideContainer
+      key={slide._id}
+      onClick={() => bannerActionHandler(slide.config.filters[0])}
+    >
+      <LearnMore>LEARN MORE</LearnMore>
+      <SlideDescription>{slide.description}</SlideDescription>
+      <Slides
+        className={bannerLength === index + 1 ? 'last' : ''}
+        bgImage={slide.imageUrl}
+      />
+    </SlideContainer>
+  ))
+
+  const handleScroll = debounce((isScrollLeft) => {
+    const scrollContainer = scrollBarRef.current._container
+    const { scrollLeft, clientWidth } = scrollContainer
+    const delta = isScrollLeft
+      ? scrollLeft + clientWidth
+      : scrollLeft - scrollLeft
+    scrollContainer.scrollTo({
+      left: delta,
+      behavior: 'smooth',
+    })
+  }, 300)
 
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
+
+  const bannerScrollLeft = () => handleScroll(true)
+  const bannerScrollRight = () => handleScroll(false)
+  const closeCleverSyncModal = () => setShowCleverSyncModal(false)
+  const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
+  const handleBannerModalClose = () => setShowBannerModal(null)
 
   return (
     <MainContentWrapper padding="30px">
@@ -124,7 +215,7 @@ const MyClasses = ({
         type="clever"
         visible={showCleverSyncModal}
         onSubmit={syncCleverClassList}
-        onCancel={() => setShowCleverSyncModal(false)}
+        onCancel={closeCleverSyncModal}
         loading={loadingCleverClassList}
         classListToSync={cleverClassList}
         courseList={courseList}
@@ -136,7 +227,7 @@ const MyClasses = ({
       />
       <CanvasClassSelectModal
         visible={showCanvasSyncModal}
-        onCancel={() => setShowCanvasSyncModal(false)}
+        onCancel={closeCanvasSyncModal}
         user={user}
         getCanvasCourseListRequest={getCanvasCourseListRequest}
         getCanvasSectionListRequest={getCanvasSectionListRequest}
@@ -144,7 +235,31 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
-      <TextWrapper size="20px" color={title} style={{ marginBottom: '1rem' }}>
+      <SliderContainer>
+        <PrevButton className="prev" onClick={bannerScrollRight}>
+          <IconChevronLeft color={white} width="32px" height="32px" />
+        </PrevButton>
+        <NextButton className="next" onClick={bannerScrollLeft}>
+          <IconChevronLeft color={white} width="32px" height="32px" />
+        </NextButton>
+        <ScrollbarContainer>
+          <PerfectScrollbar
+            ref={scrollBarRef}
+            option={{
+              suppressScrollY: true,
+              useBothWheelAxes: true,
+            }}
+          >
+            {Banner}
+          </PerfectScrollbar>
+        </ScrollbarContainer>
+      </SliderContainer>
+      <TextWrapper
+        fw="bold"
+        size="16px"
+        color={title}
+        style={{ marginBottom: '1rem' }}
+      >
         My Classes
       </TextWrapper>
       {loading ? (
@@ -163,9 +278,28 @@ const MyClasses = ({
           isClassLink={isClassLink}
         />
       ) : (
-        <Row gutter={20}>{ClassCards}</Row>
+        <div>{ClassCards}</div>
       )}
+      <FeatureContentWrapper>
+        <TextWrapper
+          fw="bold"
+          size="16px"
+          color={title}
+          style={{ marginBottom: '1rem' }}
+        >
+          Featured Content Bundles
+        </TextWrapper>
+        <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+          {FeatureContentCards}
+        </FlexContainer>
+      </FeatureContentWrapper>
       <Launch />
+      {showBannerModal && (
+        <EmbeddedVideoPreviewModal
+          closeCallback={handleBannerModalClose}
+          isVisible={showBannerModal}
+        />
+      )}
     </MainContentWrapper>
   )
 }

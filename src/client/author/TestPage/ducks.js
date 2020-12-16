@@ -48,6 +48,7 @@ import {
   helpers,
   notification,
 } from '@edulastic/common'
+import signUpState from '@edulastic/constants/const/signUpState'
 import { createGroupSummary } from './utils'
 import {
   SET_MAX_ATTEMPT,
@@ -74,6 +75,7 @@ import {
   getUserIdSelector,
   getUserId,
   getIsCurator,
+  getUserSignupStatusSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -2492,7 +2494,22 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     }
     let defaultTestSettings = {}
     if (role !== roleuser.EDULASTIC_CURATOR) {
-      defaultTestSettings = yield call(testsApi.getDefaultTestSettings, payload)
+      const currentSignupState = yield select(getUserSignupStatusSelector)
+      if (
+        role === roleuser.TEACHER &&
+        currentSignupState == signUpState.ACCESS_WITHOUT_SCHOOL
+      ) {
+        const userId = yield select(getUserIdSelector)
+        defaultTestSettings = yield call(testsApi.getDefaultTestSettings, {
+          orgId: userId,
+          params: { orgType: 'teacher' },
+        })
+      } else {
+        defaultTestSettings = yield call(
+          testsApi.getDefaultTestSettings,
+          payload
+        )
+      }
     } else {
       const { performanceBand, standardGradingScale } = testEntity
       const performanceBandProfiles = [performanceBand]

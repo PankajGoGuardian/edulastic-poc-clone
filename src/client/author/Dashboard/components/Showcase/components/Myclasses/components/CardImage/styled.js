@@ -4,12 +4,12 @@ import { white } from '@edulastic/colors'
 
 export const Image = styled.img`
   width: 100%;
-  height: 162px;
+  height: 98px;
   position: relative;
   filter: brightness(50%);
   border: none;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  border-radius: 10px 10px 0px 0px;
 `
 export const OverlayText = styled.div`
   position: absolute;
@@ -20,45 +20,44 @@ export const OverlayText = styled.div`
   z-index: 30;
   color: ${white};
   overflow: hidden;
-  padding: 0.5rem;
+  padding: 9px 12px;
   font-weight: bold;
 `
 export const IconWrapper = styled.div`
-  width: 34px;
-  height: 34px;
-  padding: 0.5rem;
-  border-radius: 50%;
-  background: ${white};
-  cursor: pointer;
   position: absolute;
   top: 0px;
   right: 2px;
+  display: flex;
+`
+export const CircleBtn = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: ${(props) => props.bg || white};
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
 `
 export const TextDiv = styled.p`
-  font-size: ${(props) => props.theme.assignment.cardTitleFontSize};
+  font-size: 13px;
   text-overflow: ellipsis;
   display: block;
   max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
   font-weight: bold;
-  padding-right: 50px;
+  padding-right: 60px;
 `
 export const SpanLeftMargin = styled.span`
   margin-left: 0.5rem;
 `
 export const RowWrapperGrade = styled(Row)`
-  margin-top: 0.3rem;
-`
-export const RowWrapperSTudentCount = styled(Row)`
-  margin-top: 1.3rem;
+  margin-top: 2px;
 `
 
 export const StyledRow = styled(Row)`
   display: flex;
-  height: 34px;
+  height: 24px;
   align-items: center;
 `

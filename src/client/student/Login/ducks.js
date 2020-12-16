@@ -956,7 +956,38 @@ function* signup({ payload }) {
         yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken)
       }
       yield call(segmentApi.trackTeacherSignUp, { user: result })
-      yield put(signupSuccessAction(result))
+
+      if (
+        role === 'teacher' &&
+        sessionStorage.getItem('signupFlow') !== 'canvas'
+      ) {
+        const userPayload = {
+          data: {
+            email: user.email,
+            currentSignUpState: 'ACCESS_WITHOUT_SCHOOL',
+          },
+          userId: user._id,
+        }
+
+        const userUpdateResult = yield call(userApi.updateUser, userPayload)
+        if (userUpdateResult && userUpdateResult.token) {
+          TokenStorage.storeAccessToken(
+            userUpdateResult.token,
+            userUpdateResult._id,
+            userUpdateResult.role,
+            true
+          )
+          TokenStorage.selectAccessToken(
+            userUpdateResult._id,
+            userUpdateResult.role
+          )
+        }
+        const updatedUser = pick(userUpdateResult, userPickFields)
+        yield put(signupSuccessAction(updatedUser))
+      } else {
+        yield put(signupSuccessAction(result))
+      }
+
       localStorage.removeItem('loginRedirectUrl')
 
       if (generalSettings) {
@@ -1168,7 +1199,13 @@ function* logout() {
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }
+      const version = localStorage.getItem('author:dashboard:version')
+      const configurableTiles = localStorage.getItem('author:dashboard:tiles')
       localStorage.clear()
+      if (version && configurableTiles) {
+        localStorage.setItem('author:dashboard:tiles', configurableTiles)
+        localStorage.setItem('author:dashboard:version', version)
+      }
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')

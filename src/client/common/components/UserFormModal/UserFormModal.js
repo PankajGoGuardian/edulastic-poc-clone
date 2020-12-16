@@ -335,8 +335,8 @@ class UserForm extends React.Component {
                           triggerNode.parentNode
                         }
                       >
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </SelectInputStyled>
                     )}
                   </Form.Item>
@@ -352,8 +352,8 @@ class UserForm extends React.Component {
                           triggerNode.parentNode
                         }
                       >
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </SelectInputStyled>
                     )}
                   </Form.Item>
@@ -369,8 +369,8 @@ class UserForm extends React.Component {
                           triggerNode.parentNode
                         }
                       >
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </SelectInputStyled>
                     )}
                   </Form.Item>
@@ -386,8 +386,8 @@ class UserForm extends React.Component {
                           triggerNode.parentNode
                         }
                       >
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </SelectInputStyled>
                     )}
                   </Form.Item>

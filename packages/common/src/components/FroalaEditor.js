@@ -606,6 +606,113 @@ const defaultCharacterSets = [
   },
 ]
 
+const NoneDiv = styled.div`
+  position: absolute;
+  opacity: 0;
+`
+
+const BackgroundStyleWrapper = styled.div.attrs({
+  className: 'froala-wrapper',
+})`
+  position: relative;
+  width: 100%;
+  display: block;
+  font-size: ${(props) => props.fontSize || props.theme.fontSize};
+  .fr-box.fr-basic .fr-wrapper {
+    background: ${(props) => props.backgroundColor || 'rgb(255, 255, 255)'};
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 13px;
+  }
+
+  .fr-wrapper {
+    ${({ centerContent }) => {
+      if (centerContent) {
+        return `.fr-element p,
+        &.show-placeholder .fr-placeholder{
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          overflow-wrap: break-word;
+          img{
+            margin:auto;
+            display:block;
+          }
+        }        
+        `
+      }
+    }}
+    .fr-view {
+      > p {
+        padding: 0px !important;
+        text-indent: 0pt !important;
+      }
+    }
+  }
+
+  ${({ border }) => {
+    if (border === 'border') {
+      return `
+        .fr {
+          &-box {
+            background: ${greyThemeLighter};
+            min-height: 102px;
+            border-radius: 2px;
+            border: 1px solid ${greyThemeLight};
+            display: flex;
+          }
+          &-wrapper {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+          }
+          &-view {
+            width: 100%;
+            min-height: 100%;
+            padding: 8px 14px;
+            overflow: auto;
+          }
+        }
+      `
+    } else {
+      /**
+       * need to show scroll if math content overflows
+       * @see https://snapwiz.atlassian.net/browse/EV-10575
+       */
+      return `
+      .fr-box {
+          max-width: 100%;
+          overflow-x: auto;
+          overflow-y: hidden;
+        }
+      `
+    }
+  }}
+
+  ${({ editorHeight }) => {
+    if (editorHeight > 40) {
+      return `
+        .fr {
+          &-box {
+            height: ${editorHeight}px;
+            overflow-x: auto;
+            overflow-y: hidden;
+          }
+        }
+      `
+    }
+  }}
+`
+
+const toolbarInlineStyle = css`
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 100%;
+  z-index: 1000;
+`
+
 //adds h1 & h2 buttons commands to froala editor.
 headings(FroalaEditor)
 // adds past event handler

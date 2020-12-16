@@ -271,7 +271,9 @@ function* loadTestActivityReport({ payload }) {
     const questionsWithActivities = questions.map((question) => {
       if (!question.activity) {
         const activity = reports.questionActivities.find(
-          (qActivity) => qActivity.qid === question.id
+          (qActivity) =>
+            qActivity.qid === question.id &&
+            qActivity.testItemId === question.testItemId
         )
         return {
           ...question,
@@ -298,14 +300,17 @@ function* loadTestActivityReport({ payload }) {
         passages,
       })
     }
-    const qActsKeysByQid = keyBy(questionActivities, 'qid')
+    const qActsKeysByQid = keyBy(
+      questionActivities,
+      (uqa) => `${uqa.testItemId}_${uqa.qid}`
+    )
     const _testItems = testItems
       .filter(({ data = {} }) => data.questions?.length)
       .map((item) =>
         produce(item, (draft) => {
           draft.data.questions.forEach((question) => {
-            if (qActsKeysByQid[question.id]) {
-              question.activity = qActsKeysByQid[question.id]
+            if (qActsKeysByQid[`${item._id}_${question.id}`]) {
+              question.activity = qActsKeysByQid[`${item._id}_${question.id}`]
             }
           })
         })
@@ -332,7 +337,7 @@ function* loadTestActivityReport({ payload }) {
     questionActivities.forEach((item) => {
       allAnswers = {
         ...allAnswers,
-        [item.qid]: item.userResponse,
+        [`${item.testItemId}_${item.qid}`]: item.userResponse,
       }
       if (item.scratchPad) {
         const newUserWork = { ...item.scratchPad }
@@ -351,7 +356,7 @@ function* loadTestActivityReport({ payload }) {
       type: ADD_ITEM_EVALUATION,
       payload: {
         ...questionActivities.reduce((result, item) => {
-          result[item.qid] = item.evaluation
+          result[`${item.testItemId}_${item.qid}`] = item.evaluation
           return result
         }, {}),
       },

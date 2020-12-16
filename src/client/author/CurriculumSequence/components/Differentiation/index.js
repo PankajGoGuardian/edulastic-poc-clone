@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -14,6 +14,7 @@ import WorkTable from './WorkTable'
 import {
   fetchDifferentiationStudentListAction,
   getDifferentiationStudentListSelector,
+  getDifferentiationSelectedDataSelector,
   fetchDifferentiationWorkAction,
   setRecommendationsToAssignAction,
   getDifferentiationWorkSelector,
@@ -24,6 +25,7 @@ import {
   addResourceToDifferentiationAction,
   addSubResourceToTestInDiffAction,
   removeSubResourceInDiffAction,
+  setDifferentiationSelectedDataAction,
 } from '../../ducks'
 import ManageContentBlock from '../ManageContentBlock'
 import { HideRightPanel } from '../CurriculumRightPanel'
@@ -35,6 +37,7 @@ const Differentiation = ({
   assignments,
   differentiationStudentList,
   differentiationWork,
+  differentiationSelectedData,
   isFetchingWork,
   workStatusData,
   receiveAssignments,
@@ -46,21 +49,25 @@ const Differentiation = ({
   addResourceToDifferentiation,
   addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
+  setDifferentiationSelectedData,
   showResource,
   removeSubResource,
   toggleManageContent,
   activeRightPanel,
   history,
 }) => {
-  const [selectedClass, setSelectedClass] = useState()
   const [classList, setClassList] = useState([])
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
   const [testData, setTestData] = useState([])
-  const [selectedTest, setSelectedTest] = useState()
   const [isAssignModalVisible, setIsAssignModalVisible] = useState(false)
   const showManageContent = activeRightPanel === 'manageContent'
+  const isInitialMount = useRef(true)
 
   const toggleAssignModal = (value) => setIsAssignModalVisible(value)
+  const {
+    class: selectedClass,
+    testId: selectedTest,
+  } = differentiationSelectedData
 
   const openManageContentPanel = (e) => {
     e.target.blur()
@@ -85,7 +92,10 @@ const Differentiation = ({
       classId: '',
       status: 'DONE',
     }
-    receiveAssignments({ filters })
+
+    if (!assignments.length) {
+      receiveAssignments({ filters })
+    }
 
     return hideManageContentPanel
   }, [])
@@ -105,7 +115,8 @@ const Differentiation = ({
         })
       )
 
-      const { testId } = history.location.state || {}
+      const { testId } =
+        history.location.state || differentiationSelectedData || {}
       const specificTest =
         testId && testDataGenerated.find(({ _id }) => _id === testId)
 
@@ -114,7 +125,6 @@ const Differentiation = ({
       const lastTestData = specificTest || last(testDataGenerated)
 
       if (lastTestData) {
-        setSelectedTest(lastTestData._id)
         let currentTestClasses = _assignmentsByTestId[lastTestData._id].map(
           (a) => ({
             classId: a.classId,
@@ -132,13 +142,24 @@ const Differentiation = ({
         })
 
         setClassList(currentTestClasses)
-        setSelectedClass(currentTestClasses[0])
+
+        if (selectedTest !== lastTestData._id || !selectedClass) {
+          setDifferentiationSelectedData({
+            testId: lastTestData._id,
+            class: selectedClass || currentTestClasses[0],
+          })
+        }
       }
     }
   }, [assignments])
 
   useEffect(() => {
-    if (selectedClass) {
+    // Avoid loading data on first render.
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+    if (selectedClass && selectedTest) {
       fetchDifferentiationStudentList({
         assignmentId: selectedClass.assignmentId,
         groupId: selectedClass.classId,
@@ -149,11 +170,9 @@ const Differentiation = ({
         testId: selectedTest,
       })
     }
-  }, [selectedClass])
+  }, [differentiationSelectedData])
 
   const handleAssignmentChange = (value) => {
-    setSelectedTest(value)
-
     let selectedTestClasses = assignmentsByTestId[value].map((a) => ({
       classId: a.classId,
       assignmentId: a._id,
@@ -169,15 +188,17 @@ const Differentiation = ({
     })
 
     setClassList(selectedTestClasses)
-    setSelectedClass()
+    setDifferentiationSelectedData({ testId: value, class: null })
   }
 
   const handleClassChange = (value, option) => {
-    setSelectedClass({
-      classId: option.props.classId,
-      assignmentId: option.props.assignmentId,
-      className: option.props.cName,
-      title: option.props.title,
+    setDifferentiationSelectedData({
+      class: {
+        classId: option.props.classId,
+        assignmentId: option.props.assignmentId,
+        className: option.props.cName,
+        title: option.props.title,
+      },
     })
   }
 
@@ -348,6 +369,9 @@ const enhance = compose(
       recommendationsToAssign: getRecommendationsToAssignSelector(state),
       isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
       workStatusData: getWorkStatusDataSelector(state),
+      differentiationSelectedData: getDifferentiationSelectedDataSelector(
+        state
+      ),
     }),
     {
       receiveAssignments: receiveAssignmentsAction,
@@ -358,6 +382,7 @@ const enhance = compose(
       addResourceToDifferentiation: addResourceToDifferentiationAction,
       addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,
       removeSubResource: removeSubResourceInDiffAction,
+      setDifferentiationSelectedData: setDifferentiationSelectedDataAction,
     }
   )
 )

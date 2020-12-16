@@ -3,6 +3,7 @@ import loadable from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
 import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import TestsApi from '@edulastic/api/src/tests'
 import {
   IconCopy,
   IconDescription,
@@ -15,7 +16,7 @@ import {
   IconAssignment,
   IconDynamic,
 } from '@edulastic/icons'
-import { Icon, Select, Tooltip, Col, Row } from 'antd'
+import { Icon, Select, Tooltip, Col, Row, Spin } from 'antd'
 import { find } from 'lodash'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -106,6 +107,8 @@ class ViewModal extends React.Component {
   state = {
     editedCollections: null,
     showCloneOptions: false,
+    summary: null,
+    summaryLoading: false,
   }
 
   modalRef = React.createRef()
@@ -125,6 +128,29 @@ class ViewModal extends React.Component {
 
   hideCloneOptions = () => {
     this.setState({ showCloneOptions: false })
+  }
+
+  componentDidUpdate(prevProps) {
+    const { item, isShow } = this.props
+    const { prevItem } = prevProps
+    if (item?.cw || item?.sharedType === 'PUBLIC') {
+      if (
+        isShow != prevProps?.isShow &&
+        isShow &&
+        item?._id != prevItem?._id &&
+        item?._id
+      ) {
+        this.setState({ summaryLoading: true, summary: null })
+        TestsApi.getSummary(item._id)
+          .then((summary) => {
+            this.setState({ summary, summaryLoading: false })
+          })
+          .catch((e) => {
+            console.warn('error loading tests', e)
+            this.setState({ summaryLoading: false })
+          })
+      }
+    }
   }
 
   render() {
@@ -164,7 +190,6 @@ class ViewModal extends React.Component {
       thumbnail = '',
       analytics = [],
       itemGroups = [],
-      summary = {},
       alignment = [],
       permission,
       _source,
@@ -173,7 +198,10 @@ class ViewModal extends React.Component {
       collections: _collections = [],
       isDocBased,
     } = item
-
+    let { summary = {} } = item
+    if (this.state.summary) {
+      summary = this.state.summary
+    }
     const { editedCollections, showCloneOptions } = this.state
 
     const modalStyles = {
@@ -533,68 +561,71 @@ class ViewModal extends React.Component {
                 </SummaryCard>
               </SummaryCardContainer>
             </SummaryContainer>
-            <PerfectScrollbar>
-              {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
-              {summary?.groupSummary?.length > 1 ||
-              itemGroups?.[0]?.type === 'AUTOSELECT' ? (
-                summary?.groupSummary?.map((group, i) => {
-                  const standards = interestedStandards?.map(
-                    (x) => x.identifier
-                  )
-                  return (
-                    <>
-                      <GroupName>{itemGroups[i]?.groupName}</GroupName>
-                      <SummaryCardContainer>
-                        <GroupSummaryCard>
-                          <GroupSummaryCardValue>
-                            {group.totalItems}
-                          </GroupSummaryCardValue>
-                          <SummaryCardLabel>Items</SummaryCardLabel>
-                        </GroupSummaryCard>
-                        <GroupSummaryCard>
-                          <Tags
-                            tags={standards}
-                            key="standards"
-                            show={2}
-                            isStandards
-                          />
-                        </GroupSummaryCard>
-                      </SummaryCardContainer>
-                    </>
-                  )
-                })
-              ) : (
-                <SummaryList>
-                  <ListHeader>
-                    <ListHeaderCell>SUMMARY</ListHeaderCell>
-                    <ListHeaderCell>Qs</ListHeaderCell>
-                    <ListHeaderCell>POINTS</ListHeaderCell>
-                  </ListHeader>
-                  {!!summary?.standards?.length &&
-                    interestedStandards.map(
-                      (data) =>
-                        !data.isEquivalentStandard && (
-                          <ListRow data-cy={data.identifier}>
-                            <ListCell>
-                              <SammaryMark>{data.identifier}</SammaryMark>
-                            </ListCell>
-                            <ListCell>{data.totalQuestions}</ListCell>
-                            <ListCell>{data.totalPoints}</ListCell>
-                          </ListRow>
-                        )
+            {this.state.summaryLoading ? (
+              <Spin />
+            ) : (
+              <PerfectScrollbar>
+                {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
+                {summary?.groupSummary?.length > 1 ||
+                itemGroups?.[0]?.type === 'AUTOSELECT' ? (
+                  summary?.groupSummary?.map((group, i) => {
+                    const standards = interestedStandards?.map(
+                      (x) => x.identifier
+                    )
+                    return (
+                      <>
+                        <GroupName>{itemGroups[i]?.groupName}</GroupName>
+                        <SummaryCardContainer>
+                          <GroupSummaryCard>
+                            <GroupSummaryCardValue>
+                              {group.totalItems}
+                            </GroupSummaryCardValue>
+                            <SummaryCardLabel>Items</SummaryCardLabel>
+                          </GroupSummaryCard>
+                          <GroupSummaryCard>
+                            <Tags
+                              tags={standards}
+                              key="standards"
+                              show={2}
+                              isStandards
+                            />
+                          </GroupSummaryCard>
+                        </SummaryCardContainer>
+                      </>
+                    )
+                  })
+                ) : (
+                  <SummaryList>
+                    <ListHeader>
+                      <ListHeaderCell>SUMMARY</ListHeaderCell>
+                      <ListHeaderCell>Qs</ListHeaderCell>
+                      <ListHeaderCell>POINTS</ListHeaderCell>
+                    </ListHeader>
+                    {!!summary?.standards?.length &&
+                      summary.standards.map((data) => (
+                        <ListRow data-cy={data.identifier}>
+                          <ListCell>
+                            <SammaryMark>{data.identifier}</SammaryMark>
+                          </ListCell>
+                          <ListCell>{data.totalQuestions}</ListCell>
+                          <ListCell>{data.totalPoints}</ListCell>
+                        </ListRow>
+                      ))}
+                    {summary?.noStandards?.totalQuestions > 0 && (
+                      <ListRow>
+                        <ListCell>
+                          <SammaryMark>No Standard</SammaryMark>
+                        </ListCell>
+                        <ListCell>
+                          {summary.noStandards.totalQuestions}
+                        </ListCell>
+                        <ListCell>{summary.noStandards.totalPoints}</ListCell>
+                      </ListRow>
                     )}
-                  {summary?.noStandards?.totalQuestions > 0 && (
-                    <ListRow>
-                      <ListCell>
-                        <SammaryMark>No Standard</SammaryMark>
-                      </ListCell>
-                      <ListCell>{summary.noStandards.totalQuestions}</ListCell>
-                      <ListCell>{summary.noStandards.totalPoints}</ListCell>
-                    </ListRow>
-                  )}
-                </SummaryList>
-              )}
-            </PerfectScrollbar>
+                  </SummaryList>
+                )}
+              </PerfectScrollbar>
+            )}
           </ModalColumn>
         </ModalContainer>
       </>

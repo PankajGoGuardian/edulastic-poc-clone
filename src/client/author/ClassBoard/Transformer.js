@@ -419,9 +419,10 @@ export const transformGradeBookResponse = (
   )
   const testItemsDataKeyed = keyBy(testItemsData, '_id')
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed)
-  const testMaxScore = testItemsData.reduce(
-    (prev, cur) => prev + getMaxScoreFromItem(cur),
-    0
+  const testMaxScore = Number(
+    Number(
+      testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0)
+    ).toFixed(2)
   )
   const questionActivitiesGrouped = groupBy(
     testQuestionActivities,
@@ -510,13 +511,7 @@ export const transformGradeBookResponse = (
 
         const questionActivitiesIndexed =
           (questionActivitiesRaw &&
-            keyBy(questionActivitiesRaw, (x) => x.qid)) ||
-          {}
-        const questionActivitiesKeyedByItemId =
-          (questionActivitiesRaw &&
-            keyBy(questionActivitiesRaw, (x) =>
-              test.isDocBased ? x._id : x.testItemId
-            )) ||
+            keyBy(questionActivitiesRaw, (x) => `${x.testItemId}_${x.qid}`)) ||
           {}
 
         const questionActivities = qids.map(
@@ -536,8 +531,7 @@ export const transformGradeBookResponse = (
           ) => {
             const _id = el
             const currentQuestionActivity =
-              questionActivitiesIndexed[el] ||
-              questionActivitiesKeyedByItemId[testItemId]
+              questionActivitiesIndexed[`${testItemId}_${el}`]
             const questionMaxScore =
               maxScore ||
               maxScore == 0 ||

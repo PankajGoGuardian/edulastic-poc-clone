@@ -70,7 +70,6 @@ export const TextAnchor = styled.span`
   text-transform: uppercase;
   color: ${linkColor};
   cursor: pointer;
-  font-weight: bold;
 `
 
 export const FullFlexContainer = styled(FlexContainer)`

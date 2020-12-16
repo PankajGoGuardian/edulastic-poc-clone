@@ -88,6 +88,7 @@ const TableRow = ({
           width="100%"
           padding="0"
           marginTop="0"
+          data-cy="rowHeader"
         >
           <CenteredText
             style={{
@@ -120,6 +121,7 @@ const TableRow = ({
             key={index + columns}
             justifyContent="center"
             width="100%"
+            data-cy="rowTitle"
           >
             <MathFormulaDisplay
               style={{
@@ -154,6 +156,7 @@ const TableRow = ({
           />
         </ColumnHeader>
         <DropContainer
+          index={index}
           height={height}
           borderColor={lightGrey12}
           isTransparent={isBackgroundImageTransparent}

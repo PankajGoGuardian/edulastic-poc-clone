@@ -116,11 +116,20 @@ const ResponseFrequency = ({
     return <SpinLoader position="fixed" />
   }
 
+  if (res.isRecommended) {
+    return (
+      <NoDataContainer fontSize="12px">
+        The Questions for each student have been dynamically selected and as a
+        result, question based comparision is unavailable for the assignment.
+      </NoDataContainer>
+    )
+  }
+
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
   }
 
-  if (isEmpty(res.metrics)) {
+  if (isEmpty(res.metrics) || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

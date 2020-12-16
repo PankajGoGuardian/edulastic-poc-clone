@@ -6,6 +6,7 @@ export const ConfirmationModal = styled(CustomModalStyled)`
   min-width: ${(props) => (props.modalWidth ? props.modalWidth : '600px')};
   top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
+    padding: ${(props) => props.padding || null};
     .ant-modal-body {
       display: ${(props) => (props.textAlign !== 'left' ? 'flex' : 'block')};
       align-items: center;

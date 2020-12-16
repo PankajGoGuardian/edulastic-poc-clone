@@ -1087,9 +1087,15 @@ export function* updateItemSaga({ payload }) {
     }
     const data = _omit(payload.data, ['authors', '__v'])
 
-    if (payload.testId && payload.testId !== 'undefined') {
-      data.testId = testId
-    }
+    /**
+     * Commented the below code as it was adding testId to item data which
+     * caused failing of test item update api because testId is not allowed
+     * in test item data
+     */
+
+    // if (payload.testId && payload.testId !== 'undefined') {
+    //   data.testId = testId
+    // }
     const { itemLevelScoring, isPassageWithQuestions } = data
 
     // const questions = yield select(getQuestionsSelector);
@@ -1336,7 +1342,16 @@ export function* updateItemSaga({ payload }) {
       yield put(setTestItemsAction(nextTestItems))
 
       if (!payload.testId || payload.testId === 'undefined') {
-        yield put(setTestDataAndUpdateAction({ addToTest: true, item }))
+        let passageItems = []
+        if (passageData?._id && passageData?.testItems?.length > 1) {
+          passageItems = yield call(
+            testItemsApi.getPassageItems,
+            passageData._id
+          )
+        }
+        yield put(
+          setTestDataAndUpdateAction({ addToTest: true, item, passageItems })
+        )
       } else {
         // When deleting question from passage item should not go to test preview
         const { redirectOnDeleteQuestion } = payload

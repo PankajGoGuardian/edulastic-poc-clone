@@ -2,13 +2,8 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Button } from 'antd'
 import { get } from 'lodash'
-import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons'
-import { white } from '@edulastic/colors'
 import { DragSource } from 'react-dnd'
-import { withNamespaces } from '@edulastic/localization'
-
 import QuestionWrapper from '../../../../../../assessment/components/QuestionWrapper'
 import { Types } from '../../../../constants'
 import {
@@ -20,7 +15,8 @@ import {
   getQuestionByIdSelector,
   setQuestionScoreAction,
 } from '../../../../../sharedDucks/questions'
-import { Container, Buttons } from './styled'
+import Ctrls from './Controls'
+import { Container, WidgetContainer, ButtonsContainer } from './styled'
 
 const ItemDetailWidget = ({
   widget,
@@ -29,7 +25,6 @@ const ItemDetailWidget = ({
   isDragging,
   connectDragSource,
   connectDragPreview,
-  t,
   widgetIndex,
   question,
   flowLayout,
@@ -40,29 +35,45 @@ const ItemDetailWidget = ({
   previewTab,
 }) => {
   const [showButtons, setShowButtons] = useState(!flowLayout)
+
   const onMouseEnterHander = () => {
     if (flowLayout) setShowButtons(true)
   }
+
   const onMouseLeaveHander = () => {
     if (flowLayout) setShowButtons(false)
   }
 
+  const onChangeQuestionLevelPoint = (score) => {
+    setQuestionScore({ score: +score, qid: question.id })
+  }
+
+  const onChangeItemLevelPoint = (score) => {
+    setItemLevelScore(+score)
+  }
+
   const showPoints = !(rowIndex === 0 && itemData.rows.length > 1)
   const isPointsBlockVisible =
-    itemData.itemLevelScoring && widgetIndex === 0 && showPoints
+    (itemData.itemLevelScoring && widgetIndex === 0 && showPoints) ||
+    widget.widgetType === 'question'
+
+  const score = itemData.itemLevelScoring
+    ? itemData.itemLevelScore
+    : get(question, 'validation.validResponse.score', 0)
+
+  const scoreChangeHandler = itemData.itemLevelScoring
+    ? onChangeItemLevelPoint
+    : onChangeQuestionLevelPoint
+
+  const disablePointsInput = widgetIndex > 0 && itemData.itemLevelScoring
+
   return (
     connectDragPreview &&
     connectDragSource &&
     connectDragPreview(
       <div onMouseEnter={onMouseEnterHander} onMouseLeave={onMouseLeaveHander}>
         <Container isDragging={isDragging} flowLayout={flowLayout}>
-          <div
-            style={{
-              flex: '10',
-              maxWidth: '100%',
-              paddingRight: isPointsBlockVisible ? '30px' : '',
-            }}
-          >
+          <WidgetContainer>
             {(widget.widgetType === 'question' ||
               widget.widgetType === 'resource') && (
               <QuestionWrapper
@@ -77,71 +88,25 @@ const ItemDetailWidget = ({
                 disableResponse
               />
             )}
-          </div>
+          </WidgetContainer>
 
           {(!flowLayout || showButtons) && (
-            <div style={{ flex: '1' }}>
-              <Buttons>
-                {isPointsBlockVisible && (
-                  <div className="points">
-                    Points :{' '}
-                    <input
-                      className="ant-input"
-                      type="number"
-                      min={0.5}
-                      step={0.5}
-                      value={itemData.itemLevelScore}
-                      onChange={(e) => {
-                        const v = parseFloat(e.target.value)
-                        setItemLevelScore(v)
-                      }}
-                    />
-                  </div>
-                )}
+            <ButtonsContainer>
+              <Ctrls.Point
+                value={score}
+                onChange={scoreChangeHandler}
+                visible={isPointsBlockVisible}
+                disabled={disablePointsInput}
+              />
 
-                {!itemData.itemLevelScoring &&
-                  widget.widgetType === 'question' && (
-                    <div className="points">
-                      Points :{' '}
-                      <input
-                        className="ant-input"
-                        type="number"
-                        min={0.5}
-                        step={0.5}
-                        value={get(
-                          question,
-                          'validation.validResponse.score',
-                          0
-                        )}
-                        onChange={(e) => {
-                          const v = parseFloat(e.target.value)
-                          setQuestionScore({ score: v, qid: question.id })
-                          //
-                        }}
-                      />
-                    </div>
-                  )}
-
-                {connectDragSource(
-                  <div>
-                    <Button title={t('move')} shape="circle">
-                      <IconMoveArrows
-                        color={white}
-                        style={{ fontSize: 11 }}
-                        width={16}
-                        height={16}
-                      />
-                    </Button>
-                  </div>
-                )}
-                <Button title={t('edit')} onClick={onEdit} shape="circle">
-                  <IconPencilEdit color={white} width={16} height={16} />
-                </Button>
-                <Button title={t('delete')} onClick={onDelete} shape="circle">
-                  <IconTrash color={white} width={16} height={16} />
-                </Button>
-              </Buttons>
-            </div>
+              {connectDragSource(
+                <div>
+                  <Ctrls.Move />
+                </div>
+              )}
+              <Ctrls.Edit onEdit={onEdit} />
+              <Ctrls.Delete onDelete={onDelete} />
+            </ButtonsContainer>
           )}
         </Container>
       </div>
@@ -188,7 +153,6 @@ function collect(c, monitor) {
 }
 
 const enhance = compose(
-  withNamespaces('default'),
   connect(
     (state, { widget }) => ({
       question: getQuestionByIdSelector(state, widget.reference),

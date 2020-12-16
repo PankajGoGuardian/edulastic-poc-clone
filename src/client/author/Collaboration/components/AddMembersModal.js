@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Modal, Checkbox, Tooltip, Spin } from 'antd'
 import { keyBy, difference, isEqual, omitBy, isEmpty, debounce } from 'lodash'
-import { EduButton } from '@edulastic/common'
+import { EduButton, notification } from '@edulastic/common'
 import {
   ModalHeader,
   StyledSelect,
@@ -85,6 +85,13 @@ const AddMembersModal = ({
   }, [userList, alreadyAddedUsers])
 
   const handleAddMembers = () => {
+    if (!selectedUsers.length) {
+      return notification({
+        type: 'warning',
+        msg: 'Please select one or more user to add to group.',
+      })
+    }
+
     const payload = {
       groupId,
       data: {

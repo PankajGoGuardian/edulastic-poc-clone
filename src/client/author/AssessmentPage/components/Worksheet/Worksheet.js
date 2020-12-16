@@ -49,6 +49,8 @@ import {
 } from '../../../AssessmentCreate/ducks'
 import PDFAnnotationTools from '../PDFAnnotationTools'
 import AppConfig from '../../../../../app-config'
+import { isImagesBlockedByBrowser } from '../../../../common/utils/helpers'
+import { toggleImageBlockNotificationAction } from '../../../../student/Login/ducks'
 
 const swap = (array, i, j) => {
   const copy = array.slice()
@@ -108,7 +110,13 @@ class WorksheetComponent extends React.Component {
   cancelUpload
 
   componentDidMount() {
-    const { saveUserWork, itemDetail, freeFormNotes } = this.props
+    const {
+      saveUserWork,
+      itemDetail,
+      freeFormNotes,
+      isImageBlockNotification,
+      toggleImageBlockNotification,
+    } = this.props
     toggleIntercomDisplay()
     const fromFreeFormNotes = {}
     if (itemDetail?._id) {
@@ -129,6 +137,11 @@ class WorksheetComponent extends React.Component {
       }
       saveUserWork({ [itemDetail._id]: { scratchpad: freeFormNotes || {} } })
     }
+    isImagesBlockedByBrowser().then((flag) => {
+      if (flag && !isImageBlockNotification) {
+        toggleImageBlockNotification(true)
+      }
+    })
   }
 
   handleHighlightQuestion = (questionId, pdfPreview = false) => {
@@ -565,6 +578,7 @@ class WorksheetComponent extends React.Component {
       currentPage: _currentPageInProps,
       match = {},
       groupId,
+      itemDetail,
     } = this.props
 
     const {
@@ -727,6 +741,7 @@ class WorksheetComponent extends React.Component {
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
               toggleIntercomDisplay={toggleIntercomDisplay}
+              itemId={itemDetail?._id}
             />
           </PDFViewerContainer>
 
@@ -752,6 +767,7 @@ class WorksheetComponent extends React.Component {
             groupId={groupId}
             qId={qid}
             clearHighlighted={this.clearHighlighted}
+            itemId={itemDetail?._id}
           />
         </WorksheetWrapper>
       </div>
@@ -836,6 +852,7 @@ const enhance = compose(
       annotationToolsProperties: state.tests.annotationToolsProperties,
       isAnnotationsStackEmpty: state.tests.annotationsStack?.length === 0,
       pdfAnnotations: state.tests.entity?.annotations,
+      isImageBlockNotification: state.user.isImageBlockNotification,
     }),
     {
       saveUserWork: saveUserWorkAction,
@@ -850,6 +867,7 @@ const enhance = compose(
       updateToolProperties: updateAnnotationToolsPropertiesAction,
       undoAnnotationsOperation: undoAnnotationsAction,
       redoAnnotationsOperation: redoAnnotationsAction,
+      toggleImageBlockNotification: toggleImageBlockNotificationAction,
     }
   )
 )

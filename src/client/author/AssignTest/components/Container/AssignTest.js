@@ -153,6 +153,21 @@ class AssignTest extends React.Component {
     setAssignments([])
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      testSettings: { playerSkinType },
+    } = this.props
+    const {
+      testSettings: { playerSkinType: prevPlayerSkinType },
+    } = prevProps
+    // the initial playerSkinType in reducer is edulastic,
+    // but after fetching the test it can be other type like testlet
+    // So need to update the assignmentSettings here
+    if (playerSkinType !== prevPlayerSkinType) {
+      this.updateAssignmentNew({ playerSkinType })
+    }
+  }
+
   handleAssign = () => {
     const {
       saveAssignment,

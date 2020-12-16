@@ -11,6 +11,7 @@ import {
   isEmpty,
   flatten,
   isArray,
+  groupBy,
 } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -326,7 +327,13 @@ class Review extends PureComponent {
   completeMoveTestItems = (items) => {
     const { test, setData } = this.props
     if (test.itemGroups.length > 1) {
-      console.log(items)
+      const itemsGroupedByGroupId = groupBy(items, 'groupId')
+      const testdata = produce(test, (draft) => {
+        draft.itemGroups.forEach((itemGroup) => {
+          itemGroup.items = itemsGroupedByGroupId[itemGroup._id]
+        })
+      })
+      setData(testdata)
     } else {
       setData(
         produce(test, (draft) => {

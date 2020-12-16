@@ -26,10 +26,11 @@ export default (WrappedComponent) => {
     const { data: question } = props
     const questionId = getQuestionId(question?.id)
     const answerContext = useContext(AnswerContext)
-
     const saveAnswer = (data) => {
       if (answerContext.isAnswerModifiable && questionId) {
-        setUserAnswer(questionId, data)
+        const _testItemId =
+          testItemId || props.itemId || props.data?.activity?.testItemId
+        setUserAnswer(_testItemId, questionId, data)
       }
     }
 

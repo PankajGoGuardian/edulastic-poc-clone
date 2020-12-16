@@ -34,6 +34,7 @@ const DateSelector = ({
   showOpenDueAndCloseDate,
   t,
   hasStartDate,
+  dateCol,
 }) => {
   const disabledStartDate = (_startDate) => {
     if (!_startDate || !endDate) {
@@ -71,7 +72,7 @@ const DateSelector = ({
     <>
       <StyledRow gutter={32} mb="15px">
         {hasStartDate && (
-          <Col span={colSpan}>
+          <Col span={dateCol || colSpan}>
             <Row>
               <Col span={24}>
                 <FieldLabel>{t('common.assignTest.openDateTitle')}</FieldLabel>
@@ -109,7 +110,7 @@ const DateSelector = ({
           </Col>
         )}
         {!!showDueDatePicker && (
-          <Col span={colSpan}>
+          <Col span={dateCol || colSpan}>
             <Row>
               <Col span={24}>
                 <FieldLabel>{t('common.assignTest.dueDateTitle')}</FieldLabel>
@@ -132,7 +133,7 @@ const DateSelector = ({
             </Row>
           </Col>
         )}
-        <Col span={colSpan}>
+        <Col span={dateCol || colSpan}>
           <Row>
             <Col span={24}>
               <FieldLabel>{t('common.assignTest.closeDateTitle')}</FieldLabel>

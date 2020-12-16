@@ -147,7 +147,14 @@ class AxisLabelsContainer extends PureComponent {
     const { list } = this.props
     const { maxWidth } = response
     const maxContentWidth = Math.min(
-      max(list.map((value) => measureText(value.text).width)),
+      max(
+        list.map(
+          (value) =>
+            measureText(value.text, {
+              padding: '0 10px 0 0',
+            }).width
+        )
+      ),
       maxWidth
     )
     if (!this.isHorizontal && defaultTitleWidth > maxContentWidth) {

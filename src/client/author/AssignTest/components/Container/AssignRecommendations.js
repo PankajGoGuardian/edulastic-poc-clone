@@ -28,6 +28,7 @@ import SimpleOptions from '../SimpleOptions/SimpleOptions'
 import AdvancedOptions from '../AdvancedOptons/AdvancedOptons'
 import {
   Anchor,
+  AnchorLink,
   TextAnchor,
   Container,
   FullFlexContainer,
@@ -47,6 +48,7 @@ const AssignRecommendations = ({
   clearAssignmentSettings,
   recommendationsToAssign,
   setRecommendationsToAssign,
+  playlistId,
   defaultTestProfiles,
   isModalView,
   isModalVisible,
@@ -61,9 +63,15 @@ const AssignRecommendations = ({
 
     getDefaultTestSettings()
 
+    const testType = assignmentSettings.testType
+      ? assignmentSettings.testType
+      : isAdmin
+      ? COMMON
+      : ASSESSMENT
+
     const updatedAssignment = {
       startDate: moment(),
-      endDate: moment().add('days', 7),
+      endDate: assignmentSettings.endDate || moment().add('days', 7),
       openPolicy: isAdmin
         ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
         : assignmentSettings.openPolicy ||
@@ -72,7 +80,7 @@ const AssignRecommendations = ({
         ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
         : assignmentSettings.closePolicy ||
           assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
-      testType: isAdmin ? COMMON : ASSESSMENT,
+      testType,
       playerSkinType: testSettings.playerSkinType,
       questionPerStandard: assignmentSettings.questionPerStandard,
       termId,
@@ -167,7 +175,7 @@ const AssignRecommendations = ({
   }
 
   const title = recommendationsToAssign.recommendations[0]?.resourceTitle
-  const handleTextAnchorClick = () =>
+  const handleAnchorClick = () =>
     setRecommendationsToAssign({
       isRecommendationAssignView: false,
     })
@@ -189,9 +197,14 @@ const AssignRecommendations = ({
         <FullFlexContainer justifyContent="space-between">
           <PaginationInfo>
             &lt;{' '}
-            <TextAnchor onClick={handleTextAnchorClick}>
-              Differentation
-            </TextAnchor>
+            <AnchorLink
+              onClick={handleAnchorClick}
+              to={`/author/playlists/playlist/${playlistId}/use-this`}
+            >
+              My Playlist
+            </AnchorLink>
+            &nbsp;/&nbsp;
+            <TextAnchor onClick={handleAnchorClick}>Differentation</TextAnchor>
             &nbsp;/&nbsp;
             <Anchor>Assign</Anchor>
           </PaginationInfo>
@@ -244,6 +257,7 @@ AssignRecommendations.propTypes = {
   clearAssignmentSettings: PropTypes.func.isRequired,
   recommendationsToAssign: PropTypes.object.isRequired,
   testSettings: PropTypes.object.isRequired,
+  playlistId: PropTypes.string.isRequired,
   defaultTestProfiles: PropTypes.object,
   isModalView: PropTypes.bool,
   isModalVisible: PropTypes.bool,

@@ -118,6 +118,7 @@ export {
   captureSentryException,
   handleChromeOsSEB,
   useLayoutEffectDebounced,
+  getRangeAtFirst,
 } from './src/helpers'
 
 // contexts

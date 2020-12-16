@@ -100,11 +100,20 @@ const QuestionAnalysis = ({
     return <SpinLoader position="fixed" />
   }
 
+  if (questionAnalysis.isRecommended) {
+    return (
+      <NoDataContainer fontSize="12px">
+        The Questions for each student have been dynamically selected and as a
+        result, question based comparison is unavailable for the assignment.
+      </NoDataContainer>
+    )
+  }
+
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
   }
 
-  if (!questionAnalysis.metricInfo?.length) {
+  if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

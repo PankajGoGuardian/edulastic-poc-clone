@@ -158,12 +158,12 @@ const PerformanceByStandards = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters },
+        requestFilters: { ...settings.requestFilters, compareBy },
         testId: settings.selectedTest.key,
       }
       getPerformanceByStandards(q)
     }
-  }, [settings])
+  }, [settings, compareBy])
 
   const setSelectedData = ({ defaultStandardId }) => {
     const _defaultStandardId =
@@ -246,7 +246,11 @@ const PerformanceByStandards = ({
     return <DataSizeExceeded />
   }
 
-  if (!report.metricInfo?.length || !report.studInfo?.length) {
+  if (
+    !report.metricInfo?.length ||
+    !report.studInfo?.length ||
+    !settings.selectedTest.key
+  ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

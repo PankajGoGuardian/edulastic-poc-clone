@@ -147,6 +147,7 @@ export const JSXBox = styled.div`
   .fr-box {
     border-radius: 4px;
     &.drag-drop {
+      width: ${({ dragDropWidth }) => dragDropWidth};
       border: 1px solid ${greyishBorder};
       &.incorrect {
         border: 1px solid

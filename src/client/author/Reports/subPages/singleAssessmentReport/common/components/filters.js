@@ -220,13 +220,13 @@ const SingleAssessmentReportFilters = ({
     setFiltersOrTestId({ testId: _testId })
     if (reportId) {
       setFirstLoad(false)
-    } else if (firstLoad) {
+    } else if (firstLoad && selected.key) {
       setFirstLoad(false)
       _onGoClick({
         filters: { ...filters },
         selectedTest: { key: _testId },
       })
-    } else {
+    } else if (selected.key) {
       setShowApply(true)
     }
   }
@@ -324,7 +324,7 @@ const SingleAssessmentReportFilters = ({
             </SearchField>
           )}
         </Collapsable>
-        <Collapsable header="student filter">
+        <Collapsable header="class filter">
           {role !== 'teacher' && (
             <>
               <SearchField>
@@ -343,6 +343,8 @@ const SingleAssessmentReportFilters = ({
                     filters.teacherIds ? filters.teacherIds.split(',') : []
                   }
                   school={filters.schoolIds}
+                  testId={testId}
+                  termId={filters.termId}
                   selectCB={(e) =>
                     updateFilterDropdownCB(e.join(','), 'teacherIds', true)
                   }

@@ -90,6 +90,7 @@ import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
+import { answersByQId } from '../../assessment/selectors/test'
 
 // constants
 
@@ -290,6 +291,8 @@ export const SET_UPDATING_TEST_FOR_REGRADE_STATE =
 export const SET_NEXT_PREVIEW_ITEM = '[test] set next preview item'
 export const GET_TESTID_FROM_VERSIONID = '[test] get testId from versionId'
 export const SET_REGRADE_FIRESTORE_DOC_ID = '[test] set regrade firestore docId'
+export const SET_CORRECT_PSSAGE_ITEMS_CREATED =
+  '[test] set correct passage items data in created items'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -481,6 +484,9 @@ export const setDefaultTestTypeProfilesAction = createAction(
 )
 export const deleteAnnotationAction = createAction(DELETE_ANNOTATION)
 export const setUndoStackAction = createAction(SET_ANNOTATIONS_STACK)
+export const setCorrectPassageItemsCreatedAction = createAction(
+  SET_CORRECT_PSSAGE_ITEMS_CREATED
+)
 
 export const defaultImage =
   'https://cdn2.edulastic.com/default/default-test-1.jpg'
@@ -1289,6 +1295,13 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         regradeFirestoreDocId: payload,
       }
+    case SET_CORRECT_PSSAGE_ITEMS_CREATED:
+      return {
+        ...state,
+        createdItems: state.createdItems.map(
+          (i) => payload.find((it) => it._id === i._id) || i
+        ),
+      }
     default:
       return state
   }
@@ -1305,7 +1318,11 @@ export const getQuestions = (itemGroups = []) => {
   for (const itemGroup of itemGroups) {
     for (const item of itemGroup.items) {
       const { questions = [], resources = [] } = item.data || {}
-      allQuestions.push(...questions, ...resources)
+      const questionsWithItemId = [...questions, ...resources].map((q) => ({
+        ...q,
+        testItemId: item._id,
+      }))
+      allQuestions.push(...questionsWithItemId)
     }
   }
   return allQuestions
@@ -2092,17 +2109,23 @@ function* setTestDataAndUpdateSaga({ payload }) {
       })
     }
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
-    const { addToTest, item } = payload
+    const { addToTest, item, passageItems = [] } = payload
     if (addToTest) {
+      if (passageItems?.length) {
+        yield put(setCorrectPassageItemsCreatedAction(passageItems))
+      }
+      const items = uniqBy([...passageItems, item], '_id')
       newTest = produce(newTest, (draft) => {
         // add only items that are already not present
-        if (
-          !draft?.itemGroups?.[currentGroupIndex]?.items?.find(
-            (x) => x._id === item._id
-          )
-        ) {
-          draft.itemGroups[currentGroupIndex].items.push(item)
-        }
+        items.forEach((i) => {
+          if (
+            !draft?.itemGroups?.[currentGroupIndex]?.items?.find(
+              (x) => x._id === i._id
+            )
+          ) {
+            draft.itemGroups[currentGroupIndex].items.push(i)
+          }
+        })
       })
     } else {
       newTest = produce(newTest, (draft) => {
@@ -2265,8 +2288,9 @@ function* getEvaluation(testItemId, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
+  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answers,
+    answersByQids,
     questions,
     itemLevelScoring,
     newScore || itemLevelScore
@@ -2277,8 +2301,9 @@ function* getEvaluationFromItem(testItem, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
+  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answers,
+    answersByQids,
     questions,
     itemLevelScoring,
     newScore || itemLevelScore

@@ -31,4 +31,5 @@ export const userPickFields = [
   'isPowerTeacher',
   'status',
   'isAdmin',
+  'refreshToken',
 ]

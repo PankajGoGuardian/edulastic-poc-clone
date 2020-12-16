@@ -166,6 +166,8 @@ export const FETCH_DIFFERENTIATION_WORK =
   '[differentiation] fetch differentiation work'
 export const SET_DIFFERENTIATION_WORK =
   '[differentiation] set differentiation work'
+export const SET_DIFFERENTIATION_SELECTED_DATA =
+  '[differentiation] set differentiation selected data'
 export const ADD_TEST_TO_DIFFERENTIATION = '[differentiation] add test'
 export const ADD_RECOMMENDATIONS_ACTIONS =
   '[differentiation] add recommendations'
@@ -293,6 +295,9 @@ export const fetchDifferentiationWorkAction = createAction(
 )
 export const setDifferentiationWorkAction = createAction(
   SET_DIFFERENTIATION_WORK
+)
+export const setDifferentiationSelectedDataAction = createAction(
+  SET_DIFFERENTIATION_SELECTED_DATA
 )
 export const addRecommendationsAction = createAction(
   ADD_RECOMMENDATIONS_ACTIONS
@@ -464,6 +469,11 @@ export const getWorkStatusDataSelector = (state) =>
 export const getRecommendationsToAssignSelector = createSelector(
   getCurriculumSequenceState,
   (curriculumSequence) => curriculumSequence.recommendationsToAssign
+)
+
+export const getDifferentiationSelectedDataSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.differentiationSelectedData
 )
 
 const getPublisher = (state) => {
@@ -1569,12 +1579,19 @@ function structureWorkData(workData, statusData, firstLoad = false) {
         })
       } else {
         draft[type].forEach((i) => {
-          const currentStatus = currentStatusArray.find(
-            (s) =>
-              (s.derivedFrom === 'STANDARDS' &&
-                s.standardIdentifiers.includes(i.standardIdentifier)) ||
-              (s.derivedFrom === 'TESTS' && s.resourceId === i.testId)
-          )
+          const currentStatus = currentStatusArray.find((s) => {
+            const isStandardRecommended =
+              s.derivedFrom === 'STANDARDS' &&
+              s.standardIdentifiers.includes(i.standardIdentifier) &&
+              (!s.skillIdentifiers ||
+                s.skillIdentifiers.includes(i.skillIdentifier))
+
+            const isTestRecommended =
+              s.derivedFrom === 'TESTS' && s.resourceId === i.testId
+
+            return isStandardRecommended || isTestRecommended
+          })
+
           if (currentStatus) {
             const { masteryRange, studentTestActivities, users } = currentStatus
             i.status = 'ADDED'
@@ -2037,6 +2054,7 @@ const initialState = {
   loadingInsights: true,
   differentiationStudentList: [],
   differentiationWork: {},
+  differentiationSelectedData: {},
   isFetchingDifferentiationWork: false,
   workStatusData: {},
 
@@ -2599,6 +2617,12 @@ export default createReducer(initialState, {
   [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
   [SET_DIFFERENTIATION_WORK]: (state, { payload }) => {
     state.differentiationWork = payload
+  },
+  [SET_DIFFERENTIATION_SELECTED_DATA]: (state, { payload }) => {
+    state.differentiationSelectedData = {
+      ...state.differentiationSelectedData,
+      ...payload,
+    }
   },
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload

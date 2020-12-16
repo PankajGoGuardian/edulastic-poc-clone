@@ -47,4 +47,8 @@ babelPreset.plugins.push.apply(babelPreset.plugins, [
   ],
 ])
 
+if (process.env.CYPRESS) {
+  babelPreset.plugins.push.apply(babelPreset.plugins, ['istanbul'])
+}
+
 module.exports = babelPreset

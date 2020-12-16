@@ -114,7 +114,11 @@ export default SortableContainer(
                 key={count}
                 extra={rightContent(group)}
               >
-                {items.map((item, index) => renderItem(item, index, group._id))}
+                {items.map(
+                  (item, index) =>
+                    item.groupId == group._id &&
+                    renderItem(item, index, group._id)
+                )}
               </Panel>
             ))}
           </GroupCollapse>

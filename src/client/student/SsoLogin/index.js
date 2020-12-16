@@ -18,9 +18,18 @@ import {
   atlasSSOLoginAction,
   googleLoginAction,
   getUserDataAction,
+  toggleRoleConfirmationPopupAction,
 } from '../Login/ducks'
+import ConfirmationModal from '../../common/components/ConfirmationModal'
 
 class SsoLogin extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      confirmationInput: '',
+    }
+  }
+
   componentDidMount() {
     const {
       location,
@@ -70,12 +79,55 @@ class SsoLogin extends React.Component {
     }
   }
 
+  handleConfirmation = () => {
+    const { googleLogin } = this.props
+    localStorage.setItem('studentRoleConfirmation', 'true')
+    googleLogin({ role: 'teacher' })
+  }
+
+  handleRejection = () => {
+    const { history, toggleRoleConfirmationPopup } = this.props
+    toggleRoleConfirmationPopup(false)
+    history.push('/login')
+  }
+
+  setConfirmationInput = (e) =>
+    this.setState({ confirmationInput: e.target.value })
+
   render() {
-    const { getUserData, googleLogin } = this.props
+    const {
+      getUserData,
+      googleLogin,
+      isRoleConfirmation,
+      email,
+      location,
+    } = this.props
+    const { confirmationInput } = this.state
+
+    const path = location.pathname.split('/')
+    const showConfirmationModal =
+      isRoleConfirmation && (path.includes('google') || path.includes('mso'))
     const reAuthenticate = () => googleLogin({ prompt: true })
     return (
       <div>
         <p>Authenticating...</p>
+        {showConfirmationModal && (
+          <ConfirmationModal
+            title="Confirm"
+            bodyText={`${email} is already registered with a Student account. Are you sure you want to register as a Teacher ?`}
+            show={isRoleConfirmation}
+            onOk={this.handleConfirmation}
+            onCancel={this.handleRejection}
+            inputVal={confirmationInput}
+            onInputChange={this.setConfirmationInput}
+            expectedVal="CONTINUE"
+            okText="Yes"
+            placeHolder="Type the text here"
+            showConfirmationText
+            hideUndoneText
+            centered
+          />
+        )}
         {this.payloadForUserData && (
           <StyledModal
             onCancel={() => getUserData(this.payloadForUserData)}
@@ -113,6 +165,8 @@ const enhance = compose(
   connect(
     (state) => ({
       user: get(state, 'user.user', null),
+      isRoleConfirmation: state.user.isRoleConfirmation,
+      email: state.user?.email || 'Email',
     }),
     {
       googleSSOLogin: googleSSOLoginAction,
@@ -121,6 +175,7 @@ const enhance = compose(
       atlasSSOLogin: atlasSSOLoginAction,
       googleLogin: googleLoginAction,
       getUserData: getUserDataAction,
+      toggleRoleConfirmationPopup: toggleRoleConfirmationPopupAction,
     }
   )
 )

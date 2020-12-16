@@ -408,12 +408,16 @@ const EditClassification = ({
   }
 
   const handlePointsChange = (val) => {
+    if (!(val > 0)) {
+      return
+    }
+    const points = parseFloat(val, 10)
     setQuestionData(
       produce(item, (draft) => {
         if (correctTab === 0) {
-          draft.validation.validResponse.score = val
+          draft.validation.validResponse.score = points
         } else {
-          draft.validation.altResponses[correctTab - 1].score = val
+          draft.validation.altResponses[correctTab - 1].score = points
         }
         updateVariables(draft)
       })
@@ -670,6 +674,7 @@ const EditClassification = ({
                 onChange={() => onUiChange('showDragHandle')(!showDragHandle)}
                 checked={!!showDragHandle}
                 mb="20px"
+                data-cy="showDragHandle"
               >
                 {t('component.cloze.imageDragDrop.showdraghandle')}
               </CheckboxLabel>
@@ -683,6 +688,7 @@ const EditClassification = ({
                 }
                 checked={!!duplicateResponses}
                 mb="20px"
+                data-cy="duplicateResponses"
               >
                 {t('component.cloze.imageDragDrop.duplicatedresponses')}
               </CheckboxLabel>
@@ -693,6 +699,7 @@ const EditClassification = ({
                 }
                 checked={!!shuffleOptions}
                 mb="20px"
+                data-cy="shuffleOptions"
               >
                 {t('component.cloze.imageDragDrop.shuffleoptions')}
               </CheckboxLabel>

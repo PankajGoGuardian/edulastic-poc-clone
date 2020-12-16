@@ -41,6 +41,9 @@ class Header {
       cy.route('POST', '**/testitem').as('createItem')
       cy.route('PUT', '**/testitem/**').as('saveItem')
       cy.route('GET', '**/testitem/**').as('reload')
+      cy.route('POST', '**/search/browse-standards').as(
+        'search-standard-after-save'
+      )
       const isNew = url.includes('questions/create')
       this.getSaveButton().click()
 
@@ -62,6 +65,9 @@ class Header {
   clickOnPublishItem = () => {
     cy.route('PUT', '**/publish?status=published').as('publish')
     cy.route('POST', '**/search/items').as('itemSearch')
+    cy.route('POST', '**/search/browse-standards').as(
+      'search-standard-after-publish'
+    )
     this.getPublishButton().click()
     cy.wait('@saveItem').then((xhr) => expect(xhr.status).to.eq(200))
     return cy.wait('@publish').then((xhr) => {

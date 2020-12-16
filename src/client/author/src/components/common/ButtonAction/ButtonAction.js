@@ -9,12 +9,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 
 import { clearAnswersAction } from '../../../actions/answers'
-import {
-  Container,
-  PreviewBar,
-  HeaderActionButton,
-  LabelText,
-} from './styled_components'
+import { Container, PreviewBar, LabelText } from './styled_components'
 import ScoreBlock from '../ScoreBlock'
 
 class ButtonAction extends Component {
@@ -61,16 +56,11 @@ class ButtonAction extends Component {
     } = this.props
     return (
       <Container showPublishButton={showPublishButton}>
-        {view === 'edit' && (
-          <PreviewBar>
-            {showSettingsButton && (
-              <HeaderActionButton htmlType="button" onClick={onShowSettings}>
-                <EduButton title="Layout" isGhost IconBtn isBlue>
-                  <IconSettings color={themeColorBlue} width={20} height={20} />
-                </EduButton>
-              </HeaderActionButton>
-            )}
-          </PreviewBar>
+        {view === 'edit' && showSettingsButton && (
+          <EduButton title="Layout" isGhost isBlue onClick={onShowSettings}>
+            <IconSettings color={themeColorBlue} width={20} height={20} />
+            LAYOUt AND GRADING
+          </EduButton>
         )}
         {view === 'preview' && (
           <PreviewBar>

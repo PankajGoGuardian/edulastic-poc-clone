@@ -251,7 +251,7 @@ export function* saveUserResponse({ payload }) {
         !answers[`${testItemId}_${question}`] &&
         !!userPrevAnswer[`${testItemId}_${question}`]
       ) {
-        itemAnswers[question] = userPrevAnswer[question]
+        itemAnswers[question] = userPrevAnswer[`${testItemId}_${question}`]
       }
       if (shuffledOptions[question]) {
         shuffles[question] = shuffledOptions[question]

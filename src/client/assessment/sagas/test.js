@@ -411,7 +411,7 @@ function* loadTest({ payload }) {
       previousQuestionActivities.forEach((item) => {
         allPrevAnswers = {
           ...allPrevAnswers,
-          [item.qid]: item.userResponse,
+          [`${item.testItemId}_${item.qid}`]: item.userResponse,
         }
         allEvaluation = {
           ...allEvaluation,

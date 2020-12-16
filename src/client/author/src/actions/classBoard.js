@@ -93,10 +93,18 @@ export const receiveStudentQuestionAction = (
   classId,
   questionId,
   studentId,
-  testItemId
+  testItemId,
+  callItemLevel
 ) => ({
   type: RECEIVE_STUDENT_QUESTION_REQUEST,
-  payload: { assignmentId, classId, questionId, studentId, testItemId },
+  payload: {
+    assignmentId,
+    classId,
+    questionId,
+    studentId,
+    testItemId,
+    callItemLevel,
+  },
 })
 
 export const receiveAnswersAction = (

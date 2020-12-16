@@ -76,6 +76,8 @@ const PerformanceByStandards = ({
   filters,
   sharedReport,
   setStandardMasteryProfile,
+  compareBy,
+  setCompareBy,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -105,9 +107,6 @@ const PerformanceByStandards = ({
 
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
-  const [compareBy, setCompareBy] = useState(
-    userRole === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
-  )
   const [standardId, setStandardId] = useState('')
   const [selectedStandards, setSelectedStandards] = useState([])
   const [selectedDomains, setSelectedDomains] = useState([])

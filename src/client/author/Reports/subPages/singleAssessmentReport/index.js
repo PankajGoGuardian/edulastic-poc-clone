@@ -34,12 +34,14 @@ import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
+import { getUserRole } from '../../../src/selectors/user'
 import {
   ReportContaner,
   SearchField,
   FilterLabel,
   FilterButtonClear,
 } from '../../common/styled'
+import { compareByMode } from './PerformanceByStandards/util/transformers'
 
 const INITIAL_DD_FILTERS = {
   gender: 'all',
@@ -70,6 +72,7 @@ const SingleAssessmentReportContainer = (props) => {
     sharingState,
     setSharingState,
     sharedReportList,
+    userRole,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -91,6 +94,20 @@ const SingleAssessmentReportContainer = (props) => {
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
   )
+  const [compareBy, setCompareBy] = useState(
+    userRole === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
+  )
+  useEffect(() => {
+    if (sharedReport?.filters?.compareBy) {
+      setCompareBy(sharedReport?.filters?.compareBy)
+    } else if (sharedReport?.sharedBy?.role) {
+      setCompareBy(
+        (sharedReport?.sharedBy?.role || userRole) === 'teacher'
+          ? compareByMode.STUDENTS
+          : compareByMode.SCHOOL
+      )
+    }
+  }, [sharedReport])
 
   const transformedSettings = useMemo(
     () => ({
@@ -235,6 +252,7 @@ const SingleAssessmentReportContainer = (props) => {
             reportFilters={{
               ...transformedSettings.requestFilters,
               testId: transformedSettings.selectedTest.key,
+              compareBy,
             }}
             showModal={sharingState}
             setShowModal={setSharingState}
@@ -333,6 +351,8 @@ const SingleAssessmentReportContainer = (props) => {
                   pageTitle={loc}
                   filters={ddfilter}
                   sharedReport={sharedReport}
+                  compareBy={compareBy}
+                  setCompareBy={setCompareBy}
                 />
               )}
             />
@@ -366,6 +386,7 @@ const ConnectedSingleAssessmentReportContainer = connect(
     cliUser: state.user?.isCliUser,
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
+    userRole: getUserRole(state),
   }),
   {
     setSARSettings: setSARSettingsAction,

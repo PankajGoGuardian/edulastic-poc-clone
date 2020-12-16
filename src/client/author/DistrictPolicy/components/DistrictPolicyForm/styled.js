@@ -58,3 +58,8 @@ export const HelperText = styled.p`
   font-size: 13px;
   color: ${textColor};
 `
+export const ConfigureButton = styled.span`
+  color: ${themeColor};
+  cursor: pointer;
+  margin-left: 5px;
+`

@@ -36,11 +36,11 @@ const packageJson = require('./package.json')
 module.exports = override(
   multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
-  process.env.BUNDLE_VISUALIZE &&
-    addBundleVisualizer({
-      generateStatsFile: true,
-      reportFilename: 'public/report.html',
-    }),
+  addBundleVisualizer({
+    generateStatsFile: true,
+    reportFilename: 'report.htm',
+    openAnalyzer: false,
+  }),
   (config) => {
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */

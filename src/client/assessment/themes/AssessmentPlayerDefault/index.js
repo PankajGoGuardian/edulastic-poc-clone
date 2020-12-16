@@ -756,6 +756,32 @@ function getScratchPadfromActivity(state, props) {
   return {}
 }
 
+function getHighlightsFromUserwork(state, props) {
+  const {
+    LCBPreviewModal = false,
+    testActivityId = '',
+    items,
+    currentItem,
+  } = props
+  const passageId = get(items, `[${currentItem}].passageId`)
+  const {
+    userWork: { present },
+  } = state
+
+  // student attempt
+  let highlights = get(present, `[${passageId}].resourceId`, null)
+
+  // LCB at show userWork
+  if (LCBPreviewModal && testActivityId) {
+    highlights = get(
+      present,
+      `[${passageId}][${testActivityId}].resourceId`,
+      null
+    )
+  }
+  return highlights
+}
+
 const enhance = compose(
   withRouter,
   withWindowSizes,
@@ -778,11 +804,7 @@ const enhance = compose(
         }].attachments`,
         null
       ),
-      highlights: get(
-        state,
-        `userWork.present[${ownProps?.passage?._id}].resourceId`,
-        null
-      ),
+      highlights: getHighlightsFromUserwork(state, ownProps),
       crossAction: get(
         state,
         `userWork.present[${

@@ -36,11 +36,12 @@ const packageJson = require('./package.json')
 module.exports = override(
   multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
- process.env.NODE_ENV === 'production' && addBundleVisualizer({
-    generateStatsFile: true,
-    reportFilename: 'report.htm',
-    openAnalyzer: false,
-  }),
+  process.env.NODE_ENV === 'production' &&
+    addBundleVisualizer({
+      generateStatsFile: true,
+      reportFilename: 'report.htm',
+      openAnalyzer: false,
+    }),
   (config) => {
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
@@ -268,29 +269,32 @@ module.exports = override(
         },
       }
       */
-     config.optimization = {
-       ...config.optimization,
-       splitChunks:{
-         ...config.optimization.splitChunks,
-         chunks: 'all',
-         maxInitialRequests: Infinity,
-         cacheGroups:{
-           ...config.optimization.splitChunks.cacheGroups,
-           'vendor-react': {
-            test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
-            name: 'vendor-react',
-            chunks: 'all',
-            enforce: true,
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          chunks: 'all',
+          maxInitialRequests: Infinity,
+          cacheGroups: {
+            ...config.optimization.splitChunks.cacheGroups,
+            default: {
+              reuseExistingChunk: true,
+            },
+            'vendor-react': {
+              test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
+              name: 'vendor-react',
+              chunks: 'all',
+              enforce: true,
+            },
+            'vendor-common': {
+              test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
+              name: 'vendor-common',
+              chunks: 'all',
+              enforce: true,
+            },
           },
-          'vendor-common': {
-            test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
-            name: 'vendor-common',
-            chunks: 'all',
-            enforce: true,
-          },
-         }
-       }
-     }
+        },
+      }
     }
 
     /** Uncomment to have a copy of files written on disk */

@@ -275,6 +275,9 @@ module.exports = override(
           maxInitialRequests: Infinity,
           cacheGroups: {
             ...config.optimization.splitChunks.cacheGroups,
+            defaultVendors:{
+              reuseExistingChunk: true,
+            },
             default: {
               reuseExistingChunk: true,
             },
@@ -283,12 +286,14 @@ module.exports = override(
             name: 'vendor-react',
             chunks: 'all',
             enforce: true,
+            reuseExistingChunk: true,
           },
           'vendor-common': {
             test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
             name: 'vendor-common',
             chunks: 'all',
             enforce: true,
+            reuseExistingChunk: true,
           },
           },
         },

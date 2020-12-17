@@ -10,6 +10,7 @@ import {
   filter,
   keys,
   uniq,
+  isEmpty,
 } from 'lodash'
 import {
   percentage,
@@ -85,6 +86,30 @@ export const getOverallMasteryPercentage = (records, maxScale) => {
     (record) => record.scale.masteryName === maxScale.masteryName
   )
   return percentage(masteredStandards.length, records.length)
+}
+
+const getScaleForMasteryCalculation = (scaleInfo = []) => {
+  let scales = scaleInfo.filter((scale) => scale.domainMastery)
+  if (isEmpty(scales)) {
+    scales = orderBy(scaleInfo, 'thresold', ['desc']).splice(0, 2)
+  }
+  return scales
+}
+
+export const getOverallDomainMasteryPercentage = (records, scales) => {
+  const masteryNames = scales.map(({ masteryName }) => masteryName)
+  const masteredStandards = filter(records, (record) =>
+    masteryNames.includes(record.scale.masteryName)
+  )
+  const { totalScore, maxScore } = masteredStandards.reduce(
+    (a, b) => {
+      a.totalScore += b.totalScore
+      a.maxScore += b.maxScore
+      return a
+    },
+    { totalScore: 0, maxScore: 0 }
+  )
+  return percentage(totalScore, maxScore)
 }
 
 export const getMasterySummary = (masteryScore, scaleInfo) => {
@@ -176,12 +201,11 @@ export const getDomains = (
   }
 
   const groupedByDomain = groupBy(metricInfo, 'domainId')
-  const maxScale = getMaxScale(scaleInfo)
-
+  const scales = getScaleForMasteryCalculation(scaleInfo)
   const domains = map(keys(groupedByDomain), (domainId) => {
     const standards = groupedByDomain[domainId]
     const { domainName = '', domain = '' } = standards[0] || {}
-    const masteryScore = getOverallMasteryPercentage(standards, maxScale)
+    const masteryScore = getOverallDomainMasteryPercentage(standards, scales)
     const masterySummary = getMasterySummary(masteryScore, scaleInfo)
 
     return {

@@ -1,6 +1,11 @@
 import React from 'react'
 import { Form, Icon, Radio, Button, message, Row } from 'antd'
-import { EduButton, notification, RadioBtn } from '@edulastic/common'
+import {
+  EduButton,
+  notification,
+  RadioBtn,
+  CheckboxLabel,
+} from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get } from 'lodash'
@@ -166,6 +171,7 @@ class StandardsProficiencyTable extends React.Component {
         shortName: row.shortName,
         threshold: row.threshold,
         color: row.color,
+        domainMastery: row.domainMastery,
       })
     })
 
@@ -218,6 +224,23 @@ class StandardsProficiencyTable extends React.Component {
     }
   }
 
+  onChangeDomainMastery = (e, key) => {
+    const { checked } = e.target
+    const { data, editingKey } = this.state
+    const newData = data.map((row) => {
+      if (row.key === key) {
+        return {
+          ...row,
+          domainMastery: !row.domainMastery,
+        }
+      }
+      return row
+    })
+
+    this.setState({ isChangeState: true })
+    this.props.setScaleData({ data: newData, _id: this.props._id })
+  }
+
   render() {
     const {
       isChangeState,
@@ -246,6 +269,23 @@ class StandardsProficiencyTable extends React.Component {
             {record.score}
           </StyledScoreDiv>
         ),
+      },
+      {
+        title: 'Domain Mastery',
+        dataIndex: 'domainMastery',
+        width: '15%',
+        render: (domainMastery, record) => {
+          const { editingKey } = this.state
+          const editable = this.isEditing(record)
+          return editable ? (
+            <CheckboxLabel
+              checked={domainMastery}
+              onChange={(e) => this.onChangeDomainMastery(e, record.key)}
+            />
+          ) : (
+            <CheckboxLabel disabled checked={domainMastery} />
+          )
+        },
       },
       {
         title: 'Mastery Level',

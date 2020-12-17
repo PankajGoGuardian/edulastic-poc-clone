@@ -122,6 +122,7 @@ export const reducer = createReducer(initialState, {
             threshold: scale[i].threshold,
             masteryLevel: scale[i].masteryLevel,
             color: scale[i].color,
+            domainMastery: scale[i].domainMastery,
           })
         }
         state.data.push({
@@ -147,6 +148,7 @@ export const reducer = createReducer(initialState, {
               masteryLevel: 'Exceeds Mastery',
               shortName: 'E',
               threshold: 90,
+              domainMastery: true,
             },
             {
               key: 1,
@@ -155,6 +157,7 @@ export const reducer = createReducer(initialState, {
               masteryLevel: 'Mastered',
               shortName: 'M',
               threshold: 80,
+              domainMastery: true,
             },
             {
               key: 2,
@@ -163,6 +166,7 @@ export const reducer = createReducer(initialState, {
               masteryLevel: 'Almost Mastered',
               shortName: 'A',
               threshold: 60,
+              domainMastery: false,
             },
             {
               key: 3,
@@ -171,6 +175,7 @@ export const reducer = createReducer(initialState, {
               masteryLevel: 'Not Mastered',
               shortName: 'N',
               threshold: 0,
+              domainMastery: false,
             },
           ],
         })

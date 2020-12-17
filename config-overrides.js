@@ -273,7 +273,7 @@ module.exports = override(
           ...config.optimization.splitChunks,
           chunks: 'all',
           maxInitialRequests: Infinity,
-          cacheGroups: {
+          /* cacheGroups: {
             ...config.optimization.splitChunks.cacheGroups,
             defaultVendors:{
               reuseExistingChunk: true,
@@ -295,7 +295,7 @@ module.exports = override(
             enforce: true,
             reuseExistingChunk: true,
           },
-          },
+          }, */ //
         },
       }
     }

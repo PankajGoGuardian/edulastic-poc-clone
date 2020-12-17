@@ -8,12 +8,12 @@ import { AutoComplete, Input, Icon, Tooltip } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 
 // ducks
-import { getUser } from '../../../../../src/selectors/user'
+import { getUser } from '../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
   getTestListLoadingSelector,
-} from '../../../../ducks'
+} from '../../../ducks'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 

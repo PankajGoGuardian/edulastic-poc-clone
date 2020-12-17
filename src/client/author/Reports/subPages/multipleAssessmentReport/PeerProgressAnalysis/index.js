@@ -61,15 +61,9 @@ const PeerProgressAnalysis = ({
   role,
   sharedReport,
 }) => {
-  const [userRole, sharedReportFilters] = useMemo(
-    () => [
-      sharedReport?.sharedBy?.role || role,
-      sharedReport?._id
-        ? { ...sharedReport.filters, reportId: sharedReport._id }
-        : null,
-    ],
-    [sharedReport]
-  )
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
   const compareByData = [...getCompareByOptions(userRole), ...options]
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
@@ -96,13 +90,7 @@ const PeerProgressAnalysis = ({
     }
   }, [pageFilters])
 
-  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
-    .testIds
-  const selectedTestIdsCount = selectedTestIdsStr
-    ? selectedTestIdsStr.split(',').length
-    : 0
-
-  const { metricInfo = [], metaInfo = [] } = get(
+  const { metricInfo = [], metaInfo = [], testsCount = 0 } = get(
     peerProgressAnalysis,
     'data.result',
     {}
@@ -135,7 +123,7 @@ const PeerProgressAnalysis = ({
     return <SpinLoader position="fixed" />
   }
 
-  if (isEmpty(selectedTestIdsStr)) {
+  if (isEmpty(metricInfo)) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
@@ -180,7 +168,7 @@ const PeerProgressAnalysis = ({
         customColumns={[studentColumn]}
         backendPagination={{
           ...pageFilters,
-          itemsCount: selectedTestIdsCount,
+          itemsCount: testsCount,
         }}
         setBackendPagination={setPageFilters}
         toolTipContent={(record) => (

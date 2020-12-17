@@ -54,9 +54,9 @@ const PDFPreview = ({
   currentAnnotationTool,
   setCurrentAnnotationTool,
   annotationToolsProperties,
-  annotationsStack,
   isEditable,
   toggleIntercomDisplay,
+  itemId,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -170,7 +170,7 @@ const PDFPreview = ({
               setOriginalDimensions={calculateInitScale}
               currentAnnotationTool={currentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
-              annotationsStack={annotationsStack}
+              annotations={annotations}
               currentPage={currentPage}
               authoringMode={viewMode === 'edit'}
             />
@@ -200,7 +200,7 @@ const PDFPreview = ({
                       questionIndex={qIndex}
                       review={review}
                       data={questionsById[questionId]}
-                      answer={answersById[questionId]}
+                      answer={answersById[`${itemId}_${questionId}`]}
                       previewMode={viewMode === 'edit' ? 'clear' : previewMode}
                       onDragStart={() => {
                         setCurrentAnnotationTool('cursor')
@@ -212,6 +212,7 @@ const PDFPreview = ({
                       annotations
                       pdfPreview
                       zoom={pdfScale}
+                      itemId={itemId}
                     />
                   </div>
                 ))}
@@ -255,7 +256,6 @@ PDFPreview.defaultProps = {
 export default connect(
   (state) => ({
     previewMode: getPreviewSelector(state),
-    annotationsStack: state.tests.annotationsStack,
   }),
   {
     removeAnswers: removeUserAnswerAction,

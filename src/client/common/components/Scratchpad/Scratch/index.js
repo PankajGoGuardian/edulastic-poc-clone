@@ -12,6 +12,7 @@ import {
   AssessmentPlayerContext,
   AnswerContext,
 } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
 import { ScratchpadContainer, ZwibblerMain } from './styled'
 import ToolBox from '../Tools'
 import {
@@ -36,6 +37,20 @@ const lineTypes = [
 ]
 
 const textTypes = [drawTools.DRAW_MATH, drawTools.DRAW_TEXT]
+function safeZwibblerLoad(zwibbler, data) {
+  try {
+    zwibbler.load(data)
+  } catch (e) {
+    try {
+      zwibbler.load(data.replace(/[^\x00-\x80]/g, ''))
+    } catch (e2) {
+      Sentry.withScope((scope) => {
+        scope.setExtra('zwibbler-data', data)
+        Sentry.captureException(e2)
+      })
+    }
+  }
+}
 
 const Scratchpad = ({
   activeMode,
@@ -328,7 +343,7 @@ const Scratchpad = ({
        * @see https://snapwiz.atlassian.net/browse/EV-17241
        */
       if (isStudentAttempt && prevItemIndex !== currentItem && data) {
-        zwibbler.load(data)
+        safeZwibblerLoad(zwibbler, data)
         setPrevItemIndex(currentItem)
       } else if (isStudentAttempt && prevItemIndex !== currentItem && !data) {
         zwibbler.newDocument()
@@ -337,7 +352,7 @@ const Scratchpad = ({
         /**
          * readonly mode views (lcb, expressGrader(edit response off), etc...)
          */
-        zwibbler.load(data)
+        safeZwibblerLoad(zwibbler, data)
       }
     }
   }, [data, zwibbler, currentItem])

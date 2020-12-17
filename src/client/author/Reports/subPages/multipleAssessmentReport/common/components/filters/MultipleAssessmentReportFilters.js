@@ -6,13 +6,12 @@ import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Spin } from 'antd'
 
-import { notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import { Collapsable } from '../../../../../common/components/widgets/Collapsable'
 import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
-import AssessmentsAutoComplete from './AssessmentAutoComplete'
+import AssessmentsAutoComplete from '../../../../../common/components/autocompletes/AssessmentsAutoComplete'
 import CourseAutoComplete from '../../../../../common/components/autocompletes/CourseAutoComplete'
 import ClassAutoComplete from '../../../../../common/components/autocompletes/ClassAutoComplete'
 import GroupsAutoComplete from '../../../../../common/components/autocompletes/GroupsAutoComplete'
@@ -113,7 +112,6 @@ const SingleAssessmentReportFilters = ({
     )
     if (reportId) {
       _onGoClick({ selectedTest: [], filters: { ...filters, ...search } })
-      setFirstLoad(false)
     } else {
       // get saved filters from backend
       const savedFilters = get(MARFilterData, 'data.result.reportFilters')
@@ -193,7 +191,12 @@ const SingleAssessmentReportFilters = ({
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
       // setTestId(urlTestIds)
       setTestId([])
+      _onGoClick({
+        filters: { ...urlParams },
+        selectedTest: [],
+      })
     }
+    setFirstLoad(false)
     // update prevMARFilterData
     setPrevMARFilterData(MARFilterData)
   }
@@ -236,19 +239,7 @@ const SingleAssessmentReportFilters = ({
 
   const onSelectTest = (selectedTestIds) => {
     setTestId(selectedTestIds)
-    if (reportId) {
-      setFirstLoad(false)
-    } else if (firstLoad) {
-      setFirstLoad(false)
-      _onGoClick({
-        filters: { ...filters },
-        selectedTest: selectedTestIds,
-      })
-    } else if (selectedTestIds.length) {
-      setShowApply(true)
-    } else {
-      notification({ type: 'warn', msg: `Test selection should not be empty` })
-    }
+    setShowApply(true)
   }
 
   return loading ? (

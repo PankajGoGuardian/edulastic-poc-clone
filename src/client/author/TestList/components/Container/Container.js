@@ -243,7 +243,7 @@ class TestList extends Component {
       sort: initSort = {},
     } = this.props
     const {
-      subject = interestedSubjects || [],
+      subject = interestedSubjects,
       grades = interestedGrades || [],
       curriculumId = firstCurriculum &&
       firstCurriculum.subject === interestedSubjects?.[0]
@@ -257,7 +257,7 @@ class TestList extends Component {
     const searchFilters = {
       ...testFilters,
       ...sessionFilters,
-      subject,
+      subject: subject || [],
       grades,
       curriculumId: parseInt(curriculumId, 10) || '',
     }

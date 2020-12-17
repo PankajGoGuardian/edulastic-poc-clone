@@ -68,8 +68,8 @@ const AdditionalFields = ({
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="active">Yes</Option>
-          <Option value="deActive">No</Option>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
         </SelectInputStyled>
       </Field>
       <Field
@@ -81,8 +81,8 @@ const AdditionalFields = ({
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="active">Yes</Option>
-          <Option value="deActive">No</Option>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
         </SelectInputStyled>
       </Field>
       <Field
@@ -94,8 +94,8 @@ const AdditionalFields = ({
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="active">Yes</Option>
-          <Option value="deActive">No</Option>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
         </SelectInputStyled>
       </Field>
       <Field
@@ -107,8 +107,8 @@ const AdditionalFields = ({
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="active">Yes</Option>
-          <Option value="deActive">No</Option>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
         </SelectInputStyled>
       </Field>
       <Field label="Race" {...restProps} fiedlName="race" initialValue={race}>

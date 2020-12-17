@@ -16,7 +16,10 @@ import {
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
-import { getSAFFilterPerformanceBandProfiles } from '../common/filterDataDucks'
+import {
+  getSAFFilterPerformanceBandProfiles,
+  setPerformanceBandProfileAction,
+} from '../common/filterDataDucks'
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
 import { TableContainer, UpperContainer } from './components/styled'
@@ -44,6 +47,7 @@ const PeerPerformance = ({
   testList,
   filters,
   sharedReport,
+  setPerformanceBandProfile,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -68,9 +72,9 @@ const PeerPerformance = ({
           profile._id ===
           (sharedReportFilters || settings.requestFilters).profileId
       )?.performanceBand ||
-      performanceBandProfiles[0]?.performanceBand ||
+      peerPerformance?.bandInfo?.performanceBand ||
       [],
-    [settings]
+    [settings, peerPerformance]
   )
 
   const [ddfilter, setDdFilter] = useState({
@@ -96,6 +100,10 @@ const PeerPerformance = ({
       getPeerPerformance(q)
     }
   }, [settings])
+
+  useEffect(() => {
+    setPerformanceBandProfile(peerPerformance?.bandInfo || {})
+  }, [peerPerformance])
 
   let { compareByDropDownData } = dropDownFormat
   compareByDropDownData = next(
@@ -280,6 +288,7 @@ const enhance = compose(
     }),
     {
       getPeerPerformance: getPeerPerformanceRequestAction,
+      setPerformanceBandProfile: setPerformanceBandProfileAction,
     }
   )
 )

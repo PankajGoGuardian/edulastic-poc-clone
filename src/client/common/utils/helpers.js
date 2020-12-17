@@ -41,7 +41,9 @@ export const isLoggedInForPrivateRoute = (user) => {
     if (
       user.user &&
       user.user.role === 'teacher' &&
-      (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
+      (user.signupStatus === signUpState.DONE ||
+        user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
+        isUndefined(user.signupStatus))
     ) {
       return true
     }
@@ -65,7 +67,9 @@ export const isLoggedInForLoggedOutRoute = (user) => {
     if (
       user.user &&
       user.user.role === 'teacher' &&
-      (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
+      (user.signupStatus === signUpState.DONE ||
+        user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
+        isUndefined(user.signupStatus))
     ) {
       return true
     }

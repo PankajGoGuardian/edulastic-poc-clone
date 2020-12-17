@@ -5,7 +5,6 @@ import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Popover, Tooltip } from 'antd'
-
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
 import { IconClockDashboard, IconHangouts, IconManage } from '@edulastic/icons'
@@ -22,7 +21,8 @@ import {
   PopoverWrapper,
   UpgradeBtn,
 } from './styled'
-import { launchHangoutOpen } from '../../duck'
+import { launchHangoutOpen } from '../../ducks'
+import CreateClassButton from '../../../ManageClass/components/CreateClassButton'
 
 const getContent = ({ setvisible, needsRenewal }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -57,6 +57,7 @@ const HeaderSection = ({
   subscription,
 }) => {
   const { subEndDate, subType } = subscription || {}
+
   useEffect(() => {
     fetchUserSubscriptionStatus()
   }, [])
@@ -90,18 +91,15 @@ const HeaderSection = ({
             <IconHangouts color={themeColor} height={21} width={19} />
           </StyledEduButton>
         </Tooltip>
-        <Tooltip title="Manage Class">
-          <Link to="/author/manageClass">
-            <EduButton
-              IconBtn
-              isBlue
-              style={{ marginLeft: '5px' }}
-              data-cy="manageClass"
-            >
-              <IconManage />
-            </EduButton>
-          </Link>
-        </Tooltip>
+        <CreateClassButton
+          style={{ marginLeft: '5px' }}
+          redirectRoute="/author/manageClass/createClass"
+        />
+        <Link to="/author/manageClass">
+          <EduButton isBlue style={{ marginLeft: '5px' }} data-cy="manageClass">
+            <IconManage /> Manage Class
+          </EduButton>
+        </Link>
         {showPopup && (
           <PopoverWrapper>
             <Popover

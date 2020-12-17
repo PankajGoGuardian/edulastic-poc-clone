@@ -57,7 +57,7 @@ export const getReportsAssessmentSummaryError = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 export const defaultReport = {
-  bandInfo: [],
+  bandInfo: {},
   metricInfo: [],
 }
 

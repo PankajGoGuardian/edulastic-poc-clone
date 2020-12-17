@@ -21,6 +21,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
+import signUpState from '@edulastic/constants/const/signUpState'
 import {
   getUserFeatures,
   getUserId,
@@ -47,7 +48,10 @@ import {
   TestStatus,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import { getIsCurator } from '../../../src/selectors/user'
+import {
+  getIsCurator,
+  getUserSignupStatusSelector,
+} from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 
 const {
@@ -165,6 +169,7 @@ const TestPageHeader = ({
   hasCollectionAccess,
   authorQuestionsById,
   isUpdatingTestForRegrade,
+  userSignupStatus,
 }) => {
   let navButtons =
     buttons ||
@@ -612,7 +617,8 @@ const TestPageHeader = ({
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers &&
-              !isEdulasticCurator && (
+              !isEdulasticCurator &&
+              userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
                 <EduButton
                   isBlue
                   data-cy="assign"
@@ -737,7 +743,8 @@ const TestPageHeader = ({
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers &&
-              !isEdulasticCurator && (
+              !isEdulasticCurator &&
+              userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
                 <EduButton
                   isBlue
                   disabled={disableButtons}
@@ -782,6 +789,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       userId: getUserId(state),
       userRole: getUserRole(state),
+      userSignupStatus: getUserSignupStatusSelector(state),
       creating: getTestsCreatingSelector(state),
       isLoadingData: shouldDisableSelector(state),
       testItems: getTestItemsSelector(state),

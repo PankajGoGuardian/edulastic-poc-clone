@@ -33,6 +33,8 @@ const TeacherAutoComplete = ({
   school: institutionId,
   selectedTeacherIds,
   selectCB,
+  testId,
+  termId,
 }) => {
   const teacherFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -54,8 +56,14 @@ const TeacherAutoComplete = ({
     if (institutionId) {
       q.institutionId = institutionId
     }
+    if (termId) {
+      q.termId = termId
+    }
+    if (testId) {
+      q.testIds = [testId]
+    }
     return q
-  }, [searchTerms.text, institutionId])
+  }, [searchTerms.text, institutionId, testId, termId])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -91,7 +99,7 @@ const TeacherAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [institutionId])
+  }, [institutionId, testId, termId])
 
   const dropdownData = (searchTerms.text ? teacherList : searchResult).map(
     (item) => {

@@ -437,9 +437,12 @@ class Variables extends Component {
             <CheckboxLabel
               data-cy="variableEnabled"
               checked={variableEnabled}
-              onChange={(e) =>
+              onChange={(e) => {
                 handleChangeVariable('enabled', e.target.checked)
-              }
+                if (e.target.checked) {
+                  generate()
+                }
+              }}
               size="large"
             >
               {t('component.options.checkVariables')}

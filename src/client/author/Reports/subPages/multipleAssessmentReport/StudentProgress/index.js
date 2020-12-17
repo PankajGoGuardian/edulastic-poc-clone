@@ -105,12 +105,6 @@ const StudentProgress = ({
     }
   }, [pageFilters])
 
-  const selectedTestIdsStr = (sharedReportFilters || settings.requestFilters)
-    .testIds
-  const selectedTestIdsCount = selectedTestIdsStr
-    ? selectedTestIdsStr.split(',').length
-    : 0
-
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [selectedTrend, setSelectedTrend] = useState('')
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
@@ -127,6 +121,7 @@ const StudentProgress = ({
   const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
 
   const metaInfo = get(studentProgress, 'data.result.metaInfo', [])
+  const testsCount = get(studentProgress, 'data.result.testsCount', 0)
   const [data, trendCount] = useGetBandData(
     filteredInfo,
     compareBy.key,
@@ -139,7 +134,7 @@ const StudentProgress = ({
     return <SpinLoader position="fixed" />
   }
 
-  if (isEmpty(selectedTestIdsStr)) {
+  if (isEmpty(filteredInfo)) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
@@ -236,7 +231,7 @@ const StudentProgress = ({
         isSharedReport={isSharedReport}
         backendPagination={{
           ...pageFilters,
-          itemsCount: selectedTestIdsCount,
+          itemsCount: testsCount,
         }}
         setBackendPagination={setPageFilters}
         toolTipContent={(record) => (

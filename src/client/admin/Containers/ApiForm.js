@@ -90,6 +90,16 @@ const ApiForm = () => {
           }
           return acc
         }, {})
+      } else if (id === 'tts') {
+        const idRegex = new RegExp(/^[0-9a-fA-F]{24}$/)
+        if (!idRegex.test(data.testId)) {
+          notification({
+            type: 'warning',
+            msg: 'Invalid test id.',
+            messageKey: 'apiFormSucc',
+          })
+          return
+        }
       }
       submit(data, option.endPoint, option.method, isSlowApi).then((res) => {
         if (res?.result) {

@@ -994,7 +994,13 @@ export const captureSentryException = (err) => {
   Sentry.captureException(err)
 }
 
+const removeImageTags = (text = '') => {
+  if (typeof text !== 'string') return text
+  return text.replace(/<img[^>]+\>/gi, '')
+}
+
 export default {
+  removeImageTags,
   sanitizeSelfClosingTags,
   getDisplayName,
   getPaginationInfo,

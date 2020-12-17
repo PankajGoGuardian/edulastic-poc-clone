@@ -14,7 +14,12 @@ import {
 } from '../../../ducks'
 
 const { DONE } = assignmentStatusOptions
-const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
+const DEFAULT_SEARCH_TERMS = {
+  text: '',
+  selectedText: '',
+  selectedKey: '',
+  searchedText: '',
+}
 
 const AssessmentAutoComplete = ({
   userDetails,
@@ -37,7 +42,8 @@ const AssessmentAutoComplete = ({
       limit: 25,
       page: 1,
       search: {
-        searchString: searchTerms.text,
+        searchString:
+          searchTerms.selectedText === searchTerms.text ? '' : searchTerms.text,
         statuses: [DONE],
         districtId,
         grades:
@@ -68,7 +74,7 @@ const AssessmentAutoComplete = ({
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    setSearchTerms({ ...searchTerms, text: value, searchedText: value })
   }
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
@@ -76,18 +82,22 @@ const AssessmentAutoComplete = ({
   )
 
   useEffect(() => {
-    if (searchTerms.selectedText) {
-      setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
-    }
-  }, [filters.termId, filters.grade, filters.subject, filters.assessmentTypes])
-  useEffect(() => {
-    if (
-      (!searchTerms.text && !searchTerms.selectedText) ||
-      searchTerms.text !== searchTerms.selectedText
-    ) {
+    if ((!searchTerms.text && !searchTerms.selectedText) || searchTerms.text) {
       loadTestListDebounced(query)
     }
   }, [query])
+  useEffect(() => {
+    if (searchTerms.selectedKey && !searchTerms.searchedText) {
+      const validTestIds = selectedTestIds.filter((testId) => {
+        return testList.find((t) => t._id === testId)
+      })
+      selectCB(validTestIds)
+    }
+    setSearchTerms({
+      ...searchTerms,
+      selectedText: searchTerms.text,
+    })
+  }, [testList])
 
   // build dropdown data
   const dropdownData = testList.map((item) => ({
@@ -97,20 +107,26 @@ const AssessmentAutoComplete = ({
     })`,
   }))
 
+  const setAssessments = (assessments) => {
+    const selectedAssessmentIds = !assessments.length
+      ? []
+      : typeof assessments === 'string'
+      ? [assessments]
+      : assessments
+    setSearchTerms({
+      ...searchTerms,
+      searchedText: '',
+      selectedKey: selectedAssessmentIds.join(','),
+    })
+    selectCB(selectedAssessmentIds)
+  }
+
   return (
     <MultiSelectSearch
       label="Test"
       placeholder="All Tests"
       el={assessmentFilterRef}
-      onChange={(selected) =>
-        selectCB(
-          !selected.length
-            ? []
-            : typeof selected === 'string'
-            ? [selected]
-            : selected
-        )
-      }
+      onChange={(selected) => setAssessments(selected)}
       onSearch={onSearch}
       value={selectedTestIds}
       options={!loading ? dropdownData : []}

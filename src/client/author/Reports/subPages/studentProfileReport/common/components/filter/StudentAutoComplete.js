@@ -23,12 +23,13 @@ const StudentAutoComplete = ({
   studentList,
   loading,
   loadStudentList,
-  selectedCourseId,
+  selectedCourseIds,
   selectedGrade,
   selectedSubject,
   selectedClasses,
   selectedStudent,
   selectCB,
+  termId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
 
@@ -49,13 +50,13 @@ const StudentAutoComplete = ({
       q.search.searchString = searchTerms.text
     }
     if (!isEmpty(selectedClasses)) {
-      q.search.groupIds = selectedClasses
+      q.search.groupIds = selectedClasses.split(',')
     }
     if (!isEmpty(institutionIds)) {
       q.institutionIds = institutionIds
     }
-    if (selectedCourseId) {
-      q.courseId = selectedCourseId
+    if (selectedCourseIds) {
+      q.courseIds = selectedCourseIds.split(',')
     }
     if (selectedGrade) {
       q.grade = selectedGrade
@@ -63,8 +64,18 @@ const StudentAutoComplete = ({
     if (selectedSubject) {
       q.subject = selectedSubject
     }
+    if (termId) {
+      q.termId = termId
+    }
     return q
-  }, [searchTerms.text])
+  }, [
+    searchTerms.text,
+    selectedClasses,
+    selectedCourseIds,
+    selectedGrade,
+    selectedSubject,
+    termId,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -97,12 +108,10 @@ const StudentAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
-    if (
-      !searchTerms.selectedText &&
-      !searchTerms.selectedKey &&
-      studentList[0]
-    ) {
-      onSelect(studentList[0]._id)
+    if (!searchTerms.selectedText && !searchTerms.selectedKey) {
+      isEmpty(studentList)
+        ? selectCB({ key: '', title: '' })
+        : onSelect(studentList[0]._id)
     }
   }, [studentList])
   useEffect(() => {
@@ -110,7 +119,13 @@ const StudentAutoComplete = ({
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
     }
     loadStudentListDebounced(query)
-  }, [selectedClasses])
+  }, [
+    selectedClasses,
+    selectedCourseIds,
+    selectedGrade,
+    selectedSubject,
+    termId,
+  ])
 
   // build dropdown data
   const dropdownData = searchTerms.text

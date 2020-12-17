@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
 import uuidv4 from 'uuid/v4'
@@ -60,6 +60,12 @@ const MathEssayInput = ({
     setLocalType(type)
   }
 
+  // input response length when using multiple lines
+  const contentLength = useMemo(
+    () => lines.reduce((acc, line) => line.text.length + acc, 0),
+    [lines]
+  )
+
   return (
     <div style={{ width: disableResponse ? 'auto' : '100%' }}>
       <MathEssayInputContext.Provider
@@ -84,6 +90,7 @@ const MathEssayInput = ({
                 }
               }}
               onChangeType={handleChangeType(i)}
+              contentLength={contentLength}
             />
           ))}
         </Wrapper>

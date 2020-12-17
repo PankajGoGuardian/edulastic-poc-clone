@@ -232,6 +232,8 @@ const SingleAssessmentReportFilters = ({
       })
     } else if (selected.key) {
       setShowApply(true)
+    } else if (firstLoad) {
+      setFirstLoad(false)
     }
   }
 

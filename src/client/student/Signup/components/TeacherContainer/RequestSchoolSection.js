@@ -41,7 +41,7 @@ const RequestSchool = (props) => {
           email: userInfo.email,
           type: userInfo.role,
           signOnMethod,
-          currentSignUpState: signupStateBykey[currentSignUpState - 1],
+          currentSignUpState: signupStateBykey[currentSignUpState],
         }
         await userApi.validateDistrictPolicy(checkDistrictPolicyPayload)
         setRequestButtonDisabled(false)

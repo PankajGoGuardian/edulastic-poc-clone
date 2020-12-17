@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { get, find, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
@@ -41,8 +41,32 @@ import {
 } from '../../../../../common/styled'
 
 import staticDropDownData from '../../../../singleAssessmentReport/common/static/staticDropDownData.json'
+import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 
 const { subjects: subjectOptions, grades: gradeOptions } = staticDropDownData
+const filtersDefaultValues = [
+  {
+    key: 'termId',
+    value: '',
+  },
+  {
+    key: 'courseIds',
+    value: '',
+  },
+  {
+    key: '',
+    nestedFilters: [
+      {
+        key: 'grade',
+        value: 'All',
+      },
+      {
+        key: 'subject',
+        value: 'All',
+      },
+    ],
+  },
+]
 
 const StudentProfileReportsFilters = ({
   style,
@@ -59,8 +83,8 @@ const StudentProfileReportsFilters = ({
   standardProficiencyRequired,
   setFilters,
   setStudent,
-  selectedClass,
-  setSelectedClass,
+  selectedClassIds,
+  setSelectedClassIds,
   defaultTerm,
   history,
   reportId,
@@ -89,7 +113,7 @@ const StudentProfileReportsFilters = ({
       find(termOptions, (term) => term.key === urlTermId) ||
       defaultTermOption ||
       {},
-    [termOptions]
+    [urlTermId]
   )
 
   const selectedGrade = useMemo(
@@ -103,11 +127,6 @@ const StudentProfileReportsFilters = ({
     [urlSubject]
   )
 
-  const selectedClasses = useMemo(
-    () => (selectedClass.key ? [selectedClass.key] : []),
-    [selectedClass]
-  )
-
   const profiles = get(SPRFilterData, 'data.result.bandInfo', [])
   const scales = get(SPRFilterData, 'data.result.scaleInfo', [])
   const standardProficiencyList = useMemo(
@@ -117,7 +136,7 @@ const StudentProfileReportsFilters = ({
 
   useEffect(() => {
     if (SPRFilterData !== prevSPRFilterData) {
-      if (urlStudentId && urlTermId) {
+      if (urlStudentId && selectedTerm.key) {
         const q = {
           termId: urlTermId,
           studentId: urlStudentId,
@@ -144,9 +163,9 @@ const StudentProfileReportsFilters = ({
 
     const _filters = {
       ...filters,
-      termId: selectedTerm.key,
-      grade: selectedGrade.key,
-      subject: selectedSubject.key,
+      termId: filters.termId || selectedTerm.key,
+      grade: filters.grade || selectedGrade.key,
+      subject: filters.subject || selectedSubject.key,
       reportId,
       // uncomment after making changes to chart files
       // performanceBandProfileId: selectedProfile,
@@ -173,23 +192,36 @@ const StudentProfileReportsFilters = ({
       }
       history.push(`${_reportPath}/${item.key}?${qs.stringify(_filters)}`)
       getSPRFilterDataRequest({
-        termId: filters.termId,
+        termId: filters.termId || selectedTerm.key,
         studentId: item.key,
+      })
+    } else {
+      _onGoClick({
+        filters,
+        selectedStudent: item,
       })
     }
   }
 
-  const handleFilterChange = (field, { key }) => {
-    const obj = {
-      ...filters,
-      [field]: key,
+  const resetSPRFilters = useCallback(
+    (prevFilters, key, selected, multiple) => {
+      const index = filtersDefaultValues.findIndex((s) => s.key === key)
+      resetFilters(prevFilters, key, selected, multiple, filtersDefaultValues)
+      if (
+        prevFilters[key] !== (multiple ? selected : selected.key) &&
+        (index !== -1 || ['grade', 'subject'].includes(key))
+      ) {
+        setStudent({ key: '', title: '' })
+        setSelectedClassIds('')
+      }
     }
+  )
+
+  const handleFilterChange = (field, value, multiple = false) => {
+    const obj = { ...filters }
+    resetSPRFilters(obj, field, value, multiple)
+    obj[field] = multiple ? value : value.key
     setFilters(obj)
-    const settings = {
-      filters: pickBy(obj, (f) => f !== 'All' && !isEmpty(f)),
-      selectedStudent: student,
-    }
-    _onGoClick(settings)
   }
 
   return (
@@ -208,10 +240,13 @@ const StudentProfileReportsFilters = ({
         />
       </SearchField>
       <SearchField>
-        <FilterLabel>Course</FilterLabel>
         <CourseAutoComplete
-          selectedCourseId={filters.courseId}
-          selectCB={(value) => handleFilterChange('courseId', value)}
+          selectedCourseIds={
+            filters.courseIds ? filters.courseIds.split(',') : []
+          }
+          selectCB={(value) =>
+            handleFilterChange('courseIds', value.join(','), true)
+          }
         />
       </SearchField>
       <SearchField>
@@ -235,22 +270,23 @@ const StudentProfileReportsFilters = ({
         />
       </SearchField>
       <SearchField>
-        <FilterLabel>Class</FilterLabel>
         <ClassAutoComplete
-          selectedCourseId={filters.courseId}
+          termId={filters.termId}
+          selectedCourseIds={filters.courseIds}
           selectedGrade={filters.grade !== 'All' && filters.grade}
           selectedSubject={filters.subject !== 'All' && filters.subject}
-          selectedClass={selectedClass}
-          selectCB={setSelectedClass}
+          selectedClassIds={selectedClassIds ? selectedClassIds.split(',') : []}
+          selectCB={(classIds) => setSelectedClassIds(classIds.join(','))}
         />
       </SearchField>
       <SearchField>
         <FilterLabel>Student</FilterLabel>
         <StudentAutoComplete
-          selectedCourseId={filters.courseId}
+          termId={filters.termId || selectedTerm.key}
+          selectedCourseIds={filters.courseIds}
           selectedGrade={filters.grade !== 'All' && filters.grade}
           selectedSubject={filters.subject !== 'All' && filters.subject}
-          selectedClasses={selectedClasses}
+          selectedClasses={selectedClassIds}
           selectedStudent={student}
           selectCB={onStudentSelect}
         />
@@ -292,7 +328,7 @@ const enhance = connect(
     SPRFilterData: getReportsSPRFilterData(state),
     filters: getFiltersSelector(state),
     student: getStudentSelector(state),
-    selectedClass: getSelectedClassSelector(state),
+    selectedClassIds: getSelectedClassSelector(state),
     role: getUserRole(state),
     prevSPRFilterData: getReportsPrevSPRFilterData(state),
     loading: getReportsSPRFilterLoadingState(state),
@@ -306,7 +342,7 @@ const enhance = connect(
     receiveStudentsListAction,
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
-    setSelectedClass: setSelectedClassAction,
+    setSelectedClassIds: setSelectedClassAction,
   }
 )
 

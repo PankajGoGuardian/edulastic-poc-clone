@@ -8,6 +8,7 @@ import Tags from '../../../../../src/components/common/Tags'
 import {
   getInterestedCurriculumsSelector,
   getCollectionsToAddContent,
+  getItemBucketsForAllCollectionsSelector,
 } from '../../../../../src/selectors/user'
 import {
   getDisableAnswerOnPaperSelector as hasRandomQuestionsSelector,
@@ -51,14 +52,19 @@ const ReviewSummary = ({
   hasRandomQuestions,
   isPublishers,
   collectionsToShow,
+  allCollectionsList,
 }) => {
   const questionsCount = summary?.totalItems || 0
   const totalPoints = summary?.totalPoints || 0
+  const collectionListToUse =
+    !owner && !isEditable ? allCollectionsList : collectionsToShow
 
   const filteredCollections = useMemo(
     () =>
-      collections.filter((c) => collectionsToShow.some((o) => o._id === c._id)),
-    [collections, collectionsToShow]
+      collections.filter((c) =>
+        collectionListToUse.some((o) => o._id === c._id)
+      ),
+    [collections, collectionListToUse]
   )
 
   const skillIdentifiers = (metadata?.skillIdentifiers || []).join(',')
@@ -136,7 +142,7 @@ const ReviewSummary = ({
             }
             margin="0px 0px 15px"
           >
-            {collectionsToShow?.map((o) => (
+            {collectionListToUse?.map((o) => (
               <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                 {`${o.collectionName} - ${o.name}`}
               </Select.Option>
@@ -271,6 +277,7 @@ export default connect(
     hasRandomQuestions: hasRandomQuestionsSelector(state),
     summary: getTestSummarySelector(state),
     collectionsToShow: getCollectionsToAddContent(state),
+    allCollectionsList: getItemBucketsForAllCollectionsSelector(state),
   }),
   null
 )(ReviewSummary)

@@ -187,7 +187,7 @@ const StudentMasteryProfile = ({
     setClickedStandard(undefined)
   }
 
-  if (isEmpty(studInfo)) {
+  if (isEmpty(studInfo) || !settings.selectedStudent?.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 

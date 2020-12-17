@@ -120,7 +120,8 @@ const StudentAssessmentProfile = ({
     isEmpty(districtAvg) ||
     isEmpty(groupAvg) ||
     isEmpty(metricInfo) ||
-    isEmpty(schoolAvg)
+    isEmpty(schoolAvg) ||
+    !settings.selectedStudent?.key
   ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }

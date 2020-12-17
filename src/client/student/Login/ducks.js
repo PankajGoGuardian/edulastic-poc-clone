@@ -1331,7 +1331,6 @@ function* googleSSOLogin({ payload }) {
     if (e.status === 409) {
       const email = get(e, 'response.data.email', 'Email')
       yield put(toggleRoleConfirmationPopupAction(email))
-      notification({ msg: errorMessage })
       return
     }
     if (errorMessage === 'signInUserNotFound') {
@@ -1397,6 +1396,12 @@ function* msoLogin({ payload }) {
 function* msoSSOLogin({ payload }) {
   const _payload = { ...payload }
 
+  const isAllowed = localStorage.getItem('studentRoleConfirmation')
+  if (isAllowed) {
+    _payload.isTeacherAllowed = true
+    localStorage.removeItem('studentRoleConfirmation')
+  }
+
   let generalSettings = localStorage.getItem('thirdPartySignOnGeneralSettings')
   if (generalSettings) {
     generalSettings = JSON.parse(generalSettings)
@@ -1418,6 +1423,11 @@ function* msoSSOLogin({ payload }) {
     yield put(getUserDataAction(res))
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'MSO Login failed')
+    if (e.status === 409) {
+      const email = get(e, 'response.data.email', 'Email')
+      yield put(toggleRoleConfirmationPopupAction(email))
+      return
+    }
     if (errorMessage === 'signInUserNotFound') {
       yield put(push(getStartedUrl()))
       notification({ type: 'warn', messageKey: 'signInUserNotFound' })

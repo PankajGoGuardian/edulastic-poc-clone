@@ -172,7 +172,8 @@ const StudentProfileSummary = ({
     isEmpty(asessmentMetricInfo) ||
     isEmpty(metricInfo) ||
     isEmpty(skillInfo) ||
-    isEmpty(studInfo)
+    isEmpty(studInfo) ||
+    !settings.selectedStudent?.key
   ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }

@@ -1,4 +1,8 @@
-import { MathKeyboard, reformatMathInputLatex } from '@edulastic/common'
+import {
+  MathKeyboard,
+  reformatMathInputLatex,
+  notification,
+} from '@edulastic/common'
 import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
@@ -7,6 +11,7 @@ import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
 
 const { EMBED_RESPONSE, keyboardMethods } = math
+const MAX_CONTENT_LENGTH = 1200
 
 class MathInput extends React.PureComponent {
   state = {
@@ -116,6 +121,7 @@ class MathInput extends React.PureComponent {
         textarea.addEventListener('keyup', this.handleChangeField)
         textarea.addEventListener('keypress', this.handleKeypress)
         textarea.addEventListener('keydown', this.handleTabKey, false)
+        textarea.addEventListener('paste', this.handlePaste)
         if (isDocbasedSection) {
           textarea.addEventListener('blur', handleDocBasedBlur, false)
         }
@@ -158,9 +164,39 @@ class MathInput extends React.PureComponent {
     return { x, y }
   }
 
-  handleTabKey = (e) => {
-    if (e?.keyCode === 9) {
+  maxContentLimit = (textLength) => {
+    return textLength >= MAX_CONTENT_LENGTH
+  }
+
+  handlePaste = (evt) => {
+    const { contentLength } = this.props
+    const clipData = evt.clipboardData || window.clipboardData
+    const clipText = clipData.getData('text/plain') || ''
+    const text = clipText + this.mQuill.latex()
+
+    // Checks max limit on pasting
+    if (
+      this.maxContentLimit(text.length) ||
+      this.maxContentLimit(contentLength + clipText?.length)
+    ) {
+      evt.preventDefault()
+      notification({ messageKey: 'maxContentLimit' })
+    }
+  }
+
+  handleTabKey = (evt) => {
+    // Checks max limit on keypress
+    const { contentLength } = this.props
+
+    if ([8, 9].includes(evt?.keyCode)) {
       this.setState({ mathFieldFocus: false })
+    }
+    const text = this.mQuill.latex() || ''
+    if (
+      this.maxContentLimit(text.length) ||
+      this.maxContentLimit(contentLength)
+    ) {
+      evt.preventDefault()
     }
   }
 
@@ -220,8 +256,19 @@ class MathInput extends React.PureComponent {
 
   onInput = (key, command = 'cmd', numToMove) => {
     const { mathField } = this.state
+    const { contentLength } = this.props
 
     if (!mathField) return
+
+    const text = reformatMathInputLatex(mathField.latex()) || ''
+
+    // Checks max limit when using math keyboard
+    if (
+      this.maxContentLimit(text.length) ||
+      this.maxContentLimit(contentLength)
+    ) {
+      return ''
+    }
 
     switch (key) {
       case 'in':
@@ -445,6 +492,7 @@ MathInput.propTypes = {
   restrictKeys: PropTypes.array,
   allowNumericOnly: PropTypes.bool,
   customKeys: PropTypes.array,
+  contentLength: PropTypes.number,
 }
 
 MathInput.defaultProps = {
@@ -466,6 +514,7 @@ MathInput.defaultProps = {
   fullWidth: false,
   className: '',
   symbols: [],
+  contentLength: 0,
 }
 
 export default MathInput

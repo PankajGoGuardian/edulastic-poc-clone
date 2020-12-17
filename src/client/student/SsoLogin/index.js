@@ -19,6 +19,7 @@ import {
   googleLoginAction,
   getUserDataAction,
   toggleRoleConfirmationPopupAction,
+  msoLoginAction,
 } from '../Login/ducks'
 import ConfirmationModal from '../../common/components/ConfirmationModal'
 
@@ -80,9 +81,15 @@ class SsoLogin extends React.Component {
   }
 
   handleConfirmation = () => {
-    const { googleLogin } = this.props
+    const { googleLogin, msoLogin, location } = this.props
+    const path = location.pathname.split('/')
     localStorage.setItem('studentRoleConfirmation', 'true')
-    googleLogin({ role: 'teacher' })
+    if (path.includes('google')) {
+      googleLogin({ role: 'teacher' })
+    }
+    if (path.includes('mso')) {
+      msoLogin({ role: 'teacher' })
+    }
   }
 
   handleRejection = () => {
@@ -113,15 +120,15 @@ class SsoLogin extends React.Component {
         <p>Authenticating...</p>
         {showConfirmationModal && (
           <ConfirmationModal
-            title="Confirm"
-            bodyText={`${email} is already registered with a Student account. Are you sure you want to register as a Teacher ?`}
+            title="Confirm Teacher Signup"
+            bodyText={`The email ${email} is already registered as a student in Edulastic. Are you sure you want to continue registering as a teacher? If so, type "CONTINUE" in the field below and proceed.`}
             show={isRoleConfirmation}
             onOk={this.handleConfirmation}
             onCancel={this.handleRejection}
             inputVal={confirmationInput}
             onInputChange={this.setConfirmationInput}
             expectedVal="CONTINUE"
-            okText="Yes"
+            okText="CONFIRM"
             placeHolder="Type the text here"
             showConfirmationText
             hideUndoneText
@@ -174,6 +181,7 @@ const enhance = compose(
       msoSSOLogin: msoSSOLoginAction,
       atlasSSOLogin: atlasSSOLoginAction,
       googleLogin: googleLoginAction,
+      msoLogin: msoLoginAction,
       getUserData: getUserDataAction,
       toggleRoleConfirmationPopup: toggleRoleConfirmationPopupAction,
     }

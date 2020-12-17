@@ -154,7 +154,7 @@ class ProfileBody extends React.Component {
       firstName: isEditProfile ? getFieldValue('firstName') : user.firstName,
       lastName: isEditProfile ? getFieldValue('lastName') : user.lastName,
       title: isEditProfile ? getFieldValue('title') : user.title,
-      currentSignUpState: signupStateBykey[currentSignUpState - 1],
+      currentSignUpState: signupStateBykey[currentSignUpState],
     }
     if (showChangePassword) data.password = getFieldValue('password')
 

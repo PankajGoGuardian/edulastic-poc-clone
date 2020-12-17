@@ -164,22 +164,33 @@ export const getWritableCollectionsSelector = createSelector(
     )
 )
 
+export const convertCollectionsToBucketList = (collections) => {
+  const flatttenBuckets = collections.flatMap((collection) =>
+    collection.buckets.map((bucket) => ({
+      ...bucket,
+      _id: collection._id,
+      bucketId: bucket._id,
+      collectionStatus: collection.status,
+      collectionName: collection.name,
+      collectionDescription: collection.description,
+      accessLevel: collection.accessLevel || '',
+      districtId: collection.districtId,
+    }))
+  )
+  return flatttenBuckets || []
+}
+
 export const getItemBucketsSelector = createSelector(
   getCustomCollectionsSelector,
   (state) => {
-    const flatttenBuckets = state.flatMap((collection) =>
-      collection.buckets.map((bucket) => ({
-        ...bucket,
-        _id: collection._id,
-        bucketId: bucket._id,
-        collectionStatus: collection.status,
-        collectionName: collection.name,
-        collectionDescription: collection.description,
-        accessLevel: collection.accessLevel || '',
-        districtId: collection.districtId,
-      }))
-    )
-    return flatttenBuckets
+    return convertCollectionsToBucketList(state)
+  }
+)
+
+export const getItemBucketsForAllCollectionsSelector = createSelector(
+  getCollectionsSelector,
+  (state) => {
+    return convertCollectionsToBucketList(state)
   }
 )
 

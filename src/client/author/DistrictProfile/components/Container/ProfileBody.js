@@ -20,6 +20,7 @@ import {
   EduButton,
   EduSwitchStyled,
 } from '@edulastic/common'
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import { withNamespaces } from '@edulastic/localization'
 import { Form, Icon, Input, Select, Tag, Modal } from 'antd'
 import produce from 'immer'
@@ -134,6 +135,7 @@ class ProfileBody extends React.Component {
       form: { getFieldValue },
       user,
       updateUserDetails,
+      userInfo: { currentSignUpState },
     } = this.props
     const { showChangePassword, isEditProfile } = this.state
     const isnotNormalLogin =
@@ -152,6 +154,7 @@ class ProfileBody extends React.Component {
       firstName: isEditProfile ? getFieldValue('firstName') : user.firstName,
       lastName: isEditProfile ? getFieldValue('lastName') : user.lastName,
       title: isEditProfile ? getFieldValue('title') : user.title,
+      currentSignUpState: signupStateBykey[currentSignUpState - 1],
     }
     if (showChangePassword) data.password = getFieldValue('password')
 

@@ -97,13 +97,14 @@ const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend
 
 function CheckRoutePatternsEffectContainer ({ role, location, history }) {
   useEffect(() => {
+	console.log('route path effects',{role,pathname: location.pathname });
     if (
       (role === 'student' || role == 'parent') &&
       location.pathname.startsWith('/author')
     ) {
-      history.push(
-        location.pathname.replace('author', 'home') || '/home/assignments'
-      )
+    //   history.push(
+    //     location.pathname.replace('author', 'home') || '/home/assignments'
+    //   )
     } else if (
       role !== 'student' &&
       role !== 'parent' &&
@@ -159,11 +160,7 @@ class App extends Component {
       shouldWatch
     } = this.props
 
-    const publicPath =
-      location.pathname.split('/').includes('public') ||
-      location.pathname.includes('/fwd') ||
-      isLocationInTestRedirectRoutes(location) ||
-      location.pathname.includes('/kid')
+    const publicPath = false;
 
     if (
       !publicPath &&
@@ -202,10 +199,10 @@ class App extends Component {
             }}
           >
             <Switch>
-              {location.pathname.toLocaleLowerCase() !==
+              {/* {location.pathname.toLocaleLowerCase() !==
                 redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
                 <Redirect exact to={redirectRoute} />
-              ) : null}
+              ) : null} */}
 
               <PrivateRoute
                 path='/home'

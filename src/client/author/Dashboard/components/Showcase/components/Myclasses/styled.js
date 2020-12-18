@@ -38,6 +38,9 @@ export const ScrollbarContainer = styled.div`
     transition: 0.2s;
     padding-bottom: 14px;
   }
+  .ps__rail-x {
+    display: none;
+  }
 `
 export const PrevButton = styled.div`
   position: absolute;

@@ -9,9 +9,10 @@ const { evaluationSettings } = mathConstants
 const LiterallyEquivalent = ({
   method,
   onChangeOption,
-  onChangeAllowedOptions,
   options,
+  onChange,
   useTemplate,
+  onChangeAllowedOptions,
   allowNumericOnly,
   allowedVariables,
 }) => {
@@ -24,11 +25,12 @@ const LiterallyEquivalent = ({
           key={key}
           optionKey={key}
           options={options}
+          onChange={onChange}
           useTemplate={useTemplate}
           allowNumericOnly={allowNumericOnly}
+          onChangeOption={onChangeOption}
           allowedVariables={allowedVariables}
           onChangeAllowedOptions={onChangeAllowedOptions}
-          onChangeOption={onChangeOption}
         />
       ))}
     </Container>

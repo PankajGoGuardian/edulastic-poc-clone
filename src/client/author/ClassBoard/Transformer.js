@@ -25,14 +25,20 @@ export const markQuestionLabel = (testItems) => {
       item.data.questions[0].qLabel = i + 1
       item.data.questions[0].barLabel = `Q${i + 1}`
     } else if (item.isDocBased) {
+      let qIndex = 0
       item.data.questions = item.data.questions
-        .filter((q) => q.type !== questionType.SECTION_LABEL)
         .sort((a, b) => a.qIndex - b.qIndex)
-        .map((q, qIndex) => ({
-          ...q,
-          qLabel: `Q${qIndex + 1}`,
-          barLabel: `Q${qIndex + 1}`,
-        }))
+        .map((q) => {
+          if (q.type === questionType.SECTION_LABEL) {
+            return q
+          }
+          qIndex++
+          return {
+            ...q,
+            qLabel: `Q${qIndex}`,
+            barLabel: `Q${qIndex}`,
+          }
+        })
     } else {
       item.data.questions = item.data.questions.map((q, qIndex) => ({
         ...q,

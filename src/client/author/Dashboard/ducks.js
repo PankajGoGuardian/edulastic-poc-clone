@@ -91,11 +91,11 @@ function* fetchDashboardTilesSaga() {
     const result = yield call(configurableTilesApi.fetchTiles, +version)
     if (!version || version !== result.version) {
       yield put(setDashboardTiles(result.data))
-      window.localStorage.setItem(
+      localStorage.setItem(
         'author:dashboard:tiles',
         JSON.stringify(result.data)
       )
-      window.localStorage.setItem('author:dashboard:version', +result.version)
+      localStorage.setItem('author:dashboard:version', +result.version)
     }
   } catch (err) {
     const errorMessage = 'Unable to fetch dashboard details.'

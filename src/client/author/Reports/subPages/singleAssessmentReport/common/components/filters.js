@@ -242,7 +242,7 @@ const SingleAssessmentReportFilters = ({
     resetStudentFilters(_filters, keyName, selected, multiple)
     _filters[keyName] = multiple ? selected : selected.key
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
-    setFiltersOrTestId({ filters: _filters })
+    setFiltersOrTestId({ filters: _filters, testId })
     setShowApply(true)
   }
 

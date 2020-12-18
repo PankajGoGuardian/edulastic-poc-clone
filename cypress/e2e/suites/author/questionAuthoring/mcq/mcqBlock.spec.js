@@ -119,6 +119,8 @@ describe(`${FileHelper.getSpecName(
 
       question.getPanalty().verifyNumInput(0.5)
 
+      /* 
+      unscore feature hidden temporarily
       question
         .getUnscore()
         .click()
@@ -130,6 +132,7 @@ describe(`${FileHelper.getSpecName(
         .getUnscore()
         .click()
         .should('not.have.class', 'ant-checkbox-checked')
+      */
     })
 
     it(' > [Tc_305]:test => Display', () => {
@@ -272,6 +275,8 @@ describe(`${FileHelper.getSpecName(
 
       question.getPanalty().verifyNumInput(0.5)
 
+      /* 
+      unscore feature hidden temporarily
       question
         .getUnscore()
         .click()
@@ -283,6 +288,7 @@ describe(`${FileHelper.getSpecName(
         .getUnscore()
         .click()
         .should('not.have.class', 'ant-checkbox-checked')
+      */
     })
 
     it(' > [Tc_312]:test => Display', () => {

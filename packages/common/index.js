@@ -119,6 +119,7 @@ export {
   handleChromeOsSEB,
   useLayoutEffectDebounced,
   getRangeAtFirst,
+  replaceLatexTemplate,
 } from './src/helpers'
 
 // contexts

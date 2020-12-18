@@ -60,6 +60,7 @@ const defaultData = {
       threshold: 90,
       masteryLevel: 'Exceeds Mastery',
       color: '#F39300',
+      domainMastery: true,
     },
     {
       score: 3,
@@ -67,6 +68,7 @@ const defaultData = {
       threshold: 80,
       masteryLevel: 'Mastered',
       color: '#3DB04E',
+      domainMastery: true,
     },
     {
       score: 2,
@@ -74,6 +76,7 @@ const defaultData = {
       threshold: 70,
       masteryLevel: 'Almost Mastered',
       color: '#EBDD54',
+      domainMastery: false,
     },
     {
       score: 1,
@@ -81,6 +84,7 @@ const defaultData = {
       threshold: 0,
       masteryLevel: 'Not Mastered',
       color: '#B22222',
+      domainMastery: false,
     },
   ],
 }

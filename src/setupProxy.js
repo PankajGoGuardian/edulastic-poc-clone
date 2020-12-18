@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 
 const rootPath = path.join(__dirname, '..', 'dist', 'login', 'index.html')
+const studentPath = path.join(__dirname, '..', 'dist', 'students', 'index.html')
 const router = express.Router()
 
 router.get('/', (req, res, next) => {
@@ -68,6 +69,11 @@ router.get('/partnerLogin/:partner/AdminSignup', (_, res) => {
 router.get('/partnerLogin/:partner/StudentSignup', (_, res) => {
   res.set('cache-control', 'no-store')
   res.sendFile(rootPath)
+})
+
+router.get('/home*',(_,res)=>{
+  res.set('cache-control', 'no-store');
+  res.sendFile(studentPath);
 })
 
 module.exports = (app) => {

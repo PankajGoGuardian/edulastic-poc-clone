@@ -20,6 +20,11 @@ const multipleEntry = require('react-app-rewire-multiple-entry')([
     template: 'public/login/index.html',
     outPath: '/login/index.html',
   },
+  {
+    entry: 'src/studentEntry.js',
+    template: 'public/students/index.html',
+    outPath: '/students/index.html',
+  },
 ])
 
 const packageJson = require('./package.json')

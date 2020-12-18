@@ -382,7 +382,6 @@ class App extends Component {
       _userRole = 'Content Author'
     }
     // signup routes hidden till org reference is not done
-
     const { showAppUpdate, canShowCliBanner } = this.state
     return (
       <div>

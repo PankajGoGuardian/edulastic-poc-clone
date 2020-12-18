@@ -134,11 +134,17 @@ const StudentAutoComplete = ({
           key="studentList"
           label="Students [Type to search]"
         >
-          {studentList.map((item) => (
-            <AutoComplete.Option key={item._id} title={getFullName(item)}>
-              {getFullName(item)}
-            </AutoComplete.Option>
-          ))}
+          {isEmpty(studentList)
+            ? [
+                <AutoComplete.Option disabled key={0} title="no data found">
+                  No Data Found
+                </AutoComplete.Option>,
+              ]
+            : studentList.map((item) => (
+                <AutoComplete.Option key={item._id} title={getFullName(item)}>
+                  {getFullName(item)}
+                </AutoComplete.Option>
+              ))}
         </AutoComplete.OptGroup>,
       ]
     : []

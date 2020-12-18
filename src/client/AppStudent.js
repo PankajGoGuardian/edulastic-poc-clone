@@ -3,7 +3,8 @@ import {  isEmpty } from 'lodash'
 import qs from 'qs'
 import queryString from 'query-string'
 import PropTypes from 'prop-types'
-import { Switch, Redirect, withRouter } from 'react-router-dom'
+import { Switch, Redirect, withRouter, Route } from 'react-router-dom'
+import { test, signUpState, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { DndProvider } from 'react-dnd'
 import TouchBackend from 'react-dnd-touch-backend'
@@ -34,6 +35,12 @@ import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 
 const Dashboard = lazy(() =>
   import(/* webpackChunkName: "student" */ './student/app')
+)
+
+const { ASSESSMENT, PRACTICE, TESTLET } = test.type
+// route wise splitting
+const AssessmentPlayer = lazy(() =>
+  import(/* webpackChunkName: "assessmentPlayer" */ './assessment/index')
 )
 
 const Loading = () => (
@@ -210,6 +217,40 @@ class App extends Component {
                 notifications={[NotificationListener]}
                 redirectPath={redirectRoute}
               />
+
+<PrivateRoute
+                path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+                component={TestAttemptReview}
+              />
+              <Route
+                path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <Route
+                path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <Route
+                path={`/student/${ASSESSMENT}/:id`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <PrivateRoute
+                path="/student/test-summary"
+                component={TestAttemptReview}
+              />
+              <Route
+                path="/student/seb-quit-confirm"
+                component={SebQuitConfirm}
+              />
+              <Route
+                path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP={false} />}
+              />
+              <Route
+                path={`/student/${PRACTICE}/:id`}
+                render={() => <AssessmentPlayer defaultAP={false} />}
+              />
+
             </Switch>
           </DndProvider>
         </Suspense>

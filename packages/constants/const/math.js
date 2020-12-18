@@ -317,12 +317,12 @@ const interpret = [
   'interpretAsList',
 ]
 const fractionForms = [
-  'isSimplified',
+  'isSimplifiedFraction',
   'isMixedFraction',
   'isImproperFraction',
   'isRationalized',
 ]
-const expressionForms = ['isFactorised', 'isExpanded']
+const expressionForms = ['isSimplified', 'isFactorised', 'isExpanded']
 const numberFormat = [
   'integerType',
   // 'numberType',

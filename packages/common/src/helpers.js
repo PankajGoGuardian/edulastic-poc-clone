@@ -999,6 +999,13 @@ const removeImageTags = (text = '') => {
   return text.replace(/<img[^>]+\>/gi, '')
 }
 
+export const replaceLatexTemplate = (str) => {
+  return str.replace(
+    /#{(.*?)#}/g,
+    '<span class="input__math" data-latex="$1"></span>'
+  )
+}
+
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1026,4 +1033,5 @@ export default {
   uuid,
   getSanitizedProps,
   captureSentryException,
+  replaceLatexTemplate,
 }

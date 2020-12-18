@@ -4,6 +4,27 @@ import PropTypes from 'prop-types'
 import { CheckboxLabel, TextInputStyled } from '@edulastic/common'
 import LabelWithHelper from './LabelWithHelper'
 
+const validations = {
+  tolerance: (value = '') => {
+    if (!value) {
+      return true
+    }
+    return /^\+?(0|[1-9]\d*)?%?$/.test(value)
+  },
+  isIn: (value = '') => {
+    if (!value) {
+      return true
+    }
+    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
+  },
+  satisfies: (value = '') => {
+    if (!value) {
+      return true
+    }
+    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
+  },
+}
+
 const InputOption = ({ options, onChange, optionKey, inputType }) => {
   const [isAllowed, setIsAllowed] = useState(false)
 
@@ -14,7 +35,15 @@ const InputOption = ({ options, onChange, optionKey, inputType }) => {
     }
   }
 
-  const onChangeInput = (e) => onChange(optionKey, e.target.value)
+  const onChangeInput = (e) => {
+    let valid = true
+    if (validations[optionKey]) {
+      valid = validations[optionKey](e.target.value)
+    }
+    if (valid) {
+      onChange(optionKey, e.target.value)
+    }
+  }
 
   useEffect(() => {
     if (options[optionKey]) {

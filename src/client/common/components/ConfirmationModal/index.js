@@ -20,7 +20,7 @@ const ConfirmationModal = ({
   show,
   onOk,
   onCancel,
-  inputVal = '',
+  inputVal,
   onInputChange,
   expectedVal,
   bodyText,

@@ -21,16 +21,8 @@ import {
   toggleRoleConfirmationPopupAction,
   msoLoginAction,
 } from '../Login/ducks'
-import ConfirmationModal from '../../common/components/ConfirmationModal'
 
 class SsoLogin extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      confirmationInput: '',
-    }
-  }
-
   componentDidMount() {
     const {
       location,
@@ -102,18 +94,7 @@ class SsoLogin extends React.Component {
     this.setState({ confirmationInput: e.target.value })
 
   render() {
-    const {
-      getUserData,
-      googleLogin,
-      isRoleConfirmation,
-      email,
-      location,
-    } = this.props
-    const { confirmationInput } = this.state
-
-    const path = location.pathname.split('/')
-    const showConfirmationModal =
-      isRoleConfirmation && (path.includes('google') || path.includes('mso'))
+    const { getUserData, googleLogin } = this.props
     const reAuthenticate = () => googleLogin({ prompt: true })
     return (
       <div>
@@ -172,8 +153,6 @@ const enhance = compose(
   connect(
     (state) => ({
       user: get(state, 'user.user', null),
-      isRoleConfirmation: state.user.isRoleConfirmation,
-      email: state.user?.email || 'Email',
     }),
     {
       googleSSOLogin: googleSSOLoginAction,
@@ -183,7 +162,6 @@ const enhance = compose(
       googleLogin: googleLoginAction,
       msoLogin: msoLoginAction,
       getUserData: getUserDataAction,
-      toggleRoleConfirmationPopup: toggleRoleConfirmationPopupAction,
     }
   )
 )

@@ -1331,7 +1331,6 @@ function* googleSSOLogin({ payload }) {
     if (e.status === 409) {
       const email = get(e, 'response.data.email', 'Email')
       yield put(toggleRoleConfirmationPopupAction(email))
-      notification({ msg: errorMessage })
       return
     }
     if (errorMessage === 'signInUserNotFound') {

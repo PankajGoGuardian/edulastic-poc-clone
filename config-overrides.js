@@ -42,7 +42,7 @@ module.exports = override(
   process.env.NODE_ENV === 'production' &&
     addBundleVisualizer({
       generateStatsFile: true,
-      reportFilename: 'report.htm',
+      reportFilename: 'report2.htm',
       openAnalyzer: false,
     }),
   (config) => {

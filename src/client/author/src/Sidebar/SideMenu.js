@@ -11,7 +11,6 @@ import {
   greyThemeLighter,
   smallDesktopWidth,
   mobileWidthLarge,
-  themeColorBlue,
 } from '@edulastic/colors'
 import { get, cloneDeep, some } from 'lodash'
 import { withRouter, Link } from 'react-router-dom'
@@ -23,7 +22,6 @@ import {
   Dropdown,
   Icon as AntIcon,
   Popover,
-  Popconfirm,
 } from 'antd'
 import styled from 'styled-components'
 import {
@@ -44,18 +42,13 @@ import {
   IconInterface,
   IconSwitchUser,
   IconUsers,
-  IconExclamationMark,
-  IconClose,
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { getLastPlayListSelector } from '../../Playlist/ducks'
 import { logoutAction } from '../actions/auth'
 import { toggleSideBarAction } from '../actions/toggleMenu'
-import {
-  getUserFeatures,
-  toggleMultipleAccountNotificationAction,
-} from '../../../student/Login/ducks'
+import { getUserFeatures } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
   getAccountSwitchDetails,
@@ -348,8 +341,6 @@ class SideMenu extends Component {
       locationState,
       features,
       showUseThisNotification,
-      isMultipleAccountNotification,
-      toggleMultipleAccountNotification,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -378,9 +369,6 @@ class SideMenu extends Component {
     })
 
     const isPublisher = features.isCurator || features.isPublisherAuthor
-    const showMultipleAccountNotification =
-      isMultipleAccountNotification &&
-      !!get(switchDetails, 'otherAccounts', []).length
 
     let _userRole = null
     if (userRole === roleuser.TEACHER) {
@@ -647,40 +635,9 @@ class SideMenu extends Component {
                         isCollapsed={isCollapsed}
                       />
                     ) : (
-                      <PopConfirmWrapper isCollapsed={isCollapsed}>
-                        <Popconfirm
-                          icon={<IconExclamationMark />}
-                          placement="bottomRight"
-                          title={
-                            <>
-                              <CloseIconWrapper
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  e.stopPropagation()
-                                  toggleMultipleAccountNotification(false)
-                                  localStorage.setItem(
-                                    'isMultipleAccountNotification',
-                                    'true'
-                                  )
-                                }}
-                              >
-                                <IconClose />
-                              </CloseIconWrapper>
-                              <p>
-                                You can switch between your teacher and student
-                                accounts here.
-                              </p>
-                            </>
-                          }
-                          trigger="click"
-                          getPopupContainer={(el) => el.parentNode}
-                          visible={showMultipleAccountNotification}
-                        >
-                          <PseudoDiv isCollapsed={isCollapsed}>
-                            {this.getInitials()}
-                          </PseudoDiv>
-                        </Popconfirm>
-                      </PopConfirmWrapper>
+                      <PseudoDiv isCollapsed={isCollapsed}>
+                        {this.getInitials()}
+                      </PseudoDiv>
                     )}
                     <div
                       style={{
@@ -751,13 +708,8 @@ const enhance = compose(
         'curriculumSequence.showUseThisNotification',
         false
       ),
-      isMultipleAccountNotification: state.user.isMultipleAccountNotification,
     }),
-    {
-      toggleSideBar: toggleSideBarAction,
-      logout: logoutAction,
-      toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
-    }
+    { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )
 )
 
@@ -1365,80 +1317,4 @@ const Hr = styled.div`
   border: ${({ theme }) => `1px solid ${theme.sideMenu.sidebarDividerColor}`};
   opacity: 0.2;
   width: 80%;
-`
-const PopConfirmWrapper = styled.div`
-  .ant-popover.ant-popover-placement-bottomRight {
-    position: fixed;
-    top: auto !important;
-    bottom: 30px;
-    left: ${({ isCollapsed }) => (isCollapsed ? '80px' : '230px')} !important;
-  }
-
-  .ant-popover-buttons {
-    display: none;
-  }
-
-  .ant-popover-arrow {
-    display: block !important;
-    position: fixed;
-    top: auto !important;
-    bottom: 40px;
-    left: ${({ isCollapsed }) => (isCollapsed ? '77px' : '227px')} !important;
-    width: 15px;
-    height: 15px;
-    transform: rotate(-45deg);
-  }
-
-  .ant-popover-message {
-    padding: 4px 0px;
-
-    svg {
-      float: left;
-      margin-top: 6px;
-      transform: scale(1.4);
-
-      path:first-child {
-        fill: ${themeColorBlue};
-      }
-    }
-  }
-
-  .ant-popover-message-title {
-    color: white;
-    width: 325px;
-    padding-left: 30px;
-    font-weight: 600;
-    font-size: 16px;
-  }
-
-  .ant-popover-inner {
-    background: #2f4151;
-  }
-
-  .ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow,
-  .ant-popover-placement-bottomLeft > .ant-popover-content > .ant-popover-arrow,
-  .ant-popover-placement-bottomRight
-    > .ant-popover-content
-    > .ant-popover-arrow {
-    border-top-color: #2f4151;
-    border-left-color: #2f4151;
-  }
-`
-const CloseIconWrapper = styled.div`
-  margin-top: -6px;
-  float: right;
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  svg {
-    float: left;
-    margin-top: 6px;
-    transform: scale(0.6) !important;
-
-    path:first-child {
-      fill: ${white} !important;
-    }
-  }
 `

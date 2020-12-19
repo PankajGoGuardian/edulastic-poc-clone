@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button } from 'antd'
+import { message, Button } from 'antd'
 import { notification } from '@edulastic/common'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -11,7 +11,6 @@ import { evaluateItem } from './src/utils/evalution'
 import { addItemEvaluationAction } from './src/actions/testItem'
 import { changePreviewAction, changeViewAction } from './src/actions/view'
 import TestItemPreview from '../assessment/components/TestItemPreview'
-import { answersByQId } from '../assessment/selectors/test'
 
 const ItemPlayer = ({
   match,
@@ -35,9 +34,8 @@ const ItemPlayer = ({
     try {
       const { questions = [] } = testItem.data
       changePreview('check')
-      const answersByQids = answersByQId(answers, testItem._id)
       const { evaluation: evals, score, maxScore } = await evaluateItem(
-        answersByQids,
+        answers,
         KeyBy(questions, 'id'),
         testItem.itemLevelScoring,
         testItem.itemLevelScore

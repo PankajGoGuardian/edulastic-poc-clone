@@ -67,10 +67,9 @@ const ReportListContent = ({
 
   const [showModal, setModal] = useState(false)
   const { releaseScore = '' } = testActivityById
-  const _questions = keyBy(get(item, 'data.questions', []), 'id')
   const resources = keyBy(get(item, 'data.resources', []), 'id')
 
-  let allWidgets = { ..._questions, ...resources }
+  let allWidgets = { ...questionsById, ...resources }
   let itemRows = get(item, 'rows', [])
   let passage = {}
   if (item.passageId && passages.length) {

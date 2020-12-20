@@ -286,6 +286,12 @@ module.exports = override(
             default: {
               reuseExistingChunk: true,
             },
+            froalaCommonChunk:{
+              test:/froalaCommonChunk/,
+              name: 'froalaCommonChunk',
+              chunks: 'initial',
+              enforce: true,
+            },
             'vendor-react': {
               test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
               name: 'vendor-react',

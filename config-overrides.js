@@ -278,29 +278,30 @@ module.exports = override(
           ...config.optimization.splitChunks,
           chunks: 'all',
           maxInitialRequests: Infinity,
-          /* cacheGroups: {
+          cacheGroups: {
             ...config.optimization.splitChunks.cacheGroups,
-            defaultVendors:{
+            defaultVendors: {
               reuseExistingChunk: true,
             },
             default: {
               reuseExistingChunk: true,
             },
-           'vendor-react': {
-            test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
-            name: 'vendor-react',
-            chunks: 'all',
-            enforce: true,
-            reuseExistingChunk: true,
+            'vendor-react': {
+              test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
+              name: 'vendor-react',
+              chunks: 'all',
+              enforce: true,
+              reuseExistingChunk: true,
+            },
+            'vendor-common': {
+              test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
+              name: 'vendor-common',
+              chunks: 'all',
+              priority: 1000,
+              enforce: true,
+              reuseExistingChunk: true,
+            },
           },
-          'vendor-common': {
-            test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
-            name: 'vendor-common',
-            chunks: 'all',
-            enforce: true,
-            reuseExistingChunk: true,
-          },
-          }, */ //
         },
       }
     }

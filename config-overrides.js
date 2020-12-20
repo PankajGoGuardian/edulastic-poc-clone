@@ -42,7 +42,7 @@ module.exports = override(
   process.env.NODE_ENV === 'production' &&
     addBundleVisualizer({
       generateStatsFile: true,
-      reportFilename: 'report3-common-vendor.htm',
+      reportFilename: 'report4-common-vendor.htm',
       openAnalyzer: false,
     }),
   (config) => {
@@ -301,7 +301,7 @@ module.exports = override(
               reuseExistingChunk: true,
             },
             'vendor-common': {
-              test: /[\\/]node_modules[\\/]((firebase|quill|antd|draft).*)[\\/]/,
+              test: /[\\/]node_modules[\\/]((@firebase|@sentry|quill|antd|draft).*)[\\/]/,
               name: 'vendor-common',
               chunks: 'all',
               priority: 1000,

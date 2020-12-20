@@ -68,6 +68,11 @@ const filtersDefaultValues = [
   },
 ]
 
+const IndependentFilterIds = [
+  'standardsProficiencyProfileId',
+  'performanceBandProfileId',
+]
+
 const StudentProfileReportsFilters = ({
   style,
   onGoClick: _onGoClick,
@@ -222,6 +227,12 @@ const StudentProfileReportsFilters = ({
     resetSPRFilters(obj, field, value, multiple)
     obj[field] = multiple ? value : value.key
     setFilters(obj)
+    if (IndependentFilterIds.includes(field)) {
+      _onGoClick({
+        filters: pickBy(obj, (v) => v && v.toLowerCase() !== 'all'),
+        selectedStudent: student,
+      })
+    }
   }
 
   return (

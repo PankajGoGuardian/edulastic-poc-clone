@@ -14,7 +14,6 @@ import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForMAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
-import extraFilterData from './common/static/extraFilterData.json'
 
 import MultipleAssessmentReportFilters from './common/components/filters/MultipleAssessmentReportFilters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
@@ -106,19 +105,6 @@ const MultipleAssessmentReportContainer = (props) => {
       setDdFilter({ ...selectedExtras })
     }
   }, [showApply, selectedExtras])
-
-  const filterlist = extraFilterData[pageTitle] || []
-
-  useEffect(() => {
-    const initalDdFilters = filterlist.reduce(
-      (acc, curr) => ({ ...acc, [curr.key]: '' }),
-      {}
-    )
-    setSelectedExtras({ ...initalDdFilters })
-    if (!showApply) {
-      setDdFilter({ ...initalDdFilters })
-    }
-  }, [pageTitle])
 
   const computeChartNavigationLinks = (filt) => {
     if (navigation.locToData[pageTitle]) {

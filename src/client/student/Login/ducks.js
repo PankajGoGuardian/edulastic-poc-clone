@@ -957,37 +957,7 @@ function* signup({ payload }) {
       }
       yield call(segmentApi.trackTeacherSignUp, { user: result })
 
-      if (
-        role === 'teacher' &&
-        sessionStorage.getItem('signupFlow') !== 'canvas'
-      ) {
-        const userPayload = {
-          data: {
-            email: user.email,
-            currentSignUpState: 'ACCESS_WITHOUT_SCHOOL',
-          },
-          userId: user._id,
-        }
-
-        const userUpdateResult = yield call(userApi.updateUser, userPayload)
-        if (userUpdateResult && userUpdateResult.token) {
-          TokenStorage.storeAccessToken(
-            userUpdateResult.token,
-            userUpdateResult._id,
-            userUpdateResult.role,
-            true
-          )
-          TokenStorage.selectAccessToken(
-            userUpdateResult._id,
-            userUpdateResult.role
-          )
-        }
-        const updatedUser = pick(userUpdateResult, userPickFields)
-        yield put(signupSuccessAction(updatedUser))
-      } else {
-        yield put(signupSuccessAction(result))
-      }
-
+      yield put(signupSuccessAction(result))
       localStorage.removeItem('loginRedirectUrl')
 
       if (generalSettings) {

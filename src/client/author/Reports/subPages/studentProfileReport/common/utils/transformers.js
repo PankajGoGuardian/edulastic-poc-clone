@@ -101,15 +101,7 @@ export const getOverallDomainMasteryPercentage = (records, scales) => {
   const masteredStandards = filter(records, (record) =>
     masteryNames.includes(record.scale.masteryName)
   )
-  const { totalScore, maxScore } = masteredStandards.reduce(
-    (a, b) => {
-      a.totalScore += b.totalScore
-      a.maxScore += b.maxScore
-      return a
-    },
-    { totalScore: 0, maxScore: 0 }
-  )
-  return percentage(totalScore, maxScore)
+  return percentage(masteredStandards.length, records.length)
 }
 
 export const getMasterySummary = (masteryScore, scaleInfo) => {

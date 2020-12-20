@@ -507,13 +507,13 @@ class ShareModal extends React.Component {
                     disabled={
                       // disabling public sharing for all
                       // TODO: enable it back when needed
-                      ((!isPublished &&
+                      (!isPublished &&
                         item !== shareTypeKeys[3] &&
                         item !== shareTypeKeys[0]) ||
                       hasPremiumQuestion ||
                       features.isCurator ||
                       features.isPublisherAuthor ||
-                      !hasPlaylistEditAccess)  ||
+                      !hasPlaylistEditAccess ||
                       (userSignupStatus === signUpState.ACCESS_WITHOUT_SCHOOL &&
                         item !== 'INDIVIDUAL')
                     }

@@ -42,7 +42,7 @@ module.exports = override(
   process.env.NODE_ENV === 'production' &&
     addBundleVisualizer({
       generateStatsFile: true,
-      reportFilename: 'report2.htm',
+      reportFilename: 'report3-common-vendor.htm',
       openAnalyzer: false,
     }),
   (config) => {
@@ -291,6 +291,7 @@ module.exports = override(
               name: 'vendor-react',
               chunks: 'all',
               enforce: true,
+              priority: 1000,
               reuseExistingChunk: true,
             },
             'vendor-common': {

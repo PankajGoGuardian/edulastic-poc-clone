@@ -66,9 +66,6 @@ export const reducer = createReducer(initialState, {
   [LAUNCH_HANGOUT_CLOSE]: (state) => {
     state.isLaunchHangoutOpen = false
   },
-  [FETCH_DASHBOARD_TILES]: (state, { payload }) => {
-    state.loading = !!payload
-  },
   [SET_DASHBOARD_TILES]: (state, { payload }) => {
     state.configurableTiles = payload
   },

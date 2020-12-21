@@ -338,7 +338,8 @@ class App extends Component {
           location.pathname.toLocaleLowerCase().includes('/auth/mso') ||
           location.pathname.toLocaleLowerCase().includes('/auth/clever') ||
           location.pathname.toLocaleLowerCase().includes('/auth/google') ||
-          location.pathname.toLocaleLowerCase().includes('/auth/atlas')
+          location.pathname.toLocaleLowerCase().includes('/auth/atlas') ||
+          location.pathname.toLocaleLowerCase().includes('/auth/newsela')
         )
       ) {
         if (location.pathname.toLocaleLowerCase().includes('/home')) {

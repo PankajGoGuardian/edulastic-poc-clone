@@ -70,6 +70,16 @@ const atlasLogin = (params) =>
     })
     .then((result) => result.data.result)
 
+const newselaLogin = (params) =>
+  api
+    .callApi({
+      url: `${prefix}/login-newsela`,
+      method: 'get',
+      params,
+      paramsSerializer: (_params) => qs.stringify(_params),
+    })
+    .then((result) => result.data.result)
+
 const msoLogin = () =>
   api
     .callApi({
@@ -146,6 +156,15 @@ const updateInvitedUserDetails = (data) =>
     })
     .then((result) => result.data.result)
 
+const newselaSSOLogin = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/callback-sso/newsela`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   login,
   signup,
@@ -164,4 +183,6 @@ export default {
   validateClassCode,
   getInvitedUserDetails,
   updateInvitedUserDetails,
+  newselaSSOLogin,
+  newselaLogin,
 }

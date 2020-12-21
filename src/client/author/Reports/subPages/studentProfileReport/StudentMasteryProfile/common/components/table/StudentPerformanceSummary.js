@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { round, intersection, filter, map } from 'lodash'
+import { round, intersection, filter, map, isEmpty } from 'lodash'
 import { Row, Col } from 'antd'
 import { greyThemeDark1 } from '@edulastic/colors'
 import { StyledTable, StyledSpan } from '../../styled'
@@ -101,6 +101,28 @@ const columns = [
   },
 ]
 
+const standardsTableColumns = [
+  'Standard',
+  'DESCRIPTION ',
+  'MASTERY ',
+  'ASSESSMENT ',
+  'TOTAL QUESTIONS ',
+  'SCORE ',
+  'MAX POSSIBLE SCORE ',
+  'AVG. SCORE(%) ',
+]
+
+const standardsTableKeys = [
+  'standard',
+  'standardName',
+  'masteryName',
+  'testCount',
+  'questionCount',
+  'totalScore',
+  'maxScore',
+  'scoreFormatted',
+]
+
 const StudentPerformanceSummary = ({
   data,
   selectedMastery,
@@ -109,6 +131,7 @@ const StudentPerformanceSummary = ({
   setExpandAllRows,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
+  const [allowCsvDownload, setAllowCsvDownload] = useState(false)
 
   const handleExpandedRowsChange = (rowIndex, totalCount) => {
     let expandedCount = 0
@@ -146,9 +169,32 @@ const StudentPerformanceSummary = ({
 
   useEffect(() => {
     expandAllRows
-      ? setExpandedRows([...Array(filteredDomains).keys()])
+      ? setExpandedRows([...filteredDomains.keys()])
       : setExpandedRows([])
   }, [expandAllRows])
+
+  useEffect(() => {
+    setAllowCsvDownload(!isEmpty(expandedRows))
+  }, [expandedRows])
+
+  useEffect(() => {
+    if (!allowCsvDownload && expandedRowProps.isCsvDownloading) {
+      for (const domain of filteredDomains) {
+        const csv = [standardsTableColumns.join(',')]
+        const csvRawData = [[...standardsTableColumns]]
+        for (const standardInfo of domain.standards) {
+          const row = []
+          for (const key of standardsTableKeys) {
+            row.push(String(standardInfo[key]))
+          }
+          csvRawData.push(row)
+          csv.push(row.join(','))
+        }
+        const csvText = csv.join('\n')
+        expandedRowProps.onCsvConvert(csvText, csvRawData)
+      }
+    }
+  }, [expandedRowProps.isCsvDownloading])
 
   return (
     <Row>
@@ -161,7 +207,11 @@ const StudentPerformanceSummary = ({
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
           expandedRowRender={(record) => (
-            <StudentMasteryTable parentRow={record} {...expandedRowProps} />
+            <StudentMasteryTable
+              parentRow={record}
+              {...expandedRowProps}
+              allowCsvDownload={allowCsvDownload}
+            />
           )}
           expandRowByClick
           onRow={(record) => ({

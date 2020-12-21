@@ -163,6 +163,7 @@ const StudentMasteryTable = ({
   onCsvConvert,
   handleOnClickStandard,
   filters,
+  allowCsvDownload,
 }) => {
   const filteredStandards = filter(
     data,
@@ -184,7 +185,7 @@ const StudentMasteryTable = ({
           tableToRender={StyledTable}
           onCsvConvert={onCsvConvert}
           scroll={{ x: '100%' }}
-          isCsvDownloading={isCsvDownloading}
+          isCsvDownloading={isCsvDownloading && allowCsvDownload}
         />
       </Col>
     </Row>

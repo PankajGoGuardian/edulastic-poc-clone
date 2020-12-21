@@ -1,30 +1,20 @@
 import styled from 'styled-components'
 import { white } from '@edulastic/colors'
 
-export const LearnMore = styled.span`
-  height: auto;
-  width: auto;
-  position: absolute;
-  top: 140px;
-  font-size: 9px;
-  font-weight: 600;
+export const CardContainer = styled.div`
+  width: 241px;
+  height: 212px;
+  display: inline-block;
+  margin: 0px 10px 10px 0px;
+  border-radius: 10px;
+  border: 1px solid #dadae4;
   background: ${white};
-  padding: 5px 10px;
-  color: #3f85e5;
-  border-radius: 4px;
-  transform: translateX(50px);
-
-  &:hover {
-    cursor: pointer;
-  }
 `
+export const CardBox = styled.div``
 
-export const SlideContainer = styled.span`
-  height: 200px;
-  width: 490px;
-  margin-right: 20px;
+export const FeatureContentWrapper = styled.div`
+  margin-top: 20px;
 `
-
 export const SliderContainer = styled.div`
   position: relative;
   .prev,
@@ -104,4 +94,51 @@ export const SlideDescription = styled.span`
   &:hover {
     cursor: pointer;
   }
+`
+
+export const LearnMore = styled.span`
+  height: auto;
+  width: auto;
+  position: absolute;
+  top: 140px;
+  font-size: 9px;
+  font-weight: 600;
+  background: ${white};
+  padding: 5px 10px;
+  color: #3f85e5;
+  border-radius: 4px;
+  transform: translateX(50px);
+
+  &:hover {
+    cursor: pointer;
+  }
+`
+
+export const SlideContainer = styled.span`
+  height: 200px;
+  width: 490px;
+  margin-right: 20px;
+`
+
+export const BundleContainer = styled.div`
+  width: 241px;
+  height: 169px;
+  display: flex;
+  align-items: flex-end;
+  margin: 0px 10px 10px 0px;
+  border-radius: 10px;
+  padding: 12px 20px;
+  color: ${white};
+  cursor: pointer;
+  background-image: ${(props) => `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  background-repeat: no-repeat;
+`
+
+export const Bottom = styled.div`
+  font-size: 13px;
+  height: 40px;
+  overflow: hidden;
+  font-weight: 600;
 `

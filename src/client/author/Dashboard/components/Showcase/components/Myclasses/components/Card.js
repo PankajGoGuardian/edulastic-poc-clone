@@ -1,10 +1,8 @@
 import { Row } from 'antd'
-import styled from 'styled-components'
 import React from 'react'
+import { CardBox } from '../styled'
 import CardImage from './CardImage/cardImage'
 import CardTextContent from './CardTextContent/cardTextContent'
-
-const CardBox = styled.div``
 
 const Card = ({ data }) => (
   <CardBox data-cy={data.name}>

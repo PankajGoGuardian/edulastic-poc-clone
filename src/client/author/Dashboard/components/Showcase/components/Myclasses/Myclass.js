@@ -1,17 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, groupBy } from 'lodash'
+import { get, groupBy, debounce } from 'lodash'
 import qs from 'qs'
 
 // components
 import { Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
+import { FlexContainer, MainContentWrapper } from '@edulastic/common'
+import { title, white } from '@edulastic/colors'
+import { IconChevronLeft } from '@edulastic/icons'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
-import BannerSlider from './components/BannerSlider/BannerSlider'
-import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
-import Classes from './components/Classes/Classes'
+import { TextWrapper } from '../../../styledComponents'
+import {
+  CardContainer,
+  FeatureContentWrapper,
+  BundleContainer,
+  Bottom,
+  ScrollbarContainer,
+  Slides,
+  PrevButton,
+  NextButton,
+  SliderContainer,
+  LearnMore,
+  SlideContainer,
+  SlideDescription,
+} from './styled'
 
 import CreateClassPage from './components/CreateClassPage/createClassPage'
 import Launch from '../../../LaunchHangout/Launch'
@@ -40,6 +55,8 @@ import {
 } from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
+import Card from './components/Card'
+import EmbeddedVideoPreviewModal from '../../../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -76,6 +93,8 @@ const MyClasses = ({
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
   const [showBannerModal, setShowBannerModal] = useState(null)
 
+  const scrollBarRef = useRef(null)
+
   useEffect(() => {
     // fetch clever classes on modal display
     if (showCleverSyncModal) {
@@ -100,6 +119,11 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
+  const ClassCards = allActiveClasses.map((item) => (
+    <CardContainer key={item._id}>
+      <Card data={item} />
+    </CardContainer>
+  ))
 
   const handleFeatureClick = (prop) => {
     const entries = prop.reduce((a, c) => ({ ...a, ...c }), {})
@@ -109,7 +133,7 @@ const MyClasses = ({
 
   const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
   const bannerSlides = BANNER || []
-  const testBundles = TEST_BUNDLE || []
+  const testBundle = TEST_BUNDLE || []
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
@@ -138,21 +162,52 @@ const MyClasses = ({
     }
   }
 
+  const FeatureContentCards = testBundle.map((bundle) => (
+    <BundleContainer
+      onClick={() => handleFeatureClick(bundle.config.filters || [])}
+      bgImage={bundle.imageUrl}
+      key={bundle._id}
+    >
+      <Bottom>{bundle.description && <div> {bundle.description} </div>}</Bottom>
+    </BundleContainer>
+  ))
+
+  const bannerLength = bannerSlides.length
+
+  const Banner = bannerSlides.map((slide, index) => (
+    <SlideContainer
+      key={slide._id}
+      onClick={() => bannerActionHandler(slide.config.filters[0])}
+    >
+      <LearnMore>LEARN MORE</LearnMore>
+      <SlideDescription>{slide.description}</SlideDescription>
+      <Slides
+        className={bannerLength === index + 1 ? 'last' : ''}
+        bgImage={slide.imageUrl}
+      />
+    </SlideContainer>
+  ))
+
+  const handleScroll = debounce((isScrollLeft) => {
+    const scrollContainer = scrollBarRef.current._container
+    const { scrollLeft, clientWidth } = scrollContainer
+    const delta = isScrollLeft
+      ? scrollLeft + clientWidth
+      : scrollLeft - scrollLeft
+    scrollContainer.scrollTo({
+      left: delta,
+      behavior: 'smooth',
+    })
+  }, 300)
+
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
 
+  const bannerScrollLeft = () => handleScroll(true)
+  const bannerScrollRight = () => handleScroll(false)
   const closeCleverSyncModal = () => setShowCleverSyncModal(false)
   const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
-  const hasNoActiveClassFallback =
-    !loading &&
-    allActiveClasses.length === 0 &&
-    (googleAllowedInstitutions.length > 0 ||
-      isCleverUser ||
-      canvasAllowedInstitutions.length > 0)
-
-  if (loading) {
-    return <Spin style={{ marginTop: '80px' }} />
-  }
+  const handleBannerModalClose = () => setShowBannerModal(null)
 
   return (
     <MainContentWrapper padding="30px">
@@ -180,13 +235,36 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
-      <BannerSlider
-        bannerSlides={bannerSlides}
-        handleBannerModalClose={() => setShowBannerModal(null)}
-        bannerActionHandler={bannerActionHandler}
-        isBannerModalVisible={showBannerModal}
-      />
-      {hasNoActiveClassFallback && (
+      <SliderContainer>
+        <PrevButton className="prev" onClick={bannerScrollRight}>
+          <IconChevronLeft color={white} width="32px" height="32px" />
+        </PrevButton>
+        <NextButton className="next" onClick={bannerScrollLeft}>
+          <IconChevronLeft color={white} width="32px" height="32px" />
+        </NextButton>
+        <ScrollbarContainer>
+          <PerfectScrollbar
+            ref={scrollBarRef}
+            option={{
+              suppressScrollY: true,
+              useBothWheelAxes: true,
+            }}
+          >
+            {Banner}
+          </PerfectScrollbar>
+        </ScrollbarContainer>
+      </SliderContainer>
+      <TextWrapper
+        fw="bold"
+        size="16px"
+        color={title}
+        style={{ marginBottom: '1rem' }}
+      >
+        My Classes
+      </TextWrapper>
+      {loading ? (
+        <Spin style={{ marginTop: '80px' }} />
+      ) : allActiveClasses.length == 0 ? (
         <CreateClassPage
           fetchClassList={fetchClassList}
           history={history}
@@ -199,13 +277,29 @@ const MyClasses = ({
           user={user}
           isClassLink={isClassLink}
         />
+      ) : (
+        <div>{ClassCards}</div>
       )}
-      {!loading && <Classes activeClasses={allActiveClasses} />}
-      <FeaturedContentBundle
-        testBundles={testBundles}
-        handleFeatureClick={handleFeatureClick}
-      />
+      <FeatureContentWrapper>
+        <TextWrapper
+          fw="bold"
+          size="16px"
+          color={title}
+          style={{ marginBottom: '1rem' }}
+        >
+          Featured Content Bundles
+        </TextWrapper>
+        <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+          {FeatureContentCards}
+        </FlexContainer>
+      </FeatureContentWrapper>
       <Launch />
+      {showBannerModal && (
+        <EmbeddedVideoPreviewModal
+          closeCallback={handleBannerModalClose}
+          isVisible={showBannerModal}
+        />
+      )}
     </MainContentWrapper>
   )
 }
@@ -222,6 +316,7 @@ export default compose(
       canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
         state
       ),
+      fetchClassListLoading: state.manageClass.fetchClassListLoading,
       districtId: state.user.user?.orgData?.districtIds?.[0],
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),

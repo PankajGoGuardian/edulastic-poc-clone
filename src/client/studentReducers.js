@@ -11,6 +11,7 @@ import tutorial from './tutorials/tutorialReducer';
 import testPlayer from './author/sharedDucks/testPlayer';
 import author_classboard_testActivity from './author/src/reducers/testActivity';
 import view from './author/src/reducers/view';
+import { reducer as assessmentCreate } from './author/AssessmentCreate/ducks';
 
 export const studentReducers = combineReducers({
 	...allStudentReducers,
@@ -24,6 +25,7 @@ export const studentReducers = combineReducers({
 	studentTestItems,
 	testPlayer,
 	author_classboard_testActivity,
-	view
+	view,
+	assessmentCreate
   })
   

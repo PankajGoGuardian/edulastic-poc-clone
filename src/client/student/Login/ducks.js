@@ -1200,6 +1200,10 @@ export function* fetchV1Redirect({ payload: id }) {
   }
 }
 
+function redirectToUrl(url){
+  window.location.href = url;
+}
+
 function* logout() {
   try {
     const user = yield select(getUser)
@@ -1221,7 +1225,7 @@ function* logout() {
       TokenStorage.initKID()
       TokenStorage.removeTokens()
       yield put({ type: 'RESET' })
-      yield put(push(getSignOutUrl()))
+      yield call(redirectToUrl,getSignOutUrl());
       removeSignOutUrl()
     }
   } catch (e) {

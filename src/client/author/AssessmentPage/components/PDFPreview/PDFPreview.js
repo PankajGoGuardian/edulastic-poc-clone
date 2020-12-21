@@ -121,7 +121,10 @@ const PDFPreview = ({
     scalePDF(round((containerWidth - 40) / viewport.width, 1))
     if (forwardedRef.current) {
       setTimeout(() => {
-        forwardedRef.current.updateScroll()
+        if(forwardedRef.current){
+          forwardedRef.current.updateScroll();
+        }
+        
       }, 10)
     }
   }

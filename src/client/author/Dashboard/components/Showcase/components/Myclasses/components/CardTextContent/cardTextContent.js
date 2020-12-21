@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Row, Col, Tooltip } from 'antd'
-import { IconPlusCircle } from '@edulastic/icons'
-import { themeColorLight, cardTitleColor } from '@edulastic/colors'
+import { IconPlusCircle, IconGraphRightArrow } from '@edulastic/icons'
+import { themeColorLight, cardTitleColor, themeColor } from '@edulastic/colors'
 import {
   CardText,
   Image,
@@ -46,7 +46,7 @@ export const CardTextContent = ({ data, history }) => {
   return (
     <CardText>
       <RowWrapper>
-        <LeftCol width="auto">
+        <LeftCol>
           <Link to="/author/assignments" onClick={applyClassFilter}>
             <IconWrapper>
               <OverlayText data-cy="totalAssignment">
@@ -79,10 +79,10 @@ export const CardTextContent = ({ data, history }) => {
         )}
       </RowWrapper>
       <RowWrapper1 onClick={() => gotoAssignedAssessment()}>
-        <Label>RECENT</Label>
+        <Label>RECENT Assignments</Label>
         {asgnTitle ? (
           <>
-            <LeftCol width="auto">
+            <LeftCol>
               <Image src={asgnThumbnail} />
             </LeftCol>
             <CenterCol>
@@ -95,6 +95,9 @@ export const CardTextContent = ({ data, history }) => {
                 {asgnStatus}
               </AssignmentStatusText>
             </CenterCol>
+            <RightCol height="auto">
+              <IconGraphRightArrow color={themeColor} />
+            </RightCol>
           </>
         ) : (
           <Col span={16} style={{ cursor: 'default' }}>
@@ -102,7 +105,6 @@ export const CardTextContent = ({ data, history }) => {
               <TextWrapper
                 data-cy="assignmentTitle"
                 color={cardTitleColor}
-                rfs="12px"
                 size="12px"
                 mb="22px"
               >

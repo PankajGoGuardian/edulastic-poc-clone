@@ -37,7 +37,6 @@ import {
   StyledLink,
   StyledParagraph,
 } from './styled'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const getUpgradeToTeacherPlanActions = ({
   openPaymentServiceModal,
@@ -45,14 +44,13 @@ const getUpgradeToTeacherPlanActions = ({
   isblur,
 }) => (
   <ActionsWrapper>
-    <AuthorCompleteSignupButton
-      renderButton={(handleClick) => (
-        <EduButton height="40px" onClick={handleClick} disabled={isblur}>
-          UPGRADE NOW FOR $100/YEAR
-        </EduButton>
-      )}
+    <EduButton
+      height="40px"
       onClick={openPaymentServiceModal}
-    />
+      disabled={isblur}
+    >
+      UPGRADE NOW FOR $100/YEAR
+    </EduButton>
     <EduButton
       isGhost
       height="40px"
@@ -269,15 +267,9 @@ const SubscriptionMain = (props) => {
                 >
                   ALREADY HAVE A LICENSE KEY
                 </EduButton>
-
-                <AuthorCompleteSignupButton
-                  renderButton={(handleClick) => (
-                    <EduButton height="40px" onClick={handleClick}>
-                      UPGRADE NOW FOR $100/YEAR
-                    </EduButton>
-                  )}
-                  onClick={openPaymentServiceModal}
-                />
+                <EduButton height="40px" onClick={openPaymentServiceModal}>
+                  UPGRADE NOW FOR $100/YEAR
+                </EduButton>
               </ActionsWrapper>
             )}
             {subType !== 'enterprise' && (

@@ -8,7 +8,6 @@ import { Row, Col, Breadcrumb, Icon } from 'antd'
 import styled, { css } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { IconClose } from '@edulastic/icons'
-import { signUpState } from '@edulastic/constants'
 import {
   themeColor,
   white,
@@ -91,7 +90,6 @@ const JoinSchool = ({
   fromUserProfile,
   addSchool,
   addingSchool,
-  hasMinHeight,
 }) => {
   const {
     email,
@@ -204,10 +202,7 @@ const JoinSchool = ({
       const data = {
         institutionIds: [selected.schoolId || selected._id || ''],
         districtId: selected.districtId,
-        currentSignUpState:
-          userInfo.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
-            ? 'ACCESS_WITHOUT_SCHOOL'
-            : 'PREFERENCE_NOT_SELECTED',
+        currentSignUpState: 'PREFERENCE_NOT_SELECTED',
         email: email || '',
         ...(firstName ? { firstName } : {}),
         middleName,
@@ -305,10 +300,7 @@ const JoinSchool = ({
       createSchool: body,
       joinSchool: {
         data: {
-          currentSignUpState:
-            userInfo.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
-              ? 'ACCESS_WITHOUT_SCHOOL'
-              : 'PREFERENCE_NOT_SELECTED',
+          currentSignUpState: 'PREFERENCE_NOT_SELECTED',
           email: userInfo.email,
           firstName: userInfo.firstName,
           middleName: userInfo.middleName,
@@ -325,7 +317,7 @@ const JoinSchool = ({
 
   return (
     <>
-      <JoinSchoolBody hasMinHeight={hasMinHeight} data-cy="joinSchoolBody">
+      <JoinSchoolBody data-cy="joinSchoolBody">
         {requestSchoolFormVisible && (
           <BreadcrumbWrapper>
             <Breadcrumb.Item>
@@ -478,11 +470,6 @@ JoinSchool.propTypes = {
   checkDistrictPolicy: PropTypes.func.isRequired,
   fetchSchoolTeachers: PropTypes.func.isRequired,
   setPreviousAutoSuggestSchoolsContent: PropTypes.func.isRequired,
-  hasMinHeight: PropTypes.bool,
-}
-
-JoinSchool.defaultProps = {
-  hasMinHeight: true,
 }
 
 const enhance = compose(
@@ -543,8 +530,7 @@ const BreadcrumbLink = styled.span`
 const JoinSchoolBody = styled(Row)`
   padding: 60px 0px;
   background: white;
-  ${({ hasMinHeight = true }) =>
-    hasMinHeight && `min-height: calc(100vh - 93px);`}
+  min-height: calc(100vh - 93px);
 `
 
 const FlexWrapper = styled(Row)`

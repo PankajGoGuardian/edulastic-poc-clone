@@ -182,7 +182,7 @@ class ClassCreate extends React.Component {
 
   getBreadCrumbData = () => {
     const { match, location } = this.props
-    const { type = 'class', exitPath } = location?.state || {}
+    const { type, exitPath } = location?.state || {}
     const pathList = match.url.split('/')
     let breadCrumbData = []
 

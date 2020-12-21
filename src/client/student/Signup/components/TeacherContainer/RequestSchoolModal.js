@@ -6,7 +6,6 @@ import {
 } from '@edulastic/colors'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { signUpState } from '@edulastic/constants'
 import { Form } from 'antd'
 import { find, get } from 'lodash'
 import PropTypes from 'prop-types'
@@ -70,22 +69,12 @@ class RequestSchool extends React.Component {
         if (district.districtId) {
           body.districtId = district.districtId
         }
-        const {
-          firstName,
-          middleName,
-          lastName,
-          email,
-          _id,
-          currentSignUpState,
-        } = userInfo
+        const { firstName, middleName, lastName, email, _id } = userInfo
         createAndJoinSchoolRequestAction({
           createSchool: body,
           joinSchool: {
             data: {
-              currentSignUpState:
-                currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
-                  ? 'ACCESS_WITHOUT_SCHOOL'
-                  : 'PREFERENCE_NOT_SELECTED',
+              currentSignUpState: 'PREFERENCE_NOT_SELECTED',
               email,
               firstName,
               middleName,

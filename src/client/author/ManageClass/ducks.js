@@ -21,7 +21,7 @@ import {
 } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
-import { receiveTeacherDashboardAction } from '../Dashboard/ducks'
+import { receiveTeacherDashboardAction } from '../Dashboard/duck'
 import { fetchGroupsAction, addGroupAction } from '../sharedDucks/groups'
 import {
   setUserGoogleLoggedInAction,

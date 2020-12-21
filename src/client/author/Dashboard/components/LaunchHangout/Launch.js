@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { message } from 'antd'
 import { notification } from '@edulastic/common'
-import { getLaunchHangoutStatus, launchHangoutClose } from '../../ducks'
+import { getLaunchHangoutStatus, launchHangoutClose } from '../../duck'
 import HangoutsModal from '../../../../student/Assignments/components/HangoutsModal'
 import { getClasses } from '../../../../student/Login/ducks'
 import {

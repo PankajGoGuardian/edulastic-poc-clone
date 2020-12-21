@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, groupBy } from 'lodash'
-import qs from 'qs'
+import { get } from 'lodash'
 
 // components
-import { Spin } from 'antd'
+import { Col, Row, Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
-import { bannerActions } from '@edulastic/constants/const/bannerActions'
-import BannerSlider from './components/BannerSlider/BannerSlider'
-import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
-import Classes from './components/Classes/Classes'
-
+import { title } from '@edulastic/colors'
+import { TextWrapper } from '../../../styledComponents'
+import { CardBox } from './styled'
+import CardImage from './components/CardImage/cardImage'
+import CardTextContent from './components/CardTextContent/cardTextContent'
 import CreateClassPage from './components/CreateClassPage/createClassPage'
 import Launch from '../../../LaunchHangout/Launch'
 import ClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import CanvasClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
+// static data
 
 // ducks
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
@@ -30,7 +30,7 @@ import {
   getCanvasSectionListRequestAction,
   setShowCleverSyncModalAction,
 } from '../../../../../ManageClass/ducks'
-import { receiveTeacherDashboardAction } from '../../../../ducks'
+import { receiveTeacherDashboardAction } from '../../../../duck'
 import {
   getGoogleAllowedInstitionPoliciesSelector,
   getCanvasAllowedInstitutionPoliciesSelector,
@@ -40,6 +40,17 @@ import {
 } from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
+
+const Card = ({ data }) => (
+  <CardBox data-cy={data.name}>
+    <Row>
+      <CardImage data={data} />
+    </Row>
+    <Row>
+      <CardTextContent data={data} />
+    </Row>
+  </CardBox>
+)
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -71,10 +82,8 @@ const MyClasses = ({
   showCleverSyncModal,
   setShowCleverSyncModal,
   teacherData,
-  dashboardTiles,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
-  const [showBannerModal, setShowBannerModal] = useState(null)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -100,59 +109,14 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-
-  const handleFeatureClick = (prop) => {
-    const entries = prop.reduce((a, c) => ({ ...a, ...c }), {})
-    const filter = qs.stringify(entries)
-    history.push(`/author/tests?${filter}`)
-  }
-
-  const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
-  const bannerSlides = BANNER || []
-  const testBundles = TEST_BUNDLE || []
-
-  const handleInAppRedirect = (data) => {
-    const filter = qs.stringify(data.filters)
-    history.push(`/author/${data.contentType}?${filter}`)
-  }
-
-  const handleExternalRedirect = (data) => {
-    window.open(data.externalUrl, '_blank')
-  }
-
-  const bannerActionHandler = (filter = {}) => {
-    // NOTE: Actions might need further refactor
-    const { action, data } = filter
-    switch (+action) {
-      case bannerActions.BANNER_DISPLAY_IN_MODAL:
-        setShowBannerModal(data)
-        break
-      case bannerActions.BANNER_APP_REDIRECT:
-        handleInAppRedirect(data)
-        break
-      case bannerActions.BANNER_EXTERNAL_REDIRECT:
-        handleExternalRedirect(data)
-        break
-      default:
-        break
-    }
-  }
+  const ClassCards = allActiveClasses.map((item) => (
+    <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6} key={item._id}>
+      <Card data={item} />
+    </Col>
+  ))
 
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
-
-  const closeCleverSyncModal = () => setShowCleverSyncModal(false)
-  const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
-  const hasNoActiveClassFallback =
-    !loading &&
-    allActiveClasses.length === 0 &&
-    (googleAllowedInstitutions.length > 0 ||
-      isCleverUser ||
-      canvasAllowedInstitutions.length > 0)
-
-  if (loading) {
-    return <Spin style={{ marginTop: '80px' }} />
-  }
 
   return (
     <MainContentWrapper padding="30px">
@@ -160,7 +124,7 @@ const MyClasses = ({
         type="clever"
         visible={showCleverSyncModal}
         onSubmit={syncCleverClassList}
-        onCancel={closeCleverSyncModal}
+        onCancel={() => setShowCleverSyncModal(false)}
         loading={loadingCleverClassList}
         classListToSync={cleverClassList}
         courseList={courseList}
@@ -172,7 +136,7 @@ const MyClasses = ({
       />
       <CanvasClassSelectModal
         visible={showCanvasSyncModal}
-        onCancel={closeCanvasSyncModal}
+        onCancel={() => setShowCanvasSyncModal(false)}
         user={user}
         getCanvasCourseListRequest={getCanvasCourseListRequest}
         getCanvasSectionListRequest={getCanvasSectionListRequest}
@@ -180,13 +144,12 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
-      <BannerSlider
-        bannerSlides={bannerSlides}
-        handleBannerModalClose={() => setShowBannerModal(null)}
-        bannerActionHandler={bannerActionHandler}
-        isBannerModalVisible={showBannerModal}
-      />
-      {hasNoActiveClassFallback && (
+      <TextWrapper size="20px" color={title} style={{ marginBottom: '1rem' }}>
+        My Classes
+      </TextWrapper>
+      {loading ? (
+        <Spin style={{ marginTop: '80px' }} />
+      ) : allActiveClasses.length == 0 ? (
         <CreateClassPage
           fetchClassList={fetchClassList}
           history={history}
@@ -199,12 +162,9 @@ const MyClasses = ({
           user={user}
           isClassLink={isClassLink}
         />
+      ) : (
+        <Row gutter={20}>{ClassCards}</Row>
       )}
-      {!loading && <Classes activeClasses={allActiveClasses} />}
-      <FeaturedContentBundle
-        testBundles={testBundles}
-        handleFeatureClick={handleFeatureClick}
-      />
       <Launch />
     </MainContentWrapper>
   )
@@ -222,6 +182,7 @@ export default compose(
       canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
         state
       ),
+      fetchClassListLoading: state.manageClass.fetchClassListLoading,
       districtId: state.user.user?.orgData?.districtIds?.[0],
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),

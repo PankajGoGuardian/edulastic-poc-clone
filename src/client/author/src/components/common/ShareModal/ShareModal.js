@@ -16,7 +16,6 @@ import {
   notification,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import signUpState from '@edulastic/constants/const/signUpState'
 import { IconClose, IconShare } from '@edulastic/icons'
 import {
   Col,
@@ -59,7 +58,6 @@ import {
 import {
   getOrgDataSelector,
   getUserRole,
-  getUserSignupStatusSelector,
   getUserNameSelector,
 } from '../../../selectors/user'
 import { RadioInputWrapper } from '../RadioInput'
@@ -395,7 +393,6 @@ class ShareModal extends React.Component {
       userRole,
       hasPlaylistEditAccess = true,
       testVersionId,
-      userSignupStatus,
       sendEmailNotification,
       showMessageBody,
       notificationMessage,
@@ -433,7 +430,6 @@ class ShareModal extends React.Component {
       ? shareTypeKeyForDa
       : shareTypeKeys
     ).filter((k) => (isPlaylist && k !== sharedKeysObj.LINK) || !isPlaylist)
-
     return (
       <SharingModal
         width="700px"
@@ -513,9 +509,7 @@ class ShareModal extends React.Component {
                       hasPremiumQuestion ||
                       features.isCurator ||
                       features.isPublisherAuthor ||
-                      !hasPlaylistEditAccess ||
-                      (userSignupStatus === signUpState.ACCESS_WITHOUT_SCHOOL &&
-                        item !== 'INDIVIDUAL')
+                      !hasPlaylistEditAccess
                     }
                   >
                     {shareTypes[item]}
@@ -667,7 +661,6 @@ const enhance = compose(
       features: getUserFeatures(state),
       userOrgData: getOrgDataSelector(state),
       userRole: getUserRole(state),
-      userSignupStatus: getUserSignupStatusSelector(state),
       sharingState: getContentSharingStateSelector(state),
       authorName: getUserNameSelector(state),
       sendEmailNotification: getShouldSendEmailStateSelector(state),

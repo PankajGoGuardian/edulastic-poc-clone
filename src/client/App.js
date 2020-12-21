@@ -5,19 +5,12 @@ import queryString from 'query-string'
 import PropTypes from 'prop-types'
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { DndProvider } from 'react-dnd'
-import TouchBackend from 'react-dnd-touch-backend'
-import HTML5Backend from 'react-dnd-html5-backend'
 import { compose } from 'redux'
 import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
 import { test, signUpState, roleuser } from '@edulastic/constants'
-import {
-  isMobileDevice,
-  OfflineNotifier,
-  notification,
-} from '@edulastic/common'
+import { OfflineNotifier, notification, DragDrop } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -47,7 +40,10 @@ import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
-  import(/* webpackChunkName: "assessmentPlayer" */ './assessment/index')
+  import(
+    /* webpackChunkName: "assessmentPlayer" */
+    './assessment/index'
+  )
 )
 const TeacherSignup = lazy(() =>
   import(
@@ -93,6 +89,12 @@ const CLIAccessBanner = lazy(() =>
   import('./author/Dashboard/components/CLIAccessBanner')
 )
 const PublicTest = lazy(() => import('./publicTest/container'))
+
+const AssignmentEmbedLink = lazy(() =>
+  import('./assignmentEmbedLink/container')
+)
+const AudioTagPlayer = lazy(() => import('./AudioTagPlayer'))
+
 const Loading = () => (
   <div>
     <Spin />
@@ -156,8 +158,6 @@ const getCurrentPath = () => {
   const location = window.location
   return `${location.pathname}${location.search}${location.hash}`
 }
-
-const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend
 
 function isLocationInTestRedirectRoutes(loc) {
   return testRedirectRoutes.find(
@@ -401,13 +401,7 @@ class App extends Component {
           <Joyride continuous showProgress showSkipButton steps={tutorial} />
         )}
         <Suspense fallback={<Loading />}>
-          <DndProvider
-            backend={dndBackend}
-            options={{
-              enableTouchEvents: true,
-              enableMouseEvents: true,
-            }}
-          >
+          <DragDrop.Provider>
             {isProxyUser && (
               <Banner
                 text={`You are currently acting as ${fullName} (${_userRole})`}
@@ -536,81 +530,85 @@ class App extends Component {
                 redirectPath={defaultRoute}
               />
 
-            <PrivateRoute
-              path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
-              component={TestAttemptReview}
-            />
+              <PrivateRoute
+                path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+                component={TestAttemptReview}
+              />
 
-            <Route
-              path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP />}
-            />
-            <Route
-              path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP />}
-            />
-            <Route
-              path={`/student/${ASSESSMENT}/:id`}
-              render={() => <AssessmentPlayer defaultAP />}
-            />
-            <PrivateRoute
-              path="/student/test-summary"
-              component={TestAttemptReview}
-            />
-            <Route
-              path="/student/seb-quit-confirm"
-              component={SebQuitConfirm}
-            />
-            <Route
-              path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP={false} />}
-            />
-            <Route
-              path={`/student/${PRACTICE}/:id`}
-              render={() => <AssessmentPlayer defaultAP={false} />}
-            />
-            <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
-            <Route
-              path="/v1/testItem/:id"
-              render={() => <TestItemDemoPlayer />}
-            />
-            <Route exact path="/fwd" render={() => <V1Redirect />} />
-            <Route path="/inviteTeacher" render={() => <Invite />} />
-            <Route path="/auth" render={() => <Auth />} />
-            {testRedirectRoutes.map((route) => {
-              return (
-                <Route path={route} component={RedirectToTest} key={route} />
-              )
-            })}
-            <Route
-              path="/public/view-test/:testId"
-              render={(props) => <PublicTest {...props} />}
-            />
-            <PrivateRoute
-              path="/assignments/embed/:testId"
-              redirectPath={redirectRoute}
-              component={AssignmentEmbedLink}
-            />
-            <Route
-              path="/audio-test"
-              render={() => <AudioTagPlayer user={user?.user} />}
-            />
-            <Redirect exact to={defaultRoute} />
-          </Switch>
-        </DragDrop.Provider>
-        {cliBannerVisible &&
-          canShowCliBanner &&
-          !sessionStorage.cliBannerShown && (
-            <CLIAccessBanner
-              visible={cliBannerVisible && canShowCliBanner}
-              location={location}
-              onClose={() => {
-                this.setState({ canShowCliBanner: false })
-                sessionStorage.cliBannerShown = true
-              }}
-            />
-          )}
-      </Suspense>
+              <Route
+                path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <Route
+                path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <Route
+                path={`/student/${ASSESSMENT}/:id`}
+                render={() => <AssessmentPlayer defaultAP />}
+              />
+              <PrivateRoute
+                path="/student/test-summary"
+                component={TestAttemptReview}
+              />
+              <Route
+                path="/student/seb-quit-confirm"
+                component={SebQuitConfirm}
+              />
+              <Route
+                path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+                render={() => <AssessmentPlayer defaultAP={false} />}
+              />
+              <Route
+                path={`/student/${PRACTICE}/:id`}
+                render={() => <AssessmentPlayer defaultAP={false} />}
+              />
+              <Route
+                path="/public/test/:id"
+                render={() => <TestDemoPlayer />}
+              />
+              <Route
+                path="/v1/testItem/:id"
+                render={() => <TestItemDemoPlayer />}
+              />
+              <Route exact path="/fwd" render={() => <V1Redirect />} />
+              <Route path="/inviteTeacher" render={() => <Invite />} />
+              <Route path="/auth" render={() => <Auth />} />
+              {testRedirectRoutes.map((route) => {
+                return (
+                  <Route path={route} component={RedirectToTest} key={route} />
+                )
+              })}
+              <Route
+                path="/public/view-test/:testId"
+                render={(props) => <PublicTest {...props} />}
+              />
+              <PrivateRoute
+                path="/assignments/embed/:testId"
+                redirectPath={redirectRoute}
+                component={AssignmentEmbedLink}
+              />
+              <Route
+                path="/audio-test"
+                render={() => <AudioTagPlayer user={user?.user} />}
+              />
+              <Redirect exact to={defaultRoute} />
+            </Switch>
+          </DragDrop.Provider>
+          {cliBannerVisible &&
+            canShowCliBanner &&
+            !sessionStorage.cliBannerShown && (
+              <CLIAccessBanner
+                visible={cliBannerVisible && canShowCliBanner}
+                location={location}
+                onClose={() => {
+                  this.setState({ canShowCliBanner: false })
+                  sessionStorage.cliBannerShown = true
+                }}
+              />
+            )}
+        </Suspense>
+      </div>
     )
   }
 }

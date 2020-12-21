@@ -77,10 +77,15 @@ const ClassCreatePage = ({
                   <GoogleLogin
                     clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                     render={(renderProps) => (
-                      <EduButton isBlue onClick={renderProps.onClick}>
-                        <IconGoogleClassroom />
-                        <span>SYNC WITH GOOGLE CLASSROOM</span>
-                      </EduButton>
+                      <AuthorCompleteSignupButton
+                        renderButton={(handleClick) => (
+                          <EduButton isBlue onClick={handleClick}>
+                            <IconGoogleClassroom />
+                            <span>SYNC WITH GOOGLE CLASSROOM</span>
+                          </EduButton>
+                        )}
+                        onClick={renderProps.onClick}
+                      />
                     )}
                     scope={scopes}
                     onSuccess={handleLoginSucess}

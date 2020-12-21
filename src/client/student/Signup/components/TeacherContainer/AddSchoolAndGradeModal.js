@@ -21,6 +21,7 @@ const AddSchoolAndGradeModal = ({
 
   return (
     <CustomModalStyled
+      title="Complete the sigup process to proceed"
       visible={isVisible}
       footer={null}
       width="900px"

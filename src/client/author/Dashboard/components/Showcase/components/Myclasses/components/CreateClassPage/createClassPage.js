@@ -1,16 +1,8 @@
 import React from 'react'
-import {
-  captureSentryException,
-  EduButton,
-  notification,
-} from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import GoogleLogin from 'react-google-login'
 import { canvasApi } from '@edulastic/api'
-import {
-  IconPlusCircle,
-  IconGoogleClassroom,
-  IconClever,
-} from '@edulastic/icons'
+import { IconGoogleClassroom, IconClever } from '@edulastic/icons'
 import styled from 'styled-components'
 
 import { CreateCardBox, SyncClassDiv } from './styled'
@@ -75,30 +67,23 @@ const CreateClassPage = ({
   }
 
   const enableCanvasSync = canvasAllowedInstitutions.length > 0
-  const createNewClass = () => history.push('/author/manageClass/createClass')
+  const syncCleverSync = () => setShowCleverSyncModal(true)
 
   return (
     <CreateCardBox>
-      <AuthorCompleteSignupButton
-        renderButton={(handleClick) => (
-          <EduButton style={{ width: '207px' }} isBlue onClick={handleClick}>
-            <IconPlusCircle width={20} height={20} />
-            <p>Create class</p>
-          </EduButton>
-        )}
-        onClick={createNewClass}
-      />
-      {(allowGoogleLogin || enableCleverSync || enableCanvasSync) &&
-        !cleverId &&
-        !isClassLink && <StyledP>OR</StyledP>}
       {allowGoogleLogin !== false && !cleverId && !isClassLink && (
         <GoogleLogin
           clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
           render={(renderProps) => (
-            <SyncClassDiv onClick={renderProps.onClick}>
-              <IconGoogleClassroom />
-              <p>Sync With Google Classroom</p>
-            </SyncClassDiv>
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <SyncClassDiv onClick={handleClick}>
+                  <IconGoogleClassroom />
+                  <p>Sync With Google Classroom</p>
+                </SyncClassDiv>
+              )}
+              onClick={renderProps.onClick}
+            />
           )}
           scope={scopes}
           onSuccess={handleLoginSucess}
@@ -108,21 +93,31 @@ const CreateClassPage = ({
         />
       )}
       {enableCleverSync && (
-        <SyncClassDiv onClick={() => setShowCleverSyncModal(true)}>
-          <IconClever />
-          <p>Sync Class Roster from Clever</p>
-        </SyncClassDiv>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <SyncClassDiv onClick={handleClick}>
+              <IconClever />
+              <p>Sync Class Roster from Clever</p>
+            </SyncClassDiv>
+          )}
+          onClick={syncCleverSync}
+        />
       )}
       {enableCanvasSync && !cleverId && !isClassLink && (
-        <SyncClassDiv onClick={handleSyncWithCanvas}>
-          <img
-            alt="Canvas"
-            src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
-            width={18}
-            height={18}
-          />
-          <p>Sync with Canvas</p>
-        </SyncClassDiv>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <SyncClassDiv onClick={handleClick}>
+              <img
+                alt="Canvas"
+                src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                width={18}
+                height={18}
+              />
+              <p>Sync with Canvas</p>
+            </SyncClassDiv>
+          )}
+          onClick={handleSyncWithCanvas}
+        />
       )}
     </CreateCardBox>
   )

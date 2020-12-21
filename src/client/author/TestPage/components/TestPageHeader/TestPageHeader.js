@@ -21,7 +21,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
-import signUpState from '@edulastic/constants/const/signUpState'
 import {
   getUserFeatures,
   getUserId,
@@ -53,6 +52,7 @@ import {
   getUserSignupStatusSelector,
 } from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const {
   statusConstants,
@@ -617,16 +617,20 @@ const TestPageHeader = ({
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers &&
-              !isEdulasticCurator &&
-              userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
-                <EduButton
-                  isBlue
-                  data-cy="assign"
-                  disabled={disableButtons}
+              !isEdulasticCurator && (
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      isBlue
+                      data-cy="assign"
+                      disabled={disableButtons}
+                      onClick={handleClick}
+                    >
+                      ASSIGN
+                    </EduButton>
+                  )}
                   onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
+                />
               )}
             {isRegradeFlow &&
               !showEditButton &&
@@ -743,16 +747,20 @@ const TestPageHeader = ({
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers &&
-              !isEdulasticCurator &&
-              userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
-                <EduButton
-                  isBlue
-                  disabled={disableButtons}
-                  data-cy="assign"
+              !isEdulasticCurator && (
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      isBlue
+                      disabled={disableButtons}
+                      data-cy="assign"
+                      onClick={handleClick}
+                    >
+                      ASSIGN
+                    </EduButton>
+                  )}
                   onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
+                />
               )}
           </RightWrapper>
           <TestPageNav

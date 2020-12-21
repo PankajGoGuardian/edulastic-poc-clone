@@ -5,7 +5,6 @@ import { cardTitleColor, themeColor, darkGrey } from '@edulastic/colors'
 import { PremiumLabel, EduButton, LikeIconStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
-import signUpState from '@edulastic/constants/const/signUpState'
 import {
   Container,
   Inner,
@@ -34,6 +33,7 @@ import { TestStatus } from '../ListItem/styled'
 import { getAuthorCollectionMap } from '../../../dataUtils'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 import { getUserSignupStatusSelector } from '../../../src/selectors/user'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const TestItemCard = ({
   thumbnail,
@@ -81,13 +81,20 @@ const TestItemCard = ({
                 Edit
               </EduButton>
             )}
-            {status === 'published' &&
-              userRole !== roleuser.EDULASTIC_CURATOR &&
-              userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
-                <EduButton style={btnStyle} height="32px" onClick={assignTest}>
-                  Assign
-                </EduButton>
-              )}
+            {status === 'published' && userRole !== roleuser.EDULASTIC_CURATOR && (
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <EduButton
+                    style={btnStyle}
+                    height="32px"
+                    onClick={handleClick}
+                  >
+                    Assign
+                  </EduButton>
+                )}
+                onClick={assignTest}
+              />
+            )}
             {(status === 'published' || status === 'draft') && (
               <>
                 <EduButton

@@ -22,7 +22,6 @@ import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import Modal from 'react-responsive-modal'
-import signUpState from '@edulastic/constants/const/signUpState'
 import { StyledSelect } from '../../../../common/styled'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import Tags from '../../../src/components/common/Tags'
@@ -75,6 +74,7 @@ import {
 } from './styled'
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
 import { getInterestedStandards } from '../../../dataUtils'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const CloneOptions = loadable(() => import('./CloneOptions'))
 
@@ -392,18 +392,22 @@ class ViewModal extends React.Component {
                     {!publicAccess && <IconEye />}
                     Preview
                   </EduButton>
-                  {publicAccess &&
-                    userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
-                      <EduButton
-                        height="40px"
-                        width="100%"
-                        justifyContent="center"
-                        data-cy="assign-button"
-                        onClick={assign}
-                      >
-                        <span>ASSIGN</span>
-                      </EduButton>
-                    )}
+                  {publicAccess && (
+                    <AuthorCompleteSignupButton
+                      renderButton={(handleClick) => (
+                        <EduButton
+                          height="40px"
+                          width="100%"
+                          justifyContent="center"
+                          data-cy="assign-button"
+                          onClick={handleClick}
+                        >
+                          <span>ASSIGN</span>
+                        </EduButton>
+                      )}
+                      onClick={assign}
+                    />
+                  )}
                   {permission !== 'VIEW' &&
                     !isEdulasticCurator &&
                     !publicAccess &&
@@ -423,18 +427,22 @@ class ViewModal extends React.Component {
                   {status === 'published' &&
                     !isEdulasticCurator &&
                     !publicAccess &&
-                    !isPublisherUser &&
-                    userSignupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL && (
-                      <EduButton
-                        height="40px"
-                        width="100%"
-                        justifyContent="center"
-                        data-cy="edit/assign-button"
+                    !isPublisherUser && (
+                      <AuthorCompleteSignupButton
+                        renderButton={(handleClick) => (
+                          <EduButton
+                            height="40px"
+                            width="100%"
+                            justifyContent="center"
+                            data-cy="edit/assign-button"
+                            onClick={handleClick}
+                          >
+                            <IconAssignment />
+                            <span>ASSIGN</span>
+                          </EduButton>
+                        )}
                         onClick={assign}
-                      >
-                        <IconAssignment />
-                        <span>ASSIGN</span>
-                      </EduButton>
+                      />
                     )}
                 </ButtonContainer>
                 {status === 'inreview' || status === 'rejected' ? (

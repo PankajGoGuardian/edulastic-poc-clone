@@ -45,12 +45,12 @@ const GetStarted = ({
   orgShortName,
   orgType,
 }) => {
-  const partnerKey = getPartnerKeyFromUrl(location.pathname)
+  const partnerKey = getPartnerKeyFromUrl(window.location.pathname)
   const partner = Partners[partnerKey]
   return (
     <RegistrationWrapper>
       {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
-        <Redirect exact to="/login" />
+        <Redirect exact to="/" />
       ) : null}
       <RegistrationBg
         src={
@@ -169,7 +169,7 @@ const RegistrationWrapper = styled.div`
   background: #067059;
   margin: 0px;
   padding: 0px;
-  min-height: 100vh;
+  max-height: 100vh;
   height: 100%;
   width: 100%;
   position: relative;

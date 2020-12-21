@@ -5,12 +5,10 @@ import { connectRouter, routerMiddleware } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import reduxReset from 'redux-reset'
 
-import { getUserConfirmation } from './common/utils/helpers'
+import {loginReducer} from './loginReducers'
+import { loginSaga } from './loginSagas'
 
-import rootReducer from './reducers'
-import rootSaga from './sagas'
-
-export const history = createBrowserHistory({ getUserConfirmation })
+export const history = createBrowserHistory()
 
 const sagaMiddleware = createSagaMiddleware({
   onError(error) {
@@ -34,10 +32,9 @@ const composeEnhancers =
   // process.env.NODE_ENV === 'development' &&
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    : //  ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({trace:true,traceLimit:30})
-      compose
+    : compose
 
-export default (initialState = {}, reducer = rootReducer, saga = rootSaga) => {
+export default (initialState = {}, reducer = loginReducer, saga = loginSaga) => {
   store = createStore(
     connectRouter(history)(reducer),
     initialState,

@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components'
-import { EduButton } from '@edulastic/common'
+import  EduButton  from '@edulastic/common/src/components/Button'
 import i18n from '@edulastic/localization'
-import { notification as antNotification } from 'antd'
+import antNotification  from 'antd/es/notification'
 import './notification.scss'
 
 const defaultConf = {

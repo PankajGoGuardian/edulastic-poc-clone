@@ -33,14 +33,9 @@ import {
   notification,
   handleChromeOsSEB,
 } from '@edulastic/common'
-import {
-  getCurrentSchool,
-  fetchUserAction,
-  getUserRole,
-  getUserId,
-} from '../Login/ducks'
+import { getCurrentSchool, fetchUserAction, getUserRole } from '../Login/ducks'
 
-import { getCurrentGroup, getClassIds } from '../Reports/ducks'
+import { getCurrentGroup } from '../Reports/ducks'
 // external actions
 import {
   assignmentSchema,
@@ -109,6 +104,15 @@ const getAssignmentClassId = (assignment, groupId, classIds) => {
   }, new Set())
   return classIds.find((x) => assignmentClassIds.has(x))
 }
+
+const getClassIds = createSelectorator(['user.user.orgData.classList'], (cls) =>
+  (cls || []).map((cl) => cl._id)
+)
+
+const getUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (_id, currentChild) => _id || currentChild
+)
 
 /**
  * get current redirect status of the assignment

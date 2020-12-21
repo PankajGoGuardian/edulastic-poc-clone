@@ -2,19 +2,27 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { pick, last, get, set, isBoolean } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
-import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException } from '@edulastic/common/src/sentryHelpers';
+import notification from '@edulastic/common/src/components/Notification';
 import { push } from 'connected-react-router'
-import {
-  authApi,
-  userApi,
-  TokenStorage,
-  settingsApi,
-  segmentApi,
-  schoolApi,
-} from '@edulastic/api'
+// import {
+//   authApi,
+//   userApi,
+//   TokenStorage,
+//   settingsApi,
+//   segmentApi,
+//   schoolApi,
+// } from '@edulastic/api'
+import authApi from '@edulastic/api/src/auth';
+import userApi from '@edulastic/api/src/user';
+import settingsApi from '@edulastic/api/src/settings';
+import segmentApi from '@edulastic/api/src/segment';
+import schoolApi from '@edulastic/api/src/school';
+import * as TokenStorage from '@edulastic/api/src/utils/Storage';
 import { roleuser } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
+import roleType from '@edulastic/constants/const/roleType'
 import { fetchAssignmentsAction } from '../Assignments/ducks'
 import {
   receiveLastPlayListAction,
@@ -157,6 +165,9 @@ export const TOGGLE_ROLE_CONFIRMATION =
 export const TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION =
   '[user] toggle multiple account notification'
 
+export const PERSIST_AUTH_STATE_AND_REDIRECT =
+  '[auth] persist auth entry state and request app bundle'
+
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
@@ -248,6 +259,10 @@ export const toggleMultipleAccountNotificationAction = createAction(
   TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION
 )
 
+export const persistAuthStateAndRedirectToAction = createAction(
+  PERSIST_AUTH_STATE_AND_REDIRECT
+)
+
 const initialState = {
   addAccount: false,
   userId: null,
@@ -262,6 +277,85 @@ const initialState = {
   isMultipleAccountNotification: !localStorage.getItem(
     'isMultipleAccountNotification'
   ),
+}
+
+function getValidRedirectRouteByRole(_url, user) {
+  const url = (_url || '').trim()
+  switch (user.role) {
+    case roleuser.TEACHER:
+      return url.match(/^\/author\//) ? url : '/author/dashboard'
+    case roleuser.STUDENT:
+      return url.match(/^\/home\//) ||
+        url.includes('/author/tests/tab/review/id/')
+        ? url
+        : '/home/assignments'
+    case roleuser.EDULASTIC_ADMIN:
+      return url.match(/^\/admin\//) ? url : '/admin/proxyUser'
+    case roleuser.EDULASTIC_CURATOR:
+      return url.match(/^\/author\//) ? url : '/author/items'
+    case roleuser.SCHOOL_ADMIN:
+      return url.match(/^\/author\//) ? url : '/author/assignments'
+    case roleuser.DISTRICT_ADMIN:
+      if ((user.permissions || []).includes('curator'))
+        return url.match(/^\/publisher\//) || url.match(/^\/author\//)
+          ? url
+          : '/publisher/dashboard'
+      return url.match(/^\/author\//) ? url : '/author/assignments'
+    default:
+      return url
+  }
+}
+
+const getRouteByGeneralRoute = (user) => {
+  switch (user.user.role) {
+    case roleuser.EDULASTIC_ADMIN:
+      return '/admin/search/clever'
+    case roleuser.DISTRICT_ADMIN:
+    case roleuser.SCHOOL_ADMIN:
+      return '/author/assignments'
+    case roleuser.TEACHER:
+      return '/author/dashboard'
+    case roleuser.STUDENT:
+    case roleuser.PARENT:
+      return '/home/assignments'
+    default:
+  }
+}
+
+const loginPaths = ['/', '/resetPassword', '/districtLogin', '/district']
+
+const isPartOfLoginRoutes = (pathname) =>
+  !loginPaths.some((path) =>
+    (pathname || window.location.pathname).startsWith(path)
+  )
+
+function* persistAuthStateAndRedirectToSaga({ payload }) {
+  const { _redirectRoute } = payload || {}
+  const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
+    {}
+
+  if (!user.user) return
+
+  let redirectRoute = _redirectRoute || ''
+
+  const appRedirectPath = localStorage.getItem('loginRedirectUrl')
+
+  if (appRedirectPath && !isPartOfLoginRoutes(appRedirectPath)) {
+    redirectRoute = getValidRedirectRouteByRole(
+      appRedirectPath,
+      user.user || {}
+    )
+    localStorage.removeItem('loginRedirectUrl')
+  } else {
+    redirectRoute = getRouteByGeneralRoute(user)
+  }
+
+  localStorage.setItem(
+    'authState',
+    JSON.stringify({ authorUi, signup: signUp, user })
+  )
+
+  window.location.replace(redirectRoute)
 }
 
 const setUser = (state, { payload }) => {
@@ -680,33 +774,6 @@ function getCurrentFirebaseUser() {
   return firebase.auth().currentUser?.uid || undefined
 }
 
-function getValidRedirectRouteByRole(_url, user) {
-  const url = (_url || '').trim()
-  switch (user.role) {
-    case roleuser.TEACHER:
-      return url.match(/^\/author\//) ? url : '/author/dashboard'
-    case roleuser.STUDENT:
-      return url.match(/^\/home\//) ||
-        url.includes('/author/tests/tab/review/id/')
-        ? url
-        : '/home/assignments'
-    case roleuser.EDULASTIC_ADMIN:
-      return url.match(/^\/admin\//) ? url : '/admin/proxyUser'
-    case roleuser.EDULASTIC_CURATOR:
-      return url.match(/^\/author\//) ? url : '/author/items'
-    case roleuser.SCHOOL_ADMIN:
-      return url.match(/^\/author\//) ? url : '/author/assignments'
-    case roleuser.DISTRICT_ADMIN:
-      if ((user.permissions || []).includes('curator'))
-        return url.match(/^\/publisher\//) || url.match(/^\/author\//)
-          ? url
-          : '/publisher/dashboard'
-      return url.match(/^\/author\//) ? url : '/author/assignments'
-    default:
-      return url
-  }
-}
-
 function* login({ payload }) {
   yield put(addLoadingComponentAction({ componentName: 'loginButton' }))
   const _payload = { ...payload }
@@ -782,9 +849,6 @@ function* login({ payload }) {
           const publicUrl = localStorage.getItem('publicUrlAccess')
           localStorage.removeItem('publicUrlAccess')
           yield put(push({ pathname: publicUrl, state: { isLoading: true } }))
-        } else {
-          localStorage.removeItem('loginRedirectUrl')
-          yield put(push(redirectUrl))
         }
       }
 
@@ -963,9 +1027,11 @@ function* signup({ payload }) {
       if (generalSettings) {
         setSignOutUrl(getDistrictSignOutUrl(generalSettings))
       }
-
-      // Important redirection code removed, redirect code already present in /src/client/App.js
-      // it receives new user props in each steps of teacher signup and for other roles
+      if (user.role === roleType.STUDENT) {
+        yield put(persistAuthStateAndRedirectToAction())
+      } else {
+        yield put(push('/Signup'))
+      }
     }
   } catch (err) {
     const { role } = payload
@@ -999,7 +1065,7 @@ const getLoggedOutUrl = () => {
     return '/studentsignup'
   }
   if (
-    pathname === '/login' &&
+    pathname === '/' &&
     (window.location.hash.includes('register') ||
       window.location.hash.includes('signup'))
   ) {
@@ -1032,7 +1098,7 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher') {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
-  return '/login'
+  return '/'
 }
 
 export function* fetchUser({ payload }) {
@@ -1062,7 +1128,9 @@ export function* fetchUser({ payload }) {
           addAccountTo: payload.userId,
         })
       )
-      yield put(push('/login'))
+      if (!isPartOfLoginRoutes()) {
+        window.location.replace('/')
+      }
       return
     }
     const firebaseUser = yield call(getCurrentFirebaseUser)
@@ -1158,6 +1226,10 @@ export function* fetchV1Redirect({ payload: id }) {
   }
 }
 
+function redirectToUrl(url){
+  window.location.href = url;
+}
+
 function* logout() {
   try {
     const user = yield select(getUser)
@@ -1185,7 +1257,7 @@ function* logout() {
       TokenStorage.initKID()
       TokenStorage.removeTokens()
       yield put({ type: 'RESET' })
-      yield put(push(getSignOutUrl()))
+      yield call(redirectToUrl,getSignOutUrl());
       removeSignOutUrl()
       yield put(toggleMultipleAccountNotificationAction(true))
     }
@@ -1625,7 +1697,7 @@ function* resetPasswordUserSaga({ payload }) {
     if (res) {
       yield put({ type: RESET_PASSWORD_USER_SUCCESS, payload: res })
     } else {
-      yield put(push('/login'))
+      yield put(push('/'))
     }
   } catch (e) {
     notification({
@@ -1633,7 +1705,7 @@ function* resetPasswordUserSaga({ payload }) {
         ? e.response.data.message
         : 'Failed to user data.',
     })
-    yield put(push('/login'))
+    yield put(push('/'))
   }
 }
 
@@ -1837,7 +1909,7 @@ function* getInviteDetailsSaga({ payload }) {
     const result = yield call(authApi.getInvitedUserDetails, payload)
     yield put({ type: GET_INVITE_DETAILS_SUCCESS, payload: result })
   } catch (e) {
-    yield put(push('/login'))
+    yield put(push('/'))
   }
 }
 
@@ -1940,4 +2012,8 @@ export function* watcherSaga() {
   )
   yield takeLatest(UPDATE_DEFAULT_SETTINGS_REQUEST, updateDefaultSettingsSaga)
   yield takeLatest(UPDATE_POWER_TEACHER_TOOLS_REQUEST, updatePowerTeacher)
+  yield takeLatest(
+    PERSIST_AUTH_STATE_AND_REDIRECT,
+    persistAuthStateAndRedirectToSaga
+  )
 }

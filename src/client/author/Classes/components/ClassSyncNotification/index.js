@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import {
-  FireBaseService as Fbs,
-  notification as antdNotification,
-} from '@edulastic/common'
+import * as Fbs  from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
 import { uniqBy, pull } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
@@ -24,6 +21,7 @@ import {
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
 
+const antdNotification = notification;
 const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
 const firestoreGoogleGradesSyncStatusCollection = 'GoogleGradeSyncStatus'
 const firestoreBulkActionCollection = 'AssignmentBulkActionEvents'

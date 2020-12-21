@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { FireBaseService as Fbs } from '@edulastic/common'
+import * as Fbs  from '@edulastic/common/src/Firebase'
 import { uniqBy, pull } from 'lodash'
 import { getUser } from '../author/src/selectors/user'
 import {

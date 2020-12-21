@@ -8,7 +8,7 @@ import Question from '../../../components/Question/index'
 import { Subtitle } from '../../../styled/Subtitle'
 
 const FroalaEditor = loadable(() =>
-  import('@edulastic/common/src/components/FroalaEditor')
+  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
 )
 
 const ComposeQuestion = ({

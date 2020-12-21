@@ -1,5 +1,4 @@
- 
-import { API } from '@edulastic/api'
+import API from '@edulastic/api/src/utils/API'
 import { useEffect, useState } from 'react'
 import mqtt from 'mqtt'
 

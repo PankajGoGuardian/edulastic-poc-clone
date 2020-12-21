@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { CustomModalStyled } from '@edulastic/common'
-import { signUpState } from '@edulastic/constants'
 import JoinSchool from './JoinSchool'
 import SubjectGradeForm from './SubjectGrade'
 
@@ -17,15 +16,8 @@ const AddSchoolAndGradeModal = ({
   orgType,
   isVisible,
   handleCancel,
-  onCompleteSignup,
 }) => {
   const userInfo = get(user, 'user', {})
-
-  useEffect(() => {
-    if (user.signupStatus === signUpState.DONE) {
-      onCompleteSignup()
-    }
-  }, [user.signupStatus])
 
   return (
     <CustomModalStyled
@@ -62,7 +54,6 @@ AddSchoolAndGradeModal.propTypes = {
   user: PropTypes.object.isRequired,
   isVisible: PropTypes.bool.isRequired,
   handleCancel: PropTypes.func.isRequired,
-  onCompleteSignup: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

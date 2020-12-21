@@ -10,6 +10,7 @@ import { scratchpad } from './common/components/Scratchpad/duck'
 import tutorial from './tutorials/tutorialReducer';
 import testPlayer from './author/sharedDucks/testPlayer';
 import author_classboard_testActivity from './author/src/reducers/testActivity';
+import view from './author/src/reducers/view';
 
 export const studentReducers = combineReducers({
 	...allStudentReducers,
@@ -22,6 +23,7 @@ export const studentReducers = combineReducers({
 	authorQuestions,
 	studentTestItems,
 	testPlayer,
-	author_classboard_testActivity
+	author_classboard_testActivity,
+	view
   })
   

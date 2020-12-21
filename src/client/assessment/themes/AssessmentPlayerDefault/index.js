@@ -416,6 +416,8 @@ class AssessmentPlayerDefault extends React.Component {
       calcType: this.calculatorType,
     }
 
+    const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
+
     return (
       /**
        * zoom only in student side, otherwise not
@@ -463,7 +465,7 @@ class AssessmentPlayerDefault extends React.Component {
             changeCaculateMode={this.handleModeCaculate}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
-            qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+            qType={qType}
             previewPlayer={previewPlayer}
             headerStyleWidthZoom={headerStyleWidthZoom}
             playerSkinType={playerSkinType}
@@ -500,6 +502,8 @@ class AssessmentPlayerDefault extends React.Component {
                 isBookmarked={isBookmarked}
                 handletoggleHints={showHints}
                 changeTool={this.changeTool}
+                handleMagnifier={handleMagnifier}
+                qType={qType}
               />
             </FeaturesSwitch>
             {!previewPlayer && (

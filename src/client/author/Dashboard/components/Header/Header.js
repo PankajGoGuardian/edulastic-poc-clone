@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { compose } from 'redux'
+import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Popover, Tooltip } from 'antd'
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
-import { IconClockDashboard, IconHangouts, IconManage } from '@edulastic/icons'
+import {
+  IconClockDashboard,
+  IconHangouts,
+  IconManage,
+  IconPlusCircle,
+} from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
@@ -22,7 +28,7 @@ import {
   UpgradeBtn,
 } from './styled'
 import { launchHangoutOpen } from '../../ducks'
-import CreateClassButton from '../../../ManageClass/components/CreateClassButton'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const getContent = ({ setvisible, needsRenewal }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -55,6 +61,7 @@ const HeaderSection = ({
   t,
   openLaunchHangout,
   subscription,
+  history,
 }) => {
   const { subEndDate, subType } = subscription || {}
 
@@ -77,6 +84,8 @@ const HeaderSection = ({
     (needsRenewal || !premium) &&
     !['enterprise', 'partial_premium'].includes(subType)
 
+  const createNewClass = () => history.push('/author/manageClass/createClass')
+
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer>
@@ -91,9 +100,18 @@ const HeaderSection = ({
             <IconHangouts color={themeColor} height={21} width={19} />
           </StyledEduButton>
         </Tooltip>
-        <CreateClassButton
-          style={{ marginLeft: '5px' }}
-          redirectRoute="/author/manageClass/createClass"
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton
+              isBlue
+              style={{ marginLeft: '5px' }}
+              data-cy="createNewClass"
+              onClick={handleClick}
+            >
+              <IconPlusCircle width={16} height={16} /> CREATE NEW CLASS
+            </EduButton>
+          )}
+          onClick={createNewClass}
         />
         <Link to="/author/manageClass">
           <EduButton isBlue style={{ marginLeft: '5px' }} data-cy="manageClass">
@@ -150,9 +168,12 @@ HeaderSection.propTypes = {
   isSubscriptionExpired: PropTypes.bool.isRequired,
   fetchUserSubscriptionStatus: PropTypes.func.isRequired,
   openLaunchHangout: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
 }
 
-export default withNamespaces('header')(
+const enhance = compose(
+  withNamespaces('header'),
+  withRouter,
   connect(
     (state) => ({
       premium: state?.user?.user?.features?.premium,
@@ -163,8 +184,10 @@ export default withNamespaces('header')(
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
       openLaunchHangout: launchHangoutOpen,
     }
-  )(HeaderSection)
+  )
 )
+
+export default enhance(HeaderSection)
 
 const StyledEduButton = styled(EduButton)`
   span {

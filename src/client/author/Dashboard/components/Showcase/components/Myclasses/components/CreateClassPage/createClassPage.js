@@ -16,7 +16,7 @@ import styled from 'styled-components'
 import { CreateCardBox, SyncClassDiv } from './styled'
 import { scopes } from '../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage'
 import authorizeCanvas from '../../../../../../../../common/utils/CanavsAuthorizationModule'
-import CreateClassButton from '../../../../../../../ManageClass/components/CreateClassButton'
+import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton'
 
 const CreateClassPage = ({
   allowGoogleLogin,
@@ -75,12 +75,18 @@ const CreateClassPage = ({
   }
 
   const enableCanvasSync = canvasAllowedInstitutions.length > 0
+  const createNewClass = () => history.push('/author/manageClass/createClass')
 
   return (
     <CreateCardBox>
-      <CreateClassButton
-        style={{ width: '207px' }}
-        redirectRoute="'/author/manageClass/createClass'"
+      <AuthorCompleteSignupButton
+        renderButton={(handleClick) => (
+          <EduButton style={{ width: '207px' }} isBlue onClick={handleClick}>
+            <IconPlusCircle width={20} height={20} />
+            <p>Create class</p>
+          </EduButton>
+        )}
+        onClick={createNewClass}
       />
       {(allowGoogleLogin || enableCleverSync || enableCanvasSync) &&
         !cleverId &&

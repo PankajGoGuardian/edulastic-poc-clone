@@ -6,6 +6,7 @@ import React, { memo } from 'react'
 import { withNamespaces } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import { ActionBtnWrapper } from './styled'
 
 const SubscriptionHeader = ({
@@ -26,9 +27,14 @@ const SubscriptionHeader = ({
         </EduButton>
       )}
       {showUpgradeOptions ? (
-        <EduButton isBlue width="215px" onClick={openPaymentServiceModal}>
-          UPGRADE NOW FOR $100/YEAR
-        </EduButton>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton isBlue width="215px" onClick={handleClick}>
+              UPGRADE NOW FOR $100/YEAR
+            </EduButton>
+          )}
+          onClick={openPaymentServiceModal}
+        />
       ) : showRenewalOptions ? (
         <EduButton
           onClick={openPaymentServiceModal}

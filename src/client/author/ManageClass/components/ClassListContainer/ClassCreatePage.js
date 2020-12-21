@@ -1,10 +1,11 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import { IconGoogleClassroom } from '@edulastic/icons'
 import GoogleLogin from 'react-google-login'
 import { EduButton } from '@edulastic/common'
 import NoClassNotification from '../NoClassNotification'
 import { ClassCreateContainer, ButtonsContainer } from './styled'
-import CreateClassButton from '../CreateClassButton'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 export const scopes = [
   'https://www.googleapis.com/auth/classroom.courses.readonly',
@@ -30,6 +31,7 @@ const ClassCreatePage = ({
   fetchClassList,
   googleAllowedInstitutions,
   isClassLink,
+  history,
 }) => {
   const { name } = recentInstitute
 
@@ -42,6 +44,9 @@ const ClassCreatePage = ({
   }
 
   const { isUserGoogleLoggedIn, cleverId } = user
+
+  const createNewClass = () => history.push('/author/manageClass/createClass')
+
   return (
     <>
       <ClassCreateContainer>
@@ -58,9 +63,13 @@ const ClassCreatePage = ({
               data={name}
             />
             <ButtonsContainer>
-              <CreateClassButton
-                redirectRoute="/author/manageClass/createClass"
-                hasIcon={false}
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <EduButton isBlue onClick={handleClick}>
+                    CREATE NEW CLASS
+                  </EduButton>
+                )}
+                onClick={createNewClass}
               />
               {googleAllowedInstitutions?.length > 0 &&
                 !cleverId &&
@@ -87,4 +96,5 @@ const ClassCreatePage = ({
     </>
   )
 }
-export default ClassCreatePage
+
+export default withRouter(ClassCreatePage)

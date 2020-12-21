@@ -1,6 +1,7 @@
 import React from 'react'
+import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import { GoogleLogin } from 'react-google-login'
 
@@ -26,7 +27,7 @@ import { ButtonsWrapper } from './styled'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
-import CreateClassButton from '../CreateClassButton'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const Header = ({
   fetchGoogleClassList,
@@ -41,6 +42,7 @@ const Header = ({
   user,
   handleCanvasBulkSync,
   isClassLink,
+  history,
 }) => {
   const { cleverId } = user
 
@@ -97,6 +99,12 @@ const Header = ({
       text: 'Groups',
     },
   ]
+
+  const createNewClass = () =>
+    history.push({
+      pathname: '/author/manageClass/createClass',
+      state: { type: currentTab },
+    })
 
   return (
     <MainHeader Icon={IconManage} headingText={t('common.manageClassTitle')}>
@@ -169,12 +177,14 @@ const Header = ({
               </EduButton>
             )}
         </>
-        <CreateClassButton
-          redirectRoute={{
-            pathname: '/author/manageClass/createClass',
-            state: { type: currentTab },
-          }}
-          title={`Create ${currentTab}`}
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton isBlue onClick={handleClick}>
+              <IconPlusCircle />
+              <span>Create {currentTab}</span>
+            </EduButton>
+          )}
+          onClick={createNewClass}
         />
       </ButtonsWrapper>
     </MainHeader>
@@ -183,6 +193,9 @@ const Header = ({
 
 Header.propTypes = {
   fetchGoogleClassList: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
 }
 
-export default withNamespaces('header')(Header)
+const enhance = compose(withNamespaces('header'), withRouter)
+
+export default enhance(Header)

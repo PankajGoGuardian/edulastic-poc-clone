@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { dashboardApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
@@ -85,7 +85,10 @@ function* receiveTeacherDashboardSaga() {
 function* fetchDashboardTilesSaga() {
   try {
     const version = localStorage.getItem('author:dashboard:version')
-    const result = yield call(configurableTilesApi.fetchTiles, +version)
+    const state = yield select((s) =>
+      s.user.user?.districts?.reduce((a, c) => a || c.defaultClass, null)
+    )
+    const result = yield call(configurableTilesApi.fetchTiles, +version, state)
     if (!version || version !== result.version) {
       yield put(setDashboardTiles(result.data))
       localStorage.setItem(
@@ -95,6 +98,7 @@ function* fetchDashboardTilesSaga() {
       localStorage.setItem('author:dashboard:version', +result.version)
     }
   } catch (err) {
+    console.log(err)
     const errorMessage = 'Unable to fetch dashboard details.'
     notification({ type: 'error', msg: errorMessage })
     yield put(receiveTeacherDashboardErrorAction({ error: errorMessage }))

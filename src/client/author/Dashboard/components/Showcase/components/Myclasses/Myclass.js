@@ -41,6 +41,9 @@ import {
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
 
+const sortByOrder = (prop) =>
+  prop.sort((a, b) => a.config?.order - b.config?.order)
+
 const MyClasses = ({
   getTeacherDashboard,
   classData,
@@ -108,8 +111,8 @@ const MyClasses = ({
   }
 
   const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
-  const bannerSlides = BANNER || []
-  const testBundles = TEST_BUNDLE || []
+  const bannerSlides = sortByOrder(BANNER || [])
+  const testBundles = sortByOrder(TEST_BUNDLE || [])
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)

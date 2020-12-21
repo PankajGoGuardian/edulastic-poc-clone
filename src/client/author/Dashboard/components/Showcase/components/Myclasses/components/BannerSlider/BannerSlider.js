@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { debounce } from 'lodash'
 
 // components
@@ -14,6 +14,7 @@ import {
   LearnMore,
   SlideContainer,
   SlideDescription,
+  CollapsedBtn,
 } from './styled'
 
 import EmbeddedVideoPreviewModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
@@ -23,8 +24,16 @@ const BannerSlider = ({
   bannerActionHandler,
   handleBannerModalClose,
   isBannerModalVisible,
+  allActiveClasses,
 }) => {
   const scrollBarRef = useRef(null)
+  const [collapsedBanner, setCollapsedBanner] = useState(true)
+
+  useEffect(() => {
+    if (allActiveClasses?.length === 0) {
+      setCollapsedBanner(false)
+    }
+  }, [])
 
   const handleScroll = debounce((isScrollLeft) => {
     const scrollContainer = scrollBarRef.current._container
@@ -42,7 +51,15 @@ const BannerSlider = ({
 
   return (
     <>
-      <SliderContainer>
+      <CollapsedBtn
+        collapsedBanner={collapsedBanner}
+        onClick={() => setCollapsedBanner(!collapsedBanner)}
+      >
+        {collapsedBanner ? 'Collapse' : 'Expand'}
+        <IconChevronLeft width={11} height={11} />
+      </CollapsedBtn>
+
+      <SliderContainer collapsedBanner={collapsedBanner}>
         <PrevButton className="prev" onClick={() => handleScroll(false)}>
           <IconChevronLeft color={white} width="32px" height="32px" />
         </PrevButton>
@@ -57,19 +74,19 @@ const BannerSlider = ({
               useBothWheelAxes: true,
             }}
           >
-            {bannerSlides.map((slide, index) => (
-              <SlideContainer
-                key={slide._id}
-                onClick={() => bannerActionHandler(slide.config.filters[0])}
-              >
-                <LearnMore>LEARN MORE</LearnMore>
-                <SlideDescription>{slide.description}</SlideDescription>
+            <SlideContainer>
+              {bannerSlides.map((slide, index) => (
                 <Slides
                   className={bannerLength === index + 1 ? 'last' : ''}
                   bgImage={slide.imageUrl}
-                />
-              </SlideContainer>
-            ))}
+                  key={slide._id}
+                  onClick={() => bannerActionHandler(slide.config.filters[0])}
+                >
+                  <LearnMore>LEARN MORE</LearnMore>
+                  <SlideDescription>{slide.description}</SlideDescription>
+                </Slides>
+              ))}
+            </SlideContainer>
           </PerfectScrollbar>
         </ScrollbarContainer>
       </SliderContainer>

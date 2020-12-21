@@ -21,11 +21,13 @@ export const LearnMore = styled.span`
 
 export const SlideContainer = styled.span`
   height: 200px;
-  width: 490px;
-  margin-right: 20px;
 `
 
 export const SliderContainer = styled.div`
+  height: ${(props) => (props.collapsedBanner ? '240px' : '0px')};
+  width: 100%;
+  transition: 0.2s;
+  overflow: hidden;
   position: relative;
   .prev,
   .next {
@@ -78,6 +80,7 @@ export const Slides = styled.div`
   background-position: top left;
   background-repeat: no-repeat;
   border-radius: 4px;
+  margin-right: 20px;
 
   &.last,
   &:last-child {
@@ -104,4 +107,43 @@ export const SlideDescription = styled.span`
   &:hover {
     cursor: pointer;
   }
+`
+
+export const CollapsedBtn = styled.div`
+  float: right;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  svg {
+    margin-left: 10px;
+    transform: rotate(${(props) => (props.collapsedBanner ? '90' : '270')}deg);
+  }
+`
+
+export const BundleContainer = styled.div`
+  width: 241px;
+  height: 169px;
+  display: flex;
+  align-items: flex-end;
+  margin: 0px 10px 10px 0px;
+  border-radius: 10px;
+  padding: 12px 20px;
+  color: ${white};
+  cursor: pointer;
+  background-image: ${(props) => `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  background-repeat: no-repeat;
+`
+
+export const Bottom = styled.div`
+  font-size: 13px;
+  height: 40px;
+  overflow: hidden;
+  font-weight: 600;
 `

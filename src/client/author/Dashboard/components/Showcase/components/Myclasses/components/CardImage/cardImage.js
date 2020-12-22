@@ -15,6 +15,7 @@ import {
   RowWrapperGrade,
   StyledRow,
   CircleBtn,
+  MetaText,
 } from './styled'
 import cardImg from '../../../../../../assets/images/cardImg.png'
 
@@ -33,6 +34,27 @@ const CardImage = ({ data, history }) => {
     }
     sessionStorage.setItem('filters[Assignments]', JSON.stringify(filter))
   }
+
+  const metaInfo = (
+    <>
+      {(grades || []).length ? (
+        <>
+          <span data-cy="grades">Grades</span>{' '}
+          {grades.join(', ').replace(/O/i, ' Other ')}
+        </>
+      ) : (
+        ''
+      )}
+      {subject ? (
+        <>
+          {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ''}
+          <SpanLeftMargin data-cy="subject">{subject}</SpanLeftMargin>
+        </>
+      ) : (
+        ''
+      )}
+    </>
+  )
 
   return (
     <>
@@ -60,29 +82,11 @@ const CardImage = ({ data, history }) => {
               </IconWrapper>
             </StyledRow>
             <RowWrapperGrade>
-              <TextWrapper color={white} rfs="12px" size="13px" fw="600" minTwo>
-                {grades.length ? (
-                  <>
-                    <span data-cy="grades">Grades</span>{' '}
-                    {grades.join(', ').replace(/O/i, ' Other ')}
-                  </>
-                ) : (
-                  ''
-                )}
-
-                {subject ? (
-                  <>
-                    {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ''}
-                    <Tooltip title={subject} placement="bottomLeft">
-                      <SpanLeftMargin data-cy="subject">
-                        {subject}
-                      </SpanLeftMargin>
-                    </Tooltip>
-                  </>
-                ) : (
-                  ''
-                )}
-              </TextWrapper>
+              <Tooltip title={metaInfo} placement="bottomLeft">
+                <MetaText color={white} rfs="12px" size="13px" fw="600">
+                  {metaInfo}
+                </MetaText>
+              </Tooltip>
             </RowWrapperGrade>
             <RowWrapperGrade>
               <TextWrapper

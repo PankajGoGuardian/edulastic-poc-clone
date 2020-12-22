@@ -3,10 +3,10 @@ import API from './utils/API'
 const api = new API()
 const prefix = '/config-tiles'
 
-const fetchTiles = (version) =>
+const fetchTiles = (version, state) =>
   api
     .callApi({
-      url: `${prefix}/${version}`,
+      url: `${prefix}/${version}${state ? `?state=${state}` : ''}`,
       method: 'get',
     })
     .then((result) => result.data)

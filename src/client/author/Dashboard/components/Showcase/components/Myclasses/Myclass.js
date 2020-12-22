@@ -40,6 +40,14 @@ import {
 } from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
+import { clearTestFiltersAction } from '../../../../../TestList/ducks'
+import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+
+const PREMIUM_TAG = 'PREMIUM'
+const FREE_TAG = 'FREE'
+
+const sortByOrder = (prop) =>
+  prop.sort((a, b) => a.config?.order - b.config?.order)
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -72,6 +80,8 @@ const MyClasses = ({
   setShowCleverSyncModal,
   teacherData,
   dashboardTiles,
+  clearTestFilters,
+  clearPlaylistFilters,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
   const [showBannerModal, setShowBannerModal] = useState(null)
@@ -89,6 +99,8 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
+  const premiumUser = user.features.premium
+
   const sortableClasses = classData
     .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
     .sort((a, b) => b.asgnStartDate - a.asgnStartDate)
@@ -101,15 +113,39 @@ const MyClasses = ({
     (c) => c.active === 1 && c.type === 'class'
   )
 
-  const handleFeatureClick = (prop) => {
-    const entries = prop.reduce((a, c) => ({ ...a, ...c }), {})
+  const handleContentRedirect = (filters, isPlaylist) => {
+    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {})
     const filter = qs.stringify(entries)
-    history.push(`/author/tests?${filter}`)
+    const contentType = isPlaylist ? 'playlists' : 'tests'
+    if (isPlaylist) {
+      clearPlaylistFilters()
+    } else {
+      clearTestFilters()
+    }
+    history.push(`/author/${contentType}?${filter}`)
+  }
+
+  const handleFeatureClick = ({ config = {}, tags = [] }) => {
+    const { filters, isPlaylist } = config
+    if (tags.includes(PREMIUM_TAG)) {
+      if (premiumUser) {
+        handleContentRedirect(filters, isPlaylist)
+      } else {
+        history.push(`/author/subscription`)
+      }
+    } else {
+      handleContentRedirect(filters, isPlaylist)
+    }
   }
 
   const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
-  const bannerSlides = BANNER || []
-  const testBundles = TEST_BUNDLE || []
+
+  // TODO: remove this once done with demo and required data is available
+  const filterContentByPremium = (content) =>
+    content.filter((x) => x.tags.includes(premiumUser ? PREMIUM_TAG : FREE_TAG))
+
+  const bannerSlides = sortByOrder(filterContentByPremium(BANNER || []))
+  const testBundles = sortByOrder(filterContentByPremium(TEST_BUNDLE || []))
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
@@ -249,6 +285,8 @@ export default compose(
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       setShowCleverSyncModal: setShowCleverSyncModalAction,
+      clearTestFilters: clearTestFiltersAction,
+      clearPlaylistFilters: clearPlaylistFiltersAction,
     }
   )
 )(MyClasses)

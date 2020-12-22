@@ -54,6 +54,8 @@ const PerformanceOverTime = ({
     parseData(rawData),
     (test) => test.testName && test.testName !== 'N/A' // filter out tests without testName
   )
+  // show tests from oldest to latest in the chart
+  const chartData = [...dataWithTestInfo].reverse()
   const filteredTableData = filter(dataWithTestInfo, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true
   )
@@ -85,7 +87,7 @@ const PerformanceOverTime = ({
           </Col>
         </Row>
         <ProgressChart
-          data={dataWithTestInfo}
+          data={chartData}
           analyseBy={analyseBy.key}
           selectedItems={selectedTests}
           setSelectedItems={setSelectedTests}

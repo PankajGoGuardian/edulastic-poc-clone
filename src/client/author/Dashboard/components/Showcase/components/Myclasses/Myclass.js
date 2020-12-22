@@ -186,7 +186,6 @@ const MyClasses = ({
           handleBannerModalClose={() => setShowBannerModal(null)}
           bannerActionHandler={bannerActionHandler}
           isBannerModalVisible={showBannerModal}
-          allActiveClasses={allActiveClasses}
         />
       )}
       {hasNoActiveClassFallback && (

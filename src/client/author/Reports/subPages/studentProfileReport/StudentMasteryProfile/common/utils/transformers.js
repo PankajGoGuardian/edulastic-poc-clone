@@ -1,12 +1,15 @@
-import { map } from 'lodash'
-import gradesMap from '../../../common/static/json/gradesMap.json'
-
-export const getDomainOptions = (domains) => {
+export const getDomainOptions = (domains, grade, subject) => {
   return [
     { key: 'All', title: 'All' },
-    ...map(domains, (domain) => ({
-      key: domain.domainId,
-      title: domain.name,
-    })),
+    ...domains
+      .filter(
+        (domain) =>
+          (grade === 'All' || domain.grades.includes(grade)) &&
+          (subject === 'All' || domain.subject === subject)
+      )
+      .map((domain) => ({
+        key: domain.domainId,
+        title: domain.name,
+      })),
   ]
 }

@@ -138,14 +138,14 @@ const MyClasses = ({
     }
   }
 
-  const { BANNER, TEST_BUNDLE } = groupBy(dashboardTiles, 'type')
+  const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
 
   // TODO: remove this once done with demo and required data is available
   const filterContentByPremium = (content) =>
     content.filter((x) => x.tags.includes(premiumUser ? PREMIUM_TAG : FREE_TAG))
 
   const bannerSlides = sortByOrder(filterContentByPremium(BANNER || []))
-  const testBundles = sortByOrder(filterContentByPremium(TEST_BUNDLE || []))
+  const featuredBundles = sortByOrder(filterContentByPremium(FEATURED || []))
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
@@ -240,7 +240,7 @@ const MyClasses = ({
       )}
       {!loading && <Classes activeClasses={allActiveClasses} />}
       <FeaturedContentBundle
-        testBundles={testBundles}
+        featuredBundles={featuredBundles}
         handleFeatureClick={handleFeatureClick}
       />
       <Launch />

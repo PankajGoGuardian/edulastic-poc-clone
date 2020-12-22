@@ -180,7 +180,7 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
-      {hasNoActiveClassFallback && (
+      {!loading && allActiveClasses?.length === 0 && (
         <BannerSlider
           bannerSlides={bannerSlides}
           handleBannerModalClose={() => setShowBannerModal(null)}

@@ -5,14 +5,25 @@ import {
 } from '../../../common/utils/transformers'
 import { percentage, getProficiencyBand } from '../../../../../common/util'
 
+export const filterData = (data, domain, grade, subject) =>
+  data.filter(
+    (record) =>
+      (domain === 'All' || String(record.domainId) === String(domain)) &&
+      (grade === 'All' || record.grades.includes(grade)) &&
+      (subject === 'All' || record.subject === subject)
+  )
+
 export const augmentDomainStandardMasteryData = (
   domains = [],
-  scaleInfo = []
+  scaleInfo = [],
+  domain,
+  grade,
+  subject
 ) => {
   const maxScale = getMaxScale(scaleInfo)
-  return domains.map((domain) =>
-    next(domain, (draftDomain) => {
-      const { totalScoreSum, maxScoreSum } = domain.standards.reduce(
+  return filterData(domains, domain, grade, subject).map((record) =>
+    next(record, (draftDomain) => {
+      const { totalScoreSum, maxScoreSum } = record.standards.reduce(
         (res, ele) => ({
           totalScoreSum: res.totalScoreSum + (Number(ele.totalScore) || 0),
           maxScoreSum: res.maxScoreSum + (Number(ele.maxScore) || 0),
@@ -21,7 +32,7 @@ export const augmentDomainStandardMasteryData = (
       )
       const score = percentage(totalScoreSum, maxScoreSum)
       draftDomain.masteredCount = getOverallMasteryCount(
-        domain.standards,
+        record.standards,
         maxScale
       )
       draftDomain.scale = getProficiencyBand(score, scaleInfo)

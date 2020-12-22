@@ -26,9 +26,12 @@ import { getCsvDownloadingState } from '../../../ducks'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
 import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
-import { getGrades, getStudentName } from '../common/utils/transformers'
+import {
+  getGrades,
+  getStudentName,
+  getDomainOptions,
+} from '../common/utils/transformers'
 import StudentPerformanceSummary from './common/components/table/StudentPerformanceSummary'
-import { getDomainOptions } from './common/utils/transformers'
 import {
   getReportsStudentMasteryProfile,
   getReportsStudentMasteryProfileLoader,
@@ -170,6 +173,10 @@ const StudentMasteryProfile = ({
   useEffect(() => {
     setSelectedMastery([])
   }, [selectedDomain.key])
+
+  useEffect(() => {
+    setSelectedDomain({ key: 'All', title: 'All' })
+  }, [selectedGrade, selectedSubject])
 
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onSubjectSelect = (_, selected) => setSelectedSubject(selected)

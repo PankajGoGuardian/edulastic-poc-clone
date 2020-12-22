@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Row } from 'antd'
 import { white } from '@edulastic/colors'
+import { TextWrapper } from '../../../../../styledComponents'
 
 export const Image = styled.img`
   width: 100%;
@@ -41,14 +42,21 @@ export const CircleBtn = styled.div`
 `
 export const TextDiv = styled.p`
   font-size: 13px;
-  text-overflow: ellipsis;
   display: block;
   max-width: 100%;
   overflow: hidden;
-  white-space: nowrap;
   font-weight: bold;
   padding-right: 60px;
+  max-height: 36px;
 `
+export const MetaText = styled(TextWrapper)`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  margin-top: 5px;
+`
+
 export const SpanLeftMargin = styled.span`
   margin-left: 0.5rem;
 `
@@ -58,6 +66,7 @@ export const RowWrapperGrade = styled(Row)`
 
 export const StyledRow = styled(Row)`
   display: flex;
-  height: 24px;
+  max-height: 35px;
+  min-height: 24px;
   align-items: center;
 `

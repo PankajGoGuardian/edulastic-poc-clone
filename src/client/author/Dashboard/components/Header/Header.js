@@ -100,6 +100,18 @@ const HeaderSection = ({
             <IconHangouts color={themeColor} height={21} width={19} />
           </StyledEduButton>
         </Tooltip>
+        <Tooltip title="Manage Class">
+          <Link to="/author/manageClass">
+            <EduButton
+              IconBtn
+              isBlue
+              style={{ marginLeft: '5px' }}
+              data-cy="manageClass"
+            >
+              <IconManage />
+            </EduButton>
+          </Link>
+        </Tooltip>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
             <EduButton
@@ -113,11 +125,6 @@ const HeaderSection = ({
           )}
           onClick={createNewClass}
         />
-        <Link to="/author/manageClass">
-          <EduButton isBlue style={{ marginLeft: '5px' }} data-cy="manageClass">
-            <IconManage /> Manage Class
-          </EduButton>
-        </Link>
         {showPopup && (
           <PopoverWrapper>
             <Popover

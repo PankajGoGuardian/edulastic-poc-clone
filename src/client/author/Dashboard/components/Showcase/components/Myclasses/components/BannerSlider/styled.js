@@ -21,8 +21,6 @@ export const LearnMore = styled.span`
 
 export const SlideContainer = styled.span`
   height: 200px;
-  width: 490px;
-  margin-right: 20px;
 `
 
 export const SliderContainer = styled.div`
@@ -44,7 +42,7 @@ export const ScrollbarContainer = styled.div`
   margin-bottom: 20px;
   transition: 0.2s;
   .scrollbar-container {
-    width: calc(100vw - 140px);
+    width: calc(100vw - 130px);
     transition: 0.2s;
     padding-bottom: 14px;
   }
@@ -78,6 +76,7 @@ export const Slides = styled.div`
   background-position: top left;
   background-repeat: no-repeat;
   border-radius: 4px;
+  margin-right: 20px;
 
   &.last,
   &:last-child {

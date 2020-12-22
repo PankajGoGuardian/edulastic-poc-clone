@@ -6,8 +6,8 @@ import { title } from '@edulastic/colors'
 import { TextWrapper } from '../../../../../styledComponents'
 import { FeatureContentWrapper, BundleContainer, Bottom } from './styled'
 
-const FeaturedContentBundle = ({ testBundles, handleFeatureClick }) => {
-  if (testBundles.length === 0) {
+const FeaturedContentBundle = ({ featuredBundles, handleFeatureClick }) => {
+  if (!featuredBundles.length) {
     return null
   }
 
@@ -22,7 +22,7 @@ const FeaturedContentBundle = ({ testBundles, handleFeatureClick }) => {
         Featured Content Bundles
       </TextWrapper>
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
-        {testBundles.map((bundle) => (
+        {featuredBundles.map((bundle) => (
           <BundleContainer
             onClick={() => handleFeatureClick(bundle || {})}
             bgImage={bundle.imageUrl}

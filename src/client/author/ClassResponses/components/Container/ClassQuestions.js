@@ -201,9 +201,7 @@ class ClassQuestions extends Component {
         }
         if (item.itemLevelScoring) {
           const firstQid = data.questions[0].id
-          const firstQAct = userQActivities.find(
-            (x) => x._id === firstQid && x.testItemId === item._id
-          )
+          const firstQAct = userQActivities.find((x) => x._id === firstQid)
           if (firstQAct) {
             if (
               filter === 'correct' &&
@@ -243,8 +241,7 @@ class ClassQuestions extends Component {
           .map((question) => {
             const { id } = question
             let qActivities = questionActivities.filter(
-              ({ qid, id: altId, testItemId }) =>
-                (qid === id || altId === id) && testItemId === item._id
+              ({ qid, id: altId }) => qid === id || altId === id
             )
             if (qActivities.length > 1) {
               /**

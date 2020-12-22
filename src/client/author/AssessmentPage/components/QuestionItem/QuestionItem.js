@@ -204,7 +204,6 @@ class QuestionItem extends React.Component {
       qId,
       clearHighlighted,
       resetTimeSpentOnQuestion,
-      itemId,
     } = this.props
 
     if (!evaluation) {
@@ -239,7 +238,6 @@ class QuestionItem extends React.Component {
       view: previewMode,
       highlighted,
       boundingRect,
-      testItemId: itemId,
     }
     switch (data.type) {
       case MULTIPLE_CHOICE:

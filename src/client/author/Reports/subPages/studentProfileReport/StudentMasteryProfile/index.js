@@ -171,6 +171,10 @@ const StudentMasteryProfile = ({
     setSelectedMastery([])
   }, [selectedDomain.key])
 
+  useEffect(() => {
+    setSelectedDomain({ key: 'All', title: 'All' })
+  }, [selectedGrade, selectedSubject])
+
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
   const onGradeSelect = (_, selected) => setSelectedGrade(selected)

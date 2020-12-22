@@ -43,6 +43,9 @@ import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/di
 import { clearTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 
+const PREMIUM_TAG = 'PREMIUM'
+const FREE_TAG = 'FREE'
+
 const sortByOrder = (prop) =>
   prop.sort((a, b) => a.config?.order - b.config?.order)
 
@@ -124,7 +127,7 @@ const MyClasses = ({
 
   const handleFeatureClick = ({ config = {}, tags = [] }) => {
     const { filters, isPlaylist } = config
-    if (tags.includes('premium')) {
+    if (tags.includes(PREMIUM_TAG)) {
       if (premiumUser) {
         handleContentRedirect(filters, isPlaylist)
       } else {
@@ -139,7 +142,7 @@ const MyClasses = ({
 
   // TODO: remove this once done with demo and required data is available
   const filterContentByPremium = (content) =>
-    content.filter((x) => x.tags.includes(premiumUser ? 'premium' : 'default'))
+    content.filter((x) => x.tags.includes(premiumUser ? PREMIUM_TAG : FREE_TAG))
 
   const bannerSlides = sortByOrder(filterContentByPremium(BANNER || []))
   const testBundles = sortByOrder(filterContentByPremium(TEST_BUNDLE || []))

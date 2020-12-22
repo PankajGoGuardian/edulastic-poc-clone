@@ -57,19 +57,19 @@ const BannerSlider = ({
               useBothWheelAxes: true,
             }}
           >
-            {bannerSlides.map((slide, index) => (
-              <SlideContainer
-                key={slide._id}
-                onClick={() => bannerActionHandler(slide.config.filters[0])}
-              >
-                <LearnMore>LEARN MORE</LearnMore>
-                <SlideDescription>{slide.description}</SlideDescription>
+            <SlideContainer>
+              {bannerSlides.map((slide, index) => (
                 <Slides
                   className={bannerLength === index + 1 ? 'last' : ''}
                   bgImage={slide.imageUrl}
-                />
-              </SlideContainer>
-            ))}
+                  key={slide._id}
+                  onClick={() => bannerActionHandler(slide.config.filters[0])}
+                >
+                  <LearnMore>LEARN MORE</LearnMore>
+                  <SlideDescription>{slide.description}</SlideDescription>
+                </Slides>
+              ))}
+            </SlideContainer>
           </PerfectScrollbar>
         </ScrollbarContainer>
       </SliderContainer>

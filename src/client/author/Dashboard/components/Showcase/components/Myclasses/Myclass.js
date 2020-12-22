@@ -180,12 +180,15 @@ const MyClasses = ({
         canvasSectionList={canvasSectionList}
         institutionId={institutionIds[0]}
       />
-      <BannerSlider
-        bannerSlides={bannerSlides}
-        handleBannerModalClose={() => setShowBannerModal(null)}
-        bannerActionHandler={bannerActionHandler}
-        isBannerModalVisible={showBannerModal}
-      />
+      {hasNoActiveClassFallback && (
+        <BannerSlider
+          bannerSlides={bannerSlides}
+          handleBannerModalClose={() => setShowBannerModal(null)}
+          bannerActionHandler={bannerActionHandler}
+          isBannerModalVisible={showBannerModal}
+          allActiveClasses={allActiveClasses}
+        />
+      )}
       {hasNoActiveClassFallback && (
         <CreateClassPage
           fetchClassList={fetchClassList}

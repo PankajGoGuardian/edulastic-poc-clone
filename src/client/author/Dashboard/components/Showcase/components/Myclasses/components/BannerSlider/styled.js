@@ -21,8 +21,6 @@ export const LearnMore = styled.span`
 
 export const SlideContainer = styled.span`
   height: 200px;
-  width: 490px;
-  margin-right: 20px;
 `
 
 export const SliderContainer = styled.div`
@@ -44,7 +42,7 @@ export const ScrollbarContainer = styled.div`
   margin-bottom: 20px;
   transition: 0.2s;
   .scrollbar-container {
-    width: calc(100vw - 140px);
+    width: calc(100vw - 130px);
     transition: 0.2s;
     padding-bottom: 14px;
   }
@@ -78,6 +76,7 @@ export const Slides = styled.div`
   background-position: top left;
   background-repeat: no-repeat;
   border-radius: 4px;
+  margin-right: 20px;
 
   &.last,
   &:last-child {
@@ -104,4 +103,27 @@ export const SlideDescription = styled.span`
   &:hover {
     cursor: pointer;
   }
+`
+
+export const BundleContainer = styled.div`
+  width: 241px;
+  height: 169px;
+  display: flex;
+  align-items: flex-end;
+  margin: 0px 10px 10px 0px;
+  border-radius: 10px;
+  padding: 12px 20px;
+  color: ${white};
+  cursor: pointer;
+  background-image: ${(props) => `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  background-repeat: no-repeat;
+`
+
+export const Bottom = styled.div`
+  font-size: 13px;
+  height: 40px;
+  overflow: hidden;
+  font-weight: 600;
 `

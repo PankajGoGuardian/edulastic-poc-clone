@@ -196,18 +196,20 @@ export const getDomains = (
   const scales = getScaleForMasteryCalculation(scaleInfo)
   const domains = map(keys(groupedByDomain), (domainId) => {
     const standards = groupedByDomain[domainId]
-    const { domainName = '', domain = '' } = standards[0] || {}
+    const { domainName = '', domain = '', grades = [], subject } =
+      standards[0] || {}
     const masteryScore = getOverallDomainMasteryPercentage(standards, scales)
     const masterySummary = getMasterySummary(masteryScore, scaleInfo)
 
     return {
       domainId,
       standards,
+      grades,
       masteryScore,
       masterySummary,
       name: domain,
       description: domainName,
-      subject: studentClassInfo?.subject,
+      subject,
       standardSet: studentClassInfo?.standardSet,
       assessmentCount: asessmentMetricInfo?.length || 0,
     }

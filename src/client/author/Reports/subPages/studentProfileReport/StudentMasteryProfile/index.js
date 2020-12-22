@@ -39,16 +39,20 @@ import {
   getReportsStudentMasteryProfileError,
 } from './ducks'
 
-const usefilterRecords = (records, domain) =>
+import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
+
+const usefilterRecords = (records, domain, grade, subject) =>
   // Note: record.domainId could be integer or string
   useMemo(
     () =>
       filter(
         records,
         (record) =>
-          domain === 'All' || String(record.domainId) === String(domain)
+          (domain === 'All' || String(record.domainId) === String(domain)) &&
+          (grade === 'All' || record.grades.includes(grade)) &&
+          (subject === 'All' || record.subject === subject)
       ),
-    [records, domain]
+    [records, domain, grade, subject]
   )
 const getTooltip = (payload) => {
   if (payload && payload.length) {
@@ -109,6 +113,14 @@ const StudentMasteryProfile = ({
     key: 'All',
     title: 'All',
   })
+  const [selectedSubject, setSelectedSubject] = useState({
+    key: 'All',
+    title: 'All Subjects',
+  })
+  const [selectedGrade, setSelectedGrade] = useState({
+    key: 'All',
+    title: 'All Subjects',
+  })
   const [selectedMastery, setSelectedMastery] = useState([])
   const [expandRows, setExpandRows] = useState(false)
 
@@ -125,9 +137,16 @@ const StudentMasteryProfile = ({
 
   const filteredStandards = usefilterRecords(
     studentStandards,
-    selectedDomain.key
+    selectedDomain.key,
+    selectedGrade.key,
+    selectedSubject.key
   )
-  const filteredDomains = usefilterRecords(studentDomains, selectedDomain.key)
+  const filteredDomains = usefilterRecords(
+    studentDomains,
+    selectedDomain.key,
+    selectedGrade.key,
+    selectedSubject.key
+  )
   const domainOptions = getDomainOptions(studentDomains)
 
   const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(
@@ -149,6 +168,8 @@ const StudentMasteryProfile = ({
   }, [selectedDomain.key])
 
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
+  const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
+  const onGradeSelect = (_, selected) => setSelectedGrade(selected)
   const onSectionClick = (item) =>
     setSelectedMastery(toggleItem(selectedMastery, item.masteryLabel))
 
@@ -232,6 +253,20 @@ const StudentMasteryProfile = ({
       <ReStyledCard>
         <FilterRow justifyContent="space-between">
           <DropdownContainer>
+            <ControlDropDown
+              by={selectedGrade}
+              selectCB={onGradeSelect}
+              data={staticDropDownData.grades}
+              prefix="Grade"
+              showPrefixOnSelected={false}
+            />
+            <ControlDropDown
+              by={selectedSubject}
+              selectCB={onSubjectSelect}
+              data={staticDropDownData.subjects}
+              prefix="Subject"
+              showPrefixOnSelected={false}
+            />
             <ControlDropDown
               showPrefixOnSelected={false}
               by={selectedDomain}
@@ -343,10 +378,18 @@ const StyledName = styled.span`
 `
 
 const DropdownContainer = styled.div`
+  display: flex;
+
   .control-dropdown {
     .ant-btn {
       width: 100%;
     }
+  }
+  .control-dropdown {
+    margin-left: 10px;
+  }
+  .control-dropown:first-child {
+    margin-left: 0px;
   }
 `
 

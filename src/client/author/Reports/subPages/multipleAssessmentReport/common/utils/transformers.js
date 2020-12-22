@@ -22,6 +22,8 @@ export const transformFiltersForMAR = (requestFilters) => {
     ...requestFilters,
     classIds,
     groupIds,
+    testGrade: requestFilters.grade,
+    testSubject: requestFilters.subject,
     grade: requestFilters.studentGrade,
     subject: requestFilters.studentSubject,
     courseId: requestFilters.studentCourseId,

@@ -8,6 +8,8 @@ export const transformFiltersForSAR = (requestFilters = {}) => ({
   groupIds: requestFilters.groupIds
     ? getFormattedString(requestFilters.groupIds)
     : requestFilters.groupId,
+  testGrade: requestFilters.grade,
+  testSubject: requestFilters.subject,
   grade: requestFilters.studentGrade,
   courseId: requestFilters.studentCourseId,
   subject: requestFilters.studentSubject,

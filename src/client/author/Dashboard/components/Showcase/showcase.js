@@ -1,21 +1,9 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
+import { Row, Col, Layout, Rate, Icon, Button } from 'antd'
 import MyClasses from './components/Myclasses/Myclass'
-import { fetchDashboardTiles } from '../../ducks'
 
-const MainContent = ({ dashboardTiles, getDashboardTiles }) => {
-  useEffect(() => {
-    getDashboardTiles()
-  }, [])
+const { Content } = Layout
 
-  return <MyClasses dashboardTiles={dashboardTiles} />
-}
+const MainContent = () => <MyClasses />
 
-export default connect(
-  (state) => ({
-    dashboardTiles: state.dashboardTeacher.configurableTiles,
-  }),
-  {
-    getDashboardTiles: fetchDashboardTiles,
-  }
-)(MainContent)
+export default MainContent

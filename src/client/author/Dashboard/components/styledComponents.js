@@ -18,7 +18,7 @@ export const TextWrapper = styled(Text)`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: ${(props) => (props.size ? props.size : '18px')};
   }
-  min-height: ${({ minTwo }) => (minTwo ? '30px' : '')};
+  min-height: ${({ minTwo }) => (minTwo ? '44px' : '')};
 `
 
 export const LinkWrapper = styled.a`

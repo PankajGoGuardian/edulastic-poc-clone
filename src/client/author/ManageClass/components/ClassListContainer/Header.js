@@ -26,7 +26,6 @@ import { ButtonsWrapper } from './styled'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
-import CreateClassButton from '../CreateClassButton'
 
 const Header = ({
   fetchGoogleClassList,
@@ -169,13 +168,18 @@ const Header = ({
               </EduButton>
             )}
         </>
-        <CreateClassButton
-          redirectRoute={{
+        <Link
+          to={{
             pathname: '/author/manageClass/createClass',
             state: { type: currentTab },
           }}
-          title={`Create ${currentTab}`}
-        />
+          data-cy="createClass"
+        >
+          <EduButton isBlue>
+            <IconPlusCircle />
+            <span>Create {currentTab}</span>
+          </EduButton>
+        </Link>
       </ButtonsWrapper>
     </MainHeader>
   )

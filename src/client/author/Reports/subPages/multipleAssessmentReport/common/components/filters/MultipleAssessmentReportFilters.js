@@ -129,8 +129,8 @@ const SingleAssessmentReportFilters = ({
       if (firstLoad) {
         search = {
           termId: search.termId || savedFilters.termId,
-          subject: search.subject || savedFilters.subject,
-          grade: search.grade || savedFilters.grade,
+          subject: search.subject || savedFilters.testSubject,
+          grade: search.grade || savedFilters.testGrade,
           ...search,
         }
       }

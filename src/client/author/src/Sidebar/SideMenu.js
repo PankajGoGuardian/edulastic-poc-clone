@@ -720,7 +720,6 @@ SideMenu.propTypes = {
   userRole: PropTypes.string.isRequired,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   logout: PropTypes.func.isRequired,
-  features: PropTypes.object,
   className: PropTypes.string,
   lastPlayList: PropTypes.object,
 }
@@ -728,7 +727,6 @@ SideMenu.propTypes = {
 SideMenu.defaultProps = {
   className: '',
   lastPlayList: {},
-  features: {},
 }
 
 const enhance = compose(

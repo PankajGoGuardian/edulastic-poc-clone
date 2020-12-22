@@ -1775,6 +1775,10 @@
     "message": "Atlas Login failed",
     "description": ""
   },
+  "newselaLoginFailed": {
+    "message": "Newsela Login failed",
+    "description": ""
+  },
   "failedToFetchUserData": {
     "message": "Failed to fetch user data.",
     "description": ""

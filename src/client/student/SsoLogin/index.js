@@ -20,6 +20,7 @@ import {
   getUserDataAction,
   toggleRoleConfirmationPopupAction,
   msoLoginAction,
+  newselaSSOLoginAction,
 } from '../Login/ducks'
 import ConfirmationModal from '../../common/components/ConfirmationModal'
 
@@ -38,6 +39,7 @@ class SsoLogin extends React.Component {
       cleverSSOLogin,
       msoSSOLogin,
       atlasSSOLogin,
+      newselaSSOLogin,
     } = this.props
     const { addAccount, addAccountTo } = JSON.parse(
       sessionStorage.getItem('addAccountDetails') || '{}'
@@ -77,6 +79,14 @@ class SsoLogin extends React.Component {
         ?.state
       if (state) payload.state = JSON.parse(state)
       atlasSSOLogin(payload)
+    } else if (path.includes('newsela')) {
+      const query = qs.parse(location.search, { ignoreQueryPrefix: true })
+      const { redirect, state } = query
+      if (redirect) {
+        localStorage.setItem('loginRedirectUrl', redirect)
+      }
+      if (state) payload.state = JSON.parse(state)
+      newselaSSOLogin(payload)
     }
   }
 
@@ -121,7 +131,7 @@ class SsoLogin extends React.Component {
         {showConfirmationModal && (
           <ConfirmationModal
             title="Confirm Teacher Signup"
-            bodyText={`The email ${email} is already registered as a student in Edulastic. Are you sure you want to continue registering as a teacher?`}
+            bodyText={`The email ${email} is already registered as a student in Edulastic. Are you sure you want to continue registering as a teacher? If so, type "CONTINUE" in the field below and proceed.`}
             show={isRoleConfirmation}
             onOk={this.handleConfirmation}
             onCancel={this.handleRejection}
@@ -182,6 +192,7 @@ const enhance = compose(
       atlasSSOLogin: atlasSSOLoginAction,
       googleLogin: googleLoginAction,
       msoLogin: msoLoginAction,
+      newselaSSOLogin: newselaSSOLoginAction,
       getUserData: getUserDataAction,
       toggleRoleConfirmationPopup: toggleRoleConfirmationPopupAction,
     }

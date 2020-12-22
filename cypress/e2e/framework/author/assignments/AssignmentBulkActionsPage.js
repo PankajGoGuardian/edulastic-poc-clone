@@ -106,7 +106,7 @@ export default class AssignmentBulkActionsPage {
 
   selectClassByClassName = (className, check = true) => {
     this.getClassRows().each(($row) => {
-      if ($row.find(`td`).eq(1).text() == className) {
+      if ($row.find('[class="schoolName"]').prev().text() == className) {
         if (check) {
           if (
             !$row

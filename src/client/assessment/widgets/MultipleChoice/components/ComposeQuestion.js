@@ -14,7 +14,7 @@ import { Subtitle } from '../../../styled/Subtitle'
 import { updateVariables } from '../../../utils/variables'
 
 const FroalaEditor = loadable(() =>
-  import('@edulastic/common/src/components/FroalaEditor')
+  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
 )
 
 class ComposeQuestion extends Component {

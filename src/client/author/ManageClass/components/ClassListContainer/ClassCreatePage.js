@@ -1,10 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { IconGoogleClassroom } from '@edulastic/icons'
 import GoogleLogin from 'react-google-login'
 import { EduButton } from '@edulastic/common'
 import NoClassNotification from '../NoClassNotification'
 import { ClassCreateContainer, ButtonsContainer } from './styled'
-import CreateClassButton from '../CreateClassButton'
 
 export const scopes = [
   'https://www.googleapis.com/auth/classroom.courses.readonly',
@@ -58,10 +58,9 @@ const ClassCreatePage = ({
               data={name}
             />
             <ButtonsContainer>
-              <CreateClassButton
-                redirectRoute="/author/manageClass/createClass"
-                hasIcon={false}
-              />
+              <Link to="/author/manageClass/createClass">
+                <EduButton isBlue>CREATE NEW CLASS</EduButton>
+              </Link>
               {googleAllowedInstitutions?.length > 0 &&
                 !cleverId &&
                 !isClassLink && (

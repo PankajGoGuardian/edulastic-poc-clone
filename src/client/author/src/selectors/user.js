@@ -121,11 +121,6 @@ export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.itemBanks', [])
 )
 
-export const getUserSignupStatusSelector = createSelector(
-  stateSelector,
-  (state) => _get(state, 'signupStatus', '')
-)
-
 export const getIsGridEditEnabledSelector = createSelector(
   stateSelector,
   (state) => {

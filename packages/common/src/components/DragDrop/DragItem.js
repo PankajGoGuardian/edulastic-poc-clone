@@ -18,9 +18,9 @@ const DragItem = ({
 }) => {
   const { isAnswerModifiable } = useContext(AnswerContext)
   const {
-    state: { actived },
+    state: { actived }={},
     setItem,
-  } = useContext(DndStateContext)
+  } = useContext(DndStateContext)||{}
 
   const [itemData, setItemData] = useState({
     data,
@@ -65,7 +65,9 @@ const DragItem = ({
 
   const onClickHandler = (e) => {
     if (window.isMobileDevice) {
-      setItem({ type: 'SET_ACTIVE_DRAG_ITEM', data: itemData })
+      if(setItem){
+        setItem({ type: 'SET_ACTIVE_DRAG_ITEM', data: itemData })
+      }
     }
     if (onClick) {
       onClick(e)

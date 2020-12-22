@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button, Modal } from 'antd'
 import { get } from 'lodash'
+import { test, questionType } from '@edulastic/constants'
 import { showHintButton } from '../../utils/test'
+
+const { calculatorTypes } = test
 
 class ToolbarModal extends React.Component {
   toolbarHandler = (value) => {
@@ -43,11 +46,6 @@ class ToolbarModal extends React.Component {
     onClose()
   }
 
-  calculator = () => {
-    const { onClose } = this.props
-    onClose()
-  }
-
   eliminationQuestion = () => {
     const { onClose } = this.props
     onClose()
@@ -55,6 +53,12 @@ class ToolbarModal extends React.Component {
 
   procractorRuler = () => {
     const { onClose } = this.props
+    onClose()
+  }
+
+  magnify = () => {
+    const { onClose, handleMagnifier } = this.props
+    handleMagnifier()
     onClose()
   }
 
@@ -69,12 +73,14 @@ class ToolbarModal extends React.Component {
       items,
       currentItem: currentItemIndex,
       handletoggleHints,
+      qType,
     } = this.props
     const questions = get(
       items,
       [`${currentItemIndex}`, `data`, `questions`],
       []
     )
+    const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
     return (
       <Modal
         visible={isVisible}
@@ -86,6 +92,19 @@ class ToolbarModal extends React.Component {
         width="390px"
       >
         <Container>
+          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+            Bookmark
+          </StyledButton>
+          {settings.calcType !== calculatorTypes.NONE && (
+            <StyledButton onClick={() => this.toolbarHandler(2)}>
+              Calculator
+            </StyledButton>
+          )}
+          {!isDisableCrossBtn && (
+            <StyledButton onClick={() => this.toolbarHandler(3)}>
+              Crossout
+            </StyledButton>
+          )}
           {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
             <StyledButton onClick={() => this.checkAnswer()}>
               Check Answer
@@ -94,9 +113,12 @@ class ToolbarModal extends React.Component {
           {!!showHintButton(questions) && (
             <StyledButton onClick={handletoggleHints}>Hint</StyledButton>
           )}
-          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
-            Bookmark
+          <StyledButton onClick={() => this.toolbarHandler(5)}>
+            Scratchpad
           </StyledButton>
+          {settings.showMagnifier && (
+            <StyledButton onClick={() => this.magnify()}>Magnify</StyledButton>
+          )}
           <StyledButton onClick={() => this.pointer()} hidden>
             Pointer
           </StyledButton>
@@ -106,17 +128,11 @@ class ToolbarModal extends React.Component {
           <StyledButton onClick={() => this.centimeterRuler()} hidden>
             Centimeter Ruler
           </StyledButton>
-          <StyledButton onClick={() => this.calculator()} hidden>
-            Calculator
-          </StyledButton>
           <StyledButton onClick={() => this.eliminationQuestion()} hidden>
             Elimination Question
           </StyledButton>
           <StyledButton onClick={() => this.procractorRuler()} hidden>
             Procractor Ruler
-          </StyledButton>
-          <StyledButton onClick={() => this.toolbarHandler(5)}>
-            Scratchpad
           </StyledButton>
         </Container>
       </Modal>
@@ -127,7 +143,7 @@ class ToolbarModal extends React.Component {
 ToolbarModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  checkanswer: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
 }
 
 export default ToolbarModal

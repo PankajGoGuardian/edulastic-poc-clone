@@ -1,6 +1,8 @@
 import { takeLatest, takeEvery, call, put, all } from 'redux-saga/effects'
-import { dictionariesApi } from '@edulastic/api'
-import { captureSentryException, notification } from '@edulastic/common'
+// import { dictionariesApi } from '@edulastic/api'
+import dictionariesApi from '@edulastic/api/src/dictionaries'
+import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
+import notification from '@edulastic/common/src/components/Notification'
 import _ from 'lodash'
 import {
   RECEIVE_DICT_CURRICULUMS_REQUEST,

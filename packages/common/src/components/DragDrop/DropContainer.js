@@ -44,10 +44,12 @@ const DropContainer = ({
       isOver: monitor.isOver(),
     }),
   })
+
+  const ctx = useContext(DndStateContext);
   const {
-    state: { actived },
+    state: { actived }={},
     setItem,
-  } = useContext(DndStateContext)
+  } = ctx||{};
 
   const attach = useCallback((element) => drop(element), [drop])
 
@@ -59,7 +61,10 @@ const DropContainer = ({
 
   useEffect(() => {
     return () => {
-      setItem({ type: 'REMOVE_ACTIVE_DRAG_ITEM' })
+      if(setItem){
+        setItem({ type: 'REMOVE_ACTIVE_DRAG_ITEM' })
+      }
+      
     }
   }, [])
 

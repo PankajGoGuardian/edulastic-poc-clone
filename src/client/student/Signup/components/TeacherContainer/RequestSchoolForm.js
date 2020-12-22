@@ -246,27 +246,21 @@ class RequestSchoolForm extends React.Component {
                 initialValue: states[0],
               })(
                 country === 'US' || country === 'United States' ? (
-                  <>
-                    {console.log('countrySelect: ', country)}
-                    <SelectInputStyled
-                      data-cy="state"
-                      showSearch
-                      placeholder="Select your state"
-                      getPopupContainer={(triggerNode) =>
-                        triggerNode.parentNode
-                      }
-                    >
-                      {stateOptions}
-                    </SelectInputStyled>
-                  </>
+                  <SelectInputStyled
+                    data-cy="state"
+                    showSearch
+                    placeholder="Select your state"
+                    getPopupContainer={(triggerNode) =>
+                      triggerNode.parentNode
+                    }
+                  >
+                    {stateOptions}
+                  </SelectInputStyled>
                 ) : (
-                  <>
-                    {console.log('country: ', country)}
-                    <TextInputStyled
-                      data-cy="state"
-                      placeholder="Enter your state"
-                    />
-                  </>
+                  <TextInputStyled
+                    data-cy="state"
+                    placeholder="Enter your state"
+                  />
                 )
               )}
             </Form.Item>

@@ -24,7 +24,7 @@ const FeaturedContentBundle = ({ testBundles, handleFeatureClick }) => {
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
         {testBundles.map((bundle) => (
           <BundleContainer
-            onClick={() => handleFeatureClick(bundle.config.filters || [])}
+            onClick={() => handleFeatureClick(bundle || {})}
             bgImage={bundle.imageUrl}
             key={bundle._id}
           >

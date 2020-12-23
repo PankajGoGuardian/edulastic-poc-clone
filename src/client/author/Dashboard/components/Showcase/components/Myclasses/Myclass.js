@@ -102,13 +102,8 @@ const MyClasses = ({
   }
 
   const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
-
-  // TODO: remove this once done with demo and required data is available
-  const filterContentByPremium = (content) =>
-    content.filter((x) => x.tags.includes(premiumUser ? PREMIUM_TAG : FREE_TAG))
-
-  const bannerSlides = sortByOrder(filterContentByPremium(BANNER || []))
-  const featuredBundles = sortByOrder(filterContentByPremium(FEATURED || []))
+  const bannerSlides = sortByOrder(BANNER || [])
+  const featuredBundles = sortByOrder(FEATURED || [])
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)

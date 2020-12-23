@@ -5,12 +5,17 @@ export const FeatureContentWrapper = styled.div`
   margin-top: 20px;
 `
 
+export const EmptyBox = styled.div`
+  width: 240px;
+  height: 169px;
+`
+
 export const BundleContainer = styled.div`
-  width: 241px;
+  width: 240px;
   height: 169px;
   display: flex;
   align-items: flex-end;
-  margin: 0px 10px 10px 0px;
+  margin: 0px 7px 10px 0px;
   border-radius: 10px;
   padding: 12px 20px;
   color: ${white};

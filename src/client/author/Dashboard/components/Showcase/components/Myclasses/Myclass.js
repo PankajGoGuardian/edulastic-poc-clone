@@ -7,7 +7,7 @@ import qs from 'qs'
 
 // components
 import { Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
+import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
@@ -80,6 +80,7 @@ const MyClasses = ({
   setShowCleverSyncModal,
   teacherData,
   dashboardTiles,
+  windowWidth,
   resetTestFilters,
   resetPlaylistFilters,
 }) => {
@@ -192,6 +193,19 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
+  const GridCountInARow = windowWidth >= 1700 ? 6 : windowWidth >= 1366 ? 5 : 4
+  const getClassCardModular = allActiveClasses.length % GridCountInARow
+  const classEmptyBoxCount =
+    windowWidth > 1024 && getClassCardModular !== 0
+      ? new Array(GridCountInARow - getClassCardModular).fill(1)
+      : []
+
+  const getFeatureCardModular = featuredBundles.length % GridCountInARow
+  const featureEmptyBoxCount =
+    windowWidth > 1024 && getClassCardModular !== 0
+      ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
+      : []
+
   return (
     <MainContentWrapper padding="30px">
       <ClassSelectModal
@@ -240,10 +254,16 @@ const MyClasses = ({
           isClassLink={isClassLink}
         />
       )}
-      {!loading && <Classes activeClasses={allActiveClasses} />}
+      {!loading && (
+        <Classes
+          activeClasses={allActiveClasses}
+          emptyBoxCount={classEmptyBoxCount}
+        />
+      )}
       <FeaturedContentBundle
         featuredBundles={featuredBundles}
         handleFeatureClick={handleFeatureClick}
+        emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
     </MainContentWrapper>
@@ -251,6 +271,7 @@ const MyClasses = ({
 }
 
 export default compose(
+  withWindowSizes,
   withRouter,
   connect(
     (state) => ({

@@ -7,7 +7,7 @@ export const CardContainer = styled.div`
   display: inline-block;
   margin: 0px 7px 10px 0px;
   border-radius: 10px;
-  border: 1px solid #dadae4;
+  border: ${(props) => props.emptyBox || '1px solid #dadae4'};
   background: ${white};
 `
 export const CardBox = styled.div``

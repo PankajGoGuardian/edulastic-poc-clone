@@ -159,11 +159,9 @@ const StudentMasteryTable = ({
   parentRow,
   data,
   selectedMastery,
-  isCsvDownloading,
   onCsvConvert,
   handleOnClickStandard,
   filters,
-  allowCsvDownload,
 }) => {
   const filteredStandards = filter(
     data,
@@ -185,7 +183,6 @@ const StudentMasteryTable = ({
           tableToRender={StyledTable}
           onCsvConvert={onCsvConvert}
           scroll={{ x: '100%' }}
-          isCsvDownloading={isCsvDownloading && allowCsvDownload}
         />
       </Col>
     </Row>
@@ -195,14 +192,12 @@ const StudentMasteryTable = ({
 StudentMasteryTable.propTypes = {
   data: PropTypes.array,
   selectedMastery: PropTypes.array,
-  isCsvDownloading: PropTypes.bool,
   onCsvConvert: PropTypes.func,
 }
 
 StudentMasteryTable.defaultProps = {
   data: [],
   selectedMastery: [],
-  isCsvDownloading: false,
   onCsvConvert: () => {},
 }
 

@@ -102,7 +102,8 @@ const columns = [
 ]
 
 const standardsTableColumns = [
-  'Standard',
+  'DOMAIN',
+  'STANDARD',
   'DESCRIPTION ',
   'MASTERY ',
   'ASSESSMENT ',
@@ -131,7 +132,6 @@ const StudentPerformanceSummary = ({
   setExpandAllRows,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
-  const [allowCsvDownload, setAllowCsvDownload] = useState(false)
 
   const handleExpandedRowsChange = (rowIndex, totalCount) => {
     let expandedCount = 0
@@ -174,16 +174,13 @@ const StudentPerformanceSummary = ({
   }, [expandAllRows])
 
   useEffect(() => {
-    setAllowCsvDownload(!isEmpty(expandedRows))
-  }, [expandedRows])
-
-  useEffect(() => {
-    if (!allowCsvDownload && expandedRowProps.isCsvDownloading) {
+    if (expandedRowProps.isCsvDownloading) {
       const csv = [standardsTableColumns.join(',')]
       const csvRawData = [[...standardsTableColumns]]
       for (const domain of filteredDomains) {
         for (const standardInfo of domain.standards) {
           const row = []
+          row.push(domain.name)
           for (const key of standardsTableKeys) {
             row.push(String(standardInfo[key]))
           }
@@ -207,11 +204,7 @@ const StudentPerformanceSummary = ({
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
           expandedRowRender={(record) => (
-            <StudentMasteryTable
-              parentRow={record}
-              {...expandedRowProps}
-              allowCsvDownload={allowCsvDownload}
-            />
+            <StudentMasteryTable parentRow={record} {...expandedRowProps} />
           )}
           expandRowByClick
           onRow={(record) => ({

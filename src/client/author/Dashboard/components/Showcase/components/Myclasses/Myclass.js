@@ -78,7 +78,7 @@ const MyClasses = ({
       hasNoInterestedFilters: true,
     })
     const filter = qs.stringify(entries)
-    const { contentType } = filters.config
+    const contentType = filters.config.contentType?.toLowerCase()
     if (isPlaylist) {
       resetPlaylistFilters()
     } else {

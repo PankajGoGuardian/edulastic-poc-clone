@@ -1715,7 +1715,6 @@ function* convertToPassageWithQuestions({ payload }) {
         id: uuid(),
         title,
         type: questionType.PASSAGE,
-        heading: 'Section 3',
         math_renderer: '',
         content:
           'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',
@@ -1895,7 +1894,6 @@ function* addWidgetToPassage({ payload }) {
             id: uuid(),
             title: 'Passage',
             type: questionType.PASSAGE,
-            heading: 'Section 3',
             math_renderer: '',
             content:
               'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',

@@ -27,9 +27,12 @@ import {
   PopoverTitle,
   PopoverWrapper,
   UpgradeBtn,
+  StyledLink,
 } from './styled'
 import { launchHangoutOpen } from '../../ducks'
+import { getUserSelector } from '../../../../author/src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { signUpState } from '@edulastic/constants'
 import HeaderSyncAction from '../Showcase/components/Myclasses/components/HeaderSyncAction/HeaderSyncAction'
 import {
   fetchClassListAction,
@@ -77,7 +80,7 @@ const getContent = ({ setvisible, needsRenewal }) => (
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
 
 const HeaderSection = ({
-  premium,
+  user,
   isSubscriptionExpired = false,
   fetchUserSubscriptionStatus,
   t,
@@ -110,6 +113,9 @@ const HeaderSection = ({
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
+
+  const { user: userInfo, signupStatus } = user
+  const premium = userInfo?.features?.premium
 
   useEffect(() => {
     fetchUserSubscriptionStatus()
@@ -159,7 +165,16 @@ const HeaderSection = ({
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
-      <FlexContainer>
+      <FlexContainer alignItems="center">
+        {signupStatus !== signUpState.DONE && (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <StyledLink onClick={handleClick}>
+                Complete signup process
+              </StyledLink>
+            )}
+          />
+        )}
         <Tooltip title="Launch Google Meet">
           <StyledEduButton
             IconBtn
@@ -280,7 +295,7 @@ const HeaderSection = ({
 }
 
 HeaderSection.propTypes = {
-  premium: PropTypes.any.isRequired,
+  user: PropTypes.object.isRequired,
   isSubscriptionExpired: PropTypes.bool.isRequired,
   fetchUserSubscriptionStatus: PropTypes.func.isRequired,
   openLaunchHangout: PropTypes.func.isRequired,
@@ -292,7 +307,7 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => ({
-      premium: state?.user?.user?.features?.premium,
+      user: getUserSelector(state),
       subscription: state?.subscription?.subscriptionData?.subscription,
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),

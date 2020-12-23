@@ -5,7 +5,7 @@ import { TextWrapper } from '../../../../../styledComponents'
 import Card from '../Card'
 import { CardContainer } from './styled'
 
-const Classes = ({ activeClasses, emptyBoxCount, getModular, windowWidth }) => {
+const Classes = ({ activeClasses, emptyBoxCount }) => {
   if (activeClasses.length === 0) {
     return null
   }
@@ -26,9 +26,9 @@ const Classes = ({ activeClasses, emptyBoxCount, getModular, windowWidth }) => {
             <Card data={item} />
           </CardContainer>
         ))}
-        {windowWidth > 1024 &&
-          getModular !== 0 &&
-          emptyBoxCount.map((index) => <CardContainer emptyBox key={index} />)}
+        {emptyBoxCount.map((index) => (
+          <CardContainer emptyBox key={index} />
+        ))}
       </FlexContainer>
     </>
   )

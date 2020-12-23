@@ -195,14 +195,16 @@ const MyClasses = ({
 
   const GridCountInARow = windowWidth >= 1700 ? 6 : windowWidth >= 1366 ? 5 : 4
   const getClassCardModular = allActiveClasses.length % GridCountInARow
-  const classEmptyBoxCount = new Array(
-    GridCountInARow - getClassCardModular
-  ).fill(1)
+  const classEmptyBoxCount =
+    windowWidth > 1024 && getClassCardModular !== 0
+      ? new Array(GridCountInARow - getClassCardModular).fill(1)
+      : []
 
   const getFeatureCardModular = featuredBundles.length % GridCountInARow
-  const featureEmptyBoxCount = new Array(
-    GridCountInARow - getFeatureCardModular
-  ).fill(1)
+  const featureEmptyBoxCount =
+    windowWidth > 1024 && getClassCardModular !== 0
+      ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
+      : []
 
   return (
     <MainContentWrapper padding="30px">
@@ -256,16 +258,12 @@ const MyClasses = ({
         <Classes
           activeClasses={allActiveClasses}
           emptyBoxCount={classEmptyBoxCount}
-          getModular={getClassCardModular}
-          windowWidth={windowWidth}
         />
       )}
       <FeaturedContentBundle
         featuredBundles={featuredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
-        getModular={getFeatureCardModular}
-        windowWidth={windowWidth}
       />
       <Launch />
     </MainContentWrapper>

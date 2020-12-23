@@ -15,8 +15,6 @@ const FeaturedContentBundle = ({
   featuredBundles,
   handleFeatureClick,
   emptyBoxCount,
-  getModular,
-  windowWidth,
 }) => {
   if (!featuredBundles.length) {
     return null
@@ -44,9 +42,9 @@ const FeaturedContentBundle = ({
             </Bottom>
           </BundleContainer>
         ))}
-        {windowWidth > 1024 &&
-          getModular !== 0 &&
-          emptyBoxCount.map((index) => <EmptyBox key={index} />)}
+        {emptyBoxCount.map((index) => (
+          <EmptyBox key={index} />
+        ))}
       </FlexContainer>
     </FeatureContentWrapper>
   )

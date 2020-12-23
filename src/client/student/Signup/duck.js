@@ -18,6 +18,7 @@ import { getUser } from '../../author/src/selectors/user'
 
 import { userPickFields } from '../../common/utils/static/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
+import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
 
 // Types
 const SEARCH_SCHOOL_REQUEST = '[signup] search school request'
@@ -421,6 +422,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
       }
       const user = pick(_result, userPickFields)
       yield put(signupSuccessAction(user))
+      yield put(fetchDashboardTiles())
     }
   } catch (err) {
     console.log('_err', err)
@@ -440,6 +442,7 @@ function* joinSchoolSaga({ payload = {} }) {
     }
     const user = pick(result, userPickFields)
     yield put(signupSuccessAction(user))
+    yield put(fetchDashboardTiles())
   } catch (err) {
     yield put({
       type: JOIN_SCHOOL_FAILED,

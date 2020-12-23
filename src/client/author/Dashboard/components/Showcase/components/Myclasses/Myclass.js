@@ -40,7 +40,7 @@ import {
 } from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
-import { clearTestFiltersAction } from '../../../../../TestList/ducks'
+import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 
 const PREMIUM_TAG = 'PREMIUM'
@@ -83,6 +83,8 @@ const MyClasses = ({
   clearTestFilters,
   clearPlaylistFilters,
   windowWidth,
+  resetTestFilters,
+  resetPlaylistFilters,
 }) => {
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
   const [showBannerModal, setShowBannerModal] = useState(null)
@@ -115,13 +117,15 @@ const MyClasses = ({
   )
 
   const handleContentRedirect = (filters, isPlaylist) => {
-    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {})
+    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
+      hasNoInterestedFilters: true,
+    })
     const filter = qs.stringify(entries)
     const contentType = isPlaylist ? 'playlists' : 'tests'
     if (isPlaylist) {
-      clearPlaylistFilters()
+      resetPlaylistFilters()
     } else {
-      clearTestFilters()
+      resetTestFilters()
     }
     history.push(`/author/${contentType}?${filter}`)
   }
@@ -310,8 +314,8 @@ export default compose(
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       setShowCleverSyncModal: setShowCleverSyncModalAction,
-      clearTestFilters: clearTestFiltersAction,
-      clearPlaylistFilters: clearPlaylistFiltersAction,
+      resetTestFilters: resetTestFiltersAction,
+      resetPlaylistFilters: clearPlaylistFiltersAction,
     }
   )
 )(MyClasses)

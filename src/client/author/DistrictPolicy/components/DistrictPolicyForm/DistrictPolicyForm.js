@@ -580,15 +580,17 @@ class DistrictPolicyForm extends Component {
               </RadioBtn>
               <RadioBtn mb="10px" value={2}>
                 <span>Canvas</span>{' '}
-                <ConfigureButton
-                  onClick={(e) => {
-                    e.preventDefault()
-                    if (thirdPartyValue === _3RDPARTYINTEGRATION.canvas)
-                      this.setState({ showCanvasConfigrationModal: true })
-                  }}
-                >
-                  (Configure)
-                </ConfigureButton>
+                {isSchoolLevel ? null : (
+                  <ConfigureButton
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (thirdPartyValue === _3RDPARTYINTEGRATION.canvas)
+                        this.setState({ showCanvasConfigrationModal: true })
+                    }}
+                  >
+                    (Configure)
+                  </ConfigureButton>
+                )}
               </RadioBtn>
               <RadioBtn mb="10px" value={3}>
                 Schoology

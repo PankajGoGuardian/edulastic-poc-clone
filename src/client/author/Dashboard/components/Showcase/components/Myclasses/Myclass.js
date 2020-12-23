@@ -24,7 +24,6 @@ import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 
 const PREMIUM_TAG = 'PREMIUM'
-const FREE_TAG = 'FREE'
 
 const sortByOrder = (prop) =>
   prop.sort((a, b) => a.config?.order - b.config?.order)
@@ -79,7 +78,7 @@ const MyClasses = ({
       hasNoInterestedFilters: true,
     })
     const filter = qs.stringify(entries)
-    const contentType = isPlaylist ? 'playlists' : 'tests'
+    const contentType = filters.config.contentType?.toLowerCase()
     if (isPlaylist) {
       resetPlaylistFilters()
     } else {
@@ -139,13 +138,13 @@ const MyClasses = ({
   const GridCountInARow = windowWidth >= 1700 ? 6 : windowWidth >= 1366 ? 5 : 4
   const getClassCardModular = allActiveClasses.length % GridCountInARow
   const classEmptyBoxCount =
-    windowWidth > 1024 && getClassCardModular !== 0
+    windowWidth > 1024 && getClassCardModular
       ? new Array(GridCountInARow - getClassCardModular).fill(1)
       : []
 
   const getFeatureCardModular = featuredBundles.length % GridCountInARow
   const featureEmptyBoxCount =
-    windowWidth > 1024 && getClassCardModular !== 0
+    windowWidth > 1024 && getFeatureCardModular
       ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
       : []
 

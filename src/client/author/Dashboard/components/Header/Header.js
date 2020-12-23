@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { get } from 'lodash'
 
+import { signUpState } from '@edulastic/constants'
 import { slice } from '../../../Subscription/ducks'
 // TODO: Change to SVG
 import IMG from '../../../Subscription/static/6.png'
@@ -30,9 +31,15 @@ import {
   StyledLink,
 } from './styled'
 import { launchHangoutOpen } from '../../ducks'
-import { getUserSelector } from '../../../../author/src/selectors/user'
+import {
+  getUserSelector,
+  getCanvasAllowedInstitutionPoliciesSelector,
+  getCleverLibraryUserSelector,
+  getGoogleAllowedInstitionPoliciesSelector,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector,
+} from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import { signUpState } from '@edulastic/constants'
 import HeaderSyncAction from '../Showcase/components/Myclasses/components/HeaderSyncAction/HeaderSyncAction'
 import {
   fetchClassListAction,
@@ -43,15 +50,8 @@ import {
   setShowCleverSyncModalAction,
   syncClassesWithCleverAction,
 } from '../../../ManageClass/ducks'
-import {
-  getCanvasAllowedInstitutionPoliciesSelector,
-  getCleverLibraryUserSelector,
-  getGoogleAllowedInstitionPoliciesSelector,
-  getInterestedGradesSelector,
-  getInterestedSubjectsSelector,
-} from '../../../src/selectors/user'
+
 import CanvasClassSelectModal from '../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
-import { getUserDetails } from '../../../../student/Login/ducks'
 import ClassSelectModal from '../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
 
@@ -93,7 +93,6 @@ const HeaderSection = ({
   canvasAllowedInstitutions,
   isCleverUser,
   setShowCleverSyncModal,
-  user,
   courseList,
   loadingCleverClassList,
   cleverClassList,
@@ -208,14 +207,14 @@ const HeaderSection = ({
             enableCleverSync={isCleverUser}
             setShowCleverSyncModal={setShowCleverSyncModal}
             handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
-            user={user}
+            user={userInfo}
             isClassLink={isClassLink}
           />
         )}
         <CanvasClassSelectModal
           visible={showCanvasSyncModal}
           onCancel={closeCanvasSyncModal}
-          user={user}
+          user={userInfo}
           getCanvasCourseListRequest={getCanvasCourseListRequest}
           getCanvasSectionListRequest={getCanvasSectionListRequest}
           canvasCourseList={canvasCourseList}
@@ -318,7 +317,6 @@ const enhance = compose(
         state
       ),
       isCleverUser: getCleverLibraryUserSelector(state),
-      user: getUserDetails(state),
       canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
       canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
       courseList: get(state, 'coursesReducer.searchResult'),

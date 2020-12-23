@@ -179,9 +179,9 @@ const StudentPerformanceSummary = ({
 
   useEffect(() => {
     if (!allowCsvDownload && expandedRowProps.isCsvDownloading) {
+      const csv = [standardsTableColumns.join(',')]
+      const csvRawData = [[...standardsTableColumns]]
       for (const domain of filteredDomains) {
-        const csv = [standardsTableColumns.join(',')]
-        const csvRawData = [[...standardsTableColumns]]
         for (const standardInfo of domain.standards) {
           const row = []
           for (const key of standardsTableKeys) {
@@ -190,9 +190,9 @@ const StudentPerformanceSummary = ({
           csvRawData.push(row)
           csv.push(row.join(','))
         }
-        const csvText = csv.join('\n')
-        expandedRowProps.onCsvConvert(csvText, csvRawData)
       }
+      const csvText = csv.join('\n')
+      expandedRowProps.onCsvConvert(csvText, csvRawData)
     }
   }, [expandedRowProps.isCsvDownloading])
 

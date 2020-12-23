@@ -94,6 +94,7 @@ export const ADD_TEST_TO_CART = '[tests] add test to cart'
 export const REMOVE_TEST_FROM_CART = '[tests] remove test from cart'
 export const TOGGLE_TEST_LIKE = '[tests list] toggle test like'
 export const UPDATE_LIKE_COUNT = '[tests list] update like count'
+export const RESET_TEST_FILTERS = '[tests library] reset test library filters'
 
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST)
@@ -124,6 +125,7 @@ export const addTestToCartAction = createAction(ADD_TEST_TO_CART)
 export const removeTestFromCartAction = createAction(REMOVE_TEST_FROM_CART)
 export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE)
 export const updateLikeCountAction = createAction(UPDATE_LIKE_COUNT)
+export const resetTestFiltersAction = createAction(RESET_TEST_FILTERS)
 
 // selectors
 export const stateSelector = (state) => state.testList
@@ -211,6 +213,20 @@ function* clearAllTestFiltersSaga() {
       subject: defaultSubject,
     }
     yield put(receiveTestsAction({ page: 1, limit, search: searchFilters }))
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+function* resetAllTestFiltersSaga() {
+  try {
+    yield put(updateDefaultGradesAction([]))
+    yield put(updateDefaultSubjectAction(''))
+
+    const testFilters = yield select(getTestsFilterSelector)
+    const limit = yield select(getTestsLimitSelector)
+
+    yield put(receiveTestsAction({ page: 1, limit, search: testFilters }))
   } catch (err) {
     console.error(err)
   }
@@ -316,6 +332,7 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
     yield takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga),
+    yield takeEvery(RESET_TEST_FILTERS, resetAllTestFiltersSaga),
     yield takeEvery(DELETE_TEST_REQUEST, deleteTestSaga),
     yield takeEvery(
       APPROVE_OR_REJECT_SINGLE_TEST_REQUEST,
@@ -481,6 +498,15 @@ export const reducer = (state = initialState, { type, payload }) => {
           }
           return test
         }),
+      }
+
+    case RESET_TEST_FILTERS:
+      return {
+        ...state,
+        filters: {
+          ...emptyFilters,
+        },
+        sort: { ...initialSortState },
       }
 
     default:

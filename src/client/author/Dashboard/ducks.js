@@ -86,9 +86,9 @@ function* fetchDashboardTilesSaga() {
   try {
     const version = localStorage.getItem('author:dashboard:version')
     const state = yield select((s) =>
-      s.user.user?.districts?.reduce((a, c) => a || c.districtState, null)
+      s.user.user?.orgData?.districts?.[0]?.districtState || ''
     )
-    const result = yield call(configurableTilesApi.fetchTiles, +version, state)
+    const result = yield call(configurableTilesApi.fetchTiles, +version, state.toUpperCase())
     if (!version || version !== result.version) {
       yield put(setDashboardTiles(result.data))
       localStorage.setItem(

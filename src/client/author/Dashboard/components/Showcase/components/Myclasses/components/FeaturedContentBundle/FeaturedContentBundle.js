@@ -4,9 +4,18 @@ import React from 'react'
 import { FlexContainer } from '@edulastic/common'
 import { title } from '@edulastic/colors'
 import { TextWrapper } from '../../../../../styledComponents'
-import { FeatureContentWrapper, BundleContainer, Bottom } from './styled'
+import {
+  FeatureContentWrapper,
+  BundleContainer,
+  Bottom,
+  EmptyBox,
+} from './styled'
 
-const FeaturedContentBundle = ({ featuredBundles, handleFeatureClick }) => {
+const FeaturedContentBundle = ({
+  featuredBundles,
+  handleFeatureClick,
+  emptyBoxCount,
+}) => {
   if (!featuredBundles.length) {
     return null
   }
@@ -21,7 +30,7 @@ const FeaturedContentBundle = ({ featuredBundles, handleFeatureClick }) => {
       >
         Featured Content Bundles
       </TextWrapper>
-      <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+      <FlexContainer justifyContent="space-between" flexWrap="wrap">
         {featuredBundles.map((bundle) => (
           <BundleContainer
             onClick={() => handleFeatureClick(bundle || {})}
@@ -32,6 +41,9 @@ const FeaturedContentBundle = ({ featuredBundles, handleFeatureClick }) => {
               {bundle.description && <div> {bundle.description} </div>}
             </Bottom>
           </BundleContainer>
+        ))}
+        {emptyBoxCount.map((index) => (
+          <EmptyBox key={index} />
         ))}
       </FlexContainer>
     </FeatureContentWrapper>

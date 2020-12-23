@@ -16,6 +16,7 @@ import {
 } from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { get } from 'lodash'
 
 import { slice } from '../../../Subscription/ducks'
 // TODO: Change to SVG
@@ -32,6 +33,27 @@ import { launchHangoutOpen } from '../../ducks'
 import { getUserSelector } from '../../../../author/src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import { signUpState } from '@edulastic/constants'
+import HeaderSyncAction from '../Showcase/components/Myclasses/components/HeaderSyncAction/HeaderSyncAction'
+import {
+  fetchClassListAction,
+  fetchCleverClassListRequestAction,
+  getCanvasCourseListRequestAction,
+  getCanvasSectionListRequestAction,
+  getCleverClassListSelector,
+  setShowCleverSyncModalAction,
+  syncClassesWithCleverAction,
+} from '../../../ManageClass/ducks'
+import {
+  getCanvasAllowedInstitutionPoliciesSelector,
+  getCleverLibraryUserSelector,
+  getGoogleAllowedInstitionPoliciesSelector,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector,
+} from '../../../src/selectors/user'
+import CanvasClassSelectModal from '../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
+import { getUserDetails } from '../../../../student/Login/ducks'
+import ClassSelectModal from '../../../ManageClass/components/ClassListContainer/ClassSelectModal'
+import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
 
 const getContent = ({ setvisible, needsRenewal }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -65,8 +87,32 @@ const HeaderSection = ({
   openLaunchHangout,
   subscription,
   history,
+  fetchClassList,
+  isUserGoogleLoggedIn,
+  googleAllowedInstitutions,
+  canvasAllowedInstitutions,
+  isCleverUser,
+  setShowCleverSyncModal,
+  user,
+  courseList,
+  loadingCleverClassList,
+  cleverClassList,
+  getStandardsListBySubject,
+  syncCleverClassList,
+  defaultGrades = [],
+  defaultSubjects = [],
+  institutionIds,
+  canvasCourseList,
+  canvasSectionList,
+  getCanvasCourseListRequest,
+  getCanvasSectionListRequest,
+  showCleverSyncModal,
+  teacherData,
+  classData,
+  loading,
 }) => {
   const { subEndDate, subType } = subscription || {}
+  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
   const { user: userInfo, signupStatus } = user
   const premium = userInfo?.features?.premium
@@ -91,6 +137,31 @@ const HeaderSection = ({
     !['enterprise', 'partial_premium'].includes(subType)
 
   const createNewClass = () => history.push('/author/manageClass/createClass')
+
+  const sortableClasses = classData
+    .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
+    .sort((a, b) => b.asgnStartDate - a.asgnStartDate)
+  const unSortableClasses = classData.filter(
+    (d) => d.asgnStartDate === null || d.asgnStartDate === undefined
+  )
+
+  const allClasses = [...sortableClasses, ...unSortableClasses]
+  const allActiveClasses = allClasses.filter(
+    (c) => c.active === 1 && c.type === 'class'
+  )
+
+  const isClassLink =
+    teacherData && teacherData.filter((id) => id?.atlasId).length > 0
+
+  const closeCleverSyncModal = () => setShowCleverSyncModal(false)
+  const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
+
+  const hasNoActiveClassFallback =
+    !loading &&
+    allActiveClasses.length === 0 &&
+    (googleAllowedInstitutions.length > 0 ||
+      isCleverUser ||
+      canvasAllowedInstitutions.length > 0)
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -127,6 +198,44 @@ const HeaderSection = ({
             </EduButton>
           </Link>
         </Tooltip>
+        {hasNoActiveClassFallback && (
+          <HeaderSyncAction
+            fetchClassList={fetchClassList}
+            history={history}
+            isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+            allowGoogleLogin={googleAllowedInstitutions.length > 0}
+            canvasAllowedInstitutions={canvasAllowedInstitutions}
+            enableCleverSync={isCleverUser}
+            setShowCleverSyncModal={setShowCleverSyncModal}
+            handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
+            user={user}
+            isClassLink={isClassLink}
+          />
+        )}
+        <CanvasClassSelectModal
+          visible={showCanvasSyncModal}
+          onCancel={closeCanvasSyncModal}
+          user={user}
+          getCanvasCourseListRequest={getCanvasCourseListRequest}
+          getCanvasSectionListRequest={getCanvasSectionListRequest}
+          canvasCourseList={canvasCourseList}
+          canvasSectionList={canvasSectionList}
+          institutionId={institutionIds[0]}
+        />
+        <ClassSelectModal
+          type="clever"
+          visible={showCleverSyncModal}
+          onSubmit={syncCleverClassList}
+          onCancel={closeCleverSyncModal}
+          loading={loadingCleverClassList}
+          classListToSync={cleverClassList}
+          courseList={courseList}
+          getStandardsListBySubject={getStandardsListBySubject}
+          refreshPage="dashboard"
+          existingGroups={allClasses}
+          defaultGrades={defaultGrades}
+          defaultSubjects={defaultSubjects}
+        />
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
             <EduButton
@@ -135,7 +244,7 @@ const HeaderSection = ({
               data-cy="createNewClass"
               onClick={handleClick}
             >
-              <IconPlusCircle width={16} height={16} /> CREATE NEW CLASS
+              <IconPlusCircle width={16} height={16} /> NEW CLASS
             </EduButton>
           )}
           onClick={createNewClass}
@@ -174,7 +283,7 @@ const HeaderSection = ({
                   data-cy="manageClass"
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />
-                  UNLOCK MORE FEATURES
+                  Upgrade
                 </EduButton>
               )}
             </Popover>
@@ -201,10 +310,39 @@ const enhance = compose(
       user: getUserSelector(state),
       subscription: state?.subscription?.subscriptionData?.subscription,
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
+      isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
+      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
+        state
+      ),
+      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
+        state
+      ),
+      isCleverUser: getCleverLibraryUserSelector(state),
+      user: getUserDetails(state),
+      canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
+      canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
+      courseList: get(state, 'coursesReducer.searchResult'),
+      loadingCleverClassList: get(state, 'manageClass.loadingCleverClassList'),
+      cleverClassList: getCleverClassListSelector(state),
+      showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      teacherData: get(state, 'dashboardTeacher.data', []),
+      classData: state.dashboardTeacher.data,
+      institutionIds: get(state, 'user.user.institutionIds', []),
+      getStandardsListBySubject: (subject) =>
+        getFormattedCurriculumsSelector(state, { subject }),
+      defaultGrades: getInterestedGradesSelector(state),
+      defaultSubjects: getInterestedSubjectsSelector(state),
+      loading: state.dashboardTeacher.loading,
     }),
     {
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
       openLaunchHangout: launchHangoutOpen,
+      fetchClassList: fetchClassListAction,
+      setShowCleverSyncModal: setShowCleverSyncModalAction,
+      fetchCleverClassList: fetchCleverClassListRequestAction,
+      syncCleverClassList: syncClassesWithCleverAction,
+      getCanvasCourseListRequest: getCanvasCourseListRequestAction,
+      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
     }
   )
 )

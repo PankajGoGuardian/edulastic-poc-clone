@@ -7,40 +7,20 @@ import qs from 'qs'
 
 // components
 import { Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
+import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import Classes from './components/Classes/Classes'
-
-import CreateClassPage from './components/CreateClassPage/createClassPage'
 import Launch from '../../../LaunchHangout/Launch'
-import ClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/ClassSelectModal'
-import CanvasClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
 
 // ducks
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
-import {
-  fetchClassListAction,
-  fetchCleverClassListRequestAction,
-  syncClassesWithCleverAction,
-  getCleverClassListSelector,
-  getCanvasCourseListRequestAction,
-  getCanvasSectionListRequestAction,
-  setShowCleverSyncModalAction,
-} from '../../../../../ManageClass/ducks'
+import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
 import { receiveTeacherDashboardAction } from '../../../../ducks'
-import {
-  getGoogleAllowedInstitionPoliciesSelector,
-  getCanvasAllowedInstitutionPoliciesSelector,
-  getInterestedGradesSelector,
-  getInterestedSubjectsSelector,
-  getCleverLibraryUserSelector,
-} from '../../../../../src/selectors/user'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
-import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
-import { clearTestFiltersAction } from '../../../../../TestList/ducks'
+import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 
 const PREMIUM_TAG = 'PREMIUM'
@@ -53,37 +33,18 @@ const MyClasses = ({
   getTeacherDashboard,
   classData,
   loading,
-  fetchClassList,
   history,
-  isUserGoogleLoggedIn,
   getDictCurriculums,
   receiveSearchCourse,
   districtId,
-  googleAllowedInstitutions,
-  canvasAllowedInstitutions,
-  courseList,
-  loadingCleverClassList,
-  cleverClassList,
-  getStandardsListBySubject,
   fetchCleverClassList,
-  syncCleverClassList,
-  defaultGrades = [],
-  defaultSubjects = [],
-  isCleverUser,
-  institutionIds,
-  canvasCourseList,
-  canvasSectionList,
-  getCanvasCourseListRequest,
-  getCanvasSectionListRequest,
   user,
   showCleverSyncModal,
-  setShowCleverSyncModal,
-  teacherData,
   dashboardTiles,
-  clearTestFilters,
-  clearPlaylistFilters,
+  windowWidth,
+  resetTestFilters,
+  resetPlaylistFilters,
 }) => {
-  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
   const [showBannerModal, setShowBannerModal] = useState(null)
 
   useEffect(() => {
@@ -114,13 +75,15 @@ const MyClasses = ({
   )
 
   const handleContentRedirect = (filters, isPlaylist) => {
-    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {})
+    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
+      hasNoInterestedFilters: true,
+    })
     const filter = qs.stringify(entries)
     const contentType = isPlaylist ? 'playlists' : 'tests'
     if (isPlaylist) {
-      clearPlaylistFilters()
+      resetPlaylistFilters()
     } else {
-      clearTestFilters()
+      resetTestFilters()
     }
     history.push(`/author/${contentType}?${filter}`)
   }
@@ -174,48 +137,25 @@ const MyClasses = ({
     }
   }
 
-  const isClassLink =
-    teacherData && teacherData.filter((id) => id?.atlasId).length > 0
-
-  const closeCleverSyncModal = () => setShowCleverSyncModal(false)
-  const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
-  const hasNoActiveClassFallback =
-    !loading &&
-    allActiveClasses.length === 0 &&
-    (googleAllowedInstitutions.length > 0 ||
-      isCleverUser ||
-      canvasAllowedInstitutions.length > 0)
-
   if (loading) {
     return <Spin style={{ marginTop: '80px' }} />
   }
 
+  const GridCountInARow = windowWidth >= 1700 ? 6 : windowWidth >= 1366 ? 5 : 4
+  const getClassCardModular = allActiveClasses.length % GridCountInARow
+  const classEmptyBoxCount =
+    windowWidth > 1024 && getClassCardModular !== 0
+      ? new Array(GridCountInARow - getClassCardModular).fill(1)
+      : []
+
+  const getFeatureCardModular = featuredBundles.length % GridCountInARow
+  const featureEmptyBoxCount =
+    windowWidth > 1024 && getClassCardModular !== 0
+      ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
+      : []
+
   return (
     <MainContentWrapper padding="30px">
-      <ClassSelectModal
-        type="clever"
-        visible={showCleverSyncModal}
-        onSubmit={syncCleverClassList}
-        onCancel={closeCleverSyncModal}
-        loading={loadingCleverClassList}
-        classListToSync={cleverClassList}
-        courseList={courseList}
-        getStandardsListBySubject={getStandardsListBySubject}
-        refreshPage="dashboard"
-        existingGroups={allClasses}
-        defaultGrades={defaultGrades}
-        defaultSubjects={defaultSubjects}
-      />
-      <CanvasClassSelectModal
-        visible={showCanvasSyncModal}
-        onCancel={closeCanvasSyncModal}
-        user={user}
-        getCanvasCourseListRequest={getCanvasCourseListRequest}
-        getCanvasSectionListRequest={getCanvasSectionListRequest}
-        canvasCourseList={canvasCourseList}
-        canvasSectionList={canvasSectionList}
-        institutionId={institutionIds[0]}
-      />
       {!loading && allActiveClasses?.length === 0 && (
         <BannerSlider
           bannerSlides={bannerSlides}
@@ -224,24 +164,16 @@ const MyClasses = ({
           isBannerModalVisible={showBannerModal}
         />
       )}
-      {hasNoActiveClassFallback && (
-        <CreateClassPage
-          fetchClassList={fetchClassList}
-          history={history}
-          isUserGoogleLoggedIn={isUserGoogleLoggedIn}
-          allowGoogleLogin={googleAllowedInstitutions.length > 0}
-          canvasAllowedInstitutions={canvasAllowedInstitutions}
-          enableCleverSync={isCleverUser}
-          setShowCleverSyncModal={setShowCleverSyncModal}
-          handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
-          user={user}
-          isClassLink={isClassLink}
+      {!loading && (
+        <Classes
+          activeClasses={allActiveClasses}
+          emptyBoxCount={classEmptyBoxCount}
         />
       )}
-      {!loading && <Classes activeClasses={allActiveClasses} />}
       <FeaturedContentBundle
         featuredBundles={featuredBundles}
         handleFeatureClick={handleFeatureClick}
+        emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
     </MainContentWrapper>
@@ -249,46 +181,23 @@ const MyClasses = ({
 }
 
 export default compose(
+  withWindowSizes,
   withRouter,
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
-      isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
-      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
-        state
-      ),
-      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
-        state
-      ),
       districtId: state.user.user?.orgData?.districtIds?.[0],
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
-      institutionIds: get(state, 'user.user.institutionIds', []),
-      canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
-      canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
-      courseList: get(state, 'coursesReducer.searchResult'),
-      isCleverUser: getCleverLibraryUserSelector(state),
-      loadingCleverClassList: get(state, 'manageClass.loadingCleverClassList'),
-      cleverClassList: getCleverClassListSelector(state),
-      getStandardsListBySubject: (subject) =>
-        getFormattedCurriculumsSelector(state, { subject }),
-      defaultGrades: getInterestedGradesSelector(state),
-      defaultSubjects: getInterestedSubjectsSelector(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
-      teacherData: get(state, 'dashboardTeacher.data', []),
     }),
     {
-      fetchClassList: fetchClassListAction,
       receiveSearchCourse: receiveSearchCourseAction,
       getDictCurriculums: getDictCurriculumsAction,
       getTeacherDashboard: receiveTeacherDashboardAction,
       fetchCleverClassList: fetchCleverClassListRequestAction,
-      syncCleverClassList: syncClassesWithCleverAction,
-      getCanvasCourseListRequest: getCanvasCourseListRequestAction,
-      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
-      setShowCleverSyncModal: setShowCleverSyncModalAction,
-      clearTestFilters: clearTestFiltersAction,
-      clearPlaylistFilters: clearPlaylistFiltersAction,
+      resetTestFilters: resetTestFiltersAction,
+      resetPlaylistFilters: clearPlaylistFiltersAction,
     }
   )
 )(MyClasses)

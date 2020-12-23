@@ -84,3 +84,11 @@ export const UpgradeBtn = styled(Button)`
     opacity: 0.9;
   }
 `
+
+export const StyledLink = styled.span`
+  font-size: 12px;
+  color: #0366d6;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-right: 20px;
+`

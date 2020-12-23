@@ -50,8 +50,12 @@ const AuthorCompleteSignupButton = ({ user, renderButton, onClick }) => {
 
 AuthorCompleteSignupButton.propTypes = {
   user: PropTypes.object.isRequired,
-  onClick: PropTypes.string.isRequired,
   renderButton: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
+}
+
+AuthorCompleteSignupButton.defaultProps = {
+  onClick: () => null,
 }
 
 const enhance = compose(

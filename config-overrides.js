@@ -42,7 +42,7 @@ module.exports = override(
   process.env.NODE_ENV === 'production' &&
     addBundleVisualizer({
       generateStatsFile: true,
-      reportFilename: 'report4-common-vendor.htm',
+      reportFilename: 'report-student-initial.htm',
       openAnalyzer: false,
     }),
   (config) => {
@@ -286,8 +286,8 @@ module.exports = override(
             default: {
               reuseExistingChunk: true,
             },
-            froalaCommonChunk:{
-              test:/froalaCommonChunk/,
+            froalaCommonChunk: {
+              test: /froalaCommonChunk/,
               name: 'froalaCommonChunk',
               chunks: 'initial',
               enforce: true,

@@ -102,27 +102,23 @@ const sentryIgnoreUrls = [
 
 const newsela = {
   clientId:
-    process.env
-      .REACT_APP_NEWSELA_CLIENT_ID /* || 'Yhp2a64VmxXwRLblLtP64L1WN4JvVRIDG9iVWD3o' */,
+    process.env.REACT_APP_NEWSELA_CLIENT_ID ||
+    'Yhp2a64VmxXwRLblLtP64L1WN4JvVRIDG9iVWD3o',
   clientSecretKey:
-    process.env
-      .REACT_APP_NEWSELA_CLIENT_SECRET_KEY /* ||
-    'O7iTrqLfiqJMpoWBPnn8fZ5VzmXYULi67q2hmw0LMJ9Tj6FSo2YU0r6dAQQMsIgD7wwskLV1KPE6VweMlrchKlc7urvxBf6kO2eZsOftmYRzj10x8QEufHbMdgWsm8kH' */,
+    process.env.REACT_APP_NEWSELA_CLIENT_SECRET_KEY ||
+    'O7iTrqLfiqJMpoWBPnn8fZ5VzmXYULi67q2hmw0LMJ9Tj6FSo2YU0r6dAQQMsIgD7wwskLV1KPE6VweMlrchKlc7urvxBf6kO2eZsOftmYRzj10x8QEufHbMdgWsm8kH',
   authUrl:
-    process.env
-      .REACT_APP_NEWSELA_AUTH_URL /* || 'https://edulastic-sso.newsela.com/oauth' */,
+    process.env.REACT_APP_NEWSELA_AUTH_URL ||
+    'https://edulastic-sso.newsela.com/oauth',
   redirectUrl:
-    process.env
-      .REACT_APP_NEWSELA_REDIRECT_URI /* ||
-    'https://edulasticv2-dryrun.snapwiz.net/auth/newsela' */,
+    process.env.REACT_APP_NEWSELA_REDIRECT_URI ||
+    'https://edulasticv2-dryrun.snapwiz.net/auth/newsela',
   identityUrl:
-    process.env
-      .REACT_APP_NEWSELA_IDENTITY_URL /* ||
-    'https://edulastic-sso.newsela.com/v1/user/me' */,
+    process.env.REACT_APP_NEWSELA_IDENTITY_URL ||
+    'https://edulastic-sso.newsela.com/v1/user/me',
   loginUrl:
-    process.env
-      .REACT_APP_NEWSELA_LOGIN_URL /* ||
-    'https://edulastic-sso.newsela.com/oauth/authorize' */,
+    process.env.REACT_APP_NEWSELA_LOGIN_URL ||
+    'https://edulastic-sso.newsela.com/oauth/authorize',
 }
 
 export default {

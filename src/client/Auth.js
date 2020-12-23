@@ -50,6 +50,12 @@ const Auth = ({
       </>
     )
   }
+  console.log(
+    '!user || (user && !user.isAuthenticated)',
+    !user || (user && !user.isAuthenticated),
+    user,
+    user?.isAuthenticated
+  )
   if (location.pathname.toLocaleLowerCase().includes('auth')) {
     return (
       <>

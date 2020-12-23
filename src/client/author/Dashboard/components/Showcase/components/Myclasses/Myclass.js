@@ -80,8 +80,6 @@ const MyClasses = ({
   setShowCleverSyncModal,
   teacherData,
   dashboardTiles,
-  clearTestFilters,
-  clearPlaylistFilters,
   windowWidth,
   resetTestFilters,
   resetPlaylistFilters,

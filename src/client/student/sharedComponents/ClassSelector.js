@@ -17,9 +17,9 @@ import {
   changeClassAction,
   getCurrentGroupExactValue,
 } from '../Login/ducks'
-import { getFormattedName } from '../../author/Gradebook/transformers'
+import { getFormattedName } from '../common/utils';
 import { setSelectedGroupStatusAction } from '../sharedDucks/AssignmentModule/ducks'
-import { getCurrentTerm } from '../../author/src/selectors/user'
+import { getCurrentTerm } from '../common/utils';
 
 const ClassSelector = ({
   t,

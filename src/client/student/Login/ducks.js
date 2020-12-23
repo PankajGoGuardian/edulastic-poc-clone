@@ -41,8 +41,7 @@ import {
   signupDistrictPolicySelector,
   signupGeneralSettingsSelector,
 } from '../Signup/duck'
-import { getUser } from '../../author/src/selectors/user'
-import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
+import { updateInitSearchStateAction } from '../common/utils'
 import { JOIN_CLASS_REQUEST_SUCCESS } from '../ManageClass/ducks'
 import 'firebase/auth'
 import {
@@ -267,6 +266,10 @@ export const toggleMultipleAccountNotificationAction = createAction(
 export const persistAuthStateAndRedirectToAction = createAction(
   PERSIST_AUTH_STATE_AND_REDIRECT
 )
+
+function getUser(state){
+  return state.user?.user;
+}
 
 const initialState = {
   addAccount: false,

@@ -11,8 +11,9 @@ import {
   largeDesktopWidth,
   themeColorBlue,
 } from '@edulastic/colors'
-import { beforeUpload, notification } from '@edulastic/common'
+import  notification  from '@edulastic/common/src/components/Notification';
 import { uploadToS3 } from '../../../author/src/utils/upload'
+import { beforeUpload } from '../../common/utils'
 import { updateProfileImageAction } from '../../Login/ducks'
 
 class Photo extends React.Component {

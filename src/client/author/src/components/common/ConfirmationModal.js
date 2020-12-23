@@ -1,4 +1,4 @@
-import { CustomModalStyled } from '@edulastic/common'
+import  CustomModalStyled from '@edulastic/common/src/components/CustomModalStyled';
 import { titleColor } from '@edulastic/colors'
 import styled from 'styled-components'
 

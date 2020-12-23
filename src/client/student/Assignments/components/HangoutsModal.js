@@ -12,7 +12,7 @@ import {
   darkGrey2,
   themeColor,
 } from '@edulastic/colors'
-import { scopes } from '../../../author/ManageClass/components/ClassListContainer/ClassCreatePage'
+import { scopes } from '../../common/utils';
 
 const HangoutsModal = ({
   title,

@@ -23,10 +23,9 @@ import {
   persistAuthStateAndRedirectToAction,
   signupSuccessAction,
 } from '../Login/ducks'
-import { getUser } from '../../author/src/selectors/user'
+import { getUser,updateInitSearchStateAction } from '../common/utils';
 
 import { userPickFields } from '../../common/utils/static/user'
-import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 
 // Types
 const SEARCH_SCHOOL_REQUEST = '[signup] search school request'

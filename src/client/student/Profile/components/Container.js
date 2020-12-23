@@ -17,7 +17,7 @@ import styled from 'styled-components'
 import { resetMyPasswordAction } from '../../Login/ducks'
 import { Wrapper } from '../../styled'
 import Photo from './Photo'
-import { getFormattedName } from '../../../author/Gradebook/transformers'
+import { getFormattedName } from '../../common/utils'
 
 const FormItem = Form.Item
 class ProfileContainer extends React.Component {

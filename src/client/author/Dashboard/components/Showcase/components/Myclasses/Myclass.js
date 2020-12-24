@@ -22,6 +22,8 @@ import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import ItemPurchaseModal from './components/ItemPurchaseModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -43,8 +45,11 @@ const MyClasses = ({
   windowWidth,
   resetTestFilters,
   resetPlaylistFilters,
+  collections,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
+  const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
+  const [purchaseModalData, setPurchaseModalData] = useState({})
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -87,8 +92,33 @@ const MyClasses = ({
     history.push(`/author/${contentType}?${filter}`)
   }
 
-  const handleFeatureClick = ({ config = {}, tags = [] }) => {
+  const hasAccessToItemBank = (itemBankId) =>
+    collections.some((collection) => collection._id === itemBankId)
+
+  const handleBlockedClick = ({
+    hasTrial,
+    subscriptionData,
+    marketingData,
+  }) => {
+    setIsPurchaseModalVisible(true)
+    setPurchaseModalData({
+      hasTrial,
+      title: marketingData.title,
+      productId: subscriptionData.productId,
+      description: marketingData.description,
+    })
+  }
+
+  const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
+
+  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
+
+    if (isBlocked) {
+      handleBlockedClick(config)
+      return
+    }
+
     const content = contentType?.toLowerCase() || 'tests'
     if (tags.includes(PREMIUM_TAG)) {
       if (premiumUser) {
@@ -101,9 +131,31 @@ const MyClasses = ({
     }
   }
 
+  const getFeatureBundles = (bundles) =>
+    bundles.map((bundle) => {
+      const { subscriptionData } = bundle.config
+      if (!subscriptionData?.productId) {
+        return bundle
+      }
+
+      let isBlocked = true
+      let imageUrl = bundle.imageUrl
+      if (hasAccessToItemBank(subscriptionData?.productId)) {
+        isBlocked = false
+      } else {
+        imageUrl = bundle.premiumImageUrl
+      }
+
+      return {
+        ...bundle,
+        imageUrl,
+        isBlocked,
+      }
+    })
+
   const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
   const bannerSlides = sortByOrder(BANNER || [])
-  const featuredBundles = sortByOrder(FEATURED || [])
+  const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
@@ -151,7 +203,7 @@ const MyClasses = ({
 
   return (
     <MainContentWrapper padding="30px">
-      {!loading && allActiveClasses?.length === 0 && (
+      {allActiveClasses?.length === 0 && (
         <BannerSlider
           bannerSlides={bannerSlides}
           handleBannerModalClose={() => setShowBannerModal(null)}
@@ -159,18 +211,26 @@ const MyClasses = ({
           isBannerModalVisible={showBannerModal}
         />
       )}
-      {!loading && (
-        <Classes
-          activeClasses={allActiveClasses}
-          emptyBoxCount={classEmptyBoxCount}
-        />
-      )}
+      <Classes
+        activeClasses={allActiveClasses}
+        emptyBoxCount={classEmptyBoxCount}
+      />
       <FeaturedContentBundle
         featuredBundles={featuredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
+      {isPurchaseModalVisible && (
+        <ItemPurchaseModal
+          title={purchaseModalData.title}
+          description={purchaseModalData.description}
+          productId={purchaseModalData.productId}
+          hasTrial={purchaseModalData.hasTrial}
+          isVisible={isPurchaseModalVisible}
+          toggleModal={togglePurchaseModal}
+        />
+      )}
     </MainContentWrapper>
   )
 }
@@ -185,6 +245,7 @@ export default compose(
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      collections: getCollectionsSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

@@ -6,9 +6,14 @@ import { MathSpan, FieldLabel, replaceLatexTemplate } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { IconCharInfo } from '@edulastic/icons'
 
-const HelperToolTip = ({ t, optionKey, large }) => {
+const HelperToolTip = ({ t, optionKey, large, isGraph }) => {
   const text = useMemo(() => {
-    let _text = t(`component.math.helperText.${optionKey}`)
+    let helperTextKey = `component.math.helperText.${optionKey}`
+    if (isGraph && optionKey === 'tolerance') {
+      helperTextKey = 'component.math.helperText.graphTolerance'
+    }
+
+    let _text = t(helperTextKey)
     if (!optionKey) {
       _text = ''
     }

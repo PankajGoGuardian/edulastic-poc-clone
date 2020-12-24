@@ -6,12 +6,13 @@ import CustomDrawer from './components/CustomDrawer'
 import CompareOption from './components/CompareOption'
 import MathEquivalentOptions from './MathEquivalent'
 import LiterallyEquivalent from './LiterallyEquivalent'
+import GraphEvaluationSettings from './GraphEvaluationSettings'
 import FormatRule from './FormatRule'
 import EnabledSettings from './EnabledSettings'
 import LabelWithHelper from './components/LabelWithHelper'
 import { Container, SettingBody } from './styled'
 
-const { methods } = mathConstants
+const { methods, GRAPH_EVALUATION_SETTING } = mathConstants
 
 const EvaluationSettings = ({
   method,
@@ -41,17 +42,23 @@ const EvaluationSettings = ({
         return LiterallyEquivalent
       case methods.EQUIV_SYNTAX:
         return FormatRule
+      case GRAPH_EVALUATION_SETTING:
+        return GraphEvaluationSettings
       default:
         return () => <span />
     }
   }, [method])
+
+  const isFromGraph = GRAPH_EVALUATION_SETTING === method
 
   return (
     <Container>
       <FlexContainer width="fit-content" alignItems="center">
         <LabelWithHelper
           large
-          optionKey="evaluationSettings"
+          optionKey={
+            isFromGraph ? 'graphEvaluationSettings' : 'evaluationSettings'
+          }
           label="Evaluation Settings"
         />
         <EduButton height="28px" ml="20px" onClick={showSettingDrawer}>
@@ -60,11 +67,13 @@ const EvaluationSettings = ({
       </FlexContainer>
       <CustomDrawer visible={isVisible} onClose={hidSettingDrawer}>
         <SettingBody>
-          <CompareOption method={method} onChange={onChangeMethod} />
+          {!isFromGraph && (
+            <CompareOption method={method} onChange={onChangeMethod} />
+          )}
           <OptionsComponent
             method={method}
             onChangeOption={changeOptions}
-            onChange={onChangeMethod}
+            onChangeRadio={onChangeMethod}
             options={options}
             useTemplate={useTemplate}
             allowNumericOnly={allowNumericOnly}

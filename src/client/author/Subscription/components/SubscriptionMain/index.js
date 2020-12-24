@@ -1,41 +1,53 @@
-import { EduButton, MainContentWrapper } from '@edulastic/common'
+import { EduButton, FlexContainer, MainContentWrapper } from '@edulastic/common'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { capitalize } from 'lodash'
 
 // TODO: Update SVG imports here
 import IMG1 from '../../static/1.png'
 import IMG2 from '../../static/2.png'
 import IMG3 from '../../static/3.png'
-import IMG4 from '../../static/analysis.png'
-import IMG5 from '../../static/speaker.png'
-import IMG6 from '../../static/teamwork.png'
-import IMG7 from '../../static/sheet.png'
-import IMG8 from '../../static/list.png'
-import IMG9 from '../../static/presentation.png'
 
-import {
-  ActionsWrapper,
-  Container,
-  Description,
-  Title,
-} from '../styled/commonStyled'
+import IMG4 from '../../static/text-speech.svg'
+import IMG5 from '../../static/test-security-settings.svg'
+import IMG6 from '../../static/advanced-authoring.svg'
+import IMG7 from '../../static/in-depth-reports.svg'
+import IMG8 from '../../static/playlists.svg'
+import IMG9 from '../../static/collaboration-engagement.svg'
+import IMG10 from '../../static/student-groups.svg'
+import IMG11 from '../../static/parent-portal.svg'
+
+import IMG12 from '../../static/spark.svg'
+import IMG13 from '../../static/book-buddies.svg'
+import IMG14 from '../../static/stem-cross-curricular.svg'
+import IMG15 from '../../static/phonics-practice.svg'
+import IMG16 from '../../static/reading-comprehension-practice.svg'
+
+import { ActionsWrapper, Description, Title } from '../styled/commonStyled'
 import {
   AvailablePlansContainer,
   ContentWrapper,
   CurrentPlanContainer,
   FeatureDescription,
-  FlexCard,
-  GridContainer,
   Img,
-  InnerWrapper,
-  PlanContainerWrapper,
   PlanDetails,
   PlanImage,
   PlansContainer,
   PlanStatus,
   StyledLink,
   StyledParagraph,
+  ContentSection,
+  ContentCards,
+  ContentCard,
+  AddonSection,
+  SectionTitle,
+  SectionDescription,
+  SectionContainer,
+  CardContainer,
+  AddonCard,
+  AddonImg,
+  AddonDescription,
+  EnterpriseSection,
+  HaveLicenseKey,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
@@ -112,37 +124,79 @@ const availablePlans = [
 const featuresData = [
   {
     imgSrc: IMG4,
-    title: 'In-depth Reporting',
-    description:
-      'Show student growth over time. Analyze answer distractor. See complete student mastery profile.',
+    title: 'Text-to-speech',
+    description: 'Text to Speech (Read Aloud) for students',
   },
   {
     imgSrc: IMG5,
-    title: 'Read Aloud',
-    description:
-      'Choose students to have questions and answer choices read to them.',
+    title: 'Test Security Settings',
+    description: 'Shuffle questions, hide correct answers, etc.',
   },
   {
     imgSrc: IMG6,
-    title: 'Collaboration',
-    description: "Work on assessment as a team before they're published.",
+    title: 'Advanced Authoring',
+    description: 'Options, dynamic parameters, rubric support',
   },
   {
     imgSrc: IMG7,
-    title: 'Advanced Assessment Options',
-    description:
-      'Shuffle question order for each student. Show student actions but hide correct answers.',
+    title: 'In-depth reports',
+    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
   },
   {
     imgSrc: IMG8,
-    title: 'Rubric Scoring',
-    description: 'Create and share rubrics school or district wide.',
+    title: 'Playlists',
+    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
   },
   {
     imgSrc: IMG9,
-    title: 'Presentation Mode',
+    title: 'Collaboration & Engagement',
+    description: 'Co-author, sharing, presentation mode',
+  },
+  {
+    imgSrc: IMG10,
+    title: 'Student Groups',
+    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+  },
+  {
+    imgSrc: IMG11,
+    title: 'Parent Portal',
+    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+  },
+]
+
+const addonsData = [
+  {
+    imgSrc: IMG12,
+    title: 'SparkMath',
     description:
-      'Review answers and common mistake with the class without showing names.',
+      'Pre-built assessments and differentiated Math practice for each student',
+  },
+  {
+    imgSrc: IMG13,
+    title: 'Book Buddies',
+    description: 'Assessments and prompts on your favorite books',
+  },
+  {
+    imgSrc: IMG14,
+    title: 'STEM Cross-curricular',
+    description: 'Science passages with reading and science questions',
+  },
+  {
+    imgSrc: IMG15,
+    title: 'Phonics Practice',
+    description:
+      'Full year of practice assignments to help all students master each sound',
+  },
+  {
+    imgSrc: IMG16,
+    title: 'Reading Comprehension Practice',
+    description: 'Fiction and nonfiction to practice close reading',
+  },
+  {
+    imgSrc: IMG12,
+    title: 'SparkScience',
+    description:
+      'NGSS-aligned pre-built assessments and item banks for grades K-12',
   },
 ]
 
@@ -197,20 +251,8 @@ const SubscriptionMain = (props) => {
 
   return (
     <>
-      <MainContentWrapper padding="30px">
+      <MainContentWrapper padding="30px" style={{ display: 'none' }}>
         <CurrentPlanContainer onClick={() => setShowPlans(false)}>
-          <Container>
-            <Title padding="0 30px 0 0">Your Current Plan:</Title>
-            <Description>
-              {isSubscribed && subType && licenseExpiryDate
-                ? `${
-                    subType === 'partial_premium'
-                      ? 'Enterprise'
-                      : capitalize(subType.replace(/_/g, ' '))
-                  } Version`
-                : 'Free Plan'}
-            </Description>
-          </Container>
           <PlanStatus>
             {isSubscribed && licenseExpiryDate ? (
               <p>
@@ -224,62 +266,6 @@ const SubscriptionMain = (props) => {
 
         {!showPlans && (
           <>
-            <PlanContainerWrapper>
-              {isSubscribed ? (
-                <h2 style={{ fontWeight: 600 }}>Cool features in your plan</h2>
-              ) : (
-                <PlansContainer isEnterprise={false}>
-                  <ContentWrapper>
-                    <PlanImage>
-                      <img src={availablePlans[0].imgSrc} alt="" />
-                    </PlanImage>
-                    <PlanDetails>
-                      <Title margin="0 0 8px 0">
-                        {availablePlans[0].title}
-                      </Title>
-                      <Description>{availablePlans[0].description}</Description>
-                    </PlanDetails>
-                  </ContentWrapper>
-                </PlansContainer>
-              )}
-
-              <GridContainer>
-                {featuresData.map((_, index) => (
-                  <FlexCard>
-                    <InnerWrapper>
-                      <Img src={featuresData[index].imgSrc} />
-                      <h3 style={{ fontWeight: 700, paddingLeft: 20 }}>
-                        {featuresData[index].title}
-                      </h3>
-                    </InnerWrapper>
-                    <FeatureDescription>
-                      {featuresData[index].description}
-                    </FeatureDescription>
-                  </FlexCard>
-                ))}
-              </GridContainer>
-            </PlanContainerWrapper>
-
-            {!isSubscribed && (
-              <ActionsWrapper width="460px" row>
-                <EduButton
-                  isGhost
-                  height="40px"
-                  onClick={openHasLicenseKeyModal}
-                >
-                  ALREADY HAVE A LICENSE KEY
-                </EduButton>
-
-                <AuthorCompleteSignupButton
-                  renderButton={(handleClick) => (
-                    <EduButton height="40px" onClick={handleClick}>
-                      UPGRADE NOW FOR $100/YEAR
-                    </EduButton>
-                  )}
-                  onClick={openPaymentServiceModal}
-                />
-              </ActionsWrapper>
-            )}
             {subType !== 'enterprise' && (
               <StyledParagraph isSubscribed={isSubscribed}>
                 interested in buying multiple teacher premium subscriptions or
@@ -312,6 +298,95 @@ const SubscriptionMain = (props) => {
           </AvailablePlansContainer>
         )}
       </MainContentWrapper>
+
+      <ContentSection>
+        <ContentCards>
+          {featuresData.map((_, index) => (
+            <ContentCard>
+              <Img src={featuresData[index].imgSrc} />
+              <h3>{featuresData[index].title}</h3>
+              <FeatureDescription>
+                {featuresData[index].description}
+              </FeatureDescription>
+            </ContentCard>
+          ))}
+          <FlexContainer
+            justifyContent="center"
+            style={{ marginTop: '25px', width: '100%' }}
+          >
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <EduButton
+                  height="38px"
+                  width="215px"
+                  isBlue
+                  onClick={handleClick}
+                  style={{
+                    background: 'transparent',
+                    borderColor: 'white',
+                  }}
+                >
+                  Upgrade now $00/mo
+                </EduButton>
+              )}
+              onClick={openPaymentServiceModal}
+            />
+            <EduButton
+              height="38px"
+              width="215px"
+              isGhost
+              isBlue
+              style={{
+                borderColor: 'white',
+              }}
+            >
+              Start a trial
+            </EduButton>
+          </FlexContainer>
+          <HaveLicenseKey onClick={openHasLicenseKeyModal}>
+            HAVE LICENSE KEY
+          </HaveLicenseKey>
+        </ContentCards>
+      </ContentSection>
+
+      <AddonSection>
+        <SectionContainer>
+          <SectionTitle>Premium addons to make it even better</SectionTitle>
+          <SectionDescription>
+            You can bundle one or more of the following addons to the teacher
+            premium subscription that will <br /> make it easier to deliver
+            differentiated instruction and keep your students engaged.
+          </SectionDescription>
+          <CardContainer>
+            {addonsData.map((_, index) => (
+              <AddonCard>
+                <AddonImg src={addonsData[index].imgSrc} />
+                <h3>{addonsData[index].title}</h3>
+                <AddonDescription>
+                  {addonsData[index].description}
+                </AddonDescription>
+              </AddonCard>
+            ))}
+          </CardContainer>
+        </SectionContainer>
+      </AddonSection>
+
+      <EnterpriseSection>
+        <SectionTitle>Enterprise</SectionTitle>
+        <SectionDescription>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
+          sollicitudin tincidunt tempus. <br /> Pellentesque auctor eros et
+          metus condimentum aliquet.
+        </SectionDescription>
+        <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
+          <EduButton height="38px" width="215px" isGhost isBlue>
+            schedule a demo
+          </EduButton>
+          <EduButton height="38px" width="215px" isBlue>
+            request a quote
+          </EduButton>
+        </FlexContainer>
+      </EnterpriseSection>
     </>
   )
 }

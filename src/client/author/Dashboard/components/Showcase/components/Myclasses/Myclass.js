@@ -73,30 +73,31 @@ const MyClasses = ({
     (c) => c.active === 1 && c.type === 'class'
   )
 
-  const handleContentRedirect = (filters, isPlaylist) => {
+  const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
       hasNoInterestedFilters: true,
     })
     const filter = qs.stringify(entries)
-    const contentType = filters.config.contentType?.toLowerCase()
-    if (isPlaylist) {
-      resetPlaylistFilters()
-    } else {
+
+    if (contentType === 'tests') {
       resetTestFilters()
+    } else {
+      resetPlaylistFilters()
     }
     history.push(`/author/${contentType}?${filter}`)
   }
 
   const handleFeatureClick = ({ config = {}, tags = [] }) => {
-    const { filters, isPlaylist } = config
+    const { filters, contentType } = config
+    const content = contentType?.toLowerCase() || 'tests'
     if (tags.includes(PREMIUM_TAG)) {
       if (premiumUser) {
-        handleContentRedirect(filters, isPlaylist)
+        handleContentRedirect(filters, content)
       } else {
         history.push(`/author/subscription`)
       }
     } else {
-      handleContentRedirect(filters, isPlaylist)
+      handleContentRedirect(filters, content)
     }
   }
 

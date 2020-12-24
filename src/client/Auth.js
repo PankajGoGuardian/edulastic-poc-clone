@@ -50,8 +50,16 @@ const Auth = ({
     }
   }, [])
 
+  console.log('current login state', {
+    user,
+    token: getAccessToken(),
+    loading,
+    isPrivate: isLoggedInForPrivateRoute(user),
+  })
+
   if (isLoggedInForPrivateRoute(user)) {
     persistAuthStateAndRedirectTo()
+    return <Spin />
   }
 
   if ((user?.authenticating && getAccessToken()) || loading) {

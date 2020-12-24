@@ -26,6 +26,8 @@ const Login = lazy(() => import('./student/Login/components'))
 
 const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
+const isNewSela = () => window.location.pathname.includes('newsela')
+
 const Auth = ({
   user,
   location,
@@ -59,10 +61,9 @@ const Auth = ({
 
   if (isLoggedInForPrivateRoute(user)) {
     persistAuthStateAndRedirectTo()
-    return <Spin />
   }
 
-  if ((user?.authenticating && getAccessToken()) || loading) {
+  if (((user?.authenticating && getAccessToken()) || loading) && !isNewSela()) {
     return <Spin />
   }
 

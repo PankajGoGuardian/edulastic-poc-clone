@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Radio, Select, Icon, Input, Tooltip, Modal } from 'antd'
+import {
+  Row,
+  Col,
+  Radio,
+  Select,
+  Icon,
+  Input,
+  Tooltip,
+  Modal,
+  InputNumber,
+} from 'antd'
 import {
   green,
   red,
@@ -38,6 +48,8 @@ import {
   RadioWrapper,
   Title,
   TimeSpentInput,
+  StyledCol,
+  StyledRow,
 } from './styled'
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
 import SubscriptionsBlock from '../../../TestPage/components/Setting/components/Container/SubscriptionsBlock'
@@ -67,9 +79,17 @@ const {
   passwordPolicyOptions,
   passwordPolicy: passwordPolicyValues,
   accessibilities,
+  redirectPolicy,
 } = test
 
 const { PARTIAL_CREDIT, PARTIAL_CREDIT_IGNORE_INCORRECT } = evalTypeLabels
+
+const { ShowPreviousAttempt } = redirectPolicy
+
+const QuestionDelivery = {
+  [redirectPolicy.QuestionDelivery.ALL]: 'All',
+  [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
+}
 
 const Settings = ({
   testSettings = {},
@@ -225,6 +245,48 @@ const Settings = ({
     overRideSettings(attr, value)
   }
 
+  const handleAutoRedirectChange = (value) => {
+    if (forClassLevel) return changeField('autoRedirect')(value)
+
+    const newSettingsState = {
+      ...assignmentSettings,
+      autoRedirect: value,
+      ...(value
+        ? {
+            autoRedirectSettings: {
+              showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
+              questionsDelivery: QuestionDelivery.ALL,
+            },
+          }
+        : {}),
+    }
+
+    updateAssignmentSettings(newSettingsState)
+  }
+
+  const handleAutoRedirectSettingsChange = (key, value) => {
+    if (key === 'maxRedirects' && (value > 3 || value < 1)) {
+      return
+    }
+    if (key === 'scoreThreshold' && (value > 100 || value < 1)) {
+      return
+    }
+
+    const newSettingsState = {
+      ...assignmentSettings,
+      autoRedirectSettings: {
+        ...assignmentSettings.autoRedirectSettings,
+        [key]: value,
+      },
+    }
+
+    if (forClassLevel)
+      return changeField('autoRedirectSettings')(
+        newSettingsState.autoRedirectSettings
+      )
+    updateAssignmentSettings(newSettingsState)
+  }
+
   const scoringType =
     assignmentSettings?.scoringType ||
     tempTestSettings?.scoringType ||
@@ -252,6 +314,8 @@ const Settings = ({
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
     enableScratchpad = tempTestSettings.enableScratchpad,
+    autoRedirect = false,
+    autoRedirectSettings,
   } = assignmentSettings
   const playerSkinType =
     assignmentSettings.playerSkinType || testSettings.playerSkinType
@@ -810,6 +874,147 @@ const Settings = ({
           </FeaturesSwitch>
         )}
         {/* Timed TEST */}
+
+        {/* Auto Redirect */}
+        {!hideClassLevelOptions && (
+          <FeaturesSwitch
+            inputFeatures="assessmentSuperPowersAutoRedirect"
+            actionOnInaccessible="hidden"
+            key="assessmentSuperPowersAutoRedirect"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowSettings gutter={16}>
+              <Row>
+                <StyledCol span={12} paddingLeft="8px" paddingRight="8px">
+                  <Label>Enable Auto Redirect</Label>
+                </StyledCol>
+                <StyledCol
+                  span={12}
+                  display="flex"
+                  flexDirection="column"
+                  paddingLeft="8px"
+                  paddingRight="8px"
+                >
+                  <Row>
+                    <AlignSwitchRight
+                      data-cy="assignment-auto-redirect-switch"
+                      size="small"
+                      defaultChecked={false}
+                      disabled={freezeSettings}
+                      checked={autoRedirect}
+                      onChange={handleAutoRedirectChange}
+                    />
+                  </Row>
+                  {autoRedirect && (
+                    <>
+                      <StyledRow mt="8px" mb="0px">
+                        <InputNumber
+                          min={1}
+                          max={100}
+                          value={autoRedirectSettings.scoreThreshold || ''}
+                          onChange={(value) =>
+                            handleAutoRedirectSettingsChange(
+                              'scoreThreshold',
+                              value
+                            )
+                          }
+                        />{' '}
+                        <span>SCORE THRESHOLD</span>
+                      </StyledRow>
+                      <StyledRow mt="8px" mb="0px">
+                        <InputNumber
+                          min={1}
+                          max={3}
+                          value={autoRedirectSettings.maxRedirects || ''}
+                          onChange={(value) =>
+                            handleAutoRedirectSettingsChange(
+                              'maxRedirects',
+                              value
+                            )
+                          }
+                        />{' '}
+                        <span>MAXIMUM ATTEMPTS ALLOWED</span>
+                      </StyledRow>
+                    </>
+                  )}
+                </StyledCol>
+              </Row>
+              {autoRedirect && (
+                <>
+                  <StyledRow mt="8px" mb="0px">
+                    <StyledCol span={12} paddingLeft="8px" paddingRight="8px">
+                      <Label>QUESTIONS DELIVERY</Label>
+                    </StyledCol>
+                    <StyledCol
+                      span={12}
+                      display="flex"
+                      flexDirection="column"
+                      paddingLeft="8px"
+                      paddingRight="8px"
+                    >
+                      <SelectInputStyled
+                        disabled={freezeSettings}
+                        onChange={(value) => {
+                          handleAutoRedirectSettingsChange(
+                            'questionsDelivery',
+                            value
+                          )
+                        }}
+                        value={autoRedirectSettings.questionsDelivery || ''}
+                        noBorder
+                        height="30px"
+                      >
+                        {Object.keys(QuestionDelivery).map((item, index) => (
+                          <Select.Option key={index} value={item}>
+                            {QuestionDelivery[item]}
+                          </Select.Option>
+                        ))}
+                      </SelectInputStyled>
+                    </StyledCol>
+                  </StyledRow>
+                  <StyledRow mt="8px" mb="0px">
+                    <StyledCol span={12} paddingLeft="8px" paddingRight="8px">
+                      <Label>SHOW PREVIOUS ATTEMPT</Label>
+                    </StyledCol>
+                    <StyledCol
+                      span={12}
+                      display="flex"
+                      flexDirection="column"
+                      paddingLeft="8px"
+                      paddingRight="8px"
+                    >
+                      <SelectInputStyled
+                        disabled={freezeSettings}
+                        onChange={(value) => {
+                          handleAutoRedirectSettingsChange(
+                            'showPreviousAttempt',
+                            value
+                          )
+                        }}
+                        value={autoRedirectSettings.showPreviousAttempt || ''}
+                        noBorder
+                        height="30px"
+                      >
+                        {Object.keys(ShowPreviousAttempt).map((item, index) => (
+                          <Select.Option key={index} value={item}>
+                            {ShowPreviousAttempt[item]}
+                          </Select.Option>
+                        ))}
+                      </SelectInputStyled>
+                    </StyledCol>
+                  </StyledRow>
+                </>
+              )}
+              <StyledRow mt="8px" mb="0px">
+                <StyledCol span={24} paddingLeft="8px" paddingRight="8px">
+                  Allow students to take the assignment multiple times to
+                  practice and improve their learning
+                </StyledCol>
+              </StyledRow>
+            </StyledRowSettings>
+          </FeaturesSwitch>
+        )}
+        {/* Auto Redirect */}
 
         {/* Test Content visibility */}
         {(userRole === roleuser.DISTRICT_ADMIN ||

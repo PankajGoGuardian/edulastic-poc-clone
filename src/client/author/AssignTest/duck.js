@@ -133,6 +133,10 @@ export const assignmentSettings = createReducer(initialState, {
       state.scoringType =
         testConst.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     }
+    if (!state.autoRedirect) {
+      delete state.autoRedirect
+      delete state.autoRedirectSettings
+    }
   },
   [CLEAR_ASSIGNMENT_SETTINGS]: () => {
     return initialState

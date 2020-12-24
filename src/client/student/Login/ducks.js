@@ -1104,7 +1104,7 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher') {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
-  return '/'
+  return '/login'
 }
 
 export function* fetchUser({ payload }) {

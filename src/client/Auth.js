@@ -54,7 +54,7 @@ const Auth = ({
     persistAuthStateAndRedirectTo()
   }
 
-  if (user?.authenticating || loading) {
+  if ((user?.authenticating && getAccessToken()) || loading) {
     return <Spin />
   }
 

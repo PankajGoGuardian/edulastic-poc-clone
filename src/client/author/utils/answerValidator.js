@@ -64,7 +64,25 @@ const answerValidator = {
     return hasEmpty
   },
   [questionType.CLOZE_DRAG_DROP](answers) {
-    return this.generalValidator(answers)
+    const hasEmpty = answers.some((answer, index) => {
+      if (isEmpty(answer.value)) {
+        return true
+      }
+      if (
+        index === 0 &&
+        keys(answer.value).some((id) => isEmpty(answer.value[id]))
+      ) {
+        return true
+      }
+      if (
+        index > 0 &&
+        isEmpty(keys(answer.value).filter((id) => !isEmpty(answer.value[id])))
+      ) {
+        return true
+      }
+      return false
+    })
+    return hasEmpty
   },
   [questionType.CLOZE_IMAGE_DRAG_DROP](answers) {
     const hasEmpty = answers.some(

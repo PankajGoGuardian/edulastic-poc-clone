@@ -65,7 +65,6 @@ const getStyle = ({
     width: width || (IconBtn ? '45px' : null),
     textShadow: 'none',
     border: noBorder && '0px',
-    boxShadow: noBorder && 'none',
   }
   return { ...defaultStyle, ...style }
 }

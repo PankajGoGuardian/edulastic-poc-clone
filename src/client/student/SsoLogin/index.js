@@ -150,10 +150,10 @@ class SsoLogin extends React.Component {
             centered
           />
         )}
-        {this.payloadForUserData && (
+        {(this.payloadForUserData || true) && (
           <StyledModal
             onCancel={() => getUserData(this.payloadForUserData)}
-            visible={!!this.payloadForUserData}
+            visible={!!this.payloadForUserData || true}
             footer={null}
             centered
           >

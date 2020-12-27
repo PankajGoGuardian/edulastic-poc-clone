@@ -285,6 +285,7 @@ const initialState = {
 }
 
 function getValidRedirectRouteByRole(_url, user) {
+  console.log('validredirectRoute', { _url, role: user.role })
   const url = (_url || '').trim()
   switch (user.role) {
     case roleuser.TEACHER:
@@ -351,6 +352,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       user.user || {}
     )
     localStorage.removeItem('loginRedirectUrl')
+    alert(`removing redirect route:${redirectRoute}`)
   } else {
     redirectRoute = getRouteByGeneralRoute(user)
   }
@@ -844,6 +846,8 @@ function* login({ payload }) {
         localStorage.getItem('loginRedirectUrl'),
         user
       )
+
+      console.warn('redirectUrl', redirectUrl)
 
       const isAuthUrl = /signup|login/gi.test(redirectUrl)
       if (redirectUrl && !isAuthUrl) {
@@ -1703,6 +1707,7 @@ function* getUserData({ payload: res }) {
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem('loginRedirectUrl')
+      alert(`login url removing:${redirectUrl}`)
       yield put(push(redirectUrl))
     }
 

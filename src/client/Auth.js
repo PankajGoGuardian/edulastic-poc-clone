@@ -61,6 +61,7 @@ const Auth = ({
   })
 
   if (isLoggedInForPrivateRoute(user)) {
+    console.log('loggedin private persist', window.location.pathname)
     persistAuthStateAndRedirectTo()
   }
 

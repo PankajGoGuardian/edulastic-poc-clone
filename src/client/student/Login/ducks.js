@@ -286,6 +286,9 @@ const initialState = {
 
 function getValidRedirectRouteByRole(_url, user) {
   console.log('validredirectRoute', { _url, role: user.role })
+  if (_url.includes('/home/group') && _url.includes('assignment')) {
+    return _url
+  }
   const url = (_url || '').trim()
   switch (user.role) {
     case roleuser.TEACHER:

@@ -2,8 +2,8 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { pick, last, get, set, isBoolean } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
-import { captureSentryException } from '@edulastic/common/src/sentryHelpers';
-import notification from '@edulastic/common/src/components/Notification';
+import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
+import notification from '@edulastic/common/src/components/Notification'
 import { push } from 'connected-react-router'
 // import {
 //   authApi,
@@ -13,12 +13,12 @@ import { push } from 'connected-react-router'
 //   segmentApi,
 //   schoolApi,
 // } from '@edulastic/api'
-import authApi from '@edulastic/api/src/auth';
-import userApi from '@edulastic/api/src/user';
-import settingsApi from '@edulastic/api/src/settings';
-import segmentApi from '@edulastic/api/src/segment';
-import schoolApi from '@edulastic/api/src/school';
-import * as TokenStorage from '@edulastic/api/src/utils/Storage';
+import authApi from '@edulastic/api/src/auth'
+import userApi from '@edulastic/api/src/user'
+import settingsApi from '@edulastic/api/src/settings'
+import segmentApi from '@edulastic/api/src/segment'
+import schoolApi from '@edulastic/api/src/school'
+import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { roleuser } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
@@ -1103,7 +1103,7 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher') {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
-  return '/'
+  return '/login'
 }
 
 export function* fetchUser({ payload }) {
@@ -1231,8 +1231,8 @@ export function* fetchV1Redirect({ payload: id }) {
   }
 }
 
-function redirectToUrl(url){
-  window.location.href = url;
+function redirectToUrl(url) {
+  window.location.href = url
 }
 
 function* logout() {
@@ -1262,7 +1262,7 @@ function* logout() {
       TokenStorage.initKID()
       TokenStorage.removeTokens()
       yield put({ type: 'RESET' })
-      yield call(redirectToUrl,getSignOutUrl());
+      yield call(redirectToUrl, getSignOutUrl())
       removeSignOutUrl()
       yield put(toggleMultipleAccountNotificationAction(true))
     }

@@ -356,12 +356,9 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       appRedirectPath,
       user.user || {}
     )
-    console.log('redirect2 1', redirectRoute)
   } else {
     redirectRoute = getRouteByGeneralRoute(user)
-    console.log('redirect2 2', redirectRoute)
   }
-  console.log('redirect2', redirectRoute)
 
   localStorage.setItem(
     'authState',
@@ -369,7 +366,6 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
   )
 
   localStorage.removeItem('loginRedirectUrl')
-  console.warn('redirectUrl removing and location replace', redirectRoute)
   window.location.replace(redirectRoute)
 }
 
@@ -854,7 +850,6 @@ function* login({ payload }) {
         localStorage.getItem('loginRedirectUrl'),
         user
       )
-      console.log('redirectUrl1', redirectUrl)
 
       const isAuthUrl = /signup|login/gi.test(redirectUrl)
       if (redirectUrl && !isAuthUrl) {

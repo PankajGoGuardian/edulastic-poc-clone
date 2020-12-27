@@ -120,7 +120,7 @@ class SsoLogin extends React.Component {
       location,
     } = this.props
     const { confirmationInput } = this.state
-
+    console.warn('ssOloginProps', { isRoleConfirmation })
     const path = location.pathname.split('/')
     const showConfirmationModal =
       isRoleConfirmation && (path.includes('google') || path.includes('mso'))

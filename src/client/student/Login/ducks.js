@@ -360,6 +360,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
   } else {
     redirectRoute = getRouteByGeneralRoute(user)
   }
+  console.log('redirect2', redirectRoute)
 
   localStorage.setItem(
     'authState',
@@ -850,6 +851,7 @@ function* login({ payload }) {
         localStorage.getItem('loginRedirectUrl'),
         user
       )
+      console.log('redirectUrl1', redirectUrl)
 
       const isAuthUrl = /signup|login/gi.test(redirectUrl)
       if (redirectUrl && !isAuthUrl) {

@@ -1366,7 +1366,11 @@ function* googleSSOLogin({ payload }) {
         'payloadForUserData',
         JSON.stringify(res)
       )
-      console.warn('redirecting to google', res, isNewUser)
+      console.warn(
+        'redirecting to google',
+        JSON.stringify(res, null, 2),
+        isNewUser
+      )
       window.location.href = '/auth/google'
     } else {
       if (isNewUser) {

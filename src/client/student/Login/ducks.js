@@ -369,6 +369,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
   )
 
   localStorage.removeItem('loginRedirectUrl')
+  console.warn('redirectUrl removing and location replace', redirectRoute)
   window.location.replace(redirectRoute)
 }
 

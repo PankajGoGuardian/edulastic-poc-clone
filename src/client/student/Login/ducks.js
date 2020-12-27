@@ -1366,6 +1366,7 @@ function* googleSSOLogin({ payload }) {
         'payloadForUserData',
         JSON.stringify(res)
       )
+      console.warn('payloadUserData set')
       console.warn(
         'redirecting to google',
         JSON.stringify(res, null, 2),
@@ -1373,6 +1374,7 @@ function* googleSSOLogin({ payload }) {
       )
       window.location.href = '/auth/google'
     } else {
+      console.warn('no payloadUserData set')
       if (isNewUser) {
         yield call(segmentApi.trackTeacherSignUp, { user: res })
       }

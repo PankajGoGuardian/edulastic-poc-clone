@@ -59,11 +59,14 @@ const Auth = ({
     loading,
     isPrivate: isLoggedInForPrivateRoute(user),
   })
+  const loggedInForPrivateRoute = isLoggedInForPrivateRoute(user)
 
-  if (isLoggedInForPrivateRoute(user)) {
-    console.log('loggedin private persist', window.location.pathname)
-    persistAuthStateAndRedirectTo()
-  }
+  useEffect(() => {
+    if (loggedInForPrivateRoute) {
+      console.log('loggedin private persist', window.location.pathname)
+      persistAuthStateAndRedirectTo()
+    }
+  }, [loggedInForPrivateRoute])
 
   if (
     ((user?.authenticating && getAccessToken()) || loading) &&

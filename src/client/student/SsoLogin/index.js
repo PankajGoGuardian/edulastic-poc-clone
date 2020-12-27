@@ -93,6 +93,7 @@ class SsoLogin extends React.Component {
       if (state) payload.state = JSON.parse(state)
       newselaSSOLogin(payload)
     }
+    this.forceUpdate()
   }
 
   handleConfirmation = () => {

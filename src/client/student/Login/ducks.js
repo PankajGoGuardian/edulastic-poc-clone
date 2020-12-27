@@ -286,6 +286,9 @@ const initialState = {
 
 function getValidRedirectRouteByRole(_url, user) {
   const url = (_url || '').trim()
+  if (url.includes('/home/group') && url.includes('assignment')) {
+    return url
+  }
   switch (user.role) {
     case roleuser.TEACHER:
       return url.match(/^\/author\//) || url.match(/\/embed\//)

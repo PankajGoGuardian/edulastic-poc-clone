@@ -27,8 +27,7 @@ const Login = lazy(() => import('./student/Login/components'))
 const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
 const isNewSela = () => window.location.pathname.includes('newsela')
-const needToBeExcluded = () =>
-  isNewSela() || window.location.pathname.includes('auth/google')
+const needToBeExcluded = () => isNewSela()
 
 const Auth = ({
   user,

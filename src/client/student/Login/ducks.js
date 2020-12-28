@@ -1144,7 +1144,10 @@ export function* fetchUser({ payload }) {
           addAccountTo: payload.userId,
         })
       )
-      if (!isPartOfLoginRoutes()) {
+      if (
+        !isPartOfLoginRoutes() &&
+        !window.location.pathname.includes('home/group')
+      ) {
         window.location.replace('/')
       }
       return

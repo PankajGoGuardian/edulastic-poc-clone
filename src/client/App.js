@@ -137,8 +137,10 @@ if (search) {
     sessionStorage.setItem('errorMessage', errorMessage)
     if (!pathname.split('/').includes('login')) {
       if (isEmpty(rest)) {
+        console.warn('rdr 1')
         window.location.href = window.location.href.split('?')[0]
       } else {
+        console.warn('rdr 2')
         window.location.href = `${
           window.location.href.split('?')[0]
         }?${qs.stringify(rest)}`

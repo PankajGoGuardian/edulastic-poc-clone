@@ -57,6 +57,7 @@ function* resetPasswordSaga({ payload }) {
       newPassword,
     })
     yield put(fetchUserAction())
+    console.warn('rdr 8')
     window.location.href = '/home/assignments'
   } catch (e) {
     notification({ messageKey: 'errorSettingPassword' })

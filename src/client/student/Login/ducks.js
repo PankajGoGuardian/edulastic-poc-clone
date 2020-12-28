@@ -1148,6 +1148,7 @@ export function* fetchUser({ payload }) {
         !isPartOfLoginRoutes() &&
         !window.location.pathname.includes('home/group')
       ) {
+        console.warn('rdr 11',window.location.pathname);
         window.location.replace('/')
       }
       return
@@ -1335,6 +1336,7 @@ function* googleLogin({ payload }) {
     }
 
     const res = yield call(authApi.googleLogin, params)
+    console.warn('rdr 9')
     window.location.href = res
   } catch (e) {
     notification({
@@ -1442,6 +1444,7 @@ function* msoLogin({ payload }) {
       })
     }
     const res = yield call(authApi.msoLogin)
+    console.warn('rdr 10')
     window.location.href = res
   } catch (e) {
     notification({ msg: get(e, 'response.data.message', 'MSO Login failed') })
@@ -1633,6 +1636,7 @@ function* newselaLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.newselaLogin, params)
+
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'newselaLoginFailed' })

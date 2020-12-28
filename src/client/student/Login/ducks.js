@@ -355,16 +355,9 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       appRedirectPath,
       user.user || {}
     )
-    console.log('login redi 1', redirectRoute)
     localStorage.removeItem('loginRedirectUrl')
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
-    console.log(
-      'login redi 2',
-      redirectRoute,
-      'pathname',
-      window.location.pathname
-    )
   }
 
   localStorage.setItem(
@@ -1248,7 +1241,6 @@ export function* fetchV1Redirect({ payload: id }) {
 }
 
 function redirectToUrl(url) {
-  console.log('login redirectToUrl')
   window.location.href = url
 }
 

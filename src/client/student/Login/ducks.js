@@ -372,7 +372,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     JSON.stringify({ authorUi, signup: signUp, user })
   )
   
-  console.log('rdr12');
+  console.log('rdr12',redirectRoute);
   window.location.replace(redirectRoute)
 }
 
@@ -1150,7 +1150,6 @@ export function* fetchUser({ payload }) {
         !window.location.pathname.includes('home/group')
       ) {
         console.log('rdr 11',window.location.pathname);
-        alert('redirecting to main')
         window.location.replace('/')
       }
       return

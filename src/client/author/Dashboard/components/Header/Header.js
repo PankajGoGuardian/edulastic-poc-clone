@@ -168,7 +168,7 @@ const HeaderSection = ({
         {signupStatus !== signUpState.DONE && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
-              <StyledLink onClick={handleClick}>
+              <StyledLink data-cy="completeSignup" onClick={handleClick}>
                 Complete signup process
               </StyledLink>
             )}

@@ -389,7 +389,8 @@ class FeedbackRight extends Component {
       _score = ''
     }
 
-    const _maxScore = rubricMaxScore || maxScore
+    const _maxScore =
+      showGradingRubricButton && rubricMaxScore ? rubricMaxScore : maxScore
 
     // TODO: uncomment when practice question scoring is implemented (EV-12869)
     // if (isPracticeQuestion) {

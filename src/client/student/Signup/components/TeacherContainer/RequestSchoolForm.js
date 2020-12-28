@@ -1,13 +1,13 @@
 import { countryApi } from '@edulastic/api'
 import { SelectInputStyled, TextInputStyled } from '@edulastic/common'
-import { Col, Form, Row, Select } from 'antd'
-import { debounce, get } from 'lodash'
+import { Col, Form, Row, Select, Spin } from 'antd'
+import { debounce, get, isEmpty, map } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { RemoteAutocompleteDropDown } from '../../../../common/components/widgets/remoteAutoCompleteDropDown'
 import { searchDistrictsRequestAction } from '../../duck'
-import { states } from './constants'
+import { statesWithCodes } from './constants'
 
 const { Option } = Select
 class RequestSchoolForm extends React.Component {
@@ -27,7 +27,7 @@ class RequestSchoolForm extends React.Component {
     const countryList = await countryApi.getCountries()
     this.setState({
       countryList,
-      stateList: states,
+      stateList: statesWithCodes,
     })
   }
 
@@ -44,9 +44,9 @@ class RequestSchoolForm extends React.Component {
       form.setFieldsValue({ state: '' })
     } else {
       this.setState({
-        stateList: states,
+        stateList: statesWithCodes,
       })
-      form.setFieldsValue({ state: states[0] })
+      form.setFieldsValue({ state: Object.keys(statesWithCodes)[0] })
     }
   }
 
@@ -79,15 +79,19 @@ class RequestSchoolForm extends React.Component {
       },
     }
 
+    if (isEmpty(countryList)) {
+      return <Spin />
+    }
+
     const countryOptions = Object.entries(countryList).map(([key, value]) => (
       <Option value={key} key={key}>
         {value}
       </Option>
     ))
 
-    const stateOptions = stateList.map((state) => (
-      <Option value={state} key={state}>
-        {state}
+    const stateOptions = map(stateList, (value, key) => (
+      <Option value={key} key={key}>
+        {value}
       </Option>
     ))
 
@@ -243,16 +247,14 @@ class RequestSchoolForm extends React.Component {
                 rules: [
                   { required: false, message: 'Please provide a valid state.' },
                 ],
-                initialValue: states[0],
+                initialValue: Object.keys(statesWithCodes)[0],
               })(
-                country === 'US' || country === 'United States' ? (
+                country === 'US' ? (
                   <SelectInputStyled
                     data-cy="state"
                     showSearch
                     placeholder="Select your state"
-                    getPopupContainer={(triggerNode) =>
-                      triggerNode.parentNode
-                    }
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   >
                     {stateOptions}
                   </SelectInputStyled>
@@ -274,7 +276,7 @@ class RequestSchoolForm extends React.Component {
                     message: 'Please provide a valid country.',
                   },
                 ],
-                initialValue: 'United States',
+                initialValue: 'US',
               })(
                 <SelectInputStyled
                   data-cy="country"

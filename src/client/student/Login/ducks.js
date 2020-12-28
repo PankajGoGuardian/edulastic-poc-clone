@@ -355,6 +355,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       appRedirectPath,
       user.user || {}
     )
+    localStorage.removeItem('loginRedirectUrl')
   } else {
     redirectRoute = getRouteByGeneralRoute(user)
   }
@@ -364,7 +365,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     JSON.stringify({ authorUi, signup: signUp, user })
   )
 
-  localStorage.removeItem('loginRedirectUrl')
+
   window.location.replace(redirectRoute)
 }
 

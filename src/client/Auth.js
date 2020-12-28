@@ -27,7 +27,7 @@ const Login = lazy(() => import('./student/Login/components'))
 const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
 const isNewSela = () => window.location.pathname.includes('newsela')
-const needToBeExcluded = () => isNewSela()
+const needToBeExcluded = () => false
 
 const Auth = ({
   user,

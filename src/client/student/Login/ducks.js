@@ -355,16 +355,17 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       appRedirectPath,
       user.user || {}
     )
+    console.warn('login redi 1', redirectRoute)
     localStorage.removeItem('loginRedirectUrl')
   } else {
     redirectRoute = getRouteByGeneralRoute(user)
+    console.warn('login redi 2', redirectRoute)
   }
 
   localStorage.setItem(
     'authState',
     JSON.stringify({ authorUi, signup: signUp, user })
   )
-
 
   window.location.replace(redirectRoute)
 }
@@ -1695,6 +1696,7 @@ function* getUserData({ payload: res }) {
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem('loginRedirectUrl')
+      console.warn('redirecting to url', redirectUrl)
       yield put(push(redirectUrl))
     }
 

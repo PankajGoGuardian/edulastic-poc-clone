@@ -68,7 +68,7 @@ const ResponseFrequency = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
-      !res.metrics.length
+      isEmpty(res?.metrics)
     ) {
       toggleFilter(null, true)
     }

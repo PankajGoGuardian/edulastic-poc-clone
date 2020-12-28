@@ -59,11 +59,13 @@ const Auth = ({
       persistAuthStateAndRedirectTo()
     }
   }, [loggedInForPrivateRoute])
-
-  if (
-    ((user?.authenticating && getAccessToken()) || loading) &&
-    !needToBeExcluded()
-  ) {
+  console.log(
+    window.location.pathname,
+    user?.authenticating,
+    loading,
+    getAccessToken()
+  )
+  if ((user?.authenticating && getAccessToken()) || loading) {
     return <Spin />
   }
 

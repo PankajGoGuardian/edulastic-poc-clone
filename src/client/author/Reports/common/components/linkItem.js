@@ -2,31 +2,36 @@ import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Icon } from 'antd'
-import { PremiumLabel } from '@edulastic/common'
 import { themeColorLight } from '@edulastic/colors'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { ReportItemCards } from './ReportItemCard'
 
 const nonPremiumReports = ['standardsGradebook']
-export const LinkItem = ({ data, inverse, tiles, premium }) => {
+export const LinkItem = ({ data, inverse, tiles, premium, history }) => {
   const showPremiumLabel = !premium && !nonPremiumReports.includes(data.key)
   const showGreenBorder = !premium && nonPremiumReports.includes(data.key)
   const ResolvedLink = showPremiumLabel ? Fragment : Link
 
   if (tiles) {
     return (
-      <ResolvedLink data-cy={data.key} to={data.location}>
-        <ItemCard>
-          {showPremiumLabel && (
-            <PremiumLabel style={{ top: 8, right: 8 }}> PREMIUM</PremiumLabel>
-          )}
-          <StyledPreviewImage
-            src={data.thumbnail}
-            alt={data.title}
-            showGreenBorder={showGreenBorder}
+      <>
+        {data.key === 'standardsGradebook' ? (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <ReportItemCards handleClick={handleClick} data={data} />
+            )}
+            onClick={() => history.push(data.location)}
           />
-          <CardTitle>{data.title}</CardTitle>
-          <CardDescription>{data.description}</CardDescription>
-        </ItemCard>
-      </ResolvedLink>
+        ) : (
+          <ResolvedLink data-cy={data.key} to={data.location}>
+            <ReportItemCards
+              data={data}
+              showPremiumLabel={showPremiumLabel}
+              showGreenBorder={showGreenBorder}
+            />
+          </ResolvedLink>
+        )}
+      </>
     )
   }
   return (
@@ -48,32 +53,6 @@ export const LinksWrapper = styled.ul`
 export const CardsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-`
-
-const ItemCard = styled.div`
-  position: relative;
-  width: 235px;
-  margin: 0px 14px 20px 0px;
-`
-
-const StyledPreviewImage = styled.img`
-  width: 100%;
-  min-height: 130px;
-  user-select: none;
-  pointer-events: none;
-  object-fit: contain;
-  ${({ showGreenBorder }) => showGreenBorder && 'border: 2px solid;'}
-`
-
-const CardTitle = styled.h4`
-  color: #1a76b3;
-  font-size: 13px;
-  margin: 13px 0px;
-`
-
-const CardDescription = styled.p`
-  font-size: 11px;
-  color: #434b5d;
 `
 
 const Item = styled.li`

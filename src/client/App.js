@@ -342,7 +342,10 @@ class App extends Component {
           location.pathname.toLocaleLowerCase().includes('/auth/newsela')
         )
       ) {
-        if (location.pathname.toLocaleLowerCase().includes('/home')) {
+        if (
+          location.pathname.toLocaleLowerCase().includes('/home') &&
+          !location.pathname.toLocaleLowerCase().includes('/home/group')
+        ) {
           localStorage.setItem('thirdPartySignOnRole', roleuser.STUDENT)
         }
         if (!getCurrentPath().includes('/login')) {

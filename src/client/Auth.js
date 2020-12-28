@@ -27,8 +27,7 @@ const Login = lazy(() => import('./student/Login/components'))
 const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
 const isNewSela = () => window.location.pathname.includes('newsela')
-const needToBeExcluded = () =>
-  isNewSela() || window.location.pathname.includes('auth/google')
+const needToBeExcluded = () => isNewSela()
 
 const Auth = ({
   user,
@@ -53,17 +52,13 @@ const Auth = ({
       window.removeEventListener('beforeunload', onBeforeUnload)
     }
   }, [])
+  const loggedInForPrivateRoute = isLoggedInForPrivateRoute(user)
 
-  console.log('current login state', {
-    user,
-    token: getAccessToken(),
-    loading,
-    isPrivate: isLoggedInForPrivateRoute(user),
-  })
-
-  if (isLoggedInForPrivateRoute(user)) {
-    persistAuthStateAndRedirectTo()
-  }
+  useEffect(() => {
+    if (loggedInForPrivateRoute) {
+      persistAuthStateAndRedirectTo()
+    }
+  }, [loggedInForPrivateRoute])
 
   if (
     ((user?.authenticating && getAccessToken()) || loading) &&

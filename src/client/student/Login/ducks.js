@@ -286,6 +286,9 @@ const initialState = {
 
 function getValidRedirectRouteByRole(_url, user) {
   const url = (_url || '').trim()
+  if (url.includes('home/group') && url.includes('assignment')) {
+    return url
+  }
   switch (user.role) {
     case roleuser.TEACHER:
       return url.match(/^\/author\//) || url.match(/\/embed\//)
@@ -353,7 +356,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       user.user || {}
     )
     localStorage.removeItem('loginRedirectUrl')
-  } else {
+  } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
   }
 
@@ -362,7 +365,9 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     JSON.stringify({ authorUi, signup: signUp, user })
   )
 
-  window.location.replace(redirectRoute)
+  if (redirectRoute) {
+    window.location.replace(redirectRoute)
+  }
 }
 
 const setUser = (state, { payload }) => {
@@ -1134,7 +1139,10 @@ export function* fetchUser({ payload }) {
           addAccountTo: payload.userId,
         })
       )
-      if (!isPartOfLoginRoutes()) {
+      if (
+        !isPartOfLoginRoutes() &&
+        !window.location.pathname.includes('home/group')
+      ) {
         window.location.replace('/')
       }
       return
@@ -1620,6 +1628,7 @@ function* newselaLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.newselaLogin, params)
+
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'newselaLoginFailed' })
@@ -1691,13 +1700,14 @@ function* getUserData({ payload: res }) {
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem('loginRedirectUrl')
+      // yield call(redirectToUrl, redirectUrl)
       yield put(push(redirectUrl))
     }
 
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (e) {
-    console.warn(e)
+    console.log(e)
     notification({ messageKey: 'failedToFetchUserData' })
 
     yield put(push(getSignOutUrl()))
@@ -1724,7 +1734,7 @@ function* updateUserRoleSaga({ payload }) {
     yield put(signupSuccessAction(_user))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
   } catch (e) {
-    console.warn('e', e)
+    console.log('e', e)
     notification({
       msg: get(
         e,

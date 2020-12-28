@@ -39,7 +39,7 @@ const packageJson = require('./package.json')
 module.exports = override(
   multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
-  process.env.NODE_ENV === 'production' &&
+  process.env.BUNDLE_VISUALIZE &&
     addBundleVisualizer({
       generateStatsFile: true,
       reportFilename: 'report4-common-vendor.htm',
@@ -286,8 +286,8 @@ module.exports = override(
             default: {
               reuseExistingChunk: true,
             },
-            froalaCommonChunk:{
-              test:/froalaCommonChunk/,
+            froalaCommonChunk: {
+              test: /froalaCommonChunk/,
               name: 'froalaCommonChunk',
               chunks: 'initial',
               enforce: true,

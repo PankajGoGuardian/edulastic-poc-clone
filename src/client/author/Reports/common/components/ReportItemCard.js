@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { PremiumLabel } from '@edulastic/common'
+import PropTypes from 'prop-types'
 
 export const ReportItemCards = ({
   data,
@@ -22,6 +23,14 @@ export const ReportItemCards = ({
       <CardDescription>{data.description}</CardDescription>
     </ItemCard>
   )
+}
+
+ReportItemCards.propTypes = {
+  handleClick: PropTypes.func,
+}
+
+ReportItemCards.defaultProps = {
+  handleClick: () => null,
 }
 
 export const LinksWrapper = styled.ul`

@@ -359,7 +359,12 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     localStorage.removeItem('loginRedirectUrl')
   } else {
     redirectRoute = getRouteByGeneralRoute(user)
-    console.warn('login redi 2', redirectRoute)
+    console.warn(
+      'login redi 2',
+      redirectRoute,
+      'pathname',
+      window.location.pathname
+    )
   }
 
   localStorage.setItem(
@@ -1697,8 +1702,8 @@ function* getUserData({ payload: res }) {
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem('loginRedirectUrl')
       console.warn('redirecting to url', redirectUrl)
-      yield call(redirectToUrl, redirectUrl)
-      // yield put(push(redirectUrl))
+      // yield call(redirectToUrl, redirectUrl)
+      yield put(push(redirectUrl))
     }
 
     // Important redirection code removed, redirect code already present in /src/client/App.js

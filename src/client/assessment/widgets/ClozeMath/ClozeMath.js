@@ -36,6 +36,7 @@ import { StyledClozeMathWrapper } from './styled/StyledClozeMathWrapper'
 import AppConfig from '../../../../app-config'
 import Question from '../../components/Question'
 import QuestionOptions from '../ClozeImageDropDown/QuestionOptions'
+import { latexKeys } from './constants'
 
 const ClozeMath = ({
   view,
@@ -101,7 +102,8 @@ const ClozeMath = ({
     )
   }
 
-  const itemForPreview = replaceVariables(item)
+  const itemForPreview = replaceVariables(item, latexKeys)
+
   const isV1Multipart = get(col, 'isV1Multipart', false)
   const { qLabel, isV1Migrated = false, qSubLabel } = item
   let options = []

@@ -118,9 +118,9 @@ const StudentProfileReportContainer = (props) => {
       selectedStudent: _settings.selectedStudent,
     })
   }
-  const toggleFilter = (e) => {
+  const toggleFilter = (e, status = false) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, !showFilter)
+      onRefineResultsCB(e, status || !showFilter)
     }
   }
 
@@ -177,6 +177,7 @@ const StudentProfileReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />
@@ -189,6 +190,7 @@ const StudentProfileReportContainer = (props) => {
                   settings={transformedSettings}
                   pageTitle={loc}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />
@@ -201,6 +203,7 @@ const StudentProfileReportContainer = (props) => {
                   settings={transformedSettings}
                   pageTitle={loc}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />

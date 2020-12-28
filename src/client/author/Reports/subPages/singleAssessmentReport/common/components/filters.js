@@ -81,6 +81,7 @@ const SingleAssessmentReportFilters = ({
   reportId,
   selectedPerformanceBandProfile,
   selectedStandardManteryScale,
+  toggleFilter,
 }) => {
   const assessmentTypeRef = useRef()
   const [selectedClass, setSelectedClass] = useState(null)
@@ -178,7 +179,7 @@ const SingleAssessmentReportFilters = ({
         key: 'All',
         title: 'All Grades',
       }
-      const urlTestId = _testId || ''
+      const urlTestId = _testId || savedFilters?.testId || ''
       const obtainedFilters = {
         termId: urlSchoolYear.key,
         subject: urlSubject.key,
@@ -220,6 +221,11 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateTestId = (selected) => {
+    if (firstLoad && !selected.key) {
+      toggleFilter(null, true)
+      setFirstLoad(false)
+      return
+    }
     const _testId = selected.key || ''
     setFiltersOrTestId({ testId: _testId })
     if (reportId) {

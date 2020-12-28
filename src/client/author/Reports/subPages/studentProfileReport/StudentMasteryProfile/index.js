@@ -82,6 +82,7 @@ const StudentMasteryProfile = ({
   loadingStudentStandard,
   sharedReport,
   t,
+  toggleFilter,
 }) => {
   const sharedReportFilters = useMemo(
     () =>
@@ -177,6 +178,17 @@ const StudentMasteryProfile = ({
   useEffect(() => {
     setSelectedDomain({ key: 'All', title: 'All' })
   }, [selectedGrade, selectedSubject])
+
+  useEffect(() => {
+    const metrics = get(studentMasteryProfile, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [studentMasteryProfile])
 
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onSubjectSelect = (_, selected) => setSelectedSubject(selected)

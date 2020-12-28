@@ -40,6 +40,7 @@ const QuestionAnalysis = ({
   settings,
   testList,
   sharedReport,
+  toggleFilter,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
@@ -66,6 +67,16 @@ const QuestionAnalysis = ({
       getQuestionAnalysis(q)
     }
   }, [settings])
+
+  useEffect(() => {
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !questionAnalysis.metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [questionAnalysis])
 
   const chartData = useMemo(() => getChartData(questionAnalysis.metricInfo), [
     questionAnalysis,

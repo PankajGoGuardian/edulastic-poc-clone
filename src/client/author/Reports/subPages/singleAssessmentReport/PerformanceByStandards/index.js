@@ -76,6 +76,7 @@ const PerformanceByStandards = ({
   filters,
   sharedReport,
   setStandardMasteryProfile,
+  toggleFilter,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -186,6 +187,13 @@ const PerformanceByStandards = ({
 
   useEffect(() => {
     setSelectedData(reportWithFilteredSkills)
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      (!report.metricInfo.length || !report.studInfo.length)
+    ) {
+      toggleFilter(null, true)
+    }
   }, [report])
 
   const handleResetSelection = () => {

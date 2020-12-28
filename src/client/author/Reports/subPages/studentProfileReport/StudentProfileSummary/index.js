@@ -73,6 +73,7 @@ const StudentProfileSummary = ({
   reportsSPRFilterLoadingState,
   sharedReport,
   t,
+  toggleFilter,
 }) => {
   const [selectedDomain, setSelectedDomain] = useState({
     key: 'All',
@@ -179,6 +180,17 @@ const StudentProfileSummary = ({
   useEffect(() => {
     setSelectedDomain({ key: 'All', title: 'All' })
   }, [selectedGrade, selectedSubject])
+
+  useEffect(() => {
+    const metrics = get(studentProfileSummary, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [studentProfileSummary])
 
   const _onBarClickCB = (key, args) => {
     !isSharedReport &&

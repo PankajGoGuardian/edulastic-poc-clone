@@ -40,6 +40,7 @@ const ResponseFrequency = ({
   settings,
   testList,
   sharedReport,
+  toggleFilter,
 }) => {
   const isSharedReport = !!sharedReport?._id
   const [difficultItems, setDifficultItems] = useState(40)
@@ -62,6 +63,16 @@ const ResponseFrequency = ({
       getResponseFrequency(q)
     }
   }, [settings])
+
+  useEffect(() => {
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !res.metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [res])
 
   const obj = useMemo(() => {
     let _obj = {

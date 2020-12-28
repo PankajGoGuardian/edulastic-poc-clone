@@ -1654,7 +1654,7 @@ function* newselaSSOLogin({ payload }) {
       yield put(getUserDataAction(res))
       const redirectUrl = localStorage.getItem('loginRedirectUrl')
       if (redirectUrl) {
-        yield put(push(redirectUrl))
+        window.location.href = redirectUrl
       }
     } else {
       const {

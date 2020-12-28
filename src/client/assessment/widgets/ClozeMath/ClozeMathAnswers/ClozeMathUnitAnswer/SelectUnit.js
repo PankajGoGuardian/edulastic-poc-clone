@@ -68,6 +68,14 @@ const SelectUnit = ({
     value = getStemNumeration('lowercase', itemIndex)
   }
 
+  const getLabel = (btn) => {
+    const label = `<span class="input__math" data-latex="${
+      btn.handler || ''
+    }"></span>`
+
+    return <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
+  }
+
   return (
     <DropDownWrapper
       ref={dropdownWrapper}
@@ -88,17 +96,13 @@ const SelectUnit = ({
         dropdownStyle={dropdownStyle}
         ref={forwardedRef}
       >
-        {allBtns.map((btn, i) => (
-          <Option value={btn.handler} key={i}>
-            {typeof btn.label === 'object' ? (
-              btn.label
-            ) : (
-              <MathFormulaDisplay
-                dangerouslySetInnerHTML={{ __html: btn.label }}
-              />
-            )}
-          </Option>
-        ))}
+        {allBtns.map((btn, i) => {
+          return (
+            <Option value={btn.handler} key={i}>
+              {getLabel(btn)}
+            </Option>
+          )
+        })}
       </SelectInputStyled>
     </DropDownWrapper>
   )

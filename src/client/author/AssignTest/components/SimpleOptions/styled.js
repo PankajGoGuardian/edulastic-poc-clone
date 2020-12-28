@@ -44,6 +44,7 @@ export const InitOptions = styled.div`
 
 export const StyledRow = styled(Row)`
   margin-bottom: ${(props) => props.mb || '8px'};
+  margin-top: ${({ mt }) => mt || '0px'};
 `
 
 export const StyledRowLabel = styled(Row)``
@@ -488,3 +489,10 @@ export const SelectTextInline = styled.div`
   font-size: 12px;
 `
 export const UnselectAll = styled(SelectAll)``
+
+export const StyledCol = styled(Col)`
+  display: ${({ display }) => display || 'block'};
+  flex-direction: ${(flexDirection) => flexDirection || 'unset'};
+  padding-left: ${({ paddingLeft }) => paddingLeft || '0px'}
+  padding-right: ${({ paddingRight }) => paddingRight || '0px'}
+`

@@ -216,6 +216,28 @@ class AssignTest extends React.Component {
         notification({ messageKey: 'enterValidPassword' })
         return
       }
+      if (updatedAssignment.autoRedirect === true) {
+        if (!updatedAssignment.autoRedirectSettings.showPreviousAttempt)
+          return notification({
+            type: 'warn',
+            msg: 'Please set the value for Show Previous Attempt',
+          })
+        if (!updatedAssignment.autoRedirectSettings.questionsDelivery)
+          return notification({
+            type: 'warn',
+            msg: 'Please set the value for Question Delivery',
+          })
+        if (!updatedAssignment.autoRedirectSettings.scoreThreshold)
+          return notification({
+            type: 'warn',
+            msg: 'Please set Score Threshold value',
+          })
+        if (!updatedAssignment.autoRedirectSettings.maxRedirects)
+          return notification({
+            type: 'warn',
+            msg: 'Please set value of Max Attempts Allowed for auto redirect',
+          })
+      }
       saveAssignment(updatedAssignment)
     }
   }

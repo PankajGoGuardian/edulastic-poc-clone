@@ -327,6 +327,9 @@ const parseTemplate = (tmpl) => {
 export const getResponsesCount = (element) =>
   $(element).find('textinput, textdropdown, mathinput, mathunit').length
 
+const closeBtn =
+  '<span contenteditable="false" class="paragraph-number-remove">x</span>'
+
 export const reIndexResponses = (htmlStr) => {
   const parsedHTML = $('<div />').html(htmlStr)
   if (
@@ -350,7 +353,7 @@ export const reIndexResponses = (htmlStr) => {
       $(this).attr('contenteditable', false)
 
       if ($(this).context.nodeName === 'PARAGRAPHNUMBER') {
-        $(this).html(`<label>${index + 1}</label>`)
+        $(this).html(`${index + 1}${closeBtn}`)
       }
 
       const text = $('<div>').append($(this).clone()).html()

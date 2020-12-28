@@ -934,7 +934,7 @@ textinput {
 
 paragraphnumber {
   padding: 0 5px;
-  margin-right: 10px;
+  margin: 0px 0.3em;
   min-height: 10px;
   color: #fff;
   line-height: 1.5;
@@ -942,6 +942,27 @@ paragraphnumber {
   cursor: pointer;
   position: relative;
   min-width: 20px;
+}
+
+paragraphnumber .paragraph-number-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  color: #434b5d;
+  background: #f8f8f8;
+  display: none;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  line-height: 1;
+  text-align: center;
+  font-size: 0.65rem;
+  border: 1px solid #b9b9b9;
+  user-select: none;
+}
+
+.fr-wrapper .paragraph-number-remove {
+  display: inline-block;
 }
 
 response {

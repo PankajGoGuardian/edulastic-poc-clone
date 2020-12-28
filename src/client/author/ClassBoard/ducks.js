@@ -646,17 +646,6 @@ export const stateExpressGraderAnswerSelector = (state) => state.answers
 export const stateQuestionAnswersSelector = (state) =>
   state.classQuestionResponse
 
-export const getAnswerByQidSelector = createSelector(
-  stateExpressGraderAnswerSelector,
-  answers=>{
-    const answerByQid = {}
-    Object.keys(answers).forEach(answer=>{
-      const [_,qid] = answer.split("_")
-      answerByQid[qid] = answers[answer]
-    })
-    return answerByQid;
-  }
-)
 const getTestItemsData = createSelector(
   stateTestActivitySelector,
   (state) => state?.data?.testItemsData || []

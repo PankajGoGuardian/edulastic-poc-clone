@@ -6,7 +6,6 @@ import { takeEvery, put, all, select } from 'redux-saga/effects'
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
 import { evaluateItem } from '../../author/src/utils/evalution'
-import { answersByQId } from '../selectors/test'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -88,9 +87,8 @@ function* evaluateTestItemSaga({ payload }) {
       .reduce((acc, curr) => [...acc, curr.reference], [])
       .map((qid) => allQuestionsById[qid])
     const qById = keyBy(questions, 'id')
-    const answersByQids = answersByQId(answers, testItem._id)
     const { evaluation, score, maxScore } = yield evaluateItem(
-      answersByQids,
+      answers,
       qById,
       itemLevelScoring,
       itemLevelScore

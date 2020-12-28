@@ -411,7 +411,7 @@ function* loadTest({ payload }) {
       previousQuestionActivities.forEach((item) => {
         allPrevAnswers = {
           ...allPrevAnswers,
-          [`${item.testItemId}_${item.qid}`]: item.userResponse,
+          [item.qid]: item.userResponse,
         }
         allEvaluation = {
           ...allEvaluation,
@@ -446,7 +446,7 @@ function* loadTest({ payload }) {
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
-          [`${item.testItemId}_${item.qid}`]: item.userResponse,
+          [item.qid]: item.userResponse,
         }
         if (item.scratchPad) {
           scratchPadData[item.testItemId] = {

@@ -235,7 +235,7 @@ export function* saveUserResponse({ payload }) {
       } else {
         timesSpent[question] = ts / questions.length
       }
-      itemAnswers[question] = answers[`${testItemId}_${question}`]
+      itemAnswers[question] = answers[question]
       // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
       const {
@@ -251,7 +251,7 @@ export function* saveUserResponse({ payload }) {
         !answers[`${testItemId}_${question}`] &&
         !!userPrevAnswer[`${testItemId}_${question}`]
       ) {
-        itemAnswers[question] = userPrevAnswer[`${testItemId}_${question}`]
+        itemAnswers[question] = userPrevAnswer[question]
       }
       if (shuffledOptions[question]) {
         shuffles[question] = shuffledOptions[question]

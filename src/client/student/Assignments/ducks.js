@@ -467,6 +467,7 @@ function isSEB() {
 }
 
 function redirectToUrl(url) {
+  console.log('redirectToUrl asignments');
   window.location.href = url
 }
 

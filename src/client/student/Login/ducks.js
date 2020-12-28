@@ -355,11 +355,11 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       appRedirectPath,
       user.user || {}
     )
-    console.warn('login redi 1', redirectRoute)
+    console.log('login redi 1', redirectRoute)
     localStorage.removeItem('loginRedirectUrl')
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
-    console.warn(
+    console.log(
       'login redi 2',
       redirectRoute,
       'pathname',
@@ -371,7 +371,8 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     'authState',
     JSON.stringify({ authorUi, signup: signUp, user })
   )
-
+  
+  console.log('rdr12');
   window.location.replace(redirectRoute)
 }
 
@@ -1148,7 +1149,8 @@ export function* fetchUser({ payload }) {
         !isPartOfLoginRoutes() &&
         !window.location.pathname.includes('home/group')
       ) {
-        console.warn('rdr 11',window.location.pathname);
+        console.log('rdr 11',window.location.pathname);
+        alert('redirecting to main')
         window.location.replace('/')
       }
       return
@@ -1247,6 +1249,7 @@ export function* fetchV1Redirect({ payload: id }) {
 }
 
 function redirectToUrl(url) {
+  console.log('login redirectToUrl');
   window.location.href = url
 }
 
@@ -1336,7 +1339,7 @@ function* googleLogin({ payload }) {
     }
 
     const res = yield call(authApi.googleLogin, params)
-    console.warn('rdr 9')
+    console.log('rdr 9')
     window.location.href = res
   } catch (e) {
     notification({
@@ -1444,7 +1447,7 @@ function* msoLogin({ payload }) {
       })
     }
     const res = yield call(authApi.msoLogin)
-    console.warn('rdr 10')
+    console.log('rdr 10')
     window.location.href = res
   } catch (e) {
     notification({ msg: get(e, 'response.data.message', 'MSO Login failed') })
@@ -1708,7 +1711,7 @@ function* getUserData({ payload: res }) {
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem('loginRedirectUrl')
-      console.warn('redirecting to url', redirectUrl)
+      console.log('redirecting to url', redirectUrl)
       // yield call(redirectToUrl, redirectUrl)
       yield put(push(redirectUrl))
     }
@@ -1716,7 +1719,7 @@ function* getUserData({ payload: res }) {
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (e) {
-    console.warn(e)
+    console.log(e)
     notification({ messageKey: 'failedToFetchUserData' })
 
     yield put(push(getSignOutUrl()))
@@ -1743,7 +1746,7 @@ function* updateUserRoleSaga({ payload }) {
     yield put(signupSuccessAction(_user))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
   } catch (e) {
-    console.warn('e', e)
+    console.log('e', e)
     notification({
       msg: get(
         e,

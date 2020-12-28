@@ -189,7 +189,6 @@ AssessmentPlayer.defaultProps = {
   test: {},
   closeTestPreviewModal: () => {
     if (isPublic) {
-      console.warn('rdr 6')
       window.location.href = '/'
     }
   },

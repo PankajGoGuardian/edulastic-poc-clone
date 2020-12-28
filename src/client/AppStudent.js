@@ -85,10 +85,8 @@ if (search) {
     sessionStorage.setItem('errorMessage', errorMessage)
     if (!pathname.split('/').includes('login')) {
       if (isEmpty(rest)) {
-        console.warn('rdr 3')
         window.location.href = window.location.href.split('?')[0]
       } else {
-        console.warn('rdr 4')
         window.location.href = `${
           window.location.href.split('?')[0]
         }?${qs.stringify(rest)}`
@@ -119,7 +117,6 @@ function CheckRoutePatternsEffectContainer ({ role, location, history }) {
       role !== 'parent' &&
       location.pathname.startsWith('/home')
     ) {
-      console.warn('rdr 5')
       window.location.href =
         location.pathname.replace('home', 'author') || '/author/assignments'
     }

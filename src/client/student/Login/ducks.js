@@ -372,7 +372,6 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     JSON.stringify({ authorUi, signup: signUp, user })
   )
 
-  console.log('rdr12', redirectRoute)
   if (redirectRoute) {
     window.location.replace(redirectRoute)
   }
@@ -1151,7 +1150,6 @@ export function* fetchUser({ payload }) {
         !isPartOfLoginRoutes() &&
         !window.location.pathname.includes('home/group')
       ) {
-        console.log('rdr 11', window.location.pathname)
         window.location.replace('/')
       }
       return
@@ -1340,7 +1338,6 @@ function* googleLogin({ payload }) {
     }
 
     const res = yield call(authApi.googleLogin, params)
-    console.log('rdr 9')
     window.location.href = res
   } catch (e) {
     notification({
@@ -1448,7 +1445,6 @@ function* msoLogin({ payload }) {
       })
     }
     const res = yield call(authApi.msoLogin)
-    console.log('rdr 10')
     window.location.href = res
   } catch (e) {
     notification({ msg: get(e, 'response.data.message', 'MSO Login failed') })
@@ -1712,7 +1708,6 @@ function* getUserData({ payload: res }) {
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem('loginRedirectUrl')
-      console.log('redirecting to url', redirectUrl)
       // yield call(redirectToUrl, redirectUrl)
       yield put(push(redirectUrl))
     }

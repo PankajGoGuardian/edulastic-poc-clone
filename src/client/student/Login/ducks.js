@@ -357,7 +357,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     )
     console.warn('login redi 1', redirectRoute)
     localStorage.removeItem('loginRedirectUrl')
-  } else {
+  } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
     console.warn(
       'login redi 2',

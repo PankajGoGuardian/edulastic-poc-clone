@@ -27,6 +27,9 @@ export const ReportItemCards = ({
 
 ReportItemCards.propTypes = {
   handleClick: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  showPremiumLabel: PropTypes.bool.isRequired,
+  showGreenBorder: PropTypes.bool.isRequired,
 }
 
 ReportItemCards.defaultProps = {

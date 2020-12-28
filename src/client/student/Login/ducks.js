@@ -371,9 +371,11 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     'authState',
     JSON.stringify({ authorUi, signup: signUp, user })
   )
-  
-  console.log('rdr12',redirectRoute);
-  window.location.replace(redirectRoute)
+
+  console.log('rdr12', redirectRoute)
+  if (redirectRoute) {
+    window.location.replace(redirectRoute)
+  }
 }
 
 const setUser = (state, { payload }) => {
@@ -1149,7 +1151,7 @@ export function* fetchUser({ payload }) {
         !isPartOfLoginRoutes() &&
         !window.location.pathname.includes('home/group')
       ) {
-        console.log('rdr 11',window.location.pathname);
+        console.log('rdr 11', window.location.pathname)
         window.location.replace('/')
       }
       return
@@ -1248,7 +1250,7 @@ export function* fetchV1Redirect({ payload: id }) {
 }
 
 function redirectToUrl(url) {
-  console.log('login redirectToUrl');
+  console.log('login redirectToUrl')
   window.location.href = url
 }
 

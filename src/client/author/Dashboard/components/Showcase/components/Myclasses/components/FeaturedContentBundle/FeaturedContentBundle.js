@@ -36,6 +36,7 @@ const FeaturedContentBundle = ({
             onClick={() => handleFeatureClick(bundle || {})}
             bgImage={bundle.imageUrl}
             key={bundle._id}
+            data-cy={bundle.description}
           >
             <Bottom>
               {bundle.description && <div> {bundle.description} </div>}

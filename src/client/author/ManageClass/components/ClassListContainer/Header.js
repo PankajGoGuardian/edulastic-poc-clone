@@ -179,7 +179,7 @@ const Header = ({
         </>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
-            <EduButton isBlue onClick={handleClick}>
+            <EduButton data-cy="createClass" isBlue onClick={handleClick}>
               <IconPlusCircle />
               <span>Create {currentTab}</span>
             </EduButton>

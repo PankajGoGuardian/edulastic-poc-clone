@@ -292,10 +292,10 @@ const JoinSchool = ({
       districtName,
       location: {
         city: userInfo.firstName,
-        state: 'Alaska',
+        state: 'AK',
         zip: userInfo.firstName,
         address: userInfo.firstName,
-        country: 'United States',
+        country: 'US',
       },
       requestNewSchool: true,
       homeSchool: true,

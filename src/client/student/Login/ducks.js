@@ -19,7 +19,7 @@ import settingsApi from '@edulastic/api/src/settings'
 import segmentApi from '@edulastic/api/src/segment'
 import schoolApi from '@edulastic/api/src/school'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, signUpState } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import roleType from '@edulastic/constants/const/roleType'
@@ -1041,6 +1041,11 @@ function* signup({ payload }) {
       }
       if (user.role === roleType.STUDENT) {
         yield put(persistAuthStateAndRedirectToAction())
+      } else if (
+        user.role === roleType.TEACHER &&
+        user.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
+      ) {
+        window.location = '/author/dashboard'
       } else {
         yield put(push('/Signup'))
       }

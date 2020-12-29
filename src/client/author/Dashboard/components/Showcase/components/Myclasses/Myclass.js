@@ -136,11 +136,11 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const widthOfTilesWithMargin = 240 + 7 // 240 is width of tile and 7 is margin-right for each tile
+  const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
-    (windowWidth - 130) / widthOfTilesWithMargin
-  ) // here 130 is width of side-menu 70px and padding of container 60px
+    (windowWidth - 120) / widthOfTilesWithMargin
+  ) // here 120 is width of side-menu 70px and padding of container 50px
 
   const getClassCardModular = allActiveClasses.length % GridCountInARow
   const classEmptyBoxCount = getClassCardModular
@@ -153,7 +153,7 @@ const MyClasses = ({
     : []
 
   return (
-    <MainContentWrapper padding="30px">
+    <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
         <BannerSlider
           bannerSlides={bannerSlides}

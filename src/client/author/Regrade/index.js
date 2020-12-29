@@ -36,7 +36,7 @@ const Regrade = ({
       removedQuestion: 'DISCARD',
       addedQuestion: 'SKIP',
       testSettings: 'EXCLUDE',
-      editedQuestion: 'SKIP',
+      editedQuestion: 'SCORE',
     },
   }
   const [regradeSettings, regradeSettingsChange] = useState(settings)

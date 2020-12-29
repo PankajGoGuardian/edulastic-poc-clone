@@ -913,15 +913,36 @@ export const getAllStudentsList = createSelector(
   (state) => get(state, 'data.students', [])
 )
 
+export const getAdditionalDataSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.additionalData
+)
+
+export const getCurrentClassIdSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'classId', '')
+)
+
+export const getRedirectedDatesSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'redirectedDates', {})
+)
+
 export const getTestActivitySelector = createSelector(
   getAllActivities,
   getEnrollmentStatus,
   getIsShowAllStudents,
-  (entities, enrollments, showAll) =>
+  getRedirectedDatesSelector,
+  getCurrentClassIdSelector,
+  (entities, enrollments, showAll, redirectedDates, classId) =>
     entities
       .map((item) => ({
         ...item,
         enrollmentStatus: enrollments[item.studentId],
+        redirectedDate:
+          redirectedDates[`student_${item.studentId}`] ||
+          redirectedDates[`class_${classId}`] ||
+          null,
       }))
       .filter((item) => (item.isAssigned && item.isEnrolled) || showAll)
 )
@@ -1025,11 +1046,6 @@ export const inProgressStudentsSelector = createSelector(
   (state) => state.filter((x) => x.UTASTATUS === testActivityStatus.START)
 )
 
-export const getAdditionalDataSelector = createSelector(
-  stateTestActivitySelector,
-  (state) => state.additionalData
-)
-
 export const testNameSelector = createSelector(
   stateTestActivitySelector,
   (state) => state.additionalData.testName
@@ -1043,11 +1059,6 @@ export const getCanMarkAssignmentSelector = createSelector(
 export const getClassesCanBeMarkedSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'classesCanBeMarked', [])
-)
-
-export const getCurrentClassIdSelector = createSelector(
-  getAdditionalDataSelector,
-  (state) => get(state, 'classId', '')
 )
 
 export const getMarkAsDoneEnableSelector = createSelector(

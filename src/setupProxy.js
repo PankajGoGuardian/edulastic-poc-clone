@@ -71,9 +71,13 @@ router.get('/partnerLogin/:partner/StudentSignup', (_, res) => {
   res.sendFile(rootPath)
 })
 
-router.get('/home*',(_,res)=>{
-  res.set('cache-control', 'no-store');
-  res.sendFile(studentPath);
+router.get('/home*', (req, res, next) => {
+  if (req.path.includes('home/group')) {
+    next()
+  } else {
+    res.set('cache-control', 'no-store')
+    res.sendFile(studentPath)
+  }
 })
 
 module.exports = (app) => {

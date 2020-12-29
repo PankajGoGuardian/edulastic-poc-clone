@@ -199,7 +199,7 @@ const getSkippedStatusOfQuestion = (
   testItemId,
   questionActivitiesMap,
   testItems,
-  qId
+  questionActivityId
 ) => {
   const questionActivities = Object.values(questionActivitiesMap)
   const questions = questionActivities.filter(
@@ -219,7 +219,7 @@ const getSkippedStatusOfQuestion = (
     }
     return false
   }
-  return questionActivitiesMap[`${testItemId}_${qId}`]?.skipped
+  return questionActivitiesMap[questionActivityId]?.skipped
 }
 
 /**

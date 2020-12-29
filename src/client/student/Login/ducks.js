@@ -1640,10 +1640,6 @@ function* newselaSSOLogin({ payload }) {
     if (payload.code) {
       const res = yield call(authApi.newselaSSOLogin, payload)
       yield put(getUserDataAction(res))
-      const redirectUrl = localStorage.getItem('loginRedirectUrl')
-      if (redirectUrl) {
-        yield put(push(redirectUrl))
-      }
     } else {
       const {
         loginUrl: authUrl,
@@ -1696,8 +1692,9 @@ function* getUserData({ payload: res }) {
       yield put(receiveRecentPlayListsAction())
     }
     const redirectUrl = TokenStorage.getFromLocalStorage('loginRedirectUrl')
-
+    console.log('redirect', redirectUrl)
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
+    console.log('isAuthUrl', isAuthUrl)
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem('loginRedirectUrl')
       // yield call(redirectToUrl, redirectUrl)

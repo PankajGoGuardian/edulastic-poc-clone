@@ -1647,10 +1647,6 @@ function* newselaSSOLogin({ payload }) {
     if (payload.code) {
       const res = yield call(authApi.newselaSSOLogin, payload)
       yield put(getUserDataAction(res))
-      const redirectUrl = localStorage.getItem('loginRedirectUrl')
-      if (redirectUrl) {
-        yield put(push(redirectUrl))
-      }
     } else {
       const {
         loginUrl: authUrl,

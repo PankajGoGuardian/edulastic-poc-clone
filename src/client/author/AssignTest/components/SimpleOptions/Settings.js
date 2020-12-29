@@ -255,7 +255,7 @@ const Settings = ({
         ? {
             autoRedirectSettings: {
               showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
-              questionsDelivery: QuestionDelivery.ALL,
+              questionsDelivery: redirectPolicy.QuestionDelivery.ALL,
             },
           }
         : {}),

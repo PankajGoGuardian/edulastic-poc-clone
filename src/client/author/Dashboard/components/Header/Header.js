@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { compose } from 'redux'
+import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Popover, Tooltip } from 'antd'
-
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
-import { IconClockDashboard, IconHangouts, IconManage } from '@edulastic/icons'
+import {
+  IconClockDashboard,
+  IconHangouts,
+  IconManage,
+  IconPlusCircle,
+} from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { get } from 'lodash'
 
+import { signUpState } from '@edulastic/constants'
 import { slice } from '../../../Subscription/ducks'
 // TODO: Change to SVG
 import IMG from '../../../Subscription/static/6.png'
@@ -21,8 +28,32 @@ import {
   PopoverTitle,
   PopoverWrapper,
   UpgradeBtn,
+  StyledLink,
 } from './styled'
-import { launchHangoutOpen } from '../../duck'
+import { launchHangoutOpen } from '../../ducks'
+import {
+  getUserSelector,
+  getCanvasAllowedInstitutionPoliciesSelector,
+  getCleverLibraryUserSelector,
+  getGoogleAllowedInstitionPoliciesSelector,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector,
+} from '../../../src/selectors/user'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import HeaderSyncAction from '../Showcase/components/Myclasses/components/HeaderSyncAction/HeaderSyncAction'
+import {
+  fetchClassListAction,
+  fetchCleverClassListRequestAction,
+  getCanvasCourseListRequestAction,
+  getCanvasSectionListRequestAction,
+  getCleverClassListSelector,
+  setShowCleverSyncModalAction,
+  syncClassesWithCleverAction,
+} from '../../../ManageClass/ducks'
+
+import CanvasClassSelectModal from '../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
+import ClassSelectModal from '../../../ManageClass/components/ClassListContainer/ClassSelectModal'
+import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
 
 const getContent = ({ setvisible, needsRenewal }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -49,14 +80,42 @@ const getContent = ({ setvisible, needsRenewal }) => (
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
 
 const HeaderSection = ({
-  premium,
+  user,
   isSubscriptionExpired = false,
   fetchUserSubscriptionStatus,
   t,
   openLaunchHangout,
   subscription,
+  history,
+  fetchClassList,
+  isUserGoogleLoggedIn,
+  googleAllowedInstitutions,
+  canvasAllowedInstitutions,
+  isCleverUser,
+  setShowCleverSyncModal,
+  courseList,
+  loadingCleverClassList,
+  cleverClassList,
+  getStandardsListBySubject,
+  syncCleverClassList,
+  defaultGrades = [],
+  defaultSubjects = [],
+  institutionIds,
+  canvasCourseList,
+  canvasSectionList,
+  getCanvasCourseListRequest,
+  getCanvasSectionListRequest,
+  showCleverSyncModal,
+  teacherData,
+  classData,
+  loading,
 }) => {
   const { subEndDate, subType } = subscription || {}
+  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
+
+  const { user: userInfo, signupStatus } = user
+  const premium = userInfo?.features?.premium
+
   useEffect(() => {
     fetchUserSubscriptionStatus()
   }, [])
@@ -76,9 +135,45 @@ const HeaderSection = ({
     (needsRenewal || !premium) &&
     !['enterprise', 'partial_premium'].includes(subType)
 
+  const createNewClass = () => history.push('/author/manageClass/createClass')
+
+  const sortableClasses = classData
+    .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
+    .sort((a, b) => b.asgnStartDate - a.asgnStartDate)
+  const unSortableClasses = classData.filter(
+    (d) => d.asgnStartDate === null || d.asgnStartDate === undefined
+  )
+
+  const allClasses = [...sortableClasses, ...unSortableClasses]
+  const allActiveClasses = allClasses.filter(
+    (c) => c.active === 1 && c.type === 'class'
+  )
+
+  const isClassLink =
+    teacherData && teacherData.filter((id) => id?.atlasId).length > 0
+
+  const closeCleverSyncModal = () => setShowCleverSyncModal(false)
+  const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
+
+  const hasNoActiveClassFallback =
+    !loading &&
+    allActiveClasses.length === 0 &&
+    (googleAllowedInstitutions.length > 0 ||
+      isCleverUser ||
+      canvasAllowedInstitutions.length > 0)
+
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
-      <FlexContainer>
+      <FlexContainer alignItems="center">
+        {signupStatus !== signUpState.DONE && (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <StyledLink data-cy="completeSignup" onClick={handleClick}>
+                Complete signup process
+              </StyledLink>
+            )}
+          />
+        )}
         <Tooltip title="Launch Google Meet">
           <StyledEduButton
             IconBtn
@@ -102,6 +197,57 @@ const HeaderSection = ({
             </EduButton>
           </Link>
         </Tooltip>
+        {hasNoActiveClassFallback && (
+          <HeaderSyncAction
+            fetchClassList={fetchClassList}
+            history={history}
+            isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+            allowGoogleLogin={googleAllowedInstitutions.length > 0}
+            canvasAllowedInstitutions={canvasAllowedInstitutions}
+            enableCleverSync={isCleverUser}
+            setShowCleverSyncModal={setShowCleverSyncModal}
+            handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
+            user={userInfo}
+            isClassLink={isClassLink}
+          />
+        )}
+        <CanvasClassSelectModal
+          visible={showCanvasSyncModal}
+          onCancel={closeCanvasSyncModal}
+          user={userInfo}
+          getCanvasCourseListRequest={getCanvasCourseListRequest}
+          getCanvasSectionListRequest={getCanvasSectionListRequest}
+          canvasCourseList={canvasCourseList}
+          canvasSectionList={canvasSectionList}
+          institutionId={institutionIds[0]}
+        />
+        <ClassSelectModal
+          type="clever"
+          visible={showCleverSyncModal}
+          onSubmit={syncCleverClassList}
+          onCancel={closeCleverSyncModal}
+          loading={loadingCleverClassList}
+          classListToSync={cleverClassList}
+          courseList={courseList}
+          getStandardsListBySubject={getStandardsListBySubject}
+          refreshPage="dashboard"
+          existingGroups={allClasses}
+          defaultGrades={defaultGrades}
+          defaultSubjects={defaultSubjects}
+        />
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton
+              isBlue
+              style={{ marginLeft: '5px' }}
+              data-cy="createNewClass"
+              onClick={handleClick}
+            >
+              <IconPlusCircle width={16} height={16} /> NEW CLASS
+            </EduButton>
+          )}
+          onClick={createNewClass}
+        />
         {showPopup && (
           <PopoverWrapper>
             <Popover
@@ -136,7 +282,7 @@ const HeaderSection = ({
                   data-cy="manageClass"
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />
-                  UNLOCK MORE FEATURES
+                  Upgrade
                 </EduButton>
               )}
             </Popover>
@@ -148,25 +294,58 @@ const HeaderSection = ({
 }
 
 HeaderSection.propTypes = {
-  premium: PropTypes.any.isRequired,
+  user: PropTypes.object.isRequired,
   isSubscriptionExpired: PropTypes.bool.isRequired,
   fetchUserSubscriptionStatus: PropTypes.func.isRequired,
   openLaunchHangout: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
 }
 
-export default withNamespaces('header')(
+const enhance = compose(
+  withNamespaces('header'),
+  withRouter,
   connect(
     (state) => ({
-      premium: state?.user?.user?.features?.premium,
+      user: getUserSelector(state),
       subscription: state?.subscription?.subscriptionData?.subscription,
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
+      isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
+      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
+        state
+      ),
+      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
+        state
+      ),
+      isCleverUser: getCleverLibraryUserSelector(state),
+      canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
+      canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
+      courseList: get(state, 'coursesReducer.searchResult'),
+      loadingCleverClassList: get(state, 'manageClass.loadingCleverClassList'),
+      cleverClassList: getCleverClassListSelector(state),
+      showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      teacherData: get(state, 'dashboardTeacher.data', []),
+      classData: state.dashboardTeacher.data,
+      institutionIds: get(state, 'user.user.institutionIds', []),
+      getStandardsListBySubject: (subject) =>
+        getFormattedCurriculumsSelector(state, { subject }),
+      defaultGrades: getInterestedGradesSelector(state),
+      defaultSubjects: getInterestedSubjectsSelector(state),
+      loading: state.dashboardTeacher.loading,
     }),
     {
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
       openLaunchHangout: launchHangoutOpen,
+      fetchClassList: fetchClassListAction,
+      setShowCleverSyncModal: setShowCleverSyncModalAction,
+      fetchCleverClassList: fetchCleverClassListRequestAction,
+      syncCleverClassList: syncClassesWithCleverAction,
+      getCanvasCourseListRequest: getCanvasCourseListRequestAction,
+      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
     }
-  )(HeaderSection)
+  )
 )
+
+export default enhance(HeaderSection)
 
 const StyledEduButton = styled(EduButton)`
   span {

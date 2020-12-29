@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
@@ -10,20 +10,20 @@ const LoggedOutRoute = ({
   redirectPath,
   orgType,
   ...rest
-}) => (
-  <Route
-    {...rest}
-    render={(props) =>
-      !isLoggedInForLoggedOutRoute(user) ? (
-        <Component {...props} orgType={orgType} />
-      ) : (
-        <Redirect
-          to={{ pathname: redirectPath, state: { from: props.location } }}
-        />
-      )
+}) => {
+  useEffect(() => {
+    if (isLoggedInForLoggedOutRoute(user)) {
+      window.location = redirectPath
     }
-  />
-)
+  }, [user])
+
+  return (
+    <Route
+      {...rest}
+      render={(props) => <Component {...props} orgType={orgType} />}
+    />
+  )
+}
 
 export default connect((state) => ({
   user: get(state, 'user', {}),

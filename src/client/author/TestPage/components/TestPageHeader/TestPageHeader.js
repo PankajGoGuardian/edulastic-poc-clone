@@ -47,8 +47,12 @@ import {
   TestStatus,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import { getIsCurator } from '../../../src/selectors/user'
+import {
+  getIsCurator,
+  getUserSignupStatusSelector,
+} from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const {
   statusConstants,
@@ -165,6 +169,7 @@ const TestPageHeader = ({
   hasCollectionAccess,
   authorQuestionsById,
   isUpdatingTestForRegrade,
+  userSignupStatus,
 }) => {
   let navButtons =
     buttons ||
@@ -613,14 +618,19 @@ const TestPageHeader = ({
               !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
-                <EduButton
-                  isBlue
-                  data-cy="assign"
-                  disabled={disableButtons}
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      isBlue
+                      data-cy="assign"
+                      disabled={disableButtons}
+                      onClick={handleClick}
+                    >
+                      ASSIGN
+                    </EduButton>
+                  )}
                   onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
+                />
               )}
             {isRegradeFlow &&
               !showEditButton &&
@@ -738,14 +748,19 @@ const TestPageHeader = ({
               !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
-                <EduButton
-                  isBlue
-                  disabled={disableButtons}
-                  data-cy="assign"
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      isBlue
+                      disabled={disableButtons}
+                      data-cy="assign"
+                      onClick={handleClick}
+                    >
+                      ASSIGN
+                    </EduButton>
+                  )}
                   onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
+                />
               )}
           </RightWrapper>
           <TestPageNav
@@ -782,6 +797,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       userId: getUserId(state),
       userRole: getUserRole(state),
+      userSignupStatus: getUserSignupStatusSelector(state),
       creating: getTestsCreatingSelector(state),
       isLoadingData: shouldDisableSelector(state),
       testItems: getTestItemsSelector(state),

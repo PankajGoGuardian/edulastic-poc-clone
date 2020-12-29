@@ -283,6 +283,7 @@ class App extends Component {
         const role = get(user, ['user', 'role'])
         if (role === 'teacher') {
           if (
+            user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
             user.signupStatus === signUpState.DONE ||
             isUndefined(user.signupStatus)
           ) {
@@ -537,7 +538,6 @@ class App extends Component {
                 component={StudentSignup}
                 redirectPath={defaultRoute}
               />
-
               <PrivateRoute
                 path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
                 component={TestAttemptReview}

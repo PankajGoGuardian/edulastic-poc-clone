@@ -32,6 +32,7 @@ import {
   isPublisherUserSelector,
   getWritableCollectionsSelector,
   getInterestedCurriculumsSelector,
+  getUserSignupStatusSelector,
 } from '../../../src/selectors/user'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 import {
@@ -73,6 +74,7 @@ import {
 } from './styled'
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
 import { getInterestedStandards } from '../../../dataUtils'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const CloneOptions = loadable(() => import('./CloneOptions'))
 
@@ -180,6 +182,7 @@ class ViewModal extends React.Component {
       collectionName,
       interestedCurriculums,
       writableCollections,
+      userSignupStatus,
     } = this.props
     const {
       title = '',
@@ -390,15 +393,20 @@ class ViewModal extends React.Component {
                     Preview
                   </EduButton>
                   {publicAccess && (
-                    <EduButton
-                      height="40px"
-                      width="100%"
-                      justifyContent="center"
-                      data-cy="assign-button"
+                    <AuthorCompleteSignupButton
+                      renderButton={(handleClick) => (
+                        <EduButton
+                          height="40px"
+                          width="100%"
+                          justifyContent="center"
+                          data-cy="assign-button"
+                          onClick={handleClick}
+                        >
+                          <span>ASSIGN</span>
+                        </EduButton>
+                      )}
                       onClick={assign}
-                    >
-                      <span>ASSIGN</span>
-                    </EduButton>
+                    />
                   )}
                   {permission !== 'VIEW' &&
                     !isEdulasticCurator &&
@@ -420,16 +428,21 @@ class ViewModal extends React.Component {
                     !isEdulasticCurator &&
                     !publicAccess &&
                     !isPublisherUser && (
-                      <EduButton
-                        height="40px"
-                        width="100%"
-                        justifyContent="center"
-                        data-cy="edit/assign-button"
+                      <AuthorCompleteSignupButton
+                        renderButton={(handleClick) => (
+                          <EduButton
+                            height="40px"
+                            width="100%"
+                            justifyContent="center"
+                            data-cy="edit/assign-button"
+                            onClick={handleClick}
+                          >
+                            <IconAssignment />
+                            <span>ASSIGN</span>
+                          </EduButton>
+                        )}
                         onClick={assign}
-                      >
-                        <IconAssignment />
-                        <span>ASSIGN</span>
-                      </EduButton>
+                      />
                     )}
                 </ButtonContainer>
                 {status === 'inreview' || status === 'rejected' ? (
@@ -648,6 +661,7 @@ class ViewModal extends React.Component {
 
 export default connect(
   (state) => ({
+    userSignupStatus: getUserSignupStatusSelector(state),
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),

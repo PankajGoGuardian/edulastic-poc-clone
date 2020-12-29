@@ -26,9 +26,6 @@ const Login = lazy(() => import('./student/Login/components'))
 
 const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
-const isNewSela = () => window.location.pathname.includes('newsela')
-const needToBeExcluded = () => isNewSela()
-
 const Auth = ({
   user,
   location,
@@ -60,10 +57,7 @@ const Auth = ({
     }
   }, [loggedInForPrivateRoute])
 
-  if (
-    ((user?.authenticating && getAccessToken()) || loading) &&
-    !needToBeExcluded()
-  ) {
+  if ((user?.authenticating && getAccessToken()) || loading) {
     return <Spin />
   }
 

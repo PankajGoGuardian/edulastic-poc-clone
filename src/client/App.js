@@ -349,9 +349,6 @@ class App extends Component {
         ) {
           localStorage.setItem('thirdPartySignOnRole', roleuser.STUDENT)
         }
-        if (!getCurrentPath().includes('/login')) {
-          localStorage.setItem('loginRedirectUrl', getCurrentPath())
-        }
 
         if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
           redirectRoute = `/district/${urlSearch.get('shortName')}`

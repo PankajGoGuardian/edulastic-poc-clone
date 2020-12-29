@@ -11,6 +11,9 @@ export default class TeacherDashBoardPage {
 
   // *** ACTIONS START ***
 
+  clickOnCompleteSignupProcess = () =>
+    cy.get('[data-cy="completeSignup"]').click()
+
   clickOnClassDropDown = () => cy.get('[data-cy="select-class"]').click()
 
   clickOnManageClass = () => cy.get('[data-cy="manageClass"]').click()

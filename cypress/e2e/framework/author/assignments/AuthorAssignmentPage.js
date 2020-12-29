@@ -48,7 +48,7 @@ class AuthorAssignmentPage {
 
   getOptionInDropDownByAttribute = (option) => cy.get(`[data-cy="${option}"]`)
 
-  getCreateNewAssignments = () => cy.get('[data-cy="new-assignment"]')
+  getCreateNewAssignments = () => cy.get('[data-cy="createNew"]')
 
   getChooseFromPlaylistsButton = () => cy.get('button').contains('PLAYLIST')
 
@@ -321,6 +321,8 @@ class AuthorAssignmentPage {
     this.getOptionInDropDownByAttribute('summary-grades').click()
     // cy.wait("@load-summary");
   }
+
+  clickOnNewAssignment = () => this.getCreateNewAssignments().click()
 
   filterByTestType = (testType) => {
     this.smartFilter.expandFilter()

@@ -57,7 +57,6 @@ class SignupPage {
     this.setEmail(email)
     this.setPassword(password)
     this.clickOnSignupButton()
-    cy.wait('@schoolSearch')
   }
 
   clickOnProceed = () => cy.contains('Proceed').click()
@@ -114,6 +113,9 @@ class SignupPage {
   setState = (state) => cy.get('[data-cy="state"]').clear().type(state)
 
   setDistrict = (district) => {
+    cy.server()
+    cy.route('POST', '**districts').as('district')
+
     cy.get('[data-cy="Enter your school district name"]')
       .click({ force: true })
       .type(district)

@@ -2,9 +2,20 @@ import FileHelper from '../../../../framework/util/fileHelper'
 import SignupPage from '../../../../framework/common/signupPage'
 import LoginPage from '../../../../framework/student/loginPage'
 import Helpers from '../../../../framework/util/Helpers'
+import TeacherDashBoardPage from '../../../../framework/author/teacherDashboardPage'
+import AuthorAssignmentPage from '../../../../framework/author/assignments/AuthorAssignmentPage'
+import TeacherSideBar from '../../../../framework/author/SideBarPage'
+import TestLibrary from '../../../../framework/author/tests/testLibraryPage'
+import TeacherManageClassPage from '../../../../framework/author/manageClassPage'
 
 const signupPage = new SignupPage()
+const dashBoard = new TeacherDashBoardPage()
 const loginPage = new LoginPage()
+const sidebar = new TeacherSideBar()
+const assignmentPage = new AuthorAssignmentPage()
+const testLibraryPage = new TestLibrary()
+const manageClass = new TeacherManageClassPage()
+
 const signupData = {
   zip: '123456789',
   name: 'smoke signupteacher',
@@ -43,7 +54,7 @@ describe(`${FileHelper.getSpecName(
     cy.visit('/')
   })
 
-  it('> signup using existing school', () => {
+  it('> signup using existing school from dashboard-CompleteSignupLink', () => {
     const {
       name,
       email,
@@ -60,7 +71,10 @@ describe(`${FileHelper.getSpecName(
     signupPage.clickOnTeacher()
     signupPage.fillTeacherSignupForm(name, randomEmail, password)
     // signupPage.closeWelcomePopUp()
-
+    cy.wait('@courses').then(() =>
+      cy.url().should('contain', 'author/dashboard')
+    )
+    dashBoard.clickOnCompleteSignupProcess()
     // search by zip
     signupPage.searchAndSelectSchool(zip).then(() => {
       signupPage.removeSelected()
@@ -75,16 +89,14 @@ describe(`${FileHelper.getSpecName(
     // set preference
     signupPage.setPreference(grade, subject, standardSet)
     signupPage.clickOnGetStarted()
-    cy.wait('@courses').then(() =>
-      cy.url().should('contain', 'author/dashboard')
-    )
+    cy.url().should('contain', 'author/dashboard')
 
     // login again with new user and verify able to login
     cy.login('teacher', randomEmail, password)
     loginPage.assertTeacherLogin()
   })
 
-  it('> signup using new school and existing district', () => {
+  it('> signup using new school and existing district from Assignments-New assignment', () => {
     const {
       name,
       email,
@@ -109,6 +121,11 @@ describe(`${FileHelper.getSpecName(
     signupPage.clickOnTeacher()
     signupPage.fillTeacherSignupForm(name, randomEmail, password)
     // signupPage.closeWelcomePopUp()
+    cy.wait('@courses').then(() =>
+      cy.url().should('contain', 'author/dashboard')
+    )
+    sidebar.clickOnAssignment()
+    assignmentPage.clickOnNewAssignment()
 
     // request new school
     signupPage.clickOnRequestNewSchoolLink()
@@ -128,16 +145,14 @@ describe(`${FileHelper.getSpecName(
     // set preference
     signupPage.setPreference(grade, subject, standardSet)
     signupPage.clickOnGetStarted()
-    cy.wait('@courses').then(() =>
-      cy.url().should('contain', 'author/dashboard')
-    )
+    cy.contains('Choose From Library').should('be.visible')
 
     // login again with new user and verify able to login
     cy.login('teacher', randomEmail, password)
     loginPage.assertTeacherLogin()
   })
 
-  it('> signup using new district and new school', () => {
+  it('> signup using new district and new school from testLibrary-Assign button', () => {
     const {
       name,
       email,
@@ -156,9 +171,20 @@ describe(`${FileHelper.getSpecName(
     signupPage.clickOnTeacher()
     signupPage.fillTeacherSignupForm(name, randomEmail, password)
     // signupPage.closeWelcomePopUp()
+    cy.wait('@courses').then(() =>
+      cy.url().should('contain', 'author/dashboard')
+    )
+
+    sidebar.clickOnTestLibrary()
+    testLibraryPage.clickOnTileView()
+    testLibraryPage.searchFilters.clearAll()
+    testLibraryPage.getTestIdOfCardInCurrentPageByIndex(0).then((id) => {
+      testLibraryPage.clickOnTestCardById(id)
+      testLibraryPage.clickOnDetailsOfCard()
+      testLibraryPage.header.getAssignButton().click()
+    })
 
     // request new school and district
-
     signupPage.clickOnRequestNewSchoolLink()
     signupPage.fillSchoolDetails(
       `${schoolName}-${random}`,
@@ -177,16 +203,14 @@ describe(`${FileHelper.getSpecName(
     // set preference
     signupPage.setPreference(grade, subject, standardSet)
     signupPage.clickOnGetStarted()
-    cy.wait('@courses').then(() =>
-      cy.url().should('contain', 'author/dashboard')
-    )
+    cy.contains('OVERRIDE TEST SETTINGS').should('be.visible')
 
     // login again with new user and verify able to login
     cy.login('teacher', randomEmail, password)
     loginPage.assertTeacherLogin()
   })
 
-  it('> signup using home school', () => {
+  it('> signup using home school from manage class-create new class', () => {
     const { name, email, password, grade, standardSet, subject } = signupData
     const randomEmail = `${Helpers.getRamdomString()}.${email}`
 
@@ -194,7 +218,11 @@ describe(`${FileHelper.getSpecName(
     signupPage.clickOnTeacher()
     signupPage.fillTeacherSignupForm(name, randomEmail, password)
     // signupPage.closeWelcomePopUp()
-
+    cy.wait('@courses').then(() =>
+      cy.url().should('contain', 'author/dashboard')
+    )
+    sidebar.clickOnManageClass()
+    manageClass.clickOnCreateClass()
     // select home school
     signupPage.clickOnHomeSchool()
     cy.wait('@user').then((xhr) => expect(xhr.status).to.eq(200))
@@ -203,9 +231,7 @@ describe(`${FileHelper.getSpecName(
     // set preference
     signupPage.setPreference(grade, subject, standardSet)
     signupPage.clickOnGetStarted()
-    cy.wait('@courses').then(() =>
-      cy.url().should('contain', 'author/dashboard')
-    )
+    cy.contains('Class Details').should('be.visible')
 
     // login again with new user and verify able to login
     cy.login('teacher', randomEmail, password)

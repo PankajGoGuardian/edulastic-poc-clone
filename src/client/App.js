@@ -151,7 +151,7 @@ const testRedirectRoutes = [
   '/demo/assessmentPreview',
   '/d/ap',
   '/d/cp',
-  '//#renderResource/close/',
+  '#renderResource/close/',
   '/#assessmentQuestions/close/',
 ]
 const getCurrentPath = () => {
@@ -278,6 +278,7 @@ class App extends Component {
     let redirectRoute = ''
     if (!publicPath) {
       const path = getWordsInURLPathName(location.pathname)
+      const urlSearch = new URLSearchParams(location.search)
       if (user && user.isAuthenticated) {
         const role = get(user, ['user', 'role'])
         if (role === 'teacher') {
@@ -341,13 +342,21 @@ class App extends Component {
           location.pathname.toLocaleLowerCase().includes('/auth/newsela')
         )
       ) {
-        if (location.pathname.toLocaleLowerCase().includes('/home')) {
+        if (
+          location.pathname.toLocaleLowerCase().includes('/home') &&
+          !location.pathname.toLocaleLowerCase().includes('/home/group')
+        ) {
           localStorage.setItem('thirdPartySignOnRole', roleuser.STUDENT)
         }
         if (!getCurrentPath().includes('/login')) {
           localStorage.setItem('loginRedirectUrl', getCurrentPath())
         }
-        redirectRoute = '/login'
+
+        if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
+          redirectRoute = `/district/${urlSearch.get('shortName')}`
+        } else {
+          redirectRoute = '/login'
+        }
       }
     }
 

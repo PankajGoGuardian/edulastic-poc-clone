@@ -224,7 +224,6 @@ export function* saveUserResponse({ payload }) {
     const itemAnswers = {}
     const shuffles = {}
     const timesSpent = {}
-    const testItemId = currentItem._id
     questions.forEach((question) => {
       if (isDocBased) {
         if (questionId && question === questionId) {
@@ -246,11 +245,7 @@ export function* saveUserResponse({ payload }) {
         STUDENT_RESPONSE_AND_FEEDBACK,
         SCORE_RESPONSE_AND_FEEDBACK,
       ].includes(redirectPolicy)
-      if (
-        hasPrevResponse &&
-        !answers[`${testItemId}_${question}`] &&
-        !!userPrevAnswer[`${testItemId}_${question}`]
-      ) {
+      if (hasPrevResponse && !answers[question] && !!userPrevAnswer[question]) {
         itemAnswers[question] = userPrevAnswer[question]
       }
       if (shuffledOptions[question]) {
@@ -258,6 +253,7 @@ export function* saveUserResponse({ payload }) {
       }
     })
 
+    const testItemId = currentItem._id
     const _userWork = yield select(
       ({ userWork }) => userWork.present[testItemId] || {}
     )

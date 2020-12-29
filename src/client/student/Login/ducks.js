@@ -2,8 +2,8 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { pick, last, get, set, isBoolean } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
-import { captureSentryException } from '@edulastic/common/src/sentryHelpers';
-import notification from '@edulastic/common/src/components/Notification';
+import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
+import notification from '@edulastic/common/src/components/Notification'
 import { push } from 'connected-react-router'
 // import {
 //   authApi,
@@ -13,12 +13,12 @@ import { push } from 'connected-react-router'
 //   segmentApi,
 //   schoolApi,
 // } from '@edulastic/api'
-import authApi from '@edulastic/api/src/auth';
-import userApi from '@edulastic/api/src/user';
-import settingsApi from '@edulastic/api/src/settings';
-import segmentApi from '@edulastic/api/src/segment';
-import schoolApi from '@edulastic/api/src/school';
-import * as TokenStorage from '@edulastic/api/src/utils/Storage';
+import authApi from '@edulastic/api/src/auth'
+import userApi from '@edulastic/api/src/user'
+import settingsApi from '@edulastic/api/src/settings'
+import segmentApi from '@edulastic/api/src/segment'
+import schoolApi from '@edulastic/api/src/school'
+import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { roleuser } from '@edulastic/constants'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
@@ -286,9 +286,14 @@ const initialState = {
 
 function getValidRedirectRouteByRole(_url, user) {
   const url = (_url || '').trim()
+  if (url.includes('home/group') && url.includes('assignment')) {
+    return url
+  }
   switch (user.role) {
     case roleuser.TEACHER:
-      return url.match(/^\/author\//) ? url : '/author/dashboard'
+      return url.match(/^\/author\//) || url.match(/\/embed\//)
+        ? url
+        : '/author/dashboard'
     case roleuser.STUDENT:
       return url.match(/^\/home\//) ||
         url.includes('/author/tests/tab/review/id/')
@@ -351,7 +356,7 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       user.user || {}
     )
     localStorage.removeItem('loginRedirectUrl')
-  } else {
+  } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
   }
 
@@ -360,7 +365,9 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     JSON.stringify({ authorUi, signup: signUp, user })
   )
 
-  window.location.replace(redirectRoute)
+  if (redirectRoute) {
+    window.location.replace(redirectRoute)
+  }
 }
 
 const setUser = (state, { payload }) => {
@@ -1102,7 +1109,7 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher') {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
-  return '/'
+  return '/login'
 }
 
 export function* fetchUser({ payload }) {
@@ -1132,7 +1139,10 @@ export function* fetchUser({ payload }) {
           addAccountTo: payload.userId,
         })
       )
-      if (!isPartOfLoginRoutes()) {
+      if (
+        !isPartOfLoginRoutes() &&
+        !window.location.pathname.includes('home/group')
+      ) {
         window.location.replace('/')
       }
       return
@@ -1230,8 +1240,8 @@ export function* fetchV1Redirect({ payload: id }) {
   }
 }
 
-function redirectToUrl(url){
-  window.location.href = url;
+function redirectToUrl(url) {
+  window.location.href = url
 }
 
 function* logout() {
@@ -1255,7 +1265,7 @@ function* logout() {
       TokenStorage.initKID()
       TokenStorage.removeTokens()
       yield put({ type: 'RESET' })
-      yield call(redirectToUrl,getSignOutUrl());
+      yield call(redirectToUrl, getSignOutUrl())
       removeSignOutUrl()
       yield put(toggleMultipleAccountNotificationAction(true))
     }
@@ -1618,6 +1628,7 @@ function* newselaLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.newselaLogin, params)
+
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'newselaLoginFailed' })
@@ -1689,13 +1700,14 @@ function* getUserData({ payload: res }) {
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem('loginRedirectUrl')
+      // yield call(redirectToUrl, redirectUrl)
       yield put(push(redirectUrl))
     }
 
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (e) {
-    console.warn(e)
+    console.log(e)
     notification({ messageKey: 'failedToFetchUserData' })
 
     yield put(push(getSignOutUrl()))
@@ -1722,7 +1734,7 @@ function* updateUserRoleSaga({ payload }) {
     yield put(signupSuccessAction(_user))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
   } catch (e) {
-    console.warn('e', e)
+    console.log('e', e)
     notification({
       msg: get(
         e,

@@ -119,6 +119,8 @@ export default class QuestionEditModal extends React.Component {
         visible={visible}
         title={QuestionTitle}
         onCancel={onClose}
+        modalWidth="600px"
+        destroyOnClose
         footer={[
           <ModalFooter>
             <EduButton
@@ -203,7 +205,6 @@ export default class QuestionEditModal extends React.Component {
 }
 
 const StyledBodyContainer = styled.div`
-  height: 350px;
   padding: 0px 24px 10px;
   overflow: auto;
 

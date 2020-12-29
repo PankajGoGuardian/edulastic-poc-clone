@@ -4,20 +4,23 @@ import {
   greyThemeLighter,
 } from '@edulastic/colors'
 import PropTypes from 'prop-types'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 import { SelectSuffixIcon } from './styled/SelectSuffixIcon'
 
 const CustomTreeSelect = ({ bg, children, title, style }) => {
-  const [show, setShow] = useState(false)
+  const [dropdownStyle, setDropdownStyle] = useState(null)
   const wrapperRef = useRef()
+  const titleRef = useRef()
 
   const handleClickOutside = (event) => {
     if (
-      event.target.className &&
-      event.target.className.includes &&
-      (event.target.className.includes('ant-select-dropdown-menu-item') ||
-        event.target.className.includes('ant-select-dropdown-menu'))
+      (event.target.className &&
+        event.target.className.includes &&
+        (event.target.className.includes('ant-select-dropdown-menu-item') ||
+          event.target.className.includes('ant-select-dropdown-menu'))) ||
+      (titleRef.current && titleRef.current.contains(event.target))
     ) {
       return
     }
@@ -27,29 +30,44 @@ const CustomTreeSelect = ({ bg, children, title, style }) => {
       wrapperRef.current &&
       !wrapperRef.current.contains(event.target)
     ) {
-      setShow(false)
+      setDropdownStyle(null)
+      document.removeEventListener('mousedown', handleClickOutside)
     }
   }
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside)
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+  const handleClickTitle = () => {
+    if (titleRef.current && !dropdownStyle) {
+      const titleRect = titleRef.current.getBoundingClientRect()
+      setDropdownStyle({
+        width: titleRect.width,
+        top: titleRect.top + titleRect.height,
+        left: titleRect.left,
+      })
+      document.addEventListener('mousedown', handleClickOutside)
+    } else if (dropdownStyle) {
+      setDropdownStyle(null)
     }
-  }, [])
+  }
 
-  return (
-    <div ref={wrapperRef}>
-      <Wrapper style={style}>
-        <Title bg={bg} onClick={() => setShow(!show)}>
-          <TextEllipsis title={title}>{title}</TextEllipsis>
-          <SelectSuffixIcon type="caret-down" />
-        </Title>
-        {show && <Main>{children}</Main>}
-      </Wrapper>
-    </div>
-  )
+  return [
+    <Title
+      key="customTreeTitle"
+      ref={titleRef}
+      style={style}
+      bg={bg}
+      onClick={handleClickTitle}
+    >
+      <TextEllipsis title={title}>{title}</TextEllipsis>
+      <SelectSuffixIcon type="caret-down" />
+    </Title>,
+    dropdownStyle &&
+      createPortal(
+        <DropdownWrapper ref={wrapperRef} key="customTreeDropdowns">
+          <Main style={dropdownStyle}>{children}</Main>
+        </DropdownWrapper>,
+        document.body
+      ),
+  ]
 }
 
 CustomTreeSelect.propTypes = {
@@ -64,10 +82,6 @@ CustomTreeSelect.defaultProps = {
 }
 
 export default CustomTreeSelect
-
-const Wrapper = styled.div`
-  position: relative;
-`
 
 const Title = styled.div`
   background: ${(props) => props.bg || greyThemeLighter};
@@ -96,16 +110,19 @@ const TextEllipsis = styled.span`
   max-width: 100%;
 `
 
+const DropdownWrapper = styled.div`
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 1100;
+`
+
 const Main = styled.div`
   background: #fff;
   padding: 20px;
   border-radius: 5px;
   position: absolute;
-  left: 0;
-  top: 101%;
-  width: 100%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
 
   .ant-select-selection {
     color: ${(props) => props.theme.questionMetadata.textColor};

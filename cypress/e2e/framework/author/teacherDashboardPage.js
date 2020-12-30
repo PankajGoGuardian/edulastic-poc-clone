@@ -7,6 +7,8 @@ export default class TeacherDashBoardPage {
 
   getMeetLauncherButton = () => cy.get('[data-cy="launch-google-meet"]')
 
+  getContentBundle = (attr) => cy.get(`[data-cy="${attr}"]`)
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -86,4 +88,67 @@ export default class TeacherDashBoardPage {
   }
 
   // *** APPHELPERS END ***
+}
+
+export const DEFAULT_CONTENT_BUNDLES = {
+  with_subject: {
+    1: {
+      collection: 'Edulastic Certified',
+      subject: 'Mathematics',
+      description: 'Edulastic Certified - Math',
+    },
+    2: {
+      collection: 'Edulastic Certified',
+      subject: 'Science',
+      description: 'Edulastic Certified - Science',
+    },
+    3: {
+      collection: 'Edulastic Certified',
+      subject: 'ELA',
+      description: 'Edulastic Certified - ELA',
+    },
+    4: {
+      collection: 'Edulastic Certified',
+      subject: 'Social Studies',
+      description: 'Edulastic Certified - Social Studies',
+    },
+    5: {
+      collection: 'SmartStart Diagnostics',
+      subject: 'Mathematics',
+      description: 'Smart Start Diagnostics - Math',
+    },
+    6: {
+      collection: 'SmartStart Diagnostics',
+      subject: 'ELA',
+      description: 'Smart Start Diagnostics - ELA',
+    },
+  },
+  with_search_string: {
+    1: {
+      collection: 'Edulastic Certified',
+      string: 'PARCC',
+      description: 'PARCC Practice Tests',
+    },
+    2: {
+      collection: 'Edulastic Certified',
+      string: 'SMARTER BALANCED PRACTICE',
+      description: 'Smarter Balanced Tests',
+    },
+    3: {
+      collection: 'Edulastic Certified',
+      string: 'ILLUSTRATIVE MATH',
+      description: 'Illustrative Math',
+    },
+    4: {
+      collection: 'Edulastic Certified',
+      string: 'AZMERIT',
+      description: 'AzMERIT',
+    },
+  },
+  others: {
+    1: {
+      collection: 'Engage NY',
+      description: 'Engage NY',
+    },
+  },
 }

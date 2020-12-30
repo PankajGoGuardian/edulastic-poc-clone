@@ -174,14 +174,15 @@ class HotspotPage {
   }
 
   expandAdvancedOptions = () => {
-    cy.get('body')
-      .contains(' ADVANCED OPTIONS')
-      .then((ele) => {
-        // const a=cy.wrap(ele);
-        if (ele.parent().siblings().length === 3) {
-          cy.wrap(ele).click({ force: true })
-        }
-      })
+    // cy.get('body')
+    //   .contains(' ADVANCED OPTIONS')
+    //   .then((ele) => {
+    //     // const a=cy.wrap(ele);
+    //     if (ele.parent().siblings().length === 3) {
+    //       cy.wrap(ele).click({ force: true })
+    //     }
+    //   })
+    return this
   }
 
   addImageAlternative = (altText) => {

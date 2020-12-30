@@ -205,7 +205,7 @@ class ChoiceMatrixStandardPage {
 
   // advance options
   clickOnAdvancedOptions() {
-    cy.get('body').contains('ADVANCED OPTIONS').click()
+    // cy.get('body').contains('ADVANCED OPTIONS').click()
     return this
   }
 

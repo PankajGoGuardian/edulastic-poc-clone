@@ -168,7 +168,7 @@ class ClassificationPage {
   getMaxScore = () => cy.get('[data-cy="points"]').should('be.visible')
 
   clickOnAdvancedOptions = () => {
-    cy.contains('span', 'Advanced Options').should('be.visible').click()
+    // cy.contains('span', 'Advanced Options').should('be.visible').click()
     return this
   }
 

@@ -1,13 +1,11 @@
 import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
 import { call, put, all, takeEvery, takeLatest } from 'redux-saga/effects'
-import { notification } from '@edulastic/common'
+import  notification  from '@edulastic/common/src/components/Notification'
 import { libraryFilters } from '@edulastic/constants'
-import {
-  curriculumSequencesApi,
-  userContextApi,
-  TokenStorage as Storage,
-} from '@edulastic/api'
+import curriculumSequencesApi from '@edulastic/api/src/curriculumSequence';
+import userContextApi from '@edulastic/api/src/userContext';
+import Storage from '@edulastic/api/src/utils/Storage'
 import produce from 'immer'
 import {
   CREATE_PLAYLISTS_SUCCESS,

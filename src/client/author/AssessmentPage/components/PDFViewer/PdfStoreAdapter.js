@@ -1,12 +1,11 @@
 import { helpers } from '@edulastic/common'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { setTestDataAction, setUndoStackAction } from '../../../TestPage/ducks'
-import { getStore } from '../../../../configureStore'
 
 let store = null
 
 window.addEventListener('load', () => {
-  store = getStore()
+  store = window.getStore()
 })
 
 const getAnnotations = (documentId) => {

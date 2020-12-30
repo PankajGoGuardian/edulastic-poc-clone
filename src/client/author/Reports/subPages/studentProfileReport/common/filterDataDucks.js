@@ -1,7 +1,7 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
-import { reportsApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
+import  reportsApi  from '@edulastic/api/src/reports'
+import  notification  from '@edulastic/common/src/components/Notification'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { get } from 'lodash'
 

@@ -20,7 +20,7 @@ import {
   getCurriculumsListSelector,
   getFormattedCurriculums,
 } from '../../../../author/src/selectors/dictionaries'
-import { getInterestedCurriculumsSelector } from '../../../../author/src/selectors/user'
+import { getInterestedCurriculumsSelector } from '../../../common/utils';
 import selectsData from '../../../../author/TestPage/components/common/selectsData'
 import {
   saveSubjectGradeAction,

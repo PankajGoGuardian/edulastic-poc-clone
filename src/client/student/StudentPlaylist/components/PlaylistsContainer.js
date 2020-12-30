@@ -16,7 +16,7 @@ import { getEnrollClassAction } from '../../ManageClass/ducks'
 import NoDataNotification from '../../../common/components/NoDataNotification'
 
 const CurriculumContainer = loadable(() =>
-  import('../../../author/CurriculumSequence')
+  import('../../../author/CurriculumSequence/components/Container')
 )
 
 const RecommendationsContainer = loadable(() => import('./Recommendations'))

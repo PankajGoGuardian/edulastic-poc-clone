@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withNamespaces } from 'react-i18next'
 import { getSPRFilterDataRequestAction } from '../../author/Reports/subPages/studentProfileReport/common/filterDataDucks'
-import StudentMasteryProfile from '../../author/Reports/subPages/studentProfileReport/StudentMasteryProfile'
 import NoDataNotification from '../../common/components/NoDataNotification'
 import {
   getClasses,
@@ -24,7 +23,9 @@ import {
 import Header from '../sharedComponents/Header'
 import MainContainer from '../styled/mainContainer'
 import { LoaderConainer } from './styled'
-import { getUserRole } from '../../author/src/selectors/user'
+import { getUserRole } from '../common/utils'
+
+const StudentMasteryProfile  = React.lazy(()=> import('../../author/Reports/subPages/studentProfileReport/StudentMasteryProfile'));
 
 const getTermId = (_classes, _classId) =>
   _classes.find((c) => c._id === _classId)?.termId || ''

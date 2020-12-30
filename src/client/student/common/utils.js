@@ -67,3 +67,9 @@ export const getFormattedName = (
 	}
 	return isAllowedType && withinSizeLimit
   }
+
+  export const getInterestedCurriculumsSelector = (state) => {
+	  const _state = state.user;
+	  const orgData = state?.user?.orgData || {}
+	  return orgData?.interestedCurriculums||[];
+  }

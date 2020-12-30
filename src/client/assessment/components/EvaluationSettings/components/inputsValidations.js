@@ -3,7 +3,7 @@ export const validations = {
     if (!value) {
       return true
     }
-    return /^\+?(0|[1-9]\d*)?%?$/.test(value)
+    return /^-?\d*\.?\d*$/.test(value)
   },
   isIn: (value = '') => {
     if (!value) {

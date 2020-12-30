@@ -91,7 +91,7 @@ const JoinSchool = ({
   fromUserProfile,
   addSchool,
   addingSchool,
-  hasMinHeight,
+  isModal,
 }) => {
   const {
     email,
@@ -325,7 +325,7 @@ const JoinSchool = ({
 
   return (
     <>
-      <JoinSchoolBody hasMinHeight={hasMinHeight} data-cy="joinSchoolBody">
+      <JoinSchoolBody hasMinHeight={!isModal} data-cy="joinSchoolBody">
         {requestSchoolFormVisible && (
           <BreadcrumbWrapper>
             <Breadcrumb.Item>
@@ -334,7 +334,10 @@ const JoinSchool = ({
             </Breadcrumb.Item>
           </BreadcrumbWrapper>
         )}
-        <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
+        <Col
+          xs={{ span: 20, offset: 2 }}
+          lg={{ span: isModal ? 21 : 18, offset: 3 }}
+        >
           <FlexWrapper type="flex" align="middle">
             <BannerText
               xs={24}
@@ -478,11 +481,11 @@ JoinSchool.propTypes = {
   checkDistrictPolicy: PropTypes.func.isRequired,
   fetchSchoolTeachers: PropTypes.func.isRequired,
   setPreviousAutoSuggestSchoolsContent: PropTypes.func.isRequired,
-  hasMinHeight: PropTypes.bool,
+  isModal: PropTypes.bool,
 }
 
 JoinSchool.defaultProps = {
-  hasMinHeight: true,
+  isModal: false,
 }
 
 const enhance = compose(

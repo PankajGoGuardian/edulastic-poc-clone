@@ -38,13 +38,13 @@ const AddSchoolAndGradeModal = ({
           orgShortName={orgShortName}
           orgType={orgType}
           allowCanvas={false}
-          hasMinHeight={false}
+          isModal
         />
       ) : (
         <SubjectGradeForm
           userInfo={userInfo}
           districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
-          hasMinHeight={false}
+          isModal
         />
       )}
     </CustomModalStyled>

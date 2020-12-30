@@ -304,13 +304,18 @@ function getValidRedirectRouteByRole(_url, user) {
     case roleuser.EDULASTIC_CURATOR:
       return url.match(/^\/author\//) ? url : '/author/items'
     case roleuser.SCHOOL_ADMIN:
-      return url.match(/^\/author\//) ? url : '/author/assignments'
+      return url.match(/^\/author\/(?!.*dashboard)/)
+        ? url
+        : '/author/assignments'
     case roleuser.DISTRICT_ADMIN:
       if ((user.permissions || []).includes('curator'))
-        return url.match(/^\/publisher\//) || url.match(/^\/author\//)
+        return url.match(/^\/publisher\//) ||
+          url.match(/^\/author\/(?!.*dashboard)/)
           ? url
           : '/publisher/dashboard'
-      return url.match(/^\/author\//) ? url : '/author/assignments'
+      return url.match(/^\/author\/(?!.*dashboard)/)
+        ? url
+        : '/author/assignments'
     default:
       return url
   }

@@ -27,11 +27,12 @@ const AuthorCompleteSignupButton = ({ user, renderButton, onClick }) => {
   }, [signupStatus])
 
   const handleClick = () => {
-    if (signupStatus === signUpState.DONE) {
-      onClick()
-    } else {
+    if (signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL) {
       toggleSchoolModal(true)
+      return
     }
+
+    onClick()
   }
 
   return (

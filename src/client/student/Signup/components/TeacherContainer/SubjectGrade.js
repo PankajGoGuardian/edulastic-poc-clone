@@ -59,11 +59,11 @@ class SubjectGrade extends React.Component {
         subject: PropTypes.string.isRequired,
       })
     ).isRequired,
-    hasMinHeight: PropTypes.bool,
+    isModal: PropTypes.bool,
   }
 
   static defaultProps = {
-    hasMinHeight: true,
+    isModal: false,
   }
 
   componentDidMount() {
@@ -127,7 +127,7 @@ class SubjectGrade extends React.Component {
       form,
       saveSubjectGradeloading,
       t,
-      hasMinHeight,
+      isModal,
     } = this.props
     const { showAllStandards } = get(this, 'props.userInfo.orgData', {})
     const formattedCurriculums = isEmpty(subjects)
@@ -145,8 +145,11 @@ class SubjectGrade extends React.Component {
     const _allSubjects = allSubjects.filter((item) => item.value)
     return (
       <>
-        <SubjectGradeBody hasMinHeight={hasMinHeight}>
-          <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
+        <SubjectGradeBody hasMinHeight={!isModal}>
+          <Col
+            xs={{ span: 20, offset: 2 }}
+            lg={{ span: isModal ? 21 : 18, offset: 3 }}
+          >
             <FlexWrapper type="flex" align="middle">
               <BannerText xs={24} sm={18} md={12}>
                 <SchoolIcon src={schoolIcon} alt="" />

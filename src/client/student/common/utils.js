@@ -19,6 +19,8 @@ export const updateInitSearchStateAction = (payload) => ({
 
 export const getUser = (state) => state.user?.user;
 
+export const getUserRole = (state) => state.user?.user?.role
+
 export const getCurrentTerm = (state) => state.user?.user?.orgData?.defaultTermId;
 
 export const getFormattedName = (

@@ -43,7 +43,8 @@ module.exports = override(
     addBundleVisualizer({
       generateStatsFile: true,
       //reportFilename: 'report-student-initial.htm',
-      reportFilename: 'report-student-halfway1.htm',
+      //reportFilename: 'report-student-halfway1.htm',
+      reportFilename: 'report-student-halfway3.htm',
       openAnalyzer: false,
     }),
   (config) => {

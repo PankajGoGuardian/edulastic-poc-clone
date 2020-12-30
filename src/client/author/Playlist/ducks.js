@@ -5,7 +5,7 @@ import  notification  from '@edulastic/common/src/components/Notification'
 import { libraryFilters } from '@edulastic/constants'
 import curriculumSequencesApi from '@edulastic/api/src/curriculumSequence';
 import userContextApi from '@edulastic/api/src/userContext';
-import Storage from '@edulastic/api/src/utils/Storage'
+import * as  Storage from '@edulastic/api/src/utils/Storage'
 import produce from 'immer'
 import {
   CREATE_PLAYLISTS_SUCCESS,

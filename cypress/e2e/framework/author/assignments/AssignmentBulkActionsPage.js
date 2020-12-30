@@ -58,6 +58,7 @@ export default class AssignmentBulkActionsPage {
             0
           )
           cy.wait('@assignment')
+          cy.wait(1000)
           break
         case icons.EXPRESS_GRADER:
           cy.url().then((url) => {
@@ -341,7 +342,7 @@ export default class AssignmentBulkActionsPage {
 
   filterBy = (filterStatus) => {
     this.getFilterOption(filterStatus).click()
-    cy.wait(500)
+    cy.wait(1000)
   }
 
   verifyNumberofClassesInFilter = (filterStatus, number) => {

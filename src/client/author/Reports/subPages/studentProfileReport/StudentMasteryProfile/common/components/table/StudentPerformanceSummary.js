@@ -182,7 +182,11 @@ const StudentPerformanceSummary = ({
           const row = []
           row.push(domain.name)
           for (const key of standardsTableKeys) {
-            row.push(String(standardInfo[key]))
+            const rowData = String(standardInfo[key])
+              .replace(/(\r\n|\n|\r)/gm, ' ')
+              .replace(/(\s+)/gm, ' ')
+              .replace(/"/g, '""')
+            row.push(`"${rowData}"`)
           }
           csvRawData.push(row)
           csv.push(row.join(','))

@@ -25,9 +25,6 @@ export const OverlayText = styled.div`
   font-weight: bold;
 `
 export const IconWrapper = styled.div`
-  position: absolute;
-  top: 0px;
-  right: 2px;
   display: flex;
 `
 export const CircleBtn = styled.div`
@@ -42,12 +39,13 @@ export const CircleBtn = styled.div`
 `
 export const TextDiv = styled.p`
   font-size: 13px;
-  display: block;
-  max-width: 100%;
-  overflow: hidden;
+  margin-top: 2px;
+  text-overflow: ellipsis;
   font-weight: bold;
-  padding-right: 60px;
-  max-height: 36px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `
 export const MetaText = styled(TextWrapper)`
   text-overflow: ellipsis;
@@ -68,5 +66,5 @@ export const StyledRow = styled(Row)`
   display: flex;
   max-height: 35px;
   min-height: 24px;
-  align-items: center;
+  align-items: top;
 `

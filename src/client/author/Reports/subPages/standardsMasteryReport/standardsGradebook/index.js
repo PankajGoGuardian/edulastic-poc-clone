@@ -65,13 +65,15 @@ const StandardsGradebook = ({
     0
   )
   const scaleInfo = get(standardsFilters, 'scaleInfo', [])
-  const selectedScale =
-    (
-      scaleInfo.find(
-        (s) =>
-          s._id === (sharedReportFilters || settings.requestFilters).profileId
-      ) || scaleInfo[0]
-    )?.scale || []
+
+  const selectedMasteryProfile =
+    scaleInfo.find(
+      (s) =>
+        s._id === (sharedReportFilters || settings.requestFilters).profileId ||
+        s.default
+    ) || scaleInfo[0]
+
+  const selectedScale = selectedMasteryProfile?.scale || []
   const studentAssignmentsData = useMemo(
     () => getStudentAssignments(selectedScale, studentStandardData),
     [selectedScale, studentStandardData]
@@ -87,6 +89,8 @@ const StandardsGradebook = ({
   const getGradebookQuery = () => {
     const q = {
       ...settings.requestFilters,
+      profileId:
+        settings?.requestFilters?.profileId || selectedMasteryProfile?._id,
       page: 1,
       pageSize: pageFilters.pageSize,
     }

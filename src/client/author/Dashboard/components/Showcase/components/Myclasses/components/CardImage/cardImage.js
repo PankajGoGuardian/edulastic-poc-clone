@@ -63,23 +63,27 @@ const CardImage = ({ data, history }) => {
         <Row>
           <Col span={24}>
             <StyledRow>
-              <Tooltip title={name} placement="bottomLeft">
-                <TextDiv data-cy="name">{name}</TextDiv>
-              </Tooltip>
-              <IconWrapper>
-                <CircleBtn onClick={gotoManageClass(_id)}>
-                  <IconManage color={themeColor} width={13} height={13} />
-                </CircleBtn>
-                <Link to="/author/assignments" onClick={applyClassFilter}>
-                  <CircleBtn
-                    bg={themeColor}
-                    style={{ marginLeft: '5px' }}
-                    onClick={gotoManageClass(_id)}
-                  >
-                    <IconAssignment color={white} width={11} height={14} />
+              <Col span={17}>
+                <Tooltip title={name} placement="bottomLeft">
+                  <TextDiv data-cy="name">{name}</TextDiv>
+                </Tooltip>
+              </Col>
+              <Col span={6} offset={1}>
+                <IconWrapper>
+                  <CircleBtn onClick={gotoManageClass(_id)}>
+                    <IconManage color={themeColor} width={13} height={13} />
                   </CircleBtn>
-                </Link>
-              </IconWrapper>
+                  <Link to="/author/assignments" onClick={applyClassFilter}>
+                    <CircleBtn
+                      bg={themeColor}
+                      style={{ marginLeft: '5px' }}
+                      onClick={gotoManageClass(_id)}
+                    >
+                      <IconAssignment color={white} width={11} height={14} />
+                    </CircleBtn>
+                  </Link>
+                </IconWrapper>
+              </Col>
             </StyledRow>
             <RowWrapperGrade>
               <Tooltip title={metaInfo} placement="bottomLeft">

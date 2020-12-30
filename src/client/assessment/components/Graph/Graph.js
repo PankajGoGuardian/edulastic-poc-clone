@@ -13,6 +13,7 @@ import {
   QuestionContentWrapper,
   QuestionSubLabel,
 } from '@edulastic/common'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
 import { compose } from 'redux'
 import styled from 'styled-components'
@@ -36,6 +37,13 @@ import {
   GraphQuadrants,
   NumberLinePlot,
 } from './Authoring'
+import { TextInputStyled } from '../../styled/InputStyles'
+import { Subtitle } from '../../styled/Subtitle'
+import { Col } from '../../styled/WidgetOptions/Col'
+import { Label } from '../../styled/WidgetOptions/Label'
+import { Row } from '../../styled/WidgetOptions/Row'
+import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+
 import GraphAnswers from './GraphAnswers'
 import { GraphDisplay } from './Display'
 import {
@@ -325,6 +333,21 @@ class Graph extends Component {
     setQuestionData(newItem)
   }
 
+  handleBgImgInputChange = (event) => {
+    const {
+      target: { name, value },
+    } = event
+    const { item } = this.props
+    const { backgroundImage } = item
+    this.handleBgImgChange({ ...backgroundImage, [name]: value })
+  }
+
+  handleBgImgCheckbox = (name, checked) => {
+    const { item } = this.props
+    const { backgroundImage } = item
+    this.handleBgImgChange({ ...backgroundImage, [name]: !checked })
+  }
+
   handleBgImgChange = (bgImgOptions) => {
     const { setQuestionData, item } = this.props
     setQuestionData({ ...item, backgroundImage: bgImgOptions })
@@ -433,7 +456,7 @@ class Graph extends Component {
       ...restProps
     } = this.props
 
-    const { symbols = defaultSymbols } = item
+    const { symbols = defaultSymbols, backgroundImage } = item
 
     const mapFontName = {
       extra_large: 'xlarge',
@@ -527,6 +550,126 @@ class Graph extends Component {
                 advancedAreOpen={advancedAreOpen}
                 {...this.getMoreOptionsProps()}
               />
+
+              <Question
+                section="main"
+                label="Background Image"
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+                advancedAreOpen
+              >
+                <Subtitle
+                  id={getFormattedAttrId(
+                    `${item?.title}-${t(
+                      'component.graphing.background_options.background_image'
+                    )}`
+                  )}
+                >
+                  {t('component.graphing.background_options.background_image')}
+                </Subtitle>
+                <Row gutter={24}>
+                  <Col md={24}>
+                    <Label>
+                      {t('component.graphing.background_options.image_url')}
+                    </Label>
+                    <TextInputStyled
+                      type="text"
+                      defaultValue=""
+                      name="src"
+                      value={backgroundImage.src}
+                      onChange={this.handleBgImgInputChange}
+                    />
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col md={12}>
+                    <Label>
+                      {t('component.graphing.background_options.height')}
+                    </Label>
+                    <TextInputStyled
+                      type="text"
+                      defaultValue=""
+                      name="height"
+                      value={backgroundImage.height}
+                      onChange={this.handleBgImgInputChange}
+                    />
+                  </Col>
+                  <Col md={12}>
+                    <Label>
+                      {t('component.graphing.background_options.width')}
+                    </Label>
+                    <TextInputStyled
+                      type="text"
+                      defaultValue=""
+                      name="width"
+                      value={backgroundImage.width}
+                      onChange={this.handleBgImgInputChange}
+                    />
+                  </Col>
+                </Row>
+
+                <Row gutter={24}>
+                  <Col md={12}>
+                    <Label>
+                      {t(
+                        'component.graphing.background_options.x_axis_image_position'
+                      )}
+                    </Label>
+                    <TextInputStyled
+                      type="text"
+                      defaultValue=""
+                      name="x"
+                      value={backgroundImage.x}
+                      onChange={this.handleBgImgInputChange}
+                    />
+                  </Col>
+                  <Col md={12}>
+                    <Label>
+                      {t(
+                        'component.graphing.background_options.y_axis_image_position'
+                      )}
+                    </Label>
+                    <TextInputStyled
+                      type="text"
+                      defaultValue=""
+                      name="y"
+                      value={backgroundImage.y}
+                      onChange={this.handleBgImgInputChange}
+                    />
+                  </Col>
+                </Row>
+
+                <Row gutter={24} type="flex" align="middle">
+                  <Col md={12}>
+                    <Label>
+                      {t('component.graphing.background_options.opacity')}
+                    </Label>
+                    <TextInputStyled
+                      type="text"
+                      defaultValue=""
+                      name="opacity"
+                      value={backgroundImage.opacity}
+                      onChange={this.handleBgImgInputChange}
+                    />
+                  </Col>
+                  <Col md={12} marginBottom="0px">
+                    <CheckboxLabel
+                      name="showShapePoints"
+                      onChange={() =>
+                        this.handleBgImgCheckbox(
+                          'showShapePoints',
+                          backgroundImage.showShapePoints
+                        )
+                      }
+                      checked={backgroundImage.showShapePoints}
+                    >
+                      {t(
+                        'component.graphing.background_options.show_bg_shape_points'
+                      )}
+                    </CheckboxLabel>
+                  </Col>
+                </Row>
+              </Question>
             </ContentArea>
           </>
         )}

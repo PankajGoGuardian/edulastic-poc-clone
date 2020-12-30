@@ -574,7 +574,6 @@ class Graph extends Component {
                     </Label>
                     <TextInputStyled
                       type="text"
-                      defaultValue=""
                       name="src"
                       value={backgroundImage.src}
                       onChange={this.handleBgImgInputChange}
@@ -588,7 +587,6 @@ class Graph extends Component {
                     </Label>
                     <TextInputStyled
                       type="text"
-                      defaultValue=""
                       name="height"
                       value={backgroundImage.height}
                       onChange={this.handleBgImgInputChange}
@@ -600,7 +598,6 @@ class Graph extends Component {
                     </Label>
                     <TextInputStyled
                       type="text"
-                      defaultValue=""
                       name="width"
                       value={backgroundImage.width}
                       onChange={this.handleBgImgInputChange}
@@ -617,7 +614,6 @@ class Graph extends Component {
                     </Label>
                     <TextInputStyled
                       type="text"
-                      defaultValue=""
                       name="x"
                       value={backgroundImage.x}
                       onChange={this.handleBgImgInputChange}
@@ -631,7 +627,6 @@ class Graph extends Component {
                     </Label>
                     <TextInputStyled
                       type="text"
-                      defaultValue=""
                       name="y"
                       value={backgroundImage.y}
                       onChange={this.handleBgImgInputChange}
@@ -646,7 +641,6 @@ class Graph extends Component {
                     </Label>
                     <TextInputStyled
                       type="text"
-                      defaultValue=""
                       name="opacity"
                       value={backgroundImage.opacity}
                       onChange={this.handleBgImgInputChange}

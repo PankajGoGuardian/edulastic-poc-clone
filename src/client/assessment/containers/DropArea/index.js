@@ -15,6 +15,8 @@ const DropArea = ({
   disable,
   isDropDown,
   containerRef,
+  enableResizing,
+  onToggleAddItem,
 }) => {
   const _dragStop = (index) => (e, d) => {
     updateData(
@@ -44,6 +46,10 @@ const DropArea = ({
   const _delete = (id) => (e) => {
     e.stopPropagation()
     const deletedIndex = findIndex(item.responses, (res) => res.id === id)
+
+    if (typeof onToggleAddItem === 'function') {
+      onToggleAddItem()
+    }
 
     if (deletedIndex !== -1) {
       setQuestionData(
@@ -171,6 +177,7 @@ const DropArea = ({
           false
         )}
         showBorder={get(item, 'responseLayout.showborder', false)}
+        onToggleAddItem={onToggleAddItem}
         onDragStop={_dragStop(i)}
         onDrag={(evt, d) => handleDragging(d)}
         onResize={_resize(i)}
@@ -180,6 +187,7 @@ const DropArea = ({
         style={{
           pointerEvents: disable ? 'none' : 'auto',
         }}
+        enableResizing={enableResizing}
       />
     )
   })
@@ -193,6 +201,7 @@ DropArea.propTypes = {
   showIndex: PropTypes.bool,
   isDropDown: PropTypes.bool,
   containerRef: PropTypes.object,
+  onToggleAddItem: PropTypes.func,
 }
 
 DropArea.defaultProps = {
@@ -200,6 +209,7 @@ DropArea.defaultProps = {
   isDropDown: false,
   disable: false,
   containerRef: {},
+  onToggleAddItem: () => null,
 }
 
 export default DropArea

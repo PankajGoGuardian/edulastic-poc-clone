@@ -67,6 +67,7 @@ class ComposeQuestion extends Component {
       isEditableResizeMove: false,
       isAnnotationBelow: false,
       isResizingImage: false,
+      isDragOrResizingItem: false,
     }
   }
 
@@ -233,7 +234,6 @@ class ComposeQuestion extends Component {
       })
     } catch (e) {
       console.log(e)
-      // eslint-disable-next-line no-undef
       notification({
         msg: `${info.file.name} ${t(
           'component.cloze.imageText.fileUploadFailed'
@@ -461,12 +461,22 @@ class ComposeQuestion extends Component {
 
     const isContainer = e.target === this.canvasRef.current
     const isDragItem = e.target.classList.contains('react-draggable')
-    const { isEditableResizeMove, isResizingImage } = this.state
+    const {
+      isEditableResizeMove,
+      isResizingImage,
+      isDragOrResizingItem,
+    } = this.state
+
+    // dragging or resizing finished
+    this.setState({ isDragOrResizingItem: false })
 
     if (
       (!isContainer && !isDragItem) ||
       isEditableResizeMove ||
-      isResizingImage
+      isResizingImage ||
+      // while dragging or resizing responsebox,
+      // we disable to add new item
+      isDragOrResizingItem
     ) {
       return
     }
@@ -505,6 +515,12 @@ class ComposeQuestion extends Component {
         updateVariables(draft)
       })
     )
+  }
+
+  toggleAddNewItem = () => {
+    this.setState((prevState) => ({
+      isDragOrResizingItem: !prevState.isDragOrResizingItem,
+    }))
   }
 
   render() {
@@ -759,16 +775,7 @@ class ComposeQuestion extends Component {
                       x: imageOptions.x || 0,
                       y: imageOptions.y || 0,
                     }}
-                    enableResizing={{
-                      bottom: false,
-                      bottomLeft: false,
-                      bottomRight: true,
-                      left: false,
-                      right: false,
-                      top: false,
-                      topLeft: false,
-                      topRight: false,
-                    }}
+                    enableResizing={{ bottomRight: true }}
                     lockAspectRatio={
                       responseLayout && responseLayout.keepAspectRatio
                     }
@@ -808,6 +815,8 @@ class ComposeQuestion extends Component {
                     setQuestionData={setQuestionData}
                     updateData={this.updateData}
                     containerRef={this.canvasRef}
+                    enableResizing={{ bottomRight: true }}
+                    onToggleAddItem={this.toggleAddNewItem}
                   />
                 </>
               )}

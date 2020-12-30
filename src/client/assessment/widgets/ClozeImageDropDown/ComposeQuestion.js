@@ -198,8 +198,8 @@ class ComposeQuestion extends Component {
   }
 
   handleChange = async (info) => {
+    const { t } = this.props
     try {
-      const { t } = this.props
       const { file } = info
       if (!beforeUpload(file)) {
         return
@@ -215,7 +215,6 @@ class ComposeQuestion extends Component {
       })
     } catch (e) {
       console.log(e)
-      // eslint-disable-next-line no-undef
       notification({
         msg: `${info.file.name} ${t(
           'component.cloze.imageText.fileUploadFailed'
@@ -480,12 +479,22 @@ class ComposeQuestion extends Component {
 
     const isContainer = e.target === this.canvasRef.current
     const isDragItem = e.target.classList.contains('react-draggable')
-    const { isEditableResizeMove, isResizingImage } = this.state
+    const {
+      isEditableResizeMove,
+      isResizingImage,
+      isDragOrResizingItem,
+    } = this.state
+
+    // dragging or resizing finished
+    this.setState({ isDragOrResizingItem: false })
 
     if (
       (!isContainer && !isDragItem) ||
       isEditableResizeMove ||
-      isResizingImage
+      isResizingImage ||
+      // while dragging or resizing responsebox,
+      // we disable to add new item
+      isDragOrResizingItem
     ) {
       return
     }
@@ -528,6 +537,12 @@ class ComposeQuestion extends Component {
         updateVariables(draft)
       })
     )
+  }
+
+  toggleAddNewItem = () => {
+    this.setState((prevState) => ({
+      isDragOrResizingItem: !prevState.isDragOrResizingItem,
+    }))
   }
 
   render() {
@@ -815,6 +830,8 @@ class ComposeQuestion extends Component {
                         setQuestionData={setQuestionData}
                         updateData={this.updateData}
                         containerRef={this.canvasRef}
+                        enableResizing={{ bottomRight: true }}
+                        onToggleAddItem={this.toggleAddNewItem}
                       />
                     </>
                   )}

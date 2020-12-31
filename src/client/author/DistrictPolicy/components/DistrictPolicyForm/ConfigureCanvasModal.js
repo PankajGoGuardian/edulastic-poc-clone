@@ -89,18 +89,18 @@ const ConfigureCanvasModal = ({
           />
         </label>
         <label>
-          Consumer Key <span>*</span>
+          Client Id <span>*</span>
           <Input
-            placeholder="Enter Consumer Key"
+            placeholder="Enter Client Id"
             onChange={(e) => handleChange(e, 'canvasConsumerKey')}
             value={canvasConfigureData.canvasConsumerKey}
             disabled={!fieldsEnabled}
           />
         </label>
         <label>
-          Shared Secret <span>*</span>
+          Secret Key <span>*</span>
           <Input
-            placeholder="Enter Shared Secret"
+            placeholder="Enter Secret Key"
             onChange={(e) => handleChange(e, 'canvasSharedSecret')}
             value={canvasConfigureData.canvasSharedSecret}
             disabled={!fieldsEnabled}

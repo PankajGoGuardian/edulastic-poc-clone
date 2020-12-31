@@ -63,12 +63,7 @@ const BannerSlider = ({
                   className={bannerLength === index + 1 ? 'last' : ''}
                   bgImage={slide.imageUrl}
                   key={slide._id}
-                  onClick={() =>
-                    bannerActionHandler(
-                      slide.config.filters[0],
-                      slide.description
-                    )
-                  }
+                  onClick={() => bannerActionHandler(slide.config.filters[0])}
                 >
                   <LearnMore>LEARN MORE</LearnMore>
                   <SlideDescription>{slide.description}</SlideDescription>

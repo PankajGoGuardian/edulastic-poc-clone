@@ -11,6 +11,8 @@ import {
   reportAssignmentsSaga,
 } from './assignmentsDucks'
 
+import { RESET_ALL_REPORTS } from './common/reportsRedux'
+
 import { reportSARSettingsReducer } from './subPages/singleAssessmentReport/ducks'
 import { reportMARSettingsReducer } from './subPages/multipleAssessmentReport/ducks'
 import { reportSPRSettingsReducer } from './subPages/studentProfileReport/ducks'
@@ -163,6 +165,10 @@ const initialState = {
 }
 
 const reports = createReducer(initialState, {
+  [RESET_ALL_REPORTS]: (state) => {
+    state.testList = []
+    state.testListLoading = true
+  },
   [SET_SHARING_STATE]: (state, { payload }) => {
     state.isSharing = payload
   },
@@ -253,7 +259,7 @@ export function* receiveTestListSaga({ payload }) {
   }
 }
 
-export function* reportSaga(params) {
+export function* reportSaga() {
   yield all([
     reportAssignmentsSaga(),
 

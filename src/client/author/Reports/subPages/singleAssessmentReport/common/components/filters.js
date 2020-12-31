@@ -481,7 +481,6 @@ const enhance = compose(
       user: getUser(state),
       prevSARFilterData: getReportsPrevSARFilterData(state),
       performanceBandProfiles: state?.performanceBandReducer?.profiles || [],
-      performanceBandLoading: state?.performanceBandReducer?.loading || false,
       standardProficiencyProfiles:
         state?.standardsProficiencyReducer?.data || [],
       standardProficiencyLoading:

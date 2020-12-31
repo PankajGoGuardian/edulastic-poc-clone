@@ -280,10 +280,12 @@ const Settings = ({
       },
     }
 
-    if (forClassLevel)
+    if (forClassLevel) {
+      changeField('autoRedirect')(true)
       return changeField('autoRedirectSettings')(
         newSettingsState.autoRedirectSettings
       )
+    }
     updateAssignmentSettings(newSettingsState)
   }
 

@@ -160,6 +160,15 @@ const SingleAssessmentReportFilters = ({
             savedFilters.assessmentTypes.join(',')) ||
           'common assessment'
       }
+      if (isStandardProficiencyRequired) {
+        search.standardsProficiencyProfile =
+          search.standardsProficiencyProfile ||
+          standardProficiencyProfiles[0]?._id
+      }
+      if (performanceBandRequired) {
+        search.performanceBandProfile =
+          search.performanceBandProfile || performanceBandProfiles[0]?._id
+      }
       const urlSchoolYear =
         schoolYear.find((item) => item.key === search.termId) ||
         schoolYear.find((item) => item.key === defaultTermId) ||
@@ -187,6 +196,8 @@ const SingleAssessmentReportFilters = ({
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
+        standardsProficiencyProfile: search.standardsProficiencyProfile || '',
+        performanceBandProfile: search.performanceBandProfile || '',
       }
       const urlParams = { ...obtainedFilters }
 
@@ -491,7 +502,6 @@ const enhance = compose(
       user: getUser(state),
       prevSARFilterData: getReportsPrevSARFilterData(state),
       performanceBandProfiles: state?.performanceBandReducer?.profiles || [],
-      performanceBandLoading: state?.performanceBandReducer?.loading || false,
       standardProficiencyProfiles:
         state?.standardsProficiencyReducer?.data || [],
       standardProficiencyLoading:

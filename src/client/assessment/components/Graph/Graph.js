@@ -408,7 +408,13 @@ class Graph extends Component {
     const { item } = this.props
     const validation = get(item, 'validation', {})
 
-    return omit(validation, ['altResponses', 'scoringType', 'validResponse'])
+    return omit(validation, [
+      'altResponses',
+      'scoringType',
+      'validResponse',
+      'rounding',
+      'graphType',
+    ])
   }
 
   render() {

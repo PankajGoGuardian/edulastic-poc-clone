@@ -5,6 +5,10 @@ import AppConfig from '../../../src/app-config'
 const allowedRoles = ['teacher', 'school-admin', 'district-admin']
 const minFeatures = 5
 
+const trackingParameters = {
+  CATEGORY_WEB_APPLICATION: 'Web Application',
+}
+
 const getUserDetails = ({
   email,
   username,
@@ -142,6 +146,26 @@ const trackTeacherClickOnUpgradeSubscription = ({ user }) => {
   }
 }
 
+const trackUserClick = ({ user, data }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+
+  const { event, category = trackingParameters.CATEGORY_WEB_APPLICATION } = data
+  if (user) {
+    const { role = '', _id, v1Id } = user
+    const userId = v1Id || _id
+    const userData = getUserDetails(user)
+    if (role === 'teacher' && window.analytics) {
+      window.analytics.track(event, {
+        userId: `${userId}`,
+        ...userData,
+        category,
+      })
+    }
+  }
+}
+
 const trackTeacherSignUp = ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
     return
@@ -168,4 +192,6 @@ export default {
   analyticsIdentify,
   trackTeacherClickOnUpgradeSubscription,
   trackTeacherSignUp,
+  trackUserClick,
+  trackingParameters,
 }

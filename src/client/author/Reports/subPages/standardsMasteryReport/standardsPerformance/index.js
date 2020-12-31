@@ -4,7 +4,11 @@ import { filter, get } from 'lodash'
 
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
-import { DropDownContainer, StyledCard } from '../../../common/styled'
+import {
+  DropDownContainer,
+  StyledCard,
+  NoDataContainer,
+} from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import StandardsPerformanceChart from './components/charts/StandardsPerformanceChart'
 import { StyledInnerRow, StyledRow } from './components/styled'
@@ -35,6 +39,7 @@ const StandardsPerformance = ({
   standardsFilters,
   getStandardsPerformanceSummaryRequest,
   isCsvDownloading,
+  toggleFilter,
   settings,
   loading,
   error,
@@ -48,7 +53,7 @@ const StandardsPerformance = ({
         : null,
     [sharedReport]
   )
-  const scaleInfo = get(standardsFilters, 'scaleInfo', [])
+  const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
   const selectedScale =
     (
       scaleInfo.find(
@@ -71,32 +76,43 @@ const StandardsPerformance = ({
   })
   // support for domain filtering from backend
   const [pageFilters, setPageFilters] = useState({
-    page: 1,
+    page: 0, // set to 0 initially to prevent multiple api request on tab change
     pageSize: 10,
   })
   const [selectedDomains, setSelectedDomains] = useState([])
 
-  // function to generate query for standards performance
-  const getPerformanceSummaryQuery = () => {
-    const q = {
-      ...settings.requestFilters,
-      compareBy: tableFilters.compareBy.key,
-      page: 1,
-      pageSize: pageFilters.pageSize,
-    }
-    return q
-  }
-
+  // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
   }, [settings, tableFilters.compareBy.key])
 
+  // get paginated data
   useEffect(() => {
-    const q = { ...getPerformanceSummaryQuery(), ...pageFilters }
-    if (q.termId || q.reportId) {
+    const q = {
+      ...settings.requestFilters,
+      compareBy: tableFilters.compareBy.key,
+      ...pageFilters,
+    }
+    if ((q.termId || q.reportId) && pageFilters.page) {
       getStandardsPerformanceSummaryRequest(q)
     }
   }, [pageFilters])
+
+  // show filters section if metricInfo is empty
+  useEffect(() => {
+    const metricInfo = get(
+      standardsPerformanceSummary,
+      'data.result.metricInfo',
+      []
+    )
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [standardsPerformanceSummary])
 
   const res = get(standardsPerformanceSummary, 'data.result', {})
 
@@ -115,17 +131,10 @@ const StandardsPerformance = ({
         tableFilters,
         selectedDomains,
         res.skillInfo,
-        standardsFilters,
+        res.groupInfo,
         selectedScale
       ),
-    [
-      res,
-      maxMasteryScore,
-      standardsFilters,
-      selectedDomains,
-      tableFilters,
-      selectedScale,
-    ]
+    [res, maxMasteryScore, selectedDomains, tableFilters, selectedScale]
   )
 
   const tableFiltersOptions = {
@@ -140,6 +149,10 @@ const StandardsPerformance = ({
 
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
+  }
+
+  if (!res.metricInfo?.length) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   return (

@@ -239,8 +239,8 @@ const StandardsGradebookTableComponent = ({
       studentId: record.studentId,
       standardId,
       profileId: filters.profileId,
-      assessmentType:
-        filters.assessmentType === 'All' ? '' : filters.assessmentType,
+      assessmentTypes:
+        filters.assessmentTypes !== 'All' ? filters.assessmentTypes : '',
     }
     const getCellContents = (props) => {
       const { printData } = props

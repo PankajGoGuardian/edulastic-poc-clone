@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
@@ -84,8 +84,6 @@ const SingleAssessmentReportFilters = ({
   toggleFilter,
 }) => {
   const assessmentTypeRef = useRef()
-  const [selectedClass, setSelectedClass] = useState(null)
-  const [selectedGroup, setSelectedGroup] = useState(null)
 
   const performanceBandProfiles = get(SARFilterData, 'data.result.bandInfo', [])
   const standardProficiencyProfiles = get(
@@ -144,6 +142,13 @@ const SingleAssessmentReportFilters = ({
     } else {
       // get saved filters from backend
       const savedFilters = get(SARFilterData, 'data.result.reportFilters')
+      // update search filters from saved filters
+      search = {
+        termId: search.termId || savedFilters.termId,
+        subject: search.subject || savedFilters.testSubject,
+        grade: search.grade || savedFilters.testGrade,
+        ...search,
+      }
       // select common assessment as default if assessment type is not set for admins
       if (
         user.role === roleuser.DISTRICT_ADMIN ||
@@ -154,14 +159,6 @@ const SingleAssessmentReportFilters = ({
           (savedFilters.assessmentTypes &&
             savedFilters.assessmentTypes.join(',')) ||
           'common assessment'
-      }
-      if (firstLoad) {
-        search = {
-          termId: search.termId || savedFilters.termId,
-          subject: search.subject || savedFilters.testSubject,
-          grade: search.grade || savedFilters.testGrade,
-          ...search,
-        }
       }
       const urlSchoolYear =
         schoolYear.find((item) => item.key === search.termId) ||
@@ -252,11 +249,6 @@ const SingleAssessmentReportFilters = ({
     setShowApply(true)
   }
 
-  const updateSearchableFilter = (selected, id, callback) => {
-    updateFilterDropdownCB(selected, id)
-    callback(selected)
-  }
-
   const standardProficiencyList = useMemo(
     () =>
       standardProficiencyProfiles.map((s) => ({ key: s._id, title: s.name })),
@@ -327,9 +319,11 @@ const SingleAssessmentReportFilters = ({
             <SearchField>
               <FilterLabel>Test</FilterLabel>
               <AssessmentAutoComplete
-                filters={filters}
                 firstLoad={firstLoad}
                 termId={filters.termId}
+                grade={filters.grade !== 'All' && filters.grade}
+                subject={filters.subject !== 'All' && filters.subject}
+                testTypes={filters.assessmentTypes}
                 selectedTestId={testId || getTestIdFromURL(location.pathname)}
                 selectCB={updateTestId}
               />
@@ -351,12 +345,12 @@ const SingleAssessmentReportFilters = ({
               </SearchField>
               <SearchField>
                 <TeacherAutoComplete
+                  termId={filters.termId}
+                  school={filters.schoolIds}
+                  testId={testId}
                   selectedTeacherIds={
                     filters.teacherIds ? filters.teacherIds.split(',') : []
                   }
-                  school={filters.schoolIds}
-                  testId={testId}
-                  termId={filters.termId}
                   selectCB={(e) =>
                     updateFilterDropdownCB(e.join(','), 'teacherIds', true)
                   }
@@ -365,7 +359,7 @@ const SingleAssessmentReportFilters = ({
             </>
           )}
           <SearchField>
-            <FilterLabel>Grade</FilterLabel>
+            <FilterLabel>Class Grade</FilterLabel>
             <ControlDropDown
               by={filters.studentGrade}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentGrade')}
@@ -375,7 +369,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Subject</FilterLabel>
+            <FilterLabel>Class Subject</FilterLabel>
             <ControlDropDown
               by={filters.studentSubject}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentSubject')}
@@ -396,20 +390,36 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Class</FilterLabel>
             <ClassAutoComplete
-              filters={filters}
-              selectedClass={selectedClass}
+              termId={filters.termId}
+              schoolIds={filters.schoolIds}
+              teacherIds={filters.teacherIds}
+              grade={filters.studentGrade !== 'All' && filters.studentGrade}
+              subject={
+                filters.studentSubject !== 'All' && filters.studentSubject
+              }
+              courseId={
+                filters.studentCourseId !== 'All' && filters.studentCourseId
+              }
               selectCB={(e) => {
-                updateSearchableFilter(e, 'classId', setSelectedClass)
+                updateFilterDropdownCB(e, 'classId')
               }}
             />
           </SearchField>
           <SearchField>
             <FilterLabel>Group</FilterLabel>
             <GroupsAutoComplete
-              filters={filters}
-              selectedGroup={selectedGroup}
+              termId={filters.termId}
+              schoolIds={filters.schoolIds}
+              teacherIds={filters.teacherIds}
+              grade={filters.studentGrade !== 'All' && filters.studentGrade}
+              subject={
+                filters.studentSubject !== 'All' && filters.studentSubject
+              }
+              courseId={
+                filters.studentCourseId !== 'All' && filters.studentCourseId
+              }
               selectCB={(e) => {
-                updateSearchableFilter(e, 'groupId', setSelectedGroup)
+                updateFilterDropdownCB(e, 'groupId')
               }}
             />
           </SearchField>

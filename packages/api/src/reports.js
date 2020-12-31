@@ -110,13 +110,11 @@ const fetchStandardsPerformanceSummaryReport = (params) =>
   })
 
 const fetchStandardMasteryFilter = (params) =>
-  api
-    .callApi({
-      useSlowApi: true,
-      url: `/report/filter/standard-mastery`,
-      params,
-    })
-    .then((result) => result.data.result)
+  api.callApi({
+    useSlowApi: true,
+    url: `/report/filter/standard-mastery`,
+    params,
+  })
 
 const fetchStandardMasteryBrowseStandards = (params) =>
   api.callApi({

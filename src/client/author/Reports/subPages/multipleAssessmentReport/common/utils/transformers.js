@@ -5,28 +5,29 @@ import {
   processFilteredClassAndGroupIds,
 } from '../../../../common/util'
 
-export const transformFiltersForMAR = (requestFilters) => {
-  let classIds = ''
-  let groupIds = ''
-  if (requestFilters?.classIds && Array.isArray(requestFilters?.classIds)) {
-    classIds = requestFilters.classIds.join(',')
-  } else if (requestFilters?.classId) {
-    classIds = requestFilters.classId
-  }
-  if (requestFilters?.groupIds && Array.isArray(requestFilters?.groupIds)) {
-    groupIds = requestFilters.groupIds.join(',')
-  } else if (requestFilters?.groupId) {
-    groupIds = requestFilters.groupId
-  }
+export const transformFiltersForMAR = ({
+  grade,
+  subject,
+  studentGrade,
+  studentSubject,
+  studentCourseId,
+  classId,
+  classIds,
+  groupId,
+  groupIds,
+  ...requestFilters
+}) => {
+  classIds = classIds && Array.isArray(classIds) ? classIds.join(',') : classId
+  groupIds = groupIds && Array.isArray(groupIds) ? groupIds.join(',') : groupId
   return {
     ...requestFilters,
-    classIds,
-    groupIds,
-    testGrade: requestFilters.grade,
-    testSubject: requestFilters.subject,
-    grade: requestFilters.studentGrade,
-    subject: requestFilters.studentSubject,
-    courseId: requestFilters.studentCourseId,
+    testGrade: grade,
+    testSubject: subject,
+    grade: studentGrade,
+    subject: studentSubject,
+    courseId: studentCourseId,
+    classIds: classIds || '',
+    groupIds: groupIds || '',
   }
 }
 

@@ -138,7 +138,6 @@ export const augmentWithData = (
   }
 }
 
-
 export const calculateTrend = (groupedData) => {
   const counts = {
     up: 0,

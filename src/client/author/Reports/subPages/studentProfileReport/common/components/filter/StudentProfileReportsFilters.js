@@ -261,7 +261,7 @@ const StudentProfileReportsFilters = ({
         />
       </SearchField>
       <SearchField>
-        <FilterLabel>Grade</FilterLabel>
+        <FilterLabel>Class Grade</FilterLabel>
         <ControlDropDown
           by={filters.grade}
           selectCB={(value) => handleFilterChange('grade', value)}
@@ -271,7 +271,7 @@ const StudentProfileReportsFilters = ({
         />
       </SearchField>
       <SearchField>
-        <FilterLabel>Subject</FilterLabel>
+        <FilterLabel>Class Subject</FilterLabel>
         <ControlDropDown
           by={filters.subject}
           selectCB={(value) => handleFilterChange('subject', value)}

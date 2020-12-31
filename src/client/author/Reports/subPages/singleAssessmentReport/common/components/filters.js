@@ -163,6 +163,15 @@ const SingleAssessmentReportFilters = ({
           ...search,
         }
       }
+      if (isStandardProficiencyRequired) {
+        search.standardsProficiencyProfile =
+          search.standardsProficiencyProfile ||
+          standardProficiencyProfiles[0]?._id
+      }
+      if (performanceBandRequired) {
+        search.performanceBandProfile =
+          search.performanceBandProfile || performanceBandProfiles[0]?._id
+      }
       const urlSchoolYear =
         schoolYear.find((item) => item.key === search.termId) ||
         schoolYear.find((item) => item.key === defaultTermId) ||
@@ -190,6 +199,8 @@ const SingleAssessmentReportFilters = ({
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
+        standardsProficiencyProfile: search.standardsProficiencyProfile || '',
+        performanceBandProfile: search.performanceBandProfile || '',
       }
       const urlParams = { ...obtainedFilters }
 

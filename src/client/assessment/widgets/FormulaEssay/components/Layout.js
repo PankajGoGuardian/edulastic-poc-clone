@@ -10,6 +10,7 @@ import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
 import { Label } from '../../../styled/WidgetOptions/Label'
 import FontSizeSelect from '../../../components/FontSizeSelect'
+import KeyPadOptions from '../../../components/KeyPadOptions'
 import TypedList from '../../../components/TypedList'
 
 import { SelectInputStyled } from '../../../styled/InputStyles'
@@ -94,6 +95,8 @@ class Layout extends Component {
             />
           </Col>
         </Row>
+
+        <KeyPadOptions onChange={onChange} item={item} />
 
         <Subtitle
           margin="20px 0px"

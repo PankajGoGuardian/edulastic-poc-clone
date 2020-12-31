@@ -8,7 +8,7 @@ import { keys, isArray, isEmpty, isString, values } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey9, greyThemeLight } from '@edulastic/colors'
 
-const { syntaxes, GRAPH_EVALUATION_SETTING } = mathConstants
+const { syntaxes } = mathConstants
 const separators = [
   { value: ',', label: 'comma' },
   { value: '.', label: 'dot' },
@@ -31,9 +31,6 @@ const EnabledSettings = ({
     const optsLables = optionKeys
       .map((key) => {
         let label = ''
-        if (key === 'apiLatex') {
-          return false
-        }
         if (key === 'syntax') {
           const syntax = syntaxOptions.find((x) => x.value === options[key])
           if (syntax) {
@@ -82,12 +79,9 @@ const EnabledSettings = ({
         label: `${allowedVariables} ${t('component.math.allowedVariables')}`,
       })
     }
-    const evaluationMethod =
-      method !== GRAPH_EVALUATION_SETTING
-        ? [{ key: 'evaluationMethod', label: t(`component.math.${method}`) }]
-        : []
-
-    return evaluationMethod.concat(optsLables)
+    return [
+      { key: 'evaluationMethod', label: t(`component.math.${method}`) },
+    ].concat(optsLables)
   }, [options, allowNumericOnly, allowedVariables])
 
   return (

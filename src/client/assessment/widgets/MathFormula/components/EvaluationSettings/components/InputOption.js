@@ -3,9 +3,29 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { CheckboxLabel, TextInputStyled } from '@edulastic/common'
 import LabelWithHelper from './LabelWithHelper'
-import { validations } from './inputsValidations'
 
-const InputOption = ({ options, onChange, optionKey, inputType, isGraph }) => {
+const validations = {
+  tolerance: (value = '') => {
+    if (!value) {
+      return true
+    }
+    return /^\+?(0|[1-9]\d*)?%?$/.test(value)
+  },
+  isIn: (value = '') => {
+    if (!value) {
+      return true
+    }
+    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
+  },
+  satisfies: (value = '') => {
+    if (!value) {
+      return true
+    }
+    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
+  },
+}
+
+const InputOption = ({ options, onChange, optionKey, inputType }) => {
   const [isAllowed, setIsAllowed] = useState(false)
 
   const onChangeCheckbox = (e) => {
@@ -49,7 +69,7 @@ const InputOption = ({ options, onChange, optionKey, inputType, isGraph }) => {
           disabled={!isAllowed}
           onChange={onChangeInput}
         />
-        <LabelWithHelper optionKey={optionKey} isGraph={isGraph} />
+        <LabelWithHelper optionKey={optionKey} />
       </CheckboxLabel>
     </InputOptionWrapper>
   )

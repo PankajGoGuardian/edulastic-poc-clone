@@ -7,7 +7,7 @@ const CustomDrawer = ({ visible, onClose, children }) => {
   return (
     <Drawer
       placement="right"
-      width={640}
+      width={600}
       zIndex={1050}
       onClose={onClose}
       visible={visible}

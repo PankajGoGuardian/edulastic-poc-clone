@@ -7,7 +7,6 @@ import React, { Component, Fragment } from 'react'
 import { compose } from 'redux'
 import { isNaN, isEqual } from 'lodash'
 import { AnnotationSettings, ScoreSettings } from '..'
-import { EDIT } from '../../../../constants/constantsForQuestions'
 import Extras from '../../../../containers/Extras'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
 import { ColoredRow, ColumnLabel, RowLabel } from '../../../../styled/Grid'
@@ -22,7 +21,6 @@ import { Row } from '../../../../styled/WidgetOptions/Row'
 import Question from '../../../Question'
 import Tools from '../../common/Tools'
 import GraphToolsParams from '../../components/GraphToolsParams'
-import { GraphDisplay } from '../../Display'
 import { calcDistance } from '../../common/utils'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
@@ -264,7 +262,6 @@ class QuadrantsMoreOptions extends Component {
       t,
       graphData,
       fontSizeList,
-      setBgShapes,
       fillSections,
       cleanSections,
       setToolbar,
@@ -274,7 +271,13 @@ class QuadrantsMoreOptions extends Component {
       changeLabel,
     } = this.props
 
-    const { uiStyle, controlbar, annotation, toolbar } = graphData
+    const {
+      uiStyle,
+      backgroundImage,
+      controlbar,
+      annotation,
+      toolbar,
+    } = graphData
 
     const {
       drawLabelZero,
@@ -904,32 +907,116 @@ class QuadrantsMoreOptions extends Component {
 
         <Question
           section="advanced"
-          label="Background Shapes"
+          label="Background Image"
           cleanSections={cleanSections}
           fillSections={fillSections}
-          deskHeight={graphData.uiStyle.layoutHeight}
           advancedAreOpen={advancedAreOpen}
         >
           <Subtitle
             id={getFormattedAttrId(
-              `${graphData?.title}-${t('component.graphing.background_shapes')}`
+              `${graphData?.title}-${t(
+                'component.graphing.background_options.background_image'
+              )}`
             )}
           >
-            {t('component.graphing.background_shapes')}
+            {t('component.graphing.background_options.background_image')}
           </Subtitle>
-          <Row>
+          <Row gutter={24}>
             <Col md={24}>
-              {advancedAreOpen && (
-                <GraphDisplay
-                  view={EDIT}
-                  advancedElementSettings
-                  graphData={graphData}
-                  onChange={setBgShapes}
-                  elements={graphData.background_shapes}
-                  changePreviewTab={() => {}}
-                  bgShapes
-                />
-              )}
+              <Label>
+                {t('component.graphing.background_options.image_url')}
+              </Label>
+              <TextInputStyled
+                type="text"
+                defaultValue=""
+                name="src"
+                value={backgroundImage.src}
+                onChange={this.handleBgImgInputChange}
+              />
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col md={12}>
+              <Label>{t('component.graphing.background_options.height')}</Label>
+              <TextInputStyled
+                type="text"
+                defaultValue=""
+                name="height"
+                value={backgroundImage.height}
+                onChange={this.handleBgImgInputChange}
+              />
+            </Col>
+            <Col md={12}>
+              <Label>{t('component.graphing.background_options.width')}</Label>
+              <TextInputStyled
+                type="text"
+                defaultValue=""
+                name="width"
+                value={backgroundImage.width}
+                onChange={this.handleBgImgInputChange}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24}>
+            <Col md={12}>
+              <Label>
+                {t(
+                  'component.graphing.background_options.x_axis_image_position'
+                )}
+              </Label>
+              <TextInputStyled
+                type="text"
+                defaultValue=""
+                name="x"
+                value={backgroundImage.x}
+                onChange={this.handleBgImgInputChange}
+              />
+            </Col>
+            <Col md={12}>
+              <Label>
+                {t(
+                  'component.graphing.background_options.y_axis_image_position'
+                )}
+              </Label>
+              <TextInputStyled
+                type="text"
+                defaultValue=""
+                name="y"
+                value={backgroundImage.y}
+                onChange={this.handleBgImgInputChange}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} type="flex" align="middle">
+            <Col md={12}>
+              <Label>
+                {t('component.graphing.background_options.opacity')}
+              </Label>
+              <TextInputStyled
+                type="text"
+                defaultValue=""
+                name="opacity"
+                value={backgroundImage.opacity}
+                onChange={this.handleBgImgInputChange}
+              />
+            </Col>
+            <Col md={12} marginBottom="0px">
+              <CheckboxLabel
+                name="showShapePoints"
+                onChange={() =>
+                  this.handleBgImgCheckbox(
+                    'showShapePoints',
+                    backgroundImage.showShapePoints
+                  )
+                }
+                checked={backgroundImage.showShapePoints}
+              >
+                {t(
+                  'component.graphing.background_options.show_bg_shape_points'
+                )}
+              </CheckboxLabel>
             </Col>
           </Row>
         </Question>
@@ -957,7 +1044,6 @@ QuadrantsMoreOptions.propTypes = {
   setOptions: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setBgImg: PropTypes.func.isRequired,
-  setBgShapes: PropTypes.func.isRequired,
   setControls: PropTypes.func.isRequired,
   setToolbar: PropTypes.func.isRequired,
   setAnnotation: PropTypes.func.isRequired,

@@ -174,33 +174,29 @@ const HeaderSection = ({
             )}
           />
         )}
-        {signupStatus === signUpState.DONE && (
-          <>
-            <Tooltip title="Launch Google Meet">
-              <StyledEduButton
-                IconBtn
-                isBlue
-                data-cy="launch-google-meet"
-                onClick={launchHangout}
-                isGhost
-              >
-                <IconHangouts color={themeColor} height={21} width={19} />
-              </StyledEduButton>
-            </Tooltip>
-            <Tooltip title="Manage Class">
-              <Link to="/author/manageClass">
-                <EduButton
-                  IconBtn
-                  isBlue
-                  style={{ marginLeft: '5px' }}
-                  data-cy="manageClass"
-                >
-                  <IconManage />
-                </EduButton>
-              </Link>
-            </Tooltip>
-          </>
-        )}
+        <Tooltip title="Launch Google Meet">
+          <StyledEduButton
+            IconBtn
+            isBlue
+            data-cy="launch-google-meet"
+            onClick={launchHangout}
+            isGhost
+          >
+            <IconHangouts color={themeColor} height={21} width={19} />
+          </StyledEduButton>
+        </Tooltip>
+        <Tooltip title="Manage Class">
+          <Link to="/author/manageClass">
+            <EduButton
+              IconBtn
+              isBlue
+              style={{ marginLeft: '5px' }}
+              data-cy="manageClass"
+            >
+              <IconManage />
+            </EduButton>
+          </Link>
+        </Tooltip>
         {hasNoActiveClassFallback && (
           <HeaderSyncAction
             fetchClassList={fetchClassList}

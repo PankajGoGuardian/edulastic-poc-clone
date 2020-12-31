@@ -23,7 +23,7 @@ import { MathInputWrapper } from './styled/MathInputWrapper'
 import { Field, UnitsDropdown, DefaultKeyPadMode, CustomUnit } from './options'
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
-import EvaluationSettings from '../../../../components/EvaluationSettings'
+import EvaluationSettings from '../EvaluationSettings'
 
 const { methods: methodsConst, methodOptions: methodOptionsConst } = math
 

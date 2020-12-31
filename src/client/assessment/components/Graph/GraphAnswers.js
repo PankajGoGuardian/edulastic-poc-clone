@@ -2,6 +2,7 @@ import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
+import { Select } from 'antd'
 import { cloneDeep } from 'lodash'
 import produce from 'immer'
 
@@ -17,6 +18,10 @@ import {
   getQuestionDataSelector,
 } from '../../../author/QuestionEditor/ducks'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+import { SelectInputStyled } from '../../styled/InputStyles'
+import { Label } from '../../styled/WidgetOptions/Label'
+import { Row } from '../../styled/WidgetOptions/Row'
+import { Col } from '../../styled/WidgetOptions/Col'
 
 class GraphAnswers extends Component {
   constructor() {
@@ -157,7 +162,47 @@ class GraphAnswers extends Component {
   }
 
   renderOptions = () => {
-    const { t, graphData, handleNumberlineChange } = this.props
+    const {
+      t,
+      getIgnoreLabelsOptions,
+      graphData,
+      handleSelectIgnoreLabels,
+      handleNumberlineChange,
+    } = this.props
+
+    if (
+      graphData.graphType === 'quadrants' ||
+      graphData.graphType === 'firstQuadrant'
+    ) {
+      return (
+        <>
+          <Row marginTop={15} gutter={24}>
+            {/* 
+              NOTE: Slicing of the array is done to keep the functionality of ignoring repeated shapes together but split into two options -
+              1 - Ignore Repeated Shapes (yes/no) => yes should default to "Compare by slope" on "yes"
+              2 - Compare By (slope / points) => on selecting ignore repeated shapes, the default option gets selected automatically
+            */}
+            {/* Removing Ignore repeated shapes and Compare by dropdown ref: https://snapwiz.atlassian.net/browse/EV-14738 */}
+            <Col span={6}>
+              <Label>Ignore labels</Label>
+              <SelectInputStyled
+                data-cy="ignoreLabels"
+                onChange={(val) => handleSelectIgnoreLabels(val)}
+                options={getIgnoreLabelsOptions()}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                value={graphData.validation.ignoreLabels || 'yes'}
+              >
+                {getIgnoreLabelsOptions().map((option) => (
+                  <Select.Option data-cy={option.value} key={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+          </Row>
+        </>
+      )
+    }
 
     if (graphData.graphType === 'axisLabels') {
       const { numberlineAxis } = graphData
@@ -269,6 +314,7 @@ GraphAnswers.propTypes = {
   view: PropTypes.string.isRequired,
   getIgnoreLabelsOptions: PropTypes.func.isRequired,
   handleSelectIgnoreLabels: PropTypes.func.isRequired,
+  getIgnoreRepeatedShapesOptions: PropTypes.func.isRequired,
   handleSelectIgnoreRepeatedShapes: PropTypes.func.isRequired,
   handleNumberlineChange: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func,

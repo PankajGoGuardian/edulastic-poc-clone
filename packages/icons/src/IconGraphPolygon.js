@@ -5,14 +5,12 @@ import SVG from '@edulastic/icons/src/common/SVG'
 const IconGraphPolygon = (props) => (
   <SVG
     xmlns="http://www.w3.org/2000/svg"
-    width="29.055"
-    height="16.263"
-    viewBox="0 0 29.055 16.263"
+    viewBox="0 0 14.927 14.928"
     {...props}
   >
     <path
-      d="M367.292,271H338.237l3.956-11.272,20.316-4.991Zm-26.234-2H364.62l-3.49-11.865-17.409,4.276Z"
-      transform="translate(-338.237 -254.737)"
+      d="M14.227,303.911a.736.736,0,0,0-.158-.8L1.629,290.671a.741.741,0,0,0-.8-.159.733.733,0,0,0-.457.671v12.44a.758.758,0,0,0,.743.746h12.44a.736.736,0,0,0,.672-.458Zm-12.4-1v-9.976l9.973,9.976Zm0,0"
+      transform="translate(0.128 -289.941)"
     />
   </SVG>
 )

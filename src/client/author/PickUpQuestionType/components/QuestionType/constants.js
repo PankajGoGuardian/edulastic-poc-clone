@@ -1743,7 +1743,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [],
           },
           altResponses: [],
-          ignoreLabels: true,
+          ignoreLabels: 'yes',
         },
         sampleAnswer: '',
         uiStyle: {
@@ -1823,7 +1823,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [],
           },
           altResponses: [],
-          ignoreLabels: true,
+          ignoreLabels: 'yes',
         },
         sampleAnswer: '',
         uiStyle: {

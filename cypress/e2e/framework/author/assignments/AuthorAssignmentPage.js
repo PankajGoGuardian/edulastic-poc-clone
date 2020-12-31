@@ -157,7 +157,7 @@ class AuthorAssignmentPage {
       .click({ force: true })
       .then(() => {
         // pop up that comes up when we try to edit a assigned test
-        cy.contains('This test is already assigned to students.')
+        cy.contains('Edit will move the test to Draft')
           .parent()
           .contains('span', 'PROCEED')
           .click({ force: true })

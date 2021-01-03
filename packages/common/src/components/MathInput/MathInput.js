@@ -73,12 +73,7 @@ class MathInput extends React.PureComponent {
   }
 
   componentDidMount() {
-    const {
-      defaultFocus,
-      value,
-      isDocbasedSection,
-      handleDocBasedBlur,
-    } = this.props
+    const { defaultFocus, value } = this.props
     if (!window.MathQuill) return
 
     const MQ = window.MathQuill.getInterface(2)
@@ -109,7 +104,7 @@ class MathInput extends React.PureComponent {
       {
         mathField,
         keyboardPosition,
-        hideKeyboardByDefault: window.isMobileDevice || isDocbasedSection,
+        hideKeyboardByDefault: window.isMobileDevice,
       },
       () => {
         // const { hideKeyboardByDefault } = this.state;
@@ -122,9 +117,6 @@ class MathInput extends React.PureComponent {
         textarea.addEventListener('keypress', this.handleKeypress)
         textarea.addEventListener('keydown', this.handleTabKey, false)
         textarea.addEventListener('paste', this.handlePaste)
-        if (isDocbasedSection) {
-          textarea.addEventListener('blur', handleDocBasedBlur, false)
-        }
         document.addEventListener('click', this.handleClick, false)
       }
     )
@@ -357,11 +349,11 @@ class MathInput extends React.PureComponent {
         const { hideKeyboardByDefault } = this.state
         const textarea = this.mQuill.el().querySelector('.mq-textarea textarea')
         if (hideKeyboardByDefault) {
-          // textarea.removeAttribute("readonly");
+          textarea.removeAttribute('readonly')
           textarea.focus()
         } else {
+          textarea.setAttribute('readonly', 'readonly')
           textarea.blur()
-          // textarea.setAttribute("readonly", "readonly");
           this.setState({ mathFieldFocus: true })
         }
       }
@@ -386,7 +378,6 @@ class MathInput extends React.PureComponent {
       className,
       restrictKeys,
       customKeys,
-      isDocbasedSection = false,
       dynamicVariableInput,
       disabled,
     } = this.props
@@ -436,7 +427,7 @@ class MathInput extends React.PureComponent {
           >
             <span className="input__math__field" ref={this.mathFieldRef} />
 
-            {(window.isMobileDevice || isDocbasedSection) && (
+            {window.isMobileDevice && (
               <KeyboardIcon
                 onClick={this.toggleHideKeyboard}
                 className={

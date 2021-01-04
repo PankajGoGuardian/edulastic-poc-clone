@@ -1,4 +1,3 @@
-/* eslint-disable array-callback-return */
 import {
   groupBy,
   keyBy,
@@ -57,84 +56,6 @@ const getFormattedName = (name) => {
   const nameArr = (name || '').trim().split(' ')
   const lName = nameArr.splice(nameArr.length - 1)[0]
   return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
-}
-
-export const getFilterDropDownData = (arr, role) => {
-  let schoolGrp
-  let teacherGrp
-  let schoolArr
-  let teacherArr
-  let keyArr
-  if (role !== 'teacher') {
-    schoolGrp = groupBy(
-      arr.filter((item) => !!item.schoolId),
-      'schoolId'
-    )
-    teacherGrp = groupBy(
-      arr.filter((item) => !!item.teacherId),
-      'teacherId'
-    )
-
-    keyArr = Object.keys(schoolGrp)
-    schoolArr = keyArr.map((item) => ({
-      key: item,
-      title: schoolGrp[item][0].schoolName,
-    }))
-    schoolArr.unshift({
-      key: 'all',
-      title: 'All',
-    })
-
-    keyArr = Object.keys(teacherGrp)
-    teacherArr = keyArr.map((item) => ({
-      key: item,
-      title: teacherGrp[item][0].teacherName,
-    }))
-    teacherArr.unshift({
-      key: 'all',
-      title: 'All',
-    })
-  }
-  const groupGrp = groupBy(
-    arr.filter((item) => !!item.groupId),
-    'groupId'
-  )
-  keyArr = Object.keys(groupGrp)
-  const groupArr = keyArr.map((item) => ({
-    key: item,
-    title: groupGrp[item][0].className,
-  }))
-  groupArr.unshift({
-    key: 'all',
-    title: 'All',
-  })
-
-  if (role !== 'teacher') {
-    return [
-      {
-        key: 'schoolId',
-        title: 'School',
-        data: schoolArr,
-      },
-      {
-        key: 'teacherId',
-        title: 'Teacher',
-        data: teacherArr,
-      },
-      {
-        key: 'groupId',
-        title: 'Class',
-        data: groupArr,
-      },
-    ]
-  }
-  return [
-    {
-      key: 'groupId',
-      title: 'Class',
-      data: groupArr,
-    },
-  ]
 }
 
 export const getMasteryDropDown = (masteryScale) => {
@@ -202,8 +123,8 @@ export const getDenormalizedData = (rawData) => {
   const denormalizedEnhancedRawMetricInfo = []
   enhancedRawMetricInfo
     .filter((i) => i.groupIds)
-    .map((item) => {
-      item.groupIds.map((_item) => {
+    .forEach((item) => {
+      item.groupIds.forEach((_item) => {
         const obj = {
           ...item,
           groupId: _item,
@@ -233,25 +154,8 @@ export const getDenormalizedData = (rawData) => {
   return finalDenormalizedData
 }
 
-export const getFilteredDenormalizedData = (
-  denormalizedData,
-  filters,
-  role
-) => {
+export const getFilteredDenormalizedData = (denormalizedData, filters) => {
   const filteredDenormalizedData = denormalizedData.filter((item) => {
-    let schoolIdFlag
-    let teacherIdFlag
-    if (role !== 'teacher') {
-      schoolIdFlag = !!(
-        item.schoolId === filters.schoolId || filters.schoolId === 'all'
-      )
-      teacherIdFlag = !!(
-        item.teacherId === filters.teacherId || filters.teacherId === 'all'
-      )
-    }
-    const groupIdFlag = !!(
-      item.groupId === filters.groupId || filters.groupId === 'all'
-    )
     const genderFlag = !!(
       item.gender === filters.gender || filters.gender === 'all'
     )
@@ -265,32 +169,9 @@ export const getFilteredDenormalizedData = (
       item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
     )
     const raceFlag = !!(item.race === filters.race || filters.race === 'all')
-
-    if (
-      role === 'teacher' &&
-      groupIdFlag &&
-      genderFlag &&
-      frlStatusFlag &&
-      ellStatusFlag &&
-      iepStatusFlag &&
-      raceFlag
-    ) {
-      return true
-    }
-    if (
-      role !== 'teacher' &&
-      schoolIdFlag &&
-      teacherIdFlag &&
-      groupIdFlag &&
-      genderFlag &&
-      frlStatusFlag &&
-      ellStatusFlag &&
-      iepStatusFlag &&
-      raceFlag
-    ) {
-      return true
-    }
-    return false
+    return (
+      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag
+    )
   })
   return filteredDenormalizedData
     .sort((a, b) => a.standard.localeCompare(b.standard))
@@ -344,7 +225,7 @@ export const getChartData = (
 
     const masteryLabelInfo = {}
 
-    Object.keys(tempMasteryCountHelper).map((_item) => {
+    Object.keys(tempMasteryCountHelper).forEach((_item) => {
       if (masteryMap[_item]) {
         const masteryPercentage = round(
           (tempMasteryCountHelper[_item] / totalStudents) * 100

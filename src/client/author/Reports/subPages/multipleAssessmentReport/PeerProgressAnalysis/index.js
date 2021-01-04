@@ -69,25 +69,27 @@ const PeerProgressAnalysis = ({
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
   const [selectedTrend, setSelectedTrend] = useState('')
-  // support for pagination from backend
+  // support for tests pagination from backend
   const [pageFilters, setPageFilters] = useState({
-    page: 1,
+    page: 0, // set to 0 initially to prevent multiple api request on tab change
     pageSize: 25,
   })
 
+  // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
   }, [settings, ddfilter, compareBy.key])
 
+  // get paginated data
   useEffect(() => {
-    const { termId, reportId } = settings.requestFilters
-    if (termId || reportId) {
-      getPeerProgressAnalysisRequest({
-        compareBy: compareBy.key,
-        ...settings.requestFilters,
-        ...ddfilter,
-        ...pageFilters,
-      })
+    const q = {
+      ...settings.requestFilters,
+      ...ddfilter,
+      compareBy: compareBy.key,
+      ...pageFilters,
+    }
+    if ((q.termId || q.reportId) && pageFilters.page) {
+      getPeerProgressAnalysisRequest(q)
     }
   }, [pageFilters])
 

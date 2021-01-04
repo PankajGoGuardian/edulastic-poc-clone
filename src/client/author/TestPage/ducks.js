@@ -1436,7 +1436,13 @@ const setTime = (userRole) => {
     .set({ hour: 23, minute: 0, second: 0, millisecond: 0 })
 }
 
-const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
+const getAssignSettings = ({
+  userRole,
+  entity,
+  userId,
+  features,
+  isPlaylist,
+}) => {
   const testType = entity?.testType
   const { ASSESSMENT, COMMON, PRACTICE } = testConst.type
   const isAdmin =
@@ -1467,7 +1473,13 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.pauseAllowed = entity.pauseAllowed || false
   }
 
-  if (!isPlaylist && features.free && !features.premium) {
+  if (
+    !isPlaylist &&
+    features.free &&
+    !features.premium &&
+    entity.createdBy._id !== userId &&
+    !entity.freezeSettings
+  ) {
     settings.testType = ASSESSMENT
     settings.maxAttempts = 1
     settings.markAsDone = completionTypes.AUTOMATICALLY
@@ -1578,6 +1590,7 @@ function* receiveTestByIdSaga({ payload }) {
     const assignSettings = getAssignSettings({
       userRole,
       entity,
+      userId,
       isPlaylist: payload.isPlaylist,
       features,
     })

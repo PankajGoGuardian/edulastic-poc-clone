@@ -32,10 +32,10 @@ import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
 import {
-  FilterButton,
   ReportContaner,
   SearchField,
   FilterLabel,
+  FilterButtonClear,
 } from '../../common/styled'
 
 const MultipleAssessmentReportContainer = (props) => {
@@ -110,7 +110,7 @@ const MultipleAssessmentReportContainer = (props) => {
     if (navigation.locToData[pageTitle]) {
       const arr = Object.keys(filt)
       const obj = {}
-      arr.map((item) => {
+      arr.forEach((item) => {
         const val = filt[item] === '' ? 'All' : filt[item]
         obj[item] = val
       })
@@ -125,10 +125,10 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters.testIds) {
-      const arr = Object.keys(settings.requestFilters)
+    if (settings.requestFilters) {
       const obj = {}
-      arr.map((item) => {
+      const arr = Object.keys(settings.requestFilters)
+      arr.forEach((item) => {
         const val =
           settings.requestFilters[item] === ''
             ? 'All'
@@ -139,10 +139,8 @@ const MultipleAssessmentReportContainer = (props) => {
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
-    const computedChartNavigatorLinks = computeChartNavigationLinks(
-      settings.requestFilters
-    )
-    updateNavigation(computedChartNavigatorLinks)
+    const navigationItems = computeChartNavigationLinks(settings.requestFilters)
+    updateNavigation(navigationItems)
   }, [settings])
 
   const toggleFilter = (e, status = false) => {
@@ -156,20 +154,19 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   const onGoClick = (_settings) => {
-    if (_settings.selectedTest) {
+    if (_settings.selectedTests) {
       const obj = {}
       const arr = Object.keys(_settings.filters)
-      arr.map((item) => {
+      arr.forEach((item) => {
         const val =
           _settings.filters[item] === 'All' ? '' : _settings.filters[item]
         obj[item] = val
       })
-
-      const { selectedTest = [] } = _settings
+      const { selectedTests = [] } = _settings
       setMARSettings({
         requestFilters: {
           ...obj,
-          testIds: selectedTest.join(','),
+          testIds: selectedTests.join(','),
         },
       })
     }
@@ -183,25 +180,26 @@ const MultipleAssessmentReportContainer = (props) => {
       [comData]: selected.key === 'all' ? '' : selected.key,
     })
   }
+
   const pageTitleList = [
     'performance-over-time',
     'peer-progress-analysis',
     'student-progress',
   ]
-  const extraFilters = pageTitleList.includes(pageTitle)
-    ? demographics &&
-      demographics.map((item) => (
-        <SearchField key={item.key}>
-          <FilterLabel>{item.title}</FilterLabel>
-          <ControlDropDown
-            selectCB={updateCB}
-            data={item.data}
-            comData={item.key}
-            by={item.data[0]}
-          />
-        </SearchField>
-      ))
-    : []
+  const extraFilters =
+    pageTitleList.includes(pageTitle) && demographics
+      ? demographics.map((item) => (
+          <SearchField key={item.key}>
+            <FilterLabel>{item.title}</FilterLabel>
+            <ControlDropDown
+              selectCB={updateCB}
+              data={item.data}
+              comData={item.key}
+              by={item.data[0]}
+            />
+          </SearchField>
+        ))
+      : []
 
   return (
     <>
@@ -242,9 +240,9 @@ const MultipleAssessmentReportContainer = (props) => {
           setFirstLoad={setFirstLoad}
         />
         {!reportId ? (
-          <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+          <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
             <IconFilter />
-          </FilterButton>
+          </FilterButtonClear>
         ) : null}
         <ReportContaner showFilter={showFilter}>
           <Route

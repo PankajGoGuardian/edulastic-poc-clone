@@ -5,16 +5,25 @@ import SVG from '@edulastic/icons/src/common/SVG'
 const IconGraphRay = (props) => (
   <SVG
     xmlns="http://www.w3.org/2000/svg"
-    width="34.619"
-    height="15.66"
-    viewBox="0 0 34.619 15.66"
+    viewBox="0 0 29.737 24.338"
     {...props}
   >
-    <g transform="translate(-252.267 -306.638)">
-      <path d="M256.486,319.688a1,1,0,0,1-.258-1.966l26.53-7.109a1,1,0,0,1,.517,1.932l-26.529,7.108A.975.975,0,0,1,256.486,319.688Z" />
-      <path d="M257.921,315.264a3.769,3.769,0,1,1-5.149,1.379,3.769,3.769,0,0,1,5.149-1.379Z" />
-      <path d="M271.921,311.484a3.769,3.769,0,1,1-5.149,1.379,3.769,3.769,0,0,1,5.149-1.379Z" />
-      <path d="M286.886,310.465l-3.828,6.63-1.562-5.643-1.24-4.814Z" />
+    <g transform="translate(0 1.932)">
+      <path
+        d="M14.988,0,0,14.988"
+        transform="translate(13.094 0) rotate(30)"
+        fill="none"
+        strokeLinecap="round"
+        strokeWidth="2"
+      />
+      <path
+        d="M3.769,0A3.769,3.769,0,1,1,0,3.769,3.769,3.769,0,0,1,3.769,0Z"
+        transform="translate(3.769 7.672) rotate(30)"
+      />
+      <path
+        d="M0,0H5.809L2.693,3.167,0,5.809Z"
+        transform="translate(29.737 6.76) rotate(120)"
+      />
     </g>
   </SVG>
 )

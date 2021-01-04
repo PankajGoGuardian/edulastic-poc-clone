@@ -30,18 +30,20 @@ export const getReportsMARSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  selectedTest: [{ key: '', title: '' }],
   requestFilters: {
     reportId: '',
     termId: '',
     subject: '',
     grade: '',
-    courseId: '',
-    groupId: '',
+    assessmentTypes: '',
+    testIds: '',
     schoolIds: '',
     teacherIds: '',
-    assessmentType: '',
-    testIds: '',
+    studentSubject: '',
+    studentGrade: '',
+    studentCourseId: '',
+    classId: '',
+    groupId: '',
   },
 }
 

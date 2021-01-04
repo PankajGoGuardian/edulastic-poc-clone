@@ -6,10 +6,8 @@ const RECEIVE_STUDENT_QUESTION_SUCCESS = '[answer] receive list success'
 
 export default function reducer(state = initialState, { type, payload }) {
   switch (type) {
-    case SET_ANSWER: {
-      const { itemId = 'new', id, data } = payload
-      return { ...state, [`${itemId}_${id}`]: data }
-    }
+    case SET_ANSWER:
+      return { ...state, [payload.id]: payload.data }
     case LOAD_ANSWERS:
       return {
         ...state,

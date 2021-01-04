@@ -67,6 +67,7 @@ const PerformanceByStudents = ({
   isCliUser,
   sharedReport,
   setPerformanceBandProfile,
+  toggleFilter,
 }) => {
   const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -99,6 +100,13 @@ const PerformanceByStudents = ({
 
   useEffect(() => {
     setPerformanceBandProfile(performanceByStudents?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !performanceByStudents.studentMetricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
   }, [performanceByStudents])
 
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)

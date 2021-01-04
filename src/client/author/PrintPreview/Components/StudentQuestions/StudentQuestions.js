@@ -85,13 +85,9 @@ class StudentQuestions extends Component {
       const questions = filterQuestions.map((question) => {
         const { id } = question
         let qIndex = 0
-        let qActivities = questionActivities.filter(
-          ({ qid, testItemId }) => qid === id && testItemId === item._id
-        )
+        let qActivities = questionActivities.filter(({ qid }) => qid === id)
         qActivities = qActivities.map((q) => {
-          const userQuestion = userQActivities.find(
-            ({ _id, testItemId }) => _id === q.qid && testItemId === item._id
-          )
+          const userQuestion = userQActivities.find(({ _id }) => _id === q.qid)
           if (userQuestion) {
             q.qIndex = ++qIndex
             q.timespent = userQuestion.timespent

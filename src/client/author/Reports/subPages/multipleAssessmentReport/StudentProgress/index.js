@@ -66,6 +66,7 @@ const StudentProgress = ({
   location,
   ddfilter,
   sharedReport,
+  toggleFilter,
 }) => {
   const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -115,7 +116,15 @@ const StudentProgress = ({
   )
 
   useEffect(() => {
-    setMetricInfo(get(studentProgress, 'data.result.metricInfo', []))
+    const metrics = get(studentProgress, 'data.result.metricInfo', [])
+    setMetricInfo(metrics)
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
   }, [studentProgress])
 
   const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)

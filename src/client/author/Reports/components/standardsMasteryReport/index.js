@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { withRouter } from 'react-router'
 import { LinkItem, CardsWrapper } from '../../common/components/linkItem'
 import { BoxHeading } from '../../common/components/boxHeading'
 import SMRGradbook from '../../../src/assets/reports/smr-gradbook/smr-gradbook.png'
@@ -32,13 +33,21 @@ const links = [
   // }
 ]
 
-export const StandardsMasteryReport = ({ premium }) => (
+const StandardsMasteryReport = ({ premium, history }) => (
   <div>
     <BoxHeading heading="Standards Mastery Report" iconType="pie-chart" />
     <CardsWrapper>
       {links.map((data) => (
-        <LinkItem key={data.title} data={data} tiles premium={premium} />
+        <LinkItem
+          history={history}
+          key={data.title}
+          data={data}
+          tiles
+          premium={premium}
+        />
       ))}
     </CardsWrapper>
   </div>
 )
+
+export default withRouter(StandardsMasteryReport)

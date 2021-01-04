@@ -48,6 +48,7 @@ const PeerPerformance = ({
   filters,
   sharedReport,
   setPerformanceBandProfile,
+  toggleFilter,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -103,6 +104,13 @@ const PeerPerformance = ({
 
   useEffect(() => {
     setPerformanceBandProfile(peerPerformance?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !peerPerformance.metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
   }, [peerPerformance])
 
   let { compareByDropDownData } = dropDownFormat

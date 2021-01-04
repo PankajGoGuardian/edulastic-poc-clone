@@ -37,7 +37,7 @@ export const AnswerForm = styled.div`
 `
 
 export const QuestionNumber = styled.span`
-  display: flex;
+  display: ${({ display }) => display || 'flex'};
   justify-content: center;
   align-items: center;
   font-size: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 16 : 18) * zoom}px;

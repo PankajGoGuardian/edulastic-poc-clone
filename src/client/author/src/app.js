@@ -805,12 +805,18 @@ const Author = ({
                   />
                   <Route
                     exact
-                    path="/author/groups/details/:classId"
+                    path={[
+                      '/author/groups/details/:classId',
+                      '/author/groups/students/details/:classId',
+                    ]}
                     component={ClassDetails}
                   />
                   <Route
                     exact
-                    path="/author/groups/edit/:classId"
+                    path={[
+                      '/author/groups/edit/:classId',
+                      '/author/groups/students/edit/:classId',
+                    ]}
                     component={ClassEdit}
                   />
                   <Route

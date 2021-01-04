@@ -145,9 +145,9 @@ const MultipleAssessmentReportContainer = (props) => {
     updateNavigation(computedChartNavigatorLinks)
   }, [settings])
 
-  const toggleFilter = (e) => {
+  const toggleFilter = (e, status = false) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, !showFilter)
+      onRefineResultsCB(e, status || !showFilter)
     }
   }
 
@@ -258,6 +258,7 @@ const MultipleAssessmentReportContainer = (props) => {
                   settings={transformedSettings}
                   ddfilter={ddfilter}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )
             }}
@@ -275,6 +276,7 @@ const MultipleAssessmentReportContainer = (props) => {
                   ddfilter={ddfilter}
                   MARFilterData={MARFilterData}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )
             }}
@@ -290,6 +292,7 @@ const MultipleAssessmentReportContainer = (props) => {
                   settings={transformedSettings}
                   ddfilter={ddfilter}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )
             }}

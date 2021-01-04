@@ -8,8 +8,8 @@ import {
 import { Row, Col, Icon } from 'antd'
 
 export const IconWrapper = styled.div`
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   background: ${themeColorLighter}33;
   border-radius: 50%;
   position: relative;
@@ -24,25 +24,25 @@ export const OverlayText = styled.div`
   color: ${themeColorLighter};
   font-size: 14px;
   z-index: 30;
-  line-height: 2.8rem;
+  line-height: 36px;
   font-weight: 600;
 `
 
 export const RowWrapper = styled(Row)`
   display: flex;
   align-items: center;
-  margin-bottom: 14px;
-  height: 44px;
+  margin-bottom: 10px;
+  height: 36px;
   cursor: pointer;
 `
 
 export const LeftCol = styled(Col)`
   width: ${({ width }) => width || '45px'};
-  margin-right: 15px;
+  margin-right: 12px;
 `
 
 export const CenterCol = styled(Col)`
-  width: calc(100% - 105px);
+  width: calc(100% - 60px);
   display: flex;
   flex-direction: column;
 `
@@ -74,11 +74,11 @@ export const RowWrapper1 = styled(Row)`
 `
 
 export const CardText = styled.div`
-  margin-top: 14px;
+  padding: 10px 12px;
 `
 export const Image = styled.img`
-  width: 51px;
-  height: 31px;
+  width: 44px;
+  height: 26px;
   border-radius: 5px;
 `
 
@@ -98,7 +98,7 @@ export const IconRightArrow = styled(Icon)`
 
 const SharedTextStyle = css`
   font-weight: 600;
-  width: 98%;
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -109,12 +109,12 @@ export const AssignmentStatusText = styled.p`
   ${SharedTextStyle}
 `
 export const AssignmentTitle = styled.p`
-  font-size: 12px;
+  font-size: 11px;
   ${SharedTextStyle}
 `
 
 export const AssignmentCount = styled.p`
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #30404f;
 `

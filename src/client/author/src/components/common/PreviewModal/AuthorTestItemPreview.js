@@ -245,7 +245,6 @@ class AuthorTestItemPreview extends Component {
           {...restProps}
           // widgetIndex was needed for passages if it has multiple tabs and widgets
           widgetIndex={widgetIndex}
-          testItemId={item._id}
         />
       </Tabs.TabContainer>
     )

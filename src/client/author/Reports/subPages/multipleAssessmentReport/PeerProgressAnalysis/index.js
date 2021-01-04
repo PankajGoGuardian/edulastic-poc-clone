@@ -60,6 +60,7 @@ const PeerProgressAnalysis = ({
   error,
   role,
   sharedReport,
+  toggleFilter,
 }) => {
   const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
     sharedReport,
@@ -90,11 +91,21 @@ const PeerProgressAnalysis = ({
     }
   }, [pageFilters])
 
-  const { metricInfo = [], metaInfo = [], testsCount = 0 } = get(
-    peerProgressAnalysis,
-    'data.result',
-    {}
+  const { metricInfo = [], metaInfo = [], testsCount = 0 } = useMemo(
+    () => get(peerProgressAnalysis, 'data.result', {}),
+    [peerProgressAnalysis]
   )
+
+  useEffect(() => {
+    const metrics = get(peerProgressAnalysis, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [peerProgressAnalysis])
 
   const [parsedData, trendCount] = parseTrendData(
     metricInfo,

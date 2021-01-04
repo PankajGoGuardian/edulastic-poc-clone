@@ -92,7 +92,7 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '' } = JSON.parse(
+    const { termId = '', grades = [], assignedBy = '' } = JSON.parse(
       sessionStorage.getItem('filters[Assignments]') || '{}'
     )
     if (isEmpty(assignmentsSummary)) {
@@ -105,6 +105,8 @@ class AssignmentAdvanced extends Component {
       termId,
       pageNo,
       status: filterStatus,
+      grades,
+      assignedBy,
     })
   }
 

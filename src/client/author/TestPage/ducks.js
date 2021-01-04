@@ -48,6 +48,7 @@ import {
   helpers,
   notification,
 } from '@edulastic/common'
+import signUpState from '@edulastic/constants/const/signUpState'
 import { createGroupSummary } from './utils'
 import {
   SET_MAX_ATTEMPT,
@@ -74,6 +75,7 @@ import {
   getUserIdSelector,
   getUserId,
   getIsCurator,
+  getUserSignupStatusSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -90,7 +92,6 @@ import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
-import { answersByQId } from '../../assessment/selectors/test'
 
 // constants
 
@@ -1361,11 +1362,7 @@ export const getQuestions = (itemGroups = []) => {
   for (const itemGroup of itemGroups) {
     for (const item of itemGroup.items) {
       const { questions = [], resources = [] } = item.data || {}
-      const questionsWithItemId = [...questions, ...resources].map((q) => ({
-        ...q,
-        testItemId: item._id,
-      }))
-      allQuestions.push(...questionsWithItemId)
+      allQuestions.push(...questions, ...resources)
     }
   }
   return allQuestions
@@ -2327,9 +2324,8 @@ function* getEvaluation(testItemId, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
-  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answersByQids,
+    answers,
     questions,
     itemLevelScoring,
     newScore || itemLevelScore
@@ -2340,9 +2336,8 @@ function* getEvaluationFromItem(testItem, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
-  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answersByQids,
+    answers,
     questions,
     itemLevelScoring,
     newScore || itemLevelScore
@@ -2479,7 +2474,22 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     }
     let defaultTestSettings = {}
     if (role !== roleuser.EDULASTIC_CURATOR) {
-      defaultTestSettings = yield call(testsApi.getDefaultTestSettings, payload)
+      const currentSignupState = yield select(getUserSignupStatusSelector)
+      if (
+        role === roleuser.TEACHER &&
+        currentSignupState == signUpState.ACCESS_WITHOUT_SCHOOL
+      ) {
+        const userId = yield select(getUserIdSelector)
+        defaultTestSettings = yield call(testsApi.getDefaultTestSettings, {
+          orgId: userId,
+          params: { orgType: 'teacher' },
+        })
+      } else {
+        defaultTestSettings = yield call(
+          testsApi.getDefaultTestSettings,
+          payload
+        )
+      }
     } else {
       const { performanceBand, standardGradingScale } = testEntity
       const performanceBandProfiles = [performanceBand]

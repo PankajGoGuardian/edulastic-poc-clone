@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { lazy } from '@loadable/component'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { removeFromLocalStorage } from '@edulastic/api/src/utils/Storage'
+import Spin from 'antd/es/spin'
+import {
+  removeFromLocalStorage,
+  getAccessToken,
+} from '@edulastic/api/src/utils/Storage'
 import { SelectRolePopup } from './student/SsoLogin/selectRolePopup'
 import { UnauthorizedPopup } from './student/SsoLogin/UnauthorizedPopup'
 import StudentSignup from './student/Signup/components/StudentContainer'
@@ -32,8 +36,29 @@ const Auth = ({
   orgType,
   persistAuthStateAndRedirectTo,
 }) => {
-  if (isLoggedInForPrivateRoute(user)) {
-    persistAuthStateAndRedirectTo()
+  const [loading, setLoading] = useState(!!getAccessToken())
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 1000)
+
+    const onBeforeUnload = () => setLoading(true)
+
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload)
+    }
+  }, [])
+  const loggedInForPrivateRoute = isLoggedInForPrivateRoute(user)
+
+  useEffect(() => {
+    if (loggedInForPrivateRoute) {
+      persistAuthStateAndRedirectTo()
+    }
+  }, [loggedInForPrivateRoute])
+
+  if ((user?.authenticating && getAccessToken()) || loading) {
+    return <Spin />
   }
 
   if (location?.state?.showUnauthorized) {
@@ -66,7 +91,9 @@ const Auth = ({
               orgShortName={orgShortName}
               orgType={orgType}
             />
-            <SelectRolePopup visible footer={null} />
+            {user?.user?.role ? null : (
+              <SelectRolePopup visible footer={null} />
+            )}
           </>
         )}
       </>

@@ -1,6 +1,7 @@
 import React from 'react'
+import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import { GoogleLogin } from 'react-google-login'
 
@@ -26,6 +27,7 @@ import { ButtonsWrapper } from './styled'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const Header = ({
   fetchGoogleClassList,
@@ -40,6 +42,7 @@ const Header = ({
   user,
   handleCanvasBulkSync,
   isClassLink,
+  history,
 }) => {
   const { cleverId } = user
 
@@ -96,6 +99,12 @@ const Header = ({
       text: 'Groups',
     },
   ]
+
+  const createNewClass = () =>
+    history.push({
+      pathname: '/author/manageClass/createClass',
+      state: { type: currentTab },
+    })
 
   return (
     <MainHeader Icon={IconManage} headingText={t('common.manageClassTitle')}>
@@ -168,18 +177,15 @@ const Header = ({
               </EduButton>
             )}
         </>
-        <Link
-          to={{
-            pathname: '/author/manageClass/createClass',
-            state: { type: currentTab },
-          }}
-          data-cy="createClass"
-        >
-          <EduButton isBlue>
-            <IconPlusCircle />
-            <span>Create {currentTab}</span>
-          </EduButton>
-        </Link>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton data-cy="createClass" isBlue onClick={handleClick}>
+              <IconPlusCircle />
+              <span>Create {currentTab}</span>
+            </EduButton>
+          )}
+          onClick={createNewClass}
+        />
       </ButtonsWrapper>
     </MainHeader>
   )
@@ -187,6 +193,9 @@ const Header = ({
 
 Header.propTypes = {
   fetchGoogleClassList: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
 }
 
-export default withNamespaces('header')(Header)
+const enhance = compose(withNamespaces('header'), withRouter)
+
+export default enhance(Header)

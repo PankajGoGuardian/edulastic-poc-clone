@@ -23,6 +23,7 @@ import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import AppConfig from '../../../../app-config'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+import { changeDataToPreferredLanguage } from './helpers'
 
 const EmptyWrapper = styled.div``
 
@@ -30,10 +31,21 @@ class ClozeText extends Component {
   static contextType = AnswerContext
 
   getRenderData = () => {
-    const { item: templateItem, history, view } = this.props
+    const { history, view, preferredLanguage } = this.props
+    let { item: templateItem } = this.props
+    const { languageFeatures } = templateItem
+
+    if (preferredLanguage !== 'en' && languageFeatures?.[preferredLanguage]) {
+      templateItem = produce(templateItem, (draft) => {
+        changeDataToPreferredLanguage(
+          draft,
+          languageFeatures?.[preferredLanguage]
+        )
+      })
+    }
+
     const itemForPreview = replaceVariables(templateItem)
     const item = view === EDIT ? templateItem : itemForPreview
-
     const locationState = history.location.state
     const isDetailPage =
       locationState !== undefined ? locationState.itemDetail : false
@@ -42,6 +54,7 @@ class ClozeText extends Component {
       : item.options
     let previewStimulus
     let itemForEdit
+
     if (item.smallSize || isDetailPage) {
       previewStimulus = item.stimulus
       itemForEdit = templateItem
@@ -54,6 +67,7 @@ class ClozeText extends Component {
         validation: templateItem.validation,
       }
     }
+
     return {
       previewStimulus,
       previewDisplayOptions,

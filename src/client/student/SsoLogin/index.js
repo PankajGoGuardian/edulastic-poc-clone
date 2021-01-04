@@ -88,6 +88,11 @@ class SsoLogin extends React.Component {
       if (state) payload.state = JSON.parse(state)
       newselaSSOLogin(payload)
     }
+    /**
+     * to force render with current instance variables
+     * This is equivalent to a simple setState. But using foceUpdate for minimal impact
+     */
+    this.forceUpdate()
   }
 
   handleConfirmation = () => {

@@ -25,6 +25,7 @@ const PerformanceOverTime = ({
   settings,
   loading,
   error,
+  toggleFilter,
 }) => {
   // support for pagination from backend
   const [pageFilters, setPageFilters] = useState({
@@ -47,6 +48,17 @@ const PerformanceOverTime = ({
       })
     }
   }, [pageFilters])
+
+  useEffect(() => {
+    const metricInfo = get(performanceOverTime, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [performanceOverTime])
 
   const rawData = get(performanceOverTime, 'data.result', {})
   const testsCount = rawData.testsCount || 0

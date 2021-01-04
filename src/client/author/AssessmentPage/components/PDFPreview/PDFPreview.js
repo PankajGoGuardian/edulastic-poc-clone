@@ -56,7 +56,6 @@ const PDFPreview = ({
   annotationToolsProperties,
   isEditable,
   toggleIntercomDisplay,
-  itemId,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -121,10 +120,9 @@ const PDFPreview = ({
     scalePDF(round((containerWidth - 40) / viewport.width, 1))
     if (forwardedRef.current) {
       setTimeout(() => {
-        if(forwardedRef.current){
-          forwardedRef.current.updateScroll();
+        if (forwardedRef.current) {
+          forwardedRef.current.updateScroll()
         }
-        
       }, 10)
     }
   }
@@ -203,7 +201,7 @@ const PDFPreview = ({
                       questionIndex={qIndex}
                       review={review}
                       data={questionsById[questionId]}
-                      answer={answersById[`${itemId}_${questionId}`]}
+                      answer={answersById[questionId]}
                       previewMode={viewMode === 'edit' ? 'clear' : previewMode}
                       onDragStart={() => {
                         setCurrentAnnotationTool('cursor')
@@ -215,7 +213,6 @@ const PDFPreview = ({
                       annotations
                       pdfPreview
                       zoom={pdfScale}
-                      itemId={itemId}
                     />
                   </div>
                 ))}

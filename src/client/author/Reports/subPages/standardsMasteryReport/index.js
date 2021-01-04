@@ -90,7 +90,10 @@ const StandardsMasteryReportContainer = (props) => {
   )
 
   const [sharedReport, userRole] = useMemo(() => {
-    const _sharedReport = sharedReportList.find((s) => s._id === reportId)
+    const _sharedReport =
+      sharedReportList.length > 0
+        ? sharedReportList.find((s) => s._id === reportId)
+        : []
     const _userRole = _sharedReport?.sharedBy?.role || role
     return [_sharedReport, _userRole]
   }, [reportId, sharedReportList])

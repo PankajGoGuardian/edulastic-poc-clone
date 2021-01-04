@@ -81,6 +81,7 @@ const SingleAssessmentReportFilters = ({
   reportId,
   selectedPerformanceBandProfile,
   selectedStandardManteryScale,
+  toggleFilter,
 }) => {
   const assessmentTypeRef = useRef()
   const [selectedClass, setSelectedClass] = useState(null)
@@ -162,6 +163,15 @@ const SingleAssessmentReportFilters = ({
           ...search,
         }
       }
+      if (isStandardProficiencyRequired) {
+        search.standardsProficiencyProfile =
+          search.standardsProficiencyProfile ||
+          standardProficiencyProfiles[0]?._id
+      }
+      if (performanceBandRequired) {
+        search.performanceBandProfile =
+          search.performanceBandProfile || performanceBandProfiles[0]?._id
+      }
       const urlSchoolYear =
         schoolYear.find((item) => item.key === search.termId) ||
         schoolYear.find((item) => item.key === defaultTermId) ||
@@ -178,7 +188,7 @@ const SingleAssessmentReportFilters = ({
         key: 'All',
         title: 'All Grades',
       }
-      const urlTestId = _testId || ''
+      const urlTestId = _testId || savedFilters?.testId || ''
       const obtainedFilters = {
         termId: urlSchoolYear.key,
         subject: urlSubject.key,
@@ -189,6 +199,8 @@ const SingleAssessmentReportFilters = ({
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
+        standardsProficiencyProfile: search.standardsProficiencyProfile || '',
+        performanceBandProfile: search.performanceBandProfile || '',
       }
       const urlParams = { ...obtainedFilters }
 
@@ -220,6 +232,11 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateTestId = (selected) => {
+    if (firstLoad && !selected.key) {
+      toggleFilter(null, true)
+      setFirstLoad(false)
+      return
+    }
     const _testId = selected.key || ''
     setFiltersOrTestId({ testId: _testId })
     if (reportId) {
@@ -475,7 +492,6 @@ const enhance = compose(
       user: getUser(state),
       prevSARFilterData: getReportsPrevSARFilterData(state),
       performanceBandProfiles: state?.performanceBandReducer?.profiles || [],
-      performanceBandLoading: state?.performanceBandReducer?.loading || false,
       standardProficiencyProfiles:
         state?.standardsProficiencyReducer?.data || [],
       standardProficiencyLoading:

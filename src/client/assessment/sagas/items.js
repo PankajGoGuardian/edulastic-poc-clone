@@ -224,7 +224,6 @@ export function* saveUserResponse({ payload }) {
     const itemAnswers = {}
     const shuffles = {}
     const timesSpent = {}
-    const testItemId = currentItem._id
     questions.forEach((question) => {
       if (isDocBased) {
         if (questionId && question === questionId) {
@@ -235,7 +234,7 @@ export function* saveUserResponse({ payload }) {
       } else {
         timesSpent[question] = ts / questions.length
       }
-      itemAnswers[question] = answers[`${testItemId}_${question}`]
+      itemAnswers[question] = answers[question]
       // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
       const {
@@ -246,18 +245,15 @@ export function* saveUserResponse({ payload }) {
         STUDENT_RESPONSE_AND_FEEDBACK,
         SCORE_RESPONSE_AND_FEEDBACK,
       ].includes(redirectPolicy)
-      if (
-        hasPrevResponse &&
-        !answers[`${testItemId}_${question}`] &&
-        !!userPrevAnswer[`${testItemId}_${question}`]
-      ) {
-        itemAnswers[question] = userPrevAnswer[`${testItemId}_${question}`]
+      if (hasPrevResponse && !answers[question] && !!userPrevAnswer[question]) {
+        itemAnswers[question] = userPrevAnswer[question]
       }
       if (shuffledOptions[question]) {
         shuffles[question] = shuffledOptions[question]
       }
     })
 
+    const testItemId = currentItem._id
     const _userWork = yield select(
       ({ userWork }) => userWork.present[testItemId] || {}
     )

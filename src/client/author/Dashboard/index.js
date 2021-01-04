@@ -1,5 +1,5 @@
 export {
   watcherSaga as dashboardTeacherSaga,
   reducer as dashboardTeacher,
-} from './duck'
+} from './ducks'
 export { default } from './components/Dashboard'

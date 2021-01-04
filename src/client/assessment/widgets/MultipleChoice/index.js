@@ -31,6 +31,7 @@ import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import { getFontSize } from '../../utils/helpers'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+import { changeDataToPreferredLanguage } from './helpers'
 
 const EmptyWrapper = styled.div``
 
@@ -47,9 +48,20 @@ const Divider = styled.div`
 
 class MultipleChoice extends Component {
   getRenderData = () => {
-    const { item: templateItem, history, view } = this.props
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem)
+    const { history, view, preferredLanguage } = this.props
+    let { item: templateItem } = this.props
+    const { languageFeatures } = templateItem || {}
 
+    if (preferredLanguage !== 'en' && languageFeatures?.[preferredLanguage]) {
+      templateItem = produce(templateItem, (draft) => {
+        changeDataToPreferredLanguage(
+          draft,
+          languageFeatures?.[preferredLanguage]
+        )
+      })
+    }
+
+    const item = view === EDIT ? templateItem : replaceVariables(templateItem)
     const locationState = history.location.state
     const isDetailPage =
       locationState !== undefined ? locationState.itemDetail : false
@@ -70,6 +82,7 @@ class MultipleChoice extends Component {
         validation: templateItem.validation,
       }
     }
+
     return {
       previewStimulus,
       previewDisplayOptions,

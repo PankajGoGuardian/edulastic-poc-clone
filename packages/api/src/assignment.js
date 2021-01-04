@@ -157,12 +157,17 @@ const fetchAssignmentsClassList = ({
   termId,
   pageNo = 1,
   status = '',
+  grades = [],
+  assignedBy = '',
 }) =>
   api
     .callApi({
       useSlowApi: true,
-      url: `${prefix}/district/${districtId}/test/${testId}?testType=${testType}&termId=${termId}&pageNo=${pageNo}&status=${status}`,
+      url: `${prefix}/district/${districtId}/test/${testId}`,
       method: 'get',
+      params: { testType, termId, pageNo, status, grades, assignedBy },
+      paramsSerializer: (params) =>
+        qs.stringify(params, { arrayFormat: 'comma' }),
     })
     .then((result) => result.data.result)
 

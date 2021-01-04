@@ -1,4 +1,3 @@
-/* global $ */
 import Helpers, { templateHasMath } from '../helpers'
 import { getMathTemplate } from '../../../../src/client/assessment/utils/variables'
 
@@ -107,13 +106,13 @@ export const getMathHtml = (latex) => {
    */
   _latex = addSpaceMatrixFraction(_latex)
   let katexString = '<span></span>'
-  try{
+  try {
     katexString = window.katex.renderToString(_latex, {
       throwOnError: false,
       displayMode: true,
     })
-  }catch(e){
-    console.warn("Katex parse error : ", _latex, e)
+  } catch (e) {
+    console.warn('Katex parse error : ', _latex, e)
   }
   // styles are applied to stimulus in itemBank/testReview(collapsed view)
   // it was affecting math content as well and EV-10152 was caused

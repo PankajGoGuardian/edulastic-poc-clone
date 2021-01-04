@@ -2,88 +2,50 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, groupBy } from 'lodash'
+import qs from 'qs'
 
 // components
-import { Col, Row, Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
-import { title } from '@edulastic/colors'
-import { TextWrapper } from '../../../styledComponents'
-import { CardBox } from './styled'
-import CardImage from './components/CardImage/cardImage'
-import CardTextContent from './components/CardTextContent/cardTextContent'
-import CreateClassPage from './components/CreateClassPage/createClassPage'
+import { Spin } from 'antd'
+import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
+import { bannerActions } from '@edulastic/constants/const/bannerActions'
+import { segmentApi } from '@edulastic/api'
+import BannerSlider from './components/BannerSlider/BannerSlider'
+import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
+import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
-import ClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/ClassSelectModal'
-import CanvasClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
-// static data
 
 // ducks
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
-import {
-  fetchClassListAction,
-  fetchCleverClassListRequestAction,
-  syncClassesWithCleverAction,
-  getCleverClassListSelector,
-  getCanvasCourseListRequestAction,
-  getCanvasSectionListRequestAction,
-  setShowCleverSyncModalAction,
-} from '../../../../../ManageClass/ducks'
-import { receiveTeacherDashboardAction } from '../../../../duck'
-import {
-  getGoogleAllowedInstitionPoliciesSelector,
-  getCanvasAllowedInstitutionPoliciesSelector,
-  getInterestedGradesSelector,
-  getInterestedSubjectsSelector,
-  getCleverLibraryUserSelector,
-} from '../../../../../src/selectors/user'
+import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
+import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
-import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
+import { resetTestFiltersAction } from '../../../../../TestList/ducks'
+import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 
-const Card = ({ data }) => (
-  <CardBox data-cy={data.name}>
-    <Row>
-      <CardImage data={data} />
-    </Row>
-    <Row>
-      <CardTextContent data={data} />
-    </Row>
-  </CardBox>
-)
+const PREMIUM_TAG = 'PREMIUM'
+
+const sortByOrder = (prop) =>
+  prop.sort((a, b) => a.config?.order - b.config?.order)
 
 const MyClasses = ({
   getTeacherDashboard,
   classData,
   loading,
-  fetchClassList,
   history,
-  isUserGoogleLoggedIn,
   getDictCurriculums,
   receiveSearchCourse,
   districtId,
-  googleAllowedInstitutions,
-  canvasAllowedInstitutions,
-  courseList,
-  loadingCleverClassList,
-  cleverClassList,
-  getStandardsListBySubject,
   fetchCleverClassList,
-  syncCleverClassList,
-  defaultGrades = [],
-  defaultSubjects = [],
-  isCleverUser,
-  institutionIds,
-  canvasCourseList,
-  canvasSectionList,
-  getCanvasCourseListRequest,
-  getCanvasSectionListRequest,
   user,
   showCleverSyncModal,
-  setShowCleverSyncModal,
-  teacherData,
+  dashboardTiles,
+  windowWidth,
+  resetTestFilters,
+  resetPlaylistFilters,
 }) => {
-  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
+  const [showBannerModal, setShowBannerModal] = useState(null)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -98,6 +60,8 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
+  const premiumUser = user.features.premium
+
   const sortableClasses = classData
     .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
     .sort((a, b) => b.asgnStartDate - a.asgnStartDate)
@@ -109,107 +73,133 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-  const ClassCards = allActiveClasses.map((item) => (
-    <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6} key={item._id}>
-      <Card data={item} />
-    </Col>
-  ))
 
-  const isClassLink =
-    teacherData && teacherData.filter((id) => id?.atlasId).length > 0
+  const handleContentRedirect = (filters, contentType) => {
+    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
+      hasNoInterestedFilters: true,
+    })
+    const filter = qs.stringify(entries)
+
+    if (contentType === 'tests') {
+      resetTestFilters()
+    } else {
+      resetPlaylistFilters()
+    }
+    history.push(`/author/${contentType}?${filter}`)
+  }
+
+  const handleFeatureClick = ({ config = {}, tags = [] }) => {
+    const { filters, contentType } = config
+    const content = contentType?.toLowerCase() || 'tests'
+    if (tags.includes(PREMIUM_TAG)) {
+      if (premiumUser) {
+        handleContentRedirect(filters, content)
+      } else {
+        history.push(`/author/subscription`)
+      }
+    } else {
+      handleContentRedirect(filters, content)
+    }
+  }
+
+  const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
+  const bannerSlides = sortByOrder(BANNER || [])
+  const featuredBundles = sortByOrder(FEATURED || [])
+
+  const handleInAppRedirect = (data) => {
+    const filter = qs.stringify(data.filters)
+    history.push(`/author/${data.contentType}?${filter}`)
+  }
+
+  const handleExternalRedirect = (data) => {
+    window.open(data.externalUrl, '_blank')
+  }
+
+  const bannerActionHandler = (filter = {}, description) => {
+    const { action, data } = filter
+    segmentApi.trackUserClick({
+      user,
+      data: { event: `dashboard:banner-${description}:click` },
+    })
+    switch (+action) {
+      case bannerActions.BANNER_DISPLAY_IN_MODAL:
+        setShowBannerModal(data)
+        break
+      case bannerActions.BANNER_APP_REDIRECT:
+        handleInAppRedirect(data)
+        break
+      case bannerActions.BANNER_EXTERNAL_REDIRECT:
+        handleExternalRedirect(data)
+        break
+      default:
+        break
+    }
+  }
+
+  if (loading) {
+    return <Spin style={{ marginTop: '80px' }} />
+  }
+
+  const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
+
+  const GridCountInARow = Math.floor(
+    (windowWidth - 120) / widthOfTilesWithMargin
+  ) // here 120 is width of side-menu 70px and padding of container 50px
+
+  const getClassCardModular = allActiveClasses.length % GridCountInARow
+  const classEmptyBoxCount = getClassCardModular
+    ? new Array(GridCountInARow - getClassCardModular).fill(1)
+    : []
+
+  const getFeatureCardModular = featuredBundles.length % GridCountInARow
+  const featureEmptyBoxCount = getFeatureCardModular
+    ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
+    : []
 
   return (
-    <MainContentWrapper padding="30px">
-      <ClassSelectModal
-        type="clever"
-        visible={showCleverSyncModal}
-        onSubmit={syncCleverClassList}
-        onCancel={() => setShowCleverSyncModal(false)}
-        loading={loadingCleverClassList}
-        classListToSync={cleverClassList}
-        courseList={courseList}
-        getStandardsListBySubject={getStandardsListBySubject}
-        refreshPage="dashboard"
-        existingGroups={allClasses}
-        defaultGrades={defaultGrades}
-        defaultSubjects={defaultSubjects}
-      />
-      <CanvasClassSelectModal
-        visible={showCanvasSyncModal}
-        onCancel={() => setShowCanvasSyncModal(false)}
-        user={user}
-        getCanvasCourseListRequest={getCanvasCourseListRequest}
-        getCanvasSectionListRequest={getCanvasSectionListRequest}
-        canvasCourseList={canvasCourseList}
-        canvasSectionList={canvasSectionList}
-        institutionId={institutionIds[0]}
-      />
-      <TextWrapper size="20px" color={title} style={{ marginBottom: '1rem' }}>
-        My Classes
-      </TextWrapper>
-      {loading ? (
-        <Spin style={{ marginTop: '80px' }} />
-      ) : allActiveClasses.length == 0 ? (
-        <CreateClassPage
-          fetchClassList={fetchClassList}
-          history={history}
-          isUserGoogleLoggedIn={isUserGoogleLoggedIn}
-          allowGoogleLogin={googleAllowedInstitutions.length > 0}
-          canvasAllowedInstitutions={canvasAllowedInstitutions}
-          enableCleverSync={isCleverUser}
-          setShowCleverSyncModal={setShowCleverSyncModal}
-          handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
-          user={user}
-          isClassLink={isClassLink}
+    <MainContentWrapper padding="30px 25px">
+      {!loading && allActiveClasses?.length === 0 && (
+        <BannerSlider
+          bannerSlides={bannerSlides}
+          handleBannerModalClose={() => setShowBannerModal(null)}
+          bannerActionHandler={bannerActionHandler}
+          isBannerModalVisible={showBannerModal}
         />
-      ) : (
-        <Row gutter={20}>{ClassCards}</Row>
       )}
+      {!loading && (
+        <Classes
+          activeClasses={allActiveClasses}
+          emptyBoxCount={classEmptyBoxCount}
+        />
+      )}
+      <FeaturedContentBundle
+        featuredBundles={featuredBundles}
+        handleFeatureClick={handleFeatureClick}
+        emptyBoxCount={featureEmptyBoxCount}
+      />
       <Launch />
     </MainContentWrapper>
   )
 }
 
 export default compose(
+  withWindowSizes,
   withRouter,
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
-      isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
-      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
-        state
-      ),
-      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
-        state
-      ),
-      fetchClassListLoading: state.manageClass.fetchClassListLoading,
       districtId: state.user.user?.orgData?.districtIds?.[0],
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
-      institutionIds: get(state, 'user.user.institutionIds', []),
-      canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
-      canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
-      courseList: get(state, 'coursesReducer.searchResult'),
-      isCleverUser: getCleverLibraryUserSelector(state),
-      loadingCleverClassList: get(state, 'manageClass.loadingCleverClassList'),
-      cleverClassList: getCleverClassListSelector(state),
-      getStandardsListBySubject: (subject) =>
-        getFormattedCurriculumsSelector(state, { subject }),
-      defaultGrades: getInterestedGradesSelector(state),
-      defaultSubjects: getInterestedSubjectsSelector(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
-      teacherData: get(state, 'dashboardTeacher.data', []),
     }),
     {
-      fetchClassList: fetchClassListAction,
       receiveSearchCourse: receiveSearchCourseAction,
       getDictCurriculums: getDictCurriculumsAction,
       getTeacherDashboard: receiveTeacherDashboardAction,
       fetchCleverClassList: fetchCleverClassListRequestAction,
-      syncCleverClassList: syncClassesWithCleverAction,
-      getCanvasCourseListRequest: getCanvasCourseListRequestAction,
-      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
-      setShowCleverSyncModal: setShowCleverSyncModalAction,
+      resetTestFilters: resetTestFiltersAction,
+      resetPlaylistFilters: clearPlaylistFiltersAction,
     }
   )
 )(MyClasses)

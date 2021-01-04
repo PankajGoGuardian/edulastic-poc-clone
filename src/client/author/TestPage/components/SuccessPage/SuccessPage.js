@@ -57,6 +57,7 @@ import {
 
 import ImageCard from './ImageCard'
 import { getAssignmentsSelector, fetchAssignmentsAction } from '../Assign/ducks'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const { statusConstants, passwordPolicy, type: _testTypes } = TEST
 
@@ -178,11 +179,16 @@ class SuccessPage extends React.Component {
             {`Return to ${fromText}`}
           </EduButton>
         )}
-        <EduButton isBlue data-cy="assignButton" onClick={this.handleAssign}>
-          {isAssignSuccess || isRegradeSuccess
-            ? 'Go to Live Classboard'
-            : 'ASSIGN'}
-        </EduButton>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton isBlue data-cy="assignButton" onClick={handleClick}>
+              {isAssignSuccess || isRegradeSuccess
+                ? 'Go to Live Classboard'
+                : 'ASSIGN'}
+            </EduButton>
+          )}
+          onClick={this.handleAssign}
+        />
       </>
     )
   }

@@ -255,7 +255,7 @@ const Settings = ({
         ? {
             autoRedirectSettings: {
               showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
-              questionsDelivery: QuestionDelivery.ALL,
+              questionsDelivery: redirectPolicy.QuestionDelivery.ALL,
             },
           }
         : {}),
@@ -280,10 +280,12 @@ const Settings = ({
       },
     }
 
-    if (forClassLevel)
+    if (forClassLevel) {
+      changeField('autoRedirect')(true)
       return changeField('autoRedirectSettings')(
         newSettingsState.autoRedirectSettings
       )
+    }
     updateAssignmentSettings(newSettingsState)
   }
 

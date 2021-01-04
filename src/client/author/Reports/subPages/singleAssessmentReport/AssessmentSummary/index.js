@@ -53,6 +53,7 @@ const AssessmentSummary = ({
   setAssesmentSummaryLoading,
   sharedReport,
   setPerformanceBandProfile,
+  toggleFilter,
 }) => {
   const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
     sharedReport,
@@ -93,6 +94,13 @@ const AssessmentSummary = ({
 
   useEffect(() => {
     setPerformanceBandProfile(assessmentSummary?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !assessmentSummary.metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
   }, [assessmentSummary])
 
   const { bandInfo, metricInfo } = assessmentSummary

@@ -460,9 +460,15 @@ class QuestionWrapper extends Component {
       isStudentReport,
       isLCBView,
       LCBPreviewModal,
+      userPreferredLanguage,
     } = restProps
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
+    const preferredLanguage = get(
+      data,
+      'activity.preferredLanguage',
+      userPreferredLanguage
+    )
     const { main, advanced, activeTab, page } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
@@ -638,6 +644,7 @@ class QuestionWrapper extends Component {
                     {...userAnswerProps}
                     page={page}
                     setPage={this.setPage}
+                    preferredLanguage={preferredLanguage}
                   />
                   {!restProps.hasDrawingResponse &&
                     showFeedback &&
@@ -788,6 +795,11 @@ const enhance = compose(
       features: getUserFeatures(state),
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),
+      userPreferredLanguage: get(
+        state,
+        ['user', 'user', 'preferredLanguage'],
+        'en'
+      ),
     }),
     {
       setQuestionData: setQuestionDataAction,

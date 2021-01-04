@@ -32,4 +32,5 @@ export const userPickFields = [
   'status',
   'isAdmin',
   'refreshToken',
+  'preferredLanguage',
 ]

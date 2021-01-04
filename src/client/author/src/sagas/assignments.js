@@ -110,8 +110,11 @@ function* receiveAssignmentsSummary({ payload = {} }) {
     }
   } catch (error) {
     captureSentryException(error)
-    const errorMessage = 'Unable to retrive assignment summary.'
-    notification({ type: 'error', messageKey: 'receiveTestFailing' })
+    let errorMessage = 'Assignments not found'
+    if (error.response.status !== 404) {
+      errorMessage = 'Unable to retrive assignment summary.'
+      notification({ type: 'error', msg: errorMessage })
+    }
     yield put({
       type: RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,
       payload: { error: errorMessage },

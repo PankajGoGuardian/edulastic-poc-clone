@@ -21,8 +21,13 @@ const ClassAutoComplete = ({
   classList,
   loading,
   loadClassList,
+  termId,
+  schoolIds,
+  teacherIds,
+  grade,
+  subject,
+  courseId,
   selectCB,
-  filters,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
@@ -42,37 +47,39 @@ const ClassAutoComplete = ({
       },
       queryType: 'OR',
     }
-    if (filters.teacherIds) {
-      q.search.teachers = filters.teacherIds
+    if (termId) {
+      q.search.termIds = [termId]
+    }
+    if (teacherIds) {
+      q.search.teachers = teacherIds
         .split(',')
         .map((t) => ({ type: 'cont', value: t }))
     }
     if (
       (userRole === roleuser.DISTRICT_ADMIN ||
         userRole === roleuser.SCHOOL_ADMIN) &&
-      !isEmpty(filters.schoolIds)
+      schoolIds
     ) {
-      q.search.institutionIds = filters.schoolIds
-        ? filters.schoolIds.split(',')
-        : []
+      q.search.institutionIds = schoolIds.split(',')
     }
-    if (filters.studentGrade !== 'All' && filters.studentGrade) {
-      q.search.grades = [filters.studentGrade]
+    if (grade) {
+      q.search.grades = [grade]
     }
-    if (filters.studentSubject !== 'All' && filters.studentSubject) {
-      q.search.subjects = [filters.studentSubject]
+    if (subject) {
+      q.search.subjects = [subject]
     }
-    if (filters.studentCourseId !== 'All' && filters.studentCourseId) {
-      q.search.courseIds = [filters.studentCourseId]
+    if (courseId) {
+      q.search.courseIds = [courseId]
     }
     return q
   }, [
     searchTerms.text,
-    filters.schoolIds,
-    filters.teacherIds,
-    filters.studentSubject,
-    filters.studentGrade,
-    filters.studentCourseId,
+    termId,
+    schoolIds,
+    teacherIds,
+    grade,
+    subject,
+    courseId,
   ])
 
   // handle autocomplete actions
@@ -117,13 +124,7 @@ const ClassAutoComplete = ({
   useEffect(() => {
     setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
-  }, [
-    filters.schoolIds,
-    filters.teacherIds,
-    filters.studentSubject,
-    filters.studentGrade,
-    filters.studentCourseId,
-  ])
+  }, [termId, schoolIds, teacherIds, grade, subject, courseId])
 
   // build dropdown data
   const dropdownData = [

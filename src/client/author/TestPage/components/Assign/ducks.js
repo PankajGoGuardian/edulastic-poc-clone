@@ -18,18 +18,9 @@ import { getTestSelector, getTestIdSelector } from '../../ducks'
 import { formatAssignment } from './utils'
 import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
 import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
-import { getUserFeatures, getUserRole } from '../../../../student/Login/ducks'
+import { getUserRole } from '../../../../student/Login/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import { updateAssingnmentSettingsAction } from '../../../AssignTest/duck'
-
-const {
-  completionTypes,
-  releaseGradeLabels,
-  calculators,
-  evalTypeLabels,
-  passwordPolicy,
-} = testContants
-
 // constants
 export const SAVE_ASSIGNMENT = '[assignments] save assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
@@ -276,28 +267,10 @@ function* saveAssignment({ payload }) {
       delete payload.performanceBand
       delete payload.standardGradingScale
     }
-    const features = yield select(getUserFeatures)
-    const assignmentSettings = { ...payload }
-    if (features.free && !features.premium) {
-      assignmentSettings.testType = testContants.type.ASSESSMENT
-      assignmentSettings.maxAttempts = 1
-      assignmentSettings.markAsDone = completionTypes.AUTOMATICALLY
-      assignmentSettings.releaseScore = releaseGradeLabels.DONT_RELEASE
-      assignmentSettings.safeBrowser = false
-      assignmentSettings.shuffleAnswers = false
-      assignmentSettings.shuffleQuestions = false
-      assignmentSettings.calcType = calculators.NONE
-      assignmentSettings.answerOnPaper = false
-      assignmentSettings.maxAnswerChecks = 0
-      assignmentSettings.scoringType = evalTypeLabels.PARTIAL_CREDIT
-      assignmentSettings.penalty = false
-      assignmentSettings.passwordPolicy =
-        passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
-    }
     const data = testIds.map((testId) =>
       omit(
         {
-          ...assignmentSettings,
+          ...payload,
           startDate,
           endDate,
           dueDate,

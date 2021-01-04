@@ -429,6 +429,7 @@ class MathFormulaPreview extends Component {
                       }
                       onInput={(latexv) => this.onUserResponse(latexv)}
                       onBlur={(latexv) => this.onBlur(latexv)}
+                      disabled={evaluation && !evaluation?.some((ie) => ie)}
                       onInnerFieldClick={() => this.onInnerFieldClick()}
                     />
                   )}

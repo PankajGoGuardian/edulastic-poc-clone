@@ -106,7 +106,7 @@ export default class QuestionEditModal extends React.Component {
 
     const QuestionTitle = (
       <>
-        <QuestionNumber display="inline-flex">{qNumber}</QuestionNumber>
+        <QuestionNumber>{qNumber}</QuestionNumber>
         <ModalTitle>
           {title === 'True or false' ? title : questionTypeTitles[type]}
         </ModalTitle>
@@ -119,7 +119,6 @@ export default class QuestionEditModal extends React.Component {
         visible={visible}
         title={QuestionTitle}
         onCancel={onClose}
-        modalWidth="750px"
         footer={[
           <ModalFooter>
             <EduButton
@@ -204,7 +203,7 @@ export default class QuestionEditModal extends React.Component {
 }
 
 const StyledBodyContainer = styled.div`
-  height: 500px;
+  height: 350px;
   padding: 0px 24px 10px;
   overflow: auto;
 

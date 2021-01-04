@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { cloneDeep, get, has, isEmpty, shuffle } from 'lodash'
+import { cloneDeep, get, has, isEmpty, difference, shuffle } from 'lodash'
 import { Select, Table } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
@@ -227,77 +227,122 @@ class Variables extends Component {
       handleChangeVariableList(variableName, param, value, newData)
     }
 
-    const getRangeValue = (min, max, factor, values) => {
-      const val =
-        Math.round((Math.random() * (max - min) + min) * factor) / factor
-      if (!values.includes(val)) {
-        return val
+    const getCombinations = (variableName, available, count, values) => {
+      available = [...new Set(available)]
+      const newValues = []
+      for (const value of values) {
+        available.forEach((combination) => {
+          if (newValues.length === 2 * count) {
+            return
+          }
+          newValues.push({ ...value, [variableName]: combination })
+        })
       }
-      return getRangeValue(min, max, factor, values)
+      return shuffle(newValues)
     }
 
-    const generateRangeValues = (variable, values) => {
-      const { decimal, max, min, name } = variable
-      const factor = 10 ** decimal
-      // generate unique available random values based on range
-      const available = []
-      Array.from(Array(max - min)).forEach(() => {
-        available.push(getRangeValue(min, max, factor, available))
+    const getCombinationsForSequence = (combinations) => {
+      // get available indexes from smallest sequence of variables
+      let availableIndexs = []
+      Object.keys(variables).forEach((variableName) => {
+        const variable = variables[variableName]
+        if (
+          variable.type === 'NUMBER_SEQUENCE' ||
+          variable.type === 'TEXT_SEQUENCE'
+        ) {
+          const { sequence } = variable
+          if (sequence) {
+            if (
+              availableIndexs.length >
+                sequence.split(',').filter((em) => !!em.trim()).length ||
+              availableIndexs.length === 0
+            ) {
+              availableIndexs = sequence
+                .split(',')
+                .filter((em) => !!em.trim())
+                .map((_, i) => i)
+            }
+          }
+        }
       })
-      // choose a value from available values by index
-      return values.map((value, indx) => ({
-        ...value,
-        [name]: available[indx % available.length],
-      }))
-    }
+      // to get unique index from availableIndexs
+      const usedIndex = []
+      return combinations.map((combination, index) => {
+        // get a unique value index from difference between availableIndexs and usedIndex
+        const diff = difference(availableIndexs, usedIndex)
+        const randomIndex = Math.floor(Math.random() * diff.length)
+        const valueIndex = diff[randomIndex]
+        usedIndex.push(valueIndex)
 
-    const generateSetValue = (variable, values) => {
-      const { set = '', name } = variable
-      if (!set) {
-        return values
-      }
-      // this will be an unique available values
-      const available = shuffle(set.split(',').filter((val) => !!val.trim()))
-      // choose a value from available values by index
-      return values.map((value, indx) => ({
-        ...value,
-        [name]: available[indx % available.length],
-      }))
-    }
-
-    const generateSeqValues = (variable, values) => {
-      const { name, sequence = '' } = variable
-      if (!sequence) {
-        return values
-      }
-      const varSeq = sequence.split(',').filter((em) => !!em.trim())
-      const vars = Array(values.length)
-        .fill('')
-        .map((_, ind) => varSeq[ind % varSeq.length])
-
-      return values.map((value, indx) => ({
-        ...value,
-        [name]: vars[indx % varSeq.length],
-      }))
+        // generate a combination based on valueIndex
+        Object.keys(variables).forEach((variableName) => {
+          const variable = variables[variableName]
+          if (
+            variable.type === 'NUMBER_SEQUENCE' ||
+            variable.type === 'TEXT_SEQUENCE'
+          ) {
+            const { sequence } = variable
+            if (sequence) {
+              const varSeq = sequence.split(',').filter((em) => !!em.trim())
+              const vars = Array(combinations.length)
+                .fill('')
+                .map((_, ind) => varSeq[ind % varSeq.length])
+              combination = {
+                ...combination,
+                [variableName]: vars[index % varSeq.length],
+              }
+            }
+          }
+        })
+        return combination
+      })
     }
 
     const generate = () => {
       let values = Array.from(Array(variableCombinationCount)).map(() => ({}))
+      let sequenceCombinationsGenerated = false
 
       Object.keys(variables).forEach((variableName) => {
         const variable = variables[variableName]
+
         switch (variable.type) {
-          case 'NUMBER_RANGE':
-            values = generateRangeValues(variable, values)
+          case 'NUMBER_RANGE': {
+            const factor = 10 ** variable.decimal
+            values = getCombinations(
+              variableName,
+              Array.from(Array(variableCombinationCount * 2)).map(
+                () =>
+                  Math.round(
+                    (Math.random() * (variable.max - variable.min) +
+                      variable.min) *
+                      factor
+                  ) / factor
+              ),
+              variableCombinationCount,
+              values
+            )
             break
+          }
           case 'TEXT_SET':
-          case 'NUMBER_SET':
-            values = generateSetValue(variable, values)
+          case 'NUMBER_SET': {
+            if (variable.set) {
+              values = getCombinations(
+                variableName,
+                variable.set.split(',').filter((val) => !!val.trim()),
+                variableCombinationCount,
+                values
+              )
+            }
             break
+          }
           case 'NUMBER_SEQUENCE':
-          case 'TEXT_SEQUENCE':
-            values = generateSeqValues(variable, values)
+          case 'TEXT_SEQUENCE': {
+            if (variable.sequence && !sequenceCombinationsGenerated) {
+              values = shuffle(getCombinationsForSequence(values))
+              sequenceCombinationsGenerated = true
+            }
             break
+          }
           default:
             break
         }

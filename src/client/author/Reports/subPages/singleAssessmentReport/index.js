@@ -159,7 +159,6 @@ const SingleAssessmentReportContainer = (props) => {
       const path = `${settings.selectedTest.key}?${qs.stringify(obj)}`
       history.push(path)
     }
-
     const navigationItems = computeChartNavigationLinks(
       settings.selectedTest,
       settings.requestFilters,
@@ -259,12 +258,12 @@ const SingleAssessmentReportContainer = (props) => {
             isStandardProficiencyRequired={[
               '/author/reports/performance-by-standards',
             ].find((x) => window.location.pathname.startsWith(x))}
-            extraFilters={extraFilters}
             style={
               reportId || !showFilter
                 ? { display: 'none' }
                 : { display: 'block' }
             }
+            extraFilters={extraFilters}
             showApply={showApply}
             setShowApply={setShowApply}
             firstLoad={firstLoad}

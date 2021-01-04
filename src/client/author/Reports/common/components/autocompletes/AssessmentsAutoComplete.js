@@ -26,9 +26,12 @@ const AssessmentAutoComplete = ({
   testList,
   loading,
   loadTestList,
+  termId,
+  grade,
+  subject,
+  testTypes,
   selectedTestIds,
   selectCB,
-  filters,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -46,31 +49,26 @@ const AssessmentAutoComplete = ({
           searchTerms.selectedText === searchTerms.text ? '' : searchTerms.text,
         statuses: [DONE],
         districtId,
-        grades:
-          !filters.grade || filters.grade === 'All' ? [] : [filters.grade],
-        subjects:
-          !filters.subject || filters.subject === 'All'
-            ? []
-            : [filters.subject],
-        testTypes:
-          (filters.assessmentTypes && filters.assessmentTypes.split(',')) || [],
       },
       aggregate: true,
     }
     if (role === roleuser.SCHOOL_ADMIN && institutionIds?.length) {
       q.search.institutionIds = institutionIds
     }
-    if (filters.termId) {
-      q.search.termId = filters.termId
+    if (termId) {
+      q.search.termId = termId
+    }
+    if (grade) {
+      q.search.grades = [grade]
+    }
+    if (subject) {
+      q.search.subjects = [subject]
+    }
+    if (testTypes) {
+      q.search.testTypes = testTypes.split(',')
     }
     return q
-  }, [
-    searchTerms.text,
-    filters.termId,
-    filters.grade,
-    filters.subject,
-    filters.assessmentTypes,
-  ])
+  }, [searchTerms.text, termId, grade, subject, testTypes])
 
   // handle autocomplete actions
   const onSearch = (value) => {

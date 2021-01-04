@@ -65,7 +65,9 @@ const ItemDetailWidget = ({
     ? onChangeItemLevelPoint
     : onChangeQuestionLevelPoint
 
-  const disablePointsInput = widgetIndex > 0 && itemData.itemLevelScoring
+  const disablePointsInput =
+    (widgetIndex > 0 && itemData.itemLevelScoring) ||
+    (question.rubrics && !itemData.itemLevelScoring)
 
   return (
     connectDragPreview &&
@@ -97,6 +99,9 @@ const ItemDetailWidget = ({
                 onChange={scoreChangeHandler}
                 visible={isPointsBlockVisible}
                 disabled={disablePointsInput}
+                isRubricQuestion={
+                  !!question.rubrics && !itemData.itemLevelScoring
+                }
               />
 
               {connectDragSource(

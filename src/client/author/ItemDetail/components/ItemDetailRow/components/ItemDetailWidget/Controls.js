@@ -28,15 +28,22 @@ const MoveButton = () => {
   )
 }
 
-const PointInput = ({ value, onChange, visible, disabled }) => {
+const PointInput = ({
+  value,
+  onChange,
+  visible,
+  disabled,
+  isRubricQuestion,
+}) => {
   if (!visible) {
     return null
   }
 
   const desc = (
     <ItemLevelScoringDesc>
-      This item is graded as a whole, to grade parts change the option using the
-      Layout &amp; Grading options button in the header
+      {isRubricQuestion
+        ? 'This Question has Grading Rubric attached to it, so points cannot be changed for this question, and it will be equal to the max score of the rubric.'
+        : 'This item is graded as a whole, to grade parts change the option using the Layout &amp; Grading options button in the header'}
     </ItemLevelScoringDesc>
   )
 
@@ -57,7 +64,7 @@ const PointInput = ({ value, onChange, visible, disabled }) => {
           width="64px"
           padding="0px 2px"
           disabled={disabled}
-          value={disabled ? '' : value}
+          value={disabled && !isRubricQuestion ? '' : value}
           onChange={onChange}
         />
       </PopoverComponent>

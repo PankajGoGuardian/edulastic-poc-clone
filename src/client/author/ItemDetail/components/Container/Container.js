@@ -134,7 +134,17 @@ class Container extends Component {
   editModeContainerRef = React.createRef()
 
   componentDidMount() {
-    const { clearAnswers, changePreviewTab, location, changeView } = this.props
+    const {
+      clearAnswers,
+      changePreviewTab,
+      location,
+      changeView,
+      item,
+      setItemLevelScoring,
+    } = this.props
+    if (item.itemLevelScoring && item.data.questions.some((q) => q.rubrics)) {
+      setItemLevelScoring(false)
+    }
     if (location.state && location.state.resetView === false) return
     clearAnswers()
     changeView('edit')
@@ -943,6 +953,8 @@ class Container extends Component {
 
     const layoutType = isPassage ? COMPACT : DEFAULT
 
+    const disableScoringLevel = item.data.questions.some((q) => q.rubrics)
+
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
         <ConfirmationModal
@@ -990,6 +1002,7 @@ class Container extends Component {
               questionsCount={qLength}
               isMultiDimensionLayout={rows.length > 1}
               isMultipart={item.multipartItem}
+              disableScoringLevel={disableScoringLevel}
             />
           )}
           <ItemHeader

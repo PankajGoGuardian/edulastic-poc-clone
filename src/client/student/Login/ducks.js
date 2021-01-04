@@ -1280,7 +1280,7 @@ function* logout() {
       sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()
-      TokenStorage.removeTokens()
+      TokenStorage.removeAllTokens()
       yield put({ type: 'RESET' })
       yield call(redirectToUrl, getSignOutUrl())
       removeSignOutUrl()
@@ -1347,6 +1347,7 @@ function* googleLogin({ payload }) {
     }
 
     const res = yield call(authApi.googleLogin, params)
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({
@@ -1454,6 +1455,7 @@ function* msoLogin({ payload }) {
       })
     }
     const res = yield call(authApi.msoLogin)
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({ msg: get(e, 'response.data.message', 'MSO Login failed') })
@@ -1526,6 +1528,7 @@ function* cleverLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.cleverLogin)
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'cleverLoginFailed' })
@@ -1587,6 +1590,7 @@ function* atlasLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.atlasLogin, params)
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'atlasLoginFailed' })
@@ -1645,7 +1649,7 @@ function* newselaLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.newselaLogin, params)
-
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'newselaLoginFailed' })

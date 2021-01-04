@@ -17,7 +17,7 @@ import {
   downloadCSV,
 } from '../../../../../common/util'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
-import BackendPagination from '../../../common/components/BackendPagination'
+import BackendPagination from '../../../../../common/components/BackendPagination'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {

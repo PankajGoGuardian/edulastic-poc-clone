@@ -1360,7 +1360,6 @@ function* googleLogin({ payload }) {
 
 function* googleSSOLogin({ payload }) {
   const _payload = { ...payload }
-  TokenStorage.removeAllTokens()
 
   const isAllowed = localStorage.getItem('studentRoleConfirmation')
   if (isAllowed) {
@@ -1465,7 +1464,7 @@ function* msoLogin({ payload }) {
 
 function* msoSSOLogin({ payload }) {
   const _payload = { ...payload }
-  TokenStorage.removeAllTokens()
+
   const isAllowed = localStorage.getItem('studentRoleConfirmation')
   if (isAllowed) {
     _payload.isTeacherAllowed = true
@@ -1538,7 +1537,7 @@ function* cleverLogin({ payload }) {
 
 function* cleverSSOLogin({ payload }) {
   const _payload = { ...payload }
-  TokenStorage.removeAllTokens()
+
   let generalSettings = localStorage.getItem('thirdPartySignOnGeneralSettings')
   if (generalSettings) {
     generalSettings = JSON.parse(generalSettings)
@@ -1600,7 +1599,7 @@ function* atlasLogin({ payload }) {
 
 function* atlasSSOLogin({ payload }) {
   const _payload = { ...payload }
-  TokenStorage.removeAllTokens()
+
   let generalSettings = localStorage.getItem('thirdPartySignOnGeneralSettings')
   if (generalSettings) {
     generalSettings = JSON.parse(generalSettings)
@@ -1659,7 +1658,6 @@ function* newselaLogin({ payload }) {
 
 function* newselaSSOLogin({ payload }) {
   try {
-    TokenStorage.removeAllTokens()
     if (payload.code) {
       const res = yield call(authApi.newselaSSOLogin, payload)
       yield put(getUserDataAction(res))

@@ -180,31 +180,36 @@ const HeaderSection = ({
                 Complete signup process
               </StyledLink>
             )}
+            trackClick={trackClick('dashboard:complete-sign-up:click')}
           />
         )}
-        <Tooltip title="Launch Google Meet">
-          <StyledEduButton
-            IconBtn
-            isBlue
-            data-cy="launch-google-meet"
-            onClick={launchHangout}
-            isGhost
-          >
-            <IconHangouts color={themeColor} height={21} width={19} />
-          </StyledEduButton>
-        </Tooltip>
-        <Tooltip title="Manage Class">
-          <Link to="/author/manageClass">
-            <EduButton
-              IconBtn
-              isBlue
-              style={{ marginLeft: '5px' }}
-              data-cy="manageClass"
-            >
-              <IconManage />
-            </EduButton>
-          </Link>
-        </Tooltip>
+        {signupStatus === signUpState.DONE && (
+          <>
+            <Tooltip title="Launch Google Meet">
+              <StyledEduButton
+                IconBtn
+                isBlue
+                data-cy="launch-google-meet"
+                onClick={launchHangout}
+                isGhost
+              >
+                <IconHangouts color={themeColor} height={21} width={19} />
+              </StyledEduButton>
+            </Tooltip>
+            <Tooltip title="Manage Class">
+              <Link to="/author/manageClass">
+                <EduButton
+                  IconBtn
+                  isBlue
+                  style={{ marginLeft: '5px' }}
+                  data-cy="manageClass"
+                >
+                  <IconManage />
+                </EduButton>
+              </Link>
+            </Tooltip>
+          </>
+        )}
         {hasNoActiveClassFallback && (
           <HeaderSyncAction
             fetchClassList={fetchClassList}
@@ -255,6 +260,7 @@ const HeaderSection = ({
             </EduButton>
           )}
           onClick={createNewClass}
+          trackClick={trackClick('dashboard:create-new-class:click')}
         />
         {showPopup && (
           <PopoverWrapper>

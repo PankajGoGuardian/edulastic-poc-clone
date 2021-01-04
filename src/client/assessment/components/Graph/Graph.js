@@ -531,7 +531,7 @@ class Graph extends Component {
                 label="Background Shapes"
                 cleanSections={cleanSections}
                 fillSections={fillSections}
-                deskHeight={item.uiStyle.layoutHeight}
+                deskHeight={item.uiStyle?.layoutHeight}
                 advancedAreOpen
               >
                 <Subtitle
@@ -551,7 +551,6 @@ class Graph extends Component {
                       graphData={item}
                       onChange={this.handleBgShapesChange}
                       elements={item.background_shapes}
-                      changePreviewTab={() => {}}
                       bgShapes
                     />
                   </Col>

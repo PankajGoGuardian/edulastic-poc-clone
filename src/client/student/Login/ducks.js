@@ -50,6 +50,10 @@ import {
   removeLoadingComponentAction,
 } from '../../author/src/actions/authorUi'
 import appConfig from '../../../app-config'
+import {
+  schoologySyncAssignmentAction,
+  schoologySyncAssignmentGradesAction,
+} from '../../author/src/actions/assignments'
 
 // types
 export const LOGIN = '[auth] login'
@@ -1712,6 +1716,24 @@ function* getUserData({ payload: res }) {
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
+      // if redirect is happening for LCB and user did action schoology sync
+      const schoologySync = localStorage.getItem('schoologyShare')
+      if (redirectUrl.include('classboard')) {
+        const fragments = redirectUrl.split('/')
+        const assignmentId = fragments[3]
+        const classSectionId = fragments[4]
+        if (schoologySync === 'grades') {
+          schoologySyncAssignmentGradesAction({
+            assignmentIds: [assignmentId],
+            groupId: classSectionId,
+          })
+        } else if (schoologySync === 'assignment') {
+          schoologySyncAssignmentAction({
+            assignmentIds: [assignmentId],
+            groupId: classSectionId,
+          })
+        }
+      }
       localStorage.removeItem('loginRedirectUrl')
       // yield call(redirectToUrl, redirectUrl)
       yield put(push(redirectUrl))

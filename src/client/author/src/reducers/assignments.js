@@ -20,6 +20,9 @@ import {
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
 } from '../constants/actions'
 
 import {
@@ -49,6 +52,7 @@ const initialState = {
   bulkActionType: '',
   totalAssignmentsClasses: 0,
   assignmentStatusCounts: { notOpen: 0, inProgress: 0, inGrading: 0, done: 0 },
+  syncWithSchoologyClassroomInProgress: false,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -195,6 +199,21 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         bulkActionType: payload,
+      }
+    case SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST:
+      return {
+        ...state,
+        syncWithSchoologyClassroomInProgress: true,
+      }
+    case SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS:
+      return {
+        ...state,
+        syncWithSchoologyClassroomInProgress: false,
+      }
+    case SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR:
+      return {
+        ...state,
+        syncWithSchoologyClassroomInProgress: false,
       }
     default:
       return state

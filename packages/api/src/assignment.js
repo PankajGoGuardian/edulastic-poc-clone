@@ -223,6 +223,15 @@ const searchAssignments = (data) =>
     })
     .then((result) => result.data.result)
 
+const syncWithSchoologyClassroom = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/share-with-atlas`,
+      method: 'POST',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   create,
   update,
@@ -244,4 +253,5 @@ export default {
   syncWithGoogleClassroom,
   fetchByTestId,
   searchAssignments,
+  syncWithSchoologyClassroom,
 }

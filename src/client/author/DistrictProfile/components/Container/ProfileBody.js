@@ -641,6 +641,7 @@ class ProfileBody extends React.Component {
                     ) ? (
                       <>
                         <EditProfileButton
+                          data-cy="editMyProfile"
                           isGhost
                           type="primary"
                           onClick={() => {
@@ -750,6 +751,7 @@ class ProfileBody extends React.Component {
                   <FormButtonWrapper>
                     <FormItem>
                       <EduButton
+                        data-cy="saveUserInformation"
                         width="100px"
                         type="primary"
                         onClick={this.handleSubmit}

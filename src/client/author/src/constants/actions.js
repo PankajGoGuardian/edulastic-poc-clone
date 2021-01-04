@@ -303,6 +303,14 @@ export const TOGGLE_STUDENT_REPORT_CARD_SETTINGS =
 
 export const SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST =
   '[LCB] sync assignment grades with google classroom request'
+export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST =
+  '[LCB] sync assignment with schoology classroom request'
+export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS =
+  '[LCB] sync assignment with schoology classroom success'
+export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR =
+  '[LCB] sync assignment with schoology classroom error'
+export const SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST =
+  '[LCB] sync assignment grades with schoology classroom request'
 // answers
 export const CLEAR_ANSWERS = '[answers] clear answers'
 

@@ -352,7 +352,6 @@ class FeedbackRight extends Component {
         (c) => maxBy(c.ratings, 'points').points
       )
     const { rubricFeedback } = activity || {}
-    const isError = rubricDetails ? rubricMaxScore < score : maxScore < score
     const isStudentName = studentName !== undefined && studentName.length !== 0
     let title
     const showGradingRubricButton =
@@ -391,6 +390,7 @@ class FeedbackRight extends Component {
 
     const _maxScore = rubricMaxScore || maxScore
 
+    const isError = _maxScore < score
     // TODO: uncomment when practice question scoring is implemented (EV-12869)
     // if (isPracticeQuestion) {
     //   _maxScore = "";

@@ -14,12 +14,21 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 import { init as SentryInit } from '@sentry/browser'
 // import { Integrations } from '@sentry/tracing'
 import './client/index.css'
-import { updateSentryScope } from '@edulastic/api/src/utils/Storage'
+import { updateSentryScope,removeAllTokens } from '@edulastic/api/src/utils/Storage'
 import App from './client/App'
 import configureStore, { history } from './client/configureStore'
 import AppConfig from './app-config'
 import { isMobileDevice, isIOS } from './client/platform'
 import * as serviceWorker from './service-worker-registration'
+
+document.addEventListener("DOMContentLoaded", function() { 
+  const codeInUrl = window.location.search.includes('code=');
+  console.log('codeInUrl',codeInUrl);
+  if(codeInUrl){
+    console.log('clearing all tokens');
+    removeAllTokens();
+  }
+});
 
 if (AppConfig.sentryURI) {
   SentryInit({

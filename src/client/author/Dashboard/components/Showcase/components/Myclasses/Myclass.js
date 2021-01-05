@@ -75,7 +75,7 @@ const MyClasses = ({
 
   const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
-      hasNoInterestedFilters: true,
+      removeInterestedFilters: true,
     })
     const filter = qs.stringify(entries)
 

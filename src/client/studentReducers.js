@@ -13,6 +13,7 @@ import author_classboard_testActivity from './author/src/reducers/testActivity'
 import feedbackResponse from './author/src/reducers/feedbackResponse'
 import view from './author/src/reducers/view'
 import { reducer as assessmentCreate } from './author/AssessmentCreate/ducks'
+import { reducer as itemDetail } from './author/ItemDetail/ducks'
 
 export const studentReducers = combineReducers({
   ...allStudentReducers,
@@ -29,4 +30,5 @@ export const studentReducers = combineReducers({
   view,
   assessmentCreate,
   feedbackResponse,
+  itemDetail,
 })

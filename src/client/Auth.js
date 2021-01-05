@@ -31,6 +31,13 @@ function getCurrentPath() {
   return `${location.pathname}${location.search}${location.hash}`
 }
 
+function isHashAssessmentUrl() {
+  return (
+    window.location.hash.includes('#renderResource/close/') ||
+    window.location.hash.includes('#assessmentQuestions/close/')
+  )
+}
+
 const Auth = ({
   user,
   location,
@@ -59,7 +66,11 @@ const Auth = ({
   useEffect(() => {
     if (loggedInForPrivateRoute) {
       const currentUrl = getCurrentPath()
-      persistAuthStateAndRedirectTo({ toUrl: currentUrl })
+      if (isHashAssessmentUrl()) {
+        persistAuthStateAndRedirectTo({ toUrl: currentUrl })
+      } else {
+        persistAuthStateAndRedirectTo()
+      }
     }
   }, [loggedInForPrivateRoute])
 

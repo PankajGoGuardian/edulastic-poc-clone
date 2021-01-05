@@ -25,7 +25,23 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
       <AssignmentsTable />
       <InputsWrapper>
         <Row>
+          <OptionTitle>
+            Please Note: Removed items will be discarded from the assignment.
+            Below, please determine how you want the revisions to be scored and
+            applied.
+          </OptionTitle>
+        </Row>
+      </InputsWrapper>
+      <InputsWrapper>
+        <Row>
           <OptionTitle>Added Items</OptionTitle>
+          <p>
+            For any newly added items, please indicate the point value to be
+            assigned. This will adjust previously submitted tests and tests
+            submitted in the future. Removed items will be automatically
+            discarded and the points adjusted accordingly.
+          </p>{' '}
+          <br />
         </Row>
         <Group
           style={{ marginLeft: '20px' }}
@@ -48,6 +64,12 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
       <InputsWrapper>
         <Row>
           <OptionTitle>Edit Items</OptionTitle>
+          <p>
+            Based on the revised test, please choose whether you want to skip
+            rescoring tests, rescore automatically the newly added or removed
+            items, or if you choose to manually grade the tests.
+          </p>
+          <br />
         </Row>
         <Group
           style={{ marginLeft: '20px' }}
@@ -70,6 +92,14 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
       <InputsWrapper>
         <Row>
           <OptionTitle>Add, Apply updated settings options </OptionTitle>
+          <p>
+            Please choose whether you want to apply the revised settings to all
+            students who received this test, or exclude assignments that were
+            modified versions of the test. For example, if a subset of students
+            were given modified assignment settings, should the changes be
+            applied to these assignments also.
+          </p>{' '}
+          <br />
         </Row>
         <Row>
           <Group
@@ -86,13 +116,6 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
               </Radio>
             </Row>
           </Group>
-        </Row>
-      </InputsWrapper>
-      <InputsWrapper>
-        <Row>
-          <OptionTitle>
-            Removed items will be discard from assignment
-          </OptionTitle>
         </Row>
       </InputsWrapper>
     </Container>

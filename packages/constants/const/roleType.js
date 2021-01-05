@@ -9,6 +9,14 @@ const PARENT = 'parent'
 
 const DA_SA_ROLE_ARRAY = [DISTRICT_ADMIN, SCHOOL_ADMIN]
 
+const ORG_TYPE = {
+  DISTRICT: 'district',
+  INSTITUTION: 'institution',
+  TEACHER: 'teacher',
+  SCHOOL_ADMIN: 'school-admin',
+  DISTRICT_ADMIN: 'district-admin',
+}
+
 module.exports = {
   STUDENT,
   ADMIN,
@@ -19,4 +27,5 @@ module.exports = {
   EDULASTIC_CURATOR,
   DA_SA_ROLE_ARRAY,
   PARENT,
+  ORG_TYPE,
 }

@@ -263,6 +263,7 @@ class TestList extends Component {
     if (searchParams.removeInterestedFilters) {
       searchFilters = {
         ...testFilters,
+        ...sessionFilters,
       }
     } else {
       searchFilters = {

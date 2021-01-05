@@ -142,7 +142,10 @@ class Container extends Component {
       item,
       setItemLevelScoring,
     } = this.props
-    if (item.itemLevelScoring && item.data.questions.some((q) => q.rubrics)) {
+    if (
+      item.itemLevelScoring &&
+      get(item, ['data', 'questions'], []).some((q) => q.rubrics)
+    ) {
       setItemLevelScoring(false)
     }
     if (location.state && location.state.resetView === false) return
@@ -952,8 +955,9 @@ class Container extends Component {
       !item.passageId && item.rows.every((row) => row?.widgets?.length === 0)
 
     const layoutType = isPassage ? COMPACT : DEFAULT
-
-    const disableScoringLevel = item.data.questions.some((q) => q.rubrics)
+    const disableScoringLevel = get(item, ['data', 'questions'], []).some(
+      (q) => q.rubrics
+    )
 
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>

@@ -337,13 +337,7 @@ const getRouteByGeneralRoute = (user) => {
   }
 }
 
-const loginPaths = [
-  '/',
-  '/resetPassword',
-  '/districtLogin',
-  '/district',
-  '/login',
-]
+const loginPaths = ['/', '/resetPassword', '/districtLogin', '/district']
 
 const isPartOfLoginRoutes = (pathname) =>
   !loginPaths.some((path) =>
@@ -351,7 +345,7 @@ const isPartOfLoginRoutes = (pathname) =>
   )
 
 function* persistAuthStateAndRedirectToSaga({ payload }) {
-  const { _redirectRoute, toUrl } = payload || {}
+  const { _redirectRoute } = payload || {}
   const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
     {}
 
@@ -367,8 +361,6 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       user.user || {}
     )
     localStorage.removeItem('loginRedirectUrl')
-  } else if (toUrl && !isPartOfLoginRoutes(toUrl) && toUrl != '/') {
-    redirectRoute = toUrl
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
   }
@@ -1355,7 +1347,7 @@ function* googleLogin({ payload }) {
     }
 
     const res = yield call(authApi.googleLogin, params)
-    TokenStorage.removeAllTokens()
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({
@@ -1463,7 +1455,7 @@ function* msoLogin({ payload }) {
       })
     }
     const res = yield call(authApi.msoLogin)
-    TokenStorage.removeAllTokens()
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({ msg: get(e, 'response.data.message', 'MSO Login failed') })
@@ -1536,7 +1528,7 @@ function* cleverLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.cleverLogin)
-    TokenStorage.removeAllTokens()
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'cleverLoginFailed' })
@@ -1598,7 +1590,7 @@ function* atlasLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.atlasLogin, params)
-    TokenStorage.removeAllTokens()
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'atlasLoginFailed' })
@@ -1657,7 +1649,7 @@ function* newselaLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.newselaLogin, params)
-    TokenStorage.removeAllTokens()
+    TokenStorage.removeAllTokens();
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'newselaLoginFailed' })

@@ -26,11 +26,6 @@ const Login = lazy(() => import('./student/Login/components'))
 
 const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
-function getCurrentPath() {
-  const location = window.location
-  return `${location.pathname}${location.search}${location.hash}`
-}
-
 const Auth = ({
   user,
   location,
@@ -58,8 +53,7 @@ const Auth = ({
 
   useEffect(() => {
     if (loggedInForPrivateRoute) {
-      const currentUrl = getCurrentPath()
-      persistAuthStateAndRedirectTo({ toUrl: currentUrl })
+      persistAuthStateAndRedirectTo()
     }
   }, [loggedInForPrivateRoute])
 

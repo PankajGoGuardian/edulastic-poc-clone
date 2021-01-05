@@ -218,20 +218,6 @@ function* clearAllTestFiltersSaga() {
   }
 }
 
-function* resetAllTestFiltersSaga() {
-  try {
-    yield put(updateDefaultGradesAction([]))
-    yield put(updateDefaultSubjectAction(''))
-
-    const testFilters = yield select(getTestsFilterSelector)
-    const limit = yield select(getTestsLimitSelector)
-
-    yield put(receiveTestsAction({ page: 1, limit, search: testFilters }))
-  } catch (err) {
-    console.error(err)
-  }
-}
-
 function* deleteTestSaga({ payload }) {
   try {
     yield call(testsApi.deleteTest, payload)
@@ -332,7 +318,6 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
     yield takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga),
-    yield takeEvery(RESET_TEST_FILTERS, resetAllTestFiltersSaga),
     yield takeEvery(DELETE_TEST_REQUEST, deleteTestSaga),
     yield takeEvery(
       APPROVE_OR_REJECT_SINGLE_TEST_REQUEST,

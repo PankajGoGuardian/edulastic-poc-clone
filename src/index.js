@@ -23,9 +23,7 @@ import * as serviceWorker from './service-worker-registration'
 
 document.addEventListener("DOMContentLoaded", function() { 
   const codeInUrl = window.location.search.includes('code=');
-  console.log('codeInUrl',codeInUrl);
   if(codeInUrl){
-    console.log('clearing all tokens');
     removeAllTokens();
   }
 });

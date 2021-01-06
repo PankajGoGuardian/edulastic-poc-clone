@@ -14,14 +14,16 @@ export const MathInputStyles = styled.div`
   }
 
   .input__math {
-    height: 100%;
     width: 100%;
-    min-width: 40px;
-    min-height: 32px;
+    height: 100%;
+    min-width: ${({ width }) => width || '40px'};
+    min-height: ${({ height }) => height || '32px'};
+    max-width: 100%;
     display: inline-flex;
     position: relative;
     border-radius: 2px;
     border: ${({ noBorder }) => !noBorder && `1px solid ${greyThemeLight}`};
+    font-size: ${({ fontSize }) => `${fontSize || 'inherit'}`};
     padding: ${({ width, noPadding }) =>
       width ? 'unset' : !noPadding && '5px 15px'};
     align-items: center;

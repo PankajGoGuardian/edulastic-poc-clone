@@ -383,6 +383,15 @@ export const fraction = {
   command: 'cmd',
 }
 
+export const slashDivide = {
+  handler: '/',
+  labelcy: 'divide',
+  value: 'divide',
+  label: <CustomImage src={Group3341} width={10} height={20} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
 export const parentheses = {
   handler: '(',
   labelcy: '(',

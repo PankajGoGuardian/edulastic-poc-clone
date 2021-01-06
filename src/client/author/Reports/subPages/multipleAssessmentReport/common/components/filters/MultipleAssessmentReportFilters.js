@@ -99,32 +99,19 @@ const SingleAssessmentReportFilters = ({
   }, [])
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
-    let search = pickBy(
+    const search = pickBy(
       qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
     if (reportId) {
       _onGoClick({ selectedTests: [], filters: { ...filters, ...search } })
     } else {
-      // get saved filters from backend
-      const savedFilters = get(MARFilterData, 'data.result.reportFilters')
-      // update search filters from saved filters
-      search = {
-        termId: search.termId || savedFilters.termId,
-        subject: search.subject || savedFilters.testSubject,
-        grade: search.grade || savedFilters.testGrade,
-        ...search,
-      }
       // select common assessment as default if assessment type is not set for admins
       if (
         user.role === roleuser.DISTRICT_ADMIN ||
         user.role === roleuser.SCHOOL_ADMIN
       ) {
-        search.assessmentTypes =
-          search.assessmentTypes ||
-          (savedFilters.assessmentTypes &&
-            savedFilters.assessmentTypes.join(',')) ||
-          'common assessment'
+        search.assessmentTypes = search.assessmentTypes || 'common assessment'
       }
       const urlSchoolYear =
         schoolYears.find((item) => item.key === search.termId) ||

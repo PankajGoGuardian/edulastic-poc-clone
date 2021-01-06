@@ -482,7 +482,7 @@ const Settings = ({
               <Col span={12}>
                 <AlignSwitchRight
                   disabled={forClassLevel || freezeSettings}
-                  defaultChecked={safeBrowser}
+                  checked={safeBrowser}
                   size="small"
                   onChange={(value) => overRideSettings('safeBrowser', value)}
                 />
@@ -530,7 +530,7 @@ const Settings = ({
                   <AlignSwitchRight
                     disabled={forClassLevel || freezeSettings}
                     size="small"
-                    defaultChecked={shuffleQuestions}
+                    checked={shuffleQuestions}
                     onChange={(value) =>
                       overRideSettings('shuffleQuestions', value)
                     }
@@ -559,7 +559,7 @@ const Settings = ({
                   <AlignSwitchRight
                     disabled={forClassLevel || freezeSettings}
                     size="small"
-                    defaultChecked={shuffleAnswers}
+                    checked={shuffleAnswers}
                     onChange={(value) =>
                       overRideSettings('shuffleAnswers', value)
                     }

@@ -91,6 +91,28 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
     <div>
       <Question
         section="main"
+        label={t('component.passage.heading')}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.passage.heading')}`
+          )}
+        >
+          {t('component.passage.heading')}
+        </Subtitle>
+        <WidgetFRInput>
+          <QuestionTextArea
+            onChange={(value) => handleChange('heading', value)}
+            value={item.heading || ''}
+            border="border"
+            toolbarId="heading"
+          />
+        </WidgetFRInput>
+      </Question>
+      <Question
+        section="main"
         label={t('component.passage.contentsTitle')}
         fillSections={fillSections}
         cleanSections={cleanSections}

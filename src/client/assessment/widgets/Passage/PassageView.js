@@ -17,6 +17,7 @@ import {
 
 import { InstructorStimulus } from './styled/InstructorStimulus'
 import { Heading } from './styled/Heading'
+import { QuestionTitleWrapper } from './styled/QustionNumber'
 import ColorPicker from './ColorPicker'
 import { ColorPickerContainer, Overlay } from './styled/ColorPicker'
 import AppConfig from '../../../../app-config'
@@ -223,7 +224,13 @@ const PassageView = ({
           dangerouslySetInnerHTML={{ __html: item.instructorStimulus }}
         />
       )}
-     
+       {!flowLayout && (
+        <QuestionTitleWrapper>
+          {item.heading && (
+            <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />
+          )}
+        </QuestionTitleWrapper>
+      )}
       {item.contentsTitle && !flowLayout && (
         <ContentsTitle
           dangerouslySetInnerHTML={{ __html: item.contentsTitle }}

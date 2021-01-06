@@ -24,9 +24,9 @@ class ClozeDragDropPage {
   getGroupResponsesCheckbox = () => cy.get('[data-cy="drag-drop-aria-check"]')
 
   clickOnAdvancedOptions = () => {
-    cy.get('[class^="AdvancedOptionsLink"]').then((ele) => {
-      if (ele.siblings().length === 3) cy.wrap(ele).click()
-    })
+    // cy.get('[class^="AdvancedOptionsLink"]').then((ele) => {
+    //   if (ele.siblings().length === 3) cy.wrap(ele).click()
+    // })
     return this
   }
 

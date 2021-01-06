@@ -23,6 +23,10 @@
     "message": "image upload failed",
     "description": ""
   },
+  "maxContentLimit": {
+    "message": "Max response limit reached",
+    "description": ""
+  },
   "fileUploadErr": {
     "message": "File upload failed",
     "description": ""
@@ -1769,6 +1773,10 @@
   },
   "atlasLoginFailed": {
     "message": "Atlas Login failed",
+    "description": ""
+  },
+  "newselaLoginFailed": {
+    "message": "Newsela Login failed",
     "description": ""
   },
   "failedToFetchUserData": {

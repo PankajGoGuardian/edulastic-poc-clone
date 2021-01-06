@@ -18,9 +18,20 @@ import {
   atlasSSOLoginAction,
   googleLoginAction,
   getUserDataAction,
+  toggleRoleConfirmationPopupAction,
+  msoLoginAction,
+  newselaSSOLoginAction,
 } from '../Login/ducks'
+import ConfirmationModal from '../../common/components/ConfirmationModal'
 
 class SsoLogin extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      confirmationInput: '',
+    }
+  }
+
   componentDidMount() {
     const {
       location,
@@ -28,6 +39,7 @@ class SsoLogin extends React.Component {
       cleverSSOLogin,
       msoSSOLogin,
       atlasSSOLogin,
+      newselaSSOLogin,
     } = this.props
     const { addAccount, addAccountTo } = JSON.parse(
       sessionStorage.getItem('addAccountDetails') || '{}'
@@ -67,15 +79,77 @@ class SsoLogin extends React.Component {
         ?.state
       if (state) payload.state = JSON.parse(state)
       atlasSSOLogin(payload)
+    } else if (path.includes('newsela')) {
+      const query = qs.parse(location.search, { ignoreQueryPrefix: true })
+      const { redirect, state } = query
+      if (redirect) {
+        localStorage.setItem('loginRedirectUrl', redirect)
+      }
+      if (state) payload.state = JSON.parse(state)
+      newselaSSOLogin(payload)
+    }
+    /**
+     * to force render with current instance variables
+     * This is equivalent to a simple setState. But using foceUpdate for minimal impact
+     */
+    this.forceUpdate()
+  }
+
+  handleConfirmation = () => {
+    const { googleLogin, msoLogin, location } = this.props
+    const path = location.pathname.split('/')
+    localStorage.setItem('studentRoleConfirmation', 'true')
+    if (path.includes('google')) {
+      googleLogin({ role: 'teacher' })
+    }
+    if (path.includes('mso')) {
+      msoLogin({ role: 'teacher' })
     }
   }
 
+  handleRejection = () => {
+    const { history, toggleRoleConfirmationPopup } = this.props
+    toggleRoleConfirmationPopup(false)
+    history.push('/login')
+  }
+
+  setConfirmationInput = (e) =>
+    this.setState({ confirmationInput: e.target.value })
+
   render() {
-    const { getUserData, googleLogin } = this.props
+    const {
+      getUserData,
+      googleLogin,
+      isRoleConfirmation,
+      email,
+      location,
+    } = this.props
+    const { confirmationInput } = this.state
+
+    const path = location.pathname.split('/')
+    const showConfirmationModal =
+      isRoleConfirmation && (path.includes('google') || path.includes('mso'))
     const reAuthenticate = () => googleLogin({ prompt: true })
     return (
       <div>
         <p>Authenticating...</p>
+        {showConfirmationModal && (
+          <ConfirmationModal
+            title="Confirm Teacher Signup"
+            bodyText={`The email ${email} is already registered as a student in Edulastic. Are you sure you want to continue registering as a teacher? If so, type "CONTINUE" in the field below and proceed.`}
+            show={isRoleConfirmation}
+            onOk={this.handleConfirmation}
+            onCancel={this.handleRejection}
+            inputVal={confirmationInput}
+            onInputChange={this.setConfirmationInput}
+            expectedVal="CONTINUE"
+            okText="CONFIRM"
+            placeHolder="Type the text here"
+            showConfirmationText
+            hideUndoneText
+            centered
+          />
+        )}
         {this.payloadForUserData && (
           <StyledModal
             onCancel={() => getUserData(this.payloadForUserData)}
@@ -113,6 +187,8 @@ const enhance = compose(
   connect(
     (state) => ({
       user: get(state, 'user.user', null),
+      isRoleConfirmation: state.user.isRoleConfirmation,
+      email: state.user?.email || 'Email',
     }),
     {
       googleSSOLogin: googleSSOLoginAction,
@@ -120,7 +196,10 @@ const enhance = compose(
       msoSSOLogin: msoSSOLoginAction,
       atlasSSOLogin: atlasSSOLoginAction,
       googleLogin: googleLoginAction,
+      msoLogin: msoLoginAction,
+      newselaSSOLogin: newselaSSOLoginAction,
       getUserData: getUserDataAction,
+      toggleRoleConfirmationPopup: toggleRoleConfirmationPopupAction,
     }
   )
 )

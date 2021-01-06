@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
 import uuidv4 from 'uuid/v4'
+import helpers from '@edulastic/common/src/helpers'
 
 import MathEssayInputLine from './components/MathEssayInputLine/index'
 import { Wrapper } from './styled/Wrapper'
@@ -20,13 +21,14 @@ const MathEssayInput = ({
   const [localType, setLocalType] = useState(uiStyle.defaultMode)
 
   const handleChange = (index, value) => {
+    const text = helpers.removeImageTags(value)
     const newLines = cloneDeep(lines)
 
-    if ((!value || value === '<p><br></p>') && newLines.length > 1) {
+    if ((!text || text === '<p><br></p>') && newLines.length > 1) {
       newLines.splice(index, 1)
       setCurrentLineIndex(index - 1)
     } else {
-      newLines[index].text = value
+      newLines[index].text = text
     }
 
     setLines(newLines)
@@ -58,6 +60,12 @@ const MathEssayInput = ({
     setLocalType(type)
   }
 
+  // input response length when using multiple lines
+  const contentLength = useMemo(
+    () => lines.reduce((acc, line) => line.text.length + acc, 0),
+    [lines]
+  )
+
   return (
     <div style={{ width: disableResponse ? 'auto' : '100%' }}>
       <MathEssayInputContext.Provider
@@ -82,6 +90,7 @@ const MathEssayInput = ({
                 }
               }}
               onChangeType={handleChangeType(i)}
+              contentLength={contentLength}
             />
           ))}
         </Wrapper>

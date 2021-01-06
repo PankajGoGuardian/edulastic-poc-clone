@@ -66,10 +66,12 @@ class ClozeWithTextPage {
   }
 
   // advance options
-  clickOnAdvancedOptions = () =>
-    cy.get('[class^="AdvancedOptionsLink"]').then((ele) => {
-      if (ele.siblings().length === 3) cy.wrap(ele).click()
-    })
+  clickOnAdvancedOptions = () => {
+    // cy.get('[class^="AdvancedOptionsLink"]').then((ele) => {
+    //   if (ele.siblings().length === 3) cy.wrap(ele).click()
+    // })
+    return this
+  }
 
   // on preview
   getResponseOnPreview = (index) =>

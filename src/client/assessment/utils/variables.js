@@ -104,7 +104,7 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
         new RegExp(`@${variableName}`, 'g'),
         useMathTemplate
           ? getMathTemplate(variables[variableName].exampleValue)
-          : variables[variableName].exampleValue
+          : ` ${variables[variableName].exampleValue}`
       )
     } else {
       result = result.replace(
@@ -118,7 +118,7 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
       mathContent = mathContent.map((content) =>
         content.replace(
           new RegExp(`@${variableName}`, 'g'),
-          variables[variableName].exampleValue
+          ` ${variables[variableName].exampleValue}`
         )
       )
     }

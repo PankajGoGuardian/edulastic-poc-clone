@@ -53,10 +53,15 @@ export const getAssignedClassesByIdSelector = createSelector(
       [TESTLET]: {},
     }
     for (const [key, value] of Object.entries(assignmentsByTestType)) {
-      if (key === COMMON) {
+      if (key === COMMON && !value.archived) {
         const assignedClasses = value
           .flatMap((item) => get(item, 'class', []))
-          .filter((item) => item.students && item.students.length === 0)
+          .filter(
+            (item) =>
+              item.students &&
+              item.students.length === 0 &&
+              item.status !== 'ARCHIVED'
+          )
         assignedClassesByTestType[key] = keyBy(assignedClasses, '_id') || {}
       }
     }
@@ -127,6 +132,10 @@ export const assignmentSettings = createReducer(initialState, {
     ) {
       state.scoringType =
         testConst.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+    }
+    if (!state.autoRedirect) {
+      delete state.autoRedirect
+      delete state.autoRedirectSettings
     }
   },
   [CLEAR_ASSIGNMENT_SETTINGS]: () => {

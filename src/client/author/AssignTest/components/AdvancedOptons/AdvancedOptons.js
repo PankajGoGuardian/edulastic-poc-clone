@@ -33,6 +33,7 @@ import {
   getIsOverrideFreezeSelector,
 } from '../../../TestPage/ducks'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
+import { getAssignedClassesByIdSelector } from '../../duck'
 
 const { releaseGradeLabels } = testConst
 class AdvancedOptons extends React.Component {
@@ -40,6 +41,7 @@ class AdvancedOptons extends React.Component {
     assignment: PropTypes.object.isRequired,
     testSettings: PropTypes.object.isRequired,
     updateOptions: PropTypes.func.isRequired,
+    isAssignRecommendations: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -89,6 +91,7 @@ class AdvancedOptons extends React.Component {
       isReleaseScorePremium,
       userRole,
       defaultTestProfiles,
+      assignedClassesById,
     } = this.props
     if (field === 'class') {
       const { classData, termId } = onClassFieldChange(value, groups)
@@ -140,6 +143,11 @@ class AdvancedOptons extends React.Component {
         } else {
           state.releaseScore = releaseGradeLabels.WITH_ANSWERS
         }
+        if (value === testConst.type.COMMON) {
+          state.class = state.class.filter(
+            (item) => !assignedClassesById[value][item._id]
+          )
+        }
       }
       if (field === 'passwordPolicy') {
         if (
@@ -168,7 +176,12 @@ class AdvancedOptons extends React.Component {
   updateStudents = (studentList) => this.onChange('students', studentList)
 
   render() {
-    const { testSettings = {}, assignment, updateOptions } = this.props
+    const {
+      testSettings = {},
+      assignment,
+      updateOptions,
+      isAssignRecommendations,
+    } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
     const { showSettings, _releaseGradeKeys } = this.state
     const changeField = curry(this.onChange)
@@ -219,19 +232,22 @@ class AdvancedOptons extends React.Component {
             />
           )}
 
-          <ClassSelectorLabel>
-            Assign this to
-            <p>
-              Please select classes to assign this assessment. Options on the
-              left can be used to filter the list of classes.
-            </p>
-          </ClassSelectorLabel>
-
-          <ClassList
-            selectedClasses={classIds}
-            selectClass={this.onChange}
-            testType={assignment.testType || testSettings.testType}
-          />
+          {!isAssignRecommendations && (
+            <>
+              <ClassSelectorLabel>
+                Assign this to
+                <p>
+                  Please select classes to assign this assessment. Options on
+                  the left can be used to filter the list of classes.
+                </p>
+              </ClassSelectorLabel>
+              <ClassList
+                selectedClasses={classIds}
+                selectClass={this.onChange}
+                testType={assignment.testType || testSettings.testType}
+              />
+            </>
+          )}
         </InitOptions>
       </OptionConationer>
     )
@@ -243,4 +259,5 @@ export default connect((state) => ({
   isReleaseScorePremium: getReleaseScorePremiumSelector(state),
   defaultTestProfiles: defaultTestTypeProfilesSelector(state),
   freezeSettings: getIsOverrideFreezeSelector(state),
+  assignedClassesById: getAssignedClassesByIdSelector(state),
 }))(AdvancedOptons)

@@ -55,7 +55,10 @@ export const ResponseFrequencyTable = ({
   }
 
   columns[4].sorter = (a, b) => {
-    return a.total_score * b.total_max_score - b.total_score * a.total_max_score
+    return (
+      a.total_score / (a.total_max_score || 1) -
+      b.total_score / (b.total_max_score || 1)
+    )
   }
   columns[4].render = (data, record) => {
     const tooltipText = (rec) => () => {

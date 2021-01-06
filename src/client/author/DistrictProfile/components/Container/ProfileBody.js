@@ -20,6 +20,7 @@ import {
   EduButton,
   EduSwitchStyled,
 } from '@edulastic/common'
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import { withNamespaces } from '@edulastic/localization'
 import { Form, Icon, Input, Select, Tag, Modal } from 'antd'
 import produce from 'immer'
@@ -134,6 +135,7 @@ class ProfileBody extends React.Component {
       form: { getFieldValue },
       user,
       updateUserDetails,
+      userInfo: { currentSignUpState },
     } = this.props
     const { showChangePassword, isEditProfile } = this.state
     const isnotNormalLogin =
@@ -152,6 +154,7 @@ class ProfileBody extends React.Component {
       firstName: isEditProfile ? getFieldValue('firstName') : user.firstName,
       lastName: isEditProfile ? getFieldValue('lastName') : user.lastName,
       title: isEditProfile ? getFieldValue('title') : user.title,
+      currentSignUpState: signupStateBykey[currentSignUpState],
     }
     if (showChangePassword) data.password = getFieldValue('password')
 
@@ -226,21 +229,15 @@ class ProfileBody extends React.Component {
         grades: selStandards[0].grades,
       })
     }
+    const { ORG_TYPE } = roleuser
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
     const standardsData = {
-      orgId,
+      orgId: user._id,
       orgType,
       curriculums: curriculumsData,
     }
@@ -638,6 +635,7 @@ class ProfileBody extends React.Component {
                     ) ? (
                       <>
                         <EditProfileButton
+                          data-cy="editMyProfile"
                           isGhost
                           type="primary"
                           onClick={() => {
@@ -747,6 +745,7 @@ class ProfileBody extends React.Component {
                   <FormButtonWrapper>
                     <FormItem>
                       <EduButton
+                        data-cy="saveUserInformation"
                         width="100px"
                         type="primary"
                         onClick={this.handleSubmit}

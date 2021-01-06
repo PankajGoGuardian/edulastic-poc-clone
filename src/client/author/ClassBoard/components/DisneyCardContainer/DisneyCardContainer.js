@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
+import moment from 'moment'
 import { withNamespaces } from '@edulastic/localization'
 import { compose } from 'redux'
 import { CheckboxLabel } from '@edulastic/common'
@@ -207,7 +208,7 @@ class DisneyCardContainer extends Component {
               })
             : null
         const responseLink = student.testActivityId &&
-          status.status !== 'Absent' &&
+          student.UTASTATUS !== ABSENT &&
           student.UTASTATUS !== NOT_STARTED && (
             <PagInfo
               data-cy="viewResponse"
@@ -342,7 +343,13 @@ class DisneyCardContainer extends Component {
                       <StyledIconCol>
                         <i
                           data-cy="redirected"
-                          title="Assessment is redirected to the student. The most recent response will be shown"
+                          title={`Assignment is redirected to the student on ${
+                            student.redirectedDate
+                              ? moment(student.redirectedDate).format(
+                                  'MMMM Do YYYY, h:mm:ss a'
+                                )
+                              : '-'
+                          }`}
                           className="fa fa-external-link"
                           aria-hidden="true"
                           style={{ color: themeColor }}

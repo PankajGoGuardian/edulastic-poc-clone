@@ -7,6 +7,7 @@ import { Select } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
+import { test as testConst } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq } from 'lodash'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
@@ -123,7 +124,8 @@ class ClassList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { test } = this.props
+    const { test, testType } = this.props
+    const { filterClassIds } = this.state
     if (prevProps.test._id !== test._id) {
       const { subjects = [], grades = [] } = test
       // eslint-disable-next-line react/no-did-update-set-state
@@ -137,7 +139,14 @@ class ClassList extends React.Component {
           },
         }),
         this.loadClassList
-      )
+      ) // eslint-disable-line
+    }
+    if (
+      prevProps.testType !== testType &&
+      testType === testConst.type.COMMON &&
+      filterClassIds.length
+    ) {
+      this.setState({ filterClassIds: [] }) // eslint-disable-line
     }
   }
 

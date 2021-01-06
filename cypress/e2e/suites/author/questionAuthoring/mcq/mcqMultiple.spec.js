@@ -114,6 +114,9 @@ describe(`${FileHelper.getSpecName(
       question.selectScoringType(SCORING_TYPE.PARTIAL)
 
       question.getPanalty().verifyNumInput(0.5)
+      /* 
+      unscore feature hidden temporarily
+
       question
         .getUnscore()
         .click()
@@ -125,6 +128,7 @@ describe(`${FileHelper.getSpecName(
         .getUnscore()
         .click()
         .should('not.have.class', 'ant-checkbox-checked')
+      */
     })
 
     it(' > [Tc_271]:test => Display', () => {
@@ -292,6 +296,9 @@ describe(`${FileHelper.getSpecName(
       question.selectScoringType(SCORING_TYPE.PARTIAL)
 
       question.getPanalty().verifyNumInput(0.5)
+
+      /* 
+      unscore feature hidden temporarily
       question
         .getUnscore()
         .click()
@@ -303,6 +310,7 @@ describe(`${FileHelper.getSpecName(
         .getUnscore()
         .click()
         .should('not.have.class', 'ant-checkbox-checked')
+      */
     })
 
     it(' > [Tc_278]:test => Display', () => {

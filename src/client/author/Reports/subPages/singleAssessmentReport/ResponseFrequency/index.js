@@ -11,14 +11,17 @@ import { StackedBarChartContainer } from './components/charts/stackedBarChartCon
 import { StyledCard, StyledContainer } from './components/styled'
 import { ResponseFrequencyTable } from './components/table/responseFrequencyTable'
 
-import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
+import {
+  getCsvDownloadingState,
+  getPrintingState,
+  getTestListSelector,
+} from '../../../ducks'
 import {
   getReportsResponseFrequency,
   getReportsResponseFrequencyLoader,
   getResponseFrequencyRequestAction,
   getReportsResponseFrequencyError,
 } from './ducks'
-import { getTestListSelector } from '../common/filterDataDucks'
 
 import jsonData from './static/json/data.json'
 
@@ -37,6 +40,7 @@ const ResponseFrequency = ({
   settings,
   testList,
   sharedReport,
+  toggleFilter,
 }) => {
   const isSharedReport = !!sharedReport?._id
   const [difficultItems, setDifficultItems] = useState(40)
@@ -59,6 +63,16 @@ const ResponseFrequency = ({
       getResponseFrequency(q)
     }
   }, [settings])
+
+  useEffect(() => {
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      isEmpty(res?.metrics)
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [res])
 
   const obj = useMemo(() => {
     let _obj = {
@@ -113,11 +127,20 @@ const ResponseFrequency = ({
     return <SpinLoader position="fixed" />
   }
 
+  if (res.isRecommended) {
+    return (
+      <NoDataContainer fontSize="12px">
+        The Questions for each student have been dynamically selected and as a
+        result, question based comparision is unavailable for the assignment.
+      </NoDataContainer>
+    )
+  }
+
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
   }
 
-  if (isEmpty(res.metrics)) {
+  if (isEmpty(res.metrics) || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

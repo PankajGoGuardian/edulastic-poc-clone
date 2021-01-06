@@ -137,6 +137,7 @@ const regeneratePassword = ({ assignmentId, classId, passwordExpireIn }) =>
 const bulkOpenAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-open`,
       data,
@@ -147,6 +148,7 @@ const bulkOpenAssignment = ({ testId, data, testType, status }) =>
 const bulkCloseAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-close`,
       data,
@@ -157,6 +159,7 @@ const bulkCloseAssignment = ({ testId, data, testType, status }) =>
 const bulkPauseAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-pause`,
       data,
@@ -167,6 +170,7 @@ const bulkPauseAssignment = ({ testId, data, testType, status }) =>
 const bulkMarkAsDoneAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-mark-as-done`,
       data,
@@ -177,6 +181,7 @@ const bulkMarkAsDoneAssignment = ({ testId, data, testType, status }) =>
 const bulkReleaseScoreAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-release-score`,
       data,
@@ -190,6 +195,7 @@ const bulkReleaseScoreAssignment = ({ testId, data, testType, status }) =>
 const bulkUnassignAssignment = ({ testId, data, testType, status }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-unassign`,
       data,
@@ -200,6 +206,7 @@ const bulkUnassignAssignment = ({ testId, data, testType, status }) =>
 const bulkDownloadGrades = ({ testId, data, testType, status }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'post',
       url: `${prefix}/test/${testId}/bulk-download-grades-and-response`,
       data,

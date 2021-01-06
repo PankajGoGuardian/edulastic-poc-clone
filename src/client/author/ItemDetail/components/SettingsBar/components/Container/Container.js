@@ -139,6 +139,7 @@ class Container extends Component {
       isMultipart,
       isMultiDimensionLayout,
       isPassageQuestion,
+      disableScoringLevel = false,
     } = this.props
     const singleLayout = type === layouts[0].value
 
@@ -216,11 +217,10 @@ class Container extends Component {
               <Col>
                 <EduSwitchStyled
                   checked={itemLevelScoring}
-                  checkedChildren="on"
-                  unCheckedChildren="off"
                   onChange={(v) => {
                     setItemLevelScoring(v)
                   }}
+                  disabled={disableScoringLevel}
                 />
               </Col>
             </Row>

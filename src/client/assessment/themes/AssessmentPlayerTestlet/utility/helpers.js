@@ -290,17 +290,18 @@ const generateAnswers = {
     }
 
     const data = testletResponseIds.map((id) => {
-      const value = testletResponses[id]
+      let value = testletResponses[id]
       if (!value) {
         return
       }
       if (isArray(value)) {
         // multiple response
         return value.map((v) => {
-          const opIndex = _alphabet.indexOf(v)
+          const opIndex = _alphabet.indexOf(v.trim())
           return options[opIndex]?.value
         })
       }
+      value = value.trim()
       // Radio type.
       const opIndex = _alphabet.indexOf(value)
       return options[opIndex]?.value
@@ -327,6 +328,9 @@ const generateAnswers = {
     return data
   },
   [questionType.MATH](item, testletResponseIds, testletResponses) {
+    return getSimpleTextAnswer(testletResponseIds, testletResponses)
+  },
+  [questionType.ESSAY_RICH_TEXT](item, testletResponseIds, testletResponses) {
     return getSimpleTextAnswer(testletResponseIds, testletResponses)
   },
   [questionType.SHORT_TEXT](item, testletResponseIds, testletResponses) {
@@ -467,3 +471,15 @@ const getUserResponse = (item, responses) => {
 }
 
 export default getUserResponse
+
+export const getExtDataForQuestion = (item, responses) => {
+  const responseIds = convertStrToArr(item.testletResponseIds)
+  const questionExtData = {}
+  responseIds.forEach((id) => {
+    if (responses[id]) {
+      questionExtData[id] = responses[id]
+    }
+  })
+
+  return questionExtData
+}

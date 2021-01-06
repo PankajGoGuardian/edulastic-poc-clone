@@ -1,3 +1,4 @@
+import questionType from '@edulastic/constants/const/questionType'
 import { sortTestItemQuestions } from '../author/dataUtils'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
@@ -19,6 +20,21 @@ export const markQuestionLabel = (_testItemsData) => {
       targetItem.data.questions[0].qLabel = i + 1
       targetItem.data.questions[0].qSubLabel = ''
       targetItem.data.questions[0].barLabel = `Q${i + 1}`
+    } else if (item.isDocBased) {
+      let qIndex = 0
+      item.data.questions = item.data.questions
+        .sort((a, b) => a.qIndex - b.qIndex)
+        .map((q) => {
+          if (q.type === questionType.SECTION_LABEL) {
+            return q
+          }
+          qIndex++
+          return {
+            ...q,
+            qLabel: `Q${qIndex}`,
+            barLabel: `Q${qIndex}`,
+          }
+        })
     } else {
       targetItem.data.questions = targetItem.data.questions.map(
         (q, qIndex) => ({

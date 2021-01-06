@@ -37,7 +37,9 @@ export default class SmartFilters {
     cy.route('GET', /assignments/g).as('assignment')
   }
 
-  waitForAssignments = () => cy.wait('@assignment')
+  waitForAssignments = () => {
+    cy.wait('@assignment')
+  }
 
   setGrades = (grade) => {
     this.getGrades().click()
@@ -61,6 +63,7 @@ export default class SmartFilters {
 
   setYear = (year) => {
     CypressHelper.selectDropDownByAttribute('schoolYear', year)
+    this.routeAPI()
     this.waitForAssignments()
   }
 

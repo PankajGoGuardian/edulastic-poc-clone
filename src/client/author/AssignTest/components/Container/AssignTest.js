@@ -20,8 +20,8 @@ import {
 } from '../../../PlaylistPage/ducks'
 import {
   fetchGroupMembersAction,
-  getStudentsSelector,
   resetStudentAction,
+  getActiveStudentsSelector,
 } from '../../../sharedDucks/groups'
 import ListHeader from '../../../src/components/common/ListHeader'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
@@ -153,6 +153,21 @@ class AssignTest extends React.Component {
     setAssignments([])
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      testSettings: { playerSkinType },
+    } = this.props
+    const {
+      testSettings: { playerSkinType: prevPlayerSkinType },
+    } = prevProps
+    // the initial playerSkinType in reducer is edulastic,
+    // but after fetching the test it can be other type like testlet
+    // So need to update the assignmentSettings here
+    if (playerSkinType !== prevPlayerSkinType) {
+      this.updateAssignmentNew({ playerSkinType })
+    }
+  }
+
   handleAssign = () => {
     const {
       saveAssignment,
@@ -200,6 +215,28 @@ class AssignTest extends React.Component {
       ) {
         notification({ messageKey: 'enterValidPassword' })
         return
+      }
+      if (updatedAssignment.autoRedirect === true) {
+        if (!updatedAssignment.autoRedirectSettings.showPreviousAttempt)
+          return notification({
+            type: 'warn',
+            msg: 'Please set the value for Show Previous Attempt',
+          })
+        if (!updatedAssignment.autoRedirectSettings.questionsDelivery)
+          return notification({
+            type: 'warn',
+            msg: 'Please set the value for Question Delivery',
+          })
+        if (!updatedAssignment.autoRedirectSettings.scoreThreshold)
+          return notification({
+            type: 'warn',
+            msg: 'Please set Score Threshold value',
+          })
+        if (!updatedAssignment.autoRedirectSettings.maxRedirects)
+          return notification({
+            type: 'warn',
+            msg: 'Please set value of Max Attempts Allowed for auto redirect',
+          })
       }
       saveAssignment(updatedAssignment)
     }
@@ -359,6 +396,7 @@ class AssignTest extends React.Component {
               testSettings={testSettings}
               onClassFieldChange={this.onClassFieldChange}
               defaultTestProfiles={defaultTestProfiles}
+              isAssignRecommendations={false}
             />
           ) : (
             <SimpleOptions
@@ -371,6 +409,7 @@ class AssignTest extends React.Component {
               onClassFieldChange={this.onClassFieldChange}
               changeDateSelection={this.changeDateSelection}
               selectedDateOption={selectedDateOption}
+              isAssignRecommendations={false}
             />
           )}
         </Container>
@@ -385,7 +424,7 @@ const enhance = compose(
     (state) => ({
       classList: getClassListSelector(state),
       assignments: getAssignmentsSelector(state),
-      students: getStudentsSelector(state),
+      students: getActiveStudentsSelector(state),
       testSettings: getTestEntitySelector(state),
       userOrgId: getUserOrgId(state),
       playlist: getPlaylistSelector(state),

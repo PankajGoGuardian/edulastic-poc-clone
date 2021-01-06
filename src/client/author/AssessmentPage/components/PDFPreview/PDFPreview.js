@@ -54,7 +54,6 @@ const PDFPreview = ({
   currentAnnotationTool,
   setCurrentAnnotationTool,
   annotationToolsProperties,
-  annotationsStack,
   isEditable,
   toggleIntercomDisplay,
 }) => {
@@ -121,7 +120,9 @@ const PDFPreview = ({
     scalePDF(round((containerWidth - 40) / viewport.width, 1))
     if (forwardedRef.current) {
       setTimeout(() => {
-        forwardedRef.current.updateScroll()
+        if (forwardedRef.current) {
+          forwardedRef.current.updateScroll()
+        }
       }, 10)
     }
   }
@@ -170,7 +171,7 @@ const PDFPreview = ({
               setOriginalDimensions={calculateInitScale}
               currentAnnotationTool={currentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
-              annotationsStack={annotationsStack}
+              annotations={annotations}
               currentPage={currentPage}
               authoringMode={viewMode === 'edit'}
             />
@@ -255,7 +256,6 @@ PDFPreview.defaultProps = {
 export default connect(
   (state) => ({
     previewMode: getPreviewSelector(state),
-    annotationsStack: state.tests.annotationsStack,
   }),
   {
     removeAnswers: removeUserAnswerAction,

@@ -179,11 +179,11 @@ export default class QuestionText extends React.Component {
   handleSetAltAnswer = (index, { target: { value } }) => {
     const { altResponses, answer, score, allow } = this.state
     const { onUpdate } = this.props
-
     const newAltResponses = produce(altResponses, (draft) => {
       draft[index] = { ...draft[index], value }
       return draft
     })
+
     this.setState({ altResponses: newAltResponses }, () => {
       const data = {
         validation: {
@@ -193,7 +193,7 @@ export default class QuestionText extends React.Component {
             score,
             matchingRule: allow,
           },
-          altResponses,
+          altResponses: newAltResponses,
         },
       }
       onUpdate(data)

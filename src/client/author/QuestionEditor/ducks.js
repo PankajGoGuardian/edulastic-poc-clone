@@ -766,6 +766,7 @@ const containsEmptyField = (variables) => {
       formula = '',
       set: _set = '',
       sequence = '',
+      name,
     } = variables[key]
     switch (true) {
       // variables must be set
@@ -781,13 +782,12 @@ const containsEmptyField = (variables) => {
       case !!intersection(_keys, _set.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: 'dynamic parameters can not use variable name inside set',
+          errMessage: `You have a parameter named "${name}" that is also given in the text set. This is not supported.`,
         }
       case !!intersection(_keys, sequence.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage:
-            'dynamic parameters can not use variable name inside sequence',
+          errMessage: `You have a parameter named "${name}" that is also given in the text sequence. This is not supported.`,
         }
       default:
         break

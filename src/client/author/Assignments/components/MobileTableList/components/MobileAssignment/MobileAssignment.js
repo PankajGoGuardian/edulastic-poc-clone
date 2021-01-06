@@ -151,7 +151,7 @@ export default class MobileAssignment extends React.Component {
             <AssignmentDetailsWrapper>
               <ExpandButton onClick={this.handleToggleExpandItems} isGhost>
                 <span>
-                  {expandItems ? 'HIDE ASSIGMENTS' : 'SHOW ASSIGMENTS'}
+                  {expandItems ? 'HIDE ASSIGNMENTS' : 'SHOW ASSIGNMENTS'}
                 </span>
               </ExpandButton>
             </AssignmentDetailsWrapper>

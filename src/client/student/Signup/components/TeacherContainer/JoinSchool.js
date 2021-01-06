@@ -8,6 +8,7 @@ import { Row, Col, Breadcrumb, Icon } from 'antd'
 import styled, { css } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { IconClose } from '@edulastic/icons'
+import { signUpState } from '@edulastic/constants'
 import {
   themeColor,
   white,
@@ -90,6 +91,7 @@ const JoinSchool = ({
   fromUserProfile,
   addSchool,
   addingSchool,
+  isModal,
 }) => {
   const {
     email,
@@ -202,7 +204,10 @@ const JoinSchool = ({
       const data = {
         institutionIds: [selected.schoolId || selected._id || ''],
         districtId: selected.districtId,
-        currentSignUpState: 'PREFERENCE_NOT_SELECTED',
+        currentSignUpState:
+          userInfo.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
+            ? 'ACCESS_WITHOUT_SCHOOL'
+            : 'PREFERENCE_NOT_SELECTED',
         email: email || '',
         ...(firstName ? { firstName } : {}),
         middleName,
@@ -287,10 +292,10 @@ const JoinSchool = ({
       districtName,
       location: {
         city: userInfo.firstName,
-        state: 'Alaska',
+        state: 'AK',
         zip: userInfo.firstName,
         address: userInfo.firstName,
-        country: 'United States',
+        country: 'US',
       },
       requestNewSchool: true,
       homeSchool: true,
@@ -300,7 +305,10 @@ const JoinSchool = ({
       createSchool: body,
       joinSchool: {
         data: {
-          currentSignUpState: 'PREFERENCE_NOT_SELECTED',
+          currentSignUpState:
+            userInfo.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
+              ? 'ACCESS_WITHOUT_SCHOOL'
+              : 'PREFERENCE_NOT_SELECTED',
           email: userInfo.email,
           firstName: userInfo.firstName,
           middleName: userInfo.middleName,
@@ -317,7 +325,7 @@ const JoinSchool = ({
 
   return (
     <>
-      <JoinSchoolBody data-cy="joinSchoolBody">
+      <JoinSchoolBody hasMinHeight={!isModal} data-cy="joinSchoolBody">
         {requestSchoolFormVisible && (
           <BreadcrumbWrapper>
             <Breadcrumb.Item>
@@ -326,7 +334,10 @@ const JoinSchool = ({
             </Breadcrumb.Item>
           </BreadcrumbWrapper>
         )}
-        <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
+        <Col
+          xs={{ span: 20, offset: 2 }}
+          lg={{ span: isModal ? 21 : 18, offset: 3 }}
+        >
           <FlexWrapper type="flex" align="middle">
             <BannerText
               xs={24}
@@ -470,6 +481,11 @@ JoinSchool.propTypes = {
   checkDistrictPolicy: PropTypes.func.isRequired,
   fetchSchoolTeachers: PropTypes.func.isRequired,
   setPreviousAutoSuggestSchoolsContent: PropTypes.func.isRequired,
+  isModal: PropTypes.bool,
+}
+
+JoinSchool.defaultProps = {
+  isModal: false,
 }
 
 const enhance = compose(
@@ -530,7 +546,8 @@ const BreadcrumbLink = styled.span`
 const JoinSchoolBody = styled(Row)`
   padding: 60px 0px;
   background: white;
-  min-height: calc(100vh - 93px);
+  ${({ hasMinHeight = true }) =>
+    hasMinHeight && `min-height: calc(100vh - 93px);`}
 `
 
 const FlexWrapper = styled(Row)`

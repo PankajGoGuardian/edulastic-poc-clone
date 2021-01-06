@@ -1,3 +1,4 @@
+import { lightBlue6 } from '@edulastic/colors'
 import styled from 'styled-components'
 import {
   MultiChoiceContent,
@@ -43,12 +44,20 @@ export const Label = styled.label`
   border: ${(props) =>
     props.showBorder &&
     (props.styleType === 'primary'
-      ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
+      ? `1px solid ${
+          props.selected && props.uiStyle.type === 'block'
+            ? 'black'
+            : props.theme.widgets.multipleChoice.labelBorderColor
+        }`
       : `dotted 1px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
   border-left: ${(props) =>
     props.uiStyle.type === 'block' &&
     (props.styleType === 'primary'
-      ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
+      ? `1px solid ${
+          props.selected && props.uiStyle.type === 'block'
+            ? 'black'
+            : props.theme.widgets.multipleChoice.labelBorderColor
+        }`
       : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
 
   max-width: ${(props) => props.maxWidth || '100%'};
@@ -68,7 +77,8 @@ export const Label = styled.label`
   align-items: center;
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};
   margin-right: 12px;
-
+  background: ${({ uiStyle, selected, label }) =>
+    uiStyle.type === 'block' && selected && !label && lightBlue6};
   &.checked {
     background-color: ${(props) =>
       props.theme.widgets.multipleChoice.labelCheckedBgColor};

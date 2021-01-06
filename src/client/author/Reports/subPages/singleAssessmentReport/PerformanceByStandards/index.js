@@ -25,10 +25,10 @@ import {
   NoDataContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState } from '../../../ducks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
 import {
   getSAFFilterStandardsProficiencyProfiles,
-  getTestListSelector,
+  setStandardMasteryProfileAction,
 } from '../common/filterDataDucks'
 import CardHeader, {
   CardDropdownWrapper,
@@ -75,6 +75,8 @@ const PerformanceByStandards = ({
   pageTitle,
   filters,
   sharedReport,
+  setStandardMasteryProfile,
+  toggleFilter,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -93,10 +95,14 @@ const PerformanceByStandards = ({
             s._id ===
             (sharedReportFilters || settings.requestFilters)
               .standardsProficiencyProfile
-        ) || standardProficiencyProfiles[0]
+        ) || report?.scaleInfo
       )?.scale,
-    [settings]
+    [settings, report]
   )
+
+  useEffect(() => {
+    setStandardMasteryProfile(report?.scaleInfo || {})
+  }, [report])
 
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
@@ -161,12 +167,12 @@ const PerformanceByStandards = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters },
+        requestFilters: { ...settings.requestFilters, compareBy },
         testId: settings.selectedTest.key,
       }
       getPerformanceByStandards(q)
     }
-  }, [settings])
+  }, [settings, compareBy])
 
   const setSelectedData = ({ defaultStandardId }) => {
     const _defaultStandardId =
@@ -181,6 +187,13 @@ const PerformanceByStandards = ({
 
   useEffect(() => {
     setSelectedData(reportWithFilteredSkills)
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      (!report.metricInfo.length || !report.studInfo.length)
+    ) {
+      toggleFilter(null, true)
+    }
   }, [report])
 
   const handleResetSelection = () => {
@@ -249,7 +262,11 @@ const PerformanceByStandards = ({
     return <DataSizeExceeded />
   }
 
-  if (!report.metricInfo?.length || !report.studInfo?.length) {
+  if (
+    !report.metricInfo?.length ||
+    !report.studInfo?.length ||
+    !settings.selectedTest.key
+  ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (
@@ -378,6 +395,7 @@ const enhance = connect(
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction,
+    setStandardMasteryProfile: setStandardMasteryProfileAction,
   }
 )
 

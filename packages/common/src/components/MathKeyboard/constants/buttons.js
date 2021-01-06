@@ -261,42 +261,62 @@ import Group8825 from '../assets/calculus/8825.svg'
 
 export const one = {
   value: '1',
+  handler: '1',
+  command: 'write',
   label: <CustomImage src={number1} width={6} height={14} />,
 }
 export const two = {
   value: '2',
+  handler: '2',
+  command: 'write',
   label: <CustomImage src={number2} width={8} height={14} />,
 }
 export const three = {
   value: '3',
+  handler: '3',
+  command: 'write',
   label: <CustomImage src={number3} width={8} height={14} />,
 }
 export const four = {
   value: '4',
+  handler: '4',
+  command: 'write',
   label: <CustomImage src={number4} width={10} height={15} />,
 }
 export const five = {
   value: '5',
+  handler: '5',
+  command: 'write',
   label: <CustomImage src={number5} width={8} height={14} />,
 }
 export const six = {
   value: '6',
+  handler: '6',
+  command: 'write',
   label: <CustomImage src={number6} width={8} height={14} />,
 }
 export const seven = {
   value: '7',
+  handler: '7',
+  command: 'write',
   label: <CustomImage src={number7} width={8} height={14} />,
 }
 export const eight = {
   value: '8',
+  handler: '8',
+  command: 'write',
   label: <CustomImage src={number8} width={8} height={14} />,
 }
 export const nine = {
   value: '9',
+  handler: '9',
+  command: 'write',
   label: <CustomImage src={number9} width={8} height={14} />,
 }
 export const zero = {
   value: '0',
+  handler: '0',
+  command: 'write',
   label: <CustomImage src={number0} width={8} height={14} />,
 }
 export const dotDecimal = {
@@ -633,21 +653,21 @@ export const mol = {
 }
 
 export const mm2 = {
-  handler: 'mm^{2}',
+  handler: '\\text{mm}^{2}',
   label: <CustomImage src={Group8395} width={39} height={16} />,
   types: ['all'],
   command: 'write',
 }
 
 export const cm2 = {
-  handler: 'cm^{2}',
+  handler: '\\text{cm}^{2}',
   label: <CustomImage src={Group8396} width={31} height={16} />,
   types: ['all'],
   command: 'write',
 }
 
 export const m2 = {
-  handler: 'm^{2}',
+  handler: '\\text{m}^{2}',
   label: <CustomImage src={Group8394} width={23} height={16} />,
   types: ['all'],
   command: 'write',
@@ -661,91 +681,91 @@ export const si_m_sec2 = {
 }
 
 export const km2 = {
-  handler: 'km^{2}',
+  handler: '\\text{km}^{2}',
   label: <CustomImage src={Group8393} width={32} height={16} />,
   types: ['all'],
   command: 'write',
 }
 
 export const si_ug = {
-  handler: 'µg',
+  handler: '\\text{µg}',
   label: <CustomImage src={Group8860} width={18} height={14} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_mg = {
-  handler: 'mg',
+  handler: '\\text{mg}',
   label: <CustomImage src={Group8861} width={24} height={14} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_g = {
-  handler: 'g',
+  handler: '\\text{g}',
   label: <CustomImage src={Group3378} width={10} height={14} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_kg = {
-  handler: 'kg',
+  handler: '\\text{kg}',
   label: <CustomImage src={Group8862} width={19} height={18} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_m = {
-  handler: 'm',
+  handler: '\\text{m}',
   label: <CustomImage src={Group8397} width={14} height={10} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_km = {
-  handler: 'km',
+  handler: '\\text{km}',
   label: <CustomImage src={Group8398} width={24} height={14} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_um = {
-  handler: 'µm',
+  handler: '\\text{µm}',
   label: <CustomImage src={Group8870} width={24} height={20} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_us = {
-  handler: 'µs',
+  handler: '\\text{µs}',
   label: <CustomImage src={Group8863} width={18} height={14} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_ms = {
-  handler: 'ms',
+  handler: '\\text{ms}',
   label: <CustomImage src={Group8864} width={25} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_s = {
-  handler: 's',
+  handler: '\\text{s}',
   label: <CustomImage src={Path3530} width={8} height={20} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_ml = {
-  handler: 'mL',
+  handler: '\\text{mL}',
   label: <CustomImage src={Path3532} width={26} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_l = {
-  handler: 'L',
+  handler: '\\text{L}',
   label: <CustomImage src={Path3531} width={8} height={20} />,
   types: ['all'],
   command: 'cmd',
@@ -766,28 +786,28 @@ export const si_per_ms2 = {
 }
 
 export const si_mm = {
-  handler: 'mm',
+  handler: '\\text{mm}',
   label: <CustomImage src={Group8871} width={30} height={10} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_cm = {
-  handler: 'cm',
+  handler: '\\text{cm}',
   label: <CustomImage src={Group8872} width={23} height={10} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const si_mm3 = {
-  handler: 'mm^3',
+  handler: '\\text{mm}^3',
   label: <CustomImage src={Group8867} width={42} height={28} />,
   types: ['all'],
   command: 'write',
 }
 
 export const si_cm3 = {
-  handler: 'cm^3',
+  handler: '\\text{cm}^3',
   label: <CustomImage src={Group8868} width={32} height={16} />,
   types: ['all'],
   command: 'write',
@@ -801,14 +821,14 @@ export const si_cm_sec = {
 }
 
 export const si_m3 = {
-  handler: 'm^3',
+  handler: '\\text{m}^3',
   label: <CustomImage src={Group8869} width={23} height={16} />,
   types: ['all'],
   command: 'write',
 }
 
 export const si_km3 = {
-  handler: 'km^3',
+  handler: '\\text{km}^3',
   label: <CustomImage src={Group8878} width={30} height={14} />,
   types: ['all'],
   command: 'write',
@@ -836,28 +856,28 @@ export const si_gcm3 = {
 }
 
 export const us_in2 = {
-  handler: 'in^{2}',
+  handler: '\\text{in}^{2}',
   label: <CustomImage src={Group8557} width={22} height={16} />,
   types: ['all'],
   command: 'write',
 }
 
 export const us_oz = {
-  handler: 'oz',
+  handler: '\\text{oz}',
   label: <CustomImage src={Path3534} width={19} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_lb = {
-  handler: 'lb',
+  handler: '\\text{lb}',
   label: <CustomImage src={Path3535} width={16} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_in = {
-  handler: 'in',
+  handler: '\\text{in}',
   label: <CustomImage src={Path3536} width={16} height={24} />,
   types: ['all'],
   command: 'cmd',
@@ -877,35 +897,35 @@ export const us_ft2 = {
 }
 
 export const us_feet = {
-  handler: 'feet',
+  handler: '\\text{feet}',
   label: 'feet',
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_sq_mi = {
-  handler: 'sq mi',
+  handler: '\\text{sq mi}',
   label: 'sq mi',
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_yard = {
-  handler: 'yard',
+  handler: '\\text{yard}',
   label: 'yard',
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_acre = {
-  handler: 'acre',
+  handler: '\\text{acre}',
   label: 'acre',
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_cup = {
-  handler: 'cup',
+  handler: '\\text{cup}',
   label: 'cup',
   types: ['all'],
   command: 'cmd',
@@ -998,56 +1018,56 @@ export const us_ft_3 = {
 }
 
 export const us_mi = {
-  handler: 'mi',
+  handler: '\\text{mi}',
   label: <CustomImage src={Path3538} width={22} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_mi2 = {
-  handler: 'mi^{2}',
+  handler: '\\text{mi}^{2}',
   label: <CustomImage src={Group8876} width={30} height={24} />,
   types: ['all'],
   command: 'write',
 }
 
 export const us_fl_oz = {
-  handler: 'fl oz',
+  handler: '\\text{fl oz}',
   label: <CustomImage src={Path3539} width={34} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_pt = {
-  handler: 'pt',
+  handler: '\\text{pt}',
   label: <CustomImage src={Path3540} width={18} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_gal = {
-  handler: 'gal',
+  handler: '\\text{gal}',
   label: <CustomImage src={Path3541} width={24} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_second = {
-  handler: 'second',
+  handler: '\\text{second}',
   label: <CustomImage src={Path3512} width={40} height={9} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_minutes = {
-  handler: 'min',
+  handler: '\\text{min}',
   label: <CustomImage src={Path3548} width={32} height={24} />,
   types: ['all'],
   command: 'cmd',
 }
 
 export const us_hour = {
-  handler: 'hour',
+  handler: '\\text{hour}',
   label: <CustomImage src={Path3549} width={40} height={24} />,
   types: ['all'],
   command: 'cmd',

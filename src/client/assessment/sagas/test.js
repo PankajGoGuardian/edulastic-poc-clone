@@ -99,7 +99,7 @@ const getQuestions = (testItems = []) => {
 
 const getSettings = (test, testActivity, preview) => {
   const { assignmentSettings = {} } = testActivity || {}
-  const calcType = preview ? assignmentSettings.calcType : test.calcType
+  const calcType = !preview ? assignmentSettings.calcType : test.calcType
   // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
   const calcProvider =
     calcType === testContants.calculatorTypes.GRAPHING

@@ -134,7 +134,20 @@ class Container extends Component {
   editModeContainerRef = React.createRef()
 
   componentDidMount() {
-    const { clearAnswers, changePreviewTab, location, changeView } = this.props
+    const {
+      clearAnswers,
+      changePreviewTab,
+      location,
+      changeView,
+      item,
+      setItemLevelScoring,
+    } = this.props
+    if (
+      item.itemLevelScoring &&
+      get(item, ['data', 'questions'], []).some((q) => q.rubrics)
+    ) {
+      setItemLevelScoring(false)
+    }
     if (location.state && location.state.resetView === false) return
     clearAnswers()
     changeView('edit')
@@ -828,7 +841,6 @@ class Container extends Component {
     const { item, passage, rows, view, itemDeleting } = this.props
     const widgetLength = get(rows, [0, 'widgets'], []).length
     const passageTestItems = this.passageItems
-
     return (
       // isPassageWithQuestions fallback condition to show/hide pagination
       (item.canAddMultipleItems || item.isPassageWithQuestions) &&
@@ -943,6 +955,9 @@ class Container extends Component {
       !item.passageId && item.rows.every((row) => row?.widgets?.length === 0)
 
     const layoutType = isPassage ? COMPACT : DEFAULT
+    const disableScoringLevel = get(item, ['data', 'questions'], []).some(
+      (q) => q.rubrics
+    )
 
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
@@ -991,6 +1006,7 @@ class Container extends Component {
               questionsCount={qLength}
               isMultiDimensionLayout={rows.length > 1}
               isMultipart={item.multipartItem}
+              disableScoringLevel={disableScoringLevel}
             />
           )}
           <ItemHeader

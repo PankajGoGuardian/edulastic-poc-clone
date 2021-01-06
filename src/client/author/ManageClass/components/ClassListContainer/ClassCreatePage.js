@@ -1,10 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { IconGoogleClassroom } from '@edulastic/icons'
 import GoogleLogin from 'react-google-login'
 import { EduButton } from '@edulastic/common'
 import NoClassNotification from '../NoClassNotification'
 import { ClassCreateContainer, ButtonsContainer } from './styled'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 export const scopes = [
   'https://www.googleapis.com/auth/classroom.courses.readonly',
@@ -30,6 +31,7 @@ const ClassCreatePage = ({
   fetchClassList,
   googleAllowedInstitutions,
   isClassLink,
+  history,
 }) => {
   const { name } = recentInstitute
 
@@ -42,6 +44,9 @@ const ClassCreatePage = ({
   }
 
   const { isUserGoogleLoggedIn, cleverId } = user
+
+  const createNewClass = () => history.push('/author/manageClass/createClass')
+
   return (
     <>
       <ClassCreateContainer>
@@ -58,19 +63,29 @@ const ClassCreatePage = ({
               data={name}
             />
             <ButtonsContainer>
-              <Link to="/author/manageClass/createClass">
-                <EduButton isBlue>CREATE NEW CLASS</EduButton>
-              </Link>
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <EduButton isBlue onClick={handleClick}>
+                    CREATE NEW CLASS
+                  </EduButton>
+                )}
+                onClick={createNewClass}
+              />
               {googleAllowedInstitutions?.length > 0 &&
                 !cleverId &&
                 !isClassLink && (
                   <GoogleLogin
                     clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                     render={(renderProps) => (
-                      <EduButton isBlue onClick={renderProps.onClick}>
-                        <IconGoogleClassroom />
-                        <span>SYNC WITH GOOGLE CLASSROOM</span>
-                      </EduButton>
+                      <AuthorCompleteSignupButton
+                        renderButton={(handleClick) => (
+                          <EduButton isBlue onClick={handleClick}>
+                            <IconGoogleClassroom />
+                            <span>SYNC WITH GOOGLE CLASSROOM</span>
+                          </EduButton>
+                        )}
+                        onClick={renderProps.onClick}
+                      />
                     )}
                     scope={scopes}
                     onSuccess={handleLoginSucess}
@@ -86,4 +101,5 @@ const ClassCreatePage = ({
     </>
   )
 }
-export default ClassCreatePage
+
+export default withRouter(ClassCreatePage)

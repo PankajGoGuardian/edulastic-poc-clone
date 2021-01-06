@@ -3,7 +3,7 @@ import styled from 'styled-components'
 // import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { MultipleAssessmentReport } from '../multipleAssessmentReport'
 import { SingleAssessmentReport } from '../singleAssessmentReport'
-import { StandardsMasteryReport } from '../standardsMasteryReport'
+import StandardsMasteryReport from '../standardsMasteryReport'
 import { StudentProfileReport } from '../studentProfileReport'
 import { SubscriptionReport } from '../subscriptionReport'
 // import SearchBox from "./SearchBox";

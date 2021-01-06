@@ -1087,9 +1087,15 @@ export function* updateItemSaga({ payload }) {
     }
     const data = _omit(payload.data, ['authors', '__v'])
 
-    if (payload.testId && payload.testId !== 'undefined') {
-      data.testId = testId
-    }
+    /**
+     * Commented the below code as it was adding testId to item data which
+     * caused failing of test item update api because testId is not allowed
+     * in test item data
+     */
+
+    // if (payload.testId && payload.testId !== 'undefined') {
+    //   data.testId = testId
+    // }
     const { itemLevelScoring, isPassageWithQuestions } = data
 
     // const questions = yield select(getQuestionsSelector);
@@ -1336,7 +1342,16 @@ export function* updateItemSaga({ payload }) {
       yield put(setTestItemsAction(nextTestItems))
 
       if (!payload.testId || payload.testId === 'undefined') {
-        yield put(setTestDataAndUpdateAction({ addToTest: true, item }))
+        let passageItems = []
+        if (passageData?._id && passageData?.testItems?.length > 1) {
+          passageItems = yield call(
+            testItemsApi.getPassageItems,
+            passageData._id
+          )
+        }
+        yield put(
+          setTestDataAndUpdateAction({ addToTest: true, item, passageItems })
+        )
       } else {
         // When deleting question from passage item should not go to test preview
         const { redirectOnDeleteQuestion } = payload
@@ -1700,7 +1715,6 @@ function* convertToPassageWithQuestions({ payload }) {
         id: uuid(),
         title,
         type: questionType.PASSAGE,
-        heading: 'Section 3',
         math_renderer: '',
         content:
           'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',
@@ -1718,7 +1732,9 @@ function* convertToPassageWithQuestions({ payload }) {
           isPassageWithQuestions: true,
           canAddMultipleItems: !!canAddMultipleItems,
           backUrl,
+          testItemId: itemId,
           tabIndex: 0,
+          testId,
         },
       })
     )
@@ -1787,8 +1803,20 @@ function* savePassage({ payload }) {
       return
     }
 
+    /*
+     * in test flow, until test is not created, testId comes as "undefined" in string
+     * do no pass it to API as testId argument
+     * @see https://snapwiz.atlassian.net/browse/EV-19517
+     */
+    const hasValidTestId = payload.testId && payload.testId !== 'undefined'
+    const testIdParam = hasValidTestId ? payload.testId : null
+
     if (currentItem._id === 'new') {
-      const item = yield call(testItemsApi.create, _omit(currentItem, '_id'))
+      const item = yield call(
+        testItemsApi.create,
+        _omit(currentItem, '_id'),
+        ...(testIdParam ? [{ testId: testIdParam }] : [])
+      )
       yield put({
         type: RECEIVE_ITEM_DETAIL_SUCCESS,
         payload: { item },
@@ -1802,14 +1830,6 @@ function* savePassage({ payload }) {
       draft.testItems = uniq([...draft.testItems, currentItemId])
     })
     yield put(updatePassageStructureAction(modifiedPassage))
-
-    /*
-     * in test flow, until test is not created, testId comes as "undefined" in string
-     * do no pass it to API as testId argument
-     * @see https://snapwiz.atlassian.net/browse/EV-19517
-     */
-    const hasValidTestId = payload.testId && payload.testId !== 'undefined'
-    const testIdParam = hasValidTestId ? payload.testId : null
 
     // only update the item if its not new, since new item already has the passageId added while creating.
     yield all([
@@ -1874,7 +1894,6 @@ function* addWidgetToPassage({ payload }) {
             id: uuid(),
             title: 'Passage',
             type: questionType.PASSAGE,
-            heading: 'Section 3',
             math_renderer: '',
             content:
               'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',
@@ -1891,7 +1910,9 @@ function* addWidgetToPassage({ payload }) {
         state: {
           isPassageWithQuestions: true,
           backUrl,
+          testItemId: itemId,
           tabIndex,
+          testId,
           canAddMultipleItems: !!canAddMultipleItems, // location state prop getting used by savePassage saga
         },
       })

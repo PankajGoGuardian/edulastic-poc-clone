@@ -80,7 +80,6 @@ class TestItemCol extends Component {
     const displayFeedback = true
     let minHeight = null
     if (
-      multiple &&
       widget.widgetType === 'question' &&
       (isLCBView || showStackedView || isDocBased || isStudentAttempt)
     ) {
@@ -89,7 +88,7 @@ class TestItemCol extends Component {
       // feedback wrapper is required minHeight 320 at least
       minHeight = '320px'
     }
-
+    const showTabBorder = !hasDrawingResponse && isLCBView
     return (
       <TabContainer
         updatePositionToStore={
@@ -104,7 +103,7 @@ class TestItemCol extends Component {
         minHeight={minHeight}
         itemIndex={widgetIndex}
         marginTop={widgetIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
-        showBorder={!hasDrawingResponse && isLCBView}
+        showBorder={showTabBorder}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== 'resource'}

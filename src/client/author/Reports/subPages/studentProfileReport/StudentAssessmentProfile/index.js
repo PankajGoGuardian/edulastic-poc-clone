@@ -35,6 +35,7 @@ const StudentAssessmentProfile = ({
   pageTitle,
   sharedReport,
   t,
+  toggleFilter,
 }) => {
   const anonymousString = t('common.anonymous')
 
@@ -86,6 +87,17 @@ const StudentAssessmentProfile = ({
     }
   }, [settings])
 
+  useEffect(() => {
+    const metrics = get(studentAssessmentProfile, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [studentAssessmentProfile])
+
   const {
     districtAvg = [],
     groupAvg = [],
@@ -120,7 +132,8 @@ const StudentAssessmentProfile = ({
     isEmpty(districtAvg) ||
     isEmpty(groupAvg) ||
     isEmpty(metricInfo) ||
-    isEmpty(schoolAvg)
+    isEmpty(schoolAvg) ||
+    !settings.selectedStudent?.key
   ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }

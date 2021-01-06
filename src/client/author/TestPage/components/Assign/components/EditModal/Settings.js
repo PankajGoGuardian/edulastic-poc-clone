@@ -1,6 +1,8 @@
 // selectors
+import { lightGrey9 } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
-import { Col, Radio } from 'antd'
+import { IconInfo } from '@edulastic/icons'
+import { Col, Radio, Tooltip } from 'antd'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 // components
@@ -140,7 +142,23 @@ const Settings = ({
 
       <StyledRowSettings gutter={16}>
         <Col span={16}>
-          <RowTitle>Safe Exam Browser</RowTitle>
+          <RowTitle>
+            Safe Exam Browser
+            <Tooltip
+              title="Ensure a secure testing environment by using Safe Exam Browser
+                   to lockdown the student's device. To use this feature, Safe Exam Browser 
+                   (on Windows/Mac/iPad) must be installed on the student device. The quit 
+                   password can be used by teacher or proctor to safely exit Safe Exam Browser 
+                   in the middle of an assessment. The quit password should not be revealed to 
+                   the students. If you select this option, students must use devices (Windows, 
+                   Mac or iPad) with Safe Exam Browser installed."
+            >
+              <IconInfo
+                color={lightGrey9}
+                style={{ cursor: 'pointer', marginLeft: '10px' }}
+              />
+            </Tooltip>
+          </RowTitle>
         </Col>
         <Col span={8}>
           <AlignSwitchRight

@@ -1,4 +1,3 @@
-import next from 'immer'
 import {
   groupBy,
   sumBy,
@@ -7,7 +6,6 @@ import {
   minBy,
   get,
   map,
-  head,
   forEach,
   values,
   reduce,
@@ -43,10 +41,10 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
     const scaleData = { ...defaultScaleData }
 
     forEach(metric.records, (record) => {
-      scaleData[record.bandName] = parseInt(record.totalAssigned)
+      scaleData[record.bandName] = parseInt(record.totalAssigned, 10)
       const calculatedPercentage = round(
         percentage(
-          parseInt(record.totalGraded),
+          parseInt(record.totalGraded, 10),
           sumBy(metric.records, (el) => parseFloat(el.totalAssigned)) -
             sumBy(metric.records, (el) => parseFloat(el.totalAbsent))
         )
@@ -56,10 +54,10 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
           ? -calculatedPercentage
           : calculatedPercentage
 
-      if (parseInt(record.aboveStandard) > 0) {
-        scaleData.aboveStandard += parseInt(record.totalAssigned)
+      if (parseInt(record.aboveStandard, 10) > 0) {
+        scaleData.aboveStandard += parseInt(record.totalAssigned, 10)
       } else {
-        scaleData.belowStandard += parseInt(record.totalAssigned)
+        scaleData.belowStandard += parseInt(record.totalAssigned, 10)
       }
     })
 
@@ -86,36 +84,8 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
   return convertedBandData
 }
 
-export const augmentTestData = (metricInfo = [], testData = []) => {
-  if (!metricInfo.length) {
-    return []
-  }
-
-  const groupedByTest = groupBy(testData, 'testId')
-
-  const mappedTests = map(metricInfo, (metric) =>
-    next(metric, (draftMetric) => {
-      const selectedTestRecords = groupedByTest[metric.testId]
-      const selectedTest = head(selectedTestRecords)
-
-      draftMetric.testName = 'N/A'
-      draftMetric.totalTestItems = 0
-
-      if (selectedTest) {
-        draftMetric.testName = selectedTest.testName || 'N/A'
-        draftMetric.totalTestItems = selectedTest.totalTestItems || 0
-      }
-    })
-  )
-
-  return mappedTests.sort(
-    (firstMetric, secondMetric) =>
-      firstMetric.assessmentDate - secondMetric.assessmentDate
-  )
-}
-
 export const parseData = (rawData = {}) => {
-  const { metricInfo = [], bandInfo = {} } = rawData
+  const { metricInfo = [] } = rawData
 
   if (!metricInfo.length) {
     return []
@@ -133,13 +103,19 @@ export const parseData = (rawData = {}) => {
   )
 
   const parsedData = map(groupedTestsByType, (records) => {
-    const { assessmentDate, testId, testType } = records[0]
-    // const totalAssigned = parseInt(records[0].totalAssigned);
+    const {
+      assessmentDate,
+      testId,
+      testName,
+      totalTestItems,
+      testType,
+    } = records[0]
+
     const totalAssigned = sumBy(records, (test) =>
-      parseInt(test.totalAssigned || 0)
+      parseInt(test.totalAssigned || 0, 10)
     )
     const totalGraded = sumBy(records, (test) =>
-      parseInt(test.totalGraded || 0)
+      parseInt(test.totalGraded || 0, 10)
     )
     const totalScore = sumBy(records, (test) =>
       parseFloat(test.totalScore || 0)
@@ -147,7 +123,7 @@ export const parseData = (rawData = {}) => {
     const totalMaxScore = sumBy(
       records,
       (test) =>
-        parseFloat(test.maxPossibleScore || 0) * parseInt(test.totalGraded)
+        parseFloat(test.maxPossibleScore || 0) * parseInt(test.totalGraded, 10)
     )
 
     const score = round(percentage(totalScore, totalMaxScore))
@@ -159,10 +135,12 @@ export const parseData = (rawData = {}) => {
       minScore: get(minBy(records, 'minScore'), 'minScore', 0),
       maxPossibleScore: (records.find((r) => r.maxPossibleScore) || records[0])
         .maxPossibleScore,
-      totalAbsent: sumBy(records, (test) => parseInt(test.totalAbsent)),
+      totalAbsent: sumBy(records, (test) => parseInt(test.totalAbsent, 10)),
       totalGraded,
       diffScore: 100 - round(score),
       testId,
+      testName,
+      totalTestItems,
       uniqId: testId + testType,
       testType: capitalize(testTypeHashMap[testType.toLowerCase()]),
       assessmentDate,

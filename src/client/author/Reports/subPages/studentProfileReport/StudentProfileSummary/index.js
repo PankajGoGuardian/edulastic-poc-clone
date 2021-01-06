@@ -4,7 +4,7 @@ import { Icon } from 'antd'
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
@@ -23,15 +23,21 @@ import {
   augementAssessmentChartData,
   getGrades,
   getStudentName,
+  getDomainOptions,
 } from '../common/utils/transformers'
+import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import StandardMasteryDetailsTable from './common/components/table/StandardMasteryDetailsTable'
-import { augmentDomainStandardMasteryData } from './common/utils/transformers'
+import {
+  augmentDomainStandardMasteryData,
+  filterData as filterStandards,
+} from './common/utils/transformers'
 import {
   getReportsStudentProfileSummary,
   getReportsStudentProfileSummaryLoader,
   getStudentProfileSummaryRequestAction,
   getReportsStudentProfileSummaryError,
 } from './ducks'
+import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
 
 const getTooltip = (payload) => {
   if (payload && payload.length) {
@@ -67,7 +73,21 @@ const StudentProfileSummary = ({
   reportsSPRFilterLoadingState,
   sharedReport,
   t,
+  toggleFilter,
 }) => {
+  const [selectedDomain, setSelectedDomain] = useState({
+    key: 'All',
+    title: 'All',
+  })
+  const [selectedSubject, setSelectedSubject] = useState({
+    key: 'All',
+    title: 'All Subjects',
+  })
+  const [selectedGrade, setSelectedGrade] = useState({
+    key: 'All',
+    title: 'All Subjects',
+  })
+
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
       sharedReport?._id
@@ -125,10 +145,28 @@ const StudentProfileSummary = ({
     studentClassInfo,
     asessmentMetricInfo
   )
+  const domainOptions = getDomainOptions(
+    domains,
+    selectedGrade.key,
+    selectedSubject.key
+  )
   const domainsWithMastery = augmentDomainStandardMasteryData(
     domains,
-    scaleInfo
+    scaleInfo,
+    selectedDomain.key,
+    selectedGrade.key,
+    selectedSubject.key
   )
+  const filteredStandards = filterStandards(
+    standards,
+    selectedDomain.key,
+    selectedGrade.key,
+    selectedSubject.key
+  )
+
+  const onDomainSelect = (_, selected) => setSelectedDomain(selected)
+  const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
+  const onGradeSelect = (_, selected) => setSelectedGrade(selected)
 
   useEffect(() => {
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
@@ -138,6 +176,21 @@ const StudentProfileSummary = ({
       })
     }
   }, [settings])
+
+  useEffect(() => {
+    setSelectedDomain({ key: 'All', title: 'All' })
+  }, [selectedGrade, selectedSubject])
+
+  useEffect(() => {
+    const metrics = get(studentProfileSummary, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [studentProfileSummary])
 
   const _onBarClickCB = (key, args) => {
     !isSharedReport &&
@@ -172,7 +225,8 @@ const StudentProfileSummary = ({
     isEmpty(asessmentMetricInfo) ||
     isEmpty(metricInfo) ||
     isEmpty(skillInfo) ||
-    isEmpty(studInfo)
+    isEmpty(studInfo) ||
+    !settings.selectedStudent?.key
   ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
@@ -228,13 +282,38 @@ const StudentProfileSummary = ({
         <FlexContainer alignItems="stretch">
           <Card width="280px" mr="20px">
             <StudentPerformancePie
-              data={standards}
+              data={filteredStandards}
               scaleInfo={scaleInfo}
               getTooltip={getTooltip}
               title=""
             />
           </Card>
           <Card width="calc(100% - 300px)">
+            <FilterRow justifyContent="space-between">
+              <DropdownContainer>
+                <ControlDropDown
+                  by={selectedGrade}
+                  selectCB={onGradeSelect}
+                  data={staticDropDownData.grades}
+                  prefix="Grade"
+                  showPrefixOnSelected={false}
+                />
+                <ControlDropDown
+                  by={selectedSubject}
+                  selectCB={onSubjectSelect}
+                  data={staticDropDownData.subjects}
+                  prefix="Subject"
+                  showPrefixOnSelected={false}
+                />
+                <ControlDropDown
+                  showPrefixOnSelected={false}
+                  by={selectedDomain}
+                  selectCB={onDomainSelect}
+                  data={domainOptions}
+                  prefix="Domain(s)"
+                />
+              </DropdownContainer>
+            </FilterRow>
             <StandardMasteryDetailsTable
               onCsvConvert={onCsvConvert}
               isCsvDownloading={isCsvDownloading}
@@ -321,5 +400,26 @@ const StudentDetailsContainer = styled.div`
   p {
     color: ${secondaryTextColor};
     margin-bottom: 15px;
+  }
+`
+const FilterRow = styled(FlexContainer)`
+  @media print {
+    display: none;
+  }
+`
+const DropdownContainer = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+
+  .control-dropdown {
+    .ant-btn {
+      width: 100%;
+    }
+  }
+  .control-dropdown {
+    margin-left: 10px;
+  }
+  .control-dropown:first-child {
+    margin-left: 0px;
   }
 `

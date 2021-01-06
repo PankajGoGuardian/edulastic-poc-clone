@@ -8,7 +8,11 @@ import { withRouter } from 'react-router-dom'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
+import {
+  getCsvDownloadingState,
+  getPrintingState,
+  getTestListSelector,
+} from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
 import {
@@ -23,7 +27,7 @@ import {
   setReportsAssesmentSummaryLoadingAction,
   getReportsAssessmentSummaryError,
 } from './ducks'
-import { getTestListSelector } from '../common/filterDataDucks'
+import { setPerformanceBandProfileAction } from '../common/filterDataDucks'
 
 const CustomCliEmptyComponent = () => (
   <Empty
@@ -48,6 +52,8 @@ const AssessmentSummary = ({
   preventHeaderRender,
   setAssesmentSummaryLoading,
   sharedReport,
+  setPerformanceBandProfile,
+  toggleFilter,
 }) => {
   const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
     sharedReport,
@@ -86,6 +92,17 @@ const AssessmentSummary = ({
     }
   }, [settings])
 
+  useEffect(() => {
+    setPerformanceBandProfile(assessmentSummary?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !assessmentSummary.metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [assessmentSummary])
+
   const { bandInfo, metricInfo } = assessmentSummary
 
   if (loading) {
@@ -99,7 +116,7 @@ const AssessmentSummary = ({
     return <DataSizeExceeded />
   }
 
-  if (!metricInfo?.length) {
+  if (!metricInfo?.length || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (
@@ -117,7 +134,7 @@ const AssessmentSummary = ({
           <StyledH3 textAlign="center">
             Students in Performance Bands (%)
           </StyledH3>
-          <SimplePieChart data={bandInfo} />
+          <SimplePieChart data={bandInfo.performanceBand} />
         </StyledCard>
       </UpperContainer>
       <TableContainer>
@@ -172,6 +189,7 @@ const enhance = compose(
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction,
       setAssesmentSummaryLoading: setReportsAssesmentSummaryLoadingAction,
+      setPerformanceBandProfile: setPerformanceBandProfileAction,
     }
   )
 )

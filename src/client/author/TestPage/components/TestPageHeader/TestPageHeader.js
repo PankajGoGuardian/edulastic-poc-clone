@@ -9,9 +9,11 @@ import {
   IconPencilEdit,
   IconPrint,
   IconReview,
+  IconTick,
   IconSend,
   IconSettings,
   IconShare,
+  IconTestBank,
 } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { memo, useEffect, useState } from 'react'
@@ -45,8 +47,12 @@ import {
   TestStatus,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import { getIsCurator } from '../../../src/selectors/user'
+import {
+  getIsCurator,
+  getUserSignupStatusSelector,
+} from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const {
   statusConstants,
@@ -65,7 +71,7 @@ export const navButtonsTest = [
     text: 'Add Items',
   },
   {
-    icon: <IconReview color={white} width={24} height={24} />,
+    icon: <IconTick color={white} width={16} height={16} />,
     value: 'review',
     text: 'Review',
   },
@@ -163,6 +169,7 @@ const TestPageHeader = ({
   hasCollectionAccess,
   authorQuestionsById,
   isUpdatingTestForRegrade,
+  userSignupStatus,
 }) => {
   let navButtons =
     buttons ||
@@ -419,9 +426,11 @@ const TestPageHeader = ({
           headingText={
             title || (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
           }
+          Icon={IconTestBank}
           headingSubContent={headingSubContent}
-          flexDirection="column"
-          alignItems="flex-start"
+          titleMarginTop="10px"
+          flexDirection="row"
+          alignItems="center"
           titleMaxWidth="250px"
         >
           <TestPageNav
@@ -432,7 +441,11 @@ const TestPageHeader = ({
             showPublishButton={!showShareButton || showPublishButton}
           />
 
-          <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
+          <RightFlexContainer
+            childMarginRight="5"
+            justifyContent="flex-end"
+            mt="12px"
+          >
             {showShareButton &&
               !isPlaylist &&
               !isDocBased &&
@@ -605,14 +618,19 @@ const TestPageHeader = ({
               !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
-                <EduButton
-                  isBlue
-                  data-cy="assign"
-                  disabled={disableButtons}
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      isBlue
+                      data-cy="assign"
+                      disabled={disableButtons}
+                      onClick={handleClick}
+                    >
+                      ASSIGN
+                    </EduButton>
+                  )}
                   onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
+                />
               )}
             {isRegradeFlow &&
               !showEditButton &&
@@ -730,14 +748,19 @@ const TestPageHeader = ({
               !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
-                <EduButton
-                  isBlue
-                  disabled={disableButtons}
-                  data-cy="assign"
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      isBlue
+                      disabled={disableButtons}
+                      data-cy="assign"
+                      onClick={handleClick}
+                    >
+                      ASSIGN
+                    </EduButton>
+                  )}
                   onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
+                />
               )}
           </RightWrapper>
           <TestPageNav
@@ -774,6 +797,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       userId: getUserId(state),
       userRole: getUserRole(state),
+      userSignupStatus: getUserSignupStatusSelector(state),
       creating: getTestsCreatingSelector(state),
       isLoadingData: shouldDisableSelector(state),
       testItems: getTestItemsSelector(state),

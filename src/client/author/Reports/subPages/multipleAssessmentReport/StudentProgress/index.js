@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { get, head, toLower, isEmpty } from 'lodash'
+import { get, head, isEmpty } from 'lodash'
 
 import { SpinLoader, notification } from '@edulastic/common'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
@@ -15,6 +15,7 @@ import {
   filterAccordingToRole,
   getFormattedName,
 } from '../../../common/util'
+import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import { getUserRole } from '../../../../src/selectors/user'
 import {
@@ -24,6 +25,7 @@ import {
   getReportsStudentProgressError,
 } from './ducks'
 import { useGetBandData } from './hooks'
+import { filterMetricInfoByDDFilters } from './utils/transformers'
 
 import dropDownData from './static/json/dropDownData.json'
 import tableColumns from './static/json/tableColumns.json'
@@ -64,6 +66,7 @@ const StudentProgress = ({
   location,
   ddfilter,
   sharedReport,
+  toggleFilter,
 }) => {
   const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -75,7 +78,7 @@ const StudentProgress = ({
     ],
     [sharedReport]
   )
-  const profiles = MARFilterData?.data?.result?.bandInfo || []
+  const profiles = get(MARFilterData, 'data.result.bandInfo', [])
 
   const bandInfo =
     profiles.find(
@@ -86,16 +89,26 @@ const StudentProgress = ({
     profiles[0]?.performanceBand ||
     DefaultBandInfo
 
+  // support for tests pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 0, // set to 0 initially to prevent multiple api request on tab change
+    pageSize: 25,
+  })
+
+  // set initial page filters
   useEffect(() => {
-    const { requestFilters = {} } = settings
-    const { termId, reportId } = requestFilters
-    if (termId || reportId) {
-      getStudentProgressRequest({ ...requestFilters })
-    }
+    setPageFilters({ ...pageFilters, page: 1 })
   }, [settings])
 
-  const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
+  // get paginated data
+  useEffect(() => {
+    const q = { ...settings.requestFilters, ...pageFilters }
+    if ((q.termId || q.reportId) && pageFilters.page) {
+      getStudentProgressRequest(q)
+    }
+  }, [pageFilters])
 
+  const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [selectedTrend, setSelectedTrend] = useState('')
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
@@ -105,55 +118,35 @@ const StudentProgress = ({
   )
 
   useEffect(() => {
-    setMetricInfo(get(studentProgress, 'data.result.metricInfo', []))
+    const metrics = get(studentProgress, 'data.result.metricInfo', [])
+    setMetricInfo(metrics)
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
   }, [studentProgress])
 
-  useEffect(() => {
-    const filteredInfo = get(
-      studentProgress,
-      'data.result.metricInfo',
-      []
-    ).filter((info) => {
-      if (ddfilter.gender !== 'all' && ddfilter.gender !== info.gender) {
-        return false
-      }
-      if (
-        ddfilter.frlStatus !== 'all' &&
-        toLower(ddfilter.frlStatus) !== toLower(info.frlStatus)
-      ) {
-        return false
-      }
-      if (
-        ddfilter.ellStatus !== 'all' &&
-        toLower(ddfilter.ellStatus) !== toLower(info.ellStatus)
-      ) {
-        return false
-      }
-      if (
-        ddfilter.iepStatus !== 'all' &&
-        toLower(ddfilter.iepStatus) !== toLower(info.iepStatus)
-      ) {
-        return false
-      }
-      if (ddfilter.race !== 'all' && ddfilter.race !== info.race) {
-        return false
-      }
-      return true
-    })
-    setMetricInfo(filteredInfo)
-  }, [ddfilter])
+  const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
 
-  const { orgData = [], testData = [] } = get(MARFilterData, 'data.result', {})
+  const metaInfo = get(studentProgress, 'data.result.metaInfo', [])
+  const testsCount = get(studentProgress, 'data.result.testsCount', 0)
   const [data, trendCount] = useGetBandData(
-    metricInfo,
+    filteredInfo,
     compareBy.key,
-    orgData,
+    metaInfo,
     selectedTrend,
     bandInfo
   )
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (isEmpty(filteredInfo)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (error && error.dataSizeExceeded) {
@@ -238,16 +231,20 @@ const StudentProgress = ({
         isCsvDownloading={isCsvDownloading}
         data={dataSource}
         rowSelection={rowSelection}
-        testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}
-        rawMetric={metricInfo}
+        rawMetric={filteredInfo}
         customColumns={customTableColumns}
         isCellClickable
         location={location}
         pageTitle={pageTitle}
         isSharedReport={isSharedReport}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: testsCount,
+        }}
+        setBackendPagination={setPageFilters}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow

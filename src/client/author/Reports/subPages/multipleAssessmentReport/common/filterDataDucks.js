@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
-import { groupBy } from 'lodash'
+import { groupBy, get } from 'lodash'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
@@ -77,6 +77,10 @@ export const getReportsMARFilterLoadingState = createSelector(
   (state) => state.loading
 )
 
+export const getMAFilterDemographics = createSelector(stateSelector, (state) =>
+  get(state, 'MARFilterData.data.result.demographics', [])
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -90,19 +94,22 @@ const initialState = {
     reportId: '',
     termId: '',
     subject: 'All',
+    studentSubject: 'All',
     grade: 'All',
+    studentGrade: 'All',
     courseId: 'All',
+    studentCourseId: 'All',
     classId: 'All',
     groupId: 'All',
-    schoolId: 'All',
-    teacherId: 'All',
-    assessmentType: 'All',
+    schoolIds: '',
+    teacherIds: '',
+    assessmentTypes: '',
     /**
      * performanceBandProfile
      */
     profileId: '',
   },
-  testId: '',
+  testId: [],
   loading: false,
 }
 

@@ -1,5 +1,6 @@
 import { replaceLatexesWithMathHtml } from '@edulastic/common/src/utils/mathUtils'
-import { IconCloseTextFormat, IconCorrectTextFormat } from '@edulastic/icons'
+import { IconCloseTextFormat } from '@edulastic/icons/src/IconClose'
+import {IconCorrectTextFormat} from '@edulastic/icons/src/IconCorrect'
 
 import { clamp } from 'lodash'
 import { CONSTANT } from '../config'

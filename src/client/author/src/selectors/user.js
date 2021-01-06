@@ -121,6 +121,11 @@ export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.itemBanks', [])
 )
 
+export const getUserSignupStatusSelector = createSelector(
+  stateSelector,
+  (state) => _get(state, 'signupStatus', '')
+)
+
 export const getIsGridEditEnabledSelector = createSelector(
   stateSelector,
   (state) => {
@@ -159,22 +164,33 @@ export const getWritableCollectionsSelector = createSelector(
     )
 )
 
+export const convertCollectionsToBucketList = (collections) => {
+  const flatttenBuckets = collections.flatMap((collection) =>
+    collection.buckets.map((bucket) => ({
+      ...bucket,
+      _id: collection._id,
+      bucketId: bucket._id,
+      collectionStatus: collection.status,
+      collectionName: collection.name,
+      collectionDescription: collection.description,
+      accessLevel: collection.accessLevel || '',
+      districtId: collection.districtId,
+    }))
+  )
+  return flatttenBuckets || []
+}
+
 export const getItemBucketsSelector = createSelector(
   getCustomCollectionsSelector,
   (state) => {
-    const flatttenBuckets = state.flatMap((collection) =>
-      collection.buckets.map((bucket) => ({
-        ...bucket,
-        _id: collection._id,
-        bucketId: bucket._id,
-        collectionStatus: collection.status,
-        collectionName: collection.name,
-        collectionDescription: collection.description,
-        accessLevel: collection.accessLevel || '',
-        districtId: collection.districtId,
-      }))
-    )
-    return flatttenBuckets
+    return convertCollectionsToBucketList(state)
+  }
+)
+
+export const getItemBucketsForAllCollectionsSelector = createSelector(
+  getCollectionsSelector,
+  (state) => {
+    return convertCollectionsToBucketList(state)
   }
 )
 
@@ -340,14 +356,15 @@ export const getInterestedCurriculumsByOrgType = createSelector(
   getUserRole,
   (interestedCurriculums, role) => {
     const byOrgType = groupBy(interestedCurriculums, 'orgType')
+    const { ORG_TYPE } = roleuser
     if (role === roleuser.TEACHER) {
-      return byOrgType.teacher || []
+      return byOrgType[ORG_TYPE.TEACHER] || []
     }
     if (role === roleuser.SCHOOL_ADMIN) {
-      return byOrgType.institution || []
+      return byOrgType[ORG_TYPE.SCHOOL_ADMIN] || []
     }
     if (role === roleuser.DISTRICT_ADMIN) {
-      return byOrgType.district || []
+      return byOrgType[ORG_TYPE.DISTRICT_ADMIN] || []
     }
     return interestedCurriculums
   }

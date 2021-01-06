@@ -149,6 +149,7 @@ const SingleAssessmentReportContainer = (props) => {
             : settings.requestFilters[item]
         obj[item] = val
       })
+      obj.reportId = reportId || ''
       if (isCliUser) {
         obj.cliUser = true
       }
@@ -158,7 +159,6 @@ const SingleAssessmentReportContainer = (props) => {
       const path = `${settings.selectedTest.key}?${qs.stringify(obj)}`
       history.push(path)
     }
-
     const navigationItems = computeChartNavigationLinks(
       settings.selectedTest,
       settings.requestFilters,
@@ -184,9 +184,9 @@ const SingleAssessmentReportContainer = (props) => {
     })
   }
 
-  const toggleFilter = (e) => {
+  const toggleFilter = (e, status = false) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, !showFilter)
+      onRefineResultsCB(e, status || !showFilter)
     }
   }
 
@@ -258,16 +258,17 @@ const SingleAssessmentReportContainer = (props) => {
             isStandardProficiencyRequired={[
               '/author/reports/performance-by-standards',
             ].find((x) => window.location.pathname.startsWith(x))}
-            extraFilters={extraFilters}
             style={
               reportId || !showFilter
                 ? { display: 'none' }
                 : { display: 'block' }
             }
+            extraFilters={extraFilters}
             showApply={showApply}
             setShowApply={setShowApply}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
+            toggleFilter={toggleFilter}
           />
           {!isCliUser && !reportId ? (
             <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
@@ -285,6 +286,7 @@ const SingleAssessmentReportContainer = (props) => {
                   setShowHeader={setShowHeader}
                   preventHeaderRender={preventHeaderRender}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />
@@ -297,6 +299,7 @@ const SingleAssessmentReportContainer = (props) => {
                   settings={transformedSettings}
                   filters={ddfilter}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />
@@ -308,6 +311,7 @@ const SingleAssessmentReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />
@@ -319,6 +323,7 @@ const SingleAssessmentReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />
@@ -332,6 +337,7 @@ const SingleAssessmentReportContainer = (props) => {
                   pageTitle={loc}
                   filters={ddfilter}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />
@@ -348,6 +354,7 @@ const SingleAssessmentReportContainer = (props) => {
                   customStudentUserId={customStudentUserId}
                   isCliUser={isCliUser}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )}
             />

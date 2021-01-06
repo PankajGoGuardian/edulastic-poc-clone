@@ -59,6 +59,11 @@ class SubjectGrade extends React.Component {
         subject: PropTypes.string.isRequired,
       })
     ).isRequired,
+    isModal: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    isModal: false,
   }
 
   componentDidMount() {
@@ -122,6 +127,7 @@ class SubjectGrade extends React.Component {
       form,
       saveSubjectGradeloading,
       t,
+      isModal,
     } = this.props
     const { showAllStandards } = get(this, 'props.userInfo.orgData', {})
     const formattedCurriculums = isEmpty(subjects)
@@ -139,8 +145,11 @@ class SubjectGrade extends React.Component {
     const _allSubjects = allSubjects.filter((item) => item.value)
     return (
       <>
-        <SubjectGradeBody>
-          <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
+        <SubjectGradeBody hasMinHeight={!isModal}>
+          <Col
+            xs={{ span: 20, offset: 2 }}
+            lg={{ span: isModal ? 21 : 18, offset: 3 }}
+          >
             <FlexWrapper type="flex" align="middle">
               <BannerText xs={24} sm={18} md={12}>
                 <SchoolIcon src={schoolIcon} alt="" />
@@ -176,6 +185,9 @@ class SubjectGrade extends React.Component {
                         ref={this.gradeRef}
                         onSelect={() => this.gradeRef?.current?.blur()}
                         onDeselect={() => this.gradeRef?.current?.blur()}
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
                         showArrow
                       >
                         {filteredAllGrades.map((el) => (
@@ -205,6 +217,9 @@ class SubjectGrade extends React.Component {
                         ref={this.subjectRef}
                         onSelect={() => this.subjectRef?.current?.blur()}
                         onDeselect={() => this.subjectRef?.current?.blur()}
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
                         showArrow
                       >
                         {_allSubjects.map((el) => (
@@ -234,6 +249,9 @@ class SubjectGrade extends React.Component {
                         ref={this.standardRef}
                         onSelect={() => this.standardRef?.current?.blur()}
                         onDeselect={() => this.standardRef?.current?.blur()}
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
                         showArrow
                       >
                         {formattedCurriculums.map(
@@ -291,7 +309,8 @@ export default enhance(SubjectGradeForm)
 const SubjectGradeBody = styled(Row)`
   padding: 60px 0px;
   background: ${white};
-  min-height: calc(100vh - 93px);
+  ${({ hasMinHeight = true }) =>
+    hasMinHeight && `min-height: calc(100vh - 93px);`}
 `
 
 const FlexWrapper = styled(Row)`

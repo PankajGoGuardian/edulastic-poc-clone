@@ -16,10 +16,12 @@ import {
   getViewPasswordSelector,
   getAssignmentPasswordDetailsSelector,
   getPasswordPolicySelector,
+  getServerTsSelector,
 } from '../../../ClassBoard/ducks'
 import {
   toggleViewPasswordAction,
   regeneratePasswordAction,
+  fetchServerTimeAction,
 } from '../../../src/actions/classBoard'
 import {
   ModalWrapper,
@@ -43,6 +45,8 @@ const ViewPasswordModal = ({
   regeneratePassword,
   passwordPolicy,
   match,
+  serverTs,
+  fetchServerTime,
 }) => {
   const {
     assignmentPassword,
@@ -55,22 +59,38 @@ const ViewPasswordModal = ({
     passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC
   const [timer, setTimer] = useState(null)
   const [canGenerate, setCanGenerate] = useState(true)
+  useEffect(() => {
+    if (isDynamicPassword) {
+      fetchServerTime()
+    }
+  }, [])
 
   useEffect(() => {
-    if (isViewPassword && isDynamicPassword && !isNaN(passwordExpireTime)) {
-      const timeRemaining = passwordExpireTime - Date.now()
-      if (timeRemaining > 0) {
+    if (
+      isViewPassword &&
+      isDynamicPassword &&
+      !Number.isNaN(passwordExpireTime)
+    ) {
+      const timeRemaining = passwordExpireTime - serverTs
+      if (timeRemaining > 1000) {
         setTimer(timeRemaining)
         setCanGenerate(false)
+      } else if (!canGenerate) {
+        setTimer(null)
+        setCanGenerate(true)
       }
     }
-  }, [passwordExpireTime])
+  }, [passwordExpireTime, serverTs])
 
   useInterval(() => {
-    if (isViewPassword && isDynamicPassword && !isNaN(passwordExpireTime)) {
-      if (timer > 1000 && !isNaN(timer)) {
+    if (
+      isViewPassword &&
+      isDynamicPassword &&
+      !Number.isNaN(passwordExpireTime)
+    ) {
+      if (timer > 1000 && !Number.isNaN(timer)) {
         setTimer(timer - 1000)
-      } else if (!canGenerate && !isNaN(passwordExpireTime)) {
+      } else if (!canGenerate && !Number.isNaN(passwordExpireTime)) {
         setCanGenerate(true)
       }
     }
@@ -150,10 +170,12 @@ const enhance = compose(
       isViewPassword: getViewPasswordSelector(state),
       passwordDetails: getAssignmentPasswordDetailsSelector(state),
       passwordPolicy: getPasswordPolicySelector(state),
+      serverTs: getServerTsSelector(state),
     }),
     {
       toggleViewPassword: toggleViewPasswordAction,
       regeneratePassword: regeneratePasswordAction,
+      fetchServerTime: fetchServerTimeAction,
     }
   )
 )

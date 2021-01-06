@@ -14,12 +14,19 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 import { init as SentryInit } from '@sentry/browser'
 // import { Integrations } from '@sentry/tracing'
 import './client/index.css'
-import { updateSentryScope } from '@edulastic/api/src/utils/Storage'
+import { updateSentryScope,removeAllTokens } from '@edulastic/api/src/utils/Storage'
 import App from './client/App'
 import configureStore, { history } from './client/configureStore'
 import AppConfig from './app-config'
 import { isMobileDevice, isIOS } from './client/platform'
 import * as serviceWorker from './service-worker-registration'
+
+document.addEventListener("DOMContentLoaded", function() { 
+  const codeInUrl = window.location.search.includes('code=');
+  if(codeInUrl){
+    removeAllTokens();
+  }
+});
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -113,8 +120,11 @@ if (AppConfig.isSegmentEnabled) {
   })()
 }
 
+const loginState = JSON.parse(localStorage.getItem('authState')) || {}
+localStorage.removeItem('authState')
+
 // redux store
-const { store } = configureStore()
+const { store } = configureStore(loginState)
 
 const RootComp = () => (
   <I18nextProvider i18n={i18n}>

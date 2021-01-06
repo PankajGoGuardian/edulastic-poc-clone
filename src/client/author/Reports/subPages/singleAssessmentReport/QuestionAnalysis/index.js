@@ -18,14 +18,13 @@ import {
 import { QuestionAnalysisTable } from './componenets/table/questionAnalysisTable'
 
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
 import {
   getQuestionAnalysisRequestAction,
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader,
   getReportsQuestionAnalysisError,
 } from './ducks'
-import { getTestListSelector } from '../common/filterDataDucks'
 
 import { getChartData, getTableData } from './utils/transformers'
 
@@ -41,6 +40,7 @@ const QuestionAnalysis = ({
   settings,
   testList,
   sharedReport,
+  toggleFilter,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
@@ -67,6 +67,16 @@ const QuestionAnalysis = ({
       getQuestionAnalysis(q)
     }
   }, [settings])
+
+  useEffect(() => {
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !questionAnalysis.metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [questionAnalysis])
 
   const chartData = useMemo(() => getChartData(questionAnalysis.metricInfo), [
     questionAnalysis,
@@ -101,11 +111,20 @@ const QuestionAnalysis = ({
     return <SpinLoader position="fixed" />
   }
 
+  if (questionAnalysis.isRecommended) {
+    return (
+      <NoDataContainer fontSize="12px">
+        The Questions for each student have been dynamically selected and as a
+        result, question based comparison is unavailable for the assignment.
+      </NoDataContainer>
+    )
+  }
+
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
   }
 
-  if (!questionAnalysis.metricInfo?.length) {
+  if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (

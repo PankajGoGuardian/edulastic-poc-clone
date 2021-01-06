@@ -28,7 +28,7 @@ const Login = ({
   return (
     <Wrapper>
       {!isSignupUsingDaURL && !validatePartnerUrl(Partners[partnerCheck]) ? (
-        <Redirect exact to="/login" />
+        <Redirect exact to="/" />
       ) : null}
       <LoginWrapper
         Partners={Partners[partnerCheck]}

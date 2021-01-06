@@ -525,6 +525,17 @@ class LiveClassboardPage {
       })
   }
 
+  clickOnAssignmentLink = (assignmentName) => {
+    cy.server()
+    cy.route('GET', '**/assignments/district/**').as('assignments')
+    cy.get('a')
+      .contains(assignmentName)
+      .click()
+      .then(() => {
+        cy.wait('@assignments')
+      })
+  }
+
   verifyRedirectIcon = (student) => {
     this.getStudentCardByStudentName(student)
       .find('[data-cy="redirected"]')

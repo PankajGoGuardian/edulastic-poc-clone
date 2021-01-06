@@ -6,8 +6,18 @@ import EvaluationOption from './components/EvaluationOption'
 
 const { evaluationSettings } = mathConstants
 
-const LiterallyEquivalent = ({ method, onChangeOption, options }) => {
+const LiterallyEquivalent = ({
+  method,
+  onChangeOption,
+  options,
+  onChange,
+  useTemplate,
+  onChangeAllowedOptions,
+  allowNumericOnly,
+  allowedVariables,
+}) => {
   const methodOptions = useMemo(() => evaluationSettings[method], [method])
+
   return (
     <Container>
       {methodOptions.map((key) => (
@@ -15,7 +25,12 @@ const LiterallyEquivalent = ({ method, onChangeOption, options }) => {
           key={key}
           optionKey={key}
           options={options}
+          onChange={onChange}
+          useTemplate={useTemplate}
+          allowNumericOnly={allowNumericOnly}
           onChangeOption={onChangeOption}
+          allowedVariables={allowedVariables}
+          onChangeAllowedOptions={onChangeAllowedOptions}
         />
       ))}
     </Container>

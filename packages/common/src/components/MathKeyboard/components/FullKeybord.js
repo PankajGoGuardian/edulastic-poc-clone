@@ -8,8 +8,27 @@ const { TabPane } = AntTabs
 
 const tabLabel = (label, name) => <Tooltip title={name}>{label}</Tooltip>
 
+const renderTabBar = (props, DefaultTabBar) => {
+  const handleTouchEnd = (node) => (e) => {
+    const { onTabClick } = props
+    if (typeof onTabClick === 'function') {
+      onTabClick(node.key, e)
+    }
+  }
+
+  return (
+    <DefaultTabBar {...props}>
+      {(node) =>
+        React.cloneElement(React.Children.only(node), {
+          onTouchEnd: handleTouchEnd(node),
+        })
+      }
+    </DefaultTabBar>
+  )
+}
+
 const FullKeybord = ({ onInput, numbers }) => (
-  <Tabs>
+  <Tabs renderTabBar={renderTabBar}>
     {TAB_BUTTONS.map(({ label, name, key, buttons }) => (
       <TabPane tab={tabLabel(label, name)} key={key}>
         <MainKeyboard

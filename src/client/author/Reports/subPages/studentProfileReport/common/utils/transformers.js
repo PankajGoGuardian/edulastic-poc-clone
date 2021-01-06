@@ -10,6 +10,7 @@ import {
   filter,
   keys,
   uniq,
+  isEmpty,
 } from 'lodash'
 import {
   percentage,
@@ -83,6 +84,22 @@ export const getOverallMasteryPercentage = (records, maxScale) => {
   const masteredStandards = filter(
     records,
     (record) => record.scale.masteryName === maxScale.masteryName
+  )
+  return percentage(masteredStandards.length, records.length)
+}
+
+const getScaleForMasteryCalculation = (scaleInfo = []) => {
+  let scales = scaleInfo.filter((scale) => scale.domainMastery)
+  if (isEmpty(scales)) {
+    scales = orderBy(scaleInfo, 'thresold', ['desc']).splice(0, 2)
+  }
+  return scales
+}
+
+export const getOverallDomainMasteryPercentage = (records, scales) => {
+  const masteryNames = scales.map(({ masteryName }) => masteryName)
+  const masteredStandards = filter(records, (record) =>
+    masteryNames.includes(record.scale.masteryName)
   )
   return percentage(masteredStandards.length, records.length)
 }
@@ -176,22 +193,23 @@ export const getDomains = (
   }
 
   const groupedByDomain = groupBy(metricInfo, 'domainId')
-  const maxScale = getMaxScale(scaleInfo)
-
+  const scales = getScaleForMasteryCalculation(scaleInfo)
   const domains = map(keys(groupedByDomain), (domainId) => {
     const standards = groupedByDomain[domainId]
-    const { domainName = '', domain = '' } = standards[0] || {}
-    const masteryScore = getOverallMasteryPercentage(standards, maxScale)
+    const { domainName = '', domain = '', grades = [], subject } =
+      standards[0] || {}
+    const masteryScore = getOverallDomainMasteryPercentage(standards, scales)
     const masterySummary = getMasterySummary(masteryScore, scaleInfo)
 
     return {
       domainId,
       standards,
+      grades,
       masteryScore,
       masterySummary,
       name: domain,
       description: domainName,
-      subject: studentClassInfo?.subject,
+      subject,
       standardSet: studentClassInfo?.standardSet,
       assessmentCount: asessmentMetricInfo?.length || 0,
     }
@@ -209,3 +227,19 @@ export const transformFiltersForSPR = (requestFilters = {}) => ({
   ...requestFilters,
   profileId: requestFilters.standardsProficiencyProfileId,
 })
+
+export const getDomainOptions = (domains, grade, subject) => {
+  return [
+    { key: 'All', title: 'All' },
+    ...domains
+      .filter(
+        (domain) =>
+          (grade === 'All' || domain.grades.includes(grade)) &&
+          (subject === 'All' || domain.subject === subject)
+      )
+      .map((domain) => ({
+        key: domain.domainId,
+        title: domain.name,
+      })),
+  ]
+}

@@ -104,6 +104,7 @@ export const StyledCard = styled(Card)`
   overflow-x: auto;
   box-shadow: none;
   border-radius: 0;
+  height: 100%;
   .ant-card-body {
     padding: 0px 0px 60px;
   }

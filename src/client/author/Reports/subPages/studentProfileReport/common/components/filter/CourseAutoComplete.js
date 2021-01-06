@@ -1,10 +1,9 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react'
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon } from 'antd'
+import MultiSelectSearch from '../../../../../common/components/widgets/MultiSelectSearch'
 
 // ducks
 import { getUser } from '../../../../../../src/selectors/user'
@@ -20,10 +19,12 @@ const CourseAutoComplete = ({
   courseList,
   loading,
   loadCourseList,
-  selectedCourseId,
+  selectedCourseIds,
   selectCB,
 }) => {
+  const courseAutocompleteRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const [defaultCourseList, setDefaultCourseList] = useState([])
 
   // build search query
   const query = useMemo(() => {
@@ -45,67 +46,55 @@ const CourseAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
-  const onSelect = (key) => {
-    const value = courseList.find((c) => c._id === key)?.name
-    setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-    selectCB({ key, title: value })
-  }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
-      selectCB({ key: '', title: '' })
+      selectCB('')
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
+    }
+  }
+  const loadCourseListDebounced = useCallback(
+    debounce(loadCourseList, 500, { trailing: true }),
+    []
+  )
+  const getDefaultCourseList = () => {
+    if (isEmpty(defaultCourseList)) {
+      loadCourseListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
-    if (!isEmpty(selectedCourseId)) {
-      const { _id, name } = courseList.find((t) => t._id === selectedCourseId)
-      setSearchTerms({ text: name, selectedText: name, selectedKey: _id })
+    if (isEmpty(defaultCourseList)) {
+      setDefaultCourseList(courseList)
     }
-  }, [selectedCourseId])
-  const loadCourseListDebounced = useCallback(
-    debounce(loadCourseList, 500, { trailing: true }),
-    []
-  )
+  }, [courseList])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadCourseListDebounced(query)
     }
   }, [searchTerms])
 
-  // build dropdown data
-  const dropdownData = searchTerms.text
-    ? [
-        <AutoComplete.OptGroup
-          key="courseList"
-          label="Courses [Type to search]"
-        >
-          {Object.values(courseList).map((item) => (
-            <AutoComplete.Option key={item._id} title={item.name}>
-              {item.name}
-            </AutoComplete.Option>
-          ))}
-        </AutoComplete.OptGroup>,
-      ]
-    : []
+  const dropdownData = (searchTerms.text ? courseList : defaultCourseList).map(
+    (item) => ({
+      key: item._id,
+      title: item.name,
+    })
+  )
 
   return (
-    <AutoCompleteContainer>
-      <AutoComplete
-        getPopupContainer={(trigger) => trigger.parentNode}
-        placeholder=""
-        value={searchTerms.text}
-        onSearch={onSearch}
-        dataSource={dropdownData}
-        onSelect={onSelect}
-        onBlur={onBlur}
-      >
-        <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
-      </AutoComplete>
-    </AutoCompleteContainer>
+    <MultiSelectSearch
+      label="Course"
+      el={courseAutocompleteRef}
+      onChange={(e) => selectCB(e)}
+      onSearch={onSearch}
+      onBlur={onBlur}
+      onFocus={getDefaultCourseList}
+      value={selectedCourseIds}
+      options={dropdownData}
+      loading={loading}
+    />
   )
 }
 
@@ -119,12 +108,3 @@ export default connect(
     loadCourseList: receiveCourseListAction,
   }
 )(CourseAutoComplete)
-
-const AutoCompleteContainer = styled.div`
-  .ant-select-auto-complete {
-    padding: 5px;
-  }
-  .ant-select-dropdown-menu-item-group-title {
-    font-weight: bold;
-  }
-`

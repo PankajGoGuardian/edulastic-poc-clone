@@ -327,6 +327,9 @@ const parseTemplate = (tmpl) => {
 export const getResponsesCount = (element) =>
   $(element).find('textinput, textdropdown, mathinput, mathunit').length
 
+const closeBtn =
+  '<span contenteditable="false" class="paragraph-number-remove">x</span>'
+
 export const reIndexResponses = (htmlStr) => {
   const parsedHTML = $('<div />').html(htmlStr)
   if (
@@ -350,7 +353,7 @@ export const reIndexResponses = (htmlStr) => {
       $(this).attr('contenteditable', false)
 
       if ($(this).context.nodeName === 'PARAGRAPHNUMBER') {
-        $(this).html(`<label>${index + 1}</label>`)
+        $(this).html(`${index + 1}${closeBtn}`)
       }
 
       const text = $('<div>').append($(this).clone()).html()
@@ -576,6 +579,16 @@ export const clearSelection = () => {
   }
 }
 
+export const getRangeAtFirst = () => {
+  const selection = getSelection()
+  if (!selection.rangeCount) {
+    console.log('Unable to find a native DOM range from the current selection.')
+    return
+  }
+
+  return selection.getRangeAt(0)
+}
+
 /**
  *
  * @param {string} className class name of new element, default is 'token active-word
@@ -585,14 +598,14 @@ export const clearSelection = () => {
 export const highlightSelectedText = (
   className = 'token active-word',
   tag = 'span',
-  style
+  style,
+  prevRange = null
 ) => {
-  const selection = getSelection()
-  if (!selection.rangeCount) {
-    console.log('Unable to find a native DOM range from the current selection.')
+  const range = prevRange || getRangeAtFirst()
+  if (!range) {
     return
   }
-  const range = selection.getRangeAt(0)
+
   const {
     endContainer,
     endOffset,
@@ -600,6 +613,7 @@ export const highlightSelectedText = (
     startOffset,
     commonAncestorContainer,
   } = range
+
   if (startOffset === endOffset) {
     clearSelection()
     return
@@ -983,7 +997,20 @@ export const captureSentryException = (err) => {
   Sentry.captureException(err)
 }
 
+const removeImageTags = (text = '') => {
+  if (typeof text !== 'string') return text
+  return text.replace(/<img[^>]+\>/gi, '')
+}
+
+export const replaceLatexTemplate = (str) => {
+  return str.replace(
+    /#{(.*?)#}/g,
+    '<span class="input__math" data-latex="$1"></span>'
+  )
+}
+
 export default {
+  removeImageTags,
   sanitizeSelfClosingTags,
   getDisplayName,
   getPaginationInfo,
@@ -1009,4 +1036,5 @@ export default {
   uuid,
   getSanitizedProps,
   captureSentryException,
+  replaceLatexTemplate,
 }

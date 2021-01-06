@@ -32,7 +32,11 @@ export const evaluateItem = async (
             hasGroupResponses: validation.hasGroupResponses,
             validation: itemLevelScoring
               ? produce(validation.validation, (v) => {
-                  set(v, 'validResponse.score', itemLevelScore / questionsNum)
+                  const score = itemLevelScore / questionsNum
+                  set(v, 'validResponse.score', score)
+                  v.altResponses.forEach(altResp=>{
+                    altResp.score = score
+                  })
                 })
               : validation.validation,
             questionId: id,

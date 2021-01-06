@@ -117,10 +117,8 @@ export function reportVerificationFunction({
             })
         })
 
-        testDetails.items.forEach((item, row) => {
-          it(`> for question no: ${row + 1}, question type is ${
-            item.split('.')[0]
-          }`, () => {
+        it(`> question data table`, () => {
+          testDetails.items.forEach((item, row) => {
             const rowdata = questionTableData[attempt.stuName][`Q${row + 1}`]
             studentReportsCardPage
               .getQuestionTableRowByIndex(row + 1)
@@ -132,7 +130,11 @@ export function reportVerificationFunction({
               studentReportsCardPage.verifyEntryByIndexOfSelectedRow(
                 ind + 1,
                 rowdata[header],
-                ', '
+                ', ',
+                `question table row for ${item.split('.')[0]} from row no ${
+                  row + 1
+                }`,
+                item.split('.')[0]
               )
             })
           })
@@ -152,8 +154,8 @@ export function reportVerificationFunction({
             })
         })
 
-        testDetails.standards.forEach((standard, row) => {
-          it(`> for standard no: ${row + 1}, standard is ${standard}`, () => {
+        it(`> standard table data`, () => {
+          testDetails.standards.forEach((standard, row) => {
             const rowdata = standardTableData[attempt.stuName][standard]
             studentReportsCardPage
               .getStandardTableRowByStandard(standard)
@@ -163,7 +165,8 @@ export function reportVerificationFunction({
               studentReportsCardPage.verifyEntryByIndexOfSelectedRow(
                 ind + 1,
                 rowdata[header],
-                ','
+                ',',
+                `question table row for ${standard} from row no ${row + 1}`
               )
             })
           })

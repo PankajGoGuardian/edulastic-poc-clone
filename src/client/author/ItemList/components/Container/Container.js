@@ -115,7 +115,7 @@ class Contaier extends Component {
       sort: initSort = {},
     } = this.props
     const {
-      subject = interestedSubjects || [],
+      subject = interestedSubjects,
       grades = interestedGrades || [],
       curriculumId = firstCurriculum &&
       firstCurriculum.subject === interestedSubjects?.[0]
@@ -141,7 +141,7 @@ class Contaier extends Component {
       ...initSearch,
       ...sessionFilters,
       ...applyAuthoredFilter,
-      subject,
+      subject: subject || [],
       grades,
       curriculumId: parseInt(curriculumId, 10) || '',
     }
@@ -533,15 +533,14 @@ class Contaier extends Component {
           <ListItems isShowFilter={isShowFilter}>
             <Element>
               <MobileFilterIcon>
-                {' '}
-                {this.renderFilterIcon(isShowFilter)}{' '}
+                {this.renderFilterIcon(isShowFilter)}
               </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
                 {loading && <Spin size="large" />}
                 <>
                   <ItemsMenu>
                     <PaginationInfo>
-                      <span>{count}</span>{' '}
+                      <span>{count}</span>
                       <span>{t('author:component.item.itemsFound')}</span>
                     </PaginationInfo>
                     <HeaderFilter

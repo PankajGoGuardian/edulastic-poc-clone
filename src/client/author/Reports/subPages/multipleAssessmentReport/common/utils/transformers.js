@@ -5,36 +5,33 @@ import {
   processFilteredClassAndGroupIds,
 } from '../../../../common/util'
 
-export const transformFiltersForMAR = (requestFilters) => {
-  let classIds = ''
-  let groupIds = ''
-  let schoolIds = ''
-  if (requestFilters?.classIds && Array.isArray(requestFilters?.classIds)) {
-    classIds = requestFilters.classIds.join(',')
-  } else if (requestFilters?.classId) {
-    classIds = requestFilters.classId
-  }
-  if (requestFilters?.groupIds && Array.isArray(requestFilters?.groupIds)) {
-    groupIds = requestFilters.groupIds.join(',')
-  } else if (requestFilters?.groupId) {
-    groupIds = requestFilters.groupId
-  }
-  if (requestFilters?.schoolIds && Array.isArray(requestFilters?.schoolIds)) {
-    schoolIds = requestFilters.schoolIds.join(',')
-  }
-  if (requestFilters?.schoolId) {
-    // overwrite schoolIds if schoolId is selected
-    schoolIds = requestFilters.schoolId
-  }
+export const transformFiltersForMAR = ({
+  grade,
+  subject,
+  studentGrade,
+  studentSubject,
+  studentCourseId,
+  classId,
+  classIds,
+  groupId,
+  groupIds,
+  ...requestFilters
+}) => {
+  classIds = classIds && Array.isArray(classIds) ? classIds.join(',') : classId
+  groupIds = groupIds && Array.isArray(groupIds) ? groupIds.join(',') : groupId
   return {
     ...requestFilters,
-    classIds,
-    groupIds,
-    schoolIds,
+    testGrade: grade,
+    testSubject: subject,
+    grade: studentGrade,
+    subject: studentSubject,
+    courseId: studentCourseId,
+    classIds: classIds || '',
+    groupIds: groupIds || '',
   }
 }
 
-const processSchoolYear = (user) => {
+export const processSchoolYear = (user) => {
   let schoolYear = []
   const arr = get(user, 'orgData.terms', [])
   if (arr.length) {
@@ -213,8 +210,8 @@ export const processTestIds = (
           currentFilter.subject === 'All') &&
         (item.courseId === currentFilter.courseId ||
           currentFilter.courseId === 'All') &&
-        (item.schoolId === currentFilter.schoolId ||
-          currentFilter.schoolId === 'All') &&
+        (currentFilter.schoolIds.includes(item.schoolId) ||
+          currentFilter.schoolIds === '') &&
         (item.teacherId === currentFilter.teacherId ||
           currentFilter.teacherId === 'All') &&
         checkForGrades &&
@@ -246,8 +243,8 @@ export const processTestIds = (
   const arr = _dropDownData.testDataArr.filter(
     (item) =>
       groupIdMap[item.groupId] &&
-      (item.assessmentType === currentFilter.assessmentType ||
-        currentFilter.assessmentType === 'All')
+      (currentFilter.assessmentTypes.includes(item.assessmentType) ||
+        currentFilter.assessmentTypes === '')
   )
   const finalTestIds = []
   const makeUniqueMap = {}

@@ -1,9 +1,7 @@
-import next from 'immer'
 import {
   groupBy,
   sumBy,
   round,
-  forEach,
   get,
   maxBy,
   find,
@@ -12,12 +10,7 @@ import {
   includes,
   filter,
 } from 'lodash'
-import {
-  roundedPercentage,
-  processClassAndGroupIds,
-  processSchoolIds,
-  processTeacherIds,
-} from '../../../../common/util'
+import { roundedPercentage } from '../../../../common/util'
 
 const analyseKeys = {
   masteryScore: 'Mastery Score',
@@ -151,17 +144,17 @@ const getFormattedName = (name) => {
   return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
-const getRowInfo = (dataSource, compareByKey, value) => {
+const getRowInfo = (groupInfo, studInfo, compareByKey, value) => {
   switch (compareByKey) {
     case 'teacherId':
     case 'schoolId':
-      return find(dataSource.orgData, (org) => org[compareByKey] === value)
+      return find(groupInfo, (org) => org[compareByKey] === value)
     case 'classId':
     case 'groupId':
-      return find(dataSource.orgData, (org) => org[compareByKey] === value)
+      return find(groupInfo, (org) => org[compareByKey] === value)
     case 'studentId':
     default:
-      return find(dataSource.studInfo, (student) => student.studentId === value)
+      return find(studInfo, (student) => student.studentId === value)
   }
 }
 
@@ -173,7 +166,7 @@ const getRowName = (compareByKey, rowInfo = {}) => {
       return `${rowInfo.schoolName}`
     case 'classId':
     case 'groupId':
-      return `${rowInfo.groupName}`
+      return `${rowInfo.className}`
     case 'studentId':
     default:
       return getFormattedName(
@@ -182,7 +175,12 @@ const getRowName = (compareByKey, rowInfo = {}) => {
   }
 }
 
-export const getCompareByData = (metricInfo = [], compareBy, filterData) => {
+export const getCompareByData = (
+  metricInfo = [],
+  studInfo = [],
+  groupInfo = [],
+  compareBy
+) => {
   const compareByKey = getCompareByKey(compareBy)
 
   if (!compareByKey) {
@@ -194,13 +192,10 @@ export const getCompareByData = (metricInfo = [], compareBy, filterData) => {
   return Object.keys(compareByData).map((itemId) => {
     const records = compareByData[itemId]
     const domainData = {}
-
-    forEach(records, (domain) => {
+    records.forEach((domain) => {
       domainData[domain.domainId] = domain
     })
-
-    const rowInfo = getRowInfo(filterData, compareByKey, itemId) || {}
-
+    const rowInfo = getRowInfo(groupInfo, studInfo, compareByKey, itemId) || {}
     return {
       id: itemId,
       name: getRowName(compareByKey, rowInfo) || '',
@@ -213,14 +208,16 @@ export const getCompareByData = (metricInfo = [], compareBy, filterData) => {
 
 export const getTableData = (
   metricInfo = [],
-  appliedFilters,
-  filterData,
-  scaleInfo = []
+  studInfo = [],
+  groupInfo,
+  scaleInfo = [],
+  appliedFilters
 ) => {
   const compareByData = getCompareByData(
     metricInfo,
-    appliedFilters.compareBy.key,
-    filterData
+    studInfo,
+    groupInfo,
+    appliedFilters.compareBy.key
   )
   let filteredData = compareByData
 
@@ -274,11 +271,12 @@ export const getOverallValue = (record = [], analyseByKey, scaleInfo) => {
 
 export const getParsedData = (
   metricInfo,
+  studInfo,
   maxMasteryScore,
   tableFilters,
   selectedDomains,
   skillInfo,
-  filterData = [],
+  groupInfo = [],
   scaleInfo = []
 ) => {
   return {
@@ -289,55 +287,12 @@ export const getParsedData = (
       selectedDomains,
       skillInfo
     ),
-    tableData: getTableData(metricInfo, tableFilters, filterData, scaleInfo),
+    tableData: getTableData(
+      metricInfo,
+      studInfo,
+      groupInfo,
+      scaleInfo,
+      tableFilters
+    ),
   }
-}
-
-export const getDropDownData = (orgData = [], role = '') => {
-  const [classIdsArr, groupIdsArr] = processClassAndGroupIds(orgData)
-  let dropDownDataOptions = []
-  let filterInitState = {}
-
-  if (role !== 'teacher') {
-    const schoolIds = processSchoolIds(orgData)
-    const teacherIds = processTeacherIds(orgData)
-    filterInitState = next(filterInitState, (draft) => {
-      draft.schoolId = schoolIds[0]
-      draft.teacherId = teacherIds[0]
-    })
-    dropDownDataOptions = next(dropDownDataOptions, (draft) => {
-      draft.push(
-        {
-          key: 'schoolId',
-          title: 'School',
-          data: schoolIds,
-        },
-        {
-          key: 'teacherId',
-          title: 'Teacher',
-          data: teacherIds,
-        }
-      )
-    })
-  }
-
-  filterInitState = next(filterInitState, (draft) => {
-    draft.classId = classIdsArr[0]
-    draft.groupId = groupIdsArr[0]
-  })
-  dropDownDataOptions = next(dropDownDataOptions, (draft) => {
-    draft.push(
-      {
-        key: 'classId',
-        title: 'Class',
-        data: classIdsArr,
-      },
-      {
-        key: 'groupId',
-        title: 'Group',
-        data: groupIdsArr,
-      }
-    )
-  })
-  return [dropDownDataOptions, filterInitState]
 }

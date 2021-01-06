@@ -6,13 +6,16 @@ import styled from 'styled-components'
 import { Radio, Select } from 'antd'
 import { get, isObject } from 'lodash'
 
-import { MathKeyboard } from '@edulastic/common'
+import {
+  MathKeyboard,
+  MathFormulaDisplay,
+  FieldLabel,
+  SelectInputStyled,
+  RadioBtn,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { white } from '@edulastic/colors'
-import { Label } from '../../../../../styled/WidgetOptions/Label'
 import { toggleAdvancedSections } from '../../../../../actions/questions'
-import { SelectInputStyled } from '../../../../../styled/InputStyles'
-import { RadioLabel } from '../../../../../styled/RadioWithLabel'
 import { Row } from '../../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../../styled/WidgetOptions/Col'
 
@@ -73,9 +76,12 @@ const UnitsDropdownPure = ({
       command: 'write',
     }))
 
-  const getLabel = (handler) => {
-    const seleted = allBtns.find((btn) => btn.handler === handler) || {}
-    return seleted.label
+  const getLabel = (btn) => {
+    const label = `<span class="input__math" data-latex="${
+      btn.handler || ''
+    }"></span>`
+
+    return <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
   }
 
   useEffect(() => {
@@ -94,22 +100,26 @@ const UnitsDropdownPure = ({
       {!preview && (
         <Row marginTop={15}>
           <Col span={24}>
-            <Label marginBottom="0" data-cy="answer-math-unit-dropdown">
+            <FieldLabel marginBottom="0" data-cy="answer-math-unit-dropdown">
               {t('component.math.showDropdown')}
               <SubLabel>&nbsp;(Use keypad section to customize)</SubLabel>
-            </Label>
+            </FieldLabel>
           </Col>
           <Col span={24}>
             <Radio.Group
               onChange={onChnageRadioGroup}
               value={item.showDropdown ? 'dropdown' : 'keypad'}
             >
-              <RadioLabel value="dropdown">
-                {t('component.math.dropdown')}
-              </RadioLabel>
-              <RadioLabel value="keypad">
-                {t('component.math.keypad')}
-              </RadioLabel>
+              <RadioBtn value="dropdown">
+                <FieldLabel display="inline-block">
+                  {t('component.math.dropdown')}
+                </FieldLabel>
+              </RadioBtn>
+              <RadioBtn value="keypad">
+                <FieldLabel display="inline-block">
+                  {t('component.math.keypad')}
+                </FieldLabel>
+              </RadioBtn>
             </Radio.Group>
           </Col>
         </Row>
@@ -131,7 +141,7 @@ const UnitsDropdownPure = ({
               >
                 {allBtns.map((btn, i) => (
                   <Option value={btn.handler} key={i}>
-                    {getLabel(btn.handler)}
+                    {getLabel(btn)}
                   </Option>
                 ))}
               </SelectInputStyled>

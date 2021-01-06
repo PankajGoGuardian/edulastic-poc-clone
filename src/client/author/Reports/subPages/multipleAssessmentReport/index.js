@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
-import { map, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
@@ -14,7 +14,6 @@ import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForMAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
-import extraFilterData from './common/static/extraFilterData.json'
 
 import MultipleAssessmentReportFilters from './common/components/filters/MultipleAssessmentReportFilters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
@@ -24,16 +23,19 @@ import StudentProgress from './StudentProgress'
 import PerformanceOverTime from './PerformanceOverTime'
 
 import { setMARSettingsAction, getReportsMARSettings } from './ducks'
-import { getReportsMARFilterData } from './common/filterDataDucks'
+import {
+  getReportsMARFilterData,
+  getMAFilterDemographics,
+} from './common/filterDataDucks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
 import {
-  FilterButton,
   ReportContaner,
   SearchField,
   FilterLabel,
+  FilterButtonClear,
 } from '../../common/styled'
 
 const MultipleAssessmentReportContainer = (props) => {
@@ -54,6 +56,7 @@ const MultipleAssessmentReportContainer = (props) => {
     sharingState,
     setSharingState,
     sharedReportList,
+    demographics,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -98,29 +101,16 @@ const MultipleAssessmentReportContainer = (props) => {
   }, [showApply, _MARFilterData])
 
   useEffect(() => {
-    if (showApply) {
+    if (!showApply) {
       setDdFilter({ ...selectedExtras })
     }
   }, [showApply, selectedExtras])
-
-  const filterlist = extraFilterData[pageTitle] || []
-
-  useEffect(() => {
-    const initalDdFilters = filterlist.reduce(
-      (acc, curr) => ({ ...acc, [curr.key]: '' }),
-      {}
-    )
-    setSelectedExtras({ ...initalDdFilters })
-    if (!showApply) {
-      setDdFilter({ ...initalDdFilters })
-    }
-  }, [pageTitle])
 
   const computeChartNavigationLinks = (filt) => {
     if (navigation.locToData[pageTitle]) {
       const arr = Object.keys(filt)
       const obj = {}
-      arr.map((item) => {
+      arr.forEach((item) => {
         const val = filt[item] === '' ? 'All' : filt[item]
         obj[item] = val
       })
@@ -135,28 +125,27 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters.testIds) {
-      const arr = Object.keys(settings.requestFilters)
+    if (settings.requestFilters) {
       const obj = {}
-      arr.map((item) => {
+      const arr = Object.keys(settings.requestFilters)
+      arr.forEach((item) => {
         const val =
           settings.requestFilters[item] === ''
             ? 'All'
             : settings.requestFilters[item]
         obj[item] = val
       })
+      obj.reportId = reportId || ''
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
-    const computedChartNavigatorLinks = computeChartNavigationLinks(
-      settings.requestFilters
-    )
-    updateNavigation(computedChartNavigatorLinks)
+    const navigationItems = computeChartNavigationLinks(settings.requestFilters)
+    updateNavigation(navigationItems)
   }, [settings])
 
-  const toggleFilter = (e) => {
+  const toggleFilter = (e, status = false) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, !showFilter)
+      onRefineResultsCB(e, status || !showFilter)
     }
   }
 
@@ -165,20 +154,19 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   const onGoClick = (_settings) => {
-    if (_settings.selectedTest) {
+    if (_settings.selectedTests) {
       const obj = {}
       const arr = Object.keys(_settings.filters)
-      arr.map((item) => {
+      arr.forEach((item) => {
         const val =
           _settings.filters[item] === 'All' ? '' : _settings.filters[item]
         obj[item] = val
       })
-
-      const { selectedTest = [] } = _settings
+      const { selectedTests = [] } = _settings
       setMARSettings({
         requestFilters: {
           ...obj,
-          testIds: map(selectedTest, (test) => test.key).join(),
+          testIds: selectedTests.join(','),
         },
       })
     }
@@ -192,24 +180,26 @@ const MultipleAssessmentReportContainer = (props) => {
       [comData]: selected.key === 'all' ? '' : selected.key,
     })
   }
+
   const pageTitleList = [
     'performance-over-time',
     'peer-progress-analysis',
     'student-progress',
   ]
-  const extraFilters = pageTitleList.includes(pageTitle)
-    ? filterlist.map((item) => (
-        <SearchField key={item.key}>
-          <FilterLabel>{item.title}</FilterLabel>
-          <ControlDropDown
-            selectCB={updateCB}
-            data={item.data}
-            comData={item.key}
-            by={item.data[0]}
-          />
-        </SearchField>
-      ))
-    : []
+  const extraFilters =
+    pageTitleList.includes(pageTitle) && demographics
+      ? demographics.map((item) => (
+          <SearchField key={item.key}>
+            <FilterLabel>{item.title}</FilterLabel>
+            <ControlDropDown
+              selectCB={updateCB}
+              data={item.data}
+              comData={item.key}
+              by={item.data[0]}
+            />
+          </SearchField>
+        ))
+      : []
 
   return (
     <>
@@ -250,9 +240,9 @@ const MultipleAssessmentReportContainer = (props) => {
           setFirstLoad={setFirstLoad}
         />
         {!reportId ? (
-          <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+          <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
             <IconFilter />
-          </FilterButton>
+          </FilterButtonClear>
         ) : null}
         <ReportContaner showFilter={showFilter}>
           <Route
@@ -265,8 +255,8 @@ const MultipleAssessmentReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   ddfilter={ddfilter}
-                  MARFilterData={MARFilterData}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )
             }}
@@ -284,6 +274,7 @@ const MultipleAssessmentReportContainer = (props) => {
                   ddfilter={ddfilter}
                   MARFilterData={MARFilterData}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )
             }}
@@ -298,8 +289,8 @@ const MultipleAssessmentReportContainer = (props) => {
                   {..._props}
                   settings={transformedSettings}
                   ddfilter={ddfilter}
-                  MARFilterData={MARFilterData}
                   sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
                 />
               )
             }}
@@ -312,6 +303,7 @@ const MultipleAssessmentReportContainer = (props) => {
 
 const ConnectedMultipleAssessmentReportContainer = connect(
   (state) => ({
+    demographics: getMAFilterDemographics(state),
     settings: getReportsMARSettings(state),
     MARFilterData: getReportsMARFilterData(state),
     sharingState: getSharingState(state),

@@ -75,6 +75,18 @@ const slice = createSlice({
             newDueDate.setHours(23, 59, 59)
           )
           state.updateSettings.endDate = newDueDate.setHours(23, 59, 59)
+        } else if (key === 'autoRedirect') {
+          if (value === true) {
+            const autoRedirectSettings = {
+              showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
+              questionsDelivery: 'ALL',
+            }
+            state.assignment.autoRedirectSettings = autoRedirectSettings
+            state.updateSettings.autoRedirectSettings = autoRedirectSettings
+          } else {
+            delete state.assignment.autoRedirectSettings
+            delete state.updateSettings.autoRedirectSettings
+          }
         }
       }
     },
@@ -201,6 +213,8 @@ function getSettingsSelector(state) {
     passwordPolicy,
     passwordExpireIn,
     assignmentPassword,
+    autoRedirect,
+    autoRedirectSettings,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -225,6 +239,38 @@ function getSettingsSelector(state) {
       return false
     }
   }
+
+  if (autoRedirect === true) {
+    if (!autoRedirectSettings.showPreviousAttempt) {
+      notification({
+        type: 'warn',
+        msg: 'Please set the value for Show Previous Attempt',
+      })
+      return false
+    }
+    if (!autoRedirectSettings.questionsDelivery) {
+      notification({
+        type: 'warn',
+        msg: 'Please set the value for Question Delivery',
+      })
+      return false
+    }
+    if (!autoRedirectSettings.scoreThreshold) {
+      notification({
+        type: 'warn',
+        msg: 'Please set Score Threshold value',
+      })
+      return false
+    }
+    if (!autoRedirectSettings.maxRedirects) {
+      notification({
+        type: 'warn',
+        msg: 'Please set value of Max Attempts Allowed for auto redirect',
+      })
+      return false
+    }
+  }
+
   return omitBy(
     {
       openPolicy,
@@ -240,6 +286,8 @@ function getSettingsSelector(state) {
       maxAttempts,
       maxAnswerChecks,
       ...passWordPolicySettings,
+      autoRedirect,
+      autoRedirectSettings,
     },
     isUndefined
   )

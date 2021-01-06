@@ -13,6 +13,7 @@ class Draggable extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      position: {},
       isDragging: false,
       touchIdentifier: null,
     }
@@ -25,6 +26,8 @@ class Draggable extends React.Component {
   }
 
   componentDidMount() {
+    const { position = {} } = this.props
+
     this.mounted = true
     // Touch handlers must be added with {passive: false} to be cancelable.
     // https://developers.google.com/web/updates/2017/01/scrolling-intervention
@@ -34,6 +37,7 @@ class Draggable extends React.Component {
         passive: false,
       })
     }
+    this.setState({ position })
   }
 
   componentWillUnmount() {
@@ -67,8 +71,19 @@ class Draggable extends React.Component {
   }
 
   onDragStart = (e) => {
-    e.stopPropagation()
-    e.preventDefault()
+    const { disabled } = this.props
+
+    const thisNode = this.findDOMNode()
+    const { ownerDocument } = thisNode
+
+    if (disabled || !(e.target instanceof ownerDocument.defaultView.Node)) {
+      return
+    }
+
+    // Prevent scrolling on mobile devices, like ipad/iphone.
+    // Important that this is after handle/cancel.
+    if (e.type === 'touchstart') e.preventDefault()
+
     if (this.mounted === false) {
       return
     }
@@ -106,11 +121,15 @@ class Draggable extends React.Component {
 
   render() {
     const { children } = this.props
+    const { position = {} } = this.state
+
     return (
       <DraggableContainer
         onMouseDown={this.onDragStart}
         onMouseUp={this.onDragStop}
         onTouchEnd={this.onDragStop}
+        left={position.x}
+        top={position.y}
         ref={this.containerRef}
       >
         {children}
@@ -121,7 +140,12 @@ class Draggable extends React.Component {
 
 export default Draggable
 
-const DraggableContainer = styled.div`
+const DraggableContainer = styled.div.attrs(({ left, top }) => ({
+  style: {
+    left,
+    top,
+  },
+}))`
   box-shadow: ${boxShadowDefault};
   position: fixed;
   z-index: 1100;

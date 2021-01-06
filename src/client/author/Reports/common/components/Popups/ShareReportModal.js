@@ -108,6 +108,8 @@ const ShareReportModal = ({
         <Col span={18}>
           <Input
             value={sharedReportTitle}
+            placeholder="Provide a name for the shared report (upto 50 characters)"
+            maxLength={50}
             onChange={(e) => setSharedReportTitle(e.target.value)}
           />
         </Col>
@@ -120,7 +122,7 @@ const ShareReportModal = ({
               valueToDisplay={selected}
               prefix="Collaboration Group"
               onSelect={onSelect}
-              placeholder="Select collaborative group(s)"
+              placeholder="Select group(s) to share"
               dropdownStyle={{ zIndex: '1025' }}
             />
           </DropdownContainer>

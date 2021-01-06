@@ -37,6 +37,7 @@ const sortOptions = require('./const/sortOptions')
 const folderTypes = require('./const/folderTypes')
 const regexJs = require('./const/regex.js')
 const report = require('./const/report.js')
+const bannerActions = require('./const/bannerActions.js')
 
 module.exports = {
   question,
@@ -78,4 +79,5 @@ module.exports = {
   folderTypes,
   regexJs,
   report,
+  bannerActions,
 }

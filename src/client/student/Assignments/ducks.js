@@ -33,14 +33,9 @@ import {
   notification,
   handleChromeOsSEB,
 } from '@edulastic/common'
-import {
-  getCurrentSchool,
-  fetchUserAction,
-  getUserRole,
-  getUserId,
-} from '../Login/ducks'
+import { getCurrentSchool, fetchUserAction, getUserRole } from '../Login/ducks'
 
-import { getCurrentGroup, getClassIds } from '../Reports/ducks'
+import { getCurrentGroup } from '../Reports/ducks'
 // external actions
 import {
   assignmentSchema,
@@ -61,7 +56,6 @@ import {
 import { clearOrderOfOptionsInStore } from '../../assessment/actions/assessmentPlayer'
 import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
-import { getCurrentTerm } from '../../author/src/selectors/user'
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type
 const { DONE, ARCHIVED, NOT_OPEN, IN_PROGRESS } = assignmentStatusOptions
@@ -110,6 +104,15 @@ const getAssignmentClassId = (assignment, groupId, classIds) => {
   }, new Set())
   return classIds.find((x) => assignmentClassIds.has(x))
 }
+
+const getClassIds = createSelectorator(['user.user.orgData.classList'], (cls) =>
+  (cls || []).map((cl) => cl._id)
+)
+
+const getUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (_id, currentChild) => _id || currentChild
+)
 
 /**
  * get current redirect status of the assignment
@@ -511,12 +514,11 @@ function* fetchAssignments() {
     const groupId = yield select(getCurrentGroup)
     const userId = yield select(getCurrentUserId)
     const classIds = yield select(getClassIds)
-    const termId = yield select(getCurrentTerm)
     const groupStatus = yield select((state) =>
       get(state, 'studentAssignment.groupStatus', 'all')
     )
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId, '', groupStatus, termId),
+      call(assignmentApi.fetchAssigned, groupId, '', groupStatus),
       call(reportsApi.fetchReports, groupId, '', '', groupStatus),
     ])
 

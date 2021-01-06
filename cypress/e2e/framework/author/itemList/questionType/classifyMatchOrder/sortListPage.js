@@ -34,10 +34,10 @@ class SortListPage {
 
   // advance options
   clickOnAdvancedOptions() {
-    cy.get('body')
-      .contains('span', 'Advanced Options')
-      .should('be.visible')
-      .click()
+    // cy.get('body')
+    //   .contains('span', 'Advanced Options')
+    //   .should('be.visible')
+    //   .click()
     return this
   }
 

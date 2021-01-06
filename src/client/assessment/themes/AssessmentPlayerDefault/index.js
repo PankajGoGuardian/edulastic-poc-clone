@@ -416,6 +416,8 @@ class AssessmentPlayerDefault extends React.Component {
       calcType: this.calculatorType,
     }
 
+    const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
+
     return (
       /**
        * zoom only in student side, otherwise not
@@ -463,7 +465,7 @@ class AssessmentPlayerDefault extends React.Component {
             changeCaculateMode={this.handleModeCaculate}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
-            qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+            qType={qType}
             previewPlayer={previewPlayer}
             headerStyleWidthZoom={headerStyleWidthZoom}
             playerSkinType={playerSkinType}
@@ -500,6 +502,8 @@ class AssessmentPlayerDefault extends React.Component {
                 isBookmarked={isBookmarked}
                 handletoggleHints={showHints}
                 changeTool={this.changeTool}
+                handleMagnifier={handleMagnifier}
+                qType={qType}
               />
             </FeaturesSwitch>
             {!previewPlayer && (
@@ -756,6 +760,32 @@ function getScratchPadfromActivity(state, props) {
   return {}
 }
 
+function getHighlightsFromUserwork(state, props) {
+  const {
+    LCBPreviewModal = false,
+    testActivityId = '',
+    items,
+    currentItem,
+  } = props
+  const passageId = get(items, `[${currentItem}].passageId`)
+  const {
+    userWork: { present },
+  } = state
+
+  // student attempt
+  let highlights = get(present, `[${passageId}].resourceId`, null)
+
+  // LCB at show userWork
+  if (LCBPreviewModal && testActivityId) {
+    highlights = get(
+      present,
+      `[${passageId}][${testActivityId}].resourceId`,
+      null
+    )
+  }
+  return highlights
+}
+
 const enhance = compose(
   withRouter,
   withWindowSizes,
@@ -778,11 +808,7 @@ const enhance = compose(
         }].attachments`,
         null
       ),
-      highlights: get(
-        state,
-        `userWork.present[${ownProps?.passage?._id}].resourceId`,
-        null
-      ),
+      highlights: getHighlightsFromUserwork(state, ownProps),
       crossAction: get(
         state,
         `userWork.present[${

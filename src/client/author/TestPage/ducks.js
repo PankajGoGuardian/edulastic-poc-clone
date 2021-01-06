@@ -48,6 +48,7 @@ import {
   helpers,
   notification,
 } from '@edulastic/common'
+import signUpState from '@edulastic/constants/const/signUpState'
 import { createGroupSummary } from './utils'
 import {
   SET_MAX_ATTEMPT,
@@ -74,6 +75,7 @@ import {
   getUserIdSelector,
   getUserId,
   getIsCurator,
+  getUserSignupStatusSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -93,7 +95,15 @@ import { sortTestItemQuestions } from '../dataUtils'
 
 // constants
 
-const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = test
+const {
+  ITEM_GROUP_TYPES,
+  ITEM_GROUP_DELIVERY_TYPES,
+  completionTypes,
+  releaseGradeLabels,
+  calculatorTypes,
+  evalTypeLabels,
+  passwordPolicy,
+} = test
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
   DRAFT: 'draft',
@@ -282,6 +292,11 @@ export const SET_UPDATING_TEST_FOR_REGRADE_STATE =
 export const SET_NEXT_PREVIEW_ITEM = '[test] set next preview item'
 export const GET_TESTID_FROM_VERSIONID = '[test] get testId from versionId'
 export const SET_REGRADE_FIRESTORE_DOC_ID = '[test] set regrade firestore docId'
+export const SET_CORRECT_PSSAGE_ITEMS_CREATED =
+  '[test] set correct passage items data in created items'
+export const SET_SHARING_CONTENT_STATE = '[test] set sharing content state'
+export const UPDATE_EMAIL_NOTIFICATION_DATA =
+  '[test] update email notification data'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -359,6 +374,12 @@ export const setUpdatingTestForRegradeStateAction = createAction(
 )
 export const getTestIdFromVersionIdAction = createAction(
   GET_TESTID_FROM_VERSIONID
+)
+export const setSharingContentStateAction = createAction(
+  SET_SHARING_CONTENT_STATE
+)
+export const updateEmailNotificationDataAction = createAction(
+  UPDATE_EMAIL_NOTIFICATION_DATA
 )
 
 export const receiveTestByIdAction = (
@@ -473,6 +494,9 @@ export const setDefaultTestTypeProfilesAction = createAction(
 )
 export const deleteAnnotationAction = createAction(DELETE_ANNOTATION)
 export const setUndoStackAction = createAction(SET_ANNOTATIONS_STACK)
+export const setCorrectPassageItemsCreatedAction = createAction(
+  SET_CORRECT_PSSAGE_ITEMS_CREATED
+)
 
 export const defaultImage =
   'https://cdn2.edulastic.com/default/default-test-1.jpg'
@@ -541,8 +565,9 @@ export const getItemGroupsSelector = createSelector(
 )
 
 export const getTestItemsSelector = createSelector(
-  getItemGroupsSelector,
-  (itemGroups) => {
+  getTestEntitySelector,
+  (_test) => {
+    const itemGroups = _test.itemGroups || []
     let testItems =
       itemGroups.flatMap(
         (itemGroup) =>
@@ -583,6 +608,26 @@ export const getTestStatusSelector = createSelector(
 export const getTestIdSelector = createSelector(
   stateSelector,
   (state) => state.entity && state.entity._id
+)
+
+export const getContentSharingStateSelector = createSelector(
+  stateSelector,
+  (state) => state.isSharingContent
+)
+
+export const getShouldSendEmailStateSelector = createSelector(
+  stateSelector,
+  (state) => state.sendEmailNotification
+)
+
+export const getShowMessageBodyStateSelector = createSelector(
+  stateSelector,
+  (state) => state.showMessageBody
+)
+
+export const getEmailNotificationMessageSelector = createSelector(
+  stateSelector,
+  (state) => state.notificationMessage
 )
 
 export const getTestsCreatingSelector = createSelector(
@@ -787,6 +832,10 @@ const initialState = {
   updatingTestForRegrade: false,
   nextItemId: null,
   regradeFirestoreDocId: '',
+  isSharingContent: false,
+  sendEmailNotification: false,
+  showMessageBody: false,
+  notificationMessage: '',
 }
 
 export const testTypeAsProfileNameType = {
@@ -1147,7 +1196,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {
           ...state.entity,
-          passages: [...state.entity.passages, payload],
+          passages: [...(state.entity.passages || []), payload],
         },
       }
     case UPDATE_CREATING:
@@ -1280,6 +1329,23 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         regradeFirestoreDocId: payload,
       }
+    case SET_CORRECT_PSSAGE_ITEMS_CREATED:
+      return {
+        ...state,
+        createdItems: state.createdItems.map(
+          (i) => payload.find((it) => it._id === i._id) || i
+        ),
+      }
+    case SET_SHARING_CONTENT_STATE:
+      return {
+        ...state,
+        isSharingContent: payload,
+      }
+    case UPDATE_EMAIL_NOTIFICATION_DATA:
+      return {
+        ...state,
+        ...payload,
+      }
     default:
       return state
   }
@@ -1362,6 +1428,64 @@ export const getTestCreatedItemsSelector = createSelector(
   stateSelector,
   (state) => get(state, 'createdItems', [])
 )
+
+const setTime = (userRole) => {
+  const addDate = userRole !== 'teacher' ? 28 : 7
+  return moment()
+    .add('days', addDate)
+    .set({ hour: 23, minute: 0, second: 0, millisecond: 0 })
+}
+
+const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
+  const testType = entity?.testType
+  const { ASSESSMENT, COMMON, PRACTICE } = testConst.type
+  const isAdmin =
+    userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
+  const settings = {
+    startDate: moment(),
+    class: [],
+    endDate: setTime(userRole),
+    passwordPolicy: entity.passwordPolicy,
+    passwordExpireIn: entity.passwordExpireIn,
+    assignmentPassword: entity.assignmentPassword,
+    timedAssignment: entity.timedAssignment,
+  }
+
+  if (isAdmin) {
+    settings.testType = testType === PRACTICE ? PRACTICE : COMMON
+    settings.openPolicy =
+      assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+  }
+
+  if (!isAdmin) {
+    settings.testType = testType || ASSESSMENT
+    settings.openPolicy = assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
+  }
+
+  if (entity.timedAssignment) {
+    settings.allowedTime = entity.allowedTime || 10 * 60 * 1000
+    settings.pauseAllowed = entity.pauseAllowed || false
+  }
+
+  if (!isPlaylist && features.free && !features.premium) {
+    settings.testType = ASSESSMENT
+    settings.maxAttempts = 1
+    settings.markAsDone = completionTypes.AUTOMATICALLY
+    settings.releaseScore = releaseGradeLabels.DONT_RELEASE
+    settings.safeBrowser = false
+    settings.shuffleAnswers = false
+    settings.shuffleQuestions = false
+    settings.calcType = calculatorTypes.NONE
+    settings.answerOnPaper = false
+    settings.maxAnswerChecks = 0
+    settings.scoringType = evalTypeLabels.PARTIAL_CREDIT
+    settings.penalty = false
+    settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
+    settings.timedAssignment = false
+  }
+
+  return settings
+}
 
 // saga
 function* receiveTestByIdSaga({ payload }) {
@@ -1450,51 +1574,15 @@ function* receiveTestByIdSaga({ payload }) {
       yield put(updateDefaultThumbnailAction(thumbnail))
     }
 
-    const setTime = (userRole) => {
-      const addDate = userRole !== 'teacher' ? 28 : 7
-      return moment()
-        .add('days', addDate)
-        .set({ hour: 23, minute: 0, second: 0, millisecond: 0 })
-    }
-
     const userRole = yield select(getUserRole)
-
-    const testType = entity?.testType
-    const { ASSESSMENT, COMMON, PRACTICE } = testConst.type
-
-    const isAdmin =
-      userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
-    const testTypeDefault = isAdmin
-      ? testType === PRACTICE
-        ? PRACTICE
-        : COMMON
-      : testType || ASSESSMENT
-    let updateForTimedAssignment = { timedAssignment: entity?.timedAssignment }
-    if (entity?.timedAssignment) {
-      updateForTimedAssignment = {
-        ...updateForTimedAssignment,
-        allowedTime: entity?.allowedTime || 10 * 60 * 1000,
-        pauseAllowed: entity?.pauseAllowed || false,
-      }
-    }
-    yield put(
-      updateAssingnmentSettingsAction({
-        startDate: moment(),
-        class: [],
-        testType: testTypeDefault,
-        endDate: setTime(userRole),
-
-        openPolicy:
-          userRole === roleuser.DISTRICT_ADMIN ||
-          userRole === roleuser.SCHOOL_ADMIN
-            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
-            : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
-        passwordPolicy: entity.passwordPolicy,
-        passwordExpireIn: entity.passwordExpireIn,
-        ...updateForTimedAssignment,
-        assignmentPassword: entity.assignmentPassword,
-      })
-    )
+    const features = yield select(getUserFeatures)
+    const assignSettings = getAssignSettings({
+      userRole,
+      entity,
+      isPlaylist: payload.isPlaylist,
+      features,
+    })
+    yield put(updateAssingnmentSettingsAction(assignSettings))
   } catch (err) {
     captureSentryException(err)
     console.log({ err })
@@ -1510,16 +1598,18 @@ function* receiveTestByIdSaga({ payload }) {
 }
 
 function* createTest(data) {
-  const { title, passwordPolicy } = data
+  const { title, passwordPolicy: _passwordPolicy } = data
 
   if (title !== undefined && !title.trim().length) {
     return notification({ messageKey: 'nameShouldNotEmpty' })
   }
-  if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
+  if (_passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
     delete data.assignmentPassword
   }
 
-  if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+  if (
+    _passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+  ) {
     delete data.passwordExpireIn
   }
   const omitedItems = [
@@ -1838,11 +1928,20 @@ function* updateRegradeDataSaga({ payload }) {
 
 function* shareTestSaga({ payload }) {
   try {
+    yield put(setSharingContentStateAction(true))
     yield call(contentSharingApi.shareContent, payload)
     yield put(
       receiveSharedWithListAction({
         contentId: payload.contentId,
         contentType: payload.data.contentType,
+      })
+    )
+    yield put(setSharingContentStateAction(false))
+    yield put(
+      updateEmailNotificationDataAction({
+        sendEmailNotification: false,
+        showMessageBody: false,
+        notificationMessage: '',
       })
     )
     notification({ type: 'success', messageKey: 'sharedPlaylist' })
@@ -1857,7 +1956,7 @@ function* shareTestSaga({ payload }) {
         msg: `Invalid mails found (${invalidEmails.join(', ')})`,
       })
     }
-
+    yield put(setSharingContentStateAction(false))
     notification({ msg: errorMessage || 'Sharing failed' })
   }
 }
@@ -2047,17 +2146,23 @@ function* setTestDataAndUpdateSaga({ payload }) {
       })
     }
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
-    const { addToTest, item } = payload
+    const { addToTest, item, passageItems = [] } = payload
     if (addToTest) {
+      if (passageItems?.length) {
+        yield put(setCorrectPassageItemsCreatedAction(passageItems))
+      }
+      const items = uniqBy([...passageItems, item], '_id')
       newTest = produce(newTest, (draft) => {
         // add only items that are already not present
-        if (
-          !draft?.itemGroups?.[currentGroupIndex]?.items?.find(
-            (x) => x._id === item._id
-          )
-        ) {
-          draft.itemGroups[currentGroupIndex].items.push(item)
-        }
+        items.forEach((i) => {
+          if (
+            !draft?.itemGroups?.[currentGroupIndex]?.items?.find(
+              (x) => x._id === i._id
+            )
+          ) {
+            draft.itemGroups[currentGroupIndex].items.push(i)
+          }
+        })
       })
     } else {
       newTest = produce(newTest, (draft) => {
@@ -2370,7 +2475,22 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     }
     let defaultTestSettings = {}
     if (role !== roleuser.EDULASTIC_CURATOR) {
-      defaultTestSettings = yield call(testsApi.getDefaultTestSettings, payload)
+      const currentSignupState = yield select(getUserSignupStatusSelector)
+      if (
+        role === roleuser.TEACHER &&
+        currentSignupState == signUpState.ACCESS_WITHOUT_SCHOOL
+      ) {
+        const userId = yield select(getUserIdSelector)
+        defaultTestSettings = yield call(testsApi.getDefaultTestSettings, {
+          orgId: userId,
+          params: { orgType: 'teacher' },
+        })
+      } else {
+        defaultTestSettings = yield call(
+          testsApi.getDefaultTestSettings,
+          payload
+        )
+      }
     } else {
       const { performanceBand, standardGradingScale } = testEntity
       const performanceBandProfiles = [performanceBand]

@@ -252,7 +252,9 @@ export const apiForms = [
       text: '**Power tools can be enabled for DA, SA and Teachers',
       parentField: 'usernames',
       position: 'bottom',
-      align: 'right',
+      style: {
+        float: 'right',
+      },
     },
     fields: [
       {
@@ -388,10 +390,9 @@ export const apiForms = [
       },
       {
         name: 'teacherIdsDestination',
-        displayName: 'Teacher Ids Destination',
-        placeholder: 'Enter Teacher Ids Destination',
+        displayName: 'Teacher Id Destination',
+        placeholder: 'Enter Teacher Id Destination',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
       {
@@ -399,7 +400,6 @@ export const apiForms = [
         displayName: 'District Id',
         placeholder: 'Enter District Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
     ],
@@ -412,11 +412,18 @@ export const apiForms = [
     slowApi: true,
     fields: [
       {
+        name: 'teacherIds',
+        displayName: 'Teacher Id(s)',
+        placeholder: 'Enter comma separated Teacher Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
         name: 'srcSchoolId',
         displayName: 'Source School Id',
         placeholder: 'Enter Source School Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
       {
@@ -424,7 +431,6 @@ export const apiForms = [
         displayName: 'Destination School Id',
         placeholder: 'Enter Destination School Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
       {
@@ -432,7 +438,6 @@ export const apiForms = [
         displayName: 'Source District Id',
         placeholder: 'Enter Source District Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
       {
@@ -440,15 +445,6 @@ export const apiForms = [
         displayName: 'Destination District Id',
         placeholder: 'Enter Destination District Id',
         type: 'string',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
-        required: true,
-      },
-      {
-        name: 'teacherIds',
-        displayName: 'Teacher Id(s)',
-        placeholder: 'Enter comma separated teacher Ids',
-        type: 'textarea',
-        formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
       },
     ],
@@ -499,6 +495,16 @@ export const apiForms = [
     name: 'Update User',
     endPoint: 'user/user-details',
     method: 'post',
+    note: {
+      text: 'Note: Updating the username will reflect same in email',
+      parentField: 'userId',
+      position: 'bottom',
+      style: {
+        width: '100%',
+        padding: '5px 0px',
+        display: 'inline-block',
+      },
+    },
     fields: [
       {
         key: 'username',

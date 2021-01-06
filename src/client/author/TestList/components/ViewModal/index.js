@@ -3,6 +3,7 @@ import loadable from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
 import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import TestsApi from '@edulastic/api/src/tests'
 import {
   IconCopy,
   IconDescription,
@@ -15,7 +16,7 @@ import {
   IconAssignment,
   IconDynamic,
 } from '@edulastic/icons'
-import { Icon, Select, Tooltip, Col, Row } from 'antd'
+import { Icon, Select, Tooltip, Col, Row, Spin } from 'antd'
 import { find } from 'lodash'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -31,6 +32,7 @@ import {
   isPublisherUserSelector,
   getWritableCollectionsSelector,
   getInterestedCurriculumsSelector,
+  getUserSignupStatusSelector,
 } from '../../../src/selectors/user'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 import {
@@ -72,6 +74,7 @@ import {
 } from './styled'
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
 import { getInterestedStandards } from '../../../dataUtils'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const CloneOptions = loadable(() => import('./CloneOptions'))
 
@@ -106,6 +109,8 @@ class ViewModal extends React.Component {
   state = {
     editedCollections: null,
     showCloneOptions: false,
+    summary: null,
+    summaryLoading: false,
   }
 
   modalRef = React.createRef()
@@ -125,6 +130,29 @@ class ViewModal extends React.Component {
 
   hideCloneOptions = () => {
     this.setState({ showCloneOptions: false })
+  }
+
+  componentDidUpdate(prevProps) {
+    const { item, isShow } = this.props
+    const { prevItem } = prevProps
+    if (item?.cw || item?.sharedType === 'PUBLIC') {
+      if (
+        isShow != prevProps?.isShow &&
+        isShow &&
+        item?._id != prevItem?._id &&
+        item?._id
+      ) {
+        this.setState({ summaryLoading: true, summary: null })
+        TestsApi.getSummary(item._id)
+          .then((summary) => {
+            this.setState({ summary, summaryLoading: false })
+          })
+          .catch((e) => {
+            console.warn('error loading tests', e)
+            this.setState({ summaryLoading: false })
+          })
+      }
+    }
   }
 
   render() {
@@ -154,6 +182,7 @@ class ViewModal extends React.Component {
       collectionName,
       interestedCurriculums,
       writableCollections,
+      userSignupStatus,
     } = this.props
     const {
       title = '',
@@ -164,7 +193,6 @@ class ViewModal extends React.Component {
       thumbnail = '',
       analytics = [],
       itemGroups = [],
-      summary = {},
       alignment = [],
       permission,
       _source,
@@ -173,7 +201,10 @@ class ViewModal extends React.Component {
       collections: _collections = [],
       isDocBased,
     } = item
-
+    let { summary = {} } = item
+    if (this.state.summary) {
+      summary = this.state.summary
+    }
     const { editedCollections, showCloneOptions } = this.state
 
     const modalStyles = {
@@ -362,15 +393,20 @@ class ViewModal extends React.Component {
                     Preview
                   </EduButton>
                   {publicAccess && (
-                    <EduButton
-                      height="40px"
-                      width="100%"
-                      justifyContent="center"
-                      data-cy="assign-button"
+                    <AuthorCompleteSignupButton
+                      renderButton={(handleClick) => (
+                        <EduButton
+                          height="40px"
+                          width="100%"
+                          justifyContent="center"
+                          data-cy="assign-button"
+                          onClick={handleClick}
+                        >
+                          <span>ASSIGN</span>
+                        </EduButton>
+                      )}
                       onClick={assign}
-                    >
-                      <span>ASSIGN</span>
-                    </EduButton>
+                    />
                   )}
                   {permission !== 'VIEW' &&
                     !isEdulasticCurator &&
@@ -392,16 +428,21 @@ class ViewModal extends React.Component {
                     !isEdulasticCurator &&
                     !publicAccess &&
                     !isPublisherUser && (
-                      <EduButton
-                        height="40px"
-                        width="100%"
-                        justifyContent="center"
-                        data-cy="edit/assign-button"
+                      <AuthorCompleteSignupButton
+                        renderButton={(handleClick) => (
+                          <EduButton
+                            height="40px"
+                            width="100%"
+                            justifyContent="center"
+                            data-cy="edit/assign-button"
+                            onClick={handleClick}
+                          >
+                            <IconAssignment />
+                            <span>ASSIGN</span>
+                          </EduButton>
+                        )}
                         onClick={assign}
-                      >
-                        <IconAssignment />
-                        <span>ASSIGN</span>
-                      </EduButton>
+                      />
                     )}
                 </ButtonContainer>
                 {status === 'inreview' || status === 'rejected' ? (
@@ -533,68 +574,71 @@ class ViewModal extends React.Component {
                 </SummaryCard>
               </SummaryCardContainer>
             </SummaryContainer>
-            <PerfectScrollbar>
-              {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
-              {summary?.groupSummary?.length > 1 ||
-              itemGroups?.[0]?.type === 'AUTOSELECT' ? (
-                summary?.groupSummary?.map((group, i) => {
-                  const standards = interestedStandards?.map(
-                    (x) => x.identifier
-                  )
-                  return (
-                    <>
-                      <GroupName>{itemGroups[i]?.groupName}</GroupName>
-                      <SummaryCardContainer>
-                        <GroupSummaryCard>
-                          <GroupSummaryCardValue>
-                            {group.totalItems}
-                          </GroupSummaryCardValue>
-                          <SummaryCardLabel>Items</SummaryCardLabel>
-                        </GroupSummaryCard>
-                        <GroupSummaryCard>
-                          <Tags
-                            tags={standards}
-                            key="standards"
-                            show={2}
-                            isStandards
-                          />
-                        </GroupSummaryCard>
-                      </SummaryCardContainer>
-                    </>
-                  )
-                })
-              ) : (
-                <SummaryList>
-                  <ListHeader>
-                    <ListHeaderCell>SUMMARY</ListHeaderCell>
-                    <ListHeaderCell>Qs</ListHeaderCell>
-                    <ListHeaderCell>POINTS</ListHeaderCell>
-                  </ListHeader>
-                  {!!summary?.standards?.length &&
-                    interestedStandards.map(
-                      (data) =>
-                        !data.isEquivalentStandard && (
-                          <ListRow data-cy={data.identifier}>
-                            <ListCell>
-                              <SammaryMark>{data.identifier}</SammaryMark>
-                            </ListCell>
-                            <ListCell>{data.totalQuestions}</ListCell>
-                            <ListCell>{data.totalPoints}</ListCell>
-                          </ListRow>
-                        )
+            {this.state.summaryLoading ? (
+              <Spin />
+            ) : (
+              <PerfectScrollbar>
+                {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
+                {summary?.groupSummary?.length > 1 ||
+                itemGroups?.[0]?.type === 'AUTOSELECT' ? (
+                  summary?.groupSummary?.map((group, i) => {
+                    const standards = interestedStandards?.map(
+                      (x) => x.identifier
+                    )
+                    return (
+                      <>
+                        <GroupName>{itemGroups[i]?.groupName}</GroupName>
+                        <SummaryCardContainer>
+                          <GroupSummaryCard>
+                            <GroupSummaryCardValue>
+                              {group.totalItems}
+                            </GroupSummaryCardValue>
+                            <SummaryCardLabel>Items</SummaryCardLabel>
+                          </GroupSummaryCard>
+                          <GroupSummaryCard>
+                            <Tags
+                              tags={standards}
+                              key="standards"
+                              show={2}
+                              isStandards
+                            />
+                          </GroupSummaryCard>
+                        </SummaryCardContainer>
+                      </>
+                    )
+                  })
+                ) : (
+                  <SummaryList>
+                    <ListHeader>
+                      <ListHeaderCell>SUMMARY</ListHeaderCell>
+                      <ListHeaderCell>Qs</ListHeaderCell>
+                      <ListHeaderCell>POINTS</ListHeaderCell>
+                    </ListHeader>
+                    {!!summary?.standards?.length &&
+                      summary.standards.map((data) => (
+                        <ListRow data-cy={data.identifier}>
+                          <ListCell>
+                            <SammaryMark>{data.identifier}</SammaryMark>
+                          </ListCell>
+                          <ListCell>{data.totalQuestions}</ListCell>
+                          <ListCell>{data.totalPoints}</ListCell>
+                        </ListRow>
+                      ))}
+                    {summary?.noStandards?.totalQuestions > 0 && (
+                      <ListRow>
+                        <ListCell>
+                          <SammaryMark>No Standard</SammaryMark>
+                        </ListCell>
+                        <ListCell>
+                          {summary.noStandards.totalQuestions}
+                        </ListCell>
+                        <ListCell>{summary.noStandards.totalPoints}</ListCell>
+                      </ListRow>
                     )}
-                  {summary?.noStandards?.totalQuestions > 0 && (
-                    <ListRow>
-                      <ListCell>
-                        <SammaryMark>No Standard</SammaryMark>
-                      </ListCell>
-                      <ListCell>{summary.noStandards.totalQuestions}</ListCell>
-                      <ListCell>{summary.noStandards.totalPoints}</ListCell>
-                    </ListRow>
-                  )}
-                </SummaryList>
-              )}
-            </PerfectScrollbar>
+                  </SummaryList>
+                )}
+              </PerfectScrollbar>
+            )}
           </ModalColumn>
         </ModalContainer>
       </>
@@ -617,6 +661,7 @@ class ViewModal extends React.Component {
 
 export default connect(
   (state) => ({
+    userSignupStatus: getUserSignupStatusSelector(state),
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),

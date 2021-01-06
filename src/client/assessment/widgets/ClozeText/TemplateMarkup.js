@@ -19,7 +19,7 @@ import { Subtitle } from '../../styled/Subtitle'
 import Question from '../../components/Question'
 
 const FroalaEditor = loadable(() =>
-  import('@edulastic/common/src/components/FroalaEditor')
+  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
 )
 
 class TemplateMarkup extends Component {

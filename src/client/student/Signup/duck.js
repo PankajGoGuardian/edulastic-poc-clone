@@ -1,23 +1,34 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { get, pick } from 'lodash'
-import { notification } from '@edulastic/common'
+import notification from '@edulastic/common/src/components/Notification'
 import mqtt from 'mqtt'
 import produce from 'immer'
 import { push } from 'connected-react-router'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
+// import {
+//   schoolApi,
+//   userApi,
+//   settingsApi,
+//   TokenStorage,
+//   canvasApi,
+//   realtimeApi,
+// } from '@edulastic/api'
+import schoolApi from '@edulastic/api/src/school'
+import userApi from '@edulastic/api/src/user'
+import settingsApi from '@edulastic/api/src/settings'
+import canvasApi from '@edulastic/api/src/canvas'
+import realtimeApi from '@edulastic/api/src/realtime'
+import * as TokenStorage from '@edulastic/api/src/utils/Storage'
+import { signUpState } from '@edulastic/constants'
 import {
-  schoolApi,
-  userApi,
-  settingsApi,
-  TokenStorage,
-  canvasApi,
-  realtimeApi,
-} from '@edulastic/api'
-import { signupSuccessAction } from '../Login/ducks'
+  persistAuthStateAndRedirectToAction,
+  signupSuccessAction,
+} from '../Login/ducks'
 import { getUser } from '../../author/src/selectors/user'
 
 import { userPickFields } from '../../common/utils/static/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
+import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
 
 // Types
 const SEARCH_SCHOOL_REQUEST = '[signup] search school request'
@@ -421,6 +432,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
       }
       const user = pick(_result, userPickFields)
       yield put(signupSuccessAction(user))
+      yield put(fetchDashboardTiles())
     }
   } catch (err) {
     console.log('_err', err)
@@ -440,6 +452,7 @@ function* joinSchoolSaga({ payload = {} }) {
     }
     const user = pick(result, userPickFields)
     yield put(signupSuccessAction(user))
+    yield put(fetchDashboardTiles())
   } catch (err) {
     yield put({
       type: JOIN_SCHOOL_FAILED,
@@ -451,6 +464,7 @@ function* joinSchoolSaga({ payload = {} }) {
 
 function* saveSubjectGradeSaga({ payload }) {
   let isSaveSubjectGradeSuccessful = false
+  const initialUser = yield select(getUser)
   try {
     const result = yield call(settingsApi.saveInterestedStandards, payload) ||
       {}
@@ -490,6 +504,7 @@ function* saveSubjectGradeSaga({ payload }) {
       const user = yield select(getUser)
       // this is meant for teacher flow to save grade subject
       // so we can directly get districtId by districtIds[0]
+
       const data = {
         email: user.email,
         districtId: user.orgData?.districtIds?.[0],
@@ -506,6 +521,11 @@ function* saveSubjectGradeSaga({ payload }) {
       }
       // setting user in store to put updated currentSignupState in store
       yield put(signupSuccessAction(finalUser))
+    }
+
+    // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
+    if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
+      yield put(persistAuthStateAndRedirectToAction())
     }
   } catch (err) {
     console.log('_err', err)
@@ -542,7 +562,6 @@ function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
     yield put({
       type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_FAILED,
     })
-    yield put(push('/login'))
   }
 }
 

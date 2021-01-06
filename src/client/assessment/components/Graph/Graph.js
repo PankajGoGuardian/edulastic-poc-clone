@@ -13,6 +13,7 @@ import {
   QuestionContentWrapper,
   QuestionSubLabel,
 } from '@edulastic/common'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
 import { compose } from 'redux'
 import styled from 'styled-components'
@@ -36,6 +37,7 @@ import {
   GraphQuadrants,
   NumberLinePlot,
 } from './Authoring'
+
 import GraphAnswers from './GraphAnswers'
 import { GraphDisplay } from './Display'
 import {
@@ -45,6 +47,9 @@ import {
 import Annotations from '../Annotations/Annotations'
 
 import Question from '../Question'
+import { Subtitle } from '../../styled/Subtitle'
+import { Col } from '../../styled/WidgetOptions/Col'
+import { Row } from '../../styled/WidgetOptions/Row'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
@@ -511,6 +516,37 @@ class Graph extends Component {
                   setQuestionData={setQuestionData}
                   editable
                 />
+              </Question>
+
+              <Question
+                section="main"
+                label="Background Shapes"
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+                deskHeight={item.uiStyle?.layoutHeight}
+                advancedAreOpen
+              >
+                <Subtitle
+                  id={getFormattedAttrId(
+                    `${item?.title}-${t(
+                      'component.graphing.background_shapes'
+                    )}`
+                  )}
+                >
+                  {t('component.graphing.background_shapes')}
+                </Subtitle>
+                <Row>
+                  <Col md={24}>
+                    <GraphDisplay
+                      view={EDIT}
+                      advancedElementSettings
+                      graphData={item}
+                      onChange={this.handleBgShapesChange}
+                      elements={item.background_shapes}
+                      bgShapes
+                    />
+                  </Col>
+                </Row>
               </Question>
 
               {advancedLink}

@@ -7,6 +7,7 @@ import {
   red,
   secondaryTextColor,
   themeColor,
+  themeColorBlue,
   themeColorLight,
   title,
   white,
@@ -18,8 +19,12 @@ import { EduSwitchStyled } from '@edulastic/common'
 const RadioGroup = Radio.Group
 
 export const OptionConationer = styled.div`
-  min-height: 80vh;
-  display: flex;
+  ${({ hasMinHeight = true }) =>
+    hasMinHeight &&
+    `
+      min-height: 80vh;
+    `}
+  display: ${(props) => props.display || 'flex'};
   justify-content: center;
   align-items: center;
   margin-top: ${window.innerHeight <= 780 && '24px'};
@@ -39,6 +44,7 @@ export const InitOptions = styled.div`
 
 export const StyledRow = styled(Row)`
   margin-bottom: ${(props) => props.mb || '8px'};
+  margin-top: ${({ mt }) => mt || '0px'};
 `
 
 export const StyledRowLabel = styled(Row)``
@@ -413,6 +419,23 @@ export const Title = styled.div`
   color: ${secondaryTextColor};
 `
 
+export const StyledLink = styled.span`
+  margin-top: 15px;
+  font-size: 13px;
+  color: #888888;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  svg {
+    margin-left: 15px;
+    fill: ${themeColorBlue};
+    path {
+      fill: ${themeColorBlue};
+    }
+  }
+`
+
 export const TimeSpentInput = styled(Input)`
   width: 30%;
   margin: 0 30px;
@@ -466,3 +489,10 @@ export const SelectTextInline = styled.div`
   font-size: 12px;
 `
 export const UnselectAll = styled(SelectAll)``
+
+export const StyledCol = styled(Col)`
+  display: ${({ display }) => display || 'block'};
+  flex-direction: ${(flexDirection) => flexDirection || 'unset'};
+  padding-left: ${({ paddingLeft }) => paddingLeft || '0px'}
+  padding-right: ${({ paddingRight }) => paddingRight || '0px'}
+`

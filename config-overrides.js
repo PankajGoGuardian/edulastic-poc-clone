@@ -5,10 +5,28 @@ const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { setIn, getIn } = require('timm')
 const path = require('path')
-const ESLintPlugin = require('eslint-webpack-plugin')
-// const CopyPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('simple-progress-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
+const WriteFilePlugin = require('write-file-webpack-plugin')
+
+const multipleEntry = require('react-app-rewire-multiple-entry')([
+  {
+    entry: 'src/index.js',
+    template: 'public/index.html',
+    outPath: '/index.html',
+  },
+  {
+    entry: 'src/login.js',
+    template: 'public/login/index.html',
+    outPath: '/login/index.html',
+  },
+  {
+    entry: 'src/studentEntry.js',
+    template: 'public/students/index.html',
+    outPath: '/students/index.html',
+  },
+])
+
 const packageJson = require('./package.json')
 
 /** Uncomment to have a copy of files written on disk */
@@ -19,17 +37,23 @@ const packageJson = require('./package.json')
 // const rootNodeModDir = path.resolve(__dirname, 'node_modules')
 
 module.exports = override(
+  multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
-  process.env.BUNDLE_VISUALIZE && addBundleVisualizer(),
+  process.env.BUNDLE_VISUALIZE &&
+    addBundleVisualizer({
+      generateStatsFile: true,
+      reportFilename: 'report4-common-vendor.htm',
+      openAnalyzer: false,
+    }),
   (config) => {
     const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
 
     config.module.rules[0].parser.requireEnsure = true
 
-    config.plugins = config.plugins.filter(
-      (plugin) => !(plugin instanceof ESLintPlugin)
-    )
+    config.plugins = config.plugins.filter((plugin) => {
+      return !(plugin.constructor.name === 'ESLintWebpackPlugin')
+    })
 
     // config.module.noParse = /pdfjs-dist/
 
@@ -132,7 +156,7 @@ module.exports = override(
     } else {
       config.plugins.push(
         new ScriptExtHtmlWebpackPlugin({
-          defaultAttribute: 'defer',
+          // defaultAttribute: 'defer',
           async: /froala-editor|firebase|pdfjs-dist|jsx-graph|mathjs|draft-js/,
           // preload: {
           //   test: /\.js$/,
@@ -141,6 +165,12 @@ module.exports = override(
         })
       )
     }
+
+    config.module.rules.push({
+      loader: 'webpack-ant-icon-loader',
+      enforce: 'pre',
+      include: [require.resolve('@ant-design/icons/lib/dist')],
+    })
 
     /* eslint-enable no-param-reassign */
 
@@ -151,13 +181,23 @@ module.exports = override(
 
     // config.output.path = path.resolve(__dirname, 'dist')
 
+    // https://webpack.js.org/guides/build-performance/#output-without-path-info
+    config.output.pathinfo = false
+    config.output.futureEmitAssets = false
+
     // chunking optimization
     if (!isProduction) {
-      config.output.filename = 'app.js'
+      config.output.filename = '[name].bundle.js'
       config.output.chunkFilename = '[name].chunk.js'
+      config.plugins.push(
+        new WriteFilePlugin({
+          // Write only files that have ".html" extension.
+          test: /\.html/,
+        })
+      )
     } else {
       // config.devtool = false // disable sourcemaps on production
-      config.output.filename = 'app.[chunkhash:8].js'
+      config.output.filename = '[name].[chunkhash:8].js'
       config.output.chunkFilename = '[name].[chunkhash:8].chunk.js'
 
       // config.optimization = {
@@ -191,6 +231,7 @@ module.exports = override(
       // }
 
       // add chunk split optimizations
+      /*
       config.optimization = {
         ...(config.optimization || {}),
         splitChunks: {
@@ -201,14 +242,10 @@ module.exports = override(
             author: {
               test: /[\\/]author[\\/]/,
               name: 'author',
-              chunks: 'all',
-              enforce: true,
             },
             assessment: {
               test: /[\\/]assessment[\\/]/,
               name: 'assessment',
-              chunks: 'all',
-              enforce: true,
             },
             'vendor-react': {
               test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
@@ -230,6 +267,46 @@ module.exports = override(
                 // npm package names are URL-safe, but some servers don't like @ symbols
                 return `vendor.lib.${packageName.replace('@', '')}`
               },
+            },
+          },
+        },
+      }
+      */
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          chunks: 'all',
+          maxInitialRequests: Infinity,
+          cacheGroups: {
+            ...config.optimization.splitChunks.cacheGroups,
+            defaultVendors: {
+              reuseExistingChunk: true,
+            },
+            default: {
+              reuseExistingChunk: true,
+            },
+            froalaCommonChunk: {
+              test: /froalaCommonChunk/,
+              name: 'froalaCommonChunk',
+              chunks: 'initial',
+              enforce: true,
+            },
+            'vendor-react': {
+              test: /[\\/]node_modules[\\/]((react|redux|react-redux|redux-saga|reselect|lodash).*)[\\/]/,
+              name: 'vendor-react',
+              chunks: 'all',
+              enforce: true,
+              priority: 1000,
+              reuseExistingChunk: true,
+            },
+            'vendor-common': {
+              test: /[\\/]node_modules[\\/]((@firebase|@sentry|quill|antd|draft).*)[\\/]/,
+              name: 'vendor-common',
+              chunks: 'all',
+              priority: 1000,
+              enforce: true,
+              reuseExistingChunk: true,
             },
           },
         },

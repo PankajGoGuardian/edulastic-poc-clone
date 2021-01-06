@@ -54,7 +54,6 @@ import { FormulaEssay } from '../widgets/FormulaEssay'
 import ClozeMath from '../widgets/ClozeMath'
 import { setQuestionDataAction } from '../../author/src/actions/question'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
-import { toggleAdvancedSections } from '../actions/questions'
 import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
 import AudioControls from '../AudioControls'
@@ -407,6 +406,18 @@ class QuestionWrapper extends Component {
     return true
   }
 
+  get advancedAreOpen() {
+    const { userRole, features, isPremiumUser, isPowerTeacher } = this.props
+
+    const isDistrictAdmin =
+      (userRole === TEACHER &&
+        !features.isPublisherAuthor &&
+        !features.isCurator) ||
+      [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
+
+    return isDistrictAdmin && isPowerTeacher && isPremiumUser
+  }
+
   render() {
     const {
       noPadding,
@@ -424,8 +435,6 @@ class QuestionWrapper extends Component {
       windowWidth,
       flowLayout,
       isPresentationMode,
-      handleAdvancedOpen,
-      advancedAreOpen,
       userRole,
       disableResponse,
       showStudentWork,
@@ -451,9 +460,15 @@ class QuestionWrapper extends Component {
       isStudentReport,
       isLCBView,
       LCBPreviewModal,
+      userPreferredLanguage,
     } = restProps
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
+    const preferredLanguage = get(
+      data,
+      'activity.preferredLanguage',
+      userPreferredLanguage
+    )
     const { main, advanced, activeTab, page } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
@@ -510,34 +525,18 @@ class QuestionWrapper extends Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
 
-    const showQuestionMenu = windowWidth > parseInt(smallDesktopWidth, 10)
+    const showQuestionMenu =
+      view === EDIT && windowWidth > parseInt(smallDesktopWidth, 10)
 
     const advancedLink =
       !showQuestionMenu && advanced.length > 0 ? (
-        <AdvancedOptionsLink
-          handleAdvancedOpen={handleAdvancedOpen}
-          advancedAreOpen={advancedAreOpen}
-          bottom
-        />
+        <AdvancedOptionsLink advancedAreOpen={this.advancedAreOpen} bottom />
       ) : null
 
     const { rubrics: rubricDetails } = data
     const rubricFeedback = data?.activity?.rubricFeedback
 
-    const { calculatedHeight, fullHeight } = restProps
-    let openAdvancedOptions = false
-
-    if (
-      (userRole === TEACHER &&
-        !features.isPublisherAuthor &&
-        !features.isCurator) ||
-      [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
-    ) {
-      openAdvancedOptions = true
-      if (isPremiumUser && isPowerTeacher) {
-        openAdvancedOptions = false
-      }
-    }
+    const { calculatedHeight, fullHeight, showBorder } = restProps
 
     return (
       <ThemeProvider
@@ -550,7 +549,7 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer ? (
+          {canShowPlayer && (
             <AudioControls
               btnWithText={
                 playerSkinType.toLowerCase() ===
@@ -565,8 +564,6 @@ class QuestionWrapper extends Component {
               isPaginated={data.paginated_content}
               className="question-audio-controller"
             />
-          ) : (
-            ''
           )}
           <div
             className="__print-question-main-wrapper"
@@ -583,17 +580,17 @@ class QuestionWrapper extends Component {
                 height: calculatedHeight || (fullHeight ? '100%' : null),
               }}
             >
-              {view === EDIT && showQuestionMenu && (
+              {showQuestionMenu && (
                 <QuestionMenuWrapper>
                   <QuestionMenu
                     activeTab={activeTab}
                     main={main}
                     advanced={advanced}
-                    advancedAreOpen={openAdvancedOptions || advancedAreOpen}
-                    handleAdvancedOpen={handleAdvancedOpen}
+                    advancedAreOpen={this.advancedAreOpen}
                     scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
-                    hideAdvancedToggleOption={openAdvancedOptions}
+                    isPremiumUser={isPremiumUser}
+                    isPowerTeacher={isPowerTeacher}
                   />
                 </QuestionMenuWrapper>
               )}
@@ -615,10 +612,7 @@ class QuestionWrapper extends Component {
                   display: 'flex',
                   boxShadow: 'none',
                   paddingRight: layoutType === COMPACT ? '100px' : null,
-                  border:
-                    isLCBView && !restProps.hasDrawingResponse
-                      ? '1px solid #DADAE4'
-                      : null,
+                  border: showBorder ? '1px solid #DADAE4' : null,
                 }}
                 flowLayout={
                   type === questionType.CODING && view === 'preview'
@@ -628,10 +622,7 @@ class QuestionWrapper extends Component {
               >
                 <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
                   {evaluation === 'pending' && (
-                    <EvaluationMessage>
-                      {' '}
-                      Evaluation is pending{' '}
-                    </EvaluationMessage>
+                    <EvaluationMessage>Evaluation is pending</EvaluationMessage>
                   )}
                   <Question
                     {...restProps}
@@ -642,7 +633,7 @@ class QuestionWrapper extends Component {
                     changePreviewTab={changePreviewTab}
                     qIndex={qIndex}
                     advancedLink={advancedLink}
-                    advancedAreOpen={openAdvancedOptions || advancedAreOpen}
+                    advancedAreOpen={this.advancedAreOpen}
                     cleanSections={this.cleanSections}
                     fillSections={this.fillSections}
                     showQuestionNumber={!isPassageOrVideoType && data.qLabel}
@@ -653,6 +644,7 @@ class QuestionWrapper extends Component {
                     {...userAnswerProps}
                     page={page}
                     setPage={this.setPage}
+                    preferredLanguage={preferredLanguage}
                   />
                   {!restProps.hasDrawingResponse &&
                     showFeedback &&
@@ -751,8 +743,6 @@ QuestionWrapper.propTypes = {
   qIndex: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
   flowLayout: PropTypes.bool,
-  advancedAreOpen: PropTypes.bool,
-  handleAdvancedOpen: PropTypes.func,
   userRole: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
   clearAnswers: PropTypes.func,
@@ -776,8 +766,6 @@ QuestionWrapper.defaultProps = {
   clearAnswers: () => {},
   changePreviewTab: () => {},
   flowLayout: false,
-  advancedAreOpen: false,
-  handleAdvancedOpen: () => {},
   saveHintUsage: () => {},
   disableResponse: false,
   isPresentationMode: false,
@@ -796,7 +784,6 @@ const enhance = compose(
         ['author_classboard_testActivity', 'presentationMode'],
         false
       ),
-      advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
       showUserTTS: get(state, 'user.user.tts', 'no'),
       selectedTheme: state.ui.selectedTheme,
       zoomLevel: state.ui.zoomLevel,
@@ -808,10 +795,14 @@ const enhance = compose(
       features: getUserFeatures(state),
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),
+      userPreferredLanguage: get(
+        state,
+        ['user', 'user', 'preferredLanguage'],
+        'en'
+      ),
     }),
     {
       setQuestionData: setQuestionDataAction,
-      handleAdvancedOpen: toggleAdvancedSections,
       loadScratchPad: requestScratchPadAction,
     }
   )

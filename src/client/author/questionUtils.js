@@ -172,9 +172,6 @@ const textCheck = (item) => {
 }
 
 const passageCheck = (i) => {
-  if (isRichTextFieldEmpty(i.heading)) {
-    return 'Heading cannot be empty.'
-  }
   if (isRichTextFieldEmpty(i.contentsTitle)) {
     return 'Title cannot be empty.'
   }

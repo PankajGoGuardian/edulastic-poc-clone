@@ -21,6 +21,7 @@ export const withMathFormula = (WrappedComponent) => {
       theme = {},
       className,
       color,
+      onFinish,
     } = props
     const [loaded, setLoaded] = useState(false)
     const [newInnerHtml, setNewInnerHtml] = useState('')
@@ -31,6 +32,9 @@ export const withMathFormula = (WrappedComponent) => {
     useEffect(() => {
       if (!loaded) {
         setNewInnerHtml(dangerouslySetInnerHTML.__html)
+        if (typeof onFinish === 'function') {
+          onFinish(true)
+        }
         return
       }
       setNewInnerHtml(
@@ -40,6 +44,9 @@ export const withMathFormula = (WrappedComponent) => {
         setNewInnerHtml(
           newInnerHtml.replace('<iframe', '<iframe style="display:none" ')
         )
+      }
+      if (typeof onFinish === 'function') {
+        onFinish(true)
       }
     }, [dangerouslySetInnerHTML, loaded])
 

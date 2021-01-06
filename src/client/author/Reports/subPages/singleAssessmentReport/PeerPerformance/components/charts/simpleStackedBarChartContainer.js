@@ -134,6 +134,7 @@ export const SimpleStackedBarChartContainer = ({
       yAxisLabel={chartSpecifics.yAxisLabel}
       filter={filter}
       referenceLineY={chartSpecifics.referenceLineY}
+      pageSize={10}
     />
   )
 }

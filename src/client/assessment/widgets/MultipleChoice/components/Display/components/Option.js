@@ -124,6 +124,8 @@ const Option = (props) => {
   const getLabel = (inx) => {
     if (uiStyle.type === 'block') {
       switch (uiStyle.choiceLabel) {
+        case 'none':
+          return ''
         case 'number':
           return inx + 1
         case 'lower-alpha':
@@ -147,6 +149,8 @@ const Option = (props) => {
     }
   }
 
+  const label = getLabel(index)
+
   const container = (
     <>
       <CheckboxContainer
@@ -163,7 +167,9 @@ const Option = (props) => {
           onChange={onChangeHandler}
         />
       </CheckboxContainer>
-      <span className="labelOnly">{getLabel(index)}</span>
+      <span className="labelOnly" style={{ display: !label && 'none' }}>
+        {label}
+      </span>
     </>
   )
 
@@ -179,6 +185,7 @@ const Option = (props) => {
         fontSize={fontSize}
         smallSize={smallSize}
         uiStyleType={uiStyle.type}
+        label={label}
       >
         <MathFormulaDisplay
           fontSize={fontSize}
@@ -210,6 +217,7 @@ const Option = (props) => {
       userSelect={!!setCrossAction}
       isPrintPreview={isPrintPreview}
       showBorder={showBorder}
+      label={label}
       onMouseEnter={() => {
         if (setCrossAction) {
           toggleHover(true)

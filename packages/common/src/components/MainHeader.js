@@ -23,6 +23,7 @@ const MainHeader = ({
   titleText,
   Icon,
   toggleSideBar,
+  titleMarginTop,
   ...restProps
 }) => {
   const title = titleText || headingText
@@ -39,6 +40,7 @@ const MainHeader = ({
             <HeaderLeftContainer
               headingText={headingText}
               {...restProps}
+              mt={titleMarginTop}
               data-cy="header-left-container"
             >
               {Icon && (
@@ -145,6 +147,7 @@ export const HeaderLeftContainer = styled.div`
   flex-direction: ${(props) => props.flexDirection || 'row'};
   flex-wrap: ${(props) => props.flexWrap || ''};
   width: ${(props) => props.width || 'auto'};
+  margin-top: ${({ mt }) => mt};
 
   @media (max-width: ${tabletWidth}) {
     margin-left: 8px;

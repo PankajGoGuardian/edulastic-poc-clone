@@ -8,6 +8,7 @@ import Tags from '../../../../../src/components/common/Tags'
 import {
   getInterestedCurriculumsSelector,
   getCollectionsToAddContent,
+  getItemBucketsForAllCollectionsSelector,
 } from '../../../../../src/selectors/user'
 import {
   getDisableAnswerOnPaperSelector as hasRandomQuestionsSelector,
@@ -51,14 +52,19 @@ const ReviewSummary = ({
   hasRandomQuestions,
   isPublishers,
   collectionsToShow,
+  allCollectionsList,
 }) => {
   const questionsCount = summary?.totalItems || 0
   const totalPoints = summary?.totalPoints || 0
+  const collectionListToUse =
+    !owner && !isEditable ? allCollectionsList : collectionsToShow
 
   const filteredCollections = useMemo(
     () =>
-      collections.filter((c) => collectionsToShow.some((o) => o._id === c._id)),
-    [collections, collectionsToShow]
+      collections.filter((c) =>
+        collectionListToUse.some((o) => o._id === c._id)
+      ),
+    [collections, collectionListToUse]
   )
 
   const skillIdentifiers = (metadata?.skillIdentifiers || []).join(',')
@@ -136,7 +142,7 @@ const ReviewSummary = ({
             }
             margin="0px 0px 15px"
           >
-            {collectionsToShow?.map((o) => (
+            {collectionListToUse?.map((o) => (
               <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                 {`${o.collectionName} - ${o.name}`}
               </Select.Option>
@@ -209,19 +215,16 @@ const ReviewSummary = ({
             <TableHeaderCol span={6}>Q&apos;s</TableHeaderCol>
             <TableHeaderCol span={6}>Points</TableHeaderCol>
           </Row>
-          {summary &&
-            interestedStandards.map(
-              (data) =>
-                !data.isEquivalentStandard && (
-                  <TableBodyRow data-cy={data.identifier} key={data.key}>
-                    <TableBodyCol span={12}>
-                      <Standard>{data.identifier}</Standard>
-                    </TableBodyCol>
-                    <TableBodyCol span={6}>{data.totalQuestions}</TableBodyCol>
-                    <TableBodyCol span={6}>{data.totalPoints}</TableBodyCol>
-                  </TableBodyRow>
-                )
-            )}
+          {summary?.standards?.length &&
+            summary.standards.map((data) => (
+              <TableBodyRow data-cy={data.identifier} key={data.key}>
+                <TableBodyCol span={12}>
+                  <Standard>{data.identifier}</Standard>
+                </TableBodyCol>
+                <TableBodyCol span={6}>{data.totalQuestions}</TableBodyCol>
+                <TableBodyCol span={6}>{data.totalPoints}</TableBodyCol>
+              </TableBodyRow>
+            ))}
           {summary?.noStandards?.totalQuestions > 0 && (
             <TableBodyRow key="noStandard">
               <TableBodyCol span={12}>
@@ -274,6 +277,7 @@ export default connect(
     hasRandomQuestions: hasRandomQuestionsSelector(state),
     summary: getTestSummarySelector(state),
     collectionsToShow: getCollectionsToAddContent(state),
+    allCollectionsList: getItemBucketsForAllCollectionsSelector(state),
   }),
   null
 )(ReviewSummary)

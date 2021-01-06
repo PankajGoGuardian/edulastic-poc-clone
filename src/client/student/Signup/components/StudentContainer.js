@@ -470,7 +470,7 @@ class StudentSignup extends React.Component {
           onClickProceed={this.onClickProceed}
         />
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
-          <Redirect exact to="/login" />
+          <Redirect exact to="/" />
         ) : null}
         <RegistrationWrapper
           image={

@@ -266,6 +266,15 @@ const deleteExternalTools = ({ orgId, orgType = 'district', externalToolId }) =>
     })
     .then((result) => result.data.result.externalTools)
 
+const saveCanvasIntegrationKeys = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/canvas-integration-keys`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   getDistrictProfile,
   updateDistrictProfile,
@@ -296,4 +305,5 @@ export default {
   createExternalTools,
   updateExternalTools,
   deleteExternalTools,
+  saveCanvasIntegrationKeys,
 }

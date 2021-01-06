@@ -271,9 +271,19 @@ import {
   // integral_double,
   closed_contour,
   // closed_surface,
+  one,
+  two,
+  three,
+  four,
+  five,
+  six,
+  seven,
+  eight,
+  nine,
+  zero,
 } from './buttons'
 
-const { symbols } = mathConstant
+const { keyboardMethods } = mathConstant
 
 const tabIconSize = {
   width: 30,
@@ -309,6 +319,7 @@ const BASIC_WO_NUMBER = [
 ]
 
 const INTERMEDIATE = [
+  divide,
   multiplication,
   plusMinus,
   greaterEqual,
@@ -477,20 +488,49 @@ const UNITS_US = [
   us_ft_3,
 ]
 
+const NUMBERS_ONLY = [
+  one,
+  two,
+  three,
+  four,
+  five,
+  six,
+  seven,
+  eight,
+  nine,
+  zero,
+]
+
 export const KEYBOARD_BUTTONS = [
   ...OPERATORS,
-  ...BASIC.map((btn) => ({ ...btn, types: [symbols[0].value] })),
-  ...BASIC_WO_NUMBER.map((btn) => ({ ...btn, types: [symbols[1].value] })),
-  ...INTERMEDIATE.map((btn) => ({ ...btn, types: [symbols[2].value] })),
+  ...NUMBERS_ONLY.map((btn) => ({
+    ...btn,
+    types: [keyboardMethods.NUMBERS_ONLY],
+  })),
+  ...BASIC.map((btn) => ({ ...btn, types: [keyboardMethods.BASIC] })),
+  ...BASIC_WO_NUMBER.map((btn) => ({
+    ...btn,
+    types: [keyboardMethods.BASIC_WO_NUMBER],
+  })),
+  ...INTERMEDIATE.map((btn) => ({
+    ...btn,
+    types: [keyboardMethods.INTERMEDIATE],
+  })),
   ...INTERMEDIATE_WO_NUMBER.map((btn) => ({
     ...btn,
-    types: [symbols[3].value],
+    types: [keyboardMethods.INTERMEDIATE_WO_NUMBER],
   })),
-  ...ADVANCED_MATRICES.map((btn) => ({ ...btn, types: [symbols[4].value] })),
-  ...ADVANCED_TRIGNOMETRY.map((btn) => ({ ...btn, types: [symbols[5].value] })),
-  ...GEOMETRY.map((btn) => ({ ...btn, types: [symbols[6].value] })),
-  ...UNITS_SI.map((btn) => ({ ...btn, types: [symbols[7].value] })),
-  ...UNITS_US.map((btn) => ({ ...btn, types: [symbols[8].value] })),
+  ...ADVANCED_MATRICES.map((btn) => ({
+    ...btn,
+    types: [keyboardMethods.ADVANCED_MATRICES],
+  })),
+  ...ADVANCED_TRIGNOMETRY.map((btn) => ({
+    ...btn,
+    types: [keyboardMethods.ADVANCED_TRIGNOMETRY],
+  })),
+  ...GEOMETRY.map((btn) => ({ ...btn, types: [keyboardMethods.GEOMETRY] })),
+  ...UNITS_SI.map((btn) => ({ ...btn, types: [keyboardMethods.UNITS_SI] })),
+  ...UNITS_US.map((btn) => ({ ...btn, types: [keyboardMethods.UNITS_US] })),
 ]
 
 export const TAB_BUTTONS = [

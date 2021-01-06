@@ -156,7 +156,7 @@ class AdminSignup extends React.Component {
 
     return (
       <div>
-        {!validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
+        {!validatePartnerUrl(partner) ? <Redirect exact to="/" /> : null}
         <RegistrationWrapper
           image={partner.partnerKey === 'login' ? adminBg : partner.background}
         >

@@ -5,6 +5,7 @@ import {
   enrollmentApi,
   classResponseApi,
   canvasApi,
+  utilityApi,
 } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
@@ -69,6 +70,7 @@ import {
   REGENERATE_PASSWORD,
   CANVAS_SYNC_GRADES,
   CANVAS_SYNC_ASSIGNMENT,
+  FETCH_SERVER_TIME,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -79,8 +81,10 @@ import {
   setAddedStudentsAction,
   setLcbActionProgress,
   setProgressStatusAction,
+  updateServerTimeAction,
 } from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
+import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
 
 const {
   authorAssignmentConstants: {
@@ -540,6 +544,7 @@ function* regeneratePasswordSaga({ payload }) {
         assignmentPassword: data.assignmentPassword,
         passwordExpireTime: data.passwordExpireTime,
         passwordExpireIn: data.passwordExpireIn,
+        ts: data.ts,
       })
     )
   } catch (e) {
@@ -561,6 +566,10 @@ function* canvasSyncGradesSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
+    if (errorMessage === 'Not shared with canvas') {
+      yield put(setShowCanvasShareAction(true))
+      return
+    }
     yield call(notification, {
       msg: errorMessage || 'Failed to sync grades with canvas.',
     })
@@ -582,6 +591,15 @@ function* canvasSyncAssignmentSaga({ payload }) {
     yield call(notification, {
       msg: errorMessage || 'Failed to sync assignment with canvas.',
     })
+  }
+}
+
+function* fetchServerTimeSaga() {
+  try {
+    const ts = yield call(utilityApi.fetchServerTime)
+    yield put(updateServerTimeAction(ts))
+  } catch (err) {
+    captureSentryException(err)
   }
 }
 
@@ -609,6 +627,7 @@ export function* watcherSaga() {
     yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga),
     yield takeEvery(CANVAS_SYNC_GRADES, canvasSyncGradesSaga),
     yield takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
+    yield takeEvery(FETCH_SERVER_TIME, fetchServerTimeSaga),
   ])
 }
 
@@ -894,15 +913,36 @@ export const getAllStudentsList = createSelector(
   (state) => get(state, 'data.students', [])
 )
 
+export const getAdditionalDataSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.additionalData
+)
+
+export const getCurrentClassIdSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'classId', '')
+)
+
+export const getRedirectedDatesSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'redirectedDates', {})
+)
+
 export const getTestActivitySelector = createSelector(
   getAllActivities,
   getEnrollmentStatus,
   getIsShowAllStudents,
-  (entities, enrollments, showAll) =>
+  getRedirectedDatesSelector,
+  getCurrentClassIdSelector,
+  (entities, enrollments, showAll, redirectedDates, classId) =>
     entities
       .map((item) => ({
         ...item,
         enrollmentStatus: enrollments[item.studentId],
+        redirectedDate:
+          redirectedDates[`student_${item.studentId}`] ||
+          redirectedDates[`class_${classId}`] ||
+          null,
       }))
       .filter((item) => (item.isAssigned && item.isEnrolled) || showAll)
 )
@@ -1006,11 +1046,6 @@ export const inProgressStudentsSelector = createSelector(
   (state) => state.filter((x) => x.UTASTATUS === testActivityStatus.START)
 )
 
-export const getAdditionalDataSelector = createSelector(
-  stateTestActivitySelector,
-  (state) => state.additionalData
-)
-
 export const testNameSelector = createSelector(
   stateTestActivitySelector,
   (state) => state.additionalData.testName
@@ -1024,11 +1059,6 @@ export const getCanMarkAssignmentSelector = createSelector(
 export const getClassesCanBeMarkedSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'classesCanBeMarked', [])
-)
-
-export const getCurrentClassIdSelector = createSelector(
-  getAdditionalDataSelector,
-  (state) => get(state, 'classId', '')
 )
 
 export const getMarkAsDoneEnableSelector = createSelector(
@@ -1111,9 +1141,13 @@ export const isItemVisibiltySelector = createSelector(
   getAdditionalDataSelector,
   getUserId,
   getAssignedBySelector,
-  (state, additionalData, userId, assignedBy) => {
+  getUserRole,
+  (state, additionalData, userId, assignedBy, role) => {
     const assignmentStatus = state?.data?.status
     const contentVisibility = additionalData?.testContentVisibility
+    if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
+      return true
+    }
     // For assigned by user content will be always visible.
     if (userId === assignedBy?._id) {
       return true

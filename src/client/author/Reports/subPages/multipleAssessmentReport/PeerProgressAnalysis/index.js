@@ -6,6 +6,7 @@ import { getUserRole } from '../../../../../student/Login/ducks'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV } from '../../../common/util'
+import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import TrendStats from '../common/components/trend/TrendStats'
 import TrendTable from '../common/components/trend/TrendTable'
@@ -53,13 +54,13 @@ const PeerProgressAnalysis = ({
   getPeerProgressAnalysisRequest,
   peerProgressAnalysis,
   isCsvDownloading,
-  MARFilterData,
   ddfilter,
   settings,
   loading,
   error,
   role,
   sharedReport,
+  toggleFilter,
 }) => {
   const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
     sharedReport,
@@ -68,26 +69,50 @@ const PeerProgressAnalysis = ({
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
   const [selectedTrend, setSelectedTrend] = useState('')
+  // support for tests pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 0, // set to 0 initially to prevent multiple api request on tab change
+    pageSize: 25,
+  })
 
+  // set initial page filters
   useEffect(() => {
-    const { requestFilters = {} } = settings
-    const { termId, reportId } = requestFilters
-    if (termId || reportId) {
-      getPeerProgressAnalysisRequest({
-        compareBy: compareBy.key,
-        ...requestFilters,
-        ...ddfilter,
-      })
-    }
+    setPageFilters({ ...pageFilters, page: 1 })
   }, [settings, ddfilter, compareBy.key])
 
-  const { metricInfo = [] } = get(peerProgressAnalysis, 'data.result', {})
-  const { orgData = [], testData = [] } = get(MARFilterData, 'data.result', [])
+  // get paginated data
+  useEffect(() => {
+    const q = {
+      ...settings.requestFilters,
+      ...ddfilter,
+      compareBy: compareBy.key,
+      ...pageFilters,
+    }
+    if ((q.termId || q.reportId) && pageFilters.page) {
+      getPeerProgressAnalysisRequest(q)
+    }
+  }, [pageFilters])
+
+  const { metricInfo = [], metaInfo = [], testsCount = 0 } = useMemo(
+    () => get(peerProgressAnalysis, 'data.result', {}),
+    [peerProgressAnalysis]
+  )
+
+  useEffect(() => {
+    const metrics = get(peerProgressAnalysis, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [peerProgressAnalysis])
 
   const [parsedData, trendCount] = parseTrendData(
     metricInfo,
     compareBy.key,
-    orgData,
+    metaInfo,
     selectedTrend
   )
 
@@ -109,6 +134,10 @@ const PeerProgressAnalysis = ({
 
   if (loading) {
     return <SpinLoader position="fixed" />
+  }
+
+  if (isEmpty(metricInfo)) {
+    return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   if (error && error.dataSizeExceeded) {
@@ -145,12 +174,16 @@ const PeerProgressAnalysis = ({
         isCsvDownloading={isCsvDownloading}
         heading="How well are student sub-groups progressing ?"
         data={parsedData}
-        testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}
         rawMetric={metricInfo}
         customColumns={[studentColumn]}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: testsCount,
+        }}
+        setBackendPagination={setPageFilters}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow

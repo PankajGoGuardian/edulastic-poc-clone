@@ -21,6 +21,8 @@ import {
 import { getReportsStandardsPerformanceSummary } from '../../standardsPerformance/ducks'
 import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
 
+import staticDropDownData from '../static/json/staticDropDownData.json'
+
 const StandardsFilters = ({
   pageTitle,
   showFilter,
@@ -45,7 +47,7 @@ const StandardsFilters = ({
   }, [interestedCurriculums])
 
   // memoize proficiencyList for standards filters data
-  const scaleInfo = get(standardsFilters, 'scaleInfo', [])
+  const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
   const defaultProficiencyId = scaleInfo.find((s) => s.default)?._id || ''
   const proficiencyList = useMemo(
     () => scaleInfo.map((s) => ({ key: s._id, title: s.name })),
@@ -61,7 +63,13 @@ const StandardsFilters = ({
     skillInfoOptions[pageTitle],
     'data.result.skillInfo',
     []
-  ).filter((o) => `${o.curriculumId}` === `${filters.curriculumId}`)
+  )
+    .filter((o) => `${o.curriculumId}` === `${filters.curriculumId}`)
+    .filter((o) =>
+      filters.standardGrade && filters.standardGrade !== 'All'
+        ? o.grades.includes(filters.standardGrade)
+        : true
+    )
   const domainGroup = groupBy(skillInfo, (o) => `${o.domainId}`)
   const allDomainIds = Object.keys(domainGroup)
   const domainsList = allDomainIds.map((domainId) => ({
@@ -100,7 +108,7 @@ const StandardsFilters = ({
     >
       <Col span={24}>
         <Row type="flex" justify="end">
-          <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
             <ControlDropDown
               by={filters.curriculumId}
               selectCB={(e) => updateFilterDropdownCB(e, 'curriculumId')}
@@ -109,7 +117,16 @@ const StandardsFilters = ({
               showPrefixOnSelected={false}
             />
           </StyledDropDownContainer>
-          <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
+            <ControlDropDown
+              by={filters.standardGrade}
+              selectCB={(e) => updateFilterDropdownCB(e, 'standardGrade')}
+              data={staticDropDownData.allGrades}
+              prefix="Standard Grade"
+              showPrefixOnSelected={false}
+            />
+          </StyledDropDownContainer>
+          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
             <ControlDropDown
               by={filters.profileId || defaultProficiencyId}
               selectCB={(e) => updateFilterDropdownCB(e, 'profileId')}
@@ -118,7 +135,7 @@ const StandardsFilters = ({
               showPrefixOnSelected={false}
             />
           </StyledDropDownContainer>
-          <StyledDropDownContainer xs={22} sm={22} md={7} lg={7} xl={7}>
+          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
             <MultipleSelect
               containerClassName="standards-mastery-report-domain-autocomplete"
               data={domainsList || []}

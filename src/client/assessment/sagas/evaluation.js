@@ -7,7 +7,7 @@ import {
   notification,
   uploadToS3,
 } from '@edulastic/common'
-import { aws } from '@edulastic/constants'
+import { aws, roleuser } from '@edulastic/constants'
 
 import { getQuestionIds } from './items'
 // actions
@@ -22,6 +22,7 @@ import { itemQuestionsSelector, answersForCheck } from '../selectors/test'
 import { CHANGE_PREVIEW, CHANGE_VIEW } from '../../author/src/constants/actions'
 import { getTypeAndMsgBasedOnScore } from '../../common/utils/helpers'
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
+import { getUserRole } from '../../author/src/selectors/user'
 
 function* evaluateAnswers({ payload: groupId }) {
   try {
@@ -64,7 +65,7 @@ function* evaluateAnswers({ payload: groupId }) {
     const _userWork = yield select(
       ({ userWork }) => userWork.present[testItemId]
     )
-    const activity = {
+    const studentActivity = {
       answers: userResponse,
       groupId,
       testActivityId,
@@ -112,7 +113,16 @@ function* evaluateAnswers({ payload: groupId }) {
         }
       }
     }
-    activity.userWork = userWorkData
+    studentActivity.userWork = userWorkData
+    const role = yield select(getUserRole)
+    const activity =
+      role === roleuser.STUDENT
+        ? studentActivity
+        : {
+            answers: studentActivity.answers,
+            shuffledOptions: studentActivity.shuffledOptions,
+            userWork: studentActivity.userWork,
+          }
     const { evaluations, maxScore, score } = yield call(
       testItemsApi.evaluation,
       testItemId,

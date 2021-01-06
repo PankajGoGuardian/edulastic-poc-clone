@@ -80,7 +80,12 @@ const reducer = (state = initialState, { type, payload }) => {
       }
     }
     case RECEIVE_ASSIGNMENTS_SUMMARY_ERROR:
-      return { ...state, loading: false, error: payload.error }
+      return {
+        ...state,
+        summaryEntities: [],
+        loading: false,
+        error: payload.error,
+      }
     case RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST:
       return { ...state, loading: true }
     case RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS: {

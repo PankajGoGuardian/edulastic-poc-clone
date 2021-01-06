@@ -98,61 +98,7 @@ describe(`${FileHelper.getSpecName(
   context('>review draft test', () => {
     context('> verify header action buttons', () => {
       it('> verify tabs and navigations', () => {
-        testLibraryPage.header.verifyHeaders(true, true, true, true)
-        testLibraryPage.header
-          .getTestSummaryHeader()
-          .should('not.have.css', 'cursor', 'not-allowed')
-          .click({ force: true })
-        testLibraryPage.testSummary.getTestGradeSelect().should('be.visible')
-        testLibraryPage.header.verifyHeaderActionButtons(
-          true,
-          true,
-          true,
-          true,
-          true,
-          false
-        )
-        testLibraryPage.header
-          .getTestAddItemHeader()
-          .should('not.have.css', 'cursor', 'not-allowed')
-          .click({ force: true })
-        testLibraryPage.testAddItem.searchFilters
-          .getSearchTextBox()
-          .should('be.visible')
-        testLibraryPage.header.verifyHeaderActionButtons(
-          true,
-          true,
-          true,
-          true,
-          true,
-          false
-        )
-        testLibraryPage.header
-          .getTestSettingsHeader()
-          .should('not.have.css', 'cursor', 'not-allowed')
-          .click({ force: true })
-        testLibraryPage.testSettings.getAnsOnPaperSwitch().should('exist')
-        testLibraryPage.header.verifyHeaderActionButtons(
-          true,
-          true,
-          true,
-          true,
-          true,
-          false
-        )
-        testLibraryPage.header
-          .getTestReviewHeader()
-          .should('not.have.css', 'cursor', 'not-allowed')
-          .click({ force: true })
-        testLibraryPage.review.getTestSubjectSelect().should('be.visible')
-        testLibraryPage.header.verifyHeaderActionButtons(
-          true,
-          true,
-          true,
-          true,
-          true,
-          false
-        )
+        testLibraryPage.verifyDraftTestHeaders()
       })
 
       it('> verify print test pop-up', () => {
@@ -176,7 +122,9 @@ describe(`${FileHelper.getSpecName(
         testLibraryPage.visitTestById(testId)
       })
       itemsInTest.forEach((item, index) => {
-        it(`> verify ${item}-${index + 1} question content and points`, () => {
+        it(`> verify ${item}-${
+          index + 1
+        } question content,metada and action buttons`, () => {
           // Verify All questions' presence
           itemListPage.verifyQuestionTextByItemId(
             itemIds[index],
@@ -186,15 +134,12 @@ describe(`${FileHelper.getSpecName(
             itemIds[index],
             questionTypeMap[`Q${index + 1}`].points
           )
-        })
-        it(`> verify  ${item}-${index + 1} metadata`, () => {
+
           itemListPage.verifyItemMetadataByItemId(
             itemIds[index],
             itemDetails[index]
           )
-        })
 
-        it(`> verify  ${item}-${index + 1}, verify action buttons`, () => {
           testLibraryPage.review.verifyActionButtonsByItemId(
             itemIds[index],
             true
@@ -206,7 +151,7 @@ describe(`${FileHelper.getSpecName(
       itemsInTest.forEach((item, index) => {
         it(`> verify  ${item}-${
           index + 1
-        } correct ans, question text, points`, () => {
+        } correct ans, question text, metada and action buttons`, () => {
           // Verify All questions' presence along with thier correct answers and points
 
           testLibraryPage.review.clickExpandByItemId(itemIds[index])
@@ -226,16 +171,12 @@ describe(`${FileHelper.getSpecName(
             itemIds[index],
             questionTypeMap[`Q${index + 1}`].points
           )
-        })
 
-        it(`> verify  ${item}-${index + 1} metadata`, () => {
           itemListPage.verifyItemMetadataByItemId(
             itemIds[index],
             itemDetails[index]
           )
-        })
 
-        it(`> verify  ${item}-${index + 1}, verify action buttons`, () => {
           testLibraryPage.review.verifyActionButtonsByItemId(
             itemIds[index],
             true,
@@ -317,14 +258,14 @@ describe(`${FileHelper.getSpecName(
           itemListPage.itemPreview.verifyActionsButtonsOnPreview(true)
         })
         if (![questionTypeKey.ESSAY_RICH].includes(item.split('.')[0])) {
-          it(`> verify show ans for "${item}-${index + 1} "`, () => {
+          it(`> verify show ans and attempt for "${item}-${
+            index + 1
+          } "`, () => {
             itemListPage.itemPreview.verifyShowAnsOnPreview(
               itemsInTest[index],
               attemptData
             )
-          })
 
-          it(`> verify right ans for "${item}-${index + 1} "`, () => {
             // Correct ans should have green bg-color
             itemListPage.itemPreview.attemptAndVerifyResponseOnPreview(
               itemsInTest[index],
@@ -332,9 +273,7 @@ describe(`${FileHelper.getSpecName(
               points,
               attemptTypes.RIGHT
             )
-          })
 
-          it(`> verify wrong ans for "${item}-${index + 1} "`, () => {
             // Wrong ans should have red bg-color
             itemListPage.itemPreview.attemptAndVerifyResponseOnPreview(
               itemsInTest[index],
@@ -351,8 +290,9 @@ describe(`${FileHelper.getSpecName(
       before('> close pop-up', () => {
         itemListPage.itemPreview.closePreiview()
       })
-      itemsInTest.forEach((item, index, totalItems) => {
-        it(`> move question-${index + 1}`, () => {
+
+      it(`> move questions`, () => {
+        itemsInTest.forEach((item, index, totalItems) => {
           testLibraryPage.review.clickOnCheckBoxByItemId(itemIds[index])
           // Move question at last-- totalItems.length
           testLibraryPage.review.moveQuestionByIndex(totalItems.length)
@@ -361,7 +301,7 @@ describe(`${FileHelper.getSpecName(
             itemIds[index],
             totalItems.length
           )
-          // testLibraryPage.review.clickOnCheckBoxByItemId(itemIds[index]);
+          testLibraryPage.review.clickOnCheckBoxByItemId(itemIds[index])
         })
       })
     })
@@ -389,28 +329,7 @@ describe(`${FileHelper.getSpecName(
     it('> verify tabs and navigations', () => {
       testLibraryPage.closePopUp()
       testLibraryPage.seachTestAndGotoReviewById(testId)
-      testLibraryPage.header.verifyHeaders(true, true, true, true)
-      testLibraryPage.header
-        .getTestSummaryHeader()
-        .should('have.css', 'cursor', 'not-allowed')
-        .click({ force: true })
-      testLibraryPage.header
-        .getTestAddItemHeader()
-        .should('have.css', 'cursor', 'not-allowed')
-        .click({ force: true })
-      testLibraryPage.review.getTestSubjectSelect().should('be.visible')
-      testLibraryPage.header
-        .getTestSettingsHeader()
-        .should('not.have.css', 'cursor', 'not-allowed')
-        .click({ force: true })
-      testLibraryPage.testSettings.getAnsOnPaperSwitch().should('exist')
-
-      testLibraryPage.header
-        .getTestReviewHeader()
-        .should('not.have.css', 'cursor', 'not-allowed')
-        .click({ force: true })
-      testLibraryPage.review.getTestSubjectSelect().should('be.visible')
-
+      testLibraryPage.verifyPublishedTestHeaders()
       testLibraryPage.review.getMoveTo().should('not.exist')
       testLibraryPage.review.getRemoveSelected().should('not.exist')
     })
@@ -469,22 +388,21 @@ describe(`${FileHelper.getSpecName(
         testLibraryPage.closePopUp()
       })
       itemsInTest.forEach((item, index) => {
-        it(`> verify ${item}-${index + 1} question content and points`, () => {
+        it(`> verify ${item}-${
+          index + 1
+        }question content,metada and action buttons`, () => {
           // Verify All questions' presence
           testLibraryPage.review.verifyQustionById(itemIds[index])
           testLibraryPage.review.asesrtPointsByid(
             itemIds[index],
             questionTypeMap[`Q${index + 1}`].points
           )
-        })
-        it(`> verify  ${item}-${index + 1} metadata`, () => {
+
           itemListPage.verifyItemMetadataByItemId(
             itemIds[index],
             itemDetails[index]
           )
-        })
 
-        it(`> verify  ${item}-${index + 1}, verify action buttons`, () => {
           testLibraryPage.review.verifyActionButtonsByItemId(
             itemIds[index],
             false,
@@ -497,7 +415,7 @@ describe(`${FileHelper.getSpecName(
       itemsInTest.forEach((item, index) => {
         it(`> verify  ${item}-${
           index + 1
-        } correct ans, question text, points`, () => {
+        }  correct ans, question text, metada and action buttons`, () => {
           // Verify All questions' presence along with thier correct answers and points
           testLibraryPage.review.clickExpandByItemId(itemIds[index])
           testLibraryPage.review.verifyQustionById(itemIds[index])
@@ -512,16 +430,12 @@ describe(`${FileHelper.getSpecName(
             itemIds[index],
             questionTypeMap[`Q${index + 1}`].points
           )
-        })
 
-        it(`> verify  ${item}-${index + 1} metadata`, () => {
           itemListPage.verifyItemMetadataByItemId(
             itemIds[index],
             itemDetails[index]
           )
-        })
 
-        it(`> verify  ${item}-${index + 1}, verify action buttons`, () => {
           testLibraryPage.review.verifyActionButtonsByItemId(
             itemIds[index],
             false,
@@ -604,14 +518,14 @@ describe(`${FileHelper.getSpecName(
           itemListPage.itemPreview.verifyActionsButtonsOnPreview(false)
         })
         if (![questionTypeKey.ESSAY_RICH].includes(item.split('.')[0])) {
-          it(`> verify show ans for "${item}-${index + 1} "`, () => {
+          it(`> verify show ans and attempt for for "${item}-${
+            index + 1
+          } "`, () => {
             itemListPage.itemPreview.verifyShowAnsOnPreview(
               itemsInTest[index],
               attemptData
             )
-          })
 
-          it(`> verify right ans for "${item}-${index + 1} "`, () => {
             // Correct ans should have green bg-color
             itemListPage.itemPreview.attemptAndVerifyResponseOnPreview(
               itemsInTest[index],
@@ -619,9 +533,7 @@ describe(`${FileHelper.getSpecName(
               points,
               attemptTypes.RIGHT
             )
-          })
 
-          it(`> verify wrong ans for "${item}-${index + 1} "`, () => {
             // Wrong ans should have red bg-color
             itemListPage.itemPreview.attemptAndVerifyResponseOnPreview(
               itemsInTest[index],

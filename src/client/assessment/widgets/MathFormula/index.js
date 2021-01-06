@@ -24,6 +24,7 @@ import ComposeQuestion from './ComposeQuestion'
 import Template from './Template'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Question from '../../components/Question'
+import { changeDataToPreferredLanguage } from '../ClozeText/helpers'
 
 const EmptyWrapper = styled.div``
 
@@ -31,7 +32,7 @@ const MathFormula = ({
   view,
   testItem,
   previewTab,
-  item,
+  item: oldItem,
   evaluation,
   setQuestionData,
   saveAnswer,
@@ -45,6 +46,23 @@ const MathFormula = ({
   t,
   ...restProps
 }) => {
+  const item = useMemo(() => {
+    const { preferredLanguage } = restProps
+    if (
+      preferredLanguage !== 'en' &&
+      oldItem?.languageFeatures?.[preferredLanguage]
+    ) {
+      return produce(oldItem, (draft) => {
+        changeDataToPreferredLanguage(
+          draft,
+          draft.languageFeatures[preferredLanguage]
+        )
+      })
+    }
+
+    return oldItem
+  }, [oldItem])
+
   const answerContextConfig = useContext(AnswerContext)
   const [keypadOffset, setOffset] = useState(0)
   const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper

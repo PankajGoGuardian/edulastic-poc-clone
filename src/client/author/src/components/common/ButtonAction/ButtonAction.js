@@ -9,12 +9,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 
 import { clearAnswersAction } from '../../../actions/answers'
-import {
-  Container,
-  PreviewBar,
-  HeaderActionButton,
-  LabelText,
-} from './styled_components'
+import { Container, PreviewBar, LabelText } from './styled_components'
 import ScoreBlock from '../ScoreBlock'
 
 class ButtonAction extends Component {
@@ -55,25 +50,21 @@ class ButtonAction extends Component {
       showPublishButton,
       showSettingsButton,
       isShowAnswerVisible,
-      handleShowHints,
-      showHints,
+      hideScoreBlock,
+      // handleShowHints,
+      // showHints,
     } = this.props
     return (
       <Container showPublishButton={showPublishButton}>
-        {view === 'edit' && (
-          <PreviewBar>
-            {showSettingsButton && (
-              <HeaderActionButton htmlType="button" onClick={onShowSettings}>
-                <EduButton title="Layout" isGhost IconBtn isBlue>
-                  <IconSettings color={themeColorBlue} width={20} height={20} />
-                </EduButton>
-              </HeaderActionButton>
-            )}
-          </PreviewBar>
+        {view === 'edit' && showSettingsButton && (
+          <EduButton title="Layout" isGhost isBlue onClick={onShowSettings}>
+            <IconSettings color={themeColorBlue} width={20} height={20} />
+            LAYOUt AND GRADING
+          </EduButton>
         )}
         {view === 'preview' && (
           <PreviewBar>
-            <ScoreBlock />
+            {!hideScoreBlock && <ScoreBlock />}
             {/* we may need to bring hint button back */}
             {/* <RightActionButton
               style={showHints ? { background: themeColor } : null}
@@ -140,6 +131,7 @@ ButtonAction.propTypes = {
   showPublishButton: PropTypes.bool,
   showSettingsButton: PropTypes.bool,
   isShowAnswerVisible: PropTypes.bool,
+  hideScoreBlock: PropTypes.bool,
 }
 
 ButtonAction.defaultProps = {
@@ -148,6 +140,7 @@ ButtonAction.defaultProps = {
   allowedAttempts: null,
   showSettingsButton: true,
   isShowAnswerVisible: true,
+  hideScoreBlock: false,
 }
 
 const enhance = compose(

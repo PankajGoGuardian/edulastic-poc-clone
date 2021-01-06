@@ -52,8 +52,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.clickonEnterClassCode()
       manageClass.typeClassCode(alreadyExistingClassCode)
       manageClass.clickonJoinButton()
-      manageClass.validateAPImsg('Class already exists in Manage Class')
-      manageClass.clickonCancelButton()
+      manageClass.validateAPImsg('User already exists in class.')
     })
 
     it('>TC04 verify blank class code and cancel button', () => {

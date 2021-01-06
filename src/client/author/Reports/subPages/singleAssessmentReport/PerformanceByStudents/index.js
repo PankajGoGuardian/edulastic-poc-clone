@@ -41,10 +41,10 @@ import {
   getReportsPerformanceByStudentsError,
 } from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
-  getTestListSelector,
+  setPerformanceBandProfileAction,
 } from '../common/filterDataDucks'
 
 import columns from './static/json/tableColumns.json'
@@ -66,6 +66,8 @@ const PerformanceByStudents = ({
   customStudentUserId,
   isCliUser,
   sharedReport,
+  setPerformanceBandProfile,
+  toggleFilter,
 }) => {
   const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -91,10 +93,21 @@ const PerformanceByStudents = ({
           profile._id ===
           (sharedReportFilters || settings.requestFilters).profileId
       )?.performanceBand ||
-      performanceBandProfiles[0]?.performanceBand ||
+      performanceByStudents?.bandInfo?.performanceBand ||
       [],
-    [settings]
+    [settings, performanceByStudents]
   )
+
+  useEffect(() => {
+    setPerformanceBandProfile(performanceByStudents?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !performanceByStudents.studentMetricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [performanceByStudents])
 
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
@@ -252,7 +265,10 @@ const PerformanceByStudents = ({
     return <DataSizeExceeded />
   }
 
-  if (!performanceByStudents.studentMetricInfo?.length) {
+  if (
+    !performanceByStudents.studentMetricInfo?.length ||
+    !settings.selectedTest.key
+  ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (
@@ -403,6 +419,7 @@ const withConnect = connect(
   }),
   {
     getPerformanceByStudents: getPerformanceByStudentsRequestAction,
+    setPerformanceBandProfile: setPerformanceBandProfileAction,
   }
 )
 

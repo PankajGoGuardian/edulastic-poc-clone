@@ -15,10 +15,10 @@ import {
   NoDataContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState } from '../../../ducks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
-  getTestListSelector,
+  setPerformanceBandProfileAction,
 } from '../common/filterDataDucks'
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
@@ -47,6 +47,8 @@ const PeerPerformance = ({
   testList,
   filters,
   sharedReport,
+  setPerformanceBandProfile,
+  toggleFilter,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -71,9 +73,9 @@ const PeerPerformance = ({
           profile._id ===
           (sharedReportFilters || settings.requestFilters).profileId
       )?.performanceBand ||
-      performanceBandProfiles[0]?.performanceBand ||
+      peerPerformance?.bandInfo?.performanceBand ||
       [],
-    [settings]
+    [settings, peerPerformance]
   )
 
   const [ddfilter, setDdFilter] = useState({
@@ -99,6 +101,17 @@ const PeerPerformance = ({
       getPeerPerformance(q)
     }
   }, [settings])
+
+  useEffect(() => {
+    setPerformanceBandProfile(peerPerformance?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !peerPerformance.metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [peerPerformance])
 
   let { compareByDropDownData } = dropDownFormat
   compareByDropDownData = next(
@@ -162,7 +175,7 @@ const PeerPerformance = ({
     return <DataSizeExceeded />
   }
 
-  if (!peerPerformance?.metricInfo?.length) {
+  if (!peerPerformance?.metricInfo?.length || !settings.selectedTest.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
   return (
@@ -283,6 +296,7 @@ const enhance = compose(
     }),
     {
       getPeerPerformance: getPeerPerformanceRequestAction,
+      setPerformanceBandProfile: setPerformanceBandProfileAction,
     }
   )
 )

@@ -43,7 +43,7 @@ export default class AssignmentBulkActionsPage {
   clickIconByClassName = (icon, className) => {
     cy.server()
     cy.route('GET', '**/assignments/**').as('assignment')
-    cy.contains(className).then(($className) => {
+    cy.contains(new RegExp(`^${className}$`)).then(($className) => {
       cy.wrap($className).closest('tr').find(`[data-cy="${icon}"]`).click()
       switch (icon) {
         case icons.LCB:
@@ -53,6 +53,12 @@ export default class AssignmentBulkActionsPage {
               'Not redirected to LCB page :'
             )
           })
+          cy.get('[data-cy="studentName"]', { timeout: 15000 }).should(
+            'have.length.greaterThan',
+            0
+          )
+          cy.wait('@assignment')
+          cy.wait(1000)
           break
         case icons.EXPRESS_GRADER:
           cy.url().then((url) => {
@@ -73,16 +79,11 @@ export default class AssignmentBulkActionsPage {
         default:
           break
       }
-      cy.wait('@assignment')
-      cy.get('[data-cy="studentName"]', { timeout: 15000 }).should(
-        'have.length.greaterThan',
-        0
-      )
     })
   }
 
   verifyAssignmentStatusOfClass = (className, status) => {
-    cy.contains(className).then(($className) => {
+    cy.contains(new RegExp(`^${className}$`)).then(($className) => {
       cy.wrap($className)
         .closest('tr')
         .find(`[status]`)
@@ -106,7 +107,7 @@ export default class AssignmentBulkActionsPage {
 
   selectClassByClassName = (className, check = true) => {
     this.getClassRows().each(($row) => {
-      if ($row.find(`td`).eq(1).text() == className) {
+      if ($row.find('[class="schoolName"]').prev().text() == className) {
         if (check) {
           if (
             !$row
@@ -240,10 +241,12 @@ export default class AssignmentBulkActionsPage {
     this.getOpenActionButton()
       .click()
       .then(() => {
-        cy.wait('@bulk-open')
-        cy.get('.ant-notification-notice-message', { timeout: 20000 })
-          .should('contain', 'Starting Bulk Action Request')
-          .should('be.visible')
+        cy.wait('@bulk-open').then((xhr) => {
+          assert.isTrue(xhr.status === 200, `Bulk open process failed`)
+        })
+        /* CypressHelper.verifyAntMesssage(
+          `Starting Bulk Action Request`
+        ) */
         this.waitForBulkProcess(
           `${impactClasses} out of ${totalclasses} classes Opened successfully.`
         )
@@ -256,10 +259,12 @@ export default class AssignmentBulkActionsPage {
     this.getCloseActionButton()
       .click()
       .then(() => {
-        cy.wait('@bulk-close')
-        cy.get('.ant-notification-notice-message', { timeout: 20000 })
-          .should('contain', 'Starting Bulk Action Request')
-          .should('be.visible')
+        cy.wait('@bulk-close').then((xhr) => {
+          assert.isTrue(xhr.status === 200, `Bulk close process failed`)
+        })
+        /* CypressHelper.verifyAntMesssage(
+          `Starting Bulk Action Request`
+        ) */
         this.waitForBulkProcess(
           `${impactClasses} out of ${totalclasses} classes Closed successfully.`
         )
@@ -272,10 +277,12 @@ export default class AssignmentBulkActionsPage {
     this.getDoneActionButton()
       .click()
       .then(() => {
-        cy.wait('@bulk-mark-as-done')
-        cy.get('.ant-notification-notice-message', { timeout: 20000 })
-          .should('contain', 'Starting Bulk Action Request')
-          .should('be.visible')
+        cy.wait('@bulk-mark-as-done').then((xhr) => {
+          assert.isTrue(xhr.status === 200, `Bulk markAsDone process failed`)
+        })
+        /* CypressHelper.verifyAntMesssage(
+          `Starting Bulk Action Request`
+        ) */
         this.waitForBulkProcess(
           `${impactClasses} out of ${totalclasses} classes successfully updated.`
         )
@@ -306,10 +313,12 @@ export default class AssignmentBulkActionsPage {
     this.getPauseActionButton()
       .click()
       .then(() => {
-        cy.wait('@bulk-pause')
-        cy.get('.ant-notification-notice-message', { timeout: 20000 })
-          .should('contain', 'Starting Bulk Action Request')
-          .should('be.visible')
+        cy.wait('@bulk-pause').then((xhr) => {
+          assert.isTrue(xhr.status === 200, `Bulk pause process failed`)
+        })
+        /* CypressHelper.verifyAntMesssage(
+          `Starting Bulk Action Request`
+        ) */
         this.waitForBulkProcess(
           `${impactClasses} out of ${totalclasses} classes Paused successfully.`
         )
@@ -333,7 +342,7 @@ export default class AssignmentBulkActionsPage {
 
   filterBy = (filterStatus) => {
     this.getFilterOption(filterStatus).click()
-    cy.wait(500)
+    cy.wait(1000)
   }
 
   verifyNumberofClassesInFilter = (filterStatus, number) => {
@@ -357,12 +366,9 @@ export default class AssignmentBulkActionsPage {
   }
 
   verifyFilteredClasses = (classes) => {
-    this.getClassRows().each(($row, index) => {
-      assert.equal(
-        $row.find(`td`).eq(1).text(),
-        classes[index],
-        'Class names not matching'
-      )
+    this.getClassRows().its('length').should('equal', classes.length)
+    classes.forEach((className) => {
+      cy.contains(className).should(`have.text`, className)
     })
   }
 

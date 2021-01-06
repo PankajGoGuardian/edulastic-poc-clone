@@ -49,32 +49,82 @@ const units = [
   { value: 'units_si', label: 'Units (SI)' },
 ]
 
+const keyboardMethods = {
+  NUMBERS_ONLY: 'numeric_only',
+  BASIC: 'basic',
+  BASIC_WO_NUMBER: 'basic_wo_number',
+  INTERMEDIATE: 'intermediate',
+  INTERMEDIATE_WO_NUMBER: 'intermediate_wo_number',
+  ADVANCED_MATRICES: 'advanced_matrices',
+  ADVANCED_TRIGNOMETRY: 'advanced_trignometry',
+  GEOMETRY: 'geometry',
+  UNITS_SI: 'units_si',
+  UNITS_US: 'units_us',
+  ALL_BUTTONS: 'all',
+}
+
 const symbols = [
-  { value: 'basic', label: 'Basic', width: 400, height: 320 },
   {
-    value: 'basic_wo_number',
+    value: keyboardMethods.NUMBERS_ONLY,
+    label: 'Numbers Only',
+    width: 280,
+    height: 250,
+  },
+  { value: keyboardMethods.BASIC, label: 'Basic', width: 400, height: 320 },
+  {
+    value: keyboardMethods.BASIC_WO_NUMBER,
     label: 'Basic w/o Numbers',
     width: 280,
     height: 250,
   },
-  { value: 'intermediate', label: 'Intermediate', width: 520, height: 270 },
   {
-    value: 'intermediate_wo_number',
+    value: keyboardMethods.INTERMEDIATE,
+    label: 'Intermediate',
+    width: 520,
+    height: 270,
+  },
+  {
+    value: keyboardMethods.INTERMEDIATE_WO_NUMBER,
     label: 'Intermediate w/o Numbers',
     width: 400,
     height: 250,
   },
-  { value: 'advanced_matrices', label: 'Matrices', width: 300, height: 190 },
   {
-    value: 'advanced_trignometry',
+    value: keyboardMethods.ADVANCED_MATRICES,
+    label: 'Matrices',
+    width: 300,
+    height: 190,
+  },
+  {
+    value: keyboardMethods.ADVANCED_TRIGNOMETRY,
     label: 'Trignometry',
     width: 400,
     height: 250,
   },
-  { value: 'geometry', label: 'Geometry', width: 400, height: 250 },
-  { value: 'units_si', label: 'Units (SI)', width: 400, height: 250 },
-  { value: 'units_us', label: 'Units (US)', width: 400, height: 250 },
-  { value: 'all', label: 'Full', width: 520, height: 190 },
+  {
+    value: keyboardMethods.GEOMETRY,
+    label: 'Geometry',
+    width: 400,
+    height: 250,
+  },
+  {
+    value: keyboardMethods.UNITS_SI,
+    label: 'Units (SI)',
+    width: 400,
+    height: 250,
+  },
+  {
+    value: keyboardMethods.UNITS_US,
+    label: 'Units (US)',
+    width: 400,
+    height: 250,
+  },
+  {
+    value: keyboardMethods.ALL_BUTTONS,
+    label: 'Full',
+    width: 520,
+    height: 190,
+  },
 ]
 
 const symbolsAll = [
@@ -150,7 +200,7 @@ const methodOptions = {
     'ignoreTrailingZeros',
     'ignoreOrder',
     'ignoreCoefficientOfOne',
-    'literalIgnoreLeadingAndTrailingSpaces',
+    'ignoreLeadingAndTrailingSpaces',
     'literalTreatMultipleSpacesAsOne',
     'inverseResult',
     'allowedVariables',
@@ -246,7 +296,7 @@ const methodOptionsGrouped = {
       'ignoreTrailingZeros',
       'ignoreOrder',
       'ignoreCoefficientOfOne',
-      'literalIgnoreLeadingAndTrailingSpaces',
+      'ignoreLeadingAndTrailingSpaces',
       'literalTreatMultipleSpacesAsOne',
       'inverseResult',
       'setDecimalSeparator',
@@ -267,12 +317,12 @@ const interpret = [
   'interpretAsList',
 ]
 const fractionForms = [
-  'isSimplified',
+  'isSimplifiedFraction',
   'isMixedFraction',
   'isImproperFraction',
   'isRationalized',
 ]
-const expressionForms = ['isFactorised', 'isExpanded']
+const expressionForms = ['isSimplified', 'isFactorised', 'isExpanded']
 const numberFormat = [
   'integerType',
   // 'numberType',
@@ -288,7 +338,7 @@ const equationForms = [
   'isLinePointSlopeForm',
   'isQuadraticStandardForm',
   'isPolynomialStandardForm',
-  'isPolynomalFactoredForm',
+  'isPolynomialFactoredForm',
   'isConicStandardForm',
   'isParabolaVertexForm',
 ]
@@ -325,7 +375,7 @@ const evaluationSettings = {
     'ignoreTrailingZeros',
     'ignoreOrder',
     'ignoreCoefficientOfOne',
-    'literalIgnoreLeadingAndTrailingSpaces',
+    'ignoreLeadingAndTrailingSpaces',
     // 'inverseResult',
     'setDecimalSeparator',
     'setThousandsSeparator',
@@ -446,4 +496,5 @@ module.exports = {
   methodOptionsGrouped,
   evaluationSettings,
   subEvaluationSettingsGrouped,
+  keyboardMethods,
 }

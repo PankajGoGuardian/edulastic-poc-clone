@@ -1,21 +1,30 @@
-const getFormattedString = (prop) => (prop ? Array.from(prop).join(',') : '')
-
-export const transformFiltersForSAR = (requestFilters = {}) => ({
-  ...requestFilters,
-  classIds: requestFilters.classIds
-    ? getFormattedString(requestFilters.classIds)
-    : requestFilters.classId,
-  groupIds: requestFilters.groupIds
-    ? getFormattedString(requestFilters.groupIds)
-    : requestFilters.groupId,
-  assessmentTypes: requestFilters?.assessmentTypes || '',
-  teacherIds: requestFilters.teacherIds,
-  schoolIds: requestFilters.schoolIds,
-  grade: requestFilters.studentGrade,
-  courseId: requestFilters.studentCourseId,
-  subject: requestFilters.studentSubject,
-  profileId: requestFilters.performanceBandProfile,
-})
+export const transformFiltersForSAR = ({
+  grade,
+  subject,
+  studentGrade,
+  studentSubject,
+  studentCourseId,
+  classId,
+  classIds,
+  groupId,
+  groupIds,
+  performanceBandProfile,
+  ...requestFilters
+}) => {
+  classIds = classIds && Array.isArray(classIds) ? classIds.join(',') : classId
+  groupIds = groupIds && Array.isArray(groupIds) ? groupIds.join(',') : groupId
+  return {
+    ...requestFilters,
+    testGrade: grade,
+    testSubject: subject,
+    grade: studentGrade,
+    subject: studentSubject,
+    courseId: studentCourseId,
+    classIds: classIds || '',
+    groupIds: groupIds || '',
+    profileId: performanceBandProfile,
+  }
+}
 
 export const transformMetricForStudentGroups = (
   studentGroupInfo = [],

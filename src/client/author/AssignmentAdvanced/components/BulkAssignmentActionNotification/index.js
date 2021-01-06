@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { uniqBy } from 'lodash'
 import qs from 'qs'
-import {
-  FireBaseService as Fbs,
-  notification as antdNotification,
-} from '@edulastic/common'
+import antdNotification from '@edulastic/common/src/components/Notification'
+import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -35,7 +33,7 @@ const NotificationListener = ({
   const [notificationIds, setNotificationIds] = useState([])
   let districtId = ''
   let testId = ''
-  const { termId = '' } = JSON.parse(
+  const { termId = '', grades = [], assignedBy = '' } = JSON.parse(
     sessionStorage.getItem('filters[Assignments]') || '{}'
   )
   const { testType = '' } = qs.parse(location.search, {
@@ -130,6 +128,8 @@ const NotificationListener = ({
             termId,
             pageNo: 1,
             status: '',
+            grades,
+            assignedBy,
           })
         }
 

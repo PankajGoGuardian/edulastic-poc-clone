@@ -22,6 +22,7 @@ import {
   receiveDistrictPolicyAction,
   receiveSchoolPolicyAction,
   updateDistrictPolicyAction,
+  saveCanvasKeysRequestAction,
 } from '../../ducks'
 import {
   HelperText,
@@ -30,7 +31,9 @@ import {
   StyledFormItem,
   StyledLabel,
   StyledRow,
+  ConfigureButton,
 } from './styled'
+import ConfigureCanvasModal from './ConfigureCanvasModal'
 
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
@@ -86,6 +89,7 @@ class DistrictPolicyForm extends Component {
         validateStatus: 'success',
         errorMsg: '',
       },
+      showCanvasConfigrationModal: false,
     }
   }
 
@@ -376,6 +380,7 @@ class DistrictPolicyForm extends Component {
       allowDomainForStudentValidate,
       allowDomainForSchoolValidate,
       allowIpForAssignmentValidate,
+      showCanvasConfigrationModal,
     } = this.state
 
     const { districtPolicy } = this.props
@@ -392,7 +397,7 @@ class DistrictPolicyForm extends Component {
     if (Object.prototype.hasOwnProperty.call(districtPolicy, '_id')) {
       saveBtnStr = 'Save'
     }
-    const { role } = this.props
+    const { role, saveCanvasKeysRequest } = this.props
     const isSchoolLevel = role === 'school-admin'
 
     return (
@@ -568,12 +573,34 @@ class DistrictPolicyForm extends Component {
             <RadioGrp
               onChange={this.thirdpartyIntegration}
               value={thirdPartyValue}
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
-              <RadioBtn value={1}>Google Classroom</RadioBtn>
-              <RadioBtn value={2}>Canvas</RadioBtn>
-              <RadioBtn value={3}>Schoology</RadioBtn>
-              <RadioBtn value={4}>ClassLink</RadioBtn>
-              <RadioBtn value={5}>None</RadioBtn>
+              <RadioBtn mb="10px" value={1}>
+                Google Classroom
+              </RadioBtn>
+              <RadioBtn mb="10px" value={2}>
+                <span>Canvas</span>{' '}
+                {isSchoolLevel ? null : (
+                  <ConfigureButton
+                    onClick={(e) => {
+                      e.preventDefault()
+                      if (thirdPartyValue === _3RDPARTYINTEGRATION.canvas)
+                        this.setState({ showCanvasConfigrationModal: true })
+                    }}
+                  >
+                    (Configure)
+                  </ConfigureButton>
+                )}
+              </RadioBtn>
+              <RadioBtn mb="10px" value={3}>
+                Schoology
+              </RadioBtn>
+              <RadioBtn mb="10px" value={4}>
+                ClassLink
+              </RadioBtn>
+              <RadioBtn mb="10px" value={5}>
+                None
+              </RadioBtn>
               {/* None signifies that no 3rd party integration is enabled */}
             </RadioGrp>
           </StyledRow>
@@ -626,6 +653,22 @@ class DistrictPolicyForm extends Component {
             <EduButton onClick={this.onSave}>{saveBtnStr}</EduButton>
           </StyledRow>
         </Form>
+
+        {showCanvasConfigrationModal && (
+          <ConfigureCanvasModal
+            visible={showCanvasConfigrationModal}
+            handleCancel={() => {
+              this.setState({ showCanvasConfigrationModal: false })
+            }}
+            districtPolicyId={districtPolicy._id}
+            orgType={districtPolicy.orgType}
+            orgId={districtPolicy.orgId}
+            saveCanvasKeysRequest={saveCanvasKeysRequest}
+            canvasConsumerKey={districtPolicy.canvasConsumerKey}
+            canvasInstanceUrl={districtPolicy.canvasInstanceUrl}
+            canvasSharedSecret={districtPolicy.canvasSharedSecret}
+          />
+        )}
       </StyledFormDiv>
     )
   }
@@ -645,6 +688,7 @@ const enhance = compose(
       createDistrictPolicy: createDistrictPolicyAction,
       changeDistrictPolicyData: changeDistrictPolicyAction,
       loadSchoolPolicy: receiveSchoolPolicyAction,
+      saveCanvasKeysRequest: saveCanvasKeysRequestAction,
     }
   )
 )

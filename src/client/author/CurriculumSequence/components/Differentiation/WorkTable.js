@@ -101,7 +101,8 @@ function OuterDropContainer({ children }) {
 
 const InnerWorkTable = ({
   type,
-  addRecommendations,
+  setRecommendationsToAssign,
+  toggleAssignModal,
   selectedData,
   differentiationStudentList,
   data = [],
@@ -382,7 +383,7 @@ const InnerWorkTable = ({
       dataIndex: 'status',
       width: '145px',
       align: 'center',
-      render: (s) => <Tag>{s}</Tag>,
+      render: (s) => <Tag>{s === 'ADDED' ? 'ASSIGNED' : s}</Tag>,
     },
   ]
 
@@ -398,13 +399,17 @@ const InnerWorkTable = ({
 
   const getResourceTitle = () => {
     if (type === 'REVIEW') {
-      return `Review #${workStatusData.length + 1} - ${selectedData.title}`
+      return `Review Work #${workStatusData.length + 1} - ${selectedData.title}`
     }
     if (type === 'PRACTICE') {
-      return `Practice #${workStatusData.length + 1} - ${selectedData.title}`
+      return `Practice Work #${workStatusData.length + 1} - ${
+        selectedData.title
+      }`
     }
     if (type === 'CHALLENGE') {
-      return `Challenge #${workStatusData.length + 1} - ${selectedData.title}`
+      return `Challenge Work #${workStatusData.length + 1} - ${
+        selectedData.title
+      }`
     }
   }
 
@@ -415,6 +420,7 @@ const InnerWorkTable = ({
       })
     if (!filteredStudentList.length)
       return notification({ messageKey: 'pleaseSelectMastery' })
+
     const recommendations = []
     const selectedRowsData = selectedRows.map((x) => data[x])
     const groupByResources = groupBy(selectedRowsData, ({ resources }) =>
@@ -475,9 +481,10 @@ const InnerWorkTable = ({
       }
     }
 
-    if (recommendations.length) {
-      addRecommendations(recommendations)
-    }
+    setRecommendationsToAssign({
+      recommendations,
+    })
+    toggleAssignModal(true)
   }
 
   const studentList = (
@@ -530,7 +537,7 @@ const InnerWorkTable = ({
             height="30px"
             onClick={handleAdd}
           >
-            Add
+            Assign
           </EduButton>
         </span>
       </TableHeader>

@@ -167,6 +167,12 @@ module.exports = {
       ALL: 'ALL',
       SKIPPED_AND_WRONG: 'SKIPPED AND WRONG',
     },
+    ShowPreviousAttempt: {
+      FEEDBACK_ONLY: 'Teacher feedback only',
+      SCORE_AND_FEEDBACK: 'Student score & teacher feedback',
+      STUDENT_RESPONSE_AND_FEEDBACK: 'Student response & teacher feedback',
+      SCORE_RESPONSE_AND_FEEDBACK: 'Student score, response & teacher feedback',
+    },
   },
   passwordPolicy: {
     REQUIRED_PASSWORD_POLICY_OFF: 0,
@@ -194,6 +200,7 @@ module.exports = {
     sbac: 'SBAC',
     cmas: 'Colorado - CMAS',
     casspp: 'California - CASSPP',
+    testlet: 'ETS Testlet Player',
   },
   playerSkinValues: {
     edulastic: 'edulastic',

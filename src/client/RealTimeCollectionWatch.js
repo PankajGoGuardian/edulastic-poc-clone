@@ -1,7 +1,7 @@
 import React from 'react'
 import { get } from 'lodash'
 import { connect } from 'react-redux'
-import { useRealtimeV2 } from '@edulastic/common'
+import  useRealtimeV2  from '@edulastic/common/src/customHooks/useRealtimeV2';
 import {
   removeItemBankPermissionAction,
   addItemBankPermissionAction,

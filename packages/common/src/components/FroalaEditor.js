@@ -509,6 +509,12 @@ const BackgroundStyleWrapper = styled.div.attrs({
         `
       }
     }}
+    .fr-view {
+      > p {
+        padding: 0px !important;
+        text-indent: 0pt !important;
+      }
+    }
   }
 
   ${({ border }) => {
@@ -814,6 +820,9 @@ const CustomEditor = ({
           const closestMathParent = evt.currentTarget.closest(
             'span.input__math'
           )
+          const paraRemove = evt.currentTarget.closest(
+            'span.paragraph-number-remove'
+          )
           if (closestMathParent) {
             this.selection.save()
             setCurrentLatex(closestMathParent.getAttribute('data-latex'))
@@ -821,6 +830,13 @@ const CustomEditor = ({
             setMathModalIsEditable(mqeditable !== 'false')
             setCurrentMathEl(closestMathParent)
             setMathModal(true)
+          } else if (paraRemove) {
+            paraRemove.parentElement.remove()
+            this.selection.save()
+            const updatedHtml = reIndexResponses(this.html.get(true))
+            if (updatedHtml) {
+              this.html.set(updatedHtml)
+            }
           } else {
             setCurrentLatex('')
             setCurrentMathEl(null)

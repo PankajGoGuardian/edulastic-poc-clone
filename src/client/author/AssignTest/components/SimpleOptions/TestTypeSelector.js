@@ -1,9 +1,9 @@
-import { FieldLabel } from '@edulastic/common'
+import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { roleuser, test } from '@edulastic/constants'
 import { Col, Select } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux'
-import { StyledRow, StyledRowSelect, StyledSelect } from './styled'
+import { StyledRow, StyledRowSelect } from './styled'
 
 const { type } = test
 const { ASSESSMENT, PRACTICE, COMMON } = type
@@ -25,24 +25,27 @@ const TestTypeSelector = ({
   }
 
   const SelectOption = (
-    <StyledSelect
+    <SelectInputStyled
       style={{ textTransform: 'capitalize' }}
       data-cy="testType"
       onChange={onAssignmentTypeChange}
       value={testType}
       disabled={disabled}
+      getPopupContainer={(node) => node.parentNode}
     >
       {isAdmin && !districtPermissions.includes('publisher') && (
         <Select.Option key={COMMON} value={COMMON}>
           Common Assessment
         </Select.Option>
       )}
-      {Object.keys(testTypes).map((key) => (
-        <Select.Option key={key} value={key}>
-          {testTypes[key]}
-        </Select.Option>
-      ))}
-    </StyledSelect>
+      {Object.keys(testTypes).map((key) => {
+        return (
+          <Select.Option key={key} value={key}>
+            {testTypes[key]}
+          </Select.Option>
+        )
+      })}
+    </SelectInputStyled>
   )
 
   return fullwidth ? (

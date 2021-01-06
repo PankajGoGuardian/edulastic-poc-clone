@@ -86,8 +86,7 @@ export default class FormMath extends React.Component {
           value={answer}
           fullWidth
           ref={(el) => highlighted && el?.setFocus()}
-          handleDocBasedBlur={this.handleBlur}
-          isDocbasedSection
+          onBlur={this.handleBlur}
           restrictKeys={restrictKeys}
           allowNumericOnly={allowNumericOnly}
         />

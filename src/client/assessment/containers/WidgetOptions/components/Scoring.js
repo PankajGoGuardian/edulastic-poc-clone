@@ -15,6 +15,7 @@ import {
 } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
+import { FlexContainer } from '@edulastic/common'
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -37,6 +38,7 @@ import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
 import QuestionTextArea from '../../../components/QuestionTextArea'
 import { WidgetFRInput } from '../../../styled/Widget'
+import { PointsInput } from '../../../styled/CorrectAnswerHeader'
 
 const roundingTypes = [rounding.roundDown, rounding.none]
 
@@ -131,6 +133,16 @@ class Scoring extends Component {
 
     const questionTitle = item?.title || questionData?.title
 
+    const onChange = (value) => {
+      if (!(value > 0)) {
+        return
+      }
+      const points = parseFloat(value, 10)
+      handleChangeValidation('validResponse', {
+        score: points,
+      })
+    }
+
     return (
       <div
         section="advanced"
@@ -168,7 +180,14 @@ class Scoring extends Component {
                 {t('component.options.automarkable')}
               </CheckboxLabel>
             </Col>
-            {isAutomarkChecked && (
+            {/* TODO Enable this when when we implement it.
+              Handle this scenario:
+                Enable unscore.
+                Disable isAutomarkChecked.
+                Observe the autoscore will be still true 
+                Make it false whenver isAutomarkChecked changes to false
+            */}
+            {/* {isAutomarkChecked && (
               <Col md={12}>
                 <CheckboxLabel
                   data-cy="unscoredChk"
@@ -182,7 +201,7 @@ class Scoring extends Component {
                   {t('component.options.unscored')}
                 </CheckboxLabel>
               </Col>
-            )}
+            )} */}
           </Row>
         )}
 
@@ -190,34 +209,24 @@ class Scoring extends Component {
           <Row gutter={24} type="flex" wrap="wrap" mb="0">
             {!isAutoMarkBtnVisible && (
               <Col md={12}>
-                <Label>{t('component.options.maxScore')}</Label>
-                <FormGroup center>
-                  <TextInputStyled
+                <FlexContainer flexDirection="column" mt="8px">
+                  <Label>{t('component.options.maxScore')}</Label>
+                  <PointsInput
+                    data-cy="maxscore"
                     id={getFormattedAttrId(
                       `${questionTitle}-${t('component.options.maxScore')}`
                     )}
-                    data-cy="maxscore"
-                    type="number"
                     value={maxScore}
+                    width="20%"
+                    onChange={onChange}
+                    min={0.5}
                     step={0.5}
-                    min={0}
-                    onChange={(e) =>
-                      handleChangeValidation('validResponse', {
-                        score: +e.target.value,
-                      })
-                    }
-                    size="large"
-                    style={{
-                      width: '20%',
-                      marginRight: 30,
-                      borderColor: '#E1E1E1',
-                    }}
                     disabled={
                       (!!questionData.rubrics && userFeatures.gradingrubrics) ||
                       isGradingCheckboxState
                     }
                   />
-                </FormGroup>
+                </FlexContainer>
               </Col>
             )}
             {/* showScoringType(default is true), hides  scoring type dropdown for few question types (eg: Short Text) */}

@@ -19,7 +19,7 @@ import {
 } from '@edulastic/icons'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Icon, Modal, Spin } from 'antd'
+import { Icon, Modal, Spin, Popover } from 'antd'
 import { get, intersection, keyBy, uniq } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -686,17 +686,20 @@ class PreviewModal extends React.Component {
                 </EduButton>
               )}
               {disableEdit && userRole !== roleuser.EDULASTIC_CURATOR ? (
-                <EduButton
-                  IconBtn
-                  noHover
-                  isGhost
-                  disabled
-                  height="28px"
-                  width="28px"
-                  title="Editing the question with dynamic parameters is disabled during the Test edit and regrade."
+                <Popover
+                  placement="bottomRight"
+                  content={
+                    <DisabledHelperText>
+                      Dynamic Parameter questions have their random values
+                      generated when the test is assigned, and they cannot be
+                      changed. You will have to grade these questions manually.
+                    </DisabledHelperText>
+                  }
                 >
-                  <IconPencilEdit color={themeColor} />
-                </EduButton>
+                  <DisabledButton>
+                    <IconPencilEdit color={themeColor} />
+                  </DisabledButton>
+                </Popover>
               ) : (
                 <EduButton
                   IconBtn
@@ -1060,4 +1063,26 @@ const ModalContentArea = styled.div`
   border-radius: 0px;
   padding: 0px 30px;
   height: ${({ isMobile }) => (isMobile ? 'calc(100vh - 100px)' : '70vh')};
+`
+
+const DisabledButton = styled.div`
+  height: 28px;
+  width: 28px;
+  border-radius: 4px;
+  border: 1px solid ${themeColor};
+  position: relative;
+  margin-left: 5px;
+  opacity: 0.3;
+  cursor: not-allowed;
+
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+`
+
+const DisabledHelperText = styled.div`
+  max-width: 320px;
 `

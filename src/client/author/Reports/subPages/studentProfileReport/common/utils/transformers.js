@@ -56,7 +56,10 @@ export const augementAssessmentChartData = (
     const assignment = assignments[0] || {}
     const { testType, testId } = assignment
     const scoreAvg = round(
-      percentage(sumBy(assignments, 'score'), sumBy(assignments, 'maxScore'))
+      percentage(
+        sumBy(assignments, 'score') || 0,
+        sumBy(assignments, 'maxScore') || 0
+      )
     )
     const band = getProficiencyBand(scoreAvg, bandInfo)
     const { standardSet, subject } =

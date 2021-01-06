@@ -110,6 +110,7 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
     align: 'left',
     fixed: 'left',
     width: 180,
+    ellipsis: true,
     render: (data, record) =>
       !isSharedReport ? (
         <Link

@@ -98,6 +98,7 @@ class LayoutComponent extends Component {
                   }
                 }}
                 checked={!!item.characterMap}
+                data-cy="specialCharactersOption"
               />
             </Col>
             <Col md={12}>

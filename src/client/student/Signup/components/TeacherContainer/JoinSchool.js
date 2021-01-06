@@ -187,7 +187,7 @@ const JoinSchool = ({
   const handleSubmit = () => {
     const schoolId = selected.schoolId || selected._id
     if (fromUserProfile) {
-      const { institutionIds } = userInfo
+      const { institutionIds = [] } = userInfo
       const newInstitutionIds = schoolId
         ? [...institutionIds, schoolId]
         : institutionIds

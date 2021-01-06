@@ -572,6 +572,9 @@ export default createReducer(initialState, {
     state.user.institutionIds = payload.institutionIds
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.districtIds = payload.districtIds
+    state.user.orgData.districtIds = payload.orgData.districtIds
+    state.user.orgData.districts = payload.orgData.districts
   },
   [ADD_SCHOOL_FAILED]: (state) => {
     state.addingSchool = undefined

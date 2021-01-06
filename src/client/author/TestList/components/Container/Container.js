@@ -259,7 +259,12 @@ class TestList extends Component {
     let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
 
     let searchFilters = {}
-    if (!searchParams.hasNoInterestedFilters) {
+
+    if (searchParams.removeInterestedFilters) {
+      searchFilters = {
+        ...testFilters,
+      }
+    } else {
       searchFilters = {
         ...testFilters,
         ...sessionFilters,

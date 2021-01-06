@@ -1,6 +1,10 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { mobileWidth, greyThemeLight, greyishBorder } from '@edulastic/colors'
 
+const disableStyles = css`
+  pointer-events: none;
+  user-select: none;
+`
 export const MathInputStyles = styled.div`
   min-width: ${({ width, fullWidth }) =>
     width || (fullWidth ? '100%' : 'fit-content')};
@@ -8,9 +12,12 @@ export const MathInputStyles = styled.div`
   background: ${({ background }) => background};
   position: relative;
 
+  cursor: ${({ disabled }) => disabled && 'not-allowed'};
+
   .input {
     position: relative;
     height: 100%;
+    ${({ disabled }) => disabled && disableStyles}
   }
 
   .input__math {

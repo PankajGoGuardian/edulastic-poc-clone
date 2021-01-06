@@ -318,9 +318,10 @@ class MathInput extends React.PureComponent {
   }
 
   onClickMathField = () => {
+    const { disabled } = this.props
     const { hideKeyboardByDefault } = this.state
-    const keyboardPosition = this.getKeyboardPosition()
-    if (!hideKeyboardByDefault) {
+    if (!hideKeyboardByDefault && !disabled) {
+      const keyboardPosition = this.getKeyboardPosition()
       this.setState({ mathFieldFocus: true, keyboardPosition }, this.focus)
     }
   }
@@ -378,6 +379,7 @@ class MathInput extends React.PureComponent {
       restrictKeys,
       customKeys,
       dynamicVariableInput,
+      disabled,
     } = this.props
 
     const {
@@ -409,6 +411,7 @@ class MathInput extends React.PureComponent {
         fontSize={style.fontSize}
         ref={this.containerRef}
         onKeyUp={onKeyUp}
+        disabled={disabled}
       >
         <div className="input" onClick={this.onClickMathField}>
           <div
@@ -476,6 +479,7 @@ MathInput.propTypes = {
   className: PropTypes.string,
   restrictKeys: PropTypes.array,
   allowNumericOnly: PropTypes.bool,
+  disabled: PropTypes.bool,
   customKeys: PropTypes.array,
   contentLength: PropTypes.number,
 }
@@ -497,6 +501,7 @@ MathInput.defaultProps = {
   onKeyDown: () => {},
   onChangeKeypad: () => {},
   fullWidth: false,
+  disabled: false,
   className: '',
   symbols: [],
   contentLength: 0,

@@ -788,7 +788,9 @@ class ProfileBody extends React.Component {
             {showDefaultSettings && (
               <SchoolWrapper>
                 <StandardSetsLabel>Standard Sets</StandardSetsLabel>
-                <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
+                <StandardSetsList data-cy="interestedStandards">
+                  {this.getStandardSets()}
+                </StandardSetsList>
                 <StandardSetsButtons>
                   {showSaveStandSetsBtn && (
                     <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>

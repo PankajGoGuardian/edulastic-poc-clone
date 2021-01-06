@@ -7,6 +7,7 @@ import {
   StyledDropDownContainer,
   StyledFilterWrapper,
 } from '../../../../common/styled'
+import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import { MultipleSelect } from '../../../../common/components/widgets/MultipleSelect'
 import { toggleItem } from '../../../../common/util'
@@ -15,6 +16,8 @@ import { getInterestedCurriculumsSelector } from '../../../../../src/selectors/u
 import {
   getFiltersSelector,
   setFiltersAction,
+  getTagsDataSelector,
+  setTagsDataAction,
   getReportsStandardsFilters,
   getReportsStandardsFiltersLoader,
 } from '../filterDataDucks'
@@ -30,6 +33,8 @@ const StandardsFilters = ({
   standardsFilters,
   filters,
   setFilters,
+  tagsData,
+  setTagsData,
   interestedCurriculums,
   standardsPerformanceSummary,
   standardsGradebook,
@@ -82,6 +87,13 @@ const StandardsFilters = ({
 
   // update handlers
   const updateFilterDropdownCB = (selected, keyName) => {
+    // update tags data
+    const _tagsData = { ...tagsData, [keyName]: selected }
+    if (!selected.key || selected.key === 'All') {
+      delete _tagsData[keyName]
+    }
+    setTagsData(_tagsData)
+    // update filters
     const _filters = {
       ...filters,
       [keyName]: selected.key,
@@ -93,68 +105,88 @@ const StandardsFilters = ({
     const _domainIds = toggleItem(filters.domainIds, domain.key).filter((o) =>
       allDomainIds.includes(o)
     )
+    // TODO: fix this
+    // const domainsTagData = domainsList
+    //   .filter((d) => _domainIds.includes(d.key))
+    //   .map((d) => ({ ...d, onClose: () => onSelectDomain(d) }))
+    // setTagsData({ ...tagsData, domainIds: [] })
     setFilters({ ...filters, domainIds: _domainIds, showApply: true })
   }
   const onChangeDomains = (domains) => {
     if (!domains?.length) {
+      setTagsData({ ...tagsData, domainIds: [] })
       setFilters({ ...filters, domainIds: [], showApply: true })
     }
   }
 
   return (
-    <StyledFilterWrapper
-      style={{ display: !showFilter || loading ? 'none' : 'flex' }}
-      isRowFilter
-    >
-      <Col span={24}>
-        <Row type="flex" justify="end">
-          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
-            <ControlDropDown
-              by={filters.curriculumId}
-              selectCB={(e) => updateFilterDropdownCB(e, 'curriculumId')}
-              data={curriculumsList}
-              prefix="Standard Set"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
-          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
-            <ControlDropDown
-              by={filters.standardGrade}
-              selectCB={(e) => updateFilterDropdownCB(e, 'standardGrade')}
-              data={staticDropDownData.allGrades}
-              prefix="Standard Grade"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
-          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
-            <ControlDropDown
-              by={filters.profileId || defaultProficiencyId}
-              selectCB={(e) => updateFilterDropdownCB(e, 'profileId')}
-              data={proficiencyList}
-              prefix="Standard Proficiency"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
-          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
-            <MultipleSelect
-              containerClassName="standards-mastery-report-domain-autocomplete"
-              data={domainsList || []}
-              valueToDisplay={
-                selectedDomains.length > 1
-                  ? { key: '', title: 'Multiple Domains' }
-                  : selectedDomains
-              }
-              by={selectedDomains}
-              prefix="Domains"
-              onSelect={onSelectDomain}
-              onChange={onChangeDomains}
-              placeholder="All Domains"
-              style={{ width: '100%', height: 'auto' }}
-            />
-          </StyledDropDownContainer>
-        </Row>
-      </Col>
-    </StyledFilterWrapper>
+    <>
+      <FilterTags tagsData={tagsData} />
+      <StyledFilterWrapper
+        style={{ display: !showFilter || loading ? 'none' : 'flex' }}
+        isRowFilter
+      >
+        <Col span={24}>
+          <Row type="flex" justify="end">
+            <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
+              <ControlDropDown
+                by={filters.curriculumId}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, 'curriculumId')
+                }
+                data={curriculumsList}
+                prefix="Standard Set"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+            <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
+              <ControlDropDown
+                by={filters.standardGrade}
+                selectCB={(e, selected) => {
+                  selected.onClose = () =>
+                    updateFilterDropdownCB(
+                      staticDropDownData.allGrades[0],
+                      'standardGrade'
+                    )
+                  updateFilterDropdownCB(selected, 'standardGrade')
+                }}
+                data={staticDropDownData.allGrades}
+                prefix="Standard Grade"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+            <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
+              <ControlDropDown
+                by={filters.profileId || defaultProficiencyId}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, 'profileId')
+                }
+                data={proficiencyList}
+                prefix="Standard Proficiency"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+            <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
+              <MultipleSelect
+                containerClassName="standards-mastery-report-domain-autocomplete"
+                data={domainsList || []}
+                valueToDisplay={
+                  selectedDomains.length > 1
+                    ? { key: '', title: 'Multiple Domains' }
+                    : selectedDomains
+                }
+                by={selectedDomains}
+                prefix="Domains"
+                onSelect={onSelectDomain}
+                onChange={onChangeDomains}
+                placeholder="All Domains"
+                style={{ width: '100%', height: 'auto' }}
+              />
+            </StyledDropDownContainer>
+          </Row>
+        </Col>
+      </StyledFilterWrapper>
+    </>
   )
 }
 
@@ -164,10 +196,12 @@ export default connect(
     loading: getReportsStandardsFiltersLoader(state),
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),
+    tagsData: getTagsDataSelector(state),
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
     standardsGradebook: getReportsStandardsGradebook(state),
   }),
   {
     setFilters: setFiltersAction,
+    setTagsData: setTagsDataAction,
   }
 )(StandardsFilters)

@@ -48,7 +48,6 @@ const SchoolAutoComplete = ({
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
-      selectCB({ key: '', title: '' })
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
@@ -90,7 +89,7 @@ const SchoolAutoComplete = ({
       label="School"
       placeholder="All School"
       el={schoolFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultSchoolList}

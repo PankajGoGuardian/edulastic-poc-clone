@@ -19,6 +19,7 @@ const SET_REPORTS_PREV_STANDARDS_FILTERS =
 
 const SET_FILTERS = '[reports] set standards filters'
 const SET_TEST_ID = '[reports] set standards testId'
+const SET_TAGS_DATA = '[reports] set standards tagsData'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -31,6 +32,7 @@ export const setPrevStandardsFiltersAction = createAction(
 
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setTestIdAction = createAction(SET_TEST_ID)
+export const setTagsDataAction = createAction(SET_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -59,6 +61,11 @@ export const getFiltersSelector = createSelector(
 export const getTestIdSelector = createSelector(
   stateSelector,
   (state) => state.testIds
+)
+
+export const getTagsDataSelector = createSelector(
+  stateSelector,
+  (state) => state.tagsData
 )
 
 export const getPrevStandardsFiltersSelector = createSelector(
@@ -98,16 +105,9 @@ const initialState = {
     domainIds: [],
     showApply: false,
   },
+  tagsData: {},
   testIds: [],
   loading: false,
-}
-
-const setFiltersReducer = (state, { payload }) => {
-  state.filters = { ...payload }
-}
-
-const setTestIdReducer = (state, { payload }) => {
-  state.testIds = payload
 }
 
 export const reportStandardsFilterDataReducer = createReducer(initialState, {
@@ -125,8 +125,15 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   [SET_REPORTS_PREV_STANDARDS_FILTERS]: (state, { payload }) => {
     state.prevStandardsFilters = payload
   },
-  [SET_FILTERS]: setFiltersReducer,
-  [SET_TEST_ID]: setTestIdReducer,
+  [SET_FILTERS]: (state, { payload }) => {
+    state.filters = { ...payload }
+  },
+  [SET_TEST_ID]: (state, { payload }) => {
+    state.testIds = payload
+  },
+  [SET_TAGS_DATA]: (state, { payload }) => {
+    state.tagsData = { ...payload }
+  },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 

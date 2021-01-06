@@ -381,17 +381,19 @@ export const formatDate = (milliseconds, showTime) => {
     : 'NA'
 }
 
-const resetFilter = (filtersToReset, prevFilters) => {
+const resetFilter = (filtersToReset, prevFilters, tagsData) => {
   for (const filter of filtersToReset) {
     if (filter.nestedFilters) {
-      resetFilter(filter.nestedFilters, prevFilters)
+      resetFilter(filter.nestedFilters, prevFilters, tagsData)
     } else {
       prevFilters[filter.key] = filter.value
+      delete tagsData[filter.key]
     }
   }
 }
 
 export const resetStudentFilters = (
+  tagsData,
   prevFilters,
   key,
   selected,
@@ -404,6 +406,6 @@ export const resetStudentFilters = (
     prevFilters[key] !== (multiple ? selected : selected.key)
   ) {
     const filtersToReset = defaultValues.slice(index + 1)
-    resetFilter(filtersToReset, prevFilters)
+    resetFilter(filtersToReset, prevFilters, tagsData)
   }
 }

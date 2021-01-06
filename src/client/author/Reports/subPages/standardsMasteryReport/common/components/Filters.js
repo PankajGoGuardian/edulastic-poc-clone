@@ -29,8 +29,10 @@ import {
 import {
   getFiltersSelector,
   getTestIdSelector,
+  getTagsDataSelector,
   setFiltersAction,
   setTestIdAction,
+  setTagsDataAction,
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
   getPrevStandardsFiltersSelector,
@@ -60,6 +62,8 @@ const StandardsFilters = ({
   setFilters,
   testIds,
   setTestIds,
+  tagsData,
+  setTagsData,
   onGoClick: _onGoClick,
   getStandardsFiltersRequest,
   standardsFilters,
@@ -217,9 +221,18 @@ const StandardsFilters = ({
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
+    // update tags data
+    const _tagsData = { ...tagsData, [keyName]: selected }
+    if (!selected.key || selected.key === 'All') {
+      delete _tagsData[keyName]
+    }
     const _filters = { ...filters }
-    resetStudentFilters(_filters, keyName, selected, multiple)
-    _filters[keyName] = multiple ? selected : selected.key
+    resetStudentFilters(_tagsData, _filters, keyName, selected, multiple)
+    setTagsData(_tagsData)
+    // update filters
+    _filters[keyName] = multiple
+      ? selected.map((o) => o.key).join(',')
+      : selected.key
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
     _filters.showApply = true
     setFilters(_filters)
@@ -250,7 +263,9 @@ const StandardsFilters = ({
             <FilterLabel>School Year</FilterLabel>
             <ControlDropDown
               by={filters.termId}
-              selectCB={(e) => updateFilterDropdownCB(e, 'termId')}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'termId')
+              }
               data={schoolYears}
               prefix="School Year"
               showPrefixOnSelected={false}
@@ -263,9 +278,7 @@ const StandardsFilters = ({
                   selectedSchoolIds={
                     filters.schoolIds ? filters.schoolIds.split(',') : []
                   }
-                  selectCB={(e) =>
-                    updateFilterDropdownCB(e.join(','), 'schoolIds', true)
-                  }
+                  selectCB={(e) => updateFilterDropdownCB(e, 'schoolIds', true)}
                 />
               </SearchField>
               <SearchField>
@@ -276,7 +289,7 @@ const StandardsFilters = ({
                     filters.teacherIds ? filters.teacherIds.split(',') : []
                   }
                   selectCB={(e) =>
-                    updateFilterDropdownCB(e.join(','), 'teacherIds', true)
+                    updateFilterDropdownCB(e, 'teacherIds', true)
                   }
                 />
               </SearchField>
@@ -287,7 +300,9 @@ const StandardsFilters = ({
             <ControlDropDown
               prefix="Grade"
               by={filters.grade}
-              selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'grade')
+              }
               data={staticDropDownData.grades}
               showPrefixOnSelected={false}
             />
@@ -296,7 +311,14 @@ const StandardsFilters = ({
             <FilterLabel>Class Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
-              selectCB={(e) => updateFilterDropdownCB(e, 'subject')}
+              selectCB={(e, selected) => {
+                selected.onClose = () =>
+                  updateFilterDropdownCB(
+                    staticDropDownData.subjects[0],
+                    'subject'
+                  )
+                updateFilterDropdownCB(selected, 'subject')
+              }}
               data={staticDropDownData.subjects}
               prefix="Subject"
               showPrefixOnSelected={false}
@@ -346,7 +368,14 @@ const StandardsFilters = ({
             <ControlDropDown
               prefix="Grade"
               by={filters.testGrade}
-              selectCB={(e) => updateFilterDropdownCB(e, 'testGrade')}
+              selectCB={(e, selected) => {
+                selected.onClose = () =>
+                  updateFilterDropdownCB(
+                    staticDropDownData.allGrades[0],
+                    'testGrade'
+                  )
+                updateFilterDropdownCB(selected, 'testGrade')
+              }}
               data={staticDropDownData.allGrades}
               showPrefixOnSelected={false}
             />
@@ -355,7 +384,14 @@ const StandardsFilters = ({
             <FilterLabel>Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.testSubject}
-              selectCB={(e) => updateFilterDropdownCB(e, 'testSubject')}
+              selectCB={(e, selected) => {
+                selected.onClose = () =>
+                  updateFilterDropdownCB(
+                    staticDropDownData.subjects[0],
+                    'testSubject'
+                  )
+                updateFilterDropdownCB(selected, 'testSubject')
+              }}
               data={staticDropDownData.subjects}
               prefix="Subject"
               showPrefixOnSelected={false}
@@ -365,9 +401,12 @@ const StandardsFilters = ({
             <MultiSelectDropdown
               label="Test Type"
               el={assessmentTypesRef}
-              onChange={(e) =>
-                updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
-              }
+              onChange={(e) => {
+                const selectedTypes = staticDropDownData.assessmentType.filter(
+                  (a) => e.inlcudes(a.key)
+                )
+                updateFilterDropdownCB(selectedTypes, 'assessmentTypes', true)
+              }}
               value={
                 filters.assessmentTypes
                   ? filters.assessmentTypes.split(',')
@@ -404,6 +443,7 @@ const enhance = compose(
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
       testIds: getTestIdSelector(state) || [],
+      tagsData: getTagsDataSelector(state),
       user: getUser(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
@@ -413,6 +453,7 @@ const enhance = compose(
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,
       setFilters: setFiltersAction,
       setTestIds: setTestIdAction,
+      setTagsData: setTagsDataAction,
       setPrevStandardsFilters: setPrevStandardsFiltersAction,
     }
   )

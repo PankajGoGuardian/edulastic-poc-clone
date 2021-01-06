@@ -90,7 +90,14 @@ const GroupsAutoComplete = ({
     const value = (searchTerms.text ? groupList[key] : searchResult[key])
       ._source.name
     setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-    selectCB({ key, title: value })
+    selectCB({
+      key,
+      title: value,
+      onClose: () => {
+        setSearchTerms(DEFAULT_SEARCH_TERMS)
+        selectCB({ key: '', title: '' })
+      },
+    })
   }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {

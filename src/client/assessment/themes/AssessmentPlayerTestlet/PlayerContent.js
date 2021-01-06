@@ -232,6 +232,10 @@ const PlayerContent = ({
                 ),
               }
               const timeSpent = Date.now() - lastTime.current
+              // initialize assessment start time
+              lastTime.current = Date.now()
+              window.localStorage.assessmentLastTime = lastTime.current
+
               onSubmitAnswer(eduQuestion.id, timeSpent, groupId, { extData })
             }
           })

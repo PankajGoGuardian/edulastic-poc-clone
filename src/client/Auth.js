@@ -81,7 +81,9 @@ const Auth = ({
       }
     }
   }, [loggedInForPrivateRoute, showLoginForAddAccount])
-
+  console.log("u", user)
+  console.log("u au", user?.authenticating)
+  console.log("AccessToken", getAccessToken)
   if (
     ((user?.authenticating && getAccessToken()) || loading) &&
     !showLoginForAddAccount

@@ -271,6 +271,12 @@ const Settings = ({
     if (key === 'scoreThreshold' && (value > 100 || value < 1)) {
       return
     }
+    if (key === 'scoreThreshold' && value === 100) {
+      return notification({
+        type: 'warn',
+        msg: 'Threshold value should be less than 100%',
+      })
+    }
 
     const newSettingsState = {
       ...assignmentSettings,
@@ -912,7 +918,7 @@ const Settings = ({
                       <StyledRow mt="8px" mb="0px">
                         <InputNumber
                           min={1}
-                          max={100}
+                          max={99}
                           value={autoRedirectSettings.scoreThreshold || ''}
                           onChange={(value) =>
                             handleAutoRedirectSettingsChange(

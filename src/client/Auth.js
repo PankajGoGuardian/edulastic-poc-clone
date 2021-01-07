@@ -31,6 +31,20 @@ function getCurrentPath() {
   return `${location.pathname}${location.search}${location.hash}`
 }
 
+function isHashAssessmentUrl() {
+  return (
+    window.location.hash.includes('#renderResource/close/') ||
+    window.location.hash.includes('#assessmentQuestions/close/')
+  )
+}
+
+function canShowLoginForAddAccount(user) {
+  const addAccountToUser = JSON.parse(
+    window.sessionStorage.addAccountDetails || '{}'
+  )?.addAccountTo
+  return user?.userId === addAccountToUser
+}
+
 const Auth = ({
   user,
   location,
@@ -56,14 +70,22 @@ const Auth = ({
   }, [])
   const loggedInForPrivateRoute = isLoggedInForPrivateRoute(user)
 
+  const showLoginForAddAccount = canShowLoginForAddAccount(user)
   useEffect(() => {
-    if (loggedInForPrivateRoute) {
+    if (loggedInForPrivateRoute && !showLoginForAddAccount) {
       const currentUrl = getCurrentPath()
-      persistAuthStateAndRedirectTo({ toUrl: currentUrl })
+      if (isHashAssessmentUrl()) {
+        persistAuthStateAndRedirectTo({ toUrl: currentUrl })
+      } else {
+        persistAuthStateAndRedirectTo()
+      }
     }
-  }, [loggedInForPrivateRoute])
+  }, [loggedInForPrivateRoute, showLoginForAddAccount])
 
-  if ((user?.authenticating && getAccessToken()) || loading) {
+  if (
+    ((user?.authenticating && getAccessToken()) || loading) &&
+    !showLoginForAddAccount
+  ) {
     return <Spin />
   }
 

@@ -21,18 +21,20 @@ import { fetchUserAction } from './client/student/Login/ducks'
 import { isMobileDevice, isIOS } from './client/platform'
 
 if (AppConfig.sentryURI) {
-  SentryInit({
-    whitelistUrls: [AppConfig.sentryWhiteListURLRegex],
-    dsn: AppConfig.sentryURI,
-    release: AppConfig.appVersion,
-    environment: AppConfig.appStage || 'development',
-    maxValueLength: 600, // defaults to 250 chars, we will need more info recorded.
-    ignoreErrors: AppConfig.sentryIgnoreErrors,
-    integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 0.1, // we sample only 10% of the data from clients.
-  })
-  updateSentryScope()
-}
+	SentryInit({
+	  whitelistUrls: [AppConfig.sentryWhiteListURLRegex],
+	  dsn: AppConfig.sentryURI,
+	  release: AppConfig.appVersion,
+	  environment: AppConfig.appStage || 'development',
+	  maxValueLength: 600, // defaults to 250 chars, we will need more info recorded.
+	  ignoreErrors: AppConfig.sentryIgnoreErrors,
+	  integrations: [new Integrations.BrowserTracing()],
+	  tracesSampleRate: 0.1, // we sample only 10% of the data from clients.
+	})
+	updateSentryScope()
+  }
+ 
+localStorage.removeItem('authState')
 
 window.isMobileDevice = isMobileDevice()
 window.isIOS = isIOS()

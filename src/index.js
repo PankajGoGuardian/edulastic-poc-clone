@@ -25,7 +25,9 @@ import { isMobileDevice, isIOS } from './client/platform'
 import * as serviceWorker from './service-worker-registration'
 
 document.addEventListener('DOMContentLoaded', function () {
-  const codeInUrl = window.location.search.includes('code=')
+  const codeInUrl =
+    window.location.search.includes('code=') ||
+    window.location.pathname.includes('newsela')
   if (codeInUrl) {
     removeAllTokens()
   }

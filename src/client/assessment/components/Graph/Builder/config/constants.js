@@ -8,6 +8,7 @@ export const TOOLS = {
   VECTOR: 'vector',
   CIRCLE: 'circle',
   SIN: 'sine',
+  COS: 'cos',
   TANGENT: 'tangent',
   SECANT: 'secant',
   EXPONENT: 'exponent',

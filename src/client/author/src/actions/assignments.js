@@ -11,6 +11,8 @@ import {
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
   SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
 } from '../constants/actions'
 
 export const googleSyncAssignmentAction = (payload) => ({
@@ -20,6 +22,16 @@ export const googleSyncAssignmentAction = (payload) => ({
 
 export const googleSyncAssignmentGradesAction = (payload) => ({
   type: SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
+  payload,
+})
+
+export const schoologySyncAssignmentAction = (payload) => ({
+  type: SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  payload,
+})
+
+export const schoologySyncAssignmentGradesAction = (payload) => ({
+  type: SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   payload,
 })
 

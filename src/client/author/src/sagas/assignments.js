@@ -7,12 +7,13 @@ import {
   select,
 } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
-import { assignmentApi, googleApi } from '@edulastic/api'
+import { assignmentApi, googleApi, atlasApi } from '@edulastic/api'
 import { omit, get, set, unset, pickBy, identity } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 
+import { removeAllTokens } from '@edulastic/api/src/utils/Storage'
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
   RECEIVE_ASSIGNMENTS_SUCCESS,
@@ -32,6 +33,10 @@ import {
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
   SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
 } from '../constants/actions'
 import { getUserRole } from '../selectors/user'
 
@@ -283,6 +288,81 @@ function* syncAssignmentGradesWithGoogleClassroomSaga({ payload }) {
   }
 }
 
+function* syncAssignmentGradesWithSchoologyClassroomSaga({ payload }) {
+  try {
+    const res = yield call(atlasApi.syncGradesWithSchoologyClassroom, payload)
+    if (res?.reAuth) {
+      try {
+        removeAllTokens()
+        localStorage.setItem('loginRedirectUrl', window.location.pathname)
+        localStorage.setItem('atlasShareOriginUrl', window.location.pathname)
+        localStorage.setItem('schoologyShare', 'grades')
+        window.location.href = res.reAuth
+      } catch (e) {
+        notification({ messageKey: 'atlasLoginFailed' })
+      }
+    } else if (res?.message) {
+      notification({ type: 'success', msg: res.message })
+    } else {
+      notification({
+        type: 'success',
+        msg: 'Grades are being shared to Schoology Classroom',
+      })
+    }
+  } catch (err) {
+    captureSentryException(err)
+    notification({
+      msg:
+        err?.response?.data?.message ||
+        'Failed to share grades to Schoology Classroom',
+    })
+    console.error(err)
+  }
+}
+
+function* syncAssignmentWithSchoologyClassroomSaga({ payload = {} }) {
+  try {
+    notification({ type: 'success', messageKey: 'sharedAssignmentInProgress' })
+    const result = yield call(assignmentApi.syncWithSchoologyClassroom, payload)
+    if (result?.reAuth) {
+      try {
+        removeAllTokens()
+        localStorage.setItem('loginRedirectUrl', window.location.pathname)
+        localStorage.setItem('atlasShareOriginUrl', window.location.pathname)
+        localStorage.setItem('schoologyShare', 'assignment')
+        window.location.href = result.reAuth
+      } catch (e) {
+        notification({ messageKey: 'atlasLoginFailed' })
+      }
+    } else if (result?.[0]?.success) {
+      yield put({
+        type: SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS,
+      })
+      notification({
+        type: 'success',
+        messageKey: 'assignmentSharedWithSchoologyClassroom',
+      })
+    } else {
+      const errorMessage =
+        result?.[0]?.message ||
+        'Assignment failed to share with schoology classroom. Please try after sometime.'
+      yield put({
+        type: SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
+      })
+      notification({ msg: errorMessage })
+    }
+  } catch (error) {
+    captureSentryException(error)
+    const errorMessage =
+      error?.data?.message ||
+      'Assignment failed to share with schoology classroom. Please try after sometime.'
+    yield put({
+      type: SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
+    })
+    notification({ msg: errorMessage })
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ASSIGNMENTS_REQUEST, receiveAssignmentsSaga),
@@ -310,6 +390,14 @@ export default function* watcherSaga() {
     yield takeEvery(
       SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
       syncAssignmentGradesWithGoogleClassroomSaga
+    ),
+    yield takeEvery(
+      SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+      syncAssignmentGradesWithSchoologyClassroomSaga
+    ),
+    yield takeEvery(
+      SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+      syncAssignmentWithSchoologyClassroomSaga
     ),
   ])
 }

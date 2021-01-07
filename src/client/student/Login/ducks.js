@@ -1304,6 +1304,7 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
+  localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
   let districtId
   if (generalSettings) {
@@ -1348,7 +1349,7 @@ function* googleLogin({ payload }) {
     }
 
     const res = yield call(authApi.googleLogin, params)
-    TokenStorage.removeAllTokens();
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({
@@ -1418,6 +1419,7 @@ function* googleSSOLogin({ payload }) {
 }
 
 function* msoLogin({ payload }) {
+  localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
   let districtId
   if (generalSettings) {
@@ -1456,7 +1458,7 @@ function* msoLogin({ payload }) {
       })
     }
     const res = yield call(authApi.msoLogin)
-    TokenStorage.removeAllTokens();
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ msg: get(e, 'response.data.message', 'MSO Login failed') })
@@ -1529,7 +1531,7 @@ function* cleverLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.cleverLogin)
-    TokenStorage.removeAllTokens();
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'cleverLoginFailed' })
@@ -1591,7 +1593,7 @@ function* atlasLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.atlasLogin, params)
-    TokenStorage.removeAllTokens();
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'atlasLoginFailed' })
@@ -1650,7 +1652,7 @@ function* newselaLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.newselaLogin, params)
-    TokenStorage.removeAllTokens();
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'newselaLoginFailed' })

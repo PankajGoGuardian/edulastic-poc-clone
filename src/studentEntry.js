@@ -32,6 +32,8 @@ if (AppConfig.sentryURI) {
 	})
 	updateSentryScope()
   }
+ 
+localStorage.removeItem('authState')
 
   // login - redux store
 const { store } = configureStore({}, studentReducers, studentsSagas)

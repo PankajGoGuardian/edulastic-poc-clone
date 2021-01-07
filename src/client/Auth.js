@@ -26,6 +26,18 @@ const Login = lazy(() => import('./student/Login/components'))
 
 const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
+function getCurrentPath() {
+  const location = window.location
+  return `${location.pathname}${location.search}${location.hash}`
+}
+
+function isHashAssessmentUrl() {
+  return (
+    window.location.hash.includes('#renderResource/close/') ||
+    window.location.hash.includes('#assessmentQuestions/close/')
+  )
+}
+
 const Auth = ({
   user,
   location,
@@ -53,7 +65,12 @@ const Auth = ({
 
   useEffect(() => {
     if (loggedInForPrivateRoute) {
-      persistAuthStateAndRedirectTo()
+      const currentUrl = getCurrentPath()
+      if (isHashAssessmentUrl()) {
+        persistAuthStateAndRedirectTo({ toUrl: currentUrl })
+      } else {
+        persistAuthStateAndRedirectTo()
+      }
     }
   }, [loggedInForPrivateRoute])
 

@@ -3,6 +3,14 @@ import { Route, Switch } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { Spin } from 'antd'
 
+if (
+  window.location.hash.includes('#renderResource/close/') ||
+  window.location.hash.includes('#assessmentQuestions/close/')
+) {
+  const v1Id = window.location.hash.split('/')[2]
+  window.location.href = `/d/ap?eAId=${v1Id}`
+}
+
 const Loading = () => (
   <div>
     <Spin />

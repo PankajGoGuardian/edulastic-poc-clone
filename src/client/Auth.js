@@ -84,7 +84,7 @@ const Auth = ({
   debugger
   console.log("u", user)
   console.log("u au", user?.authenticating)
-  console.log("AccessToken", getAccessToken)
+  console.log("AccessToken", getAccessToken())
   if (
     ((user?.authenticating && getAccessToken()) || loading) &&
     !showLoginForAddAccount

@@ -68,7 +68,7 @@ const InfoIcon = styled(IconCharInfo)`
 const ContentWrapper = styled.div`
   padding: 6px 8px;
   color: ${({ theme }) => theme.questionTextColor};
-  max-width: ${({ large }) => (large ? '450px' : '350px')};
+  width: ${({ large }) => (large ? '450px' : '350px')};
 
   .katex {
     .text {

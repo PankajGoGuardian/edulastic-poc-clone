@@ -11,7 +11,7 @@ export const TOOLS = {
   COS: 'cos',
   TANGENT: 'tangent',
   SECANT: 'secant',
-  EXPONENT: 'exponent',
+  EXPONENT: 'exp',
   LOGARITHM: 'logarithm',
   POLYNOM: 'polynom',
   POLYGON: 'polygon',

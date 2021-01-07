@@ -5,10 +5,142 @@ import {
   white,
   linkColor1,
   largeDesktopWidth,
-  smallDesktopWidth,
-  desktopWidth,
+  tabletWidth,
   extraDesktopWidthMax,
+  mediumDesktopExactWidth,
+  title,
+  whiteSmoke,
+  lightGrey9,
 } from '@edulastic/colors'
+
+export const ContentSection = styled.section`
+  min-height: 300px;
+  padding: 0px 50px;
+  background: transparent linear-gradient(111deg, #0d9c8c 0%, #095592 100%) 0%
+    0% no-repeat padding-box;
+  display: flex;
+  justify-content: center;
+`
+export const ContentCards = styled.div`
+  width: 100%;
+  position: relative;
+  top: -50px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    justify-content: space-between;
+    width: 1200px;
+  }
+`
+export const ContentCard = styled.div`
+  width: 290px;
+  height: 200px;
+  background: ${white};
+  box-shadow: 0px 3px 20px #99bdd380;
+  margin: 0px 10px 10px 0px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  h3 {
+    font-size: 14px;
+    color: ${title};
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 15px;
+  }
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    &:nth-child(4n + 4) {
+      margin-right: 0px;
+    }
+    padding: 20px 35px;
+  }
+`
+export const FeatureDescription = styled.p`
+  font-size: 14px;
+  color: ${lightGrey9};
+  text-align: center;
+`
+export const Img = styled.img`
+  height: 35px;
+`
+export const AddonSection = styled.section`
+  padding: 50px 15px;
+  background: ${white};
+  text-align: center;
+`
+export const SectionTitle = styled.h2`
+  font-size: 26px;
+  color: #292f3c;
+  font-weight: bold;
+`
+export const SectionDescription = styled.p`
+  font-size: 14px;
+  color: #373a3e;
+`
+export const SectionContainer = styled.div`
+  width: 100%;
+  margin: 0px auto;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    width: 1200px;
+  }
+`
+export const CardContainer = styled.div`
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`
+export const AddonCard = styled.div`
+  width: 100%;
+  padding: 30px;
+  h3 {
+    font-size: 13px;
+    color: ${title};
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 15px;
+  }
+  @media (min-width: ${tabletWidth}) {
+    width: 50%;
+  }
+  @media (min-width: ${largeDesktopWidth}) {
+    width: calc(100% / 3);
+    padding: 30px 70px;
+  }
+`
+export const AddonImg = styled.img`
+  height: 40px;
+`
+export const AddonDescription = styled.div`
+  font-size: 13px;
+  color: ${lightGrey9};
+`
+export const EnterpriseSection = styled.div`
+  width: 100%;
+  padding: 50px;
+  background: ${whiteSmoke};
+  border-radius: 4px;
+  text-align: center;
+  margin: 0px auto 50px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    width: 1200px;
+    border-radius: 10px;
+  }
+`
+export const HaveLicenseKey = styled.div`
+  text-align: center;
+  font-size: 9px;
+  font-weight: 600;
+  margin-top: 25px;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 100%;
+  color: ${white};
+`
 
 export const CurrentPlanContainer = styled.div`
   width: 100%;
@@ -32,14 +164,6 @@ export const AvailablePlansContainer = styled.div`
   flex-direction: column;
   border-radius: 4px;
   margin-bottom: 10px;
-`
-
-export const PlanContainerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background: ${white};
-  border-radius: 10px;
 `
 
 export const PlansContainer = styled.div`
@@ -84,59 +208,6 @@ export const PlanDetails = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     width: calc(100% - 380px);
   }
-`
-
-export const GridContainer = styled.div`
-  display: grid;
-  min-height: 250px;
-  height: 100%;
-  grid-template-columns: 30% 30% 30%;
-  grid-column-gap: 35px;
-  grid-row-gap: 25px;
-  width: 100%;
-
-  @media (max-width: ${largeDesktopWidth}) {
-    grid-template-columns: 45% 45%;
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    grid-template-columns: 45% 45%;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    grid-template-columns: 85%;
-  }
-`
-
-export const FlexCard = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 10px;
-  margin: 10px;
-`
-
-export const InnerWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  margin-bottom: 8px;
-`
-
-export const FeatureDescription = styled.p`
-  font-size: 16px;
-  color: ${linkColor1};
-  letter-spacing: 0.28px;
-  font-size: 15px;
-  text-align: left;
-  width: 100%;
-`
-
-export const Img = styled.img`
-  width: 33px;
-  height: 29px;
 `
 
 export const StyledParagraph = styled.p`

@@ -13,6 +13,7 @@ import { captureSentryException, notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 
+import { removeAllTokens } from '@edulastic/api/src/utils/Storage'
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
   RECEIVE_ASSIGNMENTS_SUCCESS,
@@ -292,21 +293,7 @@ function* syncAssignmentGradesWithSchoologyClassroomSaga({ payload }) {
     const res = yield call(atlasApi.syncGradesWithSchoologyClassroom, payload)
     if (res?.reAuth) {
       try {
-        let _tokenKey = window.sessionStorage.tokenKey
-        if (!_tokenKey) {
-          _tokenKey = window.sessionStorage.defaultTokenKey
-        }
-        if (!_tokenKey) {
-          // to keep backward compatible
-          _tokenKey = window.localStorage.defaultTokenKey
-        }
-        if (!_tokenKey) {
-          const tokens = window.localStorage.getItem('tokens')
-          if (tokens) {
-            _tokenKey = JSON.parse(tokens)[0]
-          }
-        }
-        window.localStorage.removeItem(_tokenKey)
+        removeAllTokens()
         localStorage.setItem('loginRedirectUrl', window.location.pathname)
         localStorage.setItem('atlasShareOriginUrl', window.location.pathname)
         localStorage.setItem('schoologyShare', 'grades')
@@ -339,21 +326,7 @@ function* syncAssignmentWithSchoologyClassroomSaga({ payload = {} }) {
     const result = yield call(assignmentApi.syncWithSchoologyClassroom, payload)
     if (result?.reAuth) {
       try {
-        let _tokenKey = window.sessionStorage.tokenKey
-        if (!_tokenKey) {
-          _tokenKey = window.sessionStorage.defaultTokenKey
-        }
-        if (!_tokenKey) {
-          // to keep backward compatible
-          _tokenKey = window.localStorage.defaultTokenKey
-        }
-        if (!_tokenKey) {
-          const tokens = window.localStorage.getItem('tokens')
-          if (tokens) {
-            _tokenKey = JSON.parse(tokens)[0]
-          }
-        }
-        window.localStorage.removeItem(_tokenKey)
+        removeAllTokens()
         localStorage.setItem('loginRedirectUrl', window.location.pathname)
         localStorage.setItem('atlasShareOriginUrl', window.location.pathname)
         localStorage.setItem('schoologyShare', 'assignment')

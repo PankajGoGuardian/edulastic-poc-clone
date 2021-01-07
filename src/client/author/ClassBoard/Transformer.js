@@ -136,12 +136,13 @@ export const getQuestionLabels = (testItemsData = []) => {
         barLabel: `Q${i + 1}`,
       }
     } else {
+      let qLabelCount = 1
       for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
         const q = item.data.questions[qIndex]
-        if (item.isDocBased) {
+        if (item.isDocBased && q.type !== questionType.SECTION_LABEL) {
           result[q.id] = {
-            qLabel: `Q${qIndex + 1}`,
-            barLabel: `Q${qIndex + 1}`,
+            qLabel: `Q${qLabelCount}`,
+            barLabel: `Q${qLabelCount++}`,
           }
         } else {
           result[q.id] = {

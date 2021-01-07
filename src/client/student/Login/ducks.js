@@ -1311,6 +1311,7 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
+  localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
   let districtId
   if (generalSettings) {
@@ -1425,6 +1426,7 @@ function* googleSSOLogin({ payload }) {
 }
 
 function* msoLogin({ payload }) {
+  localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
   let districtId
   if (generalSettings) {

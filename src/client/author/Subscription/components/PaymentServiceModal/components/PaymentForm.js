@@ -17,7 +17,6 @@ const PaymentForm = ({
 
   return (
     <form>
-      <p style={{ textAlign: 'center', marginBottom: '10px' }}>{userId}</p>
       <CardSection
         handleCardSubmit={handleCardSubmit}
         verificationPending={verificationPending}

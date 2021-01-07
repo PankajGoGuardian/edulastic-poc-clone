@@ -223,7 +223,7 @@ const StandardsFilters = ({
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     // update tags data
     const _tagsData = { ...tagsData, [keyName]: selected }
-    if (!selected.key || selected.key === 'All') {
+    if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tagsData[keyName]
     }
     const _filters = { ...filters }
@@ -311,14 +311,9 @@ const StandardsFilters = ({
             <FilterLabel>Class Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
-              selectCB={(e, selected) => {
-                selected.onClose = () =>
-                  updateFilterDropdownCB(
-                    staticDropDownData.subjects[0],
-                    'subject'
-                  )
+              selectCB={(e, selected) =>
                 updateFilterDropdownCB(selected, 'subject')
-              }}
+              }
               data={staticDropDownData.subjects}
               prefix="Subject"
               showPrefixOnSelected={false}
@@ -368,14 +363,9 @@ const StandardsFilters = ({
             <ControlDropDown
               prefix="Grade"
               by={filters.testGrade}
-              selectCB={(e, selected) => {
-                selected.onClose = () =>
-                  updateFilterDropdownCB(
-                    staticDropDownData.allGrades[0],
-                    'testGrade'
-                  )
+              selectCB={(e, selected) =>
                 updateFilterDropdownCB(selected, 'testGrade')
-              }}
+              }
               data={staticDropDownData.allGrades}
               showPrefixOnSelected={false}
             />
@@ -384,14 +374,9 @@ const StandardsFilters = ({
             <FilterLabel>Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.testSubject}
-              selectCB={(e, selected) => {
-                selected.onClose = () =>
-                  updateFilterDropdownCB(
-                    staticDropDownData.subjects[0],
-                    'testSubject'
-                  )
+              selectCB={(e, selected) =>
                 updateFilterDropdownCB(selected, 'testSubject')
-              }}
+              }
               data={staticDropDownData.subjects}
               prefix="Subject"
               showPrefixOnSelected={false}
@@ -402,10 +387,10 @@ const StandardsFilters = ({
               label="Test Type"
               el={assessmentTypesRef}
               onChange={(e) => {
-                const selectedTypes = staticDropDownData.assessmentType.filter(
-                  (a) => e.inlcudes(a.key)
+                const selected = staticDropDownData.assessmentType.filter((a) =>
+                  e.includes(a.key)
                 )
-                updateFilterDropdownCB(selectedTypes, 'assessmentTypes', true)
+                updateFilterDropdownCB(selected, 'assessmentTypes', true)
               }}
               value={
                 filters.assessmentTypes

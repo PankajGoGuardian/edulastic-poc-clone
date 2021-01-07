@@ -2,33 +2,44 @@ import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { Tag, Popover } from 'antd'
 
-const FilterTags = ({ tagsData }) => {
+const FilterTags = ({ tagsData, tagTypes = [], handleCloseTag }) => {
   const containerRef = useRef(null)
+
+  const closableTypes = tagTypes.filter((t) => t.closable).map((t) => t.key)
 
   const getWidthOfTag = (tagTitle) => tagTitle.length * 7 + 41
 
-  const handleCloseTag = (e, { onClose }) => {
+  const handleOnClose = (e, type, data) => {
     e.preventDefault()
-    if (onClose) {
-      onClose()
-    } else {
-      // notify
-    }
+    handleCloseTag(type, data)
   }
 
-  const getTag = (type, data, bodyArray, popOverArray, containerWidthObj) => {
+  const getTag = (
+    type,
+    subType,
+    data,
+    bodyArray,
+    popOverArray,
+    containerWidthObj
+  ) => {
     const widthOfTag = getWidthOfTag(data.title)
     if (widthOfTag <= containerWidthObj.remainingWidth) {
       containerWidthObj.remainingWidth -= widthOfTag
       bodyArray.push(
-        <Tag closable onClose={(e) => handleCloseTag(e, data)}>
-          {data.title}
+        <Tag
+          closable={closableTypes.includes(type)}
+          onClose={(e) => handleOnClose(e, type, data)}
+        >
+          {subType ? `${data.title} (${subType})` : data.title}
         </Tag>
       )
     } else {
       popOverArray.push(
-        <StyledPopupTag closable onClose={(e) => handleCloseTag(e, data)}>
-          {data.title}
+        <StyledPopupTag
+          closable={closableTypes.includes(type)}
+          onClose={(e) => handleOnClose(e, type, data)}
+        >
+          {subType ? `${data.title} (${subType})` : data.title}
         </StyledPopupTag>
       )
     }
@@ -36,6 +47,7 @@ const FilterTags = ({ tagsData }) => {
 
   const getTags = (
     type,
+    subType,
     tagData,
     bodyArray,
     popOverArray,
@@ -43,11 +55,11 @@ const FilterTags = ({ tagsData }) => {
   ) => {
     if (Array.isArray(tagData) && tagData.length) {
       tagData.forEach((d) =>
-        getTag(type, d, bodyArray, popOverArray, containerWidthObj)
+        getTags(type, subType, d, bodyArray, popOverArray, containerWidthObj)
       )
     }
     if (typeof tagData === 'object' && tagData.key && tagData.key !== 'All') {
-      getTag(type, tagData, bodyArray, popOverArray, containerWidthObj)
+      getTag(type, subType, tagData, bodyArray, popOverArray, containerWidthObj)
     }
   }
 
@@ -61,10 +73,19 @@ const FilterTags = ({ tagsData }) => {
     remainingWidth: containerWidth,
   }
 
-  const filterKeys = Object.keys(tagsData)
-  filterKeys.forEach((k) =>
-    getTags(k, tagsData[k], bodyArray, popOverArray, containerWidthObj)
-  )
+  // TODO - find a better way to do this
+  tagTypes.forEach((t) => {
+    if (tagsData[t.key]) {
+      getTags(
+        t.key,
+        t.subType,
+        tagsData[t.key],
+        bodyArray,
+        popOverArray,
+        containerWidthObj
+      )
+    }
+  })
 
   return (
     <TagsContainer ref={containerRef}>

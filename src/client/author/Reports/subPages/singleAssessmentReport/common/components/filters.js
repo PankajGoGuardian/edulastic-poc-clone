@@ -31,6 +31,8 @@ import {
   getReportsSARFilterData,
   getFiltersAndTestIdSelector,
   setFiltersOrTestIdAction,
+  getTagsDataSelector,
+  setTagsDataAction,
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
   getPerformanceBandProfile,
@@ -65,6 +67,8 @@ const SingleAssessmentReportFilters = ({
   getSARFilterDataRequest,
   filtersAndTestId: { filters, testId },
   setFiltersOrTestId,
+  tagsData,
+  setTagsData,
   onGoClick: _onGoClick,
   location,
   style,
@@ -229,9 +233,18 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
+    // update tags data
+    const _tagsData = { ...tagsData, [keyName]: selected }
+    if (!multiple && (!selected.key || selected.key === 'All')) {
+      delete _tagsData[keyName]
+    }
     const _filters = { ...filters }
-    resetStudentFilters(_filters, keyName, selected, multiple)
-    _filters[keyName] = multiple ? selected : selected.key
+    resetStudentFilters(_tagsData, _filters, keyName, selected, multiple)
+    setTagsData(_tagsData)
+    // update filters
+    _filters[keyName] = multiple
+      ? selected.map((o) => o.key).join(',')
+      : selected.key
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     setFiltersOrTestId({ filters: _filters, testId })
     setShowApply(true)
@@ -260,7 +273,9 @@ const SingleAssessmentReportFilters = ({
             <FilterLabel>School Year</FilterLabel>
             <ControlDropDown
               by={filters.termId}
-              selectCB={(e) => updateFilterDropdownCB(e, 'termId')}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'termId')
+              }
               data={schoolYear}
               prefix="School Year"
               showPrefixOnSelected={false}
@@ -270,7 +285,9 @@ const SingleAssessmentReportFilters = ({
             <FilterLabel>Test Grade</FilterLabel>
             <ControlDropDown
               by={filters.grade}
-              selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'grade')
+              }
               data={staticDropDownData.grades}
               prefix="Test Grade"
               showPrefixOnSelected={false}
@@ -280,7 +297,9 @@ const SingleAssessmentReportFilters = ({
             <FilterLabel>Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
-              selectCB={(e) => updateFilterDropdownCB(e, 'subject')}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'subject')
+              }
               data={staticDropDownData.subjects}
               prefix="Test Subject"
               showPrefixOnSelected={false}
@@ -290,9 +309,12 @@ const SingleAssessmentReportFilters = ({
             <MultiSelectDropdown
               label="Test Type"
               el={assessmentTypeRef}
-              onChange={(e) =>
-                updateFilterDropdownCB(e.join(','), 'assessmentTypes', true)
-              }
+              onChange={(e) => {
+                const selected = staticDropDownData.assessmentType.filter((a) =>
+                  e.includes(a.key)
+                )
+                updateFilterDropdownCB(selected, 'assessmentTypes', true)
+              }}
               value={
                 filters.assessmentTypes && filters.assessmentTypes !== 'All'
                   ? filters.assessmentTypes.split(',')
@@ -326,9 +348,7 @@ const SingleAssessmentReportFilters = ({
                   selectedSchoolIds={
                     filters.schoolIds ? filters.schoolIds.split(',') : []
                   }
-                  selectCB={(e) =>
-                    updateFilterDropdownCB(e.join(','), 'schoolIds', true)
-                  }
+                  selectCB={(e) => updateFilterDropdownCB(e, 'schoolIds', true)}
                 />
               </SearchField>
               <SearchField>
@@ -340,7 +360,7 @@ const SingleAssessmentReportFilters = ({
                     filters.teacherIds ? filters.teacherIds.split(',') : []
                   }
                   selectCB={(e) =>
-                    updateFilterDropdownCB(e.join(','), 'teacherIds', true)
+                    updateFilterDropdownCB(e, 'teacherIds', true)
                   }
                 />
               </SearchField>
@@ -350,7 +370,9 @@ const SingleAssessmentReportFilters = ({
             <FilterLabel>Class Grade</FilterLabel>
             <ControlDropDown
               by={filters.studentGrade}
-              selectCB={(e) => updateFilterDropdownCB(e, 'studentGrade')}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'studentGrade')
+              }
               data={staticDropDownData.grades}
               prefix="Grade"
               showPrefixOnSelected={false}
@@ -360,7 +382,9 @@ const SingleAssessmentReportFilters = ({
             <FilterLabel>Class Subject</FilterLabel>
             <ControlDropDown
               by={filters.studentSubject}
-              selectCB={(e) => updateFilterDropdownCB(e, 'studentSubject')}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'studentSubject')
+              }
               data={staticDropDownData.subjects}
               prefix="Subject"
               showPrefixOnSelected={false}
@@ -423,9 +447,9 @@ const SingleAssessmentReportFilters = ({
                     selectedStandardManteryScale?._id ||
                     standardProficiencyProfiles[0]?._id
                   }
-                  selectCB={(e) =>
+                  selectCB={(e, selected) =>
                     updateFilterDropdownCB(
-                      e,
+                      selected,
                       'standardsProficiencyProfile',
                       false
                     )
@@ -446,8 +470,12 @@ const SingleAssessmentReportFilters = ({
                       selectedPerformanceBandProfile?._id ||
                       performanceBandProfiles[0]?._id,
                   }}
-                  selectCB={(e) =>
-                    updateFilterDropdownCB(e, 'performanceBandProfile', false)
+                  selectCB={(e, selected) =>
+                    updateFilterDropdownCB(
+                      selected,
+                      'performanceBandProfile',
+                      false
+                    )
                   }
                   data={performanceBandProfiles.map((profile) => ({
                     key: profile._id,
@@ -474,6 +502,7 @@ const enhance = compose(
       loading: getReportsSARFilterLoadingState(state),
       SARFilterData: getReportsSARFilterData(state),
       filtersAndTestId: getFiltersAndTestIdSelector(state),
+      tagsData: getTagsDataSelector(state),
       role: getUserRole(state),
       districtId: getUserOrgId(state),
       user: getUser(state),
@@ -489,6 +518,7 @@ const enhance = compose(
     {
       getSARFilterDataRequest: getSARFilterDataRequestAction,
       setFiltersOrTestId: setFiltersOrTestIdAction,
+      setTagsData: setTagsDataAction,
       setPrevSARFilterData: setPrevSARFilterDataAction,
     }
   )

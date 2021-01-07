@@ -1,23 +1,37 @@
 {
-  "defaults": {
-    "teacher": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "assessmentType": "All"
-    },
-    "other": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "schoolId": "All",
-      "teacherId": "All",
-      "assessmentType": "All"
-    }
+  "tagTypes": [
+    { "key": "termId", "closable": false },
+    { "key": "schoolIds", "closable": true },
+    { "key": "teacherIds", "closable": true },
+    { "key": "grade", "closable": false, "subType": "class" },
+    { "key": "subject", "closable": true, "subType": "class" },
+    { "key": "courseId", "closable": true },
+    { "key": "classId", "closable": true },
+    { "key": "groupId", "closable": true },
+    { "key": "testGrade", "closable": true, "subType": "test" },
+    { "key": "testSubject", "closable": true, "subType": "test" },
+    { "key": "assessmentTypes", "closable": true },
+    { "key": "curriculumId", "closable": false },
+    { "key": "standardGrade", "closable": true, "subType": "standard" },
+    { "key": "profileId", "closable": false },
+    { "key": "domainIds", "closable": true }
+  ],
+  "initialFilters": {
+    "termId": "",
+    "schoolIds": "",
+    "teacherIds": "",
+    "grade": "TK",
+    "subject": "All",
+    "courseId": "All",
+    "classId": "All",
+    "groupId": "All",
+    "testGrade": "All",
+    "testSubject": "All",
+    "assessmentTypes": "",
+    "curriculumId": "",
+    "standardGrade": "All",
+    "profileId": "",
+    "domainIds": []
   },
   "subjects": [
     { "key": "All", "title": "All Subjects" },

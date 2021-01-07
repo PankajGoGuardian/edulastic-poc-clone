@@ -211,7 +211,14 @@ const StudentProfileReportsFilters = ({
   const resetSPRFilters = useCallback(
     (prevFilters, key, selected, multiple) => {
       const index = filtersDefaultValues.findIndex((s) => s.key === key)
-      resetFilters(prevFilters, key, selected, multiple, filtersDefaultValues)
+      resetFilters(
+        {},
+        prevFilters,
+        key,
+        selected,
+        multiple,
+        filtersDefaultValues
+      )
       if (
         prevFilters[key] !== (multiple ? selected : selected.key) &&
         (index !== -1 || ['grade', 'subject'].includes(key))

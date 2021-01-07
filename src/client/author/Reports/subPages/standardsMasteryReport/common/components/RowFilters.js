@@ -29,6 +29,7 @@ import staticDropDownData from '../static/json/staticDropDownData.json'
 const StandardsFilters = ({
   pageTitle,
   showFilter,
+  setShowFilter,
   loading,
   standardsFilters,
   filters,
@@ -105,11 +106,8 @@ const StandardsFilters = ({
     const _domainIds = toggleItem(filters.domainIds, domain.key).filter((o) =>
       allDomainIds.includes(o)
     )
-    // TODO: fix this
-    // const domainsTagData = domainsList
-    //   .filter((d) => _domainIds.includes(d.key))
-    //   .map((d) => ({ ...d, onClose: () => onSelectDomain(d) }))
-    // setTagsData({ ...tagsData, domainIds: [] })
+    const domainTagsData = domainsList.filter((d) => _domainIds.includes(d.key))
+    setTagsData({ ...tagsData, domainIds: domainTagsData })
     setFilters({ ...filters, domainIds: _domainIds, showApply: true })
   }
   const onChangeDomains = (domains) => {
@@ -119,9 +117,36 @@ const StandardsFilters = ({
     }
   }
 
+  const handleCloseTag = (type, { key }) => {
+    const _filters = { ...filters, showApply: true }
+    const _tagsData = { ...tagsData }
+    // handles single selection filters
+    if (filters[type] === key) {
+      _filters[type] = staticDropDownData.initialFilters[type]
+      delete _tagsData[type]
+    }
+    // handles multiple selection filters
+    else if (filters[type].includes(key)) {
+      _filters[type] = Array.isArray(filters[type])
+        ? filters[type].filter((f) => f !== key)
+        : filters[type]
+            .split(',')
+            .filter((d) => d !== key)
+            .join(',')
+      _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+    }
+    setTagsData(_tagsData)
+    setFilters(_filters)
+    setShowFilter(true)
+  }
+
   return (
     <>
-      <FilterTags tagsData={tagsData} />
+      <FilterTags
+        tagsData={tagsData}
+        tagTypes={staticDropDownData.tagTypes}
+        handleCloseTag={handleCloseTag}
+      />
       <StyledFilterWrapper
         style={{ display: !showFilter || loading ? 'none' : 'flex' }}
         isRowFilter
@@ -142,14 +167,9 @@ const StandardsFilters = ({
             <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
               <ControlDropDown
                 by={filters.standardGrade}
-                selectCB={(e, selected) => {
-                  selected.onClose = () =>
-                    updateFilterDropdownCB(
-                      staticDropDownData.allGrades[0],
-                      'standardGrade'
-                    )
+                selectCB={(e, selected) =>
                   updateFilterDropdownCB(selected, 'standardGrade')
-                }}
+                }
                 data={staticDropDownData.allGrades}
                 prefix="Standard Grade"
                 showPrefixOnSelected={false}

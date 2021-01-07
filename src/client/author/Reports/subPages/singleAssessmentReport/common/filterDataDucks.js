@@ -20,6 +20,7 @@ const SET_REPORTS_PREV_SAR_FILTER_DATA =
   '[reports] set reports prev sar filter data'
 
 const SET_FILTERS_OR_TEST_ID = '[reports] set sar filters or testId'
+const SET_TAGS_DATA = '[reports] set sar tagsData'
 
 const SET_PERFORMANCE_BAND_PROFILE = '[reports] set sar peformance band profile'
 const SET_STANDARD_MANTERY_PROFILE = '[reports] set sar standard matery profile'
@@ -35,6 +36,8 @@ export const setPrevSARFilterDataAction = createAction(
 )
 
 export const setFiltersOrTestIdAction = createAction(SET_FILTERS_OR_TEST_ID)
+
+export const setTagsDataAction = createAction(SET_TAGS_DATA)
 
 export const setPerformanceBandProfileAction = createAction(
   SET_PERFORMANCE_BAND_PROFILE
@@ -61,6 +64,11 @@ export const getReportsSARFilterData = createSelector(
 export const getFiltersAndTestIdSelector = createSelector(
   stateSelector,
   ({ filters, testId }) => ({ filters, testId })
+)
+
+export const getTagsDataSelector = createSelector(
+  stateSelector,
+  (state) => state.tagsData
 )
 
 export const getReportsPrevSARFilterData = createSelector(
@@ -103,6 +111,10 @@ export const getStandardManteryScale = createSelector(
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
+/**
+ * for any change made to filters in initial state
+ * update tagTypes & initialFilters in staticDropDownData.json accordingly
+ */
 const initialState = {
   SARFilterData: {},
   prevSARFilterData: null,
@@ -124,6 +136,7 @@ const initialState = {
     standardsProficiencyProfile: '',
   },
   testId: '',
+  tagsData: {},
   loading: false,
 }
 
@@ -145,6 +158,9 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
       state.filters = filters
     }
     state.testId = testId
+  },
+  [SET_TAGS_DATA]: (state, { payload }) => {
+    state.tagsData = payload
   },
   [RESET_REPORTS_SAR_FILTER_DATA]: (state) => {
     state.SARFilterData = {}

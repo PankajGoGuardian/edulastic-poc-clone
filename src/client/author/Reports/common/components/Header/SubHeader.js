@@ -3,6 +3,8 @@ import styled from 'styled-components'
 
 import Breadcrumb from '../../../../src/components/Breadcrumb'
 
+import SingleAssessmentRowFilters from '../../../subPages/singleAssessmentReport/common/components/RowFilters'
+import MultipleAssessmentRowFilters from '../../../subPages/multipleAssessmentReport/common/components/filters/RowFilters'
 import StandardsMasteryRowFilters from '../../../subPages/standardsMasteryReport/common/components/RowFilters'
 
 const SubHeader = ({
@@ -13,8 +15,26 @@ const SubHeader = ({
   isSharedReport,
 }) => {
   const isShowBreadcrumb = title !== 'Standard Reports'
-  const showStandardFilters =
+  const isSingleAssessmentReport =
+    title === 'Assessment Summary' ||
+    title === 'Sub-group Performance' ||
+    title === 'Question Analysis' ||
+    title === 'Response Frequency' ||
+    title === 'Performance by Standards' ||
+    title === 'Performance by Students'
+  const isMultipleAssessmentReport =
+    title === 'Performance Over Time' ||
+    title === 'Peer Progress Analysis' ||
+    title === 'Student Progress'
+  const isStandardMasteryReport =
     title === 'Standards Performance Summary' || title === 'Standards Gradebook'
+
+  const setShowFilter = (status) => {
+    onRefineResultsCB(null, status)
+  }
+  const setShowApply = (status) => {
+    onRefineResultsCB(null, status, 'applyButton')
+  }
 
   return (
     <SecondaryHeader
@@ -27,8 +47,28 @@ const SubHeader = ({
           <Breadcrumb data={breadcrumbsData} style={{ position: 'unset' }} />
         ) : null}
       </HeaderTitle>
-      {!isSharedReport && onRefineResultsCB && showStandardFilters ? (
-        <StandardsMasteryRowFilters pageTitle={title} showFilter={showFilter} />
+      {!isSharedReport && onRefineResultsCB && isSingleAssessmentReport ? (
+        <SingleAssessmentRowFilters
+          pageTitle={title}
+          showFilter={showFilter}
+          setShowApply={setShowApply}
+          setShowFilter={setShowFilter}
+        />
+      ) : null}
+      {!isSharedReport && onRefineResultsCB && isMultipleAssessmentReport ? (
+        <MultipleAssessmentRowFilters
+          pageTitle={title}
+          showFilter={showFilter}
+          setShowApply={setShowApply}
+          setShowFilter={setShowFilter}
+        />
+      ) : null}
+      {!isSharedReport && onRefineResultsCB && isStandardMasteryReport ? (
+        <StandardsMasteryRowFilters
+          pageTitle={title}
+          showFilter={showFilter}
+          setShowFilter={setShowFilter}
+        />
       ) : null}
     </SecondaryHeader>
   )

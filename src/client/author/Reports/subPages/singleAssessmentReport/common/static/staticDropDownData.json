@@ -1,23 +1,33 @@
 {
-  "defaults": {
-    "teacher": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "assessmentType": "All"
-    },
-    "other": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "schoolId": "All",
-      "teacherId": "All",
-      "assessmentType": "All"
-    }
+  "tagTypes": [
+    { "key": "termId", "closable": false },
+    { "key": "grade", "closable": true, "subType": "test" },
+    { "key": "subject", "closable": true, "subType": "test" },
+    { "key": "assessmentTypes", "closable": true },
+    { "key": "schoolIds", "closable": true },
+    { "key": "teacherIds", "closable": true },
+    { "key": "studentGrade", "closable": true, "subType": "class" },
+    { "key": "studentSubject", "closable": true, "subType": "class" },
+    { "key": "studentCourseId", "closable": true },
+    { "key": "classId", "closable": true },
+    { "key": "groupId", "closable": true },
+    { "key": "standardsProficiencyProfile", "closable": false },
+    { "key": "performanceBandProfile", "closable": false }
+  ],
+  "initialFilters": {
+    "termId": "",
+    "grade": "All",
+    "subject": "All",
+    "assessmentTypes": "",
+    "schoolIds": "",
+    "teacherIds": "",
+    "studentGrade": "All",
+    "studentSubject": "All",
+    "studentCourseId": "All",
+    "classId": "All",
+    "groupId": "All",
+    "standardsProficiencyProfile": "",
+    "performanceBandProfile": ""
   },
   "subjects": [
     { "key": "All", "title": "All Subjects" },

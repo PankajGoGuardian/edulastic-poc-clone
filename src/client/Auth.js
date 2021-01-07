@@ -81,6 +81,7 @@ const Auth = ({
       }
     }
   }, [loggedInForPrivateRoute, showLoginForAddAccount])
+  debugger
   console.log("u", user)
   console.log("u au", user?.authenticating)
   console.log("AccessToken", getAccessToken)

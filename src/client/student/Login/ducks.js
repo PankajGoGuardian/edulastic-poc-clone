@@ -1162,7 +1162,7 @@ export function* fetchUser({ payload }) {
         !isPartOfLoginRoutes() &&
         !window.location.pathname.includes('home/group')
       ) {
-        window.location.replace('/')
+        yield put(push('/login'))
       }
       return
     }

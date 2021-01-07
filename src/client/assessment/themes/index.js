@@ -267,11 +267,11 @@ const AssessmentContainer = ({
 
       const renderCheckAnswerView =
         questionIds.length > 0 &&
-        questionIds.some(
+        questionIds.filter(
           (id) =>
             previouslyAnsweredQIds.includes(id) &&
             !currentlyAnsweredQIds.includes(id)
-        )
+        ).length === questionIds.length
 
       if (renderCheckAnswerView) {
         previewTab = CHECK

@@ -122,6 +122,8 @@ const StandardsFilters = ({
       const savedFilters = pickBy(
         get(standardsFilters, 'data.result.reportFilters', {})
       )
+      const scaleInfo =
+        get(standardsFilters, 'data.result.scaleInfo', [])[0] || {}
 
       // update search filters from saved filters
       search = {
@@ -173,7 +175,7 @@ const StandardsFilters = ({
         assessmentTypes: search.assessmentTypes || '',
         curriculumId: urlCurriculum.key || '',
         standardGrade: urlStandardGrade.key,
-        profileId: '',
+        profileId: savedFilters.profileId || scaleInfo._id,
         domainIds: [],
         showApply: false,
       }

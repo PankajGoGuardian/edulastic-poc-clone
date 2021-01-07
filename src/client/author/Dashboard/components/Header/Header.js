@@ -17,7 +17,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { get } from 'lodash'
-import { segmentApi } from '@edulastic/api'
 
 import { signUpState } from '@edulastic/constants'
 import { slice } from '../../../Subscription/ducks'
@@ -123,12 +122,6 @@ const HeaderSection = ({
 
   const [visible, setvisible] = useState(false)
 
-  const trackClick = (event) => () =>
-    segmentApi.trackUserClick({
-      user: user.user,
-      data: { event },
-    })
-
   const launchHangout = () => {
     openLaunchHangout()
   }
@@ -180,7 +173,6 @@ const HeaderSection = ({
                 Complete signup process
               </StyledLink>
             )}
-            trackClick={trackClick('dashboard:complete-sign-up:click')}
           />
         )}
         {signupStatus === signUpState.DONE && (
@@ -260,7 +252,6 @@ const HeaderSection = ({
             </EduButton>
           )}
           onClick={createNewClass}
-          trackClick={trackClick('dashboard:create-new-class:click')}
         />
         {showPopup && (
           <PopoverWrapper>
@@ -294,7 +285,6 @@ const HeaderSection = ({
                   isBlue
                   style={{ marginLeft: '5px' }}
                   data-cy="manageClass"
-                  onClick={trackClick('dashboard:upgrade:click')}
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />
                   Upgrade

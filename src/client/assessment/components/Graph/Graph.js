@@ -416,6 +416,12 @@ class Graph extends Component {
     return omit(validation, ['altResponses', 'scoringType', 'validResponse'])
   }
 
+  showBackgroundShapes = () => {
+    const { item } = this.props
+    const { graphType } = item
+    return ['axisSegments', 'axisLabels'].indexOf(graphType) === -1
+  }
+
   render() {
     const answerContextConfig = this.context
     const {
@@ -526,36 +532,38 @@ class Graph extends Component {
                 />
               </Question>
 
-              <Question
-                section="main"
-                label="Background Shapes"
-                cleanSections={cleanSections}
-                fillSections={fillSections}
-                deskHeight={item.uiStyle?.layoutHeight}
-                advancedAreOpen
-              >
-                <Subtitle
-                  id={getFormattedAttrId(
-                    `${item?.title}-${t(
-                      'component.graphing.background_shapes'
-                    )}`
-                  )}
+              {this.showBackgroundShapes() && (
+                <Question
+                  section="main"
+                  label="Background Shapes"
+                  cleanSections={cleanSections}
+                  fillSections={fillSections}
+                  deskHeight={item.uiStyle?.layoutHeight}
+                  advancedAreOpen
                 >
-                  {t('component.graphing.background_shapes')}
-                </Subtitle>
-                <Row>
-                  <Col md={24}>
-                    <GraphDisplay
-                      view={EDIT}
-                      advancedElementSettings
-                      graphData={item}
-                      onChange={this.handleBgShapesChange}
-                      elements={item.background_shapes}
-                      bgShapes
-                    />
-                  </Col>
-                </Row>
-              </Question>
+                  <Subtitle
+                    id={getFormattedAttrId(
+                      `${item?.title}-${t(
+                        'component.graphing.background_shapes'
+                      )}`
+                    )}
+                  >
+                    {t('component.graphing.background_shapes')}
+                  </Subtitle>
+                  <Row>
+                    <Col md={24}>
+                      <GraphDisplay
+                        view={EDIT}
+                        advancedElementSettings
+                        graphData={item}
+                        onChange={this.handleBgShapesChange}
+                        elements={item.background_shapes}
+                        bgShapes
+                      />
+                    </Col>
+                  </Row>
+                </Question>
+              )}
 
               {advancedLink}
 

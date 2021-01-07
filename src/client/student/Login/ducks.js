@@ -40,6 +40,7 @@ import { userPickFields } from '../../common/utils/static/user'
 import {
   signupDistrictPolicySelector,
   signupGeneralSettingsSelector,
+  updateUserSignupStateAction,
 } from '../Signup/duck'
 import { getUser } from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
@@ -613,8 +614,8 @@ export default createReducer(initialState, {
     state.updatingDefaultSettings = false
     const { defaultGrades, defaultSubjects, autoShareGCAssignment } = payload
     Object.assign(state.user.orgData, {
-      defaultGrades,
-      defaultSubjects,
+      defaultGrades: defaultGrades || [],
+      defaultSubjects: defaultSubjects || [],
       autoShareGCAssignment,
     })
   },
@@ -2036,6 +2037,7 @@ function* updateDefaultSettingsSaga({ payload }) {
       messageKey: 'defaultSettingsUpdatedSuccessfully',
     })
     yield put({ type: UPDATE_DEFAULT_SETTINGS_SUCCESS, payload })
+    yield put(updateUserSignupStateAction())
   } catch (e) {
     yield put({ type: UPDATE_DEFAULT_SETTINGS_FAILED })
     console.error(e)

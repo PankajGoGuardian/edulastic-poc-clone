@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
-import { get, pick } from 'lodash'
+import { get, isEmpty, pick } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
 import mqtt from 'mqtt'
 import produce from 'immer'
@@ -23,6 +23,7 @@ import { signUpState } from '@edulastic/constants'
 import {
   persistAuthStateAndRedirectToAction,
   signupSuccessAction,
+  hideJoinSchoolAction,
 } from '../Login/ducks'
 import { getUser } from '../../author/src/selectors/user'
 
@@ -81,6 +82,7 @@ const SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS =
 
 const BULK_SYNC_CANVAS_CLASS = '[signup] bulk sync canvas class'
 const SET_BULK_SYNC_CANVAS_STATUS = '[signup] set bulk sync canvas status'
+const UPDATE_USER_SIGNUP_STATE = '[user] update user signup state'
 
 // Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
@@ -164,6 +166,10 @@ export const setBulkSyncCanvasStateAction = createAction(
   SET_BULK_SYNC_CANVAS_STATUS
 )
 export const joinSchoolFailedAction = createAction(JOIN_SCHOOL_FAILED)
+
+export const updateUserSignupStateAction = createAction(
+  UPDATE_USER_SIGNUP_STATE
+)
 
 // Reducers
 const initialState = {
@@ -432,6 +438,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
       }
       const user = pick(_result, userPickFields)
       yield put(signupSuccessAction(user))
+      yield put(hideJoinSchoolAction())
       yield put(fetchDashboardTiles())
     }
   } catch (err) {
@@ -452,6 +459,7 @@ function* joinSchoolSaga({ payload = {} }) {
     }
     const user = pick(result, userPickFields)
     yield put(signupSuccessAction(user))
+    yield put(hideJoinSchoolAction())
     yield put(fetchDashboardTiles())
   } catch (err) {
     yield put({
@@ -459,6 +467,37 @@ function* joinSchoolSaga({ payload = {} }) {
       payload: {},
     })
     notification({ msg: JOIN_SCHOOL_FAILED })
+  }
+}
+
+function* updateUserSignupStateSaga() {
+  try {
+    const user = yield select(getUser)
+    if (
+      !isEmpty(user.orgData.districtIds) &&
+      !isEmpty(user.orgData.defaultGrades) &&
+      !isEmpty(user.orgData.defaultSubjects)
+    ) {
+      const data = {
+        email: user.email,
+        districtId: user.orgData.districtIds[0],
+        currentSignUpState: 'DONE',
+        institutionIds: user.orgData.institutionIds,
+      }
+      const _result = yield call(userApi.updateUser, {
+        data,
+        userId: user._id,
+      })
+      const finalUser = {
+        ..._result,
+        features: user.features,
+      }
+      // setting user in store to put updated currentSignupState in store
+      yield put(signupSuccessAction(finalUser))
+    }
+  } catch (err) {
+    console.log('_err', err)
+    notification({ messageKey: 'failedToUpdateUser' })
   }
 }
 
@@ -475,6 +514,8 @@ function* saveSubjectGradeSaga({ payload }) {
         draft.orgData = {}
       }
       draft.orgData.interestedCurriculums = result ? result.curriculums : []
+      draft.orgData.defaultSubjects = result?.defaultSubjects || []
+      draft.orgData.defaultGrades = result?.defaultGrades || []
       delete draft.currentSignUpState
       return draft
     })
@@ -499,37 +540,13 @@ function* saveSubjectGradeSaga({ payload }) {
     }
   }
 
-  try {
-    if (isSaveSubjectGradeSuccessful) {
-      const user = yield select(getUser)
-      // this is meant for teacher flow to save grade subject
-      // so we can directly get districtId by districtIds[0]
+  if (isSaveSubjectGradeSuccessful) {
+    yield* updateUserSignupStateSaga()
+  }
 
-      const data = {
-        email: user.email,
-        districtId: user.orgData?.districtIds?.[0],
-        currentSignUpState: 'DONE',
-        institutionIds: user.orgData.institutionIds,
-      }
-      const _result = yield call(userApi.updateUser, {
-        data,
-        userId: user._id,
-      })
-      const finalUser = {
-        ..._result,
-        features: user.features,
-      }
-      // setting user in store to put updated currentSignupState in store
-      yield put(signupSuccessAction(finalUser))
-    }
-
-    // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
-    if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
-      yield put(persistAuthStateAndRedirectToAction())
-    }
-  } catch (err) {
-    console.log('_err', err)
-    notification({ messageKey: 'failedToUpdateUser' })
+  // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
+  if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
+    yield put(persistAuthStateAndRedirectToAction())
   }
 }
 
@@ -664,4 +681,5 @@ export function* watcherSaga() {
   )
   yield takeLatest(FETCH_SCHOOL_TEACHERS_REQUEST, fetchSchoolTeachersSaga)
   yield takeLatest(BULK_SYNC_CANVAS_CLASS, bulkSyncCanvasClassSaga)
+  yield takeLatest(UPDATE_USER_SIGNUP_STATE, updateUserSignupStateSaga)
 }

@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash'
 
 import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconCloseFilter } from '@edulastic/icons'
 import StandardsGradebook from './standardsGradebook'
 import StandardsPerfromance from './standardsPerformance'
 import StandardsFilters from './common/components/Filters'
@@ -263,7 +263,7 @@ const StandardsMasteryReportContainer = (props) => {
         />
         {!reportId ? (
           <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            <IconFilter />
+            {showFilter ? <IconCloseFilter /> : <IconFilter />}
           </FilterButtonClear>
         ) : null}
         <ReportContaner showFilter={showFilter}>

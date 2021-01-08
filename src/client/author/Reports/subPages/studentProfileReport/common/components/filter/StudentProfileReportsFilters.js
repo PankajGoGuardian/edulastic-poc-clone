@@ -21,6 +21,7 @@ import {
   getFiltersSelector,
   getSelectedClassSelector,
   getStudentSelector,
+  getTagsDataSelector,
   getReportsPrevSPRFilterData,
   setPrevSPRFilterDataAction,
   getReportsSPRFilterLoadingState,
@@ -29,6 +30,7 @@ import {
   getReportsSPRFilterData,
   setSelectedClassAction,
   setStudentAction,
+  setTagsDataAction,
 } from '../../filterDataDucks'
 import { getTermOptions } from '../../utils/transformers'
 import { getFullNameFromAsString } from '../../../../../../../common/utils/helpers'
@@ -40,7 +42,7 @@ import {
   FilterLabel,
 } from '../../../../../common/styled'
 
-import staticDropDownData from '../../../../singleAssessmentReport/common/static/staticDropDownData.json'
+import staticDropDownData from '../../static/staticDropDownData.json'
 import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 
 const { subjects: subjectOptions, grades: gradeOptions } = staticDropDownData
@@ -90,6 +92,8 @@ const StudentProfileReportsFilters = ({
   setStudent,
   selectedClassIds,
   setSelectedClassIds,
+  tagsData,
+  setTagsData,
   defaultTerm,
   history,
   reportId,
@@ -209,37 +213,54 @@ const StudentProfileReportsFilters = ({
   }
 
   const resetSPRFilters = useCallback(
-    (prevFilters, key, selected, multiple) => {
+    (nextTagsData, prevFilters, key, selected) => {
       const index = filtersDefaultValues.findIndex((s) => s.key === key)
       resetFilters(
-        {},
+        nextTagsData,
         prevFilters,
         key,
         selected,
-        multiple,
         filtersDefaultValues
       )
       if (
-        prevFilters[key] !== (multiple ? selected : selected.key) &&
+        prevFilters[key] !== selected &&
         (index !== -1 || ['grade', 'subject'].includes(key))
       ) {
         setStudent({ key: '', title: '' })
         setSelectedClassIds('')
+        delete nextTagsData.classIds
       }
     }
   )
 
-  const handleFilterChange = (field, value, multiple = false) => {
-    const obj = { ...filters }
-    resetSPRFilters(obj, field, value, multiple)
-    obj[field] = multiple ? value : value.key
-    setFilters(obj)
-    if (IndependentFilterIds.includes(field)) {
+  const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
+    // update tags data
+    const _tagsData = { ...tagsData, [keyName]: selected }
+    if (!multiple && (!selected.key || selected.key === 'All')) {
+      delete _tagsData[keyName]
+    }
+    const _filters = { ...filters }
+    const _selected = multiple
+      ? selected.map((o) => o.key).join(',')
+      : selected.key
+    resetSPRFilters(_tagsData, _filters, keyName, _selected)
+    setTagsData(_tagsData)
+    // update filters
+    _filters[keyName] = _selected
+    setFilters(_filters)
+    if (IndependentFilterIds.includes(keyName)) {
       _onGoClick({
-        filters: pickBy(obj, (v) => v && v.toLowerCase() !== 'all'),
+        filters: pickBy(_filters, (v) => v && v.toLowerCase() !== 'all'),
         selectedStudent: student,
       })
     }
+  }
+
+  const updateSelectedClassIds = (selected) => {
+    // update tags data
+    const _tagsData = { ...tagsData, classIds: selected }
+    setTagsData(_tagsData)
+    setSelectedClassIds(selected.map((o) => o.key).join(','))
   }
 
   return (
@@ -251,7 +272,7 @@ const StudentProfileReportsFilters = ({
         <FilterLabel>School Year</FilterLabel>
         <ControlDropDown
           by={filters.termId}
-          selectCB={(value) => handleFilterChange('termId', value)}
+          selectCB={(e, selected) => updateFilterDropdownCB(selected, 'termId')}
           data={termOptions}
           prefix="School Year"
           showPrefixOnSelected={false}
@@ -262,16 +283,14 @@ const StudentProfileReportsFilters = ({
           selectedCourseIds={
             filters.courseIds ? filters.courseIds.split(',') : []
           }
-          selectCB={(value) =>
-            handleFilterChange('courseIds', value.join(','), true)
-          }
+          selectCB={(e) => updateFilterDropdownCB(e, 'courseIds', true)}
         />
       </SearchField>
       <SearchField>
         <FilterLabel>Class Grade</FilterLabel>
         <ControlDropDown
           by={filters.grade}
-          selectCB={(value) => handleFilterChange('grade', value)}
+          selectCB={(e, selected) => updateFilterDropdownCB(selected, 'grade')}
           data={gradeOptions}
           prefix="Grade"
           showPrefixOnSelected={false}
@@ -281,7 +300,9 @@ const StudentProfileReportsFilters = ({
         <FilterLabel>Class Subject</FilterLabel>
         <ControlDropDown
           by={filters.subject}
-          selectCB={(value) => handleFilterChange('subject', value)}
+          selectCB={(e, selected) =>
+            updateFilterDropdownCB(selected, 'subject')
+          }
           data={subjectOptions}
           prefix="Subject"
           showPrefixOnSelected={false}
@@ -294,7 +315,7 @@ const StudentProfileReportsFilters = ({
           selectedGrade={filters.grade !== 'All' && filters.grade}
           selectedSubject={filters.subject !== 'All' && filters.subject}
           selectedClassIds={selectedClassIds ? selectedClassIds.split(',') : []}
-          selectCB={(classIds) => setSelectedClassIds(classIds.join(','))}
+          selectCB={updateSelectedClassIds}
         />
       </SearchField>
       <SearchField>
@@ -314,8 +335,8 @@ const StudentProfileReportsFilters = ({
           <FilterLabel>Performance Band</FilterLabel>
           <ControlDropDown
             by={filters.performanceBandProfileId}
-            selectCB={(value) =>
-              handleFilterChange('performanceBandProfileId', value)
+            selectCB={(e, selected) =>
+              updateFilterDropdownCB(selected, 'performanceBandProfileId')
             }
             data={profiles.map((p) => ({ key: p._id, title: p.name }))}
             prefix="Performance Band"
@@ -328,8 +349,8 @@ const StudentProfileReportsFilters = ({
           <FilterLabel>Standard Proficiency</FilterLabel>
           <ControlDropDown
             by={filters.standardsProficiencyProfileId}
-            selectCB={(value) =>
-              handleFilterChange('standardsProficiencyProfileId', value)
+            selectCB={(e, selected) =>
+              updateFilterDropdownCB(selected, 'standardsProficiencyProfileId')
             }
             data={standardProficiencyList}
             prefix="Standard Proficiency"
@@ -347,6 +368,7 @@ const enhance = connect(
     filters: getFiltersSelector(state),
     student: getStudentSelector(state),
     selectedClassIds: getSelectedClassSelector(state),
+    tagsData: getTagsDataSelector(state),
     role: getUserRole(state),
     prevSPRFilterData: getReportsPrevSPRFilterData(state),
     loading: getReportsSPRFilterLoadingState(state),
@@ -361,6 +383,7 @@ const enhance = connect(
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
     setSelectedClassIds: setSelectedClassAction,
+    setTagsData: setTagsDataAction,
   }
 )
 

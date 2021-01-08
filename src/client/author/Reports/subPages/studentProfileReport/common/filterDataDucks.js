@@ -27,6 +27,7 @@ const GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR =
 const SET_FILTERS = '[reports] set spr filters'
 const SET_STUDENT_ID = '[reports] set spr student'
 const SET_SELECTED_CLASS = '[reports] set selected class'
+const SET_TAGS_DATA = '[reports] set spr tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -40,6 +41,7 @@ export const setPrevSPRFilterDataAction = createAction(
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setStudentAction = createAction(SET_STUDENT_ID)
 export const setSelectedClassAction = createAction(SET_SELECTED_CLASS)
+export const setTagsDataAction = createAction(SET_TAGS_DATA)
 
 export const getSPRStudentDataRequestAction = createAction(
   GET_REPORTS_SPR_STUDENT_DATA_REQUEST
@@ -102,6 +104,11 @@ export const getStudentSelector = createSelector(
   (state) => state.student
 )
 
+export const getTagsDataSelector = createSelector(
+  stateSelector,
+  (state) => state.tagsData
+)
+
 export const getReportsPrevSPRFilterData = createSelector(
   stateSelector,
   (state) => state.prevSPRFilterData
@@ -129,23 +136,24 @@ export const getStudentsLoading = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
+  prevSPRFilterData: null,
   SPRFilterData: {},
   studentList: [],
-  prevSPRFilterData: null,
   filters: {
+    reportId: '',
     termId: '',
     courseIds: '',
     grade: 'All',
     subject: 'All',
     performanceBandProfileId: '',
     standardsProficiencyProfileId: '',
-    reportId: '',
   },
   student: {
     key: '',
     title: '',
   },
   selectedClassIds: '',
+  tagsData: {},
   loading: false,
 }
 
@@ -169,6 +177,9 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   },
   [SET_SELECTED_CLASS]: (state, { payload }) => {
     state.selectedClassIds = payload
+  },
+  [SET_TAGS_DATA]: (state, { payload }) => {
+    state.tagsData = payload
   },
   [SET_REPORTS_PREV_SPR_FILTER_DATA]: (state, { payload }) => {
     state.prevSPRFilterData = payload

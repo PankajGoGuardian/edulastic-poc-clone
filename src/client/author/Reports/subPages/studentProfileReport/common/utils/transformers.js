@@ -17,7 +17,7 @@ import {
   getProficiencyBand,
   testTypeHashMap,
 } from '../../../../common/util'
-import gradesMap from '../static/json/gradesMap.json'
+import gradesMap from '../static/gradesMap.json'
 
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {

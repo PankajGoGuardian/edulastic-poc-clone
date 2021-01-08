@@ -26,7 +26,7 @@ import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
 
-const StandardsFilters = ({
+const StandardsMasteryRowFilters = ({
   pageTitle,
   showFilter,
   setShowFilter,
@@ -224,4 +224,4 @@ export default connect(
     setFilters: setFiltersAction,
     setTagsData: setTagsDataAction,
   }
-)(StandardsFilters)
+)(StandardsMasteryRowFilters)

@@ -87,7 +87,7 @@ const CourseAutoComplete = ({
     <MultiSelectSearch
       label="Course"
       el={courseAutocompleteRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultCourseList}

@@ -125,7 +125,7 @@ const ClassAutoComplete = ({
     <MultiSelectSearch
       label="Class"
       el={classAutoCompleteRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultClassList}

@@ -198,12 +198,13 @@ const SingleAssessmentReportFilters = ({
       delete _tagsData[keyName]
     }
     const _filters = { ...filters }
-    resetStudentFilters(_tagsData, _filters, keyName, selected, multiple)
-    setTagsData(_tagsData)
-    // update filters
-    _filters[keyName] = multiple
+    const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
+    resetStudentFilters(_tagsData, _filters, keyName, _selected)
+    setTagsData(_tagsData)
+    // update filters
+    _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
     setFilters(_filters)
     setShowApply(true)

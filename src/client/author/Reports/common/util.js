@@ -397,14 +397,10 @@ export const resetStudentFilters = (
   prevFilters,
   key,
   selected,
-  multiple,
   defaultValues = studentFiltersDefaultValues
 ) => {
   const index = defaultValues.findIndex((s) => s.key === key)
-  if (
-    index !== -1 &&
-    prevFilters[key] !== (multiple ? selected : selected.key)
-  ) {
+  if (index !== -1 && prevFilters[key] !== selected) {
     const filtersToReset = defaultValues.slice(index + 1)
     resetFilter(filtersToReset, prevFilters, tagsData)
   }

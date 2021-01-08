@@ -6,6 +6,7 @@ import Breadcrumb from '../../../../src/components/Breadcrumb'
 import SingleAssessmentRowFilters from '../../../subPages/singleAssessmentReport/common/components/RowFilters'
 import MultipleAssessmentRowFilters from '../../../subPages/multipleAssessmentReport/common/components/filters/RowFilters'
 import StandardsMasteryRowFilters from '../../../subPages/standardsMasteryReport/common/components/RowFilters'
+import StudentProfileRowFilters from '../../../subPages/studentProfileReport/common/components/filter/RowFilters'
 
 const SubHeader = ({
   breadcrumbsData,
@@ -28,6 +29,10 @@ const SubHeader = ({
     title === 'Student Progress'
   const isStandardMasteryReport =
     title === 'Standards Performance Summary' || title === 'Standards Gradebook'
+  const isStudentProfileReport =
+    title === 'Student Profile Summary' ||
+    title === 'Student Mastery Profile' ||
+    title === 'Student Assessment Profile'
 
   const setShowFilter = (status) => {
     onRefineResultsCB(null, status)
@@ -49,7 +54,6 @@ const SubHeader = ({
       </HeaderTitle>
       {!isSharedReport && onRefineResultsCB && isSingleAssessmentReport ? (
         <SingleAssessmentRowFilters
-          pageTitle={title}
           showFilter={showFilter}
           setShowApply={setShowApply}
           setShowFilter={setShowFilter}
@@ -57,7 +61,6 @@ const SubHeader = ({
       ) : null}
       {!isSharedReport && onRefineResultsCB && isMultipleAssessmentReport ? (
         <MultipleAssessmentRowFilters
-          pageTitle={title}
           showFilter={showFilter}
           setShowApply={setShowApply}
           setShowFilter={setShowFilter}
@@ -69,6 +72,9 @@ const SubHeader = ({
           showFilter={showFilter}
           setShowFilter={setShowFilter}
         />
+      ) : null}
+      {!isSharedReport && onRefineResultsCB && isStudentProfileReport ? (
+        <StudentProfileRowFilters />
       ) : null}
     </SecondaryHeader>
   )

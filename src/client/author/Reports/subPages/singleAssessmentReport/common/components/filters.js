@@ -160,7 +160,7 @@ const SingleAssessmentReportFilters = ({
   /**
    * if performanceBandProfile / standardsProficiencyProfile is not selected
    * performance band / standards mastery is fetched from the assessment (page data api)
-   * this behaviour is kept dynamic for any selected test (and no apply is shown)
+   * this behaviour is kept dynamic for any selected test (apply button is not shown)
    * until the user manually selects a performance band / standards proficiency
    * however, filter tags need to reflect these dynamic changes
    * hence, the useEffect only updates tagsData for now

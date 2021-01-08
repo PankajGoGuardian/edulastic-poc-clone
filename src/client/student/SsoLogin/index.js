@@ -136,7 +136,7 @@ class SsoLogin extends React.Component {
         {showConfirmationModal && (
           <ConfirmationModal
             title="Confirm Teacher Signup"
-            bodyText={`The email ${email} is already registered as a student in Edulastic. Are you sure you want to continue registering as a teacher? If so, type "CONTINUE" in the field below and proceed.`}
+            bodyText={`The email ${email} is already registered as a student in Edulastic. Are you sure you want to continue registering as a teacher?`}
             show={isRoleConfirmation}
             onOk={this.handleConfirmation}
             onCancel={this.handleRejection}

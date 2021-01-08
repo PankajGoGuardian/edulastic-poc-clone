@@ -4,6 +4,7 @@
     { "key": "grade", "closable": true, "subType": "test" },
     { "key": "subject", "closable": true, "subType": "test" },
     { "key": "assessmentTypes", "closable": true },
+    { "key": "testIds", "closable": true },
     { "key": "schoolIds", "closable": true },
     { "key": "teacherIds", "closable": true },
     { "key": "studentGrade", "closable": true, "subType": "class" },

@@ -77,6 +77,14 @@ const StandardsFilters = ({
 }) => {
   const assessmentTypesRef = useRef()
   const role = get(user, 'role', '')
+  const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
+  const standardProficiencyList = useMemo(
+    () =>
+      scaleInfo.map((s) => ({ key: s._id, title: s.name, default: s.default })),
+    [scaleInfo]
+  )
+  const defaultStandardProficiency =
+    standardProficiencyList.find((s) => s.default) || standardProficiencyList[0]
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '')
   const curriculumsList = useMemo(() => {
@@ -104,13 +112,6 @@ const StandardsFilters = ({
     }
   }, [])
 
-  useEffect(() => {
-    if (filters.showApply) {
-      setShowApply(true)
-      setFilters({ ...filters, showApply: false })
-    }
-  }, [filters.showApply])
-
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
     let search = pickBy(
       qs.parse(location.search, { ignoreQueryPrefix: true }),
@@ -126,15 +127,13 @@ const StandardsFilters = ({
       const savedFilters = pickBy(
         get(standardsFilters, 'data.result.reportFilters', {})
       )
-      const scaleInfo =
-        get(standardsFilters, 'data.result.scaleInfo', [])[0] || {}
-
       // update search filters from saved filters
       search = {
         ...search,
         termId: search.termId || savedFilters.termId,
         grade: search.grade || savedFilters.grade,
         subject: search.subject || savedFilters.subject,
+        profileId: search.profileId || savedFilters.profileId,
       }
 
       const urlSchoolYear =
@@ -164,38 +163,54 @@ const StandardsFilters = ({
         staticDropDownData.allGrades.find(
           (item) => item.key === search.standardGrade
         ) || staticDropDownData.allGrades[0]
+      const urlStandardProficiency =
+        standardProficiencyList.find((item) => item.key === search.profileId) ||
+        defaultStandardProficiency
 
-      const urlParams = {
+      const _filters = {
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        subject: urlSubject.key,
         grade: urlGrade.key,
+        subject: urlSubject.key,
         courseId: search.courseId || 'All',
         classId: search.classId || 'All',
         groupId: search.groupId || 'All',
-        testSubject: urlTestSubject.key,
         testGrade: urlTestGrade.key,
+        testSubject: urlTestSubject.key,
         assessmentTypes: search.assessmentTypes || '',
         curriculumId: urlCurriculum.key || '',
         standardGrade: urlStandardGrade.key,
-        profileId: savedFilters.profileId || scaleInfo._id,
+        profileId: urlStandardProficiency?.key || '',
         domainIds: [],
-        showApply: false,
       }
-
       if (role === roleuser.TEACHER) {
-        delete urlParams.schoolIds
-        delete urlParams.teacherIds
+        delete _filters.schoolIds
+        delete _filters.teacherIds
       }
-      // set filters and testId
-      setFilters(urlParams)
+      const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+      const _tagsData = {
+        termId: urlSchoolYear,
+        grade: urlGrade,
+        subject: urlSubject,
+        testGrade: urlTestGrade,
+        testSubject: urlTestSubject,
+        assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
+          assessmentTypesArr.includes(a.key)
+        ),
+        curriculumId: urlCurriculum,
+        standardGrade: urlStandardGrade,
+        profileId: urlStandardProficiency,
+      }
+      // set tagsData, filters and testId
+      setTagsData(_tagsData)
+      setFilters(_filters)
       // TODO: enable selection of testIds from url and saved filters
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
       // setTestIds(urlTestIds)
       setTestIds([])
       _onGoClick({
-        filters: { ...urlParams },
+        filters: { ..._filters },
         selectedTests: [],
       })
     }
@@ -235,12 +250,13 @@ const StandardsFilters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
-    _filters.showApply = true
     setFilters(_filters)
+    setShowApply(true)
   }
 
-  const onSelectTest = (selectedTestIds) => {
-    setTestIds(selectedTestIds)
+  const onSelectTest = (selected) => {
+    setTagsData({ ...tagsData, testIds: selected })
+    setTestIds(selected.map((o) => o.key))
     setShowApply(true)
   }
 

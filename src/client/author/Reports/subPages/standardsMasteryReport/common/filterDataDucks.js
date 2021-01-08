@@ -107,7 +107,6 @@ const initialState = {
     standardGrade: 'All',
     profileId: '',
     domainIds: [],
-    showApply: false,
   },
   tagsData: {},
   testIds: [],

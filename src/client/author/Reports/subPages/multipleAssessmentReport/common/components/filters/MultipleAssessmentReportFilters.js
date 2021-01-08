@@ -57,7 +57,7 @@ const SingleAssessmentReportFilters = ({
   style,
   getMARFilterDataRequest,
   setFilters,
-  setTestId,
+  setTestIds,
   setTagsData,
   onGoClick: _onGoClick,
   location,
@@ -73,7 +73,11 @@ const SingleAssessmentReportFilters = ({
   reportId,
 }) => {
   const assessmentTypesRef = useRef()
-  const profiles = get(MARFilterData, 'data.result.bandInfo', [])
+  const performanceBandProfiles = get(MARFilterData, 'data.result.bandInfo', [])
+  const performanceBandList = useMemo(
+    () => performanceBandProfiles.map((p) => ({ key: p._id, title: p.name })),
+    [performanceBandProfiles]
+  )
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '')
 
@@ -85,7 +89,7 @@ const SingleAssessmentReportFilters = ({
     if (reportId) {
       getMARFilterDataRequest({ reportId })
       setFilters({ ...filters, ...search })
-      setTestId([])
+      setTestIds([])
     } else if (MARFilterData !== prevMARFilterData) {
       const termId =
         search.termId ||
@@ -136,40 +140,54 @@ const SingleAssessmentReportFilters = ({
         staticDropDownData.grades.find(
           (item) => item.key === search.studentGrade
         ) || staticDropDownData.grades[0]
+      const urlPerformanceBand =
+        performanceBandList.find((item) => item.key === search.profileId) ||
+        performanceBandList[0]
 
-      const obtainedFilters = {
+      const _filters = {
         termId: urlSchoolYear.key,
         subject: urlSubject.key,
         grade: urlGrade.key,
+        assessmentTypes: search.assessmentTypes || '',
+        schoolIds: search.schoolIds || '',
+        teacherIds: search.teacherIds || '',
         studentSubject: urlStudentSubject.key,
         studentGrade: urlStudentGrade.key,
         studentCourseId: search.studentCourseId || 'All',
-        courseId: search.courseId || 'All',
         classId: search.classId || 'All',
         groupId: search.groupId || 'All',
-        schoolIds: search.schoolIds || '',
-        teacherIds: search.teacherIds || '',
-        assessmentTypes: search.assessmentTypes || '',
+        profileId: urlPerformanceBand?.key || '',
       }
-
-      const urlParams = { ...obtainedFilters }
-
       if (role === roleuser.TEACHER) {
-        delete urlParams.schoolIds
-        delete urlParams.teacherIds
+        delete _filters.schoolIds
+        delete _filters.teacherIds
       }
       if (role === roleuser.SCHOOL_ADMIN) {
-        urlParams.schoolIds =
-          urlParams.schoolIds || get(user, 'institutionIds', []).join(',')
+        _filters.schoolIds =
+          _filters.schoolIds || get(user, 'institutionIds', []).join(',')
       }
-      // set filters and testId
-      setFilters(urlParams)
+      const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+      const _tagsData = {
+        termId: urlSchoolYear,
+        subject: urlSubject,
+        grade: urlGrade,
+        assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
+          assessmentTypesArr.includes(a.key)
+        ),
+        studentSubject: urlStudentSubject,
+        studentGrade: urlStudentGrade,
+        profileId: urlPerformanceBand,
+      }
+
+      // set tagsData, filters and testId
+      setTagsData(_tagsData)
+      setFilters(_filters)
       // TODO: enable selection of testIds from url and saved filters
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
-      // setTestId(urlTestIds)
-      setTestId([])
+      // setTestIds(urlTestIds)
+      setTestIds([])
       _onGoClick({
-        filters: { ...urlParams },
+        filters: { ..._filters },
         selectedTests: [],
       })
     }
@@ -210,8 +228,9 @@ const SingleAssessmentReportFilters = ({
     setShowApply(true)
   }
 
-  const onSelectTest = (selectedTestIds) => {
-    setTestId(selectedTestIds)
+  const onSelectTest = (selected) => {
+    setTagsData({ ...tagsData, testIds: selected })
+    setTestIds(selected.map((o) => o.key))
     setShowApply(true)
   }
 
@@ -396,7 +415,6 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
         </Collapsable>
-
         {performanceBandRequired && (
           <Collapsable header="performance">
             <SearchField>
@@ -406,7 +424,7 @@ const SingleAssessmentReportFilters = ({
                 selectCB={(e, selected) =>
                   updateFilterDropdownCB(selected, 'profileId')
                 }
-                data={profiles.map((p) => ({ key: p._id, title: p.name }))}
+                data={performanceBandList}
                 prefix="Performance Band"
                 showPrefixOnSelected={false}
               />
@@ -436,7 +454,7 @@ const enhance = compose(
     {
       getMARFilterDataRequest: getMARFilterDataRequestAction,
       setFilters: setFiltersAction,
-      setTestId: setTestIdAction,
+      setTestIds: setTestIdAction,
       setTagsData: setTagsDataAction,
       setPrevMARFilterData: setPrevMARFilterDataAction,
     }

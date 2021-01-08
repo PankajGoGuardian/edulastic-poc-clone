@@ -5,6 +5,7 @@
     { "key": "grade", "closable": true, "subType": "class" },
     { "key": "subject", "closable": true, "subType": "class" },
     { "key": "classIds", "closable": true },
+    { "key": "student", "closable": false },
     { "key": "performanceBandProfileId", "closable": false },
     { "key": "standardsProficiencyProfileId", "closable": false }
   ],

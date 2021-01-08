@@ -16,6 +16,8 @@ import { getInterestedCurriculumsSelector } from '../../../../../src/selectors/u
 import {
   getFiltersSelector,
   setFiltersAction,
+  getTestIdSelector,
+  setTestIdAction,
   getTagsDataSelector,
   setTagsDataAction,
   getReportsStandardsFilters,
@@ -30,10 +32,13 @@ const StandardsMasteryRowFilters = ({
   pageTitle,
   showFilter,
   setShowFilter,
+  setShowApply,
   loading,
   standardsFilters,
   filters,
   setFilters,
+  testIds,
+  setTestIds,
   tagsData,
   setTagsData,
   interestedCurriculums,
@@ -52,13 +57,15 @@ const StandardsMasteryRowFilters = ({
     return _curriculums
   }, [interestedCurriculums])
 
-  // memoize proficiencyList for standards filters data
+  // memoize standardProficiencyList for standards filters data
   const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
-  const defaultProficiencyId = scaleInfo.find((s) => s.default)?._id || ''
-  const proficiencyList = useMemo(
-    () => scaleInfo.map((s) => ({ key: s._id, title: s.name })),
+  const standardProficiencyList = useMemo(
+    () =>
+      scaleInfo.map((s) => ({ key: s._id, title: s.name, default: s.default })),
     [scaleInfo]
   )
+  const defaultStandardProficiency =
+    standardProficiencyList.find((s) => s.default) || standardProficiencyList[0]
 
   // curate domainsData from page data
   const skillInfoOptions = {
@@ -95,12 +102,9 @@ const StandardsMasteryRowFilters = ({
     }
     setTagsData(_tagsData)
     // update filters
-    const _filters = {
-      ...filters,
-      [keyName]: selected.key,
-      showApply: true,
-    }
+    const _filters = { ...filters, [keyName]: selected.key }
     setFilters(_filters)
+    setShowApply(true)
   }
   const onSelectDomain = (domain) => {
     const _domainIds = toggleItem(filters.domainIds, domain.key).filter((o) =>
@@ -108,35 +112,47 @@ const StandardsMasteryRowFilters = ({
     )
     const domainTagsData = domainsList.filter((d) => _domainIds.includes(d.key))
     setTagsData({ ...tagsData, domainIds: domainTagsData })
-    setFilters({ ...filters, domainIds: _domainIds, showApply: true })
+    setFilters({ ...filters, domainIds: _domainIds })
+    setShowApply(true)
   }
   const onChangeDomains = (domains) => {
     if (!domains?.length) {
       setTagsData({ ...tagsData, domainIds: [] })
-      setFilters({ ...filters, domainIds: [], showApply: true })
+      setFilters({ ...filters, domainIds: [] })
+      setShowApply(true)
     }
   }
 
   const handleCloseTag = (type, { key }) => {
-    const _filters = { ...filters, showApply: true }
     const _tagsData = { ...tagsData }
-    // handles single selection filters
-    if (filters[type] === key) {
-      _filters[type] = staticDropDownData.initialFilters[type]
-      delete _tagsData[type]
-    }
-    // handles multiple selection filters
-    else if (filters[type].includes(key)) {
-      _filters[type] = Array.isArray(filters[type])
-        ? filters[type].filter((f) => f !== key)
-        : filters[type]
-            .split(',')
-            .filter((d) => d !== key)
-            .join(',')
-      _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+    // handles testIds
+    if (type === 'testIds') {
+      if (testIds.includes(key)) {
+        const _testIds = testIds.filter((d) => d !== key)
+        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        setTestIds(_testIds)
+      }
+    } else {
+      const _filters = { ...filters }
+      // handles single selection filters
+      if (filters[type] === key) {
+        _filters[type] = staticDropDownData.initialFilters[type]
+        delete _tagsData[type]
+      }
+      // handles multiple selection filters
+      else if (filters[type].includes(key)) {
+        _filters[type] = Array.isArray(filters[type])
+          ? filters[type].filter((f) => f !== key)
+          : filters[type]
+              .split(',')
+              .filter((d) => d !== key)
+              .join(',')
+        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+      }
+      setFilters(_filters)
     }
     setTagsData(_tagsData)
-    setFilters(_filters)
+    setShowApply(true)
     setShowFilter(true)
   }
 
@@ -177,11 +193,11 @@ const StandardsMasteryRowFilters = ({
             </StyledDropDownContainer>
             <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
               <ControlDropDown
-                by={filters.profileId || defaultProficiencyId}
+                by={filters.profileId || defaultStandardProficiency?.key || ''}
                 selectCB={(e, selected) =>
                   updateFilterDropdownCB(selected, 'profileId')
                 }
-                data={proficiencyList}
+                data={standardProficiencyList}
                 prefix="Standard Proficiency"
                 showPrefixOnSelected={false}
               />
@@ -216,12 +232,14 @@ export default connect(
     loading: getReportsStandardsFiltersLoader(state),
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),
+    testIds: getTestIdSelector(state),
     tagsData: getTagsDataSelector(state),
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
     standardsGradebook: getReportsStandardsGradebook(state),
   }),
   {
     setFilters: setFiltersAction,
+    setTestIds: setTestIdAction,
     setTagsData: setTagsDataAction,
   }
 )(StandardsMasteryRowFilters)

@@ -90,10 +90,23 @@ const SingleAssessmentReportFilters = ({
   const assessmentTypeRef = useRef()
 
   const performanceBandProfiles = get(SARFilterData, 'data.result.bandInfo', [])
+  const performanceBandList = useMemo(
+    () =>
+      performanceBandProfiles.map((profile) => ({
+        key: profile._id,
+        title: profile.name,
+      })),
+    [performanceBandProfiles]
+  )
   const standardProficiencyProfiles = get(
     SARFilterData,
     'data.result.scaleInfo',
     []
+  )
+  const standardProficiencyList = useMemo(
+    () =>
+      standardProficiencyProfiles.map((s) => ({ key: s._id, title: s.name })),
+    [standardProficiencyProfiles]
   )
 
   const defaultTermId = get(user, 'orgData.defaultTermId', '')
@@ -105,6 +118,19 @@ const SingleAssessmentReportFilters = ({
     }
     return schoolYears
   }, [user])
+
+  const selectedPerformanceBand =
+    performanceBandList.find(
+      (p) =>
+        p.key === filters.performanceBandProfile ||
+        p.key === selectedPerformanceBandProfile?._id
+    ) || performanceBandList[0]
+  const selectedStandardProficiency =
+    standardProficiencyList.find(
+      (p) =>
+        p.key === filters.standardsProficiencyProfile ||
+        p.key === selectedStandardManteryScale?._id
+    ) || standardProficiencyList[0]
 
   useEffect(() => {
     const search = pickBy(
@@ -136,7 +162,7 @@ const SingleAssessmentReportFilters = ({
       qs.parse(location.search, { ignoreQueryPrefix: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
-    const _testId = getTestIdFromURL(location.pathname)
+    const _testId = getTestIdFromURL(location.pathname) || ''
     if (reportId) {
       _onGoClick({
         filters: { ...filters, ...search },
@@ -151,44 +177,69 @@ const SingleAssessmentReportFilters = ({
       ) {
         search.assessmentTypes = search.assessmentTypes || 'common assessment'
       }
-
       const urlSchoolYear =
         schoolYear.find((item) => item.key === search.termId) ||
         schoolYear.find((item) => item.key === defaultTermId) ||
         (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
-      const urlSubject = staticDropDownData.subjects.find(
-        (item) => item.key === search.subject
-      ) || {
-        key: 'All',
-        title: 'All Subjects',
-      }
-      const urlGrade = staticDropDownData.grades.find(
-        (item) => item.key === search.grade
-      ) || {
-        key: 'All',
-        title: 'All Grades',
-      }
-      const urlTestId = _testId || ''
-      const obtainedFilters = {
+      const urlSubject =
+        staticDropDownData.subjects.find(
+          (item) => item.key === search.subject
+        ) || staticDropDownData.subjects[0]
+      const urlGrade =
+        staticDropDownData.grades.find((item) => item.key === search.grade) ||
+        staticDropDownData.grades[0]
+      const urlStudentSubject =
+        staticDropDownData.subjects.find(
+          (item) => item.key === search.studentSubject
+        ) || staticDropDownData.subjects[0]
+      const urlStudentGrade =
+        staticDropDownData.grades.find(
+          (item) => item.key === search.studentGrade
+        ) || staticDropDownData.grades[0]
+      const urlStandardProficiency =
+        standardProficiencyList.find(
+          (item) => item.key === search.standardsProficiencyProfile
+        ) || standardProficiencyList[0]
+      const urlPerformanceBand =
+        performanceBandList.find(
+          (item) => item.key === search.performanceBandProfile
+        ) || performanceBandList[0]
+
+      const _filters = {
         termId: urlSchoolYear.key,
-        subject: urlSubject.key,
         grade: urlGrade.key,
-        courseId: search.courseId || 'All',
-        classId: search.classId || 'All',
-        groupId: search.groupId || 'All',
+        subject: urlSubject.key,
+        assessmentTypes: search.assessmentTypes || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        assessmentTypes: search.assessmentTypes || '',
+        studentGrade: urlStudentGrade.key,
+        studentSubject: urlStudentSubject.key,
+        studentCourseId: search.studentCourseId || 'All',
+        classId: search.classId || 'All',
+        groupId: search.groupId || 'All',
+        standardsProficiencyProfile: urlStandardProficiency?.key || '',
+        performanceBandProfile: urlPerformanceBand?.key || '',
       }
-      const urlParams = { ...obtainedFilters }
-
       if (role === 'teacher') {
-        delete urlParams.schoolIds
-        delete urlParams.teacherIds
+        delete _filters.schoolIds
+        delete _filters.teacherIds
       }
-
-      // set filters and testId
-      setFiltersOrTestId({ filters: urlParams, testId: urlTestId })
+      const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+      const _tagsData = {
+        termId: urlSchoolYear,
+        subject: urlSubject,
+        grade: urlGrade,
+        assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
+          assessmentTypesArr.includes(a.key)
+        ),
+        studentSubject: urlStudentSubject,
+        studentGrade: urlStudentGrade,
+        standardsProficiencyProfile: urlStandardProficiency,
+        performanceBandProfile: urlPerformanceBand,
+      }
+      // set tagsData, filters and testId
+      setTagsData(_tagsData)
+      setFiltersOrTestId({ filters: _filters, testId: _testId })
     }
     // update prevSARFilterData
     setPrevSARFilterData(SARFilterData)
@@ -210,11 +261,14 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateTestId = (selected) => {
+    const _tagsData = { ...tagsData, testId: selected }
     if (firstLoad && !selected.key) {
+      delete _tagsData.testId
       toggleFilter(null, true)
       setFirstLoad(false)
       return
     }
+    setTagsData(_tagsData)
     const _testId = selected.key || ''
     setFiltersOrTestId({ testId: _testId })
     if (reportId) {
@@ -251,11 +305,6 @@ const SingleAssessmentReportFilters = ({
     setShowApply(true)
   }
 
-  const standardProficiencyList = useMemo(
-    () =>
-      standardProficiencyProfiles.map((s) => ({ key: s._id, title: s.name })),
-    [standardProficiencyProfiles]
-  )
   return loading ? (
     <StyledFilterWrapper style={style}>
       <Spin />
@@ -443,11 +492,7 @@ const SingleAssessmentReportFilters = ({
               <SearchField>
                 <FilterLabel>Standard Proficiency</FilterLabel>
                 <ControlDropDown
-                  by={
-                    filters.standardsProficiencyProfile ||
-                    selectedStandardManteryScale?._id ||
-                    standardProficiencyProfiles[0]?._id
-                  }
+                  by={selectedStandardProficiency.key}
                   selectCB={(e, selected) =>
                     updateFilterDropdownCB(
                       selected,
@@ -465,12 +510,7 @@ const SingleAssessmentReportFilters = ({
               <SearchField>
                 <FilterLabel>Performance Band </FilterLabel>
                 <ControlDropDown
-                  by={{
-                    key:
-                      filters.performanceBandProfile ||
-                      selectedPerformanceBandProfile?._id ||
-                      performanceBandProfiles[0]?._id,
-                  }}
+                  by={selectedPerformanceBand}
                   selectCB={(e, selected) =>
                     updateFilterDropdownCB(
                       selected,
@@ -478,10 +518,7 @@ const SingleAssessmentReportFilters = ({
                       false
                     )
                   }
-                  data={performanceBandProfiles.map((profile) => ({
-                    key: profile._id,
-                    title: profile.name,
-                  }))}
+                  data={performanceBandList}
                   prefix="Performance Band"
                   showPrefixOnSelected={false}
                 />
@@ -508,11 +545,6 @@ const enhance = compose(
       districtId: getUserOrgId(state),
       user: getUser(state),
       prevSARFilterData: getReportsPrevSARFilterData(state),
-      performanceBandProfiles: state?.performanceBandReducer?.profiles || [],
-      standardProficiencyProfiles:
-        state?.standardsProficiencyReducer?.data || [],
-      standardProficiencyLoading:
-        state?.standardsProficiencyReducer?.loading || [],
       selectedPerformanceBandProfile: getPerformanceBandProfile(state),
       selectedStandardManteryScale: getStandardManteryScale(state),
     }),

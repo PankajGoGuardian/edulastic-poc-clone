@@ -11,6 +11,7 @@
     { "key": "testGrade", "closable": true, "subType": "test" },
     { "key": "testSubject", "closable": true, "subType": "test" },
     { "key": "assessmentTypes", "closable": true },
+    { "key": "testIds", "closable": true },
     { "key": "curriculumId", "closable": false },
     { "key": "standardGrade", "closable": true, "subType": "standard" },
     { "key": "profileId", "closable": false },

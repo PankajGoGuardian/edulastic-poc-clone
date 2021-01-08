@@ -22,7 +22,6 @@ const StudentProfileRowFilters = ({
   setTagsData,
 }) => {
   const handleCloseTag = (type, { key }) => {
-    const _filters = { ...filters }
     const _tagsData = { ...tagsData }
     // handles selectedClassIds
     if (type === 'classIds') {
@@ -35,6 +34,7 @@ const StudentProfileRowFilters = ({
         setSelectedClassIds(_selectedClassIds)
       }
     } else {
+      const _filters = { ...filters }
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]

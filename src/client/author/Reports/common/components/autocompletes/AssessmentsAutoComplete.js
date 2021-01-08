@@ -36,6 +36,14 @@ const AssessmentAutoComplete = ({
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
 
+  // build dropdown data
+  const dropdownData = testList.map((item) => ({
+    key: item._id,
+    title: `${item.title} (ID: ${
+      item._id?.substring(item._id.length - 5) || ''
+    })`,
+  }))
+
   // build search query
   const query = useMemo(() => {
     const { role, orgData = {} } = userDetails
@@ -74,6 +82,22 @@ const AssessmentAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value, searchedText: value })
   }
+  const onChange = (selected) => {
+    const _selectedTestIds = !selected.length
+      ? []
+      : typeof selected === 'string'
+      ? [selected]
+      : selected
+    setSearchTerms({
+      ...searchTerms,
+      searchedText: '',
+      selectedKey: _selectedTestIds.join(','),
+    })
+    const _selectedTests = dropdownData.filter((d) =>
+      _selectedTestIds.includes(d.key)
+    )
+    selectCB(_selectedTests)
+  }
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
     []
@@ -86,10 +110,10 @@ const AssessmentAutoComplete = ({
   }, [query])
   useEffect(() => {
     if (searchTerms.selectedKey && !searchTerms.searchedText) {
-      const validTestIds = selectedTestIds.filter((testId) => {
-        return testList.find((t) => t._id === testId)
-      })
-      selectCB(validTestIds)
+      const validTests = dropdownData.filter((d) =>
+        selectedTestIds.includes(d.key)
+      )
+      selectCB(validTests)
     }
     setSearchTerms({
       ...searchTerms,
@@ -97,34 +121,12 @@ const AssessmentAutoComplete = ({
     })
   }, [testList])
 
-  // build dropdown data
-  const dropdownData = testList.map((item) => ({
-    key: item._id,
-    title: `${item.title} (ID: ${
-      item._id?.substring(item._id.length - 5) || ''
-    })`,
-  }))
-
-  const setAssessments = (assessments) => {
-    const selectedAssessmentIds = !assessments.length
-      ? []
-      : typeof assessments === 'string'
-      ? [assessments]
-      : assessments
-    setSearchTerms({
-      ...searchTerms,
-      searchedText: '',
-      selectedKey: selectedAssessmentIds.join(','),
-    })
-    selectCB(selectedAssessmentIds)
-  }
-
   return (
     <MultiSelectSearch
       label="Test"
       placeholder="All Tests"
       el={assessmentFilterRef}
-      onChange={(selected) => setAssessments(selected)}
+      onChange={onChange}
       onSearch={onSearch}
       value={selectedTestIds}
       options={!loading ? dropdownData : []}

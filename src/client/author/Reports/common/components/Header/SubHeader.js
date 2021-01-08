@@ -34,6 +34,9 @@ const SubHeader = ({
     title === 'Student Mastery Profile' ||
     title === 'Student Assessment Profile'
 
+  const performanceBandRequired = []
+  const standardProficiencyRequired = []
+
   const setShowFilter = (status) => {
     onRefineResultsCB(null, status)
   }
@@ -55,15 +58,18 @@ const SubHeader = ({
       {!isSharedReport && onRefineResultsCB && isSingleAssessmentReport ? (
         <SingleAssessmentRowFilters
           showFilter={showFilter}
-          setShowApply={setShowApply}
           setShowFilter={setShowFilter}
+          setShowApply={setShowApply}
+          performanceBandRequired={performanceBandRequired}
+          standardProficiencyRequired={standardProficiencyRequired}
         />
       ) : null}
       {!isSharedReport && onRefineResultsCB && isMultipleAssessmentReport ? (
         <MultipleAssessmentRowFilters
           showFilter={showFilter}
-          setShowApply={setShowApply}
           setShowFilter={setShowFilter}
+          setShowApply={setShowApply}
+          performanceBandRequired={performanceBandRequired}
         />
       ) : null}
       {!isSharedReport && onRefineResultsCB && isStandardMasteryReport ? (
@@ -71,10 +77,14 @@ const SubHeader = ({
           pageTitle={title}
           showFilter={showFilter}
           setShowFilter={setShowFilter}
+          setShowApply={setShowApply}
         />
       ) : null}
       {!isSharedReport && onRefineResultsCB && isStudentProfileReport ? (
-        <StudentProfileRowFilters />
+        <StudentProfileRowFilters
+          performanceBandRequired={performanceBandRequired}
+          standardProficiencyRequired={standardProficiencyRequired}
+        />
       ) : null}
     </SecondaryHeader>
   )

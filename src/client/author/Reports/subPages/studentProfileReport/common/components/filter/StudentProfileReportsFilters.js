@@ -136,7 +136,11 @@ const StudentProfileReportsFilters = ({
     [urlSubject]
   )
 
-  const profiles = get(SPRFilterData, 'data.result.bandInfo', [])
+  const performanceBandProfiles = get(SPRFilterData, 'data.result.bandInfo', [])
+  const performanceBandsList = useMemo(
+    () => performanceBandProfiles.map((p) => ({ key: p._id, title: p.name })),
+    [performanceBandProfiles]
+  )
   const scales = get(SPRFilterData, 'data.result.scaleInfo', [])
   const standardProficiencyList = useMemo(
     () => scales.map((s) => ({ key: s._id, title: s.name })),
@@ -181,7 +185,16 @@ const StudentProfileReportsFilters = ({
       // standardsProficiencyProfileId: selectedScale
     }
     const _student = { ...student }
+    const _tagsData = {
+      termId: selectedTerm,
+      grade: selectedGrade,
+      subject: selectedSubject,
+      performanceBandProfileId: performanceBandsList[0],
+      standardsProficiencyProfileId: standardProficiencyList[0],
+      student: _student,
+    }
     setFilters(_filters)
+    setTagsData(_tagsData)
     // load page data
     _onGoClick({
       filters: pickBy(_filters, (f) => f !== 'All' && !isEmpty(f)),
@@ -190,6 +203,7 @@ const StudentProfileReportsFilters = ({
   }
 
   const onStudentSelect = (item) => {
+    const _tagsData = { ...tagsData, student: item }
     if (item && item.key) {
       setStudent(item)
       const _reportPath = splittedPath
@@ -205,11 +219,13 @@ const StudentProfileReportsFilters = ({
         studentId: item.key,
       })
     } else {
+      delete _tagsData.student
       _onGoClick({
         filters,
         selectedStudent: item,
       })
     }
+    setTagsData(_tagsData)
   }
 
   const resetSPRFilters = useCallback(
@@ -338,7 +354,7 @@ const StudentProfileReportsFilters = ({
             selectCB={(e, selected) =>
               updateFilterDropdownCB(selected, 'performanceBandProfileId')
             }
-            data={profiles.map((p) => ({ key: p._id, title: p.name }))}
+            data={performanceBandsList}
             prefix="Performance Band"
             showPrefixOnSelected={false}
           />

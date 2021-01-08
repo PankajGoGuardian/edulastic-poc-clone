@@ -37,8 +37,8 @@ const SubHeader = ({
     title === 'Assessment Summary' ||
     title === 'Sub-group Performance' ||
     title === 'Performance by Students' ||
-    title === 'Student Progress' ||
     title === 'Performance Over Time' ||
+    title === 'Student Progress' ||
     title === 'Student Profile Summary' ||
     title === 'Student Assessment Profile'
   const standardProficiencyRequired =

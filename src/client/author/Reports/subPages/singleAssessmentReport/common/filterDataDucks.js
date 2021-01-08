@@ -100,7 +100,7 @@ export const getPerformanceBandProfile = createSelector(
   (state) => state.performanceBandProfile
 )
 
-export const getStandardManteryScale = createSelector(
+export const getStandardMasteryScale = createSelector(
   stateSelector,
   (state) => state.standardsProficiencyProfile
 )

@@ -36,7 +36,7 @@ import {
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
   getPerformanceBandProfile,
-  getStandardManteryScale,
+  getStandardMasteryScale,
 } from '../filterDataDucks'
 import {
   getUserRole,
@@ -83,8 +83,8 @@ const SingleAssessmentReportFilters = ({
   firstLoad,
   setFirstLoad,
   reportId,
-  selectedPerformanceBandProfile,
-  selectedStandardManteryScale,
+  assessmentPerformanceBandProfile,
+  assessmentStandardMasteryScale,
   toggleFilter,
 }) => {
   const assessmentTypeRef = useRef()
@@ -123,13 +123,13 @@ const SingleAssessmentReportFilters = ({
     performanceBandList.find(
       (p) =>
         p.key === filters.performanceBandProfile ||
-        p.key === selectedPerformanceBandProfile?._id
+        p.key === assessmentPerformanceBandProfile?._id
     ) || performanceBandList[0]
   const selectedStandardProficiency =
     standardProficiencyList.find(
       (p) =>
         p.key === filters.standardsProficiencyProfile ||
-        p.key === selectedStandardManteryScale?._id
+        p.key === assessmentStandardMasteryScale?._id
     ) || standardProficiencyList[0]
 
   useEffect(() => {
@@ -156,6 +156,23 @@ const SingleAssessmentReportFilters = ({
       getSARFilterDataRequest(q)
     }
   }, [])
+
+  /**
+   * if performanceBandProfile / standardsProficiencyProfile is not selected
+   * performance band / standards mastery is fetched from the assessment (page data api)
+   * this behaviour is kept dynamic for any selected test (and no apply is shown)
+   * until the user manually selects a performance band / standards proficiency
+   * however, filter tags need to reflect these dynamic changes
+   * hence, the useEffect only updates tagsData for now
+   */
+  useEffect(() => {
+    const _tagsData = {
+      ...tagsData,
+      performanceBandProfile: selectedPerformanceBand,
+      standardsProficiencyProfile: selectedStandardProficiency,
+    }
+    setTagsData(_tagsData)
+  }, [assessmentPerformanceBandProfile, assessmentStandardMasteryScale])
 
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
     const search = pickBy(
@@ -196,14 +213,12 @@ const SingleAssessmentReportFilters = ({
         staticDropDownData.grades.find(
           (item) => item.key === search.studentGrade
         ) || staticDropDownData.grades[0]
-      const urlStandardProficiency =
-        standardProficiencyList.find(
-          (item) => item.key === search.standardsProficiencyProfile
-        ) || standardProficiencyList[0]
-      const urlPerformanceBand =
-        performanceBandList.find(
-          (item) => item.key === search.performanceBandProfile
-        ) || performanceBandList[0]
+      const urlStandardProficiency = standardProficiencyList.find(
+        (item) => item.key === search.standardsProficiencyProfile
+      )
+      const urlPerformanceBand = performanceBandList.find(
+        (item) => item.key === search.performanceBandProfile
+      )
 
       const _filters = {
         termId: urlSchoolYear.key,
@@ -545,8 +560,8 @@ const enhance = compose(
       districtId: getUserOrgId(state),
       user: getUser(state),
       prevSARFilterData: getReportsPrevSARFilterData(state),
-      selectedPerformanceBandProfile: getPerformanceBandProfile(state),
-      selectedStandardManteryScale: getStandardManteryScale(state),
+      assessmentPerformanceBandProfile: getPerformanceBandProfile(state),
+      assessmentStandardMasteryScale: getStandardMasteryScale(state),
     }),
     {
       getSARFilterDataRequest: getSARFilterDataRequestAction,

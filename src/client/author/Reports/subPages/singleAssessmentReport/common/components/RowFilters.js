@@ -14,11 +14,19 @@ import staticDropDownData from '../static/staticDropDownData.json'
 const SingleAssessmentRowFilters = ({
   setShowFilter,
   setShowApply,
+  performanceBandRequired,
+  standardProficiencyRequired,
   filtersAndTestId: { filters, testId },
   setFiltersOrTestId,
   tagsData,
   setTagsData,
 }) => {
+  const tagTypes = staticDropDownData.tagTypes.filter(
+    (t) =>
+      (performanceBandRequired || t.key !== 'performanceBandProfile') &&
+      (standardProficiencyRequired || t.key !== 'standardsProficiencyProfile')
+  )
+
   const handleCloseTag = (type, { key }) => {
     const _filters = { ...filters }
     const _tagsData = { ...tagsData }
@@ -44,7 +52,7 @@ const SingleAssessmentRowFilters = ({
   return (
     <FilterTags
       tagsData={tagsData}
-      tagTypes={staticDropDownData.tagTypes}
+      tagTypes={tagTypes}
       handleCloseTag={handleCloseTag}
     />
   )

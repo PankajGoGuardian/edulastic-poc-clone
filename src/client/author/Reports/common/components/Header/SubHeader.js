@@ -33,9 +33,18 @@ const SubHeader = ({
     title === 'Student Profile Summary' ||
     title === 'Student Mastery Profile' ||
     title === 'Student Assessment Profile'
-
-  const performanceBandRequired = []
-  const standardProficiencyRequired = []
+  const performanceBandRequired =
+    title === 'Assessment Summary' ||
+    title === 'Sub-group Performance' ||
+    title === 'Performance by Students' ||
+    title === 'Student Progress' ||
+    title === 'Performance Over Time' ||
+    title === 'Student Profile Summary' ||
+    title === 'Student Assessment Profile'
+  const standardProficiencyRequired =
+    title === 'Performance by Standards' ||
+    title === 'Student Profile Summary' ||
+    title === 'Student Mastery Profile'
 
   const setShowFilter = (status) => {
     onRefineResultsCB(null, status)

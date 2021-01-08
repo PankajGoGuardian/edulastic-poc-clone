@@ -16,6 +16,7 @@ import staticDropDownData from '../../static/staticDropDownData.json'
 const MultipleAssessmentRowFilters = ({
   setShowFilter,
   setShowApply,
+  performanceBandRequired,
   filters,
   setFilters,
   testIds,
@@ -23,6 +24,9 @@ const MultipleAssessmentRowFilters = ({
   tagsData,
   setTagsData,
 }) => {
+  const tagTypes = staticDropDownData.tagTypes.filter(
+    (t) => performanceBandRequired || t.key !== 'profileId'
+  )
   const handleCloseTag = (type, { key }) => {
     const _tagsData = { ...tagsData }
     // handles testIds
@@ -57,7 +61,7 @@ const MultipleAssessmentRowFilters = ({
   return (
     <FilterTags
       tagsData={tagsData}
-      tagTypes={staticDropDownData.tagTypes}
+      tagTypes={tagTypes}
       handleCloseTag={handleCloseTag}
     />
   )

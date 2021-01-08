@@ -14,6 +14,8 @@ import {
 import staticDropDownData from '../../static/staticDropDownData.json'
 
 const StudentProfileRowFilters = ({
+  performanceBandRequired,
+  standardProficiencyRequired,
   filters,
   setFilters,
   selectedClassIds,
@@ -21,6 +23,12 @@ const StudentProfileRowFilters = ({
   tagsData,
   setTagsData,
 }) => {
+  const tagTypes = staticDropDownData.tagTypes.filter(
+    (t) =>
+      (performanceBandRequired || t.key !== 'performanceBandProfileId') &&
+      (standardProficiencyRequired || t.key !== 'standardsProficiencyProfileId')
+  )
+
   const handleCloseTag = (type, { key }) => {
     const _tagsData = { ...tagsData }
     // handles selectedClassIds
@@ -56,7 +64,7 @@ const StudentProfileRowFilters = ({
   return (
     <FilterTags
       tagsData={tagsData}
-      tagTypes={staticDropDownData.tagTypes}
+      tagTypes={tagTypes}
       handleCloseTag={handleCloseTag}
     />
   )

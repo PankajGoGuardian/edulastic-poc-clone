@@ -1,7 +1,7 @@
 import JXG from 'jsxgraph'
 import { isObject } from 'lodash'
 import { tickLabel } from './utils'
-import { Tangent, Logarithm, Sin, Parabola, Parabola2 } from './elements'
+import { Tangent, Logarithm, Sin, Cos, Parabola, Parabola2 } from './elements'
 
 /**
  * Graph parameters
@@ -120,6 +120,13 @@ export const getLabelPositionParameters = (elementType) => {
         anchorY: 'middle',
       }
     case Sin.jxgType:
+      return {
+        position: 'lft',
+        offset: [10, 0],
+        anchorX: 'left',
+        anchorY: 'middle',
+      }
+    case Cos.jxgType:
       return {
         position: 'lft',
         offset: [10, 0],

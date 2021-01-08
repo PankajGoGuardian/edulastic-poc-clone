@@ -13,7 +13,7 @@ const { TabPane } = AntTabs
 const MathEquivalentOptions = ({
   method,
   onChangeOption,
-  onChange,
+  onChangeRadio,
   options,
   useTemplate,
   allowNumericOnly,
@@ -33,7 +33,7 @@ const MathEquivalentOptions = ({
         optionKey={key}
         options={options}
         onChangeOption={onChangeOption}
-        onChange={onChange}
+        onChangeRadio={onChangeRadio}
         useTemplate={useTemplate}
         allowNumericOnly={allowNumericOnly}
         allowedVariables={allowedVariables}

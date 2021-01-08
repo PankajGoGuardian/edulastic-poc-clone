@@ -22,6 +22,7 @@ import {
   Polynom,
   Secant,
   Sin,
+  Cos,
   Tangent,
   Circle,
   Ellipse,
@@ -42,6 +43,7 @@ const AVAILABLE_TYPES = [
   Polynom.jxgType,
   Secant.jxgType,
   Sin.jxgType,
+  Cos.jxgType,
   Tangent.jxgType,
   Equation.jxgType,
 ]
@@ -147,6 +149,10 @@ function getFunctions(shapes) {
         case Sin.jxgType: {
           const points = Object.values(item.ancestors)
           return (x, y) => y > Sin.makeCallback(...points)(x)
+        }
+        case Cos.jxgType: {
+          const points = Object.values(item.ancestors)
+          return (x, y) => y > Cos.makeCallback(...points)(x)
         }
         case Tangent.jxgType: {
           const points = Object.values(item.ancestors)

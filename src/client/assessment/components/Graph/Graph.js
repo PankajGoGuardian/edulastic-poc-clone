@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, get, omit, pickBy, identity, isObject } from 'lodash'
 import { produce } from 'immer'
 import {
   CorrectAnswersContainer,
@@ -18,7 +18,7 @@ import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
-import { defaultSymbols } from '@edulastic/constants'
+import { defaultSymbols, math as mathConstants } from '@edulastic/constants'
 import { getFontSize } from '../../utils/helpers'
 import { ContentArea } from '../../styled/ContentArea'
 import {
@@ -50,9 +50,12 @@ import Question from '../Question'
 import { Subtitle } from '../../styled/Subtitle'
 import { Col } from '../../styled/WidgetOptions/Col'
 import { Row } from '../../styled/WidgetOptions/Row'
+import EvaluationSettings from '../EvaluationSettings'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
+
+const { GRAPH_EVALUATION_SETTING } = mathConstants
 
 const EmptyWrapper = styled.div``
 
@@ -72,17 +75,6 @@ const SmallSizeAxisWrapper = styled.div`
   left: 0;
   right: 0;
 `
-
-const getIgnoreRepeatedShapesOptions = () => [
-  { value: 'no', label: 'No' },
-  { value: 'yes', label: 'Compare by slope' },
-  { value: 'strict', label: 'Compare by points' },
-]
-
-const getIgnoreLabelsOptions = () => [
-  { value: 'no', label: 'No' },
-  { value: 'yes', label: 'Yes' },
-]
 
 const getFontSizeList = () => [
   { value: 'small', label: 'Small' },
@@ -197,7 +189,7 @@ class Graph extends Component {
       'sine',
       'tangent',
       'secant',
-      'exponent',
+      'exp',
       'logarithm',
       'polynom',
       'hyperbola',
@@ -391,18 +383,43 @@ class Graph extends Component {
     saveAnswer(qid)
   }
 
-  handleSelectIgnoreRepeatedShapes = (value) => {
+  handleChangeEvaluationOption = (prop, value) => {
     const { item, setQuestionData } = this.props
-    const newItem = cloneDeep(item)
-    newItem.validation.ignore_repeated_shapes = value
-    setQuestionData({ ...newItem })
+    const newItem = produce(item, (draft) => {
+      if (!draft.validation) {
+        draft.validation = {}
+      }
+      if (prop === 'ponitsOnAnEquation' && !value) {
+        draft.validation.points = null
+        draft.validation.latex = null
+        draft.validation.apiLatex = null
+      } else if (prop === 'ponitsOnAnEquation' && isObject(value)) {
+        draft.validation = {
+          ...draft.validation,
+          ...value,
+        }
+      } else {
+        draft.validation[prop] = value
+      }
+      draft.validation.compareStartAndLength =
+        draft.validation.compareLength && draft.validation.compareStartPoint
+
+      draft.validation = pickBy(draft.validation, identity)
+    })
+    setQuestionData(newItem)
   }
 
-  handleSelectIgnoreLabels = (value) => {
-    const { item, setQuestionData } = this.props
-    const newItem = cloneDeep(item)
-    newItem.validation.ignoreLabels = value
-    setQuestionData({ ...newItem })
+  get optionsForEvaluation() {
+    const { item } = this.props
+    const validation = get(item, 'validation', {})
+
+    return omit(validation, [
+      'altResponses',
+      'scoringType',
+      'validResponse',
+      'rounding',
+      'graphType',
+    ])
   }
 
   get showBackgroundShapes() {
@@ -495,18 +512,15 @@ class Graph extends Component {
                   graphData={item}
                   previewTab={previewTab}
                   onAddAltResponses={this.handleAddAltResponses}
-                  getIgnoreLabelsOptions={getIgnoreLabelsOptions}
                   onRemoveAltResponses={this.handleRemoveAltResponses}
-                  handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
-                  getIgnoreRepeatedShapesOptions={
-                    getIgnoreRepeatedShapesOptions
-                  }
-                  handleSelectIgnoreRepeatedShapes={
-                    this.handleSelectIgnoreRepeatedShapes
-                  }
                   handleNumberlineChange={this.handleNumberlineChange}
                   onChangeKeypad={this.handleKeypadMode}
                   symbols={symbols}
+                />
+                <EvaluationSettings
+                  method={GRAPH_EVALUATION_SETTING}
+                  options={this.optionsForEvaluation}
+                  changeOptions={this.handleChangeEvaluationOption}
                 />
               </Question>
 

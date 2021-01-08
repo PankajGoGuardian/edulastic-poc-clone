@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import CheckOption from './CheckOption'
 import InputOption from './InputOption'
 import DropdownSingle from './DropdownSingle'
@@ -8,13 +9,23 @@ import AllowedVariables from './AllowedVariables'
 import Units from './Units'
 import InlineCheckOptions from './InlineCheckOptions'
 import MultipleValues from './MultipleValues'
+import PonitsOnAnEquation from './PonitsOnAnEquation'
 
 const textStyle = ['tolerance', 'isIn', 'satisfies']
 const numberStyle = ['significantDecimalPlaces']
 const dropdownSingleOpt = ['setDecimalSeparator']
 const dropdownArray = ['setThousandsSeparator']
 const radioStyle = ['interpret', 'equationForms', 'numberFormat']
-const inlineOptions = ['fractionForms', 'expressionForms', 'accuracyForms']
+const inlineOptions = [
+  'fractionForms',
+  'expressionForms',
+  'accuracyForms',
+  'graphSegmentChecks',
+  'graphLineChecks',
+  'graphPolygonChecks',
+  'graphMiscellaneous',
+  'graphPointsOnAnEquation',
+]
 
 const EvaluationOption = ({
   options,
@@ -22,7 +33,7 @@ const EvaluationOption = ({
   useTemplate,
   allowedVariables,
   allowNumericOnly,
-  onChange,
+  onChangeRadio,
   onChangeOption,
   onChangeAllowedOptions,
 }) => {
@@ -76,7 +87,7 @@ const EvaluationOption = ({
       <RadioOption
         optionKey={optionKey}
         options={options}
-        onChange={onChange}
+        onChange={onChangeRadio}
       />
     )
   }
@@ -101,6 +112,15 @@ const EvaluationOption = ({
       />
     )
   }
+  if (optionKey === 'graphPointsOnAnEquation') {
+    return (
+      <PonitsOnAnEquation
+        optionKey={optionKey}
+        options={options}
+        onChange={onChangeOption}
+      />
+    )
+  }
   if (inlineOptions.includes(optionKey)) {
     return (
       <InlineCheckOptions
@@ -117,6 +137,14 @@ const EvaluationOption = ({
       onChange={onChangeOption}
     />
   )
+}
+
+EvaluationOption.propTypes = {
+  onChangeRadio: PropTypes.func,
+}
+
+EvaluationOption.defaultProps = {
+  onChangeRadio: () => null,
 }
 
 export default EvaluationOption

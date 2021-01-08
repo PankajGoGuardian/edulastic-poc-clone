@@ -438,6 +438,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
       }
       const user = pick(_result, userPickFields)
       yield put(signupSuccessAction(user))
+      window.localStorage.setItem('author:dashboard:version', 0)
       yield put(hideJoinSchoolAction())
       yield put(fetchDashboardTiles())
     }
@@ -459,6 +460,7 @@ function* joinSchoolSaga({ payload = {} }) {
     }
     const user = pick(result, userPickFields)
     yield put(signupSuccessAction(user))
+    window.localStorage.setItem('author:dashboard:version', 0)
     yield put(hideJoinSchoolAction())
     yield put(fetchDashboardTiles())
   } catch (err) {

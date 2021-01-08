@@ -24,7 +24,7 @@ import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import { withNamespaces } from '@edulastic/localization'
 import { Form, Icon, Input, Select, Tag, Modal } from 'antd'
 import produce from 'immer'
-import { isEqual, map, omit, get } from 'lodash'
+import { isEqual, map, omit, get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -71,7 +71,6 @@ class ProfileBody extends React.Component {
     defaultGrades: [],
     defaultSubjects: [],
     autoShareGCAssignment: undefined,
-    showDefaultSettingSave: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -261,6 +260,7 @@ class ProfileBody extends React.Component {
       isPowerTeacher,
     } = this.state
     const { role } = user
+
     const orgType =
       role === roleuser.DISTRICT_ADMIN
         ? 'district'
@@ -274,20 +274,25 @@ class ProfileBody extends React.Component {
     if (role === roleuser.SCHOOL_ADMIN) {
       orgId = user.institutionIds[0]
     }
-    const settingsToUpdate = {
+    let settingsToUpdate = {
       orgId,
       orgType,
-      defaultGrades,
-      defaultSubjects,
       autoShareGCAssignment,
       isPowerTeacher,
     }
+
+    if (!isEmpty(defaultSubjects)) {
+      settingsToUpdate = { ...settingsToUpdate, defaultSubjects }
+    }
+
+    if (!isEmpty(defaultGrades)) {
+      settingsToUpdate = { ...settingsToUpdate, defaultGrades }
+    }
+
     updateDefaultSettings(settingsToUpdate)
-    this.setState({ showDefaultSettingSave: false })
   }
 
   onSettingChange = (value, field) => {
-    this.setState({ showDefaultSettingSave: true })
     switch (field) {
       case 'grade': {
         this.setState({ defaultGrades: value })
@@ -586,7 +591,6 @@ class ProfileBody extends React.Component {
       defaultGrades = [],
       defaultSubjects = [],
       autoShareGCAssignment = false,
-      showDefaultSettingSave = false,
       interestedCurriculums,
     } = this.state
     // checking if institution policy/ district policy is enabled
@@ -602,7 +606,14 @@ class ProfileBody extends React.Component {
       curriculums: interestedCurriculums,
     }
     const { features, role } = user
+    const { defaultGrades: userGrades, defaultSubjects: userSubjects } = get(
+      user,
+      'orgData'
+    )
     let showPowerTools = false
+    const showDefaultSettingSave =
+      !isEqual(userGrades, defaultGrades) ||
+      !isEqual(userSubjects, defaultSubjects)
 
     if (
       [
@@ -830,6 +841,7 @@ class ProfileBody extends React.Component {
                     data-cy="gradeSelect"
                     mode="multiple"
                     size="large"
+                    value={defaultGrades}
                     placeholder="Please select"
                     defaultValue={defaultGrades}
                     onChange={(value) => this.onSettingChange(value, 'grade')}
@@ -855,6 +867,7 @@ class ProfileBody extends React.Component {
                     size="large"
                     margin="0px 0px 15px"
                     placeholder="Please select"
+                    value={defaultSubjects}
                     defaultValue={defaultSubjects}
                     onChange={(value) => this.onSettingChange(value, 'subject')}
                     optionFilterProp="children"
@@ -940,7 +953,10 @@ class ProfileBody extends React.Component {
             width="90%"
             style={{ maxWidth: 1100 }}
           >
-            <JoinSchool userInfo={userInfo} fromUserProfile />
+            <JoinSchool
+              userInfo={userInfo}
+              fromUserProfile={!isEmpty(userInfo.orgData.districtIds)}
+            />
           </StyledModal>
         )}
       </MainContentWrapper>

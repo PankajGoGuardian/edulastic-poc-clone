@@ -113,7 +113,8 @@ const HeaderSection = ({
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
-  const { user: userInfo, signupStatus } = user
+  const { user: userInfo } = user
+  const { currentSignUpState } = userInfo
   const premium = userInfo?.features?.premium
 
   useEffect(() => {
@@ -166,7 +167,7 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
-        {signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL && (
+        {currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <StyledLink data-cy="completeSignup" onClick={handleClick}>
@@ -175,7 +176,7 @@ const HeaderSection = ({
             )}
           />
         )}
-        {signupStatus === signUpState.DONE && (
+        {currentSignUpState === signUpState.DONE && (
           <>
             <Tooltip title="Launch Google Meet">
               <StyledEduButton

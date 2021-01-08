@@ -47,10 +47,10 @@ import {
 import Annotations from '../Annotations/Annotations'
 
 import Question from '../Question'
-import EvaluationSettings from '../EvaluationSettings'
 import { Subtitle } from '../../styled/Subtitle'
 import { Col } from '../../styled/WidgetOptions/Col'
 import { Row } from '../../styled/WidgetOptions/Row'
+import EvaluationSettings from '../EvaluationSettings'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
@@ -422,6 +422,12 @@ class Graph extends Component {
     ])
   }
 
+  get showBackgroundShapes() {
+    const { item } = this.props
+    const { graphType } = item
+    return ['axisSegments', 'axisLabels'].indexOf(graphType) === -1
+  }
+
   render() {
     const answerContextConfig = this.context
     const {
@@ -532,36 +538,38 @@ class Graph extends Component {
                 />
               </Question>
 
-              <Question
-                section="main"
-                label="Background Shapes"
-                cleanSections={cleanSections}
-                fillSections={fillSections}
-                deskHeight={item.uiStyle?.layoutHeight}
-                advancedAreOpen
-              >
-                <Subtitle
-                  id={getFormattedAttrId(
-                    `${item?.title}-${t(
-                      'component.graphing.background_shapes'
-                    )}`
-                  )}
+              {this.showBackgroundShapes && (
+                <Question
+                  section="main"
+                  label="Background Shapes"
+                  cleanSections={cleanSections}
+                  fillSections={fillSections}
+                  deskHeight={item.uiStyle?.layoutHeight}
+                  advancedAreOpen
                 >
-                  {t('component.graphing.background_shapes')}
-                </Subtitle>
-                <Row>
-                  <Col md={24}>
-                    <GraphDisplay
-                      view={EDIT}
-                      advancedElementSettings
-                      graphData={item}
-                      onChange={this.handleBgShapesChange}
-                      elements={item.background_shapes}
-                      bgShapes
-                    />
-                  </Col>
-                </Row>
-              </Question>
+                  <Subtitle
+                    id={getFormattedAttrId(
+                      `${item?.title}-${t(
+                        'component.graphing.background_shapes'
+                      )}`
+                    )}
+                  >
+                    {t('component.graphing.background_shapes')}
+                  </Subtitle>
+                  <Row>
+                    <Col md={24}>
+                      <GraphDisplay
+                        view={EDIT}
+                        advancedElementSettings
+                        graphData={item}
+                        onChange={this.handleBgShapesChange}
+                        elements={item.background_shapes}
+                        bgShapes
+                      />
+                    </Col>
+                  </Row>
+                </Question>
+              )}
 
               {advancedLink}
 

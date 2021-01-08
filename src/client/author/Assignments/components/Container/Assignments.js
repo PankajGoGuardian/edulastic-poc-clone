@@ -348,7 +348,7 @@ class Assignments extends Component {
           isAdvancedView={isAdvancedView}
         />
         <Container padding="30px">
-          <FlexContainer>
+          <FlexContainer height="100%">
             <Main>
               {window.innerWidth >= tabletWidth ? (
                 <>

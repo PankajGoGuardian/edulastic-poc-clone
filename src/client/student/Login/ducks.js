@@ -40,6 +40,7 @@ import { userPickFields } from '../../common/utils/static/user'
 import {
   signupDistrictPolicySelector,
   signupGeneralSettingsSelector,
+  updateUserSignupStateAction,
 } from '../Signup/duck'
 import { getUser } from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
@@ -50,6 +51,10 @@ import {
   removeLoadingComponentAction,
 } from '../../author/src/actions/authorUi'
 import appConfig from '../../../app-config'
+import {
+  schoologySyncAssignmentAction,
+  schoologySyncAssignmentGradesAction,
+} from '../../author/src/actions/assignments'
 
 // types
 export const LOGIN = '[auth] login'
@@ -613,8 +618,8 @@ export default createReducer(initialState, {
     state.updatingDefaultSettings = false
     const { defaultGrades, defaultSubjects, autoShareGCAssignment } = payload
     Object.assign(state.user.orgData, {
-      defaultGrades,
-      defaultSubjects,
+      defaultGrades: defaultGrades || [],
+      defaultSubjects: defaultSubjects || [],
       autoShareGCAssignment,
     })
   },
@@ -1154,7 +1159,7 @@ export function* fetchUser({ payload }) {
         !isPartOfLoginRoutes() &&
         !window.location.pathname.includes('home/group')
       ) {
-        window.location.replace('/')
+        yield put(push('/login'))
       }
       return
     }
@@ -1266,13 +1271,7 @@ function* logout() {
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }
-      const version = localStorage.getItem('author:dashboard:version')
-      const configurableTiles = localStorage.getItem('author:dashboard:tiles')
       localStorage.clear()
-      if (version && configurableTiles) {
-        localStorage.setItem('author:dashboard:tiles', configurableTiles)
-        localStorage.setItem('author:dashboard:version', version)
-      }
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
@@ -1280,7 +1279,7 @@ function* logout() {
       sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()
-      TokenStorage.removeTokens()
+      TokenStorage.removeAllTokens()
       yield put({ type: 'RESET' })
       yield call(redirectToUrl, getSignOutUrl())
       removeSignOutUrl()
@@ -1303,6 +1302,7 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
+  localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
   let districtId
   if (generalSettings) {
@@ -1347,6 +1347,7 @@ function* googleLogin({ payload }) {
     }
 
     const res = yield call(authApi.googleLogin, params)
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({
@@ -1416,6 +1417,7 @@ function* googleSSOLogin({ payload }) {
 }
 
 function* msoLogin({ payload }) {
+  localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
   let districtId
   if (generalSettings) {
@@ -1454,6 +1456,7 @@ function* msoLogin({ payload }) {
       })
     }
     const res = yield call(authApi.msoLogin)
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ msg: get(e, 'response.data.message', 'MSO Login failed') })
@@ -1526,6 +1529,7 @@ function* cleverLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.cleverLogin)
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'cleverLoginFailed' })
@@ -1587,6 +1591,7 @@ function* atlasLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.atlasLogin, params)
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'atlasLoginFailed' })
@@ -1645,7 +1650,7 @@ function* newselaLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.newselaLogin, params)
-
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'newselaLoginFailed' })
@@ -1712,6 +1717,24 @@ function* getUserData({ payload: res }) {
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
+      // if redirect is happening for LCB and user did action schoology sync
+      const schoologySync = localStorage.getItem('schoologyShare')
+      if (redirectUrl.include('classboard')) {
+        const fragments = redirectUrl.split('/')
+        const assignmentId = fragments[3]
+        const classSectionId = fragments[4]
+        if (schoologySync === 'grades') {
+          schoologySyncAssignmentGradesAction({
+            assignmentIds: [assignmentId],
+            groupId: classSectionId,
+          })
+        } else if (schoologySync === 'assignment') {
+          schoologySyncAssignmentAction({
+            assignmentIds: [assignmentId],
+            groupId: classSectionId,
+          })
+        }
+      }
       localStorage.removeItem('loginRedirectUrl')
       // yield call(redirectToUrl, redirectUrl)
       yield put(push(redirectUrl))
@@ -2032,6 +2055,7 @@ function* updateDefaultSettingsSaga({ payload }) {
       messageKey: 'defaultSettingsUpdatedSuccessfully',
     })
     yield put({ type: UPDATE_DEFAULT_SETTINGS_SUCCESS, payload })
+    yield put(updateUserSignupStateAction())
   } catch (e) {
     yield put({ type: UPDATE_DEFAULT_SETTINGS_FAILED })
     console.error(e)

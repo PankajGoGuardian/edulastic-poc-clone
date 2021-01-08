@@ -271,6 +271,12 @@ const Settings = ({
     if (key === 'scoreThreshold' && (value > 100 || value < 1)) {
       return
     }
+    if (key === 'scoreThreshold' && value === 100) {
+      return notification({
+        type: 'warn',
+        msg: 'Threshold value should be less than 100%',
+      })
+    }
 
     const newSettingsState = {
       ...assignmentSettings,
@@ -482,7 +488,7 @@ const Settings = ({
               <Col span={12}>
                 <AlignSwitchRight
                   disabled={forClassLevel || freezeSettings}
-                  defaultChecked={safeBrowser}
+                  checked={safeBrowser}
                   size="small"
                   onChange={(value) => overRideSettings('safeBrowser', value)}
                 />
@@ -530,7 +536,7 @@ const Settings = ({
                   <AlignSwitchRight
                     disabled={forClassLevel || freezeSettings}
                     size="small"
-                    defaultChecked={shuffleQuestions}
+                    checked={shuffleQuestions}
                     onChange={(value) =>
                       overRideSettings('shuffleQuestions', value)
                     }
@@ -559,7 +565,7 @@ const Settings = ({
                   <AlignSwitchRight
                     disabled={forClassLevel || freezeSettings}
                     size="small"
-                    defaultChecked={shuffleAnswers}
+                    checked={shuffleAnswers}
                     onChange={(value) =>
                       overRideSettings('shuffleAnswers', value)
                     }
@@ -912,7 +918,7 @@ const Settings = ({
                       <StyledRow mt="8px" mb="0px">
                         <InputNumber
                           min={1}
-                          max={100}
+                          max={99}
                           value={autoRedirectSettings.scoreThreshold || ''}
                           onChange={(value) =>
                             handleAutoRedirectSettingsChange(

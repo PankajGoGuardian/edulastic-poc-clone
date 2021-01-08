@@ -6,7 +6,10 @@ import {
   themeColorLighter,
   darkBlue2,
 } from '@edulastic/colors'
-import { testActivityStatus as testActivityStatusConstants } from '@edulastic/constants'
+import {
+  testActivityStatus as testActivityStatusConstants,
+  questionType,
+} from '@edulastic/constants'
 
 const { SUBMITTED } = testActivityStatusConstants
 
@@ -67,7 +70,7 @@ export const convertData = (
 
   data = testItems
     .reduce((acc, curr) => [...acc, ...get(curr, 'data.questions', [])], [])
-    .filter((x) => !x.scoringDisabled)
+    .filter((x) => !x.scoringDisabled && x.type !== questionType.SECTION_LABEL)
     .map((question, index) => {
       const { barLabel } = question
       const questionActivity = {

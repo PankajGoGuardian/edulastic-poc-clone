@@ -262,7 +262,7 @@ class ClassQuestions extends Component {
               icon: currentStudent.icon,
               color: currentStudent.color,
             }))
-            const label = labels[id]
+            const label = labels[id] || {}
             if (!item.itemLevelScoring && qActivities[0]) {
               if (
                 filter === 'correct' &&

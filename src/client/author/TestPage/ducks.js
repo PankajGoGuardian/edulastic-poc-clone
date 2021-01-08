@@ -100,7 +100,7 @@ const {
   ITEM_GROUP_DELIVERY_TYPES,
   completionTypes,
   releaseGradeLabels,
-  calculators,
+  calculatorTypes,
   evalTypeLabels,
   passwordPolicy,
 } = test
@@ -1475,12 +1475,13 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.safeBrowser = false
     settings.shuffleAnswers = false
     settings.shuffleQuestions = false
-    settings.calcType = calculators.NONE
+    settings.calcType = calculatorTypes.NONE
     settings.answerOnPaper = false
     settings.maxAnswerChecks = 0
     settings.scoringType = evalTypeLabels.PARTIAL_CREDIT
     settings.penalty = false
     settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
+    settings.timedAssignment = false
   }
 
   return settings

@@ -25,7 +25,7 @@ import { updateAssingnmentSettingsAction } from '../../../AssignTest/duck'
 const {
   completionTypes,
   releaseGradeLabels,
-  calculators,
+  calculatorTypes,
   evalTypeLabels,
   passwordPolicy,
 } = testContants
@@ -286,13 +286,14 @@ function* saveAssignment({ payload }) {
       assignmentSettings.safeBrowser = false
       assignmentSettings.shuffleAnswers = false
       assignmentSettings.shuffleQuestions = false
-      assignmentSettings.calcType = calculators.NONE
+      assignmentSettings.calcType = calculatorTypes.NONE
       assignmentSettings.answerOnPaper = false
       assignmentSettings.maxAnswerChecks = 0
       assignmentSettings.scoringType = evalTypeLabels.PARTIAL_CREDIT
       assignmentSettings.penalty = false
       assignmentSettings.passwordPolicy =
         passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
+      assignmentSettings.timedAssignment = false
     }
     const data = testIds.map((testId) =>
       omit(

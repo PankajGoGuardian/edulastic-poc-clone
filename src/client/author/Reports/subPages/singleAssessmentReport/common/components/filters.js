@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
@@ -84,8 +84,6 @@ const SingleAssessmentReportFilters = ({
   toggleFilter,
 }) => {
   const assessmentTypeRef = useRef()
-  const [selectedClass, setSelectedClass] = useState(null)
-  const [selectedGroup, setSelectedGroup] = useState(null)
 
   const performanceBandProfiles = get(SARFilterData, 'data.result.bandInfo', [])
   const standardProficiencyProfiles = get(
@@ -130,7 +128,7 @@ const SingleAssessmentReportFilters = ({
   }, [])
 
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
-    let search = pickBy(
+    const search = pickBy(
       qs.parse(location.search, { ignoreQueryPrefix: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
@@ -142,26 +140,21 @@ const SingleAssessmentReportFilters = ({
       })
       setShowApply(false)
     } else {
-      // get saved filters from backend
-      const savedFilters = get(SARFilterData, 'data.result.reportFilters')
       // select common assessment as default if assessment type is not set for admins
       if (
         user.role === roleuser.DISTRICT_ADMIN ||
         user.role === roleuser.SCHOOL_ADMIN
       ) {
-        search.assessmentTypes =
-          search.assessmentTypes ||
-          (savedFilters.assessmentTypes &&
-            savedFilters.assessmentTypes.join(',')) ||
-          'common assessment'
+        search.assessmentTypes = search.assessmentTypes || 'common assessment'
       }
-      if (firstLoad) {
-        search = {
-          termId: search.termId || savedFilters.termId,
-          subject: search.subject || savedFilters.testSubject,
-          grade: search.grade || savedFilters.testGrade,
-          ...search,
-        }
+      if (isStandardProficiencyRequired) {
+        search.standardsProficiencyProfile =
+          search.standardsProficiencyProfile ||
+          standardProficiencyProfiles[0]?._id
+      }
+      if (performanceBandRequired) {
+        search.performanceBandProfile =
+          search.performanceBandProfile || performanceBandProfiles[0]?._id
       }
       if (isStandardProficiencyRequired) {
         search.standardsProficiencyProfile =
@@ -188,7 +181,7 @@ const SingleAssessmentReportFilters = ({
         key: 'All',
         title: 'All Grades',
       }
-      const urlTestId = _testId || savedFilters?.testId || ''
+      const urlTestId = _testId || ''
       const obtainedFilters = {
         termId: urlSchoolYear.key,
         subject: urlSubject.key,
@@ -263,11 +256,6 @@ const SingleAssessmentReportFilters = ({
     setShowApply(true)
   }
 
-  const updateSearchableFilter = (selected, id, callback) => {
-    updateFilterDropdownCB(selected, id)
-    callback(selected)
-  }
-
   const standardProficiencyList = useMemo(
     () =>
       standardProficiencyProfiles.map((s) => ({ key: s._id, title: s.name })),
@@ -338,9 +326,11 @@ const SingleAssessmentReportFilters = ({
             <SearchField>
               <FilterLabel>Test</FilterLabel>
               <AssessmentAutoComplete
-                filters={filters}
                 firstLoad={firstLoad}
                 termId={filters.termId}
+                grade={filters.grade !== 'All' && filters.grade}
+                subject={filters.subject !== 'All' && filters.subject}
+                testTypes={filters.assessmentTypes}
                 selectedTestId={testId || getTestIdFromURL(location.pathname)}
                 selectCB={updateTestId}
               />
@@ -362,12 +352,12 @@ const SingleAssessmentReportFilters = ({
               </SearchField>
               <SearchField>
                 <TeacherAutoComplete
+                  termId={filters.termId}
+                  school={filters.schoolIds}
+                  testId={testId}
                   selectedTeacherIds={
                     filters.teacherIds ? filters.teacherIds.split(',') : []
                   }
-                  school={filters.schoolIds}
-                  testId={testId}
-                  termId={filters.termId}
                   selectCB={(e) =>
                     updateFilterDropdownCB(e.join(','), 'teacherIds', true)
                   }
@@ -376,7 +366,7 @@ const SingleAssessmentReportFilters = ({
             </>
           )}
           <SearchField>
-            <FilterLabel>Grade</FilterLabel>
+            <FilterLabel>Class Grade</FilterLabel>
             <ControlDropDown
               by={filters.studentGrade}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentGrade')}
@@ -386,7 +376,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Subject</FilterLabel>
+            <FilterLabel>Class Subject</FilterLabel>
             <ControlDropDown
               by={filters.studentSubject}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentSubject')}
@@ -407,20 +397,36 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Class</FilterLabel>
             <ClassAutoComplete
-              filters={filters}
-              selectedClass={selectedClass}
+              termId={filters.termId}
+              schoolIds={filters.schoolIds}
+              teacherIds={filters.teacherIds}
+              grade={filters.studentGrade !== 'All' && filters.studentGrade}
+              subject={
+                filters.studentSubject !== 'All' && filters.studentSubject
+              }
+              courseId={
+                filters.studentCourseId !== 'All' && filters.studentCourseId
+              }
               selectCB={(e) => {
-                updateSearchableFilter(e, 'classId', setSelectedClass)
+                updateFilterDropdownCB(e, 'classId')
               }}
             />
           </SearchField>
           <SearchField>
             <FilterLabel>Group</FilterLabel>
             <GroupsAutoComplete
-              filters={filters}
-              selectedGroup={selectedGroup}
+              termId={filters.termId}
+              schoolIds={filters.schoolIds}
+              teacherIds={filters.teacherIds}
+              grade={filters.studentGrade !== 'All' && filters.studentGrade}
+              subject={
+                filters.studentSubject !== 'All' && filters.studentSubject
+              }
+              courseId={
+                filters.studentCourseId !== 'All' && filters.studentCourseId
+              }
               selectCB={(e) => {
-                updateSearchableFilter(e, 'groupId', setSelectedGroup)
+                updateFilterDropdownCB(e, 'groupId')
               }}
             />
           </SearchField>

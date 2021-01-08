@@ -84,10 +84,13 @@ const handleSegmentDrag = (board, segment, position, isStacked = false) => {
   const isVertical = checkOrientation(board)
 
   ;[segment.point1, segment.point2].forEach((point) => {
-    point.on('drag', (e) => {
-      if (e.movementX === 0 && e.movementY === 0) {
-        return
-      }
+    point.on('drag', () => {
+      // don't use e.movementX === 0 && e.movementY === 0
+      // movementX and movementY are always zero on Safari
+      // it seems like the bug is in JSXGraph library
+      // https://snapwiz.atlassian.net/browse/EV-19969
+      // https://snapwiz.atlassian.net/browse/EV-23207
+
       const newPosition = getUpdatedPoint(
         board,
         point,
@@ -134,10 +137,12 @@ const handleSegmentDrag = (board, segment, position, isStacked = false) => {
     })
   })
 
-  segment.on('drag', (e) => {
-    if (e.movementX === 0 && e.movementY === 0) {
-      return
-    }
+  segment.on('drag', () => {
+    // don't use e.movementX === 0 && e.movementY === 0
+    // movementX and movementY are always zero on Safari
+    // it seems like the bug is in JSXGraph library
+    // https://snapwiz.atlassian.net/browse/EV-19969
+    // https://snapwiz.atlassian.net/browse/EV-23207
 
     const [coord1, coord2] = getUpdatedPointsCoords(
       board,

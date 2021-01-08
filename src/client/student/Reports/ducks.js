@@ -39,7 +39,10 @@ export const getClassIds = createSelectorator(
   ['user.user.orgData.classList'],
   (cls) => (cls || []).map((cl) => cl._id)
 )
-export const currentUserId = createSelectorator(['user.user._id'], (r) => r)
+export const currentUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (r, currentChild) => currentChild || r
+)
 
 export const FILTERS = {
   ALL: 'all',
@@ -216,7 +219,6 @@ export const getAllAssignmentsSelector = createSelector(
         }))
       })
       .filter((assignment) => isReport(assignment, classIds, userId))
-
     return assignments.sort((a, b) => {
       const a_report = a.reports.find((report) => !report.archived)
       const b_report = b.reports.find((report) => !report.archived)

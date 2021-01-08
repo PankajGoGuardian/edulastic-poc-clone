@@ -27,25 +27,24 @@ const PerformanceOverTime = ({
   error,
   toggleFilter,
 }) => {
-  // support for pagination from backend
+  // support for tests pagination from backend
   const [pageFilters, setPageFilters] = useState({
-    page: 1,
+    page: 0, // set to 0 initially to prevent multiple api request on tab change
     pageSize: 10,
   })
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0])
   const [selectedTests, setSelectedTests] = useState([])
 
+  // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
   }, [settings])
 
+  // get paginated data
   useEffect(() => {
-    const { termId, reportId } = settings.requestFilters
-    if (termId || reportId) {
-      getPerformanceOverTimeRequest({
-        ...settings.requestFilters,
-        ...pageFilters,
-      })
+    const q = { ...settings.requestFilters, ...pageFilters }
+    if ((q.termId || q.reportId) && pageFilters.page) {
+      getPerformanceOverTimeRequest(q)
     }
   }, [pageFilters])
 

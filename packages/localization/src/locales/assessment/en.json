@@ -97,6 +97,7 @@
       "lowercasealphabet": "Lowercase Alphabet",
       "uppercasealphabet": "Uppercase Alphabet",
       "numerical": "Numerical",
+      "hideNumeration": "Hide numeration",
       "top": "Top",
       "bottom": "Bottom",
       "right": "Right",

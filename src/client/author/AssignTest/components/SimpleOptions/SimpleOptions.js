@@ -308,9 +308,10 @@ class SimpleOptions extends React.Component {
       openPolicy = selectsData.openPolicyForAdmin
       closePolicy = selectsData.closePolicyForAdmin
     }
+    // premium flag will be true when atleast one class with premium grade/subject. So until premium is true dont show premium settings in assignments page
     const gradeSubject = {
-      grades: testSettings.grades,
-      subjects: testSettings.subjects,
+      grades: [],
+      subjects: [],
     }
     const classIds = get(assignment, 'class', []).map((item) => item._id)
     const studentOfSelectedClass = getListOfActiveStudents(students, classIds)

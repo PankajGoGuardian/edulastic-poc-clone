@@ -9,7 +9,6 @@ import qs from 'qs'
 import { Spin } from 'antd'
 import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
-import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import Classes from './components/Classes/Classes'
@@ -23,6 +22,8 @@ import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import ItemPurchaseModal from './components/ItemPurchaseModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -44,8 +45,11 @@ const MyClasses = ({
   windowWidth,
   resetTestFilters,
   resetPlaylistFilters,
+  collections,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
+  const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
+  const [purchaseModalData, setPurchaseModalData] = useState({})
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -76,7 +80,7 @@ const MyClasses = ({
 
   const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
-      hasNoInterestedFilters: true,
+      removeInterestedFilters: true,
     })
     const filter = qs.stringify(entries)
 
@@ -88,8 +92,33 @@ const MyClasses = ({
     history.push(`/author/${contentType}?${filter}`)
   }
 
-  const handleFeatureClick = ({ config = {}, tags = [] }) => {
+  const hasAccessToItemBank = (itemBankId) =>
+    collections.some((collection) => collection._id === itemBankId)
+
+  const handleBlockedClick = ({
+    hasTrial,
+    subscriptionData,
+    marketingData,
+  }) => {
+    setIsPurchaseModalVisible(true)
+    setPurchaseModalData({
+      hasTrial,
+      title: marketingData.title,
+      productId: subscriptionData.productId,
+      description: marketingData.description,
+    })
+  }
+
+  const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
+
+  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
+
+    if (isBlocked) {
+      handleBlockedClick(config)
+      return
+    }
+
     const content = contentType?.toLowerCase() || 'tests'
     if (tags.includes(PREMIUM_TAG)) {
       if (premiumUser) {
@@ -102,9 +131,27 @@ const MyClasses = ({
     }
   }
 
+  const getFeatureBundles = (bundles) =>
+    bundles.map((bundle) => {
+      const { subscriptionData } = bundle.config
+      if (!subscriptionData?.productId) {
+        return bundle
+      }
+
+      const { imageUrl: imgUrl, premiumImageUrl } = bundle
+      const isBlocked = !hasAccessToItemBank(subscriptionData.productId)
+      const imageUrl = isBlocked ? premiumImageUrl : imgUrl
+
+      return {
+        ...bundle,
+        imageUrl,
+        isBlocked,
+      }
+    })
+
   const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
   const bannerSlides = sortByOrder(BANNER || [])
-  const featuredBundles = sortByOrder(FEATURED || [])
+  const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
@@ -115,12 +162,9 @@ const MyClasses = ({
     window.open(data.externalUrl, '_blank')
   }
 
-  const bannerActionHandler = (filter = {}, description) => {
+  const bannerActionHandler = (filter = {}) => {
+    // NOTE: Actions might need further refactor
     const { action, data } = filter
-    segmentApi.trackUserClick({
-      user,
-      data: { event: `dashboard:banner-${description}:click` },
-    })
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)
@@ -166,18 +210,26 @@ const MyClasses = ({
           isBannerModalVisible={showBannerModal}
         />
       )}
-      {!loading && (
-        <Classes
-          activeClasses={allActiveClasses}
-          emptyBoxCount={classEmptyBoxCount}
-        />
-      )}
+      <Classes
+        activeClasses={allActiveClasses}
+        emptyBoxCount={classEmptyBoxCount}
+      />
       <FeaturedContentBundle
         featuredBundles={featuredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
+      {isPurchaseModalVisible && (
+        <ItemPurchaseModal
+          title={purchaseModalData.title}
+          description={purchaseModalData.description}
+          productId={purchaseModalData.productId}
+          hasTrial={purchaseModalData.hasTrial}
+          isVisible={isPurchaseModalVisible}
+          toggleModal={togglePurchaseModal}
+        />
+      )}
     </MainContentWrapper>
   )
 }
@@ -192,6 +244,7 @@ export default compose(
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      collections: getCollectionsSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

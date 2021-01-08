@@ -21,10 +21,12 @@ const handleVectorPointDrag = (
   let lastTruePosition = null
   const isVertical = checkOrientation(board)
 
-  point.on('drag', (e) => {
-    if (e.movementX === 0 && e.movementY === 0) {
-      return
-    }
+  point.on('drag', () => {
+    // don't use e.movementX === 0 && e.movementY === 0
+    // movementX and movementY are always zero on Safari
+    // it seems like the bug is in JSXGraph library
+    // https://snapwiz.atlassian.net/browse/EV-19969
+    // https://snapwiz.atlassian.net/browse/EV-23207
 
     const currentPosition = isVertical ? point.Y() : point.X()
     const coord = isVertical

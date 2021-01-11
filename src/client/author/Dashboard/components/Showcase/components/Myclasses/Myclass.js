@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -22,6 +22,7 @@ import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import { getCollectionsSelector } from '../../../../../src/selectors/user'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -43,6 +44,7 @@ const MyClasses = ({
   windowWidth,
   resetTestFilters,
   resetPlaylistFilters,
+  collections,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
 
@@ -105,6 +107,24 @@ const MyClasses = ({
   const bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(FEATURED || [])
 
+  const isEurekaMathActive = useMemo(
+    () =>
+      collections.some(
+        (itemBank) =>
+          itemBank.owner === 'Great Minds DATA' &&
+          itemBank.name === 'Eureka Math'
+      ),
+    [collections]
+  )
+
+  let filteredBundles = featuredBundles
+
+  if (isEurekaMathActive) {
+    filteredBundles = featuredBundles.filter(
+      (feature) => feature.description !== 'Engage NY'
+    )
+  }
+
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
     history.push(`/author/${data.contentType}?${filter}`)
@@ -147,7 +167,7 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getClassCardModular).fill(1)
     : []
 
-  const getFeatureCardModular = featuredBundles.length % GridCountInARow
+  const getFeatureCardModular = filteredBundles.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
@@ -169,7 +189,7 @@ const MyClasses = ({
         />
       )}
       <FeaturedContentBundle
-        featuredBundles={featuredBundles}
+        featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />
@@ -188,6 +208,7 @@ export default compose(
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      collections: getCollectionsSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

@@ -1,6 +1,6 @@
 import { black, themeColor, white } from '@edulastic/colors'
 import { AutoComplete, Icon } from 'antd'
-import { some } from 'lodash'
+import { some, throttle } from 'lodash'
 import React, { useImperativeHandle, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { TextInputStyled } from '@edulastic/common'
@@ -179,7 +179,7 @@ const RemoteAutocompleteDropDown = ({
     return arr
   }
 
-  const onSearch = (value) => {
+  const onSearch = throttle((value) => {
     if (value.length > 2) {
       let exactMatchFound = false
       const searchItem = data.filter((item) => item.title === value)
@@ -207,7 +207,7 @@ const RemoteAutocompleteDropDown = ({
     setText(value)
     textChangeStatusRef.current = true
     onSearchTextChange(value)
-  }
+  }, 500)
 
   const triggerChange = (changedValue) => {
     if (onChange) {
@@ -218,10 +218,13 @@ const RemoteAutocompleteDropDown = ({
   }
 
   const onBlur = () => {
-    setText(selected.title)
-    triggerChange(selected)
+    if (selected.title) {
+      setText(selected.title)
+      triggerChange(selected)
 
-    textChangeStatusRef.current = false
+      textChangeStatusRef.current = false
+    }
+    setDropDownData([])
   }
 
   const onSelect = (key, item) => {
@@ -236,18 +239,14 @@ const RemoteAutocompleteDropDown = ({
     textChangeStatusRef.current = false
   }
 
-  const _onChange = () => {
+  const _onChange = throttle(() => {
     if (textChangeStatusRef.current !== true) {
       autoRef.current.blur()
     }
-  }
+  }, 500)
 
   const onFocus = () => {
-    setText('')
-    triggerChange({ key: '', title: '' })
     setDropDownData(data)
-    setAddCreateNewOption(false)
-    textChangeStatusRef.current = true
   }
 
   const onDropdownVisibleChange = (open) => {

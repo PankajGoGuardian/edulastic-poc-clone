@@ -214,7 +214,7 @@ export const getFullNameFromString = (name) => {
 }
 
 export const getInitialsFromName = (obj) =>
-  obj.firstName[0] + (obj.lastName ? obj.lastName[0] : '')
+  (obj.firstName?.[0] || '') + (obj?.lastName?.[0] || '')
 
 export const getDistrictSignOutUrl = (generalSettings) => {
   if (generalSettings.orgType === 'institution') {

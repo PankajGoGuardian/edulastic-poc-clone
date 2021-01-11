@@ -370,6 +370,16 @@ class ShareModal extends React.Component {
     updateEmailNotificationData({ notificationMessage: value })
   }
 
+  handleCopyBlock = () => {
+    const { isPlaylist } = this.props
+    return notification({
+      type: 'warn',
+      msg: `Kindly enable ${
+        isPlaylist ? 'playlist' : 'test'
+      } share to copy the URL`,
+    })
+  }
+
   render() {
     const {
       sharedType,
@@ -449,6 +459,9 @@ class ShareModal extends React.Component {
           <ShareBlock>
             <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
             <FlexContainer>
+              {sharedUsersList.length === 0 && (
+                <CopyBlockLayer onClick={this.handleCopyBlock} />
+              )}
               <TitleCopy copyable={{ text: sharableURL }}>
                 <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
               </TitleCopy>
@@ -876,4 +889,9 @@ export const TitleCopy = styled(Paragraph)`
     height: 20px;
     color: ${themeColor};
   }
+`
+export const CopyBlockLayer = styled.div`
+  position: absolute;
+  width: 92%;
+  height: 45px;
 `

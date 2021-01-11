@@ -153,10 +153,11 @@ const MyClasses = ({
   const bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
 
-  const isEurekaMathActive = collections.filter(
-    (itemBank) =>
-      itemBank.owner === 'Great Minds DATA' && itemBank.name === 'Eureka Math'
-  )
+  const isEurekaMathActive =
+    collections.filter(
+      (itemBank) =>
+        itemBank.owner === 'Great Minds DATA' && itemBank.name === 'Eureka Math'
+    ) || []
 
   const filteredFeatureBundles = featuredBundles.filter(
     (feature) =>

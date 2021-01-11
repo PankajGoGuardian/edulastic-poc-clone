@@ -105,6 +105,16 @@ const MyClasses = ({
   const bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(FEATURED || [])
 
+  const isEurekaMathActive = collections.filter(
+    (itemBank) =>
+      itemBank.owner === 'Great Minds DATA' && itemBank.name === 'Eureka Math'
+  )
+
+  const filteredFeatureBundles = featuredBundles.filter(
+    (feature) =>
+      isEurekaMathActive.length > 0 && feature.description !== 'Engage NY'
+  )
+
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
     history.push(`/author/${data.contentType}?${filter}`)
@@ -147,7 +157,7 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getClassCardModular).fill(1)
     : []
 
-  const getFeatureCardModular = featuredBundles.length % GridCountInARow
+  const getFeatureCardModular = filteredFeatureBundles.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
@@ -169,7 +179,7 @@ const MyClasses = ({
         />
       )}
       <FeaturedContentBundle
-        featuredBundles={featuredBundles}
+        featuredBundles={filteredFeatureBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />

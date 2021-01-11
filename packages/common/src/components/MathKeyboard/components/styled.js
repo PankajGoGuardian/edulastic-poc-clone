@@ -111,4 +111,5 @@ export const Button = styled.div`
 export const Label = styled.span`
   white-space: nowrap;
   line-height: 1;
+  font-weight: ${({ fontWeight }) => fontWeight || 'normal'};
 `

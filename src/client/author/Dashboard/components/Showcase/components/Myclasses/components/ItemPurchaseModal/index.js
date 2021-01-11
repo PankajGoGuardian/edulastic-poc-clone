@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CustomModalStyled, EduButton } from '@edulastic/common'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import { Label } from '@edulastic/common/src/components/MathKeyboard/components/styled'
 
 const ItemPurchaseModal = ({
   title,
@@ -9,23 +10,23 @@ const ItemPurchaseModal = ({
   hasTrial,
   isVisible,
   toggleModal,
+  premiumUser,
 }) => {
-  const handlePurchase = () => {
+  const handleProceed = () => {
+    // Handle Itembank Trial
     console.log(productId)
   }
 
-  const handleTrial = () => {
-    console.log(productId)
-  }
+  const handleCancel = () => toggleModal(false)
 
   const Footer = (
     <>
       {hasTrial !== false && (
-        <EduButton isGhost onClick={handleTrial}>
-          Try for free
+        <EduButton isGhost onClick={handleCancel}>
+          Cancel
         </EduButton>
       )}
-      <EduButton onClick={handlePurchase}>Purchase</EduButton>
+      <EduButton onClick={handleProceed}>Proceed</EduButton>
     </>
   )
 
@@ -39,7 +40,18 @@ const ItemPurchaseModal = ({
       visible={isVisible}
       onCancel={closeModal}
     >
-      {description}
+      <div>{description}</div>
+      <FlexContainer
+        flexDirection="column"
+        marginLeft="40px"
+        mr="40px"
+        mt="20px"
+      >
+        {!premiumUser && !hasTrial && (
+          <Label fontWeight="600">Premium Trial</Label>
+        )}
+        <Label fontWeight="600">{productId} Trial</Label>
+      </FlexContainer>
     </CustomModalStyled>
   )
 }

@@ -46,7 +46,6 @@ class RequestSchoolForm extends React.Component {
       this.setState({
         stateList: statesWithCodes,
       })
-      form.setFieldsValue({ state: Object.keys(statesWithCodes)[0] })
     }
   }
 
@@ -69,7 +68,7 @@ class RequestSchoolForm extends React.Component {
     } = this.props
     const { getFieldDecorator } = form
     const { keyword, countryList, stateList } = this.state
-    const country = form.getFieldValue('country')
+    const country = form.getFieldValue('country') || 'US'
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -247,7 +246,6 @@ class RequestSchoolForm extends React.Component {
                 rules: [
                   { required: false, message: 'Please provide a valid state.' },
                 ],
-                initialValue: Object.keys(statesWithCodes)[0],
               })(
                 country === 'US' ? (
                   <SelectInputStyled

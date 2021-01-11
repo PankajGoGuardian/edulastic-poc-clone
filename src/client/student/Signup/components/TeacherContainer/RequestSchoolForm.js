@@ -148,6 +148,22 @@ class RequestSchoolForm extends React.Component {
                     }
 
                     try {
+                      let signOnMethod = 'userNameAndPassword'
+                      signOnMethod = userInfo.msoId
+                        ? 'office365SignOn'
+                        : signOnMethod
+                      signOnMethod = userInfo.cleverId
+                        ? 'cleverSignOn'
+                        : signOnMethod
+                      signOnMethod = userInfo.googleId
+                        ? 'googleSignOn'
+                        : signOnMethod
+                      const checkDistrictPolicyPayload = {
+                        districtId: value.key,
+                        email: userInfo.email,
+                        type: userInfo.role,
+                        signOnMethod,
+                      }
                       callback()
                       return
                     } catch (error) {

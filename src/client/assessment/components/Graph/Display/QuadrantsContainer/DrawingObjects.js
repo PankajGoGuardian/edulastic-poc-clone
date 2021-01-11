@@ -74,7 +74,7 @@ class DrawingObjects extends Component {
       hyperbola: () => <IconLine {...options} />,
       tangent: () => <IconLine {...options} />,
       secant: () => <IconLine {...options} />,
-      exponent: () => <IconLine {...options} />,
+      exp: () => <IconLine {...options} />,
       logarithm: () => <IconLine {...options} />,
       polynom: () => <IconLine {...options} />,
       parabola: () => <IconParabola {...options} />,

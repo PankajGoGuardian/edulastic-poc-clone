@@ -637,7 +637,7 @@ class GraphContainer extends PureComponent {
     'sine',
     'tangent',
     'secant',
-    'exponent',
+    'exp',
     'logarithm',
     'polynom',
     'hyperbola',

@@ -62,11 +62,7 @@ const SubHeader = ({
   }
 
   return (
-    <SecondaryHeader
-      style={{
-        marginBottom: isShowBreadcrumb ? 20 : 0,
-      }}
-    >
+    <SecondaryHeader style={{ marginBottom: isShowBreadcrumb ? 20 : 0 }}>
       <HeaderTitle>
         {isShowBreadcrumb ? (
           <Breadcrumb data={breadcrumbsData} style={{ position: 'unset' }} />
@@ -113,6 +109,8 @@ const SubHeader = ({
 export default SubHeader
 
 const HeaderTitle = styled.div`
+  min-width: 230px;
+  max-width: 280px;
   h1 {
     font-size: 25px;
     font-weight: bold;
@@ -131,6 +129,7 @@ const HeaderTitle = styled.div`
 
 const SecondaryHeader = styled.div`
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   @media print {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -153,18 +153,23 @@ const MyClasses = ({
   const bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
 
-  const isEurekaMathActive =
-    collections.filter(
-      (itemBank) =>
-        itemBank.owner === 'Great Minds DATA' && itemBank.name === 'Eureka Math'
-    ) || []
-
-  const filteredBundles = featuredBundles.filter(
-    (feature) => feature.description !== 'Engage NY'
+  const isEurekaMathActive = useMemo(
+    () =>
+      collections.some(
+        (itemBank) =>
+          itemBank.owner === 'Great Minds DATA' &&
+          itemBank.name === 'Eureka Math'
+      ),
+    [collections]
   )
 
-  const featureBundleList =
-    isEurekaMathActive.length > 0 ? filteredBundles : featuredBundles
+  let filteredBundles = featuredBundles
+
+  if (isEurekaMathActive) {
+    filteredBundles = featuredBundles.filter(
+      (feature) => feature.description !== 'Engage NY'
+    )
+  }
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
@@ -208,7 +213,7 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getClassCardModular).fill(1)
     : []
 
-  const getFeatureCardModular = featureBundleList.length % GridCountInARow
+  const getFeatureCardModular = filteredBundles.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
@@ -228,7 +233,7 @@ const MyClasses = ({
         emptyBoxCount={classEmptyBoxCount}
       />
       <FeaturedContentBundle
-        featuredBundles={featureBundleList}
+        featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />

@@ -282,7 +282,6 @@ const HeaderSection = ({
                     backgroundColor: darkOrange1,
                     border: 'none',
                   }}
-                  data-cy="manageClass"
                 >
                   <FontAwesomeIcon
                     icon={faExclamationTriangle}
@@ -294,7 +293,6 @@ const HeaderSection = ({
                 <EduButton
                   isBlue
                   style={{ marginLeft: '5px' }}
-                  data-cy="manageClass"
                   onClick={trackClick('dashboard:upgrade:click')}
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />

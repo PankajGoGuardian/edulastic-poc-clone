@@ -66,7 +66,9 @@ const BannerSlider = ({
                   onClick={() => bannerActionHandler(slide.config.filters[0])}
                 >
                   <LearnMore>LEARN MORE</LearnMore>
-                  <SlideDescription>{slide.description}</SlideDescription>
+                  <SlideDescription data-cy={slide.description}>
+                    {slide.description}
+                  </SlideDescription>
                 </Slides>
               ))}
             </SlideContainer>

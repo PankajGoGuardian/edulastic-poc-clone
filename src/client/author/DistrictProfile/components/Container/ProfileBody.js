@@ -600,14 +600,16 @@ class ProfileBody extends React.Component {
       curriculums: interestedCurriculums,
     }
     const { features, role } = user
-    const { defaultGrades: userGrades, defaultSubjects: userSubjects } = get(
-      user,
-      'orgData'
-    )
+    const {
+      defaultGrades: userGrades,
+      defaultSubjects: userSubjects,
+      autoShareGCAssignment: userAutoShareGCAssignment,
+    } = get(user, 'orgData')
     let showPowerTools = false
     const showDefaultSettingSave =
       !isEqual(userGrades, defaultGrades) ||
-      !isEqual(userSubjects, defaultSubjects)
+      !isEqual(userSubjects, defaultSubjects) ||
+      !isEqual(userAutoShareGCAssignment, autoShareGCAssignment)
 
     if (
       [

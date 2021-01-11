@@ -33,7 +33,6 @@ const Magnifier = ({
   enable,
   config: { width, height, scale },
   zoomedContent: ZoomedContent,
-  type,
   offset,
 }) => {
   const [setting, setSetting] = useState({
@@ -45,152 +44,133 @@ const Magnifier = ({
   })
   const clickedClassName = useRef()
   const ref = useRef()
-  useEffect(() => {
-    if (setting.dragging) {
-      document.addEventListener('mousemove', onMouseMove)
-      document.addEventListener('mouseup', onMouseUp)
-      handleSidebarScroll({
-        target: document.getElementsByClassName('scrollbar-container')[0],
-      })
-      handleScroll({
-        target: document.getElementsByClassName('scrollable-main-wrapper')[0],
-      })
-      handleDragElements()
-      handleHints()
-    }
-    if (
-      setting.windowWidth !== windowWidth ||
-      setting.windowHeight !== windowHeight
-    ) {
-      setSetting({
-        ...setting,
-        windowWidth,
-        windowHeight,
-        pos: {
-          x: windowWidth / 2 - width / 2,
-          y: windowHeight / 2 - height / 2,
-        },
-      })
-    }
 
-    return () => {
-      document?.removeEventListener('mousemove', onMouseMove)
-      document?.removeEventListener('mouseup', onMouseUp)
-    }
-  })
-
-  useEffect(() => {
-    const container = document.getElementsByClassName(
-      'scrollable-main-wrapper'
-    )[0]
-    container?.addEventListener('scroll', handleScroll)
-    const sideBar = document.getElementsByClassName('scrollbar-container')[0]
-    sideBar?.addEventListener('scroll', handleSidebarScroll)
-    document.addEventListener('click', hideElements)
-
-    // This is to attach events to dom elements after some moment
-    setTimeout(attachEvents, 1000)
-
-    return () => {
-      container?.removeEventListener('scroll', handleScroll)
-      sideBar?.removeEventListener('scroll', handleSidebarScroll)
-      document.removeEventListener('click', hideElements)
-
-      // This is to deattach events to dom elements after some moment
-      removeAttachedEvents()
-    }
-  }, [])
-
-  const attachEvents = () => {
-    copyDomOnClickOfElements.forEach((className) => {
-      const elms = document.querySelectorAll(
-        `.unzoom-container-wrapper .${className}`
-      )
-      elms.forEach((elm) => {
-        if (elm) {
-          elm.addEventListener('click', cloneDom(className))
-        }
-      })
-    })
-    copyDomOnHoverOfElements.forEach((className) => {
-      const elms = document.querySelectorAll(
-        `.unzoom-container-wrapper .${className}`
-      )
-      elms.forEach((elm) => {
-        if (elm) {
-          elm.addEventListener('mouseenter', cloneDom(className))
-          elm.addEventListener('mouseleave', cloneDom(className))
-        }
-      })
-    })
-    copyDomOnBlurOfElements.forEach((className) => {
-      const elms = document.querySelectorAll(
-        `.unzoom-container-wrapper .${className}`
-      )
-      elms.forEach((elm) => {
-        if (elm) {
-          elm.addEventListener('blur', cloneDom(className))
-        }
-      })
-    })
-
-    copyDOmOnScrollOfElements.forEach((className, i) => {
-      const elms = document.querySelectorAll(
-        `.unzoom-container-wrapper .${className}`
-      )
-      elms.forEach((elm) => {
-        if (elm) {
-          elm.addEventListener('scroll', scrollElement(className, i))
-        }
-      })
-    })
+  const handleScroll = (e) => {
+    document
+      .getElementsByClassName('test-item-col')[1]
+      ?.scrollTo(0, e.target.scrollTop)
   }
 
-  const removeAttachedEvents = () => {
-    copyDomOnClickOfElements.forEach((className) => {
-      const elms = document.querySelectorAll(
-        `.unzoom-container-wrapper .${className}`
-      )
-      elms.forEach((elm) => {
-        if (elm) {
-          elm.removeEventListener('click', cloneDom(className))
-        }
-      })
+  const onMouseMove = (e) => {
+    if (!setting.dragging) {
+      return
+    }
+    setSetting({
+      ...setting,
+      pos: {
+        x: e.pageX - setting.rel.x,
+        y: e.pageY - setting.rel.y,
+      },
     })
-
-    copyDomOnHoverOfElements.forEach((className) => {
-      const elms = document.querySelectorAll(
-        `.unzoom-container-wrapper .${className}`
-      )
-      elms.forEach((elm) => {
-        if (elm) {
-          elm.removeEventListener('mouseenter', cloneDom(className))
-          elm.removeEventListener('mouseleave', cloneDom(className))
-        }
-      })
-    })
-    copyDomOnBlurOfElements.forEach((className) => {
-      const elms = document.querySelectorAll(
-        `.unzoom-container-wrapper .${className}`
-      )
-      elms.forEach((elm) => {
-        if (elm) {
-          elm.removeEventListener('blur', cloneDom(className))
-        }
-      })
-    })
-
-    copyDOmOnScrollOfElements.forEach((className, i) => {
-      const elms = document.querySelectorAll(
-        `.unzoom-container-wrapper .${className}`
-      )
-      elms.forEach((elm) => {
-        if (elm) {
-          elm.removeEventListener('scroll', scrollElement(className, i))
-        }
-      })
-    })
+    e.stopPropagation()
+    e.preventDefault()
   }
+
+  const onMouseUp = (e) => {
+    setSetting({
+      ...setting,
+      dragging: false,
+    })
+    e.stopPropagation()
+    e.preventDefault()
+  }
+
+  const onMouseDown = (e) => {
+    if (e.button !== 0) {
+      return
+    }
+    const pos = ref.current.getBoundingClientRect()
+    setSetting({
+      ...setting,
+      dragging: true,
+      rel: {
+        x: e.pageX - pos.left,
+        y: e.pageY - pos.top,
+      },
+    })
+    // add Mouse move and up event on clicking the magnifier wrapper
+    document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
+
+    e.stopPropagation()
+    e.preventDefault()
+  }
+
+  const handleSidebarScroll = (e) =>
+    document
+      .getElementsByClassName('scrollbar-container')[1]
+      ?.scrollTo(0, e.target.scrollTop)
+
+  const handleDragElements = () => {
+    const dragElements = document.querySelectorAll(
+      '.zoomed-container-wrapper .react-draggable'
+    )
+    if (dragElements.length > 0) {
+      document
+        .querySelectorAll('.unzoom-container-wrapper .react-draggable')
+        .forEach((elm, i) => {
+          dragElements[i].style.transform = elm.style.transform
+        })
+    }
+  }
+
+  const handleHints = () => {
+    const dragElements = document.querySelectorAll(
+      '.zoomed-container-wrapper .hint-container'
+    )
+    if (dragElements.length > 0) {
+      document
+        .querySelectorAll('.unzoom-container-wrapper .hint-container')
+        .forEach((elm, i) => {
+          dragElements[i].innerHTML = elm.innerHTML
+        })
+    }
+  }
+
+  const hideElements = (e) => {
+    // THis work to copy dom if any attached event fired before
+
+    const className = clickedClassName.current
+    if (className) {
+      // copy after some time as to wait to fully render main container
+      setTimeout(() => {
+        const elm = document.querySelector(
+          `.unzoom-container-wrapper .${className}`
+        )
+        const zoomedElm = document.querySelector(
+          `.zoomed-container-wrapper .${className}`
+        )
+        if (elm && (e.target !== elm || !elm.contains(e.target))) {
+          if (zoomedElm) {
+            document.querySelector(
+              `.zoomed-container-wrapper`
+            ).innerHTML = document.querySelector(
+              `.unzoom-container-wrapper`
+            ).innerHTML
+          }
+        }
+      }, 1000)
+    }
+  }
+
+  const scrollQuestionLIst = (e) =>
+    document
+      .querySelector(
+        '.zoomed-container-wrapper .question-select-dropdown .ant-select-dropdown-menu'
+      )
+      ?.scrollTo(0, e.target.scrollTop)
+
+  const scrollParccReviewList = (e) =>
+    document
+      .querySelector('.zoomed-container-wrapper .parcc-question-list .ant-menu')
+      ?.scrollTo(0, e.target.scrollTop)
+
+  const scrollSabcQuestionList = (e) =>
+    document
+      .querySelector(
+        '.zoomed-container-wrapper .sabc-header-question-list .ant-dropdown-menu'
+      )
+      ?.scrollTo(0, e.target.scrollTop)
 
   const scrollElement = (className, index) => {
     const cls = className
@@ -277,119 +257,151 @@ const Magnifier = ({
       }
     }
   }
-  const hideElements = (e) => {
-    // THis work to copy dom if any attached event fired before
 
-    const className = clickedClassName.current
-    if (className) {
-      // copy after some time as to wait to fully render main container
-      setTimeout(() => {
-        const elm = document.querySelector(
-          `.unzoom-container-wrapper .${className}`
-        )
-        const zoomedElm = document.querySelector(
-          `.zoomed-container-wrapper .${className}`
-        )
-        if (elm && (e.target !== elm || !elm.contains(e.target))) {
-          if (zoomedElm) {
-            document.querySelector(
-              `.zoomed-container-wrapper`
-            ).innerHTML = document.querySelector(
-              `.unzoom-container-wrapper`
-            ).innerHTML
-          }
+  const removeAttachedEvents = () => {
+    copyDomOnClickOfElements.forEach((className) => {
+      const elms = document.querySelectorAll(
+        `.unzoom-container-wrapper .${className}`
+      )
+      elms.forEach((elm) => {
+        if (elm) {
+          elm.removeEventListener('click', cloneDom(className))
         }
-      }, 1000)
-    }
-  }
+      })
+    })
 
-  const handleScroll = (e) =>
-    document
-      .getElementsByClassName('scrollable-main-wrapper')[1]
-      ?.scrollTo(0, scale * e.target.scrollTop)
-  const handleSidebarScroll = (e) =>
-    document
-      .getElementsByClassName('scrollbar-container')[1]
-      ?.scrollTo(0, e.target.scrollTop)
-  const scrollQuestionLIst = (e) =>
-    document
-      .querySelector(
-        '.zoomed-container-wrapper .question-select-dropdown .ant-select-dropdown-menu'
+    copyDomOnHoverOfElements.forEach((className) => {
+      const elms = document.querySelectorAll(
+        `.unzoom-container-wrapper .${className}`
       )
-      ?.scrollTo(0, e.target.scrollTop)
-  const scrollParccReviewList = (e) =>
-    document
-      .querySelector('.zoomed-container-wrapper .parcc-question-list .ant-menu')
-      ?.scrollTo(0, e.target.scrollTop)
-  const scrollSabcQuestionList = (e) =>
-    document
-      .querySelector(
-        '.zoomed-container-wrapper .sabc-header-question-list .ant-dropdown-menu'
+      elms.forEach((elm) => {
+        if (elm) {
+          elm.removeEventListener('mouseenter', cloneDom(className))
+          elm.removeEventListener('mouseleave', cloneDom(className))
+        }
+      })
+    })
+    copyDomOnBlurOfElements.forEach((className) => {
+      const elms = document.querySelectorAll(
+        `.unzoom-container-wrapper .${className}`
       )
-      ?.scrollTo(0, e.target.scrollTop)
-
-  const onMouseDown = (e) => {
-    if (e.button !== 0) return
-    const pos = ref.current.getBoundingClientRect()
-    setSetting({
-      ...setting,
-      dragging: true,
-      rel: {
-        x: e.pageX - pos.left,
-        y: e.pageY - pos.top,
-      },
+      elms.forEach((elm) => {
+        if (elm) {
+          elm.removeEventListener('blur', cloneDom(className))
+        }
+      })
     })
-    e.stopPropagation()
-    e.preventDefault()
+
+    copyDOmOnScrollOfElements.forEach((className, i) => {
+      const elms = document.querySelectorAll(
+        `.unzoom-container-wrapper .${className}`
+      )
+      elms.forEach((elm) => {
+        if (elm) {
+          elm.removeEventListener('scroll', scrollElement(className, i))
+        }
+      })
+    })
   }
 
-  const onMouseUp = (e) => {
-    setSetting({
-      ...setting,
-      dragging: false,
+  const attachEvents = () => {
+    copyDomOnClickOfElements.forEach((className) => {
+      const elms = document.querySelectorAll(
+        `.unzoom-container-wrapper .${className}`
+      )
+      elms.forEach((elm) => {
+        if (elm) {
+          elm.addEventListener('click', cloneDom(className))
+        }
+      })
     })
-    e.stopPropagation()
-    e.preventDefault()
+    copyDomOnHoverOfElements.forEach((className) => {
+      const elms = document.querySelectorAll(
+        `.unzoom-container-wrapper .${className}`
+      )
+      elms.forEach((elm) => {
+        if (elm) {
+          elm.addEventListener('mouseenter', cloneDom(className))
+          elm.addEventListener('mouseleave', cloneDom(className))
+        }
+      })
+    })
+    copyDomOnBlurOfElements.forEach((className) => {
+      const elms = document.querySelectorAll(
+        `.unzoom-container-wrapper .${className}`
+      )
+      elms.forEach((elm) => {
+        if (elm) {
+          elm.addEventListener('blur', cloneDom(className))
+        }
+      })
+    })
+
+    copyDOmOnScrollOfElements.forEach((className, i) => {
+      const elms = document.querySelectorAll(
+        `.unzoom-container-wrapper .${className}`
+      )
+      elms.forEach((elm) => {
+        if (elm) {
+          elm.addEventListener('scroll', scrollElement(className, i))
+        }
+      })
+    })
   }
 
-  const onMouseMove = (e) => {
-    if (!setting.dragging) return
-    setSetting({
-      ...setting,
-      pos: {
-        x: e.pageX - setting.rel.x,
-        y: e.pageY - setting.rel.y,
-      },
-    })
-    e.stopPropagation()
-    e.preventDefault()
-  }
-
-  const handleDragElements = () => {
-    const dragElements = document.querySelectorAll(
-      '.zoomed-container-wrapper .react-draggable'
-    )
-    if (dragElements.length > 0) {
-      document
-        .querySelectorAll('.unzoom-container-wrapper .react-draggable')
-        .forEach((elm, i) => {
-          dragElements[i].style.transform = elm.style.transform
-        })
+  useEffect(() => {
+    if (setting.dragging) {
+      document.addEventListener('mousemove', onMouseMove)
+      document.addEventListener('mouseup', onMouseUp)
+      handleSidebarScroll({
+        target: document.getElementsByClassName('scrollbar-container')[0],
+      })
+      handleScroll({
+        target: document.getElementsByClassName('test-item-col')[0],
+      })
+      handleDragElements()
+      handleHints()
     }
-  }
-
-  const handleHints = () => {
-    const dragElements = document.querySelectorAll(
-      '.zoomed-container-wrapper .hint-container'
-    )
-    if (dragElements.length > 0) {
-      document
-        .querySelectorAll('.unzoom-container-wrapper .hint-container')
-        .forEach((elm, i) => {
-          dragElements[i].innerHTML = elm.innerHTML
-        })
+    if (
+      setting.windowWidth !== windowWidth ||
+      setting.windowHeight !== windowHeight
+    ) {
+      setSetting({
+        ...setting,
+        windowWidth,
+        windowHeight,
+        pos: {
+          x: windowWidth / 2 - width / 2,
+          y: windowHeight / 2 - height / 2,
+        },
+      })
     }
-  }
+
+    return () => {
+      document?.removeEventListener('mousemove', onMouseMove)
+      document?.removeEventListener('mouseup', onMouseUp)
+    }
+  })
+
+  useEffect(() => {
+    const container = document.getElementsByClassName('test-item-col')[0]
+    container?.addEventListener('scroll', handleScroll)
+    const sideBar = document.getElementsByClassName('scrollbar-container')[0]
+    sideBar?.addEventListener('scroll', handleSidebarScroll)
+    document.addEventListener('click', hideElements)
+
+    // This is to attach events to dom elements after some moment
+    setTimeout(attachEvents, 1000)
+
+    return () => {
+      container?.removeEventListener('scroll', handleScroll)
+      sideBar?.removeEventListener('scroll', handleSidebarScroll)
+      document.removeEventListener('click', hideElements)
+
+      // This is to deattach events to dom elements after some moment
+      removeAttachedEvents()
+    }
+  }, [])
 
   return (
     <>
@@ -399,19 +411,9 @@ const Magnifier = ({
           ref={ref}
           onMouseDown={onMouseDown}
           id="magnifier-wrapper"
-          style={{
-            border: `1px solid ${magnifierBorderColor}`,
-            width: `${width}px`,
-            height: `${height}px`,
-            borderRadius: '5px',
-            position: 'fixed',
-            overflow: 'hidden',
-            left: `${setting.pos.x}px`,
-            top: `${setting.pos.y}px`,
-            zIndex: 1050,
-            cursor: 'move',
-            background: 'white',
-          }}
+          magnifierWidth={width}
+          magnifierHeight={height}
+          pos={setting.pos}
         >
           <div
             style={{
@@ -421,8 +423,8 @@ const Magnifier = ({
               overflow: 'visible',
               position: 'absolute',
               display: 'block',
-              left: `${-(scale * setting.pos.x) - offset.left}px`,
-              top: `${-(scale * setting.pos.y) - offset.top}px`,
+              left: -(scale * setting.pos.x) - offset.left,
+              top: -(scale * setting.pos.y) - offset.top,
               transformOrigin: 'left top',
               userSelect: 'none',
               marginLeft: `-${width / scale}px`,
@@ -431,31 +433,12 @@ const Magnifier = ({
           >
             {(ZoomedContent && <ZoomedContent />) || children}
           </div>
-          <div
-            style={{
-              width: `${width}px`,
-              height: `${height}px`,
-              position: 'absolute',
-            }}
-          />
+          <MagnifierOverlay magnifierWidth={width} magnifierHeight={height} />
         </ZoomedWrapper>
       )}
     </>
   )
 }
-
-const ZoomedWrapper = styled.div`
-  main {
-    .test-item-preview {
-      overflow: auto !important;
-      .classification-preview {
-        * {
-          overflow: visible !important;
-        }
-      }
-    }
-  }
-`
 
 Magnifier.defaultProps = {
   enable: false,
@@ -469,15 +452,56 @@ Magnifier.defaultProps = {
     left: 0,
   },
 }
+
 Magnifier.propTypes = {
   children: PropTypes.node.isRequired,
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,
   enable: PropTypes.bool,
+  offset: PropTypes.shape({
+    top: PropTypes.number,
+    left: PropTypes.number,
+  }),
   config: PropTypes.shape({
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     scale: PropTypes.number.isRequired,
   }),
 }
+
 export default withWindowSizes(Magnifier)
+
+const ZoomedWrapper = styled.div.attrs(({ pos }) => ({
+  style: {
+    left: pos.x,
+    top: pos.y,
+  },
+}))`
+  border: 1px solid ${magnifierBorderColor};
+  width: ${({ magnifierWidth }) => magnifierWidth}px;
+  height: ${({ magnifierHeight }) => magnifierHeight}px;
+  border-radius: 5px;
+  position: fixed;
+  overflow: hidden;
+  z-index: 1050;
+  cursor: move;
+  background: white;
+
+  main {
+    .test-item-preview {
+      overflow: auto !important;
+      .classification-preview {
+        * {
+          overflow: visible !important;
+        }
+      }
+    }
+  }
+`
+
+const MagnifierOverlay = styled.div`
+  position: absolute;
+  z-index: 1500;
+  width: ${({ magnifierWidth }) => magnifierWidth}px;
+  height: ${({ magnifierHeight }) => magnifierHeight}px;
+`

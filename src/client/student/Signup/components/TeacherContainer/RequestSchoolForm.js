@@ -46,7 +46,6 @@ class RequestSchoolForm extends React.Component {
       this.setState({
         stateList: statesWithCodes,
       })
-      form.setFieldsValue({ state: Object.keys(statesWithCodes)[0] })
     }
   }
 
@@ -69,7 +68,7 @@ class RequestSchoolForm extends React.Component {
     } = this.props
     const { getFieldDecorator } = form
     const { keyword, countryList, stateList } = this.state
-    const country = form.getFieldValue('country')
+    const country = form.getFieldValue('country') || 'US'
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -149,22 +148,6 @@ class RequestSchoolForm extends React.Component {
                     }
 
                     try {
-                      let signOnMethod = 'userNameAndPassword'
-                      signOnMethod = userInfo.msoId
-                        ? 'office365SignOn'
-                        : signOnMethod
-                      signOnMethod = userInfo.cleverId
-                        ? 'cleverSignOn'
-                        : signOnMethod
-                      signOnMethod = userInfo.googleId
-                        ? 'googleSignOn'
-                        : signOnMethod
-                      const checkDistrictPolicyPayload = {
-                        districtId: value.key,
-                        email: userInfo.email,
-                        type: userInfo.role,
-                        signOnMethod,
-                      }
                       callback()
                       return
                     } catch (error) {
@@ -247,7 +230,7 @@ class RequestSchoolForm extends React.Component {
                 rules: [
                   { required: false, message: 'Please provide a valid state.' },
                 ],
-                initialValue: Object.keys(statesWithCodes)[0],
+                initialValue: undefined,
               })(
                 country === 'US' ? (
                   <SelectInputStyled

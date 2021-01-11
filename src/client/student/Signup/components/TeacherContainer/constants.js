@@ -52,7 +52,6 @@ export const states = [
 ]
 
 export const statesWithCodes = {
-  SS: 'Select your state',
   AK: 'Alaska',
   AL: 'Alabama',
   AZ: 'Arizona',

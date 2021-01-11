@@ -10,11 +10,11 @@
     { "key": "standardsProficiencyProfileId", "closable": false }
   ],
   "initialFilters": {
+    "reportId": "",
 		"termId": "",
     "courseIds": "",
     "grade": "All",
 		"subject": "All",
-		"classIds": "",
     "performanceBandProfileId": "",
     "standardsProficiencyProfileId": ""
 	},

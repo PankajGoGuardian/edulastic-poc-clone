@@ -45,6 +45,14 @@ const SubHeader = ({
     title === 'Performance by Standards' ||
     title === 'Student Profile Summary' ||
     title === 'Student Mastery Profile'
+  const demographicsRequired =
+    title === 'Sub-group Performance' ||
+    title === 'Performance By Standards' ||
+    title === 'Performance By Students' ||
+    title === 'Performance Over Time' ||
+    title === 'Peer Progress Analysis' ||
+    title === 'Student Progress' ||
+    title === 'Standards Gradebook'
 
   const setShowFilter = (status) => {
     onRefineResultsCB(null, status)
@@ -71,6 +79,7 @@ const SubHeader = ({
           setShowApply={setShowApply}
           performanceBandRequired={performanceBandRequired}
           standardProficiencyRequired={standardProficiencyRequired}
+          demographicsRequired={demographicsRequired}
         />
       ) : null}
       {!isSharedReport && onRefineResultsCB && isMultipleAssessmentReport ? (
@@ -79,6 +88,7 @@ const SubHeader = ({
           setShowFilter={setShowFilter}
           setShowApply={setShowApply}
           performanceBandRequired={performanceBandRequired}
+          demographicsRequired={demographicsRequired}
         />
       ) : null}
       {!isSharedReport && onRefineResultsCB && isStandardMasteryReport ? (
@@ -87,6 +97,7 @@ const SubHeader = ({
           showFilter={showFilter}
           setShowFilter={setShowFilter}
           setShowApply={setShowApply}
+          demographicsRequired={demographicsRequired}
         />
       ) : null}
       {!isSharedReport && onRefineResultsCB && isStudentProfileReport ? (

@@ -31,8 +31,6 @@ import {
   getReportsSARFilterData,
   getFiltersAndTestIdSelector,
   setFiltersOrTestIdAction,
-  getTagsDataSelector,
-  setTagsDataAction,
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
   getPerformanceBandProfile,
@@ -555,7 +553,6 @@ const enhance = compose(
       loading: getReportsSARFilterLoadingState(state),
       SARFilterData: getReportsSARFilterData(state),
       filtersAndTestId: getFiltersAndTestIdSelector(state),
-      tagsData: getTagsDataSelector(state),
       role: getUserRole(state),
       districtId: getUserOrgId(state),
       user: getUser(state),
@@ -566,7 +563,6 @@ const enhance = compose(
     {
       getSARFilterDataRequest: getSARFilterDataRequestAction,
       setFiltersOrTestId: setFiltersOrTestIdAction,
-      setTagsData: setTagsDataAction,
       setPrevSARFilterData: setPrevSARFilterDataAction,
     }
   )

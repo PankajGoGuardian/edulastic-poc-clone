@@ -15,9 +15,15 @@
     { "key": "curriculumId", "closable": false },
     { "key": "standardGrade", "closable": true, "subType": "standard" },
     { "key": "profileId", "closable": false },
-    { "key": "domainIds", "closable": true }
+    { "key": "domainIds", "closable": true },
+    { "key": "race", "closable": true },
+    { "key": "gender", "closable": true },
+    { "key": "iepStatus", "closable": true },
+    { "key": "frlStatus", "closable": true },
+    { "key": "ellStatus", "closable": true }
   ],
   "initialFilters": {
+    "reportId": "",
     "termId": "",
     "schoolIds": "",
     "teacherIds": "",
@@ -33,6 +39,13 @@
     "standardGrade": "All",
     "profileId": "",
     "domainIds": []
+  },
+  "initialDdFilters": {
+    "race": "all",
+    "gender": "all",
+    "iepStatus": "all",
+    "frlStatus": "all",
+    "ellStatus": "all"
   },
   "subjects": [
     { "key": "All", "title": "All Subjects" },

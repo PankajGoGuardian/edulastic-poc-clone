@@ -29,10 +29,8 @@ import {
 import {
   getFiltersSelector,
   getTestIdSelector,
-  getTagsDataSelector,
   setFiltersAction,
   setTestIdAction,
-  setTagsDataAction,
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
   getPrevStandardsFiltersSelector,
@@ -445,7 +443,6 @@ const enhance = compose(
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
       testIds: getTestIdSelector(state) || [],
-      tagsData: getTagsDataSelector(state),
       user: getUser(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
@@ -455,7 +452,6 @@ const enhance = compose(
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,
       setFilters: setFiltersAction,
       setTestIds: setTestIdAction,
-      setTagsData: setTagsDataAction,
       setPrevStandardsFilters: setPrevStandardsFiltersAction,
     }
   )

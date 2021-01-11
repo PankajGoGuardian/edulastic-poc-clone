@@ -13,9 +13,15 @@
     { "key": "classId", "closable": true },
     { "key": "groupId", "closable": true },
     { "key": "standardsProficiencyProfile", "closable": false },
-    { "key": "performanceBandProfile", "closable": false }
+    { "key": "performanceBandProfile", "closable": false },
+    { "key": "race", "closable": true },
+    { "key": "gender", "closable": true },
+    { "key": "iepStatus", "closable": true },
+    { "key": "frlStatus", "closable": true },
+    { "key": "ellStatus", "closable": true }
   ],
   "initialFilters": {
+    "reportId": "",
     "termId": "",
     "grade": "All",
     "subject": "All",
@@ -29,6 +35,13 @@
     "groupId": "All",
     "standardsProficiencyProfile": "",
     "performanceBandProfile": ""
+  },
+  "initialDdFilters": {
+    "race": "all",
+    "gender": "all",
+    "iepStatus": "all",
+    "frlStatus": "all",
+    "ellStatus": "all"
   },
   "subjects": [
     { "key": "All", "title": "All Subjects" },

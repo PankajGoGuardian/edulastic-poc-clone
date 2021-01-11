@@ -26,6 +26,10 @@ import { setMARSettingsAction, getReportsMARSettings } from './ducks'
 import {
   getReportsMARFilterData,
   getMAFilterDemographics,
+  getTempDdFilterSelector,
+  setTempDdFilterAction,
+  getTagsDataSelector,
+  setTagsDataAction,
 } from './common/filterDataDucks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { getSharingState, setSharingStateAction } from '../../ducks'
@@ -53,6 +57,10 @@ const MultipleAssessmentReportContainer = (props) => {
     updateNavigation,
     onRefineResultsCB,
     MARFilterData: _MARFilterData,
+    tempDdFilter,
+    setTempDdFilter,
+    tagsData,
+    setTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
@@ -62,7 +70,6 @@ const MultipleAssessmentReportContainer = (props) => {
   const [firstLoad, setFirstLoad] = useState(true)
   const [MARFilterData, setMARFilterData] = useState({})
   const [ddfilter, setDdFilter] = useState({})
-  const [selectedExtras, setSelectedExtras] = useState({})
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
@@ -102,9 +109,9 @@ const MultipleAssessmentReportContainer = (props) => {
 
   useEffect(() => {
     if (!showApply) {
-      setDdFilter({ ...selectedExtras })
+      setDdFilter({ ...tempDdFilter })
     }
-  }, [showApply, selectedExtras])
+  }, [showApply, tempDdFilter])
 
   const computeChartNavigationLinks = (filt) => {
     if (navigation.locToData[pageTitle]) {
@@ -174,11 +181,15 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   const updateCB = (event, selected, comData) => {
-    setShowApply(true)
-    setSelectedExtras({
-      ...selectedExtras,
+    setTempDdFilter({
+      ...tempDdFilter,
       [comData]: selected.key === 'all' ? '' : selected.key,
     })
+    setTagsData({
+      ...tagsData,
+      [comData]: selected,
+    })
+    setShowApply(true)
   }
 
   const pageTitleList = [
@@ -195,7 +206,7 @@ const MultipleAssessmentReportContainer = (props) => {
               selectCB={updateCB}
               data={item.data}
               comData={item.key}
-              by={item.data[0]}
+              by={tempDdFilter[item.key] || item.data[0]}
             />
           </SearchField>
         ))
@@ -234,6 +245,8 @@ const MultipleAssessmentReportContainer = (props) => {
             reportId || !showFilter ? { display: 'none' } : { display: 'block' }
           }
           extraFilter={extraFilters}
+          tagsData={tagsData}
+          setTagsData={setTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}
@@ -306,12 +319,16 @@ const ConnectedMultipleAssessmentReportContainer = connect(
     demographics: getMAFilterDemographics(state),
     settings: getReportsMARSettings(state),
     MARFilterData: getReportsMARFilterData(state),
+    tempDdFilter: getTempDdFilterSelector(state),
+    tagsData: getTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
   }),
   {
     setMARSettings: setMARSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setTempDdFilter: setTempDdFilterAction,
+    setTagsData: setTagsDataAction,
     setSharingState: setSharingStateAction,
   }
 )(MultipleAssessmentReportContainer)

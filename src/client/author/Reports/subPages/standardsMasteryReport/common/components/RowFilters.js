@@ -18,6 +18,8 @@ import {
   setFiltersAction,
   getTestIdSelector,
   setTestIdAction,
+  getTempDdFilterSelector,
+  setTempDdFilterAction,
   getTagsDataSelector,
   setTagsDataAction,
   getReportsStandardsFilters,
@@ -28,23 +30,32 @@ import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
 
+const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
+
 const StandardsMasteryRowFilters = ({
   pageTitle,
   showFilter,
   setShowFilter,
   setShowApply,
+  demographicsRequired,
   loading,
   standardsFilters,
   filters,
   setFilters,
   testIds,
   setTestIds,
+  tempDdFilter,
+  setTempDdFilter,
   tagsData,
   setTagsData,
   interestedCurriculums,
   standardsPerformanceSummary,
   standardsGradebook,
 }) => {
+  const tagTypes = staticDropDownData.tagTypes.filter(
+    (t) => demographicsRequired || !ddFilterTypes.includes(t.key)
+  )
+
   // memoize curriculumsList for interested curriculums
   const curriculumsList = useMemo(() => {
     let _curriculums = []
@@ -132,6 +143,15 @@ const StandardsMasteryRowFilters = ({
         _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
         setTestIds(_testIds)
       }
+    }
+    // handles tempDdFilters
+    else if (ddFilterTypes.includes(type)) {
+      const _tempDdFilter = { ...tempDdFilter }
+      if (tempDdFilter[type] === key) {
+        _tempDdFilter[type] = staticDropDownData.initialDdFilters[type]
+        delete _tagsData[type]
+      }
+      setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
       // handles single selection filters
@@ -160,7 +180,7 @@ const StandardsMasteryRowFilters = ({
     <>
       <FilterTags
         tagsData={tagsData}
-        tagTypes={staticDropDownData.tagTypes}
+        tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
       />
       <StyledFilterWrapper
@@ -233,6 +253,7 @@ export default connect(
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),
     testIds: getTestIdSelector(state),
+    tempDdFilter: getTempDdFilterSelector(state),
     tagsData: getTagsDataSelector(state),
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
     standardsGradebook: getReportsStandardsGradebook(state),
@@ -240,6 +261,7 @@ export default connect(
   {
     setFilters: setFiltersAction,
     setTestIds: setTestIdAction,
+    setTempDdFilter: setTempDdFilterAction,
     setTagsData: setTagsDataAction,
   }
 )(StandardsMasteryRowFilters)

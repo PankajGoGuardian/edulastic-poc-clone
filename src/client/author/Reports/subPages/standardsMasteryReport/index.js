@@ -23,7 +23,13 @@ import {
 
 import { setSMRSettingsAction, getReportsSMRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { getSMRFilterDemographics } from './common/filterDataDucks'
+import {
+  getSMRFilterDemographics,
+  getTempDdFilterSelector,
+  setTempDdFilterAction,
+  getTagsDataSelector,
+  setTagsDataAction,
+} from './common/filterDataDucks'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import {
@@ -35,15 +41,7 @@ import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForSMR } from './common/utils'
 
 import navigation from '../../common/static/json/navigation.json'
-// import dropDownFormat from './standardsGradebook/static/json/dropDownFormat.json'
-
-const INITIAL_DD_FILTERS = {
-  gender: 'all',
-  frlStatus: 'all',
-  ellStatus: 'all',
-  iepStatus: 'all',
-  race: 'all',
-}
+import staticDropDownData from './common/static/json/staticDropDownData.json'
 
 const StandardsMasteryReportContainer = (props) => {
   const {
@@ -62,6 +60,10 @@ const StandardsMasteryReportContainer = (props) => {
     showFilter,
     interestedCurriculums,
     showApply,
+    tempDdFilter,
+    setTempDdFilter,
+    tagsData,
+    setTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
@@ -69,9 +71,8 @@ const StandardsMasteryReportContainer = (props) => {
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
-  const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS })
-  const [tempDdFilter, setTempDdFilter] = useState({
-    ...INITIAL_DD_FILTERS,
+  const [ddfilter, setDdFilter] = useState({
+    ...staticDropDownData.initialDdFilters,
   })
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
@@ -191,6 +192,10 @@ const StandardsMasteryReportContainer = (props) => {
       ...tempDdFilter,
       [comData]: selected.key,
     })
+    setTagsData({
+      ...tagsData,
+      [comData]: selected,
+    })
   }
 
   const extraFilters =
@@ -202,7 +207,7 @@ const StandardsMasteryReportContainer = (props) => {
               selectCB={updateCB}
               data={item.data}
               comData={item.key}
-              by={item.data[0]}
+              by={tempDdFilter[item.key] || item.data[0]}
             />
           </SearchField>
         ))
@@ -256,6 +261,8 @@ const StandardsMasteryReportContainer = (props) => {
             reportId || !showFilter ? { display: 'none' } : { display: 'block' }
           }
           extraFilters={extraFilters}
+          tagsData={tagsData}
+          setTagsData={setTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}
@@ -312,6 +319,8 @@ const ConnectedStandardsMasteryReportContainer = connect(
     role: getUserRole(state),
     demographics: getSMRFilterDemographics(state),
     settings: getReportsSMRSettings(state),
+    tempDdFilter: getTempDdFilterSelector(state),
+    tagsData: getTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
@@ -319,6 +328,8 @@ const ConnectedStandardsMasteryReportContainer = connect(
   {
     setSMRSettings: setSMRSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setTempDdFilter: setTempDdFilterAction,
+    setTagsData: setTagsDataAction,
     setSharingState: setSharingStateAction,
   }
 )(StandardsMasteryReportContainer)

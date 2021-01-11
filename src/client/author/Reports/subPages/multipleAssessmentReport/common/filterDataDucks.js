@@ -7,6 +7,8 @@ import { groupBy, get } from 'lodash'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
+import staticDropDownData from './static/staticDropDownData.json'
+
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST =
   '[reports] get reports mar filter data request'
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS =
@@ -18,6 +20,7 @@ const SET_REPORTS_PREV_MAR_FILTER_DATA =
 
 const SET_FILTERS = '[reports] set mar filters'
 const SET_TEST_ID = '[reports] set mar testId'
+const SET_TEMP_DD_FILTER = '[reports] set mar tempDdFilter'
 const SET_TAGS_DATA = '[reports] set mar tagsData'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
@@ -31,6 +34,7 @@ export const setPrevMARFilterDataAction = createAction(
 
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setTestIdAction = createAction(SET_TEST_ID)
+export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
 export const setTagsDataAction = createAction(SET_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -69,6 +73,11 @@ export const getTestIdSelector = createSelector(
   (state) => state.testId
 )
 
+export const getTempDdFilterSelector = createSelector(
+  stateSelector,
+  (state) => state.tempDdFilter
+)
+
 export const getTagsDataSelector = createSelector(
   stateSelector,
   (state) => state.tagsData
@@ -94,30 +103,16 @@ export const getMAFilterDemographics = createSelector(stateSelector, (state) =>
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
-/**
- * for any change made to filters in initial state
- * update tagTypes & initialFilters in staticDropDownData.json accordingly
- */
 const initialState = {
   MARFilterData: {},
   prevMARFilterData: null,
   filters: {
-    reportId: '',
-    termId: '',
-    subject: 'All',
-    studentSubject: 'All',
-    grade: 'All',
-    studentGrade: 'All',
-    courseId: 'All',
-    studentCourseId: 'All',
-    classId: 'All',
-    groupId: 'All',
-    schoolIds: '',
-    teacherIds: '',
-    assessmentTypes: '',
-    profileId: '',
+    ...staticDropDownData.initialFilters,
   },
   testId: [],
+  tempDdFilter: {
+    ...staticDropDownData.initialDdFilters,
+  },
   tagsData: {},
   loading: false,
 }
@@ -176,6 +171,9 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
   [SET_FILTERS]: setFiltersReducer,
   [SET_TEST_ID]: (state, { payload }) => {
     state.testId = payload
+  },
+  [SET_TEMP_DD_FILTER]: (state, { payload }) => {
+    state.tempDdFilter = payload
   },
   [SET_TAGS_DATA]: (state, { payload }) => {
     state.tagsData = payload

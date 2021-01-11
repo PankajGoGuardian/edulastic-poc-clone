@@ -8,6 +8,8 @@ import { notification } from '@edulastic/common'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
+import staticDropDownData from './static/staticDropDownData.json'
+
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST =
   '[reports] get reports sar filter data request'
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS =
@@ -20,6 +22,7 @@ const SET_REPORTS_PREV_SAR_FILTER_DATA =
   '[reports] set reports prev sar filter data'
 
 const SET_FILTERS_OR_TEST_ID = '[reports] set sar filters or testId'
+const SET_TEMP_DD_FILTER = '[reports] set sar tempDdFilter'
 const SET_TAGS_DATA = '[reports] set sar tagsData'
 
 const SET_PERFORMANCE_BAND_PROFILE = '[reports] set sar peformance band profile'
@@ -36,6 +39,8 @@ export const setPrevSARFilterDataAction = createAction(
 )
 
 export const setFiltersOrTestIdAction = createAction(SET_FILTERS_OR_TEST_ID)
+
+export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
 
 export const setTagsDataAction = createAction(SET_TAGS_DATA)
 
@@ -64,6 +69,11 @@ export const getReportsSARFilterData = createSelector(
 export const getFiltersAndTestIdSelector = createSelector(
   stateSelector,
   ({ filters, testId }) => ({ filters, testId })
+)
+
+export const getTempDdFilterSelector = createSelector(
+  stateSelector,
+  (state) => state.tempDdFilter
 )
 
 export const getTagsDataSelector = createSelector(
@@ -111,30 +121,14 @@ export const getStandardMasteryScale = createSelector(
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
-/**
- * for any change made to filters in initial state
- * update tagTypes & initialFilters in staticDropDownData.json accordingly
- */
 const initialState = {
   SARFilterData: {},
   prevSARFilterData: null,
   filters: {
-    reportId: '',
-    termId: '',
-    grade: 'All',
-    subject: 'All',
-    assessmentTypes: '',
-    schoolIds: '',
-    teacherIds: '',
-    studentGrade: 'All',
-    studentSubject: 'All',
-    studentCourseId: 'All',
-    classId: 'All',
-    groupId: 'All',
-    performanceBandProfile: '',
-    standardsProficiencyProfile: '',
+    ...staticDropDownData.initialFilters,
   },
   testId: '',
+  tempDdFilter: {},
   tagsData: {},
   loading: false,
 }
@@ -157,6 +151,9 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
       state.filters = filters
     }
     state.testId = testId
+  },
+  [SET_TEMP_DD_FILTER]: (state, { payload }) => {
+    state.tempDdFilter = payload
   },
   [SET_TAGS_DATA]: (state, { payload }) => {
     state.tagsData = payload

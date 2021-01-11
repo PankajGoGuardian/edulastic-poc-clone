@@ -36,8 +36,6 @@ import {
   setFiltersAction,
   getTestIdSelector,
   setTestIdAction,
-  getTagsDataSelector,
-  setTagsDataAction,
   getReportsPrevMARFilterData,
   setPrevMARFilterDataAction,
 } from '../../filterDataDucks'
@@ -446,7 +444,6 @@ const enhance = compose(
       MARFilterData: getReportsMARFilterData(state),
       filters: getFiltersSelector(state),
       testIds: getTestIdSelector(state),
-      tagsData: getTagsDataSelector(state),
       role: getUserRole(state),
       user: getUser(state),
       prevMARFilterData: getReportsPrevMARFilterData(state),
@@ -455,7 +452,6 @@ const enhance = compose(
       getMARFilterDataRequest: getMARFilterDataRequestAction,
       setFilters: setFiltersAction,
       setTestIds: setTestIdAction,
-      setTagsData: setTagsDataAction,
       setPrevMARFilterData: setPrevMARFilterDataAction,
     }
   )

@@ -58,7 +58,11 @@ const FilterTags = ({ tagsData, tagTypes = [], handleCloseTag }) => {
         getTags(type, subType, d, bodyArray, popOverArray, containerWidthObj)
       )
     }
-    if (typeof tagData === 'object' && tagData.key && tagData.key !== 'All') {
+    if (
+      typeof tagData === 'object' &&
+      tagData.key &&
+      tagData.key.toLowerCase() !== 'all'
+    ) {
       getTag(type, subType, tagData, bodyArray, popOverArray, containerWidthObj)
     }
   }

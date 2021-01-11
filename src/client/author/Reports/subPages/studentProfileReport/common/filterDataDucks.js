@@ -7,6 +7,8 @@ import { get } from 'lodash'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
+import staticDropDownData from './static/staticDropDownData.json'
+
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST =
   '[reports] get reports spr filter data request'
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST_SUCCESS =
@@ -140,13 +142,7 @@ const initialState = {
   SPRFilterData: {},
   studentList: [],
   filters: {
-    reportId: '',
-    termId: '',
-    courseIds: '',
-    grade: 'All',
-    subject: 'All',
-    performanceBandProfileId: '',
-    standardsProficiencyProfileId: '',
+    ...staticDropDownData.initialFilters,
   },
   student: {
     key: '',

@@ -8,6 +8,8 @@ import { notification } from '@edulastic/common'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
+import staticDropDownData from './static/json/staticDropDownData.json'
+
 const GET_REPORTS_STANDARDS_FILTERS_REQUEST =
   '[reports] get reports standards filters request'
 const GET_REPORTS_STANDARDS_FILTERS_REQUEST_SUCCESS =
@@ -19,6 +21,7 @@ const SET_REPORTS_PREV_STANDARDS_FILTERS =
 
 const SET_FILTERS = '[reports] set standards filters'
 const SET_TEST_ID = '[reports] set standards testId'
+const SET_TEMP_DD_FILTER = '[reports] set standards tempDdFilters'
 const SET_TAGS_DATA = '[reports] set standards tagsData'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
@@ -32,6 +35,7 @@ export const setPrevStandardsFiltersAction = createAction(
 
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setTestIdAction = createAction(SET_TEST_ID)
+export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
 export const setTagsDataAction = createAction(SET_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -63,6 +67,11 @@ export const getTestIdSelector = createSelector(
   (state) => state.testIds
 )
 
+export const getTempDdFilterSelector = createSelector(
+  stateSelector,
+  (state) => state.tempDdFilter
+)
+
 export const getTagsDataSelector = createSelector(
   stateSelector,
   (state) => state.tagsData
@@ -91,25 +100,13 @@ const initialState = {
   standardsFilters: {},
   prevStandardsFilters: null,
   filters: {
-    reportId: '',
-    termId: '',
-    schoolIds: '',
-    teacherIds: '',
-    subject: 'All',
-    grade: 'TK',
-    courseId: 'All',
-    classId: 'All',
-    groupId: 'All',
-    testSubject: 'All',
-    testGrade: 'All',
-    assessmentTypes: '',
-    curriculumId: '',
-    standardGrade: 'All',
-    profileId: '',
-    domainIds: [],
+    ...staticDropDownData.initialFilters,
+  },
+  testIds: [],
+  tempDdFilter: {
+    ...staticDropDownData.initialDdFilters,
   },
   tagsData: {},
-  testIds: [],
   loading: false,
 }
 
@@ -133,6 +130,9 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   },
   [SET_TEST_ID]: (state, { payload }) => {
     state.testIds = payload
+  },
+  [SET_TEMP_DD_FILTER]: (state, { payload }) => {
+    state.tempDdFilter = payload
   },
   [SET_TAGS_DATA]: (state, { payload }) => {
     state.tagsData = { ...payload }

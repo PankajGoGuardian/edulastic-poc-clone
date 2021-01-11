@@ -22,6 +22,7 @@ import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForSAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
+import staticDropDownData from './common/static/staticDropDownData.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import {
@@ -29,7 +30,13 @@ import {
   getReportsSARSettings,
   resetSARSettingsAction,
 } from './ducks'
-import { getSAFilterDemographics } from './common/filterDataDucks'
+import {
+  getSAFilterDemographics,
+  getTempDdFilterSelector,
+  setTempDdFilterAction,
+  getTagsDataSelector,
+  setTagsDataAction,
+} from './common/filterDataDucks'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
@@ -40,14 +47,6 @@ import {
   FilterLabel,
   FilterButtonClear,
 } from '../../common/styled'
-
-const INITIAL_DD_FILTERS = {
-  gender: 'all',
-  frlStatus: 'all',
-  ellStatus: 'all',
-  iepStatus: 'all',
-  race: 'all',
-}
 
 const SingleAssessmentReportContainer = (props) => {
   const {
@@ -67,6 +66,10 @@ const SingleAssessmentReportContainer = (props) => {
     setShowHeader,
     preventHeaderRender,
     demographics,
+    tempDdFilter,
+    setTempDdFilter,
+    tagsData,
+    setTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
@@ -76,9 +79,8 @@ const SingleAssessmentReportContainer = (props) => {
   const [isCliUser] = useState(
     cliUser || qs.parse(location.search, { ignoreQueryPrefix: true }).cliUser
   )
-  const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS })
-  const [selectedExtras, setSelectedExtras] = useState({
-    ...INITIAL_DD_FILTERS,
+  const [ddfilter, setDdFilter] = useState({
+    ...staticDropDownData.initialDdFilters,
   })
   const [customStudentUserId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).customStudentUserId
@@ -112,9 +114,9 @@ const SingleAssessmentReportContainer = (props) => {
 
   useEffect(() => {
     if (!showApply) {
-      setDdFilter({ ...selectedExtras })
+      setDdFilter({ ...tempDdFilter })
     }
-  }, [showApply, selectedExtras])
+  }, [showApply, tempDdFilter])
 
   const computeChartNavigationLinks = (sel, filt, _isCliUser) => {
     if (navigation.locToData[loc]) {
@@ -195,11 +197,15 @@ const SingleAssessmentReportContainer = (props) => {
   }
 
   const updateCB = (event, selected, comData) => {
-    setShowApply(true)
-    setSelectedExtras({
-      ...selectedExtras,
+    setTempDdFilter({
+      ...tempDdFilter,
       [comData]: selected.key,
     })
+    setTagsData({
+      ...tagsData,
+      [comData]: selected,
+    })
+    setShowApply(true)
   }
   const locList = [
     'peer-performance',
@@ -215,7 +221,7 @@ const SingleAssessmentReportContainer = (props) => {
             selectCB={updateCB}
             data={item.data}
             comData={item.key}
-            by={item.data[0]}
+            by={tempDdFilter[item.key] || item.data[0]}
           />
         </SearchField>
       ))
@@ -264,6 +270,8 @@ const SingleAssessmentReportContainer = (props) => {
                 : { display: 'block' }
             }
             extraFilters={extraFilters}
+            tagsData={tagsData}
+            setTagsData={setTagsData}
             showApply={showApply}
             setShowApply={setShowApply}
             firstLoad={firstLoad}
@@ -369,6 +377,8 @@ const ConnectedSingleAssessmentReportContainer = connect(
   (state) => ({
     settings: getReportsSARSettings(state),
     demographics: getSAFilterDemographics(state),
+    tempDdFilter: getTempDdFilterSelector(state),
+    tagsData: getTagsDataSelector(state),
     cliUser: state.user?.isCliUser,
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
@@ -376,6 +386,8 @@ const ConnectedSingleAssessmentReportContainer = connect(
   {
     setSARSettings: setSARSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setTempDdFilter: setTempDdFilterAction,
+    setTagsData: setTagsDataAction,
     updateCliUser: updateCliUserAction,
     resetSARSettings: resetSARSettingsAction,
     setSharingState: setSharingStateAction,

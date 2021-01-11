@@ -22,6 +22,7 @@ import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import { getCollectionsSelector } from '../../../../../src/selectors/user'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -43,6 +44,7 @@ const MyClasses = ({
   windowWidth,
   resetTestFilters,
   resetPlaylistFilters,
+  collections,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
 
@@ -206,6 +208,7 @@ export default compose(
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      collections: getCollectionsSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

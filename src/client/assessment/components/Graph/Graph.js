@@ -189,7 +189,7 @@ class Graph extends Component {
       'sine',
       'tangent',
       'secant',
-      'exponent',
+      'exp',
       'logarithm',
       'polynom',
       'hyperbola',

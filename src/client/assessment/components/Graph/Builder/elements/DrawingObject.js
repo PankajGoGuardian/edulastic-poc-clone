@@ -13,6 +13,7 @@ import {
   Polynom,
   Secant,
   Sin,
+  Cos,
   Tangent,
   Area,
 } from '.'
@@ -107,6 +108,9 @@ function onHandler(board, event) {
         break
       case CONSTANT.TOOLS.SIN:
         newElement = Sin.create(board, { id, label, baseColor, dashed }, points)
+        break
+      case CONSTANT.TOOLS.COS:
+        newElement = Cos.create(board, { id, label, baseColor, dashed }, points)
         break
       case CONSTANT.TOOLS.TANGENT:
         newElement = Tangent.create(

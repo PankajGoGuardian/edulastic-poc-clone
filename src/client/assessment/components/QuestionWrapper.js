@@ -529,8 +529,12 @@ class QuestionWrapper extends Component {
       view === EDIT && windowWidth > parseInt(smallDesktopWidth, 10)
 
     const advancedLink =
-      !showQuestionMenu && advanced.length > 0 ? (
-        <AdvancedOptionsLink advancedAreOpen={this.advancedAreOpen} bottom />
+      !this.advancedAreOpen && !showQuestionMenu && advanced.length > 0 ? (
+        <AdvancedOptionsLink
+          bottom
+          isPremiumUser={isPremiumUser}
+          isPowerTeacher={isPowerTeacher}
+        />
       ) : null
 
     const { rubrics: rubricDetails } = data

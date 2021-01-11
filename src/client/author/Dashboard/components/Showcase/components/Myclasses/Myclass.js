@@ -153,15 +153,18 @@ const MyClasses = ({
   const bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
 
-  const isEurekaMathActive = collections.filter(
-    (itemBank) =>
-      itemBank.owner === 'Great Minds DATA' && itemBank.name === 'Eureka Math'
+  const isEurekaMathActive =
+    collections.filter(
+      (itemBank) =>
+        itemBank.owner === 'Great Minds DATA' && itemBank.name === 'Eureka Math'
+    ) || []
+
+  const filteredBundles = featuredBundles.filter(
+    (feature) => feature.description !== 'Engage NY'
   )
 
-  const filteredFeatureBundles = featuredBundles.filter(
-    (feature) =>
-      isEurekaMathActive.length > 0 && feature.description !== 'Engage NY'
-  )
+  const featureBundleList =
+    isEurekaMathActive.length > 0 ? filteredBundles : featuredBundles
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
@@ -205,7 +208,7 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getClassCardModular).fill(1)
     : []
 
-  const getFeatureCardModular = filteredFeatureBundles.length % GridCountInARow
+  const getFeatureCardModular = featureBundleList.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
@@ -225,7 +228,7 @@ const MyClasses = ({
         emptyBoxCount={classEmptyBoxCount}
       />
       <FeaturedContentBundle
-        featuredBundles={filteredFeatureBundles}
+        featuredBundles={featureBundleList}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />

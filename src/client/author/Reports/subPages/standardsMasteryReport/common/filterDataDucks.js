@@ -92,10 +92,6 @@ export const getSMRFilterDemographics = createSelector(stateSelector, (state) =>
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
-/**
- * for any change made to filters in initial state
- * update tagTypes & initialFilters in staticDropDownData.json accordingly
- */
 const initialState = {
   standardsFilters: {},
   prevStandardsFilters: null,

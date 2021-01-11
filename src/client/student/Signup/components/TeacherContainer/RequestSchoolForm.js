@@ -246,7 +246,6 @@ class RequestSchoolForm extends React.Component {
                 rules: [
                   { required: false, message: 'Please provide a valid state.' },
                 ],
-                initialValue: undefined,
               })(
                 country === 'US' ? (
                   <SelectInputStyled

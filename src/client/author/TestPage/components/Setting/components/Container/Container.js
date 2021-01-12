@@ -645,6 +645,7 @@ class Setting extends Component {
                       size="SM"
                       updateTestData={this.updateTestData}
                       instruction={instruction}
+                      disabled={!owner || !isEditable}
                     />
                   )}
                 </Body>

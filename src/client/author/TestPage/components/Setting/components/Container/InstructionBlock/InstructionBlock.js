@@ -5,11 +5,14 @@ import loadable from '@loadable/component'
 import Progress from '@edulastic/common/src/components/Progress'
 
 const FroalaEditor = loadable(() =>
-  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
 )
 
-const Instruction = ({ instruction = '', updateTestData }) => {
+const Instruction = ({ instruction = '', updateTestData, disabled }) => {
   const onChange = (value) => {
+    if (disabled) return
     updateTestData('instruction')(value)
   }
 
@@ -20,6 +23,7 @@ const Instruction = ({ instruction = '', updateTestData }) => {
       value={instruction}
       onChange={onChange}
       placeholder="Instruction for the test"
+      readOnly={disabled}
       border="border"
       toolbarSize="SM"
     />
@@ -29,10 +33,12 @@ const Instruction = ({ instruction = '', updateTestData }) => {
 Instruction.propTypes = {
   instruction: PropTypes.string,
   updateTestData: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 }
 
 Instruction.defaultProps = {
   instruction: '',
+  disabled: false,
 }
 
 export default Instruction

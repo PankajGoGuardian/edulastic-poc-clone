@@ -58,22 +58,6 @@ const slice = createSlice({
       state.subscriptionData = {}
       state.error = ''
     },
-    startTrialAction: (state) => {
-      state.verificationPending = true
-    },
-    startTrialSuccessAction: (state, { payload }) => {
-      state.verificationPending = false
-      state.subscriptionData = payload
-      state.error = ''
-    },
-    startTrialFailureAction: (state, { payload }) => {
-      state.verificationPending = false
-      state.subscriptionData = {}
-      state.error = payload
-    },
-    resetSubscriptions: (state) => {
-      state.subscriptionData = {}
-    },
   },
 })
 
@@ -186,48 +170,10 @@ function* fetchUserSubscription() {
   }
 }
 
-function* handleFreeTrialSaga() {
-  try {
-    const apiPaymentResponse = yield call(paymentApi.pay, {})
-    if (apiPaymentResponse.success) {
-      yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
-      const { subEndDate } = apiPaymentResponse.subscription.trialSubscription
-      notification({
-        type: 'success',
-        msg: `Congratulations! Your account is upgraded to Premium Trial version for ${
-          apiPaymentResponse.subscription.trialPeriod
-        } days and the subscription will expire on ${moment(subEndDate).format(
-          'DD MMM, YYYY'
-        )}`,
-        key: 'handle-trial',
-      })
-      yield put(slice.actions.resetSubscriptions())
-      yield call(fetchUserSubscription)
-      yield put(fetchUserAction({ background: true }))
-    } else {
-      notification({
-        type: 'error',
-        msg: `API Response failed`,
-        Key: 'handle-trial',
-      })
-      console.error('API Response failed')
-    }
-  } catch (err) {
-    yield put(slice.actions.startTrialFailureAction(err?.data?.message))
-    notification({
-      msg: `Trial Subscription : ${err?.data?.message}`,
-      Key: 'handle-trial',
-    })
-    console.error('ERROR WHILE PROCESSING TRIAL SUBSCRIPTION : ', err)
-    captureSentryException(err)
-  }
-}
-
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
     yield takeEvery(slice.actions.stripePaymentAction, handleStripePayment),
-    yield takeEvery(slice.actions.startTrialAction, handleFreeTrialSaga),
     yield takeEvery(
       slice.actions.fetchUserSubscriptionStatus,
       fetchUserSubscription

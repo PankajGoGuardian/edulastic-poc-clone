@@ -246,8 +246,6 @@ const MyClasses = ({
           hasTrial={purchaseModalData.hasTrial}
           isVisible={isPurchaseModalVisible}
           toggleModal={togglePurchaseModal}
-          premiumUser={premiumUser}
-          userInfo={user}
         />
       )}
     </MainContentWrapper>

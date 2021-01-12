@@ -180,8 +180,6 @@ const Subscription = (props) => {
     subscription: { subEndDate, subType } = {},
     user,
     fetchUserSubscriptionStatus,
-    isPremiumTrialUsed,
-    startTrialAction,
   } = props
 
   useEffect(() => {
@@ -212,10 +210,7 @@ const Subscription = (props) => {
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
 
   const isSubscribed =
-    subType === 'premium' ||
-    subType === 'enterprise' ||
-    isSuccess ||
-    subType === 'TRIAL_PREMIUM'
+    subType === 'premium' || subType === 'enterprise' || isSuccess
 
   const isAboutToExpire = subEndDate
     ? Date.now() + ONE_MONTH > subEndDate
@@ -249,8 +244,6 @@ const Subscription = (props) => {
         subEndDate={subEndDate}
         subType={subType}
         setShowUpgradeModal={setShowUpgradeModal}
-        isPremiumTrialUsed={isPremiumTrialUsed}
-        startTrialAction={startTrialAction}
       />
 
       <CompareModal
@@ -266,7 +259,7 @@ const Subscription = (props) => {
       </CompareModal>
 
       <PaymentServiceModal
-        visible={paymentServiceModal && !user.features.premium}
+        visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
         closeModal={closePaymentServiceModal}
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}
@@ -308,19 +301,15 @@ const Subscription = (props) => {
 export default connect(
   (state) => ({
     verificationPending: state?.subscription?.verificationPending,
-    subscription:
-      state?.subscription?.subscriptionData?.subscription?.subscription,
+    subscription: state?.subscription?.subscriptionData?.subscription,
     isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
     isSuccess: state?.subscription?.subscriptionData?.success,
     isPremiumAccount: state?.user?.user?.features?.premium,
     user: state.user.user,
-    isPremiumTrialUsed:
-      state?.subscription?.subscriptionData?.subscription?.isPremiumTrialUsed,
   }),
   {
     verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
     stripePaymentAction: slice.actions.stripePaymentAction,
     fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
-    startTrialAction: slice.actions.startTrialAction,
   }
 )(Subscription)

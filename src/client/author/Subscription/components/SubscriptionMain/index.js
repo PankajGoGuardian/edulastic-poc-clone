@@ -1,11 +1,5 @@
+import { EduButton, FlexContainer, MainContentWrapper } from '@edulastic/common'
 import React, { useState } from 'react'
-import {
-  EduButton,
-  FlexContainer,
-  MainContentWrapper,
-  notification,
-} from '@edulastic/common'
-import { isBoolean } from 'lodash'
 import { Link } from 'react-router-dom'
 import StartTrialModal from './StartTrialModal'
 
@@ -252,8 +246,6 @@ const SubscriptionMain = (props) => {
     openPurchaseLicenseModal,
     subType,
     setShowUpgradeModal,
-    isPremiumTrialUsed,
-    startTrialAction,
   } = props
 
   const licenseExpiryDate = formatDate(subEndDate)
@@ -270,22 +262,8 @@ const SubscriptionMain = (props) => {
     setShowUpgradeModal(true)
   }
 
-  const handleStartTrial = () => {
-    // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
-    if (!isBoolean(isPremiumTrialUsed)) {
-      return notification({
-        type: 'warning',
-        msg: 'Validating trial status, please wait...',
-      })
-    }
-    if (isPremiumTrialUsed) {
-      return notification({
-        type: 'warning',
-        msg: 'You have already used up the trial !',
-      })
-    }
-    startTrialAction()
-    // setShowSelectStates(true)
+  const handleSelectStateModal = () => {
+    setShowSelectStates(true)
   }
 
   return (
@@ -375,7 +353,7 @@ const SubscriptionMain = (props) => {
               width="215px"
               isGhost
               isBlue
-              onClick={handleStartTrial}
+              onClick={handleStartTrialModal}
               style={{
                 borderColor: 'white',
               }}

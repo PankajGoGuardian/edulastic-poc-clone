@@ -1005,6 +1005,7 @@
         "allowedUnits": "Students can only use these units. Equivalence between common units is considered.#{\\newline[1em]\\text{Expected:\\enspace}1kg,\\quad\\text{allowed units}=g,kg\\newline[0.35em]\\text{Correct:\\enspace}1000g\\newline[1em]\\text{Expected:\\enspace}2500m,\\quad\\text{allowed units}=m,km\\newline[0.35em]\\text{Correct:\\enspace}2.5km\\newline[0.35em]\\text{Correct:\\enspace}2500m#}",
         "allowedVariables": "Students can only use the list of variables that are specified.#{\\newline[1em]\\text{Example:\\enspace}x,y#}",
         "allowNumericOnly": "Only Numbers can be entered in the response box",
+        "compareSides": "This is often used in a CLOZE question type where there are connected entries separated by an in/equality. The evaluation separately considers both sides, e.g. “LHS=LHS & RHS=RHS”. Note that prior to evaluation, the sense of the inequality will be aligned between the student's response and the expected answer.#{\\newline[1em]\\text{Expected:\\enspace}3+4=7\\newline[0.5em]\\text{Correct:\\enspace}4+3=7,\\quad\\text{Wrong:\\enspace}4+3=8#}",
         "ignoreTrailingZeros": "For example, 2.0+x is the same as 2+x",
         "ignoreOrder": "For example: 1,2,3 will be the same as 3,2,1",
         "ignoreCoefficientOfOne": "For example: y+1x is the same as y+x",

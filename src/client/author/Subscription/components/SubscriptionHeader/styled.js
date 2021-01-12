@@ -1,4 +1,4 @@
-import { themeColorBlue, title, white, themeColor } from '@edulastic/colors'
+import { themeColorBlue, title, white } from '@edulastic/colors'
 import styled from 'styled-components'
 import IMG17 from '../../static/bg-hero.svg'
 
@@ -31,35 +31,21 @@ export const ModalBody = styled.div`
   font-size: 14px;
   color: #304050;
 `
+export const AddonList = styled.div`
+  margin-top: 25px;
+`
+export const Total = styled.div`
+  border-top: 1px solid #dddddd;
+  margin-top: 15px;
+  padding-top: 15px;
+`
 export const FlexRow = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 5px;
-`
-export const Boxes = styled.div`
-  width: 210px;
-  height: 210px;
-  border: 2px solid #dadae4;
-  border-radius: 10px;
-  color: ${title};
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-direction: column;
-  svg {
-    height: 85px;
-    margin-bottom: 30px;
-  }
-`
-export const MultiSubscriptionLink = styled.div`
-  font-size: 12px;
-  color: ${themeColor};
-  text-transform: uppercase;
-  cursor: pointer;
+  font-size: 14px;
   font-weight: 600;
+  color: ${title};
 `
 
 export const LearnMore = styled.div`
@@ -91,7 +77,7 @@ export const ActionButtons = styled.div`
   display: flex;
   align-items: center;
   .free {
-    color: ${themeColor};
+    color: #1ab395;
     padding-right: 25px;
     padding-left: 15px;
   }

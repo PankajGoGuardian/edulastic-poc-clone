@@ -221,12 +221,3 @@ export const StyledParagraph = styled.p`
 export const StyledLink = styled.span`
   color: ${themeColor};
 `
-export const ModalBody = styled.div`
-  font-size: 14px;
-  color: #304050;
-`
-export const FlexRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-`

@@ -2,7 +2,7 @@ import { EduButton } from '@edulastic/common'
 import { IconSubscriptionHighlight } from '@edulastic/icons'
 import { darkOrange1 } from '@edulastic/colors'
 import PropTypes from 'prop-types'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { withNamespaces } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -19,6 +19,7 @@ import {
   BannerContent,
   LearnMore,
 } from './styled'
+import AddonModal from './AddonModal'
 
 function formatDate(subEndDate) {
   if (!subEndDate) return null
@@ -33,17 +34,17 @@ const SubscriptionHeader = ({
   isSubscribed = false,
   subType,
   subEndDate,
-  setShowUpgradeModal,
 }) => {
+  const [showModal, setShowModal] = useState(false)
   const menu = (
     <Menu>
-      <Menu.Item onClick={() => setShowUpgradeModal(true)}>
+      <Menu.Item onClick={() => setShowModal(true)}>
         INDIVIDUAL SUBSCRIPTION
       </Menu.Item>
-      <Menu.Item onClick={() => setShowUpgradeModal(true)}>
+      <Menu.Item onClick={() => setShowModal(true)}>
         MULTIPLE SUBSCRIPTIONS
       </Menu.Item>
-      <Menu.Item onClick={() => setShowUpgradeModal(true)}>
+      <Menu.Item onClick={() => setShowModal(true)}>
         ENTERPRISE SUBSCRIPTION
       </Menu.Item>
     </Menu>
@@ -116,6 +117,7 @@ const SubscriptionHeader = ({
           <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
         </BannerContent>
       </TopBanner>
+      <AddonModal visible={showModal} setShowModal={setShowModal} />
     </div>
   )
 }

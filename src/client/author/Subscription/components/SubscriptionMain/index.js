@@ -1,7 +1,6 @@
 import { EduButton, FlexContainer, MainContentWrapper } from '@edulastic/common'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import StartTrialModal from './StartTrialModal'
 
 // TODO: Update SVG imports here
 import IMG1 from '../../static/1.png'
@@ -244,21 +243,11 @@ const SubscriptionMain = (props) => {
     openHasLicenseKeyModal,
     openPurchaseLicenseModal,
     subType,
-    setShowUpgradeModal,
   } = props
 
   const licenseExpiryDate = formatDate(subEndDate)
 
   const [showPlans, setShowPlans] = useState(false)
-  const [showTrialModal, setShowTrialModal] = useState(false)
-
-  const handleStartTrialModal = () => {
-    setShowTrialModal(true)
-  }
-
-  const handleUpgradeModal = () => {
-    setShowUpgradeModal(true)
-  }
 
   return (
     <>
@@ -337,17 +326,16 @@ const SubscriptionMain = (props) => {
                     borderColor: 'white',
                   }}
                 >
-                  Upgrade now $100/YR
+                  Upgrade now $100/yr
                 </EduButton>
               )}
-              onClick={handleUpgradeModal}
+              onClick={openPaymentServiceModal}
             />
             <EduButton
               height="38px"
               width="215px"
               isGhost
               isBlue
-              onClick={handleStartTrialModal}
               style={{
                 borderColor: 'white',
               }}
@@ -360,10 +348,6 @@ const SubscriptionMain = (props) => {
           </HaveLicenseKey>
         </ContentCards>
       </ContentSection>
-      <StartTrialModal
-        visible={showTrialModal}
-        setShowModal={setShowTrialModal}
-      />
 
       <AddonSection>
         <SectionContainer>

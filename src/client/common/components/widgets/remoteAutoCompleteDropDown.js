@@ -221,10 +221,8 @@ const RemoteAutocompleteDropDown = ({
     if (selected.title) {
       setText(selected.title)
       triggerChange(selected)
-
-      textChangeStatusRef.current = false
     }
-    setDropDownData([])
+    textChangeStatusRef.current = false
   }
 
   const onSelect = (key, item) => {
@@ -239,14 +237,15 @@ const RemoteAutocompleteDropDown = ({
     textChangeStatusRef.current = false
   }
 
-  const _onChange = throttle(() => {
+  const _onChange = () => {
     if (textChangeStatusRef.current !== true) {
       autoRef.current.blur()
     }
-  }, 500)
+  }
 
   const onFocus = () => {
     setDropDownData(data)
+    textChangeStatusRef.current = true
   }
 
   const onDropdownVisibleChange = (open) => {

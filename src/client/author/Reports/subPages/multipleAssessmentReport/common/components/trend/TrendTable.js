@@ -19,7 +19,7 @@ import dropDownData from '../../static/json/dropDownData.json'
 import { reportLinkColor } from '../../utils/constants'
 import { compareByMap } from '../../utils/trend'
 import TrendColumn from './TrendColumn'
-import BackendPagination from '../BackendPagination'
+import BackendPagination from '../../../../../common/components/BackendPagination'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {

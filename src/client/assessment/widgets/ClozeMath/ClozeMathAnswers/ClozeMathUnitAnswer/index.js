@@ -19,9 +19,10 @@ const ClozeMathUnitAnswer = ({
   onChangeKeypad,
   onChangeAllowedOptions,
   toggleAdditional,
+  extraOptions,
 }) => {
   const [collapseHeight, setCollapseHeight] = useState('auto')
-  const { responseContainers = [], uiStyle, allowedVariables = {} } = item
+  const { responseContainers = [], uiStyle } = item
   const response = responseContainers.find(
     (cont) => cont.index === answer.index
   )
@@ -94,6 +95,7 @@ const ClozeMathUnitAnswer = ({
             showDefaultMode
             isClozeMath
             isClozeMathWithUnit
+            extraOptions={extraOptions}
             {...answer}
           />
         </Panel>

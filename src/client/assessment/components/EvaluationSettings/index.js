@@ -19,6 +19,7 @@ const EvaluationSettings = ({
   onChangeMethod,
   changeOptions,
   options,
+  extraOptions,
   useTemplate,
   allowNumericOnly,
   allowedVariables,
@@ -51,6 +52,11 @@ const EvaluationSettings = ({
 
   const isFromGraph = GRAPH_EVALUATION_SETTING === method
 
+  const optsToRender = {
+    ...options,
+    ...(extraOptions || {}),
+  }
+
   return (
     <Container>
       <FlexContainer width="fit-content" alignItems="center">
@@ -74,7 +80,7 @@ const EvaluationSettings = ({
             method={method}
             onChangeOption={changeOptions}
             onChangeRadio={onChangeMethod}
-            options={options}
+            options={optsToRender}
             useTemplate={useTemplate}
             allowNumericOnly={allowNumericOnly}
             allowedVariables={allowedVariables}
@@ -83,7 +89,7 @@ const EvaluationSettings = ({
         </SettingBody>
       </CustomDrawer>
       <EnabledSettings
-        options={options}
+        options={optsToRender}
         method={method}
         useTemplate={useTemplate}
         allowNumericOnly={allowNumericOnly}

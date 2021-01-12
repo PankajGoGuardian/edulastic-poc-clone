@@ -57,6 +57,7 @@ const MathFormulaAnswerMethod = ({
   isClozeMathWithUnit = false,
   t,
   isDocbasedSection,
+  extraOptions,
 }) => {
   /**
    * Setting _allowNumericOnly when the value is not set (null) and method is equivSymbolic
@@ -96,7 +97,7 @@ const MathFormulaAnswerMethod = ({
    * @param {string} prop
    * @param {string} val
    */
-  const changeOptions = (prop, val) => {
+  const changeOptions = (prop, val, extra) => {
     const newOptions = {
       ...options,
       [prop]: val,
@@ -110,7 +111,8 @@ const MathFormulaAnswerMethod = ({
       notification({ type: 'warn', msg: errorMsg })
       return false
     }
-    onChange('options', newOptions)
+
+    onChange('options', newOptions, extra)
   }
 
   const methodOptions = methodOptionsConst && methodOptionsConst[method]
@@ -257,6 +259,7 @@ const MathFormulaAnswerMethod = ({
       <EvaluationSettings
         method={method}
         options={options}
+        extraOptions={extraOptions}
         allowNumericOnly={allowNumericOnly}
         allowedVariables={allowedVariables}
         onChangeMethod={onChange}
@@ -287,7 +290,6 @@ MathFormulaAnswerMethod.propTypes = {
   allowNumericOnly: PropTypes.any.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired,
-  toggleAdditional: PropTypes.func.isRequired,
   keypadMode: PropTypes.string,
   customUnits: PropTypes.string,
   isClozeMath: PropTypes.bool,

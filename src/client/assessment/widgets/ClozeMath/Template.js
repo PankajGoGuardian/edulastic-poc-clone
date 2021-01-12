@@ -24,7 +24,9 @@ import { Subtitle } from '../../styled/Subtitle'
 import Question from '../../components/Question'
 
 const FroalaEditor = loadable(() =>
-  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
 )
 
 const { methods } = math
@@ -458,6 +460,19 @@ class Template extends Component {
       return newOptions
     }
 
+    const _reduceExtraOptions = (responseIds, extraOpts) => {
+      const _allIds = flattenDeep(
+        _keys(responseIds).map((key) => responseIds[key])
+      ).map((res) => res.id)
+      const extraOptionsIds = _keys(extraOpts)
+      extraOptionsIds.forEach((id) => {
+        if (!_allIds.includes(id)) {
+          delete extraOpts[id]
+        }
+      })
+      return extraOpts
+    }
+
     const _updateTemplate = (val) => {
       const newItem = produce(item, (draft) => {
         draft.stimulus = val
@@ -473,6 +488,13 @@ class Template extends Component {
         )
 
         draft.options = _reduceOptions(draft.responseIds, draft.options)
+
+        if (draft.extraOpts) {
+          draft.extraOpts = _reduceExtraOptions(
+            draft.responseIds,
+            draft.extraOpts
+          )
+        }
       })
 
       if (!newItem.options) {

@@ -476,7 +476,7 @@ export const getExtDataForQuestion = (item, responses) => {
   const responseIds = convertStrToArr(item.testletResponseIds)
   const questionExtData = {}
   responseIds.forEach((id) => {
-    if (responses[id]) {
+    if (responses && responses[id]) {
       questionExtData[id] = responses[id]
     }
   })

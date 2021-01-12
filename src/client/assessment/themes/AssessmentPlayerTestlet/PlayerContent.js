@@ -215,7 +215,13 @@ const PlayerContent = ({
   const saveUserResponse = () => {
     if (!LCBPreviewModal && !previewPlayer) {
       const { currentPageIds, response } = frameController
+
+      const timeSpent = Date.now() - lastTime.current
       const extData = {}
+      lastTime.current = Date.now()
+      // initialize assessment start time
+      window.localStorage.assessmentLastTime = lastTime.current
+
       for (const scoringId in currentPageIds) {
         if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
           const eduQuestions = getEduQuestions(scoringId.trim())
@@ -231,11 +237,6 @@ const PlayerContent = ({
                   response[scoringId]
                 ),
               }
-              const timeSpent = Date.now() - lastTime.current
-              // initialize assessment start time
-              lastTime.current = Date.now()
-              window.localStorage.assessmentLastTime = lastTime.current
-
               onSubmitAnswer(eduQuestion.id, timeSpent, groupId, { extData })
             }
           })

@@ -51,7 +51,6 @@ import {
   HaveLicenseKey,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import CalendlyScheduleModal from './CalendlyScheduleModal'
 
 const getUpgradeToTeacherPlanActions = ({
   openPaymentServiceModal,
@@ -252,7 +251,6 @@ const SubscriptionMain = (props) => {
 
   const [showPlans, setShowPlans] = useState(false)
   const [showTrialModal, setShowTrialModal] = useState(false)
-  const [showSelectStates, setShowSelectStates] = useState(false)
 
   const handleStartTrialModal = () => {
     setShowTrialModal(true)
@@ -260,10 +258,6 @@ const SubscriptionMain = (props) => {
 
   const handleUpgradeModal = () => {
     setShowUpgradeModal(true)
-  }
-
-  const handleSelectStateModal = () => {
-    setShowSelectStates(true)
   }
 
   return (
@@ -401,30 +395,14 @@ const SubscriptionMain = (props) => {
           metus condimentum aliquet.
         </SectionDescription>
         <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
-          <EduButton
-            onClick={handleSelectStateModal}
-            height="38px"
-            width="215px"
-            isGhost
-            isBlue
-          >
+          <EduButton height="38px" width="215px" isGhost isBlue>
             schedule a demo
           </EduButton>
-          <a
-            target="_blank"
-            href="//docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform?c=0&amp;w=1"
-            rel="noopener noreferrer"
-          >
-            <EduButton height="38px" width="215px" isBlue>
-              request a quote
-            </EduButton>
-          </a>
+          <EduButton height="38px" width="215px" isBlue>
+            request a quote
+          </EduButton>
         </FlexContainer>
       </EnterpriseSection>
-      <CalendlyScheduleModal
-        visible={showSelectStates}
-        setShowSelectStates={setShowSelectStates}
-      />
     </>
   )
 }

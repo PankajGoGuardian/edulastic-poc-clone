@@ -12,7 +12,6 @@ import {
   whiteSmoke,
   lightGrey9,
 } from '@edulastic/colors'
-import { CustomModalStyled } from '@edulastic/common'
 
 export const ContentSection = styled.section`
   min-height: 300px;
@@ -230,35 +229,4 @@ export const FlexRow = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 5px;
-`
-export const CalendlyModal = styled(CustomModalStyled)`
-  width: 350px !important;
-  min-width: 350px;
-  &.schedule {
-    min-width: 100%;
-
-    .ant-modal-content,
-    .ant-modal-body {
-      padding: 0px !important;
-      background: none;
-      border: none;
-      box-shadow: none;
-    }
-    .ant-modal-footer {
-      display: none;
-    }
-    .ant-modal-close-x {
-      svg {
-        width: 30px;
-        height: 30px;
-        fill: white;
-      }
-    }
-
-    & div[data-container='booking-container'] {
-      border: none !important;
-      box-shadow: none !important;
-      max-width: 100% !important;
-    }
-  }
 `

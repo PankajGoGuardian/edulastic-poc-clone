@@ -23,7 +23,6 @@ import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
-import ItemPurchaseModal from './components/ItemPurchaseModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -48,8 +47,6 @@ const MyClasses = ({
   collections,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
-  const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
-  const [purchaseModalData, setPurchaseModalData] = useState({})
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -92,33 +89,8 @@ const MyClasses = ({
     history.push(`/author/${contentType}?${filter}`)
   }
 
-  const hasAccessToItemBank = (itemBankId) =>
-    collections.some((collection) => collection._id === itemBankId)
-
-  const handleBlockedClick = ({
-    hasTrial,
-    subscriptionData,
-    marketingData,
-  }) => {
-    setIsPurchaseModalVisible(true)
-    setPurchaseModalData({
-      hasTrial,
-      title: marketingData.title,
-      productId: subscriptionData.productId,
-      description: marketingData.description,
-    })
-  }
-
-  const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
-
-  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
+  const handleFeatureClick = ({ config = {}, tags = [] }) => {
     const { filters, contentType } = config
-
-    if (isBlocked) {
-      handleBlockedClick(config)
-      return
-    }
-
     const content = contentType?.toLowerCase() || 'tests'
     if (tags.includes(PREMIUM_TAG)) {
       if (premiumUser) {
@@ -131,27 +103,9 @@ const MyClasses = ({
     }
   }
 
-  const getFeatureBundles = (bundles) =>
-    bundles.map((bundle) => {
-      const { subscriptionData } = bundle.config
-      if (!subscriptionData?.productId) {
-        return bundle
-      }
-
-      const { imageUrl: imgUrl, premiumImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData.productId)
-      const imageUrl = isBlocked ? premiumImageUrl : imgUrl
-
-      return {
-        ...bundle,
-        imageUrl,
-        isBlocked,
-      }
-    })
-
   const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
   const bannerSlides = sortByOrder(BANNER || [])
-  const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
+  const featuredBundles = sortByOrder(FEATURED || [])
 
   const isEurekaMathActive = useMemo(
     () =>
@@ -228,28 +182,18 @@ const MyClasses = ({
           isBannerModalVisible={showBannerModal}
         />
       )}
-      <Classes
-        activeClasses={allActiveClasses}
-        emptyBoxCount={classEmptyBoxCount}
-      />
+      {!loading && (
+        <Classes
+          activeClasses={allActiveClasses}
+          emptyBoxCount={classEmptyBoxCount}
+        />
+      )}
       <FeaturedContentBundle
         featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
-      {isPurchaseModalVisible && (
-        <ItemPurchaseModal
-          title={purchaseModalData.title}
-          description={purchaseModalData.description}
-          productId={purchaseModalData.productId}
-          hasTrial={purchaseModalData.hasTrial}
-          isVisible={isPurchaseModalVisible}
-          toggleModal={togglePurchaseModal}
-          premiumUser={premiumUser}
-          userInfo={user}
-        />
-      )}
     </MainContentWrapper>
   )
 }

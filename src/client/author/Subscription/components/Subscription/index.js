@@ -1,25 +1,24 @@
-import { segmentApi } from '@edulastic/api'
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { slice } from '../../ducks'
-import HasLicenseKeyModal from '../HasLicenseKeyModal'
-import PaymentServiceModal from '../PaymentServiceModal'
-import PurchaseLicenseModal from '../PurchaseLicenseModal'
-import { Wrapper } from '../styled/commonStyled'
+
 import SubscriptionHeader from '../SubscriptionHeader'
-import PayWithPoModal from '../SubscriptionHeader/PayWithPoModal'
-import UpgradeModal from '../SubscriptionHeader/UpgradeModal'
 import SubscriptionMain from '../SubscriptionMain'
+import { Wrapper } from '../styled/commonStyled'
+import PurchaseLicenseModal from '../PurchaseLicenseModal'
+import PaymentServiceModal from '../PaymentServiceModal'
+import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import {
   CompareModal,
   PlanCard,
-  PlanContent,
-  PlanDescription,
   PlanHeader,
   PlanLabel,
+  PlanContent,
   PlanTitle,
+  PlanDescription,
 } from './styled'
+import { segmentApi } from '@edulastic/api'
 
 const comparePlansData = [
   {
@@ -180,8 +179,6 @@ const Subscription = (props) => {
     subscription: { subEndDate, subType } = {},
     user,
     fetchUserSubscriptionStatus,
-    isPremiumTrialUsed,
-    startTrialAction,
   } = props
 
   useEffect(() => {
@@ -193,17 +190,12 @@ const Subscription = (props) => {
   const [paymentServiceModal, setPaymentServiceModal] = useState(false)
   const [hasLicenseKeyModal, setHasLicenseKeyModal] = useState(false)
   const [purchaseLicenseModal, setpurchaseLicenseModal] = useState(false)
-  const [payWithPoModal, setPayWithPoModal] = useState(false)
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
   const openComparePlanModal = () => setComparePlan(true)
   const closeComparePlansModal = () => setComparePlan(false)
   const openPaymentServiceModal = () => {
     setPaymentServiceModal(true)
     segmentApi.trackTeacherClickOnUpgradeSubscription({ user })
-  }
-  const openPoServiceModal = () => {
-    setPayWithPoModal(true)
   }
   const closePaymentServiceModal = () => setPaymentServiceModal(false)
   const openHasLicenseKeyModal = () => setHasLicenseKeyModal(true)
@@ -212,10 +204,7 @@ const Subscription = (props) => {
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
 
   const isSubscribed =
-    subType === 'premium' ||
-    subType === 'enterprise' ||
-    isSuccess ||
-    subType === 'TRIAL_PREMIUM'
+    subType === 'premium' || subType === 'enterprise' || isSuccess
 
   const isAboutToExpire = subEndDate
     ? Date.now() + ONE_MONTH > subEndDate
@@ -235,10 +224,6 @@ const Subscription = (props) => {
         openPaymentServiceModal={openPaymentServiceModal}
         showUpgradeOptions={showUpgradeOptions}
         showRenewalOptions={showRenewalOptions}
-        isSubscribed={isSubscribed}
-        subType={subType}
-        subEndDate={subEndDate}
-        setShowUpgradeModal={setShowUpgradeModal}
       />
 
       <SubscriptionMain
@@ -248,9 +233,6 @@ const Subscription = (props) => {
         openPurchaseLicenseModal={openPurchaseLicenseModal}
         subEndDate={subEndDate}
         subType={subType}
-        setShowUpgradeModal={setShowUpgradeModal}
-        isPremiumTrialUsed={isPremiumTrialUsed}
-        startTrialAction={startTrialAction}
       />
 
       <CompareModal
@@ -266,24 +248,12 @@ const Subscription = (props) => {
       </CompareModal>
 
       <PaymentServiceModal
-        visible={paymentServiceModal && !user.features.premium}
+        visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
         closeModal={closePaymentServiceModal}
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}
         user={user}
         reason="Premium Upgrade"
-      />
-
-      <PayWithPoModal
-        visible={payWithPoModal}
-        setShowModal={setPayWithPoModal}
-      />
-
-      <UpgradeModal
-        visible={showUpgradeModal}
-        setShowModal={setShowUpgradeModal}
-        openPaymentServiceModal={openPaymentServiceModal}
-        openPoServiceModal={openPoServiceModal}
       />
 
       <HasLicenseKeyModal
@@ -308,19 +278,15 @@ const Subscription = (props) => {
 export default connect(
   (state) => ({
     verificationPending: state?.subscription?.verificationPending,
-    subscription:
-      state?.subscription?.subscriptionData?.subscription?.subscription,
+    subscription: state?.subscription?.subscriptionData?.subscription,
     isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
     isSuccess: state?.subscription?.subscriptionData?.success,
     isPremiumAccount: state?.user?.user?.features?.premium,
     user: state.user.user,
-    isPremiumTrialUsed:
-      state?.subscription?.subscriptionData?.subscription?.isPremiumTrialUsed,
   }),
   {
     verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
     stripePaymentAction: slice.actions.stripePaymentAction,
     fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
-    startTrialAction: slice.actions.startTrialAction,
   }
 )(Subscription)

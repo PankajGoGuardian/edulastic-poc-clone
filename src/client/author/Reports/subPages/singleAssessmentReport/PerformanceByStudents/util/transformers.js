@@ -16,6 +16,7 @@ import {
   maxBy,
   get,
   round,
+  upperFirst,
 } from 'lodash'
 import moment from 'moment'
 import {
@@ -157,7 +158,9 @@ export const normaliseTableData = (rawData, data) => {
     return {
       ...studentMetric,
       student: getFormattedName(
-        `${studentMetric.firstName || ''} ${studentMetric.lastName || ''}`
+        `${upperFirst(studentMetric.firstName || '')} ${upperFirst(
+          studentMetric.lastName || ''
+        )}`
       ),
       proficiencyBand,
       school: relatedGroup.schoolName || '-',

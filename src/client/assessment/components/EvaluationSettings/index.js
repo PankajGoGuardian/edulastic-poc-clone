@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import { math as mathConstants } from '@edulastic/constants'
 import CustomDrawer from './components/CustomDrawer'
 import CompareOption from './components/CompareOption'
@@ -13,6 +13,26 @@ import LabelWithHelper from './components/LabelWithHelper'
 import { Container, SettingBody } from './styled'
 
 const { methods, GRAPH_EVALUATION_SETTING } = mathConstants
+
+const hasMutuallyExclusiveOptions = (opts = {}) => {
+  let flag = false
+  let warningMsg = ''
+
+  if (opts.isExpanded && opts.isFactorised) {
+    flag = true
+    warningMsg = 'Expanded and Factored cannot be combined together'
+  } else if (opts.isMixedFraction && opts.isImproperFraction) {
+    flag = true
+    warningMsg =
+      'Mixed Fraction and Improper fraction cannot be combined together'
+  } else if (opts.isParallel && opts.isPerpendicular) {
+    flag = true
+    warningMsg =
+      '"Is parallel" and "Is perpendicular" cannot be combined together'
+  }
+
+  return [flag, warningMsg]
+}
 
 const EvaluationSettings = ({
   method,
@@ -33,6 +53,19 @@ const EvaluationSettings = ({
 
   const hidSettingDrawer = () => {
     setIsVisible(false)
+  }
+
+  const handleChangeOptions = (prop, val) => {
+    const newOptions = {
+      ...options,
+      [prop]: val,
+    }
+    const [error, errorMsg] = hasMutuallyExclusiveOptions(newOptions)
+    if (error) {
+      notification({ type: 'warn', msg: errorMsg })
+      return false
+    }
+    changeOptions(prop, val)
   }
 
   const OptionsComponent = useMemo(() => {
@@ -78,7 +111,7 @@ const EvaluationSettings = ({
           )}
           <OptionsComponent
             method={method}
-            onChangeOption={changeOptions}
+            onChangeOption={handleChangeOptions}
             onChangeRadio={onChangeMethod}
             options={optsToRender}
             useTemplate={useTemplate}

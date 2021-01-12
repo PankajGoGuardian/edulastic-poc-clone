@@ -17,7 +17,7 @@ import {
 
 const { sectionLabelType } = questionConstants
 
-const { nonPremiumCollections = {} } = collections
+const { collectionsWithoutPremiumTag = {} } = collections
 
 const { getQuestionLevelScore, getPoints } = helpers
 
@@ -219,8 +219,8 @@ export const sortGrades = (grades) => {
  * @returns {Boolean} isPremium
  */
 export const isPremiumContent = (_collections = []) => {
-  const nonPremiumIds = Object.keys(nonPremiumCollections)
-  const isPremium = (collection) => !nonPremiumIds.includes(collection._id)
+  const idsWithoutPremiumTag = Object.keys(collectionsWithoutPremiumTag)
+  const isPremium = (collection) => !idsWithoutPremiumTag.includes(collection._id)
   const result = _collections.filter(isPremium)
   return result.length > 0
 }

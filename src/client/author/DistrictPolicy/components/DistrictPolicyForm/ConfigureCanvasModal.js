@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, Input } from 'antd'
 import styled from 'styled-components'
-import { EduButton, notification } from '@edulastic/common'
-import { backgroundGrey2, red } from '@edulastic/colors'
+import {
+  captureSentryException,
+  EduButton,
+  notification,
+} from '@edulastic/common'
+import { backgroundGrey2, green, red } from '@edulastic/colors'
+import { canvasApi } from '@edulastic/api'
+import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
+import { SpinContainer } from '../Container/styled'
+import { StyledSpin } from '../../../../admin/Common/StyledComponents'
 
 const ConfigureCanvasModal = ({
   visible,
@@ -14,6 +22,7 @@ const ConfigureCanvasModal = ({
   canvasInstanceUrl = '',
   canvasConsumerKey = '',
   canvasSharedSecret = '',
+  user,
 }) => {
   const [canvasConfigureData, setCanvasConfigureData] = useState({
     canvasInstanceUrl,
@@ -22,6 +31,8 @@ const ConfigureCanvasModal = ({
   })
 
   const [fieldsEnabled, setEnableFields] = useState(true)
+
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (canvasInstanceUrl && canvasConsumerKey && canvasSharedSecret)
@@ -52,13 +63,54 @@ const ConfigureCanvasModal = ({
       id: districtPolicyId,
     }
     saveCanvasKeysRequest(data)
-    handleCancel()
+    setEnableFields(false)
+  }
+
+  const authenticateCanvasUser = async () => {
+    setIsLoading(true)
+    if (
+      !canvasConfigureData.canvasConsumerKey ||
+      !canvasConfigureData.canvasInstanceUrl ||
+      !canvasConfigureData.canvasSharedSecret
+    ) {
+      setIsLoading(false)
+      return notification({
+        type: 'warn',
+        msg: 'Please fill all the required fields',
+      })
+    }
+    try {
+      const result = await canvasApi.getCanvasAuthURI('', 'test')
+      if (result?.errorMessage) {
+        notification({
+          type: 'warn',
+          msg:
+            result?.errorMessage ||
+            'Failed to connect with canvas. Please enter the valid configuration',
+        })
+      } else {
+        const subscriptionTopic = `canvas:${user?.districtIds?.[0]}_${
+          user._id
+        }_${user.username || user.email || ''}`
+        authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
+          .then(() => {})
+          .catch(() => {})
+      }
+      setIsLoading(false)
+    } catch (err) {
+      captureSentryException(err)
+      notification({
+        type: 'warn',
+        msg:
+          'Failed to connect with canvas. Please enter the valid configuration',
+      })
+    }
   }
 
   const footer = (
     <ButtonWrapper>
       {!fieldsEnabled && (
-        <EduButton onClick={() => setEnableFields(true)}>
+        <EduButton isGhost onClick={() => setEnableFields(true)}>
           Change Details
         </EduButton>
       )}
@@ -79,6 +131,11 @@ const ConfigureCanvasModal = ({
       centered
     >
       <ModalBodyWrapper>
+        {isLoading && (
+          <SpinContainer blur>
+            <StyledSpin size="small" />
+          </SpinContainer>
+        )}
         <label>
           Instance URL <span>*</span>
           <Input
@@ -106,6 +163,11 @@ const ConfigureCanvasModal = ({
             disabled={!fieldsEnabled}
           />
         </label>
+        {!fieldsEnabled && (
+          <AnchorLink onClick={authenticateCanvasUser}>
+            Test Connection
+          </AnchorLink>
+        )}
       </ModalBodyWrapper>
     </Modal>
   )
@@ -117,6 +179,13 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
 `
+
+const AnchorLink = styled.a`
+  color: ${green};
+  margin-bottom: 5px;
+  float: right;
+`
+
 const ModalBodyWrapper = styled.div`
   label {
     text-transform: uppercase;

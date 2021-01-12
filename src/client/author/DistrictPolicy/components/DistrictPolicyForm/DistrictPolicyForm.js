@@ -397,7 +397,7 @@ class DistrictPolicyForm extends Component {
     if (Object.prototype.hasOwnProperty.call(districtPolicy, '_id')) {
       saveBtnStr = 'Save'
     }
-    const { role, saveCanvasKeysRequest } = this.props
+    const { role, saveCanvasKeysRequest, user } = this.props
     const isSchoolLevel = role === 'school-admin'
 
     return (
@@ -667,6 +667,7 @@ class DistrictPolicyForm extends Component {
             canvasConsumerKey={districtPolicy.canvasConsumerKey}
             canvasInstanceUrl={districtPolicy.canvasInstanceUrl}
             canvasSharedSecret={districtPolicy.canvasSharedSecret}
+            user={user}
           />
         )}
       </StyledFormDiv>
@@ -681,6 +682,7 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       role: getUserRole(state),
       schoolId: get(state, 'user.saSettingsSchool'),
+      user: get(state, 'user.user'),
     }),
     {
       loadDistrictPolicy: receiveDistrictPolicyAction,

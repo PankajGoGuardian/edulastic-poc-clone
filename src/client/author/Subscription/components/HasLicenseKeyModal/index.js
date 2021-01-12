@@ -1,17 +1,13 @@
+import { useState } from 'react'
+import { Input, message } from 'antd'
 import {
+  themeColor,
   greyishBorder,
   lightGreySecondary,
-  themeColor,
 } from '@edulastic/colors'
-import {
-  CustomModalStyled,
-  EduButton,
-  FlexContainer,
-  notification,
-} from '@edulastic/common'
-import { Input } from 'antd'
-import React, { useState } from 'react'
-import { Container } from './styled'
+import { FlexContainer, notification } from '@edulastic/common'
+import { StyledHasLicenseKeyModal, Container } from './styled'
+import { ThemeButton } from '../styled/commonStyled'
 
 const getFooterComponent = ({
   hideModal,
@@ -21,30 +17,18 @@ const getFooterComponent = ({
 }) =>
   !isSubscribed ? (
     <FlexContainer width="450px">
-      <EduButton
-        isGhost
-        isBlue
-        onClick={hideModal}
-        disabled={verificationPending}
-        width="190px"
-      >
+      <ThemeButton onClick={hideModal} disabled={verificationPending}>
         CANCEL
-      </EduButton>
-      <EduButton
-        isBlue
-        onClick={nextAction}
-        disabled={verificationPending}
-        inverse
-        width="190px"
-      >
+      </ThemeButton>
+      <ThemeButton onClick={nextAction} disabled={verificationPending} inverse>
         NEXT
-      </EduButton>
+      </ThemeButton>
     </FlexContainer>
   ) : (
     <FlexContainer width="450px">
-      <EduButton width="200px" isBlue onClick={hideModal} inverse>
+      <ThemeButton onClick={hideModal} inverse>
         DONE
-      </EduButton>
+      </ThemeButton>
     </FlexContainer>
   )
 
@@ -73,7 +57,7 @@ const HasLicenseKeyModal = (props) => {
   }
 
   return (
-    <CustomModalStyled
+    <StyledHasLicenseKeyModal
       visible={visible}
       title={
         <h3 style={{ fontWeight: 700, fontSize: '22px' }}>
@@ -97,6 +81,8 @@ const HasLicenseKeyModal = (props) => {
             Enter your License Key that you received at the end of the order
             process or via email in the box below, the click on "Next"
           </p>
+          <br />
+          <br />
           <Input
             placeholder="Enter your license key"
             style={{
@@ -110,7 +96,6 @@ const HasLicenseKeyModal = (props) => {
             onChange={handleChange}
             disabled={verificationPending}
           />
-          <br />
         </Container>
       )}
       {isSubscribed && (
@@ -126,7 +111,7 @@ const HasLicenseKeyModal = (props) => {
           <br />
         </Container>
       )}
-    </CustomModalStyled>
+    </StyledHasLicenseKeyModal>
   )
 }
 

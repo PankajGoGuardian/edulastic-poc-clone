@@ -46,7 +46,11 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
             }
             if (!user?.authenticating || !TokenStorage.getAccessToken()) {
               // not authenticated user flow
-              history.push(`/public/view-test/${id}`)
+              if (window.location.pathname.includes('demo/assessmentPreview')) {
+                history.push(`/public/test/${id}`)
+              } else {
+                history.push(`/public/view-test/${id}`)
+              }
             } else {
               history.push(`/author/tests/${id}`)
             }

@@ -5,7 +5,7 @@ import { CheckboxLabel, TextInputStyled } from '@edulastic/common'
 import LabelWithHelper from './LabelWithHelper'
 import { validations } from './inputsValidations'
 
-const InputOption = ({ options, onChange, optionKey, inputType, isGraph }) => {
+const InputOption = ({ options, onChange, optionKey, isGraph }) => {
   const [isAllowed, setIsAllowed] = useState(false)
 
   const onChangeCheckbox = (e) => {
@@ -44,7 +44,6 @@ const InputOption = ({ options, onChange, optionKey, inputType, isGraph }) => {
           width="50px"
           margin="0px 18px 0px 0px"
           padding="0px 4px"
-          type={inputType}
           value={options[optionKey]}
           disabled={!isAllowed}
           onChange={onChangeInput}

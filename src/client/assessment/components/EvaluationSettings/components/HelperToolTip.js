@@ -91,6 +91,6 @@ const OptionLabel = styled(MathSpan).attrs(({ text }) => ({
   }
 `
 
-const Desc = styled(MathSpan).attrs(({ text }) => ({
+export const Desc = styled(MathSpan).attrs(({ text }) => ({
   dangerouslySetInnerHTML: { __html: text },
 }))``

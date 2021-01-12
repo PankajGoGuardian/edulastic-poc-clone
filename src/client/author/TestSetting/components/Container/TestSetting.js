@@ -47,6 +47,7 @@ class TestSetting extends Component {
       testSetting: {
         partialScore: true,
         timer: true,
+        isLinkSharingEnabled: false,
       },
     }
   }
@@ -89,40 +90,41 @@ class TestSetting extends Component {
         testSetting: {
           partialScore: true,
           timer: true,
+          isLinkSharingEnabled: false,
         },
       }
     }
     return { testSetting: nextProps.testSetting }
   }
 
-  changePartialScore = (e) => {
-    const testSetting = { ...this.state.testSetting }
-    testSetting.partialScore = e.target.value
-    this.props.setTestSettingValue(
-      testSetting,
-      this.props.role === roleuser.SCHOOL_ADMIN
-    )
-  }
-
-  changeTimerScore = (e) => {
-    const testSetting = { ...this.state.testSetting }
-    testSetting.timer = e.target.value
-    this.props.setTestSettingValue(
-      testSetting,
-      this.props.role === roleuser.SCHOOL_ADMIN
+  changeSetting = (e, fieldName) => {
+    const { testSetting } = this.state
+    const { setTestSettingValue, role } = this.props
+    setTestSettingValue(
+      { ...testSetting, [fieldName]: e.target.value },
+      role === roleuser.SCHOOL_ADMIN
     )
   }
 
   updateValue = () => {
     const { testSetting } = this.state
-    const { createTestSetting, updateTestSetting, schoolId, role } = this.props
+    const {
+      createTestSetting,
+      updateTestSetting,
+      schoolId,
+      role,
+      userOrgId,
+    } = this.props
     const updateData = {
-      orgId: role === roleuser.SCHOOL_ADMIN ? schoolId : this.props.userOrgId,
+      orgId: role === roleuser.SCHOOL_ADMIN ? schoolId : userOrgId,
       orgType: role === roleuser.SCHOOL_ADMIN ? 'institution' : 'district',
       partialScore: testSetting.partialScore,
       timer: testSetting.timer,
       testTypesProfile: testSetting.testTypesProfile,
+      isLinkSharingEnabled: !!testSetting.isLinkSharingEnabled,
     }
+
+    // eslint-disable-next-line
     if (testSetting.hasOwnProperty('_id')) {
       updateTestSetting(updateData)
     } else {
@@ -179,7 +181,7 @@ class TestSetting extends Component {
                 <StyledLabel>Allow Partial Score </StyledLabel>
                 <RadioGrp
                   defaultValue={testSetting.partialScore}
-                  onChange={(e) => this.changePartialScore(e)}
+                  onChange={(e) => this.changeSetting(e, 'partialScore')}
                   value={testSetting.partialScore}
                 >
                   <RadioBtn value>Yes</RadioBtn>
@@ -192,8 +194,22 @@ class TestSetting extends Component {
                 <StyledLabel>Show Timer </StyledLabel>
                 <RadioGrp
                   defaultValue={testSetting.timer}
-                  onChange={(e) => this.changeTimerScore(e)}
+                  onChange={(e) => this.changeSetting(e, 'timer')}
                   value={testSetting.timer}
+                >
+                  <RadioBtn value>Yes</RadioBtn>
+                  <RadioBtn value={false}>No</RadioBtn>
+                </RadioGrp>
+              </>
+            </StyledRow>
+            <StyledRow>
+              <>
+                <StyledLabel>Set Link Sharing ON for new test </StyledLabel>
+                <RadioGrp
+                  onChange={(e) =>
+                    this.changeSetting(e, 'isLinkSharingEnabled')
+                  }
+                  value={!!testSetting.isLinkSharingEnabled}
                 >
                   <RadioBtn value>Yes</RadioBtn>
                   <RadioBtn value={false}>No</RadioBtn>

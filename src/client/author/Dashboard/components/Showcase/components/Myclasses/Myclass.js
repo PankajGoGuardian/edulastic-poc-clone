@@ -18,12 +18,14 @@ import Launch from '../../../LaunchHangout/Launch'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
+import { addPermissionRequestAction } from '../../../../../ContentCollections/ducks'
 import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
 import ItemPurchaseModal from './components/ItemPurchaseModal'
+import TrialModal from './components/TrialModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -46,10 +48,12 @@ const MyClasses = ({
   resetTestFilters,
   resetPlaylistFilters,
   collections,
+  addPermissionRequest,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
-  const [purchaseModalData, setPurchaseModalData] = useState({})
+  const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+  const [productData, setProductData] = useState({})
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -95,21 +99,18 @@ const MyClasses = ({
   const hasAccessToItemBank = (itemBankId) =>
     collections.some((collection) => collection._id === itemBankId)
 
-  const handleBlockedClick = ({
-    hasTrial,
-    subscriptionData,
-    marketingData,
-  }) => {
+  const handleBlockedClick = ({ subscriptionData }) => {
     setIsPurchaseModalVisible(true)
-    setPurchaseModalData({
-      hasTrial,
-      title: marketingData.title,
+    setProductData({
       productId: subscriptionData.productId,
-      description: marketingData.description,
+      productName: subscriptionData.productName,
+      description: subscriptionData.description,
+      hasTrial: subscriptionData.hasTrial,
     })
   }
 
   const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
+  const toggleTrialModal = (value) => setIsTrialModalVisible(value)
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
@@ -144,8 +145,8 @@ const MyClasses = ({
 
       return {
         ...bundle,
-        imageUrl,
         isBlocked,
+        imageUrl,
       }
     })
 
@@ -240,14 +241,25 @@ const MyClasses = ({
       <Launch />
       {isPurchaseModalVisible && (
         <ItemPurchaseModal
-          title={purchaseModalData.title}
-          description={purchaseModalData.description}
-          productId={purchaseModalData.productId}
-          hasTrial={purchaseModalData.hasTrial}
+          title={productData.productName}
+          description={productData.description}
+          productId={productData.productId}
+          hasTrial={productData.hasTrial}
           isVisible={isPurchaseModalVisible}
           toggleModal={togglePurchaseModal}
+          toggleTrialModal={toggleTrialModal}
           premiumUser={premiumUser}
+        />
+      )}
+      {isTrialModalVisible && (
+        <TrialModal
+          description={productData.description}
+          productId={productData.productId}
+          productName={productData.productName}
           userInfo={user}
+          addItemBankPermission={addPermissionRequest}
+          isVisible={isTrialModalVisible}
+          toggleModal={toggleTrialModal}
         />
       )}
     </MainContentWrapper>
@@ -273,6 +285,7 @@ export default compose(
       fetchCleverClassList: fetchCleverClassListRequestAction,
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
+      addPermissionRequest: addPermissionRequestAction,
     }
   )
 )(MyClasses)

@@ -13,7 +13,6 @@ import { validations } from './inputsValidations'
 const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
   const [isAllowed, setIsAllowed] = useState(false)
   const [localLatex, setLocalLatex] = useState('')
-  console.log(options)
 
   const onChangeCheckbox = (e) => {
     setIsAllowed(e.target.checked)

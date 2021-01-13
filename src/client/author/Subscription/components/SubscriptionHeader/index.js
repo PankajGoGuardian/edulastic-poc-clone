@@ -40,12 +40,6 @@ const SubscriptionHeader = ({
       <Menu.Item onClick={() => setShowUpgradeModal(true)}>
         INDIVIDUAL SUBSCRIPTION
       </Menu.Item>
-      <Menu.Item onClick={() => setShowUpgradeModal(true)}>
-        MULTIPLE SUBSCRIPTIONS
-      </Menu.Item>
-      <Menu.Item onClick={() => setShowUpgradeModal(true)}>
-        ENTERPRISE SUBSCRIPTION
-      </Menu.Item>
     </Menu>
   )
 
@@ -98,16 +92,18 @@ const SubscriptionHeader = ({
                   } Version`
                 : 'Free'}
             </span>
-            <Dropdown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={menu}
-              placement="bottomRight"
-              arrow
-            >
-              <EduButton isBlue height="24px">
-                Upgrade
-              </EduButton>
-            </Dropdown>
+            {subType !== 'enterprise' && (
+              <Dropdown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={menu}
+                placement="bottomRight"
+                arrow
+              >
+                <EduButton isBlue height="24px">
+                  Upgrade
+                </EduButton>
+              </Dropdown>
+            )}
           </ActionButtons>
         </HeaderSubscription>
         <BannerContent>

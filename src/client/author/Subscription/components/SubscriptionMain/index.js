@@ -262,8 +262,8 @@ const SubscriptionMain = (props) => {
   const [showTrialModal, setShowTrialModal] = useState(false)
   const [showSelectStates, setShowSelectStates] = useState(false)
 
-  const handleStartTrialModal = () => {
-    setShowTrialModal(true)
+  const handleSelectStateModal = () => {
+    setShowSelectStates(true)
   }
 
   const handleUpgradeModal = () => {
@@ -353,23 +353,25 @@ const SubscriptionMain = (props) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            <AuthorCompleteSignupButton
-              renderButton={(handleClick) => (
-                <EduButton
-                  height="38px"
-                  width="215px"
-                  isBlue
-                  onClick={handleClick}
-                  style={{
-                    background: 'transparent',
-                    borderColor: 'white',
-                  }}
-                >
-                  Upgrade now $100/YR
-                </EduButton>
-              )}
-              onClick={handleUpgradeModal}
-            />
+            {subType !== 'enterprise' && (
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <EduButton
+                    height="38px"
+                    width="215px"
+                    isBlue
+                    onClick={handleClick}
+                    style={{
+                      background: 'transparent',
+                      borderColor: 'white',
+                    }}
+                  >
+                    Upgrade now $100/YR
+                  </EduButton>
+                )}
+                onClick={handleUpgradeModal}
+              />
+            )}
             <EduButton
               height="38px"
               width="215px"

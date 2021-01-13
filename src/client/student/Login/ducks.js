@@ -1725,7 +1725,7 @@ function* getUserData({ payload: res }) {
         const classSectionId = fragments[4]
         if (schoologySync === 'grades') {
           schoologySyncAssignmentGradesAction({
-            assignmentIds: [assignmentId],
+            assignmentId,
             groupId: classSectionId,
           })
         } else if (schoologySync === 'assignment') {

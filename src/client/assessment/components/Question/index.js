@@ -56,6 +56,7 @@ class Question extends Component {
       section,
       label,
       features,
+      permissions,
       showScoringSectionAnyRole = false,
     } = this.props
 
@@ -64,6 +65,9 @@ class Question extends Component {
       return true
     }
     let showAdvancedTools = true
+
+    // 'author' is power teacher by default
+    if (permissions.includes('author')) return true
 
     /**
      * allowed for teacher/DA/SA having premium feature and enabled power tools
@@ -158,6 +162,7 @@ Question.propTypes = {
   visible: PropTypes.bool,
   position: PropTypes.string,
   overflowHandlers: PropTypes.object,
+  permissions: PropTypes.array,
 }
 
 Question.defaultProps = {
@@ -167,6 +172,7 @@ Question.defaultProps = {
   advancedAreOpen: null,
   position: 'relative',
   overflowHandlers: {},
+  permissions: [],
 }
 
 export default compose(
@@ -177,6 +183,7 @@ export default compose(
       isPowerTeacher: get(state, ['user', 'user', 'isPowerTeacher'], false),
       isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
       features: getUserFeatures(state),
+      permissions: get(state, 'user.user.permissions', []),
     }),
     null
   )

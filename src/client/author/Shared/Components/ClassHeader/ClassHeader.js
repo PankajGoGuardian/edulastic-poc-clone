@@ -349,7 +349,7 @@ class ClassHeader extends Component {
       } = this.props
       if (schoologySync === 'grades') {
         schoologySyncAssignmentGrades({
-          assignmentIds: [assignmentId],
+          assignmentId,
           groupId: classSectionId,
         })
       } else if (schoologySync === 'assignment') {

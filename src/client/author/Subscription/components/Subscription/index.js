@@ -270,7 +270,7 @@ const Subscription = (props) => {
       </CompareModal>
 
       <PaymentServiceModal
-        visible={paymentServiceModal && !user.features.premium}
+        visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
         closeModal={closePaymentServiceModal}
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}

@@ -50,17 +50,6 @@ const Hints = ({
   const hintCount = validHints.length
   const fontSize = getFontSize(get(question, 'uiStyle.fontsize'))
 
-  if (
-    !hintCount ||
-    question.type === 'passage' ||
-    question.type === 'passageWithQuestions' ||
-    question.type === 'video' ||
-    question.type === 'resource' ||
-    question.type === 'text'
-  ) {
-    return null
-  }
-
   const hintContRef = useRef()
 
   const [showCount, updateShowCount] = useState(0)
@@ -123,6 +112,17 @@ const Hints = ({
   useEffect(() => {
     updateShowCount(0)
   }, [id])
+
+  if (
+    !hintCount ||
+    question.type === 'passage' ||
+    question.type === 'passageWithQuestions' ||
+    question.type === 'video' ||
+    question.type === 'resource' ||
+    question.type === 'text'
+  ) {
+    return null
+  }
 
   return (
     <>

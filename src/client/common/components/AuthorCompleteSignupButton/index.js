@@ -14,7 +14,12 @@ const TeacherSignup = loadable(
   }
 )
 
-const AuthorCompleteSignupButton = ({ user, renderButton, onClick }) => {
+const AuthorCompleteSignupButton = ({
+  user,
+  renderButton,
+  onClick,
+  trackClick,
+}) => {
   const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
@@ -28,6 +33,7 @@ const AuthorCompleteSignupButton = ({ user, renderButton, onClick }) => {
 
   const handleClick = () => {
     if (signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL) {
+      trackClick()
       toggleSchoolModal(true)
       return
     }
@@ -53,10 +59,12 @@ AuthorCompleteSignupButton.propTypes = {
   user: PropTypes.object.isRequired,
   renderButton: PropTypes.func.isRequired,
   onClick: PropTypes.func,
+  trackClick: PropTypes.func,
 }
 
 AuthorCompleteSignupButton.defaultProps = {
   onClick: () => null,
+  trackClick: () => null,
 }
 
 const enhance = compose(

@@ -9,6 +9,7 @@ import qs from 'qs'
 import { Spin } from 'antd'
 import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
+import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import Classes from './components/Classes/Classes'
@@ -181,9 +182,12 @@ const MyClasses = ({
     window.open(data.externalUrl, '_blank')
   }
 
-  const bannerActionHandler = (filter = {}) => {
-    // NOTE: Actions might need further refactor
+  const bannerActionHandler = (filter = {}, description) => {
     const { action, data } = filter
+    segmentApi.trackUserClick({
+      user,
+      data: { event: `dashboard:banner-${description}:click` },
+    })
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)

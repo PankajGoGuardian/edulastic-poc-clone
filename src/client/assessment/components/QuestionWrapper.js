@@ -407,7 +407,16 @@ class QuestionWrapper extends Component {
   }
 
   get advancedAreOpen() {
-    const { userRole, features, isPremiumUser, isPowerTeacher } = this.props
+    const {
+      userRole,
+      features,
+      isPremiumUser,
+      isPowerTeacher,
+      permissions,
+    } = this.props
+
+    // 'author' is power teacher by default
+    const _isPowerTeacher = isPowerTeacher || permissions.includes('author')
 
     const isDistrictAdmin =
       (userRole === TEACHER &&
@@ -415,7 +424,7 @@ class QuestionWrapper extends Component {
         !features.isCurator) ||
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
 
-    return isDistrictAdmin && isPowerTeacher && isPremiumUser
+    return isDistrictAdmin && _isPowerTeacher && isPremiumUser
   }
 
   render() {
@@ -453,8 +462,13 @@ class QuestionWrapper extends Component {
       isPremiumUser = false,
       features,
       isItemsVisible,
+      permissions,
       ...restProps
     } = this.props
+
+    // 'author' is power teacher by default
+    const _isPowerTeacher = isPowerTeacher || permissions.includes('author')
+
     const {
       isExpressGrader,
       isStudentReport,
@@ -533,7 +547,7 @@ class QuestionWrapper extends Component {
         <AdvancedOptionsLink
           bottom
           isPremiumUser={isPremiumUser}
-          isPowerTeacher={isPowerTeacher}
+          isPowerTeacher={_isPowerTeacher}
         />
       ) : null
 
@@ -594,7 +608,7 @@ class QuestionWrapper extends Component {
                     scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
                     isPremiumUser={isPremiumUser}
-                    isPowerTeacher={isPowerTeacher}
+                    isPowerTeacher={_isPowerTeacher}
                   />
                 </QuestionMenuWrapper>
               )}
@@ -754,6 +768,7 @@ QuestionWrapper.propTypes = {
   clearAnswers: PropTypes.func,
   saveHintUsage: PropTypes.func,
   LCBPreviewModal: PropTypes.any,
+  permissions: PropTypes.array,
 }
 
 QuestionWrapper.defaultProps = {
@@ -775,6 +790,7 @@ QuestionWrapper.defaultProps = {
   saveHintUsage: () => {},
   disableResponse: false,
   isPresentationMode: false,
+  permissions: [],
 }
 
 const enhance = compose(
@@ -798,6 +814,7 @@ const enhance = compose(
       playerSkinType: playerSkinTypeSelector(state),
       isPowerTeacher: get(state, ['user', 'user', 'isPowerTeacher'], false),
       isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
+      permissions: get(state, 'user.user.permissions', []),
       features: getUserFeatures(state),
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),

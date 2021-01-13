@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { MathFormulaDisplay, EduButton } from '@edulastic/common'
@@ -6,10 +6,25 @@ import { mainTextColor, backgroundGrey, lightGrey9 } from '@edulastic/colors'
 import { getFontSize } from '../../utils/helpers'
 
 const Explanation = (props) => {
-  const { question = {}, isGrade, isStudentReport } = props
+  const {
+    question = {},
+    isGrade,
+    isStudentReport,
+    preferredLanguage = 'en',
+  } = props
   const { uiStyle: { fontsize = '' } = {} } = question
 
-  const { sampleAnswer } = question
+  const sampleAnswer = useMemo(() => {
+    if (
+      preferredLanguage !== 'en' &&
+      question?.languageFeatures?.[preferredLanguage]?.sampleAnswer
+    ) {
+      return question.languageFeatures[preferredLanguage].sampleAnswer
+    }
+
+    return question?.sampleAnswer
+  }, [question])
+
   if (
     !sampleAnswer ||
     question.type === 'passage' ||
@@ -37,10 +52,8 @@ const Explanation = (props) => {
         <>
           <QuestionLabel isStudentReport={isStudentReport}>
             {isStudentReport && (
-              <>
-                <span style={{ color: '#4aac8b' }}>{question.barLabel}</span> -
-              </>
-            )}{' '}
+              <span style={{ color: '#4aac8b' }}>{question.barLabel}</span>
+            )}
             Explanation
           </QuestionLabel>
           <SolutionText isStudentReport={isStudentReport}>

@@ -705,6 +705,7 @@ class QuestionWrapper extends Component {
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isStudentReport={isStudentReport}
+                      preferredLanguage={preferredLanguage}
                     />
                   )}
                   {(isLCBView ||
@@ -715,6 +716,7 @@ class QuestionWrapper extends Component {
                         isStudentReport={isStudentReport}
                         question={data}
                         isGrade={isGrade}
+                        preferredLanguage={preferredLanguage}
                       />
                     )}
                 </StyledFlexContainer>

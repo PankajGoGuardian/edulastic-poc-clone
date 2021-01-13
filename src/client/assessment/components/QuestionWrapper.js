@@ -581,6 +581,7 @@ class QuestionWrapper extends Component {
               audioSrc={data.tts.titleAudioURL}
               isPaginated={data.paginated_content}
               className="question-audio-controller"
+              preferredLanguage={preferredLanguage}
             />
           )}
           <div

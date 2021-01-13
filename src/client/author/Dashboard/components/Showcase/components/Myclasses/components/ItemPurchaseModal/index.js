@@ -1,35 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CustomModalStyled, EduButton } from '@edulastic/common'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import { Label } from '@edulastic/common/src/components/MathKeyboard/components/styled'
 
 const ItemPurchaseModal = ({
   title,
-  productId,
   description,
-  hasTrial,
   isVisible,
   toggleModal,
+  toggleTrialModal,
+  hasTrial,
+  premiumUser,
 }) => {
-  const handlePurchase = () => {
-    console.log(productId)
-  }
+  const handleProceed = () => {}
 
+  const closeModal = () => toggleModal(false)
   const handleTrial = () => {
-    console.log(productId)
+    closeModal()
+    toggleTrialModal(true)
   }
 
   const Footer = (
     <>
-      {hasTrial !== false && (
+      {hasTrial && (
         <EduButton isGhost onClick={handleTrial}>
           Try for free
         </EduButton>
       )}
-      <EduButton onClick={handlePurchase}>Purchase</EduButton>
+      <EduButton onClick={handleProceed}>Proceed</EduButton>
     </>
   )
-
-  const closeModal = () => toggleModal(false)
 
   return (
     <CustomModalStyled
@@ -39,7 +39,16 @@ const ItemPurchaseModal = ({
       visible={isVisible}
       onCancel={closeModal}
     >
-      {description}
+      <div>{description}</div>
+      <FlexContainer
+        flexDirection="column"
+        marginLeft="40px"
+        mr="40px"
+        mt="20px"
+      >
+        {!premiumUser && <Label fontWeight="600">Premium Trial</Label>}
+        <Label fontWeight="600">{description}</Label>
+      </FlexContainer>
     </CustomModalStyled>
   )
 }
@@ -47,10 +56,14 @@ const ItemPurchaseModal = ({
 ItemPurchaseModal.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  hasTrial: PropTypes.bool.isRequired,
-  productId: PropTypes.string.isRequired,
   isVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  premiumUser: PropTypes.bool.isRequired,
+  hasTrial: PropTypes.bool,
+}
+
+ItemPurchaseModal.defaultProps = {
+  hasTrial: false,
 }
 
 export default ItemPurchaseModal

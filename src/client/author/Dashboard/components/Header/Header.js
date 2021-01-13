@@ -171,6 +171,9 @@ const HeaderSection = ({
       isCleverUser ||
       canvasAllowedInstitutions.length > 0)
 
+  const hasGoogleMeetAndManageClass =
+    currentSignUpState === signUpState.DONE && allActiveClasses.length > 0
+
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
@@ -184,7 +187,7 @@ const HeaderSection = ({
             trackClick={trackClick('dashboard:complete-sign-up:click')}
           />
         )}
-        {currentSignUpState === signUpState.DONE && (
+        {hasGoogleMeetAndManageClass && (
           <>
             <Tooltip title="Launch Google Meet">
               <StyledEduButton
@@ -293,6 +296,7 @@ const HeaderSection = ({
                 <EduButton
                   isBlue
                   style={{ marginLeft: '5px' }}
+                  data-cy="manageClass"
                   onClick={trackClick('dashboard:upgrade:click')}
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />

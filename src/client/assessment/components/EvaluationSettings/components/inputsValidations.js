@@ -17,4 +17,10 @@ export const validations = {
     }
     return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
   },
+  significantDecimalPlaces: (value = '') => {
+    if (!value) {
+      return true
+    }
+    return /^\d*[1-9]\d*$/g.test(value)
+  },
 }

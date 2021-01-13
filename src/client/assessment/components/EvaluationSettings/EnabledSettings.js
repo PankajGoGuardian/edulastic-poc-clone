@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { getMathHtml } from '@edulastic/common'
+import { getMathHtml, replaceLatexTemplate } from '@edulastic/common'
 import { math as mathConstants } from '@edulastic/constants'
 
 import { keys, isArray, isEmpty, isString, values } from 'lodash'
 
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey9, greyThemeLight } from '@edulastic/colors'
+
+import { Desc } from './components/HelperToolTip'
 
 const { syntaxes, GRAPH_EVALUATION_SETTING } = mathConstants
 const separators = [
@@ -31,7 +33,7 @@ const EnabledSettings = ({
     const optsLables = optionKeys
       .map((key) => {
         let label = ''
-        if (key === 'apiLatex') {
+        if (key === 'apiLatex' || key === 'isSimplified') {
           return false
         }
         if (key === 'syntax') {
@@ -94,7 +96,9 @@ const EnabledSettings = ({
     <Container>
       <ul>
         {optionsToShow.map((op) => (
-          <li key={op.key} dangerouslySetInnerHTML={{ __html: op.label }} />
+          <li key={op.key}>
+            <Desc text={replaceLatexTemplate(op.label)} />
+          </li>
         ))}
       </ul>
     </Container>

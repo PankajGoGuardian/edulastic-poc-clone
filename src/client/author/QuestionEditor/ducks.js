@@ -9,7 +9,16 @@ import {
   select,
   take,
 } from 'redux-saga/effects'
-import { cloneDeep, values, get, omit, set, uniqBy, intersection } from 'lodash'
+import {
+  cloneDeep,
+  values,
+  get,
+  omit,
+  set,
+  uniqBy,
+  intersection,
+  uniq,
+} from 'lodash'
 import produce from 'immer'
 import { questionType } from '@edulastic/constants'
 import { helpers, notification } from '@edulastic/common'
@@ -580,6 +589,14 @@ function* saveQuestionSaga({
           }
         })
       }
+      const itemGrades = draftData.grades.filter(
+        (item) => !!item && typeof item === 'string'
+      )
+      const itemSubjects = draftData.subjects.filter(
+        (item) => !!item && typeof item === 'string'
+      )
+      draftData.grades = uniq(itemGrades)
+      draftData.subjects = uniq(itemSubjects)
     })
 
     const redirectTestId = yield select(redirectTestIdSelector)
@@ -714,11 +731,9 @@ function* saveQuestionSaga({
       locationState.testAuthoring === false
         ? { testAuthoring: false, testId: locationState.testId }
         : {}
-    const {
-      previousTestId,
-      regradeFlow,
-      isTestFlow: _isTestFlow,
-    } = yield select((state) => state.router?.location?.state || {})
+    const { previousTestId, regradeFlow } = yield select(
+      (state) => state.router?.location?.state || {}
+    )
 
     if (itemDetail) {
       yield put(

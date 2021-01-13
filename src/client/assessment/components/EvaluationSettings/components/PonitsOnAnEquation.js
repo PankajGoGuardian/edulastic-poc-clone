@@ -70,13 +70,17 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
       </HeadingLabel>
       <FlexContainer justifyContent="flex-start" alignItems="center">
         <FlexContainer alignItems="center">
-          <CheckboxLabel onChange={onChangeCheckbox} checked={isAllowed}>
+          <CheckboxLabel
+            onChange={onChangeCheckbox}
+            checked={isAllowed}
+            labelPadding="0px 6px 0px 12px"
+          >
             <span>student needs to identify</span>
           </CheckboxLabel>
           <TextInputStyled
             size="large"
             width="50px"
-            margin="0px 14px 0px 0px"
+            margin="0px 6px 0px 0px"
             padding="0px 4px"
             type="number"
             min={1}
@@ -86,7 +90,7 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
           />
         </FlexContainer>
         <FlexContainer alignItems="center">
-          <FieldLabel marginBottom="0px">
+          <FieldLabel marginBottom="0px" mr="6px">
             unique points on an equation
           </FieldLabel>
           <MathInput

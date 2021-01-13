@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -9,6 +9,7 @@ import qs from 'qs'
 import { Spin } from 'antd'
 import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
+import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import Classes from './components/Classes/Classes'
@@ -18,12 +19,14 @@ import Launch from '../../../LaunchHangout/Launch'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
+import { addPermissionRequestAction } from '../../../../../ContentCollections/ducks'
 import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
 import ItemPurchaseModal from './components/ItemPurchaseModal'
+import TrialModal from './components/TrialModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -46,10 +49,12 @@ const MyClasses = ({
   resetTestFilters,
   resetPlaylistFilters,
   collections,
+  addPermissionRequest,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
-  const [purchaseModalData, setPurchaseModalData] = useState({})
+  const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+  const [productData, setProductData] = useState({})
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -95,21 +100,18 @@ const MyClasses = ({
   const hasAccessToItemBank = (itemBankId) =>
     collections.some((collection) => collection._id === itemBankId)
 
-  const handleBlockedClick = ({
-    hasTrial,
-    subscriptionData,
-    marketingData,
-  }) => {
+  const handleBlockedClick = ({ subscriptionData }) => {
     setIsPurchaseModalVisible(true)
-    setPurchaseModalData({
-      hasTrial,
-      title: marketingData.title,
+    setProductData({
       productId: subscriptionData.productId,
-      description: marketingData.description,
+      productName: subscriptionData.productName,
+      description: subscriptionData.description,
+      hasTrial: subscriptionData.hasTrial,
     })
   }
 
   const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
+  const toggleTrialModal = (value) => setIsTrialModalVisible(value)
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
@@ -144,14 +146,32 @@ const MyClasses = ({
 
       return {
         ...bundle,
-        imageUrl,
         isBlocked,
+        imageUrl,
       }
     })
 
   const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
   const bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
+
+  const isEurekaMathActive = useMemo(
+    () =>
+      collections.some(
+        (itemBank) =>
+          itemBank.owner === 'Great Minds DATA' &&
+          itemBank.name === 'Eureka Math'
+      ),
+    [collections]
+  )
+
+  let filteredBundles = featuredBundles
+
+  if (isEurekaMathActive) {
+    filteredBundles = featuredBundles.filter(
+      (feature) => feature.description !== 'Engage NY'
+    )
+  }
 
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
@@ -162,9 +182,12 @@ const MyClasses = ({
     window.open(data.externalUrl, '_blank')
   }
 
-  const bannerActionHandler = (filter = {}) => {
-    // NOTE: Actions might need further refactor
+  const bannerActionHandler = (filter = {}, description) => {
     const { action, data } = filter
+    segmentApi.trackUserClick({
+      user,
+      data: { event: `dashboard:banner-${description}:click` },
+    })
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)
@@ -195,7 +218,7 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getClassCardModular).fill(1)
     : []
 
-  const getFeatureCardModular = featuredBundles.length % GridCountInARow
+  const getFeatureCardModular = filteredBundles.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
@@ -215,19 +238,32 @@ const MyClasses = ({
         emptyBoxCount={classEmptyBoxCount}
       />
       <FeaturedContentBundle
-        featuredBundles={featuredBundles}
+        featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
       {isPurchaseModalVisible && (
         <ItemPurchaseModal
-          title={purchaseModalData.title}
-          description={purchaseModalData.description}
-          productId={purchaseModalData.productId}
-          hasTrial={purchaseModalData.hasTrial}
+          title={productData.productName}
+          description={productData.description}
+          productId={productData.productId}
+          hasTrial={productData.hasTrial}
           isVisible={isPurchaseModalVisible}
           toggleModal={togglePurchaseModal}
+          toggleTrialModal={toggleTrialModal}
+          premiumUser={premiumUser}
+        />
+      )}
+      {isTrialModalVisible && (
+        <TrialModal
+          description={productData.description}
+          productId={productData.productId}
+          productName={productData.productName}
+          userInfo={user}
+          addItemBankPermission={addPermissionRequest}
+          isVisible={isTrialModalVisible}
+          toggleModal={toggleTrialModal}
         />
       )}
     </MainContentWrapper>
@@ -253,6 +289,7 @@ export default compose(
       fetchCleverClassList: fetchCleverClassListRequestAction,
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
+      addPermissionRequest: addPermissionRequestAction,
     }
   )
 )(MyClasses)

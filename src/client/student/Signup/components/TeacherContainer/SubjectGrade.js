@@ -143,6 +143,9 @@ class SubjectGrade extends React.Component {
           { subject: subjects },
           showAllStandards
         )
+    const initialCurriculums = formattedCurriculums.length
+      ? interestedCurriculums.map((curriculum) => curriculum._id)
+      : []
     const { getFieldDecorator } = form
     const filteredAllGrades = allGrades.filter(
       (item) => item.isContentGrade !== true
@@ -239,6 +242,7 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator('standard', {
+                      initialValue: initialCurriculums,
                       rules: [
                         {
                           required: false,

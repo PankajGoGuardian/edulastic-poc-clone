@@ -15,6 +15,7 @@ const LAUNCH_HANGOUT_CLOSE = '[dashboard teacher] launch hangouts close'
 
 const FETCH_DASHBOARD_TILES = '[dashboard teacher] fetch tiles data'
 const SET_DASHBOARD_TILES = '[dashboard teacher] set tiles data'
+const SET_TRIAL = '[dashboard teacher] set trial'
 
 export const receiveTeacherDashboardAction = createAction(
   RECEIVE_TEACHER_DASHBOARD_REQUEST
@@ -31,6 +32,7 @@ export const launchHangoutClose = createAction(LAUNCH_HANGOUT_CLOSE)
 export const fetchDashboardTiles = createAction(FETCH_DASHBOARD_TILES)
 export const setDashboardTiles = createAction(SET_DASHBOARD_TILES)
 
+export const setTrial = createAction(SET_TRIAL)
 export const stateSelector = (state) => state.dashboardTeacher
 
 export const getLaunchHangoutStatus = createSelector(
@@ -43,6 +45,7 @@ const initialState = {
   error: null,
   loading: false,
   isLaunchHangoutOpen: false,
+  isAddingTrial: false,
   configurableTiles: JSON.parse(
     localStorage.getItem('author:dashboard:tiles') || '[]'
   ),
@@ -69,6 +72,9 @@ export const reducer = createReducer(initialState, {
   [SET_DASHBOARD_TILES]: (state, { payload }) => {
     state.configurableTiles = payload
   },
+  [SET_TRIAL]: (state, { payload }) => {
+    state.isAddingTrial = payload
+  },
 })
 
 function* receiveTeacherDashboardSaga() {
@@ -85,10 +91,14 @@ function* receiveTeacherDashboardSaga() {
 function* fetchDashboardTilesSaga() {
   try {
     const version = localStorage.getItem('author:dashboard:version')
-    const state = yield select((s) =>
-      s.user.user?.orgData?.districts?.[0]?.districtState || ''
+    const state = yield select(
+      (s) => s.user.user?.orgData?.districts?.[0]?.districtState || ''
     )
-    const result = yield call(configurableTilesApi.fetchTiles, +version, state.toUpperCase())
+    const result = yield call(
+      configurableTilesApi.fetchTiles,
+      +version,
+      state.toUpperCase()
+    )
     if (!version || version !== result.version) {
       yield put(setDashboardTiles(result.data))
       localStorage.setItem(

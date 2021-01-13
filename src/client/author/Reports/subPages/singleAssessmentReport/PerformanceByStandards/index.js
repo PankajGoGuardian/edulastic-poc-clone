@@ -7,6 +7,7 @@ import {
   find,
   indexOf,
   intersectionBy,
+  get,
 } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -17,6 +18,7 @@ import {
 } from '../../../../src/selectors/user'
 import { AutocompleteDropDown } from '../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
+import BackendPagination from '../../../common/components/BackendPagination'
 import {
   StyledCard,
   StyledDropDownContainer,
@@ -104,6 +106,12 @@ const PerformanceByStandards = ({
     setStandardMasteryProfile(report?.scaleInfo || {})
   }, [report])
 
+  const itemsCount = get(report, 'totalCount', 0)
+  const defaultPageFilter = {
+    page: 1,
+    pageSize: 50,
+  }
+  const [pageFilters, setPageFilters] = useState(defaultPageFilter)
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
   const [compareBy, setCompareBy] = useState(
@@ -167,12 +175,30 @@ const PerformanceByStandards = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters, compareBy },
+        requestFilters: {
+          ...settings.requestFilters,
+          compareBy,
+          ...defaultPageFilter,
+        },
         testId: settings.selectedTest.key,
       }
       getPerformanceByStandards(q)
     }
   }, [settings, compareBy])
+
+  useEffect(() => {
+    if (settings.selectedTest && settings.selectedTest.key) {
+      const q = {
+        requestFilters: {
+          ...settings.requestFilters,
+          compareBy,
+          ...pageFilters,
+        },
+        testId: settings.selectedTest.key,
+      }
+      getPerformanceByStandards(q)
+    }
+  }, [pageFilters])
 
   const setSelectedData = ({ defaultStandardId }) => {
     const _defaultStandardId =
@@ -354,6 +380,11 @@ const PerformanceByStandards = ({
           isCsvDownloading={isCsvDownloading}
           location={location}
           pageTitle={pageTitle}
+        />
+        <BackendPagination
+          itemsCount={itemsCount}
+          backendPagination={pageFilters}
+          setBackendPagination={setPageFilters}
         />
       </StyledCard>
     </>

@@ -1367,6 +1367,18 @@ export function* updateItemSaga({ payload }) {
               },
             })
           )
+          if (oldTestId && oldTestId === payload.testId) {
+            Sentry.withScope((scope) => {
+              scope.setTag('issueType', 'testIdMisMatchError')
+              scope.setExtra(
+                'message',
+                `old test Id = ${oldTestId}, new test Id = ${payload.testId}, testItemId = ${item._id}`
+              )
+              Sentry.captureException(
+                new Error('[test edit] item edit failure on test update')
+              )
+            })
+          }
         }
       }
       yield put(changeViewAction('edit'))

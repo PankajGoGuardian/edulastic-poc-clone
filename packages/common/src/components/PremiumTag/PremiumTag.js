@@ -3,7 +3,7 @@ import { Tag } from 'antd'
 import styled from 'styled-components'
 import { white, premiumBg } from '@edulastic/colors'
 
-const PremiumTag = ({ mr }) => <TagPremium mr={mr}>$ PREMIUM</TagPremium>
+const PremiumTag = ({ mr }) => <TagPremium mr={mr}>PREMIUM</TagPremium>
 
 export default PremiumTag
 

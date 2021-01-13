@@ -1,5 +1,5 @@
 module.exports = {
-  nonPremiumCollections: {
+  collectionsWithoutPremiumTag: {
     '6564756c61737469635f656e': 'Engage Ny',
     '6564756c61737469635f6365': 'Edulastic Certified',
     '5e3aa8ba83bf19bcab67d0bb': 'CLILESSONS Bank',
@@ -26,5 +26,6 @@ module.exports = {
     '5f0da8996ea7a80007cb65d8': 'CLI World Languages Chinese',
     '5f0eb316c5a0450007eaa2d9': 'CLI World Languages French',
     '5ef23b2a588604000731e38f': 'CL Mirrors and Windows',
+    '5e42a79966725d00073c0bb5': 'ETS Testlets',
   },
 }

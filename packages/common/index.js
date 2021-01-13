@@ -120,6 +120,7 @@ export {
   useLayoutEffectDebounced,
   getRangeAtFirst,
   replaceLatexTemplate,
+  isSafari,
 } from './src/helpers'
 
 // contexts

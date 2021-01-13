@@ -61,7 +61,7 @@ class MathInput extends React.PureComponent {
       mathFieldFocus
     ) {
       onFocus(false)
-      this.setState({ mathFieldFocus: false }, this.handleBlur)
+      this.setState({ mathFieldFocus: false })
     }
   }
 
@@ -117,6 +117,7 @@ class MathInput extends React.PureComponent {
         textarea.addEventListener('keypress', this.handleKeypress)
         textarea.addEventListener('keydown', this.handleTabKey, false)
         textarea.addEventListener('paste', this.handlePaste)
+        textarea.addEventListener('blur', this.handleBlur, false)
         document.addEventListener('click', this.handleClick, false)
       }
     )

@@ -178,7 +178,7 @@ const methodOptions = {
     'allowEulersNumber',
     'isFactorised',
     'isExpanded',
-    'isSimplified',
+    'isSimplifiedExpression',
     'isMixedFraction',
     'isImproperFraction',
     'ignoreAlphabeticCharacter',
@@ -261,7 +261,7 @@ const methodOptions = {
 const methodOptionsGrouped = {
   [methods.EQUIV_SYMBOLIC]: {
     'STUDENT ANSWER MUST BE': [
-      'isSimplified',
+      'isSimplifiedExpression',
       'isMixedFraction',
       'isImproperFraction',
       'isFactorised',
@@ -311,6 +311,8 @@ const methodOptionsGrouped = {
   // }
 }
 
+const simplifiedOptions = ['isSimplifiedFraction', 'isSimplifiedExpression']
+
 const interpret = [
   'automatic',
   'interpretAsSet',
@@ -324,7 +326,7 @@ const fractionForms = [
   'isImproperFraction',
   'isRationalized',
 ]
-const expressionForms = ['isSimplified', 'isFactorised', 'isExpanded']
+const expressionForms = ['isSimplifiedExpression', 'isFactorised', 'isExpanded']
 const numberFormat = [
   'integerType',
   // 'numberType',
@@ -533,4 +535,5 @@ module.exports = {
   subEvaluationSettingsGrouped,
   keyboardMethods,
   GRAPH_EVALUATION_SETTING,
+  simplifiedOptions,
 }

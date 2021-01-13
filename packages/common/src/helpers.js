@@ -1009,6 +1009,9 @@ export const replaceLatexTemplate = (str) => {
   )
 }
 
+export const isSafari = () =>
+  /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1034,6 +1037,7 @@ export default {
   executePromisesInSequence,
   sanitizeString,
   uuid,
+  isSafari,
   getSanitizedProps,
   captureSentryException,
   replaceLatexTemplate,

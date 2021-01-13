@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import get from 'lodash/get'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+
 import {
   EduButton,
   FlexContainer,
@@ -17,6 +18,7 @@ import {
   title,
   themeColorBlue,
 } from '@edulastic/colors'
+
 import { getFontSize } from '../../utils/helpers'
 import { Label } from '../../styled/WidgetOptions/Label'
 
@@ -30,9 +32,21 @@ const Hints = ({
   isLCBView,
   isExpressGrader,
   isStudentReport,
+  preferredLanguage = 'en',
 }) => {
-  const { hints = [], id } = question
-  const validHints = hints?.filter((hint) => hint?.label)
+  const { id } = question
+
+  const validHints = useMemo(() => {
+    if (
+      preferredLanguage !== 'en' &&
+      question?.languageFeatures?.[preferredLanguage]?.hints
+    ) {
+      return question.languageFeatures[preferredLanguage].hints
+    }
+
+    return (question?.hints || []).filter((hint) => hint?.label)
+  }, [question])
+
   const hintCount = validHints.length
   const fontSize = getFontSize(get(question, 'uiStyle.fontsize'))
 

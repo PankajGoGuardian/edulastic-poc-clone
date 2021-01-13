@@ -1,4 +1,5 @@
 import mqtt from 'mqtt'
+import { notification } from '@edulastic/common'
 import { getSignedUrl } from '../../author/ClassBoard/useRealtimeUpdates'
 
 const authorizeCanvas = async (ssoUrl, subscriptionTopic) => {
@@ -55,7 +56,31 @@ const authorizeCanvas = async (ssoUrl, subscriptionTopic) => {
           } else {
             reject(msg)
           }
+          const isAuthWindowClosed = authWindow?.closed
           authWindow?.close()
+          if (
+            !isAuthWindowClosed &&
+            (msg?.data?.message || '').includes('test_connection_success')
+          ) {
+            notification({
+              type: 'success',
+              msg: 'Canvas configuration successfully verified',
+            })
+          } else if (
+            !isAuthWindowClosed &&
+            (msg?.data?.message || '').includes('invalid_client')
+          ) {
+            notification({
+              type: 'warn',
+              msg: 'Invalid canvas secret key.',
+            })
+          } else if (!isAuthWindowClosed) {
+            notification({
+              type: 'warn',
+              msg:
+                'Failed to connect with canvas. Please enter the valid configuration',
+            })
+          }
           client.end()
         })
 

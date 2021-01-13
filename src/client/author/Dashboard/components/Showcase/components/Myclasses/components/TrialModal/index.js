@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CustomModalStyled, EduButton } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import { Checkbox } from 'antd'
+import styled from 'styled-components'
 import moment from 'moment'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 
 const ItemPurchaseModal = ({
   productId,
@@ -12,6 +14,9 @@ const ItemPurchaseModal = ({
   toggleModal,
   userInfo,
   addItemBankPermission,
+  premiumUser,
+  isPremiumTrialUsed,
+  startPremiumTrial,
 }) => {
   const closeModal = () => toggleModal(false)
   const onProceed = () => {
@@ -49,6 +54,9 @@ const ItemPurchaseModal = ({
       collectionName: productName,
       data: { permissionDetails },
     }
+    if (!premiumUser && !isPremiumTrialUsed) {
+      startPremiumTrial()
+    }
     addItemBankPermission({ data })
     closeModal()
   }
@@ -71,6 +79,18 @@ const ItemPurchaseModal = ({
       onCancel={closeModal}
     >
       {description}
+      <FlexContainer
+        flexDirection="column"
+        justifyContent="center"
+        marginLeft="40px"
+        mr="40px"
+        mt="20px"
+      >
+        {!premiumUser && !isPremiumTrialUsed && (
+          <StyledCheckbox checked>Premium Trial</StyledCheckbox>
+        )}
+        <StyledCheckbox checked>{productName} Trial</StyledCheckbox>
+      </FlexContainer>
     </CustomModalStyled>
   )
 }
@@ -84,3 +104,10 @@ ItemPurchaseModal.propTypes = {
 }
 
 export default ItemPurchaseModal
+
+const StyledCheckbox = styled(Checkbox)`
+  margin: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: unset;
+`

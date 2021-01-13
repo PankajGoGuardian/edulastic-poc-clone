@@ -109,8 +109,7 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
     key: 'testName',
     align: 'left',
     fixed: 'left',
-    width: 180,
-    ellipsis: true,
+    width: 200,
     render: (data, record) =>
       !isSharedReport ? (
         <Link
@@ -125,28 +124,26 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
   {
     title: 'Assessment Type',
     dataIndex: 'testType',
-    width: 100,
+    width: 180,
     key: 'testType',
   },
   {
     title: 'Day of Assessment Start',
     dataIndex: 'assignmentDateFormatted',
     key: 'assignmentDateFormatted',
-    width: 130,
+    width: 180,
     className: 'assessmentDate',
     sorter: (a, b) => a.assignmentDate - b.assignmentDate,
   },
   {
     title: 'Total Questions',
     dataIndex: 'totalQuestions',
-    width: 90,
     key: 'totalQuestions',
   },
   {
     title: 'Score',
     dataIndex: 'rawScore',
     className: 'rawscore',
-    width: 90,
     key: 'rawScore',
     render: (data, record) =>
       !isSharedReport
@@ -156,19 +153,16 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
   {
     title: 'District (Avg. Score%)',
     dataIndex: 'districtAvg',
-    width: 90,
     key: 'districtAvg',
   },
   {
     title: 'School (Avg Score%)',
     dataIndex: 'schoolAvg',
-    width: 90,
     key: 'schoolAvg',
   },
   {
     title: 'Class (Avg Score%)',
     dataIndex: 'groupAvg',
-    width: 90,
     key: 'groupAvg',
   },
 ]
@@ -180,7 +174,6 @@ const getColumns = (studentName = '', location, pageTitle, isSharedReport) => [
     dataIndex: 'score',
     align: 'right',
     key: 'score',
-    width: 90,
     sorter: (a, b) => a.score - b.score,
     render: (score, record) => {
       if (isNaN(score) && score !== null) {
@@ -267,7 +260,7 @@ const AssessmentTable = ({
       columns={columns}
       colouredCellsNo={1}
       tableToRender={StyledTable}
-      scroll={{ x: '100%' }}
+      scroll={{ x: 1000 }}
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}
     />

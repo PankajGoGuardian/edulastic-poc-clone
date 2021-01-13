@@ -23,7 +23,7 @@ export const StyledTable = styled(Table)`
         }
       }
       .ant-table-body {
-        overflow-x: hidden !important;
+        overflow-x: auto !important;
       }
       @media print {
         .ant-table-body {
@@ -40,6 +40,7 @@ export const StyledTable = styled(Table)`
           text-transform: uppercase;
           font-size: 10px;
           border: 0px;
+          background: none;
           .ant-table-column-sorter {
             vertical-align: top;
           }
@@ -106,13 +107,11 @@ const columns = [
     title: 'Domain Description',
     key: 'description',
     dataIndex: 'description',
-    width: 'calc(33% - 30px)',
   },
   {
     title: 'Mastered Standards',
     key: 'masteredCount',
     dataIndex: 'masteredCount',
-    width: 'calc(33% - 30px)',
     render: (masteredCount, record) =>
       `${masteredCount} out of ${record.standards.length}`,
   },
@@ -120,7 +119,6 @@ const columns = [
     title: 'Avg. Score(%)',
     key: 'score',
     dataIndex: 'score',
-    width: 'calc(33% - 30px)',
     sorter: (a, b) => a.score - b.score,
     render: renderToolTipColumn,
   },
@@ -138,7 +136,7 @@ const StandardMasteryDetailsTable = ({
     dataSource={data}
     columns={columns}
     colouredCellsNo={1}
-    scroll={{ x: '100%' }}
+    scroll={{ x: 550 }}
     rightAligned={2}
   />
 )

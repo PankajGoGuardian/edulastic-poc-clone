@@ -254,6 +254,7 @@ const SubscriptionMain = (props) => {
     setShowUpgradeModal,
     isPremiumTrialUsed,
     startTrialAction,
+    hasUpgradeButton,
   } = props
 
   const licenseExpiryDate = formatDate(subEndDate)
@@ -353,7 +354,7 @@ const SubscriptionMain = (props) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {subType !== 'enterprise' && (
+            {hasUpgradeButton && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <EduButton

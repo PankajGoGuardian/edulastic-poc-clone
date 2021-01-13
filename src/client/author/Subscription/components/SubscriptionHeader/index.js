@@ -34,6 +34,7 @@ const SubscriptionHeader = ({
   subType,
   subEndDate,
   setShowUpgradeModal,
+  hasUpgradeButton,
 }) => {
   const menu = (
     <Menu>
@@ -92,7 +93,7 @@ const SubscriptionHeader = ({
                   } Version`
                 : 'Free'}
             </span>
-            {subType !== 'enterprise' && (
+            {hasUpgradeButton && (
               <Dropdown
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 overlay={menu}

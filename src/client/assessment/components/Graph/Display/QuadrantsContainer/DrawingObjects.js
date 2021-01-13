@@ -3,7 +3,7 @@ import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import striptags from 'striptags'
-import cloneDeep from 'lodash/cloneDeep'
+import { cloneDeep, unescape } from 'lodash'
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
@@ -33,7 +33,7 @@ class DrawingObjects extends Component {
     )
     const objLabel = striptags(drawingObject.label)
     if (objLabel) {
-      return `${type} ${objLabel}`
+      return unescape(`${type} ${objLabel}`)
     }
 
     if (drawingObject.pointLabels) {
@@ -41,7 +41,7 @@ class DrawingObjects extends Component {
         .map((item) => striptags(item.label))
         .join('')
       if (pointLabels) {
-        return `${type} ${pointLabels}`
+        return unescape(`${type} ${pointLabels}`)
       }
     }
 

@@ -228,6 +228,8 @@ const Subscription = (props) => {
 
   const showUpgradeOptions = !isSubscribed
 
+  const hasUpgradeButton = !subType || subType === 'TRIAL_PREMIUM'
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -239,6 +241,7 @@ const Subscription = (props) => {
         subType={subType}
         subEndDate={subEndDate}
         setShowUpgradeModal={setShowUpgradeModal}
+        hasUpgradeButton={hasUpgradeButton}
       />
 
       <SubscriptionMain
@@ -251,6 +254,7 @@ const Subscription = (props) => {
         setShowUpgradeModal={setShowUpgradeModal}
         isPremiumTrialUsed={isPremiumTrialUsed}
         startTrialAction={startTrialAction}
+        hasUpgradeButton={hasUpgradeButton}
       />
 
       <CompareModal

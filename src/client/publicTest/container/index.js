@@ -44,7 +44,7 @@ const PublicTestPage = ({
   fetchUser,
 }) => {
   const { testId } = match.params
-  const [showPreviewModal, setShowPreviewModal] = useState(true)
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
   const [publicTest, setPublicTest] = useState()
 
   const redirectToTestPreview = (
@@ -154,14 +154,22 @@ const PublicTestPage = ({
       localStorage.setItem('publicUrlAccess', getCurrentPath())
     }
 
-    history.push({
-      pathname: `/author/assignments/${test._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    if (!user?.isAuthenticated) {
+      localStorage.setItem(
+        'loginRedirectUrl',
+        `/author/assignments/${test._id}`
+      )
+      history.push('/login')
+    } else {
+      history.push({
+        pathname: `/author/assignments/${test._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
+    }
   }
 
   const handleShowPreviewModal = () => setShowPreviewModal(true)
@@ -179,15 +187,14 @@ const PublicTestPage = ({
 
   return !isLoading ? (
     <StyledMainWrapper>
-      {/* Hiding test details modal for now */}
-      {/* <ViewModal
+      <ViewModal
         item={test}
         modalView={false}
         publicAccess
         assign={assignTest}
         status={test.status}
         previewLink={handleShowPreviewModal}
-      /> */}
+      />
       {showPreviewModal && (
         <TestPreviewModal
           isModalVisible
@@ -204,7 +211,6 @@ const PublicTestPage = ({
 
 const StyledMainWrapper = styled.div`
   width: 50%;
-  min-width: 690px;
   margin: auto;
   margin-top: 20px;
   .scrollbar-container {

@@ -21,7 +21,6 @@ const TestPreviewModal = ({
   currentAssignmentClass,
   showStudentPerformance,
   finishedPreviewTest,
-  demo,
   ...restProps
 }) => {
   const [
@@ -35,9 +34,6 @@ const TestPreviewModal = ({
   }, [error])
 
   const handleCloseModal = () => {
-    if (demo) {
-      return
-    }
     closeTestPreviewModal()
     finishedPreviewTest()
     setShowStudentPerformancePreview(false)
@@ -82,7 +78,6 @@ const TestPreviewModal = ({
           studentReportModal={studentReportModal}
           currentAssignmentId={currentAssignmentId}
           currentAssignmentClass={currentAssignmentClass}
-          demo={demo}
           {...restProps}
         />
       )}

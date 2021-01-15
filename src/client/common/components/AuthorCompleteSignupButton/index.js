@@ -15,11 +15,12 @@ const TeacherSignup = loadable(
 )
 
 const AuthorCompleteSignupButton = ({
-  user,
+  user = {},
   renderButton,
   onClick,
   trackClick,
 }) => {
+
   const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)

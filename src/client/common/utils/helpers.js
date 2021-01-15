@@ -489,3 +489,10 @@ export const isImagesBlockedByBrowser = async () => {
     console.warn(error)
   }
 }
+
+export const isHashAssessmentUrl = () => {
+  return (
+    window.location.hash.includes('#renderResource/close/') ||
+    window.location.hash.includes('#assessmentQuestions/close/')
+  )
+}

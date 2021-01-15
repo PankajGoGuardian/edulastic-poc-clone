@@ -41,6 +41,15 @@ const SubscriptionHeader = ({
       <Menu.Item onClick={() => setShowUpgradeModal(true)}>
         INDIVIDUAL SUBSCRIPTION
       </Menu.Item>
+      <Menu.Item>
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/formResponse"
+          target="_blank"
+          rel="noreferrer"
+        >
+          ENTERPRISE SUBSCRIPTION
+        </a>
+      </Menu.Item>
     </Menu>
   )
 

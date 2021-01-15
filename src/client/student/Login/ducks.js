@@ -1720,7 +1720,7 @@ function* getUserData({ payload: res }) {
     if (redirectUrl && !isAuthUrl) {
       // if redirect is happening for LCB and user did action schoology sync
       const schoologySync = localStorage.getItem('schoologyShare')
-      if (redirectUrl.include('classboard')) {
+      if ((redirectUrl || '').includes('classboard')) {
         const fragments = redirectUrl.split('/')
         const assignmentId = fragments[3]
         const classSectionId = fragments[4]

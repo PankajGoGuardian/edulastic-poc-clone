@@ -52,6 +52,7 @@ import {
   EnterpriseSection,
   HaveLicenseKey,
   CustomButton,
+  AddonFooter,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -371,6 +372,21 @@ const SubscriptionMain = (props) => {
                 <AddonDescription>
                   {addonsData[index].description}
                 </AddonDescription>
+                <AddonFooter>
+                  <span>Learn more</span>
+                  {addonsData[index].title === 'SparkMath' && (
+                    <>
+                      {hasUpgradeButton && (
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <span onClick={handleClick}>try</span>
+                          )}
+                          onClick={handleStartTrial}
+                        />
+                      )}
+                    </>
+                  )}
+                </AddonFooter>
               </AddonCard>
             ))}
           </CardContainer>

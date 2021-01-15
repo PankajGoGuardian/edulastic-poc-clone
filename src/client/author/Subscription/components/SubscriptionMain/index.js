@@ -255,6 +255,7 @@ const SubscriptionMain = (props) => {
     isPremiumTrialUsed,
     startTrialAction,
     hasUpgradeButton,
+    showRenewalOptions,
   } = props
 
   const licenseExpiryDate = formatDate(subEndDate)
@@ -354,7 +355,7 @@ const SubscriptionMain = (props) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {hasUpgradeButton && (
+            {hasUpgradeButton ? (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <EduButton
@@ -372,7 +373,11 @@ const SubscriptionMain = (props) => {
                 )}
                 onClick={handleUpgradeModal}
               />
-            )}
+            ) : showRenewalOptions ? (
+              <EduButton onClick={handleUpgradeModal} isBlue height="38px">
+                Renew Subscription
+              </EduButton>
+            ) : null}
             <EduButton
               height="38px"
               width="215px"

@@ -160,7 +160,7 @@ class SubjectGrade extends React.Component {
         <SubjectGradeBody hasMinHeight={!isModal}>
           <Col
             xs={{ span: 20, offset: 2 }}
-            lg={{ span: isModal ? 21 : 18, offset: 3 }}
+            lg={{ span: isModal ? 22 : 18, offset: isModal ? 1 : 3 }}
           >
             <FlexWrapper type="flex" align="middle">
               <BannerText xs={24} sm={18} md={12}>

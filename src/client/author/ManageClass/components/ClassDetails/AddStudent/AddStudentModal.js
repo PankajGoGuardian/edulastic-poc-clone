@@ -151,7 +151,6 @@ class AddStudentModal extends React.Component {
         onCancel={handleCancel}
         footer={footer}
         textAlign="left"
-        padding="0px"
       >
         <Spin spinning={submitted}>
           <AddForm>

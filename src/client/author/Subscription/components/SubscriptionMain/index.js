@@ -51,6 +51,7 @@ import {
   AddonDescription,
   EnterpriseSection,
   HaveLicenseKey,
+  CustomButton,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -310,18 +311,15 @@ const SubscriptionMain = (props) => {
             {hasUpgradeButton ? (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
-                  <EduButton
+                  <CustomButton
                     height="38px"
                     width="215px"
                     isBlue
                     onClick={handleClick}
-                    style={{
-                      background: 'transparent',
-                      borderColor: 'white',
-                    }}
+                    noBg
                   >
                     Upgrade now $100/YR
-                  </EduButton>
+                  </CustomButton>
                 )}
                 onClick={handleUpgradeModal}
               />
@@ -333,18 +331,15 @@ const SubscriptionMain = (props) => {
             {hasUpgradeButton && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
-                  <EduButton
+                  <CustomButton
                     height="38px"
                     width="215px"
                     isGhost
                     isBlue
                     onClick={handleClick}
-                    style={{
-                      borderColor: 'white',
-                    }}
                   >
                     Start a trial
-                  </EduButton>
+                  </CustomButton>
                 )}
                 onClick={handleStartTrial}
               />

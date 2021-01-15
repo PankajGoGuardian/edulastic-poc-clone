@@ -10,7 +10,7 @@ import {
   whiteSmoke,
   lightGrey9,
 } from '@edulastic/colors'
-import { CustomModalStyled } from '@edulastic/common'
+import { CustomModalStyled, EduButton } from '@edulastic/common'
 
 export const ContentSection = styled.section`
   min-height: 300px;
@@ -237,4 +237,8 @@ export const CalendlyModal = styled(CustomModalStyled)`
       max-width: 100% !important;
     }
   }
+`
+export const CustomButton = styled(EduButton)`
+  background: ${({ noBg }) => (noBg ? 'transparent !important' : null)};
+  border-color: ${white} !important;
 `

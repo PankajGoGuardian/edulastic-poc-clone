@@ -110,9 +110,7 @@ const initialState = {
     ...staticDropDownData.initialFilters,
   },
   testId: [],
-  tempDdFilter: {
-    ...staticDropDownData.initialDdFilters,
-  },
+  tempDdFilter: {},
   tagsData: {},
   loading: false,
 }

@@ -255,6 +255,7 @@ const Subscription = (props) => {
         isPremiumTrialUsed={isPremiumTrialUsed}
         startTrialAction={startTrialAction}
         hasUpgradeButton={hasUpgradeButton}
+        showRenewalOptions={showRenewalOptions}
       />
 
       <CompareModal

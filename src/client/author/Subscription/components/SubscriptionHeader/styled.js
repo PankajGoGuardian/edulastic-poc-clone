@@ -15,8 +15,15 @@ export const HeaderSubscription = styled.div`
   justify-content: space-between;
   padding: 15px 30px;
   .ant-dropdown-menu-item {
+    padding: 0px;
+    span {
+      padding: 5px 12px;
+      display: inline-block;
+    }
     a {
       color: ${white};
+      margin: 0px;
+      padding: 0px;
       &:hover {
         color: ${white};
       }
@@ -123,11 +130,4 @@ export const ActionButtons = styled.div`
       cursor: pointer;
     }
   }
-`
-
-export const ActionBtnWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  display: none;
 `

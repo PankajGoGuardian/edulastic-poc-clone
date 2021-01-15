@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import {
   themeColor,
-  secondaryTextColor,
   white,
-  linkColor1,
   largeDesktopWidth,
   tabletWidth,
   extraDesktopWidthMax,
@@ -143,20 +141,6 @@ export const HaveLicenseKey = styled.div`
   color: ${white};
 `
 
-export const CurrentPlanContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 40px;
-`
-
-export const PlanStatus = styled.h3`
-  color: ${linkColor1};
-  font-weight: 700;
-  margin: 0;
-`
-
 export const AvailablePlansContainer = styled.div`
   width: 100%;
   display: flex;
@@ -209,14 +193,6 @@ export const PlanDetails = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     width: calc(100% - 380px);
   }
-`
-
-export const StyledParagraph = styled.p`
-  text-transform: uppercase;
-  font-weight: 600;
-  color: ${secondaryTextColor};
-  margin-top: ${({ isSubscribed }) => isSubscribed && '50px'};
-  letter-spacing: 0.22px;
 `
 
 export const StyledLink = styled.span`

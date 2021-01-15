@@ -33,6 +33,12 @@ const SubscriptionHeader = ({
   const handleShowUpgradeModal = () => {
     setShowUpgradeModal(true)
   }
+  const handleEnterpriseClick = () => {
+    window.open(
+      'https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform',
+      '_blank'
+    )
+  }
   const menu = (
     <Menu>
       <Menu.Item>
@@ -44,13 +50,12 @@ const SubscriptionHeader = ({
         />
       </Menu.Item>
       <Menu.Item>
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/formResponse"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <span>ENTERPRISE SUBSCRIPTION</span>
-        </a>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <span onClick={handleClick}>ENTERPRISE SUBSCRIPTION</span>
+          )}
+          onClick={handleEnterpriseClick}
+        />
       </Menu.Item>
     </Menu>
   )

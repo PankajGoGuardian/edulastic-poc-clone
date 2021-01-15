@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import {
   themeColor,
-  secondaryTextColor,
   white,
-  linkColor1,
   largeDesktopWidth,
   tabletWidth,
   extraDesktopWidthMax,
@@ -12,7 +10,7 @@ import {
   whiteSmoke,
   lightGrey9,
 } from '@edulastic/colors'
-import { CustomModalStyled } from '@edulastic/common'
+import { CustomModalStyled, EduButton } from '@edulastic/common'
 
 export const ContentSection = styled.section`
   min-height: 300px;
@@ -143,20 +141,6 @@ export const HaveLicenseKey = styled.div`
   color: ${white};
 `
 
-export const CurrentPlanContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 40px;
-`
-
-export const PlanStatus = styled.h3`
-  color: ${linkColor1};
-  font-weight: 700;
-  margin: 0;
-`
-
 export const AvailablePlansContainer = styled.div`
   width: 100%;
   display: flex;
@@ -211,14 +195,6 @@ export const PlanDetails = styled.div`
   }
 `
 
-export const StyledParagraph = styled.p`
-  text-transform: uppercase;
-  font-weight: 600;
-  color: ${secondaryTextColor};
-  margin-top: ${({ isSubscribed }) => isSubscribed && '50px'};
-  letter-spacing: 0.22px;
-`
-
 export const StyledLink = styled.span`
   color: ${themeColor};
 `
@@ -261,4 +237,8 @@ export const CalendlyModal = styled(CustomModalStyled)`
       max-width: 100% !important;
     }
   }
+`
+export const CustomButton = styled(EduButton)`
+  background: ${({ noBg }) => (noBg ? 'transparent !important' : null)};
+  border-color: ${white} !important;
 `

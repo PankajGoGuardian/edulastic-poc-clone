@@ -14,13 +14,7 @@ const UpgradeModal = ({
       visible={visible}
       title="Upgrade your account"
       onCancel={() => setShowModal(false)}
-      footer={[
-        {
-          /* <MultiSubscriptionLink>
-          Buy Multiple Subscriptions CLICK HERE
-        </MultiSubscriptionLink>, */
-        },
-      ]}
+      footer={null}
       centered
       modalWidth="530px"
       padding="25px 45px"

@@ -23,6 +23,8 @@ import {
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
+  MQTT_CLIENT_REMOVE_REQUEST,
+  MQTT_CLIENT_SAVE_REQUEST,
 } from '../constants/actions'
 
 import {
@@ -53,6 +55,7 @@ const initialState = {
   totalAssignmentsClasses: 0,
   assignmentStatusCounts: { notOpen: 0, inProgress: 0, inGrading: 0, done: 0 },
   syncWithSchoologyClassroomInProgress: false,
+  mqttClient: null,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -214,6 +217,16 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         syncWithSchoologyClassroomInProgress: false,
+      }
+    case MQTT_CLIENT_SAVE_REQUEST:
+      return {
+        ...state,
+        mqttClient: payload,
+      }
+    case MQTT_CLIENT_REMOVE_REQUEST:
+      return {
+        ...state,
+        mqttClient: undefined,
       }
     default:
       return state

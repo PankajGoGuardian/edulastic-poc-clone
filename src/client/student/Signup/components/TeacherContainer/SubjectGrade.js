@@ -22,7 +22,6 @@ import {
 } from '../../../../author/src/selectors/dictionaries'
 import {
   getInterestedCurriculumsSelector,
-  getInterestedCurriculumsByOrgType,
   getUserSelector,
 } from '../../../../author/src/selectors/user'
 import selectsData from '../../../../author/TestPage/components/common/selectsData'
@@ -56,7 +55,6 @@ class SubjectGrade extends React.Component {
     getCurriculums: PropTypes.func.isRequired,
     userInfo: PropTypes.object.isRequired,
     saveSubjectGrade: PropTypes.func.isRequired,
-    userInterestedCurriculums: PropTypes.array,
     curriculums: PropTypes.arrayOf(
       PropTypes.shape({
         _id: PropTypes.string.isRequired,
@@ -71,7 +69,6 @@ class SubjectGrade extends React.Component {
 
   static defaultProps = {
     isModal: false,
-    userInterestedCurriculums: [],
   }
 
   componentDidMount() {
@@ -131,7 +128,6 @@ class SubjectGrade extends React.Component {
     const { grades, subjects } = this.state
     const {
       interestedCurriculums,
-      userInterestedCurriculums,
       curriculums,
       form,
       saveSubjectGradeloading,
@@ -148,7 +144,7 @@ class SubjectGrade extends React.Component {
           showAllStandards
         )
     const initialCurriculums = formattedCurriculums.length
-      ? userInterestedCurriculums.map((curriculum) => curriculum._id)
+      ? interestedCurriculums.map((curriculum) => curriculum._id)
       : []
     const { getFieldDecorator } = form
     const filteredAllGrades = allGrades.filter(
@@ -310,7 +306,6 @@ const enhance = compose(
       curriculums: getCurriculumsListSelector(state),
       user: getUserSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
-      userInterestedCurriculums: getInterestedCurriculumsByOrgType(state),
       saveSubjectGradeloading: saveSubjectGradeloadingSelector(state),
     }),
     {

@@ -384,3 +384,6 @@ export const SET_QUESTION_CATEGORY =
   '[pickUpQuestion] set question category success'
 export const SET_QUESTION_TAB = '[pickUpQuestion] set question tab success'
 export const SET_SCROLL_TOP = '[pickUpQuestion] set scroll top value'
+
+export const MQTT_CLIENT_SAVE_REQUEST = '[mqtt] Client saved'
+export const MQTT_CLIENT_REMOVE_REQUEST = '[mqtt] Client removed'

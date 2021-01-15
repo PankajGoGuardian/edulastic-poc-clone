@@ -5,6 +5,7 @@ import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { subscriptionApi, paymentApi } from '@edulastic/api'
 import { fetchUserAction } from '../../student/Login/ducks'
+import { addPermissionRequestAction } from '../ContentCollections/ducks'
 
 const slice = createSlice({
   name: 'subscription',
@@ -186,7 +187,7 @@ function* fetchUserSubscription() {
   }
 }
 
-function* handleFreeTrialSaga() {
+function* handleFreeTrialSaga({ payload }) {
   try {
     const apiPaymentResponse = yield call(paymentApi.pay, {})
     if (apiPaymentResponse.success) {
@@ -201,6 +202,9 @@ function* handleFreeTrialSaga() {
         )}`,
         key: 'handle-trial',
       })
+      if (payload && payload.addItemBankPermission) {
+        yield put(addPermissionRequestAction(payload.addItemBankPermission))
+      }
       yield put(slice.actions.resetSubscriptions())
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))

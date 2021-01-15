@@ -6,7 +6,7 @@ import moment from 'moment'
 import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 
-const ItemPurchaseModal = ({
+const TrialModal = ({
   productId,
   productName,
   description,
@@ -55,9 +55,10 @@ const ItemPurchaseModal = ({
       data: { permissionDetails },
     }
     if (!premiumUser && !isPremiumTrialUsed) {
-      startPremiumTrial()
+      startPremiumTrial({ addItemBankPermission: { data } })
+    } else {
+      addItemBankPermission({ data })
     }
-    addItemBankPermission({ data })
     closeModal()
   }
 
@@ -95,7 +96,7 @@ const ItemPurchaseModal = ({
   )
 }
 
-ItemPurchaseModal.propTypes = {
+TrialModal.propTypes = {
   productName: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   productId: PropTypes.string.isRequired,
@@ -103,7 +104,7 @@ ItemPurchaseModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
 }
 
-export default ItemPurchaseModal
+export default TrialModal
 
 const StyledCheckbox = styled(Checkbox)`
   margin: 8px;

@@ -9,6 +9,7 @@ import {
   title,
   whiteSmoke,
   lightGrey9,
+  borderGrey2,
 } from '@edulastic/colors'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 
@@ -241,4 +242,25 @@ export const CalendlyModal = styled(CustomModalStyled)`
 export const CustomButton = styled(EduButton)`
   background: ${({ noBg }) => (noBg ? 'transparent !important' : null)};
   border-color: ${white} !important;
+`
+export const AddonFooter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  color: #3f85e5;
+  padding-top: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  span {
+    height: 18px;
+    border-right: 1px solid ${borderGrey2};
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    &:last-child {
+      border: none;
+    }
+  }
 `

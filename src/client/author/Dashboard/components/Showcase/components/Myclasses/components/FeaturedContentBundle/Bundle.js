@@ -6,7 +6,11 @@ import { BundleContainer, Bottom } from './styled'
 
 const Bundle = ({ handleClick, bundle }) => (
   <BundleContainer onClick={handleClick} bgImage={bundle.imageUrl}>
-    <Bottom>{bundle.description && <div> {bundle.description} </div>}</Bottom>
+    <Bottom>
+      {bundle.description && (
+        <div data-cy={bundle.description}> {bundle.description} </div>
+      )}
+    </Bottom>
   </BundleContainer>
 )
 

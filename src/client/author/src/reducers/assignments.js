@@ -226,7 +226,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case MQTT_CLIENT_REMOVE_REQUEST:
       return {
         ...state,
-        mqttClient: undefined,
+        mqttClient: null,
       }
     default:
       return state

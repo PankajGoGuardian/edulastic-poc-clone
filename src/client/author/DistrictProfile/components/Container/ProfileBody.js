@@ -55,6 +55,8 @@ import { selectsData } from '../../../TestPage/components/common'
 import JoinSchool from '../../../../student/Signup/components/TeacherContainer/JoinSchool'
 import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
 
+const { ORG_TYPE } = roleuser
+
 const FormItem = Form.Item
 class ProfileBody extends React.Component {
   state = {
@@ -228,7 +230,6 @@ class ProfileBody extends React.Component {
         grades: selStandards[0].grades,
       })
     }
-    const { ORG_TYPE } = roleuser
     const orgType =
       role === roleuser.DISTRICT_ADMIN
         ? ORG_TYPE.DISTRICT_ADMIN
@@ -257,19 +258,12 @@ class ProfileBody extends React.Component {
 
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
     let settingsToUpdate = {
-      orgId,
+      orgId: user._id,
       orgType,
       autoShareGCAssignment,
       isPowerTeacher,
@@ -315,19 +309,12 @@ class ProfileBody extends React.Component {
     )
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
     const standardsData = {
-      orgId,
+      orgId: user._id,
       orgType,
       curriculums: updatedInterestedCurriculums,
     }

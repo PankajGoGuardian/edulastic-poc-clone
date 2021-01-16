@@ -102,8 +102,8 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
           </FieldLabel>
           <MathInput
             value={localLatex}
-            style={{ width: '180px', marginLeft: '14px' }}
-            symbols={['basic']}
+            style={{ width: '210px', marginLeft: '14px' }}
+            symbols={['all']}
             maxWidth="445px"
             paddingRight="8px"
             onInput={onChangeMath}

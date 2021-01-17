@@ -757,6 +757,7 @@ export const createBlankTest = () => ({
   generateReport: true,
   safeBrowser: false,
   sebPassword: '',
+  blockNavigationToAnsweredQuestions: false,
   shuffleQuestions: false,
   shuffleAnswers: false,
   calcType: test.calculatorKeys[0],

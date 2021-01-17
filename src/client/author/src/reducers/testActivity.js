@@ -21,6 +21,7 @@ import {
   UPDATE_PASSWORD_DETAILS,
   RECEIVE_STUDENT_RESPONSE_SUCCESS,
   RESPONSE_ENTRY_SCORE_SUCCESS,
+  UPDATE_PAUSE_STATUS_ACTION,
 } from '../constants/actions'
 import {
   transformGradeBookResponse,
@@ -167,6 +168,22 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         allTestActivitiesForStudent: payload,
       }
+    case UPDATE_PAUSE_STATUS_ACTION: {
+      const { result, isPaused } = payload
+      const updatedUtas = keyBy(result)
+      return {
+        ...state,
+        entities: state.entities.map((item) => {
+          if (updatedUtas[item.testActivityId]) {
+            return {
+              ...item,
+              isPaused,
+            }
+          }
+          return item
+        }),
+      }
+    }
     case RESPONSE_ENTRY_SCORE_SUCCESS:
       return produce(state, (_st) => {
         const userId = payload?.testActivity?.userId

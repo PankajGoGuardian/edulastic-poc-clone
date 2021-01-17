@@ -195,6 +195,10 @@ export const UPDATE_OVERALL_FEEDBACK = '[gradebook] update overalll feedback'
 export const MARK_AS_ABSENT = '[gradebook] mark student/students as absent'
 export const MARK_AS_SUBMITTED =
   '[gradebook] mark student/students as submitted'
+export const PAUSE_STUDENTS = '[gradebook] pause students'
+export const UPDATE_PAUSE_STATUS_ACTION =
+  'gradebook update paused status on cards'
+
 export const UPDATE_SUBMITTED_STUDENTS =
   '[gradebook] update student activity as submitted'
 export const DOWNLOAD_GRADES_RESPONSES =

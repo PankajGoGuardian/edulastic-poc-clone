@@ -14,6 +14,8 @@ import {
   IconMarkAsAbsent,
   IconMarkAsSubmitted,
   IconMoreHorizontal,
+  IconPause,
+  IconPlay,
   IconPrint,
   IconRedirect,
   IconRemove,
@@ -42,6 +44,7 @@ import {
   markAbsentAction,
   markAsDoneAction,
   markSubmittedAction,
+  togglePauseStudentsAction,
   receiveStudentResponseAction,
   receiveTestActivitydAction,
   releaseScoreAction,
@@ -738,6 +741,35 @@ class ClassBoard extends Component {
     this.setState({ showAddStudentsPopup: true })
   }
 
+  handleTogglePauseStudents = (isPause) => () => {
+    const {
+      pauseStudents,
+      match,
+      studentUnselectAll,
+      selectedStudents,
+      assignmentStatus,
+      additionalData,
+    } = this.props
+    const { assignmentId, classId } = match.params
+    if (assignmentStatus.toLowerCase() === 'not open') {
+      return notification({
+        type: 'warn',
+        messageKey: 'assignmentIsNotOpenedYet',
+      })
+    }
+    if (additionalData.isPaused) {
+      return notification({
+        type: 'warn',
+        messageKey: 'testPausedOrClosedByTeacher',
+      })
+    }
+    const selectedStudentKeys = Object.keys(selectedStudents)
+    if (!selectedStudentKeys.length)
+      return notification({ type: 'warn', messageKey: 'noStudentsSelected' })
+    studentUnselectAll()
+    pauseStudents(assignmentId, classId, selectedStudentKeys, isPause)
+  }
+
   handleHideAddStudentsPopup = () => {
     this.setState({ showAddStudentsPopup: false })
   }
@@ -1333,6 +1365,22 @@ class ClassBoard extends Component {
                             <span>Unassign Students</span>
                           </MenuItems>
                           <MenuItems
+                            data-cy="pauseStudents"
+                            onClick={this.handleTogglePauseStudents(true)}
+                            disabled={disableMarkAbsent}
+                          >
+                            <IconPause />
+                            <span>Pause Students</span>
+                          </MenuItems>
+                          <MenuItems
+                            data-cy="resumeStudents"
+                            onClick={this.handleTogglePauseStudents(false)}
+                            disabled={disableMarkAbsent}
+                          >
+                            <IconPlay />
+                            <span>Resume Students</span>
+                          </MenuItems>
+                          <MenuItems
                             data-cy="downloadGrades"
                             disabled={!enableDownload}
                             onClick={() => this.handleDownloadGrades(false)}
@@ -1784,6 +1832,7 @@ const enhance = compose(
       updateCliUser: updateCliUserAction,
       canvasSyncAssignment: canvasSyncAssignmentAction,
       setShowCanvasShare: setShowCanvasShareAction,
+      pauseStudents: togglePauseStudentsAction,
     }
   )
 )

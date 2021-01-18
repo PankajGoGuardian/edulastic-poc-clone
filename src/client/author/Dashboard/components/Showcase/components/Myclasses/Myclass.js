@@ -289,7 +289,7 @@ export default compose(
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
       collections: getCollectionsSelector(state),
       isPremiumTrialUsed:
-        state?.subscription?.subscriptionData?.subscription?.isPremiumTrialUsed,
+        state?.subscription?.subscriptionData?.isPremiumTrialUsed,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

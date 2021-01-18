@@ -24,7 +24,11 @@ import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
 import EvaluationSettings from '../../../../components/EvaluationSettings'
 
-const { methods: methodsConst, methodOptions: methodOptionsConst } = math
+const {
+  methods: methodsConst,
+  methodOptions: methodOptionsConst,
+  subEvaluationSettingsGrouped,
+} = math
 
 const MathFormulaAnswerMethod = ({
   onChange,
@@ -82,6 +86,17 @@ const MathFormulaAnswerMethod = ({
     const newOptions = {
       ...options,
       [prop]: val,
+    }
+
+    if (
+      newOptions.isSimplifiedFraction ||
+      newOptions.isMixedFraction ||
+      newOptions.isImproperFraction ||
+      newOptions.isRationalized
+    ) {
+      for (const property of subEvaluationSettingsGrouped.numberFormat) {
+        delete newOptions[property]
+      }
     }
 
     if (!val) {

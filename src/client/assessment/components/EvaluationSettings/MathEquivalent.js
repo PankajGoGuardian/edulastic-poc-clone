@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Tabs as AntTabs } from 'antd'
 import { keys } from 'lodash'
 import { FieldLabel } from '@edulastic/common'
@@ -22,6 +22,27 @@ const MathEquivalentOptions = ({
 }) => {
   const groupedOptions = useMemo(() => evaluationSettings[method], [method])
 
+  const [isNumberFormatDisabled, setIsNumberFormatDisabled] = useState(false)
+
+  const handleChangeOptions = (prop, val) => {
+    const newOptions = {
+      ...options,
+      [prop]: val,
+    }
+    if (
+      newOptions.isSimplifiedFraction ||
+      newOptions.isMixedFraction ||
+      newOptions.isImproperFraction ||
+      newOptions.isRationalized
+    ) {
+      setIsNumberFormatDisabled(true)
+    } else {
+      setIsNumberFormatDisabled(false)
+    }
+
+    onChangeOption(prop, val)
+  }
+
   const tabLabel = (label) => (
     <FieldLabel marginBottom="0px">{label}</FieldLabel>
   )
@@ -32,12 +53,13 @@ const MathEquivalentOptions = ({
         key={key}
         optionKey={key}
         options={options}
-        onChangeOption={onChangeOption}
+        onChangeOption={handleChangeOptions}
         onChangeRadio={onChangeRadio}
         useTemplate={useTemplate}
         allowNumericOnly={allowNumericOnly}
         allowedVariables={allowedVariables}
         onChangeAllowedOptions={onChangeAllowedOptions}
+        isNumberFormatDisabled={isNumberFormatDisabled}
       />
     ))
 

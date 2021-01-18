@@ -1,13 +1,14 @@
 import React from 'react'
 import { compose } from 'redux'
 import { Button, Form } from 'antd'
+import { EduButton } from '@edulastic/common'
 import styled from 'styled-components'
 import { themeColor, whiteSmoke, numBtnColors, white } from '@edulastic/colors'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 const EmailConfirmModal = ({ visible, toggleModal, changeEmail }) => {
   const Footer = [
-    <NoButton ghost onClick={() => toggleModal('EMAIL_CONFIRM', false)}>
+    <NoButton isGhost onClick={() => toggleModal('EMAIL_CONFIRM', false)}>
       NO, CANCEL
     </NoButton>,
     <YesButton onClick={changeEmail}>SAVE</YesButton>,
@@ -61,7 +62,7 @@ const YesButton = styled(Button)`
   width: 130px;
 `
 
-const NoButton = styled(Button)`
+const NoButton = styled(EduButton)`
   padding: 5px 30px;
   width: 130px;
   margin-right: 30px;

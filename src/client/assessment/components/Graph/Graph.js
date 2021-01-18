@@ -392,7 +392,7 @@ class Graph extends Component {
       if (prop === 'ponitsOnAnEquation' && !value) {
         draft.validation.points = null
         draft.validation.latex = null
-        draft.validation.apiLatex = null
+        // draft.validation.apiLatex = null
       } else if (prop === 'ponitsOnAnEquation' && isObject(value)) {
         draft.validation = {
           ...draft.validation,

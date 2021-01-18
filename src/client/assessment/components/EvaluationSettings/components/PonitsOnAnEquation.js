@@ -5,9 +5,7 @@ import {
   TextInputStyled,
   MathInput,
   FieldLabel,
-  notification,
 } from '@edulastic/common'
-import { graphEvaluateApi } from '@edulastic/api'
 import { HeadingLabel } from './InlineCheckOptions'
 import LabelWithHelper from './LabelWithHelper'
 import { validations } from './inputsValidations'
@@ -29,7 +27,7 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
       valid = validations[optionKey](e.target.value)
     }
     if (valid) {
-      onChange('ponitsOnAnEquation', { points: e.target.value })
+      onChange('points', e.target.value)
     }
   }
 
@@ -38,22 +36,7 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
   }
 
   const handleBlurMath = () => {
-    if (localLatex) {
-      graphEvaluateApi
-        .convert({ latex: localLatex })
-        .then(({ result }) => {
-          if (result === 'Conversion_Error') {
-            return notification({ messageKey: 'equationErr' })
-          }
-          onChange('ponitsOnAnEquation', {
-            latex: localLatex,
-            apiLatex: result[0],
-          })
-        })
-        .catch(() => {
-          notification({ messageKey: 'equationErr' })
-        })
-    }
+    onChange('latex', localLatex)
   }
 
   useEffect(() => {

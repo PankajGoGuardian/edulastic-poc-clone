@@ -70,6 +70,7 @@ import {
   archivedItemsSelector,
   clearPreviewAction,
   duplicateTestItemPreviewRequestAction,
+  editNonAuthoredItemAction,
   getItemDetailSelectorForPreview,
   getPassageSelector,
   setPrevewItemAction,
@@ -260,11 +261,28 @@ class PreviewModal extends React.Component {
       updateTestAndNavigate,
       test,
       isTest = !!testId,
-      match,
+      editNonAuthoredItem,
+      isEditable,
+      item,
+      userId,
+      testAssignments,
+      userRole,
+      writableCollections,
+      userFeatures,
     } = this.props
 
     const itemId = data.id
-    const regradeFlow = match.params.oldId && match.params.oldId !== 'undefined'
+    const regradeFlow = !!test?._id && testAssignments.length && test.isUsed
+    const isOwner = item?.authors?.some((author) => author._id === userId)
+    const hasCollectionAccess = allowContentEditCheck(
+      item?.collections,
+      writableCollections
+    )
+    const isDisableEdit = !(
+      (isEditable && isOwner) ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (hasCollectionAccess && userFeatures.isCurator)
+    )
 
     // change the question editor view to "edit"
     changeView('edit')
@@ -272,6 +290,9 @@ class PreviewModal extends React.Component {
     // clearing it before navigation.
 
     clearItemStore()
+    if (isDisableEdit && regradeFlow && isTest) {
+      return editNonAuthoredItem({ itemId, testId, replaceWithOrginal: true })
+    }
     if (isTest) {
       updateTestAndNavigate({
         pathname: `/author/tests/${testId}/editItem/${itemId}`,
@@ -563,7 +584,8 @@ class PreviewModal extends React.Component {
     const isDisableEdit = !(
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
-      (hasCollectionAccess && userFeatures.isCurator)
+      (hasCollectionAccess && userFeatures.isCurator) ||
+      isTestInRegrade
     )
     const isDisableDuplicate = !(
       allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
@@ -952,6 +974,7 @@ const enhance = compose(
       setNextPreviewItem: setNextPreviewItemAction,
       setPassageTestItems: setPassageItemsAction,
       setAndSavePassageItems: setAndSavePassageItemsAction,
+      editNonAuthoredItem: editNonAuthoredItemAction,
     }
   )
 )

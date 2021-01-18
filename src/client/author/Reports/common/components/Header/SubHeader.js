@@ -14,7 +14,9 @@ const SubHeader = ({
 }) => {
   const isShowBreadcrumb = title !== 'Standard Reports'
   const showStandardFilters =
-    title === 'Standards Performance Summary' || title === 'Standards Gradebook'
+    title === 'Standards Performance Summary' ||
+    title === 'Standards Gradebook' ||
+    title === 'Standards Progress'
 
   return (
     <SecondaryHeader

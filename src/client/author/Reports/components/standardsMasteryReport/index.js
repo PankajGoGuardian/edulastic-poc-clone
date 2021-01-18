@@ -23,14 +23,14 @@ const links = [
     description:
       'View a summary of proficiency on all standards assessed on one or more tests. Can be filtered by individual, class, or group.',
   },
-  // {
-  //   key: "standardsProgess",
-  //   title: "Standards Progress",
-  //   thumbnail: SMRGradbook,
-  //   location: "/author/reports/standards-progress",
-  //   description:
-  //     "View an aggregate of proficiency levels on a specific standard across one or more assessments. Can be filtered by individual, class, or group."
-  // }
+  {
+    key: 'standardsProgess',
+    title: 'Standards Progress',
+    thumbnail: SMRGradbook,
+    location: '/author/reports/standards-progress',
+    description:
+      'View an aggregate of proficiency levels on a specific standard across one or more assessments. Can be filtered by individual, class, or group.',
+  },
 ]
 
 const StandardsMasteryReport = ({ premium, history }) => (

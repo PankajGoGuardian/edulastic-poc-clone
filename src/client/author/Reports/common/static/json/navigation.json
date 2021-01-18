@@ -112,6 +112,20 @@
       "group": "standardsMasteryReport",
       "groupTitle": "Standards Mastery Report"
     },
+    "standards-progress": {
+      "title": "Standards Progress",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "STANDARDS PROGRESS"
+        }
+      ],
+      "group": "standardsMasteryReport",
+      "groupTitle": "Standards Mastery Report"
+    },
     "performance-over-time": {
       "title": "Performance Over Time",
       "breadcrumb": [
@@ -270,6 +284,11 @@
         "key": "standards-gradebook",
         "title": "Standards Gradebook",
         "location": "/author/reports/standards-gradebook"
+      },
+      {
+        "key": "standards-progress",
+        "title": "Standards Progress",
+        "location": "/author/reports/standards-progress"
       }
     ],
     "multipleAssessmentReport": [

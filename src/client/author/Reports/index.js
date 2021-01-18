@@ -290,8 +290,9 @@ const Container = (props) => {
         />
         <Route
           path={[
-            `/author/reports/standards-gradebook`,
             `/author/reports/standards-performance-summary`,
+            `/author/reports/standards-gradebook`,
+            `/author/reports/standards-progress`,
           ]}
           render={(_props) => (
             <StandardsMasteryReportContainer

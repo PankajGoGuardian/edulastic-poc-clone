@@ -32,7 +32,7 @@ export const FieldLabel = styled.label`
 const inputCommonStyle = {
   backgroundColor: (props) => props.bg || greyThemeLighter,
   border: (props) => (props.noBorder ? '0px' : `1px solid ${greyThemeLight}`),
-  color: '#6a737f',
+  color: (props) => props.color || '#6a737f',
   fontSize: (props) => props.fontSize || '13px',
   width: (props) => props.width || '100%',
   height: (props) => props.height || '32px',
@@ -69,7 +69,6 @@ export const TextInputStyled = styled((props) => (
     text-align: ${(props) => props.align || 'left'};
     ${inputCommonStyle};
     ${(props) => props.style};
-    color: ${({ theme }) => theme.questionTextColor};
     &:focus,
     &:hover {
       border: 1px solid ${themeColorBlue} !important;
@@ -82,7 +81,6 @@ export const TextInputStyled = styled((props) => (
     .ant-input {
       ${inputCommonStyle};
       ${(props) => props.style};
-      color: ${({ theme }) => theme.questionTextColor};
       &:focus,
       &:hover {
         border: 1px solid ${themeColorBlue} !important;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withTheme } from 'styled-components'
 import { compose } from 'redux'
-import { isEqual } from 'lodash'
+import { isEqual, round } from 'lodash'
 import loadable from '@loadable/component'
 import Progress from '@edulastic/common/src/components/Progress'
 import { defaultSymbols } from '@edulastic/constants'
@@ -219,7 +219,7 @@ class GraphDisplay extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { inLCB, isExpressGrader } = this.props
+    const { inLCB, isExpressGrader, tReady, windowHeight } = this.props
     // a perf optimization done in LCB view to avoid unresponsive question view.
     // without this, for every update graph re-rendering causing freezing
     // we are checking graphData.activity,graphData.elements,bgShapes for change
@@ -233,8 +233,8 @@ class GraphDisplay extends Component {
         this.props?.graphData?.activity
       ) &&
       isEqual(nextProps?.bgShapes, this.props?.bgShapes) &&
-      this.props.tReady === nextProps.tReady &&
-      this.props.windowHeight === nextProps.windowHeight
+      tReady === nextProps.tReady &&
+      windowHeight === nextProps.windowHeight
     ) {
       return false
     }
@@ -261,6 +261,36 @@ class GraphDisplay extends Component {
     }
   }
 
+  getCanvas = () => {
+    const { graphData } = this.props
+
+    const { uiStyle, canvas } = graphData
+
+    const { xRadians, yRadians } = uiStyle
+
+    const xMin = xRadians
+      ? round(Math.PI * parseFloat(canvas.xMin), 2)
+      : parseFloat(canvas.xMin)
+    const xMax = xRadians
+      ? round(Math.PI * parseFloat(canvas.xMax), 2)
+      : parseFloat(canvas.xMax)
+    const yMin = yRadians
+      ? round(Math.PI * parseFloat(canvas.yMin), 2)
+      : parseFloat(canvas.yMin)
+    const yMax = yRadians
+      ? round(Math.PI * parseFloat(canvas.yMax), 2)
+      : parseFloat(canvas.yMax)
+
+    const xDistance = xRadians
+      ? round(Math.PI / safeParseFloat(uiStyle.xDistance), 2)
+      : safeParseFloat(uiStyle.xDistance)
+    const yDistance = yRadians
+      ? round(Math.PI / safeParseFloat(uiStyle.yDistance), 2)
+      : safeParseFloat(uiStyle.yDistance)
+
+    return [xMin, xMax, yMin, yMax, xDistance, yDistance]
+  }
+
   getQuadrantsProps = () => {
     const {
       view,
@@ -282,7 +312,6 @@ class GraphDisplay extends Component {
 
     const {
       uiStyle,
-      canvas,
       backgroundImage,
       background_shapes,
       toolbar,
@@ -297,14 +326,11 @@ class GraphDisplay extends Component {
       xShowAxis = true,
       yShowAxis = true,
       drawLabelZero = true,
+      xRadians,
+      yRadians,
     } = uiStyle
 
-    const xMin = parseFloat(canvas.xMin)
-    const xMax = parseFloat(canvas.xMax)
-    const yMin = parseFloat(canvas.yMin)
-    const yMax = parseFloat(canvas.yMax)
-    const xDistance = safeParseFloat(uiStyle.xDistance)
-    const yDistance = safeParseFloat(uiStyle.yDistance)
+    const [xMin, xMax, yMin, yMax, xDistance, yDistance] = this.getCanvas()
 
     const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle)
 
@@ -324,14 +350,8 @@ class GraphDisplay extends Component {
       },
       pointParameters: {
         snapToGrid: true,
-        snapSizeX: getSnapSize(
-          uiStyle.layoutSnapto,
-          parseFloat(uiStyle.xDistance)
-        ),
-        snapSizeY: getSnapSize(
-          uiStyle.layoutSnapto,
-          parseFloat(uiStyle.yDistance)
-        ),
+        snapSizeX: getSnapSize(uiStyle.layoutSnapto, xDistance),
+        snapSizeY: getSnapSize(uiStyle.layoutSnapto, yDistance),
         showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false,
         size: uiStyle.displayPositionPoint === false ? 0 : 3,
@@ -347,6 +367,7 @@ class GraphDisplay extends Component {
         commaInLabel: uiStyle.xCommaInLabel,
         showAxis: xShowAxis,
         drawZero: drawLabelZero,
+        useRadians: xRadians,
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.yTickDistance),
@@ -359,6 +380,7 @@ class GraphDisplay extends Component {
         commaInLabel: uiStyle.yCommaInLabel,
         showAxis: yShowAxis,
         drawZero: drawLabelZero && !xShowAxis,
+        useRadians: yRadians,
       },
       gridParams: {
         gridX: xDistance,

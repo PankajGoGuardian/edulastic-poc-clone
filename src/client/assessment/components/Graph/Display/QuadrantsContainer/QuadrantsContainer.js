@@ -370,9 +370,10 @@ class GraphContainer extends PureComponent {
 
       if (
         !isEqual(xAxesParameters, prevProps.xAxesParameters) ||
-        !isEqual(yAxesParameters, prevProps.yAxesParameters)
+        !isEqual(yAxesParameters, prevProps.yAxesParameters) ||
+        !isEqual(canvas, prevProps.canvas)
       ) {
-        this._graph.setAxesParameters({
+        this._graph.createAxesTicks({
           x: {
             ...defaultAxesParameters(),
             ...xAxesParameters,

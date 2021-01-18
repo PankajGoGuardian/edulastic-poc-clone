@@ -32,6 +32,7 @@ import {
   Title,
   Dashed,
   NumberLineDotPlotPoint,
+  AxesTicks,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -135,6 +136,8 @@ class Board {
       mergeParams(cloneDeep(getDefaultConfig()), this.parameters)
     )
     this.$board.setZoom(1, 1)
+
+    this.createAxesTicks(this.parameters.axesParameters)
 
     this.creatingHandler = () => {}
     this.setCreatingHandler()
@@ -850,6 +853,18 @@ class Board {
     this.parameters.pointParameters = {
       ...this.parameters.pointParameters,
       ...pointParameters,
+    }
+    this.$board.fullUpdate()
+  }
+
+  createAxesTicks(axesParameters) {
+    const axes = this.$board.defaultAxes
+
+    if (axesParameters.x) {
+      AxesTicks.create(this.$board, axes.x, axesParameters.x, 'x')
+    }
+    if (axesParameters.y) {
+      AxesTicks.create(this.$board, axes.y, axesParameters.y, 'y')
     }
     this.$board.fullUpdate()
   }

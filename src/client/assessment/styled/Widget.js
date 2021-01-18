@@ -79,7 +79,7 @@ export const Widget = styled.div`
       }
 
       .ant-select-selection--single {
-        height: 35px;
+        height: 32px;
       }
     }
   }
@@ -90,10 +90,9 @@ export const Widget = styled.div`
 
   .ant-input {
     ${(props) => createStandardTextStyle(props)}
-    padding-left: 21px;
+    padding-left: 16px;
     letter-spacing: 0.3px;
     color: ${selectColor};
-    min-height: 35px;
   }
 
   .ql-container {

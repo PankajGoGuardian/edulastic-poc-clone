@@ -162,8 +162,8 @@ function* fetchUserSubscription() {
     )
     const data = {
       isPremiumTrialUsed: apiUserSubscriptionStatus?.result?.isPremiumTrialUsed,
-      isItemBankTrialUsed:
-        apiUserSubscriptionStatus?.result?.isItemBankTrialUsed,
+      usedTrialItemBankId:
+        apiUserSubscriptionStatus?.result?.usedTrialItemBankId,
     }
     if (apiUserSubscriptionStatus?.result.subscription === -1) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))

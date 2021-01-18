@@ -1364,22 +1364,35 @@ class ClassBoard extends Component {
                             <IconRemove />
                             <span>Unassign Students</span>
                           </MenuItems>
-                          <MenuItems
-                            data-cy="pauseStudents"
-                            onClick={this.handleTogglePauseStudents(true)}
-                            disabled={disableMarkAbsent}
+                          <FeaturesSwitch
+                            inputFeatures="premium"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
                           >
-                            <IconPause />
-                            <span>Pause Students</span>
-                          </MenuItems>
-                          <MenuItems
-                            data-cy="resumeStudents"
-                            onClick={this.handleTogglePauseStudents(false)}
-                            disabled={disableMarkAbsent}
+                            <MenuItems
+                              data-cy="pauseStudents"
+                              onClick={this.handleTogglePauseStudents(true)}
+                              disabled={disableMarkAbsent}
+                            >
+                              <IconPause />
+                              <span>Pause Students</span>
+                            </MenuItems>
+                          </FeaturesSwitch>
+
+                          <FeaturesSwitch
+                            inputFeatures="premium"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
                           >
-                            <IconPlay />
-                            <span>Resume Students</span>
-                          </MenuItems>
+                            <MenuItems
+                              data-cy="resumeStudents"
+                              onClick={this.handleTogglePauseStudents(false)}
+                              disabled={disableMarkAbsent}
+                            >
+                              <IconPlay />
+                              <span>Resume Students</span>
+                            </MenuItems>
+                          </FeaturesSwitch>
                           <MenuItems
                             data-cy="downloadGrades"
                             disabled={!enableDownload}

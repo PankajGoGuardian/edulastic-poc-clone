@@ -567,6 +567,7 @@ const reducer = (state = initialState, { type, payload }) => {
           return {
             ...item,
             status: 'absent',
+            isPaused: false,
             UTASTATUS: testActivityStatus.ABSENT,
           }
         }
@@ -589,6 +590,7 @@ const reducer = (state = initialState, { type, payload }) => {
             graded: updatedActivity.gradedAll ? 'GRADED' : 'IN GRADING',
             score: updatedActivity.score,
             testActivityId: updatedActivity._id,
+            isPaused: false,
             questionActivities: item.questionActivities.map((qAct) => ({
               ...qAct,
               ...(qAct.notStarted

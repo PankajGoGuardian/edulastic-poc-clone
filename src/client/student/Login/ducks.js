@@ -637,6 +637,10 @@ export default createReducer(initialState, {
       Object.assign(state.user, {
         isPowerTeacher: !state.user.isPowerTeacher,
       })
+    } else if (Object.prototype.hasOwnProperty.call(payload, 'enable')) {
+      Object.assign(state.user, {
+        isPowerTeacher: payload.enable,
+      })
     }
     state.updatingPowerTeacher = false
   },

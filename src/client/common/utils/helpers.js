@@ -489,3 +489,9 @@ export const isImagesBlockedByBrowser = async () => {
     console.warn(error)
   }
 }
+
+export const canUseAllOptionsByDefault = (permissions = []) => {
+  return ['author', 'curator'].some((permission) =>
+    permissions.includes(permission)
+  )
+}

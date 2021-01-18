@@ -1404,6 +1404,10 @@ function* googleSSOLogin({ payload }) {
     if (errorMessage === 'signInUserNotFound') {
       yield put(push(getStartedUrl()))
       notification({ type: 'warn', messageKey: 'signInUserNotFound' })
+    } else if (errorMessage === 'teacherSignUpNotAllowed') {
+      yield put(push(getSignOutUrl()))
+      removeSignOutUrl()
+      notification({ type: 'warn', messageKey: 'teacherSignUpNotAllowed' })
     } else {
       notification({ msg: errorMessage })
       yield put(push(getSignOutUrl()))
@@ -1501,6 +1505,10 @@ function* msoSSOLogin({ payload }) {
     if (errorMessage === 'signInUserNotFound') {
       yield put(push(getStartedUrl()))
       notification({ type: 'warn', messageKey: 'signInUserNotFound' })
+    } else if (errorMessage === 'teacherSignUpNotAllowed') {
+      yield put(push(getSignOutUrl()))
+      removeSignOutUrl()
+      notification({ type: 'warn', messageKey: 'teacherSignUpNotAllowed' })
     } else {
       notification({ msg: errorMessage })
       yield put(push(getSignOutUrl()))

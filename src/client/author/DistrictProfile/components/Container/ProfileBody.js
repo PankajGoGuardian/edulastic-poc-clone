@@ -786,14 +786,20 @@ class ProfileBody extends React.Component {
               </SchoolWrapper>
             )}
             {showDefaultSettings && (
-              <SchoolWrapper>
+              <SchoolWrapper style={{ borderBottom: '1px solid #b6b6cc' }}>
                 <StandardSetsLabel>Standard Sets</StandardSetsLabel>
                 <StandardSetsList data-cy="interestedStandards">
                   {this.getStandardSets()}
                 </StandardSetsList>
                 <StandardSetsButtons>
                   {showSaveStandSetsBtn && (
-                    <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>
+                    <SaveStandardSetsBtn
+                      isBlue
+                      isGhost
+                      type="primary"
+                      onClick={this.handleSaveStandardSets}
+
+                    >
                       SAVE
                     </SaveStandardSetsBtn>
                   )}
@@ -1042,6 +1048,7 @@ const SchoolWrapper = styled(ProfileContentWrapper)`
   display: flex;
   align-items: center;
   margin-top: 20px;
+  border:none;
 `
 
 const SchoolLabel = styled.span`
@@ -1064,7 +1071,8 @@ const StandardSetsList = styled(SchoolListWrapper)`
 `
 
 const StandardSetsButtons = styled.div`
-  float: right;
+  display: flex;
+  align-items:center;
 `
 
 const StyledTag = styled(Tag)`
@@ -1278,6 +1286,7 @@ const SelectSetsButton = styled(EditProfileButton)`
 `
 
 const SaveStandardSetsBtn = styled(SelectSetsButton)`
+  width:95px;
   margin: 5px 0px 5px 15px;
   :hover{
     color ${themeColor};

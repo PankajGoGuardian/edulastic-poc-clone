@@ -799,7 +799,6 @@ const withForwardedRef = (Component) => {
       fallBack={<span />}
       onLoaded={() => null}
     >
-      {' '}
       <Component {...props} forwardedRef={ref} />{' '}
     </WithResources>
   )

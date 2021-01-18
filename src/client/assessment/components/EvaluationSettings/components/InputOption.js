@@ -18,7 +18,7 @@ const InputOption = ({ options, onChange, optionKey, isGraph }) => {
   const onChangeInput = (e) => {
     let valid = true
     if (validations[optionKey]) {
-      valid = validations[optionKey](e.target.value)
+      valid = validations[optionKey](e.target.value, isGraph)
     }
     if (valid) {
       onChange(optionKey, e.target.value)

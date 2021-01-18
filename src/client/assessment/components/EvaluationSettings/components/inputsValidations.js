@@ -1,7 +1,10 @@
 export const validations = {
-  tolerance: (value = '') => {
+  tolerance: (value = '', isGraph) => {
     if (!value) {
       return true
+    }
+    if (!isGraph) {
+      return /^-?(\d*\.?\d*)?%?$/.test(value)
     }
     return /^-?\d*\.?\d*$/.test(value)
   },

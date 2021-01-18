@@ -177,6 +177,7 @@ const StandardsFilters = ({
         standardGrade: urlStandardGrade.key,
         profileId: savedFilters.profileId || scaleInfo._id,
         domainIds: [],
+        standardId: '',
         showApply: false,
       }
 

@@ -96,6 +96,7 @@ const initialState = {
     standardGrade: 'All',
     profileId: '',
     domainIds: [],
+    standardId: '',
     showApply: false,
   },
   testIds: [],

@@ -298,6 +298,8 @@ const Subscription = (props) => {
         isSubscribed={isSubscribed}
         verificationPending={verificationPending}
         verifyAndUpgradeLicense={verifyAndUpgradeLicense}
+        hasUpgradeButton={hasUpgradeButton}
+        subType={subType}
       />
 
       <PurchaseLicenseModal

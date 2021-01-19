@@ -56,6 +56,8 @@ const HasLicenseKeyModal = (props) => {
     expDate,
     isSubscribed = false,
     verificationPending = false,
+    hasUpgradeButton,
+    subType,
   } = props
 
   const [licenseKey, setLicenseKey] = useState()
@@ -91,11 +93,35 @@ const HasLicenseKeyModal = (props) => {
       ]}
       centered
     >
-      {!isSubscribed && (
+      {!hasUpgradeButton ? (
+        <Container width="300">
+          <h4 style={{ fontWeight: 700 }}>Congratulations!</h4>
+          <p>
+            Your account is upgraded to Premium version for a year and the
+            subscription will expire on
+          </p>
+          <p style={{ color: themeColor, paddingTop: '8px', fontWeight: 600 }}>
+            {expDate}
+          </p>
+          <br />
+        </Container>
+      ) : subType === 'TRIAL_PREMIUM' ? (
+        <Container width="300">
+          <h4 style={{ fontWeight: 700 }}>Congratulations!</h4>
+          <p>
+            Your account is upgraded to <b>Trial Premium version</b> for 15 days
+            and the subscription will expire on
+          </p>
+          <p style={{ color: themeColor, paddingTop: '8px', fontWeight: 600 }}>
+            {expDate}
+          </p>
+          <br />
+        </Container>
+      ) : (
         <Container width="480">
           <p>
             Enter your License Key that you received at the end of the order
-            process or via email in the box below, the click on "Next"
+            process or via email in the box below, the click on &quot;Next&quot;
           </p>
           <Input
             placeholder="Enter your license key"
@@ -110,19 +136,6 @@ const HasLicenseKeyModal = (props) => {
             onChange={handleChange}
             disabled={verificationPending}
           />
-          <br />
-        </Container>
-      )}
-      {isSubscribed && (
-        <Container width="300">
-          <h4 style={{ fontWeight: 700 }}>Congratulations!</h4>
-          <p>
-            Your account is upgraded to Premium version for a year and the
-            subscription will expire on
-          </p>
-          <p style={{ color: themeColor, paddingTop: '8px', fontWeight: 600 }}>
-            {expDate}
-          </p>
           <br />
         </Container>
       )}

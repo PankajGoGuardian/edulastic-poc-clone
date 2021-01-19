@@ -12,6 +12,7 @@ import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
+import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 
@@ -53,10 +54,15 @@ const MyClasses = ({
   addPermissionRequest,
   isPremiumTrialUsed,
   startTrialAction,
+  usedTrialItemBankId,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+  const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
+    false
+  )
+  const [itemBankNotUsed, setItemBankNotUsed] = useState(false)
   const [productData, setProductData] = useState({})
 
   useEffect(() => {
@@ -104,7 +110,21 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    setIsPurchaseModalVisible(true)
+    if (
+      usedTrialItemBankId &&
+      usedTrialItemBankId === subscriptionData?.productId
+    ) {
+      setShowItemBankTrialUsedModal(true)
+    } else if (
+      usedTrialItemBankId &&
+      usedTrialItemBankId !== subscriptionData?.productId
+    ) {
+      setItemBankNotUsed(true)
+      setShowItemBankTrialUsedModal(true)
+      return
+    } else {
+      setIsPurchaseModalVisible(true)
+    }
     setProductData({
       productId: subscriptionData.productId,
       productName: subscriptionData.productName,
@@ -115,11 +135,15 @@ const MyClasses = ({
 
   const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
+  const handleCloseModal = () => {
+    setShowItemBankTrialUsedModal(false)
+    setItemBankNotUsed(false)
+  }
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
 
-    if (isBlocked) {
+    if (usedTrialItemBankId || isBlocked) {
       handleBlockedClick(config)
       return
     }
@@ -246,6 +270,12 @@ const MyClasses = ({
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
+      <ItemBankTrialUsedModal
+        title={productData.productName}
+        isVisible={showItemBankTrialUsedModal}
+        handleCloseModal={handleCloseModal}
+        itemBankNotUsed={itemBankNotUsed}
+      />
       {isPurchaseModalVisible && (
         <ItemPurchaseModal
           title={productData.productName}
@@ -290,6 +320,8 @@ export default compose(
       collections: getCollectionsSelector(state),
       isPremiumTrialUsed:
         state?.subscription?.subscriptionData?.isPremiumTrialUsed,
+      usedTrialItemBankId:
+        state?.subscription?.subscriptionData?.usedTrialItemBankId,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

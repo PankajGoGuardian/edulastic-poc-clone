@@ -211,16 +211,38 @@ function* duplicateItemRequestSaga({ payload }) {
 // editing an item without edit permission.
 function* editNonAuthoredItemSaga({ payload }) {
   try {
-    const { itemId, testId, replaceWithOrginal } = payload
+    const {
+      itemId,
+      testId,
+      replaceWithOrginal,
+      passageItems: testItemIds,
+      passageId,
+    } = payload
     const test = yield select(getTestSelector)
     yield call(updateTestSaga, {
       payload: { id: testId, data: test },
     })
-    const duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId, {
-      testId,
-      replaceWithOrginal,
-    })
-    const path = `/author/tests/${testId}/editItem/${duplicatedItem._id}`
+    let duplicateItemId = 'new'
+    if (testItemIds && passageId) {
+      const duplicatedPassage = yield call(passageApi.duplicate, {
+        passageId,
+        testItemIds,
+        testId,
+        replaceWithOrginal,
+      })
+      duplicateItemId = duplicatedPassage?.testItems?.[0]
+    } else {
+      const duplicatedItem = yield call(
+        testItemsApi.duplicateTestItem,
+        itemId,
+        {
+          testId,
+          replaceWithOrginal,
+        }
+      )
+      duplicateItemId = duplicatedItem._id
+    }
+    const path = `/author/tests/${testId}/editItem/${duplicateItemId}`
     yield put(
       push(path, {
         fadeSidebar: true,

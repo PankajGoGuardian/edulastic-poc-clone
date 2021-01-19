@@ -269,6 +269,7 @@ class PreviewModal extends React.Component {
       userRole,
       writableCollections,
       userFeatures,
+      passage,
     } = this.props
 
     const itemId = data.id
@@ -291,7 +292,15 @@ class PreviewModal extends React.Component {
 
     clearItemStore()
     if (isDisableEdit && regradeFlow && isTest) {
-      return editNonAuthoredItem({ itemId, testId, replaceWithOrginal: true })
+      const passageItems = passage && passage.testItems
+      const passageId = passage && passage._id
+      return editNonAuthoredItem({
+        itemId,
+        testId,
+        replaceWithOrginal: true,
+        passageItems,
+        passageId,
+      })
     }
     if (isTest) {
       updateTestAndNavigate({

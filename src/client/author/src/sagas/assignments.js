@@ -1,42 +1,47 @@
 import {
+  all,
+  call,
+  fork,
+  put,
+  select,
   takeEvery,
   takeLatest,
-  call,
-  put,
-  all,
-  select,
 } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
-import { assignmentApi, googleApi, atlasApi } from '@edulastic/api'
-import { omit, get, set, unset, pickBy, identity } from 'lodash'
+import { assignmentApi, atlasApi, googleApi } from '@edulastic/api'
+import { get, identity, omit, pickBy, set, unset } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 
 import { removeAllTokens } from '@edulastic/api/src/utils/Storage'
+import realtimeApi from '@edulastic/api/src/realtime'
+import mqtt from 'mqtt'
 import {
-  RECEIVE_ASSIGNMENTS_REQUEST,
-  RECEIVE_ASSIGNMENTS_SUCCESS,
-  RECEIVE_ASSIGNMENTS_ERROR,
   FETCH_CURRENT_ASSIGNMENT,
   FETCH_CURRENT_EDITING_ASSIGNMENT,
-  UPDATE_CURRENT_EDITING_ASSIGNMENT,
-  UPDATE_RELEASE_SCORE_SETTINGS,
-  TOGGLE_RELEASE_GRADE_SETTINGS,
-  RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
-  RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
-  RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,
+  RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
   RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
   RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
-  RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
-  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
-  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
-  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
+  RECEIVE_ASSIGNMENTS_ERROR,
+  RECEIVE_ASSIGNMENTS_REQUEST,
+  RECEIVE_ASSIGNMENTS_SUCCESS,
+  RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,
+  RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
+  RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
   SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS,
-  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
+  TOGGLE_RELEASE_GRADE_SETTINGS,
+  UPDATE_CURRENT_EDITING_ASSIGNMENT,
+  UPDATE_RELEASE_SCORE_SETTINGS,
+  MQTT_CLIENT_SAVE_REQUEST,
+  MQTT_CLIENT_REMOVE_REQUEST,
 } from '../constants/actions'
 import { getUserRole } from '../selectors/user'
 
@@ -288,21 +293,79 @@ function* syncAssignmentGradesWithGoogleClassroomSaga({ payload }) {
   }
 }
 
+function* getAtlasGradeSyncUpdate({ assignmentId, groupId, signedUrl }) {
+  const subscriptionTopic = `atlas-grade-sync-${assignmentId}_${groupId}`
+  const client = mqtt.connect(signedUrl)
+  yield put({
+    type: MQTT_CLIENT_SAVE_REQUEST,
+    payload: client,
+  })
+  const promise = new Promise((resolve, reject) => {
+    client.on('connect', () => {
+      client.subscribe(subscriptionTopic, (err) => {
+        if (err) {
+          console.log('Error subscribing to topic: ', subscriptionTopic)
+          reject(err)
+        } else {
+          console.log('Successfully subscribed to topic', subscriptionTopic)
+        }
+      })
+    })
+    client.on('message', (topic, _message) => {
+      let msg = _message.toString()
+      msg = JSON.parse(msg)
+      console.log(`response from mqtt client with topic ${topic}`, msg)
+      if (msg.data.status === 200) {
+        notification({ type: 'success', msg: msg.data.message })
+      } else {
+        notification({ type: 'error', msg: msg.data.message })
+      }
+      resolve(msg)
+      client.end()
+    })
+
+    client.on('error', (err) => {
+      console.error('error in mqtt client', err)
+      reject(err)
+      client.end()
+    })
+  })
+  return promise.then((res) => res).catch((err) => err)
+}
+
 function* syncAssignmentGradesWithSchoologyClassroomSaga({ payload }) {
   try {
-    const res = yield call(atlasApi.syncGradesWithSchoologyClassroom, payload)
-    if (res?.reAuth) {
+    const { result } = yield call(
+      atlasApi.syncGradesWithSchoologyClassroom,
+      payload
+    )
+    const { url: signedUrl } = yield call(realtimeApi.getSignedUrl)
+    yield fork(getAtlasGradeSyncUpdate, {
+      ...payload,
+      signedUrl,
+    })
+    if (result?.reAuth) {
+      const mqttClient = yield select(
+        (state) => state.author_assignments.mqttClient
+      )
+      yield put({
+        type: MQTT_CLIENT_REMOVE_REQUEST,
+      })
+      mqttClient && mqttClient.end()
       try {
         removeAllTokens()
         localStorage.setItem('loginRedirectUrl', window.location.pathname)
         localStorage.setItem('atlasShareOriginUrl', window.location.pathname)
         localStorage.setItem('schoologyShare', 'grades')
-        window.location.href = res.reAuth
+        window.location.href = result.reAuth
       } catch (e) {
         notification({ messageKey: 'atlasLoginFailed' })
       }
-    } else if (res?.message) {
-      notification({ type: 'success', msg: res.message })
+    } else if (result?.statusCode === 200) {
+      notification({
+        type: 'success',
+        msg: 'Grade sync with Schoology is in progress',
+      })
     } else {
       notification({
         type: 'success',
@@ -310,6 +373,13 @@ function* syncAssignmentGradesWithSchoologyClassroomSaga({ payload }) {
       })
     }
   } catch (err) {
+    const mqttClient = yield select(
+      (state) => state.author_assignments.mqttClient
+    )
+    yield put({
+      type: MQTT_CLIENT_REMOVE_REQUEST,
+    })
+    mqttClient && mqttClient.end()
     captureSentryException(err)
     notification({
       msg:

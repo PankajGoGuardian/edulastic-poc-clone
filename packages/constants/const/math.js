@@ -350,7 +350,6 @@ const equationForms = [
 // Graph Types evaluation settings
 const graphSegmentChecks = [
   'compareStartPoint',
-  'comparePoints=False',
   'compareLength',
   // 'compareStartAndLength',
 ]
@@ -361,7 +360,6 @@ const graphPolygonChecks = [
   'isCongruent',
   'isSimilar',
   'hasRightAngle',
-  'comparePoints',
   'comparePerimeter',
 ]
 const graphMiscellaneous = ['tolerance', 'ignoreLabels']

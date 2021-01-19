@@ -3,6 +3,14 @@ import React from 'react'
 import { ModalBody } from './styled'
 
 const PayWithPoModal = ({ visible, setShowModal }) => {
+  const handleClick = () => {
+    setShowModal(false)
+    window.open(
+      'https://docs.google.com/forms/d/e/1FAIpQLScjkFTPFAdWeRdnV8g_Za77wYkjerEHdxAzzPCvfK1RZ-7xXA/viewform',
+      '_blank'
+    )
+  }
+
   return (
     <>
       <CustomModalStyled
@@ -10,7 +18,7 @@ const PayWithPoModal = ({ visible, setShowModal }) => {
         title="Pay with Purchase Order"
         onCancel={() => setShowModal(false)}
         footer={[
-          <EduButton height="45px" width="220px">
+          <EduButton height="45px" width="220px" onClick={handleClick}>
             REQUEST INVOICE
           </EduButton>,
         ]}

@@ -14,6 +14,8 @@ import {
   IconMarkAsAbsent,
   IconMarkAsSubmitted,
   IconMoreHorizontal,
+  IconPause,
+  IconPlay,
   IconPrint,
   IconRedirect,
   IconRemove,
@@ -42,6 +44,7 @@ import {
   markAbsentAction,
   markAsDoneAction,
   markSubmittedAction,
+  togglePauseStudentsAction,
   receiveStudentResponseAction,
   receiveTestActivitydAction,
   releaseScoreAction,
@@ -200,10 +203,11 @@ class ClassBoard extends Component {
       history,
       setShowAllStudents,
     } = this.props
+    const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
     const { search, state } = location
     setShowAllStudents(false)
-    loadTestActivity(assignmentId, classId)
+    loadTestActivity(assignmentId, classId, selectedTab === 'questionView')
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
     const cliUser = new URLSearchParams(window.location.search).has('cliUser')
@@ -394,7 +398,12 @@ class ClassBoard extends Component {
   }
 
   onTabChange = (e, name, selectedStudentId, testActivityId) => {
-    const { setCurrentTestActivityId, match, history } = this.props
+    const {
+      setCurrentTestActivityId,
+      match,
+      history,
+      loadTestActivity,
+    } = this.props
     const { assignmentId, classId } = match.params
     this.setState({
       selectedTab: name,
@@ -405,6 +414,7 @@ class ClassBoard extends Component {
     if (name === 'Both') {
       history.push(`/author/classboard/${assignmentId}/${classId}`)
       setCurrentTestActivityId('')
+      loadTestActivity(assignmentId, classId, false)
     } else if (name === 'Student') {
       history.push(
         `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
@@ -731,6 +741,35 @@ class ClassBoard extends Component {
     this.setState({ showAddStudentsPopup: true })
   }
 
+  handleTogglePauseStudents = (isPause) => () => {
+    const {
+      pauseStudents,
+      match,
+      studentUnselectAll,
+      selectedStudents,
+      assignmentStatus,
+      additionalData,
+    } = this.props
+    const { assignmentId, classId } = match.params
+    if (assignmentStatus.toLowerCase() === 'not open') {
+      return notification({
+        type: 'warn',
+        messageKey: 'assignmentIsNotOpenedYet',
+      })
+    }
+    if (additionalData.isPaused) {
+      return notification({
+        type: 'warn',
+        messageKey: 'testPausedOrClosedByTeacher',
+      })
+    }
+    const selectedStudentKeys = Object.keys(selectedStudents)
+    if (!selectedStudentKeys.length)
+      return notification({ type: 'warn', messageKey: 'noStudentsSelected' })
+    studentUnselectAll()
+    pauseStudents(assignmentId, classId, selectedStudentKeys, isPause)
+  }
+
   handleHideAddStudentsPopup = () => {
     this.setState({ showAddStudentsPopup: false })
   }
@@ -874,6 +913,7 @@ class ClassBoard extends Component {
       showCanvasShare,
       canvasSyncAssignment,
       setShowCanvasShare,
+      recentAttemptsGrouped,
     } = this.props
 
     const {
@@ -918,7 +958,7 @@ class ClassBoard extends Component {
       })
     }
     const selectedStudentsKeys = Object.keys(selectedStudents)
-    const firstStudentId = get(
+    let firstStudentId = get(
       testActivity.filter(
         (x) =>
           x.UTASTATUS === testActivityStatus.SUBMITTED ||
@@ -927,6 +967,14 @@ class ClassBoard extends Component {
       [0, 'studentId'],
       false
     )
+
+    if (!firstStudentId) {
+      firstStudentId = get(
+        Object.values(recentAttemptsGrouped).find((x) => x.length > 0),
+        [0, 'userId'],
+        false
+      )
+    }
     const testActivityId = this.getTestActivityId(
       testActivity,
       selectedStudentId || firstStudentId
@@ -935,11 +983,19 @@ class ClassBoard extends Component {
     const unselectedStudents = testActivity.filter(
       (x) => !selectedStudents[x.studentId]
     )
-    const nobodyStarted = testActivity.every(
-      ({ UTASTATUS }) =>
-        UTASTATUS === testActivityStatus.NOT_STARTED ||
-        UTASTATUS === testActivityStatus.ABSENT
-    )
+
+    const nobodyStarted =
+      testActivity.every(
+        ({ UTASTATUS }) =>
+          UTASTATUS === testActivityStatus.NOT_STARTED ||
+          UTASTATUS === testActivityStatus.ABSENT
+      ) &&
+      Object.values(recentAttemptsGrouped).every(
+        (groupedAttempts) =>
+          !groupedAttempts.some(
+            ({ status: _status }) => _status !== testActivityStatus.ABSENT
+          )
+      )
 
     const disabledList = testActivity
       .filter((student) => {
@@ -1180,7 +1236,7 @@ class ClassBoard extends Component {
                           itemId: firstQuestion.testItemId,
                           selectedTab: 'questionView',
                         })
-                        loadTestActivity(assignmentId, classId)
+                        loadTestActivity(assignmentId, classId, true)
                         history.push(
                           `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
                         )
@@ -1308,6 +1364,35 @@ class ClassBoard extends Component {
                             <IconRemove />
                             <span>Unassign Students</span>
                           </MenuItems>
+                          <FeaturesSwitch
+                            inputFeatures="premium"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
+                            <MenuItems
+                              data-cy="pauseStudents"
+                              onClick={this.handleTogglePauseStudents(true)}
+                              disabled={disableMarkAbsent}
+                            >
+                              <IconPause />
+                              <span>Pause Students</span>
+                            </MenuItems>
+                          </FeaturesSwitch>
+
+                          <FeaturesSwitch
+                            inputFeatures="premium"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
+                            <MenuItems
+                              data-cy="resumeStudents"
+                              onClick={this.handleTogglePauseStudents(false)}
+                              disabled={disableMarkAbsent}
+                            >
+                              <IconPlay />
+                              <span>Resume Students</span>
+                            </MenuItems>
+                          </FeaturesSwitch>
                           <MenuItems
                             data-cy="downloadGrades"
                             disabled={!enableDownload}
@@ -1737,6 +1822,9 @@ const enhance = compose(
       ),
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
+      recentAttemptsGrouped:
+        state?.author_classboard_testActivity?.data
+          ?.recentTestActivitiesGrouped || {},
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -1757,6 +1845,7 @@ const enhance = compose(
       updateCliUser: updateCliUserAction,
       canvasSyncAssignment: canvasSyncAssignmentAction,
       setShowCanvasShare: setShowCanvasShareAction,
+      pauseStudents: togglePauseStudentsAction,
     }
   )
 )

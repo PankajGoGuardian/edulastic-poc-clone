@@ -55,7 +55,7 @@ import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
 
-const { GRAPH_EVALUATION_SETTING } = mathConstants
+const { GRAPH_EVALUATION_SETTING, subEvaluationSettingsGrouped } = mathConstants
 
 const EmptyWrapper = styled.div``
 
@@ -392,7 +392,7 @@ class Graph extends Component {
       if (prop === 'ponitsOnAnEquation' && !value) {
         draft.validation.points = null
         draft.validation.latex = null
-        draft.validation.apiLatex = null
+        // draft.validation.apiLatex = null
       } else if (prop === 'ponitsOnAnEquation' && isObject(value)) {
         draft.validation = {
           ...draft.validation,
@@ -403,6 +403,15 @@ class Graph extends Component {
       }
       draft.validation.compareStartAndLength =
         draft.validation.compareLength && draft.validation.compareStartPoint
+
+      const evaluationOptions = [
+        ...subEvaluationSettingsGrouped.graphSegmentChecks,
+        ...subEvaluationSettingsGrouped.graphPolygonChecks,
+      ]
+
+      draft.validation['comparePoints=False'] = Object.keys(draft.validation)
+        .filter((option) => draft.validation[option])
+        .some((option) => evaluationOptions.includes(option))
 
       draft.validation = pickBy(draft.validation, identity)
     })

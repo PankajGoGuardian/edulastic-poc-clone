@@ -1954,5 +1954,9 @@
   "assignmentSharedWithSchoologyClassroom": {
     "message": "Assignment is shared with Schoology Classroom successfully",
     "description": ""
+  },
+  "teacherSignUpNotAllowed": {
+    "message": "Teacher Signup is not allowed for your district.",
+    "description": ""
   }
 }

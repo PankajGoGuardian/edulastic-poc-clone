@@ -16,6 +16,7 @@ import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 
 // ducks
+import { slice } from '../../../../../Subscription/ducks'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
@@ -50,6 +51,8 @@ const MyClasses = ({
   resetPlaylistFilters,
   collections,
   addPermissionRequest,
+  isPremiumTrialUsed,
+  startTrialAction,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -252,6 +255,7 @@ const MyClasses = ({
           isVisible={isPurchaseModalVisible}
           toggleModal={togglePurchaseModal}
           toggleTrialModal={toggleTrialModal}
+          isPremiumTrialUsed={isPremiumTrialUsed}
           premiumUser={premiumUser}
         />
       )}
@@ -264,6 +268,9 @@ const MyClasses = ({
           addItemBankPermission={addPermissionRequest}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
+          premiumUser={premiumUser}
+          isPremiumTrialUsed={isPremiumTrialUsed}
+          startPremiumTrial={startTrialAction}
         />
       )}
     </MainContentWrapper>
@@ -281,6 +288,8 @@ export default compose(
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
       collections: getCollectionsSelector(state),
+      isPremiumTrialUsed:
+        state?.subscription?.subscriptionData?.isPremiumTrialUsed,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -290,6 +299,7 @@ export default compose(
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
       addPermissionRequest: addPermissionRequestAction,
+      startTrialAction: slice.actions.startTrialAction,
     }
   )
 )(MyClasses)

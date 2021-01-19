@@ -11,6 +11,7 @@ import {
 } from '../../../author/src/selectors/user'
 
 import { Widget } from '../../styled/Widget'
+import { canUseAllOptionsByDefault } from '../../../common/utils/helpers'
 
 const { TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = userRoles
 
@@ -66,9 +67,7 @@ class Question extends Component {
     }
     let showAdvancedTools = true
 
-    // 'author' is power teacher by default
-    if (permissions.includes('author')) return true
-
+    if (canUseAllOptionsByDefault(permissions)) return true
     /**
      * allowed for teacher/DA/SA having premium feature and enabled power tools
      * scoring section needs to be shown for non power users as well

@@ -1,7 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
-import { Label } from '@edulastic/common/src/components/MathKeyboard/components/styled'
+import { Link } from 'react-router-dom'
+
+const Footer = ({
+  hasItemBankTrial,
+  isPremiumTrialUsed,
+  premiumUser,
+  handleTrial,
+}) => {
+  const hasTrialBtn = hasItemBankTrial && (!isPremiumTrialUsed || premiumUser)
+  return (
+    hasTrialBtn && <EduButton onClick={handleTrial}>Try for free</EduButton>
+  )
+}
 
 const ItemPurchaseModal = ({
   title,
@@ -11,6 +23,7 @@ const ItemPurchaseModal = ({
   toggleTrialModal,
   hasTrial,
   premiumUser,
+  isPremiumTrialUsed,
 }) => {
   const handleProceed = () => {}
 
@@ -20,35 +33,29 @@ const ItemPurchaseModal = ({
     toggleTrialModal(true)
   }
 
-  const Footer = (
-    <>
-      {hasTrial && (
-        <EduButton isGhost onClick={handleTrial}>
-          Try for free
-        </EduButton>
-      )}
-      <EduButton onClick={handleProceed}>Proceed</EduButton>
-    </>
-  )
-
   return (
     <CustomModalStyled
       centered
       title={title}
-      footer={Footer}
+      footer={
+        <Footer
+          hasItemBankTrial={hasTrial}
+          isPremiumTrialUsed={isPremiumTrialUsed}
+          premiumUser={premiumUser}
+          handleTrial={handleTrial}
+        />
+      }
       visible={isVisible}
       onCancel={closeModal}
     >
       <div>{description}</div>
-      <FlexContainer
-        flexDirection="column"
-        marginLeft="40px"
-        mr="40px"
-        mt="20px"
-      >
-        {!premiumUser && <Label fontWeight="600">Premium Trial</Label>}
-        <Label fontWeight="600">{description}</Label>
-      </FlexContainer>
+      {isPremiumTrialUsed && !premiumUser && (
+        <p>
+          You have already tried premium features, kindly upgrade to start free
+          trial of {title}.{' '}
+          <Link to="/author/subscription"> Click to upgrade</Link>
+        </p>
+      )}
     </CustomModalStyled>
   )
 }

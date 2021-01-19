@@ -228,6 +228,8 @@ const Subscription = (props) => {
 
   const showUpgradeOptions = !isSubscribed
 
+  const hasUpgradeButton = !subType || subType === 'TRIAL_PREMIUM'
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -239,6 +241,7 @@ const Subscription = (props) => {
         subType={subType}
         subEndDate={subEndDate}
         setShowUpgradeModal={setShowUpgradeModal}
+        hasUpgradeButton={hasUpgradeButton}
       />
 
       <SubscriptionMain
@@ -251,6 +254,8 @@ const Subscription = (props) => {
         setShowUpgradeModal={setShowUpgradeModal}
         isPremiumTrialUsed={isPremiumTrialUsed}
         startTrialAction={startTrialAction}
+        hasUpgradeButton={hasUpgradeButton}
+        showRenewalOptions={showRenewalOptions}
       />
 
       <CompareModal
@@ -266,7 +271,7 @@ const Subscription = (props) => {
       </CompareModal>
 
       <PaymentServiceModal
-        visible={paymentServiceModal && !user.features.premium}
+        visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
         closeModal={closePaymentServiceModal}
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}
@@ -308,14 +313,13 @@ const Subscription = (props) => {
 export default connect(
   (state) => ({
     verificationPending: state?.subscription?.verificationPending,
-    subscription:
-      state?.subscription?.subscriptionData?.subscription?.subscription,
+    subscription: state?.subscription?.subscriptionData?.subscription,
     isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
     isSuccess: state?.subscription?.subscriptionData?.success,
     isPremiumAccount: state?.user?.user?.features?.premium,
     user: state.user.user,
     isPremiumTrialUsed:
-      state?.subscription?.subscriptionData?.subscription?.isPremiumTrialUsed,
+      state?.subscription?.subscriptionData?.isPremiumTrialUsed,
   }),
   {
     verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

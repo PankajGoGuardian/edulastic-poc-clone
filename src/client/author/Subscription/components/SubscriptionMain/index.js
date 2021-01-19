@@ -33,15 +33,11 @@ import { ActionsWrapper, Description, Title } from '../styled/commonStyled'
 import {
   AvailablePlansContainer,
   ContentWrapper,
-  CurrentPlanContainer,
   FeatureDescription,
   Img,
   PlanDetails,
   PlanImage,
   PlansContainer,
-  PlanStatus,
-  StyledLink,
-  StyledParagraph,
   ContentSection,
   ContentCards,
   ContentCard,
@@ -55,6 +51,8 @@ import {
   AddonDescription,
   EnterpriseSection,
   HaveLicenseKey,
+  CustomButton,
+  AddonFooter,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -237,33 +235,24 @@ const PlansComponent = ({
   </PlansContainer>
 )
 
-function formatDate(subEndDate) {
-  if (!subEndDate) return null
-  const date = new Date(subEndDate).toString().split(' ')
-  return `${date[2]} ${date[1]}, ${date[3]}`
-}
-
 const SubscriptionMain = (props) => {
   const {
     isSubscribed = false,
-    subEndDate,
     openPaymentServiceModal,
     openHasLicenseKeyModal,
     openPurchaseLicenseModal,
-    subType,
     setShowUpgradeModal,
     isPremiumTrialUsed,
     startTrialAction,
+    hasUpgradeButton,
+    showRenewalOptions,
   } = props
 
-  const licenseExpiryDate = formatDate(subEndDate)
-
-  const [showPlans, setShowPlans] = useState(false)
   const [showTrialModal, setShowTrialModal] = useState(false)
   const [showSelectStates, setShowSelectStates] = useState(false)
 
-  const handleStartTrialModal = () => {
-    setShowTrialModal(true)
+  const handleSelectStateModal = () => {
+    setShowSelectStates(true)
   }
 
   const handleUpgradeModal = () => {
@@ -291,51 +280,18 @@ const SubscriptionMain = (props) => {
   return (
     <>
       <MainContentWrapper padding="30px" style={{ display: 'none' }}>
-        <CurrentPlanContainer onClick={() => setShowPlans(false)}>
-          <PlanStatus>
-            {isSubscribed && licenseExpiryDate ? (
-              <p>
-                Expires on: <StyledLink>{licenseExpiryDate}</StyledLink>
-              </p>
-            ) : (
-              <StyledLink>Free Forever</StyledLink>
-            )}
-          </PlanStatus>
-        </CurrentPlanContainer>
-
-        {!showPlans && (
-          <>
-            {subType !== 'enterprise' && (
-              <StyledParagraph isSubscribed={isSubscribed}>
-                interested in buying multiple teacher premium subscriptions or
-                upgrading to enterprise?
-                {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
-                <a
-                  href="https://edulastic.com/teacher-premium/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {' '}
-                  click here.
-                </a>
-              </StyledParagraph>
-            )}
-          </>
-        )}
-        {showPlans && (
-          <AvailablePlansContainer>
-            {availablePlans.map((plan, index) => (
-              <PlansComponent
-                key={index}
-                isblur={isSubscribed && index === 0}
-                openPaymentServiceModal={openPaymentServiceModal}
-                openHasLicenseKeyModal={openHasLicenseKeyModal}
-                openPurchaseLicenseModal={openPurchaseLicenseModal}
-                {...plan}
-              />
-            ))}
-          </AvailablePlansContainer>
-        )}
+        <AvailablePlansContainer>
+          {availablePlans.map((plan, index) => (
+            <PlansComponent
+              key={index}
+              isblur={isSubscribed && index === 0}
+              openPaymentServiceModal={openPaymentServiceModal}
+              openHasLicenseKeyModal={openHasLicenseKeyModal}
+              openPurchaseLicenseModal={openPurchaseLicenseModal}
+              {...plan}
+            />
+          ))}
+        </AvailablePlansContainer>
       </MainContentWrapper>
 
       <ContentSection>
@@ -353,35 +309,42 @@ const SubscriptionMain = (props) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            <AuthorCompleteSignupButton
-              renderButton={(handleClick) => (
-                <EduButton
-                  height="38px"
-                  width="215px"
-                  isBlue
-                  onClick={handleClick}
-                  style={{
-                    background: 'transparent',
-                    borderColor: 'white',
-                  }}
-                >
-                  Upgrade now $100/YR
-                </EduButton>
-              )}
-              onClick={handleUpgradeModal}
-            />
-            <EduButton
-              height="38px"
-              width="215px"
-              isGhost
-              isBlue
-              onClick={handleStartTrial}
-              style={{
-                borderColor: 'white',
-              }}
-            >
-              Start a trial
-            </EduButton>
+            {hasUpgradeButton ? (
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <CustomButton
+                    height="38px"
+                    width="215px"
+                    isBlue
+                    onClick={handleClick}
+                    noBg
+                  >
+                    Upgrade now $100/YR
+                  </CustomButton>
+                )}
+                onClick={handleUpgradeModal}
+              />
+            ) : showRenewalOptions ? (
+              <EduButton onClick={handleUpgradeModal} isBlue height="38px">
+                Renew Subscription
+              </EduButton>
+            ) : null}
+            {hasUpgradeButton && (
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <CustomButton
+                    height="38px"
+                    width="215px"
+                    isGhost
+                    isBlue
+                    onClick={handleClick}
+                  >
+                    Start a trial
+                  </CustomButton>
+                )}
+                onClick={handleStartTrial}
+              />
+            )}
           </FlexContainer>
           <HaveLicenseKey onClick={openHasLicenseKeyModal}>
             HAVE LICENSE KEY
@@ -409,6 +372,21 @@ const SubscriptionMain = (props) => {
                 <AddonDescription>
                   {addonsData[index].description}
                 </AddonDescription>
+                <AddonFooter>
+                  <span>Learn more</span>
+                  {addonsData[index].title === 'SparkMath' && (
+                    <>
+                      {hasUpgradeButton && (
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <span onClick={handleClick}>try</span>
+                          )}
+                          onClick={handleStartTrial}
+                        />
+                      )}
+                    </>
+                  )}
+                </AddonFooter>
               </AddonCard>
             ))}
           </CardContainer>

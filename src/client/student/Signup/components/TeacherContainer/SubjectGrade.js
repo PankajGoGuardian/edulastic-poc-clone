@@ -22,6 +22,7 @@ import {
 } from '../../../../author/src/selectors/dictionaries'
 import {
   getInterestedCurriculumsSelector,
+  getInterestedCurriculumsByOrgType,
   getUserSelector,
 } from '../../../../author/src/selectors/user'
 import selectsData from '../../../../author/TestPage/components/common/selectsData'
@@ -55,6 +56,7 @@ class SubjectGrade extends React.Component {
     getCurriculums: PropTypes.func.isRequired,
     userInfo: PropTypes.object.isRequired,
     saveSubjectGrade: PropTypes.func.isRequired,
+    userInterestedCurriculums: PropTypes.array,
     curriculums: PropTypes.arrayOf(
       PropTypes.shape({
         _id: PropTypes.string.isRequired,
@@ -69,6 +71,7 @@ class SubjectGrade extends React.Component {
 
   static defaultProps = {
     isModal: false,
+    userInterestedCurriculums: [],
   }
 
   componentDidMount() {
@@ -128,6 +131,7 @@ class SubjectGrade extends React.Component {
     const { grades, subjects } = this.state
     const {
       interestedCurriculums,
+      userInterestedCurriculums,
       curriculums,
       form,
       saveSubjectGradeloading,
@@ -144,7 +148,7 @@ class SubjectGrade extends React.Component {
           showAllStandards
         )
     const initialCurriculums = formattedCurriculums.length
-      ? interestedCurriculums.map((curriculum) => curriculum._id)
+      ? userInterestedCurriculums.map((curriculum) => curriculum._id)
       : []
     const { getFieldDecorator } = form
     const filteredAllGrades = allGrades.filter(
@@ -156,7 +160,7 @@ class SubjectGrade extends React.Component {
         <SubjectGradeBody hasMinHeight={!isModal}>
           <Col
             xs={{ span: 20, offset: 2 }}
-            lg={{ span: isModal ? 21 : 18, offset: 3 }}
+            lg={{ span: isModal ? 22 : 18, offset: isModal ? 1 : 3 }}
           >
             <FlexWrapper type="flex" align="middle">
               <BannerText xs={24} sm={18} md={12}>
@@ -307,6 +311,7 @@ const enhance = compose(
       curriculums: getCurriculumsListSelector(state),
       user: getUserSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
+      userInterestedCurriculums: getInterestedCurriculumsByOrgType(state),
       saveSubjectGradeloading: saveSubjectGradeloadingSelector(state),
     }),
     {

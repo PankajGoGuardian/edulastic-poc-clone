@@ -70,7 +70,7 @@ const BannerSlider = ({
                     )
                   }
                 >
-                  <LearnMore>LEARN MORE</LearnMore>
+                  <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                   <SlideDescription data-cy={slide.description}>
                     {slide.description}
                   </SlideDescription>

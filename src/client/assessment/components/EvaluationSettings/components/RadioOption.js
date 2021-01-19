@@ -9,7 +9,13 @@ import LabelWithHelper from './LabelWithHelper'
 import { HeadingLabel } from './InlineCheckOptions'
 
 const { subEvaluationSettingsGrouped } = mathConstants
-const Interpret = ({ t, options, optionKey, onChange }) => {
+const Interpret = ({
+  t,
+  options,
+  optionKey,
+  onChange,
+  isNumberFormatDisabled,
+}) => {
   const interpretOptions = subEvaluationSettingsGrouped[optionKey]
 
   const showHeading =
@@ -61,6 +67,7 @@ const Interpret = ({ t, options, optionKey, onChange }) => {
             checked={opt === selected}
             width={buttonWidth}
             onClick={onClickRadioHandler(opt)}
+            disabled={isNumberFormatDisabled}
           >
             <LabelWithHelper optionKey={opt} />
           </RadioBtn>

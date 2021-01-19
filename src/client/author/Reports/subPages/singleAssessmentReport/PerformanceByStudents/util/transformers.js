@@ -100,7 +100,7 @@ const getLeastProficiency = (bandInfo = []) =>
 
 export const getProficiency = (item, bandInfo) => {
   for (const obj of bandInfo) {
-    if ((item.totalScore / item.maxScore) * 100 >= obj.threshold) {
+    if (round((item.totalScore / item.maxScore) * 100) >= obj.threshold) {
       return obj.name || getLeastProficiency(bandInfo).name
     }
   }

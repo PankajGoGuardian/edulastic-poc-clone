@@ -1,10 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CustomModalStyled, EduButton } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import { Checkbox } from 'antd'
+import styled from 'styled-components'
 import moment from 'moment'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 
-const ItemPurchaseModal = ({
+const TrialModal = ({
   productId,
   productName,
   description,
@@ -12,6 +14,9 @@ const ItemPurchaseModal = ({
   toggleModal,
   userInfo,
   addItemBankPermission,
+  premiumUser,
+  isPremiumTrialUsed,
+  startPremiumTrial,
 }) => {
   const closeModal = () => toggleModal(false)
   const onProceed = () => {
@@ -49,7 +54,11 @@ const ItemPurchaseModal = ({
       collectionName: productName,
       data: { permissionDetails },
     }
-    addItemBankPermission({ data })
+    if (!premiumUser && !isPremiumTrialUsed) {
+      startPremiumTrial({ addItemBankPermission: { data } })
+    } else {
+      addItemBankPermission({ data })
+    }
     closeModal()
   }
 
@@ -71,11 +80,23 @@ const ItemPurchaseModal = ({
       onCancel={closeModal}
     >
       {description}
+      <FlexContainer
+        flexDirection="column"
+        justifyContent="center"
+        marginLeft="40px"
+        mr="40px"
+        mt="20px"
+      >
+        {!premiumUser && !isPremiumTrialUsed && (
+          <StyledCheckbox checked>Premium Trial</StyledCheckbox>
+        )}
+        <StyledCheckbox checked>{productName} Trial</StyledCheckbox>
+      </FlexContainer>
     </CustomModalStyled>
   )
 }
 
-ItemPurchaseModal.propTypes = {
+TrialModal.propTypes = {
   productName: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   productId: PropTypes.string.isRequired,
@@ -83,4 +104,11 @@ ItemPurchaseModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
 }
 
-export default ItemPurchaseModal
+export default TrialModal
+
+const StyledCheckbox = styled(Checkbox)`
+  margin: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: unset;
+`

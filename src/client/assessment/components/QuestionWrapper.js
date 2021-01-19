@@ -72,6 +72,7 @@ import {
   ttsUserIdSelector,
 } from '../../author/ClassBoard/ducks'
 import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
+import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
@@ -415,8 +416,8 @@ class QuestionWrapper extends Component {
       permissions,
     } = this.props
 
-    // 'author' is power teacher by default
-    const _isPowerTeacher = isPowerTeacher || permissions.includes('author')
+    const _isPowerTeacher =
+      isPowerTeacher || canUseAllOptionsByDefault(permissions)
 
     const isDistrictAdmin =
       (userRole === TEACHER &&
@@ -466,9 +467,8 @@ class QuestionWrapper extends Component {
       ...restProps
     } = this.props
 
-    // 'author' is power teacher by default
-    const _isPowerTeacher = isPowerTeacher || permissions.includes('author')
-
+    const _isPowerTeacher =
+      isPowerTeacher || canUseAllOptionsByDefault(permissions)
     const {
       isExpressGrader,
       isStudentReport,

@@ -17,6 +17,7 @@ const TestButton = ({
   toggleBookmark,
   isBookmarked = false,
   checkAnswerInProgress,
+  blockNavigationToAnsweredQuestions = false,
 }) => {
   const handleCheckAnswer = () => {
     if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
@@ -26,12 +27,14 @@ const TestButton = ({
   }
   return (
     <Container>
-      <Tooltip placement="top" title="Bookmark">
-        <StyledButton onClick={toggleBookmark} active={isBookmarked}>
-          <StyledIconBookmark />
-          <span>{t('common.test.bookmark')}</span>
-        </StyledButton>
-      </Tooltip>
+      {!blockNavigationToAnsweredQuestions && (
+        <Tooltip placement="top" title="Bookmark">
+          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+            <StyledIconBookmark />
+            <span>{t('common.test.bookmark')}</span>
+          </StyledButton>
+        </Tooltip>
+      )}
       {settings.maxAnswerChecks > 0 && (
         <Tooltip
           placement="top"

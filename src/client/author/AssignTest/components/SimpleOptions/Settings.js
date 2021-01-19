@@ -26,7 +26,7 @@ import {
   SelectInputStyled,
   NumberInputStyled,
 } from '@edulastic/common'
-import { IconCaretDown, IconInfo } from '@edulastic/icons'
+import { IconCaretDown } from '@edulastic/icons'
 import { isUndefined } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
@@ -50,6 +50,7 @@ import {
   TimeSpentInput,
   StyledCol,
   StyledRow,
+  StyledInfoIcon,
 } from './styled'
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
 import SubscriptionsBlock from '../../../TestPage/components/Setting/components/Container/SubscriptionsBlock'
@@ -324,6 +325,7 @@ const Settings = ({
     enableScratchpad = tempTestSettings.enableScratchpad,
     autoRedirect = false,
     autoRedirectSettings,
+    blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
   } = assignmentSettings
   const playerSkinType =
     assignmentSettings.playerSkinType || testSettings.playerSkinType
@@ -478,10 +480,7 @@ const Settings = ({
                    the students. If you select this option, students must use devices (Windows, 
                    Mac or iPad) with Safe Exam Browser installed."
                   >
-                    <IconInfo
-                      color={lightGrey9}
-                      style={{ cursor: 'pointer', marginLeft: '10px' }}
-                    />
+                    <StyledInfoIcon color={lightGrey9} mL="10px" />
                   </Tooltip>
                 </Label>
               </Col>
@@ -518,6 +517,46 @@ const Settings = ({
           </FeaturesSwitch>
         )}
         {/* Safe Exam Browser/Kiosk Mode */}
+
+        {
+          /* Restrict Navigation To Previously Answered Questions */
+          !isDocBased && !hideTestLevelOptions && (
+            <FeaturesSwitch
+              inputFeatures="premium"
+              actionOnInaccessible="hidden"
+              key="premium"
+              gradeSubject={gradeSubject}
+            >
+              <StyledRowSettings gutter={16}>
+                <Col span={12}>
+                  <Label>
+                    Restrict Navigation To Previously Answered Questions
+                    <Tooltip
+                      title="If ON, then students will be restricted from navigating back to the previous question. 
+                      Recommended to use along with Shuffle Questions for preventing cheating among students."
+                    >
+                      <StyledInfoIcon color={lightGrey9} mL="10px" />
+                    </Tooltip>
+                  </Label>
+                </Col>
+                <Col span={12}>
+                  <AlignSwitchRight
+                    disabled={forClassLevel || freezeSettings}
+                    size="small"
+                    checked={blockNavigationToAnsweredQuestions}
+                    onChange={(value) =>
+                      overRideSettings(
+                        'blockNavigationToAnsweredQuestions',
+                        value
+                      )
+                    }
+                  />
+                </Col>
+              </StyledRowSettings>
+            </FeaturesSwitch>
+          )
+          /* Restrict Navigation To Previously Answered Questions */
+        }
 
         {
           /* Shuffle Question */
@@ -809,10 +848,7 @@ const Settings = ({
                 <Label>
                   <span>TIMED TEST</span>
                   <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
-                    <IconInfo
-                      color={lightGrey9}
-                      style={{ cursor: 'pointer', marginLeft: '15px' }}
-                    />
+                    <StyledInfoIcon color={lightGrey9} mL="15px" />
                   </Tooltip>
                 </Label>
               </Col>

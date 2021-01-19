@@ -5,6 +5,7 @@ import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { subscriptionApi, paymentApi } from '@edulastic/api'
 import { fetchUserAction } from '../../student/Login/ducks'
+import { addPermissionRequestAction } from '../ContentCollections/ducks'
 
 const slice = createSlice({
   name: 'subscription',
@@ -52,10 +53,10 @@ const slice = createSlice({
       state.subscriptionData = {}
       state.error = payload
     },
-    updateUserSubscriptionExpired: (state) => {
+    updateUserSubscriptionExpired: (state, { payload }) => {
       state.isSubscriptionExpired = true
       state.verificationPending = false
-      state.subscriptionData = {}
+      state.subscriptionData = payload
       state.error = ''
     },
     startTrialAction: (state) => {
@@ -159,16 +160,24 @@ function* fetchUserSubscription() {
     const apiUserSubscriptionStatus = yield call(
       subscriptionApi.subscriptionStatus
     )
-    if (apiUserSubscriptionStatus?.result === -1) {
-      yield put(slice.actions.updateUserSubscriptionExpired())
+    const data = {
+      isPremiumTrialUsed: apiUserSubscriptionStatus?.result?.isPremiumTrialUsed,
+      usedTrialItemBankId:
+        apiUserSubscriptionStatus?.result?.usedTrialItemBankId,
+    }
+    if (apiUserSubscriptionStatus?.result.subscription === -1) {
+      yield put(slice.actions.updateUserSubscriptionExpired(data))
       return
     }
-    if (apiUserSubscriptionStatus.result) {
-      const data = {
-        success: true,
-        subscription: apiUserSubscriptionStatus.result,
+    if (apiUserSubscriptionStatus.result.subscription) {
+      Object.assign(data, {
+        subscription: apiUserSubscriptionStatus.result.subscription,
+      })
+      if (apiUserSubscriptionStatus.result.subscription._id) {
+        Object.assign(data, {
+          success: true,
+        })
       }
-
       yield put(slice.actions.updateUserSubscriptionStatus({ data, error: '' }))
     } else
       yield put(
@@ -186,7 +195,7 @@ function* fetchUserSubscription() {
   }
 }
 
-function* handleFreeTrialSaga() {
+function* handleFreeTrialSaga({ payload }) {
   try {
     const apiPaymentResponse = yield call(paymentApi.pay, {})
     if (apiPaymentResponse.success) {
@@ -201,6 +210,9 @@ function* handleFreeTrialSaga() {
         )}`,
         key: 'handle-trial',
       })
+      if (payload && payload.addItemBankPermission) {
+        yield put(addPermissionRequestAction(payload.addItemBankPermission))
+      }
       yield put(slice.actions.resetSubscriptions())
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))

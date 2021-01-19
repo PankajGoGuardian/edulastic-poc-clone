@@ -381,6 +381,8 @@ class MathInput extends React.PureComponent {
       customKeys,
       dynamicVariableInput,
       disabled,
+      maxWidth,
+      paddingRight,
     } = this.props
 
     const {
@@ -407,7 +409,9 @@ class MathInput extends React.PureComponent {
             : 'italic'
         }
         width={style.width}
+        maxWidth={maxWidth}
         height={height}
+        pr={paddingRight}
         background={background}
         fontSize={style.fontSize}
         ref={this.containerRef}

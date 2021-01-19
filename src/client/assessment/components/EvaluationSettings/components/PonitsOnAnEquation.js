@@ -51,7 +51,11 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
       <HeadingLabel>
         <LabelWithHelper optionKey={optionKey} />
       </HeadingLabel>
-      <FlexContainer justifyContent="flex-start" alignItems="center">
+      <FlexContainer
+        justifyContent="flex-start"
+        alignItems="flex-start"
+        flexDirection="column"
+      >
         <FlexContainer alignItems="center">
           <CheckboxLabel
             onChange={onChangeCheckbox}
@@ -71,15 +75,20 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
             disabled={!isAllowed}
             onChange={onChangeInput}
           />
-        </FlexContainer>
-        <FlexContainer alignItems="center">
           <FieldLabel marginBottom="0px" mr="6px">
-            unique points on an equation
+            unique points
+          </FieldLabel>
+        </FlexContainer>
+        <FlexContainer alignItems="center" marginLeft="28px" mt="4px">
+          <FieldLabel marginBottom="0px" mr="6px" nowrap>
+            on an equation
           </FieldLabel>
           <MathInput
             value={localLatex}
-            style={{ width: '90px', marginLeft: '14px' }}
-            symbols={['basic']}
+            style={{ width: '210px', marginLeft: '14px' }}
+            symbols={['all']}
+            maxWidth="445px"
+            paddingRight="8px"
             onInput={onChangeMath}
             onBlur={handleBlurMath}
             hideKeypad={false}

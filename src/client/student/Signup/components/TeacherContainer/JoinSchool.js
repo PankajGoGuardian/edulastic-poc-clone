@@ -336,7 +336,7 @@ const JoinSchool = ({
         )}
         <Col
           xs={{ span: 20, offset: 2 }}
-          lg={{ span: isModal ? 22 : 18, offset: isModal ? 1 : 3 }}
+          lg={{ span: isModal ? 21 : 18, offset: 3 }}
         >
           <FlexWrapper type="flex" align="middle">
             <BannerText

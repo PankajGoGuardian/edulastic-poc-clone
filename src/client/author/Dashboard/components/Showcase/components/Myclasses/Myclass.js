@@ -16,18 +16,14 @@ import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 
 // ducks
-import { slice } from '../../../../../Subscription/ducks'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
-import { addPermissionRequestAction } from '../../../../../ContentCollections/ducks'
 import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
-import ItemPurchaseModal from './components/ItemPurchaseModal'
-import TrialModal from './components/TrialModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -50,14 +46,8 @@ const MyClasses = ({
   resetTestFilters,
   resetPlaylistFilters,
   collections,
-  addPermissionRequest,
-  isPremiumTrialUsed,
-  startTrialAction,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
-  const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
-  const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
-  const [productData, setProductData] = useState({})
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -100,30 +90,8 @@ const MyClasses = ({
     history.push(`/author/${contentType}?${filter}`)
   }
 
-  const hasAccessToItemBank = (itemBankId) =>
-    collections.some((collection) => collection._id === itemBankId)
-
-  const handleBlockedClick = ({ subscriptionData }) => {
-    setIsPurchaseModalVisible(true)
-    setProductData({
-      productId: subscriptionData.productId,
-      productName: subscriptionData.productName,
-      description: subscriptionData.description,
-      hasTrial: subscriptionData.hasTrial,
-    })
-  }
-
-  const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
-  const toggleTrialModal = (value) => setIsTrialModalVisible(value)
-
-  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
+  const handleFeatureClick = ({ config = {}, tags = [] }) => {
     const { filters, contentType } = config
-
-    if (isBlocked) {
-      handleBlockedClick(config)
-      return
-    }
-
     const content = contentType?.toLowerCase() || 'tests'
     if (tags.includes(PREMIUM_TAG)) {
       if (premiumUser) {
@@ -136,27 +104,9 @@ const MyClasses = ({
     }
   }
 
-  const getFeatureBundles = (bundles) =>
-    bundles.map((bundle) => {
-      const { subscriptionData } = bundle.config
-      if (!subscriptionData?.productId) {
-        return bundle
-      }
-
-      const { imageUrl: imgUrl, premiumImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData.productId)
-      const imageUrl = isBlocked ? premiumImageUrl : imgUrl
-
-      return {
-        ...bundle,
-        isBlocked,
-        imageUrl,
-      }
-    })
-
   const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
   const bannerSlides = sortByOrder(BANNER || [])
-  const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
+  const featuredBundles = sortByOrder(FEATURED || [])
 
   const isEurekaMathActive = useMemo(
     () =>
@@ -236,43 +186,18 @@ const MyClasses = ({
           isBannerModalVisible={showBannerModal}
         />
       )}
-      <Classes
-        activeClasses={allActiveClasses}
-        emptyBoxCount={classEmptyBoxCount}
-      />
+      {!loading && (
+        <Classes
+          activeClasses={allActiveClasses}
+          emptyBoxCount={classEmptyBoxCount}
+        />
+      )}
       <FeaturedContentBundle
         featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
-      {isPurchaseModalVisible && (
-        <ItemPurchaseModal
-          title={productData.productName}
-          description={productData.description}
-          productId={productData.productId}
-          hasTrial={productData.hasTrial}
-          isVisible={isPurchaseModalVisible}
-          toggleModal={togglePurchaseModal}
-          toggleTrialModal={toggleTrialModal}
-          isPremiumTrialUsed={isPremiumTrialUsed}
-          premiumUser={premiumUser}
-        />
-      )}
-      {isTrialModalVisible && (
-        <TrialModal
-          description={productData.description}
-          productId={productData.productId}
-          productName={productData.productName}
-          userInfo={user}
-          addItemBankPermission={addPermissionRequest}
-          isVisible={isTrialModalVisible}
-          toggleModal={toggleTrialModal}
-          premiumUser={premiumUser}
-          isPremiumTrialUsed={isPremiumTrialUsed}
-          startPremiumTrial={startTrialAction}
-        />
-      )}
     </MainContentWrapper>
   )
 }
@@ -288,8 +213,6 @@ export default compose(
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
       collections: getCollectionsSelector(state),
-      isPremiumTrialUsed:
-        state?.subscription?.subscriptionData?.isPremiumTrialUsed,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -298,8 +221,6 @@ export default compose(
       fetchCleverClassList: fetchCleverClassListRequestAction,
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
-      addPermissionRequest: addPermissionRequestAction,
-      startTrialAction: slice.actions.startTrialAction,
     }
   )
 )(MyClasses)

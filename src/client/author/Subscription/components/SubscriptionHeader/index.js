@@ -1,116 +1,64 @@
-import { EduButton } from '@edulastic/common'
+import { EduButton, MainHeader } from '@edulastic/common'
 import { IconSubscriptionHighlight } from '@edulastic/icons'
+import { darkOrange1 } from '@edulastic/colors'
 import PropTypes from 'prop-types'
 import React, { memo } from 'react'
 import { withNamespaces } from 'react-i18next'
-import { Dropdown, Menu } from 'antd'
-import { capitalize } from 'lodash'
-import moment from 'moment'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import {
-  TopBanner,
-  HeaderSubscription,
-  Title,
-  ActionButtons,
-  BannerContent,
-  LearnMore,
-} from './styled'
-
-function formatDate(subEndDate) {
-  if (!subEndDate) return null
-  return moment(subEndDate).format('DD MMM, YYYY')
-}
+import { ActionBtnWrapper } from './styled'
 
 const SubscriptionHeader = ({
   openComparePlanModal,
+  openPaymentServiceModal,
+  showUpgradeOptions,
   showRenewalOptions,
-  isSubscribed = false,
-  subType,
-  subEndDate,
-  setShowUpgradeModal,
-  hasUpgradeButton,
-}) => {
-  const handleShowUpgradeModal = () => {
-    setShowUpgradeModal(true)
-  }
-  const handleEnterpriseClick = () => {
-    window.open(
-      'https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform',
-      '_blank'
-    )
-  }
-  const menu = (
-    <Menu>
-      <Menu.Item>
+  t,
+}) => (
+  <MainHeader
+    Icon={IconSubscriptionHighlight}
+    headingText={t('common.subscriptionTitle')}
+  >
+    <ActionBtnWrapper>
+      {showUpgradeOptions && (
+        <EduButton isBlue isGhost width="195px" onClick={openComparePlanModal}>
+          COMPARE PLANS
+        </EduButton>
+      )}
+      {showUpgradeOptions ? (
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
-            <span onClick={handleClick}>INDIVIDUAL SUBSCRIPTION</span>
-          )}
-          onClick={handleShowUpgradeModal}
-        />
-      </Menu.Item>
-      <Menu.Item>
-        <AuthorCompleteSignupButton
-          renderButton={(handleClick) => (
-            <span onClick={handleClick}>ENTERPRISE SUBSCRIPTION</span>
-          )}
-          onClick={handleEnterpriseClick}
-        />
-      </Menu.Item>
-    </Menu>
-  )
-
-  const licenseExpiryDate = formatDate(subEndDate)
-
-  return (
-    <TopBanner>
-      <HeaderSubscription>
-        <Title>
-          <h2>
-            <IconSubscriptionHighlight width={19} height={19} />
-            <span>Subscription</span>
-          </h2>
-        </Title>
-        <ActionButtons>
-          <span className="plan">YOUR PLAN</span>
-          <span className="free">
-            {isSubscribed && subType && licenseExpiryDate
-              ? `${
-                  subType === 'partial_premium'
-                    ? 'Enterprise'
-                    : capitalize(subType.replace(/_/g, ' '))
-                } Version`
-              : 'Free'}
-          </span>
-          {hasUpgradeButton ? (
-            <Dropdown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={menu}
-              placement="bottomRight"
-              arrow
-            >
-              <EduButton isBlue height="24px">
-                Upgrade
-              </EduButton>
-            </Dropdown>
-          ) : showRenewalOptions ? (
-            <EduButton onClick={handleShowUpgradeModal} isBlue height="24px">
-              Renew Subscription
+            <EduButton isBlue width="215px" onClick={handleClick}>
+              UPGRADE NOW FOR $100/YEAR
             </EduButton>
-          ) : null}
-        </ActionButtons>
-      </HeaderSubscription>
-      <BannerContent>
-        <h3>There&apos;s a lot more in premium!</h3>
-        <p>Upgrade to teacher premium for additional features, including:</p>
-        <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
-      </BannerContent>
-    </TopBanner>
-  )
-}
+          )}
+          onClick={openPaymentServiceModal}
+        />
+      ) : showRenewalOptions ? (
+        <EduButton
+          onClick={openPaymentServiceModal}
+          type="primary"
+          isBlue
+          style={{
+            marginLeft: '5px',
+            backgroundColor: darkOrange1,
+            border: 'none',
+          }}
+          data-cy="manageClass"
+        >
+          <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
+          <span>RENEW SUBSCRIPTION</span>
+        </EduButton>
+      ) : null}
+    </ActionBtnWrapper>
+  </MainHeader>
+)
 
 SubscriptionHeader.propTypes = {
   openComparePlanModal: PropTypes.func.isRequired,
+  openPaymentServiceModal: PropTypes.func.isRequired,
+  showUpgradeOptions: PropTypes.bool.isRequired,
 }
 
 export default memo(withNamespaces('header')(SubscriptionHeader))

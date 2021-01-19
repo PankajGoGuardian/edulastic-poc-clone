@@ -351,7 +351,7 @@ const isPartOfLoginRoutes = (pathname) =>
   )
 
 function* persistAuthStateAndRedirectToSaga({ payload }) {
-  const { _redirectRoute } = payload || {}
+  const { _redirectRoute, toUrl } = payload || {}
   const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
     {}
 
@@ -367,6 +367,9 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       user.user || {}
     )
     localStorage.removeItem('loginRedirectUrl')
+  } else if (toUrl && !isPartOfLoginRoutes(toUrl) && toUrl != '/') {
+ 
+    redirectRoute = toUrl
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
   }

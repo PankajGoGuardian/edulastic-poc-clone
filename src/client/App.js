@@ -1,16 +1,16 @@
-import React, { Component, Suspense, lazy, useEffect } from 'react'
-import { capitalize, get, isUndefined, isEmpty } from 'lodash'
+import React, { Component, lazy, Suspense, useEffect } from 'react'
+import { capitalize, get, isEmpty, isUndefined } from 'lodash'
 import qs from 'qs'
 import queryString from 'query-string'
 import PropTypes from 'prop-types'
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
-import { test, signUpState, roleuser } from '@edulastic/constants'
-import { OfflineNotifier, notification, DragDrop } from '@edulastic/common'
+import { roleuser, signUpState, test } from '@edulastic/constants'
+import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -36,6 +36,7 @@ import ClassSyncNotification from './author/Classes/components/ClassSyncNotifica
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
+import SsoAuth from '../ssoAuth'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -281,6 +282,43 @@ class App extends Component {
       const urlSearch = new URLSearchParams(location.search)
       if (user && user.isAuthenticated) {
         const role = get(user, ['user', 'role'])
+        const thirdPartyOAuth = localStorage.getItem('thirdPartyOAuth')
+        const thirdPartyOAuthRedirectUrl = localStorage.getItem(
+          'thirdPartyOAuthRedirectUrl'
+        )
+        const { getAuthDataForWordPressUser } = this.props
+        if (thirdPartyOAuth === 'wordpress' && thirdPartyOAuthRedirectUrl) {
+          // redirect user to redirect url with first name and last name and role
+          getAuthDataForWordPressUser({
+            redUrl: thirdPartyOAuthRedirectUrl,
+          })
+          return (
+            <SsoAuth
+              user={user}
+              location={location}
+              redirectUrl={thirdPartyOAuthRedirectUrl}
+            />
+          )
+        }
+        if (location.pathname.toLocaleLowerCase().includes('/sso-auth')) {
+          const { redirectUrl = '' } = qs.parse(location.search, {
+            ignoreQueryPrefix: true,
+          })
+          if (redirectUrl) {
+            getAuthDataForWordPressUser({
+              redUrl: redirectUrl,
+            })
+            return (
+              <SsoAuth
+                user={user}
+                location={location}
+                redirectUrl={thirdPartyOAuthRedirectUrl}
+              />
+            )
+          }
+        }
+        localStorage.removeItem('thirdPartyOAuth')
+        localStorage.removeItem('thirdPartyOAuthRedirectUrl')
         if (role === 'teacher') {
           if (
             user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
@@ -321,6 +359,12 @@ class App extends Component {
           defaultRoute = '/auth'
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
+      } else if (location.pathname.toLocaleLowerCase().includes('/sso-auth')) {
+        const { redirectUrl = '' } = qs.parse(location.search, {
+          ignoreQueryPrefix: true,
+        })
+        localStorage.setItem('thirdPartyOAuth', 'wordpress')
+        localStorage.setItem('thirdPartyOAuthRedirectUrl', redirectUrl)
       } else if (
         !(
           location.pathname.toLocaleLowerCase().includes('/getstarted') ||

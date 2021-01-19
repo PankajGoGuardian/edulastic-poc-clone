@@ -101,11 +101,6 @@ const MathFormulaAnswerMethod = ({
     options?.setThousandsSeparator?.[0] === options?.setDecimalSeparator?.[0] &&
     options?.setDecimalSeparator?.[0] !== undefined
 
-  const studentTemplate = template.replace(
-    /\\embed\{response\}/g,
-    '\\MathQuillMathField{}'
-  )
-  const innerValues = getInnerValuesForStatic(studentTemplate, value)
   const mathInputProps = {
     hideKeypad: item.showDropdown,
     symbols: isShowDropdown ? ['basic'] : item.symbols,
@@ -127,9 +122,12 @@ const MathFormulaAnswerMethod = ({
     }
   }
 
-  const handleChangeStaticMathInput = (val) => {
-    onChange('value', val)
-  }
+  const studentTemplate = template.replace(
+    /\\embed\{response\}/g,
+    '\\MathQuillMathField{}'
+  )
+
+  const innerValues = getInnerValuesForStatic(studentTemplate, value)
 
   return (
     <Container
@@ -160,7 +158,7 @@ const MathFormulaAnswerMethod = ({
                   noBorder
                   latex={studentTemplate}
                   innerValues={innerValues}
-                  onInput={handleChangeStaticMathInput}
+                  onInput={handleChangeMathInput}
                 />
               )}
               {/* when dropdown is selected */}

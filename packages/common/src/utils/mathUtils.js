@@ -1,3 +1,4 @@
+import { isArray } from 'lodash'
 import Helpers, { templateHasMath } from '../helpers'
 import { getMathTemplate } from '../../../../src/client/assessment/utils/variables'
 
@@ -186,6 +187,12 @@ export const replaceMathHtmlWithLatexes = (val) => {
 }
 
 export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
+  // new static math value is an array
+  // @see: https://snapwiz.atlassian.net/browse/EV-23277
+  if (isArray(userAnswer)) {
+    return userAnswer
+  }
+  // old static math value is sting type
   const escapeRegExp = (string) =>
     string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/&amp;/g, '&')
 

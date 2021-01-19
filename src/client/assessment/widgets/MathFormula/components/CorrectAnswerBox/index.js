@@ -11,10 +11,22 @@ import { withNamespaces } from '@edulastic/localization'
 import EvaluationSettings from '../../../../components/EvaluationSettings'
 import { Answer } from './styled/Answer'
 
-export const formatToMathAnswer = (answer) =>
-  answer.search('input__math') !== -1
-    ? answer
-    : `<span class="input__math" data-latex="${answer}"></span>`
+export const formatToMathAnswer = (answer, template) => {
+  let answerStr = answer
+  if (isArray(answer) && template) {
+    answerStr = template
+    const matches = template.match(/\\embed\{response\}/g)
+    if (isArray(matches)) {
+      for (let i = 0; i < matches.length; i++) {
+        answerStr = answerStr.replace(matches[i], answer[i])
+      }
+    }
+  }
+
+  return answerStr.search('input__math') !== -1
+    ? answerStr
+    : `<span class="input__math" data-latex="${answerStr}"></span>`
+}
 
 const CorrectAnswerBox = ({
   answer = '',

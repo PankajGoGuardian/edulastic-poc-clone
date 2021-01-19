@@ -962,6 +962,8 @@
       "ignoreLabels": "Ignore labels",
       "points": "Points on an Equation",
       "latex": "Equation for points",
+      "showEvaluationSettings": "Show Evaluation Settings",
+      "hideEvaluationSettings": "Hide Evaluation Settings",
       "helperText": {
         "evaluationSettings": "Additional evaluation considerations, for example, if you require that the student&apos;s response is simplified, or meets a specific tolerance, or should be literally matched...",
         "graphEvaluationSettings": "Specify the additional checks that should be performed on the student's entry, such as to check the labeling of points, measure perimeter, area or parallel lines. Note that you can also incorporate background shapes or images with the advanced options menu on the left.",

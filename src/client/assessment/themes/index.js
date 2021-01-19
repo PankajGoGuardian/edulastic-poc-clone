@@ -12,6 +12,7 @@ import {
   isEqual,
   isObject,
   flatMap,
+  isArray,
 } from 'lodash'
 import useInterval from '@use-it/interval'
 import {
@@ -324,6 +325,9 @@ const AssessmentContainer = ({
         }
         case questionType.MATH:
           if (q.title === 'Complete the Equation') {
+            if (isArray(qAnswers)) {
+              return !qAnswers.some((ans) => ans?.toString())
+            }
             const ans = (qAnswers || '').replace(/\\ /g, '')
             return isEmpty(ans) || ans === '+='
           }

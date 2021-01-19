@@ -74,9 +74,13 @@ export const receiveGradeBookdAction = (assignmentId, classId) => ({
   payload: { assignmentId, classId },
 })
 
-export const receiveTestActivitydAction = (assignmentId, classId) => ({
+export const receiveTestActivitydAction = (
+  assignmentId,
+  classId,
+  isQuestionsView = false
+) => ({
   type: RECEIVE_TESTACTIVITY_REQUEST,
-  payload: { assignmentId, classId },
+  payload: { assignmentId, classId, isQuestionsView },
 })
 
 export const releaseScoreAction = (

@@ -82,7 +82,7 @@ const AssessmentAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value, searchedText: value })
   }
-  const onChange = (selected) => {
+  const onChange = (selected, selectedElements) => {
     const _selectedTestIds = !selected.length
       ? []
       : typeof selected === 'string'
@@ -93,9 +93,10 @@ const AssessmentAutoComplete = ({
       searchedText: '',
       selectedKey: _selectedTestIds.join(','),
     })
-    const _selectedTests = dropdownData.filter((d) =>
-      _selectedTestIds.includes(d.key)
-    )
+    const _selectedTests = selectedElements.map(({ props }) => ({
+      key: props.value,
+      title: props.children,
+    }))
     selectCB(_selectedTests)
   }
   const loadTestListDebounced = useCallback(

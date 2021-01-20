@@ -34,7 +34,6 @@ import {
   redirectToAssignmentsAction,
   updatePasswordDetailsAction,
   toggleViewPasswordAction,
-  updatePauseStatusAction,
 } from '../src/actions/classBoard'
 
 import { createFakeData, hasRandomQuestions } from './utils'
@@ -72,7 +71,6 @@ import {
   CANVAS_SYNC_GRADES,
   CANVAS_SYNC_ASSIGNMENT,
   FETCH_SERVER_TIME,
-  PAUSE_STUDENTS,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -605,28 +603,6 @@ function* fetchServerTimeSaga() {
   }
 }
 
-function* togglePauseStudentsSaga({ payload }) {
-  try {
-    const { result } = yield call(classBoardApi.togglePauseStudents, payload)
-    yield put(updatePauseStatusAction({ result, isPaused: payload.isPause }))
-    yield call(notification, {
-      type: 'success',
-      msg: 'Successfully paused students',
-    })
-  } catch (err) {
-    captureSentryException(err)
-    const {
-      data: { message: errorMessage },
-    } = err.response
-    if (errorMessage === 'Assignment does not exist anymore') {
-      yield put(redirectToAssignmentsAction(''))
-    }
-    yield call(notification, {
-      msg: errorMessage || 'Mark absent students failed',
-    })
-  }
-}
-
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -640,7 +616,6 @@ export function* watcherSaga() {
     yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
     yield takeEvery(MARK_AS_SUBMITTED, markAsSubmittedSaga),
     yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
-    yield takeEvery(PAUSE_STUDENTS, togglePauseStudentsSaga),
     yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
     yield takeEvery(
       GET_ALL_TESTACTIVITIES_FOR_STUDENT,

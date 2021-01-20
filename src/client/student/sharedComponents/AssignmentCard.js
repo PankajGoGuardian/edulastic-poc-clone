@@ -90,7 +90,6 @@ const AssignmentCard = memo(
     proxyUserRole,
     highlightMode,
     index,
-    uta = {},
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
@@ -203,11 +202,7 @@ const AssignmentCard = memo(
     if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
       maxAttempts = reports.length
     }
-    if (!isPaused) {
-      isPaused = Object.keys(uta).length
-        ? !!uta?.isPaused
-        : !!lastAttempt.isPaused
-    }
+
     useEffect(() => {
       if (index <= 2 && reports.length > 0 && maxAttempts > 1) {
         setShowAttempts(true)

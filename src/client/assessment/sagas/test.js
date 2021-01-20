@@ -586,15 +586,6 @@ function* loadTest({ payload }) {
         messageKey = 'invalidAction'
       } else if (err.status === 302) {
         messageKey = 'testPausedOrClosedByTeacher'
-      } else if (err.status === 403) {
-        if (userRole === roleuser.STUDENT) {
-          const { data = {} } = err.response || {}
-          const { message: errorMessage } = data
-          notification({
-            msg: errorMessage || 'Something went wrong!',
-          })
-          return yield put(push('/home/assignments'))
-        }
       }
     }
     if (userRole === roleuser.STUDENT) {

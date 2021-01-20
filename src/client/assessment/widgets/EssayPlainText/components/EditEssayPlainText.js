@@ -56,18 +56,17 @@ const EditEssayPlainText = ({
       />
 
       <Question
-        section="advanced"
+        section="main"
         label="Scoring"
         fillSections={fillSections}
         cleanSections={cleanSections}
-        advancedAreOpen={advancedAreOpen}
-        showScoringSectionAnyRole
+        advancedAreOpen
       >
         <Scoring
           scoringTypes={[]}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          advancedAreOpen={advancedAreOpen}
+          advancedAreOpen
           showSelect={false}
           item={item}
         >

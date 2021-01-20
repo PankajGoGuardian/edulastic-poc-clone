@@ -53,7 +53,6 @@ class WidgetOptions extends Component {
       renderExtra,
       item,
       showScoringSection = false,
-      showScoringSectionAnyRole,
       showScoringType,
       extraInScoring, // extraInScoring (Component required inside scoring section)
       isCorrectAnsTab,
@@ -64,18 +63,17 @@ class WidgetOptions extends Component {
         {renderExtra}
         {(showScoring || showScoringSection) && (
           <Question
-            section={showScoringSection ? 'main' : 'advanced'} // Show scoring section in main/advanced section based on flag
+            section="main"
             label="Scoring"
             fillSections={fillSections}
             cleanSections={cleanSections}
-            advancedAreOpen={advancedAreOpen || showScoringSection} // Showing scoring outside of advanced is showScoringSection is true
-            showScoringSectionAnyRole={showScoringSectionAnyRole}
+            advancedAreOpen
           >
             <Scoring
               scoringTypes={scoringTypes}
               fillSections={fillSections}
               cleanSections={cleanSections}
-              advancedAreOpen={advancedAreOpen}
+              advancedAreOpen
               showSelect={showSelect}
               item={item}
               showScoringType={showScoringType}

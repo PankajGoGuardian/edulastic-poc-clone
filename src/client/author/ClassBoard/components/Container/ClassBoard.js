@@ -1034,6 +1034,8 @@ class ClassBoard extends Component {
     const enableDownload =
       testActivity.some((item) => item.status === 'submitted') && isItemsVisible
 
+    const showResume = testActivity.some((item) => item.isPaused)
+
     const { showScoreImporvement } = this.state
 
     return (
@@ -1383,21 +1385,23 @@ class ClassBoard extends Component {
                               <span>Pause Students</span>
                             </MenuItems>
                           </FeaturesSwitch>
-
-                          <FeaturesSwitch
-                            inputFeatures="premium"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
-                          >
-                            <MenuItems
-                              data-cy="resumeStudents"
-                              onClick={this.handleTogglePauseStudents(false)}
-                              disabled={disableMarkAbsent}
+                          {showResume && (
+                            <FeaturesSwitch
+                              inputFeatures="premium"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
                             >
-                              <IconPlay />
-                              <span>Resume Students</span>
-                            </MenuItems>
-                          </FeaturesSwitch>
+                              <MenuItems
+                                data-cy="resumeStudents"
+                                onClick={this.handleTogglePauseStudents(false)}
+                                disabled={disableMarkAbsent}
+                              >
+                                <IconPlay />
+                                <span>Resume Students</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
+                          )}
+
                           <MenuItems
                             data-cy="downloadGrades"
                             disabled={!enableDownload}

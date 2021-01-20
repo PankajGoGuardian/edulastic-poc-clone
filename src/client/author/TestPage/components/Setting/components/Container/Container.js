@@ -793,7 +793,7 @@ class Setting extends Component {
                     <EduSwitchStyled
                       disabled={!owner || !isEditable}
                       defaultChecked={blockNavigationToAnsweredQuestions}
-                      data-cy="restrict-back-nav-switch-test"
+                      data-cy="blockNavigationToAnsweredQuestions"
                       onChange={this.updateTestData(
                         'blockNavigationToAnsweredQuestions'
                       )}

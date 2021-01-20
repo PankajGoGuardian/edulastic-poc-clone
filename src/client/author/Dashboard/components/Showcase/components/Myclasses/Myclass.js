@@ -13,6 +13,7 @@ import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import SubscriptionAddonModal from './components/SubscriptionAddonModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 
@@ -63,6 +64,9 @@ const MyClasses = ({
     false
   )
   const [productData, setProductData] = useState({})
+  const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
+    false
+  )
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -128,6 +132,11 @@ const MyClasses = ({
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
   const handleCloseItemTrialModal = () => {
     setShowItemBankTrialUsedModal(false)
+  }
+
+  const handlePurchaseFlow = () => {
+    setShowSubscriptionAddonModal(true)
+    setIsPurchaseModalVisible(false)
   }
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
@@ -260,6 +269,11 @@ const MyClasses = ({
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
+      <SubscriptionAddonModal
+        isVisible={showSubscriptionAddonModal}
+        handleCloseModal={setShowSubscriptionAddonModal}
+        premiumUser={premiumUser}
+      />
       <ItemBankTrialUsedModal
         title={productData.productName}
         isVisible={showItemBankTrialUsedModal}
@@ -276,6 +290,7 @@ const MyClasses = ({
           toggleTrialModal={toggleTrialModal}
           isPremiumTrialUsed={isPremiumTrialUsed}
           premiumUser={premiumUser}
+          handlePurchaseFlow={handlePurchaseFlow}
         />
       )}
       {isTrialModalVisible && (

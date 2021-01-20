@@ -466,6 +466,7 @@ class MathFormulaPreview extends Component {
                 undefined && (
                 <CorrectAnswerBox
                   theme={theme}
+                  template={item.template}
                   answer={
                     item.isUnits && item.showDropdown
                       ? item.validation.validResponse.value[0].value.search(

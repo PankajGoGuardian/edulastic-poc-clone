@@ -110,18 +110,13 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    if (
-      usedTrialItemBankId &&
-      usedTrialItemBankId === subscriptionData?.productId
-    ) {
+    if (usedTrialItemBankId) {
+      if(usedTrialItemBankId !== subscriptionData?.productId){
+        setItemBankNotUsed(true)
+        setShowItemBankTrialUsedModal(true)
+        return
+      }
       setShowItemBankTrialUsedModal(true)
-    } else if (
-      usedTrialItemBankId &&
-      usedTrialItemBankId !== subscriptionData?.productId
-    ) {
-      setItemBankNotUsed(true)
-      setShowItemBankTrialUsedModal(true)
-      return
     } else {
       setIsPurchaseModalVisible(true)
     }

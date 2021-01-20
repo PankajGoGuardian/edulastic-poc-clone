@@ -56,7 +56,7 @@ const HasLicenseKeyModal = (props) => {
     expDate,
     isSubscribed = false,
     verificationPending = false,
-    hasUpgradeButton,
+    isPaidPremium,
     subType,
   } = props
 
@@ -93,7 +93,7 @@ const HasLicenseKeyModal = (props) => {
       ]}
       centered
     >
-      {!hasUpgradeButton ? (
+      {!isPaidPremium ? (
         <Container width="300">
           <h4 style={{ fontWeight: 700 }}>Congratulations!</h4>
           <p>

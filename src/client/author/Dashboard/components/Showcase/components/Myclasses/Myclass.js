@@ -62,7 +62,6 @@ const MyClasses = ({
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
   )
-  const [itemBankNotUsed, setItemBankNotUsed] = useState(false)
   const [productData, setProductData] = useState({})
 
   useEffect(() => {
@@ -109,13 +108,8 @@ const MyClasses = ({
   const hasAccessToItemBank = (itemBankId) =>
     collections.some((collection) => collection._id === itemBankId)
 
-  const handleBlockedClick = ({ subscriptionData }) => {
-    if (usedTrialItemBankId) {
-      if (usedTrialItemBankId !== subscriptionData?.productId) {
-        setItemBankNotUsed(true)
-        setShowItemBankTrialUsedModal(true)
-        return
-      }
+  const handleBlockedClick = ({ subscriptionData }, isItemBankUsed) => {
+    if (usedTrialItemBankId === subscriptionData?.productId) {
       setShowItemBankTrialUsedModal(true)
     } else {
       setIsPurchaseModalVisible(true)
@@ -125,21 +119,26 @@ const MyClasses = ({
       productName: subscriptionData.productName,
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
+      itemBankUsed: isItemBankUsed,
     })
   }
 
   const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
-  const handleCloseModal = () => {
+  const handleCloseItemTrialModal = () => {
     setShowItemBankTrialUsedModal(false)
-    setItemBankNotUsed(false)
   }
 
-  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
+  const handleFeatureClick = ({
+    config = {},
+    tags = [],
+    isBlocked,
+    isItemBankUsed,
+  }) => {
     const { filters, contentType } = config
 
-    if (usedTrialItemBankId || isBlocked) {
-      handleBlockedClick(config)
+    if (isBlocked) {
+      handleBlockedClick(config, isItemBankUsed)
       return
     }
 
@@ -164,11 +163,13 @@ const MyClasses = ({
 
       const { imageUrl: imgUrl, premiumImageUrl } = bundle
       const isBlocked = !hasAccessToItemBank(subscriptionData.productId)
+      const isItemBankUsed = usedTrialItemBankId === subscriptionData?.productId
       const imageUrl = isBlocked ? premiumImageUrl : imgUrl
 
       return {
         ...bundle,
         isBlocked,
+        isItemBankUsed,
         imageUrl,
       }
     })
@@ -268,8 +269,7 @@ const MyClasses = ({
       <ItemBankTrialUsedModal
         title={productData.productName}
         isVisible={showItemBankTrialUsedModal}
-        handleCloseModal={handleCloseModal}
-        itemBankNotUsed={itemBankNotUsed}
+        handleCloseModal={handleCloseItemTrialModal}
       />
       {isPurchaseModalVisible && (
         <ItemPurchaseModal

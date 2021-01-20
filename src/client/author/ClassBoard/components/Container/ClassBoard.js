@@ -14,6 +14,8 @@ import {
   IconMarkAsAbsent,
   IconMarkAsSubmitted,
   IconMoreHorizontal,
+  IconPause,
+  IconPlay,
   IconPrint,
   IconRedirect,
   IconRemove,
@@ -42,6 +44,7 @@ import {
   markAbsentAction,
   markAsDoneAction,
   markSubmittedAction,
+  togglePauseStudentsAction,
   receiveStudentResponseAction,
   receiveTestActivitydAction,
   releaseScoreAction,
@@ -738,6 +741,40 @@ class ClassBoard extends Component {
     this.setState({ showAddStudentsPopup: true })
   }
 
+  handleTogglePauseStudents = (isPause) => () => {
+    const {
+      pauseStudents,
+      match,
+      studentUnselectAll,
+      selectedStudents,
+      assignmentStatus,
+      additionalData,
+    } = this.props
+    const { assignmentId, classId } = match.params
+    if (assignmentStatus.toLowerCase() === 'not open') {
+      return notification({
+        type: 'warn',
+        messageKey: 'assignmentIsNotOpenedYet',
+      })
+    }
+    if (additionalData.isPaused) {
+      return notification({
+        type: 'warn',
+        messageKey: 'testPausedOrClosedByTeacher',
+      })
+    }
+    const selectedStudentKeys = Object.keys(selectedStudents)
+    if (!selectedStudentKeys.length)
+      return notification({
+        type: 'warn',
+        messageKey: isPause
+          ? 'noStudentSelectedForPause'
+          : 'noStudentSelectedForResume',
+      })
+    studentUnselectAll()
+    pauseStudents(assignmentId, classId, selectedStudentKeys, isPause)
+  }
+
   handleHideAddStudentsPopup = () => {
     this.setState({ showAddStudentsPopup: false })
   }
@@ -996,6 +1033,8 @@ class ClassBoard extends Component {
       .map((x) => x.studentId)
     const enableDownload =
       testActivity.some((item) => item.status === 'submitted') && isItemsVisible
+
+    const showResume = testActivity.some((item) => item.isPaused)
 
     const { showScoreImporvement } = this.state
 
@@ -1332,6 +1371,37 @@ class ClassBoard extends Component {
                             <IconRemove />
                             <span>Unassign Students</span>
                           </MenuItems>
+                          <FeaturesSwitch
+                            inputFeatures="premium"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
+                            <MenuItems
+                              data-cy="pauseStudents"
+                              onClick={this.handleTogglePauseStudents(true)}
+                              disabled={disableMarkAbsent}
+                            >
+                              <IconPause />
+                              <span>Pause Students</span>
+                            </MenuItems>
+                          </FeaturesSwitch>
+                          {showResume && (
+                            <FeaturesSwitch
+                              inputFeatures="premium"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
+                            >
+                              <MenuItems
+                                data-cy="resumeStudents"
+                                onClick={this.handleTogglePauseStudents(false)}
+                                disabled={disableMarkAbsent}
+                              >
+                                <IconPlay />
+                                <span>Resume Students</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
+                          )}
+
                           <MenuItems
                             data-cy="downloadGrades"
                             disabled={!enableDownload}
@@ -1784,6 +1854,7 @@ const enhance = compose(
       updateCliUser: updateCliUserAction,
       canvasSyncAssignment: canvasSyncAssignmentAction,
       setShowCanvasShare: setShowCanvasShareAction,
+      pauseStudents: togglePauseStudentsAction,
     }
   )
 )

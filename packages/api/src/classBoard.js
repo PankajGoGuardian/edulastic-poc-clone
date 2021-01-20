@@ -217,6 +217,15 @@ const bulkDownloadGrades = ({ testId, data, testType, status }) =>
     })
     .then((response) => response.data)
 
+const togglePauseStudents = ({ assignmentId, classId, students, isPause }) =>
+  api
+    .callApi({
+      method: 'post',
+      url: `${prefix}/${assignmentId}/toggle-pause-students`,
+      data: { groupId: classId, students, isPause },
+    })
+    .then((result) => result.data.result)
+
 export default {
   gradebook,
   testActivity,
@@ -239,4 +248,5 @@ export default {
   bulkReleaseScoreAssignment,
   bulkUnassignAssignment,
   bulkDownloadGrades,
+  togglePauseStudents,
 }

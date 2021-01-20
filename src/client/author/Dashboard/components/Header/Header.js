@@ -296,7 +296,7 @@ const HeaderSection = ({
                 <EduButton
                   isBlue
                   style={{ marginLeft: '5px' }}
-                  data-cy="manageClass"
+                  data-cy="upgradeButton"
                   onClick={trackClick('dashboard:upgrade:click')}
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />

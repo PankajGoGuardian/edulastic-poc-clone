@@ -765,7 +765,12 @@ class ClassBoard extends Component {
     }
     const selectedStudentKeys = Object.keys(selectedStudents)
     if (!selectedStudentKeys.length)
-      return notification({ type: 'warn', messageKey: 'noStudentsSelected' })
+      return notification({
+        type: 'warn',
+        messageKey: isPause
+          ? 'noStudentSelectedForPause'
+          : 'noStudentSelectedForResume',
+      })
     studentUnselectAll()
     pauseStudents(assignmentId, classId, selectedStudentKeys, isPause)
   }

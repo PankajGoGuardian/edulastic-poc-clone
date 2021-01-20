@@ -226,24 +226,6 @@ const reportsSelector = createSelector(reportsById, (reports) => {
   return filteredReports
 })
 
-export const notStartedReportsByAssignmentId = createSelector(
-  reportsById,
-  (reports) => {
-    const filteredReports = {}
-    if (!Object.keys(reports).length) {
-      return filteredReports
-    }
-    for (const r in reports) {
-      if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
-        const report = reports[r]
-        const { assignmentId, groupId } = report
-        filteredReports[`${assignmentId}_${groupId}`] = report
-      }
-    }
-    return filteredReports
-  }
-)
-
 export const assignmentIdsByTestIdSelector = createSelector(
   assignmentsSelector,
   (assignments) => {

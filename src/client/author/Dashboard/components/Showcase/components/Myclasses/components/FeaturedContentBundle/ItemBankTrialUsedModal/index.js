@@ -8,14 +8,14 @@ const Footer = ({ itemBankNotUsed, handleCloseModal }) => {
       {itemBankNotUsed ? (
         <>
           <EduButton isGhost isBlue onClick={handleCloseModal}>
-            Cancle
+            Cancel
           </EduButton>
           <EduButton isBlue>Upgrade</EduButton>
         </>
       ) : (
         <>
           <EduButton isGhost isBlue onClick={handleCloseModal}>
-            Cancle
+            Cancel
           </EduButton>
           <EduButton isBlue>Purchase</EduButton>
         </>

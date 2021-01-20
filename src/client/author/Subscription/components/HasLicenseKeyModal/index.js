@@ -109,8 +109,8 @@ const HasLicenseKeyModal = (props) => {
         <Container width="300">
           <h4 style={{ fontWeight: 700 }}>Congratulations!</h4>
           <p>
-            Your account is upgraded to <b>Trial Premium version</b> for 15 days
-            and the subscription will expire on
+            Your account is upgraded to <b>Trial Premium version</b>, and the
+            subscription will expire on
           </p>
           <p style={{ color: themeColor, paddingTop: '8px', fontWeight: 600 }}>
             {expDate}

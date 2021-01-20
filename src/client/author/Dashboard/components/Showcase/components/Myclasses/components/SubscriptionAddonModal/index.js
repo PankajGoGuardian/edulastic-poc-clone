@@ -6,10 +6,10 @@ import { ModalBody, AddonList, FlexRow, Total } from './styled'
 const SubscriptionAddonModal = ({
   isVisible,
   handleCloseModal,
-  premiumUser,
+  isPremiumUser,
 }) => {
   const closeModal = () => handleCloseModal(false)
-  const initialPrice = premiumUser ? 0 : 100
+  const initialPrice = isPremiumUser ? 0 : 100
   const [totalPrice, setTotalPrice] = useState(initialPrice)
 
   const handleClick = () => {}
@@ -50,7 +50,7 @@ const SubscriptionAddonModal = ({
         </p>
         <p> These addons need the premium or enterprise subscription.</p>
         <AddonList>
-          {!premiumUser && (
+          {!isPremiumUser && (
             <FlexRow>
               <CheckboxLabel defaultChecked disabled>
                 Teacher Premium

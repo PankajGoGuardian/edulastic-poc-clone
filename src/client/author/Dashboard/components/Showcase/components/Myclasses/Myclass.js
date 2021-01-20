@@ -272,7 +272,7 @@ const MyClasses = ({
       <SubscriptionAddonModal
         isVisible={showSubscriptionAddonModal}
         handleCloseModal={setShowSubscriptionAddonModal}
-        premiumUser={premiumUser}
+        isPremiumUser={premiumUser}
       />
       <ItemBankTrialUsedModal
         title={productData.productName}

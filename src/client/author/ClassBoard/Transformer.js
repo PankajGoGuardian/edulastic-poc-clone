@@ -688,11 +688,7 @@ export const transformGradeBookResponse = (
         const isValidQuestionActivity = (x = {}) =>
           (x.qids && x.qids.length && x.testActivityId) || x.qid
         // has own property  then pick it or else default to true
-        const {
-          isEnrolled = true,
-          isAssigned = true,
-          isPaused = false,
-        } = testActivity
+        const { isEnrolled = true, isAssigned = true } = testActivity
         return {
           studentId,
           studentName: fullName,
@@ -724,7 +720,6 @@ export const transformGradeBookResponse = (
                 }))
               : questionActivities.filter((x) => isValidQuestionActivity(x)),
           endDate: testActivity.endDate,
-          isPaused,
         }
       }
     )
@@ -739,13 +734,10 @@ export const getStudentCardStatus = (
 ) => {
   const status = {}
   const { NOT_STARTED, START, SUBMITTED, ABSENT } = testActivityStatus
-  const { UTASTATUS, isEnrolled, isAssigned, isPaused } = student
+  const { UTASTATUS, isEnrolled, isAssigned } = student
   if (student.redirected && UTASTATUS === NOT_STARTED) {
     status.status = 'Redirected'
     status.color = themeColorLighter
-    if (isPaused) {
-      status.status = `${status.status} (paused)`
-    }
     return status
   }
 
@@ -758,18 +750,12 @@ export const getStudentCardStatus = (
       status.status = 'Unassigned'
     }
     status.color = red
-    if (isPaused) {
-      status.status = `${status.status} (paused)`
-    }
     return status
   }
 
   if (isAssigned === false) {
     status.status = 'Unassigned'
     status.color = red
-    if (isPaused) {
-      status.status = `${status.status} (paused)`
-    }
     return status
   }
 
@@ -797,9 +783,6 @@ export const getStudentCardStatus = (
     default:
       status.status = 'Not Started'
       status.color = red
-  }
-  if (isPaused) {
-    status.status = `${status.status} (paused)`
   }
   return status
 }

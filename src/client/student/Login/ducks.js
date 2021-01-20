@@ -35,6 +35,7 @@ import {
   getSignOutUrl,
   removeSignOutUrl,
   getStartedUrl,
+  isHashAssessmentUrl,
 } from '../../common/utils/helpers'
 import { userPickFields } from '../../common/utils/static/user'
 import {
@@ -1130,7 +1131,7 @@ const getLoggedOutUrl = () => {
   if (pathname === '/resetpassword') {
     return window.location.href.split(window.location.origin)[1]
   }
-  if (pathname === '/inviteteacher') {
+  if (pathname === '/inviteteacher' || isHashAssessmentUrl()) {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
   return '/login'

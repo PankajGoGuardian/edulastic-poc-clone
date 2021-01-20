@@ -754,8 +754,6 @@ const enhance = compose(
       userWork: userWorkSelector(state),
       assignmentById: get(state, 'studentAssignment.byId'),
       currentAssignment: get(state, 'studentAssignment.current'),
-      blockNavigationToAnsweredQuestions:
-        state.test?.settings?.blockNavigationToAnsweredQuestions,
     }),
     {
       saveUserResponse,

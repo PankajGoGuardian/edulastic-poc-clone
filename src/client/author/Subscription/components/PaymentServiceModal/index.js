@@ -2,7 +2,7 @@ import React from 'react'
 import { WithResources } from '@edulastic/common'
 import { StripeProvider, Elements } from 'react-stripe-elements'
 import PaymentForm from './components/PaymentForm'
-import { StyledPaymentServiceModal } from './styled'
+import { StyledPaymentServiceModal, StyledSpan, StyledTitle } from './styled'
 
 const PaymentServiceModal = (props) => {
   const {
@@ -26,12 +26,8 @@ const PaymentServiceModal = (props) => {
         visible={visible}
         title={
           <>
-            <h3>Edulastic Payment Service</h3>
-            <p>
-              Your payment information is completely secure. All payments are
-              processed through Stripe and no credit card information is stored
-              in Edulastic.
-            </p>
+            <StyledTitle>Edulastic Payment Service</StyledTitle>
+            <StyledSpan>TEACHER PREMIUM</StyledSpan>
           </>
         }
         onCancel={closeModal}

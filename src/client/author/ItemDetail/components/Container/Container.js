@@ -927,7 +927,7 @@ class Container extends Component {
 
     let breadCrumbQType = ''
     if (item.passageId && item.canAddMultipleItems) {
-      breadCrumbQType = 'Passage with Multipe Questions'
+      breadCrumbQType = 'Passage with Multiple Questions'
     } else if (item.passageId && !item.canAddMultipleItems) {
       breadCrumbQType = 'Passage with Multiple parts'
     }

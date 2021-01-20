@@ -18,7 +18,6 @@ const QuestionSelectDropdown = ({
   dropdownStyle = {},
   moveToNext,
   utaId,
-  blockNavigationToAnsweredQuestions,
 }) => {
   const dropdownWrapper = useRef(null)
   const menuStyle = {
@@ -51,7 +50,6 @@ const QuestionSelectDropdown = ({
             ? moveToNext(null, true, value)
             : gotoQuestion(parseInt(value, 10))
         }}
-        disabled={blockNavigationToAnsweredQuestions}
       >
         {options.map((item, index) => (
           <Select.Option

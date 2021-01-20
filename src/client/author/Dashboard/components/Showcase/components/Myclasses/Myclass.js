@@ -108,8 +108,9 @@ const MyClasses = ({
   const hasAccessToItemBank = (itemBankId) =>
     collections.some((collection) => collection._id === itemBankId)
 
-  const handleBlockedClick = ({ subscriptionData }, isItemBankUsed) => {
-    if (usedTrialItemBankId === subscriptionData?.productId) {
+  const handleBlockedClick = ({ subscriptionData }) => {
+    const isItemBankUsed = usedTrialItemBankId === subscriptionData?.productId
+    if (isItemBankUsed) {
       setShowItemBankTrialUsedModal(true)
     } else {
       setIsPurchaseModalVisible(true)
@@ -129,16 +130,11 @@ const MyClasses = ({
     setShowItemBankTrialUsedModal(false)
   }
 
-  const handleFeatureClick = ({
-    config = {},
-    tags = [],
-    isBlocked,
-    isItemBankUsed,
-  }) => {
+  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
 
     if (isBlocked) {
-      handleBlockedClick(config, isItemBankUsed)
+      handleBlockedClick(config)
       return
     }
 
@@ -163,13 +159,11 @@ const MyClasses = ({
 
       const { imageUrl: imgUrl, premiumImageUrl } = bundle
       const isBlocked = !hasAccessToItemBank(subscriptionData.productId)
-      const isItemBankUsed = usedTrialItemBankId === subscriptionData?.productId
       const imageUrl = isBlocked ? premiumImageUrl : imgUrl
 
       return {
         ...bundle,
         isBlocked,
-        isItemBankUsed,
         imageUrl,
       }
     })

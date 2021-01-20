@@ -298,7 +298,7 @@ const Subscription = (props) => {
         isSubscribed={isSubscribed}
         verificationPending={verificationPending}
         verifyAndUpgradeLicense={verifyAndUpgradeLicense}
-        isPaidPremium={hasUpgradeButton}
+        isPaidPremium={!hasUpgradeButton}
         subType={subType}
       />
 

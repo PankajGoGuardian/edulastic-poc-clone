@@ -154,14 +154,22 @@ const PublicTestPage = ({
       localStorage.setItem('publicUrlAccess', getCurrentPath())
     }
 
-    history.push({
-      pathname: `/author/assignments/${test._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    if (!user?.isAuthenticated) {
+      localStorage.setItem(
+        'loginRedirectUrl',
+        `/author/assignments/${test._id}`
+      )
+      history.push('/login')
+    } else {
+      history.push({
+        pathname: `/author/assignments/${test._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
+    }
   }
 
   const handleShowPreviewModal = () => setShowPreviewModal(true)

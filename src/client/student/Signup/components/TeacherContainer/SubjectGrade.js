@@ -246,7 +246,6 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator('standard', {
-                      initialValue: initialCurriculums,
                       rules: [
                         {
                           required: false,

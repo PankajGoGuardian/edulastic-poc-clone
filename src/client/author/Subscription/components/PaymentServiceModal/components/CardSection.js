@@ -5,6 +5,7 @@ import {
   themeColor,
   greyishBorder,
   lightGreySecondary,
+  themeColorLight,
   linkColor1,
   redDark,
   white,

@@ -102,6 +102,7 @@ const ConfigureCanvasModal = ({
       }
       setIsLoading(false)
     } catch (err) {
+      setIsLoading(false)
       captureSentryException(err)
       notification({
         type: 'warn',
@@ -109,6 +110,13 @@ const ConfigureCanvasModal = ({
           'Failed to connect with canvas. Please enter the valid configuration',
       })
     }
+  }
+
+  const configureAppInCanvas = async () => {
+    window.open(
+      `${canvasConfigureData.canvasInstanceUrl}/accounts/1/settings`,
+      '_blank'
+    )
   }
 
   const handleCallback = () => {}
@@ -190,7 +198,9 @@ const ConfigureCanvasModal = ({
           </TabPane>
           <TabPane tab="Edulastic app configuration" key="2">
             <ContentList>
-              <p>Canvas admin can instal Edulastic app below steps:</p>
+              <p>
+                Canvas admin can instal Edulastic app following below steps:
+              </p>
               <ol>
                 <li>Search and Install Edualstic-SSO app form app center</li>
                 <li>Enter Consumer and Secret Key in the app</li>
@@ -198,11 +208,21 @@ const ConfigureCanvasModal = ({
             </ContentList>
             <InputRow>
               <label>Consumer Key</label>
-              <TextInputStyled placeholder="Enter Consumer Key" height="40px" />
+              <TextInputStyled
+                placeholder="Enter Consumer Key"
+                value={canvasConfigureData.canvasConsumerKey}
+                disabled={true}
+                height="40px"
+              />
             </InputRow>
             <InputRow>
               <label>Secret key</label>
-              <TextInputStyled placeholder="Enter Secret Key" height="40px" />
+              <TextInputStyled
+                placeholder="Enter Secret Key"
+                value={canvasConfigureData.canvasSharedSecret}
+                disabled={true}
+                height="40px"
+              />
             </InputRow>
             <ButtonWrapper fieldsEnabled>
               <div>
@@ -214,8 +234,13 @@ const ConfigureCanvasModal = ({
                 >
                   NO, CANCEL
                 </EduButton>
-                <EduButton height="40px" width="200px">
-                  YES, ADD APP BUTTON
+                <EduButton
+                  height="40px"
+                  width="200px"
+                  onClick={configureAppInCanvas}
+                  disabled={fieldsEnabled}
+                >
+                  YES, ADD APP
                 </EduButton>
               </div>
             </ButtonWrapper>

@@ -495,3 +495,10 @@ export const canUseAllOptionsByDefault = (permissions = []) => {
     permissions.includes(permission)
   )
 }
+
+export const isHashAssessmentUrl = () => {
+  return (
+    window.location.hash.includes('#renderResource/close/') ||
+    window.location.hash.includes('#assessmentQuestions/close/')
+  )
+}

@@ -15,7 +15,7 @@ const TeacherSignup = loadable(
 )
 
 const AuthorCompleteSignupButton = ({
-  user,
+  user = {},
   renderButton,
   onClick,
   trackClick,

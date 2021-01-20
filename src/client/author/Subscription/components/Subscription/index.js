@@ -224,9 +224,6 @@ const Subscription = (props) => {
         openPaymentServiceModal={openPaymentServiceModal}
         showUpgradeOptions={showUpgradeOptions}
         showRenewalOptions={showRenewalOptions}
-        isSubscribed={isSubscribed}
-        subType={subType}
-        subEndDate={subEndDate}
       />
 
       <SubscriptionMain

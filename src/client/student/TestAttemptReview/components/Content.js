@@ -101,7 +101,6 @@ class SummaryTest extends Component {
       finishTest,
       savingResponse,
       testLoading,
-      blockNavigationToAnsweredQuestions,
     } = this.props
     const { isDocBased, items } = test
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased
@@ -209,20 +208,11 @@ class SummaryTest extends Component {
                             key={index * 100 + qIndex}
                             type={type}
                             isVisible={buttonIdx === null || buttonIdx === type}
-                            onClick={
-                              blockNavigationToAnsweredQuestions
-                                ? () => {}
-                                : this.goToQuestion(
-                                    test?.testId,
-                                    test?.testActivityId,
-                                    q
-                                  )
-                            }
-                            cursor={
-                              blockNavigationToAnsweredQuestions
-                                ? 'not-allowed'
-                                : 'pointer'
-                            }
+                            onClick={this.goToQuestion(
+                              test?.testId,
+                              test?.testActivityId,
+                              q
+                            )}
                           >
                             <span> {qInd} </span>
                           </QuestionColorBlock>
@@ -282,8 +272,6 @@ const enhance = compose(
       classId: get(state, 'author_classboard_testActivity.classId', ''),
       savingResponse: state?.test?.savingResponse,
       testLoading: testLoadingSelector(state),
-      blockNavigationToAnsweredQuestions:
-        state.test?.settings?.blockNavigationToAnsweredQuestions,
     }),
     {
       loadTest: loadTestAction,
@@ -523,7 +511,7 @@ const QuestionColorBlock = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 5px;
-  cursor: ${({ cursor }) => cursor || 'pointer'};
+  cursor: pointer;
   &:hover {
     box-shadow: 4px 6px 11px 0px rgba(0, 0, 0, 0.2);
   }

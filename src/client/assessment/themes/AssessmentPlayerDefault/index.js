@@ -290,7 +290,6 @@ class AssessmentPlayerDefault extends React.Component {
       utaId,
       hasDrawingResponse,
       studentReportModal,
-      blockNavigationToAnsweredQuestions,
     } = this.props
     const { settings } = this.props
     const {
@@ -471,9 +470,6 @@ class AssessmentPlayerDefault extends React.Component {
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}
-            blockNavigationToAnsweredQuestions={
-              blockNavigationToAnsweredQuestions
-            }
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -497,9 +493,6 @@ class AssessmentPlayerDefault extends React.Component {
                 changeTool={this.changeTool}
                 handleMagnifier={handleMagnifier}
                 qType={qType}
-                blockNavigationToAnsweredQuestions={
-                  blockNavigationToAnsweredQuestions
-                }
               />
             </FeaturesSwitch>
             {!previewPlayer && (

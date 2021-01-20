@@ -15,7 +15,6 @@ import {
 import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
 import styled from 'styled-components'
 import { EduSwitchStyled } from '@edulastic/common'
-import { IconInfo } from '@edulastic/icons'
 
 const RadioGroup = Radio.Group
 
@@ -496,9 +495,4 @@ export const StyledCol = styled(Col)`
   flex-direction: ${(flexDirection) => flexDirection || 'unset'};
   padding-left: ${({ paddingLeft }) => paddingLeft || '0px'}
   padding-right: ${({ paddingRight }) => paddingRight || '0px'}
-`
-
-export const StyledInfoIcon = styled(IconInfo)`
-  cursor: pointer;
-  margin-left: ${({ mL }) => mL || '0px'};
 `

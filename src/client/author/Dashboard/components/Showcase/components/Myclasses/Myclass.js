@@ -12,6 +12,7 @@ import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
+import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 
@@ -53,10 +54,14 @@ const MyClasses = ({
   addPermissionRequest,
   isPremiumTrialUsed,
   startTrialAction,
+  usedTrialItemBankId,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+  const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
+    false
+  )
   const [productData, setProductData] = useState({})
 
   useEffect(() => {
@@ -104,17 +109,26 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    setIsPurchaseModalVisible(true)
+    const isItemBankUsed = usedTrialItemBankId === subscriptionData?.productId
+    if (isItemBankUsed) {
+      setShowItemBankTrialUsedModal(true)
+    } else {
+      setIsPurchaseModalVisible(true)
+    }
     setProductData({
       productId: subscriptionData.productId,
       productName: subscriptionData.productName,
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
+      itemBankUsed: isItemBankUsed,
     })
   }
 
   const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
+  const handleCloseItemTrialModal = () => {
+    setShowItemBankTrialUsedModal(false)
+  }
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
@@ -246,6 +260,11 @@ const MyClasses = ({
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
+      <ItemBankTrialUsedModal
+        title={productData.productName}
+        isVisible={showItemBankTrialUsedModal}
+        handleCloseModal={handleCloseItemTrialModal}
+      />
       {isPurchaseModalVisible && (
         <ItemPurchaseModal
           title={productData.productName}
@@ -290,6 +309,8 @@ export default compose(
       collections: getCollectionsSelector(state),
       isPremiumTrialUsed:
         state?.subscription?.subscriptionData?.isPremiumTrialUsed,
+      usedTrialItemBankId:
+        state?.subscription?.subscriptionData?.usedTrialItemBankId,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

@@ -74,12 +74,6 @@ const authorizeCanvas = async (ssoUrl, subscriptionTopic) => {
               type: 'warn',
               msg: 'Invalid canvas secret key.',
             })
-          } else if (!isAuthWindowClosed) {
-            notification({
-              type: 'warn',
-              msg:
-                'Failed to connect with canvas. Please enter the valid configuration',
-            })
           }
           client.end()
         })

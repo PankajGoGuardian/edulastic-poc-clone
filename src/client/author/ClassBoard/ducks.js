@@ -609,9 +609,15 @@ function* togglePauseStudentsSaga({ payload }) {
   try {
     const { result } = yield call(classBoardApi.togglePauseStudents, payload)
     yield put(updatePauseStatusAction({ result, isPaused: payload.isPause }))
-    yield call(notification, {
+    if (payload.isPause) {
+      return notification({
+        type: 'success',
+        msg: 'Successfully paused students',
+      })
+    }
+    return notification({
       type: 'success',
-      msg: 'Successfully paused students',
+      msg: 'Assignment is open and available for students to work.',
     })
   } catch (err) {
     captureSentryException(err)

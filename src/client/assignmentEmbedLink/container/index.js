@@ -3,6 +3,7 @@ import { Spin } from 'antd'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 import { roleuser } from '@edulastic/constants'
+import { testsApi } from '@edulastic/api'
 import { getUser } from '../../author/src/selectors/user'
 import { fetchAssignmentsByTestIdAction } from '../ducks'
 import {
@@ -27,15 +28,23 @@ const AssignmentEmbedLink = ({
   startAssignment,
   resumeAssignment,
   history,
+  isVersionId,
 }) => {
-  const { testId } = match.params
+  const { testId, versionId } = match.params
   useEffect(() => {
-    const { role } = user
-    if ([TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN].includes(role)) {
-      fetchAssignmentsByTestId(testId)
-    } else if (role === STUDENT) {
-      fetchAssignmentsForStudent({ testId })
-    }
+    ;(async () => {
+      const { role } = user
+      if ([TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN].includes(role)) {
+        fetchAssignmentsByTestId(testId)
+      } else if (role === STUDENT) {
+        if (isVersionId && versionId) {
+          const latestTest = await testsApi.getTestIdFromVersionId(versionId)
+          fetchAssignmentsForStudent({ testId: latestTest.testId })
+        } else {
+          fetchAssignmentsForStudent({ testId })
+        }
+      }
+    })()
   }, [])
 
   useEffect(() => {

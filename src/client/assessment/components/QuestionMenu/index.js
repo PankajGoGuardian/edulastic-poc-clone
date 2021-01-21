@@ -101,7 +101,6 @@ class QuestionMenu extends Component {
 
   render() {
     const {
-      advancedAreOpen,
       handleAdvancedOpen,
       windowWidth,
       questionTitle,
@@ -131,17 +130,15 @@ class QuestionMenu extends Component {
             />
           )}
         </ScrollbarContainer>
-        {advancedAreOpen && (
-          <VideoThumbnailWapper onClick={this.openModal}>
-            <VideoThumbnail
-              questionTitle={questionTitle}
-              title="How to author video"
-              width="100%"
-              maxWidth="100%"
-              margin="30px 0 0 0"
-            />
-          </VideoThumbnailWapper>
-        )}
+        <VideoThumbnailWapper onClick={this.openModal}>
+          <VideoThumbnail
+            questionTitle={questionTitle}
+            title="How to author video"
+            width="100%"
+            maxWidth="100%"
+            margin="30px 0 0 0"
+          />
+        </VideoThumbnailWapper>
         <IframeVideoModal
           questionTitle={questionTitle}
           visible={isVideoModalVisible}

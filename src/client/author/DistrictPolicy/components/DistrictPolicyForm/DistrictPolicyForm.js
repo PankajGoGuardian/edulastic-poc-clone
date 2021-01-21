@@ -631,10 +631,10 @@ class DistrictPolicyForm extends Component {
             </RadioGrp>
           </StyledRow>
           <StyledRow>
-            <StyledLabel>Enabale Google Meet: </StyledLabel>
+            <StyledLabel>Enable Google Meet: </StyledLabel>
             <RadioGrp
               onChange={this.enableGoogleMeet}
-              value={districtPolicy?.enableGoogleMeet ? 'yes' : 'no'}
+              value={districtPolicy?.enableGoogleMeet === false ? 'no' : 'yes'}
             >
               <RadioBtn value="yes">Yes</RadioBtn>
               <RadioBtn value="no">No</RadioBtn>

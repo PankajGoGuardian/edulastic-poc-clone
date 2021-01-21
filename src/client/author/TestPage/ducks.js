@@ -954,12 +954,20 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error }
     case SET_TEST_DATA:
+      let entity = { ...state.entity, ...payload.data }
+      if (
+        payload.data?.restrictNavigationOut ===
+          'warn-and-report-after-n-alerts' &&
+        typeof entity?.restrictNavigationOutAttemptsThreshold === 'undefined'
+      ) {
+        entity = {
+          ...entity,
+          restrictNavigationOutAttemptsThreshold: 5,
+        }
+      }
       return {
         ...state,
-        entity: {
-          ...state.entity,
-          ...payload.data,
-        },
+        entity,
         updated: true,
       }
     case UPDATE_TEST_IMAGE:
@@ -1449,6 +1457,9 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     passwordExpireIn: entity.passwordExpireIn,
     assignmentPassword: entity.assignmentPassword,
     timedAssignment: entity.timedAssignment,
+    restrictNavigationOut: entity.restrictNavigationOut,
+    restrictNavigationOutAttemptsThreshold:
+      entity.restrictNavigationOutAttemptsThreshold,
   }
 
   if (isAdmin) {

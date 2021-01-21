@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { get } from 'lodash'
-import { Anchor, Col, Row, Select, Tooltip } from 'antd'
+import { get, isObject } from 'lodash'
+import { Anchor, Col, Row, Select, Tooltip, InputNumber } from 'antd'
+import Styled from 'styled-components'
 import {
   blueBorder,
   green,
@@ -288,7 +289,7 @@ class Setting extends Component {
 
   updateFeatures = (key) => (e) => {
     const { setTestData } = this.props
-    const featVal = e.target.value
+    const featVal = isObject(e) ? e.target.value : e
     this.setState({ [key]: featVal })
     setTestData({
       [key]: featVal,
@@ -389,6 +390,8 @@ class Setting extends Component {
       instruction = '',
       testletConfig = {},
       enableSkipAlert = false,
+      restrictNavigationOut,
+      restrictNavigationOutAttemptsThreshold,
     } = entity
 
     const breadcrumbData = [
@@ -994,6 +997,66 @@ class Setting extends Component {
                   </Row>
                 </Block>
               )}
+
+              {premium && (
+                <Block id="restrict-navigation-out" smallSize={isSmallSize}>
+                  <Title>Restrict Navigation Out of Test</Title>
+                  <Body smallSize={isSmallSize}>
+                    <Row>
+                      <Col span={11}>
+                        <StyledRadioGroup
+                          disabled={!owner || !isEditable}
+                          onChange={this.updateFeatures(
+                            'restrictNavigationOut'
+                          )}
+                          value={restrictNavigationOut}
+                        >
+                          <RadioBtn value={undefined} key="disabled">
+                            DISABLED
+                          </RadioBtn>
+                          <RadioBtn
+                            value="warn-and-report"
+                            key="warn-and-report"
+                          >
+                            WARN AND REPORT ONLY
+                          </RadioBtn>
+                          <RadioBtn
+                            value="warn-and-report-after-n-alerts"
+                            key="warn-and-report-after-n-alerts"
+                          >
+                            WARN AND BLOCK TEST AFTER{' '}
+                            <InputNumberStyled
+                              size="small"
+                              value={
+                                restrictNavigationOut
+                                  ? restrictNavigationOutAttemptsThreshold
+                                  : undefined
+                              }
+                              onChange={this.updateFeatures(
+                                'restrictNavigationOutAttemptsThreshold'
+                              )}
+                              disabled={
+                                !restrictNavigationOut || !owner || !isEditable
+                              }
+                            />{' '}
+                            ALERTS
+                          </RadioBtn>
+                        </StyledRadioGroup>
+                      </Col>
+                      <Col span={13}>
+                        <Description>
+                          If <b> ON </b>, then students will be shown an alert
+                          if they navigate away from edulastic tab and if
+                          specific number of alerts exceeded, the assignment
+                          will be paused and the instructor will need to
+                          manually resume
+                        </Description>
+                      </Col>
+                    </Row>
+                  </Body>
+                </Block>
+              )}
+
               {availableFeatures.includes(
                 'assessmentSuperPowersCheckAnswerTries'
               ) && (
@@ -1526,3 +1589,7 @@ const enhance = compose(
 )
 
 export default enhance(Setting)
+
+const InputNumberStyled = Styled(InputNumber)`
+    width: 60px;
+`

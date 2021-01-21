@@ -17,6 +17,7 @@ module.exports = {
     { id: 'show-calculator', title: 'Show Calculator' },
     { id: 'answer-on-paper', title: 'Answer on Paper' },
     { id: 'require-password', title: 'Require Password' },
+    { id: 'restrict-navigation-out', title: 'Restrict Navigation Out of Test' },
     {
       id: 'check-answer-tries-per-question',
       title: 'Check Answer Tries Per Question',

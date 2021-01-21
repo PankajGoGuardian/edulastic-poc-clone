@@ -264,3 +264,6 @@ export const AddonFooter = styled.div`
     }
   }
 `
+export const PurchaseLink = styled.span`
+  color: #1ab395;
+`

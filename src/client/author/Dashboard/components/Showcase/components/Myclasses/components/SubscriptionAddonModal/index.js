@@ -7,12 +7,16 @@ const SubscriptionAddonModal = ({
   isVisible,
   handleCloseModal,
   isPremiumUser,
+  setShowUpgradeModal,
 }) => {
   const closeModal = () => handleCloseModal(false)
   const initialPrice = isPremiumUser ? 100 : 200
   const [totalPrice, setTotalPrice] = useState(initialPrice)
 
-  const handleClick = () => {}
+  const handleClick = () => {
+    handleCloseModal(false)
+    setShowUpgradeModal(true)
+  }
 
   const handleOnChange = (ele) => {
     const value = ele.value

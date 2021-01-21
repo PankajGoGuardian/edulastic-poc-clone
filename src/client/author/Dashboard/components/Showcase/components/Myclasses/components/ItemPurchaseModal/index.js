@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { Link } from 'react-router-dom'
 
 const Footer = ({
@@ -8,10 +8,20 @@ const Footer = ({
   isPremiumTrialUsed,
   premiumUser,
   handleTrial,
+  handlePurchaseFlow,
 }) => {
   const hasTrialBtn = hasItemBankTrial && (!isPremiumTrialUsed || premiumUser)
   return (
-    hasTrialBtn && <EduButton onClick={handleTrial}>Try for free</EduButton>
+    <>
+      {hasTrialBtn && (
+        <EduButton isGhost isBlue onClick={handleTrial}>
+          Try for free
+        </EduButton>
+      )}
+      <EduButton isBlue onClick={handlePurchaseFlow}>
+        Purchase
+      </EduButton>
+    </>
   )
 }
 
@@ -24,9 +34,8 @@ const ItemPurchaseModal = ({
   hasTrial,
   premiumUser,
   isPremiumTrialUsed,
+  handlePurchaseFlow,
 }) => {
-  const handleProceed = () => {}
-
   const closeModal = () => toggleModal(false)
   const handleTrial = () => {
     closeModal()
@@ -43,6 +52,7 @@ const ItemPurchaseModal = ({
           isPremiumTrialUsed={isPremiumTrialUsed}
           premiumUser={premiumUser}
           handleTrial={handleTrial}
+          handlePurchaseFlow={handlePurchaseFlow}
         />
       }
       visible={isVisible}

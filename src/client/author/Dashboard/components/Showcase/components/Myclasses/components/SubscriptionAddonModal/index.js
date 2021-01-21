@@ -9,7 +9,7 @@ const SubscriptionAddonModal = ({
   isPremiumUser,
 }) => {
   const closeModal = () => handleCloseModal(false)
-  const initialPrice = isPremiumUser ? 0 : 100
+  const initialPrice = isPremiumUser ? 100 : 200
   const [totalPrice, setTotalPrice] = useState(initialPrice)
 
   const handleClick = () => {}
@@ -52,9 +52,7 @@ const SubscriptionAddonModal = ({
         <AddonList>
           {!isPremiumUser && (
             <FlexRow>
-              <CheckboxLabel defaultChecked disabled>
-                Teacher Premium
-              </CheckboxLabel>
+              <CheckboxLabel checked>Teacher Premium</CheckboxLabel>
               <span>$100</span>
             </FlexRow>
           )}
@@ -62,6 +60,7 @@ const SubscriptionAddonModal = ({
             <CheckboxLabel
               value={100}
               onChange={(e) => handleOnChange(e.target)}
+              defaultChecked
             >
               Spark Math
             </CheckboxLabel>

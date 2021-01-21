@@ -252,7 +252,7 @@ const SubscriptionMain = ({ user, ...props }) => {
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(true)
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
-  const premiumUser = user.features.premium
+  const isPremiumUser = user.features.premium
 
   const handleSelectStateModal = () => {
     setShowSelectStates(true)
@@ -344,7 +344,7 @@ const SubscriptionMain = ({ user, ...props }) => {
           userInfo={user}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
-          premiumUser={premiumUser}
+          premiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
           addItemBankPermission={addPermissionRequest}

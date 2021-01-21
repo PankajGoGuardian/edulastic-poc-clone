@@ -56,18 +56,15 @@ const EditEssayPlainText = ({
       />
 
       <Question
-        section="advanced"
+        section="main"
         label="Scoring"
         fillSections={fillSections}
         cleanSections={cleanSections}
-        advancedAreOpen={advancedAreOpen}
-        showScoringSectionAnyRole
       >
         <Scoring
           scoringTypes={[]}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          advancedAreOpen={advancedAreOpen}
           showSelect={false}
           item={item}
         >
@@ -76,7 +73,6 @@ const EditEssayPlainText = ({
             onChange={handleItemChangeChange}
             selectValue={item.showWordLimit}
             inputValue={item.maxWord}
-            advancedAreOpen={advancedAreOpen}
             fillSections={fillSections}
             cleanSections={cleanSections}
             title={item?.title}

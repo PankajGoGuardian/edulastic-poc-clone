@@ -80,7 +80,6 @@ class Scoring extends Component {
       isSection,
       questionData,
       showSelect,
-      advancedAreOpen,
       noPaddingLeft,
       fillSections,
       cleanSections,
@@ -145,11 +144,10 @@ class Scoring extends Component {
 
     return (
       <div
-        section="advanced"
+        section="main"
         label={t('component.options.scoring')}
         fillSections={fillSections}
         cleanSections={cleanSections}
-        advancedAreOpen={advancedAreOpen}
       >
         {isSection && (
           <SectionHeading>{t('component.options.scoring')}</SectionHeading>
@@ -426,7 +424,6 @@ Scoring.propTypes = {
   isSection: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool,
   noPaddingLeft: PropTypes.bool,
   children: PropTypes.any,
   extraInScoring: PropTypes.elementType,
@@ -437,7 +434,6 @@ Scoring.defaultProps = {
   noPaddingLeft: false,
   isSection: false,
   showSelect: true,
-  advancedAreOpen: true,
   children: null,
   fillSections: () => {},
   cleanSections: () => {},

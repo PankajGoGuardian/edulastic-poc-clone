@@ -416,16 +416,16 @@ class QuestionWrapper extends Component {
       permissions,
     } = this.props
 
-    const _isPowerTeacher =
-      isPowerTeacher || canUseAllOptionsByDefault(permissions)
-
     const isDistrictAdmin =
       (userRole === TEACHER &&
         !features.isPublisherAuthor &&
         !features.isCurator) ||
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
 
-    return isDistrictAdmin && _isPowerTeacher && isPremiumUser
+    return (
+      (isDistrictAdmin && isPowerTeacher && isPremiumUser) ||
+      canUseAllOptionsByDefault(permissions)
+    )
   }
 
   render() {

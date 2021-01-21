@@ -144,7 +144,7 @@ const MyClasses = ({
       }
 
       const { imageUrl: imgUrl, premiumImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData.productId)
+      const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
       const imageUrl = isBlocked ? premiumImageUrl : imgUrl
 
       return {

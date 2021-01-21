@@ -164,6 +164,7 @@ function* fetchUserSubscription() {
       isPremiumTrialUsed: apiUserSubscriptionStatus?.result?.isPremiumTrialUsed,
       usedTrialItemBankId:
         apiUserSubscriptionStatus?.result?.usedTrialItemBankId,
+      premiumProductId: apiUserSubscriptionStatus?.result?.premiumProductId,
     }
     if (apiUserSubscriptionStatus?.result.subscription === -1) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))

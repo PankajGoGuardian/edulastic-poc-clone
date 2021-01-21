@@ -221,6 +221,21 @@ class DistrictPolicyForm extends Component {
     })
   }
 
+  enableGoogleMeet = (event) => {
+    const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props
+
+    const isGoogleMeetEnabled = event.target.value
+
+    const nextState = produce(districtPolicy, (draftState) => {
+      draftState.enableGoogleMeet = isGoogleMeetEnabled === 'yes'
+    })
+
+    changeDistrictPolicyData({
+      ...nextState,
+      schoolLevel: role === 'school-admin',
+    })
+  }
+
   enforceDistrictSignonPolicy = (e) => {
     const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props
 
@@ -362,6 +377,7 @@ class DistrictPolicyForm extends Component {
       canvas: districtPolicyData.canvas || false,
       allowedIpForAssignments: districtPolicyData.allowedIpForAssignments || [],
       disableStudentLogin: districtPolicyData.disableStudentLogin || false,
+      enableGoogleMeet: districtPolicyData.enableGoogleMeet || false,
       schoology: districtPolicyData.schoology || false,
       classlink: districtPolicyData.classlink || false,
       enforceDistrictSignonPolicy:
@@ -614,6 +630,20 @@ class DistrictPolicyForm extends Component {
               <RadioBtn value="no">No</RadioBtn>
             </RadioGrp>
           </StyledRow>
+          {isSchoolLevel ? null : (
+            <StyledRow>
+              <StyledLabel>Enable Google Meet: </StyledLabel>
+              <RadioGrp
+                onChange={this.enableGoogleMeet}
+                value={
+                  districtPolicy?.enableGoogleMeet === false ? 'no' : 'yes'
+                }
+              >
+                <RadioBtn value="yes">Yes</RadioBtn>
+                <RadioBtn value="no">No</RadioBtn>
+              </RadioGrp>
+            </StyledRow>
+          )}
           <StyledRow>
             <StyledLabel>
               Enforced District Sign-On

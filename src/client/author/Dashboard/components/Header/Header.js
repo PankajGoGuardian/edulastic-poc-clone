@@ -110,6 +110,7 @@ const HeaderSection = ({
   teacherData,
   classData,
   loading,
+  districtPolicy,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
@@ -174,6 +175,8 @@ const HeaderSection = ({
   const hasGoogleMeetAndManageClass =
     currentSignUpState === signUpState.DONE && allActiveClasses.length > 0
 
+  const isHangoutEnabled = districtPolicy?.enableGoogleMeet === true
+
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
@@ -189,17 +192,19 @@ const HeaderSection = ({
         )}
         {hasGoogleMeetAndManageClass && (
           <>
-            <Tooltip title="Launch Google Meet">
-              <StyledEduButton
-                IconBtn
-                isBlue
-                data-cy="launch-google-meet"
-                onClick={launchHangout}
-                isGhost
-              >
-                <IconHangouts color={themeColor} height={21} width={19} />
-              </StyledEduButton>
-            </Tooltip>
+            {isHangoutEnabled && (
+              <Tooltip title="Launch Google Meet">
+                <StyledEduButton
+                  IconBtn
+                  isBlue
+                  data-cy="launch-google-meet"
+                  onClick={launchHangout}
+                  isGhost
+                >
+                  <IconHangouts color={themeColor} height={21} width={19} />
+                </StyledEduButton>
+              </Tooltip>
+            )}
             <Tooltip title="Manage Class">
               <Link to="/author/manageClass">
                 <EduButton
@@ -328,6 +333,7 @@ const enhance = compose(
       subscription: state?.subscription?.subscriptionData?.subscription,
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
+      districtPolicy: get(state, 'user.user.orgData.policies.district'),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
         state
       ),

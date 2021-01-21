@@ -1689,7 +1689,7 @@ function hasInvalidItem(testData) {
   return testData.itemGroups.find((x) => x.items.find((_item) => !_item.itemId))
 }
 
-function* updateTestSaga({ payload }) {
+export function* updateTestSaga({ payload }) {
   try {
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true))

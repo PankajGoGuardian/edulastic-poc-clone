@@ -28,7 +28,7 @@ const SubscriptionAddonModal = ({
       centered
       title="Select Add-ons"
       footer={[
-        <EduButton isBlue onClick={handleClick}>
+        <EduButton disabled={totalPrice === 0} isBlue onClick={handleClick}>
           PROCEED WITH PAYMENT
         </EduButton>,
       ]}

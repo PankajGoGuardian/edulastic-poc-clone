@@ -496,3 +496,9 @@ export const isHashAssessmentUrl = () => {
     window.location.hash.includes('#assessmentQuestions/close/')
   )
 }
+
+export const canUseAllOptionsByDefault = (permissions = []) => {
+  return ['author', 'curator'].some((permission) =>
+    permissions.includes(permission)
+  )
+}

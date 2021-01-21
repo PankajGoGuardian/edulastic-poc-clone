@@ -116,15 +116,6 @@ if (query?.itemBank?.toUpperCase() === 'CANVAS') {
   sessionStorage.setItem('signupFlow', 'canvas')
 }
 
-// Capture forwarded referrer from edulastic.com
-if (
-  query &&
-  query.referrer &&
-  !window.localStorage.getItem('originalreferrer')
-) {
-  window.localStorage.setItem('originalreferrer', query.referrer)
-}
-
 /**
  *  In case of redirection from canvas we might get errorDescription as query param which
  *  we have to display as error message and remove it from the url.
@@ -289,14 +280,6 @@ class App extends Component {
       const path = getWordsInURLPathName(location.pathname)
       const urlSearch = new URLSearchParams(location.search)
       if (user && user.isAuthenticated) {
-        // Clear referrer once userId available
-        if (
-          user &&
-          (user.userId || user.user?._id) &&
-          window.localStorage.getItem('originalreferrer')
-        ) {
-          window.localStorage.removeItem('originalreferrer')
-        }
         const role = get(user, ['user', 'role'])
         if (role === 'teacher') {
           if (

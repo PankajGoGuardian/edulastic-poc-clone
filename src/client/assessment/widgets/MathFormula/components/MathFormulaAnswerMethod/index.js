@@ -6,6 +6,7 @@ import {
   withWindowSizes,
   StaticMath,
   getInnerValuesForStatic,
+  notification,
 } from '@edulastic/common'
 
 import { math, questionTitle } from '@edulastic/constants'
@@ -77,12 +78,30 @@ const MathFormulaAnswerMethod = ({
     }
   }, [method])
 
+  const hasMutuallyExclusiveOptions = (selectedOptions = {}) => {
+    let flag = false
+    let warningMsg = ''
+
+    if (selectedOptions.isExpanded && selectedOptions.isFactorised) {
+      flag = true
+      warningMsg = 'Expanded and Factored cannot be combined together'
+    } else if (
+      selectedOptions.isMixedFraction &&
+      selectedOptions.isImproperFraction
+    ) {
+      flag = true
+      warningMsg =
+        'Mixed Fraction and Improper fraction cannot be combined together'
+    }
+    return [flag, warningMsg]
+  }
+
   /**
    * Stores validation data (answer) of testItem
    * @param {string} prop
    * @param {string} val
    */
-  const changeOptions = (prop, val) => {
+  const changeOptions = (prop, val, extra) => {
     const newOptions = {
       ...options,
       [prop]: val,
@@ -102,8 +121,13 @@ const MathFormulaAnswerMethod = ({
     if (!val) {
       delete newOptions[prop]
     }
+    const [error, errorMsg] = hasMutuallyExclusiveOptions(newOptions)
+    if (error) {
+      notification({ type: 'warn', msg: errorMsg })
+      return false
+    }
 
-    onChange('options', newOptions)
+    onChange('options', newOptions, extra)
   }
 
   const methodOptions = methodOptionsConst && methodOptionsConst[method]

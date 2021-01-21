@@ -17,6 +17,7 @@ const TrialModal = ({
   premiumUser,
   isPremiumTrialUsed,
   startPremiumTrial,
+  premiumProductId,
 }) => {
   const closeModal = () => toggleModal(false)
   const onProceed = () => {
@@ -49,15 +50,12 @@ const TrialModal = ({
       },
     ]
 
-    const data = {
-      bankId: productId,
-      collectionName: productName,
-      data: { permissionDetails },
-    }
+    const productIds = [productId]
     if (!premiumUser && !isPremiumTrialUsed) {
-      startPremiumTrial({ addItemBankPermission: { data } })
+      productIds.push(premiumProductId)
+      startPremiumTrial({ productIds })
     } else {
-      addItemBankPermission({ data })
+      addItemBankPermission({ productIds })
     }
     closeModal()
   }

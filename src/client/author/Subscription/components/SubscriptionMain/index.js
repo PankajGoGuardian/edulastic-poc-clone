@@ -247,6 +247,7 @@ const SubscriptionMain = (props) => {
     isPaidPremium,
     showRenewalOptions,
     setShowSubscriptionAddonModal,
+    premiumProductId,
   } = props
 
   const [showTrialModal, setShowTrialModal] = useState(false)
@@ -274,8 +275,7 @@ const SubscriptionMain = (props) => {
         msg: 'You have already used up the trial !',
       })
     }
-    startTrialAction()
-    // setShowSelectStates(true)
+    startTrialAction({ productIds: [premiumProductId] })
   }
 
   return (

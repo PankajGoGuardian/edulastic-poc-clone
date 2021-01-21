@@ -110,14 +110,17 @@ function* upgradeUserLicense({ payload }) {
 
 function* handleStripePayment({ payload }) {
   try {
-    const { stripe, data } = payload
+    const { stripe, data, productIds } = payload
     yield call(message.loading, {
       content: 'Processing Payment, please wait',
       key: 'verify-license',
     })
     const { token, error } = yield stripe.createToken(data)
     if (token) {
-      const apiPaymentResponse = yield call(paymentApi.pay, { token })
+      const apiPaymentResponse = yield call(paymentApi.pay, {
+        productIds,
+        token,
+      })
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
         const { subEndDate } = apiPaymentResponse.subscription
@@ -198,22 +201,17 @@ function* fetchUserSubscription() {
 
 function* handleFreeTrialSaga({ payload }) {
   try {
-    const apiPaymentResponse = yield call(paymentApi.pay, {})
+    const apiPaymentResponse = yield call(paymentApi.pay, payload)
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
-      const { subEndDate } = apiPaymentResponse.subscription.trialSubscription
+      const { subEndDate } = apiPaymentResponse.subscription
       notification({
         type: 'success',
-        msg: `Congratulations! Your account is upgraded to Premium Trial version for ${
-          apiPaymentResponse.subscription.trialPeriod
-        } days and the subscription will expire on ${moment(subEndDate).format(
-          'DD MMM, YYYY'
-        )}`,
+        msg: `Congratulations! Your account is upgraded to Premium Trial version and the subscription will expire on ${moment(
+          subEndDate
+        ).format('DD MMM, YYYY')}`,
         key: 'handle-trial',
       })
-      if (payload && payload.addItemBankPermission) {
-        yield put(addPermissionRequestAction(payload.addItemBankPermission))
-      }
       yield put(slice.actions.resetSubscriptions())
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))

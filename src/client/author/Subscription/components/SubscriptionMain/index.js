@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
-import {
-  EduButton,
-  FlexContainer,
-  MainContentWrapper,
-  notification,
-} from '@edulastic/common'
-import { isBoolean } from 'lodash'
+import { connect } from 'react-redux'
+import { EduButton, FlexContainer, MainContentWrapper } from '@edulastic/common'
 import { Link } from 'react-router-dom'
-import StartTrialModal from './StartTrialModal'
+import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
+import { getUserDetails } from '../../../../student/Login/ducks'
+
 
 // TODO: Update SVG imports here
 import IMG1 from '../../static/1.png'
@@ -235,7 +232,7 @@ const PlansComponent = ({
   </PlansContainer>
 )
 
-const SubscriptionMain = (props) => {
+const SubscriptionMain = ({ user, ...props }) => {
   const {
     isSubscribed = false,
     openPaymentServiceModal,
@@ -243,13 +240,19 @@ const SubscriptionMain = (props) => {
     openPurchaseLicenseModal,
     setShowUpgradeModal,
     isPremiumTrialUsed,
-    startTrialAction,
     hasUpgradeButton,
     showRenewalOptions,
+    startTrialAction,
+    addPermissionRequest,
   } = props
 
-  const [showTrialModal, setShowTrialModal] = useState(false)
+
+
   const [showSelectStates, setShowSelectStates] = useState(false)
+  const [isTrialModalVisible, setIsTrialModalVisible] = useState(true)
+
+  const toggleTrialModal = (value) => setIsTrialModalVisible(value)
+  const premiumUser = user.features.premium
 
   const handleSelectStateModal = () => {
     setShowSelectStates(true)
@@ -260,23 +263,8 @@ const SubscriptionMain = (props) => {
   }
 
   const handleStartTrial = () => {
-    // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
-    if (!isBoolean(isPremiumTrialUsed)) {
-      return notification({
-        type: 'warning',
-        msg: 'Validating trial status, please wait...',
-      })
-    }
-    if (isPremiumTrialUsed) {
-      return notification({
-        type: 'warning',
-        msg: 'You have already used up the trial !',
-      })
-    }
-    startTrialAction()
-    // setShowSelectStates(true)
+    setIsTrialModalVisible(true)
   }
-
   return (
     <>
       <MainContentWrapper padding="30px" style={{ display: 'none' }}>
@@ -351,11 +339,18 @@ const SubscriptionMain = (props) => {
           </HaveLicenseKey>
         </ContentCards>
       </ContentSection>
-      <StartTrialModal
-        visible={showTrialModal}
-        setShowModal={setShowTrialModal}
-      />
-
+      {isTrialModalVisible && (
+       <TrialModal
+          userInfo={user}
+          isVisible={isTrialModalVisible}
+          toggleModal={toggleTrialModal}
+          premiumUser={premiumUser}
+          isPremiumTrialUsed={isPremiumTrialUsed}
+          startPremiumTrial={startTrialAction}
+          addItemBankPermission={addPermissionRequest}
+          productName="SparkMath"
+        />
+      )}
       <AddonSection>
         <SectionContainer>
           <SectionTitle>Premium addons to make it even better</SectionTitle>
@@ -429,4 +424,6 @@ const SubscriptionMain = (props) => {
   )
 }
 
-export default SubscriptionMain
+export default connect((state) => ({
+  user: getUserDetails(state),
+}))(SubscriptionMain)

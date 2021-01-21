@@ -11,6 +11,7 @@ import SubscriptionHeader from '../SubscriptionHeader'
 import PayWithPoModal from '../SubscriptionHeader/PayWithPoModal'
 import UpgradeModal from '../SubscriptionHeader/UpgradeModal'
 import SubscriptionMain from '../SubscriptionMain'
+import { addPermissionRequestAction } from '../../../ContentCollections/ducks'
 import {
   CompareModal,
   PlanCard,
@@ -182,6 +183,7 @@ const Subscription = (props) => {
     fetchUserSubscriptionStatus,
     isPremiumTrialUsed,
     startTrialAction,
+    addPermissionRequest,
   } = props
 
   useEffect(() => {
@@ -229,6 +231,7 @@ const Subscription = (props) => {
   const showUpgradeOptions = !isSubscribed
 
   const hasUpgradeButton = !subType || subType === 'TRIAL_PREMIUM'
+  const premiumUser = user.features.premium
 
   return (
     <Wrapper>
@@ -256,6 +259,9 @@ const Subscription = (props) => {
         startTrialAction={startTrialAction}
         hasUpgradeButton={hasUpgradeButton}
         showRenewalOptions={showRenewalOptions}
+        addPermissionRequest={addPermissionRequest}
+        premiumUser={premiumUser}
+        user={user}
       />
 
       <CompareModal
@@ -328,5 +334,6 @@ export default connect(
     stripePaymentAction: slice.actions.stripePaymentAction,
     fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
     startTrialAction: slice.actions.startTrialAction,
+    addPermissionRequest: addPermissionRequestAction,
   }
 )(Subscription)

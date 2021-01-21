@@ -17,6 +17,7 @@ const TrialModal = ({
   premiumUser,
   isPremiumTrialUsed,
   startPremiumTrial,
+
 }) => {
   const closeModal = () => toggleModal(false)
   const onProceed = () => {
@@ -70,16 +71,47 @@ const TrialModal = ({
       <EduButton onClick={onProceed}>Proceed</EduButton>
     </>
   )
+  const nonPremium = (
+    <>
+      <StyledCheckbox checked>
+        Teacher Premium $100 ($0 today)
+        <p>Get even more out of your trial by adding Spark premium content</p>
+      </StyledCheckbox>
+      ,
+      <StyledCheckbox>
+        {productName} $100 ($0 today)
+        <p>Curriculum-aligned differentiated math practice</p>
+      </StyledCheckbox>
+    </>
+  )
+  const Premium = (
+    <StyledCheckbox>
+      {productName} $100 ($100 today)
+      <p>Curriculum-aligned differentiated math practice</p>
+    </StyledCheckbox>
+  )
+
+  const modalContent = () => {
+    if (!premiumUser && !isPremiumTrialUsed) {
+      return nonPremium
+    }
+    return Premium
+  }
 
   return (
     <CustomModalStyled
       centered
-      title={productName}
+      title="Start Your Free Trial!"
       footer={Footer}
       visible={isVisible}
       onCancel={closeModal}
     >
-      {description}
+      <p>
+        Experience the additional features of Edulastic Teacher Premium for 14
+        days: read-aloud for students, extra test security settings, easier
+        collaboration, in-depth reports and more.
+      </p>
+
       <FlexContainer
         flexDirection="column"
         justifyContent="center"
@@ -87,11 +119,9 @@ const TrialModal = ({
         mr="40px"
         mt="20px"
       >
-        {!premiumUser && !isPremiumTrialUsed && (
-          <StyledCheckbox checked>Premium Trial</StyledCheckbox>
-        )}
-        <StyledCheckbox checked>{productName} Trial</StyledCheckbox>
+        {modalContent()}
       </FlexContainer>
+      <p>No credit card required now!</p>
     </CustomModalStyled>
   )
 }

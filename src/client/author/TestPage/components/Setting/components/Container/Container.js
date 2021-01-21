@@ -362,6 +362,7 @@ class Setting extends Component {
       releaseScore,
       safeBrowser,
       sebPassword,
+      blockNavigationToAnsweredQuestions,
       shuffleQuestions,
       shuffleAnswers,
       answerOnPaper,
@@ -778,6 +779,33 @@ class Setting extends Component {
                       should not be revealed to the students. If you select this
                       option, students must use devices (Windows, Mac or iPad)
                       with Safe Exam Browser installed.
+                    </Description>
+                  </Body>
+                </Block>
+              )}
+
+              {premium && (
+                <Block id="restrict-back-navigation" smallSize={isSmallSize}>
+                  <Title>
+                    <span>
+                      Restrict Navigation To Previously Answered Questions
+                    </span>
+                    <EduSwitchStyled
+                      disabled={!owner || !isEditable}
+                      defaultChecked={blockNavigationToAnsweredQuestions}
+                      data-cy="restrict-back-nav-switch-test"
+                      onChange={this.updateTestData(
+                        'blockNavigationToAnsweredQuestions'
+                      )}
+                    />
+                  </Title>
+                  <Body smallSize={isSmallSize}>
+                    <Description>
+                      {'If '}
+                      <BlueText>ON</BlueText>, then students will be restricted
+                      from navigating back to the previous question. Recommended
+                      to use along with Shuffle Questions for preventing
+                      cheating among students.
                     </Description>
                   </Body>
                 </Block>

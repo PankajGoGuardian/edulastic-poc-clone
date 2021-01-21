@@ -155,6 +155,8 @@ const getSettings = (test, testActivity, preview) => {
     endDate: assignmentSettings.endDate,
     closePolicy: assignmentSettings.closePolicy,
     releaseScore,
+    blockNavigationToAnsweredQuestions:
+      assignmentSettings?.blockNavigationToAnsweredQuestions || false,
   }
 }
 
@@ -566,6 +568,30 @@ function* loadTest({ payload }) {
       type: SET_TEST_LOADING_STATUS,
       payload: false,
     })
+
+    if (
+      settings.blockNavigationToAnsweredQuestions &&
+      testActivity.questionActivities.length
+    ) {
+      let questionIndex = 0
+      const qActivitiesSorted = testActivity.questionActivities.sort((a, b) => {
+        if (a.qLabel > b.qLabel) return 1
+        return -1
+      })
+      for (let i = 0; i < qActivitiesSorted.length; i++) {
+        const qActivity = qActivitiesSorted[i]
+        if (qActivity.qLabel.includes(`Q${i + 1}`)) {
+          questionIndex++
+        }
+      }
+      yield put(
+        push(
+          `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${
+            questionIndex - 1
+          }`
+        )
+      )
+    }
   } catch (err) {
     captureSentryException(err)
     yield put({

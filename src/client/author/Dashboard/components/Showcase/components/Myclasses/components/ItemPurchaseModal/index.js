@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom'
 const Footer = ({
   hasItemBankTrial,
   isPremiumTrialUsed,
-  premiumUser,
+  isPremiumUser,
   handleTrial,
   handlePurchaseFlow,
 }) => {
-  const hasTrialBtn = hasItemBankTrial && (!isPremiumTrialUsed || premiumUser)
+  const hasTrialBtn = hasItemBankTrial && (!isPremiumTrialUsed || isPremiumUser)
   return (
     <>
       {hasTrialBtn && (
@@ -18,9 +18,11 @@ const Footer = ({
           Try for free
         </EduButton>
       )}
-      <EduButton isBlue onClick={handlePurchaseFlow}>
-        Purchase
-      </EduButton>
+      {!isPremiumUser && (
+        <EduButton isBlue onClick={handlePurchaseFlow}>
+          Purchase
+        </EduButton>
+      )}
     </>
   )
 }
@@ -32,7 +34,7 @@ const ItemPurchaseModal = ({
   toggleModal,
   toggleTrialModal,
   hasTrial,
-  premiumUser,
+  isPremiumUser,
   isPremiumTrialUsed,
   handlePurchaseFlow,
 }) => {
@@ -50,7 +52,7 @@ const ItemPurchaseModal = ({
         <Footer
           hasItemBankTrial={hasTrial}
           isPremiumTrialUsed={isPremiumTrialUsed}
-          premiumUser={premiumUser}
+          isPremiumUser={isPremiumUser}
           handleTrial={handleTrial}
           handlePurchaseFlow={handlePurchaseFlow}
         />
@@ -59,7 +61,7 @@ const ItemPurchaseModal = ({
       onCancel={closeModal}
     >
       <div>{description}</div>
-      {isPremiumTrialUsed && !premiumUser && (
+      {isPremiumTrialUsed && !isPremiumUser && (
         <p>
           You have already tried premium features, kindly upgrade to start free
           trial of {title}.{' '}
@@ -75,7 +77,7 @@ ItemPurchaseModal.propTypes = {
   description: PropTypes.string.isRequired,
   isVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
-  premiumUser: PropTypes.bool.isRequired,
+  isPremiumUser: PropTypes.bool.isRequired,
   hasTrial: PropTypes.bool,
 }
 

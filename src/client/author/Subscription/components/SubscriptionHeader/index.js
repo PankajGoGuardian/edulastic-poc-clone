@@ -27,11 +27,11 @@ const SubscriptionHeader = ({
   isSubscribed = false,
   subType,
   subEndDate,
-  setShowUpgradeModal,
-  hasUpgradeButton,
+  setShowSubscriptionAddonModal,
+  isPaidPremium,
 }) => {
-  const handleShowUpgradeModal = () => {
-    setShowUpgradeModal(true)
+  const handlePurchaseFlow = () => {
+    setShowSubscriptionAddonModal(true)
   }
   const handleEnterpriseClick = () => {
     window.open(
@@ -46,7 +46,7 @@ const SubscriptionHeader = ({
           renderButton={(handleClick) => (
             <span onClick={handleClick}>INDIVIDUAL SUBSCRIPTION</span>
           )}
-          onClick={handleShowUpgradeModal}
+          onClick={handlePurchaseFlow}
         />
       </Menu.Item>
       <Menu.Item>
@@ -82,7 +82,7 @@ const SubscriptionHeader = ({
                 } Version`
               : 'Free'}
           </span>
-          {hasUpgradeButton ? (
+          {!isPaidPremium ? (
             <Dropdown
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
               overlay={menu}
@@ -94,7 +94,7 @@ const SubscriptionHeader = ({
               </EduButton>
             </Dropdown>
           ) : showRenewalOptions ? (
-            <EduButton onClick={handleShowUpgradeModal} isBlue height="24px">
+            <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription
             </EduButton>
           ) : null}

@@ -53,6 +53,7 @@ import {
   HaveLicenseKey,
   CustomButton,
   AddonFooter,
+  PurchaseLink,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -241,11 +242,11 @@ const SubscriptionMain = (props) => {
     openPaymentServiceModal,
     openHasLicenseKeyModal,
     openPurchaseLicenseModal,
-    setShowUpgradeModal,
     isPremiumTrialUsed,
     startTrialAction,
-    hasUpgradeButton,
+    isPaidPremium,
     showRenewalOptions,
+    setShowSubscriptionAddonModal,
   } = props
 
   const [showTrialModal, setShowTrialModal] = useState(false)
@@ -255,8 +256,8 @@ const SubscriptionMain = (props) => {
     setShowSelectStates(true)
   }
 
-  const handleUpgradeModal = () => {
-    setShowUpgradeModal(true)
+  const handlePurchaseFlow = () => {
+    setShowSubscriptionAddonModal(true)
   }
 
   const handleStartTrial = () => {
@@ -309,7 +310,7 @@ const SubscriptionMain = (props) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {hasUpgradeButton ? (
+            {!isPaidPremium ? (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -322,14 +323,14 @@ const SubscriptionMain = (props) => {
                     Upgrade now $100/YR
                   </CustomButton>
                 )}
-                onClick={handleUpgradeModal}
+                onClick={handlePurchaseFlow}
               />
             ) : showRenewalOptions ? (
-              <EduButton onClick={handleUpgradeModal} isBlue height="38px">
+              <EduButton onClick={handlePurchaseFlow} isBlue height="38px">
                 Renew Subscription
               </EduButton>
             ) : null}
-            {hasUpgradeButton && (
+            {!isPaidPremium && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -376,13 +377,23 @@ const SubscriptionMain = (props) => {
                   <span>Learn more</span>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
-                      {hasUpgradeButton && (
-                        <AuthorCompleteSignupButton
-                          renderButton={(handleClick) => (
-                            <span onClick={handleClick}>try</span>
-                          )}
-                          onClick={handleStartTrial}
-                        />
+                      {!isPaidPremium && (
+                        <>
+                          <AuthorCompleteSignupButton
+                            renderButton={(handleClick) => (
+                              <PurchaseLink onClick={handleClick}>
+                                Purchase
+                              </PurchaseLink>
+                            )}
+                            onClick={handlePurchaseFlow}
+                          />
+                          <AuthorCompleteSignupButton
+                            renderButton={(handleClick) => (
+                              <span onClick={handleClick}>try</span>
+                            )}
+                            onClick={handleStartTrial}
+                          />
+                        </>
                       )}
                     </>
                   )}

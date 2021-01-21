@@ -2,6 +2,7 @@ import { segmentApi } from '@edulastic/api'
 import React, { useEffect, useState } from 'react'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
+import SubscriptionAddonModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/SubscriptionAddonModal'
 import { slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PaymentServiceModal from '../PaymentServiceModal'
@@ -195,6 +196,9 @@ const Subscription = (props) => {
   const [purchaseLicenseModal, setpurchaseLicenseModal] = useState(false)
   const [payWithPoModal, setPayWithPoModal] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
+    false
+  )
 
   const openComparePlanModal = () => setComparePlan(true)
   const closeComparePlansModal = () => setComparePlan(false)
@@ -228,7 +232,7 @@ const Subscription = (props) => {
 
   const showUpgradeOptions = !isSubscribed
 
-  const hasUpgradeButton = !subType || subType === 'TRIAL_PREMIUM'
+  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
   return (
     <Wrapper>
@@ -240,8 +244,8 @@ const Subscription = (props) => {
         isSubscribed={isSubscribed}
         subType={subType}
         subEndDate={subEndDate}
-        setShowUpgradeModal={setShowUpgradeModal}
-        hasUpgradeButton={hasUpgradeButton}
+        isPaidPremium={isPaidPremium}
+        setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
       />
 
       <SubscriptionMain
@@ -251,11 +255,11 @@ const Subscription = (props) => {
         openPurchaseLicenseModal={openPurchaseLicenseModal}
         subEndDate={subEndDate}
         subType={subType}
-        setShowUpgradeModal={setShowUpgradeModal}
         isPremiumTrialUsed={isPremiumTrialUsed}
         startTrialAction={startTrialAction}
-        hasUpgradeButton={hasUpgradeButton}
+        isPaidPremium={isPaidPremium}
         showRenewalOptions={showRenewalOptions}
+        setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
       />
 
       <CompareModal
@@ -269,6 +273,13 @@ const Subscription = (props) => {
           <Plans {...plan} />
         ))}
       </CompareModal>
+
+      <SubscriptionAddonModal
+        isVisible={showSubscriptionAddonModal}
+        handleCloseModal={setShowSubscriptionAddonModal}
+        isPremiumUser={isPremiumAccount}
+        setShowUpgradeModal={setShowUpgradeModal}
+      />
 
       <PaymentServiceModal
         visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
@@ -298,7 +309,7 @@ const Subscription = (props) => {
         isSubscribed={isSubscribed}
         verificationPending={verificationPending}
         verifyAndUpgradeLicense={verifyAndUpgradeLicense}
-        isPaidPremium={!hasUpgradeButton}
+        isPaidPremium={isPaidPremium}
         subType={subType}
       />
 

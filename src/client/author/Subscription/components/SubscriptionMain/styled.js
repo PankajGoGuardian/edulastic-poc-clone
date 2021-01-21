@@ -264,3 +264,17 @@ export const AddonFooter = styled.div`
     }
   }
 `
+export const PurchaseLink = styled.span`
+  color: #1ab395;
+`
+export const LearnMoreLink = styled.a`
+  height: 18px;
+  border-right: 1px solid ${borderGrey2};
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  color: #3f85e5;
+  &:last-child {
+    border: none;
+  }
+`

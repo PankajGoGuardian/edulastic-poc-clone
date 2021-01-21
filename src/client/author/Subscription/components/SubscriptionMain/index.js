@@ -50,6 +50,8 @@ import {
   HaveLicenseKey,
   CustomButton,
   AddonFooter,
+  PurchaseLink,
+  LearnMoreLink,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -128,42 +130,45 @@ const featuresData = [
   {
     imgSrc: IMG4,
     title: 'Text-to-speech',
-    description: 'Text to Speech (Read Aloud) for students',
+    description: 'Enable read aloud for select students',
   },
   {
     imgSrc: IMG5,
     title: 'Test Security Settings',
-    description: 'Shuffle questions, hide correct answers, etc.',
+    description: 'Shuffle questions, password protect, and more',
   },
   {
     imgSrc: IMG6,
     title: 'Advanced Authoring',
-    description: 'Options, dynamic parameters, rubric support',
+    description:
+      'Activate dynamic parameters, rubrics, & authoring power tools',
   },
   {
     imgSrc: IMG7,
     title: 'In-depth reports',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description:
+      'Analyze data, growth, performance over time, & student mastery profiles.',
   },
   {
     imgSrc: IMG8,
     title: 'Playlists',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description: 'Organize and deliver your assessments by units or modules.',
   },
   {
     imgSrc: IMG9,
     title: 'Collaboration & Engagement',
-    description: 'Co-author, sharing, presentation mode',
+    description: 'Co-author, display present mode, and more.',
   },
   {
     imgSrc: IMG10,
     title: 'Student Groups',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description:
+      'Arrange students for differentiated assignments & instruction.',
   },
   {
     imgSrc: IMG11,
     title: 'Parent Portal',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description: 'Give parents/guardians insight into student progress.',
   },
 ]
 
@@ -173,33 +178,39 @@ const addonsData = [
     title: 'SparkMath',
     description:
       'Pre-built assessments and differentiated Math practice for each student',
+    learnMoreLinks: 'https://edulastic.com/spark-math',
   },
   {
     imgSrc: IMG13,
     title: 'Book Buddies',
     description: 'Assessments and prompts on your favorite books',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG14,
     title: 'STEM Cross-curricular',
     description: 'Science passages with reading and science questions',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG15,
     title: 'Phonics Practice',
     description:
       'Full year of practice assignments to help all students master each sound',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG16,
     title: 'Reading Comprehension Practice',
     description: 'Fiction and nonfiction to practice close reading',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG12,
     title: 'SparkScience',
     description:
       'NGSS-aligned pre-built assessments and item banks for grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-science',
   },
 ]
 
@@ -238,12 +249,12 @@ const SubscriptionMain = ({ user, ...props }) => {
     openPaymentServiceModal,
     openHasLicenseKeyModal,
     openPurchaseLicenseModal,
-    setShowUpgradeModal,
     isPremiumTrialUsed,
-    hasUpgradeButton,
     showRenewalOptions,
-    startTrialAction,
     addPermissionRequest,
+    startTrialAction,
+    isPaidPremium,
+    setShowSubscriptionAddonModal,
   } = props
 
 
@@ -258,8 +269,8 @@ const SubscriptionMain = ({ user, ...props }) => {
     setShowSelectStates(true)
   }
 
-  const handleUpgradeModal = () => {
-    setShowUpgradeModal(true)
+  const handlePurchaseFlow = () => {
+    setShowSubscriptionAddonModal(true)
   }
 
   const handleStartTrial = () => {
@@ -297,7 +308,7 @@ const SubscriptionMain = ({ user, ...props }) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {hasUpgradeButton ? (
+            {!isPaidPremium ? (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -310,14 +321,14 @@ const SubscriptionMain = ({ user, ...props }) => {
                     Upgrade now $100/YR
                   </CustomButton>
                 )}
-                onClick={handleUpgradeModal}
+                onClick={handlePurchaseFlow}
               />
             ) : showRenewalOptions ? (
-              <EduButton onClick={handleUpgradeModal} isBlue height="38px">
+              <EduButton onClick={handlePurchaseFlow} isBlue height="38px">
                 Renew Subscription
               </EduButton>
             ) : null}
-            {hasUpgradeButton && (
+            {!isPaidPremium && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -368,16 +379,33 @@ const SubscriptionMain = ({ user, ...props }) => {
                   {addonsData[index].description}
                 </AddonDescription>
                 <AddonFooter>
-                  <span>Learn more</span>
+                  <LearnMoreLink
+                    href={addonsData[index].learnMoreLinks}
+                    target="_blank"
+                    rel="noreferrer"
+                    className
+                  >
+                    Learn more
+                  </LearnMoreLink>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
-                      {hasUpgradeButton && (
-                        <AuthorCompleteSignupButton
-                          renderButton={(handleClick) => (
-                            <span onClick={handleClick}>try</span>
-                          )}
-                          onClick={handleStartTrial}
-                        />
+                      {!isPaidPremium && (
+                        <>
+                          <AuthorCompleteSignupButton
+                            renderButton={(handleClick) => (
+                              <PurchaseLink onClick={handleClick}>
+                                Purchase
+                              </PurchaseLink>
+                            )}
+                            onClick={handlePurchaseFlow}
+                          />
+                          <AuthorCompleteSignupButton
+                            renderButton={(handleClick) => (
+                              <span onClick={handleClick}>try</span>
+                            )}
+                            onClick={handleStartTrial}
+                          />
+                        </>
                       )}
                     </>
                   )}

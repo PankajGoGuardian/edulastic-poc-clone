@@ -13,6 +13,7 @@ import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import SubscriptionAddonModal from './components/SubscriptionAddonModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 
@@ -29,11 +30,16 @@ import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
 import ItemPurchaseModal from './components/ItemPurchaseModal'
 import TrialModal from './components/TrialModal'
+import UpgradeModal from '../../../../../Subscription/components/SubscriptionHeader/UpgradeModal'
+import PaymentServiceModal from '../../../../../Subscription/components/PaymentServiceModal'
+import PayWithPoModal from '../../../../../Subscription/components/SubscriptionHeader/PayWithPoModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
 const sortByOrder = (prop) =>
   prop.sort((a, b) => a.config?.order - b.config?.order)
+
+const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -55,14 +61,24 @@ const MyClasses = ({
   isPremiumTrialUsed,
   startTrialAction,
   usedTrialItemBankId,
+  verificationPending,
+  stripePaymentAction,
+  isSuccess,
+  subscription: { subEndDate } = {},
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+  const [productData, setProductData] = useState({})
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [paymentServiceModal, setPaymentServiceModal] = useState(false)
+  const [payWithPoModal, setPayWithPoModal] = useState(false)
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
   )
-  const [productData, setProductData] = useState({})
+  const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
+    false
+  )
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -77,7 +93,18 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
-  const premiumUser = user.features.premium
+  const openPaymentServiceModal = () => {
+    setPaymentServiceModal(true)
+    segmentApi.trackTeacherClickOnUpgradeSubscription({ user })
+  }
+
+  const openPoServiceModal = () => {
+    setPayWithPoModal(true)
+  }
+
+  const closePaymentServiceModal = () => setPaymentServiceModal(false)
+
+  const isPremiumUser = user.features.premium
 
   const sortableClasses = classData
     .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
@@ -130,6 +157,12 @@ const MyClasses = ({
     setShowItemBankTrialUsedModal(false)
   }
 
+  const handlePurchaseFlow = () => {
+    setShowSubscriptionAddonModal(true)
+    setIsPurchaseModalVisible(false)
+    setShowItemBankTrialUsedModal(false)
+  }
+
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
 
@@ -140,7 +173,7 @@ const MyClasses = ({
 
     const content = contentType?.toLowerCase() || 'tests'
     if (tags.includes(PREMIUM_TAG)) {
-      if (premiumUser) {
+      if (isPremiumUser) {
         handleContentRedirect(filters, content)
       } else {
         history.push(`/author/subscription`)
@@ -158,7 +191,7 @@ const MyClasses = ({
       }
 
       const { imageUrl: imgUrl, premiumImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData.productId)
+      const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
       const imageUrl = isBlocked ? premiumImageUrl : imgUrl
 
       return {
@@ -240,6 +273,10 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
 
+  const isAboutToExpire = subEndDate
+    ? Date.now() + ONE_MONTH > subEndDate
+    : false
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -260,10 +297,17 @@ const MyClasses = ({
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
+      <SubscriptionAddonModal
+        isVisible={showSubscriptionAddonModal}
+        handleCloseModal={setShowSubscriptionAddonModal}
+        isPremiumUser={isPremiumUser}
+        setShowUpgradeModal={setShowUpgradeModal}
+      />
       <ItemBankTrialUsedModal
         title={productData.productName}
         isVisible={showItemBankTrialUsedModal}
         handleCloseModal={handleCloseItemTrialModal}
+        handlePurchaseFlow={handlePurchaseFlow}
       />
       {isPurchaseModalVisible && (
         <ItemPurchaseModal
@@ -275,7 +319,8 @@ const MyClasses = ({
           toggleModal={togglePurchaseModal}
           toggleTrialModal={toggleTrialModal}
           isPremiumTrialUsed={isPremiumTrialUsed}
-          premiumUser={premiumUser}
+          isPremiumUser={isPremiumUser}
+          handlePurchaseFlow={handlePurchaseFlow}
         />
       )}
       {isTrialModalVisible && (
@@ -287,11 +332,29 @@ const MyClasses = ({
           addItemBankPermission={addPermissionRequest}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
-          premiumUser={premiumUser}
+          premiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
         />
       )}
+      <UpgradeModal
+        visible={showUpgradeModal}
+        setShowModal={setShowUpgradeModal}
+        openPaymentServiceModal={openPaymentServiceModal}
+        openPoServiceModal={openPoServiceModal}
+      />
+      <PaymentServiceModal
+        visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
+        closeModal={closePaymentServiceModal}
+        verificationPending={verificationPending}
+        stripePaymentAction={stripePaymentAction}
+        user={user}
+        reason="Premium Upgrade"
+      />
+      <PayWithPoModal
+        visible={payWithPoModal}
+        setShowModal={setPayWithPoModal}
+      />
     </MainContentWrapper>
   )
 }
@@ -311,6 +374,9 @@ export default compose(
         state?.subscription?.subscriptionData?.isPremiumTrialUsed,
       usedTrialItemBankId:
         state?.subscription?.subscriptionData?.usedTrialItemBankId,
+      verificationPending: state?.subscription?.verificationPending,
+      isSuccess: state?.subscription?.subscriptionData?.success,
+      subscription: state?.subscription?.subscriptionData?.subscription,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -321,6 +387,7 @@ export default compose(
       resetPlaylistFilters: clearPlaylistFiltersAction,
       addPermissionRequest: addPermissionRequestAction,
       startTrialAction: slice.actions.startTrialAction,
+      stripePaymentAction: slice.actions.stripePaymentAction,
     }
   )
 )(MyClasses)

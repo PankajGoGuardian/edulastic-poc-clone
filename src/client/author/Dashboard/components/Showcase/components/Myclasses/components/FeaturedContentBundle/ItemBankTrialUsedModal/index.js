@@ -2,23 +2,35 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 
-const Footer = ({ handleCloseModal }) => {
+const Footer = ({ handleCloseModal, handlePurchaseFlow }) => {
   return (
     <>
       <EduButton isGhost isBlue onClick={handleCloseModal}>
         Cancel
       </EduButton>
-      <EduButton isBlue>Purchase</EduButton>
+      <EduButton isBlue onClick={handlePurchaseFlow}>
+        Purchase
+      </EduButton>
     </>
   )
 }
 
-const ItemBankTrialUsedModal = ({ title, isVisible, handleCloseModal }) => {
+const ItemBankTrialUsedModal = ({
+  title,
+  isVisible,
+  handleCloseModal,
+  handlePurchaseFlow,
+}) => {
   return (
     <CustomModalStyled
       centered
       title=""
-      footer={<Footer handleCloseModal={handleCloseModal} />}
+      footer={
+        <Footer
+          handleCloseModal={handleCloseModal}
+          handlePurchaseFlow={handlePurchaseFlow}
+        />
+      }
       visible={isVisible}
       onCancel={handleCloseModal}
     >

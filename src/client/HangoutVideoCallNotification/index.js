@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import * as Fbs  from '@edulastic/common/src/Firebase'
+import * as Fbs from '@edulastic/common/src/Firebase'
 import { uniqBy, pull } from 'lodash'
 import { getUser } from '../author/src/selectors/user'
 import {
@@ -59,25 +59,37 @@ const NotificationListener = ({ user }) => {
         currentDateTime < modifiedDateTime + 60 * 60 * 1000 &&
         !notificationIds.includes(doc.__id)
       ) {
-        setNotificationIds([...notificationIds, doc.__id])
-        notificationMessage({
-          title: 'Google Meet Video Call',
-          message: `Google Meet video call is starting for ${groupInfo.name} class.`,
-          showButton: true,
-          buttonLink: hangoutLink,
-          buttonText: 'CLICK HERE TO JOIN',
-          notificationPosition: 'bottomRight',
-          notificationKey: doc.__id,
-          onCloseNotification: () => {
-            closeNotification(event, doc.__id, status)
-          },
-          onButtonClick: () => {
-            onNotificationClick(event, doc.__id, status)
-          },
-        })
-        if (status === 'initiated') {
-          // if status is initiated and we are displaying, convert status to viewed
-          updateNotificationStatus(doc.__id, 'viewed')
+        // check district policy if hangout meet is enabled
+        const hangoutEnabledDistrictMap = (
+          user.orgData.districtPolicies || []
+        ).reduce((acc, o) => {
+          acc[o.districtId] = o.enableGoogleMeet
+          return acc
+        }, {})
+        if (
+          groupInfo.districtId &&
+          hangoutEnabledDistrictMap[groupInfo.districtId]
+        ) {
+          setNotificationIds([...notificationIds, doc.__id])
+          notificationMessage({
+            title: 'Google Meet Video Call',
+            message: `Google Meet video call is starting for ${groupInfo.name} class.`,
+            showButton: true,
+            buttonLink: hangoutLink,
+            buttonText: 'CLICK HERE TO JOIN',
+            notificationPosition: 'bottomRight',
+            notificationKey: doc.__id,
+            onCloseNotification: () => {
+              closeNotification(event, doc.__id, status)
+            },
+            onButtonClick: () => {
+              onNotificationClick(event, doc.__id, status)
+            },
+          })
+          if (status === 'initiated') {
+            // if status is initiated and we are displaying, convert status to viewed
+            updateNotificationStatus(doc.__id, 'viewed')
+          }
         }
       }
     })

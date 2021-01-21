@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox } from 'antd'
 import styled from 'styled-components'
@@ -17,8 +17,9 @@ const TrialModal = ({
   premiumUser,
   isPremiumTrialUsed,
   startPremiumTrial,
-
 }) => {
+  const [isChecked, setIsChecked] = useState()
+
   const closeModal = () => toggleModal(false)
   const onProceed = () => {
     const {
@@ -55,12 +56,18 @@ const TrialModal = ({
       collectionName: productName,
       data: { permissionDetails },
     }
+
     if (!premiumUser && !isPremiumTrialUsed) {
       startPremiumTrial({ addItemBankPermission: { data } })
-    } else {
+    }
+    if (isChecked) {
       addItemBankPermission({ data })
     }
     closeModal()
+  }
+  const handleOnChange = (ele) => {
+    const checked = ele.checked
+    setIsChecked(checked)
   }
 
   const Footer = (
@@ -78,14 +85,14 @@ const TrialModal = ({
         <p>Get even more out of your trial by adding Spark premium content</p>
       </StyledCheckbox>
       ,
-      <StyledCheckbox>
+      <StyledCheckbox defaultChecked onChange={(e) => handleOnChange(e.target)}>
         {productName} $100 ($0 today)
         <p>Curriculum-aligned differentiated math practice</p>
       </StyledCheckbox>
     </>
   )
   const Premium = (
-    <StyledCheckbox>
+    <StyledCheckbox style={{ textAlign: 'left' }}>
       {productName} $100 ($100 today)
       <p>Curriculum-aligned differentiated math practice</p>
     </StyledCheckbox>
@@ -112,16 +119,10 @@ const TrialModal = ({
         collaboration, in-depth reports and more.
       </p>
 
-      <FlexContainer
-        flexDirection="column"
-        justifyContent="center"
-        marginLeft="40px"
-        mr="40px"
-        mt="20px"
-      >
+      <FlexContainer flexDirection="column" justifyContent="left" mt="20px">
         {modalContent()}
       </FlexContainer>
-      <p>No credit card required now!</p>
+      <p style={{ fontFamily: 'bold' }}>No credit card required now!</p>
     </CustomModalStyled>
   )
 }
@@ -141,4 +142,5 @@ const StyledCheckbox = styled(Checkbox)`
   font-size: 16px;
   font-weight: 600;
   cursor: unset;
+  }
 `

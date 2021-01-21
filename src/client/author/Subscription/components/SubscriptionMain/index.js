@@ -249,7 +249,7 @@ const SubscriptionMain = ({ user, ...props }) => {
 
 
   const [showSelectStates, setShowSelectStates] = useState(false)
-  const [isTrialModalVisible, setIsTrialModalVisible] = useState(true)
+  const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
   const isPremiumUser = user.features.premium

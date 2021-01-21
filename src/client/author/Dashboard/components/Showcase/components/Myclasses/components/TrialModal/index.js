@@ -18,10 +18,14 @@ const TrialModal = ({
   isPremiumTrialUsed,
   startPremiumTrial,
 }) => {
-  const [isChecked, setIsChecked] = useState()
+  const [isSparkChecked, setIsSparkChecked] = useState()
 
   const closeModal = () => toggleModal(false)
   const onProceed = () => {
+    if (!premiumUser && !isPremiumTrialUsed && !isSparkChecked) {
+      startPremiumTrial()
+      return
+    }
     const {
       orgData: { districtIds, districts },
     } = userInfo
@@ -56,18 +60,16 @@ const TrialModal = ({
       collectionName: productName,
       data: { permissionDetails },
     }
-
     if (!premiumUser && !isPremiumTrialUsed) {
       startPremiumTrial({ addItemBankPermission: { data } })
-    }
-    if (isChecked) {
+    } else {
       addItemBankPermission({ data })
     }
     closeModal()
   }
   const handleOnChange = (ele) => {
     const checked = ele.checked
-    setIsChecked(checked)
+    setIsSparkChecked(checked)
   }
 
   const Footer = (

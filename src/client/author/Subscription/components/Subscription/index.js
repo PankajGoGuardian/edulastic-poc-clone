@@ -231,7 +231,7 @@ const Subscription = (props) => {
   const showUpgradeOptions = !isSubscribed
 
   const hasUpgradeButton = !subType || subType === 'TRIAL_PREMIUM'
-  const premiumUser = user.features.premium
+  const isPremiumUser = user.features.premium
 
   return (
     <Wrapper>
@@ -260,7 +260,7 @@ const Subscription = (props) => {
         hasUpgradeButton={hasUpgradeButton}
         showRenewalOptions={showRenewalOptions}
         addPermissionRequest={addPermissionRequest}
-        premiumUser={premiumUser}
+        premiumUser={isPremiumUser}
         user={user}
       />
 

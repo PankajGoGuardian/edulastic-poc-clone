@@ -184,6 +184,7 @@ const Subscription = (props) => {
     fetchUserSubscriptionStatus,
     isPremiumTrialUsed,
     startTrialAction,
+    premiumProductId,
     addPermissionRequest,
   } = props
 
@@ -268,6 +269,7 @@ const Subscription = (props) => {
         premiumUser={isPremiumUser}
         user={user}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        premiumProductId={premiumProductId}
       />
 
       <CompareModal
@@ -296,6 +298,7 @@ const Subscription = (props) => {
         stripePaymentAction={stripePaymentAction}
         user={user}
         reason="Premium Upgrade"
+        premiumProductId={premiumProductId}
       />
 
       <PayWithPoModal
@@ -341,6 +344,7 @@ export default connect(
     user: state.user.user,
     isPremiumTrialUsed:
       state?.subscription?.subscriptionData?.isPremiumTrialUsed,
+    premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
   }),
   {
     verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

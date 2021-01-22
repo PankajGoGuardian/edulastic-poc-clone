@@ -9,10 +9,15 @@ const PaymentForm = ({
   reason,
   handlePayment,
   verificationPending,
+  premiumProductId,
 }) => {
   const handleCardSubmit = (e) => {
     e.preventDefault()
-    handlePayment({ stripe, data: { type: 'card', userId, reason } })
+    handlePayment({
+      stripe,
+      data: { type: 'card', userId, reason },
+      productIds: [premiumProductId],
+    })
   }
 
   return (

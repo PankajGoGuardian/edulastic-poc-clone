@@ -65,6 +65,7 @@ const MyClasses = ({
   stripePaymentAction,
   isSuccess,
   subscription: { subEndDate } = {},
+  premiumProductId,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -335,6 +336,7 @@ const MyClasses = ({
           premiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
+          premiumProductId={premiumProductId}
         />
       )}
       <UpgradeModal
@@ -349,6 +351,7 @@ const MyClasses = ({
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}
         user={user}
+        premiumProductId={premiumProductId}
         reason="Premium Upgrade"
       />
       <PayWithPoModal
@@ -374,6 +377,7 @@ export default compose(
         state?.subscription?.subscriptionData?.isPremiumTrialUsed,
       usedTrialItemBankId:
         state?.subscription?.subscriptionData?.usedTrialItemBankId,
+      premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
       verificationPending: state?.subscription?.verificationPending,
       isSuccess: state?.subscription?.subscriptionData?.success,
       subscription: state?.subscription?.subscriptionData?.subscription,

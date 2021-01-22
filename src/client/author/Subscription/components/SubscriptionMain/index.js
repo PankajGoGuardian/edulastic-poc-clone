@@ -255,6 +255,7 @@ const SubscriptionMain = ({ user, ...props }) => {
     startTrialAction,
     isPaidPremium,
     setShowSubscriptionAddonModal,
+    premiumProductId,
   } = props
 
 
@@ -274,6 +275,20 @@ const SubscriptionMain = ({ user, ...props }) => {
   }
 
   const handleStartTrial = () => {
+    // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
+    if (!isBoolean(isPremiumTrialUsed)) {
+      return notification({
+        type: 'warning',
+        msg: 'Validating trial status, please wait...',
+      })
+    }
+    if (isPremiumTrialUsed) {
+      return notification({
+        type: 'warning',
+        msg: 'You have already used up the trial !',
+      })
+    }
+
     setIsTrialModalVisible(true)
   }
   return (

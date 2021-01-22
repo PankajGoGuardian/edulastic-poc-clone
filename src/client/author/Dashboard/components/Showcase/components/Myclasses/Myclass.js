@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, groupBy } from 'lodash'
 import qs from 'qs'
+import moment from 'moment'
 
 // components
 import { Spin } from 'antd'
@@ -33,6 +34,7 @@ import TrialModal from './components/TrialModal'
 import UpgradeModal from '../../../../../Subscription/components/SubscriptionHeader/UpgradeModal'
 import PaymentServiceModal from '../../../../../Subscription/components/PaymentServiceModal'
 import PayWithPoModal from '../../../../../Subscription/components/SubscriptionHeader/PayWithPoModal'
+import TrialConfirmationModal from './components/FeaturedContentBundle/TrialConfimationModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -63,7 +65,9 @@ const MyClasses = ({
   usedTrialItemBankId,
   verificationPending,
   stripePaymentAction,
+  showTrialSubsConfirmationAction,
   isSuccess,
+  isConfirmationModalVisible,
   subscription: { subEndDate } = {},
   premiumProductId,
 }) => {
@@ -278,6 +282,8 @@ const MyClasses = ({
     ? Date.now() + ONE_MONTH > subEndDate
     : false
 
+  const formatTrialEndDate = moment(subEndDate).format('DD MMM, YYYY')
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -333,10 +339,11 @@ const MyClasses = ({
           addItemBankPermission={addPermissionRequest}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
-          premiumUser={isPremiumUser}
+          isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
           premiumProductId={premiumProductId}
+          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
         />
       )}
       <UpgradeModal
@@ -358,6 +365,14 @@ const MyClasses = ({
         visible={payWithPoModal}
         setShowModal={setPayWithPoModal}
       />
+      {formatTrialEndDate && (
+        <TrialConfirmationModal
+          visible={isConfirmationModalVisible}
+          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          isPremiumUser={isPremiumUser}
+          subEndDate={formatTrialEndDate}
+        />
+      )}
     </MainContentWrapper>
   )
 }
@@ -381,6 +396,8 @@ export default compose(
       verificationPending: state?.subscription?.verificationPending,
       isSuccess: state?.subscription?.subscriptionData?.success,
       subscription: state?.subscription?.subscriptionData?.subscription,
+      isConfirmationModalVisible:
+        state?.subscription?.showTrialSubsConfirmation,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -392,6 +409,8 @@ export default compose(
       addPermissionRequest: addPermissionRequestAction,
       startTrialAction: slice.actions.startTrialAction,
       stripePaymentAction: slice.actions.stripePaymentAction,
+      showTrialSubsConfirmationAction:
+        slice.actions.trialSubsConfirmationAction,
     }
   )
 )(MyClasses)

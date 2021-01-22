@@ -5,7 +5,6 @@ import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { subscriptionApi, paymentApi } from '@edulastic/api'
 import { fetchUserAction } from '../../student/Login/ducks'
-import { addPermissionRequestAction } from '../ContentCollections/ducks'
 
 const slice = createSlice({
   name: 'subscription',
@@ -14,6 +13,7 @@ const slice = createSlice({
     verificationPending: false,
     subscriptionData: {},
     error: '',
+    showTrialSubsConfirmation: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -74,6 +74,9 @@ const slice = createSlice({
     },
     resetSubscriptions: (state) => {
       state.subscriptionData = {}
+    },
+    trialSubsConfirmationAction: (state, { payload }) => {
+      state.showTrialSubsConfirmation = payload
     },
   },
 })
@@ -204,14 +207,7 @@ function* handleFreeTrialSaga({ payload }) {
     const apiPaymentResponse = yield call(paymentApi.pay, payload)
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
-      const { subEndDate } = apiPaymentResponse.subscription
-      notification({
-        type: 'success',
-        msg: `Congratulations! Your account is upgraded to Premium Trial version and the subscription will expire on ${moment(
-          subEndDate
-        ).format('DD MMM, YYYY')}`,
-        key: 'handle-trial',
-      })
+      yield put(slice.actions.trialSubsConfirmationAction(true))
       yield put(slice.actions.resetSubscriptions())
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))

@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { EduButton, FlexContainer, MainContentWrapper } from '@edulastic/common'
+import {
+  EduButton,
+  FlexContainer,
+  MainContentWrapper,
+  notification,
+} from '@edulastic/common'
 import { Link } from 'react-router-dom'
+import { isBoolean } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 import { getUserDetails } from '../../../../student/Login/ducks'
-
 
 // TODO: Update SVG imports here
 import IMG1 from '../../static/1.png'
@@ -255,10 +260,8 @@ const SubscriptionMain = ({ user, ...props }) => {
     startTrialAction,
     isPaidPremium,
     setShowSubscriptionAddonModal,
-    premiumProductId,
+    showTrialSubsConfirmationAction,
   } = props
-
-
 
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -366,15 +369,16 @@ const SubscriptionMain = ({ user, ...props }) => {
         </ContentCards>
       </ContentSection>
       {isTrialModalVisible && (
-       <TrialModal
+        <TrialModal
           userInfo={user}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
-          premiumUser={isPremiumUser}
+          isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
           addItemBankPermission={addPermissionRequest}
           productName="SparkMath"
+          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
         />
       )}
       <AddonSection>

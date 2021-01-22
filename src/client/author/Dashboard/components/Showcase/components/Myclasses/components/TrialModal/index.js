@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox } from 'antd'
 import styled from 'styled-components'
@@ -19,8 +19,14 @@ const TrialModal = ({
   startPremiumTrial,
   premiumProductId,
 }) => {
+  const [isSparkChecked, setIsSparkChecked] = useState()
+
   const closeModal = () => toggleModal(false)
   const onProceed = () => {
+    if (!premiumUser && !isPremiumTrialUsed && !isSparkChecked) {
+      startPremiumTrial()
+      return
+    }
     const {
       orgData: { districtIds, districts },
     } = userInfo
@@ -59,6 +65,10 @@ const TrialModal = ({
     }
     closeModal()
   }
+  const handleOnChange = (ele) => {
+    const checked = ele.checked
+    setIsSparkChecked(checked)
+  }
 
   const Footer = (
     <>
@@ -68,28 +78,51 @@ const TrialModal = ({
       <EduButton onClick={onProceed}>Proceed</EduButton>
     </>
   )
+  const nonPremium = (
+    <>
+      <StyledCheckbox checked>
+        Teacher Premium $100 ($0 today)
+        <p>Get even more out of your trial by adding Spark premium content</p>
+      </StyledCheckbox>
+      ,
+      <StyledCheckbox defaultChecked onChange={(e) => handleOnChange(e.target)}>
+        {productName} $100 ($0 today)
+        <p>Curriculum-aligned differentiated math practice</p>
+      </StyledCheckbox>
+    </>
+  )
+  const Premium = (
+    <StyledCheckbox style={{ textAlign: 'left' }}>
+      {productName} $100 ($100 today)
+      <p>Curriculum-aligned differentiated math practice</p>
+    </StyledCheckbox>
+  )
+
+  const modalContent = () => {
+    if (!premiumUser && !isPremiumTrialUsed) {
+      return nonPremium
+    }
+    return Premium
+  }
 
   return (
     <CustomModalStyled
       centered
-      title={productName}
+      title="Start Your Free Trial!"
       footer={Footer}
       visible={isVisible}
       onCancel={closeModal}
     >
-      {description}
-      <FlexContainer
-        flexDirection="column"
-        justifyContent="center"
-        marginLeft="40px"
-        mr="40px"
-        mt="20px"
-      >
-        {!premiumUser && !isPremiumTrialUsed && (
-          <StyledCheckbox checked>Premium Trial</StyledCheckbox>
-        )}
-        <StyledCheckbox checked>{productName} Trial</StyledCheckbox>
+      <p>
+        Experience the additional features of Edulastic Teacher Premium for 14
+        days: read-aloud for students, extra test security settings, easier
+        collaboration, in-depth reports and more.
+      </p>
+
+      <FlexContainer flexDirection="column" justifyContent="left" mt="20px">
+        {modalContent()}
       </FlexContainer>
+      <p style={{ fontFamily: 'bold' }}>No credit card required now!</p>
     </CustomModalStyled>
   )
 }
@@ -109,4 +142,5 @@ const StyledCheckbox = styled(Checkbox)`
   font-size: 16px;
   font-weight: 600;
   cursor: unset;
+  }
 `

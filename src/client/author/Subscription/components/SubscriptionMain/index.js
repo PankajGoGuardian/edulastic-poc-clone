@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
-import {
-  EduButton,
-  FlexContainer,
-  MainContentWrapper,
-  notification,
-} from '@edulastic/common'
-import { isBoolean } from 'lodash'
+import { connect } from 'react-redux'
+import { EduButton, FlexContainer, MainContentWrapper } from '@edulastic/common'
 import { Link } from 'react-router-dom'
-import StartTrialModal from './StartTrialModal'
+import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
+import { getUserDetails } from '../../../../student/Login/ducks'
+
 
 // TODO: Update SVG imports here
 import IMG1 from '../../static/1.png'
@@ -54,6 +51,7 @@ import {
   CustomButton,
   AddonFooter,
   PurchaseLink,
+  LearnMoreLink,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -132,42 +130,45 @@ const featuresData = [
   {
     imgSrc: IMG4,
     title: 'Text-to-speech',
-    description: 'Text to Speech (Read Aloud) for students',
+    description: 'Enable read aloud for select students',
   },
   {
     imgSrc: IMG5,
     title: 'Test Security Settings',
-    description: 'Shuffle questions, hide correct answers, etc.',
+    description: 'Shuffle questions, password protect, and more',
   },
   {
     imgSrc: IMG6,
     title: 'Advanced Authoring',
-    description: 'Options, dynamic parameters, rubric support',
+    description:
+      'Activate dynamic parameters, rubrics, & authoring power tools',
   },
   {
     imgSrc: IMG7,
     title: 'In-depth reports',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description:
+      'Analyze data, growth, performance over time, & student mastery profiles.',
   },
   {
     imgSrc: IMG8,
     title: 'Playlists',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description: 'Organize and deliver your assessments by units or modules.',
   },
   {
     imgSrc: IMG9,
     title: 'Collaboration & Engagement',
-    description: 'Co-author, sharing, presentation mode',
+    description: 'Co-author, display present mode, and more.',
   },
   {
     imgSrc: IMG10,
     title: 'Student Groups',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description:
+      'Arrange students for differentiated assignments & instruction.',
   },
   {
     imgSrc: IMG11,
     title: 'Parent Portal',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description: 'Give parents/guardians insight into student progress.',
   },
 ]
 
@@ -177,33 +178,39 @@ const addonsData = [
     title: 'SparkMath',
     description:
       'Pre-built assessments and differentiated Math practice for each student',
+    learnMoreLinks: 'https://edulastic.com/spark-math',
   },
   {
     imgSrc: IMG13,
     title: 'Book Buddies',
     description: 'Assessments and prompts on your favorite books',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG14,
     title: 'STEM Cross-curricular',
     description: 'Science passages with reading and science questions',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG15,
     title: 'Phonics Practice',
     description:
       'Full year of practice assignments to help all students master each sound',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG16,
     title: 'Reading Comprehension Practice',
     description: 'Fiction and nonfiction to practice close reading',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG12,
     title: 'SparkScience',
     description:
       'NGSS-aligned pre-built assessments and item banks for grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-science',
   },
 ]
 
@@ -236,22 +243,28 @@ const PlansComponent = ({
   </PlansContainer>
 )
 
-const SubscriptionMain = (props) => {
+const SubscriptionMain = ({ user, ...props }) => {
   const {
     isSubscribed = false,
     openPaymentServiceModal,
     openHasLicenseKeyModal,
     openPurchaseLicenseModal,
     isPremiumTrialUsed,
+    showRenewalOptions,
+    addPermissionRequest,
     startTrialAction,
     isPaidPremium,
-    showRenewalOptions,
     setShowSubscriptionAddonModal,
     premiumProductId,
   } = props
 
-  const [showTrialModal, setShowTrialModal] = useState(false)
+
+
   const [showSelectStates, setShowSelectStates] = useState(false)
+  const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+
+  const toggleTrialModal = (value) => setIsTrialModalVisible(value)
+  const isPremiumUser = user.features.premium
 
   const handleSelectStateModal = () => {
     setShowSelectStates(true)
@@ -275,9 +288,9 @@ const SubscriptionMain = (props) => {
         msg: 'You have already used up the trial !',
       })
     }
-    startTrialAction({ productIds: [premiumProductId] })
-  }
 
+    setIsTrialModalVisible(true)
+  }
   return (
     <>
       <MainContentWrapper padding="30px" style={{ display: 'none' }}>
@@ -352,11 +365,18 @@ const SubscriptionMain = (props) => {
           </HaveLicenseKey>
         </ContentCards>
       </ContentSection>
-      <StartTrialModal
-        visible={showTrialModal}
-        setShowModal={setShowTrialModal}
-      />
-
+      {isTrialModalVisible && (
+       <TrialModal
+          userInfo={user}
+          isVisible={isTrialModalVisible}
+          toggleModal={toggleTrialModal}
+          premiumUser={isPremiumUser}
+          isPremiumTrialUsed={isPremiumTrialUsed}
+          startPremiumTrial={startTrialAction}
+          addItemBankPermission={addPermissionRequest}
+          productName="SparkMath"
+        />
+      )}
       <AddonSection>
         <SectionContainer>
           <SectionTitle>Premium addons to make it even better</SectionTitle>
@@ -374,7 +394,14 @@ const SubscriptionMain = (props) => {
                   {addonsData[index].description}
                 </AddonDescription>
                 <AddonFooter>
-                  <span>Learn more</span>
+                  <LearnMoreLink
+                    href={addonsData[index].learnMoreLinks}
+                    target="_blank"
+                    rel="noreferrer"
+                    className
+                  >
+                    Learn more
+                  </LearnMoreLink>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
                       {!isPaidPremium && (
@@ -440,4 +467,6 @@ const SubscriptionMain = (props) => {
   )
 }
 
-export default SubscriptionMain
+export default connect((state) => ({
+  user: getUserDetails(state),
+}))(SubscriptionMain)

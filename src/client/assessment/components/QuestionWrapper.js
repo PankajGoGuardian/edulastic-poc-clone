@@ -424,7 +424,7 @@ class QuestionWrapper extends Component {
 
     return (
       (isDistrictAdmin && isPowerTeacher && isPremiumUser) ||
-      canUseAllOptionsByDefault(permissions)
+      canUseAllOptionsByDefault(permissions, userRole)
     )
   }
 
@@ -468,7 +468,7 @@ class QuestionWrapper extends Component {
     } = this.props
 
     const _isPowerTeacher =
-      isPowerTeacher || canUseAllOptionsByDefault(permissions)
+      isPowerTeacher || canUseAllOptionsByDefault(permissions, userRole)
     const {
       isExpressGrader,
       isStudentReport,

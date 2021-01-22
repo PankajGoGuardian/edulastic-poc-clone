@@ -66,7 +66,7 @@ class Question extends Component {
     }
     let showAdvancedTools = true
 
-    if (canUseAllOptionsByDefault(permissions)) return true
+    if (canUseAllOptionsByDefault(permissions, userRole)) return true
     /**
      * allowed for teacher/DA/SA having premium feature and enabled power tools
      * scoring section needs to be shown for non power users as well

@@ -35,20 +35,26 @@ const TrialModal = ({
 
   const Footer = (
     <>
-      <EduButton isGhost onClick={closeModal}>
+      <EduButton data-cy="cancelButton" isGhost onClick={closeModal}>
         Cancel
       </EduButton>
-      <EduButton onClick={onProceed}>Proceed</EduButton>
+      <EduButton data-cy="proceedButton" onClick={onProceed}>
+        Proceed
+      </EduButton>
     </>
   )
   const nonPremium = (
     <>
-      <StyledCheckbox checked>
+      <StyledCheckbox data-cy="teacherPremiumCheckbox" checked>
         Teacher Premium $100 ($0 today)
         <p>Get even more out of your trial by adding Spark premium content</p>
       </StyledCheckbox>
       ,
-      <StyledCheckbox defaultChecked onChange={(e) => handleOnChange(e.target)}>
+      <StyledCheckbox
+        data-cy="sparkPremiumCheckbox"
+        defaultChecked
+        onChange={(e) => handleOnChange(e.target)}
+      >
         {productName} $100 ($0 today)
         <p>Curriculum-aligned differentiated math practice</p>
       </StyledCheckbox>

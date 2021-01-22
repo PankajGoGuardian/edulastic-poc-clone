@@ -584,13 +584,22 @@ function* loadTest({ payload }) {
           questionIndex++
         }
       }
-      yield put(
-        push(
-          `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${
-            questionIndex - 1
-          }`
-        )
+      const allItemsToDeliver = testActivity.testActivity.itemsToDeliverInGroup.flatMap(
+        (itemGroup) => itemGroup.items
       )
+      if (allItemsToDeliver.length === questionIndex) {
+        yield put(
+          push(
+            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
+          )
+        )
+      } else {
+        yield put(
+          push(
+            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${questionIndex}`
+          )
+        )
+      }
     }
   } catch (err) {
     captureSentryException(err)

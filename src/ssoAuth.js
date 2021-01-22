@@ -12,28 +12,36 @@ import { Spin } from 'antd'
 
 const SsoAuth = ({ user, redirectUrl }) => {
   const [loading, setLoading] = useState(true)
-  const [responseData, setResponseData] = useState('')
+  const [responseData, setResponseData] = useState('Something went wrong.')
   useEffect(() => {
     // call api and get signature and data
     if (user && redirectUrl) {
       authApi
-        .wordPressLoginData({})
+        .wordPressLoginData({ redUrl: redirectUrl })
         .then((response) => {
           setLoading(false)
-          setResponseData(JSON.stringify(response))
           // post the signature to the third party
+          if (response.redirectUrl) {
+            setResponseData('Redirecting ...')
+            window.location.href = response.redirectUrl
+          } else {
+            setResponseData('Failed to get redirect url ...')
+          }
         })
-        .catch((error) => {
+        .catch(() => {
           setLoading(false)
-          setResponseData(JSON.stringify(error))
+          setResponseData('Failed to get redirect url ...')
         })
-        .finally(() => {})
+        .finally(() => {
+          // remove the storage data
+          localStorage.removeItem('thirdPartyOAuth')
+          localStorage.removeItem('thirdPartyOAuthRedirectUrl')
+        })
     }
     return () => {
       // on component unmount
     }
   }, [])
-  console.log(responseData)
   return loading ? (
     <Spin />
   ) : (

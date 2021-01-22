@@ -303,12 +303,8 @@ class App extends Component {
         const thirdPartyOAuthRedirectUrl = localStorage.getItem(
           'thirdPartyOAuthRedirectUrl'
         )
-        const { getAuthDataForWordPressUser } = this.props
         if (thirdPartyOAuth === 'wordpress' && thirdPartyOAuthRedirectUrl) {
           // redirect user to redirect url with first name and last name and role
-          getAuthDataForWordPressUser({
-            redUrl: thirdPartyOAuthRedirectUrl,
-          })
           return (
             <SsoAuth
               user={user}
@@ -322,14 +318,11 @@ class App extends Component {
             ignoreQueryPrefix: true,
           })
           if (redirectUrl) {
-            getAuthDataForWordPressUser({
-              redUrl: redirectUrl,
-            })
             return (
               <SsoAuth
                 user={user}
                 location={location}
-                redirectUrl={thirdPartyOAuthRedirectUrl}
+                redirectUrl={redirectUrl}
               />
             )
           }

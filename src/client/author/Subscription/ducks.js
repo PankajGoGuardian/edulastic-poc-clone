@@ -126,14 +126,17 @@ function* handleStripePayment({ payload }) {
       })
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
-        const { subEndDate } = apiPaymentResponse.subscription
-        notification({
-          type: 'success',
-          msg: `Congratulations! Your account is upgraded to Premium version for a year and the subscription will expire on ${moment(
-            subEndDate
-          ).format('DD MMM, YYYY')}`,
-          key: 'handle-payment',
-        })
+        if (apiPaymentResponse.subscription) {
+          const { subEndDate } = apiPaymentResponse.subscription
+          notification({
+            type: 'success',
+            msg: `Congratulations! Your account is upgraded to Premium version for a year and the subscription will expire on ${moment(
+              subEndDate
+            ).format('DD MMM, YYYY')}`,
+            key: 'handle-payment',
+          })
+        }
+        yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
       } else {
         notification({

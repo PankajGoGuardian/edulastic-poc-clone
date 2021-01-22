@@ -28,6 +28,7 @@ import {
   handleChromeOsSEB,
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
+import { testActivityApi } from '@edulastic/api';
 
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
@@ -60,7 +61,7 @@ import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
 import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
-
+import useFocusHandler from '../utils/useFocusHandler';
 const { playerSkinValues } = testConstants
 
 const shouldAutoSave = (itemRows) => {
@@ -83,6 +84,46 @@ const shouldAutoSave = (itemRows) => {
 }
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
+
+function useTabNavigationCounterEffect({testActivityId,enabled,history}){
+  const inFocusRef = useRef(true);
+  const idleTimeoutRef = useRef(null);
+  useFocusHandler({
+    onFocus: () => {
+      inFocusRef.current = true;
+      console.log('on focus ',new Date());
+      if(idleTimeoutRef.current){
+        clearTimeout(idleTimeoutRef.current);
+      }
+    },
+    onBlur: () => {
+      console.log('on blur ',new Date());
+      inFocusRef.current = false;
+      if(idleTimeoutRef.current){
+        clearTimeout(idleTimeoutRef.current);
+      }
+      idleTimeoutRef.current = setTimeout(()=>{  
+        if(!inFocusRef.current && enabled){
+          console.info('too much time away from screen!!!!!!!', new Date());
+          testActivityApi.incrementTabNavigationCounter(testActivityId)
+          .then((response)=>{
+            if(response.paused){
+              notification({type:"error",msg:"Sorry! Assignment got paused due to inactivity"})
+              ;
+              history.push('/home/assignments');
+            } else {
+              notification({type:"warning",msg:"Moving out of assignment has been noted"});
+            }
+          }).catch((error)=>{
+            console.warn('idle error',error);
+            notification({type:"error",msg:"something wrong happened with assignment"});
+            history.push('/home/assignments');
+          })
+        }
+      },5000);
+    }
+  });
+}
 
 const RealTimeV2HookWrapper = ({
   userId,
@@ -176,7 +217,9 @@ const AssessmentContainer = ({
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
-  const assignmentObj = currentAssignment && assignmentById[currentAssignment]
+  const assignmentObj = currentAssignment && assignmentById[currentAssignment];
+  console.log('assignmentObj',assignmentObj);
+  useTabNavigationCounterEffect({testActivityId: restProps.utaId,enabled:assignmentObj.restrictNavigationOut,history});
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {

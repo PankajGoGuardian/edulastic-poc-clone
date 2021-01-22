@@ -1036,7 +1036,7 @@ class Setting extends Component {
                                 'restrictNavigationOutAttemptsThreshold'
                               )}
                               disabled={
-                                !restrictNavigationOut || !owner || !isEditable
+                                !(restrictNavigationOut==='warn-and-report-after-n-alerts') || !owner || !isEditable
                               }
                             />{' '}
                             ALERTS

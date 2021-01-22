@@ -2,9 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox } from 'antd'
 import styled from 'styled-components'
-import moment from 'moment'
 import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
 
 const TrialModal = ({
   productId,
@@ -12,8 +10,6 @@ const TrialModal = ({
   description,
   isVisible,
   toggleModal,
-  userInfo,
-  addItemBankPermission,
   premiumUser,
   isPremiumTrialUsed,
   startPremiumTrial,
@@ -23,45 +19,12 @@ const TrialModal = ({
 
   const closeModal = () => toggleModal(false)
   const onProceed = () => {
-    if (!premiumUser && !isPremiumTrialUsed && !isSparkChecked) {
-      startPremiumTrial()
-      return
-    }
-    const {
-      orgData: { districtIds, districts },
-    } = userInfo
-    const orgType = 'USER'
-    const orgId = userInfo._id
-    const districtId = districtIds?.[0]
-    const districtName = districts?.[0]?.districtName
-    const orgName = districts?.[0]?.districtName
-    const isTrial = true
-    const role = [roleuser.TEACHER]
-    const itemBankName = productName
-    const startDate = moment().valueOf()
-    const endDate = moment().add(14, 'days').valueOf()
-
-    const permissionDetails = [
-      {
-        orgType,
-        orgId,
-        districtId,
-        districtName,
-        orgName,
-        isTrial,
-        role,
-        itemBankName,
-        startDate,
-        endDate,
-      },
-    ]
-
     const productIds = [productId]
     if (!premiumUser && !isPremiumTrialUsed) {
       productIds.push(premiumProductId)
       startPremiumTrial({ productIds })
     } else {
-      addItemBankPermission({ productIds })
+      startPremiumTrial({ productIds })
     }
     closeModal()
   }

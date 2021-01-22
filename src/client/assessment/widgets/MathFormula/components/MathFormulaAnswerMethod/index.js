@@ -6,7 +6,6 @@ import {
   withWindowSizes,
   StaticMath,
   getInnerValuesForStatic,
-  notification,
 } from '@edulastic/common'
 
 import { math, questionTitle } from '@edulastic/constants'
@@ -23,9 +22,13 @@ import { MathInputWrapper } from './styled/MathInputWrapper'
 import { Field, UnitsDropdown, DefaultKeyPadMode, CustomUnit } from './options'
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
-import EvaluationSettings from '../EvaluationSettings'
+import EvaluationSettings from '../../../../components/EvaluationSettings'
 
-const { methods: methodsConst, methodOptions: methodOptionsConst } = math
+const {
+  methods: methodsConst,
+  methodOptions: methodOptionsConst,
+  subEvaluationSettingsGrouped,
+} = math
 
 const MathFormulaAnswerMethod = ({
   onChange,
@@ -57,6 +60,7 @@ const MathFormulaAnswerMethod = ({
   isClozeMathWithUnit = false,
   t,
   isDocbasedSection,
+  extraOptions,
 }) => {
   /**
    * Setting _allowNumericOnly when the value is not set (null) and method is equivSymbolic
@@ -73,24 +77,6 @@ const MathFormulaAnswerMethod = ({
     }
   }, [method])
 
-  const hasMutuallyExclusiveOptions = (selectedOptions = {}) => {
-    let flag = false
-    let warningMsg = ''
-
-    if (selectedOptions.isExpanded && selectedOptions.isFactorised) {
-      flag = true
-      warningMsg = 'Expanded and Factored cannot be combined together'
-    } else if (
-      selectedOptions.isMixedFraction &&
-      selectedOptions.isImproperFraction
-    ) {
-      flag = true
-      warningMsg =
-        'Mixed Fraction and Improper fraction cannot be combined together'
-    }
-    return [flag, warningMsg]
-  }
-
   /**
    * Stores validation data (answer) of testItem
    * @param {string} prop
@@ -102,14 +88,21 @@ const MathFormulaAnswerMethod = ({
       [prop]: val,
     }
 
+    if (
+      newOptions.isSimplifiedFraction ||
+      newOptions.isMixedFraction ||
+      newOptions.isImproperFraction ||
+      newOptions.isRationalized
+    ) {
+      for (const property of subEvaluationSettingsGrouped.numberFormat) {
+        delete newOptions[property]
+      }
+    }
+
     if (!val) {
       delete newOptions[prop]
     }
-    const [error, errorMsg] = hasMutuallyExclusiveOptions(newOptions)
-    if (error) {
-      notification({ type: 'warn', msg: errorMsg })
-      return false
-    }
+
     onChange('options', newOptions)
   }
 
@@ -123,11 +116,6 @@ const MathFormulaAnswerMethod = ({
     options?.setThousandsSeparator?.[0] === options?.setDecimalSeparator?.[0] &&
     options?.setDecimalSeparator?.[0] !== undefined
 
-  const studentTemplate = template.replace(
-    /\\embed\{response\}/g,
-    '\\MathQuillMathField{}'
-  )
-  const innerValues = getInnerValuesForStatic(studentTemplate, value)
   const mathInputProps = {
     hideKeypad: item.showDropdown,
     symbols: isShowDropdown ? ['basic'] : item.symbols,
@@ -149,9 +137,12 @@ const MathFormulaAnswerMethod = ({
     }
   }
 
-  const handleChangeStaticMathInput = (val) => {
-    onChange('value', val)
-  }
+  const studentTemplate = template.replace(
+    /\\embed\{response\}/g,
+    '\\MathQuillMathField{}'
+  )
+
+  const innerValues = getInnerValuesForStatic(studentTemplate, value)
 
   return (
     <Container
@@ -182,7 +173,7 @@ const MathFormulaAnswerMethod = ({
                   noBorder
                   latex={studentTemplate}
                   innerValues={innerValues}
-                  onInput={handleChangeStaticMathInput}
+                  onInput={handleChangeMathInput}
                 />
               )}
               {/* when dropdown is selected */}
@@ -257,6 +248,7 @@ const MathFormulaAnswerMethod = ({
       <EvaluationSettings
         method={method}
         options={options}
+        extraOptions={extraOptions}
         allowNumericOnly={allowNumericOnly}
         allowedVariables={allowedVariables}
         onChangeMethod={onChange}
@@ -287,7 +279,6 @@ MathFormulaAnswerMethod.propTypes = {
   allowNumericOnly: PropTypes.any.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired,
-  toggleAdditional: PropTypes.func.isRequired,
   keypadMode: PropTypes.string,
   customUnits: PropTypes.string,
   isClozeMath: PropTypes.bool,

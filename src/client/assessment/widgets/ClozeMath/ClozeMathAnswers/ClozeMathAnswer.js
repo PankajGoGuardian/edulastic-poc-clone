@@ -56,7 +56,7 @@ class ClozeMathAnswer extends Component {
       item,
       onChangeKeypad,
       onChangeAllowedOptions,
-      toggleAdditional,
+      extraOptions,
     } = this.props
     const { showAdditionals } = this.state
     const { responseContainers = [], uiStyle } = item
@@ -140,7 +140,7 @@ class ClozeMathAnswer extends Component {
                     useTemplate={answer.useTemplate}
                     template={answer.template}
                     isClozeMath
-                    toggleAdditional={toggleAdditional}
+                    extraOptions={extraOptions}
                     {...method}
                   />
                 ))}

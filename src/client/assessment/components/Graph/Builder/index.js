@@ -27,6 +27,7 @@ import {
   Polynom,
   Secant,
   Sin,
+  Cos,
   Tangent,
   Title,
   Dashed,
@@ -235,6 +236,9 @@ class Board {
       case CONSTANT.TOOLS.SIN:
         this.creatingHandler = Sin.onHandler()
         return
+      case CONSTANT.TOOLS.COS:
+        this.creatingHandler = Cos.onHandler()
+        return
       case CONSTANT.TOOLS.POLYGON:
         this.creatingHandler = Polygon.onHandler()
         return
@@ -319,6 +323,8 @@ class Board {
         return Polygon.clean(this)
       case CONSTANT.TOOLS.SIN:
         return Sin.clean(this)
+      case CONSTANT.TOOLS.COS:
+        return Cos.clean(this)
       case CONSTANT.TOOLS.PARABOLA:
         return Parabola.clean(this)
       case CONSTANT.TOOLS.PARABOLA2:
@@ -348,6 +354,7 @@ class Board {
       ...Circle.getTempPoints(),
       ...Polygon.getTempPoints(),
       ...Sin.getTempPoints(),
+      ...Cos.getTempPoints(),
       ...Parabola.getTempPoints(),
       ...Parabola2.getTempPoints(),
       ...Ellipse.getTempPoints(),
@@ -775,6 +782,8 @@ class Board {
             return Polynom.getConfig(e)
           case Sin.jxgType:
             return Sin.getConfig(e)
+          case Cos.jxgType:
+            return Cos.getConfig(e)
           case Parabola.jxgType:
             return Parabola.getConfig(e)
           case Parabola2.jxgType:
@@ -1277,6 +1286,26 @@ class Board {
       case Sin.jxgType:
         this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Sin.create(
+          this,
+          object,
+          object.points.map((point) =>
+            Point.create(this, point, {
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
+            })
+          ),
+          {
+            labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
+            fixed,
+          }
+        )
+
+      case Cos.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
+        return Cos.create(
           this,
           object,
           object.points.map((point) =>

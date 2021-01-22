@@ -72,6 +72,7 @@ import {
   ttsUserIdSelector,
 } from '../../author/ClassBoard/ducks'
 import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
+import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
@@ -407,7 +408,13 @@ class QuestionWrapper extends Component {
   }
 
   get advancedAreOpen() {
-    const { userRole, features, isPremiumUser, isPowerTeacher } = this.props
+    const {
+      userRole,
+      features,
+      isPremiumUser,
+      isPowerTeacher,
+      permissions,
+    } = this.props
 
     const isDistrictAdmin =
       (userRole === TEACHER &&
@@ -415,7 +422,10 @@ class QuestionWrapper extends Component {
         !features.isCurator) ||
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
 
-    return isDistrictAdmin && isPowerTeacher && isPremiumUser
+    return (
+      (isDistrictAdmin && isPowerTeacher && isPremiumUser) ||
+      canUseAllOptionsByDefault(permissions)
+    )
   }
 
   render() {
@@ -453,8 +463,12 @@ class QuestionWrapper extends Component {
       isPremiumUser = false,
       features,
       isItemsVisible,
+      permissions,
       ...restProps
     } = this.props
+
+    const _isPowerTeacher =
+      isPowerTeacher || canUseAllOptionsByDefault(permissions)
     const {
       isExpressGrader,
       isStudentReport,
@@ -529,8 +543,12 @@ class QuestionWrapper extends Component {
       view === EDIT && windowWidth > parseInt(smallDesktopWidth, 10)
 
     const advancedLink =
-      !showQuestionMenu && advanced.length > 0 ? (
-        <AdvancedOptionsLink advancedAreOpen={this.advancedAreOpen} bottom />
+      !this.advancedAreOpen && !showQuestionMenu && advanced.length > 0 ? (
+        <AdvancedOptionsLink
+          bottom
+          isPremiumUser={isPremiumUser}
+          isPowerTeacher={_isPowerTeacher}
+        />
       ) : null
 
     const { rubrics: rubricDetails } = data
@@ -563,6 +581,7 @@ class QuestionWrapper extends Component {
               audioSrc={data.tts.titleAudioURL}
               isPaginated={data.paginated_content}
               className="question-audio-controller"
+              preferredLanguage={preferredLanguage}
             />
           )}
           <div
@@ -590,7 +609,7 @@ class QuestionWrapper extends Component {
                     scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
                     isPremiumUser={isPremiumUser}
-                    isPowerTeacher={isPowerTeacher}
+                    isPowerTeacher={_isPowerTeacher}
                   />
                 </QuestionMenuWrapper>
               )}
@@ -701,6 +720,7 @@ class QuestionWrapper extends Component {
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isStudentReport={isStudentReport}
+                      preferredLanguage={preferredLanguage}
                     />
                   )}
                   {(isLCBView ||
@@ -711,6 +731,7 @@ class QuestionWrapper extends Component {
                         isStudentReport={isStudentReport}
                         question={data}
                         isGrade={isGrade}
+                        preferredLanguage={preferredLanguage}
                       />
                     )}
                 </StyledFlexContainer>
@@ -748,6 +769,7 @@ QuestionWrapper.propTypes = {
   clearAnswers: PropTypes.func,
   saveHintUsage: PropTypes.func,
   LCBPreviewModal: PropTypes.any,
+  permissions: PropTypes.array,
 }
 
 QuestionWrapper.defaultProps = {
@@ -769,6 +791,7 @@ QuestionWrapper.defaultProps = {
   saveHintUsage: () => {},
   disableResponse: false,
   isPresentationMode: false,
+  permissions: [],
 }
 
 const enhance = compose(
@@ -792,6 +815,7 @@ const enhance = compose(
       playerSkinType: playerSkinTypeSelector(state),
       isPowerTeacher: get(state, ['user', 'user', 'isPowerTeacher'], false),
       isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
+      permissions: get(state, 'user.user.permissions', []),
       features: getUserFeatures(state),
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),

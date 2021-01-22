@@ -128,7 +128,7 @@ const SingleAssessmentReportFilters = ({
   }, [])
 
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
-    let search = pickBy(
+    const search = pickBy(
       qs.parse(location.search, { ignoreQueryPrefix: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
@@ -140,44 +140,14 @@ const SingleAssessmentReportFilters = ({
       })
       setShowApply(false)
     } else {
-      // get saved filters from backend
-      const savedFilters = get(SARFilterData, 'data.result.reportFilters')
-      // update search filters from saved filters
-      search = {
-        termId: search.termId || savedFilters.termId,
-        subject: search.subject || savedFilters.testSubject,
-        grade: search.grade || savedFilters.testGrade,
-        ...search,
-      }
       // select common assessment as default if assessment type is not set for admins
       if (
         user.role === roleuser.DISTRICT_ADMIN ||
         user.role === roleuser.SCHOOL_ADMIN
       ) {
-        search.assessmentTypes =
-          search.assessmentTypes ||
-          (savedFilters.assessmentTypes &&
-            savedFilters.assessmentTypes.join(',')) ||
-          'common assessment'
+        search.assessmentTypes = search.assessmentTypes || 'common assessment'
       }
-      if (isStandardProficiencyRequired) {
-        search.standardsProficiencyProfile =
-          search.standardsProficiencyProfile ||
-          standardProficiencyProfiles[0]?._id
-      }
-      if (performanceBandRequired) {
-        search.performanceBandProfile =
-          search.performanceBandProfile || performanceBandProfiles[0]?._id
-      }
-      if (isStandardProficiencyRequired) {
-        search.standardsProficiencyProfile =
-          search.standardsProficiencyProfile ||
-          standardProficiencyProfiles[0]?._id
-      }
-      if (performanceBandRequired) {
-        search.performanceBandProfile =
-          search.performanceBandProfile || performanceBandProfiles[0]?._id
-      }
+
       const urlSchoolYear =
         schoolYear.find((item) => item.key === search.termId) ||
         schoolYear.find((item) => item.key === defaultTermId) ||
@@ -194,7 +164,7 @@ const SingleAssessmentReportFilters = ({
         key: 'All',
         title: 'All Grades',
       }
-      const urlTestId = _testId || savedFilters?.testId || ''
+      const urlTestId = _testId || ''
       const obtainedFilters = {
         termId: urlSchoolYear.key,
         subject: urlSubject.key,
@@ -205,8 +175,6 @@ const SingleAssessmentReportFilters = ({
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
-        standardsProficiencyProfile: search.standardsProficiencyProfile || '',
-        performanceBandProfile: search.performanceBandProfile || '',
       }
       const urlParams = { ...obtainedFilters }
 

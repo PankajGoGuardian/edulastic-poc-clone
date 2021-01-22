@@ -12,6 +12,10 @@ module.exports = {
     { id: 'release-scores', title: 'Release Scores' },
     { id: 'require-safe-exame-browser', title: 'Safe Exam Browser' },
     { id: 'show-questions', title: 'Release Answers with Grades' },
+    {
+      id: 'restrict-back-navigation',
+      title: 'Restrict Question Navigation',
+    },
     { id: 'suffle-question', title: 'Shuffle Questions' },
     { id: 'show-answer-choice', title: 'Shuffle Answer Choice' },
     { id: 'show-calculator', title: 'Show Calculator' },
@@ -55,6 +59,7 @@ module.exports = {
     'timed-test': 'assessmentSuperPowersTimedTest',
     'check-answer-tries-per-question': 'assessmentSuperPowersCheckAnswerTries',
     'performance-bands': 'performanceBands',
+    'restrict-back-navigation': 'premium',
   },
   navigations: [
     'Intro Item',

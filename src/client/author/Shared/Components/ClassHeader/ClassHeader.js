@@ -34,6 +34,7 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { smallDesktopWidth } from '@edulastic/colors'
+import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
@@ -61,6 +62,8 @@ import {
   toggleReleaseScoreSettingsAction,
   toggleStudentReportCardSettingsAction,
   googleSyncAssignmentGradesAction,
+  schoologySyncAssignmentGradesAction,
+  schoologySyncAssignmentAction,
 } from '../../../src/actions/assignments'
 import {
   canvasSyncAssignmentAction,
@@ -77,6 +80,7 @@ import WithDisableMessage from '../../../src/components/common/ToggleDisable'
 import { gradebookUnSelectAllAction } from '../../../src/reducers/gradeBook'
 import {
   getAssignmentSyncInProgress,
+  getSchoologyAssignmentSyncInProgress,
   getToggleReleaseGradeStateSelector,
   getToggleStudentReportCardStateSelector,
 } from '../../../src/selectors/assignments'
@@ -312,6 +316,53 @@ class ClassHeader extends Component {
     googleSyncAssignmentGrades(data)
   }
 
+  handleSchoologyAssignmentGradesSync = (data) => {
+    const { schoologySyncAssignmentGrades, additionalData } = this.props
+    if (
+      additionalData.releaseScore ===
+      testContants.releaseGradeTypes.DONT_RELEASE
+    ) {
+      return notification({
+        msg:
+          'Please update release score policy to sync grades to Schoology Classroom',
+      })
+    }
+    schoologySyncAssignmentGrades(data)
+  }
+
+  componentDidMount() {
+    // if redirect is happening for LCB and user did action schoology sync
+    const atlasShareOriginUrl =
+      TokenStorage.getFromLocalStorage('atlasShareOriginUrl') || ''
+    const schoologySync = localStorage.getItem('schoologyShare')
+    if (
+      atlasShareOriginUrl &&
+      atlasShareOriginUrl.indexOf('classboard') > -1 &&
+      schoologySync
+    ) {
+      const fragments = atlasShareOriginUrl.split('/')
+      const assignmentId = fragments[3]
+      const classSectionId = fragments[4]
+      const {
+        schoologySyncAssignmentGrades,
+        schoologySyncAssignment,
+      } = this.props
+      if (schoologySync === 'grades') {
+        schoologySyncAssignmentGrades({
+          assignmentId,
+          groupId: classSectionId,
+        })
+      } else if (schoologySync === 'assignment') {
+        schoologySyncAssignment({
+          assignmentIds: [assignmentId],
+          groupId: classSectionId,
+        })
+      }
+      localStorage.removeItem('atlasShareOriginUrl')
+      localStorage.removeItem('schoologyShare')
+    }
+  }
+
   render() {
     const {
       t,
@@ -345,6 +396,8 @@ class ClassHeader extends Component {
       isShowUnAssign,
       canvasSyncAssignment,
       studentsUTAData,
+      schoologySyncAssignment,
+      syncWithSchoologyClassroomInProgress,
     } = this.props
     const {
       visible,
@@ -381,8 +434,13 @@ class ClassHeader extends Component {
         : closed
         ? 'DONE'
         : assignmentStatus
-    const { canvasCode, canvasCourseSectionCode, googleId: groupGoogleId } =
-      orgClasses.find(({ _id }) => _id === classId) || {}
+    const {
+      canvasCode,
+      canvasCourseSectionCode,
+      googleId: groupGoogleId,
+      atlasId: groupAtlasId,
+      atlasProviderName = '',
+    } = orgClasses.find(({ _id }) => _id === classId) || {}
     const showSyncGradesWithCanvasOption =
       canvasCode && canvasCourseSectionCode && canvasAllowedInstitutions.length
 
@@ -394,6 +452,16 @@ class ClassHeader extends Component {
 
     const showGoogleGradeSyncOption =
       groupGoogleId &&
+      assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
+      studentsUTAData.some(
+        (uta) =>
+          uta.graded === gradingStatus.GRADED ||
+          uta.UTASTATUS === testActivityStatus.SUBMITTED
+      )
+
+    const showSchoologyGradeSyncOption =
+      groupAtlasId &&
+      atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' &&
       assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
       studentsUTAData.some(
         (uta) =>
@@ -543,6 +611,33 @@ class ClassHeader extends Component {
             disabled={syncWithGoogleClassroomInProgress}
           >
             Sync with Google Classroom
+          </MenuItems>
+        )}
+        {showSchoologyGradeSyncOption && (
+          <MenuItems
+            key="key10"
+            onClick={() =>
+              this.handleSchoologyAssignmentGradesSync({
+                assignmentId,
+                groupId: classId,
+              })
+            }
+          >
+            Sync Grades to Schoology Classroom
+          </MenuItems>
+        )}
+        {groupAtlasId && atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' && (
+          <MenuItems
+            key="key11"
+            onClick={() =>
+              schoologySyncAssignment({
+                assignmentIds: [assignmentId],
+                groupId: classId,
+              })
+            }
+            disabled={syncWithSchoologyClassroomInProgress}
+          >
+            Sync with Schoology Classroom
           </MenuItems>
         )}
         <FeaturesSwitch
@@ -843,6 +938,9 @@ const enhance = compose(
       userId: state?.user?.user?._id,
       isShowUnAssign: getIsShowUnAssignSelector(state),
       isActivityLoading: testActivtyLoadingSelector(state),
+      syncWithSchoologyClassroomInProgress: getSchoologyAssignmentSyncInProgress(
+        state
+      ),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -860,6 +958,8 @@ const enhance = compose(
       googleSyncAssignmentGrades: googleSyncAssignmentGradesAction,
       toggleStudentReportCardPopUp: toggleStudentReportCardSettingsAction,
       canvasSyncAssignment: canvasSyncAssignmentAction,
+      schoologySyncAssignment: schoologySyncAssignmentAction,
+      schoologySyncAssignmentGrades: schoologySyncAssignmentGradesAction,
     }
   )
 )

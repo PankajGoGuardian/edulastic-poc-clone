@@ -136,12 +136,13 @@ export const getQuestionLabels = (testItemsData = []) => {
         barLabel: `Q${i + 1}`,
       }
     } else {
+      let qLabelCount = 1
       for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
         const q = item.data.questions[qIndex]
-        if (item.isDocBased) {
+        if (item.isDocBased && q.type !== questionType.SECTION_LABEL) {
           result[q.id] = {
-            qLabel: `Q${qIndex + 1}`,
-            barLabel: `Q${qIndex + 1}`,
+            qLabel: `Q${qLabelCount}`,
+            barLabel: `Q${qLabelCount++}`,
           }
         } else {
           result[q.id] = {
@@ -687,7 +688,11 @@ export const transformGradeBookResponse = (
         const isValidQuestionActivity = (x = {}) =>
           (x.qids && x.qids.length && x.testActivityId) || x.qid
         // has own property  then pick it or else default to true
-        const { isEnrolled = true, isAssigned = true } = testActivity
+        const {
+          isEnrolled = true,
+          isAssigned = true,
+          isPaused = false,
+        } = testActivity
         return {
           studentId,
           studentName: fullName,
@@ -719,6 +724,7 @@ export const transformGradeBookResponse = (
                 }))
               : questionActivities.filter((x) => isValidQuestionActivity(x)),
           endDate: testActivity.endDate,
+          isPaused,
         }
       }
     )
@@ -733,10 +739,13 @@ export const getStudentCardStatus = (
 ) => {
   const status = {}
   const { NOT_STARTED, START, SUBMITTED, ABSENT } = testActivityStatus
-  const { UTASTATUS, isEnrolled, isAssigned } = student
+  const { UTASTATUS, isEnrolled, isAssigned, isPaused } = student
   if (student.redirected && UTASTATUS === NOT_STARTED) {
     status.status = 'Redirected'
     status.color = themeColorLighter
+    if (isPaused) {
+      status.status = `${status.status} (paused)`
+    }
     return status
   }
 
@@ -749,12 +758,18 @@ export const getStudentCardStatus = (
       status.status = 'Unassigned'
     }
     status.color = red
+    if (isPaused) {
+      status.status = `${status.status} (paused)`
+    }
     return status
   }
 
   if (isAssigned === false) {
     status.status = 'Unassigned'
     status.color = red
+    if (isPaused) {
+      status.status = `${status.status} (paused)`
+    }
     return status
   }
 
@@ -782,6 +797,9 @@ export const getStudentCardStatus = (
     default:
       status.status = 'Not Started'
       status.color = red
+  }
+  if (isPaused) {
+    status.status = `${status.status} (paused)`
   }
   return status
 }

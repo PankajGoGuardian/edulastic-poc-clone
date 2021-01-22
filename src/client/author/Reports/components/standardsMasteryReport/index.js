@@ -21,7 +21,7 @@ const links = [
     thumbnail: SMRGradbook,
     location: '/author/reports/standards-gradebook',
     description:
-      'View a summary of proficiency on all standards assessed on one or assessments. Can be filtered by individual, class, or group.',
+      'View a summary of proficiency on all standards assessed on one or more tests. Can be filtered by individual, class, or group.',
   },
   // {
   //   key: "standardsProgess",

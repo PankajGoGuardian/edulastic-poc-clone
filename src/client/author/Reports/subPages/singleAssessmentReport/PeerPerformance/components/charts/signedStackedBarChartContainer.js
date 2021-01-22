@@ -186,6 +186,7 @@ export const SignedStackedBarChartContainer = ({
       barsLabelFormatter={barsLabelFormatter}
       filter={filter}
       legendPayload={legendPayload}
+      pageSize={10}
     />
   )
 }

@@ -122,3 +122,8 @@ export const getAssignmentSyncInProgress = createSelector(
   stateSelector,
   (state) => state.syncWithGoogleClassroomInProgress
 )
+
+export const getSchoologyAssignmentSyncInProgress = createSelector(
+  stateSelector,
+  (state) => state.syncWithSchoologyClassroomInProgress
+)

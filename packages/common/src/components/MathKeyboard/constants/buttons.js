@@ -97,7 +97,6 @@ import Group8871 from '../assets/units/Group8871.svg'
 import Group8872 from '../assets/units/Group8872.svg'
 import Group8873 from '../assets/units/Group8873.svg'
 import Group8874 from '../assets/units/Group8874.svg'
-import Group8875 from '../assets/units/Group8875.svg'
 import Group8876 from '../assets/units/Group8876.svg'
 import Group8877 from '../assets/units/Group8877.svg'
 import Group8878 from '../assets/units/Group8878.svg'
@@ -379,6 +378,15 @@ export const fraction = {
   labelcy: 'divide',
   value: 'divide',
   label: <CustomImage src={fractionIcon} width={25} height={40} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const slashDivide = {
+  handler: '/',
+  labelcy: 'divide',
+  value: 'divide',
+  label: <CustomImage src={Group3341} width={10} height={20} />,
   types: ['all'],
   command: 'cmd',
 }
@@ -669,13 +677,6 @@ export const cm2 = {
 export const m2 = {
   handler: '\\text{m}^{2}',
   label: <CustomImage src={Group8394} width={23} height={16} />,
-  types: ['all'],
-  command: 'write',
-}
-
-export const si_m_sec2 = {
-  handler: '\\text{m/}s^2',
-  label: <CustomImage src={Group8875} width={38} height={24} />,
   types: ['all'],
   command: 'write',
 }

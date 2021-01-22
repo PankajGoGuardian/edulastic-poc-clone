@@ -4,12 +4,18 @@ import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { RadioGrp, RadioBtn } from '@edulastic/common'
 import { math as mathConstants } from '@edulastic/constants'
-import { separatorColor } from '@edulastic/colors'
+import { separatorColor, greyThemeDark6 } from '@edulastic/colors'
 import LabelWithHelper from './LabelWithHelper'
 import { HeadingLabel } from './InlineCheckOptions'
 
 const { subEvaluationSettingsGrouped } = mathConstants
-const Interpret = ({ t, options, optionKey, onChange }) => {
+const Interpret = ({
+  t,
+  options,
+  optionKey,
+  onChange,
+  isNumberFormatDisabled,
+}) => {
   const interpretOptions = subEvaluationSettingsGrouped[optionKey]
 
   const showHeading =
@@ -43,7 +49,13 @@ const Interpret = ({ t, options, optionKey, onChange }) => {
   return (
     <RadioGroupWrapper noBorder={showHeading}>
       {showHeading && (
-        <HeadingLabel>{t(`component.math.${optionKey}`)}</HeadingLabel>
+        <HeadingLabel>
+          {optionKey === 'equationForms' ? (
+            <LabelWithHelper optionKey={optionKey} color={greyThemeDark6} />
+          ) : (
+            t(`component.math.${optionKey}`)
+          )}
+        </HeadingLabel>
       )}
       <RadioGrp name={optionKey} value={selected}>
         {interpretOptions.map((opt) => (
@@ -55,6 +67,7 @@ const Interpret = ({ t, options, optionKey, onChange }) => {
             checked={opt === selected}
             width={buttonWidth}
             onClick={onClickRadioHandler(opt)}
+            disabled={isNumberFormatDisabled}
           >
             <LabelWithHelper optionKey={opt} />
           </RadioBtn>

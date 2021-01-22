@@ -1,15 +1,13 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Row } from 'antd'
-import { get } from 'lodash'
 import { greyishDarker1 } from '@edulastic/colors'
-import { roleuser } from '@edulastic/constants'
 import { StyledH3, Capitalized } from '../../../../common/styled'
 import StatItem from './StatItem'
 
 export const Stats = (props) => {
-  const { role, name, user } = props
-  let { data } = props
+  const { role, name } = props
+  const { data } = props
   const defaultState = {
     avgScore: 0,
     total: 0,
@@ -65,11 +63,7 @@ export const Stats = (props) => {
   }
 
   const state = useMemo(() => {
-    const schoolIds = get(user, 'orgData.schools', []).map(({ _id }) => _id)
-
-    if (role == roleuser.SCHOOL_ADMIN) {
-      data = props.data.filter((d) => schoolIds.includes(d.schoolId))
-    }
+    // schoolId filter for SA is already handled in report apis
     return data ? parseData(data) : defaultState
   }, [data])
 

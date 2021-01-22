@@ -688,7 +688,7 @@ class ClassesTable extends Component {
         },
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) =>
-          a._source.owners[0].name.localeCompare(b._source.owners[0].name),
+          a._source.owners[0]?.name?.localeCompare(b._source.owners[0]?.name),
       },
       {
         title: t('class.student'),

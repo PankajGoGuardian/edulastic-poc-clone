@@ -12,6 +12,8 @@ const methods = {
   // CHECK_IF_TRUE: "isTrue"
 }
 
+const GRAPH_EVALUATION_SETTING = 'graphEvaluationSetting'
+
 const fields = {
   INTEGER: 'integerType',
   REAL: 'realType',
@@ -176,7 +178,7 @@ const methodOptions = {
     'allowEulersNumber',
     'isFactorised',
     'isExpanded',
-    'isSimplified',
+    'isSimplifiedExpression',
     'isMixedFraction',
     'isImproperFraction',
     'ignoreAlphabeticCharacter',
@@ -259,7 +261,7 @@ const methodOptions = {
 const methodOptionsGrouped = {
   [methods.EQUIV_SYMBOLIC]: {
     'STUDENT ANSWER MUST BE': [
-      'isSimplified',
+      'isSimplifiedExpression',
       'isMixedFraction',
       'isImproperFraction',
       'isFactorised',
@@ -309,6 +311,8 @@ const methodOptionsGrouped = {
   // }
 }
 
+const simplifiedOptions = ['isSimplifiedFraction', 'isSimplifiedExpression']
+
 const interpret = [
   'automatic',
   'interpretAsSet',
@@ -322,7 +326,7 @@ const fractionForms = [
   'isImproperFraction',
   'isRationalized',
 ]
-const expressionForms = ['isSimplified', 'isFactorised', 'isExpanded']
+const expressionForms = ['isSimplifiedExpression', 'isFactorised', 'isExpanded']
 const numberFormat = [
   'integerType',
   // 'numberType',
@@ -342,6 +346,25 @@ const equationForms = [
   'isConicStandardForm',
   'isParabolaVertexForm',
 ]
+
+// Graph Types evaluation settings
+const graphSegmentChecks = [
+  'compareStartPoint',
+  'compareLength',
+  // 'compareStartAndLength',
+]
+const graphLineChecks = ['isParallel', 'isPerpendicular']
+const graphPolygonChecks = [
+  'compareArea',
+  'isSquare',
+  'isCongruent',
+  'isSimilar',
+  'hasRightAngle',
+  'comparePerimeter',
+]
+const graphMiscellaneous = ['tolerance', 'ignoreLabels']
+const graphPointsOnAnEquation = ['latex', 'points']
+
 const evaluationSettings = {
   [methods.EQUIV_SYMBOLIC]: {
     'STUDENT ANSWER MUST BE': [
@@ -382,6 +405,13 @@ const evaluationSettings = {
     'allowedVariables',
     'ignoreCase',
   ],
+  [GRAPH_EVALUATION_SETTING]: [
+    'graphSegmentChecks',
+    'graphLineChecks',
+    'graphPolygonChecks',
+    'graphMiscellaneous',
+    'graphPointsOnAnEquation',
+  ],
 }
 
 const subEvaluationSettingsGrouped = {
@@ -392,6 +422,11 @@ const subEvaluationSettingsGrouped = {
   accuracyForms,
   multipleValues,
   equationForms,
+  graphSegmentChecks,
+  graphLineChecks,
+  graphPolygonChecks,
+  graphMiscellaneous,
+  graphPointsOnAnEquation,
 }
 
 const characterMapButtons = [
@@ -497,4 +532,6 @@ module.exports = {
   evaluationSettings,
   subEvaluationSettingsGrouped,
   keyboardMethods,
+  GRAPH_EVALUATION_SETTING,
+  simplifiedOptions,
 }

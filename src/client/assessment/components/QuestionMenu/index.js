@@ -101,7 +101,6 @@ class QuestionMenu extends Component {
 
   render() {
     const {
-      advancedAreOpen,
       handleAdvancedOpen,
       windowWidth,
       questionTitle,
@@ -112,7 +111,7 @@ class QuestionMenu extends Component {
 
     return (
       <Menu>
-        <ScrollbarContainer>
+        <ScrollbarContainer height="auto" mb="10px">
           <MainOptions activeTab={activeTab} windowWidth={windowWidth}>
             {this.menuOptions.map((option, index) => (
               <Option
@@ -131,18 +130,15 @@ class QuestionMenu extends Component {
             />
           )}
         </ScrollbarContainer>
-
-        {!advancedAreOpen && (
-          <VideoThumbnailWapper onClick={this.openModal}>
-            <VideoThumbnail
-              questionTitle={questionTitle}
-              title="How to author video"
-              width="100%"
-              maxWidth="100%"
-              margin="30px 0 0 0"
-            />
-          </VideoThumbnailWapper>
-        )}
+        <VideoThumbnailWapper onClick={this.openModal}>
+          <VideoThumbnail
+            questionTitle={questionTitle}
+            title="How to author video"
+            width="100%"
+            maxWidth="100%"
+            margin="30px 0 0 0"
+          />
+        </VideoThumbnailWapper>
         <IframeVideoModal
           questionTitle={questionTitle}
           visible={isVideoModalVisible}
@@ -183,6 +179,8 @@ const Menu = styled.div`
 const ScrollbarContainer = styled(PerfectScrollbar)`
   padding-top: 10px;
   padding-left: 10px;
+  height: ${({ height }) => height || ''};
+  margin-bottom: ${({ mb }) => mb || ''};
   max-height: ${(props) =>
     `calc(100vh - ${props.theme.HeaderHeight.xs + 110}px)`};
   /* 110px is for top-Bottom padding(60) and breadcrumbs height(50) */
@@ -265,7 +263,6 @@ const Option = styled.li`
 `
 
 const VideoThumbnailWapper = styled.div`
-  position: absolute;
-  bottom: 180px;
+  position: relative;
   width: 100%;
 `

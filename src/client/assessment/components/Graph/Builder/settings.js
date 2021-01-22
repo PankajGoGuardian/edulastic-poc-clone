@@ -1,7 +1,7 @@
 import JXG from 'jsxgraph'
 import { isObject } from 'lodash'
 import { tickLabel } from './utils'
-import { Tangent, Logarithm, Sin, Parabola, Parabola2 } from './elements'
+import { Tangent, Logarithm, Sin, Cos, Parabola, Parabola2 } from './elements'
 
 /**
  * Graph parameters
@@ -126,6 +126,13 @@ export const getLabelPositionParameters = (elementType) => {
         anchorX: 'left',
         anchorY: 'middle',
       }
+    case Cos.jxgType:
+      return {
+        position: 'lft',
+        offset: [10, 0],
+        anchorX: 'left',
+        anchorY: 'middle',
+      }
     case Parabola.jxgType:
     case Parabola2.jxgType:
       return {
@@ -208,6 +215,14 @@ function mergeAxesParameters(target, parameters) {
     target.y.withLabel = true
     target.y.name = parameters.y.name
   }
+
+  if ('showAxis' in parameters.x) {
+    target.x.visible = parameters.x.showAxis
+  }
+  if ('showAxis' in parameters.y) {
+    target.y.visible = parameters.y.showAxis
+  }
+
   if ('showTicks' in parameters.x && parameters.x.showTicks === false) {
     target.x.ticks.majorHeight = 0
   }
@@ -260,9 +275,15 @@ export function mergeParams(defaultConfig, userConfig) {
     mergeAxesParameters(defaultConfig.defaultaxes, userConfig.axesParameters)
   }
   if ('gridParameters' in userConfig) {
-    defaultConfig.grid = {
-      ...defaultConfig.grid,
-      ...userConfig.gridParameters,
+    const { gridParameters: userGridPrams } = userConfig
+    if ('gridX' in userGridPrams) {
+      defaultConfig.grid.gridX = userGridPrams.gridX
+    }
+    if ('gridY' in userGridPrams) {
+      defaultConfig.grid.gridY = userGridPrams.gridY
+    }
+    if ('showGrid' in userGridPrams) {
+      defaultConfig.grid.visible = userGridPrams.showGrid
     }
   }
   return defaultConfig

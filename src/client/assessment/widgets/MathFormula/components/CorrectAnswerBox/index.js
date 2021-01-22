@@ -1,17 +1,53 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { MathFormulaDisplay, CorrectAnswersContainer } from '@edulastic/common'
+import { isArray } from 'lodash'
+import {
+  FieldLabel,
+  MathFormulaDisplay,
+  CorrectAnswersContainer,
+} from '@edulastic/common'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
+import EvaluationSettings from '../../../../components/EvaluationSettings'
 import { Answer } from './styled/Answer'
 
-export const formatToMathAnswer = (answer) =>
-  answer.search('input__math') !== -1
-    ? answer
-    : `<span class="input__math" data-latex="${answer}"></span>`
+export const formatToMathAnswer = (answer, template) => {
+  let answerStr = answer
+  if (isArray(answer) && template) {
+    answerStr = template
+    const matches = template.match(/\\embed\{response\}/g)
+    if (isArray(matches)) {
+      for (let i = 0; i < matches.length; i++) {
+        answerStr = answerStr.replace(matches[i], answer[i])
+      }
+    }
+  }
 
-const CorrectAnswerBox = ({ answer = '', t, altAnswers, theme, index }) => {
-  const displayAnswer = formatToMathAnswer(answer)
+  return answerStr.search('input__math') !== -1
+    ? answerStr
+    : `<span class="input__math" data-latex="${answerStr}"></span>`
+}
+
+const CorrectAnswerBox = ({
+  answer = '',
+  t,
+  altAnswers,
+  theme,
+  index,
+  template = '',
+  method,
+  viewComponent,
+  options,
+  extraOtps,
+  allowNumericOnly,
+  allowedVariables,
+}) => {
+  const [showOptions, setShowOptions] = useState(false)
+  const optionsToShow = useMemo(() => {
+    return { ...(options || {}), ...(extraOtps || {}) }
+  }, [options, extraOtps])
+
+  const displayAnswer = formatToMathAnswer(answer, template)
 
   return (
     <CorrectAnswersContainer
@@ -28,6 +64,23 @@ const CorrectAnswerBox = ({ answer = '', t, altAnswers, theme, index }) => {
           dangerouslySetInnerHTML={{ __html: displayAnswer }}
         />
       </Answer>
+      {viewComponent === 'editQuestion' && (
+        <Answer>
+          <FieldLabel onClick={() => setShowOptions(!showOptions)}>
+            {showOptions
+              ? t('component.math.hideEvaluationSettings')
+              : t('component.math.showEvaluationSettings')}
+          </FieldLabel>
+          {showOptions && (
+            <EvaluationSettings.EnabledSettings
+              options={optionsToShow}
+              method={method}
+              allowNumericOnly={allowNumericOnly}
+              allowedVariables={allowedVariables}
+            />
+          )}
+        </Answer>
+      )}
     </CorrectAnswersContainer>
   )
 }

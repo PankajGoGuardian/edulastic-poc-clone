@@ -11,6 +11,7 @@ import {
 } from '../../../author/src/selectors/user'
 
 import { Widget } from '../../styled/Widget'
+import { canUseAllOptionsByDefault } from '../../../common/utils/helpers'
 
 const { TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = userRoles
 
@@ -56,7 +57,7 @@ class Question extends Component {
       section,
       label,
       features,
-      showScoringSectionAnyRole = false,
+      permissions,
     } = this.props
 
     // show all tools except advanced section and 'Solution' section
@@ -65,6 +66,7 @@ class Question extends Component {
     }
     let showAdvancedTools = true
 
+    if (canUseAllOptionsByDefault(permissions)) return true
     /**
      * allowed for teacher/DA/SA having premium feature and enabled power tools
      * scoring section needs to be shown for non power users as well
@@ -77,7 +79,7 @@ class Question extends Component {
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
     ) {
       showAdvancedTools = false
-      if ((isPremiumUser && isPowerTeacher) || showScoringSectionAnyRole) {
+      if (isPremiumUser && isPowerTeacher) {
         showAdvancedTools = true
       }
     }
@@ -158,6 +160,7 @@ Question.propTypes = {
   visible: PropTypes.bool,
   position: PropTypes.string,
   overflowHandlers: PropTypes.object,
+  permissions: PropTypes.array,
 }
 
 Question.defaultProps = {
@@ -167,6 +170,7 @@ Question.defaultProps = {
   advancedAreOpen: null,
   position: 'relative',
   overflowHandlers: {},
+  permissions: [],
 }
 
 export default compose(
@@ -177,6 +181,7 @@ export default compose(
       isPowerTeacher: get(state, ['user', 'user', 'isPowerTeacher'], false),
       isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
       features: getUserFeatures(state),
+      permissions: get(state, 'user.user.permissions', []),
     }),
     null
   )

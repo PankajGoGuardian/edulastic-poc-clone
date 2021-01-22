@@ -12,6 +12,7 @@ import {
   isEqual,
   isObject,
   flatMap,
+  isArray,
 } from 'lodash'
 import useInterval from '@use-it/interval'
 import {
@@ -267,11 +268,11 @@ const AssessmentContainer = ({
 
       const renderCheckAnswerView =
         questionIds.length > 0 &&
-        questionIds.some(
+        questionIds.filter(
           (id) =>
             previouslyAnsweredQIds.includes(id) &&
             !currentlyAnsweredQIds.includes(id)
-        )
+        ).length === questionIds.length
 
       if (renderCheckAnswerView) {
         previewTab = CHECK
@@ -324,6 +325,9 @@ const AssessmentContainer = ({
         }
         case questionType.MATH:
           if (q.title === 'Complete the Equation') {
+            if (isArray(qAnswers)) {
+              return !qAnswers.some((ans) => ans?.toString())
+            }
             const ans = (qAnswers || '').replace(/\\ /g, '')
             return isEmpty(ans) || ans === '+='
           }
@@ -750,6 +754,8 @@ const enhance = compose(
       userWork: userWorkSelector(state),
       assignmentById: get(state, 'studentAssignment.byId'),
       currentAssignment: get(state, 'studentAssignment.current'),
+      blockNavigationToAnsweredQuestions:
+        state.test?.settings?.blockNavigationToAnsweredQuestions,
     }),
     {
       saveUserResponse,

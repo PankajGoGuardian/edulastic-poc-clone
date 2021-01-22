@@ -16,6 +16,7 @@ export const FieldLabel = styled.label`
   font-stretch: ${(props) => props.theme.widgetOptions.labelFontStretch};
   line-height: 1.38;
   text-align: left;
+  white-space: ${(props) => props.nowrap || 'nowrap'};
   color: ${(props) => props.color || props.theme.widgetOptions.labelColor};
   display: ${(props) => (props.display ? props.display : 'block')};
   text-transform: uppercase;
@@ -152,6 +153,7 @@ export const SelectInputStyled = styled(Select)`
     margin: ${(props) => props.margin || '0px'};
     min-width: ${({ minWidth }) => minWidth || ''};
     &.ant-select-disabled {
+      opacity: 0.7;
       .ant-select-selection {
         background-color: ${(props) => props.bg || greyThemeLighter};
         cursor: not-allowed;
@@ -193,7 +195,9 @@ export const SelectInputStyled = styled(Select)`
       justify-content: flex-start;
       background-color: ${(props) => props.bg || greyThemeLighter};
       border: ${(props) =>
-        props.noBorder ? 'none' : `1px solid ${greyThemeLight}`};
+        props.noBorder
+          ? 'none'
+          : `1px solid ${props.isError ? 'red' : greyThemeLight}`};
       color: #6a737f;
       font-size: ${(props) => props.fontSize || '13px'};
       width: ${(props) => props.width || '100%'};

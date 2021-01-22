@@ -170,6 +170,17 @@ export function getAccessToken() {
   return window.localStorage.getItem(_tokenKey)
 }
 
+/**
+ * Removes all user tokens in current browser
+ */
+export function removeAllTokens(){
+  window.sessionStorage.removeItem('tokenKey');
+  window.sessionStorage.removeItem('defaultTokenKey');
+  window.localStorage.removeItem('defaultTokenKey');
+  window.localStorage.removeItem('tokens');
+  window.localStorage.removeItem('authState')
+}
+
 export function storeInLocalStorage(key, value) {
   if (window && window.localStorage) {
     window.localStorage.setItem(key, value)

@@ -35,13 +35,14 @@ const AudioButton = styled(EduButton)`
 const AudioControls = ({
   item: questionData = {},
   btnWithText = false,
-  audioSrc,
+  audioSrc: _audioSrc,
   qId: targetQId,
   currentPlayingDetails,
   setCurrentPlayingDetails,
   className,
   page,
   hideVisibility,
+  preferredLanguage = 'en',
 }) => {
   const [loading, setLoading] = useState(true)
   const [stimulusHowl, setStimulusHowl] = useState({})
@@ -50,6 +51,18 @@ const AudioControls = ({
   const [pageHowls, setPageHowls] = useState([])
 
   const qId = useMemo(() => targetQId, [targetQId])
+
+  const audioSrc = useMemo(() => {
+    if (preferredLanguage !== 'en') {
+      const preferredLanguageUrl =
+        questionData?.languageFeatures?.[preferredLanguage]?.tts?.titleAudioURL
+      if (preferredLanguageUrl) {
+        return preferredLanguageUrl
+      }
+    }
+
+    return _audioSrc
+  }, [questionData])
 
   // Loading audio
   const audioLoadResolve = (url) => {

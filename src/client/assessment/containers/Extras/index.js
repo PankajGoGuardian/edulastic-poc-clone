@@ -39,6 +39,7 @@ class Extras extends Component {
       fillSections,
       cleanSections,
       advancedAreOpen,
+      isPremiumUser,
     } = this.props
     const _change = change({ item, setQuestionData })
     const fontSize = getFontSize(item.uiStyle)
@@ -46,11 +47,11 @@ class Extras extends Component {
     return (
       <QuestionContainer fontSize={fontSize}>
         <Question
-          section="advanced"
+          section={isPremiumUser ? 'advanced' : 'main'}
           label={t('component.options.solution')}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          advancedAreOpen={advancedAreOpen}
+          advancedAreOpen={isPremiumUser ? advancedAreOpen : true}
         >
           {isSection && (
             <SectionHeading>{t('component.options.solution')}</SectionHeading>
@@ -124,6 +125,7 @@ Extras.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
+  isPremiumUser: PropTypes.bool,
 }
 
 Extras.defaultProps = {
@@ -132,6 +134,7 @@ Extras.defaultProps = {
   advancedAreOpen: true,
   fillSections: () => {},
   cleanSections: () => {},
+  isPremiumUser: false,
 }
 
 const enhance = compose(
@@ -139,6 +142,7 @@ const enhance = compose(
   connect(
     (state) => ({
       item: getQuestionDataSelector(state),
+      isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
     }),
     {
       setQuestionData: setQuestionDataAction,

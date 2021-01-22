@@ -1,6 +1,6 @@
 import { replaceLatexesWithMathHtml } from '@edulastic/common/src/utils/mathUtils'
 import { IconCloseTextFormat } from '@edulastic/icons/src/IconClose'
-import {IconCorrectTextFormat} from '@edulastic/icons/src/IconCorrect'
+import { IconCorrectTextFormat } from '@edulastic/icons/src/IconCorrect'
 
 import { clamp } from 'lodash'
 import { CONSTANT } from '../config'
@@ -118,10 +118,13 @@ function create(board, object, settings) {
     id,
   })
 
-  const dragHandler = (e) => {
-    if (e.movementX === 0 && e.movementY === 0) {
-      return
-    }
+  const dragHandler = () => {
+    // don't use e.movementX === 0 && e.movementY === 0
+    // movementX and movementY are always zero on Safari
+    // it seems like the bug is in JSXGraph library
+    // https://snapwiz.atlassian.net/browse/EV-19969
+    // https://snapwiz.atlassian.net/browse/EV-23207
+
     disableSnapToGrid(point)
     disableSnapToGrid(mark)
     newElement.dragged = true

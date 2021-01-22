@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -9,6 +9,7 @@ import qs from 'qs'
 import { Spin } from 'antd'
 import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
+import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import Classes from './components/Classes/Classes'
@@ -22,6 +23,7 @@ import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import { getCollectionsSelector } from '../../../../../src/selectors/user'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -43,6 +45,7 @@ const MyClasses = ({
   windowWidth,
   resetTestFilters,
   resetPlaylistFilters,
+  collections,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
 
@@ -75,7 +78,7 @@ const MyClasses = ({
 
   const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
-      hasNoInterestedFilters: true,
+      removeInterestedFilters: true,
     })
     const filter = qs.stringify(entries)
 
@@ -105,6 +108,24 @@ const MyClasses = ({
   const bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(FEATURED || [])
 
+  const isEurekaMathActive = useMemo(
+    () =>
+      collections.some(
+        (itemBank) =>
+          itemBank.owner === 'Great Minds DATA' &&
+          itemBank.name === 'Eureka Math'
+      ),
+    [collections]
+  )
+
+  let filteredBundles = featuredBundles
+
+  if (isEurekaMathActive) {
+    filteredBundles = featuredBundles.filter(
+      (feature) => feature.description !== 'Engage NY'
+    )
+  }
+
   const handleInAppRedirect = (data) => {
     const filter = qs.stringify(data.filters)
     history.push(`/author/${data.contentType}?${filter}`)
@@ -114,9 +135,12 @@ const MyClasses = ({
     window.open(data.externalUrl, '_blank')
   }
 
-  const bannerActionHandler = (filter = {}) => {
-    // NOTE: Actions might need further refactor
+  const bannerActionHandler = (filter = {}, description) => {
     const { action, data } = filter
+    segmentApi.trackUserClick({
+      user,
+      data: { event: `dashboard:banner-${description}:click` },
+    })
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)
@@ -147,7 +171,7 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getClassCardModular).fill(1)
     : []
 
-  const getFeatureCardModular = featuredBundles.length % GridCountInARow
+  const getFeatureCardModular = filteredBundles.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
@@ -169,7 +193,7 @@ const MyClasses = ({
         />
       )}
       <FeaturedContentBundle
-        featuredBundles={featuredBundles}
+        featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}
         emptyBoxCount={featureEmptyBoxCount}
       />
@@ -188,6 +212,7 @@ export default compose(
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      collections: getCollectionsSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

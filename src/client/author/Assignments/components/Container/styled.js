@@ -104,8 +104,14 @@ export const StyledCard = styled(Card)`
   overflow-x: auto;
   box-shadow: none;
   border-radius: 0;
+  height: calc(100% - 40px);
   .ant-card-body {
     padding: 0px 0px 60px;
+    .ant-table-pagination {
+      position: fixed;
+      bottom: 15px;
+      right: 30px;
+    }
   }
 `
 

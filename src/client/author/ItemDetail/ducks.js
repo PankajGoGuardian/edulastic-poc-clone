@@ -1367,6 +1367,18 @@ export function* updateItemSaga({ payload }) {
               },
             })
           )
+          if (oldTestId && oldTestId === payload.testId) {
+            Sentry.withScope((scope) => {
+              scope.setTag('issueType', 'testIdMisMatchError')
+              scope.setExtra(
+                'message',
+                `old test Id = ${oldTestId}, new test Id = ${payload.testId}, testItemId = ${item._id}`
+              )
+              Sentry.captureException(
+                new Error('[test edit] item edit failure on test update')
+              )
+            })
+          }
         }
       }
       yield put(changeViewAction('edit'))
@@ -1715,6 +1727,7 @@ function* convertToPassageWithQuestions({ payload }) {
         id: uuid(),
         title,
         type: questionType.PASSAGE,
+        heading: 'Section 3',
         math_renderer: '',
         content:
           'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',
@@ -1894,6 +1907,7 @@ function* addWidgetToPassage({ payload }) {
             id: uuid(),
             title: 'Passage',
             type: questionType.PASSAGE,
+            heading: 'Section 3',
             math_renderer: '',
             content:
               'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',

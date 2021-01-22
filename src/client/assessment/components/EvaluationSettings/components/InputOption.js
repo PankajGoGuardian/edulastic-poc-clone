@@ -1,31 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { CheckboxLabel, TextInputStyled } from '@edulastic/common'
+import { CheckboxLabel, TextInputStyled, FieldLabel } from '@edulastic/common'
 import LabelWithHelper from './LabelWithHelper'
+import { validations } from './inputsValidations'
 
-const validations = {
-  tolerance: (value = '') => {
-    if (!value) {
-      return true
-    }
-    return /^\+?(0|[1-9]\d*)?%?$/.test(value)
-  },
-  isIn: (value = '') => {
-    if (!value) {
-      return true
-    }
-    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
-  },
-  satisfies: (value = '') => {
-    if (!value) {
-      return true
-    }
-    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
-  },
-}
-
-const InputOption = ({ options, onChange, optionKey, inputType }) => {
+const InputOption = ({ options, onChange, optionKey, isGraph }) => {
   const [isAllowed, setIsAllowed] = useState(false)
 
   const onChangeCheckbox = (e) => {
@@ -38,7 +18,7 @@ const InputOption = ({ options, onChange, optionKey, inputType }) => {
   const onChangeInput = (e) => {
     let valid = true
     if (validations[optionKey]) {
-      valid = validations[optionKey](e.target.value)
+      valid = validations[optionKey](e.target.value, isGraph)
     }
     if (valid) {
       onChange(optionKey, e.target.value)
@@ -59,17 +39,21 @@ const InputOption = ({ options, onChange, optionKey, inputType }) => {
         labelPadding="0px 16px"
         onChange={onChangeCheckbox}
       >
+        {optionKey === 'significantDecimalPlaces' && (
+          <FieldLabel display="inline-block" mr="18px">
+            must be rounnded to
+          </FieldLabel>
+        )}
         <TextInputStyled
           size="large"
           width="50px"
           margin="0px 18px 0px 0px"
           padding="0px 4px"
-          type={inputType}
           value={options[optionKey]}
           disabled={!isAllowed}
           onChange={onChangeInput}
         />
-        <LabelWithHelper optionKey={optionKey} />
+        <LabelWithHelper optionKey={optionKey} isGraph={isGraph} />
       </CheckboxLabel>
     </InputOptionWrapper>
   )

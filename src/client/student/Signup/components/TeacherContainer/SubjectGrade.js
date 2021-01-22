@@ -20,7 +20,10 @@ import {
   getCurriculumsListSelector,
   getFormattedCurriculums,
 } from '../../../../author/src/selectors/dictionaries'
-import { getInterestedCurriculumsSelector } from '../../../../author/src/selectors/user'
+import {
+  getInterestedCurriculumsSelector,
+  getUserSelector,
+} from '../../../../author/src/selectors/user'
 import selectsData from '../../../../author/TestPage/components/common/selectsData'
 import {
   saveSubjectGradeAction,
@@ -39,11 +42,12 @@ class SubjectGrade extends React.Component {
     this.gradeRef = createRef()
     this.subjectRef = createRef()
     this.standardRef = createRef()
-  }
+    const { defaultGrades, defaultSubjects } = get(props.user, 'user.orgData')
 
-  state = {
-    subjects: [],
-    grades: [],
+    this.state = {
+      subjects: defaultSubjects || [],
+      grades: defaultGrades || [],
+    }
   }
 
   static propTypes = {
@@ -60,6 +64,7 @@ class SubjectGrade extends React.Component {
       })
     ).isRequired,
     isModal: PropTypes.bool,
+    user: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
@@ -120,7 +125,7 @@ class SubjectGrade extends React.Component {
   }
 
   render() {
-    const { subjects } = this.state
+    const { grades, subjects } = this.state
     const {
       interestedCurriculums,
       curriculums,
@@ -163,6 +168,7 @@ class SubjectGrade extends React.Component {
                 <SelectForm onSubmit={this.handleSubmit}>
                   <Form.Item label="Grade">
                     {getFieldDecorator('grade', {
+                      initialValue: grades,
                       rules: [
                         {
                           required: true,
@@ -201,6 +207,7 @@ class SubjectGrade extends React.Component {
 
                   <Form.Item label="Subjects">
                     {getFieldDecorator('subjects', {
+                      initialValue: subjects,
                       rules: [
                         {
                           required: true,
@@ -294,6 +301,7 @@ const enhance = compose(
   connect(
     (state) => ({
       curriculums: getCurriculumsListSelector(state),
+      user: getUserSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       saveSubjectGradeloading: saveSubjectGradeloadingSelector(state),
     }),

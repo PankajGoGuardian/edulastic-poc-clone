@@ -356,14 +356,15 @@ export const getInterestedCurriculumsByOrgType = createSelector(
   getUserRole,
   (interestedCurriculums, role) => {
     const byOrgType = groupBy(interestedCurriculums, 'orgType')
+    const { ORG_TYPE } = roleuser
     if (role === roleuser.TEACHER) {
-      return byOrgType.teacher || []
+      return byOrgType[ORG_TYPE.TEACHER] || []
     }
     if (role === roleuser.SCHOOL_ADMIN) {
-      return byOrgType.institution || []
+      return byOrgType[ORG_TYPE.SCHOOL_ADMIN] || []
     }
     if (role === roleuser.DISTRICT_ADMIN) {
-      return byOrgType.district || []
+      return byOrgType[ORG_TYPE.DISTRICT_ADMIN] || []
     }
     return interestedCurriculums
   }

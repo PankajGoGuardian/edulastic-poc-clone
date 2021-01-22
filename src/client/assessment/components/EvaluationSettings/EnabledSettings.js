@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { getMathHtml } from '@edulastic/common'
+import { getMathHtml, replaceLatexTemplate } from '@edulastic/common'
 import { math as mathConstants } from '@edulastic/constants'
 
 import { keys, isArray, isEmpty, isString, values } from 'lodash'
@@ -8,7 +8,9 @@ import { keys, isArray, isEmpty, isString, values } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey9, greyThemeLight } from '@edulastic/colors'
 
-const { syntaxes } = mathConstants
+import { Desc } from './components/HelperToolTip'
+
+const { syntaxes, GRAPH_EVALUATION_SETTING } = mathConstants
 const separators = [
   { value: ',', label: 'comma' },
   { value: '.', label: 'dot' },
@@ -31,6 +33,9 @@ const EnabledSettings = ({
     const optsLables = optionKeys
       .map((key) => {
         let label = ''
+        if (key === 'apiLatex' || key === 'isSimplified') {
+          return false
+        }
         if (key === 'syntax') {
           const syntax = syntaxOptions.find((x) => x.value === options[key])
           if (syntax) {
@@ -79,16 +84,21 @@ const EnabledSettings = ({
         label: `${allowedVariables} ${t('component.math.allowedVariables')}`,
       })
     }
-    return [
-      { key: 'evaluationMethod', label: t(`component.math.${method}`) },
-    ].concat(optsLables)
+    const evaluationMethod =
+      method !== GRAPH_EVALUATION_SETTING
+        ? [{ key: 'evaluationMethod', label: t(`component.math.${method}`) }]
+        : []
+
+    return evaluationMethod.concat(optsLables)
   }, [options, allowNumericOnly, allowedVariables])
 
   return (
     <Container>
       <ul>
         {optionsToShow.map((op) => (
-          <li key={op.key} dangerouslySetInnerHTML={{ __html: op.label }} />
+          <li key={op.key}>
+            <Desc text={replaceLatexTemplate(op.label)} />
+          </li>
         ))}
       </ul>
     </Container>

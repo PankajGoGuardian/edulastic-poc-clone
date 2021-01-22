@@ -16,6 +16,7 @@ import {
   maxBy,
   get,
   round,
+  upperFirst,
 } from 'lodash'
 import moment from 'moment'
 import {
@@ -99,7 +100,7 @@ const getLeastProficiency = (bandInfo = []) =>
 
 export const getProficiency = (item, bandInfo) => {
   for (const obj of bandInfo) {
-    if ((item.totalScore / item.maxScore) * 100 >= obj.threshold) {
+    if (round((item.totalScore / item.maxScore) * 100) >= obj.threshold) {
       return obj.name || getLeastProficiency(bandInfo).name
     }
   }
@@ -157,7 +158,9 @@ export const normaliseTableData = (rawData, data) => {
     return {
       ...studentMetric,
       student: getFormattedName(
-        `${studentMetric.firstName || ''} ${studentMetric.lastName || ''}`
+        `${upperFirst(studentMetric.firstName || '')} ${upperFirst(
+          studentMetric.lastName || ''
+        )}`
       ),
       proficiencyBand,
       school: relatedGroup.schoolName || '-',

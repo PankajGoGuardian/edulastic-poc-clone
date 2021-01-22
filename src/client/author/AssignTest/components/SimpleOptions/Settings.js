@@ -26,7 +26,7 @@ import {
   SelectInputStyled,
   NumberInputStyled,
 } from '@edulastic/common'
-import { IconCaretDown, IconInfo } from '@edulastic/icons'
+import { IconCaretDown } from '@edulastic/icons'
 import { isUndefined } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
@@ -50,6 +50,7 @@ import {
   TimeSpentInput,
   StyledCol,
   StyledRow,
+  StyledInfoIcon,
 } from './styled'
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
 import SubscriptionsBlock from '../../../TestPage/components/Setting/components/Container/SubscriptionsBlock'
@@ -271,6 +272,12 @@ const Settings = ({
     if (key === 'scoreThreshold' && (value > 100 || value < 1)) {
       return
     }
+    if (key === 'scoreThreshold' && value === 100) {
+      return notification({
+        type: 'warn',
+        msg: 'Threshold value should be less than 100%',
+      })
+    }
 
     const newSettingsState = {
       ...assignmentSettings,
@@ -318,6 +325,7 @@ const Settings = ({
     enableScratchpad = tempTestSettings.enableScratchpad,
     autoRedirect = false,
     autoRedirectSettings,
+    blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
   } = assignmentSettings
   const playerSkinType =
     assignmentSettings.playerSkinType || testSettings.playerSkinType
@@ -472,17 +480,14 @@ const Settings = ({
                    the students. If you select this option, students must use devices (Windows, 
                    Mac or iPad) with Safe Exam Browser installed."
                   >
-                    <IconInfo
-                      color={lightGrey9}
-                      style={{ cursor: 'pointer', marginLeft: '10px' }}
-                    />
+                    <StyledInfoIcon color={lightGrey9} mL="10px" />
                   </Tooltip>
                 </Label>
               </Col>
               <Col span={12}>
                 <AlignSwitchRight
                   disabled={forClassLevel || freezeSettings}
-                  defaultChecked={safeBrowser}
+                  checked={safeBrowser}
                   size="small"
                   onChange={(value) => overRideSettings('safeBrowser', value)}
                 />
@@ -514,6 +519,46 @@ const Settings = ({
         {/* Safe Exam Browser/Kiosk Mode */}
 
         {
+          /* Restrict Navigation To Previously Answered Questions */
+          !isDocBased && !hideTestLevelOptions && (
+            <FeaturesSwitch
+              inputFeatures="premium"
+              actionOnInaccessible="hidden"
+              key="premium"
+              gradeSubject={gradeSubject}
+            >
+              <StyledRowSettings gutter={16}>
+                <Col span={12}>
+                  <Label>
+                    Restrict Navigation To Previously Answered Questions
+                    <Tooltip
+                      title="If ON, then students will be restricted from navigating back to the previous question. 
+                      Recommended to use along with Shuffle Questions for preventing cheating among students."
+                    >
+                      <StyledInfoIcon color={lightGrey9} mL="10px" />
+                    </Tooltip>
+                  </Label>
+                </Col>
+                <Col span={12}>
+                  <AlignSwitchRight
+                    disabled={forClassLevel || freezeSettings}
+                    size="small"
+                    checked={blockNavigationToAnsweredQuestions}
+                    onChange={(value) =>
+                      overRideSettings(
+                        'blockNavigationToAnsweredQuestions',
+                        value
+                      )
+                    }
+                  />
+                </Col>
+              </StyledRowSettings>
+            </FeaturesSwitch>
+          )
+          /* Restrict Navigation To Previously Answered Questions */
+        }
+
+        {
           /* Shuffle Question */
           !isDocBased && !hideTestLevelOptions && (
             <FeaturesSwitch
@@ -530,7 +575,7 @@ const Settings = ({
                   <AlignSwitchRight
                     disabled={forClassLevel || freezeSettings}
                     size="small"
-                    defaultChecked={shuffleQuestions}
+                    checked={shuffleQuestions}
                     onChange={(value) =>
                       overRideSettings('shuffleQuestions', value)
                     }
@@ -559,7 +604,7 @@ const Settings = ({
                   <AlignSwitchRight
                     disabled={forClassLevel || freezeSettings}
                     size="small"
-                    defaultChecked={shuffleAnswers}
+                    checked={shuffleAnswers}
                     onChange={(value) =>
                       overRideSettings('shuffleAnswers', value)
                     }
@@ -803,10 +848,7 @@ const Settings = ({
                 <Label>
                   <span>TIMED TEST</span>
                   <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
-                    <IconInfo
-                      color={lightGrey9}
-                      style={{ cursor: 'pointer', marginLeft: '15px' }}
-                    />
+                    <StyledInfoIcon color={lightGrey9} mL="15px" />
                   </Tooltip>
                 </Label>
               </Col>
@@ -912,7 +954,7 @@ const Settings = ({
                       <StyledRow mt="8px" mb="0px">
                         <InputNumber
                           min={1}
-                          max={100}
+                          max={99}
                           value={autoRedirectSettings.scoreThreshold || ''}
                           onChange={(value) =>
                             handleAutoRedirectSettingsChange(

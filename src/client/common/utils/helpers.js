@@ -214,7 +214,7 @@ export const getFullNameFromString = (name) => {
 }
 
 export const getInitialsFromName = (obj) =>
-  obj.firstName[0] + (obj.lastName ? obj.lastName[0] : '')
+  (obj.firstName?.[0] || '') + (obj?.lastName?.[0] || '')
 
 export const getDistrictSignOutUrl = (generalSettings) => {
   if (generalSettings.orgType === 'institution') {
@@ -294,8 +294,9 @@ export const nameValidator = (name) => {
   // should contain at least three char (eg: stu, st1 s01)
   // should contain only one space between name/word
   // can contain number after initial alphabet
+  // can contain special characters ' and - after initial alphabet
 
-  const namePattern = /^(?!\d)[a-zA-Z\d]{2,}[a-zA-Z\d]+(?: [a-zA-z\d]+)*$/
+  const namePattern = /^(?!\d)(?!-)(?!')[a-zA-Z\d-']{2,}(?: [a-zA-z\d-']+)*$/
   if (!trimmedName || !namePattern.test(trimmedName)) {
     return false
   }
@@ -487,4 +488,17 @@ export const isImagesBlockedByBrowser = async () => {
   } catch (error) {
     console.warn(error)
   }
+}
+
+export const canUseAllOptionsByDefault = (permissions = []) => {
+  return ['author', 'curator'].some((permission) =>
+    permissions.includes(permission)
+  )
+}
+
+export const isHashAssessmentUrl = () => {
+  return (
+    window.location.hash.includes('#renderResource/close/') ||
+    window.location.hash.includes('#assessmentQuestions/close/')
+  )
 }

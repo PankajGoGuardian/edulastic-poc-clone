@@ -57,7 +57,7 @@ const AnswerBox = ({
       _: '\\_',
     }
     const { index } = find(mathUnits, (d) => d.id === ans.id) || { index: 0 }
-    let { unit = '' } = ans.options
+    let { unit = '' } = ans.options || {}
     unit = unit.trim()
 
     Object.keys(specialCharMap).map((sChar) => {
@@ -131,7 +131,7 @@ const AnswerBox = ({
         const { index } = find(mathUnits, (d) => d.id === answer.id) || {
           index: 0,
         }
-        let { unit = '' } = answer.options
+        let { unit = '' } = answer.options || {}
 
         if (
           unit &&

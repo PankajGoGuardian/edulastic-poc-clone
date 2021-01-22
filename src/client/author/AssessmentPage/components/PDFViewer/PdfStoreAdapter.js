@@ -3,13 +3,18 @@ import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { setTestDataAction, setUndoStackAction } from '../../../TestPage/ducks'
 import { getStore } from '../../../../configureStore'
 
-let store = null
-
-window.addEventListener('load', () => {
-  store = getStore()
-})
+const loadStore = () => {
+  const _store = getStore()
+  if (_store) {
+    return _store
+  }
+  if (typeof window.getStore === 'function') {
+    return window.getStore()
+  }
+}
 
 const getAnnotations = (documentId) => {
+  const store = loadStore()
   if (store && store.getState) {
     const state = store.getState()
     const storedAnnotations =
@@ -24,9 +29,7 @@ const getAnnotations = (documentId) => {
 }
 
 const updateAnnotations = (documentId, annotations = []) => {
-  if (!store) {
-    store = getStore()
-  }
+  const store = loadStore()
 
   if (store && store.getState) {
     const state = store.getState()

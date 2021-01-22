@@ -231,7 +231,7 @@ export default class API {
       (data) => {
         const reqUrl = data.response?.config?.url || 'NA'
         const err = new Error(
-          `API failed while trying to fetch: ${reqUrl}: message: ${
+          `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${
             data.response?.data?.message || 'NA'
           }`
         )

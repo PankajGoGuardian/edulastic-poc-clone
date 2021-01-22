@@ -1,5 +1,5 @@
 import { questionType, math } from '@edulastic/constants'
-import { isEmpty, keys, values as _values } from 'lodash'
+import { isEmpty, keys, values as _values, isPlainObject } from 'lodash'
 
 const { methods } = math
 
@@ -220,7 +220,13 @@ export const hasEmptyAnswers = (item) => {
     item?.validation?.validResponse,
     ...(item?.validation?.altResponses || []),
   ]
-
+  if (isPlainObject(item) && item.type === questionType.GRAPH) {
+    const { validation: { points, latex } = {} } = item
+    if (points && latex) {
+      return false
+    }
+  }
   const hasEmpty = answerValidator[item.type]?.(correctAnswers)
+
   return hasEmpty
 }

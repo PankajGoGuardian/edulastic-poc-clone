@@ -8,6 +8,7 @@ import {
   Polynom,
   Secant,
   Sin,
+  Cos,
   Tangent,
 } from '.'
 import { CONSTANT } from '../config'
@@ -26,6 +27,7 @@ const availableTypes = [
   Polynom.jxgType,
   Secant.jxgType,
   Sin.jxgType,
+  Cos.jxgType,
   Tangent.jxgType,
 ]
 

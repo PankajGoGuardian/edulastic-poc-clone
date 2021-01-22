@@ -4,18 +4,27 @@ import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import HelperToolTip from './HelperToolTip'
 
-const LabelWithHelper = ({ t, label, optionKey, vertical, large }) => {
+const LabelWithHelper = ({
+  t,
+  label,
+  optionKey,
+  vertical,
+  large,
+  isGraph,
+  color,
+}) => {
   const optionLabel = useMemo(
     () => replaceLatexTemplate(label || t(`component.math.${optionKey}`)),
     [label, optionKey]
   )
   return (
     <FieldLabel
+      color={color}
       marginBottom={vertical ? '' : '0px'}
       display={vertical ? '' : 'inline-block'}
     >
       <OptionLabel text={optionLabel} />
-      <HelperToolTip optionKey={optionKey} large={large} />
+      <HelperToolTip optionKey={optionKey} large={large} isGraph={isGraph} />
     </FieldLabel>
   )
 }

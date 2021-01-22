@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
-import { isEmpty, get } from 'lodash'
+import { isEmpty, get, isEqual } from 'lodash'
 
 import {
   MathInput,
@@ -91,7 +91,7 @@ class MathFormulaPreview extends Component {
       (expressGrader &&
         isAnswerModifiable &&
         isAnswerModifiable !== prevIsAnswerModifiable) ||
-      userAnswer !== prevUserAnswer
+      !isEqual(userAnswer, prevUserAnswer)
     ) {
       this.updateStaticMathFromUserAnswer()
     }
@@ -252,6 +252,7 @@ class MathFormulaPreview extends Component {
       showCalculatingSpinner,
       view,
       isPrintPreview,
+      viewComponent,
     } = this.props
     const { expressGrader, isAnswerModifiable } = answerContextConfig
     const { innerValues } = this.state
@@ -401,7 +402,6 @@ class MathFormulaPreview extends Component {
                       numberPad={item.numberPad}
                       hideKeypad={item.isUnits && item.showDropdown}
                       onInput={(latexv) => this.onUserResponse(latexv)}
-                      onBlur={(latexv) => this.onBlur(latexv)}
                       latex={studentTemplate}
                       innerValues={innerValues}
                       onInnerFieldClick={() => this.onInnerFieldClick()}
@@ -429,7 +429,6 @@ class MathFormulaPreview extends Component {
                       }
                       onInput={(latexv) => this.onUserResponse(latexv)}
                       onBlur={(latexv) => this.onBlur(latexv)}
-                      disabled={evaluation && !evaluation?.some((ie) => ie)}
                       onInnerFieldClick={() => this.onInnerFieldClick()}
                     />
                   )}
@@ -468,6 +467,13 @@ class MathFormulaPreview extends Component {
                 undefined && (
                 <CorrectAnswerBox
                   theme={theme}
+                  viewComponent={viewComponent}
+                  extraOtps={get(item, ['extraOpts', 0], {})}
+                  options={item.validation.validResponse.value[0].options}
+                  method={item.validation.validResponse.value[0].method}
+                  allowNumericOnly={allowNumericOnly}
+                  allowedVariables={this.restrictKeys}
+                  template={item.template}
                   answer={
                     item.isUnits && item.showDropdown
                       ? item.validation.validResponse.value[0].value.search(
@@ -509,8 +515,15 @@ class MathFormulaPreview extends Component {
                   <CorrectAnswerBox
                     altAnswers
                     theme={theme}
+                    template={item.template}
                     answer={answer}
                     index={index + 1}
+                    viewComponent={viewComponent}
+                    method={ans?.value?.[0]?.method}
+                    options={ans?.value?.[0]?.options}
+                    allowNumericOnly={allowNumericOnly}
+                    allowedVariables={this.restrictKeys}
+                    extraOtps={get(item, ['extraOpts', index + 1], {})}
                   />
                 )
               })}

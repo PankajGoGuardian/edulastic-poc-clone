@@ -223,6 +223,23 @@ const searchAssignments = (data) =>
     })
     .then((result) => result.data.result)
 
+const syncWithSchoologyClassroom = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/share-with-atlas`,
+      method: 'POST',
+      data,
+    })
+    .then((result) => result.data.result)
+
+const fetchRegradeSettings = ({ oldTestId, newTestId }) =>
+  api
+    .callApi({
+      url: `${prefix}/regrade-actions/old/${oldTestId}/new/${newTestId}`,
+      method: 'GET',
+    })
+    .then((result) => result.data.result)
+
 export default {
   create,
   update,
@@ -244,4 +261,6 @@ export default {
   syncWithGoogleClassroom,
   fetchByTestId,
   searchAssignments,
+  syncWithSchoologyClassroom,
+  fetchRegradeSettings,
 }

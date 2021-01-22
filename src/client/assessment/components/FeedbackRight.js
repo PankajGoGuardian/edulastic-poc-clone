@@ -22,6 +22,7 @@ import {
   round,
   sumBy,
   toNumber,
+  isNaN,
 } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component, Fragment, useEffect } from 'react'
@@ -266,15 +267,14 @@ class FeedbackRight extends Component {
   }
 
   onChangeFeedback = (e) => {
-    this.setState({ feedback: e.target.value, changed: true })
+    this.setState({
+      changed: true,
+      feedback: e.target.value,
+      showFeedbackSaveBtn: !!e.target.value,
+    })
   }
 
-  onKeyDownFeedback = (e) => {
-    this.arrowKeyHandler(e)
-    this.setState({ showFeedbackSaveBtn: true })
-  }
-
-  arrowKeyHandler = ({ keyCode }) => {
+  onKeyDownFeedback = ({ keyCode }) => {
     /**
      * arrow keys or escape key
      */
@@ -387,7 +387,8 @@ class FeedbackRight extends Component {
       _score = ''
     }
 
-    const _maxScore = rubricMaxScore || maxScore
+    const _maxScore =
+      showGradingRubricButton && rubricMaxScore ? rubricMaxScore : maxScore
 
     const isError = _maxScore < score
     // TODO: uncomment when practice question scoring is implemented (EV-12869)
@@ -446,19 +447,17 @@ class FeedbackRight extends Component {
           )}
         </LeaveDiv>
         {!isError && (
-          <Fragment>
-            <FeedbackInput
-              tabIndex={0}
-              data-cy="feedBackInput"
-              onChange={this.onChangeFeedback}
-              value={feedback}
-              onFocus={this.focusFeedbackInput}
-              onBlur={this.blurFeedbackInput}
-              disabled={!activity || isPresentationMode}
-              onKeyDown={this.onKeyDownFeedback}
-              autoSize
-            />
-          </Fragment>
+          <FeedbackInput
+            tabIndex={0}
+            data-cy="feedBackInput"
+            onChange={this.onChangeFeedback}
+            value={feedback}
+            onFocus={this.focusFeedbackInput}
+            onBlur={this.blurFeedbackInput}
+            disabled={!activity || isPresentationMode}
+            onKeyDown={this.onKeyDownFeedback}
+            autoSize
+          />
         )}
 
         {showPreviewRubric && (

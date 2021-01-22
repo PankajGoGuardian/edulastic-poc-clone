@@ -24,7 +24,7 @@ import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import { withNamespaces } from '@edulastic/localization'
 import { Form, Icon, Input, Select, Tag, Modal } from 'antd'
 import produce from 'immer'
-import { isEqual, map, omit, get } from 'lodash'
+import { isEqual, map, omit, get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -55,6 +55,8 @@ import { selectsData } from '../../../TestPage/components/common'
 import JoinSchool from '../../../../student/Signup/components/TeacherContainer/JoinSchool'
 import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
 
+const { ORG_TYPE } = roleuser
+
 const FormItem = Form.Item
 class ProfileBody extends React.Component {
   state = {
@@ -71,7 +73,6 @@ class ProfileBody extends React.Component {
     defaultGrades: [],
     defaultSubjects: [],
     autoShareGCAssignment: undefined,
-    showDefaultSettingSave: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -231,19 +232,12 @@ class ProfileBody extends React.Component {
     }
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
     const standardsData = {
-      orgId,
+      orgId: user._id,
       orgType,
       curriculums: curriculumsData,
     }
@@ -261,33 +255,32 @@ class ProfileBody extends React.Component {
       isPowerTeacher,
     } = this.state
     const { role } = user
+
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
-    const settingsToUpdate = {
-      orgId,
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
+    let settingsToUpdate = {
+      orgId: user._id,
       orgType,
-      defaultGrades,
-      defaultSubjects,
       autoShareGCAssignment,
       isPowerTeacher,
     }
+
+    if (!isEmpty(defaultSubjects)) {
+      settingsToUpdate = { ...settingsToUpdate, defaultSubjects }
+    }
+
+    if (!isEmpty(defaultGrades)) {
+      settingsToUpdate = { ...settingsToUpdate, defaultGrades }
+    }
+
     updateDefaultSettings(settingsToUpdate)
-    this.setState({ showDefaultSettingSave: false })
   }
 
   onSettingChange = (value, field) => {
-    this.setState({ showDefaultSettingSave: true })
     switch (field) {
       case 'grade': {
         this.setState({ defaultGrades: value })
@@ -316,19 +309,12 @@ class ProfileBody extends React.Component {
     )
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
     const standardsData = {
-      orgId,
+      orgId: user._id,
       orgType,
       curriculums: updatedInterestedCurriculums,
     }
@@ -586,7 +572,6 @@ class ProfileBody extends React.Component {
       defaultGrades = [],
       defaultSubjects = [],
       autoShareGCAssignment = false,
-      showDefaultSettingSave = false,
       interestedCurriculums,
     } = this.state
     // checking if institution policy/ district policy is enabled
@@ -602,7 +587,16 @@ class ProfileBody extends React.Component {
       curriculums: interestedCurriculums,
     }
     const { features, role } = user
+    const {
+      defaultGrades: userGrades,
+      defaultSubjects: userSubjects,
+      autoShareGCAssignment: userAutoShareGCAssignment,
+    } = get(user, 'orgData')
     let showPowerTools = false
+    const showDefaultSettingSave =
+      !isEqual(userGrades, defaultGrades) ||
+      !isEqual(userSubjects, defaultSubjects) ||
+      !isEqual(userAutoShareGCAssignment, autoShareGCAssignment)
 
     if (
       [
@@ -794,7 +788,9 @@ class ProfileBody extends React.Component {
             {showDefaultSettings && (
               <SchoolWrapper>
                 <StandardSetsLabel>Standard Sets</StandardSetsLabel>
-                <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
+                <StandardSetsList data-cy="interestedStandards">
+                  {this.getStandardSets()}
+                </StandardSetsList>
                 <StandardSetsButtons>
                   {showSaveStandSetsBtn && (
                     <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>
@@ -828,6 +824,7 @@ class ProfileBody extends React.Component {
                     data-cy="gradeSelect"
                     mode="multiple"
                     size="large"
+                    value={defaultGrades}
                     placeholder="Please select"
                     defaultValue={defaultGrades}
                     onChange={(value) => this.onSettingChange(value, 'grade')}
@@ -853,6 +850,7 @@ class ProfileBody extends React.Component {
                     size="large"
                     margin="0px 0px 15px"
                     placeholder="Please select"
+                    value={defaultSubjects}
                     defaultValue={defaultSubjects}
                     onChange={(value) => this.onSettingChange(value, 'subject')}
                     optionFilterProp="children"
@@ -938,7 +936,10 @@ class ProfileBody extends React.Component {
             width="90%"
             style={{ maxWidth: 1100 }}
           >
-            <JoinSchool userInfo={userInfo} fromUserProfile />
+            <JoinSchool
+              userInfo={userInfo}
+              fromUserProfile={!isEmpty(userInfo.orgData.districtIds)}
+            />
           </StyledModal>
         )}
       </MainContentWrapper>

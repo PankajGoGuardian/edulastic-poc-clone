@@ -11,7 +11,7 @@ import { updateVariables } from '../../utils/variables'
 
 import { latexKeys } from './constants'
 
-const { methods } = math
+const { methods, simplifiedOptions } = math
 
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
@@ -51,9 +51,32 @@ class MathFormulaAnswers extends React.Component {
   handleChangeAnswer = ({ index, prop, value }) => {
     const { item, setQuestionData } = this.props
     const { currentTab } = this.state
-
+    // optionKey === 'isSimplifiedFraction' ||
+    // optionKey === 'isSimplifiedExpression'
     setQuestionData(
       produce(item, (draft) => {
+        if (prop === 'options') {
+          let hasSimplified = false
+          Object.keys(value).forEach((optKey) => {
+            if (simplifiedOptions.includes(optKey)) {
+              hasSimplified = true
+              value.isSimplified = true
+              if (!draft.extraOpts) {
+                draft.extraOpts = {}
+              }
+              draft.extraOpts[currentTab] = {
+                [optKey]: value[optKey],
+              }
+              delete value[optKey]
+            }
+          })
+          if (!hasSimplified) {
+            if (draft.extraOpts) {
+              delete draft.extraOpts[currentTab]
+            }
+            delete value.isSimplified
+          }
+        }
         // default mode selection
         if (prop === 'keypadMode') {
           draft.keypadMode = value // adding new fields to testItem
@@ -263,6 +286,15 @@ class MathFormulaAnswers extends React.Component {
     return item.validation.altResponses[currentTab - 1]
   }
 
+  get extraOpts() {
+    const { item } = this.props
+    const { currentTab } = this.state
+    if (item.extraOpts) {
+      return item.extraOpts[currentTab] || {}
+    }
+    return {}
+  }
+
   render() {
     const { fillSections, cleanSections, keypadOffset, view } = this.props
     const { item, setQuestionData } = this.props
@@ -288,6 +320,7 @@ class MathFormulaAnswers extends React.Component {
           key={`mathanswer-${currentTab}`}
           onChangeAllowedOptions={this.handleAllowedOptions}
           answer={this.response.value}
+          extraOptions={this.extraOpts}
           setQuestionData={setQuestionData}
           onChangeKeypad={this.handleKeypadMode}
           keypadOffset={keypadOffset}

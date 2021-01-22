@@ -110,11 +110,13 @@ const HeaderSection = ({
   teacherData,
   classData,
   loading,
+  districtPolicy,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
-  const { user: userInfo, signupStatus } = user
+  const { user: userInfo } = user
+  const { currentSignUpState } = userInfo
   const premium = userInfo?.features?.premium
 
   useEffect(() => {
@@ -170,10 +172,15 @@ const HeaderSection = ({
       isCleverUser ||
       canvasAllowedInstitutions.length > 0)
 
+  const hasGoogleMeetAndManageClass =
+    currentSignUpState === signUpState.DONE && allActiveClasses.length > 0
+
+  const isHangoutEnabled = districtPolicy?.enableGoogleMeet === true
+
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
-        {signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL && (
+        {currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <StyledLink data-cy="completeSignup" onClick={handleClick}>
@@ -183,19 +190,21 @@ const HeaderSection = ({
             trackClick={trackClick('dashboard:complete-sign-up:click')}
           />
         )}
-        {signupStatus === signUpState.DONE && (
+        {hasGoogleMeetAndManageClass && (
           <>
-            <Tooltip title="Launch Google Meet">
-              <StyledEduButton
-                IconBtn
-                isBlue
-                data-cy="launch-google-meet"
-                onClick={launchHangout}
-                isGhost
-              >
-                <IconHangouts color={themeColor} height={21} width={19} />
-              </StyledEduButton>
-            </Tooltip>
+            {isHangoutEnabled && (
+              <Tooltip title="Launch Google Meet">
+                <StyledEduButton
+                  IconBtn
+                  isBlue
+                  data-cy="launch-google-meet"
+                  onClick={launchHangout}
+                  isGhost
+                >
+                  <IconHangouts color={themeColor} height={21} width={19} />
+                </StyledEduButton>
+              </Tooltip>
+            )}
             <Tooltip title="Manage Class">
               <Link to="/author/manageClass">
                 <EduButton
@@ -281,7 +290,6 @@ const HeaderSection = ({
                     backgroundColor: darkOrange1,
                     border: 'none',
                   }}
-                  data-cy="manageClass"
                 >
                   <FontAwesomeIcon
                     icon={faExclamationTriangle}
@@ -325,6 +333,7 @@ const enhance = compose(
       subscription: state?.subscription?.subscriptionData?.subscription,
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
+      districtPolicy: get(state, 'user.user.orgData.policies.district'),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
         state
       ),

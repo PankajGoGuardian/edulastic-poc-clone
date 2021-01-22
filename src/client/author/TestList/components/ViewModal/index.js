@@ -399,7 +399,7 @@ class ViewModal extends React.Component {
                           height="40px"
                           width="100%"
                           justifyContent="center"
-                          data-cy="assign-button"
+                          data-cy="edit/assign-button"
                           onClick={handleClick}
                         >
                           <span>ASSIGN</span>

@@ -14,12 +14,12 @@ const Footer = ({
   return (
     <>
       {hasTrialBtn && (
-        <EduButton isGhost isBlue onClick={handleTrial}>
+        <EduButton data-cy="trialPurchase" isGhost isBlue onClick={handleTrial}>
           Try for free
         </EduButton>
       )}
       {!isPremiumUser && (
-        <EduButton isBlue onClick={handlePurchaseFlow}>
+        <EduButton data-cy="Purchase" isBlue onClick={handlePurchaseFlow}>
           Purchase
         </EduButton>
       )}

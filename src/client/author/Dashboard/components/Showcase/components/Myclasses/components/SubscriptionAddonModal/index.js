@@ -32,7 +32,12 @@ const SubscriptionAddonModal = ({
       centered
       title="Select Add-ons"
       footer={[
-        <EduButton disabled={totalPrice === 0} isBlue onClick={handleClick}>
+        <EduButton
+          data-cy="proceedPayment"
+          disabled={totalPrice === 0}
+          isBlue
+          onClick={handleClick}
+        >
           PROCEED WITH PAYMENT
         </EduButton>,
       ]}
@@ -56,12 +61,15 @@ const SubscriptionAddonModal = ({
         <AddonList>
           {!isPremiumUser && (
             <FlexRow>
-              <CheckboxLabel checked>Teacher Premium</CheckboxLabel>
+              <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
+                Teacher Premium
+              </CheckboxLabel>
               <span>$100</span>
             </FlexRow>
           )}
           <FlexRow>
             <CheckboxLabel
+              data-cy="sparkPremiumCheckbox"
               value={100}
               onChange={(e) => handleOnChange(e.target)}
               defaultChecked

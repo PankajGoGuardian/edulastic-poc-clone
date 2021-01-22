@@ -64,10 +64,12 @@ const TrialModal = ({
 
   const Footer = (
     <>
-      <EduButton isGhost onClick={closeModal}>
+      <EduButton data-cy="cancelButton" isGhost onClick={closeModal}>
         Cancel
       </EduButton>
-      <EduButton onClick={onProceed}>Proceed</EduButton>
+      <EduButton data-cy="proceedButton" onClick={onProceed}>
+        Proceed
+      </EduButton>
     </>
   )
 
@@ -88,9 +90,13 @@ const TrialModal = ({
         mt="20px"
       >
         {!premiumUser && !isPremiumTrialUsed && (
-          <StyledCheckbox checked>Premium Trial</StyledCheckbox>
+          <StyledCheckbox data-cy="teacherPremiumTrialCheckbox" checked>
+            Premium Trial
+          </StyledCheckbox>
         )}
-        <StyledCheckbox checked>{productName} Trial</StyledCheckbox>
+        <StyledCheckbox data-cy="sparkPremiumTrialCheckbox" checked>
+          {productName} Trial
+        </StyledCheckbox>
       </FlexContainer>
     </CustomModalStyled>
   )

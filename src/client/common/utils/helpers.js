@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { isUndefined, last, get, isEmpty, keyBy } from 'lodash'
 import { Tooltip as AntDTooltip, Modal } from 'antd'
 import { notification } from '@edulastic/common'
+import { EDULASTIC_CURATOR } from '@edulastic/constants/const/roleType'
 import { themeColor } from '@edulastic/colors'
 import { signUpState, test as testConst } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
@@ -490,9 +491,10 @@ export const isImagesBlockedByBrowser = async () => {
   }
 }
 
-export const canUseAllOptionsByDefault = (permissions = []) => {
-  return ['author', 'curator'].some((permission) =>
-    permissions.includes(permission)
+export const canUseAllOptionsByDefault = (permissions = [], userRole = '') => {
+  return (
+    userRole === EDULASTIC_CURATOR ||
+    ['author', 'curator'].some((permission) => permissions.includes(permission))
   )
 }
 

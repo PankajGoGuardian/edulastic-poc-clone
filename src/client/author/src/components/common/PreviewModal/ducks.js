@@ -1,6 +1,13 @@
 import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
-import { call, put, all, takeEvery, select } from 'redux-saga/effects'
+import {
+  call,
+  put,
+  all,
+  takeEvery,
+  select,
+  takeLatest,
+} from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { get, last } from 'lodash'
 import { testItemsApi, passageApi } from '@edulastic/api'
@@ -9,6 +16,8 @@ import * as Sentry from '@sentry/browser'
 import {
   updateTestAndNavigateAction,
   receiveTestByIdAction,
+  updateTestSaga,
+  getTestSelector,
 } from '../../../../TestPage/ducks'
 
 export const SET_QUESTIONS_IN_PASSAGE =
@@ -18,6 +27,7 @@ export const SET_ITEM_PREVIEW_DATA = '[testItemPreview] set data'
 export const CLEAR_ITEM_PREVIEW = '[testItemPreview] clear item preview'
 export const DUPLICATE_TESTITEM_PREVIEW_REQUEST =
   '[testItemPreview] duplicate request'
+export const EDIT_NON_AUTHORED_ITEM = '[testItemPreview] edit non authored item'
 
 export const setQuestionsForPassageAction = createAction(
   SET_QUESTIONS_IN_PASSAGE
@@ -28,7 +38,7 @@ export const setPrevewItemAction = createAction(SET_ITEM_PREVIEW_DATA)
 export const duplicateTestItemPreviewRequestAction = createAction(
   DUPLICATE_TESTITEM_PREVIEW_REQUEST
 )
-
+export const editNonAuthoredItemAction = createAction(EDIT_NON_AUTHORED_ITEM)
 export const stateSelector = (state) => state.testItemPreview
 export const archivedItemsSelector = (state) =>
   get(state, 'testsAddItems.archivedItems', [])
@@ -198,11 +208,61 @@ function* duplicateItemRequestSaga({ payload }) {
   }
 }
 
+// editing an item without edit permission.
+function* editNonAuthoredItemSaga({ payload }) {
+  try {
+    const {
+      itemId,
+      testId,
+      replaceOldItem,
+      passageItems: testItemIds,
+      passageId,
+    } = payload
+    const test = yield select(getTestSelector)
+    yield call(updateTestSaga, {
+      payload: { id: testId, data: test },
+    })
+    let duplicateItemId = 'new'
+    if (testItemIds && passageId) {
+      const duplicatedPassage = yield call(passageApi.duplicate, {
+        passageId,
+        testItemIds,
+        testId,
+        replaceOldItem,
+      })
+      duplicateItemId = duplicatedPassage?.testItems?.[0]
+    } else {
+      const duplicatedItem = yield call(
+        testItemsApi.duplicateTestItem,
+        itemId,
+        {
+          testId,
+          replaceOldItem,
+        }
+      )
+      duplicateItemId = duplicatedItem._id
+    }
+    const path = `/author/tests/${testId}/editItem/${duplicateItemId}`
+    yield put(
+      push(path, {
+        fadeSidebar: true,
+        regradeFlow: true,
+        previousTestId: test.previousTestId,
+      })
+    )
+  } catch (e) {
+    Sentry.captureException(e)
+    notification({ messageKey: 'errorUpdatingTest' })
+    console.error('err', e)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(
       DUPLICATE_TESTITEM_PREVIEW_REQUEST,
       duplicateItemRequestSaga
     ),
+    yield takeLatest(EDIT_NON_AUTHORED_ITEM, editNonAuthoredItemSaga),
   ])
 }

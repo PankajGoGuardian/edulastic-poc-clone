@@ -655,6 +655,14 @@
     "message": " No students selected",
     "description": ""
   },
+  "noStudentSelectedForPause": {
+    "message": "At least one student should be selected to Pause.",
+    "description": ""
+  },
+  "noStudentSelectedForResume": {
+    "message": "At least one student should be selected to Resume.",
+    "description": ""
+  },
   "assessmentAlreadyAssignedToAllStudents": {
     "message": "This assessment is already assigned to all students in the class.",
     "description": ""
@@ -1933,6 +1941,10 @@
   },
   "testPausedOrClosedByTeacher": {
     "message": "Assessment is paused or closed by teacher.",
+    "description": ""
+  },
+  "testPausedByTeacher": {
+    "message": "Assignment is paused at class level. Kindly resume assignment to use this action.",
     "description": ""
   },
   "invalidAction": {

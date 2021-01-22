@@ -165,6 +165,15 @@ const newselaSSOLogin = (data) =>
     })
     .then((result) => result.data.result)
 
+const wordPressLoginData = (data) =>
+  api
+    .callApi({
+      url: `user/wp`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   login,
   signup,
@@ -185,4 +194,5 @@ export default {
   updateInvitedUserDetails,
   newselaSSOLogin,
   newselaLogin,
+  wordPressLoginData,
 }

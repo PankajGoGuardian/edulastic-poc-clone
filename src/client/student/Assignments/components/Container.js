@@ -17,7 +17,10 @@ import {
   rerenderAssignmentsAction,
   updateTestIdRealTimeAction,
 } from '../../sharedDucks/AssignmentModule/ducks'
-import { addRealtimeReportAction } from '../../sharedDucks/ReportsModule/ducks'
+import {
+  addRealtimeReportAction,
+  setAssignmentIsPausedAction,
+} from '../../sharedDucks/ReportsModule/ducks'
 import { Wrapper } from '../../styled'
 // actions
 import {
@@ -26,6 +29,7 @@ import {
   getAssignmentsSelector,
   transformAssignmentForRedirect,
   assignmentIdsByTestIdSelector,
+  notStartedReportsByAssignmentId,
 } from '../ducks'
 
 const withinThreshold = (targetDate, threshold) => {
@@ -75,6 +79,8 @@ const Content = ({
   currentChild,
   assignmentIdsByTestId,
   updateTestIdRealTime,
+  notStartedReportsByAssignment,
+  setAssignmentIsPaused,
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup)
@@ -118,6 +124,13 @@ const Content = ({
         return updateTestIdRealTime({ assignmentIds, ...payload })
       }
     },
+    'toggle-pause-assignment': (payload) => {
+      const { activitiesByUserId, paused } = payload
+      const utaId = activitiesByUserId[userId]
+      if (utaId) {
+        setAssignmentIsPaused({ utaId, paused })
+      }
+    },
   })
 
   useInterval(() => {
@@ -144,6 +157,7 @@ const Content = ({
           classId={item.classId}
           index={i}
           type="assignment"
+          uta={notStartedReportsByAssignment[`${item._id}_${item.classId}`]}
         />
       ))}
     </AssignmentWrapper>
@@ -175,6 +189,7 @@ export default connect(
     isLoading: get(state, 'studentAssignment.isLoading'),
     currentChild: state?.user?.currentChild,
     assignmentIdsByTestId: assignmentIdsByTestIdSelector(state),
+    notStartedReportsByAssignment: notStartedReportsByAssignmentId(state),
   }),
   {
     fetchAssignments: fetchAssignmentsAction,
@@ -183,6 +198,7 @@ export default connect(
     rerenderAssignments: rerenderAssignmentsAction,
     removeAssignment: removeAssignmentAction,
     updateTestIdRealTime: updateTestIdRealTimeAction,
+    setAssignmentIsPaused: setAssignmentIsPausedAction,
   }
 )(Content)
 

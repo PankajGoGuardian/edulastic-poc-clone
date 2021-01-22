@@ -297,6 +297,8 @@ export const SET_CORRECT_PSSAGE_ITEMS_CREATED =
 export const SET_SHARING_CONTENT_STATE = '[test] set sharing content state'
 export const UPDATE_EMAIL_NOTIFICATION_DATA =
   '[test] update email notification data'
+export const GET_REGRADE_ACTIONS = '[tests] get available regrade actions'
+export const SET_REGRADE_ACTIONS = '[tests] set available regrade actions'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -381,6 +383,8 @@ export const setSharingContentStateAction = createAction(
 export const updateEmailNotificationDataAction = createAction(
   UPDATE_EMAIL_NOTIFICATION_DATA
 )
+
+export const setAvailableRegradeAction = createAction(SET_REGRADE_ACTIONS)
 
 export const receiveTestByIdAction = (
   id,
@@ -497,6 +501,7 @@ export const setUndoStackAction = createAction(SET_ANNOTATIONS_STACK)
 export const setCorrectPassageItemsCreatedAction = createAction(
   SET_CORRECT_PSSAGE_ITEMS_CREATED
 )
+export const getRegradeSettingsAction = createAction(GET_REGRADE_ACTIONS)
 
 export const defaultImage =
   'https://cdn2.edulastic.com/default/default-test-1.jpg'
@@ -661,6 +666,16 @@ export const getRegradingSelector = createSelector(
   (state) => state.regrading
 )
 
+export const getIsLoadRegradeSettingsSelector = createSelector(
+  stateSelector,
+  (state) => state.loadRegradeSettings
+)
+
+export const getAvaialbleRegradeSettingsSelector = createSelector(
+  stateSelector,
+  (state) => state.availableRegradeSettings
+)
+
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
   ({ itemGroups }) => {
@@ -757,6 +772,7 @@ export const createBlankTest = () => ({
   generateReport: true,
   safeBrowser: false,
   sebPassword: '',
+  blockNavigationToAnsweredQuestions: false,
   shuffleQuestions: false,
   shuffleAnswers: false,
   calcType: test.calculatorKeys[0],
@@ -836,6 +852,8 @@ const initialState = {
   sendEmailNotification: false,
   showMessageBody: false,
   notificationMessage: '',
+  loadRegradeSettings: false,
+  availableRegradeSettings: [`ADD`, `EDIT`, `REMOVE`, `SETTINGS`],
 }
 
 export const testTypeAsProfileNameType = {
@@ -1346,6 +1364,17 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         ...payload,
       }
+    case GET_REGRADE_ACTIONS:
+      return {
+        ...state,
+        loadRegradeSettings: true,
+      }
+    case SET_REGRADE_ACTIONS:
+      return {
+        ...state,
+        availableRegradeSettings: payload,
+        loadRegradeSettings: false,
+      }
     default:
       return state
   }
@@ -1660,7 +1689,7 @@ function hasInvalidItem(testData) {
   return testData.itemGroups.find((x) => x.items.find((_item) => !_item.itemId))
 }
 
-function* updateTestSaga({ payload }) {
+export function* updateTestSaga({ payload }) {
   try {
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true))
@@ -2881,6 +2910,16 @@ function* getTestIdFromVersionIdSaga({ payload }) {
   }
 }
 
+function* getRegradeSettingsSaga({ payload }) {
+  try {
+    const result = yield call(assignmentApi.fetchRegradeSettings, payload)
+    yield put(setAvailableRegradeAction(result))
+  } catch (err) {
+    Sentry.captureException(err)
+    console.error(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
@@ -2911,5 +2950,6 @@ export function* watcherSaga() {
     yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
     yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
     yield takeLatest(GET_TESTID_FROM_VERSIONID, getTestIdFromVersionIdSaga),
+    yield takeLatest(GET_REGRADE_ACTIONS, getRegradeSettingsSaga),
   ])
 }

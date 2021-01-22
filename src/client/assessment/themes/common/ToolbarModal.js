@@ -74,6 +74,7 @@ class ToolbarModal extends React.Component {
       currentItem: currentItemIndex,
       handletoggleHints,
       qType,
+      blockNavigationToAnsweredQuestions = false,
     } = this.props
     const questions = get(
       items,
@@ -92,9 +93,11 @@ class ToolbarModal extends React.Component {
         width="390px"
       >
         <Container>
-          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
-            Bookmark
-          </StyledButton>
+          {!blockNavigationToAnsweredQuestions && (
+            <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+              Bookmark
+            </StyledButton>
+          )}
           {settings.calcType !== calculatorTypes.NONE && (
             <StyledButton onClick={() => this.toolbarHandler(2)}>
               Calculator

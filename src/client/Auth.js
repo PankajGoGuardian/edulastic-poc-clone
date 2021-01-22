@@ -72,7 +72,10 @@ const Auth = ({
   useEffect(() => {
     if (loggedInForPrivateRoute && !showLoginForAddAccount) {
       const currentUrl = getCurrentPath()
-      if (isHashAssessmentUrl()) {
+      if (
+        isHashAssessmentUrl() ||
+        window.location.pathname.includes('/assignments/embed/')
+      ) {
         persistAuthStateAndRedirectTo({ toUrl: currentUrl })
       } else {
         persistAuthStateAndRedirectTo()

@@ -39,6 +39,7 @@ const Assignments = ({
   currentChild,
   proxyUserRole,
   isCliUser,
+  districtPolicies,
   t,
 }) => {
   const isParentRoleProxy = proxyUserRole === 'parent'
@@ -46,9 +47,15 @@ const Assignments = ({
   const activeEnrolledClasses = (activeClasses || []).filter(
     (c) => c.status == '1'
   )
-
+  const hangoutEnabledDistrictMap = (districtPolicies || []).reduce(
+    (acc, o) => {
+      acc[o.districtId] = o.enableGoogleMeet
+      return acc
+    },
+    {}
+  )
   const classListWithHangouts = activeEnrolledClasses.filter(
-    (c) => c.hangoutLink
+    (c) => c.hangoutLink && hangoutEnabledDistrictMap[c.districtId]
   )
 
   const [showHangoutsModal, setShowHangoutsModal] = useState(false)
@@ -64,7 +71,7 @@ const Assignments = ({
   }, [currentChild])
 
   if (loading) return <Spin />
-
+  const isHangoutEnabled = !!classListWithHangouts?.length
   return (
     <Wrapper>
       <HangoutsModal
@@ -85,7 +92,8 @@ const Assignments = ({
       >
         <Row type="flex" align="middle">
           {!!classListWithHangouts.length &&
-            !(userRole === 'parent' || isParentRoleProxy) && (
+            !(userRole === 'parent' || isParentRoleProxy) &&
+            isHangoutEnabled && (
               <StyledEduButton
                 height="40px"
                 style={{ 'margin-right': '20px' }}
@@ -116,6 +124,7 @@ export default withNamespaces('header')(
   connect(
     (state) => ({
       userRole: state?.user?.user?.role,
+      districtPolicies: state?.user?.user?.orgData?.districtPolicies,
       allClasses: state.studentEnrollClassList.allClasses,
       activeClasses: state.studentEnrollClassList.filteredClasses,
       loading: state.studentEnrollClassList.loading,

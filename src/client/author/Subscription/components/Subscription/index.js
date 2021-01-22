@@ -1,5 +1,6 @@
 import { segmentApi } from '@edulastic/api'
 import React, { useEffect, useState } from 'react'
+import moment from 'moment'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import SubscriptionAddonModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/SubscriptionAddonModal'
@@ -22,6 +23,7 @@ import {
   PlanLabel,
   PlanTitle,
 } from './styled'
+import TrialConfirmationModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/TrialConfimationModal'
 
 const comparePlansData = [
   {
@@ -186,6 +188,8 @@ const Subscription = (props) => {
     startTrialAction,
     premiumProductId,
     addPermissionRequest,
+    isConfirmationModalVisible,
+    showTrialSubsConfirmationAction,
   } = props
 
   useEffect(() => {
@@ -239,6 +243,7 @@ const Subscription = (props) => {
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
+  const formatTrialEndDate = moment(subEndDate).format('DD MMM, YYYY')
 
   return (
     <Wrapper>
@@ -270,6 +275,7 @@ const Subscription = (props) => {
         user={user}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         premiumProductId={premiumProductId}
+        showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
       />
 
       <CompareModal
@@ -330,6 +336,14 @@ const Subscription = (props) => {
         openPaymentServiceModal={openPaymentServiceModal}
         verificationPending={verificationPending}
       />
+      {formatTrialEndDate && (
+        <TrialConfirmationModal
+          visible={isConfirmationModalVisible}
+          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          isPremiumUser={isPremiumUser}
+          subEndDate={formatTrialEndDate}
+        />
+      )}
     </Wrapper>
   )
 }
@@ -345,6 +359,7 @@ export default connect(
     isPremiumTrialUsed:
       state?.subscription?.subscriptionData?.isPremiumTrialUsed,
     premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
+    isConfirmationModalVisible: state?.subscription?.showTrialSubsConfirmation,
   }),
   {
     verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
@@ -352,5 +367,6 @@ export default connect(
     fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
     startTrialAction: slice.actions.startTrialAction,
     addPermissionRequest: addPermissionRequestAction,
+    showTrialSubsConfirmationAction: slice.actions.trialSubsConfirmationAction,
   }
 )(Subscription)

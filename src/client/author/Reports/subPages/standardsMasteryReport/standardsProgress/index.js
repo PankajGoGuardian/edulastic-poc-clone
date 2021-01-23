@@ -8,6 +8,7 @@ import { SpinLoader } from '@edulastic/common'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import SignedStackedBarChartContainer from './components/charts/SignedStackedBarChartContainer'
+import StandardsProgressTable from './components/table/StandardsProgressTable'
 
 import { getCsvDownloadingState } from '../../../ducks'
 import { getReportsStandardsFilters } from '../common/filterDataDucks'
@@ -22,14 +23,14 @@ import {
   getDenormalizedData,
   getFilteredDenormalizedData,
 } from './utils/transformers'
-import dropDownData from '../standardsPerformance/static/json/dropDownData.json'
+import dropDownData from './static/dropDownData.json'
 
 const { compareByData, analyseByData } = dropDownData
 
 const StandardsProgress = ({
   loading,
   error,
-  // isCsvDownloading,
+  isCsvDownloading,
   settings,
   standardsFilters,
   standardsProgress,
@@ -97,11 +98,21 @@ const StandardsProgress = ({
     }
   }, [pageFilters])
 
+  const testInfo = get(standardsProgress, 'data.result.testInfo', [])
   const totalTestCount = get(standardsProgress, 'data.result.totalTestCount', 0)
 
-  const filteredDenormalizedData = useMemo(() => {
-    const denormalizedData = getDenormalizedData(standardsProgress)
-    return getFilteredDenormalizedData(denormalizedData, ddfilter)
+  const [
+    filteredDenormalizedData,
+    filteredDenormalizedTableData,
+  ] = useMemo(() => {
+    const [denormalizedData, denormalizedTableData] = getDenormalizedData(
+      standardsProgress
+    )
+    return getFilteredDenormalizedData(
+      denormalizedData,
+      denormalizedTableData,
+      ddfilter
+    )
   }, [standardsProgress, ddfilter])
 
   if (loading) {
@@ -120,7 +131,7 @@ const StandardsProgress = ({
     <div>
       <StyledCard>
         <Row type="flex" justify="start">
-          <StyledH3>Mastery Level Distribution Standards</StyledH3>
+          <StyledH3>Mastery Level Distribution by Test</StyledH3>
         </Row>
         <Row>
           <SignedStackedBarChartContainer
@@ -141,6 +152,20 @@ const StandardsProgress = ({
             }
           />
         </Row>
+      </StyledCard>
+      <StyledCard>
+        <StandardsProgressTable
+          data={filteredDenormalizedTableData}
+          testInfo={testInfo}
+          masteryScale={selectedScale}
+          tableFilters={tableFilters}
+          setTableFilters={setTableFilters}
+          tableFilterOptions={{
+            compareByData: compareByDataFiltered,
+            analyseByData,
+          }}
+          isCsvDownloading={isCsvDownloading}
+        />
       </StyledCard>
     </div>
   )

@@ -28,7 +28,7 @@ import {
 import dropDownFormat from '../../static/json/dropDownFormat.json'
 import { reportLinkColor } from '../../../../multipleAssessmentReport/common/utils/constants'
 
-const GradebookTable = styled(StyledTable)`
+export const GradebookTable = styled(StyledTable)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
       table tbody tr td {

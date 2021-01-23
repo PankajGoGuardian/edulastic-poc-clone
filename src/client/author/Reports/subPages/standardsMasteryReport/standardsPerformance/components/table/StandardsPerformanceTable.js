@@ -16,12 +16,12 @@ import {
   getOverallMasteryScore,
   getRecordMasteryLevel,
 } from '../../utils/transformers'
-import { StyledDropDownContainer } from '../styled'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
   StyledH3,
   StyledTable,
   ColoredCell,
+  StyledDropDownContainer,
 } from '../../../../../common/styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
@@ -234,7 +234,9 @@ const StandardsPerformanceTable = ({
     <>
       <Row type="flex" justify="start" className={className}>
         <Col xs={24} sm={24} md={11} lg={11} xl={12}>
-          <StyledH3>Domain Mastery Details by School</StyledH3>
+          <StyledH3>
+            Domain Mastery Details by {tableFilters.compareBy.title}
+          </StyledH3>
         </Col>
         <Col xs={24} sm={24} md={13} lg={13} xl={12}>
           <Row className="control-dropdown-row">

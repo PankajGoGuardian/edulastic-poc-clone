@@ -271,9 +271,8 @@ export const getColValue = (test, analyseByKey, masteryScale) => {
   }
 }
 
-export const getMasteryScoreColor = (test, masteryScale) => {
+export const getMasteryScoreColor = (test, masteryScale) =>
   getMasteryLevel(getMasteryScore(test), masteryScale).color
-}
 
 const getCompareByDataKey = (compareByKey) => {
   switch (compareByKey) {

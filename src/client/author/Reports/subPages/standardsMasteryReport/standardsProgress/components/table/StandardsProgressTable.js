@@ -5,13 +5,13 @@ import { Row, Col } from 'antd'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
   StyledH3,
-  StyledTable,
   ColoredCell,
   StyledDropDownContainer,
 } from '../../../../../common/styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
+import { GradebookTable as StyledTable } from '../../../standardsGradebook/components/table/standardsGradebookTable'
 
 import { downloadCSV } from '../../../../../common/util'
 import {

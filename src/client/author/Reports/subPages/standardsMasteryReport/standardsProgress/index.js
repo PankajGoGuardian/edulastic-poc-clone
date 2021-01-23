@@ -31,6 +31,7 @@ const StandardsProgress = ({
   loading,
   error,
   isCsvDownloading,
+  toggleFilter,
   settings,
   standardsFilters,
   standardsProgress,
@@ -115,6 +116,17 @@ const StandardsProgress = ({
     )
   }, [standardsProgress, ddfilter])
 
+  // show filters section if data is empty
+  useEffect(() => {
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !filteredDenormalizedData?.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [filteredDenormalizedData])
+
   if (loading) {
     return <SpinLoader position="fixed" />
   }
@@ -123,7 +135,10 @@ const StandardsProgress = ({
     return <DataSizeExceeded />
   }
 
-  if (!filteredDenormalizedData?.length) {
+  if (
+    !filteredDenormalizedData?.length ||
+    !filteredDenormalizedTableData?.length
+  ) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 

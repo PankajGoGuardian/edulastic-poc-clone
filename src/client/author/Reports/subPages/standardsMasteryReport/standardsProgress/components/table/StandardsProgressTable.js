@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import next from 'immer'
 
 import { Row, Col } from 'antd'
+import { EduButton } from '@edulastic/common'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
   StyledH3,
@@ -31,6 +32,8 @@ const StandardsProgressTable = ({
   setTableFilters,
   tableFilterOptions,
   isCsvDownloading,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const { analyseByData, compareByData } = tableFilterOptions
 
@@ -144,14 +147,14 @@ const StandardsProgressTable = ({
   return (
     <>
       <Row type="flex" justify="start">
-        <Col xs={24} sm={24} md={11} lg={11} xl={12}>
+        <Col xs={24} sm={24} md={8} lg={8} xl={12}>
           <StyledH3>
             Standard Mastery Over Time by {tableFilters.compareBy.title}
           </StyledH3>
         </Col>
-        <Col xs={24} sm={24} md={13} lg={13} xl={12}>
+        <Col xs={24} sm={24} md={16} lg={16} xl={12}>
           <Row className="control-dropdown-row">
-            <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
+            <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
               <ControlDropDown
                 prefix="Compare by "
                 data={compareByData}
@@ -159,13 +162,47 @@ const StandardsProgressTable = ({
                 selectCB={bindOnChange('compareBy', compareByData)}
               />
             </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={13} lg={13} xl={8}>
+            <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
               <ControlDropDown
                 prefix="Analyze by "
                 data={analyseByData}
                 by={tableFilters.analyseBy}
                 selectCB={bindOnChange('analyseBy', analyseByData)}
               />
+            </StyledDropDownContainer>
+            <StyledDropDownContainer xs={24} sm={24} md={4} lg={4} xl={4}>
+              <EduButton
+                block
+                height="32px"
+                onClick={() =>
+                  setBackendPagination({
+                    ...backendPagination,
+                    page: backendPagination.page - 1,
+                  })
+                }
+                disabled={backendPagination.page <= 1}
+              >
+                PREV
+              </EduButton>
+            </StyledDropDownContainer>
+            <StyledDropDownContainer xs={24} sm={24} md={4} lg={4} xl={4}>
+              <EduButton
+                block
+                height="32px"
+                onClick={() =>
+                  setBackendPagination({
+                    ...backendPagination,
+                    page: backendPagination.page + 1,
+                  })
+                }
+                disabled={
+                  !backendPagination.page ||
+                  !backendPagination.pageCount ||
+                  backendPagination.page === backendPagination.pageCount
+                }
+              >
+                NEXT
+              </EduButton>
             </StyledDropDownContainer>
           </Row>
         </Col>

@@ -36,8 +36,6 @@ const StandardsProgress = ({
   standardsFilters,
   standardsProgress,
   getStandardsProgressRequest,
-  // location,
-  // pageTitle,
   ddfilter,
   userRole,
   sharedReport,
@@ -101,6 +99,7 @@ const StandardsProgress = ({
 
   const testInfo = get(standardsProgress, 'data.result.testInfo', [])
   const totalTestCount = get(standardsProgress, 'data.result.totalTestCount', 0)
+  const totalRowCount = get(standardsProgress, 'data.result.totalRowCount', 0)
 
   const [
     filteredDenormalizedData,
@@ -180,6 +179,18 @@ const StandardsProgress = ({
             analyseByData,
           }}
           isCsvDownloading={isCsvDownloading}
+          backendPagination={{
+            page: pageFilters.tablePageNumber,
+            pageSize: pageFilters.tablePageSize,
+            pageCount:
+              Math.ceil(totalRowCount / pageFilters.tablePageSize) || 1,
+          }}
+          setBackendPagination={({ page }) =>
+            setPageFilters({
+              ...pageFilters,
+              tablePageNumber: page,
+            })
+          }
         />
       </StyledCard>
     </div>

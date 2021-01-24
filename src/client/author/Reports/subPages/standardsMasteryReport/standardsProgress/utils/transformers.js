@@ -13,7 +13,60 @@ const getFormattedName = (name) => {
   return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
-export const getDenormalizedData = (rawData) => {
+const getCompareByDataKey = (compareByKey) => {
+  switch (compareByKey) {
+    case 'school':
+      return 'schoolId'
+    case 'teacher':
+      return 'teacherId'
+    case 'student':
+      return 'studentId'
+    case 'class':
+    case 'group':
+      return 'groupId'
+    case 'race':
+      return 'race'
+    case 'gender':
+      return 'gender'
+    case 'frlStatus':
+      return 'frlStatus'
+    case 'ellStatus':
+      return 'ellStatus'
+    case 'iepStatus':
+      return 'iepStatus'
+    default:
+      return ''
+  }
+}
+
+const getRowName = (compareByKey, rowInfo = {}) => {
+  switch (compareByKey) {
+    case 'teacherId':
+      return `${rowInfo.teacherName}`
+    case 'schoolId':
+      return `${rowInfo.schoolName}`
+    case 'classId':
+    case 'groupId':
+      return `${rowInfo.className}`
+    case 'race':
+      return `${rowInfo.race}`
+    case 'gender':
+      return `${rowInfo.gender}`
+    case 'frlStatus':
+      return `${rowInfo.frlStatus}`
+    case 'ellStatus':
+      return `${rowInfo.ellStatus}`
+    case 'iepStatus':
+      return `${rowInfo.iepStatus}`
+    case 'studentId':
+    default:
+      return getFormattedName(
+        `${rowInfo.firstName || ''} ${rowInfo.lastName || ''}`
+      )
+  }
+}
+
+export const getDenormalizedData = (rawData, compareByKey) => {
   if (isEmpty(rawData)) {
     return []
   }
@@ -58,12 +111,13 @@ export const getDenormalizedData = (rawData) => {
     }))
   )
 
+  const compareByDataKey = getCompareByDataKey(compareByKey)
   const rawMetricInfo = get(rawData, 'data.result.metricInfo', [])
   const metricInfo = rawMetricInfo
     .map((item) => {
-      if (studInfoMap[item.studentId]) {
-        return {
-          ...item,
+      let itemInfo = {}
+      if (compareByDataKey === 'studentId' && studInfoMap[item.studentId]) {
+        itemInfo = {
           ...studInfoMap[item.studentId],
           ...testInfoMap[item.reportKey],
           studentName: getFormattedName(
@@ -74,17 +128,27 @@ export const getDenormalizedData = (rawData) => {
           groupIds: uniq(studInfoMap[item.studentId].groupIds.split(',')),
         }
       }
-      return item
+      if (compareByDataKey === 'groupId' && teacherInfoMap[item.groupId]) {
+        itemInfo = { ...(teacherInfoMap[item.groupId] || {}) }
+      }
+      if (compareByDataKey === 'schoolId' || compareByDataKey === 'teacherId') {
+        const teacherInfo = rawTeacherInfo.find(
+          (t) => t[compareByDataKey] === item[compareByDataKey]
+        )
+        itemInfo = isEmpty(teacherInfo) ? {} : { ...teacherInfo }
+      }
+      return { ...item, ...itemInfo }
     })
-    .filter((item) => !isEmpty(item.groupIds))
     .sort((a, b) => testOrderMap(a.reportKey) - testOrderMap(b.reportKey))
 
   const denormalizedTableData = metricInfo.flatMap(({ groupIds, ...item }) =>
-    groupIds.map((groupId) => ({
-      ...item,
-      groupId,
-      ...(teacherInfoMap[groupId] || {}),
-    }))
+    isEmpty(groupIds)
+      ? [item]
+      : groupIds.map((groupId) => ({
+          ...item,
+          groupId,
+          ...(teacherInfoMap[groupId] || {}),
+        }))
   )
 
   return [denormalizedData, denormalizedTableData]
@@ -273,59 +337,6 @@ export const getColValue = (test, analyseByKey, masteryScale) => {
 
 export const getMasteryScoreColor = (test, masteryScale) =>
   getMasteryLevel(getMasteryScore(test), masteryScale).color
-
-const getCompareByDataKey = (compareByKey) => {
-  switch (compareByKey) {
-    case 'school':
-      return 'schoolId'
-    case 'teacher':
-      return 'teacherId'
-    case 'student':
-      return 'studentId'
-    case 'class':
-    case 'group':
-      return 'groupId'
-    case 'race':
-      return 'race'
-    case 'gender':
-      return 'gender'
-    case 'frlStatus':
-      return 'frlStatus'
-    case 'ellStatus':
-      return 'ellStatus'
-    case 'iepStatus':
-      return 'iepStatus'
-    default:
-      return ''
-  }
-}
-
-const getRowName = (compareByKey, rowInfo = {}) => {
-  switch (compareByKey) {
-    case 'teacherId':
-      return `${rowInfo.teacherName}`
-    case 'schoolId':
-      return `${rowInfo.schoolName}`
-    case 'classId':
-    case 'groupId':
-      return `${rowInfo.className}`
-    case 'race':
-      return `${rowInfo.race}`
-    case 'gender':
-      return `${rowInfo.gender}`
-    case 'frlStatus':
-      return `${rowInfo.frlStatus}`
-    case 'ellStatus':
-      return `${rowInfo.ellStatus}`
-    case 'iepStatus':
-      return `${rowInfo.iepStatus}`
-    case 'studentId':
-    default:
-      return getFormattedName(
-        `${rowInfo.firstName || ''} ${rowInfo.lastName || ''}`
-      )
-  }
-}
 
 export const getTableData = (
   rawTableData,

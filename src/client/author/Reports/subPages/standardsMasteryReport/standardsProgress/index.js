@@ -106,14 +106,15 @@ const StandardsProgress = ({
     filteredDenormalizedTableData,
   ] = useMemo(() => {
     const [denormalizedData, denormalizedTableData] = getDenormalizedData(
-      standardsProgress
+      standardsProgress,
+      tableFilters.compareBy.key
     )
     return getFilteredDenormalizedData(
       denormalizedData,
       denormalizedTableData,
       ddfilter
     )
-  }, [standardsProgress, ddfilter])
+  }, [standardsProgress, ddfilter, tableFilters.compareBy])
 
   // show filters section if data is empty
   useEffect(() => {
@@ -134,10 +135,7 @@ const StandardsProgress = ({
     return <DataSizeExceeded />
   }
 
-  if (
-    !filteredDenormalizedData?.length ||
-    !filteredDenormalizedTableData?.length
-  ) {
+  if (!filteredDenormalizedData?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 

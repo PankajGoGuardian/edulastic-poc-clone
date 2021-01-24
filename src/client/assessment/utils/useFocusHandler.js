@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export default function useFocusHandler({onFocus,onBlur}){
+export default function useFocusHandler({onFocus,onBlur,enabled}){
 	useEffect(()=>{
 		/**plugin code starts */
 		/*
@@ -62,6 +62,7 @@ export default function useFocusHandler({onFocus,onBlur}){
 			////////////////////////////////////////////
 			////////////////////////////////////////////
 			// TabWindowVisibilityManager
+			var cleanupCallbacks = [];
 			;(function($) {
 
 				// main visibility API function
@@ -83,7 +84,10 @@ export default function useFocusHandler({onFocus,onBlur}){
 					}
 
 					return function(c) {
-						if (c) document.addEventListener(eventKey, c);
+						if (c){
+							document.addEventListener(eventKey, c);
+							return () => document.removeEventListener(eventKey,c);
+						} 
 						return !document[stateKey];
 					}
 				})();
@@ -98,11 +102,10 @@ export default function useFocusHandler({onFocus,onBlur}){
 					var o = $.extend(defaults, options);
 					var notIE = (document.documentMode === undefined),
 						isChromium = window.chrome;
-
 					this.each(function() {
 						/////////////////////////////////////////
 						// check if current tab is active or not
-						vis(function() {
+						var cleanupCb1 = vis(function() {
 							if (vis()) {
 								setTimeout(function() {
 									// tween resume() code goes here
@@ -113,47 +116,47 @@ export default function useFocusHandler({onFocus,onBlur}){
 								o.onBlurCallback();
 							}
 						});
+						cleanupCallbacks.push(cleanupCb1);
 						/////////////////////////////////////////
 						// check if browser window has focus
 						if (notIE && !isChromium) {
 							// checks for Firefox and other  NON IE Chrome versions
-							$(window).on("focusin", function() {
+							var focusinCb = function() {
 								setTimeout(function() {
 									// tween resume() code goes here
 									o.onFocusCallback();
 								}, 300);
-							}).on("focusout", function() {
+							};
+							var focusOutCb = function() {
 								// tween pause() code goes here
 								o.onBlurCallback();
-							});
+							};
+							$(window).on("focusin", focusinCb).on("focusout", focusOutCb);
+							cleanupCallbacks.push(() => $(window).off("focusin", focusinCb));
+							cleanupCallbacks.push(() => $(window).off("focusout", focusOutCb));
+							
 						} else {
 							// checks for IE and Chromium versions
 							if (window.addEventListener) {
 								// bind focus event
-								window.addEventListener("focus", function(event) {
+								var focusCb = function(event) {
 									setTimeout(function() {
 										// tween resume() code goes here
 										o.onFocusCallback();
 									}, 300);
-								}, false);
-								// bind blur event
-								window.addEventListener("blur", function(event) {
+								};
+								var blurCb = function(event) {
 									// tween pause() code goes
 									o.onBlurCallback();
-								}, false);
+								};
+								window.addEventListener("focus", focusCb , false);
+								cleanupCallbacks.push(()=> window.removeEventListener("focus",focusCb,false));
+								// bind blur event
+								window.addEventListener("blur", blurCb , false);
+								cleanupCallbacks.push(()=> window.removeEventListener("blur",blurCb,false))
 							} else {
-								// bind focus event
-								window.attachEvent("focus", function(event) {
-									setTimeout(function() {
-										// tween resume() code goes here
-										o.onFocusCallback();
-									}, 300);
-								});
-								// bind focus event
-								window.attachEvent("blur", function(event) {
-									// tween pause() code goes here
-									o.onBlurCallback();
-								});
+								// very old browser
+								console.warn('focus features not supported');
 							}
 						}
 					});
@@ -167,5 +170,9 @@ export default function useFocusHandler({onFocus,onBlur}){
 			onFocusCallback: onFocus,
 			onBlurCallback: onBlur
 		});
-	},[])
+
+		return () => {
+			cleanupCallbacks.forEach(c => c());
+		}
+	},[enabled])
 }

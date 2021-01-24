@@ -26,9 +26,14 @@ import {
   useRealtimeV2,
   notification,
   handleChromeOsSEB,
+  EduButton,
+  FireBaseService
 } from '@edulastic/common'
+import firebase from 'firebase/app'
+// Required for side-effects
+import 'firebase/firestore'
 import { themeColor } from '@edulastic/colors'
-import { testActivityApi } from '@edulastic/api';
+import { testActivityApi, classBoardApi } from '@edulastic/api';
 
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
@@ -85,10 +90,146 @@ const shouldAutoSave = (itemRows) => {
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
 
+function pauseAssignment({history,testActivityId, assignmentId,classId,userId,pauseReason}){
+  console.warn('pausing assignment');
+  classBoardApi.togglePauseStudents({assignmentId,classId,students:[userId],isPause:true,pauseReason}).then(()=>{
+    const errorMsg = "Pausing Assignment due to Anti Cheating measures";
+    notification({type:"warning",msg:errorMsg});
+    history.push('/home/assignments');
+  }).catch(e=>{
+    const errorMsg = e?.response?.data?.result?.message||"Pausing Assignment due to Anti Cheating measures";
+    notification({type:"warning",msg:errorMsg});
+    history.push('/home/assignments');
+  })
+}
+
+function incrementNavigationCounter({history,testActivityId}){
+  return testActivityApi.incrementTabNavigationCounter(testActivityId)
+          .then((response)=>{
+            if(response.paused){
+              notification({type:"error",msg:"Sorry! Assignment got paused due to inactivity"})
+              ;
+              history.push('/home/assignments');
+            } else {
+              notification({type:"warning",msg:"Moving out of assignment has been noted"});
+            }
+          }).catch((error)=>{
+            console.warn('idle error',error);
+            notification({type:"error",msg:"something wrong happened with assignment"});
+            history.push('/home/assignments');
+          })
+}
+
+function ForceFullScreenModal({history,visible,finishTest,testActivityId}){
+
+  useEffect(()=>{
+    if(visible){
+      //incrementNavigationCounter({history,testActivityId});
+    }
+  },[visible]);
+
+  return (<Modal destroyOnClose keyboard={false} closable={false} maskClosable={false} footer={
+  <>
+    <Button type="danger" onClick={finishTest}>Submit the test</Button>
+    <Button type="primary" onClick={()=>{
+      document.body.requestFullscreen({navigationUI:"hide"}).then({}).catch((e)=>{
+        console.warn(`fullsreen error`,e);
+      })
+    }}>Go Back to the test</Button>
+   
+  </>
+  } 
+  maskStyle={{background:'#000',opacity:1}} 
+  visible={visible}>
+    <p>This Assessment can only be taken in full screen mode</p>
+  </Modal>);
+}
+
+
+function useFullScreenListener({init=true,enabled}){
+  const [inFullScreen,setInFullScreen] = useState(enabled?null:true);
+  const fullScreenCb = function(e){
+    if(document.fullscreenElement){
+      setInFullScreen(true)
+    } else {
+      setInFullScreen(false);
+    }
+  };
+
+  useEffect(()=>{
+    document.addEventListener('fullscreenchange',fullScreenCb);
+    if(init && enabled){
+
+      // Modal.confirm({
+      //   closable:false,
+      //   content: <p> you need to finish this assessment without exiting the window or leaving the window or tab. We will be going into full screen mode now</p>,
+      //   maskClosable:false,
+      //   cancelButtonProps: {style:{display:'none'}},
+      //   keyboard:false,
+      //   onOk: ()=> {
+      //     document.body.requestFullscreen().then({}).catch((e)=>{
+      //       console.warn(`An error occurred while trying to switch into full-screen mode`,e);
+      //     });
+      //   }
+      // })
+    }
+    return () => {
+      document.removeEventListener('fullscreenchange',fullScreenCb);
+      Modal.destroyAll();
+      document.exitFullscreen().catch((e)=>{});
+    }
+  },[enabled]);
+  return inFullScreen;
+}
+
+function useFirestorePingsForNavigationCheck({testActivityId,history, blockSaveAndContinue,userId,classId,assignmentId}){
+  const collectionName = `timetracking`;
+  const coll = FireBaseService.db.collection(collectionName);
+  const doc = coll.doc(testActivityId);
+  useEffect(()=>{
+    if(testActivityId){
+      doc.get().then((d)=>{
+        console.log('dd',d)
+        if(!d.data()){
+          doc.set({lastUpdatedTime: Date.now()});
+          return ;
+        } 
+        const lastTime = d.data().lastUpdatedTime;
+        console.info('now-lastTime', Date.now()-lastTime);
+        if((Date.now()-lastTime)>=45*1000){
+          if(blockSaveAndContinue){
+            pauseAssignment({history,testActivityId, userId,assignmentId,classId,pauseReason:"blocked-save-and-continue"});
+          } else {
+            incrementNavigationCounter({history,testActivityId})
+          }
+        } else {
+          doc.set({lastUpdatedTime: Date.now()});
+        }
+      })
+    }
+
+    const interval = window.setInterval(()=>{
+      console.log(' interval',Date.now());
+      doc.set({lastUpdatedTime: Date.now()});
+    },30*1000);
+
+    return ()=> {
+      clearInterval(interval);
+    }
+
+  },[testActivityId]);
+}
+
+function FirestorePings({testActivityId,history,blockSaveAndContinue,userId,classId,assignmentId}){
+  useFirestorePingsForNavigationCheck({testActivityId,history,blockSaveAndContinue,assignmentId,classId,userId});
+  return null;
+}
+
 function useTabNavigationCounterEffect({testActivityId,enabled,history}){
   const inFocusRef = useRef(true);
   const idleTimeoutRef = useRef(null);
   useFocusHandler({
+    enabled,
     onFocus: () => {
       inFocusRef.current = true;
       console.log('on focus ',new Date());
@@ -105,20 +246,7 @@ function useTabNavigationCounterEffect({testActivityId,enabled,history}){
       idleTimeoutRef.current = setTimeout(()=>{  
         if(!inFocusRef.current && enabled){
           console.info('too much time away from screen!!!!!!!', new Date());
-          testActivityApi.incrementTabNavigationCounter(testActivityId)
-          .then((response)=>{
-            if(response.paused){
-              notification({type:"error",msg:"Sorry! Assignment got paused due to inactivity"})
-              ;
-              history.push('/home/assignments');
-            } else {
-              notification({type:"warning",msg:"Moving out of assignment has been noted"});
-            }
-          }).catch((error)=>{
-            console.warn('idle error',error);
-            notification({type:"error",msg:"something wrong happened with assignment"});
-            history.push('/home/assignments');
-          })
+          incrementNavigationCounter({history,testActivityId});
         }
       },5000);
     }
@@ -218,8 +346,11 @@ const AssessmentContainer = ({
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment];
-  console.log('assignmentObj',assignmentObj);
-  useTabNavigationCounterEffect({testActivityId: restProps.utaId,enabled:assignmentObj.restrictNavigationOut,history});
+  const hidePause = assignmentObj?.blockSaveAndContinue;
+  
+  const currentlyFullScreen = useFullScreenListener({enabled:assignmentObj?.restrictNavigationOut});
+  useTabNavigationCounterEffect({testActivityId: restProps.utaId,enabled:assignmentObj?.restrictNavigationOut,history});
+console.info('currently fullscree',currentlyFullScreen);
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
@@ -580,9 +711,12 @@ const AssessmentContainer = ({
   useEffect(() => {
     const cb = (event) => {
       event.preventDefault()
+      if(assignmentObj.blockSaveAndContinue){
+        pauseAssignment({history,testActivityId:restProps.utaId,assignmentId: assignmentObj?._id,classId: groupId,userId,pauseReason:"exiting"})
+      }
       saveProgress()
       // Older browsers supported custom message
-      event.returnValue = ''
+      event.returnValue = 'Are'
     }
 
     window.addEventListener('beforeunload', cb)
@@ -652,6 +786,7 @@ const AssessmentContainer = ({
     playerComponent = (
       <AssessmentPlayerDocBased
         docUrl={docUrl}
+        hidePause={hidePause}
         annotations={annotations}
         questionsById={questionsById}
         answers={answers}
@@ -665,6 +800,7 @@ const AssessmentContainer = ({
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
+        hidePause={hidePause}
         testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
@@ -678,9 +814,9 @@ const AssessmentContainer = ({
      * highlight image default pen should be disabled
      */
     playerComponent = defaultAP ? (
-      <AssessmentPlayerDefault {...props} />
+      <AssessmentPlayerDefault {...props} hidePause={hidePause} />
     ) : (
-      <AssessmentPlayerSimple {...props} />
+      <AssessmentPlayerSimple {...props} hidePause={hidePause} />
     )
   }
 
@@ -688,6 +824,19 @@ const AssessmentContainer = ({
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem }}
     >
+      {assignmentObj?.restrictNavigationOut  
+      && 
+      (<>
+      <ForceFullScreenModal 
+          testActivityId={restProps.utaId} 
+          history={history}
+          visible = {!currentlyFullScreen}
+          finishTest={() => finishTest(groupId)} 
+      />
+      </>)}
+
+      {(assignmentObj.blockSaveAndContinue||assignmentObj?.restrictNavigationOut) &&
+        (<FirestorePings testActivityId={restProps.utaId} history={history} blockSaveAndContinue={assignmentObj.blockSaveAndContinue} userId={userId} classId={groupId} assignmentId={assignmentObj?._id}  />)}
       {showRegradedModal && (
         <Modal
           visible

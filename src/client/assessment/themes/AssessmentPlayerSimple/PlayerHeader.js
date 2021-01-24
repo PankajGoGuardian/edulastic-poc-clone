@@ -58,6 +58,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -75,7 +76,7 @@ const PlayerHeader = ({
   }
 
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
-  const rightButtons = (
+  const rightButtons = hidePause?null:(
     <SaveAndExit
       utaId={utaId}
       groupId={groupId}
@@ -84,7 +85,7 @@ const PlayerHeader = ({
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
     />
-  )
+  );
 
   return (
     <>

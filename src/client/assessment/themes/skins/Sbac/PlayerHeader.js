@@ -80,6 +80,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -179,7 +180,7 @@ const PlayerHeader = ({
                   </Tooltip>
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>
-                  {showPause && (
+                  {showPause && (!hidePause) && (
                     <Tooltip placement="top" title="Save & Exit">
                       <StyledButton onClick={finishTest}>
                         <StyledIcon type="save" theme="filled" />

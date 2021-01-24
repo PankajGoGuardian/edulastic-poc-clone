@@ -392,6 +392,7 @@ class Setting extends Component {
       enableSkipAlert = false,
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
+      blockSaveAndContinue,
     } = entity
 
     const breadcrumbData = [
@@ -998,6 +999,19 @@ class Setting extends Component {
                 </Block>
               )}
 
+              {premium && (
+                <Block id="block-save-and-continue" smallSize={isSmallSize}>
+                <Title>
+                  <span>Block Save And Continue</span>
+                  <EduSwitchStyled
+                    disabled={!owner || !isEditable}
+                    checked={blockSaveAndContinue}
+                    data-cy="bockSaveAndContinueSwitch"
+                    onChange={this.updateTestData('blockSaveAndContinue')}
+                  />
+                </Title>
+              </Block>
+              )}
               {premium && (
                 <Block id="restrict-navigation-out" smallSize={isSmallSize}>
                   <Title>Restrict Navigation Out of Test</Title>

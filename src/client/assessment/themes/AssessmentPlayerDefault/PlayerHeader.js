@@ -62,12 +62,13 @@ const PlayerHeader = ({
   utaId,
   groupId,
   location,
+  hidePause
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 
-  const rightButtons = (
+  const rightButtons = hidePause?null: (
     <SaveAndExit
       timedAssignment={timedAssignment}
       utaId={utaId}
@@ -78,7 +79,7 @@ const PlayerHeader = ({
       isCliUserPreview={cliUser}
       LCBPreviewModal={LCBPreviewModal}
     />
-  )
+  );
 
   return (
     <CustomAffix>

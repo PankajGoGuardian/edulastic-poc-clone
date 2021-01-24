@@ -290,6 +290,7 @@ class AssessmentPlayerDefault extends React.Component {
       utaId,
       hasDrawingResponse,
       studentReportModal,
+      hidePause
     } = this.props
     const { settings } = this.props
     const {
@@ -420,6 +421,7 @@ class AssessmentPlayerDefault extends React.Component {
           data-cy="assessment-player-default-wrapper"
         >
           <AssessmentPlayerSkinWrapper
+            hidePause={hidePause}
             title={title}
             LCBPreviewModal={LCBPreviewModal}
             headerHeight={headerHeight}

@@ -964,6 +964,8 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...entity,
           restrictNavigationOutAttemptsThreshold: 5,
         }
+      } else if(payload.data?.restrictNavigationOut === 'warn-and-report'){
+        entity = {...entity,restrictNavigationOutAttemptsThreshold:undefined};
       }
       return {
         ...state,
@@ -1460,6 +1462,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     restrictNavigationOut: entity.restrictNavigationOut,
     restrictNavigationOutAttemptsThreshold:
       entity.restrictNavigationOutAttemptsThreshold,
+    blockSaveAndContinue: entity.blockSaveAndContinue
   }
 
   if (isAdmin) {

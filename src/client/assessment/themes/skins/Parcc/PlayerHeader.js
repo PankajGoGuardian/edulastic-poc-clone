@@ -73,6 +73,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -193,6 +194,7 @@ const PlayerHeader = ({
                   utaId={utaId}
                   showMagnifier={isDocbased ? false : showMagnifier}
                   enableMagnifier={enableMagnifier}
+                  hidePause={hidePause}
                 />
               </FlexContainer>
             </HeaderWrapper>

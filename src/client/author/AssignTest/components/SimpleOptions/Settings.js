@@ -51,6 +51,7 @@ import {
   StyledCol,
   StyledRow,
 } from './styled'
+import Styled from 'styled-components';
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
 import SubscriptionsBlock from '../../../TestPage/components/Setting/components/Container/SubscriptionsBlock'
 
@@ -159,6 +160,9 @@ const Settings = ({
     }
 
     const newSettings = {}
+    if(key === "restrictNavigationOut" && value==="warn-and-report-after-n-alerts"){
+      newSettings.restrictNavigationOutAttemptsThreshold = 5;
+    }
 
     // SimpleOptions onChange method has similar condition
     if (key === 'scoringType') {
@@ -319,6 +323,9 @@ const Settings = ({
     passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60,
     showMagnifier = tempTestSettings.showMagnifier,
     timedAssignment = tempTestSettings.timedAssignment,
+    blockSaveAndContinue = tempTestSettings.blockSaveAndContinue,
+    restrictNavigationOut= tempTestSettings.restrictNavigationOut,
+    restrictNavigationOutAttemptsThreshold= tempTestSettings.restrictNavigationOutAttemptsThreshold,
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
     enableScratchpad = tempTestSettings.enableScratchpad,
@@ -795,7 +802,101 @@ const Settings = ({
           </StyledRowSelect>
         )}
         {/* Evaluation Method */}
-
+        {/**
+         * Block save & Continue
+         */}
+        {premium && (
+          <StyledRowSettings gutter={16}>
+              <Col span={12}>
+                <Label>
+                  <span>BLOCK SAVE AND CONTINUE</span>
+                  <Tooltip title="Will force the students to take the test in single sitting">
+                    <IconInfo
+                      color={lightGrey9}
+                      style={{ cursor: 'pointer', marginLeft: '15px' }}
+                    />
+                  </Tooltip>
+                </Label>
+              </Col>
+              <Col
+                span={10}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <Row style={{ display: 'flex', alignItems: 'center' }}>
+                  <AlignSwitchRight
+                    size="small"
+                    disabled={forClassLevel || freezeSettings}
+                    checked={blockSaveAndContinue}
+                    onChange={(value) =>
+                      overRideSettings('blockSaveAndContinue', value)
+                    }
+                  />
+            
+                </Row>
+              </Col>
+          </StyledRowSettings>
+        )}
+        {/**
+         * Restrict navigation out
+         */}
+          {premium && (
+          <StyledRowSettings gutter={16}>
+            <Row>
+              <StyledCol span={12} style={{paddingLeft:8}}>
+                <Label>
+                  <span>RESTRICT NAVIGATION OUT OF TEST</span>
+                  <Tooltip title={`If ON, then students will be shown an alert
+                          if they navigate away from edulastic tab and if
+                          specific number of alerts exceeded, the assignment
+                          will be paused and the instructor will need to
+                          manually resume`}>
+                    <IconInfo
+                      color={lightGrey9}
+                      style={{ cursor: 'pointer', marginLeft: '15px' }}
+                    />
+                  </Tooltip>
+                </Label>
+              </StyledCol>
+              </Row>
+              <Row>
+              <Col
+                span={10}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <Row>
+                   <Col span={12} style={{paddingLeft:8}}>
+                    <StyledRadioGroupWrapper value={restrictNavigationOut} disabled={forClassLevel || freezeSettings} onChange={(e)=>{
+                      overRideSettings('restrictNavigationOut', e.target.value)
+                    }}>
+                      <Radio value={undefined}>DISABLED</Radio>
+                      <br />
+                      <Radio value="warn-and-report">WARN AND REPORT ONLY</Radio>
+                      <br />
+                      <Radio value="warn-and-report-after-n-alerts">
+                      WARN AND BLOCK TEST AFTER{' '}
+                            <InputNumberStyled
+                              size="small"
+                              value={
+                                restrictNavigationOut
+                                  ? restrictNavigationOutAttemptsThreshold
+                                  : undefined
+                              }
+                              onChange={(v)=>{
+                                overRideSettings('restrictNavigationOutAttemptsThreshold', v)
+                              }}
+                              disabled={
+                                !(restrictNavigationOut==='warn-and-report-after-n-alerts') || forClassLevel || freezeSettings
+                              }
+                            />{' '}
+                            ALERTS
+                      </Radio>
+                    </StyledRadioGroupWrapper>
+                    </Col>
+                </Row> 
+              </Col>
+            </Row>
+          </StyledRowSettings>
+        )}
         {/* Timed TEST */}
         {!hideTestLevelOptions && (
           <FeaturesSwitch
@@ -1178,3 +1279,14 @@ export default connect(
   }),
   null
 )(withRouter(Settings))
+
+const InputNumberStyled = Styled(InputNumber)`
+    width: 60px;
+`
+
+const StyledRadioGroupWrapper = Styled(Radio.Group)`
+    padding-top:15px;
+    .ant-radio-wrapper span:nth-child(2){
+      font-size:12px;
+    }
+`;

@@ -33,11 +33,12 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
   const { calcType } = settings
 
-  const rightButtons = (
+  const rightButtons = hidePause?null:(
     <SaveAndExit
       previewPlayer={previewPlayer}
       finishTest={onOpenExitPopup}
@@ -45,7 +46,7 @@ const PlayerHeader = ({
       utaId={utaId}
       groupId={groupId}
     />
-  )
+  );
 
   const headerStyle = {
     height: '70px',

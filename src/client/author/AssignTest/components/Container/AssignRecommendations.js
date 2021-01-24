@@ -87,6 +87,7 @@ const AssignRecommendations = ({
       restrictNavigationOut: testSettings.restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold:
         testSettings.restrictNavigationOutAttemptsThreshold,
+      blockSaveAndContinue: testSettings.blockSaveAndContinue,
     }
 
     updateAssignmentSettings(updatedAssignment)

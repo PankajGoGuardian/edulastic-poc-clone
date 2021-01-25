@@ -2,11 +2,7 @@ import React, { useContext, useRef, useMemo } from 'react'
 import { useDragLayer } from 'react-dnd'
 import styled from 'styled-components'
 import { get, isUndefined } from 'lodash'
-import {
-  ScrollContext,
-  HorizontalScrollContext,
-  isSafari,
-} from '@edulastic/common'
+import { ScrollContext, HorizontalScrollContext } from '@edulastic/common'
 
 const layerStyles = {
   position: 'fixed',
@@ -18,10 +14,6 @@ const layerStyles = {
   transform: 'scale(1) !important',
   height: '100%',
 }
-
-const scrollStep = 20
-
-const delay = 50
 
 const getItemStyles = (initialOffset, currentOffset, itemDimensions) => {
   if (!initialOffset || !currentOffset) {
@@ -95,7 +87,8 @@ const CustomDragLayer = ({ showPoint }) => {
     const containerTop = top
     const containerBottom = bottom - itemDimensions.height - 50 // window.innerHeight - 50;
     const yOffset = get(currentOffset, 'y', null)
-    const scrollByVertical = yOffset < containerTop ? -scrollStep : scrollStep
+    const scrollByVertical = yOffset < containerTop ? -10 : 10
+
     if (
       !verticalInterval.current &&
       scrollByVertical &&
@@ -105,9 +98,9 @@ const CustomDragLayer = ({ showPoint }) => {
       verticalInterval.current = setInterval(() => {
         scrollEl.scrollBy({
           top: scrollByVertical,
-          behavior: isSafari() ? '' : 'smooth',
+          behavior: 'smooth',
         })
-      }, delay)
+      }, 50)
     } else if (
       verticalInterval.current &&
       ((yOffset > containerTop && yOffset < containerBottom) || !yOffset)
@@ -122,7 +115,7 @@ const CustomDragLayer = ({ showPoint }) => {
   if (horizontalScrollEl) {
     const containerRight = right - itemDimensions.width
     const xOffset = get(currentOffset, 'x', null)
-    const scrollByHorizontal = xOffset < left ? -scrollStep : scrollStep
+    const scrollByHorizontal = xOffset < left ? -10 : 10
 
     if (
       !horizontalInterval.current &&
@@ -133,9 +126,8 @@ const CustomDragLayer = ({ showPoint }) => {
       horizontalInterval.current = setInterval(() => {
         horizontalScrollEl.scrollBy({
           left: scrollByHorizontal,
-          behavior: isSafari() ? '' : 'smooth',
         })
-      }, delay)
+      }, 50)
     } else if (
       horizontalInterval.current &&
       ((xOffset > left && xOffset < containerRight) || !xOffset)

@@ -25,6 +25,13 @@ const Explanation = (props) => {
     return question?.sampleAnswer
   }, [question])
 
+  const [show, updateShow] = useState(isGrade)
+
+  const onClickHandler = (e) => {
+    e.stopPropagation()
+    updateShow(true)
+  }
+
   if (
     !sampleAnswer ||
     question.type === 'passage' ||
@@ -34,13 +41,6 @@ const Explanation = (props) => {
     question.type === 'text'
   ) {
     return null
-  }
-
-  const [show, updateShow] = useState(isGrade)
-
-  const onClickHandler = (e) => {
-    e.stopPropagation()
-    updateShow(true)
   }
 
   return (

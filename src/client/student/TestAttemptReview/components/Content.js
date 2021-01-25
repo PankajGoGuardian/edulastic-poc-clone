@@ -74,7 +74,7 @@ class SummaryTest extends Component {
 
     if (test.testType !== TESTLET) {
       history.push(
-        `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${targetItemIndex}`,
+        `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${items[targetItemIndex]._id}`,
         {
           fromSummary: true,
           question: q,

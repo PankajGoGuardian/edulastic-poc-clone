@@ -164,7 +164,10 @@ const AssessmentContainer = ({
   evaluateForPreview,
   ...restProps
 }) => {
-  const qid = preview || testletType ? 0 : match.params.qid || 0
+  const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
+  const itemIndex =
+    itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
+  const qid = itemIndex > 0 ? itemIndex : 0
   const [currentItem, setCurrentItem] = useState(Number(qid))
   const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({
     qLabels: [],
@@ -242,7 +245,7 @@ const AssessmentContainer = ({
 
   const onRegradedModalOk = () => {
     history.push(
-      `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/qid/0`
+      `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/itemId/${items[currentItem]._id}`
     )
     clearRegradeAssignment()
     setShowRegradedModal(false)
@@ -406,7 +409,7 @@ const AssessmentContainer = ({
       ) {
         const previewTab = getPreviewTab(index)
         saveCurrentAnswer({
-          urlToGo: `${url}/qid/${index}`,
+          urlToGo: `${url}/itemId/${items[index]._id}`,
           locState: history?.location?.state,
           callback: () => changePreview(previewTab),
         })

@@ -226,7 +226,7 @@ function* loadTest({ payload }) {
 
     const studentAssesment = yield select((state) =>
       (state.router.location.pathname || '').match(
-        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/itemId/.*')
       )
     )
 
@@ -516,17 +516,27 @@ function* loadTest({ payload }) {
       ) || {}
 
       // move to last attended question
-      if (loadFromLast && testType !== testContants.type.TESTLET) {
-        yield put(
-          push({
-            pathname: `${lastAttendedQuestion}`,
-            state: prevLocationState,
+      if (!settings.blockNavigationToAnsweredQuestions) {
+        if (loadFromLast && testType !== testContants.type.TESTLET) {
+          const itemId = testItemIds[lastAttendedQuestion]
+          yield put(
+            push({
+              pathname: `${itemId}`,
+              state: prevLocationState,
+            })
+          )
+          yield put({
+            type: SET_RESUME_STATUS,
+            payload: false,
           })
-        )
-        yield put({
-          type: SET_RESUME_STATUS,
-          payload: false,
-        })
+        } else if (testType !== testContants.type.TESTLET) {
+          yield put(
+            push({
+              pathname: `${testItemIds[0]}`,
+              state: prevLocationState,
+            })
+          )
+        }
       }
     }
 
@@ -584,19 +594,17 @@ function* loadTest({ payload }) {
           questionIndex++
         }
       }
-      const allItemsToDeliver = testActivity.testActivity.itemsToDeliverInGroup.flatMap(
-        (itemGroup) => itemGroup.items
-      )
-      if (allItemsToDeliver.length === questionIndex) {
+      if (testItems.length === questionIndex) {
         yield put(
           push(
             `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
           )
         )
       } else {
+        const itemId = testItems[questionIndex]._id
         yield put(
           push(
-            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${questionIndex}`
+            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
           )
         )
       }

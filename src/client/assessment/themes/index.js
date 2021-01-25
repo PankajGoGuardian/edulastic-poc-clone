@@ -158,21 +158,6 @@ function useFullScreenListener({init=true,enabled}){
 
   useEffect(()=>{
     document.addEventListener('fullscreenchange',fullScreenCb);
-    if(init && enabled){
-
-      // Modal.confirm({
-      //   closable:false,
-      //   content: <p> you need to finish this assessment without exiting the window or leaving the window or tab. We will be going into full screen mode now</p>,
-      //   maskClosable:false,
-      //   cancelButtonProps: {style:{display:'none'}},
-      //   keyboard:false,
-      //   onOk: ()=> {
-      //     document.body.requestFullscreen().then({}).catch((e)=>{
-      //       console.warn(`An error occurred while trying to switch into full-screen mode`,e);
-      //     });
-      //   }
-      // })
-    }
     return () => {
       document.removeEventListener('fullscreenchange',fullScreenCb);
       Modal.destroyAll();
@@ -189,7 +174,6 @@ function useFirestorePingsForNavigationCheck({testActivityId,history, blockSaveA
   useEffect(()=>{
     if(testActivityId){
       doc.get().then((d)=>{
-        console.log('dd',d)
         if(!d.data()){
           doc.set({lastUpdatedTime: Date.now()});
           return ;
@@ -209,7 +193,6 @@ function useFirestorePingsForNavigationCheck({testActivityId,history, blockSaveA
     }
 
     const interval = window.setInterval(()=>{
-      console.log(' interval',Date.now());
       doc.set({lastUpdatedTime: Date.now()});
     },30*1000);
 
@@ -350,7 +333,6 @@ const AssessmentContainer = ({
   
   const currentlyFullScreen = useFullScreenListener({enabled:assignmentObj?.restrictNavigationOut});
   useTabNavigationCounterEffect({testActivityId: restProps.utaId,enabled:assignmentObj?.restrictNavigationOut,history});
-console.info('currently fullscree',currentlyFullScreen);
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
@@ -711,17 +693,24 @@ console.info('currently fullscree',currentlyFullScreen);
   useEffect(() => {
     const cb = (event) => {
       event.preventDefault()
-      if(assignmentObj.blockSaveAndContinue){
-        pauseAssignment({history,testActivityId:restProps.utaId,assignmentId: assignmentObj?._id,classId: groupId,userId,pauseReason:"exiting"})
-      }
       saveProgress()
       // Older browsers supported custom message
       event.returnValue = 'Are'
     }
 
     window.addEventListener('beforeunload', cb)
+
+    const unloadCb = (e)=>{
+      if(assignmentObj.blockSaveAndContinue){
+        pauseAssignment({history,testActivityId:restProps.utaId,assignmentId: assignmentObj?._id,classId: groupId,userId,pauseReason:"exiting"})
+      }
+    }
+
+    window.addEventListener('unload',unloadCb);
+
     return () => {
       window.removeEventListener('beforeunload', cb)
+      window.removeEventListener('unload',unloadCb);
     }
   }, [qid])
 

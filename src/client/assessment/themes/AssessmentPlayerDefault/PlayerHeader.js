@@ -68,10 +68,11 @@ const PlayerHeader = ({
   const { cliUser } = query
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 
-  const rightButtons = hidePause?null: (
+  const rightButtons =  (
     <SaveAndExit
       timedAssignment={timedAssignment}
       utaId={utaId}
+      hidePause={hidePause}
       groupId={groupId}
       previewPlayer={previewPlayer}
       showZoomBtn

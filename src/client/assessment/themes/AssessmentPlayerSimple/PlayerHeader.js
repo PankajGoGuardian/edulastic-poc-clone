@@ -76,12 +76,13 @@ const PlayerHeader = ({
   }
 
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
-  const rightButtons = hidePause?null:(
+  const rightButtons = (
     <SaveAndExit
       utaId={utaId}
       groupId={groupId}
       previewPlayer={previewPlayer}
       showZoomBtn
+      hidePause={hidePause}
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
     />

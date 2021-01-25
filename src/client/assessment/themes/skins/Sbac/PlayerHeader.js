@@ -180,9 +180,9 @@ const PlayerHeader = ({
                   </Tooltip>
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>
-                  {showPause && (!hidePause) && (
-                    <Tooltip placement="top" title="Save & Exit">
-                      <StyledButton onClick={finishTest}>
+                  {showPause && (
+                    <Tooltip placement="top" title={hidePause?`Save & Exit disabled`:`Save & Exit`}>
+                      <StyledButton disabled={hidePause} onClick={finishTest}>
                         <StyledIcon type="save" theme="filled" />
                       </StyledButton>
                     </Tooltip>

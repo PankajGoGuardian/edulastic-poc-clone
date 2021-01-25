@@ -38,12 +38,13 @@ const PlayerHeader = ({
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
   const { calcType } = settings
 
-  const rightButtons = hidePause?null:(
+  const rightButtons = (
     <SaveAndExit
       previewPlayer={previewPlayer}
       finishTest={onOpenExitPopup}
       onSubmit={!previewPlayer ? onSubmit : null}
       utaId={utaId}
+      hidePause={hidePause}
       groupId={groupId}
     />
   );

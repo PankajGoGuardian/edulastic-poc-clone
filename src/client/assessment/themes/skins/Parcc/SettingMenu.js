@@ -40,7 +40,7 @@ const SettingMenu = ({
         </Menu.Item>
       ))}
       {showPause && <Menu.Divider />}
-      {showPause && (!hidePause) && <Menu.Item key="save">Save & Exit</Menu.Item>}
+      {showPause && <Menu.Item disabled={hidePause} {...(hidePause?{title:"Save & exit disabled due to configuration"}:{})} key="save">Save & Exit</Menu.Item>}
     </StyledMenu>
   )
 

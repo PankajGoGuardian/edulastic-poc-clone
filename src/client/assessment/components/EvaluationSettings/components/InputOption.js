@@ -41,7 +41,7 @@ const InputOption = ({ options, onChange, optionKey, isGraph }) => {
       >
         {optionKey === 'significantDecimalPlaces' && (
           <FieldLabel display="inline-block" mr="18px">
-            must be rounnded to
+            must be rounded to
           </FieldLabel>
         )}
         <TextInputStyled

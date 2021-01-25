@@ -39,7 +39,7 @@ export default function ClassNamePattern({
       classNamePattern: selectState,
       isClasslink,
     }
-    if (isClever) {
+    if (isClever || isClasslink) {
       Object.assign(data, {
         overrideClassName: overrideClassNameState,
       })
@@ -52,7 +52,7 @@ export default function ClassNamePattern({
 
   return (
     <>
-      {isClever && (
+      {(isClever || isClasslink) && (
         <CheckboxLabel
           style={{ margin: '10px 0px 20px 0px' }}
           checked={overrideClassNameState}

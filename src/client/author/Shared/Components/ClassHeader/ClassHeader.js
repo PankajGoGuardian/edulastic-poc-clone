@@ -492,7 +492,7 @@ class ClassHeader extends Component {
                   : this.togglePauseModal(true)
               }
             >
-              {isPaused ? 'OPEN' : 'PAUSE'}
+              {isPaused ? 'RESUME' : 'PAUSE'}
             </EduButton>
           )
         )}
@@ -822,20 +822,22 @@ class ClassHeader extends Component {
                 {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
                 {isViewPassword && <ViewPasswordModal />}
                 <ConfirmationModal
-                  title="Pause"
+                  title="Pause Assignment"
                   show={isPauseModalVisible}
                   onOk={() => this.handlePauseAssignment(!isPaused)}
                   onCancel={() => this.togglePauseModal(false)}
-                  inputVal={modalInputVal}
+                  inputVal="PAUSE"
                   placeHolder="Type the action"
                   onInputChange={this.handleValidateInput}
                   expectedVal="PAUSE"
                   showConfirmationText
                   hideUndoneText
+                  hideConfirmation
                   bodyText={
                     <div>
-                      Are you sure you want to pause? Once paused,no student
-                      would be able to answer the test unless you resume it.
+                      Are you sure you want to pause assignment for{' '}
+                      {additionalData.className} ? Once paused, no student would
+                      be able to answer the assignment unless you resume it.
                     </div>
                   }
                   okText="Yes, Pause"

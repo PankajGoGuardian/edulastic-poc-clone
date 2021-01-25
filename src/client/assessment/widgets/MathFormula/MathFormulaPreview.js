@@ -19,7 +19,9 @@ import {
 import { greyThemeLight, white } from '@edulastic/colors'
 import { SHOW, CHECK, CLEAR, EDIT } from '../../constants/constantsForQuestions'
 
-import CorrectAnswerBox from './components/CorrectAnswerBox/index'
+import CorrectAnswerBox, {
+  formatToMathAnswer,
+} from './components/CorrectAnswerBox'
 import MathInputStatus from './components/MathInputStatus/index'
 import { UnitsDropdown } from './components/MathFormulaAnswerMethod/options'
 
@@ -237,6 +239,15 @@ class MathFormulaPreview extends Component {
     return ''
   }
 
+  get formattedUserAnswer() {
+    const { userAnswer, item } = this.props
+    const { template } = item
+    if (userAnswer && template) {
+      return formatToMathAnswer(userAnswer, template)
+    }
+    return userAnswer
+  }
+
   render() {
     const {
       evaluation: mathEvaluation,
@@ -246,7 +257,6 @@ class MathFormulaPreview extends Component {
       studentTemplate,
       testItem,
       theme,
-      userAnswer,
       disableResponse,
       answerContextConfig,
       showCalculatingSpinner,
@@ -411,7 +421,12 @@ class MathFormulaPreview extends Component {
                   )}
                   {this.isStatic && disableResponse && (
                     <MathInputSpan>
-                      <MathSpanWrapper latex={userAnswer || ''} />
+                      <MathFormulaDisplay
+                        data-cy="answer-display"
+                        dangerouslySetInnerHTML={{
+                          __html: this.formattedUserAnswer,
+                        }}
+                      />
                     </MathInputSpan>
                   )}
                   {!this.isStatic && !disableResponse && (

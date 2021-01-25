@@ -12,7 +12,7 @@ import EvaluationSettings from '../../../../components/EvaluationSettings'
 import { Answer } from './styled/Answer'
 
 export const formatToMathAnswer = (answer, template) => {
-  let answerStr = answer
+  let answerStr = answer || ''
   if (isArray(answer) && template) {
     answerStr = template
     const matches = template.match(/\\embed\{response\}/g)

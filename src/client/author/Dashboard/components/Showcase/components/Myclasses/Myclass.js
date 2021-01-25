@@ -370,7 +370,6 @@ const MyClasses = ({
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}
         user={user}
-        premiumProductId={premiumProductId}
         reason="Premium Upgrade"
         totalPurchaseAmount={totalAmount}
         addOnProductIds={addOnProductIds}

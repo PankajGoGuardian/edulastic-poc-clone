@@ -314,7 +314,6 @@ const Subscription = (props) => {
         stripePaymentAction={stripePaymentAction}
         user={user}
         reason="Premium Upgrade"
-        premiumProductId={premiumProductId}
         totalPurchaseAmount={totalAmount}
         addOnProductIds={addOnProductIds}
       />

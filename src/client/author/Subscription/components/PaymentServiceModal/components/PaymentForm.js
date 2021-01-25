@@ -9,7 +9,6 @@ const PaymentForm = ({
   reason,
   handlePayment,
   verificationPending,
-  premiumProductId,
   totalPurchaseAmount,
   addOnProductIds = [],
 }) => {
@@ -18,7 +17,7 @@ const PaymentForm = ({
     handlePayment({
       stripe,
       data: { type: 'card', userId, reason },
-      productIds: [premiumProductId, ...addOnProductIds],
+      productIds: addOnProductIds,
     })
   }
 

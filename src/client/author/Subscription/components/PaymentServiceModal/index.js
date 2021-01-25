@@ -12,7 +12,6 @@ const PaymentServiceModal = (props) => {
     reason,
     verificationPending,
     stripePaymentAction,
-    premiumProductId,
     totalPurchaseAmount,
     addOnProductIds = [],
   } = props
@@ -48,7 +47,6 @@ const PaymentServiceModal = (props) => {
               reason={reason}
               handlePayment={stripePaymentAction}
               verificationPending={verificationPending}
-              premiumProductId={premiumProductId}
               totalPurchaseAmount={totalPurchaseAmount}
               addOnProductIds={addOnProductIds}
             />

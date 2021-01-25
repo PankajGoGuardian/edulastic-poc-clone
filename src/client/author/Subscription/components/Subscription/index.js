@@ -316,6 +316,7 @@ const Subscription = (props) => {
         reason="Premium Upgrade"
         premiumProductId={premiumProductId}
         totalPurchaseAmount={totalAmount}
+        addOnProductIds={addOnProductIds}
       />
 
       <PayWithPoModal

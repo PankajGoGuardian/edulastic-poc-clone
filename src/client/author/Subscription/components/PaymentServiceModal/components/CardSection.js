@@ -78,7 +78,7 @@ const CardSection = ({
       onClick={handleCardSubmit}
       disabled={verificationPending}
     >
-      PAY ${totalPurchaseAmount}
+      PAY ${totalPurchaseAmount || 100}
     </EduButton>
   </OuterContainer>
 )

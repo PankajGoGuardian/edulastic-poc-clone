@@ -373,6 +373,7 @@ const MyClasses = ({
         premiumProductId={premiumProductId}
         reason="Premium Upgrade"
         totalPurchaseAmount={totalAmount}
+        addOnProductIds={addOnProductIds}
       />
       <PayWithPoModal
         visible={payWithPoModal}

@@ -356,7 +356,7 @@ const SubscriptionMain = ({ user, ...props }) => {
                     isGhost
                     isBlue
                     onClick={handleClick}
-                    data-cy="-subscriptionStartTrialbtn"
+                    data-cy="subscriptionStartTrialbtn"
                   >
                     Start a trial
                   </CustomButton>

@@ -17,7 +17,6 @@ const TrialModal = ({
   isPremiumTrialUsed,
   startPremiumTrial,
   premiumProductId,
-  showTrialSubsConfirmationAction,
 }) => {
   const [isSparkChecked, setIsSparkChecked] = useState(true)
 
@@ -32,7 +31,6 @@ const TrialModal = ({
       productIds.push(premiumProductId)
       startPremiumTrial({ productIds })
       toggleModal(false)
-      showTrialSubsConfirmationAction(true)
     } else {
       startPremiumTrial({ productIds })
     }

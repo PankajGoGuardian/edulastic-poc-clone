@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
-import { Link } from 'react-router-dom'
 
 const Footer = ({
   hasItemBankTrial,
@@ -18,11 +17,9 @@ const Footer = ({
           Try for free
         </EduButton>
       )}
-      {!isPremiumUser && (
-        <EduButton data-cy="Purchase" isBlue onClick={handlePurchaseFlow}>
-          Purchase
-        </EduButton>
-      )}
+      <EduButton data-cy="Purchase" isBlue onClick={handlePurchaseFlow}>
+        Purchase
+      </EduButton>
     </>
   )
 }
@@ -60,14 +57,7 @@ const ItemPurchaseModal = ({
       visible={isVisible}
       onCancel={closeModal}
     >
-      <div>{description}</div>
-      {isPremiumTrialUsed && !isPremiumUser && (
-        <p>
-          You have already tried premium features, kindly upgrade to start free
-          trial of {title}.{' '}
-          <Link to="/author/subscription"> Click to upgrade</Link>
-        </p>
-      )}
+      <div dangerouslySetInnerHTML={{ __html: description }} />
     </CustomModalStyled>
   )
 }

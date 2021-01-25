@@ -369,7 +369,9 @@ const MyClasses = ({
         <TrialConfirmationModal
           visible={isConfirmationModalVisible}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          usedTrialItemBankId={usedTrialItemBankId}
           isPremiumUser={isPremiumUser}
+          isPremiumTrialUsed={isPremiumTrialUsed}
           subEndDate={formatTrialEndDate}
         />
       )}

@@ -5,7 +5,6 @@ import {
   themeColor,
   greyishBorder,
   lightGreySecondary,
-  themeColorLight,
   linkColor1,
   redDark,
 } from '@edulastic/colors'
@@ -62,7 +61,11 @@ const CardStyle = {
   },
 }
 
-const CardSection = ({ handleCardSubmit, verificationPending }) => (
+const CardSection = ({
+  handleCardSubmit,
+  verificationPending,
+  totalAmount = '',
+}) => (
   <OuterContainer>
     <InnerContainer>
       <InputContainer>
@@ -75,7 +78,7 @@ const CardSection = ({ handleCardSubmit, verificationPending }) => (
       onClick={handleCardSubmit}
       disabled={verificationPending}
     >
-      PAY $100/YEAR
+      PAY ${totalAmount || '100'}/YEAR
     </EduButton>
   </OuterContainer>
 )

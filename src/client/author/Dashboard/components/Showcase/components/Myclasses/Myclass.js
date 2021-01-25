@@ -84,6 +84,8 @@ const MyClasses = ({
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [addOnProductIds, setAddOnProductIds] = useState([])
+  const [totalAmount, setTotalAmount] = useState(100)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -360,6 +362,8 @@ const MyClasses = ({
         user={user}
         premiumProductId={premiumProductId}
         reason="Premium Upgrade"
+        addOnProductIds={addOnProductIds}
+        totalAmount={totalAmount}
       />
       <PayWithPoModal
         visible={payWithPoModal}

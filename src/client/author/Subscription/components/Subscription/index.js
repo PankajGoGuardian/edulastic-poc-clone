@@ -206,6 +206,8 @@ const Subscription = (props) => {
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [addOnProductIds, setAddOnProductIds] = useState([])
+  const [totalAmount, setTotalAmount] = useState(100)
 
   const openComparePlanModal = () => setComparePlan(true)
   const closeComparePlansModal = () => setComparePlan(false)
@@ -305,6 +307,8 @@ const Subscription = (props) => {
         user={user}
         reason="Premium Upgrade"
         premiumProductId={premiumProductId}
+        addOnProductIds={addOnProductIds}
+        totalAmount={totalAmount}
       />
 
       <PayWithPoModal

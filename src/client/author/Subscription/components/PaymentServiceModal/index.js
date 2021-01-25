@@ -13,6 +13,8 @@ const PaymentServiceModal = (props) => {
     verificationPending,
     stripePaymentAction,
     premiumProductId,
+    addOnProductIds = [],
+    totalAmount,
   } = props
 
   const stripePubKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
@@ -47,6 +49,8 @@ const PaymentServiceModal = (props) => {
               handlePayment={stripePaymentAction}
               verificationPending={verificationPending}
               premiumProductId={premiumProductId}
+              addOnProductIds={addOnProductIds}
+              totalAmount={totalAmount}
             />
           </Elements>
         </StripeProvider>

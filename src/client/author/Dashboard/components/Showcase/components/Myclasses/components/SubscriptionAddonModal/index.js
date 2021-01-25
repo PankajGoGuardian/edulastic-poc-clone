@@ -21,9 +21,9 @@ const SubscriptionAddonModal = ({
 
   useEffect(() => {
     if (!addOnProducts.length || !premiumProductId) return
-    const _productIds = addOnProducts.map((x) => x.id)
-    if (!isPremiumUser) {
-      _productIds.push(premiumProductId)
+    let _productIds = addOnProducts.map((x) => x.id)
+    if (isPremiumUser) {
+      _productIds = _productIds.filter((x) => x === premiumProductId)
     }
     setSelectedProductIds(_productIds)
   }, [isPremiumUser, addOnProducts, premiumProductId])
@@ -71,15 +71,11 @@ const SubscriptionAddonModal = ({
 
   const handleOnChange = (e, id) => {
     const value = e.target.value
-    const hasProduct = selectedProductIds.some((x) => x === id)
-    if (hasProduct) {
-      setSelectedProductIds((x) => x.filter((y) => y !== id))
-    } else {
-      setSelectedProductIds((x) => x.concat(id))
-    }
     if (e.target.checked) {
+      setSelectedProductIds((x) => x.concat(id))
       setTotalPrice(totalPrice + value)
     } else {
+      setSelectedProductIds((x) => x.filter((y) => y !== id))
       setTotalPrice(totalPrice - value)
     }
   }

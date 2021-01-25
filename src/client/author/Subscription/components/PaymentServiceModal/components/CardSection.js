@@ -5,28 +5,26 @@ import {
   themeColor,
   greyishBorder,
   lightGreySecondary,
+  themeColorLight,
   linkColor1,
   redDark,
-  white,
 } from '@edulastic/colors'
-import { Button } from 'antd'
+import { EduButton } from '@edulastic/common'
 
 const OuterContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
 `
 
 const InnerContainer = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 35px;
   width: 100%;
 `
 
 const InputContainer = styled.div`
-  margin: 10px;
   width: 100%;
 
   .StripeElement {
@@ -54,20 +52,6 @@ const InputContainer = styled.div`
   }
 `
 
-const StyledButton = styled(Button)`
-  width: 390px;
-  height: 40px;
-  background: ${themeColor};
-  color: ${white};
-  border-radius: 4px;
-
-  &:hover,
-  &:focus {
-    background: ${themeColor};
-    color: ${white};
-  }
-`
-
 const CardStyle = {
   base: {
     color: linkColor1,
@@ -85,9 +69,14 @@ const CardSection = ({ handleCardSubmit, verificationPending }) => (
         <CardElement style={CardStyle} hidePostalCode />
       </InputContainer>
     </InnerContainer>
-    <StyledButton onClick={handleCardSubmit} disabled={verificationPending}>
-      Pay $100
-    </StyledButton>
+    <EduButton
+      width="220px"
+      height="45px"
+      onClick={handleCardSubmit}
+      disabled={verificationPending}
+    >
+      PAY $100/YEAR
+    </EduButton>
   </OuterContainer>
 )
 

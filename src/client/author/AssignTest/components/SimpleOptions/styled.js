@@ -11,30 +11,37 @@ import {
   themeColorLight,
   title,
   white,
+  borderGrey3,
 } from '@edulastic/colors'
 import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
 import styled from 'styled-components'
 import { EduSwitchStyled } from '@edulastic/common'
+import { IconInfo } from '@edulastic/icons'
 
 const RadioGroup = Radio.Group
 
 export const OptionConationer = styled.div`
-  ${({ hasMinHeight = true }) =>
-    hasMinHeight &&
-    `
-      min-height: 80vh;
-    `}
-  display: ${(props) => props.display || 'flex'};
-  justify-content: center;
-  align-items: center;
-  margin-top: ${window.innerHeight <= 780 && '24px'};
+  width: ${({ width }) => width || '100%'};
+  margin: auto;
+  margin-top: ${window.innerHeight <= 780 ? '24px' : '80px'};
+  .ant-tabs-bar {
+    width: ${window.innerWidth <= 780 ? '100%' : '60%'};
+    margin: auto;
+    margin-bottom: 20px;
+  }
+  .ant-tabs-nav-scroll {
+    display: flex;
+    justify-content: center;
+  }
+  .ant-tabs-tab {
+    font-size: 12px;
+  }
 `
 
 export const InitOptions = styled.div`
   background: ${white};
-  border: 1px solid #dadae4;
   border-radius: 10px;
-  padding: 40px;
+  padding: 20px 40px 0px 40px;
   width: 100%;
 
   @media (min-width: ${largeDesktopWidth}) {
@@ -43,8 +50,12 @@ export const InitOptions = styled.div`
 `
 
 export const StyledRow = styled(Row)`
-  margin-bottom: ${(props) => props.mb || '8px'};
+  border-bottom: 1px solid ${borderGrey3};
+  padding: 15px 0px;
   margin-top: ${({ mt }) => mt || '0px'};
+  :hover {
+    background: ${borderGrey3};
+  }
 `
 
 export const StyledRowLabel = styled(Row)``
@@ -146,7 +157,6 @@ export const CheckBoxWrapper = styled.p`
 `
 
 export const SettingsWrapper = styled.div`
-  margin-top: 35px;
   color: #434b5d;
   font-weight: 600;
   display: flex;
@@ -383,13 +393,8 @@ export const RadioWrapper = styled(Block)`
   }
 
   .ant-row {
-    padding: 14px 22px;
     background: ${white};
     border-radius: 4px;
-
-    &:not(:last-child) {
-      margin-bottom: 15px;
-    }
   }
 
   @media (max-width: ${mobileWidth}) {
@@ -495,4 +500,9 @@ export const StyledCol = styled(Col)`
   flex-direction: ${(flexDirection) => flexDirection || 'unset'};
   padding-left: ${({ paddingLeft }) => paddingLeft || '0px'}
   padding-right: ${({ paddingRight }) => paddingRight || '0px'}
+`
+
+export const StyledInfoIcon = styled(IconInfo)`
+  cursor: pointer;
+  margin-left: ${({ mL }) => mL || '0px'};
 `

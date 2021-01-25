@@ -58,7 +58,6 @@ class Question extends Component {
       label,
       features,
       permissions,
-      showScoringSectionAnyRole = false,
     } = this.props
 
     // show all tools except advanced section and 'Solution' section
@@ -67,7 +66,7 @@ class Question extends Component {
     }
     let showAdvancedTools = true
 
-    if (canUseAllOptionsByDefault(permissions)) return true
+    if (canUseAllOptionsByDefault(permissions, userRole)) return true
     /**
      * allowed for teacher/DA/SA having premium feature and enabled power tools
      * scoring section needs to be shown for non power users as well
@@ -80,7 +79,7 @@ class Question extends Component {
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
     ) {
       showAdvancedTools = false
-      if ((isPremiumUser && isPowerTeacher) || showScoringSectionAnyRole) {
+      if (isPremiumUser && isPowerTeacher) {
         showAdvancedTools = true
       }
     }

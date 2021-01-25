@@ -64,7 +64,7 @@ const AssessmentPlayer = ({
     window.confirmBeforeGoBack = (e) => {
       e.preventDefault()
       const matched = e.target.location.pathname.match(
-        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/itemId/.*')
       )
       if (!matched) {
         if (
@@ -145,7 +145,7 @@ const AssessmentPlayer = ({
   return (
     <Switch>
       <Route
-        path={`${match.url}/qid/:qid`}
+        path={`${match.url}/itemId/:itemId`}
         render={() => (
           <WithResources
             resources={[

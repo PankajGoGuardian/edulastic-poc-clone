@@ -62,7 +62,8 @@ const PlayerHeader = ({
   utaId,
   groupId,
   location,
-  hidePause
+  hidePause,
+  blockNavigationToAnsweredQuestions = false,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -103,25 +104,30 @@ const PlayerHeader = ({
                       zoomLevel={zoomLevel}
                       moveToNext={moveToNext}
                       utaId={utaId}
+                      blockNavigationToAnsweredQuestions={
+                        blockNavigationToAnsweredQuestions
+                      }
                     />
-                    <Tooltip
-                      placement="top"
-                      title="Previous"
-                      overlayStyle={overlayStyle}
-                    >
-                      <ControlBtn.Back
-                        prev
-                        skin
-                        data-cy="prev"
-                        type="primary"
-                        icon="left"
-                        disabled={disabled}
-                        onClick={(e) => {
-                          moveToPrev(null, true)
-                          e.target.blur()
-                        }}
-                      />
-                    </Tooltip>
+                    {!blockNavigationToAnsweredQuestions && (
+                      <Tooltip
+                        placement="top"
+                        title="Previous"
+                        overlayStyle={overlayStyle}
+                      >
+                        <ControlBtn.Back
+                          prev
+                          skin
+                          data-cy="prev"
+                          type="primary"
+                          icon="left"
+                          disabled={disabled}
+                          onClick={(e) => {
+                            moveToPrev(null, true)
+                            e.target.blur()
+                          }}
+                        />
+                      </Tooltip>
+                    )}
                     {!hideSubmitBtn && (
                       <ControlBtn.Next
                         next
@@ -151,6 +157,9 @@ const PlayerHeader = ({
                     toggleBookmark={toggleBookmark}
                     isBookmarked={isBookmarked}
                     handletoggleHints={handletoggleHints}
+                    blockNavigationToAnsweredQuestions={
+                      blockNavigationToAnsweredQuestions
+                    }
                   />
                 )}
                 {!LCBPreviewModal && (

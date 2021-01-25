@@ -6,12 +6,14 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { performanceBandSelector } from '../../../../../AssignTest/duck'
 import { StyledTable, Title } from './styled'
+import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 
 const PerformanceBands = ({
   performanceBandsData,
   setSettingsData,
   performanceBand = {},
   disabled = false,
+  isFeatureAvailable = false,
 }) => {
   const handleProfileChange = (val) => {
     const selectedBandsData = performanceBandsData.find((o) => o._id === val)
@@ -69,7 +71,10 @@ const PerformanceBands = ({
         data-cy="performance-band"
         style={{ justifyContent: 'space-between', marginBottom: '10px' }}
       >
-        <span>Performance Bands</span>
+        <span>
+          Performance Bands
+          <DollarPremiumSymbol premium={isFeatureAvailable} />
+        </span>
         <SelectInputStyled
           style={{ width: '250px' }}
           value={selectedBandsData._id}

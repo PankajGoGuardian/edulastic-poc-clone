@@ -16,7 +16,10 @@ import StudentSignup from './student/Signup/components/StudentContainer'
 import AdminSignup from './student/Signup/components/AdminContainer/Container'
 import TeacherSignup from './student/Signup/components/TeacherContainer/Container'
 
-import { isLoggedInForPrivateRoute } from './common/utils/helpers'
+import {
+  isLoggedInForPrivateRoute,
+  isHashAssessmentUrl,
+} from './common/utils/helpers'
 import { persistAuthStateAndRedirectToAction } from './student/Login/ducks'
 
 const GetStarted = lazy(() =>
@@ -26,16 +29,11 @@ const Login = lazy(() => import('./student/Login/components'))
 
 const SsoLogin = lazy(() => import('./student/SsoLogin'))
 
+const RedirectToTest = lazy(() => import('./author/RedirectToTest'))
+
 function getCurrentPath() {
   const location = window.location
   return `${location.pathname}${location.search}${location.hash}`
-}
-
-function isHashAssessmentUrl() {
-  return (
-    window.location.hash.includes('#renderResource/close/') ||
-    window.location.hash.includes('#assessmentQuestions/close/')
-  )
 }
 
 function canShowLoginForAddAccount(user) {
@@ -74,13 +72,21 @@ const Auth = ({
   useEffect(() => {
     if (loggedInForPrivateRoute && !showLoginForAddAccount) {
       const currentUrl = getCurrentPath()
-      if (isHashAssessmentUrl()) {
+      if (
+        isHashAssessmentUrl() ||
+        window.location.pathname.includes('/assignments/embed/')
+      ) {
         persistAuthStateAndRedirectTo({ toUrl: currentUrl })
       } else {
         persistAuthStateAndRedirectTo()
       }
     }
   }, [loggedInForPrivateRoute, showLoginForAddAccount])
+
+  if (isHashAssessmentUrl()) {
+    const v1Id = location.hash.split('/')[2]
+    return <RedirectToTest v1Id={v1Id} />
+  }
 
   if (
     ((user?.authenticating && getAccessToken()) || loading) &&

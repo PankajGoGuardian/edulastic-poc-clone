@@ -1943,6 +1943,10 @@
     "message": "Assessment is paused or closed by teacher.",
     "description": ""
   },
+  "testPausedByTeacher": {
+    "message": "Assignment is paused at class level. Kindly resume assignment to use this action.",
+    "description": ""
+  },
   "invalidAction": {
     "message": "Invalid Action.",
     "description": ""

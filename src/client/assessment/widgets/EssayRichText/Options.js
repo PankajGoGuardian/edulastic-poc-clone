@@ -42,7 +42,6 @@ const Options = ({
       advancedAreOpen={advancedAreOpen}
       item={item}
       handleItemChangeChange={handleItemChangeChange}
-      showScoringSectionAnyRole
     >
       <LayoutComponent
         item={item}

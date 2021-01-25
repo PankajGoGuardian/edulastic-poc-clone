@@ -70,6 +70,7 @@ import {
   archivedItemsSelector,
   clearPreviewAction,
   duplicateTestItemPreviewRequestAction,
+  editNonAuthoredItemAction,
   getItemDetailSelectorForPreview,
   getPassageSelector,
   setPrevewItemAction,
@@ -260,11 +261,29 @@ class PreviewModal extends React.Component {
       updateTestAndNavigate,
       test,
       isTest = !!testId,
-      match,
+      editNonAuthoredItem,
+      isEditable,
+      item,
+      userId,
+      testAssignments,
+      userRole,
+      writableCollections,
+      userFeatures,
+      passage,
     } = this.props
 
     const itemId = data.id
-    const regradeFlow = match.params.oldId && match.params.oldId !== 'undefined'
+    const regradeFlow = !!test?._id && testAssignments.length && test.isUsed
+    const isOwner = item?.authors?.some((author) => author._id === userId)
+    const hasCollectionAccess = allowContentEditCheck(
+      item?.collections,
+      writableCollections
+    )
+    const isDisableEdit = !(
+      (isEditable && isOwner) ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (hasCollectionAccess && userFeatures.isCurator)
+    )
 
     // change the question editor view to "edit"
     changeView('edit')
@@ -272,6 +291,24 @@ class PreviewModal extends React.Component {
     // clearing it before navigation.
 
     clearItemStore()
+    if (isDisableEdit && regradeFlow && isTest) {
+      let passageItems = passage && passage.testItems
+      const passageId = passage && passage._id
+      if (passageItems && passageId) {
+        const testItemIds = test.itemGroups.flatMap((group) =>
+          group.items.map((ele) => ele._id)
+        )
+        passageItems = passageItems.filter((ele) => testItemIds.includes(ele))
+      }
+
+      return editNonAuthoredItem({
+        itemId,
+        testId,
+        replaceOldItem: true,
+        passageItems,
+        passageId,
+      })
+    }
     if (isTest) {
       updateTestAndNavigate({
         pathname: `/author/tests/${testId}/editItem/${itemId}`,
@@ -563,7 +600,8 @@ class PreviewModal extends React.Component {
     const isDisableEdit = !(
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
-      (hasCollectionAccess && userFeatures.isCurator)
+      (hasCollectionAccess && userFeatures.isCurator) ||
+      isTestInRegrade
     )
     const isDisableDuplicate = !(
       allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
@@ -952,6 +990,7 @@ const enhance = compose(
       setNextPreviewItem: setNextPreviewItemAction,
       setPassageTestItems: setPassageItemsAction,
       setAndSavePassageItems: setAndSavePassageItemsAction,
+      editNonAuthoredItem: editNonAuthoredItemAction,
     }
   )
 )

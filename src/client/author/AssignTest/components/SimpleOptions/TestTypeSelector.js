@@ -3,7 +3,6 @@ import { roleuser, test } from '@edulastic/constants'
 import { Col, Select } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux'
-import { StyledRow, StyledRowSelect } from './styled'
 
 const { type } = test
 const { ASSESSMENT, PRACTICE, COMMON } = type
@@ -49,22 +48,22 @@ const TestTypeSelector = ({
   )
 
   return fullwidth ? (
-    <StyledRowSelect gutter={16}>
+    <>
       <Col span={12}>
         <FieldLabel>TEST TYPE</FieldLabel>
       </Col>
       <Col span={12}>{SelectOption}</Col>
-    </StyledRowSelect>
+    </>
   ) : (
     <>
-      <StyledRow gutter={48}>
+      <>
         {!isAdvanceView && (
-          <Col span={24}>
+          <Col span={12}>
             <FieldLabel>TEST TYPE</FieldLabel>
           </Col>
         )}
-        <Col span={24}>{SelectOption}</Col>
-      </StyledRow>
+        <Col span={12}>{SelectOption}</Col>
+      </>
     </>
   )
 }

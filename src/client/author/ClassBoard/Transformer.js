@@ -693,7 +693,7 @@ export const transformGradeBookResponse = (
           isAssigned = true,
           isPaused = false,
           tabNavigationCounter:outNavigationCounter=0,
-          pauseReason
+          pauseReason,
         } = testActivity
         return {
           studentId,

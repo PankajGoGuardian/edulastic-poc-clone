@@ -20,10 +20,10 @@ const createShowAnswerResult = async (questions, answers) => {
           answer = expression.replace(/=/gm, `${unit}=`)
         }
       }
-      const { validation } = replaceVariables(question, [], false)
+      const { validation, template } = replaceVariables(question, [], false)
 
       const { evaluation } = await evaluator(
-        { userResponse: answer, validation, questionId: id },
+        { userResponse: answer, validation, questionId: id, template },
         question.type
       )
       results[id] = evaluation

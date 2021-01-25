@@ -13,6 +13,7 @@ const slice = createSlice({
     verificationPending: false,
     subscriptionData: {},
     error: '',
+    showTrialSubsConfirmation: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -52,11 +53,30 @@ const slice = createSlice({
       state.subscriptionData = {}
       state.error = payload
     },
-    updateUserSubscriptionExpired: (state) => {
+    updateUserSubscriptionExpired: (state, { payload }) => {
       state.isSubscriptionExpired = true
       state.verificationPending = false
-      state.subscriptionData = {}
+      state.subscriptionData = payload
       state.error = ''
+    },
+    startTrialAction: (state) => {
+      state.verificationPending = true
+    },
+    startTrialSuccessAction: (state, { payload }) => {
+      state.verificationPending = false
+      state.subscriptionData = payload
+      state.error = ''
+    },
+    startTrialFailureAction: (state, { payload }) => {
+      state.verificationPending = false
+      state.subscriptionData = {}
+      state.error = payload
+    },
+    resetSubscriptions: (state) => {
+      state.subscriptionData = {}
+    },
+    trialSubsConfirmationAction: (state, { payload }) => {
+      state.showTrialSubsConfirmation = payload
     },
   },
 })
@@ -93,24 +113,30 @@ function* upgradeUserLicense({ payload }) {
 
 function* handleStripePayment({ payload }) {
   try {
-    const { stripe, data } = payload
+    const { stripe, data, productIds } = payload
     yield call(message.loading, {
       content: 'Processing Payment, please wait',
       key: 'verify-license',
     })
     const { token, error } = yield stripe.createToken(data)
     if (token) {
-      const apiPaymentResponse = yield call(paymentApi.pay, { token })
+      const apiPaymentResponse = yield call(paymentApi.pay, {
+        productIds,
+        token,
+      })
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
-        const { subEndDate } = apiPaymentResponse.subscription
-        notification({
-          type: 'success',
-          msg: `Congratulations! Your account is upgraded to Premium version for a year and the subscription will expire on ${moment(
-            subEndDate
-          ).format('DD MMM, YYYY')}`,
-          key: 'handle-payment',
-        })
+        if (apiPaymentResponse.subscription) {
+          const { subEndDate } = apiPaymentResponse.subscription
+          notification({
+            type: 'success',
+            msg: `Congratulations! Your account is upgraded to Premium version for a year and the subscription will expire on ${moment(
+              subEndDate
+            ).format('DD MMM, YYYY')}`,
+            key: 'handle-payment',
+          })
+        }
+        yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
       } else {
         notification({
@@ -143,16 +169,25 @@ function* fetchUserSubscription() {
     const apiUserSubscriptionStatus = yield call(
       subscriptionApi.subscriptionStatus
     )
-    if (apiUserSubscriptionStatus?.result === -1) {
-      yield put(slice.actions.updateUserSubscriptionExpired())
+    const data = {
+      isPremiumTrialUsed: apiUserSubscriptionStatus?.result?.isPremiumTrialUsed,
+      usedTrialItemBankId:
+        apiUserSubscriptionStatus?.result?.usedTrialItemBankId,
+      premiumProductId: apiUserSubscriptionStatus?.result?.premiumProductId,
+    }
+    if (apiUserSubscriptionStatus?.result.subscription === -1) {
+      yield put(slice.actions.updateUserSubscriptionExpired(data))
       return
     }
-    if (apiUserSubscriptionStatus.result) {
-      const data = {
-        success: true,
-        subscription: apiUserSubscriptionStatus.result,
+    if (apiUserSubscriptionStatus.result.subscription) {
+      Object.assign(data, {
+        subscription: apiUserSubscriptionStatus.result.subscription,
+      })
+      if (apiUserSubscriptionStatus.result.subscription._id) {
+        Object.assign(data, {
+          success: true,
+        })
       }
-
       yield put(slice.actions.updateUserSubscriptionStatus({ data, error: '' }))
     } else
       yield put(
@@ -170,10 +205,39 @@ function* fetchUserSubscription() {
   }
 }
 
+function* handleFreeTrialSaga({ payload }) {
+  try {
+    const apiPaymentResponse = yield call(paymentApi.pay, payload)
+    if (apiPaymentResponse.success) {
+      yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
+      yield put(slice.actions.trialSubsConfirmationAction(true))
+      yield put(slice.actions.resetSubscriptions())
+      yield call(fetchUserSubscription)
+      yield put(fetchUserAction({ background: true }))
+    } else {
+      notification({
+        type: 'error',
+        msg: `API Response failed`,
+        Key: 'handle-trial',
+      })
+      console.error('API Response failed')
+    }
+  } catch (err) {
+    yield put(slice.actions.startTrialFailureAction(err?.data?.message))
+    notification({
+      msg: `Trial Subscription : ${err?.data?.message}`,
+      Key: 'handle-trial',
+    })
+    console.error('ERROR WHILE PROCESSING TRIAL SUBSCRIPTION : ', err)
+    captureSentryException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
     yield takeEvery(slice.actions.stripePaymentAction, handleStripePayment),
+    yield takeEvery(slice.actions.startTrialAction, handleFreeTrialSaga),
     yield takeEvery(
       slice.actions.fetchUserSubscriptionStatus,
       fetchUserSubscription

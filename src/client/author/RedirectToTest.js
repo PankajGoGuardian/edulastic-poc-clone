@@ -8,7 +8,12 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import AppConfig from '../../app-config'
 
-const RedirectToTest = ({ location: { search }, history, user }) => {
+const RedirectToTest = ({
+  location: { search },
+  history,
+  user,
+  v1Id: v1IdFromProps,
+}) => {
   const handleFailed = (e) => {
     console.log(e)
     notification({ type: 'error', msg: 'Unable to find the associated test.' })
@@ -26,13 +31,22 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
       handleFailed('Missing Salt Key')
     }
   }
+
+  const redirectToUrl = (url) => {
+    history.push(url)
+    if (v1IdFromProps) {
+      window.location.reload(url)
+    }
+  }
+
   useEffect(() => {
     const { eAId, aId } = qs.parse(search, { ignoreQueryPrefix: true })
-    const v1Id = eAId || aId
+    const v1Id = eAId || aId || v1IdFromProps
     let testId = v1Id
 
     if (isNaN(v1Id)) {
-      testId = decrypt(atob(v1Id))
+      const decodedData = decodeURIComponent(v1Id)
+      testId = decrypt(atob(decodedData))
     }
 
     if (testId) {
@@ -47,12 +61,12 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
             if (!user?.authenticating || !TokenStorage.getAccessToken()) {
               // not authenticated user flow
               if (window.location.pathname.includes('demo/assessmentPreview')) {
-                history.push(`/public/test/${id}`)
+                redirectToUrl(`/public/test/${id}`)
               } else {
-                history.push(`/public/view-test/${id}`)
+                redirectToUrl(`/public/view-test/${id}`)
               }
             } else {
-              history.push(`/author/tests/${id}`)
+              redirectToUrl(`/author/tests/${id}`)
             }
           })
           .catch(handleFailed)

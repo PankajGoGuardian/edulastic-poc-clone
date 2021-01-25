@@ -699,7 +699,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId,
@@ -711,7 +711,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId,
@@ -723,7 +723,7 @@ function* startAssignment({ payload }) {
           push(
             `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
           )
         )
       }
@@ -812,7 +812,7 @@ function* resumeAssignment({ payload }) {
     if (studentRecommendation) {
       yield put(
         push({
-          pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+          pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
           state: {
             playlistRecommendationsFlow: true,
             playlistId: studentRecommendation.playlistId,
@@ -825,7 +825,7 @@ function* resumeAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId,
@@ -837,7 +837,7 @@ function* resumeAssignment({ payload }) {
           push(
             `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
           )
         )
       }

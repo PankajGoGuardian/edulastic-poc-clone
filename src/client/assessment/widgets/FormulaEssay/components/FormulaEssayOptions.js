@@ -22,7 +22,6 @@ const FormulaEssayOptions = ({
     fillSections={fillSections}
     cleanSections={cleanSections}
     item={item}
-    showScoringSectionAnyRole
   >
     <Layout
       onChange={onChange}

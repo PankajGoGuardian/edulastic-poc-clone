@@ -103,7 +103,7 @@ const Regrade = ({
         onApplySettings={onApplySettings}
         onCancelRegrade={onCancelRegrade}
         title={title}
-        isRegrading={isRegrading}
+        isRegrading={isRegrading || isLoadRegradeSettings}
       />
       <SecondHeader>
         <BreadCrumb data={breadcrumbData} style={{ position: 'unset' }} />

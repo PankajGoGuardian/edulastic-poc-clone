@@ -324,9 +324,13 @@ function* addPermissionRequestSaga({ payload }) {
   try {
     const { data, paginationData } = payload
     yield call(collectionsApi.addPermission, data)
-    yield put(
-      fetchPermissionsRequestAction({ _id: data.bankId, paginationData })
-    )
+
+    if (paginationData) {
+      yield put(
+        fetchPermissionsRequestAction({ _id: data.bankId, paginationData })
+      )
+    }
+
     notification({
       type: 'success',
       msg: `Permission added successfully for ${data.collectionName}.`,

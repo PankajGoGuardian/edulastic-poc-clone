@@ -70,6 +70,7 @@ const MyClasses = ({
   isConfirmationModalVisible,
   subscription: { subEndDate } = {},
   premiumProductId,
+  addOnProducts,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -84,6 +85,8 @@ const MyClasses = ({
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [addOnProductIds, setAddOnProductIds] = useState([])
+  const [totalAmount, setTotalAmount] = useState(100)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -309,6 +312,12 @@ const MyClasses = ({
         handleCloseModal={setShowSubscriptionAddonModal}
         isPremiumUser={isPremiumUser}
         setShowUpgradeModal={setShowUpgradeModal}
+        subEndDate={subEndDate}
+        usedTrialItemBankId={usedTrialItemBankId}
+        addOnProducts={addOnProducts}
+        premiumProductId={premiumProductId}
+        setTotalPurchaseAmount={setTotalAmount}
+        setAddOnProductIds={setAddOnProductIds}
       />
       <ItemBankTrialUsedModal
         title={productData.productName}
@@ -344,6 +353,9 @@ const MyClasses = ({
           startPremiumTrial={startTrialAction}
           premiumProductId={premiumProductId}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          subEndDate={subEndDate}
+          usedTrialItemBankId={usedTrialItemBankId}
+          addOnProducts={addOnProducts}
         />
       )}
       <UpgradeModal
@@ -360,6 +372,7 @@ const MyClasses = ({
         user={user}
         premiumProductId={premiumProductId}
         reason="Premium Upgrade"
+        totalPurchaseAmount={totalAmount}
       />
       <PayWithPoModal
         visible={payWithPoModal}
@@ -400,6 +413,7 @@ export default compose(
       subscription: state?.subscription?.subscriptionData?.subscription,
       isConfirmationModalVisible:
         state?.subscription?.showTrialSubsConfirmation,
+      addOnProducts: state?.subscription?.addOnProducts,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

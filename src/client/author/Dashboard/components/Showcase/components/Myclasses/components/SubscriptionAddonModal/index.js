@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { CheckboxLabel, CustomModalStyled, EduButton } from '@edulastic/common'
 import { ModalBody, AddonList, FlexRow, Total } from './styled'
@@ -8,19 +8,76 @@ const SubscriptionAddonModal = ({
   handleCloseModal,
   isPremiumUser,
   setShowUpgradeModal,
+  subEndDate,
+  premiumProductId,
+  addOnProducts = [],
+  setTotalPurchaseAmount,
+  setAddOnProductIds,
 }) => {
   const closeModal = () => handleCloseModal(false)
   const initialPrice = isPremiumUser ? 100 : 200
   const [totalPrice, setTotalPrice] = useState(initialPrice)
+  const [selectedProductIds, setSelectedProductIds] = useState([])
+
+  useEffect(() => {
+    if (!addOnProducts.length || !premiumProductId) return
+    const _productIds = addOnProducts.map((x) => x.id)
+    if (!isPremiumUser) {
+      _productIds.push(premiumProductId)
+    }
+    setSelectedProductIds(_productIds)
+  }, [isPremiumUser, addOnProducts, premiumProductId])
+
+  const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
+    const result = addOnProducts.map((item) => {
+      const itembankPrice = 100
+      const period = 365
+      if (!subEndDate || item.id === premiumProductId) {
+        return {
+          ...item,
+          period,
+          price: itembankPrice,
+        }
+      }
+      let currentDate = new Date()
+      const itemBankSubEndDate = new Date(
+        currentDate.setDate(currentDate.getDate() + period)
+      ).valueOf()
+      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
+      currentDate = Date.now()
+      const amountFactor =
+        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
+      const dynamicPrice = Math.round(amountFactor * itembankPrice)
+      const dynamicDays = Math.round(amountFactor * period)
+
+      return {
+        ...item,
+        price: dynamicPrice,
+        period: dynamicDays,
+      }
+    })
+    return {
+      teacherPremium: result[0],
+      itemBankPremium: result.slice(1),
+    }
+  }, [subEndDate, addOnProducts])
 
   const handleClick = () => {
+    setAddOnProductIds(selectedProductIds)
+    setTotalPurchaseAmount(totalPrice)
     handleCloseModal(false)
     setShowUpgradeModal(true)
   }
 
-  const handleOnChange = (ele) => {
-    const value = ele.value
-    if (ele.checked) {
+  const handleOnChange = (e, id) => {
+    const value = e.target.value
+    const hasProduct = selectedProductIds.some((x) => x === id)
+    if (hasProduct) {
+      setSelectedProductIds((x) => x.filter((y) => y !== id))
+    } else {
+      setSelectedProductIds((x) => x.concat(id))
+    }
+    if (e.target.checked) {
       setTotalPrice(totalPrice + value)
     } else {
       setTotalPrice(totalPrice - value)
@@ -62,22 +119,24 @@ const SubscriptionAddonModal = ({
           {!isPremiumUser && (
             <FlexRow>
               <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
-                Teacher Premium
+                {teacherPremium.name}
               </CheckboxLabel>
-              <span>$100</span>
+              <span>${teacherPremium.price}</span>
             </FlexRow>
           )}
-          <FlexRow>
-            <CheckboxLabel
-              data-cy="sparkPremiumCheckbox"
-              value={100}
-              onChange={(e) => handleOnChange(e.target)}
-              defaultChecked
-            >
-              Spark Math
-            </CheckboxLabel>
-            <span>$100</span>
-          </FlexRow>
+          {itemBankPremium.map((item) => (
+            <FlexRow key={item.id}>
+              <CheckboxLabel
+                data-cy="sparkPremiumCheckbox"
+                value={item.price}
+                onChange={(e) => handleOnChange(e, item.id)}
+                defaultChecked
+              >
+                {item.name}
+              </CheckboxLabel>
+              <span>${item.price}</span>
+            </FlexRow>
+          ))}
         </AddonList>
         <Total>
           <FlexRow>

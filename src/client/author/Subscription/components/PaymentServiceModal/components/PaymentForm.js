@@ -10,6 +10,7 @@ const PaymentForm = ({
   handlePayment,
   verificationPending,
   premiumProductId,
+  totalPurchaseAmount,
 }) => {
   const handleCardSubmit = (e) => {
     e.preventDefault()
@@ -25,6 +26,7 @@ const PaymentForm = ({
       <CardSection
         handleCardSubmit={handleCardSubmit}
         verificationPending={verificationPending}
+        totalPurchaseAmount={totalPurchaseAmount}
       />
     </form>
   )

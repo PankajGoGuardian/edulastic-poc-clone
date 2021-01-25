@@ -1,3 +1,4 @@
+import React, { useState, useMemo } from 'react'
 import {
   CheckboxLabel,
   CustomModalStyled,
@@ -5,29 +6,77 @@ import {
   FlexContainer,
 } from '@edulastic/common'
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
 import styled from 'styled-components'
 
 const TrialModal = ({
   productId,
-  productName,
   isVisible,
   toggleModal,
   isPremiumUser,
   isPremiumTrialUsed,
   startPremiumTrial,
   premiumProductId,
+  subEndDate,
+  usedTrialItemBankId,
+  addOnProducts = [],
 }) => {
   const [isSparkChecked, setIsSparkChecked] = useState(true)
 
-  const closeModal = () => toggleModal(false)
+  const isTrial = useMemo(() => !isPremiumUser && !isPremiumTrialUsed, [
+    isPremiumUser,
+    isPremiumTrialUsed,
+  ])
+
+  const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
+    const result = addOnProducts.map((item) => {
+      if (!subEndDate || item.id === premiumProductId) {
+        return {
+          ...item,
+          price: 100,
+          period: 14,
+        }
+      }
+      const itembankPrice = 100
+      const period = 14
+      let currentDate = new Date()
+      const itemBankSubEndDate = new Date(
+        currentDate.setDate(currentDate.getDate() + period)
+      ).valueOf()
+      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
+      currentDate = Date.now()
+      const amountFactor =
+        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
+      const dynamicPrice = Math.round(amountFactor * itembankPrice)
+      const dynamicDays = Math.round(amountFactor * period)
+
+      return {
+        ...item,
+        price: dynamicPrice,
+        period: dynamicDays,
+      }
+    })
+    return {
+      teacherPremium: result[0],
+      itemBankPremium: result.slice(1),
+    }
+  }, [
+    subEndDate,
+    isPremiumTrialUsed,
+    usedTrialItemBankId,
+    productId,
+    addOnProducts,
+  ])
+
   const isDisableProceed = !isSparkChecked && isPremiumUser
+
+  const closeModal = () => toggleModal(false)
+
   const onProceed = () => {
     const productIds = []
     if (isSparkChecked) {
       productIds.push(productId)
     }
-    if (!isPremiumUser && !isPremiumTrialUsed) {
+    if (isTrial) {
       productIds.push(premiumProductId)
       startPremiumTrial({ productIds })
       toggleModal(false)
@@ -36,10 +85,7 @@ const TrialModal = ({
     }
     closeModal()
   }
-  const handleOnChange = (ele) => {
-    const checked = ele.checked
-    setIsSparkChecked(checked)
-  }
+  const handleOnChange = (e) => setIsSparkChecked(e.target.checked)
 
   const Footer = (
     <>
@@ -55,46 +101,40 @@ const TrialModal = ({
       </EduButton>
     </>
   )
-  const nonPremium = (
+
+  const Premium = (
+    <>
+      {itemBankPremium.map((item) => (
+        <StyledCheckbox
+          data-cy="sparkPremiumCheckbox"
+          defaultChecked
+          onChange={handleOnChange}
+        >
+          <ListValue>
+            <span>{item.name}</span> <span>{`$${item.price} ($0 today)`}</span>
+          </ListValue>
+          <Description>{item.description}</Description>
+        </StyledCheckbox>
+      ))}
+    </>
+  )
+
+  const NonPremium = (
     <>
       <StyledCheckbox data-cy="teacherPremiumCheckbox" checked>
         <ListValue>
-          <span>Teacher Premium</span> <span>$100 ($0 today)</span>
+          <span>{teacherPremium.name}</span>{' '}
+          <span>{`$${teacherPremium.price} ($0 today)`}</span>
         </ListValue>
-        <Description>
-          Get even more out of your trial by adding Spark premium content
-        </Description>
+        <Description>{teacherPremium.description}</Description>
       </StyledCheckbox>
-      <StyledCheckbox
-        data-cy="sparkPremiumCheckbox"
-        defaultChecked
-        onChange={(e) => handleOnChange(e.target)}
-      >
-        <ListValue>
-          <span>{productName}</span> <span>$100 ($0 today)</span>
-        </ListValue>
-        <Description>
-          Curriculum-aligned differentiated math practice
-        </Description>
-      </StyledCheckbox>
+      {Premium}
     </>
-  )
-  const Premium = (
-    <StyledCheckbox
-      data-cy="sparkPremiumCheckbox"
-      defaultChecked
-      onChange={(e) => handleOnChange(e.target)}
-    >
-      <ListValue>
-        <span>{productName}</span> <span>$100 ($0 today)</span>
-      </ListValue>
-      <Description>Curriculum-aligned differentiated math practice</Description>
-    </StyledCheckbox>
   )
 
   const modalContent = () => {
-    if (!isPremiumUser && !isPremiumTrialUsed) {
-      return nonPremium
+    if (isTrial) {
+      return NonPremium
     }
     return Premium
   }
@@ -107,16 +147,16 @@ const TrialModal = ({
       visible={isVisible}
       onCancel={closeModal}
     >
-      {!isPremiumUser && !isPremiumTrialUsed ? (
+      {isTrial ? (
         <p>
-          Experience the additional features of Edulastic Teacher Premium for 14
+          {`Experience the additional features of Edulastic Teacher Premium for 14
           days: read-aloud for students, extra test security settings, easier
-          collaboration, in-depth reports and more.
+          collaboration, in-depth reports and more.`}
         </p>
       ) : (
         <p>
-          Access premium assessments and practice for the subjects you teach for
-          the next 14 days.
+          {`Access premium assessments and practice for the subjects you teach for
+          the next 14 days.`}
         </p>
       )}
 
@@ -131,7 +171,6 @@ const TrialModal = ({
 }
 
 TrialModal.propTypes = {
-  productName: PropTypes.string.isRequired,
   productId: PropTypes.string.isRequired,
   isVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,

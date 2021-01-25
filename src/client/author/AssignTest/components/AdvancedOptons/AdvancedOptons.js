@@ -2,10 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import produce from 'immer'
-import { notification } from '@edulastic/common'
 import { curry } from 'lodash'
 import * as moment from 'moment'
-import { Col, Icon } from 'antd'
 import {
   test as testConst,
   assignmentPolicyOptions,
@@ -13,14 +11,7 @@ import {
 } from '@edulastic/constants'
 import ClassList from './ClassList'
 import DatePolicySelector from './DatePolicySelector'
-import Settings from '../SimpleOptions/Settings'
-import {
-  OptionConationer,
-  InitOptions,
-  StyledRowLabel,
-  SettingsBtn,
-  ClassSelectorLabel,
-} from './styled'
+import { OptionConationer, InitOptions, ClassSelectorLabel } from './styled'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import {
@@ -44,14 +35,6 @@ class AdvancedOptons extends React.Component {
     isAssignRecommendations: PropTypes.bool.isRequired,
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      showSettings: false,
-      _releaseGradeKeys: nonPremiumReleaseGradeKeys,
-    }
-  }
-
   static getDerivedStateFromProps(nextProps) {
     const { features, testSettings } = nextProps
     const { grades, subjects } = testSettings || {}
@@ -72,15 +55,6 @@ class AdvancedOptons extends React.Component {
     return {
       _releaseGradeKeys: nonPremiumReleaseGradeKeys,
     }
-  }
-
-  toggleSettings = () => {
-    const { freezeSettings } = this.props
-    const { showSettings } = this.state
-    if (freezeSettings && !showSettings) {
-      notification({ type: 'warn', messageKey: 'overrrideSettingsRestricted' })
-    }
-    this.setState({ showSettings: !showSettings })
   }
 
   onChange = (field, value, groups) => {
@@ -179,11 +153,9 @@ class AdvancedOptons extends React.Component {
     const {
       testSettings = {},
       assignment,
-      updateOptions,
       isAssignRecommendations,
     } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
-    const { showSettings, _releaseGradeKeys } = this.state
     const changeField = curry(this.onChange)
 
     return (
@@ -204,33 +176,6 @@ class AdvancedOptons extends React.Component {
               assignment.showMagnifier || testSettings.showMagnifier
             }
           />
-          <StyledRowLabel gutter={16}>
-            <Col>
-              <SettingsBtn
-                data-cy="override"
-                onClick={this.toggleSettings}
-                isVisible={showSettings}
-              >
-                OVERRIDE TEST SETTINGS{' '}
-                {showSettings ? (
-                  <Icon type="caret-up" />
-                ) : (
-                  <Icon type="caret-down" />
-                )}
-              </SettingsBtn>
-            </Col>
-          </StyledRowLabel>
-
-          {showSettings && (
-            <Settings
-              assignmentSettings={assignment}
-              updateAssignmentSettings={updateOptions}
-              changeField={changeField}
-              testSettings={testSettings}
-              _releaseGradeKeys={_releaseGradeKeys}
-              isAdvanced
-            />
-          )}
 
           {!isAssignRecommendations && (
             <>

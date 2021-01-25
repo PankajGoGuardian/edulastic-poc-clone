@@ -1,19 +1,22 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import { Col, Select, Tooltip } from 'antd'
+import { Select, Tooltip } from 'antd'
 import styled from 'styled-components'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
+import { StyledRow, StyledCol } from './styled'
 
 const dropdownStyle = {
   boxShadow: '0 3px 10px 0 rgba(0, 0, 0, 0.1)',
 }
 
 const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
-  <>
-    <Col span={12}>
+  <StyledRow gutter={16}>
+    <StyledCol span={12}>
       <FieldLabel>CLASS/GROUP SECTION</FieldLabel>
+    </StyledCol>
+    <StyledCol span={12}>
       <SelectInputStyled
         showSearch
         data-cy="selectClass"
@@ -30,7 +33,6 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
         }
         value={selectedGroups}
         getPopupContainer={(trigger) => trigger.parentNode}
-        margin="0px 0px 10px"
         dropdownStyle={dropdownStyle}
       >
         {group.map((data) => (
@@ -66,8 +68,8 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
           </Select.Option>
         ))}
       </SelectInputStyled>
-    </Col>
-  </>
+    </StyledCol>
+  </StyledRow>
 )
 
 export default ClassSelector

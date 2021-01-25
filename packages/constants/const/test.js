@@ -5,22 +5,22 @@ module.exports = {
     PRACTICE: 'practice',
     TESTLET: 'testlet',
   },
-  settingCategories: [
+  settingsList: [
     { id: 'test-type', title: 'Test Type' },
     { id: 'maximum-attempts-allowed', title: 'Maximum Attempts Allowed' },
     { id: 'mark-as-done', title: 'Mark as Done' },
     { id: 'release-scores', title: 'Release Scores' },
     { id: 'require-safe-exame-browser', title: 'Safe Exam Browser' },
     { id: 'show-questions', title: 'Release Answers with Grades' },
-    {
-      id: 'restrict-back-navigation',
-      title: 'Restrict Question Navigation',
-    },
     { id: 'suffle-question', title: 'Shuffle Questions' },
     { id: 'show-answer-choice', title: 'Shuffle Answer Choice' },
     { id: 'show-calculator', title: 'Show Calculator' },
     { id: 'answer-on-paper', title: 'Answer on Paper' },
     { id: 'require-password', title: 'Require Password' },
+    {
+      id: 'restrict-back-navigation',
+      title: ' Restrict Navigation To Previously Answered Questions',
+    },
     {
       id: 'check-answer-tries-per-question',
       title: 'Check Answer Tries Per Question',
@@ -41,6 +41,23 @@ module.exports = {
     { id: 'ui-time', title: 'UI / Time' },
     { id: 'administration', title: 'Administration' },
   ],
+  settingCategories: [
+    {
+      id: 'test-behavior',
+      title: 'Test Behavior',
+      type: 'settings-category',
+    },
+    {
+      id: 'anti-cheating',
+      title: 'Anti-Cheating',
+      type: 'settings-category',
+    },
+    {
+      id: 'miscellaneous',
+      title: 'Miscellaneous',
+      type: 'settings-category',
+    },
+  ],
   settingCategoriesFeatureMap: {
     'test-type': 'selectTestType',
     'player-skin-type': 'selectPlayerSkinType',
@@ -59,7 +76,8 @@ module.exports = {
     'timed-test': 'assessmentSuperPowersTimedTest',
     'check-answer-tries-per-question': 'assessmentSuperPowersCheckAnswerTries',
     'performance-bands': 'performanceBands',
-    'restrict-back-navigation': 'premium',
+    'add-instruction': 'testInstructions',
+    'restrict-back-navigation': 'assessmentSuperPowersRestrictQuestionBackNav',
   },
   navigations: [
     'Intro Item',

@@ -43,7 +43,6 @@ import {
   getTestEntitySelector,
   updateAssingnmentSettingsAction,
 } from '../../duck'
-import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
 import SimpleOptions from '../SimpleOptions/SimpleOptions'
 import CommonStudentConfirmation from './ConfirmationModal'
 import MultipleAssignConfirmation from './MultipleAssignConfirmation'
@@ -389,15 +388,6 @@ class AssignTest extends React.Component {
             <div style={{ height: '70vh' }}>
               <Spin />
             </div>
-          ) : isAdvancedView ? (
-            <AdvancedOptons
-              assignment={assignment}
-              updateOptions={this.updateAssignmentNew}
-              testSettings={testSettings}
-              onClassFieldChange={this.onClassFieldChange}
-              defaultTestProfiles={defaultTestProfiles}
-              isAssignRecommendations={false}
-            />
           ) : (
             <SimpleOptions
               group={classList}
@@ -410,6 +400,9 @@ class AssignTest extends React.Component {
               changeDateSelection={this.changeDateSelection}
               selectedDateOption={selectedDateOption}
               isAssignRecommendations={false}
+              match={match}
+              isAdvancedView={isAdvancedView}
+              defaultTestProfiles={defaultTestProfiles}
             />
           )}
         </Container>

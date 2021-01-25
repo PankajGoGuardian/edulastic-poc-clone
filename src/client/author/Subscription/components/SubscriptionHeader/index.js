@@ -44,7 +44,9 @@ const SubscriptionHeader = ({
       <Menu.Item>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
-            <span onClick={handleClick}>INDIVIDUAL SUBSCRIPTION</span>
+            <span data-cy="individualSubscription" onClick={handleClick}>
+              INDIVIDUAL SUBSCRIPTION
+            </span>
           )}
           onClick={handlePurchaseFlow}
         />
@@ -52,7 +54,9 @@ const SubscriptionHeader = ({
       <Menu.Item>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
-            <span onClick={handleClick}>ENTERPRISE SUBSCRIPTION</span>
+            <span data-cy="enterpriseSubscription" onClick={handleClick}>
+              ENTERPRISE SUBSCRIPTION
+            </span>
           )}
           onClick={handleEnterpriseClick}
         />
@@ -72,8 +76,10 @@ const SubscriptionHeader = ({
           </h2>
         </Title>
         <ActionButtons>
-          <span className="plan">YOUR PLAN</span>
-          <span className="free">
+          <span data-cy="yourPlanSubscription" className="plan">
+            YOUR PLAN
+          </span>
+          <span data-cy="FreeSubscription" className="free">
             {isSubscribed && subType && licenseExpiryDate
               ? `${
                   subType === 'partial_premium'

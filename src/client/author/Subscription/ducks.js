@@ -160,6 +160,8 @@ function* fetchUserSubscription() {
     )
     const data = {
       isPremiumTrialUsed: apiUserSubscriptionStatus?.result?.isPremiumTrialUsed,
+      itemBankSubscriptions:
+        apiUserSubscriptionStatus?.result?.itemBankSubscriptions,
       usedTrialItemBankId:
         apiUserSubscriptionStatus?.result?.usedTrialItemBankId,
       premiumProductId: apiUserSubscriptionStatus?.result?.premiumProductId,

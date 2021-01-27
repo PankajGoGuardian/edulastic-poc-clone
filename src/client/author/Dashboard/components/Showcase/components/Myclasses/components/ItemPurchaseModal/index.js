@@ -2,14 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 
-const Footer = ({ handleTrial, handlePurchaseFlow, showTrialButton }) => {
+const Footer = ({ handleTrial, handlePurchaseFlow }) => {
   return (
     <>
-      {showTrialButton && (
-        <EduButton data-cy="trialPurchase" isGhost isBlue onClick={handleTrial}>
-          Try for free
-        </EduButton>
-      )}
+      <EduButton data-cy="trialPurchase" isGhost isBlue onClick={handleTrial}>
+        Try for free
+      </EduButton>
       <EduButton data-cy="Purchase" isBlue onClick={handlePurchaseFlow}>
         Purchase
       </EduButton>
@@ -24,7 +22,6 @@ const ItemPurchaseModal = ({
   toggleModal,
   toggleTrialModal,
   handlePurchaseFlow,
-  showTrialButton,
 }) => {
   const closeModal = () => toggleModal(false)
   const handleTrial = () => {
@@ -40,7 +37,6 @@ const ItemPurchaseModal = ({
         <Footer
           handleTrial={handleTrial}
           handlePurchaseFlow={handlePurchaseFlow}
-          showTrialButton={showTrialButton}
         />
       }
       visible={isVisible}

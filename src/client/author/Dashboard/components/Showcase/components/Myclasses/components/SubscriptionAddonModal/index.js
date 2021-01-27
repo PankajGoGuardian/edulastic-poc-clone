@@ -113,7 +113,7 @@ const SubscriptionAddonModal = ({
         </p>
         <p> These addons need the premium or enterprise subscription.</p>
         <AddonList>
-          {!isPaidPremium && (
+          {!isPremiumUser && (
             <FlexRow>
               <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
                 {teacherPremium.name}

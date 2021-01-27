@@ -16,8 +16,6 @@ const TrialModal = ({
   isPremiumTrialUsed,
   startPremiumTrial,
   premiumProductId,
-  subEndDate,
-  usedTrialItemBankId,
   products = [],
 }) => {
   const [isSparkChecked, setIsSparkChecked] = useState(true)
@@ -28,38 +26,16 @@ const TrialModal = ({
   ])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
-    const result = products.map((item) => {
-      if (!subEndDate || item.id === premiumProductId) {
-        return {
-          ...item,
-          price: 100,
-          period: 14,
-        }
-      }
-      const itembankPrice = 100
-      const period = 14
-      let currentDate = new Date()
-      const itemBankSubEndDate = new Date(
-        currentDate.setDate(currentDate.getDate() + period)
-      ).valueOf()
-      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
-      currentDate = Date.now()
-      const amountFactor =
-        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
-      const dynamicPrice = Math.round(amountFactor * itembankPrice)
-      const dynamicDays = Math.round(amountFactor * period)
-
-      return {
-        ...item,
-        price: dynamicPrice,
-        period: dynamicDays,
-      }
-    })
+    const result = products.map((item) => ({
+      ...item,
+      price: 100,
+      period: 14,
+    }))
     return {
       teacherPremium: result[0],
       itemBankPremium: result.slice(1),
     }
-  }, [subEndDate, isPremiumTrialUsed, usedTrialItemBankId, productId, products])
+  }, [products])
 
   const isDisableProceed = !isSparkChecked && isPremiumUser
 

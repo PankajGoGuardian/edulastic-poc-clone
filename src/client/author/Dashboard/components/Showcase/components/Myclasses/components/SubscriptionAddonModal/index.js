@@ -33,7 +33,11 @@ const SubscriptionAddonModal = ({
     const result = products.map((item) => {
       const itembankPrice = 100
       const period = 365
-      if (!subEndDate || item.id === premiumProductId) {
+      if (
+        !subEndDate ||
+        item.id === premiumProductId ||
+        (subEndDate && !isPaidPremium)
+      ) {
         return {
           ...item,
           period,
@@ -113,7 +117,7 @@ const SubscriptionAddonModal = ({
         </p>
         <p> These addons need the premium or enterprise subscription.</p>
         <AddonList>
-          {!isPremiumUser && (
+          {!isPaidPremium && (
             <FlexRow>
               <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
                 {teacherPremium.name}

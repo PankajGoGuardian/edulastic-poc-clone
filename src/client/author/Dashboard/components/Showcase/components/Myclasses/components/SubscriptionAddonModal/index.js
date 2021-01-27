@@ -24,7 +24,7 @@ const SubscriptionAddonModal = ({
     if (!products.length || !premiumProductId) return
     let _productIds = products.map((x) => x.id)
     if (isPremiumUser) {
-      _productIds = _productIds.filter((x) => x === premiumProductId)
+      _productIds = _productIds.filter((x) => x !== premiumProductId)
     }
     setSelectedProductIds(_productIds)
   }, [isPremiumUser, products, premiumProductId])

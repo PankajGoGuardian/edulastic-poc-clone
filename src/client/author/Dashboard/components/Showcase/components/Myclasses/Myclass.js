@@ -70,7 +70,7 @@ const MyClasses = ({
   isConfirmationModalVisible,
   subscription: { subEndDate, subType } = {},
   premiumProductId,
-  addOnProducts,
+  products,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -322,7 +322,7 @@ const MyClasses = ({
           setShowUpgradeModal={setShowUpgradeModal}
           subEndDate={subEndDate}
           usedTrialItemBankId={usedTrialItemBankId}
-          addOnProducts={addOnProducts}
+          products={products}
           premiumProductId={premiumProductId}
           setTotalPurchaseAmount={setTotalAmount}
           setAddOnProductIds={setAddOnProductIds}
@@ -364,7 +364,7 @@ const MyClasses = ({
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
           subEndDate={subEndDate}
           usedTrialItemBankId={usedTrialItemBankId}
-          addOnProducts={addOnProducts}
+          products={products}
         />
       )}
       {showUpgradeModal && (
@@ -426,7 +426,7 @@ export default compose(
       subscription: state?.subscription?.subscriptionData?.subscription,
       isConfirmationModalVisible:
         state?.subscription?.showTrialSubsConfirmation,
-      addOnProducts: state?.subscription?.addOnProducts,
+      products: state?.subscription?.products,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

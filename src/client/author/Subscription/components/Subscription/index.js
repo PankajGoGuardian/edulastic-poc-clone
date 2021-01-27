@@ -189,7 +189,7 @@ const Subscription = (props) => {
     addPermissionRequest,
     isConfirmationModalVisible,
     showTrialSubsConfirmationAction,
-    addOnProducts,
+    products,
     usedTrialItemBankId,
   } = props
 
@@ -303,7 +303,8 @@ const Subscription = (props) => {
         setShowUpgradeModal={setShowUpgradeModal}
         subEndDate={subEndDate}
         usedTrialItemBankId={usedTrialItemBankId}
-        addOnProducts={addOnProducts}
+        products={products}
+        isPremiumUser={isPremiumUser}
         premiumProductId={premiumProductId}
         setTotalPurchaseAmount={setTotalAmount}
         setAddOnProductIds={setAddOnProductIds}
@@ -372,7 +373,7 @@ export default connect(
       state?.subscription?.subscriptionData?.isPremiumTrialUsed,
     premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
     isConfirmationModalVisible: state?.subscription?.showTrialSubsConfirmation,
-    addOnProducts: state?.subscription?.addOnProducts,
+    products: state?.subscription?.products,
     usedTrialItemBankId:
       state?.subscription?.subscriptionData?.usedTrialItemBankId,
   }),

@@ -10,9 +10,10 @@ const SubscriptionAddonModal = ({
   setShowUpgradeModal,
   subEndDate,
   premiumProductId,
-  addOnProducts = [],
+  products = [],
   setTotalPurchaseAmount,
   setAddOnProductIds,
+  isPremiumUser,
 }) => {
   const closeModal = () => handleCloseModal(false)
   const initialPrice = isPaidPremium ? 100 : 200
@@ -20,16 +21,16 @@ const SubscriptionAddonModal = ({
   const [selectedProductIds, setSelectedProductIds] = useState([])
 
   useEffect(() => {
-    if (!addOnProducts.length || !premiumProductId) return
-    let _productIds = addOnProducts.map((x) => x.id)
+    if (!products.length || !premiumProductId) return
+    let _productIds = products.map((x) => x.id)
     if (isPremiumUser) {
       _productIds = _productIds.filter((x) => x === premiumProductId)
     }
     setSelectedProductIds(_productIds)
-  }, [isPremiumUser, addOnProducts, premiumProductId])
+  }, [isPremiumUser, products, premiumProductId])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
-    const result = addOnProducts.map((item) => {
+    const result = products.map((item) => {
       const itembankPrice = 100
       const period = 365
       if (!subEndDate || item.id === premiumProductId) {
@@ -60,7 +61,7 @@ const SubscriptionAddonModal = ({
       teacherPremium: result[0],
       itemBankPremium: result.slice(1),
     }
-  }, [subEndDate, addOnProducts])
+  }, [subEndDate, products])
 
   const handleClick = () => {
     setAddOnProductIds(selectedProductIds)

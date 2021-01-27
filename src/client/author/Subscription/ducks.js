@@ -14,7 +14,7 @@ const slice = createSlice({
     subscriptionData: {},
     error: '',
     showTrialSubsConfirmation: false,
-    addOnProducts: [],
+    products: [],
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -80,7 +80,7 @@ const slice = createSlice({
       state.showTrialSubsConfirmation = payload
     },
     setAddOnProducts: (state, { payload }) => {
-      state.addOnProducts = payload
+      state.products = payload
     },
   },
 })
@@ -167,7 +167,7 @@ function* fetchUserSubscription() {
     }
 
     // TODO:  Refactor in Phase -3
-    const addOnProducts = [
+    const products = [
       {
         id: data.premiumProductId,
         name: 'Teacher Premium',
@@ -182,7 +182,7 @@ function* fetchUserSubscription() {
         price: 100,
       },
     ]
-    yield put(slice.actions.setAddOnProducts(addOnProducts))
+    yield put(slice.actions.setAddOnProducts(products))
     if (apiUserSubscriptionStatus?.result.subscription === -1) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))
       return

@@ -62,16 +62,18 @@ const PlayerHeader = ({
   utaId,
   groupId,
   location,
+  hidePause,
   blockNavigationToAnsweredQuestions = false,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 
-  const rightButtons = (
+  const rightButtons =  (
     <SaveAndExit
       timedAssignment={timedAssignment}
       utaId={utaId}
+      hidePause={hidePause}
       groupId={groupId}
       previewPlayer={previewPlayer}
       showZoomBtn
@@ -79,7 +81,7 @@ const PlayerHeader = ({
       isCliUserPreview={cliUser}
       LCBPreviewModal={LCBPreviewModal}
     />
-  )
+  );
 
   return (
     <CustomAffix>

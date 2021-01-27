@@ -4,6 +4,7 @@ import {
   EduButton,
   FlexContainer,
 } from '@edulastic/common'
+import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import { Tooltip } from 'antd'
 import React, { useState } from 'react'
@@ -58,6 +59,7 @@ const TrialModal = ({
   )
   const nonPremium = (
     <>
+<<<<<<< Updated upstream
       <TrialContainer>
         <Tooltip title="Premium subscription is mandatory for Spark content">
           <StyledCheckbox data-cy="teacherPremiumTrialCheckbox" checked />
@@ -97,6 +99,39 @@ const TrialModal = ({
       </ListValue>
       <Description>Curriculum-aligned differentiated math practice</Description>
     </StyledCheckbox>
+=======
+      {itemBankPremium.map((item) => (
+        <TrialContainer>
+          <StyledCheckbox
+            data-cy="sparkPremiumCheckbox"
+            defaultChecked
+            onChange={handleOnChange}
+          />
+          <div>
+            <p>{item.name} TRIAL </p>{' '}
+            <Description>{item.description}</Description>
+          </div>
+          <Description>{`$${item.price} ($0 today)`}</Description>
+        </TrialContainer>
+      ))}
+    </>
+  )
+
+  const NonPremium = (
+    <>
+      <TrialContainer>
+        <Tooltip title="Premium subscription is mandatory for Spark content">
+          <StyledCheckbox data-cy="teacherPremiumTrialCheckbox" checked />
+        </Tooltip>
+        <div>
+          <p>{teacherPremium.name} TRIAL </p>
+          <Description>{teacherPremium.description}</Description>
+        </div>
+        <Description>{`$${teacherPremium.price} ($0 today)`}</Description>
+      </TrialContainer>
+      <span>{Premium}</span>
+    </>
+>>>>>>> Stashed changes
   )
 
   const modalContent = () => {
@@ -152,12 +187,15 @@ const StyledCheckbox = styled(CheckboxLabel)`
     margin-top: 5px;
   }
 `
+<<<<<<< Updated upstream
 const ListValue = styled.span`
   font-size: 14px;
   display: flex;
   justify-content: space-between;
   font-weight: bold;
 `
+=======
+>>>>>>> Stashed changes
 const Description = styled.span`
   color: #666666;
   text-transform: initial;
@@ -175,6 +213,27 @@ const TrialContainer = styled.div`
   & > span {
     font-weight: bold;
     white-space: nowrap;
+  }
+`
+const FooterText = styled.p`
+  margin-top: 30px;
+`
+const TrialContainer = styled.div`
+  display: flex;
+  justify-content:space-between;
+  margin-top:10px;
+  & > div {
+    width:75%;
+    margin-top: 10px;
+    margin-left:15px;
+    font-size: 12px;
+    color: #666666;
+    font-weight::bold;
+  }
+  & > span {
+    font-weight: bold;
+    white-space: nowrap;
+    color: #666666;
   }
 `
 const FooterText = styled.p`

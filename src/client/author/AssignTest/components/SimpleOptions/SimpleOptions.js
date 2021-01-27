@@ -103,12 +103,12 @@ class SimpleOptions extends React.Component {
     const {
       onClassFieldChange,
       group,
-      assignment,
       updateOptions,
       isReleaseScorePremium,
       userRole,
       features: { free, premium },
     } = this.props
+    let { assignment } = this.props
     if (field === 'class') {
       const { classData, termId } = onClassFieldChange(value, group)
       const nextAssignment = produce(assignment, (state) => {
@@ -123,6 +123,13 @@ class SimpleOptions extends React.Component {
       if (value === null) {
         value = moment(startDate).add('days', 7)
       }
+    }
+
+    if (
+      field === 'restrictNavigationOut' &&
+      value === 'warn-and-report-after-n-alerts'
+    ) {
+      assignment = { ...assignment, restrictNavigationOutAttemptsThreshold: 5 }
     }
 
     const nextAssignment = produce(assignment, (state) => {
@@ -295,6 +302,7 @@ class SimpleOptions extends React.Component {
     }
 
     const newSettings = {}
+    console.log('key', key, 'value', value)
 
     // SimpleOptions onChange method has similar condition
     if (key === 'scoringType') {

@@ -6,13 +6,7 @@ import { withRouter } from 'react-router-dom'
 import { get, isObject } from 'lodash'
 import { Anchor, Col, Row, Select, Tooltip, InputNumber, Icon } from 'antd'
 import Styled from 'styled-components'
-import {
-  blueBorder,
-  green,
-  red,
-  themeColor,
-  lightGrey9,
-} from '@edulastic/colors'
+import { blueBorder, green, red, lightGrey9 } from '@edulastic/colors'
 
 import {
   MainContentWrapper,
@@ -396,7 +390,7 @@ class Setting extends Component {
       hasInstruction = false,
       instruction = '',
       testletConfig = {},
-      enableSkipAlert = false,
+      //      enableSkipAlert = false,
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
       blockSaveAndContinue,
@@ -1091,6 +1085,89 @@ class Setting extends Component {
                           </Description>
                         </Body>
                       </SettingContainer>
+                    </Block>
+                  )}
+                  {premium && (
+                    <Block id="block-save-and-continue" smallSize={isSmallSize}>
+                      <Title>
+                        <span>Block Save And Continue</span>
+                        <EduSwitchStyled
+                          disabled={!owner || !isEditable}
+                          checked={blockSaveAndContinue}
+                          data-cy="bockSaveAndContinueSwitch"
+                          onChange={this.updateTestData('blockSaveAndContinue')}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          Will force the students to take the test in single
+                          sitting
+                        </Description>
+                      </Body>
+                    </Block>
+                  )}
+
+                  {premium && (
+                    <Block id="restrict-navigation-out" smallSize={isSmallSize}>
+                      <Title>Restrict Navigation Out of Test</Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row>
+                          <Col span={11}>
+                            <StyledRadioGroup
+                              disabled={!owner || !isEditable}
+                              onChange={this.updateFeatures(
+                                'restrictNavigationOut'
+                              )}
+                              value={restrictNavigationOut}
+                            >
+                              <RadioBtn value={undefined} key="disabled">
+                                DISABLED
+                              </RadioBtn>
+                              <RadioBtn
+                                value="warn-and-report"
+                                key="warn-and-report"
+                              >
+                                WARN AND REPORT ONLY
+                              </RadioBtn>
+                              <RadioBtn
+                                value="warn-and-report-after-n-alerts"
+                                key="warn-and-report-after-n-alerts"
+                              >
+                                WARN AND BLOCK TEST AFTER{' '}
+                                <InputNumberStyled
+                                  size="small"
+                                  value={
+                                    restrictNavigationOut
+                                      ? restrictNavigationOutAttemptsThreshold
+                                      : undefined
+                                  }
+                                  onChange={this.updateFeatures(
+                                    'restrictNavigationOutAttemptsThreshold'
+                                  )}
+                                  disabled={
+                                    !(
+                                      restrictNavigationOut ===
+                                      'warn-and-report-after-n-alerts'
+                                    ) ||
+                                    !owner ||
+                                    !isEditable
+                                  }
+                                />{' '}
+                                ALERTS
+                              </RadioBtn>
+                            </StyledRadioGroup>
+                          </Col>
+                          <Col span={13}>
+                            <Description>
+                              If <b> ON </b>, then students will be shown an
+                              alert if they navigate away from edulastic tab and
+                              if specific number of alerts exceeded, the
+                              assignment will be paused and the instructor will
+                              need to manually resume
+                            </Description>
+                          </Col>
+                        </Row>
+                      </Body>
                     </Block>
                   )}
                   {!isDocBased && (

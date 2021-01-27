@@ -1,8 +1,18 @@
 import React, { useState } from 'react'
-import { Row, Col, Select, Tooltip, Input, Icon } from 'antd'
+import {
+  Row,
+  Col,
+  Select,
+  Tooltip,
+  Input,
+  Icon,
+  InputNumber,
+  Radio,
+} from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { blueBorder, lightGrey9, red, green } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
+import Styled from 'styled-components'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -40,6 +50,9 @@ const AntiCheatingGroupContainer = ({
     assignmentPassword = testSettings.assignmentPassword,
     passwordExpireIn = testSettings.passwordExpireIn || 15 * 60,
     blockNavigationToAnsweredQuestions = testSettings.blockNavigationToAnsweredQuestions,
+    blockSaveAndContinue = testSettings.blockSaveAndContinue,
+    restrictNavigationOut = testSettings.restrictNavigationOut,
+    restrictNavigationOutAttemptsThreshold = testSettings.restrictNavigationOutAttemptsThreshold,
   } = assignmentSettings
 
   const {
@@ -48,6 +61,7 @@ const AntiCheatingGroupContainer = ({
     assessmentSuperPowersRequirePassword,
     assessmentSuperPowersRestrictQuestionBackNav,
     assessmentSuperPowersRequireSafeExamBrowser,
+    premium,
   } = featuresAvailable
 
   const validateAndUpdatePassword = (_assignmentPassword) => {
@@ -268,6 +282,114 @@ const AntiCheatingGroupContainer = ({
       {/* Require Password */}
 
       {
+        /* BLOCK SAVE AND CONTINUE starts */
+        <SettingContainer>
+          <DetailsTooltip
+            title="Block Save And Continue"
+            content="Will force the students to take the test in single sitting"
+            placement="rightTop"
+            premium={premium}
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={12}>
+              <Label>
+                Block Save And Continue
+                <DollarPremiumSymbol premium={premium} />
+                <Tooltip title="Will force the students to take the test in single sitting">
+                  <StyledInfoIcon color={lightGrey9} mL="10px" />
+                </Tooltip>
+              </Label>
+            </Col>
+            <Col span={12}>
+              <AlignSwitchRight
+                disabled={freezeSettings || !premium}
+                size="small"
+                checked={blockSaveAndContinue}
+                onChange={(value) =>
+                  overRideSettings('blockSaveAndContinue', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+        /* BLOCK SAVE AND CONTINUE ends */
+      }
+
+      {
+        /* Restrict navigation out starts */
+        <SettingContainer>
+          <DetailsTooltip
+            title="Restrict Navigation Out Of Test"
+            content={`If ON, then students will be shown an alert
+              if they navigate away from edulastic tab and if
+              specific number of alerts exceeded, the assignment
+              will be paused and the instructor will need to
+              manually resume`}
+            placement="rightTop"
+            premium={premium}
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={12}>
+              <Label>
+                Restrict Navigation Out Of Test
+                <DollarPremiumSymbol premium={premium} />
+                <Tooltip
+                  title={`If ON, then students will be shown an alert
+                    if they navigate away from edulastic tab and if
+                    specific number of alerts exceeded, the assignment
+                    will be paused and the instructor will need to
+                    manually resume`}
+                >
+                  <StyledInfoIcon color={lightGrey9} mL="10px" />
+                </Tooltip>
+              </Label>
+            </Col>
+
+            <Col span={12}>
+              <StyledRadioGroupWrapper
+                value={restrictNavigationOut}
+                disabled={freezeSettings}
+                onChange={(e) => {
+                  overRideSettings('restrictNavigationOut', e.target.value)
+                }}
+              >
+                <Radio value={undefined}>DISABLED</Radio>
+                <br />
+                <Radio value="warn-and-report">WARN AND REPORT ONLY</Radio>
+                <br />
+                <Radio value="warn-and-report-after-n-alerts">
+                  WARN AND BLOCK TEST AFTER{' '}
+                  <InputNumberStyled
+                    size="small"
+                    min={1}
+                    value={
+                      restrictNavigationOut
+                        ? restrictNavigationOutAttemptsThreshold
+                        : undefined
+                    }
+                    onChange={(v) => {
+                      overRideSettings(
+                        'restrictNavigationOutAttemptsThreshold',
+                        v
+                      )
+                    }}
+                    disabled={
+                      !(
+                        restrictNavigationOut ===
+                        'warn-and-report-after-n-alerts'
+                      ) || freezeSettings
+                    }
+                  />{' '}
+                  ALERTS
+                </Radio>
+              </StyledRadioGroupWrapper>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+        /* Restrict navigation ends */
+      }
+
+      {
         /* Restrict Navigation To Previously Answered Questions */
         !isDocBased && (
           <SettingContainer>
@@ -381,5 +503,16 @@ const AntiCheatingGroupContainer = ({
     </>
   )
 }
+
+const InputNumberStyled = Styled(InputNumber)`
+    width: 60px;
+`
+
+const StyledRadioGroupWrapper = Styled(Radio.Group)`
+    padding-top:15px;
+    .ant-radio-wrapper span:nth-child(2){
+      font-size:12px;
+    }
+`
 
 export default AntiCheatingGroupContainer

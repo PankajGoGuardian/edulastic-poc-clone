@@ -176,7 +176,6 @@ const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
 const Subscription = (props) => {
   const {
     verificationPending,
-    isPremiumAccount,
     isSubscriptionExpired,
     verifyAndUpgradeLicense,
     stripePaymentAction,
@@ -190,6 +189,7 @@ const Subscription = (props) => {
     addPermissionRequest,
     isConfirmationModalVisible,
     showTrialSubsConfirmationAction,
+    usedTrialItemBankId,
   } = props
 
   useEffect(() => {
@@ -232,18 +232,20 @@ const Subscription = (props) => {
     ? Date.now() + ONE_MONTH > subEndDate
     : false
 
-  const showRenewalOptions =
-    ((isPremiumAccount && isAboutToExpire) ||
-      (!isPremiumAccount && isSubscriptionExpired)) &&
-    !['enterprise', 'partial_premium'].includes(subType)
-
-  const showUpgradeOptions = !isSubscribed
-
   const isPremiumUser = user.features.premium
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
+  const showRenewalOptions =
+    ((isPaidPremium && isAboutToExpire) ||
+      (!isPaidPremium && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
+
+  const showUpgradeOptions = !isSubscribed
+
   const formatTrialEndDate = moment(subEndDate).format('DD MMM, YYYY')
+
+  const isTrialItemBank = usedTrialItemBankId && usedTrialItemBankId !== ''
 
   return (
     <Wrapper>
@@ -269,6 +271,7 @@ const Subscription = (props) => {
         isPremiumTrialUsed={isPremiumTrialUsed}
         startTrialAction={startTrialAction}
         isPaidPremium={isPaidPremium}
+        isTrialItemBank={isTrialItemBank}
         showRenewalOptions={showRenewalOptions}
         addPermissionRequest={addPermissionRequest}
         premiumUser={isPremiumUser}
@@ -293,7 +296,7 @@ const Subscription = (props) => {
       <SubscriptionAddonModal
         isVisible={showSubscriptionAddonModal}
         handleCloseModal={setShowSubscriptionAddonModal}
-        isPremiumUser={isPremiumAccount}
+        isPaidPremium={isPaidPremium}
         setShowUpgradeModal={setShowUpgradeModal}
       />
 
@@ -354,12 +357,13 @@ export default connect(
     subscription: state?.subscription?.subscriptionData?.subscription,
     isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
     isSuccess: state?.subscription?.subscriptionData?.success,
-    isPremiumAccount: state?.user?.user?.features?.premium,
     user: state.user.user,
     isPremiumTrialUsed:
       state?.subscription?.subscriptionData?.isPremiumTrialUsed,
     premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
     isConfirmationModalVisible: state?.subscription?.showTrialSubsConfirmation,
+    usedTrialItemBankId:
+      state?.subscription?.subscriptionData?.usedTrialItemBankId,
   }),
   {
     verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

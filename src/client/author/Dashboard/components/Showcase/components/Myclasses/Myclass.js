@@ -68,7 +68,7 @@ const MyClasses = ({
   showTrialSubsConfirmationAction,
   isSuccess,
   isConfirmationModalVisible,
-  subscription: { subEndDate } = {},
+  subscription: { subEndDate, subType } = {},
   premiumProductId,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
@@ -284,6 +284,13 @@ const MyClasses = ({
 
   const formatTrialEndDate = moment(subEndDate).format('DD MMM, YYYY')
 
+  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+
+  const isTrialItemBank = usedTrialItemBankId && usedTrialItemBankId !== ''
+
+  const showTrialButton =
+    (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -304,30 +311,32 @@ const MyClasses = ({
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
-      <SubscriptionAddonModal
-        isVisible={showSubscriptionAddonModal}
-        handleCloseModal={setShowSubscriptionAddonModal}
-        isPremiumUser={isPremiumUser}
-        setShowUpgradeModal={setShowUpgradeModal}
-      />
-      <ItemBankTrialUsedModal
-        title={productData.productName}
-        isVisible={showItemBankTrialUsedModal}
-        handleCloseModal={handleCloseItemTrialModal}
-        handlePurchaseFlow={handlePurchaseFlow}
-      />
+      {showSubscriptionAddonModal && (
+        <SubscriptionAddonModal
+          isVisible={showSubscriptionAddonModal}
+          handleCloseModal={setShowSubscriptionAddonModal}
+          isPremiumUser={isPremiumUser}
+          setShowUpgradeModal={setShowUpgradeModal}
+        />
+      )}
+      {showItemBankTrialUsedModal && (
+        <ItemBankTrialUsedModal
+          title={productData.productName}
+          isVisible={showItemBankTrialUsedModal}
+          handleCloseModal={handleCloseItemTrialModal}
+          handlePurchaseFlow={handlePurchaseFlow}
+        />
+      )}
       {isPurchaseModalVisible && (
         <ItemPurchaseModal
           title={productData.productName}
           description={productData.description}
           productId={productData.productId}
-          hasTrial={productData.hasTrial}
           isVisible={isPurchaseModalVisible}
           toggleModal={togglePurchaseModal}
           toggleTrialModal={toggleTrialModal}
-          isPremiumTrialUsed={isPremiumTrialUsed}
-          isPremiumUser={isPremiumUser}
           handlePurchaseFlow={handlePurchaseFlow}
+          showTrialButton={showTrialButton}
         />
       )}
       {isTrialModalVisible && (
@@ -346,12 +355,14 @@ const MyClasses = ({
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
         />
       )}
-      <UpgradeModal
-        visible={showUpgradeModal}
-        setShowModal={setShowUpgradeModal}
-        openPaymentServiceModal={openPaymentServiceModal}
-        openPoServiceModal={openPoServiceModal}
-      />
+      {showUpgradeModal && (
+        <UpgradeModal
+          visible={showUpgradeModal}
+          setShowModal={setShowUpgradeModal}
+          openPaymentServiceModal={openPaymentServiceModal}
+          openPoServiceModal={openPoServiceModal}
+        />
+      )}
       <PaymentServiceModal
         visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
         closeModal={closePaymentServiceModal}
@@ -361,10 +372,12 @@ const MyClasses = ({
         premiumProductId={premiumProductId}
         reason="Premium Upgrade"
       />
-      <PayWithPoModal
-        visible={payWithPoModal}
-        setShowModal={setPayWithPoModal}
-      />
+      {payWithPoModal && (
+        <PayWithPoModal
+          visible={payWithPoModal}
+          setShowModal={setPayWithPoModal}
+        />
+      )}
       {formatTrialEndDate && (
         <TrialConfirmationModal
           visible={isConfirmationModalVisible}

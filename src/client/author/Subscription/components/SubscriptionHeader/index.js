@@ -82,7 +82,7 @@ const SubscriptionHeader = ({
                 } Version`
               : 'Free'}
           </span>
-          {!isPaidPremium ? (
+          {!showRenewalOptions && (
             <Dropdown
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
               overlay={menu}
@@ -93,11 +93,12 @@ const SubscriptionHeader = ({
                 Upgrade
               </EduButton>
             </Dropdown>
-          ) : showRenewalOptions ? (
+          )}
+          {isPaidPremium && showRenewalOptions && (
             <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription
             </EduButton>
-          ) : null}
+          )}
         </ActionButtons>
       </HeaderSubscription>
       <BannerContent>

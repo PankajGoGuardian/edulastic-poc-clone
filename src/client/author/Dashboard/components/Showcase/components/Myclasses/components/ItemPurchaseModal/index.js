@@ -2,17 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 
-const Footer = ({
-  hasItemBankTrial,
-  isPremiumTrialUsed,
-  isPremiumUser,
-  handleTrial,
-  handlePurchaseFlow,
-}) => {
-  const hasTrialBtn = hasItemBankTrial && (!isPremiumTrialUsed || isPremiumUser)
+const Footer = ({ handleTrial, handlePurchaseFlow, showTrialButton }) => {
   return (
     <>
-      {hasTrialBtn && (
+      {showTrialButton && (
         <EduButton data-cy="trialPurchase" isGhost isBlue onClick={handleTrial}>
           Try for free
         </EduButton>
@@ -30,10 +23,8 @@ const ItemPurchaseModal = ({
   isVisible,
   toggleModal,
   toggleTrialModal,
-  hasTrial,
-  isPremiumUser,
-  isPremiumTrialUsed,
   handlePurchaseFlow,
+  showTrialButton,
 }) => {
   const closeModal = () => toggleModal(false)
   const handleTrial = () => {
@@ -47,11 +38,9 @@ const ItemPurchaseModal = ({
       title={title}
       footer={
         <Footer
-          hasItemBankTrial={hasTrial}
-          isPremiumTrialUsed={isPremiumTrialUsed}
-          isPremiumUser={isPremiumUser}
           handleTrial={handleTrial}
           handlePurchaseFlow={handlePurchaseFlow}
+          showTrialButton={showTrialButton}
         />
       }
       visible={isVisible}
@@ -67,12 +56,6 @@ ItemPurchaseModal.propTypes = {
   description: PropTypes.string.isRequired,
   isVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
-  isPremiumUser: PropTypes.bool.isRequired,
-  hasTrial: PropTypes.bool,
-}
-
-ItemPurchaseModal.defaultProps = {
-  hasTrial: false,
 }
 
 export default ItemPurchaseModal

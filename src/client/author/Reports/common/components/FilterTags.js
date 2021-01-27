@@ -1,13 +1,13 @@
 import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
-import { Tag, Popover } from 'antd'
+import { Tag, Popover, Tooltip } from 'antd'
 
 const FilterTags = ({ tagsData, tagTypes = [], handleCloseTag }) => {
   const containerRef = useRef(null)
 
   const closableTypes = tagTypes.filter((t) => t.closable).map((t) => t.key)
 
-  const getWidthOfTag = (tagTitle) => tagTitle.length * 7 + 41
+  const getWidthOfTag = (tagTitle) => Math.min(250, tagTitle.length * 7 + 41)
 
   const handleOnClose = (e, type, data) => {
     e.preventDefault()
@@ -23,25 +23,24 @@ const FilterTags = ({ tagsData, tagTypes = [], handleCloseTag }) => {
     containerWidthObj
   ) => {
     const widthOfTag = getWidthOfTag(data.title)
+    const tag = (
+      <StyledPopupTag
+        closable={closableTypes.includes(type)}
+        onClose={(e) => handleOnClose(e, type, data)}
+      >
+        <Tooltip
+          title={subType ? `${data.title} (${subType})` : data.title}
+          placement="topLeft"
+        >
+          {subType ? `${data.title} (${subType})` : data.title}
+        </Tooltip>
+      </StyledPopupTag>
+    )
     if (widthOfTag <= containerWidthObj.remainingWidth) {
       containerWidthObj.remainingWidth -= widthOfTag
-      bodyArray.push(
-        <Tag
-          closable={closableTypes.includes(type)}
-          onClose={(e) => handleOnClose(e, type, data)}
-        >
-          {subType ? `${data.title} (${subType})` : data.title}
-        </Tag>
-      )
+      bodyArray.push(tag)
     } else {
-      popOverArray.push(
-        <StyledPopupTag
-          closable={closableTypes.includes(type)}
-          onClose={(e) => handleOnClose(e, type, data)}
-        >
-          {subType ? `${data.title} (${subType})` : data.title}
-        </StyledPopupTag>
-      )
+      popOverArray.push(tag)
     }
   }
 
@@ -138,6 +137,14 @@ const TagsContainer = styled.div`
 
 const StyledPopupTag = styled(Tag)`
   ${TagsStyle};
+  display: flex;
+  align-items: center;
+  span {
+    display: inline-block;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `
 
 const PopoverContentWrapper = styled.div`

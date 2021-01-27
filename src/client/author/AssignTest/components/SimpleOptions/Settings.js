@@ -22,14 +22,6 @@ import {
   StyledCol,
   StyledRow,
 } from './styled'
-
-import Styled from 'styled-components';
-import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
-import SubscriptionsBlock from '../../../TestPage/components/Setting/components/Container/SubscriptionsBlock'
-
-import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
-
-
 import { getUserRole } from '../../../src/selectors/user'
 import {
   getDisableAnswerOnPaperSelector,
@@ -116,8 +108,11 @@ const Settings = ({
     }
 
     const newSettings = {}
-    if(key === "restrictNavigationOut" && value==="warn-and-report-after-n-alerts"){
-      newSettings.restrictNavigationOutAttemptsThreshold = 5;
+    if (
+      key === 'restrictNavigationOut' &&
+      value === 'warn-and-report-after-n-alerts'
+    ) {
+      newSettings.restrictNavigationOutAttemptsThreshold = 5
     }
 
     // SimpleOptions onChange method has similar condition
@@ -231,14 +226,6 @@ const Settings = ({
     assignmentPassword = tempTestSettings.assignmentPassword,
     maxAttempts = tempTestSettings.maxAttempts,
     passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60,
-    showMagnifier = tempTestSettings.showMagnifier,
-    timedAssignment = tempTestSettings.timedAssignment,
-    blockSaveAndContinue = tempTestSettings.blockSaveAndContinue,
-    restrictNavigationOut= tempTestSettings.restrictNavigationOut,
-    restrictNavigationOutAttemptsThreshold= tempTestSettings.restrictNavigationOutAttemptsThreshold,
-    allowedTime = tempTestSettings.allowedTime,
-    pauseAllowed = tempTestSettings.pauseAllowed,
-    enableScratchpad = tempTestSettings.enableScratchpad,
     autoRedirect = false,
     autoRedirectSettings,
   } = assignmentSettings
@@ -487,165 +474,38 @@ const Settings = ({
           /* Check Answer Tries Per Question */
         }
 
-
-        {/* Evaluation Method */}
-        {!hideTestLevelOptions && (
-          <StyledRowSelect gutter={16}>
-            <Col span={12}>
-              <Label>EVALUATION METHOD</Label>
-            </Col>
-            <Col span={12}>
-              <SelectInputStyled
-                disabled={forClassLevel || freezeSettings}
-                onChange={(value) => {
-                  if (!forClassLevel && !freezeSettings) {
-                    overRideSettings('scoringType', value)
-                  }
-                }}
-                value={scoringType}
-                noBorder
-                height="30px"
-              >
-                {Object.keys(evalTypes).map((evalKey, index) => (
-                  <Select.Option
-                    value={evalKey}
-                    data-cy={evalKey}
-                    key={evalKey}
-                  >
-                    {Object.values(evalTypes)[index]}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
-            </Col>
-          </StyledRowSelect>
-        )}
-        {/* Evaluation Method */}
-        {/**
-         * Block save & Continue
-         */}
-        {premium && (
-          <StyledRowSettings gutter={16}>
-              <Col span={12}>
-                <Label>
-                  <span>BLOCK SAVE AND CONTINUE</span>
-                  <Tooltip title="Will force the students to take the test in single sitting">
-                    <IconInfo
-                      color={lightGrey9}
-                      style={{ cursor: 'pointer', marginLeft: '15px' }}
-                    />
-                  </Tooltip>
-                </Label>
-              </Col>
-              <Col
-                span={10}
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                <Row style={{ display: 'flex', alignItems: 'center' }}>
-                  <AlignSwitchRight
-                    size="small"
-                    disabled={forClassLevel || freezeSettings}
-                    checked={blockSaveAndContinue}
-                    onChange={(value) =>
-                      overRideSettings('blockSaveAndContinue', value)
-                    }
-                  />
-            
-                </Row>
-              </Col>
-          </StyledRowSettings>
-        )}
-        {/**
-         * Restrict navigation out
-         */}
-          {premium && (
-          <StyledRowSettings gutter={16}>
-            <Row>
-              <StyledCol span={12} style={{paddingLeft:8}}>
-                <Label>
-                  <span>RESTRICT NAVIGATION OUT OF TEST</span>
-                  <Tooltip title={`If ON, then students will be shown an alert
-                          if they navigate away from edulastic tab and if
-                          specific number of alerts exceeded, the assignment
-                          will be paused and the instructor will need to
-                          manually resume`}>
-                    <IconInfo
-                      color={lightGrey9}
-                      style={{ cursor: 'pointer', marginLeft: '15px' }}
-                    />
-                  </Tooltip>
-                </Label>
-              </StyledCol>
-              </Row>
-              <Row>
-              <Col
-                span={10}
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                <Row>
-                   <Col span={12} style={{paddingLeft:8}}>
-                    <StyledRadioGroupWrapper value={restrictNavigationOut} disabled={forClassLevel || freezeSettings} onChange={(e)=>{
-                      overRideSettings('restrictNavigationOut', e.target.value)
-                    }}>
-                      <Radio value={undefined}>DISABLED</Radio>
-                      <br />
-                      <Radio value="warn-and-report">WARN AND REPORT ONLY</Radio>
-                      <br />
-                      <Radio value="warn-and-report-after-n-alerts">
-                      WARN AND BLOCK TEST AFTER{' '}
-                            <InputNumberStyled
-                              size="small"
-                              value={
-                                restrictNavigationOut
-                                  ? restrictNavigationOutAttemptsThreshold
-                                  : undefined
-                              }
-                              onChange={(v)=>{
-                                overRideSettings('restrictNavigationOutAttemptsThreshold', v)
-                              }}
-                              disabled={
-                                !(restrictNavigationOut==='warn-and-report-after-n-alerts') || forClassLevel || freezeSettings
-                              }
-                            />{' '}
-                            ALERTS
-                      </Radio>
-                    </StyledRadioGroupWrapper>
-                    </Col>
-                </Row> 
-              </Col>
-            </Row>
-          </StyledRowSettings>
-        )}
-        {/* Timed TEST */}
-        {!hideTestLevelOptions && (
-          <FeaturesSwitch
-            inputFeatures="assessmentSuperPowersTimedTest"
-            actionOnInaccessible="hidden"
-            key="assessmentSuperPowersTimedTest"
-            gradeSubject={gradeSubject}
-          >
-            <StyledRowSettings gutter={16} height="40">
-              <Col span={12}>
-                <Label>
-                  <span>TIMED TEST</span>
-                  <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
-                    <IconInfo
-                      color={lightGrey9}
-                      style={{ cursor: 'pointer', marginLeft: '15px' }}
-                    />
-                  </Tooltip>
-                </Label>
-              </Col>
-              <Col
-                span={10}
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                <Row style={{ display: 'flex', alignItems: 'center' }}>
-                  <AlignSwitchRight
-                    data-cy="assignment-time-switch"
-                    size="small"
-                    defaultChecked={false}
-                    disabled={forClassLevel || freezeSettings}
-                    checked={timedAssignment}
+        {/* Auto Redirect */}
+        <SettingContainer>
+          <DetailsTooltip
+            title="Enable Auto Redirect"
+            content="Allow students to take the assignment multiple times to practice and improve their learning."
+          />
+          <StyledRow gutter={16}>
+            <StyledCol span={12}>
+              <Label>Enable Auto Redirect</Label>
+            </StyledCol>
+            <StyledCol span={12}>
+              <AlignSwitchRight
+                data-cy="assignment-auto-redirect-switch"
+                size="small"
+                defaultChecked={false}
+                disabled={freezeSettings}
+                checked={autoRedirect}
+                onChange={handleAutoRedirectChange}
+              />
+            </StyledCol>
+          </StyledRow>
+          {autoRedirect && (
+            <>
+              <StyledRow>
+                <StyledCol span={12}>
+                  <Label>SCORE THRESHOLD</Label>
+                </StyledCol>
+                <StyledCol span={12}>
+                  <InputNumber
+                    min={1}
+                    max={99}
+                    value={autoRedirectSettings.scoreThreshold || ''}
                     onChange={(value) =>
                       handleAutoRedirectSettingsChange('scoreThreshold', value)
                     }
@@ -740,14 +600,3 @@ export default connect(
   }),
   null
 )(withRouter(Settings))
-
-const InputNumberStyled = Styled(InputNumber)`
-    width: 60px;
-`
-
-const StyledRadioGroupWrapper = Styled(Radio.Group)`
-    padding-top:15px;
-    .ant-radio-wrapper span:nth-child(2){
-      font-size:12px;
-    }
-`;

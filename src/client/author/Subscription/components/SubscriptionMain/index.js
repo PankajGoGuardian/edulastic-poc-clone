@@ -339,6 +339,7 @@ const SubscriptionMain = ({ user, ...props }) => {
                   <CustomButton
                     height="38px"
                     width="215px"
+                    data-cy="subscriptionUpgradebtn"
                     isBlue
                     onClick={handleClick}
                     noBg
@@ -360,6 +361,7 @@ const SubscriptionMain = ({ user, ...props }) => {
                   <CustomButton
                     height="38px"
                     width="215px"
+                    data-cy="subscriptionStartTrialbtn"
                     isGhost
                     isBlue
                     onClick={handleClick}
@@ -371,7 +373,10 @@ const SubscriptionMain = ({ user, ...props }) => {
               />
             )}
           </FlexContainer>
-          <HaveLicenseKey onClick={openHasLicenseKeyModal}>
+          <HaveLicenseKey
+            data-cy="subscriptionHaveLicenseKey"
+            onClick={openHasLicenseKeyModal}
+          >
             HAVE LICENSE KEY
           </HaveLicenseKey>
         </ContentCards>

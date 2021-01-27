@@ -5,6 +5,7 @@ import {
   EduButton,
   FlexContainer,
 } from '@edulastic/common'
+import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -75,29 +76,34 @@ const TrialModal = ({
   const Premium = (
     <>
       {itemBankPremium.map((item) => (
-        <StyledCheckbox
-          data-cy="sparkPremiumCheckbox"
-          defaultChecked
-          onChange={handleOnChange}
-        >
-          <ListValue>
-            <span>{item.name}</span> <span>{`$${item.price} ($0 today)`}</span>
-          </ListValue>
-          <Description>{item.description}</Description>
-        </StyledCheckbox>
+        <TrialContainer>
+          <StyledCheckbox
+            data-cy="sparkPremiumCheckbox"
+            defaultChecked
+            onChange={handleOnChange}
+          />
+          <div>
+            <p>{item.name} TRIAL </p>{' '}
+            <Description>{item.description}</Description>
+          </div>
+          <Description>{`$${item.price} ($0 today)`}</Description>
+        </TrialContainer>
       ))}
     </>
   )
 
   const NonPremium = (
     <>
-      <StyledCheckbox data-cy="teacherPremiumCheckbox" checked>
-        <ListValue>
-          <span>{teacherPremium.name}</span>{' '}
-          <span>{`$${teacherPremium.price} ($0 today)`}</span>
-        </ListValue>
-        <Description>{teacherPremium.description}</Description>
-      </StyledCheckbox>
+      <TrialContainer>
+        <Tooltip title="Premium subscription is mandatory for Spark content">
+          <StyledCheckbox data-cy="teacherPremiumTrialCheckbox" checked />
+        </Tooltip>
+        <div>
+          <p>{teacherPremium.name} TRIAL </p>
+          <Description>{teacherPremium.description}</Description>
+        </div>
+        <Description>{`$${teacherPremium.price} ($0 today)`}</Description>
+      </TrialContainer>
       {Premium}
     </>
   )
@@ -133,9 +139,9 @@ const TrialModal = ({
       <FlexContainer flexDirection="column" justifyContent="left" mt="20px">
         {modalContent()}
       </FlexContainer>
-      <p>
+      <FooterText>
         <b>No credit card required now!</b>
-      </p>
+      </FooterText>
     </CustomModalStyled>
   )
 }
@@ -162,14 +168,29 @@ const StyledCheckbox = styled(CheckboxLabel)`
     }
   }
 `
-const ListValue = styled.span`
-  font-size: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
 const Description = styled.span`
   display: block;
   color: #666666;
   text-transform: initial;
+`
+const TrialContainer = styled.div`
+  display: flex;
+  justify-content:space-between;
+  margin-top:10px;
+  & > div {
+    width:75%;
+    margin-top: 10px;
+    margin-left:15px;
+    font-size: 12px;
+    color: #666666;
+    font-weight::bold;
+  }
+  & > span {
+    font-weight: bold;
+    white-space: nowrap;
+    color: #666666;
+  }
+`
+const FooterText = styled.p`
+  margin-top: 30px;
 `

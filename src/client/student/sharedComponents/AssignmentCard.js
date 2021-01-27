@@ -25,7 +25,7 @@ import { test as testConstants } from '@edulastic/constants'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { first, maxBy, isNaN } from 'lodash'
-import { Row, Col, Icon, Modal } from 'antd'
+import { Row, Col, Icon, Modal, Select } from 'antd'
 import { maxDueDateFromClassess, getServerTs } from '../utils'
 
 //  components
@@ -91,10 +91,12 @@ const AssignmentCard = memo(
     highlightMode,
     index,
     uta = {},
+    setSelectedLanguage,
+    languagePreference,
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
-    const { releaseGradeLabels } = testConstants
+    const { releaseGradeLabels, languageCodes } = testConstants
     const [retakeConfirmation, setRetakeConfirmation] = useState(false)
     const [showRetakeModal, setShowRetakeModal] = useState(false)
     const assignmentCardRef = useRef()
@@ -112,6 +114,14 @@ const AssignmentCard = memo(
       }
     }, [highlightMode])
 
+    useEffect(() => {
+      console.log(data.multiLanguageEnabled, '====', languagePreference)
+      if (data?.multiLanguageEnabled && !languagePreference) {
+        // if lang selection enabled then set default as english
+        setSelectedLanguage(languageCodes.ENGLISH)
+      }
+    }, [data?.multiLanguageEnabled])
+
     const {
       test = {},
       reports = [],
@@ -128,6 +138,7 @@ const AssignmentCard = memo(
       assignedBy,
       hasInstruction = false,
       instruction = '',
+      multiLanguageEnabled = false,
     } = data
 
     const serverTimeStamp = getServerTs(data)
@@ -220,7 +231,10 @@ const AssignmentCard = memo(
         return
       }
 
-      if (!resume && (timedAssignment || hasInstruction)) {
+      if (
+        !resume &&
+        (timedAssignment || hasInstruction || multiLanguageEnabled)
+      ) {
         const timedContent = pauseAllowed ? (
           <p>
             {' '}
@@ -244,9 +258,24 @@ const AssignmentCard = memo(
             and you can’t quit in between. Do you want to continue?
           </p>
         )
+        const { Option } = Select
+        const langSelectContent = multiLanguageEnabled ? (
+          <p style={{ margin: '10px 0' }}>
+            <Select
+              getPopupContainer={(e) => e.parentElement}
+              value={languagePreference}
+              style={{ width: 120 }}
+              onChange={setSelectedLanguage}
+            >
+              <Option value={languageCodes.ENGLISH}>English</Option>
+              <Option value={languageCodes.SPANISH}>Spanish</Option>
+            </Select>
+          </p>
+        ) : null
 
         const content = (
           <FlexContainer flexDirection="column">
+            {langSelectContent}
             {timedAssignment && timedContent}
             {hasInstruction && instruction && (
               <MathFormulaDisplay
@@ -262,7 +291,13 @@ const AssignmentCard = memo(
           content,
           onOk: () => {
             if (attemptCount < maxAttempts)
-              startAssignment({ testId, assignmentId, testType, classId })
+              startAssignment({
+                testId,
+                assignmentId,
+                testType,
+                classId,
+                languagePreference,
+              })
             Modal.destroyAll()
           },
           okText: 'Continue',
@@ -285,7 +320,13 @@ const AssignmentCard = memo(
           classId,
         })
       } else if (attemptCount < maxAttempts) {
-        startAssignment({ testId, assignmentId, testType, classId })
+        startAssignment({
+          testId,
+          assignmentId,
+          testType,
+          classId,
+          languagePreference,
+        })
       }
     }
 

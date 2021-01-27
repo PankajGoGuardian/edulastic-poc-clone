@@ -438,6 +438,9 @@ export const getAllAssignmentsSelector = createSelector(
           ...(clazz.pauseAllowed !== undefined && !assignment.redir
             ? { pauseAllowed: clazz.pauseAllowed }
             : {}),
+          ...(clazz.multiLanguageEnabled && !assignment.redir
+            ? { multiLanguageEnabled: clazz.multiLanguageEnabled }
+            : {}),
         }))
       })
       .filter((assignment) => isLiveAssignment(assignment, classIds, userId))
@@ -480,6 +483,10 @@ export const getLoadAssignmentSelector = createSelector(
   (state) => state.loadAssignment
 )
 
+export const getSelectedLanguageSelector = createSelector(
+  stateSelector,
+  (state) => state.languagePreference
+)
 function isSEB() {
   return window.navigator.userAgent.includes('SEB')
 }
@@ -594,6 +601,7 @@ function* startAssignment({ payload }) {
       isPlaylist = false,
       studentRecommendation,
       safeBrowser,
+      languagePreference = '',
     } = payload
 
     if (safeBrowser && !isSEB()) {
@@ -662,6 +670,7 @@ function* startAssignment({ payload }) {
         groupType,
         testId,
         studentRecommendationId: studentRecommendation._id,
+        languagePreference,
       })
       testActivityId = _id
     } else if (isPlaylist && !assignmentId) {
@@ -678,6 +687,7 @@ function* startAssignment({ payload }) {
         institutionId,
         groupType,
         testId,
+        languagePreference,
       })
       testActivityId = _id
     } else {
@@ -688,6 +698,7 @@ function* startAssignment({ payload }) {
         institutionId,
         groupType,
         testId,
+        languagePreference,
       })
       testActivityId = _id
     }

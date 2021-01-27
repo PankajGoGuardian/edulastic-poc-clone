@@ -66,10 +66,24 @@ const NotificationListener = ({ user }) => {
           acc[o.districtId] = o.enableGoogleMeet
           return acc
         }, {})
-        if (
-          groupInfo.districtId &&
-          hangoutEnabledDistrictMap[groupInfo.districtId]
-        ) {
+
+        // check school policy if hangout meet is enabled
+        const hangoutEnabledSchoolMap = (
+          user.orgData.schoolPolicies || []
+        ).reduce((acc, o) => {
+          acc[o.schoolId] = o.enableGoogleMeet
+          return acc
+        }, {})
+
+        const isHangoutEnabled =
+          (groupInfo.districtId &&
+            hangoutEnabledDistrictMap[groupInfo.districtId]) === true
+            ? true
+            : (groupInfo.institutionId &&
+                hangoutEnabledSchoolMap[groupInfo.institutionId]) === true
+            ? true
+            : false
+        if (isHangoutEnabled) {
           setNotificationIds([...notificationIds, doc.__id])
           notificationMessage({
             title: 'Google Meet Video Call',

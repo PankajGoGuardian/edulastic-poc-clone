@@ -4,8 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { get, isObject } from 'lodash'
-import { Anchor, Col, Row, Select, Tooltip, InputNumber, Icon } from 'antd'
-import Styled from 'styled-components'
+import { Anchor, Col, Row, Select, Tooltip, Icon } from 'antd'
 import { blueBorder, green, red, lightGrey9 } from '@edulastic/colors'
 
 import {
@@ -390,7 +389,7 @@ class Setting extends Component {
       hasInstruction = false,
       instruction = '',
       testletConfig = {},
-      //      enableSkipAlert = false,
+      multiLanguageEnabled,
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
       blockSaveAndContinue,
@@ -934,6 +933,37 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
+                  {/* Multi language start */}
+                  <Block id="multi-language-enabled" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <DetailsTooltip
+                        showInsideContainer
+                        title="Multi-Language"
+                        content="Select ON , If you want to enable multiple languages for the test."
+                        premium={premium}
+                      />
+                      <Title>
+                        <span>Multi-Language</span>
+                        <EduSwitchStyled
+                          disabled={!owner || !isEditable}
+                          data-cy="multi-language-enabled"
+                          defaultChecked={multiLanguageEnabled}
+                          onChange={() =>
+                            this.updateTestData('multiLanguageEnabled')(
+                              !multiLanguageEnabled
+                            )
+                          }
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          Select <BlueText> ON </BlueText> , If you want to
+                          enable multiple languages for the test.
+                        </Description>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+                  {/* Multi language Ends */}
 
                   {!isDocBased && (
                     <Block
@@ -1520,7 +1550,7 @@ class Setting extends Component {
                       />
                       <Title>
                         <span>
-                          Answer on Paper{' '}
+                          Answer on Paper 4
                           <DollarPremiumSymbol
                             premium={assessmentSuperPowersAnswerOnPaper}
                           />
@@ -1749,7 +1779,3 @@ const enhance = compose(
 )
 
 export default enhance(Setting)
-
-const InputNumberStyled = Styled(InputNumber)`
-    width: 60px;
-`

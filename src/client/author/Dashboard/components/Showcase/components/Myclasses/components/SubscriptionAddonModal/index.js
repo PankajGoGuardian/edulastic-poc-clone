@@ -63,18 +63,24 @@ const SubscriptionAddonModal = ({
         <AddonList>
           {!isPaidPremium && (
             <FlexRow>
-              <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
-                Teacher Premium
-              </CheckboxLabel>
+              <Tooltip title="Premium subscription is mandatory for Spark content">
+                <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
+                  Teacher Premium
+                </CheckboxLabel>
+              </Tooltip>
+
               <span>$100</span>
             </FlexRow>
           )}
           <FlexRow>
-            <Tooltip title="Premium subscription is mandatory for Spark content">
-              <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
-                Teacher Premium
-              </CheckboxLabel>
-            </Tooltip>
+            <CheckboxLabel
+              data-cy="sparkPremiumCheckbox"
+              value={100}
+              onChange={(e) => handleOnChange(e.target)}
+              defaultChecked
+            >
+              Spark Math
+            </CheckboxLabel>
             <span>$100</span>
           </FlexRow>
         </AddonList>

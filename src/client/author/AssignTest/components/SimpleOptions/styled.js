@@ -12,6 +12,8 @@ import {
   title,
   white,
   borderGrey3,
+  smallDesktopWidth,
+  mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
 import styled from 'styled-components'
@@ -25,7 +27,19 @@ export const OptionConationer = styled.div`
   margin: auto;
   margin-top: ${window.innerHeight <= 780 ? '24px' : '80px'};
   .ant-tabs-bar {
-    width: ${window.innerWidth <= 780 ? '100%' : '60%'};
+    width: 65%;
+
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      width: 80%;
+    }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 90%;
+    }
+
+    @media (max-width: ${smallDesktopWidth}) {
+      width: 100%;
+    }
     margin: auto;
     margin-bottom: 20px;
   }

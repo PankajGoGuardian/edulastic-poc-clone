@@ -101,7 +101,7 @@ export const getDenormalizedData = (rawData, compareByKey) => {
       return item
     })
     .filter((item) => !isEmpty(item.groupIds))
-    .sort((a, b) => testOrderMap(a.reportKey) - testOrderMap(b.reportKey))
+    .sort((a, b) => testOrderMap[a.reportKey] - testOrderMap[b.reportKey])
 
   const denormalizedData = studentMetricInfo.flatMap(({ groupIds, ...item }) =>
     groupIds.map((groupId) => ({
@@ -139,7 +139,7 @@ export const getDenormalizedData = (rawData, compareByKey) => {
       }
       return { ...item, ...itemInfo }
     })
-    .sort((a, b) => testOrderMap(a.reportKey) - testOrderMap(b.reportKey))
+    .sort((a, b) => testOrderMap[a.reportKey] - testOrderMap[b.reportKey])
 
   const denormalizedTableData = metricInfo.flatMap(({ groupIds, ...item }) =>
     isEmpty(groupIds)
@@ -185,32 +185,24 @@ export const getFilteredDenormalizedData = (
     .sort((a, b) =>
       a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
     )
-  const filteredDenormalizedTableData = denormalizedTableData
-    .filter((item) => {
-      const genderFlag = !!(
-        item.gender === filters.gender || filters.gender === 'all'
-      )
-      const frlStatusFlag = !!(
-        item.frlStatus === filters.frlStatus || filters.frlStatus === 'all'
-      )
-      const ellStatusFlag = !!(
-        item.ellStatus === filters.ellStatus || filters.ellStatus === 'all'
-      )
-      const iepStatusFlag = !!(
-        item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
-      )
-      const raceFlag = !!(item.race === filters.race || filters.race === 'all')
-      return (
-        genderFlag &&
-        frlStatusFlag &&
-        ellStatusFlag &&
-        iepStatusFlag &&
-        raceFlag
-      )
-    })
-    .sort((a, b) =>
-      a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
+  const filteredDenormalizedTableData = denormalizedTableData.filter((item) => {
+    const genderFlag = !!(
+      item.gender === filters.gender || filters.gender === 'all'
     )
+    const frlStatusFlag = !!(
+      item.frlStatus === filters.frlStatus || filters.frlStatus === 'all'
+    )
+    const ellStatusFlag = !!(
+      item.ellStatus === filters.ellStatus || filters.ellStatus === 'all'
+    )
+    const iepStatusFlag = !!(
+      item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
+    )
+    const raceFlag = !!(item.race === filters.race || filters.race === 'all')
+    return (
+      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag
+    )
+  })
   return [filteredDenormalizedData, filteredDenormalizedTableData]
 }
 

@@ -70,6 +70,7 @@ const MyClasses = ({
   isConfirmationModalVisible,
   subscription: { subEndDate, subType } = {},
   premiumProductId,
+  products,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -84,6 +85,8 @@ const MyClasses = ({
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [addOnProductIds, setAddOnProductIds] = useState([])
+  const [totalAmount, setTotalAmount] = useState(100)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -317,6 +320,12 @@ const MyClasses = ({
           handleCloseModal={setShowSubscriptionAddonModal}
           isPremiumUser={isPremiumUser}
           setShowUpgradeModal={setShowUpgradeModal}
+          subEndDate={subEndDate}
+          usedTrialItemBankId={usedTrialItemBankId}
+          products={products}
+          premiumProductId={premiumProductId}
+          setTotalPurchaseAmount={setTotalAmount}
+          setAddOnProductIds={setAddOnProductIds}
         />
       )}
       {showItemBankTrialUsedModal && (
@@ -353,6 +362,9 @@ const MyClasses = ({
           startPremiumTrial={startTrialAction}
           premiumProductId={premiumProductId}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          subEndDate={subEndDate}
+          usedTrialItemBankId={usedTrialItemBankId}
+          products={products}
         />
       )}
       {showUpgradeModal && (
@@ -369,8 +381,9 @@ const MyClasses = ({
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}
         user={user}
-        premiumProductId={premiumProductId}
         reason="Premium Upgrade"
+        totalPurchaseAmount={totalAmount}
+        addOnProductIds={addOnProductIds}
       />
       {payWithPoModal && (
         <PayWithPoModal
@@ -413,6 +426,7 @@ export default compose(
       subscription: state?.subscription?.subscriptionData?.subscription,
       isConfirmationModalVisible:
         state?.subscription?.showTrialSubsConfirmation,
+      products: state?.subscription?.products,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

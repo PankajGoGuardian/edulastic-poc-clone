@@ -189,13 +189,9 @@ const Subscription = (props) => {
     addPermissionRequest,
     isConfirmationModalVisible,
     showTrialSubsConfirmationAction,
+    products,
     usedTrialItemBankId,
   } = props
-
-  useEffect(() => {
-    // getSubscription on mount
-    fetchUserSubscriptionStatus()
-  }, [])
 
   const [comparePlan, setComparePlan] = useState(false)
   const [paymentServiceModal, setPaymentServiceModal] = useState(false)
@@ -206,6 +202,13 @@ const Subscription = (props) => {
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [addOnProductIds, setAddOnProductIds] = useState([])
+  const [totalAmount, setTotalAmount] = useState(100)
+
+  useEffect(() => {
+    // getSubscription on mount
+    fetchUserSubscriptionStatus()
+  }, [])
 
   const openComparePlanModal = () => setComparePlan(true)
   const closeComparePlansModal = () => setComparePlan(false)
@@ -298,6 +301,13 @@ const Subscription = (props) => {
         handleCloseModal={setShowSubscriptionAddonModal}
         isPaidPremium={isPaidPremium}
         setShowUpgradeModal={setShowUpgradeModal}
+        subEndDate={subEndDate}
+        usedTrialItemBankId={usedTrialItemBankId}
+        products={products}
+        isPremiumUser={isPremiumUser}
+        premiumProductId={premiumProductId}
+        setTotalPurchaseAmount={setTotalAmount}
+        setAddOnProductIds={setAddOnProductIds}
       />
 
       <PaymentServiceModal
@@ -307,7 +317,8 @@ const Subscription = (props) => {
         stripePaymentAction={stripePaymentAction}
         user={user}
         reason="Premium Upgrade"
-        premiumProductId={premiumProductId}
+        totalPurchaseAmount={totalAmount}
+        addOnProductIds={addOnProductIds}
       />
 
       <PayWithPoModal
@@ -362,6 +373,7 @@ export default connect(
       state?.subscription?.subscriptionData?.isPremiumTrialUsed,
     premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
     isConfirmationModalVisible: state?.subscription?.showTrialSubsConfirmation,
+    products: state?.subscription?.products,
     usedTrialItemBankId:
       state?.subscription?.subscriptionData?.usedTrialItemBankId,
   }),

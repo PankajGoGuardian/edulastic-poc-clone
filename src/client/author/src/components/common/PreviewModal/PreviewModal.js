@@ -291,7 +291,7 @@ class PreviewModal extends React.Component {
     // clearing it before navigation.
 
     clearItemStore()
-    if (isDisableEdit && regradeFlow && isTest) {
+    if (isDisableEdit && regradeFlow && isTest && hasCollectionAccess) {
       let passageItems = passage && passage.testItems
       const passageId = passage && passage._id
       if (passageItems && passageId) {
@@ -601,7 +601,7 @@ class PreviewModal extends React.Component {
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
       (hasCollectionAccess && userFeatures.isCurator) ||
-      isTestInRegrade
+      (isTestInRegrade && allowDuplicate)
     )
     const isDisableDuplicate = !(
       allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
@@ -746,7 +746,9 @@ class PreviewModal extends React.Component {
                   width="28px"
                   title={
                     isDisableEdit
-                      ? 'Edit permission is restricted by the author'
+                      ? !allowDuplicate
+                        ? 'Edit of Item is restricted by Publisher'
+                        : 'Edit permission is restricted by the author'
                       : 'Edit item'
                   }
                   noHover={isDisableEdit}

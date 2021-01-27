@@ -65,6 +65,7 @@ const AntiCheatingGroupContainer = ({
   } = featuresAvailable
 
   const validateAndUpdatePassword = (_assignmentPassword) => {
+    overRideSettings('assignmentPassword', _assignmentPassword)
     if (_assignmentPassword.split(' ').length > 1) {
       setPasswordStatus({
         color: red,
@@ -87,8 +88,6 @@ const AntiCheatingGroupContainer = ({
       color: red,
       message: validationMessage,
     })
-
-    overRideSettings('assignmentPassword', _assignmentPassword)
   }
 
   const handleUpdatePasswordExpireIn = (e) => {

@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { get, isObject } from 'lodash'
-import { Anchor, Col, Row, Select, Tooltip, InputNumber } from 'antd'
+import { Anchor, Col, Row, Select, Tooltip, InputNumber, Icon } from 'antd'
 import Styled from 'styled-components'
 import {
   blueBorder,
@@ -1413,84 +1413,18 @@ class Setting extends Component {
                 </>
               )}
 
-              {premium && (
-                <Block id="block-save-and-continue" smallSize={isSmallSize}>
-                <Title>
-                  <span>Block Save And Continue</span>
-                  <EduSwitchStyled
-                    disabled={!owner || !isEditable}
-                    checked={blockSaveAndContinue}
-                    data-cy="bockSaveAndContinueSwitch"
-                    onChange={this.updateTestData('blockSaveAndContinue')}
-                  />
-                </Title>
-              </Block>
-              )}
-              {premium && (
-                <Block id="restrict-navigation-out" smallSize={isSmallSize}>
-                  <Title>Restrict Navigation Out of Test</Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row>
-                      <Col span={11}>
-                        <StyledRadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={this.updateFeatures(
-                            'restrictNavigationOut'
-                          )}
-                          value={restrictNavigationOut}
-                        >
-                          <RadioBtn value={undefined} key="disabled">
-                            DISABLED
-                          </RadioBtn>
-                          <RadioBtn
-                            value="warn-and-report"
-                            key="warn-and-report"
-                          >
-                            WARN AND REPORT ONLY
-                          </RadioBtn>
-                          <RadioBtn
-                            value="warn-and-report-after-n-alerts"
-                            key="warn-and-report-after-n-alerts"
-                          >
-                            WARN AND BLOCK TEST AFTER{' '}
-                            <InputNumberStyled
-                              size="small"
-                              value={
-                                restrictNavigationOut
-                                  ? restrictNavigationOutAttemptsThreshold
-                                  : undefined
-                              }
-                              onChange={this.updateFeatures(
-                                'restrictNavigationOutAttemptsThreshold'
-                              )}
-                              disabled={
-                                !(restrictNavigationOut==='warn-and-report-after-n-alerts') || !owner || !isEditable
-                              }
-                            />{' '}
-                            ALERTS
-                          </RadioBtn>
-                        </StyledRadioGroup>
-                      </Col>
-                      <Col span={13}>
-                        <Description>
-                          If <b> ON </b>, then students will be shown an alert
-                          if they navigate away from edulastic tab and if
-                          specific number of alerts exceeded, the assignment
-                          will be paused and the instructor will need to
-                          manually resume
-                        </Description>
-                      </Col>
-                    </Row>
-                  </Body>
-                </Block>
-              )}
-
-              {availableFeatures.includes(
-                'assessmentSuperPowersCheckAnswerTries'
-              ) && (
-                <Block
-                  id="check-answer-tries-per-question"
-                  smallSize={isSmallSize}>
+              <SettingsCategoryBlock id="miscellaneous">
+                <span>
+                  Miscellaneous <DollarPremiumSymbol premium={premium} />
+                </span>
+                <span
+                  onClick={() =>
+                    this.togglePanel(
+                      'isMiscellaneousGroupExpanded',
+                      !isMiscellaneousGroupExpanded
+                    )
+                  }
+                >
                   <Icon
                     type={isMiscellaneousGroupExpanded ? 'minus' : 'plus'}
                   />

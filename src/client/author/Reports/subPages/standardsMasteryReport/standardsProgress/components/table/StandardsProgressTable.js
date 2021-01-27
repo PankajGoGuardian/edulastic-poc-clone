@@ -25,7 +25,7 @@ import {
 import { getAnalyseByTitle } from '../../../standardsPerformance/utils/transformers'
 
 const StandardsProgressTable = ({
-  data: rawTableData,
+  data: rawTableData = [],
   testInfo,
   masteryScale,
   tableFilters,

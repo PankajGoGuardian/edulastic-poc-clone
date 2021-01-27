@@ -73,6 +73,10 @@ const StandardsFilters = ({
         ? o.grades.includes(filters.standardGrade)
         : true
     )
+  const standardIdFromPageData = get(
+    skillInfoOptions[pageTitle],
+    'data.result.standardId'
+  )
   const domainGroup = groupBy(skillInfo, (o) => `${o.domainId}`)
   const allDomainIds = Object.keys(domainGroup).sort((a, b) =>
     a.localeCompare(b)
@@ -95,6 +99,10 @@ const StandardsFilters = ({
       key: `${o.standardId}`,
       title: o.standard,
     }))
+  const selectedStandard =
+    standardsList.find((o) => o.key === `${standardIdFromPageData}`) ||
+    standardsList.find((o) => o.key === `${filters.standardId}`) ||
+    standardsList[0]
 
   // update handlers
   const updateFilterDropdownCB = (selected, keyName) => {
@@ -197,7 +205,7 @@ const StandardsFilters = ({
           {pageTitle === 'Standards Progress' && (
             <StyledDropDownContainer xs={24} sm={12} md={12} lg={4} xl={4}>
               <ControlDropDown
-                by={filters.standardId || standardsList[0]}
+                by={selectedStandard}
                 selectCB={(e) => updateFilterDropdownCB(e, 'standardId')}
                 data={standardsList}
                 prefix="Standard"

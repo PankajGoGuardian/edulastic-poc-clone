@@ -129,6 +129,7 @@ const AntiCheatingGroupContainer = ({
                   }
                   size="small"
                   checked={shuffleQuestions}
+                  data-cy="shuffle-questions"
                   onChange={(value) =>
                     overRideSettings('shuffleQuestions', value)
                   }
@@ -165,6 +166,7 @@ const AntiCheatingGroupContainer = ({
                   }
                   size="small"
                   checked={shuffleAnswers}
+                  data-cy="shuffle-choices"
                   onChange={(value) =>
                     overRideSettings('shuffleAnswers', value)
                   }
@@ -204,6 +206,7 @@ const AntiCheatingGroupContainer = ({
                   value={passwordPolicy}
                   onChange={changeField('passwordPolicy')}
                   height="30px"
+                  data-cy="password-policy"
                 >
                   {Object.keys(passwordPolicyValues).map((item, index) => (
                     <Select.Option
@@ -421,6 +424,7 @@ const AntiCheatingGroupContainer = ({
                   }
                   size="small"
                   checked={blockNavigationToAnsweredQuestions}
+                  data-cy="restrict-backward-nav"
                   onChange={(value) =>
                     overRideSettings(
                       'blockNavigationToAnsweredQuestions',
@@ -471,6 +475,7 @@ const AntiCheatingGroupContainer = ({
               checked={safeBrowser}
               size="small"
               onChange={(value) => overRideSettings('safeBrowser', value)}
+              data-cy="seb"
             />
             {safeBrowser && (
               <Password
@@ -493,6 +498,7 @@ const AntiCheatingGroupContainer = ({
                 value={sebPassword}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Quit Password"
+                data-cy="seb-password"
               />
             )}
           </Col>

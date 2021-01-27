@@ -86,6 +86,7 @@ const MiscellaneousGroupContainer = ({
               size="small"
               checked={answerOnPaper}
               onChange={(value) => overRideSettings('answerOnPaper', value)}
+              data-cy="ans-on-paper"
             />
           </Col>
         </StyledRow>

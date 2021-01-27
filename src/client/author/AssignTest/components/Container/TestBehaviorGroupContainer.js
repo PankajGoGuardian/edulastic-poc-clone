@@ -141,7 +141,11 @@ const TestBehaviorGroupContainer = ({
               value={markAsDone}
             >
               {completionTypeKeys.map((item) => (
-                <RadioBtn value={completionTypes[item]} key={item}>
+                <RadioBtn
+                  value={completionTypes[item]}
+                  data-cy={`mark-as-done-${completionTypes[item]}`}
+                  key={item}
+                >
                   <Label>{completionTypes[item]}</Label>
                 </RadioBtn>
               ))}
@@ -171,7 +175,7 @@ const TestBehaviorGroupContainer = ({
             height="30px"
           >
             {_releaseGradeKeys.map((item, index) => (
-              <Select.Option data-cy="class" key={index} value={item}>
+              <Select.Option key={index} value={item}>
                 {releaseGradeTypes[item]}
               </Select.Option>
             ))}
@@ -234,6 +238,7 @@ const TestBehaviorGroupContainer = ({
           </Col>
           <Col span={12}>
             <SelectInputStyled
+              data-cy="eval-methods"
               disabled={freezeSettings}
               onChange={(value) => {
                 if (!freezeSettings) {
@@ -285,6 +290,7 @@ const TestBehaviorGroupContainer = ({
                   min={0}
                   placeholder="Number of tries"
                   bg="white"
+                  data-cy="check-ans-tries"
                 />
               </Col>
             </StyledRow>
@@ -300,7 +306,12 @@ const TestBehaviorGroupContainer = ({
           content="The time can be modified in one minute increments. When the time limit is reached, students will be locked out of the assessment. If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off. This ensures that the student does not go over the allotted time."
           premium={assessmentSuperPowersTimedTest}
         />
-        <StyledRow gutter={16} mb="15px" height="40">
+        <StyledRow
+          data-cy="timed-test-container"
+          gutter={16}
+          mb="15px"
+          height="40"
+        >
           <Col span={12}>
             <Label>
               <span>
@@ -420,6 +431,7 @@ const TestBehaviorGroupContainer = ({
               step={1}
               bg="white"
               width="20%"
+              data-cy="max-attempts-allowed"
             />
           </Col>
         </StyledRow>

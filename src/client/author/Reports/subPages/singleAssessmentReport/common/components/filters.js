@@ -247,17 +247,19 @@ const SingleAssessmentReportFilters = ({
       <Spin />
     </StyledFilterWrapper>
   ) : (
-    <StyledFilterWrapper style={style}>
+    <StyledFilterWrapper data-cy="filters" style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         {showApply && (
-          <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+          <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>
+            APPLY
+          </StyledGoButton>
         )}
       </GoButtonWrapper>
       <PerfectScrollbar>
         <Collapsable header="find the test" defaultActiveKey="0">
           <SearchField>
-            <FilterLabel>School Year</FilterLabel>
+            <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
             <ControlDropDown
               by={filters.termId}
               selectCB={(e) => updateFilterDropdownCB(e, 'termId')}
@@ -267,7 +269,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Test Grade</FilterLabel>
+            <FilterLabel data-cy="testGrade">Test Grade</FilterLabel>
             <ControlDropDown
               by={filters.grade}
               selectCB={(e) => updateFilterDropdownCB(e, 'grade')}
@@ -277,7 +279,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Test Subject</FilterLabel>
+            <FilterLabel data-cy="testSubject">Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
               selectCB={(e) => updateFilterDropdownCB(e, 'subject')}
@@ -288,6 +290,7 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           <SearchField>
             <MultiSelectDropdown
+              data-cy="testType"
               label="Test Type"
               el={assessmentTypeRef}
               onChange={(e) =>
@@ -305,7 +308,7 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           {prevSARFilterData && (
             <SearchField>
-              <FilterLabel>Test</FilterLabel>
+              <FilterLabel data-cy="test">Test</FilterLabel>
               <AssessmentAutoComplete
                 firstLoad={firstLoad}
                 termId={filters.termId}
@@ -347,7 +350,7 @@ const SingleAssessmentReportFilters = ({
             </>
           )}
           <SearchField>
-            <FilterLabel>Class Grade</FilterLabel>
+            <FilterLabel data-cy="classGrade">Class Grade</FilterLabel>
             <ControlDropDown
               by={filters.studentGrade}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentGrade')}
@@ -357,7 +360,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Class Subject</FilterLabel>
+            <FilterLabel data-cy="classSubject">Class Subject</FilterLabel>
             <ControlDropDown
               by={filters.studentSubject}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentSubject')}
@@ -367,7 +370,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Course</FilterLabel>
+            <FilterLabel data-cy="course">Course</FilterLabel>
             <CourseAutoComplete
               selectedCourseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
@@ -376,7 +379,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Class</FilterLabel>
+            <FilterLabel data-cy="classTitle">Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -394,7 +397,7 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Group</FilterLabel>
+            <FilterLabel data-cy="group">Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -416,7 +419,9 @@ const SingleAssessmentReportFilters = ({
           <Collapsable header="performance">
             {isStandardProficiencyRequired && (
               <SearchField>
-                <FilterLabel>Standard Proficiency</FilterLabel>
+                <FilterLabel data-cy="standardProficiency">
+                  Standard Proficiency
+                </FilterLabel>
                 <ControlDropDown
                   by={
                     filters.standardsProficiencyProfile ||
@@ -438,7 +443,9 @@ const SingleAssessmentReportFilters = ({
             )}
             {performanceBandRequired && (
               <SearchField>
-                <FilterLabel>Performance Band </FilterLabel>
+                <FilterLabel data-cy="performanceBand">
+                  Performance Band
+                </FilterLabel>
                 <ControlDropDown
                   by={{
                     key:

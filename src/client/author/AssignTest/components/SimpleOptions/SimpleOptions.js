@@ -339,6 +339,7 @@ class SimpleOptions extends React.Component {
       disableAnswerOnPaper,
       isAdvancedView,
       defaultTestProfiles,
+      onClassFieldChange,
     } = this.props
     const changeField = curry(this.onChange)
     let { openPolicy } = selectsData
@@ -388,9 +389,9 @@ class SimpleOptions extends React.Component {
               <TabContentContainer width="100%">
                 <AdvancedOptons
                   assignment={assignment}
-                  updateOptions={this.updateAssignmentNew}
+                  updateOptions={updateOptions}
                   testSettings={testSettings}
-                  onClassFieldChange={this.onClassFieldChange}
+                  onClassFieldChange={onClassFieldChange}
                   defaultTestProfiles={defaultTestProfiles}
                   isAssignRecommendations={false}
                 />

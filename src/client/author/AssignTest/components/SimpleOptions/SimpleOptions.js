@@ -29,6 +29,7 @@ import AutoRedirectGroupContainer from '../Container/AutoRedirectGroupContainer'
 import MiscellaneousGroupContainer from '../Container/MiscellaneousGroupContainer'
 import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
 import { TabContentContainer } from '../Container/styled'
+import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
 
 const { TabPane } = Tabs
 
@@ -103,12 +104,12 @@ class SimpleOptions extends React.Component {
     const {
       onClassFieldChange,
       group,
-      assignment,
       updateOptions,
       isReleaseScorePremium,
       userRole,
       features: { free, premium },
     } = this.props
+    let { assignment } = this.props
     if (field === 'class') {
       const { classData, termId } = onClassFieldChange(value, group)
       const nextAssignment = produce(assignment, (state) => {
@@ -123,6 +124,13 @@ class SimpleOptions extends React.Component {
       if (value === null) {
         value = moment(startDate).add('days', 7)
       }
+    }
+
+    if (
+      field === 'restrictNavigationOut' &&
+      value === 'warn-and-report-after-n-alerts'
+    ) {
+      assignment = { ...assignment, restrictNavigationOutAttemptsThreshold: 5 }
     }
 
     const nextAssignment = produce(assignment, (state) => {
@@ -338,6 +346,7 @@ class SimpleOptions extends React.Component {
       disableAnswerOnPaper,
       isAdvancedView,
       defaultTestProfiles,
+      onClassFieldChange,
     } = this.props
     const changeField = curry(this.onChange)
     let { openPolicy } = selectsData
@@ -387,9 +396,9 @@ class SimpleOptions extends React.Component {
               <TabContentContainer width="100%">
                 <AdvancedOptons
                   assignment={assignment}
-                  updateOptions={this.updateAssignmentNew}
+                  updateOptions={updateOptions}
                   testSettings={testSettings}
-                  onClassFieldChange={this.onClassFieldChange}
+                  onClassFieldChange={onClassFieldChange}
                   defaultTestProfiles={defaultTestProfiles}
                   isAssignRecommendations={false}
                 />
@@ -444,7 +453,15 @@ class SimpleOptions extends React.Component {
               />
             </TabContentContainer>
           </TabPane>
-          <TabPane tab="ANTI-CHEATING" key="3">
+          <TabPane
+            tab={
+              <span>
+                ANTI-CHEATING
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="3"
+          >
             <TabContentContainer>
               <AntiCheatingGroupContainer
                 assignmentSettings={assignment}
@@ -459,7 +476,15 @@ class SimpleOptions extends React.Component {
               />
             </TabContentContainer>
           </TabPane>
-          <TabPane tab="AUTO REDIRECT SETTINGS" key="4">
+          <TabPane
+            tab={
+              <span>
+                AUTO REDIRECT SETTINGS
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="4"
+          >
             <TabContentContainer>
               <AutoRedirectGroupContainer
                 assignmentSettings={assignment}
@@ -471,7 +496,15 @@ class SimpleOptions extends React.Component {
               />
             </TabContentContainer>
           </TabPane>
-          <TabPane tab="MISCELLANEOUS" key="5">
+          <TabPane
+            tab={
+              <span>
+                MISCELLANEOUS
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="5"
+          >
             <TabContentContainer>
               <MiscellaneousGroupContainer
                 assignmentSettings={assignment}

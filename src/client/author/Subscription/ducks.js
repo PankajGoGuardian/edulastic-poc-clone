@@ -14,6 +14,7 @@ const slice = createSlice({
     subscriptionData: {},
     error: '',
     showTrialSubsConfirmation: false,
+    products: [],
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -78,10 +79,51 @@ const slice = createSlice({
     trialSubsConfirmationAction: (state, { payload }) => {
       state.showTrialSubsConfirmation = payload
     },
+    setAddOnProducts: (state, { payload }) => {
+      state.products = payload
+    },
   },
 })
 
 export { slice }
+
+function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
+  const { subscriptions, itemBankPermissions } = apiPaymentResponse
+  const hasSubscriptions = Object.keys(subscriptions).length > 0
+  const hasItemBankPermissions = Object.keys(itemBankPermissions).length > 0
+  const subscriptionPeriod = isTrial ? '14 days' : 'an year'
+  const premiumType = isTrial ? 'Trial Premium' : 'Premium'
+  if (hasSubscriptions && !hasItemBankPermissions) {
+    const { subEndDate } = subscriptions
+    yield call(notification, {
+      type: 'success',
+      msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${moment(
+        subEndDate
+      ).format('DD MMM, YYYY')}`,
+      key: 'handle-payment',
+    })
+  } else if (hasItemBankPermissions && !hasSubscriptions) {
+    const { subEndDate, name: itemBankName } = itemBankPermissions
+    yield call(notification, {
+      type: 'success',
+      msg: `Congratulations! You are subscribed to ${itemBankName} ${premiumType} Itembank for ${subscriptionPeriod} and the subscription will expire on ${moment(
+        subEndDate
+      ).format('DD MMM, YYYY')}`,
+      key: 'handle-payment',
+    })
+  } else if (hasItemBankPermissions && hasSubscriptions) {
+    const { subEndDate } = subscriptions
+    const { name: itemBankName } = itemBankPermissions
+    yield call(notification, {
+      type: 'success',
+      msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankName}
+            Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${moment(
+        subEndDate
+      ).format('DD MMM, YYYY')}`,
+      key: 'handle-payment',
+    })
+  }
+}
 
 function* upgradeUserLicense({ payload }) {
   try {
@@ -111,59 +153,6 @@ function* upgradeUserLicense({ payload }) {
   }
 }
 
-function* handleStripePayment({ payload }) {
-  try {
-    const { stripe, data, productIds } = payload
-    yield call(message.loading, {
-      content: 'Processing Payment, please wait',
-      key: 'verify-license',
-    })
-    const { token, error } = yield stripe.createToken(data)
-    if (token) {
-      const apiPaymentResponse = yield call(paymentApi.pay, {
-        productIds,
-        token,
-      })
-      if (apiPaymentResponse.success) {
-        yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
-        if (apiPaymentResponse.subscription) {
-          const { subEndDate } = apiPaymentResponse.subscription
-          notification({
-            type: 'success',
-            msg: `Congratulations! Your account is upgraded to Premium version for a year and the subscription will expire on ${moment(
-              subEndDate
-            ).format('DD MMM, YYYY')}`,
-            key: 'handle-payment',
-          })
-        }
-        yield call(fetchUserSubscription)
-        yield put(fetchUserAction({ background: true }))
-      } else {
-        notification({
-          msg: `API Response failed: ${error}`,
-          Key: 'handle-payment',
-        })
-        console.error('API Response failed')
-      }
-    } else {
-      notification({
-        msg: `Creating token failed : ${error.message}`,
-        Key: 'handle-payment',
-      })
-      yield put(slice.actions.disablePending())
-      console.error('ERROR WHILE PROCESSING PAYMENT [Create Token] : ', error)
-    }
-  } catch (err) {
-    yield put(slice.actions.stripePaymentFailure(err?.data?.message))
-    notification({
-      msg: `Payment Failed : ${err?.data?.message}`,
-      Key: 'handle-payment',
-    })
-    console.error('ERROR WHILE PROCESSING PAYMENT : ', err)
-    captureSentryException(err)
-  }
-}
-
 function* fetchUserSubscription() {
   try {
     const apiUserSubscriptionStatus = yield call(
@@ -171,10 +160,31 @@ function* fetchUserSubscription() {
     )
     const data = {
       isPremiumTrialUsed: apiUserSubscriptionStatus?.result?.isPremiumTrialUsed,
+      itemBankSubscriptions:
+        apiUserSubscriptionStatus?.result?.itemBankSubscriptions,
       usedTrialItemBankId:
         apiUserSubscriptionStatus?.result?.usedTrialItemBankId,
       premiumProductId: apiUserSubscriptionStatus?.result?.premiumProductId,
+      sparkMathProductId: apiUserSubscriptionStatus?.result?.sparkMathProductId,
     }
+
+    // TODO:  Refactor in Phase -3
+    const products = [
+      {
+        id: data.premiumProductId,
+        name: 'Teacher Premium',
+        description:
+          'Get even more out of your trial by adding Spark premium content',
+        price: 100,
+      },
+      {
+        id: data.sparkMathProductId,
+        name: 'Spark Math',
+        description: 'Curriculum-aligned differentiated math practice',
+        price: 100,
+      },
+    ]
+    yield put(slice.actions.setAddOnProducts(products))
     if (apiUserSubscriptionStatus?.result.subscription === -1) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))
       return
@@ -205,12 +215,57 @@ function* fetchUserSubscription() {
   }
 }
 
+function* handleStripePayment({ payload }) {
+  try {
+    const { stripe, data, productIds } = payload
+    yield call(message.loading, {
+      content: 'Processing Payment, please wait',
+      key: 'verify-license',
+    })
+    const { token, error } = yield stripe.createToken(data)
+    if (token) {
+      const apiPaymentResponse = yield call(paymentApi.pay, {
+        productIds,
+        token,
+      })
+      if (apiPaymentResponse.success) {
+        yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
+        yield call(showSuccessNotifications, apiPaymentResponse)
+        yield call(fetchUserSubscription)
+        yield put(fetchUserAction({ background: true }))
+      } else {
+        notification({
+          msg: `API Response failed: ${error}`,
+          Key: 'handle-payment',
+        })
+        console.error('API Response failed')
+      }
+    } else {
+      notification({
+        msg: `Creating token failed : ${error.message}`,
+        Key: 'handle-payment',
+      })
+      yield put(slice.actions.disablePending())
+      console.error('ERROR WHILE PROCESSING PAYMENT [Create Token] : ', error)
+    }
+  } catch (err) {
+    yield put(slice.actions.stripePaymentFailure(err?.data?.message))
+    notification({
+      msg: `Payment Failed : ${err?.data?.message}`,
+      Key: 'handle-payment',
+    })
+    console.error('ERROR WHILE PROCESSING PAYMENT : ', err)
+    captureSentryException(err)
+  }
+}
+
 function* handleFreeTrialSaga({ payload }) {
   try {
     const apiPaymentResponse = yield call(paymentApi.pay, payload)
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
       yield put(slice.actions.trialSubsConfirmationAction(true))
+      yield call(showSuccessNotifications, apiPaymentResponse, true)
       yield put(slice.actions.resetSubscriptions())
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))

@@ -144,15 +144,6 @@ const StyledCheckbox = styled(CheckboxLabel)`
     margin-top: 5px;
   }
 `
-<<<<<<< Updated upstream
-const ListValue = styled.span`
-  font-size: 14px;
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-`
-=======
->>>>>>> Stashed changes
 const Description = styled.span`
   color: #666666;
   text-transform: initial;

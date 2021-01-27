@@ -18,6 +18,7 @@ import {
   receiveTestByIdAction,
   updateTestSaga,
   getTestSelector,
+  setTestsLoadingAction,
 } from '../../../../TestPage/ducks'
 
 export const SET_QUESTIONS_IN_PASSAGE =
@@ -222,6 +223,7 @@ function* editNonAuthoredItemSaga({ payload }) {
     yield call(updateTestSaga, {
       payload: { id: testId, data: test },
     })
+    yield put(setTestsLoadingAction(true))
     let duplicateItemId = 'new'
     if (testItemIds && passageId) {
       const duplicatedPassage = yield call(passageApi.duplicate, {
@@ -250,7 +252,9 @@ function* editNonAuthoredItemSaga({ payload }) {
         previousTestId: test.previousTestId,
       })
     )
+    yield put(setTestsLoadingAction(false))
   } catch (e) {
+    yield put(setTestsLoadingAction(false))
     Sentry.captureException(e)
     notification({ messageKey: 'errorUpdatingTest' })
     console.error('err', e)

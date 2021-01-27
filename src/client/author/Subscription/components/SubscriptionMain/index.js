@@ -259,9 +259,11 @@ const SubscriptionMain = ({ user, ...props }) => {
     addPermissionRequest,
     startTrialAction,
     isPaidPremium,
+    isPaidItemBank,
     setShowSubscriptionAddonModal,
     showTrialSubsConfirmationAction,
     isTrialItemBank,
+    products,
   } = props
 
   const [showSelectStates, setShowSelectStates] = useState(false)
@@ -331,7 +333,7 @@ const SubscriptionMain = ({ user, ...props }) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {!showRenewalOptions && (
+            {!(isPaidPremium && isPaidItemBank) && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -390,6 +392,7 @@ const SubscriptionMain = ({ user, ...props }) => {
           addItemBankPermission={addPermissionRequest}
           productName="SparkMath"
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          products={products}
         />
       )}
       <AddonSection>
@@ -419,7 +422,7 @@ const SubscriptionMain = ({ user, ...props }) => {
                   </LearnMoreLink>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
-                      {!isPaidPremium && (
+                      {!(isPaidPremium && isPaidItemBank) && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <PurchaseLink onClick={handleClick}>
@@ -484,4 +487,5 @@ const SubscriptionMain = ({ user, ...props }) => {
 
 export default connect((state) => ({
   user: getUserDetails(state),
+  products: state?.subscription?.products,
 }))(SubscriptionMain)

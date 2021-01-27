@@ -133,9 +133,9 @@ const TrialModal = ({
       <FlexContainer flexDirection="column" justifyContent="left" mt="20px">
         {modalContent()}
       </FlexContainer>
-      <p style={{ marginTop: '30px' }}>
+      <FooterText>
         <b>No credit card required now!</b>
-      </p>
+      </FooterText>
     </CustomModalStyled>
   )
 }
@@ -178,4 +178,7 @@ const TrialContainer = styled.div`
     font-weight: bold;
     white-space: nowrap;
   }
+`
+const FooterText = styled.p`
+  margin-top: 30px;
 `

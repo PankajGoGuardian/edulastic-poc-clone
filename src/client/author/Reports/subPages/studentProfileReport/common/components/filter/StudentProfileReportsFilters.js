@@ -186,6 +186,7 @@ const StudentProfileReportsFilters = ({
     }
     const _student = { ...student }
     const _tagsData = {
+      ...tagsData,
       termId: selectedTerm,
       grade: selectedGrade,
       subject: selectedSubject,

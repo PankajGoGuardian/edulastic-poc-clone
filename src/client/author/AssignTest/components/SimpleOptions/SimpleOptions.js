@@ -29,6 +29,7 @@ import AutoRedirectGroupContainer from '../Container/AutoRedirectGroupContainer'
 import MiscellaneousGroupContainer from '../Container/MiscellaneousGroupContainer'
 import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
 import { TabContentContainer } from '../Container/styled'
+import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
 
 const { TabPane } = Tabs
 
@@ -444,7 +445,15 @@ class SimpleOptions extends React.Component {
               />
             </TabContentContainer>
           </TabPane>
-          <TabPane tab="ANTI-CHEATING" key="3">
+          <TabPane
+            tab={
+              <span>
+                ANTI-CHEATING
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="3"
+          >
             <TabContentContainer>
               <AntiCheatingGroupContainer
                 assignmentSettings={assignment}
@@ -459,7 +468,15 @@ class SimpleOptions extends React.Component {
               />
             </TabContentContainer>
           </TabPane>
-          <TabPane tab="AUTO REDIRECT SETTINGS" key="4">
+          <TabPane
+            tab={
+              <span>
+                AUTO REDIRECT SETTINGS
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="4"
+          >
             <TabContentContainer>
               <AutoRedirectGroupContainer
                 assignmentSettings={assignment}
@@ -471,7 +488,15 @@ class SimpleOptions extends React.Component {
               />
             </TabContentContainer>
           </TabPane>
-          <TabPane tab="MISCELLANEOUS" key="5">
+          <TabPane
+            tab={
+              <span>
+                MISCELLANEOUS
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="5"
+          >
             <TabContentContainer>
               <MiscellaneousGroupContainer
                 assignmentSettings={assignment}

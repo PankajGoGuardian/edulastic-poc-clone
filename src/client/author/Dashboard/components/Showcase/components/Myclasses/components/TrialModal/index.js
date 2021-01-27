@@ -6,7 +6,6 @@ import {
 } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
-import { Tooltip } from 'antd'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
@@ -59,47 +58,6 @@ const TrialModal = ({
   )
   const nonPremium = (
     <>
-<<<<<<< Updated upstream
-      <TrialContainer>
-        <Tooltip title="Premium subscription is mandatory for Spark content">
-          <StyledCheckbox data-cy="teacherPremiumTrialCheckbox" checked />
-        </Tooltip>
-        <div>
-          <ListValue>Teacher Premium Trial</ListValue>
-          <Description>
-            Get even more out of your trial by adding Spark premium content
-          </Description>
-        </div>
-        <span>$100 ($0 today)</span>
-      </TrialContainer>
-      <TrialContainer>
-        <StyledCheckbox
-          data-cy="itemBankTrialCheckbox"
-          defaultChecked
-          onChange={(e) => handleOnChange(e.target)}
-        />
-        <div>
-          <ListValue>Item Bank Trial</ListValue>
-          <Description>
-            Curriculum-aligned differentiated math practice
-          </Description>
-        </div>
-        <span>$100 ($0 today)</span>
-      </TrialContainer>
-    </>
-  )
-  const Premium = (
-    <StyledCheckbox
-      data-cy="itemBankTrialCheckbox"
-      defaultChecked
-      onChange={(e) => handleOnChange(e.target)}
-    >
-      <ListValue>
-        <span>Item Bank Trial</span> <span>$100 ($0 today)</span>
-      </ListValue>
-      <Description>Curriculum-aligned differentiated math practice</Description>
-    </StyledCheckbox>
-=======
       {itemBankPremium.map((item) => (
         <TrialContainer>
           <StyledCheckbox
@@ -131,7 +89,6 @@ const TrialModal = ({
       </TrialContainer>
       <span>{Premium}</span>
     </>
->>>>>>> Stashed changes
   )
 
   const modalContent = () => {

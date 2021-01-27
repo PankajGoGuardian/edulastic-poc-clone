@@ -6,7 +6,7 @@ import { SignedStackedBarChart } from '../../../../../common/components/charts/s
 import { getChartData } from '../../utils/transformers'
 
 const SignedStackedBarChartContainer = ({
-  data: rawChartData,
+  data: rawChartData = [],
   masteryScale = [],
   backendPagination,
   setBackendPagination,

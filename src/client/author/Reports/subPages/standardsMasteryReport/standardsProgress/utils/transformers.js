@@ -266,7 +266,7 @@ export const getOverallScore = (metrics = []) =>
 
 const getMasteryScore = (record) => round(record.fm, 2)
 
-const getOverallMasteryScore = (records) =>
+const getOverallMasteryScore = (records = []) =>
   records.length ? (sumBy(records, 'fm') / records.length).toFixed(2) : 0
 
 const getRecordMasteryLevel = (records, masteryScale) => {

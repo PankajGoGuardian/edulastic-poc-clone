@@ -61,6 +61,7 @@ const MyClasses = ({
   collections,
   addPermissionRequest,
   isPremiumTrialUsed,
+  itemBankSubscriptions = [],
   startTrialAction,
   usedTrialItemBankId,
   verificationPending,
@@ -289,7 +290,10 @@ const MyClasses = ({
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
-  const isTrialItemBank = usedTrialItemBankId && usedTrialItemBankId !== ''
+  const isTrialItemBank =
+    itemBankSubscriptions &&
+    itemBankSubscriptions?.length > 0 &&
+    itemBankSubscriptions?.[0]?.isTrial === true
 
   const showTrialButton =
     (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
@@ -318,7 +322,7 @@ const MyClasses = ({
         <SubscriptionAddonModal
           isVisible={showSubscriptionAddonModal}
           handleCloseModal={setShowSubscriptionAddonModal}
-          isPremiumUser={isPremiumUser}
+          isPaidPremium={isPaidPremium}
           setShowUpgradeModal={setShowUpgradeModal}
           subEndDate={subEndDate}
           usedTrialItemBankId={usedTrialItemBankId}
@@ -418,6 +422,8 @@ export default compose(
       collections: getCollectionsSelector(state),
       isPremiumTrialUsed:
         state?.subscription?.subscriptionData?.isPremiumTrialUsed,
+      itemBankSubscriptions:
+        state?.subscription?.subscriptionData?.itemBankSubscriptions,
       usedTrialItemBankId:
         state?.subscription?.subscriptionData?.usedTrialItemBankId,
       premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,

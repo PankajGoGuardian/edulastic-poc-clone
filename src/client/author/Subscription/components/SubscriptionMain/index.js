@@ -259,6 +259,7 @@ const SubscriptionMain = ({ user, ...props }) => {
     addPermissionRequest,
     startTrialAction,
     isPaidPremium,
+    isPaidItemBank,
     setShowSubscriptionAddonModal,
     showTrialSubsConfirmationAction,
     isTrialItemBank,
@@ -331,7 +332,7 @@ const SubscriptionMain = ({ user, ...props }) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {!showRenewalOptions && (
+            {!(isPaidPremium && isPaidItemBank) && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -414,7 +415,7 @@ const SubscriptionMain = ({ user, ...props }) => {
                   </LearnMoreLink>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
-                      {!isPaidPremium && (
+                      {!(isPaidPremium && isPaidItemBank) && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <PurchaseLink onClick={handleClick}>

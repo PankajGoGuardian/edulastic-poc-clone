@@ -184,6 +184,7 @@ const Subscription = (props) => {
     user,
     fetchUserSubscriptionStatus,
     isPremiumTrialUsed,
+    itemBankSubscriptions = [],
     startTrialAction,
     premiumProductId,
     addPermissionRequest,
@@ -248,7 +249,15 @@ const Subscription = (props) => {
 
   const formatTrialEndDate = moment(subEndDate).format('DD MMM, YYYY')
 
-  const isTrialItemBank = usedTrialItemBankId && usedTrialItemBankId !== ''
+  const isTrialItemBank =
+    itemBankSubscriptions &&
+    itemBankSubscriptions?.length > 0 &&
+    itemBankSubscriptions?.[0]?.isTrial === true
+
+  const isPaidItemBank =
+    itemBankSubscriptions &&
+    itemBankSubscriptions?.length > 0 &&
+    itemBankSubscriptions?.[0]?.isTrial !== true
 
   return (
     <Wrapper>
@@ -262,6 +271,7 @@ const Subscription = (props) => {
         subEndDate={subEndDate}
         isPaidPremium={isPaidPremium}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        isPaidItemBank={isPaidItemBank}
       />
 
       <SubscriptionMain
@@ -274,6 +284,7 @@ const Subscription = (props) => {
         isPremiumTrialUsed={isPremiumTrialUsed}
         startTrialAction={startTrialAction}
         isPaidPremium={isPaidPremium}
+        isPaidItemBank={isPaidItemBank}
         isTrialItemBank={isTrialItemBank}
         showRenewalOptions={showRenewalOptions}
         addPermissionRequest={addPermissionRequest}
@@ -371,6 +382,8 @@ export default connect(
     user: state.user.user,
     isPremiumTrialUsed:
       state?.subscription?.subscriptionData?.isPremiumTrialUsed,
+    itemBankSubscriptions:
+      state?.subscription?.subscriptionData?.itemBankSubscriptions,
     premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
     isConfirmationModalVisible: state?.subscription?.showTrialSubsConfirmation,
     products: state?.subscription?.products,

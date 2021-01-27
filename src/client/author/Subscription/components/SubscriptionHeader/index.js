@@ -73,7 +73,7 @@ const SubscriptionHeader = ({
         </Title>
         <ActionButtons>
           <span className="plan">YOUR PLAN</span>
-          <span className="free">
+          <span data-cy="currentPlan" className="free">
             {isSubscribed && subType && licenseExpiryDate
               ? `${
                   subType === 'partial_premium'

@@ -198,12 +198,20 @@ const TestBehaviorGroupContainer = ({
           </Col>
           <Col span={12}>
             <AlignRight
-              disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
+              disabled={freezeSettings}
               value={calcType}
               onChange={(e) => overRideSettings('calcType', e.target.value)}
             >
               {calculatorKeysAvailable.map((item) => (
-                <RadioBtn data-cy={item} value={item} key={item}>
+                <RadioBtn
+                  data-cy={item}
+                  value={item}
+                  key={item}
+                  disabled={
+                    !assessmentSuperPowersShowCalculator &&
+                    !['NONE', 'BASIC'].includes(item)
+                  }
+                >
                   <Label>{calculators[item]}</Label>
                 </RadioBtn>
               ))}

@@ -738,11 +738,7 @@ class Setting extends Component {
                         <Row>
                           <Col span={8}>
                             <StyledRadioGroup
-                              disabled={
-                                !owner ||
-                                !isEditable ||
-                                !assessmentSuperPowersShowCalculator
-                              }
+                              disabled={!owner || !isEditable}
                               onChange={this.updateFeatures('calcType')}
                               value={calcType}
                             >
@@ -751,6 +747,10 @@ class Setting extends Component {
                                   data-cy={item}
                                   value={item}
                                   key={item}
+                                  disabled={
+                                    !assessmentSuperPowersShowCalculator &&
+                                    !['NONE', 'BASIC'].includes(item)
+                                  }
                                 >
                                   {calculators[item]}
                                 </RadioBtn>

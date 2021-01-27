@@ -10,7 +10,6 @@ import {
   NumberInputStyled,
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   AlignRight,
   AlignSwitchRight,
@@ -57,7 +56,6 @@ const Settings = ({
   updateAssignmentSettings,
   isAdvanced,
   changeField,
-  gradeSubject,
   _releaseGradeKeys,
   isDocBased,
   forClassLevel = false,
@@ -65,6 +63,7 @@ const Settings = ({
   premium,
   freezeSettings = false,
   calculatorProvider,
+  features,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -218,6 +217,15 @@ const Settings = ({
   }
 
   const {
+    assessmentSuperPowersAutoRedirect,
+    assessmentSuperPowersCheckAnswerTries,
+    assessmentSuperPowersRequirePassword,
+    assessmentSuperPowersAnswerOnPaper,
+    assessmentSuperPowersShowCalculator,
+    assessmentSuperPowersTimedTest,
+  } = features
+
+  const {
     releaseScore = tempTestSettings.releaseScore,
     calcType = tempTestSettings.calcType,
     answerOnPaper = tempTestSettings.answerOnPaper,
@@ -271,12 +279,12 @@ const Settings = ({
         {/* Release score */}
 
         {/* Maximum attempt */}
-        <FeaturesSwitch
-          inputFeatures="maxAttemptAllowed"
-          actionOnInaccessible="disabled"
-          key="maxAttemptAllowed"
-          gradeSubject={gradeSubject}
-        >
+        <SettingContainer>
+          <DetailsTooltip
+            title="MAXIMUM ATTEMPTS ALLOWED"
+            content="Control the number of times a student can take the assignment."
+            premium={assessmentSuperPowersTimedTest}
+          />
           <StyledRow gutter={16} mb="15px">
             <Col span={12}>
               <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
@@ -284,7 +292,7 @@ const Settings = ({
             <Col span={12}>
               <NumberInputStyled
                 size="large"
-                disabled={freezeSettings}
+                disabled={freezeSettings || !assessmentSuperPowersTimedTest}
                 value={maxAttempts}
                 onChange={(value) => overRideSettings('maxAttempts', value)}
                 min={1}
@@ -294,7 +302,7 @@ const Settings = ({
               />
             </Col>
           </StyledRow>
-        </FeaturesSwitch>
+        </SettingContainer>
         {/* Maximum attempt */}
 
         {/* Show Calculator */}
@@ -302,6 +310,7 @@ const Settings = ({
           <DetailsTooltip
             title="SHOW CALCULATOR"
             content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+            premium={assessmentSuperPowersShowCalculator}
           />
           <StyledRow gutter={16} mb="15px">
             <Col span={12}>
@@ -314,7 +323,15 @@ const Settings = ({
                 onChange={(e) => overRideSettings('calcType', e.target.value)}
               >
                 {calculatorKeysAvailable.map((item) => (
-                  <RadioBtn data-cy={item} value={item} key={item}>
+                  <RadioBtn
+                    data-cy={item}
+                    value={item}
+                    key={item}
+                    disabled={
+                      !assessmentSuperPowersShowCalculator &&
+                      !['NONE', 'BASIC'].includes(item)
+                    }
+                  >
                     <Label>{calculators[item]}</Label>
                   </RadioBtn>
                 ))}
@@ -330,6 +347,7 @@ const Settings = ({
             title="ANSWER ON PAPER"
             content="Use this option if you are administering this assessment on paper. If you use this option, you will have to manually grade student responses after the assessment is closed."
             placement="rightBottom"
+            premium={assessmentSuperPowersAnswerOnPaper}
           />
           <StyledRow gutter={16} mb="15p">
             <Col span={12}>
@@ -337,7 +355,11 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignSwitchRight
-                disabled={disableAnswerOnPaper || freezeSettings}
+                disabled={
+                  disableAnswerOnPaper ||
+                  freezeSettings ||
+                  !assessmentSuperPowersAnswerOnPaper
+                }
                 size="small"
                 checked={answerOnPaper}
                 onChange={(value) => overRideSettings('answerOnPaper', value)}
@@ -352,6 +374,7 @@ const Settings = ({
           <DetailsTooltip
             title="REQUIRE PASSWORD"
             content="Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
+            premium={assessmentSuperPowersRequirePassword}
           />
           <StyledRow gutter={16} mb="15px">
             <Col span={12}>
@@ -361,7 +384,9 @@ const Settings = ({
               <Row>
                 <Col span={24}>
                   <SelectInputStyled
-                    disabled={freezeSettings}
+                    disabled={
+                      freezeSettings || !assessmentSuperPowersRequirePassword
+                    }
                     placeholder="Please select"
                     cache="false"
                     value={passwordPolicy}
@@ -445,19 +470,21 @@ const Settings = ({
         {
           /* Check Answer Tries Per Question */
           !isDocBased && (
-            <FeaturesSwitch
-              inputFeatures="assessmentSuperPowersCheckAnswerTries"
-              actionOnInaccessible="disabled"
-              key="assessmentSuperPowersCheckAnswerTries"
-              gradeSubject={gradeSubject}
-            >
+            <SettingContainer>
+              <DetailsTooltip
+                title="CHECK ANSWER TRIES PER QUESTION"
+                content="Control whether student can check in answer during attempt or not. Value mentioned will be equivalent to number of attempts allowed per student."
+                premium={assessmentSuperPowersTimedTest}
+              />
               <StyledRow gutter={16} mb="15px">
                 <Col span={12}>
                   <Label>CHECK ANSWER TRIES PER QUESTION</Label>
                 </Col>
                 <Col span={12}>
                   <NumberInputStyled
-                    disabled={freezeSettings}
+                    disabled={
+                      freezeSettings || !assessmentSuperPowersCheckAnswerTries
+                    }
                     onChange={(value) =>
                       overRideSettings('maxAnswerChecks', value)
                     }
@@ -469,7 +496,7 @@ const Settings = ({
                   />
                 </Col>
               </StyledRow>
-            </FeaturesSwitch>
+            </SettingContainer>
           )
           /* Check Answer Tries Per Question */
         }
@@ -479,6 +506,7 @@ const Settings = ({
           <DetailsTooltip
             title="Enable Auto Redirect"
             content="Allow students to take the assignment multiple times to practice and improve their learning."
+            premium={assessmentSuperPowersAutoRedirect}
           />
           <StyledRow gutter={16}>
             <StyledCol span={12}>
@@ -489,7 +517,7 @@ const Settings = ({
                 data-cy="assignment-auto-redirect-switch"
                 size="small"
                 defaultChecked={false}
-                disabled={freezeSettings}
+                disabled={freezeSettings || !assessmentSuperPowersAutoRedirect}
                 checked={autoRedirect}
                 onChange={handleAutoRedirectChange}
               />
@@ -597,6 +625,7 @@ export default connect(
       ? state?.tests?.entity?.summary?.totalQuestions
       : state?.tests?.entity?.summary?.totalItems,
     freezeSettings: getIsOverrideFreezeSelector(state),
+    features: state?.user?.user?.features,
   }),
   null
 )(withRouter(Settings))

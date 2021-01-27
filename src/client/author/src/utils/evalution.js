@@ -41,6 +41,7 @@ export const evaluateItem = async (
                   }
                 })
               : validation.validation,
+            template: validation.template,
             questionId: id,
           },
           type

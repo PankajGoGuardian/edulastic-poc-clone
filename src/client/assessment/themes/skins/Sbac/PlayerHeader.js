@@ -79,6 +79,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
   blockNavigationToAnsweredQuestions,
 }) => {
   useEffect(() => {
@@ -185,8 +186,8 @@ const PlayerHeader = ({
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>
                   {showPause && (
-                    <Tooltip placement="top" title="Save & Exit">
-                      <StyledButton onClick={finishTest}>
+                    <Tooltip placement="top" title={hidePause?`Save & Exit disabled`:`Save & Exit`}>
+                      <StyledButton disabled={hidePause} onClick={finishTest}>
                         <StyledIcon type="save" theme="filled" />
                       </StyledButton>
                     </Tooltip>

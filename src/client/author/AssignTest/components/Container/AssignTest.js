@@ -134,6 +134,10 @@ class AssignTest extends React.Component {
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
           : assignmentSettings.openPolicy,
         playerSkinType: testSettings.playerSkinType,
+        restrictNavigationOut: testSettings.restrictNavigationOut,
+        restrictNavigationOutAttemptsThreshold:
+          testSettings.restrictNavigationOutAttemptsThreshold,
+        blockSaveAndContinue: testSettings.blockSaveAndContinue
       })
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId)

@@ -261,6 +261,7 @@ const SubscriptionMain = ({ user, ...props }) => {
     isPaidPremium,
     setShowSubscriptionAddonModal,
     showTrialSubsConfirmationAction,
+    isTrialItemBank,
   } = props
 
   const [showSelectStates, setShowSelectStates] = useState(false)
@@ -294,6 +295,10 @@ const SubscriptionMain = ({ user, ...props }) => {
 
     setIsTrialModalVisible(true)
   }
+
+  const showTrialButton =
+    (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
+
   return (
     <>
       <MainContentWrapper padding="30px" style={{ display: 'none' }}>
@@ -326,7 +331,7 @@ const SubscriptionMain = ({ user, ...props }) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {!isPaidPremium ? (
+            {!showRenewalOptions && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -341,12 +346,13 @@ const SubscriptionMain = ({ user, ...props }) => {
                 )}
                 onClick={handlePurchaseFlow}
               />
-            ) : showRenewalOptions ? (
+            )}
+            {isPaidPremium && showRenewalOptions && (
               <EduButton onClick={handlePurchaseFlow} isBlue height="38px">
                 Renew Subscription
               </EduButton>
-            ) : null}
-            {!isPaidPremium && (
+            )}
+            {showTrialButton && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -409,22 +415,22 @@ const SubscriptionMain = ({ user, ...props }) => {
                   {addonsData[index].title === 'SparkMath' && (
                     <>
                       {!isPaidPremium && (
-                        <>
-                          <AuthorCompleteSignupButton
-                            renderButton={(handleClick) => (
-                              <PurchaseLink onClick={handleClick}>
-                                Purchase
-                              </PurchaseLink>
-                            )}
-                            onClick={handlePurchaseFlow}
-                          />
-                          <AuthorCompleteSignupButton
-                            renderButton={(handleClick) => (
-                              <span onClick={handleClick}>try</span>
-                            )}
-                            onClick={handleStartTrial}
-                          />
-                        </>
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <PurchaseLink onClick={handleClick}>
+                              Purchase
+                            </PurchaseLink>
+                          )}
+                          onClick={handlePurchaseFlow}
+                        />
+                      )}
+                      {showTrialButton && (
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <span onClick={handleClick}>try</span>
+                          )}
+                          onClick={handleStartTrial}
+                        />
                       )}
                     </>
                   )}

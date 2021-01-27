@@ -73,6 +73,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
   blockNavigationToAnsweredQuestions = false,
 }) => {
   const totalQuestions = options.length
@@ -200,6 +201,7 @@ const PlayerHeader = ({
                   utaId={utaId}
                   showMagnifier={isDocbased ? false : showMagnifier}
                   enableMagnifier={enableMagnifier}
+                  hidePause={hidePause}
                 />
               </FlexContainer>
             </HeaderWrapper>

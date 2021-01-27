@@ -58,6 +58,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
   blockNavigationToAnsweredQuestions,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
@@ -82,10 +83,11 @@ const PlayerHeader = ({
       groupId={groupId}
       previewPlayer={previewPlayer}
       showZoomBtn
+      hidePause={hidePause}
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
     />
-  )
+  );
 
   return (
     <>

@@ -3,74 +3,84 @@ import API from '@edulastic/api/src/utils/API'
 const api = new API()
 const prefix = '/test-activity'
 
-const create = (data) =>
+const create = data =>
   api
     .callApi({
       url: prefix,
       method: 'post',
-      data,
+      data
     })
-    .then((result) => result.data.result)
+    .then(result => result.data.result)
 
 const fetchReports = () =>
   api
     .callApi({
       url: `${prefix}/?status=graded`,
-      method: 'get',
+      method: 'get'
     })
-    .then((result) => result.data.result)
+    .then(result => result.data.result)
 
 const submit = (testActivityId, groupId) =>
   api
     .callApi({
       url: `${prefix}/${testActivityId}/status`,
       method: 'put',
-      data: { status: 1, groupId },
+      data: { status: 1, groupId }
     })
-    .then((result) => result.data)
+    .then(result => result.data)
 
-const previousResponses = (testActivityId) =>
+const previousResponses = testActivityId =>
   api
     .callApi({
       url: `${prefix}/${testActivityId}/previousResponses`,
-      method: 'get',
+      method: 'get'
     })
-    .then((result) => result.data.result)
+    .then(result => result.data.result)
 
 const getById = (testActivityId, groupId, studentAssesment = false) =>
   api
     .callApi({
       url: `${prefix}/${testActivityId}`,
       method: 'get',
-      params: { groupId, studentAssesment },
+      params: { groupId, studentAssesment }
     })
-    .then((result) => result.data.result)
+    .then(result => result.data.result)
 
-const getScratchpad = (testActivityId) =>
+const getScratchpad = testActivityId =>
   api
     .callApi({
       url: `/question-activity/${testActivityId}/scratchpad`,
-      method: 'get',
+      method: 'get'
     })
-    .then((result) => result.data.result)
+    .then(result => result.data.result)
 
 const saveOverallFeedback = ({ testActivityId, groupId, feedback: data }) =>
   api
     .callApi({
       url: `${prefix}/${testActivityId}/overall-feedback?groupId=${groupId}`,
       method: 'put',
-      data,
+      data
     })
-    .then((result) => result.data.result)
+    .then(result => result.data.result)
+
+function incrementTabNavigationCounter (id) {
+  return api
+    .callApi({
+      url: `${prefix}/${id}/tab-navigation-counter`,
+      method: 'put',
+      data: {}
+    })
+    .then(result => result.data)
+}
 
 const updateResponseEntryAndScore = ({ testActivityId, itemId, ...data }) =>
   api
     .callApi({
       url: `${prefix}/${testActivityId}/test-item/${itemId}/response-entry-and-score`,
       method: 'put',
-      data,
+      data
     })
-    .then((result) => result.data)
+    .then(result => result.data)
 
 const updateQuestionFeedBack = ({
   testActivityId,
@@ -82,18 +92,18 @@ const updateQuestionFeedBack = ({
     .callApi({
       url: `${prefix}/${testActivityId}/test-item/${itemId}/question/${questionId}/feedback`,
       method: 'put',
-      data,
+      data
     })
-    .then((result) => result.data.result)
+    .then(result => result.data.result)
 
 const updateUtaTime = ({ utaId, type, syncOffset }) =>
   api
     .callApi({
       url: `${prefix}/uta/${utaId}`,
       method: 'post',
-      data: { type, syncOffset },
+      data: { type, syncOffset }
     })
-    .then((result) => result.data.result)
+    .then(result => result.data.result)
 
 export default {
   create,
@@ -106,4 +116,5 @@ export default {
   updateResponseEntryAndScore,
   updateQuestionFeedBack,
   updateUtaTime,
+  incrementTabNavigationCounter
 }

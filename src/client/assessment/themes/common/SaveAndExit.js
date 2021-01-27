@@ -49,6 +49,7 @@ const SaveAndExit = ({
   LCBPreviewModal,
   hideData,
   toggleScratchpadVisibility,
+  hidePause,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
@@ -75,8 +76,9 @@ const SaveAndExit = ({
           <>
             {!isCliUserPreview && (
               <SaveAndExitButton
-                title="Exit"
+                title={hidePause?"Save & Exit disabled due to configuration":"Exit"}
                 data-cy="finishTest"
+                disabled={hidePause}
                 onClick={finishTest}
               >
                 <IconCircleLogout />
@@ -88,7 +90,8 @@ const SaveAndExit = ({
           <>
             {!isCliUser && (
               <SaveAndExitButton
-                title="Save & Exit"
+                title={hidePause?"Save & Exit disabled due to configuration":"Save & Exit"}
+                disabled={hidePause}
                 data-cy="finishTest"
                 onClick={finishTest}
               >

@@ -146,6 +146,7 @@ class AssessmentPlayerDocBased extends React.Component {
       settings,
       playerSkinType,
       groupId,
+      hidePause
     } = this.props
 
     const item = items[0]
@@ -180,6 +181,7 @@ class AssessmentPlayerDocBased extends React.Component {
             currentToolMode={currentToolMode}
             onChangeTool={this.onChangeTool}
             finishTest={this.openExitPopup}
+            hidePause={hidePause}
           >
             {!loading && (
               <WorksheetComponent

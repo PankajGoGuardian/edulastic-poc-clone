@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Tooltip } from 'antd'
 import { CheckboxLabel, CustomModalStyled, EduButton } from '@edulastic/common'
 import { ModalBody, AddonList, FlexRow, Total } from './styled'
 
@@ -31,6 +32,7 @@ const SubscriptionAddonModal = ({
     <CustomModalStyled
       centered
       title="Select Add-ons"
+      data-cy="SelectAddOnsModal"
       footer={[
         <EduButton
           data-cy="proceedPayment"
@@ -68,14 +70,11 @@ const SubscriptionAddonModal = ({
             </FlexRow>
           )}
           <FlexRow>
-            <CheckboxLabel
-              data-cy="sparkPremiumCheckbox"
-              value={100}
-              onChange={(e) => handleOnChange(e.target)}
-              defaultChecked
-            >
-              Spark Math
-            </CheckboxLabel>
+            <Tooltip title="Premium subscription is mandatory for Spark content">
+              <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
+                Teacher Premium
+              </CheckboxLabel>
+            </Tooltip>
             <span>$100</span>
           </FlexRow>
         </AddonList>

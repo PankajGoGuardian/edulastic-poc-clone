@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { CheckboxLabel, TextInputStyled } from '@edulastic/common'
+import { CheckboxLabel, TextInputStyled, FieldLabel } from '@edulastic/common'
 import LabelWithHelper from './LabelWithHelper'
 import { validations } from './inputsValidations'
 
@@ -39,6 +39,11 @@ const InputOption = ({ options, onChange, optionKey, isGraph }) => {
         labelPadding="0px 16px"
         onChange={onChangeCheckbox}
       >
+        {optionKey === 'significantDecimalPlaces' && (
+          <FieldLabel display="inline-block" mr="18px">
+            must be rounnded to
+          </FieldLabel>
+        )}
         <TextInputStyled
           size="large"
           width="50px"

@@ -5,12 +5,12 @@ import { keyBy, groupBy, sortBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState, useMemo, useEffect } from 'react'
 import {
-  StyledCol,
   HeaderButtonsWrapper,
   SelectAll,
   UnselectAll,
   SelectTextInline,
   StyledRow,
+  SelectStudentColumn,
 } from './styled'
 import { getFormattedName } from '../../../Gradebook/transformers'
 
@@ -76,10 +76,10 @@ const StudentsSelector = ({
 
   return (
     <StyledRow gutter={16}>
-      <StyledCol span={12}>
+      <SelectStudentColumn span={12}>
         <FieldLabel>STUDENTS</FieldLabel>
-      </StyledCol>
-      <StyledCol span={12}>
+      </SelectStudentColumn>
+      <SelectStudentColumn span={12}>
         <Tooltip
           autoAdjustOverflow
           overlayStyle={{ maxWidth: '100%' }}
@@ -154,7 +154,7 @@ const StudentsSelector = ({
             />
           </div>
         </Tooltip>
-      </StyledCol>
+      </SelectStudentColumn>
     </StyledRow>
   )
 }

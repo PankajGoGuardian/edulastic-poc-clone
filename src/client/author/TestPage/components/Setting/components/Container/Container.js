@@ -1362,7 +1362,7 @@ class Setting extends Component {
                       />
                       <Title>
                         <span>
-                          Restrict Navigation To Previously Answered Questions{' '}
+                          Restrict Question Navigation{' '}
                           <DollarPremiumSymbol
                             premium={
                               assessmentSuperPowersRestrictQuestionBackNav

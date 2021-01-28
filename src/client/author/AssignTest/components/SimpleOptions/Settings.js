@@ -223,6 +223,7 @@ const Settings = ({
     assessmentSuperPowersAnswerOnPaper,
     assessmentSuperPowersShowCalculator,
     assessmentSuperPowersTimedTest,
+    assessmentSuperPowersRestrictQuestionBackNav,
   } = features
 
   const {
@@ -236,6 +237,7 @@ const Settings = ({
     passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60,
     autoRedirect = false,
     autoRedirectSettings,
+    blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -610,6 +612,43 @@ const Settings = ({
           )}
         </SettingContainer>
         {/* Auto Redirect */}
+
+        {
+          /* Restrict Question Navigation */
+          !isDocBased && (
+            <SettingContainer>
+              <DetailsTooltip
+                title="Restrict question navigation"
+                content="If ON, then students will be restricted from navigating back to the previous question that they have answered. It is recommended to use this along with Shuffle Questions for preventing cheating among students."
+                placement="rightTop"
+                premium={assessmentSuperPowersRestrictQuestionBackNav}
+              />
+              <StyledRow gutter={16} mb="15px">
+                <Col span={12}>
+                  <Label>RESTRICT QUESTION NAVIGATION</Label>
+                </Col>
+                <Col span={12}>
+                  <AlignSwitchRight
+                    disabled={
+                      freezeSettings ||
+                      !assessmentSuperPowersRestrictQuestionBackNav
+                    }
+                    size="small"
+                    checked={blockNavigationToAnsweredQuestions}
+                    data-cy="restrict-backward-nav"
+                    onChange={(value) =>
+                      overRideSettings(
+                        'blockNavigationToAnsweredQuestions',
+                        value
+                      )
+                    }
+                  />
+                </Col>
+              </StyledRow>
+            </SettingContainer>
+          )
+          /* Restrict Question Navigation */
+        }
       </StyledDiv>
     </SettingsWrapper>
   )

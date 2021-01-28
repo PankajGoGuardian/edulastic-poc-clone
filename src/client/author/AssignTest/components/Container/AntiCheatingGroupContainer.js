@@ -392,7 +392,7 @@ const AntiCheatingGroupContainer = ({
       }
 
       {
-        /* Restrict Navigation To Previously Answered Questions */
+        /* Restrict Question Navigation */
         !isDocBased && (
           <SettingContainer>
             <DetailsTooltip
@@ -404,7 +404,7 @@ const AntiCheatingGroupContainer = ({
             <StyledRow gutter={16} mb="15px">
               <Col span={12}>
                 <Label>
-                  Restrict Navigation To Previously Answered Questions
+                  Restrict Question Navigation
                   <DollarPremiumSymbol
                     premium={assessmentSuperPowersRestrictQuestionBackNav}
                   />
@@ -436,7 +436,7 @@ const AntiCheatingGroupContainer = ({
             </StyledRow>
           </SettingContainer>
         )
-        /* Restrict Navigation To Previously Answered Questions */
+        /* Restrict Question Navigation */
       }
 
       {/* Safe Exam Browser/Kiosk Mode */}

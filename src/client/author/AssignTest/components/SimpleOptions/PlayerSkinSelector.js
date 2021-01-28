@@ -1,13 +1,9 @@
 import { test } from '@edulastic/constants'
 import { Col, Select } from 'antd'
 import React from 'react'
-import {
-  ColLabel,
-  Label,
-  StyledRow,
-  StyledRowSelect,
-  StyledSelect,
-} from './styled'
+import { SelectInputStyled } from '@edulastic/common'
+import { ColLabel, Label, StyledRow } from './styled'
+import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
 
 const { playerSkinTypes } = test
 
@@ -19,6 +15,7 @@ const PlayerSkinSelector = ({
   disabled = false,
   fullwidth = false,
   selectBackgroundWhite = false,
+  isFeatureAvailable = false,
 }) => {
   const edulastic = `${playerSkinTypes.edulastic} ${
     testType?.includes('assessment') ? 'Test' : 'Practice'
@@ -29,7 +26,7 @@ const PlayerSkinSelector = ({
   }
 
   const SelectOption = (
-    <StyledSelect
+    <SelectInputStyled
       data-cy="playerSkinType"
       onChange={onAssignmentTypeChange}
       value={
@@ -45,22 +42,28 @@ const PlayerSkinSelector = ({
           {types[key]}
         </Select.Option>
       ))}
-    </StyledSelect>
+    </SelectInputStyled>
   )
 
   return fullwidth ? (
-    <StyledRowSelect gutter={16}>
+    <StyledRow gutter={16}>
       <Col span={12}>
-        <Label>STUDENT PLAYER SKIN</Label>
+        <Label>
+          STUDENT PLAYER SKIN
+          <DollarPremiumSymbol premium={isFeatureAvailable} />
+        </Label>
       </Col>
       <Col span={12}>{SelectOption}</Col>
-    </StyledRowSelect>
+    </StyledRow>
   ) : (
     <>
       <StyledRow gutter={48}>
         {!isAdvanceView && (
           <ColLabel span={24}>
-            <Label>STUDENT PLAYER SKIN</Label>
+            <Label>
+              STUDENT PLAYER SKIN
+              <DollarPremiumSymbol premium={isFeatureAvailable} />
+            </Label>
           </ColLabel>
         )}
         <Col span={24}>{SelectOption}</Col>

@@ -1,13 +1,12 @@
-import { useState } from 'react'
-import { Input, message } from 'antd'
 import {
-  themeColor,
-  greyishBorder,
-  lightGreySecondary,
-} from '@edulastic/colors'
-import { FlexContainer, notification } from '@edulastic/common'
-import { StyledHasLicenseKeyModal, Container } from './styled'
-import { ThemeButton } from '../styled/commonStyled'
+  CustomModalStyled,
+  EduButton,
+  FlexContainer,
+  notification,
+  TextInputStyled,
+} from '@edulastic/common'
+import React, { useState } from 'react'
+import { Container, ExpiryDate } from './styled'
 
 const getFooterComponent = ({
   hideModal,
@@ -17,18 +16,30 @@ const getFooterComponent = ({
 }) =>
   !isSubscribed ? (
     <FlexContainer width="450px">
-      <ThemeButton onClick={hideModal} disabled={verificationPending}>
+      <EduButton
+        isGhost
+        isBlue
+        onClick={hideModal}
+        disabled={verificationPending}
+        width="190px"
+      >
         CANCEL
-      </ThemeButton>
-      <ThemeButton onClick={nextAction} disabled={verificationPending} inverse>
+      </EduButton>
+      <EduButton
+        isBlue
+        onClick={nextAction}
+        disabled={verificationPending}
+        inverse
+        width="190px"
+      >
         NEXT
-      </ThemeButton>
+      </EduButton>
     </FlexContainer>
   ) : (
     <FlexContainer width="450px">
-      <ThemeButton onClick={hideModal} inverse>
+      <EduButton width="200px" isBlue onClick={hideModal} inverse>
         DONE
-      </ThemeButton>
+      </EduButton>
     </FlexContainer>
   )
 
@@ -40,6 +51,8 @@ const HasLicenseKeyModal = (props) => {
     expDate,
     isSubscribed = false,
     verificationPending = false,
+    isPaidPremium,
+    subType,
   } = props
 
   const [licenseKey, setLicenseKey] = useState()
@@ -57,7 +70,7 @@ const HasLicenseKeyModal = (props) => {
   }
 
   return (
-    <StyledHasLicenseKeyModal
+    <CustomModalStyled
       visible={visible}
       title={
         <h3 style={{ fontWeight: 700, fontSize: '22px' }}>
@@ -75,43 +88,42 @@ const HasLicenseKeyModal = (props) => {
       ]}
       centered
     >
-      {!isSubscribed && (
-        <Container width="480">
-          <p>
-            Enter your License Key that you received at the end of the order
-            process or via email in the box below, the click on "Next"
-          </p>
-          <br />
-          <br />
-          <Input
-            placeholder="Enter your license key"
-            style={{
-              width: '85%',
-              height: '50px',
-              background: lightGreySecondary,
-              border: `1px solid ${greyishBorder}`,
-              margin: 'auto',
-            }}
-            value={licenseKey}
-            onChange={handleChange}
-            disabled={verificationPending}
-          />
-        </Container>
-      )}
-      {isSubscribed && (
+      {isPaidPremium ? (
         <Container width="300">
-          <h4 style={{ fontWeight: 700 }}>Congratulations!</h4>
+          <h4>Congratulations!</h4>
           <p>
             Your account is upgraded to Premium version for a year and the
             subscription will expire on
           </p>
-          <p style={{ color: themeColor, paddingTop: '8px', fontWeight: 600 }}>
-            {expDate}
+          <ExpiryDate>{expDate}</ExpiryDate>
+          <br />
+        </Container>
+      ) : subType === 'TRIAL_PREMIUM' ? (
+        <Container width="300">
+          <h4>Congratulations!</h4>
+          <p>
+            Your account is upgraded to <b>Trial Premium version</b>, and the
+            subscription will expire on
           </p>
+          <ExpiryDate>{expDate}</ExpiryDate>
+          <br />
+        </Container>
+      ) : (
+        <Container width="480">
+          <p>
+            Enter your License Key that you received at the end of the order
+            process or via email in the box below, the click on &quot;Next&quot;
+          </p>
+          <TextInputStyled
+            placeholder="Enter your license key"
+            value={licenseKey}
+            onChange={handleChange}
+            disabled={verificationPending}
+          />
           <br />
         </Container>
       )}
-    </StyledHasLicenseKeyModal>
+    </CustomModalStyled>
   )
 }
 

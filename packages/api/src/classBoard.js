@@ -11,10 +11,10 @@ const gradebook = ({ assignmentId, classId }) =>
     })
     .then((result) => result.data.result)
 
-const testActivity = ({ assignmentId, classId, isQuestionsView = false }) =>
+const testActivity = ({ assignmentId, classId }) =>
   api
     .callApi({
-      url: `${prefix}/${assignmentId}/classes/${classId}/test-activity?isQuestionsView=${isQuestionsView}`,
+      url: `${prefix}/${assignmentId}/classes/${classId}/test-activity`,
       method: 'get',
     })
     .then((result) => result.data)
@@ -217,12 +217,12 @@ const bulkDownloadGrades = ({ testId, data, testType, status }) =>
     })
     .then((response) => response.data)
 
-const togglePauseStudents = ({ assignmentId, classId, students, isPause }) =>
+const togglePauseStudents = ({ assignmentId, classId, students, isPause,pauseReason }) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/${assignmentId}/toggle-pause-students`,
-      data: { groupId: classId, students, isPause },
+      data: { groupId: classId, students, isPause,pauseReason },
     })
     .then((result) => result.data.result)
 

@@ -9,18 +9,24 @@ const PaymentForm = ({
   reason,
   handlePayment,
   verificationPending,
+  totalPurchaseAmount,
+  addOnProductIds = [],
 }) => {
   const handleCardSubmit = (e) => {
     e.preventDefault()
-    handlePayment({ stripe, data: { type: 'card', userId, reason } })
+    handlePayment({
+      stripe,
+      data: { type: 'card', userId, reason },
+      productIds: addOnProductIds,
+    })
   }
 
   return (
     <form>
-      <p style={{ textAlign: 'center', marginBottom: '10px' }}>{userId}</p>
       <CardSection
         handleCardSubmit={handleCardSubmit}
         verificationPending={verificationPending}
+        totalPurchaseAmount={totalPurchaseAmount}
       />
     </form>
   )

@@ -226,7 +226,7 @@ function* loadTest({ payload }) {
 
     const studentAssesment = yield select((state) =>
       (state.router.location.pathname || '').match(
-        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/itemId/.*')
       )
     )
 
@@ -255,6 +255,9 @@ function* loadTest({ payload }) {
       : call(testsApi.getPublicTest, testId)
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
+    const isFromSummary = yield select((state) =>
+      get(state, 'router.location.state.fromSummary', false)
+    )
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse
@@ -265,9 +268,6 @@ function* loadTest({ payload }) {
         yield put(setActiveAssignmentAction(assignmentId))
       }
 
-      const isFromSummary = yield select((state) =>
-        get(state, 'router.location.state.fromSummary', false)
-      )
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
           testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF ||
@@ -516,17 +516,27 @@ function* loadTest({ payload }) {
       ) || {}
 
       // move to last attended question
-      if (loadFromLast && testType !== testContants.type.TESTLET) {
-        yield put(
-          push({
-            pathname: `${lastAttendedQuestion}`,
-            state: prevLocationState,
+      if (!settings.blockNavigationToAnsweredQuestions && !isFromSummary) {
+        if (loadFromLast && testType !== testContants.type.TESTLET) {
+          const itemId = testItemIds[lastAttendedQuestion]
+          yield put(
+            push({
+              pathname: `${itemId}`,
+              state: prevLocationState,
+            })
+          )
+          yield put({
+            type: SET_RESUME_STATUS,
+            payload: false,
           })
-        )
-        yield put({
-          type: SET_RESUME_STATUS,
-          payload: false,
-        })
+        } else if (testType !== testContants.type.TESTLET) {
+          yield put(
+            push({
+              pathname: `${testItemIds[0]}`,
+              state: prevLocationState,
+            })
+          )
+        }
       }
     }
 
@@ -584,13 +594,20 @@ function* loadTest({ payload }) {
           questionIndex++
         }
       }
-      yield put(
-        push(
-          `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${
-            questionIndex - 1
-          }`
+      if (testItems.length === questionIndex) {
+        yield put(
+          push(
+            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
+          )
         )
-      )
+      } else {
+        const itemId = testItems[questionIndex]._id
+        yield put(
+          push(
+            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
+          )
+        )
+      }
     }
   } catch (err) {
     captureSentryException(err)

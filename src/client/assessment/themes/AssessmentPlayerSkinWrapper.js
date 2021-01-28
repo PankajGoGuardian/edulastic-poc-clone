@@ -35,6 +35,30 @@ const AssessmentPlayerSkinWrapper = ({
   } = restProps
 
   const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
+
+  const { blockNavigationToAnsweredQuestions } = restProps
+
+  const handleRestrictQuestionBackNav = (e) => {
+    e.preventDefault()
+    if (blockNavigationToAnsweredQuestions) {
+      const matched = e.target.location.pathname.match(
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/.*')
+      )
+      if (matched) {
+        window.history.go(1)
+        return false
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (blockNavigationToAnsweredQuestions) {
+      window.addEventListener('popstate', handleRestrictQuestionBackNav)
+      return () =>
+        window.removeEventListener('popstate', handleRestrictQuestionBackNav)
+    }
+  }, [])
+
   useEffect(() => {
     const toolToggleFunc = toggleToolsOpenStatus || changeTool
     // 5 is Scratchpad mode
@@ -179,7 +203,7 @@ const AssessmentPlayerSkinWrapper = ({
 
   const navigationBtns = () => (
     <>
-      {currentItem > 0 && (
+      {!blockNavigationToAnsweredQuestions && currentItem > 0 && (
         <Nav.BackArrow
           left="0px"
           borderRadius="0px"

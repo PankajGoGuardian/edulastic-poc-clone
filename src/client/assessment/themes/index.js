@@ -26,8 +26,14 @@ import {
   useRealtimeV2,
   notification,
   handleChromeOsSEB,
+  EduButton,
+  FireBaseService
 } from '@edulastic/common'
+import firebase from 'firebase/app'
+// Required for side-effects
+import 'firebase/firestore'
 import { themeColor } from '@edulastic/colors'
+import { testActivityApi, classBoardApi } from '@edulastic/api';
 
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
@@ -60,7 +66,7 @@ import { hasUserWork } from '../utils/answer'
 import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
 import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
-
+import useFocusHandler from '../utils/useFocusHandler';
 const { playerSkinValues } = testConstants
 
 const shouldAutoSave = (itemRows) => {
@@ -83,6 +89,152 @@ const shouldAutoSave = (itemRows) => {
 }
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
+
+function pauseAssignment({history,testActivityId, assignmentId,classId,userId,pauseReason}){
+  console.warn('pausing assignment');
+  classBoardApi.togglePauseStudents({assignmentId,classId,students:[userId],isPause:true,pauseReason}).then(()=>{
+    const errorMsg = "Pausing Assignment due to Anti Cheating measures";
+    notification({type:"warning",msg:errorMsg});
+    history.push('/home/assignments');
+  }).catch(e=>{
+    const errorMsg = e?.response?.data?.result?.message||"Pausing Assignment due to Anti Cheating measures";
+    notification({type:"warning",msg:errorMsg});
+    history.push('/home/assignments');
+  })
+}
+
+function incrementNavigationCounter({history,testActivityId}){
+  return testActivityApi.incrementTabNavigationCounter(testActivityId)
+          .then((response)=>{
+            if(response.paused){
+              notification({type:"error",msg:"Sorry! Assignment got paused due to inactivity"})
+              ;
+              history.push('/home/assignments');
+            } else {
+              notification({type:"warning",msg:"Moving out of assignment has been noted"});
+            }
+          }).catch((error)=>{
+            console.warn('idle error',error);
+            notification({type:"error",msg:"something wrong happened with assignment"});
+            history.push('/home/assignments');
+          })
+}
+
+function ForceFullScreenModal({history,visible,finishTest,testActivityId}){
+
+  useEffect(()=>{
+    if(visible){
+      //incrementNavigationCounter({history,testActivityId});
+    }
+  },[visible]);
+
+  return (<Modal destroyOnClose keyboard={false} closable={false} maskClosable={false} footer={
+  <>
+    <Button type="danger" onClick={finishTest}>Submit the test</Button>
+    <Button type="primary" onClick={()=>{
+      document.body.requestFullscreen({navigationUI:"hide"}).then({}).catch((e)=>{
+        console.warn(`fullsreen error`,e);
+      })
+    }}>Go Back to the test</Button>
+   
+  </>
+  } 
+  maskStyle={{background:'#000',opacity:1}} 
+  visible={visible}>
+    <p>This Assessment can only be taken in full screen mode</p>
+  </Modal>);
+}
+
+
+function useFullScreenListener({init=true,enabled}){
+  const [inFullScreen,setInFullScreen] = useState(enabled?null:true);
+  const fullScreenCb = function(e){
+    if(document.fullscreenElement){
+      setInFullScreen(true)
+    } else {
+      setInFullScreen(false);
+    }
+  };
+
+  useEffect(()=>{
+    document.addEventListener('fullscreenchange',fullScreenCb);
+    return () => {
+      document.removeEventListener('fullscreenchange',fullScreenCb);
+      Modal.destroyAll();
+      document.exitFullscreen().catch((e)=>{});
+    }
+  },[enabled]);
+  return inFullScreen;
+}
+
+function useFirestorePingsForNavigationCheck({testActivityId,history, blockSaveAndContinue,userId,classId,assignmentId}){
+  const collectionName = `timetracking`;
+  const coll = FireBaseService.db.collection(collectionName);
+  const doc = coll.doc(testActivityId);
+  useEffect(()=>{
+    if(testActivityId){
+      doc.get().then((d)=>{
+        if(!d.data()){
+          doc.set({lastUpdatedTime: Date.now()});
+          return ;
+        } 
+        const lastTime = d.data().lastUpdatedTime;
+        console.info('now-lastTime', Date.now()-lastTime);
+        if((Date.now()-lastTime)>=45*1000){
+          if(blockSaveAndContinue){
+            pauseAssignment({history,testActivityId, userId,assignmentId,classId,pauseReason:"blocked-save-and-continue"});
+          } else {
+            incrementNavigationCounter({history,testActivityId})
+          }
+        } else {
+          doc.set({lastUpdatedTime: Date.now()});
+        }
+      })
+    }
+
+    const interval = window.setInterval(()=>{
+      doc.set({lastUpdatedTime: Date.now()});
+    },30*1000);
+
+    return ()=> {
+      clearInterval(interval);
+    }
+
+  },[testActivityId]);
+}
+
+function FirestorePings({testActivityId,history,blockSaveAndContinue,userId,classId,assignmentId}){
+  useFirestorePingsForNavigationCheck({testActivityId,history,blockSaveAndContinue,assignmentId,classId,userId});
+  return null;
+}
+
+function useTabNavigationCounterEffect({testActivityId,enabled,history}){
+  const inFocusRef = useRef(true);
+  const idleTimeoutRef = useRef(null);
+  useFocusHandler({
+    enabled,
+    onFocus: () => {
+      inFocusRef.current = true;
+      console.log('on focus ',new Date());
+      if(idleTimeoutRef.current){
+        clearTimeout(idleTimeoutRef.current);
+      }
+    },
+    onBlur: () => {
+      console.log('on blur ',new Date());
+      inFocusRef.current = false;
+      if(idleTimeoutRef.current){
+        clearTimeout(idleTimeoutRef.current);
+      }
+      idleTimeoutRef.current = setTimeout(()=>{  
+        if(!inFocusRef.current && enabled){
+          console.info('too much time away from screen!!!!!!!', new Date());
+          incrementNavigationCounter({history,testActivityId});
+        }
+      },5000);
+    }
+  });
+}
 
 const RealTimeV2HookWrapper = ({
   userId,
@@ -164,7 +316,10 @@ const AssessmentContainer = ({
   evaluateForPreview,
   ...restProps
 }) => {
-  const qid = preview || testletType ? 0 : match.params.qid || 0
+  const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
+  const itemIndex =
+    itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
+  const qid = itemIndex > 0 ? itemIndex : 0
   const [currentItem, setCurrentItem] = useState(Number(qid))
   const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({
     qLabels: [],
@@ -176,7 +331,11 @@ const AssessmentContainer = ({
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
-  const assignmentObj = currentAssignment && assignmentById[currentAssignment]
+  const assignmentObj = currentAssignment && assignmentById[currentAssignment];
+  const hidePause = assignmentObj?.blockSaveAndContinue;
+  
+  const currentlyFullScreen = useFullScreenListener({enabled:assignmentObj?.restrictNavigationOut});
+  useTabNavigationCounterEffect({testActivityId: restProps.utaId,enabled:assignmentObj?.restrictNavigationOut,history});
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
@@ -242,7 +401,7 @@ const AssessmentContainer = ({
 
   const onRegradedModalOk = () => {
     history.push(
-      `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/qid/0`
+      `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/itemId/${items[currentItem]._id}`
     )
     clearRegradeAssignment()
     setShowRegradedModal(false)
@@ -406,7 +565,7 @@ const AssessmentContainer = ({
       ) {
         const previewTab = getPreviewTab(index)
         saveCurrentAnswer({
-          urlToGo: `${url}/qid/${index}`,
+          urlToGo: `${url}/itemId/${items[index]._id}`,
           locState: history?.location?.state,
           callback: () => changePreview(previewTab),
         })
@@ -539,12 +698,22 @@ const AssessmentContainer = ({
       event.preventDefault()
       saveProgress()
       // Older browsers supported custom message
-      event.returnValue = ''
+      event.returnValue = 'Are'
     }
 
     window.addEventListener('beforeunload', cb)
+
+    const unloadCb = (e)=>{
+      if(assignmentObj.blockSaveAndContinue){
+        pauseAssignment({history,testActivityId:restProps.utaId,assignmentId: assignmentObj?._id,classId: groupId,userId,pauseReason:"exiting"})
+      }
+    }
+
+    window.addEventListener('unload',unloadCb);
+
     return () => {
       window.removeEventListener('beforeunload', cb)
+      window.removeEventListener('unload',unloadCb);
     }
   }, [qid])
 
@@ -609,6 +778,7 @@ const AssessmentContainer = ({
     playerComponent = (
       <AssessmentPlayerDocBased
         docUrl={docUrl}
+        hidePause={hidePause}
         annotations={annotations}
         questionsById={questionsById}
         answers={answers}
@@ -622,6 +792,7 @@ const AssessmentContainer = ({
     playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
+        hidePause={hidePause}
         testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
@@ -635,9 +806,9 @@ const AssessmentContainer = ({
      * highlight image default pen should be disabled
      */
     playerComponent = defaultAP ? (
-      <AssessmentPlayerDefault {...props} />
+      <AssessmentPlayerDefault {...props} hidePause={hidePause} />
     ) : (
-      <AssessmentPlayerSimple {...props} />
+      <AssessmentPlayerSimple {...props} hidePause={hidePause} />
     )
   }
 
@@ -645,6 +816,19 @@ const AssessmentContainer = ({
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem }}
     >
+      {assignmentObj?.restrictNavigationOut  
+      && 
+      (<>
+      <ForceFullScreenModal 
+          testActivityId={restProps.utaId} 
+          history={history}
+          visible = {!currentlyFullScreen}
+          finishTest={() => finishTest(groupId)} 
+      />
+      </>)}
+
+      {(assignmentObj.blockSaveAndContinue||assignmentObj?.restrictNavigationOut) &&
+        (<FirestorePings testActivityId={restProps.utaId} history={history} blockSaveAndContinue={assignmentObj.blockSaveAndContinue} userId={userId} classId={groupId} assignmentId={assignmentObj?._id}  />)}
       {showRegradedModal && (
         <Modal
           visible

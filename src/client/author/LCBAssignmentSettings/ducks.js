@@ -215,6 +215,7 @@ function getSettingsSelector(state) {
     assignmentPassword,
     autoRedirect,
     autoRedirectSettings,
+    blockNavigationToAnsweredQuestions,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -288,6 +289,7 @@ function getSettingsSelector(state) {
       ...passWordPolicySettings,
       autoRedirect,
       autoRedirectSettings,
+      blockNavigationToAnsweredQuestions,
     },
     isUndefined
   )

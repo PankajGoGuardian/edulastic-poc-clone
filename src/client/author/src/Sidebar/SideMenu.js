@@ -428,7 +428,9 @@ class SideMenu extends Component {
             <Menu.Item key="2" className="removeSelectedBorder">
               <Link to="/author/subscription">
                 <IconSubscriptionHighlight />{' '}
-                <span>{isCollapsed ? '' : 'Subscription'}</span>
+                <span data-cy="subscription">
+                  {isCollapsed ? '' : 'Subscription'}
+                </span>
               </Link>
             </Menu.Item>
           )}

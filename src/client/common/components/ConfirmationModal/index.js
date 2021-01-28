@@ -30,6 +30,7 @@ const ConfirmationModal = ({
   bodyStyle = {},
   bodyTextStyle,
   placeHolder,
+  hideConfirmation = false,
 }) => (
   <ConfirmationModalStyled
     centered
@@ -65,12 +66,12 @@ const ConfirmationModal = ({
             )}
           </StyledDiv>
 
-          {showConfirmationText ? (
+          {showConfirmationText && !hideConfirmation ? (
             <StyledDiv style={bodyTextStyle}>
               If Yes, type<LightGreenSpan> {expectedVal} </LightGreenSpan>
               in the space given below and proceed.
             </StyledDiv>
-          ) : (
+          ) : hideConfirmation ? null : (
             <StyledDiv style={bodyTextStyle}>
               If you are sure, please type{' '}
               <LightGreenSpan> {expectedVal} </LightGreenSpan> in the space
@@ -79,20 +80,22 @@ const ConfirmationModal = ({
           )}
         </Col>
       </Row>
-      <Row>
-        <StyledCol span={24}>
-          <TextInputStyled
-            align="center"
-            placeHolderAlign="left"
-            placeholder={placeHolder}
-            data-cy="confirmationInput"
-            value={inputVal}
-            onChange={onInputChange}
-            // here paste is not allowed, and user has to manually type in inputVal
-            onPaste={(e) => e.preventDefault()}
-          />
-        </StyledCol>
-      </Row>
+      {!hideConfirmation && (
+        <Row>
+          <StyledCol span={24}>
+            <TextInputStyled
+              align="center"
+              placeHolderAlign="left"
+              placeholder={placeHolder}
+              data-cy="confirmationInput"
+              value={inputVal}
+              onChange={onInputChange}
+              // here paste is not allowed, and user has to manually type in inputVal
+              onPaste={(e) => e.preventDefault()}
+            />
+          </StyledCol>
+        </Row>
+      )}
     </InitOptions>
   </ConfirmationModalStyled>
 )

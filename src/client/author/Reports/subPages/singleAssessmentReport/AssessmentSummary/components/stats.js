@@ -79,10 +79,12 @@ export const Stats = (props) => {
         className="average-stats"
       >
         <StatItem
+          dataCy="averageScore"
           heading="Average Score"
           value={`${state.avgScore}/${Math.round(state.total)}`}
         />
         <StatItem
+          dataCy="avgStudentScore"
           heading="Average Student Score"
           value={`${state.avgStudentScore}%`}
         />
@@ -94,17 +96,20 @@ export const Stats = (props) => {
         className="average-stats"
       >
         <StatItem
+          dataCy="studentsAssigned"
           fontSize="14px"
           heading="Total Assigned"
           value={state.studentsAssigned}
         />
         <StatItem
+          dataCy="studentsGraded"
           fontSize="14px"
           heading="Students Submitted & Graded"
           value={state.studentsGraded}
         />
         {/* added extra white space for responsiveness */}
         <StatItem
+          dataCy="studentsAbsent"
           fontSize="14px"
           heading="Students Not Started, In Progress & Absent"
           value={state.studentsAbsent}

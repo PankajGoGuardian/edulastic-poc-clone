@@ -692,6 +692,8 @@ export const transformGradeBookResponse = (
           isEnrolled = true,
           isAssigned = true,
           isPaused = false,
+          tabNavigationCounter:outNavigationCounter=0,
+          pauseReason,
         } = testActivity
         return {
           studentId,
@@ -725,6 +727,8 @@ export const transformGradeBookResponse = (
               : questionActivities.filter((x) => isValidQuestionActivity(x)),
           endDate: testActivity.endDate,
           isPaused,
+          outNavigationCounter,
+          pauseReason
         }
       }
     )

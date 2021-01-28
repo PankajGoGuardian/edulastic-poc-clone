@@ -11,6 +11,7 @@ import {
   white,
   mediumDesktopExactWidth,
   greyThemeLighter,
+  backgroundGrey,
 } from '@edulastic/colors'
 import { Paper } from '@edulastic/common'
 import { Anchor, Button, Col, Input, Radio, Select, Table } from 'antd'
@@ -28,7 +29,7 @@ export const StyledAnchor = styled(Anchor)`
   max-height: unset !important;
 
   .ant-anchor-ink {
-    padding: 14px 0;
+    padding: 24px 0;
     left: 8px;
 
     &:before {
@@ -38,7 +39,7 @@ export const StyledAnchor = styled(Anchor)`
 
   .ant-anchor-link {
     position: relative;
-    padding: 14px;
+    padding: 20px;
     @media (max-width: ${smallDesktopWidth}) {
       max-width: 200px;
     }
@@ -51,7 +52,7 @@ export const StyledAnchor = styled(Anchor)`
       display: block;
       position: absolute;
       content: '';
-      top: 14px;
+      top: 20px;
       left: -5px;
       width: 8px;
       height: 8px;
@@ -68,7 +69,7 @@ export const StyledAnchor = styled(Anchor)`
       content: '';
       position: absolute;
       left: -7px;
-      top: 14px;
+      top: 20px;
       z-index: 5;
       opacity: 0;
       transition: all 0.3s ease;
@@ -101,6 +102,7 @@ export const StyledAnchor = styled(Anchor)`
 
 export const Block = styled.div`
   margin-bottom: 20px;
+  margin-left: 20px;
   padding: ${(props) => (props.smallSize ? '15px' : '0')};
   background: ${white};
   border-radius: 4px;
@@ -374,5 +376,21 @@ export const SecondHeader = styled.div`
     background: transparent;
     height: 24px;
     margin-left: 17px;
+  }
+`
+export const SettingsCategoryBlock = styled.div`
+  padding: 0px 24px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  background: ${backgroundGrey};
+  margin-bottom: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  > span:last-child {
+    font-size: 20px;
+    cursor: pointer;
   }
 `

@@ -4,7 +4,8 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { get, isObject } from 'lodash'
-import { Anchor, Col, Row, Select, Tooltip, Icon } from 'antd'
+import Styled from 'styled-components'
+import { Anchor, Col, Row, Select, Tooltip, Icon, InputNumber } from 'antd'
 import { blueBorder, green, red, lightGrey9 } from '@edulastic/colors'
 
 import {
@@ -1779,3 +1780,7 @@ const enhance = compose(
 )
 
 export default enhance(Setting)
+
+const InputNumberStyled = Styled(InputNumber)`
+    width: 60px;
+`

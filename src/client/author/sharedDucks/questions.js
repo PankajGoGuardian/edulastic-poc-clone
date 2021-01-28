@@ -16,6 +16,8 @@ import { markQuestionLabel } from '../../assessment/Transformer'
 export const LOAD_QUESTIONS = '[author questions] load questions'
 export const ADD_ITEMS_QUESTION = '[author question] load question'
 export const UPDATE_QUESTION = '[author questions] update questions'
+export const UPDATE_QUESTION_REQUEST =
+  '[author questions] update questions request'
 export const CHANGE_LABEL = '[author questions] change label'
 export const SET_FIRST_MOUNT = '[author questions] set first mount'
 export const CHANGE_ITEM = '[author questions] change item'

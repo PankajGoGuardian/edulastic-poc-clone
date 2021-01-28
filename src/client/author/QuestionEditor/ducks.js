@@ -20,7 +20,7 @@ import {
   uniq,
 } from 'lodash'
 import produce from 'immer'
-import { questionType } from '@edulastic/constants'
+import { questionType, appLanguages } from '@edulastic/constants'
 import { helpers, notification } from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
@@ -53,6 +53,7 @@ import {
 import {
   SET_RUBRIC_ID,
   UPDATE_QUESTION,
+  UPDATE_QUESTION_REQUEST,
   SET_FIRST_MOUNT,
   getCurrentQuestionSelector,
   getQuestionsArraySelector,
@@ -87,6 +88,14 @@ import {
 } from '../src/selectors/user'
 import { getTestEntitySelector } from '../AssignTest/duck'
 import { reSequenceQuestionsWithWidgets } from '../../common/utils/helpers'
+import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import {
+  changeDataToPreferredLanguage,
+  changeDataInPreferredLanguage,
+} from '../../assessment/utils/question'
+
+const { LANGUAGE_EN } = appLanguages
+
 // constants
 export const resourceTypeQuestions = {
   PASSAGE: questionType.PASSAGE,
@@ -140,7 +149,7 @@ export const saveQuestionAction = (testId, isTestFlow, isEditFlow = false) => ({
 })
 
 export const setQuestionDataAction = (question) => ({
-  type: UPDATE_QUESTION,
+  type: UPDATE_QUESTION_REQUEST,
   payload: question,
 })
 
@@ -326,7 +335,8 @@ export const getQuestionSelector = createSelector(
 )
 export const getQuestionDataSelector = createSelector(
   getCurrentQuestionSelector,
-  (state) => state
+  getCurrentLanguage,
+  (state, currentLang) => changeDataToPreferredLanguage(state, currentLang)
 )
 export const getQuestionAlignmentSelector = createSelector(
   getCurrentQuestionSelector,
@@ -944,7 +954,7 @@ function* calculateFormulaSaga({ payload }) {
     }
 
     yield put({
-      type: UPDATE_QUESTION,
+      type: UPDATE_QUESTION_REQUEST,
       payload: newQuestion,
     })
   } catch (err) {
@@ -1002,6 +1012,28 @@ function* loadQuestionSaga({ payload }) {
   }
 }
 
+function* updateQuestionSaga({ payload }) {
+  const prevQuestion = yield select(getCurrentQuestionSelector)
+  const currentLanguage = yield select(getCurrentLanguage)
+
+  if (currentLanguage && currentLanguage !== LANGUAGE_EN) {
+    const newQuestion = changeDataInPreferredLanguage(
+      currentLanguage,
+      prevQuestion,
+      payload
+    )
+    yield put({
+      type: UPDATE_QUESTION,
+      payload: newQuestion,
+    })
+  } else {
+    yield put({
+      payload,
+      type: UPDATE_QUESTION,
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
@@ -1009,5 +1041,6 @@ export function* watcherSaga() {
     yield takeEvery(LOAD_QUESTION, loadQuestionSaga),
     yield takeLatest(CALCULATE_FORMULA, calculateFormulaSaga),
     yield takeEvery(ADD_AUTHORED_ITEMS_TO_TEST, addAuthoredItemsToTestSaga),
+    yield takeLatest(UPDATE_QUESTION_REQUEST, updateQuestionSaga),
   ])
 }

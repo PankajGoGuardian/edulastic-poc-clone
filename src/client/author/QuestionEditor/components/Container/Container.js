@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Row, Col } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import {
   withWindowSizes,
@@ -12,6 +11,7 @@ import {
   getFormattedAttrId,
   ItemLevelContext as HideScoringBlackContext,
   CustomPrompt,
+  LanguageContext,
 } from '@edulastic/common'
 import styled from 'styled-components'
 import { IconClose } from '@edulastic/icons'
@@ -41,6 +41,7 @@ import {
   saveQuestionAction,
   setQuestionDataAction,
   getCalculatingSelector,
+  getQuestionDataSelector,
 } from '../../ducks'
 import {
   getItemIdSelector,
@@ -49,10 +50,7 @@ import {
   savePassageAction,
   saveAndPublishItemAction,
 } from '../../../ItemDetail/ducks'
-import {
-  getCurrentQuestionSelector,
-  changeUpdatedFlagAction,
-} from '../../../sharedDucks/questions'
+import { changeUpdatedFlagAction } from '../../../sharedDucks/questions'
 import {
   checkAnswerAction,
   showAnswerAction,
@@ -63,6 +61,10 @@ import { removeUserAnswerAction } from '../../../../assessment/actions/answers'
 import { BackLink, QuestionContentWrapper } from './styled'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
+import LanguageSelector from '../../../../common/components/LanguageSelector'
+import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
+
+const { useLanguageFeatureQn } = constantsQuestionType
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const questions = get(item, 'data.questions', [])
@@ -368,13 +370,7 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const {
-      view,
-      question,
-      authorQuestions,
-      preview,
-      itemFromState = {},
-    } = this.props
+    const { view, question, preview, itemFromState = {} } = this.props
     const { showHints } = this.state
     const { checkAnswerButton = false, checkAttempts = 1 } =
       question.validation || {}
@@ -382,8 +378,8 @@ class Container extends Component {
       itemFromState || {}
     const hideScoreBlock = multipartItem && itemLevelScoring
     const isShowAnswerVisible =
-      authorQuestions &&
-      !constantsQuestionType.manuallyGradableQn.includes(authorQuestions.type)
+      question &&
+      !constantsQuestionType.manuallyGradableQn.includes(question.type)
 
     return (
       <ButtonAction
@@ -477,7 +473,7 @@ class Container extends Component {
       setShowSettings,
       saveItem,
       preview,
-      authorQuestions,
+      question,
     } = this.props
 
     const commonProps = {
@@ -487,7 +483,7 @@ class Container extends Component {
       view,
       preview,
       isTestFlow,
-      showMetaData: authorQuestions.type !== 'passage',
+      showMetaData: question.type !== 'passage',
       withLabels: true,
     }
 
@@ -540,8 +536,9 @@ class Container extends Component {
       showWarningModal,
       proceedSave,
       hasUnsavedChanges,
+      currentLanguage,
     } = this.props
-    
+
     if (!question) {
       const backUrl = get(history, 'location.state.backUrl', '')
       if (backUrl.includes('pickup-questiontype')) {
@@ -563,6 +560,8 @@ class Container extends Component {
 
     const { showModal, showStickyHeader } = this.state
     const itemId = question === null ? '' : question._id
+    const questionType = question && question.type
+
     return (
       <EditorContainer ref={this.innerDiv}>
         {/* TODO: message can be seen only when react-router-dom detects changes */}
@@ -587,15 +586,16 @@ class Container extends Component {
         </ItemHeader>
 
         <BreadCrumbBar className={showStickyHeader ? 'sticky-header' : ''}>
-          <Col xs={{ span: 8 }} lg={{ span: 12 }}>
-            {windowWidth > desktopWidth.replace('px', '') ? (
-              <SecondHeadBar breadcrumb={this.breadcrumb} />
-            ) : (
-              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+          {windowWidth > desktopWidth.replace('px', '') ? (
+            <SecondHeadBar breadcrumb={this.breadcrumb} />
+          ) : (
+            <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+          )}
+          <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
+            {useLanguageFeatureQn.includes(questionType) && (
+              <LanguageSelector questionId={question.id} />
             )}
-          </Col>
-          {view !== 'preview' && view !== 'auditTrail' && (
-            <Col span={12}>
+            {view !== 'preview' && view !== 'auditTrail' && (
               <EduButton
                 isGhost
                 height="30px"
@@ -604,9 +604,7 @@ class Container extends Component {
               >
                 How to author
               </EduButton>
-            </Col>
-          )}
-          <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
+            )}
             <div>{view === 'preview' && this.renderButtons()}</div>
           </RightActionButtons>
         </BreadCrumbBar>
@@ -615,7 +613,9 @@ class Container extends Component {
           ref={this.scrollContainer}
           zIndex="1"
         >
-          {this.renderQuestion()}
+          <LanguageContext.Provider value={{ currentLanguage }}>
+            {this.renderQuestion()}
+          </LanguageContext.Provider>
         </QuestionContentWrapper>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
       </EditorContainer>
@@ -646,7 +646,6 @@ Container.propTypes = {
   toggleModalAction: PropTypes.func.isRequired,
   onSaveScrollTop: PropTypes.func.isRequired,
   savedWindowScrollTop: PropTypes.number,
-  authorQuestions: PropTypes.object,
   testId: PropTypes.string,
 }
 
@@ -657,7 +656,6 @@ Container.defaultProps = {
   navigateToItemDetail: () => {},
   onCompleteItemCreation: () => {},
   onModalClose: () => {},
-  authorQuestions: {},
   savedWindowScrollTop: 0,
   testId: '',
   testName: '',
@@ -671,17 +669,17 @@ const enhance = compose(
     (state) => ({
       view: getViewSelector(state),
       preview: getPreviewSelector(state),
-      question: getCurrentQuestionSelector(state),
+      question: getQuestionDataSelector(state),
       testItemId: getItemIdSelector(state),
       itemFromState: getItemSelector(state),
       testName: state.tests.entity.title,
       testId: state.tests.entity._id,
       savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,
-      authorQuestions: getCurrentQuestionSelector(state),
       hasUnsavedChanges: state?.authorQuestions?.updated || false,
       showWarningModal: get(state, ['itemDetail', 'showWarningModal'], false),
       showCalculatingSpinner: getCalculatingSelector(state),
       previewMode: getPreviewSelector(state),
+      currentLanguage: getCurrentLanguage(state),
     }),
     {
       changeView: changeViewAction,
@@ -704,8 +702,12 @@ const enhance = compose(
 
 export default enhance(Container)
 
-const BreadCrumbBar = styled(Row)`
+const BreadCrumbBar = styled.div`
   padding: 10px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   &.sticky-header {
     position: fixed;
     left: 70px;
@@ -715,10 +717,9 @@ const BreadCrumbBar = styled(Row)`
   }
 `
 
-const RightActionButtons = styled(Col)`
-  div {
-    float: right;
-  }
+const RightActionButtons = styled.div`
+  display: flex;
+  align-items: center;
 `
 
 const EditorContainer = styled.div`

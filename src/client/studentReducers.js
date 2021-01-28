@@ -6,7 +6,7 @@ import dictionaries from './author/src/reducers/dictionaries'
 import { reducer as tests } from './author/TestPage/ducks'
 import authorQuestions from './author/sharedDucks/questions'
 import studentTestItems from './student/sharedDucks/TestItem'
-import { scratchpad } from './common/components/Scratchpad/duck'
+import commonReducers from './common/ducks'
 import tutorial from './tutorials/tutorialReducer'
 import testPlayer from './author/sharedDucks/testPlayer'
 import author_classboard_testActivity from './author/src/reducers/testActivity'
@@ -18,9 +18,9 @@ import { reducer as itemDetail } from './author/ItemDetail/ducks'
 export const studentReducers = combineReducers({
   ...allStudentReducers,
   ...assessmentReducers,
+  ...commonReducers,
   authorUi,
   dictionaries,
-  scratchpad,
   tutorial,
   tests,
   authorQuestions,

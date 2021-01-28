@@ -12,10 +12,7 @@ const Wrapper = styled.div`
   align-items: center;
   height: 28px;
   padding: 0px 14px 0px 10px;
-  position: absolute;
-  left: 0%;
-  top: 50%;
-  transform: translate(-100%, -50%);
+  margin-left: 5px;
   ${({ customStyle }) => ({ ...customStyle })};
 
   ${({ scoreType, theme }) => {

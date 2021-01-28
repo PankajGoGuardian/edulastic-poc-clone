@@ -386,3 +386,8 @@ export const isCoTeacherSelector = createSelector(
     role === roleuser.SCHOOL_ADMIN ||
     role === roleuser.TEACHER
 )
+
+export const getUserPreferredLanguage = createSelector(
+  getUserSelector,
+  (state) => state?.user?.preferredLanguage
+)

@@ -452,9 +452,11 @@ const SubscriptionMain = ({ user, ...props }) => {
       <EnterpriseSection>
         <SectionTitle>Enterprise</SectionTitle>
         <SectionDescription>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
-          sollicitudin tincidunt tempus. <br /> Pellentesque auctor eros et
-          metus condimentum aliquet.
+          Get in-depth insights into schoolwide and districtwide progress with
+          Edulastic Enterprise. Deliver common assessments, analyze the instant
+          student data, and manage everything in one place. Enterprise includes
+          Teacher Premium and its collaboration, accommodation, and security
+          tools.
         </SectionDescription>
         <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
           <EduButton

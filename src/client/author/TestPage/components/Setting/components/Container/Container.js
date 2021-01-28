@@ -495,6 +495,8 @@ class Setting extends Component {
       selectPlayerSkinType = false,
     } = availableFeatures
 
+    const showMultiLangSelection =
+      isAuthorPublisher || userRole !== roleuser.EDULASTIC_CURATOR
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />
@@ -934,37 +936,6 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
-                  {/* Multi language start */}
-                  <Block id="multi-language-enabled" smallSize={isSmallSize}>
-                    <SettingContainer>
-                      <DetailsTooltip
-                        showInsideContainer
-                        title="Multi-Language"
-                        content="Select ON , If you want to enable multiple languages for the test."
-                        premium={premium}
-                      />
-                      <Title>
-                        <span>Multi-Language</span>
-                        <EduSwitchStyled
-                          disabled={!owner || !isEditable}
-                          data-cy="multi-language-enabled"
-                          defaultChecked={multiLanguageEnabled}
-                          onChange={() =>
-                            this.updateTestData('multiLanguageEnabled')(
-                              !multiLanguageEnabled
-                            )
-                          }
-                        />
-                      </Title>
-                      <Body smallSize={isSmallSize}>
-                        <Description>
-                          Select <BlueText> ON </BlueText> , If you want to
-                          enable multiple languages for the test.
-                        </Description>
-                      </Body>
-                    </SettingContainer>
-                  </Block>
-                  {/* Multi language Ends */}
 
                   {!isDocBased && (
                     <Block
@@ -1578,6 +1549,40 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
+
+                  {/* Multi language start */}
+                  {showMultiLangSelection && (
+                    <Block id="multi-language-enabled" smallSize={isSmallSize}>
+                      <SettingContainer>
+                        <DetailsTooltip
+                          showInsideContainer
+                          title="Multi-Language"
+                          content="Select ON , If you want to enable multiple languages for the test."
+                          premium={premium}
+                        />
+                        <Title>
+                          <span>Multi-Language</span>
+                          <EduSwitchStyled
+                            disabled={!owner || !isEditable}
+                            data-cy="multi-language-enabled"
+                            defaultChecked={multiLanguageEnabled}
+                            onChange={() =>
+                              this.updateTestData('multiLanguageEnabled')(
+                                !multiLanguageEnabled
+                              )
+                            }
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description>
+                            Select <BlueText> ON </BlueText> , If you want to
+                            enable multiple languages for the test.
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  )}
+                  {/* Multi language Ends */}
 
                   <Block id="performance-bands" smallSize={isSmallSize}>
                     <PeformanceBand

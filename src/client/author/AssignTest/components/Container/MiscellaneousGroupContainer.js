@@ -1,7 +1,8 @@
 import React from 'react'
-import { Col, Radio } from 'antd'
+import { Row, Col, Radio, Tooltip } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
+import { lightGrey9 } from '@edulastic/colors'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   AlignSwitchRight,
@@ -12,6 +13,7 @@ import {
   StyledRadioGroup,
   RadioWrapper,
   Title,
+  StyledInfoIcon,
 } from '../SimpleOptions/styled'
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
 import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
@@ -41,6 +43,7 @@ const MiscellaneousGroupContainer = ({
     standardGradingScale = testSettings.standardGradingScale,
     showMagnifier = testSettings.showMagnifier,
     enableScratchpad = testSettings.enableScratchpad,
+    multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
   } = assignmentSettings
 
   const playerSkinType =
@@ -55,7 +58,10 @@ const MiscellaneousGroupContainer = ({
     assessmentSuperPowersAnswerOnPaper,
     performanceBands,
     selectPlayerSkinType,
+    premium,
   } = featuresAvailable
+
+  const showMultiLangSelection = !!testSettings.multiLanguageEnabled
 
   return (
     <>
@@ -92,7 +98,41 @@ const MiscellaneousGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Answer on Paper */}
-
+      {/* Multi language */}
+      {showMultiLangSelection && (
+        <SettingContainer>
+          <DetailsTooltip
+            title="Multi-Language"
+            content="Select ON , If you want to enable multiple languages for the test."
+            premium={premium}
+          />
+          <StyledRow gutter={16} mb="15px" height="40">
+            <Col span={12}>
+              <Label>
+                <span>Multi-Language</span>
+                <Tooltip title="Select ON , If you want to enable multiple languages for the assignment.">
+                  <StyledInfoIcon color={lightGrey9} mL="15px" />
+                </Tooltip>
+              </Label>
+            </Col>
+            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignSwitchRight
+                  data-cy="multi-language"
+                  size="small"
+                  defaultChecked={false}
+                  disabled={freezeSettings || !premium}
+                  checked={multiLanguageEnabled}
+                  onChange={(value) =>
+                    overRideSettings('multiLanguageEnabled', value)
+                  }
+                />
+              </Row>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      )}
+      {/* Multi language */}
       <FeaturesSwitch
         inputFeatures="performanceBands"
         actionOnInaccessible={actionOnFeatureInaccessible}

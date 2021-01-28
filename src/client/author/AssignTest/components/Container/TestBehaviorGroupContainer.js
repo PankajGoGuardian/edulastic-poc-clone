@@ -63,7 +63,6 @@ const TestBehaviorGroupContainer = ({
       testContentVisibilityOptions.ALWAYS,
     maxAttempts = testSettings.maxAttempts,
     testType = testSettings.testType,
-    multiLanguageEnabled = testSettings.multiLanguageEnabled,
   } = assignmentSettings
 
   const {
@@ -381,40 +380,6 @@ const TestBehaviorGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Timed TEST */}
-
-      {/* Multi language */}
-      <SettingContainer>
-        <DetailsTooltip
-          title="Multi-Language"
-          content="Select ON , If you want to enable multiple languages for the test."
-          premium={premium}
-        />
-        <StyledRow gutter={16} mb="15px" height="40">
-          <Col span={12}>
-            <Label>
-              <span>Multi-Language</span>
-              <Tooltip title="Select ON , If you want to enable multiple languages for the assignment.">
-                <StyledInfoIcon color={lightGrey9} mL="15px" />
-              </Tooltip>
-            </Label>
-          </Col>
-          <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
-            <Row style={{ display: 'flex', alignItems: 'center' }}>
-              <AlignSwitchRight
-                data-cy="multi-language"
-                size="small"
-                defaultChecked={false}
-                disabled={freezeSettings || !premium}
-                checked={multiLanguageEnabled}
-                onChange={(value) =>
-                  overRideSettings('multiLanguageEnabled', value)
-                }
-              />
-            </Row>
-          </Col>
-        </StyledRow>
-      </SettingContainer>
-      {/* Multi language */}
 
       {/* Test Content visibility */}
       {(userRole === roleuser.DISTRICT_ADMIN ||

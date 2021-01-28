@@ -238,6 +238,7 @@ const Settings = ({
     autoRedirect = false,
     autoRedirectSettings,
     blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
+    multiLanguageEnabled = !!tempTestSettings.multiLanguageEnabled,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -248,6 +249,7 @@ const Settings = ({
       )) ||
     calculatorKeys
 
+  const showMultiLangSelection = !!testSettings.multiLanguageEnabled
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -502,6 +504,42 @@ const Settings = ({
           )
           /* Check Answer Tries Per Question */
         }
+
+        {/* Multi language */}
+        {showMultiLangSelection && (
+          <SettingContainer>
+            <DetailsTooltip
+              title="Multi-Language"
+              content="Select ON , If you want to enable multiple languages for the test."
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15px" height="40">
+              <Col span={12}>
+                <Label>
+                  <span>Multi-Language</span>
+                </Label>
+              </Col>
+              <Col
+                span={10}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <Row style={{ display: 'flex', alignItems: 'center' }}>
+                  <AlignSwitchRight
+                    data-cy="multi-language"
+                    size="small"
+                    defaultChecked={false}
+                    disabled={freezeSettings}
+                    checked={multiLanguageEnabled}
+                    onChange={(value) =>
+                      overRideSettings('multiLanguageEnabled', value)
+                    }
+                  />
+                </Row>
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        )}
+        {/* Multi language */}
 
         {/* Auto Redirect */}
         <SettingContainer>

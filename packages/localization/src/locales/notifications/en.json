@@ -1839,6 +1839,10 @@
     "message": "Test is expired",
     "description": ""
   },
+  "selectLanguage": {
+    "message": "Please select your preferred language to continue",
+    "description": ""
+  },
   "failedToUpdateUser": {
     "message": "Failed to update user please try again.",
     "description": ""

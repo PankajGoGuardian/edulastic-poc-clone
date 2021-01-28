@@ -817,6 +817,7 @@ export const createBlankTest = () => ({
   ],
   passages: [],
   freezeSettings: false,
+  multiLanguageEnabled: false,
   playerSkinType: 'edulastic',
 })
 

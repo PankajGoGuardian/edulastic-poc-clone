@@ -141,11 +141,20 @@ const StudentProfileReportsFilters = ({
     () => performanceBandProfiles.map((p) => ({ key: p._id, title: p.name })),
     [performanceBandProfiles]
   )
+  const selectedPerformanceBand =
+    performanceBandsList.find(
+      (p) => p.key === filters.performanceBandProfileId
+    ) || performanceBandsList[0]
+
   const scales = get(SPRFilterData, 'data.result.scaleInfo', [])
   const standardProficiencyList = useMemo(
     () => scales.map((s) => ({ key: s._id, title: s.name })),
     [scales]
   )
+  const selectedStandardProficiency =
+    standardProficiencyList.find(
+      (p) => p.key === filters.standardsProficiencyProfileId
+    ) || standardProficiencyList[0]
 
   useEffect(() => {
     if (SPRFilterData !== prevSPRFilterData) {
@@ -190,8 +199,8 @@ const StudentProfileReportsFilters = ({
       termId: selectedTerm,
       grade: selectedGrade,
       subject: selectedSubject,
-      performanceBandProfileId: performanceBandsList[0],
-      standardsProficiencyProfileId: standardProficiencyList[0],
+      performanceBandProfileId: selectedPerformanceBand,
+      standardsProficiencyProfileId: selectedStandardProficiency,
       student: _student,
     }
     setFilters(_filters)
@@ -351,7 +360,7 @@ const StudentProfileReportsFilters = ({
         <SearchField>
           <FilterLabel>Performance Band</FilterLabel>
           <ControlDropDown
-            by={filters.performanceBandProfileId}
+            by={selectedPerformanceBand}
             selectCB={(e, selected) =>
               updateFilterDropdownCB(selected, 'performanceBandProfileId')
             }
@@ -365,7 +374,7 @@ const StudentProfileReportsFilters = ({
         <SearchField>
           <FilterLabel>Standard Proficiency</FilterLabel>
           <ControlDropDown
-            by={filters.standardsProficiencyProfileId}
+            by={selectedStandardProficiency}
             selectCB={(e, selected) =>
               updateFilterDropdownCB(selected, 'standardsProficiencyProfileId')
             }

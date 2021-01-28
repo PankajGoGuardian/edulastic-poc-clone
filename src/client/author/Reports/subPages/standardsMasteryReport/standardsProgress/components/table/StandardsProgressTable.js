@@ -55,8 +55,8 @@ const StandardsProgressTable = ({
           <span>{test.testName}</span>
           <br />
           <span>
-            {test[tableFilters.analyseBy.key]}{' '}
-            {tableFilters.analyseBy.Key == 'score' ? '%' : ''}
+            {test[tableFilters.analyseBy.key]}
+            {tableFilters.analyseBy.key === 'score' ? ' %' : ''}
           </span>
         </>
       ),
@@ -79,7 +79,7 @@ const StandardsProgressTable = ({
               title={`${tableFilters.compareBy.title}: `}
               value={record.name || '-'}
             />
-            <TableTooltipRow title="Test: " value={_test.testName} />
+            <TableTooltipRow title="Test: " value={test.testName} />
             <TableTooltipRow
               title={`${getAnalyseByTitle(tableFilters.analyseBy.key)}: `}
               value={colValue}

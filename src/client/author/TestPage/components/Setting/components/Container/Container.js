@@ -1551,7 +1551,7 @@ class Setting extends Component {
                       />
                       <Title>
                         <span>
-                          Answer on Paper 4
+                          Answer on Paper
                           <DollarPremiumSymbol
                             premium={assessmentSuperPowersAnswerOnPaper}
                           />

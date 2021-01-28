@@ -21,6 +21,7 @@ cypress/.snapshot-report
 cypress/videos/
 dist/
 public/testlets/
+speedMeasureOutput.txt
 
 # vi swap files
 *.sw*

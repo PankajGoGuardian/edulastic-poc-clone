@@ -953,7 +953,23 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CREATE_TEST_ERROR:
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error }
-    case SET_TEST_DATA:
+    case SET_TEST_DATA: {
+      let entity = { ...state.entity, ...payload.data }
+      if (
+        payload.data?.restrictNavigationOut ===
+          'warn-and-report-after-n-alerts' &&
+        typeof entity?.restrictNavigationOutAttemptsThreshold === 'undefined'
+      ) {
+        entity = {
+          ...entity,
+          restrictNavigationOutAttemptsThreshold: 5,
+        }
+      } else if (payload.data?.restrictNavigationOut === 'warn-and-report') {
+        entity = {
+          ...entity,
+          restrictNavigationOutAttemptsThreshold: undefined,
+        }
+      }
       return {
         ...state,
         entity: {
@@ -962,6 +978,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         },
         updated: true,
       }
+    }
     case UPDATE_TEST_IMAGE:
       return {
         ...state,
@@ -1086,7 +1103,9 @@ export const reducer = (state = initialState, { type, payload }) => {
       return produce(state, (_state) => {
         if (_state.entity.isDocBased) {
           const newSubjects =
-            payload?.alignment?.flatMap((x) => x.subject) || []
+            payload?.alignment
+              ?.flatMap((x) => x.subject)
+              ?.filter((x) => x && x?.trim()) || []
           const newGrades = payload?.alignment?.flatMap((x) => x.grades) || []
           _state.entity.grades = _uniq([..._state.entity.grades, ...newGrades])
           _state.entity.subjects = _uniq([

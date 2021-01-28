@@ -301,7 +301,7 @@ export const getColValue = (test, analyseByKey, masteryScale) => {
     case 'rawScore':
       return test
         ? `${(test.totalScore || 0).toFixed(2)} / ${test.maxScore}`
-        : 0
+        : 'N/A'
     case 'masteryLevel':
       return test
         ? getMasteryLevel(getMasteryScore(test), masteryScale).masteryLabel

@@ -133,6 +133,24 @@ const StandardsFilters = ({
 
   const filterColSpan = pageTitle === 'Standards Progress' ? 5 : 6
 
+  const standardProficiencyFilter = (
+    <StyledDropDownContainer
+      xs={24}
+      sm={12}
+      md={12}
+      lg={filterColSpan}
+      xl={filterColSpan}
+    >
+      <ControlDropDown
+        by={filters.profileId || defaultProficiencyId}
+        selectCB={(e) => updateFilterDropdownCB(e, 'profileId')}
+        data={proficiencyList}
+        prefix="Standard Proficiency"
+        showPrefixOnSelected={false}
+      />
+    </StyledDropDownContainer>
+  )
+
   return (
     <StyledFilterWrapper
       style={{ display: !showFilter || loading ? 'none' : 'flex' }}
@@ -170,21 +188,7 @@ const StandardsFilters = ({
               showPrefixOnSelected={false}
             />
           </StyledDropDownContainer>
-          <StyledDropDownContainer
-            xs={24}
-            sm={12}
-            md={12}
-            lg={filterColSpan}
-            xl={filterColSpan}
-          >
-            <ControlDropDown
-              by={filters.profileId || defaultProficiencyId}
-              selectCB={(e) => updateFilterDropdownCB(e, 'profileId')}
-              data={proficiencyList}
-              prefix="Standard Proficiency"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
+          {pageTitle !== 'Standards Progress' && standardProficiencyFilter}
           <StyledDropDownContainer
             xs={24}
             sm={12}
@@ -219,6 +223,7 @@ const StandardsFilters = ({
               />
             </StyledDropDownContainer>
           )}
+          {pageTitle === 'Standards Progress' && standardProficiencyFilter}
         </Row>
       </Col>
     </StyledFilterWrapper>

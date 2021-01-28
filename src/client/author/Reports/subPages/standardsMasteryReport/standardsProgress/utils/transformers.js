@@ -101,6 +101,9 @@ export const getDenormalizedData = (rawData, compareByKey) => {
       return item
     })
     .filter((item) => !isEmpty(item.groupIds))
+    .sort((a, b) =>
+      a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
+    )
     .sort((a, b) => testOrderMap[a.reportKey] - testOrderMap[b.reportKey])
 
   const denormalizedData = studentMetricInfo.flatMap(({ groupIds, ...item }) =>
@@ -125,7 +128,6 @@ export const getDenormalizedData = (rawData, compareByKey) => {
               studInfoMap[item.studentId].lastName || ''
             }`
           ),
-          groupIds: uniq(studInfoMap[item.studentId].groupIds.split(',')),
         }
       }
       if (compareByDataKey === 'groupId' && teacherInfoMap[item.groupId]) {
@@ -141,17 +143,7 @@ export const getDenormalizedData = (rawData, compareByKey) => {
     })
     .sort((a, b) => testOrderMap[a.reportKey] - testOrderMap[b.reportKey])
 
-  const denormalizedTableData = metricInfo.flatMap(({ groupIds, ...item }) =>
-    isEmpty(groupIds)
-      ? [item]
-      : groupIds.map((groupId) => ({
-          ...item,
-          groupId,
-          ...(teacherInfoMap[groupId] || {}),
-        }))
-  )
-
-  return [denormalizedData, denormalizedTableData]
+  return [denormalizedData, metricInfo]
 }
 
 export const getFilteredDenormalizedData = (
@@ -159,32 +151,24 @@ export const getFilteredDenormalizedData = (
   denormalizedTableData = [],
   filters
 ) => {
-  const filteredDenormalizedData = denormalizedData
-    .filter((item) => {
-      const genderFlag = !!(
-        item.gender === filters.gender || filters.gender === 'all'
-      )
-      const frlStatusFlag = !!(
-        item.frlStatus === filters.frlStatus || filters.frlStatus === 'all'
-      )
-      const ellStatusFlag = !!(
-        item.ellStatus === filters.ellStatus || filters.ellStatus === 'all'
-      )
-      const iepStatusFlag = !!(
-        item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
-      )
-      const raceFlag = !!(item.race === filters.race || filters.race === 'all')
-      return (
-        genderFlag &&
-        frlStatusFlag &&
-        ellStatusFlag &&
-        iepStatusFlag &&
-        raceFlag
-      )
-    })
-    .sort((a, b) =>
-      a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
+  const filteredDenormalizedData = denormalizedData.filter((item) => {
+    const genderFlag = !!(
+      item.gender === filters.gender || filters.gender === 'all'
     )
+    const frlStatusFlag = !!(
+      item.frlStatus === filters.frlStatus || filters.frlStatus === 'all'
+    )
+    const ellStatusFlag = !!(
+      item.ellStatus === filters.ellStatus || filters.ellStatus === 'all'
+    )
+    const iepStatusFlag = !!(
+      item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
+    )
+    const raceFlag = !!(item.race === filters.race || filters.race === 'all')
+    return (
+      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag
+    )
+  })
   const filteredDenormalizedTableData = denormalizedTableData.filter((item) => {
     const genderFlag = !!(
       item.gender === filters.gender || filters.gender === 'all'

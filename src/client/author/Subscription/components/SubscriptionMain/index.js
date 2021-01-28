@@ -425,7 +425,10 @@ const SubscriptionMain = ({ user, ...props }) => {
                       {!(isPaidPremium && isPaidItemBank) && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
-                            <PurchaseLink onClick={handleClick}>
+                            <PurchaseLink
+                              data-cy="Purchase"
+                              onClick={handleClick}
+                            >
                               Purchase
                             </PurchaseLink>
                           )}

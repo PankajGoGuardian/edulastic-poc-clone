@@ -110,6 +110,7 @@ const SubscriptionAddonModal = ({
             href="https://edulastic.com/spark-math/"
             target="_blank"
             rel="noreferrer"
+            data-cy="sparkContentLink"
           >
             Click here
           </a>{' '}

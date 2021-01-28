@@ -7,8 +7,7 @@ import styled from 'styled-components'
 import next from 'immer'
 import { withNamespaces } from '@edulastic/localization'
 
-import { extraDesktopWidthMax, title } from '@edulastic/colors'
-import { compareNatural } from 'mathjs'
+import { extraDesktopWidthMax } from '@edulastic/colors'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 
 import { StyledTable, StyledDropDownContainer } from '../styled'

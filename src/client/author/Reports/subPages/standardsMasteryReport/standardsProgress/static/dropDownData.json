@@ -8,13 +8,8 @@
   "compareByData": [
     { "key": "school", "title": "School", "hiddenFromRole": ["teacher"] },
     { "key": "teacher", "title": "Teacher", "hiddenFromRole": ["teacher"] },
-    {
-      "key": "student",
-      "title": "Student",
-      "hiddenFromRole": ["district-admin"]
-    },
+    { "key": "student", "title": "Student" },
     { "key": "class", "title": "Class" },
-    { "key": "group", "title": "Student Group" },
     { "key": "race", "title": "Race" },
     { "key": "gender", "title": "Gender" },
     { "key": "frlStatus", "title": "FRL Status" },

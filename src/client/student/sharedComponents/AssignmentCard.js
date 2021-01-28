@@ -1,12 +1,6 @@
 import React, { useState, memo, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
-import {
-  notification,
-  EduButton,
-  FlexContainer,
-  MathFormulaDisplay,
-  handleChromeOsSEB,
-} from '@edulastic/common'
+import { notification, EduButton, handleChromeOsSEB } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
@@ -17,7 +11,6 @@ import {
   largeDesktopWidth,
   desktopWidth,
   black,
-  themeColor,
   tabletWidth,
 } from '@edulastic/colors'
 import { test as testConstants } from '@edulastic/constants'
@@ -25,7 +18,7 @@ import { test as testConstants } from '@edulastic/constants'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { first, maxBy, isNaN } from 'lodash'
-import { Row, Col, Icon, Modal, Select } from 'antd'
+import { Row, Col, Icon } from 'antd'
 import { maxDueDateFromClassess, getServerTs } from '../utils'
 
 //  components
@@ -34,6 +27,7 @@ import StartButton from '../Assignments/components/StartButton'
 import ReviewButton from '../Reports/components/ReviewButton'
 import SafeStartAssignButton from '../styled/AssignmentCardButton'
 import Attempt from './Attempt'
+import TestInfoModal from './TestInfoModal'
 import { ConfirmationModal } from '../../author/src/components/common/ConfirmationModal'
 
 // actions
@@ -96,10 +90,11 @@ const AssignmentCard = memo(
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
-    const { releaseGradeLabels, languageCodes } = testConstants
+    const { releaseGradeLabels } = testConstants
     const [retakeConfirmation, setRetakeConfirmation] = useState(false)
     const [showRetakeModal, setShowRetakeModal] = useState(false)
     const assignmentCardRef = useRef()
+    const [showInformationModal, setShowInformationModal] = useState(false)
 
     // case: when highlightMode is true i.e if want to highlight and assignment
     // scoll to specific assignment view
@@ -113,14 +108,6 @@ const AssignmentCard = memo(
         }
       }
     }, [highlightMode])
-
-    useEffect(() => {
-      console.log(data.multiLanguageEnabled, '====', languagePreference)
-      if (data?.multiLanguageEnabled && !languagePreference) {
-        // if lang selection enabled then set default as english
-        setSelectedLanguage(languageCodes.ENGLISH)
-      }
-    }, [data?.multiLanguageEnabled])
 
     const {
       test = {},
@@ -230,85 +217,11 @@ const AssignmentCard = memo(
         notification({ messageKey: 'testIsExpired' })
         return
       }
-
       if (
         !resume &&
         (timedAssignment || hasInstruction || multiLanguageEnabled)
       ) {
-        const timedContent = pauseAllowed ? (
-          <p>
-            {' '}
-            This is a timed assignment which should be finished within the time
-            limit set for this assignment. The time limit for this assignment is{' '}
-            <span data-cy="test-time" style={{ fontWeight: 700 }}>
-              {' '}
-              {allowedTime / (60 * 1000)} minutes
-            </span>
-            . Do you want to continue?
-          </p>
-        ) : (
-          <p>
-            {' '}
-            This is a timed assignment which should be finished within the time
-            limit set for this assignment. The time limit for this assignment is{' '}
-            <span data-cy="test-time" style={{ fontWeight: 700 }}>
-              {' '}
-              {allowedTime / (60 * 1000)} minutes
-            </span>{' '}
-            and you can’t quit in between. Do you want to continue?
-          </p>
-        )
-        const { Option } = Select
-        const langSelectContent = multiLanguageEnabled ? (
-          <p style={{ margin: '10px 0' }}>
-            <Select
-              getPopupContainer={(e) => e.parentElement}
-              value={languagePreference}
-              style={{ width: 120 }}
-              onChange={setSelectedLanguage}
-            >
-              <Option value={languageCodes.ENGLISH}>English</Option>
-              <Option value={languageCodes.SPANISH}>Spanish</Option>
-            </Select>
-          </p>
-        ) : null
-
-        const content = (
-          <FlexContainer flexDirection="column">
-            {langSelectContent}
-            {timedAssignment && timedContent}
-            {hasInstruction && instruction && (
-              <MathFormulaDisplay
-                dangerouslySetInnerHTML={{ __html: instruction }}
-                style={{ marginTop: '1rem' }}
-              />
-            )}
-          </FlexContainer>
-        )
-
-        Modal.confirm({
-          title: 'Do you want to Continue ?',
-          content,
-          onOk: () => {
-            if (attemptCount < maxAttempts)
-              startAssignment({
-                testId,
-                assignmentId,
-                testType,
-                classId,
-                languagePreference,
-              })
-            Modal.destroyAll()
-          },
-          okText: 'Continue',
-          // okType: "danger",
-          centered: true,
-          width: 500,
-          okButtonProps: {
-            style: { background: themeColor },
-          },
-        })
-        return
+        return setShowInformationModal(true)
       }
 
       if (resume) {
@@ -460,6 +373,27 @@ const AssignmentCard = memo(
                 want to Start?
               </p>
             </ConfirmationModal>
+          )}
+          {showInformationModal && (
+            <TestInfoModal
+              pauseAllowed={pauseAllowed}
+              allowedTime={allowedTime}
+              multiLanguageEnabled={multiLanguageEnabled}
+              showInformationModal={showInformationModal}
+              setSelectedLanguage={setSelectedLanguage}
+              languagePreference={languagePreference}
+              timedAssignment={timedAssignment}
+              hasInstruction={hasInstruction}
+              instruction={instruction}
+              setShowInformationModal={setShowInformationModal}
+              attemptCount={attemptCount}
+              maxAttempts={maxAttempts}
+              startAssignment={startAssignment}
+              testId={testId}
+              assignmentId={assignmentId}
+              testType={testType}
+              classId={classId}
+            />
           )}
           <AssessmentDetails
             data-cy={`test-${data.testId}`}

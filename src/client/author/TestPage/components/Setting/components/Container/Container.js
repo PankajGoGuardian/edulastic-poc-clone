@@ -496,7 +496,7 @@ class Setting extends Component {
     } = availableFeatures
 
     const showMultiLangSelection =
-      isAuthorPublisher || userRole !== roleuser.EDULASTIC_CURATOR
+      isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />

@@ -216,6 +216,7 @@ function getSettingsSelector(state) {
     autoRedirect,
     autoRedirectSettings,
     blockNavigationToAnsweredQuestions,
+    multiLanguageEnabled,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -290,6 +291,7 @@ function getSettingsSelector(state) {
       autoRedirect,
       autoRedirectSettings,
       blockNavigationToAnsweredQuestions,
+      multiLanguageEnabled,
     },
     isUndefined
   )

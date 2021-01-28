@@ -28,6 +28,7 @@ import {
 } from '../../../TestPage/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import { SettingContainer } from '../Container/styled'
+import { getmultiLanguageEnabled } from '../../../ClassBoard/ducks'
 
 const {
   calculatorKeys,
@@ -64,6 +65,7 @@ const Settings = ({
   freezeSettings = false,
   calculatorProvider,
   features,
+  multiLanguageEnabledLCB,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -249,7 +251,7 @@ const Settings = ({
       )) ||
     calculatorKeys
 
-  const showMultiLangSelection = !!testSettings.multiLanguageEnabled
+  const showMultiLangSelection = !!multiLanguageEnabledLCB
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -703,6 +705,7 @@ export default connect(
       : state?.tests?.entity?.summary?.totalItems,
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: state?.user?.user?.features,
+    multiLanguageEnabledLCB: getmultiLanguageEnabled(state),
   }),
   null
 )(withRouter(Settings))

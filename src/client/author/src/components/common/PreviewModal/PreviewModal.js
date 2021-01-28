@@ -268,6 +268,7 @@ class PreviewModal extends React.Component {
       testAssignments,
       userRole,
       writableCollections,
+      collections,
       userFeatures,
       passage,
     } = this.props
@@ -278,6 +279,11 @@ class PreviewModal extends React.Component {
     const hasCollectionAccess = allowContentEditCheck(
       item?.collections,
       writableCollections
+    )
+    const allowDuplicate = allowDuplicateCheck(
+      item?.collections,
+      collections,
+      'item'
     )
     const isDisableEdit = !(
       (isEditable && isOwner) ||
@@ -291,7 +297,7 @@ class PreviewModal extends React.Component {
     // clearing it before navigation.
 
     clearItemStore()
-    if (isDisableEdit && regradeFlow && isTest && hasCollectionAccess) {
+    if (isDisableEdit && regradeFlow && isTest && allowDuplicate) {
       let passageItems = passage && passage.testItems
       const passageId = passage && passage._id
       if (passageItems && passageId) {
@@ -601,7 +607,7 @@ class PreviewModal extends React.Component {
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
       (hasCollectionAccess && userFeatures.isCurator) ||
-      (isTestInRegrade && allowDuplicate)
+      (isTestInRegrade && allowDuplicate && isEditable)
     )
     const isDisableDuplicate = !(
       allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR

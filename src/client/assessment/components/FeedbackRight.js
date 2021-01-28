@@ -25,7 +25,7 @@ import {
   isNaN,
 } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { Component, Fragment, useEffect } from 'react'
+import React, { Component, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
@@ -424,7 +424,7 @@ class FeedbackRight extends Component {
                 studentResponseLoading
               }
               ref={this.scoreInput}
-              onKeyDown={this.arrowKeyHandler}
+              onKeyDown={this.onKeyDownFeedback}
               pattern="[0-9]+([\.,][0-9]+)?"
               tabIndex={0}
             />

@@ -19,7 +19,8 @@ const { subEvaluationSettingsGrouped } = mathConstants
 
 const InlineCheckOptions = ({ t, optionKey, options, onChange }) => {
   const settings = subEvaluationSettingsGrouped[optionKey]
-  const isVertical = optionKey === 'graphMiscellaneous'
+  const isVertical =
+    optionKey === 'graphMiscellaneous' || optionKey === 'accuracyForms'
   const isGraph = graphTypes.includes(optionKey)
 
   return (

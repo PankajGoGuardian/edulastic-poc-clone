@@ -861,7 +861,7 @@
       "ignoreTrailingZeros": "Ignore trailing zeros in a decimal",
       "ignoreCoefficientOfOne": "Ignore a \"#{1#}\" in front of a variable",
       "inverseResult": "Inverse result",
-      "significantDecimalPlaces": "Significant decimal places",
+      "significantDecimalPlaces": "decimal places",
       "ignoreAlphabeticCharacters": "Ignore alphabet characters",
       "ignoreAlphabeticCharacter": "Ignore alphabet characters",
       "compareSides": "Compare both sides of the in/equality",

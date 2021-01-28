@@ -47,8 +47,8 @@ const SubHeader = ({
     title === 'Student Mastery Profile'
   const demographicsRequired =
     title === 'Sub-group Performance' ||
-    title === 'Performance By Standards' ||
-    title === 'Performance By Students' ||
+    title === 'Performance by Standards' ||
+    title === 'Performance by Students' ||
     title === 'Performance Over Time' ||
     title === 'Peer Progress Analysis' ||
     title === 'Student Progress' ||

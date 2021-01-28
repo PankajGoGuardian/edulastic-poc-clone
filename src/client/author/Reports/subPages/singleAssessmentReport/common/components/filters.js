@@ -118,17 +118,20 @@ const SingleAssessmentReportFilters = ({
   }, [user])
 
   const selectedPerformanceBand =
+    performanceBandList.find((p) => p.key === filters.performanceBandProfile) ||
     performanceBandList.find(
-      (p) =>
-        p.key === filters.performanceBandProfile ||
-        p.key === assessmentPerformanceBandProfile?._id
-    ) || performanceBandList[0]
+      (p) => p.key === assessmentPerformanceBandProfile?._id
+    ) ||
+    performanceBandList[0]
+
   const selectedStandardProficiency =
     standardProficiencyList.find(
-      (p) =>
-        p.key === filters.standardsProficiencyProfile ||
-        p.key === assessmentStandardMasteryScale?._id
-    ) || standardProficiencyList[0]
+      (p) => p.key === filters.standardsProficiencyProfile
+    ) ||
+    standardProficiencyList.find(
+      (p) => p.key === assessmentStandardMasteryScale?._id
+    ) ||
+    standardProficiencyList[0]
 
   useEffect(() => {
     const search = pickBy(

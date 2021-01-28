@@ -425,11 +425,7 @@ class SideMenu extends Component {
             </Link>
           </Menu.Item>
           {!isPublisher && (
-            <Menu.Item
-              data-cy="subscription"
-              key="2"
-              className="removeSelectedBorder"
-            >
+            <Menu.Item key="2" className="removeSelectedBorder">
               <Link to="/author/subscription">
                 <IconSubscriptionHighlight />{' '}
                 <span data-cy="subscription">

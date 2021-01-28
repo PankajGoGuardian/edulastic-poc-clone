@@ -58,7 +58,6 @@ const Settings = ({
   changeField,
   _releaseGradeKeys,
   isDocBased,
-  forClassLevel = false,
   disableAnswerOnPaper,
   premium,
   freezeSettings = false,
@@ -166,25 +165,6 @@ const Settings = ({
     overRideSettings('passwordExpireIn', value)
   }
 
-  const handleAutoRedirectChange = (value) => {
-    if (forClassLevel) return changeField('autoRedirect')(value)
-
-    const newSettingsState = {
-      ...assignmentSettings,
-      autoRedirect: value,
-      ...(value
-        ? {
-            autoRedirectSettings: {
-              showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
-              questionsDelivery: redirectPolicy.QuestionDelivery.ALL,
-            },
-          }
-        : {}),
-    }
-
-    updateAssignmentSettings(newSettingsState)
-  }
-
   const handleAutoRedirectSettingsChange = (key, value) => {
     if (key === 'maxRedirects' && (value > 3 || value < 1)) {
       return
@@ -207,13 +187,8 @@ const Settings = ({
       },
     }
 
-    if (forClassLevel) {
-      changeField('autoRedirect')(true)
-      return changeField('autoRedirectSettings')(
-        newSettingsState.autoRedirectSettings
-      )
-    }
-    updateAssignmentSettings(newSettingsState)
+    changeField('autoRedirect')(true)
+    changeField('autoRedirectSettings')(newSettingsState.autoRedirectSettings)
   }
 
   const {
@@ -521,13 +496,13 @@ const Settings = ({
                 defaultChecked={false}
                 disabled={freezeSettings || !assessmentSuperPowersAutoRedirect}
                 checked={autoRedirect}
-                onChange={handleAutoRedirectChange}
+                onChange={(value) => changeField('autoRedirect')(value)}
               />
             </StyledCol>
           </StyledRow>
           {autoRedirect && (
             <>
-              <StyledRow>
+              <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>SCORE THRESHOLD</Label>
                 </StyledCol>
@@ -543,7 +518,7 @@ const Settings = ({
                 </StyledCol>
               </StyledRow>
 
-              <StyledRow>
+              <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
                 </StyledCol>
@@ -559,7 +534,7 @@ const Settings = ({
                 </StyledCol>
               </StyledRow>
 
-              <StyledRow>
+              <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>QUESTIONS DELIVERY</Label>
                 </StyledCol>
@@ -584,7 +559,7 @@ const Settings = ({
                 </StyledCol>
               </StyledRow>
 
-              <StyledRow>
+              <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>SHOW PREVIOUS ATTEMPT</Label>
                 </StyledCol>

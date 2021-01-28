@@ -53,6 +53,7 @@ const StandardsMasteryReportContainer = (props) => {
     resetAllReports,
     premium,
     setShowHeader,
+    navigationItems,
     updateNavigation,
     loc,
     history,
@@ -148,8 +149,10 @@ const StandardsMasteryReportContainer = (props) => {
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
-    const navigationItems = computeChartNavigationLinks(settings.requestFilters)
-    updateNavigation(!premium ? [navigationItems[1]] : navigationItems)
+    const _navigationItems = computeChartNavigationLinks(
+      settings.requestFilters
+    )
+    updateNavigation(!premium ? [_navigationItems[1]] : _navigationItems)
   }, [settings])
 
   const toggleFilter = (e, status = false) => {
@@ -293,6 +296,7 @@ const StandardsMasteryReportContainer = (props) => {
               return (
                 <StandardsGradebook
                   {..._props}
+                  navigationItems={navigationItems}
                   pageTitle={loc}
                   toggleFilter={toggleFilter}
                   settings={transformedSettings}

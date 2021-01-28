@@ -38,6 +38,7 @@ const StandardsGradebook = ({
   standardsGradebook,
   getStandardsGradebookRequest,
   isCsvDownloading,
+  navigationItems,
   toggleFilter,
   settings,
   loading,
@@ -211,6 +212,7 @@ const StandardsGradebook = ({
           handleOnClickStandard={handleOnClickStandard}
           standardsData={standardsData}
           location={location}
+          navigationItems={navigationItems}
           pageTitle={pageTitle}
           isSharedReport={isSharedReport}
         />

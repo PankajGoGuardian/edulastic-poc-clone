@@ -302,6 +302,7 @@ const Container = (props) => {
               showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
+              navigationItems={navigationItems}
               updateNavigation={setNavigationItems}
               setShowHeader={setShowHeader}
             />

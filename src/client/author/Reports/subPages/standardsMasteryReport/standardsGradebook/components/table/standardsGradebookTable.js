@@ -7,7 +7,8 @@ import styled from 'styled-components'
 import next from 'immer'
 import { withNamespaces } from '@edulastic/localization'
 
-import { extraDesktopWidthMax } from '@edulastic/colors'
+import { extraDesktopWidthMax, title } from '@edulastic/colors'
+import { compareNatural } from 'mathjs'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 
 import { StyledTable, StyledDropDownContainer } from '../styled'
@@ -23,6 +24,7 @@ import {
   idToName,
   analyseByToKeyToRender,
   analyseByToName,
+  getStandardProgressNav,
 } from '../../utils/transformers'
 
 import dropDownFormat from '../../static/json/dropDownFormat.json'
@@ -113,6 +115,7 @@ const StandardsGradebookTableComponent = ({
   handleOnClickStandard,
   standardsData,
   location,
+  navigationItems,
   pageTitle,
   isSharedReport,
   t,
@@ -247,26 +250,18 @@ const StandardsGradebookTableComponent = ({
       const bgColor =
         (_analyseBy === 'masteryLevel' || _analyseBy === 'masteryScore') &&
         standardToRender?.color
-      if (_compareBy === 'studentId') {
-        return (
-          <ColoredCell
-            bgColor={bgColor}
-            onClick={
-              printData !== 'N/A'
-                ? () =>
-                    handleOnClickStandard(
-                      obj,
-                      standardName,
-                      record.compareByLabel
-                    )
-                : null
-            }
-          >
-            {printData}
-          </ColoredCell>
-        )
-      }
-      return <ColoredCell bgColor={bgColor}>{printData}</ColoredCell>
+      return _compareBy === 'studentId' && printData !== 'N/A' ? (
+        <ColoredCell
+          bgColor={bgColor}
+          onClick={() =>
+            handleOnClickStandard(obj, standardName, record.compareByLabel)
+          }
+        >
+          {printData}
+        </ColoredCell>
+      ) : (
+        <ColoredCell bgColor={bgColor}>{printData}</ColoredCell>
+      )
     }
 
     const printData = getDisplayValue(
@@ -373,8 +368,13 @@ const StandardsGradebookTableComponent = ({
             flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
             'standardId'
           )
-        ).map((item, index) => ({
-          title: (
+        ).map((item, index) => {
+          const standardProgressNav = getStandardProgressNav(
+            navigationItems,
+            item.standardId,
+            tableDdFilters.compareBy
+          )
+          const titleComponent = (
             <>
               <span>{item.standardName}</span>
               <br />
@@ -382,19 +382,28 @@ const StandardsGradebookTableComponent = ({
                 {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
               </span>
             </>
-          ),
-          dataIndex: item.standardId,
-          key: item.standardId,
-          align: 'center',
-          width: 150,
-          render: renderStandardIdColumns(
-            index,
-            tableDdFilters.compareBy,
-            tableDdFilters.analyseBy,
-            item.standardName,
-            item.standardId
-          ),
-        })),
+          )
+
+          console.log(standardProgressNav, titleComponent)
+          return {
+            title: standardProgressNav ? (
+              <Link to={standardProgressNav}>{titleComponent}</Link>
+            ) : (
+              titleComponent
+            ),
+            dataIndex: item.standardId,
+            key: item.standardId,
+            align: 'center',
+            width: 150,
+            render: renderStandardIdColumns(
+              index,
+              tableDdFilters.compareBy,
+              tableDdFilters.analyseBy,
+              item.standardName,
+              item.standardId
+            ),
+          }
+        }),
       ]
     }
 

@@ -1,3 +1,4 @@
+import qs from 'qs'
 import {
   groupBy,
   keyBy,
@@ -452,4 +453,39 @@ export const groupedByStandard = (
       records: standardData,
     }
   })
+}
+
+export const getStandardProgressNav = (
+  navigationItems,
+  standardId,
+  compareByKey
+) => {
+  const standardsProgressNavLink = navigationItems.find(
+    (n) => n.key === 'standards-progress'
+  )?.location
+  if (standardId && standardsProgressNavLink) {
+    const [
+      standardsProgressNavPrefix,
+      standardsProgressNavQuery,
+    ] = standardsProgressNavLink.split('?')
+    const standardsProgressNavObj = qs.parse(standardsProgressNavQuery, {
+      ignoreQueryPrefix: true,
+    })
+    const gradebookToProgressCompareByKey = {
+      schoolId: 'school',
+      teacherId: 'teacher',
+      studentId: 'student',
+      groupId: 'class',
+    }
+    const _standardsProgressNavObj = { ...standardsProgressNavObj, standardId }
+    const _standardsProgressNavQuery = qs.stringify(_standardsProgressNavObj)
+    return {
+      pathname: `${standardsProgressNavPrefix}?${_standardsProgressNavQuery}`,
+      state: {
+        compareByKey:
+          gradebookToProgressCompareByKey[compareByKey] || compareByKey,
+      },
+    }
+  }
+  return null
 }

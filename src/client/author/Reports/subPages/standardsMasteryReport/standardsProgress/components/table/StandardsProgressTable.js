@@ -60,6 +60,7 @@ const StandardsProgressTable = ({
           </span>
         </>
       ),
+      align: 'center',
       dataIndex: test.reportKey,
       key: test.reportKey,
       render: (_, record) => {

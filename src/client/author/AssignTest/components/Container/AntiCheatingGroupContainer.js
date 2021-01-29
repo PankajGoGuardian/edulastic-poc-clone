@@ -399,50 +399,47 @@ const AntiCheatingGroupContainer = ({
 
       {
         /* Restrict Question Navigation */
-        !isDocBased && (
-          <SettingContainer>
-            <DetailsTooltip
-              width={tootltipWidth}
-              title="Restrict question navigation"
-              content="If ON, then students will be restricted from navigating back to the previous question that they have answered. It is recommended to use this along with Shuffle Questions for preventing cheating among students."
-              placement="rightTop"
-              premium={assessmentSuperPowersRestrictQuestionBackNav}
-            />
-            <StyledRow gutter={16} mb="15px">
-              <Col span={12}>
-                <Label>
-                  Restrict Question Navigation
-                  <DollarPremiumSymbol
-                    premium={assessmentSuperPowersRestrictQuestionBackNav}
-                  />
-                  <Tooltip
-                    title="If ON, then students will be restricted from navigating back to the previous question. 
-                      Recommended to use along with Shuffle Questions for preventing cheating among students."
-                  >
-                    <StyledInfoIcon color={lightGrey9} mL="10px" />
-                  </Tooltip>
-                </Label>
-              </Col>
-              <Col span={12}>
-                <AlignSwitchRight
-                  disabled={
-                    freezeSettings ||
-                    !assessmentSuperPowersRestrictQuestionBackNav
-                  }
-                  size="small"
-                  checked={blockNavigationToAnsweredQuestions}
-                  data-cy="restrict-backward-nav"
-                  onChange={(value) =>
-                    overRideSettings(
-                      'blockNavigationToAnsweredQuestions',
-                      value
-                    )
-                  }
+        <SettingContainer>
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="Restrict question navigation"
+            content="If ON, then students will be restricted from navigating back to the previous question that they have answered. It is recommended to use this along with Shuffle Questions for preventing cheating among students. (This setting is not applicable for SnapQuiz)"
+            placement="rightTop"
+            premium={assessmentSuperPowersRestrictQuestionBackNav}
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={12}>
+              <Label>
+                Restrict Question Navigation
+                <DollarPremiumSymbol
+                  premium={assessmentSuperPowersRestrictQuestionBackNav}
                 />
-              </Col>
-            </StyledRow>
-          </SettingContainer>
-        )
+                <Tooltip
+                  title="If ON, then students will be restricted from navigating back to the previous question. 
+                      Recommended to use along with Shuffle Questions for preventing cheating among students.
+                      (This setting is not applicable for SnapQuiz)"
+                >
+                  <StyledInfoIcon color={lightGrey9} mL="10px" />
+                </Tooltip>
+              </Label>
+            </Col>
+            <Col span={12}>
+              <AlignSwitchRight
+                disabled={
+                  freezeSettings ||
+                  !assessmentSuperPowersRestrictQuestionBackNav ||
+                  isDocBased
+                }
+                size="small"
+                checked={blockNavigationToAnsweredQuestions}
+                data-cy="restrict-backward-nav"
+                onChange={(value) =>
+                  overRideSettings('blockNavigationToAnsweredQuestions', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
         /* Restrict Question Navigation */
       }
 

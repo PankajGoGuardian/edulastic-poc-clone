@@ -1374,7 +1374,8 @@ class Setting extends Component {
                           disabled={
                             !owner ||
                             !isEditable ||
-                            !assessmentSuperPowersRestrictQuestionBackNav
+                            !assessmentSuperPowersRestrictQuestionBackNav ||
+                            isDocBased
                           }
                           defaultChecked={blockNavigationToAnsweredQuestions}
                           data-cy="restrict-back-nav-switch-test"
@@ -1390,6 +1391,7 @@ class Setting extends Component {
                           restricted from navigating back to the previous
                           question. Recommended to use along with Shuffle
                           Questions for preventing cheating among students.
+                          (This setting is not applicable for SnapQuiz)
                         </Description>
                       </Body>
                     </SettingContainer>

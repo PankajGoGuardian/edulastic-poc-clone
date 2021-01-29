@@ -583,7 +583,8 @@ function* loadTest({ payload }) {
 
     if (
       settings.blockNavigationToAnsweredQuestions &&
-      testActivity.questionActivities.length
+      testActivity.questionActivities.length &&
+      !test.isDocBased
     ) {
       let questionIndex = 0
       const qActivitiesSorted = testActivity.questionActivities.sort((a, b) => {

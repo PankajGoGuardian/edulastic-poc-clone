@@ -57,10 +57,6 @@ export const InitOptions = styled.div`
   border-radius: 10px;
   padding: 20px 40px 0px 40px;
   width: 100%;
-
-  @media (min-width: ${largeDesktopWidth}) {
-    width: 1000px;
-  }
 `
 
 export const StyledRow = styled(Row)`
@@ -88,6 +84,7 @@ export const StyledRowButton = styled(Row)`
 export const AlignRight = styled(RadioGroup)`
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
   & * {
     cursor: ${({ forClassLevel }) =>
       forClassLevel ? 'not-allowed' : 'initial'};
@@ -98,6 +95,7 @@ export const AlignRight = styled(RadioGroup)`
     max-width: 200px;
     display: flex;
     align-items: center;
+    margin-bottom: 4px;
 
     span {
       display: inline-block;

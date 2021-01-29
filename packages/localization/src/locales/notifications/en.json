@@ -1970,5 +1970,9 @@
   "teacherSignUpNotAllowed": {
     "message": "Teacher Signup is not allowed for your district.",
     "description": ""
+  },
+  "studentAssignmentPaused": {
+    "message": "Assignment is Paused , Please check with your instructor.",
+    "description": ""
   }
 }

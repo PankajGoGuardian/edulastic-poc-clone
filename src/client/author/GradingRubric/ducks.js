@@ -2,7 +2,6 @@ import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { rubricsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { setRubricIdAction } from '../sharedDucks/questions'
 import { setItemLevelScoreFromRubricAction } from '../ItemDetail/ducks'
@@ -122,6 +121,12 @@ function* updateRubricSaga({ payload }) {
         type: 'success',
         messageKey: 'rubricUpdatedAndSPublished',
       })
+    else {
+      notification({
+        type: 'success',
+        messageKey: 'rubricUpdatedSuccessfully',
+      })
+    }
   } catch (err) {
     notification({ messageKey: 'failedToUpdateRubric' })
   }
@@ -157,7 +162,7 @@ function* getRubricByIdSaga({ payload }) {
   }
 }
 
-function* addRubricToRecentlyUsedSaga({ payload }) {
+function addRubricToRecentlyUsedSaga({ payload }) {
   let localStoredRubrics = localStorage.getItem('recentlyUsedRubrics')
   if (localStoredRubrics) {
     localStoredRubrics = JSON.parse(localStoredRubrics)

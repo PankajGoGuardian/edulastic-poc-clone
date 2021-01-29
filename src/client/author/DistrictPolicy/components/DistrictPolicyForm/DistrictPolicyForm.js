@@ -630,20 +630,16 @@ class DistrictPolicyForm extends Component {
               <RadioBtn value="no">No</RadioBtn>
             </RadioGrp>
           </StyledRow>
-          {isSchoolLevel ? null : (
-            <StyledRow>
-              <StyledLabel>Enable Google Meet: </StyledLabel>
-              <RadioGrp
-                onChange={this.enableGoogleMeet}
-                value={
-                  districtPolicy?.enableGoogleMeet === false ? 'no' : 'yes'
-                }
-              >
-                <RadioBtn value="yes">Yes</RadioBtn>
-                <RadioBtn value="no">No</RadioBtn>
-              </RadioGrp>
-            </StyledRow>
-          )}
+          <StyledRow>
+            <StyledLabel>Enable Google Meet: </StyledLabel>
+            <RadioGrp
+              onChange={this.enableGoogleMeet}
+              value={districtPolicy?.enableGoogleMeet === false ? 'no' : 'yes'}
+            >
+              <RadioBtn value="yes">Yes</RadioBtn>
+              <RadioBtn value="no">No</RadioBtn>
+            </RadioGrp>
+          </StyledRow>
           <StyledRow>
             <StyledLabel>
               Enforced District Sign-On

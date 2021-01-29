@@ -41,6 +41,7 @@ const Assignments = ({
   isCliUser,
   districtPolicies,
   t,
+  schoolPolicies,
 }) => {
   const isParentRoleProxy = proxyUserRole === 'parent'
 
@@ -54,8 +55,20 @@ const Assignments = ({
     },
     {}
   )
+
+  const hangoutEnabledSchoolMap = (schoolPolicies || []).reduce((acc, o) => {
+    acc[o.schoolId] = o.enableGoogleMeet
+    return acc
+  }, {})
+
   const classListWithHangouts = activeEnrolledClasses.filter(
-    (c) => c.hangoutLink && hangoutEnabledDistrictMap[c.districtId]
+    (c) =>
+      c.hangoutLink &&
+      (hangoutEnabledDistrictMap[c.districtId] === true
+        ? true
+        : hangoutEnabledSchoolMap[c.institutionId] === true
+        ? true
+        : false)
   )
 
   const [showHangoutsModal, setShowHangoutsModal] = useState(false)
@@ -125,6 +138,7 @@ export default withNamespaces('header')(
     (state) => ({
       userRole: state?.user?.user?.role,
       districtPolicies: state?.user?.user?.orgData?.districtPolicies,
+      schoolPolicies: state?.user?.user?.orgData?.schoolPolicies,
       allClasses: state.studentEnrollClassList.allClasses,
       activeClasses: state.studentEnrollClassList.filteredClasses,
       loading: state.studentEnrollClassList.loading,

@@ -111,6 +111,7 @@ const HeaderSection = ({
   classData,
   loading,
   districtPolicy,
+  schoolPolicy,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
@@ -175,7 +176,12 @@ const HeaderSection = ({
   const hasGoogleMeetAndManageClass =
     currentSignUpState === signUpState.DONE && allActiveClasses.length > 0
 
-  const isHangoutEnabled = districtPolicy?.enableGoogleMeet === true
+  const isHangoutEnabled =
+    districtPolicy?.enableGoogleMeet === true
+      ? true
+      : schoolPolicy[0]?.enableGoogleMeet === true
+      ? true
+      : false
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -334,6 +340,7 @@ const enhance = compose(
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
       districtPolicy: get(state, 'user.user.orgData.policies.district'),
+      schoolPolicy: get(state, 'user.user.orgData.policies.institutions'),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
         state
       ),

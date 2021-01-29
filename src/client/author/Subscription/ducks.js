@@ -1,5 +1,6 @@
 import { message } from 'antd'
 import moment from 'moment'
+import { isEmpty } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
@@ -16,6 +17,7 @@ const slice = createSlice({
     showTrialSubsConfirmation: false,
     showTrialConfirmationMessage: '',
     products: [],
+    isPaymentServiceModalVisible: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -86,15 +88,18 @@ const slice = createSlice({
     setAddOnProducts: (state, { payload }) => {
       state.products = payload
     },
+    setPaymentServiceModal: (state, { payload }) => {
+      state.isPaymentServiceModalVisible = payload
+    },
   },
 })
 
 export { slice }
 
 function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
-  const { subscriptions, itemBankPermissions } = apiPaymentResponse
+  const { subscriptions, itemBankPermissions = [] } = apiPaymentResponse
   const hasSubscriptions = Object.keys(subscriptions).length > 0
-  const hasItemBankPermissions = Object.keys(itemBankPermissions).length > 0
+  const hasItemBankPermissions = !isEmpty(itemBankPermissions)
   const subscriptionPeriod = isTrial ? '14 days' : 'an year'
   const premiumType = isTrial ? 'Trial Premium' : 'Premium'
   if (hasSubscriptions && !hasItemBankPermissions) {
@@ -111,11 +116,12 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       )
     )
   } else if (hasItemBankPermissions && !hasSubscriptions) {
-    const { subEndDate, name: itemBankName } = itemBankPermissions
+    const { subEndDate } = itemBankPermissions[0]
+    const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     yield call(notification, {
       type: 'success',
-      msg: `Congratulations! You are subscribed to ${itemBankName} ${premiumType} Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+      msg: `Congratulations! You are subscribed to ${itemBankNames} ${premiumType} Itembank(s) for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
       key: 'handle-payment',
     })
     yield put(
@@ -125,11 +131,11 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     )
   } else if (hasItemBankPermissions && hasSubscriptions) {
     const { subEndDate } = subscriptions
-    const { name: itemBankName } = itemBankPermissions
+    const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     yield call(notification, {
       type: 'success',
-      msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankName}
+      msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankNames}
             Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
       key: 'handle-payment',
     })
@@ -235,6 +241,7 @@ function* handleStripePayment({ payload }) {
       })
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
+        yield put(slice.actions.setPaymentServiceModal(false))
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))

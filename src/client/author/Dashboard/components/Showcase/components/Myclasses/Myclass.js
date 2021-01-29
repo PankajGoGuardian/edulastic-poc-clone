@@ -67,13 +67,14 @@ const MyClasses = ({
   subscription: { subEndDate, subType } = {},
   premiumProductId,
   products,
+  isPaymentServiceModalVisible,
+  setPaymentServiceModal,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [productData, setProductData] = useState({})
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
-  const [paymentServiceModal, setPaymentServiceModal] = useState(false)
   const [payWithPoModal, setPayWithPoModal] = useState(false)
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
@@ -96,6 +97,54 @@ const MyClasses = ({
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
+
+  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+
+  const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
+    const DEFAULT_ITEMBANK_PRICE = 100
+    const DEFAULT_PERIOD = 365
+    const boughtPremiumBankIds = itemBankSubscriptions
+      .filter((x) => !x.isTrial)
+      .map((x) => x.itemBankId)
+    const purchasableProducts = products.filter(
+      (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
+    )
+    const result = purchasableProducts.map((product) => {
+      const { id: currentProductId } = product
+      if (
+        !subEndDate ||
+        currentProductId === premiumProductId ||
+        (subEndDate && !isPaidPremium) ||
+        ['enterprise', 'partial_premium'].includes(subType)
+      ) {
+        return {
+          ...product,
+          period: DEFAULT_PERIOD,
+          price: DEFAULT_ITEMBANK_PRICE,
+        }
+      }
+      let currentDate = new Date()
+      const itemBankSubEndDate = new Date(
+        currentDate.setDate(currentDate.getDate() + DEFAULT_PERIOD)
+      ).valueOf()
+      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
+      currentDate = Date.now()
+      const amountFactor =
+        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
+      const dynamicPrice = Math.round(amountFactor * DEFAULT_ITEMBANK_PRICE)
+      const dynamicPeriodInDays = Math.round(amountFactor * DEFAULT_PERIOD)
+
+      return {
+        ...product,
+        price: dynamicPrice,
+        period: dynamicPeriodInDays,
+      }
+    })
+    return {
+      teacherPremium: result[0],
+      itemBankPremium: result.slice(1),
+    }
+  }, [subEndDate, products])
 
   const openPaymentServiceModal = () => {
     setPaymentServiceModal(true)
@@ -289,8 +338,6 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
 
-  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
-
   const isTrialItemBank =
     itemBankSubscriptions &&
     itemBankSubscriptions?.length > 0 &&
@@ -325,13 +372,13 @@ const MyClasses = ({
           handleCloseModal={setShowSubscriptionAddonModal}
           isPaidPremium={isPaidPremium}
           setShowUpgradeModal={setShowUpgradeModal}
-          subEndDate={subEndDate}
-          subType={subType}
           usedTrialItemBankId={usedTrialItemBankId}
-          products={products}
           premiumProductId={premiumProductId}
           setTotalPurchaseAmount={setTotalAmount}
           setAddOnProductIds={setAddOnProductIds}
+          defaultSelectedProductIds={[productData.productId]}
+          teacherPremium={teacherPremium}
+          itemBankPremium={itemBankPremium}
         />
       )}
       {showItemBankTrialUsedModal && (
@@ -374,7 +421,7 @@ const MyClasses = ({
         />
       )}
       <PaymentServiceModal
-        visible={paymentServiceModal}
+        visible={isPaymentServiceModalVisible}
         closeModal={closePaymentServiceModal}
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}
@@ -416,19 +463,20 @@ export default compose(
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
       collections: getCollectionsSelector(state),
       isPremiumTrialUsed:
-        state?.subscription?.subscriptionData?.isPremiumTrialUsed,
+        state.subscription?.subscriptionData?.isPremiumTrialUsed,
       itemBankSubscriptions:
-        state?.subscription?.subscriptionData?.itemBankSubscriptions,
+        state.subscription?.subscriptionData?.itemBankSubscriptions,
       usedTrialItemBankId:
-        state?.subscription?.subscriptionData?.usedTrialItemBankId,
-      premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
-      verificationPending: state?.subscription?.verificationPending,
-      subscription: state?.subscription?.subscriptionData?.subscription,
-      isConfirmationModalVisible:
-        state?.subscription?.showTrialSubsConfirmation,
+        state.subscription?.subscriptionData?.usedTrialItemBankId,
+      premiumProductId: state.subscription?.subscriptionData?.premiumProductId,
+      verificationPending: state.subscription?.verificationPending,
+      subscription: state.subscription?.subscriptionData?.subscription,
+      isConfirmationModalVisible: state.subscription?.showTrialSubsConfirmation,
       showTrialConfirmationMessage:
-        state?.subscription?.showTrialConfirmationMessage,
-      products: state?.subscription?.products,
+        state.subscription?.showTrialConfirmationMessage,
+      products: state.subscription?.products,
+      isPaymentServiceModalVisible:
+        state.subscription?.isPaymentServiceModalVisible,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -441,6 +489,7 @@ export default compose(
       stripePaymentAction: slice.actions.stripePaymentAction,
       showTrialSubsConfirmationAction:
         slice.actions.trialSubsConfirmationAction,
+      setPaymentServiceModal: slice.actions.setPaymentServiceModal,
     }
   )
 )(MyClasses)

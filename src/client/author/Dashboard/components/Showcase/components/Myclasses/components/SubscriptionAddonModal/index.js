@@ -1,76 +1,67 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { CheckboxLabel, CustomModalStyled, EduButton } from '@edulastic/common'
 import { ModalBody, AddonList, FlexRow, Total } from './styled'
+
+const getInitialSelectedProductIds = ({
+  defaultSelectedProductIds,
+  isPaidPremium,
+  premiumProductId,
+  itemBankPremium,
+}) => {
+  const itemBankPremiumIds = itemBankPremium.map((x) => x.id)
+  const productIds = defaultSelectedProductIds || itemBankPremiumIds
+  if (!isPaidPremium) {
+    productIds.push(premiumProductId)
+  }
+  return productIds
+}
+
+const getInitialTotalPrice = ({
+  selectedProductIds: x = [],
+  isPaidPremium,
+  teacherPremium = {},
+  itemBankPremium = [],
+}) => {
+  const initialPrice = isPaidPremium ? 0 : teacherPremium.price || 100
+  if (!x.length) return initialPrice
+  return itemBankPremium.reduce(
+    (a, { id, price }) => a + (x.includes(id) ? price : 0),
+    initialPrice
+  )
+}
 
 const SubscriptionAddonModal = ({
   isVisible,
   handleCloseModal,
   isPaidPremium,
   setShowUpgradeModal,
-  subEndDate,
-  subType,
   premiumProductId,
-  products = [],
   setTotalPurchaseAmount,
   setAddOnProductIds,
+  defaultSelectedProductIds,
+  teacherPremium,
+  itemBankPremium,
 }) => {
-  const closeModal = () => handleCloseModal(false)
-  const [totalPrice, setTotalPrice] = useState(100)
-  const [selectedProductIds, setSelectedProductIds] = useState([])
-
-  useEffect(() => {
-    const initialPrice = isPaidPremium ? 100 : 200
-    setTotalPrice(initialPrice)
-  }, [isPaidPremium])
-
-  useEffect(() => {
-    if (!products.length || !premiumProductId) return
-    let _productIds = products.map((x) => x.id)
-    if (isPaidPremium) {
-      _productIds = _productIds.filter((x) => x !== premiumProductId)
-    }
-    setSelectedProductIds(_productIds)
-  }, [isPaidPremium, products, premiumProductId])
-
-  const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
-    const result = products.map((item) => {
-      const itembankPrice = 100
-      const period = 365
-      if (
-        !subEndDate ||
-        item.id === premiumProductId ||
-        (subEndDate && !isPaidPremium) ||
-        ['enterprise', 'partial_premium'].includes(subType)
-      ) {
-        return {
-          ...item,
-          period,
-          price: itembankPrice,
-        }
-      }
-      let currentDate = new Date()
-      const itemBankSubEndDate = new Date(
-        currentDate.setDate(currentDate.getDate() + period)
-      ).valueOf()
-      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
-      currentDate = Date.now()
-      const amountFactor =
-        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
-      const dynamicPrice = Math.round(amountFactor * itembankPrice)
-      const dynamicDays = Math.round(amountFactor * period)
-
-      return {
-        ...item,
-        price: dynamicPrice,
-        period: dynamicDays,
-      }
+  const [selectedProductIds, setSelectedProductIds] = useState(
+    getInitialSelectedProductIds({
+      defaultSelectedProductIds,
+      isPaidPremium,
+      premiumProductId,
+      itemBankPremium,
     })
-    return {
-      teacherPremium: result[0],
-      itemBankPremium: result.slice(1),
-    }
-  }, [subEndDate, products])
+  )
+
+  const [totalPrice, setTotalPrice] = useState(
+    getInitialTotalPrice({
+      selectedProductIds,
+      isPaidPremium,
+      teacherPremium,
+      itemBankPremium,
+    })
+  )
+
+  const closeModal = () => handleCloseModal(false)
 
   const handleClick = () => {
     setAddOnProductIds(selectedProductIds)
@@ -80,13 +71,13 @@ const SubscriptionAddonModal = ({
   }
 
   const handleOnChange = (e, id) => {
-    const value = e.target.value
+    const productPrice = e.target.value
     if (e.target.checked) {
       setSelectedProductIds((x) => x.concat(id))
-      setTotalPrice(totalPrice + value)
+      setTotalPrice((currentPrice) => currentPrice + productPrice)
     } else {
       setSelectedProductIds((x) => x.filter((y) => y !== id))
-      setTotalPrice(totalPrice - value)
+      setTotalPrice((currentPrice) => currentPrice - productPrice)
     }
   }
 
@@ -137,7 +128,7 @@ const SubscriptionAddonModal = ({
                 data-cy="sparkPremiumCheckbox"
                 value={item.price}
                 onChange={(e) => handleOnChange(e, item.id)}
-                defaultChecked
+                checked={selectedProductIds.includes(item.id)}
               >
                 {item.name}
               </CheckboxLabel>

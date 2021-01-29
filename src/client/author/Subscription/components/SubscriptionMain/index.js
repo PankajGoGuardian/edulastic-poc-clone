@@ -257,24 +257,37 @@ const SubscriptionMain = ({
   showRenewalOptions,
   startTrialAction,
   isPaidPremium,
-  isPaidItemBank,
-  setShowSubscriptionAddonModal,
+  setShowSubscriptionAddonModalWithId,
   usedTrialItemBankId,
   products,
+  hasAllPremiumProductAccess,
+  itemBankSubscriptions,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
-  const sparkMathProductId = useMemo(
-    () => products.find((product) => product.name === 'Spark Math')?.id,
+
+  const {
+    id: sparkMathProductId,
+    linkedProductId: sparkMathItemBankId,
+  } = useMemo(
+    () => products.find((product) => product.name === 'Spark Math') || {},
     [products]
   )
+
+  const isPaidSparkMath =
+    itemBankSubscriptions &&
+    itemBankSubscriptions?.length > 0 &&
+    itemBankSubscriptions?.filter((x) => {
+      return x.itemBankId === sparkMathItemBankId && !x.isTrial
+    })?.length
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
   const isPremiumUser = user.features.premium
 
   const handleSelectStateModal = () => setShowSelectStates(true)
 
-  const handlePurchaseFlow = () => setShowSubscriptionAddonModal(true)
+  const handlePurchaseFlow = (productId) =>
+    setShowSubscriptionAddonModalWithId(productId)
 
   const handleStartTrial = () => {
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
@@ -294,7 +307,11 @@ const SubscriptionMain = ({
   // Show item bank trial button when item bank trial is not used yet and user is either premium
   // or hasn't used premium trial yet.
   const hasSparkMathTrialButton =
-    !usedTrialItemBankId && (!isPremiumTrialUsed || isPremiumUser)
+    usedTrialItemBankId !== sparkMathItemBankId &&
+    !isPaidSparkMath &&
+    (!isPremiumTrialUsed || isPremiumUser)
+
+  const handleSparkMathClick = () => handlePurchaseFlow(sparkMathProductId)
 
   return (
     <>
@@ -328,7 +345,7 @@ const SubscriptionMain = ({
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {!(isPaidPremium && isPaidItemBank) && (
+            {!hasAllPremiumProductAccess && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -414,7 +431,7 @@ const SubscriptionMain = ({
                   </LearnMoreLink>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
-                      {!(isPaidPremium && isPaidItemBank) && (
+                      {!(isPaidPremium && isPaidSparkMath) && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <PurchaseLink
@@ -424,7 +441,7 @@ const SubscriptionMain = ({
                               Purchase
                             </PurchaseLink>
                           )}
-                          onClick={handlePurchaseFlow}
+                          onClick={handleSparkMathClick}
                         />
                       )}
                       {hasSparkMathTrialButton && (

@@ -29,7 +29,7 @@ const SubscriptionHeader = ({
   subEndDate,
   setShowSubscriptionAddonModal,
   isPaidPremium,
-  isPaidItemBank,
+  hasAllPremiumProductAccess,
 }) => {
   const handlePurchaseFlow = () => {
     setShowSubscriptionAddonModal(true)
@@ -44,7 +44,7 @@ const SubscriptionHeader = ({
   const menu = (
     <Menu>
       <Menu.Item>
-        {!(isPaidPremium && isPaidItemBank) && (
+        {!hasAllPremiumProductAccess && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <span data-cy="individualSubscription" onClick={handleClick}>

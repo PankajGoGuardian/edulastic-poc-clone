@@ -1141,6 +1141,7 @@ class Setting extends Component {
                                       ? restrictNavigationOutAttemptsThreshold
                                       : undefined
                                   }
+                                  min={1}
                                   onChange={this.updateFeatures(
                                     'restrictNavigationOutAttemptsThreshold'
                                   )}

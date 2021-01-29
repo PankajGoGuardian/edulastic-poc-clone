@@ -26,7 +26,12 @@ const AssignmentButton = ({
   return new Date(startDate) > new Date(serverTimeStamp) ||
     !startDate ||
     isPaused ? (
-    <NotAvailableButton disabled>
+    <NotAvailableButton
+      {...(isPaused
+        ? { title: 'Will be enabled once the teacher marks it Open for you' }
+        : {})}
+      disabled
+    >
       <span>
         <img src={lockIcon} alt="" />
       </span>

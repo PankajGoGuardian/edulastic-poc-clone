@@ -35,7 +35,7 @@ const packageJson = require('./package.json')
 /** Uncomment to have a copy of files written on disk */
 
 // const rootNodeModDir = path.resolve(__dirname, 'node_modules')
-
+const isProduction = process.env.NODE_ENV === 'production'
 module.exports = override(
   multipleEntry.addMultiEntry,
   // add webpack bundle visualizer if BUNDLE_VISUALIZE flag is enabled
@@ -46,7 +46,6 @@ module.exports = override(
       openAnalyzer: false,
     }),
   (config) => {
-    const isProduction = process.env.NODE_ENV === 'production'
     /* eslint-disable no-param-reassign */
 
     config.module.rules[0].parser.requireEnsure = true
@@ -118,6 +117,13 @@ module.exports = override(
       config.plugins.unshift(
         new webpack.HashedModuleIdsPlugin() // so that file hashes don't change unexpectedly
       )
+      config.module.rules.push({
+        loader: 'webpack-ant-icon-loader',
+        enforce: 'pre',
+        include: [require.resolve('@ant-design/icons/lib/dist')],
+      })
+
+      config.plugins.push(new MomentLocalesPlugin())
     }
 
     config.plugins.push(
@@ -133,8 +139,6 @@ module.exports = override(
         __TEST__: false,
       })
     )
-
-    config.plugins.push(new MomentLocalesPlugin())
 
     // config.plugins.push(
     //   new CopyPlugin({
@@ -166,12 +170,6 @@ module.exports = override(
       )
     }
 
-    config.module.rules.push({
-      loader: 'webpack-ant-icon-loader',
-      enforce: 'pre',
-      include: [require.resolve('@ant-design/icons/lib/dist')],
-    })
-
     /* eslint-enable no-param-reassign */
 
     if (process.env.QUICK_BUILD) {
@@ -187,8 +185,8 @@ module.exports = override(
 
     // chunking optimization
     if (!isProduction) {
-      config.output.filename = '[name].bundle.js'
-      config.output.chunkFilename = '[name].chunk.js'
+      // config.output.filename = '[name].bundle.js'
+      // config.output.chunkFilename = '[name].chunk.js'
       config.plugins.push(
         new WriteFilePlugin({
           // Write only files that have ".html" extension.

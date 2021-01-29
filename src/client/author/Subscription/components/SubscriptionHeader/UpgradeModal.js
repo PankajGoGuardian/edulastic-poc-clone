@@ -26,6 +26,7 @@ const UpgradeModal = ({
               openPaymentServiceModal()
               setShowModal(false)
             }}
+            data-cy="payWithCreditCard"
           >
             <IconCredit />
             <span>Pay with Credit Card</span>
@@ -35,6 +36,7 @@ const UpgradeModal = ({
               openPoServiceModal()
               setShowModal(false)
             }}
+            data-cy="payWithPO"
           >
             <IconPo />
             <span>Pay with PO</span>

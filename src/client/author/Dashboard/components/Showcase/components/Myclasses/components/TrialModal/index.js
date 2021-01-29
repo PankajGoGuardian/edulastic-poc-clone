@@ -8,55 +8,57 @@ import {
 import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { groupBy, map } from 'lodash'
 
 const TrialModal = ({
-  productId,
+  addOnIdsToShow,
   isVisible,
   toggleModal,
   isPremiumUser,
   isPremiumTrialUsed,
   startPremiumTrial,
-  premiumProductId,
   products = [],
 }) => {
-  const [isSparkChecked, setIsSparkChecked] = useState(true)
-
-  const isTrial = useMemo(() => !isPremiumUser && !isPremiumTrialUsed, [
+  const hasPremiumTrial = useMemo(() => !isPremiumUser && !isPremiumTrialUsed, [
     isPremiumUser,
     isPremiumTrialUsed,
   ])
 
-  const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
-    const result = products.map((item) => ({
+  const productsToShow = products.filter(
+    (product) =>
+      (product.type === 'PREMIUM' && hasPremiumTrial) ||
+      addOnIdsToShow.includes(product.id)
+  )
+  const [productIds, setProductIds] = useState(map(productsToShow, 'id'))
+
+  const {
+    PREMIUM: teacherPremium = [],
+    ITEM_BANK: itemBankPremium = [],
+  } = useMemo(() => {
+    const result = productsToShow.map((item) => ({
       ...item,
       price: 100,
       period: 14,
     }))
-    return {
-      teacherPremium: result[0],
-      itemBankPremium: result.slice(1),
-    }
+    return groupBy(result, 'type')
   }, [products])
 
-  const isDisableProceed = !isSparkChecked && isPremiumUser
+  const isProceedDisabled = productIds.length === 0
 
   const closeModal = () => toggleModal(false)
 
+  const handleOnChange = (value) => (e) => {
+    if (e.target.checked) {
+      return setProductIds((ids) => [...ids, value])
+    }
+
+    return setProductIds((ids) => ids.filter((id) => id !== value))
+  }
+
   const onProceed = () => {
-    const productIds = []
-    if (isSparkChecked) {
-      productIds.push(productId)
-    }
-    if (isTrial) {
-      productIds.push(premiumProductId)
-      startPremiumTrial({ productIds })
-      toggleModal(false)
-    } else {
-      startPremiumTrial({ productIds })
-    }
+    startPremiumTrial({ productIds })
     closeModal()
   }
-  const handleOnChange = (e) => setIsSparkChecked(e.target.checked)
 
   const Footer = (
     <>
@@ -64,7 +66,7 @@ const TrialModal = ({
         Cancel
       </EduButton>
       <EduButton
-        disabled={isDisableProceed}
+        disabled={isProceedDisabled}
         data-cy="proceedButton"
         onClick={onProceed}
       >
@@ -80,7 +82,7 @@ const TrialModal = ({
           <StyledCheckbox
             data-cy="sparkPremiumCheckbox"
             defaultChecked
-            onChange={handleOnChange}
+            onChange={handleOnChange(item.id)}
           />
           <div>
             <p>{item.name} TRIAL </p>{' '}
@@ -92,24 +94,24 @@ const TrialModal = ({
     </>
   )
 
-  const NonPremium = (
+  const NonPremium = teacherPremium.length && (
     <>
       <TrialContainer>
         <Tooltip title="Premium subscription is mandatory for Spark content">
           <StyledCheckbox data-cy="teacherPremiumTrialCheckbox" checked />
         </Tooltip>
         <div>
-          <p>{teacherPremium.name} TRIAL </p>
-          <Description>{teacherPremium.description}</Description>
+          <p>{teacherPremium[0].name} TRIAL </p>
+          <Description>{teacherPremium[0].description}</Description>
         </div>
-        <Description>{`$${teacherPremium.price} ($0 today)`}</Description>
+        <Description>{`$${teacherPremium[0].price} ($0 today)`}</Description>
       </TrialContainer>
       {Premium}
     </>
   )
 
   const modalContent = () => {
-    if (isTrial) {
+    if (hasPremiumTrial) {
       return NonPremium
     }
     return Premium
@@ -123,7 +125,7 @@ const TrialModal = ({
       visible={isVisible}
       onCancel={closeModal}
     >
-      {isTrial ? (
+      {hasPremiumTrial ? (
         <p>
           {`Experience the additional features of Edulastic Teacher Premium for 14
           days: read-aloud for students, extra test security settings, easier
@@ -147,9 +149,13 @@ const TrialModal = ({
 }
 
 TrialModal.propTypes = {
-  productId: PropTypes.string.isRequired,
+  addOnIdsToShow: PropTypes.array.isRequired,
   isVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  isPremiumUser: PropTypes.bool.isRequired,
+  isPremiumTrialUsed: PropTypes.bool.isRequired,
+  startPremiumTrial: PropTypes.func.isRequired,
+  products: PropTypes.array.isRequired,
 }
 
 export default TrialModal

@@ -23,12 +23,13 @@ import {
   idToName,
   analyseByToKeyToRender,
   analyseByToName,
+  getStandardProgressNav,
 } from '../../utils/transformers'
 
 import dropDownFormat from '../../static/json/dropDownFormat.json'
 import { reportLinkColor } from '../../../../multipleAssessmentReport/common/utils/constants'
 
-const GradebookTable = styled(StyledTable)`
+export const GradebookTable = styled(StyledTable)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
       table tbody tr td {
@@ -113,6 +114,7 @@ const StandardsGradebookTableComponent = ({
   handleOnClickStandard,
   standardsData,
   location,
+  navigationItems,
   pageTitle,
   isSharedReport,
   t,
@@ -247,26 +249,18 @@ const StandardsGradebookTableComponent = ({
       const bgColor =
         (_analyseBy === 'masteryLevel' || _analyseBy === 'masteryScore') &&
         standardToRender?.color
-      if (_compareBy === 'studentId') {
-        return (
-          <ColoredCell
-            bgColor={bgColor}
-            onClick={
-              printData !== 'N/A'
-                ? () =>
-                    handleOnClickStandard(
-                      obj,
-                      standardName,
-                      record.compareByLabel
-                    )
-                : null
-            }
-          >
-            {printData}
-          </ColoredCell>
-        )
-      }
-      return <ColoredCell bgColor={bgColor}>{printData}</ColoredCell>
+      return _compareBy === 'studentId' && printData !== 'N/A' ? (
+        <ColoredCell
+          bgColor={bgColor}
+          onClick={() =>
+            handleOnClickStandard(obj, standardName, record.compareByLabel)
+          }
+        >
+          {printData}
+        </ColoredCell>
+      ) : (
+        <ColoredCell bgColor={bgColor}>{printData}</ColoredCell>
+      )
     }
 
     const printData = getDisplayValue(
@@ -316,7 +310,6 @@ const StandardsGradebookTableComponent = ({
         title: 'Overall',
         dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
         key: analyseByToKeyToRender[tableDdFilters.analyseBy],
-        align: 'left',
         width: 150,
         sorter: (a, b) => {
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy]
@@ -373,8 +366,13 @@ const StandardsGradebookTableComponent = ({
             flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
             'standardId'
           )
-        ).map((item, index) => ({
-          title: (
+        ).map((item, index) => {
+          const standardProgressNav = getStandardProgressNav(
+            navigationItems,
+            item.standardId,
+            tableDdFilters.compareBy
+          )
+          const titleComponent = (
             <>
               <span>{item.standardName}</span>
               <br />
@@ -382,19 +380,26 @@ const StandardsGradebookTableComponent = ({
                 {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
               </span>
             </>
-          ),
-          dataIndex: item.standardId,
-          key: item.standardId,
-          align: 'center',
-          width: 150,
-          render: renderStandardIdColumns(
-            index,
-            tableDdFilters.compareBy,
-            tableDdFilters.analyseBy,
-            item.standardName,
-            item.standardId
-          ),
-        })),
+          )
+          return {
+            title: standardProgressNav ? (
+              <Link to={standardProgressNav}>{titleComponent}</Link>
+            ) : (
+              titleComponent
+            ),
+            dataIndex: item.standardId,
+            key: item.standardId,
+            align: 'center',
+            width: 150,
+            render: renderStandardIdColumns(
+              index,
+              tableDdFilters.compareBy,
+              tableDdFilters.analyseBy,
+              item.standardName,
+              item.standardId
+            ),
+          }
+        }),
       ]
     }
 

@@ -91,7 +91,6 @@ function* getReportsStandardsPerformanceSummaryRequest({ payload }) {
       reportsApi.fetchStandardsPerformanceSummaryReport,
       payload
     )
-    // const standardsPerformanceSummary = { data: tempData };
     const dataSizeExceeded =
       standardsPerformanceSummary?.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {

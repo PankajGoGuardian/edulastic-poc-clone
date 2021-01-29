@@ -427,6 +427,9 @@ export const StyledAutocompleteDropDownContainer = styled.div`
   .ant-select-selection--multiple {
     padding-bottom: 6px;
   }
+  .ant-select-selection--multiple .ant-select-selection__choice {
+    max-width: 87%;
+  }
   .ant-select-selection--multiple .ant-select-selection__choice__content {
     text-transform: none;
   }

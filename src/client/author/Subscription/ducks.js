@@ -14,6 +14,7 @@ const slice = createSlice({
     subscriptionData: {},
     error: '',
     showTrialSubsConfirmation: false,
+    showTrialConfirmationMessage: '',
     products: [],
   },
   reducers: {
@@ -79,6 +80,9 @@ const slice = createSlice({
     trialSubsConfirmationAction: (state, { payload }) => {
       state.showTrialSubsConfirmation = payload
     },
+    trialConfirmationMessageAction: (state, { payload }) => {
+      state.showTrialConfirmationMessage = payload
+    },
     setAddOnProducts: (state, { payload }) => {
       state.products = payload
     },
@@ -95,33 +99,45 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
   const premiumType = isTrial ? 'Trial Premium' : 'Premium'
   if (hasSubscriptions && !hasItemBankPermissions) {
     const { subEndDate } = subscriptions
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     yield call(notification, {
       type: 'success',
-      msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${moment(
-        subEndDate
-      ).format('DD MMM, YYYY')}`,
+      msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
       key: 'handle-payment',
     })
+    yield put(
+      slice.actions.trialConfirmationMessageAction(
+        `Thanks for trying teacher premium. Your trial will expire on ${formatSubEndDate}. After your trial ends, continue to use teacher premium for a full calendar year for just $100.`
+      )
+    )
   } else if (hasItemBankPermissions && !hasSubscriptions) {
     const { subEndDate, name: itemBankName } = itemBankPermissions
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     yield call(notification, {
       type: 'success',
-      msg: `Congratulations! You are subscribed to ${itemBankName} ${premiumType} Itembank for ${subscriptionPeriod} and the subscription will expire on ${moment(
-        subEndDate
-      ).format('DD MMM, YYYY')}`,
+      msg: `Congratulations! You are subscribed to ${itemBankName} ${premiumType} Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
       key: 'handle-payment',
     })
+    yield put(
+      slice.actions.trialConfirmationMessageAction(
+        `Thanks for trying premium Spark assessments and practice. Your trial will expire on ${formatSubEndDate}. After your trial ends, continue to use additional Spark content for a full calendar year for just $100`
+      )
+    )
   } else if (hasItemBankPermissions && hasSubscriptions) {
     const { subEndDate } = subscriptions
     const { name: itemBankName } = itemBankPermissions
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     yield call(notification, {
       type: 'success',
       msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankName}
-            Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${moment(
-        subEndDate
-      ).format('DD MMM, YYYY')}`,
+            Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
       key: 'handle-payment',
     })
+    yield put(
+      slice.actions.trialConfirmationMessageAction(
+        `Thanks for trying Teacher Premium and additional Spark content. Your subscription will expire on ${formatSubEndDate}. After your trial ends upgrade for a full calendar year for just $100 plus optional Spark premium content that you choose to add on.`
+      )
+    )
   }
 }
 

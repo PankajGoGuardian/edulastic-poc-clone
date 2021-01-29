@@ -1,5 +1,13 @@
 import { useEffect } from 'react';
 
+function hasFocus(){
+	if(document.hasFocus){
+		return document.hasFocus();
+	} else {
+		return false;
+	}
+}
+
 export default function useFocusHandler({onFocus,onBlur,enabled}){
 	useEffect(()=>{
 		/**plugin code starts */
@@ -113,7 +121,9 @@ export default function useFocusHandler({onFocus,onBlur,enabled}){
 								}, 300);
 							} else {
 								// tween pause() code goes here
-								o.onBlurCallback();
+								if(!hasFocus()){
+									o.onBlurCallback();
+								}
 							}
 						});
 						cleanupCallbacks.push(cleanupCb1);
@@ -129,7 +139,9 @@ export default function useFocusHandler({onFocus,onBlur,enabled}){
 							};
 							var focusOutCb = function() {
 								// tween pause() code goes here
-								o.onBlurCallback();
+								if(!hasFocus()){
+									o.onBlurCallback();
+								}
 							};
 							$(window).on("focusin", focusinCb).on("focusout", focusOutCb);
 							cleanupCallbacks.push(() => $(window).off("focusin", focusinCb));
@@ -147,7 +159,9 @@ export default function useFocusHandler({onFocus,onBlur,enabled}){
 								};
 								var blurCb = function(event) {
 									// tween pause() code goes
-									o.onBlurCallback();
+									if(!hasFocus()){
+										o.onBlurCallback();
+									}
 								};
 								window.addEventListener("focus", focusCb , false);
 								cleanupCallbacks.push(()=> window.removeEventListener("focus",focusCb,false));

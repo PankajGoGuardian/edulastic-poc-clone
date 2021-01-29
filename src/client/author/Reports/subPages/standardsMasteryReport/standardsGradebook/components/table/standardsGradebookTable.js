@@ -382,8 +382,6 @@ const StandardsGradebookTableComponent = ({
               </span>
             </>
           )
-
-          console.log(standardProgressNav, titleComponent)
           return {
             title: standardProgressNav ? (
               <Link to={standardProgressNav}>{titleComponent}</Link>

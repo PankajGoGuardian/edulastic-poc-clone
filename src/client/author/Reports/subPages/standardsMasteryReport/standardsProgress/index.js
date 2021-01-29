@@ -31,6 +31,7 @@ const StandardsProgress = ({
   loading,
   error,
   isCsvDownloading,
+  location,
   toggleFilter,
   settings,
   standardsFilters,
@@ -61,7 +62,10 @@ const StandardsProgress = ({
   )
 
   const [tableFilters, setTableFilters] = useState({
-    compareBy: compareByDataFiltered[0],
+    compareBy:
+      compareByDataFiltered.find(
+        (o) => o.key === location?.state?.compareByKey
+      ) || compareByDataFiltered[0],
     analyseBy: analyseByData[3],
   })
   // support for backend pagination of tests

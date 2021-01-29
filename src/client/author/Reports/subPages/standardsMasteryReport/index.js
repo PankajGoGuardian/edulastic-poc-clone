@@ -79,6 +79,11 @@ const StandardsMasteryReportContainer = (props) => {
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
 
+  const standardIdFromLocationState = useMemo(
+    () => (location.state?.standardId ? location.state.standardId : ''),
+    [location.state]
+  )
+
   const [sharedReport, userRole] = useMemo(() => {
     const _sharedReport =
       sharedReportList.length > 0
@@ -109,6 +114,14 @@ const StandardsMasteryReportContainer = (props) => {
       setDdFilter({ ...sharedReport.filters.ddfilter })
     }
   }, [sharedReport])
+
+  useEffect(() => {
+    if (standardIdFromLocationState) {
+      const _settings = { ...settings }
+      _settings.requestFilters.standardId = standardIdFromLocationState
+      setSMRSettings(_settings)
+    }
+  }, [standardIdFromLocationState])
 
   useEffect(() => {
     if (!showApply) {

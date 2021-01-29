@@ -480,8 +480,10 @@ export const getStandardProgressNav = (
     const _standardsProgressNavObj = { ...standardsProgressNavObj, standardId }
     const _standardsProgressNavQuery = qs.stringify(_standardsProgressNavObj)
     return {
-      pathname: `${standardsProgressNavPrefix}?${_standardsProgressNavQuery}`,
+      pathname: standardsProgressNavPrefix,
+      search: `?${_standardsProgressNavQuery}`,
       state: {
+        standardId,
         compareByKey:
           gradebookToProgressCompareByKey[compareByKey] || compareByKey,
       },

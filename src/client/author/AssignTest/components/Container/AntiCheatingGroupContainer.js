@@ -328,7 +328,7 @@ const AntiCheatingGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
-            content={`If ON, then students will be shown an alert
+            content={`Students will be shown an alert
               if they navigate away from edulastic tab and if
               specific number of alerts exceeded, the assignment
               will be paused and the instructor will need to
@@ -355,7 +355,7 @@ const AntiCheatingGroupContainer = ({
 
             <Col span={12}>
               <StyledRadioGroupWrapper
-                value={restrictNavigationOut}
+                value={restrictNavigationOut || undefined}
                 disabled={freezeSettings}
                 onChange={(e) => {
                   overRideSettings('restrictNavigationOut', e.target.value)

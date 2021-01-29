@@ -702,7 +702,7 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
-
+    window.document.exitFullscreen().catch(() => {})
     const isCliUser = yield select((state) => state.user?.isCliUser)
     if (isCliUser) {
       window.parent.postMessage(

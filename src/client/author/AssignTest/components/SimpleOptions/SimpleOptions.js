@@ -194,7 +194,11 @@ class SimpleOptions extends React.Component {
       if (field === 'scoringType') {
         state.penalty = value === evalTypeLabels.PARTIAL_CREDIT
       }
-      state[field] = value
+      if (typeof value === 'undefined') {
+        state[field] = null
+      } else {
+        state[field] = value
+      }
     })
     updateOptions(nextAssignment)
   }

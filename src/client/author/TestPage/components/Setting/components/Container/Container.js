@@ -1113,11 +1113,10 @@ class Setting extends Component {
                           </Col>
                           <Col span={13}>
                             <Description>
-                              If <b> ON </b>, then students will be shown an
-                              alert if they navigate away from edulastic tab and
-                              if specific number of alerts exceeded, the
-                              assignment will be paused and the instructor will
-                              need to manually resume
+                              Students will be shown an alert if they navigate
+                              away from edulastic tab and if specific number of
+                              alerts exceeded, the assignment will be paused and
+                              the instructor will need to manually resume
                             </Description>
                           </Col>
                         </Row>

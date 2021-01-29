@@ -153,6 +153,7 @@ export function* saveUserResponse({ payload }) {
         yield call(testActivityApi.updateUtaTime, { utaId, type: 'pausing' })
         yield put(utaStartTimeUpdateRequired(null))
       }
+      window.document.exitFullscreen().catch(() => {})
     }
 
     if (!endDate && clazz.length) {

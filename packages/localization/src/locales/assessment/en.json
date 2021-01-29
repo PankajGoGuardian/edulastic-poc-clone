@@ -869,7 +869,6 @@
       "allowEulersNumber": "Interpret #{e#} as Euler's number",
       "interpretTrigArgAsDegree": "Use degrees instead of radians",
       "tolerance": "Amount of tolerance",
-      "roundTo": "Must be rounded to",
       "allowDecimalMarks": "Allow decimal marks",
       "decimalSeparator": "Decimal separator",
       "addNewMethod": "Add new method",

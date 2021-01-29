@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import { CheckboxLabel, TextInputStyled, FieldLabel } from '@edulastic/common'
 import LabelWithHelper from './LabelWithHelper'
 import { validations } from './inputsValidations'
 
-const InputOption = ({ t, options, onChange, optionKey, isGraph }) => {
+const InputOption = ({ options, onChange, optionKey, isGraph }) => {
   const [isAllowed, setIsAllowed] = useState(false)
 
   const onChangeCheckbox = (e) => {
@@ -42,7 +41,7 @@ const InputOption = ({ t, options, onChange, optionKey, isGraph }) => {
       >
         {optionKey === 'significantDecimalPlaces' && (
           <FieldLabel display="inline-block" mr="18px">
-            {t('component.math.roundTo')}
+            must be rounnded to
           </FieldLabel>
         )}
         <TextInputStyled
@@ -67,7 +66,7 @@ InputOption.propTypes = {
 
 InputOption.defaultProps = {}
 
-export default withNamespaces('assessment')(InputOption)
+export default InputOption
 
 const InputOptionWrapper = styled.div`
   margin-bottom: 20px;

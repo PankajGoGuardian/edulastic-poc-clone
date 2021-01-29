@@ -9,7 +9,6 @@ import {
 import { Link } from 'react-router-dom'
 import { isBoolean } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
-import { getUserDetails } from '../../../../student/Login/ducks'
 
 // TODO: Update SVG imports here
 import IMG1 from '../../static/1.png'
@@ -248,37 +247,31 @@ const PlansComponent = ({
   </PlansContainer>
 )
 
-const SubscriptionMain = ({ user, ...props }) => {
-  const {
-    isSubscribed = false,
-    openPaymentServiceModal,
-    openHasLicenseKeyModal,
-    openPurchaseLicenseModal,
-    isPremiumTrialUsed,
-    showRenewalOptions,
-    addPermissionRequest,
-    startTrialAction,
-    isPaidPremium,
-    isPaidItemBank,
-    setShowSubscriptionAddonModal,
-    showTrialSubsConfirmationAction,
-    isTrialItemBank,
-    products,
-  } = props
-
+const SubscriptionMain = ({
+  user,
+  isSubscribed = false,
+  openPaymentServiceModal,
+  openHasLicenseKeyModal,
+  openPurchaseLicenseModal,
+  isPremiumTrialUsed,
+  showRenewalOptions,
+  startTrialAction,
+  isPaidPremium,
+  isPaidItemBank,
+  setShowSubscriptionAddonModal,
+  sparkMathProductId,
+  usedTrialItemBankId,
+  products,
+}) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
   const isPremiumUser = user.features.premium
 
-  const handleSelectStateModal = () => {
-    setShowSelectStates(true)
-  }
+  const handleSelectStateModal = () => setShowSelectStates(true)
 
-  const handlePurchaseFlow = () => {
-    setShowSubscriptionAddonModal(true)
-  }
+  const handlePurchaseFlow = () => setShowSubscriptionAddonModal(true)
 
   const handleStartTrial = () => {
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
@@ -288,18 +281,17 @@ const SubscriptionMain = ({ user, ...props }) => {
         msg: 'Validating trial status, please wait...',
       })
     }
-    if (isPremiumTrialUsed) {
-      return notification({
-        type: 'warning',
-        msg: 'You have already used up the trial !',
-      })
-    }
 
     setIsTrialModalVisible(true)
   }
 
-  const showTrialButton =
-    (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
+  // Show start premium trial button, if user is not premium and premium trial is not yet used.
+  const hasPremiumTrialButton = !isPremiumTrialUsed && !isPremiumUser
+
+  // Show item bank trial button when item bank trial is not used yet and user is either premium
+  // or hasn't used premium trial yet.
+  const hasSparkMathTrialButton =
+    !usedTrialItemBankId && (!isPremiumTrialUsed || isPremiumUser)
 
   return (
     <>
@@ -355,7 +347,7 @@ const SubscriptionMain = ({ user, ...props }) => {
                 Renew Subscription
               </EduButton>
             )}
-            {showTrialButton && (
+            {hasPremiumTrialButton && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -383,15 +375,12 @@ const SubscriptionMain = ({ user, ...props }) => {
       </ContentSection>
       {isTrialModalVisible && (
         <TrialModal
-          userInfo={user}
+          addOnIdsToShow={[sparkMathProductId]}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
-          addItemBankPermission={addPermissionRequest}
-          productName="SparkMath"
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
           products={products}
         />
       )}
@@ -435,7 +424,7 @@ const SubscriptionMain = ({ user, ...props }) => {
                           onClick={handlePurchaseFlow}
                         />
                       )}
-                      {showTrialButton && (
+                      {hasSparkMathTrialButton && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <span onClick={handleClick}>try</span>
@@ -489,6 +478,6 @@ const SubscriptionMain = ({ user, ...props }) => {
 }
 
 export default connect((state) => ({
-  user: getUserDetails(state),
   products: state?.subscription?.products,
+  sparkMathProductId: state?.subscription?.subscriptionData?.sparkMathProductId,
 }))(SubscriptionMain)

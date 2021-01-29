@@ -9,25 +9,29 @@ const SubscriptionAddonModal = ({
   isPaidPremium,
   setShowUpgradeModal,
   subEndDate,
+  subType,
   premiumProductId,
   products = [],
   setTotalPurchaseAmount,
   setAddOnProductIds,
-  isPremiumUser,
 }) => {
   const closeModal = () => handleCloseModal(false)
-  const initialPrice = isPaidPremium ? 100 : 200
-  const [totalPrice, setTotalPrice] = useState(initialPrice)
+  const [totalPrice, setTotalPrice] = useState(100)
   const [selectedProductIds, setSelectedProductIds] = useState([])
+
+  useEffect(() => {
+    const initialPrice = isPaidPremium ? 100 : 200
+    setTotalPrice(initialPrice)
+  }, [isPaidPremium])
 
   useEffect(() => {
     if (!products.length || !premiumProductId) return
     let _productIds = products.map((x) => x.id)
-    if (isPremiumUser) {
+    if (isPaidPremium) {
       _productIds = _productIds.filter((x) => x !== premiumProductId)
     }
     setSelectedProductIds(_productIds)
-  }, [isPremiumUser, products, premiumProductId])
+  }, [isPaidPremium, products, premiumProductId])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const result = products.map((item) => {
@@ -36,7 +40,8 @@ const SubscriptionAddonModal = ({
       if (
         !subEndDate ||
         item.id === premiumProductId ||
-        (subEndDate && !isPaidPremium)
+        (subEndDate && !isPaidPremium) ||
+        ['enterprise', 'partial_premium'].includes(subType)
       ) {
         return {
           ...item,

@@ -23,7 +23,6 @@ import { slice } from '../../../../../Subscription/ducks'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
-import { addPermissionRequestAction } from '../../../../../ContentCollections/ducks'
 import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
@@ -59,7 +58,6 @@ const MyClasses = ({
   resetTestFilters,
   resetPlaylistFilters,
   collections,
-  addPermissionRequest,
   isPremiumTrialUsed,
   itemBankSubscriptions = [],
   startTrialAction,
@@ -325,6 +323,7 @@ const MyClasses = ({
           isPaidPremium={isPaidPremium}
           setShowUpgradeModal={setShowUpgradeModal}
           subEndDate={subEndDate}
+          subType={subType}
           usedTrialItemBankId={usedTrialItemBankId}
           products={products}
           premiumProductId={premiumProductId}
@@ -354,20 +353,12 @@ const MyClasses = ({
       )}
       {isTrialModalVisible && (
         <TrialModal
-          description={productData.description}
-          productId={productData.productId}
-          productName={productData.productName}
-          userInfo={user}
-          addItemBankPermission={addPermissionRequest}
+          addOnIdsToShow={[productData.productId]}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
-          premiumProductId={premiumProductId}
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-          subEndDate={subEndDate}
-          usedTrialItemBankId={usedTrialItemBankId}
           products={products}
         />
       )}
@@ -441,7 +432,6 @@ export default compose(
       fetchCleverClassList: fetchCleverClassListRequestAction,
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
-      addPermissionRequest: addPermissionRequestAction,
       startTrialAction: slice.actions.startTrialAction,
       stripePaymentAction: slice.actions.stripePaymentAction,
       showTrialSubsConfirmationAction:

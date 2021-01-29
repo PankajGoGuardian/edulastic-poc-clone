@@ -13,7 +13,6 @@ import SubscriptionHeader from '../SubscriptionHeader'
 import PayWithPoModal from '../SubscriptionHeader/PayWithPoModal'
 import UpgradeModal from '../SubscriptionHeader/UpgradeModal'
 import SubscriptionMain from '../SubscriptionMain'
-import { addPermissionRequestAction } from '../../../ContentCollections/ducks'
 import {
   CompareModal,
   PlanCard,
@@ -187,7 +186,6 @@ const Subscription = (props) => {
     itemBankSubscriptions = [],
     startTrialAction,
     premiumProductId,
-    addPermissionRequest,
     isConfirmationModalVisible,
     showTrialSubsConfirmationAction,
     products,
@@ -249,11 +247,6 @@ const Subscription = (props) => {
 
   const formatTrialEndDate = moment(subEndDate).format('DD MMM, YYYY')
 
-  const isTrialItemBank =
-    itemBankSubscriptions &&
-    itemBankSubscriptions?.length > 0 &&
-    itemBankSubscriptions?.[0]?.isTrial === true
-
   const isPaidItemBank =
     itemBankSubscriptions &&
     itemBankSubscriptions?.length > 0 &&
@@ -285,14 +278,11 @@ const Subscription = (props) => {
         startTrialAction={startTrialAction}
         isPaidPremium={isPaidPremium}
         isPaidItemBank={isPaidItemBank}
-        isTrialItemBank={isTrialItemBank}
         showRenewalOptions={showRenewalOptions}
-        addPermissionRequest={addPermissionRequest}
+        usedTrialItemBankId={usedTrialItemBankId}
         premiumUser={isPremiumUser}
         user={user}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        premiumProductId={premiumProductId}
-        showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
       />
 
       <CompareModal
@@ -313,9 +303,9 @@ const Subscription = (props) => {
         isPaidPremium={isPaidPremium}
         setShowUpgradeModal={setShowUpgradeModal}
         subEndDate={subEndDate}
+        subType={subType}
         usedTrialItemBankId={usedTrialItemBankId}
         products={products}
-        isPremiumUser={isPremiumUser}
         premiumProductId={premiumProductId}
         setTotalPurchaseAmount={setTotalAmount}
         setAddOnProductIds={setAddOnProductIds}
@@ -395,7 +385,6 @@ export default connect(
     stripePaymentAction: slice.actions.stripePaymentAction,
     fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
     startTrialAction: slice.actions.startTrialAction,
-    addPermissionRequest: addPermissionRequestAction,
     showTrialSubsConfirmationAction: slice.actions.trialSubsConfirmationAction,
   }
 )(Subscription)

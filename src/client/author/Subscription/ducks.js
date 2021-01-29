@@ -172,6 +172,7 @@ function* fetchUserSubscription() {
     const products = [
       {
         id: data.premiumProductId,
+        type: 'PREMIUM',
         name: 'Teacher Premium',
         description:
           'Get even more out of your trial by adding Spark premium content',
@@ -179,6 +180,7 @@ function* fetchUserSubscription() {
       },
       {
         id: data.sparkMathProductId,
+        type: 'ITEM_BANK',
         name: 'Spark Math',
         description: 'Curriculum-aligned differentiated math practice',
         price: 100,

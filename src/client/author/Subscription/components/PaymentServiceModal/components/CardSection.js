@@ -77,6 +77,7 @@ const CardSection = ({
       height="45px"
       onClick={handleCardSubmit}
       disabled={verificationPending}
+      data-cy="finalPayButton"
     >
       PAY ${totalPurchaseAmount || 100}
     </EduButton>

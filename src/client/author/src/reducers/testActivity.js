@@ -178,6 +178,9 @@ const reducer = (state = initialState, { type, payload }) => {
             return {
               ...item,
               isPaused,
+              ...(isPaused
+                ? {}
+                : { pauseReason: undefined, tabNavigationCounter: null }),
             }
           }
           return item

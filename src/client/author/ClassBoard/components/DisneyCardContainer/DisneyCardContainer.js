@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { round, shuffle, get } from 'lodash'
-import { Col, Row, Spin, Button,Icon,Tooltip } from 'antd'
+import { Col, Row, Spin, Icon, Tooltip } from 'antd'
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { connect } from 'react-redux'
@@ -65,20 +65,31 @@ import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
 
 const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
 
-
-function PauseToolTip({outNavigationCounter, pauseReason}){
-  let reason = null;
-  if(pauseReason==="blocked-save-and-continue"){
-    reason = "Paused due to idle timeout"
-  } else if(pauseReason === "exiting"){
-    reason = "Paused due to browser exiting before submiting"
-  } else if (pauseReason === "out-of-navigation"){
-    reason = `Paused because of navigating outside asssessment ${outNavigationCounter>1?`${outNavigationCounter} times`: `${outNavigationCounter} time`}`
-  } else if(outNavigationCounter>0){
-    reason = `navigated ${outNavigationCounter>1?`${outNavigationCounter} times`:`${outNavigationCounter} time out of assessment`}`
+function PauseToolTip({ outNavigationCounter, pauseReason }) {
+  let reason = null
+  console.log('pauseToolTip', { pauseReason })
+  if (pauseReason === 'blocked-save-and-continue') {
+    reason = 'Paused due to idle timeout'
+  } else if (pauseReason === 'exiting') {
+    reason = 'Paused due to browser exiting before submiting'
+  } else if (pauseReason === 'out-of-navigation') {
+    // reason = `Paused because of navigating outside asssessment ${outNavigationCounter>1?`${outNavigationCounter} times`: `${outNavigationCounter} time`}`
+    reason = 'Paused due to tab navigation'
+  } else if (outNavigationCounter > 0) {
+    reason = `navigated ${
+      outNavigationCounter > 1
+        ? `${outNavigationCounter} times`
+        : `${outNavigationCounter} time out of assessment`
+    }`
+  } else if (pauseReason) {
+    reason = pauseReason
   }
 
-  return reason? <Tooltip title={reason}><QuestionIcon type="question-circle"  /></Tooltip>:null;
+  return reason ? (
+    <Tooltip title={reason}>
+      <QuestionIcon type="question-circle" />
+    </Tooltip>
+  ) : null
 }
 class DisneyCardContainer extends Component {
   constructor(props) {
@@ -318,7 +329,11 @@ class DisneyCardContainer extends Component {
                       >
                         {enrollMentFlag}
                         {unAssignedMessage}
-                        {status.status} <PauseToolTip outNavigationCounter={student.outNavigationCounter} pauseReason={student.pauseReason} />
+                        {status.status}{' '}
+                        <PauseToolTip
+                          outNavigationCounter={student.outNavigationCounter}
+                          pauseReason={student.pauseReason}
+                        />
                       </StyledParaS>
                       {pastDueTag && (
                         <StatusRow>
@@ -668,8 +683,8 @@ const Refresh = styled.div`
   }
 `
 const QuestionIcon = styled(Icon)`
-  cursor:pointer;
+  cursor: pointer;
   color: #5eb500;
-  font-size:15px;
-  margin-left:6px;
-`;
+  font-size: 15px;
+  margin-left: 6px;
+`

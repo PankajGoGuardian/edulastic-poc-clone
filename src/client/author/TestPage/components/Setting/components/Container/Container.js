@@ -540,33 +540,36 @@ class Setting extends Component {
                       <Title>Test Type</Title>
                       <Body smallSize={isSmallSize}>
                         <Row>
-                          <SelectInputStyled
-                            width="70%"
-                            value={testType}
-                            disabled={!owner || !isEditable}
-                            onChange={this.updateTestData('testType')}
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                          >
-                            {(userRole === roleuser.DISTRICT_ADMIN ||
-                              userRole === roleuser.SCHOOL_ADMIN ||
-                              testType === COMMON) &&
-                              !districtPermissions.includes('publisher') && (
-                                <Option key={COMMON} value={COMMON}>
-                                  Common Assessment
+                          <Col span={12}>
+                            <SelectInputStyled
+                              value={testType}
+                              disabled={!owner || !isEditable}
+                              onChange={this.updateTestData('testType')}
+                              getPopupContainer={(trigger) =>
+                                trigger.parentNode
+                              }
+                            >
+                              {(userRole === roleuser.DISTRICT_ADMIN ||
+                                userRole === roleuser.SCHOOL_ADMIN ||
+                                testType === COMMON) &&
+                                !districtPermissions.includes('publisher') && (
+                                  <Option key={COMMON} value={COMMON}>
+                                    Common Assessment
+                                  </Option>
+                                )}
+                              {Object.keys(
+                                isAuthorPublisher
+                                  ? authorPublisherTestTypes
+                                  : testTypes
+                              ).map((key) => (
+                                <Option key={key} value={key}>
+                                  {isAuthorPublisher
+                                    ? authorPublisherTestTypes[key]
+                                    : testTypes[key]}
                                 </Option>
-                              )}
-                            {Object.keys(
-                              isAuthorPublisher
-                                ? authorPublisherTestTypes
-                                : testTypes
-                            ).map((key) => (
-                              <Option key={key} value={key}>
-                                {isAuthorPublisher
-                                  ? authorPublisherTestTypes[key]
-                                  : testTypes[key]}
-                              </Option>
-                            ))}
-                          </SelectInputStyled>
+                              ))}
+                            </SelectInputStyled>
+                          </Col>
                         </Row>
                       </Body>
                     </Row>

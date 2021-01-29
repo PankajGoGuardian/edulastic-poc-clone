@@ -35,6 +35,7 @@ const AntiCheatingGroupContainer = ({
   freezeSettings,
   overRideSettings,
   featuresAvailable,
+  tootltipWidth,
 }) => {
   const [passwordStatus, setPasswordStatus] = useState({
     color: blueBorder,
@@ -109,6 +110,7 @@ const AntiCheatingGroupContainer = ({
         !isDocBased && (
           <SettingContainer>
             <DetailsTooltip
+              width={tootltipWidth}
               title="SHUFFLE QUESTIONS"
               content="If ON, then order of questions will be different for each student."
               premium={assessmentSuperPowersShuffleQuestions}
@@ -146,6 +148,7 @@ const AntiCheatingGroupContainer = ({
         !isDocBased && (
           <SettingContainer>
             <DetailsTooltip
+              width={tootltipWidth}
               title="SHUFFLE ANSWER CHOICE"
               content="If set to ON, answer choices for multiple choice and multiple select questions will be randomly shuffled for students. Text to speech does not work when the answer choices are shuffled."
               premium={assessmentSuperPowersShuffleAnswerChoice}
@@ -181,6 +184,7 @@ const AntiCheatingGroupContainer = ({
       {/* Require Password */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="REQUIRE PASSWORD"
           content="Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
           premium={assessmentSuperPowersRequirePassword}
@@ -287,6 +291,7 @@ const AntiCheatingGroupContainer = ({
         /* BLOCK SAVE AND CONTINUE starts */
         <SettingContainer>
           <DetailsTooltip
+            width={tootltipWidth}
             title="Block Save And Continue"
             content="Will force the students to take the test in single sitting"
             placement="rightTop"
@@ -321,6 +326,7 @@ const AntiCheatingGroupContainer = ({
         /* Restrict navigation out starts */
         <SettingContainer>
           <DetailsTooltip
+            width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
             content={`If ON, then students will be shown an alert
               if they navigate away from edulastic tab and if
@@ -396,6 +402,7 @@ const AntiCheatingGroupContainer = ({
         !isDocBased && (
           <SettingContainer>
             <DetailsTooltip
+              width={tootltipWidth}
               title="Restrict question navigation"
               content="If ON, then students will be restricted from navigating back to the previous question that they have answered. It is recommended to use this along with Shuffle Questions for preventing cheating among students."
               placement="rightTop"
@@ -442,6 +449,7 @@ const AntiCheatingGroupContainer = ({
       {/* Safe Exam Browser/Kiosk Mode */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="Require Safe Exam Browser"
           content="Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed on the student devices."
           placement="rightTop"

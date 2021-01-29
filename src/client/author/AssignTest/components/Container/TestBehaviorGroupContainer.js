@@ -49,6 +49,7 @@ const TestBehaviorGroupContainer = ({
   totalItems,
   userRole,
   featuresAvailable,
+  tootltipWidth,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -123,6 +124,7 @@ const TestBehaviorGroupContainer = ({
       {/* Mark as done */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="Mark as done"
           content="Control when class will be marked as Done. Automatically when all studens are graded and due date has passed OR Manually when you click the Mark as Done button."
           premium={assessmentSuperPowersMarkAsDone}
@@ -187,6 +189,7 @@ const TestBehaviorGroupContainer = ({
       {/* Show Calculator */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="SHOW CALCULATOR"
           content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
           premium={assessmentSuperPowersShowCalculator}
@@ -228,6 +231,7 @@ const TestBehaviorGroupContainer = ({
       {/* Evaluation Method */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="EVALUATION METHOD"
           content="Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for incorrect answers or not (applicable only for multiple selection que widgets)."
           premium
@@ -264,6 +268,7 @@ const TestBehaviorGroupContainer = ({
         !isDocBased && (
           <SettingContainer>
             <DetailsTooltip
+              width={tootltipWidth}
               title="CHECK ANSWER TRIES PER QUESTION"
               content="Control whether student can check in answer during attempt or not. Value mentioned will be equivalent to number of attempts allowed per student."
               premium={assessmentSuperPowersTimedTest}
@@ -302,9 +307,11 @@ const TestBehaviorGroupContainer = ({
       {/* Timed TEST */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="TIMED TEST"
           content="The time can be modified in one minute increments. When the time limit is reached, students will be locked out of the assessment. If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off. This ensures that the student does not go over the allotted time."
           premium={assessmentSuperPowersTimedTest}
+          placement="rightTop"
         />
         <StyledRow
           data-cy="timed-test-container"
@@ -410,6 +417,7 @@ const TestBehaviorGroupContainer = ({
       {/* Maximum attempt */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="MAXIMUM ATTEMPTS ALLOWED"
           content="Control the number of times a student can take the assignment."
           premium={assessmentSuperPowersTimedTest}

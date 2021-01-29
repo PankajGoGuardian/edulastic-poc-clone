@@ -8,8 +8,9 @@ const DetailsTooltip = ({
   placement,
   premium,
   showInsideContainer,
+  width,
 }) => {
-  let yShift = '-40%'
+  let yShift = '-32%'
   if (placement === 'rightTop') yShift = '-80%'
   if (placement === 'rightBottom') yShift = '0%'
 
@@ -17,7 +18,12 @@ const DetailsTooltip = ({
   if (showInsideContainer) xShift = '-20%'
 
   return (
-    <StyledPopOver className="popover" yShift={yShift} xShift={xShift}>
+    <StyledPopOver
+      className="popover"
+      yShift={yShift}
+      xShift={xShift}
+      width={width}
+    >
       <span>{title}</span>
       {!premium && <span className="premium-tag">$ Premium</span>}
       <span>{content}</span>
@@ -28,7 +34,7 @@ const DetailsTooltip = ({
 export default DetailsTooltip
 
 const StyledPopOver = styled.div`
-  width: 250px;
+  width: ${({ width }) => (width ? `${width}px` : '240px')};
   position: absolute;
   right: 0;
   background: ${white};

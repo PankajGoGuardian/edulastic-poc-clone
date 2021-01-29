@@ -26,6 +26,7 @@ const AutoRedirectGroupContainer = ({
   freezeSettings,
   updateAssignmentSettings,
   featuresAvailable,
+  tootltipWidth,
 }) => {
   const { autoRedirect = false, autoRedirectSettings } = assignmentSettings
 
@@ -77,6 +78,7 @@ const AutoRedirectGroupContainer = ({
       {/* Auto Redirect */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="Enable Auto Redirect"
           content="Allow students to take the assignment multiple times to practice and improve their learning."
           premium={assessmentSuperPowersAutoRedirect}

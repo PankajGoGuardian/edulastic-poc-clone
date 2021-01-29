@@ -34,6 +34,7 @@ const MiscellaneousGroupContainer = ({
   disableAnswerOnPaper,
   actionOnFeatureInaccessible,
   featuresAvailable,
+  tootltipWidth,
 }) => {
   const {
     answerOnPaper = testSettings.answerOnPaper,
@@ -62,6 +63,7 @@ const MiscellaneousGroupContainer = ({
       {/* Answer on Paper */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="ANSWER ON PAPER"
           content="Use this option if you are administering this assessment on paper. If you use this option, you will have to manually grade student responses after the assessment is closed."
           placement="rightBottom"

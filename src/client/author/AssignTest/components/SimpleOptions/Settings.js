@@ -276,6 +276,7 @@ const Settings = ({
                 step={1}
                 bg="white"
                 width="20%"
+                data-cy="max-attempts-allowed"
               />
             </Col>
           </StyledRow>
@@ -326,6 +327,7 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignSwitchRight
+                data-cy="ans-on-paper"
                 disabled={
                   disableAnswerOnPaper ||
                   freezeSettings ||
@@ -355,6 +357,7 @@ const Settings = ({
               <Row>
                 <Col span={24}>
                   <SelectInputStyled
+                    data-cy="password-policy"
                     disabled={
                       freezeSettings || !assessmentSuperPowersRequirePassword
                     }
@@ -464,6 +467,7 @@ const Settings = ({
                     min={0}
                     placeholder="Number of tries"
                     bg="white"
+                    data-cy="check-ans-tries"
                   />
                 </Col>
               </StyledRow>
@@ -502,6 +506,7 @@ const Settings = ({
                 </StyledCol>
                 <StyledCol span={12}>
                   <InputNumber
+                    data-cy="auto-redirect-score-threshold"
                     min={1}
                     max={99}
                     value={autoRedirectSettings.scoreThreshold || ''}
@@ -518,6 +523,7 @@ const Settings = ({
                 </StyledCol>
                 <StyledCol span={12}>
                   <InputNumber
+                    data-cy="auto-redirect-max-attempts"
                     min={1}
                     max={3}
                     value={autoRedirectSettings.maxRedirects || ''}
@@ -534,6 +540,7 @@ const Settings = ({
                 </StyledCol>
                 <StyledCol span={12}>
                   <SelectInputStyled
+                    data-cy="auto-redirect-que-delivery"
                     disabled={freezeSettings}
                     onChange={(value) => {
                       handleAutoRedirectSettingsChange(
@@ -559,6 +566,7 @@ const Settings = ({
                 </StyledCol>
                 <StyledCol span={12}>
                   <SelectInputStyled
+                    data-cy="auto-redirect-poilcy"
                     disabled={freezeSettings}
                     onChange={(value) => {
                       handleAutoRedirectSettingsChange(

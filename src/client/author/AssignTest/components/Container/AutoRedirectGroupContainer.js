@@ -111,6 +111,7 @@ const AutoRedirectGroupContainer = ({
               </StyledCol>
               <StyledCol span={12}>
                 <InputNumber
+                  data-cy="auto-redirect-score-threshold"
                   min={1}
                   max={99}
                   value={autoRedirectSettings.scoreThreshold || ''}
@@ -127,6 +128,7 @@ const AutoRedirectGroupContainer = ({
               </StyledCol>
               <StyledCol span={12}>
                 <InputNumber
+                  data-cy="auto-redirect-max-attempts"
                   min={1}
                   max={3}
                   value={autoRedirectSettings.maxRedirects || ''}
@@ -143,6 +145,7 @@ const AutoRedirectGroupContainer = ({
               </StyledCol>
               <StyledCol span={12}>
                 <SelectInputStyled
+                  data-cy="auto-redirect-que-delivery"
                   disabled={
                     freezeSettings || !assessmentSuperPowersAutoRedirect
                   }
@@ -167,6 +170,7 @@ const AutoRedirectGroupContainer = ({
               </StyledCol>
               <StyledCol span={12}>
                 <SelectInputStyled
+                  data-cy="auto-redirect-poilcy"
                   disabled={
                     freezeSettings || !assessmentSuperPowersAutoRedirect
                   }

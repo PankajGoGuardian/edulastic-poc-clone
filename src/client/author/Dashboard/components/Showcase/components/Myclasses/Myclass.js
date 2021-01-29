@@ -65,6 +65,7 @@ const MyClasses = ({
   verificationPending,
   stripePaymentAction,
   showTrialSubsConfirmationAction,
+  showTrialConfirmationMessage,
   isSuccess,
   isConfirmationModalVisible,
   subscription: { subEndDate, subType } = {},
@@ -390,6 +391,7 @@ const MyClasses = ({
         <TrialConfirmationModal
           visible={isConfirmationModalVisible}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          showTrialConfirmationMessage={showTrialConfirmationMessage}
           usedTrialItemBankId={usedTrialItemBankId}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
@@ -423,6 +425,8 @@ export default compose(
       subscription: state?.subscription?.subscriptionData?.subscription,
       isConfirmationModalVisible:
         state?.subscription?.showTrialSubsConfirmation,
+      showTrialConfirmationMessage:
+        state?.subscription?.showTrialConfirmationMessage,
       products: state?.subscription?.products,
     }),
     {

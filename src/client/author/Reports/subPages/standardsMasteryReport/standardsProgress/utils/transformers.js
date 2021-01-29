@@ -142,51 +142,8 @@ export const getDenormalizedData = (rawData, compareByKey) => {
       return { ...item, ...itemInfo }
     })
     .sort((a, b) => testOrderMap[b.reportKey] - testOrderMap[a.reportKey])
-  return [denormalizedData, metricInfo]
-}
 
-export const getFilteredDenormalizedData = (
-  denormalizedData = [],
-  denormalizedTableData = [],
-  filters
-) => {
-  const filteredDenormalizedData = denormalizedData.filter((item) => {
-    const genderFlag = !!(
-      item.gender === filters.gender || filters.gender === 'all'
-    )
-    const frlStatusFlag = !!(
-      item.frlStatus === filters.frlStatus || filters.frlStatus === 'all'
-    )
-    const ellStatusFlag = !!(
-      item.ellStatus === filters.ellStatus || filters.ellStatus === 'all'
-    )
-    const iepStatusFlag = !!(
-      item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
-    )
-    const raceFlag = !!(item.race === filters.race || filters.race === 'all')
-    return (
-      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag
-    )
-  })
-  const filteredDenormalizedTableData = denormalizedTableData.filter((item) => {
-    const genderFlag = !!(
-      item.gender === filters.gender || filters.gender === 'all'
-    )
-    const frlStatusFlag = !!(
-      item.frlStatus === filters.frlStatus || filters.frlStatus === 'all'
-    )
-    const ellStatusFlag = !!(
-      item.ellStatus === filters.ellStatus || filters.ellStatus === 'all'
-    )
-    const iepStatusFlag = !!(
-      item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
-    )
-    const raceFlag = !!(item.race === filters.race || filters.race === 'all')
-    return (
-      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag
-    )
-  })
-  return [filteredDenormalizedData, filteredDenormalizedTableData]
+  return [denormalizedData, metricInfo]
 }
 
 export const getChartData = (rawChartData, masteryScale) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, pickBy, isEmpty } from 'lodash'
 
 import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
@@ -19,10 +19,7 @@ import {
   getReportsStandardsProgressError,
 } from './ducks'
 
-import {
-  getDenormalizedData,
-  getFilteredDenormalizedData,
-} from './utils/transformers'
+import { getDenormalizedData } from './utils/transformers'
 import dropDownData from './static/dropDownData.json'
 
 const { compareByData, analyseByData } = dropDownData
@@ -79,7 +76,7 @@ const StandardsProgress = ({
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, barsPageNumber: 1, tablePageNumber: 1 })
-  }, [settings])
+  }, [settings, ddfilter])
   useEffect(() => {
     if (pageFilters.barsPageNumber) {
       setPageFilters({ ...pageFilters, tablePageNumber: 1 })
@@ -87,8 +84,10 @@ const StandardsProgress = ({
   }, [tableFilters.compareBy.key])
   // get paginated data
   useEffect(() => {
+    const _ddfilter = pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f))
     const q = {
       ...settings.requestFilters,
+      ..._ddfilter,
       compareBy: tableFilters.compareBy.key,
       ...pageFilters,
     }
@@ -105,31 +104,21 @@ const StandardsProgress = ({
   const totalTestCount = get(standardsProgress, 'data.result.totalTestCount', 0)
   const totalRowCount = get(standardsProgress, 'data.result.totalRowCount', 0)
 
-  const [
-    filteredDenormalizedData,
-    filteredDenormalizedTableData,
-  ] = useMemo(() => {
-    const [denormalizedData, denormalizedTableData] = getDenormalizedData(
-      standardsProgress,
-      tableFilters.compareBy.key
-    )
-    return getFilteredDenormalizedData(
-      denormalizedData,
-      denormalizedTableData,
-      ddfilter
-    )
-  }, [standardsProgress, ddfilter, tableFilters.compareBy])
+  const [denormalizedData, denormalizedTableData] = useMemo(
+    () => getDenormalizedData(standardsProgress, tableFilters.compareBy.key),
+    [standardsProgress, tableFilters.compareBy]
+  )
 
   // show filters section if data is empty
   useEffect(() => {
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
-      !filteredDenormalizedData?.length
+      !denormalizedData?.length
     ) {
       toggleFilter(null, true)
     }
-  }, [filteredDenormalizedData])
+  }, [denormalizedData])
 
   if (loading) {
     return <SpinLoader position="fixed" />
@@ -139,7 +128,7 @@ const StandardsProgress = ({
     return <DataSizeExceeded />
   }
 
-  if (!filteredDenormalizedData?.length) {
+  if (!denormalizedData?.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
@@ -151,7 +140,7 @@ const StandardsProgress = ({
         </Row>
         <Row>
           <SignedStackedBarChartContainer
-            data={filteredDenormalizedData}
+            data={denormalizedData}
             masteryScale={selectedScale}
             backendPagination={{
               page: pageFilters.barsPageNumber,
@@ -171,7 +160,7 @@ const StandardsProgress = ({
       </StyledCard>
       <StyledCard>
         <StandardsProgressTable
-          data={filteredDenormalizedTableData}
+          data={denormalizedTableData}
           testInfo={testInfo}
           masteryScale={selectedScale}
           tableFilters={tableFilters}

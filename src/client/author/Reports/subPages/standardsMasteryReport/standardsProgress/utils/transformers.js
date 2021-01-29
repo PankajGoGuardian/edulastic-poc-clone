@@ -49,15 +49,15 @@ const getRowName = (compareByKey, rowInfo = {}) => {
     case 'groupId':
       return `${rowInfo.className}`
     case 'race':
-      return `${rowInfo.race}`
+      return rowInfo.race
     case 'gender':
-      return `${rowInfo.gender}`
+      return rowInfo.gender
     case 'frlStatus':
-      return `${rowInfo.frlStatus}`
+      return rowInfo.frlStatus
     case 'ellStatus':
-      return `${rowInfo.ellStatus}`
+      return rowInfo.ellStatus
     case 'iepStatus':
-      return `${rowInfo.iepStatus}`
+      return rowInfo.iepStatus
     case 'studentId':
     default:
       return getFormattedName(
@@ -304,17 +304,19 @@ export const getTableData = (
 
   const compareByDataKey = getCompareByDataKey(compareByKey)
   const groupedTableData = groupBy(rawTableData, compareByDataKey)
-  const tableData = Object.keys(groupedTableData).map((itemId) => {
-    const tableDataForItem = groupedTableData[itemId]
-    const rowInfo = tableDataForItem.find((o) => o[compareByDataKey])
-    const rowName = getRowName(compareByDataKey, rowInfo) || ''
-    return {
-      id: itemId,
-      name: rowName,
-      records: tableDataForItem,
-      rowInfo: tableDataForItem,
-    }
-  })
+  const tableData = Object.keys(groupedTableData)
+    .map((itemId) => {
+      const tableDataForItem = groupedTableData[itemId]
+      const rowInfo = tableDataForItem.find((o) => o[compareByDataKey])
+      const rowName = getRowName(compareByDataKey, rowInfo)
+      return {
+        id: itemId,
+        name: rowName,
+        records: tableDataForItem,
+        rowInfo: tableDataForItem,
+      }
+    })
+    .filter((o) => o.name)
 
   return [tableData, testInfoEnhanced]
 }

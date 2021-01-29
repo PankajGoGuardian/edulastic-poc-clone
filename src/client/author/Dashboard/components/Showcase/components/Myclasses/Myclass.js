@@ -40,8 +40,6 @@ const PREMIUM_TAG = 'PREMIUM'
 const sortByOrder = (prop) =>
   prop.sort((a, b) => a.config?.order - b.config?.order)
 
-const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
-
 const MyClasses = ({
   getTeacherDashboard,
   classData,
@@ -66,7 +64,6 @@ const MyClasses = ({
   stripePaymentAction,
   showTrialSubsConfirmationAction,
   showTrialConfirmationMessage,
-  isSuccess,
   isConfirmationModalVisible,
   subscription: { subEndDate, subType } = {},
   premiumProductId,
@@ -281,10 +278,6 @@ const MyClasses = ({
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
 
-  const isAboutToExpire = subEndDate
-    ? Date.now() + ONE_MONTH > subEndDate
-    : false
-
   const formatTrialEndDate = moment(subEndDate).format('DD MMM, YYYY')
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
@@ -354,7 +347,7 @@ const MyClasses = ({
       )}
       {isTrialModalVisible && (
         <TrialModal
-          addOnIdsToShow={[productData.productId]}
+          addOnProductIds={[productData.productId]}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
@@ -372,7 +365,7 @@ const MyClasses = ({
         />
       )}
       <PaymentServiceModal
-        visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
+        visible={paymentServiceModal}
         closeModal={closePaymentServiceModal}
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}
@@ -421,7 +414,6 @@ export default compose(
         state?.subscription?.subscriptionData?.usedTrialItemBankId,
       premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
       verificationPending: state?.subscription?.verificationPending,
-      isSuccess: state?.subscription?.subscriptionData?.success,
       subscription: state?.subscription?.subscriptionData?.subscription,
       isConfirmationModalVisible:
         state?.subscription?.showTrialSubsConfirmation,

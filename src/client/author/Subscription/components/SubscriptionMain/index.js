@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import {
   EduButton,
@@ -259,12 +259,15 @@ const SubscriptionMain = ({
   isPaidPremium,
   isPaidItemBank,
   setShowSubscriptionAddonModal,
-  sparkMathProductId,
   usedTrialItemBankId,
   products,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+  const sparkMathProductId = useMemo(
+    () => products.find((product) => product.name === 'Spark Math')?.id,
+    [products]
+  )
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
   const isPremiumUser = user.features.premium
@@ -375,7 +378,7 @@ const SubscriptionMain = ({
       </ContentSection>
       {isTrialModalVisible && (
         <TrialModal
-          addOnIdsToShow={[sparkMathProductId]}
+          addOnProductIds={[sparkMathProductId]}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
@@ -481,5 +484,4 @@ const SubscriptionMain = ({
 
 export default connect((state) => ({
   products: state?.subscription?.products,
-  sparkMathProductId: state?.subscription?.subscriptionData?.sparkMathProductId,
 }))(SubscriptionMain)

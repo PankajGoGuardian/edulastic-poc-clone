@@ -312,7 +312,7 @@ const Subscription = (props) => {
       />
 
       <PaymentServiceModal
-        visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
+        visible={paymentServiceModal}
         closeModal={closePaymentServiceModal}
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}

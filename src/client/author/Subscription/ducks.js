@@ -174,44 +174,31 @@ function* fetchUserSubscription() {
     const apiUserSubscriptionStatus = yield call(
       subscriptionApi.subscriptionStatus
     )
+    const { result } = apiUserSubscriptionStatus || {}
+    const premiumProductId = result?.products.find(
+      (product) => product.type === 'PREMIUM'
+    )?.id
     const data = {
-      isPremiumTrialUsed: apiUserSubscriptionStatus?.result?.isPremiumTrialUsed,
-      itemBankSubscriptions:
-        apiUserSubscriptionStatus?.result?.itemBankSubscriptions,
-      usedTrialItemBankId:
-        apiUserSubscriptionStatus?.result?.usedTrialItemBankId,
-      premiumProductId: apiUserSubscriptionStatus?.result?.premiumProductId,
-      sparkMathProductId: apiUserSubscriptionStatus?.result?.sparkMathProductId,
+      isPremiumTrialUsed: result?.isPremiumTrialUsed,
+      itemBankSubscriptions: result?.itemBankSubscriptions,
+      usedTrialItemBankId: result?.usedTrialItemBankId,
+      premiumProductId,
     }
 
-    // TODO:  Refactor in Phase -3
-    const products = [
-      {
-        id: data.premiumProductId,
-        type: 'PREMIUM',
-        name: 'Teacher Premium',
-        description:
-          'Get even more out of your trial by adding Spark premium content',
-        price: 100,
-      },
-      {
-        id: data.sparkMathProductId,
-        type: 'ITEM_BANK',
-        name: 'Spark Math',
-        description: 'Curriculum-aligned differentiated math practice',
-        price: 100,
-      },
-    ]
-    yield put(slice.actions.setAddOnProducts(products))
+    yield put(
+      slice.actions.setAddOnProducts(
+        apiUserSubscriptionStatus?.result?.products || []
+      )
+    )
     if (apiUserSubscriptionStatus?.result.subscription === -1) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))
       return
     }
-    if (apiUserSubscriptionStatus.result.subscription) {
+    if (result.subscription) {
       Object.assign(data, {
-        subscription: apiUserSubscriptionStatus.result.subscription,
+        subscription: result.subscription,
       })
-      if (apiUserSubscriptionStatus.result.subscription._id) {
+      if (result.subscription._id) {
         Object.assign(data, {
           success: true,
         })
@@ -221,7 +208,7 @@ function* fetchUserSubscription() {
       yield put(
         slice.actions.updateUserSubscriptionStatus({
           data: {},
-          error: apiUserSubscriptionStatus.result,
+          error: result,
         })
       )
   } catch (err) {

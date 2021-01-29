@@ -8,10 +8,10 @@ import {
 import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { groupBy, map } from 'lodash'
+import { groupBy, map, camelCase } from 'lodash'
 
 const TrialModal = ({
-  addOnIdsToShow,
+  addOnProductIds = [],
   isVisible,
   toggleModal,
   isPremiumUser,
@@ -19,15 +19,15 @@ const TrialModal = ({
   startPremiumTrial,
   products = [],
 }) => {
-  const hasPremiumTrial = useMemo(() => !isPremiumUser && !isPremiumTrialUsed, [
-    isPremiumUser,
-    isPremiumTrialUsed,
-  ])
+  const hasPremiumTrialIncluded = useMemo(
+    () => !isPremiumUser && !isPremiumTrialUsed,
+    [isPremiumUser, isPremiumTrialUsed]
+  )
 
   const productsToShow = products.filter(
     (product) =>
-      (product.type === 'PREMIUM' && hasPremiumTrial) ||
-      addOnIdsToShow.includes(product.id)
+      (product.type === 'PREMIUM' && hasPremiumTrialIncluded) ||
+      addOnProductIds.includes(product.id)
   )
   const [productIds, setProductIds] = useState(map(productsToShow, 'id'))
 
@@ -35,12 +35,7 @@ const TrialModal = ({
     PREMIUM: teacherPremium = [],
     ITEM_BANK: itemBankPremium = [],
   } = useMemo(() => {
-    const result = productsToShow.map((item) => ({
-      ...item,
-      price: 100,
-      period: 14,
-    }))
-    return groupBy(result, 'type')
+    return groupBy(productsToShow, 'type')
   }, [products])
 
   const isProceedDisabled = productIds.length === 0
@@ -80,7 +75,7 @@ const TrialModal = ({
       {itemBankPremium.map((item) => (
         <TrialContainer>
           <StyledCheckbox
-            data-cy="sparkPremiumCheckbox"
+            data-cy={`${camelCase(item.name)}TrialCheckbox`}
             defaultChecked
             onChange={handleOnChange(item.id)}
           />
@@ -98,7 +93,11 @@ const TrialModal = ({
     <>
       <TrialContainer>
         <Tooltip title="Premium subscription is mandatory for Spark content">
-          <StyledCheckbox data-cy="teacherPremiumTrialCheckbox" checked />
+          <StyledCheckbox
+            data-cy="teacherPremiumTrialCheckbox"
+            checked
+            disabled
+          />
         </Tooltip>
         <div>
           <p>{teacherPremium[0].name} TRIAL </p>
@@ -111,7 +110,7 @@ const TrialModal = ({
   )
 
   const modalContent = () => {
-    if (hasPremiumTrial) {
+    if (hasPremiumTrialIncluded) {
       return NonPremium
     }
     return Premium
@@ -125,7 +124,7 @@ const TrialModal = ({
       visible={isVisible}
       onCancel={closeModal}
     >
-      {hasPremiumTrial ? (
+      {hasPremiumTrialIncluded ? (
         <p>
           {`Experience the additional features of Edulastic Teacher Premium for 14
           days: read-aloud for students, extra test security settings, easier
@@ -149,7 +148,7 @@ const TrialModal = ({
 }
 
 TrialModal.propTypes = {
-  addOnIdsToShow: PropTypes.array.isRequired,
+  addOnProductIds: PropTypes.array.isRequired,
   isVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
   isPremiumUser: PropTypes.bool.isRequired,

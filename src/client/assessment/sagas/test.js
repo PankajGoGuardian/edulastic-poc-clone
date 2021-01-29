@@ -360,9 +360,11 @@ function* loadTest({ payload }) {
       )
     }
     // eslint-disable-next-line prefer-const
-    let { testItems, passages, testType } = test
+    let { testItems, passages } = test
 
     const settings = getSettings(test, testActivity, preview)
+
+    const testType = settings.testType || test.testType
 
     const answerCheckByItemId = {}
     ;(testActivity.questionActivities || []).forEach((item) => {

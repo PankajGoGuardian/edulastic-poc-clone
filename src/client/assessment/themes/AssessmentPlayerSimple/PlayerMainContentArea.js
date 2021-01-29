@@ -40,6 +40,7 @@ const PlayerContentArea = ({
   highlights,
   enableMagnifier,
   changePreview,
+  blockNavigationToAnsweredQuestions = false,
 }) => {
   const scrollContainerRef = useRef()
   const item = items[currentItem]
@@ -114,6 +115,9 @@ const PlayerContentArea = ({
           isSidebarVisible={isSidebarVisible}
           t={t}
           unansweredQuestionCount={unansweredQuestionCount}
+          blockNavigationToAnsweredQuestions={
+            blockNavigationToAnsweredQuestions
+          }
         />
       )}
     </Main>

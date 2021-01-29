@@ -4,9 +4,8 @@ import { Spin } from 'antd'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'
-import { WithResources } from '@edulastic/common/src/HOC/withResources';
-import AppConfig from '../../app-config';
-
+import { WithResources } from '@edulastic/common/src/HOC/withResources'
+import AppConfig from '../../app-config'
 
 // themes
 import ThemeContainer from './themes/index'
@@ -64,7 +63,9 @@ const AssessmentPlayer = ({
     window.confirmBeforeGoBack = (e) => {
       e.preventDefault()
       const matched = e.target.location.pathname.match(
-        new RegExp('/student/assessment/.*/class/.*/uta/.*/itemId/.*')
+        new RegExp(
+          '/student/(assessment|practice)/.*/class/.*/uta/.*/itemId/.*'
+        )
       )
       if (!matched) {
         if (
@@ -148,9 +149,7 @@ const AssessmentPlayer = ({
         path={`${match.url}/itemId/:itemId`}
         render={() => (
           <WithResources
-            resources={[
-              `${AppConfig.jqueryPath}/jquery.min.js`,
-            ]}
+            resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
             fallBack={<Spin />}
           >
             <ThemeContainer
@@ -168,9 +167,7 @@ const AssessmentPlayer = ({
         path={`${match.url}`}
         render={() => (
           <WithResources
-            resources={[
-              `${AppConfig.jqueryPath}/jquery.min.js`,
-            ]}
+            resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
             fallBack={<Spin />}
           >
             <ThemeContainer

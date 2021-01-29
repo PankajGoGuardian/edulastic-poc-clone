@@ -36,13 +36,13 @@ const AssessmentPlayerSkinWrapper = ({
 
   const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
 
-  const { blockNavigationToAnsweredQuestions } = restProps
+  const { blockNavigationToAnsweredQuestions = false } = restProps
 
   const handleRestrictQuestionBackNav = (e) => {
     e.preventDefault()
     if (blockNavigationToAnsweredQuestions) {
       const matched = e.target.location.pathname.match(
-        new RegExp('/student/assessment/.*/class/.*/uta/.*/.*')
+        new RegExp('/student/(assessment|practice)/.*/class/.*/uta/.*/.*')
       )
       if (matched) {
         window.history.go(1)
@@ -139,6 +139,9 @@ const AssessmentPlayerSkinWrapper = ({
             toggleSideBar={toggleSideBar}
             isSidebarVisible={isSidebarVisible}
             theme={restProps.theme}
+            blockNavigationToAnsweredQuestions={
+              blockNavigationToAnsweredQuestions
+            }
           />
         </Sidebar>
       )

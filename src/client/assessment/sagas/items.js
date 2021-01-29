@@ -147,13 +147,17 @@ export function* saveUserResponse({ payload }) {
     const timedAssignment = yield select(
       (state) => state.test?.settings?.timedAssignment
     )
+    if (pausing) {
+      window.document.exitFullscreen().catch((e) => {
+        console.warn('error', e)
+      })
+    }
     if (pausing && timedAssignment) {
       const utaId = yield select((state) => state.test.testActivityId)
       if (utaId) {
         yield call(testActivityApi.updateUtaTime, { utaId, type: 'pausing' })
         yield put(utaStartTimeUpdateRequired(null))
       }
-      window.document.exitFullscreen().catch(() => {})
     }
 
     if (!endDate && clazz.length) {

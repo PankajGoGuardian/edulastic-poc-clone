@@ -57,7 +57,6 @@ import PeformanceBand from './PeformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
 import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
-import DetailsTooltip from '../../../../../AssignTest/components/Container/DetailsTooltip'
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
 
 const {
@@ -603,12 +602,6 @@ class Setting extends Component {
                   {/* Add instruction starts */}
                   <Block id="add-instruction" smallSize={isSmallSize}>
                     <SettingContainer>
-                      <DetailsTooltip
-                        showInsideContainer
-                        title="Test Instructions"
-                        content="Add instructions for the students here. For example, “You will be allowed two attempts on this quiz.“ Or, “This test is worth 30% of your grade.“"
-                        premium
-                      />
                       <Title>
                         <span>Test Instructions</span>
                         <EduSwitchStyled
@@ -645,13 +638,6 @@ class Setting extends Component {
 
                   <Block id="mark-as-done" smallSize={isSmallSize}>
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="Mark as Done"
-                        content="Control when class will be marked as Done. Automatically when all studens are graded and due date has passed OR Manually when you click the Mark as Done button."
-                        premium={assessmentSuperPowersMarkAsDone}
-                      />
                       <Title>
                         Mark as Done{' '}
                         <DollarPremiumSymbol
@@ -721,13 +707,6 @@ class Setting extends Component {
 
                   <Block id="show-calculator" smallSize={isSmallSize}>
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="Show Calculator"
-                        content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
-                        premium={assessmentSuperPowersShowCalculator}
-                      />
                       <Title>
                         Show Calculator{' '}
                         <DollarPremiumSymbol
@@ -738,7 +717,11 @@ class Setting extends Component {
                         <Row>
                           <Col span={8}>
                             <StyledRadioGroup
-                              disabled={!owner || !isEditable}
+                              disabled={
+                                !owner ||
+                                !isEditable ||
+                                !assessmentSuperPowersShowCalculator
+                              }
                               onChange={this.updateFeatures('calcType')}
                               value={calcType}
                             >
@@ -747,10 +730,6 @@ class Setting extends Component {
                                   data-cy={item}
                                   value={item}
                                   key={item}
-                                  disabled={
-                                    !assessmentSuperPowersShowCalculator &&
-                                    !['NONE', 'BASIC'].includes(item)
-                                  }
                                 >
                                   {calculators[item]}
                                 </RadioBtn>
@@ -771,13 +750,6 @@ class Setting extends Component {
 
                   <Block id="evaluation-method" smallSize={isSmallSize}>
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="Evaluation Method"
-                        content="Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for incorrect answers or not (applicable only for multiple selection que widgets)."
-                        premium
-                      />
                       <Title>Evaluation Method</Title>
                       <Body smallSize={isSmallSize}>
                         <Row>
@@ -842,13 +814,6 @@ class Setting extends Component {
 
                   <Block id="timed-test" smallSize={isSmallSize}>
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="Timed Test"
-                        content="The time can be modified in one minute increments. When the time limit is reached, students will be locked out of the assessment. If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off. This ensures that the student does not go over the allotted time."
-                        premium={assessmentSuperPowersTimedTest}
-                      />
                       <Title>
                         <span>
                           Timed Test{' '}
@@ -941,13 +906,6 @@ class Setting extends Component {
                       smallSize={isSmallSize}
                     >
                       <SettingContainer>
-                        <DetailsTooltip
-                          placement="rightBottom"
-                          showInsideContainer
-                          title="Check Answer Tries Per Question"
-                          content="Control whether student can check in answer during attempt or not. Value mentioned will be equivalent to number of attempts allowed per student."
-                          premium={assessmentSuperPowersCheckAnswerTries}
-                        />
                         <Title>
                           Check Answer Tries Per Question{' '}
                           <DollarPremiumSymbol
@@ -976,6 +934,11 @@ class Setting extends Component {
                               />
                             </Col>
                           </Row>
+                          <Description>
+                            Control whether student can check in answer during
+                            attempt or not. Value mentioned will be equivalent
+                            to number of attempts allowed per student.
+                          </Description>
                         </Body>
                       </SettingContainer>
                     </Block>
@@ -1004,13 +967,6 @@ class Setting extends Component {
 
                   <Block id="maximum-attempts-allowed">
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="Maximum Attempts Allowed"
-                        content="Control the number of times a student can take the assignment."
-                        premium={maxAttemptAllowed}
-                      />
                       <Title>
                         Maximum Attempts Allowed{' '}
                         <DollarPremiumSymbol premium={maxAttemptAllowed} />
@@ -1027,6 +983,10 @@ class Setting extends Component {
                           min={1}
                           step={1}
                         />
+                        <Description>
+                          Control the number of times a student can take the
+                          assignment.
+                        </Description>
                       </Body>
                     </SettingContainer>
                   </Block>
@@ -1052,13 +1012,6 @@ class Setting extends Component {
                   {!isDocBased && (
                     <Block id="suffle-question" smallSize={isSmallSize}>
                       <SettingContainer>
-                        <DetailsTooltip
-                          placement="rightBottom"
-                          showInsideContainer
-                          title="Shuffle Questions"
-                          content="If ON, then order of questions will be different for each student."
-                          premium={assessmentSuperPowersShuffleQuestions}
-                        />
                         <Title>
                           <span>
                             Shuffle Questions{' '}
@@ -1174,13 +1127,6 @@ class Setting extends Component {
                   {!isDocBased && (
                     <Block id="show-answer-choice" smallSize={isSmallSize}>
                       <SettingContainer>
-                        <DetailsTooltip
-                          placement="rightBottom"
-                          showInsideContainer
-                          title="Shuffle Answer Choice"
-                          content="If set to ON, answer choices for multiple choice and multiple select questions will be randomly shuffled for students. Text to speech does not work when the answer choices are shuffled."
-                          premium={assessmentSuperPowersShuffleAnswerChoice}
-                        />
                         <Title>
                           <span>
                             Shuffle Answer Choice{' '}
@@ -1213,13 +1159,6 @@ class Setting extends Component {
 
                   <Block id="require-password" smallSize={isSmallSize}>
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="Require Password"
-                        content="Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
-                        premium={assessmentSuperPowersRequirePassword}
-                      />
                       <Row>
                         <Title>
                           Require Password{' '}
@@ -1354,13 +1293,6 @@ class Setting extends Component {
 
                   <Block id="restrict-back-navigation" smallSize={isSmallSize}>
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="RESTRICT QUESTION NAVIGATION"
-                        content="If ON, then students will be restricted from navigating back to the previous question that they have answered. It is recommended to use this along with Shuffle Questions for preventing cheating among students."
-                        premium={assessmentSuperPowersRestrictQuestionBackNav}
-                      />
                       <Title>
                         <span>
                           Restrict Question Navigation{' '}
@@ -1402,13 +1334,6 @@ class Setting extends Component {
                     smallSize={isSmallSize}
                   >
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="Require Safe Exam Browser"
-                        content="Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed on the student devices."
-                        premium={assessmentSuperPowersRequireSafeExamBrowser}
-                      />
                       <Title>
                         <span>
                           Require Safe Exam Browser{' '}
@@ -1514,13 +1439,6 @@ class Setting extends Component {
                 <>
                   <Block id="answer-on-paper" smallSize={isSmallSize}>
                     <SettingContainer>
-                      <DetailsTooltip
-                        placement="rightBottom"
-                        showInsideContainer
-                        title="Answer on Paper"
-                        content="Use this option if you are administering this assessment on paper. If you use this option, you will have to manually grade student responses after the assessment is closed."
-                        premium={assessmentSuperPowersAnswerOnPaper}
-                      />
                       <Title>
                         <span>
                           Answer on Paper{' '}

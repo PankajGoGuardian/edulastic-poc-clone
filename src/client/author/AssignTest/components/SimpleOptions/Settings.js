@@ -295,20 +295,14 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignRight
-                disabled={freezeSettings}
+                disabled={
+                  freezeSettings || !assessmentSuperPowersShowCalculator
+                }
                 value={calcType}
                 onChange={(e) => overRideSettings('calcType', e.target.value)}
               >
                 {calculatorKeysAvailable.map((item) => (
-                  <RadioBtn
-                    data-cy={item}
-                    value={item}
-                    key={item}
-                    disabled={
-                      !assessmentSuperPowersShowCalculator &&
-                      !['NONE', 'BASIC'].includes(item)
-                    }
-                  >
+                  <RadioBtn data-cy={item} value={item} key={item}>
                     <Label>{calculators[item]}</Label>
                   </RadioBtn>
                 ))}

@@ -115,8 +115,8 @@ class TeacherTable extends Component {
       {
         title: t('users.teacher.name'),
         render: (_, { _source }) => {
-          const firstName = get(_source, 'firstName', '')
-          const lastName = get(_source, 'lastName', '')
+          const firstName = get(_source, 'firstName', '') || ''
+          const lastName = get(_source, 'lastName', '') || ''
           return (
             <span>
               {firstName === 'Anonymous' || isEmpty(firstName)
@@ -128,9 +128,9 @@ class TeacherTable extends Component {
         },
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, '_source?.firstName', '')
-          const next = get(b, '_source?.firstName', '')
-          return next?.localeCompare?.(prev)
+          const prev = get(a, '_source.firstName', '') || ''
+          const next = get(b, '_source.firstName', '') || ''
+          return next.localeCompare(prev)
         },
       },
       {
@@ -138,9 +138,9 @@ class TeacherTable extends Component {
         dataIndex: '_source.email',
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, '_source?.email', '')
-          const next = get(b, '_source?.email', '')
-          return next?.localeCompare?.(prev)
+          const prev = get(a, '_source.email', '') || ''
+          const next = get(b, '_source.email', '') || ''
+          return next.localeCompare(prev)
         },
       },
       {

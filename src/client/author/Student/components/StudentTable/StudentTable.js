@@ -128,7 +128,6 @@ class StudentTable extends Component {
           filterAdded: false,
         },
       ],
-      currentPage: 1,
       refineButtonActive: false,
     }
     const { t, isProxyUser } = this.props
@@ -136,8 +135,8 @@ class StudentTable extends Component {
       {
         title: t('users.student.name'),
         render: (_, { _source }) => {
-          const firstName = get(_source, 'firstName', '')
-          const lastName = get(_source, 'lastName', '')
+          const firstName = get(_source, 'firstName', '') || ''
+          const lastName = get(_source, 'lastName', '') || ''
           return (
             <span>
               {firstName === 'Anonymous' || isEmpty(firstName)
@@ -149,8 +148,8 @@ class StudentTable extends Component {
         },
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, '_source.firstName', '')
-          const next = get(b, '_source.firstName', '')
+          const prev = get(a, '_source.firstName', '') || ''
+          const next = get(b, '_source.firstName', '') || ''
           return next.localeCompare(prev)
         },
       },
@@ -161,8 +160,8 @@ class StudentTable extends Component {
           record._source.username || record._source.email,
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, '_source.username', '')
-          const next = get(b, '_source.username', '')
+          const prev = get(a, '_source.username', '') || ''
+          const next = get(b, '_source.username', '') || ''
           return next.localeCompare(prev)
         },
       },

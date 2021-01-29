@@ -104,7 +104,7 @@ export const getDenormalizedData = (rawData, compareByKey) => {
     .sort((a, b) =>
       a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
     )
-    .sort((a, b) => testOrderMap[a.reportKey] - testOrderMap[b.reportKey])
+    .sort((a, b) => testOrderMap[b.reportKey] - testOrderMap[a.reportKey])
 
   const denormalizedData = studentMetricInfo.flatMap(({ groupIds, ...item }) =>
     groupIds.map((groupId) => ({
@@ -141,8 +141,7 @@ export const getDenormalizedData = (rawData, compareByKey) => {
       }
       return { ...item, ...itemInfo }
     })
-    .sort((a, b) => testOrderMap[a.reportKey] - testOrderMap[b.reportKey])
-
+    .sort((a, b) => testOrderMap[b.reportKey] - testOrderMap[a.reportKey])
   return [denormalizedData, metricInfo]
 }
 
@@ -321,28 +320,30 @@ export const getTableData = (
   compareByKey
 ) => {
   const groupedTableDataByTest = groupBy(rawTableData, 'reportKey')
-  const testInfoEnhanced = testInfo.map((test) => {
-    const tableDataForTest = groupedTableDataByTest[test.reportKey]
-    const masteryScore = getOverallMasteryScore(tableDataForTest)
-    const score = round(
-      (sumBy(tableDataForTest, 'totalScore') /
-        sumBy(tableDataForTest, 'maxScore')) *
-        100
-    )
-    const rawScore = `${sumBy(tableDataForTest, 'totalScore')?.toFixed(
-      2
-    )} / ${sumBy(tableDataForTest, 'maxScore')}`
-    const masteryLevel = getRecordMasteryLevel(tableDataForTest, masteryScale)
-      .masteryLabel
-    return {
-      ...test,
-      masteryScore,
-      score,
-      rawScore,
-      masteryLevel,
-      fill: getMasteryLevel(masteryScore, masteryScale).color || '#cccccc',
-    }
-  })
+  const testInfoEnhanced = testInfo
+    .map((test) => {
+      const tableDataForTest = groupedTableDataByTest[test.reportKey]
+      const masteryScore = getOverallMasteryScore(tableDataForTest)
+      const score = round(
+        (sumBy(tableDataForTest, 'totalScore') /
+          sumBy(tableDataForTest, 'maxScore')) *
+          100
+      )
+      const rawScore = `${sumBy(tableDataForTest, 'totalScore')?.toFixed(
+        2
+      )} / ${sumBy(tableDataForTest, 'maxScore')}`
+      const masteryLevel = getRecordMasteryLevel(tableDataForTest, masteryScale)
+        .masteryLabel
+      return {
+        ...test,
+        masteryScore,
+        score,
+        rawScore,
+        masteryLevel,
+        fill: getMasteryLevel(masteryScore, masteryScale).color || '#cccccc',
+      }
+    })
+    .reverse()
 
   const compareByDataKey = getCompareByDataKey(compareByKey)
   const groupedTableData = groupBy(rawTableData, compareByDataKey)

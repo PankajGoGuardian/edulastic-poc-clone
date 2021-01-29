@@ -310,7 +310,6 @@ const StandardsGradebookTableComponent = ({
         title: 'Overall',
         dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
         key: analyseByToKeyToRender[tableDdFilters.analyseBy],
-        align: 'left',
         width: 150,
         sorter: (a, b) => {
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy]

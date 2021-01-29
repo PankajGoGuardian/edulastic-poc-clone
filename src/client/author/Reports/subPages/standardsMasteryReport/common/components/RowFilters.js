@@ -131,7 +131,7 @@ const StandardsFilters = ({
     }
   }
 
-  const filterColSpan = pageTitle === 'Standards Progress' ? 5 : 6
+  const filterColSpan = pageTitle === 'Standards Progress' ? 4 : 6
 
   const standardProficiencyFilter = (
     <StyledDropDownContainer
@@ -213,7 +213,13 @@ const StandardsFilters = ({
             />
           </StyledDropDownContainer>
           {pageTitle === 'Standards Progress' && (
-            <StyledDropDownContainer xs={24} sm={12} md={12} lg={4} xl={4}>
+            <StyledDropDownContainer
+              xs={24}
+              sm={12}
+              md={12}
+              lg={filterColSpan}
+              xl={filterColSpan}
+            >
               <ControlDropDown
                 by={filters.standardId || standardsList[0]}
                 selectCB={(e) => updateFilterDropdownCB(e, 'standardId')}

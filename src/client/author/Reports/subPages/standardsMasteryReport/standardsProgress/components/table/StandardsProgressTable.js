@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import next from 'immer'
 
 import { Row, Col } from 'antd'
-import { EduButton } from '@edulastic/common'
+import BackendPagination from '../../../../../common/components/BackendPagination'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
   StyledH3,
@@ -61,6 +61,7 @@ const StandardsProgressTable = ({
         </>
       ),
       align: 'center',
+      width: 150,
       dataIndex: test.reportKey,
       key: test.reportKey,
       render: (_, record) => {
@@ -108,6 +109,9 @@ const StandardsProgressTable = ({
       title: tableFilters.compareBy.title,
       dataIndex: 'name',
       key: 'name',
+      width: 150,
+      fixed: 'left',
+      ellipsis: true,
       sorter: (a, b) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
       render: (data) => data || '-',
@@ -116,6 +120,7 @@ const StandardsProgressTable = ({
       title: 'Overall',
       dataIndex: 'overall',
       key: 'overall',
+      width: 150,
       sorter: getOverallColSorter(tableFilters.analyseBy.key, masteryScale),
       render: (_, record) =>
         getOverallValue(record, tableFilters.analyseBy.key, masteryScale),
@@ -148,14 +153,14 @@ const StandardsProgressTable = ({
   return (
     <>
       <Row type="flex" justify="start">
-        <Col xs={24} sm={24} md={8} lg={8} xl={12}>
+        <Col xs={24} sm={24} md={12} lg={12} xl={16}>
           <StyledH3>
             Standard Mastery Over Time by {tableFilters.compareBy.title}
           </StyledH3>
         </Col>
-        <Col xs={24} sm={24} md={16} lg={16} xl={12}>
+        <Col xs={24} sm={24} md={12} lg={12} xl={8}>
           <Row className="control-dropdown-row">
-            <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+            <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={12}>
               <ControlDropDown
                 prefix="Compare by "
                 data={compareByData}
@@ -163,7 +168,7 @@ const StandardsProgressTable = ({
                 selectCB={bindOnChange('compareBy', compareByData)}
               />
             </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+            <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={12}>
               <ControlDropDown
                 prefix="Analyze by "
                 data={analyseByData}
@@ -171,45 +176,11 @@ const StandardsProgressTable = ({
                 selectCB={bindOnChange('analyseBy', analyseByData)}
               />
             </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={4} lg={4} xl={4}>
-              <EduButton
-                block
-                height="32px"
-                onClick={() =>
-                  setBackendPagination({
-                    ...backendPagination,
-                    page: backendPagination.page - 1,
-                  })
-                }
-                disabled={backendPagination.page <= 1}
-              >
-                PREV
-              </EduButton>
-            </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={4} lg={4} xl={4}>
-              <EduButton
-                block
-                height="32px"
-                onClick={() =>
-                  setBackendPagination({
-                    ...backendPagination,
-                    page: backendPagination.page + 1,
-                  })
-                }
-                disabled={
-                  !backendPagination.page ||
-                  !backendPagination.pageCount ||
-                  backendPagination.page === backendPagination.pageCount
-                }
-              >
-                NEXT
-              </EduButton>
-            </StyledDropDownContainer>
           </Row>
         </Col>
       </Row>
       <Row type="flex" justify="start">
-        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+        <Col span={24}>
           <CsvTable
             dataSource={tableData}
             columns={columns}
@@ -217,6 +188,12 @@ const StandardsProgressTable = ({
             isCsvDownloading={isCsvDownloading}
             tableToRender={StyledTable}
             scroll={{ x: '100%' }}
+          />
+        </Col>
+        <Col span={24}>
+          <BackendPagination
+            backendPagination={backendPagination}
+            setBackendPagination={setBackendPagination}
           />
         </Col>
       </Row>

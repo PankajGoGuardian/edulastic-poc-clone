@@ -184,13 +184,13 @@ const StandardsProgress = ({
           backendPagination={{
             page: pageFilters.tablePageNumber,
             pageSize: pageFilters.tablePageSize,
-            pageCount:
-              Math.ceil(totalRowCount / pageFilters.tablePageSize) || 1,
+            itemsCount: totalRowCount || 0,
           }}
-          setBackendPagination={({ page }) =>
+          setBackendPagination={({ page, pageSize }) =>
             setPageFilters({
               ...pageFilters,
               tablePageNumber: page,
+              tablePageSize: pageSize,
             })
           }
         />

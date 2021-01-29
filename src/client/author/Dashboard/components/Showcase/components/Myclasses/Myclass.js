@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, groupBy } from 'lodash'
 import qs from 'qs'
-import moment from 'moment'
 
 // components
 import { Spin } from 'antd'
@@ -262,6 +261,18 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
+  const getClickedBundle =
+    featuredBundles &&
+    featuredBundles.find(
+      (bundle) =>
+        bundle?.config?.subscriptionData?.productId === productData?.productId
+    )
+
+  const handleGoToCollectionClick = () => {
+    handleFeatureClick(getClickedBundle)
+    showTrialSubsConfirmationAction(false)
+  }
+
   const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
@@ -277,8 +288,6 @@ const MyClasses = ({
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
-
-  const formatTrialEndDate = moment(subEndDate).format('DD MMM, YYYY')
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
@@ -380,15 +389,15 @@ const MyClasses = ({
           setShowModal={setPayWithPoModal}
         />
       )}
-      {formatTrialEndDate && (
+      {isConfirmationModalVisible && (
         <TrialConfirmationModal
           visible={isConfirmationModalVisible}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
           showTrialConfirmationMessage={showTrialConfirmationMessage}
-          usedTrialItemBankId={usedTrialItemBankId}
-          isPremiumUser={isPremiumUser}
-          isPremiumTrialUsed={isPremiumTrialUsed}
-          subEndDate={formatTrialEndDate}
+          isTrialItemBank={isTrialItemBank}
+          title={productData.productName}
+          isBlocked={getClickedBundle?.isBlocked}
+          handleGoToCollectionClick={handleGoToCollectionClick}
         />
       )}
     </MainContentWrapper>

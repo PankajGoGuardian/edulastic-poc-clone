@@ -269,11 +269,11 @@ function* handleFreeTrialSaga({ payload }) {
     const apiPaymentResponse = yield call(paymentApi.pay, payload)
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
-      yield put(slice.actions.trialSubsConfirmationAction(true))
       yield call(showSuccessNotifications, apiPaymentResponse, true)
       yield put(slice.actions.resetSubscriptions())
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))
+      yield put(slice.actions.trialSubsConfirmationAction(true))
     } else {
       notification({
         type: 'error',

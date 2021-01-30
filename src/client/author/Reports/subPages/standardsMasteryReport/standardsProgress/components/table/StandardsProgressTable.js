@@ -24,6 +24,23 @@ import {
 } from '../../utils/transformers'
 import { getAnalyseByTitle } from '../../../standardsPerformance/utils/transformers'
 
+const compareByStudentsColumns = [
+  {
+    title: 'SIS ID',
+    dataIndex: 'sisId',
+    key: 'sisId',
+    visibleOn: ['csv'],
+    render: (_, record) => record.rowInfo[0]?.sisId || '',
+  },
+  {
+    title: 'STUDENT NUMBER',
+    dataIndex: 'studentNumber',
+    key: 'studentNumber',
+    visibleOn: ['csv'],
+    render: (_, record) => record.rowInfo[0]?.studentNumber || '',
+  },
+]
+
 const StandardsProgressTable = ({
   data: rawTableData = [],
   testInfo,
@@ -116,6 +133,9 @@ const StandardsProgressTable = ({
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
       render: (data) => data || '-',
     },
+    ...(tableFilters.compareBy.key === 'student'
+      ? compareByStudentsColumns
+      : []),
     {
       title: 'Overall',
       dataIndex: 'overall',
@@ -126,13 +146,6 @@ const StandardsProgressTable = ({
         getOverallValue(record, tableFilters.analyseBy.key, masteryScale),
     },
     ...getTestCols(),
-    {
-      title: 'SIS ID',
-      dataIndex: 'sisId',
-      key: 'sisId',
-      visibleOn: ['csv'],
-      render: (_, record) => record.rowInfo.sisId || '',
-    },
   ]
 
   const onChangeTableFilters = (prefix, options, selectedPayload) => {

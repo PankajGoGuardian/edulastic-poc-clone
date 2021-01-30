@@ -95,7 +95,7 @@ function pauseAssignment({
   userId,
   pauseReason,
 }) {
-  console.warn('pausing assignment')
+
   classBoardApi
     .togglePauseStudents({
       assignmentId,
@@ -105,6 +105,9 @@ function pauseAssignment({
       pauseReason,
     })
     .then(() => {
+      document.exitFullscreen().catch((e)=>{
+        console.warn('fullscreen exit error',e)
+      });
       const errorMsg = 'Pausing Assignment due to Anti Cheating measures'
       notification({ type: 'warning', msg: errorMsg })
       if (history.location.pathname === '/home/assignments') {
@@ -115,14 +118,14 @@ function pauseAssignment({
       }
     })
     .catch((e) => {
+      document.exitFullscreen().catch((e)=>{
+        console.warn('fullscreen exit error',e)
+      });
       const errorMsg =
         e?.response?.data?.result?.message ||
         'Pausing Assignment due to Anti Cheating measures'
-      notification({ type: 'warning', msg: errorMsg })
-      if (history.location.pathname === '/home/assignments') {
-        history.push('/home/assignmentss')
-        history.replace('/home/assignments')
-      } else {
+        console.warn('error pausing',errorMsg);
+      if (!history.location.pathname === '/home/assignments') {
         history.push('/home/assignments')
       }
     })
@@ -155,7 +158,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
     })
 }
 
-function ForceFullScreenModal({ visible, finishTest }) {
+export function ForceFullScreenModal({ visible, finishTest }) {
   return (
     <Modal
       destroyOnClose
@@ -190,7 +193,7 @@ function ForceFullScreenModal({ visible, finishTest }) {
   )
 }
 
-function useFullScreenListener({
+export function useFullScreenListener({
   enabled,
   assignmentId,
   testActivityId,
@@ -199,7 +202,7 @@ function useFullScreenListener({
   history,
   disableSave,
 }) {
-  const [inFullScreen, setInFullScreen] = useState(enabled ? null : true)
+  const [inFullScreen, setInFullScreen] = useState(enabled ? document.fullscreenElement : true)
   const fullScreenCb = () => {
     if (document.fullscreenElement) {
       setInFullScreen(true)
@@ -210,6 +213,9 @@ function useFullScreenListener({
 
   useEffect(() => {
     document.addEventListener('fullscreenchange', fullScreenCb)
+    if(enabled && !document.fullscreenElement){
+      setInFullScreen(false);
+    }
     return () => {
       document.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
@@ -286,7 +292,7 @@ function useFirestorePingsForNavigationCheck({
   }, [testActivityId])
 }
 
-function FirestorePings({
+export function FirestorePings({
   testActivityId,
   history,
   blockSaveAndContinue,
@@ -294,6 +300,7 @@ function FirestorePings({
   classId,
   assignmentId,
 }) {
+  console.log('testActivityId',testActivityId);
   useFirestorePingsForNavigationCheck({
     testActivityId,
     history,
@@ -305,7 +312,7 @@ function FirestorePings({
   return null
 }
 
-function useTabNavigationCounterEffect({ testActivityId, enabled, history }) {
+export function useTabNavigationCounterEffect({ testActivityId, enabled, history }) {
   const inFocusRef = useRef(true)
   const idleTimeoutRef = useRef(null)
   useFocusHandler({
@@ -814,7 +821,7 @@ const AssessmentContainer = ({
     window.addEventListener('beforeunload', cb)
 
     const unloadCb = () => {
-      if (assignmentObj.blockSaveAndContinue) {
+      if (assignmentObj?.blockSaveAndContinue) {
         pauseAssignment({
           history,
           testActivityId: restProps.utaId,
@@ -949,7 +956,7 @@ const AssessmentContainer = ({
         <FirestorePings
           testActivityId={restProps.utaId}
           history={history}
-          blockSaveAndContinue={assignmentObj.blockSaveAndContinue}
+          blockSaveAndContinue={assignmentObj?.blockSaveAndContinue}
           userId={userId}
           classId={groupId}
           assignmentId={assignmentObj?._id}

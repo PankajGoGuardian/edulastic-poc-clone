@@ -179,7 +179,7 @@ const HeaderSection = ({
   const isHangoutEnabled =
     districtPolicy?.enableGoogleMeet === true
       ? true
-      : schoolPolicy[0]?.enableGoogleMeet === true
+      : schoolPolicy?.[0]?.enableGoogleMeet === true
       ? true
       : false
 

@@ -74,14 +74,13 @@ const AssessmentPlayer = ({
           )
         ) {
           // to remove attached event from window after execuation done
-          setTimeout(() => {
-            window.removeEventListener('popstate', window.confirmBeforeGoBack)
-            delete window.confirmBeforeGoBack
-          }, 1000)
+         
           return true
         }
         window.history.go(1)
         return false
+      } else {
+        console.warn('ev',e);
       }
     }
   }

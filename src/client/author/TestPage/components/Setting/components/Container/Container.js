@@ -278,7 +278,10 @@ class Setting extends Component {
 
   updateFeatures = (key) => (e) => {
     const { setTestData } = this.props
-    const featVal = isObject(e) ? e.target.value : e
+    let featVal = isObject(e) ? e.target.value : e
+    if( typeof featVal != 'undefined'){
+      featVal = null;
+    }
     this.setState({ [key]: featVal })
     setTestData({
       [key]: featVal,
@@ -1074,7 +1077,7 @@ class Setting extends Component {
                               onChange={this.updateFeatures(
                                 'restrictNavigationOut'
                               )}
-                              value={restrictNavigationOut}
+                              value={restrictNavigationOut||undefined}
                             >
                               <RadioBtn value={undefined} key="disabled">
                                 DISABLED

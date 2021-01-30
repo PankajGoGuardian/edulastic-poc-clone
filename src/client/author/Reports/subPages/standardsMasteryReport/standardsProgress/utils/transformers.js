@@ -204,10 +204,13 @@ export const getChartData = (rawChartData, masteryScale) => {
 export const getOverallScore = (metrics = []) =>
   percentage(sumBy(metrics, 'totalScore'), sumBy(metrics, 'maxScore'), true)
 
-const getMasteryScore = (record = {}) => round(record.fm, 2) || 0
+const getMasteryScore = (record = {}) =>
+  round(record.fmSum / record.fmCount, 2) || 0
 
 const getOverallMasteryScore = (records = []) =>
-  records.length ? (sumBy(records, 'fm') / records.length).toFixed(2) : 0
+  records.length
+    ? (sumBy(records, 'fmSum') / sumBy(records, 'fmCount')).toFixed(2)
+    : 0
 
 const getRecordMasteryLevel = (records, masteryScale) => {
   const score = getOverallMasteryScore(records)

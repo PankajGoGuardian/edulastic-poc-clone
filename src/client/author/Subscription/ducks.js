@@ -263,7 +263,7 @@ function* handleStripePayment({ payload }) {
   } catch (err) {
     yield put(slice.actions.stripePaymentFailure(err?.data?.message))
     notification({
-      msg: `Payment Failed : ${err?.data?.message}`,
+      msg: `Payment Failed : ${err?.response?.data?.message}`,
       Key: 'handle-payment',
     })
     console.error('ERROR WHILE PROCESSING PAYMENT : ', err)
@@ -292,7 +292,7 @@ function* handleFreeTrialSaga({ payload }) {
   } catch (err) {
     yield put(slice.actions.startTrialFailureAction(err?.data?.message))
     notification({
-      msg: `Trial Subscription : ${err?.data?.message}`,
+      msg: `Trial Subscription : ${err?.response?.data?.message}`,
       Key: 'handle-trial',
     })
     console.error('ERROR WHILE PROCESSING TRIAL SUBSCRIPTION : ', err)

@@ -164,11 +164,18 @@ class TestList extends Component {
       JSON.parse(sessionStorage.getItem('filters[playList]')) || {}
     const sessionSortFilters =
       JSON.parse(sessionStorage.getItem('sort[playList]')) || {}
-    const searchFilters = {
-      ...playListFilters,
-      ...sessionFilters,
-      grades,
-      subject,
+    let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
+    let searchFilters = {}
+
+    if (searchParams.removeInterestedFilters) {
+      searchFilters = playListFilters
+    } else {
+      searchFilters = {
+        ...playListFilters,
+        ...sessionFilters,
+        subject,
+        grades,
+      }
     }
 
     const sort = {
@@ -178,7 +185,6 @@ class TestList extends Component {
       ...sessionSortFilters,
     }
 
-    let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     searchParams = this.typeCheck(searchParams, searchFilters)
 
     if (Object.keys(searchParams).length) {

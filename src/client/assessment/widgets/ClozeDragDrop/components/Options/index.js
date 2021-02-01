@@ -35,13 +35,12 @@ const Options = ({
       questionType={item?.title}
     />
     <Extras
-      item={item}
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
     >
-      <Extras.Distractors item={item} />
-      <Extras.Hints item={item} />
+      <Extras.Distractors />
+      <Extras.Hints />
     </Extras>
   </WidgetOptions>
 )

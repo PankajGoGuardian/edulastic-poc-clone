@@ -64,8 +64,6 @@ const SubscriptionAddonModal = ({
     })
   )
 
-  const closeModal = () => handleCloseModal(false)
-
   const handleClick = () => {
     setAddOnProductIds(selectedProductIds)
     setTotalPurchaseAmount(totalPrice)
@@ -99,7 +97,7 @@ const SubscriptionAddonModal = ({
         </EduButton>,
       ]}
       visible={isVisible}
-      onCancel={closeModal}
+      onCancel={handleCloseModal}
     >
       <ModalBody>
         <p>

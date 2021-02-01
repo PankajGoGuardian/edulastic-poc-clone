@@ -347,6 +347,11 @@ const MyClasses = ({
 
   const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
 
+  const handleSubscriptionAddonModalClose = () => {
+    setProductData({})
+    setShowSubscriptionAddonModal(false)
+  }
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -370,7 +375,7 @@ const MyClasses = ({
       {showSubscriptionAddonModal && (
         <SubscriptionAddonModal
           isVisible={showSubscriptionAddonModal}
-          handleCloseModal={setShowSubscriptionAddonModal}
+          handleCloseModal={handleSubscriptionAddonModalClose}
           isPaidPremium={isPaidPremium}
           setShowUpgradeModal={setShowUpgradeModal}
           usedTrialItemBankId={usedTrialItemBankId}

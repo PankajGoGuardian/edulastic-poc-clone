@@ -282,8 +282,7 @@ const SubscriptionMain = ({
 
   const handleSelectStateModal = () => setShowSelectStates(true)
 
-  const handlePurchaseFlow = (productId) =>
-    setShowSubscriptionAddonModalWithId(productId)
+  const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
   const handleStartTrial = () => {
     settingProductData()
@@ -312,7 +311,10 @@ const SubscriptionMain = ({
     !isPaidSparkMath &&
     (!isPremiumTrialUsed || isPremiumUser)
 
-  const handleSparkMathClick = () => handlePurchaseFlow(sparkMathProductId)
+  const handleSparkMathClick = () => {
+    settingProductData()
+    handlePurchaseFlow()
+  }
 
   return (
     <>

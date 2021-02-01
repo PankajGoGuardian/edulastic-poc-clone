@@ -202,11 +202,6 @@ const chartFilterMetricInfo = (
   chartFilters = {},
   skillInfo = []
 ) => {
-  const filtersList = Object.keys(chartFilters).map((key) => ({
-    key,
-    value: chartFilters[key],
-  }))
-
   const filteredMetrics = filter(metricInfo, (metric) =>
     find(skillInfo, (skill) => skill.standardId === metric.standardId)
   )
@@ -217,11 +212,7 @@ const chartFilterMetricInfo = (
     filteredMetrics
   )
 
-  return filtersList.reduce((filteredMetrics, filter) => {
-    const byStudentInfo = (metric) =>
-      filter.value === 'all' ? true : metric[filter.key] === filter.value
-    return filteredMetrics.filter(byStudentInfo)
-  }, metricsWithStudent)
+  return metricsWithStudent
 }
 
 const getStandardMetrics = (data = {}, scaleInfo = []) =>

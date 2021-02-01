@@ -461,7 +461,7 @@ export const CustomXAxisTickTooltipContainer = styled.div`
   width: ${(props) => props.width}px;
   text-align: center;
   background: white;
-  z-index: 1;
+  z-index: 999;
   background-color: #f0f0f0;
   color: black;
   border: solid 0.5px #bebebe;

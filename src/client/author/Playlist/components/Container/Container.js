@@ -162,10 +162,10 @@ class TestList extends Component {
       interestedSubjects,
       interestedGrades,
       sort: initSort = {},
-      RecentPlaylist,
+      recentPlaylist,
     } = this.props
 
-    if (RecentPlaylist.length < 1) {
+    if (recentPlaylist.length < 1) {
       this.setState({ isVisible: true })
     }
 
@@ -684,7 +684,7 @@ const enhance = compose(
       selectedPlayLists: getSelectedPlaylistSelector(state),
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
-      RecentPlaylist: getRecentPlaylistSelector(state),
+      recentPlaylist: getRecentPlaylistSelector(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

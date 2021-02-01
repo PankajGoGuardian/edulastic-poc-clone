@@ -200,6 +200,7 @@ const MyClasses = ({
       productName: subscriptionData.productName,
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
+      itemBankId: subscriptionData.itemBankId,
       itemBankUsed: isItemBankUsed,
     })
   }
@@ -341,7 +342,9 @@ const MyClasses = ({
   const isTrialItemBank =
     itemBankSubscriptions &&
     itemBankSubscriptions?.length > 0 &&
-    itemBankSubscriptions?.[0]?.isTrial === true
+    itemBankSubscriptions?.filter((x) => {
+      return x.itemBankId === productData?.itemBankId && x.isTrial
+    })?.length > 0
 
   const showTrialButton =
     (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
@@ -442,7 +445,7 @@ const MyClasses = ({
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
           showTrialConfirmationMessage={showTrialConfirmationMessage}
           isTrialItemBank={isTrialItemBank}
-          title={productData.productName}
+          title={productData?.productName}
           isBlocked={getClickedBundle?.isBlocked}
           handleGoToCollectionClick={handleGoToCollectionClick}
         />

@@ -265,6 +265,7 @@ const SubscriptionMain = ({
   settingProductData,
   sparkMathProductId,
   sparkMathItemBankId,
+  setShowItemBankTrialUsedModal,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -294,6 +295,10 @@ const SubscriptionMain = ({
       })
     }
 
+    if (usedTrialItemBankId) {
+      setShowItemBankTrialUsedModal(true)
+      return
+    }
     setIsTrialModalVisible(true)
   }
 

@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import { CheckboxLabel, CustomModalStyled, EduButton } from '@edulastic/common'
+import { Tooltip } from 'antd'
+import { title } from '@edulastic/colors'
 import { ModalBody, AddonList, FlexRow, Total } from './styled'
 
 const getInitialSelectedProductIds = ({
@@ -116,9 +119,16 @@ const SubscriptionAddonModal = ({
         <AddonList>
           {!isPaidPremium && (
             <FlexRow>
-              <CheckboxLabel data-cy="teacherPremiumCheckbox" checked>
-                {teacherPremium.name}
-              </CheckboxLabel>
+              <Tooltip title="Premium subscription is mandatory for Spark content">
+                <StyledCheckbox
+                  data-cy="teacherPremiumCheckbox"
+                  checked
+                  disabled
+                >
+                  {teacherPremium.name}
+                </StyledCheckbox>
+              </Tooltip>
+
               <span>${teacherPremium.price}</span>
             </FlexRow>
           )}
@@ -152,3 +162,9 @@ SubscriptionAddonModal.propTypes = {
 }
 
 export default SubscriptionAddonModal
+
+const StyledCheckbox = styled(CheckboxLabel)`
+  &.ant-checkbox-wrapper .ant-checkbox + span {
+    color: ${title};
+  }
+`

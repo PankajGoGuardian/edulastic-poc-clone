@@ -189,7 +189,7 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    const isItemBankUsed = usedTrialItemBankId === subscriptionData?.productId
+    const isItemBankUsed = usedTrialItemBankId === subscriptionData?.itemBankId
     if (isItemBankUsed) {
       setShowItemBankTrialUsedModal(true)
     } else {
@@ -200,6 +200,7 @@ const MyClasses = ({
       productName: subscriptionData.productName,
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
+      itemBankId: subscriptionData.itemBankId,
       itemBankUsed: isItemBankUsed,
     })
   }

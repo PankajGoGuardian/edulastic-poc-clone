@@ -292,8 +292,8 @@ const AntiCheatingGroupContainer = ({
         <SettingContainer>
           <DetailsTooltip
             width={tootltipWidth}
-            title="Block Save And Continue"
-            content="Will force the students to take the test in single sitting"
+            title="ALLOW STUDENT TO SAVE AND CONTINUE LATER"
+            content="If OFF, will force the students to take the test in single sitting"
             placement="rightTop"
             premium={premium}
           />

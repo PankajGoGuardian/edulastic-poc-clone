@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import {
   EduButton,
@@ -262,17 +262,12 @@ const SubscriptionMain = ({
   products,
   hasAllPremiumProductAccess,
   itemBankSubscriptions,
+  settingProductData,
+  sparkMathProductId,
+  sparkMathItemBankId,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
-
-  const {
-    id: sparkMathProductId,
-    linkedProductId: sparkMathItemBankId,
-  } = useMemo(
-    () => products.find((product) => product.name === 'Spark Math') || {},
-    [products]
-  )
 
   const isPaidSparkMath =
     itemBankSubscriptions &&
@@ -290,6 +285,7 @@ const SubscriptionMain = ({
     setShowSubscriptionAddonModalWithId(productId)
 
   const handleStartTrial = () => {
+    settingProductData()
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
     if (!isBoolean(isPremiumTrialUsed)) {
       return notification({

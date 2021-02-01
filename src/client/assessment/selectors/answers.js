@@ -99,24 +99,3 @@ export const assignmentLevelSettingsSelector = createSelector(
     return byId[current] || {}
   }
 )
-
-export const languagePreferenceSelector = (state, props = {}) => {
-  let preferredLanguage = 'en'
-  const { isLCBView, isStudentReport } = props || {}
-  if (isLCBView) {
-    const { entities = [] } = state?.author_classboard_testActivity || {}
-    const { studentId } = props
-    if (studentId) {
-      const currentUTA = entities.find((uta) => uta.studentId === studentId)
-      if (currentUTA?.languagePreference) {
-        preferredLanguage = currentUTA.languagePreference
-      }
-    }
-  } else if (isStudentReport) {
-    const { languagePreference = 'en' } =
-      state?.studentReport?.testActivity || {}
-    preferredLanguage = languagePreference
-  }
-
-  return preferredLanguage
-}

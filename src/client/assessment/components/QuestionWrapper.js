@@ -74,7 +74,7 @@ import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemIn
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
 import { getFontSize } from '../utils/helpers'
 import { changeDataToPreferredLanguage } from '../utils/question'
-import { languagePreferenceSelector } from '../selectors/answers'
+import { languagePreferenceSelector } from '../../common/components/LanguageSelector/duck'
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? '0px' : null)};

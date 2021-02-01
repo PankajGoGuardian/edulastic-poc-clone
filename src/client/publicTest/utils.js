@@ -139,6 +139,7 @@ const redirectToAssessmentPlayer = (
     graded,
     title,
     releaseScore,
+    absent,
   } = assignment
   // if assignment is graded, then redirected to assignment review page
   const activeAssignments = assignment.class.filter(
@@ -156,8 +157,8 @@ const redirectToAssessmentPlayer = (
       (item) => currentTime > item.endDate || item.closed
     )
   }
-  if (graded && (isExpired || attemptCount === maxAttempts)) {
-    if (releaseScore === releaseGradeLabels.DONT_RELEASE) {
+  if ((graded || absent) && (isExpired || attemptCount === maxAttempts)) {
+    if (releaseScore === releaseGradeLabels.DONT_RELEASE || absent) {
       return history.push({
         pathname: '/home/grades',
         state: { highlightAssignment: assignmentId },
@@ -292,8 +293,8 @@ export const activeAssignmentClassIdentifiers = (assignmentsObj) => {
   }
   const classIdentifiers = {}
   assignments.forEach((item) => {
-    item.class.forEach((item) => {
-      classIdentifiers[item.identifier] = true
+    item.class.forEach((c) => {
+      classIdentifiers[c.identifier] = true
     })
   })
   return classIdentifiers

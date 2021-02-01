@@ -382,6 +382,18 @@ function* loadTest({ payload }) {
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      if (activity.isPaused) {
+        document.exitFullscreen().catch((e) => {
+          console.warn(e)
+        })
+        yield put(push('/home/assignments'))
+        setTimeout(() => {
+          notification({
+            type: 'warning',
+            msg: 'Your assignment is paused contact your instructor',
+          })
+        }, 2000)
+      }
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(
         questionActivities,

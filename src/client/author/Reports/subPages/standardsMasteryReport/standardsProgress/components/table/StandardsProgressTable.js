@@ -78,7 +78,6 @@ const StandardsProgressTable = ({
         </>
       ),
       align: 'center',
-      width: 150,
       dataIndex: test.reportKey,
       key: test.reportKey,
       render: (_, record) => {
@@ -126,9 +125,8 @@ const StandardsProgressTable = ({
       title: tableFilters.compareBy.title,
       dataIndex: 'name',
       key: 'name',
-      width: 150,
+      width: 200,
       fixed: 'left',
-      ellipsis: true,
       sorter: (a, b) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
       render: (data) => data || '-',
@@ -200,7 +198,7 @@ const StandardsProgressTable = ({
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
             tableToRender={StyledTable}
-            scroll={{ x: '100%' }}
+            scroll={{ x: 800 }}
           />
         </Col>
         <Col span={24}>

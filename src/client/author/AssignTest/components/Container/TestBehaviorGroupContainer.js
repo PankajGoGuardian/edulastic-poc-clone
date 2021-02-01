@@ -98,8 +98,10 @@ const TestBehaviorGroupContainer = ({
         content:
           'Changes made in Timed Assignment will impact all Students who are In Progress or Not Started.',
         onOk: () => {
-          if (attr === 'timedAssignment' && value)
+          if (attr === 'timedAssignment' && value) {
+            overRideSettings('pauseAllowed', true)
             overRideSettings('allowedTime', totalItems * 60 * 1000)
+          }
           overRideSettings(attr, value)
           setTimedtestConfirmed(true)
           Modal.destroyAll()
@@ -114,8 +116,11 @@ const TestBehaviorGroupContainer = ({
       })
       return
     }
-    if (attr === 'timedAssignment' && value)
+    if (attr === 'timedAssignment' && value) {
+      overRideSettings('pauseAllowed', true)
       overRideSettings('allowedTime', totalItems * 60 * 1000)
+    }
+
     overRideSettings(attr, value)
   }
 

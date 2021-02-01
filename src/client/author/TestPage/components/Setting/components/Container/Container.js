@@ -307,7 +307,7 @@ class Setting extends Component {
     if (value) {
       setTestData({
         [attr]: value,
-        pauseAllowed: false,
+        pauseAllowed: true,
         allowedTime: totalItems * 60 * 1000,
       })
       return
@@ -396,6 +396,7 @@ class Setting extends Component {
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
       blockSaveAndContinue,
+      pauseAllowed,
     } = entity
 
     const breadcrumbData = [
@@ -884,6 +885,7 @@ class Setting extends Component {
                           <Col span={16}>
                             {timedAssignment && (
                               <CheckboxLabel
+                                checked={pauseAllowed}
                                 disabled={!owner || !isEditable}
                                 data-cy="exit-allowed"
                                 onChange={(e) =>

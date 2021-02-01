@@ -57,7 +57,7 @@ const getParentUrl = (urlList) => {
 
 const ScrollElement = ({ item, onClick, ticked }) => (
   <div
-    data-cy={`${item.lastName}, ${item.firstName}, ${item.middleName}`}
+    data-cy={getFormattedName(item.firstName, item.middleName, item.lastName)}
     className="scrollbar-element"
     onClick={() => onClick(item._id)}
   >

@@ -1,6 +1,11 @@
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { greyLight1, greyThemeLight } from '@edulastic/colors'
-import { FlexContainer, withWindowSizes } from '@edulastic/common'
+import {
+  FlexContainer,
+  withWindowSizes,
+  CustomModalStyled,
+  EduButton,
+} from '@edulastic/common'
 import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
 import qs from 'qs'
@@ -70,6 +75,7 @@ import {
   checkPlayListAction,
   getSortFilterStateSelector,
   initialSortState,
+  getRecentPlaylistSelector,
 } from '../../ducks'
 import Actions from '../../../ItemList/components/Actions'
 import SelectCollectionModal from '../../../ItemList/components/Actions/SelectCollection'
@@ -124,6 +130,7 @@ class TestList extends Component {
     blockStyle: 'tile',
     isShowFilter: false,
     openSidebar: false,
+    isVisible: false,
   }
 
   getUrlToPush(page = undefined) {
@@ -155,7 +162,13 @@ class TestList extends Component {
       interestedSubjects,
       interestedGrades,
       sort: initSort = {},
+      RecentPlaylist,
     } = this.props
+
+    if (RecentPlaylist.length < 1) {
+      this.setState({ isVisible: true })
+    }
+
     const {
       subject = interestedSubjects || [],
       grades = interestedGrades || [],
@@ -487,7 +500,7 @@ class TestList extends Component {
       sort = {},
     } = this.props
 
-    const { blockStyle, isShowFilter, openSidebar } = this.state
+    const { blockStyle, isShowFilter, openSidebar, isVisible } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
       <FilterToggleBtn
@@ -495,7 +508,14 @@ class TestList extends Component {
         toggleFilter={this.toggleFilter}
       />
     )
-
+    const Footer = (
+      <>
+        <EduButton data-cy="cancelButton" isGhost>
+          Cancel
+        </EduButton>
+        <EduButton data-cy="proceedButton">Proceed</EduButton>
+      </>
+    )
     return (
       <>
         <ListHeader
@@ -634,6 +654,9 @@ class TestList extends Component {
             </Main>
           </FlexContainer>
           <SelectCollectionModal contentType="PLAYLIST" />
+          <CustomModalStyled visible={isVisible} footer={Footer}>
+            <div>playlistAvailableModal</div>
+          </CustomModalStyled>
         </Container>
       </>
     )
@@ -661,6 +684,7 @@ const enhance = compose(
       selectedPlayLists: getSelectedPlaylistSelector(state),
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
+      RecentPlaylist: getRecentPlaylistSelector(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

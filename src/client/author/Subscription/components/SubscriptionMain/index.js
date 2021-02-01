@@ -262,8 +262,7 @@ const SubscriptionMain = ({
   products,
   hasAllPremiumProductAccess,
   itemBankSubscriptions,
-  setProductData,
-  currentItemBank,
+  settingProductData,
   sparkMathProductId,
   sparkMathItemBankId,
 }) => {
@@ -286,16 +285,7 @@ const SubscriptionMain = ({
     setShowSubscriptionAddonModalWithId(productId)
 
   const handleStartTrial = () => {
-    const { config = {} } = currentItemBank
-    const { subscriptionData } = config
-
-    setProductData({
-      productId: subscriptionData.productId,
-      productName: subscriptionData.productName,
-      description: subscriptionData.description,
-      hasTrial: subscriptionData.hasTrial,
-      itemBankId: subscriptionData.itemBankId,
-    })
+    settingProductData()
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
     if (!isBoolean(isPremiumTrialUsed)) {
       return notification({

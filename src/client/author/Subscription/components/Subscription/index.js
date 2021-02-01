@@ -177,9 +177,6 @@ function formatDate(subEndDate) {
 
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
 
-const sortByOrder = (prop) =>
-  prop.sort((a, b) => a.config?.order - b.config?.order)
-
 const Subscription = (props) => {
   const {
     history,
@@ -305,7 +302,7 @@ const Subscription = (props) => {
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
 
   const { FEATURED } = groupBy(dashboardTiles, 'type')
-  const featuredBundles = sortByOrder(FEATURED || [])
+  const featuredBundles = FEATURED || []
 
   const currentItemBank =
     featuredBundles &&
@@ -314,16 +311,22 @@ const Subscription = (props) => {
         bundle?.config?.subscriptionData?.productId === sparkMathProductId
     )
 
-  const handleGoToCollectionClick = () => {
+  const settingProductData = () => {
     const { config = {} } = currentItemBank
-    const { filters, contentType, subscriptionData } = config
+    const { subscriptionData } = config
 
     setProductData({
       productId: subscriptionData.productId,
       productName: subscriptionData.productName,
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
+      itemBankId: subscriptionData.itemBankId,
     })
+  }
+
+  const handleGoToCollectionClick = () => {
+    const { config = {} } = currentItemBank
+    const { filters, contentType } = config
 
     const content = contentType?.toLowerCase() || 'tests'
 
@@ -414,8 +417,7 @@ const Subscription = (props) => {
         }
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
         itemBankSubscriptions={itemBankSubscriptions}
-        setProductData={setProductData}
-        currentItemBank={currentItemBank}
+        settingProductData={settingProductData}
         sparkMathItemBankId={sparkMathItemBankId}
         sparkMathProductId={sparkMathProductId}
       />

@@ -1049,18 +1049,20 @@ class Setting extends Component {
                   {premium && (
                     <Block id="block-save-and-continue" smallSize={isSmallSize}>
                       <Title>
-                        <span>Block Save And Continue</span>
+                        <span>ALLOW STUDENT TO SAVE AND CONTINUE LATER</span>
                         <EduSwitchStyled
                           disabled={!owner || !isEditable}
-                          checked={blockSaveAndContinue}
+                          checked={!blockSaveAndContinue}
                           data-cy="bockSaveAndContinueSwitch"
-                          onChange={this.updateTestData('blockSaveAndContinue')}
+                          onChange={(v) =>
+                            this.updateTestData('blockSaveAndContinue')(!v)
+                          }
                         />
                       </Title>
                       <Body smallSize={isSmallSize}>
                         <Description>
-                          Will force the students to take the test in single
-                          sitting
+                          If <b>OFF</b> Will force the students to take the test
+                          in single sitting
                         </Description>
                       </Body>
                     </Block>

@@ -300,9 +300,9 @@ const AntiCheatingGroupContainer = ({
           <StyledRow gutter={16} mb="15px">
             <Col span={12}>
               <Label>
-                Block Save And Continue
+                ALLOW STUDENT TO SAVE AND CONTINUE LATER
                 <DollarPremiumSymbol premium={premium} />
-                <Tooltip title="Will force the students to take the test in single sitting">
+                <Tooltip title="If OFF, will force the students to take the test in single sitting">
                   <StyledInfoIcon color={lightGrey9} mL="10px" />
                 </Tooltip>
               </Label>
@@ -311,9 +311,9 @@ const AntiCheatingGroupContainer = ({
               <AlignSwitchRight
                 disabled={freezeSettings || !premium}
                 size="small"
-                checked={blockSaveAndContinue}
+                checked={!blockSaveAndContinue}
                 onChange={(value) =>
-                  overRideSettings('blockSaveAndContinue', value)
+                  overRideSettings('blockSaveAndContinue', !value)
                 }
               />
             </Col>

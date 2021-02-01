@@ -516,6 +516,7 @@ export const transformGradeBookResponse = (
         icon,
       }) => {
         const testActivity = studentTestActivities[studentId]
+        // console.log('testActivity', testActivity, studentId)
         if (!testActivity) {
           return false
         }
@@ -692,8 +693,9 @@ export const transformGradeBookResponse = (
           isEnrolled = true,
           isAssigned = true,
           isPaused = false,
-          tabNavigationCounter:outNavigationCounter=0,
+          tabNavigationCounter: outNavigationCounter = 0,
           pauseReason,
+          languagePreference = 'en',
         } = testActivity
         return {
           studentId,
@@ -728,7 +730,8 @@ export const transformGradeBookResponse = (
           endDate: testActivity.endDate,
           isPaused,
           outNavigationCounter,
-          pauseReason
+          pauseReason,
+          languagePreference,
         }
       }
     )

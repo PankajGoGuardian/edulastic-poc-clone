@@ -28,6 +28,7 @@ import {
 } from '../../../TestPage/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import { SettingContainer } from '../Container/styled'
+import { getmultiLanguageEnabled } from '../../../ClassBoard/ducks'
 
 const {
   calculatorKeys,
@@ -63,6 +64,7 @@ const Settings = ({
   freezeSettings = false,
   calculatorProvider,
   features,
+  multiLanguageEnabledLCB,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -213,6 +215,7 @@ const Settings = ({
     autoRedirect = false,
     autoRedirectSettings,
     blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
+    multiLanguageEnabled = !!tempTestSettings.multiLanguageEnabled,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -223,6 +226,7 @@ const Settings = ({
       )) ||
     calculatorKeys
 
+  const showMultiLangSelection = !!multiLanguageEnabledLCB
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -476,6 +480,42 @@ const Settings = ({
           /* Check Answer Tries Per Question */
         }
 
+        {/* Multi language */}
+        {showMultiLangSelection && (
+          <SettingContainer>
+            <DetailsTooltip
+              title="Multi-Language"
+              content="Select ON , If you want to enable multiple languages for the test."
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15px" height="40">
+              <Col span={12}>
+                <Label>
+                  <span>Multi-Language</span>
+                </Label>
+              </Col>
+              <Col
+                span={10}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <Row style={{ display: 'flex', alignItems: 'center' }}>
+                  <AlignSwitchRight
+                    data-cy="multi-language"
+                    size="small"
+                    defaultChecked={false}
+                    disabled={freezeSettings}
+                    checked={multiLanguageEnabled}
+                    onChange={(value) =>
+                      overRideSettings('multiLanguageEnabled', value)
+                    }
+                  />
+                </Row>
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        )}
+        {/* Multi language */}
+
         {/* Auto Redirect */}
         <SettingContainer>
           <DetailsTooltip
@@ -642,6 +682,7 @@ export default connect(
       : state?.tests?.entity?.summary?.totalItems,
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: state?.user?.user?.features,
+    multiLanguageEnabledLCB: getmultiLanguageEnabled(state),
   }),
   null
 )(withRouter(Settings))

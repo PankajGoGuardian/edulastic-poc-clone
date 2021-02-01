@@ -44,6 +44,8 @@ export const SET_SHOW_RETAKE_MODAL_STATE =
   '[studentAssignments] set show retake modal state'
 export const SET_SELECTED_GROUP_STATUS =
   '[studentAssignments] set selected group status'
+export const SET_LANGUAGE_PREFERENCE =
+  '[studentAssignments] set selected language'
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING)
@@ -77,6 +79,8 @@ export const setShowRetakeModalAction = createAction(
   SET_SHOW_RETAKE_MODAL_STATE
 )
 
+export const setSelectedLanguageAction = createAction(SET_LANGUAGE_PREFERENCE)
+
 // initial State
 const initialState = {
   isLoading: false,
@@ -94,6 +98,7 @@ const initialState = {
   updateUtaTimeType: null,
   showRetakeModal: false,
   groupStatus: 'all',
+  languagePreference: '',
 }
 
 // reducers
@@ -183,6 +188,9 @@ export default createReducer(initialState, {
   },
   [SET_SELECTED_GROUP_STATUS]: (state, { payload }) => {
     state.groupStatus = payload
+  },
+  [SET_LANGUAGE_PREFERENCE]: (state, { payload }) => {
+    state.languagePreference = payload
   },
 })
 

@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect'
-import { values } from 'lodash'
+import { values, keyBy } from 'lodash'
+import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { changeDataToPreferredLanguage } from '../utils/question'
 
 const getQuestionsSelector = (state) => state.assessmentplayerQuestions
 
@@ -9,6 +11,12 @@ export const getQuestionsListSelector = createSelector(
 )
 
 export const getQuestionsByIdSelector = createSelector(
-  getQuestionsSelector,
-  (state) => state.byId
+  getQuestionsListSelector,
+  getCurrentLanguage,
+  (questions, userPreferredLanguage) => {
+    const convertedInPreferredLang = questions.map((question) =>
+      changeDataToPreferredLanguage(question, userPreferredLanguage)
+    )
+    return keyBy(convertedInPreferredLang, 'id')
+  }
 )

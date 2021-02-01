@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { CheckboxLabel, CustomModalStyled, EduButton } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import { title } from '@edulastic/colors'
-import { ModalBody, AddonList, FlexRow, Total } from './styled'
+import { ModalBody, AddonList, FlexRow, Total, ContentWrapper } from './styled'
 
 const getInitialSelectedProductIds = ({
   defaultSelectedProductIds,
@@ -114,42 +114,44 @@ const SubscriptionAddonModal = ({
           to learn more.
         </p>
         <p> These addons need the premium or enterprise subscription.</p>
-        <AddonList>
-          {!isPaidPremium && (
-            <FlexRow>
-              <Tooltip title="Premium subscription is mandatory for Spark content">
-                <StyledCheckbox
-                  data-cy="teacherPremiumCheckbox"
-                  checked
-                  disabled
-                >
-                  {teacherPremium.name}
-                </StyledCheckbox>
-              </Tooltip>
+        <ContentWrapper>
+          <AddonList>
+            {!isPaidPremium && (
+              <FlexRow>
+                <Tooltip title="Premium subscription is mandatory for Spark content">
+                  <StyledCheckbox
+                    data-cy="teacherPremiumCheckbox"
+                    checked
+                    disabled
+                  >
+                    {teacherPremium.name}
+                  </StyledCheckbox>
+                </Tooltip>
 
-              <span>${teacherPremium.price}</span>
+                <span>${teacherPremium.price}</span>
+              </FlexRow>
+            )}
+            {itemBankPremium.map((item) => (
+              <FlexRow key={item.id}>
+                <CheckboxLabel
+                  data-cy="sparkPremiumCheckbox"
+                  value={item.price}
+                  onChange={(e) => handleOnChange(e, item.id)}
+                  checked={selectedProductIds.includes(item.id)}
+                >
+                  {item.name}
+                </CheckboxLabel>
+                <span className="priceCol">${item.price}</span>
+              </FlexRow>
+            ))}
+          </AddonList>
+          <Total>
+            <FlexRow>
+              <label>Total</label>
+              <span>${totalPrice}</span>
             </FlexRow>
-          )}
-          {itemBankPremium.map((item) => (
-            <FlexRow key={item.id}>
-              <CheckboxLabel
-                data-cy="sparkPremiumCheckbox"
-                value={item.price}
-                onChange={(e) => handleOnChange(e, item.id)}
-                checked={selectedProductIds.includes(item.id)}
-              >
-                {item.name}
-              </CheckboxLabel>
-              <span>${item.price}</span>
-            </FlexRow>
-          ))}
-        </AddonList>
-        <Total>
-          <FlexRow>
-            <label>Total</label>
-            <span>${totalPrice}</span>
-          </FlexRow>
-        </Total>
+          </Total>
+        </ContentWrapper>
       </ModalBody>
     </CustomModalStyled>
   )

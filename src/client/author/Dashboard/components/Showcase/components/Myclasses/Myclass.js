@@ -189,8 +189,7 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    const isItemBankUsed = usedTrialItemBankId === subscriptionData?.itemBankId
-    if (isItemBankUsed) {
+    if (usedTrialItemBankId) {
       setShowItemBankTrialUsedModal(true)
     } else {
       setIsPurchaseModalVisible(true)
@@ -201,15 +200,12 @@ const MyClasses = ({
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
       itemBankId: subscriptionData.itemBankId,
-      itemBankUsed: isItemBankUsed,
     })
   }
 
   const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
-  const handleCloseItemTrialModal = () => {
-    setShowItemBankTrialUsedModal(false)
-  }
+  const handleCloseItemTrialModal = () => setShowItemBankTrialUsedModal(false)
 
   const handlePurchaseFlow = () => {
     setShowSubscriptionAddonModal(true)
@@ -349,6 +345,8 @@ const MyClasses = ({
   const showTrialButton =
     (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
 
+  const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -390,6 +388,7 @@ const MyClasses = ({
           isVisible={showItemBankTrialUsedModal}
           handleCloseModal={handleCloseItemTrialModal}
           handlePurchaseFlow={handlePurchaseFlow}
+          isCurrentItemBankUsed={isCurrentItemBankUsed}
         />
       )}
       {isPurchaseModalVisible && (

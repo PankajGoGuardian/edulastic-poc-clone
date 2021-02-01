@@ -28,6 +28,7 @@ import {
 import TrialConfirmationModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/TrialConfimationModal'
 import { resetTestFiltersAction } from '../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
+import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 
 const comparePlansData = [
   {
@@ -224,6 +225,9 @@ const Subscription = (props) => {
   const [totalAmount, setTotalAmount] = useState(100)
   const [selectedProductId, setSelectedProcductId] = useState(null)
   const [productData, setProductData] = useState({})
+  const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
+    false
+  )
 
   useEffect(() => {
     // getSubscription on mount
@@ -383,6 +387,15 @@ const Subscription = (props) => {
     setShowSubscriptionAddonModal(true)
   }
 
+  const handlePurchaseFlow = () => {
+    setShowSubscriptionAddonModal(true)
+    setShowItemBankTrialUsedModal(false)
+  }
+
+  const handleCloseItemTrialModal = () => setShowItemBankTrialUsedModal(false)
+
+  const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -420,6 +433,7 @@ const Subscription = (props) => {
         settingProductData={settingProductData}
         sparkMathItemBankId={sparkMathItemBankId}
         sparkMathProductId={sparkMathProductId}
+        setShowItemBankTrialUsedModal={setShowItemBankTrialUsedModal}
       />
 
       <CompareModal
@@ -501,6 +515,15 @@ const Subscription = (props) => {
           isBlocked={currentItemBank?.isBlocked}
           title={productData?.productName}
           handleGoToCollectionClick={handleGoToCollectionClick}
+        />
+      )}
+      {showItemBankTrialUsedModal && (
+        <ItemBankTrialUsedModal
+          title={productData?.productName}
+          isVisible={showItemBankTrialUsedModal}
+          handleCloseModal={handleCloseItemTrialModal}
+          handlePurchaseFlow={handlePurchaseFlow}
+          isCurrentItemBankUsed={isCurrentItemBankUsed}
         />
       )}
     </Wrapper>

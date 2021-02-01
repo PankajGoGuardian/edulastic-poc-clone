@@ -40,7 +40,7 @@
   "prettier.useTabs": false,
   "prettier.trailingComma": "es5",
   "[javascript]": {
-    "editor.defaultFormatter": "numso.prettier-standard-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

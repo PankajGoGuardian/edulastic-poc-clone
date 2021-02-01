@@ -771,11 +771,12 @@
         "show_axis": "SHOW AXIS",
         "comma_in_label": "COMMA IN LABEL",
         "draw_label": "DRAW LABELS",
+        "use_radians": "USE RADIANS",
         "min_arrow": "MIN ARROW",
         "max_arrow": "MAX ARROW",
         "hide_ticks": "HIDE TICKS",
         "show_label": "SHOW LABEL",
-
+        "axes": "AXES",
         "x_distance": "X distance ",
         "y_distance": "Y distance",
         "show_axis_label": "Show axis label",

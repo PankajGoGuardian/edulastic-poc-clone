@@ -321,12 +321,28 @@ class Graph extends Component {
     setQuestionData({ ...item, annotation: options })
   }
 
-  handleCanvasChange = (canvas, uiStyle) => {
-    const { setQuestionData, item } = this.props
-    let newItem = { ...item, canvas }
-    if (uiStyle) {
-      newItem = { ...newItem, uiStyle }
-    }
+  handleCanvasChange = (canvas, uiStyle, removeElement) => {
+    const { item, setQuestionData } = this.props
+    const newItem = produce(item, (draft) => {
+      if (canvas) {
+        item.canvas = canvas
+      }
+      if (uiStyle) {
+        item.uiStyle = uiStyle
+      }
+      if (removeElement) {
+        if (!draft.validation) {
+          draft.validation = {}
+        }
+        draft.validation.validResponse.value = []
+        if (draft.validation.altResponses) {
+          draft.validation.altResponses.forEach((alt) => {
+            alt.value = []
+          })
+        }
+        draft.background_shapes = []
+      }
+    })
     setQuestionData(newItem)
   }
 

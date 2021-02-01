@@ -223,7 +223,6 @@ const Subscription = (props) => {
   )
   const [addOnProductIds, setAddOnProductIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
-  const [selectedProductId, setSelectedProcductId] = useState(null)
   const [productData, setProductData] = useState({})
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
@@ -295,9 +294,6 @@ const Subscription = (props) => {
     setPayWithPoModal(true)
   }
   const closePaymentServiceModal = () => {
-    if (selectedProductId) {
-      setSelectedProcductId(null)
-    }
     setPaymentServiceModal(false)
   }
   const openHasLicenseKeyModal = () => setHasLicenseKeyModal(true)
@@ -380,10 +376,7 @@ const Subscription = (props) => {
       return x.itemBankId === productData?.itemBankId && x.isTrial
     })?.length > 0
 
-  const setShowSubscriptionAddonModalWithId = (id) => {
-    if (id) {
-      setSelectedProcductId(id)
-    }
+  const setShowSubscriptionAddonModalWithId = () => {
     setShowSubscriptionAddonModal(true)
   }
 
@@ -395,6 +388,15 @@ const Subscription = (props) => {
   const handleCloseItemTrialModal = () => setShowItemBankTrialUsedModal(false)
 
   const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
+
+  const handleSubscriptionAddonModalClose = () => {
+    setProductData({})
+    setShowSubscriptionAddonModal(false)
+  }
+
+  const defaultSelectedProductIds = productData.productId
+    ? [productData.productId]
+    : null
 
   return (
     <Wrapper>
@@ -451,16 +453,14 @@ const Subscription = (props) => {
       {showSubscriptionAddonModal && (
         <SubscriptionAddonModal
           isVisible={showSubscriptionAddonModal}
-          handleCloseModal={setShowSubscriptionAddonModal}
+          handleCloseModal={handleSubscriptionAddonModalClose}
           isPaidPremium={isPaidPremium}
           setShowUpgradeModal={setShowUpgradeModal}
           usedTrialItemBankId={usedTrialItemBankId}
           premiumProductId={premiumProductId}
           setTotalPurchaseAmount={setTotalAmount}
           setAddOnProductIds={setAddOnProductIds}
-          defaultSelectedProductIds={
-            selectedProductId ? [selectedProductId] : null
-          }
+          defaultSelectedProductIds={defaultSelectedProductIds}
           teacherPremium={teacherPremium}
           itemBankPremium={itemBankPremium}
         />

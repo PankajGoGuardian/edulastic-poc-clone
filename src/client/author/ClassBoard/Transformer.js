@@ -516,6 +516,7 @@ export const transformGradeBookResponse = (
         icon,
       }) => {
         const testActivity = studentTestActivities[studentId]
+        // console.log('testActivity', testActivity, studentId)
         if (!testActivity) {
           return false
         }
@@ -688,7 +689,12 @@ export const transformGradeBookResponse = (
         const isValidQuestionActivity = (x = {}) =>
           (x.qids && x.qids.length && x.testActivityId) || x.qid
         // has own property  then pick it or else default to true
-        const { isEnrolled = true, isAssigned = true } = testActivity
+        const {
+          isEnrolled = true,
+          isAssigned = true,
+          languagePreference = 'en',
+        } = testActivity
+
         return {
           studentId,
           studentName: fullName,
@@ -720,6 +726,7 @@ export const transformGradeBookResponse = (
                 }))
               : questionActivities.filter((x) => isValidQuestionActivity(x)),
           endDate: testActivity.endDate,
+          languagePreference,
         }
       }
     )

@@ -74,6 +74,7 @@ import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemIn
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
 import { getFontSize } from '../utils/helpers'
 import { changeDataToPreferredLanguage } from '../utils/question'
+import { languagePreferenceSelector } from '../../common/components/LanguageSelector/duck'
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
@@ -431,9 +432,8 @@ class QuestionWrapper extends Component {
 
   // we will use this method only for LCB and student report
   get renderData() {
-    const { data } = this.props
-    const userActivityLanguage = get(data, 'activity.preferredLanguage')
-    return changeDataToPreferredLanguage(data, userActivityLanguage)
+    const { data, studentLanguagePreference } = this.props
+    return changeDataToPreferredLanguage(data, studentLanguagePreference)
   }
 
   render() {
@@ -801,7 +801,7 @@ const enhance = compose(
   withTheme,
   withNamespaces('assessment'),
   connect(
-    (state) => ({
+    (state, ownProps) => ({
       isPresentationMode: get(
         state,
         ['author_classboard_testActivity', 'presentationMode'],
@@ -819,6 +819,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),
+      studentLanguagePreference: languagePreferenceSelector(state, ownProps),
     }),
     {
       setQuestionData: setQuestionDataAction,

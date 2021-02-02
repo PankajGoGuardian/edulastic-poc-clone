@@ -83,7 +83,6 @@ const AssessmentAutoComplete = ({
       setSearchTerms({ text: value, selectedText: value, selectedKey: key })
       selectCB({ key, title: value })
     } else {
-      setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
       selectCB({ key: '', title: '' })
     }
   }
@@ -132,28 +131,23 @@ const AssessmentAutoComplete = ({
     }
   }, [query])
   // build dropdown data
-  const dropdownData = searchTerms.text
-    ? [
-        <AutoComplete.OptGroup
-          key="testList"
-          label="Assessments [Type to search]"
-        >
-          {isEmpty(testList)
-            ? [
-                <AutoComplete.Option disabled key={0} title="no data found">
-                  No Data Found
-                </AutoComplete.Option>,
-              ]
-            : testList.map((item) => (
-                <AutoComplete.Option key={item._id} title={item.title}>
-                  {`${item.title} (ID:${
-                    item._id.substring(item._id.length - 5) || ''
-                  })`}
-                </AutoComplete.Option>
-              ))}
-        </AutoComplete.OptGroup>,
-      ]
-    : []
+  const dropdownData = [
+    <AutoComplete.OptGroup key="testList" label="Assessments [Type to search]">
+      {isEmpty(testList)
+        ? [
+            <AutoComplete.Option disabled key={0} title="no data found">
+              No Data Found
+            </AutoComplete.Option>,
+          ]
+        : testList.map((item) => (
+            <AutoComplete.Option key={item._id} title={item.title}>
+              {`${item.title} (ID:${
+                item._id.substring(item._id.length - 5) || ''
+              })`}
+            </AutoComplete.Option>
+          ))}
+    </AutoComplete.OptGroup>,
+  ]
 
   const selectedTestLabel =
     searchTerms.text === searchTerms.selectedText && selectedTest._id

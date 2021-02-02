@@ -306,7 +306,10 @@ export const getTableData = (
     .reverse()
 
   const compareByDataKey = getCompareByDataKey(compareByKey)
-  const groupedTableData = groupBy(rawTableData, compareByDataKey)
+  const groupedTableData = groupBy(
+    rawTableData.filter((el) => !!el[compareByDataKey]),
+    compareByDataKey
+  )
   const tableData = Object.keys(groupedTableData)
     .map((itemId) => {
       const tableDataForItem = groupedTableData[itemId]

@@ -27,12 +27,13 @@ import {
   notification,
   handleChromeOsSEB,
   FireBaseService,
-  useResources
+  EduButton,
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'
 import { testActivityApi, classBoardApi } from '@edulastic/api'
 
+import Styled from 'styled-components'
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
   finishTestAcitivityAction,
@@ -109,7 +110,7 @@ function pauseAssignment({
         console.warn('fullscreen exit error', e)
       })
       const errorMsg = 'Pausing Assignment due to Anti Cheating measures'
-      notification({ type: 'warning', msg: errorMsg })
+      notification({ type: 'warning', msg: errorMsg, duration: 0 })
       if (history.location.pathname === '/home/assignments') {
         history.push('/home/assignmentss')
         history.replace('/home/assignments')
@@ -139,6 +140,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
         notification({
           type: 'error',
           msg: 'Sorry! Assignment got paused due to inactivity',
+          duration: 0,
         })
         document.exitFullscreen().catch(() => {})
         history.push('/home/assignments')
@@ -146,6 +148,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
         notification({
           type: 'warning',
           msg: 'Moving out of assignment has been noted',
+          duration: 0,
         })
       }
     })
@@ -155,19 +158,22 @@ function incrementNavigationCounter({ history, testActivityId }) {
     })
 }
 
-export function ForceFullScreenModal({ visible, finishTest }) {
+export function ForceFullScreenModal({ visible, takeItLaterCb }) {
   return (
-    <Modal
+    <StyledModal
       destroyOnClose
       keyboard={false}
       closable={false}
       maskClosable={false}
       footer={
         <>
-          <Button type="danger" onClick={finishTest}>
-            Submit the test
-          </Button>
-          <Button
+          {takeItLaterCb && (
+            <Button type="link" onClick={() => takeItLaterCb()}>
+              Take it Later
+            </Button>
+          )}
+          <EduButton
+            className="inline-button"
             type="primary"
             onClick={() => {
               document.body
@@ -178,15 +184,20 @@ export function ForceFullScreenModal({ visible, finishTest }) {
                 })
             }}
           >
-            Go Back to the test
-          </Button>
+            proceed
+          </EduButton>
         </>
       }
       maskStyle={{ background: '#000', opacity: 1 }}
       visible={visible}
     >
-      <p>This Assessment can only be taken in full screen mode</p>
-    </Modal>
+      <div>
+        <b>
+          While taking this test, you can not open other web pages. This test
+          can only be taken in fullscreen mode
+        </b>
+      </div>
+    </StyledModal>
   )
 }
 
@@ -947,8 +958,19 @@ const AssessmentContainer = ({
           <ForceFullScreenModal
             testActivityId={restProps.utaId}
             history={history}
-            visible={!currentlyFullScreen}
-            finishTest={() => finishTest(groupId)}
+            visible={
+              !currentlyFullScreen &&
+              history.location.pathname.includes('/uta/')
+            }
+            takeItLaterCb={
+              assignmentObj?.blockSaveAndContinue
+                ? null
+                : () =>
+                    saveCurrentAnswer({
+                      pausing: true,
+                      callback: () => history.push('/home/assignments'),
+                    })
+            }
           />
         </>
       )}
@@ -1093,5 +1115,19 @@ const enhance = compose(
     }
   )
 )
+
+const StyledModal = Styled(Modal)`
+  .ant-modal-footer{
+    border-top:0px;
+    text-align:center;
+    .ant-btn-link{
+      color: ${themeColor}
+    }
+  }
+
+  .inline-button{
+    display: inline-block;
+  }
+`
 
 export default enhance(AssessmentContainer)

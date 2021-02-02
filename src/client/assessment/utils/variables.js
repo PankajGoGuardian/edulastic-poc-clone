@@ -99,17 +99,18 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   let result = str.replace(mathRegex, '{math-latex}')
   let mathContent = str.match(mathRegex)
   Object.keys(variables).forEach((variableName) => {
+    const isFormula = variables[variableName].type.includes('FORMULA')
     if (isLatex) {
       result = result.replace(
         new RegExp(`@${variableName}`, 'g'),
-        useMathTemplate
+        useMathTemplate && isFormula
           ? getMathTemplate(variables[variableName].exampleValue)
           : ` ${variables[variableName].exampleValue}`
       )
     } else {
       result = result.replace(
         new RegExp(`@${variableName}`, 'g'),
-        useMathTemplate
+        useMathTemplate && isFormula
           ? getMathTemplate(variables[variableName].exampleValue)
           : variables[variableName].exampleValue
       )

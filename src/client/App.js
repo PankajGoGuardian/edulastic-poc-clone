@@ -304,31 +304,42 @@ class App extends Component {
           'thirdPartyOAuthRedirectUrl'
         )
         if (thirdPartyOAuth === 'wordpress' && thirdPartyOAuthRedirectUrl) {
+          const contentId = localStorage.getItem('wpCId')
+          const action = localStorage.getItem('wpAction')
           // redirect user to redirect url with first name and last name and role
           return (
             <SsoAuth
               user={user}
               location={location}
               redirectUrl={thirdPartyOAuthRedirectUrl}
+              contentId={contentId}
+              action={action}
             />
           )
         }
         if (location.pathname.toLocaleLowerCase().includes('/sso-auth')) {
-          const { redirectUrl = '' } = qs.parse(location.search, {
-            ignoreQueryPrefix: true,
-          })
+          const { redirectUrl = '', cId = '', action = '' } = qs.parse(
+            location.search,
+            {
+              ignoreQueryPrefix: true,
+            }
+          )
           if (redirectUrl) {
             return (
               <SsoAuth
                 user={user}
                 location={location}
                 redirectUrl={redirectUrl}
+                contentId={cId}
+                action={action}
               />
             )
           }
         }
         localStorage.removeItem('thirdPartyOAuth')
         localStorage.removeItem('thirdPartyOAuthRedirectUrl')
+        localStorage.removeItem('wpCId')
+        localStorage.removeItem('upAction')
         if (role === 'teacher') {
           if (
             user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
@@ -370,11 +381,16 @@ class App extends Component {
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (location.pathname.toLocaleLowerCase().includes('/sso-auth')) {
-        const { redirectUrl = '' } = qs.parse(location.search, {
-          ignoreQueryPrefix: true,
-        })
+        const { redirectUrl = '', cId = '', action = '' } = qs.parse(
+          location.search,
+          {
+            ignoreQueryPrefix: true,
+          }
+        )
         localStorage.setItem('thirdPartyOAuth', 'wordpress')
         localStorage.setItem('thirdPartyOAuthRedirectUrl', redirectUrl)
+        localStorage.setItem('wpCId', cId)
+        localStorage.setItem('upAction', action)
       } else if (
         !(
           location.pathname.toLocaleLowerCase().includes('/getstarted') ||

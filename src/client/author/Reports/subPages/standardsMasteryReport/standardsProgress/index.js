@@ -7,6 +7,7 @@ import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
+import { TableContainer } from './components/styled'
 import SignedStackedBarChartContainer from './components/charts/SignedStackedBarChartContainer'
 import StandardsProgressTable from './components/table/StandardsProgressTable'
 
@@ -38,11 +39,13 @@ const StandardsProgress = ({
   userRole,
   sharedReport,
 }) => {
-  const sharedReportFilters = useMemo(
-    () =>
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
       sharedReport?._id
         ? { ...sharedReport.filters, reportId: sharedReport?._id }
         : null,
+      !!sharedReport?._id,
+    ],
     [sharedReport]
   )
   const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
@@ -158,7 +161,7 @@ const StandardsProgress = ({
           />
         </Row>
       </StyledCard>
-      <StyledCard>
+      <TableContainer>
         <StandardsProgressTable
           data={denormalizedTableData}
           testInfo={testInfo}
@@ -182,8 +185,10 @@ const StandardsProgress = ({
               tablePageSize: pageSize,
             })
           }
+          filters={settings.requestFilters}
+          isSharedReport={isSharedReport}
         />
-      </StyledCard>
+      </TableContainer>
     </div>
   )
 }

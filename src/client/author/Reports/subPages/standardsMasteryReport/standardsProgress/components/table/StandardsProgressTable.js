@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import next from 'immer'
-
+import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
 import BackendPagination from '../../../../../common/components/BackendPagination'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
@@ -51,6 +51,8 @@ const StandardsProgressTable = ({
   isCsvDownloading,
   backendPagination,
   setBackendPagination,
+  filters,
+  isSharedReport,
 }) => {
   const { analyseByData, compareByData } = tableFilterOptions
 
@@ -129,7 +131,16 @@ const StandardsProgressTable = ({
       fixed: 'left',
       sorter: (a, b) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
-      render: (data) => data || '-',
+      render: (data, record) =>
+        tableFilters.compareBy.key === 'student' && !isSharedReport ? (
+          <Link
+            to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
+          >
+            {data || '-'}
+          </Link>
+        ) : (
+          data || '-'
+        ),
     },
     ...(tableFilters.compareBy.key === 'student'
       ? compareByStudentsColumns

@@ -70,7 +70,7 @@
     "prettier:format": "yarn prettier --write \"src/**/*.js|src/**/*.ts\""
   },
   "dependencies": {
-    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#2d0ab5bcb21f6bf923f0747e7088ecef540579c0",
+    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#61964f56ab529a15f9c463088eb3130065627ca2",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",

@@ -47,6 +47,7 @@ import {
   captureSentryException,
   helpers,
   notification,
+  Effects,
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
 import { createGroupSummary } from './utils'
@@ -2946,7 +2947,11 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
-    yield takeEvery(UPDATE_TEST_DOC_BASED_REQUEST, updateTestDocBasedSaga),
+    yield Effects.throttleAction(
+      10000,
+      UPDATE_TEST_DOC_BASED_REQUEST,
+      updateTestDocBasedSaga
+    ),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(TEST_PUBLISH, publishTestSaga),

@@ -159,7 +159,6 @@ const AssignmentsClasses = ({
           }}
         >
           <TableData columns={columns} dataSource={data} pagination={false} />
-          {console.log(data, 'yesh')}
         </AssignmentsClassesContainer>
       ) : (
         ''

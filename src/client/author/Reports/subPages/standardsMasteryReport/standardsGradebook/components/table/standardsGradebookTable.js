@@ -35,11 +35,6 @@ export const GradebookTable = styled(StyledTable)`
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
-      }
       .ant-table-body {
         overflow-x: auto !important;
       }
@@ -462,7 +457,7 @@ const StandardsGradebookTableComponent = ({
             tableToRender={GradebookTable}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
-            scroll={{ x: 800 }}
+            scroll={{ x: 1350 }}
           />
         </Row>
       </StyledCard>

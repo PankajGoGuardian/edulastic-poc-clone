@@ -563,7 +563,7 @@ class TestList extends Component {
             <SearchModalContainer>
               <TestListFilters
                 isPlaylist
-                search={playListFilters}
+                search={{ ...playListFilters }}
                 handleLabelSearch={this.handleLabelSearch}
                 onChange={this.handleFiltersChange}
                 clearFilter={this.handleClearFilter}
@@ -591,7 +591,7 @@ class TestList extends Component {
                         />
                         <TestListFilters
                           isPlaylist
-                          search={playListFilters}
+                          search={{ ...playListFilters }}
                           handleLabelSearch={this.handleLabelSearch}
                           onChange={this.handleFiltersChange}
                           clearFilter={this.handleClearFilter}

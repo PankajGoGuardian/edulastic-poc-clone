@@ -58,6 +58,7 @@ import StandardProficiencyTable from './StandardProficiencyTable'
 import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
+import DetailsTooltip from '../../../../../AssignTest/components/Container/DetailsTooltip'
 
 const {
   settingCategories,

@@ -339,7 +339,7 @@ class App extends Component {
         localStorage.removeItem('thirdPartyOAuth')
         localStorage.removeItem('thirdPartyOAuthRedirectUrl')
         localStorage.removeItem('wpCId')
-        localStorage.removeItem('upAction')
+        localStorage.removeItem('wpAction')
         if (role === 'teacher') {
           if (
             user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
@@ -390,7 +390,7 @@ class App extends Component {
         localStorage.setItem('thirdPartyOAuth', 'wordpress')
         localStorage.setItem('thirdPartyOAuthRedirectUrl', redirectUrl)
         localStorage.setItem('wpCId', cId)
-        localStorage.setItem('upAction', action)
+        localStorage.setItem('wpAction', action)
       } else if (
         !(
           location.pathname.toLocaleLowerCase().includes('/getstarted') ||

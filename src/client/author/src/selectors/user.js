@@ -121,6 +121,13 @@ export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.itemBanks', [])
 )
 
+export const getSparkMathIdSelector = createSelector(
+  getOrgItemBanksSelector,
+  (state) => {
+    return state.find((item) => item.name === 'Spark Math')?._id || null
+  }
+)
+
 export const getUserSignupStatusSelector = createSelector(
   stateSelector,
   (state) => _get(state, 'signupStatus', '')

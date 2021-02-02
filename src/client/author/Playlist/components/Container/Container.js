@@ -31,6 +31,7 @@ import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  getSparkMathIdSelector,
 } from '../../../src/selectors/user'
 import CardWrapper from '../../../TestList/components/CardWrapper/CardWrapper'
 import {
@@ -85,6 +86,7 @@ import InputTag from '../../../ItemList/components/ItemFilter/SearchTag'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import SortMenu from '../../../ItemList/components/SortMenu'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
+import PlaylistAvailableModal from '../../playListAvailable/playListAvailableModal'
 
 function getUrlFilter(filter) {
   if (filter === 'AUTHORED_BY_ME') {
@@ -148,6 +150,10 @@ class TestList extends Component {
     return urlToPush
   }
 
+  showModal = () => {
+    this.setState({ isVisible: false })
+  }
+
   componentDidMount() {
     const {
       receivePlaylists,
@@ -163,11 +169,8 @@ class TestList extends Component {
       interestedGrades,
       sort: initSort = {},
       recentPlaylist,
+      sparkMathId,
     } = this.props
-
-    if (recentPlaylist.length < 1) {
-      this.setState({ isVisible: true })
-    }
 
     const {
       subject = interestedSubjects || [],
@@ -210,6 +213,13 @@ class TestList extends Component {
     receivePlaylists({ page: pageFinal, limit, search: searchFilters, sort })
     getAllTags({ type: 'playlist' })
     receiveRecentPlayLists()
+
+    if (
+      searchFilters.subject.includes('Mathematics') &&
+      searchFilters.collections.includes(sparkMathId) &&
+      !recentPlaylist.length
+    )
+      this.setState({ isVisible: true })
   }
 
   updateFilterState = (searchState, sort) => {
@@ -508,14 +518,6 @@ class TestList extends Component {
         toggleFilter={this.toggleFilter}
       />
     )
-    const Footer = (
-      <>
-        <EduButton data-cy="cancelButton" isGhost>
-          Cancel
-        </EduButton>
-        <EduButton data-cy="proceedButton">Proceed</EduButton>
-      </>
-    )
     return (
       <>
         <ListHeader
@@ -654,9 +656,10 @@ class TestList extends Component {
             </Main>
           </FlexContainer>
           <SelectCollectionModal contentType="PLAYLIST" />
-          <CustomModalStyled visible={isVisible} footer={Footer}>
-            <div>playlistAvailableModal</div>
-          </CustomModalStyled>
+          <PlaylistAvailableModal
+            isVisible={isVisible}
+            closeModal={this.showModal}
+          />
         </Container>
       </>
     )
@@ -685,6 +688,7 @@ const enhance = compose(
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
       recentPlaylist: getRecentPlaylistSelector(state),
+      sparkMathId: getSparkMathIdSelector(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

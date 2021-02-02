@@ -209,7 +209,7 @@ const StandardsProgressTable = ({
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
             tableToRender={StyledTable}
-            scroll={{ x: 1350 }}
+            scroll={{ x: '100%' }}
           />
         </Col>
         <Col span={24}>

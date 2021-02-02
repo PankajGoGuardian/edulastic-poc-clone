@@ -41,9 +41,11 @@ const SubscriptionHeader = ({
       '_blank'
     )
   }
+
   const multipleSubscriptionClick = () => {
     window.open('https://edulastic.com/teacher-premium/', '_blank')
   }
+
   const menu = (
     <Menu>
       <Menu.Item>
@@ -68,15 +70,8 @@ const SubscriptionHeader = ({
           onClick={handleEnterpriseClick}
         />
       </Menu.Item>
-      <Menu.Item>
-        <AuthorCompleteSignupButton
-          renderButton={(handleClick) => (
-            <span data-cy="multipleSubscription" onClick={handleClick}>
-              MULTIPLE SUBSCRIPTIONS
-            </span>
-          )}
-          onClick={multipleSubscriptionClick}
-        />
+      <Menu.Item onClick={multipleSubscriptionClick}>
+        <span data-cy="multipleSubscription">MULTIPLE SUBSCRIPTIONS</span>
       </Menu.Item>
     </Menu>
   )

@@ -151,7 +151,7 @@ const AssignmentsClasses = ({
   ]
   return (
     <>
-      {data.length && data.length > 0 ? (
+      {data.length > 0 && (
         <AssignmentsClassesContainer
           onClick={(e) => {
             e.preventDefault()
@@ -160,8 +160,6 @@ const AssignmentsClasses = ({
         >
           <TableData columns={columns} dataSource={data} pagination={false} />
         </AssignmentsClassesContainer>
-      ) : (
-        ''
       )}
     </>
   )

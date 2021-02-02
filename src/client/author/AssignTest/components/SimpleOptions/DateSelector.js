@@ -59,10 +59,10 @@ const DateSelector = ({
     <>
       {hasStartDate && (
         <StyledRow mb="15px" gutter={16}>
-          <StyledCol span={12}>
+          <StyledCol span={10}>
             <FieldLabel>{t('common.assignTest.openDateTitle')}</FieldLabel>
           </StyledCol>
-          <StyledCol span={12}>
+          <StyledCol span={14}>
             <Tooltip
               placement="top"
               title={
@@ -95,10 +95,10 @@ const DateSelector = ({
       )}
       {!!showDueDatePicker && (
         <StyledRow mb="15px" gutter={16}>
-          <StyledCol span={12}>
+          <StyledCol span={10}>
             <FieldLabel>{t('common.assignTest.dueDateTitle')}</FieldLabel>
           </StyledCol>
-          <StyledCol span={12}>
+          <StyledCol span={14}>
             <DatePickerStyled
               allowClear={false}
               data-cy="dueDate"
@@ -119,10 +119,10 @@ const DateSelector = ({
       )}
 
       <StyledRow mb="15px" gutter={16}>
-        <StyledCol span={12}>
+        <StyledCol span={10}>
           <FieldLabel>{t('common.assignTest.closeDateTitle')}</FieldLabel>
         </StyledCol>
-        <StyledCol span={12}>
+        <StyledCol span={14}>
           <DatePickerStyled
             allowClear={false}
             data-cy="closeDate"

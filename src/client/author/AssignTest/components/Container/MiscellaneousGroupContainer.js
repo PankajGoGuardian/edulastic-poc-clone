@@ -1,8 +1,7 @@
 import React from 'react'
-import { Row, Col, Radio, Tooltip } from 'antd'
+import { Row, Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
-import { lightGrey9 } from '@edulastic/colors'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -12,12 +11,10 @@ import {
   StyledRadioGroup,
   RadioWrapper,
   Title,
-  StyledInfoIcon,
 } from '../SimpleOptions/styled'
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
 import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
 import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
-import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import { SettingContainer } from './styled'
 
@@ -83,15 +80,10 @@ const MiscellaneousGroupContainer = ({
           premium={assessmentSuperPowersAnswerOnPaper}
         />
         <StyledRow gutter={16} mb="15p">
-          <Col span={12}>
-            <Label>
-              ANSWER ON PAPER
-              <DollarPremiumSymbol
-                premium={assessmentSuperPowersAnswerOnPaper}
-              />
-            </Label>
+          <Col span={10}>
+            <Label>ANSWER ON PAPER</Label>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <AlignSwitchRight
               disabled={
                 disableAnswerOnPaper ||
@@ -114,16 +106,13 @@ const MiscellaneousGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="Multi-Language"
-            content="Select ON , If you want to enable multiple languages for the test."
+            content="Select ON , If you want to enable multiple languages for the assignment."
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px" height="40">
             <Col span={12}>
               <Label>
                 <span>Multi-Language</span>
-                <Tooltip title="Select ON , If you want to enable multiple languages for the assignment.">
-                  <StyledInfoIcon color={lightGrey9} mL="15px" />
-                </Tooltip>
               </Label>
             </Col>
             <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -160,6 +149,7 @@ const MiscellaneousGroupContainer = ({
             setSettingsData={(val) => overRideSettings('performanceBand', val)}
             performanceBand={performanceBand}
             isFeatureAvailable={performanceBands}
+            fromAssignments
           />
         </DivBlock>
       </SettingContainer>
@@ -203,21 +193,17 @@ const MiscellaneousGroupContainer = ({
                         title={accessibilities[key]}
                         content={description}
                         premium={featuresAvailable[key]}
-                        placement="rightTop"
                       />
                       <StyledRow
                         key={accessibilities[key]}
                         style={{ width: '100%' }}
                       >
-                        <Col span={12}>
+                        <Col span={10}>
                           <span style={{ fontSize: 12, fontWeight: 600 }}>
                             {accessibilities[key]}
-                            <DollarPremiumSymbol
-                              premium={featuresAvailable[key]}
-                            />
                           </span>
                         </Col>
-                        <Col span={12}>
+                        <Col span={14}>
                           <StyledRadioGroup
                             disabled={freezeSettings || !featuresAvailable[key]}
                             onChange={(e) =>

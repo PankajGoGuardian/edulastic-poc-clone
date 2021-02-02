@@ -30,7 +30,6 @@ const StyledRadioBtn = styled(Radio)`
       box-shadow: none;
     }
     .ant-radio {
-      margin-right: 10px;
       & + span {
         font-size: ${(props) => props.labelFontSize || '12px'};
         padding: ${(props) => props.labelPadding || '0px 10px'};

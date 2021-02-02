@@ -59,6 +59,7 @@ import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
 import DetailsTooltip from '../../../../../AssignTest/components/Container/DetailsTooltip'
+import { StyledRow } from '../../../../../AssignTest/components/SimpleOptions/styled'
 
 const {
   settingCategories,
@@ -572,6 +573,11 @@ class Setting extends Component {
                             </SelectInputStyled>
                           </Col>
                         </Row>
+                        <Description>
+                          Designate what type of assignment you are delivering.
+                          You’ll be able to use these categories later to filter
+                          reports so make sure practice is set as practice.
+                        </Description>
                       </Body>
                     </Row>
                   </Block>
@@ -673,13 +679,11 @@ class Setting extends Component {
                           </Col>
                           <Col span={16}>
                             <Description>
-                              {'Control when class will be marked as Done. '}
-                              <BlueText>Automatically</BlueText>
-                              {
-                                ' when all students are graded and due date has passed OR '
-                              }
-                              <BlueText>Manually</BlueText>
-                              {' when you click the "Mark as Done" button.'}
+                              When an assignment is marked “Done”, data flows to
+                              the reports. Automatically will mark it as done
+                              when all students are graded and the due date has
+                              passed, OR choose Manually and select the Mark as
+                              Done button when ready.
                             </Description>
                           </Col>
                         </Row>
@@ -706,6 +710,10 @@ class Setting extends Component {
                           </RadioBtn>
                         ))}
                       </StyledRadioGroup>
+                      <Description>
+                        Decide what students immediately get to see upon
+                        submitting an assessment.
+                      </Description>
                     </Body>
                   </Block>
 
@@ -825,7 +833,7 @@ class Setting extends Component {
                             premium={assessmentSuperPowersTimedTest}
                           />
                         </span>
-                        <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
+                        <Tooltip title="Timed test allows you to control how long students have to take the test. When the time limit is reached, students will be locked out of the assessment. Choose the time and whether students can pause and continue later or if the test should be taken in a single sitting.">
                           <IconInfo
                             color={lightGrey9}
                             style={{ marginLeft: '10px', cursor: 'pointer' }}
@@ -897,78 +905,16 @@ class Setting extends Component {
                           </Col>
                         </Row>
                         <Description style={{ marginTop: '10px' }}>
-                          Select <BlueText> ON </BlueText>, If you want to set a
-                          time limit on the test. Adjust the minutes
-                          accordingly.
+                          Timed test allows you to control how long students
+                          have to take the test. When the time limit is reached,
+                          students will be locked out of the assessment. Choose
+                          the time and whether students can pause and continue
+                          later or if the test should be taken in a single
+                          sitting.
                         </Description>
                       </Body>
                     </SettingContainer>
                   </Block>
-
-                  {!isDocBased && (
-                    <Block
-                      id="check-answer-tries-per-question"
-                      smallSize={isSmallSize}
-                    >
-                      <SettingContainer>
-                        <Title>
-                          Check Answer Tries Per Question{' '}
-                          <DollarPremiumSymbol
-                            premium={assessmentSuperPowersCheckAnswerTries}
-                          />
-                        </Title>
-                        <Body smallSize={isSmallSize}>
-                          <Row gutter={24}>
-                            <Col span={12}>
-                              <TextInputStyled
-                                disabled={
-                                  !owner ||
-                                  !isEditable ||
-                                  !assessmentSuperPowersCheckAnswerTries
-                                }
-                                onChange={(e) =>
-                                  this.updateTestData('maxAnswerChecks')(
-                                    e.target.value
-                                  )
-                                }
-                                size="large"
-                                value={maxAnswerChecks}
-                                type="number"
-                                min={0}
-                                placeholder="Number of tries"
-                              />
-                            </Col>
-                          </Row>
-                          <Description>
-                            Control whether student can check in answer during
-                            attempt or not. Value mentioned will be equivalent
-                            to number of attempts allowed per student.
-                          </Description>
-                        </Body>
-                      </SettingContainer>
-                    </Block>
-                  )}
-                  {(userRole === roleuser.DISTRICT_ADMIN ||
-                    userRole === roleuser.SCHOOL_ADMIN) && (
-                    <Block id="test-content-visibility" smallSize={isSmallSize}>
-                      <Title>Item content visibility to Teachers</Title>
-                      <Body smallSize={isSmallSize}>
-                        <StyledRadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={this.updateFeatures(
-                            'testContentVisibility'
-                          )}
-                          value={testContentVisibility}
-                        >
-                          {testContentVisibilityTypes.map((item) => (
-                            <RadioBtn value={item.key} key={item.key}>
-                              {item.value}
-                            </RadioBtn>
-                          ))}
-                        </StyledRadioGroup>
-                      </Body>
-                    </Block>
-                  )}
 
                   <Block id="maximum-attempts-allowed">
                     <SettingContainer>
@@ -989,14 +935,80 @@ class Setting extends Component {
                           step={1}
                         />
                         <Description>
-                          Control the number of times a student can take the
-                          assignment.
+                          Select the number of times a student can attempt the
+                          test. Note, this can be overridden at a later time in
+                          the settings if necessary.
                         </Description>
                       </Body>
                     </SettingContainer>
                   </Block>
                 </>
               )}
+
+              {!isDocBased && (
+                <Block
+                  id="check-answer-tries-per-question"
+                  smallSize={isSmallSize}
+                >
+                  <SettingContainer>
+                    <Title>
+                      Check Answer Tries Per Question{' '}
+                      <DollarPremiumSymbol
+                        premium={assessmentSuperPowersCheckAnswerTries}
+                      />
+                    </Title>
+                    <Body smallSize={isSmallSize}>
+                      <Row gutter={24}>
+                        <Col span={12}>
+                          <TextInputStyled
+                            disabled={
+                              !owner ||
+                              !isEditable ||
+                              !assessmentSuperPowersCheckAnswerTries
+                            }
+                            onChange={(e) =>
+                              this.updateTestData('maxAnswerChecks')(
+                                e.target.value
+                              )
+                            }
+                            size="large"
+                            value={maxAnswerChecks}
+                            type="number"
+                            min={0}
+                            placeholder="Number of tries"
+                          />
+                        </Col>
+                      </Row>
+                      <Description>
+                        Allow students to check their answer before moving on to
+                        the next question. Enter the number of attempts allowed
+                        per question.
+                      </Description>
+                    </Body>
+                  </SettingContainer>
+                </Block>
+              )}
+
+              {(userRole === roleuser.DISTRICT_ADMIN ||
+                userRole === roleuser.SCHOOL_ADMIN) && (
+                <Block id="test-content-visibility" smallSize={isSmallSize}>
+                  <Title>Item content visibility to Teachers</Title>
+                  <Body smallSize={isSmallSize}>
+                    <StyledRadioGroup
+                      disabled={!owner || !isEditable}
+                      onChange={this.updateFeatures('testContentVisibility')}
+                      value={testContentVisibility}
+                    >
+                      {testContentVisibilityTypes.map((item) => (
+                        <RadioBtn value={item.key} key={item.key}>
+                          {item.value}
+                        </RadioBtn>
+                      ))}
+                    </StyledRadioGroup>
+                  </Body>
+                </Block>
+              )}
+
               <SettingsCategoryBlock id="anti-cheating">
                 <span>
                   Anti-Cheating <DollarPremiumSymbol premium={premium} />
@@ -1019,7 +1031,7 @@ class Setting extends Component {
                       <SettingContainer>
                         <Title>
                           <span>
-                            Shuffle Questions{' '}
+                            Shuffle Items{' '}
                             <DollarPremiumSymbol
                               premium={assessmentSuperPowersShuffleQuestions}
                             />
@@ -1045,91 +1057,7 @@ class Setting extends Component {
                       </SettingContainer>
                     </Block>
                   )}
-                  {premium && (
-                    <Block id="block-save-and-continue" smallSize={isSmallSize}>
-                      <Title>
-                        <span>ALLOW STUDENT TO SAVE AND CONTINUE LATER</span>
-                        <EduSwitchStyled
-                          disabled={!owner || !isEditable}
-                          checked={!blockSaveAndContinue}
-                          data-cy="bockSaveAndContinueSwitch"
-                          onChange={(v) =>
-                            this.updateTestData('blockSaveAndContinue')(!v)
-                          }
-                        />
-                      </Title>
-                      <Body smallSize={isSmallSize}>
-                        <Description>
-                          If <b>OFF</b> Will force the students to take the test
-                          in single sitting
-                        </Description>
-                      </Body>
-                    </Block>
-                  )}
 
-                  {premium && (
-                    <Block id="restrict-navigation-out" smallSize={isSmallSize}>
-                      <Title>Restrict Navigation Out of Test</Title>
-                      <Body smallSize={isSmallSize}>
-                        <Row>
-                          <Col span={11}>
-                            <StyledRadioGroup
-                              disabled={!owner || !isEditable}
-                              onChange={this.updateFeatures(
-                                'restrictNavigationOut'
-                              )}
-                              value={restrictNavigationOut || undefined}
-                            >
-                              <RadioBtn value={undefined} key="disabled">
-                                DISABLED
-                              </RadioBtn>
-                              <RadioBtn
-                                value="warn-and-report"
-                                key="warn-and-report"
-                              >
-                                WARN AND REPORT ONLY
-                              </RadioBtn>
-                              <RadioBtn
-                                value="warn-and-report-after-n-alerts"
-                                key="warn-and-report-after-n-alerts"
-                              >
-                                WARN AND BLOCK TEST AFTER{' '}
-                                <InputNumberStyled
-                                  size="small"
-                                  value={
-                                    restrictNavigationOut
-                                      ? restrictNavigationOutAttemptsThreshold
-                                      : undefined
-                                  }
-                                  min={1}
-                                  onChange={this.updateFeatures(
-                                    'restrictNavigationOutAttemptsThreshold'
-                                  )}
-                                  disabled={
-                                    !(
-                                      restrictNavigationOut ===
-                                      'warn-and-report-after-n-alerts'
-                                    ) ||
-                                    !owner ||
-                                    !isEditable
-                                  }
-                                />{' '}
-                                ALERTS
-                              </RadioBtn>
-                            </StyledRadioGroup>
-                          </Col>
-                          <Col span={13}>
-                            <Description>
-                              Students will be shown an alert if they navigate
-                              away from edulastic tab and if specific number of
-                              alerts exceeded, the assignment will be paused and
-                              the instructor will need to manually resume
-                            </Description>
-                          </Col>
-                        </Row>
-                      </Body>
-                    </Block>
-                  )}
                   {!isDocBased && (
                     <Block id="show-answer-choice" smallSize={isSmallSize}>
                       <SettingContainer>
@@ -1156,7 +1084,8 @@ class Setting extends Component {
                             {'If set to '}
                             <BlueText>ON</BlueText>, answer choices for multiple
                             choice and multiple select questions will be
-                            randomly shuffled for students.
+                            randomly shuffled for students. Text to speech does
+                            not work when the answer choices are shuffled.
                           </Description>
                         </Body>
                       </SettingContainer>
@@ -1167,7 +1096,7 @@ class Setting extends Component {
                     <SettingContainer>
                       <Row>
                         <Title>
-                          Require Password{' '}
+                          Test Password{' '}
                           <DollarPremiumSymbol
                             premium={assessmentSuperPowersRequirePassword}
                           />
@@ -1293,6 +1222,93 @@ class Setting extends Component {
                         </Body>
                       </Row>
                     </SettingContainer>
+                  </Block>
+
+                  <Block id="block-save-and-continue" smallSize={isSmallSize}>
+                    <Title>
+                      <span>Complete Test in One Sitting</span>
+                      <EduSwitchStyled
+                        disabled={!owner || !isEditable || !premium}
+                        checked={blockSaveAndContinue}
+                        data-cy="bockSaveAndContinueSwitch"
+                        onChange={(v) =>
+                          this.updateTestData('blockSaveAndContinue')(!v)
+                        }
+                      />
+                    </Title>
+                    <Body smallSize={isSmallSize}>
+                      <Description>
+                        If <b>ON</b>, then students will not be allowed to exit
+                        the test without submitting. In case they close the app
+                        they will be paused and the instructor will need to
+                        manually resume.
+                      </Description>
+                    </Body>
+                  </Block>
+
+                  <Block id="restrict-navigation-out" smallSize={isSmallSize}>
+                    <Title>Restrict Navigation Out of Test</Title>
+                    <Body smallSize={isSmallSize}>
+                      <Row>
+                        <Col span={11}>
+                          <StyledRadioGroup
+                            disabled={!owner || !isEditable || !premium}
+                            onChange={this.updateFeatures(
+                              'restrictNavigationOut'
+                            )}
+                            value={restrictNavigationOut || undefined}
+                          >
+                            <RadioBtn value={undefined} key="disabled">
+                              DISABLED
+                            </RadioBtn>
+                            <RadioBtn
+                              value="warn-and-report"
+                              key="warn-and-report"
+                            >
+                              WARN AND REPORT ONLY
+                            </RadioBtn>
+                            <RadioBtn
+                              value="warn-and-report-after-n-alerts"
+                              key="warn-and-report-after-n-alerts"
+                            >
+                              WARN AND BLOCK TEST AFTER{' '}
+                              <InputNumberStyled
+                                size="small"
+                                value={
+                                  restrictNavigationOut
+                                    ? restrictNavigationOutAttemptsThreshold
+                                    : undefined
+                                }
+                                min={1}
+                                onChange={this.updateFeatures(
+                                  'restrictNavigationOutAttemptsThreshold'
+                                )}
+                                disabled={
+                                  !(
+                                    restrictNavigationOut ===
+                                    'warn-and-report-after-n-alerts'
+                                  ) ||
+                                  !owner ||
+                                  !isEditable
+                                }
+                              />{' '}
+                              ALERTS
+                            </RadioBtn>
+                          </StyledRadioGroup>
+                        </Col>
+                        <Col span={13}>
+                          <Description>
+                            If <b>ON</b>, then students must take the test in
+                            full screen mode to prevent opening another browser
+                            window. The student will get an alert if they
+                            navigate out of full screen mode during the test. If
+                            the designated number of alerts are exceeded, the
+                            student’s assignment will be paused and the
+                            instructor will need to manually reset.
+                          </Description>
+                        </Col>
+                      </Row>
+                    </Body>
                   </Block>
 
                   <Block id="restrict-back-navigation" smallSize={isSmallSize}>
@@ -1466,12 +1482,58 @@ class Setting extends Component {
                         <Description>
                           Use this opinion if you are administering this
                           assessment on paper. If you use this opinion, you will
-                          have <br /> to manually grade student responses after
-                          the assessment is closed.
+                          have to manually grade student responses after the
+                          assessment is closed.
                         </Description>
                       </Body>
                     </SettingContainer>
                   </Block>
+
+                  {testType !== 'testlet' && !isDocBased && (
+                    <Block id="player-skin-type" smallSize={isSmallSize}>
+                      <Row>
+                        <Title>
+                          Student Player Skin{' '}
+                          <DollarPremiumSymbol premium={selectPlayerSkinType} />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Col span={12}>
+                            <SelectInputStyled
+                              data-cy="playerSkinType"
+                              value={
+                                playerSkinType ===
+                                playerSkinTypes.edulastic.toLowerCase()
+                                  ? edulastic
+                                  : playerSkinType
+                              }
+                              disabled={
+                                !owner || !isEditable || !selectPlayerSkinType
+                              }
+                              onChange={this.updateTestData('playerSkinType')}
+                              getPopupContainer={(trigger) =>
+                                trigger.parentNode
+                              }
+                            >
+                              {Object.keys(skinTypes).map((key) => (
+                                <Option key={key} value={key}>
+                                  {skinTypes[key]}
+                                </Option>
+                              ))}
+                            </SelectInputStyled>
+                          </Col>
+                          <Col span={24}>
+                            <Description>
+                              Teachers can change the look and feel of the
+                              assessments to more closely align with formats
+                              similar to state and nationally administered
+                              assessments. If you don’t see your state, select
+                              the generic option, Edulastic Test.
+                            </Description>
+                          </Col>
+                        </Body>
+                      </Row>
+                    </Block>
+                  )}
 
                   {/* Multi language start */}
                   {showMultiLangSelection && (
@@ -1528,39 +1590,6 @@ class Setting extends Component {
                     />
                   </Block>
 
-                  {testType !== 'testlet' && !isDocBased && (
-                    <Block id="player-skin-type" smallSize={isSmallSize}>
-                      <Row>
-                        <Title>
-                          Student Player Skin{' '}
-                          <DollarPremiumSymbol premium={selectPlayerSkinType} />
-                        </Title>
-                        <Body smallSize={isSmallSize}>
-                          <SelectInputStyled
-                            data-cy="playerSkinType"
-                            value={
-                              playerSkinType ===
-                              playerSkinTypes.edulastic.toLowerCase()
-                                ? edulastic
-                                : playerSkinType
-                            }
-                            disabled={
-                              !owner || !isEditable || !selectPlayerSkinType
-                            }
-                            onChange={this.updateTestData('playerSkinType')}
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                          >
-                            {Object.keys(skinTypes).map((key) => (
-                              <Option key={key} value={key}>
-                                {skinTypes[key]}
-                              </Option>
-                            ))}
-                          </SelectInputStyled>
-                        </Body>
-                      </Row>
-                    </Block>
-                  )}
-
                   <Block id="accessibility" smallSize={isSmallSize}>
                     <Title>
                       Accessibility <DollarPremiumSymbol premium={premium} />
@@ -1568,17 +1597,13 @@ class Setting extends Component {
                     <RadioWrapper
                       disabled={!owner || !isEditable}
                       style={{
-                        marginTop: '29px',
+                        marginTop: '20px',
                         marginBottom: 0,
                         flexDirection: 'row',
                       }}
                     >
                       {accessibilityData.map((o) => (
-                        <Row
-                          key={o.key}
-                          style={{ width: '100%' }}
-                          align="middle"
-                        >
+                        <StyledRow key={o.key} align="middle">
                           <Col span={12}>
                             <span
                               style={{
@@ -1612,7 +1637,7 @@ class Setting extends Component {
                               </RadioBtn>
                             </StyledRadioGroup>
                           </Col>
-                        </Row>
+                        </StyledRow>
                       ))}
                     </RadioWrapper>
                   </Block>

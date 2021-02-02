@@ -224,7 +224,7 @@ const PassageView = ({
           dangerouslySetInnerHTML={{ __html: item.instructorStimulus }}
         />
       )}
-       {!flowLayout && (
+      {!flowLayout && (
         <QuestionTitleWrapper>
           {item.heading && (
             <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />

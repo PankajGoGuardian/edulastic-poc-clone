@@ -340,9 +340,32 @@ class ClassQuestions extends Component {
   }
 
   showStudentWork = (testItem) => {
+    const testData = produce(testItem, (draft) => {
+      const { rows } = draft
+      if (!isEmpty(rows)) {
+        draft.rows = rows
+          .map((row) => {
+            let { widgets = [] } = row
+            widgets = widgets
+              .map((widget) => {
+                if (widget.type !== 'passage') {
+                  return widget
+                }
+                return null
+              })
+              .filter((x) => x)
+            if (!isEmpty(widgets)) {
+              return { ...row, widgets }
+            }
+            return null
+          })
+          .filter((x) => x)
+      }
+    })
+
     this.setState({
       showPlayerModal: true,
-      selectedTestItem: testItem,
+      selectedTestItem: testData,
     })
   }
 
@@ -479,7 +502,7 @@ class ClassQuestions extends Component {
           testletState: get(testActivity, 'userWork.testletState'),
           itemGroups: [{ items: [selectedTestItem] }],
         }
-      : { itemGroups: [{ items: [selectedTestItem] }] }
+      : { itemGroups: [{ items: [selectedTestItem] }], passages }
 
     let docBasedProps = {}
     if (testData.isDocBased) {

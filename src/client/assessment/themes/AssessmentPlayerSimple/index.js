@@ -330,7 +330,6 @@ const enhance = compose(
     (state, ownProps) => ({
       evaluation: state.evaluation,
       preview: state.view.preview,
-      questions: state.assessmentplayerQuestions.byId,
       settings: state.test.settings,
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
       zoomLevel: state.ui.zoomLevel,

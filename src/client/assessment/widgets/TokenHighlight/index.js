@@ -1,29 +1,15 @@
 import React, { Fragment, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import produce from 'immer'
 
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions'
 import { replaceVariables } from '../../utils/variables'
 import TokenHighlightPreview from './TokenHighlightPreview'
 import TokenHighlightEdit from './TokenHighlightEdit'
-import { changeDataToPreferredLanguage } from '../ClozeText/helpers'
 
 const TokenHighlight = (props) => {
-  const { view, preferredLanguage } = props
-  let { item } = props
-  if (
-    preferredLanguage !== 'en' &&
-    item?.languageFeatures?.[preferredLanguage]
-  ) {
-    item = produce(item, (draft) => {
-      changeDataToPreferredLanguage(
-        draft,
-        item.languageFeatures[preferredLanguage]
-      )
-    })
-  }
+  const { item, view } = props
   const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (

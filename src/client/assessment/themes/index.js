@@ -582,6 +582,7 @@ const AssessmentContainer = ({
     enableMagnifier,
     studentReportModal,
     hasDrawingResponse,
+    questions: questionsById,
     ...restProps,
   }
 

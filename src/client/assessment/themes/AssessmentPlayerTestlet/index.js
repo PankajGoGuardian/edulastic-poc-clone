@@ -166,7 +166,6 @@ export default connect(
   (state) => ({
     evaluation: state.evaluation,
     testActivityId: state.test ? state.test.testActivityId : '',
-    questions: state.assessmentplayerQuestions.byId,
     settings: state.test.settings,
     zoomLevel: state.ui.zoomLevel,
     selectedTheme: state.ui.selectedTheme,

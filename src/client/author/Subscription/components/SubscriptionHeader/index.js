@@ -14,6 +14,7 @@ import {
   ActionButtons,
   BannerContent,
   LearnMore,
+  PlanText,
 } from './styled'
 
 function formatDate(subEndDate) {
@@ -41,6 +42,10 @@ const SubscriptionHeader = ({
     )
   }
 
+  const multipleSubscriptionClick = () => {
+    window.open('https://edulastic.com/teacher-premium/', '_blank')
+  }
+
   const menu = (
     <Menu>
       <Menu.Item>
@@ -65,6 +70,9 @@ const SubscriptionHeader = ({
           onClick={handleEnterpriseClick}
         />
       </Menu.Item>
+      <Menu.Item onClick={multipleSubscriptionClick}>
+        <span data-cy="multipleSubscription">MULTIPLE SUBSCRIPTIONS</span>
+      </Menu.Item>
     </Menu>
   )
 
@@ -80,10 +88,10 @@ const SubscriptionHeader = ({
           </h2>
         </Title>
         <ActionButtons>
-          <span data-cy="yourPlanSubscription" className="plan">
+          <PlanText data-cy="yourPlanSubscription" className="plan">
             YOUR PLAN
-          </span>
-          <span data-cy="currentPlan" className="free">
+          </PlanText>
+          <PlanText data-cy="currentPlan" className="free">
             {isSubscribed && subType && licenseExpiryDate
               ? `${
                   subType === 'partial_premium'
@@ -91,7 +99,7 @@ const SubscriptionHeader = ({
                     : capitalize(subType.replace(/_/g, ' '))
                 } Version`
               : 'Free'}
-          </span>
+          </PlanText>
           {!showRenewalOptions && (
             <Dropdown
               getPopupContainer={(triggerNode) => triggerNode.parentNode}

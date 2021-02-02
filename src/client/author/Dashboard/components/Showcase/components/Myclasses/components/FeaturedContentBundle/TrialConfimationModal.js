@@ -15,27 +15,31 @@ const TrialConfirmationModal = ({
   const handleCloseModal = () => {
     showTrialSubsConfirmationAction(false)
   }
+  const { hasTrial, subEndDate } = showTrialConfirmationMessage
 
   return (
     <>
       <CustomModalStyled
         visible={visible}
-        title="Trial start confirmation"
+        title="Free Trial Started"
         onCancel={handleCloseModal}
+        width="675px"
         footer={[
           <>
             <EduButton
               data-cy="goToDashboard"
-              isBlue
               onClick={handleCloseModal}
+              width="180px"
+              height="45px"
             >
               Go To Dashboard
             </EduButton>
             {isTrialItemBank && (
               <EduButton
                 data-cy="goToItemBank"
-                isBlue
                 onClick={handleGoToCollectionClick}
+                width="180px"
+                height="45px"
               >
                 Go To {title}
               </EduButton>
@@ -49,7 +53,30 @@ const TrialConfirmationModal = ({
             <StyledSpin size="large" />
           </SpinContainer>
         )}
-        <p>{showTrialConfirmationMessage}</p>
+        <ModalBody>
+          {hasTrial === 'haveBothSparkAndPremiumTrial' ? (
+            <p>
+              Thanks for trying the Teacher Premium and additional Spark
+              content. Your subscription will expire on <b>{subEndDate}</b>.
+              After your trial ends upgrade for a full calendar year for just
+              $100 plus optional Spark premium contente that you choose to add
+              on.
+            </p>
+          ) : hasTrial === 'onlyPremiumTrial' ? (
+            <p>
+              Thanks for trying teacher premium. Your trial will expire on{' '}
+              <b>{subEndDate}</b>. After your trial ends, continue to use
+              teacher premium for a full calendar year for just $100.
+            </p>
+          ) : (
+            <p>
+              Thanks for trying premium Spark assessments and practice. Your
+              trial will expire on <b>{subEndDate}</b>. After your trial ends,
+              continue to use additional Spark content for a full calendar year
+              for just $100
+            </p>
+          )}
+        </ModalBody>
       </CustomModalStyled>
     </>
   )
@@ -57,6 +84,11 @@ const TrialConfirmationModal = ({
 
 export default TrialConfirmationModal
 
+const ModalBody = styled.div`
+  p {
+    font-weight: normal !important;
+  }
+`
 const SpinContainer = styled.div`
   position: absolute;
   width: 100%;

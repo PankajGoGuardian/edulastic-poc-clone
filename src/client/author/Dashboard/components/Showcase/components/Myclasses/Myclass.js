@@ -406,6 +406,7 @@ const MyClasses = ({
           toggleTrialModal={toggleTrialModal}
           handlePurchaseFlow={handlePurchaseFlow}
           showTrialButton={showTrialButton}
+          isPremiumUser={isPremiumUser}
         />
       )}
       {isTrialModalVisible && (

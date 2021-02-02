@@ -205,7 +205,7 @@ export function useFullScreenListener({
     if (document.fullscreenElement) {
       setInFullScreen(true)
     } else {
-      setInFullScreen(false)
+      setTimeout(() => setInFullScreen(false), 500)
     }
   }
 
@@ -260,7 +260,7 @@ function useFirestorePingsForNavigationCheck({
           return
         }
         const lastTime = d.data().lastUpdatedTime
-        console.info('now-lastTime', Date.now() - lastTime)
+
         if (Date.now() - lastTime >= 45 * 1000) {
           if (blockSaveAndContinue) {
             pauseAssignment({
@@ -298,7 +298,6 @@ export function FirestorePings({
   classId,
   assignmentId,
 }) {
-  console.log('testActivityId', testActivityId)
   useFirestorePingsForNavigationCheck({
     testActivityId,
     history,

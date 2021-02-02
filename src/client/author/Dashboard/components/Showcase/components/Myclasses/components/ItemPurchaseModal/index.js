@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
+import styled from 'styled-components'
+import { darkGrey2 } from '@edulastic/colors'
 import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton'
 
 const Footer = ({ handleTrial, handlePurchaseFlow }) => {
@@ -11,7 +13,8 @@ const Footer = ({ handleTrial, handlePurchaseFlow }) => {
           <EduButton
             data-cy="trialPurchase"
             isGhost
-            isBlue
+            width="180px"
+            height="45px"
             onClick={handleClick}
           >
             Try for free
@@ -21,7 +24,12 @@ const Footer = ({ handleTrial, handlePurchaseFlow }) => {
       />
       <AuthorCompleteSignupButton
         renderButton={(handleClick) => (
-          <EduButton data-cy="Purchase" isBlue onClick={handleClick}>
+          <EduButton
+            data-cy="Purchase"
+            width="180px"
+            height="45px"
+            onClick={handleClick}
+          >
             Purchase
           </EduButton>
         )}
@@ -48,7 +56,7 @@ const ItemPurchaseModal = ({
   return (
     <CustomModalStyled
       centered
-      title={title}
+      title={`${title} + Teacher Premium`}
       footer={
         <Footer
           handleTrial={handleTrial}
@@ -57,8 +65,11 @@ const ItemPurchaseModal = ({
       }
       visible={isVisible}
       onCancel={closeModal}
+      width="665px"
     >
-      <div dangerouslySetInnerHTML={{ __html: description }} />
+      <ModalBody>
+        <div dangerouslySetInnerHTML={{ __html: description }} />
+      </ModalBody>
     </CustomModalStyled>
   )
 }
@@ -71,3 +82,17 @@ ItemPurchaseModal.propTypes = {
 }
 
 export default ItemPurchaseModal
+
+const ModalBody = styled.div`
+  p {
+    font-size: 14px;
+    color: ${darkGrey2};
+    font-weight: normal !important;
+    margin-bottom: 20px !important;
+  }
+  img {
+    height: 30px;
+    width: auto;
+    margin: 0px 8px;
+  }
+`

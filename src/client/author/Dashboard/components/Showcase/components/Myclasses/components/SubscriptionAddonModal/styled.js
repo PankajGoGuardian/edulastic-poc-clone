@@ -1,14 +1,23 @@
+import { darkGrey2, lightBlue7, title } from '@edulastic/colors'
 import styled from 'styled-components'
 
 export const ModalBody = styled.div`
   font-size: 14px;
-  color: #304050;
-`
-export const ContentWrapper = styled.div`
-  width: 365px;
+  color: ${darkGrey2};
+  p {
+    font-weight: normal !important;
+  }
+  a {
+    color: ${lightBlue7};
+    font-weight: 600;
+  }
+  .priceCol {
+    color: ${title};
+    font-weight: 600;
+  }
 `
 export const AddonList = styled.div`
-  margin-top: 25px;
+  margin-top: 40px;
 `
 export const FlexRow = styled.div`
   display: flex;
@@ -17,6 +26,8 @@ export const FlexRow = styled.div`
   .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-checked) {
     & + .priceCol {
       text-decoration: line-through;
+      color: ${title};
+      opacity: 50%;
     }
   }
 `

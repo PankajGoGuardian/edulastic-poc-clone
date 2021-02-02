@@ -1022,14 +1022,10 @@ class QuadrantsMoreOptions extends Component {
         </Question>
 
         <Extras
-          isSection={false}
-          cleanSections={cleanSections}
           fillSections={fillSections}
+          cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
-        >
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
+        />
       </>
     )
   }

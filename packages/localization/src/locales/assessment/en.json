@@ -30,6 +30,7 @@
     "checkAnswer": "Check answer",
     "hint": "Hint",
     "addANewHint": "Add a new hint",
+    "addNewDistractor": "Add a new distractor",
     "enterHintForTheProblem": "Enter a hint for the problem",
     "options": {
       "preFilled": "Pre-Filled",

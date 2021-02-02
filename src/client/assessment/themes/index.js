@@ -27,6 +27,7 @@ import {
   notification,
   handleChromeOsSEB,
   FireBaseService,
+  useResources
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'

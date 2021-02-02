@@ -154,16 +154,15 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
           if (!err) {
             // here only the user'ids need to be passed for the API call, hence extracting only the user id's
             const userIds = validEmailIdsList.map((item) => item._id)
-
+            const isRevokeAccess =
+              subscriptionAction === radioButtonUserData.REVOKE
             upgradeUserSubscriptionAction({
+              ...(isRevokeAccess && { status: 0 }),
+              ...(!isRevokeAccess && { subType: 'premium' }),
               subStartDate: subStartDate.valueOf(),
               subEndDate: subEndDate.valueOf(),
               notes,
               userIds,
-              subType:
-                subscriptionAction === radioButtonUserData.UPGRADE
-                  ? 'premium'
-                  : 'free',
             })
           }
         }

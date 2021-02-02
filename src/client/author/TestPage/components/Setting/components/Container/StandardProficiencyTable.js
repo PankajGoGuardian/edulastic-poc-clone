@@ -5,6 +5,7 @@ import { get } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { StyledTable, Title } from './styled'
 
 const StandardProficiencyTable = ({
@@ -12,6 +13,8 @@ const StandardProficiencyTable = ({
   setSettingsData,
   standardGradingScale = {},
   disabled = false,
+  isFeatureAvailable = false,
+  fromAssignments = false,
 }) => {
   const handleProfileChange = (val) => {
     const selectedStandardData = standardsData.find((o) => o._id === val) ||
@@ -76,7 +79,12 @@ const StandardProficiencyTable = ({
           marginBottom: '10px',
         }}
       >
-        <span>Standard based grading scale</span>
+        <span>
+          Standard based grading scale{' '}
+          {!fromAssignments && (
+            <DollarPremiumSymbol premium={isFeatureAvailable} />
+          )}
+        </span>
         <SelectInputStyled
           style={{ width: '250px' }}
           value={selectedStandardData._id}

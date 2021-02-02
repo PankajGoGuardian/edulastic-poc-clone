@@ -161,7 +161,7 @@ const MiscellaneousGroupContainer = ({
           width={tootltipWidth}
           title="Standards Based Grading Scale"
           content="Standards based scales are set by district or school admins. Teachers can modify performance threshold scores for class assignments to track mastery by standards assessed."
-          premium
+          premium={premium}
           placement="rightBottom"
         />
         <DivBlock>
@@ -171,6 +171,8 @@ const MiscellaneousGroupContainer = ({
             setSettingsData={(val) =>
               overRideSettings('standardGradingScale', val)
             }
+            isFeatureAvailable={premium}
+            fromAssignments
           />
         </DivBlock>
       </SettingContainer>

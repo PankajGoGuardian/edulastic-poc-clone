@@ -1587,6 +1587,7 @@ class Setting extends Component {
                         this.updateTestData('standardGradingScale')(val)
                       }
                       disabled={!owner || !isEditable}
+                      isFeatureAvailable={premium}
                     />
                   </Block>
 

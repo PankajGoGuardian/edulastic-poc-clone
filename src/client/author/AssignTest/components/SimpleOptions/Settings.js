@@ -63,6 +63,7 @@ import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
 } from '../../../TestPage/ducks'
+import { getmultiLanguageEnabled } from '../../../ClassBoard/ducks'
 
 const completionTypeKeys = ['AUTOMATICALLY', 'MANUALLY']
 const {
@@ -111,6 +112,7 @@ const Settings = ({
   hideTestLevelOptions = false,
   hideClassLevelOptions = false,
   calculatorProvider,
+  lcbBultiLanguageEnabled,
 }) => {
   const [showPassword, setShowSebPassword] = useState(false)
   const [tempTestSettings, updateTempTestSettings] = useState({
@@ -324,6 +326,7 @@ const Settings = ({
     enableScratchpad = tempTestSettings.enableScratchpad,
     autoRedirect = false,
     autoRedirectSettings,
+    multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
   } = assignmentSettings
   const playerSkinType =
     assignmentSettings.playerSkinType || testSettings.playerSkinType
@@ -340,6 +343,9 @@ const Settings = ({
       )) ||
     calculatorKeys
 
+  const showMultiLangSelection = forClassLevel
+    ? lcbBultiLanguageEnabled
+    : !!testSettings.multiLanguageEnabled
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -631,6 +637,28 @@ const Settings = ({
           </FeaturesSwitch>
         )}
         {/* Answer on Paper */}
+
+        {/* Multi language */}
+        {showMultiLangSelection && !hideClassLevelOptions && (
+          <StyledRowSettings gutter={16}>
+            <Col span={12}>
+              <Label>Multi-Language</Label>
+            </Col>
+            <Col span={12}>
+              <AlignSwitchRight
+                data-cy="multi-language"
+                size="small"
+                defaultChecked={false}
+                disabled={freezeSettings || !premium}
+                checked={multiLanguageEnabled}
+                onChange={(value) =>
+                  overRideSettings('multiLanguageEnabled', value)
+                }
+              />
+            </Col>
+          </StyledRowSettings>
+        )}
+        {/* Multi language */}
 
         {/* Require Password */}
         {!hideClassLevelOptions && (
@@ -1175,6 +1203,7 @@ export default connect(
       : state?.tests?.entity?.summary?.totalItems,
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: getUserFeatures(state),
+    lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
   }),
   null
 )(withRouter(Settings))

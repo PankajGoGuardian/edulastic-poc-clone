@@ -420,6 +420,9 @@ export const getAllAssignmentsSelector = createSelector(
           ...(clazz.pauseAllowed !== undefined && !assignment.redir
             ? { pauseAllowed: clazz.pauseAllowed }
             : {}),
+          ...(clazz.multiLanguageEnabled && !assignment.redir
+            ? { multiLanguageEnabled: clazz.multiLanguageEnabled }
+            : {}),
         }))
       })
       .filter((assignment) => isLiveAssignment(assignment, classIds, userId))
@@ -460,6 +463,11 @@ export const assignmentsCountByFilerNameSelector = createSelector(
 export const getLoadAssignmentSelector = createSelector(
   stateSelector,
   (state) => state.loadAssignment
+)
+
+export const getSelectedLanguageSelector = createSelector(
+  stateSelector,
+  (state) => state.languagePreference
 )
 
 function isSEB() {
@@ -576,6 +584,7 @@ function* startAssignment({ payload }) {
       isPlaylist = false,
       studentRecommendation,
       safeBrowser,
+      languagePreference,
     } = payload
 
     if (safeBrowser && !isSEB()) {
@@ -638,13 +647,17 @@ function* startAssignment({ payload }) {
           isLoading: true,
         })
       )
-      const { _id } = yield testActivityApi.create({
+      const recommendationData = {
         groupId: classId,
         institutionId,
         groupType,
         testId,
         studentRecommendationId: studentRecommendation._id,
-      })
+      }
+      if (languagePreference) {
+        recommendationData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(recommendationData)
       testActivityId = _id
     } else if (isPlaylist && !assignmentId) {
       yield put(
@@ -653,24 +666,32 @@ function* startAssignment({ payload }) {
           isLoading: true,
         })
       )
-      const { _id } = yield testActivityApi.create({
+      const playListData = {
         playlistModuleId: isPlaylist.moduleId,
         playlistId: isPlaylist.playlistId,
         groupId: classId,
         institutionId,
         groupType,
         testId,
-      })
+      }
+      if (languagePreference) {
+        playListData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(playListData)
       testActivityId = _id
     } else {
       yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }))
-      const { _id } = yield testActivityApi.create({
+      const testData = {
         assignmentId,
         groupId: classId,
         institutionId,
         groupType,
         testId,
-      })
+      }
+      if (languagePreference) {
+        testData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(testData)
       testActivityId = _id
     }
 

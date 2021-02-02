@@ -1257,6 +1257,11 @@ export const showScoreSelector = createSelector(
   (state) => state.showScore
 )
 
+export const getmultiLanguageEnabled = createSelector(
+  stateClassResponseSelector,
+  (state) => state.data?.multiLanguageEnabled
+)
+
 export const getStudentResponseSelector = createSelector(
   stateStudentResponseSelector,
   (state) => state.data

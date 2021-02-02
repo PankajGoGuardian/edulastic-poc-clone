@@ -389,6 +389,7 @@ class Setting extends Component {
       instruction = '',
       testletConfig = {},
       enableSkipAlert = false,
+      multiLanguageEnabled,
     } = entity
 
     const breadcrumbData = [
@@ -476,7 +477,8 @@ class Setting extends Component {
         title: 'External Metadata',
       })
     }
-
+    const showMultiLangSelection =
+      isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />
@@ -885,6 +887,34 @@ class Setting extends Component {
                   </Body>
                 </Block>
               )}
+
+              {/* Multi language start */}
+              {showMultiLangSelection && (
+                <Block id="multi-language-enabled" smallSize={isSmallSize}>
+                  <Body>
+                    <Title>
+                      <span>Multi-Language</span>
+                      <EduSwitchStyled
+                        disabled={!owner || !isEditable}
+                        data-cy="multi-language-enabled"
+                        defaultChecked={multiLanguageEnabled}
+                        onChange={() =>
+                          this.updateTestData('multiLanguageEnabled')(
+                            !multiLanguageEnabled
+                          )
+                        }
+                      />
+                    </Title>
+                    <Body smallSize={isSmallSize}>
+                      <Description>
+                        Select <BlueText> ON </BlueText> , If you want to enable
+                        multiple languages for the test.
+                      </Description>
+                    </Body>
+                  </Body>
+                </Block>
+              )}
+              {/* Multi language Ends */}
 
               {!!availableFeatures.includes(
                 'assessmentSuperPowersRequirePassword'

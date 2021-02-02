@@ -210,4 +210,8 @@ module.exports = {
     casspp: 'casspp',
     testlet: 'testlet',
   },
+  languageCodes: {
+    ENGLISH: 'en',
+    SPANISH: 'es',
+  },
 }

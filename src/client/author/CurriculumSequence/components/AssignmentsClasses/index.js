@@ -151,7 +151,7 @@ const AssignmentsClasses = ({
   ]
   return (
     <>
-      {data.length ? (
+      {data.length && data.length > 0 ? (
         <AssignmentsClassesContainer
           onClick={(e) => {
             e.preventDefault()

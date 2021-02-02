@@ -105,12 +105,13 @@ const AutoRedirectGroupContainer = ({
         </StyledRow>
         {autoRedirect && (
           <>
-            <StyledRow>
+            <StyledRow gutter={16}>
               <StyledCol span={12}>
                 <Label>SCORE THRESHOLD</Label>
               </StyledCol>
               <StyledCol span={12}>
                 <InputNumber
+                  style={{ marginRight: '10px' }}
                   data-cy="auto-redirect-score-threshold"
                   min={1}
                   max={99}
@@ -119,12 +120,13 @@ const AutoRedirectGroupContainer = ({
                     handleAutoRedirectSettingsChange('scoreThreshold', value)
                   }
                 />
+                %
               </StyledCol>
             </StyledRow>
 
-            <StyledRow>
+            <StyledRow gutter={16}>
               <StyledCol span={12}>
-                <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
+                <Label>EXTRA ATTEMPTS ALLOWED</Label>
               </StyledCol>
               <StyledCol span={12}>
                 <InputNumber
@@ -139,7 +141,7 @@ const AutoRedirectGroupContainer = ({
               </StyledCol>
             </StyledRow>
 
-            <StyledRow>
+            <StyledRow gutter={16}>
               <StyledCol span={12}>
                 <Label>QUESTIONS DELIVERY</Label>
               </StyledCol>
@@ -194,9 +196,11 @@ const AutoRedirectGroupContainer = ({
           </>
         )}
       </SettingContainer>
-      <StyledRow>
-        Allow students to take the assignment multiple times to practice and
-        improve their learning
+      <StyledRow gutter={16}>
+        <StyledCol span={12}>
+          Allow students to take the assignment multiple times to practice and
+          improve their learning
+        </StyledCol>
       </StyledRow>
       {/* Auto Redirect */}
     </>

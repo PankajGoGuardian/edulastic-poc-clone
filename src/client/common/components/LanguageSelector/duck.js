@@ -53,14 +53,22 @@ export function* languageSaga() {
 }
 
 export const languageStateSelector = (state) => state.languages
+export const getUtaPeferredLanguage = (state) => state.test.languagePreference
 export const getCurrentLanguage = createSelector(
   languageStateSelector,
   getCurrentQuestionIdSelector,
   getUserRole,
   getUserPreferredLanguage,
-  (state, currentQuestionId, userRole, userPreferredLanguage) => {
+  getUtaPeferredLanguage,
+  (
+    state,
+    currentQuestionId,
+    userRole,
+    userPreferredLanguage,
+    utaPeferredLanguage
+  ) => {
     if (userRole === roleuser.STUDENT) {
-      return userPreferredLanguage || LANGUAGE_EN
+      return utaPeferredLanguage || userPreferredLanguage || LANGUAGE_EN
     }
     return state[currentQuestionId] || LANGUAGE_EN
   }

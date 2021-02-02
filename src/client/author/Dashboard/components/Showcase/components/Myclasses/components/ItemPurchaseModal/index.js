@@ -1,16 +1,32 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
+import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton'
 
 const Footer = ({ handleTrial, handlePurchaseFlow }) => {
   return (
     <>
-      <EduButton data-cy="trialPurchase" isGhost isBlue onClick={handleTrial}>
-        Try for free
-      </EduButton>
-      <EduButton data-cy="Purchase" isBlue onClick={handlePurchaseFlow}>
-        Purchase
-      </EduButton>
+      <AuthorCompleteSignupButton
+        renderButton={(handleClick) => (
+          <EduButton
+            data-cy="trialPurchase"
+            isGhost
+            isBlue
+            onClick={handleClick}
+          >
+            Try for free
+          </EduButton>
+        )}
+        onClick={handleTrial}
+      />
+      <AuthorCompleteSignupButton
+        renderButton={(handleClick) => (
+          <EduButton data-cy="Purchase" isBlue onClick={handleClick}>
+            Purchase
+          </EduButton>
+        )}
+        onClick={handlePurchaseFlow}
+      />
     </>
   )
 }

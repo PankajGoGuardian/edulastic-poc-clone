@@ -99,7 +99,7 @@ const SubscriptionHeader = ({
               placement="bottomRight"
               arrow
             >
-              <EduButton isBlue height="24px">
+              <EduButton data-cy="upgradeButton" isBlue height="24px">
                 Upgrade
               </EduButton>
             </Dropdown>

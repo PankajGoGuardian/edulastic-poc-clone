@@ -425,6 +425,7 @@ const SubscriptionMain = ({
                 </AddonDescription>
                 <AddonFooter>
                   <LearnMoreLink
+                    data-cy="LearnMore"
                     href={addonsData[index].learnMoreLinks}
                     target="_blank"
                     rel="noreferrer"
@@ -450,7 +451,9 @@ const SubscriptionMain = ({
                       {hasSparkMathTrialButton && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
-                            <span onClick={handleClick}>try</span>
+                            <span data-cy="trialPurchase" onClick={handleClick}>
+                              try
+                            </span>
                           )}
                           onClick={handleStartTrial}
                         />

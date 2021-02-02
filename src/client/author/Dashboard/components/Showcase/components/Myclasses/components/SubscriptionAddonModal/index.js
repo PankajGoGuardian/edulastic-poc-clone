@@ -1,3 +1,4 @@
+import { camelCase } from 'lodash'
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -134,21 +135,26 @@ const SubscriptionAddonModal = ({
             {itemBankPremium.map((item) => (
               <FlexRow key={item.id}>
                 <CheckboxLabel
-                  data-cy="sparkPremiumCheckbox"
+                  data-cy={`${camelCase(item.name)}Checkbox`}
                   value={item.price}
                   onChange={(e) => handleOnChange(e, item.id)}
                   checked={selectedProductIds.includes(item.id)}
                 >
                   {item.name}
                 </CheckboxLabel>
-                <span className="priceCol">${item.price}</span>
+                <span 
+                  className="priceCol" 
+                  data-cy={`${camelCase(item.name)}Price`}
+                >
+                  ${item.price}
+                </span>
               </FlexRow>
             ))}
           </AddonList>
           <Total>
             <FlexRow>
               <label>Total</label>
-              <span>${totalPrice}</span>
+              <span data-cy="TotalPrice">${totalPrice}</span>
             </FlexRow>
           </Total>
         </ContentWrapper>

@@ -2929,6 +2929,13 @@ function* getTestIdFromVersionIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err)
     console.error(err)
+    const errorMessage = 'Unable to retrieve test info.'
+    yield put(push('/author/tests'))
+    if (err.status === 403) {
+      notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })
+    } else {
+      notification({ msg: errorMessage })
+    }
   }
 }
 

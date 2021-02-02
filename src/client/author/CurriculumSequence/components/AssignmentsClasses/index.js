@@ -150,14 +150,21 @@ const AssignmentsClasses = ({
     },
   ]
   return (
-    <AssignmentsClassesContainer
-      onClick={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-      }}
-    >
-      <TableData columns={columns} dataSource={data} pagination={false} />
-    </AssignmentsClassesContainer>
+    <>
+      {data.length ? (
+        <AssignmentsClassesContainer
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
+        >
+          <TableData columns={columns} dataSource={data} pagination={false} />
+          {console.log(data, 'yesh')}
+        </AssignmentsClassesContainer>
+      ) : (
+        ''
+      )}
+    </>
   )
 }
 

@@ -1285,9 +1285,7 @@ class Setting extends Component {
                               ) : (
                                 <Description>
                                   Require your students to type a password when
-                                  opening the assessment. Password ensures that
-                                  your <br /> students can access this
-                                  assessment only in the classroom
+                                  opening the assessment.
                                 </Description>
                               )}
                             </Col>

@@ -301,12 +301,9 @@ const SubscriptionMain = ({
     setIsTrialModalVisible(true)
   }
 
-  // Show start premium trial button, if user is not premium and premium trial is not yet used.
-  const hasPremiumTrialButton = !isPremiumTrialUsed && !isPremiumUser
-
   // Show item bank trial button when item bank trial is not used yet and user is either premium
   // or hasn't used premium trial yet.
-  const hasSparkMathTrialButton =
+  const hasTrialButton =
     usedTrialItemBankId !== sparkMathItemBankId &&
     !isPaidSparkMath &&
     (!isPremiumTrialUsed || isPremiumUser)
@@ -370,7 +367,7 @@ const SubscriptionMain = ({
                 Renew Subscription
               </EduButton>
             )}
-            {hasPremiumTrialButton && (
+            {hasTrialButton && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -448,7 +445,7 @@ const SubscriptionMain = ({
                           onClick={handleSparkMathClick}
                         />
                       )}
-                      {hasSparkMathTrialButton && (
+                      {hasTrialButton && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <span data-cy="trialPurchase" onClick={handleClick}>

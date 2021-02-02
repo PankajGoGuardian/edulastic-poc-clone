@@ -186,7 +186,7 @@ const AntiCheatingGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title="REQUIRE PASSWORD"
-          content="Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
+          content="Require your students to type a password when opening the assessment."
           premium={assessmentSuperPowersRequirePassword}
         />
         <StyledRow gutter={16} mb="15px">

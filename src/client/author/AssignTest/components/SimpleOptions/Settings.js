@@ -350,7 +350,7 @@ const Settings = ({
         <SettingContainer>
           <DetailsTooltip
             title="REQUIRE PASSWORD"
-            content="Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
+            content="Require your students to type a password when opening the assessment."
             premium={assessmentSuperPowersRequirePassword}
           />
           <StyledRow gutter={16} mb="15px">
@@ -546,6 +546,7 @@ const Settings = ({
                 </StyledCol>
                 <StyledCol span={12}>
                   <InputNumber
+                    style={{ marginRight: '10px' }}
                     data-cy="auto-redirect-score-threshold"
                     min={1}
                     max={99}
@@ -554,12 +555,13 @@ const Settings = ({
                       handleAutoRedirectSettingsChange('scoreThreshold', value)
                     }
                   />
+                  %
                 </StyledCol>
               </StyledRow>
 
               <StyledRow gutter={16}>
                 <StyledCol span={12}>
-                  <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
+                  <Label>EXTRA ATTEMPTS ALLOWED</Label>
                 </StyledCol>
                 <StyledCol span={12}>
                   <InputNumber

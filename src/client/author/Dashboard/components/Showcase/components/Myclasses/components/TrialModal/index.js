@@ -1,14 +1,17 @@
 import React, { useState, useMemo } from 'react'
-import {
-  CheckboxLabel,
-  CustomModalStyled,
-  EduButton,
-  FlexContainer,
-} from '@edulastic/common'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { groupBy, map, camelCase } from 'lodash'
+import {
+  Description,
+  FlexRow,
+  FooterText,
+  ModalBody,
+  Price,
+  StyledCheckbox,
+  TrialContainer,
+} from './styled'
 
 const TrialModal = ({
   addOnProductIds = [],
@@ -57,13 +60,21 @@ const TrialModal = ({
 
   const Footer = (
     <>
-      <EduButton data-cy="cancelButton" isGhost onClick={closeModal}>
+      <EduButton
+        width="180px"
+        height="45px"
+        data-cy="cancelButton"
+        isGhost
+        onClick={closeModal}
+      >
         Cancel
       </EduButton>
       <EduButton
         disabled={isProceedDisabled}
         data-cy="proceedButton"
         onClick={onProceed}
+        width="180px"
+        height="45px"
       >
         Proceed
       </EduButton>
@@ -74,16 +85,17 @@ const TrialModal = ({
     <>
       {itemBankPremium.map((item) => (
         <TrialContainer>
-          <StyledCheckbox
-            data-cy={`${camelCase(item.name)}TrialCheckbox`}
-            defaultChecked
-            onChange={handleOnChange(item.id)}
-          />
-          <div>
-            <p>{item.name} TRIAL </p>{' '}
-            <Description>{item.description}</Description>
-          </div>
-          <Description>{`$${item.price} ($0 today)`}</Description>
+          <FlexRow>
+            <StyledCheckbox
+              data-cy={`${camelCase(item.name)}TrialCheckbox`}
+              defaultChecked
+              onChange={handleOnChange(item.id)}
+            >
+              {item.name} TRIAL
+            </StyledCheckbox>
+            <Price>{`$${item.price} ($0 today)`}</Price>
+          </FlexRow>
+          <Description>{item.description}</Description>
         </TrialContainer>
       ))}
     </>
@@ -92,18 +104,19 @@ const TrialModal = ({
   const NonPremium = teacherPremium.length && (
     <>
       <TrialContainer>
-        <Tooltip title="Premium subscription is mandatory for Spark content">
-          <StyledCheckbox
-            data-cy="teacherPremiumTrialCheckbox"
-            checked
-            disabled
-          />
-        </Tooltip>
-        <div>
-          <p>{teacherPremium[0].name} TRIAL </p>
-          <Description>{teacherPremium[0].description}</Description>
-        </div>
-        <Description>{`$${teacherPremium[0].price} ($0 today)`}</Description>
+        <FlexRow>
+          <Tooltip title="Premium subscription is mandatory for Spark content">
+            <StyledCheckbox
+              data-cy="teacherPremiumTrialCheckbox"
+              checked
+              disabled
+            >
+              {teacherPremium[0].name} TRIAL
+            </StyledCheckbox>
+          </Tooltip>
+          <Price>{`$${teacherPremium[0].price} ($0 today)`}</Price>
+        </FlexRow>
+        <Description>{teacherPremium[0].description}</Description>
       </TrialContainer>
       {Premium}
     </>
@@ -123,26 +136,28 @@ const TrialModal = ({
       footer={Footer}
       visible={isVisible}
       onCancel={closeModal}
+      modalWidth="510px"
+      width="510px"
     >
-      {hasPremiumTrialIncluded ? (
-        <p>
-          {`Experience the additional features of Edulastic Teacher Premium for 14
-          days: read-aloud for students, extra test security settings, easier
-          collaboration, in-depth reports and more.`}
-        </p>
-      ) : (
-        <p>
-          {`Access premium assessments and practice for the subjects you teach for
-          the next 14 days.`}
-        </p>
-      )}
+      <ModalBody>
+        {hasPremiumTrialIncluded ? (
+          <p>
+            Experience the additional features of Edulastic Teacher Premium for
+            14 days: read-loud for students, extra test security settings,
+            easier collaboration, in-depth reports and more.
+          </p>
+        ) : (
+          <p>
+            Access premium assessments and practice for the subjects you teach
+            for the next 14 days.
+          </p>
+        )}
+      </ModalBody>
 
       <FlexContainer flexDirection="column" justifyContent="left" mt="20px">
         {modalContent()}
       </FlexContainer>
-      <FooterText>
-        <b>No credit card required now!</b>
-      </FooterText>
+      <FooterText>No credit card required now!</FooterText>
     </CustomModalStyled>
   )
 }
@@ -158,45 +173,3 @@ TrialModal.propTypes = {
 }
 
 export default TrialModal
-
-const StyledCheckbox = styled(CheckboxLabel)`
-  margin: 10px 0px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: unset;
-  display: flex;
-  align-items: flex-start;
-  .ant-checkbox {
-    margin-top: 5px;
-    & + span {
-      width: 100%;
-    }
-  }
-`
-const Description = styled.span`
-  display: block;
-  color: #666666;
-  text-transform: initial;
-`
-const TrialContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content:space-between;
-  margin-top:10px;
-  & > div {
-    width:75%;
-    margin-top: 10px;
-    margin-left:15px;
-    font-size: 12px;
-    color: #666666;
-    font-weight::bold;
-  }
-  & > span {
-    font-weight: bold;
-    white-space: nowrap;
-    color: #666666;
-  }
-`
-const FooterText = styled.p`
-  margin-top: 30px;
-`

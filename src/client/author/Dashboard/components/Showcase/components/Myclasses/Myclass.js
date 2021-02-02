@@ -69,6 +69,8 @@ const MyClasses = ({
   products,
   isPaymentServiceModalVisible,
   setPaymentServiceModal,
+  showHeaderTrialModal,
+  setShowHeaderTrialModal,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -409,15 +411,16 @@ const MyClasses = ({
           isPremiumUser={isPremiumUser}
         />
       )}
-      {isTrialModalVisible && (
+      {(isTrialModalVisible || showHeaderTrialModal) && (
         <TrialModal
-          addOnProductIds={[productData.productId]}
-          isVisible={isTrialModalVisible}
+          addOnProductIds={[isTrialModalVisible && productData.productId]}
+          isVisible={isTrialModalVisible || showHeaderTrialModal}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
           products={products}
+          setShowHeaderTrialModal={setShowHeaderTrialModal}
         />
       )}
       {showUpgradeModal && (
@@ -485,6 +488,7 @@ export default compose(
       products: state.subscription?.products,
       isPaymentServiceModalVisible:
         state.subscription?.isPaymentServiceModalVisible,
+      showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -498,6 +502,7 @@ export default compose(
       showTrialSubsConfirmationAction:
         slice.actions.trialSubsConfirmationAction,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
+      setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
     }
   )
 )(MyClasses)

@@ -4,7 +4,8 @@ import styled from 'styled-components'
 import { CheckboxLabel, CustomModalStyled, EduButton } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import { title } from '@edulastic/colors'
-import { ModalBody, AddonList, FlexRow, Total, ContentWrapper } from './styled'
+import { camelCase } from 'lodash'
+import { ModalBody, AddonList, FlexRow, Total } from './styled'
 
 const getInitialSelectedProductIds = ({
   defaultSelectedProductIds,
@@ -90,19 +91,23 @@ const SubscriptionAddonModal = ({
         <EduButton
           data-cy="proceedPayment"
           disabled={totalPrice === 0}
-          isBlue
           onClick={handleClick}
+          width="220px"
+          height="45px"
         >
           PROCEED WITH PAYMENT
         </EduButton>,
       ]}
       visible={isVisible}
       onCancel={handleCloseModal}
+      modalWidth="510px"
+      width="510px"
     >
       <ModalBody>
         <p>
           The Spark addons bundle premium content with some exciting software
-          features to make it super easy for you to use.{' '}
+          features to make it super easy for you to use.
+          <br />
           <a
             href="https://edulastic.com/spark-math/"
             target="_blank"
@@ -114,44 +119,49 @@ const SubscriptionAddonModal = ({
           to learn more.
         </p>
         <p> These addons need the premium or enterprise subscription.</p>
-        <ContentWrapper>
-          <AddonList>
-            {!isPaidPremium && (
-              <FlexRow>
-                <Tooltip title="Premium subscription is mandatory for Spark content">
-                  <StyledCheckbox
-                    data-cy="teacherPremiumCheckbox"
-                    checked
-                    disabled
-                  >
-                    {teacherPremium.name}
-                  </StyledCheckbox>
-                </Tooltip>
-
-                <span>${teacherPremium.price}</span>
-              </FlexRow>
-            )}
-            {itemBankPremium.map((item) => (
-              <FlexRow key={item.id}>
-                <CheckboxLabel
-                  data-cy="sparkPremiumCheckbox"
-                  value={item.price}
-                  onChange={(e) => handleOnChange(e, item.id)}
-                  checked={selectedProductIds.includes(item.id)}
-                >
-                  {item.name}
-                </CheckboxLabel>
-                <span className="priceCol">${item.price}</span>
-              </FlexRow>
-            ))}
-          </AddonList>
-          <Total>
+        <AddonList>
+          {!isPaidPremium && (
             <FlexRow>
-              <label>Total</label>
-              <span>${totalPrice}</span>
+              <Tooltip title="Premium subscription is mandatory for Spark content">
+                <StyledCheckbox
+                  data-cy="teacherPremiumCheckbox"
+                  checked
+                  disabled
+                >
+                  {teacherPremium.name}
+                </StyledCheckbox>
+              </Tooltip>
+
+              <span className="priceCol">${teacherPremium.price}</span>
             </FlexRow>
-          </Total>
-        </ContentWrapper>
+          )}
+          {itemBankPremium.map((item) => (
+            <FlexRow key={item.id}>
+              <CheckboxLabel
+                data-cy={`${camelCase(item.name)}Checkbox`}
+                value={item.price}
+                onChange={(e) => handleOnChange(e, item.id)}
+                checked={selectedProductIds.includes(item.id)}
+              >
+                {item.name}
+              </CheckboxLabel>
+              <span
+                className="priceCol"
+                data-cy={`${camelCase(item.name)}Price`}
+              >
+                ${item.price}
+              </span>
+            </FlexRow>
+          ))}
+        </AddonList>
+        <Total>
+          <FlexRow>
+            <label>Total</label>
+            <span data-cy="TotalPrice" className="priceCol">
+              ${totalPrice}
+            </span>
+          </FlexRow>
+        </Total>
       </ModalBody>
     </CustomModalStyled>
   )

@@ -111,9 +111,10 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       key: 'handle-payment',
     })
     yield put(
-      slice.actions.trialConfirmationMessageAction(
-        `Thanks for trying teacher premium. Your trial will expire on ${formatSubEndDate}. After your trial ends, continue to use teacher premium for a full calendar year for just $100.`
-      )
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'onlyPremiumTrial',
+        subEndDate: formatSubEndDate,
+      })
     )
   } else if (hasItemBankPermissions && !hasSubscriptions) {
     const { subEndDate } = itemBankPermissions[0]
@@ -125,9 +126,10 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       key: 'handle-payment',
     })
     yield put(
-      slice.actions.trialConfirmationMessageAction(
-        `Thanks for trying premium Spark assessments and practice. Your trial will expire on ${formatSubEndDate}. After your trial ends, continue to use additional Spark content for a full calendar year for just $100`
-      )
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'onlySparkTrial',
+        subEndDate: formatSubEndDate,
+      })
     )
   } else if (hasItemBankPermissions && hasSubscriptions) {
     const { subEndDate } = subscriptions
@@ -140,9 +142,10 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       key: 'handle-payment',
     })
     yield put(
-      slice.actions.trialConfirmationMessageAction(
-        `Thanks for trying Teacher Premium and additional Spark content. Your subscription will expire on ${formatSubEndDate}. After your trial ends upgrade for a full calendar year for just $100 plus optional Spark premium content that you choose to add on.`
-      )
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'haveBothSparkAndPremiumTrial',
+        subEndDate: formatSubEndDate,
+      })
     )
   }
 }

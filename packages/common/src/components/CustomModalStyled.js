@@ -19,7 +19,7 @@ const StyledModal = styled(Modal)`
   top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
     background: ${white};
-    padding: ${(props) => props.padding || '25px'};
+    padding: ${(props) => props.padding || '25px 45px'};
     .ant-modal-close {
       color: ${title};
       top: 10px;

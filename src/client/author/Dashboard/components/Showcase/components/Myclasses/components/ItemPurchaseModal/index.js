@@ -46,6 +46,7 @@ const ItemPurchaseModal = ({
   toggleModal,
   toggleTrialModal,
   handlePurchaseFlow,
+  isPremiumUser,
 }) => {
   const closeModal = () => toggleModal(false)
   const handleTrial = () => {
@@ -53,10 +54,12 @@ const ItemPurchaseModal = ({
     toggleTrialModal(true)
   }
 
+  const modalTitle = `${title} ${!isPremiumUser ? '+ Teacher Premium' : ''}`
+
   return (
     <CustomModalStyled
       centered
-      title={`${title} + Teacher Premium`}
+      title={modalTitle}
       footer={
         <Footer
           handleTrial={handleTrial}

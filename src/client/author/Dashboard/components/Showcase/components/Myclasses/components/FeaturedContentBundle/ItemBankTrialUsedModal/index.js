@@ -9,7 +9,12 @@ const Footer = ({
 }) => {
   return (
     <>
-      <EduButton data-cy="itemBankTrialUsedCloseModal" isGhost isBlue onClick={handleCloseModal}>
+      <EduButton
+        data-cy="itemBankTrialUsedCloseModal"
+        isGhost
+        isBlue
+        onClick={handleCloseModal}
+      >
         Cancel
       </EduButton>
       <EduButton data-cy="Purchase" isBlue onClick={handlePurchaseFlow}>

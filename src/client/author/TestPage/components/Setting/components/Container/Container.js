@@ -144,21 +144,15 @@ class Setting extends Component {
   }
 
   componentDidMount = () => {
-    const {
-      entity,
-      isAuthorPublisher,
-      resetUpdatedState,
-      editEnable,
-    } = this.props
+    const { entity, isAuthorPublisher, resetUpdatedState } = this.props
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
     }
     if (isAuthorPublisher) {
       this.updateTestData('testType')(ASSESSMENT)
     }
-    if (entity?.status === 'published' && !editEnable) {
-      resetUpdatedState()
-    }
+    // resetting updated state on mount
+    resetUpdatedState()
   }
 
   handleShowPassword = () => {

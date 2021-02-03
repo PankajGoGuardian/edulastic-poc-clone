@@ -31,7 +31,7 @@ const SubscriptionHeader = ({
   setShowSubscriptionAddonModal,
   isPaidPremium,
   hasAllPremiumProductAccess,
-  isPremiumUser,
+  isPremium,
 }) => {
   const handlePurchaseFlow = () => {
     setShowSubscriptionAddonModal(true)
@@ -123,14 +123,14 @@ const SubscriptionHeader = ({
       </HeaderSubscription>
       <BannerContent>
         <h3>
-          {isPremiumUser ? (
+          {isPremium ? (
             <span>You are on the Premium Plan</span>
           ) : (
             <span>There&apos;s a lot more in premium!</span>
           )}
         </h3>
         <p>
-          {isPremiumUser
+          {isPremium
             ? `This plan expires on ${licenseExpiryDate}`
             : `Upgrade to teacher premium for additional features, including:`}
         </p>

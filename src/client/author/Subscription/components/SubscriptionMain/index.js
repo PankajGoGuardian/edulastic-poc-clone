@@ -53,6 +53,7 @@ import {
   AddonFooter,
   PurchaseLink,
   LearnMoreLink,
+  HaveLicenseKey,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -196,7 +197,6 @@ const PlansComponent = ({
 )
 
 const SubscriptionMain = ({
-  user,
   openPaymentServiceModal,
   openPurchaseLicenseModal,
   isPremiumTrialUsed,
@@ -212,6 +212,9 @@ const SubscriptionMain = ({
   sparkMathProductId,
   sparkMathItemBankId,
   setShowItemBankTrialUsedModal,
+  openHasLicenseKeyModal,
+  isPremiumUser,
+  isPremium,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -224,7 +227,6 @@ const SubscriptionMain = ({
     })?.length
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
-  const isPremiumUser = user.features.premium
 
   const handleSelectStateModal = () => setShowSelectStates(true)
 
@@ -329,6 +331,14 @@ const SubscriptionMain = ({
               />
             )}
           </FlexContainer>
+          {!isPremium && (
+            <HaveLicenseKey
+              data-cy="subscriptionHaveLicenseKey"
+              onClick={openHasLicenseKeyModal}
+            >
+              HAVE LICENSE KEY
+            </HaveLicenseKey>
+          )}
         </ContentCards>
       </ContentSection>
       {isTrialModalVisible && (
@@ -345,7 +355,7 @@ const SubscriptionMain = ({
       <AddonSection>
         <SectionContainer>
           <SectionTitle>
-            {isPremiumUser
+            {isPremium
               ? 'Add ons for your Premium Version'
               : 'Premium addons to make it even better'}
           </SectionTitle>

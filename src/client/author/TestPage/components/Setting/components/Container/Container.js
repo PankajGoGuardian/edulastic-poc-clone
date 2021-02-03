@@ -645,52 +645,6 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
                   {/* Add instruction ends */}
-
-                  <Block id="mark-as-done" smallSize={isSmallSize}>
-                    <SettingContainer>
-                      <Title>
-                        Mark as Done{' '}
-                        <DollarPremiumSymbol
-                          premium={assessmentSuperPowersMarkAsDone}
-                        />
-                      </Title>
-                      <Body smallSize={isSmallSize}>
-                        <Row type="flex" align="middle">
-                          <Col span={8}>
-                            <StyledRadioGroup
-                              disabled={
-                                !owner ||
-                                !isEditable ||
-                                !assessmentSuperPowersMarkAsDone
-                              }
-                              onChange={this.updateFeatures('markAsDone')}
-                              value={markAsDone}
-                            >
-                              {Object.keys(completionTypes).map((item) => (
-                                <RadioBtn
-                                  value={completionTypes[item]}
-                                  key={completionTypes[item]}
-                                  data-cy={`mark-as-done-${completionTypes[item]}`}
-                                >
-                                  {completionTypes[item]}
-                                </RadioBtn>
-                              ))}
-                            </StyledRadioGroup>
-                          </Col>
-                          <Col span={16}>
-                            <Description>
-                              When an assignment is marked “Done”, data flows to
-                              the reports. Automatically will mark it as done
-                              when all students are graded and the due date has
-                              passed, OR choose Manually and select the Mark as
-                              Done button when ready.
-                            </Description>
-                          </Col>
-                        </Row>
-                      </Body>
-                    </SettingContainer>
-                  </Block>
-
                   <Block id="release-scores" smallSize={isSmallSize}>
                     <Title>
                       Release Scores{' '}
@@ -715,49 +669,6 @@ class Setting extends Component {
                         submitting an assessment.
                       </Description>
                     </Body>
-                  </Block>
-
-                  <Block id="show-calculator" smallSize={isSmallSize}>
-                    <SettingContainer>
-                      <Title>
-                        Show Calculator{' '}
-                        <DollarPremiumSymbol
-                          premium={assessmentSuperPowersShowCalculator}
-                        />
-                      </Title>
-                      <Body smallSize={isSmallSize}>
-                        <Row>
-                          <Col span={8}>
-                            <StyledRadioGroup
-                              disabled={
-                                !owner ||
-                                !isEditable ||
-                                !assessmentSuperPowersShowCalculator
-                              }
-                              onChange={this.updateFeatures('calcType')}
-                              value={calcType}
-                            >
-                              {calculatorKeysAvailable.map((item) => (
-                                <RadioBtn
-                                  data-cy={item}
-                                  value={item}
-                                  key={item}
-                                >
-                                  {calculators[item]}
-                                </RadioBtn>
-                              ))}
-                            </StyledRadioGroup>
-                          </Col>
-                          <Col span={16}>
-                            <Description>
-                              Choose if student can use a calculator, also
-                              select the type of calculator that would be shown
-                              to the students.
-                            </Description>
-                          </Col>
-                        </Row>
-                      </Body>
-                    </SettingContainer>
                   </Block>
 
                   <Block id="evaluation-method" smallSize={isSmallSize}>
@@ -817,6 +728,94 @@ class Setting extends Component {
                               (applicable only for multiple selection question
                               and multi part question with multiple selection
                               widgets)
+                            </Description>
+                          </Col>
+                        </Row>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+
+                  <Block id="mark-as-done" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        Mark as Done{' '}
+                        <DollarPremiumSymbol
+                          premium={assessmentSuperPowersMarkAsDone}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row type="flex" align="middle">
+                          <Col span={8}>
+                            <StyledRadioGroup
+                              disabled={
+                                !owner ||
+                                !isEditable ||
+                                !assessmentSuperPowersMarkAsDone
+                              }
+                              onChange={this.updateFeatures('markAsDone')}
+                              value={markAsDone}
+                            >
+                              {Object.keys(completionTypes).map((item) => (
+                                <RadioBtn
+                                  value={completionTypes[item]}
+                                  key={completionTypes[item]}
+                                  data-cy={`mark-as-done-${completionTypes[item]}`}
+                                >
+                                  {completionTypes[item]}
+                                </RadioBtn>
+                              ))}
+                            </StyledRadioGroup>
+                          </Col>
+                          <Col span={16}>
+                            <Description>
+                              When an assignment is marked “Done”, data flows to
+                              the reports. Automatically will mark it as done
+                              when all students are graded and the due date has
+                              passed, OR choose Manually and select the Mark as
+                              Done button when ready.
+                            </Description>
+                          </Col>
+                        </Row>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+
+                  <Block id="show-calculator" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        Show Calculator{' '}
+                        <DollarPremiumSymbol
+                          premium={assessmentSuperPowersShowCalculator}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row>
+                          <Col span={8}>
+                            <StyledRadioGroup
+                              disabled={
+                                !owner ||
+                                !isEditable ||
+                                !assessmentSuperPowersShowCalculator
+                              }
+                              onChange={this.updateFeatures('calcType')}
+                              value={calcType}
+                            >
+                              {calculatorKeysAvailable.map((item) => (
+                                <RadioBtn
+                                  data-cy={item}
+                                  value={item}
+                                  key={item}
+                                >
+                                  {calculators[item]}
+                                </RadioBtn>
+                              ))}
+                            </StyledRadioGroup>
+                          </Col>
+                          <Col span={16}>
+                            <Description>
+                              Choose if student can use a calculator, also
+                              select the type of calculator that would be shown
+                              to the students.
                             </Description>
                           </Col>
                         </Row>

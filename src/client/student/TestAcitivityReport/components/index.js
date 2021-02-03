@@ -1,11 +1,17 @@
-import { MainContentWrapper, EduButton, FlexContainer } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  EduButton,
+  FlexContainer,
+  notification,
+  useRealtimeV2,
+} from '@edulastic/common'
 import { IconReport } from '@edulastic/icons'
 import { Spin } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 import styled from 'styled-components'
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
@@ -59,12 +65,27 @@ const ReportListContainer = ({
   attempts,
   testActivity,
   questionActivities,
+  userId,
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null)
   const [showGraph, setShowGraph] = useState(true)
   const { isDocBased } = test
   const { releaseScore } = testActivity
 
+  const topics = [`student_assignment:class:${match.params.classId}`]
+  useRealtimeV2(topics, {
+    'toggle-pause-assignment': (payload) => {
+      const { activitiesByUserId, paused } = payload
+      const utaId = activitiesByUserId[userId]
+      if (match.params.id === utaId && paused) {
+        notification({
+          type: 'warn',
+          messageKey: 'studentAssignmentPaused',
+        })
+        return history.push(`/home/grades`)
+      }
+    },
+  })
   const setCurrentItemFromGraph = (qIndex) => {
     if (continueBtns.includes(releaseScore)) {
       setCurrentItem(qIndex)
@@ -193,6 +214,7 @@ const enhance = compose(
       attempts: get(state, `testActivities`, []).filter(
         ({ status }) => status !== ABSENT && status !== NOT_STARTED
       ),
+      userId: get(state, 'user.user._id'),
     }),
     {
       setCurrentItem: setCurrentItemAction,

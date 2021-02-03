@@ -1,33 +1,37 @@
 import React, { useState, useMemo } from 'react'
-import {
-  CheckboxLabel,
-  CustomModalStyled,
-  EduButton,
-  FlexContainer,
-} from '@edulastic/common'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { groupBy, map } from 'lodash'
+import { groupBy, map, camelCase } from 'lodash'
+import {
+  Description,
+  FlexRow,
+  FooterText,
+  ModalBody,
+  Price,
+  StyledCheckbox,
+  TrialContainer,
+} from './styled'
 
 const TrialModal = ({
-  addOnIdsToShow,
+  addOnProductIds = [],
   isVisible,
   toggleModal,
   isPremiumUser,
   isPremiumTrialUsed,
   startPremiumTrial,
   products = [],
+  setShowHeaderTrialModal,
 }) => {
-  const hasPremiumTrial = useMemo(() => !isPremiumUser && !isPremiumTrialUsed, [
-    isPremiumUser,
-    isPremiumTrialUsed,
-  ])
+  const hasPremiumTrialIncluded = useMemo(
+    () => !isPremiumUser && !isPremiumTrialUsed,
+    [isPremiumUser, isPremiumTrialUsed]
+  )
 
   const productsToShow = products.filter(
     (product) =>
-      (product.type === 'PREMIUM' && hasPremiumTrial) ||
-      addOnIdsToShow.includes(product.id)
+      (product.type === 'PREMIUM' && hasPremiumTrialIncluded) ||
+      addOnProductIds.includes(product.id)
   )
   const [productIds, setProductIds] = useState(map(productsToShow, 'id'))
 
@@ -35,17 +39,15 @@ const TrialModal = ({
     PREMIUM: teacherPremium = [],
     ITEM_BANK: itemBankPremium = [],
   } = useMemo(() => {
-    const result = productsToShow.map((item) => ({
-      ...item,
-      price: 100,
-      period: 14,
-    }))
-    return groupBy(result, 'type')
+    return groupBy(productsToShow, 'type')
   }, [products])
 
   const isProceedDisabled = productIds.length === 0
 
-  const closeModal = () => toggleModal(false)
+  const closeModal = () => {
+    toggleModal(false)
+    setShowHeaderTrialModal(false)
+  }
 
   const handleOnChange = (value) => (e) => {
     if (e.target.checked) {
@@ -62,13 +64,21 @@ const TrialModal = ({
 
   const Footer = (
     <>
-      <EduButton data-cy="cancelButton" isGhost onClick={closeModal}>
+      <EduButton
+        width="180px"
+        height="45px"
+        data-cy="cancelButton"
+        isGhost
+        onClick={closeModal}
+      >
         Cancel
       </EduButton>
       <EduButton
         disabled={isProceedDisabled}
         data-cy="proceedButton"
         onClick={onProceed}
+        width="180px"
+        height="45px"
       >
         Proceed
       </EduButton>
@@ -79,16 +89,17 @@ const TrialModal = ({
     <>
       {itemBankPremium.map((item) => (
         <TrialContainer>
-          <StyledCheckbox
-            data-cy="sparkPremiumCheckbox"
-            defaultChecked
-            onChange={handleOnChange(item.id)}
-          />
-          <div>
-            <p>{item.name} TRIAL </p>{' '}
-            <Description>{item.description}</Description>
-          </div>
-          <Description>{`$${item.price} ($0 today)`}</Description>
+          <FlexRow>
+            <StyledCheckbox
+              data-cy={`${camelCase(item.name)}TrialCheckbox`}
+              defaultChecked
+              onChange={handleOnChange(item.id)}
+            >
+              {item.name} TRIAL
+            </StyledCheckbox>
+            <Price>{`$${item.price} ($0 today)`}</Price>
+          </FlexRow>
+          <Description>{item.description}</Description>
         </TrialContainer>
       ))}
     </>
@@ -97,21 +108,26 @@ const TrialModal = ({
   const NonPremium = teacherPremium.length && (
     <>
       <TrialContainer>
-        <Tooltip title="Premium subscription is mandatory for Spark content">
-          <StyledCheckbox data-cy="teacherPremiumTrialCheckbox" checked />
-        </Tooltip>
-        <div>
-          <p>{teacherPremium[0].name} TRIAL </p>
-          <Description>{teacherPremium[0].description}</Description>
-        </div>
-        <Description>{`$${teacherPremium[0].price} ($0 today)`}</Description>
+        <FlexRow>
+          <Tooltip title="Premium subscription is mandatory for Spark content">
+            <StyledCheckbox
+              data-cy="teacherPremiumTrialCheckbox"
+              checked
+              disabled
+            >
+              {teacherPremium[0].name} TRIAL
+            </StyledCheckbox>
+          </Tooltip>
+          <Price>{`$${teacherPremium[0].price} ($0 today)`}</Price>
+        </FlexRow>
+        <Description>{teacherPremium[0].description}</Description>
       </TrialContainer>
       {Premium}
     </>
   )
 
   const modalContent = () => {
-    if (hasPremiumTrial) {
+    if (hasPremiumTrialIncluded) {
       return NonPremium
     }
     return Premium
@@ -124,79 +140,45 @@ const TrialModal = ({
       footer={Footer}
       visible={isVisible}
       onCancel={closeModal}
+      modalWidth="510px"
+      width="510px"
     >
-      {hasPremiumTrial ? (
-        <p>
-          {`Experience the additional features of Edulastic Teacher Premium for 14
-          days: read-aloud for students, extra test security settings, easier
-          collaboration, in-depth reports and more.`}
-        </p>
-      ) : (
-        <p>
-          {`Access premium assessments and practice for the subjects you teach for
-          the next 14 days.`}
-        </p>
-      )}
+      <ModalBody>
+        {hasPremiumTrialIncluded ? (
+          <p>
+            Experience the additional features of Edulastic Teacher Premium for
+            14 days: read-loud for students, extra test security settings,
+            easier collaboration, in-depth reports and more.
+          </p>
+        ) : (
+          <p>
+            Access premium assessments and practice for the subjects you teach
+            for the next 14 days.
+          </p>
+        )}
+      </ModalBody>
 
       <FlexContainer flexDirection="column" justifyContent="left" mt="20px">
         {modalContent()}
       </FlexContainer>
-      <FooterText>
-        <b>No credit card required now!</b>
-      </FooterText>
+      <FooterText>No credit card required now!</FooterText>
     </CustomModalStyled>
   )
 }
 
 TrialModal.propTypes = {
-  addOnIdsToShow: PropTypes.array.isRequired,
+  addOnProductIds: PropTypes.array.isRequired,
   isVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
   isPremiumUser: PropTypes.bool.isRequired,
   isPremiumTrialUsed: PropTypes.bool.isRequired,
   startPremiumTrial: PropTypes.func.isRequired,
   products: PropTypes.array.isRequired,
+  setShowHeaderTrialModal: PropTypes.func,
+}
+
+TrialModal.defaultProps = {
+  setShowHeaderTrialModal: () => {},
 }
 
 export default TrialModal
-
-const StyledCheckbox = styled(CheckboxLabel)`
-  margin: 10px 0px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: unset;
-  display: flex;
-  align-items: flex-start;
-  .ant-checkbox {
-    margin-top: 5px;
-    & + span {
-      width: 100%;
-    }
-  }
-`
-const Description = styled.span`
-  display: block;
-  color: #666666;
-  text-transform: initial;
-`
-const TrialContainer = styled.div`
-  display: flex;
-  justify-content:space-between;
-  margin-top:10px;
-  & > div {
-    width:75%;
-    margin-top: 10px;
-    margin-left:15px;
-    font-size: 12px;
-    color: #666666;
-    font-weight::bold;
-  }
-  & > span {
-    font-weight: bold;
-    white-space: nowrap;
-    color: #666666;
-  }
-`
-const FooterText = styled.p`
-  margin-top: 30px;
-`

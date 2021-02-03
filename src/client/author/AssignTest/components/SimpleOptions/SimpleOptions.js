@@ -49,6 +49,7 @@ class SimpleOptions extends React.Component {
     this.state = {
       _releaseGradeKeys: nonPremiumReleaseGradeKeys,
     }
+    this.containerRef = React.createRef()
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -193,7 +194,11 @@ class SimpleOptions extends React.Component {
       if (field === 'scoringType') {
         state.penalty = value === evalTypeLabels.PARTIAL_CREDIT
       }
-      state[field] = value
+      if (typeof value === 'undefined') {
+        state[field] = null
+      } else {
+        state[field] = value
+      }
     })
     updateOptions(nextAssignment)
   }
@@ -388,8 +393,13 @@ class SimpleOptions extends React.Component {
       }
     })
 
+    let tootltipWidth
+    if (this?.containerRef?.current?.offsetWidth) {
+      tootltipWidth = this?.containerRef?.current?.offsetWidth * 0.2 || 0
+    }
+
     return (
-      <OptionConationer isAdvancedView={isAdvancedView}>
+      <OptionConationer isAdvancedView={isAdvancedView} ref={this.containerRef}>
         <Tabs defaultActiveKey="1" onChange={() => {}}>
           <TabPane tab="CLASS/GROUP" key="1">
             {isAdvancedView ? (
@@ -427,6 +437,7 @@ class SimpleOptions extends React.Component {
                   freezeSettings={freezeSettings}
                   isRecommendingStandards={isRecommendingStandards}
                   questionPerStandardOptions={questionPerStandardOptions}
+                  tootltipWidth={tootltipWidth}
                 />
               </TabContentContainer>
             )}
@@ -450,6 +461,7 @@ class SimpleOptions extends React.Component {
                 userRole={userRole}
                 actionOnFeatureInaccessible={actionOnFeatureInaccessible}
                 featuresAvailable={featuresAvailable}
+                tootltipWidth={tootltipWidth}
               />
             </TabContentContainer>
           </TabPane>
@@ -473,6 +485,7 @@ class SimpleOptions extends React.Component {
                 overRideSettings={this.overRideSettings}
                 actionOnFeatureInaccessible={actionOnFeatureInaccessible}
                 featuresAvailable={featuresAvailable}
+                tootltipWidth={tootltipWidth}
               />
             </TabContentContainer>
           </TabPane>
@@ -493,6 +506,10 @@ class SimpleOptions extends React.Component {
                 updateAssignmentSettings={updateOptions}
                 actionOnFeatureInaccessible={actionOnFeatureInaccessible}
                 featuresAvailable={featuresAvailable}
+                tootltipWidth={tootltipWidth}
+                testSettings={testSettings}
+                overRideSettings={this.overRideSettings}
+                isDocBased={testSettings.isDocBased}
               />
             </TabContentContainer>
           </TabPane>
@@ -519,6 +536,7 @@ class SimpleOptions extends React.Component {
                 disableAnswerOnPaper={disableAnswerOnPaper}
                 actionOnFeatureInaccessible={actionOnFeatureInaccessible}
                 featuresAvailable={featuresAvailable}
+                tootltipWidth={tootltipWidth}
               />
             </TabContentContainer>
           </TabPane>

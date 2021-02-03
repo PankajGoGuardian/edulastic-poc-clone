@@ -47,6 +47,7 @@ import {
   captureSentryException,
   helpers,
   notification,
+  Effects,
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
 import { createGroupSummary } from './utils'
@@ -817,6 +818,7 @@ export const createBlankTest = () => ({
   ],
   passages: [],
   freezeSettings: false,
+  multiLanguageEnabled: false,
   playerSkinType: 'edulastic',
 })
 
@@ -2927,6 +2929,13 @@ function* getTestIdFromVersionIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err)
     console.error(err)
+    const errorMessage = 'Unable to retrieve test info.'
+    yield put(push('/author/tests'))
+    if (err.status === 403) {
+      notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })
+    } else {
+      notification({ msg: errorMessage })
+    }
   }
 }
 
@@ -2945,7 +2954,11 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
-    yield takeEvery(UPDATE_TEST_DOC_BASED_REQUEST, updateTestDocBasedSaga),
+    yield Effects.throttleAction(
+      10000,
+      UPDATE_TEST_DOC_BASED_REQUEST,
+      updateTestDocBasedSaga
+    ),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(TEST_PUBLISH, publishTestSaga),

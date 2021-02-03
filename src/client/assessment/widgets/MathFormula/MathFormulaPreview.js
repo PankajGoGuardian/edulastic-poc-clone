@@ -262,6 +262,7 @@ class MathFormulaPreview extends Component {
       showCalculatingSpinner,
       view,
       isPrintPreview,
+      viewComponent,
     } = this.props
     const { expressGrader, isAnswerModifiable } = answerContextConfig
     const { innerValues } = this.state
@@ -481,6 +482,12 @@ class MathFormulaPreview extends Component {
                 undefined && (
                 <CorrectAnswerBox
                   theme={theme}
+                  viewComponent={viewComponent}
+                  extraOtps={get(item, ['extraOpts', 0], {})}
+                  options={item.validation.validResponse.value[0].options}
+                  method={item.validation.validResponse.value[0].method}
+                  allowNumericOnly={allowNumericOnly}
+                  allowedVariables={this.restrictKeys}
                   template={item.template}
                   answer={
                     item.isUnits && item.showDropdown
@@ -526,6 +533,12 @@ class MathFormulaPreview extends Component {
                     template={item.template}
                     answer={answer}
                     index={index + 1}
+                    viewComponent={viewComponent}
+                    method={ans?.value?.[0]?.method}
+                    options={ans?.value?.[0]?.options}
+                    allowNumericOnly={allowNumericOnly}
+                    allowedVariables={this.restrictKeys}
+                    extraOtps={get(item, ['extraOpts', index + 1], {})}
                   />
                 )
               })}

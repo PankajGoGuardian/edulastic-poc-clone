@@ -1,7 +1,11 @@
 import React from 'react'
 import { Select, InputNumber } from 'antd'
 import { test } from '@edulastic/constants'
-import { notification, SelectInputStyled } from '@edulastic/common'
+import {
+  notification,
+  SelectInputStyled,
+  NumberInputStyled,
+} from '@edulastic/common'
 import {
   AlignSwitchRight,
   Label,
@@ -26,10 +30,23 @@ const AutoRedirectGroupContainer = ({
   freezeSettings,
   updateAssignmentSettings,
   featuresAvailable,
+  tootltipWidth,
+  testSettings,
+  overRideSettings,
+  isDocBased,
 }) => {
-  const { autoRedirect = false, autoRedirectSettings } = assignmentSettings
+  const {
+    autoRedirect = false,
+    autoRedirectSettings,
+    maxAttempts = testSettings.maxAttempts,
+    maxAnswerChecks = testSettings.maxAnswerChecks,
+  } = assignmentSettings
 
-  const { assessmentSuperPowersAutoRedirect } = featuresAvailable
+  const {
+    assessmentSuperPowersAutoRedirect,
+    maxAttemptAllowed,
+    assessmentSuperPowersCheckAnswerTries,
+  } = featuresAvailable
 
   const handleAutoRedirectChange = (value) => {
     const newSettingsState = {
@@ -77,20 +94,16 @@ const AutoRedirectGroupContainer = ({
       {/* Auto Redirect */}
       <SettingContainer>
         <DetailsTooltip
+          width={tootltipWidth}
           title="Enable Auto Redirect"
-          content="Allow students to take the assignment multiple times to practice and improve their learning."
+          content="When On, allows students to automatically retake a test when they scored below a set threshold. Enables students to practice and improve learning through multiple self-directed attempts."
           premium={assessmentSuperPowersAutoRedirect}
         />
         <StyledRow gutter={16}>
-          <StyledCol span={12}>
-            <Label>
-              Enable Auto Redirect
-              <DollarPremiumSymbol
-                premium={assessmentSuperPowersAutoRedirect}
-              />
-            </Label>
+          <StyledCol span={10}>
+            <Label>Enable Auto Redirect</Label>
           </StyledCol>
-          <StyledCol span={12}>
+          <StyledCol span={14}>
             <AlignSwitchRight
               data-cy="assignment-auto-redirect-switch"
               size="small"
@@ -101,14 +114,24 @@ const AutoRedirectGroupContainer = ({
             />
           </StyledCol>
         </StyledRow>
-        {autoRedirect && (
-          <>
-            <StyledRow>
-              <StyledCol span={12}>
+      </SettingContainer>
+      {autoRedirect && (
+        <>
+          <SettingContainer>
+            <DetailsTooltip
+              width={tootltipWidth}
+              title="SCORE THRESHOLD"
+              content="If student scores below the selected percentage score, the student will automatically be given the option to retake the test."
+              premium={assessmentSuperPowersAutoRedirect}
+            />
+            <StyledRow gutter={16}>
+              <StyledCol span={10}>
                 <Label>SCORE THRESHOLD</Label>
               </StyledCol>
-              <StyledCol span={12}>
+              <StyledCol span={14}>
                 <InputNumber
+                  style={{ marginRight: '10px' }}
+                  data-cy="auto-redirect-score-threshold"
                   min={1}
                   max={99}
                   value={autoRedirectSettings.scoreThreshold || ''}
@@ -116,31 +139,42 @@ const AutoRedirectGroupContainer = ({
                     handleAutoRedirectSettingsChange('scoreThreshold', value)
                   }
                 />
+                %
               </StyledCol>
             </StyledRow>
+          </SettingContainer>
 
-            <StyledRow>
-              <StyledCol span={12}>
-                <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
-              </StyledCol>
-              <StyledCol span={12}>
-                <InputNumber
-                  min={1}
-                  max={3}
-                  value={autoRedirectSettings.maxRedirects || ''}
-                  onChange={(value) =>
-                    handleAutoRedirectSettingsChange('maxRedirects', value)
-                  }
-                />
-              </StyledCol>
-            </StyledRow>
+          <StyledRow gutter={16}>
+            <StyledCol span={10}>
+              <Label>EXTRA ATTEMPTS ALLOWED</Label>
+            </StyledCol>
+            <StyledCol span={14}>
+              <InputNumber
+                data-cy="auto-redirect-max-attempts"
+                min={1}
+                max={3}
+                value={autoRedirectSettings.maxRedirects || ''}
+                onChange={(value) =>
+                  handleAutoRedirectSettingsChange('maxRedirects', value)
+                }
+              />
+            </StyledCol>
+          </StyledRow>
 
-            <StyledRow>
-              <StyledCol span={12}>
+          <SettingContainer>
+            <DetailsTooltip
+              width={tootltipWidth}
+              title="QUESTIONS DELIVERY"
+              content="Choose which questions students should see on redirected tests."
+              premium={assessmentSuperPowersAutoRedirect}
+            />
+            <StyledRow gutter={16}>
+              <StyledCol span={10}>
                 <Label>QUESTIONS DELIVERY</Label>
               </StyledCol>
-              <StyledCol span={12}>
+              <StyledCol span={14}>
                 <SelectInputStyled
+                  data-cy="auto-redirect-que-delivery"
                   disabled={
                     freezeSettings || !assessmentSuperPowersAutoRedirect
                   }
@@ -158,13 +192,22 @@ const AutoRedirectGroupContainer = ({
                 </SelectInputStyled>
               </StyledCol>
             </StyledRow>
+          </SettingContainer>
 
+          <SettingContainer>
+            <DetailsTooltip
+              width={tootltipWidth}
+              title="SHOW PREVIOUS ATTEMPT"
+              content="Choose how much information students will see on redirected tests."
+              premium={assessmentSuperPowersAutoRedirect}
+            />
             <StyledRow gutter={16}>
-              <StyledCol span={12}>
+              <StyledCol span={10}>
                 <Label>SHOW PREVIOUS ATTEMPT</Label>
               </StyledCol>
-              <StyledCol span={12}>
+              <StyledCol span={14}>
                 <SelectInputStyled
+                  data-cy="auto-redirect-poilcy"
                   disabled={
                     freezeSettings || !assessmentSuperPowersAutoRedirect
                   }
@@ -185,14 +228,91 @@ const AutoRedirectGroupContainer = ({
                 </SelectInputStyled>
               </StyledCol>
             </StyledRow>
-          </>
-        )}
-      </SettingContainer>
-      <StyledRow>
-        Allow students to take the assignment multiple times to practice and
-        improve their learning
+          </SettingContainer>
+        </>
+      )}
+      <StyledRow gutter={16}>
+        <StyledCol span={24}>
+          Allow students to take the assignment multiple times to practice and
+          improve their learning
+        </StyledCol>
       </StyledRow>
       {/* Auto Redirect */}
+
+      {/* Maximum attempt */}
+      <SettingContainer>
+        <DetailsTooltip
+          width={tootltipWidth}
+          title="MAXIMUM ATTEMPTS ALLOWED"
+          content="Select the number of times a student can attempt the test. Note, this can be overridden at a later time in the settings if necessary."
+          premium={maxAttemptAllowed}
+        />
+        <StyledRow gutter={16} mb="15px">
+          <StyledCol span={10}>
+            <Label>
+              MAXIMUM ATTEMPTS ALLOWED
+              <DollarPremiumSymbol premium={maxAttemptAllowed} />
+            </Label>
+          </StyledCol>
+          <StyledCol span={14}>
+            <NumberInputStyled
+              size="large"
+              disabled={freezeSettings || !maxAttemptAllowed}
+              value={maxAttempts}
+              onChange={(value) => overRideSettings('maxAttempts', value)}
+              min={1}
+              step={1}
+              bg="white"
+              width="20%"
+              data-cy="max-attempts-allowed"
+            />
+          </StyledCol>
+        </StyledRow>
+      </SettingContainer>
+      {/* Maximum attempt */}
+
+      {
+        /* Check Answer Tries Per Question */
+        !isDocBased && (
+          <SettingContainer>
+            <DetailsTooltip
+              width={tootltipWidth}
+              title="CHECK ANSWER TRIES PER QUESTION"
+              content="Allow students to check their answer before moving on to the next question. Enter the number of attempts allowed per question."
+              premium={assessmentSuperPowersCheckAnswerTries}
+              placement="rightTop"
+            />
+            <StyledRow gutter={16} mb="15px">
+              <StyledCol span={10}>
+                <Label>
+                  CHECK ANSWER TRIES PER QUESTION
+                  <DollarPremiumSymbol
+                    premium={assessmentSuperPowersCheckAnswerTries}
+                  />
+                </Label>
+              </StyledCol>
+              <StyledCol span={14}>
+                <NumberInputStyled
+                  disabled={
+                    freezeSettings || !assessmentSuperPowersCheckAnswerTries
+                  }
+                  onChange={(value) =>
+                    overRideSettings('maxAnswerChecks', value)
+                  }
+                  size="large"
+                  value={maxAnswerChecks}
+                  min={0}
+                  placeholder="Number of tries"
+                  bg="white"
+                  data-cy="check-ans-tries"
+                  width="20%"
+                />
+              </StyledCol>
+            </StyledRow>
+          </SettingContainer>
+        )
+        /* Check Answer Tries Per Question */
+      }
     </>
   )
 }

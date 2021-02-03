@@ -49,7 +49,7 @@ const TestTypeSelector = ({
 
   return fullwidth ? (
     <>
-      <Col span={12}>
+      <Col span={9}>
         <FieldLabel>TEST TYPE</FieldLabel>
       </Col>
       <Col span={12}>{SelectOption}</Col>
@@ -58,11 +58,11 @@ const TestTypeSelector = ({
     <>
       <>
         {!isAdvanceView && (
-          <Col span={12}>
+          <Col span={10}>
             <FieldLabel>TEST TYPE</FieldLabel>
           </Col>
         )}
-        <Col span={12}>{SelectOption}</Col>
+        <Col span={14}>{SelectOption}</Col>
       </>
     </>
   )

@@ -8,8 +8,9 @@ import { isEmpty } from 'lodash'
 import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
-import StandardsGradebook from './standardsGradebook'
 import StandardsPerfromance from './standardsPerformance'
+import StandardsGradebook from './standardsGradebook'
+import StandardsProgress from './standardsProgress'
 import StandardsFilters from './common/components/Filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
@@ -52,6 +53,7 @@ const StandardsMasteryReportContainer = (props) => {
     resetAllReports,
     premium,
     setShowHeader,
+    navigationItems,
     updateNavigation,
     loc,
     history,
@@ -75,6 +77,11 @@ const StandardsMasteryReportContainer = (props) => {
   })
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
+  )
+
+  const standardIdFromLocationState = useMemo(
+    () => (location.state?.standardId ? location.state.standardId : ''),
+    [location.state]
   )
 
   const [sharedReport, userRole] = useMemo(() => {
@@ -107,6 +114,14 @@ const StandardsMasteryReportContainer = (props) => {
       setDdFilter({ ...sharedReport.filters.ddfilter })
     }
   }, [sharedReport])
+
+  useEffect(() => {
+    if (standardIdFromLocationState) {
+      const _settings = { ...settings }
+      _settings.requestFilters.standardId = standardIdFromLocationState
+      setSMRSettings(_settings)
+    }
+  }, [standardIdFromLocationState])
 
   useEffect(() => {
     if (!showApply) {
@@ -147,8 +162,10 @@ const StandardsMasteryReportContainer = (props) => {
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
-    const navigationItems = computeChartNavigationLinks(settings.requestFilters)
-    updateNavigation(!premium ? [navigationItems[1]] : navigationItems)
+    const _navigationItems = computeChartNavigationLinks(
+      settings.requestFilters
+    )
+    updateNavigation(!premium ? [_navigationItems[1]] : _navigationItems)
   }, [settings])
 
   const toggleFilter = (e, status = false) => {
@@ -194,7 +211,8 @@ const StandardsMasteryReportContainer = (props) => {
   }
 
   const extraFilters =
-    loc === 'standards-gradebook' && demographics
+    (loc === 'standards-gradebook' || loc === 'standards-progress') &&
+    demographics
       ? demographics.map((item) => (
           <SearchField key={item.key}>
             <FilterLabel>{item.title}</FilterLabel>
@@ -269,12 +287,29 @@ const StandardsMasteryReportContainer = (props) => {
         <ReportContaner showFilter={showFilter}>
           <Route
             exact
+            path="/author/reports/standards-performance-summary"
+            render={(_props) => {
+              setShowHeader(true)
+              return (
+                <StandardsPerfromance
+                  {..._props}
+                  toggleFilter={toggleFilter}
+                  settings={transformedSettings}
+                  userRole={userRole}
+                  sharedReport={sharedReport}
+                />
+              )
+            }}
+          />
+          <Route
+            exact
             path="/author/reports/standards-gradebook"
             render={(_props) => {
               setShowHeader(true)
               return (
                 <StandardsGradebook
                   {..._props}
+                  navigationItems={navigationItems}
                   pageTitle={loc}
                   toggleFilter={toggleFilter}
                   settings={transformedSettings}
@@ -287,14 +322,16 @@ const StandardsMasteryReportContainer = (props) => {
           />
           <Route
             exact
-            path="/author/reports/standards-performance-summary"
+            path="/author/reports/standards-progress"
             render={(_props) => {
               setShowHeader(true)
               return (
-                <StandardsPerfromance
+                <StandardsProgress
                   {..._props}
+                  pageTitle={loc}
                   toggleFilter={toggleFilter}
                   settings={transformedSettings}
+                  ddfilter={ddfilter}
                   userRole={userRole}
                   sharedReport={sharedReport}
                 />

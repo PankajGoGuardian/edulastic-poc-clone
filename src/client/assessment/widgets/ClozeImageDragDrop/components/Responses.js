@@ -9,9 +9,17 @@ import { ChoiceItem, DragHandler } from '../../../components/ChoiceItem'
 
 class Responses extends React.Component {
   shouldComponentUpdate(nextProps) {
-    const { responses: currentResponses } = this.props
-    const { responses: nextResponses } = nextProps
-    const responsesAreEqual = isEqual(currentResponses, nextResponses)
+    const {
+      responses: currentResponses,
+      transparentResponses: currentTransparentResponses,
+    } = this.props
+    const {
+      responses: nextResponses,
+      transparentResponses: prevTransparentResponses,
+    } = nextProps
+    const responsesAreEqual =
+      isEqual(currentResponses, nextResponses) &&
+      isEqual(currentTransparentResponses, prevTransparentResponses)
 
     return !responsesAreEqual
   }
@@ -38,6 +46,7 @@ class Responses extends React.Component {
           className={
             transparentResponses ? 'draggable_box_transparent' : 'draggable_box'
           }
+          transparentResponses={transparentResponses}
         >
           {dragHandler && <DragHandler />}
           <MathSpan dangerouslySetInnerHTML={{ __html: option.value }} />

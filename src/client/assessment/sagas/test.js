@@ -360,9 +360,11 @@ function* loadTest({ payload }) {
       )
     }
     // eslint-disable-next-line prefer-const
-    let { testItems, passages, testType } = test
+    let { testItems, passages } = test
 
     const settings = getSettings(test, testActivity, preview)
+
+    const testType = settings.testType || test.testType
 
     const answerCheckByItemId = {}
     ;(testActivity.questionActivities || []).forEach((item) => {
@@ -581,7 +583,8 @@ function* loadTest({ payload }) {
 
     if (
       settings.blockNavigationToAnsweredQuestions &&
-      testActivity.questionActivities.length
+      testActivity.questionActivities.length &&
+      !test.isDocBased
     ) {
       let questionIndex = 0
       const qActivitiesSorted = testActivity.questionActivities.sort((a, b) => {
@@ -699,7 +702,7 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
-
+    window.document.exitFullscreen().catch(() => {})
     const isCliUser = yield select((state) => state.user?.isCliUser)
     if (isCliUser) {
       window.parent.postMessage(

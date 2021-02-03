@@ -891,6 +891,10 @@
     "message": "Rubric is saved and published",
     "description": ""
   },
+  "rubricUpdatedSuccessfully": {
+    "message": "Rubric updated successfully",
+    "description": ""
+  },
   "itemIsSaved": {
     "message": "Item is saved",
     "description": ""
@@ -1839,6 +1843,10 @@
     "message": "Test is expired",
     "description": ""
   },
+  "selectLanguage": {
+    "message": "Please select your preferred language to continue",
+    "description": ""
+  },
   "failedToUpdateUser": {
     "message": "Failed to update user please try again.",
     "description": ""
@@ -1969,6 +1977,10 @@
   },
   "teacherSignUpNotAllowed": {
     "message": "Teacher Signup is not allowed for your district.",
+    "description": ""
+  },
+  "studentAssignmentPaused": {
+    "message": "Assignment is Paused , Please check with your instructor.",
     "description": ""
   }
 }

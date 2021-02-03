@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { get, groupBy } from 'lodash'
 import { Row, Col } from 'antd'
@@ -20,6 +20,7 @@ import {
 } from '../filterDataDucks'
 import { getReportsStandardsPerformanceSummary } from '../../standardsPerformance/ducks'
 import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
+import { getReportsStandardsProgress } from '../../standardsProgress/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
 
@@ -33,6 +34,7 @@ const StandardsFilters = ({
   interestedCurriculums,
   standardsPerformanceSummary,
   standardsGradebook,
+  standardsProgress,
 }) => {
   // memoize curriculumsList for interested curriculums
   const curriculumsList = useMemo(() => {
@@ -58,6 +60,7 @@ const StandardsFilters = ({
   const skillInfoOptions = {
     'Standards Performance Summary': standardsPerformanceSummary,
     'Standards Gradebook': standardsGradebook,
+    'Standards Progress': standardsProgress,
   }
   const skillInfo = get(
     skillInfoOptions[pageTitle],
@@ -70,8 +73,24 @@ const StandardsFilters = ({
         ? o.grades.includes(filters.standardGrade)
         : true
     )
+
+  const standardIdFromPageData = useMemo(
+    () => get(standardsProgress, 'data.result.standardId'),
+    [standardsProgress]
+  )
+
+  useEffect(() => {
+    const _standardId = standardIdFromPageData || filters.standardId
+    setFilters({
+      ...filters,
+      standardId: _standardId,
+    })
+  }, [standardIdFromPageData])
+
   const domainGroup = groupBy(skillInfo, (o) => `${o.domainId}`)
-  const allDomainIds = Object.keys(domainGroup)
+  const allDomainIds = Object.keys(domainGroup).sort((a, b) =>
+    a.localeCompare(b)
+  )
   const domainsList = allDomainIds.map((domainId) => ({
     key: `${domainId}`,
     title: domainGroup[domainId][0].domain,
@@ -79,6 +98,17 @@ const StandardsFilters = ({
   const selectedDomains = (domainsList || []).filter((o) =>
     filters.domainIds?.includes(o.key)
   )
+  const standardsList = skillInfo
+    .filter((o) =>
+      selectedDomains.length
+        ? filters.domainIds.includes(`${o.domainId}`)
+        : true
+    )
+    .sort((a, b) => a.domainId - b.domainId || a.standardId - b.standardId)
+    .map((o) => ({
+      key: `${o.standardId}`,
+      title: o.standard,
+    }))
 
   // update handlers
   const updateFilterDropdownCB = (selected, keyName) => {
@@ -101,6 +131,26 @@ const StandardsFilters = ({
     }
   }
 
+  const filterColSpan = pageTitle === 'Standards Progress' ? 4 : 6
+
+  const standardProficiencyFilter = (
+    <StyledDropDownContainer
+      xs={24}
+      sm={12}
+      md={12}
+      lg={filterColSpan}
+      xl={filterColSpan}
+    >
+      <ControlDropDown
+        by={filters.profileId || defaultProficiencyId}
+        selectCB={(e) => updateFilterDropdownCB(e, 'profileId')}
+        data={proficiencyList}
+        prefix="Standard Proficiency"
+        showPrefixOnSelected={false}
+      />
+    </StyledDropDownContainer>
+  )
+
   return (
     <StyledFilterWrapper
       style={{ display: !showFilter || loading ? 'none' : 'flex' }}
@@ -108,7 +158,13 @@ const StandardsFilters = ({
     >
       <Col span={24}>
         <Row type="flex" justify="end">
-          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            md={12}
+            lg={filterColSpan}
+            xl={filterColSpan}
+          >
             <ControlDropDown
               by={filters.curriculumId}
               selectCB={(e) => updateFilterDropdownCB(e, 'curriculumId')}
@@ -117,7 +173,13 @@ const StandardsFilters = ({
               showPrefixOnSelected={false}
             />
           </StyledDropDownContainer>
-          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            md={12}
+            lg={filterColSpan}
+            xl={filterColSpan}
+          >
             <ControlDropDown
               by={filters.standardGrade}
               selectCB={(e) => updateFilterDropdownCB(e, 'standardGrade')}
@@ -126,16 +188,14 @@ const StandardsFilters = ({
               showPrefixOnSelected={false}
             />
           </StyledDropDownContainer>
-          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
-            <ControlDropDown
-              by={filters.profileId || defaultProficiencyId}
-              selectCB={(e) => updateFilterDropdownCB(e, 'profileId')}
-              data={proficiencyList}
-              prefix="Standard Proficiency"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
-          <StyledDropDownContainer xs={24} sm={12} md={12} lg={6} xl={6}>
+          {pageTitle !== 'Standards Progress' && standardProficiencyFilter}
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            md={12}
+            lg={filterColSpan}
+            xl={filterColSpan}
+          >
             <MultipleSelect
               containerClassName="standards-mastery-report-domain-autocomplete"
               data={domainsList || []}
@@ -152,6 +212,24 @@ const StandardsFilters = ({
               style={{ width: '100%', height: 'auto' }}
             />
           </StyledDropDownContainer>
+          {pageTitle === 'Standards Progress' && (
+            <StyledDropDownContainer
+              xs={24}
+              sm={12}
+              md={12}
+              lg={filterColSpan}
+              xl={filterColSpan}
+            >
+              <ControlDropDown
+                by={filters.standardId || standardsList[0]}
+                selectCB={(e) => updateFilterDropdownCB(e, 'standardId')}
+                data={standardsList}
+                prefix="Standard"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+          )}
+          {pageTitle === 'Standards Progress' && standardProficiencyFilter}
         </Row>
       </Col>
     </StyledFilterWrapper>
@@ -166,6 +244,7 @@ export default connect(
     filters: getFiltersSelector(state),
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
     standardsGradebook: getReportsStandardsGradebook(state),
+    standardsProgress: getReportsStandardsProgress(state),
   }),
   {
     setFilters: setFiltersAction,

@@ -730,6 +730,23 @@ export const getAssignmentPasswordDetailsSelector = createSelector(
   })
 )
 
+export const getStudentsPrevSubmittedUtasSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => {
+    const groupedUtas = state?.data?.recentTestActivitiesGrouped || {}
+    const groupedSubmittedUtas = {}
+    for (const [key, value] of Object.entries(groupedUtas)) {
+      const lastSubmittedUTA = value.find(
+        (v) => v.status !== testActivityStatus.ABSENT
+      )
+      if (lastSubmittedUTA) {
+        groupedSubmittedUtas[key] = lastSubmittedUTA
+      }
+    }
+    return groupedSubmittedUtas
+  }
+)
+
 export const getItemSummary = (
   entities,
   questionsOrder,
@@ -1286,6 +1303,11 @@ export const getAssignmentClassIdSelector = createSelector(
 export const showScoreSelector = createSelector(
   stateClassResponseSelector,
   (state) => state.showScore
+)
+
+export const getmultiLanguageEnabled = createSelector(
+  stateClassResponseSelector,
+  (state) => state.data?.multiLanguageEnabled
 )
 
 export const getStudentResponseSelector = createSelector(

@@ -98,6 +98,8 @@ ResponseBoxLayout.defaultProps = {
 }
 
 export default React.memo(ResponseBoxLayout, (prevProps, nextProps) => {
-  const responsesAreEqual = isEqual(prevProps.responses, nextProps.responses)
+  const responsesAreEqual =
+    isEqual(prevProps.responses, nextProps.responses) &&
+    isEqual(prevProps.transparentResponses, nextProps.transparentResponses)
   return responsesAreEqual
 })

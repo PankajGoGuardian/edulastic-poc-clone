@@ -2,14 +2,23 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 
-const Footer = ({ handleCloseModal, handlePurchaseFlow }) => {
+const Footer = ({
+  isCurrentItemBankUsed,
+  handleCloseModal,
+  handlePurchaseFlow,
+}) => {
   return (
     <>
-      <EduButton isGhost isBlue onClick={handleCloseModal}>
+      <EduButton
+        data-cy="itemBankTrialUsedCloseModal"
+        isGhost
+        isBlue
+        onClick={handleCloseModal}
+      >
         Cancel
       </EduButton>
-      <EduButton isBlue onClick={handlePurchaseFlow}>
-        Purchase
+      <EduButton data-cy="Purchase" isBlue onClick={handlePurchaseFlow}>
+        {isCurrentItemBankUsed ? 'Purchase' : 'Upgrade'}
       </EduButton>
     </>
   )
@@ -20,6 +29,7 @@ const ItemBankTrialUsedModal = ({
   isVisible,
   handleCloseModal,
   handlePurchaseFlow,
+  isCurrentItemBankUsed,
 }) => {
   return (
     <CustomModalStyled
@@ -29,15 +39,23 @@ const ItemBankTrialUsedModal = ({
         <Footer
           handleCloseModal={handleCloseModal}
           handlePurchaseFlow={handlePurchaseFlow}
+          isCurrentItemBankUsed={isCurrentItemBankUsed}
         />
       }
       visible={isVisible}
       onCancel={handleCloseModal}
     >
-      <p>
-        Free trail for <b> {title} </b> is already utilized. Kindly purchase to
-        access the content.
-      </p>
+      {!isCurrentItemBankUsed ? (
+        <p>
+          Kindly Upgrade to premium version of app for trying any other item
+          bank.
+        </p>
+      ) : (
+        <p>
+          Free trail for <b> {title} </b> is already utilized. Kindly purchase
+          to access the content.
+        </p>
+      )}
     </CustomModalStyled>
   )
 }

@@ -111,6 +111,9 @@ const HeaderSection = ({
   classData,
   loading,
   districtPolicy,
+  schoolPolicy,
+  setShowHeaderTrialModal,
+  isPremiumTrialUsed,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
@@ -159,11 +162,15 @@ const HeaderSection = ({
     (c) => c.active === 1 && c.type === 'class'
   )
 
+  const isPremiumUser = user.user?.features?.premium
+
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
 
   const closeCleverSyncModal = () => setShowCleverSyncModal(false)
   const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
+
+  const handleShowTrialModal = () => setShowHeaderTrialModal(true)
 
   const hasNoActiveClassFallback =
     !loading &&
@@ -175,7 +182,10 @@ const HeaderSection = ({
   const hasGoogleMeetAndManageClass =
     currentSignUpState === signUpState.DONE && allActiveClasses.length > 0
 
-  const isHangoutEnabled = districtPolicy?.enableGoogleMeet === true
+  const isHangoutEnabled =
+    districtPolicy?.enableGoogleMeet === true
+      ? true
+      : schoolPolicy?.[0]?.enableGoogleMeet === true
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -188,6 +198,16 @@ const HeaderSection = ({
               </StyledLink>
             )}
             trackClick={trackClick('dashboard:complete-sign-up:click')}
+          />
+        )}
+        {!isPremiumUser && !isPremiumTrialUsed && (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <StyledLink data-cy="freeTrialButton" onClick={handleClick}>
+                Free Trial
+              </StyledLink>
+            )}
+            onClick={handleShowTrialModal}
           />
         )}
         {hasGoogleMeetAndManageClass && (
@@ -334,6 +354,7 @@ const enhance = compose(
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
       districtPolicy: get(state, 'user.user.orgData.policies.district'),
+      schoolPolicy: get(state, 'user.user.orgData.policies.institutions'),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
         state
       ),
@@ -355,6 +376,8 @@ const enhance = compose(
       defaultGrades: getInterestedGradesSelector(state),
       defaultSubjects: getInterestedSubjectsSelector(state),
       loading: state.dashboardTeacher.loading,
+      isPremiumTrialUsed:
+        state.subscription?.subscriptionData?.isPremiumTrialUsed,
     }),
     {
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
@@ -365,6 +388,7 @@ const enhance = compose(
       syncCleverClassList: syncClassesWithCleverAction,
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
+      setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
     }
   )
 )

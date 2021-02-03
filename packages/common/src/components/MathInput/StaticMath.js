@@ -55,8 +55,8 @@ const StaticMath = ({
   noBorder,
 }) => {
   const [keyboardPosition, setKeyboardPosition] = useState(null)
-  const [currentInnerField, setCurrentInnerField] = useState(null)
   const containerRef = useRef(null)
+  const currentField = useRef(null)
   const mathFieldRef = useRef(null)
   const mQuill = useRef(null)
 
@@ -100,38 +100,50 @@ const StaticMath = ({
   }
 
   const handleFocusInner = (innerField) => {
+    const { innerFields = [] } = mQuill.current
+    innerFields.forEach((field) => {
+      if (field.id !== innerField.id) {
+        const cursors = field?.el()?.querySelectorAll('.mq-cursor')
+        if (!isEmpty(cursors)) {
+          field?.__controller?.cursor?.hide()?.parent?.blur()
+        }
+        cursors.forEach((cursor) => {
+          cursor.remove()
+        })
+      }
+    })
     setKeyboardPosition(getKeyboardPosition(innerField.el(), symbols))
     onInnerFieldClick(getIndex(innerField.el()))
-    setCurrentInnerField(innerField)
+    currentField.current = innerField
     document.addEventListener('click', handleClickOutside, false)
   }
 
   const onInputKeyboard = (key, command = 'cmd') => {
-    if (!currentInnerField) {
+    if (!currentField.current) {
       return
     }
     if (key === 'in') {
-      currentInnerField.write('in')
+      currentField.current.write('in')
     } else if (key === 'left_move') {
-      currentInnerField.keystroke('Left')
+      currentField.current.keystroke('Left')
     } else if (key === 'right_move') {
-      currentInnerField.keystroke('Right')
+      currentField.current.keystroke('Right')
     } else if (key === 'ln--') {
-      currentInnerField.write('ln\\left(\\right)')
+      currentField.current.write('ln\\left(\\right)')
     } else if (key === 'leftright3') {
-      currentInnerField.write('\\sqrt[3]{}')
+      currentField.current.write('\\sqrt[3]{}')
     } else if (key === 'Backspace') {
-      currentInnerField.keystroke('Backspace')
+      currentField.current.keystroke('Backspace')
     } else if (key === 'leftright2') {
-      currentInnerField.write('^2')
+      currentField.current.write('^2')
     } else if (key === 'down_move') {
-      currentInnerField.keystroke('Down')
+      currentField.current.keystroke('Down')
     } else if (key === 'up_move') {
-      currentInnerField.keystroke('Up')
+      currentField.current.keystroke('Up')
     } else {
-      currentInnerField[command](key)
+      currentField.current[command](key)
     }
-    currentInnerField.focus()
+    currentField.current.focus()
     handleSave()
   }
 

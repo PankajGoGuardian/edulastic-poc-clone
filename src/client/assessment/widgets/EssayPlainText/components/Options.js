@@ -30,6 +30,7 @@ class Options extends Component {
         cleanSections={cleanSections}
         item={item}
         handleItemChangeChange={handleItemChangeChange}
+        showScoringSectionAnyRole
       >
         <LayoutComponent
           item={item}

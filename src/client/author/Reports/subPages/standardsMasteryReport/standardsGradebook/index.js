@@ -38,6 +38,7 @@ const StandardsGradebook = ({
   standardsGradebook,
   getStandardsGradebookRequest,
   isCsvDownloading,
+  navigationItems,
   toggleFilter,
   settings,
   loading,
@@ -179,7 +180,7 @@ const StandardsGradebook = ({
         <StyledCard>
           <Row type="flex" justify="start">
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledH3>Mastery Level Distribution Standards</StyledH3>
+              <StyledH3>Mastery Level Distribution by Standard</StyledH3>
             </Col>
           </Row>
           <Row>
@@ -211,6 +212,7 @@ const StandardsGradebook = ({
           handleOnClickStandard={handleOnClickStandard}
           standardsData={standardsData}
           location={location}
+          navigationItems={navigationItems}
           pageTitle={pageTitle}
           isSharedReport={isSharedReport}
         />

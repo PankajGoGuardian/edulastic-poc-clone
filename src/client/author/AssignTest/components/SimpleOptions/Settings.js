@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Select, Input, InputNumber } from 'antd'
-import { green, red, blueBorder } from '@edulastic/colors'
+import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
+import { green, red, blueBorder, themeColor } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
 import {
   RadioBtn,
   notification,
   SelectInputStyled,
   NumberInputStyled,
+  CheckboxLabel,
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
 import {
@@ -20,6 +21,8 @@ import {
   Label,
   StyledCol,
   StyledRow,
+  CheckBoxWrapper,
+  TimeSpentInput,
 } from './styled'
 import { getUserRole } from '../../../src/selectors/user'
 import {
@@ -28,6 +31,7 @@ import {
 } from '../../../TestPage/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import { SettingContainer } from '../Container/styled'
+import { getmultiLanguageEnabled } from '../../../ClassBoard/ducks'
 
 const {
   calculatorKeys,
@@ -63,6 +67,9 @@ const Settings = ({
   freezeSettings = false,
   calculatorProvider,
   features,
+  multiLanguageEnabledLCB,
+  match,
+  totalItems,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -71,6 +78,7 @@ const Settings = ({
     color: blueBorder,
     message: '',
   })
+  const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
 
   const passwordValidationStatus = (assignmentPassword) => {
     if (assignmentPassword.split(' ').length > 1) {
@@ -191,6 +199,38 @@ const Settings = ({
     changeField('autoRedirectSettings')(newSettingsState.autoRedirectSettings)
   }
 
+  const updateTimedTestAttrs = (attr, value) => {
+    if (
+      match?.params?.assignmentId &&
+      match?.params?.classId &&
+      !timedTestConfirmed
+    ) {
+      Modal.confirm({
+        title: 'Do you want to Proceed ?',
+        content:
+          'Changes made in Timed Assignment will impact all Students who are In Progress or Not Started.',
+        onOk: () => {
+          if (attr === 'timedAssignment' && value)
+            overRideSettings('allowedTime', totalItems * 60 * 1000)
+          overRideSettings(attr, value)
+          setTimedtestConfirmed(true)
+          Modal.destroyAll()
+        },
+        onCancel: () => {},
+        okText: 'Proceed',
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor },
+        },
+      })
+      return
+    }
+    if (attr === 'timedAssignment' && value)
+      overRideSettings('allowedTime', totalItems * 60 * 1000)
+    overRideSettings(attr, value)
+  }
+
   const {
     assessmentSuperPowersAutoRedirect,
     assessmentSuperPowersCheckAnswerTries,
@@ -199,6 +239,7 @@ const Settings = ({
     assessmentSuperPowersShowCalculator,
     assessmentSuperPowersTimedTest,
     assessmentSuperPowersRestrictQuestionBackNav,
+    maxAttemptAllowed,
   } = features
 
   const {
@@ -213,6 +254,10 @@ const Settings = ({
     autoRedirect = false,
     autoRedirectSettings,
     blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
+    multiLanguageEnabled = !!tempTestSettings.multiLanguageEnabled,
+    timedAssignment = tempTestSettings.timedAssignment,
+    allowedTime = tempTestSettings.allowedTime,
+    pauseAllowed = tempTestSettings.pauseAllowed,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -223,6 +268,7 @@ const Settings = ({
       )) ||
     calculatorKeys
 
+  const showMultiLangSelection = !!multiLanguageEnabledLCB
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -260,7 +306,7 @@ const Settings = ({
           <DetailsTooltip
             title="MAXIMUM ATTEMPTS ALLOWED"
             content="Control the number of times a student can take the assignment."
-            premium={assessmentSuperPowersTimedTest}
+            premium={maxAttemptAllowed}
           />
           <StyledRow gutter={16} mb="15px">
             <Col span={12}>
@@ -269,13 +315,14 @@ const Settings = ({
             <Col span={12}>
               <NumberInputStyled
                 size="large"
-                disabled={freezeSettings || !assessmentSuperPowersTimedTest}
+                disabled={freezeSettings || !maxAttemptAllowed}
                 value={maxAttempts}
                 onChange={(value) => overRideSettings('maxAttempts', value)}
                 min={1}
                 step={1}
                 bg="white"
                 width="20%"
+                data-cy="max-attempts-allowed"
               />
             </Col>
           </StyledRow>
@@ -295,20 +342,14 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignRight
-                disabled={freezeSettings}
+                disabled={
+                  freezeSettings || !assessmentSuperPowersShowCalculator
+                }
                 value={calcType}
                 onChange={(e) => overRideSettings('calcType', e.target.value)}
               >
                 {calculatorKeysAvailable.map((item) => (
-                  <RadioBtn
-                    data-cy={item}
-                    value={item}
-                    key={item}
-                    disabled={
-                      !assessmentSuperPowersShowCalculator &&
-                      !['NONE', 'BASIC'].includes(item)
-                    }
-                  >
+                  <RadioBtn data-cy={item} value={item} key={item}>
                     <Label>{calculators[item]}</Label>
                   </RadioBtn>
                 ))}
@@ -332,6 +373,7 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignSwitchRight
+                data-cy="ans-on-paper"
                 disabled={
                   disableAnswerOnPaper ||
                   freezeSettings ||
@@ -350,7 +392,7 @@ const Settings = ({
         <SettingContainer>
           <DetailsTooltip
             title="REQUIRE PASSWORD"
-            content="Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
+            content="Require your students to type a password when opening the assessment."
             premium={assessmentSuperPowersRequirePassword}
           />
           <StyledRow gutter={16} mb="15px">
@@ -361,6 +403,7 @@ const Settings = ({
               <Row>
                 <Col span={24}>
                   <SelectInputStyled
+                    data-cy="password-policy"
                     disabled={
                       freezeSettings || !assessmentSuperPowersRequirePassword
                     }
@@ -451,7 +494,7 @@ const Settings = ({
               <DetailsTooltip
                 title="CHECK ANSWER TRIES PER QUESTION"
                 content="Control whether student can check in answer during attempt or not. Value mentioned will be equivalent to number of attempts allowed per student."
-                premium={assessmentSuperPowersTimedTest}
+                premium={assessmentSuperPowersCheckAnswerTries}
               />
               <StyledRow gutter={16} mb="15px">
                 <Col span={12}>
@@ -470,6 +513,7 @@ const Settings = ({
                     min={0}
                     placeholder="Number of tries"
                     bg="white"
+                    data-cy="check-ans-tries"
                   />
                 </Col>
               </StyledRow>
@@ -477,6 +521,42 @@ const Settings = ({
           )
           /* Check Answer Tries Per Question */
         }
+
+        {/* Multi language */}
+        {showMultiLangSelection && (
+          <SettingContainer>
+            <DetailsTooltip
+              title="Multi-Language"
+              content="Select ON , If you want to enable multiple languages for the test."
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15px" height="40">
+              <Col span={12}>
+                <Label>
+                  <span>Multi-Language</span>
+                </Label>
+              </Col>
+              <Col
+                span={10}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <Row style={{ display: 'flex', alignItems: 'center' }}>
+                  <AlignSwitchRight
+                    data-cy="multi-language"
+                    size="small"
+                    defaultChecked={false}
+                    disabled={freezeSettings}
+                    checked={multiLanguageEnabled}
+                    onChange={(value) =>
+                      overRideSettings('multiLanguageEnabled', value)
+                    }
+                  />
+                </Row>
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        )}
+        {/* Multi language */}
 
         {/* Auto Redirect */}
         <SettingContainer>
@@ -508,6 +588,8 @@ const Settings = ({
                 </StyledCol>
                 <StyledCol span={12}>
                   <InputNumber
+                    style={{ marginRight: '10px' }}
+                    data-cy="auto-redirect-score-threshold"
                     min={1}
                     max={99}
                     value={autoRedirectSettings.scoreThreshold || ''}
@@ -515,15 +597,17 @@ const Settings = ({
                       handleAutoRedirectSettingsChange('scoreThreshold', value)
                     }
                   />
+                  %
                 </StyledCol>
               </StyledRow>
 
               <StyledRow gutter={16}>
                 <StyledCol span={12}>
-                  <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
+                  <Label>EXTRA ATTEMPTS ALLOWED</Label>
                 </StyledCol>
                 <StyledCol span={12}>
                   <InputNumber
+                    data-cy="auto-redirect-max-attempts"
                     min={1}
                     max={3}
                     value={autoRedirectSettings.maxRedirects || ''}
@@ -540,6 +624,7 @@ const Settings = ({
                 </StyledCol>
                 <StyledCol span={12}>
                   <SelectInputStyled
+                    data-cy="auto-redirect-que-delivery"
                     disabled={freezeSettings}
                     onChange={(value) => {
                       handleAutoRedirectSettingsChange(
@@ -565,6 +650,7 @@ const Settings = ({
                 </StyledCol>
                 <StyledCol span={12}>
                   <SelectInputStyled
+                    data-cy="auto-redirect-poilcy"
                     disabled={freezeSettings}
                     onChange={(value) => {
                       handleAutoRedirectSettingsChange(
@@ -624,6 +710,86 @@ const Settings = ({
           )
           /* Restrict Question Navigation */
         }
+
+        {/* Timed TEST */}
+        <SettingContainer>
+          <DetailsTooltip
+            title="TIMED TEST"
+            content="The time can be modified in one minute increments. When the time limit is reached, students will be locked out of the assessment. If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off. This ensures that the student does not go over the allotted time."
+            placement="rightTop"
+            premium={assessmentSuperPowersTimedTest}
+          />
+          <StyledRow gutter={16} height="40">
+            <Col span={12}>
+              <Label>
+                <span>TIMED TEST</span>
+              </Label>
+            </Col>
+            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignSwitchRight
+                  data-cy="assignment-time-switch"
+                  size="small"
+                  defaultChecked={false}
+                  disabled
+                  checked={timedAssignment}
+                  onChange={(value) =>
+                    updateTimedTestAttrs('timedAssignment', value)
+                  }
+                />
+                {timedAssignment && (
+                  <>
+                    {/* eslint-disable no-restricted-globals */}
+                    <TimeSpentInput
+                      onChange={(e) => {
+                        if (
+                          e.target.value.length <= 3 &&
+                          e.target.value <= 300
+                        ) {
+                          updateTimedTestAttrs(
+                            'allowedTime',
+                            e.target.value * 60 * 1000
+                          )
+                        }
+                      }}
+                      size="large"
+                      data-cy="assignment-time"
+                      value={
+                        !isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1
+                      }
+                      type="number"
+                      min={1}
+                      max={300}
+                      step={1}
+                      disabled={!assessmentSuperPowersTimedTest}
+                    />
+                    <Label>MINUTES</Label>
+                    {/* eslint-enable no-restricted-globals */}
+                  </>
+                )}
+              </Row>
+              <Row>
+                {timedAssignment && (
+                  <CheckBoxWrapper>
+                    <CheckboxLabel
+                      disabled={
+                        freezeSettings || !assessmentSuperPowersTimedTest
+                      }
+                      data-cy="exit-allowed"
+                      checked={pauseAllowed}
+                      onChange={(e) =>
+                        updateTimedTestAttrs('pauseAllowed', e.target.checked)
+                      }
+                    >
+                      <span>Allow student to save and continue later</span>
+                    </CheckboxLabel>
+                  </CheckBoxWrapper>
+                )}
+              </Row>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+        {/* Timed TEST */}
       </StyledDiv>
     </SettingsWrapper>
   )
@@ -640,6 +806,7 @@ export default connect(
       : state?.tests?.entity?.summary?.totalItems,
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: state?.user?.user?.features,
+    multiLanguageEnabledLCB: getmultiLanguageEnabled(state),
   }),
   null
 )(withRouter(Settings))

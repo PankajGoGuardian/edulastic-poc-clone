@@ -1,5 +1,6 @@
 import { message } from 'antd'
 import moment from 'moment'
+import { isEmpty } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
@@ -14,7 +15,10 @@ const slice = createSlice({
     subscriptionData: {},
     error: '',
     showTrialSubsConfirmation: false,
+    showTrialConfirmationMessage: '',
     products: [],
+    isPaymentServiceModalVisible: false,
+    showHeaderTrialModal: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -79,8 +83,17 @@ const slice = createSlice({
     trialSubsConfirmationAction: (state, { payload }) => {
       state.showTrialSubsConfirmation = payload
     },
+    trialConfirmationMessageAction: (state, { payload }) => {
+      state.showTrialConfirmationMessage = payload
+    },
     setAddOnProducts: (state, { payload }) => {
       state.products = payload
+    },
+    setPaymentServiceModal: (state, { payload }) => {
+      state.isPaymentServiceModalVisible = payload
+    },
+    setShowHeaderTrialModal: (state, { payload }) => {
+      state.showHeaderTrialModal = payload
     },
   },
 })
@@ -88,40 +101,56 @@ const slice = createSlice({
 export { slice }
 
 function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
-  const { subscriptions, itemBankPermissions } = apiPaymentResponse
+  const { subscriptions, itemBankPermissions = [] } = apiPaymentResponse
   const hasSubscriptions = Object.keys(subscriptions).length > 0
-  const hasItemBankPermissions = Object.keys(itemBankPermissions).length > 0
+  const hasItemBankPermissions = !isEmpty(itemBankPermissions)
   const subscriptionPeriod = isTrial ? '14 days' : 'an year'
   const premiumType = isTrial ? 'Trial Premium' : 'Premium'
   if (hasSubscriptions && !hasItemBankPermissions) {
     const { subEndDate } = subscriptions
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     yield call(notification, {
       type: 'success',
-      msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${moment(
-        subEndDate
-      ).format('DD MMM, YYYY')}`,
+      msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
       key: 'handle-payment',
     })
+    yield put(
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'onlyPremiumTrial',
+        subEndDate: formatSubEndDate,
+      })
+    )
   } else if (hasItemBankPermissions && !hasSubscriptions) {
-    const { subEndDate, name: itemBankName } = itemBankPermissions
+    const { subEndDate } = itemBankPermissions[0]
+    const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     yield call(notification, {
       type: 'success',
-      msg: `Congratulations! You are subscribed to ${itemBankName} ${premiumType} Itembank for ${subscriptionPeriod} and the subscription will expire on ${moment(
-        subEndDate
-      ).format('DD MMM, YYYY')}`,
+      msg: `Congratulations! You are subscribed to ${itemBankNames} ${premiumType} Itembank(s) for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
       key: 'handle-payment',
     })
+    yield put(
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'onlySparkTrial',
+        subEndDate: formatSubEndDate,
+      })
+    )
   } else if (hasItemBankPermissions && hasSubscriptions) {
     const { subEndDate } = subscriptions
-    const { name: itemBankName } = itemBankPermissions
+    const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     yield call(notification, {
       type: 'success',
-      msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankName}
-            Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${moment(
-        subEndDate
-      ).format('DD MMM, YYYY')}`,
+      msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankNames}
+            Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
       key: 'handle-payment',
     })
+    yield put(
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'haveBothSparkAndPremiumTrial',
+        subEndDate: formatSubEndDate,
+      })
+    )
   }
 }
 
@@ -158,44 +187,31 @@ function* fetchUserSubscription() {
     const apiUserSubscriptionStatus = yield call(
       subscriptionApi.subscriptionStatus
     )
+    const { result } = apiUserSubscriptionStatus || {}
+    const premiumProductId = result?.products.find(
+      (product) => product.type === 'PREMIUM'
+    )?.id
     const data = {
-      isPremiumTrialUsed: apiUserSubscriptionStatus?.result?.isPremiumTrialUsed,
-      itemBankSubscriptions:
-        apiUserSubscriptionStatus?.result?.itemBankSubscriptions,
-      usedTrialItemBankId:
-        apiUserSubscriptionStatus?.result?.usedTrialItemBankId,
-      premiumProductId: apiUserSubscriptionStatus?.result?.premiumProductId,
-      sparkMathProductId: apiUserSubscriptionStatus?.result?.sparkMathProductId,
+      isPremiumTrialUsed: result?.isPremiumTrialUsed,
+      itemBankSubscriptions: result?.itemBankSubscriptions,
+      usedTrialItemBankId: result?.usedTrialItemBankId,
+      premiumProductId,
     }
 
-    // TODO:  Refactor in Phase -3
-    const products = [
-      {
-        id: data.premiumProductId,
-        type: 'PREMIUM',
-        name: 'Teacher Premium',
-        description:
-          'Get even more out of your trial by adding Spark premium content',
-        price: 100,
-      },
-      {
-        id: data.sparkMathProductId,
-        type: 'ITEM_BANK',
-        name: 'Spark Math',
-        description: 'Curriculum-aligned differentiated math practice',
-        price: 100,
-      },
-    ]
-    yield put(slice.actions.setAddOnProducts(products))
+    yield put(
+      slice.actions.setAddOnProducts(
+        apiUserSubscriptionStatus?.result?.products || []
+      )
+    )
     if (apiUserSubscriptionStatus?.result.subscription === -1) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))
       return
     }
-    if (apiUserSubscriptionStatus.result.subscription) {
+    if (result.subscription) {
       Object.assign(data, {
-        subscription: apiUserSubscriptionStatus.result.subscription,
+        subscription: result.subscription,
       })
-      if (apiUserSubscriptionStatus.result.subscription._id) {
+      if (result.subscription._id) {
         Object.assign(data, {
           success: true,
         })
@@ -205,7 +221,7 @@ function* fetchUserSubscription() {
       yield put(
         slice.actions.updateUserSubscriptionStatus({
           data: {},
-          error: apiUserSubscriptionStatus.result,
+          error: result,
         })
       )
   } catch (err) {
@@ -232,6 +248,7 @@ function* handleStripePayment({ payload }) {
       })
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
+        yield put(slice.actions.setPaymentServiceModal(false))
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
@@ -253,7 +270,7 @@ function* handleStripePayment({ payload }) {
   } catch (err) {
     yield put(slice.actions.stripePaymentFailure(err?.data?.message))
     notification({
-      msg: `Payment Failed : ${err?.data?.message}`,
+      msg: `Payment Failed : ${err?.response?.data?.message}`,
       Key: 'handle-payment',
     })
     console.error('ERROR WHILE PROCESSING PAYMENT : ', err)
@@ -266,11 +283,11 @@ function* handleFreeTrialSaga({ payload }) {
     const apiPaymentResponse = yield call(paymentApi.pay, payload)
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
-      yield put(slice.actions.trialSubsConfirmationAction(true))
       yield call(showSuccessNotifications, apiPaymentResponse, true)
       yield put(slice.actions.resetSubscriptions())
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))
+      yield put(slice.actions.trialSubsConfirmationAction(true))
     } else {
       notification({
         type: 'error',
@@ -282,7 +299,7 @@ function* handleFreeTrialSaga({ payload }) {
   } catch (err) {
     yield put(slice.actions.startTrialFailureAction(err?.data?.message))
     notification({
-      msg: `Trial Subscription : ${err?.data?.message}`,
+      msg: `Trial Subscription : ${err?.response?.data?.message}`,
       Key: 'handle-trial',
     })
     console.error('ERROR WHILE PROCESSING TRIAL SUBSCRIPTION : ', err)

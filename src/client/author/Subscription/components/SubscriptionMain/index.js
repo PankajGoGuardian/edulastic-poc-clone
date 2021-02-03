@@ -257,23 +257,35 @@ const SubscriptionMain = ({
   showRenewalOptions,
   startTrialAction,
   isPaidPremium,
-  isPaidItemBank,
-  setShowSubscriptionAddonModal,
-  sparkMathProductId,
+  setShowSubscriptionAddonModalWithId,
   usedTrialItemBankId,
   products,
+  hasAllPremiumProductAccess,
+  itemBankSubscriptions,
+  settingProductData,
+  sparkMathProductId,
+  sparkMathItemBankId,
+  setShowItemBankTrialUsedModal,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+
+  const isPaidSparkMath =
+    itemBankSubscriptions &&
+    itemBankSubscriptions?.length > 0 &&
+    itemBankSubscriptions?.filter((x) => {
+      return x.itemBankId === sparkMathItemBankId && !x.isTrial
+    })?.length
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
   const isPremiumUser = user.features.premium
 
   const handleSelectStateModal = () => setShowSelectStates(true)
 
-  const handlePurchaseFlow = () => setShowSubscriptionAddonModal(true)
+  const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
   const handleStartTrial = () => {
+    settingProductData()
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
     if (!isBoolean(isPremiumTrialUsed)) {
       return notification({
@@ -282,16 +294,24 @@ const SubscriptionMain = ({
       })
     }
 
+    if (usedTrialItemBankId) {
+      setShowItemBankTrialUsedModal(true)
+      return
+    }
     setIsTrialModalVisible(true)
   }
 
-  // Show start premium trial button, if user is not premium and premium trial is not yet used.
-  const hasPremiumTrialButton = !isPremiumTrialUsed && !isPremiumUser
-
   // Show item bank trial button when item bank trial is not used yet and user is either premium
   // or hasn't used premium trial yet.
-  const hasSparkMathTrialButton =
-    !usedTrialItemBankId && (!isPremiumTrialUsed || isPremiumUser)
+  const hasTrialButton =
+    usedTrialItemBankId !== sparkMathItemBankId &&
+    !isPaidSparkMath &&
+    (!isPremiumTrialUsed || isPremiumUser)
+
+  const handleSparkMathClick = () => {
+    settingProductData()
+    handlePurchaseFlow()
+  }
 
   return (
     <>
@@ -325,7 +345,7 @@ const SubscriptionMain = ({
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {!(isPaidPremium && isPaidItemBank) && (
+            {!hasAllPremiumProductAccess && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -347,7 +367,7 @@ const SubscriptionMain = ({
                 Renew Subscription
               </EduButton>
             )}
-            {hasPremiumTrialButton && (
+            {hasTrialButton && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -375,7 +395,7 @@ const SubscriptionMain = ({
       </ContentSection>
       {isTrialModalVisible && (
         <TrialModal
-          addOnIdsToShow={[sparkMathProductId]}
+          addOnProductIds={[sparkMathProductId]}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
@@ -402,6 +422,7 @@ const SubscriptionMain = ({
                 </AddonDescription>
                 <AddonFooter>
                   <LearnMoreLink
+                    data-cy="LearnMore"
                     href={addonsData[index].learnMoreLinks}
                     target="_blank"
                     rel="noreferrer"
@@ -411,7 +432,7 @@ const SubscriptionMain = ({
                   </LearnMoreLink>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
-                      {!(isPaidPremium && isPaidItemBank) && (
+                      {!(isPaidPremium && isPaidSparkMath) && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <PurchaseLink
@@ -421,13 +442,15 @@ const SubscriptionMain = ({
                               Purchase
                             </PurchaseLink>
                           )}
-                          onClick={handlePurchaseFlow}
+                          onClick={handleSparkMathClick}
                         />
                       )}
-                      {hasSparkMathTrialButton && (
+                      {hasTrialButton && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
-                            <span onClick={handleClick}>try</span>
+                            <span data-cy="trialPurchase" onClick={handleClick}>
+                              try
+                            </span>
                           )}
                           onClick={handleStartTrial}
                         />
@@ -444,9 +467,11 @@ const SubscriptionMain = ({
       <EnterpriseSection>
         <SectionTitle>Enterprise</SectionTitle>
         <SectionDescription>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
-          sollicitudin tincidunt tempus. <br /> Pellentesque auctor eros et
-          metus condimentum aliquet.
+          Get in-depth insights into schoolwide and districtwide progress with
+          Edulastic Enterprise. Deliver common assessments, analyze the instant
+          student data, and manage everything in one place. Enterprise includes
+          Teacher Premium and its collaboration, accommodation, and security
+          tools.
         </SectionDescription>
         <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
           <EduButton
@@ -479,5 +504,4 @@ const SubscriptionMain = ({
 
 export default connect((state) => ({
   products: state?.subscription?.products,
-  sparkMathProductId: state?.subscription?.subscriptionData?.sparkMathProductId,
 }))(SubscriptionMain)

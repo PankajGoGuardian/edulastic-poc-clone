@@ -13,7 +13,11 @@ import {
   Progress,
   CustomPrompt,
 } from '@edulastic/common'
-import { test as testContants, roleuser } from '@edulastic/constants'
+import {
+  test as testContants,
+  roleuser,
+  collections as collectionsConstant,
+} from '@edulastic/constants'
 import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
 import {
@@ -114,6 +118,7 @@ const {
   ITEM_GROUP_TYPES,
   ITEM_GROUP_DELIVERY_TYPES,
 } = testContants
+const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
 class Container extends PureComponent {
   constructor() {
@@ -1044,11 +1049,16 @@ class Container extends PureComponent {
       !showEditButton &&
       !showDuplicateButton &&
       (testStatus === 'draft' || editEnable)
+
+    const premiumOrgCollections = collections.filter(
+      ({ _id }) =>
+        !Object.keys(nonPremiumCollectionsToShareContent).includes(_id)
+    )
     const testItems = (itemGroups || []).flatMap(
       (itemGroup) => itemGroup.items || []
     )
     const hasPremiumQuestion = !!testItems.find((i) =>
-      hasUserGotAccessToPremiumItem(i.collections, collections)
+      hasUserGotAccessToPremiumItem(i.collections, premiumOrgCollections)
     )
 
     const gradeSubject = { grades, subjects }

@@ -11,9 +11,7 @@ import { isBoolean } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 
 // TODO: Update SVG imports here
-import IMG1 from '../../static/1.png'
 import IMG2 from '../../static/2.png'
-import IMG3 from '../../static/3.png'
 
 import IMG4 from '../../static/text-speech.svg'
 import IMG5 from '../../static/test-security-settings.svg'
@@ -51,39 +49,14 @@ import {
   AddonImg,
   AddonDescription,
   EnterpriseSection,
-  HaveLicenseKey,
   CustomButton,
   AddonFooter,
   PurchaseLink,
   LearnMoreLink,
+  HaveLicenseKey,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
-
-const getUpgradeToTeacherPlanActions = ({
-  openPaymentServiceModal,
-  openHasLicenseKeyModal,
-  isblur,
-}) => (
-  <ActionsWrapper>
-    <AuthorCompleteSignupButton
-      renderButton={(handleClick) => (
-        <EduButton height="40px" onClick={handleClick} disabled={isblur}>
-          UPGRADE NOW FOR $100/YEAR
-        </EduButton>
-      )}
-      onClick={openPaymentServiceModal}
-    />
-    <EduButton
-      isGhost
-      height="40px"
-      onClick={openHasLicenseKeyModal}
-      disabled={isblur}
-    >
-      ALREADY HAVE A LICENSE KEY
-    </EduButton>
-  </ActionsWrapper>
-)
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -98,35 +71,13 @@ const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   </ActionsWrapper>
 )
 
-const getEnterprisePlanActions = () => (
-  <ActionsWrapper>
-    <EduButton height="40px" isGhost>
-      REQUEST A QUOTE
-    </EduButton>
-  </ActionsWrapper>
-)
-
 const availablePlans = [
-  {
-    imgSrc: IMG1,
-    title: 'Upgrade to Teacher Premium',
-    description:
-      'Get Additional reports, options to assist students collaborate with collegues, anti-cheating tools and more.',
-    getActionsComp: getUpgradeToTeacherPlanActions,
-  },
   {
     imgSrc: IMG2,
     title: 'Upgrade Multiple Users to Premium',
     description:
       'Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.',
     getActionsComp: getUpgradeToMultipleUsersPlanAction,
-  },
-  {
-    imgSrc: IMG3,
-    title: 'Edulastic Enterprise',
-    description:
-      'Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.',
-    getActionsComp: getEnterprisePlanActions,
   },
 ]
 
@@ -225,7 +176,6 @@ const PlansComponent = ({
   getActionsComp,
   isblur,
   openPaymentServiceModal,
-  openHasLicenseKeyModal,
   openPurchaseLicenseModal,
 }) => (
   <PlansContainer isblur={isblur}>
@@ -240,7 +190,6 @@ const PlansComponent = ({
     </ContentWrapper>
     {getActionsComp({
       openPaymentServiceModal,
-      openHasLicenseKeyModal,
       openPurchaseLicenseModal,
       isblur,
     })}
@@ -248,10 +197,7 @@ const PlansComponent = ({
 )
 
 const SubscriptionMain = ({
-  user,
-  isSubscribed = false,
   openPaymentServiceModal,
-  openHasLicenseKeyModal,
   openPurchaseLicenseModal,
   isPremiumTrialUsed,
   showRenewalOptions,
@@ -266,6 +212,9 @@ const SubscriptionMain = ({
   sparkMathProductId,
   sparkMathItemBankId,
   setShowItemBankTrialUsedModal,
+  openHasLicenseKeyModal,
+  isPremiumUser,
+  isPremium,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -278,7 +227,6 @@ const SubscriptionMain = ({
     })?.length
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
-  const isPremiumUser = user.features.premium
 
   const handleSelectStateModal = () => setShowSelectStates(true)
 
@@ -320,9 +268,7 @@ const SubscriptionMain = ({
           {availablePlans.map((plan, index) => (
             <PlansComponent
               key={index}
-              isblur={isSubscribed && index === 0}
               openPaymentServiceModal={openPaymentServiceModal}
-              openHasLicenseKeyModal={openHasLicenseKeyModal}
               openPurchaseLicenseModal={openPurchaseLicenseModal}
               {...plan}
             />
@@ -385,12 +331,14 @@ const SubscriptionMain = ({
               />
             )}
           </FlexContainer>
-          <HaveLicenseKey
-            data-cy="subscriptionHaveLicenseKey"
-            onClick={openHasLicenseKeyModal}
-          >
-            HAVE LICENSE KEY
-          </HaveLicenseKey>
+          {!isPremium && (
+            <HaveLicenseKey
+              data-cy="subscriptionHaveLicenseKey"
+              onClick={openHasLicenseKeyModal}
+            >
+              HAVE LICENSE KEY
+            </HaveLicenseKey>
+          )}
         </ContentCards>
       </ContentSection>
       {isTrialModalVisible && (
@@ -406,7 +354,11 @@ const SubscriptionMain = ({
       )}
       <AddonSection>
         <SectionContainer>
-          <SectionTitle>Premium addons to make it even better</SectionTitle>
+          <SectionTitle>
+            {isPremium
+              ? 'Add ons for your Premium Version'
+              : 'Premium addons to make it even better'}
+          </SectionTitle>
           <SectionDescription>
             You can bundle one or more of the following addons to the teacher
             premium subscription that will <br /> make it easier to deliver

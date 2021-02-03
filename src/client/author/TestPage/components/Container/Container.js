@@ -102,7 +102,9 @@ import { redirectToStudentPage } from '../../../../publicTest/utils'
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSelectedLanguageSelector,
 } from '../../../../student/Assignments/ducks'
+import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -280,6 +282,8 @@ class Container extends PureComponent {
       resumeAssignment,
       setEditEnable,
       editEnable,
+      languagePreference,
+      setSelectedLanguage,
     } = this.props
 
     const { testLoaded, studentRedirected } = this.state
@@ -344,7 +348,9 @@ class Container extends PureComponent {
             history,
             startAssignment,
             resumeAssignment,
-            test
+            test,
+            languagePreference,
+            setSelectedLanguage
           )
           // eslint-disable-next-line react/no-did-update-set-state
           this.setState({ studentRedirected: true })
@@ -1238,6 +1244,7 @@ const enhance = compose(
       pageNumber: state?.testsAddItems?.page || 1,
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isOrganizationDA: isOrganizationDistrictSelector(state),
+      languagePreference: getSelectedLanguageSelector(state),
     }),
     {
       createTest: createTestAction,
@@ -1267,6 +1274,7 @@ const enhance = compose(
       setEditEnable: setEditEnableAction,
       resetPageState: resetPageStateAction,
       getTestIdFromVersionId: getTestIdFromVersionIdAction,
+      setSelectedLanguage: setSelectedLanguageAction,
     }
   )
 )

@@ -47,6 +47,7 @@ import {
   setIsActivityCreatingAction,
   utaStartTimeUpdateRequired,
   setShowRetakeModalAction,
+  setSelectedLanguageAction,
 } from '../sharedDucks/AssignmentModule/ducks'
 
 import {
@@ -584,9 +585,8 @@ function* startAssignment({ payload }) {
       isPlaylist = false,
       studentRecommendation,
       safeBrowser,
-      languagePreference,
     } = payload
-
+    const languagePreference = yield select(getSelectedLanguageSelector)
     if (safeBrowser && !isSEB()) {
       const sebUrl = getSebUrl({
         testId,
@@ -761,6 +761,7 @@ function* startAssignment({ payload }) {
     yield put(
       setIsActivityCreatingAction({ assignmentId: '', isLoading: false })
     )
+    yield put(setSelectedLanguageAction(''))
   }
 }
 

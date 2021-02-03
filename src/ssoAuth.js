@@ -10,14 +10,14 @@ import { compose } from 'redux'
 import { authApi } from '@edulastic/api'
 import { Spin } from 'antd'
 
-const SsoAuth = ({ user, redirectUrl }) => {
+const SsoAuth = ({ user, redirectUrl, contentId, action }) => {
   const [loading, setLoading] = useState(true)
   const [responseData, setResponseData] = useState('Something went wrong.')
   useEffect(() => {
     // call api and get signature and data
     if (user && redirectUrl) {
       authApi
-        .wordPressLoginData({ redUrl: redirectUrl })
+        .wordPressLoginData({ redUrl: redirectUrl, cId: contentId, action })
         .then((response) => {
           setLoading(false)
           // post the signature to the third party

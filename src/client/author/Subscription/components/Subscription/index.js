@@ -409,6 +409,7 @@ const Subscription = (props) => {
         subType={subType}
         subEndDate={subEndDate}
         isPaidPremium={isPaidPremium}
+        isPremiumUser={isPremiumUser}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
       />

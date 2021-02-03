@@ -131,16 +131,6 @@ export const EnterpriseSection = styled.div`
     border-radius: 10px;
   }
 `
-export const HaveLicenseKey = styled.div`
-  text-align: center;
-  font-size: 9px;
-  font-weight: 600;
-  margin-top: 25px;
-  text-transform: uppercase;
-  cursor: pointer;
-  width: 100%;
-  color: ${white};
-`
 
 export const AvailablePlansContainer = styled.div`
   width: 100%;

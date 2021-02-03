@@ -627,7 +627,7 @@ const getFixedPostion = (el) => {
 const getToolbarButtons = (
   size,
   toolbarSize,
-  additionalToolbar,
+  additionalToolbarOptions,
   buttons,
   buttonCounts
 ) => {
@@ -645,7 +645,7 @@ const getToolbarButtons = (
   toolbarButtons.moreText.buttonsVisible =
     buttonCounts || toolbarButtons.moreText.buttonsVisible
   toolbarButtons.moreMisc = {
-    buttons: additionalToolbar,
+    buttons: additionalToolbarOptions,
     buttonsVisible: 3,
   }
 
@@ -730,38 +730,30 @@ const CustomEditor = ({
   const [mathField, setMathField] = useState(null)
   const { currentLanguage } = useContext(LanguageContext)
 
-  // don't show additional tool buttons
-  // if selected language isn't EN
-  // when authoring a question
-  const additionalToolbar =
-    currentLanguage && currentLanguage !== appLanguages.LANGUAGE_EN
-      ? []
-      : additionalToolbarOptions
-
   const EditorRef = useRef(null)
 
   const toolbarButtons = getToolbarButtons(
     'STD',
     toolbarSize,
-    additionalToolbar,
+    additionalToolbarOptions,
     buttons
   )
   const toolbarButtonsMD = getToolbarButtons(
     'MD',
     toolbarSize,
-    additionalToolbar,
+    additionalToolbarOptions,
     buttons
   )
   const toolbarButtonsSM = getToolbarButtons(
     'SM',
     toolbarSize,
-    additionalToolbar,
+    additionalToolbarOptions,
     buttons
   )
   const toolbarButtonsXS = getToolbarButtons(
     'XS',
     toolbarSize,
-    additionalToolbar,
+    additionalToolbarOptions,
     buttons
   )
   const specialCharactersSets = getSpecialCharacterSets(customCharacters)
@@ -1126,21 +1118,21 @@ const CustomEditor = ({
   }
 
   const hasResponseBoxBtn = () =>
-    additionalToolbar.includes('textinput') ||
-    additionalToolbar.includes('response') ||
-    additionalToolbar.includes('mathinput') ||
-    additionalToolbar.includes('mathunit') ||
-    additionalToolbar.includes('textdropdown') ||
-    additionalToolbar.includes('responseBoxes') ||
-    additionalToolbar.includes('paragraphNumber')
+    additionalToolbarOptions.includes('textinput') ||
+    additionalToolbarOptions.includes('response') ||
+    additionalToolbarOptions.includes('mathinput') ||
+    additionalToolbarOptions.includes('mathunit') ||
+    additionalToolbarOptions.includes('textdropdown') ||
+    additionalToolbarOptions.includes('responseBoxes') ||
+    additionalToolbarOptions.includes('paragraphNumber')
 
   useEffect(() => {
     let toolbarWidth = toolbarContainerRef?.current?.clientWidth
     // if response button is there than subtracting the width of response button
     if (hasResponseBoxBtn()) {
-      for (let i = 0; i < additionalToolbar.length; i++) {
+      for (let i = 0; i < additionalToolbarOptions.length; i++) {
         if (i === 3) break
-        toolbarWidth -= buttonWidthMap[additionalToolbar[i]]
+        toolbarWidth -= buttonWidthMap[additionalToolbarOptions[i]]
       }
     }
     /**
@@ -1159,21 +1151,21 @@ const CustomEditor = ({
     const _toolbarButtons = getToolbarButtons(
       'STD',
       toolbarSize,
-      additionalToolbar,
+      additionalToolbarOptions,
       buttons,
       buttonCounts
     )
     const _toolbarButtonsMD = getToolbarButtons(
       'MD',
       toolbarSize,
-      additionalToolbar,
+      additionalToolbarOptions,
       buttons,
       buttonCounts
     )
     const _toolbarButtonsSM = getToolbarButtons(
       'SM',
       toolbarSize,
-      additionalToolbar,
+      additionalToolbarOptions,
       buttons,
       buttonCounts
     )

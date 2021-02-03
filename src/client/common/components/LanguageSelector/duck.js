@@ -74,11 +74,16 @@ export const getCurrentLanguage = createSelector(
   }
 )
 
-// used in LCB and student side grades
+// used in LCB, ExpressGrader and student side grades
 export const languagePreferenceSelector = (state, props = {}) => {
+  const { isLCBView, isStudentReport, isExpressGrader } = props || {}
   let preferredLanguage = 'en'
-  const { isLCBView, isStudentReport } = props || {}
-  if (isLCBView) {
+
+  if (isExpressGrader) {
+    const { preferredLanguage: studentAttemptLanguage = 'en' } =
+      state?.studentQuestionResponse?.data || {}
+    preferredLanguage = studentAttemptLanguage
+  } else if (isLCBView) {
     const { entities = [] } = state?.author_classboard_testActivity || {}
     const { studentId } = props
     if (studentId) {

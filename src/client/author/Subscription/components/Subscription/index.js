@@ -398,6 +398,8 @@ const Subscription = (props) => {
     ? [productData.productId]
     : null
 
+  const isPremium = subType && subType !== 'FREE' // here user can be premium, trial premium, or partial premium
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -409,6 +411,7 @@ const Subscription = (props) => {
         subType={subType}
         subEndDate={subEndDate}
         isPaidPremium={isPaidPremium}
+        isPremium={isPremium}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
       />
@@ -425,8 +428,8 @@ const Subscription = (props) => {
         isPaidPremium={isPaidPremium}
         showRenewalOptions={showRenewalOptions}
         usedTrialItemBankId={usedTrialItemBankId}
-        premiumUser={isPremiumUser}
-        user={user}
+        isPremiumUser={isPremiumUser}
+        isPremium={isPremium}
         setShowSubscriptionAddonModalWithId={
           setShowSubscriptionAddonModalWithId
         }

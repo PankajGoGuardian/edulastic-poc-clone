@@ -428,7 +428,7 @@ const Subscription = (props) => {
         isPaidPremium={isPaidPremium}
         showRenewalOptions={showRenewalOptions}
         usedTrialItemBankId={usedTrialItemBankId}
-        premiumUser={isPremiumUser}
+        isPremiumUser={isPremiumUser}
         isPremium={isPremium}
         setShowSubscriptionAddonModalWithId={
           setShowSubscriptionAddonModalWithId

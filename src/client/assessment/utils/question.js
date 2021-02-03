@@ -1,6 +1,7 @@
 import { isObject, get, set, isEmpty } from 'lodash'
 import { produce } from 'immer'
 import { appLanguages, questionType } from '@edulastic/constants'
+import { isValidUpdate } from '@edulastic/common'
 
 const { useLanguageFeatureQn } = questionType
 const { LANGUAGE_EN } = appLanguages
@@ -52,6 +53,13 @@ const patternsByQuestionType = {
   [questionType.TOKEN_HIGHLIGHT]: [...commonPatterns, /template/],
 }
 
+const clozeTypes = [
+  questionType.CLOZE_DRAG_DROP,
+  questionType.EXPRESSION_MULTIPART,
+  questionType.CLOZE_DROP_DOWN,
+  questionType.CLOZE_TEXT,
+]
+
 const getAvailablePaths = (data, prev = '', paths = []) => {
   Object.keys(data).forEach((key) => {
     const path = prev + (prev ? '.' : '') + key
@@ -85,6 +93,16 @@ export const changeDataInPreferredLanguage = (
     useLanguageFeatureQn.includes(newQuestion.type) &&
     patternsByQuestionType[newQuestion.type]
   ) {
+    if (clozeTypes.includes(newQuestion.type)) {
+      const vaild = isValidUpdate(
+        get(newQuestion, `stimulus`, ''),
+        get(prevQuestion, `stimulus`, '')
+      )
+      if (!vaild) {
+        return prevQuestion
+      }
+    }
+
     const dataFields = getLanguageDataPaths(newQuestion.type, newQuestion)
     const changedQuestion = produce(newQuestion, (draft) => {
       if (!draft.languageFeatures) {

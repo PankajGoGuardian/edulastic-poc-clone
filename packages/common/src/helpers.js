@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { get, round, isNaN, isString, omit } from 'lodash'
+import { get, round, isNaN, isString, omit, isEqual } from 'lodash'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import { fileApi } from '@edulastic/api'
@@ -362,6 +362,13 @@ export const reIndexResponses = (htmlStr) => {
     })
 
   return $(parsedHTML).html()
+}
+
+export const isValidUpdate = (prevContent = '', currentContent = '') => {
+  const uuidPattern = /id="(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12})"/g
+  const prevIds = prevContent.match(uuidPattern)
+  const newIds = currentContent.match(uuidPattern)
+  return isEqual(prevIds, newIds)
 }
 
 const tagMapping = {

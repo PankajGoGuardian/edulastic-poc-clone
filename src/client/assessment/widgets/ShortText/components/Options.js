@@ -18,6 +18,7 @@ const Options = ({
   fillSections,
   cleanSections,
   advancedAreOpen,
+  showScoringSection,
   extraInScoring,
   showScoringType,
   isCorrectAnsTab,
@@ -27,6 +28,7 @@ const Options = ({
     cleanSections={cleanSections}
     advancedAreOpen={advancedAreOpen}
     item={item}
+    showScoringSection={showScoringSection}
     extraInScoring={extraInScoring}
     showScoringType={showScoringType}
     isCorrectAnsTab={isCorrectAnsTab}
@@ -53,6 +55,7 @@ Options.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
+  showScoringSection: PropTypes.bool,
   extraInScoring: PropTypes.elementType,
   showScoringType: PropTypes.bool,
 }
@@ -61,6 +64,7 @@ Options.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
   advancedAreOpen: false,
+  showScoringSection: false,
   extraInScoring: null,
   showScoringType: true,
 }

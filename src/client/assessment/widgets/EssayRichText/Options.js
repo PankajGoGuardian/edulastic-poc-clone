@@ -39,9 +39,10 @@ const Options = ({
       title={t('common.options.title')}
       fillSections={fillSections}
       cleanSections={cleanSections}
-      advancedAreOpen={advancedAreOpen}
       item={item}
       handleItemChangeChange={handleItemChangeChange}
+      showScoringSection
+      showScoringSectionAnyRole
     >
       <LayoutComponent
         item={item}

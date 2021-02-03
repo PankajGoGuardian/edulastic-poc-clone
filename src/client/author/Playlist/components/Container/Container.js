@@ -1,11 +1,6 @@
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { greyLight1, greyThemeLight } from '@edulastic/colors'
-import {
-  FlexContainer,
-  withWindowSizes,
-  CustomModalStyled,
-  EduButton,
-} from '@edulastic/common'
+import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
 import qs from 'qs'
@@ -26,12 +21,12 @@ import {
 } from '../../../../student/Login/ducks'
 import ListHeader from '../../../src/components/common/ListHeader'
 import {
+  getCollectionsSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
-  getSparkMathIdSelector,
 } from '../../../src/selectors/user'
 import CardWrapper from '../../../TestList/components/CardWrapper/CardWrapper'
 import {
@@ -132,7 +127,7 @@ class TestList extends Component {
     blockStyle: 'tile',
     isShowFilter: false,
     openSidebar: false,
-    isVisible: false,
+    isPlaylistAvailableModalVisible: false,
   }
 
   getUrlToPush(page = undefined) {
@@ -150,8 +145,8 @@ class TestList extends Component {
     return urlToPush
   }
 
-  showModal = () => {
-    this.setState({ isVisible: false })
+  closePlaylistAvailableModal = () => {
+    this.setState({ isPlaylistAvailableModalVisible: false })
   }
 
   componentDidMount() {
@@ -164,12 +159,12 @@ class TestList extends Component {
       getAllTags,
       match: { params = {} },
       playListFilters,
+      collectionSelector = [],
       history,
       interestedSubjects,
       interestedGrades,
       sort: initSort = {},
       recentPlaylist,
-      sparkMathId,
     } = this.props
 
     const {
@@ -214,12 +209,15 @@ class TestList extends Component {
     getAllTags({ type: 'playlist' })
     receiveRecentPlayLists()
 
+    const sparkMathId =
+      collectionSelector.find((item) => item.name === 'Spark Math')?._id || null
+
     if (
       searchFilters.subject.includes('Mathematics') &&
       searchFilters.collections.includes(sparkMathId) &&
       !recentPlaylist.length
     )
-      this.setState({ isVisible: true })
+      this.setState({ isPlaylistAvailableModalVisible: true })
   }
 
   updateFilterState = (searchState, sort) => {
@@ -510,7 +508,12 @@ class TestList extends Component {
       sort = {},
     } = this.props
 
-    const { blockStyle, isShowFilter, openSidebar, isVisible } = this.state
+    const {
+      blockStyle,
+      isShowFilter,
+      openSidebar,
+      isPlaylistAvailableModalVisible,
+    } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
       <FilterToggleBtn
@@ -656,10 +659,12 @@ class TestList extends Component {
             </Main>
           </FlexContainer>
           <SelectCollectionModal contentType="PLAYLIST" />
-          <PlaylistAvailableModal
-            isVisible={isVisible}
-            closeModal={this.showModal}
-          />
+          {isPlaylistAvailableModalVisible && (
+            <PlaylistAvailableModal
+              isVisible={isPlaylistAvailableModalVisible}
+              closeModal={this.closePlaylistAvailableModal}
+            />
+          )}
         </Container>
       </>
     )
@@ -688,7 +693,7 @@ const enhance = compose(
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
       recentPlaylist: getRecentPlaylistSelector(state),
-      sparkMathId: getSparkMathIdSelector(state),
+      collectionSelector: getCollectionsSelector(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

@@ -154,10 +154,6 @@ const SingleAssessmentReportFilters = ({
         delete urlParams.schoolIds
         delete urlParams.teacherIds
       }
-      if (role === roleuser.SCHOOL_ADMIN) {
-        urlParams.schoolIds =
-          urlParams.schoolIds || get(user, 'institutionIds', []).join(',')
-      }
       // set filters and testId
       _setFilters(urlParams)
       // TODO: enable selection of testIds from url and saved filters
@@ -179,10 +175,6 @@ const SingleAssessmentReportFilters = ({
       filters: { ...filters },
       selectedTests: testIds,
       ..._settings,
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      settings.filters.schoolIds =
-        settings.filters.schoolIds || get(user, 'institutionIds', []).join(',')
     }
     _onGoClick(settings)
   }

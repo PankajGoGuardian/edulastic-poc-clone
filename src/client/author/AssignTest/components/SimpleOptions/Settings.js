@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Select, Input, InputNumber } from 'antd'
-import { green, red, blueBorder } from '@edulastic/colors'
+import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
+import { green, red, blueBorder, themeColor } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
 import {
   RadioBtn,
   notification,
   SelectInputStyled,
   NumberInputStyled,
+  CheckboxLabel,
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
 import {
@@ -20,6 +21,8 @@ import {
   Label,
   StyledCol,
   StyledRow,
+  CheckBoxWrapper,
+  TimeSpentInput,
 } from './styled'
 import { getUserRole } from '../../../src/selectors/user'
 import {
@@ -65,6 +68,8 @@ const Settings = ({
   calculatorProvider,
   features,
   multiLanguageEnabledLCB,
+  match,
+  totalItems,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -73,6 +78,7 @@ const Settings = ({
     color: blueBorder,
     message: '',
   })
+  const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
 
   const passwordValidationStatus = (assignmentPassword) => {
     if (assignmentPassword.split(' ').length > 1) {
@@ -193,6 +199,38 @@ const Settings = ({
     changeField('autoRedirectSettings')(newSettingsState.autoRedirectSettings)
   }
 
+  const updateTimedTestAttrs = (attr, value) => {
+    if (
+      match?.params?.assignmentId &&
+      match?.params?.classId &&
+      !timedTestConfirmed
+    ) {
+      Modal.confirm({
+        title: 'Do you want to Proceed ?',
+        content:
+          'Changes made in Timed Assignment will impact all Students who are In Progress or Not Started.',
+        onOk: () => {
+          if (attr === 'timedAssignment' && value)
+            overRideSettings('allowedTime', totalItems * 60 * 1000)
+          overRideSettings(attr, value)
+          setTimedtestConfirmed(true)
+          Modal.destroyAll()
+        },
+        onCancel: () => {},
+        okText: 'Proceed',
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor },
+        },
+      })
+      return
+    }
+    if (attr === 'timedAssignment' && value)
+      overRideSettings('allowedTime', totalItems * 60 * 1000)
+    overRideSettings(attr, value)
+  }
+
   const {
     assessmentSuperPowersAutoRedirect,
     assessmentSuperPowersCheckAnswerTries,
@@ -201,6 +239,7 @@ const Settings = ({
     assessmentSuperPowersShowCalculator,
     assessmentSuperPowersTimedTest,
     assessmentSuperPowersRestrictQuestionBackNav,
+    maxAttemptAllowed,
   } = features
 
   const {
@@ -216,6 +255,9 @@ const Settings = ({
     autoRedirectSettings,
     blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
     multiLanguageEnabled = !!tempTestSettings.multiLanguageEnabled,
+    timedAssignment = tempTestSettings.timedAssignment,
+    allowedTime = tempTestSettings.allowedTime,
+    pauseAllowed = tempTestSettings.pauseAllowed,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -264,7 +306,7 @@ const Settings = ({
           <DetailsTooltip
             title="MAXIMUM ATTEMPTS ALLOWED"
             content="Control the number of times a student can take the assignment."
-            premium={assessmentSuperPowersTimedTest}
+            premium={maxAttemptAllowed}
           />
           <StyledRow gutter={16} mb="15px">
             <Col span={12}>
@@ -273,7 +315,7 @@ const Settings = ({
             <Col span={12}>
               <NumberInputStyled
                 size="large"
-                disabled={freezeSettings || !assessmentSuperPowersTimedTest}
+                disabled={freezeSettings || !maxAttemptAllowed}
                 value={maxAttempts}
                 onChange={(value) => overRideSettings('maxAttempts', value)}
                 min={1}
@@ -452,7 +494,7 @@ const Settings = ({
               <DetailsTooltip
                 title="CHECK ANSWER TRIES PER QUESTION"
                 content="Control whether student can check in answer during attempt or not. Value mentioned will be equivalent to number of attempts allowed per student."
-                premium={assessmentSuperPowersTimedTest}
+                premium={assessmentSuperPowersCheckAnswerTries}
               />
               <StyledRow gutter={16} mb="15px">
                 <Col span={12}>
@@ -668,6 +710,86 @@ const Settings = ({
           )
           /* Restrict Question Navigation */
         }
+
+        {/* Timed TEST */}
+        <SettingContainer>
+          <DetailsTooltip
+            title="TIMED TEST"
+            content="The time can be modified in one minute increments. When the time limit is reached, students will be locked out of the assessment. If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off. This ensures that the student does not go over the allotted time."
+            placement="rightTop"
+            premium={assessmentSuperPowersTimedTest}
+          />
+          <StyledRow gutter={16} height="40">
+            <Col span={12}>
+              <Label>
+                <span>TIMED TEST</span>
+              </Label>
+            </Col>
+            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignSwitchRight
+                  data-cy="assignment-time-switch"
+                  size="small"
+                  defaultChecked={false}
+                  disabled
+                  checked={timedAssignment}
+                  onChange={(value) =>
+                    updateTimedTestAttrs('timedAssignment', value)
+                  }
+                />
+                {timedAssignment && (
+                  <>
+                    {/* eslint-disable no-restricted-globals */}
+                    <TimeSpentInput
+                      onChange={(e) => {
+                        if (
+                          e.target.value.length <= 3 &&
+                          e.target.value <= 300
+                        ) {
+                          updateTimedTestAttrs(
+                            'allowedTime',
+                            e.target.value * 60 * 1000
+                          )
+                        }
+                      }}
+                      size="large"
+                      data-cy="assignment-time"
+                      value={
+                        !isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1
+                      }
+                      type="number"
+                      min={1}
+                      max={300}
+                      step={1}
+                      disabled={!assessmentSuperPowersTimedTest}
+                    />
+                    <Label>MINUTES</Label>
+                    {/* eslint-enable no-restricted-globals */}
+                  </>
+                )}
+              </Row>
+              <Row>
+                {timedAssignment && (
+                  <CheckBoxWrapper>
+                    <CheckboxLabel
+                      disabled={
+                        freezeSettings || !assessmentSuperPowersTimedTest
+                      }
+                      data-cy="exit-allowed"
+                      checked={pauseAllowed}
+                      onChange={(e) =>
+                        updateTimedTestAttrs('pauseAllowed', e.target.checked)
+                      }
+                    >
+                      <span>Allow student to save and continue later</span>
+                    </CheckboxLabel>
+                  </CheckBoxWrapper>
+                )}
+              </Row>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+        {/* Timed TEST */}
       </StyledDiv>
     </SettingsWrapper>
   )

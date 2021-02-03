@@ -1,10 +1,10 @@
+import { camelCase } from 'lodash'
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { CheckboxLabel, CustomModalStyled, EduButton } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import { title } from '@edulastic/colors'
-import { camelCase } from 'lodash'
 import { ModalBody, AddonList, FlexRow, Total } from './styled'
 
 const getInitialSelectedProductIds = ({

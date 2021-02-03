@@ -165,6 +165,7 @@ const EditShortText = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
+        showScoringSection // To show scoring section regardless advanced section is open or close
         item={item}
         extraInScoring={renderOptions()}
         showScoringType={false} // To hide scoring method section inside scoring section

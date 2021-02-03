@@ -21,6 +21,7 @@ import {
 } from '../../../../student/Login/ducks'
 import ListHeader from '../../../src/components/common/ListHeader'
 import {
+  getCollectionsSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   getInterestedCurriculumsSelector,
@@ -70,6 +71,7 @@ import {
   checkPlayListAction,
   getSortFilterStateSelector,
   initialSortState,
+  getRecentPlaylistSelector,
 } from '../../ducks'
 import Actions from '../../../ItemList/components/Actions'
 import SelectCollectionModal from '../../../ItemList/components/Actions/SelectCollection'
@@ -79,6 +81,7 @@ import InputTag from '../../../ItemList/components/ItemFilter/SearchTag'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import SortMenu from '../../../ItemList/components/SortMenu'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
+import PlaylistAvailableModal from '../../playListAvailable/playListAvailableModal'
 
 function getUrlFilter(filter) {
   if (filter === 'AUTHORED_BY_ME') {
@@ -124,6 +127,7 @@ class TestList extends Component {
     blockStyle: 'tile',
     isShowFilter: false,
     openSidebar: false,
+    isPlaylistAvailableModalVisible: false,
   }
 
   getUrlToPush(page = undefined) {
@@ -141,6 +145,10 @@ class TestList extends Component {
     return urlToPush
   }
 
+  closePlaylistAvailableModal = () => {
+    this.setState({ isPlaylistAvailableModalVisible: false })
+  }
+
   componentDidMount() {
     const {
       receivePlaylists,
@@ -151,11 +159,14 @@ class TestList extends Component {
       getAllTags,
       match: { params = {} },
       playListFilters,
+      collectionSelector = [],
       history,
       interestedSubjects,
       interestedGrades,
       sort: initSort = {},
+      recentPlaylist,
     } = this.props
+
     const {
       subject = interestedSubjects || [],
       grades = interestedGrades || [],
@@ -203,6 +214,16 @@ class TestList extends Component {
     receivePlaylists({ page: pageFinal, limit, search: searchFilters, sort })
     getAllTags({ type: 'playlist' })
     receiveRecentPlayLists()
+
+    const sparkMathId = collectionSelector.find(
+      (item) => item.name === 'Spark Math'
+    )?._id
+
+    if (
+      searchFilters.collections.includes(sparkMathId) &&
+      !recentPlaylist.length
+    )
+      this.setState({ isPlaylistAvailableModalVisible: true })
   }
 
   updateFilterState = (searchState, sort) => {
@@ -493,7 +514,12 @@ class TestList extends Component {
       sort = {},
     } = this.props
 
-    const { blockStyle, isShowFilter, openSidebar } = this.state
+    const {
+      blockStyle,
+      isShowFilter,
+      openSidebar,
+      isPlaylistAvailableModalVisible,
+    } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
       <FilterToggleBtn
@@ -501,7 +527,6 @@ class TestList extends Component {
         toggleFilter={this.toggleFilter}
       />
     )
-
     return (
       <>
         <ListHeader
@@ -640,6 +665,12 @@ class TestList extends Component {
             </Main>
           </FlexContainer>
           <SelectCollectionModal contentType="PLAYLIST" />
+          {isPlaylistAvailableModalVisible && (
+            <PlaylistAvailableModal
+              isVisible={isPlaylistAvailableModalVisible}
+              closeModal={this.closePlaylistAvailableModal}
+            />
+          )}
         </Container>
       </>
     )
@@ -667,6 +698,8 @@ const enhance = compose(
       selectedPlayLists: getSelectedPlaylistSelector(state),
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
+      recentPlaylist: getRecentPlaylistSelector(state),
+      collectionSelector: getCollectionsSelector(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

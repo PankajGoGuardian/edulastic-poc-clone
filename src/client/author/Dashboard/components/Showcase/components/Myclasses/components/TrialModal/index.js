@@ -174,6 +174,11 @@ TrialModal.propTypes = {
   isPremiumTrialUsed: PropTypes.bool.isRequired,
   startPremiumTrial: PropTypes.func.isRequired,
   products: PropTypes.array.isRequired,
+  setShowHeaderTrialModal: PropTypes.func,
+}
+
+TrialModal.defaultProps = {
+  setShowHeaderTrialModal: () => {},
 }
 
 export default TrialModal

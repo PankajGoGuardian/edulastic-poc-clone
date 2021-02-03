@@ -12,6 +12,7 @@ import {
   NextButton,
   SliderContainer,
   LearnMore,
+  TransparentButton,
   SlideContainer,
   SlideDescription,
 } from './styled'
@@ -58,24 +59,36 @@ const BannerSlider = ({
             }}
           >
             <SlideContainer>
-              {bannerSlides.map((slide, index) => (
-                <Slides
-                  className={bannerLength === index + 1 ? 'last' : ''}
-                  bgImage={slide.imageUrl}
-                  key={slide._id}
-                  onClick={() =>
-                    bannerActionHandler(
-                      slide.config.filters[0],
-                      slide.description
-                    )
-                  }
-                >
-                  <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
-                  <SlideDescription data-cy={slide.description}>
-                    {slide.description}
-                  </SlideDescription>
-                </Slides>
-              ))}
+              {bannerSlides.map((slide, index) => {
+                const isSparkMathTile =
+                  slide.description === 'Spark Math Playlist'
+
+                return (
+                  <Slides
+                    className={bannerLength === index + 1 ? 'last' : ''}
+                    bgImage={slide.imageUrl}
+                    key={slide._id}
+                    onClick={() =>
+                      bannerActionHandler(
+                        slide.config.filters[0],
+                        slide.description,
+                        isSparkMathTile
+                      )
+                    }
+                  >
+                    {isSparkMathTile ? (
+                      <TransparentButton data-cy="tryItFree">
+                        Try it free
+                      </TransparentButton>
+                    ) : (
+                      <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
+                    )}
+                    <SlideDescription data-cy={slide.description}>
+                      {slide.description}
+                    </SlideDescription>
+                  </Slides>
+                )
+              })}
             </SlideContainer>
           </PerfectScrollbar>
         </ScrollbarContainer>

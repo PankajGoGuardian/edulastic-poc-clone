@@ -1,6 +1,7 @@
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { Spin } from 'antd'
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const TrialConfirmationModal = ({
@@ -11,9 +12,14 @@ const TrialConfirmationModal = ({
   handleGoToCollectionClick,
   title,
   isBlocked,
+  history,
 }) => {
   const handleCloseModal = () => {
     showTrialSubsConfirmationAction(false)
+  }
+  const handleGoToDashboard = () => {
+    handleCloseModal()
+    history.push('/author/dashboard')
   }
   const { hasTrial, subEndDate } = showTrialConfirmationMessage
 
@@ -28,7 +34,7 @@ const TrialConfirmationModal = ({
           <>
             <EduButton
               data-cy="goToDashboard"
-              onClick={handleCloseModal}
+              onClick={handleGoToDashboard}
               width="180px"
               height="45px"
             >
@@ -80,6 +86,14 @@ const TrialConfirmationModal = ({
       </CustomModalStyled>
     </>
   )
+}
+
+TrialConfirmationModal.propTypes = {
+  showTrialSubsConfirmationAction: PropTypes.func,
+}
+
+TrialConfirmationModal.defaultProps = {
+  showTrialSubsConfirmationAction: () => {},
 }
 
 export default TrialConfirmationModal

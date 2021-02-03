@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, groupBy } from 'lodash'
+import { get, groupBy, isEmpty } from 'lodash'
 import qs from 'qs'
 
 // components
@@ -284,12 +284,41 @@ const MyClasses = ({
     window.open(data.externalUrl, '_blank')
   }
 
-  const bannerActionHandler = (filter = {}, description) => {
+  const getTileByProductName = (name) => {
+    const { id: productId } =
+      products.find((product) => product.name === name) || {}
+
+    if (productId) {
+      return (
+        featuredBundles &&
+        featuredBundles.find(
+          (bundle) => bundle?.config?.subscriptionData?.productId === productId
+        )
+      )
+    }
+
+    return {}
+  }
+
+  const handleSparkMathBannerClick = () => {
+    const tile = getTileByProductName('Spark Math')
+    if (!isEmpty(tile.config)) {
+      handleFeatureClick(tile)
+    }
+  }
+
+  const bannerActionHandler = (filter = {}, description, isSparkMathTile) => {
     const { action, data } = filter
     segmentApi.trackUserClick({
       user,
       data: { event: `dashboard:banner-${description}:click` },
     })
+
+    if (isSparkMathTile) {
+      handleSparkMathBannerClick()
+      return
+    }
+
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)
@@ -456,6 +485,7 @@ const MyClasses = ({
           title={productData?.productName}
           isBlocked={getClickedBundle?.isBlocked}
           handleGoToCollectionClick={handleGoToCollectionClick}
+          history={history}
         />
       )}
     </MainContentWrapper>

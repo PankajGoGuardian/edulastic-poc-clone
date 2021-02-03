@@ -457,7 +457,7 @@ const StandardsGradebookTableComponent = ({
             tableToRender={GradebookTable}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
-            scroll={{ x: '100%' }}
+            scroll={{ x: 1350 }}
           />
         </Row>
       </StyledCard>

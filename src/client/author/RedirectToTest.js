@@ -60,7 +60,7 @@ const RedirectToTest = ({
             }
             if (!user?.authenticating || !TokenStorage.getAccessToken()) {
               // not authenticated user flow
-              if (window.location.pathname.includes('demo/assessmentPreview')) {
+              if (window.location.pathname.includes('demo/assessmentPreview')||window.location.host.startsWith('preview')) {
                 redirectToUrl(`/public/test/${id}`)
               } else {
                 redirectToUrl(`/public/view-test/${id}`)

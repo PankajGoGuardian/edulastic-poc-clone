@@ -113,6 +113,7 @@ const HeaderSection = ({
   districtPolicy,
   schoolPolicy,
   setShowHeaderTrialModal,
+  isPremiumTrialUsed,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
@@ -199,7 +200,7 @@ const HeaderSection = ({
             trackClick={trackClick('dashboard:complete-sign-up:click')}
           />
         )}
-        {!isPremiumUser && (
+        {!isPremiumUser && !isPremiumTrialUsed && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <StyledLink data-cy="freeTrialButton" onClick={handleClick}>
@@ -375,6 +376,8 @@ const enhance = compose(
       defaultGrades: getInterestedGradesSelector(state),
       defaultSubjects: getInterestedSubjectsSelector(state),
       loading: state.dashboardTeacher.loading,
+      isPremiumTrialUsed:
+        state.subscription?.subscriptionData?.isPremiumTrialUsed,
     }),
     {
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,

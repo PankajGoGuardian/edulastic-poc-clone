@@ -456,6 +456,7 @@ const MyClasses = ({
           title={productData?.productName}
           isBlocked={getClickedBundle?.isBlocked}
           handleGoToCollectionClick={handleGoToCollectionClick}
+          history={history}
         />
       )}
     </MainContentWrapper>

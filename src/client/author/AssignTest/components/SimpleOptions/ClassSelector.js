@@ -13,10 +13,10 @@ const dropdownStyle = {
 
 const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
   <StyledRow gutter={16}>
-    <StyledCol span={12}>
+    <StyledCol span={10}>
       <FieldLabel>CLASS/GROUP SECTION</FieldLabel>
     </StyledCol>
-    <StyledCol span={12}>
+    <StyledCol span={14}>
       <SelectInputStyled
         showSearch
         data-cy="selectClass"

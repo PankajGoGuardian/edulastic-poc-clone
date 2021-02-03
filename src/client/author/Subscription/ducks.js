@@ -18,6 +18,7 @@ const slice = createSlice({
     showTrialConfirmationMessage: '',
     products: [],
     isPaymentServiceModalVisible: false,
+    showHeaderTrialModal: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -90,6 +91,9 @@ const slice = createSlice({
     },
     setPaymentServiceModal: (state, { payload }) => {
       state.isPaymentServiceModalVisible = payload
+    },
+    setShowHeaderTrialModal: (state, { payload }) => {
+      state.showHeaderTrialModal = payload
     },
   },
 })

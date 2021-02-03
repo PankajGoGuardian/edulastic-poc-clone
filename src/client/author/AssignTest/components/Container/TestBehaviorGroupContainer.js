@@ -1,12 +1,7 @@
 import React, { useState } from 'react'
-import { Row, Col, Select, Tooltip, Modal } from 'antd'
-import {
-  RadioBtn,
-  CheckboxLabel,
-  SelectInputStyled,
-  NumberInputStyled,
-} from '@edulastic/common'
-import { themeColor, lightGrey9 } from '@edulastic/colors'
+import { Row, Col, Select, Modal } from 'antd'
+import { RadioBtn, CheckboxLabel, SelectInputStyled } from '@edulastic/common'
+import { themeColor } from '@edulastic/colors'
 import { test, roleuser } from '@edulastic/constants'
 import {
   AlignRight,
@@ -14,7 +9,6 @@ import {
   CheckBoxWrapper,
   Label,
   TimeSpentInput,
-  StyledInfoIcon,
   StyledRow,
 } from '../SimpleOptions/styled'
 import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
@@ -39,7 +33,6 @@ const TestBehaviorGroupContainer = ({
   changeField,
   testSettings,
   _releaseGradeKeys,
-  isDocBased,
   freezeSettings,
   completionTypeKeys,
   premium,
@@ -56,22 +49,18 @@ const TestBehaviorGroupContainer = ({
     markAsDone = testSettings?.markAsDone,
     releaseScore = testSettings.releaseScore,
     calcType = testSettings.calcType,
-    maxAnswerChecks = testSettings.maxAnswerChecks,
     timedAssignment = testSettings.timedAssignment,
     allowedTime = testSettings.allowedTime,
     pauseAllowed = testSettings.pauseAllowed,
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
-    maxAttempts = testSettings.maxAttempts,
     testType = testSettings.testType,
   } = assignmentSettings
 
   const {
     assessmentSuperPowersMarkAsDone,
     assessmentSuperPowersShowCalculator,
-    assessmentSuperPowersCheckAnswerTries,
     assessmentSuperPowersTimedTest,
-    maxAttemptAllowed,
   } = featuresAvailable
 
   const scoringType =
@@ -131,17 +120,17 @@ const TestBehaviorGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title="Mark as done"
-          content="Control when class will be marked as Done. Automatically when all studens are graded and due date has passed OR Manually when you click the Mark as Done button."
+          content="When an assignment is marked “Done”, data flows to the reports. Automatically will mark it as done when all students are graded and the due date has passed, OR choose Manually and select the Mark as Done button when ready."
           premium={assessmentSuperPowersMarkAsDone}
         />
         <StyledRow gutter={16} mb="15px">
-          <Col span={12}>
+          <Col span={10}>
             <Label>
               MARK AS DONE
               <DollarPremiumSymbol premium={assessmentSuperPowersMarkAsDone} />
             </Label>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <AlignRight
               disabled={freezeSettings || !assessmentSuperPowersMarkAsDone}
               onChange={(e) => overRideSettings('markAsDone', e.target.value)}
@@ -163,32 +152,40 @@ const TestBehaviorGroupContainer = ({
       {/* Mark as done */}
 
       {/* Release score */}
-      <StyledRow gutter={16} mb="15px">
-        <Col span={12}>
-          <Label>
-            RELEASE SCORES{' '}
-            {releaseScore === releaseGradeLabels.DONT_RELEASE
-              ? '[OFF]'
-              : '[ON]'}
-          </Label>
-        </Col>
-        <Col span={12}>
-          <SelectInputStyled
-            data-cy="selectRelaseScore"
-            placeholder="Please select"
-            cache="false"
-            value={releaseScore}
-            onChange={changeField('releaseScore')}
-            height="30px"
-          >
-            {_releaseGradeKeys.map((item, index) => (
-              <Select.Option key={index} value={item}>
-                {releaseGradeTypes[item]}
-              </Select.Option>
-            ))}
-          </SelectInputStyled>
-        </Col>
-      </StyledRow>
+      <SettingContainer>
+        <DetailsTooltip
+          width={tootltipWidth}
+          title="RELEASE SCORES"
+          content="Decide what students immediately get to see upon submitting an assessment."
+          premium
+        />
+        <StyledRow gutter={16} mb="15px">
+          <Col span={10}>
+            <Label>
+              RELEASE SCORES{' '}
+              {releaseScore === releaseGradeLabels.DONT_RELEASE
+                ? '[OFF]'
+                : '[ON]'}
+            </Label>
+          </Col>
+          <Col span={14}>
+            <SelectInputStyled
+              data-cy="selectRelaseScore"
+              placeholder="Please select"
+              cache="false"
+              value={releaseScore}
+              onChange={changeField('releaseScore')}
+              height="30px"
+            >
+              {_releaseGradeKeys.map((item, index) => (
+                <Select.Option key={index} value={item}>
+                  {releaseGradeTypes[item]}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
+          </Col>
+        </StyledRow>
+      </SettingContainer>
       {/* Release score */}
 
       {/* Show Calculator */}
@@ -200,7 +197,7 @@ const TestBehaviorGroupContainer = ({
           premium={assessmentSuperPowersShowCalculator}
         />
         <StyledRow gutter={16} mb="15px">
-          <Col span={12}>
+          <Col span={10}>
             <Label>
               SHOW CALCULATOR
               <DollarPremiumSymbol
@@ -208,14 +205,14 @@ const TestBehaviorGroupContainer = ({
               />
             </Label>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <AlignRight
               disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
               value={calcType}
               onChange={(e) => overRideSettings('calcType', e.target.value)}
             >
               {calculatorKeysAvailable.map((item) => (
-                <RadioBtn data-cy={item} value={item} key={item}>
+                <RadioBtn d9a-cy={item} value={item} key={item}>
                   <Label>{calculators[item]}</Label>
                 </RadioBtn>
               ))}
@@ -234,10 +231,10 @@ const TestBehaviorGroupContainer = ({
           premium
         />
         <StyledRow gutter={16} mb="15px">
-          <Col span={12}>
+          <Col span={10}>
             <Label>EVALUATION METHOD</Label>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <SelectInputStyled
               data-cy="eval-methods"
               disabled={freezeSettings}
@@ -260,53 +257,12 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Evaluation Method */}
 
-      {
-        /* Check Answer Tries Per Question */
-        !isDocBased && (
-          <SettingContainer>
-            <DetailsTooltip
-              width={tootltipWidth}
-              title="CHECK ANSWER TRIES PER QUESTION"
-              content="Control whether student can check in answer during attempt or not. Value mentioned will be equivalent to number of attempts allowed per student."
-              premium={assessmentSuperPowersTimedTest}
-            />
-            <StyledRow gutter={16} mb="15px">
-              <Col span={12}>
-                <Label>
-                  CHECK ANSWER TRIES PER QUESTION
-                  <DollarPremiumSymbol
-                    premium={assessmentSuperPowersCheckAnswerTries}
-                  />
-                </Label>
-              </Col>
-              <Col span={12}>
-                <NumberInputStyled
-                  disabled={
-                    freezeSettings || !assessmentSuperPowersCheckAnswerTries
-                  }
-                  onChange={(value) =>
-                    overRideSettings('maxAnswerChecks', value)
-                  }
-                  size="large"
-                  value={maxAnswerChecks}
-                  min={0}
-                  placeholder="Number of tries"
-                  bg="white"
-                  data-cy="check-ans-tries"
-                />
-              </Col>
-            </StyledRow>
-          </SettingContainer>
-        )
-        /* Check Answer Tries Per Question */
-      }
-
       {/* Timed TEST */}
       <SettingContainer>
         <DetailsTooltip
           width={tootltipWidth}
           title="TIMED TEST"
-          content="The time can be modified in one minute increments. When the time limit is reached, students will be locked out of the assessment. If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off. This ensures that the student does not go over the allotted time."
+          content="Timed test allows you to control how long students have to take the test. When the time limit is reached, students will be locked out of the assessment. Choose the time and whether students can pause and continue later or if the test should be taken in a single sitting."
           premium={assessmentSuperPowersTimedTest}
           placement="rightTop"
         />
@@ -316,15 +272,12 @@ const TestBehaviorGroupContainer = ({
           mb="15px"
           height="40"
         >
-          <Col span={12}>
+          <Col span={10}>
             <Label>
               <span>
                 TIMED TEST
                 <DollarPremiumSymbol premium={assessmentSuperPowersTimedTest} />
               </span>
-              <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
-                <StyledInfoIcon color={lightGrey9} mL="15px" />
-              </Tooltip>
             </Label>
           </Col>
           <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -359,7 +312,7 @@ const TestBehaviorGroupContainer = ({
                     max={300}
                     step={1}
                   />
-                  <Label>MINUTES</Label>
+                  9 <Label>MINUTES</Label>
                   {/* eslint-enable no-restricted-globals */}
                 </>
               )}
@@ -389,10 +342,10 @@ const TestBehaviorGroupContainer = ({
       {(userRole === roleuser.DISTRICT_ADMIN ||
         userRole === roleuser.SCHOOL_ADMIN) && (
         <StyledRow gutter={16} mb="15px">
-          <Col span={12}>
+          <Col span={10}>
             <Label>ITEM CONTENT VISIBILITY TO TEACHERS</Label>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <AlignRight
               disabled={freezeSettings}
               onChange={(e) =>
@@ -411,46 +364,23 @@ const TestBehaviorGroupContainer = ({
       )}
       {/* Test Content visibility */}
 
-      {/* Maximum attempt */}
       <SettingContainer>
         <DetailsTooltip
           width={tootltipWidth}
-          title="MAXIMUM ATTEMPTS ALLOWED"
-          content="Control the number of times a student can take the assignment."
-          premium={assessmentSuperPowersTimedTest}
+          title="Test Type"
+          content="Designate what type of assignment you are delivering. You’ll be able to use these categories later to filter reports so make sure practice is set as practice. "
+          premium
+          placement="rightTop"
         />
-        <StyledRow gutter={16} mb="15px">
-          <Col span={12}>
-            <Label>
-              MAXIMUM ATTEMPTS ALLOWED
-              <DollarPremiumSymbol premium={maxAttemptAllowed} />
-            </Label>
-          </Col>
-          <Col span={12}>
-            <NumberInputStyled
-              size="large"
-              disabled={freezeSettings || !maxAttemptAllowed}
-              value={maxAttempts}
-              onChange={(value) => overRideSettings('maxAttempts', value)}
-              min={1}
-              step={1}
-              bg="white"
-              width="20%"
-              data-cy="max-attempts-allowed"
-            />
-          </Col>
+        <StyledRow mb="15px" gutter={16}>
+          <TestTypeSelector
+            userRole={userRole}
+            testType={testType}
+            onAssignmentTypeChange={changeField('testType')}
+            disabled={freezeSettings}
+          />
         </StyledRow>
       </SettingContainer>
-      {/* Maximum attempt */}
-
-      <StyledRow mb="15px" gutter={16}>
-        <TestTypeSelector
-          userRole={userRole}
-          testType={testType}
-          onAssignmentTypeChange={changeField('testType')}
-          disabled={freezeSettings}
-        />
-      </StyledRow>
     </>
   )
 }

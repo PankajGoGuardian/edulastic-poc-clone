@@ -112,6 +112,7 @@ const HeaderSection = ({
   loading,
   districtPolicy,
   schoolPolicy,
+  setShowHeaderTrialModal,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
@@ -160,11 +161,15 @@ const HeaderSection = ({
     (c) => c.active === 1 && c.type === 'class'
   )
 
+  const isPremiumUser = user.user?.features?.premium
+
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
 
   const closeCleverSyncModal = () => setShowCleverSyncModal(false)
   const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
+
+  const handleShowTrialModal = () => setShowHeaderTrialModal(true)
 
   const hasNoActiveClassFallback =
     !loading &&
@@ -180,8 +185,6 @@ const HeaderSection = ({
     districtPolicy?.enableGoogleMeet === true
       ? true
       : schoolPolicy?.[0]?.enableGoogleMeet === true
-      ? true
-      : false
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -194,6 +197,16 @@ const HeaderSection = ({
               </StyledLink>
             )}
             trackClick={trackClick('dashboard:complete-sign-up:click')}
+          />
+        )}
+        {!isPremiumUser && (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <StyledLink data-cy="freeTrialButton" onClick={handleClick}>
+                Free Trial
+              </StyledLink>
+            )}
+            onClick={handleShowTrialModal}
           />
         )}
         {hasGoogleMeetAndManageClass && (
@@ -372,6 +385,7 @@ const enhance = compose(
       syncCleverClassList: syncClassesWithCleverAction,
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
+      setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
     }
   )
 )

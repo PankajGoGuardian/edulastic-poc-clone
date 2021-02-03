@@ -21,6 +21,7 @@ const TrialModal = ({
   isPremiumTrialUsed,
   startPremiumTrial,
   products = [],
+  setShowHeaderTrialModal,
 }) => {
   const hasPremiumTrialIncluded = useMemo(
     () => !isPremiumUser && !isPremiumTrialUsed,
@@ -43,7 +44,10 @@ const TrialModal = ({
 
   const isProceedDisabled = productIds.length === 0
 
-  const closeModal = () => toggleModal(false)
+  const closeModal = () => {
+    toggleModal(false)
+    setShowHeaderTrialModal(false)
+  }
 
   const handleOnChange = (value) => (e) => {
     if (e.target.checked) {

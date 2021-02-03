@@ -62,11 +62,11 @@ const ClassGroupContainer = ({
         showOpenDueAndCloseDate={showOpenDueAndCloseDate}
       />
       <StyledRow gutter={16}>
-        <Col span={12}>
+        <Col span={10}>
           <FieldLabel>OPEN POLICY</FieldLabel>
         </Col>
 
-        <Col span={12}>
+        <Col span={14}>
           <Tooltip
             placement="top"
             title={
@@ -98,10 +98,10 @@ const ClassGroupContainer = ({
         </Col>
       </StyledRow>
       <StyledRow gutter={16}>
-        <Col span={12}>
+        <Col span={10}>
           <FieldLabel>CLOSE POLICY</FieldLabel>
         </Col>
-        <Col span={12}>
+        <Col span={14}>
           <SelectInputStyled
             data-cy="selectClosePolicy"
             placeholder="Please select"

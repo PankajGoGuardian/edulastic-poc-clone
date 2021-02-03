@@ -19,10 +19,11 @@ const DollarSymbolWrapper = styled.span`
   color: ${white};
   margin-left: 10px;
   background: ${premiumBg};
-  font-size: 12px;
+  font-size: 13px;
   height: 22px;
   width: 22px;
   text-align: center;
   line-height: 22px;
   border-radius: 2px;
+  font-weight: 400;
 `

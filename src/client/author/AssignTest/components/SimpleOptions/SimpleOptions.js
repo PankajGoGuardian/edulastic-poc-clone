@@ -437,6 +437,7 @@ class SimpleOptions extends React.Component {
                   freezeSettings={freezeSettings}
                   isRecommendingStandards={isRecommendingStandards}
                   questionPerStandardOptions={questionPerStandardOptions}
+                  tootltipWidth={tootltipWidth}
                 />
               </TabContentContainer>
             )}

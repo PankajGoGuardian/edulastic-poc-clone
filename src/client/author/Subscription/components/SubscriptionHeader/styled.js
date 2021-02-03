@@ -131,3 +131,7 @@ export const ActionButtons = styled.div`
     }
   }
 `
+export const PlanText = styled.span`
+  font-size: 14px !important;
+  font-weight: bold;
+`

@@ -515,6 +515,7 @@ const Subscription = (props) => {
           isBlocked={currentItemBank?.isBlocked}
           title={productData?.productName}
           handleGoToCollectionClick={handleGoToCollectionClick}
+          history={history}
         />
       )}
       {showItemBankTrialUsedModal && (

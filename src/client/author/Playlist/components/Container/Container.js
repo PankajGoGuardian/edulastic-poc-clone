@@ -209,11 +209,11 @@ class TestList extends Component {
     getAllTags({ type: 'playlist' })
     receiveRecentPlayLists()
 
-    const sparkMathId =
-      collectionSelector.find((item) => item.name === 'Spark Math')?._id || null
+    const sparkMathId = collectionSelector.find(
+      (item) => item.name === 'Spark Math'
+    )?._id
 
     if (
-      searchFilters.subject.includes('Mathematics') &&
       searchFilters.collections.includes(sparkMathId) &&
       !recentPlaylist.length
     )

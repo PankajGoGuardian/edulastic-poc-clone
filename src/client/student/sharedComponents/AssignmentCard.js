@@ -389,6 +389,7 @@ const AssignmentCard = memo(
               assignmentId={assignmentId}
               testType={testType}
               classId={classId}
+              assignmentTitle={title}
             />
           )}
           <AssessmentDetails

@@ -6,7 +6,7 @@ import {
   MathFormulaDisplay,
 } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
-import { Select } from 'antd'
+import { Select, Tooltip } from 'antd'
 import { ConfirmationModal } from '../../author/src/components/common/ConfirmationModal'
 
 const { Option } = Select
@@ -31,6 +31,7 @@ const TestInfoModal = ({
   assignmentId,
   testType,
   classId,
+  assignmentTitle,
 }) => {
   useEffect(() => {
     if (showInformationModal && !!languagePreference) {
@@ -76,23 +77,39 @@ const TestInfoModal = ({
   return (
     <ConfirmationModal
       textAlign="initial"
-      title="Do you want to Continue ?"
+      title={
+        <Tooltip title={assignmentTitle}>
+          <div
+            style={{
+              width: '300px',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {assignmentTitle}
+          </div>
+        </Tooltip>
+      }
       visible={showInformationModal}
       destroyOnClose
       onCancel={() => setShowInformationModal(false)}
       footer={[
         <EduButton isGhost onClick={() => setShowInformationModal(false)}>
-          No, Cancel
+          Cancel
         </EduButton>,
         <EduButton data-cy="continue" onClick={handleContinue}>
-          Yes, Continue
+          Continue
         </EduButton>,
       ]}
     >
       <FlexContainer flexDirection="column">
         {multiLanguageEnabled && (
           <>
-            <p>Select preferred language</p>
+            <p>
+              This test is offered in multiple languages. Please select your
+              preferred language.
+            </p>
             <p>
               <Select
                 getPopupContainer={(e) => e.parentElement}

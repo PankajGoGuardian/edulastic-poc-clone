@@ -18,6 +18,10 @@ const commonPatterns = [
 
 const patternsByQuestionType = {
   [questionType.CLOZE_DRAG_DROP]: [...commonPatterns, /options\.(\d+)\.label/],
+  [questionType.CLOZE_IMAGE_DRAG_DROP]: [
+    ...commonPatterns,
+    /options\.(\d+)\.value/,
+  ],
   [questionType.EXPRESSION_MULTIPART]: [
     ...commonPatterns,
     /options\.(.*?)\.(\d+)/,

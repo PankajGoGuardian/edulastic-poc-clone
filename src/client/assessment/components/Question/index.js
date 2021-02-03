@@ -58,6 +58,7 @@ class Question extends Component {
       label,
       features,
       permissions,
+      showScoringSectionAnyRole = false,
     } = this.props
 
     // show all tools except advanced section and 'Solution' section
@@ -79,7 +80,7 @@ class Question extends Component {
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
     ) {
       showAdvancedTools = false
-      if (isPremiumUser && isPowerTeacher) {
+      if ((isPremiumUser && isPowerTeacher) || showScoringSectionAnyRole) {
         showAdvancedTools = true
       }
     }

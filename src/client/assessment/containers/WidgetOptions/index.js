@@ -21,6 +21,7 @@ class WidgetOptions extends Component {
     advancedAreOpen: PropTypes.bool,
     showSelect: PropTypes.bool,
     renderExtra: PropTypes.any,
+    showScoringSection: PropTypes.bool,
     extraInScoring: PropTypes.elementType,
     showScoringType: PropTypes.bool,
   }
@@ -34,6 +35,7 @@ class WidgetOptions extends Component {
     cleanSections: () => {},
     renderExtra: null,
     showSelect: true,
+    showScoringSection: false,
     extraInScoring: null,
     showScoringType: true,
   }
@@ -50,6 +52,8 @@ class WidgetOptions extends Component {
       showSelect,
       renderExtra,
       item,
+      showScoringSection = false,
+      showScoringSectionAnyRole,
       showScoringType,
       extraInScoring, // extraInScoring (Component required inside scoring section)
       isCorrectAnsTab,
@@ -58,17 +62,20 @@ class WidgetOptions extends Component {
     return (
       <>
         {renderExtra}
-        {showScoring && (
+        {(showScoring || showScoringSection) && (
           <Question
-            section="main"
+            section={showScoringSection ? 'main' : 'advanced'} // Show scoring section in main/advanced section based on flag
             label="Scoring"
             fillSections={fillSections}
             cleanSections={cleanSections}
+            advancedAreOpen={advancedAreOpen || showScoringSection} // Showing scoring outside of advanced is showScoringSection is true
+            showScoringSectionAnyRole={showScoringSectionAnyRole}
           >
             <Scoring
               scoringTypes={scoringTypes}
               fillSections={fillSections}
               cleanSections={cleanSections}
+              advancedAreOpen={advancedAreOpen}
               showSelect={showSelect}
               item={item}
               showScoringType={showScoringType}

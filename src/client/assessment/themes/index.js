@@ -147,7 +147,8 @@ function incrementNavigationCounter({ history, testActivityId }) {
       } else {
         notification({
           type: 'warning',
-          msg: 'Moving out of assignment has been noted',
+          msg:
+            'Test Security: Moving out of the assignment has been recorded and the teacher will be notified',
           duration: 0,
         })
       }
@@ -163,7 +164,8 @@ export function ForceFullScreenModal({ visible, takeItLaterCb }) {
     <StyledModal
       destroyOnClose
       keyboard={false}
-      closable={false}
+      closable={!!takeItLaterCb}
+      onCancel={takeItLaterCb}
       maskClosable={false}
       footer={
         <>
@@ -184,18 +186,16 @@ export function ForceFullScreenModal({ visible, takeItLaterCb }) {
                 })
             }}
           >
-            proceed
+            Enter Full Screen
           </EduButton>
         </>
       }
       maskStyle={{ background: '#000', opacity: 1 }}
       visible={visible}
     >
-      <div>
-        <b>
-          While taking this test, you can not open other web pages. This test
-          can only be taken in fullscreen mode
-        </b>
+      <div className="content">
+        While taking this test, you can not open other web pages. This test can
+        only be taken in fullscreen mode
       </div>
     </StyledModal>
   )
@@ -1117,6 +1117,9 @@ const enhance = compose(
 )
 
 const StyledModal = Styled(Modal)`
+  .content{
+    padding-top:20px;
+  }
   .ant-modal-footer{
     border-top:0px;
     text-align:center;

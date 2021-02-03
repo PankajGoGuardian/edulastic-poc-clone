@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { white } from '@edulastic/colors'
+import { white, greyLight1 } from '@edulastic/colors'
 
 export const LearnMore = styled.span`
   height: auto;
@@ -12,6 +12,25 @@ export const LearnMore = styled.span`
   padding: 5px 10px;
   color: #3f85e5;
   border-radius: 4px;
+  transform: translateX(50px);
+
+  &:hover {
+    cursor: pointer;
+  }
+`
+
+export const TransparentButton = styled.span`
+  height: auto;
+  width: auto;
+  position: absolute;
+  top: 140px;
+  font-size: 11px;
+  font-weight: 600;
+  background: transparent;
+  padding: 5px 15px;
+  color: ${greyLight1};
+  border-radius: 4px;
+  border: 1px solid ${greyLight1};
   transform: translateX(50px);
 
   &:hover {

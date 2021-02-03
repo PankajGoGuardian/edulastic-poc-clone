@@ -115,42 +115,25 @@ const TestBehaviorGroupContainer = ({
 
   return (
     <>
-      {/* Mark as done */}
+      {/* Test type */}
       <SettingContainer>
         <DetailsTooltip
           width={tootltipWidth}
-          title="Mark as done"
-          content="When an assignment is marked “Done”, data flows to the reports. Automatically will mark it as done when all students are graded and the due date has passed, OR choose Manually and select the Mark as Done button when ready."
-          premium={assessmentSuperPowersMarkAsDone}
+          title="Test Type"
+          content="Designate what type of assignment you are delivering. You’ll be able to use these categories later to filter reports so make sure practice is set as practice. "
+          premium
+          placement="rightBottom"
         />
-        <StyledRow gutter={16} mb="15px">
-          <Col span={10}>
-            <Label>
-              MARK AS DONE
-              <DollarPremiumSymbol premium={assessmentSuperPowersMarkAsDone} />
-            </Label>
-          </Col>
-          <Col span={14}>
-            <AlignRight
-              disabled={freezeSettings || !assessmentSuperPowersMarkAsDone}
-              onChange={(e) => overRideSettings('markAsDone', e.target.value)}
-              value={markAsDone}
-            >
-              {completionTypeKeys.map((item) => (
-                <RadioBtn
-                  value={completionTypes[item]}
-                  data-cy={`mark-as-done-${completionTypes[item]}`}
-                  key={item}
-                >
-                  <Label>{completionTypes[item]}</Label>
-                </RadioBtn>
-              ))}
-            </AlignRight>
-          </Col>
+        <StyledRow mb="15px" gutter={16}>
+          <TestTypeSelector
+            userRole={userRole}
+            testType={testType}
+            onAssignmentTypeChange={changeField('testType')}
+            disabled={freezeSettings}
+          />
         </StyledRow>
       </SettingContainer>
-      {/* Mark as done */}
-
+      {/* Test type */}
       {/* Release score */}
       <SettingContainer>
         <DetailsTooltip
@@ -187,41 +170,6 @@ const TestBehaviorGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Release score */}
-
-      {/* Show Calculator */}
-      <SettingContainer>
-        <DetailsTooltip
-          width={tootltipWidth}
-          title="SHOW CALCULATOR"
-          content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
-          premium={assessmentSuperPowersShowCalculator}
-        />
-        <StyledRow gutter={16} mb="15px">
-          <Col span={10}>
-            <Label>
-              SHOW CALCULATOR
-              <DollarPremiumSymbol
-                premium={assessmentSuperPowersShowCalculator}
-              />
-            </Label>
-          </Col>
-          <Col span={14}>
-            <AlignRight
-              disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
-              value={calcType}
-              onChange={(e) => overRideSettings('calcType', e.target.value)}
-            >
-              {calculatorKeysAvailable.map((item) => (
-                <RadioBtn d9a-cy={item} value={item} key={item}>
-                  <Label>{calculators[item]}</Label>
-                </RadioBtn>
-              ))}
-            </AlignRight>
-          </Col>
-        </StyledRow>
-      </SettingContainer>
-      {/* Show Calculator */}
-
       {/* Evaluation Method */}
       <SettingContainer>
         <DetailsTooltip
@@ -256,6 +204,76 @@ const TestBehaviorGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Evaluation Method */}
+
+      {/* Mark as done */}
+      <SettingContainer>
+        <DetailsTooltip
+          width={tootltipWidth}
+          title="Mark as done"
+          content="When an assignment is marked “Done”, data flows to the reports. Automatically will mark it as done when all students are graded and the due date has passed, OR choose Manually and select the Mark as Done button when ready."
+          premium={assessmentSuperPowersMarkAsDone}
+        />
+        <StyledRow gutter={16} mb="15px">
+          <Col span={10}>
+            <Label>
+              MARK AS DONE
+              <DollarPremiumSymbol premium={assessmentSuperPowersMarkAsDone} />
+            </Label>
+          </Col>
+          <Col span={14}>
+            <AlignRight
+              disabled={freezeSettings || !assessmentSuperPowersMarkAsDone}
+              onChange={(e) => overRideSettings('markAsDone', e.target.value)}
+              value={markAsDone}
+            >
+              {completionTypeKeys.map((item) => (
+                <RadioBtn
+                  value={completionTypes[item]}
+                  data-cy={`mark-as-done-${completionTypes[item]}`}
+                  key={item}
+                >
+                  <Label>{completionTypes[item]}</Label>
+                </RadioBtn>
+              ))}
+            </AlignRight>
+          </Col>
+        </StyledRow>
+      </SettingContainer>
+      {/* Mark as done */}
+
+      {/* Show Calculator */}
+      <SettingContainer>
+        <DetailsTooltip
+          width={tootltipWidth}
+          title="SHOW CALCULATOR"
+          content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+          premium={assessmentSuperPowersShowCalculator}
+        />
+        <StyledRow gutter={16} mb="15px">
+          <Col span={10}>
+            <Label>
+              SHOW CALCULATOR
+              <DollarPremiumSymbol
+                premium={assessmentSuperPowersShowCalculator}
+              />
+            </Label>
+          </Col>
+          <Col span={14}>
+            <AlignRight
+              disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
+              value={calcType}
+              onChange={(e) => overRideSettings('calcType', e.target.value)}
+            >
+              {calculatorKeysAvailable.map((item) => (
+                <RadioBtn d9a-cy={item} value={item} key={item}>
+                  <Label>{calculators[item]}</Label>
+                </RadioBtn>
+              ))}
+            </AlignRight>
+          </Col>
+        </StyledRow>
+      </SettingContainer>
+      {/* Show Calculator */}
 
       {/* Timed TEST */}
       <SettingContainer>
@@ -363,24 +381,6 @@ const TestBehaviorGroupContainer = ({
         </StyledRow>
       )}
       {/* Test Content visibility */}
-
-      <SettingContainer>
-        <DetailsTooltip
-          width={tootltipWidth}
-          title="Test Type"
-          content="Designate what type of assignment you are delivering. You’ll be able to use these categories later to filter reports so make sure practice is set as practice. "
-          premium
-          placement="rightTop"
-        />
-        <StyledRow mb="15px" gutter={16}>
-          <TestTypeSelector
-            userRole={userRole}
-            testType={testType}
-            onAssignmentTypeChange={changeField('testType')}
-            disabled={freezeSettings}
-          />
-        </StyledRow>
-      </SettingContainer>
     </>
   )
 }

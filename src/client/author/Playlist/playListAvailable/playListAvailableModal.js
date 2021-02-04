@@ -4,7 +4,12 @@ import styled from 'styled-components'
 
 const PlayListAvailableModal = ({ isVisible, closeModal }) => {
   const footer = (
-    <EduButton width="180px" height="45px" onClick={closeModal}>
+    <EduButton
+      width="180px"
+      height="45px"
+      data-cy="playlistGetStartedButton"
+      onClick={closeModal}
+    >
       Get Started
     </EduButton>
   )

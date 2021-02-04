@@ -72,7 +72,6 @@ const PlayerHeader = ({
   qType,
   setZoomLevel,
   zoomLevel,
-  defaultAP,
   isDocbased,
   toolsOpenStatus,
   handleMagnifier,
@@ -80,6 +79,8 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
+  blockNavigationToAnsweredQuestions,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -127,6 +128,9 @@ const PlayerHeader = ({
                   options={options}
                   currentItem={currentItem}
                   gotoQuestion={gotoQuestion}
+                  blockNavigationToAnsweredQuestions={
+                    blockNavigationToAnsweredQuestions
+                  }
                 />
                 <div style={{ width: 136, display: 'flex' }}>
                   <StyledProgress
@@ -147,21 +151,23 @@ const PlayerHeader = ({
               <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
                 <MainActionWrapper>
-                  <Tooltip
-                    placement="top"
-                    title="Previous"
-                    overlayStyle={overlayStyle}
-                  >
-                    <ControlBtn
-                      data-cy="prev"
-                      icon="left"
-                      disabled={isFirst()}
-                      onClick={(e) => {
-                        moveToPrev()
-                        e.target.blur()
-                      }}
-                    />
-                  </Tooltip>
+                  {!blockNavigationToAnsweredQuestions && (
+                    <Tooltip
+                      placement="top"
+                      title="Previous"
+                      overlayStyle={overlayStyle}
+                    >
+                      <ControlBtn
+                        data-cy="prev"
+                        icon="left"
+                        disabled={isFirst()}
+                        onClick={(e) => {
+                          moveToPrev()
+                          e.target.blur()
+                        }}
+                      />
+                    </Tooltip>
+                  )}
                   <Tooltip
                     placement="top"
                     title="Next"
@@ -180,8 +186,8 @@ const PlayerHeader = ({
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>
                   {showPause && (
-                    <Tooltip placement="top" title="Save & Exit">
-                      <StyledButton onClick={finishTest}>
+                    <Tooltip placement="top" title={hidePause?`Save & Exit disabled`:`Save & Exit`}>
+                      <StyledButton disabled={hidePause} onClick={finishTest}>
                         <StyledIcon type="save" theme="filled" />
                       </StyledButton>
                     </Tooltip>

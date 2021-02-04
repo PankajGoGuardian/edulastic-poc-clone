@@ -18,11 +18,13 @@ import {
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSelectedLanguageSelector,
 } from '../../student/Assignments/ducks'
 import { getUser } from '../../author/src/selectors/user'
 import { redirectToStudentPage, redirectToDashbord } from '../utils'
 
 import { fetchUserAction } from '../../student/Login/ducks'
+import { setSelectedLanguageAction } from '../../student/sharedDucks/AssignmentModule/ducks'
 
 const ARCHIVED_TEST_MSG =
   'You can no longer use this as sharing access has been revoked by author'
@@ -42,6 +44,8 @@ const PublicTestPage = ({
   startAssignment,
   resumeAssignment,
   fetchUser,
+  languagePreference,
+  setSelectedLanguage,
 }) => {
   const { testId } = match.params
   const [showPreviewModal, setShowPreviewModal] = useState(false)
@@ -135,7 +139,9 @@ const PublicTestPage = ({
         history,
         startAssignment,
         resumeAssignment,
-        publicTest
+        publicTest,
+        languagePreference,
+        setSelectedLanguage
       )
     }
   }, [loadingAssignments])
@@ -154,14 +160,22 @@ const PublicTestPage = ({
       localStorage.setItem('publicUrlAccess', getCurrentPath())
     }
 
-    history.push({
-      pathname: `/author/assignments/${test._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    if (!user?.isAuthenticated) {
+      localStorage.setItem(
+        'loginRedirectUrl',
+        `/author/assignments/${test._id}`
+      )
+      history.push('/login')
+    } else {
+      history.push({
+        pathname: `/author/assignments/${test._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
+    }
   }
 
   const handleShowPreviewModal = () => setShowPreviewModal(true)
@@ -235,6 +249,7 @@ export default connect(
     authenticating: get(state, 'user.authenticating', false),
     assignments: getAllAssignmentsSelector(state),
     loadingAssignments: get(state, 'publicTest.loadingAssignments'),
+    languagePreference: getSelectedLanguageSelector(state),
   }),
   {
     fetchTest: fetchTestAction,
@@ -242,5 +257,6 @@ export default connect(
     startAssignment: startAssignmentAction,
     resumeAssignment: resumeAssignmentAction,
     fetchUser: fetchUserAction,
+    setSelectedLanguage: setSelectedLanguageAction,
   }
 )(PublicTestPage)

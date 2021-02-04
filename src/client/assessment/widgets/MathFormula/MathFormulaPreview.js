@@ -19,7 +19,9 @@ import {
 import { greyThemeLight, white } from '@edulastic/colors'
 import { SHOW, CHECK, CLEAR, EDIT } from '../../constants/constantsForQuestions'
 
-import CorrectAnswerBox from './components/CorrectAnswerBox/index'
+import CorrectAnswerBox, {
+  formatToMathAnswer,
+} from './components/CorrectAnswerBox'
 import MathInputStatus from './components/MathInputStatus/index'
 import { UnitsDropdown } from './components/MathFormulaAnswerMethod/options'
 
@@ -237,6 +239,15 @@ class MathFormulaPreview extends Component {
     return ''
   }
 
+  get formattedUserAnswer() {
+    const { userAnswer, item } = this.props
+    const { template } = item
+    if (userAnswer && template) {
+      return formatToMathAnswer(userAnswer, template)
+    }
+    return userAnswer
+  }
+
   render() {
     const {
       evaluation: mathEvaluation,
@@ -246,12 +257,12 @@ class MathFormulaPreview extends Component {
       studentTemplate,
       testItem,
       theme,
-      userAnswer,
       disableResponse,
       answerContextConfig,
       showCalculatingSpinner,
       view,
       isPrintPreview,
+      viewComponent,
     } = this.props
     const { expressGrader, isAnswerModifiable } = answerContextConfig
     const { innerValues } = this.state
@@ -410,7 +421,12 @@ class MathFormulaPreview extends Component {
                   )}
                   {this.isStatic && disableResponse && (
                     <MathInputSpan>
-                      <MathSpanWrapper latex={userAnswer || ''} />
+                      <MathFormulaDisplay
+                        data-cy="answer-display"
+                        dangerouslySetInnerHTML={{
+                          __html: this.formattedUserAnswer,
+                        }}
+                      />
                     </MathInputSpan>
                   )}
                   {!this.isStatic && !disableResponse && (
@@ -466,6 +482,12 @@ class MathFormulaPreview extends Component {
                 undefined && (
                 <CorrectAnswerBox
                   theme={theme}
+                  viewComponent={viewComponent}
+                  extraOtps={get(item, ['extraOpts', 0], {})}
+                  options={item.validation.validResponse.value[0].options}
+                  method={item.validation.validResponse.value[0].method}
+                  allowNumericOnly={allowNumericOnly}
+                  allowedVariables={this.restrictKeys}
                   template={item.template}
                   answer={
                     item.isUnits && item.showDropdown
@@ -511,6 +533,12 @@ class MathFormulaPreview extends Component {
                     template={item.template}
                     answer={answer}
                     index={index + 1}
+                    viewComponent={viewComponent}
+                    method={ans?.value?.[0]?.method}
+                    options={ans?.value?.[0]?.options}
+                    allowNumericOnly={allowNumericOnly}
+                    allowedVariables={this.restrictKeys}
+                    extraOtps={get(item, ['extraOpts', index + 1], {})}
                   />
                 )
               })}

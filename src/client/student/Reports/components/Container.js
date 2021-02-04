@@ -7,7 +7,7 @@ import { get } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { useRealtimeV2 } from '@edulastic/common'
-import { getCurrentGroup } from '../../Login/ducks'
+import { getClasses, getCurrentGroup } from '../../Login/ducks'
 
 // actions
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../ducks'
@@ -17,6 +17,7 @@ import AssignmentCard from '../../sharedComponents/AssignmentCard'
 import NoDataNotification from '../../../common/components/NoDataNotification'
 import { assignmentIdsByTestIdSelector } from '../../Assignments/ducks'
 import { updateTestIdRealTimeAction } from '../../sharedDucks/AssignmentModule/ducks'
+import { setAssignmentIsPausedAction } from '../../sharedDucks/ReportsModule/ducks'
 
 const Content = ({
   flag,
@@ -28,6 +29,9 @@ const Content = ({
   location: { state = {} },
   assignmentIdsByTestId,
   updateTestIdRealTime,
+  setAssignmentIsPaused,
+  allClasses,
+  userId,
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup)
@@ -36,11 +40,27 @@ const Content = ({
     (item) => `student_assessment:test:${item}`
   )
 
+  if (allClasses) {
+    const listenGroups = [
+      ...(currentGroup
+        ? [`student_assignment:class:${currentGroup}`]
+        : allClasses.map((x) => `student_assignment:class:${x._id}`)),
+    ]
+    topics.push(...listenGroups)
+  }
+
   useRealtimeV2(topics, {
     regradedAssignment: (payload) => {
       const assignmentIds = assignmentIdsByTestId[payload.oldTestId]
       if (assignmentIds && assignmentIds.length) {
         return updateTestIdRealTime({ assignmentIds, ...payload })
+      }
+    },
+    'toggle-pause-assignment': (payload) => {
+      const { activitiesByUserId, paused } = payload
+      const utaId = activitiesByUserId[userId]
+      if (utaId) {
+        setAssignmentIsPaused({ utaId, paused })
       }
     },
   })
@@ -83,10 +103,13 @@ const enhance = compose(
       assignments: getAssignmentsSelector(state),
       currentChild: state?.user?.currentChild,
       assignmentIdsByTestId: assignmentIdsByTestIdSelector(state),
+      allClasses: getClasses(state),
+      userId: get(state, 'user.user._id'),
     }),
     {
       fetchAssignments: fetchAssignmentsAction,
       updateTestIdRealTime: updateTestIdRealTimeAction,
+      setAssignmentIsPaused: setAssignmentIsPausedAction,
     }
   )
 )

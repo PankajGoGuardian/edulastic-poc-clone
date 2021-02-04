@@ -39,7 +39,6 @@ import {
 import { changePreviewAction } from '../../../author/src/actions/view'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
-import { changeDataToPreferredLanguage } from '../MultipleChoice/helpers'
 
 const EmptyWrapper = styled.div`
   max-width: 100%;
@@ -50,7 +49,7 @@ const MatrixChoice = ({
   view,
   testItem,
   previewTab,
-  item: oldItem,
+  item,
   setQuestionData,
   saveAnswer,
   userAnswer,
@@ -68,23 +67,6 @@ const MatrixChoice = ({
   showQuestionNumber,
   ...restProps
 }) => {
-  const item = useMemo(() => {
-    const { preferredLanguage } = restProps
-    if (
-      preferredLanguage !== 'en' &&
-      oldItem?.languageFeatures?.[preferredLanguage]
-    ) {
-      return produce(oldItem, (draft) => {
-        changeDataToPreferredLanguage(
-          draft,
-          draft.languageFeatures[preferredLanguage]
-        )
-      })
-    }
-
-    return oldItem
-  }, [oldItem])
-
   const [feedbackAttempts, setFeedbackAttempts] = useState(
     item.feedback_attempts
   )

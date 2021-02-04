@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import { Menu } from 'antd'
 import { StyledDropdown, StyledIcon } from './styled'
 
-const QuestionList = ({ options = [], currentItem = 0, gotoQuestion }) => {
+const QuestionList = ({
+  options = [],
+  currentItem = 0,
+  gotoQuestion,
+  blockNavigationToAnsweredQuestions = false,
+}) => {
   const handleQuestionCLick = (e) => gotoQuestion(options[parseInt(e.key, 10)])
   const menu = (
     <Menu onClick={handleQuestionCLick}>
@@ -11,7 +16,7 @@ const QuestionList = ({ options = [], currentItem = 0, gotoQuestion }) => {
         Select question <StyledIcon type="down" />
       </Menu.Item>
       {options.map((option) => (
-        <Menu.Item key={option}>
+        <Menu.Item key={option} disabled={blockNavigationToAnsweredQuestions}>
           Question&nbsp;&nbsp;&nbsp;{`0${option + 1}`.slice(-2)}
         </Menu.Item>
       ))}

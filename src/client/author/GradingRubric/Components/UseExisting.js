@@ -201,8 +201,28 @@ const UseExisting = ({
     setCurrentMode('EDIT')
   }
 
-  const handleShareModalResponse = () => {
-    setShowShareModal(false)
+  const handleShareModalResponse = (action = '', sharedType = '') => {
+    const {
+      // <-- not allowed
+      __v,
+      updatedAt,
+      modifiedBy,
+      // not allowed -->
+      ...restRubricData
+    } = currentRubricData
+
+    if (action === 'CANCEL') {
+      setShowShareModal(false)
+    } else {
+      updateRubric({
+        rubricData: {
+          ...restRubricData,
+          sharedType,
+        },
+      })
+
+      setShowShareModal(false)
+    }
   }
 
   const handleDeleteModalResponse = (response) => {
@@ -437,7 +457,8 @@ const UseExisting = ({
       {showShareModal && (
         <ShareModal
           visible={showShareModal}
-          handleResponse={(res) => handleShareModalResponse(res)}
+          handleResponse={handleShareModalResponse}
+          currentRubricData={currentRubricData}
         />
       )}
       {showDeleteModal && (

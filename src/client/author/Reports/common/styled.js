@@ -427,6 +427,9 @@ export const StyledAutocompleteDropDownContainer = styled.div`
   .ant-select-selection--multiple {
     padding-bottom: 6px;
   }
+  .ant-select-selection--multiple .ant-select-selection__choice {
+    max-width: 87%;
+  }
   .ant-select-selection--multiple .ant-select-selection__choice__content {
     text-transform: none;
   }
@@ -458,7 +461,7 @@ export const CustomXAxisTickTooltipContainer = styled.div`
   width: ${(props) => props.width}px;
   text-align: center;
   background: white;
-  z-index: 1;
+  z-index: 999;
   background-color: #f0f0f0;
   color: black;
   border: solid 0.5px #bebebe;

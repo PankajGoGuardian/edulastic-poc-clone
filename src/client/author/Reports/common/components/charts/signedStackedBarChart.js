@@ -83,7 +83,7 @@ export const SignedStackedBarChart = ({
   referenceLine = 0,
   filter = {},
   legendPayload,
-  backendPagination, // structure: { pageSize: x, pageSize: y, pageCount: z }
+  backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7

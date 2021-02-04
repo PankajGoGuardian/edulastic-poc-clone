@@ -1,7 +1,7 @@
 import { CustomModalStyled } from '@edulastic/common'
 import { IconCredit, IconPo } from '@edulastic/icons'
 import React from 'react'
-import { ModalBody, Boxes, MultiSubscriptionLink, FlexRow } from './styled'
+import { ModalBody, Boxes, FlexRow } from './styled'
 
 const UpgradeModal = ({
   visible,
@@ -14,11 +14,7 @@ const UpgradeModal = ({
       visible={visible}
       title="Upgrade your account"
       onCancel={() => setShowModal(false)}
-      footer={[
-        <MultiSubscriptionLink>
-          Buy Multiple Subscriptions CLICK HERE
-        </MultiSubscriptionLink>,
-      ]}
+      footer={null}
       centered
       modalWidth="530px"
       padding="25px 45px"
@@ -30,6 +26,7 @@ const UpgradeModal = ({
               openPaymentServiceModal()
               setShowModal(false)
             }}
+            data-cy="payWithCreditCard"
           >
             <IconCredit />
             <span>Pay with Credit Card</span>
@@ -39,6 +36,7 @@ const UpgradeModal = ({
               openPoServiceModal()
               setShowModal(false)
             }}
+            data-cy="payWithPO"
           >
             <IconPo />
             <span>Pay with PO</span>

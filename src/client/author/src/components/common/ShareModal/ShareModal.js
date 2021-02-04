@@ -524,7 +524,7 @@ class ShareModal extends React.Component {
                       features.isPublisherAuthor ||
                       !hasPlaylistEditAccess ||
                       (userSignupStatus === signUpState.ACCESS_WITHOUT_SCHOOL &&
-                        item !== 'INDIVIDUAL')
+                        item !== sharedKeysObj.INDIVIDUAL)
                     }
                   >
                     {shareTypes[item]}

@@ -254,7 +254,7 @@ export const getMasteryScoreColor = (domain, scaleInfo) =>
   getMasteryLevel(getMasteryScore(domain), scaleInfo).color
 export const getAnalyseByTitle = (key) => analyseKeys[key] || ''
 
-export const getOverallValue = (record = [], analyseByKey, scaleInfo) => {
+export const getOverallValue = (record = {}, analyseByKey, scaleInfo) => {
   switch (analyseByKey) {
     case 'masteryScore':
       return getOverallMasteryScore(record.records)

@@ -228,6 +228,14 @@ function* loadTestActivityReport({ payload }) {
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
     ])
 
+    if (reports.testActivity && reports.testActivity.isPaused) {
+      yield put(push(`/home/grades`))
+      return notification({
+        type: 'warn',
+        messageKey: 'studentAssignmentPaused',
+      })
+    }
+
     reports.questionActivities = reports.questionActivities.map((qa) => {
       if (qa.autoGrade === false && qa.score === undefined) {
         return {

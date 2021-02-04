@@ -1,18 +1,17 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import {
   EduButton,
   FlexContainer,
   MainContentWrapper,
   notification,
 } from '@edulastic/common'
-import { isBoolean } from 'lodash'
 import { Link } from 'react-router-dom'
-import StartTrialModal from './StartTrialModal'
+import { isBoolean } from 'lodash'
+import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 
 // TODO: Update SVG imports here
-import IMG1 from '../../static/1.png'
 import IMG2 from '../../static/2.png'
-import IMG3 from '../../static/3.png'
 
 import IMG4 from '../../static/text-speech.svg'
 import IMG5 from '../../static/test-security-settings.svg'
@@ -33,15 +32,11 @@ import { ActionsWrapper, Description, Title } from '../styled/commonStyled'
 import {
   AvailablePlansContainer,
   ContentWrapper,
-  CurrentPlanContainer,
   FeatureDescription,
   Img,
   PlanDetails,
   PlanImage,
   PlansContainer,
-  PlanStatus,
-  StyledLink,
-  StyledParagraph,
   ContentSection,
   ContentCards,
   ContentCard,
@@ -54,35 +49,14 @@ import {
   AddonImg,
   AddonDescription,
   EnterpriseSection,
+  CustomButton,
+  AddonFooter,
+  PurchaseLink,
+  LearnMoreLink,
   HaveLicenseKey,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
-
-const getUpgradeToTeacherPlanActions = ({
-  openPaymentServiceModal,
-  openHasLicenseKeyModal,
-  isblur,
-}) => (
-  <ActionsWrapper>
-    <AuthorCompleteSignupButton
-      renderButton={(handleClick) => (
-        <EduButton height="40px" onClick={handleClick} disabled={isblur}>
-          UPGRADE NOW FOR $100/YEAR
-        </EduButton>
-      )}
-      onClick={openPaymentServiceModal}
-    />
-    <EduButton
-      isGhost
-      height="40px"
-      onClick={openHasLicenseKeyModal}
-      disabled={isblur}
-    >
-      ALREADY HAVE A LICENSE KEY
-    </EduButton>
-  </ActionsWrapper>
-)
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -97,22 +71,7 @@ const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   </ActionsWrapper>
 )
 
-const getEnterprisePlanActions = () => (
-  <ActionsWrapper>
-    <EduButton height="40px" isGhost>
-      REQUEST A QUOTE
-    </EduButton>
-  </ActionsWrapper>
-)
-
 const availablePlans = [
-  {
-    imgSrc: IMG1,
-    title: 'Upgrade to Teacher Premium',
-    description:
-      'Get Additional reports, options to assist students collaborate with collegues, anti-cheating tools and more.',
-    getActionsComp: getUpgradeToTeacherPlanActions,
-  },
   {
     imgSrc: IMG2,
     title: 'Upgrade Multiple Users to Premium',
@@ -120,55 +79,51 @@ const availablePlans = [
       'Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.',
     getActionsComp: getUpgradeToMultipleUsersPlanAction,
   },
-  {
-    imgSrc: IMG3,
-    title: 'Edulastic Enterprise',
-    description:
-      'Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.',
-    getActionsComp: getEnterprisePlanActions,
-  },
 ]
 
 const featuresData = [
   {
     imgSrc: IMG4,
     title: 'Text-to-speech',
-    description: 'Text to Speech (Read Aloud) for students',
+    description: 'Enable read aloud for select students',
   },
   {
     imgSrc: IMG5,
     title: 'Test Security Settings',
-    description: 'Shuffle questions, hide correct answers, etc.',
+    description: 'Shuffle questions, password protect, and more',
   },
   {
     imgSrc: IMG6,
     title: 'Advanced Authoring',
-    description: 'Options, dynamic parameters, rubric support',
+    description:
+      'Activate dynamic parameters, rubrics, & authoring power tools',
   },
   {
     imgSrc: IMG7,
     title: 'In-depth reports',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description:
+      'Analyze data, growth, performance over time, & student mastery profiles.',
   },
   {
     imgSrc: IMG8,
     title: 'Playlists',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description: 'Organize and deliver your assessments by units or modules.',
   },
   {
     imgSrc: IMG9,
     title: 'Collaboration & Engagement',
-    description: 'Co-author, sharing, presentation mode',
+    description: 'Co-author, display present mode, and more.',
   },
   {
     imgSrc: IMG10,
     title: 'Student Groups',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description:
+      'Arrange students for differentiated assignments & instruction.',
   },
   {
     imgSrc: IMG11,
     title: 'Parent Portal',
-    description: 'Lorem ipsum dolor sit amet? lorem ipsum.',
+    description: 'Give parents/guardians insight into student progress.',
   },
 ]
 
@@ -178,33 +133,39 @@ const addonsData = [
     title: 'SparkMath',
     description:
       'Pre-built assessments and differentiated Math practice for each student',
+    learnMoreLinks: 'https://edulastic.com/spark-math',
   },
   {
     imgSrc: IMG13,
     title: 'Book Buddies',
     description: 'Assessments and prompts on your favorite books',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG14,
     title: 'STEM Cross-curricular',
     description: 'Science passages with reading and science questions',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG15,
     title: 'Phonics Practice',
     description:
       'Full year of practice assignments to help all students master each sound',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG16,
     title: 'Reading Comprehension Practice',
     description: 'Fiction and nonfiction to practice close reading',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
   },
   {
     imgSrc: IMG12,
     title: 'SparkScience',
     description:
       'NGSS-aligned pre-built assessments and item banks for grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-science',
   },
 ]
 
@@ -215,7 +176,6 @@ const PlansComponent = ({
   getActionsComp,
   isblur,
   openPaymentServiceModal,
-  openHasLicenseKeyModal,
   openPurchaseLicenseModal,
 }) => (
   <PlansContainer isblur={isblur}>
@@ -230,49 +190,50 @@ const PlansComponent = ({
     </ContentWrapper>
     {getActionsComp({
       openPaymentServiceModal,
-      openHasLicenseKeyModal,
       openPurchaseLicenseModal,
       isblur,
     })}
   </PlansContainer>
 )
 
-function formatDate(subEndDate) {
-  if (!subEndDate) return null
-  const date = new Date(subEndDate).toString().split(' ')
-  return `${date[2]} ${date[1]}, ${date[3]}`
-}
-
-const SubscriptionMain = (props) => {
-  const {
-    isSubscribed = false,
-    subEndDate,
-    openPaymentServiceModal,
-    openHasLicenseKeyModal,
-    openPurchaseLicenseModal,
-    subType,
-    setShowUpgradeModal,
-    isPremiumTrialUsed,
-    startTrialAction,
-    hasUpgradeButton,
-    showRenewalOptions,
-  } = props
-
-  const licenseExpiryDate = formatDate(subEndDate)
-
-  const [showPlans, setShowPlans] = useState(false)
-  const [showTrialModal, setShowTrialModal] = useState(false)
+const SubscriptionMain = ({
+  openPaymentServiceModal,
+  openPurchaseLicenseModal,
+  isPremiumTrialUsed,
+  showRenewalOptions,
+  startTrialAction,
+  isPaidPremium,
+  setShowSubscriptionAddonModalWithId,
+  usedTrialItemBankId,
+  products,
+  hasAllPremiumProductAccess,
+  itemBankSubscriptions,
+  settingProductData,
+  sparkMathProductId,
+  sparkMathItemBankId,
+  setShowItemBankTrialUsedModal,
+  openHasLicenseKeyModal,
+  isPremiumUser,
+  isPremium,
+}) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
+  const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
 
-  const handleSelectStateModal = () => {
-    setShowSelectStates(true)
-  }
+  const isPaidSparkMath =
+    itemBankSubscriptions &&
+    itemBankSubscriptions?.length > 0 &&
+    itemBankSubscriptions?.filter((x) => {
+      return x.itemBankId === sparkMathItemBankId && !x.isTrial
+    })?.length
 
-  const handleUpgradeModal = () => {
-    setShowUpgradeModal(true)
-  }
+  const toggleTrialModal = (value) => setIsTrialModalVisible(value)
+
+  const handleSelectStateModal = () => setShowSelectStates(true)
+
+  const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
   const handleStartTrial = () => {
+    settingProductData()
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
     if (!isBoolean(isPremiumTrialUsed)) {
       return notification({
@@ -280,64 +241,39 @@ const SubscriptionMain = (props) => {
         msg: 'Validating trial status, please wait...',
       })
     }
-    if (isPremiumTrialUsed) {
-      return notification({
-        type: 'warning',
-        msg: 'You have already used up the trial !',
-      })
+
+    if (usedTrialItemBankId) {
+      setShowItemBankTrialUsedModal(true)
+      return
     }
-    startTrialAction()
-    // setShowSelectStates(true)
+    setIsTrialModalVisible(true)
+  }
+
+  // Show item bank trial button when item bank trial is not used yet and user is either premium
+  // or hasn't used premium trial yet.
+  const hasTrialButton =
+    usedTrialItemBankId !== sparkMathItemBankId &&
+    !isPaidSparkMath &&
+    (!isPremiumTrialUsed || isPremiumUser)
+
+  const handleSparkMathClick = () => {
+    settingProductData()
+    handlePurchaseFlow()
   }
 
   return (
     <>
       <MainContentWrapper padding="30px" style={{ display: 'none' }}>
-        <CurrentPlanContainer onClick={() => setShowPlans(false)}>
-          <PlanStatus>
-            {isSubscribed && licenseExpiryDate ? (
-              <p>
-                Expires on: <StyledLink>{licenseExpiryDate}</StyledLink>
-              </p>
-            ) : (
-              <StyledLink>Free Forever</StyledLink>
-            )}
-          </PlanStatus>
-        </CurrentPlanContainer>
-
-        {!showPlans && (
-          <>
-            {subType !== 'enterprise' && (
-              <StyledParagraph isSubscribed={isSubscribed}>
-                interested in buying multiple teacher premium subscriptions or
-                upgrading to enterprise?
-                {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
-                <a
-                  href="https://edulastic.com/teacher-premium/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {' '}
-                  click here.
-                </a>
-              </StyledParagraph>
-            )}
-          </>
-        )}
-        {showPlans && (
-          <AvailablePlansContainer>
-            {availablePlans.map((plan, index) => (
-              <PlansComponent
-                key={index}
-                isblur={isSubscribed && index === 0}
-                openPaymentServiceModal={openPaymentServiceModal}
-                openHasLicenseKeyModal={openHasLicenseKeyModal}
-                openPurchaseLicenseModal={openPurchaseLicenseModal}
-                {...plan}
-              />
-            ))}
-          </AvailablePlansContainer>
-        )}
+        <AvailablePlansContainer>
+          {availablePlans.map((plan, index) => (
+            <PlansComponent
+              key={index}
+              openPaymentServiceModal={openPaymentServiceModal}
+              openPurchaseLicenseModal={openPurchaseLicenseModal}
+              {...plan}
+            />
+          ))}
+        </AvailablePlansContainer>
       </MainContentWrapper>
 
       <ContentSection>
@@ -355,55 +291,74 @@ const SubscriptionMain = (props) => {
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {hasUpgradeButton ? (
+            {!hasAllPremiumProductAccess && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
-                  <EduButton
+                  <CustomButton
                     height="38px"
                     width="215px"
+                    data-cy="subscriptionUpgradebtn"
                     isBlue
                     onClick={handleClick}
-                    style={{
-                      background: 'transparent',
-                      borderColor: 'white',
-                    }}
+                    noBg
                   >
                     Upgrade now $100/YR
-                  </EduButton>
+                  </CustomButton>
                 )}
-                onClick={handleUpgradeModal}
+                onClick={handlePurchaseFlow}
               />
-            ) : showRenewalOptions ? (
-              <EduButton onClick={handleUpgradeModal} isBlue height="38px">
+            )}
+            {isPaidPremium && showRenewalOptions && (
+              <EduButton onClick={handlePurchaseFlow} isBlue height="38px">
                 Renew Subscription
               </EduButton>
-            ) : null}
-            <EduButton
-              height="38px"
-              width="215px"
-              isGhost
-              isBlue
-              onClick={handleStartTrial}
-              style={{
-                borderColor: 'white',
-              }}
-            >
-              Start a trial
-            </EduButton>
+            )}
+            {hasTrialButton && (
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <CustomButton
+                    height="38px"
+                    width="215px"
+                    data-cy="subscriptionStartTrialbtn"
+                    isGhost
+                    isBlue
+                    onClick={handleClick}
+                  >
+                    Start a trial
+                  </CustomButton>
+                )}
+                onClick={handleStartTrial}
+              />
+            )}
           </FlexContainer>
-          <HaveLicenseKey onClick={openHasLicenseKeyModal}>
-            HAVE LICENSE KEY
-          </HaveLicenseKey>
+          {!isPremium && (
+            <HaveLicenseKey
+              data-cy="subscriptionHaveLicenseKey"
+              onClick={openHasLicenseKeyModal}
+            >
+              HAVE LICENSE KEY
+            </HaveLicenseKey>
+          )}
         </ContentCards>
       </ContentSection>
-      <StartTrialModal
-        visible={showTrialModal}
-        setShowModal={setShowTrialModal}
-      />
-
+      {isTrialModalVisible && (
+        <TrialModal
+          addOnProductIds={[sparkMathProductId]}
+          isVisible={isTrialModalVisible}
+          toggleModal={toggleTrialModal}
+          isPremiumUser={isPremiumUser}
+          isPremiumTrialUsed={isPremiumTrialUsed}
+          startPremiumTrial={startTrialAction}
+          products={products}
+        />
+      )}
       <AddonSection>
         <SectionContainer>
-          <SectionTitle>Premium addons to make it even better</SectionTitle>
+          <SectionTitle>
+            {isPremium
+              ? 'Add ons for your Premium Version'
+              : 'Premium addons to make it even better'}
+          </SectionTitle>
           <SectionDescription>
             You can bundle one or more of the following addons to the teacher
             premium subscription that will <br /> make it easier to deliver
@@ -417,6 +372,44 @@ const SubscriptionMain = (props) => {
                 <AddonDescription>
                   {addonsData[index].description}
                 </AddonDescription>
+                <AddonFooter>
+                  <LearnMoreLink
+                    data-cy="LearnMore"
+                    href={addonsData[index].learnMoreLinks}
+                    target="_blank"
+                    rel="noreferrer"
+                    className
+                  >
+                    Learn more
+                  </LearnMoreLink>
+                  {addonsData[index].title === 'SparkMath' && (
+                    <>
+                      {!(isPaidPremium && isPaidSparkMath) && (
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <PurchaseLink
+                              data-cy="Purchase"
+                              onClick={handleClick}
+                            >
+                              Purchase
+                            </PurchaseLink>
+                          )}
+                          onClick={handleSparkMathClick}
+                        />
+                      )}
+                      {hasTrialButton && (
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <span data-cy="trialPurchase" onClick={handleClick}>
+                              try
+                            </span>
+                          )}
+                          onClick={handleStartTrial}
+                        />
+                      )}
+                    </>
+                  )}
+                </AddonFooter>
               </AddonCard>
             ))}
           </CardContainer>
@@ -426,9 +419,11 @@ const SubscriptionMain = (props) => {
       <EnterpriseSection>
         <SectionTitle>Enterprise</SectionTitle>
         <SectionDescription>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
-          sollicitudin tincidunt tempus. <br /> Pellentesque auctor eros et
-          metus condimentum aliquet.
+          Get in-depth insights into schoolwide and districtwide progress with
+          Edulastic Enterprise. Deliver common assessments, analyze the instant
+          student data, and manage everything in one place. Enterprise includes
+          Teacher Premium and its collaboration, accommodation, and security
+          tools.
         </SectionDescription>
         <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
           <EduButton
@@ -459,4 +454,6 @@ const SubscriptionMain = (props) => {
   )
 }
 
-export default SubscriptionMain
+export default connect((state) => ({
+  products: state?.subscription?.products,
+}))(SubscriptionMain)

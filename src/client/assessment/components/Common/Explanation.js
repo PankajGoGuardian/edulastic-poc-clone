@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { MathFormulaDisplay, EduButton } from '@edulastic/common'
@@ -6,24 +6,17 @@ import { mainTextColor, backgroundGrey, lightGrey9 } from '@edulastic/colors'
 import { getFontSize } from '../../utils/helpers'
 
 const Explanation = (props) => {
-  const {
-    question = {},
-    isGrade,
-    isStudentReport,
-    preferredLanguage = 'en',
-  } = props
+  const { question = {}, isGrade, isStudentReport } = props
   const { uiStyle: { fontsize = '' } = {} } = question
 
-  const sampleAnswer = useMemo(() => {
-    if (
-      preferredLanguage !== 'en' &&
-      question?.languageFeatures?.[preferredLanguage]?.sampleAnswer
-    ) {
-      return question.languageFeatures[preferredLanguage].sampleAnswer
-    }
+  const { sampleAnswer } = question
 
-    return question?.sampleAnswer
-  }, [question])
+  const [show, updateShow] = useState(isGrade)
+
+  const onClickHandler = (e) => {
+    e.stopPropagation()
+    updateShow(true)
+  }
 
   if (
     !sampleAnswer ||
@@ -34,13 +27,6 @@ const Explanation = (props) => {
     question.type === 'text'
   ) {
     return null
-  }
-
-  const [show, updateShow] = useState(isGrade)
-
-  const onClickHandler = (e) => {
-    e.stopPropagation()
-    updateShow(true)
   }
 
   return (

@@ -110,6 +110,10 @@ const HeaderSection = ({
   teacherData,
   classData,
   loading,
+  districtPolicy,
+  schoolPolicy,
+  setShowHeaderTrialModal,
+  isPremiumTrialUsed,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
@@ -158,11 +162,15 @@ const HeaderSection = ({
     (c) => c.active === 1 && c.type === 'class'
   )
 
+  const isPremiumUser = user.user?.features?.premium
+
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
 
   const closeCleverSyncModal = () => setShowCleverSyncModal(false)
   const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
+
+  const handleShowTrialModal = () => setShowHeaderTrialModal(true)
 
   const hasNoActiveClassFallback =
     !loading &&
@@ -173,6 +181,11 @@ const HeaderSection = ({
 
   const hasGoogleMeetAndManageClass =
     currentSignUpState === signUpState.DONE && allActiveClasses.length > 0
+
+  const isHangoutEnabled =
+    districtPolicy?.enableGoogleMeet === true
+      ? true
+      : schoolPolicy?.[0]?.enableGoogleMeet === true
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -187,19 +200,31 @@ const HeaderSection = ({
             trackClick={trackClick('dashboard:complete-sign-up:click')}
           />
         )}
+        {!isPremiumUser && !isPremiumTrialUsed && (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <StyledLink data-cy="freeTrialButton" onClick={handleClick}>
+                Free Trial
+              </StyledLink>
+            )}
+            onClick={handleShowTrialModal}
+          />
+        )}
         {hasGoogleMeetAndManageClass && (
           <>
-            <Tooltip title="Launch Google Meet">
-              <StyledEduButton
-                IconBtn
-                isBlue
-                data-cy="launch-google-meet"
-                onClick={launchHangout}
-                isGhost
-              >
-                <IconHangouts color={themeColor} height={21} width={19} />
-              </StyledEduButton>
-            </Tooltip>
+            {isHangoutEnabled && (
+              <Tooltip title="Launch Google Meet">
+                <StyledEduButton
+                  IconBtn
+                  isBlue
+                  data-cy="launch-google-meet"
+                  onClick={launchHangout}
+                  isGhost
+                >
+                  <IconHangouts color={themeColor} height={21} width={19} />
+                </StyledEduButton>
+              </Tooltip>
+            )}
             <Tooltip title="Manage Class">
               <Link to="/author/manageClass">
                 <EduButton
@@ -296,7 +321,7 @@ const HeaderSection = ({
                 <EduButton
                   isBlue
                   style={{ marginLeft: '5px' }}
-                  data-cy="manageClass"
+                  data-cy="upgradeButton"
                   onClick={trackClick('dashboard:upgrade:click')}
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />
@@ -328,6 +353,8 @@ const enhance = compose(
       subscription: state?.subscription?.subscriptionData?.subscription,
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
+      districtPolicy: get(state, 'user.user.orgData.policies.district'),
+      schoolPolicy: get(state, 'user.user.orgData.policies.institutions'),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
         state
       ),
@@ -349,6 +376,8 @@ const enhance = compose(
       defaultGrades: getInterestedGradesSelector(state),
       defaultSubjects: getInterestedSubjectsSelector(state),
       loading: state.dashboardTeacher.loading,
+      isPremiumTrialUsed:
+        state.subscription?.subscriptionData?.isPremiumTrialUsed,
     }),
     {
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
@@ -359,6 +388,7 @@ const enhance = compose(
       syncCleverClassList: syncClassesWithCleverAction,
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
+      setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
     }
   )
 )

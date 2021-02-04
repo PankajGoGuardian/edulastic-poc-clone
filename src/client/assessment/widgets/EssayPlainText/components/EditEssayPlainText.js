@@ -56,11 +56,11 @@ const EditEssayPlainText = ({
       />
 
       <Question
-        section="advanced"
+        section="main"
         label="Scoring"
         fillSections={fillSections}
         cleanSections={cleanSections}
-        advancedAreOpen={advancedAreOpen}
+        advancedAreOpen
         showScoringSectionAnyRole
       >
         <Scoring

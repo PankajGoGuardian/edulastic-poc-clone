@@ -1,12 +1,6 @@
 import React, { useState, memo, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
-import {
-  notification,
-  EduButton,
-  FlexContainer,
-  MathFormulaDisplay,
-  handleChromeOsSEB,
-} from '@edulastic/common'
+import { notification, EduButton, handleChromeOsSEB } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
@@ -17,7 +11,6 @@ import {
   largeDesktopWidth,
   desktopWidth,
   black,
-  themeColor,
   tabletWidth,
 } from '@edulastic/colors'
 import { test as testConstants } from '@edulastic/constants'
@@ -25,7 +18,7 @@ import { test as testConstants } from '@edulastic/constants'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { first, maxBy, isNaN } from 'lodash'
-import { Row, Col, Icon, Modal } from 'antd'
+import { Row, Col, Icon } from 'antd'
 import { maxDueDateFromClassess, getServerTs } from '../utils'
 
 //  components
@@ -43,6 +36,7 @@ import {
   getSebUrl,
 } from '../Assignments/ducks'
 import { proxyRole } from '../Login/ducks'
+import { showTestInfoModal } from '../../publicTest/utils'
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
 
@@ -90,6 +84,10 @@ const AssignmentCard = memo(
     proxyUserRole,
     highlightMode,
     index,
+    uta = {},
+    setSelectedLanguage,
+    languagePreference,
+    history,
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
@@ -127,6 +125,7 @@ const AssignmentCard = memo(
       assignedBy,
       hasInstruction = false,
       instruction = '',
+      multiLanguageEnabled = false,
     } = data
 
     const serverTimeStamp = getServerTs(data)
@@ -202,7 +201,11 @@ const AssignmentCard = memo(
     if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
       maxAttempts = reports.length
     }
-
+    if (!isPaused) {
+      isPaused = Object.keys(uta).length
+        ? !!uta?.isPaused
+        : !!lastAttempt.isPaused
+    }
     useEffect(() => {
       if (index <= 2 && reports.length > 0 && maxAttempts > 1) {
         setShowAttempts(true)
@@ -214,61 +217,30 @@ const AssignmentCard = memo(
         notification({ messageKey: 'testIsExpired' })
         return
       }
-
-      if (!resume && (timedAssignment || hasInstruction)) {
-        const timedContent = pauseAllowed ? (
-          <p>
-            {' '}
-            This is a timed assignment which should be finished within the time
-            limit set for this assignment. The time limit for this assignment is{' '}
-            <span data-cy="test-time" style={{ fontWeight: 700 }}>
-              {' '}
-              {allowedTime / (60 * 1000)} minutes
-            </span>
-            . Do you want to continue?
-          </p>
-        ) : (
-          <p>
-            {' '}
-            This is a timed assignment which should be finished within the time
-            limit set for this assignment. The time limit for this assignment is{' '}
-            <span data-cy="test-time" style={{ fontWeight: 700 }}>
-              {' '}
-              {allowedTime / (60 * 1000)} minutes
-            </span>{' '}
-            and you can’t quit in between. Do you want to continue?
-          </p>
-        )
-
-        const content = (
-          <FlexContainer flexDirection="column">
-            {timedAssignment && timedContent}
-            {hasInstruction && instruction && (
-              <MathFormulaDisplay
-                dangerouslySetInnerHTML={{ __html: instruction }}
-                style={{ marginTop: '1rem' }}
-              />
-            )}
-          </FlexContainer>
-        )
-
-        Modal.confirm({
-          title: 'Do you want to Continue ?',
-          content,
-          onOk: () => {
-            if (attemptCount < maxAttempts)
-              startAssignment({ testId, assignmentId, testType, classId })
-            Modal.destroyAll()
-          },
-          okText: 'Continue',
-          // okType: "danger",
-          centered: true,
-          width: 500,
-          okButtonProps: {
-            style: { background: themeColor },
-          },
+      if (
+        !resume &&
+        (timedAssignment || hasInstruction || multiLanguageEnabled)
+      ) {
+        return showTestInfoModal({
+          pauseAllowed,
+          allowedTime,
+          multiLanguageEnabled,
+          setSelectedLanguage,
+          languagePreference,
+          timedAssignment,
+          hasInstruction,
+          instruction,
+          attemptCount,
+          maxAttempts,
+          startAssignment,
+          testId,
+          assignmentId,
+          testType,
+          classId,
+          history,
+          title,
+          notifyCancel: false,
         })
-        return
       }
 
       if (resume) {
@@ -280,7 +252,13 @@ const AssignmentCard = memo(
           classId,
         })
       } else if (attemptCount < maxAttempts) {
-        startAssignment({ testId, assignmentId, testType, classId })
+        startAssignment({
+          testId,
+          assignmentId,
+          testType,
+          classId,
+          languagePreference,
+        })
       }
     }
 

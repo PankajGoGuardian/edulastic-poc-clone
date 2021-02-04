@@ -4,6 +4,8 @@ import { Spin } from 'antd'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'
+import { WithResources } from '@edulastic/common/src/HOC/withResources'
+import AppConfig from '../../app-config'
 
 // themes
 import ThemeContainer from './themes/index'
@@ -61,7 +63,9 @@ const AssessmentPlayer = ({
     window.confirmBeforeGoBack = (e) => {
       e.preventDefault()
       const matched = e.target.location.pathname.match(
-        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+        new RegExp(
+          '/student/(assessment|practice)/.*/class/.*/uta/.*/itemId/.*'
+        )
       )
       if (!matched) {
         if (
@@ -70,14 +74,13 @@ const AssessmentPlayer = ({
           )
         ) {
           // to remove attached event from window after execuation done
-          setTimeout(() => {
-            window.removeEventListener('popstate', window.confirmBeforeGoBack)
-            delete window.confirmBeforeGoBack
-          }, 1000)
+         
           return true
         }
         window.history.go(1)
         return false
+      } else {
+        console.warn('ev',e);
       }
     }
   }
@@ -142,30 +145,40 @@ const AssessmentPlayer = ({
   return (
     <Switch>
       <Route
-        path={`${match.url}/qid/:qid`}
+        path={`${match.url}/itemId/:itemId`}
         render={() => (
-          <ThemeContainer
-            passages={passages}
-            utaId={utaId}
-            defaultAP={defaultAP}
-            url={match.url}
-            groupId={groupId}
-            testId={match.params.id}
-          />
+          <WithResources
+            resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+            fallBack={<Spin />}
+          >
+            <ThemeContainer
+              passages={passages}
+              utaId={utaId}
+              defaultAP={defaultAP}
+              url={match.url}
+              groupId={groupId}
+              testId={match.params.id}
+            />
+          </WithResources>
         )}
       />
       <Route
         path={`${match.url}`}
         render={() => (
-          <ThemeContainer
-            passages={passages}
-            utaId={utaId}
-            defaultAP={defaultAP}
-            url={match.url}
-            testletType
-            groupId={groupId}
-            testId={match.params.id}
-          />
+          <WithResources
+            resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+            fallBack={<Spin />}
+          >
+            <ThemeContainer
+              passages={passages}
+              utaId={utaId}
+              defaultAP={defaultAP}
+              url={match.url}
+              testletType
+              groupId={groupId}
+              testId={match.params.id}
+            />
+          </WithResources>
         )}
       />
     </Switch>

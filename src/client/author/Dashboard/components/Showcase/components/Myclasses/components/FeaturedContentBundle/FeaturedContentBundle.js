@@ -5,7 +5,7 @@ import { FlexContainer } from '@edulastic/common'
 import { title } from '@edulastic/colors'
 import { TextWrapper } from '../../../../../styledComponents'
 import { FeatureContentWrapper, EmptyBox } from './styled'
-import BundleWrapper from './BundleWrapper'
+import Bundle from './Bundle'
 
 const FeaturedContentBundle = ({
   featuredBundles,
@@ -28,11 +28,7 @@ const FeaturedContentBundle = ({
       </TextWrapper>
       <FlexContainer justifyContent="space-between" flexWrap="wrap">
         {featuredBundles.map((bundle) => (
-          <BundleWrapper
-            key={bundle._id}
-            handleFeatureClick={handleFeatureClick}
-            bundle={bundle}
-          />
+          <Bundle handleClick={handleFeatureClick} bundle={bundle} />
         ))}
         {emptyBoxCount.map((index) => (
           <EmptyBox key={index} />

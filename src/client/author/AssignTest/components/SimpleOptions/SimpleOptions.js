@@ -1,10 +1,10 @@
-import { FieldLabel, notification, SelectInputStyled } from '@edulastic/common'
+import { notification } from '@edulastic/common'
 import {
   assignmentPolicyOptions,
   roleuser,
   test as testConst,
 } from '@edulastic/constants'
-import { Col, Icon, Row, Select, Tooltip } from 'antd'
+import { Tabs } from 'antd'
 import produce from 'immer'
 import { curry, get, keyBy } from 'lodash'
 import * as moment from 'moment'
@@ -17,22 +17,21 @@ import { getUserRole } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
   getIsOverrideFreezeSelector,
+  getDisableAnswerOnPaperSelector,
   getReleaseScorePremiumSelector,
 } from '../../../TestPage/ducks'
 import { getListOfActiveStudents } from '../../utils'
-import ClassSelector from './ClassSelector'
-import DateSelector from './DateSelector'
-import Settings from './Settings'
-import StudentSelector from './StudentSelector'
-import QuestionPerStandardSelector from './QuestionPerStandardSelector'
-import {
-  InitOptions,
-  OptionConationer,
-  SettingsBtn,
-  StyledRow,
-  StyledRowButton,
-} from './styled'
-import TestTypeSelector from './TestTypeSelector'
+import { OptionConationer } from './styled'
+import ClassGroupContainer from '../Container/ClassGroupContainer'
+import TestBehaviorGroupContainer from '../Container/TestBehaviorGroupContainer'
+import AntiCheatingGroupContainer from '../Container/AntiCheatingGroupContainer'
+import AutoRedirectGroupContainer from '../Container/AutoRedirectGroupContainer'
+import MiscellaneousGroupContainer from '../Container/MiscellaneousGroupContainer'
+import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
+import { TabContentContainer } from '../Container/styled'
+import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
+
+const { TabPane } = Tabs
 
 export const releaseGradeKeys = [
   'DONT_RELEASE',
@@ -41,15 +40,16 @@ export const releaseGradeKeys = [
   'WITH_ANSWERS',
 ]
 export const nonPremiumReleaseGradeKeys = ['DONT_RELEASE', 'WITH_ANSWERS']
+const completionTypeKeys = ['AUTOMATICALLY', 'MANUALLY']
 
 const { releaseGradeLabels, evalTypeLabels } = testConst
 class SimpleOptions extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      showSettings: false,
       _releaseGradeKeys: nonPremiumReleaseGradeKeys,
     }
+    this.containerRef = React.createRef()
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -77,14 +77,19 @@ class SimpleOptions extends React.Component {
   componentDidMount() {
     const {
       features: { free, premium },
+      testSettings = {},
+      assignment,
     } = this.props
-    const { showSettings } = this.state
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
-      if (!showSettings) {
-        this.setState({ showSettings: true })
-      }
     }
+    const { scoringType: _scoringType, penalty: _penalty } = testSettings
+    const { scoringType = _scoringType, penalty = _penalty } = assignment
+    if (scoringType === evalTypeLabels.PARTIAL_CREDIT && !penalty)
+      this.overRideSettings(
+        'scoringType',
+        evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      )
   }
 
   toggleSettings = () => {
@@ -100,12 +105,12 @@ class SimpleOptions extends React.Component {
     const {
       onClassFieldChange,
       group,
-      assignment,
       updateOptions,
       isReleaseScorePremium,
       userRole,
       features: { free, premium },
     } = this.props
+    let { assignment } = this.props
     if (field === 'class') {
       const { classData, termId } = onClassFieldChange(value, group)
       const nextAssignment = produce(assignment, (state) => {
@@ -120,6 +125,13 @@ class SimpleOptions extends React.Component {
       if (value === null) {
         value = moment(startDate).add('days', 7)
       }
+    }
+
+    if (
+      field === 'restrictNavigationOut' &&
+      value === 'warn-and-report-after-n-alerts'
+    ) {
+      assignment = { ...assignment, restrictNavigationOutAttemptsThreshold: 5 }
     }
 
     const nextAssignment = produce(assignment, (state) => {
@@ -182,7 +194,11 @@ class SimpleOptions extends React.Component {
       if (field === 'scoringType') {
         state.penalty = value === evalTypeLabels.PARTIAL_CREDIT
       }
-      state[field] = value
+      if (typeof value === 'undefined') {
+        state[field] = null
+      } else {
+        state[field] = value
+      }
     })
     updateOptions(nextAssignment)
   }
@@ -281,8 +297,41 @@ class SimpleOptions extends React.Component {
     updateOptions(nextAssignment)
   }
 
+  overRideSettings = (key, value) => {
+    const { disableAnswerOnPaper, assignmentSettings } = this.props
+    if ((key === 'maxAnswerChecks' || key === 'maxAttempts') && value < 0)
+      value = 0
+    if (key === 'answerOnPaper' && value && disableAnswerOnPaper) {
+      return notification({
+        messageKey: 'answerOnPaperNotSupportedForThisTest',
+      })
+    }
+
+    const newSettings = {}
+
+    // SimpleOptions onChange method has similar condition
+    if (key === 'scoringType') {
+      const penalty = value === evalTypeLabels.PARTIAL_CREDIT
+      newSettings.penalty = penalty
+    }
+
+    const newSettingsState = {
+      ...assignmentSettings,
+      ...newSettings,
+      [key]: value,
+    }
+
+    if (key === 'safeBrowser' && value === false) {
+      delete newSettingsState.sebPassword
+    }
+    if (key === 'assignmentPassword') {
+      // passwordValidationStatus(value)
+    }
+    this.onChange(key, value)
+  }
+
   render() {
-    const { showSettings, _releaseGradeKeys } = this.state
+    const { _releaseGradeKeys } = this.state
     const {
       group,
       fetchStudents,
@@ -297,6 +346,12 @@ class SimpleOptions extends React.Component {
       features,
       isAssignRecommendations,
       isRecommendingStandards,
+      match,
+      totalItems,
+      disableAnswerOnPaper,
+      isAdvancedView,
+      defaultTestProfiles,
+      onClassFieldChange,
     } = this.props
     const changeField = curry(this.onChange)
     let { openPolicy } = selectsData
@@ -322,148 +377,170 @@ class SimpleOptions extends React.Component {
       label: i + 1,
     }))
 
+    const actionOnFeatureInaccessible = 'disabled'
+
+    const featuresAvailable = {}
+    Object.keys(features).forEach((featureKey) => {
+      const isAccessible = isFeatureAccessible({
+        features,
+        inputFeatures: featureKey,
+        gradeSubject,
+      })
+      if (isAccessible) {
+        featuresAvailable[featureKey] = true
+      } else {
+        featuresAvailable[featureKey] = false
+      }
+    })
+
+    let tootltipWidth
+    if (this?.containerRef?.current?.offsetWidth) {
+      tootltipWidth = this?.containerRef?.current?.offsetWidth * 0.2 || 0
+    }
+
     return (
-      <OptionConationer>
-        <InitOptions>
-          {!isAssignRecommendations && (
-            <StyledRow gutter={32}>
-              <ClassSelector
-                onChange={changeField('class')}
-                fetchStudents={fetchStudents}
-                selectedGroups={classIds}
-                group={group}
-              />
-              <StudentSelector
-                selectedGroups={classIds}
-                students={studentOfSelectedClass}
-                groups={group}
-                updateStudents={this.updateStudents}
-                selectAllStudents={this.selectAllStudents}
-                unselectAllStudents={this.unselectAllStudents}
-                handleRemoveStudents={this.handleRemoveStudents}
-              />
-            </StyledRow>
-          )}
-
-          <DateSelector
-            startDate={assignment.startDate}
-            endDate={assignment.endDate}
-            dueDate={assignment.dueDate}
-            hasStartDate={!isAssignRecommendations}
-            changeField={changeField}
-            passwordPolicy={assignment.passwordPolicy}
-            changeRadioGrop={changeDateSelection}
-            selectedOption={selectedDateOption}
-            showOpenDueAndCloseDate={showOpenDueAndCloseDate}
-          />
-
-          <StyledRow gutter={32} mb="15px">
-            <Col span={12}>
-              <Row>
-                <Col span={24}>
-                  <FieldLabel>OPEN POLICY</FieldLabel>
-                  <Tooltip
-                    placement="top"
-                    title={
-                      assignment.passwordPolicy ===
-                      testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-                        ? 'To modify set Dynamic Password as OFF'
-                        : null
-                    }
-                  >
-                    <SelectInputStyled
-                      data-cy="selectOpenPolicy"
-                      placeholder="Please select"
-                      cache="false"
-                      value={assignment.openPolicy}
-                      onChange={changeField('openPolicy')}
-                      disabled={
-                        assignment.passwordPolicy ===
-                        testConst.passwordPolicy
-                          .REQUIRED_PASSWORD_POLICY_DYNAMIC
-                      }
-                      title="To modify set Dynamic Password as OFF"
-                    >
-                      {openPolicy.map(({ value, text }, index) => (
-                        <Select.Option key={index} value={value} data-cy="open">
-                          {text}
-                        </Select.Option>
-                      ))}
-                    </SelectInputStyled>
-                  </Tooltip>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={12}>
-              <Row>
-                <Col span={24}>
-                  <FieldLabel>CLOSE POLICY</FieldLabel>
-                  <SelectInputStyled
-                    data-cy="selectClosePolicy"
-                    placeholder="Please select"
-                    cache="false"
-                    value={assignment.closePolicy}
-                    onChange={changeField('closePolicy')}
-                  >
-                    {closePolicy.map(({ value, text }, index) => (
-                      <Select.Option data-cy="class" key={index} value={value}>
-                        {text}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
-                </Col>
-              </Row>
-            </Col>
-          </StyledRow>
-          <StyledRow gutter={32} mb="15px">
-            <Col span={12}>
-              <TestTypeSelector
-                userRole={userRole}
-                testType={assignment.testType || testSettings.testType}
-                onAssignmentTypeChange={changeField('testType')}
-                disabled={freezeSettings}
-              />
-            </Col>
-          </StyledRow>
-          {isAssignRecommendations && isRecommendingStandards && (
-            <StyledRow gutter={32} mb="25px">
-              <Col span={12}>
-                <QuestionPerStandardSelector
-                  onChange={changeField('questionPerStandard')}
-                  questionPerStandard={
-                    assignment.questionPerStandard ||
-                    testSettings.questionPerStandard
-                  }
-                  options={questionPerStandardOptions}
+      <OptionConationer isAdvancedView={isAdvancedView} ref={this.containerRef}>
+        <Tabs defaultActiveKey="1" onChange={() => {}}>
+          <TabPane tab="CLASS/GROUP" key="1">
+            {isAdvancedView ? (
+              <TabContentContainer width="100%">
+                <AdvancedOptons
+                  assignment={assignment}
+                  updateOptions={updateOptions}
+                  testSettings={testSettings}
+                  onClassFieldChange={onClassFieldChange}
+                  defaultTestProfiles={defaultTestProfiles}
+                  isAssignRecommendations={false}
                 />
-              </Col>
-            </StyledRow>
-          )}
-          <StyledRowButton gutter={32}>
-            <Col>
-              <SettingsBtn onClick={this.toggleSettings}>
-                OVERRIDE TEST SETTINGS
-                {showSettings ? (
-                  <Icon type="caret-up" />
-                ) : (
-                  <Icon type="caret-down" />
-                )}
-              </SettingsBtn>
-            </Col>
-          </StyledRowButton>
-
-          {showSettings && (
-            <Settings
-              assignmentSettings={assignment}
-              updateAssignmentSettings={updateOptions}
-              changeField={changeField}
-              testSettings={testSettings}
-              gradeSubject={gradeSubject}
-              _releaseGradeKeys={_releaseGradeKeys}
-              isDocBased={testSettings.isDocBased}
-            />
-          )}
-        </InitOptions>
+              </TabContentContainer>
+            ) : (
+              <TabContentContainer>
+                <ClassGroupContainer
+                  changeField={changeField}
+                  fetchStudents={fetchStudents}
+                  classIds={classIds}
+                  group={group}
+                  studentOfSelectedClass={studentOfSelectedClass}
+                  updateStudents={this.updateStudents}
+                  selectAllStudents={this.selectAllStudents}
+                  unselectAllStudents={this.unselectAllStudents}
+                  handleRemoveStudents={this.handleRemoveStudents}
+                  assignment={assignment}
+                  isAssignRecommendations={isAssignRecommendations}
+                  changeDateSelection={changeDateSelection}
+                  selectedDateOption={selectedDateOption}
+                  showOpenDueAndCloseDate={showOpenDueAndCloseDate}
+                  userRole={userRole}
+                  openPolicy={openPolicy}
+                  closePolicy={closePolicy}
+                  testSettings={testSettings}
+                  freezeSettings={freezeSettings}
+                  isRecommendingStandards={isRecommendingStandards}
+                  questionPerStandardOptions={questionPerStandardOptions}
+                  tootltipWidth={tootltipWidth}
+                />
+              </TabContentContainer>
+            )}
+          </TabPane>
+          <TabPane tab="TEST BEHAVIOR" key="2">
+            <TabContentContainer>
+              <TestBehaviorGroupContainer
+                assignmentSettings={assignment}
+                changeField={changeField}
+                testSettings={testSettings}
+                gradeSubject={gradeSubject}
+                _releaseGradeKeys={_releaseGradeKeys}
+                isDocBased={testSettings.isDocBased}
+                freezeSettings={freezeSettings}
+                completionTypeKeys={completionTypeKeys}
+                premium={features?.premium}
+                calculatorProvider={features?.calculatorProvider}
+                overRideSettings={this.overRideSettings}
+                match={match}
+                totalItems={totalItems}
+                userRole={userRole}
+                actionOnFeatureInaccessible={actionOnFeatureInaccessible}
+                featuresAvailable={featuresAvailable}
+                tootltipWidth={tootltipWidth}
+              />
+            </TabContentContainer>
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+                ANTI-CHEATING
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="3"
+          >
+            <TabContentContainer>
+              <AntiCheatingGroupContainer
+                assignmentSettings={assignment}
+                changeField={changeField}
+                testSettings={testSettings}
+                gradeSubject={gradeSubject}
+                isDocBased={testSettings.isDocBased}
+                freezeSettings={freezeSettings}
+                overRideSettings={this.overRideSettings}
+                actionOnFeatureInaccessible={actionOnFeatureInaccessible}
+                featuresAvailable={featuresAvailable}
+                tootltipWidth={tootltipWidth}
+              />
+            </TabContentContainer>
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+                AUTO REDIRECT SETTINGS
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="4"
+          >
+            <TabContentContainer>
+              <AutoRedirectGroupContainer
+                assignmentSettings={assignment}
+                gradeSubject={gradeSubject}
+                freezeSettings={freezeSettings}
+                updateAssignmentSettings={updateOptions}
+                actionOnFeatureInaccessible={actionOnFeatureInaccessible}
+                featuresAvailable={featuresAvailable}
+                tootltipWidth={tootltipWidth}
+                testSettings={testSettings}
+                overRideSettings={this.overRideSettings}
+                isDocBased={testSettings.isDocBased}
+              />
+            </TabContentContainer>
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+                MISCELLANEOUS
+                <DollarPremiumSymbol premium={features?.premium} />
+              </span>
+            }
+            key="5"
+          >
+            <TabContentContainer>
+              <MiscellaneousGroupContainer
+                assignmentSettings={assignment}
+                changeField={changeField}
+                testSettings={testSettings}
+                gradeSubject={gradeSubject}
+                isDocBased={testSettings.isDocBased}
+                freezeSettings={freezeSettings}
+                premium={features?.premium}
+                overRideSettings={this.overRideSettings}
+                userRole={userRole}
+                disableAnswerOnPaper={disableAnswerOnPaper}
+                actionOnFeatureInaccessible={actionOnFeatureInaccessible}
+                featuresAvailable={featuresAvailable}
+                tootltipWidth={tootltipWidth}
+              />
+            </TabContentContainer>
+          </TabPane>
+        </Tabs>
       </OptionConationer>
     )
   }
@@ -492,4 +569,8 @@ export default connect((state) => ({
   features: getUserFeatures(state),
   isReleaseScorePremium: getReleaseScorePremiumSelector(state),
   freezeSettings: getIsOverrideFreezeSelector(state),
+  disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
+  totalItems: state?.tests?.entity?.isDocBased
+    ? state?.tests?.entity?.summary?.totalQuestions
+    : state?.tests?.entity?.summary?.totalItems,
 }))(SimpleOptions)

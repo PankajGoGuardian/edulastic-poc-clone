@@ -92,6 +92,10 @@ import {
   reportStandardsGradebookSaga,
 } from './subPages/standardsMasteryReport/standardsGradebook/ducks'
 import {
+  reportStandardsProgressReducer,
+  reportStandardsProgressSaga,
+} from './subPages/standardsMasteryReport/standardsProgress/ducks'
+import {
   customReportReducer,
   customReportSaga,
 } from './components/customReport/ducks'
@@ -220,6 +224,7 @@ export const reportReducer = combineReducers({
   reportStudentAssessmentProfileReducer,
   reportStandardsPerformanceSummaryReducer,
   reportStandardsGradebookReducer,
+  reportStandardsProgressReducer,
   customReportReducer,
   sharedReportsReducer,
 })
@@ -282,6 +287,7 @@ export function* reportSaga() {
     reportStudentAssessmentProfileSaga(),
     reportStandardsPerformanceSummarySaga(),
     reportStandardsGradebookSaga(),
+    reportStandardsProgressSaga(),
     customReportSaga(),
     sharedReportsSaga(),
     yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),

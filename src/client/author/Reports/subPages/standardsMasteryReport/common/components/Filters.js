@@ -181,6 +181,8 @@ const StandardsFilters = ({
         standardGrade: urlStandardGrade.key,
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
+        standardId: search.standardId || '',
+        showApply: false,
       }
       if (role === roleuser.TEACHER) {
         delete _filters.schoolIds

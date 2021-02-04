@@ -8,7 +8,7 @@ import { FieldLabel } from '@edulastic/common'
 const AdvancedOptionsLink = ({ bottom, isPremiumUser }) => (
   <AdvancedOptionsHeader bottom={bottom}>
     {isPremiumUser && (
-      <FieldLabel>
+      <FieldLabel nowrap="normal">
         Enable
         <Link to="/author/profile" replace>
           <span className="power-use">&nbsp;power use&nbsp;</span>
@@ -17,7 +17,7 @@ const AdvancedOptionsLink = ({ bottom, isPremiumUser }) => (
       </FieldLabel>
     )}
     {!isPremiumUser && (
-      <FieldLabel>
+      <FieldLabel nowrap="normal">
         <Link to="/author/subscription" replace>
           <span className="power-use">&nbsp;Upgrade&nbsp;</span>
         </Link>

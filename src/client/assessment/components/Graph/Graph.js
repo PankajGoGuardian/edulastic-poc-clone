@@ -55,7 +55,7 @@ import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
 
-const { GRAPH_EVALUATION_SETTING } = mathConstants
+const { GRAPH_EVALUATION_SETTING, subEvaluationSettingsGrouped } = mathConstants
 
 const EmptyWrapper = styled.div``
 
@@ -321,12 +321,28 @@ class Graph extends Component {
     setQuestionData({ ...item, annotation: options })
   }
 
-  handleCanvasChange = (canvas, uiStyle) => {
-    const { setQuestionData, item } = this.props
-    let newItem = { ...item, canvas }
-    if (uiStyle) {
-      newItem = { ...newItem, uiStyle }
-    }
+  handleCanvasChange = (canvas, uiStyle, removeElement) => {
+    const { item, setQuestionData } = this.props
+    const newItem = produce(item, (draft) => {
+      if (canvas) {
+        item.canvas = canvas
+      }
+      if (uiStyle) {
+        item.uiStyle = uiStyle
+      }
+      if (removeElement) {
+        if (!draft.validation) {
+          draft.validation = {}
+        }
+        draft.validation.validResponse.value = []
+        if (draft.validation.altResponses) {
+          draft.validation.altResponses.forEach((alt) => {
+            alt.value = []
+          })
+        }
+        draft.background_shapes = []
+      }
+    })
     setQuestionData(newItem)
   }
 
@@ -392,7 +408,7 @@ class Graph extends Component {
       if (prop === 'ponitsOnAnEquation' && !value) {
         draft.validation.points = null
         draft.validation.latex = null
-        draft.validation.apiLatex = null
+        // draft.validation.apiLatex = null
       } else if (prop === 'ponitsOnAnEquation' && isObject(value)) {
         draft.validation = {
           ...draft.validation,
@@ -403,6 +419,15 @@ class Graph extends Component {
       }
       draft.validation.compareStartAndLength =
         draft.validation.compareLength && draft.validation.compareStartPoint
+
+      const evaluationOptions = [
+        ...subEvaluationSettingsGrouped.graphSegmentChecks,
+        ...subEvaluationSettingsGrouped.graphPolygonChecks,
+      ]
+
+      draft.validation['comparePoints=False'] = Object.keys(draft.validation)
+        .filter((option) => draft.validation[option])
+        .some((option) => evaluationOptions.includes(option))
 
       draft.validation = pickBy(draft.validation, identity)
     })

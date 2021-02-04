@@ -11,40 +11,60 @@ import {
   themeColorLight,
   title,
   white,
+  smallDesktopWidth,
+  mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
 import styled from 'styled-components'
 import { EduSwitchStyled } from '@edulastic/common'
+import { IconInfo } from '@edulastic/icons'
 
 const RadioGroup = Radio.Group
 
 export const OptionConationer = styled.div`
-  ${({ hasMinHeight = true }) =>
-    hasMinHeight &&
-    `
-      min-height: 80vh;
-    `}
-  display: ${(props) => props.display || 'flex'};
-  justify-content: center;
-  align-items: center;
-  margin-top: ${window.innerHeight <= 780 && '24px'};
+  width: ${({ width }) => width || '100%'};
+  margin: auto;
+  margin-top: ${window.innerHeight <= 780 ? '24px' : '80px'};
+  .ant-tabs-bar {
+    width: 65%;
+
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      width: 80%;
+    }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 90%;
+    }
+
+    @media (max-width: ${smallDesktopWidth}) {
+      width: 100%;
+    }
+    margin: auto;
+    margin-bottom: 20px;
+  }
+  .ant-tabs-nav-scroll {
+    display: flex;
+    justify-content: center;
+  }
+  .ant-tabs-tab {
+    font-size: 12px;
+  }
 `
 
 export const InitOptions = styled.div`
   background: ${white};
-  border: 1px solid #dadae4;
   border-radius: 10px;
-  padding: 40px;
+  padding: 20px 40px 0px 40px;
   width: 100%;
-
-  @media (min-width: ${largeDesktopWidth}) {
-    width: 1000px;
-  }
 `
 
 export const StyledRow = styled(Row)`
-  margin-bottom: ${(props) => props.mb || '8px'};
+  border-bottom: ${({ borderBottom }) => borderBottom || '1px solid #dddddd'};
+  padding: ${({ padding }) => padding || '15px 0px'};
   margin-top: ${({ mt }) => mt || '0px'};
+  :hover {
+    background: ${greyThemeLighter};
+  }
 `
 
 export const StyledRowLabel = styled(Row)``
@@ -63,6 +83,7 @@ export const StyledRowButton = styled(Row)`
 export const AlignRight = styled(RadioGroup)`
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
   & * {
     cursor: ${({ forClassLevel }) =>
       forClassLevel ? 'not-allowed' : 'initial'};
@@ -73,6 +94,7 @@ export const AlignRight = styled(RadioGroup)`
     max-width: 200px;
     display: flex;
     align-items: center;
+    margin-bottom: 4px;
 
     span {
       display: inline-block;
@@ -146,7 +168,6 @@ export const CheckBoxWrapper = styled.p`
 `
 
 export const SettingsWrapper = styled.div`
-  margin-top: 35px;
   color: #434b5d;
   font-weight: 600;
   display: flex;
@@ -316,10 +337,10 @@ export const Label = styled.label`
   font-size: ${(props) => props.theme.linkFontSize};
   font-weight: 600;
   text-transform: uppercase;
+  align-items: center;
 `
 export const RadioButtonWrapper = styled.div`
   display: flex;
-  margin-top: 10px;
 `
 
 export const StyledDiv = styled.div`
@@ -383,13 +404,8 @@ export const RadioWrapper = styled(Block)`
   }
 
   .ant-row {
-    padding: 14px 22px;
     background: ${white};
     border-radius: 4px;
-
-    &:not(:last-child) {
-      margin-bottom: 15px;
-    }
   }
 
   @media (max-width: ${mobileWidth}) {
@@ -442,6 +458,7 @@ export const TimeSpentInput = styled(Input)`
 `
 
 export const SelectStudentColumn = styled(Col)`
+  margin-bottom: ${({ marginBottom }) => marginBottom || '0px'};
   .student-dropdown {
     padding: 15px;
     .ant-select-tree-switcher {
@@ -495,4 +512,9 @@ export const StyledCol = styled(Col)`
   flex-direction: ${(flexDirection) => flexDirection || 'unset'};
   padding-left: ${({ paddingLeft }) => paddingLeft || '0px'}
   padding-right: ${({ paddingRight }) => paddingRight || '0px'}
+`
+
+export const StyledInfoIcon = styled(IconInfo)`
+  cursor: pointer;
+  margin-left: ${({ mL }) => mL || '0px'};
 `

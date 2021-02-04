@@ -36,6 +36,7 @@ const EvaluationOption = ({
   onChangeRadio,
   onChangeOption,
   onChangeAllowedOptions,
+  isNumberFormatDisabled,
 }) => {
   if (textStyle.includes(optionKey) || numberStyle.includes(optionKey)) {
     return (
@@ -88,6 +89,9 @@ const EvaluationOption = ({
         optionKey={optionKey}
         options={options}
         onChange={onChangeRadio}
+        isNumberFormatDisabled={
+          optionKey === 'numberFormat' ? isNumberFormatDisabled : false
+        }
       />
     )
   }

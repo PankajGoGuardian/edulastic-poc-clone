@@ -1,17 +1,41 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
-import { Link } from 'react-router-dom'
+import { CustomModalStyled, EduButton } from '@edulastic/common'
+import styled from 'styled-components'
+import { darkGrey2 } from '@edulastic/colors'
+import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton'
 
-const Footer = ({
-  hasItemBankTrial,
-  isPremiumTrialUsed,
-  premiumUser,
-  handleTrial,
-}) => {
-  const hasTrialBtn = hasItemBankTrial && (!isPremiumTrialUsed || premiumUser)
+const Footer = ({ handleTrial, handlePurchaseFlow }) => {
   return (
-    hasTrialBtn && <EduButton onClick={handleTrial}>Try for free</EduButton>
+    <>
+      <AuthorCompleteSignupButton
+        renderButton={(handleClick) => (
+          <EduButton
+            data-cy="trialPurchase"
+            isGhost
+            width="180px"
+            height="45px"
+            onClick={handleClick}
+          >
+            Try for free
+          </EduButton>
+        )}
+        onClick={handleTrial}
+      />
+      <AuthorCompleteSignupButton
+        renderButton={(handleClick) => (
+          <EduButton
+            data-cy="Purchase"
+            width="180px"
+            height="45px"
+            onClick={handleClick}
+          >
+            Purchase
+          </EduButton>
+        )}
+        onClick={handlePurchaseFlow}
+      />
+    </>
   )
 }
 
@@ -21,41 +45,34 @@ const ItemPurchaseModal = ({
   isVisible,
   toggleModal,
   toggleTrialModal,
-  hasTrial,
-  premiumUser,
-  isPremiumTrialUsed,
+  handlePurchaseFlow,
+  isPremiumUser,
 }) => {
-  const handleProceed = () => {}
-
   const closeModal = () => toggleModal(false)
   const handleTrial = () => {
     closeModal()
     toggleTrialModal(true)
   }
 
+  const modalTitle = `${title} ${!isPremiumUser ? '+ Teacher Premium' : ''}`
+
   return (
     <CustomModalStyled
       centered
-      title={title}
+      title={modalTitle}
       footer={
         <Footer
-          hasItemBankTrial={hasTrial}
-          isPremiumTrialUsed={isPremiumTrialUsed}
-          premiumUser={premiumUser}
           handleTrial={handleTrial}
+          handlePurchaseFlow={handlePurchaseFlow}
         />
       }
       visible={isVisible}
       onCancel={closeModal}
+      width="665px"
     >
-      <div>{description}</div>
-      {isPremiumTrialUsed && !premiumUser && (
-        <p>
-          You have already tried premium features, kindly upgrade to start free
-          trial of {title}.{' '}
-          <Link to="/author/subscription"> Click to upgrade</Link>
-        </p>
-      )}
+      <ModalBody>
+        <div dangerouslySetInnerHTML={{ __html: description }} />
+      </ModalBody>
     </CustomModalStyled>
   )
 }
@@ -65,12 +82,20 @@ ItemPurchaseModal.propTypes = {
   description: PropTypes.string.isRequired,
   isVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
-  premiumUser: PropTypes.bool.isRequired,
-  hasTrial: PropTypes.bool,
-}
-
-ItemPurchaseModal.defaultProps = {
-  hasTrial: false,
 }
 
 export default ItemPurchaseModal
+
+const ModalBody = styled.div`
+  p {
+    font-size: 14px;
+    color: ${darkGrey2};
+    font-weight: normal !important;
+    margin-bottom: 20px !important;
+  }
+  img {
+    height: 30px;
+    width: auto;
+    margin: 0px 8px;
+  }
+`

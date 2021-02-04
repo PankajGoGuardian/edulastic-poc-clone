@@ -217,19 +217,17 @@ class ScoreTable extends Component {
   render() {
     let columnInfo = []
     const { columnData } = this.state
-    const { testActivity, windowWidth } = this.props
+    const { testActivity } = this.props
     const columnsLength =
       testActivity && testActivity.length !== 0
         ? testActivity[0].questionActivities.length
         : 0
     const submittedLength = testActivity.filter((x) => x.status === 'submitted')
       .length
-    const showColumnsCount =
-      windowWidth < 1366 ? 5 : windowWidth < 1600 ? 7 : 10
     if (columnsLength) {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength)
     }
-    const scrollX = columnsLength * 100 + 300
+
     const scrollY = window.innerHeight - 250
     // 40 sice of each cell in table + 3 overlapped padding
     const showY = columnData.length * 43 > scrollY
@@ -243,7 +241,7 @@ class ScoreTable extends Component {
           // Columns length will be the number of questions
           // Column data length will be number of students
           scroll={{
-            x: columnsLength > showColumnsCount ? scrollX : false,
+            x: 'max-content',
             y: showY ? scrollY : false,
           }}
           rowKey={(record, i) => i}

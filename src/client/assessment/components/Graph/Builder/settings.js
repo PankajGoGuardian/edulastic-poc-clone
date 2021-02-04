@@ -1,6 +1,6 @@
 import JXG from 'jsxgraph'
-import { isObject } from 'lodash'
-import { tickLabel } from './utils'
+import { isObject, round } from 'lodash'
+import { tickLabel, radianTickLabel } from './utils'
 import { Tangent, Logarithm, Sin, Cos, Parabola, Parabola2 } from './elements'
 
 /**
@@ -202,10 +202,18 @@ export const defaultGridParameters = () => ({ ...gridParameters })
 
 function mergeAxesParameters(target, parameters) {
   if (parameters.x.ticksDistance) {
-    target.x.ticks.ticksDistance = parseFloat(parameters.x.ticksDistance)
+    let xTickDistance = parseFloat(parameters.x.ticksDistance)
+    if (parameters.x.useRadians) {
+      xTickDistance = round(Math.PI / xTickDistance, 2)
+    }
+    target.x.ticks.ticksDistance = xTickDistance
   }
   if (parameters.y.ticksDistance) {
-    target.y.ticks.ticksDistance = parseFloat(parameters.y.ticksDistance)
+    let yTickDistance = parseFloat(parameters.y.ticksDistance)
+    if (parameters.y.useRadians) {
+      yTickDistance = round(Math.PI / yTickDistance, 2)
+    }
+    target.y.ticks.ticksDistance = yTickDistance
   }
   if (parameters.x.name) {
     target.x.withLabel = true
@@ -253,16 +261,34 @@ function mergeAxesParameters(target, parameters) {
   if ('gridY' in parameters) {
     target.grid.gridY = parameters.gridY
   }
-  target.x.ticks.generateLabelText = tickLabel(
-    'x',
-    parameters.x.commaInLabel,
-    parameters.x.drawZero
-  )
-  target.y.ticks.generateLabelText = tickLabel(
-    'y',
-    parameters.y.commaInLabel,
-    parameters.y.drawZero
-  )
+
+  if (parameters.x.useRadians) {
+    target.x.ticks.generateLabelText = radianTickLabel(
+      'x',
+      parameters.x.drawZero,
+      parameters.x.ticksDistance
+    )
+  } else {
+    target.x.ticks.generateLabelText = tickLabel(
+      'x',
+      parameters.x.commaInLabel,
+      parameters.x.drawZero
+    )
+  }
+
+  if (parameters.y.useRadians) {
+    target.y.ticks.generateLabelText = radianTickLabel(
+      'y',
+      parameters.y.drawZero,
+      parameters.y.ticksDistance
+    )
+  } else {
+    target.y.ticks.generateLabelText = tickLabel(
+      'y',
+      parameters.y.commaInLabel,
+      parameters.y.drawZero
+    )
+  }
 }
 
 export function mergeParams(defaultConfig, userConfig) {

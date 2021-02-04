@@ -1,16 +1,16 @@
 /* eslint-disable func-names */
 /* eslint-disable */
 /* global $ */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme, css } from 'styled-components'
 import { cloneDeep, debounce, isEmpty } from 'lodash'
 import { message } from 'antd'
-import { notification } from '@edulastic/common'
+import { notification, LanguageContext } from '@edulastic/common'
 import Editor from 'react-froala-wysiwyg'
 import uuid from 'uuid/v4'
 import { withMathFormula } from '../HOC/withMathFormula'
-import { aws, math } from '@edulastic/constants'
+import { aws, math, appLanguages } from '@edulastic/constants'
 import {
   white,
   dashBorderColor,
@@ -626,7 +626,7 @@ const getFixedPostion = (el) => {
 const getToolbarButtons = (
   size,
   toolbarSize,
-  additionalToolbarOptions,
+  additionalToolbar,
   buttons,
   buttonCounts
 ) => {
@@ -644,7 +644,7 @@ const getToolbarButtons = (
   toolbarButtons.moreText.buttonsVisible =
     buttonCounts || toolbarButtons.moreText.buttonsVisible
   toolbarButtons.moreMisc = {
-    buttons: additionalToolbarOptions,
+    buttons: additionalToolbar,
     buttonsVisible: 3,
   }
 
@@ -727,31 +727,40 @@ const CustomEditor = ({
   const [toolbarExpanded, setToolbarExpanded] = useState(false)
   const [configState, setConfigState] = useState(null)
   const [mathField, setMathField] = useState(null)
+  const { currentLanguage } = useContext(LanguageContext)
+
+  // don't show additional tool buttons
+  // if selected language isn't EN
+  // when authoring a question
+  const additionalToolbar =
+    currentLanguage && currentLanguage !== appLanguages.LANGUAGE_EN
+      ? []
+      : additionalToolbarOptions
 
   const EditorRef = useRef(null)
 
   const toolbarButtons = getToolbarButtons(
     'STD',
     toolbarSize,
-    additionalToolbarOptions,
+    additionalToolbar,
     buttons
   )
   const toolbarButtonsMD = getToolbarButtons(
     'MD',
     toolbarSize,
-    additionalToolbarOptions,
+    additionalToolbar,
     buttons
   )
   const toolbarButtonsSM = getToolbarButtons(
     'SM',
     toolbarSize,
-    additionalToolbarOptions,
+    additionalToolbar,
     buttons
   )
   const toolbarButtonsXS = getToolbarButtons(
     'XS',
     toolbarSize,
-    additionalToolbarOptions,
+    additionalToolbar,
     buttons
   )
   const specialCharactersSets = getSpecialCharacterSets(customCharacters)
@@ -1116,21 +1125,21 @@ const CustomEditor = ({
   }
 
   const hasResponseBoxBtn = () =>
-    additionalToolbarOptions.includes('textinput') ||
-    additionalToolbarOptions.includes('response') ||
-    additionalToolbarOptions.includes('mathinput') ||
-    additionalToolbarOptions.includes('mathunit') ||
-    additionalToolbarOptions.includes('textdropdown') ||
-    additionalToolbarOptions.includes('responseBoxes') ||
-    additionalToolbarOptions.includes('paragraphNumber')
+    additionalToolbar.includes('textinput') ||
+    additionalToolbar.includes('response') ||
+    additionalToolbar.includes('mathinput') ||
+    additionalToolbar.includes('mathunit') ||
+    additionalToolbar.includes('textdropdown') ||
+    additionalToolbar.includes('responseBoxes') ||
+    additionalToolbar.includes('paragraphNumber')
 
   useEffect(() => {
     let toolbarWidth = toolbarContainerRef?.current?.clientWidth
     // if response button is there than subtracting the width of response button
     if (hasResponseBoxBtn()) {
-      for (let i = 0; i < additionalToolbarOptions.length; i++) {
+      for (let i = 0; i < additionalToolbar.length; i++) {
         if (i === 3) break
-        toolbarWidth -= buttonWidthMap[additionalToolbarOptions[i]]
+        toolbarWidth -= buttonWidthMap[additionalToolbar[i]]
       }
     }
     /**
@@ -1149,21 +1158,21 @@ const CustomEditor = ({
     const _toolbarButtons = getToolbarButtons(
       'STD',
       toolbarSize,
-      additionalToolbarOptions,
+      additionalToolbar,
       buttons,
       buttonCounts
     )
     const _toolbarButtonsMD = getToolbarButtons(
       'MD',
       toolbarSize,
-      additionalToolbarOptions,
+      additionalToolbar,
       buttons,
       buttonCounts
     )
     const _toolbarButtonsSM = getToolbarButtons(
       'SM',
       toolbarSize,
-      additionalToolbarOptions,
+      additionalToolbar,
       buttons,
       buttonCounts
     )

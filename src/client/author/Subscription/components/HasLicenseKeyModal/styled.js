@@ -6,6 +6,7 @@ import {
   white,
   secondaryTextColor,
   titleColor,
+  themeColor,
 } from '@edulastic/colors'
 
 export const StyledHasLicenseKeyModal = styled(Modal)`
@@ -67,4 +68,12 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
+  h4 {
+    font-weight: bold;
+  }
+`
+export const ExpiryDate = styled.p`
+  color: ${themeColor} !important;
+  padding-top: 8px;
+  font-weight: 600;
 `

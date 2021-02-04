@@ -89,11 +89,12 @@ const evaluation = (id, data) =>
     })
     .then((result) => result.data.result)
 
-const duplicateTestItem = (id) =>
+const duplicateTestItem = (id, data = {}) =>
   api
     .callApi({
       url: `${prefix}/${id}/duplicate`,
       method: 'post',
+      data,
     })
     .then((result) => result.data.result)
 

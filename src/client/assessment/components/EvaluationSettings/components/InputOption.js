@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
-import { CheckboxLabel, TextInputStyled } from '@edulastic/common'
+import { CheckboxLabel, TextInputStyled, FieldLabel } from '@edulastic/common'
 import LabelWithHelper from './LabelWithHelper'
 import { validations } from './inputsValidations'
 
-const InputOption = ({ options, onChange, optionKey, isGraph }) => {
+const InputOption = ({ t, options, onChange, optionKey, isGraph }) => {
   const [isAllowed, setIsAllowed] = useState(false)
 
   const onChangeCheckbox = (e) => {
@@ -18,7 +19,7 @@ const InputOption = ({ options, onChange, optionKey, isGraph }) => {
   const onChangeInput = (e) => {
     let valid = true
     if (validations[optionKey]) {
-      valid = validations[optionKey](e.target.value)
+      valid = validations[optionKey](e.target.value, isGraph)
     }
     if (valid) {
       onChange(optionKey, e.target.value)
@@ -39,6 +40,11 @@ const InputOption = ({ options, onChange, optionKey, isGraph }) => {
         labelPadding="0px 16px"
         onChange={onChangeCheckbox}
       >
+        {optionKey === 'significantDecimalPlaces' && (
+          <FieldLabel display="inline-block" mr="18px">
+            {t('component.math.roundTo')}
+          </FieldLabel>
+        )}
         <TextInputStyled
           size="large"
           width="50px"
@@ -61,7 +67,7 @@ InputOption.propTypes = {
 
 InputOption.defaultProps = {}
 
-export default InputOption
+export default withNamespaces('assessment')(InputOption)
 
 const InputOptionWrapper = styled.div`
   margin-bottom: 20px;

@@ -38,7 +38,6 @@ class Extras extends Component {
       isSection,
       fillSections,
       cleanSections,
-      advancedAreOpen,
     } = this.props
     const _change = change({ item, setQuestionData })
     const fontSize = getFontSize(item.uiStyle)
@@ -46,11 +45,10 @@ class Extras extends Component {
     return (
       <QuestionContainer fontSize={fontSize}>
         <Question
-          section="advanced"
+          section="main"
           label={t('component.options.solution')}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          advancedAreOpen={advancedAreOpen}
         >
           {isSection && (
             <SectionHeading>{t('component.options.solution')}</SectionHeading>
@@ -123,13 +121,11 @@ Extras.propTypes = {
   isSection: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool,
 }
 
 Extras.defaultProps = {
   children: null,
   isSection: false,
-  advancedAreOpen: true,
   fillSections: () => {},
   cleanSections: () => {},
 }

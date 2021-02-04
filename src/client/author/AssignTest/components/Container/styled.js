@@ -121,3 +121,15 @@ export const Paragraph = styled.p`
   margin-bottom: 15px;
   text-align: ${(props) => props.alignItems && props.alignItems};
 `
+export const TabContentContainer = styled.div`
+  width: ${({ width }) => (width || window.innerWidth <= 780 ? '100%' : '50%')};
+  margin: auto;
+`
+export const SettingContainer = styled.div`
+  position: relative;
+  :hover {
+    .popover {
+      display: flex;
+    }
+  }
+`

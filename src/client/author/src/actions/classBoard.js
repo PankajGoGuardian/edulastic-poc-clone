@@ -41,6 +41,8 @@ import {
   CANVAS_SYNC_GRADES,
   CANVAS_SYNC_ASSIGNMENT,
   FETCH_SERVER_TIME,
+  PAUSE_STUDENTS,
+  UPDATE_PAUSE_STATUS_ACTION,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -72,9 +74,13 @@ export const receiveGradeBookdAction = (assignmentId, classId) => ({
   payload: { assignmentId, classId },
 })
 
-export const receiveTestActivitydAction = (assignmentId, classId) => ({
+export const receiveTestActivitydAction = (
+  assignmentId,
+  classId,
+  isQuestionsView = false
+) => ({
   type: RECEIVE_TESTACTIVITY_REQUEST,
-  payload: { assignmentId, classId },
+  payload: { assignmentId, classId, isQuestionsView },
 })
 
 export const releaseScoreAction = (
@@ -132,6 +138,16 @@ export const markAbsentAction = (assignmentId, classId, students) => ({
 export const markSubmittedAction = (assignmentId, classId, students) => ({
   type: MARK_AS_SUBMITTED,
   payload: { assignmentId, classId, students },
+})
+
+export const togglePauseStudentsAction = (
+  assignmentId,
+  classId,
+  students,
+  isPause
+) => ({
+  type: PAUSE_STUDENTS,
+  payload: { assignmentId, classId, students, isPause },
 })
 
 export const downloadGradesResponseAction = (
@@ -239,3 +255,4 @@ export const updatePasswordDetailsAction = createAction(UPDATE_PASSWORD_DETAILS)
 export const canvasSyncGradesAction = createAction(CANVAS_SYNC_GRADES)
 export const canvasSyncAssignmentAction = createAction(CANVAS_SYNC_ASSIGNMENT)
 export const fetchServerTimeAction = createAction(FETCH_SERVER_TIME)
+export const updatePauseStatusAction = createAction(UPDATE_PAUSE_STATUS_ACTION)

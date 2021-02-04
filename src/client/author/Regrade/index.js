@@ -8,6 +8,9 @@ import {
   setRegradeSettingsDataAction,
   getRegradingSelector,
   getRegradeFirebaseDocIdSelector,
+  getRegradeSettingsAction,
+  getIsLoadRegradeSettingsSelector,
+  getAvaialbleRegradeSettingsSelector,
 } from '../TestPage/ducks'
 import Header from './Header'
 import MainContent from './MainContent'
@@ -23,6 +26,9 @@ const Regrade = ({
   history,
   isRegrading,
   regradeFirebaseDocId,
+  getRegradeActions,
+  isLoadRegradeSettings,
+  availableRegradeSettings,
 }) => {
   const { oldTestId, newTestId } = match.params
   const { state: _locationState } = history.location
@@ -43,6 +49,7 @@ const Regrade = ({
 
   useEffect(() => {
     getAssignmentsByTestId({ testId: oldTestId, regradeAssignments: true })
+    getRegradeActions({ oldTestId, newTestId })
   }, [])
 
   const onUpdateSettings = (key, value) => {
@@ -57,6 +64,7 @@ const Regrade = ({
   }
 
   const onApplySettings = () => {
+    if (isLoadRegradeSettings) return
     setRegradeSettings(regradeSettings)
   }
 
@@ -88,13 +96,14 @@ const Regrade = ({
     title: 'Regrade',
     to: '',
   })
+
   return (
     <>
       <Header
         onApplySettings={onApplySettings}
         onCancelRegrade={onCancelRegrade}
         title={title}
-        isRegrading={isRegrading}
+        isRegrading={isRegrading || isLoadRegradeSettings}
       />
       <SecondHeader>
         <BreadCrumb data={breadcrumbData} style={{ position: 'unset' }} />
@@ -102,6 +111,8 @@ const Regrade = ({
       <MainContent
         regradeSettings={regradeSettings}
         onUpdateSettings={onUpdateSettings}
+        isLoadRegradeSettings={isLoadRegradeSettings}
+        availableRegradeSettings={availableRegradeSettings}
       />
       {regradeFirebaseDocId && <RegradeNotificationListener />}
     </>
@@ -119,10 +130,13 @@ export default withRouter(
       districtId: get(state, ['user', 'user', 'orgData', 'districtIds', 0]),
       isRegrading: getRegradingSelector(state),
       regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
+      isLoadRegradeSettings: getIsLoadRegradeSettingsSelector(state),
+      availableRegradeSettings: getAvaialbleRegradeSettingsSelector(state),
     }),
     {
       getAssignmentsByTestId: fetchAssignmentsAction,
       setRegradeSettings: setRegradeSettingsDataAction,
+      getRegradeActions: getRegradeSettingsAction,
     }
   )(Regrade)
 )

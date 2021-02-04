@@ -43,7 +43,6 @@ import {
   getTestEntitySelector,
   updateAssingnmentSettingsAction,
 } from '../../duck'
-import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
 import SimpleOptions from '../SimpleOptions/SimpleOptions'
 import CommonStudentConfirmation from './ConfirmationModal'
 import MultipleAssignConfirmation from './MultipleAssignConfirmation'
@@ -135,6 +134,10 @@ class AssignTest extends React.Component {
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
           : assignmentSettings.openPolicy,
         playerSkinType: testSettings.playerSkinType,
+        restrictNavigationOut: testSettings.restrictNavigationOut,
+        restrictNavigationOutAttemptsThreshold:
+          testSettings.restrictNavigationOutAttemptsThreshold,
+        blockSaveAndContinue: testSettings.blockSaveAndContinue,
       })
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId)
@@ -355,7 +358,7 @@ class AssignTest extends React.Component {
         />
         <ListHeader
           title={`Assign ${moduleTitle || title || ''}`}
-          midTitle="PICK CLASSES, GROUPS OR STUDENTS"
+          midTitle="Assignment Settings"
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
           renderButton={this.renderHeaderButton}
@@ -389,15 +392,6 @@ class AssignTest extends React.Component {
             <div style={{ height: '70vh' }}>
               <Spin />
             </div>
-          ) : isAdvancedView ? (
-            <AdvancedOptons
-              assignment={assignment}
-              updateOptions={this.updateAssignmentNew}
-              testSettings={testSettings}
-              onClassFieldChange={this.onClassFieldChange}
-              defaultTestProfiles={defaultTestProfiles}
-              isAssignRecommendations={false}
-            />
           ) : (
             <SimpleOptions
               group={classList}
@@ -410,6 +404,9 @@ class AssignTest extends React.Component {
               changeDateSelection={this.changeDateSelection}
               selectedDateOption={selectedDateOption}
               isAssignRecommendations={false}
+              match={match}
+              isAdvancedView={isAdvancedView}
+              defaultTestProfiles={defaultTestProfiles}
             />
           )}
         </Container>

@@ -23,6 +23,7 @@ const ReviewToolbar = ({
   gotoQuestion,
   skipped = [],
   bookmarks,
+  blockNavigationToAnsweredQuestions,
 }) => {
   const [selectedCard, setSelectedCard] = useState('all')
   const handleCardClick = (cardType) => setSelectedCard(cardType)
@@ -54,6 +55,7 @@ const ReviewToolbar = ({
           <Menu.Item
             key={option}
             style={!skipped[option] && { paddingLeft: '33px' }}
+            disabled={blockNavigationToAnsweredQuestions}
           >
             {skipped[option] && (
               <FontAwesomeIcon

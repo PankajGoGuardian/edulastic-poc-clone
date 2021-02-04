@@ -3,6 +3,7 @@ import { Spin } from 'antd'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 import { roleuser } from '@edulastic/constants'
+import { testsApi } from '@edulastic/api'
 import { getUser } from '../../author/src/selectors/user'
 import { fetchAssignmentsByTestIdAction } from '../ducks'
 import {
@@ -12,8 +13,10 @@ import {
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSelectedLanguageSelector,
 } from '../../student/Assignments/ducks'
 import { redirectToStudentPage } from '../../publicTest/utils'
+import { setSelectedLanguageAction } from '../../student/sharedDucks/AssignmentModule/ducks'
 
 const { STUDENT, TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = roleuser
 
@@ -27,15 +30,25 @@ const AssignmentEmbedLink = ({
   startAssignment,
   resumeAssignment,
   history,
+  isVersionId,
+  languagePreference,
+  setSelectedLanguage,
 }) => {
-  const { testId } = match.params
+  const { testId, versionId } = match.params
   useEffect(() => {
-    const { role } = user
-    if ([TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN].includes(role)) {
-      fetchAssignmentsByTestId(testId)
-    } else if (role === STUDENT) {
-      fetchAssignmentsForStudent({ testId })
-    }
+    ;(async () => {
+      const { role } = user
+      if ([TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN].includes(role)) {
+        fetchAssignmentsByTestId(testId)
+      } else if (role === STUDENT) {
+        if (isVersionId && versionId) {
+          const latestTest = await testsApi.getTestIdFromVersionId(versionId)
+          fetchAssignmentsForStudent({ testId: latestTest.testId })
+        } else {
+          fetchAssignmentsForStudent({ testId })
+        }
+      }
+    })()
   }, [])
 
   useEffect(() => {
@@ -44,7 +57,10 @@ const AssignmentEmbedLink = ({
         assignments,
         history,
         startAssignment,
-        resumeAssignment
+        resumeAssignment,
+        {},
+        languagePreference,
+        setSelectedLanguage
       )
     }
   }, [loadingAssignments])
@@ -57,11 +73,13 @@ export default connect(
     user: getUser(state),
     loadingAssignments: get(state, 'publicTest.loadingAssignments'),
     assignments: getAllAssignmentsSelector(state),
+    languagePreference: getSelectedLanguageSelector(state),
   }),
   {
     fetchAssignmentsByTestId: fetchAssignmentsByTestIdAction,
     fetchAssignmentsForStudent: fetchAssignmentsByTestAction,
     startAssignment: startAssignmentAction,
     resumeAssignment: resumeAssignmentAction,
+    setSelectedLanguage: setSelectedLanguageAction,
   }
 )(AssignmentEmbedLink)

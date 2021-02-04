@@ -21,15 +21,18 @@ const PlayerFooter = ({
   t,
   unansweredQuestionCount,
   isSidebarVisible,
+  blockNavigationToAnsweredQuestions,
 }) => (
   <MainFooter
     isSidebarVisible={isSidebarVisible}
     className="practice-player-footer"
   >
     <FlexContainer>
-      <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
-        <FontAwesomeIcon icon={faAngleLeft} />
-      </PrevButton>
+      {!blockNavigationToAnsweredQuestions && (
+        <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </PrevButton>
+      )}
       <NextButton data-cy="next" onClick={moveToNext}>
         <span>{isLast() ? t('pagination.submit') : t('pagination.next')}</span>
         <FontAwesomeIcon icon={faAngleRight} />

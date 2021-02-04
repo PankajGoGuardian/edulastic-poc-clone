@@ -290,8 +290,9 @@ const Container = (props) => {
         />
         <Route
           path={[
-            `/author/reports/standards-gradebook`,
             `/author/reports/standards-performance-summary`,
+            `/author/reports/standards-gradebook`,
+            `/author/reports/standards-progress`,
           ]}
           render={(_props) => (
             <StandardsMasteryReportContainer
@@ -301,6 +302,7 @@ const Container = (props) => {
               showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
+              navigationItems={navigationItems}
               updateNavigation={setNavigationItems}
               setShowHeader={setShowHeader}
             />

@@ -15,11 +15,15 @@ export const InputLabel = styled.label`
 `
 
 export const ClassHeading = styled.p`
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   text-align: center;
   margin-bottom: 30px;
   color: ${secondaryTextColor};
+  text-transform: uppercase;
+  > span {
+    color: ${themeColor};
+  }
 `
 
 export const ActionButton = styled(ThemeButton)`

@@ -16,6 +16,7 @@ const SidebarQuestionList = ({
   t,
   isSidebarVisible,
   toggleSideBar,
+  blockNavigationToAnsweredQuestions,
 }) => (
   <SidebarWrapper>
     <MinimizeButton onClick={toggleSideBar} minimized={isSidebarVisible}>
@@ -34,6 +35,7 @@ const SidebarQuestionList = ({
                 active={active}
                 key={index}
                 onClick={() => {
+                  if (blockNavigationToAnsweredQuestions) return
                   gotoQuestion(index)
                 }}
               >
@@ -44,7 +46,10 @@ const SidebarQuestionList = ({
                     r={6}
                     active={active}
                   />
-                  <Content active={active}>
+                  <Content
+                    active={active}
+                    disableClickEvents={blockNavigationToAnsweredQuestions}
+                  >
                     {t('common.layout.questionlist.question')} {index + 1}
                   </Content>
                 </FlexContainer>
@@ -89,7 +94,8 @@ const Content = styled.div`
   line-height: 1;
   letter-spacing: 0.2px;
   text-transform: capitalize;
-  cursor: pointer;
+  cursor: ${({ disableClickEvents }) =>
+    disableClickEvents ? 'not-allowed' : 'pointer'};
 
   @media (max-width: ${smallDesktopWidth}) {
     font-size: ${(props) => props.theme.linkFontSize};

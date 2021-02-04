@@ -155,6 +155,8 @@ const getSettings = (test, testActivity, preview) => {
     endDate: assignmentSettings.endDate,
     closePolicy: assignmentSettings.closePolicy,
     releaseScore,
+    blockNavigationToAnsweredQuestions:
+      assignmentSettings?.blockNavigationToAnsweredQuestions || false,
   }
 }
 
@@ -224,7 +226,7 @@ function* loadTest({ payload }) {
 
     const studentAssesment = yield select((state) =>
       (state.router.location.pathname || '').match(
-        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/itemId/.*')
       )
     )
 
@@ -253,6 +255,9 @@ function* loadTest({ payload }) {
       : call(testsApi.getPublicTest, testId)
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
+    const isFromSummary = yield select((state) =>
+      get(state, 'router.location.state.fromSummary', false)
+    )
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse
@@ -263,9 +268,6 @@ function* loadTest({ payload }) {
         yield put(setActiveAssignmentAction(assignmentId))
       }
 
-      const isFromSummary = yield select((state) =>
-        get(state, 'router.location.state.fromSummary', false)
-      )
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
           testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF ||
@@ -358,9 +360,11 @@ function* loadTest({ payload }) {
       )
     }
     // eslint-disable-next-line prefer-const
-    let { testItems, passages, testType } = test
+    let { testItems, passages } = test
 
     const settings = getSettings(test, testActivity, preview)
+
+    const testType = settings.testType || test.testType
 
     const answerCheckByItemId = {}
     ;(testActivity.questionActivities || []).forEach((item) => {
@@ -514,17 +518,27 @@ function* loadTest({ payload }) {
       ) || {}
 
       // move to last attended question
-      if (loadFromLast && testType !== testContants.type.TESTLET) {
-        yield put(
-          push({
-            pathname: `${lastAttendedQuestion}`,
-            state: prevLocationState,
+      if (!settings.blockNavigationToAnsweredQuestions && !isFromSummary) {
+        if (loadFromLast && testType !== testContants.type.TESTLET) {
+          const itemId = testItemIds[lastAttendedQuestion]
+          yield put(
+            push({
+              pathname: `${itemId}`,
+              state: prevLocationState,
+            })
+          )
+          yield put({
+            type: SET_RESUME_STATUS,
+            payload: false,
           })
-        )
-        yield put({
-          type: SET_RESUME_STATUS,
-          payload: false,
-        })
+        } else if (testType !== testContants.type.TESTLET) {
+          yield put(
+            push({
+              pathname: `${testItemIds[0]}`,
+              state: prevLocationState,
+            })
+          )
+        }
       }
     }
 
@@ -566,6 +580,38 @@ function* loadTest({ payload }) {
       type: SET_TEST_LOADING_STATUS,
       payload: false,
     })
+
+    if (
+      settings.blockNavigationToAnsweredQuestions &&
+      testActivity.questionActivities.length &&
+      !test.isDocBased
+    ) {
+      let questionIndex = 0
+      const qActivitiesSorted = testActivity.questionActivities.sort((a, b) => {
+        if (a.qLabel > b.qLabel) return 1
+        return -1
+      })
+      for (let i = 0; i < qActivitiesSorted.length; i++) {
+        const qActivity = qActivitiesSorted[i]
+        if (qActivity.qLabel.includes(`Q${i + 1}`)) {
+          questionIndex++
+        }
+      }
+      if (testItems.length === questionIndex) {
+        yield put(
+          push(
+            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
+          )
+        )
+      } else {
+        const itemId = testItems[questionIndex]._id
+        yield put(
+          push(
+            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
+          )
+        )
+      }
+    }
   } catch (err) {
     captureSentryException(err)
     yield put({
@@ -586,6 +632,15 @@ function* loadTest({ payload }) {
         messageKey = 'invalidAction'
       } else if (err.status === 302) {
         messageKey = 'testPausedOrClosedByTeacher'
+      } else if (err.status === 403) {
+        if (userRole === roleuser.STUDENT) {
+          const { data = {} } = err.response || {}
+          const { message: errorMessage } = data
+          notification({
+            msg: errorMessage || 'Something went wrong!',
+          })
+          return yield put(push('/home/assignments'))
+        }
       }
     }
     if (userRole === roleuser.STUDENT) {
@@ -647,7 +702,7 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
-
+    window.document.exitFullscreen().catch(() => {})
     const isCliUser = yield select((state) => state.user?.isCliUser)
     if (isCliUser) {
       window.parent.postMessage(

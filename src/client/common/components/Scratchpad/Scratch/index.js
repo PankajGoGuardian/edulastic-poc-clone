@@ -42,6 +42,7 @@ function safeZwibblerLoad(zwibbler, data) {
     zwibbler.load(data)
   } catch (e) {
     try {
+      // eslint-disable-next-line no-control-regex
       zwibbler.load(data.replace(/[^\x00-\x80]/g, ''))
     } catch (e2) {
       Sentry.withScope((scope) => {
@@ -364,23 +365,20 @@ const Scratchpad = ({
   }, [isAnswerModifiable, expressGrader])
 
   useEffect(() => {
+    // handle dimension change such as zoom in/out or window resize
     if (zwibbler) {
       zwibbler.resize()
+      if (isStudentAttempt && !readOnly && zwibblerRef.current) {
+        const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
+        setScratchpadRect({
+          top: zwibblerDomRect.top,
+          left: zwibblerDomRect.left,
+          width: zwibblerDomRect.width,
+          height: zwibblerDomRect.height,
+        })
+      }
     }
   }, [width, height, conatinerWidth])
-
-  useEffect(() => {
-    if (isStudentAttempt && !readOnly && zwibbler && zwibblerRef.current) {
-      const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
-      zwibbler.resize()
-      setScratchpadRect({
-        top: zwibblerDomRect.top,
-        left: zwibblerDomRect.left,
-        width: zwibblerDomRect.width,
-        height: zwibblerDomRect.height,
-      })
-    }
-  }, [conatinerWidth])
 
   return (
     <ScratchpadContainer ref={zwibblerContainer} hideData={hideData}>

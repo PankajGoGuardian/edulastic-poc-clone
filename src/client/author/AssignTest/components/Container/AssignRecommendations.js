@@ -84,6 +84,10 @@ const AssignRecommendations = ({
       playerSkinType: testSettings.playerSkinType,
       questionPerStandard: assignmentSettings.questionPerStandard,
       termId,
+      restrictNavigationOut: testSettings.restrictNavigationOut,
+      restrictNavigationOutAttemptsThreshold:
+        testSettings.restrictNavigationOutAttemptsThreshold,
+      blockSaveAndContinue: testSettings.blockSaveAndContinue,
     }
 
     updateAssignmentSettings(updatedAssignment)

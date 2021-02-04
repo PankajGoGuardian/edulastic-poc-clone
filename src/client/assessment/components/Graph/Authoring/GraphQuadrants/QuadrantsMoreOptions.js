@@ -1,19 +1,20 @@
-import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import {
+  getFormattedAttrId,
+  TextInputStyled,
+  SelectInputStyled,
+  CustomModalStyled,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { evaluationType } from '@edulastic/constants'
 import { Select } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { compose } from 'redux'
-import { isNaN, isEqual } from 'lodash'
+import { isNaN, isEqual, isEmpty } from 'lodash'
 import { AnnotationSettings, ScoreSettings } from '..'
 import Extras from '../../../../containers/Extras'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
-import { ColoredRow, ColumnLabel, RowLabel } from '../../../../styled/Grid'
-import {
-  SelectInputStyled,
-  TextInputStyled,
-} from '../../../../styled/InputStyles'
+import { ColumnLabel } from '../../../../styled/Grid'
 import { Subtitle } from '../../../../styled/Subtitle'
 import { Col } from '../../../../styled/WidgetOptions/Col'
 import { Label } from '../../../../styled/WidgetOptions/Label'
@@ -21,6 +22,8 @@ import { Row } from '../../../../styled/WidgetOptions/Row'
 import Question from '../../../Question'
 import Tools from '../../common/Tools'
 import GraphToolsParams from '../../components/GraphToolsParams'
+import RadiansDropdown from '../../components/RadiansDropdown'
+import PiSymbol from '../../components/PiSymbol'
 import { calcDistance } from '../../common/utils'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
@@ -30,6 +33,8 @@ class QuadrantsMoreOptions extends Component {
     this.state = {
       ...props.graphData.canvas,
       ...props.graphData.uiStyle,
+      changedCertainOpts: false,
+      showConfirmModal: false,
     }
     this.reg = new RegExp('^[-.0-9]+$')
   }
@@ -52,25 +57,41 @@ class QuadrantsMoreOptions extends Component {
     const {
       graphData: { canvas, uiStyle },
     } = this.props
+    // uiStyle doesn't have xRadians and yRadians at first time
+    // need to distract them
+    const { xRadians, yRadians } = uiStyle
     this.setState({
       ...canvas,
       ...uiStyle,
+      xRadians,
+      yRadians,
+      changedCertainOpts: false,
+      showConfirmModal: false,
     })
   }
 
+  checkElements = () => {
+    const { graphData } = this.props
+    const { background_shapes, validation } = graphData
+
+    const hasElements =
+      !isEmpty(background_shapes) ||
+      !isEmpty(validation.validResponse.value) ||
+      validation.altResponses.some((alt) => !isEmpty(alt.value))
+
+    return hasElements
+  }
+
   handleGridChange = (event) => {
-    const value = event.target.value
+    const { name, value } = event.target
     if (
-      event.target.name !== 'xAxisLabel' &&
-      event.target.name !== 'yAxisLabel' &&
-      (event.target.value === '' || this.reg.test(value))
+      name !== 'xAxisLabel' &&
+      name !== 'yAxisLabel' &&
+      (value === '' || this.reg.test(value))
     ) {
-      this.setState({ [event.target.name]: value })
-    } else if (
-      event.target.name === 'xAxisLabel' ||
-      event.target.name === 'yAxisLabel'
-    ) {
-      this.setState({ [event.target.name]: event.target.value })
+      this.setState({ [name]: value, changedCertainOpts: true })
+    } else if (name === 'xAxisLabel' || name === 'yAxisLabel') {
+      this.setState({ [name]: value })
     }
   }
 
@@ -80,18 +101,24 @@ class QuadrantsMoreOptions extends Component {
       return
     }
 
+    const {
+      graphData: {
+        uiStyle: { xRadians, yRadians },
+      },
+    } = this.props
+
     const { xMin, xMax, yMin, yMax } = this.state
     let { xDistance, yDistance, xTickDistance, yTickDistance } = this.state
-    if (name === 'xMin') {
+    if (name === 'xMin' && !xRadians) {
       xDistance = calcDistance(value, xMax)
     }
-    if (name === 'xMax') {
+    if (name === 'xMax' && !xRadians) {
       xDistance = calcDistance(xMin, value)
     }
-    if (name === 'yMin') {
+    if (name === 'yMin' && !yRadians) {
       yDistance = calcDistance(value, yMax)
     }
-    if (name === 'yMax') {
+    if (name === 'yMax' && !yRadians) {
       yDistance = calcDistance(yMin, value)
     }
 
@@ -111,33 +138,44 @@ class QuadrantsMoreOptions extends Component {
       yDistance,
       xTickDistance,
       yTickDistance,
+      changedCertainOpts: true,
     })
   }
 
-  handleMinMaxBluer = () => {
-    const {
-      xMin,
-      xMax,
-      yMin,
-      yMax,
-      xDistance,
-      yDistance,
-      xTickDistance,
-      yTickDistance,
-    } = this.state
-    const { graphData, setCanvas } = this.props
-    const { uiStyle, canvas } = graphData
+  handleCertainOptsBlur = () => {
+    const { changedCertainOpts } = this.state
 
-    if (
-      !isNaN(parseFloat(xMin)) &&
-      !isNaN(parseFloat(xMax)) &&
-      !isNaN(parseFloat(yMin)) &&
-      !isNaN(parseFloat(yMax))
-    )
-      setCanvas(
-        { ...canvas, xMin, xMax, xRatio: 1, yMin, yMax, yRatio: 1 },
-        { ...uiStyle, xDistance, yDistance, xTickDistance, yTickDistance }
-      )
+    const hasElements = this.checkElements()
+
+    if (hasElements && changedCertainOpts) {
+      this.setState({ showConfirmModal: true })
+    } else {
+      this.handleConfirmOptsChanges()
+    }
+  }
+
+  handleChangeRadians = (name, value) => {
+    const { graphData, setOptions } = this.props
+    const { uiStyle } = graphData
+
+    const hasElements = this.checkElements()
+    const newState = { [name]: value }
+
+    if (value && name === 'xRadians') {
+      newState.xDistance = 1
+      newState.xTickDistance = 1
+    }
+
+    if (value && name === 'yRadians') {
+      newState.yDistance = 1
+      newState.yTickDistance = 1
+    }
+
+    if (hasElements) {
+      this.setState({ ...newState, showConfirmModal: true })
+    } else {
+      setOptions({ ...uiStyle, ...newState })
+    }
   }
 
   isQuadrantsPlacement = () => {
@@ -257,6 +295,63 @@ class QuadrantsMoreOptions extends Component {
     })
   }
 
+  handleConfirmOptsChanges = () => {
+    const {
+      xMin,
+      xMax,
+      yMin,
+      yMax,
+      xDistance,
+      yDistance,
+      xTickDistance,
+      yTickDistance,
+      xRadians,
+      yRadians,
+    } = this.state
+    const { graphData, setCanvas } = this.props
+    const { uiStyle, canvas } = graphData
+
+    this.setState(
+      { changedCertainOpts: false, showConfirmModal: false },
+      () => {
+        if (
+          !isNaN(parseFloat(xMin)) &&
+          !isNaN(parseFloat(xMax)) &&
+          !isNaN(parseFloat(yMin)) &&
+          !isNaN(parseFloat(yMax)) &&
+          !isNaN(parseFloat(xDistance)) &&
+          !isNaN(parseFloat(yDistance)) &&
+          !isNaN(parseFloat(xTickDistance)) &&
+          !isNaN(parseFloat(yTickDistance))
+        ) {
+          const newCanvas = {
+            ...canvas,
+            xMin,
+            xMax,
+            xRatio: 1,
+            yMin,
+            yMax,
+            yRatio: 1,
+          }
+          const newUiStyle = {
+            ...uiStyle,
+            xDistance,
+            yDistance,
+            xTickDistance,
+            yTickDistance,
+            xRadians,
+            yRadians,
+          }
+          setCanvas(newCanvas, newUiStyle, true)
+        }
+      }
+    )
+  }
+
+  handleCancelOptsChanges = () => {
+    this.updateState()
+  }
+
   render() {
     const {
       t,
@@ -318,6 +413,9 @@ class QuadrantsMoreOptions extends Component {
       yDistance,
       xTickDistance,
       yTickDistance,
+      showConfirmModal,
+      xRadians,
+      yRadians,
     } = this.state
 
     return (
@@ -508,162 +606,191 @@ class QuadrantsMoreOptions extends Component {
             {t('component.graphing.grid_options.grid')}
           </Subtitle>
           <Row gutter={4} type="flex" align="middle">
-            <Col md={13} style={{ marginBottom: '0' }}>
+            <Col md={11} marginBottom="0px">
               <Row type="flex" align="middle">
-                <Col md={3} />
-                <Col align="center" md={4}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
-                    {t('component.graphing.grid_options.label')}
+                    {t('component.graphing.grid_options.axes')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={4}>
+                <Col align="center" md={5} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.min')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={4}>
+                <Col align="center" md={5} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.max')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={4} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.distance')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={4} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.tick_distance')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.ratio')}
                   </ColumnLabel>
                 </Col>
               </Row>
             </Col>
-            <Col md={11} style={{ marginBottom: '0' }}>
+            <Col md={13} marginBottom="0px">
               <Row type="flex" align="middle" justify="space-between">
-                <Col align="center" md={3}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.show_axis')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.show_label')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.hide_ticks')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.min_arrow')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.max_arrow')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.comma_in_label')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={3}>
+                <Col align="center" md={3} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.draw_label')}
+                  </ColumnLabel>
+                </Col>
+                <Col align="center" md={3} marginBottom="6px">
+                  <ColumnLabel>
+                    {t('component.graphing.grid_options.use_radians')}
                   </ColumnLabel>
                 </Col>
               </Row>
             </Col>
           </Row>
-          <ColoredRow style={{ padding: '5px 1px' }} gutter={4}>
-            <Col md={13} style={{ marginBottom: '0' }}>
-              <Col style={{ marginBottom: '0' }} md={3} align="center">
-                <RowLabel style={{ justifyContent: 'center' }}>
-                  {t('component.graphing.grid_options.axis_x')}
-                </RowLabel>
-              </Col>
-              <Col md={4} style={{ marginBottom: '0' }}>
+          <Row center gutter={4} mb="4">
+            <Col md={11} marginBottom="0px">
+              <Col md={3} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   defaultValue="X"
                   name="xAxisLabel"
                   value={xAxisLabel}
+                  align="center"
+                  padding="0px 4px"
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
-                  height="30px"
                 />
               </Col>
-              <Col md={4} style={{ marginBottom: '0' }}>
+              <Col md={5} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="xMin"
                   value={xMin}
+                  suffix={xRadians ? <PiSymbol /> : ''}
                   onChange={this.handleMinMaxChange}
-                  onBlur={this.handleMinMaxBluer}
+                  onBlur={this.handleCertainOptsBlur}
                   disabled={false}
-                  height="30px"
+                  height="35px"
+                  align="center"
+                  padding="0px 4px"
                 />
               </Col>
-              <Col md={4} style={{ marginBottom: '0' }}>
+              <Col md={5} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="xMax"
                   value={xMax}
+                  suffix={xRadians ? <PiSymbol /> : ''}
                   onChange={this.handleMinMaxChange}
-                  onBlur={this.handleMinMaxBluer}
+                  onBlur={this.handleCertainOptsBlur}
                   disabled={false}
-                  height="30px"
+                  height="35px"
+                  align="center"
+                  padding="0px 4px"
                 />
               </Col>
-              <Col md={3} style={{ marginBottom: '0' }}>
-                <TextInputStyled
-                  type="text"
-                  defaultValue="1"
-                  min={0}
-                  name="xDistance"
-                  value={xDistance}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleInputChange}
-                  disabled={false}
-                  height="30px"
-                />
+              <Col md={4} marginBottom="0px">
+                {xRadians && (
+                  <RadiansDropdown
+                    name="xDistance"
+                    value={xDistance}
+                    onSelect={(val) =>
+                      this.handleChangeRadians('xDistance', val)
+                    }
+                  />
+                )}
+                {!xRadians && (
+                  <TextInputStyled
+                    type="text"
+                    defaultValue="1"
+                    min={0}
+                    name="xDistance"
+                    value={xDistance}
+                    onChange={this.handleGridChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                  />
+                )}
               </Col>
-              <Col md={3} style={{ marginBottom: '0' }}>
-                <TextInputStyled
-                  type="text"
-                  defaultValue="1"
-                  min={0}
-                  name="xTickDistance"
-                  value={xTickDistance}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleInputChange}
-                  disabled={false}
-                  height="30px"
-                />
+              <Col md={4} marginBottom="0px">
+                {xRadians && (
+                  <RadiansDropdown
+                    name="xTickDistance"
+                    value={xTickDistance}
+                    onSelect={(val) =>
+                      this.handleChangeRadians('xTickDistance', val)
+                    }
+                  />
+                )}
+                {!xRadians && (
+                  <TextInputStyled
+                    type="text"
+                    defaultValue="1"
+                    min={0}
+                    name="xTickDistance"
+                    value={xTickDistance}
+                    onChange={this.handleGridChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                  />
+                )}
               </Col>
-              <Col md={3} style={{ marginBottom: '0' }}>
+              <Col md={3} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="xRatio"
                   min={0}
                   value={xRatio}
+                  align="center"
+                  padding="0px 4px"
                   onChange={this.handleGridChange}
                   onBlur={this.handleRatioChange}
                   disabled={false}
-                  height="30px"
                 />
               </Col>
             </Col>
-            <Col md={11} style={{ marginBottom: '0' }}>
+            <Col md={13} marginBottom="0px">
               <Row type="flex" justify="space-between">
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
                   <CheckboxLabel
@@ -722,17 +849,21 @@ class QuadrantsMoreOptions extends Component {
                     checked={xDrawLabel}
                   />
                 </Col>
+                <Col align="center" md={3} style={{ marginBottom: '0' }}>
+                  <CheckboxLabel
+                    name="xRadians"
+                    onChange={() =>
+                      this.handleChangeRadians('xRadians', !xRadians)
+                    }
+                    checked={xRadians}
+                  />
+                </Col>
               </Row>
             </Col>
-          </ColoredRow>
-          <ColoredRow style={{ padding: '5px 1px' }} gutter={4}>
-            <Col md={13} style={{ marginBottom: '0' }}>
-              <Col md={3} style={{ marginBottom: '0' }}>
-                <RowLabel style={{ justifyContent: 'center' }}>
-                  {t('component.graphing.grid_options.axis_y')}
-                </RowLabel>
-              </Col>
-              <Col md={4} style={{ marginBottom: '0' }}>
+          </Row>
+          <Row center gutter={4} mb="0">
+            <Col md={11} marginBottom="0px">
+              <Col md={3} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   defaultValue="X"
@@ -741,58 +872,87 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
-                  height="30px"
+                  align="center"
+                  padding="0px 4px"
                 />
               </Col>
-              <Col md={4} style={{ marginBottom: '0' }}>
+              <Col md={5} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="yMin"
                   value={yMin}
+                  suffix={yRadians ? <PiSymbol /> : ''}
                   onChange={this.handleMinMaxChange}
-                  onBlur={this.handleMinMaxBluer}
+                  onBlur={this.handleCertainOptsBlur}
                   disabled={false}
-                  height="30px"
+                  height="35px"
+                  align="center"
+                  padding="0px 4px"
                 />
               </Col>
-              <Col md={4} style={{ marginBottom: '0' }}>
+              <Col md={5} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="yMax"
                   value={yMax}
+                  suffix={yRadians ? <PiSymbol /> : ''}
                   onChange={this.handleMinMaxChange}
-                  onBlur={this.handleMinMaxBluer}
+                  onBlur={this.handleCertainOptsBlur}
                   disabled={false}
-                  height="30px"
+                  height="35px"
+                  align="center"
+                  padding="0px 4px"
                 />
               </Col>
-              <Col md={3} style={{ marginBottom: '0' }}>
-                <TextInputStyled
-                  type="text"
-                  defaultValue="1"
-                  min={0}
-                  name="yDistance"
-                  value={yDistance}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleInputChange}
-                  disabled={false}
-                  height="30px"
-                />
+              <Col md={4} marginBottom="0px">
+                {yRadians && (
+                  <RadiansDropdown
+                    name="yDistance"
+                    value={yDistance}
+                    onSelect={(val) =>
+                      this.handleChangeRadians('yDistance', val)
+                    }
+                  />
+                )}
+                {!yRadians && (
+                  <TextInputStyled
+                    type="text"
+                    defaultValue="1"
+                    min={0}
+                    name="yDistance"
+                    value={yDistance}
+                    onChange={this.handleGridChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                  />
+                )}
               </Col>
-              <Col md={3} style={{ marginBottom: '0' }}>
-                <TextInputStyled
-                  type="text"
-                  defaultValue="1"
-                  min={0}
-                  name="yTickDistance"
-                  value={yTickDistance}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleInputChange}
-                  disabled={false}
-                  height="30px"
-                />
+              <Col md={4} marginBottom="0px">
+                {yRadians && (
+                  <RadiansDropdown
+                    name="yTickDistance"
+                    value={yTickDistance}
+                    onSelect={(val) =>
+                      this.handleChangeRadians('yTickDistance', val)
+                    }
+                  />
+                )}
+                {!yRadians && (
+                  <TextInputStyled
+                    type="text"
+                    defaultValue="1"
+                    min={0}
+                    name="yTickDistance"
+                    value={yTickDistance}
+                    onChange={this.handleGridChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="32px"
+                  />
+                )}
               </Col>
-              <Col md={3} style={{ marginBottom: '0' }}>
+              <Col md={3} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="yRatio"
@@ -801,11 +961,12 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleRatioChange}
                   disabled={false}
-                  height="30px"
+                  align="center"
+                  padding="0px 4px"
                 />
               </Col>
             </Col>
-            <Col md={11} style={{ marginBottom: '0' }}>
+            <Col md={13} marginBottom="0px">
               <Row type="flex" justify="space-between">
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
                   <CheckboxLabel
@@ -864,9 +1025,18 @@ class QuadrantsMoreOptions extends Component {
                     checked={yDrawLabel}
                   />
                 </Col>
+                <Col align="center" md={3} style={{ marginBottom: '0' }}>
+                  <CheckboxLabel
+                    name="yRadians"
+                    onChange={() =>
+                      this.handleChangeRadians('yRadians', !yRadians)
+                    }
+                    checked={yRadians}
+                  />
+                </Col>
               </Row>
             </Col>
-          </ColoredRow>
+          </Row>
         </Question>
 
         <Question
@@ -1021,6 +1191,19 @@ class QuadrantsMoreOptions extends Component {
           </Row>
         </Question>
 
+        {showConfirmModal && (
+          <CustomModalStyled
+            centered
+            visible={showConfirmModal}
+            title="Warning"
+            okText="Confirm"
+            onOk={this.handleConfirmOptsChanges}
+            onCancel={this.handleCancelOptsChanges}
+          >
+            The graphing objects will no longer fall on the updated grid, and
+            you will need to recreate them. Please confirm?
+          </CustomModalStyled>
+        )}
         <Extras
           isSection={false}
           cleanSections={cleanSections}

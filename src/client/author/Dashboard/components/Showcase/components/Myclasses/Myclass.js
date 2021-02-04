@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, groupBy } from 'lodash'
+import { get, groupBy, isEmpty } from 'lodash'
 import qs from 'qs'
 
 // components
@@ -12,6 +12,8 @@ import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
+import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import SubscriptionAddonModal from './components/SubscriptionAddonModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 
@@ -20,7 +22,6 @@ import { slice } from '../../../../../Subscription/ducks'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
-import { addPermissionRequestAction } from '../../../../../ContentCollections/ducks'
 import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
@@ -28,6 +29,10 @@ import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
 import ItemPurchaseModal from './components/ItemPurchaseModal'
 import TrialModal from './components/TrialModal'
+import UpgradeModal from '../../../../../Subscription/components/SubscriptionHeader/UpgradeModal'
+import PaymentServiceModal from '../../../../../Subscription/components/PaymentServiceModal'
+import PayWithPoModal from '../../../../../Subscription/components/SubscriptionHeader/PayWithPoModal'
+import TrialConfirmationModal from './components/FeaturedContentBundle/TrialConfimationModal'
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -50,14 +55,37 @@ const MyClasses = ({
   resetTestFilters,
   resetPlaylistFilters,
   collections,
-  addPermissionRequest,
   isPremiumTrialUsed,
+  itemBankSubscriptions = [],
   startTrialAction,
+  usedTrialItemBankId,
+  verificationPending,
+  stripePaymentAction,
+  showTrialSubsConfirmationAction,
+  showTrialConfirmationMessage,
+  isConfirmationModalVisible,
+  subscription: { subEndDate, subType } = {},
+  premiumProductId,
+  products,
+  isPaymentServiceModalVisible,
+  setPaymentServiceModal,
+  showHeaderTrialModal,
+  setShowHeaderTrialModal,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [productData, setProductData] = useState({})
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [payWithPoModal, setPayWithPoModal] = useState(false)
+  const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
+    false
+  )
+  const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
+    false
+  )
+  const [addOnProductIds, setAddOnProductIds] = useState([])
+  const [totalAmount, setTotalAmount] = useState(100)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -72,7 +100,66 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
-  const premiumUser = user.features.premium
+  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+
+  const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
+    const DEFAULT_ITEMBANK_PRICE = 100
+    const DEFAULT_PERIOD = 365
+    const boughtPremiumBankIds = itemBankSubscriptions
+      .filter((x) => !x.isTrial)
+      .map((x) => x.itemBankId)
+    const purchasableProducts = products.filter(
+      (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
+    )
+    const result = purchasableProducts.map((product) => {
+      const { id: currentProductId } = product
+      if (
+        !subEndDate ||
+        currentProductId === premiumProductId ||
+        (subEndDate && !isPaidPremium) ||
+        ['enterprise', 'partial_premium'].includes(subType)
+      ) {
+        return {
+          ...product,
+          period: DEFAULT_PERIOD,
+          price: DEFAULT_ITEMBANK_PRICE,
+        }
+      }
+      let currentDate = new Date()
+      const itemBankSubEndDate = new Date(
+        currentDate.setDate(currentDate.getDate() + DEFAULT_PERIOD)
+      ).valueOf()
+      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
+      currentDate = Date.now()
+      const amountFactor =
+        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
+      const dynamicPrice = Math.round(amountFactor * DEFAULT_ITEMBANK_PRICE)
+      const dynamicPeriodInDays = Math.round(amountFactor * DEFAULT_PERIOD)
+
+      return {
+        ...product,
+        price: dynamicPrice,
+        period: dynamicPeriodInDays,
+      }
+    })
+    return {
+      teacherPremium: result[0],
+      itemBankPremium: result.slice(1),
+    }
+  }, [subEndDate, products])
+
+  const openPaymentServiceModal = () => {
+    setPaymentServiceModal(true)
+    segmentApi.trackTeacherClickOnUpgradeSubscription({ user })
+  }
+
+  const openPoServiceModal = () => {
+    setPayWithPoModal(true)
+  }
+
+  const closePaymentServiceModal = () => setPaymentServiceModal(false)
+
+  const isPremiumUser = user.features.premium
 
   const sortableClasses = classData
     .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
@@ -104,17 +191,29 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    setIsPurchaseModalVisible(true)
+    if (usedTrialItemBankId) {
+      setShowItemBankTrialUsedModal(true)
+    } else {
+      setIsPurchaseModalVisible(true)
+    }
     setProductData({
       productId: subscriptionData.productId,
       productName: subscriptionData.productName,
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
+      itemBankId: subscriptionData.itemBankId,
     })
   }
 
   const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
+  const handleCloseItemTrialModal = () => setShowItemBankTrialUsedModal(false)
+
+  const handlePurchaseFlow = () => {
+    setShowSubscriptionAddonModal(true)
+    setIsPurchaseModalVisible(false)
+    setShowItemBankTrialUsedModal(false)
+  }
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
@@ -126,7 +225,7 @@ const MyClasses = ({
 
     const content = contentType?.toLowerCase() || 'tests'
     if (tags.includes(PREMIUM_TAG)) {
-      if (premiumUser) {
+      if (isPremiumUser) {
         handleContentRedirect(filters, content)
       } else {
         history.push(`/author/subscription`)
@@ -144,7 +243,7 @@ const MyClasses = ({
       }
 
       const { imageUrl: imgUrl, premiumImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData.productId)
+      const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
       const imageUrl = isBlocked ? premiumImageUrl : imgUrl
 
       return {
@@ -185,12 +284,41 @@ const MyClasses = ({
     window.open(data.externalUrl, '_blank')
   }
 
-  const bannerActionHandler = (filter = {}, description) => {
+  const getTileByProductName = (name) => {
+    const { id: productId } =
+      products.find((product) => product.name === name) || {}
+
+    if (productId) {
+      return (
+        featuredBundles &&
+        featuredBundles.find(
+          (bundle) => bundle?.config?.subscriptionData?.productId === productId
+        )
+      )
+    }
+
+    return {}
+  }
+
+  const handleSparkMathBannerClick = () => {
+    const tile = getTileByProductName('Spark Math')
+    if (!isEmpty(tile.config)) {
+      handleFeatureClick(tile)
+    }
+  }
+
+  const bannerActionHandler = (filter = {}, description, isSparkMathTile) => {
     const { action, data } = filter
     segmentApi.trackUserClick({
       user,
       data: { event: `dashboard:banner-${description}:click` },
     })
+
+    if (isSparkMathTile) {
+      handleSparkMathBannerClick()
+      return
+    }
+
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)
@@ -210,6 +338,18 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
+  const getClickedBundle =
+    featuredBundles &&
+    featuredBundles.find(
+      (bundle) =>
+        bundle?.config?.subscriptionData?.productId === productData?.productId
+    )
+
+  const handleGoToCollectionClick = () => {
+    handleFeatureClick(getClickedBundle)
+    showTrialSubsConfirmationAction(false)
+  }
+
   const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
@@ -225,6 +365,23 @@ const MyClasses = ({
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
     : []
+
+  const isTrialItemBank =
+    itemBankSubscriptions &&
+    itemBankSubscriptions?.length > 0 &&
+    itemBankSubscriptions?.filter((x) => {
+      return x.itemBankId === productData?.itemBankId && x.isTrial
+    })?.length > 0
+
+  const showTrialButton =
+    (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
+
+  const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
+
+  const handleSubscriptionAddonModalClose = () => {
+    setProductData({})
+    setShowSubscriptionAddonModal(false)
+  }
 
   return (
     <MainContentWrapper padding="30px 25px">
@@ -246,31 +403,89 @@ const MyClasses = ({
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
+      {showSubscriptionAddonModal && (
+        <SubscriptionAddonModal
+          isVisible={showSubscriptionAddonModal}
+          handleCloseModal={handleSubscriptionAddonModalClose}
+          isPaidPremium={isPaidPremium}
+          setShowUpgradeModal={setShowUpgradeModal}
+          usedTrialItemBankId={usedTrialItemBankId}
+          premiumProductId={premiumProductId}
+          setTotalPurchaseAmount={setTotalAmount}
+          setAddOnProductIds={setAddOnProductIds}
+          defaultSelectedProductIds={[productData.productId]}
+          teacherPremium={teacherPremium}
+          itemBankPremium={itemBankPremium}
+        />
+      )}
+      {showItemBankTrialUsedModal && (
+        <ItemBankTrialUsedModal
+          title={productData.productName}
+          isVisible={showItemBankTrialUsedModal}
+          handleCloseModal={handleCloseItemTrialModal}
+          handlePurchaseFlow={handlePurchaseFlow}
+          isCurrentItemBankUsed={isCurrentItemBankUsed}
+        />
+      )}
       {isPurchaseModalVisible && (
         <ItemPurchaseModal
           title={productData.productName}
           description={productData.description}
           productId={productData.productId}
-          hasTrial={productData.hasTrial}
           isVisible={isPurchaseModalVisible}
           toggleModal={togglePurchaseModal}
           toggleTrialModal={toggleTrialModal}
-          isPremiumTrialUsed={isPremiumTrialUsed}
-          premiumUser={premiumUser}
+          handlePurchaseFlow={handlePurchaseFlow}
+          showTrialButton={showTrialButton}
+          isPremiumUser={isPremiumUser}
         />
       )}
-      {isTrialModalVisible && (
+      {(isTrialModalVisible || showHeaderTrialModal) && (
         <TrialModal
-          description={productData.description}
-          productId={productData.productId}
-          productName={productData.productName}
-          userInfo={user}
-          addItemBankPermission={addPermissionRequest}
-          isVisible={isTrialModalVisible}
+          addOnProductIds={[isTrialModalVisible && productData.productId]}
+          isVisible={isTrialModalVisible || showHeaderTrialModal}
           toggleModal={toggleTrialModal}
-          premiumUser={premiumUser}
+          isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
+          products={products}
+          setShowHeaderTrialModal={setShowHeaderTrialModal}
+        />
+      )}
+      {showUpgradeModal && (
+        <UpgradeModal
+          visible={showUpgradeModal}
+          setShowModal={setShowUpgradeModal}
+          openPaymentServiceModal={openPaymentServiceModal}
+          openPoServiceModal={openPoServiceModal}
+        />
+      )}
+      <PaymentServiceModal
+        visible={isPaymentServiceModalVisible}
+        closeModal={closePaymentServiceModal}
+        verificationPending={verificationPending}
+        stripePaymentAction={stripePaymentAction}
+        user={user}
+        reason="Premium Upgrade"
+        totalPurchaseAmount={totalAmount}
+        addOnProductIds={addOnProductIds}
+      />
+      {payWithPoModal && (
+        <PayWithPoModal
+          visible={payWithPoModal}
+          setShowModal={setPayWithPoModal}
+        />
+      )}
+      {isConfirmationModalVisible && (
+        <TrialConfirmationModal
+          visible={isConfirmationModalVisible}
+          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          showTrialConfirmationMessage={showTrialConfirmationMessage}
+          isTrialItemBank={isTrialItemBank}
+          title={productData?.productName}
+          isBlocked={getClickedBundle?.isBlocked}
+          handleGoToCollectionClick={handleGoToCollectionClick}
+          history={history}
         />
       )}
     </MainContentWrapper>
@@ -289,7 +504,21 @@ export default compose(
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
       collections: getCollectionsSelector(state),
       isPremiumTrialUsed:
-        state?.subscription?.subscriptionData?.subscription?.isPremiumTrialUsed,
+        state.subscription?.subscriptionData?.isPremiumTrialUsed,
+      itemBankSubscriptions:
+        state.subscription?.subscriptionData?.itemBankSubscriptions,
+      usedTrialItemBankId:
+        state.subscription?.subscriptionData?.usedTrialItemBankId,
+      premiumProductId: state.subscription?.subscriptionData?.premiumProductId,
+      verificationPending: state.subscription?.verificationPending,
+      subscription: state.subscription?.subscriptionData?.subscription,
+      isConfirmationModalVisible: state.subscription?.showTrialSubsConfirmation,
+      showTrialConfirmationMessage:
+        state.subscription?.showTrialConfirmationMessage,
+      products: state.subscription?.products,
+      isPaymentServiceModalVisible:
+        state.subscription?.isPaymentServiceModalVisible,
+      showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -298,8 +527,12 @@ export default compose(
       fetchCleverClassList: fetchCleverClassListRequestAction,
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
-      addPermissionRequest: addPermissionRequestAction,
       startTrialAction: slice.actions.startTrialAction,
+      stripePaymentAction: slice.actions.stripePaymentAction,
+      showTrialSubsConfirmationAction:
+        slice.actions.trialSubsConfirmationAction,
+      setPaymentServiceModal: slice.actions.setPaymentServiceModal,
+      setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
     }
   )
 )(MyClasses)

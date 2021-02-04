@@ -58,7 +58,6 @@ import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
 import AudioControls from '../AudioControls'
 
-import { getFontSize } from '../utils/helpers'
 import PreviewRubricTable from '../../author/GradingRubric/Components/common/PreviewRubricTable'
 // import { Coding } from '../widgets/Coding'
 
@@ -72,6 +71,10 @@ import {
   ttsUserIdSelector,
 } from '../../author/ClassBoard/ducks'
 import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
+import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
+import { getFontSize } from '../utils/helpers'
+import { changeDataToPreferredLanguage } from '../utils/question'
+import { languagePreferenceSelector } from '../../common/components/LanguageSelector/duck'
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
@@ -415,16 +418,22 @@ class QuestionWrapper extends Component {
       permissions,
     } = this.props
 
-    // 'author' is power teacher by default
-    const _isPowerTeacher = isPowerTeacher || permissions.includes('author')
-
     const isDistrictAdmin =
       (userRole === TEACHER &&
         !features.isPublisherAuthor &&
         !features.isCurator) ||
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
 
-    return isDistrictAdmin && _isPowerTeacher && isPremiumUser
+    return (
+      (isDistrictAdmin && isPowerTeacher && isPremiumUser) ||
+      canUseAllOptionsByDefault(permissions, userRole)
+    )
+  }
+
+  // we will use this method only for LCB and student report
+  get renderData() {
+    const { data, studentLanguagePreference } = this.props
+    return changeDataToPreferredLanguage(data, studentLanguagePreference)
   }
 
   render() {
@@ -433,7 +442,7 @@ class QuestionWrapper extends Component {
       isFlex,
       type,
       timespent,
-      data,
+      data: _originalData,
       showFeedback,
       multiple,
       view,
@@ -466,23 +475,26 @@ class QuestionWrapper extends Component {
       ...restProps
     } = this.props
 
-    // 'author' is power teacher by default
-    const _isPowerTeacher = isPowerTeacher || permissions.includes('author')
+    const data = this.renderData
 
+    const _isPowerTeacher =
+      isPowerTeacher || canUseAllOptionsByDefault(permissions, userRole)
     const {
       isExpressGrader,
       isStudentReport,
       isLCBView,
       LCBPreviewModal,
-      userPreferredLanguage,
+      calculatedHeight,
+      fullHeight,
+      showBorder,
+      borderRadius,
+      hasDrawingResponse,
+      previewTab,
     } = restProps
+
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
-    const preferredLanguage = get(
-      data,
-      'activity.preferredLanguage',
-      userPreferredLanguage
-    )
+
     const { main, advanced, activeTab, page } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
@@ -554,8 +566,6 @@ class QuestionWrapper extends Component {
     const { rubrics: rubricDetails } = data
     const rubricFeedback = data?.activity?.rubricFeedback
 
-    const { calculatedHeight, fullHeight, showBorder } = restProps
-
     return (
       <ThemeProvider
         theme={{
@@ -581,7 +591,6 @@ class QuestionWrapper extends Component {
               audioSrc={data.tts.titleAudioURL}
               isPaginated={data.paginated_content}
               className="question-audio-controller"
-              preferredLanguage={preferredLanguage}
             />
           )}
           <div
@@ -618,7 +627,7 @@ class QuestionWrapper extends Component {
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 isStudentReport={isStudentReport}
-                borderRadius={isLCBView ? '10px' : restProps.borderRadius}
+                borderRadius={isLCBView ? '10px' : borderRadius}
                 style={{
                   width:
                     !isPrintPreview &&
@@ -663,43 +672,38 @@ class QuestionWrapper extends Component {
                     {...userAnswerProps}
                     page={page}
                     setPage={this.setPage}
-                    preferredLanguage={preferredLanguage}
                   />
-                  {!restProps.hasDrawingResponse &&
-                    showFeedback &&
-                    !isPrintPreview && (
-                      <>
-                        <TimeSpentWrapper
-                          className={isStudentReport ? 'student-report' : ''}
-                        >
-                          {!!showStudentWork && (
-                            <ShowUserWork
-                              style={{ marginRight: '1rem' }}
-                              onClickHandler={() => {
-                                // load the data from server and then show
-                                loadScratchPad({
-                                  testActivityId:
-                                    data?.activity?.testActivityId,
-                                  testItemId: data?.activity?.testItemId,
-                                  qActId:
-                                    data?.activity?.qActId ||
-                                    data?.activity?._id,
-                                  callback: () => showStudentWork(),
-                                })
-                              }}
-                            >
-                              Show student work
-                            </ShowUserWork>
-                          )}
-                          {timeSpent && (
-                            <>
-                              <IconClockCircularOutline />
-                              {round(timeSpent / 1000, 1)}s
-                            </>
-                          )}
-                        </TimeSpentWrapper>
-                      </>
-                    )}
+                  {!hasDrawingResponse && showFeedback && !isPrintPreview && (
+                    <>
+                      <TimeSpentWrapper
+                        className={isStudentReport ? 'student-report' : ''}
+                      >
+                        {!!showStudentWork && (
+                          <ShowUserWork
+                            style={{ marginRight: '1rem' }}
+                            onClickHandler={() => {
+                              // load the data from server and then show
+                              loadScratchPad({
+                                testActivityId: data?.activity?.testActivityId,
+                                testItemId: data?.activity?.testItemId,
+                                qActId:
+                                  data?.activity?.qActId || data?.activity?._id,
+                                callback: () => showStudentWork(),
+                              })
+                            }}
+                          >
+                            Show student work
+                          </ShowUserWork>
+                        )}
+                        {timeSpent && (
+                          <>
+                            <IconClockCircularOutline />
+                            {round(timeSpent / 1000, 1)}s
+                          </>
+                        )}
+                      </TimeSpentWrapper>
+                    </>
+                  )}
                   {rubricDetails && studentReportFeedbackVisible && (
                     <RubricTableWrapper>
                       <span>Graded Rubric</span>
@@ -720,18 +724,14 @@ class QuestionWrapper extends Component {
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isStudentReport={isStudentReport}
-                      preferredLanguage={preferredLanguage}
                     />
                   )}
-                  {(isLCBView ||
-                    isExpressGrader ||
-                    restProps.previewTab === 'show') &&
+                  {(isLCBView || isExpressGrader || previewTab === 'show') &&
                     !isPrintPreview && (
                       <Explanation
                         isStudentReport={isStudentReport}
                         question={data}
                         isGrade={isGrade}
-                        preferredLanguage={preferredLanguage}
                       />
                     )}
                 </StyledFlexContainer>
@@ -801,7 +801,7 @@ const enhance = compose(
   withTheme,
   withNamespaces('assessment'),
   connect(
-    (state) => ({
+    (state, ownProps) => ({
       isPresentationMode: get(
         state,
         ['author_classboard_testActivity', 'presentationMode'],
@@ -819,11 +819,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),
-      userPreferredLanguage: get(
-        state,
-        ['user', 'user', 'preferredLanguage'],
-        'en'
-      ),
+      studentLanguagePreference: languagePreferenceSelector(state, ownProps),
     }),
     {
       setQuestionData: setQuestionDataAction,

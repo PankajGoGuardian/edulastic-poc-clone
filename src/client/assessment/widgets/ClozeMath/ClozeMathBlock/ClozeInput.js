@@ -92,5 +92,6 @@ const InputBox = styled(TextInputStyled)`
   min-width: ${({ minWidth }) => minWidth};
   &.ant-input {
     border: 1px solid ${lightGrey12};
+    font-weight: normal;
   }
 `

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Tabs as AntTabs } from 'antd'
 import { keys } from 'lodash'
 import { FieldLabel } from '@edulastic/common'
@@ -7,7 +7,7 @@ import { math as mathConstants } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
 import EvaluationOption from './components/EvaluationOption'
 
-const { evaluationSettings } = mathConstants
+const { evaluationSettings, subEvaluationSettingsGrouped } = mathConstants
 const { TabPane } = AntTabs
 
 const MathEquivalentOptions = ({
@@ -21,6 +21,37 @@ const MathEquivalentOptions = ({
   onChangeAllowedOptions,
 }) => {
   const groupedOptions = useMemo(() => evaluationSettings[method], [method])
+  const fractionFormOptions = subEvaluationSettingsGrouped.fractionForms
+  const isFractionFormChecked = useMemo(
+    () =>
+      keys(options)
+        .filter((option) => options[option])
+        .some((option) => fractionFormOptions.includes(option)),
+    [options, fractionFormOptions]
+  )
+
+  const [isNumberFormatDisabled, setIsNumberFormatDisabled] = useState(
+    isFractionFormChecked
+  )
+
+  const handleChangeOptions = (prop, val) => {
+    const newOptions = {
+      ...options,
+      [prop]: val,
+    }
+    if (
+      newOptions.isSimplifiedFraction ||
+      newOptions.isMixedFraction ||
+      newOptions.isImproperFraction ||
+      newOptions.isRationalized
+    ) {
+      setIsNumberFormatDisabled(true)
+    } else {
+      setIsNumberFormatDisabled(false)
+    }
+
+    onChangeOption(prop, val)
+  }
 
   const tabLabel = (label) => (
     <FieldLabel marginBottom="0px">{label}</FieldLabel>
@@ -32,12 +63,13 @@ const MathEquivalentOptions = ({
         key={key}
         optionKey={key}
         options={options}
-        onChangeOption={onChangeOption}
+        onChangeOption={handleChangeOptions}
         onChangeRadio={onChangeRadio}
         useTemplate={useTemplate}
         allowNumericOnly={allowNumericOnly}
         allowedVariables={allowedVariables}
         onChangeAllowedOptions={onChangeAllowedOptions}
+        isNumberFormatDisabled={isNumberFormatDisabled}
       />
     ))
 

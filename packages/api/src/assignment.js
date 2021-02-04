@@ -232,6 +232,14 @@ const syncWithSchoologyClassroom = (data) =>
     })
     .then((result) => result.data.result)
 
+const fetchRegradeSettings = ({ oldTestId, newTestId }) =>
+  api
+    .callApi({
+      url: `${prefix}/regrade-actions/old/${oldTestId}/new/${newTestId}`,
+      method: 'GET',
+    })
+    .then((result) => result.data.result)
+
 export default {
   create,
   update,
@@ -254,4 +262,5 @@ export default {
   fetchByTestId,
   searchAssignments,
   syncWithSchoologyClassroom,
+  fetchRegradeSettings,
 }

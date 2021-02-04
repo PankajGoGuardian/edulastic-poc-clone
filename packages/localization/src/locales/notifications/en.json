@@ -655,6 +655,14 @@
     "message": " No students selected",
     "description": ""
   },
+  "noStudentSelectedForPause": {
+    "message": "At least one student should be selected to Pause.",
+    "description": ""
+  },
+  "noStudentSelectedForResume": {
+    "message": "At least one student should be selected to Resume.",
+    "description": ""
+  },
   "assessmentAlreadyAssignedToAllStudents": {
     "message": "This assessment is already assigned to all students in the class.",
     "description": ""
@@ -881,6 +889,10 @@
   },
   "rubricIsSavedAndSpublished": {
     "message": "Rubric is saved and published",
+    "description": ""
+  },
+  "rubricUpdatedSuccessfully": {
+    "message": "Rubric updated successfully",
     "description": ""
   },
   "itemIsSaved": {
@@ -1831,6 +1843,10 @@
     "message": "Test is expired",
     "description": ""
   },
+  "selectLanguage": {
+    "message": "Please select your preferred language to continue",
+    "description": ""
+  },
   "failedToUpdateUser": {
     "message": "Failed to update user please try again.",
     "description": ""
@@ -1935,6 +1951,10 @@
     "message": "Assessment is paused or closed by teacher.",
     "description": ""
   },
+  "testPausedByTeacher": {
+    "message": "Assignment is paused at class level. Kindly resume assignment to use this action.",
+    "description": ""
+  },
   "invalidAction": {
     "message": "Invalid Action.",
     "description": ""
@@ -1953,6 +1973,14 @@
   },
   "assignmentSharedWithSchoologyClassroom": {
     "message": "Assignment is shared with Schoology Classroom successfully",
+    "description": ""
+  },
+  "teacherSignUpNotAllowed": {
+    "message": "Teacher Signup is not allowed for your district.",
+    "description": ""
+  },
+  "studentAssignmentPaused": {
+    "message": "Assignment is Paused , Please check with your instructor.",
     "description": ""
   }
 }

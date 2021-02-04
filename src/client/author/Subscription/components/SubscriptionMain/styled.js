@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import {
   themeColor,
-  secondaryTextColor,
   white,
-  linkColor1,
   largeDesktopWidth,
   tabletWidth,
   extraDesktopWidthMax,
@@ -11,8 +9,9 @@ import {
   title,
   whiteSmoke,
   lightGrey9,
+  borderGrey2,
 } from '@edulastic/colors'
-import { CustomModalStyled } from '@edulastic/common'
+import { CustomModalStyled, EduButton } from '@edulastic/common'
 
 export const ContentSection = styled.section`
   min-height: 300px;
@@ -143,20 +142,6 @@ export const HaveLicenseKey = styled.div`
   color: ${white};
 `
 
-export const CurrentPlanContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 40px;
-`
-
-export const PlanStatus = styled.h3`
-  color: ${linkColor1};
-  font-weight: 700;
-  margin: 0;
-`
-
 export const AvailablePlansContainer = styled.div`
   width: 100%;
   display: flex;
@@ -211,14 +196,6 @@ export const PlanDetails = styled.div`
   }
 `
 
-export const StyledParagraph = styled.p`
-  text-transform: uppercase;
-  font-weight: 600;
-  color: ${secondaryTextColor};
-  margin-top: ${({ isSubscribed }) => isSubscribed && '50px'};
-  letter-spacing: 0.22px;
-`
-
 export const StyledLink = styled.span`
   color: ${themeColor};
 `
@@ -260,5 +237,44 @@ export const CalendlyModal = styled(CustomModalStyled)`
       box-shadow: none !important;
       max-width: 100% !important;
     }
+  }
+`
+export const CustomButton = styled(EduButton)`
+  background: ${({ noBg }) => (noBg ? 'transparent !important' : null)};
+  border-color: ${white} !important;
+`
+export const AddonFooter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  color: #3f85e5;
+  padding-top: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  span {
+    height: 18px;
+    border-right: 1px solid ${borderGrey2};
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    &:last-child {
+      border: none;
+    }
+  }
+`
+export const PurchaseLink = styled.span`
+  color: #1ab395;
+`
+export const LearnMoreLink = styled.a`
+  height: 18px;
+  border-right: 1px solid ${borderGrey2};
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  color: #3f85e5;
+  &:last-child {
+    border: none;
   }
 `

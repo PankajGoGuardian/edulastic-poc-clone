@@ -16,6 +16,7 @@ export const FieldLabel = styled.label`
   font-stretch: ${(props) => props.theme.widgetOptions.labelFontStretch};
   line-height: 1.38;
   text-align: left;
+  white-space: ${(props) => props.nowrap || 'nowrap'};
   color: ${(props) => props.color || props.theme.widgetOptions.labelColor};
   display: ${(props) => (props.display ? props.display : 'block')};
   text-transform: uppercase;
@@ -82,6 +83,7 @@ export const TextInputStyled = styled((props) => (
     .ant-input {
       ${inputCommonStyle};
       ${(props) => props.style};
+      text-align: ${(props) => props.align || 'left'};
       color: ${({ theme }) => theme.questionTextColor};
       &:focus,
       &:hover {
@@ -202,7 +204,6 @@ export const SelectInputStyled = styled(Select)`
       width: ${(props) => props.width || '100%'};
       height: ${(props) => props.height || '100%'};
       min-height: ${(props) => props.height || '32px'};
-      padding: ${(props) => props.padding || '0px'};
       border-radius: 2px;
       font-weight: 600;
       line-height: 1.38;
@@ -210,7 +211,8 @@ export const SelectInputStyled = styled(Select)`
       &.ant-select-selection--single {
         .ant-select-selection__rendered {
           width: 100%;
-          padding: ${(props) => (props.noBorder ? '0px' : '0px 30px 0px 15px')};
+          padding: ${({ noBorder, padding }) =>
+            padding || (noBorder ? '0px' : '0px 30px 0px 15px')};
           line-height: ${(props) => props.height || '32px'};
           margin: 0px;
           .ant-select-selection-selected-value {

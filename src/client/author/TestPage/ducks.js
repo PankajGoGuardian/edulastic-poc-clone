@@ -47,6 +47,7 @@ import {
   captureSentryException,
   helpers,
   notification,
+  Effects,
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
 import { createGroupSummary } from './utils'
@@ -297,6 +298,8 @@ export const SET_CORRECT_PSSAGE_ITEMS_CREATED =
 export const SET_SHARING_CONTENT_STATE = '[test] set sharing content state'
 export const UPDATE_EMAIL_NOTIFICATION_DATA =
   '[test] update email notification data'
+export const GET_REGRADE_ACTIONS = '[tests] get available regrade actions'
+export const SET_REGRADE_ACTIONS = '[tests] set available regrade actions'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -381,6 +384,8 @@ export const setSharingContentStateAction = createAction(
 export const updateEmailNotificationDataAction = createAction(
   UPDATE_EMAIL_NOTIFICATION_DATA
 )
+
+export const setAvailableRegradeAction = createAction(SET_REGRADE_ACTIONS)
 
 export const receiveTestByIdAction = (
   id,
@@ -497,6 +502,7 @@ export const setUndoStackAction = createAction(SET_ANNOTATIONS_STACK)
 export const setCorrectPassageItemsCreatedAction = createAction(
   SET_CORRECT_PSSAGE_ITEMS_CREATED
 )
+export const getRegradeSettingsAction = createAction(GET_REGRADE_ACTIONS)
 
 export const defaultImage =
   'https://cdn2.edulastic.com/default/default-test-1.jpg'
@@ -661,6 +667,16 @@ export const getRegradingSelector = createSelector(
   (state) => state.regrading
 )
 
+export const getIsLoadRegradeSettingsSelector = createSelector(
+  stateSelector,
+  (state) => state.loadRegradeSettings
+)
+
+export const getAvaialbleRegradeSettingsSelector = createSelector(
+  stateSelector,
+  (state) => state.availableRegradeSettings
+)
+
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
   ({ itemGroups }) => {
@@ -757,6 +773,7 @@ export const createBlankTest = () => ({
   generateReport: true,
   safeBrowser: false,
   sebPassword: '',
+  blockNavigationToAnsweredQuestions: false,
   shuffleQuestions: false,
   shuffleAnswers: false,
   calcType: test.calculatorKeys[0],
@@ -801,6 +818,7 @@ export const createBlankTest = () => ({
   ],
   passages: [],
   freezeSettings: false,
+  multiLanguageEnabled: false,
   playerSkinType: 'edulastic',
 })
 
@@ -836,6 +854,8 @@ const initialState = {
   sendEmailNotification: false,
   showMessageBody: false,
   notificationMessage: '',
+  loadRegradeSettings: false,
+  availableRegradeSettings: [`ADD`, `EDIT`, `REMOVE`, `SETTINGS`],
 }
 
 export const testTypeAsProfileNameType = {
@@ -953,15 +973,29 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CREATE_TEST_ERROR:
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error }
-    case SET_TEST_DATA:
+    case SET_TEST_DATA: {
+      let entity = { ...state.entity, ...payload.data }
+      if (
+        payload.data?.restrictNavigationOut ===
+          'warn-and-report-after-n-alerts' &&
+        typeof entity?.restrictNavigationOutAttemptsThreshold === 'undefined'
+      ) {
+        entity = {
+          ...entity,
+          restrictNavigationOutAttemptsThreshold: 5,
+        }
+      } else if (payload.data?.restrictNavigationOut === 'warn-and-report') {
+        entity = {
+          ...entity,
+          restrictNavigationOutAttemptsThreshold: undefined,
+        }
+      }
       return {
         ...state,
-        entity: {
-          ...state.entity,
-          ...payload.data,
-        },
+        entity,
         updated: true,
       }
+    }
     case UPDATE_TEST_IMAGE:
       return {
         ...state,
@@ -1086,7 +1120,9 @@ export const reducer = (state = initialState, { type, payload }) => {
       return produce(state, (_state) => {
         if (_state.entity.isDocBased) {
           const newSubjects =
-            payload?.alignment?.flatMap((x) => x.subject) || []
+            payload?.alignment
+              ?.flatMap((x) => x.subject)
+              ?.filter((x) => x && x?.trim()) || []
           const newGrades = payload?.alignment?.flatMap((x) => x.grades) || []
           _state.entity.grades = _uniq([..._state.entity.grades, ...newGrades])
           _state.entity.subjects = _uniq([
@@ -1346,6 +1382,17 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         ...payload,
       }
+    case GET_REGRADE_ACTIONS:
+      return {
+        ...state,
+        loadRegradeSettings: true,
+      }
+    case SET_REGRADE_ACTIONS:
+      return {
+        ...state,
+        availableRegradeSettings: payload,
+        loadRegradeSettings: false,
+      }
     default:
       return state
   }
@@ -1449,6 +1496,10 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     passwordExpireIn: entity.passwordExpireIn,
     assignmentPassword: entity.assignmentPassword,
     timedAssignment: entity.timedAssignment,
+    restrictNavigationOut: entity.restrictNavigationOut,
+    restrictNavigationOutAttemptsThreshold:
+      entity.restrictNavigationOutAttemptsThreshold,
+    blockSaveAndContinue: entity.blockSaveAndContinue,
   }
 
   if (isAdmin) {
@@ -1660,7 +1711,7 @@ function hasInvalidItem(testData) {
   return testData.itemGroups.find((x) => x.items.find((_item) => !_item.itemId))
 }
 
-function* updateTestSaga({ payload }) {
+export function* updateTestSaga({ payload }) {
   try {
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true))
@@ -2878,6 +2929,23 @@ function* getTestIdFromVersionIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err)
     console.error(err)
+    const errorMessage = 'Unable to retrieve test info.'
+    yield put(push('/author/tests'))
+    if (err.status === 403) {
+      notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })
+    } else {
+      notification({ msg: errorMessage })
+    }
+  }
+}
+
+function* getRegradeSettingsSaga({ payload }) {
+  try {
+    const result = yield call(assignmentApi.fetchRegradeSettings, payload)
+    yield put(setAvailableRegradeAction(result))
+  } catch (err) {
+    Sentry.captureException(err)
+    console.error(err)
   }
 }
 
@@ -2886,7 +2954,11 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
-    yield takeEvery(UPDATE_TEST_DOC_BASED_REQUEST, updateTestDocBasedSaga),
+    yield Effects.throttleAction(
+      10000,
+      UPDATE_TEST_DOC_BASED_REQUEST,
+      updateTestDocBasedSaga
+    ),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(TEST_PUBLISH, publishTestSaga),
@@ -2911,5 +2983,6 @@ export function* watcherSaga() {
     yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
     yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
     yield takeLatest(GET_TESTID_FROM_VERSIONID, getTestIdFromVersionIdSaga),
+    yield takeLatest(GET_REGRADE_ACTIONS, getRegradeSettingsSaga),
   ])
 }

@@ -21,6 +21,7 @@ const SettingMenu = ({
   showMagnifier,
   enableMagnifier,
   utaId,
+  hidePause
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
@@ -39,7 +40,7 @@ const SettingMenu = ({
         </Menu.Item>
       ))}
       {showPause && <Menu.Divider />}
-      {showPause && <Menu.Item key="save">Save & Exit</Menu.Item>}
+      {showPause && <Menu.Item disabled={hidePause} {...(hidePause?{title:"Save & exit disabled due to configuration"}:{})} key="save">Save & Exit</Menu.Item>}
     </StyledMenu>
   )
 

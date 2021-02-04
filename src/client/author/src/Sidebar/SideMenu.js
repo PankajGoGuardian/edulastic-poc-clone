@@ -55,6 +55,7 @@ import { toggleSideBarAction } from '../actions/toggleMenu'
 import {
   getUserFeatures,
   toggleMultipleAccountNotificationAction,
+  isProxyUser as isProxyUserSelector,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
@@ -350,6 +351,7 @@ class SideMenu extends Component {
       showUseThisNotification,
       isMultipleAccountNotification,
       toggleMultipleAccountNotification,
+      isProxyUser,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -426,7 +428,9 @@ class SideMenu extends Component {
             <Menu.Item key="2" className="removeSelectedBorder">
               <Link to="/author/subscription">
                 <IconSubscriptionHighlight />{' '}
-                <span>{isCollapsed ? '' : 'Subscription'}</span>
+                <span data-cy="subscription">
+                  {isCollapsed ? '' : 'Subscription'}
+                </span>
               </Link>
             </Menu.Item>
           )}
@@ -511,6 +515,7 @@ class SideMenu extends Component {
               selectedKeys={[defaultSelectedMenu.toString()]}
               mode="inline"
               onClick={(item) => this.handleMenu(item)}
+              isProxyUser={isProxyUser}
             >
               {this.MenuItems.map((menu, index) => {
                 if (menu.divider) {
@@ -747,6 +752,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       profileThumbnail: get(state.user, 'user.thumbnail'),
       switchDetails: getAccountSwitchDetails(state),
+      isProxyUser: isProxyUserSelector(state),
       locationState: get(state, 'router.location.state'),
       showUseThisNotification: get(
         state,
@@ -1048,7 +1054,9 @@ const Menu = styled(AntMenu)`
 
   @media (max-height: 780px) {
     overflow: auto;
-    height: calc(100vh - 190px);
+    height: ${({ isProxyUser }) =>
+      isProxyUser ? 'calc(100vh - 220px)' : 'calc(100vh - 190px)'};
+
     &::-webkit-scrollbar {
       width: 4px;
     }

@@ -81,7 +81,7 @@ const HotspotPreview = ({
     fill: areaAttributes?.local?.find((attr) => attr.area === i)
       ? areaAttributes.local.find((attr) => attr.area === i).fill
       : areaAttributes.global.fill,
-    stroke: areaAttributes.local.find((attr) => attr.area === i)
+    stroke: areaAttributes?.local?.find((attr) => attr.area === i)
       ? areaAttributes.local.find((attr) => attr.area === i).stroke
       : areaAttributes.global.stroke,
   })

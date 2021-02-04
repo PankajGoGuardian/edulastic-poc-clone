@@ -200,10 +200,6 @@ const SingleAssessmentReportFilters = ({
       selectedTests: testIds,
       ..._settings,
     }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      settings.filters.schoolIds =
-        settings.filters.schoolIds || get(user, 'institutionIds', []).join(',')
-    }
     _onGoClick(settings)
   }
 

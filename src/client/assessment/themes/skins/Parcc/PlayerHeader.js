@@ -73,6 +73,8 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
+  blockNavigationToAnsweredQuestions = false,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -118,21 +120,23 @@ const PlayerHeader = ({
               <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
                 <MainActionWrapper>
-                  <Tooltip
-                    placement="top"
-                    title="Previous"
-                    overlayStyle={overlayStyle}
-                  >
-                    <ControlBtn
-                      data-cy="prev"
-                      icon="left"
-                      disabled={isFirst()}
-                      onClick={(e) => {
-                        moveToPrev()
-                        e.target.blur()
-                      }}
-                    />
-                  </Tooltip>
+                  {!blockNavigationToAnsweredQuestions && (
+                    <Tooltip
+                      placement="top"
+                      title="Previous"
+                      overlayStyle={overlayStyle}
+                    >
+                      <ControlBtn
+                        data-cy="prev"
+                        icon="left"
+                        disabled={isFirst()}
+                        onClick={(e) => {
+                          moveToPrev()
+                          e.target.blur()
+                        }}
+                      />
+                    </Tooltip>
+                  )}
                   <Tooltip
                     placement="top"
                     title="Next"
@@ -158,18 +162,23 @@ const PlayerHeader = ({
                         gotoQuestion={gotoQuestion}
                         skipped={skipped}
                         bookmarks={bookmarks}
-                      />
-                      <StyledButton
-                        onClick={
-                          defaultAP
-                            ? toggleBookmark
-                            : () => toggleBookmark(items[currentItem]?._id)
+                        blockNavigationToAnsweredQuestions={
+                          blockNavigationToAnsweredQuestions
                         }
-                        active={isBookmarked}
-                      >
-                        <StyledIconBookmark />
-                        <span>{t('common.test.bookmark')}</span>
-                      </StyledButton>
+                      />
+                      {!blockNavigationToAnsweredQuestions && (
+                        <StyledButton
+                          onClick={
+                            defaultAP
+                              ? toggleBookmark
+                              : () => toggleBookmark(items[currentItem]?._id)
+                          }
+                          active={isBookmarked}
+                        >
+                          <StyledIconBookmark />
+                          <span>{t('common.test.bookmark')}</span>
+                        </StyledButton>
+                      )}
                     </Container>
                   )}
                 </MainActionWrapper>
@@ -183,7 +192,6 @@ const PlayerHeader = ({
                   utaId={utaId}
                   isDocbased={isDocbased}
                   timedAssignment={timedAssignment}
-                  utaId={utaId}
                   groupId={groupId}
                 />
               </FlexContainer>
@@ -193,6 +201,7 @@ const PlayerHeader = ({
                   utaId={utaId}
                   showMagnifier={isDocbased ? false : showMagnifier}
                   enableMagnifier={enableMagnifier}
+                  hidePause={hidePause}
                 />
               </FlexContainer>
             </HeaderWrapper>

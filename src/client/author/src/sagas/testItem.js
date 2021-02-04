@@ -38,8 +38,8 @@ import {
 import {
   getQuestionsSelector,
   CHANGE_CURRENT_QUESTION,
-  getCurrentQuestionSelector,
 } from '../../sharedDucks/questions'
+import { getQuestionDataSelector } from '../../QuestionEditor/ducks'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -140,7 +140,7 @@ function* updateTestItemSaga({ payload }) {
 
 function* evaluateAnswers({ payload }) {
   try {
-    const question = yield select(getCurrentQuestionSelector)
+    const question = yield select(getQuestionDataSelector)
     const item = yield select((state) => state.itemDetail?.item)
     if (question) {
       const hasEmptyAnswer = hasEmptyAnswers(question)

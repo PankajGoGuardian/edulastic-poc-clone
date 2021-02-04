@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Col, Icon, Row, Select, Tooltip } from 'antd'
+import { Col, Row, Select } from 'antd'
 import moment from 'moment'
 import {
   test as testConst,
@@ -21,8 +21,6 @@ import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 import {
   OptionConationer,
   InitOptions,
-  StyledRowButton,
-  SettingsBtn,
   StyledSelect,
   StyledRow,
 } from '../AssignTest/components/SimpleOptions/styled'
@@ -36,7 +34,6 @@ import selectsData from '../TestPage/components/common/selectsData'
 import { getDefaultTestSettingsAction } from '../TestPage/ducks'
 import { getTestEntitySelector } from '../AssignTest/duck'
 import { InputLabel, InputLabelContainer, ClassHeading } from './styled'
-import { QuestionIcon } from '../../assessment/styled/Subtitle'
 import { allowedSettingPageToDisplay } from '../Shared/Components/ClassHeader/utils/transformers'
 
 export const releaseGradeKeys = [
@@ -46,8 +43,6 @@ export const releaseGradeKeys = [
   'WITH_ANSWERS',
 ]
 export const nonPremiumReleaseGradeKeys = ['DONT_RELEASE', 'WITH_ANSWERS']
-
-const { releaseGradeTypes, evalTypeLabels } = testConst
 
 function LCBAssignmentSettings({
   additionalData = {},
@@ -79,20 +74,6 @@ function LCBAssignmentSettings({
       history.push(`/author/classboard/${assignmentId}/${classId}`)
     }
   }, [additionalData])
-
-  const assignmentSettings = useMemo(() => {
-    const { scoringType, penalty } = assignment || {}
-    if (scoringType === evalTypeLabels.PARTIAL_CREDIT && !penalty) {
-      return {
-        ...assignment,
-        scoringType: evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
-      }
-    }
-    return assignment
-  }, [assignment])
-
-  const [showSettings, setShowSettings] = useState(false)
-  const [showClassSettings, toggleClassSettings] = useState(true)
 
   const { startDate, endDate, status, dueDate } =
     assignment?.['class']?.[0] || {}
@@ -143,10 +124,16 @@ function LCBAssignmentSettings({
         testActivity={testActivity}
       />
       <MainContentWrapper>
-        <OptionConationer>
-          <InitOptions style={{ padding: '30px 50px' }}>
+        <OptionConationer width="60%">
+          <InitOptions>
             <ClassHeading>
-              {className ? `Settings for ${className}` : 'loading...'}
+              {className ? (
+                <>
+                  Settings for <span>{className}</span>
+                </>
+              ) : (
+                'loading...'
+              )}
             </ClassHeading>
             <DateSelector
               startDate={moment(startDate)}
@@ -157,144 +144,69 @@ function LCBAssignmentSettings({
               status={status}
               passwordPolicy={assignment?.passwordPolicy}
             />
-
-            <Row gutter={32}>
-              <StyledRow>
-                <Col span={12} style={{ padding: '0px 16px' }}>
-                  <InputLabelContainer>
-                    <InputLabel>open policy</InputLabel>
-                  </InputLabelContainer>
-                  <StyledSelect
-                    data-cy="selectOpenPolicy"
-                    placeholder="Please select"
-                    cache="false"
-                    value={assignment?.openPolicy}
-                    onChange={changeField('openPolicy')}
-                    disabled={
-                      assignment?.passwordPolicy ===
-                        testConst.passwordPolicy
-                          .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
-                      status !== assignmentStatusOptions.NOT_OPEN
-                    }
-                  >
-                    {openPolicy.map(({ value, text }, index) => (
-                      <Select.Option key={index} value={value} data-cy="open">
-                        {text}
-                      </Select.Option>
-                    ))}
-                  </StyledSelect>
-                </Col>
-                <Col span={12} style={{ padding: '0px 16px' }}>
-                  <InputLabelContainer>
-                    <InputLabel>close policy</InputLabel>
-                  </InputLabelContainer>
-                  <StyledSelect
-                    data-cy="selectClosePolicy"
-                    placeholder="Please select"
-                    cache="false"
-                    value={assignment?.closePolicy}
-                    onChange={changeField('closePolicy')}
-                    disabled={status === assignmentStatusOptions.DONE}
-                  >
-                    {closePolicy.map(({ value, text }, index) => (
-                      <Select.Option data-cy="class" key={index} value={value}>
-                        {text}
-                      </Select.Option>
-                    ))}
-                  </StyledSelect>
-                </Col>
-              </StyledRow>
-
-              {/* Release score */}
+            <StyledRow gutter={16}>
               <Col span={12}>
                 <InputLabelContainer>
-                  <InputLabel>RELEASE SCORES</InputLabel>
+                  <InputLabel>open policy</InputLabel>
                 </InputLabelContainer>
+              </Col>
+              <Col span={12}>
                 <StyledSelect
-                  data-cy="selectRelaseScore"
+                  data-cy="selectOpenPolicy"
                   placeholder="Please select"
                   cache="false"
-                  value={assignment?.releaseScore}
-                  onChange={changeField('releaseScore')}
+                  value={assignment?.openPolicy}
+                  onChange={changeField('openPolicy')}
+                  disabled={
+                    assignment?.passwordPolicy ===
+                      testConst.passwordPolicy
+                        .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                    status !== assignmentStatusOptions.NOT_OPEN
+                  }
                 >
-                  {releaseGradeKeys.map((item, index) => (
-                    <Select.Option data-cy="class" key={index} value={item}>
-                      {releaseGradeTypes[item]}
+                  {openPolicy.map(({ value, text }, index) => (
+                    <Select.Option key={index} value={value} data-cy="open">
+                      {text}
                     </Select.Option>
                   ))}
                 </StyledSelect>
               </Col>
-              {/* Release score */}
-            </Row>
-
-            <StyledRowButton gutter={16}>
-              <Col>
-                <SettingsBtn onClick={() => toggleClassSettings((old) => !old)}>
-                  CLASS LEVEL SETTINGS
-                  {showClassSettings ? (
-                    <Icon style={{ marginLeft: '-12px' }} type="caret-up" />
-                  ) : (
-                    <Icon type="caret-down" style={{ marginLeft: '-10px' }} />
-                  )}
-                </SettingsBtn>
+            </StyledRow>
+            <StyledRow gutter={16}>
+              <Col span={12}>
+                <InputLabelContainer>
+                  <InputLabel>close policy</InputLabel>
+                </InputLabelContainer>
               </Col>
-            </StyledRowButton>
-
-            {showClassSettings && (
-              <Settings
-                assignmentSettings={assignment || {}}
-                updateAssignmentSettings={() => {}}
-                forClassLevel
-                hideTestLevelOptions
-                changeField={changeField}
-                testSettings={testSettings}
-                gradeSubject={gradeSubject}
-                _releaseGradeKeys={releaseGradeKeys}
-                isDocBased={assignment?.isDocBased}
-              />
-            )}
-            <StyledRowButton gutter={16}>
-              <Col>
-                <SettingsBtn onClick={() => setShowSettings((old) => !old)}>
-                  TEST LEVEL SETTINGS
-                  <Tooltip title="Below settings can’t be changed here. To modify edit the test and make changes.">
-                    <span>
-                      <QuestionIcon
-                        customStyle={{
-                          position: 'relative',
-                          bottom: '8px',
-                          marginLeft: '6px',
-                        }}
-                        id="test-level-settings"
-                        onClick={(event) => {
-                          event.stopPropagation()
-                        }}
-                      />
-                    </span>
-                  </Tooltip>
-                  {showSettings ? (
-                    <Icon style={{ marginLeft: '-12px' }} type="caret-up" />
-                  ) : (
-                    <Icon type="caret-down" style={{ marginLeft: '-10px' }} />
-                  )}
-                </SettingsBtn>
+              <Col span={12}>
+                <StyledSelect
+                  data-cy="selectClosePolicy"
+                  placeholder="Please select"
+                  cache="false"
+                  value={assignment?.closePolicy}
+                  onChange={changeField('closePolicy')}
+                  disabled={status === assignmentStatusOptions.DONE}
+                >
+                  {closePolicy.map(({ value, text }, index) => (
+                    <Select.Option data-cy="class" key={index} value={value}>
+                      {text}
+                    </Select.Option>
+                  ))}
+                </StyledSelect>
               </Col>
-            </StyledRowButton>
+            </StyledRow>
 
-            {showSettings && (
-              <Settings
-                assignmentSettings={assignmentSettings || {}}
-                updateAssignmentSettings={() => {}}
-                forClassLevel
-                hideClassLevelOptions
-                changeField={changeField}
-                testSettings={testSettings}
-                gradeSubject={gradeSubject}
-                _releaseGradeKeys={releaseGradeKeys}
-                isDocBased={assignment?.isDocBased}
-              />
-            )}
-            <Row gutter={0}>
+            <Settings
+              assignmentSettings={assignment || {}}
+              updateAssignmentSettings={() => {}}
+              changeField={changeField}
+              testSettings={testSettings}
+              gradeSubject={gradeSubject}
+              _releaseGradeKeys={releaseGradeKeys}
+              isDocBased={assignment?.isDocBased}
+            />
+
+            <Row gutter={0} style={{ marginTop: '15px' }}>
               <Col offset={12}>
                 <Col span={12} style={{ paddingLeft: '16px' }}>
                   <EduButton

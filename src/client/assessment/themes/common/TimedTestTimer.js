@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/browser'
 import firebase from 'firebase/app'
 // Required for side-effects
 import 'firebase/firestore'
-import { Icon, notification } from 'antd'
+import { Icon } from 'antd'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import moment from 'moment'
@@ -13,6 +13,7 @@ import { isEqual, omit } from 'lodash'
 import { white, red } from '@edulastic/colors'
 import useInterval from '@use-it/interval'
 import { db } from '@edulastic/common/src/Firebase'
+import { notification } from '@edulastic/common'
 import AssignmentTimeEndedAlert from './AssignmentTimeEndedAlert'
 import { utaStartTimeUpdateRequired } from '../../../student/sharedDucks/AssignmentModule/ducks'
 
@@ -44,10 +45,8 @@ const getFormattedTime = (currentAssignmentTime) => {
 const firestoreCollectionName = 'timedAssignmentUTAs'
 
 function handlePaused(history) {
-  // TODO: replace with proper text as required
-  notification.open({
-    message: 'The assignment is paused',
-    description: `The assignment can't be attempted now , since its in paused state`,
+  notification({
+    msg: 'Assignment is Paused , Please check with your instructor.',
   })
   history.push('/home/assignments')
 }

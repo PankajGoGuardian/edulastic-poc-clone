@@ -61,7 +61,11 @@ const CardStyle = {
   },
 }
 
-const CardSection = ({ handleCardSubmit, verificationPending }) => (
+const CardSection = ({
+  handleCardSubmit,
+  verificationPending,
+  totalPurchaseAmount,
+}) => (
   <OuterContainer>
     <InnerContainer>
       <InputContainer>
@@ -73,8 +77,9 @@ const CardSection = ({ handleCardSubmit, verificationPending }) => (
       height="45px"
       onClick={handleCardSubmit}
       disabled={verificationPending}
+      data-cy="finalPayButton"
     >
-      PAY $100/YEAR
+      PAY ${totalPurchaseAmount || 100}
     </EduButton>
   </OuterContainer>
 )

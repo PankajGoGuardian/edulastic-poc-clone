@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
-import { Button, Radio } from 'antd'
+import { Radio } from 'antd'
 import styled from 'styled-components'
 import { white, borderGrey3 } from '@edulastic/colors'
+import { SharedTypes } from '@edulastic/constants/const/sharedTypes'
 import { EduButton } from '@edulastic/common'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
-import { ModalBody, Heading, YesButton } from './ConfirmModal'
+import { ModalBody, Heading } from './ConfirmModal'
 
-const ShareModal = ({ visible, handleResponse }) => {
-  const [value, setValue] = useState(1)
+const { PUBLIC, DISTRICT, INDIVIDUAL } = SharedTypes
+
+const ShareModal = ({ visible, handleResponse, currentRubricData }) => {
+  const [value, setValue] = useState(currentRubricData.sharedType || INDIVIDUAL)
   const Footer = [
     <EduButton height="40px" isGhost onClick={() => handleResponse('CANCEL')}>
       NO
     </EduButton>,
-    <EduButton height="40px" onClick={() => handleResponse('SAVE')}>
+    <EduButton height="40px" onClick={() => handleResponse('SAVE', value)}>
       SAVE
     </EduButton>,
   ]
@@ -24,14 +27,13 @@ const ShareModal = ({ visible, handleResponse }) => {
       textAlign="center"
       visible={visible}
       footer={Footer}
-      textAlign="center"
       onCancel={() => handleResponse('CANCEL')}
     >
       <StyledModalBody>
         <Radio.Group onChange={(e) => setValue(e.target.value)} value={value}>
-          <StyledRadio value={1}>Do not share</StyledRadio>
-          <StyledRadio value={2}>Share with district</StyledRadio>
-          <StyledRadio value={3}>
+          <StyledRadio value={INDIVIDUAL}>Do not share</StyledRadio>
+          <StyledRadio value={DISTRICT}>Share with district</StyledRadio>
+          <StyledRadio value={PUBLIC}>
             Share with whole edulastic community
           </StyledRadio>
         </Radio.Group>

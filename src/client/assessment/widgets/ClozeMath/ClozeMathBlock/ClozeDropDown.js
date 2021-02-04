@@ -134,6 +134,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
             <Option value={option} key={respID}>
               <MathFormulaDisplay
                 dangerouslySetInnerHTML={{ __html: option }}
+                fontSize={dropdownStyle?.fontSize}
               />
             </Option>
           ))}

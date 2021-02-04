@@ -28,6 +28,7 @@ import {
   isProxyUser as isProxyUserSelector,
   updateCliUserAction,
 } from './Login/ducks'
+import { AssignmentEmbedLink } from '../assignmentEmbedLink'
 
 const StudentApp = ({
   match,
@@ -88,6 +89,12 @@ const StudentApp = ({
                 <Route
                   path={`${match.url}/playlist`}
                   component={StudentPlaylist}
+                />
+                <Route
+                  path={`${match.url}/tests/verid/:versionId`}
+                  render={(props) => (
+                    <AssignmentEmbedLink {...props} isVersionId />
+                  )}
                 />
                 <Route component={NotFound} />
               </Switch>

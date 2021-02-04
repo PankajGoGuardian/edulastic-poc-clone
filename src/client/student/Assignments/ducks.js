@@ -47,6 +47,7 @@ import {
   setIsActivityCreatingAction,
   utaStartTimeUpdateRequired,
   setShowRetakeModalAction,
+  setSelectedLanguageAction,
 } from '../sharedDucks/AssignmentModule/ducks'
 
 import {
@@ -225,6 +226,24 @@ const reportsSelector = createSelector(reportsById, (reports) => {
   }
   return filteredReports
 })
+
+export const notStartedReportsByAssignmentId = createSelector(
+  reportsById,
+  (reports) => {
+    const filteredReports = {}
+    if (!Object.keys(reports).length) {
+      return filteredReports
+    }
+    for (const r in reports) {
+      if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
+        const report = reports[r]
+        const { assignmentId, groupId } = report
+        filteredReports[`${assignmentId}_${groupId}`] = report
+      }
+    }
+    return filteredReports
+  }
+)
 
 export const assignmentIdsByTestIdSelector = createSelector(
   assignmentsSelector,
@@ -420,6 +439,9 @@ export const getAllAssignmentsSelector = createSelector(
           ...(clazz.pauseAllowed !== undefined && !assignment.redir
             ? { pauseAllowed: clazz.pauseAllowed }
             : {}),
+          ...(clazz.multiLanguageEnabled && !assignment.redir
+            ? { multiLanguageEnabled: clazz.multiLanguageEnabled }
+            : {}),
         }))
       })
       .filter((assignment) => isLiveAssignment(assignment, classIds, userId))
@@ -462,6 +484,10 @@ export const getLoadAssignmentSelector = createSelector(
   (state) => state.loadAssignment
 )
 
+export const getSelectedLanguageSelector = createSelector(
+  stateSelector,
+  (state) => state.languagePreference
+)
 function isSEB() {
   return window.navigator.userAgent.includes('SEB')
 }
@@ -577,7 +603,7 @@ function* startAssignment({ payload }) {
       studentRecommendation,
       safeBrowser,
     } = payload
-
+    const languagePreference = yield select(getSelectedLanguageSelector)
     if (safeBrowser && !isSEB()) {
       const sebUrl = getSebUrl({
         testId,
@@ -638,13 +664,17 @@ function* startAssignment({ payload }) {
           isLoading: true,
         })
       )
-      const { _id } = yield testActivityApi.create({
+      const recommendationData = {
         groupId: classId,
         institutionId,
         groupType,
         testId,
         studentRecommendationId: studentRecommendation._id,
-      })
+      }
+      if (languagePreference) {
+        recommendationData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(recommendationData)
       testActivityId = _id
     } else if (isPlaylist && !assignmentId) {
       yield put(
@@ -653,24 +683,32 @@ function* startAssignment({ payload }) {
           isLoading: true,
         })
       )
-      const { _id } = yield testActivityApi.create({
+      const playListData = {
         playlistModuleId: isPlaylist.moduleId,
         playlistId: isPlaylist.playlistId,
         groupId: classId,
         institutionId,
         groupType,
         testId,
-      })
+      }
+      if (languagePreference) {
+        playListData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create()
       testActivityId = _id
     } else {
       yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }))
-      const { _id } = yield testActivityApi.create({
+      const testData = {
         assignmentId,
         groupId: classId,
         institutionId,
         groupType,
         testId,
-      })
+      }
+      if (languagePreference) {
+        testData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(testData)
       testActivityId = _id
     }
 
@@ -681,7 +719,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId,
@@ -693,7 +731,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId,
@@ -705,7 +743,7 @@ function* startAssignment({ payload }) {
           push(
             `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
           )
         )
       }
@@ -740,6 +778,7 @@ function* startAssignment({ payload }) {
     yield put(
       setIsActivityCreatingAction({ assignmentId: '', isLoading: false })
     )
+    yield put(setSelectedLanguageAction(''))
   }
 }
 
@@ -794,7 +833,7 @@ function* resumeAssignment({ payload }) {
     if (studentRecommendation) {
       yield put(
         push({
-          pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+          pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
           state: {
             playlistRecommendationsFlow: true,
             playlistId: studentRecommendation.playlistId,
@@ -807,7 +846,7 @@ function* resumeAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId,
@@ -819,7 +858,7 @@ function* resumeAssignment({ payload }) {
           push(
             `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
           )
         )
       }

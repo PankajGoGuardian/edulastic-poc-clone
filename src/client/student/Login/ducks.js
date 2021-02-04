@@ -35,6 +35,7 @@ import {
   getSignOutUrl,
   removeSignOutUrl,
   getStartedUrl,
+  isHashAssessmentUrl,
 } from '../../common/utils/helpers'
 import { userPickFields } from '../../common/utils/static/user'
 import {
@@ -301,7 +302,8 @@ function getValidRedirectRouteByRole(_url, user) {
         : '/author/dashboard'
     case roleuser.STUDENT:
       return url.match(/^\/home\//) ||
-        url.includes('/author/tests/tab/review/id/')
+        url.includes('/author/tests/tab/review/id/') ||
+        url.match(/\/embed\//)
         ? url
         : '/home/assignments'
     case roleuser.EDULASTIC_ADMIN:
@@ -350,7 +352,7 @@ const isPartOfLoginRoutes = (pathname) =>
   )
 
 function* persistAuthStateAndRedirectToSaga({ payload }) {
-  const { _redirectRoute } = payload || {}
+  const { _redirectRoute, toUrl } = payload || {}
   const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
     {}
 
@@ -366,6 +368,9 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
       user.user || {}
     )
     localStorage.removeItem('loginRedirectUrl')
+  } else if (toUrl && !isPartOfLoginRoutes(toUrl) && toUrl != '/') {
+ 
+    redirectRoute = toUrl
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
   }
@@ -636,6 +641,10 @@ export default createReducer(initialState, {
     if (!payload?.usernames) {
       Object.assign(state.user, {
         isPowerTeacher: !state.user.isPowerTeacher,
+      })
+    } else if (Object.prototype.hasOwnProperty.call(payload, 'enable')) {
+      Object.assign(state.user, {
+        isPowerTeacher: payload.enable,
       })
     }
     state.updatingPowerTeacher = false
@@ -1122,7 +1131,7 @@ const getLoggedOutUrl = () => {
   if (pathname === '/resetpassword') {
     return window.location.href.split(window.location.origin)[1]
   }
-  if (pathname === '/inviteteacher') {
+  if (pathname === '/inviteteacher' || isHashAssessmentUrl()) {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
   return '/login'
@@ -1404,6 +1413,10 @@ function* googleSSOLogin({ payload }) {
     if (errorMessage === 'signInUserNotFound') {
       yield put(push(getStartedUrl()))
       notification({ type: 'warn', messageKey: 'signInUserNotFound' })
+    } else if (errorMessage === 'teacherSignUpNotAllowed') {
+      yield put(push(getSignOutUrl()))
+      removeSignOutUrl()
+      notification({ type: 'warn', messageKey: 'teacherSignUpNotAllowed' })
     } else {
       notification({ msg: errorMessage })
       yield put(push(getSignOutUrl()))
@@ -1501,6 +1514,10 @@ function* msoSSOLogin({ payload }) {
     if (errorMessage === 'signInUserNotFound') {
       yield put(push(getStartedUrl()))
       notification({ type: 'warn', messageKey: 'signInUserNotFound' })
+    } else if (errorMessage === 'teacherSignUpNotAllowed') {
+      yield put(push(getSignOutUrl()))
+      removeSignOutUrl()
+      notification({ type: 'warn', messageKey: 'teacherSignUpNotAllowed' })
     } else {
       notification({ msg: errorMessage })
       yield put(push(getSignOutUrl()))
@@ -1719,7 +1736,7 @@ function* getUserData({ payload: res }) {
     if (redirectUrl && !isAuthUrl) {
       // if redirect is happening for LCB and user did action schoology sync
       const schoologySync = localStorage.getItem('schoologyShare')
-      if (redirectUrl.include('classboard')) {
+      if ((redirectUrl || '').includes('classboard')) {
         const fragments = redirectUrl.split('/')
         const assignmentId = fragments[3]
         const classSectionId = fragments[4]

@@ -179,12 +179,16 @@ const PerformanceByStandards = ({
           ...settings.requestFilters,
           compareBy,
           ...defaultPageFilter,
+          ...Object.keys(filters).reduce((reqFilter, key) => {
+            reqFilter[key] = filters[key] === 'all' ? '' : filters[key]
+            return reqFilter
+          }, {}),
         },
         testId: settings.selectedTest.key,
       }
       getPerformanceByStandards(q)
     }
-  }, [settings, compareBy])
+  }, [settings, compareBy, filters])
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -193,6 +197,10 @@ const PerformanceByStandards = ({
           ...settings.requestFilters,
           compareBy,
           ...pageFilters,
+          ...Object.keys(filters).reduce((reqFilter, key) => {
+            reqFilter[key] = filters[key] === 'all' ? '' : filters[key]
+            return reqFilter
+          }, {}),
         },
         testId: settings.selectedTest.key,
       }

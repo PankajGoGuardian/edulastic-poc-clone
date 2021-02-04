@@ -214,12 +214,12 @@ export function useFullScreenListener({
   }
 
   useEffect(() => {
-    document.addEventListener('fullscreenchange', fullScreenCb)
+    Fscreen.addEventListener('fullscreenchange', fullScreenCb)
     if (enabled && !Fscreen.fullscreenElement) {
       setInFullScreen(false)
     }
     return () => {
-      document.removeEventListener('fullscreenchange', fullScreenCb)
+      Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
       setTimeout(
         (win) => {

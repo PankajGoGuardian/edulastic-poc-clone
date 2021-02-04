@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { connect } from 'react-redux'
-import { get, groupBy } from 'lodash'
+import { get, groupBy, capitalize } from 'lodash'
 import { Row, Col } from 'antd'
 
 import {
@@ -10,7 +10,7 @@ import {
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import { MultipleSelect } from '../../../../common/components/widgets/MultipleSelect'
-import { toggleItem } from '../../../../common/util'
+import { resetStudentFilters, toggleItem } from '../../../../common/util'
 
 import { getInterestedCurriculumsSelector } from '../../../../../src/selectors/user'
 import {
@@ -154,6 +154,10 @@ const StandardsMasteryRowFilters = ({
       setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
+      const filterKey = ['grade', 'subject'].includes(type)
+        ? `student${capitalize(type)}`
+        : type
+      resetStudentFilters(_tagsData, _filters, filterKey, '')
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]

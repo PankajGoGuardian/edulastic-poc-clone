@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy } from 'lodash'
+import { capitalize, get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Spin } from 'antd'
@@ -243,7 +243,10 @@ const StandardsFilters = ({
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
-    resetStudentFilters(_tagsData, _filters, keyName, _selected)
+    const filterKey = ['grade', 'subject'].includes(keyName)
+      ? `student${capitalize(keyName)}`
+      : keyName
+    resetStudentFilters(_tagsData, _filters, filterKey, _selected)
     setTagsData(_tagsData)
     // update filters
     _filters[keyName] = _selected
@@ -337,9 +340,7 @@ const StandardsFilters = ({
           <SearchField>
             <FilterLabel>Course</FilterLabel>
             <CourseAutoComplete
-              selectedCourseId={
-                filters.studentCourseId !== 'All' && filters.studentCourseId
-              }
+              selectedCourseId={filters.courseId}
               selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
             />
           </SearchField>
@@ -355,6 +356,7 @@ const StandardsFilters = ({
               selectCB={(e) => {
                 updateFilterDropdownCB(e, 'classId')
               }}
+              selectedClassId={filters.classId}
             />
           </SearchField>
           <SearchField>
@@ -369,6 +371,7 @@ const StandardsFilters = ({
               selectCB={(e) => {
                 updateFilterDropdownCB(e, 'groupId')
               }}
+              selectedGroupId={filters.groupId}
             />
           </SearchField>
         </Collapsable>

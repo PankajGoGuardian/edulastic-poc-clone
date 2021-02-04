@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import FilterTags from '../../../../../common/components/FilterTags'
+import { resetStudentFilters } from '../../../../../common/util'
 
 import {
   getFiltersSelector,
@@ -57,6 +58,7 @@ const MultipleAssessmentRowFilters = ({
       setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
+      resetStudentFilters(_tagsData, _filters, type, '')
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]

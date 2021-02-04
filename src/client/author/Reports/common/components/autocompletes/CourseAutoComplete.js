@@ -21,6 +21,7 @@ const CourseAutoComplete = ({
   loading,
   loadCourseList,
   selectCB,
+  selectedCourseId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
@@ -81,6 +82,11 @@ const CourseAutoComplete = ({
       loadCourseListDebounced(query)
     }
   }, [searchTerms])
+  useEffect(() => {
+    if (selectedCourseId === 'All') {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+    }
+  }, [selectedCourseId])
 
   // build dropdown data
   const dropdownData = [

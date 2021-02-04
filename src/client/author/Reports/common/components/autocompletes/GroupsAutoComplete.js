@@ -28,6 +28,7 @@ const GroupsAutoComplete = ({
   subject,
   courseId,
   selectCB,
+  selectedGroupId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
@@ -124,7 +125,14 @@ const GroupsAutoComplete = ({
   useEffect(() => {
     setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
+    selectCB({ key: '', title: '' })
   }, [termId, schoolIds, teacherIds, grade, subject, courseId])
+  useEffect(() => {
+    if (selectedGroupId === 'All') {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+      selectCB({ key: '', title: '' })
+    }
+  }, [selectedGroupId])
 
   // build dropdown data
   const dropdownData = [

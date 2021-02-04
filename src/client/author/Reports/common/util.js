@@ -408,5 +408,8 @@ export const resetStudentFilters = (
   if (index !== -1 && prevFilters[key] !== selected) {
     const filtersToReset = defaultValues.slice(index + 1)
     resetFilter(filtersToReset, prevFilters, tagsData)
+  } else if (['studentGrade', 'studentSubject'].includes(key)) {
+    const filtersToReset = defaultValues.slice(2)
+    resetFilter(filtersToReset, prevFilters, tagsData)
   }
 }

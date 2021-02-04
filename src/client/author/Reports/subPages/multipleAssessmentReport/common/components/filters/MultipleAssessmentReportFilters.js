@@ -370,9 +370,7 @@ const SingleAssessmentReportFilters = ({
           <SearchField>
             <FilterLabel>Course</FilterLabel>
             <CourseAutoComplete
-              selectedCourseId={
-                filters.studentCourseId !== 'All' && filters.studentCourseId
-              }
+              selectedCourseId={filters.studentCourseId}
               selectCB={(e) => updateFilterDropdownCB(e, 'studentCourseId')}
             />
           </SearchField>
@@ -392,6 +390,7 @@ const SingleAssessmentReportFilters = ({
               selectCB={(e) => {
                 updateFilterDropdownCB(e, 'classId')
               }}
+              selectedClassId={filters.classId}
             />
           </SearchField>
           <SearchField>
@@ -410,6 +409,7 @@ const SingleAssessmentReportFilters = ({
               selectCB={(e) => {
                 updateFilterDropdownCB(e, 'groupId')
               }}
+              selectedGroupId={filters.groupId}
             />
           </SearchField>
         </Collapsable>

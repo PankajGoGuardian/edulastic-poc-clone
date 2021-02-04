@@ -28,6 +28,7 @@ const ClassAutoComplete = ({
   subject,
   courseId,
   selectCB,
+  selectedClassId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
@@ -124,7 +125,14 @@ const ClassAutoComplete = ({
   useEffect(() => {
     setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
+    selectCB({ key: '', title: '' })
   }, [termId, schoolIds, teacherIds, grade, subject, courseId])
+  useEffect(() => {
+    if (selectedClassId === 'All') {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+      selectCB({ key: '', title: '' })
+    }
+  }, [selectedClassId])
 
   // build dropdown data
   const dropdownData = [

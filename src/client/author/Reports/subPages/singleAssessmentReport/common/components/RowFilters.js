@@ -14,6 +14,8 @@ import {
 
 import staticDropDownData from '../static/staticDropDownData.json'
 
+import { resetStudentFilters } from '../../../../common/util'
+
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
 const SingleAssessmentRowFilters = ({
@@ -49,6 +51,7 @@ const SingleAssessmentRowFilters = ({
       setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
+      resetStudentFilters(_tagsData, _filters, type, '')
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]

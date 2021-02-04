@@ -30,6 +30,7 @@ const TestTypeSelector = ({
       onChange={onAssignmentTypeChange}
       value={testType}
       disabled={disabled}
+      height="30px"
       getPopupContainer={(node) => node.parentNode}
     >
       {isAdmin && !districtPermissions.includes('publisher') && (

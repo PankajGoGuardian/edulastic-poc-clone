@@ -122,7 +122,7 @@ export const Paragraph = styled.p`
   text-align: ${(props) => props.alignItems && props.alignItems};
 `
 export const TabContentContainer = styled.div`
-  width: ${({ width }) => (width || window.innerWidth <= 780 ? '100%' : '60%')};
+  width: ${({ width }) => (width || window.innerWidth <= 780 ? '100%' : '50%')};
   margin: auto;
 `
 export const SettingContainer = styled.div`

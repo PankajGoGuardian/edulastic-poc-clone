@@ -2,7 +2,6 @@ import React from 'react'
 import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -16,7 +15,6 @@ import {
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
 import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
 import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
-import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import { SettingContainer } from './styled'
 
@@ -26,15 +24,14 @@ const MiscellaneousGroupContainer = ({
   assignmentSettings,
   changeField,
   testSettings,
-  gradeSubject,
   isDocBased,
   freezeSettings,
   overRideSettings,
   userRole,
   disableAnswerOnPaper,
-  actionOnFeatureInaccessible,
   featuresAvailable,
   tootltipWidth,
+  premium,
 }) => {
   const {
     answerOnPaper = testSettings.answerOnPaper,
@@ -48,8 +45,18 @@ const MiscellaneousGroupContainer = ({
     assignmentSettings.playerSkinType || testSettings.playerSkinType
 
   const accessibilityData = [
-    { key: 'showMagnifier', value: showMagnifier },
-    { key: 'enableScratchpad', value: enableScratchpad },
+    {
+      key: 'showMagnifier',
+      value: showMagnifier,
+      description:
+        'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
+    },
+    {
+      key: 'enableScratchpad',
+      value: enableScratchpad,
+      description:
+        'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
+    },
   ]
 
   const {
@@ -65,20 +72,15 @@ const MiscellaneousGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title="ANSWER ON PAPER"
-          content="Use this option if you are administering this assessment on paper. If you use this option, you will have to manually grade student responses after the assessment is closed."
+          content=" Use this option if students will be taking the assessment on paper. When ON, teachers must manually enter paper-based responses after the assessment is closed. Students who do not submit electronically, will NOT be marked as absent."
           placement="rightBottom"
           premium={assessmentSuperPowersAnswerOnPaper}
         />
         <StyledRow gutter={16} mb="15p">
-          <Col span={12}>
-            <Label>
-              ANSWER ON PAPER
-              <DollarPremiumSymbol
-                premium={assessmentSuperPowersAnswerOnPaper}
-              />
-            </Label>
+          <Col span={10}>
+            <Label>ANSWER ON PAPER</Label>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <AlignSwitchRight
               disabled={
                 disableAnswerOnPaper ||
@@ -95,30 +97,49 @@ const MiscellaneousGroupContainer = ({
       </SettingContainer>
       {/* Answer on Paper */}
 
-      <FeaturesSwitch
-        inputFeatures="performanceBands"
-        actionOnInaccessible={actionOnFeatureInaccessible}
-        key="performanceBands"
-        gradeSubject={gradeSubject}
-      >
+      {/* Performance Bands */}
+      <SettingContainer>
+        <DetailsTooltip
+          width={tootltipWidth}
+          title="Performance Bands"
+          content="Performance bands are set by district or school admins. Teachers can modify cut scores/thresholds for class assignments."
+          premium={performanceBands}
+          placement="rightBottom"
+        />
         <DivBlock>
           <PeformanceBand
             disabled={freezeSettings || !performanceBands}
             setSettingsData={(val) => overRideSettings('performanceBand', val)}
             performanceBand={performanceBand}
             isFeatureAvailable={performanceBands}
+            fromAssignments
           />
         </DivBlock>
-      </FeaturesSwitch>
-      <DivBlock>
-        <StandardProficiencyTable
-          disabled={freezeSettings}
-          standardGradingScale={standardGradingScale}
-          setSettingsData={(val) =>
-            overRideSettings('standardGradingScale', val)
-          }
+      </SettingContainer>
+      {/* Performance Bands */}
+
+      {/* Standards Based Grading Scale */}
+      <SettingContainer>
+        <DetailsTooltip
+          width={tootltipWidth}
+          title="Standards Based Grading Scale"
+          content="Standards based scales are set by district or school admins. Teachers can modify performance threshold scores for class assignments to track mastery by standards assessed."
+          premium={premium}
+          placement="rightBottom"
         />
-      </DivBlock>
+        <DivBlock>
+          <StandardProficiencyTable
+            disabled={freezeSettings}
+            standardGradingScale={standardGradingScale}
+            setSettingsData={(val) =>
+              overRideSettings('standardGradingScale', val)
+            }
+            isFeatureAvailable={premium}
+            fromAssignments
+          />
+        </DivBlock>
+      </SettingContainer>
+      {/* Standards Based Grading Scale */}
 
       <div>
         <Block smallSize id="accessibility">
@@ -130,32 +151,37 @@ const MiscellaneousGroupContainer = ({
                   disabled={freezeSettings}
                   style={{ marginTop: '10px', marginBottom: 0 }}
                 >
-                  {accessibilityData.map(({ key, value }) => (
-                    <StyledRow
-                      key={accessibilities[key]}
-                      style={{ width: '100%' }}
-                    >
-                      <Col span={12}>
-                        <span style={{ fontSize: 12, fontWeight: 600 }}>
-                          {accessibilities[key]}
-                          <DollarPremiumSymbol
-                            premium={featuresAvailable[key]}
-                          />
-                        </span>
-                      </Col>
-                      <Col span={12}>
-                        <StyledRadioGroup
-                          disabled={freezeSettings || !featuresAvailable[key]}
-                          onChange={(e) =>
-                            overRideSettings(key, e.target.value)
-                          }
-                          defaultValue={isUndefined(value) ? true : value}
-                        >
-                          <Radio value>ENABLE</Radio>
-                          <Radio value={false}>DISABLE</Radio>
-                        </StyledRadioGroup>
-                      </Col>
-                    </StyledRow>
+                  {accessibilityData.map(({ key, value, description }) => (
+                    <SettingContainer>
+                      <DetailsTooltip
+                        width={tootltipWidth}
+                        title={accessibilities[key]}
+                        content={description}
+                        premium={featuresAvailable[key]}
+                      />
+                      <StyledRow
+                        key={accessibilities[key]}
+                        style={{ width: '100%' }}
+                      >
+                        <Col span={10}>
+                          <span style={{ fontSize: 12, fontWeight: 600 }}>
+                            {accessibilities[key]}
+                          </span>
+                        </Col>
+                        <Col span={14}>
+                          <StyledRadioGroup
+                            disabled={freezeSettings || !featuresAvailable[key]}
+                            onChange={(e) =>
+                              overRideSettings(key, e.target.value)
+                            }
+                            defaultValue={isUndefined(value) ? true : value}
+                          >
+                            <Radio value>ENABLE</Radio>
+                            <Radio value={false}>DISABLE</Radio>
+                          </StyledRadioGroup>
+                        </Col>
+                      </StyledRow>
+                    </SettingContainer>
                   ))}
                 </RadioWrapper>
               )}
@@ -165,12 +191,14 @@ const MiscellaneousGroupContainer = ({
           {(assignmentSettings?.testType || testSettings.testType) !==
             'testlet' &&
             !testSettings.isDocBased && (
-              <FeaturesSwitch
-                inputFeatures="selectPlayerSkinType"
-                actionOnInaccessible={actionOnFeatureInaccessible}
-                key="selectPlayerSkin"
-                gradeSubject={gradeSubject}
-              >
+              <SettingContainer>
+                <DetailsTooltip
+                  width={tootltipWidth}
+                  title="Student Player Skin"
+                  content="Teachers can change the look and feel of the assessments to more closely align with formats similar to state and nationally administered assessments. If you don’t see your state, select the generic option, Edulastic Test."
+                  premium={selectPlayerSkinType}
+                  placement="rightTop"
+                />
                 <PlayerSkinSelector
                   userRole={userRole}
                   playerSkinType={playerSkinType}
@@ -183,7 +211,7 @@ const MiscellaneousGroupContainer = ({
                   isFeatureAvailable={selectPlayerSkinType}
                   fullwidth
                 />
-              </FeaturesSwitch>
+              </SettingContainer>
             )}
         </Block>
       </div>

@@ -11,7 +11,6 @@ import {
   themeColorLight,
   title,
   white,
-  borderGrey3,
   smallDesktopWidth,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
@@ -60,11 +59,11 @@ export const InitOptions = styled.div`
 `
 
 export const StyledRow = styled(Row)`
-  border-bottom: 1px solid ${borderGrey3};
-  padding: 15px 0px;
+  border-bottom: ${({ borderBottom }) => borderBottom || '1px solid #dddddd'};
+  padding: ${({ padding }) => padding || '15px 0px'};
   margin-top: ${({ mt }) => mt || '0px'};
   :hover {
-    background: ${borderGrey3};
+    background: ${greyThemeLighter};
   }
 `
 
@@ -338,10 +337,10 @@ export const Label = styled.label`
   font-size: ${(props) => props.theme.linkFontSize};
   font-weight: 600;
   text-transform: uppercase;
+  align-items: center;
 `
 export const RadioButtonWrapper = styled.div`
   display: flex;
-  margin-top: 10px;
 `
 
 export const StyledDiv = styled.div`
@@ -459,6 +458,7 @@ export const TimeSpentInput = styled(Input)`
 `
 
 export const SelectStudentColumn = styled(Col)`
+  margin-bottom: ${({ marginBottom }) => marginBottom || '0px'};
   .student-dropdown {
     padding: 15px;
     .ant-select-tree-switcher {

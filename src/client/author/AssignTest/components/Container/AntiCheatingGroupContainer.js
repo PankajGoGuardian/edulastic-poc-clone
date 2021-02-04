@@ -1,27 +1,16 @@
 import React, { useState } from 'react'
-import {
-  Row,
-  Col,
-  Select,
-  Tooltip,
-  Input,
-  Icon,
-  InputNumber,
-  Radio,
-} from 'antd'
+import { Row, Col, Select, Input, Icon, InputNumber, Radio } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
-import { blueBorder, lightGrey9, red, green } from '@edulastic/colors'
+import { blueBorder, red, green } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
 import Styled from 'styled-components'
 import {
   AlignSwitchRight,
   StyledRow,
   Label,
-  StyledInfoIcon,
   Password,
   MessageSpan,
 } from '../SimpleOptions/styled'
-import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import { SettingContainer } from './styled'
 
@@ -111,20 +100,15 @@ const AntiCheatingGroupContainer = ({
           <SettingContainer>
             <DetailsTooltip
               width={tootltipWidth}
-              title="SHUFFLE QUESTIONS"
+              title="SHUFFLE ITEMS"
               content="If ON, then order of questions will be different for each student."
               premium={assessmentSuperPowersShuffleQuestions}
             />
             <StyledRow gutter={16} mb="15px">
-              <Col span={12}>
-                <Label>
-                  SHUFFLE QUESTIONS
-                  <DollarPremiumSymbol
-                    premium={assessmentSuperPowersShuffleQuestions}
-                  />
-                </Label>
+              <Col span={10}>
+                <Label>SHUFFLE ITEMS</Label>
               </Col>
-              <Col span={12}>
+              <Col span={14}>
                 <AlignSwitchRight
                   disabled={
                     freezeSettings || !assessmentSuperPowersShuffleQuestions
@@ -154,15 +138,10 @@ const AntiCheatingGroupContainer = ({
               premium={assessmentSuperPowersShuffleAnswerChoice}
             />
             <StyledRow gutter={16} mb="15px">
-              <Col span={12}>
-                <Label>
-                  SHUFFLE ANSWER CHOICE
-                  <DollarPremiumSymbol
-                    premium={assessmentSuperPowersShuffleAnswerChoice}
-                  />
-                </Label>
+              <Col span={10}>
+                <Label>SHUFFLE ANSWER CHOICE</Label>
               </Col>
-              <Col span={12}>
+              <Col span={14}>
                 <AlignSwitchRight
                   disabled={
                     freezeSettings || !assessmentSuperPowersShuffleAnswerChoice
@@ -190,15 +169,10 @@ const AntiCheatingGroupContainer = ({
           premium={assessmentSuperPowersRequirePassword}
         />
         <StyledRow gutter={16} mb="15px">
-          <Col span={12}>
-            <Label>
-              REQUIRE PASSWORD
-              <DollarPremiumSymbol
-                premium={assessmentSuperPowersRequirePassword}
-              />
-            </Label>
+          <Col span={10}>
+            <Label>REQUIRE PASSWORD</Label>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <Row>
               <Col span={24}>
                 <SelectInputStyled
@@ -292,26 +266,19 @@ const AntiCheatingGroupContainer = ({
         <SettingContainer>
           <DetailsTooltip
             width={tootltipWidth}
-            title="ALLOW STUDENT TO SAVE AND CONTINUE LATER"
-            content="If OFF, will force the students to take the test in single sitting"
-            placement="rightTop"
+            title="Complete test in one sitting"
+            content="Will force the students to take the test in single sitting"
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
-            <Col span={12}>
-              <Label>
-                ALLOW STUDENT TO SAVE AND CONTINUE LATER
-                <DollarPremiumSymbol premium={premium} />
-                <Tooltip title="If OFF, will force the students to take the test in single sitting">
-                  <StyledInfoIcon color={lightGrey9} mL="10px" />
-                </Tooltip>
-              </Label>
+            <Col span={10}>
+              <Label>Complete test in one sitting</Label>
             </Col>
-            <Col span={12}>
+            <Col span={14}>
               <AlignSwitchRight
                 disabled={freezeSettings || !premium}
                 size="small"
-                checked={!blockSaveAndContinue}
+                checked={blockSaveAndContinue}
                 onChange={(value) =>
                   overRideSettings('blockSaveAndContinue', !value)
                 }
@@ -328,32 +295,14 @@ const AntiCheatingGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
-            content={`Students will be shown an alert
-              if they navigate away from edulastic tab and if
-              specific number of alerts exceeded, the assignment
-              will be paused and the instructor will need to
-              manually resume`}
-            placement="rightTop"
+            content="If ON, students must take the test in full screen mode to prevent opening another browser window. The student will get an alert if they navigate out of full screen mode during the test. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset."
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
-            <Col span={12}>
-              <Label>
-                Restrict Navigation Out Of Test
-                <DollarPremiumSymbol premium={premium} />
-                <Tooltip
-                  title={`If ON, then students will be shown an alert
-                    if they navigate away from edulastic tab and if
-                    specific number of alerts exceeded, the assignment
-                    will be paused and the instructor will need to
-                    manually resume`}
-                >
-                  <StyledInfoIcon color={lightGrey9} mL="10px" />
-                </Tooltip>
-              </Label>
+            <Col span={10}>
+              <Label>Restrict Navigation Out Of Test</Label>
             </Col>
-
-            <Col span={12}>
+            <Col span={14}>
               <StyledRadioGroupWrapper
                 value={restrictNavigationOut || undefined}
                 disabled={freezeSettings}
@@ -408,22 +357,10 @@ const AntiCheatingGroupContainer = ({
             premium={assessmentSuperPowersRestrictQuestionBackNav}
           />
           <StyledRow gutter={16} mb="15px">
-            <Col span={12}>
-              <Label>
-                Restrict Question Navigation
-                <DollarPremiumSymbol
-                  premium={assessmentSuperPowersRestrictQuestionBackNav}
-                />
-                <Tooltip
-                  title="If ON, then students will be restricted from navigating back to the previous question. 
-                      Recommended to use along with Shuffle Questions for preventing cheating among students.
-                      (This setting is not applicable for SnapQuiz)"
-                >
-                  <StyledInfoIcon color={lightGrey9} mL="10px" />
-                </Tooltip>
-              </Label>
+            <Col span={10}>
+              <Label>Restrict Question Navigation</Label>
             </Col>
-            <Col span={12}>
+            <Col span={14}>
               <AlignSwitchRight
                 disabled={
                   freezeSettings ||
@@ -453,26 +390,10 @@ const AntiCheatingGroupContainer = ({
           premium={assessmentSuperPowersRequireSafeExamBrowser}
         />
         <StyledRow gutter={16} mb="15px">
-          <Col span={12}>
-            <Label style={{ display: 'flex' }}>
-              Require Safe Exam Browser
-              <DollarPremiumSymbol
-                premium={assessmentSuperPowersRequireSafeExamBrowser}
-              />
-              <Tooltip
-                title="Ensure a secure testing environment by using Safe Exam Browser
-                   to lockdown the student's device. To use this feature, Safe Exam Browser 
-                   (on Windows/Mac/iPad) must be installed on the student device. The quit 
-                   password can be used by teacher or proctor to safely exit Safe Exam Browser 
-                   in the middle of an assessment. The quit password should not be revealed to 
-                   the students. If you select this option, students must use devices (Windows, 
-                   Mac or iPad) with Safe Exam Browser installed."
-              >
-                <StyledInfoIcon color={lightGrey9} mL="10px" />
-              </Tooltip>
-            </Label>
+          <Col span={10}>
+            <Label style={{ display: 'flex' }}>Require Safe Exam Browser</Label>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <AlignSwitchRight
               disabled={
                 freezeSettings || !assessmentSuperPowersRequireSafeExamBrowser

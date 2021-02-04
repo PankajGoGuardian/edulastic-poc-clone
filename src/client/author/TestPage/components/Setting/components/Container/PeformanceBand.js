@@ -14,6 +14,7 @@ const PerformanceBands = ({
   performanceBand = {},
   disabled = false,
   isFeatureAvailable = false,
+  fromAssignments = false,
 }) => {
   const handleProfileChange = (val) => {
     const selectedBandsData = performanceBandsData.find((o) => o._id === val)
@@ -73,7 +74,9 @@ const PerformanceBands = ({
       >
         <span>
           Performance Bands
-          <DollarPremiumSymbol premium={isFeatureAvailable} />
+          {!fromAssignments && (
+            <DollarPremiumSymbol premium={isFeatureAvailable} />
+          )}
         </span>
         <SelectInputStyled
           style={{ width: '250px' }}

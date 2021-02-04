@@ -146,6 +146,7 @@ export const Description = styled.div`
   font-size: 12px;
   line-height: 22px;
   color: #6a737f;
+  margin-top: 10px;
 `
 
 export const StyledRadioGroup = styled(Radio.Group)`
@@ -323,19 +324,16 @@ export const Line = styled.div`
 
 export const RadioWrapper = styled(Block)`
   padding: 0;
+  margin-left: 0px;
 
   &:not(:last-child) {
     margin-bottom: 15px;
   }
 
   .ant-row {
-    padding: 14px 22px;
+    padding: 8px 10px;
     background: ${white};
     border-radius: 4px;
-
-    &:not(:last-child) {
-      margin-bottom: 15px;
-    }
   }
 
   @media (max-width: ${mobileWidth}) {

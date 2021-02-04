@@ -137,7 +137,7 @@ class AssignTest extends React.Component {
         restrictNavigationOut: testSettings.restrictNavigationOut,
         restrictNavigationOutAttemptsThreshold:
           testSettings.restrictNavigationOutAttemptsThreshold,
-        blockSaveAndContinue: testSettings.blockSaveAndContinue
+        blockSaveAndContinue: testSettings.blockSaveAndContinue,
       })
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId)
@@ -358,7 +358,7 @@ class AssignTest extends React.Component {
         />
         <ListHeader
           title={`Assign ${moduleTitle || title || ''}`}
-          midTitle="PICK CLASSES, GROUPS OR STUDENTS"
+          midTitle="Assignment Settings"
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
           renderButton={this.renderHeaderButton}

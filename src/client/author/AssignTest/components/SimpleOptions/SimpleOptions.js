@@ -395,7 +395,7 @@ class SimpleOptions extends React.Component {
 
     let tootltipWidth
     if (this?.containerRef?.current?.offsetWidth) {
-      tootltipWidth = this?.containerRef?.current?.offsetWidth * 0.18 || 0
+      tootltipWidth = this?.containerRef?.current?.offsetWidth * 0.2 || 0
     }
 
     return (
@@ -437,6 +437,7 @@ class SimpleOptions extends React.Component {
                   freezeSettings={freezeSettings}
                   isRecommendingStandards={isRecommendingStandards}
                   questionPerStandardOptions={questionPerStandardOptions}
+                  tootltipWidth={tootltipWidth}
                 />
               </TabContentContainer>
             )}
@@ -506,6 +507,9 @@ class SimpleOptions extends React.Component {
                 actionOnFeatureInaccessible={actionOnFeatureInaccessible}
                 featuresAvailable={featuresAvailable}
                 tootltipWidth={tootltipWidth}
+                testSettings={testSettings}
+                overRideSettings={this.overRideSettings}
+                isDocBased={testSettings.isDocBased}
               />
             </TabContentContainer>
           </TabPane>

@@ -28,7 +28,9 @@ const SubHeader = ({
     title === 'Peer Progress Analysis' ||
     title === 'Student Progress'
   const isStandardMasteryReport =
-    title === 'Standards Performance Summary' || title === 'Standards Gradebook'
+    title === 'Standards Performance Summary' ||
+    title === 'Standards Gradebook' ||
+    title === 'Standards Progress'
   const isStudentProfileReport =
     title === 'Student Profile Summary' ||
     title === 'Student Mastery Profile' ||

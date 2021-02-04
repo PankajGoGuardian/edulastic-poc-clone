@@ -391,6 +391,7 @@ export const StyledSignedBarContainer = styled.div`
 
 export const StyledDropDownContainer = styled(Col)`
   padding: ${({ padding }) => padding || 'unset'};
+  flex: 1;
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;

@@ -45,7 +45,7 @@ class Extras extends Component {
     return (
       <QuestionContainer fontSize={fontSize}>
         <Question
-          section="main"
+          section="extras"
           label={t('component.options.solution')}
           fillSections={fillSections}
           cleanSections={cleanSections}

@@ -92,11 +92,11 @@ class QuestionMenu extends Component {
   }
 
   get menuOptions() {
-    const { main, advanced, isPremiumUser, isPowerTeacher } = this.props
+    const { main, advanced, extras, isPremiumUser, isPowerTeacher } = this.props
     if (!isPremiumUser || !isPowerTeacher) {
-      return main || []
+      return (main || []).concat(extras) || []
     }
-    return (main || []).concat(advanced) || []
+    return ((main || []).concat(advanced) || []).concat(extras) || []
   }
 
   render() {

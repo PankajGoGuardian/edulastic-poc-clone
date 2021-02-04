@@ -21,7 +21,7 @@
     { "key": "gender", "closable": true },
     { "key": "iepStatus", "closable": true },
     { "key": "frlStatus", "closable": true },
-    { "key": "ellStatus", "closable": true },
+    { "key": "ellStatus", "closable": true }
   ],
   "initialFilters": {
     "reportId": "",

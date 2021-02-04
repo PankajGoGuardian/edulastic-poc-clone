@@ -66,6 +66,7 @@ import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
 import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
+import { Fscreen } from '../utils/helpers'
 
 const { playerSkinValues } = testConstants
 
@@ -106,9 +107,7 @@ function pauseAssignment({
       pauseReason,
     })
     .then(() => {
-      document.exitFullscreen().catch((e) => {
-        console.warn('fullscreen exit error', e)
-      })
+      Fscreen.safeExitfullScreen()
       const errorMsg = 'Pausing Assignment due to Anti Cheating measures'
       notification({ type: 'warning', msg: errorMsg, duration: 0 })
       if (history.location.pathname === '/home/assignments') {
@@ -119,9 +118,7 @@ function pauseAssignment({
       }
     })
     .catch((e) => {
-      document.exitFullscreen().catch((_e) => {
-        console.warn('fullscreen exit error', _e)
-      })
+      Fscreen.exitFullscreen()
       const errorMsg =
         e?.response?.data?.result?.message ||
         'Pausing Assignment due to Anti Cheating measures'
@@ -142,7 +139,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
           msg: 'Sorry! Assignment got paused due to inactivity',
           duration: 0,
         })
-        document.exitFullscreen().catch(() => {})
+        Fscreen.exitFullscreen()
         history.push('/home/assignments')
       } else {
         notification({
@@ -178,12 +175,7 @@ export function ForceFullScreenModal({ visible, takeItLaterCb }) {
             className="inline-button"
             type="primary"
             onClick={() => {
-              document.body
-                .requestFullscreen({ navigationUI: 'hide' })
-                .then({})
-                .catch((e) => {
-                  console.warn(`fullsreen error`, e)
-                })
+              Fscreen.requestFullscreen(document.body)
             }}
           >
             Enter Full Screen
@@ -211,10 +203,10 @@ export function useFullScreenListener({
   disableSave,
 }) {
   const [inFullScreen, setInFullScreen] = useState(
-    enabled ? document.fullscreenElement : true
+    enabled ? Fscreen.fullscreenElement : true
   )
   const fullScreenCb = () => {
-    if (document.fullscreenElement) {
+    if (Fscreen.fullscreenElement) {
       setInFullScreen(true)
     } else {
       setTimeout(() => setInFullScreen(false), 500)
@@ -222,12 +214,12 @@ export function useFullScreenListener({
   }
 
   useEffect(() => {
-    document.addEventListener('fullscreenchange', fullScreenCb)
-    if (enabled && !document.fullscreenElement) {
+    Fscreen.addEventListener('fullscreenchange', fullScreenCb)
+    if (enabled && !Fscreen.fullscreenElement) {
       setInFullScreen(false)
     }
     return () => {
-      document.removeEventListener('fullscreenchange', fullScreenCb)
+      Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
       setTimeout(
         (win) => {
@@ -247,7 +239,6 @@ export function useFullScreenListener({
         5000,
         window
       )
-      // document.exitFullscreen().catch((e)=>{});
     }
   }, [enabled])
   return inFullScreen

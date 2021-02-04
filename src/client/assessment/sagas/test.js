@@ -20,6 +20,7 @@ import {
   testActivityStatus,
 } from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
+import { Fscreen } from '../utils/helpers'
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
 import {
@@ -383,9 +384,7 @@ function* loadTest({ payload }) {
         previousQuestionActivities = [],
       } = testActivity
       if (activity.isPaused) {
-        document.exitFullscreen().catch((e) => {
-          console.warn(e)
-        })
+        Fscreen.safeExitfullScreen()
         yield put(push('/home/assignments'))
         setTimeout(() => {
           notification({
@@ -714,7 +713,7 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
-    window.document.exitFullscreen().catch(() => {})
+    Fscreen.safeExitfullScreen()
     const isCliUser = yield select((state) => state.user?.isCliUser)
     if (isCliUser) {
       window.parent.postMessage(

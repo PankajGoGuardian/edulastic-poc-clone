@@ -36,7 +36,7 @@ const MainContent = ({
       </h2>
       <AssignmentsTable />
       {showRemove && (
-        <InputsWrapper>
+        <InputsWrapper data-cy="removed-items">
           <Row>
             <OptionTitle>
               Please Note: Removed items will be discarded from the assignment.
@@ -47,7 +47,7 @@ const MainContent = ({
         </InputsWrapper>
       )}
       {showAdd && (
-        <InputsWrapper>
+        <InputsWrapper data-cy="added-items">
           <Row>
             <OptionTitle>Added Items</OptionTitle>
             <p>
@@ -78,7 +78,7 @@ const MainContent = ({
         </InputsWrapper>
       )}
       {showEdit && (
-        <InputsWrapper>
+        <InputsWrapper data-cy="edited-items">
           <Row>
             <OptionTitle>Edit Items</OptionTitle>
             <p>
@@ -108,7 +108,7 @@ const MainContent = ({
         </InputsWrapper>
       )}
       {showSettings && (
-        <InputsWrapper>
+        <InputsWrapper data-cy="revised-settings">
           <Row>
             <OptionTitle>Add, Apply updated settings options </OptionTitle>
             <p>

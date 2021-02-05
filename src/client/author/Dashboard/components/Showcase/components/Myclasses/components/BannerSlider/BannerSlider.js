@@ -12,7 +12,6 @@ import {
   NextButton,
   SliderContainer,
   LearnMore,
-  TransparentButton,
   SlideContainer,
   SlideDescription,
 } from './styled'
@@ -78,9 +77,7 @@ const BannerSlider = ({
                     }
                   >
                     {isSparkMathTile ? (
-                      <TransparentButton data-cy="tryItFree">
-                        Try it free
-                      </TransparentButton>
+                      <LearnMore data-cy="tryItFree">TRY IT FREE</LearnMore>
                     ) : (
                       <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                     )}

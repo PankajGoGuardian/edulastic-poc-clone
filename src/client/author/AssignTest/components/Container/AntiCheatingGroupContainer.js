@@ -280,7 +280,7 @@ const AntiCheatingGroupContainer = ({
                 size="small"
                 checked={blockSaveAndContinue}
                 onChange={(value) =>
-                  overRideSettings('blockSaveAndContinue', !value)
+                  overRideSettings('blockSaveAndContinue', value)
                 }
               />
             </Col>
@@ -305,7 +305,7 @@ const AntiCheatingGroupContainer = ({
             <Col span={14}>
               <StyledRadioGroupWrapper
                 value={restrictNavigationOut || undefined}
-                disabled={freezeSettings}
+                disabled={freezeSettings || !premium}
                 onChange={(e) => {
                   overRideSettings('restrictNavigationOut', e.target.value)
                 }}

@@ -1226,13 +1226,16 @@ class Setting extends Component {
 
                   <Block id="block-save-and-continue" smallSize={isSmallSize}>
                     <Title>
-                      <span>Complete Test in One Sitting</span>
+                      <span>
+                        Complete Test in One Sitting
+                        <DollarPremiumSymbol premium={premium} />
+                      </span>
                       <EduSwitchStyled
                         disabled={!owner || !isEditable || !premium}
                         checked={blockSaveAndContinue}
                         data-cy="bockSaveAndContinueSwitch"
                         onChange={(v) =>
-                          this.updateTestData('blockSaveAndContinue')(!v)
+                          this.updateTestData('blockSaveAndContinue')(v)
                         }
                       />
                     </Title>
@@ -1247,7 +1250,10 @@ class Setting extends Component {
                   </Block>
 
                   <Block id="restrict-navigation-out" smallSize={isSmallSize}>
-                    <Title>Restrict Navigation Out of Test</Title>
+                    <Title>
+                      Restrict Navigation Out of Test{' '}
+                      <DollarPremiumSymbol premium={premium} />
+                    </Title>
                     <Body smallSize={isSmallSize}>
                       <Row>
                         <Col span={11}>

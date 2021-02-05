@@ -209,7 +209,7 @@ export function useFullScreenListener({
     if (Fscreen.fullscreenElement) {
       setInFullScreen(true)
     } else {
-      setTimeout(() => setInFullScreen(false), 500)
+      setTimeout(() => setInFullScreen(false), 700)
     }
   }
 

@@ -650,12 +650,14 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
+          Fscreen.exitFullscreen()
           return yield put(push('/home/assignments'))
         }
       }
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
+      Fscreen.exitFullscreen()
       return yield put(push('/home/assignments'))
     }
   }
@@ -713,7 +715,6 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
-    Fscreen.safeExitfullScreen()
     const isCliUser = yield select((state) => state.user?.isCliUser)
     if (isCliUser) {
       window.parent.postMessage(
@@ -840,6 +841,7 @@ function* submitTest({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: false,
     })
+    Fscreen.safeExitfullScreen()
   }
 }
 

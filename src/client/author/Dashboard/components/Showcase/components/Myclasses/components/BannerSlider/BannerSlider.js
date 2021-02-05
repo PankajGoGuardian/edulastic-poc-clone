@@ -58,13 +58,14 @@ const BannerSlider = ({
               useBothWheelAxes: true,
             }}
           >
-            <SlideContainer>
+            <SlideContainer data-cy="sliderContainer">
               {bannerSlides.map((slide, index) => {
                 const isSparkMathTile =
                   slide.description === 'Spark Math Playlist'
 
                 return (
                   <Slides
+                    data-cy="banners"
                     className={bannerLength === index + 1 ? 'last' : ''}
                     bgImage={slide.imageUrl}
                     key={slide._id}

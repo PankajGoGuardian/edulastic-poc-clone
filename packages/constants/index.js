@@ -39,6 +39,7 @@ const regexJs = require('./const/regex.js')
 const report = require('./const/report.js')
 const bannerActions = require('./const/bannerActions.js')
 const appLanguages = require('./const/languages')
+const fileTypes = require('./const/fileTypes')
 
 module.exports = {
   question,
@@ -82,4 +83,5 @@ module.exports = {
   report,
   bannerActions,
   appLanguages,
+  fileTypes,
 }

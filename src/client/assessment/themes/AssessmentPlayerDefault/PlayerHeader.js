@@ -57,7 +57,7 @@ const PlayerHeader = ({
   finishTest,
   handleMagnifier,
   enableMagnifier,
-  toggleCameraModal,
+  toggleUserWorkUploadModal,
   timedAssignment,
   hasDrawingResponse,
   utaId,
@@ -192,7 +192,7 @@ const PlayerHeader = ({
                         qType={qType}
                         handleMagnifier={handleMagnifier}
                         enableMagnifier={enableMagnifier}
-                        toggleCameraModal={toggleCameraModal}
+                        toggleUserWorkUploadModal={toggleUserWorkUploadModal}
                         timedAssignment={timedAssignment}
                         utaId={utaId}
                         hasDrawingResponse={hasDrawingResponse}

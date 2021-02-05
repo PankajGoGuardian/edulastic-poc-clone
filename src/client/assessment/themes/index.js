@@ -65,8 +65,7 @@ import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
 import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
-import CameraModal from './common/CameraModal'
-import useImageUpload from '../hooks/useImageUpload'
+import useUploadToS3 from '../hooks/useUploadToS3'
 
 const { playerSkinValues } = testConstants
 
@@ -440,34 +439,8 @@ const AssessmentContainer = ({
     show: false,
   })
   const [showRegradedModal, setShowRegradedModal] = useState(false)
-  const [isCameraModalVisible, setIsCameraModalVisible] = useState(false)
-  const toggleCameraModal = () => setIsCameraModalVisible((value) => !value)
-  const saveQuestionWorkImageUrl = (questionWorkImageUrl) => {
-    const userWorkId = items[currentItem]?._id
 
-    // Add questionWorkImageUrl to all the questions of item
-    const newUserWork = Object.keys(userWork).reduce((acc, key) => {
-      acc[key] = {
-        ...userWork[key],
-        questionWorkImageUrl,
-      }
-
-      return acc
-    }, {})
-
-    // Update question item with question work image url.
-    saveUserWork({
-      [userWorkId]: newUserWork,
-    })
-
-    // Close the camera modal
-    setIsCameraModalVisible(false)
-  }
-
-  const [isImageUploading, uploadImage] = useImageUpload(
-    saveQuestionWorkImageUrl,
-    userId
-  )
+  const [, uploadFile] = useUploadToS3(userId)
 
   const isLast = () => currentItem === items.length - 1
   const isFirst = () => currentItem === 0
@@ -915,7 +888,7 @@ const AssessmentContainer = ({
     studentReportModal,
     hasDrawingResponse,
     questions: questionsById,
-    toggleCameraModal,
+    uploadToS3: uploadFile,
     ...restProps,
   }
 
@@ -1045,15 +1018,6 @@ const AssessmentContainer = ({
         />
       )}
       {playerComponent}
-      <CameraModal
-        isModalVisible={isCameraModalVisible}
-        onCancel={toggleCameraModal}
-        isPhotoTakingDisabled={isImageUploading}
-        onTakePhoto={uploadImage}
-        delayCount={5}
-      >
-        {isImageUploading && <Spin />}
-      </CameraModal>
     </AssessmentPlayerContext.Provider>
   )
 }

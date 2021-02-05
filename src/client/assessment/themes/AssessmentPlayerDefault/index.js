@@ -46,6 +46,7 @@ import {
 } from '../../actions/userInteractions'
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
+import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -65,6 +66,7 @@ class AssessmentPlayerDefault extends React.Component {
       minWidth: 480,
       defaultContentWidth: 900,
       defaultHeaderHeight: 62,
+      isUserWorkUploadModalVisible: false,
     }
     this.scrollContainer = React.createRef()
   }
@@ -212,6 +214,26 @@ class AssessmentPlayerDefault extends React.Component {
     })
   }
 
+  toggleUserWorkUploadModal = () =>
+    this.setState(({ isUserWorkUploadModalVisible }) => ({
+      isUserWorkUploadModalVisible: !isUserWorkUploadModalVisible,
+    }))
+
+  closeUserWorkUploadModal = () =>
+    this.setState({ isUserWorkUploadModalVisible: false })
+
+  saveUserWorkAttachments = (files) => {
+    const { attachments } = this.props
+    const newAttachments = files.map(({ name, type, size, source }) => ({
+      name,
+      type,
+      size,
+      source,
+    }))
+    this.saveHistory('attachments')([...(attachments || []), ...newAttachments])
+    this.closeUserWorkUploadModal()
+  }
+
   static getDerivedStateFromProps(next, prevState) {
     if (next.currentItem !== prevState.cloneCurrentItem) {
       // coming from a different question
@@ -294,7 +316,6 @@ class AssessmentPlayerDefault extends React.Component {
       showMagnifier,
       handleMagnifier,
       enableMagnifier,
-      toggleCameraModal,
       scratchpadActivity,
       showHints,
       timedAssignment = false,
@@ -304,6 +325,7 @@ class AssessmentPlayerDefault extends React.Component {
       studentReportModal,
       hidePause,
       blockNavigationToAnsweredQuestions,
+      uploadToS3,
     } = this.props
     const { settings } = this.props
     const {
@@ -317,6 +339,7 @@ class AssessmentPlayerDefault extends React.Component {
       defaultContentWidth,
       defaultHeaderHeight,
       currentToolMode,
+      isUserWorkUploadModalVisible,
     } = this.state
     const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC', 'EDULASTIC']
     const dropdownOptions = Array.isArray(items)
@@ -482,7 +505,7 @@ class AssessmentPlayerDefault extends React.Component {
             showMagnifier={showMagnifier}
             handleMagnifier={handleMagnifier}
             enableMagnifier={enableMagnifier}
-            toggleCameraModal={toggleCameraModal}
+            toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}
@@ -642,6 +665,12 @@ class AssessmentPlayerDefault extends React.Component {
                 calcBrands={calcBrands}
               />
             )}
+            <UserWorkUploadModal
+              isModalVisible={isUserWorkUploadModalVisible}
+              onCancel={this.closeUserWorkUploadModal}
+              uploadFile={uploadToS3}
+              onUploadFinished={this.saveUserWorkAttachments}
+            />
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

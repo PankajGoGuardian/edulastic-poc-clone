@@ -11,6 +11,10 @@
     "message": "Image size should be less than 2MB",
     "description": ""
   },
+  "fileSizeError1MB": {
+    "message": "File size should be less than 1MB",
+    "description": ""
+  },
   "fileSizeError5MB": {
     "message": "File size should be less than 5MB",
     "description": ""
@@ -1117,6 +1121,10 @@
   },
   "pleaseUploadFileInImageFormat": {
     "message": "Please upload files in image format",
+    "description": ""
+  },
+  "pleaseUploadFileInRequiredFormat": {
+    "message": "Please upload files in required format",
     "description": ""
   },
   "widthShouldBeGreaterThanZero": {

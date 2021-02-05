@@ -11,11 +11,16 @@ import {
   Scratchpad,
   ScratchpadTool,
 } from '../../../../../common/components/Scratchpad'
-import { Container, WidgetContainer } from './styled/Container'
+import {
+  Container,
+  WidgetContainer,
+  FilesViewContainer,
+} from './styled/Container'
 import { MobileRightSide } from './styled/MobileRightSide'
 import { MobileLeftSide } from './styled/MobileLeftSide'
 import { IconArrow } from './styled/IconArrow'
 import TabContainer from './TabContainer'
+import FilesView from '../../../../widgets/UploadFile/components/FilesView'
 
 class TestItemCol extends Component {
   constructor() {
@@ -54,6 +59,8 @@ class TestItemCol extends Component {
       itemLevelScoring,
       isPassageWithQuestions,
       hasDrawingResponse,
+      attachments,
+      saveAttachments,
       ...restProps
     } = this.props
     const {
@@ -89,6 +96,15 @@ class TestItemCol extends Component {
       minHeight = '320px'
     }
     const showTabBorder = !hasDrawingResponse && isLCBView
+
+    const saveUpdatedAttachments = (index) => {
+      const newAttachments = attachments.filter((attachment, i) => i !== index)
+      saveAttachments(newAttachments)
+    }
+
+    const isAttachmentListVisible = attachments && attachments.length > 0
+
+    // question false undefined false undefined undefined true true
     return (
       <TabContainer
         updatePositionToStore={
@@ -139,6 +155,15 @@ class TestItemCol extends Component {
         {isStudentReport &&
           !itemLevelScoring &&
           teachCherFeedBack(widget, null, null, showStackedView)}
+        {isAttachmentListVisible && (
+          <FilesViewContainer>
+            <FilesView
+              files={attachments}
+              hideDelete={!isStudentAttempt}
+              onDelete={saveUpdatedAttachments}
+            />
+          </FilesViewContainer>
+        )}
       </TabContainer>
     )
   }

@@ -1,9 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { FACING_MODES, IMAGE_TYPES } from 'jslib-html5-camera-photo'
+import { isFunction } from 'lodash'
+import {
+  CameraWrapper,
+  Video,
+  DelayOverlay,
+  Image,
+  NumberCircle,
+  WhiteFlash,
+} from './styled'
 import { useLibCameraPhoto } from '../../customHooks/useLibCameraPhoto'
-import WhiteFlash from './WhiteFlash'
 import DisplayError from './DisplayError'
 import clickSound from '../../utils/data/click-sound.base64.json'
 
@@ -73,9 +80,9 @@ function Camera({
    * ---- Functionalities from original library ---
    */
   useEffect(() => {
-    if (mediaStream && typeof onCameraStart === 'function') {
+    if (mediaStream && isFunction(onCameraStart)) {
       onCameraStart(mediaStream)
-    } else if (typeof onCameraStop === 'function') {
+    } else if (isFunction(onCameraStop)) {
       onCameraStop()
     }
   }, [mediaStream])
@@ -85,7 +92,7 @@ function Camera({
       setCameraStartDisplayError(
         `${cameraStartError.name} ${cameraStartError.message}`
       )
-      if (typeof onCameraError === 'function') {
+      if (isFunction(onCameraError)) {
         onCameraError(cameraStartError)
       }
     }
@@ -120,7 +127,7 @@ function Camera({
 
     // Call the onTakePhoto callback once photo is taken.
     // Blob functionality is added by us.
-    if (typeof onTakePhoto === 'function') {
+    if (isFunction(onTakePhoto)) {
       if (IMAGE_DATA_TYPE.BLOB === imageDataType) {
         // get blob from dataUri.
         const photoBlob = await (await fetch(newDataUri)).blob()
@@ -140,7 +147,7 @@ function Camera({
     showFlashTimeoutId = setTimeout(() => {
       setIsFlashVisible(false)
 
-      if (typeof onTakePhotoAnimationDone === 'function') {
+      if (isFunction(onTakePhotoAnimationDone)) {
         onTakePhotoAnimationDone(newDataUri)
       }
     }, 900)
@@ -160,6 +167,11 @@ function Camera({
 
   // Handles photo taking when countdown hits 0.
   useEffect(() => {
+    // If there is no counter running, return
+    if (!delayCounterId) {
+      return
+    }
+
     if (currentDelayCount > 0) {
       return
     }
@@ -194,7 +206,9 @@ function Camera({
   )
 
   const delayCounter = isDelayCounterVisible && (
-    <DelayCounter>{currentDelayCount}</DelayCounter>
+    <DelayOverlay>
+      <NumberCircle>{currentDelayCount}</NumberCircle>
+    </DelayOverlay>
   )
 
   const cameraBody = isVideoVisible ? (
@@ -203,6 +217,7 @@ function Camera({
       autoPlay
       muted="muted"
       playsInline
+      isImageMirror={isImageMirror}
       isVisible={isVideoVisible}
     />
   ) : (
@@ -246,7 +261,7 @@ Camera.defaultProps = {
   idealResolution: {},
   imageType: IMAGE_TYPES.PNG,
   imageDataType: IMAGE_DATA_TYPE.BLOB,
-  isImageMirror: true,
+  isImageMirror: false,
   isSilentMode: false,
   isStartCameraErrorDisplayed: true,
   imageCompression: 0.9,
@@ -256,24 +271,6 @@ Camera.defaultProps = {
   onCameraStop: () => null,
   delayCount: 0,
 }
-
-const CameraWrapper = styled.div`
-  position: relative;
-  text-align: center;
-`
-
-const Video = styled.video`
-  width: 100%;
-  transform: rotateY(180deg);
-`
-
-const DelayCounter = styled.div`
-  text-align: center;
-`
-
-const Image = styled.img`
-  width: 100%;
-`
 
 export { Camera, FACING_MODES, IMAGE_TYPES, IMAGE_DATA_TYPE }
 

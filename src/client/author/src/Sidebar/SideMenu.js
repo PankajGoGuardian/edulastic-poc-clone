@@ -143,6 +143,13 @@ const menuItems = [
     allowedPathPattern: [/schools/],
     role: ['school-admin'],
   },
+  {
+    label: 'Manage Subscription',
+    icon: IconSettings,
+    path: 'author/manage-subscriptions',
+    allowedPathPattern: [/author\/manage-subscriptions/],
+    role: ['teacher', 'district-admin', 'school-admin'],
+  },
 ]
 
 const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist']

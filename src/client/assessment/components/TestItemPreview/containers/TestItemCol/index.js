@@ -109,10 +109,11 @@ class TestItemCol extends Component {
     }
 
     const imageAttachments =
-      attachments &&
-      attachments.filter((attachment) => {
-        return attachment.type.includes('image/')
-      })
+      (attachments &&
+        attachments.filter((attachment) => {
+          return attachment.type.includes('image/')
+        })) ||
+      []
 
     // question false undefined false undefined undefined true true
     return (
@@ -162,7 +163,7 @@ class TestItemCol extends Component {
         />
         {/* on the student side, show feedback for each question
         only when item level scoring is off */}
-        {isStudentReport && (
+        {isStudentReport && imageAttachments.length > 0 && (
           <StudentWorkCollapse
             isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
             toggleStudentWorkCollapse={toggleStudentWorkCollapse}

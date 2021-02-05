@@ -260,7 +260,7 @@ const TestBehaviorGroupContainer = ({
               onChange={(e) => overRideSettings('calcType', e.target.value)}
             >
               {calculatorKeysAvailable.map((item) => (
-                <RadioBtn d9a-cy={item} value={item} key={item}>
+                <RadioBtn data-cy={item} value={item} key={item}>
                   <Label>{calculators[item]}</Label>
                 </RadioBtn>
               ))}

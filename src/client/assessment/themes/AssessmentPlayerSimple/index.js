@@ -188,7 +188,10 @@ class AssessmentPlayerSimple extends React.Component {
       size,
       source,
     }))
-    this.saveHistory('attachments')([...(attachments || []), ...newAttachments])
+    this.saveUserWork('attachments')([
+      ...(attachments || []),
+      ...newAttachments,
+    ])
     this.closeUserWorkUploadModal()
   }
 

@@ -1,18 +1,7 @@
-import { Upload, Radio } from 'antd'
+import { Upload } from 'antd'
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 
-export const StyledRadioButton = styled(Radio.Button)``
-
-export const StyledRadioGroup = styled(Radio.Group)`
-  margin-bottom: 20px;
-  label.ant-radio-button-wrapper {
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.35);
-    font-weight: bold;
-    background-color: rgba(0, 0, 0, 0.15);
-  }
-`
 export const Footer = styled.div.attrs(() => ({
   className: 'ant-modal-footer',
 }))``

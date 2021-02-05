@@ -7,10 +7,12 @@ import { isEmpty, sortBy } from 'lodash'
 import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
 import QuestionWrapper from '../../../QuestionWrapper'
+
 import {
   Scratchpad,
   ScratchpadTool,
 } from '../../../../../common/components/Scratchpad'
+
 import {
   Container,
   WidgetContainer,
@@ -19,8 +21,10 @@ import {
 import { MobileRightSide } from './styled/MobileRightSide'
 import { MobileLeftSide } from './styled/MobileLeftSide'
 import { IconArrow } from './styled/IconArrow'
+import { StyleH2Heading } from './styled/Headings'
 import TabContainer from './TabContainer'
 import FilesView from '../../../../widgets/UploadFile/components/FilesView'
+import StudentWorkCollapse from '../../components/StudentWorkCollapse'
 
 class TestItemCol extends Component {
   constructor() {
@@ -61,6 +65,8 @@ class TestItemCol extends Component {
       hasDrawingResponse,
       attachments,
       saveAttachments,
+      isStudentWorkCollapseOpen,
+      toggleStudentWorkCollapse,
       ...restProps
     } = this.props
     const {
@@ -102,7 +108,11 @@ class TestItemCol extends Component {
       saveAttachments(newAttachments)
     }
 
-    const isAttachmentListVisible = attachments && attachments.length > 0
+    const imageAttachments =
+      attachments &&
+      attachments.filter((attachment) => {
+        return attachment.type.includes('image/')
+      })
 
     // question false undefined false undefined undefined true true
     return (
@@ -152,18 +162,31 @@ class TestItemCol extends Component {
         />
         {/* on the student side, show feedback for each question
         only when item level scoring is off */}
+        {isStudentReport && (
+          <StudentWorkCollapse
+            isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+            toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+            imageAttachments={imageAttachments}
+          />
+        )}
+
+        {attachments && attachments.length > 0 && (
+          <>
+            <StyleH2Heading>Attachments</StyleH2Heading>
+            <FilesViewContainer>
+              <FilesView
+                files={attachments}
+                hideDelete={!isStudentAttempt}
+                onDelete={saveUpdatedAttachments}
+              />
+            </FilesViewContainer>
+          </>
+        )}
+
+        {/*  on the student side, show feedback for each question only when item level scoring is off */}
         {isStudentReport &&
           !itemLevelScoring &&
           teachCherFeedBack(widget, null, null, showStackedView)}
-        {isAttachmentListVisible && (
-          <FilesViewContainer>
-            <FilesView
-              files={attachments}
-              hideDelete={!isStudentAttempt}
-              onDelete={saveUpdatedAttachments}
-            />
-          </FilesViewContainer>
-        )}
       </TabContainer>
     )
   }

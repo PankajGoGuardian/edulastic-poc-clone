@@ -70,6 +70,7 @@ const PlayerHeader = ({
   toolsOpenStatus,
   handleMagnifier,
   enableMagnifier,
+  toggleCameraModal,
   timedAssignment,
   utaId,
   groupId,
@@ -191,6 +192,7 @@ const PlayerHeader = ({
                   qType={qType}
                   utaId={utaId}
                   isDocbased={isDocbased}
+                  toggleCameraModal={toggleCameraModal}
                   timedAssignment={timedAssignment}
                   groupId={groupId}
                 />

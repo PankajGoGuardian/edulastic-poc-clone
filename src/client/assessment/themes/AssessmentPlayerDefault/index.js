@@ -294,6 +294,7 @@ class AssessmentPlayerDefault extends React.Component {
       showMagnifier,
       handleMagnifier,
       enableMagnifier,
+      toggleCameraModal,
       scratchpadActivity,
       showHints,
       timedAssignment = false,
@@ -481,6 +482,7 @@ class AssessmentPlayerDefault extends React.Component {
             showMagnifier={showMagnifier}
             handleMagnifier={handleMagnifier}
             enableMagnifier={enableMagnifier}
+            toggleCameraModal={toggleCameraModal}
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}

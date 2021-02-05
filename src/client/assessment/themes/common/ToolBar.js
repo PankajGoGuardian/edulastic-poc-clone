@@ -11,6 +11,7 @@ import {
   IconMagnify,
   IconProtactor,
   IconScratchPad,
+  IconPhotoCamera,
 } from '@edulastic/icons'
 import { Button } from 'antd'
 import PropTypes from 'prop-types'
@@ -32,6 +33,7 @@ const ToolBar = ({
   qType,
   handleMagnifier,
   enableMagnifier,
+  toggleCameraModal,
   changeTool,
   hasDrawingResponse,
 }) => {
@@ -51,7 +53,6 @@ const ToolBar = ({
         onClick={toolbarHandler(0)}
         hidden
       />
-
       <ActionButton
         title="Ruler"
         icon={<InRulerIcon />}
@@ -59,7 +60,6 @@ const ToolBar = ({
         onClick={toolbarHandler(1)}
         hidden
       />
-
       {calcType !== calculatorTypes.NONE && (
         <ActionButton
           title="Calculator"
@@ -68,7 +68,6 @@ const ToolBar = ({
           onClick={toolbarHandler(2)}
         />
       )}
-
       <ActionButton
         title={
           isDisableCrossBtn
@@ -80,7 +79,6 @@ const ToolBar = ({
         onClick={toolbarHandler(3)}
         disabled={isDisableCrossBtn}
       />
-
       <ActionButton
         title="Protactor"
         icon={<ProtactorIcon />}
@@ -97,7 +95,6 @@ const ToolBar = ({
           onClick={toolbarHandler(5)}
         />
       )}
-
       {showMagnifier && (
         <ActionButton
           title="Magnify"
@@ -106,6 +103,11 @@ const ToolBar = ({
           onClick={handleMagnifier}
         />
       )}
+      <ActionButton
+        title="Camera"
+        icon={<IconPhotoCamera />}
+        onClick={toggleCameraModal}
+      />
     </Container>
   )
 }

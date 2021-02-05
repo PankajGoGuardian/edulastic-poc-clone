@@ -87,21 +87,22 @@ export const getCurrentLanguage = createSelector(
 
 // used in LCB, ExpressGrader and student side grades
 export const languagePreferenceSelector = (state, props = {}) => {
-  const { isLCBView, isStudentReport, isExpressGrader } = props || {}
   let preferredLanguage = 'en'
-
+  const { isLCBView, isStudentReport, isExpressGrader, data } = props || {}
   if (isExpressGrader) {
     const { preferredLanguage: studentAttemptLanguage = 'en' } =
       state?.studentQuestionResponse?.data || {}
     preferredLanguage = studentAttemptLanguage
   } else if (isLCBView) {
-    const { entities = [] } = state?.author_classboard_testActivity || {}
-    const { studentId } = props
-    if (studentId) {
-      const currentUTA = entities.find((uta) => uta.studentId === studentId)
-      if (currentUTA?.languagePreference) {
-        preferredLanguage = currentUTA.languagePreference
-      }
+    const { activity: { testActivityId } = {} } = data || {}
+    const { testActivities = [] } =
+      state?.author_classboard_testActivity?.data || {}
+    if (testActivityId) {
+      const currentUTA = testActivities.find(
+        (uta) => uta._id === testActivityId
+      )
+      const { languagePreference = 'en' } = currentUTA || {}
+      preferredLanguage = languagePreference
     }
   } else if (isStudentReport) {
     const { languagePreference = 'en' } =

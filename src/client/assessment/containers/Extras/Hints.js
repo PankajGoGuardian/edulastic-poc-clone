@@ -36,7 +36,7 @@ const Hints = ({
 
   return (
     <Question
-      section="main"
+      section="extras"
       label={t('component.options.hint')}
       fillSections={fillSections}
       cleanSections={cleanSections}

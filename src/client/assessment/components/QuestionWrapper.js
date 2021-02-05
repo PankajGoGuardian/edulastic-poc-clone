@@ -316,6 +316,7 @@ class QuestionWrapper extends Component {
     this.state = {
       main: [],
       advanced: [],
+      extras: [],
       activeTab: 0,
       shuffledOptsOrder: [],
       page: 1,
@@ -362,7 +363,7 @@ class QuestionWrapper extends Component {
 
   static getDerivedStateFromProps(props) {
     if (props.view !== EDIT) {
-      return { main: [], advanced: [], activeTab: 0 }
+      return { main: [], advanced: [], extras: [], activeTab: 0 }
     }
     return null
   }
@@ -483,7 +484,7 @@ class QuestionWrapper extends Component {
       'activity.preferredLanguage',
       userPreferredLanguage
     )
-    const { main, advanced, activeTab, page } = this.state
+    const { main, advanced, extras, activeTab, page } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
     const { layoutType } = this.context
@@ -605,6 +606,7 @@ class QuestionWrapper extends Component {
                     activeTab={activeTab}
                     main={main}
                     advanced={advanced}
+                    extras={extras}
                     advancedAreOpen={this.advancedAreOpen}
                     scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}

@@ -104,6 +104,9 @@ const StandardsBasedReport = loadable(() => import('../StandardsBasedReport'), {
 const ManageClass = loadable(() => import('../ManageClass'), {
   fallback: <Progress />,
 })
+const ManageSubscription = loadable(() => import('../ManageSubscription'), {
+  fallback: <Progress />,
+})
 const ClassDetails = loadable(
   () => import('../ManageClass/components/ClassDetails'),
   {
@@ -892,6 +895,11 @@ const Author = ({
                     exact
                     path={`${match.url}/students-report-card/:assignmentId/:classId`}
                     component={StudentsReportCard}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/managesubscription`}
+                    component={ManageSubscription}
                   />
                   <Route component={NotFound} />
                 </Switch>

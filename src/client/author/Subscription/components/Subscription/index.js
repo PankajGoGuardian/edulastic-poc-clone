@@ -367,8 +367,6 @@ const Subscription = (props) => {
       (!isPaidPremium && isSubscriptionExpired)) &&
     !['enterprise', 'partial_premium'].includes(subType)
 
-  const showUpgradeOptions = !isSubscribed
-
   const isTrialItemBank =
     itemBankSubscriptions &&
     itemBankSubscriptions?.length > 0 &&
@@ -404,8 +402,6 @@ const Subscription = (props) => {
     <Wrapper>
       <SubscriptionHeader
         openComparePlanModal={openComparePlanModal}
-        openPaymentServiceModal={openPaymentServiceModal}
-        showUpgradeOptions={showUpgradeOptions}
         showRenewalOptions={showRenewalOptions}
         isSubscribed={isSubscribed}
         subType={subType}

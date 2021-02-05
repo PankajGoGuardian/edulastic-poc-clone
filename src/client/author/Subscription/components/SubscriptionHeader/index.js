@@ -32,6 +32,7 @@ const SubscriptionHeader = ({
   isPaidPremium,
   hasAllPremiumProductAccess,
   isPremium,
+  hideBanner,
 }) => {
   const handlePurchaseFlow = () => {
     setShowSubscriptionAddonModal(true)
@@ -80,7 +81,7 @@ const SubscriptionHeader = ({
   const licenseExpiryDate = formatDate(subEndDate)
 
   return (
-    <TopBanner>
+    <TopBanner hideBanner>
       <HeaderSubscription>
         <Title>
           <h2>
@@ -121,27 +122,33 @@ const SubscriptionHeader = ({
           )}
         </ActionButtons>
       </HeaderSubscription>
-      <BannerContent>
-        <h3>
-          {isPremium ? (
-            <span>You are on the Premium Plan</span>
-          ) : (
-            <span>There&apos;s a lot more in premium!</span>
-          )}
-        </h3>
-        <p>
-          {isPremium
-            ? `This plan expires on ${licenseExpiryDate}`
-            : `Upgrade to teacher premium for additional features, including:`}
-        </p>
-        <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
-      </BannerContent>
+      {!hideBanner && (
+        <BannerContent>
+          <h3>
+            {isPremium ? (
+              <span>You are on the Premium Plan</span>
+            ) : (
+              <span>There&apos;s a lot more in premium!</span>
+            )}
+          </h3>
+          <p>
+            {isPremium
+              ? `This plan expires on ${licenseExpiryDate}`
+              : `Upgrade to teacher premium for additional features, including:`}
+          </p>
+          <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
+        </BannerContent>
+      )}
     </TopBanner>
   )
 }
 
 SubscriptionHeader.propTypes = {
   openComparePlanModal: PropTypes.func.isRequired,
+  setShowSubscriptionAddonModal: PropTypes.func,
+}
+SubscriptionHeader.defaultProps = {
+  setShowSubscriptionAddonModal: () => {},
 }
 
 export default memo(withNamespaces('header')(SubscriptionHeader))

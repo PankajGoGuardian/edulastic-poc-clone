@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import IMG17 from '../../static/bg-hero.svg'
 
 export const TopBanner = styled.div`
-  background: url(${IMG17});
-  padding-bottom: 80px;
+  background: ${(props) => (!props.hideBanner ? `url(${IMG17})` : white)};
+  padding-bottom: ${(props) => (!props.hideBanner ? '80px' : '0px')};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: 0px 65px;

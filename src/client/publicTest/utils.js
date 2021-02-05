@@ -287,6 +287,7 @@ const redirectToAssessmentPlayer = (
   }
   if ((graded || absent) && (isExpired || attemptCount === maxAttempts)) {
     if (releaseScore === releaseGradeLabels.DONT_RELEASE || absent) {
+      notification({ msg: 'Test is expired' })
       return history.push({
         pathname: '/home/grades',
         state: { highlightAssignment: assignmentId },

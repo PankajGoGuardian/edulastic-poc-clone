@@ -67,6 +67,10 @@ const StandardsProgressTable = ({
     [rawTableData, tableFilters]
   )
 
+  const scrollX = useMemo(() => testInfoEnhanced?.length * 120 || '100%', [
+    testInfoEnhanced?.length,
+  ])
+
   const getTestCols = () =>
     testInfoEnhanced.map((test) => ({
       title: (
@@ -149,7 +153,7 @@ const StandardsProgressTable = ({
       title: 'Overall',
       dataIndex: 'overall',
       key: 'overall',
-      width: 150,
+      width: 100,
       sorter: getOverallColSorter(tableFilters.analyseBy.key, masteryScale),
       render: (_, record) =>
         getOverallValue(record, tableFilters.analyseBy.key, masteryScale),
@@ -209,7 +213,7 @@ const StandardsProgressTable = ({
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
             tableToRender={StyledTable}
-            scroll={{ x: 800 }}
+            scroll={{ x: scrollX }}
           />
         </Col>
         <Col span={24}>

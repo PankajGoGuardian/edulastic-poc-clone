@@ -138,7 +138,6 @@ const defaultQuestionValue = {
       method: methods.EQUIV_SYMBOLIC,
       options: {
         inverseResult: false,
-        significantDecimalPlaces: 10,
       },
       value: '',
     },

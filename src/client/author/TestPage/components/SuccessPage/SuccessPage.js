@@ -1,6 +1,9 @@
 import { themeColor, darkGrey } from '@edulastic/colors'
 import { EduButton, FlexContainer } from '@edulastic/common'
-import { test as TEST } from '@edulastic/constants'
+import {
+  test as TEST,
+  collections as collectionsConstant,
+} from '@edulastic/constants'
 import { IconLock, IconPencilEdit } from '@edulastic/icons'
 import { Divider } from 'antd'
 import { get } from 'lodash'
@@ -60,6 +63,7 @@ import { getAssignmentsSelector, fetchAssignmentsAction } from '../Assign/ducks'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const { statusConstants, passwordPolicy, type: _testTypes } = TEST
+const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
 const sharedWithPriorityOrder = ['Public', 'District', 'School']
 const AUTOMATICALLY_ON_START_DATE = 'Automatically on Start Date'
@@ -272,9 +276,16 @@ class SuccessPage extends React.Component {
 
     let hasPremiumQuestion = false
     if (!isPlaylist) {
-      const { testItems = [] } = test
+      const { itemGroups = [] } = test
+      const testItems = (itemGroups || []).flatMap(
+        (itemGroup) => itemGroup.items || []
+      )
+      const premiumOrgCollections = collections.filter(
+        ({ _id: id }) =>
+          !Object.keys(nonPremiumCollectionsToShareContent).includes(id)
+      )
       hasPremiumQuestion = !!testItems.find((i) =>
-        hasUserGotAccessToPremiumItem(i.collections, collections)
+        hasUserGotAccessToPremiumItem(i.collections, premiumOrgCollections)
       )
     }
 

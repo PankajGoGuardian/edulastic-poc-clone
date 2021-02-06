@@ -69,7 +69,10 @@ const Interpret = ({
             onClick={onClickRadioHandler(opt)}
             disabled={isNumberFormatDisabled}
           >
-            <LabelWithHelper optionKey={opt} />
+            <LabelWithHelper
+              optionKey={opt}
+              large={optionKey === 'interpret'}
+            />
           </RadioBtn>
         ))}
       </RadioGrp>

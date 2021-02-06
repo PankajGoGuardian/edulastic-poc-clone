@@ -41,7 +41,11 @@ import {
   resetUpdatedStateAction,
 } from '../../../../ducks'
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
-import { isPublisherUserSelector } from '../../../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  currentUserIdSelector,
+  isPublisherUserSelector,
+} from '../../../../../src/selectors/user'
 import {
   AdvancedButton,
   AdvancedSettings,
@@ -355,6 +359,7 @@ class Setting extends Component {
       districtPermissions = [],
       isAuthorPublisher,
       calculatorProvider,
+      allowedToSelectMultiLanguage,
     } = this.props
 
     const {
@@ -477,8 +482,7 @@ class Setting extends Component {
         title: 'External Metadata',
       })
     }
-    const showMultiLangSelection =
-      isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR
+
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />
@@ -889,7 +893,7 @@ class Setting extends Component {
               )}
 
               {/* Multi language start */}
-              {showMultiLangSelection && (
+              {allowedToSelectMultiLanguage && (
                 <Block id="multi-language-enabled" smallSize={isSmallSize}>
                   <Body>
                     <Title>
@@ -1545,6 +1549,8 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       isAuthorPublisher: isPublisherUserSelector(state),
       editEnable: state.tests?.editEnable,
+      currentUserId: currentUserIdSelector(state),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

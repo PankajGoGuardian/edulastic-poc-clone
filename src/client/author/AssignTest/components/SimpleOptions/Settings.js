@@ -56,7 +56,11 @@ import SubscriptionsBlock from '../../../TestPage/components/Setting/components/
 
 import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
 
-import { getUserRole, getUserFeatures } from '../../../src/selectors/user'
+import {
+  getUserRole,
+  getUserFeatures,
+  allowedToSelectMultiLanguageInTest,
+} from '../../../src/selectors/user'
 import TestTypeSelector from './TestTypeSelector'
 import PlayerSkinSelector from './PlayerSkinSelector'
 import {
@@ -113,6 +117,7 @@ const Settings = ({
   hideClassLevelOptions = false,
   calculatorProvider,
   lcbBultiLanguageEnabled,
+  allowedToSelectMultiLanguage,
 }) => {
   const [showPassword, setShowSebPassword] = useState(false)
   const [tempTestSettings, updateTempTestSettings] = useState({
@@ -343,9 +348,12 @@ const Settings = ({
       )) ||
     calculatorKeys
 
-  const showMultiLangSelection = forClassLevel
-    ? lcbBultiLanguageEnabled
-    : !!testSettings.multiLanguageEnabled
+  const showMultiLangSelection =
+    allowedToSelectMultiLanguage &&
+    (forClassLevel
+      ? lcbBultiLanguageEnabled
+      : !!testSettings.multiLanguageEnabled)
+
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -1204,6 +1212,7 @@ export default connect(
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: getUserFeatures(state),
     lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
+    allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
   }),
   null
 )(withRouter(Settings))

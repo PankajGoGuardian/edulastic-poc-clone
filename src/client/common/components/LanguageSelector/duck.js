@@ -94,13 +94,15 @@ export const languagePreferenceSelector = (state, props = {}) => {
       state?.studentQuestionResponse?.data || {}
     preferredLanguage = studentAttemptLanguage
   } else if (isLCBView) {
-    const { activity: { testActivityId } = {} } = data || {}
-    const { testActivities = [] } =
-      state?.author_classboard_testActivity?.data || {}
+    const { activity: { testActivityId, userId } = {} } = data || {}
+    const {
+      testActivities: currentUTAS = [],
+      recentTestActivitiesGrouped = {},
+    } = state?.author_classboard_testActivity?.data || {}
+    const previousUTAS = recentTestActivitiesGrouped?.[userId] || []
+    const allUTAS = [...currentUTAS, ...previousUTAS]
     if (testActivityId) {
-      const currentUTA = testActivities.find(
-        (uta) => uta._id === testActivityId
-      )
+      const currentUTA = allUTAS.find((uta) => uta._id === testActivityId)
       const { languagePreference = 'en' } = currentUTA || {}
       preferredLanguage = languagePreference
     }

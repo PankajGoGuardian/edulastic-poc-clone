@@ -63,6 +63,7 @@ import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
+import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -537,6 +538,7 @@ class Container extends Component {
       proceedSave,
       hasUnsavedChanges,
       currentLanguage,
+      allowedToSelectMultiLanguage,
     } = this.props
 
     if (!question) {
@@ -592,9 +594,10 @@ class Container extends Component {
             <BackLink onClick={history.goBack}>Back to Item List</BackLink>
           )}
           <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-            {useLanguageFeatureQn.includes(questionType) && (
-              <LanguageSelector questionId={question.id} />
-            )}
+            {allowedToSelectMultiLanguage &&
+              useLanguageFeatureQn.includes(questionType) && (
+                <LanguageSelector questionId={question.id} />
+              )}
             {view !== 'preview' && view !== 'auditTrail' && (
               <EduButton
                 isGhost
@@ -680,6 +683,7 @@ const enhance = compose(
       showCalculatingSpinner: getCalculatingSelector(state),
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       changeView: changeViewAction,

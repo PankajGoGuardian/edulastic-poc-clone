@@ -230,7 +230,9 @@ class SideMenu extends Component {
         ],
         role: ['teacher'],
       })
-    } else if (
+    }
+
+    if (
       [
         roleuser.DISTRICT_ADMIN,
         roleuser.SCHOOL_ADMIN,

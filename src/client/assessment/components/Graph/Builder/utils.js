@@ -391,6 +391,7 @@ export function updateAxe(line, parameters, axe) {
       parameters.maxArrow === true ? { size: parameters.arrowSize || 8 } : false
     )
   }
+
   if (parameters.useRadians) {
     line.ticks[0].generateLabelText = radianTickLabel(
       axe,
@@ -404,10 +405,11 @@ export function updateAxe(line, parameters, axe) {
       parameters.drawZero
     )
   }
+
   if ('showAxis' in parameters) {
     line.setAttribute({ visible: parameters.showAxis })
-    line.ticks[0].setAttribute({ visible: parameters.showAxis })
   }
+
   if ('strokeColor' in parameters) {
     line.setAttribute({ strokeColor: parameters.strokeColor })
   }

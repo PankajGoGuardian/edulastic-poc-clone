@@ -52,7 +52,7 @@ const ItemBankTrialUsedModal = ({
         </p>
       ) : (
         <p>
-          Free trail for <b> {title} </b> is already utilized. Kindly purchase
+          Free trial for <b> {title} </b> is already utilized. Kindly purchase
           to access the content.
         </p>
       )}

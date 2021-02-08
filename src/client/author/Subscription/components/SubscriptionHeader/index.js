@@ -103,6 +103,17 @@ const SubscriptionHeader = ({
               : 'Free'}
           </PlanText>
 
+          {!isBannerVisible && (
+            <EduButton
+              data-cy="manageSubscriptionButton"
+              isBlue
+              isGhost
+              height="24px"
+            >
+              MANAGE SUBSCRIPTIONS
+            </EduButton>
+          )}
+
           {!showRenewalOptions && (
             <Dropdown
               getPopupContainer={(triggerNode) => triggerNode.parentNode}

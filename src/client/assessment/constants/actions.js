@@ -125,3 +125,6 @@ export const Hide_HINTS = '[hints] hide hints'
 // assessmentPlayer
 export const STORE_OPTIONS = '[assessmentPlayer] store order of options'
 export const CLEAR_OPTIONS = '[assessmentPlayer] clear order of options stored'
+export const SWITCH_LANGUAGE =
+  '[assessmentPlayer] switch language during attempt'
+export const LANG_CHANGE_SUCCESS = '[assessmentPlayer] language switch success'

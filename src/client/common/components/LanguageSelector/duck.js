@@ -1,6 +1,7 @@
 import { createAction } from 'redux-starter-kit'
 import { all, takeLatest, select, put } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
+import { get } from 'lodash'
 import { appLanguages, roleuser } from '@edulastic/constants'
 import {
   UPDATE_QUESTION,
@@ -53,14 +54,32 @@ export function* languageSaga() {
 }
 
 export const languageStateSelector = (state) => state.languages
+export const getUtaPeferredLanguage = (state) => state.test.languagePreference
+
+export const getIsMultiLanguageEnabled = (state) => {
+  const assignmentById = get(state, 'studentAssignment.byId')
+  const currentAssignment = get(state, 'studentAssignment.current')
+  return !!assignmentById[currentAssignment]?.multiLanguageEnabled
+}
 export const getCurrentLanguage = createSelector(
   languageStateSelector,
   getCurrentQuestionIdSelector,
   getUserRole,
   getUserPreferredLanguage,
-  (state, currentQuestionId, userRole, userPreferredLanguage) => {
+  getUtaPeferredLanguage,
+  getIsMultiLanguageEnabled,
+  (
+    state,
+    currentQuestionId,
+    userRole,
+    userPreferredLanguage,
+    utaPeferredLanguage,
+    isMultiLanguageEnabled
+  ) => {
     if (userRole === roleuser.STUDENT) {
-      return userPreferredLanguage || LANGUAGE_EN
+      if (isMultiLanguageEnabled)
+        return utaPeferredLanguage || userPreferredLanguage || LANGUAGE_EN
+      return LANGUAGE_EN
     }
     return state[currentQuestionId] || LANGUAGE_EN
   }

@@ -7,6 +7,8 @@ import {
   SET_PASSWORD_STATUS_MESSAGE,
   TEST_ACTIVITY_LOADING,
   UPDATE_CURRENT_AUDIO_DEATILS,
+  SWITCH_LANGUAGE,
+  LANG_CHANGE_SUCCESS,
 } from '../constants/actions'
 
 export const loadTestAction = (payload) => ({
@@ -45,5 +47,15 @@ export const setTestActivityLoadingAction = (payload) => ({
 
 export const setCurrentAudioDetailsAction = (payload) => ({
   type: UPDATE_CURRENT_AUDIO_DEATILS,
+  payload,
+})
+
+export const switchLanguageAction = (payload) => ({
+  type: SWITCH_LANGUAGE,
+  payload,
+})
+
+export const languageChangeSuccessAction = (payload) => ({
+  type: LANG_CHANGE_SUCCESS,
   payload,
 })

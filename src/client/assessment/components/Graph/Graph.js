@@ -57,6 +57,8 @@ import { EDIT } from '../../constants/constantsForQuestions'
 
 const { GRAPH_EVALUATION_SETTING, subEvaluationSettingsGrouped } = mathConstants
 
+const hidePointOnEquation = ['axisSegments', 'axisLabels', 'fractionEditor']
+
 const EmptyWrapper = styled.div``
 
 const SmallSizeQuadrantsWrapper = styled.div`
@@ -475,7 +477,7 @@ class Graph extends Component {
       ...restProps
     } = this.props
 
-    const { symbols = defaultSymbols } = item
+    const { symbols = defaultSymbols, graphType } = item
 
     const mapFontName = {
       extra_large: 'xlarge',
@@ -545,6 +547,7 @@ class Graph extends Component {
                 <EvaluationSettings
                   method={GRAPH_EVALUATION_SETTING}
                   options={this.optionsForEvaluation}
+                  hidePointOnEquation={hidePointOnEquation.includes(graphType)}
                   changeOptions={this.handleChangeEvaluationOption}
                 />
               </Question>

@@ -41,10 +41,12 @@ const ManageSubscriptionContainer = ({
           setShowManageLicenseModal={setShowManageLicenseModal}
         />
       </ContentWrapper>
-      <ManageLicensesModal
-        isVisible={showManageLicenseModal}
-        onCancel={closeManageLicenseModal}
-      />
+      {showManageLicenseModal && (
+        <ManageLicensesModal
+          isVisible={showManageLicenseModal}
+          onCancel={closeManageLicenseModal}
+        />
+      )}
     </>
   )
 }

@@ -29,7 +29,7 @@ const LicenseCountSection = ({ subsLicenses, setShowManageLicenseModal }) => {
             <span>Purchased</span>
           </Countbox>
           <Countbox>
-            <Count>{license.used}</Count>
+            <Count>{license.count - license.used}</Count>
             <span>Available</span>
           </Countbox>
         </RightCol>

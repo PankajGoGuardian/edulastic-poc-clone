@@ -143,13 +143,6 @@ const menuItems = [
     allowedPathPattern: [/schools/],
     role: ['school-admin'],
   },
-  {
-    label: 'Manage Subscription',
-    icon: IconSettings,
-    path: 'author/manage-subscriptions',
-    allowedPathPattern: [/author\/manage-subscriptions/],
-    role: ['teacher', 'district-admin', 'school-admin'],
-  },
 ]
 
 const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist']
@@ -214,9 +207,9 @@ class SideMenu extends Component {
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       _menuItems = _menuItems.filter((i) => libraryItems.includes(i.label))
     }
-    const collaborationItem = []
+    const conditionalMenuItems = []
     if (userRole === roleuser.TEACHER && features.showCollaborationGroups) {
-      collaborationItem.push({
+      conditionalMenuItems.push({
         label: 'Collaboration Groups',
         icon: () => (
           // TODO: replace this terrible icon with better one
@@ -237,10 +230,32 @@ class SideMenu extends Component {
         ],
         role: ['teacher'],
       })
+    } else if (
+      [
+        roleuser.DISTRICT_ADMIN,
+        roleuser.SCHOOL_ADMIN,
+        roleuser.TEACHER,
+      ].includes(userRole) &&
+      features.showMultipleSubscriptions
+    ) {
+      conditionalMenuItems.push({
+        label: 'Manage Subscription',
+        icon: () => (
+          <IconSettings
+            style={{
+              marginRight: !isSidebarCollapsed && '25px',
+              transform: 'Scale(1.2)',
+            }}
+          />
+        ),
+        path: 'author/manage-subscriptions',
+        allowedPathPattern: [/author\/manage-subscriptions/],
+        role: ['teacher', 'district-admin', 'school-admin'],
+      })
     }
 
     if (!lastPlayList || !lastPlayList.value)
-      return [..._menuItems, ...collaborationItem]
+      return [..._menuItems, ...conditionalMenuItems]
 
     const [item1, ...rest] = _menuItems
     const { _id = '' } = lastPlayList.value || {}
@@ -257,9 +272,9 @@ class SideMenu extends Component {
       path: `author/playlists/playlist/${_id}/use-this`,
     }
     if (item1.divider) {
-      return [myPlayListItem, ..._menuItems, ...collaborationItem]
+      return [myPlayListItem, ..._menuItems, ...conditionalMenuItems]
     }
-    return [item1, myPlayListItem, ...rest, ...collaborationItem]
+    return [item1, myPlayListItem, ...rest, ...conditionalMenuItems]
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`

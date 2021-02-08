@@ -67,7 +67,7 @@ const StandardsProgressTable = ({
     [rawTableData, tableFilters]
   )
 
-  const scrollX = useMemo(() => testInfoEnhanced?.length * 120 || '100%', [
+  const scrollX = useMemo(() => testInfoEnhanced?.length * 160 || '100%', [
     testInfoEnhanced?.length,
   ])
 

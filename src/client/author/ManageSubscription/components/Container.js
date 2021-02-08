@@ -1,7 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { getSubscriptionSelector, getSuccessSelector } from '../ducks'
+import {
+  getSubscriptionSelector,
+  getSuccessSelector,
+} from '../../Subscription/ducks'
 import Header from './Header'
 
 const ManageSubscriptionContainer = ({

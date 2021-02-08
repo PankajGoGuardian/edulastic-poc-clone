@@ -1,11 +1,27 @@
-import { message } from 'antd'
-import moment from 'moment'
-import { isEmpty } from 'lodash'
+import { paymentApi, subscriptionApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
+import { message } from 'antd'
+import { isEmpty } from 'lodash'
+import moment from 'moment'
+import { all, call, put, takeEvery } from 'redux-saga/effects'
 import { createSlice } from 'redux-starter-kit'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
-import { subscriptionApi, paymentApi } from '@edulastic/api'
+import { createSelector } from 'reselect'
 import { fetchUserAction } from '../../student/Login/ducks'
+
+// selectors
+const subscriptionSelector = (state) => state.subscription
+export const getSubscriptionDataSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.subscriptionData
+)
+export const getSubscriptionSelector = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.subscription
+)
+export const getSuccessSelector = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.success
+)
 
 const slice = createSlice({
   name: 'subscription',

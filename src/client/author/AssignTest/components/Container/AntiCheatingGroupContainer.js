@@ -266,8 +266,9 @@ const AntiCheatingGroupContainer = ({
         <SettingContainer>
           <DetailsTooltip
             width={tootltipWidth}
-            title="Complete test in one sitting"
-            content="Will force the students to take the test in single sitting"
+            title="ALLOW STUDENT TO SAVE AND CONTINUE LATER"
+            content="If OFF, will force the students to take the test in single sitting"
+            placement="rightTop"
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
@@ -280,7 +281,7 @@ const AntiCheatingGroupContainer = ({
                 size="small"
                 checked={blockSaveAndContinue}
                 onChange={(value) =>
-                  overRideSettings('blockSaveAndContinue', !value)
+                  overRideSettings('blockSaveAndContinue', value)
                 }
               />
             </Col>
@@ -305,7 +306,7 @@ const AntiCheatingGroupContainer = ({
             <Col span={14}>
               <StyledRadioGroupWrapper
                 value={restrictNavigationOut || undefined}
-                disabled={freezeSettings}
+                disabled={freezeSettings || !premium}
                 onChange={(e) => {
                   overRideSettings('restrictNavigationOut', e.target.value)
                 }}

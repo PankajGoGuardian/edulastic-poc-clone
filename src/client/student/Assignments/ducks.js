@@ -67,7 +67,15 @@ export const FILTERS = {
   IN_PROGRESS: 'inProgress',
 }
 
-export const getCurrentUserId = createSelectorator(['user.user._id'], (r) => r)
+export const getCurrentUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (r, currentChild) => {
+    if (currentChild) {
+      return currentChild
+    }
+    return r
+  }
+)
 
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments'
@@ -488,6 +496,7 @@ export const getSelectedLanguageSelector = createSelector(
   stateSelector,
   (state) => state.languagePreference
 )
+
 function isSEB() {
   return window.navigator.userAgent.includes('SEB')
 }
@@ -694,7 +703,7 @@ function* startAssignment({ payload }) {
       if (languagePreference) {
         playListData.languagePreference = languagePreference
       }
-      const { _id } = yield testActivityApi.create()
+      const { _id } = yield testActivityApi.create(playListData)
       testActivityId = _id
     } else {
       yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }))

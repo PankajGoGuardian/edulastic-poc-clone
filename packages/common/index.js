@@ -120,6 +120,7 @@ export {
   useLayoutEffectDebounced,
   getRangeAtFirst,
   replaceLatexTemplate,
+  isValidUpdate,
 } from './src/helpers'
 
 // contexts

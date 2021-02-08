@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 
 import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconCloseFilter } from '@edulastic/icons'
 
 import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForMAR } from './common/utils/transformers'
@@ -241,7 +241,7 @@ const MultipleAssessmentReportContainer = (props) => {
         />
         {!reportId ? (
           <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            <IconFilter />
+            {showFilter ? <IconCloseFilter /> : <IconFilter />}
           </FilterButtonClear>
         ) : null}
         <ReportContaner showFilter={showFilter}>

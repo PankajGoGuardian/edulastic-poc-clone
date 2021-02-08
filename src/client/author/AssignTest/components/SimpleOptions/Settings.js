@@ -24,7 +24,10 @@ import {
   CheckBoxWrapper,
   TimeSpentInput,
 } from './styled'
-import { getUserRole } from '../../../src/selectors/user'
+import {
+  getUserRole,
+  allowedToSelectMultiLanguageInTest,
+} from '../../../src/selectors/user'
 import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
@@ -70,6 +73,7 @@ const Settings = ({
   multiLanguageEnabledLCB,
   match,
   totalItems,
+  allowedToSelectMultiLanguage,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -268,7 +272,8 @@ const Settings = ({
       )) ||
     calculatorKeys
 
-  const showMultiLangSelection = !!multiLanguageEnabledLCB
+  const showMultiLangSelection =
+    allowedToSelectMultiLanguage && !!multiLanguageEnabledLCB
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -387,6 +392,28 @@ const Settings = ({
           </StyledRow>
         </SettingContainer>
         {/* Answer on Paper */}
+
+        {/* Multi language */}
+        {showMultiLangSelection && (
+          <StyledRow gutter={16}>
+            <Col span={12}>
+              <Label>Multi-Language</Label>
+            </Col>
+            <Col span={12}>
+              <AlignSwitchRight
+                data-cy="multi-language"
+                size="small"
+                defaultChecked={false}
+                disabled={freezeSettings || !premium}
+                checked={multiLanguageEnabled}
+                onChange={(value) =>
+                  overRideSettings('multiLanguageEnabled', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        )}
+        {/* Multi language */}
 
         {/* Require Password */}
         <SettingContainer>
@@ -807,6 +834,7 @@ export default connect(
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: state?.user?.user?.features,
     multiLanguageEnabledLCB: getmultiLanguageEnabled(state),
+    allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
   }),
   null
 )(withRouter(Settings))

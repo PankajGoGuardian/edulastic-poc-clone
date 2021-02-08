@@ -4,7 +4,15 @@ import {
   assignmentApi,
   attchmentApi as attachmentApi,
 } from '@edulastic/api'
-import { takeEvery, call, all, put, select, take } from 'redux-saga/effects'
+import {
+  takeEvery,
+  call,
+  all,
+  put,
+  select,
+  take,
+  takeLatest,
+} from 'redux-saga/effects'
 import { Modal } from 'antd'
 import {
   notification,
@@ -20,6 +28,7 @@ import {
   testActivityStatus,
 } from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
+import { Fscreen } from '../utils/helpers'
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
 import {
@@ -42,6 +51,7 @@ import {
   REMOVE_PREVIOUS_ANSWERS,
   CLEAR_USER_WORK,
   SET_SAVE_USER_RESPONSE,
+  SWITCH_LANGUAGE,
 } from '../constants/actions'
 import { saveUserResponse as saveUserResponseAction } from '../actions/items'
 import { saveUserResponse as saveUserResponseSaga } from './items'
@@ -50,6 +60,7 @@ import { loadBookmarkAction } from '../sharedDucks/bookmark'
 import {
   setPasswordValidateStatusAction,
   setPasswordStatusAction,
+  languageChangeSuccessAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
@@ -64,8 +75,13 @@ import {
 import { addAutoselectGroupItems } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
-import { setActiveAssignmentAction } from '../../student/sharedDucks/AssignmentModule/ducks'
+import {
+  setActiveAssignmentAction,
+  utaStartTimeUpdateRequired,
+} from '../../student/sharedDucks/AssignmentModule/ducks'
 import { getClassIds } from '../../student/Reports/ducks'
+import { startAssessmentAction } from '../actions/assessment'
+import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -382,6 +398,16 @@ function* loadTest({ payload }) {
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      if (activity.isPaused) {
+        Fscreen.safeExitfullScreen()
+        yield put(push('/home/assignments'))
+        setTimeout(() => {
+          notification({
+            type: 'warning',
+            msg: 'Your assignment is paused contact your instructor',
+          })
+        }, 2000)
+      }
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(
         questionActivities,
@@ -572,6 +598,7 @@ function* loadTest({ payload }) {
         settings,
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
+        languagePreference: testActivity.testActivity?.languagePreference,
       },
     })
     yield put(setPasswordValidateStatusAction(true))
@@ -639,12 +666,14 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
+          Fscreen.exitFullscreen()
           return yield put(push('/home/assignments'))
         }
       }
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
+      Fscreen.exitFullscreen()
       return yield put(push('/home/assignments'))
     }
   }
@@ -702,7 +731,6 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
-    window.document.exitFullscreen().catch(() => {})
     const isCliUser = yield select((state) => state.user?.isCliUser)
     if (isCliUser) {
       window.parent.postMessage(
@@ -829,6 +857,45 @@ function* submitTest({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: false,
     })
+    Fscreen.safeExitfullScreen()
+  }
+}
+
+function* switchLanguage({ payload }) {
+  try {
+    const testActivityId = yield select(
+      (state) => state.test && state.test.testActivityId
+    )
+    const { testActivity } = yield call(testActivityApi.switchLanguage, {
+      testActivityId,
+      ...payload,
+    })
+    const {
+      groupId,
+      testId,
+      _id,
+      itemsToDeliverInGroup,
+      languagePreference,
+    } = testActivity
+    yield put(
+      languageChangeSuccessAction({ languagePreference, testActivityId: _id })
+    )
+    const testType = yield select((state) => state.test && state.test.testType)
+    const firstItemId = itemsToDeliverInGroup[0].items[0]
+    yield put(startAssessmentAction())
+    yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
+    yield put(push('/'))
+    yield put(
+      push(
+        `/student/${testType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`
+      )
+    )
+  } catch (err) {
+    console.log(err)
+    captureSentryException(err)
+    notification({
+      msg: err.response?.data?.message || 'Something went wrong!',
+    })
   }
 }
 
@@ -837,5 +904,6 @@ export default function* watcherSaga() {
     yield takeEvery(LOAD_TEST, loadTest),
     yield Effects.throttleAction(10000, FINISH_TEST, submitTest),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
+    yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
   ])
 }

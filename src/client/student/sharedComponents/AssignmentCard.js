@@ -217,6 +217,7 @@ const AssignmentCard = memo(
         notification({ messageKey: 'testIsExpired' })
         return
       }
+
       if (
         !resume &&
         (timedAssignment || hasInstruction || multiLanguageEnabled)

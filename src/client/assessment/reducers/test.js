@@ -19,6 +19,7 @@ import {
   Hide_HINTS,
   SET_SAVE_USER_RESPONSE,
   SET_CHECK_ANSWER_PROGRESS_STATUS,
+  LANG_CHANGE_SUCCESS,
 } from '../constants/actions'
 
 const initialState = {
@@ -43,6 +44,7 @@ const initialState = {
   currentAssignmentTime: null,
   stopTimerFlag: false,
   checkAnswerInProgress: false,
+  languagePreference: '',
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -63,6 +65,7 @@ const test = (state = initialState, { payload, type }) => {
         isDocBased: payload.isDocBased,
         freeFormNotes: payload.freeFormNotes,
         showMagnifier: payload.showMagnifier,
+        languagePreference: payload.languagePreference,
         settings: {
           ...state.settings,
           ...payload.settings,
@@ -160,6 +163,12 @@ const test = (state = initialState, { payload, type }) => {
       return { ...state, savingResponse: payload }
     case SET_CHECK_ANSWER_PROGRESS_STATUS:
       return { ...state, checkAnswerInProgress: payload }
+    case LANG_CHANGE_SUCCESS:
+      return {
+        ...state,
+        languagePreference: payload.languagePreference,
+        testActivityId: payload.testActivityId,
+      }
     default:
       return state
   }

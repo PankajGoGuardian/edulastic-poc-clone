@@ -135,6 +135,7 @@ const StandardsFilters = ({
 
   const standardProficiencyFilter = (
     <StyledDropDownContainer
+      data-cy="standardProficiency"
       xs={24}
       sm={12}
       md={12}
@@ -159,6 +160,7 @@ const StandardsFilters = ({
       <Col span={24}>
         <Row type="flex" justify="end">
           <StyledDropDownContainer
+            data-cy="standardSet"
             xs={24}
             sm={12}
             md={12}
@@ -174,6 +176,7 @@ const StandardsFilters = ({
             />
           </StyledDropDownContainer>
           <StyledDropDownContainer
+            data-cy="standardGrade"
             xs={24}
             sm={12}
             md={12}
@@ -214,6 +217,7 @@ const StandardsFilters = ({
           </StyledDropDownContainer>
           {pageTitle === 'Standards Progress' && (
             <StyledDropDownContainer
+              data-cy="standard"
               xs={24}
               sm={12}
               md={12}

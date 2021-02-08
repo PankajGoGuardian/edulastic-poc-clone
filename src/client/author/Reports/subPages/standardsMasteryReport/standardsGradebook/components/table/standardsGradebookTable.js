@@ -162,7 +162,7 @@ const StandardsGradebookTableComponent = ({
       filteredTableData,
       ({ standardsInfo }) => standardsInfo
     ).length
-    return standardCols * 120 || '100%'
+    return standardCols * 160 || '100%'
   }, [filteredTableData])
 
   const getDisplayValue = (item, _analyseBy) => {

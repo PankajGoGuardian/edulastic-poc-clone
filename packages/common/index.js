@@ -120,10 +120,12 @@ export {
   useLayoutEffectDebounced,
   getRangeAtFirst,
   replaceLatexTemplate,
+  isValidUpdate,
 } from './src/helpers'
 
 // contexts
 export { default as AnswerContext } from './src/contexts/AnswerContext'
+export { default as LanguageContext } from './src/contexts/LanguageContext'
 export { default as ScratchPadContext } from './src/contexts/ScratchPadContext'
 export { default as ScrollContext } from './src/contexts/ScrollContext'
 export { default as LCBScrollContext } from './src/contexts/LCBScrollContext'

@@ -43,6 +43,7 @@ const initialState = {
   currentAssignmentTime: null,
   stopTimerFlag: false,
   checkAnswerInProgress: false,
+  languagePreference: '',
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -63,6 +64,7 @@ const test = (state = initialState, { payload, type }) => {
         isDocBased: payload.isDocBased,
         freeFormNotes: payload.freeFormNotes,
         showMagnifier: payload.showMagnifier,
+        languagePreference: payload.languagePreference,
         settings: {
           ...state.settings,
           ...payload.settings,

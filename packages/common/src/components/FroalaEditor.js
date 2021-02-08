@@ -1,16 +1,16 @@
 /* eslint-disable func-names */
 /* eslint-disable */
 /* global $ */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme, css } from 'styled-components'
-import { cloneDeep, debounce, isEmpty } from 'lodash'
+import { cloneDeep, debounce, isEmpty, isEqual } from 'lodash'
 import { message } from 'antd'
-import { notification } from '@edulastic/common'
+import { notification, LanguageContext } from '@edulastic/common'
 import Editor from 'react-froala-wysiwyg'
 import uuid from 'uuid/v4'
 import { withMathFormula } from '../HOC/withMathFormula'
-import { aws, math } from '@edulastic/constants'
+import { aws, math, appLanguages } from '@edulastic/constants'
 import {
   white,
   dashBorderColor,
@@ -29,6 +29,7 @@ import {
   reIndexResponses,
   canInsert,
   beforeUpload,
+  isValidUpdate,
 } from '../helpers'
 import headings from './FroalaPlugins/headings'
 import customPastePlugin from './FroalaPlugins/customPastePlugin'
@@ -727,6 +728,7 @@ const CustomEditor = ({
   const [toolbarExpanded, setToolbarExpanded] = useState(false)
   const [configState, setConfigState] = useState(null)
   const [mathField, setMathField] = useState(null)
+  const { currentLanguage } = useContext(LanguageContext)
 
   const EditorRef = useRef(null)
 
@@ -1427,6 +1429,21 @@ const CustomEditor = ({
     setPrevValue(value)
     setContent(replaceLatexesWithMathHtml(value))
   }, [value])
+
+  useEffect(() => {
+    if (
+      value &&
+      content &&
+      currentLanguage &&
+      currentLanguage !== appLanguages.LANGUAGE_EN &&
+      hasResponseBoxBtn() &&
+      !isValidUpdate(value, content)
+    ) {
+      // in spanish mode, if they add/remove responseboxes
+      // use previous content instead of updated
+      setChange(value)
+    }
+  }, [content])
 
   return (
     <>

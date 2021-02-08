@@ -1,10 +1,8 @@
-import React, { useMemo, memo } from 'react'
+import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import produce from 'immer'
-
 import { Paper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 
@@ -12,12 +10,11 @@ import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import { ContentArea } from '../../styled/ContentArea'
 import TextContent from './TextContent'
 import TextContentPreview from './TextContentPreview'
-import { changeDataToPreferredLanguage } from '../MultipleChoice/helpers'
 
 const EmptyWrapper = styled.div``
 
 const Text = ({
-  item: _item,
+  item,
   view,
   smallSize,
   setQuestionData,
@@ -25,24 +22,7 @@ const Text = ({
   fillSections,
   cleanSections,
   advancedLink,
-  preferredLanguage = 'en',
 }) => {
-  const item = useMemo(() => {
-    if (
-      preferredLanguage !== 'en' &&
-      _item?.languageFeatures?.[preferredLanguage]
-    ) {
-      return produce(_item, (draft) => {
-        changeDataToPreferredLanguage(
-          draft,
-          draft.languageFeatures[preferredLanguage]
-        )
-      })
-    }
-
-    return _item
-  }, [_item])
-
   const Wrapper = smallSize ? EmptyWrapper : Paper
 
   if (view === 'edit') {

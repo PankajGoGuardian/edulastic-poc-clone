@@ -32,18 +32,9 @@ const Hints = ({
   isLCBView,
   isExpressGrader,
   isStudentReport,
-  preferredLanguage = 'en',
 }) => {
   const { id } = question
-
   const validHints = useMemo(() => {
-    if (
-      preferredLanguage !== 'en' &&
-      question?.languageFeatures?.[preferredLanguage]?.hints
-    ) {
-      return question.languageFeatures[preferredLanguage].hints
-    }
-
     return (question?.hints || []).filter((hint) => hint?.label)
   }, [question])
 

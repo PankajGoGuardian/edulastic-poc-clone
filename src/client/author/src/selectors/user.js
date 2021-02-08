@@ -386,3 +386,24 @@ export const isCoTeacherSelector = createSelector(
     role === roleuser.SCHOOL_ADMIN ||
     role === roleuser.TEACHER
 )
+
+export const getUserPreferredLanguage = createSelector(
+  getUserSelector,
+  (state) => state?.user?.preferredLanguage
+)
+
+export const currentUserIdSelector = createSelector(
+  getUserSelector,
+  (state) => state?.user?._id
+)
+
+export const allowedToSelectMultiLanguageInTest = createSelector(
+  currentUserIdSelector,
+  (state) => {
+    const allowedUserIds = [
+      // '5d26f2f892df401ddf8c2fd7', // poc user
+      '5ec422aabdde150007764df1', // "Edulastic Premium Content"
+    ]
+    return allowedUserIds.includes(state)
+  }
+)

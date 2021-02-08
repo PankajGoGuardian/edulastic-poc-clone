@@ -41,6 +41,7 @@ function Preview({
   userWork,
   scractchPadUsed,
   t,
+  isStudentView,
 }) {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -115,6 +116,7 @@ function Preview({
         studentName={studentName || t('common.anonymous')}
         inLCB
         itemId={item._id}
+        isStudentView={isStudentView}
       />
     </StyledFlexContainer>
   )
@@ -465,6 +467,7 @@ class ClassQuestions extends Component {
           scractchPadUsed={scractchPadUsed}
           userWork={userWork} // used to determine show student work button
           t={t}
+          isStudentView={isStudentView}
         />
       )
     })

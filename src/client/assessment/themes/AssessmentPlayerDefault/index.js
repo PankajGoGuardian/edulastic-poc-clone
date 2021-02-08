@@ -802,7 +802,6 @@ const enhance = compose(
     (state, ownProps) => ({
       evaluation: state.evaluation,
       preview: state.view.preview,
-      questions: state.assessmentplayerQuestions.byId,
       scratchPad: get(
         state,
         `userWork.present[${

@@ -16,6 +16,7 @@ import {
   removeAssignmentAction,
   rerenderAssignmentsAction,
   updateTestIdRealTimeAction,
+  setSelectedLanguageAction,
 } from '../../sharedDucks/AssignmentModule/ducks'
 import {
   addRealtimeReportAction,
@@ -30,6 +31,7 @@ import {
   transformAssignmentForRedirect,
   assignmentIdsByTestIdSelector,
   notStartedReportsByAssignmentId,
+  getSelectedLanguageSelector,
 } from '../ducks'
 
 const withinThreshold = (targetDate, threshold) => {
@@ -81,6 +83,8 @@ const Content = ({
   updateTestIdRealTime,
   notStartedReportsByAssignment,
   setAssignmentIsPaused,
+  setSelectedLanguage,
+  languagePreference,
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup)
@@ -158,6 +162,8 @@ const Content = ({
           index={i}
           type="assignment"
           uta={notStartedReportsByAssignment[`${item._id}_${item.classId}`]}
+          languagePreference={languagePreference}
+          setSelectedLanguage={setSelectedLanguage}
         />
       ))}
     </AssignmentWrapper>
@@ -190,6 +196,7 @@ export default connect(
     currentChild: state?.user?.currentChild,
     assignmentIdsByTestId: assignmentIdsByTestIdSelector(state),
     notStartedReportsByAssignment: notStartedReportsByAssignmentId(state),
+    languagePreference: getSelectedLanguageSelector(state),
   }),
   {
     fetchAssignments: fetchAssignmentsAction,
@@ -199,6 +206,7 @@ export default connect(
     removeAssignment: removeAssignmentAction,
     updateTestIdRealTime: updateTestIdRealTimeAction,
     setAssignmentIsPaused: setAssignmentIsPausedAction,
+    setSelectedLanguage: setSelectedLanguageAction,
   }
 )(Content)
 

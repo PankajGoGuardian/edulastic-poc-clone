@@ -138,6 +138,9 @@ const Profile = loadable(
 const Subscription = loadable(() => import('../Subscription'), {
   fallback: <Progress />,
 })
+const ManageSubscription = loadable(() => import('../ManageSubscription'), {
+  fallback: <Progress />,
+})
 const DistrictProfile = loadable(() => import('../DistrictProfile'), {
   fallback: <Progress />,
 })
@@ -723,6 +726,11 @@ const Author = ({
                     exact
                     path="/author/subscription"
                     component={Subscription}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/manage-subscriptions`}
+                    component={ManageSubscription}
                   />
                   <Route
                     exact

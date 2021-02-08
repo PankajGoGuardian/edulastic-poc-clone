@@ -27,6 +27,7 @@ import { testsAddItems } from '../../TestPage/components/AddItems'
 import { testAssignmentsReducer } from '../../TestPage/components/Assign'
 import { assessmentCreate } from '../../AssessmentCreate'
 import { manageClass } from '../../ManageClass'
+import { manageSubscription } from '../../ManageSubscription'
 import { districtProfileReducer } from '../../DistrictProfile'
 import { testSettingReducer } from '../../TestSetting'
 import { termReducer } from '../../Term'
@@ -92,6 +93,7 @@ const authorReducers = {
   studentQuestionResponse,
   classQuestionResponse,
   manageClass,
+  manageSubscription,
   authorUserList,
   districtProfileReducer,
   testSettingReducer,

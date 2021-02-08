@@ -1,11 +1,19 @@
 import React from 'react'
 import { maxBy } from 'lodash'
-import { Modal } from 'antd'
-import { notification } from '@edulastic/common'
-import { themeColor } from '@edulastic/colors'
+import {
+  notification,
+  FlexContainer,
+  MathFormulaDisplay,
+} from '@edulastic/common'
 import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 
-const releaseGradeLabels = testConstants.releaseGradeLabels
+import { Select, Modal, Tooltip } from 'antd'
+import { themeColor } from '@edulastic/colors'
+
+const { Option } = Select
+
+const { languageCodes, releaseGradeLabels } = testConstants
+
 const ARCHIVED_TEST_MSG =
   'You can no longer use this as sharing access has been revoked by author'
 
@@ -117,12 +125,129 @@ export const redirectToDashbord = (type = '', history) => {
   history.push('/home/assignments')
 }
 
+export const showTestInfoModal = ({
+  pauseAllowed,
+  allowedTime,
+  multiLanguageEnabled,
+  setSelectedLanguage,
+  languagePreference,
+  timedAssignment,
+  hasInstruction,
+  instruction,
+  attemptCount,
+  maxAttempts,
+  startAssignment,
+  testId,
+  assignmentId,
+  testType,
+  classId,
+  history,
+  title,
+  notifyCancel,
+}) => {
+  const timedContent = pauseAllowed ? (
+    <p style={{ margin: '10px 0' }}>
+      {' '}
+      This is a timed assignment which should be finished within the time limit
+      set for this assignment. The time limit for this assignment is{' '}
+      <span data-cy="test-time" style={{ fontWeight: 700 }}>
+        {' '}
+        {allowedTime / (60 * 1000)} minutes
+      </span>
+      . Do you want to continue?
+    </p>
+  ) : (
+    <p style={{ margin: '10px 0' }}>
+      {' '}
+      This is a timed assignment which should be finished within the time limit
+      set for this assignment. The time limit for this assignment is{' '}
+      <span data-cy="test-time" style={{ fontWeight: 700 }}>
+        {' '}
+        {allowedTime / (60 * 1000)} minutes
+      </span>{' '}
+      and you can’t quit in between. Do you want to continue?
+    </p>
+  )
+
+  const content = (
+    <FlexContainer flexDirection="column">
+      {multiLanguageEnabled && (
+        <>
+          <p style={{ margin: '10px 0' }}>
+            This test is offered in multiple languages. Please select your
+            preferred language.
+          </p>
+          <p style={{ margin: '10px 0' }}>
+            <Select
+              getPopupContainer={(e) => e.parentElement}
+              defaultValue={languagePreference}
+              style={{ width: 200 }}
+              onChange={setSelectedLanguage}
+            >
+              <Option value="" disabled>
+                Select Language
+              </Option>
+              <Option value={languageCodes.ENGLISH}>English</Option>
+              <Option value={languageCodes.SPANISH}>Spanish</Option>
+            </Select>
+          </p>
+        </>
+      )}
+      {timedAssignment && timedContent}
+      {hasInstruction && instruction && (
+        <p style={{ margin: '10px 0' }}>
+          <MathFormulaDisplay
+            dangerouslySetInnerHTML={{ __html: instruction }}
+          />
+        </p>
+      )}
+    </FlexContainer>
+  )
+
+  Modal.confirm({
+    title: (
+      <Tooltip title={title}>
+        <div
+          style={{
+            width: '300px',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {title}
+        </div>
+      </Tooltip>
+    ),
+    content,
+    onOk: () => {
+      if (attemptCount < maxAttempts)
+        startAssignment({ testId, assignmentId, testType, classId })
+      Modal.destroyAll()
+    },
+    onCancel: () => {
+      setSelectedLanguage('')
+      if (notifyCancel) redirectToDashbord('HOME', history)
+      else Modal.destroyAll()
+    },
+    okText: 'Continue',
+    // okType: "danger",
+    centered: true,
+    width: 500,
+    okButtonProps: {
+      style: { background: themeColor },
+    },
+  })
+}
+
 // case: check to where to navigate
 const redirectToAssessmentPlayer = (
   assignment,
   history,
   startAssignment,
-  resumeAssignment
+  resumeAssignment,
+  languagePreference,
+  setSelectedLanguage
 ) => {
   const {
     endDate,
@@ -139,6 +264,10 @@ const redirectToAssessmentPlayer = (
     graded,
     title,
     releaseScore,
+    absent,
+    multiLanguageEnabled,
+    hasInstruction,
+    instruction,
   } = assignment
   // if assignment is graded, then redirected to assignment review page
   const activeAssignments = assignment.class.filter(
@@ -156,8 +285,8 @@ const redirectToAssessmentPlayer = (
       (item) => currentTime > item.endDate || item.closed
     )
   }
-  if (graded && (isExpired || attemptCount === maxAttempts)) {
-    if (releaseScore === releaseGradeLabels.DONT_RELEASE) {
+  if ((graded || absent) && (isExpired || attemptCount === maxAttempts)) {
+    if (releaseScore === releaseGradeLabels.DONT_RELEASE || absent) {
       return history.push({
         pathname: '/home/grades',
         state: { highlightAssignment: assignmentId },
@@ -178,49 +307,27 @@ const redirectToAssessmentPlayer = (
   // case assignment is not started yet and is timed assignment, then modal popup with appropriate content
   // on proceed, redirect to assessment player
   // on cancel redirect to student dashboard
-  if (!resume && timedAssignment) {
-    const content = pauseAllowed ? (
-      <p>
-        {' '}
-        This is a timed assignment which should be finished within the time
-        limit set for this assignment. The time limit for this assignment is{' '}
-        <span data-cy="test-time" style={{ fontWeight: 700 }}>
-          {' '}
-          {allowedTime / (60 * 1000)} minutes
-        </span>
-        . Do you want to continue?
-      </p>
-    ) : (
-      <p>
-        {' '}
-        This is a timed assignment which should be finished within the time
-        limit set for this assignment. The time limit for this assignment is{' '}
-        <span data-cy="test-time" style={{ fontWeight: 700 }}>
-          {' '}
-          {allowedTime / (60 * 1000)} minutes
-        </span>{' '}
-        and you can’t quit in between. Do you want to continue?
-      </p>
-    )
-
-    Modal.confirm({
-      title: 'Do you want to Continue ?',
-      content,
-      onOk: () => {
-        if (attemptCount < maxAttempts)
-          startAssignment({ testId, assignmentId, testType, classId })
-        Modal.destroyAll()
-      },
-      onCancel: () => redirectToDashbord('HOME', history),
-      okText: 'Continue',
-      // okType: "danger",
-      centered: true,
-      width: 500,
-      okButtonProps: {
-        style: { background: themeColor },
-      },
+  if (!resume && (timedAssignment || hasInstruction || multiLanguageEnabled)) {
+    return showTestInfoModal({
+      pauseAllowed,
+      allowedTime,
+      multiLanguageEnabled,
+      setSelectedLanguage,
+      languagePreference,
+      timedAssignment,
+      hasInstruction,
+      instruction,
+      attemptCount,
+      maxAttempts,
+      startAssignment,
+      testId,
+      assignmentId,
+      testType,
+      classId,
+      history,
+      title,
+      notifyCancel: true,
     })
-    return
   }
 
   // case assigment is resumed, then redirect to assessment player with resumed state
@@ -246,7 +353,9 @@ export const redirectToStudentPage = (
   history,
   startAssignment,
   resumeAssignment,
-  test
+  test,
+  languagePreference,
+  setSelectedLanguage
 ) => {
   const formatedAssignments = assignments.map((assignment) =>
     formatAssignment(assignment)
@@ -267,7 +376,9 @@ export const redirectToStudentPage = (
       assignment,
       history,
       startAssignment,
-      resumeAssignment
+      resumeAssignment,
+      languagePreference,
+      setSelectedLanguage
     )
   } else {
     // if test is archieved/ in draft,
@@ -292,8 +403,8 @@ export const activeAssignmentClassIdentifiers = (assignmentsObj) => {
   }
   const classIdentifiers = {}
   assignments.forEach((item) => {
-    item.class.forEach((item) => {
-      classIdentifiers[item.identifier] = true
+    item.class.forEach((c) => {
+      classIdentifiers[c.identifier] = true
     })
   })
   return classIdentifiers

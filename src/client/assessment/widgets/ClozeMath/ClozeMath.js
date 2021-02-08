@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
-import React, { useContext, useMemo } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import {
   WithResources,
@@ -37,12 +37,11 @@ import AppConfig from '../../../../app-config'
 import Question from '../../components/Question'
 import QuestionOptions from '../ClozeImageDropDown/QuestionOptions'
 import { latexKeys } from './constants'
-import { changeDataToPreferredLanguage } from '../ClozeText/helpers'
 
 const ClozeMath = ({
   view,
   previewTab,
-  item: oldItem,
+  item,
   setQuestionData,
   saveAnswer,
   checkAnswer,
@@ -60,23 +59,6 @@ const ClozeMath = ({
   isPrintPreview,
   ...restProps
 }) => {
-  const item = useMemo(() => {
-    const { preferredLanguage } = restProps
-    if (
-      preferredLanguage !== 'en' &&
-      oldItem?.languageFeatures?.[preferredLanguage]
-    ) {
-      return produce(oldItem, (draft) => {
-        changeDataToPreferredLanguage(
-          draft,
-          draft.languageFeatures[preferredLanguage]
-        )
-      })
-    }
-
-    return oldItem
-  }, [oldItem])
-
   const answerContextConfig = useContext(AnswerContext)
   let actualPreviewMode = previewTab
   if (

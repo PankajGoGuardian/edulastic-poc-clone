@@ -8,7 +8,7 @@ import {
   LOAD_QUESTION,
 } from '../constants/actions'
 import {
-  UPDATE_QUESTION,
+  UPDATE_QUESTION_REQUEST,
   SET_FIRST_MOUNT,
   CHANGE_ITEM,
   CHANGE_ITEM_UI_STYLE,
@@ -32,7 +32,7 @@ export const changeLabelAction = (value) => ({
 })
 
 export const setQuestionDataAction = (question) => ({
-  type: UPDATE_QUESTION,
+  type: UPDATE_QUESTION_REQUEST,
   payload: question,
 })
 

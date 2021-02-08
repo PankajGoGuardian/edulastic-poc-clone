@@ -583,6 +583,7 @@ function* loadTest({ payload }) {
         settings,
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
+        languagePreference: testActivity.testActivity?.languagePreference,
       },
     })
     yield put(setPasswordValidateStatusAction(true))

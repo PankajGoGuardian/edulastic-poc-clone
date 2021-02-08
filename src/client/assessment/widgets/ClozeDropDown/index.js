@@ -26,7 +26,6 @@ import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import AppConfig from '../../../../app-config'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
-import { changeDataToPreferredLanguage } from '../ClozeText/helpers'
 
 const EmptyWrapper = styled.div``
 
@@ -34,19 +33,7 @@ class ClozeDropDown extends Component {
   static contextType = AnswerContext
 
   getRenderData = () => {
-    const { history, view, preferredLanguage } = this.props
-    let { item: templateItem } = this.props
-    const { languageFeatures } = templateItem
-
-    if (preferredLanguage !== 'en' && languageFeatures?.[preferredLanguage]) {
-      templateItem = produce(templateItem, (draft) => {
-        changeDataToPreferredLanguage(
-          draft,
-          languageFeatures[preferredLanguage]
-        )
-      })
-    }
-
+    const { item: templateItem, history, view } = this.props
     const itemForPreview = replaceVariables(templateItem)
     const item = view === EDIT ? templateItem : replaceVariables(templateItem)
 

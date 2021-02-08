@@ -13,8 +13,10 @@ import {
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSelectedLanguageSelector,
 } from '../../student/Assignments/ducks'
 import { redirectToStudentPage } from '../../publicTest/utils'
+import { setSelectedLanguageAction } from '../../student/sharedDucks/AssignmentModule/ducks'
 
 const { STUDENT, TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = roleuser
 
@@ -29,6 +31,8 @@ const AssignmentEmbedLink = ({
   resumeAssignment,
   history,
   isVersionId,
+  languagePreference,
+  setSelectedLanguage,
 }) => {
   const { testId, versionId } = match.params
   useEffect(() => {
@@ -53,7 +57,10 @@ const AssignmentEmbedLink = ({
         assignments,
         history,
         startAssignment,
-        resumeAssignment
+        resumeAssignment,
+        {},
+        languagePreference,
+        setSelectedLanguage
       )
     }
   }, [loadingAssignments])
@@ -66,11 +73,13 @@ export default connect(
     user: getUser(state),
     loadingAssignments: get(state, 'publicTest.loadingAssignments'),
     assignments: getAllAssignmentsSelector(state),
+    languagePreference: getSelectedLanguageSelector(state),
   }),
   {
     fetchAssignmentsByTestId: fetchAssignmentsByTestIdAction,
     fetchAssignmentsForStudent: fetchAssignmentsByTestAction,
     startAssignment: startAssignmentAction,
     resumeAssignment: resumeAssignmentAction,
+    setSelectedLanguage: setSelectedLanguageAction,
   }
 )(AssignmentEmbedLink)

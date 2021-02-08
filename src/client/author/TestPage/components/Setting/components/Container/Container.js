@@ -37,7 +37,11 @@ import {
   resetUpdatedStateAction,
 } from '../../../../ducks'
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
-import { isPublisherUserSelector } from '../../../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  currentUserIdSelector,
+  isPublisherUserSelector,
+} from '../../../../../src/selectors/user'
 import {
   Block,
   BlueText,
@@ -359,6 +363,7 @@ class Setting extends Component {
       districtPermissions = [],
       isAuthorPublisher,
       calculatorProvider,
+      allowedToSelectMultiLanguage,
     } = this.props
 
     const {
@@ -397,6 +402,7 @@ class Setting extends Component {
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
       blockSaveAndContinue,
+      multiLanguageEnabled,
     } = entity
 
     const breadcrumbData = [
@@ -646,6 +652,7 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
+
                   {/* Add instruction ends */}
                   <Block id="release-scores" smallSize={isSmallSize}>
                     <Title>
@@ -1541,6 +1548,34 @@ class Setting extends Component {
                     </Block>
                   )}
 
+                  {/* Multi language start */}
+                  {allowedToSelectMultiLanguage && (
+                    <Block id="multi-language-enabled" smallSize={isSmallSize}>
+                      <Body>
+                        <Title>
+                          <span>Multi-Language</span>
+                          <EduSwitchStyled
+                            disabled={!owner || !isEditable}
+                            data-cy="multi-language-enabled"
+                            defaultChecked={multiLanguageEnabled}
+                            onChange={() =>
+                              this.updateTestData('multiLanguageEnabled')(
+                                !multiLanguageEnabled
+                              )
+                            }
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description>
+                            Select <BlueText> ON </BlueText> , If you want to
+                            enable multiple languages for the test.
+                          </Description>
+                        </Body>
+                      </Body>
+                    </Block>
+                  )}
+                  {/* Multi language Ends */}
+
                   <Block id="performance-bands" smallSize={isSmallSize}>
                     <PeformanceBand
                       setSettingsData={(val) =>
@@ -1695,6 +1730,8 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       isAuthorPublisher: isPublisherUserSelector(state),
       editEnable: state.tests?.editEnable,
+      currentUserId: currentUserIdSelector(state),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

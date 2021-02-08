@@ -24,13 +24,17 @@ import {
   CheckBoxWrapper,
   TimeSpentInput,
 } from './styled'
-import { getUserRole } from '../../../src/selectors/user'
+import {
+  getUserRole,
+  allowedToSelectMultiLanguageInTest,
+} from '../../../src/selectors/user'
 import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
 } from '../../../TestPage/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import { SettingContainer } from '../Container/styled'
+import { getmultiLanguageEnabled } from '../../../ClassBoard/ducks'
 
 const {
   calculatorKeys,
@@ -68,6 +72,8 @@ const Settings = ({
   features,
   match,
   totalItems,
+  lcbBultiLanguageEnabled,
+  allowedToSelectMultiLanguage,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -255,6 +261,7 @@ const Settings = ({
     timedAssignment = tempTestSettings.timedAssignment,
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
+    multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -264,6 +271,9 @@ const Settings = ({
         [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i)
       )) ||
     calculatorKeys
+
+  const showMultiLangSelection =
+    allowedToSelectMultiLanguage && lcbBultiLanguageEnabled
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -383,6 +393,28 @@ const Settings = ({
           </StyledRow>
         </SettingContainer>
         {/* Answer on Paper */}
+
+        {/* Multi language */}
+        {showMultiLangSelection && (
+          <StyledRow gutter={16}>
+            <Col span={12}>
+              <Label>Multi-Language</Label>
+            </Col>
+            <Col span={12}>
+              <AlignSwitchRight
+                data-cy="multi-language"
+                size="small"
+                defaultChecked={false}
+                disabled={freezeSettings || !premium}
+                checked={multiLanguageEnabled}
+                onChange={(value) =>
+                  overRideSettings('multiLanguageEnabled', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        )}
+        {/* Multi language */}
 
         {/* Require Password */}
         <SettingContainer>
@@ -766,6 +798,8 @@ export default connect(
       : state?.tests?.entity?.summary?.totalItems,
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: state?.user?.user?.features,
+    lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
+    allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
   }),
   null
 )(withRouter(Settings))

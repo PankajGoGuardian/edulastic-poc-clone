@@ -6,7 +6,7 @@ import next from 'immer'
 import qs from 'qs'
 
 import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconCloseFilter } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import StudentMasteryProfile from './StudentMasteryProfile'
 import StudentAssessmentProfile from './StudentAssessmentProfile'
@@ -165,7 +165,7 @@ const StudentProfileReportContainer = (props) => {
           />
           {!reportId ? (
             <FilterButton showFilter={showFilter} onClick={toggleFilter}>
-              <IconFilter />
+              {showFilter ? <IconCloseFilter /> : <IconFilter />}
             </FilterButton>
           ) : null}
           <ReportContaner showFilter={showFilter}>

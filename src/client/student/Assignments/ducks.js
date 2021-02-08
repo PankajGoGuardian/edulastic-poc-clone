@@ -67,7 +67,15 @@ export const FILTERS = {
   IN_PROGRESS: 'inProgress',
 }
 
-export const getCurrentUserId = createSelectorator(['user.user._id'], (r) => r)
+export const getCurrentUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (r, currentChild) => {
+    if (currentChild) {
+      return currentChild
+    }
+    return r
+  }
+)
 
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments'

@@ -67,6 +67,10 @@ const StandardsProgressTable = ({
     [rawTableData, tableFilters]
   )
 
+  const scrollX = useMemo(() => testInfoEnhanced?.length * 160 || '100%', [
+    testInfoEnhanced?.length,
+  ])
+
   const getTestCols = () =>
     testInfoEnhanced.map((test) => ({
       title: (
@@ -209,7 +213,7 @@ const StandardsProgressTable = ({
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
             tableToRender={StyledTable}
-            scroll={{ x: 1350 }}
+            scroll={{ x: scrollX }}
           />
         </Col>
         <Col span={24}>

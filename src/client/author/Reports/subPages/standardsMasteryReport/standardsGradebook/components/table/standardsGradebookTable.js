@@ -157,6 +157,14 @@ const StandardsGradebookTableComponent = ({
 
   const filteredTableData = getFilteredTableData()
 
+  const scrollX = useMemo(() => {
+    const standardCols = flatMap(
+      filteredTableData,
+      ({ standardsInfo }) => standardsInfo
+    ).length
+    return standardCols * 160 || '100%'
+  }, [filteredTableData])
+
   const getDisplayValue = (item, _analyseBy) => {
     let printData
     if (!item) {
@@ -457,7 +465,7 @@ const StandardsGradebookTableComponent = ({
             tableToRender={GradebookTable}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
-            scroll={{ x: 1350 }}
+            scroll={{ x: scrollX }}
           />
         </Row>
       </StyledCard>

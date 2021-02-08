@@ -13,7 +13,13 @@ const LicenseCountSection = ({ subsLicenses, setShowManageLicenseModal }) => {
         <LeftCol>
           <span>Expires {license.validEndDate}</span>
           <h4>{license.product.name}</h4>
-          <EduButton isGhost height="24px" ml="0px" onClick={openModal}>
+          <EduButton
+            isGhost
+            height="24px"
+            ml="0px"
+            onClick={openModal}
+            data-cy="buyMoreLicenseButton"
+          >
             buy more
           </EduButton>
         </LeftCol>

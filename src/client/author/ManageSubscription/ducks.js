@@ -12,7 +12,7 @@ export const getSubsLicenses = createSelector(
 
 // action types
 export const SET_LICENSES_DATA =
-  '[manageClass] set manage subscriptions license data'
+  '[manageSubscriptions] set manage subscriptions license data'
 
 // action creators
 

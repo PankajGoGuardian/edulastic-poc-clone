@@ -248,7 +248,7 @@ const StandardsFilters = ({
         )}
       </GoButtonWrapper>
       <PerfectScrollbar>
-        <Collapsable header="find student" defaultActiveKey="0">
+        <Collapsable header="Find students" defaultActiveKey="0">
           <SearchField>
             <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
             <ControlDropDown

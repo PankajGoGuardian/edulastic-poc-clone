@@ -186,7 +186,7 @@ const StandardsFilters = ({
             <ControlDropDown
               by={filters.standardGrade}
               selectCB={(e) => updateFilterDropdownCB(e, 'standardGrade')}
-              data={staticDropDownData.allGrades}
+              data={staticDropDownData.allStandardGrades}
               prefix="Standard Grade"
               showPrefixOnSelected={false}
             />

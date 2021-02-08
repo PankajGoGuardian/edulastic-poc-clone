@@ -85,18 +85,26 @@ export const getCurrentLanguage = createSelector(
   }
 )
 
-// used in LCB and student side grades
+// used in LCB, ExpressGrader and student side grades
 export const languagePreferenceSelector = (state, props = {}) => {
   let preferredLanguage = 'en'
-  const { isLCBView, isStudentReport } = props || {}
-  if (isLCBView) {
-    const { entities = [] } = state?.author_classboard_testActivity || {}
-    const { studentId } = props
-    if (studentId) {
-      const currentUTA = entities.find((uta) => uta.studentId === studentId)
-      if (currentUTA?.languagePreference) {
-        preferredLanguage = currentUTA.languagePreference
-      }
+  const { isLCBView, isStudentReport, isExpressGrader, data } = props || {}
+  if (isExpressGrader) {
+    const { preferredLanguage: studentAttemptLanguage = 'en' } =
+      state?.studentQuestionResponse?.data || {}
+    preferredLanguage = studentAttemptLanguage
+  } else if (isLCBView) {
+    const { activity: { testActivityId, userId } = {} } = data || {}
+    const {
+      testActivities: currentUTAS = [],
+      recentTestActivitiesGrouped = {},
+    } = state?.author_classboard_testActivity?.data || {}
+    const previousUTAS = recentTestActivitiesGrouped?.[userId] || []
+    const allUTAS = [...currentUTAS, ...previousUTAS]
+    if (testActivityId) {
+      const currentUTA = allUTAS.find((uta) => uta._id === testActivityId)
+      const { languagePreference = 'en' } = currentUTA || {}
+      preferredLanguage = languagePreference
     }
   } else if (isStudentReport) {
     const { languagePreference = 'en' } =

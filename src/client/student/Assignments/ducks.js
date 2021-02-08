@@ -496,6 +496,7 @@ export const getSelectedLanguageSelector = createSelector(
   stateSelector,
   (state) => state.languagePreference
 )
+
 function isSEB() {
   return window.navigator.userAgent.includes('SEB')
 }
@@ -702,7 +703,7 @@ function* startAssignment({ payload }) {
       if (languagePreference) {
         playListData.languagePreference = languagePreference
       }
-      const { _id } = yield testActivityApi.create()
+      const { _id } = yield testActivityApi.create(playListData)
       testActivityId = _id
     } else {
       yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }))

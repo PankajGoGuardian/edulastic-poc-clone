@@ -20,6 +20,7 @@ import {
   testActivityStatus,
 } from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
+import { Fscreen } from '../utils/helpers'
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
 import {
@@ -382,6 +383,16 @@ function* loadTest({ payload }) {
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      if (activity.isPaused) {
+        Fscreen.safeExitfullScreen()
+        yield put(push('/home/assignments'))
+        setTimeout(() => {
+          notification({
+            type: 'warning',
+            msg: 'Your assignment is paused contact your instructor',
+          })
+        }, 2000)
+      }
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(
         questionActivities,
@@ -639,12 +650,14 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
+          Fscreen.exitFullscreen()
           return yield put(push('/home/assignments'))
         }
       }
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
+      Fscreen.exitFullscreen()
       return yield put(push('/home/assignments'))
     }
   }
@@ -702,7 +715,6 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
-    window.document.exitFullscreen().catch(() => {})
     const isCliUser = yield select((state) => state.user?.isCliUser)
     if (isCliUser) {
       window.parent.postMessage(
@@ -829,6 +841,7 @@ function* submitTest({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: false,
     })
+    Fscreen.safeExitfullScreen()
   }
 }
 

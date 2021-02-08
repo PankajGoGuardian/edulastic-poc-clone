@@ -87,7 +87,7 @@ function PauseToolTip({ outNavigationCounter, pauseReason }) {
 
   return reason ? (
     <Tooltip title={reason}>
-      <QuestionIcon type="question-circle" />
+      <QuestionIcon type="caret-up" theme="filled" />
     </Tooltip>
   ) : null
 }
@@ -329,11 +329,11 @@ class DisneyCardContainer extends Component {
                       >
                         {enrollMentFlag}
                         {unAssignedMessage}
-                        {status.status}{' '}
                         <PauseToolTip
                           outNavigationCounter={student.outNavigationCounter}
                           pauseReason={student.pauseReason}
                         />
+                        {status.status}{' '}
                       </StyledParaS>
                       {pastDueTag && (
                         <StatusRow>
@@ -684,7 +684,7 @@ const Refresh = styled.div`
 `
 const QuestionIcon = styled(Icon)`
   cursor: pointer;
-  color: #5eb500;
+  color: #fdcc3b;
   font-size: 15px;
-  margin-left: 6px;
+  margin-left: -2px;
 `

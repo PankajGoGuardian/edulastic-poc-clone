@@ -39,7 +39,6 @@ import {
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
 import {
   allowedToSelectMultiLanguageInTest,
-  currentUserIdSelector,
   isPublisherUserSelector,
 } from '../../../../../src/selectors/user'
 import {
@@ -1728,7 +1727,6 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       isAuthorPublisher: isPublisherUserSelector(state),
       editEnable: state.tests?.editEnable,
-      currentUserId: currentUserIdSelector(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {

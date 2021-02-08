@@ -175,7 +175,8 @@ export const showTestInfoModal = ({
         <>
           <p style={{ margin: '10px 0' }}>
             This test is offered in multiple languages. Please select your
-            preferred language.
+            preferred language. You can change the preferred language anytime
+            during the attempt
           </p>
           <p style={{ margin: '10px 0' }}>
             <Select

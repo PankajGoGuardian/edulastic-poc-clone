@@ -89,11 +89,7 @@ export const getCurrentLanguage = createSelector(
 export const languagePreferenceSelector = (state, props = {}) => {
   let preferredLanguage = 'en'
   const { isLCBView, isStudentReport, isExpressGrader, data } = props || {}
-  if (isExpressGrader) {
-    const { preferredLanguage: studentAttemptLanguage = 'en' } =
-      state?.studentQuestionResponse?.data || {}
-    preferredLanguage = studentAttemptLanguage
-  } else if (isLCBView) {
+  if (isLCBView || isExpressGrader) {
     const { activity: { testActivityId, userId } = {} } = data || {}
     const {
       testActivities: currentUTAS = [],

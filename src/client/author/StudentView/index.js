@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { findIndex, isUndefined, get } from 'lodash'
 import { setAutoFreeze } from 'immer'
 import memoizeOne from 'memoize-one'
-import { Input, Tooltip } from 'antd'
+import { Input, Tooltip, Spin } from 'antd'
 import {
   AnswerContext,
   scrollTo,
@@ -46,9 +46,12 @@ import {
   getStudentResponseSelector,
   getTestItemsOrderSelector,
   getCurrentTestActivityIdSelector,
+  getmultiLanguageEnabled,
+  getStudentResponseLoadingSelector,
 } from '../ClassBoard/ducks'
 
 import { getQuestionLabels } from '../ClassBoard/Transformer'
+import RealTimeLanguageSwitch from './RealTimeLanguageSwitch'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -160,6 +163,9 @@ class StudentViewContainer extends Component {
       testItemsOrder,
       filter,
       isCliUser,
+      multiLanguageEnabled,
+      match,
+      studentResponseLoading,
     } = this.props
 
     const {
@@ -177,6 +183,8 @@ class StudentViewContainer extends Component {
       }
       return studentId === userId
     })
+
+    const { classId, assignmentId } = match?.params || {}
 
     const showStudentWorkButton = test.type.TESTLET === classResponse.testType
 
@@ -222,8 +230,21 @@ class StudentViewContainer extends Component {
       </div>
     )
 
+    if (studentResponseLoading) {
+      return <Spin />
+    }
+
     return (
       <>
+        {multiLanguageEnabled && studentTestActivity?._id && (
+          <RealTimeLanguageSwitch
+            groupId={classId}
+            assignmentId={assignmentId}
+            testActivityIds={[studentTestActivity?._id]}
+            selectedStudent={selectedStudent}
+            studentView
+          />
+        )}
         {showFeedbackPopup && (
           <StyledModal
             centered
@@ -388,6 +409,7 @@ const enhance = compose(
       studentResponse: getStudentResponseSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
       currentTestActivityId: getCurrentTestActivityIdSelector(state),
+      multiLanguageEnabled: getmultiLanguageEnabled(state),
       isPresentationMode: get(
         state,
         ['author_classboard_testActivity', 'presentationMode'],
@@ -400,6 +422,7 @@ const enhance = compose(
       ),
       entities: get(state, 'author_classboard_testActivity.entities', []),
       filter: state?.author_classboard_testActivity?.studentViewFilter,
+      studentResponseLoading: getStudentResponseLoadingSelector(state),
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,

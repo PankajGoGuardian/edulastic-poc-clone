@@ -25,7 +25,7 @@ const links = [
       'View a summary of proficiency on all standards assessed on one or more tests. Can be filtered by individual, class, or group.',
   },
   {
-    key: 'standardsProgess',
+    key: 'standardsProgress',
     title: 'Standards Progress',
     thumbnail: SMRProgress,
     location: '/author/reports/standards-progress',

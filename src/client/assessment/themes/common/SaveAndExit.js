@@ -76,7 +76,7 @@ const SaveAndExit = ({
           <>
             {!isCliUserPreview && (
               <SaveAndExitButton
-                title={hidePause?"Save & Exit disabled due to configuration":"Exit"}
+                title={hidePause?"This assignment is configured to completed in a single sitting":"Exit"}
                 data-cy="finishTest"
                 disabled={hidePause}
                 onClick={finishTest}
@@ -90,7 +90,7 @@ const SaveAndExit = ({
           <>
             {!isCliUser && (
               <SaveAndExitButton
-                title={hidePause?"Save & Exit disabled due to configuration":"Save & Exit"}
+                title={hidePause?"This assignment is configured to completed in a single sitting":"Save & Exit"}
                 disabled={hidePause}
                 data-cy="finishTest"
                 onClick={finishTest}

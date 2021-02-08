@@ -30,6 +30,7 @@ import { getUser } from '../../author/src/selectors/user'
 import { userPickFields } from '../../common/utils/static/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
+import { slice as subscriptionSlice } from '../../author/Subscription/ducks'
 
 // Types
 const SEARCH_SCHOOL_REQUEST = '[signup] search school request'
@@ -441,6 +442,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
       window.localStorage.setItem('author:dashboard:version', 0)
       yield put(hideJoinSchoolAction())
       yield put(fetchDashboardTiles())
+      yield put(subscriptionSlice.actions.fetchUserSubscriptionStatus())
     }
   } catch (err) {
     console.log('_err', err)
@@ -463,6 +465,7 @@ function* joinSchoolSaga({ payload = {} }) {
     window.localStorage.setItem('author:dashboard:version', 0)
     yield put(hideJoinSchoolAction())
     yield put(fetchDashboardTiles())
+    yield put(subscriptionSlice.actions.fetchUserSubscriptionStatus())
   } catch (err) {
     yield put({
       type: JOIN_SCHOOL_FAILED,

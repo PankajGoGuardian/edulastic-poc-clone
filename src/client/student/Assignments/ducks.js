@@ -47,6 +47,7 @@ import {
   setIsActivityCreatingAction,
   utaStartTimeUpdateRequired,
   setShowRetakeModalAction,
+  setSelectedLanguageAction,
 } from '../sharedDucks/AssignmentModule/ducks'
 
 import {
@@ -66,7 +67,15 @@ export const FILTERS = {
   IN_PROGRESS: 'inProgress',
 }
 
-export const getCurrentUserId = createSelectorator(['user.user._id'], (r) => r)
+export const getCurrentUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (r, currentChild) => {
+    if (currentChild) {
+      return currentChild
+    }
+    return r
+  }
+)
 
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments'
@@ -487,6 +496,7 @@ export const getSelectedLanguageSelector = createSelector(
   stateSelector,
   (state) => state.languagePreference
 )
+
 function isSEB() {
   return window.navigator.userAgent.includes('SEB')
 }
@@ -601,9 +611,8 @@ function* startAssignment({ payload }) {
       isPlaylist = false,
       studentRecommendation,
       safeBrowser,
-      languagePreference = '',
     } = payload
-
+    const languagePreference = yield select(getSelectedLanguageSelector)
     if (safeBrowser && !isSEB()) {
       const sebUrl = getSebUrl({
         testId,
@@ -694,7 +703,7 @@ function* startAssignment({ payload }) {
       if (languagePreference) {
         playListData.languagePreference = languagePreference
       }
-      const { _id } = yield testActivityApi.create()
+      const { _id } = yield testActivityApi.create(playListData)
       testActivityId = _id
     } else {
       yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }))
@@ -778,6 +787,7 @@ function* startAssignment({ payload }) {
     yield put(
       setIsActivityCreatingAction({ assignmentId: '', isLoading: false })
     )
+    yield put(setSelectedLanguageAction(''))
   }
 }
 

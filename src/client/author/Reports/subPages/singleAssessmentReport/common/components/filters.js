@@ -290,7 +290,7 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           <SearchField>
             <MultiSelectDropdown
-              data-cy="testType"
+              dataCy="testTypes"
               label="Test Type"
               el={assessmentTypeRef}
               onChange={(e) =>

@@ -35,11 +35,6 @@ export const GradebookTable = styled(StyledTable)`
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
-      }
       .ant-table-body {
         overflow-x: auto !important;
       }
@@ -161,6 +156,14 @@ const StandardsGradebookTableComponent = ({
     })
 
   const filteredTableData = getFilteredTableData()
+
+  const scrollX = useMemo(() => {
+    const standardCols = flatMap(
+      filteredTableData,
+      ({ standardsInfo }) => standardsInfo
+    ).length
+    return standardCols * 160 || '100%'
+  }, [filteredTableData])
 
   const getDisplayValue = (item, _analyseBy) => {
     let printData
@@ -462,7 +465,7 @@ const StandardsGradebookTableComponent = ({
             tableToRender={GradebookTable}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
-            scroll={{ x: 800 }}
+            scroll={{ x: scrollX }}
           />
         </Row>
       </StyledCard>

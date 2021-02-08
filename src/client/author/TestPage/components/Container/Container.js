@@ -13,7 +13,11 @@ import {
   Progress,
   CustomPrompt,
 } from '@edulastic/common'
-import { test as testContants, roleuser } from '@edulastic/constants'
+import {
+  test as testContants,
+  roleuser,
+  collections as collectionsConstant,
+} from '@edulastic/constants'
 import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
 import {
@@ -102,7 +106,9 @@ import { redirectToStudentPage } from '../../../../publicTest/utils'
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSelectedLanguageSelector,
 } from '../../../../student/Assignments/ducks'
+import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -114,6 +120,7 @@ const {
   ITEM_GROUP_TYPES,
   ITEM_GROUP_DELIVERY_TYPES,
 } = testContants
+const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
 class Container extends PureComponent {
   constructor() {
@@ -280,6 +287,8 @@ class Container extends PureComponent {
       resumeAssignment,
       setEditEnable,
       editEnable,
+      languagePreference,
+      setSelectedLanguage,
     } = this.props
 
     const { testLoaded, studentRedirected } = this.state
@@ -344,7 +353,9 @@ class Container extends PureComponent {
             history,
             startAssignment,
             resumeAssignment,
-            test
+            test,
+            languagePreference,
+            setSelectedLanguage
           )
           // eslint-disable-next-line react/no-did-update-set-state
           this.setState({ studentRedirected: true })
@@ -1044,11 +1055,16 @@ class Container extends PureComponent {
       !showEditButton &&
       !showDuplicateButton &&
       (testStatus === 'draft' || editEnable)
+
+    const premiumOrgCollections = collections.filter(
+      ({ _id }) =>
+        !Object.keys(nonPremiumCollectionsToShareContent).includes(_id)
+    )
     const testItems = (itemGroups || []).flatMap(
       (itemGroup) => itemGroup.items || []
     )
     const hasPremiumQuestion = !!testItems.find((i) =>
-      hasUserGotAccessToPremiumItem(i.collections, collections)
+      hasUserGotAccessToPremiumItem(i.collections, premiumOrgCollections)
     )
 
     const gradeSubject = { grades, subjects }
@@ -1238,6 +1254,7 @@ const enhance = compose(
       pageNumber: state?.testsAddItems?.page || 1,
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isOrganizationDA: isOrganizationDistrictSelector(state),
+      languagePreference: getSelectedLanguageSelector(state),
     }),
     {
       createTest: createTestAction,
@@ -1267,6 +1284,7 @@ const enhance = compose(
       setEditEnable: setEditEnableAction,
       resetPageState: resetPageStateAction,
       getTestIdFromVersionId: getTestIdFromVersionIdAction,
+      setSelectedLanguage: setSelectedLanguageAction,
     }
   )
 )

@@ -1,16 +1,16 @@
 import {
   lightGreySecondary,
-  mobileWidthMax,
   tabletWidth,
   themeColor,
   title,
-  white,
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import { IconSelectCaretDown } from '@edulastic/icons'
-import { Button, Select } from 'antd'
-import React from 'react'
+import { test as testConstants } from '@edulastic/constants'
+import { Select } from 'antd'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
 import { ConfirmationModal } from '../../author/src/components/common/ConfirmationModal'
 import {
@@ -23,6 +23,13 @@ import {
   setSettingsModalVisibilityAction,
   setZoomLevelAction,
 } from '../Sidebar/ducks'
+import {
+  getIsMultiLanguageEnabled,
+  getUtaPeferredLanguage,
+} from '../../common/components/LanguageSelector/duck'
+import { switchLanguageAction } from '../../assessment/actions/test'
+
+const { languageCodes } = testConstants
 
 const SettingsModal = ({
   selectedTheme,
@@ -32,6 +39,9 @@ const SettingsModal = ({
   zoomLevel,
   setZoomLevel,
   theme,
+  languagePreference,
+  multiLanguageEnabled,
+  switchLanguage,
 }) => {
   const bodyStyle = {
     padding: '20px',
@@ -42,11 +52,20 @@ const SettingsModal = ({
     boxShadow: 'none',
   }
 
+  const [selectedLang, setChangedLang] = useState(languagePreference)
+
+  useEffect(() => {
+    setChangedLang(languagePreference)
+  }, [languagePreference, settingsModalVisible])
+
   const closeModal = () => setSettingsModalVisibility(false)
 
   const handleApply = () => {
     localStorage.setItem('selectedTheme', selectedTheme)
     localStorage.setItem('zoomLevel', zoomLevel)
+    if (selectedLang !== languagePreference) {
+      switchLanguage({ languagePreference: selectedLang })
+    }
     closeModal()
   }
 
@@ -55,11 +74,12 @@ const SettingsModal = ({
     setZoomLevel(localStorage.getItem('zoomLevel') || '1')
     closeModal()
   }
+
   return (
     <ConfirmationModal
       maskClosable={false}
       textAlign="left"
-      title="Zoom & Contrast"
+      title="Test Options"
       centered
       visible={settingsModalVisible}
       onCancel={handleCancel}
@@ -96,6 +116,7 @@ const SettingsModal = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             value={zoomLevel}
             onChange={setZoomLevel}
+            style={{ marginBottom: '10px' }}
             suffixIcon={<IconSelectCaretDown color={themeColor} />}
           >
             <Select.Option value="1">None</Select.Option>
@@ -105,22 +126,49 @@ const SettingsModal = ({
             <Select.Option value="3">3X standard</Select.Option>
           </StyledSelect>
         </div>
+        {multiLanguageEnabled && (
+          <div>
+            <CustomColumn>SELECT PREFERRED LANGUAGE</CustomColumn>
+            <StyledSelect
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              onChange={setChangedLang}
+              value={selectedLang}
+              suffixIcon={<IconSelectCaretDown color={themeColor} />}
+            >
+              <Select.Option value="" disabled>
+                Select Language
+              </Select.Option>
+              <Select.Option value={languageCodes.ENGLISH}>
+                English
+              </Select.Option>
+              <Select.Option value={languageCodes.SPANISH}>
+                Spanish
+              </Select.Option>
+            </StyledSelect>
+          </div>
+        )}
       </InitOptions>
     </ConfirmationModal>
   )
 }
 
-const enhance = connect(
-  (state) => ({
-    selectedTheme: state.ui.selectedTheme,
-    settingsModalVisible: state.ui.settingsModalVisible,
-    zoomLevel: state.ui.zoomLevel,
-  }),
-  {
-    setSelectedTheme: setSelectedThemeAction,
-    setSettingsModalVisibility: setSettingsModalVisibilityAction,
-    setZoomLevel: setZoomLevelAction,
-  }
+const enhance = compose(
+  withTheme,
+  connect(
+    (state) => ({
+      selectedTheme: state.ui.selectedTheme,
+      settingsModalVisible: state.ui.settingsModalVisible,
+      zoomLevel: state.ui.zoomLevel,
+      languagePreference: getUtaPeferredLanguage(state),
+      multiLanguageEnabled: getIsMultiLanguageEnabled(state),
+    }),
+    {
+      setSelectedTheme: setSelectedThemeAction,
+      setSettingsModalVisibility: setSettingsModalVisibilityAction,
+      setZoomLevel: setZoomLevelAction,
+      switchLanguage: switchLanguageAction,
+    }
+  )
 )
 
 export const ModifyModalWrapper = styled(ModalWrapper)`
@@ -154,4 +202,4 @@ export const StyledSelect = styled(Select)`
   }
 `
 
-export default enhance(withTheme(SettingsModal))
+export default enhance(SettingsModal)

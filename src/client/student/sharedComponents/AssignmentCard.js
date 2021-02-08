@@ -27,7 +27,6 @@ import StartButton from '../Assignments/components/StartButton'
 import ReviewButton from '../Reports/components/ReviewButton'
 import SafeStartAssignButton from '../styled/AssignmentCardButton'
 import Attempt from './Attempt'
-import TestInfoModal from './TestInfoModal'
 import { ConfirmationModal } from '../../author/src/components/common/ConfirmationModal'
 
 // actions
@@ -37,6 +36,7 @@ import {
   getSebUrl,
 } from '../Assignments/ducks'
 import { proxyRole } from '../Login/ducks'
+import { showTestInfoModal } from '../../publicTest/utils'
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
 
@@ -87,6 +87,7 @@ const AssignmentCard = memo(
     uta = {},
     setSelectedLanguage,
     languagePreference,
+    history,
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
@@ -94,7 +95,6 @@ const AssignmentCard = memo(
     const [retakeConfirmation, setRetakeConfirmation] = useState(false)
     const [showRetakeModal, setShowRetakeModal] = useState(false)
     const assignmentCardRef = useRef()
-    const [showInformationModal, setShowInformationModal] = useState(false)
 
     // case: when highlightMode is true i.e if want to highlight and assignment
     // scoll to specific assignment view
@@ -217,11 +217,31 @@ const AssignmentCard = memo(
         notification({ messageKey: 'testIsExpired' })
         return
       }
+
       if (
         !resume &&
         (timedAssignment || hasInstruction || multiLanguageEnabled)
       ) {
-        return setShowInformationModal(true)
+        return showTestInfoModal({
+          pauseAllowed,
+          allowedTime,
+          multiLanguageEnabled,
+          setSelectedLanguage,
+          languagePreference,
+          timedAssignment,
+          hasInstruction,
+          instruction,
+          attemptCount,
+          maxAttempts,
+          startAssignment,
+          testId,
+          assignmentId,
+          testType,
+          classId,
+          history,
+          title,
+          notifyCancel: false,
+        })
       }
 
       if (resume) {
@@ -373,27 +393,6 @@ const AssignmentCard = memo(
                 want to Start?
               </p>
             </ConfirmationModal>
-          )}
-          {showInformationModal && (
-            <TestInfoModal
-              pauseAllowed={pauseAllowed}
-              allowedTime={allowedTime}
-              multiLanguageEnabled={multiLanguageEnabled}
-              showInformationModal={showInformationModal}
-              setSelectedLanguage={setSelectedLanguage}
-              languagePreference={languagePreference}
-              timedAssignment={timedAssignment}
-              hasInstruction={hasInstruction}
-              instruction={instruction}
-              setShowInformationModal={setShowInformationModal}
-              attemptCount={attemptCount}
-              maxAttempts={maxAttempts}
-              startAssignment={startAssignment}
-              testId={testId}
-              assignmentId={assignmentId}
-              testType={testType}
-              classId={classId}
-            />
           )}
           <AssessmentDetails
             data-cy={`test-${data.testId}`}

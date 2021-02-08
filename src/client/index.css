@@ -36,13 +36,13 @@ body {
 }
 
 body:fullscreen {
-  background-color: rgba(255, 255, 255, 0);
+  background-color: white;
 }
 body:-webkit-full-screen {
-  background-color: rgba(255, 255, 255, 0);
+  background-color: white;
 }
 body:-moz-full-screen {
-  background-color: rgba(255, 255, 255, 0);
+  background-color: white;
 }
 
 ::backdrop {

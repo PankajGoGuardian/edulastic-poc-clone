@@ -5,7 +5,11 @@ import EvaluationOption from './components/EvaluationOption'
 
 const { evaluationSettings, GRAPH_EVALUATION_SETTING } = mathConstants
 
-const GraphEvaluationSettings = ({ onChangeOption, options }) => {
+const GraphEvaluationSettings = ({
+  onChangeOption,
+  options,
+  hidePointOnEquation,
+}) => {
   const groupedOptionsLabels =
     evaluationSettings[GRAPH_EVALUATION_SETTING] || []
 
@@ -16,6 +20,7 @@ const GraphEvaluationSettings = ({ onChangeOption, options }) => {
           <EvaluationOption
             optionKey={label}
             options={options}
+            hidePointOnEquation={hidePointOnEquation}
             onChangeOption={onChangeOption}
           />
         </OptionPanel>

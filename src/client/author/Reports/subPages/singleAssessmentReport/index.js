@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 
 import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconCloseFilter } from '@edulastic/icons'
 
 import ResponseFrequency from './ResponseFrequency'
 import AssessmentSummary from './AssessmentSummary'
@@ -272,7 +272,7 @@ const SingleAssessmentReportContainer = (props) => {
           />
           {!isCliUser && !reportId ? (
             <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-              <IconFilter />
+              {showFilter ? <IconCloseFilter /> : <IconFilter />}
             </FilterButtonClear>
           ) : null}
           <ReportContaner showFilter={showFilter}>

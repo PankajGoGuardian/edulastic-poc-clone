@@ -1,6 +1,7 @@
 import { isObject, get, set, isEmpty } from 'lodash'
 import { produce } from 'immer'
 import { appLanguages, questionType } from '@edulastic/constants'
+import { isValidUpdate } from '@edulastic/common'
 
 const { useLanguageFeatureQn } = questionType
 const { LANGUAGE_EN } = appLanguages
@@ -18,6 +19,10 @@ const commonPatterns = [
 
 const patternsByQuestionType = {
   [questionType.CLOZE_DRAG_DROP]: [...commonPatterns, /options\.(\d+)\.label/],
+  [questionType.CLOZE_IMAGE_DRAG_DROP]: [
+    ...commonPatterns,
+    /options\.(\d+)\.value/,
+  ],
   [questionType.EXPRESSION_MULTIPART]: [
     ...commonPatterns,
     /options\.(.*?)\.(\d+)/,
@@ -47,6 +52,13 @@ const patternsByQuestionType = {
   [questionType.MULTIPLE_CHOICE]: [...commonPatterns, /options\.(\d+)\.label/],
   [questionType.TOKEN_HIGHLIGHT]: [...commonPatterns, /template/],
 }
+
+const clozeTypes = [
+  questionType.CLOZE_DRAG_DROP,
+  questionType.EXPRESSION_MULTIPART,
+  questionType.CLOZE_DROP_DOWN,
+  questionType.CLOZE_TEXT,
+]
 
 const getAvailablePaths = (data, prev = '', paths = []) => {
   Object.keys(data).forEach((key) => {
@@ -81,6 +93,16 @@ export const changeDataInPreferredLanguage = (
     useLanguageFeatureQn.includes(newQuestion.type) &&
     patternsByQuestionType[newQuestion.type]
   ) {
+    if (clozeTypes.includes(newQuestion.type)) {
+      const vaild = isValidUpdate(
+        get(newQuestion, `stimulus`, ''),
+        get(prevQuestion, `stimulus`, '')
+      )
+      if (!vaild) {
+        return prevQuestion
+      }
+    }
+
     const dataFields = getLanguageDataPaths(newQuestion.type, newQuestion)
     const changedQuestion = produce(newQuestion, (draft) => {
       if (!draft.languageFeatures) {

@@ -31,6 +31,7 @@ import {
 import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
 import { getServerTs } from '../../student/utils'
+import { Fscreen } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
 import {
   scratchpadDomRectSelector,
@@ -148,9 +149,7 @@ export function* saveUserResponse({ payload }) {
       (state) => state.test?.settings?.timedAssignment
     )
     if (pausing) {
-      window.document.exitFullscreen().catch((e) => {
-        console.warn('error', e)
-      })
+      Fscreen.safeExitfullScreen()
     }
     if (pausing && timedAssignment) {
       const utaId = yield select((state) => state.test.testActivityId)

@@ -17,11 +17,10 @@ const MultiSelectSearch = ({
   onFocus = () => {},
 }) => (
   <>
-    <FilterLabel>{label}</FilterLabel>
+    <FilterLabel data-cy={dataCy}>{label}</FilterLabel>
     <SelectInputStyled
       showSearch
       loading={loading}
-      data-cy={dataCy}
       placeholder={placeholder}
       mode="multiple"
       ref={el}

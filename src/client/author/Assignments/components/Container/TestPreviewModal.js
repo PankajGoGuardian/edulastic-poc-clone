@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Modal } from 'antd'
+import { Modal, Spin } from 'antd'
+import { WithResources } from '@edulastic/common/src/HOC/withResources'
 import AssessmentPlayer from '../../../../assessment'
 import TestActivityPreview from './TestActivityPreview'
 import { finishedPreviewTestAction } from '../../../../assessment/sharedDucks/previewTest'
+import AppConfig from '../../../../../app-config'
 
 const TestPreviewModal = ({
   isModalVisible,
@@ -65,21 +67,26 @@ const TestPreviewModal = ({
         <TestActivityPreview onClose={handleCloseModal} previewModal />
       )}
       {!showStudentPerformancePreview && (
-        <AssessmentPlayer
-          closeTestPreviewModal={handleCloseModal}
-          submitPreviewTest={submitPreviewTest}
-          LCBPreviewModal={LCBPreviewModal}
-          testId={testId}
-          test={test}
-          passages={passages}
-          preview
-          showTools={!isStudentReport}
-          isStudentReport={isStudentReport}
-          studentReportModal={studentReportModal}
-          currentAssignmentId={currentAssignmentId}
-          currentAssignmentClass={currentAssignmentClass}
-          {...restProps}
-        />
+        <WithResources
+          resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+          fallBack={<Spin />}
+        >
+          <AssessmentPlayer
+            closeTestPreviewModal={handleCloseModal}
+            submitPreviewTest={submitPreviewTest}
+            LCBPreviewModal={LCBPreviewModal}
+            testId={testId}
+            test={test}
+            passages={passages}
+            preview
+            showTools={!isStudentReport}
+            isStudentReport={isStudentReport}
+            studentReportModal={studentReportModal}
+            currentAssignmentId={currentAssignmentId}
+            currentAssignmentClass={currentAssignmentClass}
+            {...restProps}
+          />
+        </WithResources>
       )}
     </StyledModal>
   )

@@ -37,7 +37,10 @@ import {
   resetUpdatedStateAction,
 } from '../../../../ducks'
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
-import { isPublisherUserSelector } from '../../../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  isPublisherUserSelector,
+} from '../../../../../src/selectors/user'
 import {
   Block,
   BlueText,
@@ -354,6 +357,7 @@ class Setting extends Component {
       districtPermissions = [],
       isAuthorPublisher,
       calculatorProvider,
+      allowedToSelectMultiLanguage,
     } = this.props
 
     const {
@@ -495,7 +499,8 @@ class Setting extends Component {
     } = availableFeatures
 
     const showMultiLangSelection =
-      isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR
+      allowedToSelectMultiLanguage &&
+      (isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR)
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />
@@ -1225,13 +1230,16 @@ class Setting extends Component {
 
                   <Block id="block-save-and-continue" smallSize={isSmallSize}>
                     <Title>
-                      <span>Complete Test in One Sitting</span>
+                      <span>
+                        Complete Test in One Sitting
+                        <DollarPremiumSymbol premium={premium} />
+                      </span>
                       <EduSwitchStyled
                         disabled={!owner || !isEditable || !premium}
                         checked={blockSaveAndContinue}
                         data-cy="bockSaveAndContinueSwitch"
                         onChange={(v) =>
-                          this.updateTestData('blockSaveAndContinue')(!v)
+                          this.updateTestData('blockSaveAndContinue')(v)
                         }
                       />
                     </Title>
@@ -1246,7 +1254,10 @@ class Setting extends Component {
                   </Block>
 
                   <Block id="restrict-navigation-out" smallSize={isSmallSize}>
-                    <Title>Restrict Navigation Out of Test</Title>
+                    <Title>
+                      Restrict Navigation Out of Test{' '}
+                      <DollarPremiumSymbol premium={premium} />
+                    </Title>
                     <Body smallSize={isSmallSize}>
                       <Row>
                         <Col span={11}>
@@ -1722,6 +1733,7 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       isAuthorPublisher: isPublisherUserSelector(state),
       editEnable: state.tests?.editEnable,
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

@@ -347,7 +347,7 @@ class Settings extends Component {
         <Row style={{ marginBottom: '20px' }}>
           <TextInputStyled
             type="text"
-            width="60px"
+            width="80px"
             height="30px"
             name="xMin"
             value={xMin}
@@ -357,7 +357,7 @@ class Settings extends Component {
           <MinMaxSeparator>-</MinMaxSeparator>
           <TextInputStyled
             type="text"
-            width="60px"
+            width="80px"
             height="30px"
             name="xMax"
             value={xMax}
@@ -366,9 +366,9 @@ class Settings extends Component {
           />
           <TextInputStyled
             type="text"
-            width="92px"
+            width="80px"
             height="30px"
-            margin="0px 0px 0px 18px"
+            margin="0px 0px 0px 10px"
             name="xDistance"
             value={xDistance}
             placeholder={t('component.graphing.settingsPopup.step')}
@@ -397,7 +397,7 @@ class Settings extends Component {
         <Row>
           <TextInputStyled
             type="text"
-            width="60px"
+            width="80px"
             height="30px"
             name="yMin"
             value={yMin}
@@ -407,7 +407,7 @@ class Settings extends Component {
           <MinMaxSeparator>-</MinMaxSeparator>
           <TextInputStyled
             type="text"
-            width="60px"
+            width="80px"
             height="30px"
             name="yMax"
             value={yMax}
@@ -416,9 +416,9 @@ class Settings extends Component {
           />
           <TextInputStyled
             type="text"
-            width="92px"
+            width="80px"
             height="30px"
-            margin="0px 0px 0px 18px"
+            margin="0px 0px 0px 10px"
             name="yDistance"
             value={yDistance}
             placeholder={t('component.graphing.settingsPopup.step')}

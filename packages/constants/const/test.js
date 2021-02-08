@@ -128,11 +128,11 @@ module.exports = {
     GRAPHING: 'GRAPHING',
   },
   evalTypes: {
-    ALL_OR_NOTHING: 'ALL OR NOTHING',
-    PARTIAL_CREDIT: 'PARTIAL CREDIT',
+    ALL_OR_NOTHING: 'All or nothing',
+    PARTIAL_CREDIT: 'Partial credit',
     PARTIAL_CREDIT_IGNORE_INCORRECT:
-      'PARTIAL CREDIT (DON’T PENALIZE FOR INCORRECT SELECTION)',
-    ITEM_LEVEL_EVALUATION: 'CONSIDER ITEM LEVEL EVALUATION',
+      "Partial credit (don't penalize for incorrect selection)",
+    ITEM_LEVEL_EVALUATION: 'Consider item level evaluation',
   },
   evalTypeLabels: {
     ALL_OR_NOTHING: 'ALL_OR_NOTHING',

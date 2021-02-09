@@ -15,7 +15,7 @@ import {
   RadioButtonWrapper,
 } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const { redirectPolicy } = test
 
@@ -95,7 +95,7 @@ const AutoRedirectGroupContainer = ({
 
   return (
     <>
-      <SettingContainer>
+      <SettingContainer id="auto-redirect-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Enable Auto Redirect"
@@ -114,7 +114,7 @@ const AutoRedirectGroupContainer = ({
               disabled={freezeSettings || !assessmentSuperPowersAutoRedirect}
             >
               <RadioButtonWrapper>
-                <RadioBtn data-cy="radioAllStudents" value={false} />
+                <RadioBtn data-cy="radioAllowMultipleAttempts" value={false} />
                 <Label>Allow Multiple Attempts</Label>
               </RadioButtonWrapper>
               <RadioButtonWrapper style={{ marginLeft: '20px' }}>
@@ -282,7 +282,7 @@ const AutoRedirectGroupContainer = ({
 
       {/* Maximum attempt */}
       {!autoRedirect && (
-        <SettingContainer>
+        <SettingContainer id="max-attempts-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="MAXIMUM ATTEMPTS ALLOWED"
@@ -313,7 +313,7 @@ const AutoRedirectGroupContainer = ({
       {
         /* Check Answer Tries Per Question */
         !isDocBased && !autoRedirect && (
-          <SettingContainer>
+          <SettingContainer id="check-answer-tries-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="CHECK ANSWER TRIES/QUESTION/ATTEMPT"

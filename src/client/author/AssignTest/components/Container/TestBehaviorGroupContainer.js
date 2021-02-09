@@ -14,7 +14,7 @@ import {
 import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
 import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const {
   calculatorKeys,
@@ -116,7 +116,7 @@ const TestBehaviorGroupContainer = ({
   return (
     <>
       {/* Test type */}
-      <SettingContainer>
+      <SettingContainer id="test-type-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Test Type"
@@ -135,7 +135,7 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Test type */}
       {/* Release score */}
-      <SettingContainer>
+      <SettingContainer id="release-score-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="RELEASE SCORES"
@@ -171,7 +171,7 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Release score */}
       {/* Evaluation Method */}
-      <SettingContainer>
+      <SettingContainer id="evaluation-method-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="EVALUATION METHOD"
@@ -206,7 +206,7 @@ const TestBehaviorGroupContainer = ({
       {/* Evaluation Method */}
 
       {/* Mark as done */}
-      <SettingContainer>
+      <SettingContainer id="mark-as-done-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Mark as done"
@@ -242,7 +242,7 @@ const TestBehaviorGroupContainer = ({
       {/* Mark as done */}
 
       {/* Show Calculator */}
-      <SettingContainer>
+      <SettingContainer id="calculator-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="SHOW CALCULATOR"
@@ -276,7 +276,7 @@ const TestBehaviorGroupContainer = ({
       {/* Show Calculator */}
 
       {/* Timed TEST */}
-      <SettingContainer>
+      <SettingContainer id="timed-test-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="TIMED TEST"

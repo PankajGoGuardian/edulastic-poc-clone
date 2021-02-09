@@ -127,9 +127,4 @@ export const TabContentContainer = styled.div`
 `
 export const SettingContainer = styled.div`
   position: relative;
-  :hover {
-    .popover {
-      display: flex;
-    }
-  }
 `

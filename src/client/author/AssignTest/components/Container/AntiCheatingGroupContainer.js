@@ -12,7 +12,7 @@ import {
   MessageSpan,
 } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const { passwordPolicyOptions, passwordPolicy: passwordPolicyValues } = test
 
@@ -97,7 +97,7 @@ const AntiCheatingGroupContainer = ({
       {
         /* Shuffle Question */
         !isDocBased && (
-          <SettingContainer>
+          <SettingContainer id="shuffle-items-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="SHUFFLE ITEMS"
@@ -130,7 +130,7 @@ const AntiCheatingGroupContainer = ({
       {
         /* Shuffle Answer Choice */
         !isDocBased && (
-          <SettingContainer>
+          <SettingContainer id="shuffle-answer-choice-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="SHUFFLE ANSWER CHOICE"
@@ -161,7 +161,7 @@ const AntiCheatingGroupContainer = ({
       }
 
       {/* Require Password */}
-      <SettingContainer>
+      <SettingContainer id="require-password-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="REQUIRE PASSWORD"
@@ -263,7 +263,7 @@ const AntiCheatingGroupContainer = ({
 
       {
         /* BLOCK SAVE AND CONTINUE starts */
-        <SettingContainer>
+        <SettingContainer id="block-saveandcontinue-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="ALLOW STUDENT TO SAVE AND CONTINUE LATER"
@@ -280,6 +280,7 @@ const AntiCheatingGroupContainer = ({
                 disabled={freezeSettings || !premium}
                 size="small"
                 checked={blockSaveAndContinue}
+                data-cy="bockSaveAndContinueSwitch"
                 onChange={(value) =>
                   overRideSettings('blockSaveAndContinue', value)
                 }
@@ -292,7 +293,7 @@ const AntiCheatingGroupContainer = ({
 
       {
         /* Restrict navigation out starts */
-        <SettingContainer>
+        <SettingContainer id="restrict-nav-out-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
@@ -311,11 +312,21 @@ const AntiCheatingGroupContainer = ({
                   overRideSettings('restrictNavigationOut', e.target.value)
                 }}
               >
-                <Radio value={undefined}>DISABLED</Radio>
+                <Radio value={undefined} data-cy="restrict-nav-out-disabled">
+                  DISABLED
+                </Radio>
                 <br />
-                <Radio value="warn-and-report">WARN AND REPORT ONLY</Radio>
+                <Radio
+                  value="warn-and-report"
+                  data-cy="restrict-nav-out-warn-report"
+                >
+                  WARN AND REPORT ONLY
+                </Radio>
                 <br />
-                <Radio value="warn-and-report-after-n-alerts">
+                <Radio
+                  value="warn-and-report-after-n-alerts"
+                  data-cy="restrict-nav-out-warn-report-alerts"
+                >
                   WARN AND BLOCK TEST AFTER{' '}
                   <InputNumberStyled
                     size="small"
@@ -349,7 +360,7 @@ const AntiCheatingGroupContainer = ({
 
       {
         /* Restrict Question Navigation */
-        <SettingContainer>
+        <SettingContainer id="restrict-question-nav-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict question navigation"
@@ -382,7 +393,7 @@ const AntiCheatingGroupContainer = ({
       }
 
       {/* Safe Exam Browser/Kiosk Mode */}
-      <SettingContainer>
+      <SettingContainer id="safe-exam-browser-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Require Safe Exam Browser"

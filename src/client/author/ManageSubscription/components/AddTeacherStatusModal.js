@@ -60,7 +60,11 @@ const AddTeacherStatusModal = ({
   const modifiedDataSource = teacherDataSource.map((item) => {
     const obj = {
       ...item,
-      fullName: `${get(item, 'firstName', '')} ${get(item, 'lastName', '')}`,
+      fullName: `${get(item, 'firstName', '')} ${get(
+        item,
+        'lastName',
+        ''
+      )}`.trim(),
       userRole,
     }
     return obj

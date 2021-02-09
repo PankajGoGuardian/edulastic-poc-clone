@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 
 const InviteTeachersSection = ({ setShowInviteTeachersModal }) => {
   const openModal = () => setShowInviteTeachersModal(true)
-  const handleOnChange = () => {}
-  const handleOnSearch = () => {}
   return (
     <FlexContainer justifyContent="flex-end" padding="10px 0px">
       <EduButton
@@ -20,9 +18,6 @@ const InviteTeachersSection = ({ setShowInviteTeachersModal }) => {
       </EduButton>
       <SearchInputStyled
         placeholder="Search..."
-        onChange={(e) => handleOnChange(e)}
-        onSearch={(e) => handleOnSearch(e)}
-        value=""
         height="34px"
         width="310px"
         data-cy="searchTeachersInputField"

@@ -6,7 +6,7 @@ import {
   EduButton,
   TextAreaInputStyled,
 } from '@edulastic/common'
-import { ModalBody, CheckboxWrpper } from './styled'
+import { CheckboxWrpper } from './styled'
 
 const InviteTeachersModal = ({
   isVisible,
@@ -17,11 +17,11 @@ const InviteTeachersModal = ({
   const [fieldValue, setFieldValue] = useState('')
   const [checkboxValues, setCheckboxValues] = useState([])
 
-  const handleOnChange = (ele) => setFieldValue(ele.value)
+  const handleOnChange = (ele) => setFieldValue(ele.target.value)
   const handleOnCheck = (value) => setCheckboxValues(value)
 
   const handleInviteTeachers = () => {
-    if (fieldValue && fieldValue !== '') {
+    if (fieldValue) {
       const userDetails = fieldValue.replace(/\s/g, '').split(/,|\n/)
       addTeachers({ districtId, userDetails })
       onCancel()
@@ -58,20 +58,17 @@ const InviteTeachersModal = ({
         </>,
       ]}
     >
-      <ModalBody>
+      <div>
         <p className="label">Invite for premium access</p>
         <TextAreaInputStyled
           value={fieldValue}
-          onChange={(e) => handleOnChange(e.target)}
+          onChange={handleOnChange}
           placeholder="Email IDs (separated by comma)"
           data-cy="inviteTeacherInputField"
           height="110px"
         />
         <CheckboxWrpper>
-          <CheckBoxGrp
-            value={checkboxValues}
-            onChange={(value) => handleOnCheck(value)}
-          >
+          <CheckBoxGrp value={checkboxValues} onChange={handleOnCheck}>
             <CheckboxLabel value="teacherPremium">
               Upgrade to Premium
             </CheckboxLabel>
@@ -80,7 +77,7 @@ const InviteTeachersModal = ({
             </CheckboxLabel>
           </CheckBoxGrp>
         </CheckboxWrpper>
-      </ModalBody>
+      </div>
     </CustomModalStyled>
   )
 }

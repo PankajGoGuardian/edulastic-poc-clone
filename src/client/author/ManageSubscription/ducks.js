@@ -12,6 +12,14 @@ export const getSubsLicenses = createSelector(
   manageSubscriptionSelector,
   (state) => state.licenses
 )
+export const getConfirmationModalVisible = createSelector(
+  manageSubscriptionSelector,
+  (state) => state.teacherDetailsModalVisible
+)
+export const getBulkTeacherData = createSelector(
+  manageSubscriptionSelector,
+  (state) => state.bulkTeacherData
+)
 
 // action types
 export const SET_LICENSES_DATA =
@@ -21,7 +29,7 @@ const ADD_BULK_TEACHER_REQUEST = '[teacher] add bulk teacher request'
 const ADD_BULK_TEACHER_SUCCESS = '[teacher] add bulk teacher success'
 const ADD_BULK_TEACHER_ERROR = '[teacher] add bulk teacher error'
 
-const SET_TEACHERDETAIL_MODAL_VISIBLE =
+const SET_TEACHER_DETAIL_MODAL_VISIBLE =
   '[teacher] set teacher detail modal visible'
 
 // action creators
@@ -33,7 +41,7 @@ export const addBulkTeacherAdminErrorAction = createAction(
   ADD_BULK_TEACHER_ERROR
 )
 export const setTeachersDetailsModalVisibleAction = createAction(
-  SET_TEACHERDETAIL_MODAL_VISIBLE
+  SET_TEACHER_DETAIL_MODAL_VISIBLE
 )
 
 // initial State
@@ -94,7 +102,7 @@ export const reducer = createReducer(initialState, {
     state.addBulkTeacherError = payload.bulkAddError
     state.teacherDetailsModalVisible = false
   },
-  [SET_TEACHERDETAIL_MODAL_VISIBLE]: (state, { payload }) => {
+  [SET_TEACHER_DETAIL_MODAL_VISIBLE]: (state, { payload }) => {
     state.teacherDetailsModalVisible = payload
   },
 })

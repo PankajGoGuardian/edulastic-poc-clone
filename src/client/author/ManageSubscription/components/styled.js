@@ -55,8 +55,6 @@ export const Count = styled.div`
   font-weight: bold;
   margin-bottom: 10px;
 `
-export const ModalBody = styled.div``
-
 export const CheckboxWrpper = styled.div`
   padding: 15px 0px 0px;
 `

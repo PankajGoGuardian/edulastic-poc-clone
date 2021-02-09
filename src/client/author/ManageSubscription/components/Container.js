@@ -1,5 +1,4 @@
 import { withNamespaces } from '@edulastic/localization'
-import { get } from 'lodash'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -10,6 +9,8 @@ import {
 } from '../../Subscription/ducks'
 import {
   addBulkTeacherAdminAction,
+  getBulkTeacherData,
+  getConfirmationModalVisible,
   getSubsLicenses,
   setTeachersDetailsModalVisibleAction,
 } from '../ducks'
@@ -28,8 +29,8 @@ const ManageSubscriptionContainer = ({
   userOrgId,
   addTeachers,
   setTeachersDetailsModalVisible,
-  teacherDetailsModalVisible,
-  teacherDataSource,
+  addTeacherStatusModalVisible = false,
+  teacherDataSource = [],
   t,
 }) => {
   const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
@@ -49,7 +50,6 @@ const ManageSubscriptionContainer = ({
   const sendInvite = (obj) => {
     const o = {
       addReq: obj,
-      // listReq: this.getSearchQuery(),
     }
     addTeachers(o)
   }
@@ -85,9 +85,9 @@ const ManageSubscriptionContainer = ({
           addTeachers={sendInvite}
         />
       )}
-      {teacherDetailsModalVisible && (
+      {addTeacherStatusModalVisible && (
         <AddTeacherStatusModal
-          isVisible={teacherDetailsModalVisible}
+          isVisible={addTeacherStatusModalVisible}
           onCancel={closeTeachersDetailModal}
           teacherDataSource={teacherDataSource}
           userRole="teacher"
@@ -106,16 +106,8 @@ const enhance = compose(
       isSuccess: getSuccessSelector(state),
       subsLicenses: getSubsLicenses(state),
       userOrgId: getUserOrgId(state),
-      teacherDetailsModalVisible: get(
-        state,
-        ['manageSubscription', 'teacherDetailsModalVisible'],
-        false
-      ),
-      teacherDataSource: get(
-        state,
-        ['manageSubscription', 'bulkTeacherData'],
-        []
-      ),
+      addTeacherStatusModalVisible: getConfirmationModalVisible(state),
+      teacherDataSource: getBulkTeacherData(state),
     }),
     {
       addTeachers: addBulkTeacherAdminAction,

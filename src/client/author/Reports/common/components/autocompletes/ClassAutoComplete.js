@@ -125,12 +125,13 @@ const ClassAutoComplete = ({
   useEffect(() => {
     setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
-    selectCB({ key: '', title: '' })
+    if (selectedClassId) {
+      selectCB({ key: '', title: '' })
+    }
   }, [termId, schoolIds, teacherIds, grade, subject, courseId])
   useEffect(() => {
-    if (selectedClassId === 'All') {
+    if (!selectedClassId) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
-      selectCB({ key: '', title: '' })
     }
   }, [selectedClassId])
 

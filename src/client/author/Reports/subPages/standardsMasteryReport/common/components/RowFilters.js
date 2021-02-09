@@ -98,19 +98,6 @@ const StandardsMasteryRowFilters = ({
         : true
     )
 
-  const standardIdFromPageData = useMemo(
-    () => get(standardsProgress, 'data.result.standardId'),
-    [standardsProgress]
-  )
-
-  useEffect(() => {
-    const _standardId = standardIdFromPageData || filters.standardId
-    setFilters({
-      ...filters,
-      standardId: _standardId,
-    })
-  }, [standardIdFromPageData])
-
   const domainGroup = groupBy(skillInfo, (o) => `${o.domainId}`)
   const allDomainIds = Object.keys(domainGroup).sort((a, b) =>
     a.localeCompare(b)
@@ -133,6 +120,27 @@ const StandardsMasteryRowFilters = ({
       key: `${o.standardId}`,
       title: o.standard,
     }))
+
+  const standardIdFromPageData = useMemo(
+    () => get(standardsProgress, 'data.result.standardId'),
+    [standardsProgress]
+  )
+
+  useEffect(() => {
+    if (standardIdFromPageData) {
+      const standardFromPageData = standardsList.find(
+        (o) => o.key === standardIdFromPageData
+      )
+      setFilters({
+        ...filters,
+        standardId: standardIdFromPageData,
+      })
+      setTagsData({
+        ...tagsData,
+        standardId: standardFromPageData,
+      })
+    }
+  }, [standardIdFromPageData])
 
   // update handlers
   const updateFilterDropdownCB = (selected, keyName) => {

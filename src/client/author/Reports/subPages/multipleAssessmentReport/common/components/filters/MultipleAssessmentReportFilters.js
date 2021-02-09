@@ -152,8 +152,8 @@ const SingleAssessmentReportFilters = ({
         studentSubject: urlStudentSubject.key,
         studentGrade: urlStudentGrade.key,
         studentCourseId: search.studentCourseId || 'All',
-        classId: search.classId || 'All',
-        groupId: search.groupId || 'All',
+        classId: search.classId || '',
+        groupId: search.groupId || '',
         profileId: urlPerformanceBand?.key || '',
       }
       if (role === roleuser.TEACHER) {

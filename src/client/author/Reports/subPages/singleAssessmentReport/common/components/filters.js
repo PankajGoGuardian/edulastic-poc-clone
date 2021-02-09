@@ -231,8 +231,8 @@ const SingleAssessmentReportFilters = ({
         studentGrade: urlStudentGrade.key,
         studentSubject: urlStudentSubject.key,
         studentCourseId: search.studentCourseId || 'All',
-        classId: search.classId || 'All',
-        groupId: search.groupId || 'All',
+        classId: search.classId || '',
+        groupId: search.groupId || '',
         standardsProficiencyProfile: urlStandardProficiency?.key || '',
         performanceBandProfile: urlPerformanceBand?.key || '',
       }

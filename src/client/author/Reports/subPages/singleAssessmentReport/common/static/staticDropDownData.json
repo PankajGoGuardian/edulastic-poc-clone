@@ -31,8 +31,8 @@
     "studentGrade": "All",
     "studentSubject": "All",
     "studentCourseId": "All",
-    "classId": "All",
-    "groupId": "All",
+    "classId": "",
+    "groupId": "",
     "standardsProficiencyProfile": "",
     "performanceBandProfile": ""
   },

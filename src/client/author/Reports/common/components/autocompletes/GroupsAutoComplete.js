@@ -125,12 +125,13 @@ const GroupsAutoComplete = ({
   useEffect(() => {
     setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
-    selectCB({ key: '', title: '' })
+    if (selectedGroupId) {
+      selectCB({ key: '', title: '' })
+    }
   }, [termId, schoolIds, teacherIds, grade, subject, courseId])
   useEffect(() => {
-    if (selectedGroupId === 'All') {
+    if (!selectedGroupId) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
-      selectCB({ key: '', title: '' })
     }
   }, [selectedGroupId])
 

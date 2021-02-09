@@ -106,7 +106,13 @@ class Container extends Component {
     window.addEventListener('scroll', this.handleStickyHeader)
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
+    // evaluation mode: check/show/clear
+    const { clearAnswers, previewMode, changePreview } = this.props
+    if (['check', 'show'].includes(previewMode)) {
+      changePreview('clear')
+      clearAnswers()
+    }
     window.removeEventListener('scroll', this.handleStickyHeader)
   }
 
@@ -237,15 +243,6 @@ class Container extends Component {
       this.setState({ clearClicked: true }, () =>
         this.setState({ clearClicked: false })
       )
-    }
-  }
-
-  componentWillUnmount() {
-    // evaluation mode: check/show/clear
-    const { clearAnswers, previewMode, changePreview } = this.props
-    if (['check', 'show'].includes(previewMode)) {
-      changePreview('clear')
-      clearAnswers()
     }
   }
 
@@ -596,7 +593,7 @@ class Container extends Component {
           <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
             {allowedToSelectMultiLanguage &&
               useLanguageFeatureQn.includes(questionType) && (
-                <LanguageSelector questionId={question.id} />
+                <LanguageSelector />
               )}
             {view !== 'preview' && view !== 'auditTrail' && (
               <EduButton

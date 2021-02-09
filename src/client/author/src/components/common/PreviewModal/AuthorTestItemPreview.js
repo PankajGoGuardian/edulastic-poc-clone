@@ -53,6 +53,8 @@ import {
   ScratchpadTool,
   Scratchpad,
 } from '../../../../../common/components/Scratchpad'
+import { getCurrentLanguage } from '../../../../../common/components/LanguageSelector/duck'
+import { changeDataToPreferredLanguage } from '../../../../../assessment/utils/question'
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -186,6 +188,7 @@ class AuthorTestItemPreview extends Component {
       item,
       cols,
       isMultipart,
+      authorLanguage,
       ...restProps
     } = this.props
     // const questionCount = get(item, ["data", "questions"], []).length;
@@ -197,7 +200,10 @@ class AuthorTestItemPreview extends Component {
     // const alphabets = "abcdefghijklmnopqrstuvwxyz";
 
     // const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
-    const question = questions[widget.reference]
+    const question = changeDataToPreferredLanguage(
+      questions[widget.reference] || {},
+      authorLanguage
+    )
     // if (isMultiPart || resourceCount > 0) {
     //   if (!question.qSubLabel) {
     //     question.qSubLabel = alphabets[subIndex - resourceCount];
@@ -679,6 +685,7 @@ const enhance = compose(
       userId: getUserId(state),
       user: getUserSelector(state).user,
       userRole: getUserRole(state),
+      authorLanguage: getCurrentLanguage(state),
     }),
     {
       deleteItem: deleteItemAction,

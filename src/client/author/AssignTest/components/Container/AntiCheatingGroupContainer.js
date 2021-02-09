@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Row, Col, Select, Input, Icon, InputNumber, Radio } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { blueBorder, red, green } from '@edulastic/colors'
@@ -54,6 +54,7 @@ const AntiCheatingGroupContainer = ({
     premium,
   } = featuresAvailable
 
+  const numInputRef = useRef()
   const validateAndUpdatePassword = (_assignmentPassword) => {
     overRideSettings('assignmentPassword', _assignmentPassword)
     if (_assignmentPassword.split(' ').length > 1) {
@@ -318,6 +319,7 @@ const AntiCheatingGroupContainer = ({
                   WARN AND BLOCK TEST AFTER{' '}
                   <InputNumberStyled
                     size="small"
+                    ref={numInputRef}
                     min={1}
                     value={
                       restrictNavigationOut
@@ -325,10 +327,18 @@ const AntiCheatingGroupContainer = ({
                         : undefined
                     }
                     onChange={(v) => {
-                      overRideSettings(
-                        'restrictNavigationOutAttemptsThreshold',
-                        v
-                      )
+                      if (v) {
+                        overRideSettings(
+                          'restrictNavigationOutAttemptsThreshold',
+                          v
+                        )
+                      } else {
+                        numInputRef.current?.blur()
+                        overRideSettings(
+                          'restrictNavigationOut',
+                          'warn-and-report'
+                        )
+                      }
                     }}
                     disabled={
                       !(

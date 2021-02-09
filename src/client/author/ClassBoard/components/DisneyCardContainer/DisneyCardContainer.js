@@ -331,7 +331,7 @@ class DisneyCardContainer extends Component {
                           outNavigationCounter={student.outNavigationCounter}
                           pauseReason={student.pauseReason}
                         >
-                          <QuestionIcon type="caret-up" theme="filled" />
+                          <QuestionIcon type="warning" theme="filled" />
                           {status.status}{' '}
                         </PauseToolTip>
                       </StyledParaS>

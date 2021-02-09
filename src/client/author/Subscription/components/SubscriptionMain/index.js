@@ -302,7 +302,7 @@ const SubscriptionMain = ({
                     onClick={handleClick}
                     noBg
                   >
-                    Upgrade now $100/YR
+                    Upgrade now
                   </CustomButton>
                 )}
                 onClick={handlePurchaseFlow}

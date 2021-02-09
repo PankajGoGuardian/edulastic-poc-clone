@@ -101,7 +101,6 @@ function Preview({
         qIndex={qIndex}
         evaluation={evaluation}
         showStudentWork={showStudentWork}
-        passageTestItemID={passageId}
         isQuestionView={isQuestionView}
         isExpressGrader={isExpressGrader}
         isLCBView={isLCBView}

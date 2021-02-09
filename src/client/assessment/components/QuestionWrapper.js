@@ -74,7 +74,10 @@ import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemIn
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
 import { getFontSize } from '../utils/helpers'
 import { changeDataToPreferredLanguage } from '../utils/question'
-import { languagePreferenceSelector } from '../../common/components/LanguageSelector/duck'
+import {
+  languagePreferenceSelector,
+  getCurrentLanguage,
+} from '../../common/components/LanguageSelector/duck'
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
@@ -822,6 +825,7 @@ const enhance = compose(
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),
       studentLanguagePreference: languagePreferenceSelector(state, ownProps),
+      authLanguage: getCurrentLanguage(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

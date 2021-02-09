@@ -94,15 +94,16 @@ Passage.defaultProps = {
   cleanSections: () => {},
 }
 
+function getHighlightForAauthor(state, props) {
+  const { item } = props
+  return get(state, `userWork.present[${item.id}]`)
+}
+
 const enhance = compose(
   withNamespaces('assessment'),
   connect(
-    (state, ownProps) => ({
-      userWork: get(
-        state,
-        `userWork.present[${ownProps.passageTestItemID}].resourceId`,
-        []
-      ),
+    (state, props) => ({
+      userWork: getHighlightForAauthor(state, props),
     }),
     {
       setQuestionData: setQuestionDataAction,

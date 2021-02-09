@@ -15,8 +15,8 @@
   "compareByDropDownData": [
     { "key": "schoolId", "title": "School" },
     { "key": "teacherId", "title": "Teacher" },
-    { "key": "studentId", "title": "Student" },
     { "key": "groupId", "title": "Class" },
+    { "key": "studentId", "title": "Student" },
     { "key": "race", "title": "Race" },
     { "key": "gender", "title": "Gender" },
     { "key": "frlStatus", "title": "FRL Status" },

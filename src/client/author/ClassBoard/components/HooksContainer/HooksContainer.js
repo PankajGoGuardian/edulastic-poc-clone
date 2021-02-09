@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import useInterval from '@use-it/interval'
 import { assignmentPolicyOptions as Policies } from '@edulastic/constants'
+import { notification } from '@edulastic/common'
 import {
   realtimeGradebookActivityAddAction,
   gradebookTestItemAddAction,
@@ -17,6 +18,8 @@ import {
 } from '../../../src/reducers/testActivity'
 import useRealtimeUpdates from '../../useRealtimeUpdates'
 import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
+import { getAllStudentsList, testNameSelector } from '../../ducks'
+import { getFormattedName } from '../../../Gradebook/transformers'
 
 const needRealtimeDateTracking = ({
   openPolicy,
@@ -58,8 +61,11 @@ const Shell = ({
   realtimeUpdateAssignment,
   recalculateAssignment,
   additionalData,
+  selectedTab,
+  testName,
+  studentsList,
 }) => {
-  const redirectCheck = (payload) => {
+  const redirectCheck = () => {
     const { assignmentId, classId } = match.params
     loadTestActivity(assignmentId, classId)
   }
@@ -88,6 +94,22 @@ const Shell = ({
       const { assignmentId, classId } = match.params
       loadTestActivity(assignmentId, classId)
     },
+    languagePreferenceSwitched: (payload) => {
+      const { newActivityId, oldActivityId, userId } = payload
+      if(!newActivityId || !oldActivityId || !userId){
+        return
+      }
+      if(selectedTab === 'Both'){
+        const student = studentsList.find((item) => item._id === userId)
+        const { firstName = '', middleName = '', lastName = '' } = student
+        const studentName = getFormattedName(firstName, middleName, lastName)
+        const { assignmentId, classId } = match.params
+        notification({
+          msg: `student ${studentName} had switched the preferred language for the assignment ${testName}`,
+        })
+        loadTestActivity(assignmentId, classId)
+      }
+    },
     // TODO: need to comeback to it when we need to handle realtime impact of regrading
     // removeQuestions,
     // addQuestionsMaxScore
@@ -98,7 +120,10 @@ const Shell = ({
 
 export default compose(
   withRouter,
-  connect(null, {
+  connect((state)=>({
+    studentsList: getAllStudentsList(state),
+    testName: testNameSelector(state),
+  }), {
     addActivity: realtimeGradebookActivityAddAction,
     addItem: gradebookTestItemAddAction,
     submitActivity: realtimeGradebookActivitySubmitAction,

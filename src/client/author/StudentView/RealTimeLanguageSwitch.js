@@ -20,7 +20,6 @@ const RealTimeLanguageSwitch = ({
   assignmentId,
   testActivityIds = [],
   loadStudentResponses,
-  selectedStudent,
   history,
   setCurrentTestActivityId,
   studentView,
@@ -31,7 +30,6 @@ const RealTimeLanguageSwitch = ({
   qid,
   questionView,
   loadClassQuestionResponses,
-  userIdsByActivityId = {},
   loadTestActivity,
 }) => {
   const topics = testActivityIds.length
@@ -43,13 +41,11 @@ const RealTimeLanguageSwitch = ({
 
   useRealtimeV2(topics, {
     languagePreferenceSwitched: (payload) => {
-      const { newActivityId, oldActivityId } = payload
-      let student = studentsList.find((item) => item._id === selectedStudent)
-      if (questionView) {
-        student = studentsList.find(
-          (item) => item._id === userIdsByActivityId[oldActivityId]?.studentId
-        )
+      const { newActivityId, oldActivityId, userId } = payload
+      if(!newActivityId || !oldActivityId || !userId){
+        return
       }
+      const student = studentsList.find((item) => item._id === userId)
       const { firstName = '', middleName = '', lastName = '' } = student
       const studentName = getFormattedName(firstName, middleName, lastName)
       if (
@@ -64,7 +60,7 @@ const RealTimeLanguageSwitch = ({
         loadStudentResponses({
           testActivityId: newActivityId,
           groupId,
-          studentId: selectedStudent,
+          studentId: userId,
         })
         history.push(
           `/author/classboard/${assignmentId}/${groupId}/test-activity/${newActivityId}`

@@ -1156,6 +1156,7 @@ class ClassBoard extends Component {
           additionalData={additionalData}
           classId={classId}
           assignmentId={assignmentId}
+          selectedTab={selectedTab}
         />
         <ClassHeader
           classId={classId}

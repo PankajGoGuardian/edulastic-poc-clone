@@ -241,7 +241,6 @@ class StudentViewContainer extends Component {
             groupId={classId}
             assignmentId={assignmentId}
             testActivityIds={[studentTestActivity?._id]}
-            selectedStudent={selectedStudent}
             studentView
           />
         )}

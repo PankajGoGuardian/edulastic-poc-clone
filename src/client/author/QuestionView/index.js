@@ -13,7 +13,7 @@ import {
   Line,
 } from 'recharts'
 import { withRouter } from 'react-router'
-import { head, get, isEmpty, round, sumBy, keyBy } from 'lodash'
+import { head, get, isEmpty, round, sumBy } from 'lodash'
 import {
   greyGraphstroke,
   incorrect,
@@ -235,7 +235,6 @@ class QuestionViewContainer extends Component {
       data = data.slice(0, 2)
     }
     const testActivityIds = testActivity.map((item) => item.testActivityId)
-    const userIdsByActivityId = keyBy(testActivity, 'testActivityId')
     const { assignmentId, classId } = match.params
     return (
       <>
@@ -249,7 +248,6 @@ class QuestionViewContainer extends Component {
               testActivityIds={testActivityIds}
               itemId={itemId}
               qid={question?._id}
-              userIdsByActivityId={userIdsByActivityId}
               questionView
             />
           )}

@@ -83,7 +83,6 @@ const Shell = ({
       recalculateAssignment()
     }
   }, 60 * 1000)
-
   const client = useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
     addActivity,
     addItem,
@@ -100,13 +99,15 @@ const Shell = ({
         return
       }
       if(selectedTab === 'Both'){
-        const student = studentsList.find((item) => item._id === userId)
-        const { firstName = '', middleName = '', lastName = '' } = student
-        const studentName = getFormattedName(firstName, middleName, lastName)
+        if(studentsList.length){
+          const student = studentsList.find((item) => item._id === userId)
+          const { firstName = '', middleName = '', lastName = '' } = student
+          const studentName = getFormattedName(firstName, middleName, lastName)
+          notification({
+            msg: `student ${studentName} had switched the preferred language for the assignment ${testName}`,
+          })
+        }
         const { assignmentId, classId } = match.params
-        notification({
-          msg: `student ${studentName} had switched the preferred language for the assignment ${testName}`,
-        })
         loadTestActivity(assignmentId, classId)
       }
     },

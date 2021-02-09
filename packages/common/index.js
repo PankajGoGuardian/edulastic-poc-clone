@@ -121,6 +121,7 @@ export {
   getRangeAtFirst,
   replaceLatexTemplate,
   isValidUpdate,
+  removeTokenFromHtml,
 } from './src/helpers'
 
 // contexts

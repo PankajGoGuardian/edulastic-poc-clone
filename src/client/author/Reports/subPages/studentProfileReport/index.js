@@ -6,7 +6,7 @@ import next from 'immer'
 import qs from 'qs'
 
 import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconCloseFilter } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import StudentMasteryProfile from './StudentMasteryProfile'
 import StudentAssessmentProfile from './StudentAssessmentProfile'
@@ -16,7 +16,7 @@ import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 
 import { setSPRSettingsAction, getReportsSPRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner, FilterButton } from '../../common/styled'
+import { ReportContaner, FilterButtonClear } from '../../common/styled'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
@@ -164,9 +164,9 @@ const StudentProfileReportContainer = (props) => {
             ].find((x) => window.location.pathname.startsWith(x))}
           />
           {!reportId ? (
-            <FilterButton showFilter={showFilter} onClick={toggleFilter}>
-              <IconFilter />
-            </FilterButton>
+            <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
+              {showFilter ? <IconCloseFilter /> : <IconFilter />}
+            </FilterButtonClear>
           ) : null}
           <ReportContaner showFilter={showFilter}>
             <Route

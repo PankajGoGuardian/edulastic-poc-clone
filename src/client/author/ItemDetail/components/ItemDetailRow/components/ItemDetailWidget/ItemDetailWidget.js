@@ -73,7 +73,11 @@ const ItemDetailWidget = ({
     connectDragPreview &&
     connectDragSource &&
     connectDragPreview(
-      <div onMouseEnter={onMouseEnterHander} onMouseLeave={onMouseLeaveHander}>
+      <div
+        onMouseEnter={onMouseEnterHander}
+        onMouseLeave={onMouseLeaveHander}
+        data-cy="item-detail-widget"
+      >
         <Container isDragging={isDragging} flowLayout={flowLayout}>
           <WidgetContainer>
             {(widget.widgetType === 'question' ||

@@ -134,7 +134,8 @@ const TemplateBox = ({ resprops, id }) => {
       drop={onDrop}
       showHoverBorder
       borderColor={greyThemeLight}
-      height={boxHeight}
+      minHeight={boxHeight}
+      maxHeight={Dimensions.maxHeight}
       minWidth={style.minWidth}
       maxWidth={style.maxWidth}
       index={dropTargetIndex}
@@ -167,8 +168,8 @@ const StyledDropContainer = styled(DropContainer)`
   padding: 5px;
   vertical-align: middle;
   white-space: nowrap;
-  min-height: ${({ height }) => height}px;
-  max-height: ${({ height }) => height}px;
+  min-height: ${({ minHeight }) => minHeight}px;
+  max-height: ${({ maxHeight }) => maxHeight}px;
   min-width: ${({ minWidth }) => minWidth}px;
   max-width: ${({ maxWidth }) => maxWidth}px;
 `

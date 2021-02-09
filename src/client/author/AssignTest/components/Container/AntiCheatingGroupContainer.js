@@ -296,7 +296,7 @@ const AntiCheatingGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
-            content="If ON, students must take the test in full screen mode to prevent opening another browser window. The student will get an alert if they navigate out of full screen mode during the test. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset."
+            content="If ON, students must take the test in full screen mode to prevent opening another browser window. Alert will appear if student has navigated away for more than 5 seconds. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset."
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
@@ -315,7 +315,10 @@ const AntiCheatingGroupContainer = ({
                 <br />
                 <Radio value="warn-and-report">WARN AND REPORT ONLY</Radio>
                 <br />
-                <Radio value="warn-and-report-after-n-alerts">
+                <Radio
+                  value="warn-and-report-after-n-alerts"
+                  title="Alert will appear if student has navigated away for more than 5 seconds"
+                >
                   WARN AND BLOCK TEST AFTER{' '}
                   <InputNumberStyled
                     size="small"

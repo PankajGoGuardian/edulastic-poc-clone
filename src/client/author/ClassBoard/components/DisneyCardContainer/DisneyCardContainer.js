@@ -78,7 +78,7 @@ function PauseToolTip({ outNavigationCounter, pauseReason, children }) {
     reason =
       'Test is paused due to multiple attempts to navigate away. To reset, place check mark in student card, go to More, select Resume'
   } else if (outNavigationCounter > 0) {
-    reason = `Student has navigated out of test${
+    reason = `Student has navigated out of test ${
       outNavigationCounter > 1
         ? `${outNavigationCounter} times`
         : `${outNavigationCounter} time`
@@ -87,7 +87,13 @@ function PauseToolTip({ outNavigationCounter, pauseReason, children }) {
     reason = pauseReason
   }
 
-  return reason ? <Tooltip title={reason}>{children}</Tooltip> : null
+  return reason ? (
+    <Tooltip title={reason}>
+      <QuestionIcon type="warning" theme="filled" /> {children}
+    </Tooltip>
+  ) : (
+    children
+  )
 }
 class DisneyCardContainer extends Component {
   constructor(props) {
@@ -331,7 +337,6 @@ class DisneyCardContainer extends Component {
                           outNavigationCounter={student.outNavigationCounter}
                           pauseReason={student.pauseReason}
                         >
-                          <QuestionIcon type="warning" theme="filled" />
                           {status.status}{' '}
                         </PauseToolTip>
                       </StyledParaS>

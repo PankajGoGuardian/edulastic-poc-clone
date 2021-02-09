@@ -46,12 +46,13 @@ import {
   getStudentResponseSelector,
   getTestItemsOrderSelector,
   getCurrentTestActivityIdSelector,
-  getmultiLanguageEnabled,
   getStudentResponseLoadingSelector,
+  getAdditionalDataSelector,
+  getAllStudentsList,
 } from '../ClassBoard/ducks'
 
 import { getQuestionLabels } from '../ClassBoard/Transformer'
-import RealTimeLanguageSwitch from './RealTimeLanguageSwitch'
+import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -163,9 +164,10 @@ class StudentViewContainer extends Component {
       testItemsOrder,
       filter,
       isCliUser,
-      multiLanguageEnabled,
       match,
       studentResponseLoading,
+      additionalData,
+      studentsList,
     } = this.props
 
     const {
@@ -236,14 +238,17 @@ class StudentViewContainer extends Component {
 
     return (
       <>
-        {multiLanguageEnabled && studentTestActivity?._id && (
-          <RealTimeLanguageSwitch
-            groupId={classId}
+        {studentsList.length && studentTestActivity?._id && (
+          <HooksContainer
+            additionalData={additionalData}
+            classId={classId}
             assignmentId={assignmentId}
-            testActivityIds={[studentTestActivity?._id]}
-            studentView
+            testActivityId={studentTestActivity?._id}
+            studentsList={studentsList}
+            selectedTab="Student"
           />
         )}
+
         {showFeedbackPopup && (
           <StyledModal
             centered
@@ -408,7 +413,6 @@ const enhance = compose(
       studentResponse: getStudentResponseSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
       currentTestActivityId: getCurrentTestActivityIdSelector(state),
-      multiLanguageEnabled: getmultiLanguageEnabled(state),
       isPresentationMode: get(
         state,
         ['author_classboard_testActivity', 'presentationMode'],
@@ -422,6 +426,8 @@ const enhance = compose(
       entities: get(state, 'author_classboard_testActivity.entities', []),
       filter: state?.author_classboard_testActivity?.studentViewFilter,
       studentResponseLoading: getStudentResponseLoadingSelector(state),
+      additionalData: getAdditionalDataSelector(state),
+      studentsList: getAllStudentsList(state),
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,

@@ -65,31 +65,29 @@ import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
 
 const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
 
-function PauseToolTip({ outNavigationCounter, pauseReason }) {
+function PauseToolTip({ outNavigationCounter, pauseReason, children }) {
   let reason = null
   console.log('pauseToolTip', { pauseReason })
   if (pauseReason === 'blocked-save-and-continue') {
-    reason = 'Paused due to idle timeout'
+    reason =
+      'Test is paused due to inactivity.  To reset, place a check mark in student card, go to More, select Resume'
   } else if (pauseReason === 'exiting') {
     reason = 'Paused due to browser exiting before submiting'
   } else if (pauseReason === 'out-of-navigation') {
     // reason = `Paused because of navigating outside asssessment ${outNavigationCounter>1?`${outNavigationCounter} times`: `${outNavigationCounter} time`}`
-    reason = 'Paused due to tab navigation'
+    reason =
+      'Test is paused due to multiple attempts to navigate away. To reset, place check mark in student card, go to More, select Resume'
   } else if (outNavigationCounter > 0) {
-    reason = `navigated ${
+    reason = `Student has navigated out of test${
       outNavigationCounter > 1
         ? `${outNavigationCounter} times`
-        : `${outNavigationCounter} time out of assessment`
+        : `${outNavigationCounter} time`
     }`
   } else if (pauseReason) {
     reason = pauseReason
   }
 
-  return reason ? (
-    <Tooltip title={reason}>
-      <QuestionIcon type="caret-up" theme="filled" />
-    </Tooltip>
-  ) : null
+  return reason ? <Tooltip title={reason}>{children}</Tooltip> : null
 }
 class DisneyCardContainer extends Component {
   constructor(props) {
@@ -332,8 +330,10 @@ class DisneyCardContainer extends Component {
                         <PauseToolTip
                           outNavigationCounter={student.outNavigationCounter}
                           pauseReason={student.pauseReason}
-                        />
-                        {status.status}{' '}
+                        >
+                          <QuestionIcon type="caret-up" theme="filled" />
+                          {status.status}{' '}
+                        </PauseToolTip>
                       </StyledParaS>
                       {pastDueTag && (
                         <StatusRow>
@@ -687,4 +687,5 @@ const QuestionIcon = styled(Icon)`
   color: #fdcc3b;
   font-size: 15px;
   margin-left: -2px;
+  padding-right: 2px;
 `

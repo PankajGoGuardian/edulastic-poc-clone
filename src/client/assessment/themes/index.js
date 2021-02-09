@@ -136,7 +136,8 @@ function incrementNavigationCounter({ history, testActivityId }) {
       if (response.paused) {
         notification({
           type: 'error',
-          msg: 'Sorry! Assignment got paused due to inactivity',
+          msg:
+            'Your test has been locked. Please contact your teacher to reset the test.',
           duration: 0,
         })
         Fscreen.exitFullscreen()

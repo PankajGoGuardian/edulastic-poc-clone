@@ -1537,6 +1537,24 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   return settings
 }
 
+function validateRestrictNavigationOut(data) {
+  if (
+    data?.restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+    !data?.restrictNavigationOutAttemptsThreshold
+  ) {
+    notification({
+      type: 'warning',
+      msg: 'Please enter a valid input for Restrict Navigation Out of Test',
+    })
+    document
+      .getElementById('restrict-navigation-out')
+      ?.querySelector('.ant-input-number-input')
+      ?.focus()
+    return false
+  }
+  return true
+}
+
 // saga
 function* receiveTestByIdSaga({ payload }) {
   try {
@@ -1690,6 +1708,9 @@ function* createTest(data) {
 
 function* createTestSaga({ payload }) {
   try {
+    if (!validateRestrictNavigationOut(payload.data)) {
+      return
+    }
     const entity = yield createTest(payload.data)
     entity.itemGroups = payload.data.itemGroups
     yield put(createTestSuccessAction(entity))
@@ -1712,6 +1733,10 @@ function hasInvalidItem(testData) {
 
 export function* updateTestSaga({ payload }) {
   try {
+    if (!validateRestrictNavigationOut(payload.data)) {
+      yield put(setTestsLoadingAction(false))
+      return
+    }
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true))
     const { scoring = {}, currentTab } = payload.data
@@ -1848,6 +1873,10 @@ export function* updateTestSaga({ payload }) {
 
 function* updateTestDocBasedSaga({ payload }) {
   try {
+    if (!validateRestrictNavigationOut(payload.data)) {
+      yield put(setUpdatingTestForRegradeStateAction(false))
+      return
+    }
     const _questions =
       payload?.data?.itemGroups?.[0]?.items?.[0]?.data?.questions || []
     const QuestionsbyId = {}
@@ -2014,6 +2043,9 @@ function* shareTestSaga({ payload }) {
 function* publishTestSaga({ payload }) {
   try {
     const { _id: id, test: _test, assignFlow } = payload
+    if (!validateRestrictNavigationOut(_test)) {
+      return
+    }
     const defaultThumbnail = yield select(getDefaultThumbnailSelector)
     _test.thumbnail =
       _test.thumbnail === defaultImage ? defaultThumbnail : _test.thumbnail
@@ -2120,6 +2152,10 @@ function* publishForRegrade({ payload }) {
     const _test = yield select(getTestSelector)
     if (_test.isUsed && !test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
+    }
+    if (!validateRestrictNavigationOut(_test)) {
+      yield put(setUpdatingTestForRegradeStateAction(false))
+      return
     }
     yield call(_test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
       payload: {

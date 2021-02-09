@@ -61,7 +61,7 @@ export const StyledFilterWrapper = styled.div`
   ${({ isRowFilter }) =>
     isRowFilter
       ? `
-    width: 60%;
+    min-width: 60%;
     display: flex;
     justify-content: flex-end;
   `

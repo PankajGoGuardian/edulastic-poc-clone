@@ -402,6 +402,8 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
   (state) => {
     const allowedUserIds = [
       // '5d26f2f892df401ddf8c2fd7', // poc user
+      '5ee90bb54e6a8b000713dae9', // QA testing author account
+      '5e3138446247305142d94332', // QA testing publisher account
       '5ec422aabdde150007764df1', // "Edulastic Premium Content"
     ]
     return allowedUserIds.includes(state)

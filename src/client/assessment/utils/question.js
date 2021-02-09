@@ -7,6 +7,7 @@ const { useLanguageFeatureQn } = questionType
 const { LANGUAGE_EN } = appLanguages
 
 const commonPatterns = [
+  /scoringInstructions/,
   /instructorStimulus/,
   /sampleAnswer/,
   /stimulus/,
@@ -51,6 +52,8 @@ const patternsByQuestionType = {
   [questionType.FORMULA_ESSAY]: [...commonPatterns],
   [questionType.MULTIPLE_CHOICE]: [...commonPatterns, /options\.(\d+)\.label/],
   [questionType.TOKEN_HIGHLIGHT]: [...commonPatterns, /template/],
+  [questionType.TEXT]: [...commonPatterns, /heading/, /content/],
+  [questionType.VIDEO]: [...commonPatterns, /heading/, /summary/, /transcript/],
 }
 
 const clozeTypes = [

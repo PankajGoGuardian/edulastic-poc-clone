@@ -16,7 +16,7 @@ import StandardProficiencyTable from '../../../TestPage/components/Setting/compo
 import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
 import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const { accessibilities } = test
 
@@ -50,12 +50,14 @@ const MiscellaneousGroupContainer = ({
       value: showMagnifier,
       description:
         'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
+      id: 'magnifier-setting',
     },
     {
       key: 'enableScratchpad',
       value: enableScratchpad,
       description:
         'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
+      id: 'scratchpad-setting',
     },
   ]
 
@@ -71,7 +73,7 @@ const MiscellaneousGroupContainer = ({
   return (
     <>
       {/* Answer on Paper */}
-      <SettingContainer>
+      <SettingContainer id="answer-on-paper-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="ANSWER ON PAPER"
@@ -135,7 +137,7 @@ const MiscellaneousGroupContainer = ({
       {/* Multi language */}
 
       {/* Performance Bands */}
-      <SettingContainer>
+      <SettingContainer id="performance-bands-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Performance Bands"
@@ -156,7 +158,7 @@ const MiscellaneousGroupContainer = ({
       {/* Performance Bands */}
 
       {/* Standards Based Grading Scale */}
-      <SettingContainer>
+      <SettingContainer id="standards-mastery-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Standards Based Grading Scale"
@@ -188,8 +190,8 @@ const MiscellaneousGroupContainer = ({
                   disabled={freezeSettings}
                   style={{ marginTop: '10px', marginBottom: 0 }}
                 >
-                  {accessibilityData.map(({ key, value, description }) => (
-                    <SettingContainer>
+                  {accessibilityData.map(({ key, value, description, id }) => (
+                    <SettingContainer id={id}>
                       <DetailsTooltip
                         width={tootltipWidth}
                         title={accessibilities[key]}
@@ -213,8 +215,12 @@ const MiscellaneousGroupContainer = ({
                             }
                             defaultValue={isUndefined(value) ? true : value}
                           >
-                            <Radio value>ENABLE</Radio>
-                            <Radio value={false}>DISABLE</Radio>
+                            <Radio value data-cy={`${key}-enable`}>
+                              ENABLE
+                            </Radio>
+                            <Radio value={false} data-cy={`${key}-disable`}>
+                              DISABLE
+                            </Radio>
                           </StyledRadioGroup>
                         </Col>
                       </StyledRow>
@@ -228,7 +234,7 @@ const MiscellaneousGroupContainer = ({
           {(assignmentSettings?.testType || testSettings.testType) !==
             'testlet' &&
             !testSettings.isDocBased && (
-              <SettingContainer>
+              <SettingContainer id="player-skin-setting">
                 <DetailsTooltip
                   width={tootltipWidth}
                   title="Student Player Skin"

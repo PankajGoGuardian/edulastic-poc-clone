@@ -77,6 +77,7 @@ const createUser = (data) =>
 const updateUser = ({ data, userId }) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${userId}`,
       method: 'put',
       data,

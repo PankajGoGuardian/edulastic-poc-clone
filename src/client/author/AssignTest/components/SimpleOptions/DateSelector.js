@@ -16,7 +16,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { StyledRow, Label, RadioButtonWrapper, StyledCol } from './styled'
 import DetailsTooltip from '../Container/DetailsTooltip'
-import { SettingContainer } from '../Container/styled'
+import SettingContainer from '../Container/SettingsContainer'
 
 const DateSelector = ({
   startDate,
@@ -61,7 +61,7 @@ const DateSelector = ({
   return (
     <>
       {!forClassLevel && showOpenDueAndCloseDate && (
-        <SettingContainer>
+        <SettingContainer id="open-close-due-radio">
           <DetailsTooltip
             width={tootltipWidth}
             title="Radio to select Open, close and due"
@@ -98,7 +98,7 @@ const DateSelector = ({
       )}
 
       {hasStartDate && (
-        <SettingContainer>
+        <SettingContainer id="open-date-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="Open date"
@@ -125,8 +125,8 @@ const DateSelector = ({
                   size="large"
                   style={{ width: '100%' }}
                   disabledDate={disabledStartDate}
-                  showTime={{ use12Hours: true }}
-                  format="YYYY-MM-DD hh:mm:ss a"
+                  showTime={{ use12Hours: true, format: 'hh:mm a' }}
+                  format="YYYY-MM-DD hh:mm a"
                   value={startDate}
                   placeholder={t('common.assignTest.openDatePlaceholder')}
                   onChange={changeField('startDate')}
@@ -154,8 +154,8 @@ const DateSelector = ({
               data-cy="dueDate"
               size="large"
               style={{ width: '100%' }}
-              showTime={{ use12Hours: true }}
-              format="YYYY-MM-DD hh:mm:ss a"
+              showTime={{ use12Hours: true, format: 'hh:mm a' }}
+              format="YYYY-MM-DD hh:mm a"
               value={dueDate}
               placeholder={t('common.assignTest.dueDatePlaceholder')}
               onChange={changeField('dueDate')}
@@ -168,7 +168,7 @@ const DateSelector = ({
         </StyledRow>
       )}
 
-      <SettingContainer>
+      <SettingContainer id="close-date-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Close date"
@@ -186,8 +186,8 @@ const DateSelector = ({
               style={{ width: '100%' }}
               size="large"
               disabledDate={disabledEndDate}
-              showTime={{ use12Hours: true }}
-              format="YYYY-MM-DD hh:mm:ss a"
+              showTime={{ use12Hours: true, format: 'hh:mm a' }}
+              format="YYYY-MM-DD hh:mm a"
               value={endDate}
               placeholder={t('common.assignTest.closeDatePlaceholder')}
               showToday={false}

@@ -24,7 +24,7 @@ const DetailsTooltip = ({
       xShift={xShift}
       width={width}
     >
-      <span>{title}</span>
+      <span className="popover-title">{title}</span>
       {!premium && <span className="premium-tag">$ Premium</span>}
       <span>{content}</span>
     </StyledPopOver>

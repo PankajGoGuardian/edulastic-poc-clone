@@ -71,6 +71,7 @@ const MyClasses = ({
   setPaymentServiceModal,
   showHeaderTrialModal,
   setShowHeaderTrialModal,
+  isCliUser,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -254,7 +255,7 @@ const MyClasses = ({
     })
 
   const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
-  const bannerSlides = sortByOrder(BANNER || [])
+  let bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
 
   const isEurekaMathActive = useMemo(
@@ -270,8 +271,17 @@ const MyClasses = ({
   let filteredBundles = featuredBundles
 
   if (isEurekaMathActive) {
-    filteredBundles = featuredBundles.filter(
+    filteredBundles = filteredBundles.filter(
       (feature) => feature.description !== 'Engage NY'
+    )
+  }
+
+  if (isCliUser) {
+    filteredBundles = filteredBundles.filter(
+      (feature) => feature.description !== 'Spark Math'
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) => banner.description !== 'Spark Math Playlist'
     )
   }
 
@@ -499,6 +509,7 @@ export default compose(
     (state) => ({
       classData: state.dashboardTeacher.data,
       districtId: state.user.user?.orgData?.districtIds?.[0],
+      isCliUser: get(state, 'user.isCliUser', false),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),

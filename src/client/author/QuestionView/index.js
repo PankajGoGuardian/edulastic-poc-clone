@@ -12,7 +12,8 @@ import {
   Tooltip,
   Line,
 } from 'recharts'
-import { head, get, isEmpty, round, sumBy } from 'lodash'
+import { withRouter } from 'react-router'
+import { head, get, isEmpty, round, sumBy, keyBy } from 'lodash'
 import {
   greyGraphstroke,
   incorrect,
@@ -42,8 +43,10 @@ import { receiveAnswersAction } from '../src/actions/classBoard'
 import {
   getAssignmentClassIdSelector,
   getClassQuestionSelector,
+  getmultiLanguageEnabled,
   getQLabelsSelector,
 } from '../ClassBoard/ducks'
+import RealTimeLanguageSwitch from '../StudentView/RealTimeLanguageSwitch'
 
 /**
  * @param {string} studentId
@@ -134,6 +137,9 @@ class QuestionViewContainer extends Component {
       isPresentationMode,
       labels,
       t,
+      match,
+      multiLanguageEnabled,
+      itemId,
     } = this.props
     const { loading } = this.state
 
@@ -228,9 +234,25 @@ class QuestionViewContainer extends Component {
     if (isMobile) {
       data = data.slice(0, 2)
     }
-
+    const testActivityIds = testActivity.map((item) => item.testActivityId)
+    const userIdsByActivityId = keyBy(testActivity, 'testActivityId')
+    const { assignmentId, classId } = match.params
     return (
       <>
+        {multiLanguageEnabled &&
+          testActivityIds &&
+          testActivityIds.length &&
+          itemId && (
+            <RealTimeLanguageSwitch
+              groupId={classId}
+              assignmentId={assignmentId}
+              testActivityIds={testActivityIds}
+              itemId={itemId}
+              qid={question?._id}
+              userIdsByActivityId={userIdsByActivityId}
+              questionView
+            />
+          )}
         <StyledFlexContainer>
           <StyledCard bordered={false}>
             <LegendContainer>
@@ -373,12 +395,14 @@ class QuestionViewContainer extends Component {
 }
 
 const enhance = compose(
+  withRouter,
   withNamespaces('student'),
   connect(
     (state) => ({
       classQuestion: getClassQuestionSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state),
       labels: getQLabelsSelector(state),
+      multiLanguageEnabled: getmultiLanguageEnabled(state),
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,

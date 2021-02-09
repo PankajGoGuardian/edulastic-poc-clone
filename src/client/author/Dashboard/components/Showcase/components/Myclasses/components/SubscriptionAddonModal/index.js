@@ -11,10 +11,8 @@ const getInitialSelectedProductIds = ({
   defaultSelectedProductIds,
   isPaidPremium,
   premiumProductId,
-  itemBankPremium,
 }) => {
-  const itemBankPremiumIds = itemBankPremium.map((x) => x.id)
-  const productIds = defaultSelectedProductIds || itemBankPremiumIds
+  const productIds = defaultSelectedProductIds || []
   if (!isPaidPremium) {
     productIds.push(premiumProductId)
   }

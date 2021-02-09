@@ -238,7 +238,7 @@ class SideMenu extends Component {
         roleuser.SCHOOL_ADMIN,
         roleuser.TEACHER,
       ].includes(userRole) &&
-      features.showMultipleSubscriptions
+      !features.showMultipleSubscriptions
     ) {
       conditionalMenuItems.push({
         label: 'Manage Subscription',

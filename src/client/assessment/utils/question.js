@@ -7,6 +7,7 @@ const { useLanguageFeatureQn } = questionType
 const { LANGUAGE_EN } = appLanguages
 
 const commonPatterns = [
+  /scoringInstructions/,
   /instructorStimulus/,
   /sampleAnswer/,
   /stimulus/,

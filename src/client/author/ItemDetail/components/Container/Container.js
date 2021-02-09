@@ -101,6 +101,8 @@ import {
 } from '../../../src/components/common/PreviewModal/styled'
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
+import LanguageSelector from '../../../../common/components/LanguageSelector'
+import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -119,6 +121,8 @@ const defaultEmptyItem = {
     },
   ],
 }
+
+const { useLanguageFeatureQn } = constantsQuestionType
 
 class Container extends Component {
   constructor(props) {
@@ -888,11 +892,6 @@ class Container extends Component {
                 </EduButton>
               </>
             )}
-            {view !== 'preview' && view !== 'auditTrail' && (
-              <EduButton ml="20px" isGhost height="30px" id="how-to-author">
-                How to author
-              </EduButton>
-            )}
           </AddRemoveButtonWrapper>
         </PassageNavigation>
       )
@@ -923,6 +922,7 @@ class Container extends Component {
       showPublishButton,
       hasAuthorPermission,
       t,
+      allowedToSelectMultiLanguage,
     } = this.props
 
     let breadCrumbQType = ''
@@ -958,6 +958,10 @@ class Container extends Component {
     const disableScoringLevel = get(item, ['data', 'questions'], []).some(
       (q) => q.rubrics
     )
+
+    const showLanguageSelector =
+      isPassageQuestion ||
+      item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
 
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
@@ -1058,6 +1062,14 @@ class Container extends Component {
 
               <FlexContainer alignItems="center" justifyContent="flex-end">
                 {this.passageNavigator}
+                {allowedToSelectMultiLanguage && showLanguageSelector && (
+                  <LanguageSelector />
+                )}
+                {view !== 'preview' && view !== 'auditTrail' && (
+                  <EduButton ml="8px" isGhost height="30px" id="how-to-author">
+                    How to author
+                  </EduButton>
+                )}
                 {view === 'preview' && (
                   <RightActionButtons>
                     {this.renderButtons()}
@@ -1153,6 +1165,7 @@ const enhance = compose(
       currentAuthorId: get(state, ['user', 'user', '_id']),
       itemDeleting: get(state, 'itemDetail.deleting', false),
       view: getViewSelector(state),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       changeView: changeViewAction,

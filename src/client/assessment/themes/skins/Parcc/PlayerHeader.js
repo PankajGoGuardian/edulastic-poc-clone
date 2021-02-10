@@ -120,23 +120,25 @@ const PlayerHeader = ({
               <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
                 <MainActionWrapper>
-                  {!blockNavigationToAnsweredQuestions && (
-                    <Tooltip
-                      placement="top"
-                      title="Previous"
-                      overlayStyle={overlayStyle}
-                    >
-                      <ControlBtn
-                        data-cy="prev"
-                        icon="left"
-                        disabled={isFirst()}
-                        onClick={(e) => {
-                          moveToPrev()
-                          e.target.blur()
-                        }}
-                      />
-                    </Tooltip>
-                  )}
+                  <Tooltip
+                    placement="top"
+                    title={
+                      blockNavigationToAnsweredQuestions
+                        ? 'This assignment is restricted from navigating back to the previous question.'
+                        : 'Previous'
+                    }
+                    overlayStyle={overlayStyle}
+                  >
+                    <ControlBtn
+                      data-cy="prev"
+                      icon="left"
+                      disabled={isFirst() || blockNavigationToAnsweredQuestions}
+                      onClick={(e) => {
+                        moveToPrev()
+                        e.target.blur()
+                      }}
+                    />
+                  </Tooltip>
                   <Tooltip
                     placement="top"
                     title="Next"

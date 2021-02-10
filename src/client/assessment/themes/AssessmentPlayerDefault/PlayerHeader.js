@@ -108,26 +108,28 @@ const PlayerHeader = ({
                         blockNavigationToAnsweredQuestions
                       }
                     />
-                    {!blockNavigationToAnsweredQuestions && (
-                      <Tooltip
-                        placement="top"
-                        title="Previous"
-                        overlayStyle={overlayStyle}
-                      >
-                        <ControlBtn.Back
-                          prev
-                          skin
-                          data-cy="prev"
-                          type="primary"
-                          icon="left"
-                          disabled={disabled}
-                          onClick={(e) => {
-                            moveToPrev(null, true)
-                            e.target.blur()
-                          }}
-                        />
-                      </Tooltip>
-                    )}
+                    <Tooltip
+                      placement="top"
+                      title={
+                        blockNavigationToAnsweredQuestions
+                          ? 'This assignment is restricted from navigating back to the previous question.'
+                          : 'Previous'
+                      }
+                      overlayStyle={overlayStyle}
+                    >
+                      <ControlBtn.Back
+                        prev
+                        skin
+                        data-cy="prev"
+                        type="primary"
+                        icon="left"
+                        disabled={disabled}
+                        onClick={(e) => {
+                          moveToPrev(null, true)
+                          e.target.blur()
+                        }}
+                      />
+                    </Tooltip>
                     {!hideSubmitBtn && (
                       <ControlBtn.Next
                         next

@@ -69,6 +69,7 @@ const StandardsFilters = ({
   showApply,
   setShowApply,
   setFirstLoad,
+  firstLoad,
   reportId,
 }) => {
   const assessmentTypesRef = useRef()
@@ -99,13 +100,6 @@ const StandardsFilters = ({
       getStandardsFiltersRequest({})
     }
   }, [])
-
-  useEffect(() => {
-    if (filters.showApply) {
-      setShowApply(true)
-      setFilters({ ...filters, showApply: false })
-    }
-  }, [filters.showApply])
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
     let search = pickBy(
@@ -217,12 +211,26 @@ const StandardsFilters = ({
     _onGoClick(settings)
   }
 
+  useEffect(() => {
+    if (!filters.showApply && !firstLoad) {
+      onGoClick()
+    }
+  }, [filters.showApply])
+
+  const onApplyClick = () => {
+    if (filters.showApply) {
+      setFilters({ ...filters, showApply: false })
+    } else {
+      onGoClick()
+    }
+  }
+
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     const _filters = { ...filters }
     resetStudentFilters(_filters, keyName, selected, multiple)
     _filters[keyName] = multiple ? selected : selected.key
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
-    _filters.showApply = true
+    setShowApply(true)
     setFilters(_filters)
   }
 
@@ -242,7 +250,7 @@ const StandardsFilters = ({
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         {showApply && (
-          <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>
+          <StyledGoButton data-cy="applyFilter" onClick={onApplyClick}>
             APPLY
           </StyledGoButton>
         )}

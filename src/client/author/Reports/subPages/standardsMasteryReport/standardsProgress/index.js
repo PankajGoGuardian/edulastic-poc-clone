@@ -139,7 +139,9 @@ const StandardsProgress = ({
     <div>
       <StyledCard>
         <Row type="flex" justify="start">
-          <StyledH3>Mastery Level Distribution by Test</StyledH3>
+          <StyledH3 marginLeft="50px">
+            Mastery Level Distribution by Test
+          </StyledH3>
         </Row>
         <Row>
           <SignedStackedBarChartContainer

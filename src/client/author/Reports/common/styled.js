@@ -279,6 +279,7 @@ export const StyledH3 = styled.h3`
   color: ${fadedBlack};
   font-size: 14px;
   margin: 0px 0px 10px;
+  margin-left: ${({ marginLeft }) => marginLeft || '0px'};
   text-align: ${({ textAlign }) => textAlign || 'left'};
 `
 
@@ -391,6 +392,7 @@ export const StyledSignedBarContainer = styled.div`
 
 export const StyledDropDownContainer = styled(Col)`
   padding: ${({ padding }) => padding || 'unset'};
+  flex: 1;
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;

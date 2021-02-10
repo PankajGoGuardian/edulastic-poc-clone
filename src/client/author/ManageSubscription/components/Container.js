@@ -1,22 +1,43 @@
-import React, { useState } from 'react'
+import { withNamespaces } from '@edulastic/localization'
+import React, { lazy, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { getUserOrgId } from '../../src/selectors/user'
 import {
   getSubscriptionSelector,
   getSuccessSelector,
 } from '../../Subscription/ducks'
-import { getSubsLicenses } from '../ducks'
+import {
+  addBulkUsersAdminAction,
+  getBulkUsersData,
+  getConfirmationModalVisible,
+  getSubsLicenses,
+  setAddUserConfirmationModalVisibleAction,
+} from '../ducks'
 import Header from './Header'
+import AddUsersSection from './AddUsersSection'
 import LicenseCountSection from './LicenseCountSection'
-import ManageLicensesModal from './ManageLicensesModal'
 import { ContentWrapper } from './styled'
+
+const AddUsersModal = lazy(() => import('./AddUsersModal'))
+const ManageLicensesModal = lazy(() => import('./ManageLicensesModal'))
+const AddUsersConfirmationModal = lazy(() =>
+  import('./AddUsersConfirmationModal')
+)
 
 const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},
   isSuccess,
   subsLicenses,
+  userOrgId,
+  addUsers,
+  setAddUsersConfirmationModalVisible,
+  showAddUserConfirmationModal = false,
+  userDataSource = [],
+  t,
 }) => {
   const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
+  const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const isSubscribed =
     subType === 'premium' ||
     subType === 'enterprise' ||
@@ -26,6 +47,16 @@ const ManageSubscriptionContainer = ({
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
   const closeManageLicenseModal = () => setShowManageLicenseModal(false)
+  const closeAddUsersModal = () => setShowAddUsersModal(false)
+  const closeAddUsersConfirmationModal = () =>
+    setAddUsersConfirmationModalVisible(false)
+
+  const sendInvite = (obj) => {
+    const o = {
+      addReq: obj,
+    }
+    addUsers(o)
+  }
 
   return (
     <>
@@ -40,6 +71,7 @@ const ManageSubscriptionContainer = ({
           subsLicenses={subsLicenses}
           setShowManageLicenseModal={setShowManageLicenseModal}
         />
+        <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
       </ContentWrapper>
       {showManageLicenseModal && (
         <ManageLicensesModal
@@ -47,18 +79,42 @@ const ManageSubscriptionContainer = ({
           onCancel={closeManageLicenseModal}
         />
       )}
+      {showAddUsersModal && (
+        <AddUsersModal
+          isVisible={showAddUsersModal}
+          onCancel={closeAddUsersModal}
+          districtId={userOrgId}
+          addUsers={sendInvite}
+        />
+      )}
+      {showAddUserConfirmationModal && (
+        <AddUsersConfirmationModal
+          isVisible={showAddUserConfirmationModal}
+          onCancel={closeAddUsersConfirmationModal}
+          userDataSource={userDataSource}
+          userRole="teacher"
+          t={t}
+        />
+      )}
     </>
   )
 }
 
 const enhance = compose(
+  withNamespaces('manageDistrict'),
   connect(
     (state) => ({
       subscription: getSubscriptionSelector(state),
       isSuccess: getSuccessSelector(state),
       subsLicenses: getSubsLicenses(state),
+      userOrgId: getUserOrgId(state),
+      showAddUserConfirmationModal: getConfirmationModalVisible(state),
+      userDataSource: getBulkUsersData(state),
     }),
-    null
+    {
+      addUsers: addBulkUsersAdminAction,
+      setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
+    }
   )
 )
 

@@ -126,6 +126,9 @@ const useLanguageFeatureQn = [
   MULTIPLE_CHOICE,
   TOKEN_HIGHLIGHT,
   CLOZE_IMAGE_DRAG_DROP,
+  PASSAGE,
+  TEXT,
+  VIDEO,
 ]
 
 module.exports = {

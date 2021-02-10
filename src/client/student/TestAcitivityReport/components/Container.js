@@ -83,7 +83,7 @@ const ReportListContent = ({
     })
     allWidgets = { ...allWidgets, ...passageData }
   }
-  const passageId = passage._id
+
   const preview =
     releaseScore === releaseGradeLabels.WITH_ANSWERS ? 'show' : 'check'
   const closeModal = () => setModal(false)
@@ -138,7 +138,6 @@ const ReportListContent = ({
               isStudentReport
               viewComponent="studentReport"
               evaluation={evaluation}
-              passageTestItemID={passageId}
               highlights={highlights}
               userWork={userWork}
               attachments={attachments}

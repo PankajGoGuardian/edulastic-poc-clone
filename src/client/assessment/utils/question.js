@@ -54,6 +54,13 @@ const patternsByQuestionType = {
   [questionType.TOKEN_HIGHLIGHT]: [...commonPatterns, /template/],
   [questionType.TEXT]: [...commonPatterns, /heading/, /content/],
   [questionType.VIDEO]: [...commonPatterns, /heading/, /summary/, /transcript/],
+  [questionType.PASSAGE]: [
+    ...commonPatterns,
+    /heading/,
+    /contentsTitle/,
+    /content/,
+    /pages\.(\d+)/,
+  ],
 }
 
 const clozeTypes = [

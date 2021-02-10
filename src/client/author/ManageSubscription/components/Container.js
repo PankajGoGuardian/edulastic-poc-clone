@@ -5,16 +5,18 @@ import {
   getSubscriptionSelector,
   getSuccessSelector,
 } from '../../Subscription/ducks'
-import { getSubsLicenses } from '../ducks'
+import { getSubsLicensesSelector, getUsersSelector } from '../ducks'
 import Header from './Header'
 import LicenseCountSection from './LicenseCountSection'
 import ManageLicensesModal from './ManageLicensesModal'
+import Userlist from './Userlist'
 import { ContentWrapper } from './styled'
 
 const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},
   isSuccess,
   subsLicenses,
+  users,
 }) => {
   const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
   const isSubscribed =
@@ -40,6 +42,7 @@ const ManageSubscriptionContainer = ({
           subsLicenses={subsLicenses}
           setShowManageLicenseModal={setShowManageLicenseModal}
         />
+        <Userlist users={users} />
       </ContentWrapper>
       {showManageLicenseModal && (
         <ManageLicensesModal
@@ -56,7 +59,8 @@ const enhance = compose(
     (state) => ({
       subscription: getSubscriptionSelector(state),
       isSuccess: getSuccessSelector(state),
-      subsLicenses: getSubsLicenses(state),
+      subsLicenses: getSubsLicensesSelector(state),
+      users: getUsersSelector(state),
     }),
     null
   )

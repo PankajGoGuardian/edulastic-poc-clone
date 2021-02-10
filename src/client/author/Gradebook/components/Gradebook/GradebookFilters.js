@@ -110,7 +110,7 @@ const GradebookFilters = ({
           }
           value={filters.grades}
           options={data.grades}
-          dataCy="filter-class"
+          dataCy="grades"
         />
         <FilterDropdown
           label="Subject"

@@ -8,10 +8,7 @@ const _Extras = ({ fillSections, cleanSections, advancedAreOpen }) => {
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
-    >
-      <Extras.Distractors />
-      <Extras.Hints />
-    </Extras>
+    />
   )
 }
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Tooltip } from 'antd'
 import { borders, mobileWidthMax } from '@edulastic/colors'
 // assets
 import lockIcon from '../../assets/lock-icon.svg'
@@ -26,20 +27,24 @@ const AssignmentButton = ({
   return new Date(startDate) > new Date(serverTimeStamp) ||
     !startDate ||
     isPaused ? (
-    <NotAvailableButton
-      {...(isPaused
-        ? { title: 'Will be enabled once the teacher marks it Open for you' }
-        : {})}
-      disabled
+    <Tooltip
+      placement="left"
+      title={
+        isPaused
+          ? 'Will be enabled once the teacher marks it Open for you'
+          : null
+      }
     >
-      <span>
-        <img src={lockIcon} alt="" />
-      </span>
-      <span data-cy="lockAssignment">
-        {t('common.lockAssignment')}
-        {isPaused ? ' (Paused)' : ''}
-      </span>
-    </NotAvailableButton>
+      <NotAvailableButton disabled>
+        <span>
+          <img src={lockIcon} alt="" />
+        </span>
+        <span data-cy="lockAssignment">
+          {t('common.lockAssignment')}
+          {isPaused ? ' (Paused)' : ''}
+        </span>
+      </NotAvailableButton>
+    </Tooltip>
   ) : (
     <StartButton onClick={startTest} assessment={assessment}>
       <span data-cy="assignmentButton">{startButtonText}</span>

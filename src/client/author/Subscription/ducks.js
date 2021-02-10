@@ -109,11 +109,13 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
   if (hasSubscriptions && !hasItemBankPermissions) {
     const { subEndDate } = subscriptions
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
-    yield call(notification, {
-      type: 'success',
-      msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
-      key: 'handle-payment',
-    })
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
     yield put(
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlyPremiumTrial',
@@ -124,11 +126,13 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     const { subEndDate } = itemBankPermissions[0]
     const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
-    yield call(notification, {
-      type: 'success',
-      msg: `Congratulations! You are subscribed to ${itemBankNames} ${premiumType} Itembank(s) for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
-      key: 'handle-payment',
-    })
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! You are subscribed to ${itemBankNames} ${premiumType} Itembank(s) for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
     yield put(
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlySparkTrial',
@@ -139,12 +143,14 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     const { subEndDate } = subscriptions
     const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
-    yield call(notification, {
-      type: 'success',
-      msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankNames}
-            Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
-      key: 'handle-payment',
-    })
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankNames}
+              Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
     yield put(
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'haveBothSparkAndPremiumTrial',
@@ -284,6 +290,7 @@ function* handleFreeTrialSaga({ payload }) {
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
       yield put(slice.actions.resetSubscriptions())
+      yield call(showSuccessNotifications, apiPaymentResponse, true)
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))
       yield put(slice.actions.trialSubsConfirmationAction(true))

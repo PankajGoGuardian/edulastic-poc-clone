@@ -13,7 +13,7 @@ import {
   Line,
 } from 'recharts'
 import { withRouter } from 'react-router'
-import { head, get, isEmpty, round, sumBy, keyBy } from 'lodash'
+import { head, get, isEmpty, round, sumBy } from 'lodash'
 import {
   greyGraphstroke,
   incorrect,
@@ -41,12 +41,13 @@ import ClassQuestions from '../ClassResponses/components/Container/ClassQuestion
 import { receiveAnswersAction } from '../src/actions/classBoard'
 // selectors
 import {
+  getAdditionalDataSelector,
+  getAllStudentsList,
   getAssignmentClassIdSelector,
   getClassQuestionSelector,
-  getmultiLanguageEnabled,
   getQLabelsSelector,
 } from '../ClassBoard/ducks'
-import RealTimeLanguageSwitch from '../StudentView/RealTimeLanguageSwitch'
+import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 
 /**
  * @param {string} studentId
@@ -138,8 +139,9 @@ class QuestionViewContainer extends Component {
       labels,
       t,
       match,
-      multiLanguageEnabled,
       itemId,
+      additionalData,
+      studentsList,
     } = this.props
     const { loading } = this.state
 
@@ -234,25 +236,21 @@ class QuestionViewContainer extends Component {
     if (isMobile) {
       data = data.slice(0, 2)
     }
-    const testActivityIds = testActivity.map((item) => item.testActivityId)
-    const userIdsByActivityId = keyBy(testActivity, 'testActivityId')
     const { assignmentId, classId } = match.params
     return (
       <>
-        {multiLanguageEnabled &&
-          testActivityIds &&
-          testActivityIds.length &&
-          itemId && (
-            <RealTimeLanguageSwitch
-              groupId={classId}
-              assignmentId={assignmentId}
-              testActivityIds={testActivityIds}
-              itemId={itemId}
-              qid={question?._id}
-              userIdsByActivityId={userIdsByActivityId}
-              questionView
-            />
-          )}
+        {studentsList.length && itemId && (
+          <HooksContainer
+            additionalData={additionalData}
+            classId={classId}
+            assignmentId={assignmentId}
+            itemId={itemId}
+            qid={question?._id}
+            studentsList={studentsList}
+            selectedTab="questionView"
+          />
+        )}
+
         <StyledFlexContainer>
           <StyledCard bordered={false}>
             <LegendContainer>
@@ -402,7 +400,8 @@ const enhance = compose(
       classQuestion: getClassQuestionSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state),
       labels: getQLabelsSelector(state),
-      multiLanguageEnabled: getmultiLanguageEnabled(state),
+      additionalData: getAdditionalDataSelector(state),
+      studentsList: getAllStudentsList(state),
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,

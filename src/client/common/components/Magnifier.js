@@ -24,7 +24,7 @@ const copyDomOnHoverOfElements = ['parcc-question-list', 'ant-dropdown-trigger']
 
 const copyDomOnBlurOfElements = ['ant-input']
 
-const copyDOmOnScrollOfElements = ['froala-wrapper .fr-wrapper']
+const copyDomOnScrollOfElements = ['froala-wrapper .fr-wrapper']
 
 const Magnifier = ({
   children,
@@ -43,7 +43,8 @@ const Magnifier = ({
     windowHeight,
   })
   const clickedClassName = useRef()
-  const ref = useRef()
+  const magnifierRef = useRef()
+  const unzoomRef = useRef()
 
   const handleScroll = (e) => {
     document
@@ -79,7 +80,7 @@ const Magnifier = ({
     if (e.button !== 0) {
       return
     }
-    const pos = ref.current.getBoundingClientRect()
+    const pos = magnifierRef.current.getBoundingClientRect()
     setSetting({
       ...setting,
       dragging: true,
@@ -292,7 +293,7 @@ const Magnifier = ({
       })
     })
 
-    copyDOmOnScrollOfElements.forEach((className, i) => {
+    copyDomOnScrollOfElements.forEach((className, i) => {
       const elms = document.querySelectorAll(
         `.unzoom-container-wrapper .${className}`
       )
@@ -337,7 +338,7 @@ const Magnifier = ({
       })
     })
 
-    copyDOmOnScrollOfElements.forEach((className, i) => {
+    copyDomOnScrollOfElements.forEach((className, i) => {
       const elms = document.querySelectorAll(
         `.unzoom-container-wrapper .${className}`
       )
@@ -403,36 +404,51 @@ const Magnifier = ({
     }
   }, [])
 
+  useEffect(() => {
+    if (enable) {
+      const unZoomed = document.getElementsByClassName('test-item-col')[0]
+      const zoomWrapper = document.querySelector('.zoomed-container-wrapper')
+
+      if (unzoomRef.current && zoomWrapper && !ZoomedContent) {
+        unzoomRef.current.childNodes.forEach((node) => {
+          zoomWrapper.appendChild(node.cloneNode(true))
+        })
+      }
+
+      if (unZoomed) {
+        handleScroll({
+          target: unZoomed,
+        })
+      }
+    }
+  }, [enable])
+
   return (
     <>
-      <div className="unzoom-container-wrapper">{children}</div>
+      <div className="unzoom-container-wrapper" ref={unzoomRef}>
+        {children}
+      </div>
       {enable && (
         <ZoomedWrapper
-          ref={ref}
+          ref={magnifierRef}
           onMouseDown={onMouseDown}
           id="magnifier-wrapper"
           magnifierWidth={width}
           magnifierHeight={height}
           pos={setting.pos}
         >
-          <div
-            style={{
-              transform: `scale(${scale})`,
-              width: windowWidth,
-              height: windowHeight,
-              overflow: 'visible',
-              position: 'absolute',
-              display: 'block',
-              left: -(scale * setting.pos.x) - offset.left,
-              top: -(scale * setting.pos.y) - offset.top,
-              transformOrigin: 'left top',
-              userSelect: 'none',
-              marginLeft: `-${width / scale}px`,
-            }}
+          <ZoomedContentWrapper
+            scale={scale}
+            windowHeight={windowHeight}
+            windowWidth={windowWidth}
+            pos={setting.pos}
+            top={offset.top}
+            left={offset.left}
+            width={width}
             className="zoomed-container-wrapper"
           >
-            {(ZoomedContent && <ZoomedContent />) || children}
-          </div>
+            {ZoomedContent && <ZoomedContent />}
+          </ZoomedContentWrapper>
           <MagnifierOverlay magnifierWidth={width} magnifierHeight={height} />
         </ZoomedWrapper>
       )}
@@ -497,6 +513,23 @@ const ZoomedWrapper = styled.div.attrs(({ pos }) => ({
       }
     }
   }
+`
+
+const ZoomedContentWrapper = styled.div.attrs(({ scale, pos, left, top }) => ({
+  style: {
+    left: -(scale * pos.x) - left,
+    top: -(scale * pos.y) - top,
+  },
+}))`
+  overflow: visible;
+  position: absolute;
+  display: block;
+  transform: ${({ scale }) => `scale(${scale})`};
+  width: ${({ windowWidth }) => windowWidth}px;
+  height: ${({ windowHeight }) => windowHeight}px;
+  transform-origin: left top;
+  user-select: none;
+  margin-left: ${({ width, scale }) => `-${width / scale}px`};
 `
 
 const MagnifierOverlay = styled.div`

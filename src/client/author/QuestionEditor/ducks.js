@@ -20,7 +20,7 @@ import {
   uniq,
 } from 'lodash'
 import produce from 'immer'
-import { questionType, appLanguages } from '@edulastic/constants'
+import { questionType } from '@edulastic/constants'
 import { helpers, notification } from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
@@ -93,8 +93,6 @@ import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
-
-const { LANGUAGE_EN } = appLanguages
 
 // constants
 export const resourceTypeQuestions = {
@@ -1016,22 +1014,14 @@ function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
 
-  if (currentLanguage && currentLanguage !== LANGUAGE_EN) {
-    const newQuestion = changeDataInPreferredLanguage(
+  yield put({
+    type: UPDATE_QUESTION,
+    payload: changeDataInPreferredLanguage(
       currentLanguage,
       prevQuestion,
       payload
-    )
-    yield put({
-      type: UPDATE_QUESTION,
-      payload: newQuestion,
-    })
-  } else {
-    yield put({
-      payload,
-      type: UPDATE_QUESTION,
-    })
-  }
+    ),
+  })
 }
 
 export function* watcherSaga() {

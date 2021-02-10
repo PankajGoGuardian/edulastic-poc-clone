@@ -32,6 +32,7 @@ const BackArrow = styled.nav`
   ${sharedBtnStyle}
   left: ${(props) => props.left || '4px'};
   width: ${(props) => props.width || '40'}px;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 `
 
 const NextArrow = styled.nav`

@@ -39,6 +39,7 @@ const MiscellaneousGroupContainer = ({
     standardGradingScale = testSettings.standardGradingScale,
     showMagnifier = testSettings.showMagnifier,
     enableScratchpad = testSettings.enableScratchpad,
+    multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
   } = assignmentSettings
 
   const playerSkinType =
@@ -65,6 +66,7 @@ const MiscellaneousGroupContainer = ({
     selectPlayerSkinType,
   } = featuresAvailable
 
+  const showMultiLangSelection = !!testSettings.multiLanguageEnabled
   return (
     <>
       {/* Answer on Paper */}
@@ -96,6 +98,38 @@ const MiscellaneousGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Answer on Paper */}
+
+      {/* Multi language */}
+      {showMultiLangSelection && (
+        <SettingContainer>
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="Multi-Language"
+            content="Select ON , If you want to enable multiple languages for the assignment."
+            premium={premium}
+          />
+          <StyledRow gutter={16} mb="15p">
+            <Col span={10}>
+              <Label>
+                <span>Multi-Language</span>
+              </Label>
+            </Col>
+            <Col span={14}>
+              <AlignSwitchRight
+                data-cy="multi-language"
+                size="small"
+                defaultChecked={false}
+                disabled={freezeSettings || !premium}
+                checked={multiLanguageEnabled}
+                onChange={(value) =>
+                  overRideSettings('multiLanguageEnabled', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      )}
+      {/* Multi language */}
 
       {/* Performance Bands */}
       <SettingContainer>
@@ -130,7 +164,7 @@ const MiscellaneousGroupContainer = ({
         />
         <DivBlock>
           <StandardProficiencyTable
-            disabled={freezeSettings}
+            disabled={freezeSettings || !premium}
             standardGradingScale={standardGradingScale}
             setSettingsData={(val) =>
               overRideSettings('standardGradingScale', val)

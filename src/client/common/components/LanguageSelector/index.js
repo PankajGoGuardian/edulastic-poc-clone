@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { SelectInputStyled } from '@edulastic/common'
 import { appLanguages } from '@edulastic/constants'
@@ -8,10 +8,16 @@ import { getCurrentLanguage, setLangAction } from './duck'
 const { Option } = SelectInputStyled
 const { LANGUAGES_OPTIONS } = appLanguages
 
-const LanguageSelector = ({ currentLang, setLanguage, questionId }) => {
+const LanguageSelector = ({ currentLang, setLanguage }) => {
   const handleChangeLanguage = (lang) => {
-    setLanguage({ [questionId]: lang })
+    setLanguage(lang)
   }
+
+  useEffect(() => {
+    return () => {
+      setLanguage('')
+    }
+  }, [])
 
   return (
     <SelectInputStyled

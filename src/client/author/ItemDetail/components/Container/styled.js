@@ -43,6 +43,7 @@ export const PassageNavigation = styled.div`
   justify-content: space-between;
   font-size: 11px;
   color: ${linkColor};
+  margin-right: 8px;
 
   .ant-pagination {
     margin: 0 10px;

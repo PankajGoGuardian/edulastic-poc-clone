@@ -79,6 +79,7 @@ const GradebookFilters = ({
           }
           value={filters.assessmentIds}
           options={data.assessments}
+          dataCy="grades"
         />
         <FilterDropdown
           label="Status"
@@ -87,6 +88,7 @@ const GradebookFilters = ({
           }
           value={filters.status}
           options={data.statusList}
+          dataCy="filter-status"
         />
         <FilterDropdown
           label="Class"
@@ -97,6 +99,7 @@ const GradebookFilters = ({
           }
           value={filters.classIds}
           options={data.classes}
+          dataCy="filter-class"
         />
         <FilterDropdown
           label="Grade"
@@ -107,6 +110,7 @@ const GradebookFilters = ({
           }
           value={filters.grades}
           options={data.grades}
+          dataCy="grades"
         />
         <FilterDropdown
           label="Subject"
@@ -117,6 +121,7 @@ const GradebookFilters = ({
           }
           value={filters.subjects}
           options={data.subjects}
+          dataCy="subjects"
         />
         <FilterDropdown
           label="Year"
@@ -125,6 +130,7 @@ const GradebookFilters = ({
           }
           value={filters.termId}
           options={data.terms}
+          dataCy="schoolYear"
         />
         <FilterDropdown
           label="Test Type"
@@ -133,6 +139,7 @@ const GradebookFilters = ({
           }
           value={filters.testType}
           options={data.testTypes}
+          dataCy="filter-testType"
         />
         <GroupsFilter
           onNewGroupClick={onNewGroupClick}

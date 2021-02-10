@@ -115,7 +115,7 @@ const AutoRedirectGroupContainer = ({
               disabled={freezeSettings || !assessmentSuperPowersAutoRedirect}
             >
               <RadioButtonWrapper>
-                <RadioBtn data-cy="radioAllStudents" value={false} />
+                <RadioBtn data-cy="radioAllowMultipleAttempts" value={false} />
                 <Label>Allow Multiple Attempts</Label>
               </RadioButtonWrapper>
               <RadioButtonWrapper style={{ marginLeft: '20px' }}>

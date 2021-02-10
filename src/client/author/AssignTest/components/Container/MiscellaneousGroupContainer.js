@@ -126,6 +126,7 @@ const MiscellaneousGroupContainer = ({
           content="Standards based scales are set by district or school admins. Teachers can modify performance threshold scores for class assignments to track mastery by standards assessed."
           premium={premium}
           placement="rightBottom"
+          fromAssignments
         />
         <DivBlock>
           <StandardProficiencyTable

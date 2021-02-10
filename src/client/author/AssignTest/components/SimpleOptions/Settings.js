@@ -319,7 +319,6 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <NumberInputStyled
-                size="large"
                 disabled={freezeSettings || !maxAttemptAllowed}
                 value={maxAttempts}
                 onChange={(value) => overRideSettings('maxAttempts', value)}
@@ -535,12 +534,12 @@ const Settings = ({
                     onChange={(value) =>
                       overRideSettings('maxAnswerChecks', value)
                     }
-                    size="large"
                     value={maxAnswerChecks}
                     min={0}
                     placeholder="Number of tries"
                     bg="white"
                     data-cy="check-ans-tries"
+                    width="20%"
                   />
                 </Col>
               </StyledRow>

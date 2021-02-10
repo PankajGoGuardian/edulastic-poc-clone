@@ -59,6 +59,7 @@ const AutoRedirectGroupContainer = ({
             maxAttempts: 1,
             maxAnswerChecks: 0,
             autoRedirectSettings: {
+              maxRedirects: 1,
               showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
               questionsDelivery: redirectPolicy.QuestionDelivery.ALL,
             },
@@ -158,14 +159,14 @@ const AutoRedirectGroupContainer = ({
 
           <StyledRow gutter={16}>
             <StyledCol span={10}>
-              <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
+              <Label>EXTRA ATTEMPTS ALLOWED</Label>
             </StyledCol>
             <StyledCol span={14}>
               <InputNumber
                 data-cy="auto-redirect-max-attempts"
                 min={1}
                 max={3}
-                value={autoRedirectSettings.maxRedirects || ''}
+                value={autoRedirectSettings.maxRedirects}
                 onChange={(value) =>
                   handleAutoRedirectSettingsChange('maxRedirects', value)
                 }

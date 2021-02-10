@@ -78,6 +78,7 @@ const slice = createSlice({
         } else if (key === 'autoRedirect') {
           if (value === true) {
             const autoRedirectSettings = {
+              maxRedirects: 1,
               showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
               questionsDelivery: 'ALL',
             }

@@ -12,6 +12,7 @@ import {
   IPAD_LANDSCAPE_WIDTH,
   LARGE_DESKTOP_WIDTH,
 } from '../../constants/others'
+import { Tooltip } from '../../../common/utils/helpers'
 
 const PlayerFooter = ({
   isFirst,
@@ -28,15 +29,32 @@ const PlayerFooter = ({
     className="practice-player-footer"
   >
     <FlexContainer>
-      {!blockNavigationToAnsweredQuestions && (
-        <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </PrevButton>
-      )}
-      <NextButton data-cy="next" onClick={moveToNext}>
-        <span>{isLast() ? t('pagination.submit') : t('pagination.next')}</span>
-        <FontAwesomeIcon icon={faAngleRight} />
-      </NextButton>
+      <Tooltip
+        placement="left"
+        title={
+          blockNavigationToAnsweredQuestions
+            ? 'This assignment is restricted from navigating back to the previous question.'
+            : 'Previous'
+        }
+      >
+        <span>
+          <PrevButton
+            data-cy="prev"
+            disabled={isFirst() || blockNavigationToAnsweredQuestions}
+            onClick={moveToPrev}
+          >
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </PrevButton>
+        </span>
+      </Tooltip>
+      <Tooltip placement="right" title="Next">
+        <NextButton data-cy="next" onClick={moveToNext}>
+          <span>
+            {isLast() ? t('pagination.submit') : t('pagination.next')}
+          </span>
+          <FontAwesomeIcon icon={faAngleRight} />
+        </NextButton>
+      </Tooltip>
     </FlexContainer>
     <StyledFlexContainer>
       <QuestionsLeftToAttempt data-cy="questionLeftToAttempt">
@@ -86,6 +104,7 @@ const ControlBtn = styled.button`
   text-transform: uppercase;
   &[disabled] {
     background-color: ${(props) => props.theme.btnDisabled};
+    cursor: not-allowed;
   }
   .fa {
     position: absolute;

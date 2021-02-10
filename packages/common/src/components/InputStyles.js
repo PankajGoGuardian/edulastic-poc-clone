@@ -49,6 +49,7 @@ const inputCommonStyle = {
 
 export const SearchInputStyled = styled(Input.Search)`
   &.ant-input-search {
+    width: ${(props) => props.width || '100%'};
     .ant-input {
       ${inputCommonStyle};
       ${(props) => props.style};
@@ -58,6 +59,11 @@ export const SearchInputStyled = styled(Input.Search)`
         border: 1px solid ${themeColorBlue} !important;
         background-color: ${greyThemeLighter};
         box-shadow: none;
+      }
+    }
+    .ant-input-suffix {
+      svg {
+        fill: ${themeColor};
       }
     }
   }

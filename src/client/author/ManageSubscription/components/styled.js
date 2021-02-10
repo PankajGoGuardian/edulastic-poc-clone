@@ -1,4 +1,5 @@
-import { title } from '@edulastic/colors'
+import { greenThird, title } from '@edulastic/colors'
+import { Icon } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../common/styled'
 
@@ -6,7 +7,7 @@ export const ContentWrapper = styled.div`
   padding: 15px 30px;
 `
 export const GreyBox = styled.div`
-  background: #f5f5f5;
+  background: #f3f3f3;
   border-radius: 10px;
   width: calc(50% - 10px);
   padding: 20px 35px;
@@ -50,7 +51,7 @@ export const Countbox = styled.div`
   }
 `
 export const Count = styled.div`
-  color: #5eb500;
+  color: ${greenThird};
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -67,4 +68,17 @@ export const StyledAntdTable = styled(StyledTable)`
       text-align: center;
     }
   }
+`
+export const CheckboxWrpper = styled.div`
+  padding: 15px 0px 0px;
+`
+export const StatusDiv = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+export const StyledStatusIcon = styled(Icon)`
+  font-size: 18px;
+  margin-right: 10px;
+  color: ${(props) => props.iconColor};
 `

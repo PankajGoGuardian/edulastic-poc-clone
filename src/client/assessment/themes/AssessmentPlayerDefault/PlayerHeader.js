@@ -69,7 +69,7 @@ const PlayerHeader = ({
   const { cliUser } = query
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 
-  const rightButtons =  (
+  const rightButtons = (
     <SaveAndExit
       timedAssignment={timedAssignment}
       utaId={utaId}
@@ -81,7 +81,7 @@ const PlayerHeader = ({
       isCliUserPreview={cliUser}
       LCBPreviewModal={LCBPreviewModal}
     />
-  );
+  )
 
   return (
     <CustomAffix>

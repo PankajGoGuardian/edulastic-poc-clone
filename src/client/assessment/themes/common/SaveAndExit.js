@@ -10,7 +10,7 @@ import {
   isSEB,
 } from '@edulastic/common'
 import { IconAccessibility, IconCircleLogout, IconSend } from '@edulastic/icons'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -63,40 +63,55 @@ const SaveAndExit = ({
         </ScratchpadVisibilityToggler>
       )}
       {showZoomBtn && (
-        <StyledButton
-          title="Visual Assistance"
-          onClick={() => setSettingsModalVisibility(true)}
-        >
-          <IconAccessibility />
-        </StyledButton>
+        <Tooltip placement="bottom" title="Visual Assistance">
+          <StyledButton onClick={() => setSettingsModalVisibility(true)}>
+            <IconAccessibility />
+          </StyledButton>
+        </Tooltip>
       )}
       {showPause &&
         !inSEB &&
         (previewPlayer ? (
           <>
             {!isCliUserPreview && (
-              <SaveAndExitButton
-                title={hidePause?"This assignment is configured to completed in a single sitting":"Exit"}
-                data-cy="finishTest"
-                disabled={hidePause}
-                onClick={finishTest}
+              <Tooltip
+                placement="bottom"
+                title={
+                  hidePause
+                    ? 'This assignment is configured to completed in a single sitting'
+                    : 'Exit'
+                }
               >
-                <IconCircleLogout />
-                EXIT
-              </SaveAndExitButton>
+                <SaveAndExitButton
+                  data-cy="finishTest"
+                  disabled={hidePause}
+                  onClick={finishTest}
+                >
+                  <IconCircleLogout />
+                  EXIT
+                </SaveAndExitButton>
+              </Tooltip>
             )}
           </>
         ) : (
           <>
             {!isCliUser && (
-              <SaveAndExitButton
-                title={hidePause?"This assignment is configured to completed in a single sitting":"Save & Exit"}
-                disabled={hidePause}
-                data-cy="finishTest"
-                onClick={finishTest}
+              <Tooltip
+                placement="bottomRight"
+                title={
+                  hidePause
+                    ? 'This assignment is configured to completed in a single sitting'
+                    : 'Save & Exit'
+                }
               >
-                <IconCircleLogout />
-              </SaveAndExitButton>
+                <SaveAndExitButton
+                  disabled={hidePause}
+                  data-cy="finishTest"
+                  onClick={finishTest}
+                >
+                  <IconCircleLogout />
+                </SaveAndExitButton>
+              </Tooltip>
             )}
           </>
         ))}

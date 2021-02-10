@@ -555,6 +555,7 @@ class Setting extends Component {
                               getPopupContainer={(trigger) =>
                                 trigger.parentNode
                               }
+                              data-cy="testType"
                             >
                               {(userRole === roleuser.DISTRICT_ADMIN ||
                                 userRole === roleuser.SCHOOL_ADMIN ||
@@ -1268,18 +1269,24 @@ class Setting extends Component {
                             )}
                             value={restrictNavigationOut || undefined}
                           >
-                            <RadioBtn value={undefined} key="disabled">
+                            <RadioBtn
+                              value={undefined}
+                              key="disabled"
+                              data-cy="restrict-nav-out-disabled"
+                            >
                               DISABLED
                             </RadioBtn>
                             <RadioBtn
                               value="warn-and-report"
                               key="warn-and-report"
+                              data-cy="restrict-nav-out-warn-report"
                             >
                               WARN AND REPORT ONLY
                             </RadioBtn>
                             <RadioBtn
                               value="warn-and-report-after-n-alerts"
                               key="warn-and-report-after-n-alerts"
+                              data-cy="restrict-nav-out-warn-report-alerts"
                             >
                               WARN AND BLOCK TEST AFTER{' '}
                               <InputNumberStyled

@@ -569,12 +569,11 @@ export const FilterButtonClear = styled(Button)`
   margin-left: ${({ showFilter }) => (showFilter ? -80 : 0)}px;
   padding: 5px 2px 2px;
   box-shadow: none;
-
+  transition: none;
   &:focus,
   &:hover {
     outline: unset;
   }
-
   svg {
     fill: ${({ showFilter }) =>
       showFilter ? '#1AB395' : '#434b5d'} !important;

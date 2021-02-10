@@ -3,6 +3,7 @@ import {
   assignmentPolicyOptions,
   roleuser,
   test as testConst,
+  assignmentSettingSections as sectionContants,
 } from '@edulastic/constants'
 import { IconAssignment } from '@edulastic/icons'
 import { Spin } from 'antd'
@@ -69,6 +70,7 @@ class AssignTest extends React.Component {
     this.state = {
       isAdvancedView: props.userRole !== 'teacher',
       selectedDateOption: false,
+      activeTab: '1',
     }
   }
 
@@ -200,13 +202,17 @@ class AssignTest extends React.Component {
         updatedAssignment?.assignmentPassword?.length > 25)
     ) {
       notification({ messageKey: 'enterValidPassword' })
+      this.handleTabChange(sectionContants.ANTI_CHEATING_SECTION)
     }
     if (isEmpty(assignment.class)) {
       notification({ messageKey: 'selectClass' })
+      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
     } else if (assignment.endDate < Date.now()) {
       notification({ messageKey: 'endDate' })
+      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
     } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
       notification({ messageKey: 'dueDateShouldNotBeGreaterThanEndDate' })
+      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
     } else {
       if (!selectedDateOption) {
         updatedAssignment = omit(updatedAssignment, ['dueDate'])
@@ -217,29 +223,38 @@ class AssignTest extends React.Component {
         !((assignment?.assignmentPassword?.trim()?.length || 0) > 5)
       ) {
         notification({ messageKey: 'enterValidPassword' })
+        this.handleTabChange(sectionContants.ANTI_CHEATING_SECTION)
         return
       }
       if (updatedAssignment.autoRedirect === true) {
-        if (!updatedAssignment.autoRedirectSettings.showPreviousAttempt)
+        if (!updatedAssignment.autoRedirectSettings.showPreviousAttempt) {
+          this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
           return notification({
             type: 'warn',
             msg: 'Please set the value for Show Previous Attempt',
           })
-        if (!updatedAssignment.autoRedirectSettings.questionsDelivery)
+        }
+        if (!updatedAssignment.autoRedirectSettings.questionsDelivery) {
+          this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
           return notification({
             type: 'warn',
             msg: 'Please set the value for Question Delivery',
           })
-        if (!updatedAssignment.autoRedirectSettings.scoreThreshold)
+        }
+        if (!updatedAssignment.autoRedirectSettings.scoreThreshold) {
+          this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
           return notification({
             type: 'warn',
             msg: 'Please set Score Threshold value',
           })
-        if (!updatedAssignment.autoRedirectSettings.maxRedirects)
+        }
+        if (!updatedAssignment.autoRedirectSettings.maxRedirects) {
+          this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
           return notification({
             type: 'warn',
             msg: 'Please set value of Max Attempts Allowed for auto redirect',
           })
+        }
       }
       saveAssignment(updatedAssignment)
     }
@@ -323,8 +338,12 @@ class AssignTest extends React.Component {
     })
   }
 
+  handleTabChange = (key) => {
+    this.setState({ activeTab: key })
+  }
+
   render() {
-    const { isAdvancedView, selectedDateOption } = this.state
+    const { isAdvancedView, selectedDateOption, activeTab } = this.state
     const { assignmentSettings: assignment, isTestLoading, match } = this.props
     const {
       classList,
@@ -407,6 +426,8 @@ class AssignTest extends React.Component {
               match={match}
               isAdvancedView={isAdvancedView}
               defaultTestProfiles={defaultTestProfiles}
+              activeTab={activeTab}
+              handleTabChange={this.handleTabChange}
             />
           )}
         </Container>

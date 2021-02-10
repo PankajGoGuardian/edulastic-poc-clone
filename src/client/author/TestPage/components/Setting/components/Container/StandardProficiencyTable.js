@@ -78,6 +78,7 @@ const StandardProficiencyTable = ({
           justifyContent: 'space-between',
           marginBottom: '10px',
         }}
+        data-cy="standard-mastery"
       >
         <span>
           Standard based grading scale{' '}
@@ -89,7 +90,7 @@ const StandardProficiencyTable = ({
           style={{ width: '250px' }}
           value={selectedStandardData._id}
           onChange={(val) => handleProfileChange(val)}
-          disabled={disabled}
+          disabled={disabled || !isFeatureAvailable}
         >
           {standardsData.map((standardData) => (
             <Select.Option key={standardData._id} value={standardData._id}>

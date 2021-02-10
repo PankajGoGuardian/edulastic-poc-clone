@@ -63,7 +63,10 @@ import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
-import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  showItemStatusSelector as hasAuthorOrCuratorAccount,
+} from '../../../src/selectors/user'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -535,6 +538,7 @@ class Container extends Component {
       proceedSave,
       hasUnsavedChanges,
       currentLanguage,
+      isAuthorOrCurator,
       allowedToSelectMultiLanguage,
     } = this.props
 
@@ -591,10 +595,9 @@ class Container extends Component {
             <BackLink onClick={history.goBack}>Back to Item List</BackLink>
           )}
           <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-            {allowedToSelectMultiLanguage &&
-              useLanguageFeatureQn.includes(questionType) && (
-                <LanguageSelector />
-              )}
+            {(allowedToSelectMultiLanguage &&
+              useLanguageFeatureQn.includes(questionType)) ||
+              (isAuthorOrCurator && <LanguageSelector />)}
             {view !== 'preview' && view !== 'auditTrail' && (
               <EduButton
                 isGhost
@@ -647,6 +650,7 @@ Container.propTypes = {
   onSaveScrollTop: PropTypes.func.isRequired,
   savedWindowScrollTop: PropTypes.number,
   testId: PropTypes.string,
+  isAuthorOrCurator: PropTypes.bool,
 }
 
 Container.defaultProps = {
@@ -659,6 +663,7 @@ Container.defaultProps = {
   savedWindowScrollTop: 0,
   testId: '',
   testName: '',
+  isAuthorOrCurator: false,
 }
 
 const enhance = compose(
@@ -680,6 +685,7 @@ const enhance = compose(
       showCalculatingSpinner: getCalculatingSelector(state),
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
+      isAuthorOrCurator: hasAuthorOrCuratorAccount(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {

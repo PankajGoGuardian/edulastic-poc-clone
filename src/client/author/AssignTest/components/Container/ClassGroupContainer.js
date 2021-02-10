@@ -8,7 +8,7 @@ import DateSelector from '../SimpleOptions/DateSelector'
 import QuestionPerStandardSelector from '../SimpleOptions/QuestionPerStandardSelector'
 import { StyledRow } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const ClassGroupContainer = ({
   changeField,
@@ -36,7 +36,7 @@ const ClassGroupContainer = ({
     <>
       {!isAssignRecommendations && (
         <>
-          <SettingContainer>
+          <SettingContainer id="class-group-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="Class/Group Section"
@@ -51,7 +51,7 @@ const ClassGroupContainer = ({
             />
           </SettingContainer>
 
-          <SettingContainer>
+          <SettingContainer id="students-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="Students"
@@ -83,7 +83,7 @@ const ClassGroupContainer = ({
         tootltipWidth={tootltipWidth}
       />
 
-      <SettingContainer>
+      <SettingContainer id="open-policy-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="OPEN POLICY"
@@ -128,7 +128,7 @@ const ClassGroupContainer = ({
         </StyledRow>
       </SettingContainer>
 
-      <SettingContainer>
+      <SettingContainer id="close-policy-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="CLOSE POLICY"

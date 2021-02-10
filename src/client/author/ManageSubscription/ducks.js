@@ -14,34 +14,32 @@ export const getSubsLicenses = createSelector(
 )
 export const getConfirmationModalVisible = createSelector(
   manageSubscriptionSelector,
-  (state) => state.teacherDetailsModalVisible
+  (state) => state.showAddUserConfirmationModal
 )
-export const getBulkTeacherData = createSelector(
+export const getBulkUsersData = createSelector(
   manageSubscriptionSelector,
-  (state) => state.bulkTeacherData
+  (state) => state.bulkUsersData
 )
 
 // action types
 export const SET_LICENSES_DATA =
   '[manageSubscriptions] set manage subscriptions license data'
 
-const ADD_BULK_TEACHER_REQUEST = '[teacher] add bulk teacher request'
-const ADD_BULK_TEACHER_SUCCESS = '[teacher] add bulk teacher success'
-const ADD_BULK_TEACHER_ERROR = '[teacher] add bulk teacher error'
+const ADD_BULK_USERS_REQUEST = '[users] add bulk users request'
+const ADD_BULK_USERS_SUCCESS = '[users] add bulk users success'
+const ADD_BULK_USERS_ERROR = '[users] add bulk users error'
 
-const SET_TEACHER_DETAIL_MODAL_VISIBLE =
-  '[teacher] set teacher detail modal visible'
+const SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE =
+  '[users] set add users confirmation modal visible'
 
 // action creators
-export const addBulkTeacherAdminAction = createAction(ADD_BULK_TEACHER_REQUEST)
-export const addBulkTeacherAdminSuccessAction = createAction(
-  ADD_BULK_TEACHER_SUCCESS
+export const addBulkUsersAdminAction = createAction(ADD_BULK_USERS_REQUEST)
+export const addBulkUsersAdminSuccessAction = createAction(
+  ADD_BULK_USERS_SUCCESS
 )
-export const addBulkTeacherAdminErrorAction = createAction(
-  ADD_BULK_TEACHER_ERROR
-)
-export const setTeachersDetailsModalVisibleAction = createAction(
-  SET_TEACHER_DETAIL_MODAL_VISIBLE
+export const addBulkUsersAdminErrorAction = createAction(ADD_BULK_USERS_ERROR)
+export const setAddUserConfirmationModalVisibleAction = createAction(
+  SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE
 )
 
 // initial State
@@ -51,8 +49,8 @@ const initialState = {
     totalUsers: 0,
   },
   creating: false,
-  bulkTeacherData: [],
-  teacherDetailsModalVisible: false,
+  bulkUsersData: [],
+  showAddUserConfirmationModal: false,
   licenses: [
     {
       validEndDate: 'Jun 6, 2021',
@@ -86,29 +84,29 @@ const setLicensesData = (state, { payload }) => {
 // main reducer
 export const reducer = createReducer(initialState, {
   [SET_LICENSES_DATA]: setLicensesData,
-  [ADD_BULK_TEACHER_REQUEST]: (state) => {
+  [ADD_BULK_USERS_REQUEST]: (state) => {
     state.creating = true
-    state.teacherDetailsModalVisible = false
+    state.showAddUserConfirmationModal = false
   },
-  [ADD_BULK_TEACHER_SUCCESS]: (state, { payload: { res, _bulkTeachers } }) => {
-    state.bulkTeacherData = res
+  [ADD_BULK_USERS_SUCCESS]: (state, { payload: { res, _bulkTeachers } }) => {
+    state.bulkUsersData = res
     state.data.result = { ..._bulkTeachers, ...state.data.result }
     state.data.totalUsers += Object.keys(_bulkTeachers).length
     state.creating = false
-    state.teacherDetailsModalVisible = true
+    state.showAddUserConfirmationModal = true
   },
-  [ADD_BULK_TEACHER_ERROR]: (state, { payload }) => {
+  [ADD_BULK_USERS_ERROR]: (state, { payload }) => {
     state.creating = false
     state.addBulkTeacherError = payload.bulkAddError
-    state.teacherDetailsModalVisible = false
+    state.showAddUserConfirmationModal = false
   },
-  [SET_TEACHER_DETAIL_MODAL_VISIBLE]: (state, { payload }) => {
-    state.teacherDetailsModalVisible = payload
+  [SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE]: (state, { payload }) => {
+    state.showAddUserConfirmationModal = payload
   },
 })
 
 // sagas
-function* addBulkTeacherAdminSaga({ payload }) {
+function* addBulkUsersAdminSaga({ payload }) {
   try {
     const res = yield call(userApi.adddBulkTeacher, payload.addReq)
     const _bulkTeachers = {}
@@ -124,18 +122,16 @@ function* addBulkTeacherAdminSaga({ payload }) {
           },
         }
       })
-    yield put(addBulkTeacherAdminSuccessAction({ res, _bulkTeachers }))
+    yield put(addBulkUsersAdminSuccessAction({ res, _bulkTeachers }))
   } catch (err) {
     captureSentryException(err)
-    const errorMessage = 'Unable to add teachers in bulk.'
+    const errorMessage = 'Unable to add users in bulk.'
     notification({ type: 'error', msg: errorMessage })
-    yield put(addBulkTeacherAdminErrorAction({ bulkAddError: errorMessage }))
+    yield put(addBulkUsersAdminErrorAction({ bulkAddError: errorMessage }))
   }
 }
 
 // watcher saga
 export function* watcherSaga() {
-  yield all([
-    yield takeLatest(ADD_BULK_TEACHER_REQUEST, addBulkTeacherAdminSaga),
-  ])
+  yield all([yield takeLatest(ADD_BULK_USERS_REQUEST, addBulkUsersAdminSaga)])
 }

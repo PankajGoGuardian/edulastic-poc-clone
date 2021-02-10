@@ -5,10 +5,10 @@ import { get } from 'lodash'
 import React from 'react'
 import { StatusDiv, StyledStatusIcon } from './styled'
 
-const AddTeacherStatusModal = ({
+const AddUsersConfirmationModal = ({
   isVisible,
   onCancel,
-  teacherDataSource,
+  userDataSource,
   userRole,
   t,
 }) => {
@@ -17,7 +17,7 @@ const AddTeacherStatusModal = ({
       title: t('users.student.studentdetail.name'),
       dataIndex: 'fullName',
       render: () => {
-        return <div>Teacher name will be updated after first sign-up</div>
+        return <div>Name will be updated after first sign-up</div>
       },
     },
     {
@@ -57,7 +57,7 @@ const AddTeacherStatusModal = ({
     },
   ]
 
-  const modifiedDataSource = teacherDataSource.map((item) => {
+  const modifiedDataSource = userDataSource.map((item) => {
     const obj = {
       ...item,
       fullName: `${get(item, 'firstName', '')} ${get(
@@ -72,7 +72,7 @@ const AddTeacherStatusModal = ({
   return (
     <CustomModalStyled
       visible={isVisible}
-      title="Teacher Details"
+      title="User(s) Details"
       onCancel={onCancel}
       centered
       width="60%"
@@ -80,7 +80,7 @@ const AddTeacherStatusModal = ({
         <EduButton
           height="40px"
           width="200px"
-          data-cy="closeAddTeachersStatusModal"
+          data-cy="closeAddUsersConfirmationModal"
           onClick={onCancel}
         >
           Done
@@ -101,4 +101,4 @@ const AddTeacherStatusModal = ({
   )
 }
 
-export default AddTeacherStatusModal
+export default AddUsersConfirmationModal

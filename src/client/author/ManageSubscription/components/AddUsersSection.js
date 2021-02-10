@@ -2,8 +2,8 @@ import React from 'react'
 import { EduButton, FlexContainer, SearchInputStyled } from '@edulastic/common'
 import PropTypes from 'prop-types'
 
-const InviteTeachersSection = ({ setShowInviteTeachersModal }) => {
-  const openModal = () => setShowInviteTeachersModal(true)
+const AddUsersSection = ({ setShowAddUsersModal }) => {
+  const openModal = () => setShowAddUsersModal(true)
   return (
     <FlexContainer justifyContent="flex-end" padding="10px 0px">
       <EduButton
@@ -12,25 +12,25 @@ const InviteTeachersSection = ({ setShowInviteTeachersModal }) => {
         width="140px"
         mr="10px"
         onClick={openModal}
-        data-cy="openInvitetTeachersModalBtn"
+        data-cy="openAddUsersModalBtn"
       >
-        ADD TEACHERS
+        ADD USER(S)
       </EduButton>
       <SearchInputStyled
         placeholder="Search..."
         height="34px"
         width="310px"
-        data-cy="searchTeachersInputField"
+        data-cy="searchUsersInputField"
       />
     </FlexContainer>
   )
 }
 
-InviteTeachersSection.propTypes = {
-  setShowInviteTeachersModal: PropTypes.func,
+AddUsersSection.propTypes = {
+  setShowAddUsersModal: PropTypes.func,
 }
-InviteTeachersSection.defaultProps = {
-  setShowInviteTeachersModal: () => {},
+AddUsersSection.defaultProps = {
+  setShowAddUsersModal: () => {},
 }
 
-export default InviteTeachersSection
+export default AddUsersSection

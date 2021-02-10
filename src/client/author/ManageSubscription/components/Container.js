@@ -1,5 +1,5 @@
 import { withNamespaces } from '@edulastic/localization'
-import React, { useState } from 'react'
+import React, { lazy, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { getUserOrgId } from '../../src/selectors/user'
@@ -8,33 +8,36 @@ import {
   getSuccessSelector,
 } from '../../Subscription/ducks'
 import {
-  addBulkTeacherAdminAction,
-  getBulkTeacherData,
+  addBulkUsersAdminAction,
+  getBulkUsersData,
   getConfirmationModalVisible,
   getSubsLicenses,
-  setTeachersDetailsModalVisibleAction,
+  setAddUserConfirmationModalVisibleAction,
 } from '../ducks'
 import Header from './Header'
-import InviteTeachersModal from './InviteTeachersModal'
-import InviteTeachersSection from './InviteTeachersSection'
+import AddUsersSection from './AddUsersSection'
 import LicenseCountSection from './LicenseCountSection'
-import ManageLicensesModal from './ManageLicensesModal'
-import AddTeacherStatusModal from './AddTeacherStatusModal'
 import { ContentWrapper } from './styled'
+
+const AddUsersModal = lazy(() => import('./AddUsersModal'))
+const ManageLicensesModal = lazy(() => import('./ManageLicensesModal'))
+const AddUsersConfirmationModal = lazy(() =>
+  import('./AddUsersConfirmationModal')
+)
 
 const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},
   isSuccess,
   subsLicenses,
   userOrgId,
-  addTeachers,
-  setTeachersDetailsModalVisible,
-  addTeacherStatusModalVisible = false,
-  teacherDataSource = [],
+  addUsers,
+  setAddUsersConfirmationModalVisible,
+  showAddUserConfirmationModal = false,
+  userDataSource = [],
   t,
 }) => {
   const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
-  const [showInviteTeachersModal, setShowInviteTeachersModal] = useState(false)
+  const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const isSubscribed =
     subType === 'premium' ||
     subType === 'enterprise' ||
@@ -44,14 +47,15 @@ const ManageSubscriptionContainer = ({
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
   const closeManageLicenseModal = () => setShowManageLicenseModal(false)
-  const closeInviteTeachersModal = () => setShowInviteTeachersModal(false)
-  const closeTeachersDetailModal = () => setTeachersDetailsModalVisible(false)
+  const closeAddUsersModal = () => setShowAddUsersModal(false)
+  const closeAddUsersConfirmationModal = () =>
+    setAddUsersConfirmationModalVisible(false)
 
   const sendInvite = (obj) => {
     const o = {
       addReq: obj,
     }
-    addTeachers(o)
+    addUsers(o)
   }
 
   return (
@@ -67,9 +71,7 @@ const ManageSubscriptionContainer = ({
           subsLicenses={subsLicenses}
           setShowManageLicenseModal={setShowManageLicenseModal}
         />
-        <InviteTeachersSection
-          setShowInviteTeachersModal={setShowInviteTeachersModal}
-        />
+        <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
       </ContentWrapper>
       {showManageLicenseModal && (
         <ManageLicensesModal
@@ -77,19 +79,19 @@ const ManageSubscriptionContainer = ({
           onCancel={closeManageLicenseModal}
         />
       )}
-      {showInviteTeachersModal && (
-        <InviteTeachersModal
-          isVisible={showInviteTeachersModal}
-          onCancel={closeInviteTeachersModal}
+      {showAddUsersModal && (
+        <AddUsersModal
+          isVisible={showAddUsersModal}
+          onCancel={closeAddUsersModal}
           districtId={userOrgId}
-          addTeachers={sendInvite}
+          addUsers={sendInvite}
         />
       )}
-      {addTeacherStatusModalVisible && (
-        <AddTeacherStatusModal
-          isVisible={addTeacherStatusModalVisible}
-          onCancel={closeTeachersDetailModal}
-          teacherDataSource={teacherDataSource}
+      {showAddUserConfirmationModal && (
+        <AddUsersConfirmationModal
+          isVisible={showAddUserConfirmationModal}
+          onCancel={closeAddUsersConfirmationModal}
+          userDataSource={userDataSource}
           userRole="teacher"
           t={t}
         />
@@ -106,12 +108,12 @@ const enhance = compose(
       isSuccess: getSuccessSelector(state),
       subsLicenses: getSubsLicenses(state),
       userOrgId: getUserOrgId(state),
-      addTeacherStatusModalVisible: getConfirmationModalVisible(state),
-      teacherDataSource: getBulkTeacherData(state),
+      showAddUserConfirmationModal: getConfirmationModalVisible(state),
+      userDataSource: getBulkUsersData(state),
     }),
     {
-      addTeachers: addBulkTeacherAdminAction,
-      setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction,
+      addUsers: addBulkUsersAdminAction,
+      setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
     }
   )
 )

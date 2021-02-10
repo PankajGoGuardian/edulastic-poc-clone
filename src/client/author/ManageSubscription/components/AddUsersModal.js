@@ -8,22 +8,17 @@ import {
 } from '@edulastic/common'
 import { CheckboxWrpper } from './styled'
 
-const InviteTeachersModal = ({
-  isVisible,
-  onCancel,
-  addTeachers,
-  districtId,
-}) => {
+const AddUsersModal = ({ isVisible, onCancel, addUsers, districtId }) => {
   const [fieldValue, setFieldValue] = useState('')
   const [checkboxValues, setCheckboxValues] = useState([])
 
   const handleOnChange = (ele) => setFieldValue(ele.target.value)
   const handleOnCheck = (value) => setCheckboxValues(value)
 
-  const handleInviteTeachers = () => {
+  const handleAddUsers = () => {
     if (fieldValue) {
       const userDetails = fieldValue.replace(/\s/g, '').split(/,|\n/)
-      addTeachers({ districtId, userDetails })
+      addUsers({ districtId, userDetails })
       onCancel()
     }
   }
@@ -31,7 +26,7 @@ const InviteTeachersModal = ({
   return (
     <CustomModalStyled
       visible={isVisible}
-      title="Add Teachers"
+      title="Add User(s)"
       onCancel={onCancel}
       centered
       modalWidth="520px"
@@ -41,7 +36,7 @@ const InviteTeachersModal = ({
             isGhost
             height="40px"
             width="200px"
-            data-cy="closeInviteTeachersModalBtn"
+            data-cy="closeAddUsersModalBtn"
             onClick={onCancel}
           >
             NO, CANCEL
@@ -49,11 +44,11 @@ const InviteTeachersModal = ({
           <EduButton
             height="40px"
             width="200px"
-            data-cy="yesInviteTeachersModalBtn"
-            onClick={handleInviteTeachers}
+            data-cy="yesAddUsersModalBtn"
+            onClick={handleAddUsers}
             disabled={fieldValue === ''}
           >
-            YES, ADD TEACHERS
+            YES, ADD User(s)
           </EduButton>
         </>,
       ]}
@@ -64,15 +59,21 @@ const InviteTeachersModal = ({
           value={fieldValue}
           onChange={handleOnChange}
           placeholder="Email IDs (separated by comma)"
-          data-cy="inviteTeacherInputField"
+          data-cy="addUsersInputField"
           height="110px"
         />
         <CheckboxWrpper>
           <CheckBoxGrp value={checkboxValues} onChange={handleOnCheck}>
-            <CheckboxLabel value="teacherPremium">
+            <CheckboxLabel
+              data-cy="teacherPremiumCheckbox"
+              value="teacherPremium"
+            >
               Upgrade to Premium
             </CheckboxLabel>
-            <CheckboxLabel value="sparkMathPremium">
+            <CheckboxLabel
+              data-cy="sparkMathPremiumCheckbox"
+              value="sparkMathPremium"
+            >
               Access Spark Math
             </CheckboxLabel>
           </CheckBoxGrp>
@@ -82,4 +83,4 @@ const InviteTeachersModal = ({
   )
 }
 
-export default InviteTeachersModal
+export default AddUsersModal

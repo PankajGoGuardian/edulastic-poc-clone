@@ -158,6 +158,7 @@ const MiscellaneousGroupContainer = ({
                         title={accessibilities[key]}
                         content={description}
                         premium={featuresAvailable[key]}
+                        placement="rightTop"
                       />
                       <StyledRow
                         key={accessibilities[key]}

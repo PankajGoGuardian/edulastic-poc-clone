@@ -208,18 +208,22 @@ class DisneyCardContainer extends Component {
          */
         const enrollMentFlag =
           student.isEnrolled === false ? (
-            <span title="Not Enrolled">
-              <ExclamationMark />
-            </span>
+            <Tooltip title="Not Enrolled">
+              <span>
+                <ExclamationMark />
+              </span>
+            </Tooltip>
           ) : (
             ''
           )
         const isAcitveStudentUnassigned =
           student.isAssigned === false && student.isEnrolled
         const unAssignedMessage = isAcitveStudentUnassigned ? (
-          <span title="Unassigned">
-            <ExclamationMark />
-          </span>
+          <Tooltip title="Unassigned">
+            <span>
+              <ExclamationMark />
+            </span>
+          </Tooltip>
         ) : (
           ''
         )
@@ -371,14 +375,15 @@ class DisneyCardContainer extends Component {
                   </Row>
                   <Row style={{ display: 'flex' }}>
                     {hasUsedScratchPad && (
-                      <StyledIconCol title="Student has used scratchpad">
-                        <ScratchPadIcon />
-                      </StyledIconCol>
+                      <Tooltip title="Student has used scratchpad">
+                        <StyledIconCol>
+                          <ScratchPadIcon />
+                        </StyledIconCol>
+                      </Tooltip>
                     )}
                     {student.redirected && (
                       <StyledIconCol>
-                        <i
-                          data-cy="redirected"
+                        <Tooltip
                           title={`Assignment is redirected to the student on ${
                             student.redirectedDate
                               ? moment(student.redirectedDate).format(
@@ -386,10 +391,14 @@ class DisneyCardContainer extends Component {
                                 )
                               : '-'
                           }`}
-                          className="fa fa-external-link"
-                          aria-hidden="true"
-                          style={{ color: themeColor }}
-                        />
+                        >
+                          <i
+                            data-cy="redirected"
+                            className="fa fa-external-link"
+                            aria-hidden="true"
+                            style={{ color: themeColor }}
+                          />
+                        </Tooltip>
                       </StyledIconCol>
                     )}
                   </Row>

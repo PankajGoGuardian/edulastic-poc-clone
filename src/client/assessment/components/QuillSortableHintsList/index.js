@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -17,6 +17,8 @@ import { CustomStyleBtn } from '../../styled/ButtonStyles'
 import { updateVariables } from '../../utils/variables'
 import { getFontSize } from '../../utils/helpers'
 import { Label } from '../../styled/WidgetOptions/Label'
+import { Row } from '../../styled/WidgetOptions/Row'
+import { Col } from '../../styled/WidgetOptions/Col'
 
 class QuillSortableHintsList extends Component {
   onSortEnd = ({ oldIndex, newIndex }) => {
@@ -83,25 +85,27 @@ class QuillSortableHintsList extends Component {
     const fontSize = getFontSize(item.uiStyle)
 
     return (
-      <>
-        <Label data-cy="hints">{t('component.options.hints')}</Label>
-        <QuillSortableList
-          items={item.hints.map((o) => o.label)}
-          onSortEnd={this.onSortEnd}
-          prefix="hints"
-          useDragHandle
-          placeholder={t('component.enterHintForTheProblem')}
-          defaultLabel={false}
-          firstFocus={item.firstMount}
-          onRemove={this.remove}
-          fontSize={fontSize}
-          onChange={this.editOptions}
-        />
+      <Row gutter={24}>
+        <Col md={24}>
+          <Label data-cy="hints">{t('component.options.hints')}</Label>
+          <QuillSortableList
+            items={item.hints.map((o) => o.label)}
+            onSortEnd={this.onSortEnd}
+            prefix="hints"
+            useDragHandle
+            placeholder={t('component.enterHintForTheProblem')}
+            defaultLabel={false}
+            firstFocus={item.firstMount}
+            onRemove={this.remove}
+            fontSize={fontSize}
+            onChange={this.editOptions}
+          />
 
-        <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
-          {t('component.addANewHint')}
-        </CustomStyleBtn>
-      </>
+          <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
+            {t('component.addANewHint')}
+          </CustomStyleBtn>
+        </Col>
+      </Row>
     )
   }
 }

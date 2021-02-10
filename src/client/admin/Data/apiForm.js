@@ -1,3 +1,5 @@
+import { questionTypes } from './index'
+
 export const apiForms = [
   {
     id: 'configurereports',
@@ -612,6 +614,56 @@ export const apiForms = [
         type: 'textarea',
         formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
+      },
+    ],
+  },
+  {
+    id: 're-evaluation',
+    name: 'Re-Evaluate by Assignment Id',
+    endPoint: 'admin-tool/dummyroute',
+    method: 'post',
+    fields: [
+      {
+        key: 'assignmentId',
+        name: 'assignmentId',
+        placeholder: 'Enter Assignment Id',
+        type: 'string',
+        displayName: 'Enter Assignment Id',
+        required: true,
+      },
+      {
+        key: 'userId',
+        name: 'userId',
+        placeholder: 'Enter User Id',
+        type: 'string',
+        displayName: 'Enter User Id',
+        required: true,
+      },
+      {
+        key: 'questionId',
+        name: 'questionId',
+        placeholder: 'Enter Question Id',
+        type: 'string',
+        displayName: 'Enter Question Id',
+      },
+      {
+        key: 'Or',
+        displayName: 'Or',
+        labelStyle: {
+          'text-align': 'center',
+          'font-weight': 'bold',
+          'font-size': '16px',
+        },
+      },
+      {
+        key: 'questionType',
+        name: 'questionType',
+        placeholder: 'Select question type',
+        type: 'dropdown',
+        displayName: 'Select question type',
+        values: ['Select question type', ...questionTypes],
+        defaultValue: 'Select question type',
+        formatter: (value) => (value === 'Select question type' ? null : value),
       },
     ],
   },

@@ -180,7 +180,9 @@ const StandardsGradebook = ({
         <StyledCard>
           <Row type="flex" justify="start">
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledH3>Mastery Level Distribution by Standard</StyledH3>
+              <StyledH3 marginLeft="50px">
+                Mastery Level Distribution by Standard
+              </StyledH3>
             </Col>
           </Row>
           <Row>
@@ -250,5 +252,4 @@ const enhance = compose(
 )
 
 export default enhance(StandardsGradebook)
-
 // -----|-----|-----|-----|-----| COMPONENT ENDED |-----|-----|-----|-----|----- //

@@ -152,6 +152,13 @@ export const PaginationInfoT = styled(StyledFlexContainer)`
   flex-wrap: wrap;
   justify-content: flex-start;
   min-height: 15px;
+  &.questions-grid {
+    @media (min-width: 1024px) {
+      display: grid;
+      grid-template-columns: 22px 22px 22px 22px 22px 22px 22px 22px 22px 22px;
+      grid-gap: 1px;
+    }
+  }
 `
 
 export const CircularDiv = styled.div`
@@ -196,9 +203,9 @@ export const StyledName = styled.div`
 
 const SquareColorDiv = styled.div`
   display: inline-block;
-  width: ${(props) => ((props.weight || 1) > 1 ? 2 * 23 + 1 : 23)}px;
+  width: 22px;
   height: 8px;
-  margin: 1px 2px 0px 0px;
+  margin: 1px 1px 0px 0px;
 `
 
 export const SquareColorDivGreen = styled(SquareColorDiv)`

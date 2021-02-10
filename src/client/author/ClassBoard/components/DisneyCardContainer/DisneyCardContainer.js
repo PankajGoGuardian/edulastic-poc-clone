@@ -420,7 +420,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                   </PerfomanceSection>
                 </PaginationInfoS>
-                <PaginationInfoT data-cy="questions">
+                <PaginationInfoT className="questions-grid" data-cy="questions">
                   {!student.redirected &&
                     student.questionActivities
                       .filter((x) => !x.disabled)

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox, EduButton } from '@edulastic/common'
-import { isEmpty } from 'lodash'
+import { CheckboxLabel, EduButton } from '@edulastic/common'
+import { isUndefined, isEmpty } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
 import { StyledAntdTable } from './styled'
@@ -10,22 +10,24 @@ const Userlist = ({ users }) => {
   const [changes, setChanges] = useState({})
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
 
-  const onChangeHandler = (userId, fieldName) => {
+  const onChangeHandler = (userId, fieldName, isChecked) => {
     const newChanges = produce(changes, (draft) => {
-      if (!draft[userId]) {
+      if (isUndefined(draft[userId])) {
         draft[userId] = {}
-        draft[userId][fieldName] = true
+        draft[userId][fieldName] = isChecked
         return
       }
 
-      if (!draft[userId][fieldName]) {
-        draft[userId][fieldName] = true
+      if (isUndefined(draft[userId][fieldName])) {
+        draft[userId][fieldName] = isChecked
         return
       }
 
-      if (draft[userId][fieldName]) {
+      if (!isUndefined(draft[userId][fieldName])) {
         delete draft[userId][fieldName]
-        isEmpty(draft[userId])
+      }
+
+      if (isEmpty(draft[userId])) {
         delete draft[userId]
       }
     })
@@ -40,9 +42,17 @@ const Userlist = ({ users }) => {
   const getXOR = (a, b) => (a || b) && !(a && b)
 
   const getCheckbox = (record, key) => {
-    const checked = getXOR(record[key], changes[record.userId]?.[key])
-    const onChange = () => onChangeHandler(record.userId, key)
-    return <Checkbox onChange={onChange} checked={checked} />
+    const isChecked = getXOR(
+      record[key],
+      !isUndefined(changes[record.userId]?.[key])
+    )
+    const onChange = (e) => {
+      const {
+        target: { checked },
+      } = e
+      onChangeHandler(record.userId, key, checked)
+    }
+    return <CheckboxLabel onChange={onChange} checked={isChecked} />
   }
 
   const columns = [
@@ -75,9 +85,9 @@ const Userlist = ({ users }) => {
     },
     {
       title: 'MANAGE LICENSES',
-      dataIndex: 'isAdmin',
+      dataIndex: 'hasManageLicense',
       key: 'actionAdmin',
-      render: (_, record) => getCheckbox(record, 'isAdmin'),
+      render: (_, record) => getCheckbox(record, 'hasManageLicense'),
     },
   ]
 

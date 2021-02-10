@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox, EduButton } from '@edulastic/common'
 import { isEmpty } from 'lodash'
@@ -8,11 +8,10 @@ import { StyledAntdTable } from './styled'
 
 const Userlist = ({ users }) => {
   const [changes, setChanges] = useState({})
-  const changesRef = useRef({})
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
 
   const onChangeHandler = (userId, fieldName) => {
-    changesRef.current = produce(changes, (draft) => {
+    const newChanges = produce(changes, (draft) => {
       if (!draft[userId]) {
         draft[userId] = {}
         draft[userId][fieldName] = true
@@ -30,8 +29,8 @@ const Userlist = ({ users }) => {
         delete draft[userId]
       }
     })
-    setChanges(changesRef.current)
-    setIsSaveButtonVisible(!isEmpty(changesRef.current))
+    setChanges(newChanges)
+    setIsSaveButtonVisible(!isEmpty(newChanges))
   }
 
   const onSaveHandler = () => {

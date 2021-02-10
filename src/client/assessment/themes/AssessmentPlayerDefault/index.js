@@ -24,7 +24,12 @@ import {
 import ReportIssuePopover from '../common/ReportIssuePopover'
 import { isZoomGreator } from '../../../common/utils/helpers'
 import SettingsModal from '../../../student/sharedComponents/SettingsModal'
-import { Main, Container, CalculatorContainer } from '../common'
+import {
+  Main,
+  Container,
+  CalculatorContainer,
+  getDefaultCalculatorProvider,
+} from '../common'
 import TestItemPreview from '../../components/TestItemPreview'
 import {
   MAX_MOBILE_WIDTH,
@@ -59,7 +64,9 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
       history: 0,
-      calculateMode: `${calcType}_${settings.calcProvider}`,
+      calculateMode: `${calcType}_${
+        settings.calcProvider || getDefaultCalculatorProvider(calcType)
+      }`,
       currentToolMode: [0],
       enableCrossAction: false,
       minWidth: 480,

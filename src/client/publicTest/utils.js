@@ -9,6 +9,7 @@ import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 
 import { Select, Modal, Tooltip } from 'antd'
 import { themeColor } from '@edulastic/colors'
+import { IconSelectCaretDown } from '@edulastic/icons'
 
 const { Option } = Select
 
@@ -184,6 +185,7 @@ export const showTestInfoModal = ({
               defaultValue={languagePreference}
               style={{ width: 200 }}
               onChange={setSelectedLanguage}
+              suffixIcon={<IconSelectCaretDown color={themeColor} />}
             >
               <Option value="" disabled>
                 Select Language
@@ -210,7 +212,7 @@ export const showTestInfoModal = ({
       <Tooltip title={title}>
         <div
           style={{
-            width: '300px',
+            maxWidth: '80%',
             textOverflow: 'ellipsis',
             overflow: 'hidden',
             whiteSpace: 'nowrap',
@@ -231,13 +233,11 @@ export const showTestInfoModal = ({
       if (notifyCancel) redirectToDashbord('HOME', history)
       else Modal.destroyAll()
     },
-    okText: 'Continue',
-    // okType: "danger",
+    okText: 'YES, CONTINUE',
+    cancelText: 'NO, CANCEL',
+    className: 'ant-modal-confirm-custom-styled',
     centered: true,
-    width: 500,
-    okButtonProps: {
-      style: { background: themeColor },
-    },
+    icon: '',
   })
 }
 

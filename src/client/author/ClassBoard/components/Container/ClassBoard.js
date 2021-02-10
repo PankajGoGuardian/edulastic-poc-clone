@@ -85,6 +85,7 @@ import {
   getEnrollmentStatus,
   getFirstQuestionEntitiesSelector,
   actionInProgressSelector,
+  getAllStudentsList,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -911,6 +912,7 @@ class ClassBoard extends Component {
       showCanvasShare,
       canvasSyncAssignment,
       setShowCanvasShare,
+      studentsList,
     } = this.props
 
     const {
@@ -1114,11 +1116,15 @@ class ClassBoard extends Component {
             assignmentId={assignmentId}
           />
         )}
-        <HooksContainer
-          additionalData={additionalData}
-          classId={classId}
-          assignmentId={assignmentId}
-        />
+        {selectedTab === 'Both' && studentsList.length && (
+          <HooksContainer
+            additionalData={additionalData}
+            classId={classId}
+            assignmentId={assignmentId}
+            studentsList={studentsList}
+            selectedTab={selectedTab}
+          />
+        )}
         <ClassHeader
           classId={classId}
           active="classboard"
@@ -1807,6 +1813,7 @@ const enhance = compose(
       ),
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
+      studentsList: getAllStudentsList(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

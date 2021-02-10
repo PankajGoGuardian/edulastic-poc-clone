@@ -2534,3 +2534,69 @@ div[class*='_pendo'] button {
 .text-entry-altanswer-button .ant-popover-inner-content {
   padding: 0px !important;
 }
+
+.ant-modal-confirm-custom-styled {
+  min-width: 50%;
+  top: 100px;
+}
+
+.ant-modal-confirm-custom-styled
+  .ant-modal-confirm-body
+  > .anticon
+  + .ant-modal-confirm-title
+  + .ant-modal-confirm-content {
+  background: #fff;
+  padding: 0;
+  margin-left: 0;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 14px;
+  color: rgb(67, 75, 93);
+}
+
+.ant-modal-confirm-custom-styled .ant-modal-confirm-title {
+  font-size: 22px;
+  color: #434b5d;
+  font-weight: 700;
+}
+.ant-modal-confirm-custom-styled .ant-modal-confirm-body {
+  background: transparent;
+  padding: 0px 25px;
+}
+
+.ant-modal-confirm-custom-styled p {
+  font-size: 14px;
+  color: #444;
+  font-weight: 600;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns {
+  border: none;
+  display: flex;
+  justify-content: center;
+  padding: 0px;
+  float: unset;
+}
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns .ant-btn:nth-child(1) {
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(26, 179, 148);
+  color: rgb(26, 179, 148);
+}
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns .ant-btn:nth-child(2) {
+  background-color: rgb(26, 179, 148);
+  border-color: rgb(26, 179, 148);
+  color: rgb(255, 255, 255);
+}
+
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns .ant-btn {
+  padding: 0px 30px 0 30px;
+  height: 40px;
+  font-size: 12px;
+}
+
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns .ant-btn:hover {
+  background-color: rgb(26, 115, 232);
+  border-color: rgb(26, 115, 232);
+  color: rgb(255, 255, 255);
+}

@@ -1079,7 +1079,7 @@ export const inProgressStudentsSelector = createSelector(
 
 export const testNameSelector = createSelector(
   stateTestActivitySelector,
-  (state) => state.additionalData.testName
+  (state) => state.additionalData?.testName
 )
 
 export const getCanMarkAssignmentSelector = createSelector(

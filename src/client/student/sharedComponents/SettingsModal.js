@@ -52,10 +52,18 @@ const SettingsModal = ({
     boxShadow: 'none',
   }
 
+  const reconfirmContentStyle = {
+    fontSize: '14px',
+    textAlign: 'center',
+    margin: '0 -15px',
+  }
+
   const [selectedLang, setChangedLang] = useState(languagePreference)
+  const [showReconfirm, setShowReconfirm] = useState(false)
 
   useEffect(() => {
     setChangedLang(languagePreference)
+    setShowReconfirm(false)
   }, [languagePreference, settingsModalVisible])
 
   const closeModal = () => setSettingsModalVisibility(false)
@@ -63,7 +71,10 @@ const SettingsModal = ({
   const handleApply = () => {
     localStorage.setItem('selectedTheme', selectedTheme)
     localStorage.setItem('zoomLevel', zoomLevel)
-    if (selectedLang !== languagePreference) {
+    if (selectedLang !== languagePreference && !showReconfirm) {
+      return setShowReconfirm(true)
+    }
+    if (showReconfirm && selectedLang !== languagePreference) {
       switchLanguage({ languagePreference: selectedLang })
     }
     closeModal()
@@ -79,7 +90,7 @@ const SettingsModal = ({
     <ConfirmationModal
       maskClosable={false}
       textAlign="left"
-      title="Test Options"
+      title={showReconfirm ? 'Alert' : 'Test Options'}
       centered
       visible={settingsModalVisible}
       onCancel={handleCancel}
@@ -89,63 +100,73 @@ const SettingsModal = ({
           CANCEL
         </EduButton>,
         <EduButton key="submit" onClick={handleApply}>
-          APPLY
+          {showReconfirm ? 'CONTINUE' : 'APPLY'}
         </EduButton>,
       ]}
     >
       <InitOptions bodyStyle={bodyStyle}>
-        <div>
-          <CustomColumn>COLOR CONTRAST</CustomColumn>
-          <StyledSelect
-            value={selectedTheme}
-            onChange={setSelectedTheme}
-            suffixIcon={<IconSelectCaretDown color={themeColor} />}
-            style={{ marginBottom: '10px' }}
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          >
-            <Select.Option value="default">Default</Select.Option>
-            {Object.keys(themeColorsMap).map((key) => {
-              const item = themeColorsMap[key]
-              return <Select.Option value={key}>{item.title}</Select.Option>
-            })}
-          </StyledSelect>
-        </div>
-        <div>
-          <CustomColumn>ZOOM</CustomColumn>
-          <StyledSelect
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            value={zoomLevel}
-            onChange={setZoomLevel}
-            style={{ marginBottom: '10px' }}
-            suffixIcon={<IconSelectCaretDown color={themeColor} />}
-          >
-            <Select.Option value="1">None</Select.Option>
-            <Select.Option value="1.5">1.5X standard</Select.Option>
-            <Select.Option value="1.75">1.75X standard</Select.Option>
-            <Select.Option value="2.5">2.5X standard</Select.Option>
-            <Select.Option value="3">3X standard</Select.Option>
-          </StyledSelect>
-        </div>
-        {multiLanguageEnabled && (
-          <div>
-            <CustomColumn>SELECT PREFERRED LANGUAGE</CustomColumn>
-            <StyledSelect
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              onChange={setChangedLang}
-              value={selectedLang}
-              suffixIcon={<IconSelectCaretDown color={themeColor} />}
-            >
-              <Select.Option value="" disabled>
-                Select Language
-              </Select.Option>
-              <Select.Option value={languageCodes.ENGLISH}>
-                English
-              </Select.Option>
-              <Select.Option value={languageCodes.SPANISH}>
-                Spanish
-              </Select.Option>
-            </StyledSelect>
+        {showReconfirm ? (
+          <div style={reconfirmContentStyle}>
+            {' '}
+            All your previous responses will be lost and assignment will start
+            from the beginning. Are you sure you want to continue?{' '}
           </div>
+        ) : (
+          <>
+            <div>
+              <CustomColumn>COLOR CONTRAST</CustomColumn>
+              <StyledSelect
+                value={selectedTheme}
+                onChange={setSelectedTheme}
+                suffixIcon={<IconSelectCaretDown color={themeColor} />}
+                style={{ marginBottom: '10px' }}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              >
+                <Select.Option value="default">Default</Select.Option>
+                {Object.keys(themeColorsMap).map((key) => {
+                  const item = themeColorsMap[key]
+                  return <Select.Option value={key}>{item.title}</Select.Option>
+                })}
+              </StyledSelect>
+            </div>
+            <div>
+              <CustomColumn>ZOOM</CustomColumn>
+              <StyledSelect
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                value={zoomLevel}
+                onChange={setZoomLevel}
+                style={{ marginBottom: '10px' }}
+                suffixIcon={<IconSelectCaretDown color={themeColor} />}
+              >
+                <Select.Option value="1">None</Select.Option>
+                <Select.Option value="1.5">1.5X standard</Select.Option>
+                <Select.Option value="1.75">1.75X standard</Select.Option>
+                <Select.Option value="2.5">2.5X standard</Select.Option>
+                <Select.Option value="3">3X standard</Select.Option>
+              </StyledSelect>
+            </div>
+            {multiLanguageEnabled && (
+              <div>
+                <CustomColumn>SELECT PREFERRED LANGUAGE</CustomColumn>
+                <StyledSelect
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  onChange={setChangedLang}
+                  value={selectedLang}
+                  suffixIcon={<IconSelectCaretDown color={themeColor} />}
+                >
+                  <Select.Option value="" disabled>
+                    Select Language
+                  </Select.Option>
+                  <Select.Option value={languageCodes.ENGLISH}>
+                    English
+                  </Select.Option>
+                  <Select.Option value={languageCodes.SPANISH}>
+                    Spanish
+                  </Select.Option>
+                </StyledSelect>
+              </div>
+            )}
+          </>
         )}
       </InitOptions>
     </ConfirmationModal>

@@ -891,8 +891,8 @@
     "message": "Rubric is saved and published",
     "description": ""
   },
-  "rubricUpdatedSuccessfully": {
-    "message": "Rubric updated successfully",
+  "rubricSharedSuccessfully": {
+    "message": "Rubric share was successful.",
     "description": ""
   },
   "itemIsSaved": {

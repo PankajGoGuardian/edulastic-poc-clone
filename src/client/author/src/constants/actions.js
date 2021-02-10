@@ -229,6 +229,8 @@ export const TOGGLE_VIEW_PASSWORD_MODAL =
 export const REGENERATE_PASSWORD = '[gradebook] regenerate password action'
 export const UPDATE_PASSWORD_DETAILS =
   '[gradebook] update password details action'
+export const SET_UPDATED_ACTIVITY_IN_ENTITY =
+  '[gradebook] set updated activityId in entity'
 
 export const FETCH_SERVER_TIME = '[gradebook] fetch server time'
 

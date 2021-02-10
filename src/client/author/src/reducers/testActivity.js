@@ -22,6 +22,7 @@ import {
   RECEIVE_STUDENT_RESPONSE_SUCCESS,
   RESPONSE_ENTRY_SCORE_SUCCESS,
   UPDATE_PAUSE_STATUS_ACTION,
+  SET_UPDATED_ACTIVITY_IN_ENTITY,
 } from '../constants/actions'
 import {
   transformGradeBookResponse,
@@ -669,6 +670,20 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         isShowAllStudents: payload,
+      }
+    case SET_UPDATED_ACTIVITY_IN_ENTITY:
+      return {
+        ...state,
+        entities: state.entities.map((item) => {
+          const { oldActivityId, newActivityId } = payload
+          if (item.testActivityId === oldActivityId) {
+            return {
+              ...item,
+              testActivityId: newActivityId,
+            }
+          }
+          return item
+        }),
       }
     default:
       return state

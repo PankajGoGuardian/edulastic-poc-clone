@@ -238,7 +238,10 @@ export const getCuratedMetrics = ({
       let flag = false
       const pScore = round(item.percentScore, 2) * 100
       masteryRangeToShow.forEach(({ min, max }) => {
-        if (min <= pScore && pScore < max) {
+        if (
+          min <= pScore &&
+          (pScore < max || (max === 100 && pScore === 100))
+        ) {
           flag = true
         }
       })

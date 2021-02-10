@@ -53,7 +53,14 @@ const patternsByQuestionType = {
   [questionType.MULTIPLE_CHOICE]: [...commonPatterns, /options\.(\d+)\.label/],
   [questionType.TOKEN_HIGHLIGHT]: [...commonPatterns, /template/],
   [questionType.TEXT]: [...commonPatterns, /heading/, /content/],
-  [questionType.VIDEO]: [...commonPatterns, /heading/, /summary/, /transcript/],
+  [questionType.VIDEO]: [
+    ...commonPatterns,
+    /sourceURL/,
+    /videoType/,
+    /heading/,
+    /summary/,
+    /transcript/,
+  ],
   [questionType.PASSAGE]: [
     ...commonPatterns,
     /heading/,

@@ -1,4 +1,4 @@
-import { isObject, get, set, isEmpty } from 'lodash'
+import { isObject, get, set, isEmpty, keys } from 'lodash'
 import { produce } from 'immer'
 import { appLanguages, questionType } from '@edulastic/constants'
 import { isValidUpdate } from '@edulastic/common'
@@ -83,11 +83,7 @@ const getAvailablePaths = (data, prev = '', paths = []) => {
   return paths
 }
 
-const getLanguageDataPaths = (qType, data) => {
-  const patterns = patternsByQuestionType[qType]
-  if (!patterns) {
-    return []
-  }
+const getLanguageDataPaths = (patterns, data) => {
   const availablePaths = getAvailablePaths(data)
   return availablePaths.filter((path) =>
     patterns.some((pattern) => new RegExp(pattern, 'g').test(path))
@@ -100,6 +96,8 @@ export const changeDataInPreferredLanguage = (
   newQuestion
 ) => {
   if (
+    language &&
+    language !== LANGUAGE_EN &&
     useLanguageFeatureQn.includes(newQuestion.type) &&
     patternsByQuestionType[newQuestion.type]
   ) {
@@ -113,7 +111,8 @@ export const changeDataInPreferredLanguage = (
       }
     }
 
-    const dataFields = getLanguageDataPaths(newQuestion.type, newQuestion)
+    const patterns = patternsByQuestionType[newQuestion.type]
+    const dataFields = getLanguageDataPaths(patterns, newQuestion)
     const changedQuestion = produce(newQuestion, (draft) => {
       if (!draft.languageFeatures) {
         draft.languageFeatures = {}
@@ -144,6 +143,30 @@ export const changeDataInPreferredLanguage = (
     })
 
     return changedQuestion
+  }
+  // I clean existing languageData when EN data is updated
+  if (
+    (!language || language === LANGUAGE_EN) &&
+    useLanguageFeatureQn.includes(newQuestion.type) &&
+    newQuestion.languageFeatures
+  ) {
+    const changedData = produce(newQuestion, (draft) => {
+      keys(draft.languageFeatures).forEach((langKey) => {
+        const langDataPaths = getAvailablePaths(draft.languageFeatures[langKey])
+
+        const cleanLangData = {}
+        langDataPaths.forEach((path) => {
+          const enData = get(draft, path)
+          const langData = get(draft.languageFeatures[langKey], path)
+          if (enData && langData) {
+            set(cleanLangData, path, langData)
+          }
+        })
+
+        draft.languageFeatures[langKey] = cleanLangData
+      })
+    })
+    return changedData
   }
 
   return newQuestion

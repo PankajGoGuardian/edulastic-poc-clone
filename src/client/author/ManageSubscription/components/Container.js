@@ -11,12 +11,14 @@ import {
   addBulkUsersAdminAction,
   getBulkUsersData,
   getConfirmationModalVisible,
-  getSubsLicenses,
+  getSubsLicensesSelector,
+  getUsersSelector,
   setAddUserConfirmationModalVisibleAction,
 } from '../ducks'
 import Header from './Header'
 import AddUsersSection from './AddUsersSection'
 import LicenseCountSection from './LicenseCountSection'
+import Userlist from './Userlist'
 import { ContentWrapper } from './styled'
 
 const AddUsersModal = lazy(() => import('./AddUsersModal'))
@@ -29,6 +31,7 @@ const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},
   isSuccess,
   subsLicenses,
+  users,
   userOrgId,
   addUsers,
   setAddUsersConfirmationModalVisible,
@@ -72,6 +75,7 @@ const ManageSubscriptionContainer = ({
           setShowManageLicenseModal={setShowManageLicenseModal}
         />
         <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
+        <Userlist users={users} />
       </ContentWrapper>
       {showManageLicenseModal && (
         <ManageLicensesModal
@@ -106,8 +110,9 @@ const enhance = compose(
     (state) => ({
       subscription: getSubscriptionSelector(state),
       isSuccess: getSuccessSelector(state),
-      subsLicenses: getSubsLicenses(state),
+      subsLicenses: getSubsLicensesSelector(state),
       userOrgId: getUserOrgId(state),
+      users: getUsersSelector(state),
       showAddUserConfirmationModal: getConfirmationModalVisible(state),
       userDataSource: getBulkUsersData(state),
     }),

@@ -1,6 +1,7 @@
 import { greenThird, title } from '@edulastic/colors'
 import { Icon } from 'antd'
 import styled from 'styled-components'
+import { StyledTable } from '../../../common/styled'
 
 export const ContentWrapper = styled.div`
   padding: 15px 30px;
@@ -54,6 +55,19 @@ export const Count = styled.div`
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 10px;
+`
+
+export const StyledAntdTable = styled(StyledTable)`
+  .ant-table {
+    &-thead {
+      & > tr > th {
+        text-align: center;
+      }
+    }
+    &-tbody {
+      text-align: center;
+    }
+  }
 `
 export const CheckboxWrpper = styled.div`
   padding: 15px 0px 0px;

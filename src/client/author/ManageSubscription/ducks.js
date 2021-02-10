@@ -8,7 +8,7 @@ import { createSelector } from 'reselect'
 
 // selectors
 const manageSubscriptionSelector = (state) => state.manageSubscription
-export const getSubsLicenses = createSelector(
+export const getSubsLicensesSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.licenses
 )
@@ -19,6 +19,11 @@ export const getConfirmationModalVisible = createSelector(
 export const getBulkUsersData = createSelector(
   manageSubscriptionSelector,
   (state) => state.bulkUsersData
+)
+
+export const getUsersSelector = createSelector(
+  manageSubscriptionSelector,
+  (state) => state.users
 )
 
 // action types
@@ -73,6 +78,35 @@ const initialState = {
         linkedProductId: '',
         type: 'ITEM_BANK',
       },
+    },
+  ],
+  users: [
+    {
+      userId: '1',
+      hasPremium: true,
+      hasSparkMath: false,
+      hasManageLicense: false,
+      username: 'one',
+      email: 'one@one.com',
+      expireOn: '20 Jan 2022',
+    },
+    {
+      userId: '2',
+      hasPremium: true,
+      hasSparkMath: true,
+      hasManageLicense: false,
+      username: 'two',
+      email: 'two@two.com',
+      expireOn: '20 Jan 2022',
+    },
+    {
+      userId: '3',
+      hasPremium: true,
+      hasSparkMath: false,
+      hasManageLicense: true,
+      username: 'three',
+      email: 'three@three.com',
+      expireOn: '20 Jan 2022',
     },
   ],
 }

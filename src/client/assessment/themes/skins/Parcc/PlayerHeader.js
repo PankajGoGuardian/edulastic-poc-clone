@@ -35,6 +35,7 @@ import {
   Container,
 } from './styled'
 import { themes } from '../../../../theme'
+import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 
 const {
   playerSkin: { parcc },
@@ -75,6 +76,7 @@ const PlayerHeader = ({
   groupId,
   hidePause,
   blockNavigationToAnsweredQuestions = false,
+  setSettingsModalVisibility,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -89,10 +91,15 @@ const PlayerHeader = ({
   }
   const isFirst = () => (isDocbased ? true : currentItem === 0)
   const onSettingsChange = (e) => {
-    if (e.key === 'save') {
-      finishTest()
-    } else if (e.key === 'enableMagnifier') {
-      handleMagnifier()
+    switch (e.key) {
+      case 'save':
+        return finishTest()
+      case 'enableMagnifier':
+        return handleMagnifier()
+      case 'testOptions':
+        return setSettingsModalVisibility(true)
+      default:
+        break
     }
   }
 
@@ -232,7 +239,9 @@ const enhance = compose(
       settings: state.test.settings,
       timedAssignment: state.test?.settings?.timedAssignment,
     }),
-    null
+    {
+      setSettingsModalVisibility: setSettingsModalVisibilityAction,
+    }
   )
 )
 

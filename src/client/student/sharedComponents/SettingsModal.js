@@ -28,8 +28,9 @@ import {
   getUtaPeferredLanguage,
 } from '../../common/components/LanguageSelector/duck'
 import { switchLanguageAction } from '../../assessment/actions/test'
+import { playerSkinTypeSelector } from '../../assessment/selectors/test'
 
-const { languageCodes } = testConstants
+const { languageCodes, playerSkinValues } = testConstants
 
 const SettingsModal = ({
   selectedTheme,
@@ -42,6 +43,7 @@ const SettingsModal = ({
   languagePreference,
   multiLanguageEnabled,
   switchLanguage,
+  playerSkinType,
 }) => {
   const bodyStyle = {
     padding: '20px',
@@ -85,7 +87,9 @@ const SettingsModal = ({
     setZoomLevel(localStorage.getItem('zoomLevel') || '1')
     closeModal()
   }
-
+  const hideColorOrZoom =
+    playerSkinType === playerSkinValues.parcc ||
+    playerSkinType === playerSkinValues.sbac
   return (
     <ConfirmationModal
       maskClosable={false}
@@ -113,38 +117,44 @@ const SettingsModal = ({
           </div>
         ) : (
           <>
-            <div>
-              <CustomColumn>COLOR CONTRAST</CustomColumn>
-              <StyledSelect
-                value={selectedTheme}
-                onChange={setSelectedTheme}
-                suffixIcon={<IconSelectCaretDown color={themeColor} />}
-                style={{ marginBottom: '10px' }}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              >
-                <Select.Option value="default">Default</Select.Option>
-                {Object.keys(themeColorsMap).map((key) => {
-                  const item = themeColorsMap[key]
-                  return <Select.Option value={key}>{item.title}</Select.Option>
-                })}
-              </StyledSelect>
-            </div>
-            <div>
-              <CustomColumn>ZOOM</CustomColumn>
-              <StyledSelect
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                value={zoomLevel}
-                onChange={setZoomLevel}
-                style={{ marginBottom: '10px' }}
-                suffixIcon={<IconSelectCaretDown color={themeColor} />}
-              >
-                <Select.Option value="1">None</Select.Option>
-                <Select.Option value="1.5">1.5X standard</Select.Option>
-                <Select.Option value="1.75">1.75X standard</Select.Option>
-                <Select.Option value="2.5">2.5X standard</Select.Option>
-                <Select.Option value="3">3X standard</Select.Option>
-              </StyledSelect>
-            </div>
+            {!hideColorOrZoom && (
+              <>
+                <div>
+                  <CustomColumn>COLOR CONTRAST</CustomColumn>
+                  <StyledSelect
+                    value={selectedTheme}
+                    onChange={setSelectedTheme}
+                    suffixIcon={<IconSelectCaretDown color={themeColor} />}
+                    style={{ marginBottom: '10px' }}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    <Select.Option value="default">Default</Select.Option>
+                    {Object.keys(themeColorsMap).map((key) => {
+                      const item = themeColorsMap[key]
+                      return (
+                        <Select.Option value={key}>{item.title}</Select.Option>
+                      )
+                    })}
+                  </StyledSelect>
+                </div>
+                <div>
+                  <CustomColumn>ZOOM</CustomColumn>
+                  <StyledSelect
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    value={zoomLevel}
+                    onChange={setZoomLevel}
+                    style={{ marginBottom: '10px' }}
+                    suffixIcon={<IconSelectCaretDown color={themeColor} />}
+                  >
+                    <Select.Option value="1">None</Select.Option>
+                    <Select.Option value="1.5">1.5X standard</Select.Option>
+                    <Select.Option value="1.75">1.75X standard</Select.Option>
+                    <Select.Option value="2.5">2.5X standard</Select.Option>
+                    <Select.Option value="3">3X standard</Select.Option>
+                  </StyledSelect>
+                </div>
+              </>
+            )}
             {multiLanguageEnabled && (
               <div>
                 <CustomColumn>SELECT PREFERRED LANGUAGE</CustomColumn>
@@ -182,6 +192,7 @@ const enhance = compose(
       zoomLevel: state.ui.zoomLevel,
       languagePreference: getUtaPeferredLanguage(state),
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
+      playerSkinType: playerSkinTypeSelector(state),
     }),
     {
       setSelectedTheme: setSelectedThemeAction,

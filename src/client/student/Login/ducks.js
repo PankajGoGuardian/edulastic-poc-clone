@@ -412,6 +412,7 @@ const setUser = (state, { payload }) => {
   }
   state.user.middleName = payload.middleName || undefined
   state.user.lastName = payload.lastName || undefined
+  state.user.openIdProvider = payload.openIdProvider || undefined
   set(state.user, 'orgData.defaultClass', defaultClass)
   set(state.user, 'orgData.selectedGrades', defaultGrades)
   set(state.user, 'orgData.selectedSubject', defaultSubject)

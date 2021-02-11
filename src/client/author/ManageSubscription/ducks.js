@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-import { userApi } from '@edulastic/api'
+import { manageSubscriptionsApi, userApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { takeLatest } from 'redux-saga'
 import { all, call, put } from 'redux-saga/effects'
@@ -26,6 +26,11 @@ export const getUsersSelector = createSelector(
   (state) => state.users
 )
 
+export const getLoadingStateSelector = createSelector(
+  manageSubscriptionSelector,
+  (state) => state.loading
+)
+
 // action types
 export const SET_LICENSES_DATA =
   '[manageSubscriptions] set manage subscriptions license data'
@@ -33,9 +38,14 @@ export const SET_LICENSES_DATA =
 const ADD_BULK_USERS_REQUEST = '[users] add bulk users request'
 const ADD_BULK_USERS_SUCCESS = '[users] add bulk users success'
 const ADD_BULK_USERS_ERROR = '[users] add bulk users error'
-
 const SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE =
   '[users] set add users confirmation modal visible'
+const FETCH_MANAGE_SUBSCRIPTIONS =
+  '[mannge-subscriptions] fetch licenseKeys and user details'
+const FETCH_MANAGE_SUBSCRIPTIONS_SUCCESS =
+  '[mannge-subscriptions] fetch was successful'
+const FETCH_MANAGE_SUBSCRIPTIONS_ERROR =
+  '[mannge-subscriptions] fetch resulted in error'
 
 // action creators
 export const addBulkUsersAdminAction = createAction(ADD_BULK_USERS_REQUEST)
@@ -46,9 +56,19 @@ export const addBulkUsersAdminErrorAction = createAction(ADD_BULK_USERS_ERROR)
 export const setAddUserConfirmationModalVisibleAction = createAction(
   SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE
 )
+export const fetchMultipleSubscriptionsAction = createAction(
+  FETCH_MANAGE_SUBSCRIPTIONS
+)
+export const fetchManageSubscriptionsSuccessAction = createAction(
+  FETCH_MANAGE_SUBSCRIPTIONS_SUCCESS
+)
+export const fetchManageSubscriptionsErrorAction = createAction(
+  FETCH_MANAGE_SUBSCRIPTIONS_ERROR
+)
 
 // initial State
 const initialState = {
+  loading: false,
   data: {
     result: {},
     totalUsers: 0,
@@ -56,59 +76,8 @@ const initialState = {
   creating: false,
   bulkUsersData: [],
   showAddUserConfirmationModal: false,
-  licenses: [
-    {
-      validEndDate: 'Jun 6, 2021',
-      count: 20,
-      used: 5,
-      product: {
-        name: 'Teacher Premium Licenses',
-        id: '',
-        linkedProductId: '',
-        type: 'PREMIUM',
-      },
-    },
-    {
-      validEndDate: 'Jun 6, 2021',
-      count: 20,
-      used: 5,
-      product: {
-        name: 'SparkMath Licenses',
-        id: '',
-        linkedProductId: '',
-        type: 'ITEM_BANK',
-      },
-    },
-  ],
-  users: [
-    {
-      userId: '1',
-      hasPremium: true,
-      hasSparkMath: false,
-      hasManageLicense: false,
-      username: 'one',
-      email: 'one@one.com',
-      expireOn: '20 Jan 2022',
-    },
-    {
-      userId: '2',
-      hasPremium: true,
-      hasSparkMath: true,
-      hasManageLicense: false,
-      username: 'two',
-      email: 'two@two.com',
-      expireOn: '20 Jan 2022',
-    },
-    {
-      userId: '3',
-      hasPremium: true,
-      hasSparkMath: false,
-      hasManageLicense: true,
-      username: 'three',
-      email: 'three@three.com',
-      expireOn: '20 Jan 2022',
-    },
-  ],
+  licenses: [],
+  users: [],
 }
 
 const setLicensesData = (state, { payload }) => {
@@ -136,6 +105,19 @@ export const reducer = createReducer(initialState, {
   },
   [SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE]: (state, { payload }) => {
     state.showAddUserConfirmationModal = payload
+  },
+  [FETCH_MANAGE_SUBSCRIPTIONS]: (state) => {
+    state.loading = true
+  },
+  [FETCH_MANAGE_SUBSCRIPTIONS_SUCCESS]: (state, { payload }) => {
+    state.loading = false
+    state.licenses = payload.licenses
+    state.users = payload.users
+  },
+  [FETCH_MANAGE_SUBSCRIPTIONS_ERROR]: (state, { payload }) => {
+    state.loading = false
+    state.licenses = payload.licenses
+    state.users = payload.users
   },
 })
 
@@ -165,7 +147,24 @@ function* addBulkUsersAdminSaga({ payload }) {
   }
 }
 
+function* fetchManageSubscriptionsSaga() {
+  try {
+    const result = yield call(manageSubscriptionsApi.fetchLicenses)
+    yield put(fetchManageSubscriptionsSuccessAction(result))
+  } catch (err) {
+    captureSentryException(err)
+    notification({
+      type: 'error',
+      msg: 'Unable to fetch user(s) subscription data.',
+    })
+    yield put(fetchManageSubscriptionsErrorAction())
+  }
+}
+
 // watcher saga
 export function* watcherSaga() {
-  yield all([yield takeLatest(ADD_BULK_USERS_REQUEST, addBulkUsersAdminSaga)])
+  yield all([
+    yield takeLatest(ADD_BULK_USERS_REQUEST, addBulkUsersAdminSaga),
+    yield takeLatest(FETCH_MANAGE_SUBSCRIPTIONS, fetchManageSubscriptionsSaga),
+  ])
 }

@@ -12,6 +12,7 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { IconBookmark } from '@edulastic/icons'
+import { test as testConstants } from '@edulastic/constants'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -36,6 +37,7 @@ import {
 } from './styled'
 import { themes } from '../../../../theme'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
+import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 
 const {
   playerSkin: { parcc },
@@ -77,6 +79,7 @@ const PlayerHeader = ({
   hidePause,
   blockNavigationToAnsweredQuestions = false,
   setSettingsModalVisibility,
+  testType,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -112,6 +115,7 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
+      {testType === testConstants.type.PRACTICE && <SettingsModal />}
       <Header
         ref={headerRef}
         style={{
@@ -238,6 +242,7 @@ const enhance = compose(
     (state) => ({
       settings: state.test.settings,
       timedAssignment: state.test?.settings?.timedAssignment,
+      testType: state.test?.settings?.testType,
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

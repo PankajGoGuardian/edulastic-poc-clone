@@ -521,7 +521,6 @@ function* saveSubjectGradeSaga({ payload }) {
       draft.orgData.interestedCurriculums = result ? result.curriculums : []
       draft.orgData.defaultSubjects = result?.defaultSubjects || []
       draft.orgData.defaultGrades = result?.defaultGrades || []
-      delete draft.currentSignUpState
       return draft
     })
     // setting user in store to put orgData in store

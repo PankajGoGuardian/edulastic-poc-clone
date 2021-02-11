@@ -286,6 +286,9 @@ function* loadTest({ payload }) {
     const isFromSummary = yield select((state) =>
       get(state, 'router.location.state.fromSummary', false)
     )
+    const _switchLanguage = yield select((state) =>
+      get(state, 'router.location.state.switchLanguage', false)
+    )
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse
@@ -299,7 +302,8 @@ function* loadTest({ payload }) {
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
           testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF ||
-        isFromSummary
+        isFromSummary ||
+        _switchLanguage
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true))
       }
@@ -315,6 +319,7 @@ function* loadTest({ payload }) {
         type: TEST_ACTIVITY_LOADING,
         payload: false,
       })
+
       while (!passwordValidated) {
         try {
           const { payload: _payload } = yield take(GET_ASSIGNMENT_PASSWORD)
@@ -912,12 +917,19 @@ function* switchLanguage({ payload }) {
     const testType = yield select((state) => state.test && state.test.testType)
     const firstItemId = itemsToDeliverInGroup[0].items[0]
     yield put(startAssessmentAction())
+    yield put({
+      type: LOAD_SCRATCH_PAD,
+      payload: {},
+    })
     yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
     yield put(push('/'))
     yield put(
-      push(
-        `/student/${testType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`
-      )
+      push({
+        pathname: `/student/${testType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
+        state: {
+          switchLanguage: true,
+        },
+      })
     )
   } catch (err) {
     console.log(err)

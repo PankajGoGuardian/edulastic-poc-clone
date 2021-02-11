@@ -1,5 +1,6 @@
 import { withNamespaces } from '@edulastic/localization'
-import React, { lazy, useState } from 'react'
+import React, { useState } from 'react'
+import loadable from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { getUserOrgId } from '../../src/selectors/user'
@@ -21,9 +22,9 @@ import LicenseCountSection from './LicenseCountSection'
 import Userlist from './Userlist'
 import { ContentWrapper } from './styled'
 
-const AddUsersModal = lazy(() => import('./AddUsersModal'))
-const ManageLicensesModal = lazy(() => import('./ManageLicensesModal'))
-const AddUsersConfirmationModal = lazy(() =>
+const AddUsersModal = loadable(() => import('./AddUsersModal'))
+const ManageLicensesModal = loadable(() => import('./ManageLicensesModal'))
+const AddUsersConfirmationModal = loadable(() =>
   import('./AddUsersConfirmationModal')
 )
 

@@ -63,7 +63,7 @@ const SaveAndExit = ({
         </ScratchpadVisibilityToggler>
       )}
       {showZoomBtn && (
-        <Tooltip placement="bottom" title="Visual Assistance">
+        <Tooltip placement="bottom" title="Test Options">
           <StyledButton onClick={() => setSettingsModalVisibility(true)}>
             <IconAccessibility />
           </StyledButton>

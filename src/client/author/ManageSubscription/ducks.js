@@ -114,10 +114,10 @@ export const reducer = createReducer(initialState, {
     state.licenses = payload.licenses
     state.users = payload.users
   },
-  [FETCH_MANAGE_SUBSCRIPTIONS_ERROR]: (state, { payload }) => {
+  [FETCH_MANAGE_SUBSCRIPTIONS_ERROR]: (state) => {
     state.loading = false
-    state.licenses = payload.licenses
-    state.users = payload.users
+    state.licenses = []
+    state.users = []
   },
 })
 

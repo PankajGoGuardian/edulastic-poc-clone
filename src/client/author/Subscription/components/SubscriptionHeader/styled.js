@@ -69,13 +69,6 @@ export const Boxes = styled.div`
     margin-bottom: 30px;
   }
 `
-export const MultiSubscriptionLink = styled.div`
-  font-size: 12px;
-  color: ${themeColor};
-  text-transform: uppercase;
-  cursor: pointer;
-  font-weight: 600;
-`
 
 export const LearnMore = styled.div`
   font-size: 11px;

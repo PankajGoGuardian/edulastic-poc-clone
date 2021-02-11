@@ -1,7 +1,16 @@
 import React from 'react'
 import SubscriptionHeader from '../../Subscription/components/SubscriptionHeader'
 
-const Header = ({ isSubscribed, subType, subEndDate, isPaidPremium }) => {
+const Header = ({
+  isSubscribed,
+  subType,
+  subEndDate,
+  isPaidPremium,
+  setShowSubscriptionAddonModal,
+  setShowMultiplePurchaseModal,
+  settingProductData,
+  hasAllPremiumProductAccess,
+}) => {
   return (
     <SubscriptionHeader
       isSubscribed={isSubscribed}
@@ -9,6 +18,10 @@ const Header = ({ isSubscribed, subType, subEndDate, isPaidPremium }) => {
       subEndDate={subEndDate}
       isPaidPremium={isPaidPremium}
       isBannerVisible={false}
+      setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+      hasAllPremiumProductAccess={hasAllPremiumProductAccess}
+      setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+      settingProductData={settingProductData}
     />
   )
 }

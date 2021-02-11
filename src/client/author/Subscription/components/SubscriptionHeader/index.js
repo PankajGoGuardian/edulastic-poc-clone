@@ -33,8 +33,13 @@ const SubscriptionHeader = ({
   hasAllPremiumProductAccess,
   isPremium,
   isBannerVisible,
+  setShowMultiplePurchaseModal,
+  settingProductData,
 }) => {
+  const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
+
   const handlePurchaseFlow = () => {
+    settingProductData()
     setShowSubscriptionAddonModal(true)
   }
   const handleEnterpriseClick = () => {
@@ -42,10 +47,6 @@ const SubscriptionHeader = ({
       'https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform',
       '_blank'
     )
-  }
-
-  const multipleSubscriptionClick = () => {
-    window.open('https://edulastic.com/teacher-premium/', '_blank')
   }
 
   const menu = (
@@ -72,7 +73,7 @@ const SubscriptionHeader = ({
           onClick={handleEnterpriseClick}
         />
       </Menu.Item>
-      <Menu.Item onClick={multipleSubscriptionClick}>
+      <Menu.Item onClick={openMultiplePurchaseModal}>
         <span data-cy="multipleSubscription">MULTIPLE SUBSCRIPTIONS</span>
       </Menu.Item>
     </Menu>
@@ -157,10 +158,14 @@ const SubscriptionHeader = ({
 SubscriptionHeader.propTypes = {
   openComparePlanModal: PropTypes.func.isRequired,
   setShowSubscriptionAddonModal: PropTypes.func,
+  settingProductData: PropTypes.func,
+  setShowMultiplePurchaseModal: PropTypes.func,
   isBannerVisible: PropTypes.bool,
 }
 SubscriptionHeader.defaultProps = {
   setShowSubscriptionAddonModal: () => {},
+  settingProductData: () => {},
+  setShowMultiplePurchaseModal: () => {},
   isBannerVisible: true,
 }
 

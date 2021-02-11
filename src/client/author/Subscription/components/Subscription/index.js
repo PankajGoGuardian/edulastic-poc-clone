@@ -6,16 +6,13 @@ import qs from 'qs'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { groupBy } from 'lodash'
-import SubscriptionAddonModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/SubscriptionAddonModal'
 import { slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
-import PaymentServiceModal from '../PaymentServiceModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
 import { Wrapper } from '../styled/commonStyled'
 import SubscriptionHeader from '../SubscriptionHeader'
-import PayWithPoModal from '../SubscriptionHeader/PayWithPoModal'
-import UpgradeModal from '../SubscriptionHeader/UpgradeModal'
 import SubscriptionMain from '../SubscriptionMain'
+import PurchaseFlowModals from '../../../src/components/common/PurchaseModals'
 import {
   CompareModal,
   PlanCard,
@@ -184,7 +181,6 @@ const Subscription = (props) => {
     verificationPending,
     isSubscriptionExpired,
     verifyAndUpgradeLicense,
-    stripePaymentAction,
     isSuccess = false,
     subscription: { subEndDate, subType } = {},
     user,
@@ -192,12 +188,10 @@ const Subscription = (props) => {
     isPremiumTrialUsed,
     itemBankSubscriptions = [],
     startTrialAction,
-    premiumProductId,
     isConfirmationModalVisible,
     showTrialSubsConfirmationAction,
     products,
     usedTrialItemBankId,
-    isPaymentServiceModalVisible,
     setPaymentServiceModal,
     showTrialConfirmationMessage,
     dashboardTiles,
@@ -216,13 +210,12 @@ const Subscription = (props) => {
   const [comparePlan, setComparePlan] = useState(false)
   const [hasLicenseKeyModal, setHasLicenseKeyModal] = useState(false)
   const [purchaseLicenseModal, setpurchaseLicenseModal] = useState(false)
-  const [payWithPoModal, setPayWithPoModal] = useState(false)
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
-  const [addOnProductIds, setAddOnProductIds] = useState([])
-  const [totalAmount, setTotalAmount] = useState(100)
+  const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
+    false
+  )
   const [productData, setProductData] = useState({})
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
@@ -237,65 +230,13 @@ const Subscription = (props) => {
 
   const isPremiumUser = user.features.premium
 
-  const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
-    const DEFAULT_ITEMBANK_PRICE = 100
-    const DEFAULT_PERIOD = 365
-    const boughtPremiumBankIds = itemBankSubscriptions
-      .filter((x) => !x.isTrial)
-      .map((x) => x.itemBankId)
-    const purchasableProducts = products.filter(
-      (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
-    )
-
-    const result = purchasableProducts.map((product) => {
-      const { id: currentProductId } = product
-      if (
-        !subEndDate ||
-        currentProductId === premiumProductId ||
-        (subEndDate && !isPaidPremium) ||
-        ['enterprise', 'partial_premium'].includes(subType)
-      ) {
-        return {
-          ...product,
-          period: DEFAULT_PERIOD,
-          price: DEFAULT_ITEMBANK_PRICE,
-        }
-      }
-      let currentDate = new Date()
-      const itemBankSubEndDate = new Date(
-        currentDate.setDate(currentDate.getDate() + DEFAULT_PERIOD)
-      ).valueOf()
-      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
-      currentDate = Date.now()
-      const amountFactor =
-        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
-      const dynamicPrice = Math.round(amountFactor * DEFAULT_ITEMBANK_PRICE)
-      const dynamicPeriodInDays = Math.round(amountFactor * DEFAULT_PERIOD)
-
-      return {
-        ...product,
-        price: dynamicPrice,
-        period: dynamicPeriodInDays,
-      }
-    })
-    return {
-      teacherPremium: result[0],
-      itemBankPremium: result.slice(1),
-    }
-  }, [subEndDate, products])
-
   const openComparePlanModal = () => setComparePlan(true)
   const closeComparePlansModal = () => setComparePlan(false)
   const openPaymentServiceModal = () => {
     setPaymentServiceModal(true)
     segmentApi.trackTeacherClickOnUpgradeSubscription({ user })
   }
-  const openPoServiceModal = () => {
-    setPayWithPoModal(true)
-  }
-  const closePaymentServiceModal = () => {
-    setPaymentServiceModal(false)
-  }
+
   const openHasLicenseKeyModal = () => setHasLicenseKeyModal(true)
   const closeHasLicenseKeyModal = () => setHasLicenseKeyModal(false)
   const openPurchaseLicenseModal = () => setpurchaseLicenseModal(true)
@@ -387,11 +328,6 @@ const Subscription = (props) => {
 
   const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
 
-  const handleSubscriptionAddonModalClose = () => {
-    setProductData({})
-    setShowSubscriptionAddonModal(false)
-  }
-
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
     : null
@@ -410,6 +346,7 @@ const Subscription = (props) => {
         isPremium={isPremium}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
+        setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
       />
 
       <SubscriptionMain
@@ -449,43 +386,13 @@ const Subscription = (props) => {
         ))}
       </CompareModal>
 
-      {showSubscriptionAddonModal && (
-        <SubscriptionAddonModal
-          isVisible={showSubscriptionAddonModal}
-          handleCloseModal={handleSubscriptionAddonModalClose}
-          isPaidPremium={isPaidPremium}
-          setShowUpgradeModal={setShowUpgradeModal}
-          usedTrialItemBankId={usedTrialItemBankId}
-          premiumProductId={premiumProductId}
-          setTotalPurchaseAmount={setTotalAmount}
-          setAddOnProductIds={setAddOnProductIds}
-          defaultSelectedProductIds={defaultSelectedProductIds}
-          teacherPremium={teacherPremium}
-          itemBankPremium={itemBankPremium}
-        />
-      )}
-
-      <PaymentServiceModal
-        visible={isPaymentServiceModalVisible}
-        closeModal={closePaymentServiceModal}
-        verificationPending={verificationPending}
-        stripePaymentAction={stripePaymentAction}
-        user={user}
-        reason="Premium Upgrade"
-        totalPurchaseAmount={totalAmount}
-        addOnProductIds={addOnProductIds}
-      />
-
-      <PayWithPoModal
-        visible={payWithPoModal}
-        setShowModal={setPayWithPoModal}
-      />
-
-      <UpgradeModal
-        visible={showUpgradeModal}
-        setShowModal={setShowUpgradeModal}
-        openPaymentServiceModal={openPaymentServiceModal}
-        openPoServiceModal={openPoServiceModal}
+      <PurchaseFlowModals
+        showSubscriptionAddonModal={showSubscriptionAddonModal}
+        setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        defaultSelectedProductIds={defaultSelectedProductIds}
+        showMultiplePurchaseModal={showMultiplePurchaseModal}
+        setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+        setProductData={setProductData}
       />
 
       <HasLicenseKeyModal
@@ -543,21 +450,17 @@ export default compose(
         state?.subscription?.subscriptionData?.isPremiumTrialUsed,
       itemBankSubscriptions:
         state?.subscription?.subscriptionData?.itemBankSubscriptions,
-      premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
       isConfirmationModalVisible:
         state?.subscription?.showTrialSubsConfirmation,
       products: state?.subscription?.products,
       usedTrialItemBankId:
         state?.subscription?.subscriptionData?.usedTrialItemBankId,
-      isPaymentServiceModalVisible:
-        state.subscription?.isPaymentServiceModalVisible,
       showTrialConfirmationMessage:
         state?.subscription?.showTrialConfirmationMessage,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
-      stripePaymentAction: slice.actions.stripePaymentAction,
       fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       startTrialAction: slice.actions.startTrialAction,
       showTrialSubsConfirmationAction:

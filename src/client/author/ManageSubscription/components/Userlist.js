@@ -73,9 +73,9 @@ const Userlist = ({ users }) => {
     },
     {
       title: 'TEACHER PREMIUM',
-      dataIndex: 'hasPremium',
+      dataIndex: 'hasTeacherPremium',
       key: 'actionPremium',
-      render: (_, record) => getCheckbox(record, 'hasPremium'),
+      render: (_, record) => getCheckbox(record, 'hasTeacherPremium'),
     },
     {
       title: 'SPARK MATH',

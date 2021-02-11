@@ -84,6 +84,7 @@ class FeedbackRight extends Component {
     }
 
     this.scoreInput = React.createRef()
+    this.scoreRegex = new RegExp(/^[0-9]*(\.){0,1}([0-9]+)?$/)
   }
 
   static contextType = AnswerContext
@@ -261,7 +262,8 @@ class FeedbackRight extends Component {
 
   onChangeScore = (e) => {
     const value = e.target.value
-    if (!isNaN(value) || value === '.') {
+    const isValid = this.scoreRegex.test(value)
+    if ((isValid && !isNaN(value)) || value === '.') {
       this.setState({ score: value, changed: true })
     }
   }
@@ -425,7 +427,6 @@ class FeedbackRight extends Component {
               }
               ref={this.scoreInput}
               onKeyDown={this.onKeyDownFeedback}
-              pattern="[0-9]+([\.,][0-9]+)?"
               tabIndex={0}
             />
             <TextPara>{_maxScore}</TextPara>

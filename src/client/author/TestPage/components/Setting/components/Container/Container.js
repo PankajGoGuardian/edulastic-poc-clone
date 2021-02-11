@@ -500,7 +500,8 @@ class Setting extends Component {
 
     const showMultiLangSelection =
       allowedToSelectMultiLanguage &&
-      (isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR)
+      (isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR) &&
+      !isDocBased
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />

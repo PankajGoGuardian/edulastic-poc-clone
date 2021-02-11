@@ -10,14 +10,12 @@ const PaymentForm = ({
   handlePayment,
   verificationPending,
   totalPurchaseAmount,
-  addOnProductIds = [],
 }) => {
   const handleCardSubmit = (e) => {
     e.preventDefault()
     handlePayment({
       stripe,
       data: { type: 'card', userId, reason },
-      productIds: addOnProductIds,
     })
   }
 

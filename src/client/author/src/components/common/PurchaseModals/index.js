@@ -17,7 +17,8 @@ const MultiplePurchaseModal = loadable(() => import('./MultiplePurchaseModal'))
 const PurchaseFlowModals = (props) => {
   const {
     verificationPending,
-    stripePaymentAction,
+    handleStripePayment,
+    handleStripeMultiplePayment,
     subscription: { subEndDate, subType } = {},
     user,
     fetchUserSubscriptionStatus,
@@ -37,6 +38,7 @@ const PurchaseFlowModals = (props) => {
   const [payWithPoModal, setPayWithPoModal] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const [addOnProductIds, setAddOnProductIds] = useState([])
+  const [productsCart, setProductsCart] = useState({})
   const [totalAmount, setTotalAmount] = useState(100)
 
   useEffect(() => {
@@ -110,6 +112,16 @@ const PurchaseFlowModals = (props) => {
     setShowSubscriptionAddonModal(false)
   }
 
+  const stripePaymentActionHandler = (data) => {
+    if (addOnProductIds) {
+      handleStripePayment({ ...data, productIds: [...addOnProductIds] })
+      setAddOnProductIds([])
+    } else {
+      handleStripeMultiplePayment({ ...data, productIds: [...productsCart] })
+      setProductsCart({})
+    }
+  }
+
   return (
     <>
       {showSubscriptionAddonModal && (
@@ -139,11 +151,10 @@ const PurchaseFlowModals = (props) => {
           visible={isPaymentServiceModalVisible}
           closeModal={closePaymentServiceModal}
           verificationPending={verificationPending}
-          stripePaymentAction={stripePaymentAction}
+          stripePaymentAction={stripePaymentActionHandler}
           user={user}
           reason="Premium Upgrade"
           totalPurchaseAmount={totalAmount}
-          addOnProductIds={addOnProductIds}
         />
       )}
       {payWithPoModal && (
@@ -156,6 +167,10 @@ const PurchaseFlowModals = (props) => {
         <MultiplePurchaseModal
           isVisible={showMultiplePurchaseModal}
           onCancel={closeMultiplePurchaseModal}
+          setShowUpgradeModal={setShowUpgradeModal}
+          setTotalAmount={setTotalAmount}
+          setProductsCart={setProductsCart}
+          products={products}
         />
       )}
     </>
@@ -177,7 +192,8 @@ export default compose(
         state.subscription?.isPaymentServiceModalVisible,
     }),
     {
-      stripePaymentAction: slice.actions.stripePaymentAction,
+      handleStripePayment: slice.actions.stripePaymentAction,
+      handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
       fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
     }

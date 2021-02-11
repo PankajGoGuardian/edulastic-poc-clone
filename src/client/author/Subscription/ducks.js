@@ -64,6 +64,9 @@ const slice = createSlice({
     stripePaymentAction: (state) => {
       state.verificationPending = true
     },
+    stripeMultiplePaymentAction: (state) => {
+      state.verificationPending = true
+    },
     stripePaymentSuccess: (state, { payload }) => {
       state.verificationPending = false
       state.subscriptionData = payload
@@ -249,6 +252,10 @@ function* fetchUserSubscription() {
   }
 }
 
+function handleMultiplePurchasePayment({ payload }) {
+  console.log('multiple purchase modal', payload)
+}
+
 function* handleStripePayment({ payload }) {
   try {
     const { stripe, data, productIds } = payload
@@ -327,6 +334,10 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
     yield takeEvery(slice.actions.stripePaymentAction, handleStripePayment),
+    yield takeEvery(
+      slice.actions.stripeMultiplePaymentAction,
+      handleMultiplePurchasePayment
+    ),
     yield takeEvery(slice.actions.startTrialAction, handleFreeTrialSaga),
     yield takeEvery(
       slice.actions.fetchUserSubscriptionStatus,

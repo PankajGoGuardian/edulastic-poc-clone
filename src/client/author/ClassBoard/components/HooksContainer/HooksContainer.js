@@ -22,6 +22,7 @@ import {
   receiveStudentResponseAction,
   receiveTestActivitydAction,
   setCurrentTestActivityIdAction,
+  setUpdateActivityIdInEntityAction,
 } from '../../../src/actions/classBoard'
 import { testNameSelector } from '../../ducks'
 import { getFormattedName } from '../../../Gradebook/transformers'
@@ -86,6 +87,7 @@ const Shell = ({
   qid,
   isEG,
   history,
+  setUpdateActivityIdInEntity,
 }) => {
   const reloadLCB = () => {
     loadTestActivity(assignmentId, classId)
@@ -116,6 +118,7 @@ const Shell = ({
       loadTestActivity(assignmentId, classId)
     }
     if (selectedTab === 'Student' && testActivityId === oldActivityId) {
+      setUpdateActivityIdInEntity({ oldActivityId, newActivityId })
       setCurrentTestActivityId(newActivityId)
       loadStudentResponses({
         testActivityId: newActivityId,
@@ -171,6 +174,7 @@ export default compose(
       loadStudentResponses: receiveStudentResponseAction,
       setCurrentTestActivityId: setCurrentTestActivityIdAction,
       loadClassQuestionResponses: receiveAnswersAction,
+      setUpdateActivityIdInEntity: setUpdateActivityIdInEntityAction,
     }
   )
 )(Shell)

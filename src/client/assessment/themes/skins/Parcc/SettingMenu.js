@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Icon, Menu } from 'antd'
@@ -14,6 +14,7 @@ const menuItems = {
   enableMagnifier: 'Enable Magnifier',
   showLineReaderMask: 'Show Line Reader Mask',
   enableAnswerMask: 'Enable Answer Masking',
+  testOptions: 'Test Options',
 }
 const SettingMenu = ({
   user: { firstName },
@@ -21,7 +22,7 @@ const SettingMenu = ({
   showMagnifier,
   enableMagnifier,
   utaId,
-  hidePause
+  hidePause,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
@@ -40,7 +41,20 @@ const SettingMenu = ({
         </Menu.Item>
       ))}
       {showPause && <Menu.Divider />}
-      {showPause && <Menu.Item disabled={hidePause} {...(hidePause?{title:"This assignment is configured to completed in a single sitting"}:{})} key="save">Save & Exit</Menu.Item>}
+      {showPause && (
+        <Menu.Item
+          disabled={hidePause}
+          {...(hidePause
+            ? {
+                title:
+                  'This assignment is configured to completed in a single sitting',
+              }
+            : {})}
+          key="save"
+        >
+          Save & Exit
+        </Menu.Item>
+      )}
     </StyledMenu>
   )
 

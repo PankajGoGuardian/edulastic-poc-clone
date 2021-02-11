@@ -888,6 +888,10 @@ function* switchLanguage({ payload }) {
     const testType = yield select((state) => state.test && state.test.testType)
     const firstItemId = itemsToDeliverInGroup[0].items[0]
     yield put(startAssessmentAction())
+    yield put({
+      type: LOAD_SCRATCH_PAD,
+      payload: {},
+    })
     yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
     yield put(push('/'))
     yield put(

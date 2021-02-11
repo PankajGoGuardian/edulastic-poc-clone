@@ -303,7 +303,8 @@ function getValidRedirectRouteByRole(_url, user) {
     case roleuser.STUDENT:
       return url.match(/^\/home\//) ||
         url.includes('/author/tests/tab/review/id/') ||
-        url.match(/\/embed\//)
+        url.match(/\/embed\//) ||
+        url.includes('author/tests/verid')
         ? url
         : '/home/assignments'
     case roleuser.EDULASTIC_ADMIN:
@@ -369,7 +370,6 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     )
     localStorage.removeItem('loginRedirectUrl')
   } else if (toUrl && !isPartOfLoginRoutes(toUrl) && toUrl != '/') {
- 
     redirectRoute = toUrl
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
@@ -1752,8 +1752,17 @@ function* getUserData({ payload: res }) {
           })
         }
       }
-      localStorage.removeItem('loginRedirectUrl')
-      // yield call(redirectToUrl, redirectUrl)
+      if (
+        !(
+          user?.role === roleuser.STUDENT &&
+          redirectUrl.includes('author/tests/verid') &&
+          window.location.pathname.includes('/auth')
+        )
+      ) {
+        // When student is authenticating and redirect url is a test sharing link, do not clear the loginRedirectUrl from storage
+        // This will allow us to correct the URL (replace author with home) and redirect on persistAuthStateAndRedirectToSaga call
+        localStorage.removeItem('loginRedirectUrl')
+      }
       yield put(push(redirectUrl))
     }
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useRef } from 'react'
-import { Select } from 'antd'
+import { Select, Tooltip } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { IconBookmark, IconSend } from '@edulastic/icons'
 import styled from 'styled-components'
@@ -41,42 +41,51 @@ const QuestionSelectDropdown = ({
       skinb={skinb}
       className="question-select-dropdown"
     >
-      <Select
-        getPopupContainer={getPopupContainer}
-        dropdownStyle={{ zIndex: 1100 }}
-        value={currentItem}
-        data-cy="options"
-        onChange={(value) => {
-          value === 'SUBMIT'
-            ? moveToNext(null, true, value)
-            : gotoQuestion(parseInt(value, 10))
-        }}
-        disabled={blockNavigationToAnsweredQuestions}
+      <Tooltip
+        placement="bottom"
+        title={
+          blockNavigationToAnsweredQuestions
+            ? 'This assignment is restricted from navigating back to the previous question.'
+            : null
+        }
       >
-        {options.map((item, index) => (
-          <Select.Option
-            data-cy="questionSelectOptions"
-            key={index}
-            value={item}
-          >
-            {`${t('common.layout.selectbox.question')} ${index + 1}/${
-              options.length
-            }`}
-            {bookmarks[index] ? (
-              <IconBookmark color="#f8c165" height={16} />
-            ) : skipped[index] ? (
-              <SkippedIcon className="fa fa-exclamation-circle" />
-            ) : (
-              ''
-            )}
-          </Select.Option>
-        ))}
-        {showSubmit && (
-          <Select.Option key={options.length} value="SUBMIT">
-            Submit <IconSend />
-          </Select.Option>
-        )}
-      </Select>
+        <Select
+          getPopupContainer={getPopupContainer}
+          dropdownStyle={{ zIndex: 1100 }}
+          value={currentItem}
+          data-cy="options"
+          onChange={(value) => {
+            value === 'SUBMIT'
+              ? moveToNext(null, true, value)
+              : gotoQuestion(parseInt(value, 10))
+          }}
+          disabled={blockNavigationToAnsweredQuestions}
+        >
+          {options.map((item, index) => (
+            <Select.Option
+              data-cy="questionSelectOptions"
+              key={index}
+              value={item}
+            >
+              {`${t('common.layout.selectbox.question')} ${index + 1}/${
+                options.length
+              }`}
+              {bookmarks[index] ? (
+                <IconBookmark color="#f8c165" height={16} />
+              ) : skipped[index] ? (
+                <SkippedIcon className="fa fa-exclamation-circle" />
+              ) : (
+                ''
+              )}
+            </Select.Option>
+          ))}
+          {showSubmit && (
+            <Select.Option key={options.length} value="SUBMIT">
+              Submit <IconSend />
+            </Select.Option>
+          )}
+        </Select>
+      </Tooltip>
     </SelectContainer>
   )
 }

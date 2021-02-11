@@ -13,6 +13,7 @@ import { IPAD_LANDSCAPE_WIDTH } from '../constants/others'
 import { Nav } from './common'
 import SbacHeader from './skins/Sbac/PlayerHeader'
 import Magnifier from '../../common/components/Magnifier'
+import { Tooltip } from '../../common/utils/helpers'
 
 const AssessmentPlayerSkinWrapper = ({
   children,
@@ -206,24 +207,36 @@ const AssessmentPlayerSkinWrapper = ({
 
   const navigationBtns = () => (
     <>
-      {!blockNavigationToAnsweredQuestions && currentItem > 0 && (
-        <Nav.BackArrow
-          left="0px"
+      {currentItem > 0 && (
+        <Tooltip
+          placement="right"
+          title={
+            blockNavigationToAnsweredQuestions
+              ? 'This assignment is restricted from navigating back to the previous question.'
+              : 'Previous'
+          }
+        >
+          <Nav.BackArrow
+            left="0px"
+            borderRadius="0px"
+            width="30"
+            onClick={blockNavigationToAnsweredQuestions ? () => {} : moveToPrev}
+            disabled={blockNavigationToAnsweredQuestions}
+          >
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </Nav.BackArrow>
+        </Tooltip>
+      )}
+      <Tooltip placement="left" title="Next">
+        <Nav.NextArrow
+          right="0px"
           borderRadius="0px"
           width="30"
-          onClick={moveToPrev}
+          onClick={moveToNext}
         >
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </Nav.BackArrow>
-      )}
-      <Nav.NextArrow
-        right="0px"
-        borderRadius="0px"
-        width="30"
-        onClick={moveToNext}
-      >
-        <FontAwesomeIcon icon={faAngleRight} />
-      </Nav.NextArrow>
+          <FontAwesomeIcon icon={faAngleRight} />
+        </Nav.NextArrow>
+      </Tooltip>
     </>
   )
 

@@ -1,16 +1,15 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
-import { message, Select } from 'antd'
+import { Select } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
-import { Checkbox, notification } from '@edulastic/common'
+import { notification } from '@edulastic/common'
 
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { fractionStringToNumber } from '../../../../utils/helpers'
 import { FRACTION_FORMATS } from '../../../../constants/constantsForQuestions'
 import { RENDERING_BASE } from '../../Builder/config/constants'
 import Extras from '../../../../containers/Extras'
-import { MoreOptionsInput } from '../../common/styled_components'
 
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
@@ -632,14 +631,10 @@ class AxisSegmentsMoreOptions extends Component {
         </Question>
 
         <Extras
-          isSection={false}
-          cleanSections={cleanSections}
           fillSections={fillSections}
+          cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
-        >
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
+        />
       </>
     )
   }

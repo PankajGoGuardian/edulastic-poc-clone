@@ -91,6 +91,7 @@ const SignedStackedBarChartContainer = ({
       barsLabelFormatter={barsLabelFormatter}
       backendPagination={backendPagination}
       setBackendPagination={setBackendPagination}
+      margin={{ top: 0, right: 60, left: 10, bottom: 0 }}
     />
   )
 }

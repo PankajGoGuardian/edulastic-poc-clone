@@ -36,6 +36,7 @@ import {
   getPerformanceBandProfile,
   getStandardManteryScale,
 } from '../filterDataDucks'
+import { getTestListSelector } from '../../../../ducks'
 import {
   getUserRole,
   getUserOrgId,
@@ -82,6 +83,7 @@ const SingleAssessmentReportFilters = ({
   selectedPerformanceBandProfile,
   selectedStandardManteryScale,
   toggleFilter,
+  testList,
 }) => {
   const assessmentTypeRef = useRef()
 
@@ -250,7 +252,7 @@ const SingleAssessmentReportFilters = ({
     <StyledFilterWrapper data-cy="filters" style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
-        {showApply && (
+        {showApply && !isEmpty(testList) && (
           <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>
             APPLY
           </StyledGoButton>
@@ -492,6 +494,7 @@ const enhance = compose(
         state?.standardsProficiencyReducer?.loading || [],
       selectedPerformanceBandProfile: getPerformanceBandProfile(state),
       selectedStandardManteryScale: getStandardManteryScale(state),
+      testList: getTestListSelector(state),
     }),
     {
       getSARFilterDataRequest: getSARFilterDataRequestAction,

@@ -175,7 +175,7 @@ class ExpressGrader extends Component {
         groupId={classId}
       >
         <div>
-          <HooksContainer assignmentId={assignmentId} classId={classId} />
+          <HooksContainer assignmentId={assignmentId} classId={classId} isEG />
           <ClassHeader
             classId={classId}
             active="expressgrader"

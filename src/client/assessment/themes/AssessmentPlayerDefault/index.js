@@ -454,7 +454,7 @@ class AssessmentPlayerDefault extends React.Component {
             dropdownStyle={navZoomStyle}
             zoomLevel={headerZoom}
             overlayStyle={navZoomStyle}
-            disabled={isFirst()}
+            disabled={isFirst() || blockNavigationToAnsweredQuestions}
             isLast={isLast()}
             moveToPrev={moveToPrev}
             moveToNext={moveToNext}

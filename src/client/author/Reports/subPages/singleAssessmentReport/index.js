@@ -259,7 +259,7 @@ const SingleAssessmentReportContainer = (props) => {
               '/author/reports/performance-by-standards',
             ].find((x) => window.location.pathname.startsWith(x))}
             style={
-              reportId || !showFilter
+              isCliUser || reportId || !showFilter
                 ? { display: 'none' }
                 : { display: 'block' }
             }

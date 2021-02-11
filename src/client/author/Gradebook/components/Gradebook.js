@@ -294,7 +294,12 @@ const Gradebook = ({
             </ScrollbarContainer>
           )}
           <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
-            <IconFilter width={20} height={20} />
+            <IconFilter
+              data-test={showFilter ? 'expanded' : 'collapsed'}
+              data-cy="smart-filter"
+              width={20}
+              height={20}
+            />
           </FilterButton>
           {loading ? (
             <TableContainer showFilter={showFilter}>

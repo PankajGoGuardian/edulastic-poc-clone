@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { withNamespaces } from 'react-i18next'
 
 // components
-import { Row, Layout, Spin } from 'antd'
+import { Row, Layout, Spin, Modal } from 'antd'
 import { MainContentWrapper, MainHeader, EduButton } from '@edulastic/common'
 import { IconClockDashboard, IconHangouts } from '@edulastic/icons'
 import { white, themeColor } from '@edulastic/colors'
@@ -24,7 +24,10 @@ import {
 } from '../../ManageClass/ducks'
 
 // constants
-import { proxyRole } from '../../Login/ducks'
+import {
+  proxyRole,
+  toggleIosRestrictNavigationModalAction,
+} from '../../Login/ducks'
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -42,6 +45,8 @@ const Assignments = ({
   districtPolicies,
   t,
   schoolPolicies,
+  iosRestrictNavigationModalVisible,
+  toggleIosModal,
 }) => {
   const isParentRoleProxy = proxyUserRole === 'parent'
 
@@ -66,9 +71,7 @@ const Assignments = ({
       c.hangoutLink &&
       (hangoutEnabledDistrictMap[c.districtId] === true
         ? true
-        : hangoutEnabledSchoolMap[c.institutionId] === true
-        ? true
-        : false)
+        : hangoutEnabledSchoolMap[c.institutionId] === true)
   )
 
   const [showHangoutsModal, setShowHangoutsModal] = useState(false)
@@ -87,6 +90,19 @@ const Assignments = ({
   const isHangoutEnabled = !!classListWithHangouts?.length
   return (
     <Wrapper>
+      <IosModal
+        visible={iosRestrictNavigationModalVisible}
+        centered
+        footer={
+          <EduButton onClick={() => toggleIosModal(false)} type="primary">
+            Ok
+          </EduButton>
+        }
+        onCancel={() => toggleIosModal(false)}
+      >
+        Your teacher has added security settings to this test that are not
+        compatible with an iPad
+      </IosModal>
       <HangoutsModal
         isStudent
         visible={showHangoutsModal}
@@ -137,6 +153,8 @@ export default withNamespaces('header')(
   connect(
     (state) => ({
       userRole: state?.user?.user?.role,
+      iosRestrictNavigationModalVisible:
+        state?.user?.iosRestrictNavigationModalVisible,
       districtPolicies: state?.user?.user?.orgData?.districtPolicies,
       schoolPolicies: state?.user?.user?.orgData?.schoolPolicies,
       allClasses: state.studentEnrollClassList.allClasses,
@@ -149,6 +167,7 @@ export default withNamespaces('header')(
     {
       loadAllClasses: getEnrollClassAction,
       setFilterClass: setFilterClassAction,
+      toggleIosModal: toggleIosRestrictNavigationModalAction,
     }
   )(Assignments)
 )
@@ -167,6 +186,16 @@ const StyledEduButton = styled(EduButton)`
   &:focus {
     .b {
       fill: ${themeColor};
+    }
+  }
+`
+
+const IosModal = styled(Modal)`
+  .ant-modal-footer {
+    border-top: 0;
+    text-align: center;
+    button {
+      display: inline-block;
     }
   }
 `

@@ -33,7 +33,12 @@ import {
   notification,
   handleChromeOsSEB,
 } from '@edulastic/common'
-import { getCurrentSchool, fetchUserAction, getUserRole } from '../Login/ducks'
+import {
+  getCurrentSchool,
+  fetchUserAction,
+  getUserRole,
+  toggleIosRestrictNavigationModalAction,
+} from '../Login/ducks'
 
 import { getCurrentGroup } from '../Reports/ducks'
 // external actions
@@ -54,6 +59,7 @@ import {
   setReportsAction,
   reportSchema,
 } from '../sharedDucks/ReportsModule/ducks'
+import { isiOS } from '../../assessment/utils/helpers'
 import { clearOrderOfOptionsInStore } from '../../assessment/actions/assessmentPlayer'
 import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
@@ -535,7 +541,7 @@ export function getSebUrl({
 
 // sagas
 // fetch and load assignments and reports for the student
-function* fetchAssignments() {
+export function* fetchAssignments() {
   try {
     yield put(setAssignmentsLoadingAction())
     const groupId = yield select(getCurrentGroup)
@@ -647,10 +653,15 @@ function* startAssignment({ payload }) {
     }
 
     if (assignmentId) {
-      const { timedAssignment } = yield call(
+      const { timedAssignment, restrictNavigationOut } = yield call(
         assignmentApi.getById,
         assignmentId
       ) || {}
+      if (isiOS() && restrictNavigationOut) {
+        yield put(push('/home/assignments'))
+        yield put(toggleIosRestrictNavigationModalAction(true))
+        return
+      }
       if (timedAssignment) {
         yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
       }

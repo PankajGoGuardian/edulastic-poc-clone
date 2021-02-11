@@ -1,5 +1,5 @@
+import React, { useState, useEffect } from 'react'
 import { withNamespaces } from '@edulastic/localization'
-import React, { useState } from 'react'
 import loadable from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -10,17 +10,19 @@ import {
 } from '../../Subscription/ducks'
 import {
   addBulkUsersAdminAction,
+  fetchMultipleSubscriptionsAction,
   getBulkUsersData,
   getConfirmationModalVisible,
   getSubsLicensesSelector,
   getUsersSelector,
   setAddUserConfirmationModalVisibleAction,
+  getLoadingStateSelector,
 } from '../ducks'
 import Header from './Header'
 import AddUsersSection from './AddUsersSection'
 import LicenseCountSection from './LicenseCountSection'
 import Userlist from './Userlist'
-import { ContentWrapper } from './styled'
+import { ContentWrapper, StyledSpin } from './styled'
 
 const AddUsersModal = loadable(() => import('./AddUsersModal'))
 const ManageLicensesModal = loadable(() => import('./ManageLicensesModal'))
@@ -39,9 +41,16 @@ const ManageSubscriptionContainer = ({
   showAddUserConfirmationModal = false,
   userDataSource = [],
   t,
+  fetchMultipleSubscriptions,
+  loading,
 }) => {
   const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
+
+  useEffect(() => {
+    fetchMultipleSubscriptions()
+  }, [])
+
   const isSubscribed =
     subType === 'premium' ||
     subType === 'enterprise' ||
@@ -60,6 +69,10 @@ const ManageSubscriptionContainer = ({
       addReq: obj,
     }
     addUsers(o)
+  }
+
+  if (loading) {
+    return <StyledSpin />
   }
 
   return (
@@ -109,6 +122,7 @@ const enhance = compose(
   withNamespaces('manageDistrict'),
   connect(
     (state) => ({
+      loading: getLoadingStateSelector(state),
       subscription: getSubscriptionSelector(state),
       isSuccess: getSuccessSelector(state),
       subsLicenses: getSubsLicensesSelector(state),
@@ -120,6 +134,7 @@ const enhance = compose(
     {
       addUsers: addBulkUsersAdminAction,
       setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
+      fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
     }
   )
 )

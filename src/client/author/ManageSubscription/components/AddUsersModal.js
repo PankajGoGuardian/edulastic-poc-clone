@@ -1,5 +1,4 @@
-import React, { useState, useMemo } from 'react'
-import { Spin } from 'antd'
+import React, { useState } from 'react'
 import { debounce } from 'lodash'
 import { userApi } from '@edulastic/api'
 import {
@@ -16,16 +15,10 @@ const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
 const AddUsersModal = ({ isVisible, onCancel, addUsers, districtId }) => {
   const [fieldValue, setFieldValue] = useState([])
   const [checkboxValues, setCheckboxValues] = useState([])
-  const [fetching, setFetching] = useState(false)
   const [usersList, setUsersList] = useState([])
 
   const handleOnChange = (value) => setFieldValue(value)
   const handleOnCheck = (value) => setCheckboxValues(value)
-
-  const notFoundContent = useMemo(
-    () => (fetching ? <Spin size="small" /> : null),
-    [fetching]
-  )
 
   const handleAddUsers = () => {
     if (fieldValue) {
@@ -37,7 +30,6 @@ const AddUsersModal = ({ isVisible, onCancel, addUsers, districtId }) => {
   const fetchUsers = async (searchString) => {
     try {
       if (!searchString) return
-      setFetching(true)
       const searchData = {
         districtId,
         search: {
@@ -48,11 +40,9 @@ const AddUsersModal = ({ isVisible, onCancel, addUsers, districtId }) => {
         role: 'teacher',
       }
       const { result } = await userApi.fetchUsers(searchData)
-      setFetching(false)
       const users = sanitizeSearchResult(result)
       setUsersList(users)
     } catch (e) {
-      setFetching(false)
       setUsersList([])
       console.warn(e)
     }
@@ -97,7 +87,7 @@ const AddUsersModal = ({ isVisible, onCancel, addUsers, districtId }) => {
           placeholder="Email IDs (separated by comma)"
           mode="tags"
           size="large"
-          notFoundContent={notFoundContent}
+          notFoundContent={null}
           filterOption={false}
           onSearch={handleUsersSearch}
           value={fieldValue}

@@ -467,8 +467,20 @@ class Setting extends Component {
     }
 
     const accessibilityData = [
-      { key: 'showMagnifier', value: showMagnifier },
-      { key: 'enableScratchpad', value: enableScratchpad },
+      {
+        key: 'showMagnifier',
+        value: showMagnifier,
+        description:
+          'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
+        id: 'magnifier-setting',
+      },
+      {
+        key: 'enableScratchpad',
+        value: enableScratchpad,
+        description:
+          'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
+        id: 'scratchpad-setting',
+      },
       // { key: 'enableSkipAlert', value: enableSkipAlert },
     ]
 
@@ -1586,6 +1598,11 @@ class Setting extends Component {
                       disabled={!owner || !isEditable || !performanceBands}
                       isFeatureAvailable={performanceBands}
                     />
+                    <Description>
+                      Performance bands are set by district or school admins.
+                      Teachers can modify cut scores/thresholds for class
+                      assignments.
+                    </Description>
                   </Block>
 
                   <Block id="standards-proficiency" smallSize={isSmallSize}>
@@ -1597,6 +1614,12 @@ class Setting extends Component {
                       disabled={!owner || !isEditable || !premium}
                       isFeatureAvailable={premium}
                     />
+                    <Description>
+                      Standards based scales are set by district or school
+                      admins. Teachers can modify performance threshold scores
+                      for class assignments to track mastery by standards
+                      assessed.
+                    </Description>
                   </Block>
 
                   <Block id="accessibility" smallSize={isSmallSize}>
@@ -1613,7 +1636,7 @@ class Setting extends Component {
                     >
                       {accessibilityData.map((o) => (
                         <StyledRow key={o.key} align="middle">
-                          <Col span={12}>
+                          <Col span={6}>
                             <span
                               style={{
                                 fontSize: 13,
@@ -1645,6 +1668,9 @@ class Setting extends Component {
                                 DISABLE
                               </RadioBtn>
                             </StyledRadioGroup>
+                          </Col>
+                          <Col span={24}>
+                            <Description>{o.description}</Description>
                           </Col>
                         </StyledRow>
                       ))}

@@ -325,7 +325,7 @@ const TestBehaviorGroupContainer = ({
                     max={300}
                     step={1}
                   />
-                  9 <Label>MINUTES</Label>
+                  <Label>MINUTES</Label>
                   {/* eslint-enable no-restricted-globals */}
                 </>
               )}

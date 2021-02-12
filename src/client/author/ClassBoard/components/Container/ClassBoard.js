@@ -86,6 +86,7 @@ import {
   getFirstQuestionEntitiesSelector,
   actionInProgressSelector,
   getAllStudentsList,
+  getStudentsPrevSubmittedUtasSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -204,10 +205,11 @@ class ClassBoard extends Component {
       history,
       setShowAllStudents,
     } = this.props
+    const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
     const { search, state } = location
     setShowAllStudents(false)
-    loadTestActivity(assignmentId, classId)
+    loadTestActivity(assignmentId, classId, selectedTab === 'questionView')
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
     const cliUser = new URLSearchParams(window.location.search).has('cliUser')
@@ -231,6 +233,7 @@ class ClassBoard extends Component {
     } = this.props
     const { assignmentId, classId } = match.params
     const filterCriteria = (activity) => activity?.testActivityId
+    const { selectedStudentId } = this.state
     if (
       additionalData.testId !== prevState.testId ||
       !prevProps.testActivity.length
@@ -242,7 +245,7 @@ class ClassBoard extends Component {
       )
       if (firstStudentId)
         getAllTestActivitiesForStudent({
-          studentId: firstStudentId,
+          studentId: selectedStudentId || firstStudentId,
           assignmentId,
           groupId: classId,
         })
@@ -304,9 +307,19 @@ class ClassBoard extends Component {
       const tempArr = props.location.pathname.split('/')
       const testActivityId = tempArr[tempArr.length - 1]
 
-      const student = testActivity.find(
+      let student = testActivity.find(
         (item) => item.testActivityId === testActivityId
       )
+
+      if (!student) {
+        const currentUta = Object.values(
+          state?.studentsPrevSubmittedUtas || {}
+        ).find((uta) => uta._id === testActivityId)
+        if (currentUta) {
+          student = { studentId: currentUta.userId }
+        }
+      }
+
       if (student) {
         newState = {
           ...newState,
@@ -398,7 +411,12 @@ class ClassBoard extends Component {
   }
 
   onTabChange = (e, name, selectedStudentId, testActivityId) => {
-    const { setCurrentTestActivityId, match, history } = this.props
+    const {
+      setCurrentTestActivityId,
+      match,
+      history,
+      loadTestActivity,
+    } = this.props
     const { assignmentId, classId } = match.params
     this.setState({
       selectedTab: name,
@@ -409,6 +427,7 @@ class ClassBoard extends Component {
     if (name === 'Both') {
       history.push(`/author/classboard/${assignmentId}/${classId}`)
       setCurrentTestActivityId('')
+      loadTestActivity(assignmentId, classId, false)
     } else if (name === 'Student') {
       history.push(
         `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
@@ -913,6 +932,8 @@ class ClassBoard extends Component {
       canvasSyncAssignment,
       setShowCanvasShare,
       studentsList,
+      recentAttemptsGrouped,
+      studentsPrevSubmittedUtas,
     } = this.props
 
     const {
@@ -932,6 +953,7 @@ class ClassBoard extends Component {
       hasStickyHeader,
       toggleBackTopIcon,
     } = this.state
+
     const { assignmentId, classId } = match.params
     const studentTestActivity =
       (studentResponse && studentResponse.testActivity) || {}
@@ -957,7 +979,7 @@ class ClassBoard extends Component {
       })
     }
     const selectedStudentsKeys = Object.keys(selectedStudents)
-    const firstStudentId = get(
+    let firstStudentId = get(
       testActivity.filter(
         (x) =>
           x.UTASTATUS === testActivityStatus.SUBMITTED ||
@@ -966,6 +988,14 @@ class ClassBoard extends Component {
       [0, 'studentId'],
       false
     )
+
+    if (!firstStudentId) {
+      firstStudentId = get(
+        Object.values(recentAttemptsGrouped).find((x) => x.length > 0),
+        [0, 'userId'],
+        false
+      )
+    }
     const testActivityId = this.getTestActivityId(
       testActivity,
       selectedStudentId || firstStudentId
@@ -974,11 +1004,19 @@ class ClassBoard extends Component {
     const unselectedStudents = testActivity.filter(
       (x) => !selectedStudents[x.studentId]
     )
-    const nobodyStarted = testActivity.every(
-      ({ UTASTATUS }) =>
-        UTASTATUS === testActivityStatus.NOT_STARTED ||
-        UTASTATUS === testActivityStatus.ABSENT
-    )
+
+    const nobodyStarted =
+      testActivity.every(
+        ({ UTASTATUS }) =>
+          UTASTATUS === testActivityStatus.NOT_STARTED ||
+          UTASTATUS === testActivityStatus.ABSENT
+      ) &&
+      Object.values(recentAttemptsGrouped).every(
+        (groupedAttempts) =>
+          !groupedAttempts.some(
+            ({ status: _status }) => _status !== testActivityStatus.ABSENT
+          )
+      )
 
     const disabledList = testActivity
       .filter((student) => {
@@ -1225,7 +1263,7 @@ class ClassBoard extends Component {
                           itemId: firstQuestion.testItemId,
                           selectedTab: 'questionView',
                         })
-                        loadTestActivity(assignmentId, classId)
+                        loadTestActivity(assignmentId, classId, true)
                         history.push(
                           `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
                         )
@@ -1518,6 +1556,7 @@ class ClassBoard extends Component {
                         }}
                         isPresentationMode={isPresentationMode}
                         isCliUser={isCliUser}
+                        studentsPrevSubmittedUtas={studentsPrevSubmittedUtas}
                       />
                       <GraphWrapper style={{ width: '100%', display: 'flex' }}>
                         <BarGraph
@@ -1814,6 +1853,10 @@ const enhance = compose(
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
       studentsList: getAllStudentsList(state),
+      recentAttemptsGrouped:
+        state?.author_classboard_testActivity?.data
+          ?.recentTestActivitiesGrouped || {},
+      studentsPrevSubmittedUtas: getStudentsPrevSubmittedUtasSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

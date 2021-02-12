@@ -24,6 +24,7 @@ const { ShowPreviousAttempt } = redirectPolicy
 const QuestionDelivery = {
   [redirectPolicy.QuestionDelivery.ALL]: 'All',
   [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
+  [redirectPolicy.QuestionDelivery.SKIPPED]: 'Skipped',
 }
 
 const AutoRedirectGroupContainer = ({

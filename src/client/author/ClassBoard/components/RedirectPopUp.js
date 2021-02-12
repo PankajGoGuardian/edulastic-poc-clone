@@ -26,6 +26,7 @@ const { redirectPolicy } = testContants
 const QuestionDelivery = {
   [redirectPolicy.QuestionDelivery.ALL]: 'All',
   [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
+  [redirectPolicy.QuestionDelivery.SKIPPED]: 'Skipped',
 }
 
 const ShowPreviousAttempt = {
@@ -120,7 +121,8 @@ const RedirectPopUp = ({
     } else {
       let _selected = selected
       if (
-        qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG
+        qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG ||
+        qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED
       ) {
         const selectedStudentsTestActivity = testActivity.filter(
           (item) =>

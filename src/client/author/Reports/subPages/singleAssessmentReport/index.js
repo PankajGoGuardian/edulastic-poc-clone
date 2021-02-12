@@ -241,6 +241,7 @@ const SingleAssessmentReportContainer = (props) => {
         )}
         <FlexContainer
           alignItems="flex-start"
+          justifyContent="space-between"
           display={firstLoad ? 'none' : 'flex'}
         >
           <SingleAssessmentReportFilters

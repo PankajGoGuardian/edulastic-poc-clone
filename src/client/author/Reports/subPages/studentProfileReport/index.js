@@ -141,7 +141,7 @@ const StudentProfileReportContainer = (props) => {
             setShowModal={setSharingState}
           />
         )}
-        <FlexContainer alignItems="flex-start">
+        <FlexContainer alignItems="flex-start" justifyContent="space-between">
           <StudentProfileReportsFilters
             reportId={reportId}
             onGoClick={onGoClick}

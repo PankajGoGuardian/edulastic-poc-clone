@@ -217,6 +217,7 @@ const MultipleAssessmentReportContainer = (props) => {
       )}
       <FlexContainer
         alignItems="flex-start"
+        justifyContent="space-between"
         display={firstLoad ? 'none' : 'flex'}
       >
         <MultipleAssessmentReportFilters

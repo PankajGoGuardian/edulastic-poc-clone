@@ -1,5 +1,5 @@
 import { greenThird, title } from '@edulastic/colors'
-import { Icon } from 'antd'
+import { Icon, Spin } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../common/styled'
 
@@ -81,4 +81,8 @@ export const StyledStatusIcon = styled(Icon)`
   font-size: 18px;
   margin-right: 10px;
   color: ${(props) => props.iconColor};
+`
+
+export const StyledSpin = styled(Spin)`
+  position: fixed;
 `

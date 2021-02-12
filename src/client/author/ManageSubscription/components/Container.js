@@ -1,6 +1,8 @@
+import React, { useState, useEffect } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { groupBy } from 'lodash'
-import React, { lazy, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import loadable from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PurchaseFlowModals from '../../src/components/common/PurchaseModals'
@@ -11,21 +13,23 @@ import {
 } from '../../Subscription/ducks'
 import {
   addBulkUsersAdminAction,
+  fetchMultipleSubscriptionsAction,
   getBulkUsersData,
   getConfirmationModalVisible,
   getSubsLicensesSelector,
   getUsersSelector,
   setAddUserConfirmationModalVisibleAction,
+  getLoadingStateSelector,
 } from '../ducks'
 import AddUsersSection from './AddUsersSection'
 import Header from './Header'
 import LicenseCountSection from './LicenseCountSection'
-import { ContentWrapper } from './styled'
 import Userlist from './Userlist'
+import { ContentWrapper, StyledSpin } from './styled'
 
-const AddUsersModal = lazy(() => import('./AddUsersModal'))
-const ManageLicensesModal = lazy(() => import('./ManageLicensesModal'))
-const AddUsersConfirmationModal = lazy(() =>
+const AddUsersModal = loadable(() => import('./AddUsersModal'))
+const ManageLicensesModal = loadable(() => import('./ManageLicensesModal'))
+const AddUsersConfirmationModal = loadable(() =>
   import('./AddUsersConfirmationModal')
 )
 
@@ -43,6 +47,8 @@ const ManageSubscriptionContainer = ({
   products,
   itemBankSubscriptions = [],
   t,
+  fetchMultipleSubscriptions,
+  loading,
 }) => {
   const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -86,6 +92,10 @@ const ManageSubscriptionContainer = ({
     ? [productData.productId]
     : null
 
+  useEffect(() => {
+    fetchMultipleSubscriptions()
+  }, [])
+
   const isSubscribed =
     subType === 'premium' ||
     subType === 'enterprise' ||
@@ -105,7 +115,7 @@ const ManageSubscriptionContainer = ({
     }
     addUsers(o)
   }
-
+  
   const totalPaidProducts = itemBankSubscriptions.reduce(
     (a, c) => {
       if (c.isTrial) return a
@@ -115,6 +125,10 @@ const ManageSubscriptionContainer = ({
   )
 
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
+
+  if (loading) {
+    return <StyledSpin />
+  }
 
   return (
     <>
@@ -176,6 +190,7 @@ const enhance = compose(
   withNamespaces('manageDistrict'),
   connect(
     (state) => ({
+      loading: getLoadingStateSelector(state),
       subscription: getSubscriptionSelector(state),
       isSuccess: getSuccessSelector(state),
       subsLicenses: getSubsLicensesSelector(state),
@@ -191,6 +206,7 @@ const enhance = compose(
     {
       addUsers: addBulkUsersAdminAction,
       setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
+      fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
     }
   )
 )

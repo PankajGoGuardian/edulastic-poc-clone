@@ -11,8 +11,8 @@ const LicenseCountSection = ({ subsLicenses, setShowManageLicenseModal }) => {
     subsLicenses.map((license) => (
       <GreyBox>
         <LeftCol>
-          <span>Expires {license.validEndDate}</span>
-          <h4>{license.product.name}</h4>
+          <span>Expires {license.expiresOn}</span>
+          <h4>{license.productName}</h4>
           <EduButton
             isGhost
             height="24px"
@@ -25,11 +25,11 @@ const LicenseCountSection = ({ subsLicenses, setShowManageLicenseModal }) => {
         </LeftCol>
         <RightCol>
           <Countbox>
-            <Count>{license.count}</Count>
+            <Count>{license.totalCount}</Count>
             <span>Purchased</span>
           </Countbox>
           <Countbox>
-            <Count>{license.count - license.used}</Count>
+            <Count>{license.totalCount - license.usedCount}</Count>
             <span>Available</span>
           </Countbox>
         </RightCol>

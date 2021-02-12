@@ -113,7 +113,7 @@ const PurchaseFlowModals = (props) => {
   }
 
   const stripePaymentActionHandler = (data) => {
-    if (addOnProductIds) {
+    if (addOnProductIds?.length) {
       handleStripePayment({ ...data, productIds: [...addOnProductIds] })
       setAddOnProductIds([])
     } else {

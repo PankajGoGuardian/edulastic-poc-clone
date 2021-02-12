@@ -21,7 +21,8 @@ const MultiplePurchaseModal = ({
   const [premiumSubsCount, setPremiumSubsCount] = useState()
   const [sparkMathSubsCount, setSparkMathSubsCount] = useState()
   const [emailValues, setEmailValues] = useState('')
-  const [totalProductsAmount, setTotalProductsAmount] = useState(100)
+  const [premiumTotalPrice, setPremiumTotalPrice] = useState(0)
+  const [sparkMathTotalPrice, setSparkMathTotalPrice] = useState(0)
 
   const emailsArray =
     emailValues && emailValues.replace(/\s/g, '').split(/,|\n/)
@@ -34,7 +35,7 @@ const MultiplePurchaseModal = ({
       })
       return
     }
-    setTotalAmount(totalProductsAmount)
+    setTotalAmount(premiumTotalPrice + sparkMathTotalPrice)
 
     const setProductQuantity = products.map((product) => ({
       ...product,
@@ -54,18 +55,15 @@ const MultiplePurchaseModal = ({
       (product) => product.type === 'PREMIUM'
     ).price
 
+    const getSparkPrice = products.find((product) => product.type === 'PREMIUM')
+      .price
+
     setPremiumSubsCount(value)
+    setPremiumTotalPrice(value * getPremiumPrice)
 
     if (sparkMathSubsCount > value) {
       setSparkMathSubsCount(value)
-      setTotalProductsAmount((value + value) * getPremiumPrice)
-      return
-    }
-
-    if (sparkMathSubsCount) {
-      setTotalProductsAmount((value + sparkMathSubsCount) * getPremiumPrice)
-    } else {
-      setTotalProductsAmount(value * getPremiumPrice)
+      setSparkMathTotalPrice(value * getSparkPrice)
     }
   }
 
@@ -73,7 +71,7 @@ const MultiplePurchaseModal = ({
     const getSparkPrice = products.find((product) => product.type === 'PREMIUM')
       .price
     setSparkMathSubsCount(value)
-    setTotalProductsAmount((value + premiumSubsCount) * getSparkPrice)
+    setSparkMathTotalPrice(value * getSparkPrice)
   }
 
   const handleInputEmailAddress = (ele) => {
@@ -104,7 +102,8 @@ const MultiplePurchaseModal = ({
           onClick={handlePayWithCard}
           disabled={!emailValues}
         >
-          PAY WITH CREDIT CARD {premiumSubsCount && `$${totalProductsAmount}`}
+          PAY WITH CREDIT CARD{' '}
+          {premiumSubsCount && `$${premiumTotalPrice + sparkMathTotalPrice}`}
         </EduButton>,
       ]}
       centered

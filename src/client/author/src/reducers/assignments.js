@@ -25,6 +25,8 @@ import {
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
   MQTT_CLIENT_REMOVE_REQUEST,
   MQTT_CLIENT_SAVE_REQUEST,
+  SET_GOOGLE_RE_AUTH,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_AUTH_ERROR,
 } from '../constants/actions'
 
 import {
@@ -56,6 +58,7 @@ const initialState = {
   assignmentStatusCounts: { notOpen: 0, inProgress: 0, inGrading: 0, done: 0 },
   syncWithSchoologyClassroomInProgress: false,
   mqttClient: null,
+  isGoogleAuthRequired: true,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -188,6 +191,12 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         syncWithGoogleClassroomInProgress: false,
       }
+    case SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_AUTH_ERROR:
+      return {
+        ...state,
+        syncWithGoogleClassroomInProgress: false,
+        isGoogleAuthRequired: true,
+      }
     case TOGGLE_STUDENT_REPORT_CARD_SETTINGS:
       return {
         ...state,
@@ -228,6 +237,12 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         mqttClient: null,
       }
+    case SET_GOOGLE_RE_AUTH: {
+      return {
+        ...state,
+        isGoogleAuthRequired: !state.isGoogleAuthRequired,
+      }
+    }
     default:
       return state
   }

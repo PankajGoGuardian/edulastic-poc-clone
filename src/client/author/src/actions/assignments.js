@@ -13,6 +13,7 @@ import {
   SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  SET_GOOGLE_RE_AUTH,
 } from '../constants/actions'
 
 export const googleSyncAssignmentAction = (payload) => ({
@@ -81,5 +82,10 @@ export const setAssignmentFiltersAction = (payload) => ({
 
 export const toggleStudentReportCardSettingsAction = (payload) => ({
   type: TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+  payload,
+})
+
+export const setGoogleAuthRequiredAction = (payload) => ({
+  type: SET_GOOGLE_RE_AUTH,
   payload,
 })

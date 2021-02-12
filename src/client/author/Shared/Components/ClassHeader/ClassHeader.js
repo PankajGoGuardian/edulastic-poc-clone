@@ -64,6 +64,7 @@ import {
   googleSyncAssignmentGradesAction,
   schoologySyncAssignmentGradesAction,
   schoologySyncAssignmentAction,
+  setGoogleAuthRequiredAction,
 } from '../../../src/actions/assignments'
 import {
   canvasSyncAssignmentAction,
@@ -83,6 +84,7 @@ import {
   getSchoologyAssignmentSyncInProgress,
   getToggleReleaseGradeStateSelector,
   getToggleStudentReportCardStateSelector,
+  getGoogleAuthRequiredSelector,
 } from '../../../src/selectors/assignments'
 import {
   getGroupList,
@@ -104,6 +106,7 @@ import {
 } from './styled'
 import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
+import ReAuthOnAsgnSyncFailModal from '../../../ManageClass/components/ClassDetails/ReAuthOnAsgnSyncFailModal'
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions
 const {
@@ -398,6 +401,8 @@ class ClassHeader extends Component {
       studentsUTAData,
       schoologySyncAssignment,
       syncWithSchoologyClassroomInProgress,
+      setGoogleAuthenticationRequired,
+      isGoogleAuthRequired,
     } = this.props
     const {
       visible,
@@ -886,6 +891,16 @@ class ClassHeader extends Component {
             </RightSideButtonWrapper>
           </>
         )}
+        {isGoogleAuthRequired && (
+          <ReAuthOnAsgnSyncFailModal
+            visible={isGoogleAuthRequired}
+            toggle={() => setGoogleAuthenticationRequired()}
+            handleLoginSuccess={(data) => {
+              console.log(data)
+              googleSyncAssignment()
+            }}
+          />
+        )}
       </MainHeader>
     )
   }
@@ -934,6 +949,7 @@ const enhance = compose(
         state
       ),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
+      isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
       isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(
         state
       ),
@@ -962,6 +978,7 @@ const enhance = compose(
       canvasSyncAssignment: canvasSyncAssignmentAction,
       schoologySyncAssignment: schoologySyncAssignmentAction,
       schoologySyncAssignmentGrades: schoologySyncAssignmentGradesAction,
+      setGoogleAuthenticationRequired: setGoogleAuthRequiredAction,
     }
   )
 )

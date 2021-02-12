@@ -22,6 +22,7 @@ import {
 import {
   receiveAssignmentByAssignmentIdAction,
   googleSyncAssignmentAction,
+  setGoogleAuthRequiredAction,
 } from '../../../src/actions/assignments'
 import BreadCrumb from '../../../src/components/Breadcrumb'
 import ListHeader from '../../../src/components/common/ListHeader'
@@ -29,6 +30,7 @@ import ShareModal from '../../../src/components/common/ShareModal'
 import {
   getCurrentAssignmentSelector,
   getAssignmentSyncInProgress,
+  getGoogleAuthRequiredSelector,
 } from '../../../src/selectors/assignments'
 import { getCollectionsSelector } from '../../../src/selectors/user'
 import {
@@ -61,6 +63,7 @@ import {
 import ImageCard from './ImageCard'
 import { getAssignmentsSelector, fetchAssignmentsAction } from '../Assign/ducks'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import ReAuthOnAsgnSyncFailModal from '../../../ManageClass/components/ClassDetails/ReAuthOnAsgnSyncFailModal'
 
 const { statusConstants, passwordPolicy, type: _testTypes } = TEST
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
@@ -239,6 +242,8 @@ class SuccessPage extends React.Component {
       history,
       syncWithGoogleClassroomInProgress,
       classList,
+      setGoogleAuthRequired,
+      isGoogleAuthRequired,
     } = this.props
 
     const { isShareModalVisible, shareWithGCEnable } = this.state
@@ -596,6 +601,16 @@ class SuccessPage extends React.Component {
                     </EduButton>
                   </FlexWrapperClassroomBox>
                 )}
+                {isGoogleAuthRequired && (
+                  <ReAuthOnAsgnSyncFailModal
+                    visible={isGoogleAuthRequired}
+                    toggle={() => setGoogleAuthRequired()}
+                    handleLoginSuccess={(data) => {
+                      console.log(data)
+                      this.shareWithGoogleClassroom()
+                    }}
+                  />
+                )}
               </FlexShareContainer>
             </FlexContainerWrapperRight>
           </FlexContainerWrapper>
@@ -624,6 +639,7 @@ const enhance = compose(
       regradedAssignments: getAssignmentsSelector(state),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
       classList: get(state, 'user.user.orgData.classList', []),
+      isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
     }),
     {
       fetchAssignmentById: receiveAssignmentByAssignmentIdAction,
@@ -631,6 +647,7 @@ const enhance = compose(
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,
       googleSyncAssignment: googleSyncAssignmentAction,
+      setGoogleAuthRequired: setGoogleAuthRequiredAction,
     }
   )
 )

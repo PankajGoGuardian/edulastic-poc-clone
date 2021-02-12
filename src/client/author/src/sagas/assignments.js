@@ -42,6 +42,7 @@ import {
   UPDATE_RELEASE_SCORE_SETTINGS,
   MQTT_CLIENT_SAVE_REQUEST,
   MQTT_CLIENT_REMOVE_REQUEST,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_AUTH_ERROR,
 } from '../constants/actions'
 import { getUserRole } from '../selectors/user'
 
@@ -242,7 +243,19 @@ function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   try {
     notification({ type: 'success', messageKey: 'sharedAssignmentInProgress' })
     const result = yield call(assignmentApi.syncWithGoogleClassroom, payload)
-    if (result?.[0]?.success) {
+    const reAuth = (result || []).filter(
+      (o) => (o?.message || '').indexOf('re-authenticate') > -1
+    )
+    if (reAuth?.length) {
+      yield put({
+        type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_AUTH_ERROR,
+      })
+      notification({
+        msg:
+          reAuth?.[0]?.message ||
+          'Assignment failed to share with google classroom. Please try after sometime.',
+      })
+    } else if (result?.[0]?.success) {
       yield put({
         type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
       })

@@ -304,6 +304,8 @@ export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS =
   '[LCB] sync assignment with google classroom success'
 export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR =
   '[LCB] sync assignment with google classroom error'
+export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_AUTH_ERROR =
+  '[LCB] sync assignment with google classroom re-auth error'
 export const TOGGLE_STUDENT_REPORT_CARD_SETTINGS =
   '[assignments] show student report card popup'
 
@@ -393,3 +395,5 @@ export const SET_SCROLL_TOP = '[pickUpQuestion] set scroll top value'
 
 export const MQTT_CLIENT_SAVE_REQUEST = '[mqtt] Client saved'
 export const MQTT_CLIENT_REMOVE_REQUEST = '[mqtt] Client removed'
+
+export const SET_GOOGLE_RE_AUTH = '[Asgn] set is google re-auth required'

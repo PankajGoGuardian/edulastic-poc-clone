@@ -68,7 +68,7 @@ class TableDisplay extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { additionalData: { standards = [] } = {} } = props
+    const { reportStandards: standards } = props
     const submittedActs = props.testActivities.filter(
       (x) => x.status === 'submitted'
     )
@@ -147,7 +147,8 @@ class TableDisplay extends Component {
   render() {
     const { stdId, perfomancePercentage } = this.state
     const {
-      additionalData: { standards = [], assignmentMastery = [] } = {},
+      additionalData: { assignmentMastery = [] } = {},
+      reportStandards: standards,
       hasRandomQuestions,
       testActivities,
       qids,
@@ -214,7 +215,7 @@ class TableDisplay extends Component {
       (act) => act.status === 'submitted'
     ).length
     const data = standards.map((std, index) => {
-      const perfomancePercentage = this.getPerfomancePercentage(std)
+      const _perfomancePercentage = this.getPerfomancePercentage(std)
       return {
         key: index + 1,
         stdId: std._id,
@@ -226,8 +227,8 @@ class TableDisplay extends Component {
               .map((id) => labels[id].barLabel)
           ),
         ].join(','),
-        masterySummary: perfomancePercentage,
-        performanceSummary: perfomancePercentage,
+        masterySummary: _perfomancePercentage,
+        performanceSummary: _perfomancePercentage,
         icon: submittedLength ? (
           stdId === std._id ? (
             <div>
@@ -368,6 +369,5 @@ const CustomQuestionCell = styled(QuestionCell)`
 
 TableDisplay.propTypes = {
   /* eslint-disable react/require-default-props */
-  testActivity: PropTypes.object,
   additionalData: PropTypes.object,
 }

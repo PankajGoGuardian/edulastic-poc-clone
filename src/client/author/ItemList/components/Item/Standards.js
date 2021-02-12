@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React from 'react'
 import { connect } from 'react-redux'
-import { keyBy } from 'lodash'
+import { keyBy, uniqBy } from 'lodash'
 import { getInterestedCurriculumsSelector } from '../../../src/selectors/user'
 import Tags from '../../../src/components/common/Tags'
 
@@ -67,7 +67,10 @@ const Standards = ({
 
   return standards.length ? (
     <Tags
-      tags={standards.map((_item) => ({ ..._item, tagName: _item.name }))}
+      tags={uniqBy(standards, (x) => x._id).map((_item) => ({
+        ..._item,
+        tagName: _item.name,
+      }))}
       show={2}
       labelStyle={labelStyle}
       margin={margin}

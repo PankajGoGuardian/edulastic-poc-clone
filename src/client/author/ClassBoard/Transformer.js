@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { keyBy, groupBy, get, values, flatten, isEmpty } from 'lodash'
+import { keyBy, groupBy, get, values, flatten, isEmpty, uniq } from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
@@ -412,6 +412,39 @@ export function getResponseTobeDisplayed(
     )
   }
   return userResponse ? 'TEI' : ''
+}
+
+export function getStandardsForStandardBasedReport(
+  testItems,
+  standardsDescriptions
+) {
+  const standardsDescriptionsKeyed = keyBy(
+    standardsDescriptions,
+    (x) => `${x._id}`
+  )
+  const standardsQuestionsMap = {}
+  const questions = testItems.flatMap((x) => x.data.questions || [])
+  for (const q of questions) {
+    const standards = q.alignment
+      .flatMap((x) => x?.domains || [])
+      .flatMap((x) => x?.standards || [])
+    for (const std of standards) {
+      if (standardsQuestionsMap[`${std.id}`]) {
+        standardsQuestionsMap[`${std.id}`].qIds = uniq([
+          ...standardsQuestionsMap[`${std.id}`].qIds,
+          q.id,
+        ])
+      } else {
+        standardsQuestionsMap[`${std.id}`] = {
+          ...std,
+          desc: standardsDescriptionsKeyed[`${std._id}`]?.desc,
+          qIds: [q.id],
+          ...(std.name ? { identifier: std.name } : {}),
+        }
+      }
+    }
+  }
+  return values(standardsQuestionsMap)
 }
 
 export const transformGradeBookResponse = (

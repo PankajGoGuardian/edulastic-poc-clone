@@ -41,7 +41,7 @@ const Tags = ({
           className={className}
           popupContainer
           style={labelStyle}
-          key={i}
+          key={tag?._id || i}
           type={type}
         >
           {isStandards || typeof tag === 'string' ? tag : tag.tagName}

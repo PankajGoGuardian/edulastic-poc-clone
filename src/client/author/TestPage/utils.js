@@ -15,6 +15,9 @@ import {
   question as questionConstants,
 } from '@edulastic/constants'
 
+const roundOff = (number) =>
+  number ? Number(Number(number).toFixed(2)) : number
+
 const { sectionLabelType } = questionConstants
 
 const { nonPremiumCollections = {} } = collections
@@ -53,6 +56,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
   }
   if (!items || !items.length) return summary
   for (const item of items) {
+    const itemStandards = []
     const { itemLevelScoring, maxScore, itemLevelScore, _id } = item
     const questions = get(item, 'data.questions', []).filter(
       ({ type }) => type !== sectionLabelType
@@ -75,10 +79,14 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
         questionWisePoints[question.id]
       )
       if (standardSummary) {
-        summary.standards.push(...standardSummary)
+        summary.standards.push(
+          ...uniqBy(standardSummary, (x) => `${x.curriculumId}${x.identifier}`)
+        )
+        itemStandards.push(...standardSummary)
       }
     }
-    if (summary.standards.length > 0) {
+
+    if (itemStandards.length > 0) {
       const standardSummary = groupBy(summary.standards, 'curriculumId')
       const standardSumm = map(standardSummary, (objects, curriculumId) => {
         const obj = groupBy(objects, 'identifier')
@@ -109,9 +117,6 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
   }
   return summary
 }
-
-const roundOff = (number) =>
-  number ? Number(Number(number).toFixed(2)) : number
 
 export const createGroupSummary = (test) => {
   const summary = {

@@ -42,6 +42,7 @@ class StandardsBasedReport extends Component {
     const {
       testActivity,
       additionalData,
+      reportStandards,
       creating,
       match: {
         params: { assignmentId, classId },
@@ -75,6 +76,7 @@ class StandardsBasedReport extends Component {
               testActivities={testActivity}
               labels={labels}
               additionalData={additionalData}
+              reportStandards={reportStandards}
               qids={testQIds}
               testStandardsEmpty={testStandardsLength === 0}
             />
@@ -93,8 +95,8 @@ const enhance = compose(
       testQIds: getQIdsSelector(state),
       labels: getQLabelsSelector(state),
       testStandardsLength:
-        state?.author_classboard_testActivity?.data?.testsummary?.standards
-          ?.length || 0,
+        state.classResponse?.data?.reportStandards?.length || 0,
+      reportStandards: state.classResponse?.data?.reportStandards || [],
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

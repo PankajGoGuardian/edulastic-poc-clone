@@ -67,7 +67,6 @@ const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
 
 function PauseToolTip({ outNavigationCounter, pauseReason }) {
   let reason = null
-  console.log('pauseToolTip', { pauseReason })
   if (pauseReason === 'blocked-save-and-continue') {
     reason = 'Paused due to idle timeout'
   } else if (pauseReason === 'exiting') {

@@ -55,8 +55,9 @@ const MultiplePurchaseModal = ({
       (product) => product.type === 'PREMIUM'
     ).price
 
-    const getSparkPrice = products.find((product) => product.type === 'PREMIUM')
-      .price
+    const getSparkPrice = products.find(
+      (product) => product.type === 'ITEM_BANK'
+    ).price
 
     setPremiumSubsCount(value)
     setPremiumTotalPrice(value * getPremiumPrice)
@@ -67,9 +68,12 @@ const MultiplePurchaseModal = ({
     }
   }
 
+  console.log('products', products)
+
   const handleSelectCountSparkMathSubs = (value) => {
-    const getSparkPrice = products.find((product) => product.type === 'PREMIUM')
-      .price
+    const getSparkPrice = products.find(
+      (product) => product.type === 'ITEM_BANK'
+    ).price
     setSparkMathSubsCount(value)
     setSparkMathTotalPrice(value * getSparkPrice)
   }

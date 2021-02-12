@@ -68,8 +68,6 @@ const MultiplePurchaseModal = ({
     }
   }
 
-  console.log('products', products)
-
   const handleSelectCountSparkMathSubs = (value) => {
     const getSparkPrice = products.find(
       (product) => product.type === 'ITEM_BANK'

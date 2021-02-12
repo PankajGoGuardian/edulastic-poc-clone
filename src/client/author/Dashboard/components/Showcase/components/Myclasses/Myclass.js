@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, groupBy, isEmpty } from 'lodash'
 import qs from 'qs'
+import loadable from '@loadable/component'
 
 // components
 import { Spin } from 'antd'
@@ -16,9 +17,6 @@ import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankT
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
-import ItemPurchaseModal from './components/ItemPurchaseModal'
-import TrialModal from './components/TrialModal'
-import TrialConfirmationModal from './components/FeaturedContentBundle/TrialConfimationModal'
 
 // ducks
 import { slice } from '../../../../../Subscription/ducks'
@@ -30,6 +28,14 @@ import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
+
+const ItemPurchaseModal = loadable(() =>
+  import('./components/ItemPurchaseModal')
+)
+const TrialModal = loadable(() => import('./components/TrialModal'))
+const TrialConfirmationModal = loadable(() =>
+  import('./components/FeaturedContentBundle/TrialConfimationModal')
+)
 
 const PREMIUM_TAG = 'PREMIUM'
 

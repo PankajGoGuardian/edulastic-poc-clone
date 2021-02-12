@@ -4,7 +4,15 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
-import { slice } from '../../../../Subscription/ducks'
+import {
+  getItemBankSubscriptions,
+  getProducts,
+  getSubscriptionSelector,
+  getIsPaymentServiceModalVisible,
+  getPremiumProductId,
+  getIsVerificationPending,
+  slice,
+} from '../../../../Subscription/ducks'
 
 const SubscriptionAddonModal = loadable(() =>
   import('./SubscriptionAddonModal')
@@ -169,6 +177,7 @@ const PurchaseFlowModals = (props) => {
           onCancel={closeMultiplePurchaseModal}
           setShowUpgradeModal={setShowUpgradeModal}
           setTotalAmount={setTotalAmount}
+          totalAmount={totalAmount}
           setProductsCart={setProductsCart}
           products={products}
         />
@@ -181,15 +190,13 @@ export default compose(
   withRouter,
   connect(
     (state) => ({
-      verificationPending: state?.subscription?.verificationPending,
-      subscription: state?.subscription?.subscriptionData?.subscription,
+      subscription: getSubscriptionSelector(state),
+      itemBankSubscriptions: getItemBankSubscriptions(state),
+      products: getProducts(state),
+      verificationPending: getIsVerificationPending(state),
+      premiumProductId: getPremiumProductId(state),
+      isPaymentServiceModalVisible: getIsPaymentServiceModalVisible(state),
       user: state.user.user,
-      itemBankSubscriptions:
-        state?.subscription?.subscriptionData?.itemBankSubscriptions,
-      premiumProductId: state?.subscription?.subscriptionData?.premiumProductId,
-      products: state?.subscription?.products,
-      isPaymentServiceModalVisible:
-        state.subscription?.isPaymentServiceModalVisible,
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,

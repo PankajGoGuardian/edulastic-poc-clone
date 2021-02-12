@@ -20,12 +20,10 @@ export const getBulkUsersData = createSelector(
   manageSubscriptionSelector,
   (state) => state.bulkUsersData
 )
-
 export const getUsersSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.users
 )
-
 export const getLoadingStateSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.loading

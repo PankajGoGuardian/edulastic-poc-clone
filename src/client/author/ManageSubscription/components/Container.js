@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { groupBy } from 'lodash'
-import React, { useMemo, useState } from 'react'
 import loadable from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PurchaseFlowModals from '../../src/components/common/PurchaseModals'
 import { getUserOrgId } from '../../src/selectors/user'
+import { getDashboardTilesSelector } from '../../Dashboard/ducks'
 import {
   getSubscriptionSelector,
   getSuccessSelector,
+  getProducts,
+  getItemBankSubscriptions,
 } from '../../Subscription/ducks'
 import {
   addBulkUsersAdminAction,
@@ -115,7 +117,7 @@ const ManageSubscriptionContainer = ({
     }
     addUsers(o)
   }
-  
+
   const totalPaidProducts = itemBankSubscriptions.reduce(
     (a, c) => {
       if (c.isTrial) return a
@@ -198,10 +200,9 @@ const enhance = compose(
       users: getUsersSelector(state),
       showAddUserConfirmationModal: getConfirmationModalVisible(state),
       userDataSource: getBulkUsersData(state),
-      products: state?.subscription?.products,
-      dashboardTiles: state.dashboardTeacher.configurableTiles,
-      itemBankSubscriptions:
-        state?.subscription?.subscriptionData?.itemBankSubscriptions,
+      products: getProducts(state),
+      itemBankSubscriptions: getItemBankSubscriptions(state),
+      dashboardTiles: getDashboardTilesSelector(state),
     }),
     {
       addUsers: addBulkUsersAdminAction,

@@ -22,6 +22,26 @@ export const getSuccessSelector = createSelector(
   getSubscriptionDataSelector,
   (state) => state.success
 )
+export const getProducts = createSelector(
+  subscriptionSelector,
+  (state) => state.products
+)
+export const getItemBankSubscriptions = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.itemBankSubscriptions
+)
+export const getIsVerificationPending = createSelector(
+  subscriptionSelector,
+  (state) => state.verificationPending
+)
+export const getPremiumProductId = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.premiumProductId
+)
+export const getIsPaymentServiceModalVisible = createSelector(
+  subscriptionSelector,
+  (state) => state.isPaymentServiceModalVisible
+)
 
 const slice = createSlice({
   name: 'subscription',

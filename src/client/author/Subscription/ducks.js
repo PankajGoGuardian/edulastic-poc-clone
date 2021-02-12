@@ -22,6 +22,26 @@ export const getSuccessSelector = createSelector(
   getSubscriptionDataSelector,
   (state) => state.success
 )
+export const getProducts = createSelector(
+  subscriptionSelector,
+  (state) => state.products
+)
+export const getItemBankSubscriptions = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.itemBankSubscriptions
+)
+export const getIsVerificationPending = createSelector(
+  subscriptionSelector,
+  (state) => state.verificationPending
+)
+export const getPremiumProductId = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.premiumProductId
+)
+export const getIsPaymentServiceModalVisible = createSelector(
+  subscriptionSelector,
+  (state) => state.isPaymentServiceModalVisible
+)
 
 const slice = createSlice({
   name: 'subscription',
@@ -62,6 +82,9 @@ const slice = createSlice({
       state.error = payload
     },
     stripePaymentAction: (state) => {
+      state.verificationPending = true
+    },
+    stripeMultiplePaymentAction: (state) => {
       state.verificationPending = true
     },
     stripePaymentSuccess: (state, { payload }) => {
@@ -249,6 +272,10 @@ function* fetchUserSubscription() {
   }
 }
 
+function handleMultiplePurchasePayment({ payload }) {
+  console.log('multiple purchase modal', payload)
+}
+
 function* handleStripePayment({ payload }) {
   try {
     const { stripe, data, productIds } = payload
@@ -327,6 +354,10 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
     yield takeEvery(slice.actions.stripePaymentAction, handleStripePayment),
+    yield takeEvery(
+      slice.actions.stripeMultiplePaymentAction,
+      handleMultiplePurchasePayment
+    ),
     yield takeEvery(slice.actions.startTrialAction, handleFreeTrialSaga),
     yield takeEvery(
       slice.actions.fetchUserSubscriptionStatus,

@@ -32,6 +32,7 @@ const AssessmentAutoComplete = ({
   testTypes,
   selectedTestIds,
   selectCB,
+  dataCy,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -121,6 +122,7 @@ const AssessmentAutoComplete = ({
 
   return (
     <MultiSelectSearch
+      dataCy={dataCy}
       label="Test"
       placeholder="All Tests"
       el={assessmentFilterRef}

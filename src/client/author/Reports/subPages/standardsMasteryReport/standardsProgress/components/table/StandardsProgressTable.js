@@ -186,7 +186,14 @@ const StandardsProgressTable = ({
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={8}>
           <Row className="control-dropdown-row">
-            <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={12}>
+            <StyledDropDownContainer
+              data-cy="compareBy"
+              xs={24}
+              sm={24}
+              md={12}
+              lg={12}
+              xl={12}
+            >
               <ControlDropDown
                 prefix="Compare by "
                 data={compareByData}
@@ -194,7 +201,14 @@ const StandardsProgressTable = ({
                 selectCB={bindOnChange('compareBy', compareByData)}
               />
             </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={12}>
+            <StyledDropDownContainer
+              data-cy="analyzeBy"
+              xs={24}
+              sm={24}
+              md={12}
+              lg={12}
+              xl={12}
+            >
               <ControlDropDown
                 prefix="Analyze by "
                 data={analyseByData}

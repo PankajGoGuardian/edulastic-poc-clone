@@ -238,17 +238,19 @@ const StandardsFilters = ({
       <Spin />
     </StyledFilterWrapper>
   ) : (
-    <StyledFilterWrapper style={style}>
+    <StyledFilterWrapper data-cy="filters" style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         {showApply && (
-          <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+          <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>
+            APPLY
+          </StyledGoButton>
         )}
       </GoButtonWrapper>
       <PerfectScrollbar>
-        <Collapsable header="Find students" defaultActiveKey="0">
+        <Collapsable header="find students" defaultActiveKey="0">
           <SearchField>
-            <FilterLabel>School Year</FilterLabel>
+            <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
             <ControlDropDown
               by={filters.termId}
               selectCB={(e) => updateFilterDropdownCB(e, 'termId')}
@@ -284,7 +286,7 @@ const StandardsFilters = ({
             </>
           )}
           <SearchField>
-            <FilterLabel>Class Grade</FilterLabel>
+            <FilterLabel data-cy="classGrade">Class Grade</FilterLabel>
             <ControlDropDown
               prefix="Grade"
               by={filters.grade}
@@ -294,7 +296,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Class Subject</FilterLabel>
+            <FilterLabel data-cy="classSubject">Class Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
               selectCB={(e) => updateFilterDropdownCB(e, 'subject')}
@@ -304,7 +306,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Course</FilterLabel>
+            <FilterLabel data-cy="course">Course</FilterLabel>
             <CourseAutoComplete
               selectedCourseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
@@ -313,7 +315,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Class</FilterLabel>
+            <FilterLabel data-cy="class">Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -327,7 +329,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Group</FilterLabel>
+            <FilterLabel data-cy="group">Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -341,9 +343,9 @@ const StandardsFilters = ({
             />
           </SearchField>
         </Collapsable>
-        <Collapsable header="Filter by test">
+        <Collapsable header="filter by test">
           <SearchField>
-            <FilterLabel>Test Grade</FilterLabel>
+            <FilterLabel data-cy="testGrade">Test Grade</FilterLabel>
             <ControlDropDown
               prefix="Grade"
               by={filters.testGrade}
@@ -353,7 +355,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Test Subject</FilterLabel>
+            <FilterLabel data-cy="testSubject">Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.testSubject}
               selectCB={(e) => updateFilterDropdownCB(e, 'testSubject')}
@@ -364,6 +366,7 @@ const StandardsFilters = ({
           </SearchField>
           <SearchField>
             <MultiSelectDropdown
+              dataCy="testTypes"
               label="Test Type"
               el={assessmentTypesRef}
               onChange={(e) =>
@@ -381,6 +384,7 @@ const StandardsFilters = ({
           </SearchField>
           <SearchField>
             <AssessmentsAutoComplete
+              dataCy="tests"
               termId={filters.termId}
               grade={filters.testGrade !== 'All' && filters.testGrade}
               subject={filters.testSubject !== 'All' && filters.testSubject}

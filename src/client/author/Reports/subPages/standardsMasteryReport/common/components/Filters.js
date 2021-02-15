@@ -250,7 +250,7 @@ const StandardsFilters = ({
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         {showApply && (
-          <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>
+          <StyledGoButton data-cy="applyFilter" onClick={onApplyClick}>
             APPLY
           </StyledGoButton>
         )}

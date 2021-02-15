@@ -354,14 +354,22 @@ const Subscription = (props) => {
     ? Date.now() + ONE_MONTH > subEndDate
     : false
 
+  const itemBankProductIds = products
+    .filter((prod) => prod.type === 'ITEM_BANK')
+    .map((prod) => prod.linkedProductId)
+
   const totalPaidProducts = itemBankSubscriptions.reduce(
     (a, c) => {
-      if (c.isTrial) return a
-      return a + 1
+      if (itemBankProductIds.includes(c.itemBankId)) {
+        if (c.isTrial) return a
+        return a + 1
+      }
+      return a
     },
     isPaidPremium ? 1 : 0
   )
-  const hasAllPremiumProductAccess = totalPaidProducts === products.length
+  const hasAllPremiumProductAccess =
+    isPaidPremium && totalPaidProducts === products.length
   const showRenewalOptions =
     ((isPaidPremium && isAboutToExpire) ||
       (!isPaidPremium && isSubscriptionExpired)) &&

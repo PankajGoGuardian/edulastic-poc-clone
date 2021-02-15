@@ -310,7 +310,7 @@ const Settings = ({
         <SettingContainer>
           <DetailsTooltip
             title="SHOW CALCULATOR"
-            content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+            content="If students can use an on-screen calculator, select the type to make available on the test."
             premium={assessmentSuperPowersShowCalculator}
           />
           <StyledRow gutter={16} mb="15px">

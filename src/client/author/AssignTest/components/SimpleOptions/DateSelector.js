@@ -64,7 +64,7 @@ const DateSelector = ({
         <SettingContainer>
           <DetailsTooltip
             width={tootltipWidth}
-            title="Radio to select Open, close and due"
+            title="Open, Close and Due Dates"
             content="When Use Open and Close Date is selected, this restricts the test window to these dates. If you want to allow late submissions, choose the Use Open, Due, and Close Date option.  Selecting this gives the option to set a “due” date within the test window and doesn’t restrict late submissions (e.g. from absent students). Note: the Close date can be adjusted if needed on the Live Class Board, Settings."
             premium
           />

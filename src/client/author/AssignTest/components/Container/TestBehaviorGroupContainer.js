@@ -170,7 +170,7 @@ const TestBehaviorGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title="EVALUATION METHOD"
-          content="Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for incorrect answers or not (applicable only for multiple selection que widgets)."
+          content="Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for incorrect answers or not (applicable only for multiple selection question widgets)."
           premium
         />
         <StyledRow gutter={16} mb="15px">
@@ -241,7 +241,7 @@ const TestBehaviorGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title="SHOW CALCULATOR"
-          content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+          content="If students can use an on-screen calculator, select the type to make available on the test."
           premium={assessmentSuperPowersShowCalculator}
         />
         <StyledRow gutter={16} mb="15px">

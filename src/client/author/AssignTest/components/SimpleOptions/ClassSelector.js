@@ -14,7 +14,7 @@ const dropdownStyle = {
 const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
   <StyledRow gutter={16}>
     <StyledCol span={10}>
-      <FieldLabel>CLASS/GROUP SECTION</FieldLabel>
+      <FieldLabel>CLASS/GROUP</FieldLabel>
     </StyledCol>
     <StyledCol span={14}>
       <SelectInputStyled

@@ -105,7 +105,7 @@ const AutoRedirectGroupContainer = ({
         />
         <StyledRow gutter={16}>
           <StyledCol span={10}>
-            <Label>Choose One Option</Label>
+            <Label>Enable Auto Redirect</Label>
           </StyledCol>
           <StyledCol span={14}>
             <RadioGrp

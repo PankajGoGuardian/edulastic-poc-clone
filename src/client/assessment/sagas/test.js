@@ -20,7 +20,15 @@ import {
   captureSentryException,
 } from '@edulastic/common'
 import { push } from 'react-router-redux'
-import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from 'lodash'
+import {
+  keyBy as _keyBy,
+  groupBy,
+  get,
+  flatten,
+  cloneDeep,
+  set,
+  isEmpty,
+} from 'lodash'
 import produce from 'immer'
 import {
   test as testContants,
@@ -28,8 +36,11 @@ import {
   testActivityStatus,
 } from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
-import { Fscreen } from '../utils/helpers'
-import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
+import { Fscreen, isiOS } from '../utils/helpers'
+import {
+  getCurrentGroupWithAllClasses,
+  toggleIosRestrictNavigationModalAction,
+} from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
 import {
   LOAD_TEST,
@@ -67,6 +78,7 @@ import {
   getCurrentUserId,
   SET_RESUME_STATUS,
   transformAssignmentForRedirect,
+  fetchAssignments as fetchAssignmentsSaga,
 } from '../../student/Assignments/ducks'
 import {
   CLEAR_ITEM_EVALUATION,
@@ -397,12 +409,28 @@ function* loadTest({ payload }) {
       let allAnswers = {}
       let allPrevAnswers = {}
       let allEvaluation = {}
-
+      let assignmentById = yield select(
+        (state) => state?.studentAssignment?.byId || {}
+      )
+      if (isEmpty(assignmentById) || !assignmentById) {
+        // load assignments
+        yield call(fetchAssignmentsSaga)
+      }
       const {
         testActivity: activity,
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      assignmentById = yield select(
+        (state) => state?.studentAssignment?.byId || {}
+      )
+      const assignmentObj = assignmentById[activity.assignmentId]
+      if (assignmentObj?.restrictNavigationOut && isiOS()) {
+        Fscreen.safeExitfullScreen()
+        yield put(push('/home/assignments'))
+        yield put(toggleIosRestrictNavigationModalAction(true))
+        return
+      }
       if (activity.isPaused) {
         Fscreen.safeExitfullScreen()
         yield put(push('/home/assignments'))
@@ -412,6 +440,7 @@ function* loadTest({ payload }) {
             msg: 'Your assignment is paused contact your instructor',
           })
         }, 2000)
+        return
       }
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(

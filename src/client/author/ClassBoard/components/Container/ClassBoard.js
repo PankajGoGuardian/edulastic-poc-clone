@@ -85,8 +85,8 @@ import {
   getEnrollmentStatus,
   getFirstQuestionEntitiesSelector,
   actionInProgressSelector,
-  getStudentsPrevSubmittedUtasSelector,
   getAllStudentsList,
+  getStudentsPrevSubmittedUtasSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -931,9 +931,9 @@ class ClassBoard extends Component {
       showCanvasShare,
       canvasSyncAssignment,
       setShowCanvasShare,
+      studentsList,
       recentAttemptsGrouped,
       studentsPrevSubmittedUtas,
-      studentsList,
     } = this.props
 
     const {
@@ -1852,11 +1852,11 @@ const enhance = compose(
       ),
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
+      studentsList: getAllStudentsList(state),
       recentAttemptsGrouped:
         state?.author_classboard_testActivity?.data
           ?.recentTestActivitiesGrouped || {},
       studentsPrevSubmittedUtas: getStudentsPrevSubmittedUtasSelector(state),
-      studentsList: getAllStudentsList(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

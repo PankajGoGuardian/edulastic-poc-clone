@@ -7,6 +7,7 @@ import { all, call, put, takeEvery } from 'redux-saga/effects'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { fetchUserAction } from '../../student/Login/ducks'
+import { fetchMultipleSubscriptionsAction } from '../ManageSubscription/ducks'
 
 // selectors
 const subscriptionSelector = (state) => state.subscription
@@ -86,6 +87,13 @@ const slice = createSlice({
     },
     stripeMultiplePaymentAction: (state) => {
       state.verificationPending = true
+    },
+    stripeMultiplePaymentFailureAction: (state) => {
+      state.verificationPending = false
+    },
+    stripeMultiplePaymentSuccessAction: (state, { payload }) => {
+      state.verificationPending = false
+      state.multiplePaymentData = payload
     },
     stripePaymentSuccess: (state, { payload }) => {
       state.verificationPending = false
@@ -272,8 +280,60 @@ function* fetchUserSubscription() {
   }
 }
 
-function handleMultiplePurchasePayment({ payload }) {
-  console.log('multiple purchase modal', payload)
+function* handleMultiplePurchasePayment({ payload }) {
+  try {
+    yield call(message.loading, {
+      content: 'Processing Payment, please wait',
+      key: 'verify-license',
+    })
+    const { stripe, data, productIds } = payload
+    const { token, error } = yield stripe.createToken(data)
+    if (token) {
+      const products = productIds.reduce((allProducts, product) => {
+        const { quantity, id, linkedProductId } = product
+        allProducts[linkedProductId || id] = quantity
+        return allProducts
+      }, {})
+      const apiPaymentResponse = yield call(paymentApi.licensePurchase, {
+        token,
+        products,
+      })
+      if (apiPaymentResponse.licenseKeys) {
+        yield put(
+          slice.actions.stripeMultiplePaymentSuccessAction(
+            apiPaymentResponse.licenseKeys
+          )
+        )
+        yield put(slice.actions.setPaymentServiceModal(false))
+        yield put(fetchMultipleSubscriptionsAction())
+        notification({
+          type: 'success',
+          msg: `Payment successful.`,
+        })
+      } else {
+        notification({
+          type: 'error',
+          msg: `Payment failed.`,
+        })
+        yield put(slice.actions.stripeMultiplePaymentFailureAction())
+      }
+    } else {
+      notification({
+        type: 'error',
+        msg: `Creating token failed : ${error.message}`,
+      })
+      yield put(slice.actions.stripeMultiplePaymentFailureAction())
+      console.error('ERROR WHILE PROCESSING PAYMENT [Create Token] : ', error)
+    }
+  } catch (err) {
+    yield put(slice.actions.stripeMultiplePaymentFailureAction())
+    notification({
+      type: 'error',
+      msg: 'Payment failed.',
+    })
+    console.error('ERROR WHILE PROCESSING LICENSE PURCHASE : ', err)
+    captureSentryException(err)
+  }
 }
 
 function* handleStripePayment({ payload }) {

@@ -95,6 +95,7 @@ const Userlist = ({ users }) => {
     <Row>
       <Col span={24}>
         <StyledAntdTable
+          rowKey={(x) => x.userId}
           dataSource={users}
           columns={columns}
           pagination={false}

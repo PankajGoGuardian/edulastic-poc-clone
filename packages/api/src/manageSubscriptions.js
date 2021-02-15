@@ -11,6 +11,16 @@ const fetchLicenses = () =>
     })
     .then((result) => result.data)
 
+const upgradeUsersSubscriptions = (data) =>
+  api
+    .callApi({
+      method: 'post',
+      url: `${BASE_URL}/upgrade-users`,
+      data,
+    })
+    .then((result) => result.data)
+
 export default {
   fetchLicenses,
+  upgradeUsersSubscriptions,
 }

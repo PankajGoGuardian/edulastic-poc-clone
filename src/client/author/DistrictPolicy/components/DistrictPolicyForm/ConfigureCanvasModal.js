@@ -25,6 +25,7 @@ const ConfigureCanvasModal = ({
   canvasConsumerKey = '',
   canvasSharedSecret = '',
   user,
+  lti,
 }) => {
   const [canvasConfigureData, setCanvasConfigureData] = useState({
     canvasInstanceUrl,
@@ -210,7 +211,7 @@ const ConfigureCanvasModal = ({
               <label>Consumer Key</label>
               <TextInputStyled
                 placeholder="Enter Consumer Key"
-                value={canvasConfigureData.canvasConsumerKey}
+                value={lti.consumerKey}
                 disabled={true}
                 height="40px"
               />
@@ -219,7 +220,7 @@ const ConfigureCanvasModal = ({
               <label>Secret key</label>
               <TextInputStyled
                 placeholder="Enter Secret Key"
-                value={canvasConfigureData.canvasSharedSecret}
+                value={lti.consumerSecret}
                 disabled={true}
                 height="40px"
               />

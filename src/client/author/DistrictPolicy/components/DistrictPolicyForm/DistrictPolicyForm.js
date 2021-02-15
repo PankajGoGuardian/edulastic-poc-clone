@@ -693,6 +693,7 @@ class DistrictPolicyForm extends Component {
             canvasConsumerKey={districtPolicy.canvasConsumerKey}
             canvasInstanceUrl={districtPolicy.canvasInstanceUrl}
             canvasSharedSecret={districtPolicy.canvasSharedSecret}
+            lti={districtPolicy.lti}
             user={user}
           />
         )}

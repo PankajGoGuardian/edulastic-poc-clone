@@ -43,6 +43,7 @@ import {
   FETCH_SERVER_TIME,
   PAUSE_STUDENTS,
   UPDATE_PAUSE_STATUS_ACTION,
+  SET_UPDATED_ACTIVITY_IN_ENTITY,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -256,3 +257,6 @@ export const canvasSyncGradesAction = createAction(CANVAS_SYNC_GRADES)
 export const canvasSyncAssignmentAction = createAction(CANVAS_SYNC_ASSIGNMENT)
 export const fetchServerTimeAction = createAction(FETCH_SERVER_TIME)
 export const updatePauseStatusAction = createAction(UPDATE_PAUSE_STATUS_ACTION)
+export const setUpdateActivityIdInEntityAction = createAction(
+  SET_UPDATED_ACTIVITY_IN_ENTITY
+)

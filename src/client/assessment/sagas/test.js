@@ -20,7 +20,15 @@ import {
   captureSentryException,
 } from '@edulastic/common'
 import { push } from 'react-router-redux'
-import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from 'lodash'
+import {
+  keyBy as _keyBy,
+  groupBy,
+  get,
+  flatten,
+  cloneDeep,
+  set,
+  isEmpty,
+} from 'lodash'
 import produce from 'immer'
 import {
   test as testContants,
@@ -28,8 +36,11 @@ import {
   testActivityStatus,
 } from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
-import { Fscreen } from '../utils/helpers'
-import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
+import { Fscreen, isiOS } from '../utils/helpers'
+import {
+  getCurrentGroupWithAllClasses,
+  toggleIosRestrictNavigationModalAction,
+} from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
 import {
   LOAD_TEST,
@@ -67,6 +78,7 @@ import {
   getCurrentUserId,
   SET_RESUME_STATUS,
   transformAssignmentForRedirect,
+  fetchAssignments as fetchAssignmentsSaga,
 } from '../../student/Assignments/ducks'
 import {
   CLEAR_ITEM_EVALUATION,
@@ -274,6 +286,9 @@ function* loadTest({ payload }) {
     const isFromSummary = yield select((state) =>
       get(state, 'router.location.state.fromSummary', false)
     )
+    const _switchLanguage = yield select((state) =>
+      get(state, 'router.location.state.switchLanguage', false)
+    )
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse
@@ -287,7 +302,8 @@ function* loadTest({ payload }) {
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
           testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF ||
-        isFromSummary
+        isFromSummary ||
+        _switchLanguage
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true))
       }
@@ -303,6 +319,7 @@ function* loadTest({ payload }) {
         type: TEST_ACTIVITY_LOADING,
         payload: false,
       })
+
       while (!passwordValidated) {
         try {
           const { payload: _payload } = yield take(GET_ASSIGNMENT_PASSWORD)
@@ -392,12 +409,28 @@ function* loadTest({ payload }) {
       let allAnswers = {}
       let allPrevAnswers = {}
       let allEvaluation = {}
-
+      let assignmentById = yield select(
+        (state) => state?.studentAssignment?.byId || {}
+      )
+      if (isEmpty(assignmentById) || !assignmentById) {
+        // load assignments
+        yield call(fetchAssignmentsSaga)
+      }
       const {
         testActivity: activity,
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      assignmentById = yield select(
+        (state) => state?.studentAssignment?.byId || {}
+      )
+      const assignmentObj = assignmentById[activity.assignmentId]
+      if (assignmentObj?.restrictNavigationOut && isiOS()) {
+        Fscreen.safeExitfullScreen()
+        yield put(push('/home/assignments'))
+        yield put(toggleIosRestrictNavigationModalAction(true))
+        return
+      }
       if (activity.isPaused) {
         Fscreen.safeExitfullScreen()
         yield put(push('/home/assignments'))
@@ -407,6 +440,7 @@ function* loadTest({ payload }) {
             msg: 'Your assignment is paused contact your instructor',
           })
         }, 2000)
+        return
       }
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(
@@ -883,12 +917,19 @@ function* switchLanguage({ payload }) {
     const testType = yield select((state) => state.test && state.test.testType)
     const firstItemId = itemsToDeliverInGroup[0].items[0]
     yield put(startAssessmentAction())
+    yield put({
+      type: LOAD_SCRATCH_PAD,
+      payload: {},
+    })
     yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
     yield put(push('/'))
     yield put(
-      push(
-        `/student/${testType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`
-      )
+      push({
+        pathname: `/student/${testType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
+        state: {
+          switchLanguage: true,
+        },
+      })
     )
   } catch (err) {
     console.log(err)

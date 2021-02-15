@@ -462,6 +462,22 @@ export const normalizeTouchEvent = (e) => {
   }
 }
 
+export function isiOS() {
+  return (
+    [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod',
+    ].includes(navigator.platform) ||
+    // iPad on iOS 13 detection
+    (navigator.userAgent.includes('Mac') && 'ontouchend' in document) ||
+    (!window.MSStream && /iPad|iPhone|iPod/.test(navigator.userAgent))
+  )
+}
+
 /**
  * shows the “Remember to hide the scratchpad to answer other parts of this question”
  * message in case the item is multipart, whenever we click on show scratchpad
@@ -561,12 +577,10 @@ export const Fscreen = {
       if (returnVal?.catch) {
         returnVal.catch((e) => {
           console.warn('fullscreen exit error', e)
-          Sentry.captureException(e)
         })
       }
     } catch (err) {
       console.warn('fullscreen exit error', err)
-      Sentry.captureException(err)
     }
   },
   get fullscreenPseudoClass() {

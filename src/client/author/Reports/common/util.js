@@ -28,12 +28,12 @@ const studentFiltersDefaultValues = [
     key: '',
     nestedFilters: [
       {
-        key: 'classId',
-        value: 'All',
+        key: 'classIds',
+        value: '',
       },
       {
-        key: 'groupId',
-        value: 'All',
+        key: 'groupIds',
+        value: '',
       },
     ],
   },

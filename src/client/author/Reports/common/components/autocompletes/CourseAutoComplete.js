@@ -24,6 +24,7 @@ const CourseAutoComplete = ({
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
+  const [isFocused, setIsFocused] = useState(false)
 
   // build search query
   const query = useMemo(() => {
@@ -53,6 +54,7 @@ const CourseAutoComplete = ({
     selectCB({ key, title: value })
   }
   const onBlur = () => {
+    setIsFocused(false)
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
       selectCB({ key: 'All', title: '' })
@@ -65,6 +67,7 @@ const CourseAutoComplete = ({
     []
   )
   const getDefaultCourseList = () => {
+    setIsFocused(true)
     if (isEmpty(searchResult)) {
       loadCourseListDebounced(query)
     }
@@ -83,17 +86,21 @@ const CourseAutoComplete = ({
   }, [searchTerms])
 
   // build dropdown data
-  const dropdownData = [
-    <AutoComplete.OptGroup key="courseList" label="Courses [Type to search]">
-      {Object.values(searchTerms.text ? courseList : searchResult).map(
-        (item) => (
-          <AutoComplete.Option key={item._id} title={item.name}>
-            {item.name}
-          </AutoComplete.Option>
-        )
-      )}
-    </AutoComplete.OptGroup>,
-  ]
+  const dropdownData = Object.values(
+    searchTerms.text ? courseList : searchResult
+  ).map((item) => (
+    <AutoComplete.Option key={item._id} title={item.name}>
+      {item.name.length > 45 ? `${item.name.slice(0, 42)}...` : item.name}
+    </AutoComplete.Option>
+  ))
+
+  const InputSuffixIcon = loading ? (
+    <Icon type="loading" />
+  ) : searchTerms.text && isFocused ? (
+    <></>
+  ) : (
+    <Icon type="search" />
+  )
 
   return (
     <AutoCompleteContainer>
@@ -106,8 +113,10 @@ const CourseAutoComplete = ({
         onSelect={onSelect}
         onBlur={onBlur}
         onFocus={() => getDefaultCourseList()}
+        allowClear={!loading && searchTerms.selectedText && isFocused}
+        clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
       >
-        <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
+        <Input suffix={InputSuffixIcon} />
       </AutoComplete>
     </AutoCompleteContainer>
   )

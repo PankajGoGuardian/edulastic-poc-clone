@@ -64,22 +64,16 @@ const TrialConfirmationModal = ({
             <p>
               Thanks for trying the Teacher Premium and additional Spark
               content. Your subscription will expire on <b>{subEndDate}</b>.
-              After your trial ends upgrade for a full calendar year for just
-              $100 plus optional Spark premium contente that you choose to add
-              on.
             </p>
           ) : hasTrial === 'onlyPremiumTrial' ? (
             <p>
               Thanks for trying teacher premium. Your trial will expire on{' '}
-              <b>{subEndDate}</b>. After your trial ends, continue to use
-              teacher premium for a full calendar year for just $100.
+              <b>{subEndDate}</b>.
             </p>
           ) : (
             <p>
               Thanks for trying premium Spark assessments and practice. Your
-              trial will expire on <b>{subEndDate}</b>. After your trial ends,
-              continue to use additional Spark content for a full calendar year
-              for just $100
+              trial will expire on <b>{subEndDate}</b>.
             </p>
           )}
         </ModalBody>

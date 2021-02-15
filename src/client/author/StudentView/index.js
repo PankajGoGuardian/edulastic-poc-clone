@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { findIndex, isUndefined, get } from 'lodash'
 import { setAutoFreeze } from 'immer'
 import memoizeOne from 'memoize-one'
-import { Input, Tooltip, Spin } from 'antd'
+import { Input, Tooltip } from 'antd'
 import {
   AnswerContext,
   scrollTo,
@@ -46,7 +46,6 @@ import {
   getStudentResponseSelector,
   getTestItemsOrderSelector,
   getCurrentTestActivityIdSelector,
-  getStudentResponseLoadingSelector,
   getAdditionalDataSelector,
   getAllStudentsList,
 } from '../ClassBoard/ducks'
@@ -165,7 +164,6 @@ class StudentViewContainer extends Component {
       filter,
       isCliUser,
       match,
-      studentResponseLoading,
       additionalData,
       studentsList,
     } = this.props
@@ -231,10 +229,6 @@ class StudentViewContainer extends Component {
         <p>{initFeedbackValue}</p>
       </div>
     )
-
-    if (studentResponseLoading) {
-      return <Spin />
-    }
 
     return (
       <>
@@ -425,7 +419,6 @@ const enhance = compose(
       ),
       entities: get(state, 'author_classboard_testActivity.entities', []),
       filter: state?.author_classboard_testActivity?.studentViewFilter,
-      studentResponseLoading: getStudentResponseLoadingSelector(state),
       additionalData: getAdditionalDataSelector(state),
       studentsList: getAllStudentsList(state),
     }),

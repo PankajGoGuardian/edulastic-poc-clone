@@ -61,7 +61,6 @@ import StandardProficiencyTable from './StandardProficiencyTable'
 import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
-import DetailsTooltip from '../../../../../AssignTest/components/Container/DetailsTooltip'
 import { StyledRow } from '../../../../../AssignTest/components/SimpleOptions/styled'
 
 const {
@@ -461,8 +460,20 @@ class Setting extends Component {
     }
 
     const accessibilityData = [
-      { key: 'showMagnifier', value: showMagnifier },
-      { key: 'enableScratchpad', value: enableScratchpad },
+      {
+        key: 'showMagnifier',
+        value: showMagnifier,
+        description:
+          'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
+        id: 'magnifier-setting',
+      },
+      {
+        key: 'enableScratchpad',
+        value: enableScratchpad,
+        description:
+          'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
+        id: 'scratchpad-setting',
+      },
       // { key: 'enableSkipAlert', value: enableSkipAlert },
     ]
 
@@ -500,7 +511,8 @@ class Setting extends Component {
 
     const showMultiLangSelection =
       allowedToSelectMultiLanguage &&
-      (isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR)
+      (isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR) &&
+      !isDocBased
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />
@@ -1317,11 +1329,11 @@ class Setting extends Component {
                           <Description>
                             If <b>ON</b>, then students must take the test in
                             full screen mode to prevent opening another browser
-                            window. The student will get an alert if they
-                            navigate out of full screen mode during the test. If
-                            the designated number of alerts are exceeded, the
-                            student’s assignment will be paused and the
-                            instructor will need to manually reset.
+                            window. Alert will appear if student has navigated
+                            away for more than 5 seconds.If the designated
+                            number of alerts are exceeded, the student’s
+                            assignment will be paused and the instructor will
+                            need to manually reset.
                           </Description>
                         </Col>
                       </Row>
@@ -1553,15 +1565,9 @@ class Setting extends Component {
                   )}
 
                   {/* Multi language start */}
-                  {showMultiLangSelection && (
+                  {allowedToSelectMultiLanguage && (
                     <Block id="multi-language-enabled" smallSize={isSmallSize}>
-                      <SettingContainer>
-                        <DetailsTooltip
-                          showInsideContainer
-                          title="Multi-Language"
-                          content="Select ON , If you want to enable multiple languages for the test."
-                          premium={premium}
-                        />
+                      <Body>
                         <Title>
                           <span>Multi-Language</span>
                           <EduSwitchStyled
@@ -1581,7 +1587,7 @@ class Setting extends Component {
                             enable multiple languages for the test.
                           </Description>
                         </Body>
-                      </SettingContainer>
+                      </Body>
                     </Block>
                   )}
                   {/* Multi language Ends */}
@@ -1595,6 +1601,11 @@ class Setting extends Component {
                       disabled={!owner || !isEditable || !performanceBands}
                       isFeatureAvailable={performanceBands}
                     />
+                    <Description>
+                      Performance bands are set by district or school admins.
+                      Teachers can modify cut scores/thresholds for class
+                      assignments.
+                    </Description>
                   </Block>
 
                   <Block id="standards-proficiency" smallSize={isSmallSize}>
@@ -1606,6 +1617,12 @@ class Setting extends Component {
                       disabled={!owner || !isEditable || !premium}
                       isFeatureAvailable={premium}
                     />
+                    <Description>
+                      Standards based scales are set by district or school
+                      admins. Teachers can modify performance threshold scores
+                      for class assignments to track mastery by standards
+                      assessed.
+                    </Description>
                   </Block>
 
                   <Block id="accessibility" smallSize={isSmallSize}>
@@ -1622,7 +1639,7 @@ class Setting extends Component {
                     >
                       {accessibilityData.map((o) => (
                         <StyledRow key={o.key} align="middle">
-                          <Col span={12}>
+                          <Col span={6}>
                             <span
                               style={{
                                 fontSize: 13,
@@ -1654,6 +1671,9 @@ class Setting extends Component {
                                 DISABLE
                               </RadioBtn>
                             </StyledRadioGroup>
+                          </Col>
+                          <Col span={24}>
+                            <Description>{o.description}</Description>
                           </Col>
                         </StyledRow>
                       ))}

@@ -357,10 +357,10 @@ const SubscriptionMain = ({
           <SectionTitle>
             {isPremium
               ? 'Add ons for your Premium Version'
-              : 'Premium addons to make it even better'}
+              : 'Premium add-ons to make it even better'}
           </SectionTitle>
           <SectionDescription>
-            You can bundle one or more of the following addons to the teacher
+            You can bundle one or more of the following add-ons to the teacher
             premium subscription that will <br /> make it easier to deliver
             differentiated instruction and keep your students engaged.
           </SectionDescription>

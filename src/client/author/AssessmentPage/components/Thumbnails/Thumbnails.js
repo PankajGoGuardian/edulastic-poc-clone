@@ -19,12 +19,22 @@ const menu = (
   onAddPdf
 ) => (
   <Menu>
-    <Menu.Item onClick={onAddBlank}>Add Blank Page</Menu.Item>
-    <Menu.Item disabled={pdfPageLength === 1} onClick={onDeleteBlank}>
+    <Menu.Item onClick={onAddBlank} data-cy="addBlankPage">
+      Add Blank Page
+    </Menu.Item>
+    <Menu.Item
+      disabled={pdfPageLength === 1}
+      onClick={onDeleteBlank}
+      data-cy="deletePage"
+    >
       Delete Page
     </Menu.Item>
-    <Menu.Item onClick={onAddPdf}>Add Another PDF</Menu.Item>
-    <Menu.Item onClick={onReupload}>Reupload PDF</Menu.Item>
+    <Menu.Item onClick={onAddPdf} data-cy="addAnotherPdf">
+      Add Another PDF
+    </Menu.Item>
+    <Menu.Item onClick={onReupload} data-cy="reUploadPdf">
+      Reupload PDF
+    </Menu.Item>
   </Menu>
 )
 
@@ -96,7 +106,9 @@ const Thumbnails = ({
                 onAddPdf
               )}
             >
-              <ReuploadButton>Manage document</ReuploadButton>
+              <ReuploadButton data-cy="manageDocument">
+                Manage document
+              </ReuploadButton>
             </Dropdown>
           </ReuploadButtonWrapper>
         )}

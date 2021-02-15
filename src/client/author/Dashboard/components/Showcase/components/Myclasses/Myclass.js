@@ -71,7 +71,6 @@ const MyClasses = ({
   setPaymentServiceModal,
   showHeaderTrialModal,
   setShowHeaderTrialModal,
-  isCliUser,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -102,6 +101,7 @@ const MyClasses = ({
   }, [])
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+  const isCliUser = user.openIdProvider === 'CLI'
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const DEFAULT_ITEMBANK_PRICE = 100
@@ -509,7 +509,6 @@ export default compose(
     (state) => ({
       classData: state.dashboardTeacher.data,
       districtId: state.user.user?.orgData?.districtIds?.[0],
-      isCliUser: get(state, 'user.isCliUser', false),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),

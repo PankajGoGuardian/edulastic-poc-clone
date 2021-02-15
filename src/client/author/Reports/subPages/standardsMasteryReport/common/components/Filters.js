@@ -162,8 +162,8 @@ const StandardsFilters = ({
         subject: urlSubject.key,
         grade: urlGrade.key,
         courseId: search.courseId || 'All',
-        classId: search.classId || 'All',
-        groupId: search.groupId || 'All',
+        classIds: search.classIds || '',
+        groupIds: search.groupIds || '',
         testSubject: urlTestSubject.key,
         testGrade: urlTestGrade.key,
         assessmentTypes: search.assessmentTypes || '',
@@ -331,8 +331,11 @@ const StandardsFilters = ({
               grade={filters.grade !== 'All' && filters.grade}
               subject={filters.subject !== 'All' && filters.subject}
               courseId={filters.courseId !== 'All' && filters.courseId}
+              selectedClassIds={
+                filters.classIds ? filters.classIds.split(',') : []
+              }
               selectCB={(e) => {
-                updateFilterDropdownCB(e, 'classId')
+                updateFilterDropdownCB(e.join(','), 'classIds', true)
               }}
             />
           </SearchField>
@@ -345,8 +348,11 @@ const StandardsFilters = ({
               grade={filters.grade !== 'All' && filters.grade}
               subject={filters.subject !== 'All' && filters.subject}
               courseId={filters.courseId !== 'All' && filters.courseId}
+              selectedGroupIds={
+                filters.groupIds ? filters.groupIds.split(',') : []
+              }
               selectCB={(e) => {
-                updateFilterDropdownCB(e, 'groupId')
+                updateFilterDropdownCB(e.join(','), 'groupIds', true)
               }}
             />
           </SearchField>

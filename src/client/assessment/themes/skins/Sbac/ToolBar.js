@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { test, questionType } from '@edulastic/constants'
@@ -7,10 +9,13 @@ import {
   IconClose,
   IconScratchPad,
   IconMagnify,
+  IconLanguage,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
+import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
+import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
 
 const { calculatorTypes } = test
 
@@ -19,11 +24,9 @@ const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 const ToolBar = ({
   settings = {},
   tool = [],
-  changeCaculateMode,
   changeTool,
   qType,
   setZoomLevel,
-  zoomLevel,
   isDocbased,
   handleMagnifier,
   showMagnifier,
@@ -32,14 +35,11 @@ const ToolBar = ({
   utaId,
   groupId,
   header,
+  multiLanguageEnabled,
+  setSettingsModalVisibility,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
-
-  const handleCalculateMode = (value) => {
-    changeTool(2)
-    changeCaculateMode(value)
-  }
 
   const { calcType, enableScratchpad } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
@@ -55,6 +55,10 @@ const ToolBar = ({
       setZoomLevel(zoomIndex[zoom - 1])
       setZoom(zoom - 1)
     }
+  }
+
+  const showLangSwitchPopUp = () => {
+    setSettingsModalVisibility(true)
   }
 
   return (
@@ -120,6 +124,13 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
+      {multiLanguageEnabled && (
+        <Tooltip placement="top" title="Select Language">
+          <StyledButton onClick={showLangSwitchPopUp}>
+            <IconLanguage />
+          </StyledButton>
+        </Tooltip>
+      )}
       {timedAssignment && (
         <TimedTestTimer
           utaId={utaId}
@@ -132,14 +143,24 @@ const ToolBar = ({
 }
 
 ToolBar.propTypes = {
-  changeCaculateMode: PropTypes.func.isRequired,
   tool: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   qType: PropTypes.string.isRequired,
 }
 
-export default ToolBar
+const enhance = compose(
+  connect(
+    (state) => ({
+      multiLanguageEnabled: getIsMultiLanguageEnabled(state),
+    }),
+    {
+      setSettingsModalVisibility: setSettingsModalVisibilityAction,
+    }
+  )
+)
+
+export default enhance(ToolBar)
 
 export const CaculatorIcon = styled(IconCalculator)`
   ${({ theme }) => `

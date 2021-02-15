@@ -14,6 +14,7 @@ import { setQuestionDataAction } from '../../../../author/src/actions/question'
 import { smallestZoomLevel } from '../../../../common/utils/static/zoom'
 import { ifZoomed } from '../../../../common/utils/helpers'
 import { MIN_SNAP_SIZE } from '../Builder/config/constants'
+import GraphInView from './GraphInView'
 
 const QuadrantsContainer = loadable(() =>
   import('./QuadrantsContainer/QuadrantsContainer')
@@ -808,12 +809,12 @@ class GraphDisplay extends Component {
     const GraphContainer = this.getGraphContainer()
 
     return (
-      <>
+      <GraphInView isPartial className="__prevent-page-break">
         {graphIsValid ? (
-          <div className="__prevent-page-break">
+          <>
             {/* zoomLevel change css transform: scale() style,
-                after changing this style 
-                you need to do full reinit of component with jsxgraph object */}
+              after changing this style 
+              you need to do full reinit of component with jsxgraph object */}
             {zl === 1 && (
               <GraphContainer
                 fallback={<Progress />}
@@ -854,11 +855,11 @@ class GraphDisplay extends Component {
                 isPrintPreview={isPrint || isPrintPreview}
               />
             )}
-          </div>
+          </>
         ) : (
           <div>Wrong parameters</div>
         )}
-      </>
+      </GraphInView>
     )
   }
 }

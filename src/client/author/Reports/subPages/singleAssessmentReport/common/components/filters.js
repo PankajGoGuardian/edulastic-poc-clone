@@ -172,8 +172,8 @@ const SingleAssessmentReportFilters = ({
         subject: urlSubject.key,
         grade: urlGrade.key,
         courseId: search.courseId || 'All',
-        classId: search.classId || 'All',
-        groupId: search.groupId || 'All',
+        classIds: search.classIds || '',
+        groupIds: search.groupIds || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
@@ -381,7 +381,6 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel data-cy="classTitle">Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -393,13 +392,15 @@ const SingleAssessmentReportFilters = ({
               courseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
               }
-              selectCB={(e) => {
-                updateFilterDropdownCB(e, 'classId')
-              }}
+              selectedClassIds={
+                filters.classIds ? filters.classIds.split(',') : []
+              }
+              selectCB={(e) =>
+                updateFilterDropdownCB(e.join(','), 'classIds', true)
+              }
             />
           </SearchField>
           <SearchField>
-            <FilterLabel data-cy="group">Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -411,9 +412,12 @@ const SingleAssessmentReportFilters = ({
               courseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
               }
-              selectCB={(e) => {
-                updateFilterDropdownCB(e, 'groupId')
-              }}
+              selectedGroupIds={
+                filters.groupIds ? filters.groupIds.split(',') : []
+              }
+              selectCB={(e) =>
+                updateFilterDropdownCB(e.join(','), 'groupIds', true)
+              }
             />
           </SearchField>
         </Collapsable>

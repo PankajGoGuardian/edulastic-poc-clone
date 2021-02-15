@@ -67,7 +67,7 @@ export const SignedStackedBarChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
   legendWrapperStyle = { top: -10 },
   xTickTooltipPosition = 460,
-  xTickToolTipWidth = 110,
+  xTickToolTipWidth = 200,
   pageSize: _pageSize,
   barsData,
   data = [],

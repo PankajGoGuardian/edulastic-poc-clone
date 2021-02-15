@@ -498,7 +498,6 @@ class QuestionWrapper extends Component {
 
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
-
     const { main, advanced, extras, activeTab, page } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled

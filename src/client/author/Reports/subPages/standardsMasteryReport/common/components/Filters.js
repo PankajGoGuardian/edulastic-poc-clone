@@ -250,7 +250,7 @@ const StandardsFilters = ({
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         {showApply && (
-          <StyledGoButton data-cy="applyFilter" onClick={onApplyClick}>
+          <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>
             APPLY
           </StyledGoButton>
         )}
@@ -323,6 +323,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
+            <FilterLabel data-cy="class">Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -339,6 +340,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
+            <FilterLabel data-cy="group">Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}

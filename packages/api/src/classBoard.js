@@ -217,12 +217,18 @@ const bulkDownloadGrades = ({ testId, data, testType, status }) =>
     })
     .then((response) => response.data)
 
-const togglePauseStudents = ({ assignmentId, classId, students, isPause,pauseReason }) =>
+const togglePauseStudents = ({
+  assignmentId,
+  classId,
+  students,
+  isPause,
+  pauseReason,
+}) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/${assignmentId}/toggle-pause-students`,
-      data: { groupId: classId, students, isPause,pauseReason },
+      data: { groupId: classId, students, isPause, pauseReason },
     })
     .then((result) => result.data.result)
 

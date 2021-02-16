@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Col, Row, Table } from 'antd'
-import { themeColor } from '@edulastic/colors'
+import { alertColor, dangerColor, themeColor } from '@edulastic/colors'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { StatusDiv, StyledStatusIcon } from './styled'
 
@@ -18,8 +18,8 @@ const ADD_USER_STATUS = {
 
 const ICON_COLORS = {
   SUCCESS: themeColor,
-  ALERT: '#faad14',
-  DANGER: '#f5222d',
+  ALERT: alertColor,
+  DANGER: dangerColor,
 }
 
 const StatusComponent = ({ type, color, text }) => (

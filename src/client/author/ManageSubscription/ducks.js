@@ -165,7 +165,8 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
     }
   } catch (err) {
     captureSentryException(err)
-    const errorMessage = 'Unable to add users in bulk.'
+    const errorMessage =
+      err?.response?.data?.message || 'Unable to add or upgrade users in bulk.'
     notification({ type: 'error', msg: errorMessage })
     yield put(addAndUpgradeUsersErrorAction({ bulkAddError: errorMessage }))
   }

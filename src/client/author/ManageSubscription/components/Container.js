@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { withNamespaces } from '@edulastic/localization'
+import { subscriptions as constants } from '@edulastic/constants'
 import { groupBy } from 'lodash'
 import loadable from '@loadable/component'
 import { connect } from 'react-redux'
@@ -35,10 +36,7 @@ const AddUsersConfirmationModal = loadable(() =>
   import('./AddUsersConfirmationModal')
 )
 
-const PRODUCT_NAMES = {
-  TEACHER_PREMIUM: 'Teacher Premium',
-  SPARK_MATH: 'Spark Math',
-}
+const { PRODUCT_NAMES } = constants
 
 const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},

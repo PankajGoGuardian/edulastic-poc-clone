@@ -67,7 +67,6 @@ const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
 
 function PauseToolTip({ outNavigationCounter, pauseReason, children }) {
   let reason = null
-  console.log('pauseToolTip', { pauseReason })
   if (pauseReason === 'blocked-save-and-continue') {
     reason =
       'Test is paused due to inactivity.  To reset, place a check mark in student card, go to More, select Resume'

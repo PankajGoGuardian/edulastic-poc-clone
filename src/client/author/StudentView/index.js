@@ -193,6 +193,7 @@ class StudentViewContainer extends Component {
     const activeQuestions = questionActivities.filter(
       (x) => !(x.disabled || x.scoringDisabled)
     )
+    // TODO: refactor computing these counts in a single loop/reduce
     const totalNumber = activeQuestions.length
 
     const correctNumber = activeQuestions.filter(

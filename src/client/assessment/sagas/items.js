@@ -34,10 +34,7 @@ import { redirectPolicySelector } from '../selectors/test'
 import { getServerTs } from '../../student/utils'
 import { Fscreen } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
-import {
-  scratchpadDomRectSelector,
-  resetScratchpadDimensionsAction,
-} from '../../common/components/Scratchpad/duck'
+import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -365,7 +362,6 @@ export function* saveUserResponse({ payload }) {
     if (payload?.urlToGo) {
       yield put(push({ pathname: payload.urlToGo, state: payload?.locState }))
     }
-    yield put(resetScratchpadDimensionsAction())
     if (shouldClearUserWork) {
       /**
        * if we have two assignments one for practice

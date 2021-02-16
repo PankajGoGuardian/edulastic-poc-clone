@@ -1862,6 +1862,7 @@ export function* updateTestSaga({ payload }) {
       else notification({ type: 'success', messageKey: 'testSavedAsDraft' })
     }
     yield put(setTestsLoadingAction(false))
+    return entity
   } catch (err) {
     captureSentryException(err)
     console.log({ err })
@@ -1971,9 +1972,10 @@ function* updateTestDocBasedSaga({ payload }) {
       ],
     }
 
-    return yield call(updateTestSaga, {
+    const entityData = yield call(updateTestSaga, {
       payload: { ...payload, data: newAssessment },
     })
+    return entityData
   } catch (err) {
     captureSentryException(err)
     const errorMessage = err?.data?.message || 'Unable to update the test.'
@@ -2077,9 +2079,14 @@ function* publishTestSaga({ payload }) {
         return
       }
     }
-    yield call(_test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
-      payload: { id, data: _test, assignFlow: true },
-    })
+    const result = yield call(
+      _test.isDocBased ? updateTestDocBasedSaga : updateTestSaga,
+      {
+        payload: { id, data: _test, assignFlow: true },
+      }
+    )
+
+    if (!result) return
 
     const features = yield select(getUserFeatures)
     if (features.isPublisherAuthor && !assignFlow) {

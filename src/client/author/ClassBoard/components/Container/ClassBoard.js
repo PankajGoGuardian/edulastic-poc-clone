@@ -120,8 +120,12 @@ import {
   SwitchBox,
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
-import { updateCliUserAction } from '../../../../student/Login/ducks'
+import {
+  updateCliUserAction,
+  toggleFreeAdminSubscriptionModalAction,
+} from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
+import { isFreeAdminSelector } from '../../../src/selectors/user'
 
 const NotificationComponent = (props) => {
   notification(props)
@@ -204,7 +208,13 @@ class ClassBoard extends Component {
       isCliUser: cliUserUpdated,
       history,
       setShowAllStudents,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
     } = this.props
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
     const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
     const { search, state } = location
@@ -1857,6 +1867,7 @@ const enhance = compose(
         state?.author_classboard_testActivity?.data
           ?.recentTestActivitiesGrouped || {},
       studentsPrevSubmittedUtas: getStudentsPrevSubmittedUtasSelector(state),
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -1878,6 +1889,7 @@ const enhance = compose(
       canvasSyncAssignment: canvasSyncAssignmentAction,
       setShowCanvasShare: setShowCanvasShareAction,
       pauseStudents: togglePauseStudentsAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

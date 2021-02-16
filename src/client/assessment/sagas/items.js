@@ -27,6 +27,7 @@ import {
   LOAD_ANSWERS,
   CLEAR_USER_WORK,
   CLEAR_HINT_USAGE,
+  SET_SAVE_USER_RESPONSE,
 } from '../constants/actions'
 import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
@@ -119,6 +120,11 @@ async function getFileNameAndQidMap(qId, data, folder) {
 
 export function* saveUserResponse({ payload }) {
   try {
+    // setting savingResponse true only when the saveUserResponse is being called
+    yield put({
+      type: SET_SAVE_USER_RESPONSE,
+      payload: true,
+    })
     const ts = payload.timeSpent || 0
     const {
       autoSave,

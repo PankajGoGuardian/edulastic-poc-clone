@@ -48,6 +48,7 @@ import {
   getCollectionsSelector,
   getUserId,
   getCollectionsToAddContent,
+  isFreeAdminSelector,
 } from '../../../src/selectors/user'
 import {
   approveOrRejectSingleTestRequestAction,
@@ -84,6 +85,7 @@ import {
 } from './styled'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import { sharedTypeMap } from '../Item/Item'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
 
 class ListItem extends Component {
   static propTypes = {
@@ -141,15 +143,22 @@ class ListItem extends Component {
 
   assignTest = (e) => {
     e && e.stopPropagation()
-    const { history, item } = this.props
-    history.push({
-      pathname: `/author/assignments/${item._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    const {
+      history,
+      item,
+      toggleFreeAdminSubscriptionModal,
+      isFreeAdmin,
+    } = this.props
+    if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
+    else
+      history.push({
+        pathname: `/author/assignments/${item._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
   }
 
   openModal = () => {
@@ -572,10 +581,12 @@ const enhance = compose(
       isCoTeacher: isCoTeacherSelector(state),
       currentUserId: getUserId(state),
       collectionToWrite: getCollectionsToAddContent(state),
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

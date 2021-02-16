@@ -13,7 +13,7 @@ export const evaluateItem = async (
   const results = {}
   let totalScore = 0
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0
-  const questionsNum = Object.keys(validations).filter(
+  const numberOfQuestions = Object.keys(validations).filter(
     (x) => validations?.[x]?.validation
   ).length
   let allCorrect = true
@@ -26,21 +26,22 @@ export const evaluateItem = async (
       if (!evaluator) {
         results[id] = []
       } else {
+        const validationData = itemLevelScoring
+          ? produce(validation.validation, (v) => {
+              const questionScore = itemLevelScore / numberOfQuestions
+              set(v, 'validResponse.score', questionScore)
+              if (Array.isArray(v.altResponses) && numberOfQuestions > 1) {
+                v.altResponses.forEach((altResp) => {
+                  altResp.score = questionScore
+                })
+              }
+            })
+          : validation.validation
         const { evaluation, score = 0, maxScore } = await evaluator(
           {
             userResponse: answer,
             hasGroupResponses: validation.hasGroupResponses,
-            validation: itemLevelScoring
-              ? produce(validation.validation, (v) => {
-                  const questionScore = itemLevelScore / questionsNum
-                  set(v, 'validResponse.score', questionScore)
-                  if (Array.isArray(v.altResponses)) {
-                    v.altResponses.forEach((altResp) => {
-                      altResp.score = questionScore
-                    })
-                  }
-                })
-              : validation.validation,
+            validation: validationData,
             template: validation.template,
             questionId: id,
           },

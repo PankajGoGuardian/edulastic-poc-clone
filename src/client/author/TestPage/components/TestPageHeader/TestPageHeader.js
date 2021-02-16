@@ -25,6 +25,7 @@ import {
   getUserFeatures,
   getUserId,
   getUserRole,
+  toggleFreeAdminSubscriptionModalAction,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
 import ConfirmRegradeModal from '../../../src/components/common/ConfirmRegradeModal'
@@ -50,6 +51,7 @@ import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import {
   getIsCurator,
   getUserSignupStatusSelector,
+  isFreeAdminSelector,
 } from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
@@ -170,6 +172,8 @@ const TestPageHeader = ({
   authorQuestionsById,
   isUpdatingTestForRegrade,
   userSignupStatus,
+  isFreeAdmin,
+  toggleFreeAdminSubscriptionModal,
 }) => {
   let navButtons =
     buttons ||
@@ -279,6 +283,7 @@ const TestPageHeader = ({
   }
 
   const handleAssign = () => {
+    if (isFreeAdmin) return toggleFreeAdminSubscriptionModal()
     if (
       isUsed &&
       (updated || test.status !== statusConstants.PUBLISHED) &&
@@ -804,10 +809,12 @@ const enhance = compose(
       isCurator: getIsCurator(state),
       authorQuestionsById: state.authorQuestions.byId,
       isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

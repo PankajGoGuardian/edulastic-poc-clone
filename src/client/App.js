@@ -37,6 +37,7 @@ import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 import SsoAuth from '../ssoAuth'
+import FreeAdminAlertModal from './common/components/FreeAdminAlertModal'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -286,6 +287,7 @@ class App extends Component {
     const features = user?.user?.features || {}
     let defaultRoute = ''
     let redirectRoute = ''
+    const isPremium = get(user, ['user', 'features', 'premium'])
     if (!publicPath) {
       const path = getWordsInURLPathName(location.pathname)
       const urlSearch = new URLSearchParams(location.search)
@@ -367,9 +369,11 @@ class App extends Component {
         } else if (role === 'district-admin' || role === 'school-admin') {
           if (features.isCurator) {
             defaultRoute = '/publisher/dashboard'
-          } else {
+          } else if (isPremium) {
             // redirecting da & sa to assignments after login as their dashboard page is not implemented
             defaultRoute = '/author/assignments'
+          } else {
+            defaultRoute = '/author/reports'
           }
         } else if (role === 'edulastic-curator') {
           defaultRoute = '/author/tests'
@@ -463,6 +467,9 @@ class App extends Component {
     const { showAppUpdate, canShowCliBanner } = this.state
     return (
       <div>
+        {!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
+          <FreeAdminAlertModal history={history} />
+        )}
         {shouldWatch && <RealTimeCollectionWatch />}
         {userRole && (
           <CheckRoutePatternsEffectContainer

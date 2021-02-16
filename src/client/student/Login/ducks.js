@@ -179,6 +179,8 @@ export const PERSIST_AUTH_STATE_AND_REDIRECT =
 
 export const TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL =
   '[user] toggle ios restrict navigation modal'
+export const TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL =
+  '[auth] toggle free admin subscription alert modal'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -281,6 +283,10 @@ export const toggleIosRestrictNavigationModalAction = createAction(
   TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL
 )
 
+export const toggleFreeAdminSubscriptionModalAction = createAction(
+  TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL
+)
+
 const initialState = {
   addAccount: false,
   userId: null,
@@ -296,6 +302,7 @@ const initialState = {
     'isMultipleAccountNotification'
   ),
   iosRestrictNavigationModalVisible: false,
+  showAdminSubscriptionModal: false,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -328,6 +335,11 @@ function getValidRedirectRouteByRole(_url, user) {
           url.match(/^\/author\/(?!.*dashboard)/)
           ? url
           : '/publisher/dashboard'
+      if (!user?.features?.premium) {
+        return url.match(/^\/author\/(?!.*dashboard)(?!.*assignments)/)
+          ? url
+          : '/author/reports'
+      }
       return url.match(/^\/author\/(?!.*dashboard)/)
         ? url
         : '/author/assignments'
@@ -342,6 +354,7 @@ const getRouteByGeneralRoute = (user) => {
       return '/admin/search/clever'
     case roleuser.DISTRICT_ADMIN:
     case roleuser.SCHOOL_ADMIN:
+      if (!user?.user?.features?.premium) return '/author/reports'
       return '/author/assignments'
     case roleuser.TEACHER:
       return '/author/dashboard'
@@ -704,6 +717,9 @@ export default createReducer(initialState, {
   },
   [TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION]: (state, { payload }) => {
     state.isMultipleAccountNotification = payload
+  },
+  [TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL]: (state) => {
+    state.showAdminSubscriptionModal = !state.showAdminSubscriptionModal
   },
 })
 

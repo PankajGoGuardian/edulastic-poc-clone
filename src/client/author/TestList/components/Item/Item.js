@@ -11,6 +11,7 @@ import {
   isPublisherUserSelector,
   getUserRole,
   getUserId,
+  isFreeAdminSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
@@ -29,6 +30,7 @@ import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
 import { isPremiumContent } from '../../../TestPage/utils'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
 
 export const sharedTypeMap = {
   0: 'PUBLIC',
@@ -105,16 +107,23 @@ class Item extends Component {
   }
 
   assignTest = (e) => {
-    e && e.stopPropagation()
-    const { history, item } = this.props
-    history.push({
-      pathname: `/author/assignments/${item._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    e?.stopPropagation()
+    const {
+      history,
+      item,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+    } = this.props
+    if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
+    else
+      history.push({
+        pathname: `/author/assignments/${item._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
   }
 
   closeModal = () => {
@@ -353,12 +362,14 @@ const enhance = compose(
       isPublisherUser: isPublisherUserSelector(state),
       userRole: getUserRole(state),
       currentUserId: getUserId(state),
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
       duplicatePlayList: duplicatePlaylistRequestAction,
       duplicateTest: duplicateTestRequestAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

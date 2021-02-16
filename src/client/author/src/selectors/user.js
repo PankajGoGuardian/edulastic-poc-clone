@@ -121,6 +121,13 @@ export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.itemBanks', [])
 )
 
+export const isFreeAdminSelector = createSelector(
+  getUserRole,
+  getUserFeatures,
+  (userRole, userFeatures) =>
+    roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && !userFeatures.premium
+)
+
 export const getUserSignupStatusSelector = createSelector(
   stateSelector,
   (state) => _get(state, 'signupStatus', '')

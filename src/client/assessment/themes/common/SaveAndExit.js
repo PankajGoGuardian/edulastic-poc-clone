@@ -50,6 +50,7 @@ const SaveAndExit = ({
   hideData,
   toggleScratchpadVisibility,
   hidePause,
+  savingResponse,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
@@ -116,10 +117,12 @@ const SaveAndExit = ({
           </>
         ))}
       {onSubmit && (
-        <EduButton isGhost onClick={onSubmit}>
-          <IconSend />
-          SUBMIT
-        </EduButton>
+        <div id="submitTestButton" tabIndex="-1">
+          <EduButton isGhost onClick={onSubmit} loading={savingResponse}>
+            <IconSend />
+            SUBMIT
+          </EduButton>
+        </div>
       )}
     </FlexContainer>
   )
@@ -131,6 +134,7 @@ SaveAndExit.propTypes = {
   setSettingsModalVisibility: PropTypes.func,
   previewPlayer: PropTypes.bool,
   showZoomBtn: PropTypes.bool,
+  savingResponse: PropTypes.bool,
 }
 
 SaveAndExit.defaultProps = {
@@ -138,6 +142,7 @@ SaveAndExit.defaultProps = {
   previewPlayer: false,
   setSettingsModalVisibility: () => null,
   onSubmit: null,
+  savingResponse: false,
 }
 
 export default connect(
@@ -145,6 +150,7 @@ export default connect(
     pauseAllowed: state.test?.settings?.pauseAllowed,
     isCliUser: get(state, 'user.isCliUser', false),
     hideData: state?.scratchpad?.hideData,
+    savingResponse: get(state, 'test.savingResponse', false),
   }),
   {
     setSettingsModalVisibility: setSettingsModalVisibilityAction,

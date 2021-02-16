@@ -13,6 +13,7 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { IconBookmark } from '@edulastic/icons'
+import { test as testConstants } from '@edulastic/constants'
 import { get, round } from 'lodash'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -41,6 +42,8 @@ import { getUserRole } from '../../../../author/src/selectors/user'
 import QuestionList from './QuestionList'
 import ToolBar from './ToolBar'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
+import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
+
 
 const {
   playerSkin: { sbac },
@@ -81,6 +84,7 @@ const PlayerHeader = ({
   groupId,
   hidePause,
   blockNavigationToAnsweredQuestions,
+  testType,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -113,6 +117,7 @@ const PlayerHeader = ({
 
   return (
     <StyledFlexContainer>
+      {testType === testConstants.type.PRACTICE && <SettingsModal />}
       <Header ref={headerRef} style={headerStyle}>
         <HeaderTopMenu
           style={{
@@ -271,6 +276,7 @@ const enhance = compose(
       showUserTTS: get(state, 'user.user.tts', 'no'),
       userRole: getUserRole(state),
       timedAssignment: state.test?.settings?.timedAssignment,
+      testType: state.test?.settings?.testType,
     }),
     {
       setZoomLevel: setZoomLevelAction,

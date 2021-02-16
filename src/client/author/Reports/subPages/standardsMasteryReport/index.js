@@ -210,9 +210,16 @@ const StandardsMasteryReportContainer = (props) => {
     })
   }
 
+  const locList = ['standards-gradebook', 'standards-progress']
+  useEffect(() => {
+    if (!locList.includes(loc)) {
+      setDdFilter({ ...INITIAL_DD_FILTERS })
+      setTempDdFilter({ ...INITIAL_DD_FILTERS })
+    }
+  }, [loc])
+
   const extraFilters =
-    (loc === 'standards-gradebook' || loc === 'standards-progress') &&
-    demographics
+    locList.includes(loc) && demographics
       ? demographics.map((item) => (
           <SearchField key={item.key}>
             <FilterLabel>{item.title}</FilterLabel>
@@ -220,7 +227,7 @@ const StandardsMasteryReportContainer = (props) => {
               selectCB={updateCB}
               data={item.data}
               comData={item.key}
-              by={item.data[0]}
+              by={ddfilter[item.key] || item.data[0]}
             />
           </SearchField>
         ))

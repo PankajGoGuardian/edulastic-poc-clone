@@ -267,8 +267,8 @@ const AntiCheatingGroupContainer = ({
         <SettingContainer id="block-saveandcontinue-setting">
           <DetailsTooltip
             width={tootltipWidth}
-            title="ALLOW STUDENT TO SAVE AND CONTINUE LATER"
-            content="If OFF, will force the students to take the test in single sitting"
+            title="Complete test in one sitting"
+            content="If ON, then students will not be allowed to exit the test without submitting. In case they close the app they will be paused and the instructor will need to manually resume."
             placement="rightTop"
             premium={premium}
           />

@@ -25,7 +25,11 @@ import {
   getActiveStudentsSelector,
 } from '../../../sharedDucks/groups'
 import ListHeader from '../../../src/components/common/ListHeader'
-import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
+import {
+  getUserOrgId,
+  getUserRole,
+  isFreeAdminSelector,
+} from '../../../src/selectors/user'
 import {
   loadAssignmentsAction,
   saveAssignmentAction,
@@ -54,6 +58,7 @@ import {
   FullFlexContainer,
   PaginationInfo,
 } from './styled'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
 
 const { ASSESSMENT, COMMON } = testConst.type
 
@@ -89,7 +94,15 @@ class AssignTest extends React.Component {
       assignmentSettings = {},
       testSettings,
       getDefaultTestSettings,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+      history,
     } = this.props
+
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
 
     resetStudents()
 
@@ -451,6 +464,7 @@ const enhance = compose(
       isAssigning: state.authorTestAssignments.isAssigning,
       assignmentSettings: state.assignmentSettings,
       isTestLoading: getTestsLoadingSelector(state),
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       loadClassList: receiveClassListAction,
@@ -464,6 +478,7 @@ const enhance = compose(
       resetStudents: resetStudentAction,
       updateAssignmentSettings: updateAssingnmentSettingsAction,
       clearAssignmentSettings: clearAssignmentSettingsAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

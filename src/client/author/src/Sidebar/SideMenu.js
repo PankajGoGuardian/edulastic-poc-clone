@@ -56,10 +56,12 @@ import {
   getUserFeatures,
   toggleMultipleAccountNotificationAction,
   isProxyUser as isProxyUserSelector,
+  toggleFreeAdminSubscriptionModalAction,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
   getAccountSwitchDetails,
+  isFreeAdminSelector,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser } from '../../authUtils'
@@ -271,8 +273,15 @@ class SideMenu extends Component {
 
   handleMenu = (item) => {
     if (item.key) {
-      const { history } = this.props
-      const { path } = this.MenuItems[item.key]
+      const {
+        history,
+        isFreeAdmin,
+        toggleFreeAdminSubscriptionModal,
+      } = this.props
+      const { path, label } = this.MenuItems[item.key]
+      if (label === 'Assignments' && isFreeAdmin) {
+        return toggleFreeAdminSubscriptionModal()
+      }
       if (path !== undefined) {
         if (path.match(/playlists\/.{24}\/use-this/)) {
           history.push({ pathname: `/${path}`, state: { from: 'myPlaylist' } })
@@ -759,12 +768,14 @@ const enhance = compose(
         'curriculumSequence.showUseThisNotification',
         false
       ),
+      isFreeAdmin: isFreeAdminSelector(state),
       isMultipleAccountNotification: state.user.isMultipleAccountNotification,
     }),
     {
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
       toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

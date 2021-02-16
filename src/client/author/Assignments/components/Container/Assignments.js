@@ -52,7 +52,7 @@ import {
   LeftWrapper,
   FixedWrapper,
 } from './styled'
-import { getUserRole } from '../../../src/selectors/user'
+import { getUserRole, isFreeAdminSelector } from '../../../src/selectors/user'
 import EditTestModal from '../../../src/components/common/EditTestModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import TestLinkModal from '../TestLinkModal/TestLinkModal'
@@ -62,6 +62,7 @@ import {
   getToggleDeleteAssignmentModalState,
 } from '../../../sharedDucks/assignments'
 import { DeleteAssignmentModal } from '../DeleteAssignmentModal/deleteAssignmentModal'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
 
 const initialFilterState = {
   grades: [],
@@ -90,7 +91,14 @@ class Assignments extends Component {
       districtId,
       userRole,
       orgData,
+      isFreeAdmin,
+      history,
+      toggleFreeAdminSubscriptionModal,
     } = this.props
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
 
     const { defaultTermId, terms } = orgData
     const storedFilters =
@@ -473,6 +481,7 @@ const enhance = compose(
       toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(
         state
       ),
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       loadAssignments: receiveAssignmentsAction,
@@ -484,6 +493,7 @@ const enhance = compose(
       setAssignmentFilters: setAssignmentFiltersAction,
       toggleAssignmentView: toggleAssignmentViewAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

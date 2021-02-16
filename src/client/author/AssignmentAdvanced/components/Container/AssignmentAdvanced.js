@@ -63,10 +63,12 @@ import {
   getUserRole,
   getGroupList,
   getUserSchoolsListSelector,
+  isFreeAdminSelector,
 } from '../../../src/selectors/user'
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
 
 const { assignmentStatusBg } = authorAssignment
 
@@ -81,7 +83,17 @@ class AssignmentAdvanced extends Component {
   }
 
   componentDidMount() {
-    const { match, location } = this.props
+    const {
+      match,
+      location,
+      history,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+    } = this.props
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
     const { districtId, testId } = match.params
     const {
       loadAssignmentsClassList,
@@ -500,6 +512,7 @@ const enhance = compose(
       authorAssignmentsState: stateSelector(state),
       assignmentTestList: getAssignmentTestList(state),
       bulkActionType: getBulkActionTypeSelector(state),
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       setReleaseScore: releaseScoreAction,
@@ -514,6 +527,7 @@ const enhance = compose(
       bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction,
       bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

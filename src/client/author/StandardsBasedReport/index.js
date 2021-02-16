@@ -18,10 +18,24 @@ import {
 } from '../ClassBoard/ducks'
 import { StyledFlexContainer, DivWrapper } from './components/styled'
 import ClassBreadBrumb from '../Shared/Components/ClassBreadCrumb'
+import { isFreeAdminSelector } from '../src/selectors/user'
+import { toggleFreeAdminSubscriptionModalAction } from '../../student/Login/ducks'
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
-    const { loadTestActivity, match, testActivity, additionalData } = this.props
+    const {
+      loadTestActivity,
+      match,
+      testActivity,
+      additionalData,
+      history,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+    } = this.props
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
     if (!size(testActivity) && isEmpty(additionalData)) {
       const { assignmentId, classId } = match.params
       loadTestActivity(assignmentId, classId)
@@ -95,9 +109,11 @@ const enhance = compose(
       testStandardsLength:
         state?.author_classboard_testActivity?.data?.testsummary?.standards
           ?.length || 0,
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

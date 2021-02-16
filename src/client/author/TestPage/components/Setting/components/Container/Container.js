@@ -831,9 +831,7 @@ class Setting extends Component {
                           </Col>
                           <Col span={16}>
                             <Description>
-                              Choose if student can use a calculator, also
-                              select the type of calculator that would be shown
-                              to the students.
+                              If students can use an on-screen calculator, select the type to make available on the test.
                             </Description>
                           </Col>
                         </Row>

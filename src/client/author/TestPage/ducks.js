@@ -1864,8 +1864,12 @@ export function* updateTestSaga({ payload }) {
     yield put(setTestsLoadingAction(false))
     return entity
   } catch (err) {
-    captureSentryException(err)
-    console.log({ err })
+    captureSentryException(err, {
+      errorMessage: 'failed to update test',
+      saga: 'updateTestSaga',
+      data: payload,
+    })
+    console.error(err)
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
@@ -1977,7 +1981,11 @@ function* updateTestDocBasedSaga({ payload }) {
     })
     return entityData
   } catch (err) {
-    captureSentryException(err)
+    captureSentryException(err, {
+      errorMessage: 'failed to update docbased test',
+      saga: 'updateTestDocBasedSaga',
+      data: payload,
+    })
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))

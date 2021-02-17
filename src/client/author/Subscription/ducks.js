@@ -3,10 +3,9 @@ import moment from 'moment'
 import { isEmpty } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import { createSlice } from 'redux-starter-kit'
-import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { subscriptionApi, paymentApi, segmentApi } from '@edulastic/api'
+import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { subscriptionApi, paymentApi } from '@edulastic/api'
 import { fetchUserAction } from '../../student/Login/ducks'
-import { getUserSelector } from '../src/selectors/user'
 
 const slice = createSlice({
   name: 'subscription',
@@ -107,21 +106,6 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
   const hasItemBankPermissions = !isEmpty(itemBankPermissions)
   const subscriptionPeriod = isTrial ? '14 days' : 'an year'
   const premiumType = isTrial ? 'Trial Premium' : 'Premium'
-  if (isTrial) {
-    const { user } = yield select(getUserSelector)
-    if (hasSubscriptions) {
-      segmentApi.trackUserClick({
-        user,
-        data: { event: `isTrialPremium` },
-      })
-    }
-    if (hasItemBankPermissions) {
-      segmentApi.trackUserClick({
-        user,
-        data: { event: `isTrialSparkMath` },
-      })
-    }
-  }
   if (hasSubscriptions && !hasItemBankPermissions) {
     const { subEndDate } = subscriptions
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')

@@ -921,6 +921,10 @@ function* switchLanguage({ payload }) {
       languageChangeSuccessAction({ languagePreference, testActivityId: _id })
     )
     const testType = yield select((state) => state.test && state.test.testType)
+    const urlTestType =
+      testType === testContants.type.COMMON
+        ? testContants.type.ASSESSMENT
+        : testType
     const firstItemId = itemsToDeliverInGroup[0].items[0]
     yield put(startAssessmentAction())
     yield put({
@@ -931,7 +935,7 @@ function* switchLanguage({ payload }) {
     yield put(push('/'))
     yield put(
       push({
-        pathname: `/student/${testType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
+        pathname: `/student/${urlTestType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
         state: {
           switchLanguage: true,
         },

@@ -577,6 +577,7 @@ class WorksheetComponent extends React.Component {
       isEditable,
       currentPage: _currentPageInProps,
       groupId,
+      itemDetail,
     } = this.props
 
     const {
@@ -738,6 +739,7 @@ class WorksheetComponent extends React.Component {
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
               toggleIntercomDisplay={toggleIntercomDisplay}
+              itemId={itemDetail?._id}
             />
           </PDFViewerContainer>
 
@@ -763,6 +765,7 @@ class WorksheetComponent extends React.Component {
             groupId={groupId}
             qId={0} // For doc based qid (question index) can always be 0
             clearHighlighted={this.clearHighlighted}
+            itemId={itemDetail?._id}
           />
         </WorksheetWrapper>
       </div>

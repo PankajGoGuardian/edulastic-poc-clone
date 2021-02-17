@@ -34,7 +34,8 @@ class Question extends Component {
         classId,
         _id,
         studentId,
-        weight > 1 ? testItemId : undefined
+        testItemId,
+        weight > 1
       )
     }
   }
@@ -58,7 +59,6 @@ class Question extends Component {
       !studentResponseLoading
     ) {
       const {
-        record,
         loadStudentQuestionResponses,
         assignmentClassId: { assignmentId, classId },
       } = this.props
@@ -69,7 +69,8 @@ class Question extends Component {
           classId,
           _id,
           studentId,
-          weight > 1 ? testItemId : undefined
+          testItemId,
+          weight > 1
         )
       }
     }

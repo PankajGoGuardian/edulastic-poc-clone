@@ -19,6 +19,7 @@ import {
   Effects,
   captureSentryException,
 } from '@edulastic/common'
+import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
 import {
   keyBy as _keyBy,
@@ -271,6 +272,10 @@ function* loadTest({ payload }) {
           !!studentAssesment
         )
       : false
+    const userAuthenticated = getAccessToken()
+    const getPublicTest = userAuthenticated
+      ? testsApi.getById
+      : testsApi.getPublicTest
     const testRequest = !demo
       ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
           validation: true,
@@ -280,7 +285,7 @@ function* loadTest({ payload }) {
           ...(playlistId ? { playlistId } : {}),
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
-      : call(testsApi.getPublicTest, testId)
+      : call(getPublicTest, testId)
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
     const isFromSummary = yield select((state) =>
@@ -682,6 +687,7 @@ function* loadTest({ payload }) {
 
     if (preview) {
       notification({ messageKey: 'youCanNoLongerUse' })
+      window.location.href = '/'
       return Modal.destroyAll()
     }
 

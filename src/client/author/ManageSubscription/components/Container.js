@@ -23,6 +23,7 @@ import {
   getUsersSelector,
   setAddUserConfirmationModalVisibleAction,
   getLoadingStateSelector,
+  bulkEditUsersPermissionAction,
 } from '../ducks'
 import AddUsersSection from './AddUsersSection'
 import Header from './Header'
@@ -54,6 +55,7 @@ const ManageSubscriptionContainer = ({
   t,
   fetchMultipleSubscriptions,
   loading,
+  bulkEditUsersPermission,
 }) => {
   const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -167,7 +169,12 @@ const ManageSubscriptionContainer = ({
           setShowManageLicenseModal={setShowManageLicenseModal}
         />
         <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
-        <Userlist users={users} />
+        <Userlist
+          users={users}
+          bulkEditUsersPermission={bulkEditUsersPermission}
+          teacherPremiumProductId={teacherPremiumProductId}
+          sparkMathProductId={sparkMathProductId}
+        />
       </ContentWrapper>
 
       <PurchaseFlowModals
@@ -230,6 +237,7 @@ const enhance = compose(
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,
       setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
+      bulkEditUsersPermission: bulkEditUsersPermissionAction,
     }
   )
 )

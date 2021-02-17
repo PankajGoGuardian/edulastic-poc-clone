@@ -6,7 +6,12 @@ import produce from 'immer'
 import { Col, Row } from 'antd'
 import { StyledAntdTable } from './styled'
 
-const Userlist = ({ users }) => {
+const Userlist = ({
+  users,
+  bulkEditUsersPermission,
+  teacherPremiumProductId,
+  sparkMathProductId,
+}) => {
   const [changes, setChanges] = useState({})
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
 
@@ -36,7 +41,11 @@ const Userlist = ({ users }) => {
   }
 
   const onSaveHandler = () => {
-    console.log(changes)
+    bulkEditUsersPermission({
+      usersPermission: changes,
+      teacherPremiumProductId,
+      sparkMathProductId,
+    })
   }
 
   const getXOR = (a, b) => (a || b) && !(a && b)

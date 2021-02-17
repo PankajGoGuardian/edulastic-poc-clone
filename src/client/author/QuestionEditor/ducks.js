@@ -93,6 +93,7 @@ import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
+import { getOptionsForMath } from '../../assessment/utils/variables'
 
 // constants
 export const resourceTypeQuestions = {
@@ -874,7 +875,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 
 function* calculateFormulaSaga({ payload }) {
   try {
-    const getLatexValuePairs = (id, variables, example) => ({
+    const getLatexValuePairs = ({ id, variables, example, options }) => ({
       id,
       latexes: Object.keys(variables)
         .map((variableName) => variables[variableName])
@@ -898,6 +899,7 @@ function* calculateFormulaSaga({ payload }) {
             ? example[variableName]
             : variables[variableName].exampleValue,
       })),
+      ...options,
     })
 
     const question = yield select(getCurrentQuestionSelector)
@@ -905,10 +907,17 @@ function* calculateFormulaSaga({ payload }) {
     if (!question.variable || !question.variable.enabled) {
       return []
     }
+
+    const options = question?.isMath
+      ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
+      : {}
+
     const variables =
       payload.data.variables || question.variable.variables || {}
     const examples = payload.data.examples || question.variable.examples || {}
-    const latexValuePairs = [getLatexValuePairs('definition', variables)]
+    const latexValuePairs = [
+      getLatexValuePairs({ id: 'definition', variables, options }),
+    ]
 
     const { hasEmptyField = false, errMessage = '' } = containsEmptyField(
       variables
@@ -923,11 +932,12 @@ function* calculateFormulaSaga({ payload }) {
 
     if (examples) {
       for (const example of examples) {
-        const pair = getLatexValuePairs(
-          `example${example.key}`,
+        const pair = getLatexValuePairs({
+          id: `example${example.key}`,
           variables,
-          example
-        )
+          example,
+          options,
+        })
         if (pair.latexes.length > 0) {
           latexValuePairs.push(pair)
         }

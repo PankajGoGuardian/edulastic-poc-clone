@@ -388,11 +388,13 @@ function* loadTest({ payload }) {
       (itemGroup) => itemGroup.items || []
     )
     if (
-      testActivity?.assignmentSettings?.questionsDelivery ===
-        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&
+      (testActivity?.assignmentSettings?.questionsDelivery ===
+        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG ||
+        testActivity?.assignmentSettings?.questionsDelivery ===
+          testContants.redirectPolicy.QuestionDelivery.SKIPPED) &&
       testActivity.itemsToBeExcluded?.length
     ) {
-      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
+      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG / SKIPPED
       test.testItems = test.testItems.filter(
         (item) => !testActivity.itemsToBeExcluded.includes(item._id)
       )

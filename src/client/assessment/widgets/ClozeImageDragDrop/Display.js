@@ -482,6 +482,7 @@ class Display extends Component {
       isPrint = false,
       isPrintPreview = false,
       view,
+      hideCorrectAnswer,
     } = this.props
     const isPrintMode = isPrint || isPrintPreview
     const isWrapText = get(item, 'responseLayout.isWrapText', false)
@@ -783,7 +784,11 @@ class Display extends Component {
 
     const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout
     const answerBox =
-      showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
+        correctAnswerBoxLayout
+      ) : (
+        <div />
+      )
 
     return (
       <div style={{ fontSize }}>

@@ -120,6 +120,7 @@ class EditingTypeDisplay extends Component {
       view,
       isPrint,
       isPrintPreview,
+      hideCorrectAnswer,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -212,7 +213,7 @@ class EditingTypeDisplay extends Component {
             />
           )}
           {view !== EDIT && <Instructions item={item} />}
-          {(showAnswer || isExpressGrader) && (
+          {(showAnswer || isExpressGrader) && !hideCorrectAnswer && (
             <>
               <CorrectAnswerBoxLayout
                 fontSize={fontSize}

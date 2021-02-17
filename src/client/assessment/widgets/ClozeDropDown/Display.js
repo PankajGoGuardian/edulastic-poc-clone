@@ -145,6 +145,7 @@ class ClozeDropDownDisplay extends Component {
       view,
       isPrint,
       isPrintPreview,
+      hideCorrectAnswer,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -171,7 +172,7 @@ class ClozeDropDownDisplay extends Component {
       item.validation.altResponses.length > 0
 
     const answerBox =
-      showAnswer || isExpressGrader ? (
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
         <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}

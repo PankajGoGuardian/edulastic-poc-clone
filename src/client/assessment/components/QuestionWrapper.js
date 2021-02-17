@@ -389,6 +389,7 @@ class QuestionWrapper extends Component {
       windowWidth: prevWindowWidth,
       windowHeight: prevWindowHeight,
       userWork: prevUserWork,
+      hideCorrectAnswer: prevHideCorrectAnswer,
     } = prevProps
     const {
       data,
@@ -397,6 +398,7 @@ class QuestionWrapper extends Component {
       windowWidth,
       windowHeight,
       userWork,
+      hideCorrectAnswer,
     } = this.props
 
     if (
@@ -406,7 +408,8 @@ class QuestionWrapper extends Component {
       isEqual(prevUserWork, userWork) &&
       isEqual(prevData?.activity, data?.activity) &&
       prevWindowHeight === windowHeight &&
-      prevWindowWidth === windowWidth
+      prevWindowWidth === windowWidth &&
+      hideCorrectAnswer === prevHideCorrectAnswer
     ) {
       return false
     }

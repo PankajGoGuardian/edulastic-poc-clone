@@ -42,6 +42,7 @@ function Preview({
   scractchPadUsed,
   t,
   isStudentView,
+  hideCorrectAnswer,
   testActivityId: utaId,
 }) {
   const rows = getRows(item, false)
@@ -118,6 +119,7 @@ function Preview({
         itemId={item._id}
         isStudentView={isStudentView}
         testActivityId={utaId}
+        hideCorrectAnswer={hideCorrectAnswer}
       />
     </StyledFlexContainer>
   )
@@ -439,6 +441,7 @@ class ClassQuestions extends Component {
       t,
       ttsUserIds,
       isStudentView,
+      hideCorrectAnswer,
     } = this.props
     const testItems = this.getTestItems()
     const { expressGrader: isExpressGrader = false } = this.context
@@ -491,6 +494,7 @@ class ClassQuestions extends Component {
           scractchPadUsed={scractchPadUsed}
           userWork={userWork} // used to determine show student work button
           t={t}
+          hideCorrectAnswer={hideCorrectAnswer}
           isStudentView={isStudentView}
           testActivityId={testActivityId || currentStudent.testActivityId}
         />

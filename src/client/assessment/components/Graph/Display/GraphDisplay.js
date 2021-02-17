@@ -219,8 +219,9 @@ class GraphDisplay extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     const { inLCB, isExpressGrader, tReady, windowHeight } = this.props
+    const { graphIsValid } = this.state
     // a perf optimization done in LCB view to avoid unresponsive question view.
     // without this, for every update graph re-rendering causing freezing
     // we are checking graphData.activity,graphData.elements,bgShapes for change
@@ -235,7 +236,8 @@ class GraphDisplay extends Component {
       ) &&
       isEqual(nextProps?.bgShapes, this.props?.bgShapes) &&
       tReady === nextProps.tReady &&
-      windowHeight === nextProps.windowHeight
+      windowHeight === nextProps.windowHeight &&
+      graphIsValid === nextState.graphIsValid
     ) {
       return false
     }

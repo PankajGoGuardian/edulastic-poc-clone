@@ -311,6 +311,7 @@ class ClozeDragDropDisplay extends Component {
       question,
       view,
       t,
+      hideCorrectAnswer,
     } = this.props
     const { userAnswers, possibleResponses, parsedTemplate } = this.state
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions
@@ -494,7 +495,11 @@ class ClozeDragDropDisplay extends Component {
         <div style={responseBoxStyle}>{previewResponseBoxLayout}</div>
       )
     const answerBox =
-      showAnswer || isExpressGrader ? correctAnswerBoxLayout : <></>
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
+        correctAnswerBoxLayout
+      ) : (
+        <></>
+      )
 
     const questionContent = (
       <div>

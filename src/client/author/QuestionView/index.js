@@ -22,6 +22,7 @@ import {
   themeColor,
   skippedBarColor,
 } from '@edulastic/colors'
+import { IconEye, IconEyeClose } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import {
   scrollTo,
@@ -29,6 +30,7 @@ import {
   Legends,
   LegendContainer,
   LCBScrollContext,
+  EduButton,
 } from '@edulastic/common'
 import { testActivityStatus } from '@edulastic/constants'
 import { getAvatarName } from '../ClassBoard/Transformer'
@@ -116,6 +118,10 @@ class QuestionViewContainer extends Component {
     }
   }
 
+  state = {
+    hideCorrectAnswer: true,
+  }
+
   isMobile = () => window.innerWidth < 480
 
   // calcTimeSpent = (student = {}) => {
@@ -141,6 +147,12 @@ class QuestionViewContainer extends Component {
     _scrollTo(data.id, this.context.current)
   }
 
+  toggleShowCorrectAnswers = () => {
+    this.setState((prevState) => ({
+      hideCorrectAnswer: !prevState.hideCorrectAnswer,
+    }))
+  }
+
   render() {
     const {
       testActivity,
@@ -159,7 +171,7 @@ class QuestionViewContainer extends Component {
       studentsList,
       filter,
     } = this.props
-    const { loading } = this.state
+    const { loading, hideCorrectAnswer } = this.state
 
     let filteredItems = testItems?.filter((item) =>
       item.data.questions.some((q) => q.id === question.id)
@@ -436,6 +448,16 @@ class QuestionViewContainer extends Component {
                 NOT GRADED ({notGradedNumber})
               </PartiallyCorrectButton>
             </StudentButtonDiv>
+            <EduButton
+              isGhost
+              height="24px"
+              fontSize="9px"
+              mr="28px"
+              onClick={this.toggleShowCorrectAnswers}
+            >
+              {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
+              <span>correct answers</span>
+            </EduButton>
           </StudentButtonWrapper>
         </StudentResponse>
 
@@ -465,6 +487,7 @@ class QuestionViewContainer extends Component {
                   isPresentationMode={isPresentationMode}
                   labels={labels}
                   isLCBView
+                  hideCorrectAnswer={hideCorrectAnswer}
                 />
               </AnswerContext.Provider>
             )

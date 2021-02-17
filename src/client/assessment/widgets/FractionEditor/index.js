@@ -8,8 +8,6 @@ import ComposeQuestion from './components/ComposeQuestion'
 import CorrectAnswers from './components/CorrectAnswers'
 import Options from './components/Options'
 import Display from './components/Display'
-import Annotations from '../../components/Annotations/Annotations'
-import Question from '../../components/Question'
 import ExtraSection from './components/Extras'
 
 const FractionEditor = (props) => {
@@ -30,6 +28,7 @@ const FractionEditor = (props) => {
     changePreviewTab,
     isReviewTab,
     advancedAreOpen,
+    hideCorrectAnswer,
   } = props
   return (
     <>
@@ -91,6 +90,7 @@ const FractionEditor = (props) => {
           changePreviewTab={changePreviewTab}
           isReviewTab={isReviewTab}
           view={view}
+          hideCorrectAnswer={hideCorrectAnswer}
         />
       )}
     </>

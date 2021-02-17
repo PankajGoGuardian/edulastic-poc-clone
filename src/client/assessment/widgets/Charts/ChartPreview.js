@@ -62,6 +62,7 @@ const ChartPreview = ({
   setStashIndex,
   setQuestionData,
   isReviewTab,
+  hideCorrectAnswer,
 }) => {
   const answerContextConfig = useContext(AnswerContext)
   const fontSize = getFontSize(get(item, 'uiStyle.fontsize'))
@@ -275,34 +276,37 @@ const ChartPreview = ({
 
             {view !== EDIT && <Instructions item={item} />}
 
-            {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
-              <CorrectAnswersContainer
-                title={t('component.chart.correctAnswer')}
-                noBackground
-                showBorder
-                padding="14px 45px"
-                margin="38px 0px"
-              >
-                <ChartContainer>
-                  <CurrentChart
-                    name={name}
-                    data={answerData}
-                    gridParams={calculatedParams}
-                    deleteMode={tool === 'delete'}
-                    view={view}
-                    disableResponse
-                    previewTab={previewTab}
-                    saveAnswer={saveAnswerHandler}
-                    item={item}
-                    setQuestionData={setQuestionData}
-                    showAnswer
-                  />
-                </ChartContainer>
-              </CorrectAnswersContainer>
-            )}
+            {view === PREVIEW &&
+              (previewTab === SHOW || expressGrader) &&
+              !hideCorrectAnswer && (
+                <CorrectAnswersContainer
+                  title={t('component.chart.correctAnswer')}
+                  noBackground
+                  showBorder
+                  padding="14px 45px"
+                  margin="38px 0px"
+                >
+                  <ChartContainer>
+                    <CurrentChart
+                      name={name}
+                      data={answerData}
+                      gridParams={calculatedParams}
+                      deleteMode={tool === 'delete'}
+                      view={view}
+                      disableResponse
+                      previewTab={previewTab}
+                      saveAnswer={saveAnswerHandler}
+                      item={item}
+                      setQuestionData={setQuestionData}
+                      showAnswer
+                    />
+                  </ChartContainer>
+                </CorrectAnswersContainer>
+              )}
 
             {view === PREVIEW &&
               previewTab === SHOW &&
+              !hideCorrectAnswer &&
               altAnswerData.length > 0 &&
               altAnswerData.map((ans, index) => (
                 <CorrectAnswersContainer

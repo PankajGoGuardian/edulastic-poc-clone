@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { withNamespaces } from '@edulastic/localization'
+import { subscriptions as constants } from '@edulastic/constants'
 import { groupBy } from 'lodash'
 import loadable from '@loadable/component'
 import { connect } from 'react-redux'
@@ -14,10 +15,10 @@ import {
   getItemBankSubscriptions,
 } from '../../Subscription/ducks'
 import {
-  addBulkUsersAdminAction,
+  addAndUpgradeUsersAction,
   fetchMultipleSubscriptionsAction,
   getBulkUsersData,
-  getConfirmationModalVisible,
+  getUpgradeSuccessModalVisible,
   getSubsLicensesSelector,
   getUsersSelector,
   setAddUserConfirmationModalVisibleAction,
@@ -35,15 +36,17 @@ const AddUsersConfirmationModal = loadable(() =>
   import('./AddUsersConfirmationModal')
 )
 
+const { PRODUCT_NAMES } = constants
+
 const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},
   isSuccess,
   subsLicenses,
   users,
   userOrgId,
-  addUsers,
+  addAndUpgradeUsersSubscriptions,
   setAddUsersConfirmationModalVisible,
-  showAddUserConfirmationModal = false,
+  showUpgradeUsersSuccessModal = false,
   userDataSource = [],
   dashboardTiles,
   products,
@@ -65,10 +68,22 @@ const ManageSubscriptionContainer = ({
   const { FEATURED } = groupBy(dashboardTiles, 'type')
   const featuredBundles = FEATURED || []
 
-  const { id: sparkMathProductId } = useMemo(
-    () => products.find((product) => product.name === 'Spark Math') || {},
-    [products]
-  )
+  const { sparkMathProductId, teacherPremiumProductId } = useMemo(() => {
+    let _sparkMathProductId = null
+    let _teacherPremiumProductId = null
+    for (const { id, name } of products) {
+      if (name === PRODUCT_NAMES.TEACHER_PREMIUM) {
+        _teacherPremiumProductId = id
+      }
+      if (name === PRODUCT_NAMES.SPARK_MATH) {
+        _sparkMathProductId = id
+      }
+    }
+    return {
+      sparkMathProductId: _sparkMathProductId,
+      teacherPremiumProductId: _teacherPremiumProductId,
+    }
+  }, [products])
 
   const currentItemBank =
     featuredBundles &&
@@ -111,12 +126,14 @@ const ManageSubscriptionContainer = ({
   const closeAddUsersConfirmationModal = () =>
     setAddUsersConfirmationModalVisible(false)
 
-  const sendInvite = (obj) => {
-    const o = {
-      addReq: obj,
-    }
-    addUsers(o)
-  }
+  const addAndUpgradeUsers = ({ userDetails, licenses }) =>
+    addAndUpgradeUsersSubscriptions({
+      addUsersPayload: {
+        districtId: userOrgId,
+        userDetails,
+      },
+      licenses,
+    })
 
   const totalPaidProducts = itemBankSubscriptions.reduce(
     (a, c) => {
@@ -172,16 +189,21 @@ const ManageSubscriptionContainer = ({
           isVisible={showAddUsersModal}
           onCancel={closeAddUsersModal}
           districtId={userOrgId}
-          addUsers={sendInvite}
+          addAndUpgradeUsers={addAndUpgradeUsers}
+          subsLicenses={subsLicenses}
+          teacherPremiumProductId={teacherPremiumProductId}
+          sparkMathProductId={sparkMathProductId}
         />
       )}
-      {showAddUserConfirmationModal && (
+      {showUpgradeUsersSuccessModal && (
         <AddUsersConfirmationModal
-          isVisible={showAddUserConfirmationModal}
+          t={t}
+          userRole="teacher"
+          isVisible={showUpgradeUsersSuccessModal}
           onCancel={closeAddUsersConfirmationModal}
           userDataSource={userDataSource}
-          userRole="teacher"
-          t={t}
+          teacherPremiumProductId={teacherPremiumProductId}
+          sparkMathProductId={sparkMathProductId}
         />
       )}
     </>
@@ -198,14 +220,14 @@ const enhance = compose(
       subsLicenses: getSubsLicensesSelector(state),
       userOrgId: getUserOrgId(state),
       users: getUsersSelector(state),
-      showAddUserConfirmationModal: getConfirmationModalVisible(state),
+      showUpgradeUsersSuccessModal: getUpgradeSuccessModalVisible(state),
       userDataSource: getBulkUsersData(state),
       products: getProducts(state),
       itemBankSubscriptions: getItemBankSubscriptions(state),
       dashboardTiles: getDashboardTilesSelector(state),
     }),
     {
-      addUsers: addBulkUsersAdminAction,
+      addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,
       setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
     }

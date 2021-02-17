@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { userApi } from '@edulastic/api'
 import {
@@ -12,7 +12,15 @@ import { CheckboxWrpper } from './styled'
 
 const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
 
-const AddUsersModal = ({ isVisible, onCancel, addUsers, districtId }) => {
+const AddUsersModal = ({
+  isVisible,
+  onCancel,
+  addAndUpgradeUsers,
+  districtId,
+  subsLicenses,
+  teacherPremiumProductId,
+  sparkMathProductId,
+}) => {
   const [fieldValue, setFieldValue] = useState([])
   const [checkboxValues, setCheckboxValues] = useState([])
   const [usersList, setUsersList] = useState([])
@@ -21,11 +29,31 @@ const AddUsersModal = ({ isVisible, onCancel, addUsers, districtId }) => {
   const handleOnCheck = (value) => setCheckboxValues(value)
 
   const handleAddUsers = () => {
-    if (fieldValue) {
-      addUsers({ districtId, userDetails: fieldValue })
+    if (fieldValue.length) {
+      addAndUpgradeUsers({
+        userDetails: fieldValue,
+        licenses: checkboxValues,
+      })
       onCancel()
     }
   }
+
+  const { premiumLicenseId, sparkMathLicenseId } = useMemo(() => {
+    let _premiumLicenseId = ''
+    let _sparkMathLicenseId = ''
+    for (const { productId, linkedProductId, licenseId } of subsLicenses) {
+      if (productId === teacherPremiumProductId) {
+        _premiumLicenseId = licenseId
+      }
+      if (linkedProductId === sparkMathProductId) {
+        _sparkMathLicenseId = licenseId
+      }
+    }
+    return {
+      premiumLicenseId: _premiumLicenseId,
+      sparkMathLicenseId: _sparkMathLicenseId,
+    }
+  }, [subsLicenses, teacherPremiumProductId, sparkMathProductId])
 
   const fetchUsers = async (searchString) => {
     try {
@@ -104,13 +132,15 @@ const AddUsersModal = ({ isVisible, onCancel, addUsers, districtId }) => {
           <CheckBoxGrp value={checkboxValues} onChange={handleOnCheck}>
             <CheckboxLabel
               data-cy="teacherPremiumCheckbox"
-              value="teacherPremium"
+              value={premiumLicenseId}
+              disabled={!premiumLicenseId.length}
             >
               Upgrade to Premium
             </CheckboxLabel>
             <CheckboxLabel
               data-cy="sparkMathPremiumCheckbox"
-              value="sparkMathPremium"
+              value={sparkMathLicenseId}
+              disabled={!sparkMathLicenseId.length}
             >
               Access Spark Math
             </CheckboxLabel>

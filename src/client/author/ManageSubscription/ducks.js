@@ -12,9 +12,9 @@ export const getSubsLicensesSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.licenses
 )
-export const getConfirmationModalVisible = createSelector(
+export const getUpgradeSuccessModalVisible = createSelector(
   manageSubscriptionSelector,
-  (state) => state.showAddUserConfirmationModal
+  (state) => state.showUpgradeUsersSuccessModal
 )
 export const getBulkUsersData = createSelector(
   manageSubscriptionSelector,
@@ -39,18 +39,22 @@ const ADD_BULK_USERS_ERROR = '[users] add bulk users error'
 const SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE =
   '[users] set add users confirmation modal visible'
 const FETCH_MANAGE_SUBSCRIPTIONS =
-  '[mannge-subscriptions] fetch licenseKeys and user details'
+  '[manage-subscriptions] fetch licenseKeys and user details'
 const FETCH_MANAGE_SUBSCRIPTIONS_SUCCESS =
-  '[mannge-subscriptions] fetch was successful'
+  '[manage-subscriptions] fetch was successful'
 const FETCH_MANAGE_SUBSCRIPTIONS_ERROR =
-  '[mannge-subscriptions] fetch resulted in error'
+  '[manage-subscriptions] fetch resulted in error'
+const UPGRADE_USERS_SUBSCRIPTIONS_SUCCESS =
+  '[manage-subscriptions] upgrade users by selected licenses - success'
+const UPGRADE_USERS_SUBSCRIPTIONS_ERROR =
+  '[manage-subscriptions] upgrade users by selected licenses - failed'
 
 // action creators
-export const addBulkUsersAdminAction = createAction(ADD_BULK_USERS_REQUEST)
-export const addBulkUsersAdminSuccessAction = createAction(
+export const addAndUpgradeUsersAction = createAction(ADD_BULK_USERS_REQUEST)
+export const addAndUpgradeUsersSuccessAction = createAction(
   ADD_BULK_USERS_SUCCESS
 )
-export const addBulkUsersAdminErrorAction = createAction(ADD_BULK_USERS_ERROR)
+export const addAndUpgradeUsersErrorAction = createAction(ADD_BULK_USERS_ERROR)
 export const setAddUserConfirmationModalVisibleAction = createAction(
   SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE
 )
@@ -63,6 +67,12 @@ export const fetchManageSubscriptionsSuccessAction = createAction(
 export const fetchManageSubscriptionsErrorAction = createAction(
   FETCH_MANAGE_SUBSCRIPTIONS_ERROR
 )
+export const upgradeUsersSubscriptionsSuccessAction = createAction(
+  UPGRADE_USERS_SUBSCRIPTIONS_SUCCESS
+)
+export const upgradeUsersSubscriptionsErrorAction = createAction(
+  UPGRADE_USERS_SUBSCRIPTIONS_ERROR
+)
 
 // initial State
 const initialState = {
@@ -73,7 +83,7 @@ const initialState = {
   },
   creating: false,
   bulkUsersData: [],
-  showAddUserConfirmationModal: false,
+  showUpgradeUsersSuccessModal: false,
   licenses: [],
   users: [],
 }
@@ -87,25 +97,23 @@ export const reducer = createReducer(initialState, {
   [SET_LICENSES_DATA]: setLicensesData,
   [ADD_BULK_USERS_REQUEST]: (state) => {
     state.creating = true
-    state.showAddUserConfirmationModal = false
+    state.showUpgradeUsersSuccessModal = false
   },
-  [ADD_BULK_USERS_SUCCESS]: (state, { payload: { res, _bulkTeachers } }) => {
-    state.bulkUsersData = res
-    state.data.result = { ..._bulkTeachers, ...state.data.result }
-    state.data.totalUsers += Object.keys(_bulkTeachers).length
+  [ADD_BULK_USERS_SUCCESS]: (state, { payload }) => {
+    state.bulkUsersData = payload
     state.creating = false
-    state.showAddUserConfirmationModal = true
+    state.showUpgradeUsersSuccessModal = true
   },
   [ADD_BULK_USERS_ERROR]: (state, { payload }) => {
     state.creating = false
     state.addBulkTeacherError = payload.bulkAddError
-    state.showAddUserConfirmationModal = false
+    state.showUpgradeUsersSuccessModal = false
   },
   [SET_ADD_USERS_CONFIRMATION_MODAL_VISIBLE]: (state, { payload }) => {
-    state.showAddUserConfirmationModal = payload
+    state.showUpgradeUsersSuccessModal = payload
   },
-  [FETCH_MANAGE_SUBSCRIPTIONS]: (state) => {
-    state.loading = true
+  [FETCH_MANAGE_SUBSCRIPTIONS]: (state, { payload }) => {
+    state.loading = !payload?.fetchInBackground
   },
   [FETCH_MANAGE_SUBSCRIPTIONS_SUCCESS]: (state, { payload }) => {
     state.loading = false
@@ -117,31 +125,50 @@ export const reducer = createReducer(initialState, {
     state.licenses = []
     state.users = []
   },
+  [UPGRADE_USERS_SUBSCRIPTIONS_SUCCESS]: (state, { payload }) => {
+    state.bulkUsersData = payload
+    state.showUpgradeUsersSuccessModal = true
+  },
+  [UPGRADE_USERS_SUBSCRIPTIONS_ERROR]: (state) => {
+    state.showUpgradeUsersSuccessModal = false
+  },
 })
 
 // sagas
-function* addBulkUsersAdminSaga({ payload }) {
+function* addBulkUsersAndUpgradeSaga({ payload }) {
   try {
-    const res = yield call(userApi.adddBulkTeacher, payload.addReq)
-    const _bulkTeachers = {}
-    res
-      .filter((_t) => _t.status == 'SUCCESS')
-      .forEach((_o) => {
-        const { _id } = _o
-        _bulkTeachers[_id] = {
-          _id,
-          _source: {
-            ..._o,
-            status: 1,
-          },
+    const { addUsersPayload, licenses } = payload
+    const res = yield call(userApi.adddBulkTeacher, addUsersPayload) || []
+    if (!(licenses || []).length) {
+      yield put(addAndUpgradeUsersSuccessAction(res))
+      return
+    }
+
+    const users = res.map((x) => x._id)
+    const result = yield call(
+      manageSubscriptionsApi.upgradeUsersSubscriptions,
+      {
+        users,
+        licenses,
+      }
+    ) || {}
+    if (Object.keys(result).length) {
+      for (const user of res) {
+        result[user._id] = {
+          ...result[user._id],
+          username: user.username,
+          status: user.status,
         }
-      })
-    yield put(addBulkUsersAdminSuccessAction({ res, _bulkTeachers }))
+      }
+      yield put(upgradeUsersSubscriptionsSuccessAction(Object.values(result)))
+      yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
+    }
   } catch (err) {
     captureSentryException(err)
-    const errorMessage = 'Unable to add users in bulk.'
+    const errorMessage =
+      err?.response?.data?.message || 'Unable to add or upgrade users in bulk.'
     notification({ type: 'error', msg: errorMessage })
-    yield put(addBulkUsersAdminErrorAction({ bulkAddError: errorMessage }))
+    yield put(addAndUpgradeUsersErrorAction({ bulkAddError: errorMessage }))
   }
 }
 
@@ -162,7 +189,7 @@ function* fetchManageSubscriptionsSaga() {
 // watcher saga
 export function* watcherSaga() {
   yield all([
-    yield takeLatest(ADD_BULK_USERS_REQUEST, addBulkUsersAdminSaga),
+    yield takeLatest(ADD_BULK_USERS_REQUEST, addBulkUsersAndUpgradeSaga),
     yield takeLatest(FETCH_MANAGE_SUBSCRIPTIONS, fetchManageSubscriptionsSaga),
   ])
 }

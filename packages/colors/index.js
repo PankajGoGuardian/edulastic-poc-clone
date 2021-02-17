@@ -114,6 +114,8 @@ export const darkBlue2 = '#3896be'
 export const darkBlueSecondary = '#0288d1'
 export const blueButton = '#0e93dc'
 export const blueBorder = '#40a9ff'
+export const alertColor = '#faad14'
+export const dangerColor = '#f5222d'
 
 export const green = '#1AB394'
 export const lightGreen = '#f5f9fe'

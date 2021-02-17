@@ -24,7 +24,7 @@ const AttemptSelect = ({ attempts = [], history, match }) => {
     >
       {attempts?.map((attempt = {}, index) => (
         <Option key={attempt?.activiyId || id} value={attempt?.activiyId || id}>
-          <span data-cy="date">Attempt {index + 1}</span>
+          <span data-cy="attempts-select">Attempt {index + 1}</span>
         </Option>
       ))}
     </SelectInputStyled>

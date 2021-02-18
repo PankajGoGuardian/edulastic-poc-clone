@@ -1122,7 +1122,8 @@ export const reducer = (state = initialState, { type, payload }) => {
             payload?.alignment
               ?.flatMap((x) => x.subject)
               ?.filter((x) => x && x?.trim()) || []
-          const newGrades = payload?.alignment?.flatMap((x) => x.grades) || []
+          const newGrades =
+            payload?.alignment?.flatMap((x) => x.grades || []) || []
           _state.entity.grades = _uniq([..._state.entity.grades, ...newGrades])
           _state.entity.subjects = _uniq([
             ..._state.entity.subjects,

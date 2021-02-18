@@ -12,8 +12,9 @@ import {
   scrollTo,
   EduButton,
   FieldLabel,
+  FlexContainer,
 } from '@edulastic/common'
-import { IconFeedback } from '@edulastic/icons'
+import { IconFeedback, IconEye, IconEyeClose } from '@edulastic/icons'
 import { test } from '@edulastic/constants'
 import { white } from '@edulastic/colors'
 import {
@@ -65,6 +66,7 @@ class StudentViewContainer extends Component {
       showFeedbackPopup: false,
       showTestletPlayer: false,
       hasStickyHeader: false,
+      hideCorrectAnswer: true,
     }
   }
 
@@ -153,6 +155,12 @@ class StudentViewContainer extends Component {
     scrollTo(document.querySelector('body'))
   }
 
+  toggleShowCorrectAnswers = () => {
+    this.setState((prevState) => ({
+      hideCorrectAnswer: !prevState.hideCorrectAnswer,
+    }))
+  }
+
   render() {
     const {
       classResponse,
@@ -173,6 +181,7 @@ class StudentViewContainer extends Component {
       showFeedbackPopup,
       showTestletPlayer,
       hasStickyHeader,
+      hideCorrectAnswer,
     } = this.state
     const userId = studentResponse.testActivity
       ? studentResponse.testActivity.userId
@@ -193,6 +202,7 @@ class StudentViewContainer extends Component {
     const activeQuestions = questionActivities.filter(
       (x) => !(x.disabled || x.scoringDisabled)
     )
+    // TODO: refactor computing these counts in a single loop/reduce
     const totalNumber = activeQuestions.length
 
     const correctNumber = activeQuestions.filter(
@@ -335,28 +345,40 @@ class StudentViewContainer extends Component {
               </StyledStudentTabButton>
             )}
           </StudentButtonWrapper>
-          {!isCliUser && (
-            <GiveOverallFeedBackButton
-              data-cy="overallFeedback"
-              onClick={() => this.handleShowFeedbackPopup(true)}
-              active
+          <FlexContainer alignItems="center">
+            <EduButton
+              isGhost
+              height="24px"
+              fontSize="9px"
+              mr="28px"
+              onClick={this.toggleShowCorrectAnswers}
             >
-              <IconFeedback color={white} />
-              {initFeedbackValue.length ? (
-                <Tooltip
-                  title={feedbackButtonToolTip}
-                  placement={hasStickyHeader ? 'bottom' : 'top'}
-                >
-                  <span>
-                    {`${initFeedbackValue.slice(0, 30)}
+              {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
+              <span>correct answers</span>
+            </EduButton>
+            {!isCliUser && (
+              <GiveOverallFeedBackButton
+                data-cy="overallFeedback"
+                onClick={() => this.handleShowFeedbackPopup(true)}
+                active
+              >
+                <IconFeedback color={white} />
+                {initFeedbackValue.length ? (
+                  <Tooltip
+                    title={feedbackButtonToolTip}
+                    placement={hasStickyHeader ? 'bottom' : 'top'}
+                  >
+                    <span>
+                      {`${initFeedbackValue.slice(0, 30)}
                       ${initFeedbackValue.length > 30 ? '.....' : ''}`}
-                  </span>
-                </Tooltip>
-              ) : (
-                'GIVE OVERALL FEEDBACK'
-              )}
-            </GiveOverallFeedBackButton>
-          )}
+                    </span>
+                  </Tooltip>
+                ) : (
+                  'GIVE OVERALL FEEDBACK'
+                )}
+              </GiveOverallFeedBackButton>
+            )}
+          </FlexContainer>
         </StyledFlexContainer>
 
         <div ref={this.questionsContainerRef}>
@@ -381,6 +403,7 @@ class StudentViewContainer extends Component {
                   this.setState({ showTestletPlayer: false })
                 }
                 testActivityId={studentResponse?.testActivity?._id}
+                hideCorrectAnswer={hideCorrectAnswer}
                 isLCBView
                 isStudentView
               />

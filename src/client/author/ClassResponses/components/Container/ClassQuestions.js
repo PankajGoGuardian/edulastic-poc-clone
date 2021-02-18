@@ -42,6 +42,7 @@ function Preview({
   scractchPadUsed,
   t,
   isStudentView,
+  hideCorrectAnswer,
   testActivityId: utaId,
 }) {
   const rows = getRows(item, false)
@@ -118,6 +119,7 @@ function Preview({
         itemId={item._id}
         isStudentView={isStudentView}
         testActivityId={utaId}
+        hideCorrectAnswer={hideCorrectAnswer}
       />
     </StyledFlexContainer>
   )
@@ -204,7 +206,9 @@ class ClassQuestions extends Component {
         }
         if (item.itemLevelScoring) {
           const firstQid = data.questions[0].id
-          const firstQAct = userQActivities.find((x) => x._id === firstQid)
+          const firstQAct = userQActivities.find(
+            (x) => x._id === firstQid && x.testItemId === item._id
+          )
           if (firstQAct) {
             if (
               filter === 'correct' &&
@@ -244,7 +248,8 @@ class ClassQuestions extends Component {
           .map((question) => {
             const { id } = question
             let qActivities = questionActivities.filter(
-              ({ qid, id: altId }) => qid === id || altId === id
+              ({ qid, id: altId, testItemId }) =>
+                (qid === id || altId === id) && testItemId === item._id
             )
             if (qActivities.length > 1) {
               /**
@@ -439,6 +444,7 @@ class ClassQuestions extends Component {
       t,
       ttsUserIds,
       isStudentView,
+      hideCorrectAnswer,
     } = this.props
     const testItems = this.getTestItems()
     const { expressGrader: isExpressGrader = false } = this.context
@@ -491,6 +497,7 @@ class ClassQuestions extends Component {
           scractchPadUsed={scractchPadUsed}
           userWork={userWork} // used to determine show student work button
           t={t}
+          hideCorrectAnswer={hideCorrectAnswer}
           isStudentView={isStudentView}
           testActivityId={testActivityId || currentStudent.testActivityId}
         />

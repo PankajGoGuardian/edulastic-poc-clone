@@ -80,6 +80,7 @@ const MatchListPreview = ({
   isPrintPreview,
   updateOptionsToStore,
   optionsFromStore,
+  hideCorrectAnswer,
 }) => {
   const {
     possibleResponses: posResponses,
@@ -456,7 +457,7 @@ const MatchListPreview = ({
             <div style={{ ...wrapperStyle, alignItems: 'flex-start' }}>
               {view !== EDIT && <Instructions item={item} />}
             </div>
-            {previewTab === SHOW || isReviewTab ? (
+            {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer ? (
               <CorrectAnswers
                 t={t}
                 list={list}

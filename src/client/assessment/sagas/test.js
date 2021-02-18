@@ -19,6 +19,7 @@ import {
   Effects,
   captureSentryException,
 } from '@edulastic/common'
+import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
 import {
   keyBy as _keyBy,
@@ -271,6 +272,10 @@ function* loadTest({ payload }) {
           !!studentAssesment
         )
       : false
+    const userAuthenticated = getAccessToken()
+    const getPublicTest = userAuthenticated
+      ? testsApi.getById
+      : testsApi.getPublicTest
     const testRequest = !demo
       ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
           validation: true,
@@ -280,7 +285,7 @@ function* loadTest({ payload }) {
           ...(playlistId ? { playlistId } : {}),
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
-      : call(testsApi.getPublicTest, testId)
+      : call(getPublicTest, testId)
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
     const isFromSummary = yield select((state) =>
@@ -383,11 +388,13 @@ function* loadTest({ payload }) {
       (itemGroup) => itemGroup.items || []
     )
     if (
-      testActivity?.assignmentSettings?.questionsDelivery ===
-        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&
+      (testActivity?.assignmentSettings?.questionsDelivery ===
+        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG ||
+        testActivity?.assignmentSettings?.questionsDelivery ===
+          testContants.redirectPolicy.QuestionDelivery.SKIPPED) &&
       testActivity.itemsToBeExcluded?.length
     ) {
-      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
+      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG / SKIPPED
       test.testItems = test.testItems.filter(
         (item) => !testActivity.itemsToBeExcluded.includes(item._id)
       )
@@ -475,7 +482,7 @@ function* loadTest({ payload }) {
       previousQuestionActivities.forEach((item) => {
         allPrevAnswers = {
           ...allPrevAnswers,
-          [item.qid]: item.userResponse,
+          [`${item.testItemId}_${item.qid}`]: item.userResponse,
         }
         allEvaluation = {
           ...allEvaluation,
@@ -510,7 +517,7 @@ function* loadTest({ payload }) {
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
-          [item.qid]: item.userResponse,
+          [`${item.testItemId}_${item.qid}`]: item.userResponse,
         }
         if (item.scratchPad) {
           scratchPadData[item.testItemId] = {
@@ -682,6 +689,7 @@ function* loadTest({ payload }) {
 
     if (preview) {
       notification({ messageKey: 'youCanNoLongerUse' })
+      window.location.href = '/'
       return Modal.destroyAll()
     }
 
@@ -915,6 +923,10 @@ function* switchLanguage({ payload }) {
       languageChangeSuccessAction({ languagePreference, testActivityId: _id })
     )
     const testType = yield select((state) => state.test && state.test.testType)
+    const urlTestType =
+      testType === testContants.type.COMMON
+        ? testContants.type.ASSESSMENT
+        : testType
     const firstItemId = itemsToDeliverInGroup[0].items[0]
     yield put(startAssessmentAction())
     yield put({
@@ -925,7 +937,7 @@ function* switchLanguage({ payload }) {
     yield put(push('/'))
     yield put(
       push({
-        pathname: `/student/${testType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
+        pathname: `/student/${urlTestType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
         state: {
           switchLanguage: true,
         },

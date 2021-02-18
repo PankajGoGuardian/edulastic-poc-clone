@@ -47,6 +47,15 @@ export const testTypeHashMap = {
   assessment: 'class',
 }
 
+export const DemographicCompareByOptions = [
+  'gender',
+  'race',
+  'gender',
+  'frlStatus',
+  'ellStatus',
+  'iepStatus',
+]
+
 export const percentage = (
   numerator = 0,
   denominator = 0,

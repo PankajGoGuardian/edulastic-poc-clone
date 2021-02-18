@@ -1,4 +1,4 @@
-import { has } from 'lodash'
+import { has, omitBy } from 'lodash'
 import uuid from 'uuid'
 import produce from 'immer'
 
@@ -206,4 +206,45 @@ export const replaceVariables = (
       )
     })
   })
+}
+
+export const getOptionsForMath = (validations) => {
+  const transformedOptions = {}
+
+  validations.forEach((val) => {
+    const options = omitBy(val.options || {}, (f) => f === false)
+    const optionKeys = Object.keys(options)
+
+    optionKeys.forEach((key) => {
+      const optionVal = options[key]
+
+      if (key === 'setThousandsSeparator') {
+        if (optionVal.length) {
+          const stringArr = `[${optionVal.map((f) => `'${f}'`)}]`
+          if (optionVal.includes('.') && !options.setDecimalSeparator) {
+            transformedOptions.setDecimalSeparator = ','
+          }
+          transformedOptions[key] = stringArr
+        }
+      } else if (key === 'setDecimalSeparator') {
+        if (optionVal === ',' && !options.setThousandsSeparator) {
+          transformedOptions.setThousandsSeparator = '.'
+        }
+        transformedOptions[key] = optionVal
+      } else if (key === 'allowedUnits') {
+        transformedOptions[key] = `[${optionVal}]`
+      } else if (key === 'syntax') {
+        if (options.argument === undefined) {
+          transformedOptions[key] = optionVal
+        } else {
+          transformedOptions[optionVal] = options.argument
+        }
+      } else if (key === 'significantDecimalPlaces') {
+        transformedOptions.isDecimal = optionVal
+      } else {
+        transformedOptions[key] = optionVal
+      }
+    })
+  })
+  return { options: transformedOptions }
 }

@@ -190,6 +190,7 @@ module.exports = {
     QuestionDelivery: {
       ALL: 'ALL',
       SKIPPED_AND_WRONG: 'SKIPPED AND WRONG',
+      SKIPPED: 'SKIPPED',
     },
     ShowPreviousAttempt: {
       FEEDBACK_ONLY: 'Teacher feedback only',

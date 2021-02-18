@@ -178,7 +178,7 @@ class Container extends React.Component {
       assessment,
       updateDocBasedTest,
     } = this.props
-    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+    if (!validateQuestionsForDocBased(assessmentQuestions, true)) {
       return
     }
     updateDocBasedTest(assessment._id, assessment, true)
@@ -233,7 +233,7 @@ class Container extends React.Component {
       match,
     } = this.props
     const { _id } = assessment
-    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+    if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
       return
     }
     if (this.validateTest(assessment)) {
@@ -256,7 +256,7 @@ class Container extends React.Component {
       updated,
     } = this.props
     const { status } = assessment
-    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+    if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
       return
     }
     if (this.validateTest(assessment)) {

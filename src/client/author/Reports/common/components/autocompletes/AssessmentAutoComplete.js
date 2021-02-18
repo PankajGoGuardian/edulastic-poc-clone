@@ -115,9 +115,7 @@ const AssessmentAutoComplete = ({
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
       onSelect(testList[0]._id)
-    } else if (!loading && !testList.length) {
-      onSelect()
-    }
+    } 
   }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {

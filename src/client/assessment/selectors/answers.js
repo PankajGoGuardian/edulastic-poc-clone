@@ -4,14 +4,19 @@ import { hasValidAnswers } from '../utils/answer'
 
 export const getAnswersListSelector = (state) => state.answers
 export const getPreviousAnswersListSelector = (state) => state.previousAnswers
+export const getStudentItemsStateSelector = (state) => state.studentTestItems
 
 export const getAnswersArraySelector = createSelector(
   getAnswersListSelector,
   (answers) => values(answers)
 )
 
-export const getAnswerByQuestionIdSelector = (questionId) => (answers) =>
-  questionId ? answers[questionId] : undefined
+export const getAnswerByQuestionIdSelector = (
+  testItemId,
+  questionId,
+  answers
+) =>
+  questionId && testItemId ? answers[`${testItemId}_${questionId}`] : undefined
 
 const getActivityFromPropsSelector = (state, props) => props.activity
 
@@ -22,10 +27,14 @@ const getQuestionIdFromPropsSelector = (state, props) => {
   const questionId = props?.questionId
   return questionId || id
 }
-// eslint-disable-next-line no-unused-vars
-const getQuestionSelector = (state, props) => {
-  const { data } = props
-  return data
+
+const getTestItemIdFromPropsSelector = (state, props) => {
+  let itemId = props.data?.itemId || props.itemId || props.testItemId
+  if (!itemId) {
+    const studentItemsData = getStudentItemsStateSelector(state)
+    itemId = studentItemsData?.items[studentItemsData?.current]?._id
+  }
+  return itemId || 'new'
 }
 
 const getQuestionId = (questionId) => questionId || 'tmp'
@@ -33,30 +42,40 @@ const getQuestionId = (questionId) => questionId || 'tmp'
 export const getUserAnswerSelector = createSelector(
   [
     getActivityFromPropsSelector,
+    getTestItemIdFromPropsSelector,
     getQuestionIdFromPropsSelector,
     getAnswersListSelector,
   ],
-  (activity, questionId, answers) => {
-    if (!questionId) return undefined
+  (activity, testItemId, questionId, answers) => {
+    if (!questionId || !testItemId) return undefined
 
     let userAnswer
     if (activity && activity.userResponse) {
       userAnswer = activity.userResponse
     } else {
-      const qId = getQuestionId(questionId)
-      userAnswer = getAnswerByQuestionIdSelector(qId)(answers)
+      userAnswer = getAnswerByQuestionIdSelector(
+        testItemId,
+        questionId,
+        answers
+      )
     }
     return userAnswer
   }
 )
 
 export const getUserPrevAnswerSelector = createSelector(
-  [getQuestionIdFromPropsSelector, getPreviousAnswersListSelector],
-  (questionId, previousAnswers) => {
-    if (!questionId) return undefined
-
-    const qId = getQuestionId(questionId)
-    return getAnswerByQuestionIdSelector(qId)(previousAnswers)
+  [
+    getTestItemIdFromPropsSelector,
+    getQuestionIdFromPropsSelector,
+    getPreviousAnswersListSelector,
+  ],
+  (testItemId, questionId, previousAnswers) => {
+    if (!questionId || !testItemId) return undefined
+    return getAnswerByQuestionIdSelector(
+      testItemId,
+      questionId,
+      previousAnswers
+    )
   }
 )
 
@@ -64,8 +83,13 @@ export const getEvaluationSelector = (state, props) =>
   props.evaluation || state.evaluation
 
 export const getEvaluationByIdSelector = createSelector(
-  [getEvaluationSelector, getQuestionIdFromPropsSelector],
-  (evaluation, questionId) => evaluation[getQuestionId(questionId)]
+  [
+    getEvaluationSelector,
+    getQuestionIdFromPropsSelector,
+    getTestItemIdFromPropsSelector,
+  ],
+  (evaluation, questionId, itemId) =>
+    evaluation[`${itemId}_${getQuestionId(questionId)}`]
 )
 
 // selectors
@@ -82,7 +106,7 @@ export const getSkippedAnswerSelector = createSelector(
         type: q.type,
       }))
       const isAnswered = questions.some((q) =>
-        hasValidAnswers(q.type, answers[q.id])
+        hasValidAnswers(q.type, answers[`${item._id}_${q.id}`])
       )
       skippedItems[index] = !isAnswered
     })

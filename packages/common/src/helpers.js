@@ -995,13 +995,18 @@ export const getSanitizedProps = (props, blackListedProps) => {
   return omit(props, blackListedProps)
 }
 
-export const captureSentryException = (err) => {
+export const captureSentryException = (err, extraData) => {
   // Ignore BE's business errors
   if (!err || (err && [409, 302, 422, 403].includes(err.status))) {
     return
   }
 
-  Sentry.captureException(err)
+  Sentry.withScope((scope) => {
+    if (extraData) {
+      scope.setExtra('extraData', extraData)
+    }
+    Sentry.captureException(err)
+  })
 }
 
 const removeImageTags = (text = '') => {

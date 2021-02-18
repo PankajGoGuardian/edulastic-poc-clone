@@ -45,6 +45,7 @@ const TokenHighlightPreview = ({
   theme,
   showQuestionNumber,
   disableResponse,
+  hideCorrectAnswer,
   mode,
   t,
 }) => {
@@ -390,6 +391,7 @@ const TokenHighlightPreview = ({
           </TokenPreviewWrapper>
           {view && view !== EDIT && <Instructions item={item} />}
           {previewTab === SHOW &&
+            !hideCorrectAnswer &&
             allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {
               const title =
                 correctGroupIndex === 0

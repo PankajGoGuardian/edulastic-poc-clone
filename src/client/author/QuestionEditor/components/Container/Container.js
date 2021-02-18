@@ -256,6 +256,7 @@ class Container extends Component {
       preview,
       itemFromState,
       showCalculatingSpinner,
+      testItemId,
     } = this.props
     const { saveClicked, clearClicked } = this.state
     const questionType = question && question.type
@@ -287,6 +288,7 @@ class Container extends Component {
             clearClicked={clearClicked}
             scrollContainer={this.scrollContainer}
             showCalculatingSpinner={showCalculatingSpinner}
+            testItemId={testItemId}
           />
           {/* we may need to bring hint button back */}
           {/* {showHints && <Hints questions={[question]} />} */}

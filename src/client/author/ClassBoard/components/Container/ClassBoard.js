@@ -1,11 +1,12 @@
 import { black } from '@edulastic/colors'
+import styled from 'styled-components'
 import {
   MainContentWrapper,
   CheckboxLabel,
   notification,
-  EduSwitchStyled,
   LCBScrollContext,
   BackTop,
+  SelectInputStyled,
 } from '@edulastic/common'
 import {
   IconAddStudents,
@@ -132,6 +133,44 @@ const NotificationComponent = (props) => {
   return null
 }
 
+function getStudentFilterCategory(x) {
+  if (x.isAssigned === false) {
+    return 'UNASSIGNED'
+  }
+  if (x.redirected) {
+    return 'REDIRECTED'
+  }
+  if (x.isPaused) {
+    return 'PAUSED'
+  }
+  if (x.graded === 'GRADED') {
+    return 'GRADED'
+  }
+  if (x.UTASTATUS === testActivityStatus.NOT_STARTED) {
+    return 'NOT STARTED'
+  }
+  if (x.status?.toLowerCase() == 'inprogress') {
+    return 'IN PROGRESS'
+  }
+  if (x.status?.toLowerCase() === 'submitted' && x.graded !== 'GRADED') {
+    return 'SUBMITTED'
+  }
+  if (x.UTASTATUS === testActivityStatus.ABSENT) {
+    return 'ABSENT'
+  }
+
+  return x.status.toUpperCase()
+}
+
+function filterStudentsByStatus(selectedStatus) {
+  return (x) => {
+    if (selectedStatus === 'ALL') {
+      return true
+    }
+    return getStudentFilterCategory(x) === selectedStatus
+  }
+}
+
 class ClassBoard extends Component {
   constructor(props) {
     super(props)
@@ -167,6 +206,7 @@ class ClassBoard extends Component {
       showScoreImporvement: false,
       hasStickyHeader: false,
       toggleBackTopIcon: false,
+      studentFilter: 'ALL',
     }
   }
 
@@ -218,7 +258,7 @@ class ClassBoard extends Component {
     const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
     const { search, state } = location
-    setShowAllStudents(false)
+    setShowAllStudents(true)
     loadTestActivity(assignmentId, classId, selectedTab === 'questionView')
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
@@ -936,7 +976,6 @@ class ClassBoard extends Component {
       location,
       loadTestActivity,
       isCliUser,
-      isShowAllStudents,
       firstQuestionEntities,
       showCanvasShare,
       canvasSyncAssignment,
@@ -962,6 +1001,7 @@ class ClassBoard extends Component {
       openPrintModal,
       hasStickyHeader,
       toggleBackTopIcon,
+      studentFilter,
     } = this.state
 
     const { assignmentId, classId } = match.params
@@ -1063,7 +1103,16 @@ class ClassBoard extends Component {
     const showResume = testActivity.some((item) => item.isPaused)
 
     const { showScoreImporvement } = this.state
-
+    const studentFilterCategoryCounts = testActivity
+      .map((x) => getStudentFilterCategory(x))
+      .reduce((acc, cur) => {
+        if (acc[cur]) {
+          acc[cur] += 1
+        } else {
+          acc[cur] = 1
+        }
+        return acc
+      }, {})
     return (
       <div>
         {showCanvasShare && (
@@ -1320,11 +1369,35 @@ class ClassBoard extends Component {
                         : 'UNSELECT ALL'}
                     </CheckboxLabel>
                     <SwitchBox>
-                      <span>SHOW ACTIVE STUDENTS</span>
-                      <EduSwitchStyled
-                        checked={!isShowAllStudents}
-                        onClick={this.onShowUnEnrolled}
-                      />
+                      <FilterSpan>FILTER BY STATUS</FilterSpan>
+                      <FilterSelect
+                        value={studentFilter}
+                        onChange={(v) => {
+                          this.setState({ studentFilter: v })
+                        }}
+                        width="150px"
+                        height="30px"
+                      >
+                        {[
+                          'ALL',
+                          'NOT STARTED',
+                          'IN PROGRESS',
+                          'SUBMITTED',
+                          'GRADED',
+                          'ABSENT',
+                          'PAUSED',
+                          'REDIRECTED',
+                          'UNASSIGNED',
+                        ].map((x) => (
+                          <FilterSelect.Option key={x} value={x}>
+                            {x} (
+                            {x === 'ALL'
+                              ? testActivity.length
+                              : studentFilterCategoryCounts[x] || 0}
+                            )
+                          </FilterSelect.Option>
+                        ))}
+                      </FilterSelect>
                     </SwitchBox>
                   </div>
                   <ClassBoardFeats>
@@ -1465,7 +1538,9 @@ class ClassBoard extends Component {
                   {flag ? (
                     <DisneyCardContainer
                       selectedStudents={selectedStudents}
-                      testActivity={testActivity}
+                      testActivity={testActivity.filter(
+                        filterStudentsByStatus(studentFilter)
+                      )}
                       assignmentId={assignmentId}
                       classId={classId}
                       studentSelect={this.onSelectCardOne}
@@ -1920,3 +1995,12 @@ ClassBoard.propTypes = {
   testQuestionActivities: PropTypes.array,
   qActivityByStudent: PropTypes.any,
 }
+const FilterSelect = styled(SelectInputStyled)`
+  display: inline-block;
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  margin-left: 10px;
+`
+const FilterSpan = styled.span`
+  padding-right: 5px;
+`

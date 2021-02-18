@@ -542,7 +542,7 @@ const AssessmentContainer = ({
 
     if (redirectPolicy === STUDENT_RESPONSE_AND_FEEDBACK) {
       const questionIds = (items[index]?.data?.questions || []).map(
-        (question) => question.id
+        (question) => `${items[index]?._id}_${question.id}`
       )
       const currentlyAnsweredQIds = Object.keys(answersById)
       const previouslyAnsweredQIds = Object.keys(userPrevAnswer)
@@ -575,16 +575,19 @@ const AssessmentContainer = ({
      * consider item as attempted
      * @see https://snapwiz.atlassian.net/browse/EV-17309
      */
-    if (hasUserWork(items[currentItem]?._id, restProps.userWork || {})) {
+    const itemId = items[currentItem]?._id
+    if (hasUserWork(itemId, restProps.userWork || {})) {
       return []
     }
     return questions.filter((q) => {
-      const qAnswers = answersById[q.id] || userPrevAnswer[q.id]
+      const qAnswers =
+        answersById[`${itemId}_${q.id}`] || userPrevAnswer[`${itemId}_${q.id}`]
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
           return (
-            (answersById[q.id] || []).filter((token) => token?.selected)
-              .length === 0
+            (answersById[`${itemId}_${q.id}`] || []).filter(
+              (token) => token?.selected
+            ).length === 0
           )
         case questionType.LINE_CHART:
         case questionType.BAR_CHART:

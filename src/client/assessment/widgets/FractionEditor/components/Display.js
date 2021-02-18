@@ -31,6 +31,7 @@ const Display = ({
   userAnswer,
   changePreviewTab,
   isReviewTab,
+  hideCorrectAnswer,
   view,
   t,
 }) => {
@@ -143,7 +144,7 @@ const Display = ({
           )}
         </FractionContainer>
         {view && view !== EDIT && <Instructions item={item} />}
-        {previewTab === SHOW && (
+        {previewTab === SHOW && !hideCorrectAnswer && (
           <FractionContainer className="__prevent-page-break">
             <CorrectAnswerBox
               fractionProperties={fractionProperties}

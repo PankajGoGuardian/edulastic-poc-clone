@@ -186,6 +186,14 @@ const MultipleAssessmentReportContainer = (props) => {
     'peer-progress-analysis',
     'student-progress',
   ]
+
+  useEffect(() => {
+    if (!pageTitleList.includes(pageTitle)) {
+      setDdFilter({})
+      setSelectedExtras({})
+    }
+  }, [pageTitle])
+
   const extraFilters =
     pageTitleList.includes(pageTitle) && demographics
       ? demographics.map((item) => (
@@ -195,7 +203,7 @@ const MultipleAssessmentReportContainer = (props) => {
               selectCB={updateCB}
               data={item.data}
               comData={item.key}
-              by={item.data[0]}
+              by={ddfilter[item.key] || item.data[0]}
             />
           </SearchField>
         ))

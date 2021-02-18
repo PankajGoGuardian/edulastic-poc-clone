@@ -93,6 +93,7 @@ import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
+import { answersByQId } from '../../assessment/selectors/test'
 
 // constants
 
@@ -1410,7 +1411,11 @@ export const getQuestions = (itemGroups = []) => {
   for (const itemGroup of itemGroups) {
     for (const item of itemGroup.items) {
       const { questions = [], resources = [] } = item.data || {}
-      allQuestions.push(...questions, ...resources)
+      const questionsWithItemId = [...questions, ...resources].map((q) => ({
+        ...q,
+        testItemId: item._id,
+      }))
+      allQuestions.push(...questionsWithItemId)
     }
   }
   return allQuestions
@@ -1864,8 +1869,12 @@ export function* updateTestSaga({ payload }) {
     yield put(setTestsLoadingAction(false))
     return entity
   } catch (err) {
-    captureSentryException(err)
-    console.log({ err })
+    captureSentryException(err, {
+      errorMessage: 'failed to update test',
+      saga: 'updateTestSaga',
+      data: payload,
+    })
+    console.error(err)
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
@@ -1977,7 +1986,11 @@ function* updateTestDocBasedSaga({ payload }) {
     })
     return entityData
   } catch (err) {
-    captureSentryException(err)
+    captureSentryException(err, {
+      errorMessage: 'failed to update docbased test',
+      saga: 'updateTestDocBasedSaga',
+      data: payload,
+    })
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
@@ -2420,8 +2433,9 @@ function* getEvaluation(testItemId, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
+  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answers,
+    answersByQids,
     questions,
     itemLevelScoring,
     newScore || itemLevelScore
@@ -2432,8 +2446,9 @@ function* getEvaluationFromItem(testItem, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
+  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answers,
+    answersByQids,
     questions,
     itemLevelScoring,
     newScore || itemLevelScore

@@ -250,7 +250,6 @@ const MiscellaneousGroupContainer = ({
                   }
                   selectBackgroundWhite
                   disabled={freezeSettings || !selectPlayerSkinType}
-                  isFeatureAvailable={selectPlayerSkinType}
                   fullwidth
                 />
               </SettingContainer>

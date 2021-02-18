@@ -35,9 +35,9 @@ export const StyledFlexContainer = styled(FlexContainer)`
 `
 
 export const StudentButtonWrapper = styled(FlexContainer)`
-  width: calc(75% - 15px);
   justify-content: space-between;
   margin-bottom: 0px;
+  align-items: center;
 
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;

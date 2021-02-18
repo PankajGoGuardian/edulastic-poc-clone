@@ -316,10 +316,12 @@ class AdvancedTable extends Component {
 
   fetchSummary = (pageNo, sort) => {
     const { loadAssignmentsSummary, districtId, filters } = this.props
+    const { folderId } = filters
     loadAssignmentsSummary({
       districtId,
       filters: { ...filters, pageNo },
       sort,
+      folderId,
     })
   }
 

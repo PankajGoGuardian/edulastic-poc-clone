@@ -141,7 +141,7 @@ export const getFilteredMetrics = (
       // filter by standards
       groupedData[sId] = groupedData[sId].filter(
         ({ standardId, playlistModuleId }) =>
-          (!standards.length || standards.includes(standardId)) &&
+          (!standards.length || standards.includes(`${standardId}`)) &&
           (!modules.length || modules.includes(playlistModuleId))
       )
       if (groupedData[sId].length) {
@@ -150,7 +150,7 @@ export const getFilteredMetrics = (
           groupedData[sId],
           (res, ele) => {
             res.playlistModuleIds.push(ele.playlistModuleId)
-            res.standardIds.push(ele.standardId)
+            res.standardIds.push(`${ele.standardId}`)
             res.totalTotalScore += ele.totalScore || 0
             res.totalMaxScore += ele.maxScore || 0
             res.totalTimeSpent += parseInt(ele.timeSpent, 10)
@@ -238,7 +238,10 @@ export const getCuratedMetrics = ({
       let flag = false
       const pScore = round(item.percentScore, 2) * 100
       masteryRangeToShow.forEach(({ min, max }) => {
-        if (min <= pScore && pScore < max) {
+        if (
+          min <= pScore &&
+          (pScore < max || (max === 100 && pScore === 100))
+        ) {
           flag = true
         }
       })

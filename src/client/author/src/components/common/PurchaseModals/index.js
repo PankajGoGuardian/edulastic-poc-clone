@@ -44,7 +44,7 @@ const PurchaseFlowModals = (props) => {
     setShowMultiplePurchaseModal,
     showBuyMoreModal,
     setShowBuyMoreModal,
-    isPremiumBuyMoreModalOpened,
+    isBuyMoreModalOpened,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -194,7 +194,7 @@ const PurchaseFlowModals = (props) => {
         <BuyMoreLicensesModal
           isVisible={showBuyMoreModal}
           onCancel={closeBuyMoreModal}
-          isPremiumBuyMoreModalOpened={isPremiumBuyMoreModalOpened}
+          isBuyMoreModalOpened={isBuyMoreModalOpened}
           setBuyCount={setBuyCount}
           buyCount={buyCount}
           setProductsCart={setProductsCart}

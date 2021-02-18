@@ -10,7 +10,7 @@ import styled from 'styled-components'
 const BuyMoreLicensesModal = ({
   isVisible,
   onCancel,
-  isPremiumBuyMoreModalOpened,
+  isBuyMoreModalOpened,
   setBuyCount,
   buyCount,
   setProductsCart,
@@ -22,7 +22,7 @@ const BuyMoreLicensesModal = ({
   const [sparkMathCount, setSparkMathCount] = useState()
 
   useEffect(() => {
-    if (isPremiumBuyMoreModalOpened) {
+    if (isBuyMoreModalOpened === 'PREMIUM') {
       setPremiumCount(buyCount)
     } else {
       setSparkMathCount(buyCount)
@@ -33,7 +33,7 @@ const BuyMoreLicensesModal = ({
     setBuyCount(value)
   }
   const handleProceed = () => {
-    if (isPremiumBuyMoreModalOpened) {
+    if (isBuyMoreModalOpened === 'PREMIUM') {
       const getPremiumPrice = products.find(
         (product) => product.type === 'PREMIUM'
       ).price
@@ -77,8 +77,8 @@ const BuyMoreLicensesModal = ({
       <ModalBody>
         <p>
           Please enter the number of{' '}
-          {isPremiumBuyMoreModalOpened ? 'premium' : 'SparkMath'} license count
-          you need to buy.
+          {isBuyMoreModalOpened === 'PREMIUM' ? 'premium' : 'SparkMath'} license
+          count you need to buy.
         </p>
         <NumberInputStyled
           type="number"

@@ -6,15 +6,15 @@ import { Count, Countbox, GreyBox, LeftCol, RightCol } from './styled'
 const LicenseCountSection = ({
   subsLicenses,
   setShowBuyMoreModal,
-  setIsPremiumBuyMoreModalOpened,
+  setIsBuyMoreModalOpened,
 }) => {
   const openPremiumModal = () => {
-    setIsPremiumBuyMoreModalOpened(true)
+    setIsBuyMoreModalOpened('PREMIUM')
     setShowBuyMoreModal(true)
   }
 
-  const openItemBankModal = () => {
-    setIsPremiumBuyMoreModalOpened(false)
+  const openSparkMathModal = () => {
+    setIsBuyMoreModalOpened('SPARK_MATH')
     setShowBuyMoreModal(true)
   }
 
@@ -32,7 +32,7 @@ const LicenseCountSection = ({
             onClick={
               license.productType === 'PREMIUM'
                 ? openPremiumModal
-                : openItemBankModal
+                : openSparkMathModal
             }
             data-cy="buyMoreLicenseButton"
           >
@@ -61,9 +61,11 @@ const LicenseCountSection = ({
 
 LicenseCountSection.propTypes = {
   setShowBuyMoreModal: PropTypes.func,
+  setIsBuyMoreModalOpened: PropTypes.func,
 }
 LicenseCountSection.defaultProps = {
   setShowBuyMoreModal: () => {},
+  setIsBuyMoreModalOpened: () => {},
 }
 
 export default LicenseCountSection

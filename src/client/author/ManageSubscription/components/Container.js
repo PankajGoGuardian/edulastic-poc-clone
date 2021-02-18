@@ -13,7 +13,6 @@ import {
   getSuccessSelector,
   getProducts,
   getItemBankSubscriptions,
-  slice,
 } from '../../Subscription/ducks'
 import {
   addAndUpgradeUsersAction,
@@ -64,10 +63,7 @@ const ManageSubscriptionContainer = ({
     false
   )
 
-  const [
-    isPremiumBuyMoreModalOpened,
-    setIsPremiumBuyMoreModalOpened,
-  ] = useState(false)
+  const [isBuyMoreModalOpened, setIsBuyMoreModalOpened] = useState('')
 
   const [productData, setProductData] = useState({})
 
@@ -170,7 +166,7 @@ const ManageSubscriptionContainer = ({
         <LicenseCountSection
           subsLicenses={subsLicenses}
           setShowBuyMoreModal={setShowBuyMoreModal}
-          setIsPremiumBuyMoreModalOpened={setIsPremiumBuyMoreModalOpened}
+          setIsBuyMoreModalOpened={setIsBuyMoreModalOpened}
         />
         <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
         <Userlist users={users} />
@@ -185,7 +181,7 @@ const ManageSubscriptionContainer = ({
         setProductData={setProductData}
         showBuyMoreModal={showBuyMoreModal}
         setShowBuyMoreModal={setShowBuyMoreModal}
-        isPremiumBuyMoreModalOpened={isPremiumBuyMoreModalOpened}
+        isBuyMoreModalOpened={isBuyMoreModalOpened}
       />
       {showAddUsersModal && (
         <AddUsersModal
@@ -233,7 +229,6 @@ const enhance = compose(
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,
       setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
-      handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
     }
   )
 )

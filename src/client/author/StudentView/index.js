@@ -354,7 +354,9 @@ class StudentViewContainer extends Component {
               onClick={this.toggleShowCorrectAnswers}
             >
               {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
-              <span>correct answers</span>
+              <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
+                correct answers
+              </span>
             </EduButton>
             {!isCliUser && (
               <GiveOverallFeedBackButton

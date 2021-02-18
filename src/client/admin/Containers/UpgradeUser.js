@@ -56,6 +56,7 @@ function UpgradeUser({
   fetchLicenses,
   viewLicense,
   deleteLicense,
+  manageLicensesData,
 }) {
   const [activeTab, setActiveTab] = useState('manageSubscriptionByDistrict')
   const onChangeTab = (tabKey) => setActiveTab(tabKey)
@@ -111,9 +112,10 @@ function UpgradeUser({
       >
         <ManageSubscriptionsByLicenses
           getSubscriptionAction={getSubscriptionAction}
-          fetchLicenses={fetchLicenses}
+          fetchLicensesBySearchType={fetchLicenses}
           viewLicense={viewLicense}
           deleteLicense={deleteLicense}
+          licenseData={manageLicensesData.licenses}
         />
       </TabPane>
     </Tabs>

@@ -1,5 +1,6 @@
 import { createSlice, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
+import { manageSubscriptionsApi } from '@edulastic/api'
 import { combineReducers } from 'redux'
 import { put, takeEvery, call, all } from 'redux-saga/effects'
 import { adminApi } from '@edulastic/api'
@@ -372,7 +373,10 @@ function* getSubscriptionSaga({ payload }) {
 
 function* fetchLicensesByTypeSaga({ payload }) {
   try {
-    const result = yield call(getSubscription, payload)
+    const result = yield call(
+      manageSubscriptionsApi.fetchManageLicenses,
+      payload
+    )
     yield put(
       manageSubscriptionsByLicenses.actions.fetchLicensesSuccess(result)
     )

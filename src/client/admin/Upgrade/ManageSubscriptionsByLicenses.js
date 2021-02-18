@@ -155,27 +155,8 @@ const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
   handleViewLicense,
   handleDeleteLicense,
+  licenseData,
 }) => {
-  const licenseData = [
-    {
-      invoiceId: 1,
-      licenseId: '507c7f79bcf86cd7994f6c0e',
-      orgName: 'MultipleSubscriptions HOME SCHOOL DISTRICT',
-      username: 'multi-sub-user@edu.uat',
-      startDate: '2020-11-23T09:49:27.407Z',
-      endDate: '2022-11-23T09:49:27.407Z',
-      productType: 'PREMIUM',
-    },
-    {
-      invoiceId: 2,
-      licenseId: '507c7f79bcf86cd7994f6c0f',
-      orgName: 'MultipleSubscriptions HOME SCHOOL DISTRICT',
-      username: 'multi-sub-user@edu.uat',
-      startDate: '2020-11-23T09:49:27.407Z',
-      endDate: '2022-11-23T09:49:27.407Z',
-      productType: 'ITEM_BANK',
-    },
-  ]
   return (
     <>
       <FlexContainer justifyContent="space-between">

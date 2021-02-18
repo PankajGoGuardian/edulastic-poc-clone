@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { CheckboxLabel, EduButton } from '@edulastic/common'
 import { isUndefined, isEmpty } from 'lodash'
@@ -14,6 +14,10 @@ const Userlist = ({
 }) => {
   const [changes, setChanges] = useState({})
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
+
+  useEffect(() => {
+    setChanges({})
+  }, [users])
 
   const onChangeHandler = (userId, fieldName, isChecked) => {
     const newChanges = produce(changes, (draft) => {
@@ -41,6 +45,8 @@ const Userlist = ({
   }
 
   const onSaveHandler = () => {
+    // TODO: fix the usersPermission so that the segregation in BE can be removed
+    // maybe create a map based on license or productId
     bulkEditUsersPermission({
       usersPermission: changes,
       teacherPremiumProductId,

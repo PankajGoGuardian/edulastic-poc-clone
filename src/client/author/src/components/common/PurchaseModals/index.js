@@ -51,6 +51,7 @@ const PurchaseFlowModals = (props) => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const [addOnProductIds, setAddOnProductIds] = useState([])
   const [productsCart, setProductsCart] = useState({})
+  const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
   const [buyCount, setBuyCount] = useState()
 
@@ -132,7 +133,11 @@ const PurchaseFlowModals = (props) => {
       handleStripePayment({ ...data, productIds: [...addOnProductIds] })
       setAddOnProductIds([])
     } else {
-      handleStripeMultiplePayment({ ...data, productIds: [...productsCart] })
+      handleStripeMultiplePayment({
+        ...data,
+        productIds: [...productsCart],
+        emailIds,
+      })
       setProductsCart({})
     }
   }
@@ -187,6 +192,7 @@ const PurchaseFlowModals = (props) => {
           setTotalAmount={setTotalAmount}
           totalAmount={totalAmount}
           setProductsCart={setProductsCart}
+          setEmailIds={setEmailIds}
           products={products}
         />
       )}

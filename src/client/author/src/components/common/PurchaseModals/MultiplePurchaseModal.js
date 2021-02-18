@@ -17,6 +17,7 @@ const MultiplePurchaseModal = ({
   setTotalAmount,
   products,
   setProductsCart,
+  setEmailIds,
 }) => {
   const [premiumSubsCount, setPremiumSubsCount] = useState()
   const [sparkMathSubsCount, setSparkMathSubsCount] = useState()
@@ -45,6 +46,7 @@ const MultiplePurchaseModal = ({
     }))
 
     setProductsCart(setProductQuantity)
+    setEmailIds(emailsArray)
 
     onCancel()
     setShowUpgradeModal(true)

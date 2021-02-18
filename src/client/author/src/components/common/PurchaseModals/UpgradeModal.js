@@ -8,12 +8,17 @@ const UpgradeModal = ({
   setShowModal,
   openPaymentServiceModal,
   openPoServiceModal,
+  setShowBuyMoreModal,
 }) => {
+  const closeUpgradeModal = () => {
+    setShowModal(false)
+    setShowBuyMoreModal(false)
+  }
   return (
     <CustomModalStyled
       visible={visible}
       title="Upgrade your account"
-      onCancel={() => setShowModal(false)}
+      onCancel={closeUpgradeModal}
       footer={null}
       centered
       modalWidth="530px"
@@ -24,7 +29,7 @@ const UpgradeModal = ({
           <Boxes
             onClick={() => {
               openPaymentServiceModal()
-              setShowModal(false)
+              closeUpgradeModal()
             }}
             data-cy="payWithCreditCard"
           >

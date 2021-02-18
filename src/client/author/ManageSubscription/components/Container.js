@@ -13,6 +13,7 @@ import {
   getSuccessSelector,
   getProducts,
   getItemBankSubscriptions,
+  slice,
 } from '../../Subscription/ducks'
 import {
   addAndUpgradeUsersAction,
@@ -31,7 +32,6 @@ import Userlist from './Userlist'
 import { ContentWrapper, StyledSpin } from './styled'
 
 const AddUsersModal = loadable(() => import('./AddUsersModal'))
-const ManageLicensesModal = loadable(() => import('./ManageLicensesModal'))
 const AddUsersConfirmationModal = loadable(() =>
   import('./AddUsersConfirmationModal')
 )
@@ -55,7 +55,7 @@ const ManageSubscriptionContainer = ({
   fetchMultipleSubscriptions,
   loading,
 }) => {
-  const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
+  const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
@@ -63,6 +63,12 @@ const ManageSubscriptionContainer = ({
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
+
+  const [
+    isPremiumBuyMoreModalOpened,
+    setIsPremiumBuyMoreModalOpened,
+  ] = useState(false)
+
   const [productData, setProductData] = useState({})
 
   const { FEATURED } = groupBy(dashboardTiles, 'type')
@@ -121,7 +127,6 @@ const ManageSubscriptionContainer = ({
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
-  const closeManageLicenseModal = () => setShowManageLicenseModal(false)
   const closeAddUsersModal = () => setShowAddUsersModal(false)
   const closeAddUsersConfirmationModal = () =>
     setAddUsersConfirmationModalVisible(false)
@@ -164,7 +169,8 @@ const ManageSubscriptionContainer = ({
       <ContentWrapper>
         <LicenseCountSection
           subsLicenses={subsLicenses}
-          setShowManageLicenseModal={setShowManageLicenseModal}
+          setShowBuyMoreModal={setShowBuyMoreModal}
+          setIsPremiumBuyMoreModalOpened={setIsPremiumBuyMoreModalOpened}
         />
         <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
         <Userlist users={users} />
@@ -177,13 +183,10 @@ const ManageSubscriptionContainer = ({
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}
+        showBuyMoreModal={showBuyMoreModal}
+        setShowBuyMoreModal={setShowBuyMoreModal}
+        isPremiumBuyMoreModalOpened={isPremiumBuyMoreModalOpened}
       />
-      {showManageLicenseModal && (
-        <ManageLicensesModal
-          isVisible={showManageLicenseModal}
-          onCancel={closeManageLicenseModal}
-        />
-      )}
       {showAddUsersModal && (
         <AddUsersModal
           isVisible={showAddUsersModal}
@@ -230,6 +233,7 @@ const enhance = compose(
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,
       setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
+      handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
     }
   )
 )

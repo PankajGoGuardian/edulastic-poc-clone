@@ -3,8 +3,20 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Count, Countbox, GreyBox, LeftCol, RightCol } from './styled'
 
-const LicenseCountSection = ({ subsLicenses, setShowManageLicenseModal }) => {
-  const openModal = () => setShowManageLicenseModal(true)
+const LicenseCountSection = ({
+  subsLicenses,
+  setShowBuyMoreModal,
+  setIsPremiumBuyMoreModalOpened,
+}) => {
+  const openPremiumModal = () => {
+    setIsPremiumBuyMoreModalOpened(true)
+    setShowBuyMoreModal(true)
+  }
+
+  const openItemBankModal = () => {
+    setIsPremiumBuyMoreModalOpened(false)
+    setShowBuyMoreModal(true)
+  }
 
   const LicenseCountContainer =
     subsLicenses &&
@@ -17,7 +29,11 @@ const LicenseCountSection = ({ subsLicenses, setShowManageLicenseModal }) => {
             isGhost
             height="24px"
             ml="0px"
-            onClick={openModal}
+            onClick={
+              license.productType === 'PREMIUM'
+                ? openPremiumModal
+                : openItemBankModal
+            }
             data-cy="buyMoreLicenseButton"
           >
             buy more
@@ -44,10 +60,10 @@ const LicenseCountSection = ({ subsLicenses, setShowManageLicenseModal }) => {
 }
 
 LicenseCountSection.propTypes = {
-  setShowManageLicenseModal: PropTypes.func,
+  setShowBuyMoreModal: PropTypes.func,
 }
 LicenseCountSection.defaultProps = {
-  setShowManageLicenseModal: () => {},
+  setShowBuyMoreModal: () => {},
 }
 
 export default LicenseCountSection

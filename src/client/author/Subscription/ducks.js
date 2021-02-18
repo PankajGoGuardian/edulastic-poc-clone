@@ -281,6 +281,7 @@ function* fetchUserSubscription() {
 }
 
 function* handleMultiplePurchasePayment({ payload }) {
+  console.log('payload', payload)
   try {
     yield call(message.loading, {
       content: 'Processing Payment, please wait',

@@ -761,7 +761,10 @@ class Container extends PureComponent {
       updateDocBasedTest,
     } = this.props
 
-    if (test.isDocBased && !validateQuestionsForDocBased(assessmentQuestions)) {
+    if (
+      test.isDocBased &&
+      !validateQuestionsForDocBased(assessmentQuestions, true)
+    ) {
       return
     }
     updateDocBasedTest(test._id, test, true)
@@ -892,7 +895,10 @@ class Container extends PureComponent {
       setEditEnable,
     } = this.props
     const { _id } = test
-    if (test.isDocBased && !validateQuestionsForDocBased(assessmentQuestions)) {
+    if (
+      test.isDocBased &&
+      !validateQuestionsForDocBased(assessmentQuestions, false)
+    ) {
       return
     }
     if (this.validateTest(test)) {

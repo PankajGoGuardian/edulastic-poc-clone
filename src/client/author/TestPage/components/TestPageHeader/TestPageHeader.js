@@ -48,11 +48,7 @@ import {
   TestStatus,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import {
-  getIsCurator,
-  getUserSignupStatusSelector,
-  isFreeAdminSelector,
-} from '../../../src/selectors/user'
+import { getIsCurator, isFreeAdminSelector } from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
@@ -171,7 +167,6 @@ const TestPageHeader = ({
   hasCollectionAccess,
   authorQuestionsById,
   isUpdatingTestForRegrade,
-  userSignupStatus,
   isFreeAdmin,
   toggleFreeAdminSubscriptionModal,
 }) => {
@@ -209,7 +204,7 @@ const TestPageHeader = ({
     if (validateTest(test)) {
       if (test.isDocBased) {
         const assessmentQuestions = Object.values(authorQuestionsById || {})
-        if (!validateQuestionsForDocBased(assessmentQuestions)) {
+        if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
           return
         }
       }
@@ -802,7 +797,6 @@ const enhance = compose(
       features: getUserFeatures(state),
       userId: getUserId(state),
       userRole: getUserRole(state),
-      userSignupStatus: getUserSignupStatusSelector(state),
       creating: getTestsCreatingSelector(state),
       isLoadingData: shouldDisableSelector(state),
       testItems: getTestItemsSelector(state),

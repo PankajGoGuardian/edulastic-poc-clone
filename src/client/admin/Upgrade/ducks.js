@@ -168,6 +168,30 @@ export const manageSubscriptionsByUserSegments = createSlice({
   },
 })
 
+export const manageSubscriptionsByLicenses = createSlice({
+  slice: 'manageSubscriptionsByLicenses',
+  initialState: {
+    loading: false,
+    licenses: [],
+    count: 0,
+  },
+  reducers: {
+    fetchLicenses: (state) => {
+      state.loading = true
+    },
+    fetchLicensesSuccess: (state, { payload }) => {
+      state.loading = false
+      state.licenses = payload.licenses
+      state.count = payload.count
+    },
+    fetchLicensesError: (state) => {
+      state.loading = false
+    },
+    viewLicense: (state, { payload }) => {},
+    deleteLicense: (state, { payload }) => {},
+  },
+})
+
 // SELECTORS
 const upGradeStateSelector = (state) => state.admin.upgradeData
 
@@ -191,12 +215,18 @@ export const getManageSubscriptionByUserSegmentsData = createSelector(
   ({ manageUserSegmentData }) => manageUserSegmentData
 )
 
+export const getManageSubscriptionByLicensesData = createSelector(
+  upGradeStateSelector,
+  ({ manageLicensesData }) => manageLicensesData
+)
+
 // REDUCERS
 const reducer = combineReducers({
   districtSearchData: manageSubscriptionsBydistrict.reducer,
   manageUsers: manageSubscriptionsByUsers.reducer,
   manageSchoolsData: manageSubscriptionsBySchool.reducer,
   manageUserSegmentData: manageSubscriptionsByUserSegments.reducer,
+  manageLicensesData: manageSubscriptionsByLicenses.reducer,
 })
 
 // API's
@@ -340,6 +370,21 @@ function* getSubscriptionSaga({ payload }) {
   }
 }
 
+function* fetchLicensesByTypeSaga({ payload }) {
+  try {
+    const result = yield call(getSubscription, payload)
+    yield put(
+      manageSubscriptionsByLicenses.actions.fetchLicensesSuccess(result)
+    )
+  } catch (err) {
+    manageSubscriptionsByLicenses.actions.fetchLicensesError()
+    yield call(notification, {
+      type: 'error',
+      msg: 'Failed to load subscriptions.',
+    })
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -351,6 +396,10 @@ function* watcherSaga() {
     yield takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser),
     yield takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga),
     yield takeEvery(GET_SUBSCRIPTION, getSubscriptionSaga),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.fetchLicenses,
+      fetchLicensesByTypeSaga
+    ),
   ])
 }
 

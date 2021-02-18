@@ -232,30 +232,6 @@ class SideMenu extends Component {
       })
     }
 
-    if (
-      [
-        roleuser.DISTRICT_ADMIN,
-        roleuser.SCHOOL_ADMIN,
-        roleuser.TEACHER,
-      ].includes(userRole) &&
-      features.showMultipleSubscriptions
-    ) {
-      conditionalMenuItems.push({
-        label: 'Manage Subscription',
-        icon: () => (
-          <IconSettings
-            style={{
-              marginRight: !isSidebarCollapsed && '25px',
-              transform: 'Scale(1.2)',
-            }}
-          />
-        ),
-        path: 'author/manage-subscriptions',
-        allowedPathPattern: [/author\/manage-subscriptions/],
-        role: ['teacher', 'district-admin', 'school-admin'],
-      })
-    }
-
     if (!lastPlayList || !lastPlayList.value)
       return [..._menuItems, ...conditionalMenuItems]
 

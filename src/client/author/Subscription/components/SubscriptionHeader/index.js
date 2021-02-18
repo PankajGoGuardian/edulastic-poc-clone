@@ -6,6 +6,7 @@ import { withNamespaces } from 'react-i18next'
 import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
   TopBanner,
@@ -35,6 +36,7 @@ const SubscriptionHeader = ({
   isBannerVisible,
   setShowMultiplePurchaseModal,
   settingProductData,
+  showMultipleSubscriptions,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -104,14 +106,16 @@ const SubscriptionHeader = ({
               : 'Free'}
           </PlanText>
 
-          {!isBannerVisible && (
+          {isBannerVisible && showMultipleSubscriptions && (
             <EduButton
               data-cy="manageSubscriptionButton"
               isBlue
               isGhost
               height="24px"
             >
-              MANAGE SUBSCRIPTIONS
+              <Link to="/author/manage-subscriptions">
+                MANAGE SUBSCRIPTIONS
+              </Link>
             </EduButton>
           )}
 

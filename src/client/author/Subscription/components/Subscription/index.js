@@ -26,6 +26,7 @@ import {
 import { resetTestFiltersAction } from '../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
 import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import { getUserFeatures } from '../../../../student/Login/ducks'
 
 const TrialConfirmationModal = loadable(() =>
   import(
@@ -203,6 +204,7 @@ const Subscription = (props) => {
     dashboardTiles,
     resetTestFilters,
     resetPlaylistFilters,
+    features,
   } = props
 
   const {
@@ -353,6 +355,7 @@ const Subscription = (props) => {
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+        showMultipleSubscriptions={features.showMultipleSubscriptions}
       />
 
       <SubscriptionMain
@@ -464,6 +467,7 @@ export default compose(
       showTrialConfirmationMessage:
         state?.subscription?.showTrialConfirmationMessage,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
+      features: getUserFeatures(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

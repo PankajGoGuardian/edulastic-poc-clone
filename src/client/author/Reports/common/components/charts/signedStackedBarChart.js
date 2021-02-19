@@ -19,6 +19,7 @@ import {
   StyledCustomChartTooltip,
   StyledChartNavButton,
   CustomXAxisTickTooltipContainer,
+  ResetButtonClear
 } from '../../styled'
 import {
   CustomChartXTick,
@@ -243,7 +244,7 @@ export const SignedStackedBarChart = ({
 
   return (
     <StyledSignedStackedBarChartContainer>
-      <a
+      <ResetButtonClear
         onClick={onResetClick}
         style={
           Object.keys(filter).length > 0
@@ -252,7 +253,7 @@ export const SignedStackedBarChart = ({
         }
       >
         Reset
-      </a>
+      </ResetButtonClear>
       <StyledChartNavButton
         type="primary"
         shape="circle"

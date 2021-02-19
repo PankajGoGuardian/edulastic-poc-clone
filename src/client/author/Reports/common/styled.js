@@ -587,6 +587,25 @@ export const FilterButtonClear = styled(Button)`
   }
 `
 
+export const ResetButtonClear = styled(Button)`
+  min-width: 35px;
+  min-height: 25px;
+  border: none;
+  margin-top: -4px;
+  padding: 5px 2px 2px;
+  box-shadow: none;
+  transition: none;
+  color: #1ab395;
+  &:focus,
+  &:hover {
+    outline: unset;
+    color: #1ab395;
+  }
+  @media print {
+    display: none;
+  }
+`
+
 export const SearchField = styled.div`
   margin-bottom: 10px;
   padding-right: 15px;

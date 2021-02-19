@@ -54,7 +54,6 @@ const StandardsProgressTable = ({
   setBackendPagination,
   filters,
   isSharedReport,
-  chartFilter,
 }) => {
   const { analyseByData, compareByData } = tableFilterOptions
 
@@ -73,16 +72,8 @@ const StandardsProgressTable = ({
     testInfoEnhanced?.length,
   ])
 
-  const filteredTestInfoEnhanced = useMemo(
-    () =>
-      !isEmpty(chartFilter)
-        ? testInfoEnhanced.filter((test) => chartFilter[test.testName])
-        : testInfoEnhanced,
-    [chartFilter]
-  )
-
   const getTestCols = () =>
-    filteredTestInfoEnhanced.map((test) => ({
+    testInfoEnhanced.map((test) => ({
       title: (
         <>
           <span>{test.testName}</span>

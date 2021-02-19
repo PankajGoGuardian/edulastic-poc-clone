@@ -10,9 +10,6 @@ const SignedStackedBarChartContainer = ({
   masteryScale = [],
   backendPagination,
   setBackendPagination,
-  chartFilter,
-  onBarClickCB,
-  onBarResetClickCB,
 }) => {
   const chartData = useMemo(() => getChartData(rawChartData, masteryScale), [
     rawChartData,
@@ -83,9 +80,8 @@ const SignedStackedBarChartContainer = ({
     return ''
   }
 
-  const _onBarClickCB = (key) => {
-    onBarClickCB(key)
-  }
+  const _onBarClickCB = () => {}
+  const _onBarResetClickCB = () => {}
 
   return (
     <SignedStackedBarChart
@@ -97,8 +93,7 @@ const SignedStackedBarChartContainer = ({
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}
       onBarClickCB={_onBarClickCB}
-      onResetClickCB={onBarResetClickCB}
-      filter={chartFilter}
+      onResetClickCB={_onBarResetClickCB}
       backendPagination={backendPagination}
       setBackendPagination={setBackendPagination}
       margin={{ top: 0, right: 60, left: 10, bottom: 0 }}

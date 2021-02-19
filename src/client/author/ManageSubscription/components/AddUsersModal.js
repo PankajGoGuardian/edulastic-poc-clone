@@ -26,8 +26,6 @@ const AddUsersModal = ({
   const [usersList, setUsersList] = useState([])
 
   const handleOnChange = (value) => setFieldValue(value)
-  const handleOnCheck = (value) => setCheckboxValues(value)
-
   const handleAddUsers = () => {
     if (fieldValue.length) {
       addAndUpgradeUsers({
@@ -38,22 +36,49 @@ const AddUsersModal = ({
     }
   }
 
-  const { premiumLicenseId, sparkMathLicenseId } = useMemo(() => {
+  const {
+    premiumLicenseId,
+    sparkMathLicenseId,
+    isSparkCheckboxDisbled,
+  } = useMemo(() => {
     let _premiumLicenseId = ''
     let _sparkMathLicenseId = ''
-    for (const { productId, linkedProductId, licenseId } of subsLicenses) {
+    let _isPremiumCheckboxChecked = ''
+    let _SparkAvailableCount = ''
+    for (const {
+      productId,
+      linkedProductId,
+      licenseId,
+      totalCount,
+      usedCount,
+    } of subsLicenses) {
       if (productId === teacherPremiumProductId) {
         _premiumLicenseId = licenseId
+        _isPremiumCheckboxChecked = checkboxValues.includes(licenseId)
       }
       if (linkedProductId === sparkMathProductId) {
         _sparkMathLicenseId = licenseId
       }
+      _SparkAvailableCount = totalCount - usedCount
     }
+    const _isSparkCheckboxDisbled =
+      _isPremiumCheckboxChecked && _SparkAvailableCount
     return {
       premiumLicenseId: _premiumLicenseId,
       sparkMathLicenseId: _sparkMathLicenseId,
+      isSparkCheckboxDisbled: _isSparkCheckboxDisbled,
     }
-  }, [subsLicenses, teacherPremiumProductId, sparkMathProductId])
+  }, [
+    subsLicenses,
+    teacherPremiumProductId,
+    sparkMathProductId,
+    checkboxValues,
+  ])
+
+  const handleOnCheck = (value) => {
+    const list = value.includes(premiumLicenseId) ? value : []
+    setCheckboxValues(list)
+  }
 
   const fetchUsers = async (searchString) => {
     try {
@@ -140,7 +165,7 @@ const AddUsersModal = ({
             <CheckboxLabel
               data-cy="sparkMathPremiumCheckbox"
               value={sparkMathLicenseId}
-              disabled={!sparkMathLicenseId.length}
+              disabled={!isSparkCheckboxDisbled}
             >
               Access Spark Math
             </CheckboxLabel>

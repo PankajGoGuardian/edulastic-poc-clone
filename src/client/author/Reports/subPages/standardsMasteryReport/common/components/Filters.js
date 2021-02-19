@@ -323,7 +323,6 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel data-cy="class">Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -340,7 +339,6 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel data-cy="group">Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}

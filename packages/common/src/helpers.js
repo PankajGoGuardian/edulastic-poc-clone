@@ -480,7 +480,7 @@ export const removeIndexFromTemplate = (tmpl) => {
       $(this).removeAttr('responseindex')
       $(this).removeAttr('contenteditable')
     })
-  return $(parsedHTML).html()
+  return sanitizeString($(parsedHTML).html())
 }
 
 export const allowedFileTypes = [

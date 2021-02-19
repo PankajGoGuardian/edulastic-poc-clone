@@ -6,6 +6,7 @@ import qs from 'qs'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { groupBy } from 'lodash'
+import { roleuser } from '@edulastic/constants'
 import SubscriptionAddonModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/SubscriptionAddonModal'
 import { slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
@@ -222,6 +223,10 @@ const Subscription = (props) => {
     false
   )
   const [addOnProductIds, setAddOnProductIds] = useState([])
+  const [
+    showFeatureNotAvailableModal,
+    setShowFeatureNotAvailableModal,
+  ] = useState(false)
   const [totalAmount, setTotalAmount] = useState(100)
   const [productData, setProductData] = useState({})
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
@@ -408,6 +413,13 @@ const Subscription = (props) => {
 
   const isPremium = subType && subType !== 'FREE' // here user can be premium, trial premium, or partial premium
 
+  const isFreeAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
+    user.role
+  )
+
+  const handleCloseFeatureNotAvailableModal = () =>
+    setShowFeatureNotAvailableModal(false)
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -422,6 +434,8 @@ const Subscription = (props) => {
         isPremium={isPremium}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
+        isFreeAdmin={isFreeAdmin}
+        toggleShowFeatureNotAvailableModal={setShowFeatureNotAvailableModal}
       />
 
       <SubscriptionMain
@@ -447,6 +461,11 @@ const Subscription = (props) => {
         sparkMathItemBankId={sparkMathItemBankId}
         sparkMathProductId={sparkMathProductId}
         setShowItemBankTrialUsedModal={setShowItemBankTrialUsedModal}
+        handleCloseFeatureNotAvailableModal={
+          handleCloseFeatureNotAvailableModal
+        }
+        showFeatureNotAvailableModal={showFeatureNotAvailableModal}
+        isFreeAdmin={isFreeAdmin}
       />
 
       <CompareModal

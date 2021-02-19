@@ -1,5 +1,5 @@
-import React from 'react'
-import { Button, Form, Table, Tooltip } from 'antd'
+import React, { useState } from 'react'
+import { Button, Form, Pagination, Table, Tooltip } from 'antd'
 import { StyledFilterSelect } from '../Common/StyledComponents'
 import moment from 'moment'
 import { FlexContainer } from '@edulastic/common'
@@ -90,7 +90,7 @@ const LicensesInvoiceTable = ({
     },
   ]
 
-  return licensesData ? (
+  return licensesData.length ? (
     <>
       <h2>The list of active Licenses are :</h2>
       <Table
@@ -110,11 +110,13 @@ const SearchFilters = Form.create({
   ({
     form: { getFieldDecorator, validateFields },
     fetchLicensesBySearchType,
+    setSearchType,
   }) => {
     const handleSubmit = (evt) => {
       evt.preventDefault()
       validateFields((err, { searchType }) => {
         if (!err) {
+          setSearchType(searchType)
           fetchLicensesBySearchType({
             type: searchType,
             page: 1,
@@ -155,12 +157,26 @@ const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
   handleViewLicense,
   handleDeleteLicense,
-  licenseData,
+  manageLicensesData,
+  setSearchType,
 }) => {
+  const { licenses = [], count = 0, searchType } = manageLicensesData
+  const [page, setPage] = useState(1)
+  const handlePageChange = (pageNo) => {
+    setPage(pageNo)
+    fetchLicensesBySearchType({
+      type: searchType,
+      page: pageNo,
+      limit: 20,
+    })
+  }
   return (
     <>
       <FlexContainer justifyContent="space-between">
-        <SearchFilters fetchLicensesBySearchType={fetchLicensesBySearchType} />
+        <SearchFilters
+          fetchLicensesBySearchType={fetchLicensesBySearchType}
+          setSearchType={setSearchType}
+        />
         <Button
           onClick={() => console.log('Add Subscription')} // TODO!
           type="primary"
@@ -169,9 +185,16 @@ const ManageSubscriptionsByLicenses = ({
         </Button>
       </FlexContainer>
       <LicensesInvoiceTable
-        licensesData={licenseData}
+        licensesData={licenses}
         handleViewLicense={handleViewLicense}
         handleDeleteLicense={handleDeleteLicense}
+      />
+      <Pagination
+        hideOnSinglePage
+        pageSize={20}
+        onChange={handlePageChange}
+        current={page}
+        total={count}
       />
     </>
   )

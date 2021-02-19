@@ -57,6 +57,7 @@ function UpgradeUser({
   viewLicense,
   deleteLicense,
   manageLicensesData,
+  setSearchType,
 }) {
   const [activeTab, setActiveTab] = useState('manageSubscriptionByDistrict')
   const onChangeTab = (tabKey) => setActiveTab(tabKey)
@@ -115,7 +116,8 @@ function UpgradeUser({
           fetchLicensesBySearchType={fetchLicenses}
           viewLicense={viewLicense}
           deleteLicense={deleteLicense}
-          licenseData={manageLicensesData.licenses}
+          manageLicensesData={manageLicensesData}
+          setSearchType={setSearchType}
         />
       </TabPane>
     </Tabs>
@@ -153,6 +155,7 @@ const withConnect = connect(mapStateToProps, {
   deleteGradeSubjectRow:
     manageSubscriptionsByUserSegments.actions.deleteGradeSubjectRow,
   saveOrgPermissions: saveOrgPermissionsAction,
+  setSearchType: manageSubscriptionsByLicenses.actions.setSearchType,
   fetchLicenses: manageSubscriptionsByLicenses.actions.fetchLicenses,
   viewLicense: manageSubscriptionsByLicenses.actions.viewLicense,
   deleteLicense: manageSubscriptionsByLicenses.actions.deleteLicense,

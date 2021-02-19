@@ -175,6 +175,7 @@ export const manageSubscriptionsByLicenses = createSlice({
     loading: false,
     licenses: [],
     count: 0,
+    searchType: null,
   },
   reducers: {
     fetchLicenses: (state) => {
@@ -188,8 +189,11 @@ export const manageSubscriptionsByLicenses = createSlice({
     fetchLicensesError: (state) => {
       state.loading = false
     },
-    viewLicense: (state, { payload }) => {},
-    deleteLicense: (state, { payload }) => {},
+    setSearchType: (state, { payload }) => {
+      state.searchType = payload
+    },
+    viewLicense: (state, { payload }) => {}, // TODO!
+    deleteLicense: (state, { payload }) => {}, // TODO!
   },
 })
 

@@ -125,7 +125,7 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters) {
+    if (settings.requestFilters.termId) {
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {

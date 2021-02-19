@@ -17,6 +17,7 @@ import { reportSARSettingsReducer } from './subPages/singleAssessmentReport/duck
 import { reportMARSettingsReducer } from './subPages/multipleAssessmentReport/ducks'
 import { reportSPRSettingsReducer } from './subPages/studentProfileReport/ducks'
 import { reportSMRSettingsReducer } from './subPages/standardsMasteryReport/ducks'
+import { reportERSettingsReducer } from './subPages/engagementReport/ducks'
 
 import {
   reportSARFilterDataReducer,
@@ -34,6 +35,10 @@ import {
   reportStandardsFilterDataReducer,
   reportStandardsFilterSaga,
 } from './subPages/standardsMasteryReport/common/filterDataDucks'
+import {
+  reportERFilterDataReducer,
+  reportERFilterDataSaga,
+} from './subPages/engagementReport/common/filterDataDucks'
 
 import {
   reportAssessmentSummaryReducer,
@@ -95,6 +100,18 @@ import {
   reportStandardsProgressReducer,
   reportStandardsProgressSaga,
 } from './subPages/standardsMasteryReport/standardsProgress/ducks'
+import {
+  reportEngagementSummaryReducer,
+  reportEngagementSummarySaga,
+} from './subPages/engagementReport/EngagementSummary/ducks'
+import {
+  reportActivityBySchoolReducer,
+  reportActivityBySchoolSaga,
+} from './subPages/engagementReport/ActivityBySchool/ducks'
+import {
+  reportActivityByTeacherReducer,
+  reportActivityByTeacherSaga,
+} from './subPages/engagementReport/ActivityByTeacher/ducks'
 import {
   customReportReducer,
   customReportSaga,
@@ -204,11 +221,13 @@ export const reportReducer = combineReducers({
   reportMARSettingsReducer,
   reportSPRSettingsReducer,
   reportSMRSettingsReducer,
+  reportERSettingsReducer,
 
   reportSARFilterDataReducer,
   reportMARFilterDataReducer,
   reportSPRFilterDataReducer,
   reportStandardsFilterDataReducer,
+  reportERFilterDataReducer,
 
   reportAssessmentSummaryReducer,
   reportPeerPerformanceReducer,
@@ -225,6 +244,9 @@ export const reportReducer = combineReducers({
   reportStandardsPerformanceSummaryReducer,
   reportStandardsGradebookReducer,
   reportStandardsProgressReducer,
+  reportEngagementSummaryReducer,
+  reportActivityBySchoolReducer,
+  reportActivityByTeacherReducer,
   customReportReducer,
   sharedReportsReducer,
 })
@@ -272,6 +294,7 @@ export function* reportSaga() {
     reportMARFilterDataSaga(),
     reportSPRFilterDataSaga(),
     reportStandardsFilterSaga(),
+    reportERFilterDataSaga(),
 
     reportAssessmentSummarySaga(),
     reportPeerPerformanceSaga(),
@@ -288,6 +311,9 @@ export function* reportSaga() {
     reportStandardsPerformanceSummarySaga(),
     reportStandardsGradebookSaga(),
     reportStandardsProgressSaga(),
+    reportEngagementSummarySaga(),
+    reportActivityBySchoolSaga(),
+    reportActivityByTeacherSaga(),
     customReportSaga(),
     sharedReportsSaga(),
     yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),

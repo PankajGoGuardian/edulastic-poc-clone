@@ -128,7 +128,7 @@ export const DropDownContainer = styled.div`
 export const StyledCard = styled(Card)`
   box-shadow: none;
   .ant-card-body {
-    padding: 0px;
+    padding: ${(props) => props.padding || '0px'};
   }
 `
 
@@ -277,7 +277,7 @@ export const StyledTable = styled(Table)`
 export const StyledH3 = styled.h3`
   font-weight: 700;
   color: ${fadedBlack};
-  font-size: 14px;
+  font-size: ${({ fontSize }) => fontSize || '14px'};
   margin: 0px 0px 10px;
   margin-left: ${({ marginLeft }) => marginLeft || '0px'};
   text-align: ${({ textAlign }) => textAlign || 'left'};

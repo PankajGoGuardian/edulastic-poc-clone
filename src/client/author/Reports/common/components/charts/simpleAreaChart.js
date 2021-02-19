@@ -1,119 +1,85 @@
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import React, { useState, useMemo } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
 import {
   ComposedChart,
-  Bar,
-  Line,
-  Cell,
   XAxis,
   YAxis,
+  Area,
+  Line,
   CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
+  Tooltip,
   LabelList,
-  Brush,
-  ReferenceLine,
 } from 'recharts'
-import styled from 'styled-components'
-import { connect } from 'react-redux'
-import { getPrintingState } from '../../../ducks'
+
 import {
   StyledCustomChartTooltip,
   StyledChartNavButton,
   CustomXAxisTickTooltipContainer,
 } from '../../styled'
+
+import { getPrintingState } from '../../../ducks'
+
 import {
   CustomChartXTick,
   calculateXCoordinateOfXAxisToolTip,
 } from './chartUtils/customChartXTick'
 
-const _yTickFormatter = (val) => `${val}%`
-
-const LabelText = (props) => {
-  const {
-    x,
-    y,
-    width,
-    height,
-    value,
-    formatter,
-    onBarMouseOver,
-    onBarMouseLeave,
-    index,
-    startIndex,
-  } = props
-  return (
-    <g
-      className="asd-asd"
-      onMouseOver={onBarMouseOver()}
-      onMouseLeave={onBarMouseLeave()}
-    >
-      <text
-        x={x + width / 2}
-        y={y + height}
-        textAnchor="middle"
-        dominantBaseline="text-after-edge"
-      >
-        {formatter(value, index, startIndex, x, y)}
-      </text>
-    </g>
-  )
-}
-
-const SimpleStackedBarChartComponent = ({
+const SimpleAreaChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
   xTickTooltipPosition = 460,
   xTickToolTipWidth = 110,
-  pageSize: _pageSize,
   data = [],
+  pageSize: _pageSize,
+  xAxisDataKey,
+  xTickFormatter,
+  chartDataKey,
   yDomain = [0, 110],
   ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-  xAxisDataKey,
-  bottomStackDataKey,
-  bottomStackDataUnit,
-  bottomStackBarProps = {},
-  topStackDataKey,
-  topStackDataUnit,
-  topStackBarProps = {},
-  onBarClickCB,
-  onResetClickCB,
-  getXTickText,
-  getTooltipJSX = () => null,
-  TooltipCursor = false,
+  yTickFormatter,
   yAxisLabel = '',
-  yTickFormatter = _yTickFormatter,
-  barsLabelFormatter = _yTickFormatter,
-  filter = {},
-  referenceLineY = null,
+  areaProps = { stroke: '#8884d8', fill: '#8884d8' },
+  areaDotProps = false,
+  areaActiveDotProps = {},
+  lineChartDataKey,
   lineYDomain = [0, 110],
-  lineChartDataKey = false,
+  lineTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+  lineYTickFormatter,
+  lineYAxisLabel = '',
   lineProps = {},
   lineDotProps = {},
   lineActiveDotProps = {},
-  lineTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-  lineYTickFormatter = _yTickFormatter,
-  lineYAxisLabel = '',
-  isBarClickable = false,
+  getXTickText,
+  getTooltipJSX = () => null,
+  TooltipCursor = false,
   isPrinting,
   printWidth,
   overflowStyle = 'hidden',
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
+  isLeftPaginated,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
-    startIndex: 0,
-    endIndex: pageSize - 1,
+    startIndex:
+      isLeftPaginated && data.length > pageSize
+        ? data.length - pageSize - 1
+        : 0,
+    endIndex: isLeftPaginated ? data.length - 1 : pageSize - 1,
   })
-  const [copyData, setCopyData] = useState(null)
-  const [barIndex, setBarIndex] = useState(null)
-  const [isDotActive, setDotActive] = useState(false)
+  const [isDotActive, setIsDotActive] = useState(false)
   const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
     visibility: 'hidden',
     x: null,
     y: null,
     content: null,
   })
+
+  const chartData = useMemo(
+    () => data.slice(pagination.startIndex, pagination.startIndex + pageSize),
+    [pagination, data]
+  )
 
   const constants = {
     COLOR_BLACK: '#010101',
@@ -125,16 +91,6 @@ const SimpleStackedBarChartComponent = ({
       dx: 50,
     },
   }
-
-  if (data !== copyData) {
-    setPagination({
-      startIndex: 0,
-      endIndex: pageSize - 1,
-    })
-    setCopyData(data)
-  }
-
-  const chartData = useMemo(() => [...data], [pagination])
 
   const scrollLeft = () => {
     let diff
@@ -153,33 +109,17 @@ const SimpleStackedBarChartComponent = ({
 
   const scrollRight = () => {
     let diff
-    if (pagination.endIndex < chartData.length - 1) {
-      if (chartData.length - 1 - pagination.endIndex >= pageSize) {
+    if (pagination.endIndex < data.length - 1) {
+      if (data.length - 1 - pagination.endIndex >= pageSize) {
         diff = pageSize
       } else {
-        diff = chartData.length - 1 - pagination.endIndex
+        diff = data.length - 1 - pagination.endIndex
       }
       setPagination({
         startIndex: pagination.startIndex + diff,
         endIndex: pagination.endIndex + diff,
       })
     }
-  }
-
-  const onBarClick = (args) => {
-    onBarClickCB(args[xAxisDataKey], args)
-  }
-
-  const onResetClick = () => {
-    onResetClickCB()
-  }
-
-  const onBarMouseOver = (index) => () => {
-    setBarIndex(index)
-  }
-
-  const onBarMouseLeave = () => () => {
-    setBarIndex(null)
   }
 
   const renderToolTipCursor = () =>
@@ -220,10 +160,10 @@ const SimpleStackedBarChartComponent = ({
   // chart navigation visibility and control
   const chartNavLeftVisibility = backendPagination
     ? backendPagination.page > 1
-    : !(pagination.startIndex == 0)
+    : !(pagination.startIndex <= 0)
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
-    : !(chartData.length <= pagination.endIndex + 1)
+    : !(pagination.endIndex >= data.length - 1)
   const chartNavLeftClick = () =>
     backendPagination
       ? setBackendPagination({
@@ -240,20 +180,7 @@ const SimpleStackedBarChartComponent = ({
       : scrollRight()
 
   return (
-    <StyledStackedBarChartContainer
-      overflowStyle={overflowStyle}
-      clickable={isBarClickable}
-    >
-      <a
-        onClick={onResetClick}
-        style={
-          Object.keys(filter).length > 0
-            ? { visibility: 'visible' }
-            : { visibility: 'hidden' }
-        }
-      >
-        Reset
-      </a>
+    <StyledChartContainer overflowStyle={overflowStyle}>
       <StyledChartNavButton
         type="primary"
         shape="circle"
@@ -302,6 +229,7 @@ const SimpleStackedBarChartComponent = ({
               <CustomChartXTick data={chartData} getXTickText={getXTickText} />
             }
             interval={0}
+            tickFormatter={xTickFormatter}
             axisLine={{
               stroke: '#E5E5E5',
             }}
@@ -311,7 +239,6 @@ const SimpleStackedBarChartComponent = ({
           />
           <YAxis
             type="number"
-            yAxisId="barChart"
             domain={yDomain}
             tick={constants.TICK_FILL}
             ticks={ticks}
@@ -325,64 +252,26 @@ const SimpleStackedBarChartComponent = ({
             tickMargin="6"
             style={{ transform: 'translate(-25px)' }}
           />
-          <Brush
-            dataKey={xAxisDataKey}
-            height={0}
-            width={0}
-            startIndex={pagination.startIndex}
-            endIndex={pagination.endIndex}
+          <Tooltip
+            cursor={
+              typeof TooltipCursor === 'boolean'
+                ? TooltipCursor
+                : renderToolTipCursor()
+            }
+            content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />}
           />
-          <Bar
-            dataKey={bottomStackDataKey}
-            yAxisId="barChart"
-            stackId="a"
-            unit={bottomStackDataUnit}
-            isAnimationActive={!isPrinting}
-            onClick={onBarClick}
-            barSize={45}
-            onMouseOver={onBarMouseOver(1)}
-            onMouseLeave={onBarMouseLeave(null)}
-            {...bottomStackBarProps}
-          />
-          <Bar
-            dataKey={topStackDataKey}
-            yAxisId="barChart"
-            stackId="a"
-            unit={topStackDataUnit}
-            onClick={onBarClick}
-            isAnimationActive={!isPrinting}
-            barSize={45}
-            onMouseOver={onBarMouseOver(1)}
-            onMouseLeave={onBarMouseLeave(null)}
-            {...topStackBarProps}
+          <Area
+            type="monotone"
+            dataKey={chartDataKey}
+            {...areaProps}
+            dot={areaDotProps}
+            activeDot={areaActiveDotProps}
           >
-            <LabelList
-              dataKey={bottomStackDataKey}
-              position="insideBottom"
-              fill="#010101"
-              unit={bottomStackDataUnit}
-              offset={5}
-              onMouseOver={onBarMouseOver(1)}
-              onMouseLeave={onBarMouseLeave(null)}
-              content={
-                <LabelText
-                  startIndex={pagination.startIndex}
-                  onBarMouseOver={onBarMouseOver}
-                  onBarMouseLeave={onBarMouseLeave}
-                  formatter={barsLabelFormatter}
-                />
-              }
-            />
-            {chartData.map((entry) => (
-              <Cell
-                radius={[10, 10, 0, 0]}
-                key={entry[xAxisDataKey]}
-                fill="#e5e5e5"
-              />
-            ))}
-          </Bar>
+            <LabelList dataKey={chartDataKey} position="top" offset={7} />
+          </Area>
           {lineChartDataKey ? (
             <YAxis
+              type="number"
               yAxisId="lineChart"
               domain={lineYDomain || null}
               label={constants.LINE_Y_AXIS_LABEL}
@@ -401,14 +290,8 @@ const SimpleStackedBarChartComponent = ({
           {lineChartDataKey ? (
             <Line
               activeDot={{
-                onMouseOver: () => {
-                  setDotActive(true)
-                  setBarIndex(1)
-                },
-                onMouseLeave: () => {
-                  setDotActive(false)
-                  setBarIndex(null)
-                },
+                onMouseOver: () => setIsDotActive(true),
+                onMouseLeave: () => setIsDotActive(false),
                 r: 5,
                 ...lineDotProps,
                 ...lineActiveDotProps,
@@ -421,47 +304,23 @@ const SimpleStackedBarChartComponent = ({
               {...lineProps}
             />
           ) : null}
-          {referenceLineY > 0 ? (
-            <ReferenceLine
-              yAxisId="barChart"
-              y={referenceLineY}
-              stroke="#010101"
-            />
-          ) : null}
-          <Tooltip
-            cursor={
-              typeof TooltipCursor === 'boolean'
-                ? TooltipCursor
-                : renderToolTipCursor()
-            }
-            content={
-              <StyledCustomChartTooltip
-                getJSX={getTooltipJSX}
-                barIndex={barIndex}
-              />
-            }
-          />
         </ComposedChart>
       </ResponsiveContainer>
-    </StyledStackedBarChartContainer>
+    </StyledChartContainer>
   )
 }
 
-export const SimpleStackedBarChart = connect(
+export default connect(
   (state) => ({
     isPrinting: getPrintingState(state),
   }),
   null
-)(SimpleStackedBarChartComponent)
+)(SimpleAreaChart)
 
-const StyledStackedBarChartContainer = styled.div`
+const StyledChartContainer = styled.div`
   padding: 10px;
   overflow: ${(props) => props.overflowStyle};
   position: relative;
-
-  .recharts-surface {
-    overflow: ${(props) => props.overflowStyle};
-  }
 
   .recharts-cartesian-axis-ticks {
     font-size: 12px;
@@ -479,8 +338,5 @@ const StyledStackedBarChartContainer = styled.div`
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
     stroke-opacity: 0;
-  }
-  .recharts-rectangle {
-    cursor: ${({ clickable }) => (clickable ? 'pointer' : 'default')}!important;
   }
 `

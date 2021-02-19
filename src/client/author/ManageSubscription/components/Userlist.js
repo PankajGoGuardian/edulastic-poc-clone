@@ -83,8 +83,8 @@ const Userlist = ({
     },
     {
       title: 'EXPIRATION DATE',
-      dataIndex: 'expireOn',
-      key: 'expireOn',
+      dataIndex: 'expiresOn',
+      key: 'expiresOn',
     },
     {
       title: 'TEACHER PREMIUM',

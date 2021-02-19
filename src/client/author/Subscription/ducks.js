@@ -107,8 +107,8 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
   const hasItemBankPermissions = !isEmpty(itemBankPermissions)
   const subscriptionPeriod = isTrial ? '14 days' : 'an year'
   const premiumType = isTrial ? 'Trial Premium' : 'Premium'
+  const { user } = yield select(getUserSelector)
   if (isTrial) {
-    const { user } = yield select(getUserSelector)
     if (hasSubscriptions) {
       segmentApi.trackUserClick({
         user,
@@ -122,6 +122,33 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       })
     }
   }
+
+  const eventType = isTrial ? 'trial' : 'purchase'
+  if (hasSubscriptions) {
+    const { subEndDate } = subscriptions
+    segmentApi.trackProductPurchase({
+      user,
+      data: {
+        event: `order premium ${eventType}`,
+        Premium_status: eventType,
+        Premium_purchase_date: new Date(),
+        Premium_expiry_date: new Date(subEndDate),
+      },
+    })
+  }
+  if (hasItemBankPermissions) {
+    const { subEndDate } = itemBankPermissions[0]
+    segmentApi.trackProductPurchase({
+      user,
+      data: {
+        event: `order smath ${eventType}`,
+        SMath_status: eventType,
+        SMath_purchase_date: new Date(),
+        SMath_expiry_date: new Date(subEndDate),
+      },
+    })
+  }
+
   if (hasSubscriptions && !hasItemBankPermissions) {
     const { subEndDate } = subscriptions
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')

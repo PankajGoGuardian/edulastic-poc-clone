@@ -133,6 +133,10 @@ const StandardsGradebook = ({
     setChartFilter(_chartFilter)
   }
 
+  const onBarResetClickCB = () => {
+    setChartFilter({})
+  }
+
   const masteryScale = selectedScale || []
   const maxMasteryScore = getMaxMasteryScore(masteryScale)
 
@@ -193,6 +197,7 @@ const StandardsGradebook = ({
               masteryScale={masteryScale}
               role={userRole}
               onBarClickCB={onBarClickCB}
+              onBarResetClickCB={onBarResetClickCB}
               backendPagination={{
                 ...pageFilters,
                 pageCount:

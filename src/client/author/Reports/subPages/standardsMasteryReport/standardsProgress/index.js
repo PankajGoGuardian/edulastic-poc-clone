@@ -39,6 +39,7 @@ const StandardsProgress = ({
   userRole,
   sharedReport,
 }) => {
+  const [chartFilter, setChartFilter] = useState({})
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
       sharedReport?._id
@@ -112,6 +113,20 @@ const StandardsProgress = ({
     [standardsProgress, tableFilters.compareBy]
   )
 
+  const onBarClickCB = (key) => {
+    const _chartFilter = { ...chartFilter }
+    if (_chartFilter[key]) {
+      delete _chartFilter[key]
+    } else {
+      _chartFilter[key] = true
+    }
+    setChartFilter(_chartFilter)
+  }
+
+  const onBarResetClickCB = () => {
+    setChartFilter({})
+  }
+
   // show filters section if data is empty
   useEffect(() => {
     if (
@@ -146,6 +161,9 @@ const StandardsProgress = ({
         <Row>
           <SignedStackedBarChartContainer
             data={denormalizedData}
+            chartFilter={chartFilter}
+            onBarClickCB={onBarClickCB}
+            onBarResetClickCB={onBarResetClickCB}
             masteryScale={selectedScale}
             backendPagination={{
               page: pageFilters.barsPageNumber,
@@ -166,6 +184,7 @@ const StandardsProgress = ({
       <TableContainer>
         <StandardsProgressTable
           data={denormalizedTableData}
+          chartFilter={chartFilter}
           testInfo={testInfo}
           masteryScale={selectedScale}
           tableFilters={tableFilters}

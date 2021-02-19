@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import next from 'immer'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
+import { isEmpty } from 'lodash'
 import BackendPagination from '../../../../../common/components/BackendPagination'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
@@ -53,6 +54,7 @@ const StandardsProgressTable = ({
   setBackendPagination,
   filters,
   isSharedReport,
+  chartFilter,
 }) => {
   const { analyseByData, compareByData } = tableFilterOptions
 
@@ -71,8 +73,16 @@ const StandardsProgressTable = ({
     testInfoEnhanced?.length,
   ])
 
+  const filteredTestInfoEnhanced = useMemo(
+    () =>
+      !isEmpty(chartFilter)
+        ? testInfoEnhanced.filter((test) => chartFilter[test.testName])
+        : testInfoEnhanced,
+    [chartFilter]
+  )
+
   const getTestCols = () =>
-    testInfoEnhanced.map((test) => ({
+    filteredTestInfoEnhanced.map((test) => ({
       title: (
         <>
           <span>{test.testName}</span>

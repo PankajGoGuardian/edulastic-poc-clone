@@ -7,7 +7,7 @@ import loadable from '@loadable/component'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { groupBy } from 'lodash'
-import { slice } from '../../ducks'
+import { slice, getIsManageSubscriptionButtonVisible } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
 import { Wrapper } from '../styled/commonStyled'
@@ -26,7 +26,6 @@ import {
 import { resetTestFiltersAction } from '../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
 import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
-import { getUserFeatures } from '../../../../student/Login/ducks'
 
 const TrialConfirmationModal = loadable(() =>
   import(
@@ -204,7 +203,7 @@ const Subscription = (props) => {
     dashboardTiles,
     resetTestFilters,
     resetPlaylistFilters,
-    features,
+    isManageSubscriptionButtonVisible,
   } = props
 
   const {
@@ -355,7 +354,7 @@ const Subscription = (props) => {
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
-        showMultipleSubscriptions={features.showMultipleSubscriptions}
+        isManageSubscriptionButtonVisible={isManageSubscriptionButtonVisible}
       />
 
       <SubscriptionMain
@@ -467,7 +466,9 @@ export default compose(
       showTrialConfirmationMessage:
         state?.subscription?.showTrialConfirmationMessage,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
-      features: getUserFeatures(state),
+      isManageSubscriptionButtonVisible: getIsManageSubscriptionButtonVisible(
+        state
+      ),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

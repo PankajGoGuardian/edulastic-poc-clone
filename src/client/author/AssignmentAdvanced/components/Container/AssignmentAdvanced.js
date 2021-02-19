@@ -69,13 +69,14 @@ import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 
 const { assignmentStatusBg } = authorAssignment
 
 class AssignmentAdvanced extends Component {
   state = {
     openEditPopup: false,
-    isPreviewModalVisible: false,
     filterStatus: '',
     isHeaderAction: false,
     openPrintModal: false,
@@ -267,7 +268,8 @@ class AssignmentAdvanced extends Component {
   }
 
   toggleTestPreviewModal = (value) => {
-    this.setState({ isPreviewModalVisible: !!value })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(!!value)
   }
 
   onUpdateReleaseScoreSettings = (releaseScore) => {
@@ -306,7 +308,6 @@ class AssignmentAdvanced extends Component {
     const {
       filterStatus,
       openEditPopup,
-      isPreviewModalVisible,
       isHeaderAction,
       openPrintModal,
       pageNo,
@@ -337,6 +338,7 @@ class AssignmentAdvanced extends Component {
       userSchoolsList,
       authorAssignmentsState = {},
       assignmentTestList,
+      isPreviewModalVisible,
     } = this.props
     const {
       assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
@@ -513,6 +515,7 @@ const enhance = compose(
       assignmentTestList: getAssignmentTestList(state),
       bulkActionType: getBulkActionTypeSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       setReleaseScore: releaseScoreAction,
@@ -528,6 +531,7 @@ const enhance = compose(
       bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

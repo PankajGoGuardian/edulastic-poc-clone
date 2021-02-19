@@ -4,11 +4,11 @@ import {
   themeColor,
   title,
 } from '@edulastic/colors'
-import { EduButton } from '@edulastic/common'
+import { AssessmentPlayerContext, EduButton } from '@edulastic/common'
 import { IconSelectCaretDown } from '@edulastic/icons'
 import { test as testConstants } from '@edulastic/constants'
 import { Select } from 'antd'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
@@ -27,8 +27,13 @@ import {
   getIsMultiLanguageEnabled,
   getUtaPeferredLanguage,
 } from '../../common/components/LanguageSelector/duck'
-import { switchLanguageAction } from '../../assessment/actions/test'
+import {
+  setPreviewLanguageAction,
+  switchLanguageAction,
+} from '../../assessment/actions/test'
 import { playerSkinTypeSelector } from '../../assessment/selectors/test'
+import { clearUserWorkAction } from '../../assessment/actions/userWork'
+import { startAssessmentAction } from '../../assessment/actions/assessment'
 
 const { languageCodes, playerSkinValues } = testConstants
 
@@ -44,6 +49,10 @@ const SettingsModal = ({
   multiLanguageEnabled,
   switchLanguage,
   playerSkinType,
+  isPreview,
+  setPreviewLanguage,
+  clearUserWork,
+  startAssessment,
 }) => {
   const bodyStyle = {
     padding: '20px',
@@ -62,6 +71,7 @@ const SettingsModal = ({
 
   const [selectedLang, setChangedLang] = useState(languagePreference)
   const [showReconfirm, setShowReconfirm] = useState(false)
+  const { setCurrentItem } = useContext(AssessmentPlayerContext)
 
   useEffect(() => {
     setChangedLang(languagePreference)
@@ -77,7 +87,14 @@ const SettingsModal = ({
       return setShowReconfirm(true)
     }
     if (showReconfirm && selectedLang !== languagePreference) {
-      switchLanguage({ languagePreference: selectedLang })
+      if (isPreview) {
+        clearUserWork()
+        startAssessment()
+        setCurrentItem(0)
+        setPreviewLanguage(selectedLang)
+      } else {
+        switchLanguage({ languagePreference: selectedLang })
+      }
     }
     closeModal()
   }
@@ -193,12 +210,16 @@ const enhance = compose(
       languagePreference: getUtaPeferredLanguage(state),
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
       playerSkinType: playerSkinTypeSelector(state),
+      isPreview: state.test.isTestPreviewModalVisible,
     }),
     {
       setSelectedTheme: setSelectedThemeAction,
       setSettingsModalVisibility: setSettingsModalVisibilityAction,
       setZoomLevel: setZoomLevelAction,
       switchLanguage: switchLanguageAction,
+      setPreviewLanguage: setPreviewLanguageAction,
+      clearUserWork: clearUserWorkAction,
+      startAssessment: startAssessmentAction,
     }
   )
 )

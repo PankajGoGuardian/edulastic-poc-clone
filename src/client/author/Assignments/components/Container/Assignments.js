@@ -63,6 +63,8 @@ import {
 } from '../../../sharedDucks/assignments'
 import { DeleteAssignmentModal } from '../DeleteAssignmentModal/deleteAssignmentModal'
 import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 
 const initialFilterState = {
   grades: [],
@@ -77,7 +79,6 @@ const initialFilterState = {
 class Assignments extends Component {
   state = {
     filterState: {},
-    isPreviewModalVisible: false,
     openEditPopup: false,
     currentTestId: '',
     openPrintModal: false,
@@ -144,12 +145,14 @@ class Assignments extends Component {
   }
 
   hidePreviewModal = () => {
-    this.setState({ isPreviewModalVisible: false })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
   }
 
   showPreviewModal = (testId, currentAssignmentId, currentAssignmentClass) => {
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(true)
     this.setState({
-      isPreviewModalVisible: true,
       currentTestId: testId,
       currentAssignmentId,
       currentAssignmentClass,
@@ -289,10 +292,10 @@ class Assignments extends Component {
       isAdvancedView,
       toggleDeleteAssignmentModalState,
       t,
+      isPreviewModalVisible,
     } = this.props
     const {
       filterState,
-      isPreviewModalVisible,
       currentTestId,
       openEditPopup,
       currentAssignmentId,
@@ -482,6 +485,7 @@ const enhance = compose(
         state
       ),
       isFreeAdmin: isFreeAdminSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       loadAssignments: receiveAssignmentsAction,
@@ -494,6 +498,7 @@ const enhance = compose(
       toggleAssignmentView: toggleAssignmentViewAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

@@ -64,6 +64,7 @@ import {
   CLEAR_USER_WORK,
   SET_SAVE_USER_RESPONSE,
   SWITCH_LANGUAGE,
+  UPDATE_PLAYER_PREVIEW_STATE,
 } from '../constants/actions'
 import { saveUserResponse as saveUserResponseAction } from '../actions/items'
 import { saveUserResponse as saveUserResponseSaga } from './items'
@@ -73,6 +74,7 @@ import {
   setPasswordValidateStatusAction,
   setPasswordStatusAction,
   languageChangeSuccessAction,
+  setShowTestInfoSuccesAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
@@ -642,6 +644,27 @@ function* loadTest({ payload }) {
         languagePreference: testActivity.testActivity?.languagePreference,
       },
     })
+    if (preview) {
+      yield put({
+        type: UPDATE_PLAYER_PREVIEW_STATE,
+        payload: {
+          instruction: test.instruction,
+          hasInstruction: test.hasInstruction,
+          blockNavigationToAnsweredQuestions:
+            test.blockNavigationToAnsweredQuestions,
+          multiLanguageEnabled: test.multiLanguageEnabled,
+        },
+      })
+      if (
+        !(
+          test.multiLanguageEnabled ||
+          test.hasInstruction ||
+          test.timedAssignment
+        )
+      ) {
+        yield put(setShowTestInfoSuccesAction(true))
+      }
+    }
     yield put(setPasswordValidateStatusAction(true))
 
     yield put({

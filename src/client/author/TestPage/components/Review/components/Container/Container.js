@@ -67,6 +67,8 @@ import TestPreviewModal from '../../../../../Assignments/components/Container/Te
 import ReviewItems from '../ReviewItems'
 import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
 import { groupTestItemsByPassageId } from '../helper'
+import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
 
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
@@ -82,7 +84,6 @@ class Review extends PureComponent {
       isShowSummary: true,
       isModalVisible: false,
       item: [],
-      isTestPreviewModalVisible: false,
       currentTestId: '',
       hasStickyHeader: false,
       indexForPreview: 0,
@@ -112,9 +113,8 @@ class Review extends PureComponent {
       ignoreQueryPrefix: true,
     })
     if (showAssignmentPreview) {
-      this.setState({
-        isTestPreviewModalVisible: true,
-      })
+      const { setIsTestPreviewVisible } = this.props
+      setIsTestPreviewVisible(true)
     }
   }
 
@@ -462,16 +462,16 @@ class Review extends PureComponent {
   }
 
   hidePreviewModal = () => {
-    const { clearAnswer, clearEvaluation } = this.props
-    this.setState({ isTestPreviewModalVisible: false }, () => {
-      clearAnswer()
-      clearEvaluation()
-    })
+    const { clearAnswer, clearEvaluation, setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
+    clearAnswer()
+    clearEvaluation()
   }
 
   showTestPreviewModal = () => {
-    const { test } = this.props
-    this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id })
+    const { test, setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(true)
+    this.setState({ currentTestId: test._id })
   }
 
   handleScroll = (e) => {
@@ -489,7 +489,8 @@ class Review extends PureComponent {
   }
 
   closeTestPreviewModal = () => {
-    this.setState({ isTestPreviewModalVisible: false })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
   }
 
   render() {
@@ -518,13 +519,13 @@ class Review extends PureComponent {
       userRole,
       isPowerPremiumAccount,
       showGroupsPanel,
+      isPreviewModalVisible,
     } = this.props
     const {
       isCollapse,
       isShowSummary,
       isModalVisible,
       item,
-      isTestPreviewModalVisible,
       currentTestId,
       hasStickyHeader,
     } = this.state
@@ -698,7 +699,7 @@ class Review extends PureComponent {
           />
         )}
         <TestPreviewModal
-          isModalVisible={isTestPreviewModalVisible}
+          isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
           test={test}
           showStudentPerformance
@@ -761,6 +762,7 @@ const enhance = compose(
       userRole: getUserRole(state),
       isPowerPremiumAccount: getIsPowerPremiumAccount(state),
       showGroupsPanel: showGroupsPanelSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       setData: setTestDataAction,
@@ -773,6 +775,7 @@ const enhance = compose(
       setTestItems: setTestItemsAction,
       addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction,
       resetItemScore: resetItemScoreAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

@@ -120,7 +120,14 @@ class AssessmentPlayerSimple extends React.Component {
   }
 
   openExitPopup = () => {
-    const { updateTestPlayer } = this.props
+    const {
+      updateTestPlayer,
+      closeTestPreviewModal,
+      previewPlayer,
+    } = this.props
+    if (previewPlayer && closeTestPreviewModal) {
+      return closeTestPreviewModal()
+    }
     updateTestPlayer({ enableMagnifier: false })
     this.setState({ showExitPopup: true })
   }

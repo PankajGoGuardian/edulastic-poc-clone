@@ -37,6 +37,7 @@ import Styled from 'styled-components'
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
 import {
   finishTestAcitivityAction,
+  setIsTestPreviewVisibleAction,
   setPasswordValidateStatusAction,
 } from '../actions/test'
 import { evaluateAnswer } from '../actions/evaluation'
@@ -423,6 +424,7 @@ const AssessmentContainer = ({
   currentAssignment,
   fetchAssignments,
   evaluateForPreview,
+  setIsTestPreviewVisible,
   ...restProps
 }) => {
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
@@ -496,6 +498,7 @@ const AssessmentContainer = ({
       Modal.info({
         title: "It looks like there aren't any Items in this test.",
         okText: 'Close',
+        onOk: () => setIsTestPreviewVisible(false),
       })
     }
   }, [loading])
@@ -575,17 +578,18 @@ const AssessmentContainer = ({
      * consider item as attempted
      * @see https://snapwiz.atlassian.net/browse/EV-17309
      */
-    const itemId = items[currentItem]?._id
-    if (hasUserWork(itemId, restProps.userWork || {})) {
+    const _itemId = items[currentItem]?._id
+    if (hasUserWork(_itemId, restProps.userWork || {})) {
       return []
     }
     return questions.filter((q) => {
       const qAnswers =
-        answersById[`${itemId}_${q.id}`] || userPrevAnswer[`${itemId}_${q.id}`]
+        answersById[`${_itemId}_${q.id}`] ||
+        userPrevAnswer[`${_itemId}_${q.id}`]
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
           return (
-            (answersById[`${itemId}_${q.id}`] || []).filter(
+            (answersById[`${_itemId}_${q.id}`] || []).filter(
               (token) => token?.selected
             ).length === 0
           )
@@ -675,11 +679,28 @@ const AssessmentContainer = ({
 
   const gotoQuestion = (index, needsToProceed = false, context = '') => {
     if (preview) {
-      hideHints()
-      setCurrentItem(index)
-      const timeSpent = Date.now() - lastTime.current
-      if (!demo) {
-        evaluateForPreview({ currentItem, timeSpent })
+      const unansweredQs = getUnAnsweredQuestions()
+      if (
+        (unansweredQs.length && needsToProceed) ||
+        !unansweredQs.length ||
+        index < currentItem
+      ) {
+        hideHints()
+        setCurrentItem(index)
+        const timeSpent = Date.now() - lastTime.current
+        if (!demo) {
+          evaluateForPreview({ currentItem, timeSpent })
+        }
+      } else {
+        setUnansweredPopupSetting({
+          show: true,
+          qLabels: unansweredQs.map(
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
+          ),
+          index,
+          context,
+        })
       }
     } else {
       const unansweredQs = getUnAnsweredQuestions()
@@ -774,12 +795,24 @@ const AssessmentContainer = ({
     }
   }
 
+  const skipOnPreview = (index) => {
+    hideHints()
+    setCurrentItem(index)
+    const timeSpent = Date.now() - lastTime.current
+    if (!demo) {
+      evaluateForPreview({ currentItem, timeSpent })
+    }
+  }
+
   const onSkipUnansweredPopup = async () => {
     setUnansweredPopupSetting({
       ...unansweredPopupSetting,
       show: false,
     })
     const { index, context } = unansweredPopupSetting
+    if (preview) {
+      return skipOnPreview(index)
+    }
     if (context === 'next') {
       await moveToNext(null, true)
     } else if (context === 'prev') {
@@ -947,7 +980,7 @@ const AssessmentContainer = ({
 
   return (
     <AssessmentPlayerContext.Provider
-      value={{ isStudentAttempt: true, currentItem }}
+      value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
     >
       {assignmentObj?.restrictNavigationOut && (
         <>
@@ -1108,6 +1141,7 @@ const enhance = compose(
       fetchAssignments: fetchAssignmentsAction,
       evaluateForPreview: evaluateCurrentAnswersForPreviewAction,
       setCheckAnswerInProgress: setCheckAnswerInProgressStatusAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

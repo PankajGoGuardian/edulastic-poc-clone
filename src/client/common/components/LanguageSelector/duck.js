@@ -52,6 +52,10 @@ export const getUtaPeferredLanguage = (state) => state.test.languagePreference
 export const getIsMultiLanguageEnabled = (state) => {
   const assignmentById = get(state, 'studentAssignment.byId')
   const currentAssignment = get(state, 'studentAssignment.current')
+  const isPreview = get(state, 'test.isTestPreviewModalVisible', false)
+  if (isPreview) {
+    return get(state, 'test.previewState.multiLanguageEnabled', false)
+  }
   return !!assignmentById[currentAssignment]?.multiLanguageEnabled
 }
 export const getCurrentLanguage = createSelector(
@@ -71,6 +75,9 @@ export const getCurrentLanguage = createSelector(
       if (isMultiLanguageEnabled)
         return utaPeferredLanguage || userPreferredLanguage || LANGUAGE_EN
       return LANGUAGE_EN
+    }
+    if (userRole !== roleuser.STUDENT && isMultiLanguageEnabled) {
+      return utaPeferredLanguage || LANGUAGE_EN
     }
     return state || LANGUAGE_EN
   }

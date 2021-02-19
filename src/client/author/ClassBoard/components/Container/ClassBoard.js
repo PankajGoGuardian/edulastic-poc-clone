@@ -400,23 +400,21 @@ class ClassBoard extends Component {
   onSelectAllChange = (e) => {
     const { checked } = e.target
     const { testActivity } = this.props
-    const {
-      studentSelect,
-      studentUnselectAll,
-      allStudents,
-      removedStudents,
-    } = this.props
-    testActivity.map((student) => {
+    const { studentSelect, studentUnselectAll } = this.props
+    const { studentFilter } = this.state
+    const filteredStudentActivities = testActivity.filter(
+      filterStudentsByStatus(studentFilter)
+    )
+    filteredStudentActivities.forEach((student) => {
       student.check = checked
-      return null
     })
     this.setState({
-      nCountTrue: checked ? testActivity.length : 0,
+      nCountTrue: checked ? filteredStudentActivities.length : 0,
     })
     if (checked) {
-      const selectedAllstudents = allStudents
-        .map((x) => x._id)
-        .filter((item) => !removedStudents.includes(item))
+      const selectedAllstudents = filteredStudentActivities.map(
+        (x) => x.studentId
+      )
       studentSelect(selectedAllstudents)
     } else {
       studentUnselectAll()
@@ -983,6 +981,7 @@ class ClassBoard extends Component {
       studentsList,
       recentAttemptsGrouped,
       studentsPrevSubmittedUtas,
+      studentUnselectAll,
     } = this.props
 
     const {
@@ -1018,6 +1017,9 @@ class ClassBoard extends Component {
     )
     const { status } = studentTestActivity
     let { score = 0, maxScore = 0 } = studentTestActivity
+    const filteredStudentActivities = testActivity.filter(
+      filterStudentsByStatus(studentFilter)
+    )
     if (
       studentResponse &&
       !isEmpty(studentResponse.questionActivities) &&
@@ -1051,7 +1053,7 @@ class ClassBoard extends Component {
       selectedStudentId || firstStudentId
     )
 
-    const unselectedStudents = testActivity.filter(
+    const unselectedStudents = filteredStudentActivities.filter(
       (x) => !selectedStudents[x.studentId]
     )
 
@@ -1113,6 +1115,7 @@ class ClassBoard extends Component {
         }
         return acc
       }, {})
+
     return (
       <div>
         {showCanvasShare && (
@@ -1360,7 +1363,8 @@ class ClassBoard extends Component {
                       checked={unselectedStudents.length === 0}
                       indeterminate={
                         unselectedStudents.length > 0 &&
-                        unselectedStudents.length < testActivity.length
+                        unselectedStudents.length <
+                          filteredStudentActivities.length
                       }
                       onChange={this.onSelectAllChange}
                     >
@@ -1373,6 +1377,7 @@ class ClassBoard extends Component {
                       <FilterSelect
                         value={studentFilter}
                         onChange={(v) => {
+                          studentUnselectAll()
                           this.setState({ studentFilter: v })
                         }}
                         width="150px"
@@ -1538,9 +1543,7 @@ class ClassBoard extends Component {
                   {flag ? (
                     <DisneyCardContainer
                       selectedStudents={selectedStudents}
-                      testActivity={testActivity.filter(
-                        filterStudentsByStatus(studentFilter)
-                      )}
+                      testActivity={filteredStudentActivities}
                       assignmentId={assignmentId}
                       classId={classId}
                       studentSelect={this.onSelectCardOne}

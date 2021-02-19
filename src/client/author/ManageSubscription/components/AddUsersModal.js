@@ -44,7 +44,7 @@ const AddUsersModal = ({
     let _premiumLicenseId = ''
     let _sparkMathLicenseId = ''
     let _isPremiumCheckboxChecked = ''
-    let _SparkAvailableCount = ''
+    let _sparkAvailableCount = ''
     for (const {
       productId,
       linkedProductId,
@@ -59,10 +59,10 @@ const AddUsersModal = ({
       if (linkedProductId === sparkMathProductId) {
         _sparkMathLicenseId = licenseId
       }
-      _SparkAvailableCount = totalCount - usedCount
+      _sparkAvailableCount = totalCount - usedCount
     }
     const _isSparkCheckboxDisbled =
-      _isPremiumCheckboxChecked && _SparkAvailableCount
+      _isPremiumCheckboxChecked && _sparkAvailableCount
     return {
       premiumLicenseId: _premiumLicenseId,
       sparkMathLicenseId: _sparkMathLicenseId,

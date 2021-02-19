@@ -108,7 +108,7 @@ export const redirectToDashbord = (type = '', history) => {
   let msg
   switch (type) {
     case 'EXPIRED':
-      msg = 'Test is expired'
+      msg = 'The due date for this assignment has passed'
       break
     case 'ARCHIVED':
       msg = ARCHIVED_TEST_MSG
@@ -117,7 +117,7 @@ export const redirectToDashbord = (type = '', history) => {
       msg = 'Redirecting to the student dashboard'
       break
     case 'NOT_FOUND':
-      msg = 'Test not found'
+      msg = 'This assignment is not available'
       break
     default:
       msg = 'Assignment is not available for the attempt.'

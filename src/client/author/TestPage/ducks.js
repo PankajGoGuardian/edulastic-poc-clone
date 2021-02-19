@@ -2988,7 +2988,10 @@ function* getTestIdFromVersionIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err)
     console.error(err)
-    const errorMessage = 'Unable to retrieve test info.'
+    const errorMessage =
+      err?.response?.data?.statusCode === 404
+        ? 'You can no longer use this, as sharing access has been revoked by author'
+        : 'Unable to retrieve test info.'
     yield put(push('/author/tests'))
     if (err.status === 403) {
       notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })

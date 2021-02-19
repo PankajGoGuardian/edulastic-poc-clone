@@ -2,7 +2,9 @@ import React, { useEffect } from 'react'
 import { Spin } from 'antd'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
+import * as Sentry from '@sentry/browser'
 import { roleuser } from '@edulastic/constants'
+import notfification from '@edulastic/common/src/components/Notification'
 import { testsApi } from '@edulastic/api'
 import { getUser } from '../../author/src/selectors/user'
 import { fetchAssignmentsByTestIdAction } from '../ducks'
@@ -42,8 +44,19 @@ const AssignmentEmbedLink = ({
         fetchAssignmentsByTestId(testId)
       } else if (role === STUDENT) {
         if (isVersionId && versionId) {
-          const latestTest = await testsApi.getTestIdFromVersionId(versionId)
-          fetchAssignmentsForStudent({ testId: latestTest.testId })
+          try {
+            const latestTest = await testsApi.getTestIdFromVersionId(versionId)
+            fetchAssignmentsForStudent({ testId: latestTest.testId })
+          } catch (err) {
+            if (!err?.response) {
+              Sentry.captureException(err)
+            }
+            history.push('/home/assignments')
+            notfification({
+              type: 'warning',
+              msg: 'This assignment is not available.',
+            })
+          }
         } else {
           fetchAssignmentsForStudent({ testId })
         }

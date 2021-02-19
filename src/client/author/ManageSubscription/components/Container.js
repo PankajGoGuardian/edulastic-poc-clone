@@ -23,6 +23,7 @@ import {
   getUsersSelector,
   setAddUserConfirmationModalVisibleAction,
   getLoadingStateSelector,
+  bulkEditUsersPermissionAction,
 } from '../ducks'
 import AddUsersSection from './AddUsersSection'
 import Header from './Header'
@@ -31,7 +32,6 @@ import Userlist from './Userlist'
 import { ContentWrapper, StyledSpin } from './styled'
 
 const AddUsersModal = loadable(() => import('./AddUsersModal'))
-const ManageLicensesModal = loadable(() => import('./ManageLicensesModal'))
 const AddUsersConfirmationModal = loadable(() =>
   import('./AddUsersConfirmationModal')
 )
@@ -54,8 +54,9 @@ const ManageSubscriptionContainer = ({
   t,
   fetchMultipleSubscriptions,
   loading,
+  bulkEditUsersPermission,
 }) => {
-  const [showManageLicenseModal, setShowManageLicenseModal] = useState(false)
+  const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
@@ -63,6 +64,9 @@ const ManageSubscriptionContainer = ({
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
+
+  const [isBuyMoreModalOpened, setIsBuyMoreModalOpened] = useState('')
+
   const [productData, setProductData] = useState({})
 
   const { FEATURED } = groupBy(dashboardTiles, 'type')
@@ -121,7 +125,6 @@ const ManageSubscriptionContainer = ({
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
-  const closeManageLicenseModal = () => setShowManageLicenseModal(false)
   const closeAddUsersModal = () => setShowAddUsersModal(false)
   const closeAddUsersConfirmationModal = () =>
     setAddUsersConfirmationModalVisible(false)
@@ -164,10 +167,16 @@ const ManageSubscriptionContainer = ({
       <ContentWrapper>
         <LicenseCountSection
           subsLicenses={subsLicenses}
-          setShowManageLicenseModal={setShowManageLicenseModal}
+          setShowBuyMoreModal={setShowBuyMoreModal}
+          setIsBuyMoreModalOpened={setIsBuyMoreModalOpened}
         />
         <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
-        <Userlist users={users} />
+        <Userlist
+          users={users}
+          bulkEditUsersPermission={bulkEditUsersPermission}
+          teacherPremiumProductId={teacherPremiumProductId}
+          sparkMathProductId={sparkMathProductId}
+        />
       </ContentWrapper>
 
       <PurchaseFlowModals
@@ -177,13 +186,10 @@ const ManageSubscriptionContainer = ({
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}
+        showBuyMoreModal={showBuyMoreModal}
+        setShowBuyMoreModal={setShowBuyMoreModal}
+        isBuyMoreModalOpened={isBuyMoreModalOpened}
       />
-      {showManageLicenseModal && (
-        <ManageLicensesModal
-          isVisible={showManageLicenseModal}
-          onCancel={closeManageLicenseModal}
-        />
-      )}
       {showAddUsersModal && (
         <AddUsersModal
           isVisible={showAddUsersModal}
@@ -230,6 +236,7 @@ const enhance = compose(
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,
       setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
+      bulkEditUsersPermission: bulkEditUsersPermissionAction,
     }
   )
 )

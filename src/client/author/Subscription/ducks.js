@@ -286,7 +286,7 @@ function* handleMultiplePurchasePayment({ payload }) {
       content: 'Processing Payment, please wait',
       key: 'verify-license',
     })
-    const { stripe, data, productIds } = payload
+    const { stripe, data, productIds, emailIds: userEmailIds } = payload
     const { token, error } = yield stripe.createToken(data)
     if (token) {
       const products = productIds.reduce((allProducts, product) => {
@@ -297,6 +297,7 @@ function* handleMultiplePurchasePayment({ payload }) {
       const apiPaymentResponse = yield call(paymentApi.licensePurchase, {
         token,
         products,
+        userEmailIds,
       })
       if (apiPaymentResponse.licenseKeys) {
         yield put(

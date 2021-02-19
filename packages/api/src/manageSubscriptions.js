@@ -20,6 +20,15 @@ const upgradeUsersSubscriptions = (data) =>
     })
     .then((result) => result.data)
 
+const bulkEditUsersPermission = (data) =>
+  api
+    .callApi({
+      method: 'put',
+      url: `${BASE_URL}/users-permission`,
+      data,
+    })
+    .then((result) => result.data)
+
 const fetchManageLicenses = (data) =>
   api
     .callApi({
@@ -33,4 +42,5 @@ export default {
   fetchLicenses,
   upgradeUsersSubscriptions,
   fetchManageLicenses,
+  bulkEditUsersPermission,
 }

@@ -49,6 +49,9 @@ const UPGRADE_USERS_SUBSCRIPTIONS_SUCCESS =
 const UPGRADE_USERS_SUBSCRIPTIONS_ERROR =
   '[manage-subscriptions] upgrade users by selected licenses - failed'
 
+const BULK_EDIT_USERS_PERMISSION_REQUEST =
+  '[users] bulk edit users permission request'
+
 // action creators
 export const addAndUpgradeUsersAction = createAction(ADD_BULK_USERS_REQUEST)
 export const addAndUpgradeUsersSuccessAction = createAction(
@@ -72,6 +75,10 @@ export const upgradeUsersSubscriptionsSuccessAction = createAction(
 )
 export const upgradeUsersSubscriptionsErrorAction = createAction(
   UPGRADE_USERS_SUBSCRIPTIONS_ERROR
+)
+
+export const bulkEditUsersPermissionAction = createAction(
+  BULK_EDIT_USERS_PERMISSION_REQUEST
 )
 
 // initial State
@@ -186,10 +193,41 @@ function* fetchManageSubscriptionsSaga() {
   }
 }
 
+function* bulkEditUsersPermissionSaga({ payload }) {
+  try {
+    const result = yield call(
+      manageSubscriptionsApi.bulkEditUsersPermission,
+      payload
+    )
+    if (result.error) {
+      notification({
+        type: 'error',
+        msg: result?.message || 'Unable to update user(s) permission.',
+      })
+      return
+    }
+    yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
+    notification({
+      type: 'success',
+      msg: `Successfully updated.`,
+    })
+  } catch (err) {
+    captureSentryException(err)
+    notification({
+      type: 'error',
+      msg:
+        err?.response?.data?.message || 'Unable to update user(s) permission.',
+    })
+  }
+}
 // watcher saga
 export function* watcherSaga() {
   yield all([
     yield takeLatest(ADD_BULK_USERS_REQUEST, addBulkUsersAndUpgradeSaga),
     yield takeLatest(FETCH_MANAGE_SUBSCRIPTIONS, fetchManageSubscriptionsSaga),
+    yield takeLatest(
+      BULK_EDIT_USERS_PERMISSION_REQUEST,
+      bulkEditUsersPermissionSaga
+    ),
   ])
 }

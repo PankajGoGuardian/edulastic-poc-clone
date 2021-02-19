@@ -21,6 +21,7 @@ const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
 const MultiplePurchaseModal = loadable(() => import('./MultiplePurchaseModal'))
+const BuyMoreLicensesModal = loadable(() => import('./BuyMoreLicensesModal'))
 
 const PurchaseFlowModals = (props) => {
   const {
@@ -41,13 +42,18 @@ const PurchaseFlowModals = (props) => {
     defaultSelectedProductIds,
     showMultiplePurchaseModal,
     setShowMultiplePurchaseModal,
+    showBuyMoreModal,
+    setShowBuyMoreModal,
+    isBuyMoreModalOpened,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const [addOnProductIds, setAddOnProductIds] = useState([])
   const [productsCart, setProductsCart] = useState({})
+  const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
+  const [buyCount, setBuyCount] = useState()
 
   useEffect(() => {
     // getSubscription on mount
@@ -120,12 +126,18 @@ const PurchaseFlowModals = (props) => {
     setShowSubscriptionAddonModal(false)
   }
 
+  const closeBuyMoreModal = () => setShowBuyMoreModal(false)
+
   const stripePaymentActionHandler = (data) => {
     if (addOnProductIds?.length) {
       handleStripePayment({ ...data, productIds: [...addOnProductIds] })
       setAddOnProductIds([])
     } else {
-      handleStripeMultiplePayment({ ...data, productIds: [...productsCart] })
+      handleStripeMultiplePayment({
+        ...data,
+        productIds: [...productsCart],
+        emailIds,
+      })
       setProductsCart({})
     }
   }
@@ -150,6 +162,7 @@ const PurchaseFlowModals = (props) => {
         <UpgradeModal
           visible={showUpgradeModal}
           setShowModal={setShowUpgradeModal}
+          setShowBuyMoreModal={setShowBuyMoreModal}
           openPaymentServiceModal={openPaymentServiceModal}
           openPoServiceModal={openPoServiceModal}
         />
@@ -179,7 +192,21 @@ const PurchaseFlowModals = (props) => {
           setTotalAmount={setTotalAmount}
           totalAmount={totalAmount}
           setProductsCart={setProductsCart}
+          setEmailIds={setEmailIds}
           products={products}
+        />
+      )}
+      {showBuyMoreModal && (
+        <BuyMoreLicensesModal
+          isVisible={showBuyMoreModal}
+          onCancel={closeBuyMoreModal}
+          isBuyMoreModalOpened={isBuyMoreModalOpened}
+          setBuyCount={setBuyCount}
+          buyCount={buyCount}
+          setProductsCart={setProductsCart}
+          setShowUpgradeModal={setShowUpgradeModal}
+          products={products}
+          setTotalAmount={setTotalAmount}
         />
       )}
     </>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Button, Form, Pagination, Table, Tooltip } from 'antd'
-import { StyledFilterSelect } from '../Common/StyledComponents'
 import moment from 'moment'
 import { FlexContainer } from '@edulastic/common'
 import { IconEye, IconTrash } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
+import { StyledFilterSelect } from '../Common/StyledComponents'
 
 const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
   {
@@ -112,6 +112,7 @@ const SearchFilters = Form.create({
     fetchLicensesBySearchType,
     setSearchType,
   }) => {
+    // TODO: replace submit btn click handler with onChange handler
     const handleSubmit = (evt) => {
       evt.preventDefault()
       validateFields((err, { searchType }) => {
@@ -131,7 +132,7 @@ const SearchFilters = Form.create({
           <Form.Item style={{ width: '300px' }}>
             {getFieldDecorator('searchType', {
               rules: [{ required: true }],
-              initialValue: undefined,
+              initialValue: MANAGE_SUBSCRIPTION_SEARCH_TYPE[0].type,
             })(
               <StyledFilterSelect placeholder="Select a filter to search">
                 {MANAGE_SUBSCRIPTION_SEARCH_TYPE.map(({ type, name }) => (

@@ -32,8 +32,14 @@ const SubscriptionHeader = ({
   isPaidPremium,
   hasAllPremiumProductAccess,
   isPremium,
+  isFreeAdmin,
+  toggleShowFeatureNotAvailableModal,
 }) => {
   const handlePurchaseFlow = () => {
+    if (isFreeAdmin) {
+      toggleShowFeatureNotAvailableModal(true)
+      return
+    }
     setShowSubscriptionAddonModal(true)
   }
   const handleEnterpriseClick = () => {

@@ -453,7 +453,7 @@ class ClassQuestions extends Component {
       if (curr.pendingEvaluation) {
         acc[curr.qid] = 'pending'
       } else {
-        acc[curr.qid] = curr.evaluation
+        acc[`${curr.testItemId}_${curr.qid}`] = curr.evaluation
       }
 
       return acc

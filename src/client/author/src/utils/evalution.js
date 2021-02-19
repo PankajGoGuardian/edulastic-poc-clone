@@ -7,7 +7,8 @@ export const evaluateItem = async (
   answers,
   validations,
   itemLevelScoring = false,
-  itemLevelScore = 0
+  itemLevelScore = 0,
+  itemId = ''
 ) => {
   const questionIds = Object.keys(validations)
   const results = {}
@@ -18,13 +19,14 @@ export const evaluateItem = async (
   ).length
   let allCorrect = true
   for (const id of questionIds) {
+    const evaluationId = `${itemId}_${id}`
     const answer = answers[id]
     if (validations && validations[id]) {
       const validation = replaceVariables(validations[id], [], false)
       const { type } = validations[id]
       const evaluator = evaluators[validation.type]
       if (!evaluator) {
-        results[id] = []
+        results[evaluationId] = []
       } else {
         const validationData = itemLevelScoring
           ? produce(validation.validation, (v) => {
@@ -51,7 +53,7 @@ export const evaluateItem = async (
           allCorrect = score === maxScore
         }
 
-        results[id] = evaluation
+        results[evaluationId] = evaluation
         if (itemLevelScoring) {
           totalScore += round(score, 2)
         } else {
@@ -63,7 +65,7 @@ export const evaluateItem = async (
         }
       }
     } else {
-      results[id] = []
+      results[evaluationId] = []
     }
   }
   if (itemLevelScoring) {

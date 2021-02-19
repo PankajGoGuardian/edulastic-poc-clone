@@ -2438,7 +2438,8 @@ function* getEvaluation(testItemId, newScore) {
     answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore
+    newScore || itemLevelScore,
+    testItem._id
   )
   return evaluation
 }
@@ -2451,7 +2452,8 @@ function* getEvaluationFromItem(testItem, newScore) {
     answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore
+    newScore || itemLevelScore,
+    testItem._id
   )
   return evaluation
 }
@@ -2518,14 +2520,17 @@ function* showAnswerSaga({ payload }) {
       }, {})
     }
 
-    const evaluation = yield createShowAnswerData(questions, answers)
+    const evaluation = yield createShowAnswerData(
+      questions,
+      answers,
+      testItem._id
+    )
     yield put({
       type: CHANGE_PREVIEW,
       payload: {
         view: 'show',
       },
     })
-
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

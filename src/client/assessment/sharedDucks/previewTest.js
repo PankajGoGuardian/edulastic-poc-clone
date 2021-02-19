@@ -93,7 +93,8 @@ function* evaluateTestItemSaga({ payload }) {
       answersByQids,
       qById,
       itemLevelScoring,
-      itemLevelScore
+      itemLevelScore,
+      testItem._id
     )
     const previewUserWork = yield select(
       ({ userWork }) => userWork.present[testItemId]

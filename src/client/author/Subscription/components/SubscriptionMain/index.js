@@ -360,8 +360,8 @@ const SubscriptionMain = ({
               : 'Premium add-ons to make it even better'}
           </SectionTitle>
           <SectionDescription>
-            You can bundle one or more of the following add-ons to the teacher
-            premium subscription that will <br /> make it easier to deliver
+            You can bundle one or more of the following add-ons to the premium
+            subscription that will <br /> make it easier to deliver
             differentiated instruction and keep your students engaged.
           </SectionDescription>
           <CardContainer>
@@ -422,8 +422,7 @@ const SubscriptionMain = ({
           Get in-depth insights into schoolwide and districtwide progress with
           Edulastic Enterprise. Deliver common assessments, analyze the instant
           student data, and manage everything in one place. Enterprise includes
-          Teacher Premium and its collaboration, accommodation, and security
-          tools.
+          Premium and its collaboration, accommodation, and security tools.
         </SectionDescription>
         <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
           <EduButton

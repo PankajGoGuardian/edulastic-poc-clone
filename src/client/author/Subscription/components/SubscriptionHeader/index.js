@@ -64,15 +64,22 @@ const SubscriptionHeader = ({
       <Menu.Item>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
+            <span data-cy="multipleSubscription" onClick={handleClick}>
+              MULTIPLE SUBSCRIPTIONS
+            </span>
+          )}
+          onClick={multipleSubscriptionClick}
+        />
+      </Menu.Item>
+      <Menu.Item>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
             <span data-cy="enterpriseSubscription" onClick={handleClick}>
               ENTERPRISE SUBSCRIPTION
             </span>
           )}
           onClick={handleEnterpriseClick}
         />
-      </Menu.Item>
-      <Menu.Item onClick={multipleSubscriptionClick}>
-        <span data-cy="multipleSubscription">MULTIPLE SUBSCRIPTIONS</span>
       </Menu.Item>
     </Menu>
   )
@@ -132,7 +139,7 @@ const SubscriptionHeader = ({
         <p>
           {isPremium
             ? `This plan expires on ${licenseExpiryDate}`
-            : `Upgrade to teacher premium for additional features, including:`}
+            : `Upgrade to premium for additional features, including:`}
         </p>
         <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
       </BannerContent>

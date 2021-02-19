@@ -141,8 +141,8 @@ const SingleAssessmentReportFilters = ({
         studentGrade: urlStudentGrade.key,
         studentCourseId: search.studentCourseId || 'All',
         courseId: search.courseId || 'All',
-        classId: search.classId || 'All',
-        groupId: search.groupId || 'All',
+        classIds: search.classIds || '',
+        groupIds: search.groupIds || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
@@ -339,7 +339,6 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -351,13 +350,15 @@ const SingleAssessmentReportFilters = ({
               courseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
               }
+              selectedClassIds={
+                filters.classIds ? filters.classIds.split(',') : []
+              }
               selectCB={(e) => {
-                updateFilterDropdownCB(e, 'classId')
+                updateFilterDropdownCB(e.join(','), 'classIds', true)
               }}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -369,8 +370,11 @@ const SingleAssessmentReportFilters = ({
               courseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
               }
+              selectedGroupIds={
+                filters.groupIds ? filters.groupIds.split(',') : []
+              }
               selectCB={(e) => {
-                updateFilterDropdownCB(e, 'groupId')
+                updateFilterDropdownCB(e.join(','), 'groupIds', true)
               }}
             />
           </SearchField>

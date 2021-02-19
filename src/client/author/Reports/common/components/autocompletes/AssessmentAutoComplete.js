@@ -34,6 +34,7 @@ const AssessmentAutoComplete = ({
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
+  const [isFocused, setIsFocused] = useState(false)
 
   // build search query
   const query = useMemo(() => {
@@ -95,6 +96,7 @@ const AssessmentAutoComplete = ({
         text: searchTerms.selectedText,
       })
     }
+    setIsFocused(false)
   }
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
@@ -113,9 +115,7 @@ const AssessmentAutoComplete = ({
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
       onSelect(testList[0]._id)
-    } else if (!loading && !testList.length) {
-      onSelect()
-    }
+    } 
   }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {
@@ -131,23 +131,21 @@ const AssessmentAutoComplete = ({
     }
   }, [query])
   // build dropdown data
-  const dropdownData = [
-    <AutoComplete.OptGroup key="testList" label="Assessments [Type to search]">
-      {isEmpty(testList)
-        ? [
-            <AutoComplete.Option disabled key={0} title="no data found">
-              No Data Found
-            </AutoComplete.Option>,
-          ]
-        : testList.map((item) => (
-            <AutoComplete.Option key={item._id} title={item.title}>
-              {`${item.title} (ID:${
-                item._id.substring(item._id.length - 5) || ''
-              })`}
-            </AutoComplete.Option>
-          ))}
-    </AutoComplete.OptGroup>,
-  ]
+  const dropdownData = isEmpty(testList)
+    ? [
+        <AutoComplete.Option disabled key={0} title="no data found">
+          No Data Found
+        </AutoComplete.Option>,
+      ]
+    : testList.map((item) => (
+        <AutoComplete.Option key={item._id} title={item.title}>
+          {`${
+            item.title.length > 25
+              ? `${item.title.slice(0, 22)}...`
+              : item.title
+          } (ID:${item._id.substring(item._id.length - 5) || ''})`}
+        </AutoComplete.Option>
+      ))
 
   const selectedTestLabel =
     searchTerms.text === searchTerms.selectedText && selectedTest._id
@@ -155,6 +153,14 @@ const AssessmentAutoComplete = ({
           selectedTest._id.length - 5
         )})`
       : ''
+
+  const InputSuffixIcon = loading ? (
+    <Icon type="loading" />
+  ) : searchTerms.text && isFocused ? (
+    <></>
+  ) : (
+    <Icon type="search" />
+  )
 
   return (
     <Tooltip title={selectedTestLabel} placement="top">
@@ -166,8 +172,11 @@ const AssessmentAutoComplete = ({
           dataSource={dropdownData}
           onSelect={onSelect}
           onBlur={onBlur}
+          onFocus={() => setIsFocused(true)}
+          allowClear={!loading && searchTerms.selectedText && isFocused}
+          clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
         >
-          <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
+          <Input suffix={InputSuffixIcon} />
         </AutoComplete>
       </AutoCompleteContainer>
     </Tooltip>

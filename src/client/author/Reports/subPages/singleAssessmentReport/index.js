@@ -206,6 +206,14 @@ const SingleAssessmentReportContainer = (props) => {
     'performance-by-standards',
     'performance-by-students',
   ]
+
+  useEffect(() => {
+    if (!locList.includes(loc)) {
+      setDdFilter({ ...INITIAL_DD_FILTERS })
+      setSelectedExtras({ ...INITIAL_DD_FILTERS })
+    }
+  }, [loc])
+
   const extraFilters = locList.includes(loc)
     ? demographics &&
       demographics.map((item) => (
@@ -215,7 +223,7 @@ const SingleAssessmentReportContainer = (props) => {
             selectCB={updateCB}
             data={item.data}
             comData={item.key}
-            by={item.data[0]}
+            by={ddfilter[item.key] || item.data[0]}
           />
         </SearchField>
       ))
@@ -241,6 +249,7 @@ const SingleAssessmentReportContainer = (props) => {
         )}
         <FlexContainer
           alignItems="flex-start"
+          justifyContent="space-between"
           display={firstLoad ? 'none' : 'flex'}
         >
           <SingleAssessmentReportFilters

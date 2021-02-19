@@ -24,6 +24,7 @@ const CreateBlank = ({ onCreate, loading }) => (
       Want to create an assessment with no content?
     </TextWrapper>
     <EduButton
+      data-cy="continueWithBlank"
       type="primary"
       width="234px"
       height="45px"

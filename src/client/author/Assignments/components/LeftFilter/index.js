@@ -79,8 +79,8 @@ class LeftFilter extends React.Component {
       currentTerm,
     } = this.props
     const filters = folderId
-      ? { ...filterState, termId: '' }
-      : { ...filterState, termId: currentTerm }
+      ? { ...filterState, termId: '', folderId }
+      : { ...filterState, termId: currentTerm, folderId: '' }
 
     if (isAdvancedView) {
       loadAssignmentsSummary({

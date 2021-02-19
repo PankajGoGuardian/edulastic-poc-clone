@@ -54,6 +54,7 @@ const { ShowPreviousAttempt } = redirectPolicy
 const QuestionDelivery = {
   [redirectPolicy.QuestionDelivery.ALL]: 'All',
   [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
+  [redirectPolicy.QuestionDelivery.SKIPPED]: 'Skipped',
 }
 
 const Settings = ({
@@ -69,9 +70,9 @@ const Settings = ({
   freezeSettings = false,
   calculatorProvider,
   features,
-  multiLanguageEnabledLCB,
   match,
   totalItems,
+  lcbBultiLanguageEnabled,
   allowedToSelectMultiLanguage,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
@@ -257,10 +258,10 @@ const Settings = ({
     autoRedirect = false,
     autoRedirectSettings,
     blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
-    multiLanguageEnabled = !!tempTestSettings.multiLanguageEnabled,
     timedAssignment = tempTestSettings.timedAssignment,
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
+    multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -272,7 +273,8 @@ const Settings = ({
     calculatorKeys
 
   const showMultiLangSelection =
-    allowedToSelectMultiLanguage && !!multiLanguageEnabledLCB
+    allowedToSelectMultiLanguage && lcbBultiLanguageEnabled
+
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -309,7 +311,7 @@ const Settings = ({
         <SettingContainer>
           <DetailsTooltip
             title="SHOW CALCULATOR"
-            content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+            content="If students can use an on-screen calculator, select the type to make available on the test."
             premium={assessmentSuperPowersShowCalculator}
           />
           <StyledRow gutter={16} mb="15px">
@@ -830,7 +832,7 @@ export default connect(
       : state?.tests?.entity?.summary?.totalItems,
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: state?.user?.user?.features,
-    multiLanguageEnabledLCB: getmultiLanguageEnabled(state),
+    lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
     allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
   }),
   null

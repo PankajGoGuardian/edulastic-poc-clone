@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Radio } from 'antd'
+import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
 import {
@@ -31,6 +31,7 @@ const MiscellaneousGroupContainer = ({
   disableAnswerOnPaper,
   featuresAvailable,
   tootltipWidth,
+  premium,
 }) => {
   const {
     answerOnPaper = testSettings.answerOnPaper,
@@ -65,11 +66,9 @@ const MiscellaneousGroupContainer = ({
     assessmentSuperPowersAnswerOnPaper,
     performanceBands,
     selectPlayerSkinType,
-    premium,
   } = featuresAvailable
 
   const showMultiLangSelection = !!testSettings.multiLanguageEnabled
-
   return (
     <>
       {/* Answer on Paper */}
@@ -111,25 +110,23 @@ const MiscellaneousGroupContainer = ({
             content="Select ON , If you want to enable multiple languages for the assignment."
             premium={premium}
           />
-          <StyledRow gutter={16} mb="15px" height="40">
-            <Col span={12}>
+          <StyledRow gutter={16} mb="15p">
+            <Col span={10}>
               <Label>
                 <span>Multi-Language</span>
               </Label>
             </Col>
-            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
-              <Row style={{ display: 'flex', alignItems: 'center' }}>
-                <AlignSwitchRight
-                  data-cy="multi-language"
-                  size="small"
-                  defaultChecked={false}
-                  disabled={freezeSettings || !premium}
-                  checked={multiLanguageEnabled}
-                  onChange={(value) =>
-                    overRideSettings('multiLanguageEnabled', value)
-                  }
-                />
-              </Row>
+            <Col span={14}>
+              <AlignSwitchRight
+                data-cy="multi-language"
+                size="small"
+                defaultChecked={false}
+                disabled={freezeSettings || !premium}
+                checked={multiLanguageEnabled}
+                onChange={(value) =>
+                  overRideSettings('multiLanguageEnabled', value)
+                }
+              />
             </Col>
           </StyledRow>
         </SettingContainer>
@@ -165,10 +162,11 @@ const MiscellaneousGroupContainer = ({
           content="Standards based scales are set by district or school admins. Teachers can modify performance threshold scores for class assignments to track mastery by standards assessed."
           premium={premium}
           placement="rightBottom"
+          fromAssignments
         />
         <DivBlock>
           <StandardProficiencyTable
-            disabled={freezeSettings}
+            disabled={freezeSettings || !premium}
             standardGradingScale={standardGradingScale}
             setSettingsData={(val) =>
               overRideSettings('standardGradingScale', val)
@@ -197,6 +195,7 @@ const MiscellaneousGroupContainer = ({
                         title={accessibilities[key]}
                         content={description}
                         premium={featuresAvailable[key]}
+                        placement="rightTop"
                       />
                       <StyledRow
                         key={accessibilities[key]}
@@ -251,7 +250,6 @@ const MiscellaneousGroupContainer = ({
                   }
                   selectBackgroundWhite
                   disabled={freezeSettings || !selectPlayerSkinType}
-                  isFeatureAvailable={selectPlayerSkinType}
                   fullwidth
                 />
               </SettingContainer>

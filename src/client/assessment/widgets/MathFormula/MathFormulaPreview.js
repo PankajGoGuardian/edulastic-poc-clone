@@ -263,6 +263,7 @@ class MathFormulaPreview extends Component {
       view,
       isPrintPreview,
       viewComponent,
+      hideCorrectAnswer,
     } = this.props
     const { expressGrader, isAnswerModifiable } = answerContextConfig
     const { innerValues } = this.state
@@ -478,6 +479,7 @@ class MathFormulaPreview extends Component {
             )}
             {view && view !== EDIT && <Instructions item={item} />}
             {previewType === SHOW &&
+              !hideCorrectAnswer &&
               item?.validation?.validResponse?.value?.[0].value !==
                 undefined && (
                 <CorrectAnswerBox
@@ -505,6 +507,7 @@ class MathFormulaPreview extends Component {
               )}
             {hasAltAnswers &&
               previewType === SHOW &&
+              !hideCorrectAnswer &&
               item?.validation?.altResponses.map((ans, index) => {
                 let answer = ''
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Row, Col, Select, Input, Icon, InputNumber, Radio } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { blueBorder, red, green } from '@edulastic/colors'
@@ -54,6 +54,7 @@ const AntiCheatingGroupContainer = ({
     premium,
   } = featuresAvailable
 
+  const numInputRef = useRef()
   const validateAndUpdatePassword = (_assignmentPassword) => {
     overRideSettings('assignmentPassword', _assignmentPassword)
     if (_assignmentPassword.split(' ').length > 1) {
@@ -266,8 +267,8 @@ const AntiCheatingGroupContainer = ({
         <SettingContainer id="block-saveandcontinue-setting">
           <DetailsTooltip
             width={tootltipWidth}
-            title="ALLOW STUDENT TO SAVE AND CONTINUE LATER"
-            content="If OFF, will force the students to take the test in single sitting"
+            title="Complete test in one sitting"
+            content="If ON, then students will not be allowed to exit the test without submitting. In case they close the app they will be paused and the instructor will need to manually resume."
             placement="rightTop"
             premium={premium}
           />
@@ -297,7 +298,7 @@ const AntiCheatingGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
-            content="If ON, students must take the test in full screen mode to prevent opening another browser window. The student will get an alert if they navigate out of full screen mode during the test. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset."
+            content="If ON, students must take the test in full screen mode to prevent opening another browser window. Alert will appear if student has navigated away for more than 5 seconds. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset."
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
@@ -326,10 +327,12 @@ const AntiCheatingGroupContainer = ({
                 <Radio
                   value="warn-and-report-after-n-alerts"
                   data-cy="restrict-nav-out-warn-report-alerts"
+                  title="Alert will appear if student has navigated away for more than 5 seconds"
                 >
                   WARN AND BLOCK TEST AFTER{' '}
                   <InputNumberStyled
                     size="small"
+                    ref={numInputRef}
                     min={1}
                     value={
                       restrictNavigationOut
@@ -337,10 +340,18 @@ const AntiCheatingGroupContainer = ({
                         : undefined
                     }
                     onChange={(v) => {
-                      overRideSettings(
-                        'restrictNavigationOutAttemptsThreshold',
-                        v
-                      )
+                      if (v) {
+                        overRideSettings(
+                          'restrictNavigationOutAttemptsThreshold',
+                          v
+                        )
+                      } else {
+                        numInputRef.current?.blur()
+                        overRideSettings(
+                          'restrictNavigationOut',
+                          'warn-and-report'
+                        )
+                      }
                     }}
                     disabled={
                       !(

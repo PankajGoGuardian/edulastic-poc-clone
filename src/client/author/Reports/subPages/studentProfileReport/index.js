@@ -16,7 +16,7 @@ import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 
 import { setSPRSettingsAction, getReportsSPRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner, FilterButton } from '../../common/styled'
+import { ReportContaner, FilterButtonClear } from '../../common/styled'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
@@ -141,7 +141,7 @@ const StudentProfileReportContainer = (props) => {
             setShowModal={setSharingState}
           />
         )}
-        <FlexContainer alignItems="flex-start">
+        <FlexContainer alignItems="flex-start" justifyContent="space-between">
           <StudentProfileReportsFilters
             reportId={reportId}
             onGoClick={onGoClick}
@@ -164,9 +164,9 @@ const StudentProfileReportContainer = (props) => {
             ].find((x) => window.location.pathname.startsWith(x))}
           />
           {!reportId ? (
-            <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+            <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
               {showFilter ? <IconCloseFilter /> : <IconFilter />}
-            </FilterButton>
+            </FilterButtonClear>
           ) : null}
           <ReportContaner showFilter={showFilter}>
             <Route

@@ -36,6 +36,7 @@ const ClozeMathPreview = ({
   isPrintPreview,
   allOptions = [],
   enableMagnifier = false,
+  hideCorrectAnswer,
 }) => {
   const [newHtml, setNewHtml] = useState('')
   const { isAnswerModifiable } = useContext(AnswerContext)
@@ -213,7 +214,7 @@ const ClozeMathPreview = ({
         jsx={newHtml}
       />
       {type !== EDIT && <Instructions item={item} />}
-      {(isExpressGrader || type === SHOW) && (
+      {(isExpressGrader || type === SHOW) && !hideCorrectAnswer && (
         <AnswerBox
           mathAnswers={allAnswers.mathAnswers}
           dropdownAnswers={allAnswers.dropdownAnswers}

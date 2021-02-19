@@ -65,6 +65,7 @@ const MatrixChoice = ({
   evaluation,
   isReviewTab,
   showQuestionNumber,
+  hideCorrectAnswer,
   ...restProps
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(
@@ -197,7 +198,7 @@ const MatrixChoice = ({
 
           {view !== EDIT && <Instructions item={item} />}
 
-          {(previewTab === SHOW || isReviewTab) && (
+          {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer && (
             <>
               <CorrectAnswersContainer
                 item={item}

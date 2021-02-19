@@ -306,8 +306,6 @@ class GraphContainer extends PureComponent {
         }))
         this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
       }
-
-      this.setElementsToGraph()
     }
 
     this.setGraphUpdateEventHandler()
@@ -330,6 +328,7 @@ class GraphContainer extends PureComponent {
       changePreviewTab,
       elements,
       view,
+      evaluation,
     } = this.props
 
     const { tools } = toolbar
@@ -414,8 +413,12 @@ class GraphContainer extends PureComponent {
           this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
         }
       }
-
-      this.setElementsToGraph(prevProps, refreshElements)
+      if (
+        !isEqual(elements, prevProps.elements) ||
+        !isEqual(evaluation, prevProps.evaluation)
+      ) {
+        this.setElementsToGraph(prevProps, refreshElements)
+      }
     }
 
     if (
@@ -692,18 +695,15 @@ class GraphContainer extends PureComponent {
   resourcesOnLoaded = () => {
     const { backgroundShapes } = this.props
     const { resourcesLoaded } = this.state
-    if (resourcesLoaded) {
-      return
+    if (!resourcesLoaded) {
+      this.setState({ resourcesLoaded: true }, this.setElementsToGraph)
+      const bgShapeValues = backgroundShapes.values.map((el) => ({
+        ...el,
+        priorityColor: bgColor,
+      }))
+      this._graph.resetBg()
+      this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
     }
-    this.setState({ resourcesLoaded: true })
-
-    const bgShapeValues = backgroundShapes.values.map((el) => ({
-      ...el,
-      priorityColor: bgColor,
-    }))
-    this._graph.resetBg()
-    this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
-    this.setElementsToGraph()
   }
 
   setTools = (tools) => {

@@ -141,7 +141,7 @@ const test = (state = initialState, { payload, type }) => {
       }
     case SAVE_USER_RESPONSE:
       if (!payload.autoSave) {
-        return { ...state, savingResponse: true, showHints: false }
+        return { ...state, showHints: false }
       }
       return state
     case SAVE_USER_RESPONSE_SUCCESS:

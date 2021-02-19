@@ -42,8 +42,8 @@ const initialState = {
     studentSubject: '',
     studentGrade: '',
     studentCourseId: '',
-    classId: '',
-    groupId: '',
+    classIds: '',
+    groupIds: '',
   },
 }
 

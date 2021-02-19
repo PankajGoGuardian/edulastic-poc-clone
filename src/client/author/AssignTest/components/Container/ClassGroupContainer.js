@@ -39,7 +39,7 @@ const ClassGroupContainer = ({
           <SettingContainer id="class-group-setting">
             <DetailsTooltip
               width={tootltipWidth}
-              title="Class/Group Section"
+              title="Class/Group"
               content="Choose one or more classes or groups to receive the test. In the student field below, you can select individuals from these sections if not all students should receive the assignment."
               premium
             />
@@ -55,7 +55,7 @@ const ClassGroupContainer = ({
             <DetailsTooltip
               width={tootltipWidth}
               title="Students"
-              content="Select individual students if required. If this field is left blank, all students in the class will receive the assignment."
+              content="If you don’t want to assign the test to all students in the class, select Specific Students here and enter individual names in the box below."
               premium
             />
             <StudentSelector

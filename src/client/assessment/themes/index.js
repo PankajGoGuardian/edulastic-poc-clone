@@ -136,7 +136,8 @@ function incrementNavigationCounter({ history, testActivityId }) {
       if (response.paused) {
         notification({
           type: 'error',
-          msg: 'Sorry! Assignment got paused due to inactivity',
+          msg:
+            'Your test has been locked. Please contact your teacher to reset the test.',
           duration: 0,
         })
         Fscreen.exitFullscreen()
@@ -541,7 +542,7 @@ const AssessmentContainer = ({
 
     if (redirectPolicy === STUDENT_RESPONSE_AND_FEEDBACK) {
       const questionIds = (items[index]?.data?.questions || []).map(
-        (question) => question.id
+        (question) => `${items[index]?._id}_${question.id}`
       )
       const currentlyAnsweredQIds = Object.keys(answersById)
       const previouslyAnsweredQIds = Object.keys(userPrevAnswer)
@@ -574,16 +575,19 @@ const AssessmentContainer = ({
      * consider item as attempted
      * @see https://snapwiz.atlassian.net/browse/EV-17309
      */
-    if (hasUserWork(items[currentItem]?._id, restProps.userWork || {})) {
+    const itemId = items[currentItem]?._id
+    if (hasUserWork(itemId, restProps.userWork || {})) {
       return []
     }
     return questions.filter((q) => {
-      const qAnswers = answersById[q.id] || userPrevAnswer[q.id]
+      const qAnswers =
+        answersById[`${itemId}_${q.id}`] || userPrevAnswer[`${itemId}_${q.id}`]
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
           return (
-            (answersById[q.id] || []).filter((token) => token?.selected)
-              .length === 0
+            (answersById[`${itemId}_${q.id}`] || []).filter(
+              (token) => token?.selected
+            ).length === 0
           )
         case questionType.LINE_CHART:
         case questionType.BAR_CHART:

@@ -192,6 +192,7 @@ class Display extends Component {
       isPrintPreview = false,
       setAnswers,
       view,
+      hideCorrectAnswer,
     } = this.props
 
     const { shuffleOptions } = configureOptions
@@ -478,7 +479,11 @@ class Display extends Component {
     )
 
     const answerBox =
-      showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
+        correctAnswerBoxLayout
+      ) : (
+        <div />
+      )
 
     return (
       <StyledDisplayContainer

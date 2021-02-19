@@ -251,7 +251,7 @@ export const sortTestItemQuestions = (testItems) => {
     // sort questions based on widegets
     const questions = keyBy(get(item, 'data.questions', []), 'id')
     const widgets = (item.rows || []).reduce(
-      (acc, curr) => [...acc, ...curr.widgets],
+      (acc, curr) => [...acc, ...(curr.widgets || [])],
       []
     )
     return {

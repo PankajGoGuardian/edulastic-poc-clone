@@ -14,6 +14,7 @@ import { setQuestionDataAction } from '../../../../author/src/actions/question'
 import { smallestZoomLevel } from '../../../../common/utils/static/zoom'
 import { ifZoomed } from '../../../../common/utils/helpers'
 import { MIN_SNAP_SIZE } from '../Builder/config/constants'
+import GraphInView from './GraphInView'
 
 const QuadrantsContainer = loadable(() =>
   import('./QuadrantsContainer/QuadrantsContainer')
@@ -218,8 +219,9 @@ class GraphDisplay extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     const { inLCB, isExpressGrader, tReady, windowHeight } = this.props
+    const { graphIsValid } = this.state
     // a perf optimization done in LCB view to avoid unresponsive question view.
     // without this, for every update graph re-rendering causing freezing
     // we are checking graphData.activity,graphData.elements,bgShapes for change
@@ -234,7 +236,8 @@ class GraphDisplay extends Component {
       ) &&
       isEqual(nextProps?.bgShapes, this.props?.bgShapes) &&
       tReady === nextProps.tReady &&
-      windowHeight === nextProps.windowHeight
+      windowHeight === nextProps.windowHeight &&
+      graphIsValid === nextState.graphIsValid
     ) {
       return false
     }
@@ -808,12 +811,12 @@ class GraphDisplay extends Component {
     const GraphContainer = this.getGraphContainer()
 
     return (
-      <>
+      <GraphInView isPartial className="__prevent-page-break">
         {graphIsValid ? (
-          <div className="__prevent-page-break">
+          <>
             {/* zoomLevel change css transform: scale() style,
-                after changing this style 
-                you need to do full reinit of component with jsxgraph object */}
+              after changing this style 
+              you need to do full reinit of component with jsxgraph object */}
             {zl === 1 && (
               <GraphContainer
                 fallback={<Progress />}
@@ -854,11 +857,11 @@ class GraphDisplay extends Component {
                 isPrintPreview={isPrint || isPrintPreview}
               />
             )}
-          </div>
+          </>
         ) : (
           <div>Wrong parameters</div>
         )}
-      </>
+      </GraphInView>
     )
   }
 }

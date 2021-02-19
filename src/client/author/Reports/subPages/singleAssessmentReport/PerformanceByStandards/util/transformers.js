@@ -14,7 +14,10 @@ import {
   reduce,
 } from 'lodash'
 import next from 'immer'
-import { percentage } from '../../../../common/util'
+import {
+  percentage,
+  DemographicCompareByOptions,
+} from '../../../../common/util'
 import { transformMetricForStudentGroups } from '../../common/utils/transformers'
 
 export const viewByMode = {
@@ -362,6 +365,9 @@ export const analysisParseData = (report, viewBy, compareBy, filters) => {
     filteredMetrics,
     scaleInfo
   )
+  if (DemographicCompareByOptions.includes(compareBy)) {
+    filteredMetrics = orderBy(filteredMetrics, compareBy, ['asc'])
+  }
   switch (viewBy) {
     case viewByMode.STANDARDS:
       return analysisStandardsData(compareBy, filteredMetrics, scaleInfo)

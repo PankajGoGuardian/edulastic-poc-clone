@@ -19,7 +19,7 @@ import {
 } from '../../ducks'
 import { hasValidAnswers } from '../../../../assessment/utils/answer'
 import {
-  stateExpressGraderAnswerSelector,
+  getAnswerByQidSelector,
   getStudentQuestionSelector,
 } from '../../../ClassBoard/ducks'
 import BottomNavigation from '../BottomNavigation/BottomNavigation'
@@ -330,7 +330,7 @@ QuestionModal.defaultProps = {
 
 export default connect(
   (state) => ({
-    userResponse: stateExpressGraderAnswerSelector(state),
+    userResponse: getAnswerByQidSelector(state),
     allResponse: getStudentQuestionSelector(state),
     teacherEditedScore: getTeacherEditedScoreSelector(state),
     studentResponseLoading: state.studentQuestionResponse?.loading,

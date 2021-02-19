@@ -232,10 +232,10 @@ class MathInput extends React.PureComponent {
     }
   }
 
-  handleBlur = () => {
+  handleBlur = (ev) => {
     const { onBlur } = this.props
     if (onBlur) {
-      onBlur()
+      onBlur(ev)
     }
   }
 

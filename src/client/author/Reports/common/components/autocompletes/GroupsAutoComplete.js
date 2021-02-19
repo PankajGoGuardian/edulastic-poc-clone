@@ -1,11 +1,10 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react'
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon } from 'antd'
 import { roleuser } from '@edulastic/constants'
+import MultiSelectSearch from '../widgets/MultiSelectSearch'
 
 // ducks
 import { getUser } from '../../../../src/selectors/user'
@@ -28,7 +27,9 @@ const GroupsAutoComplete = ({
   subject,
   courseId,
   selectCB,
+  selectedGroupIds,
 }) => {
+  const groupFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
 
@@ -86,12 +87,6 @@ const GroupsAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
-  const onSelect = (key) => {
-    const value = (searchTerms.text ? groupList[key] : searchResult[key])
-      ._source.name
-    setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-    selectCB({ key, title: value })
-  }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
@@ -122,38 +117,32 @@ const GroupsAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
-    setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
   }, [termId, schoolIds, teacherIds, grade, subject, courseId])
 
   // build dropdown data
-  const dropdownData = [
-    <AutoComplete.OptGroup key="groupList" label="Groups [Type to search]">
-      {Object.values(searchTerms.text ? groupList : searchResult).map(
-        (item) => (
-          <AutoComplete.Option key={item._id} title={item._source.name}>
-            {item._source.name}
-          </AutoComplete.Option>
-        )
-      )}
-    </AutoComplete.OptGroup>,
-  ]
+  const dropdownData = Object.values(
+    searchTerms.text ? groupList : searchResult
+  ).map((item) => {
+    return {
+      key: item._id,
+      title: item._source.name,
+    }
+  })
 
   return (
-    <AutoCompleteContainer>
-      <AutoComplete
-        getPopupContainer={(trigger) => trigger.parentNode}
-        placeholder="All Groups"
-        value={searchTerms.text}
-        onSearch={onSearch}
-        dataSource={dropdownData}
-        onSelect={onSelect}
-        onBlur={onBlur}
-        onFocus={() => getDefaultGroupList()}
-      >
-        <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
-      </AutoComplete>
-    </AutoCompleteContainer>
+    <MultiSelectSearch
+      label="Group"
+      placeholder="All Groups"
+      el={groupFilterRef}
+      onChange={(e) => selectCB(e)}
+      onSearch={onSearch}
+      onBlur={onBlur}
+      onFocus={getDefaultGroupList}
+      value={selectedGroupIds}
+      options={!loading ? dropdownData : []}
+      loading={loading}
+    />
   )
 }
 
@@ -167,12 +156,3 @@ export default connect(
     loadGroupList: receiveGroupListAction,
   }
 )(GroupsAutoComplete)
-
-const AutoCompleteContainer = styled.div`
-  .ant-select-auto-complete {
-    padding: 5px;
-  }
-  .ant-select-dropdown-menu-item-group-title {
-    font-weight: bold;
-  }
-`

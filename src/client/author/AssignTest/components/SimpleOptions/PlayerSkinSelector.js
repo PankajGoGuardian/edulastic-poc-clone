@@ -3,7 +3,6 @@ import { Col, Select } from 'antd'
 import React from 'react'
 import { SelectInputStyled } from '@edulastic/common'
 import { ColLabel, Label, StyledRow } from './styled'
-import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
 
 const { playerSkinTypes } = test
 
@@ -15,7 +14,6 @@ const PlayerSkinSelector = ({
   disabled = false,
   fullwidth = false,
   selectBackgroundWhite = false,
-  isFeatureAvailable = false,
 }) => {
   const edulastic = `${playerSkinTypes.edulastic} ${
     testType?.includes('assessment') ? 'Test' : 'Practice'
@@ -48,10 +46,7 @@ const PlayerSkinSelector = ({
   return fullwidth ? (
     <StyledRow gutter={16}>
       <Col span={10}>
-        <Label>
-          STUDENT PLAYER SKIN
-          <DollarPremiumSymbol premium={isFeatureAvailable} />
-        </Label>
+        <Label>STUDENT PLAYER SKIN</Label>
       </Col>
       <Col span={12}>{SelectOption}</Col>
     </StyledRow>
@@ -60,10 +55,7 @@ const PlayerSkinSelector = ({
       <StyledRow gutter={48}>
         {!isAdvanceView && (
           <ColLabel span={24}>
-            <Label>
-              STUDENT PLAYER SKIN
-              <DollarPremiumSymbol premium={isFeatureAvailable} />
-            </Label>
+            <Label>STUDENT PLAYER SKIN</Label>
           </ColLabel>
         )}
         <Col span={24}>{SelectOption}</Col>

@@ -1,24 +1,6 @@
 import React, { useRef, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import { testActivity, testActivityStatus } from '@edulastic/constants'
-import {
-  CircularDiv,
-  ResponseCard,
-  StyledFlexContainer,
-  ResponseCardTitle,
-} from '../../styled'
-import { getAvatarName } from '../../../ClassBoard/Transformer'
 
-const { SUBMITTED, IN_PROGRESS } = testActivity.status
-
-const StudentResponse = ({
-  testActivity: _testActivity,
-  onClick,
-  isPresentationMode,
-}) => {
-  const showFakeUser = (student) => (
-    <i className={`fa fa-${student.icon}`} style={{ color: student.color }} />
-  )
+const StudentResponse = ({ children }) => {
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -46,35 +28,7 @@ const StudentResponse = ({
     }
   }, [containerRef])
 
-  return (
-    <div ref={containerRef}>
-      <StyledFlexContainer>
-        <ResponseCard>
-          <ResponseCardTitle>Student Responses</ResponseCardTitle>
-          {_testActivity
-            .filter(
-              ({ status, UTASTATUS }) =>
-                [SUBMITTED, IN_PROGRESS].includes(status) &&
-                UTASTATUS !== testActivityStatus.NOT_STARTED
-            )
-            .map((student, index) => (
-              <CircularDiv
-                onClick={() => onClick(student.studentId)}
-                key={index}
-              >
-                {isPresentationMode
-                  ? showFakeUser(student)
-                  : getAvatarName(student.studentName)}
-              </CircularDiv>
-            ))}
-        </ResponseCard>
-      </StyledFlexContainer>
-    </div>
-  )
+  return <div ref={containerRef}>{children}</div>
 }
 
 export default StudentResponse
-
-StudentResponse.propTypes = {
-  testActivity: PropTypes.object.isRequired,
-}

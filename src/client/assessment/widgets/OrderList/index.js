@@ -104,6 +104,7 @@ const OrderList = ({
   changePreviewTab,
   advancedLink,
   isReviewTab,
+  hideCorrectAnswer,
   isPrintPreview,
 }) => {
   const [correctTab, setCorrectTab] = useState(0)
@@ -394,7 +395,7 @@ const OrderList = ({
               )}
 
               {view !== EDIT && <Instructions item={item} />}
-              {previewTab === SHOW || isReviewTab ? (
+              {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer ? (
                 <>
                   <CorrectAnswersContainer
                     title={t('component.orderlist.correctanswer')}

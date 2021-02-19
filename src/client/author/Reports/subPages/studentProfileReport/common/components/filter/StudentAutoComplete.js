@@ -129,24 +129,17 @@ const StudentAutoComplete = ({
 
   // build dropdown data
   const dropdownData = searchTerms.text
-    ? [
-        <AutoComplete.OptGroup
-          key="studentList"
-          label="Students [Type to search]"
-        >
-          {isEmpty(studentList)
-            ? [
-                <AutoComplete.Option disabled key={0} title="no data found">
-                  No Data Found
-                </AutoComplete.Option>,
-              ]
-            : studentList.map((item) => (
-                <AutoComplete.Option key={item._id} title={getFullName(item)}>
-                  {getFullName(item)}
-                </AutoComplete.Option>
-              ))}
-        </AutoComplete.OptGroup>,
-      ]
+    ? isEmpty(studentList)
+      ? [
+          <AutoComplete.Option disabled key={0} title="no data found">
+            No Data Found
+          </AutoComplete.Option>,
+        ]
+      : studentList.map((item) => (
+          <AutoComplete.Option key={item._id} title={getFullName(item)}>
+            {getFullName(item)}
+          </AutoComplete.Option>
+        ))
     : []
 
   return (
@@ -177,9 +170,6 @@ export default connect(
 )(StudentAutoComplete)
 
 const AutoCompleteContainer = styled.div`
-  .ant-select-auto-complete {
-    padding: 5px;
-  }
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
   }

@@ -61,7 +61,6 @@ import StandardProficiencyTable from './StandardProficiencyTable'
 import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
-import DetailsTooltip from '../../../../../AssignTest/components/Container/DetailsTooltip'
 import { StyledRow } from '../../../../../AssignTest/components/SimpleOptions/styled'
 
 const {
@@ -832,9 +831,7 @@ class Setting extends Component {
                           </Col>
                           <Col span={16}>
                             <Description>
-                              Choose if student can use a calculator, also
-                              select the type of calculator that would be shown
-                              to the students.
+                              If students can use an on-screen calculator, select the type to make available on the test.
                             </Description>
                           </Col>
                         </Row>
@@ -1330,11 +1327,11 @@ class Setting extends Component {
                           <Description>
                             If <b>ON</b>, then students must take the test in
                             full screen mode to prevent opening another browser
-                            window. The student will get an alert if they
-                            navigate out of full screen mode during the test. If
-                            the designated number of alerts are exceeded, the
-                            student’s assignment will be paused and the
-                            instructor will need to manually reset.
+                            window. Alert will appear if student has navigated
+                            away for more than 5 seconds.If the designated
+                            number of alerts are exceeded, the student’s
+                            assignment will be paused and the instructor will
+                            need to manually reset.
                           </Description>
                         </Col>
                       </Row>
@@ -1566,15 +1563,9 @@ class Setting extends Component {
                   )}
 
                   {/* Multi language start */}
-                  {showMultiLangSelection && (
+                  {allowedToSelectMultiLanguage && (
                     <Block id="multi-language-enabled" smallSize={isSmallSize}>
-                      <SettingContainer>
-                        <DetailsTooltip
-                          showInsideContainer
-                          title="Multi-Language"
-                          content="Select ON , If you want to enable multiple languages for the test."
-                          premium={premium}
-                        />
+                      <Body>
                         <Title>
                           <span>Multi-Language</span>
                           <EduSwitchStyled
@@ -1594,7 +1585,7 @@ class Setting extends Component {
                             enable multiple languages for the test.
                           </Description>
                         </Body>
-                      </SettingContainer>
+                      </Body>
                     </Block>
                   )}
                   {/* Multi language Ends */}

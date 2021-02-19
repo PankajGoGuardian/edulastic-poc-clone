@@ -7,6 +7,7 @@ import {
   ManageSubscriptionByUser,
   ManageSubscriptionBySchool,
   ManageSubscriptionByUserSegments,
+  ManageSubscriptionsByLicenses,
 } from '../Upgrade/Tabs'
 import {
   getDistrictDataAction,
@@ -22,7 +23,9 @@ import {
   manageSubscriptionsBySchool,
   upgradePartialPremiumUserAction,
   manageSubscriptionsByUserSegments,
+  manageSubscriptionsByLicenses,
   getManageSubscriptionByUserSegmentsData,
+  getManageSubscriptionByLicensesData,
   saveOrgPermissionsAction,
   getSubscriptionAction,
 } from '../Upgrade/ducks'
@@ -50,6 +53,11 @@ function UpgradeUser({
   deleteGradeSubjectRow,
   saveOrgPermissions,
   getSubscriptionAction,
+  fetchLicenses,
+  viewLicense,
+  deleteLicense,
+  manageLicensesData,
+  setSearchType,
 }) {
   const [activeTab, setActiveTab] = useState('manageSubscriptionByDistrict')
   const onChangeTab = (tabKey) => setActiveTab(tabKey)
@@ -98,6 +106,20 @@ function UpgradeUser({
           deleteGradeSubjectRow={deleteGradeSubjectRow}
         />
       </TabPane>
+      <TabPane
+        tab="Manage by Licenses"
+        key="manageSubscriptionByLicenses"
+        forceRender
+      >
+        <ManageSubscriptionsByLicenses
+          getSubscriptionAction={getSubscriptionAction}
+          fetchLicensesBySearchType={fetchLicenses}
+          viewLicense={viewLicense}
+          deleteLicense={deleteLicense}
+          manageLicensesData={manageLicensesData}
+          setSearchType={setSearchType}
+        />
+      </TabPane>
     </Tabs>
   )
 }
@@ -107,6 +129,7 @@ const mapStateToProps = (state) => ({
   manageUsersData: getUsersDataSelector(state),
   manageSchoolData: getManageSubscriptionBySchoolData(state),
   manageUserSegmentsData: getManageSubscriptionByUserSegmentsData(state),
+  manageLicensesData: getManageSubscriptionByLicensesData(state),
 })
 
 const withConnect = connect(mapStateToProps, {
@@ -132,6 +155,10 @@ const withConnect = connect(mapStateToProps, {
   deleteGradeSubjectRow:
     manageSubscriptionsByUserSegments.actions.deleteGradeSubjectRow,
   saveOrgPermissions: saveOrgPermissionsAction,
+  setSearchType: manageSubscriptionsByLicenses.actions.setSearchType,
+  fetchLicenses: manageSubscriptionsByLicenses.actions.fetchLicenses,
+  viewLicense: manageSubscriptionsByLicenses.actions.viewLicense,
+  deleteLicense: manageSubscriptionsByLicenses.actions.deleteLicense,
 })
 
 export default compose(withConnect)(UpgradeUser)

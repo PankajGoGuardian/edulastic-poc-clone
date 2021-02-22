@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, groupBy, isEmpty } from 'lodash'
 import qs from 'qs'
+import loadable from '@loadable/component'
 
 // components
 import { Spin } from 'antd'
@@ -13,9 +14,9 @@ import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
-import SubscriptionAddonModal from './components/SubscriptionAddonModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
+import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
 
 // ducks
 import { slice } from '../../../../../Subscription/ducks'
@@ -27,12 +28,14 @@ import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
-import ItemPurchaseModal from './components/ItemPurchaseModal'
-import TrialModal from './components/TrialModal'
-import UpgradeModal from '../../../../../Subscription/components/SubscriptionHeader/UpgradeModal'
-import PaymentServiceModal from '../../../../../Subscription/components/PaymentServiceModal'
-import PayWithPoModal from '../../../../../Subscription/components/SubscriptionHeader/PayWithPoModal'
-import TrialConfirmationModal from './components/FeaturedContentBundle/TrialConfimationModal'
+
+const ItemPurchaseModal = loadable(() =>
+  import('./components/ItemPurchaseModal')
+)
+const TrialModal = loadable(() => import('./components/TrialModal'))
+const TrialConfirmationModal = loadable(() =>
+  import('./components/FeaturedContentBundle/TrialConfimationModal')
+)
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -59,16 +62,11 @@ const MyClasses = ({
   itemBankSubscriptions = [],
   startTrialAction,
   usedTrialItemBankId,
-  verificationPending,
-  stripePaymentAction,
   showTrialSubsConfirmationAction,
   showTrialConfirmationMessage,
   isConfirmationModalVisible,
-  subscription: { subEndDate, subType } = {},
-  premiumProductId,
+  subscription: { subType } = {},
   products,
-  isPaymentServiceModalVisible,
-  setPaymentServiceModal,
   showHeaderTrialModal,
   setShowHeaderTrialModal,
 }) => {
@@ -76,16 +74,12 @@ const MyClasses = ({
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [productData, setProductData] = useState({})
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
-  const [payWithPoModal, setPayWithPoModal] = useState(false)
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
   )
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
-  const [addOnProductIds, setAddOnProductIds] = useState([])
-  const [totalAmount, setTotalAmount] = useState(100)
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -102,63 +96,6 @@ const MyClasses = ({
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
   const isCliUser = user.openIdProvider === 'CLI'
-
-  const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
-    const DEFAULT_ITEMBANK_PRICE = 100
-    const DEFAULT_PERIOD = 365
-    const boughtPremiumBankIds = itemBankSubscriptions
-      .filter((x) => !x.isTrial)
-      .map((x) => x.itemBankId)
-    const purchasableProducts = products.filter(
-      (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
-    )
-    const result = purchasableProducts.map((product) => {
-      const { id: currentProductId } = product
-      if (
-        !subEndDate ||
-        currentProductId === premiumProductId ||
-        (subEndDate && !isPaidPremium) ||
-        ['enterprise', 'partial_premium'].includes(subType)
-      ) {
-        return {
-          ...product,
-          period: DEFAULT_PERIOD,
-          price: DEFAULT_ITEMBANK_PRICE,
-        }
-      }
-      let currentDate = new Date()
-      const itemBankSubEndDate = new Date(
-        currentDate.setDate(currentDate.getDate() + DEFAULT_PERIOD)
-      ).valueOf()
-      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
-      currentDate = Date.now()
-      const amountFactor =
-        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
-      const dynamicPrice = Math.round(amountFactor * DEFAULT_ITEMBANK_PRICE)
-      const dynamicPeriodInDays = Math.round(amountFactor * DEFAULT_PERIOD)
-
-      return {
-        ...product,
-        price: dynamicPrice,
-        period: dynamicPeriodInDays,
-      }
-    })
-    return {
-      teacherPremium: result[0],
-      itemBankPremium: result.slice(1),
-    }
-  }, [subEndDate, products])
-
-  const openPaymentServiceModal = () => {
-    setPaymentServiceModal(true)
-    segmentApi.trackTeacherClickOnUpgradeSubscription({ user })
-  }
-
-  const openPoServiceModal = () => {
-    setPayWithPoModal(true)
-  }
-
-  const closePaymentServiceModal = () => setPaymentServiceModal(false)
 
   const isPremiumUser = user.features.premium
 
@@ -388,11 +325,6 @@ const MyClasses = ({
 
   const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
 
-  const handleSubscriptionAddonModalClose = () => {
-    setProductData({})
-    setShowSubscriptionAddonModal(false)
-  }
-
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -413,21 +345,12 @@ const MyClasses = ({
         emptyBoxCount={featureEmptyBoxCount}
       />
       <Launch />
-      {showSubscriptionAddonModal && (
-        <SubscriptionAddonModal
-          isVisible={showSubscriptionAddonModal}
-          handleCloseModal={handleSubscriptionAddonModalClose}
-          isPaidPremium={isPaidPremium}
-          setShowUpgradeModal={setShowUpgradeModal}
-          usedTrialItemBankId={usedTrialItemBankId}
-          premiumProductId={premiumProductId}
-          setTotalPurchaseAmount={setTotalAmount}
-          setAddOnProductIds={setAddOnProductIds}
-          defaultSelectedProductIds={[productData.productId]}
-          teacherPremium={teacherPremium}
-          itemBankPremium={itemBankPremium}
-        />
-      )}
+      <PurchaseFlowModals
+        showSubscriptionAddonModal={showSubscriptionAddonModal}
+        setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        defaultSelectedProductIds={[productData.productId]}
+        setProductData={setProductData}
+      />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal
           title={productData.productName}
@@ -460,30 +383,6 @@ const MyClasses = ({
           startPremiumTrial={startTrialAction}
           products={products}
           setShowHeaderTrialModal={setShowHeaderTrialModal}
-        />
-      )}
-      {showUpgradeModal && (
-        <UpgradeModal
-          visible={showUpgradeModal}
-          setShowModal={setShowUpgradeModal}
-          openPaymentServiceModal={openPaymentServiceModal}
-          openPoServiceModal={openPoServiceModal}
-        />
-      )}
-      <PaymentServiceModal
-        visible={isPaymentServiceModalVisible}
-        closeModal={closePaymentServiceModal}
-        verificationPending={verificationPending}
-        stripePaymentAction={stripePaymentAction}
-        user={user}
-        reason="Premium Upgrade"
-        totalPurchaseAmount={totalAmount}
-        addOnProductIds={addOnProductIds}
-      />
-      {payWithPoModal && (
-        <PayWithPoModal
-          visible={payWithPoModal}
-          setShowModal={setPayWithPoModal}
         />
       )}
       {isConfirmationModalVisible && (
@@ -519,15 +418,11 @@ export default compose(
         state.subscription?.subscriptionData?.itemBankSubscriptions,
       usedTrialItemBankId:
         state.subscription?.subscriptionData?.usedTrialItemBankId,
-      premiumProductId: state.subscription?.subscriptionData?.premiumProductId,
-      verificationPending: state.subscription?.verificationPending,
       subscription: state.subscription?.subscriptionData?.subscription,
       isConfirmationModalVisible: state.subscription?.showTrialSubsConfirmation,
       showTrialConfirmationMessage:
         state.subscription?.showTrialConfirmationMessage,
       products: state.subscription?.products,
-      isPaymentServiceModalVisible:
-        state.subscription?.isPaymentServiceModalVisible,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
     }),
     {
@@ -538,10 +433,8 @@ export default compose(
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
       startTrialAction: slice.actions.startTrialAction,
-      stripePaymentAction: slice.actions.stripePaymentAction,
       showTrialSubsConfirmationAction:
         slice.actions.trialSubsConfirmationAction,
-      setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
     }
   )

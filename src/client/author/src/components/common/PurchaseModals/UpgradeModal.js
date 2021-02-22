@@ -1,5 +1,6 @@
 import { CustomModalStyled } from '@edulastic/common'
 import { IconCredit, IconPo } from '@edulastic/icons'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { ModalBody, Boxes, FlexRow } from './styled'
 
@@ -8,12 +9,17 @@ const UpgradeModal = ({
   setShowModal,
   openPaymentServiceModal,
   openPoServiceModal,
+  setShowBuyMoreModal,
 }) => {
+  const closeUpgradeModal = () => {
+    setShowModal(false)
+    setShowBuyMoreModal(false)
+  }
   return (
     <CustomModalStyled
       visible={visible}
       title="Upgrade your account"
-      onCancel={() => setShowModal(false)}
+      onCancel={closeUpgradeModal}
       footer={null}
       centered
       modalWidth="530px"
@@ -24,7 +30,7 @@ const UpgradeModal = ({
           <Boxes
             onClick={() => {
               openPaymentServiceModal()
-              setShowModal(false)
+              closeUpgradeModal()
             }}
             data-cy="payWithCreditCard"
           >
@@ -45,6 +51,13 @@ const UpgradeModal = ({
       </ModalBody>
     </CustomModalStyled>
   )
+}
+
+UpgradeModal.propTypes = {
+  setShowBuyMoreModal: PropTypes.func,
+}
+UpgradeModal.defaultProps = {
+  setShowBuyMoreModal: () => {},
 }
 
 export default UpgradeModal

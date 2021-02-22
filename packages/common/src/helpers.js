@@ -305,6 +305,12 @@ const parseTemplate = (tmpl) => {
     return ''
   }
   const parsedHTML = $('<div />').html(temp)
+  // Clean v1 math content for jsx parser
+  $(parsedHTML)
+    .find('.MathJax')
+    .each(function () {
+      $(this).replaceWith(`<span>${$(this).html()}</span>`)
+    })
 
   $(parsedHTML)
     .find('textinput, mathinput, textdropdown, response, mathunit')

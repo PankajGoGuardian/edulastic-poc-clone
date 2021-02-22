@@ -779,6 +779,18 @@ const AssessmentContainer = ({
     const timeSpent = Date.now() - lastTime.current
 
     if (isLast() && preview && !demo) {
+      const unansweredQs = getUnAnsweredQuestions()
+      if (unansweredQs.length && !needsToProceed) {
+        return setUnansweredPopupSetting({
+          show: true,
+          qLabels: unansweredQs.map(
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
+          ),
+          index: Number(currentItem),
+          context: value,
+        })
+      }
       evaluateForPreview({
         currentItem,
         timeSpent,
@@ -842,7 +854,11 @@ const AssessmentContainer = ({
     setCurrentItem(index)
     const timeSpent = Date.now() - lastTime.current
     if (!demo) {
-      evaluateForPreview({ currentItem, timeSpent })
+      const evalArgs = { currentItem, timeSpent }
+      if (isLast()) {
+        evalArgs.callback = submitPreviewTest
+      }
+      evaluateForPreview(evalArgs)
     }
   }
 

@@ -38,11 +38,19 @@ const Folders = ({
   onSelectFolder,
   setContentsUpdated,
   removeItemFromCart,
+  selectedFolderId,
 }) => {
   const [selectedFolder, setSelectedFolder] = useState(null)
   const [isOpenCreate, setIsOpenCreate] = useState(false)
   const [isOpenConfirm, setIsOpenConfirm] = useState(false)
   const [isOpenRename, setIsOpenRename] = useState(false)
+
+  useEffect(() => {
+    const selectedFolderData = folders.find(
+      ({ _id = '' }) => _id === selectedFolderId
+    )
+    setSelectedFolder(selectedFolderData)
+  }, [selectedFolderId, folders])
 
   const showCreateModal = () => {
     setIsOpenCreate(true)

@@ -189,13 +189,14 @@ const StandardsMasteryReportContainer = (props) => {
       })
       const {
         selectedTests = [],
-        filters: { domainIds = [] },
+        filters: { domainIds = [], tags = [] },
       } = _settings
       setSMRSettings({
         requestFilters: {
           ...obj,
           testIds: selectedTests.join(),
           domainIds: domainIds.join(),
+          tagIds: tags.join(),
         },
       })
     }

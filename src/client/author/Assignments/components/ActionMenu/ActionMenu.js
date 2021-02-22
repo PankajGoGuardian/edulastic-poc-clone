@@ -5,7 +5,7 @@ import qs from 'qs'
 
 import { assignmentApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
-import { IconPrint, IconBarChart } from '@edulastic/icons'
+import { IconPrint, IconBarChart, IconEdit } from '@edulastic/icons'
 import { roleuser, test } from '@edulastic/constants'
 
 import classIcon from '../../assets/manage-class.svg'
@@ -43,6 +43,7 @@ const ActionMenu = ({
   canEdit = true,
   handleDownloadResponses,
   showEmbedLinkModal = () => {},
+  toggleTagsEditModal = () => {},
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -268,6 +269,18 @@ const ActionMenu = ({
             <i className="fa fa-link" aria-hidden="true" />
             <SpaceElement />
             Embed Link
+          </StyledLink>
+        </Menu.Item>
+
+        <Menu.Item
+          data-cy="edit-tags"
+          key="edit-tags"
+          onClick={() => toggleTagsEditModal(currentTestId)}
+        >
+          <StyledLink target="_blank" rel="noopener noreferrer">
+            <IconEdit height="13px" width="13px" />
+            <SpaceElement />
+            Edit Tags
           </StyledLink>
         </Menu.Item>
       </StyledMenu>

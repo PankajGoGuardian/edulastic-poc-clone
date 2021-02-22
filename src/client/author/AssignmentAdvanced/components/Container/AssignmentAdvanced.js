@@ -105,7 +105,7 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '', grades = [], assignedBy = '' } = JSON.parse(
+    const { termId = '', grades = [], assignedBy = '', tags = [] } = JSON.parse(
       sessionStorage.getItem('filters[Assignments]') || '{}'
     )
     if (isEmpty(assignmentsSummary)) {
@@ -120,6 +120,7 @@ class AssignmentAdvanced extends Component {
       status: filterStatus,
       grades,
       assignedBy,
+      tags,
     })
   }
 
@@ -151,7 +152,7 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '' } = JSON.parse(
+    const { termId = '', tags = [] } = JSON.parse(
       sessionStorage.getItem('filters[Assignments]') || '{}'
     )
     loadAssignmentsClassList({
@@ -161,6 +162,7 @@ class AssignmentAdvanced extends Component {
       termId,
       pageNo,
       status: filterStatus,
+      tags,
     })
   }
 

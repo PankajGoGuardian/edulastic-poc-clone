@@ -1011,6 +1011,14 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         tagsList: { ...state.tagsList, [payload.tagType]: payload.tags },
       }
+    case SET_ALL_TAGS_FAILED:
+      return {
+        ...state,
+        tagsList: {
+          ...state.tagsList,
+          [payload.tagType]: [],
+        },
+      }
     case ADD_NEW_TAG:
       return {
         ...state,
@@ -2552,17 +2560,19 @@ export const TAGS_SAGA_FETCH_STATUS = {
 }
 
 function* getAllTagsSaga({ payload }) {
+  const tagType = Array.isArray(payload.type) ? payload.type[0] : payload.type
   try {
     TAGS_SAGA_FETCH_STATUS.isLoading = true
     const tags = yield call(tagsApi.getAll, payload.type)
     yield put({
       type: SET_ALL_TAGS,
-      payload: { tags, tagType: payload.type },
+      payload: { tags, tagType },
     })
   } catch (e) {
     Sentry.captureException(e)
     yield put({
       type: SET_ALL_TAGS_FAILED,
+      payload: { tagType },
     })
     notification({ messageKey: 'getAllTagsFailed' })
   } finally {

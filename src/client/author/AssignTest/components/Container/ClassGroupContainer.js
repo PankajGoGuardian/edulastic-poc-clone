@@ -9,6 +9,7 @@ import QuestionPerStandardSelector from '../SimpleOptions/QuestionPerStandardSel
 import { StyledRow } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
+import TagFilter from '../../../src/components/common/TagFilter'
 
 const ClassGroupContainer = ({
   changeField,
@@ -32,6 +33,7 @@ const ClassGroupContainer = ({
   questionPerStandardOptions,
   tootltipWidth,
 }) => {
+  const { tags = testSettings.tags } = assignment
   return (
     <>
       {!isAssignRecommendations && (
@@ -154,6 +156,28 @@ const ClassGroupContainer = ({
                 </Select.Option>
               ))}
             </SelectInputStyled>
+          </Col>
+        </StyledRow>
+      </SettingContainer>
+
+      <SettingContainer id="tags-setting">
+        <DetailsTooltip
+          width={tootltipWidth}
+          title="Add Tags"
+          content=""
+          premium
+          placement="rightTop"
+        />
+        <StyledRow gutter={16}>
+          <Col span={10}>
+            <FieldLabel>Add Tags</FieldLabel>
+          </Col>
+          <Col span={14}>
+            <TagFilter
+              selectedTags={tags}
+              canCreate
+              onChangeField={(type, value) => changeField(type)(value)}
+            />
           </Col>
         </StyledRow>
       </SettingContainer>

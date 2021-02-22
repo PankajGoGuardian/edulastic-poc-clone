@@ -43,7 +43,7 @@ import {
   getUser,
 } from '../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../common/util'
-
+import TagFilter from '../../../../../src/components/common/TagFilter'
 import staticDropDownData from '../static/staticDropDownData.json'
 
 const getTestIdFromURL = (url) => {
@@ -177,6 +177,7 @@ const SingleAssessmentReportFilters = ({
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
+        tags: [],
       }
       const urlParams = { ...obtainedFilters }
 
@@ -235,7 +236,8 @@ const SingleAssessmentReportFilters = ({
     resetStudentFilters(_filters, keyName, selected, multiple)
     _filters[keyName] = multiple ? selected : selected.key
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
-    setFiltersOrTestId({ filters: _filters, testId })
+    const _testId = keyName === 'tags' ? '' : testId
+    setFiltersOrTestId({ filters: _filters, testId: _testId })
     setShowApply(true)
   }
 
@@ -308,6 +310,20 @@ const SingleAssessmentReportFilters = ({
               )}
             />
           </SearchField>
+          <SearchField>
+            <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+            <TagFilter
+              onChangeField={(type, value) =>
+                updateFilterDropdownCB(
+                  value.map(({ _id }) => _id),
+                  type,
+                  true
+                )
+              }
+              selectedTagIds={filters.tags}
+            />
+          </SearchField>
+
           {prevSARFilterData && (
             <SearchField>
               <FilterLabel data-cy="test">Test</FilterLabel>
@@ -315,6 +331,7 @@ const SingleAssessmentReportFilters = ({
                 firstLoad={firstLoad}
                 termId={filters.termId}
                 grade={filters.grade !== 'All' && filters.grade}
+                tags={filters.tags}
                 subject={filters.subject !== 'All' && filters.subject}
                 testTypes={filters.assessmentTypes}
                 selectedTestId={testId || getTestIdFromURL(location.pathname)}

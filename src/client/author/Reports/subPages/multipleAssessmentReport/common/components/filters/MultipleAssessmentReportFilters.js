@@ -41,7 +41,7 @@ import {
 } from '../../filterDataDucks'
 import { getUserRole, getUser } from '../../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../../common/util'
-
+import TagFilter from '../../../../../../src/components/common/TagFilter'
 import staticDropDownData from '../../static/staticDropDownData.json'
 
 const SingleAssessmentReportFilters = ({
@@ -146,6 +146,7 @@ const SingleAssessmentReportFilters = ({
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
+        tags: [],
       }
 
       const urlParams = { ...obtainedFilters }
@@ -267,6 +268,19 @@ const SingleAssessmentReportFilters = ({
               )}
             />
           </SearchField>
+          <SearchField>
+            <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+            <TagFilter
+              onChangeField={(type, value) =>
+                updateFilterDropdownCB(
+                  value.map(({ _id }) => _id),
+                  type,
+                  true
+                )
+              }
+              selectedTagIds={filters.tags}
+            />
+          </SearchField>
           {prevMARFilterData && (
             <SearchField>
               <AssessmentsAutoComplete
@@ -275,6 +289,7 @@ const SingleAssessmentReportFilters = ({
                 grade={filters.grade !== 'All' && filters.grade}
                 subject={filters.subject !== 'All' && filters.subject}
                 testTypes={filters.assessmentTypes}
+                tags={filters.tags}
                 selectedTestIds={testIds}
                 selectCB={onSelectTest}
               />

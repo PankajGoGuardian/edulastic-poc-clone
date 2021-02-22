@@ -228,7 +228,7 @@ export const SelectInputStyled = styled(Select)`
         .ant-select-arrow {
           font-size: ${(props) => props.arrowFontSize || '14px'};
           position: absolute;
-          top: 20px;
+          top: ${({ size }) => (size === 'large' ? '20px' : '15px')};
         }
         .ant-select-selection__rendered {
           width: 100%;

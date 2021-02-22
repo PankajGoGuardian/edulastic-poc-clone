@@ -36,7 +36,7 @@ const SubscriptionHeader = ({
   isBannerVisible,
   setShowMultiplePurchaseModal,
   settingProductData,
-  isManageSubscriptionButtonVisible,
+  showMultipleSubscriptions,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -105,7 +105,7 @@ const SubscriptionHeader = ({
                 } Version`
               : 'Free'}
           </PlanText>
-          {isBannerVisible && isManageSubscriptionButtonVisible && (
+          {isBannerVisible && showMultipleSubscriptions && (
             <EduButton
               data-cy="manageSubscriptionButton"
               isBlue

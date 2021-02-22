@@ -26,7 +26,7 @@ const MultiplePurchaseModal = ({
   const [sparkMathTotalPrice, setSparkMathTotalPrice] = useState(0)
 
   const emailsArray =
-    emailValues && emailValues.replace(/\s/g, '').split(/,|\n/)
+    (emailValues && emailValues.replace(/\s/g, '').split(/,|\n/)) || []
 
   const handlePayWithCard = () => {
     if (emailsArray.length > premiumSubsCount) {
@@ -104,7 +104,7 @@ const MultiplePurchaseModal = ({
           height="45px"
           width="220px"
           onClick={handlePayWithCard}
-          disabled={!emailValues}
+          disabled={!premiumSubsCount}
         >
           PAY WITH CREDIT CARD{' '}
           {premiumSubsCount && `$${premiumTotalPrice + sparkMathTotalPrice}`}

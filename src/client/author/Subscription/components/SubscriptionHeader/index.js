@@ -36,7 +36,7 @@ const SubscriptionHeader = ({
   isBannerVisible,
   setShowMultiplePurchaseModal,
   settingProductData,
-  isManageSubscriptionButtonVisible,
+  showMultipleSubscriptions,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -68,15 +68,22 @@ const SubscriptionHeader = ({
       <Menu.Item>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
+            <span data-cy="multipleSubscription" onClick={handleClick}>
+              MULTIPLE SUBSCRIPTIONS
+            </span>
+          )}
+          onClick={openMultiplePurchaseModal}
+        />
+      </Menu.Item>
+      <Menu.Item>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
             <span data-cy="enterpriseSubscription" onClick={handleClick}>
               ENTERPRISE SUBSCRIPTION
             </span>
           )}
           onClick={handleEnterpriseClick}
         />
-      </Menu.Item>
-      <Menu.Item onClick={openMultiplePurchaseModal}>
-        <span data-cy="multipleSubscription">MULTIPLE SUBSCRIPTIONS</span>
       </Menu.Item>
     </Menu>
   )
@@ -105,7 +112,7 @@ const SubscriptionHeader = ({
                 } Version`
               : 'Free'}
           </PlanText>
-          {isBannerVisible && isManageSubscriptionButtonVisible && (
+          {isBannerVisible && showMultipleSubscriptions && (
             <EduButton
               data-cy="manageSubscriptionButton"
               isBlue

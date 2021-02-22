@@ -43,10 +43,6 @@ export const getIsPaymentServiceModalVisible = createSelector(
   subscriptionSelector,
   (state) => state.isPaymentServiceModalVisible
 )
-export const getIsManageSubscriptionButtonVisible = createSelector(
-  subscriptionSelector,
-  (state) => state.isManageSubscriptionButtonVisible
-)
 
 const slice = createSlice({
   name: 'subscription',
@@ -60,7 +56,6 @@ const slice = createSlice({
     products: [],
     isPaymentServiceModalVisible: false,
     showHeaderTrialModal: false,
-    isManageSubscriptionButtonVisible: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -143,9 +138,6 @@ const slice = createSlice({
     },
     setPaymentServiceModal: (state, { payload }) => {
       state.isPaymentServiceModalVisible = payload
-    },
-    showManageSubscriptionButton: (state, { payload }) => {
-      state.isManageSubscriptionButtonVisible = payload
     },
     setShowHeaderTrialModal: (state, { payload }) => {
       state.showHeaderTrialModal = payload
@@ -315,7 +307,7 @@ function* handleMultiplePurchasePayment({ payload }) {
         )
         yield put(slice.actions.setPaymentServiceModal(false))
         yield put(fetchMultipleSubscriptionsAction())
-        yield put(slice.actions.showManageSubscriptionButton(true))
+        yield put(fetchUserAction({ background: true }))
         notification({
           type: 'success',
           msg: `Payment successful.`,

@@ -27,6 +27,7 @@ const SimpleStackedBarWithLineChartContainer = ({
     if (payload && payload[0]?.payload) {
       const {
         schoolName,
+        schoolNames,
         testCount,
         studentCount,
         teacherCount,
@@ -35,7 +36,9 @@ const SimpleStackedBarWithLineChartContainer = ({
         <div>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">School: </Col>
-            <Col className="tooltip-value">{schoolName}</Col>
+            <Col className="tooltip-value">
+              {activityBy === 'school' ? schoolName : schoolNames}
+            </Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">Test Count: </Col>

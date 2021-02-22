@@ -137,6 +137,7 @@ export const greenDark7 = '#64C4AE'
 export const greenDarkSecondary = '#057750'
 export const greenSecondary = '#4CD43B'
 export const fadedGreen = '#c7ead9'
+export const fadedGreen1 = '#D8EEE2'
 
 export const greenPrimary = '#0EB08D'
 export const greenThird = '#5eb500'

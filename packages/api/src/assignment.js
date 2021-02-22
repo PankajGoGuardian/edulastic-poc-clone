@@ -48,7 +48,13 @@ const fetchRegradeAssignments = (testId) =>
     })
     .then((result) => result.data.result)
 
-const fetchAssigned = (groupId = '', testId = '', groupStatus = 'all') =>
+const fetchAssigned = (
+  groupId = '',
+  testId = '',
+  groupStatus = 'all',
+  studentId = '',
+  districtId = ''
+) =>
   api
     .callApi({
       url: `${prefix}/all`,
@@ -57,6 +63,8 @@ const fetchAssigned = (groupId = '', testId = '', groupStatus = 'all') =>
         groupId,
         testId,
         groupStatus,
+        studentId,
+        districtId,
       },
     })
     .then((result) => result.data.result)

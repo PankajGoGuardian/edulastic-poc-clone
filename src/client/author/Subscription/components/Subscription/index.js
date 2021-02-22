@@ -7,6 +7,7 @@ import loadable from '@loadable/component'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { groupBy } from 'lodash'
+import { roleuser } from '@edulastic/constants'
 import { slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
@@ -222,6 +223,10 @@ const Subscription = (props) => {
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
+  const [
+    showFeatureNotAvailableModal,
+    setShowFeatureNotAvailableModal,
+  ] = useState(false)
   const [productData, setProductData] = useState({})
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
@@ -301,14 +306,22 @@ const Subscription = (props) => {
     ? Date.now() + ONE_MONTH > subEndDate
     : false
 
+  const itemBankProductIds = products
+    .filter((prod) => prod.type === 'ITEM_BANK')
+    .map((prod) => prod.linkedProductId)
+
   const totalPaidProducts = itemBankSubscriptions.reduce(
     (a, c) => {
-      if (c.isTrial) return a
-      return a + 1
+      if (itemBankProductIds.includes(c.itemBankId)) {
+        if (c.isTrial) return a
+        return a + 1
+      }
+      return a
     },
     isPaidPremium ? 1 : 0
   )
-  const hasAllPremiumProductAccess = totalPaidProducts === products.length
+  const hasAllPremiumProductAccess =
+    isPaidPremium && totalPaidProducts === products.length
   const showRenewalOptions =
     ((isPaidPremium && isAboutToExpire) ||
       (!isPaidPremium && isSubscriptionExpired)) &&
@@ -341,6 +354,13 @@ const Subscription = (props) => {
 
   const isPremium = subType && subType !== 'FREE' // here user can be premium, trial premium, or partial premium
 
+  const isFreeAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
+    user.role
+  )
+
+  const handleCloseFeatureNotAvailableModal = () =>
+    setShowFeatureNotAvailableModal(false)
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -355,6 +375,8 @@ const Subscription = (props) => {
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         showMultipleSubscriptions={showMultipleSubscriptions}
+        isFreeAdmin={isFreeAdmin}
+        toggleShowFeatureNotAvailableModal={setShowFeatureNotAvailableModal}
       />
 
       <SubscriptionMain
@@ -380,6 +402,11 @@ const Subscription = (props) => {
         sparkMathItemBankId={sparkMathItemBankId}
         sparkMathProductId={sparkMathProductId}
         setShowItemBankTrialUsedModal={setShowItemBankTrialUsedModal}
+        handleCloseFeatureNotAvailableModal={
+          handleCloseFeatureNotAvailableModal
+        }
+        showFeatureNotAvailableModal={showFeatureNotAvailableModal}
+        isFreeAdmin={isFreeAdmin}
       />
 
       <CompareModal

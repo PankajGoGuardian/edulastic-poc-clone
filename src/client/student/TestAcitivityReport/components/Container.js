@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { keyBy, get } from 'lodash'
@@ -27,6 +27,8 @@ import {
 } from '../../../author/sharedDucks/questions'
 import { getEvaluationSelector } from '../../../assessment/selectors/answers'
 import { requestScratchPadAction } from '../../../author/ExpressGrader/ducks'
+import { getIsPreviewModalVisibleSelector } from '../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../assessment/actions/test'
 
 const { releaseGradeLabels } = testConstants
 
@@ -44,6 +46,8 @@ const ReportListContent = ({
   userWork,
   highlights,
   loadScratchpadFromServer,
+  setIsTestPreviewVisible,
+  isPreviewModalVisible,
 }) => {
   const {
     isDocBased,
@@ -65,11 +69,11 @@ const ReportListContent = ({
     return <Work key="review" review {...props} viewMode="report" />
   }
 
-  const [showModal, setModal] = useState(false)
   const { releaseScore = '' } = testActivityById
+  const _questions = keyBy(get(item, 'data.questions', []), 'id')
   const resources = keyBy(get(item, 'data.resources', []), 'id')
 
-  let allWidgets = { ...questionsById, ...resources }
+  let allWidgets = { ..._questions, ...resources }
   let itemRows = get(item, 'rows', [])
   let passage = {}
   if (item.passageId && passages.length) {
@@ -83,10 +87,10 @@ const ReportListContent = ({
     })
     allWidgets = { ...allWidgets, ...passageData }
   }
-  const passageId = passage._id
+
   const preview =
     releaseScore === releaseGradeLabels.WITH_ANSWERS ? 'show' : 'check'
-  const closeModal = () => setModal(false)
+  const closeModal = () => setIsTestPreviewVisible(false)
   const hasCollapseButtons =
     itemRows?.length > 1 &&
     itemRows
@@ -100,7 +104,7 @@ const ReportListContent = ({
       (question) => question?.type === questionType.HIGHLIGHT_IMAGE
     )
     if (hasDrawingResponse) {
-      setModal(true)
+      setIsTestPreviewVisible(true)
     } else {
       // load the scratchpad data and then open the modal
       loadScratchpadFromServer({
@@ -108,7 +112,7 @@ const ReportListContent = ({
         testItemId: item?._id,
         qActId: questionActivity?.[0]?._id,
         callback: () => {
-          setModal(true)
+          setIsTestPreviewVisible(true)
         },
       })
     }
@@ -138,7 +142,6 @@ const ReportListContent = ({
               isStudentReport
               viewComponent="studentReport"
               evaluation={evaluation}
-              passageTestItemID={passageId}
               highlights={highlights}
               userWork={userWork}
               attachments={attachments}
@@ -152,11 +155,11 @@ const ReportListContent = ({
           </Wrapper>
         </AssignmentContentWrapper>
         <TestPreviewModal
-          isModalVisible={showModal}
+          isModalVisible={isPreviewModalVisible}
           closeTestPreviewModal={closeModal}
           passages={passages}
           test={{ itemGroups: [{ items: [item] }] }}
-          showScratchPad={userWork && showModal}
+          showScratchPad={userWork && isPreviewModalVisible}
           isShowStudentWork
           LCBPreviewModal
           isStudentReport
@@ -181,8 +184,12 @@ export default connect(
     questionActivity: questionActivityFromFeedbackSelector(state),
     userWork: userWorkFromQuestionActivitySelector(state),
     highlights: highlightsStudentReportSelector(state),
+    isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
   }),
-  { loadScratchpadFromServer: requestScratchPadAction }
+  {
+    loadScratchpadFromServer: requestScratchPadAction,
+    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+  }
 )(ReportListContent)
 
 ReportListContent.propTypes = {

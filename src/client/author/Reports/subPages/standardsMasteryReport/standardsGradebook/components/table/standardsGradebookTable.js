@@ -157,14 +157,6 @@ const StandardsGradebookTableComponent = ({
 
   const filteredTableData = getFilteredTableData()
 
-  const scrollX = useMemo(() => {
-    const standardCols = flatMap(
-      filteredTableData,
-      ({ standardsInfo }) => standardsInfo
-    ).length
-    return standardCols * 120 || '100%'
-  }, [filteredTableData])
-
   const getDisplayValue = (item, _analyseBy) => {
     let printData
     if (!item) {
@@ -275,8 +267,6 @@ const StandardsGradebookTableComponent = ({
   }
 
   const getColumnsData = () => {
-    const extraColsNeeded =
-      filteredTableData.length && filteredTableData[0].standardsInfo.length
     let result = [
       {
         title: idToName[tableDdFilters.compareBy],
@@ -351,54 +341,57 @@ const StandardsGradebookTableComponent = ({
       }
     }
 
-    if (extraColsNeeded) {
-      result = [
-        ...result,
-        ...Object.values(
-          keyBy(
-            flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
-            'standardId'
-          )
-        ).map((item, index) => {
-          const standardProgressNav = getStandardProgressNav(
-            navigationItems,
-            item.standardId,
-            tableDdFilters.compareBy
-          )
-          const titleComponent = (
-            <>
-              <span>{item.standardName}</span>
-              <br />
-              <span>
-                {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
-              </span>
-            </>
-          )
-          return {
-            title: standardProgressNav ? (
-              <Link to={standardProgressNav}>{titleComponent}</Link>
-            ) : (
-              titleComponent
-            ),
-            dataIndex: item.standardId,
-            key: item.standardId,
-            align: 'center',
-            render: renderStandardIdColumns(
-              index,
-              tableDdFilters.compareBy,
-              tableDdFilters.analyseBy,
-              item.standardName,
-              item.standardId
-            ),
-          }
-        }),
-      ]
-    }
+    result = [
+      ...result,
+      ...Object.values(
+        keyBy(
+          flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
+          'standardId'
+        )
+      ).map((item, index) => {
+        const standardProgressNav = getStandardProgressNav(
+          navigationItems,
+          item.standardId,
+          tableDdFilters.compareBy
+        )
+        const titleComponent = (
+          <>
+            <span>{item.standardName}</span>
+            <br />
+            <span>
+              {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
+            </span>
+          </>
+        )
+        return {
+          title: standardProgressNav ? (
+            <Link to={standardProgressNav}>{titleComponent}</Link>
+          ) : (
+            titleComponent
+          ),
+          dataIndex: item.standardId,
+          key: item.standardId,
+          align: 'center',
+          render: renderStandardIdColumns(
+            index,
+            tableDdFilters.compareBy,
+            tableDdFilters.analyseBy,
+            item.standardName,
+            item.standardId
+          ),
+        }
+      }),
+    ]
 
     return result
   }
 
   const columnsData = getColumnsData()
+
+  const scrollX = useMemo(() => {
+    const visibleColumns = columnsData.filter((column) => !column.visibleOn)
+    return visibleColumns.length * 180 || '100%'
+  }, [columnsData])
 
   const compareByDropDownData = next(
     dropDownFormat.compareByDropDownData,

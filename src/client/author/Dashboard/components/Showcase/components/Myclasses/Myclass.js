@@ -95,6 +95,7 @@ const MyClasses = ({
   }, [])
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+  const isCliUser = user.openIdProvider === 'CLI'
 
   const isPremiumUser = user.features.premium
 
@@ -191,7 +192,7 @@ const MyClasses = ({
     })
 
   const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
-  const bannerSlides = sortByOrder(BANNER || [])
+  let bannerSlides = sortByOrder(BANNER || [])
   const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
 
   const isEurekaMathActive = useMemo(
@@ -207,8 +208,17 @@ const MyClasses = ({
   let filteredBundles = featuredBundles
 
   if (isEurekaMathActive) {
-    filteredBundles = featuredBundles.filter(
+    filteredBundles = filteredBundles.filter(
       (feature) => feature.description !== 'Engage NY'
+    )
+  }
+
+  if (isCliUser) {
+    filteredBundles = filteredBundles.filter(
+      (feature) => feature.description !== 'Spark Math'
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) => banner.description !== 'Spark Math Playlist'
     )
   }
 

@@ -99,8 +99,8 @@ const initialState = {
     studentGrade: 'All',
     courseId: 'All',
     studentCourseId: 'All',
-    classId: 'All',
-    groupId: 'All',
+    classIds: '',
+    groupIds: '',
     schoolIds: '',
     teacherIds: '',
     assessmentTypes: '',
@@ -108,6 +108,7 @@ const initialState = {
      * performanceBandProfile
      */
     profileId: '',
+    tags: [],
   },
   testId: [],
   loading: false,

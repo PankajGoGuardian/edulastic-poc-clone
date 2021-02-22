@@ -15,7 +15,7 @@ import {
   RadioButtonWrapper,
 } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const { redirectPolicy } = test
 
@@ -24,6 +24,7 @@ const { ShowPreviousAttempt } = redirectPolicy
 const QuestionDelivery = {
   [redirectPolicy.QuestionDelivery.ALL]: 'All',
   [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
+  [redirectPolicy.QuestionDelivery.SKIPPED]: 'Skipped',
 }
 
 const AutoRedirectGroupContainer = ({
@@ -59,6 +60,7 @@ const AutoRedirectGroupContainer = ({
             maxAttempts: 1,
             maxAnswerChecks: 0,
             autoRedirectSettings: {
+              maxRedirects: 1,
               showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
               questionsDelivery: redirectPolicy.QuestionDelivery.ALL,
             },
@@ -95,7 +97,7 @@ const AutoRedirectGroupContainer = ({
 
   return (
     <>
-      <SettingContainer>
+      <SettingContainer id="auto-redirect-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Enable Auto Redirect"
@@ -104,7 +106,7 @@ const AutoRedirectGroupContainer = ({
         />
         <StyledRow gutter={16}>
           <StyledCol span={10}>
-            <Label>Choose One Option</Label>
+            <Label>Enable Auto Redirect</Label>
           </StyledCol>
           <StyledCol span={14}>
             <RadioGrp
@@ -114,7 +116,7 @@ const AutoRedirectGroupContainer = ({
               disabled={freezeSettings || !assessmentSuperPowersAutoRedirect}
             >
               <RadioButtonWrapper>
-                <RadioBtn data-cy="radioAllStudents" value={false} />
+                <RadioBtn data-cy="radioAllowMultipleAttempts" value={false} />
                 <Label>Allow Multiple Attempts</Label>
               </RadioButtonWrapper>
               <RadioButtonWrapper style={{ marginLeft: '20px' }}>
@@ -158,14 +160,14 @@ const AutoRedirectGroupContainer = ({
 
           <StyledRow gutter={16}>
             <StyledCol span={10}>
-              <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
+              <Label>EXTRA ATTEMPTS ALLOWED</Label>
             </StyledCol>
             <StyledCol span={14}>
               <InputNumber
                 data-cy="auto-redirect-max-attempts"
                 min={1}
                 max={3}
-                value={autoRedirectSettings.maxRedirects || ''}
+                value={autoRedirectSettings.maxRedirects}
                 onChange={(value) =>
                   handleAutoRedirectSettingsChange('maxRedirects', value)
                 }
@@ -282,7 +284,7 @@ const AutoRedirectGroupContainer = ({
 
       {/* Maximum attempt */}
       {!autoRedirect && (
-        <SettingContainer>
+        <SettingContainer id="max-attempts-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="MAXIMUM ATTEMPTS ALLOWED"
@@ -313,7 +315,7 @@ const AutoRedirectGroupContainer = ({
       {
         /* Check Answer Tries Per Question */
         !isDocBased && !autoRedirect && (
-          <SettingContainer>
+          <SettingContainer id="check-answer-tries-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="CHECK ANSWER TRIES/QUESTION/ATTEMPT"

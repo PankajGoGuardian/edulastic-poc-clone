@@ -17,7 +17,11 @@ import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import { finishTestAcitivityAction } from '../../actions/test'
 
 // components
-import { Container, CalculatorContainer } from '../common'
+import {
+  Container,
+  CalculatorContainer,
+  getDefaultCalculatorProvider,
+} from '../common'
 import PlayerContent from './PlayerContent'
 import SubmitConfirmation from '../common/SubmitConfirmation'
 
@@ -102,7 +106,9 @@ class AssessmentPlayerTestlet extends React.Component {
     const { calcProvider, calcType } = settings
     const calculateMode =
       calcProvider && calcType !== 'NONE'
-        ? `${calcType}_${calcProvider}`
+        ? `${calcType}_${
+            calcProvider || getDefaultCalculatorProvider(calcType)
+          }`
         : false
 
     return (

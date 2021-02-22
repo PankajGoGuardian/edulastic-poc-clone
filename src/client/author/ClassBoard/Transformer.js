@@ -172,14 +172,18 @@ const getMaxScoreFromQuestion = (question) => {
  * @param {string} qid
  * @param {Object[]} testItemsData
  */
-export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
+export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => (
+  testItemId
+) => {
   if (!qid) {
     return qActivityMaxScore || 1
   }
   // TODO: Need to make it more efficient . no need to loop through all items
   for (const testItem of testItemsData) {
     const questions = get(testItem, ['data', 'questions'], [])
-    const questionIndex = questions.findIndex((x) => x.id === qid)
+    const questionIndex = questions.findIndex(
+      (x) => x.id === qid && (!testItemId || testItem._id === testItemId)
+    )
     const questionNeeded = questions[questionIndex]
     if (questionNeeded) {
       // for item level scoring handle scores as whole instead of each questions
@@ -200,7 +204,7 @@ const getSkippedStatusOfQuestion = (
   testItemId,
   questionActivitiesMap,
   testItems,
-  questionActivityId
+  qId
 ) => {
   const questionActivities = Object.values(questionActivitiesMap)
   const questions = questionActivities.filter(
@@ -220,7 +224,7 @@ const getSkippedStatusOfQuestion = (
     }
     return false
   }
-  return questionActivitiesMap[questionActivityId]?.skipped
+  return questionActivitiesMap[`${testItemId}_${qId}`]?.skipped
 }
 
 /**
@@ -549,13 +553,7 @@ export const transformGradeBookResponse = (
 
         const questionActivitiesIndexed =
           (questionActivitiesRaw &&
-            keyBy(questionActivitiesRaw, (x) => x.qid)) ||
-          {}
-        const questionActivitiesKeyedByItemId =
-          (questionActivitiesRaw &&
-            keyBy(questionActivitiesRaw, (x) =>
-              test.isDocBased ? x._id : x.testItemId
-            )) ||
+            keyBy(questionActivitiesRaw, (x) => `${x.testItemId}_${x.qid}`)) ||
           {}
 
         const questionActivities = qids.map(
@@ -575,8 +573,7 @@ export const transformGradeBookResponse = (
           ) => {
             const _id = el
             const currentQuestionActivity =
-              questionActivitiesIndexed[el] ||
-              questionActivitiesKeyedByItemId[testItemId]
+              questionActivitiesIndexed[`${testItemId}_${el}`]
             const questionMaxScore =
               maxScore ||
               maxScore == 0 ||
@@ -584,7 +581,7 @@ export const transformGradeBookResponse = (
                 _id,
                 testItemsData,
                 currentQuestionActivity?.maxScore
-              )
+              )(testItemId)
 
             if (!currentQuestionActivity) {
               return {

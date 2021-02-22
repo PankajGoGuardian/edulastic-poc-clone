@@ -122,7 +122,7 @@ const StudentsSelector = ({
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 title={
                   !SelectedStudents?.length
-                    ? 'Select one or more Class/Group Section'
+                    ? 'Select one or more Class/Group'
                     : ''
                 }
               >
@@ -131,7 +131,7 @@ const StudentsSelector = ({
                     as={TreeSelect}
                     placeholder={
                       !SelectedStudents?.length
-                        ? 'Select one or more Class/Group Section'
+                        ? 'Select one or more Class/Group'
                         : 'Select a student to assign'
                     }
                     treeCheckable

@@ -82,6 +82,7 @@ const SortableQuestionItem = SortableElement(
     qId,
     clearHighlighted,
     resetTimeSpentOnQuestion,
+    itemId,
   }) => (
     <div
       onClick={() => {
@@ -123,6 +124,7 @@ const SortableQuestionItem = SortableElement(
         qId={qId}
         clearHighlighted={clearHighlighted}
         resetTimeSpentOnQuestion={resetTimeSpentOnQuestion}
+        itemId={itemId}
       />
     </div>
   )
@@ -138,7 +140,6 @@ const defaultQuestionValue = {
       method: methods.EQUIV_SYMBOLIC,
       options: {
         inverseResult: false,
-        significantDecimalPlaces: 10,
       },
       value: '',
     },
@@ -522,6 +523,7 @@ class Questions extends React.Component {
       groupId,
       qId,
       clearHighlighted,
+      itemId,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -570,7 +572,7 @@ class Questions extends React.Component {
                     onDelete={this.handleDeleteQuestion(question.id)}
                     previewMode={previewMode}
                     viewMode={viewMode}
-                    answer={answersById[question.id]}
+                    answer={answersById[`${itemId}_${question.id}`]}
                     onDragStart={onDragStart}
                     highlighted={highlighted === question.id}
                     testMode={testMode}
@@ -580,6 +582,7 @@ class Questions extends React.Component {
                     groupId={groupId}
                     qId={qId}
                     resetTimeSpentOnQuestion={this.resetTimeSpentOnQuestion}
+                    itemId={itemId}
                   />
                 )
               )}

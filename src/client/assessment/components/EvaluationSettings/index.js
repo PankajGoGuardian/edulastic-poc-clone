@@ -44,6 +44,7 @@ const EvaluationSettings = ({
   allowNumericOnly,
   allowedVariables,
   onChangeAllowedOptions,
+  hidePointOnEquation,
 }) => {
   const [isVisible, setIsVisible] = useState(false)
 
@@ -118,6 +119,7 @@ const EvaluationSettings = ({
             allowNumericOnly={allowNumericOnly}
             allowedVariables={allowedVariables}
             onChangeAllowedOptions={onChangeAllowedOptions}
+            hidePointOnEquation={hidePointOnEquation}
           />
         </SettingBody>
       </CustomDrawer>

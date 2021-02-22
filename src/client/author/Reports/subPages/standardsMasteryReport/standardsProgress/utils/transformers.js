@@ -1,6 +1,18 @@
-import { get, isEmpty, groupBy, keyBy, uniq, sumBy, round } from 'lodash'
+import {
+  get,
+  isEmpty,
+  groupBy,
+  keyBy,
+  uniq,
+  sumBy,
+  round,
+  orderBy,
+} from 'lodash'
 
-import { percentage } from '../../../../common/util'
+import {
+  percentage,
+  DemographicCompareByOptions,
+} from '../../../../common/util'
 import {
   getMasteryLevel,
   getScore,
@@ -310,7 +322,7 @@ export const getTableData = (
     rawTableData.filter((el) => !!el[compareByDataKey]),
     compareByDataKey
   )
-  const tableData = Object.keys(groupedTableData)
+  let tableData = Object.keys(groupedTableData)
     .map((itemId) => {
       const tableDataForItem = groupedTableData[itemId]
       const rowInfo = tableDataForItem.find((o) => o[compareByDataKey])
@@ -323,6 +335,8 @@ export const getTableData = (
       }
     })
     .filter((o) => o.name)
-
+  if (DemographicCompareByOptions.includes(compareByKey)) {
+    tableData = orderBy(tableData, 'name', ['asc'])
+  }
   return [tableData, testInfoEnhanced]
 }

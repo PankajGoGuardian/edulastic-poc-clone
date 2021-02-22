@@ -45,7 +45,7 @@ export const attemptSummarySelector = createSelector(
        */
       if (item.itemLevelScoring) {
         const attempted = questions.some((q) =>
-          hasValidAnswers(q.type, answers[q.id])
+          hasValidAnswers(q.type, answers[`${item._id}_${q.id}`])
         )
         if (bookmarked) {
           blocks[firstQid] = 2
@@ -57,7 +57,10 @@ export const attemptSummarySelector = createSelector(
         itemWiseQids[item._id] = [firstQid]
       } else {
         questions.forEach((q) => {
-          const attempted = hasValidAnswers(q.type, answers[q.id])
+          const attempted = hasValidAnswers(
+            q.type,
+            answers[`${item._id}_${q.id}`]
+          )
           if (bookmarked) {
             blocks[q.id] = 2
           } else {
@@ -84,7 +87,7 @@ export const unansweredQuestionCountSelector = createSelector(
     let totalAnsweredItems = 0
     for (const item of items) {
       questionsByItemId[item._id] = item.data.questions.filter((q) =>
-        answerToArray.includes(q.id)
+        answerToArray.includes(`${item._id}_${q.id}`)
       )
       if (questionsByItemId[item._id]?.length) {
         totalAnsweredItems++

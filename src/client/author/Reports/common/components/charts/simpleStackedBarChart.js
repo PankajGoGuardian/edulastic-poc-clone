@@ -70,7 +70,11 @@ const SimpleStackedBarChartComponent = ({
   ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   xAxisDataKey,
   bottomStackDataKey,
+  bottomStackDataUnit,
+  bottomStackBarProps = {},
   topStackDataKey,
+  topStackDataUnit,
+  topStackBarProps = {},
   onBarClickCB,
   onResetClickCB,
   getXTickText,
@@ -85,6 +89,7 @@ const SimpleStackedBarChartComponent = ({
   lineChartDataKey = false,
   lineProps = {},
   lineDotProps = {},
+  lineActiveDotProps = {},
   lineTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   lineYTickFormatter = _yTickFormatter,
   lineYAxisLabel = '',
@@ -114,7 +119,11 @@ const SimpleStackedBarChartComponent = ({
     COLOR_BLACK: '#010101',
     TICK_FILL: { fill: '#010101', fontWeight: 'normal' },
     Y_AXIS_LABEL: { value: yAxisLabel.toUpperCase(), angle: -90, dx: -55 },
-    LINE_Y_AXIS_LABEL: { value: lineYAxisLabel, angle: -90, dx: 50 },
+    LINE_Y_AXIS_LABEL: {
+      value: lineYAxisLabel.toUpperCase(),
+      angle: -90,
+      dx: 50,
+    },
   }
 
   if (data !== copyData) {
@@ -327,27 +336,31 @@ const SimpleStackedBarChartComponent = ({
             dataKey={bottomStackDataKey}
             yAxisId="barChart"
             stackId="a"
-            unit="%"
+            unit={bottomStackDataUnit}
             isAnimationActive={!isPrinting}
             onClick={onBarClick}
             barSize={45}
             onMouseOver={onBarMouseOver(1)}
             onMouseLeave={onBarMouseLeave(null)}
+            {...bottomStackBarProps}
           />
           <Bar
             dataKey={topStackDataKey}
             yAxisId="barChart"
             stackId="a"
+            unit={topStackDataUnit}
             onClick={onBarClick}
             isAnimationActive={!isPrinting}
             barSize={45}
             onMouseOver={onBarMouseOver(1)}
             onMouseLeave={onBarMouseLeave(null)}
+            {...topStackBarProps}
           >
             <LabelList
               dataKey={bottomStackDataKey}
               position="insideBottom"
               fill="#010101"
+              unit={bottomStackDataUnit}
               offset={5}
               onMouseOver={onBarMouseOver(1)}
               onMouseLeave={onBarMouseLeave(null)}
@@ -398,6 +411,7 @@ const SimpleStackedBarChartComponent = ({
                 },
                 r: 5,
                 ...lineDotProps,
+                ...lineActiveDotProps,
               }}
               yAxisId="lineChart"
               type="linear"
@@ -444,6 +458,10 @@ const StyledStackedBarChartContainer = styled.div`
   padding: 10px;
   overflow: ${(props) => props.overflowStyle};
   position: relative;
+
+  .recharts-surface {
+    overflow: ${(props) => props.overflowStyle};
+  }
 
   .recharts-cartesian-axis-ticks {
     font-size: 12px;

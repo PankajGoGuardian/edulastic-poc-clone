@@ -63,17 +63,20 @@ import {
   getUserRole,
   getGroupList,
   getUserSchoolsListSelector,
+  isFreeAdminSelector,
 } from '../../../src/selectors/user'
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 
 const { assignmentStatusBg } = authorAssignment
 
 class AssignmentAdvanced extends Component {
   state = {
     openEditPopup: false,
-    isPreviewModalVisible: false,
     filterStatus: '',
     isHeaderAction: false,
     openPrintModal: false,
@@ -81,7 +84,17 @@ class AssignmentAdvanced extends Component {
   }
 
   componentDidMount() {
-    const { match, location } = this.props
+    const {
+      match,
+      location,
+      history,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+    } = this.props
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
     const { districtId, testId } = match.params
     const {
       loadAssignmentsClassList,
@@ -92,7 +105,7 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '', grades = [], assignedBy = '' } = JSON.parse(
+    const { termId = '', grades = [], assignedBy = '', tags = [] } = JSON.parse(
       sessionStorage.getItem('filters[Assignments]') || '{}'
     )
     if (isEmpty(assignmentsSummary)) {
@@ -107,6 +120,7 @@ class AssignmentAdvanced extends Component {
       status: filterStatus,
       grades,
       assignedBy,
+      tags,
     })
   }
 
@@ -138,7 +152,7 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '' } = JSON.parse(
+    const { termId = '', tags = [] } = JSON.parse(
       sessionStorage.getItem('filters[Assignments]') || '{}'
     )
     loadAssignmentsClassList({
@@ -148,6 +162,7 @@ class AssignmentAdvanced extends Component {
       termId,
       pageNo,
       status: filterStatus,
+      tags,
     })
   }
 
@@ -255,7 +270,8 @@ class AssignmentAdvanced extends Component {
   }
 
   toggleTestPreviewModal = (value) => {
-    this.setState({ isPreviewModalVisible: !!value })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(!!value)
   }
 
   onUpdateReleaseScoreSettings = (releaseScore) => {
@@ -294,7 +310,6 @@ class AssignmentAdvanced extends Component {
     const {
       filterStatus,
       openEditPopup,
-      isPreviewModalVisible,
       isHeaderAction,
       openPrintModal,
       pageNo,
@@ -325,6 +340,7 @@ class AssignmentAdvanced extends Component {
       userSchoolsList,
       authorAssignmentsState = {},
       assignmentTestList,
+      isPreviewModalVisible,
     } = this.props
     const {
       assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
@@ -500,6 +516,8 @@ const enhance = compose(
       authorAssignmentsState: stateSelector(state),
       assignmentTestList: getAssignmentTestList(state),
       bulkActionType: getBulkActionTypeSelector(state),
+      isFreeAdmin: isFreeAdminSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       setReleaseScore: releaseScoreAction,
@@ -514,6 +532,8 @@ const enhance = compose(
       bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction,
       bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

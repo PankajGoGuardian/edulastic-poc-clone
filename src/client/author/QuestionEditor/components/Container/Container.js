@@ -63,6 +63,10 @@ import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
+import {
+  allowedToSelectMultiLanguageInTest,
+  showItemStatusSelector as hasAuthorOrCuratorAccount,
+} from '../../../src/selectors/user'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -105,7 +109,13 @@ class Container extends Component {
     window.addEventListener('scroll', this.handleStickyHeader)
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
+    // evaluation mode: check/show/clear
+    const { clearAnswers, previewMode, changePreview } = this.props
+    if (['check', 'show'].includes(previewMode)) {
+      changePreview('clear')
+      clearAnswers()
+    }
     window.removeEventListener('scroll', this.handleStickyHeader)
   }
 
@@ -239,15 +249,6 @@ class Container extends Component {
     }
   }
 
-  componentWillUnmount() {
-    // evaluation mode: check/show/clear
-    const { clearAnswers, previewMode, changePreview } = this.props
-    if (['check', 'show'].includes(previewMode)) {
-      changePreview('clear')
-      clearAnswers()
-    }
-  }
-
   renderQuestion = () => {
     const {
       view,
@@ -255,6 +256,7 @@ class Container extends Component {
       preview,
       itemFromState,
       showCalculatingSpinner,
+      testItemId,
     } = this.props
     const { saveClicked, clearClicked } = this.state
     const questionType = question && question.type
@@ -286,6 +288,7 @@ class Container extends Component {
             clearClicked={clearClicked}
             scrollContainer={this.scrollContainer}
             showCalculatingSpinner={showCalculatingSpinner}
+            testItemId={testItemId}
           />
           {/* we may need to bring hint button back */}
           {/* {showHints && <Hints questions={[question]} />} */}
@@ -537,6 +540,8 @@ class Container extends Component {
       proceedSave,
       hasUnsavedChanges,
       currentLanguage,
+      isAuthorOrCurator,
+      allowedToSelectMultiLanguage,
     } = this.props
 
     if (!question) {
@@ -592,9 +597,9 @@ class Container extends Component {
             <BackLink onClick={history.goBack}>Back to Item List</BackLink>
           )}
           <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-            {useLanguageFeatureQn.includes(questionType) && (
-              <LanguageSelector questionId={question.id} />
-            )}
+            {(allowedToSelectMultiLanguage &&
+              useLanguageFeatureQn.includes(questionType)) ||
+              (isAuthorOrCurator && <LanguageSelector />)}
             {view !== 'preview' && view !== 'auditTrail' && (
               <EduButton
                 isGhost
@@ -647,6 +652,7 @@ Container.propTypes = {
   onSaveScrollTop: PropTypes.func.isRequired,
   savedWindowScrollTop: PropTypes.number,
   testId: PropTypes.string,
+  isAuthorOrCurator: PropTypes.bool,
 }
 
 Container.defaultProps = {
@@ -659,6 +665,7 @@ Container.defaultProps = {
   savedWindowScrollTop: 0,
   testId: '',
   testName: '',
+  isAuthorOrCurator: false,
 }
 
 const enhance = compose(
@@ -680,6 +687,8 @@ const enhance = compose(
       showCalculatingSpinner: getCalculatingSelector(state),
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
+      isAuthorOrCurator: hasAuthorOrCuratorAccount(state),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       changeView: changeViewAction,

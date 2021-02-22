@@ -142,7 +142,7 @@ export const normaliseTableData = (rawData, data) => {
           )) *
           100
       ) || 0
-    let studentScore = 0
+    let studentScore = 'Absent'
     let assessmentScore = 'Absent'
     let proficiencyBand = 'Absent'
     if (studentMetric.progressStatus === 1) {
@@ -350,9 +350,11 @@ const getColorCell = (
     )
   }
 
+  const printData = text === 'Absent' ? text : getDisplayValue(columnType, text)
+
   return (
     <CustomTableTooltip
-      printData={getDisplayValue(columnType, text)}
+      printData={printData}
       colorKey={text}
       placement="top"
       title={toolTipText(record)}

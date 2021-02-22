@@ -36,14 +36,15 @@ const initialState = {
     subject: '',
     grade: '',
     assessmentTypes: '',
+    tagIds: '',
     testIds: '',
     schoolIds: '',
     teacherIds: '',
     studentSubject: '',
     studentGrade: '',
     studentCourseId: '',
-    classId: '',
-    groupId: '',
+    classIds: '',
+    groupIds: '',
   },
 }
 

@@ -109,16 +109,27 @@ const HighlightImagePreview = ({
     (showDrawing && !readyOnlyScratchpad && !disableResponse) ||
     (!disableResponse && isExpressGrader)
 
-  const scratchpadWidth = max([
+  const { height: actHeight = 0, width: actWidth = 0 } =
+    item?.activity?.scratchPad?.dimensions || {}
+
+  const maxScratchpadWidth = max([
     containerRef.current?.clientWidth,
     imageContainerDimensions.width + 51, // 51 is current question label width,
     scratchpadDimensions?.width,
+    actWidth,
   ])
+
+  const maxScratchapadHeight = max([actHeight, scratchpadDimensions?.height])
 
   const handleSaveData = (data) => {
     if (typeof saveUserWork === 'function') {
       saveUserWork({ userWorkData: data, questionId: item.id })
     }
+  }
+
+  const finalDimensions = {
+    width: maxScratchpadWidth,
+    height: maxScratchapadHeight,
   }
 
   return (
@@ -135,10 +146,7 @@ const HighlightImagePreview = ({
             hideTools
             clearClicked={clearClicked}
             readOnly={readyOnlyScratchpad}
-            dimensions={{
-              width: scratchpadWidth,
-              height: scratchpadDimensions?.height,
-            }}
+            dimensions={finalDimensions}
             saveData={handleSaveData}
             conatinerWidth={colWidth}
             data={scratchpadData}

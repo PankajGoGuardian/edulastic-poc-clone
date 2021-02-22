@@ -121,10 +121,11 @@ function* updateRubricSaga({ payload }) {
         type: 'success',
         messageKey: 'rubricUpdatedAndSPublished',
       })
-    else {
+    else if (payload.changes === 'SHARED_TYPE') {
+      // to use custom message for specific changes
       notification({
         type: 'success',
-        messageKey: 'rubricUpdatedSuccessfully',
+        messageKey: 'rubricSharedSuccessfully',
       })
     }
   } catch (err) {

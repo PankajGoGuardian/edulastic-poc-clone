@@ -1,6 +1,5 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { Col } from 'antd'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from 'react-i18next'
@@ -12,23 +11,15 @@ import {
 
 import SortableList from '../../components/SortableList'
 import withAddButton from '../../components/HOC/withAddButton'
+import { Label } from '../../styled/WidgetOptions/Label'
 
 import { change, remove, add, sort } from './helpers'
-import { StyledRow } from './styled/StyledRow'
-import { Subtitle } from '../../styled/Subtitle'
-import Question from '../../components/Question'
+import { Row } from '../../styled/WidgetOptions/Row'
+import { Col } from '../../styled/WidgetOptions/Col'
 
 const SortableListWithAddButton = withAddButton(SortableList)
 
-const Distractors = ({
-  t,
-  setQuestionData,
-  item,
-  advancedAreOpen,
-  fillSections,
-  cleanSections,
-  visible,
-}) => {
+const Distractors = ({ t, setQuestionData, item }) => {
   const prop = 'distractor_rationale_response_level'
 
   const _change = change({ item, setQuestionData, prop })
@@ -37,35 +28,27 @@ const Distractors = ({
   const _sort = sort({ item, setQuestionData, prop })
 
   return (
-    <Question
-      section="advanced"
-      label={t('component.options.distractorTitle')}
-      fillSections={fillSections}
-      cleanSections={cleanSections}
-      advancedAreOpen={advancedAreOpen}
-      visible={visible}
-    >
-      <>
-        <Subtitle>{t('component.options.distractorTitle')}</Subtitle>
-        <StyledRow gutter={60}>
-          <Col data-cy="distractorList" md={24}>
-            <SortableListWithAddButton
-              buttonText={t('component.options.add')}
-              useDragHandle
-              label={t('component.options.distractor')}
-              items={get(item, `metadata.${prop}`, [])}
-              onSortEnd={_sort}
-              prefix="distractors"
-              onAdd={_add}
-              onRemove={_remove}
-              onChange={(index, e) =>
-                _change(`metadata.${prop}[${index}]`, e.target.value)
-              }
-            />
-          </Col>
-        </StyledRow>
-      </>
-    </Question>
+    <Row gutter={24}>
+      <Col data-cy="distractorList" md={24}>
+        <Label data-cy="distractor">
+          {t('component.options.distractorTitle')}
+        </Label>
+        <SortableListWithAddButton
+          useDragHandle
+          buttonText={t('component.addNewDistractor')}
+          buttonWidth="160px"
+          label={t('component.options.distractor')}
+          items={get(item, `metadata.${prop}`, [])}
+          onSortEnd={_sort}
+          prefix="distractors"
+          onAdd={_add}
+          onRemove={_remove}
+          onChange={(index, e) =>
+            _change(`metadata.${prop}[${index}]`, e.target.value)
+          }
+        />
+      </Col>
+    </Row>
   )
 }
 
@@ -73,17 +56,6 @@ Distractors.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
-  fillSections: PropTypes.func,
-  cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool,
-  visible: PropTypes.bool,
-}
-
-Distractors.defaultProps = {
-  fillSections: () => {},
-  cleanSections: () => {},
-  advancedAreOpen: false,
-  visible: true,
 }
 
 const enhance = compose(

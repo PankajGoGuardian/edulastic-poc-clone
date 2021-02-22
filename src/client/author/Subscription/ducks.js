@@ -1,13 +1,14 @@
-import { paymentApi, subscriptionApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { message } from 'antd'
 import { isEmpty } from 'lodash'
 import moment from 'moment'
-import { all, call, put, takeEvery } from 'redux-saga/effects'
+import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import { subscriptionApi, paymentApi, segmentApi } from '@edulastic/api'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { fetchUserAction } from '../../student/Login/ducks'
 import { fetchMultipleSubscriptionsAction } from '../ManageSubscription/ducks'
+import { getUserSelector } from '../src/selectors/user'
 
 // selectors
 const subscriptionSelector = (state) => state.subscription
@@ -153,14 +154,58 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
   const hasItemBankPermissions = !isEmpty(itemBankPermissions)
   const subscriptionPeriod = isTrial ? '14 days' : 'an year'
   const premiumType = isTrial ? 'Trial Premium' : 'Premium'
+  const { user } = yield select(getUserSelector)
+  if (isTrial) {
+    if (hasSubscriptions) {
+      segmentApi.trackUserClick({
+        user,
+        data: { event: `isTrialPremium` },
+      })
+    }
+    if (hasItemBankPermissions) {
+      segmentApi.trackUserClick({
+        user,
+        data: { event: `isTrialSparkMath` },
+      })
+    }
+  }
+
+  const eventType = isTrial ? 'trial' : 'purchase'
+  if (hasSubscriptions) {
+    const { subEndDate } = subscriptions
+    segmentApi.trackProductPurchase({
+      user,
+      data: {
+        event: `order premium ${eventType}`,
+        Premium_status: eventType,
+        Premium_purchase_date: new Date(),
+        Premium_expiry_date: new Date(subEndDate),
+      },
+    })
+  }
+  if (hasItemBankPermissions) {
+    const { subEndDate } = itemBankPermissions[0]
+    segmentApi.trackProductPurchase({
+      user,
+      data: {
+        event: `order smath ${eventType}`,
+        SMath_status: eventType,
+        SMath_purchase_date: new Date(),
+        SMath_expiry_date: new Date(subEndDate),
+      },
+    })
+  }
+
   if (hasSubscriptions && !hasItemBankPermissions) {
     const { subEndDate } = subscriptions
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
-    yield call(notification, {
-      type: 'success',
-      msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
-      key: 'handle-payment',
-    })
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
     yield put(
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlyPremiumTrial',
@@ -171,11 +216,13 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     const { subEndDate } = itemBankPermissions[0]
     const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
-    yield call(notification, {
-      type: 'success',
-      msg: `Congratulations! You are subscribed to ${itemBankNames} ${premiumType} Itembank(s) for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
-      key: 'handle-payment',
-    })
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! You are subscribed to ${itemBankNames} ${premiumType} Itembank(s) for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
     yield put(
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlySparkTrial',
@@ -186,12 +233,14 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     const { subEndDate } = subscriptions
     const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
-    yield call(notification, {
-      type: 'success',
-      msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankNames}
-            Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
-      key: 'handle-payment',
-    })
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankNames}
+              Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
     yield put(
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'haveBothSparkAndPremiumTrial',
@@ -388,8 +437,8 @@ function* handleFreeTrialSaga({ payload }) {
     const apiPaymentResponse = yield call(paymentApi.pay, payload)
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
-      yield call(showSuccessNotifications, apiPaymentResponse, true)
       yield put(slice.actions.resetSubscriptions())
+      yield call(showSuccessNotifications, apiPaymentResponse, true)
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))
       yield put(slice.actions.trialSubsConfirmationAction(true))

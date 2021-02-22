@@ -26,6 +26,8 @@ export const SET_TEST_LOADING_STATUS = '[test] set loading status'
 export const SET_TEST_LOADING_ERROR = '[test] set loading status error'
 export const SET_CHECK_ANSWER_PROGRESS_STATUS =
   '[test] set check answer progress status'
+export const SET_PREVIEW_LANGUAGE = '[test] language switch preview'
+export const SET_IS_TEST_PREVIEW_VISIBLE = '[test] set is preview'
 
 export const COUNT_CHECK_ANSWER = '[test] increase check answer count'
 export const SET_PASSWORD_VALIDATE_STATUS =
@@ -125,3 +127,10 @@ export const Hide_HINTS = '[hints] hide hints'
 // assessmentPlayer
 export const STORE_OPTIONS = '[assessmentPlayer] store order of options'
 export const CLEAR_OPTIONS = '[assessmentPlayer] clear order of options stored'
+export const SWITCH_LANGUAGE =
+  '[assessmentPlayer] switch language during attempt'
+export const LANG_CHANGE_SUCCESS = '[assessmentPlayer] language switch success'
+export const UPDATE_PLAYER_PREVIEW_STATE =
+  '[assessmentPlayer] update player settings'
+export const SET_VIEW_TEST_INFO_SUCCESS =
+  '[assessmentPlayer] view test info success'

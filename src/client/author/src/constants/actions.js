@@ -229,6 +229,8 @@ export const TOGGLE_VIEW_PASSWORD_MODAL =
 export const REGENERATE_PASSWORD = '[gradebook] regenerate password action'
 export const UPDATE_PASSWORD_DETAILS =
   '[gradebook] update password details action'
+export const SET_UPDATED_ACTIVITY_IN_ENTITY =
+  '[gradebook] set updated activityId in entity'
 
 export const FETCH_SERVER_TIME = '[gradebook] fetch server time'
 
@@ -246,6 +248,7 @@ export const TOGGLE_PRESENTATION_MODE =
   '[testActivity] toggle presentation mode'
 export const RESPONSE_ENTRY_SCORE_SUCCESS =
   '[testActivity] response entry score success'
+
 // assignments
 export const RECEIVE_ASSIGNMENTS_REQUEST = '[assignments] receive list request'
 export const RECEIVE_ASSIGNMENTS_SUCCESS = '[assignments] receive list success'
@@ -287,6 +290,9 @@ export const DELETE_ASSIGNMENT_REQUEST_FAILED =
   '[assignments] delete assignment request failed'
 
 export const ADVANCED_ASSIGNMENT_VIEW = '[assignments] change view'
+
+export const EDIT_TAGS_REQUEST = '[assignments] edit tags request'
+export const SET_TAGS_UPDATING_STATE = '[assignments] set tags updating state'
 
 export const RECEIVE_CLASS_QUESTION_REQUEST = '[answers] receive list request'
 export const RECEIVE_CLASS_QUESTION_SUCCESS = '[answers] receive list success'

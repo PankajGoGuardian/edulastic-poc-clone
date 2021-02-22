@@ -11,10 +11,8 @@ const getInitialSelectedProductIds = ({
   defaultSelectedProductIds,
   isPaidPremium,
   premiumProductId,
-  itemBankPremium,
 }) => {
-  const itemBankPremiumIds = itemBankPremium.map((x) => x.id)
-  const productIds = defaultSelectedProductIds || itemBankPremiumIds
+  const productIds = defaultSelectedProductIds || []
   if (!isPaidPremium) {
     productIds.push(premiumProductId)
   }
@@ -105,7 +103,7 @@ const SubscriptionAddonModal = ({
     >
       <ModalBody>
         <p>
-          The Spark addons bundle premium content with some exciting software
+          The Spark add-ons bundle premium content with some exciting software
           features to make it super easy for you to use.
           <br />
           <a
@@ -118,7 +116,7 @@ const SubscriptionAddonModal = ({
           </a>{' '}
           to learn more.
         </p>
-        <p> These addons need the premium or enterprise subscription.</p>
+        <p> These add-ons need the premium or enterprise subscription.</p>
         <AddonList>
           {!isPaidPremium && (
             <FlexRow>

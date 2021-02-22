@@ -58,6 +58,7 @@ const SortListPreview = ({
   changePreviewTab,
   isReviewTab,
   isPrintPreview,
+  hideCorrectAnswer,
 }) => {
   const previewRef = useRef()
   const answerContextConfig = useContext(AnswerContext)
@@ -454,7 +455,7 @@ const SortListPreview = ({
               </FlexContainer>
             </Container>
             {view && view !== EDIT && <Instructions item={item} />}
-            {(previewTab === SHOW || isReviewTab) && (
+            {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer && (
               <ShowCorrect
                 source={source}
                 list={validResponseCorrectList}

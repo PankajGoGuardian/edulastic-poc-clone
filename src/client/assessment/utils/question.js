@@ -1,11 +1,13 @@
-import { isObject, get, set, isEmpty } from 'lodash'
+import { isObject, get, set, isEmpty, keys } from 'lodash'
 import { produce } from 'immer'
 import { appLanguages, questionType } from '@edulastic/constants'
+import { isValidUpdate } from '@edulastic/common'
 
 const { useLanguageFeatureQn } = questionType
 const { LANGUAGE_EN } = appLanguages
 
 const commonPatterns = [
+  /scoringInstructions/,
   /instructorStimulus/,
   /sampleAnswer/,
   /stimulus/,
@@ -18,6 +20,10 @@ const commonPatterns = [
 
 const patternsByQuestionType = {
   [questionType.CLOZE_DRAG_DROP]: [...commonPatterns, /options\.(\d+)\.label/],
+  [questionType.CLOZE_IMAGE_DRAG_DROP]: [
+    ...commonPatterns,
+    /options\.(\d+)\.value/,
+  ],
   [questionType.EXPRESSION_MULTIPART]: [
     ...commonPatterns,
     /options\.(.*?)\.(\d+)/,
@@ -46,7 +52,30 @@ const patternsByQuestionType = {
   [questionType.FORMULA_ESSAY]: [...commonPatterns],
   [questionType.MULTIPLE_CHOICE]: [...commonPatterns, /options\.(\d+)\.label/],
   [questionType.TOKEN_HIGHLIGHT]: [...commonPatterns, /template/],
+  [questionType.TEXT]: [...commonPatterns, /heading/, /content/],
+  [questionType.VIDEO]: [
+    ...commonPatterns,
+    /sourceURL/,
+    /videoType/,
+    /heading/,
+    /summary/,
+    /transcript/,
+  ],
+  [questionType.PASSAGE]: [
+    ...commonPatterns,
+    /heading/,
+    /contentsTitle/,
+    /content/,
+    /pages\.(\d+)/,
+  ],
 }
+
+const clozeTypes = [
+  questionType.CLOZE_DRAG_DROP,
+  questionType.EXPRESSION_MULTIPART,
+  questionType.CLOZE_DROP_DOWN,
+  questionType.CLOZE_TEXT,
+]
 
 const getAvailablePaths = (data, prev = '', paths = []) => {
   Object.keys(data).forEach((key) => {
@@ -61,11 +90,7 @@ const getAvailablePaths = (data, prev = '', paths = []) => {
   return paths
 }
 
-const getLanguageDataPaths = (qType, data) => {
-  const patterns = patternsByQuestionType[qType]
-  if (!patterns) {
-    return []
-  }
+const getLanguageDataPaths = (patterns, data) => {
   const availablePaths = getAvailablePaths(data)
   return availablePaths.filter((path) =>
     patterns.some((pattern) => new RegExp(pattern, 'g').test(path))
@@ -78,10 +103,23 @@ export const changeDataInPreferredLanguage = (
   newQuestion
 ) => {
   if (
+    language &&
+    language !== LANGUAGE_EN &&
     useLanguageFeatureQn.includes(newQuestion.type) &&
     patternsByQuestionType[newQuestion.type]
   ) {
-    const dataFields = getLanguageDataPaths(newQuestion.type, newQuestion)
+    if (clozeTypes.includes(newQuestion.type)) {
+      const vaild = isValidUpdate(
+        get(newQuestion, `stimulus`, ''),
+        get(prevQuestion, `stimulus`, '')
+      )
+      if (!vaild) {
+        return prevQuestion
+      }
+    }
+
+    const patterns = patternsByQuestionType[newQuestion.type]
+    const dataFields = getLanguageDataPaths(patterns, newQuestion)
     const changedQuestion = produce(newQuestion, (draft) => {
       if (!draft.languageFeatures) {
         draft.languageFeatures = {}
@@ -112,6 +150,30 @@ export const changeDataInPreferredLanguage = (
     })
 
     return changedQuestion
+  }
+  // I clean existing languageData when EN data is updated
+  if (
+    (!language || language === LANGUAGE_EN) &&
+    useLanguageFeatureQn.includes(newQuestion.type) &&
+    newQuestion.languageFeatures
+  ) {
+    const changedData = produce(newQuestion, (draft) => {
+      keys(draft.languageFeatures).forEach((langKey) => {
+        const langDataPaths = getAvailablePaths(draft.languageFeatures[langKey])
+
+        const cleanLangData = {}
+        langDataPaths.forEach((path) => {
+          const enData = get(draft, path)
+          const langData = get(draft.languageFeatures[langKey], path)
+          if (enData && langData) {
+            set(cleanLangData, path, langData)
+          }
+        })
+
+        draft.languageFeatures[langKey] = cleanLangData
+      })
+    })
+    return changedData
   }
 
   return newQuestion

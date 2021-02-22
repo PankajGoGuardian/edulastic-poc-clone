@@ -26,6 +26,7 @@ const transformTeacherList = (list) => {
 }
 
 const TeacherAutoComplete = ({
+  dataCy,
   userOrgData,
   teacherList: teacherListRaw,
   loading,
@@ -88,6 +89,12 @@ const TeacherAutoComplete = ({
 
   // effects
   useEffect(() => {
+    if (selectedTeacherIds.length) {
+      // TODO: add backend support for selected ids in query
+      loadTeacherListDebounced(query)
+    }
+  }, [])
+  useEffect(() => {
     if (isEmpty(searchResult) || !searchTerms.text) {
       setSearchResult(transformTeacherList(teacherListRaw))
     }
@@ -112,8 +119,9 @@ const TeacherAutoComplete = ({
 
   return (
     <MultiSelectSearch
+      dataCy={dataCy}
       label="Teacher"
-      placeholder="All Teacher"
+      placeholder="All Teachers"
       el={teacherFilterRef}
       onChange={(e) => selectCB(e)}
       onSearch={onSearch}

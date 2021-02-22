@@ -27,15 +27,14 @@ import {
   LOAD_ANSWERS,
   CLEAR_USER_WORK,
   CLEAR_HINT_USAGE,
+  SET_SAVE_USER_RESPONSE,
 } from '../constants/actions'
 import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
 import { getServerTs } from '../../student/utils'
+import { Fscreen } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
-import {
-  scratchpadDomRectSelector,
-  resetScratchpadDimensionsAction,
-} from '../../common/components/Scratchpad/duck'
+import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -118,6 +117,11 @@ async function getFileNameAndQidMap(qId, data, folder) {
 
 export function* saveUserResponse({ payload }) {
   try {
+    // setting savingResponse true only when the saveUserResponse is being called
+    yield put({
+      type: SET_SAVE_USER_RESPONSE,
+      payload: true,
+    })
     const ts = payload.timeSpent || 0
     const {
       autoSave,
@@ -148,9 +152,7 @@ export function* saveUserResponse({ payload }) {
       (state) => state.test?.settings?.timedAssignment
     )
     if (pausing) {
-      window.document.exitFullscreen().catch((e) => {
-        console.warn('error', e)
-      })
+      Fscreen.safeExitfullScreen()
     }
     if (pausing && timedAssignment) {
       const utaId = yield select((state) => state.test.testActivityId)
@@ -229,6 +231,7 @@ export function* saveUserResponse({ payload }) {
     const itemAnswers = {}
     const shuffles = {}
     const timesSpent = {}
+    const testItemId = currentItem._id
     questions.forEach((question) => {
       if (isDocBased) {
         if (questionId && question === questionId) {
@@ -239,7 +242,7 @@ export function* saveUserResponse({ payload }) {
       } else {
         timesSpent[question] = ts / questions.length
       }
-      itemAnswers[question] = answers[question]
+      itemAnswers[question] = answers[`${testItemId}_${question}`]
       // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
       const {
@@ -250,15 +253,19 @@ export function* saveUserResponse({ payload }) {
         STUDENT_RESPONSE_AND_FEEDBACK,
         SCORE_RESPONSE_AND_FEEDBACK,
       ].includes(redirectPolicy)
-      if (hasPrevResponse && !answers[question] && !!userPrevAnswer[question]) {
-        itemAnswers[question] = userPrevAnswer[question]
+      if (
+        hasPrevResponse &&
+        !answers[`${testItemId}_${question}`] &&
+        !!userPrevAnswer[`${testItemId}_${question}`]
+      ) {
+        itemAnswers[question] = userPrevAnswer[`${testItemId}_${question}`]
       }
       if (shuffledOptions[question]) {
         shuffles[question] = shuffledOptions[question]
       }
     })
 
-    const testItemId = currentItem._id
+
     const _userWork = yield select(
       ({ userWork }) => userWork.present[testItemId] || {}
     )
@@ -360,7 +367,6 @@ export function* saveUserResponse({ payload }) {
     if (payload?.urlToGo) {
       yield put(push({ pathname: payload.urlToGo, state: payload?.locState }))
     }
-    yield put(resetScratchpadDimensionsAction())
     if (shouldClearUserWork) {
       /**
        * if we have two assignments one for practice

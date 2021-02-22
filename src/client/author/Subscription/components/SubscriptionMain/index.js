@@ -57,6 +57,7 @@ import {
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
+import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -215,6 +216,9 @@ const SubscriptionMain = ({
   openHasLicenseKeyModal,
   isPremiumUser,
   isPremium,
+  showFeatureNotAvailableModal,
+  handleCloseFeatureNotAvailableModal,
+  isFreeAdmin,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -291,7 +295,7 @@ const SubscriptionMain = ({
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {!hasAllPremiumProductAccess && (
+            {!hasAllPremiumProductAccess && !isFreeAdmin && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -302,7 +306,7 @@ const SubscriptionMain = ({
                     onClick={handleClick}
                     noBg
                   >
-                    Upgrade now $100/YR
+                    Upgrade now
                   </CustomButton>
                 )}
                 onClick={handlePurchaseFlow}
@@ -313,7 +317,7 @@ const SubscriptionMain = ({
                 Renew Subscription
               </EduButton>
             )}
-            {hasTrialButton && (
+            {hasTrialButton && !isFreeAdmin && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -352,16 +356,23 @@ const SubscriptionMain = ({
           products={products}
         />
       )}
+      {showFeatureNotAvailableModal && (
+        <FeatureNotAvailableModal
+          isVisible={showFeatureNotAvailableModal}
+          handleCloseModal={handleCloseFeatureNotAvailableModal}
+          handleSelectStateModal={handleSelectStateModal}
+        />
+      )}
       <AddonSection>
         <SectionContainer>
           <SectionTitle>
             {isPremium
               ? 'Add ons for your Premium Version'
-              : 'Premium addons to make it even better'}
+              : 'Premium add-ons to make it even better'}
           </SectionTitle>
           <SectionDescription>
-            You can bundle one or more of the following addons to the teacher
-            premium subscription that will <br /> make it easier to deliver
+            You can bundle one or more of the following add-ons to the premium
+            subscription that will <br /> make it easier to deliver
             differentiated instruction and keep your students engaged.
           </SectionDescription>
           <CardContainer>
@@ -384,7 +395,7 @@ const SubscriptionMain = ({
                   </LearnMoreLink>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
-                      {!(isPaidPremium && isPaidSparkMath) && (
+                      {!(isPaidPremium && isPaidSparkMath) && !isFreeAdmin && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <PurchaseLink
@@ -397,7 +408,7 @@ const SubscriptionMain = ({
                           onClick={handleSparkMathClick}
                         />
                       )}
-                      {hasTrialButton && (
+                      {hasTrialButton && !isFreeAdmin && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <span data-cy="trialPurchase" onClick={handleClick}>
@@ -422,8 +433,7 @@ const SubscriptionMain = ({
           Get in-depth insights into schoolwide and districtwide progress with
           Edulastic Enterprise. Deliver common assessments, analyze the instant
           student data, and manage everything in one place. Enterprise includes
-          Teacher Premium and its collaboration, accommodation, and security
-          tools.
+          Premium and its collaboration, accommodation, and security tools.
         </SectionDescription>
         <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
           <EduButton

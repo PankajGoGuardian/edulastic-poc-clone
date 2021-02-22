@@ -12,7 +12,7 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { IconBookmark } from '@edulastic/icons'
+import { test as testConstants, roleuser } from '@edulastic/constants'
 import { get, round } from 'lodash'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -41,6 +41,8 @@ import { getUserRole } from '../../../../author/src/selectors/user'
 import QuestionList from './QuestionList'
 import ToolBar from './ToolBar'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
+import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
+import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 
 const {
   playerSkin: { sbac },
@@ -81,6 +83,8 @@ const PlayerHeader = ({
   groupId,
   hidePause,
   blockNavigationToAnsweredQuestions,
+  testType,
+  isTestPreviewModalVisible,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -104,15 +108,16 @@ const PlayerHeader = ({
   const data = items[currentItem]?.data?.questions[0]
   const showAudioControls = userRole === 'teacher' && !!LCBPreviewModal
   const canShowPlayer =
-    ((showUserTTS === 'yes' && userRole === 'student') ||
-      (userRole === 'teacher' && !!LCBPreviewModal)) &&
+    ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
+      (userRole !== roleuser.STUDENT &&
+        (!!LCBPreviewModal || isTestPreviewModalVisible))) &&
     data?.tts &&
     data?.tts?.taskStatus === 'COMPLETED'
-
   const { showMagnifier } = settings
 
   return (
     <StyledFlexContainer>
+      {testType === testConstants.type.PRACTICE && <SettingsModal />}
       <Header ref={headerRef} style={headerStyle}>
         <HeaderTopMenu
           style={{
@@ -151,23 +156,25 @@ const PlayerHeader = ({
               <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
                 <MainActionWrapper>
-                  {!blockNavigationToAnsweredQuestions && (
-                    <Tooltip
-                      placement="top"
-                      title="Previous"
-                      overlayStyle={overlayStyle}
-                    >
-                      <ControlBtn
-                        data-cy="prev"
-                        icon="left"
-                        disabled={isFirst()}
-                        onClick={(e) => {
-                          moveToPrev()
-                          e.target.blur()
-                        }}
-                      />
-                    </Tooltip>
-                  )}
+                  <Tooltip
+                    placement="top"
+                    title={
+                      blockNavigationToAnsweredQuestions
+                        ? 'This assignment is restricted from navigating back to the previous question.'
+                        : 'Previous'
+                    }
+                    overlayStyle={overlayStyle}
+                  >
+                    <ControlBtn
+                      data-cy="prev"
+                      icon="left"
+                      disabled={isFirst() || blockNavigationToAnsweredQuestions}
+                      onClick={(e) => {
+                        moveToPrev()
+                        e.target.blur()
+                      }}
+                    />
+                  </Tooltip>
                   <Tooltip
                     placement="top"
                     title="Next"
@@ -186,7 +193,10 @@ const PlayerHeader = ({
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>
                   {showPause && (
-                    <Tooltip placement="top" title={hidePause?`Save & Exit disabled`:`Save & Exit`}>
+                    <Tooltip
+                      placement="top"
+                      title={hidePause ? `Save & Exit disabled` : `Save & Exit`}
+                    >
                       <StyledButton disabled={hidePause} onClick={finishTest}>
                         <StyledIcon type="save" theme="filled" />
                       </StyledButton>
@@ -234,31 +244,30 @@ PlayerHeader.propTypes = {
   title: PropTypes.string.isRequired,
   currentItem: PropTypes.number.isRequired,
   gotoQuestion: PropTypes.func.isRequired,
-  settings: PropTypes.object,
-  toggleBookmark: PropTypes.func,
-  isBookmarked: PropTypes.bool,
-  headerRef: PropTypes.node,
-  isMobile: PropTypes.bool,
+  settings: PropTypes.object.isRequired,
+  headerRef: PropTypes.node.isRequired,
+  isMobile: PropTypes.bool.isRequired,
   moveToPrev: PropTypes.func.isRequired,
   moveToNext: PropTypes.func.isRequired,
-  overlayStyle: PropTypes.object,
-  options: PropTypes.array,
-  skipped: PropTypes.array,
-  bookmarks: PropTypes.array,
+  overlayStyle: PropTypes.object.isRequired,
+  options: PropTypes.array.isRequired,
+  skipped: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   tool: PropTypes.array.isRequired,
-  calcBrands: PropTypes.array,
-  changeCaculateMode: PropTypes.func,
+  calcBrands: PropTypes.array.isRequired,
+  changeCaculateMode: PropTypes.func.isRequired,
   finishTest: PropTypes.func.isRequired,
-  showUserTTS: PropTypes.bool,
-  userRole: PropTypes.string,
+  showUserTTS: PropTypes.bool.isRequired,
+  userRole: PropTypes.string.isRequired,
   LCBPreviewModal: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   qType: PropTypes.string.isRequired,
   setZoomLevel: PropTypes.func.isRequired,
-  zoomLevel: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+  zoomLevel: PropTypes.oneOf([PropTypes.number, PropTypes.string]).isRequired,
 }
-
+PlayerHeader.defaultProps = {
+  LCBPreviewModal: false,
+}
 const enhance = compose(
   withRouter,
   withWindowSizes,
@@ -269,6 +278,8 @@ const enhance = compose(
       showUserTTS: get(state, 'user.user.tts', 'no'),
       userRole: getUserRole(state),
       timedAssignment: state.test?.settings?.timedAssignment,
+      testType: state.test?.settings?.testType,
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       setZoomLevel: setZoomLevelAction,
@@ -291,15 +302,4 @@ const HeaderSbacPlayer = styled(FlexContainer)`
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
     padding: 0px;
   }
-`
-
-const StyledIconBookmark = styled(IconBookmark)`
-  ${({ theme }) => `
-    width: ${theme.default.headerBookmarkIconWidth};
-    height: ${theme.default.headerBookmarkIconHeight};
-  `}
-`
-
-const BreadcrumbContainer = styled.div`
-  flex: 1;
 `

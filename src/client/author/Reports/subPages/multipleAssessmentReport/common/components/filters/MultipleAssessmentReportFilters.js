@@ -41,7 +41,7 @@ import {
 } from '../../filterDataDucks'
 import { getUserRole, getUser } from '../../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../../common/util'
-
+import TagFilter from '../../../../../../src/components/common/TagFilter'
 import staticDropDownData from '../../static/staticDropDownData.json'
 
 const SingleAssessmentReportFilters = ({
@@ -141,11 +141,12 @@ const SingleAssessmentReportFilters = ({
         studentGrade: urlStudentGrade.key,
         studentCourseId: search.studentCourseId || 'All',
         courseId: search.courseId || 'All',
-        classId: search.classId || 'All',
-        groupId: search.groupId || 'All',
+        classIds: search.classIds || '',
+        groupIds: search.groupIds || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         assessmentTypes: search.assessmentTypes || '',
+        tags: [],
       }
 
       const urlParams = { ...obtainedFilters }
@@ -267,6 +268,19 @@ const SingleAssessmentReportFilters = ({
               )}
             />
           </SearchField>
+          <SearchField>
+            <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+            <TagFilter
+              onChangeField={(type, value) =>
+                updateFilterDropdownCB(
+                  value.map(({ _id }) => _id),
+                  type,
+                  true
+                )
+              }
+              selectedTagIds={filters.tags}
+            />
+          </SearchField>
           {prevMARFilterData && (
             <SearchField>
               <AssessmentsAutoComplete
@@ -275,6 +289,7 @@ const SingleAssessmentReportFilters = ({
                 grade={filters.grade !== 'All' && filters.grade}
                 subject={filters.subject !== 'All' && filters.subject}
                 testTypes={filters.assessmentTypes}
+                tags={filters.tags}
                 selectedTestIds={testIds}
                 selectCB={onSelectTest}
               />
@@ -339,7 +354,6 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -351,13 +365,15 @@ const SingleAssessmentReportFilters = ({
               courseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
               }
+              selectedClassIds={
+                filters.classIds ? filters.classIds.split(',') : []
+              }
               selectCB={(e) => {
-                updateFilterDropdownCB(e, 'classId')
+                updateFilterDropdownCB(e.join(','), 'classIds', true)
               }}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -369,8 +385,11 @@ const SingleAssessmentReportFilters = ({
               courseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
               }
+              selectedGroupIds={
+                filters.groupIds ? filters.groupIds.split(',') : []
+              }
               selectCB={(e) => {
-                updateFilterDropdownCB(e, 'groupId')
+                updateFilterDropdownCB(e.join(','), 'groupIds', true)
               }}
             />
           </SearchField>

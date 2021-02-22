@@ -145,6 +145,7 @@ class TestItemPreview extends Component {
       studentName,
       itemId,
       t,
+      isExpressGrader,
     } = this.props
 
     const [
@@ -165,6 +166,7 @@ class TestItemPreview extends Component {
         showFeedback={showFeedback}
         displayFeedback={displayFeedback}
         isPrintPreview={isPrintPreview}
+        isExpressGrader={isExpressGrader}
         showCollapseBtn={showCollapseBtn}
         prevQActivityForQuestion={prevQActivityForQuestion}
         data={{ ...question, smallSize: true }}

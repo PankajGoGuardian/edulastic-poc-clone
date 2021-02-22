@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash'
 
 import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconCloseFilter } from '@edulastic/icons'
 import StandardsPerfromance from './standardsPerformance'
 import StandardsGradebook from './standardsGradebook'
 import StandardsProgress from './standardsProgress'
@@ -148,7 +148,7 @@ const StandardsMasteryReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters) {
+    if (settings.requestFilters.termId) {
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -189,13 +189,14 @@ const StandardsMasteryReportContainer = (props) => {
       })
       const {
         selectedTests = [],
-        filters: { domainIds = [] },
+        filters: { domainIds = [], tags = [] },
       } = _settings
       setSMRSettings({
         requestFilters: {
           ...obj,
           testIds: selectedTests.join(),
           domainIds: domainIds.join(),
+          tagIds: tags.join(),
         },
       })
     }
@@ -210,9 +211,16 @@ const StandardsMasteryReportContainer = (props) => {
     })
   }
 
+  const locList = ['standards-gradebook', 'standards-progress']
+  useEffect(() => {
+    if (!locList.includes(loc)) {
+      setDdFilter({ ...INITIAL_DD_FILTERS })
+      setTempDdFilter({ ...INITIAL_DD_FILTERS })
+    }
+  }, [loc])
+
   const extraFilters =
-    (loc === 'standards-gradebook' || loc === 'standards-progress') &&
-    demographics
+    locList.includes(loc) && demographics
       ? demographics.map((item) => (
           <SearchField key={item.key}>
             <FilterLabel>{item.title}</FilterLabel>
@@ -220,7 +228,7 @@ const StandardsMasteryReportContainer = (props) => {
               selectCB={updateCB}
               data={item.data}
               comData={item.key}
-              by={item.data[0]}
+              by={ddfilter[item.key] || item.data[0]}
             />
           </SearchField>
         ))
@@ -261,6 +269,7 @@ const StandardsMasteryReportContainer = (props) => {
       )}
       <FlexContainer
         alignItems="flex-start"
+        justifyContent="space-between"
         display={firstLoad ? 'none' : 'flex'}
       >
         <StandardsFilters
@@ -281,7 +290,7 @@ const StandardsMasteryReportContainer = (props) => {
         />
         {!reportId ? (
           <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            <IconFilter />
+            {showFilter ? <IconCloseFilter /> : <IconFilter />}
           </FilterButtonClear>
         ) : null}
         <ReportContaner showFilter={showFilter}>

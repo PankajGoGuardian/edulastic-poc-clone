@@ -19,6 +19,11 @@ import {
   Hide_HINTS,
   SET_SAVE_USER_RESPONSE,
   SET_CHECK_ANSWER_PROGRESS_STATUS,
+  LANG_CHANGE_SUCCESS,
+  UPDATE_PLAYER_PREVIEW_STATE,
+  SET_VIEW_TEST_INFO_SUCCESS,
+  SET_PREVIEW_LANGUAGE,
+  SET_IS_TEST_PREVIEW_VISIBLE,
 } from '../constants/actions'
 
 const initialState = {
@@ -43,6 +48,10 @@ const initialState = {
   currentAssignmentTime: null,
   stopTimerFlag: false,
   checkAnswerInProgress: false,
+  languagePreference: '',
+  previewState: {},
+  viewTestInfoSuccess: false,
+  isTestPreviewModalVisible: false,
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -63,6 +72,7 @@ const test = (state = initialState, { payload, type }) => {
         isDocBased: payload.isDocBased,
         freeFormNotes: payload.freeFormNotes,
         showMagnifier: payload.showMagnifier,
+        languagePreference: payload.languagePreference,
         settings: {
           ...state.settings,
           ...payload.settings,
@@ -138,7 +148,7 @@ const test = (state = initialState, { payload, type }) => {
       }
     case SAVE_USER_RESPONSE:
       if (!payload.autoSave) {
-        return { ...state, savingResponse: true, showHints: false }
+        return { ...state, showHints: false }
       }
       return state
     case SAVE_USER_RESPONSE_SUCCESS:
@@ -160,6 +170,33 @@ const test = (state = initialState, { payload, type }) => {
       return { ...state, savingResponse: payload }
     case SET_CHECK_ANSWER_PROGRESS_STATUS:
       return { ...state, checkAnswerInProgress: payload }
+    case LANG_CHANGE_SUCCESS:
+      return {
+        ...state,
+        languagePreference: payload.languagePreference,
+        testActivityId: payload.testActivityId,
+      }
+    case UPDATE_PLAYER_PREVIEW_STATE:
+      return {
+        ...state,
+        previewState: payload,
+      }
+    case SET_VIEW_TEST_INFO_SUCCESS:
+      return {
+        ...state,
+        viewTestInfoSuccess: payload,
+      }
+    case SET_PREVIEW_LANGUAGE:
+      return {
+        ...state,
+        languagePreference: payload,
+        answerCheckByItemId: {},
+      }
+    case SET_IS_TEST_PREVIEW_VISIBLE:
+      return {
+        ...state,
+        isTestPreviewModalVisible: payload,
+      }
     default:
       return state
   }

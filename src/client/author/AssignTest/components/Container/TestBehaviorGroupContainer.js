@@ -14,7 +14,7 @@ import {
 import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
 import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const {
   calculatorKeys,
@@ -116,7 +116,7 @@ const TestBehaviorGroupContainer = ({
   return (
     <>
       {/* Test type */}
-      <SettingContainer>
+      <SettingContainer id="test-type-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Test Type"
@@ -135,7 +135,7 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Test type */}
       {/* Release score */}
-      <SettingContainer>
+      <SettingContainer id="release-score-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="RELEASE SCORES"
@@ -171,11 +171,11 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Release score */}
       {/* Evaluation Method */}
-      <SettingContainer>
+      <SettingContainer id="evaluation-method-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="EVALUATION METHOD"
-          content="Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for incorrect answers or not (applicable only for multiple selection que widgets)."
+          content="Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for incorrect answers or not (applicable only for multiple selection question widgets)."
           premium
         />
         <StyledRow gutter={16} mb="15px">
@@ -206,7 +206,7 @@ const TestBehaviorGroupContainer = ({
       {/* Evaluation Method */}
 
       {/* Mark as done */}
-      <SettingContainer>
+      <SettingContainer id="mark-as-done-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Mark as done"
@@ -242,11 +242,11 @@ const TestBehaviorGroupContainer = ({
       {/* Mark as done */}
 
       {/* Show Calculator */}
-      <SettingContainer>
+      <SettingContainer id="calculator-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="SHOW CALCULATOR"
-          content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+          content="If students can use an on-screen calculator, select the type to make available on the test."
           premium={assessmentSuperPowersShowCalculator}
         />
         <StyledRow gutter={16} mb="15px">
@@ -276,7 +276,7 @@ const TestBehaviorGroupContainer = ({
       {/* Show Calculator */}
 
       {/* Timed TEST */}
-      <SettingContainer>
+      <SettingContainer id="timed-test-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="TIMED TEST"
@@ -330,7 +330,7 @@ const TestBehaviorGroupContainer = ({
                     max={300}
                     step={1}
                   />
-                  9 <Label>MINUTES</Label>
+                  <Label>MINUTES</Label>
                   {/* eslint-enable no-restricted-globals */}
                 </>
               )}

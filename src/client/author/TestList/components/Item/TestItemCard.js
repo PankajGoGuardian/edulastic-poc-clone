@@ -87,7 +87,10 @@ const TestItemCard = ({
                   <EduButton
                     style={btnStyle}
                     height="32px"
-                    onClick={handleClick}
+                    onClick={(e) => {
+                      e?.stopPropagation()
+                      handleClick()
+                    }}
                   >
                     Assign
                   </EduButton>

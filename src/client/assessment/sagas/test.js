@@ -4,15 +4,32 @@ import {
   assignmentApi,
   attchmentApi as attachmentApi,
 } from '@edulastic/api'
-import { takeEvery, call, all, put, select, take } from 'redux-saga/effects'
+import {
+  takeEvery,
+  call,
+  all,
+  put,
+  select,
+  take,
+  takeLatest,
+} from 'redux-saga/effects'
 import { Modal } from 'antd'
 import {
   notification,
   Effects,
   captureSentryException,
 } from '@edulastic/common'
+import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
-import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from 'lodash'
+import {
+  keyBy as _keyBy,
+  groupBy,
+  get,
+  flatten,
+  cloneDeep,
+  set,
+  isEmpty,
+} from 'lodash'
 import produce from 'immer'
 import {
   test as testContants,
@@ -20,7 +37,11 @@ import {
   testActivityStatus,
 } from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
-import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
+import { Fscreen, isiOS } from '../utils/helpers'
+import {
+  getCurrentGroupWithAllClasses,
+  toggleIosRestrictNavigationModalAction,
+} from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
 import {
   LOAD_TEST,
@@ -42,6 +63,8 @@ import {
   REMOVE_PREVIOUS_ANSWERS,
   CLEAR_USER_WORK,
   SET_SAVE_USER_RESPONSE,
+  SWITCH_LANGUAGE,
+  UPDATE_PLAYER_PREVIEW_STATE,
 } from '../constants/actions'
 import { saveUserResponse as saveUserResponseAction } from '../actions/items'
 import { saveUserResponse as saveUserResponseSaga } from './items'
@@ -50,12 +73,15 @@ import { loadBookmarkAction } from '../sharedDucks/bookmark'
 import {
   setPasswordValidateStatusAction,
   setPasswordStatusAction,
+  languageChangeSuccessAction,
+  setShowTestInfoSuccesAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
   getCurrentUserId,
   SET_RESUME_STATUS,
   transformAssignmentForRedirect,
+  fetchAssignments as fetchAssignmentsSaga,
 } from '../../student/Assignments/ducks'
 import {
   CLEAR_ITEM_EVALUATION,
@@ -64,8 +90,13 @@ import {
 import { addAutoselectGroupItems } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
-import { setActiveAssignmentAction } from '../../student/sharedDucks/AssignmentModule/ducks'
+import {
+  setActiveAssignmentAction,
+  utaStartTimeUpdateRequired,
+} from '../../student/sharedDucks/AssignmentModule/ducks'
 import { getClassIds } from '../../student/Reports/ducks'
+import { startAssessmentAction } from '../actions/assessment'
+import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -243,6 +274,10 @@ function* loadTest({ payload }) {
           !!studentAssesment
         )
       : false
+    const userAuthenticated = getAccessToken()
+    const getPublicTest = userAuthenticated
+      ? testsApi.getById
+      : testsApi.getPublicTest
     const testRequest = !demo
       ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
           validation: true,
@@ -252,11 +287,14 @@ function* loadTest({ payload }) {
           ...(playlistId ? { playlistId } : {}),
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
-      : call(testsApi.getPublicTest, testId)
+      : call(getPublicTest, testId)
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
     const isFromSummary = yield select((state) =>
       get(state, 'router.location.state.fromSummary', false)
+    )
+    const _switchLanguage = yield select((state) =>
+      get(state, 'router.location.state.switchLanguage', false)
     )
     if (!preview) {
       /**
@@ -271,7 +309,8 @@ function* loadTest({ payload }) {
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
           testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF ||
-        isFromSummary
+        isFromSummary ||
+        _switchLanguage
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true))
       }
@@ -287,6 +326,7 @@ function* loadTest({ payload }) {
         type: TEST_ACTIVITY_LOADING,
         payload: false,
       })
+
       while (!passwordValidated) {
         try {
           const { payload: _payload } = yield take(GET_ASSIGNMENT_PASSWORD)
@@ -350,11 +390,13 @@ function* loadTest({ payload }) {
       (itemGroup) => itemGroup.items || []
     )
     if (
-      testActivity?.assignmentSettings?.questionsDelivery ===
-        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&
+      (testActivity?.assignmentSettings?.questionsDelivery ===
+        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG ||
+        testActivity?.assignmentSettings?.questionsDelivery ===
+          testContants.redirectPolicy.QuestionDelivery.SKIPPED) &&
       testActivity.itemsToBeExcluded?.length
     ) {
-      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
+      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG / SKIPPED
       test.testItems = test.testItems.filter(
         (item) => !testActivity.itemsToBeExcluded.includes(item._id)
       )
@@ -376,12 +418,39 @@ function* loadTest({ payload }) {
       let allAnswers = {}
       let allPrevAnswers = {}
       let allEvaluation = {}
-
+      let assignmentById = yield select(
+        (state) => state?.studentAssignment?.byId || {}
+      )
+      if (isEmpty(assignmentById) || !assignmentById) {
+        // load assignments
+        yield call(fetchAssignmentsSaga)
+      }
       const {
         testActivity: activity,
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      assignmentById = yield select(
+        (state) => state?.studentAssignment?.byId || {}
+      )
+      const assignmentObj = assignmentById[activity.assignmentId]
+      if (assignmentObj?.restrictNavigationOut && isiOS()) {
+        Fscreen.safeExitfullScreen()
+        yield put(push('/home/assignments'))
+        yield put(toggleIosRestrictNavigationModalAction(true))
+        return
+      }
+      if (activity.isPaused) {
+        Fscreen.safeExitfullScreen()
+        yield put(push('/home/assignments'))
+        setTimeout(() => {
+          notification({
+            type: 'warning',
+            msg: 'Your assignment is paused contact your instructor',
+          })
+        }, 2000)
+        return
+      }
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(
         questionActivities,
@@ -415,7 +484,7 @@ function* loadTest({ payload }) {
       previousQuestionActivities.forEach((item) => {
         allPrevAnswers = {
           ...allPrevAnswers,
-          [item.qid]: item.userResponse,
+          [`${item.testItemId}_${item.qid}`]: item.userResponse,
         }
         allEvaluation = {
           ...allEvaluation,
@@ -450,7 +519,7 @@ function* loadTest({ payload }) {
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
-          [item.qid]: item.userResponse,
+          [`${item.testItemId}_${item.qid}`]: item.userResponse,
         }
         if (item.scratchPad) {
           scratchPadData[item.testItemId] = {
@@ -572,8 +641,30 @@ function* loadTest({ payload }) {
         settings,
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
+        languagePreference: testActivity.testActivity?.languagePreference,
       },
     })
+    if (preview) {
+      yield put({
+        type: UPDATE_PLAYER_PREVIEW_STATE,
+        payload: {
+          instruction: test.instruction,
+          hasInstruction: test.hasInstruction,
+          blockNavigationToAnsweredQuestions:
+            test.blockNavigationToAnsweredQuestions,
+          multiLanguageEnabled: test.multiLanguageEnabled,
+        },
+      })
+      if (
+        !(
+          test.multiLanguageEnabled ||
+          test.hasInstruction ||
+          test.timedAssignment
+        )
+      ) {
+        yield put(setShowTestInfoSuccesAction(true))
+      }
+    }
     yield put(setPasswordValidateStatusAction(true))
 
     yield put({
@@ -621,6 +712,7 @@ function* loadTest({ payload }) {
 
     if (preview) {
       notification({ messageKey: 'youCanNoLongerUse' })
+      window.location.href = '/'
       return Modal.destroyAll()
     }
 
@@ -639,12 +731,14 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
+          Fscreen.exitFullscreen()
           return yield put(push('/home/assignments'))
         }
       }
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
+      Fscreen.exitFullscreen()
       return yield put(push('/home/assignments'))
     }
   }
@@ -702,7 +796,6 @@ function* submitTest({ payload }) {
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
-    window.document.exitFullscreen().catch(() => {})
     const isCliUser = yield select((state) => state.user?.isCliUser)
     if (isCliUser) {
       window.parent.postMessage(
@@ -829,6 +922,56 @@ function* submitTest({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: false,
     })
+    Fscreen.safeExitfullScreen()
+  }
+}
+
+function* switchLanguage({ payload }) {
+  try {
+    const testActivityId = yield select(
+      (state) => state.test && state.test.testActivityId
+    )
+    const { testActivity } = yield call(testActivityApi.switchLanguage, {
+      testActivityId,
+      ...payload,
+    })
+    const {
+      groupId,
+      testId,
+      _id,
+      itemsToDeliverInGroup,
+      languagePreference,
+    } = testActivity
+    yield put(
+      languageChangeSuccessAction({ languagePreference, testActivityId: _id })
+    )
+    const testType = yield select((state) => state.test && state.test.testType)
+    const urlTestType =
+      testType === testContants.type.COMMON
+        ? testContants.type.ASSESSMENT
+        : testType
+    const firstItemId = itemsToDeliverInGroup[0].items[0]
+    yield put(startAssessmentAction())
+    yield put({
+      type: LOAD_SCRATCH_PAD,
+      payload: {},
+    })
+    yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
+    yield put(push('/'))
+    yield put(
+      push({
+        pathname: `/student/${urlTestType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
+        state: {
+          switchLanguage: true,
+        },
+      })
+    )
+  } catch (err) {
+    console.log(err)
+    captureSentryException(err)
+    notification({
+      msg: err.response?.data?.message || 'Something went wrong!',
+    })
   }
 }
 
@@ -837,5 +980,6 @@ export default function* watcherSaga() {
     yield takeEvery(LOAD_TEST, loadTest),
     yield Effects.throttleAction(10000, FINISH_TEST, submitTest),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
+    yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
   ])
 }

@@ -11,6 +11,7 @@ import {
   isPublisherUserSelector,
   getUserRole,
   getUserId,
+  isFreeAdminSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
@@ -29,6 +30,9 @@ import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
 import { isPremiumContent } from '../../../TestPage/utils'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 
 export const sharedTypeMap = {
   0: 'PUBLIC',
@@ -46,7 +50,7 @@ class Item extends Component {
     testItemId: PropTypes.string,
     orgCollections: PropTypes.array.isRequired,
     currentTestId: PropTypes.string,
-    isPreviewModalVisible: PropTypes.bool,
+    isPreviewModalVisible: PropTypes.bool.isRequired,
     isPlaylist: PropTypes.bool,
     approveOrRejectSingleTestRequest: PropTypes.func.isRequired,
     orgData: PropTypes.object.isRequired,
@@ -59,7 +63,6 @@ class Item extends Component {
     authorName: '',
     currentTestId: '',
     owner: false,
-    isPreviewModalVisible: false,
     testItemId: '',
     isPlaylist: false,
     standards: [],
@@ -105,16 +108,23 @@ class Item extends Component {
   }
 
   assignTest = (e) => {
-    e && e.stopPropagation()
-    const { history, item } = this.props
-    history.push({
-      pathname: `/author/assignments/${item._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    e?.stopPropagation()
+    const {
+      history,
+      item,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+    } = this.props
+    if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
+    else
+      history.push({
+        pathname: `/author/assignments/${item._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
   }
 
   closeModal = () => {
@@ -126,12 +136,16 @@ class Item extends Component {
   }
 
   hidePreviewModal = () => {
-    this.setState({ isPreviewModalVisible: false })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
+    this.setState({ currentTestId: '' })
   }
 
   showPreviewModal = (testId, e) => {
     e && e.stopPropagation()
-    this.setState({ isPreviewModalVisible: true, currentTestId: testId })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(true)
+    this.setState({ currentTestId: testId })
   }
 
   get name() {
@@ -203,16 +217,12 @@ class Item extends Component {
       currentUserId,
       isTestLiked,
       duplicatePlayList,
+      isPreviewModalVisible,
     } = this.props
     const { analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
     const usage = analytics?.[0]?.usage || '0'
-    const {
-      isOpenModal,
-      currentTestId,
-      isPreviewModalVisible,
-      isDeleteModalOpen,
-    } = this.state
+    const { isOpenModal, currentTestId, isDeleteModalOpen } = this.state
     const standardsIdentifiers = isPlaylist
       ? flattenPlaylistStandards(_source?.modules)
       : standards.map((_item) => _item.identifier)
@@ -326,8 +336,8 @@ class Item extends Component {
           collectionName={collectionName}
         />
         <TestPreviewModal
-          isModalVisible={isPreviewModalVisible}
-          testId={currentTestId}
+          isModalVisible={isPreviewModalVisible && currentTestId === item._id}
+          testId={isPreviewModalVisible ? currentTestId : ''}
           showStudentPerformance
           closeTestPreviewModal={this.hidePreviewModal}
         />
@@ -353,12 +363,16 @@ const enhance = compose(
       isPublisherUser: isPublisherUserSelector(state),
       userRole: getUserRole(state),
       currentUserId: getUserId(state),
+      isFreeAdmin: isFreeAdminSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
       duplicatePlayList: duplicatePlaylistRequestAction,
       duplicateTest: duplicateTestRequestAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

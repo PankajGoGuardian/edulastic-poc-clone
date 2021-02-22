@@ -19,6 +19,8 @@ import {
   toggleReleaseScoreSettingsAction,
   toggleAssignmentViewAction,
   setAssignmentFiltersAction,
+  editTagsRequestAction,
+  setTagsUpdatingStateAction,
 } from '../../../src/actions/assignments'
 import { releaseScoreAction } from '../../../src/actions/classBoard'
 import TestPreviewModal from './TestPreviewModal'
@@ -31,6 +33,7 @@ import {
   getDistrictIdSelector,
   getAssignmentViewSelector,
   getAssignmentFilterSelector,
+  getTagsUpdatingStateSelector,
 } from '../../../src/selectors/assignments'
 
 import FilterBar from '../FilterBar/FilterBar'
@@ -52,7 +55,7 @@ import {
   LeftWrapper,
   FixedWrapper,
 } from './styled'
-import { getUserRole } from '../../../src/selectors/user'
+import { getUserRole, isFreeAdminSelector } from '../../../src/selectors/user'
 import EditTestModal from '../../../src/components/common/EditTestModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import TestLinkModal from '../TestLinkModal/TestLinkModal'
@@ -62,6 +65,10 @@ import {
   getToggleDeleteAssignmentModalState,
 } from '../../../sharedDucks/assignments'
 import { DeleteAssignmentModal } from '../DeleteAssignmentModal/deleteAssignmentModal'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import EditTagsModal from '../EditTagsModal'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 
 const initialFilterState = {
   grades: [],
@@ -76,11 +83,11 @@ const initialFilterState = {
 class Assignments extends Component {
   state = {
     filterState: {},
-    isPreviewModalVisible: false,
     openEditPopup: false,
     currentTestId: '',
     openPrintModal: false,
     showTestLinkModal: false,
+    showTagsEditModal: false,
   }
 
   componentDidMount() {
@@ -90,7 +97,14 @@ class Assignments extends Component {
       districtId,
       userRole,
       orgData,
+      isFreeAdmin,
+      history,
+      toggleFreeAdminSubscriptionModal,
     } = this.props
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
 
     const { defaultTermId, terms } = orgData
     const storedFilters =
@@ -125,6 +139,7 @@ class Assignments extends Component {
         districtId,
         filters: { ...filters, pageNo: 1 },
         filtering: true,
+        folderId: filters.folderId,
       })
     }
     this.setFilterState(filters)
@@ -136,12 +151,14 @@ class Assignments extends Component {
   }
 
   hidePreviewModal = () => {
-    this.setState({ isPreviewModalVisible: false })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
   }
 
   showPreviewModal = (testId, currentAssignmentId, currentAssignmentClass) => {
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(true)
     this.setState({
-      isPreviewModalVisible: true,
       currentTestId: testId,
       currentAssignmentId,
       currentAssignmentClass,
@@ -269,6 +286,14 @@ class Assignments extends Component {
     })
   }
 
+  toggleTagsEditModal = (testId) => {
+    const { showTagsEditModal } = this.state
+    this.setState({
+      showTagsEditModal: !showTagsEditModal,
+      currentTestId: testId,
+    })
+  }
+
   render() {
     const {
       assignmentsByTestId,
@@ -281,16 +306,24 @@ class Assignments extends Component {
       isAdvancedView,
       toggleDeleteAssignmentModalState,
       t,
+      userRole,
+      editTagsRequest,
+      tagsUpdatingState,
+      loadAssignments,
+      loadAssignmentsSummary,
+      setTagsUpdatingState,
+      isPreviewModalVisible,
     } = this.props
+
     const {
       filterState,
-      isPreviewModalVisible,
       currentTestId,
       openEditPopup,
       currentAssignmentId,
       currentAssignmentClass,
       openPrintModal,
       showTestLinkModal,
+      showTagsEditModal,
     } = this.state
     const { showFilter = false } = filterState
     const tabletWidth = 768
@@ -337,6 +370,23 @@ class Assignments extends Component {
             onCancel={this.togglePrintModal}
             currentTestId={currentTestId}
             assignmentId={currentAssignmentId}
+          />
+        )}
+        {showTagsEditModal && (
+          <EditTagsModal
+            visible={showTagsEditModal}
+            toggleModal={this.toggleTagsEditModal}
+            testId={currentTestId}
+            assignments={assignmentsByTestId[currentTestId]}
+            assignmentsSummary={assignmentsSummary}
+            userRole={userRole}
+            editTagsRequest={editTagsRequest}
+            tagsUpdatingState={tagsUpdatingState}
+            loadAssignments={loadAssignments}
+            loadAssignmentsSummary={loadAssignmentsSummary}
+            districtId={districtId}
+            filters={filterState}
+            setTagsUpdatingState={setTagsUpdatingState}
           />
         )}
         <ListHeader
@@ -392,6 +442,7 @@ class Assignments extends Component {
                           showFilter={showFilter}
                           togglePrintModal={this.togglePrintModal}
                           showEmbedLinkModal={this.showEmbedLinkModal}
+                          toggleTagsEditModal={this.toggleTagsEditModal}
                         />
                       ) : (
                         <TableList
@@ -407,6 +458,7 @@ class Assignments extends Component {
                           showFilter={showFilter}
                           status={filterState.status}
                           togglePrintModal={this.togglePrintModal}
+                          toggleTagsEditModal={this.toggleTagsEditModal}
                         />
                       )}
                     </StyledCard>
@@ -473,6 +525,9 @@ const enhance = compose(
       toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(
         state
       ),
+      isFreeAdmin: isFreeAdminSelector(state),
+      tagsUpdatingState: getTagsUpdatingStateSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       loadAssignments: receiveAssignmentsAction,
@@ -484,6 +539,10 @@ const enhance = compose(
       setAssignmentFilters: setAssignmentFiltersAction,
       toggleAssignmentView: toggleAssignmentViewAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      editTagsRequest: editTagsRequestAction,
+      setTagsUpdatingState: setTagsUpdatingStateAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

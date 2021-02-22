@@ -128,7 +128,7 @@ export const DropDownContainer = styled.div`
 export const StyledCard = styled(Card)`
   box-shadow: none;
   .ant-card-body {
-    padding: 0px;
+    padding: ${(props) => props.padding || '0px'};
   }
 `
 
@@ -277,8 +277,9 @@ export const StyledTable = styled(Table)`
 export const StyledH3 = styled.h3`
   font-weight: 700;
   color: ${fadedBlack};
-  font-size: 14px;
+  font-size: ${({ fontSize }) => fontSize || '14px'};
   margin: 0px 0px 10px;
+  margin-left: ${({ marginLeft }) => marginLeft || '0px'};
   text-align: ${({ textAlign }) => textAlign || 'left'};
 `
 
@@ -391,6 +392,7 @@ export const StyledSignedBarContainer = styled.div`
 
 export const StyledDropDownContainer = styled(Col)`
   padding: ${({ padding }) => padding || 'unset'};
+  flex: 1;
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;
@@ -569,17 +571,35 @@ export const FilterButtonClear = styled(Button)`
   margin-left: ${({ showFilter }) => (showFilter ? -80 : 0)}px;
   padding: 5px 2px 2px;
   box-shadow: none;
-
+  transition: none;
   &:focus,
   &:hover {
     outline: unset;
   }
-
   svg {
     fill: ${({ showFilter }) =>
       showFilter ? '#1AB395' : '#434b5d'} !important;
     width: 20px;
     height: 20px;
+  }
+  @media print {
+    display: none;
+  }
+`
+
+export const ResetButtonClear = styled(Button)`
+  min-width: 35px;
+  min-height: 25px;
+  border: none;
+  margin-top: -4px;
+  padding: 5px 2px 2px;
+  box-shadow: none;
+  transition: none;
+  color: #1ab395;
+  &:focus,
+  &:hover {
+    outline: unset;
+    color: #1ab395;
   }
   @media print {
     display: none;

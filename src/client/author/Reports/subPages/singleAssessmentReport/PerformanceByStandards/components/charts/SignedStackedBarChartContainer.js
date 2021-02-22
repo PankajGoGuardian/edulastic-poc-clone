@@ -149,6 +149,7 @@ const SignedStackedBarChartContainer = ({
       barsLabelFormatter={barsLabelFormatter}
       filter={getSelectedItems(selectedData)}
       xTickTooltipPosition={490}
+      margin={{ top: 0, right: 60, left: 20, bottom: 0 }}
     />
   )
 }

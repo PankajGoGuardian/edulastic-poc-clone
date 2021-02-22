@@ -73,39 +73,58 @@ class AddQuestion extends React.Component {
         <ContentWrapper>
           <QuestionTypes flexDirection="column">
             <Tooltip placement="top" title="Multiple Choice">
-              <AddQuestionIcon onClick={onAddQuestion(MULTIPLE_CHOICE)}>
+              <AddQuestionIcon
+                onClick={onAddQuestion(MULTIPLE_CHOICE)}
+                data-cy={MULTIPLE_CHOICE}
+              >
                 <IconNewList />
               </AddQuestionIcon>
             </Tooltip>
             <Tooltip placement="top" title="Text Entry">
-              <AddQuestionIcon onClick={onAddQuestion(SHORT_TEXT)}>
+              <AddQuestionIcon
+                onClick={onAddQuestion(SHORT_TEXT)}
+                data-cy={SHORT_TEXT}
+              >
                 <IconTextEntry />
               </AddQuestionIcon>
             </Tooltip>
             <Tooltip placement="top" title="Drop down">
-              <AddQuestionIcon onClick={onAddQuestion(CLOZE_DROP_DOWN)}>
+              <AddQuestionIcon
+                onClick={onAddQuestion(CLOZE_DROP_DOWN)}
+                data-cy={CLOZE_DROP_DOWN}
+              >
                 <IconDropDown />
               </AddQuestionIcon>
             </Tooltip>
             <Tooltip placement="top" title="Math">
-              <AddQuestionIcon onClick={onAddQuestion(MATH)}>
+              <AddQuestionIcon onClick={onAddQuestion(MATH)} data-cy={MATH}>
                 <IconMath />
               </AddQuestionIcon>
             </Tooltip>
             <Tooltip placement="top" title="True/False">
-              <AddQuestionIcon onClick={onAddQuestion(TRUE_OR_FALSE)}>
+              <AddQuestionIcon
+                onClick={onAddQuestion(TRUE_OR_FALSE)}
+                data-cy={TRUE_OR_FALSE}
+              >
                 <IconTrueFalse />
               </AddQuestionIcon>
             </Tooltip>
             <Tooltip placement="top" title="Essay">
-              <AddQuestionIcon onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}>
+              <AddQuestionIcon
+                onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}
+                data-cy={ESSAY_PLAIN_TEXT}
+              >
                 <IconPencilHollow />
               </AddQuestionIcon>
             </Tooltip>
           </QuestionTypes>
           <QuestionTypes>
-            <AddButton onClick={this.toggleBulkModal}>Add Bulk</AddButton>
-            <AddButton onClick={onAddSection}>Add Section</AddButton>
+            <AddButton onClick={this.toggleBulkModal} data-cy="addBulk">
+              Add Bulk
+            </AddButton>
+            <AddButton onClick={onAddSection} data-cy="addSection">
+              Add Section
+            </AddButton>
           </QuestionTypes>
           <AddBulkModal
             visible={bulkModalVisible}

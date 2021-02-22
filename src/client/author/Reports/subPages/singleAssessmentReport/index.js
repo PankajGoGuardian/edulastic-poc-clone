@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 
 import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconCloseFilter } from '@edulastic/icons'
 
 import ResponseFrequency from './ResponseFrequency'
 import AssessmentSummary from './AssessmentSummary'
@@ -176,10 +176,9 @@ const SingleAssessmentReportContainer = (props) => {
         _settings.filters[item] === 'All' ? '' : _settings.filters[item]
       obj[item] = val
     })
-
     setSARSettings({
       selectedTest: _settings.selectedTest,
-      requestFilters: obj,
+      requestFilters: { ...obj, tagIds: _settings.filters.tags.join() },
       cliUser: isCliUser,
     })
   }
@@ -206,6 +205,14 @@ const SingleAssessmentReportContainer = (props) => {
     'performance-by-standards',
     'performance-by-students',
   ]
+
+  useEffect(() => {
+    if (!locList.includes(loc)) {
+      setDdFilter({ ...INITIAL_DD_FILTERS })
+      setSelectedExtras({ ...INITIAL_DD_FILTERS })
+    }
+  }, [loc])
+
   const extraFilters = locList.includes(loc)
     ? demographics &&
       demographics.map((item) => (
@@ -215,7 +222,7 @@ const SingleAssessmentReportContainer = (props) => {
             selectCB={updateCB}
             data={item.data}
             comData={item.key}
-            by={item.data[0]}
+            by={ddfilter[item.key] || item.data[0]}
           />
         </SearchField>
       ))
@@ -241,6 +248,7 @@ const SingleAssessmentReportContainer = (props) => {
         )}
         <FlexContainer
           alignItems="flex-start"
+          justifyContent="space-between"
           display={firstLoad ? 'none' : 'flex'}
         >
           <SingleAssessmentReportFilters
@@ -259,7 +267,7 @@ const SingleAssessmentReportContainer = (props) => {
               '/author/reports/performance-by-standards',
             ].find((x) => window.location.pathname.startsWith(x))}
             style={
-              reportId || !showFilter
+              isCliUser || reportId || !showFilter
                 ? { display: 'none' }
                 : { display: 'block' }
             }
@@ -272,7 +280,7 @@ const SingleAssessmentReportContainer = (props) => {
           />
           {!isCliUser && !reportId ? (
             <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-              <IconFilter />
+              {showFilter ? <IconCloseFilter /> : <IconFilter />}
             </FilterButtonClear>
           ) : null}
           <ReportContaner showFilter={showFilter}>

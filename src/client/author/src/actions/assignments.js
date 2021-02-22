@@ -13,6 +13,8 @@ import {
   SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  EDIT_TAGS_REQUEST,
+  SET_TAGS_UPDATING_STATE,
 } from '../constants/actions'
 
 export const googleSyncAssignmentAction = (payload) => ({
@@ -81,5 +83,15 @@ export const setAssignmentFiltersAction = (payload) => ({
 
 export const toggleStudentReportCardSettingsAction = (payload) => ({
   type: TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+  payload,
+})
+
+export const editTagsRequestAction = (payload) => ({
+  type: EDIT_TAGS_REQUEST,
+  payload,
+})
+
+export const setTagsUpdatingStateAction = (payload) => ({
+  type: SET_TAGS_UPDATING_STATE,
   payload,
 })

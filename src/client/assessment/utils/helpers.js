@@ -1,5 +1,6 @@
 import { groupBy, difference, isEmpty } from 'lodash'
 import questionType from '@edulastic/constants/const/questionType'
+import * as Sentry from '@sentry/browser'
 
 import { FRACTION_FORMATS } from '../constants/constantsForQuestions'
 
@@ -461,6 +462,22 @@ export const normalizeTouchEvent = (e) => {
   }
 }
 
+export function isiOS() {
+  return (
+    [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod',
+    ].includes(navigator.platform) ||
+    // iPad on iOS 13 detection
+    (navigator.userAgent.includes('Mac') && 'ontouchend' in document) ||
+    (!window.MSStream && /iPad|iPhone|iPod/.test(navigator.userAgent))
+  )
+}
+
 /**
  * shows the “Remember to hide the scratchpad to answer other parts of this question”
  * message in case the item is multipart, whenever we click on show scratchpad
@@ -485,4 +502,120 @@ export function showScratchpadInfoNotification(item) {
     }
   }
   return false
+}
+
+const key = {
+  fullscreenEnabled: 0,
+  fullscreenElement: 1,
+  requestFullscreen: 2,
+  exitFullscreen: 3,
+  fullscreenchange: 4,
+  fullscreenerror: 5,
+  fullscreen: 6,
+}
+
+const webkit = [
+  'webkitFullscreenEnabled',
+  'webkitFullscreenElement',
+  'webkitRequestFullscreen',
+  'webkitExitFullscreen',
+  'webkitfullscreenchange',
+  'webkitfullscreenerror',
+  '-webkit-full-screen',
+]
+
+const moz = [
+  'mozFullScreenEnabled',
+  'mozFullScreenElement',
+  'mozRequestFullScreen',
+  'mozCancelFullScreen',
+  'mozfullscreenchange',
+  'mozfullscreenerror',
+  '-moz-full-screen',
+]
+
+const ms = [
+  'msFullscreenEnabled',
+  'msFullscreenElement',
+  'msRequestFullscreen',
+  'msExitFullscreen',
+  'MSFullscreenChange',
+  'MSFullscreenError',
+  '-ms-fullscreen',
+]
+
+const vendor =
+  ('fullscreenEnabled' in document && Object.keys(key)) ||
+  (webkit[0] in document && webkit) ||
+  (moz[0] in document && moz) ||
+  (ms[0] in document && ms) ||
+  []
+
+export const Fscreen = {
+  requestFullscreen: (element) => {
+    try {
+      const returnValue = element[vendor[key.requestFullscreen]]()
+      if (returnValue?.then) {
+        returnValue?.catch((_e) => {
+          console.warn('fullscreen error', _e)
+          Sentry.captureException(_e)
+        })
+      }
+    } catch (e) {
+      console.warn('fullscreen error')
+      Sentry.captureException(e)
+    }
+  },
+  requestFullscreenFunction: (element) =>
+    element[vendor[key.requestFullscreen]],
+  get exitFullscreen() {
+    return document[vendor[key.exitFullscreen]].bind(document)
+  },
+  safeExitfullScreen: () => {
+    try {
+      const returnVal = Fscreen.exitFullscreen()
+      if (returnVal?.catch) {
+        returnVal.catch((e) => {
+          console.warn('fullscreen exit error', e)
+        })
+      }
+    } catch (err) {
+      console.warn('fullscreen exit error', err)
+    }
+  },
+  get fullscreenPseudoClass() {
+    return `:${vendor[key.fullscreen]}`
+  },
+  addEventListener: (type, handler, options) =>
+    document.addEventListener(vendor[key[type]], handler, options),
+  removeEventListener: (type, handler, options) =>
+    document.removeEventListener(vendor[key[type]], handler, options),
+  get fullscreenEnabled() {
+    return Boolean(document[vendor[key.fullscreenEnabled]])
+  },
+  // eslint-disable-next-line no-empty-function
+  set fullscreenEnabled(val) {},
+  get fullscreenElement() {
+    return document[vendor[key.fullscreenElement]]
+  },
+  // eslint-disable-next-line no-empty-function
+  set fullscreenElement(val) {},
+  get onfullscreenchange() {
+    return document[`on${vendor[key.fullscreenchange]}`.toLowerCase()]
+  },
+  set onfullscreenchange(handler) {
+    // eslint-disable-next-line no-return-assign
+    return (document[
+      `on${vendor[key.fullscreenchange]}`.toLowerCase()
+    ] = handler)
+  },
+  get onfullscreenerror() {
+    return document[`on${vendor[key.fullscreenerror]}`.toLowerCase()]
+  },
+  set onfullscreenerror(handler) {
+    // eslint-disable-next-line no-return-assign
+    return (document[
+      `on${vendor[key.fullscreenerror]}`.toLowerCase()
+    ] = handler)
+  },
 }

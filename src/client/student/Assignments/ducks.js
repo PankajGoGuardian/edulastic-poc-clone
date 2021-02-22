@@ -33,7 +33,12 @@ import {
   notification,
   handleChromeOsSEB,
 } from '@edulastic/common'
-import { getCurrentSchool, fetchUserAction, getUserRole } from '../Login/ducks'
+import {
+  getCurrentSchool,
+  fetchUserAction,
+  getUserRole,
+  toggleIosRestrictNavigationModalAction,
+} from '../Login/ducks'
 
 import { getCurrentGroup } from '../Reports/ducks'
 // external actions
@@ -54,6 +59,7 @@ import {
   setReportsAction,
   reportSchema,
 } from '../sharedDucks/ReportsModule/ducks'
+import { isiOS } from '../../assessment/utils/helpers'
 import { clearOrderOfOptionsInStore } from '../../assessment/actions/assessmentPlayer'
 import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
@@ -67,7 +73,15 @@ export const FILTERS = {
   IN_PROGRESS: 'inProgress',
 }
 
-export const getCurrentUserId = createSelectorator(['user.user._id'], (r) => r)
+export const getCurrentUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (r, currentChild) => {
+    if (currentChild) {
+      return currentChild
+    }
+    return r
+  }
+)
 
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments'
@@ -488,6 +502,7 @@ export const getSelectedLanguageSelector = createSelector(
   stateSelector,
   (state) => state.languagePreference
 )
+
 function isSEB() {
   return window.navigator.userAgent.includes('SEB')
 }
@@ -534,7 +549,7 @@ export function getSebUrl({
 
 // sagas
 // fetch and load assignments and reports for the student
-function* fetchAssignments() {
+export function* fetchAssignments() {
   try {
     yield put(setAssignmentsLoadingAction())
     const groupId = yield select(getCurrentGroup)
@@ -646,10 +661,15 @@ function* startAssignment({ payload }) {
     }
 
     if (assignmentId) {
-      const { timedAssignment } = yield call(
+      const { timedAssignment, restrictNavigationOut } = yield call(
         assignmentApi.getById,
         assignmentId
       ) || {}
+      if (isiOS() && restrictNavigationOut) {
+        yield put(push('/home/assignments'))
+        yield put(toggleIosRestrictNavigationModalAction(true))
+        return
+      }
       if (timedAssignment) {
         yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
       }
@@ -694,7 +714,7 @@ function* startAssignment({ payload }) {
       if (languagePreference) {
         playListData.languagePreference = languagePreference
       }
-      const { _id } = yield testActivityApi.create()
+      const { _id } = yield testActivityApi.create(playListData)
       testActivityId = _id
     } else {
       yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }))

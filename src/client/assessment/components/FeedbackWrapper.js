@@ -29,6 +29,7 @@ const FeedbackWrapper = ({
   itemId,
   studentName,
   t,
+  isExpressGrader,
 }) => {
   const { rubrics: rubricDetails } = data
   const isPassageOrVideoType = [
@@ -90,6 +91,7 @@ const FeedbackWrapper = ({
             rubricDetails={rubricDetails}
             isPracticeQuestion={isPracticeQuestion}
             itemId={itemId}
+            isExpressGrader={isExpressGrader}
             {...presentationModeProps}
           />
         )}

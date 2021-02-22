@@ -25,6 +25,7 @@ import {
   getUserFeatures,
   getUserId,
   getUserRole,
+  toggleFreeAdminSubscriptionModalAction,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
 import ConfirmRegradeModal from '../../../src/components/common/ConfirmRegradeModal'
@@ -47,10 +48,7 @@ import {
   TestStatus,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import {
-  getIsCurator,
-  getUserSignupStatusSelector,
-} from '../../../src/selectors/user'
+import { getIsCurator, isFreeAdminSelector } from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
@@ -169,7 +167,8 @@ const TestPageHeader = ({
   hasCollectionAccess,
   authorQuestionsById,
   isUpdatingTestForRegrade,
-  userSignupStatus,
+  isFreeAdmin,
+  toggleFreeAdminSubscriptionModal,
 }) => {
   let navButtons =
     buttons ||
@@ -205,7 +204,7 @@ const TestPageHeader = ({
     if (validateTest(test)) {
       if (test.isDocBased) {
         const assessmentQuestions = Object.values(authorQuestionsById || {})
-        if (!validateQuestionsForDocBased(assessmentQuestions)) {
+        if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
           return
         }
       }
@@ -279,6 +278,7 @@ const TestPageHeader = ({
   }
 
   const handleAssign = () => {
+    if (isFreeAdmin) return toggleFreeAdminSubscriptionModal()
     if (
       isUsed &&
       (updated || test.status !== statusConstants.PUBLISHED) &&
@@ -797,17 +797,18 @@ const enhance = compose(
       features: getUserFeatures(state),
       userId: getUserId(state),
       userRole: getUserRole(state),
-      userSignupStatus: getUserSignupStatusSelector(state),
       creating: getTestsCreatingSelector(state),
       isLoadingData: shouldDisableSelector(state),
       testItems: getTestItemsSelector(state),
       isCurator: getIsCurator(state),
       authorQuestionsById: state.authorQuestions.byId,
       isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

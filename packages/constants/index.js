@@ -40,6 +40,7 @@ const report = require('./const/report.js')
 const bannerActions = require('./const/bannerActions.js')
 const appLanguages = require('./const/languages')
 const subscriptions = require('./const/subscriptions')
+const assignmentSettingSections = require('./const/assignmentSettingSections')
 
 module.exports = {
   question,
@@ -84,4 +85,5 @@ module.exports = {
   bannerActions,
   appLanguages,
   subscriptions,
+  assignmentSettingSections,
 }

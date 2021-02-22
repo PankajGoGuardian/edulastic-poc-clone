@@ -9,7 +9,7 @@ import {
   fadedRed,
   red,
 } from '@edulastic/colors'
-import { sum } from 'lodash'
+import { calculateScore } from './helper'
 
 const PreviewRubricTable = ({
   data,
@@ -21,11 +21,24 @@ const PreviewRubricTable = ({
   const [selectedRatings, setSelectedRatings] = useState({})
   const [scrolledX, setScrolledX] = useState({})
 
+  const handleRatingSelection = (criteriaId, ratingId) => {
+    const selectedData = { ...selectedRatings }
+    selectedData[criteriaId] = ratingId
+    setSelectedRatings(selectedData)
+    handleChange({
+      score: calculateScore(data, selectedData),
+      rubricFeedback: selectedData,
+    })
+  }
+
   useEffect(() => {
     if (rubricFeedback) {
       setSelectedRatings(rubricFeedback)
       if (!isDisabled)
-        handleChange({ score: calculateScore(rubricFeedback), rubricFeedback })
+        handleChange({
+          rubricFeedback,
+          score: calculateScore(data, rubricFeedback),
+        })
     }
   }, [rubricFeedback, isDisabled])
 
@@ -82,27 +95,6 @@ const PreviewRubricTable = ({
         {getRatings(c)}
       </CriteriaWrapper>
     ))
-
-  const handleRatingSelection = (criteriaId, ratingId) => {
-    const selectedData = { ...selectedRatings }
-    selectedData[criteriaId] = ratingId
-    setSelectedRatings(selectedData)
-    handleChange({
-      score: calculateScore(selectedData),
-      rubricFeedback: selectedData,
-    })
-  }
-
-  const calculateScore = (selectedData) => {
-    const seletecdPointsArray = Object.keys(selectedData).map((cId) => {
-      const rId = selectedData[cId]
-      return data.criteria
-        .find(({ id }) => id === cId)
-        .ratings.find(({ id }) => id === rId).points
-    })
-
-    return sum(seletecdPointsArray)
-  }
 
   return (
     <PerfectScrollbar

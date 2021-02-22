@@ -590,4 +590,29 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'restore-assignment',
+    name: 'Restore Assignment',
+    endPoint: 'admin-tool/restore-assignment',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        key: 'assignmentId',
+        name: 'assignmentId',
+        placeholder: 'Assignment Id',
+        type: 'string',
+        displayName: 'Enter Assignment ID',
+        required: true,
+      },
+      {
+        name: 'groupIds',
+        displayName: 'Enter Class ID(s)',
+        placeholder: 'Enter comma separated Class Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+    ],
+  },
 ]

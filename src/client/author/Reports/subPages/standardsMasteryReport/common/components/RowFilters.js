@@ -6,6 +6,7 @@ import { Row, Col } from 'antd'
 import {
   StyledDropDownContainer,
   StyledFilterWrapper,
+  StyledGoButton,
 } from '../../../../common/styled'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import { MultipleSelect } from '../../../../common/components/widgets/MultipleSelect'
@@ -135,6 +136,7 @@ const StandardsFilters = ({
 
   const standardProficiencyFilter = (
     <StyledDropDownContainer
+      data-cy="standardProficiency"
       xs={24}
       sm={12}
       md={12}
@@ -151,14 +153,19 @@ const StandardsFilters = ({
     </StyledDropDownContainer>
   )
 
+  const onGoClick = () => {
+    setFilters({ ...filters, showApply: false })
+  }
+
   return (
     <StyledFilterWrapper
       style={{ display: !showFilter || loading ? 'none' : 'flex' }}
       isRowFilter
     >
       <Col span={24}>
-        <Row type="flex" justify="end">
+        <Row type="flex" justify="end" align="middle">
           <StyledDropDownContainer
+            data-cy="standardSet"
             xs={24}
             sm={12}
             md={12}
@@ -174,6 +181,7 @@ const StandardsFilters = ({
             />
           </StyledDropDownContainer>
           <StyledDropDownContainer
+            data-cy="standardGrade"
             xs={24}
             sm={12}
             md={12}
@@ -214,6 +222,7 @@ const StandardsFilters = ({
           </StyledDropDownContainer>
           {pageTitle === 'Standards Progress' && (
             <StyledDropDownContainer
+              data-cy="standard"
               xs={24}
               sm={12}
               md={12}
@@ -230,6 +239,9 @@ const StandardsFilters = ({
             </StyledDropDownContainer>
           )}
           {pageTitle === 'Standards Progress' && standardProficiencyFilter}
+          {filters.showApply && (
+            <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+          )}
         </Row>
       </Col>
     </StyledFilterWrapper>

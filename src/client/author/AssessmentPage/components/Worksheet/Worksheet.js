@@ -576,8 +576,8 @@ class WorksheetComponent extends React.Component {
       pdfAnnotations = [],
       isEditable,
       currentPage: _currentPageInProps,
-      match = {},
       groupId,
+      itemDetail,
     } = this.props
 
     const {
@@ -591,7 +591,6 @@ class WorksheetComponent extends React.Component {
       currentPage: _currentPageInState,
     } = this.state
 
-    const { qid } = match.params || {}
     const currentPage = onPageChange ? _currentPageInProps : _currentPageInState
     let { answersById } = this.props
     if (studentWorkAnswersById) {
@@ -740,6 +739,7 @@ class WorksheetComponent extends React.Component {
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
               toggleIntercomDisplay={toggleIntercomDisplay}
+              itemId={itemDetail?._id}
             />
           </PDFViewerContainer>
 
@@ -763,8 +763,9 @@ class WorksheetComponent extends React.Component {
             reportMode={reportMode}
             setCurrentAnnotationTool={setCurrentAnnotationTool}
             groupId={groupId}
-            qId={qid}
+            qId={0} // For doc based qid (question index) can always be 0
             clearHighlighted={this.clearHighlighted}
+            itemId={itemDetail?._id}
           />
         </WorksheetWrapper>
       </div>

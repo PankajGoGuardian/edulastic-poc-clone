@@ -128,7 +128,8 @@ const AddStudentsPopup = ({
             }
             style={{ width: '100%', cursor: 'pointer' }}
             value={endDate}
-            showTime
+            showTime={{ use12Hours: true, format: 'hh:mm a' }}
+            format="YYYY-MM-DD hh:mm a"
             showToday={false}
             onChange={(v) => {
               if (!v) {

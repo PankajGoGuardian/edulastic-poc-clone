@@ -401,7 +401,7 @@ class Container extends PureComponent {
       updated,
       editEnable,
     } = this.props
-    const { authors, itemGroups = [] } = test
+    const { authors, itemGroups = [], _id } = test
     if (!test?.title?.trim()?.length) {
       notification({ type: 'warn', messageKey: 'pleaseEnterName' })
       return
@@ -418,9 +418,13 @@ class Container extends PureComponent {
       (authors && authors.some((x) => x._id === userId)) || !params.id
     const isEditable =
       isOwner && (editEnable || testStatus === statusConstants.DRAFT)
+    const totalTestItems = itemGroups.flatMap(
+      (itemGroup) => itemGroup.items || []
+    ).length
     if (
       isEditable &&
-      itemGroups.flatMap((itemGroup) => itemGroup.items || []).length > 0 &&
+      totalTestItems > 0 &&
+      !(totalTestItems === 1 && !_id) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
       updated &&
       !firstFlow
     ) {
@@ -661,7 +665,7 @@ class Container extends PureComponent {
       case 'groupItems':
         return (
           <Content>
-            <GroupItems />
+            <GroupItems handleSaveTest={this.handleSave} />
           </Content>
         )
       default:
@@ -757,7 +761,10 @@ class Container extends PureComponent {
       updateDocBasedTest,
     } = this.props
 
-    if (test.isDocBased && !validateQuestionsForDocBased(assessmentQuestions)) {
+    if (
+      test.isDocBased &&
+      !validateQuestionsForDocBased(assessmentQuestions, true)
+    ) {
       return
     }
     updateDocBasedTest(test._id, test, true)
@@ -888,7 +895,10 @@ class Container extends PureComponent {
       setEditEnable,
     } = this.props
     const { _id } = test
-    if (test.isDocBased && !validateQuestionsForDocBased(assessmentQuestions)) {
+    if (
+      test.isDocBased &&
+      !validateQuestionsForDocBased(assessmentQuestions, false)
+    ) {
       return
     }
     if (this.validateTest(test)) {

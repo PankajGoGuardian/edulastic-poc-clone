@@ -32,6 +32,8 @@ const AssessmentAutoComplete = ({
   testTypes,
   selectedTestIds,
   selectCB,
+  dataCy,
+  tags,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -67,8 +69,11 @@ const AssessmentAutoComplete = ({
     if (testTypes) {
       q.search.testTypes = testTypes.split(',')
     }
+    if (tags?.length) {
+      q.search.tagIds = tags
+    }
     return q
-  }, [searchTerms.text, termId, grade, subject, testTypes])
+  }, [searchTerms.text, termId, grade, subject, testTypes, tags])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -121,6 +126,7 @@ const AssessmentAutoComplete = ({
 
   return (
     <MultiSelectSearch
+      dataCy={dataCy}
       label="Test"
       placeholder="All Tests"
       el={assessmentFilterRef}

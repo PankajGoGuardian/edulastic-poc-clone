@@ -16,7 +16,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { StyledRow, Label, RadioButtonWrapper, StyledCol } from './styled'
 import DetailsTooltip from '../Container/DetailsTooltip'
-import { SettingContainer } from '../Container/styled'
+import SettingContainer from '../Container/SettingsContainer'
 
 const DateSelector = ({
   startDate,
@@ -61,10 +61,10 @@ const DateSelector = ({
   return (
     <>
       {!forClassLevel && showOpenDueAndCloseDate && (
-        <SettingContainer>
+        <SettingContainer id="open-close-due-radio">
           <DetailsTooltip
             width={tootltipWidth}
-            title="Radio to select Open, close and due"
+            title="Open, Close and Due Dates"
             content="When Use Open and Close Date is selected, this restricts the test window to these dates. If you want to allow late submissions, choose the Use Open, Due, and Close Date option.  Selecting this gives the option to set a “due” date within the test window and doesn’t restrict late submissions (e.g. from absent students). Note: the Close date can be adjusted if needed on the Live Class Board, Settings."
             premium
           />
@@ -98,7 +98,7 @@ const DateSelector = ({
       )}
 
       {hasStartDate && (
-        <SettingContainer>
+        <SettingContainer id="open-date-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="Open date"
@@ -106,10 +106,10 @@ const DateSelector = ({
             premium
           />
           <StyledRow mb="15px" gutter={16}>
-            <StyledCol span={10}>
+            <StyledCol span={forClassLevel ? 12 : 10}>
               <FieldLabel>{t('common.assignTest.openDateTitle')}</FieldLabel>
             </StyledCol>
-            <StyledCol span={14}>
+            <StyledCol span={forClassLevel ? 12 : 14}>
               <Tooltip
                 placement="top"
                 title={
@@ -125,8 +125,8 @@ const DateSelector = ({
                   size="large"
                   style={{ width: '100%' }}
                   disabledDate={disabledStartDate}
-                  showTime={{ use12Hours: true }}
-                  format="YYYY-MM-DD hh:mm:ss a"
+                  showTime={{ use12Hours: true, format: 'hh:mm a' }}
+                  format="YYYY-MM-DD hh:mm a"
                   value={startDate}
                   placeholder={t('common.assignTest.openDatePlaceholder')}
                   onChange={changeField('startDate')}
@@ -145,17 +145,17 @@ const DateSelector = ({
       )}
       {!!showDueDatePicker && (
         <StyledRow mb="15px" gutter={16}>
-          <StyledCol span={10}>
+          <StyledCol span={forClassLevel ? 12 : 10}>
             <FieldLabel>{t('common.assignTest.dueDateTitle')}</FieldLabel>
           </StyledCol>
-          <StyledCol span={14}>
+          <StyledCol span={forClassLevel ? 12 : 14}>
             <DatePickerStyled
               allowClear={false}
               data-cy="dueDate"
               size="large"
               style={{ width: '100%' }}
-              showTime={{ use12Hours: true }}
-              format="YYYY-MM-DD hh:mm:ss a"
+              showTime={{ use12Hours: true, format: 'hh:mm a' }}
+              format="YYYY-MM-DD hh:mm a"
               value={dueDate}
               placeholder={t('common.assignTest.dueDatePlaceholder')}
               onChange={changeField('dueDate')}
@@ -168,7 +168,7 @@ const DateSelector = ({
         </StyledRow>
       )}
 
-      <SettingContainer>
+      <SettingContainer id="close-date-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Close date"
@@ -176,18 +176,18 @@ const DateSelector = ({
           premium
         />
         <StyledRow mb="15px" gutter={16}>
-          <StyledCol span={10}>
+          <StyledCol span={forClassLevel ? 12 : 10}>
             <FieldLabel>{t('common.assignTest.closeDateTitle')}</FieldLabel>
           </StyledCol>
-          <StyledCol span={14}>
+          <StyledCol span={forClassLevel ? 12 : 14}>
             <DatePickerStyled
               allowClear={false}
               data-cy="closeDate"
               style={{ width: '100%' }}
               size="large"
               disabledDate={disabledEndDate}
-              showTime={{ use12Hours: true }}
-              format="YYYY-MM-DD hh:mm:ss a"
+              showTime={{ use12Hours: true, format: 'hh:mm a' }}
+              format="YYYY-MM-DD hh:mm a"
               value={endDate}
               placeholder={t('common.assignTest.closeDatePlaceholder')}
               showToday={false}

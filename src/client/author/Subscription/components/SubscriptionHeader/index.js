@@ -37,11 +37,17 @@ const SubscriptionHeader = ({
   setShowMultiplePurchaseModal,
   settingProductData,
   showMultipleSubscriptions,
+  isFreeAdmin,
+  toggleShowFeatureNotAvailableModal,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
   const handlePurchaseFlow = () => {
     settingProductData()
+    if (isFreeAdmin) {
+      toggleShowFeatureNotAvailableModal(true)
+      return
+    }
     setShowSubscriptionAddonModal(true)
   }
   const handleEnterpriseClick = () => {
@@ -156,7 +162,7 @@ const SubscriptionHeader = ({
           <p>
             {isPremium
               ? `This plan expires on ${licenseExpiryDate}`
-              : `Upgrade to teacher premium for additional features, including:`}
+              : `Upgrade to premium for additional features, including:`}
           </p>
           <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
         </BannerContent>

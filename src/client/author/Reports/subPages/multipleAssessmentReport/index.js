@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 
 import { Spin } from 'antd'
 import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconCloseFilter } from '@edulastic/icons'
 
 import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForMAR } from './common/utils/transformers'
@@ -125,7 +125,7 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters) {
+    if (settings.requestFilters.termId) {
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -166,7 +166,8 @@ const MultipleAssessmentReportContainer = (props) => {
       setMARSettings({
         requestFilters: {
           ...obj,
-          testIds: selectedTests.join(','),
+          testIds: selectedTests.join(),
+          tagIds: _settings.filters.tags.join(),
         },
       })
     }
@@ -186,6 +187,14 @@ const MultipleAssessmentReportContainer = (props) => {
     'peer-progress-analysis',
     'student-progress',
   ]
+
+  useEffect(() => {
+    if (!pageTitleList.includes(pageTitle)) {
+      setDdFilter({})
+      setSelectedExtras({})
+    }
+  }, [pageTitle])
+
   const extraFilters =
     pageTitleList.includes(pageTitle) && demographics
       ? demographics.map((item) => (
@@ -195,7 +204,7 @@ const MultipleAssessmentReportContainer = (props) => {
               selectCB={updateCB}
               data={item.data}
               comData={item.key}
-              by={item.data[0]}
+              by={ddfilter[item.key] || item.data[0]}
             />
           </SearchField>
         ))
@@ -217,6 +226,7 @@ const MultipleAssessmentReportContainer = (props) => {
       )}
       <FlexContainer
         alignItems="flex-start"
+        justifyContent="space-between"
         display={firstLoad ? 'none' : 'flex'}
       >
         <MultipleAssessmentReportFilters
@@ -241,7 +251,7 @@ const MultipleAssessmentReportContainer = (props) => {
         />
         {!reportId ? (
           <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            <IconFilter />
+            {showFilter ? <IconCloseFilter /> : <IconFilter />}
           </FilterButtonClear>
         ) : null}
         <ReportContaner showFilter={showFilter}>

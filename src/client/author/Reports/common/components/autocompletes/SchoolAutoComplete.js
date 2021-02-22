@@ -15,6 +15,7 @@ import {
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const SchoolAutoComplete = ({
+  dataCy,
   userOrgData,
   schoolList,
   loading,
@@ -65,6 +66,12 @@ const SchoolAutoComplete = ({
 
   // effects
   useEffect(() => {
+    if (selectedSchoolIds.length) {
+      // TODO: add backend support for selected ids in query
+      loadSchoolListDebounced(query)
+    }
+  }, [])
+  useEffect(() => {
     if (isEmpty(searchResult)) {
       setSearchResult(schoolList)
     }
@@ -87,8 +94,9 @@ const SchoolAutoComplete = ({
 
   return (
     <MultiSelectSearch
+      dataCy={dataCy}
       label="School"
-      placeholder="All School"
+      placeholder="All Schools"
       el={schoolFilterRef}
       onChange={(e) => selectCB(e)}
       onSearch={onSearch}

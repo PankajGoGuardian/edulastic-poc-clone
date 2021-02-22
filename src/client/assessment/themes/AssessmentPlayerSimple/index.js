@@ -14,7 +14,11 @@ import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 // components
 
-import { Container, CalculatorContainer } from '../common'
+import {
+  Container,
+  CalculatorContainer,
+  getDefaultCalculatorProvider,
+} from '../common'
 import PlayerMainContentArea from './PlayerMainContentArea'
 
 import SubmitConfirmation from '../common/SubmitConfirmation'
@@ -116,7 +120,14 @@ class AssessmentPlayerSimple extends React.Component {
   }
 
   openExitPopup = () => {
-    const { updateTestPlayer } = this.props
+    const {
+      updateTestPlayer,
+      closeTestPreviewModal,
+      previewPlayer,
+    } = this.props
+    if (previewPlayer && closeTestPreviewModal) {
+      return closeTestPreviewModal()
+    }
     updateTestPlayer({ enableMagnifier: false })
     this.setState({ showExitPopup: true })
   }
@@ -254,7 +265,10 @@ class AssessmentPlayerSimple extends React.Component {
           >
             {toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
               <CalculatorContainer
-                calculateMode={`${settings.calcType}_${settings.calcProvider}`}
+                calculateMode={`${settings.calcType}_${
+                  settings.calcProvider ||
+                  getDefaultCalculatorProvider(settings.calcType)
+                }`}
                 changeTool={this.toggleToolsOpenStatus}
               />
             ) : null}

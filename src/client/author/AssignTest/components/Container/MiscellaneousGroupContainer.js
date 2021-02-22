@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Radio } from 'antd'
+import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
 import {
@@ -16,7 +16,7 @@ import StandardProficiencyTable from '../../../TestPage/components/Setting/compo
 import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
 import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const { accessibilities } = test
 
@@ -31,6 +31,7 @@ const MiscellaneousGroupContainer = ({
   disableAnswerOnPaper,
   featuresAvailable,
   tootltipWidth,
+  premium,
 }) => {
   const {
     answerOnPaper = testSettings.answerOnPaper,
@@ -50,12 +51,14 @@ const MiscellaneousGroupContainer = ({
       value: showMagnifier,
       description:
         'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
+      id: 'magnifier-setting',
     },
     {
       key: 'enableScratchpad',
       value: enableScratchpad,
       description:
         'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
+      id: 'scratchpad-setting',
     },
   ]
 
@@ -63,15 +66,13 @@ const MiscellaneousGroupContainer = ({
     assessmentSuperPowersAnswerOnPaper,
     performanceBands,
     selectPlayerSkinType,
-    premium,
   } = featuresAvailable
 
   const showMultiLangSelection = !!testSettings.multiLanguageEnabled
-
   return (
     <>
       {/* Answer on Paper */}
-      <SettingContainer>
+      <SettingContainer id="answer-on-paper-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="ANSWER ON PAPER"
@@ -109,25 +110,23 @@ const MiscellaneousGroupContainer = ({
             content="Select ON , If you want to enable multiple languages for the assignment."
             premium={premium}
           />
-          <StyledRow gutter={16} mb="15px" height="40">
-            <Col span={12}>
+          <StyledRow gutter={16} mb="15p">
+            <Col span={10}>
               <Label>
                 <span>Multi-Language</span>
               </Label>
             </Col>
-            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
-              <Row style={{ display: 'flex', alignItems: 'center' }}>
-                <AlignSwitchRight
-                  data-cy="multi-language"
-                  size="small"
-                  defaultChecked={false}
-                  disabled={freezeSettings || !premium}
-                  checked={multiLanguageEnabled}
-                  onChange={(value) =>
-                    overRideSettings('multiLanguageEnabled', value)
-                  }
-                />
-              </Row>
+            <Col span={14}>
+              <AlignSwitchRight
+                data-cy="multi-language"
+                size="small"
+                defaultChecked={false}
+                disabled={freezeSettings || !premium}
+                checked={multiLanguageEnabled}
+                onChange={(value) =>
+                  overRideSettings('multiLanguageEnabled', value)
+                }
+              />
             </Col>
           </StyledRow>
         </SettingContainer>
@@ -135,7 +134,7 @@ const MiscellaneousGroupContainer = ({
       {/* Multi language */}
 
       {/* Performance Bands */}
-      <SettingContainer>
+      <SettingContainer id="performance-bands-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Performance Bands"
@@ -156,17 +155,18 @@ const MiscellaneousGroupContainer = ({
       {/* Performance Bands */}
 
       {/* Standards Based Grading Scale */}
-      <SettingContainer>
+      <SettingContainer id="standards-mastery-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Standards Based Grading Scale"
           content="Standards based scales are set by district or school admins. Teachers can modify performance threshold scores for class assignments to track mastery by standards assessed."
           premium={premium}
           placement="rightBottom"
+          fromAssignments
         />
         <DivBlock>
           <StandardProficiencyTable
-            disabled={freezeSettings}
+            disabled={freezeSettings || !premium}
             standardGradingScale={standardGradingScale}
             setSettingsData={(val) =>
               overRideSettings('standardGradingScale', val)
@@ -188,13 +188,14 @@ const MiscellaneousGroupContainer = ({
                   disabled={freezeSettings}
                   style={{ marginTop: '10px', marginBottom: 0 }}
                 >
-                  {accessibilityData.map(({ key, value, description }) => (
-                    <SettingContainer>
+                  {accessibilityData.map(({ key, value, description, id }) => (
+                    <SettingContainer id={id}>
                       <DetailsTooltip
                         width={tootltipWidth}
                         title={accessibilities[key]}
                         content={description}
                         premium={featuresAvailable[key]}
+                        placement="rightTop"
                       />
                       <StyledRow
                         key={accessibilities[key]}
@@ -213,8 +214,12 @@ const MiscellaneousGroupContainer = ({
                             }
                             defaultValue={isUndefined(value) ? true : value}
                           >
-                            <Radio value>ENABLE</Radio>
-                            <Radio value={false}>DISABLE</Radio>
+                            <Radio value data-cy={`${key}-enable`}>
+                              ENABLE
+                            </Radio>
+                            <Radio value={false} data-cy={`${key}-disable`}>
+                              DISABLE
+                            </Radio>
                           </StyledRadioGroup>
                         </Col>
                       </StyledRow>
@@ -228,7 +233,7 @@ const MiscellaneousGroupContainer = ({
           {(assignmentSettings?.testType || testSettings.testType) !==
             'testlet' &&
             !testSettings.isDocBased && (
-              <SettingContainer>
+              <SettingContainer id="player-skin-setting">
                 <DetailsTooltip
                   width={tootltipWidth}
                   title="Student Player Skin"
@@ -245,7 +250,6 @@ const MiscellaneousGroupContainer = ({
                   }
                   selectBackgroundWhite
                   disabled={freezeSettings || !selectPlayerSkinType}
-                  isFeatureAvailable={selectPlayerSkinType}
                   fullwidth
                 />
               </SettingContainer>

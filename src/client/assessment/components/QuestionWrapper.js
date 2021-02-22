@@ -65,7 +65,10 @@ import Hints from './Hints'
 import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
 import ShowUserWork from './Common/ShowUserWork'
-import { playerSkinTypeSelector } from '../selectors/test'
+import {
+  getIsPreviewModalVisibleSelector,
+  playerSkinTypeSelector,
+} from '../selectors/test'
 import {
   isItemVisibiltySelector,
   ttsUserIdSelector,
@@ -74,7 +77,10 @@ import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemIn
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
 import { getFontSize } from '../utils/helpers'
 import { changeDataToPreferredLanguage } from '../utils/question'
-import { languagePreferenceSelector } from '../../common/components/LanguageSelector/duck'
+import {
+  languagePreferenceSelector,
+  getCurrentLanguage,
+} from '../../common/components/LanguageSelector/duck'
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
@@ -375,9 +381,18 @@ class QuestionWrapper extends Component {
    * @returns {boolean} whether current student is a tts user
    */
   get ttsVisibilityAuthorSide() {
-    const { studentId, ttsUserIds = [], userRole, data } = this.props
+    const {
+      studentId,
+      ttsUserIds = [],
+      userRole,
+      data,
+      isTestPreviewModalVisible,
+    } = this.props
     const key = data?.activity?.userId || studentId
-    return userRole === 'teacher' && ttsUserIds.includes(key)
+    return (
+      userRole !== roleuser.STUDENT &&
+      (ttsUserIds.includes(key) || isTestPreviewModalVisible)
+    )
   }
 
   shouldComponentUpdate(prevProps) {
@@ -386,6 +401,7 @@ class QuestionWrapper extends Component {
       windowWidth: prevWindowWidth,
       windowHeight: prevWindowHeight,
       userWork: prevUserWork,
+      hideCorrectAnswer: prevHideCorrectAnswer,
     } = prevProps
     const {
       data,
@@ -394,6 +410,7 @@ class QuestionWrapper extends Component {
       windowWidth,
       windowHeight,
       userWork,
+      hideCorrectAnswer,
     } = this.props
 
     if (
@@ -403,7 +420,8 @@ class QuestionWrapper extends Component {
       isEqual(prevUserWork, userWork) &&
       isEqual(prevData?.activity, data?.activity) &&
       prevWindowHeight === windowHeight &&
-      prevWindowWidth === windowWidth
+      prevWindowWidth === windowWidth &&
+      hideCorrectAnswer === prevHideCorrectAnswer
     ) {
       return false
     }
@@ -495,7 +513,6 @@ class QuestionWrapper extends Component {
 
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
-
     const { main, advanced, extras, activeTab, page } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
@@ -529,7 +546,7 @@ class QuestionWrapper extends Component {
     }
 
     const canShowPlayer =
-      ((showUserTTS === 'yes' && userRole === 'student') ||
+      ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
         this.ttsVisibilityAuthorSide) &&
       data.tts &&
       data.tts.taskStatus === 'COMPLETED'
@@ -822,6 +839,8 @@ const enhance = compose(
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),
       studentLanguagePreference: languagePreferenceSelector(state, ownProps),
+      authLanguage: getCurrentLanguage(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

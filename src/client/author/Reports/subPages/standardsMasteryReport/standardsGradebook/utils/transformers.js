@@ -11,7 +11,10 @@ import {
   isNaN,
 } from 'lodash'
 import { white } from '@edulastic/colors'
-import { getProficiencyBand } from '../../../../common/util'
+import {
+  getProficiencyBand,
+  DemographicCompareByOptions,
+} from '../../../../common/util'
 
 export const idToLabel = {
   standardId: 'standard',
@@ -174,6 +177,7 @@ export const getFilteredDenormalizedData = (denormalizedData, filters) => {
       genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag
     )
   })
+
   return filteredDenormalizedData
     .sort((a, b) => a.standard.localeCompare(b.standard))
     .sort((a, b) =>
@@ -404,7 +408,10 @@ export const getTableData = (
     compareBy
   )
   const analysedData = getAnalysedData(groupedData, compareBy, masteryScale)
-  const filteredData = filterByMasteryLevel(analysedData, masteryLevel)
+  let filteredData = filterByMasteryLevel(analysedData, masteryLevel)
+  if (DemographicCompareByOptions.includes(compareBy)) {
+    filteredData = orderBy(filteredData, 'compareByLabel', ['asc'])
+  }
   return filteredData
 }
 

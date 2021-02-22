@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import next from 'immer'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
+import { isEmpty } from 'lodash'
 import BackendPagination from '../../../../../common/components/BackendPagination'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
@@ -67,7 +68,7 @@ const StandardsProgressTable = ({
     [rawTableData, tableFilters]
   )
 
-  const scrollX = useMemo(() => testInfoEnhanced?.length * 120 || '100%', [
+  const scrollX = useMemo(() => testInfoEnhanced?.length * 160 || '100%', [
     testInfoEnhanced?.length,
   ])
 
@@ -186,7 +187,14 @@ const StandardsProgressTable = ({
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={8}>
           <Row className="control-dropdown-row">
-            <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={12}>
+            <StyledDropDownContainer
+              data-cy="compareBy"
+              xs={24}
+              sm={24}
+              md={12}
+              lg={12}
+              xl={12}
+            >
               <ControlDropDown
                 prefix="Compare by "
                 data={compareByData}
@@ -194,7 +202,14 @@ const StandardsProgressTable = ({
                 selectCB={bindOnChange('compareBy', compareByData)}
               />
             </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={12}>
+            <StyledDropDownContainer
+              data-cy="analyzeBy"
+              xs={24}
+              sm={24}
+              md={12}
+              lg={12}
+              xl={12}
+            >
               <ControlDropDown
                 prefix="Analyze by "
                 data={analyseByData}

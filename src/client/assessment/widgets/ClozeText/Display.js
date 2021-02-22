@@ -167,6 +167,7 @@ class ClozeTextDisplay extends Component {
       isPrint = false,
       isV1Migrated,
       isPrintPreview = false,
+      hideCorrectAnswer,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -212,7 +213,7 @@ class ClozeTextDisplay extends Component {
     )
 
     const answerBox =
-      showAnswer || isExpressGrader ? (
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
         <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}

@@ -72,7 +72,7 @@ const CreateUpload = ({
           beforeUpload={() => false}
           accept=".pdf"
         >
-          <RoundedButton>
+          <RoundedButton data-cy="uploadPdfFromFiles">
             <IconCloudUpload color={themeColor} />
           </RoundedButton>
         </UploadDragger>
@@ -83,7 +83,7 @@ const CreateUpload = ({
           onAuthFailed={handleAuthFailed}
           mimeTypes={['application/pdf']}
         >
-          <RoundedButton>
+          <RoundedButton data-cy="uploadPdfFromDrive">
             <IconGdrive color={themeColor} />
           </RoundedButton>
         </GooglePicker>

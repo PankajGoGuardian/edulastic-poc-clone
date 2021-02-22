@@ -93,6 +93,7 @@ import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
+import { answersByQId } from '../../assessment/selectors/test'
 
 // constants
 
@@ -1010,6 +1011,14 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         tagsList: { ...state.tagsList, [payload.tagType]: payload.tags },
       }
+    case SET_ALL_TAGS_FAILED:
+      return {
+        ...state,
+        tagsList: {
+          ...state.tagsList,
+          [payload.tagType]: [],
+        },
+      }
     case ADD_NEW_TAG:
       return {
         ...state,
@@ -1123,7 +1132,8 @@ export const reducer = (state = initialState, { type, payload }) => {
             payload?.alignment
               ?.flatMap((x) => x.subject)
               ?.filter((x) => x && x?.trim()) || []
-          const newGrades = payload?.alignment?.flatMap((x) => x.grades) || []
+          const newGrades =
+            payload?.alignment?.flatMap((x) => x.grades || []) || []
           _state.entity.grades = _uniq([..._state.entity.grades, ...newGrades])
           _state.entity.subjects = _uniq([
             ..._state.entity.subjects,
@@ -1409,7 +1419,11 @@ export const getQuestions = (itemGroups = []) => {
   for (const itemGroup of itemGroups) {
     for (const item of itemGroup.items) {
       const { questions = [], resources = [] } = item.data || {}
-      allQuestions.push(...questions, ...resources)
+      const questionsWithItemId = [...questions, ...resources].map((q) => ({
+        ...q,
+        testItemId: item._id,
+      }))
+      allQuestions.push(...questionsWithItemId)
     }
   }
   return allQuestions
@@ -1536,6 +1550,24 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   }
 
   return settings
+}
+
+function validateRestrictNavigationOut(data) {
+  if (
+    data?.restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+    !data?.restrictNavigationOutAttemptsThreshold
+  ) {
+    notification({
+      type: 'warning',
+      msg: 'Please enter a valid input for Restrict Navigation Out of Test',
+    })
+    document
+      .getElementById('restrict-navigation-out')
+      ?.querySelector('.ant-input-number-input')
+      ?.focus()
+    return false
+  }
+  return true
 }
 
 // saga
@@ -1691,6 +1723,9 @@ function* createTest(data) {
 
 function* createTestSaga({ payload }) {
   try {
+    if (!validateRestrictNavigationOut(payload.data)) {
+      return
+    }
     const entity = yield createTest(payload.data)
     entity.itemGroups = payload.data.itemGroups
     yield put(createTestSuccessAction(entity))
@@ -1713,6 +1748,10 @@ function hasInvalidItem(testData) {
 
 export function* updateTestSaga({ payload }) {
   try {
+    if (!validateRestrictNavigationOut(payload.data)) {
+      yield put(setTestsLoadingAction(false))
+      return
+    }
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true))
     const { scoring = {}, currentTab } = payload.data
@@ -1836,9 +1875,14 @@ export function* updateTestSaga({ payload }) {
       else notification({ type: 'success', messageKey: 'testSavedAsDraft' })
     }
     yield put(setTestsLoadingAction(false))
+    return entity
   } catch (err) {
-    captureSentryException(err)
-    console.log({ err })
+    captureSentryException(err, {
+      errorMessage: 'failed to update test',
+      saga: 'updateTestSaga',
+      data: payload,
+    })
+    console.error(err)
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
@@ -1849,6 +1893,10 @@ export function* updateTestSaga({ payload }) {
 
 function* updateTestDocBasedSaga({ payload }) {
   try {
+    if (!validateRestrictNavigationOut(payload.data)) {
+      yield put(setUpdatingTestForRegradeStateAction(false))
+      return
+    }
     const _questions =
       payload?.data?.itemGroups?.[0]?.items?.[0]?.data?.questions || []
     const QuestionsbyId = {}
@@ -1941,11 +1989,16 @@ function* updateTestDocBasedSaga({ payload }) {
       ],
     }
 
-    return yield call(updateTestSaga, {
+    const entityData = yield call(updateTestSaga, {
       payload: { ...payload, data: newAssessment },
     })
+    return entityData
   } catch (err) {
-    captureSentryException(err)
+    captureSentryException(err, {
+      errorMessage: 'failed to update docbased test',
+      saga: 'updateTestDocBasedSaga',
+      data: payload,
+    })
     const errorMessage = err?.data?.message || 'Unable to update the test.'
     notification({ type: 'error', msg: errorMessage })
     yield put(updateTestErrorAction(errorMessage))
@@ -2015,6 +2068,9 @@ function* shareTestSaga({ payload }) {
 function* publishTestSaga({ payload }) {
   try {
     const { _id: id, test: _test, assignFlow } = payload
+    if (!validateRestrictNavigationOut(_test)) {
+      return
+    }
     const defaultThumbnail = yield select(getDefaultThumbnailSelector)
     _test.thumbnail =
       _test.thumbnail === defaultImage ? defaultThumbnail : _test.thumbnail
@@ -2044,9 +2100,14 @@ function* publishTestSaga({ payload }) {
         return
       }
     }
-    yield call(_test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
-      payload: { id, data: _test, assignFlow: true },
-    })
+    const result = yield call(
+      _test.isDocBased ? updateTestDocBasedSaga : updateTestSaga,
+      {
+        payload: { id, data: _test, assignFlow: true },
+      }
+    )
+
+    if (!result) return
 
     const features = yield select(getUserFeatures)
     if (features.isPublisherAuthor && !assignFlow) {
@@ -2121,6 +2182,10 @@ function* publishForRegrade({ payload }) {
     const _test = yield select(getTestSelector)
     if (_test.isUsed && !test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
+    }
+    if (!validateRestrictNavigationOut(_test)) {
+      yield put(setUpdatingTestForRegradeStateAction(false))
+      return
     }
     yield call(_test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
       payload: {
@@ -2376,11 +2441,13 @@ function* getEvaluation(testItemId, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
+  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answers,
+    answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore
+    newScore || itemLevelScore,
+    testItem._id
   )
   return evaluation
 }
@@ -2388,11 +2455,13 @@ function* getEvaluationFromItem(testItem, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
+  const answersByQids = answersByQId(answers, testItem._id)
   const evaluation = yield evaluateItem(
-    answers,
+    answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore
+    newScore || itemLevelScore,
+    testItem._id
   )
   return evaluation
 }
@@ -2459,14 +2528,17 @@ function* showAnswerSaga({ payload }) {
       }, {})
     }
 
-    const evaluation = yield createShowAnswerData(questions, answers)
+    const evaluation = yield createShowAnswerData(
+      questions,
+      answers,
+      testItem._id
+    )
     yield put({
       type: CHANGE_PREVIEW,
       payload: {
         view: 'show',
       },
     })
-
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
@@ -2488,17 +2560,19 @@ export const TAGS_SAGA_FETCH_STATUS = {
 }
 
 function* getAllTagsSaga({ payload }) {
+  const tagType = Array.isArray(payload.type) ? payload.type[0] : payload.type
   try {
     TAGS_SAGA_FETCH_STATUS.isLoading = true
     const tags = yield call(tagsApi.getAll, payload.type)
     yield put({
       type: SET_ALL_TAGS,
-      payload: { tags, tagType: payload.type },
+      payload: { tags, tagType },
     })
   } catch (e) {
     Sentry.captureException(e)
     yield put({
       type: SET_ALL_TAGS_FAILED,
+      payload: { tagType },
     })
     notification({ messageKey: 'getAllTagsFailed' })
   } finally {
@@ -2929,7 +3003,10 @@ function* getTestIdFromVersionIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err)
     console.error(err)
-    const errorMessage = 'Unable to retrieve test info.'
+    const errorMessage =
+      err?.response?.data?.statusCode === 404
+        ? 'You can no longer use this, as sharing access has been revoked by author'
+        : 'Unable to retrieve test info.'
     yield put(push('/author/tests'))
     if (err.status === 403) {
       notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })

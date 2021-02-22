@@ -1,22 +1,31 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import useInterval from '@use-it/interval'
 import { assignmentPolicyOptions as Policies } from '@edulastic/constants'
+import { notification } from '@edulastic/common'
 import {
   realtimeGradebookActivityAddAction,
   gradebookTestItemAddAction,
   realtimeGradebookActivitySubmitAction,
-  realtimeGradebookQuestionAddMaxScoreAction,
-  realtimeGradebookQuestionsRemoveAction,
+  // realtimeGradebookQuestionAddMaxScoreAction,
+  // realtimeGradebookQuestionsRemoveAction,
   realtimeGradebookRedirectAction,
-  realtimeGradebookCloseAction,
-  realtimeUpdateAssignmentAction,
+  // realtimeGradebookCloseAction,
+  // realtimeUpdateAssignmentAction,
   recalculateAdditionalDataAction,
 } from '../../../src/reducers/testActivity'
 import useRealtimeUpdates from '../../useRealtimeUpdates'
-import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
+import {
+  receiveAnswersAction,
+  receiveStudentResponseAction,
+  receiveTestActivitydAction,
+  setCurrentTestActivityIdAction,
+  setUpdateActivityIdInEntityAction,
+} from '../../../src/actions/classBoard'
+import { testNameSelector } from '../../ducks'
+import { getFormattedName } from '../../../Gradebook/transformers'
 
 const needRealtimeDateTracking = ({
   openPolicy,
@@ -44,23 +53,43 @@ const needRealtimeDateTracking = ({
   return false
 }
 
+const getStudentName = (studentsList, studentId) => {
+  if (!studentsList.length) {
+    return ''
+  }
+  const student = studentsList.find((item) => item._id === studentId)
+  const { firstName = '', middleName = '', lastName = '' } = student
+  const studentName = getFormattedName(firstName, middleName, lastName)
+  return studentName
+}
+
 const Shell = ({
   addActivity,
   classId,
   assignmentId,
   addItem,
-  match,
   loadTestActivity,
   submitActivity,
-  removeQuestions,
-  addQuestionsMaxScore,
-  closeAssignment,
-  realtimeUpdateAssignment,
+  // removeQuestions,
+  // addQuestionsMaxScore,
+  // closeAssignment,
+  // realtimeUpdateAssignment,
   recalculateAssignment,
   additionalData,
+  selectedTab,
+  testName,
+  studentsList,
+  loadStudentResponses,
+  setCurrentTestActivityId,
+  loadClassQuestionResponses,
+  testActivityId,
+  itemId,
+  qid,
+  isEG,
+  history,
+  setUpdateActivityIdInEntity,
 }) => {
-  const redirectCheck = (payload) => {
-    const { assignmentId, classId } = match.params
+  const reloadLCB = () => {
     loadTestActivity(assignmentId, classId)
   }
 
@@ -78,16 +107,45 @@ const Shell = ({
     }
   }, 60 * 1000)
 
-  const client = useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
+  const languagePreferenceSwitched = (payload) => {
+    const { newActivityId, oldActivityId, userId } = payload
+    if (!newActivityId || !oldActivityId || !userId || isEG) {
+      return
+    }
+
+    const studentName = getStudentName(studentsList, userId)
+    if (selectedTab === 'Both') {
+      loadTestActivity(assignmentId, classId)
+    }
+    if (selectedTab === 'Student' && testActivityId === oldActivityId) {
+      setUpdateActivityIdInEntity({ oldActivityId, newActivityId })
+      setCurrentTestActivityId(newActivityId)
+      loadStudentResponses({
+        testActivityId: newActivityId,
+        groupId: classId,
+        studentId: userId,
+      })
+      history.push(
+        `/author/classboard/${assignmentId}/${classId}/test-activity/${newActivityId}`
+      )
+    }
+    if (selectedTab === 'questionView') {
+      loadTestActivity(assignmentId, classId, true)
+      loadClassQuestionResponses(assignmentId, classId, qid, itemId)
+    }
+    notification({
+      msg: `student ${studentName} had switched the preferred language for the assignment ${testName}`,
+    })
+  }
+
+  useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
     addActivity,
     addItem,
     submitActivity,
-    redirect: redirectCheck,
+    redirect: reloadLCB,
     // "assignment:close": closeAssignment,
-    assignment: () => {
-      const { assignmentId, classId } = match.params
-      loadTestActivity(assignmentId, classId)
-    },
+    assignment: reloadLCB,
+    languagePreferenceSwitched,
     // TODO: need to comeback to it when we need to handle realtime impact of regrading
     // removeQuestions,
     // addQuestionsMaxScore
@@ -98,16 +156,25 @@ const Shell = ({
 
 export default compose(
   withRouter,
-  connect(null, {
-    addActivity: realtimeGradebookActivityAddAction,
-    addItem: gradebookTestItemAddAction,
-    submitActivity: realtimeGradebookActivitySubmitAction,
-    removeQuestions: realtimeGradebookQuestionsRemoveAction,
-    addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,
-    loadTestActivity: receiveTestActivitydAction,
-    redirect: realtimeGradebookRedirectAction,
-    closeAssignment: realtimeGradebookCloseAction,
-    realtimeUpdateAssignment: realtimeUpdateAssignmentAction,
-    recalculateAssignment: recalculateAdditionalDataAction,
-  })
+  connect(
+    (state) => ({
+      testName: testNameSelector(state),
+    }),
+    {
+      addActivity: realtimeGradebookActivityAddAction,
+      addItem: gradebookTestItemAddAction,
+      submitActivity: realtimeGradebookActivitySubmitAction,
+      // removeQuestions: realtimeGradebookQuestionsRemoveAction,
+      // addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,
+      loadTestActivity: receiveTestActivitydAction,
+      redirect: realtimeGradebookRedirectAction,
+      // closeAssignment: realtimeGradebookCloseAction,
+      // realtimeUpdateAssignment: realtimeUpdateAssignmentAction,
+      recalculateAssignment: recalculateAdditionalDataAction,
+      loadStudentResponses: receiveStudentResponseAction,
+      setCurrentTestActivityId: setCurrentTestActivityIdAction,
+      loadClassQuestionResponses: receiveAnswersAction,
+      setUpdateActivityIdInEntity: setUpdateActivityIdInEntityAction,
+    }
+  )
 )(Shell)

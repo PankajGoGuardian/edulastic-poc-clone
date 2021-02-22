@@ -177,6 +177,11 @@ export const TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION =
 export const PERSIST_AUTH_STATE_AND_REDIRECT =
   '[auth] persist auth entry state and request app bundle'
 
+export const TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL =
+  '[user] toggle ios restrict navigation modal'
+export const TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL =
+  '[auth] toggle free admin subscription alert modal'
+
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
@@ -274,6 +279,14 @@ export const persistAuthStateAndRedirectToAction = createAction(
   PERSIST_AUTH_STATE_AND_REDIRECT
 )
 
+export const toggleIosRestrictNavigationModalAction = createAction(
+  TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL
+)
+
+export const toggleFreeAdminSubscriptionModalAction = createAction(
+  TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL
+)
+
 const initialState = {
   addAccount: false,
   userId: null,
@@ -288,6 +301,8 @@ const initialState = {
   isMultipleAccountNotification: !localStorage.getItem(
     'isMultipleAccountNotification'
   ),
+  iosRestrictNavigationModalVisible: false,
+  showAdminSubscriptionModal: false,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -303,7 +318,8 @@ function getValidRedirectRouteByRole(_url, user) {
     case roleuser.STUDENT:
       return url.match(/^\/home\//) ||
         url.includes('/author/tests/tab/review/id/') ||
-        url.match(/\/embed\//)
+        url.match(/\/embed\//) ||
+        url.includes('author/tests/verid')
         ? url
         : '/home/assignments'
     case roleuser.EDULASTIC_ADMIN:
@@ -320,6 +336,11 @@ function getValidRedirectRouteByRole(_url, user) {
           url.match(/^\/author\/(?!.*dashboard)/)
           ? url
           : '/publisher/dashboard'
+      if (!user?.features?.premium) {
+        return url.match(/^\/author\/(?!.*dashboard)(?!.*assignments)/)
+          ? url
+          : '/author/reports'
+      }
       return url.match(/^\/author\/(?!.*dashboard)/)
         ? url
         : '/author/assignments'
@@ -334,6 +355,7 @@ const getRouteByGeneralRoute = (user) => {
       return '/admin/search/clever'
     case roleuser.DISTRICT_ADMIN:
     case roleuser.SCHOOL_ADMIN:
+      if (!user?.user?.features?.premium) return '/author/reports'
       return '/author/assignments'
     case roleuser.TEACHER:
       return '/author/dashboard'
@@ -369,7 +391,6 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     )
     localStorage.removeItem('loginRedirectUrl')
   } else if (toUrl && !isPartOfLoginRoutes(toUrl) && toUrl != '/') {
- 
     redirectRoute = toUrl
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
@@ -405,6 +426,7 @@ const setUser = (state, { payload }) => {
   }
   state.user.middleName = payload.middleName || undefined
   state.user.lastName = payload.lastName || undefined
+  state.user.openIdProvider = payload.openIdProvider || undefined
   set(state.user, 'orgData.defaultClass', defaultClass)
   set(state.user, 'orgData.selectedGrades', defaultGrades)
   set(state.user, 'orgData.selectedSubject', defaultSubject)
@@ -440,6 +462,9 @@ export default createReducer(initialState, {
   [SET_USER]: setUser,
   [SET_SETTINGS_SA_SCHOOL]: (state, { payload }) => {
     state.saSettingsSchool = payload
+  },
+  [TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL]: (state, { payload }) => {
+    state.iosRestrictNavigationModalVisible = payload
   },
   [CHANGE_CLASS]: (state, { payload }) => {
     if (!(state.user && state.user.orgData)) {
@@ -693,6 +718,9 @@ export default createReducer(initialState, {
   },
   [TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION]: (state, { payload }) => {
     state.isMultipleAccountNotification = payload
+  },
+  [TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL]: (state) => {
+    state.showAdminSubscriptionModal = !state.showAdminSubscriptionModal
   },
 })
 
@@ -1752,8 +1780,17 @@ function* getUserData({ payload: res }) {
           })
         }
       }
-      localStorage.removeItem('loginRedirectUrl')
-      // yield call(redirectToUrl, redirectUrl)
+      if (
+        !(
+          user?.role === roleuser.STUDENT &&
+          redirectUrl.includes('author/tests/verid') &&
+          window.location.pathname.includes('/auth')
+        )
+      ) {
+        // When student is authenticating and redirect url is a test sharing link, do not clear the loginRedirectUrl from storage
+        // This will allow us to correct the URL (replace author with home) and redirect on persistAuthStateAndRedirectToSaga call
+        localStorage.removeItem('loginRedirectUrl')
+      }
       yield put(push(redirectUrl))
     }
 

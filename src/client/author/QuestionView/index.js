@@ -12,6 +12,7 @@ import {
   Tooltip,
   Line,
 } from 'recharts'
+import { withRouter } from 'react-router'
 import { head, get, isEmpty, round, sumBy } from 'lodash'
 import {
   greyGraphstroke,
@@ -21,6 +22,7 @@ import {
   themeColor,
   skippedBarColor,
 } from '@edulastic/colors'
+import { IconEye, IconEyeClose } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import {
   scrollTo,
@@ -28,22 +30,35 @@ import {
   Legends,
   LegendContainer,
   LCBScrollContext,
+  EduButton,
 } from '@edulastic/common'
 import { testActivityStatus } from '@edulastic/constants'
 import { getAvatarName } from '../ClassBoard/Transformer'
 
 import { StyledFlexContainer, StyledCard, TooltipContainer } from './styled'
 import StudentResponse from './component/studentResponses/studentResponse'
+import {
+  StudentButtonWrapper,
+  StudentButtonDiv,
+  AllButton,
+  CorrectButton,
+  WrongButton,
+  PartiallyCorrectButton,
+} from '../StudentView/styled'
 import ClassQuestions from '../ClassResponses/components/Container/ClassQuestions'
 
 // actions
 import { receiveAnswersAction } from '../src/actions/classBoard'
 // selectors
 import {
+  getAdditionalDataSelector,
+  getAllStudentsList,
   getAssignmentClassIdSelector,
   getClassQuestionSelector,
   getQLabelsSelector,
 } from '../ClassBoard/ducks'
+import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
+import { setStudentViewFilterAction as setFilterAction } from '../src/reducers/testActivity'
 
 /**
  * @param {string} studentId
@@ -103,6 +118,10 @@ class QuestionViewContainer extends Component {
     }
   }
 
+  state = {
+    hideCorrectAnswer: true,
+  }
+
   isMobile = () => window.innerWidth < 480
 
   // calcTimeSpent = (student = {}) => {
@@ -118,8 +137,20 @@ class QuestionViewContainer extends Component {
     return round(totalSpent / activities.length / 1000, 2)
   }
 
+  onClickTab = (filter) => {
+    const { setFilter } = this.props
+    setFilter(filter)
+    scrollTo(document.querySelector('body'), 160, this.context.current)
+  }
+
   onClickChart = (data) => {
     _scrollTo(data.id, this.context.current)
+  }
+
+  toggleShowCorrectAnswers = () => {
+    this.setState((prevState) => ({
+      hideCorrectAnswer: !prevState.hideCorrectAnswer,
+    }))
   }
 
   render() {
@@ -134,8 +165,13 @@ class QuestionViewContainer extends Component {
       isPresentationMode,
       labels,
       t,
+      match,
+      itemId,
+      additionalData,
+      studentsList,
+      filter,
     } = this.props
-    const { loading } = this.state
+    const { loading, hideCorrectAnswer } = this.state
 
     let filteredItems = testItems?.filter((item) =>
       item.data.questions.some((q) => q.id === question.id)
@@ -174,6 +210,33 @@ class QuestionViewContainer extends Component {
     //     return "";
     //   });
     // }
+    const activeQuestions = classQuestion
+    /**
+     * copied from
+     *  https://github.com/snapwiz/edulastic-poc/blob/eacf271e7792e2e452b2fcc427340fc57c67434d/src/client/author/StudentView/index.js#L197
+     * TODO: refactor to compute these counts in single loop/reduce
+     */
+    const totalNumber = activeQuestions.length
+
+    const correctNumber = activeQuestions.filter(
+      (x) => x.score === x.maxScore && x.score > 0
+    ).length
+
+    const wrongNumber = activeQuestions.filter(
+      (x) => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
+    ).length
+
+    const partiallyCorrectNumber = activeQuestions.filter(
+      (x) => x.score > 0 && x.score < x.maxScore
+    ).length
+
+    const skippedNumber = activeQuestions.filter(
+      (x) => x.skipped && x.score === 0
+    ).length
+
+    const notGradedNumber = activeQuestions.filter(
+      (x) => !x.skipped && x.graded === false
+    ).length
 
     if (!isEmpty(testActivity)) {
       data = testActivity
@@ -228,9 +291,21 @@ class QuestionViewContainer extends Component {
     if (isMobile) {
       data = data.slice(0, 2)
     }
-
+    const { assignmentId, classId } = match.params
     return (
       <>
+        {studentsList.length && itemId && (
+          <HooksContainer
+            additionalData={additionalData}
+            classId={classId}
+            assignmentId={assignmentId}
+            itemId={itemId}
+            qid={question?._id}
+            studentsList={studentsList}
+            selectedTab="questionView"
+          />
+        )}
+
         <StyledFlexContainer>
           <StyledCard bordered={false}>
             <LegendContainer>
@@ -333,11 +408,61 @@ class QuestionViewContainer extends Component {
             </ResponsiveContainer>
           </StyledCard>
         </StyledFlexContainer>
-        <StudentResponse
-          testActivity={testActivity}
-          onClick={(studentId) => _scrollTo(studentId, this.context.current)}
-          isPresentationMode={isPresentationMode}
-        />
+        <StudentResponse isPresentationMode={isPresentationMode}>
+          <StudentButtonWrapper>
+            <StudentButtonDiv>
+              <AllButton
+                active={filter === null}
+                onClick={() => this.onClickTab(null)}
+              >
+                ALL ({totalNumber})
+              </AllButton>
+              <CorrectButton
+                active={filter === 'correct'}
+                onClick={() => this.onClickTab('correct')}
+              >
+                CORRECT ({correctNumber})
+              </CorrectButton>
+              <WrongButton
+                active={filter === 'wrong'}
+                onClick={() => this.onClickTab('wrong')}
+              >
+                INCORRECT ({wrongNumber})
+              </WrongButton>
+              <WrongButton
+                active={filter === 'partial'}
+                onClick={() => this.onClickTab('partial')}
+              >
+                PARTIALLY CORRECT ({partiallyCorrectNumber})
+              </WrongButton>
+              <WrongButton
+                active={filter === 'skipped'}
+                onClick={() => this.onClickTab('skipped')}
+              >
+                SKIPPED ({skippedNumber})
+              </WrongButton>
+              <PartiallyCorrectButton
+                active={filter === 'notGraded'}
+                onClick={() => this.onClickTab('notGraded')}
+              >
+                NOT GRADED ({notGradedNumber})
+              </PartiallyCorrectButton>
+            </StudentButtonDiv>
+            <EduButton
+              isGhost
+              height="24px"
+              fontSize="9px"
+              mr="28px"
+              onClick={this.toggleShowCorrectAnswers}
+            >
+              {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
+              <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
+                correct answers
+              </span>
+            </EduButton>
+          </StudentButtonWrapper>
+        </StudentResponse>
+
         {testActivity &&
           !loading &&
           testActivity.map((student, index) => {
@@ -358,11 +483,13 @@ class QuestionViewContainer extends Component {
                   isQuestionView={isQuestionView}
                   qIndex={qIndex}
                   currentStudent={student}
+                  studentViewFilter={filter}
                   classResponse={{ testItems: filteredItems, ...others }}
                   questionActivities={qActivities}
                   isPresentationMode={isPresentationMode}
                   labels={labels}
                   isLCBView
+                  hideCorrectAnswer={hideCorrectAnswer}
                 />
               </AnswerContext.Provider>
             )
@@ -373,15 +500,20 @@ class QuestionViewContainer extends Component {
 }
 
 const enhance = compose(
+  withRouter,
   withNamespaces('student'),
   connect(
     (state) => ({
       classQuestion: getClassQuestionSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state),
       labels: getQLabelsSelector(state),
+      additionalData: getAdditionalDataSelector(state),
+      studentsList: getAllStudentsList(state),
+      filter: state?.author_classboard_testActivity?.studentViewFilter,
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,
+      setFilter: setFilterAction,
     }
   )
 )

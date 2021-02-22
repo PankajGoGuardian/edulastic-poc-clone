@@ -12,6 +12,7 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { IconBookmark } from '@edulastic/icons'
+import { test as testConstants } from '@edulastic/constants'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -35,6 +36,8 @@ import {
   Container,
 } from './styled'
 import { themes } from '../../../../theme'
+import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
+import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 
 const {
   playerSkin: { parcc },
@@ -75,6 +78,8 @@ const PlayerHeader = ({
   groupId,
   hidePause,
   blockNavigationToAnsweredQuestions = false,
+  setSettingsModalVisibility,
+  testType,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -89,10 +94,15 @@ const PlayerHeader = ({
   }
   const isFirst = () => (isDocbased ? true : currentItem === 0)
   const onSettingsChange = (e) => {
-    if (e.key === 'save') {
-      finishTest()
-    } else if (e.key === 'enableMagnifier') {
-      handleMagnifier()
+    switch (e.key) {
+      case 'save':
+        return finishTest()
+      case 'enableMagnifier':
+        return handleMagnifier()
+      case 'testOptions':
+        return setSettingsModalVisibility(true)
+      default:
+        break
     }
   }
 
@@ -105,6 +115,7 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
+      {testType === testConstants.type.PRACTICE && <SettingsModal />}
       <Header
         ref={headerRef}
         style={{
@@ -120,23 +131,25 @@ const PlayerHeader = ({
               <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
                 <MainActionWrapper>
-                  {!blockNavigationToAnsweredQuestions && (
-                    <Tooltip
-                      placement="top"
-                      title="Previous"
-                      overlayStyle={overlayStyle}
-                    >
-                      <ControlBtn
-                        data-cy="prev"
-                        icon="left"
-                        disabled={isFirst()}
-                        onClick={(e) => {
-                          moveToPrev()
-                          e.target.blur()
-                        }}
-                      />
-                    </Tooltip>
-                  )}
+                  <Tooltip
+                    placement="top"
+                    title={
+                      blockNavigationToAnsweredQuestions
+                        ? 'This assignment is restricted from navigating back to the previous question.'
+                        : 'Previous'
+                    }
+                    overlayStyle={overlayStyle}
+                  >
+                    <ControlBtn
+                      data-cy="prev"
+                      icon="left"
+                      disabled={isFirst() || blockNavigationToAnsweredQuestions}
+                      onClick={(e) => {
+                        moveToPrev()
+                        e.target.blur()
+                      }}
+                    />
+                  </Tooltip>
                   <Tooltip
                     placement="top"
                     title="Next"
@@ -229,8 +242,11 @@ const enhance = compose(
     (state) => ({
       settings: state.test.settings,
       timedAssignment: state.test?.settings?.timedAssignment,
+      testType: state.test?.settings?.testType,
     }),
-    null
+    {
+      setSettingsModalVisibility: setSettingsModalVisibilityAction,
+    }
   )
 )
 

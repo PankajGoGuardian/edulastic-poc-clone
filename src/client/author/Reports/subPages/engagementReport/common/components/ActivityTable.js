@@ -40,10 +40,12 @@ const ActivityTable = ({
           assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
           schoolIds: record.schoolId,
         })
-        return (
+        return text ? (
           <Link to={`/author/reports/performance-over-time?${queryStr}`}>
             {text}
           </Link>
+        ) : (
+          '-'
         )
       }
       rawColumns[2].render = (text) => text
@@ -62,19 +64,22 @@ const ActivityTable = ({
           </Link>
         )
       }
-      rawColumns[1].render = (text) => (
-        <Tooltip title={text} placement="top">
-          <div
-            style={{
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {text}
-          </div>
-        </Tooltip>
-      )
+      rawColumns[1].render = (text) =>
+        text ? (
+          <Tooltip title={text} placement="top">
+            <div
+              style={{
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {text}
+            </div>
+          </Tooltip>
+        ) : (
+          '-'
+        )
       rawColumns[1].sorter = sortText('schoolNames')
     }
     rawColumns[activityBy === 'school' ? 1 : 2].render = (text) => text

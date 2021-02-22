@@ -112,7 +112,7 @@ function pauseAssignment({
       const errorMsg = 'Pausing Assignment due to Anti Cheating measures'
       notification({ type: 'warning', msg: errorMsg, duration: 0 })
       if (history.location.pathname === '/home/assignments') {
-        history.push('/home/assignmentss')
+        history.push('/home/assignmentss') // this hack needed to re-render route
         history.replace('/home/assignments')
       } else {
         history.push('/home/assignments')
@@ -318,9 +318,24 @@ export function useTabNavigationCounterEffect({
   testActivityId,
   enabled,
   history,
+  threshold,
+  assignmentId,
+  classId,
+  userId,
 }) {
   const inFocusRef = useRef(true)
   const idleTimeoutRef = useRef(null)
+  const totalBlurTimeCounterIntervalRef = useRef(null)
+  const totalTimeInBlur = useRef(0)
+
+  useEffect(() => {
+    return () => {
+      if (totalBlurTimeCounterIntervalRef.current) {
+        clearInterval(totalBlurTimeCounterIntervalRef.current)
+      }
+    }
+  }, [])
+
   useFocusHandler({
     enabled,
     onFocus: () => {
@@ -329,13 +344,37 @@ export function useTabNavigationCounterEffect({
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current)
       }
+      if (totalBlurTimeCounterIntervalRef.current) {
+        clearInterval(totalBlurTimeCounterIntervalRef.current)
+      }
     },
     onBlur: () => {
       console.log('on blur ', new Date())
       inFocusRef.current = false
+      if (totalBlurTimeCounterIntervalRef.current) {
+        clearInterval(totalBlurTimeCounterIntervalRef.current)
+      }
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current)
       }
+      totalBlurTimeCounterIntervalRef.current = setInterval(() => {
+        totalTimeInBlur.current += 1
+        if (enabled && threshold > 1) {
+          const maximumTimeLimit = threshold * 5
+          if (totalTimeInBlur.current >= maximumTimeLimit) {
+            if (totalBlurTimeCounterIntervalRef.current) {
+              clearInterval(totalBlurTimeCounterIntervalRef.current)
+            }
+            pauseAssignment({
+              history,
+              assignmentId,
+              classId,
+              userId,
+              pauseReason: 'out-of-navigation',
+            })
+          }
+        }
+      }, 1000)
       idleTimeoutRef.current = setTimeout(() => {
         if (!inFocusRef.current && enabled) {
           console.info('too much time away from screen!!!!!!!', new Date())
@@ -444,7 +483,6 @@ const AssessmentContainer = ({
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
   const hidePause = assignmentObj?.blockSaveAndContinue
-
   const currentlyFullScreen = useFullScreenListener({
     enabled: assignmentObj?.restrictNavigationOut,
     assignmentId: assignmentObj?._id,
@@ -458,7 +496,11 @@ const AssessmentContainer = ({
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,
     enabled: assignmentObj?.restrictNavigationOut,
+    threshold: assignmentObj?.restrictNavigationOutAttemptsThreshold,
     history,
+    assignmentId: assignmentObj?._id,
+    classId: groupId,
+    userId,
   })
   useEffect(() => {
     if (assignmentObj) {

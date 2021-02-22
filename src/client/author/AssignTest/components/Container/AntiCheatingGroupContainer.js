@@ -45,6 +45,10 @@ const AntiCheatingGroupContainer = ({
     restrictNavigationOutAttemptsThreshold = testSettings.restrictNavigationOutAttemptsThreshold,
   } = assignmentSettings
 
+  const navigationThresholdMoreThan1 =
+    restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+    restrictNavigationOutAttemptsThreshold > 1
+
   const {
     assessmentSuperPowersShuffleQuestions,
     assessmentSuperPowersShuffleAnswerChoice,
@@ -298,7 +302,13 @@ const AntiCheatingGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
-            content="If ON, students must take the test in full screen mode to prevent opening another browser window. Alert will appear if student has navigated away for more than 5 seconds. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset."
+            content={`If ON, students must take the test in full screen mode to prevent opening another browser window. Alert will appear if student has navigated away for more than 5 seconds ${
+              navigationThresholdMoreThan1
+                ? `and student will be blocked after ${
+                    restrictNavigationOutAttemptsThreshold * 5
+                  } seconds`
+                : ''
+            }. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset.`}
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">

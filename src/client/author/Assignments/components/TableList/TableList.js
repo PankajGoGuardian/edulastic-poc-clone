@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
-import { get, isEmpty } from 'lodash'
+import { get, isEmpty, uniqBy } from 'lodash'
 import { Link, withRouter } from 'react-router-dom'
 import { Dropdown, Tooltip, Spin, Menu } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
@@ -103,6 +103,10 @@ const convertTableData = (
     (item) =>
       item.assignedBy.role === roleuser.SCHOOL_ADMIN ||
       item.assignedBy.role === roleuser.DISTRICT_ADMIN
+  ),
+  assignedBy: uniqBy(
+    assignments.map((item) => item.assignedBy),
+    '_id'
   ),
 })
 

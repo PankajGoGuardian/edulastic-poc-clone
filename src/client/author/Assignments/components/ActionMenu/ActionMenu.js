@@ -54,6 +54,7 @@ const ActionMenu = ({
   const shouldSendAssignmentId =
     assignmentTest?.testType === test.type.COMMON ||
     !assignmentTest?.authors?.find((a) => a._id === userId)
+  const isAssignmentOwner = row?.assignedBy?.some(({ _id }) => _id === userId)
 
   const handleShowPreview = () => {
     if (
@@ -272,17 +273,19 @@ const ActionMenu = ({
           </StyledLink>
         </Menu.Item>
 
-        <Menu.Item
-          data-cy="edit-tags"
-          key="edit-tags"
-          onClick={() => toggleTagsEditModal(currentTestId)}
-        >
-          <StyledLink target="_blank" rel="noopener noreferrer">
-            <IconEdit height="13px" width="13px" />
-            <SpaceElement />
-            Edit Tags
-          </StyledLink>
-        </Menu.Item>
+        {isAssignmentOwner && (
+          <Menu.Item
+            data-cy="edit-tags"
+            key="edit-tags"
+            onClick={() => toggleTagsEditModal(currentTestId)}
+          >
+            <StyledLink target="_blank" rel="noopener noreferrer">
+              <IconEdit height="13px" width="13px" />
+              <SpaceElement />
+              Edit Tags
+            </StyledLink>
+          </Menu.Item>
+        )}
       </StyledMenu>
     </Container>
   )

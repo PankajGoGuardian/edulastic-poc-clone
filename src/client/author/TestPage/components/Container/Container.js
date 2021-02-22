@@ -421,10 +421,13 @@ class Container extends PureComponent {
     const totalTestItems = itemGroups.flatMap(
       (itemGroup) => itemGroup.items || []
     ).length
+    const isAutoSelectGroup =
+      test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
+
     if (
       isEditable &&
-      totalTestItems > 0 &&
-      !(totalTestItems === 1 && !_id) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
+      (totalTestItems > 0 || isAutoSelectGroup) &&
+      !(totalTestItems === 1 && !_id && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
       updated &&
       !firstFlow
     ) {

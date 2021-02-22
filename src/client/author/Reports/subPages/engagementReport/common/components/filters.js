@@ -147,7 +147,9 @@ const EngagementReportFilters = ({
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         {showApply && (
-          <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>APPLY</StyledGoButton>
+          <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>
+            APPLY
+          </StyledGoButton>
         )}
       </GoButtonWrapper>
       <PerfectScrollbar>
@@ -188,7 +190,7 @@ const EngagementReportFilters = ({
           </SearchField>
         )}
         <SearchField>
-          <FilterLabel data-cy="classGrade">Grade</FilterLabel>
+          <FilterLabel data-cy="classGrade">Class Grade</FilterLabel>
           <ControlDropDown
             prefix="Grade"
             className="custom-1-scrollbar"
@@ -199,7 +201,7 @@ const EngagementReportFilters = ({
           />
         </SearchField>
         <SearchField>
-          <FilterLabel data-cy="classSubject">Subject</FilterLabel>
+          <FilterLabel data-cy="classSubject">Class Subject</FilterLabel>
           <ControlDropDown
             by={filters.subject}
             selectCB={(e) => updateFilterDropdownCB(e, 'subject')}

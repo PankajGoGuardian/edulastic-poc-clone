@@ -8,6 +8,9 @@ import { CustomChartCursor } from '../../../../common/components/charts/chartUti
 
 const SimpleStackedBarWithLineChartContainer = ({
   data,
+  filter,
+  onBarClickCB,
+  onResetClickCB,
   activityBy = 'school',
 }) => {
   let maxTestCount = 0
@@ -18,7 +21,11 @@ const SimpleStackedBarWithLineChartContainer = ({
       maxStudentCount = Math.max(maxStudentCount, item.studentCount)
       return {
         ...item,
-        fill: lightGreen8,
+        [`${activityBy}Name`]: item[`${activityBy}Name`] || '-',
+        fill:
+          Object.keys(filter).length && !filter[item[`${activityBy}Name`]]
+            ? '#cccccc'
+            : lightGreen8,
       }
     })
     .sort((a, b) => b.testCount - a.testCount)
@@ -93,6 +100,9 @@ const SimpleStackedBarWithLineChartContainer = ({
       yDomain={chartSpecifics.yDomain}
       ticks={chartSpecifics.ticks}
       yTickFormatter={chartSpecifics.formatter}
+      filter={filter}
+      onBarClickCB={onBarClickCB}
+      onResetClickCB={onResetClickCB}
       lineChartDataKey="studentCount"
       lineYAxisLabel="Students taking Assessment"
       lineYTickFormatter={chartSpecifics.formatter}

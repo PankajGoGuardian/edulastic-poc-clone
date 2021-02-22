@@ -22,21 +22,30 @@ const sortText = (key) => (a, b) =>
   (a[key] || '').toLowerCase().localeCompare((b[key] || '').toLowerCase())
 
 const ActivityTable = ({
-  dataSource,
+  data,
+  filter,
   columns,
   isCsvDownloading,
   filters,
   activityBy = 'school',
 }) => {
-  const onCsvConvert = (data) =>
-    downloadCSV(`Activity by ${activityBy} Report.csv`, data)
+  const { grade: studentGrade, subject: studentSubject, ...query } = filters
+
+  const tableData = Object.keys(filter).length
+    ? data.filter((item) => filter[item[`${activityBy}Name`]])
+    : data
+
+  const onCsvConvert = (csvData) =>
+    downloadCSV(`Activity by ${activityBy} Report.csv`, csvData)
 
   const _columns = next(columns, (rawColumns) => {
     if (activityBy === 'school') {
       rawColumns[0].sorter = sortText('schoolName')
       rawColumns[0].render = (text, record) => {
         const queryStr = qs.stringify({
-          ...filters,
+          ...query,
+          studentGrade,
+          studentSubject,
           assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
           schoolIds: record.schoolId,
         })
@@ -54,7 +63,9 @@ const ActivityTable = ({
       rawColumns[0].sorter = sortText('teacherName')
       rawColumns[0].render = (text, record) => {
         const queryStr = qs.stringify({
-          ...filters,
+          ...query,
+          studentGrade,
+          studentSubject,
           assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
           teacherIds: record.teacherId,
         })
@@ -95,7 +106,7 @@ const ActivityTable = ({
     <CsvTable
       isCsvDownloading={isCsvDownloading}
       onCsvConvert={onCsvConvert}
-      dataSource={dataSource}
+      dataSource={tableData}
       columns={_columns}
       tableToRender={StyledTable}
       scroll={{ x: '100%' }}

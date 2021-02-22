@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 
@@ -26,6 +26,8 @@ const ActivityBySchool = ({
   settings,
   isCsvDownloading,
 }) => {
+  const [metricFilter, setMetricFilter] = useState({})
+
   useEffect(() => {
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
@@ -34,6 +36,20 @@ const ActivityBySchool = ({
   }, [settings])
 
   const metricInfo = get(activityBySchool, 'data.result.metricInfo', [])
+
+  const onBarClickCB = (key) => {
+    const _metricFilter = { ...metricFilter }
+    if (_metricFilter[key]) {
+      delete _metricFilter[key]
+    } else {
+      _metricFilter[key] = true
+    }
+    setMetricFilter(_metricFilter)
+  }
+
+  const onResetClickCB = () => {
+    setMetricFilter({})
+  }
 
   if (loading) {
     return <SpinLoader position="fixed" />
@@ -53,14 +69,22 @@ const ActivityBySchool = ({
         <StyledH3 fontSize="16px" marginLeft="10px">
           Activity by School
         </StyledH3>
-        <SimpleStackedBarWithLineChartContainer data={metricInfo} />
+        <SimpleStackedBarWithLineChartContainer
+          data={metricInfo}
+          filter={metricFilter}
+          onBarClickCB={onBarClickCB}
+          onResetClickCB={onResetClickCB}
+          activityBy="school"
+        />
       </StyledCard>
       <StyledCard>
         <ActivityTable
           isCsvDownloading={isCsvDownloading}
-          dataSource={metricInfo}
+          data={metricInfo}
+          filter={metricFilter}
           columns={columns.columns}
           filters={settings.requestFilters}
+          activityBy="school"
         />
       </StyledCard>
     </>

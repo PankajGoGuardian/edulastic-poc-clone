@@ -6,7 +6,7 @@ import loadable from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PurchaseFlowModals from '../../src/components/common/PurchaseModals'
-import { getUserOrgId } from '../../src/selectors/user'
+import { getUserOrgId, getUserIdSelector } from '../../src/selectors/user'
 import { getDashboardTilesSelector } from '../../Dashboard/ducks'
 import {
   getSubscriptionSelector,
@@ -44,6 +44,7 @@ const ManageSubscriptionContainer = ({
   subsLicenses,
   users,
   userOrgId,
+  userId,
   addAndUpgradeUsersSubscriptions,
   setAddUsersConfirmationModalVisible,
   showUpgradeUsersSuccessModal = false,
@@ -173,6 +174,7 @@ const ManageSubscriptionContainer = ({
         <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
         <Userlist
           users={users}
+          userId={userId}
           bulkEditUsersPermission={bulkEditUsersPermission}
           teacherPremiumProductId={teacherPremiumProductId}
           sparkMathProductId={sparkMathProductId}
@@ -225,6 +227,7 @@ const enhance = compose(
       isSuccess: getSuccessSelector(state),
       subsLicenses: getSubsLicensesSelector(state),
       userOrgId: getUserOrgId(state),
+      userId: getUserIdSelector(state),
       users: getUsersSelector(state),
       showUpgradeUsersSuccessModal: getUpgradeSuccessModalVisible(state),
       userDataSource: getBulkUsersData(state),

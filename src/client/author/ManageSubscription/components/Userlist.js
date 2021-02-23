@@ -8,6 +8,7 @@ import { StyledAntdTable } from './styled'
 
 const Userlist = ({
   users,
+  userId: currentUserId,
   bulkEditUsersPermission,
   teacherPremiumProductId,
   sparkMathProductId,
@@ -67,7 +68,13 @@ const Userlist = ({
       } = e
       onChangeHandler(record.userId, key, checked)
     }
-    return <CheckboxLabel onChange={onChange} checked={isChecked} />
+    return (
+      <CheckboxLabel
+        onChange={onChange}
+        checked={isChecked}
+        disabled={record.userId === currentUserId && key === 'hasManageLicense'}
+      />
+    )
   }
 
   const columns = [

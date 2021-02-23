@@ -78,3 +78,6 @@ export const WidgetContainer = styled.div`
   flex-grow: 1;
   min-height: max-content; // to fix height issue with safari
 `
+export const FilesViewContainer = styled.div`
+  padding: 35px;
+`

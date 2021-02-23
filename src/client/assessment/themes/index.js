@@ -35,6 +35,7 @@ import { testActivityApi, classBoardApi } from '@edulastic/api'
 
 import Styled from 'styled-components'
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
+import { saveUserWorkAction } from '../actions/userWork'
 import {
   finishTestAcitivityAction,
   setIsTestPreviewVisibleAction,
@@ -67,6 +68,7 @@ import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
 import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
+import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 
 const { playerSkinValues } = testConstants
@@ -417,6 +419,7 @@ const AssessmentContainer = ({
   history,
   changePreview,
   saveUserResponse: saveUserAnswer,
+  saveUserWork,
   evaluateAnswer: evaluate,
   match,
   url,
@@ -455,6 +458,7 @@ const AssessmentContainer = ({
   regradedRealtimeAssignment,
   testId,
   userId,
+  userWork,
   regradedAssignment,
   clearRegradeAssignment,
   setPasswordValidateStatus,
@@ -476,6 +480,9 @@ const AssessmentContainer = ({
     show: false,
   })
   const [showRegradedModal, setShowRegradedModal] = useState(false)
+
+  const [, uploadFile] = useUploadToS3(userId)
+
   const isLast = () => currentItem === items.length - 1
   const isFirst = () => currentItem === 0
 
@@ -975,6 +982,7 @@ const AssessmentContainer = ({
     studentReportModal,
     hasDrawingResponse,
     questions: questionsById,
+    uploadToS3: uploadFile,
     ...restProps,
   }
 
@@ -1188,6 +1196,7 @@ const enhance = compose(
     {
       saveUserResponse,
       evaluateAnswer,
+      saveUserWork: saveUserWorkAction,
       changePreview: changePreviewAction,
       finishTest: finishTestAcitivityAction,
       gotoItem: gotoItemAction,

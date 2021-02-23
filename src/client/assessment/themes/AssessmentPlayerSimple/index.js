@@ -39,6 +39,7 @@ import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import { showHintsAction } from '../../actions/userInteractions'
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
+import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 
 class AssessmentPlayerSimple extends React.Component {
   constructor(props) {
@@ -50,6 +51,7 @@ class AssessmentPlayerSimple extends React.Component {
       history: 0,
       currentItem: 0,
       enableCrossAction: false,
+      isUserWorkUploadModalVisible: false,
     }
   }
 
@@ -181,6 +183,29 @@ class AssessmentPlayerSimple extends React.Component {
     })
   }
 
+  toggleUserWorkUploadModal = () =>
+    this.setState(({ isUserWorkUploadModalVisible }) => ({
+      isUserWorkUploadModalVisible: !isUserWorkUploadModalVisible,
+    }))
+
+  closeUserWorkUploadModal = () =>
+    this.setState({ isUserWorkUploadModalVisible: false })
+
+  saveUserWorkAttachments = (files) => {
+    const { attachments } = this.props
+    const newAttachments = files.map(({ name, type, size, source }) => ({
+      name,
+      type,
+      size,
+      source,
+    }))
+    this.saveUserWork('attachments')([
+      ...(attachments || []),
+      ...newAttachments,
+    ])
+    this.closeUserWorkUploadModal()
+  }
+
   handleChangePreview = () => {
     const { changePreview = () => {} } = this.props
     // change the player state to clear mode (attemptable mode)
@@ -211,12 +236,14 @@ class AssessmentPlayerSimple extends React.Component {
       groupId,
       highlights,
       utaId,
+      uploadToS3,
     } = this.props
     const {
       showExitPopup,
       testItemState,
       enableCrossAction,
       toolsOpenStatus,
+      isUserWorkUploadModalVisible,
     } = this.state
 
     const dropdownOptions = Array.isArray(items)
@@ -307,6 +334,12 @@ class AssessmentPlayerSimple extends React.Component {
                 finishTest={this.finishTest}
               />
             )}
+            <UserWorkUploadModal
+              isModalVisible={isUserWorkUploadModalVisible}
+              onCancel={this.closeUserWorkUploadModal}
+              uploadFile={uploadToS3}
+              onUploadFinished={this.saveUserWorkAttachments}
+            />
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

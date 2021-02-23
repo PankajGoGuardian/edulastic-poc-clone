@@ -86,6 +86,7 @@ const notification = (options) => {
     )
     antNotification[type]({
       description: messageTemplate,
+      duration: 6.5, // default notification duration
       ...rest,
     })
   }

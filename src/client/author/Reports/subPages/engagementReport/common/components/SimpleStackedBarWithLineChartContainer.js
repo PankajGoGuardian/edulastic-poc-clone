@@ -21,6 +21,7 @@ const SimpleStackedBarWithLineChartContainer = ({
       maxStudentCount = Math.max(maxStudentCount, item.studentCount)
       return {
         ...item,
+        schoolNames: item.schoolNames || '-',
         [`${activityBy}Name`]: item[`${activityBy}Name`] || '-',
         fill:
           Object.keys(filter).length && !filter[item[`${activityBy}Name`]]
@@ -34,6 +35,7 @@ const SimpleStackedBarWithLineChartContainer = ({
     if (payload && payload[0]?.payload) {
       const {
         schoolName,
+        teacherName,
         schoolNames,
         testCount,
         studentCount,
@@ -41,23 +43,34 @@ const SimpleStackedBarWithLineChartContainer = ({
       } = payload[0].payload
       return (
         <div>
+          {activityBy === 'school' ? (
+            <Row type="flex" justify="start">
+              <Col className="tooltip-key">School: </Col>
+              <Col className="tooltip-value">{schoolName}</Col>
+            </Row>
+          ) : (
+            <>
+              <Row type="flex" justify="start">
+                <Col className="tooltip-key">Teacher: </Col>
+                <Col className="tooltip-value">{teacherName}</Col>
+              </Row>
+              <Row type="flex" justify="start">
+                <Col className="tooltip-key">School: </Col>
+                <Col className="tooltip-value">{schoolNames}</Col>
+              </Row>
+            </>
+          )}
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">School: </Col>
-            <Col className="tooltip-value">
-              {activityBy === 'school' ? schoolName : schoolNames}
-            </Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">Test Count: </Col>
+            <Col className="tooltip-key">Assessments Assigned: </Col>
             <Col className="tooltip-value">{testCount}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">Student Count: </Col>
+            <Col className="tooltip-key">Students taking Assessment: </Col>
             <Col className="tooltip-value">{studentCount}</Col>
           </Row>
           {activityBy === 'school' && (
             <Row type="flex" justify="start">
-              <Col className="tooltip-key">Teacher Count: </Col>
+              <Col className="tooltip-key">Active Teachers: </Col>
               <Col className="tooltip-value">{teacherCount}</Col>
             </Row>
           )}
@@ -69,15 +82,25 @@ const SimpleStackedBarWithLineChartContainer = ({
 
   const getChartSpecifics = () => {
     const ticksArr = ticks(0, maxTestCount, 10)
-    const maxTickValue = ticksArr[ticksArr.length - 1]
     const tickDiff = ticksArr[1] - ticksArr[0]
+    let maxTickValue = ticksArr[ticksArr.length - 1]
     const lineTicksArr = ticks(0, maxStudentCount, 10)
-    const maxLineTickValue = lineTicksArr[lineTicksArr.length - 1]
     const lineTickDiff = lineTicksArr[1] - lineTicksArr[0]
+    let maxLineTickValue = lineTicksArr[lineTicksArr.length - 1]
+    // normalize ticks length for y-axes
+    while (ticksArr.length !== lineTicksArr.length) {
+      if (ticksArr.length < lineTicksArr.length) {
+        ticksArr.push(maxTickValue + tickDiff)
+        maxTickValue += tickDiff
+      } else {
+        lineTicksArr.push(maxLineTickValue + lineTickDiff)
+        maxLineTickValue += lineTickDiff
+      }
+    }
     return {
-      yDomain: [0, maxTickValue + tickDiff],
+      yDomain: [0, maxTickValue + 2 * tickDiff],
       ticks: [...ticksArr, maxTickValue + tickDiff],
-      lineYDomain: [0, maxLineTickValue + lineTickDiff],
+      lineYDomain: [0, maxLineTickValue + 2 * lineTickDiff],
       lineTicks: [...lineTicksArr, maxLineTickValue + lineTickDiff],
       formatter: (val) => val,
     }

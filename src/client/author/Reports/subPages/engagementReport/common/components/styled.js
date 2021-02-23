@@ -76,3 +76,9 @@ export const StyledTable = styled(Table)`
     }
   }
 `
+
+export const TooltipDiv = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`

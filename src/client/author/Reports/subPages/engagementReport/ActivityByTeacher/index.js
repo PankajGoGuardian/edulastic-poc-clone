@@ -35,6 +35,15 @@ const ActivityByTeacher = ({
   }, [settings])
 
   const metricInfo = get(activityByTeacher, 'data.result.metricInfo', [])
+  const normalizedMetricInfo = metricInfo.map((item) => {
+    const schoolNamesArr = (item.schoolNames || '')
+      .split(',')
+      .map((o) => o.trim())
+    const schoolNames = schoolNamesArr
+      .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+      .join(', ')
+    return { ...item, schoolNames }
+  })
 
   const onBarClickCB = (key) => {
     const _metricFilter = { ...metricFilter }
@@ -69,7 +78,7 @@ const ActivityByTeacher = ({
           Activity by Teacher
         </StyledH3>
         <SimpleStackedBarWithLineChartContainer
-          data={metricInfo}
+          data={normalizedMetricInfo}
           filter={metricFilter}
           onBarClickCB={onBarClickCB}
           onResetClickCB={onResetClickCB}
@@ -80,7 +89,7 @@ const ActivityByTeacher = ({
         <ActivityTable
           activityBy="teacher"
           isCsvDownloading={isCsvDownloading}
-          data={metricInfo}
+          data={normalizedMetricInfo}
           filter={metricFilter}
           columns={columns.columns}
           filters={settings.requestFilters}

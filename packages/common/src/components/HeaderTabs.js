@@ -111,7 +111,7 @@ export const StyledAnchor = styled.div`
   border: 1px solid ${(props) => (props.isActive ? '#2f4151' : '#E5E5E5')};
   border-bottom-color: ${(props) => props.isActive && white};
   width: auto;
-  padding: 0px 32px 0px 16px;
+  padding: 0px 16px;
   text-align: center;
   height: ${(props) => (props.isActive ? '43px' : '42px')};
   margin: 0 2px;

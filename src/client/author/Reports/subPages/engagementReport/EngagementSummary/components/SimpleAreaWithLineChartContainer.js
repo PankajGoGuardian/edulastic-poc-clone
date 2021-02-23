@@ -3,7 +3,7 @@ import moment from 'moment'
 import { ticks } from 'd3-array'
 
 import { Row, Col } from 'antd'
-import { themeColor, lightBlue10 } from '@edulastic/colors'
+import { themeColor, lightGreen8 } from '@edulastic/colors'
 import SimpleAreaChart from '../../../../common/components/charts/simpleAreaChart'
 
 const MONTHS_ARR = [
@@ -48,9 +48,9 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
       maxStudentCount = Math.max(maxStudentCount, Number(item.studentCount))
       return {
         ...item,
-        date: moment(item.assessmentDate).format('MMM YYYY'),
+        date: moment(item.assessmentDate).format("MMM'YY"),
         month: moment(item.assessmentDate).format('MMMM'),
-        year: moment(item.assessmentDate).format('YYYY'),
+        year: moment(item.assessmentDate).format('YY'),
       }
     })
 
@@ -72,16 +72,16 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
         augmented.push({
           month: currMonth,
           year: currYear,
-          date: `${currMonth.substring(0, 3)} ${currYear}`,
+          date: `${currMonth.substring(0, 3)}'${currYear}`,
           testCount: 0,
           studentCount: 0,
         })
-        currMonthPos = currMonthPos === 12 ? 1 : currMonthPos + 1
         currYear = currMonthPos === 12 ? currYear + 1 : currYear
+        currMonthPos = currMonthPos === 12 ? 1 : currMonthPos + 1
       }
       augmented.push(chartData[i])
-      currMonthPos = currMonthPos === 12 ? 1 : currMonthPos + 1
       currYear = currMonthPos === 12 ? currYear + 1 : currYear
+      currMonthPos = currMonthPos === 12 ? 1 : currMonthPos + 1
     }
     return augmented
   }
@@ -102,7 +102,7 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
             <Col className="tooltip-value">{testCount}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">Students Count: </Col>
+            <Col className="tooltip-key">Students taking Assessment: </Col>
             <Col className="tooltip-value">{studentCount}</Col>
           </Row>
         </div>
@@ -113,11 +113,21 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
 
   const getChartSpecifics = () => {
     const ticksArr = ticks(0, maxTestCount, 10)
-    const maxTickValue = ticksArr[ticksArr.length - 1]
     const tickDiff = ticksArr[1] - ticksArr[0]
+    let maxTickValue = ticksArr[ticksArr.length - 1]
     const lineTicksArr = ticks(0, maxStudentCount, 10)
-    const maxLineTickValue = lineTicksArr[lineTicksArr.length - 1]
     const lineTickDiff = lineTicksArr[1] - lineTicksArr[0]
+    let maxLineTickValue = lineTicksArr[lineTicksArr.length - 1]
+    // normalize ticks length for y-axes
+    while (ticksArr.length !== lineTicksArr.length) {
+      if (ticksArr.length < lineTicksArr.length) {
+        ticksArr.push(maxTickValue + tickDiff)
+        maxTickValue += tickDiff
+      } else {
+        lineTicksArr.push(maxLineTickValue + lineTickDiff)
+        maxLineTickValue += lineTickDiff
+      }
+    }
     return {
       yDomain: [0, maxTickValue + 2 * tickDiff],
       ticks: [...ticksArr, maxTickValue + tickDiff],
@@ -138,12 +148,12 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
       xAxisDataKey="date"
       xTickFormatter={chartSpecifics.formatter}
       chartDataKey="testCount"
-      yAxisLabel="Assessments Assigned #"
+      yAxisLabel="Assessments Assigned"
       yTickFormatter={chartSpecifics.formatter}
       yDomain={chartSpecifics.yDomain}
       ticks={chartSpecifics.ticks}
-      areaProps={{ stroke: lightBlue10, strokeWidth: 3, fill: lightBlue10 }}
-      areaDotProps={{ stroke: lightBlue10, fill: lightBlue10, r: 2 }}
+      areaProps={{ stroke: lightGreen8, strokeWidth: 3, fill: lightGreen8 }}
+      areaDotProps={{ stroke: lightGreen8, fill: lightGreen8, r: 2 }}
       areaActiveDotProps={{ strokeWidth: 3, r: 5 }}
       lineChartDataKey="studentCount"
       lineYAxisLabel="Students taking Assessment"

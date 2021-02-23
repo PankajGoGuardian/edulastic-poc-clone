@@ -7,13 +7,14 @@
 	}, {
 		"title": "School",
 		"dataIndex": "schoolNames",
-		"key": "schoolNames"
+		"key": "schoolNames",
+		"align": "left"
 	}, {
-		"title": "Assignment Assigned",
+		"title": "Assessments Assigned",
 		"dataIndex": "testCount",
 		"key": "testCount"
 	}, {
-		"title": "Student Taking Assessment",
+		"title": "Students Taking Assessment",
 		"dataIndex": "studentCount",
 		"key": "studentCount"
 	}]

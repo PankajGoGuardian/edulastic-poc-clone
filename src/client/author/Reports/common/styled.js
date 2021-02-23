@@ -69,7 +69,7 @@ export const StyledFilterWrapper = styled.div`
     margin-right: 16px;
     width: 230px;
     flex-shrink: 0;
-    height: calc(100vh - 250px);
+    height: calc(100vh - 200px);
     position: relative;
   `}
 

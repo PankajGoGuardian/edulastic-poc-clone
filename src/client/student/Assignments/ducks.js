@@ -40,7 +40,11 @@ import {
   toggleIosRestrictNavigationModalAction,
 } from '../Login/ducks'
 
-import { getCurrentGroup } from '../Reports/ducks'
+import {
+  getCurrentGroup,
+  getCurrentStudentDistrictId,
+  getSelectedCassSectionDistrictId,
+} from '../Reports/ducks'
 // external actions
 import {
   assignmentSchema,
@@ -558,8 +562,20 @@ export function* fetchAssignments() {
     const groupStatus = yield select((state) =>
       get(state, 'studentAssignment.groupStatus', 'all')
     )
+    // get districtId from group if selected otherwise get from student
+    let districtId = yield select(getSelectedCassSectionDistrictId)
+    if (!districtId) {
+      districtId = yield select(getCurrentStudentDistrictId)
+    }
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId, '', groupStatus),
+      call(
+        assignmentApi.fetchAssigned,
+        groupId,
+        '',
+        groupStatus,
+        userId,
+        districtId
+      ),
       call(reportsApi.fetchReports, groupId, '', '', groupStatus),
     ])
 

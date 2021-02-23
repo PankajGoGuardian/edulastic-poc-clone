@@ -1,10 +1,19 @@
 import React, { useState } from 'react'
 import { Button, Form, Pagination, Table, Tooltip } from 'antd'
+import styled from 'styled-components'
+import { CustomModalStyled, FlexContainer } from '@edulastic/common'
 import moment from 'moment'
-import { FlexContainer } from '@edulastic/common'
 import { IconEye, IconTrash } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import { StyledFilterSelect } from '../Common/StyledComponents'
+import ManageSubscription from '../../author/ManageSubscription'
+
+const FullScreenModal = styled(CustomModalStyled)`
+  height: 100%;
+  .ant-modal-content {
+    height: 100%;
+  }
+}`
 
 const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
   {
@@ -156,13 +165,14 @@ const SearchFilters = Form.create({
 
 const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
-  handleViewLicense,
   handleDeleteLicense,
   manageLicensesData,
   setSearchType,
 }) => {
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
+  const [isVisible, setVisible] = useState(false)
+  const [currentLicenseIds, setCurrentLicenseIds] = useState()
   const handlePageChange = (pageNo) => {
     setPage(pageNo)
     fetchLicensesBySearchType({
@@ -171,8 +181,22 @@ const ManageSubscriptionsByLicenses = ({
       limit: 20,
     })
   }
+  const handleViewLicense = (licenseIds) => {
+    setCurrentLicenseIds(['602f984e0b683463a674112f', '602f984e0b683463a6741132', '602f984e0b683463a6741135'])
+    setVisible(true)
+  }
   return (
     <>
+      <FullScreenModal
+        visible={isVisible}
+        title="Manage Subscription"
+        onCancel={() => setVisible(false)}
+        modalWidth="100%"
+        top='0'
+        footer={[]}
+      >
+        <ManageSubscription licenseIds={currentLicenseIds} />
+      </FullScreenModal>
       <FlexContainer justifyContent="space-between">
         <SearchFilters
           fetchLicensesBySearchType={fetchLicensesBySearchType}

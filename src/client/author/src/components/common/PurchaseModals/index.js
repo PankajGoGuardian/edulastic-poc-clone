@@ -45,6 +45,7 @@ const PurchaseFlowModals = (props) => {
     showBuyMoreModal,
     setShowBuyMoreModal,
     isBuyMoreModalOpened,
+    licenseIds,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -137,6 +138,7 @@ const PurchaseFlowModals = (props) => {
         ...data,
         productIds: [...productsCart],
         emailIds,
+        licenseIds,
       })
       setProductsCart({})
     }

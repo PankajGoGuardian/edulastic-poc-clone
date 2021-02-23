@@ -8,6 +8,7 @@ import { StyledAntdTable } from './styled'
 
 const Userlist = ({
   users,
+  licenseIds,
   bulkEditUsersPermission,
   teacherPremiumProductId,
   sparkMathProductId,
@@ -51,6 +52,7 @@ const Userlist = ({
       usersPermission: changes,
       teacherPremiumProductId,
       sparkMathProductId,
+      licenseIds,
     })
   }
 

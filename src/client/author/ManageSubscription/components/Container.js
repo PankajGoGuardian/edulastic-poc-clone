@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { withNamespaces } from '@edulastic/localization'
-import { subscriptions as constants } from '@edulastic/constants'
+import { subscriptions as constants, roleuser } from '@edulastic/constants'
 import { groupBy } from 'lodash'
 import loadable from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PurchaseFlowModals from '../../src/components/common/PurchaseModals'
-import { getUserOrgId } from '../../src/selectors/user'
+import { getUserOrgId, getUserRole } from '../../src/selectors/user'
 import { getDashboardTilesSelector } from '../../Dashboard/ducks'
 import {
   getSubscriptionSelector,
@@ -55,6 +55,8 @@ const ManageSubscriptionContainer = ({
   fetchMultipleSubscriptions,
   loading,
   bulkEditUsersPermission,
+  licenseIds,
+  userRole,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -114,7 +116,7 @@ const ManageSubscriptionContainer = ({
     : null
 
   useEffect(() => {
-    fetchMultipleSubscriptions()
+    fetchMultipleSubscriptions({ licenseIds })
   }, [])
 
   const isSubscribed =
@@ -154,16 +156,19 @@ const ManageSubscriptionContainer = ({
 
   return (
     <>
-      <Header
-        isSubscribed={isSubscribed}
-        subType={subType}
-        subEndDate={subEndDate}
-        isPaidPremium={isPaidPremium}
-        setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        hasAllPremiumProductAccess={hasAllPremiumProductAccess}
-        setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
-        settingProductData={settingProductData}
-      />
+      {userRole !== roleuser.EDULASTIC_ADMIN && (
+        <Header
+          isSubscribed={isSubscribed}
+          subType={subType}
+          subEndDate={subEndDate}
+          isPaidPremium={isPaidPremium}
+          setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+          hasAllPremiumProductAccess={hasAllPremiumProductAccess}
+          setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+          settingProductData={settingProductData}
+        />
+      )}
+
       <ContentWrapper>
         <LicenseCountSection
           subsLicenses={subsLicenses}
@@ -173,6 +178,7 @@ const ManageSubscriptionContainer = ({
         <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
         <Userlist
           users={users}
+          licenseIds={licenseIds}
           bulkEditUsersPermission={bulkEditUsersPermission}
           teacherPremiumProductId={teacherPremiumProductId}
           sparkMathProductId={sparkMathProductId}
@@ -180,6 +186,7 @@ const ManageSubscriptionContainer = ({
       </ContentWrapper>
 
       <PurchaseFlowModals
+        licenseIds={licenseIds}
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         defaultSelectedProductIds={defaultSelectedProductIds}
@@ -231,6 +238,7 @@ const enhance = compose(
       products: getProducts(state),
       itemBankSubscriptions: getItemBankSubscriptions(state),
       dashboardTiles: getDashboardTilesSelector(state),
+      userRole: getUserRole(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

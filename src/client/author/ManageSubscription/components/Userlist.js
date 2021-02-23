@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { CheckboxLabel } from '@edulastic/common'
-import { isUndefined, isEmpty } from 'lodash'
+import { CheckboxLabel, EduButton } from '@edulastic/common'
+import { isUndefined, isEmpty, isObject } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
 import { StyledAntdTable, SaveButton } from './styled'
@@ -12,6 +12,7 @@ const Userlist = ({
   bulkEditUsersPermission,
   teacherPremiumProductId,
   sparkMathProductId,
+  subsLicenses,
 }) => {
   const [changes, setChanges] = useState({})
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
@@ -22,6 +23,23 @@ const Userlist = ({
     setIsSaveButtonVisible(false)
     setIsSaveButtonDisabled(false)
   }, [users])
+
+  const { premiumLicenseId, sparkMathLicenseId } = useMemo(() => {
+    let _premiumLicenseId = null
+    let _sparkMathLicenseId = null
+    for (const { productId, linkedProductId, licenseId } of subsLicenses) {
+      if (productId === teacherPremiumProductId) {
+        _premiumLicenseId = licenseId
+      }
+      if (linkedProductId === sparkMathProductId) {
+        _sparkMathLicenseId = licenseId
+      }
+    }
+    return {
+      premiumLicenseId: _premiumLicenseId,
+      sparkMathLicenseId: _sparkMathLicenseId,
+    }
+  }, [subsLicenses, teacherPremiumProductId, sparkMathProductId])
 
   const onChangeHandler = (userId, fieldName, isChecked) => {
     const newChanges = produce(changes, (draft) => {
@@ -61,9 +79,19 @@ const Userlist = ({
 
   const getXOR = (a, b) => (a || b) && !(a && b)
 
+  const getChange = (record) => {
+    if (isObject(record)) {
+      return record?.some((x) =>
+        [premiumLicenseId, sparkMathLicenseId].includes(x)
+      )
+    }
+    return record
+  }
+
   const getCheckbox = (record, key) => {
+    let disabled = false
     const isChecked = getXOR(
-      record[key],
+      getChange(record[key]),
       !isUndefined(changes[record.userId]?.[key])
     )
     const onChange = (e) => {
@@ -72,11 +100,20 @@ const Userlist = ({
       } = e
       onChangeHandler(record.userId, key, checked)
     }
+    if (key === 'hasTeacherPremium') {
+      disabled =
+        record.hasTeacherPremium.length &&
+        record.hasTeacherPremium !== premiumLicenseId
+    }
+    if (key === 'hasSparkMath') {
+      disabled =
+        record.hasSparkMath.length && record.hasSparkMath !== sparkMathLicenseId
+    }
     return (
       <CheckboxLabel
         onChange={onChange}
         checked={isChecked}
-        disabled={record.userId === currentUserId && key === 'hasManageLicense'}
+        disabled={disabled || (record.userId === currentUserId && key === 'hasManageLicense')}
       />
     )
   }

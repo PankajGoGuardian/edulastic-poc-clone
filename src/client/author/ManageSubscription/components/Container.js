@@ -174,6 +174,7 @@ const ManageSubscriptionContainer = ({
         <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
         <Userlist
           users={users}
+          subsLicenses={subsLicenses}
           userId={userId}
           bulkEditUsersPermission={bulkEditUsersPermission}
           teacherPremiumProductId={teacherPremiumProductId}

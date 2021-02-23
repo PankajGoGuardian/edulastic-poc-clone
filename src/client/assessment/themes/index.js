@@ -621,7 +621,11 @@ const AssessmentContainer = ({
      * @see https://snapwiz.atlassian.net/browse/EV-17309
      */
     const _itemId = items[currentItem]?._id
-    if (hasUserWork(_itemId, restProps.userWork || {})) {
+    const itemRows = items[currentItem]?.rows
+    const hasDrawingResponse = flatMap(itemRows, (r) => r.widgets).some(
+      (x) => x.type === questionType.HIGHLIGHT_IMAGE
+    )
+    if (hasUserWork(_itemId, restProps.userWork || {}) && hasDrawingResponse) {
       return []
     }
     return questions.filter((q) => {

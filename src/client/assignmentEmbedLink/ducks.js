@@ -2,6 +2,7 @@ import { createAction } from 'redux-starter-kit'
 import { takeLatest, put, call, select } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { assignmentApi, testsApi } from '@edulastic/api'
+import notification from '@edulastic/common/src/components/Notification'
 import { roleuser } from '@edulastic/constants'
 import { getClasses, getUserRole, getUserDetails } from '../student/Login/ducks'
 
@@ -48,6 +49,9 @@ function* fetchAssignmentsByTestIdSaga({ payload }) {
         yield call(testsApi.getById, payload)
         yield put(push(`/author/tests/tab/review/id/${payload}`))
       } catch (err) {
+        if (err?.status === 403) {
+          notification({ msg: 'Assignment is not available' })
+        }
         yield put(push('/author/assignments'))
       }
     }

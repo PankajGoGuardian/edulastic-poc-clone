@@ -31,7 +31,7 @@ const defaultConf = {
  * @param {{type?:String, messageKey: String, showButton?:boolean, msg?:String }} options
  */
 const notification = (options) => {
-  const { messageKey, msg, ...restOptions } = options
+  const { messageKey, msg, exact, ...restOptions } = options
   // get messages from localization
   let translatedMessage =
     msg ||
@@ -41,7 +41,11 @@ const notification = (options) => {
     ? ''
     : i18n.t(`notifications:${messageKey}.description`)
 
-  if (restOptions.type === 'error' && translatedMessage !== 'Incorrect') {
+  if (
+    restOptions.type === 'error' &&
+    translatedMessage !== 'Incorrect' &&
+    !exact
+  ) {
     translatedMessage = `${translatedMessage} Please try again later, or email support@edulastic.com.`
   }
 

@@ -1672,7 +1672,11 @@ function* receiveTestByIdSaga({ payload }) {
     const errorMessage = 'Unable to retrieve test info.'
     if (err.status === 403) {
       yield put(push('/author/tests'))
-      notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })
+      notification({
+        type: 'error',
+        messageKey: 'curriculumMakeApiErr',
+        exact: true,
+      })
     } else {
       notification({ msg: errorMessage })
     }
@@ -3009,7 +3013,11 @@ function* getTestIdFromVersionIdSaga({ payload }) {
         : 'Unable to retrieve test info.'
     yield put(push('/author/tests'))
     if (err.status === 403) {
-      notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })
+      notification({
+        type: 'error',
+        messageKey: 'curriculumMakeApiErr',
+        exact: true,
+      })
     } else {
       notification({ msg: errorMessage })
     }

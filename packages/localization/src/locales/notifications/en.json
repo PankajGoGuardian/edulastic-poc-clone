@@ -804,7 +804,7 @@
     "description": ""
   },
   "tryingToAccessPrivateTest": {
-    "message": "Trying to access private test",
+    "message": "This test is marked private",
     "description": ""
   },
   "redirectSuccessful": {
@@ -1840,7 +1840,7 @@
     "description": ""
   },
   "testIsExpired": {
-    "message": "Test is expired",
+    "message": "The due date for this assignment has passed",
     "description": ""
   },
   "selectLanguage": {

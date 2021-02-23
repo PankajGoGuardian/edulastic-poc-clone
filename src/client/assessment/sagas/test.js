@@ -725,7 +725,7 @@ function* loadTest({ payload }) {
       } else if (err.status === 302) {
         messageKey = 'testPausedOrClosedByTeacher'
       } else if (err.status === 403) {
-        if (userRole === roleuser.STUDENT) {
+        if (userRole === roleuser.STUDENT || userRole === roleuser.PARENT) {
           const { data = {} } = err.response || {}
           const { message: errorMessage } = data
           notification({
@@ -734,6 +734,9 @@ function* loadTest({ payload }) {
           Fscreen.exitFullscreen()
           return yield put(push('/home/assignments'))
         }
+        notification({
+          msg: 'This test is marked private',
+        })
       }
     }
     if (userRole === roleuser.STUDENT) {

@@ -13,6 +13,7 @@ const Header = ({
 }) => {
   return (
     <SubscriptionHeader
+      title="Manage Subscription"
       isSubscribed={isSubscribed}
       subType={subType}
       subEndDate={subEndDate}

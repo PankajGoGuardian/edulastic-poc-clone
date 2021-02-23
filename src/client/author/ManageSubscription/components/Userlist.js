@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { CheckboxLabel, EduButton } from '@edulastic/common'
+import { CheckboxLabel } from '@edulastic/common'
 import { isUndefined, isEmpty } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
-import { StyledAntdTable } from './styled'
+import { StyledAntdTable, SaveButton } from './styled'
 
 const Userlist = ({
   users,
@@ -15,9 +15,12 @@ const Userlist = ({
 }) => {
   const [changes, setChanges] = useState({})
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
 
   useEffect(() => {
     setChanges({})
+    setIsSaveButtonVisible(false)
+    setIsSaveButtonDisabled(false)
   }, [users])
 
   const onChangeHandler = (userId, fieldName, isChecked) => {
@@ -46,6 +49,7 @@ const Userlist = ({
   }
 
   const onSaveHandler = () => {
+    setIsSaveButtonDisabled(true)
     // TODO: fix the usersPermission so that the segregation in BE can be removed
     // maybe create a map based on license or productId
     bulkEditUsersPermission({
@@ -82,33 +86,39 @@ const Userlist = ({
       title: 'USERNAME',
       dataIndex: 'username',
       key: 'username',
+      sorter: true,
     },
     {
       title: 'EMAIL',
       dataIndex: 'email',
       key: 'email',
+      sorter: true,
     },
     {
       title: 'EXPIRATION DATE',
       dataIndex: 'expiresOn',
       key: 'expiresOn',
+      sorter: true,
     },
     {
       title: 'TEACHER PREMIUM',
       dataIndex: 'hasTeacherPremium',
       key: 'actionPremium',
+      sorter: true,
       render: (_, record) => getCheckbox(record, 'hasTeacherPremium'),
     },
     {
       title: 'SPARK MATH',
       dataIndex: 'hasSparkMath',
       key: 'actionSparkMath',
+      sorter: true,
       render: (_, record) => getCheckbox(record, 'hasSparkMath'),
     },
     {
       title: 'MANAGE LICENSES',
       dataIndex: 'hasManageLicense',
       key: 'actionAdmin',
+      sorter: true,
       render: (_, record) => getCheckbox(record, 'hasManageLicense'),
     },
   ]
@@ -125,7 +135,9 @@ const Userlist = ({
       </Col>
       {isSaveButtonVisible && (
         <Col span={2} offset={22}>
-          <EduButton onClick={onSaveHandler}>Save</EduButton>
+          <SaveButton disabled={isSaveButtonDisabled} onClick={onSaveHandler}>
+            Save
+          </SaveButton>
         </Col>
       )}
     </Row>

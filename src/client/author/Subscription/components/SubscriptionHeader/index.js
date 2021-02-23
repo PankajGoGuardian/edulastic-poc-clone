@@ -39,6 +39,7 @@ const SubscriptionHeader = ({
   showMultipleSubscriptions,
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
+  title,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -102,7 +103,7 @@ const SubscriptionHeader = ({
         <Title>
           <h2>
             <IconSubscriptionHighlight width={19} height={19} />
-            <span>Subscription</span>
+            <span>{title}</span>
           </h2>
         </Title>
         <ActionButtons>
@@ -177,12 +178,14 @@ SubscriptionHeader.propTypes = {
   settingProductData: PropTypes.func,
   setShowMultiplePurchaseModal: PropTypes.func,
   isBannerVisible: PropTypes.bool,
+  title: PropTypes.string,
 }
 SubscriptionHeader.defaultProps = {
   setShowSubscriptionAddonModal: () => {},
   settingProductData: () => {},
   setShowMultiplePurchaseModal: () => {},
   isBannerVisible: true,
+  title: 'Subscription',
 }
 
 export default memo(withNamespaces('header')(SubscriptionHeader))

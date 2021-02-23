@@ -1,6 +1,7 @@
 import { greenThird, title } from '@edulastic/colors'
 import { Icon, Spin } from 'antd'
 import styled from 'styled-components'
+import { EduButton } from '@edulastic/common'
 import { StyledTable } from '../../../common/styled'
 
 export const ContentWrapper = styled.div`
@@ -85,4 +86,8 @@ export const StyledStatusIcon = styled(Icon)`
 
 export const StyledSpin = styled(Spin)`
   position: fixed;
+`
+
+export const SaveButton = styled(EduButton)`
+  margin-top: 10px;
 `

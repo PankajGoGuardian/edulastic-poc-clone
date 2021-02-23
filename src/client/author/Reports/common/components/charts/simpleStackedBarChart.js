@@ -457,7 +457,6 @@ export const SimpleStackedBarChart = connect(
 const StyledStackedBarChartContainer = styled.div`
   padding: 10px;
   overflow: ${(props) => props.overflowStyle};
-  position: relative;
 
   .recharts-surface {
     overflow: ${(props) => props.overflowStyle};

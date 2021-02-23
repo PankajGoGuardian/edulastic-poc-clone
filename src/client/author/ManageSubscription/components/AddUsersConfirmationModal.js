@@ -43,7 +43,9 @@ const AddUsersConfirmationModal = ({
       {
         title: t('manageSubscriptions.name'),
         dataIndex: 'fullName',
-        render: () => <p>Name will be updated after first sign-up</p>,
+        render: (fullName) => (
+          <p>{fullName || 'Name will be updated after first sign-up'}</p>
+        ),
       },
       {
         title: t('manageSubscriptions.username'),

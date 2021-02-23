@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
-import { Button, Form, Pagination, Table, Tooltip } from 'antd'
-import moment from 'moment'
+import { themeColor } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
 import { IconEye, IconTrash } from '@edulastic/icons'
-import { themeColor } from '@edulastic/colors'
+import loadable from '@loadable/component'
+import { Button, Form, Pagination, Table, Tooltip } from 'antd'
+import moment from 'moment'
+import React, { useState } from 'react'
 import { StyledFilterSelect } from '../Common/StyledComponents'
+
+const SubsLicenseViewModal = loadable(() => import('./SubsLicenseViewModal'))
 
 const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
   {
@@ -23,11 +26,7 @@ const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
 
 const IconStyles = { width: '20px', cursor: 'pointer' }
 
-const LicensesInvoiceTable = ({
-  licensesData,
-  handleViewLicense,
-  handleDeleteLicense,
-}) => {
+const LicensesInvoiceTable = ({ licensesData, handleViewLicense }) => {
   const columns = [
     {
       title: 'Invoice Id',
@@ -79,11 +78,7 @@ const LicensesInvoiceTable = ({
             />
           </Tooltip>
           <Tooltip title="Delete License">
-            <IconTrash
-              onClick={() => handleDeleteLicense(licenseId)}
-              color={themeColor}
-              style={IconStyles}
-            />
+            <IconTrash color={themeColor} style={IconStyles} />
           </Tooltip>
         </FlexContainer>
       ),
@@ -156,13 +151,14 @@ const SearchFilters = Form.create({
 
 const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
-  handleViewLicense,
-  handleDeleteLicense,
   manageLicensesData,
   setSearchType,
+  upgradeUserSubscriptionAction,
 }) => {
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
+  const [currentLicense, setCurrentLicense] = useState({})
+  const [showLicenseViewModal, setShowLicenseViewModal] = useState(false)
   const handlePageChange = (pageNo) => {
     setPage(pageNo)
     fetchLicensesBySearchType({
@@ -171,6 +167,17 @@ const ManageSubscriptionsByLicenses = ({
       limit: 20,
     })
   }
+  const handleViewLicense = (licenseId) => {
+    const getCurrentLicense = licenses.find(
+      (license) => license.licenseId === licenseId
+    )
+    setCurrentLicense(getCurrentLicense)
+    setShowLicenseViewModal(true)
+  }
+  const closeViewLicenseModal = () => {
+    setShowLicenseViewModal(false)
+  }
+
   return (
     <>
       <FlexContainer justifyContent="space-between">
@@ -188,7 +195,6 @@ const ManageSubscriptionsByLicenses = ({
       <LicensesInvoiceTable
         licensesData={licenses}
         handleViewLicense={handleViewLicense}
-        handleDeleteLicense={handleDeleteLicense}
       />
       <Pagination
         hideOnSinglePage
@@ -197,6 +203,14 @@ const ManageSubscriptionsByLicenses = ({
         current={page}
         total={count}
       />
+      {searchType === 'TRIAL_PREMIUM' && showLicenseViewModal && (
+        <SubsLicenseViewModal
+          isVisible={showLicenseViewModal}
+          closeModal={closeViewLicenseModal}
+          extendTrialEndDate={upgradeUserSubscriptionAction}
+          currentLicense={currentLicense}
+        />
+      )}
     </>
   )
 }

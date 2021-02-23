@@ -12,7 +12,6 @@ const RubricGrading = ({
   rubricFeedback,
   currentScore,
   onRubricResponse,
-  isExpressGrader,
 }) => {
   const [showPreviewRubric, setShowRubricModal] = useState(false)
 
@@ -40,20 +39,17 @@ const RubricGrading = ({
       <PreviewRubricCard
         rubricData={rubricData}
         rubricFeedback={rubricFeedback}
-        isExpressGrader={isExpressGrader}
         onChange={submitRubricResponse}
       />
-      {!isExpressGrader && (
-        <RubricsButton
-          ml="0px"
-          noHover
-          isGhost
-          width="100%"
-          onClick={handleRubricAction}
-        >
-          view rubric details
-        </RubricsButton>
-      )}
+      <RubricsButton
+        ml="0px"
+        noHover
+        isGhost
+        width="100%"
+        onClick={handleRubricAction}
+      >
+        view rubric details
+      </RubricsButton>
       {showPreviewRubric && (
         <PreviewRubricModal
           visible={showPreviewRubric}

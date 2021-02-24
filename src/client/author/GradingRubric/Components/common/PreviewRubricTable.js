@@ -212,21 +212,6 @@ const RatingScrollContainer = styled(PerfectScrollbar)`
   padding: 2px 3px 12px 3px;
   white-space: nowrap;
   display: flex;
-  align-items: stretch;
-  ${(props) =>
-    props.visibleOnLoad &&
-    `
-    .ps__rail-x { 
-      display: block;
-      opacity: 0.2 !important;
-      width: 100%;
-      background-color: transparent !important;
-      .ps__thumb-x {
-        width: 100% !important;
-        height: 6px !important;
-      }
-    }
-  `}
 `
 
 const NavBtn = styled.div`

@@ -71,9 +71,10 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
 export default PreviewRubricCard
 
 const RatingButton = styled.div`
-  width: 38px;
-  height: 38px;
-  margin-left: 4px;
+  min-width: 35px;
+  height: 35px;
+  margin-right: 4px;
+  margin-bottom: 4px;
   font-weight: ${(props) => props.theme.bold};
   font-size: 18px;
   border-radius: 4px;
@@ -83,9 +84,10 @@ const RatingButton = styled.div`
   align-items: center;
   justify-content: center;
   user-select: none;
+  padding: 0px 4px;
 
-  &:first-child {
-    margin-left: 0px;
+  &:nth-child(5n) {
+    margin-right: 0px;
   }
 
   color: ${({ selected }) => (selected ? white : greyThemeDark1)};

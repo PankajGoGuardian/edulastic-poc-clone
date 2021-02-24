@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   LabelList,
+  Legend,
 } from 'recharts'
 
 import {
@@ -28,6 +29,7 @@ import {
 
 const SimpleAreaChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
+  legendWrapperStyle = { top: -10 },
   xTickTooltipPosition = 460,
   xTickToolTipWidth = 110,
   data = [],
@@ -75,6 +77,7 @@ const SimpleAreaChart = ({
     y: null,
     content: null,
   })
+  const [activeLegend, setActiveLegend] = useState(null)
 
   const chartData = useMemo(
     () => data.slice(pagination.startIndex, pagination.startIndex + pageSize),
@@ -91,6 +94,23 @@ const SimpleAreaChart = ({
       dx: 50,
     },
   }
+
+  const legendPayload = [
+    {
+      id: lineChartDataKey,
+      dataKey: lineChartDataKey,
+      color: lineProps.stroke,
+      value: lineYAxisLabel,
+      type: 'line',
+    },
+    {
+      id: chartDataKey,
+      dataKey: chartDataKey,
+      color: areaProps.fill,
+      value: yAxisLabel,
+      type: 'rect',
+    },
+  ]
 
   const scrollLeft = () => {
     let diff
@@ -156,6 +176,9 @@ const SimpleAreaChart = ({
       content: null,
     })
   }
+
+  const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
+  const onLegendMouseLeave = () => setActiveLegend(null)
 
   // chart navigation visibility and control
   const chartNavLeftVisibility = backendPagination
@@ -260,7 +283,16 @@ const SimpleAreaChart = ({
             }
             content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />}
           />
+          <Legend
+            wrapperStyle={legendWrapperStyle}
+            align="right"
+            verticalAlign="top"
+            onMouseEnter={onLegendMouseEnter}
+            onMouseLeave={onLegendMouseLeave}
+            payload={legendPayload}
+          />
           <Area
+            opacity={activeLegend && activeLegend !== chartDataKey ? 0.2 : 1}
             type="monotone"
             dataKey={chartDataKey}
             {...areaProps}
@@ -289,6 +321,9 @@ const SimpleAreaChart = ({
           ) : null}
           {lineChartDataKey ? (
             <Line
+              opacity={
+                activeLegend && activeLegend !== lineChartDataKey ? 0.2 : 1
+              }
               activeDot={{
                 onMouseOver: () => setIsDotActive(true),
                 onMouseLeave: () => setIsDotActive(false),

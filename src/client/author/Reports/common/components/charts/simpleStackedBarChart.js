@@ -13,6 +13,7 @@ import {
   LabelList,
   Brush,
   ReferenceLine,
+  Legend,
 } from 'recharts'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
@@ -62,6 +63,7 @@ const LabelText = (props) => {
 
 const SimpleStackedBarChartComponent = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
+  legendWrapperStyle = { top: -10 },
   xTickTooltipPosition = 460,
   xTickToolTipWidth = 110,
   pageSize: _pageSize,
@@ -114,6 +116,7 @@ const SimpleStackedBarChartComponent = ({
     y: null,
     content: null,
   })
+  const [activeLegend, setActiveLegend] = useState(null)
 
   const constants = {
     COLOR_BLACK: '#010101',
@@ -133,6 +136,23 @@ const SimpleStackedBarChartComponent = ({
     })
     setCopyData(data)
   }
+
+  const legendPayload = [
+    {
+      id: lineChartDataKey,
+      dataKey: lineChartDataKey,
+      color: lineProps.stroke,
+      value: lineYAxisLabel,
+      type: 'line',
+    },
+    {
+      id: bottomStackDataKey,
+      dataKey: bottomStackDataKey,
+      color: bottomStackBarProps.fill,
+      value: yAxisLabel,
+      type: 'rect',
+    },
+  ]
 
   const chartData = useMemo(() => [...data], [pagination])
 
@@ -207,6 +227,9 @@ const SimpleStackedBarChartComponent = ({
     }
     setXAxisTickTooltipData(data)
   }
+
+  const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
+  const onLegendMouseLeave = () => setActiveLegend(null)
 
   const onXAxisTickTooltipMouseOut = () => {
     setXAxisTickTooltipData({
@@ -343,6 +366,9 @@ const SimpleStackedBarChartComponent = ({
             onMouseOver={onBarMouseOver(1)}
             onMouseLeave={onBarMouseLeave(null)}
             {...bottomStackBarProps}
+            opacity={
+              activeLegend && activeLegend !== bottomStackDataKey ? 0.2 : 1
+            }
           />
           <Bar
             dataKey={topStackDataKey}
@@ -400,6 +426,9 @@ const SimpleStackedBarChartComponent = ({
           ) : null}
           {lineChartDataKey ? (
             <Line
+              opacity={
+                activeLegend && activeLegend !== lineChartDataKey ? 0.2 : 1
+              }
               activeDot={{
                 onMouseOver: () => {
                   setDotActive(true)
@@ -428,6 +457,14 @@ const SimpleStackedBarChartComponent = ({
               stroke="#010101"
             />
           ) : null}
+          <Legend
+            wrapperStyle={legendWrapperStyle}
+            align="right"
+            verticalAlign="top"
+            onMouseEnter={onLegendMouseEnter}
+            onMouseLeave={onLegendMouseLeave}
+            payload={legendPayload}
+          />
           <Tooltip
             cursor={
               typeof TooltipCursor === 'boolean'

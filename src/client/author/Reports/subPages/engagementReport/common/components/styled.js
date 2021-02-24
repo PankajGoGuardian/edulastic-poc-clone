@@ -81,4 +81,8 @@ export const TooltipDiv = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+
+  @media print {
+    white-space: normal;
+  }
 `

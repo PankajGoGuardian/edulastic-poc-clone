@@ -142,18 +142,18 @@ const SimpleStackedBarChartComponent = ({
   const legendPayload = showLegend
     ? [
         {
-          id: lineChartDataKey,
-          dataKey: lineChartDataKey,
-          color: lineProps.stroke,
-          value: lineYAxisLabel,
-          type: 'line',
-        },
-        {
           id: bottomStackDataKey,
           dataKey: bottomStackDataKey,
           color: bottomStackBarProps.fill,
           value: yAxisLabel,
           type: 'rect',
+        },
+        {
+          id: lineChartDataKey,
+          dataKey: lineChartDataKey,
+          color: lineProps.stroke,
+          value: lineYAxisLabel,
+          type: 'line',
         },
       ]
     : []

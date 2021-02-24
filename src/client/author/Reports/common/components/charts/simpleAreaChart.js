@@ -96,18 +96,18 @@ const SimpleAreaChart = ({
 
   const legendPayload = [
     {
-      id: lineChartDataKey,
-      dataKey: lineChartDataKey,
-      color: lineProps.stroke,
-      value: lineYAxisLabel,
-      type: 'line',
-    },
-    {
       id: chartDataKey,
       dataKey: chartDataKey,
       color: areaProps.fill,
       value: yAxisLabel,
       type: 'rect',
+    },
+    {
+      id: lineChartDataKey,
+      dataKey: lineChartDataKey,
+      color: lineProps.stroke,
+      value: lineYAxisLabel,
+      type: 'line',
     },
   ]
 

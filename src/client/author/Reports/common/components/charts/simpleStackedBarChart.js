@@ -128,6 +128,7 @@ const SimpleStackedBarChartComponent = ({
       angle: -90,
       dx: 50,
     },
+    INTERVAL: lineChartDataKey ? 0 : 'preserveEnd',
   }
 
   if (data !== copyData) {
@@ -341,6 +342,7 @@ const SimpleStackedBarChartComponent = ({
             domain={yDomain}
             tick={constants.TICK_FILL}
             ticks={ticks}
+            interval={constants.INTERVAL}
             tickFormatter={yTickFormatter}
             label={constants.Y_AXIS_LABEL}
             axisLine={false}
@@ -417,6 +419,7 @@ const SimpleStackedBarChartComponent = ({
               label={constants.LINE_Y_AXIS_LABEL}
               ticks={lineTicks}
               orientation="right"
+              interval={constants.INTERVAL}
               tickFormatter={lineYTickFormatter}
               axisLine={false}
               tickLine={{

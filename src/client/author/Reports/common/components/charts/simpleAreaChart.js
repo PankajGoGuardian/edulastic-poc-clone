@@ -91,6 +91,7 @@ const SimpleAreaChart = ({
       angle: -90,
       dx: 50,
     },
+    INTERVAL: lineChartDataKey ? 0 : 'preserveEnd',
   }
 
   const legendPayload = [
@@ -260,6 +261,7 @@ const SimpleAreaChart = ({
           />
           <YAxis
             type="number"
+            interval={constants.INTERVAL}
             domain={yDomain}
             tick={constants.TICK_FILL}
             ticks={ticks}
@@ -302,6 +304,7 @@ const SimpleAreaChart = ({
           {lineChartDataKey ? (
             <YAxis
               type="number"
+              interval={constants.INTERVAL}
               yAxisId="lineChart"
               domain={lineYDomain || null}
               label={constants.LINE_Y_AXIS_LABEL}

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { Spin } from 'antd'
 import { debounce } from 'lodash'
 import { userApi } from '@edulastic/api'
 import {
@@ -12,6 +13,8 @@ import { CheckboxWrpper } from './styled'
 
 const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
 
+const loaderStyles = { height: '30px' }
+
 const AddUsersModal = ({
   isVisible,
   onCancel,
@@ -24,6 +27,7 @@ const AddUsersModal = ({
   const [fieldValue, setFieldValue] = useState([])
   const [checkboxValues, setCheckboxValues] = useState([])
   const [usersList, setUsersList] = useState([])
+  const [isFetchingUsers, setIsFetchingUsers] = useState(false)
 
   const handleOnChange = (value) => setFieldValue(value)
   const handleAddUsers = () => {
@@ -98,10 +102,17 @@ const AddUsersModal = ({
     } catch (e) {
       setUsersList([])
       console.warn(e)
+    } finally {
+      setIsFetchingUsers(false)
     }
   }
 
-  const handleUsersSearch = debounce(fetchUsers, 200)
+  const handleUsersFetch = debounce(fetchUsers, 800)
+
+  const handleUsersSearch = (searchString) => {
+    setIsFetchingUsers(true)
+    handleUsersFetch(searchString)
+  }
 
   return (
     <CustomModalStyled
@@ -147,11 +158,17 @@ const AddUsersModal = ({
           onChange={handleOnChange}
           getPopupContainer={(e) => e.parentNode}
         >
-          {usersList.map((emailId) => (
-            <SelectInputStyled.Option key={emailId}>
-              {emailId}
+          {isFetchingUsers ? (
+            <SelectInputStyled.Option key="loader" style={loaderStyles}>
+              <Spin />
             </SelectInputStyled.Option>
-          ))}
+          ) : (
+            usersList.map((emailId) => (
+              <SelectInputStyled.Option key={emailId}>
+                {emailId}
+              </SelectInputStyled.Option>
+            ))
+          )}
         </SelectInputStyled>
         <CheckboxWrpper>
           <CheckBoxGrp value={checkboxValues} onChange={handleOnCheck}>

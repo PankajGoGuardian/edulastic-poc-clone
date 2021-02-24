@@ -155,16 +155,41 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
     const { addUsersPayload, licenses = [] } = payload
     const res = yield call(userApi.adddBulkTeacher, addUsersPayload) || []
 
-    const users = res.map((x) => x._id)
-    const result = yield call(
-      manageSubscriptionsApi.upgradeUsersSubscriptions,
-      {
-        users,
-        licenses,
-      }
-    ) || {}
+    const users = res.map((x) => x._id).filter((x) => x)
+    if (users.length) {
+      const result = yield call(
+        manageSubscriptionsApi.upgradeUsersSubscriptions,
+        {
+          users,
+          licenses,
+        }
+      ) || {}
 
-    if (Object.keys(result).length) {
+      if (Object.keys(result).length) {
+        for (const user of res) {
+          result[user._id] = {
+            ...result[user._id],
+            username: user.username,
+            status: user.status,
+          }
+        }
+        yield put(upgradeUsersSubscriptionsSuccessAction(Object.values(result)))
+      }
+      if (licenses.length) {
+        yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
+      } else {
+        const existingUsersData = yield select(getUsersSelector)
+        const existingUserIds = existingUsersData.map((x) => x.userId)
+        const newData = [...existingUsersData]
+        Object.values(result).forEach((x) => {
+          if (!existingUserIds.includes(x.userId)) {
+            newData.push(x)
+          }
+        })
+        yield put(updateManageSubscriptionsAction(newData))
+      }
+    } else {
+      const result = {}
       for (const user of res) {
         result[user._id] = {
           ...result[user._id],
@@ -173,19 +198,6 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
         }
       }
       yield put(upgradeUsersSubscriptionsSuccessAction(Object.values(result)))
-    }
-    if (licenses.length) {
-      yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
-    } else {
-      const existingUsersData = yield select(getUsersSelector)
-      const existingUserIds = existingUsersData.map((x) => x.userId)
-      const newData = [...existingUsersData]
-      Object.values(result).forEach((x) => {
-        if (!existingUserIds.includes(x.userId)) {
-          newData.push(x)
-        }
-      })
-      yield put(updateManageSubscriptionsAction(newData))
     }
   } catch (err) {
     captureSentryException(err)

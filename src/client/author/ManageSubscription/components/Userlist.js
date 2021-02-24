@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import { CheckboxLabel, EduButton } from '@edulastic/common'
+import { CheckboxLabel } from '@edulastic/common'
 import { isUndefined, isEmpty, isObject } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
@@ -90,31 +90,33 @@ const Userlist = ({
   }
 
   const getCheckbox = (record, key) => {
+    const { userId, hasTeacherPremium = '', hasSparkMath = '' } = record
     let disabled = false
     const isChecked = getXOR(
       getChange(record[key]),
-      !isUndefined(changes[record.userId]?.[key])
+      !isUndefined(changes[userId]?.[key])
     )
     const onChange = (e) => {
       const {
         target: { checked },
       } = e
-      onChangeHandler(record.userId, key, checked)
+      onChangeHandler(userId, key, checked)
     }
     if (key === 'hasTeacherPremium') {
       disabled =
-        record.hasTeacherPremium.length &&
-        record.hasTeacherPremium !== premiumLicenseId
+        hasTeacherPremium.length && hasTeacherPremium !== premiumLicenseId
     }
     if (key === 'hasSparkMath') {
-      disabled =
-        record.hasSparkMath.length && record.hasSparkMath !== sparkMathLicenseId
+      disabled = hasSparkMath.length && hasSparkMath !== sparkMathLicenseId
     }
     return (
       <CheckboxLabel
         onChange={onChange}
         checked={isChecked}
-        disabled={disabled || (record.userId === currentUserId && key === 'hasManageLicense')}
+        disabled={
+          disabled ||
+          (record.userId === currentUserId && key === 'hasManageLicense')
+        }
       />
     )
   }

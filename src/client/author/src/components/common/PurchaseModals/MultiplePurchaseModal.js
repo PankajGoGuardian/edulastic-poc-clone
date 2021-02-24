@@ -105,6 +105,7 @@ const MultiplePurchaseModal = ({
           width="220px"
           onClick={handlePayWithCard}
           disabled={!premiumSubsCount}
+          data-cy="payWithCC"
         >
           PAY WITH CREDIT CARD{' '}
           {premiumSubsCount && `$${premiumTotalPrice + sparkMathTotalPrice}`}
@@ -126,7 +127,11 @@ const MultiplePurchaseModal = ({
               data-cy="selectNumberOfPremiumSubs"
             >
               {premiumCountArray.map((count) => (
-                <SelectInputStyled.Option key={count} value={count}>
+                <SelectInputStyled.Option
+                  data-cy={`premiumCount-${count}`}
+                  key={count}
+                  value={count}
+                >
                   {count}
                 </SelectInputStyled.Option>
               ))}
@@ -145,7 +150,11 @@ const MultiplePurchaseModal = ({
               disabled={!premiumSubsCount}
             >
               {sparkMathCountArray.map((count) => (
-                <SelectInputStyled.Option key={count} value={count}>
+                <SelectInputStyled.Option
+                  data-cy={`sparkMathCount-${count}`}
+                  key={count}
+                  value={count}
+                >
                   {count}
                 </SelectInputStyled.Option>
               ))}

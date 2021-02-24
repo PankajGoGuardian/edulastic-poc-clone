@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import { CheckboxLabel, EduButton } from '@edulastic/common'
 import { isUndefined, isEmpty, isObject } from 'lodash'
@@ -136,6 +137,10 @@ const Userlist = ({
       dataIndex: 'expiresOn',
       key: 'expiresOn',
       sorter: true,
+      render: (exipiresOn) =>
+        exipiresOn === '-'
+          ? exipiresOn
+          : moment(exipiresOn).format('MMM DD, YYYY'),
     },
     {
       title: 'TEACHER PREMIUM',

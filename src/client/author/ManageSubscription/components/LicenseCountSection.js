@@ -1,6 +1,7 @@
-import { EduButton, FlexContainer } from '@edulastic/common'
-import PropTypes from 'prop-types'
 import React from 'react'
+import moment from 'moment'
+import PropTypes from 'prop-types'
+import { EduButton, FlexContainer } from '@edulastic/common'
 import { Count, Countbox, GreyBox, LeftCol, RightCol } from './styled'
 
 const LicenseCountSection = ({
@@ -23,7 +24,9 @@ const LicenseCountSection = ({
     subsLicenses.map((license) => (
       <GreyBox>
         <LeftCol>
-          <span>Expires {license.expiresOn}</span>
+          <span data-cy={`${license.productName}-expiresOn`}>
+            Expires {moment(license.expiresOn).format('MMM DD, YYYY')}
+          </span>
           <h4>{license.productName}</h4>
           <EduButton
             isGhost
@@ -41,11 +44,15 @@ const LicenseCountSection = ({
         </LeftCol>
         <RightCol>
           <Countbox>
-            <Count>{license.totalCount}</Count>
+            <Count data-cy={`${license.productName}-totalCount`}>
+              {license.totalCount}
+            </Count>
             <span>Purchased</span>
           </Countbox>
           <Countbox>
-            <Count>{license.totalCount - license.usedCount}</Count>
+            <Count data-cy={`${license.productName}-availableCount`}>
+              {license.totalCount - license.usedCount}
+            </Count>
             <span>Available</span>
           </Countbox>
         </RightCol>

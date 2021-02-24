@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
-import { find, keyBy, omitBy, isEmpty, isNaN } from 'lodash'
+import { find, groupBy, keyBy, omitBy, isEmpty, isNaN } from 'lodash'
 import { StyledCard, StyledTable } from '../styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import { ResponseTag } from './responseTag'
@@ -226,7 +226,10 @@ export const ResponseFrequencyTable = ({
         ) {
           str = record.validation[0] === comboKey ? 'Correct' : 'Incorrect'
         }
-
+        // sort characters in str
+        if (str && !['Correct', 'Incorrect'].includes(str)) {
+          str = str.split('').sort().join('')
+        }
         return {
           value: Math.round((data[comboKey] / sum) * 100),
           count: data[comboKey],
@@ -244,6 +247,24 @@ export const ResponseFrequencyTable = ({
       'multiple choice - multiple response',
       // "multiple selection"
     ]
+
+    // group data by key
+    if (checkForQtypes.includes(record.qType.toLocaleLowerCase())) {
+      const groupedArr = groupBy(arr, 'key')
+      arr = Object.keys(groupedArr).map((k) => {
+        const { value, count } = groupedArr[k].reduce(
+          (res, ele) => ({
+            value: res.value + ele.value,
+            count: res.count + ele.count,
+          }),
+          {
+            value: 0,
+            count: 0,
+          }
+        )
+        return { ...groupedArr[k][0], value, count }
+      })
+    }
 
     if (
       checkForQtypes.includes(record.qType.toLocaleLowerCase()) &&

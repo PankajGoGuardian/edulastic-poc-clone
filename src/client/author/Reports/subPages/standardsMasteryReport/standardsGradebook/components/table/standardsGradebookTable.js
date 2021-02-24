@@ -157,14 +157,6 @@ const StandardsGradebookTableComponent = ({
 
   const filteredTableData = getFilteredTableData()
 
-  const scrollX = useMemo(() => {
-    const standardCols = flatMap(
-      filteredTableData,
-      ({ standardsInfo }) => standardsInfo
-    ).length
-    return standardCols * 160 || '100%'
-  }, [filteredTableData])
-
   const getDisplayValue = (item, _analyseBy) => {
     let printData
     if (!item) {
@@ -399,6 +391,11 @@ const StandardsGradebookTableComponent = ({
   }
 
   const columnsData = getColumnsData()
+
+  const scrollX = useMemo(() => {
+    const visibleColumns = columnsData.filter((column) => !column.visibleOn)
+    return visibleColumns.length * 180 || '100%'
+  }, [columnsData])
 
   const compareByDropDownData = next(
     dropDownFormat.compareByDropDownData,

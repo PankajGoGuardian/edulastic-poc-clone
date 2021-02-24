@@ -207,9 +207,6 @@ export default connect(
 )(AssessmentAutoComplete)
 
 const AutoCompleteContainer = styled.div`
-  .ant-select-auto-complete {
-    padding: 5px;
-  }
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
     white-space: nowrap;

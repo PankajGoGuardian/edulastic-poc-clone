@@ -22,6 +22,7 @@ const SubHeader = ({
     <SecondaryHeader
       style={{
         marginBottom: isShowBreadcrumb ? 20 : 0,
+        paddingLeft: '5px',
       }}
     >
       <HeaderTitle>

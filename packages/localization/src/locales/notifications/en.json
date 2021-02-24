@@ -280,7 +280,7 @@
     "description": ""
   },
   "curriculumMakeApiErr": {
-    "message": "You can no longer use this, as sharing access has been revoked by author.",
+    "message": "You can no longer use this, as sharing access has been revoked by author",
     "description": ""
   },
   "curriculumMakeApiWarn": {

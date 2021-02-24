@@ -135,6 +135,7 @@ const SimpleStackedBarWithLineChartContainer = ({
       lineDotProps={{ stroke: themeColor, strokeWidth: 2, r: 4 }}
       lineActiveDotProps={{ stroke: '#ffffff', strokeWidth: 3, r: 5 }}
       overflowStyle="visible"
+      showLegend
     />
   )
 }

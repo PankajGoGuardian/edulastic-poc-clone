@@ -101,6 +101,7 @@ const SimpleStackedBarChartComponent = ({
   overflowStyle = 'hidden',
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
+  showLegend = false,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -137,22 +138,24 @@ const SimpleStackedBarChartComponent = ({
     setCopyData(data)
   }
 
-  const legendPayload = [
-    {
-      id: lineChartDataKey,
-      dataKey: lineChartDataKey,
-      color: lineProps.stroke,
-      value: lineYAxisLabel,
-      type: 'line',
-    },
-    {
-      id: bottomStackDataKey,
-      dataKey: bottomStackDataKey,
-      color: bottomStackBarProps.fill,
-      value: yAxisLabel,
-      type: 'rect',
-    },
-  ]
+  const legendPayload = showLegend
+    ? [
+        {
+          id: lineChartDataKey,
+          dataKey: lineChartDataKey,
+          color: lineProps.stroke,
+          value: lineYAxisLabel,
+          type: 'line',
+        },
+        {
+          id: bottomStackDataKey,
+          dataKey: bottomStackDataKey,
+          color: bottomStackBarProps.fill,
+          value: yAxisLabel,
+          type: 'rect',
+        },
+      ]
+    : []
 
   const chartData = useMemo(() => [...data], [pagination])
 
@@ -457,14 +460,16 @@ const SimpleStackedBarChartComponent = ({
               stroke="#010101"
             />
           ) : null}
-          <Legend
-            wrapperStyle={legendWrapperStyle}
-            align="right"
-            verticalAlign="top"
-            onMouseEnter={onLegendMouseEnter}
-            onMouseLeave={onLegendMouseLeave}
-            payload={legendPayload}
-          />
+          {showLegend && (
+            <Legend
+              wrapperStyle={legendWrapperStyle}
+              align="right"
+              verticalAlign="top"
+              onMouseEnter={onLegendMouseEnter}
+              onMouseLeave={onLegendMouseLeave}
+              payload={legendPayload}
+            />
+          )}
           <Tooltip
             cursor={
               typeof TooltipCursor === 'boolean'

@@ -17,11 +17,11 @@ const SubsLicenseViewModal = ({
   extendTrialEndDate,
   currentLicense,
 }) => {
-  const { startDate, endDate, licenseId, productType, userId } = currentLicense
+  const { startDate, endDate, userId } = currentLicense
   const [fieldData, setFieldData] = useState({
     subStartDate: new Date(startDate).getTime(),
     subEndDate: new Date(endDate).getTime(),
-    csManager: '',
+    customerSuccessManager: '',
     opportunityId: '',
     notes: '',
   })
@@ -36,8 +36,7 @@ const SubsLicenseViewModal = ({
   const handleValidateFields = () => {
     extendTrialEndDate({
       ...fieldData,
-      licenseId,
-      subType: productType,
+      subType: 'TRIAL_PREMIUM',
       userIds: [userId],
     })
   }
@@ -101,8 +100,10 @@ const SubsLicenseViewModal = ({
         <FieldLabel>CS Manager</FieldLabel>
         <TextInputStyled
           placeholder="Type the CS Manager"
-          value={fieldData.csManager || ''}
-          onChange={(e) => handleFieldChange('csManager')(e.target.value)}
+          value={fieldData.customerSuccessManager || ''}
+          onChange={(e) =>
+            handleFieldChange('customerSuccessManager')(e.target.value)
+          }
         />
       </StyledFieldRow>
       <StyledFieldRow>

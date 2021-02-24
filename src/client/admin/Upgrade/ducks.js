@@ -273,7 +273,6 @@ function* upgradeDistrict({ payload }) {
 }
 
 function* upgradeUserData({ payload }) {
-  console.log('payload', payload)
   try {
     const { result } = yield call(manageSubscriptionApi, payload)
     if (result.success) {

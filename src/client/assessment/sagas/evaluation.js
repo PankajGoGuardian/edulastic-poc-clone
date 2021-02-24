@@ -123,7 +123,7 @@ function* evaluateAnswers({ payload: groupId }) {
             shuffledOptions: studentActivity.shuffledOptions,
             userWork: studentActivity.userWork,
           }
-    const { evaluations, maxScore, score } = yield call(
+    const { evaluations: _evaluations, maxScore, score } = yield call(
       testItemsApi.evaluation,
       testItemId,
       activity
@@ -141,7 +141,10 @@ function* evaluateAnswers({ payload: groupId }) {
         view: 'preview',
       },
     })
-
+    const evaluations = {}
+    Object.keys(_evaluations).forEach((item) => {
+      evaluations[`${testItemId}_${item}`] = _evaluations[item]
+    })
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

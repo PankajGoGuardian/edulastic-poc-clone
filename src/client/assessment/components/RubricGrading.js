@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { isEqual } from 'lodash'
 import { EduButton } from '@edulastic/common'
-import { white } from '@edulastic/colors'
+import { themeColor, white } from '@edulastic/colors'
 import PreviewRubricModal from '../../author/GradingRubric/Components/common/PreviewRubricModal'
 import PreviewRubricCard from '../../author/GradingRubric/Components/common/PreviewRubricCard'
 
@@ -73,6 +73,7 @@ const RubricsWrapper = styled.div`
 const RubricsButton = styled(EduButton)`
   &:hover {
     &.ant-btn.ant-btn-primary {
+      background-color: ${themeColor};
       color: ${white};
     }
   }

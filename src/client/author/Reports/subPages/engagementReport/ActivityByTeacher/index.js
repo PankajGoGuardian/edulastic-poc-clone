@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 
@@ -34,16 +34,19 @@ const ActivityByTeacher = ({
     }
   }, [settings])
 
-  const metricInfo = get(activityByTeacher, 'data.result.metricInfo', [])
-  const normalizedMetricInfo = metricInfo.map((item) => {
-    const schoolNamesArr = (item.schoolNames || '')
-      .split(',')
-      .map((o) => o.trim())
-    const schoolNames = schoolNamesArr
-      .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-      .join(', ')
-    return { ...item, schoolNames }
-  })
+  const normalizedMetricInfo = useMemo(
+    () =>
+      get(activityByTeacher, 'data.result.metricInfo', []).map((item) => {
+        const schoolNamesArr = (item.schoolNames || '')
+          .split(',')
+          .map((o) => o.trim())
+        const schoolNames = schoolNamesArr
+          .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+          .join(', ')
+        return { ...item, schoolNames }
+      }),
+    [activityByTeacher]
+  )
 
   const onBarClickCB = (key) => {
     const _metricFilter = { ...metricFilter }
@@ -67,7 +70,7 @@ const ActivityByTeacher = ({
     return <DataSizeExceeded />
   }
 
-  if (!metricInfo.length) {
+  if (!normalizedMetricInfo.length) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 

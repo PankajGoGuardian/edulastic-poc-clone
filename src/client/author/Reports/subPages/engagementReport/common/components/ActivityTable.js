@@ -38,7 +38,7 @@ const ActivityTable = ({
   const { grade: studentGrade, subject: studentSubject, ...query } = filters
 
   const tableData = Object.keys(filter).length
-    ? data.filter((item) => filter[item[`${activityBy}Name`]])
+    ? data.filter((item) => filter[item[`${activityBy}Name`] || '-'])
     : data
 
   const onCsvConvert = (csvData) =>

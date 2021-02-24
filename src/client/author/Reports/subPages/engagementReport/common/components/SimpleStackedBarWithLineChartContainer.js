@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ticks } from 'd3-array'
 
 import { Row, Col } from 'antd'
@@ -15,21 +15,30 @@ const SimpleStackedBarWithLineChartContainer = ({
 }) => {
   let maxTestCount = 0
   let maxStudentCount = 0
-  const chartData = data
-    .map((item) => {
-      maxTestCount = Math.max(maxTestCount, item.testCount)
-      maxStudentCount = Math.max(maxStudentCount, item.studentCount)
-      return {
-        ...item,
-        schoolNames: item.schoolNames || '-',
-        [`${activityBy}Name`]: item[`${activityBy}Name`] || '-',
-        fill:
-          Object.keys(filter).length && !filter[item[`${activityBy}Name`]]
-            ? '#cccccc'
-            : lightGreen8,
-      }
-    })
-    .sort((a, b) => b.testCount - a.testCount)
+
+  const chartData = useMemo(
+    () =>
+      data
+        .map((item) => {
+          return {
+            ...item,
+            schoolNames: item.schoolNames || '-',
+            [`${activityBy}Name`]: item[`${activityBy}Name`] || '-',
+          }
+        })
+        .sort((a, b) => b.testCount - a.testCount),
+    [data]
+  )
+
+  // calculate max test count, max student count & determine item fill color
+  chartData.forEach((item) => {
+    maxTestCount = Math.max(maxTestCount, Number(item.testCount))
+    maxStudentCount = Math.max(maxStudentCount, Number(item.studentCount))
+    item.fill =
+      Object.keys(filter).length && !filter[item[`${activityBy}Name`]]
+        ? '#cccccc'
+        : lightGreen8
+  })
 
   const getTooltipJSX = (payload) => {
     if (payload && payload[0]?.payload) {

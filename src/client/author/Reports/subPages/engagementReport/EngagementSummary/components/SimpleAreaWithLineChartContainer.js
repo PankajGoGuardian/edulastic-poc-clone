@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import moment from 'moment'
 import { ticks } from 'd3-array'
 
@@ -41,18 +41,26 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
   let maxStudentCount = 0
 
   // filter items with invalid date and curate chartData
-  const chartData = data
-    .filter((item) => item.assessmentDate)
-    .map((item) => {
-      maxTestCount = Math.max(maxTestCount, Number(item.testCount))
-      maxStudentCount = Math.max(maxStudentCount, Number(item.studentCount))
-      return {
-        ...item,
-        date: moment(item.assessmentDate).format("MMM'YY"),
-        month: moment(item.assessmentDate).format('MMMM'),
-        year: Number(moment(item.assessmentDate).format('YY')),
-      }
-    })
+  const chartData = useMemo(
+    () =>
+      data
+        .filter((item) => item.assessmentDate)
+        .map((item) => {
+          return {
+            ...item,
+            date: moment(item.assessmentDate).format("MMM'YY"),
+            month: moment(item.assessmentDate).format('MMMM'),
+            year: Number(moment(item.assessmentDate).format('YY')),
+          }
+        }),
+    [data]
+  )
+
+  // calculate max test count & max student count
+  chartData.forEach((item) => {
+    maxTestCount = Math.max(maxTestCount, Number(item.testCount))
+    maxStudentCount = Math.max(maxStudentCount, Number(item.studentCount))
+  })
 
   // augment chart data with missing months
   const getAugmentedChartData = () => {

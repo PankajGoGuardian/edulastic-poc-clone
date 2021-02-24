@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 
@@ -35,7 +35,10 @@ const ActivityBySchool = ({
     }
   }, [settings])
 
-  const metricInfo = get(activityBySchool, 'data.result.metricInfo', [])
+  const metricInfo = useMemo(
+    () => get(activityBySchool, 'data.result.metricInfo', []),
+    [activityBySchool]
+  )
 
   const onBarClickCB = (key) => {
     const _metricFilter = { ...metricFilter }

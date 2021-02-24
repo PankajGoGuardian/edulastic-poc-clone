@@ -65,9 +65,7 @@ const SimpleAreaChart = ({
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
     startIndex:
-      isLeftPaginated && data.length > pageSize
-        ? data.length - pageSize - 1
-        : 0,
+      isLeftPaginated && data.length > pageSize ? data.length - pageSize : 0,
     endIndex: isLeftPaginated ? data.length - 1 : pageSize - 1,
   })
   const [isDotActive, setIsDotActive] = useState(false)

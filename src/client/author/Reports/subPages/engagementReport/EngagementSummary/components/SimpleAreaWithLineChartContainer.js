@@ -50,7 +50,7 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
         ...item,
         date: moment(item.assessmentDate).format("MMM'YY"),
         month: moment(item.assessmentDate).format('MMMM'),
-        year: moment(item.assessmentDate).format('YY'),
+        year: Number(moment(item.assessmentDate).format('YY')),
       }
     })
 
@@ -63,11 +63,12 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
         : MONTHS_OBJ[chartData[0].month] + 1
     let currYear =
       MONTHS_OBJ[chartData[0].month] === 12
-        ? Number(chartData[0].year) + 1
-        : Number(chartData[0].year)
+        ? chartData[0].year + 1
+        : chartData[0].year
     for (let i = 1; i < chartData.length; i++) {
       const nextMonthPos = MONTHS_OBJ[chartData[i].month]
-      while (currMonthPos !== nextMonthPos) {
+      const nextYear = chartData[i].year
+      while (currMonthPos !== nextMonthPos || currYear !== nextYear) {
         const currMonth = MONTHS_ARR[currMonthPos]
         augmented.push({
           month: currMonth,

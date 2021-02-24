@@ -137,14 +137,14 @@ function getStudentFilterCategory(x) {
   if (x.isAssigned === false) {
     return 'UNASSIGNED'
   }
-  if (x.redirected) {
-    return 'REDIRECTED'
-  }
   if (x.isPaused) {
     return 'PAUSED'
   }
   if (x.graded === 'GRADED') {
     return 'GRADED'
+  }
+  if (x.redirected) {
+    return 'REDIRECTED'
   }
   if (x.UTASTATUS === testActivityStatus.NOT_STARTED) {
     return 'NOT STARTED'
@@ -1380,7 +1380,7 @@ class ClassBoard extends Component {
                           studentUnselectAll()
                           this.setState({ studentFilter: v })
                         }}
-                        width="150px"
+                        width="170px"
                         height="30px"
                       >
                         {[
@@ -2006,4 +2006,6 @@ const FilterSelect = styled(SelectInputStyled)`
 `
 const FilterSpan = styled.span`
   padding-right: 5px;
+  font-size: 12px;
+  font-weight: 600;
 `

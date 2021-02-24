@@ -113,11 +113,6 @@ const PreviewRubricTable = ({
   useEffect(() => {
     if (rubricFeedback) {
       setSelectedRatings(rubricFeedback)
-      if (!isDisabled)
-        handleChange({
-          rubricFeedback,
-          score: calculateScore(data, rubricFeedback),
-        })
     }
   }, [rubricFeedback, isDisabled])
 

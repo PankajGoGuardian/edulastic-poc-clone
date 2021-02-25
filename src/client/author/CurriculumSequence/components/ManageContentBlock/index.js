@@ -8,7 +8,6 @@ import { Dropdown, Empty, Menu, Spin } from 'antd'
 import { pick, uniq } from 'lodash'
 import React, { useCallback, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import AssessmentPlayer from '../../../../assessment'
 import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
@@ -26,7 +25,6 @@ import {
   LoaderWrapper,
   ManageContentContainer,
   ManageContentOuterWrapper,
-  ModalWrapper,
   ResourceDataList,
   SearchBar,
   ManageContentLabel,
@@ -35,6 +33,7 @@ import {
   SearchByNavigationBar,
   SearchByTab,
 } from './styled'
+import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 
 const resourceTabs = ['tests', 'resources']
 const sourceList = [
@@ -398,20 +397,14 @@ const ManageContentBlock = (props) => {
             addLTIResource={addLTIResource}
           /> */}
         </ManageContentContainer>
-        <ModalWrapper
-          footer={null}
-          visible={testPreviewModalVisible}
-          onCancel={closePreviewModal}
-          width="100%"
-          height="100%"
-          destroyOnClose
-        >
-          <AssessmentPlayer
+        {testPreviewModalVisible && selectedTestForPreview && (
+          <TestPreviewModal
+            isModalVisible={testPreviewModalVisible}
             testId={selectedTestForPreview}
-            preview
+            showStudentPerformance
             closeTestPreviewModal={closePreviewModal}
           />
-        </ModalWrapper>
+        )}
       </div>
 
       {isWebsiteUrlResourceModal && (

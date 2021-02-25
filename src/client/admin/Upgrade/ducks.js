@@ -193,7 +193,9 @@ export const manageSubscriptionsByLicenses = createSlice({
       state.searchType = payload
     },
     viewLicense: (state, { payload }) => {}, // TODO!
-    deleteLicense: (state, { payload }) => {}, // TODO!
+    archiveLicenses: (state, { payload }) => {}, // TODO!
+    archiveLicensesSuccess: (state, { payload }) => {},
+    archiveLicensesError: (state) => {},
   },
 })
 
@@ -394,6 +396,22 @@ function* fetchLicensesByTypeSaga({ payload }) {
   }
 }
 
+function* archiveLicensesSaga({ payload }) {
+  try {
+    const result = payload
+    // const result = yield call(manageSubscriptionsApi.archiveLicenses, payload)
+    yield put(
+      manageSubscriptionsByLicenses.actions.archiveLicensesSuccess(result)
+    )
+  } catch (err) {
+    manageSubscriptionsByLicenses.actions.archiveLicensesError()
+    yield call(notification, {
+      type: 'error',
+      msg: 'Failed to archive licenses.',
+    })
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -408,6 +426,10 @@ function* watcherSaga() {
     yield takeEvery(
       manageSubscriptionsByLicenses.actions.fetchLicenses,
       fetchLicensesByTypeSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.archiveLicenses,
+      archiveLicensesSaga
     ),
   ])
 }

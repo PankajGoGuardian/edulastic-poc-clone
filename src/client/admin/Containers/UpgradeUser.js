@@ -55,7 +55,7 @@ function UpgradeUser({
   getSubscriptionAction,
   fetchLicenses,
   viewLicense,
-  deleteLicense,
+  archiveLicenses,
   manageLicensesData,
   setSearchType,
   extendTrialEndDate,
@@ -116,7 +116,7 @@ function UpgradeUser({
           getSubscriptionAction={getSubscriptionAction}
           fetchLicensesBySearchType={fetchLicenses}
           viewLicense={viewLicense}
-          deleteLicense={deleteLicense}
+          archiveLicenses={archiveLicenses}
           manageLicensesData={manageLicensesData}
           setSearchType={setSearchType}
           extendTrialEndDate={extendTrialEndDate}
@@ -161,7 +161,7 @@ const withConnect = connect(mapStateToProps, {
   setSearchType: manageSubscriptionsByLicenses.actions.setSearchType,
   fetchLicenses: manageSubscriptionsByLicenses.actions.fetchLicenses,
   viewLicense: manageSubscriptionsByLicenses.actions.viewLicense,
-  deleteLicense: manageSubscriptionsByLicenses.actions.deleteLicense,
+  archiveLicenses: manageSubscriptionsByLicenses.actions.archiveLicenses,
 })
 
 export default compose(withConnect)(UpgradeUser)

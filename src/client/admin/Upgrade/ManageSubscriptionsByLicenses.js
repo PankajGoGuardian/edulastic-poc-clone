@@ -179,6 +179,7 @@ const ManageSubscriptionsByLicenses = ({
   isFetchingOrganization,
   districtList,
   searchRequest,
+  archiveLicenses,
 }) => {
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
@@ -242,6 +243,7 @@ const ManageSubscriptionsByLicenses = ({
       </FlexContainer>
       <LicensesInvoiceTable
         licensesData={licenses}
+        archiveLicenses={archiveLicenses}
         handleViewLicense={handleViewLicense}
       />
       <Pagination

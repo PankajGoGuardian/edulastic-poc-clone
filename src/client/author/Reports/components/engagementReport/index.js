@@ -13,7 +13,7 @@ const links = [
     thumbnail: EngagementSummaryImg,
     location: '/author/reports/engagement-summary',
     description:
-      'View overall no. of assessments assigned and total no. of students taking the assessments over time',
+      'View overall no. of assessments assigned and total no. of students taking the assessments over time.',
   },
   {
     key: 'activityBySchool',
@@ -21,7 +21,7 @@ const links = [
     thumbnail: ActivityBySchoolImg,
     location: '/author/reports/activity-by-school',
     description:
-      'View the no. of assessments, active teacher and students taking assessment by each school',
+      'View the no. of assessments, active teacher and students taking assessment by each school.',
   },
   {
     key: 'activityByTeacher',
@@ -29,7 +29,7 @@ const links = [
     thumbnail: ActivityByTeacherImg,
     location: '/author/reports/activity-by-teacher',
     description:
-      'View the no. of assessments and students taking assessment under each teacher',
+      'View the no. of assessments and students taking assessment under each teacher.',
   },
 ]
 

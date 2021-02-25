@@ -97,7 +97,7 @@ const ReportListContent = ({
       .flatMap((_item) => _item?.widgets)
       ?.find((_item) => _item?.widgetType === 'resource')
 
-  const { scratchPad: { attachments, dimensions } = {} } = questionActivity
+  const { scratchPad: { attachments, dimensions } = {} } = questionActivity?.[0]
 
   const handleShowStudentWork = () => {
     const hasDrawingResponse = (item?.data?.questions || []).some(

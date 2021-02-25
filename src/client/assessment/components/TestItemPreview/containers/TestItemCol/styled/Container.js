@@ -79,5 +79,5 @@ export const WidgetContainer = styled.div`
   min-height: max-content; // to fix height issue with safari
 `
 export const FilesViewContainer = styled.div`
-  padding: 35px;
+  padding: 10px 35px;
 `

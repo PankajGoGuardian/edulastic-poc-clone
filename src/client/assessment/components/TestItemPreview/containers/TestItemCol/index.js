@@ -161,13 +161,15 @@ class TestItemCol extends Component {
           isStudentAttempt={isStudentAttempt}
           isFeedbackVisible={isFeedbackVisible}
         />
-        {!isStudentAttempt && imageAttachments.length > 0 && (
-          <StudentWorkCollapse
-            isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-            toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-            imageAttachments={imageAttachments}
-          />
-        )}
+        {!isStudentAttempt &&
+          !isStudentReport &&
+          imageAttachments.length > 0 && (
+            <StudentWorkCollapse
+              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+              toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+              imageAttachments={imageAttachments}
+            />
+          )}
         {attachments && attachments.length > 0 && (
           <>
             <StyleH2Heading>Attachments</StyleH2Heading>

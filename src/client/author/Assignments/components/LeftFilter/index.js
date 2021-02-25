@@ -69,6 +69,7 @@ class LeftFilter extends React.Component {
         filters = { ...filters, pageNo: 1 }
       }
       loadAssignmentsSummary({
+        folderId: filters.folderId,
         districtId,
         filters: pickBy(filters, identity),
         filtering: true,

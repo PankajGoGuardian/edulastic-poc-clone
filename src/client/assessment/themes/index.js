@@ -785,7 +785,7 @@ const AssessmentContainer = ({
 
     const timeSpent = Date.now() - lastTime.current
 
-    if (isLast() && preview && !demo) {
+    if (isLast() && preview) {
       const unansweredQs = getUnAnsweredQuestions()
       if (unansweredQs.length && !needsToProceed) {
         return setUnansweredPopupSetting({
@@ -798,11 +798,13 @@ const AssessmentContainer = ({
           context: value,
         })
       }
-      evaluateForPreview({
-        currentItem,
-        timeSpent,
-        callback: submitPreviewTest,
-      })
+      if (!demo) {
+        evaluateForPreview({
+          currentItem,
+          timeSpent,
+          callback: submitPreviewTest,
+        })
+      }
     }
 
     if ((isLast() || value === 'SUBMIT') && !preview) {
@@ -860,6 +862,9 @@ const AssessmentContainer = ({
     hideHints()
     setCurrentItem(index)
     const timeSpent = Date.now() - lastTime.current
+    if (demo && isLast()) {
+      return submitPreviewTest()
+    }
     if (!demo) {
       const evalArgs = { currentItem, timeSpent }
       if (isLast()) {

@@ -281,6 +281,15 @@ const PrintAssessmentContainer = styled.div`
   @page {
     margin: 10px;
   }
+  /** 
+  * To avoid overflowing of sqare-root sign while printing  
+  * check https://snapwiz.atlassian.net/browse/EV-24370
+ */
+  @media print {
+    .hide-tail {
+      overflow: hidden !important;
+    }
+  }
 `
 
 const StyledTitle = styled.p`

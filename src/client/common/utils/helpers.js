@@ -236,7 +236,7 @@ export const getStartedUrl = () => '/getStarted'
 export const removeSignOutUrl = () => sessionStorage.removeItem('signOutUrl')
 
 export const validateQuestionsForDocBased = (questions, forDraft = false) => {
-  if (!questions.filter((q) => q.type !== 'sectionLabel').length) {
+  if (!forDraft && !questions.filter((q) => q.type !== 'sectionLabel').length) {
     notification({ type: 'warn', messageKey: 'aleastOneQuestion' })
     return false
   }

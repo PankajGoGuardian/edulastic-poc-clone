@@ -223,7 +223,7 @@ const ManageSubscriptionsByLicenses = ({
         onCancel={() => setVisible(false)}
         fullscreen
         destroyOnClose
-        footer={[]}
+        footer={null}
       >
         <ManageSubscription
           isEdulasticAdminView

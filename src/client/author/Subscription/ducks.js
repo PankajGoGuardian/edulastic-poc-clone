@@ -333,7 +333,6 @@ function* fetchUserSubscription() {
 }
 
 function* handleEdulasticAdminProductLicenseSaga({ payload }) {
-  console.log('payload', payload)
   try {
     const { productIds, emailIds: userEmailIds, licenseIds } = payload
     const products = productIds.reduce((allProducts, product) => {
@@ -353,7 +352,6 @@ function* handleEdulasticAdminProductLicenseSaga({ payload }) {
         )
       )
       yield put(fetchMultipleSubscriptionsAction({ licenseIds }))
-      yield put(fetchUserAction({ background: true }))
     }
   } catch (err) {
     notification({

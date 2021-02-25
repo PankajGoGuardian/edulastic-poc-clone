@@ -313,7 +313,6 @@ class FeedbackRight extends Component {
       user,
       disabled,
       isPracticeQuestion,
-      isExpressGrader,
     } = this.props
     const {
       score,
@@ -411,7 +410,6 @@ class FeedbackRight extends Component {
         {showGradingRubricButton && (
           <RubricGrading
             rubricData={rubricDetails}
-            isExpressGrader={isExpressGrader}
             maxScore={rubricMaxScore}
             rubricFeedback={rubricFeedback}
             currentScore={activity?.score}

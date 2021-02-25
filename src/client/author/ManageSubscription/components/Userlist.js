@@ -1,24 +1,47 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
+import moment from 'moment'
 import PropTypes from 'prop-types'
-import { CheckboxLabel, EduButton } from '@edulastic/common'
-import { isUndefined, isEmpty } from 'lodash'
+import { CheckboxLabel } from '@edulastic/common'
+import { isUndefined, isEmpty, isObject } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
-import { StyledAntdTable } from './styled'
+import { StyledAntdTable, SaveButton } from './styled'
 
 const Userlist = ({
   users,
   licenseIds,
+  userId: currentUserId,
   bulkEditUsersPermission,
   teacherPremiumProductId,
   sparkMathProductId,
+  subsLicenses,
 }) => {
   const [changes, setChanges] = useState({})
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
 
   useEffect(() => {
     setChanges({})
+    setIsSaveButtonVisible(false)
+    setIsSaveButtonDisabled(false)
   }, [users])
+
+  const { premiumLicenseId, sparkMathLicenseId } = useMemo(() => {
+    let _premiumLicenseId = null
+    let _sparkMathLicenseId = null
+    for (const { productId, linkedProductId, licenseId } of subsLicenses) {
+      if (productId === teacherPremiumProductId) {
+        _premiumLicenseId = licenseId
+      }
+      if ([linkedProductId, productId].includes(sparkMathProductId)) {
+        _sparkMathLicenseId = licenseId
+      }
+    }
+    return {
+      premiumLicenseId: _premiumLicenseId,
+      sparkMathLicenseId: _sparkMathLicenseId,
+    }
+  }, [subsLicenses, teacherPremiumProductId, sparkMathProductId])
 
   const onChangeHandler = (userId, fieldName, isChecked) => {
     const newChanges = produce(changes, (draft) => {
@@ -46,6 +69,7 @@ const Userlist = ({
   }
 
   const onSaveHandler = () => {
+    setIsSaveButtonDisabled(true)
     // TODO: fix the usersPermission so that the segregation in BE can be removed
     // maybe create a map based on license or productId
     bulkEditUsersPermission({
@@ -58,18 +82,45 @@ const Userlist = ({
 
   const getXOR = (a, b) => (a || b) && !(a && b)
 
+  const getChange = (record) => {
+    if (isObject(record)) {
+      return record?.some((x) =>
+        [premiumLicenseId, sparkMathLicenseId].includes(x)
+      )
+    }
+    return record
+  }
+
   const getCheckbox = (record, key) => {
+    const { userId, hasTeacherPremium = '', hasSparkMath = '' } = record
+    let disabled = false
     const isChecked = getXOR(
-      record[key],
-      !isUndefined(changes[record.userId]?.[key])
+      getChange(record[key]),
+      !isUndefined(changes[userId]?.[key])
     )
     const onChange = (e) => {
       const {
         target: { checked },
       } = e
-      onChangeHandler(record.userId, key, checked)
+      onChangeHandler(userId, key, checked)
     }
-    return <CheckboxLabel onChange={onChange} checked={isChecked} />
+    if (key === 'hasTeacherPremium') {
+      disabled =
+        hasTeacherPremium.length && hasTeacherPremium !== premiumLicenseId
+    }
+    if (key === 'hasSparkMath') {
+      disabled = hasSparkMath.length && hasSparkMath !== sparkMathLicenseId
+    }
+    return (
+      <CheckboxLabel
+        onChange={onChange}
+        checked={isChecked}
+        disabled={
+          disabled ||
+          (record.userId === currentUserId && key === 'hasManageLicense')
+        }
+      />
+    )
   }
 
   const columns = [
@@ -77,33 +128,43 @@ const Userlist = ({
       title: 'USERNAME',
       dataIndex: 'username',
       key: 'username',
+      sorter: true,
     },
     {
       title: 'EMAIL',
       dataIndex: 'email',
       key: 'email',
+      sorter: true,
     },
     {
       title: 'EXPIRATION DATE',
       dataIndex: 'expiresOn',
       key: 'expiresOn',
+      sorter: true,
+      render: (exipiresOn) =>
+        exipiresOn === '-'
+          ? exipiresOn
+          : moment(exipiresOn).format('MMM DD, YYYY'),
     },
     {
       title: 'TEACHER PREMIUM',
       dataIndex: 'hasTeacherPremium',
       key: 'actionPremium',
+      sorter: true,
       render: (_, record) => getCheckbox(record, 'hasTeacherPremium'),
     },
     {
       title: 'SPARK MATH',
       dataIndex: 'hasSparkMath',
       key: 'actionSparkMath',
+      sorter: true,
       render: (_, record) => getCheckbox(record, 'hasSparkMath'),
     },
     {
       title: 'MANAGE LICENSES',
       dataIndex: 'hasManageLicense',
       key: 'actionAdmin',
+      sorter: true,
       render: (_, record) => getCheckbox(record, 'hasManageLicense'),
     },
   ]
@@ -120,7 +181,9 @@ const Userlist = ({
       </Col>
       {isSaveButtonVisible && (
         <Col span={2} offset={22}>
-          <EduButton onClick={onSaveHandler}>Save</EduButton>
+          <SaveButton disabled={isSaveButtonDisabled} onClick={onSaveHandler}>
+            Save
+          </SaveButton>
         </Col>
       )}
     </Row>

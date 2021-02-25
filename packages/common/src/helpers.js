@@ -979,6 +979,17 @@ export const toggleIntercomDisplay = () => {
   }
 }
 
+export const hasMediaDevice = async (deviceKind) => {
+  let mediaDevices = navigator.mediaDevices
+  if (!mediaDevices || !mediaDevices.enumerateDevices) {
+    return false
+  }
+
+  const devices = await mediaDevices.enumerateDevices()
+
+  return devices.some((device) => device.kind === deviceKind)
+}
+
 /** A small utiltiy to help Resolve promises sequentially */
 const executePromisesInSequence = (promises) =>
   promises.reduce(
@@ -1080,5 +1091,6 @@ export default {
   getSanitizedProps,
   captureSentryException,
   replaceLatexTemplate,
+  hasMediaDevice,
   removeTokenFromHtml,
 }

@@ -119,7 +119,12 @@ const QuestionMath = ({ onUpdate, question }) => {
           />
         </FormGroup>
         <FormGroup>
-          <InputNumber min={0} value={score} onChange={handleScoreChange} />
+          <InputNumber
+            min={0}
+            value={score}
+            onChange={handleScoreChange}
+            data-cy="points"
+          />
           <Points>Points</Points>
         </FormGroup>
       </QuestionFormWrapper>

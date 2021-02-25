@@ -335,12 +335,14 @@ class Item extends Component {
           isTestLiked={isTestLiked}
           collectionName={collectionName}
         />
-        <TestPreviewModal
-          isModalVisible={isPreviewModalVisible && currentTestId === item._id}
-          testId={isPreviewModalVisible ? currentTestId : ''}
-          showStudentPerformance
-          closeTestPreviewModal={this.hidePreviewModal}
-        />
+        {currentTestId && (
+          <TestPreviewModal
+            isModalVisible={isPreviewModalVisible}
+            testId={currentTestId}
+            showStudentPerformance
+            closeTestPreviewModal={this.hidePreviewModal}
+          />
+        )}
         {isDeleteModalOpen ? (
           <DeleteItemModal
             isVisible={isDeleteModalOpen}

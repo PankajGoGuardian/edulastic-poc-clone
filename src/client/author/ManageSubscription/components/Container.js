@@ -6,7 +6,11 @@ import loadable from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PurchaseFlowModals from '../../src/components/common/PurchaseModals'
-import { getUserOrgId, getUserRole } from '../../src/selectors/user'
+import {
+  getUserOrgId,
+  getUserRole,
+  getUserIdSelector,
+} from '../../src/selectors/user'
 import { getDashboardTilesSelector } from '../../Dashboard/ducks'
 import {
   getSubscriptionSelector,
@@ -44,6 +48,7 @@ const ManageSubscriptionContainer = ({
   subsLicenses,
   users,
   userOrgId,
+  userId,
   addAndUpgradeUsersSubscriptions,
   setAddUsersConfirmationModalVisible,
   showUpgradeUsersSuccessModal = false,
@@ -74,20 +79,27 @@ const ManageSubscriptionContainer = ({
   const { FEATURED } = groupBy(dashboardTiles, 'type')
   const featuredBundles = FEATURED || []
 
-  const { sparkMathProductId, teacherPremiumProductId } = useMemo(() => {
+  const {
+    sparkMathProductId,
+    sparkMathLinkedProductId,
+    teacherPremiumProductId,
+  } = useMemo(() => {
     let _sparkMathProductId = null
     let _teacherPremiumProductId = null
-    for (const { id, name } of products) {
+    let _sparkMathLinkedProductId = null
+    for (const { id, name, linkedProductId } of products) {
       if (name === PRODUCT_NAMES.TEACHER_PREMIUM) {
         _teacherPremiumProductId = id
       }
       if (name === PRODUCT_NAMES.SPARK_MATH) {
         _sparkMathProductId = id
+        _sparkMathLinkedProductId = linkedProductId
       }
     }
     return {
       sparkMathProductId: _sparkMathProductId,
       teacherPremiumProductId: _teacherPremiumProductId,
+      sparkMathLinkedProductId: _sparkMathLinkedProductId,
     }
   }, [products])
 
@@ -179,6 +191,8 @@ const ManageSubscriptionContainer = ({
         <Userlist
           users={users}
           licenseIds={licenseIds}
+          subsLicenses={subsLicenses}
+          userId={userId}
           bulkEditUsersPermission={bulkEditUsersPermission}
           teacherPremiumProductId={teacherPremiumProductId}
           sparkMathProductId={sparkMathProductId}
@@ -216,7 +230,7 @@ const ManageSubscriptionContainer = ({
           onCancel={closeAddUsersConfirmationModal}
           userDataSource={userDataSource}
           teacherPremiumProductId={teacherPremiumProductId}
-          sparkMathProductId={sparkMathProductId}
+          sparkMathProductId={sparkMathLinkedProductId}
         />
       )}
     </>
@@ -232,6 +246,7 @@ const enhance = compose(
       isSuccess: getSuccessSelector(state),
       subsLicenses: getSubsLicensesSelector(state),
       userOrgId: getUserOrgId(state),
+      userId: getUserIdSelector(state),
       users: getUsersSelector(state),
       showUpgradeUsersSuccessModal: getUpgradeSuccessModalVisible(state),
       userDataSource: getBulkUsersData(state),

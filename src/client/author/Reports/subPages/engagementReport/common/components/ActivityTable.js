@@ -5,7 +5,7 @@ import qs from 'qs'
 
 import { Tooltip } from 'antd'
 import CsvTable from '../../../../common/components/tables/CsvTable'
-import { StyledTable } from './styled'
+import { StyledTable, TooltipDiv } from './styled'
 
 import { downloadCSV } from '../../../../common/util'
 import staticDropDownData from '../static/staticDropDownData.json'
@@ -21,6 +21,12 @@ const sortNumbers = (key) => (a, b) =>
 const sortText = (key) => (a, b) =>
   (a[key] || '').toLowerCase().localeCompare((b[key] || '').toLowerCase())
 
+const TooltipEllipsisText = ({ text }) => (
+  <Tooltip title={text} placement="topLeft">
+    <TooltipDiv>{text}</TooltipDiv>
+  </Tooltip>
+)
+
 const ActivityTable = ({
   data,
   filter,
@@ -32,7 +38,7 @@ const ActivityTable = ({
   const { grade: studentGrade, subject: studentSubject, ...query } = filters
 
   const tableData = Object.keys(filter).length
-    ? data.filter((item) => filter[item[`${activityBy}Name`]])
+    ? data.filter((item) => filter[item[`${activityBy}Name`] || '-'])
     : data
 
   const onCsvConvert = (csvData) =>
@@ -51,7 +57,7 @@ const ActivityTable = ({
         })
         return text ? (
           <Link to={`/author/reports/performance-over-time?${queryStr}`}>
-            {text}
+            <TooltipEllipsisText text={text} />
           </Link>
         ) : (
           '-'
@@ -71,26 +77,12 @@ const ActivityTable = ({
         })
         return (
           <Link to={`/author/reports/performance-over-time?${queryStr}`}>
-            {text}
+            <TooltipEllipsisText text={text} />
           </Link>
         )
       }
       rawColumns[1].render = (text) =>
-        text ? (
-          <Tooltip title={text} placement="top">
-            <div
-              style={{
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {text}
-            </div>
-          </Tooltip>
-        ) : (
-          '-'
-        )
+        text ? <TooltipEllipsisText text={text} /> : '-'
       rawColumns[1].sorter = sortText('schoolNames')
     }
     rawColumns[activityBy === 'school' ? 1 : 2].render = (text) => text

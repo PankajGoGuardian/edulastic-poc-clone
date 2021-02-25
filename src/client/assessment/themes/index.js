@@ -35,6 +35,7 @@ import { testActivityApi, classBoardApi } from '@edulastic/api'
 
 import Styled from 'styled-components'
 import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
+import { saveUserWorkAction } from '../actions/userWork'
 import {
   finishTestAcitivityAction,
   setIsTestPreviewVisibleAction,
@@ -67,6 +68,7 @@ import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
 import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
+import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 
 const { playerSkinValues } = testConstants
@@ -98,6 +100,7 @@ function pauseAssignment({
   classId,
   userId,
   pauseReason,
+  msg,
 }) {
   classBoardApi
     .togglePauseStudents({
@@ -109,7 +112,7 @@ function pauseAssignment({
     })
     .then(() => {
       Fscreen.safeExitfullScreen()
-      const errorMsg = 'Pausing Assignment due to Anti Cheating measures'
+      const errorMsg = msg || 'Pausing Assignment due to Anti Cheating measures'
       notification({ type: 'warning', msg: errorMsg, duration: 0 })
       if (history.location.pathname === '/home/assignments') {
         history.push('/home/assignmentss') // this hack needed to re-render route
@@ -136,7 +139,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
     .then((response) => {
       if (response.paused) {
         notification({
-          type: 'error',
+          type: 'warning',
           msg:
             'Your test has been locked. Please contact your teacher to reset the test.',
           duration: 0,
@@ -371,6 +374,8 @@ export function useTabNavigationCounterEffect({
               classId,
               userId,
               pauseReason: 'out-of-navigation',
+              msg:
+                'Your test has been locked. Please contact your teacher to reset the test',
             })
           }
         }
@@ -417,6 +422,7 @@ const AssessmentContainer = ({
   history,
   changePreview,
   saveUserResponse: saveUserAnswer,
+  saveUserWork,
   evaluateAnswer: evaluate,
   match,
   url,
@@ -455,6 +461,7 @@ const AssessmentContainer = ({
   regradedRealtimeAssignment,
   testId,
   userId,
+  userWork,
   regradedAssignment,
   clearRegradeAssignment,
   setPasswordValidateStatus,
@@ -476,6 +483,9 @@ const AssessmentContainer = ({
     show: false,
   })
   const [showRegradedModal, setShowRegradedModal] = useState(false)
+
+  const [, uploadFile] = useUploadToS3(userId)
+
   const isLast = () => currentItem === items.length - 1
   const isFirst = () => currentItem === 0
 
@@ -778,12 +788,26 @@ const AssessmentContainer = ({
 
     const timeSpent = Date.now() - lastTime.current
 
-    if (isLast() && preview && !demo) {
-      evaluateForPreview({
-        currentItem,
-        timeSpent,
-        callback: submitPreviewTest,
-      })
+    if (isLast() && preview) {
+      const unansweredQs = getUnAnsweredQuestions()
+      if (unansweredQs.length && !needsToProceed) {
+        return setUnansweredPopupSetting({
+          show: true,
+          qLabels: unansweredQs.map(
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
+          ),
+          index: Number(currentItem),
+          context: value,
+        })
+      }
+      if (!demo) {
+        evaluateForPreview({
+          currentItem,
+          timeSpent,
+          callback: submitPreviewTest,
+        })
+      }
     }
 
     if ((isLast() || value === 'SUBMIT') && !preview) {
@@ -841,8 +865,15 @@ const AssessmentContainer = ({
     hideHints()
     setCurrentItem(index)
     const timeSpent = Date.now() - lastTime.current
+    if (demo && isLast()) {
+      return submitPreviewTest()
+    }
     if (!demo) {
-      evaluateForPreview({ currentItem, timeSpent })
+      const evalArgs = { currentItem, timeSpent }
+      if (isLast()) {
+        evalArgs.callback = submitPreviewTest
+      }
+      evaluateForPreview(evalArgs)
     }
   }
 
@@ -959,6 +990,7 @@ const AssessmentContainer = ({
     studentReportModal,
     hasDrawingResponse,
     questions: questionsById,
+    uploadToS3: uploadFile,
     ...restProps,
   }
 
@@ -1172,6 +1204,7 @@ const enhance = compose(
     {
       saveUserResponse,
       evaluateAnswer,
+      saveUserWork: saveUserWorkAction,
       changePreview: changePreviewAction,
       finishTest: finishTestAcitivityAction,
       gotoItem: gotoItemAction,

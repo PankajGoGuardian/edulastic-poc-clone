@@ -247,17 +247,17 @@ const StudentMasteryProfile = ({
                 <StyledAatar size={150} icon="user" />
               )}
             </FlexContainer>
-            <FlexContainer flexDirection="column" alignItems="flex-start">
+            <FlexContainer
+              flexDirection="column"
+              alignItems="flex-start"
+              justifyContent="center"
+            >
               <StyledP marginTop="30px">
                 <StyledName>{studentName || anonymousString}</StyledName>
               </StyledP>
               <StyledP marginTop="12px">
                 <StyledText weight="Bold"> Grade: </StyledText>
                 <StyledText>{getGrades(studInfo)}</StyledText>
-              </StyledP>
-              <StyledP>
-                <StyledText weight="Bold"> Subject: </StyledText>
-                <StyledText>{studentClassInformation.standardSet}</StyledText>
               </StyledP>
             </FlexContainer>
           </FlexContainer>
@@ -280,14 +280,14 @@ const StudentMasteryProfile = ({
               by={selectedGrade}
               selectCB={onGradeSelect}
               data={staticDropDownData.grades}
-              prefix="Grade"
+              prefix="Standard Grade"
               showPrefixOnSelected={false}
             />
             <ControlDropDown
               by={selectedSubject}
               selectCB={onSubjectSelect}
               data={staticDropDownData.subjects}
-              prefix="Subject"
+              prefix="Standard Subject"
               showPrefixOnSelected={false}
             />
             <ControlDropDown

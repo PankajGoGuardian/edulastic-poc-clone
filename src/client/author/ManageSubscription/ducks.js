@@ -2,7 +2,7 @@
 import { manageSubscriptionsApi, userApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { takeLatest } from 'redux-saga'
-import { all, call, put } from 'redux-saga/effects'
+import { all, call, put, select } from 'redux-saga/effects'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 
@@ -44,6 +44,8 @@ const FETCH_MANAGE_SUBSCRIPTIONS_SUCCESS =
   '[manage-subscriptions] fetch was successful'
 const FETCH_MANAGE_SUBSCRIPTIONS_ERROR =
   '[manage-subscriptions] fetch resulted in error'
+const UPDATE_MANAGE_SUBSCRIPTIONS =
+  '[manage-subscriptions] add users to existing list'
 const UPGRADE_USERS_SUBSCRIPTIONS_SUCCESS =
   '[manage-subscriptions] upgrade users by selected licenses - success'
 const UPGRADE_USERS_SUBSCRIPTIONS_ERROR =
@@ -69,6 +71,9 @@ export const fetchManageSubscriptionsSuccessAction = createAction(
 )
 export const fetchManageSubscriptionsErrorAction = createAction(
   FETCH_MANAGE_SUBSCRIPTIONS_ERROR
+)
+export const updateManageSubscriptionsAction = createAction(
+  UPDATE_MANAGE_SUBSCRIPTIONS
 )
 export const upgradeUsersSubscriptionsSuccessAction = createAction(
   UPGRADE_USERS_SUBSCRIPTIONS_SUCCESS
@@ -132,6 +137,9 @@ export const reducer = createReducer(initialState, {
     state.licenses = []
     state.users = []
   },
+  [UPDATE_MANAGE_SUBSCRIPTIONS]: (state, { payload }) => {
+    state.users = payload
+  },
   [UPGRADE_USERS_SUBSCRIPTIONS_SUCCESS]: (state, { payload }) => {
     state.bulkUsersData = payload
     state.showUpgradeUsersSuccessModal = true
@@ -144,31 +152,54 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* addBulkUsersAndUpgradeSaga({ payload }) {
   try {
-    const { addUsersPayload, licenses } = payload
+    const { addUsersPayload, licenses = [] } = payload
     const res = yield call(userApi.adddBulkTeacher, addUsersPayload) || []
-    if (!(licenses || []).length) {
-      yield put(addAndUpgradeUsersSuccessAction(res))
-      return
-    }
 
-    const users = res.map((x) => x._id)
-    const result = yield call(
-      manageSubscriptionsApi.upgradeUsersSubscriptions,
-      {
-        users,
-        licenses,
+    const users = res.map((x) => x._id).filter((x) => x)
+    if (users.length) {
+      const result = yield call(
+        manageSubscriptionsApi.upgradeUsersSubscriptions,
+        {
+          users,
+          licenses,
+        }
+      ) || {}
+
+      if (Object.keys(result).length) {
+        for (const user of res) {
+          result[user._id] = {
+            ...result[user._id],
+            fullName: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+            username: user.username,
+            status: user.status,
+          }
+        }
+        yield put(upgradeUsersSubscriptionsSuccessAction(Object.values(result)))
       }
-    ) || {}
-    if (Object.keys(result).length) {
+      if (licenses.length) {
+        yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
+      } else {
+        const existingUsersData = yield select(getUsersSelector)
+        const existingUserIds = existingUsersData.map((x) => x.userId)
+        const newData = [...existingUsersData]
+        Object.values(result).forEach((x) => {
+          if (!existingUserIds.includes(x.userId)) {
+            newData.push(x)
+          }
+        })
+        yield put(updateManageSubscriptionsAction(newData))
+      }
+    } else {
+      const result = {}
       for (const user of res) {
         result[user._id] = {
           ...result[user._id],
+          fullName: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
           username: user.username,
           status: user.status,
         }
       }
       yield put(upgradeUsersSubscriptionsSuccessAction(Object.values(result)))
-      yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
     }
   } catch (err) {
     captureSentryException(err)

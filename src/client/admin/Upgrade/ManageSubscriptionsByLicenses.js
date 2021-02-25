@@ -1,19 +1,20 @@
-import React, { useState } from 'react'
-import { Button, Form, Pagination, Table, Tooltip } from 'antd'
-import styled from 'styled-components'
-import { CustomModalStyled, FlexContainer } from '@edulastic/common'
-import moment from 'moment'
-import { IconEye, IconTrash } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import { StyledFilterSelect } from '../Common/StyledComponents'
+import { CustomModalStyled, EduButton, FlexContainer, SelectInputStyled } from '@edulastic/common'
+import { IconEye, IconTrash } from '@edulastic/icons'
+import loadable from '@loadable/component'
+import { Form, Pagination, Table, Tooltip } from 'antd'
+import moment from 'moment'
+import React, { useState } from 'react'
+import connect from 'react-redux/lib/connect/connect'
+import {
+  getDistrictListSelector,
+  getFetchOrganizationStateSelector,
+  searchOrgaizationRequestAction,
+} from '../../author/ContentCollections/ducks'
 import ManageSubscription from '../../author/ManageSubscription'
 
-const FullScreenModal = styled(CustomModalStyled)`
-  height: 100%;
-  .ant-modal-content {
-    height: 100%;
-  }
-}`
+const SubsLicenseViewModal = loadable(() => import('./SubsLicenseViewModal'))
+const AddSubscriptionModal = loadable(() => import('./AddSubscriptionModal'))
 
 const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
   {
@@ -32,11 +33,7 @@ const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
 
 const IconStyles = { width: '20px', cursor: 'pointer' }
 
-const LicensesInvoiceTable = ({
-  licensesData,
-  handleViewLicense,
-  handleDeleteLicense,
-}) => {
+const LicensesInvoiceTable = ({ licensesData, handleViewLicense }) => {
   const columns = [
     {
       title: 'Invoice Id',
@@ -88,11 +85,7 @@ const LicensesInvoiceTable = ({
             />
           </Tooltip>
           <Tooltip title="Delete License">
-            <IconTrash
-              onClick={() => handleDeleteLicense(licenseId)}
-              color={themeColor}
-              style={IconStyles}
-            />
+            <IconTrash color={themeColor} style={IconStyles} />
           </Tooltip>
         </FlexContainer>
       ),
@@ -137,25 +130,32 @@ const SearchFilters = Form.create({
     }
     return (
       <Form onSubmit={handleSubmit}>
-        <FlexContainer justifyContent="space-between" width="400px">
+        <FlexContainer
+          justifyContent="space-between"
+          alignItems="center"
+          width="400px"
+        >
           <Form.Item style={{ width: '300px' }}>
             {getFieldDecorator('searchType', {
               rules: [{ required: true }],
               initialValue: MANAGE_SUBSCRIPTION_SEARCH_TYPE[0].type,
             })(
-              <StyledFilterSelect placeholder="Select a filter to search">
+              <SelectInputStyled
+                height="36px"
+                placeholder="Select a filter to search"
+              >
                 {MANAGE_SUBSCRIPTION_SEARCH_TYPE.map(({ type, name }) => (
-                  <StyledFilterSelect.Option key={type}>
+                  <SelectInputStyled.Option key={type}>
                     {name}
-                  </StyledFilterSelect.Option>
+                  </SelectInputStyled.Option>
                 ))}
-              </StyledFilterSelect>
+              </SelectInputStyled>
             )}
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <EduButton isBlue htmlType="submit">
               Search
-            </Button>
+            </EduButton>
           </Form.Item>
         </FlexContainer>
       </Form>
@@ -165,14 +165,22 @@ const SearchFilters = Form.create({
 
 const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
-  handleDeleteLicense,
   manageLicensesData,
   setSearchType,
+  upgradeUserSubscriptionAction,
+  isFetchingOrganization,
+  districtList,
+  searchRequest,
 }) => {
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
   const [isVisible, setVisible] = useState(false)
   const [currentLicenseIds, setCurrentLicenseIds] = useState()
+  const [currentLicense, setCurrentLicense] = useState({})
+  const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(
+    false
+  )
+  const [showLicenseViewModal, setShowLicenseViewModal] = useState(false)
   const handlePageChange = (pageNo) => {
     setPage(pageNo)
     fetchLicensesBySearchType({
@@ -181,38 +189,53 @@ const ManageSubscriptionsByLicenses = ({
       limit: 20,
     })
   }
-  const handleViewLicense = (licenseIds) => {
-    setCurrentLicenseIds(['602f984e0b683463a674112f', '602f984e0b683463a6741132', '602f984e0b683463a6741135'])
+  const handleViewLicense = (licenseId) => {
+    setCurrentLicenseIds([
+      '602f984e0b683463a674112f',
+      '602f984e0b683463a6741132',
+      '602f984e0b683463a6741135',
+    ])
     setVisible(true)
+    const getCurrentLicense = licenses.find(
+      (license) => license.licenseId === licenseId
+    )
+    setCurrentLicense(getCurrentLicense)
+    setShowLicenseViewModal(true)
   }
+  const closeViewLicenseModal = () => {
+    setShowLicenseViewModal(false)
+  }
+  const handleAddSubscription = () => {
+    setShowAddSubscriptionModal(true)
+  }
+  const closeAddSubscriptionModal = () => {
+    setShowAddSubscriptionModal(false)
+  }
+
   return (
     <>
-      <FullScreenModal
+      <CustomModalStyled
         visible={isVisible}
         title="Manage Subscription"
         onCancel={() => setVisible(false)}
         modalWidth="100%"
-        top='0'
+        top="0"
         footer={[]}
       >
         <ManageSubscription licenseIds={currentLicenseIds} />
-      </FullScreenModal>
+      </CustomModalStyled>
       <FlexContainer justifyContent="space-between">
         <SearchFilters
           fetchLicensesBySearchType={fetchLicensesBySearchType}
           setSearchType={setSearchType}
         />
-        <Button
-          onClick={() => console.log('Add Subscription')} // TODO!
-          type="primary"
-        >
+        <EduButton isBlue onClick={handleAddSubscription}>
           Add Subscription
-        </Button>
+        </EduButton>
       </FlexContainer>
       <LicensesInvoiceTable
         licensesData={licenses}
         handleViewLicense={handleViewLicense}
-        handleDeleteLicense={handleDeleteLicense}
       />
       <Pagination
         hideOnSinglePage
@@ -221,8 +244,31 @@ const ManageSubscriptionsByLicenses = ({
         current={page}
         total={count}
       />
+      {searchType === 'TRIAL_PREMIUM' && showLicenseViewModal && (
+        <SubsLicenseViewModal
+          isVisible={showLicenseViewModal}
+          closeModal={closeViewLicenseModal}
+          extendTrialEndDate={upgradeUserSubscriptionAction}
+          currentLicense={currentLicense}
+        />
+      )}
+      {showAddSubscriptionModal && (
+        <AddSubscriptionModal
+          isVisible={showAddSubscriptionModal}
+          closeModal={closeAddSubscriptionModal}
+          isFetchingOrganization={isFetchingOrganization}
+          districtList={districtList}
+          searchRequest={searchRequest}
+        />
+      )}
     </>
   )
 }
 
-export default ManageSubscriptionsByLicenses
+export default connect(
+  (state) => ({
+    districtList: getDistrictListSelector(state),
+    isFetchingOrganization: getFetchOrganizationStateSelector(state),
+  }),
+  { searchRequest: searchOrgaizationRequestAction }
+)(ManageSubscriptionsByLicenses)

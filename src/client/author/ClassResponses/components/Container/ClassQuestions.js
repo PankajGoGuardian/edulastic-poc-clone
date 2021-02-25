@@ -42,6 +42,8 @@ function Preview({
   scractchPadUsed,
   t,
   isStudentView,
+  isStudentWorkCollapseOpen,
+  toggleStudentWorkCollapse,
   hideCorrectAnswer,
   testActivityId: utaId,
 }) {
@@ -112,6 +114,8 @@ function Preview({
         highlights={highlights}
         scratchpadDimensions={scratchpadDimensions}
         saveUserWork={() => {}}
+        isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+        toggleStudentWorkCollapse={toggleStudentWorkCollapse}
         {...scoringProps}
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
@@ -142,7 +146,14 @@ class ClassQuestions extends Component {
       showPlayerModal: false,
       selectedTestItem: [],
       showDocBasedPlayer: false,
+      isStudentWorkCollapseOpen: false,
     }
+  }
+
+  toggleStudentWorkCollapse = () => {
+    this.setState(({ isStudentWorkCollapseOpen }) => ({
+      isStudentWorkCollapseOpen: !isStudentWorkCollapseOpen,
+    }))
   }
 
   // show AssessmentPlayerModal
@@ -425,7 +436,12 @@ class ClassQuestions extends Component {
     })
 
   render() {
-    const { showPlayerModal, selectedTestItem, showDocBasedPlayer } = this.state
+    const {
+      showPlayerModal,
+      selectedTestItem,
+      showDocBasedPlayer,
+      isStudentWorkCollapseOpen,
+    } = this.state
     const {
       questionActivities,
       currentStudent,
@@ -495,6 +511,8 @@ class ClassQuestions extends Component {
           isLCBView={isLCBView}
           questionActivity={questionActivity}
           scractchPadUsed={scractchPadUsed}
+          isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+          toggleStudentWorkCollapse={this.toggleStudentWorkCollapse}
           userWork={userWork} // used to determine show student work button
           t={t}
           hideCorrectAnswer={hideCorrectAnswer}

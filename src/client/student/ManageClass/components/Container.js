@@ -48,9 +48,9 @@ const ManageClassContainer = ({
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false)
   const [classCode, setClassCode] = useState(null)
   const joinClassHandler = () => {
-    const { email, firstName, role } = studentData
+    const { email, firstName, lastName, middleName, role } = studentData
     if (classCode && classCode.trim().length) {
-      joinClass({ classCode, email, firstName, role })
+      joinClass({ classCode, email, firstName, role, lastName, middleName })
     } else {
       setClassCode('')
     }

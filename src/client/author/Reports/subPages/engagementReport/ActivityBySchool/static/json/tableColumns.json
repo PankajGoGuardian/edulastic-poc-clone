@@ -5,15 +5,15 @@
 		"key": "schoolName",
 		"align": "left"
 	}, {
-		"title": "Assignment Assigned",
+		"title": "Assessments Assigned",
 		"dataIndex": "testCount",
 		"key": "testCount"
 	}, {
-		"title": "Active Teacher",
+		"title": "Active Teachers",
 		"dataIndex": "teacherCount",
 		"key": "teacherCount"
 	}, {
-		"title": "Student Taking Assessment",
+		"title": "Students Taking Assessment",
 		"dataIndex": "studentCount",
 		"key": "studentCount"
 	}]

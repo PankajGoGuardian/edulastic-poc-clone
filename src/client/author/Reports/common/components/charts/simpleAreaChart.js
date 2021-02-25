@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   LabelList,
+  Legend,
 } from 'recharts'
 
 import {
@@ -28,7 +29,8 @@ import {
 
 const SimpleAreaChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
-  xTickTooltipPosition = 460,
+  legendWrapperStyle = { top: -10 },
+  xTickTooltipPosition = 420,
   xTickToolTipWidth = 110,
   data = [],
   pageSize: _pageSize,
@@ -63,9 +65,7 @@ const SimpleAreaChart = ({
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
     startIndex:
-      isLeftPaginated && data.length > pageSize
-        ? data.length - pageSize - 1
-        : 0,
+      isLeftPaginated && data.length > pageSize ? data.length - pageSize : 0,
     endIndex: isLeftPaginated ? data.length - 1 : pageSize - 1,
   })
   const [isDotActive, setIsDotActive] = useState(false)
@@ -75,6 +75,7 @@ const SimpleAreaChart = ({
     y: null,
     content: null,
   })
+  const [activeLegend, setActiveLegend] = useState(null)
 
   const chartData = useMemo(
     () => data.slice(pagination.startIndex, pagination.startIndex + pageSize),
@@ -90,7 +91,25 @@ const SimpleAreaChart = ({
       angle: -90,
       dx: 50,
     },
+    INTERVAL: lineChartDataKey ? 0 : 'preserveEnd',
   }
+
+  const legendPayload = [
+    {
+      id: chartDataKey,
+      dataKey: chartDataKey,
+      color: areaProps.fill,
+      value: yAxisLabel,
+      type: 'rect',
+    },
+    {
+      id: lineChartDataKey,
+      dataKey: lineChartDataKey,
+      color: lineProps.stroke,
+      value: lineYAxisLabel,
+      type: 'line',
+    },
+  ]
 
   const scrollLeft = () => {
     let diff
@@ -156,6 +175,9 @@ const SimpleAreaChart = ({
       content: null,
     })
   }
+
+  const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
+  const onLegendMouseLeave = () => setActiveLegend(null)
 
   // chart navigation visibility and control
   const chartNavLeftVisibility = backendPagination
@@ -239,6 +261,7 @@ const SimpleAreaChart = ({
           />
           <YAxis
             type="number"
+            interval={constants.INTERVAL}
             domain={yDomain}
             tick={constants.TICK_FILL}
             ticks={ticks}
@@ -260,7 +283,16 @@ const SimpleAreaChart = ({
             }
             content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />}
           />
+          <Legend
+            wrapperStyle={legendWrapperStyle}
+            align="right"
+            verticalAlign="top"
+            onMouseEnter={onLegendMouseEnter}
+            onMouseLeave={onLegendMouseLeave}
+            payload={legendPayload}
+          />
           <Area
+            opacity={activeLegend && activeLegend !== chartDataKey ? 0.2 : 1}
             type="monotone"
             dataKey={chartDataKey}
             {...areaProps}
@@ -272,6 +304,7 @@ const SimpleAreaChart = ({
           {lineChartDataKey ? (
             <YAxis
               type="number"
+              interval={constants.INTERVAL}
               yAxisId="lineChart"
               domain={lineYDomain || null}
               label={constants.LINE_Y_AXIS_LABEL}
@@ -289,6 +322,9 @@ const SimpleAreaChart = ({
           ) : null}
           {lineChartDataKey ? (
             <Line
+              opacity={
+                activeLegend && activeLegend !== lineChartDataKey ? 0.2 : 1
+              }
               activeDot={{
                 onMouseOver: () => setIsDotActive(true),
                 onMouseLeave: () => setIsDotActive(false),

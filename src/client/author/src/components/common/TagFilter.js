@@ -45,7 +45,7 @@ const TagFilter = ({
           tagType,
         })
         newTag = { _id, tagName }
-        addNewTag({ tag: newTag, tagType })
+        addNewTag({ tag: newTag, tagType: 'test' })
       } catch (e) {
         notification({ messageKey: 'savingTagErr' })
       }

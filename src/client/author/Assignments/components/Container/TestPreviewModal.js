@@ -20,7 +20,7 @@ const TestPreviewModal = ({
   testId,
   test,
   error,
-  closeTestPreviewModal,
+  closeTestPreviewModal: _closeTestPreviewModal,
   isStudentReport = false,
   passages,
   studentReportModal,
@@ -40,7 +40,7 @@ const TestPreviewModal = ({
 
   useEffect(() => {
     if (error) {
-      closeTestPreviewModal()
+      _closeTestPreviewModal()
     }
   }, [error])
 
@@ -50,6 +50,12 @@ const TestPreviewModal = ({
       setTestLoading(true)
     }
   }, [isModalVisible])
+
+  const closeTestPreviewModal = () => {
+    _closeTestPreviewModal()
+    setShowTestInfoSucces(false)
+    setTestLoading(true)
+  }
 
   const handleCloseModal = () => {
     closeTestPreviewModal()

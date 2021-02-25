@@ -55,6 +55,7 @@ export const GoButtonWrapper = styled.div`
   margin-bottom: 15px;
   display: flex;
   align-items: center;
+  padding-left: 5px;
 `
 
 export const StyledFilterWrapper = styled.div`
@@ -67,9 +68,9 @@ export const StyledFilterWrapper = styled.div`
   `
       : `
     margin-right: 16px;
-    width: 230px;
+    width: 240px;
     flex-shrink: 0;
-    height: calc(100vh - 250px);
+    height: calc(100vh - 200px);
     position: relative;
   `}
 
@@ -109,6 +110,13 @@ export const StyledFilterWrapper = styled.div`
         color: ${themeColor};
       }
     }
+  }
+  .ant-collapse {
+    background: none;
+    padding-left: 5px;
+  }
+  .ant-dropdown {
+    box-shadow: 0 0 5px;
   }
 `
 
@@ -460,7 +468,9 @@ export const CustomXAxisTickTooltipContainer = styled.div`
   top: 0px;
   transform: translate(${(props) => props.x}, ${(props) => props.y});
   padding: 5px;
-  width: ${(props) => props.width}px;
+  min-width: ${(props) => props.width}px;
+  max-width: 250px;
+  overflow-wrap: anywhere;
   text-align: center;
   background: white;
   z-index: 999;

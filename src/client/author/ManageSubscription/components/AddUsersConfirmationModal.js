@@ -43,7 +43,9 @@ const AddUsersConfirmationModal = ({
       {
         title: t('manageSubscriptions.name'),
         dataIndex: 'fullName',
-        render: () => <p>Name will be updated after first sign-up</p>,
+        render: (fullName) => (
+          <p>{fullName || 'Name will be updated after first sign-up'}</p>
+        ),
       },
       {
         title: t('manageSubscriptions.username'),
@@ -88,11 +90,9 @@ const AddUsersConfirmationModal = ({
     let _dynamicModalWidth = 60
 
     const _dataSource = userDataSource.map((item = {}) => {
-      const { firstName, lastName } = item
       const data = {
         ...item,
         userRole,
-        fullName: `${firstName || ''} ${lastName || ''}`.trim(),
       }
       if (!hasPremiumEntry && data[teacherPremiumProductId]) {
         hasPremiumEntry = true

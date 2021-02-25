@@ -55,9 +55,20 @@ const EngagementReportContainer = ({
     [reportId, sharedReportList]
   )
 
+  const toggleFilter = (e, status = false) => {
+    if (onRefineResultsCB) {
+      onRefineResultsCB(e, status || !showFilter)
+    }
+  }
+
+  const setShowApply = (status) => {
+    onRefineResultsCB(null, status, 'applyButton')
+  }
+
   useEffect(
     () => () => {
       console.log('Engagement Reports Component Unmount')
+      setShowApply(false)
       resetAllReports()
     },
     []
@@ -111,97 +122,88 @@ const EngagementReportContainer = ({
     setERSettings({ requestFilters: obj })
   }
 
-  const toggleFilter = (e, status = false) => {
-    if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
-    }
-  }
-
-  const setShowApply = (status) => {
-    onRefineResultsCB(null, status, 'applyButton')
-  }
-
   return (
-    // TODO: uncomment when feature has been added in backend
-    // <FeaturesSwitch
-    //   inputFeatures="engagementReport"
-    //   actionOnInaccessible="hidden"
-    // >
-    <>
-      {firstLoad && <Spin size="large" />}
-      {sharingState && (
-        <ShareReportModal
-          reportType={loc}
-          reportFilters={{ ...settings.requestFilters }}
-          showModal={sharingState}
-          setShowModal={setSharingState}
-        />
-      )}
-      <FlexContainer
-        alignItems="flex-start"
-        display={firstLoad ? 'none' : 'flex'}
-      >
-        <EngagementReportFilters
-          reportId={reportId}
-          onGoClick={onGoClick}
-          loc={loc}
-          history={history}
-          location={location}
-          match={match}
-          style={
-            reportId || !showFilter ? { display: 'none' } : { display: 'block' }
-          }
-          showApply={showApply}
-          setShowApply={setShowApply}
-          firstLoad={firstLoad}
-          setFirstLoad={setFirstLoad}
-        />
-        {!reportId ? (
-          <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            {showFilter ? <IconCloseFilter /> : <IconFilter />}
-          </FilterButtonClear>
-        ) : null}
-        <ReportContaner showFilter={showFilter}>
-          <Route
-            exact
-            path="/author/reports/engagement-summary"
-            render={(_props) => (
-              <EngagementSummary
-                {..._props}
-                settings={settings}
-                sharedReport={sharedReport}
-                toggleFilter={toggleFilter}
-              />
-            )}
+    <FeaturesSwitch
+      inputFeatures="engagementReport"
+      actionOnInaccessible="hidden"
+    >
+      <>
+        {firstLoad && <Spin size="large" />}
+        {sharingState && (
+          <ShareReportModal
+            reportType={loc}
+            reportFilters={{ ...settings.requestFilters }}
+            showModal={sharingState}
+            setShowModal={setSharingState}
           />
-          <Route
-            exact
-            path="/author/reports/activity-by-school"
-            render={(_props) => (
-              <ActivityBySchool
-                {..._props}
-                settings={settings}
-                sharedReport={sharedReport}
-                toggleFilter={toggleFilter}
-              />
-            )}
+        )}
+        <FlexContainer
+          alignItems="flex-start"
+          display={firstLoad ? 'none' : 'flex'}
+        >
+          <EngagementReportFilters
+            reportId={reportId}
+            onGoClick={onGoClick}
+            loc={loc}
+            history={history}
+            location={location}
+            match={match}
+            style={
+              reportId || !showFilter
+                ? { display: 'none' }
+                : { display: 'block' }
+            }
+            showApply={showApply}
+            setShowApply={setShowApply}
+            firstLoad={firstLoad}
+            setFirstLoad={setFirstLoad}
           />
-          <Route
-            exact
-            path="/author/reports/activity-by-teacher"
-            render={(_props) => (
-              <ActivityByTeacher
-                {..._props}
-                settings={settings}
-                sharedReport={sharedReport}
-                toggleFilter={toggleFilter}
-              />
-            )}
-          />
-        </ReportContaner>
-      </FlexContainer>
-    </>
-    // </FeaturesSwitch>
+          {!reportId ? (
+            <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
+              {showFilter ? <IconCloseFilter /> : <IconFilter />}
+            </FilterButtonClear>
+          ) : null}
+          <ReportContaner showFilter={showFilter}>
+            <Route
+              exact
+              path="/author/reports/engagement-summary"
+              render={(_props) => (
+                <EngagementSummary
+                  {..._props}
+                  settings={settings}
+                  sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/author/reports/activity-by-school"
+              render={(_props) => (
+                <ActivityBySchool
+                  {..._props}
+                  settings={settings}
+                  sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/author/reports/activity-by-teacher"
+              render={(_props) => (
+                <ActivityByTeacher
+                  {..._props}
+                  settings={settings}
+                  sharedReport={sharedReport}
+                  toggleFilter={toggleFilter}
+                />
+              )}
+            />
+          </ReportContaner>
+        </FlexContainer>
+      </>
+    </FeaturesSwitch>
   )
 }
 

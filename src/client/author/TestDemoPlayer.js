@@ -24,6 +24,7 @@ const DemoPlayer = ({ match }) => {
         preview
         demo
         closeTestPreviewModal={closeTestPreviewModal}
+        defaultAP
       />
     </WithResources>
   )

@@ -108,15 +108,16 @@ function* evaluateTestItemSaga({ payload }) {
         testItemId,
         graded: true,
         notStarted: false,
-        score: answers[q.id] ? score : 0,
+        score: answers[`${testItemId}_${q.id}`] ? score : 0,
         skipped:
-          isEmpty(answers[q.id]) && !defaultManualGradedType.includes(q.type),
+          isEmpty(answers[`${testItemId}_${q.id}`]) &&
+          !defaultManualGradedType.includes(q.type),
         pendingEvaluation:
           isEmpty(evaluation) || defaultManualGradedType.includes(q.type),
         qLabel: isEmpty(q.qSubLabel)
           ? q.barLabel
           : `${q.barLabel}.${q.qSubLabel}`,
-        evaluation: evaluation[q.id],
+        evaluation: evaluation[`${testItemId}_${q.id}`],
       }
       if (previewUserWork) {
         activity.userWork = previewUserWork

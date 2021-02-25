@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 
-import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -30,9 +29,13 @@ const Engagement = ({
     }
   }, [settings])
 
-  const statsData =
-    get(engagementSummary, 'data.result.summaryData', [])[0] || {}
-  const timelineData = get(engagementSummary, 'data.result.metricInfo', [])
+  const [statsData, timelineData] = useMemo(
+    () => [
+      get(engagementSummary, 'data.result.summaryData', [])[0] || {},
+      get(engagementSummary, 'data.result.metricInfo', []),
+    ],
+    [engagementSummary]
+  )
 
   if (loading) {
     return <SpinLoader position="fixed" />

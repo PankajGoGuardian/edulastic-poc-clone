@@ -253,45 +253,6 @@ class LeftFilter extends React.Component {
           </>
         )}
 
-        <FieldLabel>Tags</FieldLabel>
-        <TagFilter
-          margin="0px 0px 15px"
-          onChangeField={(type, value) => this.handleChange(type)(value)}
-          selectedTagIds={tags}
-        />
-
-        <FieldLabel>Test Name</FieldLabel>
-        <SelectInputStyled
-          data-cy="filter-test-name"
-          mode="default"
-          showSearch
-          placeholder="All Tests"
-          value={testId}
-          onChange={this.handleChange('testId')}
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-            0
-          }
-          margin="0px 0px 15px"
-        >
-          <Select.Option key={0} value="">
-            All Tests
-          </Select.Option>
-          {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) &&
-            assignmentTestList?.map(({ testId: _id, title }, index) => (
-              <Select.Option key={index} value={_id}>
-                {title}
-              </Select.Option>
-            ))}
-          {userRole === roleuser.TEACHER &&
-            teacherTestList.map(({ _id, title }, index) => (
-              <Select.Option key={index} value={_id}>
-                {title}
-              </Select.Option>
-            ))}
-        </SelectInputStyled>
-
         {userRole === 'teacher' && (
           <>
             <FieldLabel>Class</FieldLabel>
@@ -377,6 +338,45 @@ class LeftFilter extends React.Component {
             </SelectInputStyled>
           </>
         )}
+
+        <FieldLabel>Tags</FieldLabel>
+        <TagFilter
+          margin="0px 0px 15px"
+          onChangeField={(type, value) => this.handleChange(type)(value)}
+          selectedTagIds={tags}
+        />
+
+        <FieldLabel>Test Name</FieldLabel>
+        <SelectInputStyled
+          data-cy="filter-test-name"
+          mode="default"
+          showSearch
+          placeholder="All Tests"
+          value={testId}
+          onChange={this.handleChange('testId')}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+            0
+          }
+          margin="0px 0px 15px"
+        >
+          <Select.Option key={0} value="">
+            All Tests
+          </Select.Option>
+          {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) &&
+            assignmentTestList?.map(({ testId: _id, title }, index) => (
+              <Select.Option key={index} value={_id}>
+                {title}
+              </Select.Option>
+            ))}
+          {userRole === roleuser.TEACHER &&
+            teacherTestList.map(({ _id, title }, index) => (
+              <Select.Option key={index} value={_id}>
+                {title}
+              </Select.Option>
+            ))}
+        </SelectInputStyled>
 
         <Folders
           showAllItems

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { isEqual } from 'lodash'
 import { EduButton } from '@edulastic/common'
-import { white } from '@edulastic/colors'
+import { themeColor, white } from '@edulastic/colors'
 import PreviewRubricModal from '../../author/GradingRubric/Components/common/PreviewRubricModal'
 import PreviewRubricCard from '../../author/GradingRubric/Components/common/PreviewRubricCard'
 
@@ -12,7 +12,6 @@ const RubricGrading = ({
   rubricFeedback,
   currentScore,
   onRubricResponse,
-  isExpressGrader,
 }) => {
   const [showPreviewRubric, setShowRubricModal] = useState(false)
 
@@ -40,20 +39,17 @@ const RubricGrading = ({
       <PreviewRubricCard
         rubricData={rubricData}
         rubricFeedback={rubricFeedback}
-        isExpressGrader={isExpressGrader}
         onChange={submitRubricResponse}
       />
-      {!isExpressGrader && (
-        <RubricsButton
-          ml="0px"
-          noHover
-          isGhost
-          width="100%"
-          onClick={handleRubricAction}
-        >
-          view rubric details
-        </RubricsButton>
-      )}
+      <RubricsButton
+        ml="0px"
+        noHover
+        isGhost
+        width="100%"
+        onClick={handleRubricAction}
+      >
+        view rubric details
+      </RubricsButton>
       {showPreviewRubric && (
         <PreviewRubricModal
           visible={showPreviewRubric}
@@ -77,6 +73,7 @@ const RubricsWrapper = styled.div`
 const RubricsButton = styled(EduButton)`
   &:hover {
     &.ant-btn.ant-btn-primary {
+      background-color: ${themeColor};
       color: ${white};
     }
   }

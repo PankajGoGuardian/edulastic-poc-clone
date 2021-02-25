@@ -120,7 +120,7 @@ export const redirectToDashbord = (type = '', history) => {
       msg = 'This assignment is not available'
       break
     default:
-      msg = 'Assignment is not available for the attempt.'
+      msg = 'Assignment is not available for the attempt'
   }
   notification({ msg })
   history.push('/home/assignments')
@@ -310,7 +310,7 @@ const redirectToAssessmentPlayer = (
   }
   if ((graded || absent) && (isExpired || attemptCount === maxAttempts)) {
     if (releaseScore === releaseGradeLabels.DONT_RELEASE || absent) {
-      notification({ msg: 'Test is expired' })
+      notification({ msg: 'The due date for this assignment has passed' })
       return history.push({
         pathname: '/home/grades',
         state: { highlightAssignment: assignmentId },

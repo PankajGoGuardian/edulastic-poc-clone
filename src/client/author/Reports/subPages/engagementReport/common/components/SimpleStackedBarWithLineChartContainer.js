@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { ticks } from 'd3-array'
+import { round } from 'lodash'
 
 import { Row, Col } from 'antd'
 import { themeColor, lightGreen8 } from '@edulastic/colors'
@@ -111,7 +112,7 @@ const SimpleStackedBarWithLineChartContainer = ({
       ticks: [...ticksArr, maxTickValue + tickDiff],
       lineYDomain: [0, maxLineTickValue + 2 * lineTickDiff],
       lineTicks: [...lineTicksArr, maxLineTickValue + lineTickDiff],
-      formatter: (val) => val,
+      formatter: (val) => round(Number(val), 2),
     }
   }
 

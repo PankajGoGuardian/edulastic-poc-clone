@@ -10,6 +10,7 @@ import {
   IconScratchPad,
   IconMagnify,
   IconLanguage,
+  IconCloudUpload,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container, StyledButton, StyledIcon } from './styled'
@@ -37,6 +38,7 @@ const ToolBar = ({
   header,
   multiLanguageEnabled,
   setSettingsModalVisibility,
+  toggleUserWorkUploadModal,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
@@ -121,6 +123,13 @@ const ToolBar = ({
         <Tooltip placement="top" title="Magnify">
           <StyledButton onClick={handleMagnifier} active={enableMagnifier}>
             <IconMagnify />
+          </StyledButton>
+        </Tooltip>
+      )}
+      {!isDocbased && (
+        <Tooltip placement="top" title="Upload work">
+          <StyledButton onClick={toggleUserWorkUploadModal}>
+            <IconCloudUpload />
           </StyledButton>
         </Tooltip>
       )}

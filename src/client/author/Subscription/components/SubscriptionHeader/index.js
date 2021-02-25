@@ -40,6 +40,7 @@ const SubscriptionHeader = ({
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
   title,
+  isRoleTeacher,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -60,28 +61,32 @@ const SubscriptionHeader = ({
 
   const menu = (
     <Menu>
-      <Menu.Item>
-        {!hasAllPremiumProductAccess && (
+      {isRoleTeacher && (
+        <Menu.Item>
+          {!hasAllPremiumProductAccess && (
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <span data-cy="individualSubscription" onClick={handleClick}>
+                  INDIVIDUAL SUBSCRIPTION
+                </span>
+              )}
+              onClick={handlePurchaseFlow}
+            />
+          )}
+        </Menu.Item>
+      )}
+      {isRoleTeacher && (
+        <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
-              <span data-cy="individualSubscription" onClick={handleClick}>
-                INDIVIDUAL SUBSCRIPTION
+              <span data-cy="multipleSubscription" onClick={handleClick}>
+                MULTIPLE SUBSCRIPTIONS
               </span>
             )}
-            onClick={handlePurchaseFlow}
+            onClick={openMultiplePurchaseModal}
           />
-        )}
-      </Menu.Item>
-      <Menu.Item>
-        <AuthorCompleteSignupButton
-          renderButton={(handleClick) => (
-            <span data-cy="multipleSubscription" onClick={handleClick}>
-              MULTIPLE SUBSCRIPTIONS
-            </span>
-          )}
-          onClick={openMultiplePurchaseModal}
-        />
-      </Menu.Item>
+        </Menu.Item>
+      )}
       <Menu.Item>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (

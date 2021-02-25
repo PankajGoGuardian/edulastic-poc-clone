@@ -10,6 +10,7 @@ const Header = ({
   setShowMultiplePurchaseModal,
   settingProductData,
   hasAllPremiumProductAccess,
+  isRoleTeacher,
 }) => {
   return (
     <SubscriptionHeader
@@ -23,6 +24,7 @@ const Header = ({
       hasAllPremiumProductAccess={hasAllPremiumProductAccess}
       setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
       settingProductData={settingProductData}
+      isRoleTeacher={isRoleTeacher}
     />
   )
 }

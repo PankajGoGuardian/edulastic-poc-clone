@@ -214,6 +214,9 @@ const Subscription = (props) => {
     [products]
   )
 
+  const { role } = user
+  const isRoleTeacher = role === roleuser.TEACHER
+
   const [comparePlan, setComparePlan] = useState(false)
   const [hasLicenseKeyModal, setHasLicenseKeyModal] = useState(false)
   const [purchaseLicenseModal, setpurchaseLicenseModal] = useState(false)
@@ -377,6 +380,7 @@ const Subscription = (props) => {
         showMultipleSubscriptions={showMultipleSubscriptions}
         isFreeAdmin={isFreeAdmin}
         toggleShowFeatureNotAvailableModal={setShowFeatureNotAvailableModal}
+        isRoleTeacher={isRoleTeacher}
       />
 
       <SubscriptionMain

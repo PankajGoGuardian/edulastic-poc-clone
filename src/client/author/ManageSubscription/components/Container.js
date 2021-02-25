@@ -176,6 +176,8 @@ const ManageSubscriptionContainer = ({
 
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
 
+  const isRoleTeacher = userRole === roleuser.TEACHER
+
   if (loading) {
     return <StyledSpin />
   }
@@ -192,6 +194,7 @@ const ManageSubscriptionContainer = ({
           hasAllPremiumProductAccess={hasAllPremiumProductAccess}
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           settingProductData={settingProductData}
+          isRoleTeacher={isRoleTeacher}
         />
       )}
 

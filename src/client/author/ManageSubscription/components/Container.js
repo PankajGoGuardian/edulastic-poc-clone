@@ -67,17 +67,17 @@ const ManageSubscriptionContainer = ({
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [dataSource, setDataSource] = useState(users)
-  const [searchValue, setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState()
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
-
   const [isBuyMoreModalOpened, setIsBuyMoreModalOpened] = useState('')
-
   const [productData, setProductData] = useState({})
+
+  useEffect(() => setDataSource(users), [users])
 
   const { FEATURED } = groupBy(dashboardTiles, 'type')
   const featuredBundles = FEATURED || []
@@ -166,6 +166,10 @@ const ManageSubscriptionContainer = ({
   const handleTableSearch = (e) => {
     const currValue = e.target.value
     setSearchValue(currValue)
+    if (!currValue) {
+      setDataSource(users)
+      return
+    }
     const filteredData = users.filter(
       (entry) =>
         entry?.username?.includes(currValue) ||

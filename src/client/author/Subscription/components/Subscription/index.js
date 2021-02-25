@@ -307,7 +307,7 @@ const Subscription = (props) => {
     : false
 
   const itemBankProductIds = products
-    .filter((prod) => prod.type === 'ITEM_BANK')
+    .filter((prod) => prod.type === 'ITEM_BANK_SPARK_MATH')
     .map((prod) => prod.linkedProductId)
 
   const totalPaidProducts = itemBankSubscriptions.reduce(

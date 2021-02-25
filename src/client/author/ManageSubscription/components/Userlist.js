@@ -34,7 +34,6 @@ const getUpdatedValue = (attr, userId, data, licenseId) =>
 
 const Userlist = ({
   users,
-  licenseIds,
   userId: currentUserId,
   bulkEditUsersPermission,
   teacherPremiumProductId,
@@ -128,10 +127,16 @@ const Userlist = ({
       }
     }
 
-    bulkEditUsersPermission({
-      licensesPermission,
-      manageLicensePermission,
-    })
+    const data = {}
+    if (Object.keys(licensesPermission).length) {
+      data.licensesPermission = licensesPermission
+    }
+
+    if (Object.keys(manageLicensePermission).length) {
+      data.manageLicensePermission = manageLicensePermission
+    }
+
+    bulkEditUsersPermission(data)
   }
 
   const getXOR = (a, b) => (a || b) && !(a && b)

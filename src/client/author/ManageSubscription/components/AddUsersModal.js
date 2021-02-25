@@ -60,7 +60,7 @@ const AddUsersModal = ({
         _premiumLicenseId = licenseId
         _isPremiumCheckboxChecked = checkboxValues.includes(licenseId)
       }
-      if (linkedProductId === sparkMathProductId) {
+      if ([linkedProductId, productId].includes(sparkMathProductId)) {
         _sparkMathLicenseId = licenseId
       }
       _sparkAvailableCount = totalCount - usedCount

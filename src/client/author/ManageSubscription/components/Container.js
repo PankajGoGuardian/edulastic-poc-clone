@@ -73,20 +73,27 @@ const ManageSubscriptionContainer = ({
   const { FEATURED } = groupBy(dashboardTiles, 'type')
   const featuredBundles = FEATURED || []
 
-  const { sparkMathProductId, teacherPremiumProductId } = useMemo(() => {
+  const {
+    sparkMathProductId,
+    sparkMathLinkedProductId,
+    teacherPremiumProductId,
+  } = useMemo(() => {
     let _sparkMathProductId = null
     let _teacherPremiumProductId = null
-    for (const { id, name } of products) {
+    let _sparkMathLinkedProductId = null
+    for (const { id, name, linkedProductId } of products) {
       if (name === PRODUCT_NAMES.TEACHER_PREMIUM) {
         _teacherPremiumProductId = id
       }
       if (name === PRODUCT_NAMES.SPARK_MATH) {
         _sparkMathProductId = id
+        _sparkMathLinkedProductId = linkedProductId
       }
     }
     return {
       sparkMathProductId: _sparkMathProductId,
       teacherPremiumProductId: _teacherPremiumProductId,
+      sparkMathLinkedProductId: _sparkMathLinkedProductId,
     }
   }, [products])
 
@@ -212,7 +219,7 @@ const ManageSubscriptionContainer = ({
           onCancel={closeAddUsersConfirmationModal}
           userDataSource={userDataSource}
           teacherPremiumProductId={teacherPremiumProductId}
-          sparkMathProductId={sparkMathProductId}
+          sparkMathProductId={sparkMathLinkedProductId}
         />
       )}
     </>

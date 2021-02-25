@@ -32,7 +32,7 @@ const Userlist = ({
       if (productId === teacherPremiumProductId) {
         _premiumLicenseId = licenseId
       }
-      if (linkedProductId === sparkMathProductId) {
+      if ([linkedProductId, productId].includes(sparkMathProductId)) {
         _sparkMathLicenseId = licenseId
       }
     }

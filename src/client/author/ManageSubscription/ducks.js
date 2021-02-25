@@ -169,6 +169,7 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
         for (const user of res) {
           result[user._id] = {
             ...result[user._id],
+            fullName: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
             username: user.username,
             status: user.status,
           }
@@ -193,6 +194,7 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
       for (const user of res) {
         result[user._id] = {
           ...result[user._id],
+          fullName: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
           username: user.username,
           status: user.status,
         }

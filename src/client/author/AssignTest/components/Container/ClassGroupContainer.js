@@ -163,14 +163,14 @@ const ClassGroupContainer = ({
       <SettingContainer id="tags-setting">
         <DetailsTooltip
           width={tootltipWidth}
-          title="Add Tags"
-          content=""
+          title="Tags"
+          content="Tags are keywords you can use to search for your tests in the Assignments or Insights sections.  Entering a tag makes it easier to locate an assigned test or quickly access test data."
           premium
           placement="rightTop"
         />
         <StyledRow gutter={16}>
           <Col span={10}>
-            <FieldLabel>Add Tags</FieldLabel>
+            <FieldLabel>Tags</FieldLabel>
           </Col>
           <Col span={14}>
             <TagFilter

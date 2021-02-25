@@ -188,7 +188,7 @@ class AdvancedOptons extends React.Component {
 
           <StyledRow gutter={24}>
             <Col xs={24} md={12} lg={6}>
-              <Label>Add Tags</Label>
+              <Label>Tags</Label>
               <TagFilter
                 selectedTags={tags}
                 canCreate

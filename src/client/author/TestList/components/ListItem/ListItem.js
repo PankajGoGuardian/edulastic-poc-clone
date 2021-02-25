@@ -339,12 +339,14 @@ class ListItem extends Component {
           collectionName={collectionName}
         />
 
-        <TestPreviewModal
-          isModalVisible={isPreviewModalVisible && currentTestId === item._id}
-          testId={isPreviewModalVisible ? currentTestId : ''}
-          showStudentPerformance
-          closeTestPreviewModal={this.hidePreviewModal}
-        />
+        {currentTestId && (
+          <TestPreviewModal
+            isModalVisible={isPreviewModalVisible}
+            testId={currentTestId}
+            showStudentPerformance
+            closeTestPreviewModal={this.hidePreviewModal}
+          />
+        )}
         <Container>
           <ContentWrapper>
             <Col span={24}>

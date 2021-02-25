@@ -11,6 +11,7 @@ import { Form, Pagination, Table, Tooltip } from 'antd'
 import moment from 'moment'
 import React, { useState } from 'react'
 import connect from 'react-redux/lib/connect/connect'
+import styled from 'styled-components'
 import {
   getDistrictListSelector,
   getFetchOrganizationStateSelector,
@@ -217,7 +218,7 @@ const ManageSubscriptionsByLicenses = ({
 
   return (
     <>
-      <CustomModalStyled
+      <ManageSubscriptinModal
         visible={isVisible}
         title="Manage Subscription"
         onCancel={() => setVisible(false)}
@@ -229,7 +230,7 @@ const ManageSubscriptionsByLicenses = ({
           isEdulasticAdminView
           licenseIds={currentLicenseIds}
         />
-      </CustomModalStyled>
+      </ManageSubscriptinModal>
       <FlexContainer justifyContent="space-between">
         <SearchFilters
           fetchLicensesBySearchType={fetchLicensesBySearchType}
@@ -278,3 +279,13 @@ export default connect(
   }),
   { searchRequest: searchOrgaizationRequestAction }
 )(ManageSubscriptionsByLicenses)
+
+const ManageSubscriptinModal = styled(CustomModalStyled)`
+  min-width: 100%;
+  padding-bottom: 0px;
+  top: 0px;
+  .ant-modal-content {
+    border-radius: 0px;
+    min-height: 100vh;
+  }
+`

@@ -1321,6 +1321,17 @@ class Setting extends Component {
                                 }
                               />{' '}
                               ALERTS
+                              {navigationThresholdMoreThan1 ? (
+                                <>
+                                  {' '}
+                                  <br />{' '}
+                                  {`OR MAXIMUM OF ${
+                                    restrictNavigationOutAttemptsThreshold * 5
+                                  } SEC.`}{' '}
+                                </>
+                              ) : (
+                                ''
+                              )}
                             </RadioBtn>
                           </StyledRadioGroup>
                         </Col>

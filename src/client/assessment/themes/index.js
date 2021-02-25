@@ -100,6 +100,7 @@ function pauseAssignment({
   classId,
   userId,
   pauseReason,
+  msg,
 }) {
   classBoardApi
     .togglePauseStudents({
@@ -111,7 +112,7 @@ function pauseAssignment({
     })
     .then(() => {
       Fscreen.safeExitfullScreen()
-      const errorMsg = 'Pausing Assignment due to Anti Cheating measures'
+      const errorMsg = msg || 'Pausing Assignment due to Anti Cheating measures'
       notification({ type: 'warning', msg: errorMsg, duration: 0 })
       if (history.location.pathname === '/home/assignments') {
         history.push('/home/assignmentss') // this hack needed to re-render route
@@ -138,7 +139,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
     .then((response) => {
       if (response.paused) {
         notification({
-          type: 'error',
+          type: 'warning',
           msg:
             'Your test has been locked. Please contact your teacher to reset the test.',
           duration: 0,
@@ -373,6 +374,8 @@ export function useTabNavigationCounterEffect({
               classId,
               userId,
               pauseReason: 'out-of-navigation',
+              msg:
+                'Your test has been locked. Please contact your teacher to reset the test',
             })
           }
         }

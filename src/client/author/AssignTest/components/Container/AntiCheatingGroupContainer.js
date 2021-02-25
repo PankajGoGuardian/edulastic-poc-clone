@@ -371,6 +371,16 @@ const AntiCheatingGroupContainer = ({
                     }
                   />{' '}
                   ALERTS
+                  {navigationThresholdMoreThan1 ? (
+                    <Styled2ndLine>
+                      {' '}
+                      {`OR MAXIMUM OF ${
+                        restrictNavigationOutAttemptsThreshold * 5
+                      } SEC.`}{' '}
+                    </Styled2ndLine>
+                  ) : (
+                    ''
+                  )}
                 </Radio>
               </StyledRadioGroupWrapper>
             </Col>
@@ -477,6 +487,10 @@ const StyledRadioGroupWrapper = Styled(Radio.Group)`
     .ant-radio-wrapper span:nth-child(2){
       font-size:12px;
     }
+`
+
+const Styled2ndLine = Styled.div`
+  padding-left:24px;
 `
 
 export default AntiCheatingGroupContainer

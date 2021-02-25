@@ -30,7 +30,7 @@ import {
 const SimpleAreaChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
   legendWrapperStyle = { top: -10 },
-  xTickTooltipPosition = 460,
+  xTickTooltipPosition = 420,
   xTickToolTipWidth = 110,
   data = [],
   pageSize: _pageSize,

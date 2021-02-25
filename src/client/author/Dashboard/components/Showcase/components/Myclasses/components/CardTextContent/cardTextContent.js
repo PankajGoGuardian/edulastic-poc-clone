@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { Row, Col, Tooltip } from 'antd'
 import { IconPlusCircle } from '@edulastic/icons'
 import { themeColorLight, cardTitleColor } from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
 import {
   CardText,
   Image,
@@ -81,7 +82,11 @@ export const CardTextContent = ({ data, history }) => {
       <RowWrapper1 onClick={() => gotoAssignedAssessment()}>
         <Label>RECENT</Label>
         {asgnTitle ? (
-          <>
+          <FlexContainer
+            justifyContent="flex-start"
+            alignItems="flex-start"
+            width="100%"
+          >
             <LeftCol width="auto">
               <Image src={asgnThumbnail} />
             </LeftCol>
@@ -95,7 +100,7 @@ export const CardTextContent = ({ data, history }) => {
                 {asgnStatus}
               </AssignmentStatusText>
             </CenterCol>
-          </>
+          </FlexContainer>
         ) : (
           <Col span={16} style={{ cursor: 'default' }}>
             <Row>

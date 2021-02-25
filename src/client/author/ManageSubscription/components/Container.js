@@ -62,6 +62,7 @@ const ManageSubscriptionContainer = ({
   bulkEditUsersPermission,
   licenseIds,
   userRole,
+  isEdulasticAdminView,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -181,7 +182,7 @@ const ManageSubscriptionContainer = ({
         />
       )}
 
-      <ContentWrapper>
+      <ContentWrapper isEdulasticAdminView={isEdulasticAdminView}>
         <LicenseCountSection
           subsLicenses={subsLicenses}
           setShowBuyMoreModal={setShowBuyMoreModal}
@@ -210,6 +211,7 @@ const ManageSubscriptionContainer = ({
         showBuyMoreModal={showBuyMoreModal}
         setShowBuyMoreModal={setShowBuyMoreModal}
         isBuyMoreModalOpened={isBuyMoreModalOpened}
+        isEdulasticAdminView={isEdulasticAdminView}
       />
       {showAddUsersModal && (
         <AddUsersModal

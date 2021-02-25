@@ -1,5 +1,10 @@
 import { themeColor } from '@edulastic/colors'
-import { CustomModalStyled, EduButton, FlexContainer, SelectInputStyled } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  FlexContainer,
+  SelectInputStyled,
+} from '@edulastic/common'
 import { IconEye, IconTrash } from '@edulastic/icons'
 import loadable from '@loadable/component'
 import { Form, Pagination, Table, Tooltip } from 'antd'
@@ -11,8 +16,10 @@ import {
   getFetchOrganizationStateSelector,
   searchOrgaizationRequestAction,
 } from '../../author/ContentCollections/ducks'
-import ManageSubscription from '../../author/ManageSubscription'
 
+const ManageSubscription = loadable(() =>
+  import('../../author/ManageSubscription')
+)
 const SubsLicenseViewModal = loadable(() => import('./SubsLicenseViewModal'))
 const AddSubscriptionModal = loadable(() => import('./AddSubscriptionModal'))
 
@@ -190,11 +197,7 @@ const ManageSubscriptionsByLicenses = ({
     })
   }
   const handleViewLicense = (licenseId) => {
-    setCurrentLicenseIds([
-      '602f984e0b683463a674112f',
-      '602f984e0b683463a6741132',
-      '602f984e0b683463a6741135',
-    ])
+    setCurrentLicenseIds([licenseId])
     setVisible(true)
     const getCurrentLicense = licenses.find(
       (license) => license.licenseId === licenseId
@@ -218,11 +221,14 @@ const ManageSubscriptionsByLicenses = ({
         visible={isVisible}
         title="Manage Subscription"
         onCancel={() => setVisible(false)}
-        modalWidth="100%"
-        top="0"
+        fullscreen
+        destroyOnClose
         footer={[]}
       >
-        <ManageSubscription licenseIds={currentLicenseIds} />
+        <ManageSubscription
+          isEdulasticAdminView
+          licenseIds={currentLicenseIds}
+        />
       </CustomModalStyled>
       <FlexContainer justifyContent="space-between">
         <SearchFilters

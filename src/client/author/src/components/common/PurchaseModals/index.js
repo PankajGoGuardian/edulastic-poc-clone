@@ -46,6 +46,8 @@ const PurchaseFlowModals = (props) => {
     setShowBuyMoreModal,
     isBuyMoreModalOpened,
     licenseIds,
+    isEdulasticAdminView = false,
+    handleEdulasticAdminProductLicense,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -209,6 +211,10 @@ const PurchaseFlowModals = (props) => {
           setShowUpgradeModal={setShowUpgradeModal}
           products={products}
           setTotalAmount={setTotalAmount}
+          isEdulasticAdminView={isEdulasticAdminView}
+          handlePayment={handleEdulasticAdminProductLicense}
+          licenseIds={licenseIds}
+          userEmailIds={emailIds}
         />
       )}
     </>
@@ -230,6 +236,8 @@ export default compose(
     {
       handleStripePayment: slice.actions.stripePaymentAction,
       handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
+      handleEdulasticAdminProductLicense:
+        slice.actions.edulasticAdminProductLicenseAction,
       fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
     }

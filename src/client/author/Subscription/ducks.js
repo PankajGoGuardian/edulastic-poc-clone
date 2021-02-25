@@ -89,6 +89,9 @@ const slice = createSlice({
     stripeMultiplePaymentAction: (state) => {
       state.verificationPending = true
     },
+    edulasticAdminProductLicenseAction: (state) => {
+      state.verificationPending = true
+    },
     stripeMultiplePaymentFailureAction: (state) => {
       state.verificationPending = false
     },
@@ -329,6 +332,39 @@ function* fetchUserSubscription() {
   }
 }
 
+function* handleEdulasticAdminProductLicenseSaga({ payload }) {
+  console.log('payload', payload)
+  try {
+    const { productIds, emailIds: userEmailIds, licenseIds } = payload
+    const products = productIds.reduce((allProducts, product) => {
+      const { quantity, id, linkedProductId } = product
+      allProducts[id || linkedProductId] = quantity
+      return allProducts
+    }, {})
+    const apiPaymentResponse = yield call(paymentApi.licensePurchase, {
+      products,
+      userEmailIds,
+      licenseIds,
+    })
+    if (apiPaymentResponse.licenseKeys) {
+      yield put(
+        slice.actions.stripeMultiplePaymentSuccessAction(
+          apiPaymentResponse.licenseKeys
+        )
+      )
+      yield put(fetchMultipleSubscriptionsAction({ licenseIds }))
+      yield put(fetchUserAction({ background: true }))
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Process failed.',
+    })
+    console.error('ERROR WHILE PROCESSING LICENSE PURCHASE : ', err)
+    captureSentryException(err)
+  }
+}
+
 function* handleMultiplePurchasePayment({ payload }) {
   try {
     yield call(message.loading, {
@@ -475,6 +511,10 @@ export function* watcherSaga() {
     yield takeEvery(
       slice.actions.stripeMultiplePaymentAction,
       handleMultiplePurchasePayment
+    ),
+    yield takeEvery(
+      slice.actions.edulasticAdminProductLicenseAction,
+      handleEdulasticAdminProductLicenseSaga
     ),
     yield takeEvery(slice.actions.startTrialAction, handleFreeTrialSaga),
     yield takeEvery(

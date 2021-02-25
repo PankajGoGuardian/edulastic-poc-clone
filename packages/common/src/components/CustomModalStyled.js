@@ -15,10 +15,15 @@ const CustomModalStyled = ({ children, ...props }) => (
 export default CustomModalStyled
 
 const StyledModal = styled(Modal)`
-  min-width: ${(props) => (props.modalWidth ? props.modalWidth : '600px')};
-  top: ${(props) => (props.top ? props.top : '100px')};
+  min-width: ${(props) =>
+    props.modalWidth ? props.modalWidth : props.fullscreen ? '100%' : '600px'};
+  padding-bottom: ${(props) => (props.fullscreen ? '0px' : '24px')};
+  top: ${(props) =>
+    props.top ? props.top : props.fullscreen ? '0px' : '100px'};
   .ant-modal-content {
     background: ${white};
+    border-radius: ${(props) => (props.fullscreen ? '0px' : '4px')};
+    min-height: ${(props) => (props.fullscreen ? '100vh' : 'auto')};
     padding: ${(props) => props.padding || '25px 45px'};
     .ant-modal-close {
       color: ${title};

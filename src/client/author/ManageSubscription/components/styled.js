@@ -5,7 +5,7 @@ import { EduButton } from '@edulastic/common'
 import { StyledTable } from '../../../common/styled'
 
 export const ContentWrapper = styled.div`
-  padding: 15px 30px;
+  padding: ${(props) => (props.isEdulasticAdminView ? '0px' : '15px 30px')};
 `
 export const GreyBox = styled.div`
   background: #f3f3f3;

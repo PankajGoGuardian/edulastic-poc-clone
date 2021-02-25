@@ -89,6 +89,9 @@ const slice = createSlice({
     stripeMultiplePaymentAction: (state) => {
       state.verificationPending = true
     },
+    edulasticAdminProductLicenseAction: (state) => {
+      state.verificationPending = true
+    },
     stripeMultiplePaymentFailureAction: (state) => {
       state.verificationPending = false
     },
@@ -329,13 +332,50 @@ function* fetchUserSubscription() {
   }
 }
 
+function* handleEdulasticAdminProductLicenseSaga({ payload }) {
+  try {
+    const { productIds, emailIds: userEmailIds, licenseIds } = payload
+    const products = productIds.reduce((allProducts, product) => {
+      const { quantity, id, linkedProductId } = product
+      allProducts[id || linkedProductId] = quantity
+      return allProducts
+    }, {})
+    const apiPaymentResponse = yield call(paymentApi.licensePurchase, {
+      products,
+      userEmailIds,
+      licenseIds,
+    })
+    if (apiPaymentResponse.licenseKeys) {
+      yield put(
+        slice.actions.stripeMultiplePaymentSuccessAction(
+          apiPaymentResponse.licenseKeys
+        )
+      )
+      yield put(fetchMultipleSubscriptionsAction({ licenseIds }))
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Process failed.',
+    })
+    console.error('ERROR WHILE PROCESSING LICENSE PURCHASE : ', err)
+    captureSentryException(err)
+  }
+}
+
 function* handleMultiplePurchasePayment({ payload }) {
   try {
     yield call(message.loading, {
       content: 'Processing Payment, please wait',
       key: 'verify-license',
     })
-    const { stripe, data, productIds, emailIds: userEmailIds } = payload
+    const {
+      stripe,
+      data,
+      productIds,
+      emailIds: userEmailIds,
+      licenseIds,
+    } = payload
     const { token, error } = yield stripe.createToken(data)
     if (token) {
       const products = productIds.reduce((allProducts, product) => {
@@ -347,6 +387,7 @@ function* handleMultiplePurchasePayment({ payload }) {
         token,
         products,
         userEmailIds,
+        licenseIds,
       })
       if (apiPaymentResponse.licenseKeys) {
         yield put(
@@ -355,7 +396,7 @@ function* handleMultiplePurchasePayment({ payload }) {
           )
         )
         yield put(slice.actions.setPaymentServiceModal(false))
-        yield put(fetchMultipleSubscriptionsAction())
+        yield put(fetchMultipleSubscriptionsAction({ licenseIds }))
         yield put(fetchUserAction({ background: true }))
         notification({
           type: 'success',
@@ -468,6 +509,10 @@ export function* watcherSaga() {
     yield takeEvery(
       slice.actions.stripeMultiplePaymentAction,
       handleMultiplePurchasePayment
+    ),
+    yield takeEvery(
+      slice.actions.edulasticAdminProductLicenseAction,
+      handleEdulasticAdminProductLicenseSaga
     ),
     yield takeEvery(slice.actions.startTrialAction, handleFreeTrialSaga),
     yield takeEvery(

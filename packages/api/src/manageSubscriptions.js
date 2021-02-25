@@ -3,11 +3,12 @@ import API from './utils/API'
 const api = new API()
 const BASE_URL = '/license-keys'
 
-const fetchLicenses = () =>
+const fetchLicenses = (data) =>
   api
     .callApi({
       method: 'get',
       url: `${BASE_URL}/me`,
+      params: data,
     })
     .then((result) => result.data)
 

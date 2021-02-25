@@ -17,6 +17,10 @@ const BuyMoreLicensesModal = ({
   setShowUpgradeModal,
   products,
   setTotalAmount,
+  isEdulasticAdminView,
+  handlePayment,
+  licenseIds,
+  emailIds,
 }) => {
   const [premiumCount, setPremiumCount] = useState()
   const [sparkMathCount, setSparkMathCount] = useState()
@@ -51,6 +55,16 @@ const BuyMoreLicensesModal = ({
     }))
 
     setProductsCart(setProductQuantity)
+
+    if (isEdulasticAdminView) {
+      handlePayment({
+        productIds: setProductQuantity,
+        emailIds,
+        licenseIds,
+      })
+      onCancel()
+      return
+    }
     setShowUpgradeModal(true)
   }
   const footer = (

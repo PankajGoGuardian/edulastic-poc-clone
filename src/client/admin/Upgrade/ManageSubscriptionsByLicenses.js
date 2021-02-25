@@ -1,17 +1,26 @@
 import { themeColor } from '@edulastic/colors'
-import { EduButton, FlexContainer, SelectInputStyled } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  FlexContainer,
+  SelectInputStyled,
+} from '@edulastic/common'
 import { IconEye, IconTrash } from '@edulastic/icons'
 import loadable from '@loadable/component'
 import { Form, Pagination, Table, Tooltip } from 'antd'
 import moment from 'moment'
 import React, { useState } from 'react'
 import connect from 'react-redux/lib/connect/connect'
+import styled from 'styled-components'
 import {
   getDistrictListSelector,
   getFetchOrganizationStateSelector,
   searchOrgaizationRequestAction,
 } from '../../author/ContentCollections/ducks'
 
+const ManageSubscription = loadable(() =>
+  import('../../author/ManageSubscription')
+)
 const SubsLicenseViewModal = loadable(() => import('./SubsLicenseViewModal'))
 const AddSubscriptionModal = loadable(() => import('./AddSubscriptionModal'))
 
@@ -173,6 +182,8 @@ const ManageSubscriptionsByLicenses = ({
 }) => {
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
+  const [isVisible, setVisible] = useState(false)
+  const [currentLicenseIds, setCurrentLicenseIds] = useState()
   const [currentLicense, setCurrentLicense] = useState({})
   const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(
     false
@@ -187,6 +198,8 @@ const ManageSubscriptionsByLicenses = ({
     })
   }
   const handleViewLicense = (licenseId) => {
+    setCurrentLicenseIds([licenseId])
+    setVisible(true)
     const getCurrentLicense = licenses.find(
       (license) => license.licenseId === licenseId
     )
@@ -205,6 +218,19 @@ const ManageSubscriptionsByLicenses = ({
 
   return (
     <>
+      <ManageSubscriptinModal
+        visible={isVisible}
+        title="Manage Subscription"
+        onCancel={() => setVisible(false)}
+        fullscreen
+        destroyOnClose
+        footer={null}
+      >
+        <ManageSubscription
+          isEdulasticAdminView
+          licenseIds={currentLicenseIds}
+        />
+      </ManageSubscriptinModal>
       <FlexContainer justifyContent="space-between">
         <SearchFilters
           fetchLicensesBySearchType={fetchLicensesBySearchType}
@@ -253,3 +279,13 @@ export default connect(
   }),
   { searchRequest: searchOrgaizationRequestAction }
 )(ManageSubscriptionsByLicenses)
+
+const ManageSubscriptinModal = styled(CustomModalStyled)`
+  min-width: 100%;
+  padding-bottom: 0px;
+  top: 0px;
+  .ant-modal-content {
+    border-radius: 0px;
+    min-height: 100vh;
+  }
+`

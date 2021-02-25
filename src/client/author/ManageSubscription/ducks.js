@@ -210,9 +210,14 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
   }
 }
 
-function* fetchManageSubscriptionsSaga() {
+function* fetchManageSubscriptionsSaga({ payload }) {
   try {
-    const result = yield call(manageSubscriptionsApi.fetchLicenses)
+    const { licenseIds = [] } = payload
+    const params = {}
+    if (licenseIds.length) {
+      Object.assign(params, { licenseIds: licenseIds.join(',') })
+    }
+    const result = yield call(manageSubscriptionsApi.fetchLicenses, params)
     yield put(fetchManageSubscriptionsSuccessAction(result))
   } catch (err) {
     captureSentryException(err)
@@ -226,6 +231,7 @@ function* fetchManageSubscriptionsSaga() {
 
 function* bulkEditUsersPermissionSaga({ payload }) {
   try {
+    const { licenseIds } = payload
     const result = yield call(
       manageSubscriptionsApi.bulkEditUsersPermission,
       payload
@@ -237,7 +243,9 @@ function* bulkEditUsersPermissionSaga({ payload }) {
       })
       return
     }
-    yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
+    yield put(
+      fetchMultipleSubscriptionsAction({ fetchInBackground: true, licenseIds })
+    )
     notification({
       type: 'success',
       msg: `Successfully updated.`,

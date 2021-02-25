@@ -2,10 +2,35 @@ import React, { useState, useEffect, useMemo } from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { CheckboxLabel } from '@edulastic/common'
-import { isUndefined, isEmpty, isObject } from 'lodash'
+import { isUndefined, isEmpty, isObject, isBoolean } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
 import { StyledAntdTable, SaveButton } from './styled'
+
+const getClubbedValue = (prev = [], curr) => prev.concat(curr)
+
+const getUpdatedValue = (attr, userId, data, licenseId) =>
+  produce(data, (draft) => {
+    if (!draft[licenseId] && licenseId) {
+      draft[licenseId] = {}
+    }
+    if (attr) {
+      const key = 'userIdsToAdd'
+      if (licenseId) {
+        draft[licenseId][key] = getClubbedValue(draft[licenseId][key], userId)
+      } else {
+        draft[key] = getClubbedValue(draft[key], userId)
+      }
+    } else {
+      const key = 'userIdsToRemove'
+      if (licenseId) {
+        draft[licenseId][key] = getClubbedValue(draft[licenseId][key], userId)
+      } else {
+        draft[key] = getClubbedValue(draft[key], userId)
+      }
+    }
+    return draft
+  })
 
 const Userlist = ({
   users,
@@ -70,13 +95,42 @@ const Userlist = ({
 
   const onSaveHandler = () => {
     setIsSaveButtonDisabled(true)
-    // TODO: fix the usersPermission so that the segregation in BE can be removed
-    // maybe create a map based on license or productId
+    let licensesPermission = {}
+    let manageLicensePermission = {}
+
+    for (const [userId, permissions] of Object.entries(changes)) {
+      const { hasTeacherPremium, hasSparkMath, hasManageLicense } = permissions
+
+      if (isBoolean(hasTeacherPremium)) {
+        licensesPermission = getUpdatedValue(
+          hasTeacherPremium,
+          userId,
+          licensesPermission,
+          premiumLicenseId
+        )
+      }
+
+      if (isBoolean(hasSparkMath)) {
+        licensesPermission = getUpdatedValue(
+          hasSparkMath,
+          userId,
+          licensesPermission,
+          sparkMathLicenseId
+        )
+      }
+
+      if (isBoolean(hasManageLicense)) {
+        manageLicensePermission = getUpdatedValue(
+          hasManageLicense,
+          userId,
+          manageLicensePermission
+        )
+      }
+    }
+
     bulkEditUsersPermission({
-      usersPermission: changes,
-      teacherPremiumProductId,
-      sparkMathProductId,
-      licenseIds,
+      licensesPermission,
+      manageLicensePermission,
     })
   }
 

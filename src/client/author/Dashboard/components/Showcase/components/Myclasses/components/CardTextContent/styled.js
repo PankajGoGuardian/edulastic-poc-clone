@@ -105,11 +105,13 @@ const SharedTextStyle = css`
 `
 export const AssignmentStatusText = styled.p`
   font-size: 9px;
+  padding: 2px 0px 0px !important;
   color: ${cardTitleColor};
   ${SharedTextStyle}
 `
 export const AssignmentTitle = styled.p`
   font-size: 11px;
+  padding: 0px !important;
   ${SharedTextStyle}
 `
 

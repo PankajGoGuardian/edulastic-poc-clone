@@ -2,7 +2,11 @@ import React from 'react'
 import { EduButton, FlexContainer, SearchInputStyled } from '@edulastic/common'
 import PropTypes from 'prop-types'
 
-const AddUsersSection = ({ setShowAddUsersModal }) => {
+const AddUsersSection = ({
+  setShowAddUsersModal,
+  handleTableSearch,
+  searchValue,
+}) => {
   const openModal = () => setShowAddUsersModal(true)
   return (
     <FlexContainer justifyContent="flex-end" padding="10px 0px">
@@ -21,6 +25,8 @@ const AddUsersSection = ({ setShowAddUsersModal }) => {
         height="34px"
         width="310px"
         data-cy="searchUsersInputField"
+        value={searchValue}
+        onChange={handleTableSearch}
       />
     </FlexContainer>
   )

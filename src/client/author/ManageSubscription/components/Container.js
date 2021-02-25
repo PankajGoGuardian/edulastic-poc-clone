@@ -59,6 +59,8 @@ const ManageSubscriptionContainer = ({
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
+  const [dataSource, setDataSource] = useState(users)
+  const [searchValue, setSearchValue] = useState('')
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
@@ -147,6 +149,17 @@ const ManageSubscriptionContainer = ({
     isPaidPremium ? 1 : 0
   )
 
+  const handleTableSearch = (e) => {
+    const currValue = e.target.value
+    setSearchValue(currValue)
+    const filteredData = users.filter(
+      (entry) =>
+        entry?.username?.includes(currValue) ||
+        entry?.email?.includes(currValue)
+    )
+    setDataSource(filteredData)
+  }
+
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
 
   if (loading) {
@@ -171,9 +184,13 @@ const ManageSubscriptionContainer = ({
           setShowBuyMoreModal={setShowBuyMoreModal}
           setIsBuyMoreModalOpened={setIsBuyMoreModalOpened}
         />
-        <AddUsersSection setShowAddUsersModal={setShowAddUsersModal} />
+        <AddUsersSection
+          setShowAddUsersModal={setShowAddUsersModal}
+          handleTableSearch={handleTableSearch}
+          searchValue={searchValue}
+        />
         <Userlist
-          users={users}
+          users={dataSource}
           subsLicenses={subsLicenses}
           userId={userId}
           bulkEditUsersPermission={bulkEditUsersPermission}

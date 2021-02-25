@@ -1,13 +1,19 @@
 import { themeColor } from '@edulastic/colors'
-import { FlexContainer } from '@edulastic/common'
+import { EduButton, FlexContainer, SelectInputStyled } from '@edulastic/common'
 import { IconEye, IconTrash } from '@edulastic/icons'
 import loadable from '@loadable/component'
-import { Button, Form, Pagination, Table, Tooltip } from 'antd'
+import { Form, Pagination, Table, Tooltip } from 'antd'
 import moment from 'moment'
 import React, { useState } from 'react'
-import { StyledFilterSelect } from '../Common/StyledComponents'
+import connect from 'react-redux/lib/connect/connect'
+import {
+  getDistrictListSelector,
+  getFetchOrganizationStateSelector,
+  searchOrgaizationRequestAction,
+} from '../../author/ContentCollections/ducks'
 
 const SubsLicenseViewModal = loadable(() => import('./SubsLicenseViewModal'))
+const AddSubscriptionModal = loadable(() => import('./AddSubscriptionModal'))
 
 const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
   {
@@ -123,25 +129,32 @@ const SearchFilters = Form.create({
     }
     return (
       <Form onSubmit={handleSubmit}>
-        <FlexContainer justifyContent="space-between" width="400px">
+        <FlexContainer
+          justifyContent="space-between"
+          alignItems="center"
+          width="400px"
+        >
           <Form.Item style={{ width: '300px' }}>
             {getFieldDecorator('searchType', {
               rules: [{ required: true }],
               initialValue: MANAGE_SUBSCRIPTION_SEARCH_TYPE[0].type,
             })(
-              <StyledFilterSelect placeholder="Select a filter to search">
+              <SelectInputStyled
+                height="36px"
+                placeholder="Select a filter to search"
+              >
                 {MANAGE_SUBSCRIPTION_SEARCH_TYPE.map(({ type, name }) => (
-                  <StyledFilterSelect.Option key={type}>
+                  <SelectInputStyled.Option key={type}>
                     {name}
-                  </StyledFilterSelect.Option>
+                  </SelectInputStyled.Option>
                 ))}
-              </StyledFilterSelect>
+              </SelectInputStyled>
             )}
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <EduButton isBlue htmlType="submit">
               Search
-            </Button>
+            </EduButton>
           </Form.Item>
         </FlexContainer>
       </Form>
@@ -154,10 +167,16 @@ const ManageSubscriptionsByLicenses = ({
   manageLicensesData,
   setSearchType,
   upgradeUserSubscriptionAction,
+  isFetchingOrganization,
+  districtList,
+  searchRequest,
 }) => {
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
   const [currentLicense, setCurrentLicense] = useState({})
+  const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(
+    false
+  )
   const [showLicenseViewModal, setShowLicenseViewModal] = useState(false)
   const handlePageChange = (pageNo) => {
     setPage(pageNo)
@@ -177,6 +196,12 @@ const ManageSubscriptionsByLicenses = ({
   const closeViewLicenseModal = () => {
     setShowLicenseViewModal(false)
   }
+  const handleAddSubscription = () => {
+    setShowAddSubscriptionModal(true)
+  }
+  const closeAddSubscriptionModal = () => {
+    setShowAddSubscriptionModal(false)
+  }
 
   return (
     <>
@@ -185,12 +210,9 @@ const ManageSubscriptionsByLicenses = ({
           fetchLicensesBySearchType={fetchLicensesBySearchType}
           setSearchType={setSearchType}
         />
-        <Button
-          onClick={() => console.log('Add Subscription')} // TODO!
-          type="primary"
-        >
+        <EduButton isBlue onClick={handleAddSubscription}>
           Add Subscription
-        </Button>
+        </EduButton>
       </FlexContainer>
       <LicensesInvoiceTable
         licensesData={licenses}
@@ -211,8 +233,23 @@ const ManageSubscriptionsByLicenses = ({
           currentLicense={currentLicense}
         />
       )}
+      {showAddSubscriptionModal && (
+        <AddSubscriptionModal
+          isVisible={showAddSubscriptionModal}
+          closeModal={closeAddSubscriptionModal}
+          isFetchingOrganization={isFetchingOrganization}
+          districtList={districtList}
+          searchRequest={searchRequest}
+        />
+      )}
     </>
   )
 }
 
-export default ManageSubscriptionsByLicenses
+export default connect(
+  (state) => ({
+    districtList: getDistrictListSelector(state),
+    isFetchingOrganization: getFetchOrganizationStateSelector(state),
+  }),
+  { searchRequest: searchOrgaizationRequestAction }
+)(ManageSubscriptionsByLicenses)

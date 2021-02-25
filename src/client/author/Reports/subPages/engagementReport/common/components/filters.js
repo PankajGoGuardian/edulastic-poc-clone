@@ -4,9 +4,6 @@ import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { Spin } from 'antd'
-
-import { roleuser } from '@edulastic/constants'
 
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
@@ -21,15 +18,7 @@ import {
   FilterLabel,
 } from '../../../../common/styled'
 
-import {
-  getReportsERFilterLoadingState,
-  getERFilterDataRequestAction,
-  getReportsERFilterData,
-  getFiltersSelector,
-  setFiltersAction,
-  getReportsPrevERFilterData,
-  setPrevERFilterDataAction,
-} from '../filterDataDucks'
+import { getFiltersSelector, setFiltersAction } from '../filterDataDucks'
 import { getUser } from '../../../../../src/selectors/user'
 
 import { resetStudentFilters } from '../../../../common/util'
@@ -45,19 +34,12 @@ const EngagementReportFilters = ({
   showApply,
   setShowApply,
   setFirstLoad,
-  reportId,
   user,
-  getERFilterDataRequest,
-  loading,
-  ERFilterData,
-  prevERFilterData,
-  setPrevERFilterData,
   filters,
   setFilters: _setFilters,
   onGoClick: _onGoClick,
 }) => {
   const assessmentTypesRef = useRef()
-  const role = get(user, 'role', '')
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '') || schoolYears[0]
 
@@ -66,55 +48,30 @@ const EngagementReportFilters = ({
       qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
-    if (reportId) {
-      getERFilterDataRequest({ reportId })
-      _setFilters({ ...filters, ...search })
-    } else if (ERFilterData !== prevERFilterData) {
-      const termId = search.termId || defaultTermId
-      const q = { ...search, termId }
-      if (role === roleuser.SCHOOL_ADMIN) {
-        q.schoolIds = get(user, 'institutionIds', []).join(',')
-      }
-      getERFilterDataRequest(q)
+    const urlSchoolYear =
+      schoolYears.find((item) => item.key === search.termId) ||
+      schoolYears.find((item) => item.key === defaultTermId) ||
+      (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
+    const urlSubject =
+      staticDropDownData.subjects.find((item) => item.key === search.subject) ||
+      staticDropDownData.subjects[0]
+    const urlGrade =
+      staticDropDownData.grades.find((item) => item.key === search.grade) ||
+      staticDropDownData.grades[0]
+
+    const _filters = {
+      reportId: search.reportId,
+      termId: urlSchoolYear.key,
+      schoolIds: search.schoolIds || '',
+      teacherIds: search.teacherIds || '',
+      subject: urlSubject.key,
+      grade: urlGrade.key,
+      assessmentTypes: search.assessmentTypes || '',
     }
-  }, [])
-
-  if (ERFilterData !== prevERFilterData && !isEmpty(ERFilterData)) {
-    const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
-      (f) => f !== 'All' && !isEmpty(f)
-    )
-    if (reportId) {
-      _onGoClick({ filters: { ...filters, ...search } })
-    } else {
-      const urlSchoolYear =
-        schoolYears.find((item) => item.key === search.termId) ||
-        schoolYears.find((item) => item.key === defaultTermId) ||
-        (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
-      const urlSubject =
-        staticDropDownData.subjects.find(
-          (item) => item.key === search.subject
-        ) || staticDropDownData.subjects[0]
-      const urlGrade =
-        staticDropDownData.grades.find((item) => item.key === search.grade) ||
-        staticDropDownData.grades[0]
-
-      const _filters = {
-        termId: urlSchoolYear.key,
-        schoolIds: search.schoolIds || '',
-        teacherIds: search.teacherIds || '',
-        subject: urlSubject.key,
-        grade: urlGrade.key,
-        assessmentTypes: search.assessmentTypes || '',
-      }
-
-      _setFilters(_filters)
-      _onGoClick({ filters: { ..._filters } })
-    }
+    _setFilters(_filters)
+    _onGoClick({ filters: { ..._filters } })
     setFirstLoad(false)
-    // update prevERFilterData
-    setPrevERFilterData(ERFilterData)
-  }
+  }, [])
 
   const onGoClick = (_settings = {}) => {
     const settings = {
@@ -138,11 +95,7 @@ const EngagementReportFilters = ({
     setFilters(_filters)
   }
 
-  return loading ? (
-    <StyledFilterWrapper style={style}>
-      <Spin />
-    </StyledFilterWrapper>
-  ) : (
+  return (
     <StyledFilterWrapper data-cy="filters" style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
@@ -237,14 +190,9 @@ const enhance = compose(
   connect(
     (state) => ({
       user: getUser(state),
-      loading: getReportsERFilterLoadingState(state),
-      ERFilterData: getReportsERFilterData(state),
-      prevERFilterData: getReportsPrevERFilterData(state),
       filters: getFiltersSelector(state),
     }),
     {
-      getERFilterDataRequest: getERFilterDataRequestAction,
-      setPrevERFilterData: setPrevERFilterDataAction,
       setFilters: setFiltersAction,
     }
   )

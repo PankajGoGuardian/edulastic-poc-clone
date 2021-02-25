@@ -35,10 +35,7 @@ import {
   reportStandardsFilterDataReducer,
   reportStandardsFilterSaga,
 } from './subPages/standardsMasteryReport/common/filterDataDucks'
-import {
-  reportERFilterDataReducer,
-  reportERFilterDataSaga,
-} from './subPages/engagementReport/common/filterDataDucks'
+import { reportERFilterDataReducer } from './subPages/engagementReport/common/filterDataDucks'
 
 import {
   reportAssessmentSummaryReducer,
@@ -294,7 +291,6 @@ export function* reportSaga() {
     reportMARFilterDataSaga(),
     reportSPRFilterDataSaga(),
     reportStandardsFilterSaga(),
-    reportERFilterDataSaga(),
 
     reportAssessmentSummarySaga(),
     reportPeerPerformanceSaga(),

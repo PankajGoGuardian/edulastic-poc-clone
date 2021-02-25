@@ -55,9 +55,20 @@ const EngagementReportContainer = ({
     [reportId, sharedReportList]
   )
 
+  const toggleFilter = (e, status = false) => {
+    if (onRefineResultsCB) {
+      onRefineResultsCB(e, status || !showFilter)
+    }
+  }
+
+  const setShowApply = (status) => {
+    onRefineResultsCB(null, status, 'applyButton')
+  }
+
   useEffect(
     () => () => {
       console.log('Engagement Reports Component Unmount')
+      setShowApply(false)
       resetAllReports()
     },
     []
@@ -109,16 +120,6 @@ const EngagementReportContainer = ({
       obj[item] = val
     })
     setERSettings({ requestFilters: obj })
-  }
-
-  const toggleFilter = (e, status = false) => {
-    if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
-    }
-  }
-
-  const setShowApply = (status) => {
-    onRefineResultsCB(null, status, 'applyButton')
   }
 
   return (

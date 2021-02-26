@@ -350,7 +350,8 @@ class StudentViewContainer extends Component {
               isGhost
               height="24px"
               fontSize="9px"
-              mr="28px"
+              mr="0px"
+              ml="0px"
               onClick={this.toggleShowCorrectAnswers}
             >
               {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}

@@ -197,12 +197,15 @@ const ManageSubscriptionsByLicenses = ({
   }
   const handleViewLicense = (licenseIds) => {
     setCurrentLicenseIds(licenseIds)
-    setVisible(true)
-    const getCurrentLicense = licenses.find((license) =>
-      licenseIds.includes(license.licenseId)
-    )
-    setCurrentLicense(getCurrentLicense)
-    setShowLicenseViewModal(true)
+    if (searchType === 'TRIAL_LICENSES') {
+      const getCurrentLicense = licenses.find((license) =>
+        licenseIds.includes(license.licenseIds?.[0])
+      )
+      setCurrentLicense(getCurrentLicense)
+      setShowLicenseViewModal(true)
+    } else {
+      setVisible(true)
+    }
   }
   const closeViewLicenseModal = () => {
     setShowLicenseViewModal(false)
@@ -250,7 +253,7 @@ const ManageSubscriptionsByLicenses = ({
         total={count}
         style={paginationStyles}
       />
-      {searchType === 'TRIAL_PREMIUM' && showLicenseViewModal && (
+      {searchType === 'TRIAL_LICENSES' && showLicenseViewModal && (
         <SubsLicenseViewModal
           isVisible={showLicenseViewModal}
           closeModal={closeViewLicenseModal}

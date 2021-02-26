@@ -39,6 +39,7 @@ const Userlist = ({
   teacherPremiumProductId,
   sparkMathProductId,
   subsLicenses,
+  licenseIds,
 }) => {
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
@@ -151,15 +152,16 @@ const Userlist = ({
         )
       }
     }
-    const data = {}
+    const apiData = {}
+
     if (Object.keys(licensesPermission).length) {
-      data.licensesPermission = licensesPermission
+      apiData.licensesPermission = licensesPermission
     }
     if (Object.keys(manageLicensePermission).length) {
-      data.manageLicensePermission = manageLicensePermission
+      apiData.manageLicensePermission = manageLicensePermission
     }
 
-    bulkEditUsersPermission(data)
+    bulkEditUsersPermission({ apiData, licenseIds })
   }
 
   const getCheckbox = (record, key) => {

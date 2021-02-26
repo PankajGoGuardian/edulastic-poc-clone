@@ -30,16 +30,14 @@ const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
     name: 'Multiple Licenses',
   },
   {
-    type: 'TRIAL_PREMIUM',
-    name: 'Trial Premium Licenses',
-  },
-  {
-    type: 'TRIAL_SPARKMATH',
-    name: 'SparkMath Licenses',
+    type: 'TRIAL_LICENSES',
+    name: 'Trial Premium & Trial SparkMath Licenses',
   },
 ]
 
 const IconStyles = { width: '20px', cursor: 'pointer' }
+
+const paginationStyles = { margin: '15px auto' }
 
 const LicensesInvoiceTable = ({ licensesData, handleViewLicense }) => {
   const columns = [
@@ -81,13 +79,13 @@ const LicensesInvoiceTable = ({ licensesData, handleViewLicense }) => {
     },
     {
       title: 'Actions',
-      dataIndex: 'licenseId',
+      dataIndex: 'licenseIds',
       width: 100,
-      render: (licenseId) => (
+      render: (licenseIds) => (
         <FlexContainer>
           <Tooltip title="View License">
             <IconEye
-              onClick={() => handleViewLicense(licenseId)}
+              onClick={() => handleViewLicense(licenseIds)}
               color={themeColor}
               style={IconStyles}
             />
@@ -131,7 +129,7 @@ const SearchFilters = Form.create({
           fetchLicensesBySearchType({
             type: searchType,
             page: 1,
-            limit: 20,
+            limit: 10,
           })
         }
       })
@@ -143,7 +141,7 @@ const SearchFilters = Form.create({
           alignItems="center"
           width="400px"
         >
-          <Form.Item style={{ width: '300px' }}>
+          <Form.Item style={{ width: '350px' }}>
             {getFieldDecorator('searchType', {
               rules: [{ required: true }],
               initialValue: MANAGE_SUBSCRIPTION_SEARCH_TYPE[0].type,
@@ -194,14 +192,14 @@ const ManageSubscriptionsByLicenses = ({
     fetchLicensesBySearchType({
       type: searchType,
       page: pageNo,
-      limit: 20,
+      limit: 10,
     })
   }
-  const handleViewLicense = (licenseId) => {
-    setCurrentLicenseIds([licenseId])
+  const handleViewLicense = (licenseIds) => {
+    setCurrentLicenseIds(licenseIds)
     setVisible(true)
-    const getCurrentLicense = licenses.find(
-      (license) => license.licenseId === licenseId
+    const getCurrentLicense = licenses.find((license) =>
+      licenseIds.includes(license.licenseId)
     )
     setCurrentLicense(getCurrentLicense)
     setShowLicenseViewModal(true)
@@ -250,6 +248,7 @@ const ManageSubscriptionsByLicenses = ({
         onChange={handlePageChange}
         current={page}
         total={count}
+        style={paginationStyles}
       />
       {searchType === 'TRIAL_PREMIUM' && showLicenseViewModal && (
         <SubsLicenseViewModal

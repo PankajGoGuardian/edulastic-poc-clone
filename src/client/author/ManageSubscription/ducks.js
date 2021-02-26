@@ -231,10 +231,10 @@ function* fetchManageSubscriptionsSaga({ payload }) {
 
 function* bulkEditUsersPermissionSaga({ payload }) {
   try {
-    const { licenseIds } = payload
+    const { licenseIds, apiData } = payload
     const result = yield call(
       manageSubscriptionsApi.bulkEditUsersPermission,
-      payload
+      apiData
     )
     if (result.error) {
       notification({

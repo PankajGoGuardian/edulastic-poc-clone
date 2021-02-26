@@ -1299,7 +1299,7 @@ class Setting extends Component {
                               key="warn-and-report-after-n-alerts"
                               data-cy="restrict-nav-out-warn-report-alerts"
                             >
-                              WARN AND BLOCK TEST AFTER{' '}
+                              WARN AND BLOCK TEST AFTER
                               <InputNumberStyled
                                 size="small"
                                 value={
@@ -1325,9 +1325,11 @@ class Setting extends Component {
                                 <>
                                   {' '}
                                   <br />{' '}
-                                  {`or maximum of ${
-                                    restrictNavigationOutAttemptsThreshold * 5
-                                  } sec.`}{' '}
+                                  <span style={{ textTransform: 'lowercase' }}>
+                                    {`or maximum of ${
+                                      restrictNavigationOutAttemptsThreshold * 5
+                                    } sec.`}
+                                  </span>{' '}
                                 </>
                               ) : (
                                 ''

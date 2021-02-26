@@ -5,6 +5,7 @@ import { takeLatest } from 'redux-saga'
 import { all, call, put, select } from 'redux-saga/effects'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
+import { slice } from '../Subscription/ducks'
 
 // selectors
 const manageSubscriptionSelector = (state) => state.manageSubscription
@@ -231,11 +232,12 @@ function* fetchManageSubscriptionsSaga({ payload }) {
 
 function* bulkEditUsersPermissionSaga({ payload }) {
   try {
-    const { licenseIds, apiData } = payload
+    const { licenseIds, apiData, fetchOrgSubscriptions } = payload
     const result = yield call(
       manageSubscriptionsApi.bulkEditUsersPermission,
       apiData
     )
+
     if (result.error) {
       notification({
         type: 'error',
@@ -246,6 +248,9 @@ function* bulkEditUsersPermissionSaga({ payload }) {
     yield put(
       fetchMultipleSubscriptionsAction({ fetchInBackground: true, licenseIds })
     )
+    if (fetchOrgSubscriptions) {
+      yield put(slice.actions.fetchUserSubscriptionStatus({ background: true }))
+    }
     notification({
       type: 'success',
       msg: `Successfully updated.`,

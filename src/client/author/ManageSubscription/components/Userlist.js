@@ -121,6 +121,7 @@ const Userlist = ({
     setIsSaveButtonDisabled(true)
     let licensesPermission = {}
     let manageLicensePermission = {}
+    let rowUserId = ''
     for (const permissions of changes) {
       const {
         hasTeacherPremium,
@@ -128,6 +129,9 @@ const Userlist = ({
         hasManageLicense,
         userId,
       } = permissions
+
+      rowUserId = userId
+
       if (isBoolean(hasTeacherPremium)) {
         licensesPermission = getUpdatedValue(
           hasTeacherPremium,
@@ -161,7 +165,8 @@ const Userlist = ({
       apiData.manageLicensePermission = manageLicensePermission
     }
 
-    bulkEditUsersPermission({ apiData, licenseIds })
+    const fetchOrgSubscriptions = rowUserId === currentUserId
+    bulkEditUsersPermission({ apiData, licenseIds, fetchOrgSubscriptions })
   }
 
   const getCheckbox = (record, key) => {

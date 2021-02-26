@@ -451,6 +451,7 @@ function* handleStripePayment({ payload }) {
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
+        yield put(fetchMultipleSubscriptionsAction({ background: true }))
       } else {
         notification({
           msg: `API Response failed: ${error}`,

@@ -153,6 +153,9 @@ const slice = createSlice({
   },
 })
 
+export const closePlayListTestPreviewModalAction = () =>
+  slice.actions.closeTestPreviewModal()
+
 export default slice
 
 function* fetchTestsSaga() {

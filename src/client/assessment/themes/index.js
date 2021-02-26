@@ -234,12 +234,16 @@ export function useFullScreenListener({
     if (enabled && !Fscreen.fullscreenElement) {
       setInFullScreen(false)
     }
+
     return () => {
       Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
       setTimeout(
         (win) => {
           const { pathname: _path } = win.location
+          if (!_path.includes('/uta/')) {
+            window.sessionStorage.removeItem('totalTimeInBlur')
+          }
           if (!_path.includes('/uta/') && disableSave) {
             pauseAssignment({
               history,

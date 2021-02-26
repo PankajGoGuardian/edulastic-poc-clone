@@ -44,6 +44,7 @@ const SubscriptionAddonModal = ({
   defaultSelectedProductIds,
   teacherPremium,
   itemBankPremium,
+  showRenewalOptions,
 }) => {
   const [selectedProductIds, setSelectedProductIds] = useState(
     getInitialSelectedProductIds({
@@ -84,7 +85,7 @@ const SubscriptionAddonModal = ({
   return (
     <CustomModalStyled
       centered
-      title="Select Add-ons"
+      title={showRenewalOptions ? 'Renew Subscription' : 'Select Add-ons'}
       footer={[
         <EduButton
           data-cy="proceedPayment"
@@ -118,7 +119,7 @@ const SubscriptionAddonModal = ({
         </p>
         <p> These add-ons need the premium or enterprise subscription.</p>
         <AddonList>
-          {!isPaidPremium && (
+          {(showRenewalOptions || !isPaidPremium) && (
             <FlexRow>
               <Tooltip title="Premium subscription is mandatory for Spark content">
                 <StyledCheckbox

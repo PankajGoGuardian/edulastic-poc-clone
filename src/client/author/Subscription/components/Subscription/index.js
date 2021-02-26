@@ -430,6 +430,7 @@ const Subscription = (props) => {
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}
+        showRenewalOptions={showRenewalOptions}
       />
 
       <HasLicenseKeyModal

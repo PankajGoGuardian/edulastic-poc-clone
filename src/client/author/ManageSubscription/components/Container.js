@@ -247,6 +247,7 @@ const ManageSubscriptionContainer = ({
         setShowBuyMoreModal={setShowBuyMoreModal}
         isBuyMoreModalOpened={isBuyMoreModalOpened}
         isEdulasticAdminView={isEdulasticAdminView}
+        showRenewalOptions={showRenewalOptions}
       />
       {showAddUsersModal && (
         <AddUsersModal

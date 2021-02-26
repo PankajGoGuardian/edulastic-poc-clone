@@ -48,6 +48,7 @@ const PurchaseFlowModals = (props) => {
     licenseIds,
     isEdulasticAdminView = false,
     handleEdulasticAdminProductLicense,
+    showRenewalOptions = false,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -160,6 +161,7 @@ const PurchaseFlowModals = (props) => {
           defaultSelectedProductIds={defaultSelectedProductIds}
           teacherPremium={teacherPremium}
           itemBankPremium={itemBankPremium}
+          showRenewalOptions={showRenewalOptions}
         />
       )}
       {showUpgradeModal && (

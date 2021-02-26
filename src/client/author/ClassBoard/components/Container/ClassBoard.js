@@ -143,6 +143,9 @@ function getStudentFilterCategory(x) {
   if (x.graded === 'GRADED') {
     return 'GRADED'
   }
+  if (x.status?.toLowerCase() === 'submitted' && x.graded !== 'GRADED') {
+    return 'SUBMITTED'
+  }
   if (x.redirected) {
     return 'REDIRECTED'
   }
@@ -152,9 +155,7 @@ function getStudentFilterCategory(x) {
   if (x.status?.toLowerCase() == 'inprogress') {
     return 'IN PROGRESS'
   }
-  if (x.status?.toLowerCase() === 'submitted' && x.graded !== 'GRADED') {
-    return 'SUBMITTED'
-  }
+
   if (x.UTASTATUS === testActivityStatus.ABSENT) {
     return 'ABSENT'
   }

@@ -17,6 +17,7 @@ import {
   getSuccessSelector,
   getProducts,
   getItemBankSubscriptions,
+  getIsSubscriptionExpired,
 } from '../../Subscription/ducks'
 import {
   addAndUpgradeUsersAction,
@@ -41,6 +42,8 @@ const AddUsersConfirmationModal = loadable(() =>
 )
 
 const { PRODUCT_NAMES } = constants
+const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
+const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
 
 const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},
@@ -63,6 +66,7 @@ const ManageSubscriptionContainer = ({
   licenseIds,
   userRole,
   isEdulasticAdminView,
+  isSubscriptionExpired,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -142,6 +146,15 @@ const ManageSubscriptionContainer = ({
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
+  const isAboutToExpire = subEndDate
+    ? Date.now() + ONE_MONTH > subEndDate && Date.now() < subEndDate + TEN_DAYS
+    : false
+
+  const showRenewalOptions =
+    ((isPaidPremium && isAboutToExpire) ||
+      (!isPaidPremium && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
+
   const closeAddUsersModal = () => setShowAddUsersModal(false)
   const closeAddUsersConfirmationModal = () =>
     setAddUsersConfirmationModalVisible(false)
@@ -196,6 +209,7 @@ const ManageSubscriptionContainer = ({
           hasAllPremiumProductAccess={hasAllPremiumProductAccess}
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           settingProductData={settingProductData}
+          showRenewalOptions={showRenewalOptions}
         />
       )}
 
@@ -277,6 +291,7 @@ const enhance = compose(
       itemBankSubscriptions: getItemBankSubscriptions(state),
       dashboardTiles: getDashboardTilesSelector(state),
       userRole: getUserRole(state),
+      isSubscriptionExpired: getIsSubscriptionExpired(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

@@ -30,7 +30,6 @@ const SubscriptionHeader = ({
   subType,
   subEndDate,
   setShowSubscriptionAddonModal,
-  isPaidPremium,
   hasAllPremiumProductAccess,
   isPremium,
   isBannerVisible,
@@ -144,7 +143,7 @@ const SubscriptionHeader = ({
               </EduButton>
             </Dropdown>
           )}
-          {isPaidPremium && showRenewalOptions && (
+          {showRenewalOptions && (
             <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription
             </EduButton>

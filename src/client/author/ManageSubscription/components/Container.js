@@ -151,10 +151,9 @@ const ManageSubscriptionContainer = ({
     : false
 
   const showRenewalOptions =
-    true ||
-    (((isPaidPremium && isAboutToExpire) ||
+    ((isPaidPremium && isAboutToExpire) ||
       (!isPaidPremium && isSubscriptionExpired)) &&
-      !['enterprise', 'partial_premium'].includes(subType))
+    !['enterprise', 'partial_premium'].includes(subType)
 
   const closeAddUsersModal = () => setShowAddUsersModal(false)
   const closeAddUsersConfirmationModal = () =>

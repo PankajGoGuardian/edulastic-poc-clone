@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect, useLayoutEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import styled, { withTheme } from 'styled-components'
+import styled, { css, withTheme } from 'styled-components'
 import { questionType } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
 import { get, isEmpty, round } from 'lodash'
@@ -13,6 +13,7 @@ import FeedBackContainer from './FeedBackContainer'
 import FeedbackRight from './FeedbackRight'
 import StudentReportFeedback from '../../student/TestAcitivityReport/components/StudentReportFeedback'
 import { TimeSpentWrapper } from './QuestionWrapper'
+import { updateHeight as updateHeightAction } from '../../author/src/reducers/feedback'
 
 const FeedbackWrapper = ({
   showFeedback,
@@ -28,8 +29,27 @@ const FeedbackWrapper = ({
   studentId,
   itemId,
   studentName,
+  updatePosition,
   t,
 }) => {
+  const feedbackRef = useRef()
+  const heightOfContainer = feedbackRef.current?.clientHeight
+  useLayoutEffect(() => {
+    if (!isStudentReport && shouldTakeDimensionsFromStore) {
+      updatePosition({
+        id: data.id,
+        height: heightOfContainer,
+      })
+    }
+  }, [feedbackRef.current, heightOfContainer])
+
+  useEffect(() => {
+    updatePosition({
+      id: data.id,
+      height: null,
+    })
+  }, [])
+
   const { rubrics: rubricDetails } = data
   const isPassageOrVideoType = [
     questionType.PASSAGE,
@@ -65,6 +85,7 @@ const FeedbackWrapper = ({
 
   return (
     <StyledFeedbackWrapper
+      ref={feedbackRef}
       minWidth={
         studentReportFeedbackVisible && displayFeedback && !isPrintPreview
           ? '320px'
@@ -90,6 +111,7 @@ const FeedbackWrapper = ({
             rubricDetails={rubricDetails}
             isPracticeQuestion={isPracticeQuestion}
             itemId={itemId}
+            isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
             {...presentationModeProps}
           />
         )}
@@ -142,21 +164,25 @@ const FeedbackWrapper = ({
  * the container dimensions for the question block is stored in store
  * need to take the dimensions from store and set it to the feedback block
  */
+
+const wrapperPosition = css`
+  position: absolute;
+  top: ${({ dimensions }) => dimensions.top}px;
+  right: 0;
+  width: 100%;
+  height: ${({ dimensions }) =>
+    dimensions.height ? `${dimensions.height}px` : '100%'};
+`
+
 const StyledFeedbackWrapper = styled.div`
   align-self: normal;
-  padding-bottom: 10px;
   min-width: ${({ minWidth }) => minWidth};
   ${({ shouldTakeDimensionsFromStore, dimensions, isStudentReport }) =>
     !isStudentReport &&
     shouldTakeDimensionsFromStore &&
     dimensions &&
-    `
-      position: absolute;
-      top: ${dimensions.top}px;
-      right: 0;
-      width: 100%;
-      height: ${dimensions.height ? `${dimensions.height}px` : '100%'};
-    `};
+    dimensions.top &&
+    wrapperPosition};
 `
 
 FeedbackWrapper.propTypes = {
@@ -189,7 +215,7 @@ const enhance = compose(
       ),
       dimensions: get(state, ['feedback', ownProps.data?.id], null),
     }),
-    null
+    { updatePosition: updateHeightAction }
   )
 )
 

@@ -7,7 +7,7 @@ import {
   white,
   themeColor,
   desktopWidth,
-  mediumDesktopExactWidth,
+  extraDesktopWidth,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -119,7 +119,7 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
     }
   }
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
+  @media (min-width: ${extraDesktopWidth}) {
     min-width: 300px;
     padding: 20px 10px;
   }

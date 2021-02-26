@@ -192,14 +192,13 @@ const QuestionContainer = styled.div`
   }
 `
 
-export const TimeSpentWrapper = styled.p`
+export const TimeSpentWrapper = styled.div`
   font-size: 19px;
   color: ${greyThemeDark2};
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
   align-items: center;
-  padding-top: 10px;
   margin: ${({ margin }) => margin};
   &.student-report {
     position: absolute;
@@ -646,6 +645,7 @@ class QuestionWrapper extends Component {
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 isStudentReport={isStudentReport}
+                isLCBView={isLCBView}
                 borderRadius={isLCBView ? '10px' : borderRadius}
                 style={{
                   width:
@@ -693,35 +693,33 @@ class QuestionWrapper extends Component {
                     setPage={this.setPage}
                   />
                   {!hasDrawingResponse && showFeedback && !isPrintPreview && (
-                    <>
-                      <TimeSpentWrapper
-                        className={isStudentReport ? 'student-report' : ''}
-                      >
-                        {!!showStudentWork && (
-                          <ShowUserWork
-                            style={{ marginRight: '1rem' }}
-                            onClickHandler={() => {
-                              // load the data from server and then show
-                              loadScratchPad({
-                                testActivityId: data?.activity?.testActivityId,
-                                testItemId: data?.activity?.testItemId,
-                                qActId:
-                                  data?.activity?.qActId || data?.activity?._id,
-                                callback: () => showStudentWork(),
-                              })
-                            }}
-                          >
-                            Show student work
-                          </ShowUserWork>
-                        )}
-                        {timeSpent && (
-                          <>
-                            <IconClockCircularOutline />
-                            {round(timeSpent / 1000, 1)}s
-                          </>
-                        )}
-                      </TimeSpentWrapper>
-                    </>
+                    <TimeSpentWrapper
+                      className={isStudentReport ? 'student-report' : ''}
+                    >
+                      {!!showStudentWork && (
+                        <ShowUserWork
+                          style={{ marginRight: '1rem' }}
+                          onClickHandler={() => {
+                            // load the data from server and then show
+                            loadScratchPad({
+                              testActivityId: data?.activity?.testActivityId,
+                              testItemId: data?.activity?.testItemId,
+                              qActId:
+                                data?.activity?.qActId || data?.activity?._id,
+                              callback: () => showStudentWork(),
+                            })
+                          }}
+                        >
+                          Show student work
+                        </ShowUserWork>
+                      )}
+                      {timeSpent && (
+                        <>
+                          <IconClockCircularOutline />
+                          {round(timeSpent / 1000, 1)}s
+                        </>
+                      )}
+                    </TimeSpentWrapper>
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
                     <RubricTableWrapper>

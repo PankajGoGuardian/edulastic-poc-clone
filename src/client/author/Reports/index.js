@@ -6,6 +6,7 @@ import qs from 'qs'
 
 import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 
 import { Header, SubHeader } from './common/components/Header'
 import StandardReport from './components/StandardReport'
@@ -31,10 +32,13 @@ import { MultipleAssessmentReportContainer } from './subPages/multipleAssessment
 import { SingleAssessmentReportContainer } from './subPages/singleAssessmentReport'
 import { StandardsMasteryReportContainer } from './subPages/standardsMasteryReport'
 import { StudentProfileReportContainer } from './subPages/studentProfileReport'
+import { EngagementReportContainer } from './subPages/engagementReport'
 import ClassCreate from '../ManageClass/components/ClassCreate'
+import { getUserRole } from '../src/selectors/user'
 
 const Container = (props) => {
   const {
+    role,
     isCsvDownloading,
     isPrinting,
     match,
@@ -53,6 +57,9 @@ const Container = (props) => {
     navigation.navigation[groupName]
   )
   const [dynamicBreadcrumb, setDynamicBreadcrumb] = useState('')
+
+  const isAdmin =
+    role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN
 
   useEffect(() => {
     window.onbeforeprint = () => {
@@ -206,6 +213,7 @@ const Container = (props) => {
           isCliUser={isCliUser}
           showCustomReport={showCustomReport}
           showSharedReport={sharedReportList.length}
+          title={headerSettings.title}
           isSharedReport={headerSettings.isSharedReport}
         />
       )}
@@ -239,7 +247,9 @@ const Container = (props) => {
             path={match.path}
             component={() => {
               setShowHeader(true)
-              return <StandardReport premium={props.premium} />
+              return (
+                <StandardReport premium={props.premium} isAdmin={isAdmin} />
+              )
             }}
           />
         ) : null}
@@ -328,6 +338,26 @@ const Container = (props) => {
           }}
         />
         <Route
+          path={[
+            `/author/reports/engagement-summary`,
+            `/author/reports/activity-by-school`,
+            `/author/reports/activity-by-teacher`,
+          ]}
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <EngagementReportContainer
+                {..._props}
+                showFilter={showFilter}
+                showApply={showApply}
+                onRefineResultsCB={onRefineResultsCB}
+                loc={reportType}
+                updateNavigation={setNavigationItems}
+              />
+            )
+          }}
+        />
+        <Route
           path="/author/reports/custom-reports/:id"
           render={(_props) => {
             setShowHeader(true)
@@ -353,6 +383,7 @@ const Container = (props) => {
 
 const enhance = connect(
   (state) => ({
+    role: getUserRole(state),
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     premium: state?.user?.user?.features?.premium,

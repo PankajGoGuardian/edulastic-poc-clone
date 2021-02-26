@@ -235,6 +235,7 @@ export default class QuestionText extends React.Component {
               value={answer}
               onChange={throttle(this.handleSetAnswer, 2000)}
               autoFocus
+              data-cy="correctAnswer"
             />
             <EduButton
               IconBtn
@@ -256,6 +257,7 @@ export default class QuestionText extends React.Component {
                   (val) => this.handleSetAltAnswer(index, val),
                   2000
                 )}
+                data-cy="alternateAnswer"
               />
               <EduButton
                 IconBtn
@@ -276,6 +278,7 @@ export default class QuestionText extends React.Component {
               height="32px"
               onChange={this.handleAllowChange}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              data-cy="allowDropDownSelect"
             >
               <SelectInputStyled.Option key={1} value={EXACT_MATCH}>
                 Exact Match
@@ -292,6 +295,7 @@ export default class QuestionText extends React.Component {
               value={score}
               width="100%"
               onChange={this.handleScoreChange}
+              data-cy="points"
             />
           </FormGroup>
         </FormInline>
@@ -302,6 +306,7 @@ export default class QuestionText extends React.Component {
           <CheckboxLabel
             checked={matchCase}
             onChange={this.handleMatchCaseChange}
+            data-cy="matchCase"
           />
         </FormGroup>
       </QuestionFormWrapper>

@@ -20,6 +20,12 @@ import {
   SET_SAVE_USER_RESPONSE,
   SET_CHECK_ANSWER_PROGRESS_STATUS,
   LANG_CHANGE_SUCCESS,
+  UPDATE_PLAYER_PREVIEW_STATE,
+  SET_VIEW_TEST_INFO_SUCCESS,
+  SET_PREVIEW_LANGUAGE,
+  SET_IS_TEST_PREVIEW_VISIBLE,
+  SAVE_BLUR_TIME,
+  SET_SAVED_BLUR_TIME,
 } from '../constants/actions'
 
 const initialState = {
@@ -45,6 +51,11 @@ const initialState = {
   stopTimerFlag: false,
   checkAnswerInProgress: false,
   languagePreference: '',
+  previewState: {},
+  viewTestInfoSuccess: false,
+  isTestPreviewModalVisible: false,
+  blurTime: 0,
+  savedBlurTime: 0,
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -139,6 +150,16 @@ const test = (state = initialState, { payload, type }) => {
         ...state,
         passwordStatusMessage: payload,
       }
+    case SAVE_BLUR_TIME:
+      return {
+        ...state,
+        blurTime: payload,
+      }
+    case SET_SAVED_BLUR_TIME:
+      return {
+        ...state,
+        savedBlurTime: payload,
+      }
     case SAVE_USER_RESPONSE:
       if (!payload.autoSave) {
         return { ...state, showHints: false }
@@ -168,6 +189,27 @@ const test = (state = initialState, { payload, type }) => {
         ...state,
         languagePreference: payload.languagePreference,
         testActivityId: payload.testActivityId,
+      }
+    case UPDATE_PLAYER_PREVIEW_STATE:
+      return {
+        ...state,
+        previewState: payload,
+      }
+    case SET_VIEW_TEST_INFO_SUCCESS:
+      return {
+        ...state,
+        viewTestInfoSuccess: payload,
+      }
+    case SET_PREVIEW_LANGUAGE:
+      return {
+        ...state,
+        languagePreference: payload,
+        answerCheckByItemId: {},
+      }
+    case SET_IS_TEST_PREVIEW_VISIBLE:
+      return {
+        ...state,
+        isTestPreviewModalVisible: payload,
       }
     default:
       return state

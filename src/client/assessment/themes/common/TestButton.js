@@ -7,6 +7,7 @@ import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { TokenStorage } from '@edulastic/api'
 import { Tooltip } from '../../../common/utils/helpers'
 
 const TestButton = ({
@@ -25,6 +26,8 @@ const TestButton = ({
     }
     checkAnswer()
   }
+
+  const hideCheckAnswer = !TokenStorage.getAccessToken()
   return (
     <Container>
       {!blockNavigationToAnsweredQuestions && (
@@ -35,7 +38,7 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       )}
-      {settings.maxAnswerChecks > 0 && (
+      {settings.maxAnswerChecks > 0 && !hideCheckAnswer && (
         <Tooltip
           placement="top"
           title={

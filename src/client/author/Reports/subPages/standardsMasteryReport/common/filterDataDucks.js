@@ -92,6 +92,7 @@ const initialState = {
     testSubject: 'All',
     testGrade: 'All',
     assessmentTypes: '',
+    tags: [],
     curriculumId: '',
     standardGrade: 'All',
     profileId: '',

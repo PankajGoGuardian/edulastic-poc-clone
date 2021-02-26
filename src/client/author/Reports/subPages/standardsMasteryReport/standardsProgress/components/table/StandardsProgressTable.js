@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import next from 'immer'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
+import { isEmpty } from 'lodash'
 import BackendPagination from '../../../../../common/components/BackendPagination'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {

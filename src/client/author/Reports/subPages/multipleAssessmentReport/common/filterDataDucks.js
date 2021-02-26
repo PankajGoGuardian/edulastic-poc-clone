@@ -108,6 +108,7 @@ const initialState = {
      * performanceBandProfile
      */
     profileId: '',
+    tags: [],
   },
   testId: [],
   loading: false,

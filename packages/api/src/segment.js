@@ -187,6 +187,30 @@ const trackTeacherSignUp = ({ user }) => {
   }
 }
 
+const trackProductPurchase = ({ user, data }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+  const {
+    event,
+    category = trackingParameters.CATEGORY_WEB_APPLICATION,
+    ...rest
+  } = data
+  if (user) {
+    const { role = '', _id, v1Id } = user
+    const userId = v1Id || _id
+    const userData = getUserDetails(user)
+    if (role === 'teacher' && window.analytics) {
+      window.analytics.track(event, {
+        userId: `${userId}`,
+        ...userData,
+        ...rest,
+        category,
+      })
+    }
+  }
+}
+
 export default {
   unloadIntercom,
   analyticsIdentify,
@@ -194,4 +218,5 @@ export default {
   trackTeacherSignUp,
   trackUserClick,
   trackingParameters,
+  trackProductPurchase,
 }

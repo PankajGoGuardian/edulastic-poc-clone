@@ -61,6 +61,11 @@ const StyledModal = styled(Modal)`
         font-weight: 600;
         width: 100%;
         margin-bottom: 10px;
+        &.label {
+          font-size: 11px;
+          margin-bottom: 5px;
+          text-transform: uppercase;
+        }
       }
     }
     .ant-modal-footer {

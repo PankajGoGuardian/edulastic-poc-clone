@@ -125,7 +125,7 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters) {
+    if (settings.requestFilters.termId) {
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -166,7 +166,8 @@ const MultipleAssessmentReportContainer = (props) => {
       setMARSettings({
         requestFilters: {
           ...obj,
-          testIds: selectedTests.join(','),
+          testIds: selectedTests.join(),
+          tagIds: _settings.filters.tags.join(),
         },
       })
     }

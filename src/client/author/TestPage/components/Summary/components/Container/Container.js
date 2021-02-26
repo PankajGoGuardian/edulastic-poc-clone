@@ -70,7 +70,7 @@ const Summary = ({
   }
 
   useEffect(() => {
-    getAllTags({ type: isPlaylist ? 'playlist' : 'test' })
+    getAllTags({ type: isPlaylist ? 'playlist' : ['test', 'assignment'] })
   }, [])
 
   useEffect(() => {

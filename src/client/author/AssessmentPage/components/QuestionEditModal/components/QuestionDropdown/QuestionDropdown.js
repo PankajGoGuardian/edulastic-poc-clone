@@ -153,7 +153,9 @@ export default class QuestionDropdown extends React.Component {
               onRemove={this.handleRemove}
               onChange={this.handleOptionChange}
             />
-            <Button onClick={this.handleAdd}>Add choice</Button>
+            <Button onClick={this.handleAdd} data-cy="addNewChoices">
+              Add choice
+            </Button>
           </FormGroup>
           <FormGroup>
             <FormLabel>Correct Answer</FormLabel>
@@ -162,6 +164,7 @@ export default class QuestionDropdown extends React.Component {
               onChange={this.handleValueChange}
               style={{ marginRight: '20px', minWidth: '200px' }}
               getPopupContainer={(trigger) => trigger.parentNode}
+              data-cy="dropDownSelect"
             >
               {this.currentOptions.map((option, key) => (
                 <Select.Option key={key} value={option}>
@@ -173,6 +176,7 @@ export default class QuestionDropdown extends React.Component {
               min={0}
               value={score}
               onChange={this.handleScoreChange}
+              data-cy="points"
             />
             <Points>Points</Points>
           </FormGroup>

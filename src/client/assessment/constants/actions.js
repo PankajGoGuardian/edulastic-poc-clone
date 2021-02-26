@@ -26,6 +26,8 @@ export const SET_TEST_LOADING_STATUS = '[test] set loading status'
 export const SET_TEST_LOADING_ERROR = '[test] set loading status error'
 export const SET_CHECK_ANSWER_PROGRESS_STATUS =
   '[test] set check answer progress status'
+export const SET_PREVIEW_LANGUAGE = '[test] language switch preview'
+export const SET_IS_TEST_PREVIEW_VISIBLE = '[test] set is preview'
 
 export const COUNT_CHECK_ANSWER = '[test] increase check answer count'
 export const SET_PASSWORD_VALIDATE_STATUS =
@@ -45,6 +47,8 @@ export const RECEIVE_ITEM_ERROR = '[items] receive item error'
 export const CREATE_ITEM_REQUEST = '[items] create item request'
 export const UPDATE_ITEM_REQUEST = '[items] update item request'
 export const SAVE_USER_RESPONSE = '[items] save user response'
+export const SAVE_BLUR_TIME = '[anticheating] set blur time'
+export const SET_SAVED_BLUR_TIME = '[anticheating] set saved blur time'
 export const SAVE_USER_RESPONSE_SUCCESS = '[items] save user response success'
 export const SAVE_USER_RESPONSE_ERROR = '[items] save user response error'
 export const LOAD_USER_RESPONSE = '[items] load user response'
@@ -128,3 +132,7 @@ export const CLEAR_OPTIONS = '[assessmentPlayer] clear order of options stored'
 export const SWITCH_LANGUAGE =
   '[assessmentPlayer] switch language during attempt'
 export const LANG_CHANGE_SUCCESS = '[assessmentPlayer] language switch success'
+export const UPDATE_PLAYER_PREVIEW_STATE =
+  '[assessmentPlayer] update player settings'
+export const SET_VIEW_TEST_INFO_SUCCESS =
+  '[assessmentPlayer] view test info success'

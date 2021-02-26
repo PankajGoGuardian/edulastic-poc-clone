@@ -2658,7 +2658,7 @@ export const themes = {
           background: '#00AD50',
           color: 'white',
         },
-        audioPauseColor: '#ff9900',
+        audioPauseColor: '#00AD50',
         questionMarkColor: '#00AD50',
       },
     },

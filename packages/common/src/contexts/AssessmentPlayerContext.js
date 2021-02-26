@@ -8,6 +8,7 @@ import React from 'react'
 const assessmentPlayerContext = React.createContext({
   isStudentAttempt: false,
   currentItem: 0,
+  setCurrentItem: () => {},
 })
 
 export default assessmentPlayerContext

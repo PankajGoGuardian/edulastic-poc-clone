@@ -65,7 +65,10 @@ import Hints from './Hints'
 import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
 import ShowUserWork from './Common/ShowUserWork'
-import { playerSkinTypeSelector } from '../selectors/test'
+import {
+  getIsPreviewModalVisibleSelector,
+  playerSkinTypeSelector,
+} from '../selectors/test'
 import {
   isItemVisibiltySelector,
   ttsUserIdSelector,
@@ -378,9 +381,18 @@ class QuestionWrapper extends Component {
    * @returns {boolean} whether current student is a tts user
    */
   get ttsVisibilityAuthorSide() {
-    const { studentId, ttsUserIds = [], userRole, data } = this.props
+    const {
+      studentId,
+      ttsUserIds = [],
+      userRole,
+      data,
+      isTestPreviewModalVisible,
+    } = this.props
     const key = data?.activity?.userId || studentId
-    return userRole === 'teacher' && ttsUserIds.includes(key)
+    return (
+      userRole !== roleuser.STUDENT &&
+      (ttsUserIds.includes(key) || isTestPreviewModalVisible)
+    )
   }
 
   shouldComponentUpdate(prevProps) {
@@ -534,7 +546,7 @@ class QuestionWrapper extends Component {
     }
 
     const canShowPlayer =
-      ((showUserTTS === 'yes' && userRole === 'student') ||
+      ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
         this.ttsVisibilityAuthorSide) &&
       data.tts &&
       data.tts.taskStatus === 'COMPLETED'
@@ -828,6 +840,7 @@ const enhance = compose(
       ttsUserIds: ttsUserIdSelector(state),
       studentLanguagePreference: languagePreferenceSelector(state, ownProps),
       authLanguage: getCurrentLanguage(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

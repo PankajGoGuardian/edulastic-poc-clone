@@ -122,6 +122,7 @@ const initialState = {
     assessmentTypes: '',
     performanceBandProfile: '',
     standardsProficiencyProfile: '',
+    tags: [],
   },
   testId: '',
   loading: false,

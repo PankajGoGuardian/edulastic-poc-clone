@@ -42,8 +42,10 @@ import {
   UPDATE_RELEASE_SCORE_SETTINGS,
   MQTT_CLIENT_SAVE_REQUEST,
   MQTT_CLIENT_REMOVE_REQUEST,
+  EDIT_TAGS_REQUEST,
 } from '../constants/actions'
 import { getUserRole } from '../selectors/user'
+import { setTagsUpdatingStateAction } from '../actions/assignments'
 
 function* receiveAssignmentClassList({ payload = {} }) {
   try {
@@ -433,6 +435,23 @@ function* syncAssignmentWithSchoologyClassroomSaga({ payload = {} }) {
   }
 }
 
+function* editTagsRequestSaga({ payload }) {
+  try {
+    yield put(setTagsUpdatingStateAction('UPDATING'))
+    yield call(assignmentApi.editTagsRequest, payload)
+    yield put(setTagsUpdatingStateAction('SUCCESS'))
+    notification({
+      msg: 'Successfully updated tags in the Assignment(s)',
+      type: 'success',
+    })
+  } catch (err) {
+    const errorMessage =
+      err?.data?.message || 'Failed to update tags in the Assignment(s)'
+    notification({ msg: errorMessage })
+    yield put(setTagsUpdatingStateAction('ERROR'))
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ASSIGNMENTS_REQUEST, receiveAssignmentsSaga),
@@ -469,5 +488,6 @@ export default function* watcherSaga() {
       SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
       syncAssignmentWithSchoologyClassroomSaga
     ),
+    yield takeEvery(EDIT_TAGS_REQUEST, editTagsRequestSaga),
   ])
 }

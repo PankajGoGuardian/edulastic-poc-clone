@@ -1,3 +1,4 @@
+import qs from 'qs'
 import API from './utils/API'
 
 const api = new API()
@@ -9,6 +10,8 @@ const getAll = (tagType) =>
       url: `${prefix}`,
       method: 'get',
       params: { tagType },
+      paramsSerializer: (params) =>
+        qs.stringify(params, { arrayFormat: 'comma' }),
     })
     .then((result) => result.data.result)
 

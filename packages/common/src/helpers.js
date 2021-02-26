@@ -305,6 +305,12 @@ const parseTemplate = (tmpl) => {
     return ''
   }
   const parsedHTML = $('<div />').html(temp)
+  // Clean v1 math content for jsx parser
+  $(parsedHTML)
+    .find('.MathJax')
+    .each(function () {
+      $(this).replaceWith(`<span>${$(this).html()}</span>`)
+    })
 
   $(parsedHTML)
     .find('textinput, mathinput, textdropdown, response, mathunit')
@@ -973,6 +979,17 @@ export const toggleIntercomDisplay = () => {
   }
 }
 
+export const hasMediaDevice = async (deviceKind) => {
+  let mediaDevices = navigator.mediaDevices
+  if (!mediaDevices || !mediaDevices.enumerateDevices) {
+    return false
+  }
+
+  const devices = await mediaDevices.enumerateDevices()
+
+  return devices.some((device) => device.kind === deviceKind)
+}
+
 /** A small utiltiy to help Resolve promises sequentially */
 const executePromisesInSequence = (promises) =>
   promises.reduce(
@@ -1074,5 +1091,6 @@ export default {
   getSanitizedProps,
   captureSentryException,
   replaceLatexTemplate,
+  hasMediaDevice,
   removeTokenFromHtml,
 }

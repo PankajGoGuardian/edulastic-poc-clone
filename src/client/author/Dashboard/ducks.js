@@ -39,6 +39,10 @@ export const getLaunchHangoutStatus = createSelector(
   stateSelector,
   (state) => state.isLaunchHangoutOpen
 )
+export const getDashboardTilesSelector = createSelector(
+  stateSelector,
+  (state) => state.configurableTiles
+)
 
 const initialState = {
   data: [],

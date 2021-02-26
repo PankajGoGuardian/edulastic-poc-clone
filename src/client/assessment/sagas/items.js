@@ -133,6 +133,7 @@ export function* saveUserResponse({ payload }) {
       extData,
     } = payload
     const itemIndex = payload.itemId
+    const timeInBlur = yield select((state) => state.test?.blurTime)
     const assignmentsByIds = yield select(
       (state) => state.studentAssignment && state.studentAssignment.byId
     )
@@ -265,7 +266,6 @@ export function* saveUserResponse({ payload }) {
       }
     })
 
-
     const _userWork = yield select(
       ({ userWork }) => userWork.present[testItemId] || {}
     )
@@ -286,6 +286,9 @@ export function* saveUserResponse({ payload }) {
 
     if (!isEmpty(extData)) {
       activity.extData = extData
+    }
+    if (timeInBlur) {
+      activity.timeInBlur = timeInBlur
     }
 
     let userWorkData = { ..._userWork, scratchpad: false }

@@ -6,6 +6,7 @@ import { withNamespaces } from 'react-i18next'
 import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
   TopBanner,
@@ -32,8 +33,22 @@ const SubscriptionHeader = ({
   isPaidPremium,
   hasAllPremiumProductAccess,
   isPremium,
+  isBannerVisible,
+  setShowMultiplePurchaseModal,
+  settingProductData,
+  showMultipleSubscriptions,
+  isFreeAdmin,
+  toggleShowFeatureNotAvailableModal,
+  title,
 }) => {
+  const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
+
   const handlePurchaseFlow = () => {
+    settingProductData()
+    if (isFreeAdmin) {
+      toggleShowFeatureNotAvailableModal(true)
+      return
+    }
     setShowSubscriptionAddonModal(true)
   }
   const handleEnterpriseClick = () => {
@@ -41,10 +56,6 @@ const SubscriptionHeader = ({
       'https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform',
       '_blank'
     )
-  }
-
-  const multipleSubscriptionClick = () => {
-    window.open('https://edulastic.com/teacher-premium/', '_blank')
   }
 
   const menu = (
@@ -64,6 +75,16 @@ const SubscriptionHeader = ({
       <Menu.Item>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
+            <span data-cy="multipleSubscription" onClick={handleClick}>
+              MULTIPLE SUBSCRIPTIONS
+            </span>
+          )}
+          onClick={openMultiplePurchaseModal}
+        />
+      </Menu.Item>
+      <Menu.Item>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
             <span data-cy="enterpriseSubscription" onClick={handleClick}>
               ENTERPRISE SUBSCRIPTION
             </span>
@@ -71,21 +92,18 @@ const SubscriptionHeader = ({
           onClick={handleEnterpriseClick}
         />
       </Menu.Item>
-      <Menu.Item onClick={multipleSubscriptionClick}>
-        <span data-cy="multipleSubscription">MULTIPLE SUBSCRIPTIONS</span>
-      </Menu.Item>
     </Menu>
   )
 
   const licenseExpiryDate = formatDate(subEndDate)
 
   return (
-    <TopBanner>
+    <TopBanner isBannerVisible={isBannerVisible}>
       <HeaderSubscription>
         <Title>
           <h2>
             <IconSubscriptionHighlight width={19} height={19} />
-            <span>Subscription</span>
+            <span>{title}</span>
           </h2>
         </Title>
         <ActionButtons>
@@ -101,6 +119,18 @@ const SubscriptionHeader = ({
                 } Version`
               : 'Free'}
           </PlanText>
+          {isBannerVisible && showMultipleSubscriptions && (
+            <EduButton
+              data-cy="manageSubscriptionButton"
+              isBlue
+              isGhost
+              height="24px"
+            >
+              <Link to="/author/manage-subscriptions">
+                MANAGE SUBSCRIPTIONS
+              </Link>
+            </EduButton>
+          )}
 
           {!showRenewalOptions && (
             <Dropdown
@@ -121,27 +151,41 @@ const SubscriptionHeader = ({
           )}
         </ActionButtons>
       </HeaderSubscription>
-      <BannerContent>
-        <h3>
-          {isPremium ? (
-            <span>You are on the Premium Plan</span>
-          ) : (
-            <span>There&apos;s a lot more in premium!</span>
-          )}
-        </h3>
-        <p>
-          {isPremium
-            ? `This plan expires on ${licenseExpiryDate}`
-            : `Upgrade to teacher premium for additional features, including:`}
-        </p>
-        <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
-      </BannerContent>
+      {isBannerVisible && (
+        <BannerContent>
+          <h3>
+            {isPremium ? (
+              <span>You are on the Premium Plan</span>
+            ) : (
+              <span>There&apos;s a lot more in premium!</span>
+            )}
+          </h3>
+          <p>
+            {isPremium
+              ? `This plan expires on ${licenseExpiryDate}`
+              : `Upgrade to premium for additional features, including:`}
+          </p>
+          <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
+        </BannerContent>
+      )}
     </TopBanner>
   )
 }
 
 SubscriptionHeader.propTypes = {
   openComparePlanModal: PropTypes.func.isRequired,
+  setShowSubscriptionAddonModal: PropTypes.func,
+  settingProductData: PropTypes.func,
+  setShowMultiplePurchaseModal: PropTypes.func,
+  isBannerVisible: PropTypes.bool,
+  title: PropTypes.string,
+}
+SubscriptionHeader.defaultProps = {
+  setShowSubscriptionAddonModal: () => {},
+  settingProductData: () => {},
+  setShowMultiplePurchaseModal: () => {},
+  isBannerVisible: true,
+  title: 'Subscription',
 }
 
 export default memo(withNamespaces('header')(SubscriptionHeader))

@@ -209,9 +209,9 @@ class SideMenu extends Component {
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       _menuItems = _menuItems.filter((i) => libraryItems.includes(i.label))
     }
-    const collaborationItem = []
+    const conditionalMenuItems = []
     if (userRole === roleuser.TEACHER && features.showCollaborationGroups) {
-      collaborationItem.push({
+      conditionalMenuItems.push({
         label: 'Collaboration Groups',
         icon: () => (
           // TODO: replace this terrible icon with better one
@@ -235,7 +235,7 @@ class SideMenu extends Component {
     }
 
     if (!lastPlayList || !lastPlayList.value)
-      return [..._menuItems, ...collaborationItem]
+      return [..._menuItems, ...conditionalMenuItems]
 
     const [item1, ...rest] = _menuItems
     const { _id = '' } = lastPlayList.value || {}
@@ -252,9 +252,9 @@ class SideMenu extends Component {
       path: `author/playlists/playlist/${_id}/use-this`,
     }
     if (item1.divider) {
-      return [myPlayListItem, ..._menuItems, ...collaborationItem]
+      return [myPlayListItem, ..._menuItems, ...conditionalMenuItems]
     }
-    return [item1, myPlayListItem, ...rest, ...collaborationItem]
+    return [item1, myPlayListItem, ...rest, ...conditionalMenuItems]
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`

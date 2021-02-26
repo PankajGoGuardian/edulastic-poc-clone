@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { white, title, themeColorLighter } from '@edulastic/colors'
 import { sumBy, maxBy } from 'lodash'
@@ -6,6 +6,7 @@ import { notification } from '@edulastic/common'
 import PreviewRubricTable from './PreviewRubricTable'
 import { ModalBody } from './ConfirmModal'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { calculateScore } from './helper'
 
 const PreviewRubricModal = ({
   visible,
@@ -31,15 +32,15 @@ const PreviewRubricModal = ({
         ),
       [currentRubricData.criteria]
     )
-  const Title = [
-    <HeaderWrapper>
+  const titleContent = (
+    <HeaderWrapper key="rubric-header">
       <span>{currentRubricData.name}</span>
       <span>
         <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;
         <span>{maxScore || localMaxScore}</span>
       </span>
-    </HeaderWrapper>,
-  ]
+    </HeaderWrapper>
+  )
 
   const handleChange = (response) => {
     setObtained(response.score)
@@ -66,15 +67,21 @@ const PreviewRubricModal = ({
     }
   }
 
+  useEffect(() => {
+    if (rubricFeedback) {
+      setObtained(calculateScore(currentRubricData, rubricFeedback))
+    }
+  }, [rubricFeedback])
+
   return (
     <StyledModal
-      title={Title}
+      title={titleContent}
       centered
       textAlign="left"
       visible={visible}
       footer={null}
       onCancel={() => handleCloseRubric()}
-      width="800px"
+      width="80%"
     >
       <StyledModalBody>
         <PreviewRubricTable
@@ -94,6 +101,7 @@ const StyledModal = styled(ConfirmationModal)`
   max-width: 80%;
   .ant-modal-content {
     background: ${white};
+    padding: 25px 0px;
     .ant-modal-close-x {
       height: 60px;
       line-height: 60px;
@@ -103,8 +111,7 @@ const StyledModal = styled(ConfirmationModal)`
     }
     .ant-modal-header {
       background: ${white};
-      margin-left: 16px;
-      margin-right: 25px;
+      padding: 0px 42px;
     }
     .ant-modal-body {
       padding: 0px;
@@ -129,8 +136,8 @@ const HeaderWrapper = styled.div`
 
   > span:last-child {
     font-size: 35px;
-    float: right;
     font-weight: 100;
+    line-height: 1;
 
     > span:first-child {
       color: ${themeColorLighter};

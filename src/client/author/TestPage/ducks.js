@@ -1011,6 +1011,14 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         tagsList: { ...state.tagsList, [payload.tagType]: payload.tags },
       }
+    case SET_ALL_TAGS_FAILED:
+      return {
+        ...state,
+        tagsList: {
+          ...state.tagsList,
+          [payload.tagType]: [],
+        },
+      }
     case ADD_NEW_TAG:
       return {
         ...state,
@@ -1506,6 +1514,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     restrictNavigationOutAttemptsThreshold:
       entity.restrictNavigationOutAttemptsThreshold,
     blockSaveAndContinue: entity.blockSaveAndContinue,
+    scoringType: entity.scoringType,
+    penalty: entity.penalty,
   }
 
   if (isAdmin) {
@@ -1664,7 +1674,11 @@ function* receiveTestByIdSaga({ payload }) {
     const errorMessage = 'Unable to retrieve test info.'
     if (err.status === 403) {
       yield put(push('/author/tests'))
-      notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })
+      notification({
+        type: 'error',
+        messageKey: 'curriculumMakeApiErr',
+        exact: true,
+      })
     } else {
       notification({ msg: errorMessage })
     }
@@ -2438,7 +2452,8 @@ function* getEvaluation(testItemId, newScore) {
     answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore
+    newScore || itemLevelScore,
+    testItem._id
   )
   return evaluation
 }
@@ -2451,7 +2466,8 @@ function* getEvaluationFromItem(testItem, newScore) {
     answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore
+    newScore || itemLevelScore,
+    testItem._id
   )
   return evaluation
 }
@@ -2518,14 +2534,17 @@ function* showAnswerSaga({ payload }) {
       }, {})
     }
 
-    const evaluation = yield createShowAnswerData(questions, answers)
+    const evaluation = yield createShowAnswerData(
+      questions,
+      answers,
+      testItem._id
+    )
     yield put({
       type: CHANGE_PREVIEW,
       payload: {
         view: 'show',
       },
     })
-
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
@@ -2547,17 +2566,19 @@ export const TAGS_SAGA_FETCH_STATUS = {
 }
 
 function* getAllTagsSaga({ payload }) {
+  const tagType = Array.isArray(payload.type) ? payload.type[0] : payload.type
   try {
     TAGS_SAGA_FETCH_STATUS.isLoading = true
     const tags = yield call(tagsApi.getAll, payload.type)
     yield put({
       type: SET_ALL_TAGS,
-      payload: { tags, tagType: payload.type },
+      payload: { tags, tagType },
     })
   } catch (e) {
     Sentry.captureException(e)
     yield put({
       type: SET_ALL_TAGS_FAILED,
+      payload: { tagType },
     })
     notification({ messageKey: 'getAllTagsFailed' })
   } finally {
@@ -2988,10 +3009,17 @@ function* getTestIdFromVersionIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err)
     console.error(err)
-    const errorMessage = 'Unable to retrieve test info.'
+    const errorMessage =
+      err?.response?.data?.statusCode === 404
+        ? 'You can no longer use this, as sharing access has been revoked by author'
+        : 'Unable to retrieve test info.'
     yield put(push('/author/tests'))
     if (err.status === 403) {
-      notification({ type: 'error', messageKey: 'curriculumMakeApiErr' })
+      notification({
+        type: 'error',
+        messageKey: 'curriculumMakeApiErr',
+        exact: true,
+      })
     } else {
       notification({ msg: errorMessage })
     }

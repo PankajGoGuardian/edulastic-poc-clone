@@ -4,7 +4,6 @@ import {
   tabGrey,
   themeColor,
   themeColorTagsBg,
-  white,
 } from '@edulastic/colors'
 import {
   AnswerContext,
@@ -14,16 +13,7 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Avatar, Card, Input } from 'antd'
-import {
-  get,
-  isEqual,
-  isUndefined,
-  maxBy,
-  round,
-  sumBy,
-  toNumber,
-  isNaN,
-} from 'lodash'
+import { get, isUndefined, maxBy, round, sumBy, toNumber, isNaN } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component, useEffect } from 'react'
 import { connect } from 'react-redux'
@@ -31,8 +21,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
-import { setTeacherEditedScore } from '../../author/ExpressGrader/ducks'
-import PreviewRubricModal from '../../author/GradingRubric/Components/common/PreviewRubricModal'
+import { setTeacherEditedScore as setTeacherEditedScoreAction } from '../../author/ExpressGrader/ducks'
 import { updateStudentQuestionActivityScoreAction } from '../../author/sharedDucks/classResponses'
 import { hasValidAnswers } from '../utils/answer'
 import { receiveFeedbackResponseAction } from '../../author/src/actions/classBoard'
@@ -45,6 +34,7 @@ import {
   getUserThumbnail,
 } from '../../author/src/selectors/user'
 import { getAvatarName } from '../../author/ClassBoard/Transformer'
+import RubricGrading from './RubricGrading'
 
 const { TextArea } = Input
 
@@ -78,7 +68,6 @@ class FeedbackRight extends Component {
     this.state = {
       score,
       maxScore,
-      showPreviewRubric: false,
       showFeedbackSaveBtn: false,
       feedbackInputHasFocus: false,
     }
@@ -89,8 +78,9 @@ class FeedbackRight extends Component {
 
   static contextType = AnswerContext
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps?.widget?.activity && !this.props?.widget?.activity) {
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ score: 0 })
     }
   }
@@ -154,6 +144,7 @@ class FeedbackRight extends Component {
       studentId,
       itemId,
       allAnswers = {},
+      setTeacherEditedScore,
     } = this.props
 
     if ((!score || isNaN(score)) && score != 0) {
@@ -176,7 +167,7 @@ class FeedbackRight extends Component {
       return
     }
 
-    this.props.setTeacherEditedScore({
+    setTeacherEditedScore({
       [id]: rubricResponse ? rubricResponse.score : _score,
     })
 
@@ -248,7 +239,7 @@ class FeedbackRight extends Component {
   preCheckSubmit = () => {
     const { changed, showFeedbackSaveBtn } = this.state
     if (changed || showFeedbackSaveBtn) {
-      this.setState({ submitted: true }, this.onFeedbackSubmit)
+      this.onFeedbackSubmit()
     }
     this.setState({ showFeedbackSaveBtn: false })
   }
@@ -256,7 +247,7 @@ class FeedbackRight extends Component {
   submitScore = () => {
     const { changed } = this.state
     if (changed) {
-      this.setState({ submitted: true }, this.onScoreSubmit)
+      this.onScoreSubmit()
     }
   }
 
@@ -298,27 +289,12 @@ class FeedbackRight extends Component {
     }
   }
 
-  handleRubricAction = async () => {
-    const { rubricDetails } = this.props
-    if (rubricDetails) this.setState({ showPreviewRubric: true })
-  }
-
-  handleRubricResponse = (res) => {
-    if (res && this.state.score != res.score) {
-      this.setState({ score: res.score || 0, changed: true })
-    }
-  }
-
-  handleRubricModal = (res) => {
-    const { rubricFeedback, score } = this.props?.widget?.activity || {}
-    this.setState({ showPreviewRubric: false })
-    if (
-      res &&
-      (!isEqual(res.rubricFeedback, rubricFeedback) || score !== res.score)
-    )
-      this.setState({ score: res.score }, () => {
+  handleRubricResponse = (res, isSubmit) => {
+    this.setState({ score: res.score, changed: true }, () => {
+      if (isSubmit) {
         this.onScoreSubmit(res)
-      })
+      }
+    })
   }
 
   focusFeedbackInput = () => this.setState({ feedbackInputHasFocus: true })
@@ -342,7 +318,6 @@ class FeedbackRight extends Component {
       score,
       maxScore,
       feedback,
-      showPreviewRubric,
       changed,
       showFeedbackSaveBtn,
       feedbackInputHasFocus,
@@ -433,11 +408,13 @@ class FeedbackRight extends Component {
           </ScoreInputWrapper>
         </StyledDivSec>
         {showGradingRubricButton && (
-          <RubricsWrapper>
-            <RubricsButton onClick={() => this.handleRubricAction()}>
-              Grading Rubric
-            </RubricsButton>
-          </RubricsWrapper>
+          <RubricGrading
+            rubricData={rubricDetails}
+            maxScore={rubricMaxScore}
+            rubricFeedback={rubricFeedback}
+            currentScore={activity?.score}
+            onRubricResponse={this.handleRubricResponse}
+          />
         )}
         <LeaveDiv>
           <span>{isError ? 'Score is too large' : 'Student Feedback!'}</span>
@@ -458,17 +435,6 @@ class FeedbackRight extends Component {
             disabled={!activity || isPresentationMode}
             onKeyDown={this.onKeyDownFeedback}
             autoSize
-          />
-        )}
-
-        {showPreviewRubric && (
-          <PreviewRubricModal
-            visible={showPreviewRubric}
-            currentRubricData={rubricDetails}
-            onRubricResponseUpdate={this.handleRubricResponse}
-            toggleModal={this.handleRubricModal}
-            maxScore={rubricMaxScore}
-            rubricFeedback={rubricFeedback}
           />
         )}
       </StyledCardTwo>
@@ -512,7 +478,7 @@ const enhance = compose(
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,
       updateQuestionActivityScore: updateStudentQuestionActivityScoreAction,
-      setTeacherEditedScore,
+      setTeacherEditedScore: setTeacherEditedScoreAction,
     }
   )
 )
@@ -642,21 +608,4 @@ const UserAvatar = styled(Avatar)`
   margin-right: 10px;
   font-size: 14px;
   text-transform: uppercase;
-`
-
-const RubricsWrapper = styled.div`
-  margin-top: 15px;
-`
-
-const RubricsButton = styled.span`
-  display: block;
-  text-align: center;
-  padding: 10px;
-  color: ${white};
-  background: ${themeColor};
-  border-radius: 4px;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-size: ${(props) => props.theme.smallFontSize};
-  font-weight: ${(props) => props.theme.semiBold};
 `

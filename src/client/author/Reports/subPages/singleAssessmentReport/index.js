@@ -176,10 +176,9 @@ const SingleAssessmentReportContainer = (props) => {
         _settings.filters[item] === 'All' ? '' : _settings.filters[item]
       obj[item] = val
     })
-
     setSARSettings({
       selectedTest: _settings.selectedTest,
-      requestFilters: obj,
+      requestFilters: { ...obj, tagIds: _settings.filters.tags.join() },
       cliUser: isCliUser,
     })
   }

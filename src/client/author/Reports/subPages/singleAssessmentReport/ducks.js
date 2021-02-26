@@ -39,6 +39,7 @@ const initialState = {
     subject: '',
     grade: '',
     assessmentTypes: '',
+    tagIds: '',
     schoolIds: '',
     teacherIds: '',
     studentSubject: '',

@@ -43,6 +43,7 @@ const initialState = {
     testSubject: '',
     testGrade: '',
     assessmentTypes: '',
+    tagIds: '',
     testIds: '',
     curriculumId: '',
     standardGrade: '',

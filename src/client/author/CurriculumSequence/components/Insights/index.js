@@ -105,7 +105,8 @@ const Insights = ({
     'student',
     [],
     '',
-    defaultBandInfo
+    defaultBandInfo,
+    'startDate'
   )
 
   const { studInfo = [], metricInfo = [], scaleInfo = [] } = playlistInsights

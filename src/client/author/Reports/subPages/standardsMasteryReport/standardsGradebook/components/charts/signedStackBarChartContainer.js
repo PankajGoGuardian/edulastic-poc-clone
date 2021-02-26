@@ -11,6 +11,7 @@ export const SignedStackBarChartContainer = ({
   masteryScale = [],
   role,
   onBarClickCB,
+  onBarResetClickCB,
   backendPagination,
   setBackendPagination,
 }) => {
@@ -90,8 +91,6 @@ export const SignedStackBarChartContainer = ({
     onBarClickCB(key)
   }
 
-  const _onResetClickCB = () => {}
-
   const yTickFormatter = () => ''
 
   const barsLabelFormatter = (val) => {
@@ -108,7 +107,7 @@ export const SignedStackBarChartContainer = ({
       xAxisDataKey="standard"
       getTooltipJSX={getTooltipJSX}
       onBarClickCB={_onBarClickCB}
-      onResetClickCB={_onResetClickCB}
+      onResetClickCB={onBarResetClickCB}
       yAxisLabel={chartSpecifics.yAxisLabel}
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}

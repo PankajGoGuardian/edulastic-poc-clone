@@ -64,8 +64,12 @@ import {
   CLEAR_USER_WORK,
   SET_SAVE_USER_RESPONSE,
   SWITCH_LANGUAGE,
+  UPDATE_PLAYER_PREVIEW_STATE,
 } from '../constants/actions'
-import { saveUserResponse as saveUserResponseAction } from '../actions/items'
+import {
+  saveUserResponse as saveUserResponseAction,
+  setSavedBlurTimeAction,
+} from '../actions/items'
 import { saveUserResponse as saveUserResponseSaga } from './items'
 import { loadQuestionsAction } from '../actions/questions'
 import { loadBookmarkAction } from '../sharedDucks/bookmark'
@@ -73,6 +77,7 @@ import {
   setPasswordValidateStatusAction,
   setPasswordStatusAction,
   languageChangeSuccessAction,
+  setShowTestInfoSuccesAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
@@ -299,10 +304,12 @@ function* loadTest({ payload }) {
        * src/client/assessment/sagas/items.js:saveUserResponse
        * requires current assignment id in store (studentAssignment.current)
        */
-      const { assignmentId } = testActivity?.testActivity || {}
+      const { assignmentId, timeInBlur = 0 } = testActivity?.testActivity || {}
       if (assignmentId) {
         yield put(setActiveAssignmentAction(assignmentId))
       }
+
+      yield put(setSavedBlurTimeAction(timeInBlur))
 
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
@@ -642,6 +649,27 @@ function* loadTest({ payload }) {
         languagePreference: testActivity.testActivity?.languagePreference,
       },
     })
+    if (preview) {
+      yield put({
+        type: UPDATE_PLAYER_PREVIEW_STATE,
+        payload: {
+          instruction: test.instruction,
+          hasInstruction: test.hasInstruction,
+          blockNavigationToAnsweredQuestions:
+            test.blockNavigationToAnsweredQuestions,
+          multiLanguageEnabled: test.multiLanguageEnabled,
+        },
+      })
+      if (
+        !(
+          test.multiLanguageEnabled ||
+          test.hasInstruction ||
+          test.timedAssignment
+        )
+      ) {
+        yield put(setShowTestInfoSuccesAction(true))
+      }
+    }
     yield put(setPasswordValidateStatusAction(true))
 
     yield put({
@@ -702,7 +730,7 @@ function* loadTest({ payload }) {
       } else if (err.status === 302) {
         messageKey = 'testPausedOrClosedByTeacher'
       } else if (err.status === 403) {
-        if (userRole === roleuser.STUDENT) {
+        if (userRole === roleuser.STUDENT || userRole === roleuser.PARENT) {
           const { data = {} } = err.response || {}
           const { message: errorMessage } = data
           notification({
@@ -711,6 +739,9 @@ function* loadTest({ payload }) {
           Fscreen.exitFullscreen()
           return yield put(push('/home/assignments'))
         }
+        notification({
+          msg: 'This test is marked private',
+        })
       }
     }
     if (userRole === roleuser.STUDENT) {

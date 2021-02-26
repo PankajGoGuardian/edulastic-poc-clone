@@ -14,8 +14,10 @@ import { white, red } from '@edulastic/colors'
 import useInterval from '@use-it/interval'
 import { db } from '@edulastic/common/src/Firebase'
 import { notification } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import AssignmentTimeEndedAlert from './AssignmentTimeEndedAlert'
 import { utaStartTimeUpdateRequired } from '../../../student/sharedDucks/AssignmentModule/ducks'
+import { getUserRole } from '../../../author/src/selectors/user'
 
 export const TIME_UPDATE_TYPE = {
   START: 'start',
@@ -60,6 +62,9 @@ const TimedTestTimer = ({
   updateUtaTimeType = null,
   resetUpdateUtaType,
   isPasswordValidated,
+  userRole,
+  isPreview,
+  allowedTime,
 }) => {
   const [uta, setUtaDoc] = useState()
   const [upstreamUta, setUpstreamUta] = useState()
@@ -68,13 +73,18 @@ const TimedTestTimer = ({
   const docRef = useRef(
     db.collection(firestoreCollectionName).doc(utaId || 'NONEXISTENT')
   )
-
+  const isAuthorPreview = userRole !== roleuser.STUDENT && isPreview
   useEffect(() => {
     let unsubscribe = () => {}
-    unsubscribe = db
-      .collection(firestoreCollectionName)
-      .doc(utaId || 'NONEXISTENT')
-      .onSnapshot((_doc) => setUpstreamUta(_doc.data()))
+    if (!isAuthorPreview) {
+      unsubscribe = db
+        .collection(firestoreCollectionName)
+        .doc(utaId || 'NONEXISTENT')
+        .onSnapshot((_doc) => setUpstreamUta(_doc.data()))
+    }
+    if (isAuthorPreview) {
+      setCurrentAssignmentTime(allowedTime)
+    }
     return () => unsubscribe()
   }, [])
 
@@ -84,7 +94,7 @@ const TimedTestTimer = ({
       omit(upstreamUta, ['lastResumed', 'timeSpent'])
     )
 
-    if (isModified) {
+    if (isModified && !isAuthorPreview) {
       setUtaDoc(upstreamUta)
       const pausedByStudent =
         upstreamUta &&
@@ -177,7 +187,7 @@ const TimedTestTimer = ({
           )
         )
       }
-    } else if (currentAssignmentTime > 0) {
+    } else if (currentAssignmentTime > 0 && !isAuthorPreview) {
       Sentry.captureException(
         new Error(
           `[Timed Assignment] Unable to Sync time ${currentAssignmentTime} on uta ${utaId} and group ${groupId}`
@@ -188,7 +198,7 @@ const TimedTestTimer = ({
 
   return (
     <>
-      {uta && currentAssignmentTime !== 0 && (
+      {(uta || isAuthorPreview) && currentAssignmentTime !== 0 && (
         <TimerWrapper
           isDanger={currentAssignmentTime <= CAUTION_TIME}
           fgColor={fgColor}
@@ -205,11 +215,12 @@ const TimedTestTimer = ({
           </Label>
         </TimerWrapper>
       )}
-      {autoSubmitPopUp && uta && (
+      {autoSubmitPopUp && (uta || isAuthorPreview) && (
         <AssignmentTimeEndedAlert
           isVisible={autoSubmitPopUp}
           groupId={groupId}
           utaId={utaId}
+          isAuthorPreview={isAuthorPreview}
         />
       )}
     </>
@@ -222,6 +233,9 @@ const enhance = compose(
     (state) => ({
       updateUtaTimeType: state.studentAssignment.updateUtaTimeType,
       isPasswordValidated: state.test.isPasswordValidated,
+      isPreview: state.test.isTestPreviewModalVisible,
+      userRole: getUserRole(state),
+      allowedTime: state.test.settings.allowedTime,
     }),
     {
       resetUpdateUtaType: utaStartTimeUpdateRequired,

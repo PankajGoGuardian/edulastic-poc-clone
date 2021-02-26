@@ -509,10 +509,10 @@ class Setting extends Component {
       selectPlayerSkinType = false,
     } = availableFeatures
 
-    const showMultiLangSelection =
-      allowedToSelectMultiLanguage &&
-      (isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR) &&
-      !isDocBased
+    const navigationThresholdMoreThan1 =
+      restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+      restrictNavigationOutAttemptsThreshold > 1
+
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />
@@ -831,7 +831,8 @@ class Setting extends Component {
                           </Col>
                           <Col span={16}>
                             <Description>
-                              If students can use an on-screen calculator, select the type to make available on the test.
+                              If students can use an on-screen calculator,
+                              select the type to make available on the test.
                             </Description>
                           </Col>
                         </Row>
@@ -1320,6 +1321,17 @@ class Setting extends Component {
                                 }
                               />{' '}
                               ALERTS
+                              {navigationThresholdMoreThan1 ? (
+                                <>
+                                  {' '}
+                                  <br />{' '}
+                                  {`or maximum of ${
+                                    restrictNavigationOutAttemptsThreshold * 5
+                                  } sec.`}{' '}
+                                </>
+                              ) : (
+                                ''
+                              )}
                             </RadioBtn>
                           </StyledRadioGroup>
                         </Col>
@@ -1328,10 +1340,15 @@ class Setting extends Component {
                             If <b>ON</b>, then students must take the test in
                             full screen mode to prevent opening another browser
                             window. Alert will appear if student has navigated
-                            away for more than 5 seconds.If the designated
-                            number of alerts are exceeded, the student’s
-                            assignment will be paused and the instructor will
-                            need to manually reset.
+                            away for more than 5 seconds{' '}
+                            {navigationThresholdMoreThan1
+                              ? `and student will be blocked after ${
+                                  restrictNavigationOutAttemptsThreshold * 5
+                                } seconds`
+                              : ''}
+                            .If the designated number of alerts are exceeded,
+                            the student’s assignment will be paused and the
+                            instructor will need to manually reset.
                           </Description>
                         </Col>
                       </Row>

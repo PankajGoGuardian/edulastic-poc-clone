@@ -47,6 +47,7 @@ import {
   ApplyFitlerLabel,
   FilterLabel,
 } from '../../../../common/styled'
+import TagFilter from '../../../../../src/components/common/TagFilter'
 
 const StandardsFilters = ({
   user,
@@ -167,6 +168,7 @@ const StandardsFilters = ({
         testSubject: urlTestSubject.key,
         testGrade: urlTestGrade.key,
         assessmentTypes: search.assessmentTypes || '',
+        tags: [],
         curriculumId: urlCurriculum.key || '',
         standardGrade: urlStandardGrade.key,
         profileId: savedFilters.profileId || scaleInfo._id,
@@ -395,11 +397,25 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
+            <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+            <TagFilter
+              onChangeField={(type, value) =>
+                updateFilterDropdownCB(
+                  value.map(({ _id }) => _id),
+                  type,
+                  true
+                )
+              }
+              selectedTagIds={filters.tags}
+            />
+          </SearchField>
+          <SearchField>
             <AssessmentsAutoComplete
               dataCy="tests"
               termId={filters.termId}
               grade={filters.testGrade !== 'All' && filters.testGrade}
               subject={filters.testSubject !== 'All' && filters.testSubject}
+              tags={filters.tags}
               testTypes={filters.assessmentTypes}
               selectedTestIds={testIds}
               selectCB={onSelectTest}

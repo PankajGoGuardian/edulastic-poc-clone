@@ -617,6 +617,12 @@ class ModuleRow extends Component {
               testId={selectedTest}
               showStudentPerformance
               closeTestPreviewModal={this.closePreviewTest}
+              onPlayListPreviewClose={() => {
+                this.setState({
+                  selectedTest: '',
+                })
+              }}
+              isPlayListPreview
             />
           )}
 

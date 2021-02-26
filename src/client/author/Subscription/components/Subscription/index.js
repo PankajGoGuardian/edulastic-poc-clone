@@ -308,9 +308,10 @@ const Subscription = (props) => {
     : false
 
   const showRenewalOptions =
-    ((isPaidPremium && isAboutToExpire) ||
+    true ||
+    (((isPaidPremium && isAboutToExpire) ||
       (!isPaidPremium && isSubscriptionExpired)) &&
-    !['enterprise', 'partial_premium'].includes(subType)
+      !['enterprise', 'partial_premium'].includes(subType))
 
   const itemBankProductIds = products
     .filter((prod) => prod.type === 'ITEM_BANK_SPARK_MATH')
@@ -430,6 +431,7 @@ const Subscription = (props) => {
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}
+        showRenewalOptions={showRenewalOptions}
       />
 
       <HasLicenseKeyModal

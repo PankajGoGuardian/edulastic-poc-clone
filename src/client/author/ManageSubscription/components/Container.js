@@ -151,9 +151,10 @@ const ManageSubscriptionContainer = ({
     : false
 
   const showRenewalOptions =
-    ((isPaidPremium && isAboutToExpire) ||
+    true ||
+    (((isPaidPremium && isAboutToExpire) ||
       (!isPaidPremium && isSubscriptionExpired)) &&
-    !['enterprise', 'partial_premium'].includes(subType)
+      !['enterprise', 'partial_premium'].includes(subType))
 
   const closeAddUsersModal = () => setShowAddUsersModal(false)
   const closeAddUsersConfirmationModal = () =>
@@ -247,6 +248,7 @@ const ManageSubscriptionContainer = ({
         setShowBuyMoreModal={setShowBuyMoreModal}
         isBuyMoreModalOpened={isBuyMoreModalOpened}
         isEdulasticAdminView={isEdulasticAdminView}
+        showRenewalOptions={showRenewalOptions}
       />
       {showAddUsersModal && (
         <AddUsersModal

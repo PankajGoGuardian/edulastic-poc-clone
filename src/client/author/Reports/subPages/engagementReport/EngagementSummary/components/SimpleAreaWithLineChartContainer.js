@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react'
 import moment from 'moment'
-import { ticks } from 'd3-array'
-import { round } from 'lodash'
 
 import { Row, Col } from 'antd'
 import { themeColor, lightGreen8 } from '@edulastic/colors'
@@ -122,28 +120,27 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
   }
 
   const getChartSpecifics = () => {
-    const ticksArr = ticks(0, maxTestCount, 10)
-    const tickDiff = ticksArr[1] - ticksArr[0]
-    let maxTickValue = ticksArr[ticksArr.length - 1]
-    const lineTicksArr = ticks(0, maxStudentCount, 10)
-    const lineTickDiff = lineTicksArr[1] - lineTicksArr[0]
-    let maxLineTickValue = lineTicksArr[lineTicksArr.length - 1]
-    // normalize ticks length for y-axes
-    while (ticksArr.length !== lineTicksArr.length) {
-      if (ticksArr.length < lineTicksArr.length) {
-        ticksArr.push(maxTickValue + tickDiff)
-        maxTickValue += tickDiff
-      } else {
-        lineTicksArr.push(maxLineTickValue + lineTickDiff)
-        maxLineTickValue += lineTickDiff
-      }
+    // tickStep should be greater than equal to 1
+    const tickStep = Math.ceil(maxTestCount / 10) || 1
+    const lineTickStep = Math.ceil(maxStudentCount / 10) || 1
+    const ticksArr = []
+    const lineTicksArr = []
+    // generate 10 ticks for each y-axis
+    let pos = 0
+    while (
+      (pos - 1) * tickStep < maxTestCount ||
+      (pos - 1) * lineTickStep < maxStudentCount
+    ) {
+      ticksArr.push(pos * tickStep)
+      lineTicksArr.push(pos * lineTickStep)
+      pos += 1
     }
     return {
-      yDomain: [0, maxTickValue + 2 * tickDiff],
-      ticks: [...ticksArr, maxTickValue + tickDiff],
-      lineYDomain: [0, maxLineTickValue + 2 * lineTickDiff],
-      lineTicks: [...lineTicksArr, maxLineTickValue + lineTickDiff],
-      formatter: (val) => round(Number(val), 2),
+      yDomain: [0, (pos + 1) * tickStep],
+      ticks: [...ticksArr, pos * tickStep],
+      lineYDomain: [0, (pos + 1) * lineTickStep],
+      lineTicks: [...lineTicksArr, pos * lineTickStep],
+      formatter: (val) => val,
     }
   }
 

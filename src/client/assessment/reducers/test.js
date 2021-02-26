@@ -24,6 +24,8 @@ import {
   SET_VIEW_TEST_INFO_SUCCESS,
   SET_PREVIEW_LANGUAGE,
   SET_IS_TEST_PREVIEW_VISIBLE,
+  SAVE_BLUR_TIME,
+  SET_SAVED_BLUR_TIME,
 } from '../constants/actions'
 
 const initialState = {
@@ -52,6 +54,8 @@ const initialState = {
   previewState: {},
   viewTestInfoSuccess: false,
   isTestPreviewModalVisible: false,
+  blurTime: 0,
+  savedBlurTime: 0,
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -145,6 +149,16 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         passwordStatusMessage: payload,
+      }
+    case SAVE_BLUR_TIME:
+      return {
+        ...state,
+        blurTime: payload,
+      }
+    case SET_SAVED_BLUR_TIME:
+      return {
+        ...state,
+        savedBlurTime: payload,
       }
     case SAVE_USER_RESPONSE:
       if (!payload.autoSave) {

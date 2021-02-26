@@ -31,6 +31,8 @@ const TestPreviewModal = ({
   testType,
   setShowTestInfoSucces,
   setTestLoading,
+  onPlayListPreviewClose,
+  isPlayListPreview = false,
   ...restProps
 }) => {
   const [
@@ -50,6 +52,16 @@ const TestPreviewModal = ({
       setTestLoading(true)
     }
   }, [isModalVisible])
+
+  useEffect(() => {
+    return () => {
+      if (isPlayListPreview && onPlayListPreviewClose) {
+        setShowTestInfoSucces(false)
+        setTestLoading(true)
+        onPlayListPreviewClose()
+      }
+    }
+  }, [])
 
   const closeTestPreviewModal = () => {
     _closeTestPreviewModal()

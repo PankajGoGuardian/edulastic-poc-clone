@@ -41,6 +41,14 @@ export { slice }
 function* sendParentCodeSaga({ payload }) {
   try {
     const result = yield call(userApi.sendParentCode, payload)
+    if (result === 'expired') {
+      notification({ messageKey: 'errorParentCodeExpired' })
+      yield put(push('/login'))
+    }
+    if (!result) {
+      notification({ messageKey: 'errorParentCodeNotFound' })
+      yield put(push('/login'))
+    }
     yield put(slice.actions.sendParentCodeSucess(result))
   } catch (e) {
     notification({ messageKey: 'errorParentCode' })

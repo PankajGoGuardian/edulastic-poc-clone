@@ -37,7 +37,7 @@ const TrialModal = ({
 
   const {
     PREMIUM: teacherPremium = [],
-    ITEM_BANK: itemBankPremium = [],
+    ITEM_BANK_SPARK_MATH: itemBankPremium = [],
   } = useMemo(() => {
     return groupBy(productsToShow, 'type')
   }, [products])

@@ -44,6 +44,10 @@ export const getIsPaymentServiceModalVisible = createSelector(
   subscriptionSelector,
   (state) => state.isPaymentServiceModalVisible
 )
+export const getIsSubscriptionExpired = createSelector(
+  subscriptionSelector,
+  (state) => state.isSubscriptionExpired
+)
 
 const slice = createSlice({
   name: 'subscription',

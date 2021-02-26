@@ -44,7 +44,7 @@ const BuyMoreLicensesModal = ({
       setTotalAmount(buyCount * getPremiumPrice)
     } else {
       const getSparkPrice = products.find(
-        (product) => product.type === 'ITEM_BANK'
+        (product) => product.type === 'ITEM_BANK_SPARK_MATH'
       ).price
       setTotalAmount(buyCount * getSparkPrice)
     }

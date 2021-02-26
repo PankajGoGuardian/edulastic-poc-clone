@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { white, title, themeColorLighter } from '@edulastic/colors'
 import { sumBy, maxBy } from 'lodash'
@@ -6,6 +6,7 @@ import { notification } from '@edulastic/common'
 import PreviewRubricTable from './PreviewRubricTable'
 import { ModalBody } from './ConfirmModal'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { calculateScore } from './helper'
 
 const PreviewRubricModal = ({
   visible,
@@ -31,15 +32,15 @@ const PreviewRubricModal = ({
         ),
       [currentRubricData.criteria]
     )
-  const Title = [
+  const titleContent = (
     <HeaderWrapper key="rubric-header">
       <span>{currentRubricData.name}</span>
       <span>
         <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;
         <span>{maxScore || localMaxScore}</span>
       </span>
-    </HeaderWrapper>,
-  ]
+    </HeaderWrapper>
+  )
 
   const handleChange = (response) => {
     setObtained(response.score)
@@ -66,9 +67,15 @@ const PreviewRubricModal = ({
     }
   }
 
+  useEffect(() => {
+    if (rubricFeedback) {
+      setObtained(calculateScore(currentRubricData, rubricFeedback))
+    }
+  }, [rubricFeedback])
+
   return (
     <StyledModal
-      title={Title}
+      title={titleContent}
       centered
       textAlign="left"
       visible={visible}

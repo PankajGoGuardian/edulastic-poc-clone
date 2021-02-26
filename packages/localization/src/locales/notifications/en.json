@@ -1767,6 +1767,14 @@
     "message": "error parent code",
     "description": ""
   },
+  "errorParentCodeExpired": {
+    "message": "Invitation link expired. Please login using your credentials.",
+    "description": ""
+  },
+  "errorParentCodeNotFound": {
+    "message": "Invitation code not found.",
+    "description": ""
+  },
   "errorSettingPassword": {
     "message": "error setting password",
     "description": ""

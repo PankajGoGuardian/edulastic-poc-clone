@@ -49,7 +49,7 @@ const EditTagsModal = ({
   useEffect(() => {
     if (tagsUpdatingState === 'SUCCESS') {
       if (userRole === roleuser.TEACHER) {
-        loadAssignments({ filters })
+        loadAssignments({ filters, folderId: filters.folderId })
       } else {
         loadAssignmentsSummary({
           districtId,

@@ -24,7 +24,7 @@ const RatingComp = ({ data, selected, onClick }) => (
 const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
   const [selectedRatings, setSelectedRatings] = useState({})
 
-  const { criteria } = rubricData
+  const { criteria, name } = rubricData
 
   const handleClickRatingBtn = (criteriaId, ratingId) => {
     const selectedData = { ...selectedRatings }
@@ -49,6 +49,7 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
 
   return (
     <div data-cy="rubric-ratings">
+      <RubrickName>{name}</RubrickName>
       {(criteria || []).map((c) => (
         <CriteriaRow key={c.id}>
           <TwoLineEllipsis>{c.name}</TwoLineEllipsis>
@@ -129,4 +130,8 @@ const TwoLineEllipsis = styled(FieldLabel)`
     margin-top: 0.2em;
     background: white;
   }
+`
+
+const RubrickName = styled(FieldLabel)`
+  font-size: 14px;
 `

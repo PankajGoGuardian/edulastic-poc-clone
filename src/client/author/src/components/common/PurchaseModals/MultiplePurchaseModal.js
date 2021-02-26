@@ -58,7 +58,7 @@ const MultiplePurchaseModal = ({
     ).price
 
     const getSparkPrice = products.find(
-      (product) => product.type === 'ITEM_BANK'
+      (product) => product.type === 'ITEM_BANK_SPARK_MATH'
     ).price
 
     setPremiumSubsCount(value)
@@ -72,7 +72,7 @@ const MultiplePurchaseModal = ({
 
   const handleSelectCountSparkMathSubs = (value) => {
     const getSparkPrice = products.find(
-      (product) => product.type === 'ITEM_BANK'
+      (product) => product.type === 'ITEM_BANK_SPARK_MATH'
     ).price
     setSparkMathSubsCount(value)
     setSparkMathTotalPrice(value * getSparkPrice)

@@ -163,7 +163,7 @@ const ClassGroupContainer = ({
       <SettingContainer id="tags-setting">
         <DetailsTooltip
           width={tootltipWidth}
-          title="Tags"
+          title="TAGS"
           content="Tags are keywords you can use to search for your tests in the Assignments or Insights sections.  Entering a tag makes it easier to locate an assigned test or quickly access test data."
           premium
           placement="rightTop"

@@ -302,13 +302,30 @@ const AntiCheatingGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
-            content={`If ON, students must take the test in full screen mode to prevent opening another browser window. Alert will appear if student has navigated away for more than 5 seconds ${
-              navigationThresholdMoreThan1
-                ? `and student will be blocked after ${
-                    restrictNavigationOutAttemptsThreshold * 5
-                  } seconds`
-                : ''
-            }. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset.`}
+            content={
+              <>
+                <p>
+                  If ON, students must take the test in full screen mode to
+                  prevent opening another browser window. Alert will appear if
+                  student has navigated away for more than 5 seconds. If the
+                  designated number of alerts are exceeded, the student’s
+                  assignment will be paused and the instructor will need to
+                  manually reset.
+                </p>
+                {navigationThresholdMoreThan1 ? (
+                  <>
+                    <br />
+                    <p>
+                      Alert will appear if student has navigated away for more
+                      than 5 seconds and student will be blocked after{' '}
+                      {restrictNavigationOutAttemptsThreshold * 5} seconds
+                    </p>
+                  </>
+                ) : (
+                  ''
+                )}
+              </>
+            }
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
@@ -374,9 +391,9 @@ const AntiCheatingGroupContainer = ({
                   {navigationThresholdMoreThan1 ? (
                     <Styled2ndLine>
                       {' '}
-                      {`OR MAXIMUM OF ${
+                      {`or maximum of ${
                         restrictNavigationOutAttemptsThreshold * 5
-                      } SEC.`}{' '}
+                      } sec.`}{' '}
                     </Styled2ndLine>
                   ) : (
                     ''

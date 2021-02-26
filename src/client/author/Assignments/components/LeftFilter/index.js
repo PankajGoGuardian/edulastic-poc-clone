@@ -59,7 +59,7 @@ class LeftFilter extends React.Component {
       if (key === 'tags') {
         filters = { ...filters, pageNo: 1, testId: '' }
       }
-      loadAssignments({ filters })
+      loadAssignments({ filters, folderId: filters.folderId })
     } else {
       if (!['testId', 'assignedBy', 'tags'].includes(key)) {
         filters = { ...filters, pageNo: 1, assignedBy: '', testId: '' }

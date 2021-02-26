@@ -17,6 +17,7 @@ import {
   getSuccessSelector,
   getProducts,
   getItemBankSubscriptions,
+  getIsSubscriptionExpired,
 } from '../../Subscription/ducks'
 import {
   addAndUpgradeUsersAction,
@@ -41,6 +42,8 @@ const AddUsersConfirmationModal = loadable(() =>
 )
 
 const { PRODUCT_NAMES } = constants
+const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
+const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
 
 const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},
@@ -63,21 +66,22 @@ const ManageSubscriptionContainer = ({
   licenseIds,
   userRole,
   isEdulasticAdminView,
+  isSubscriptionExpired,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [dataSource, setDataSource] = useState(users)
-  const [searchValue, setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState()
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
-
   const [isBuyMoreModalOpened, setIsBuyMoreModalOpened] = useState('')
-
   const [productData, setProductData] = useState({})
+
+  useEffect(() => setDataSource(users), [users])
 
   const { FEATURED } = groupBy(dashboardTiles, 'type')
   const featuredBundles = FEATURED || []
@@ -142,6 +146,15 @@ const ManageSubscriptionContainer = ({
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
+  const isAboutToExpire = subEndDate
+    ? Date.now() + ONE_MONTH > subEndDate && Date.now() < subEndDate + TEN_DAYS
+    : false
+
+  const showRenewalOptions =
+    ((isPaidPremium && isAboutToExpire) ||
+      (!isPaidPremium && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
+
   const closeAddUsersModal = () => setShowAddUsersModal(false)
   const closeAddUsersConfirmationModal = () =>
     setAddUsersConfirmationModalVisible(false)
@@ -166,6 +179,10 @@ const ManageSubscriptionContainer = ({
   const handleTableSearch = (e) => {
     const currValue = e.target.value
     setSearchValue(currValue)
+    if (!currValue) {
+      setDataSource(users)
+      return
+    }
     const filteredData = users.filter(
       (entry) =>
         entry?.username?.includes(currValue) ||
@@ -195,6 +212,7 @@ const ManageSubscriptionContainer = ({
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           settingProductData={settingProductData}
           isRoleTeacher={isRoleTeacher}
+          showRenewalOptions={showRenewalOptions}
         />
       )}
 
@@ -276,6 +294,7 @@ const enhance = compose(
       itemBankSubscriptions: getItemBankSubscriptions(state),
       dashboardTiles: getDashboardTilesSelector(state),
       userRole: getUserRole(state),
+      isSubscriptionExpired: getIsSubscriptionExpired(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

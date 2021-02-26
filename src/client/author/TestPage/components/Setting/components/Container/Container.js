@@ -1325,9 +1325,9 @@ class Setting extends Component {
                                 <>
                                   {' '}
                                   <br />{' '}
-                                  {`OR MAXIMUM OF ${
+                                  {`or maximum of ${
                                     restrictNavigationOutAttemptsThreshold * 5
-                                  } SEC.`}{' '}
+                                  } sec.`}{' '}
                                 </>
                               ) : (
                                 ''

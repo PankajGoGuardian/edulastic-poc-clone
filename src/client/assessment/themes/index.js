@@ -34,7 +34,11 @@ import { themeColor } from '@edulastic/colors'
 import { testActivityApi, classBoardApi } from '@edulastic/api'
 
 import Styled from 'styled-components'
-import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
+import {
+  gotoItem as gotoItemAction,
+  saveUserResponse,
+  saveBlurTimeAction,
+} from '../actions/items'
 import { saveUserWorkAction } from '../actions/userWork'
 import {
   finishTestAcitivityAction,
@@ -113,7 +117,12 @@ function pauseAssignment({
     .then(() => {
       Fscreen.safeExitfullScreen()
       const errorMsg = msg || 'Pausing Assignment due to Anti Cheating measures'
-      notification({ type: 'warning', msg: errorMsg, duration: 0 })
+      notification({
+        type: 'warning',
+        msg: errorMsg,
+        duration: 0,
+        key: errorMsg,
+      })
       if (history.location.pathname === '/home/assignments') {
         history.push('/home/assignmentss') // this hack needed to re-render route
         history.replace('/home/assignments')
@@ -134,15 +143,17 @@ function pauseAssignment({
 }
 
 function incrementNavigationCounter({ history, testActivityId }) {
+  const msg =
+    'Your test has been locked for security reasons. Please contact your teacher to reopen your test'
   return testActivityApi
     .incrementTabNavigationCounter(testActivityId)
     .then((response) => {
       if (response.paused) {
         notification({
           type: 'warning',
-          msg:
-            'Your test has been locked. Please contact your teacher to reset the test.',
+          msg,
           duration: 0,
+          key: msg,
         })
         Fscreen.exitFullscreen()
         history.push('/home/assignments')
@@ -325,13 +336,24 @@ export function useTabNavigationCounterEffect({
   assignmentId,
   classId,
   userId,
+  onTimeInBlurChange,
+  blurTimeAlreadySaved,
 }) {
   const inFocusRef = useRef(true)
   const idleTimeoutRef = useRef(null)
   const totalBlurTimeCounterIntervalRef = useRef(null)
-  const totalTimeInBlur = useRef(0)
+  const totalTimeInBlur = useRef(blurTimeAlreadySaved || 0)
 
   useEffect(() => {
+    if (window.sessionStorage.totalTimeInBlur) {
+      totalTimeInBlur.current =
+        parseInt(window.sessionStorage.totalTimeInBlur, 10) || 0
+      window.sessionStorage.removeItem('totalTimeInBlur')
+      onTimeInBlurChange(totalTimeInBlur.current)
+    } else if (blurTimeAlreadySaved) {
+      totalTimeInBlur.current = blurTimeAlreadySaved
+      onTimeInBlurChange(blurTimeAlreadySaved)
+    }
     return () => {
       if (totalBlurTimeCounterIntervalRef.current) {
         clearInterval(totalBlurTimeCounterIntervalRef.current)
@@ -342,7 +364,9 @@ export function useTabNavigationCounterEffect({
   useFocusHandler({
     enabled,
     onFocus: () => {
+      onTimeInBlurChange(totalTimeInBlur.current)
       inFocusRef.current = true
+      window.sessionStorage.removeItem('totalTimeInBlur')
       console.log('on focus ', new Date())
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current)
@@ -362,12 +386,14 @@ export function useTabNavigationCounterEffect({
       }
       totalBlurTimeCounterIntervalRef.current = setInterval(() => {
         totalTimeInBlur.current += 1
+        window.sessionStorage.totalTimeInBlur = totalTimeInBlur.current
         if (enabled && threshold > 1) {
           const maximumTimeLimit = threshold * 5
           if (totalTimeInBlur.current >= maximumTimeLimit) {
             if (totalBlurTimeCounterIntervalRef.current) {
               clearInterval(totalBlurTimeCounterIntervalRef.current)
             }
+            window.sessionStorage.removeItem('totalTimeInBlur')
             pauseAssignment({
               history,
               assignmentId,
@@ -375,7 +401,7 @@ export function useTabNavigationCounterEffect({
               userId,
               pauseReason: 'out-of-navigation',
               msg:
-                'Your test has been locked. Please contact your teacher to reset the test',
+                'Your test has been locked for security reasons. Please contact your teacher to reopen your test',
             })
           }
         }
@@ -471,6 +497,8 @@ const AssessmentContainer = ({
   fetchAssignments,
   evaluateForPreview,
   setIsTestPreviewVisible,
+  saveBlurTime,
+  savedBlurTime: blurTimeAlreadySaved,
   ...restProps
 }) => {
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
@@ -511,6 +539,10 @@ const AssessmentContainer = ({
     assignmentId: assignmentObj?._id,
     classId: groupId,
     userId,
+    onTimeInBlurChange: (v) => {
+      saveBlurTime(v)
+    },
+    blurTimeAlreadySaved,
   })
   useEffect(() => {
     if (assignmentObj) {
@@ -1200,9 +1232,11 @@ const enhance = compose(
       currentAssignment: get(state, 'studentAssignment.current'),
       blockNavigationToAnsweredQuestions:
         state.test?.settings?.blockNavigationToAnsweredQuestions,
+      savedBlurTime: state.test?.savedBlurTime,
     }),
     {
       saveUserResponse,
+      saveBlurTime: saveBlurTimeAction,
       evaluateAnswer,
       saveUserWork: saveUserWorkAction,
       changePreview: changePreviewAction,

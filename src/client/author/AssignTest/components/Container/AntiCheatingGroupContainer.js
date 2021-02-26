@@ -374,9 +374,9 @@ const AntiCheatingGroupContainer = ({
                   {navigationThresholdMoreThan1 ? (
                     <Styled2ndLine>
                       {' '}
-                      {`OR MAXIMUM OF ${
+                      {`or maximum of ${
                         restrictNavigationOutAttemptsThreshold * 5
-                      } SEC.`}{' '}
+                      } sec.`}{' '}
                     </Styled2ndLine>
                   ) : (
                     ''

@@ -66,7 +66,10 @@ import {
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
 } from '../constants/actions'
-import { saveUserResponse as saveUserResponseAction } from '../actions/items'
+import {
+  saveUserResponse as saveUserResponseAction,
+  setSavedBlurTimeAction,
+} from '../actions/items'
 import { saveUserResponse as saveUserResponseSaga } from './items'
 import { loadQuestionsAction } from '../actions/questions'
 import { loadBookmarkAction } from '../sharedDucks/bookmark'
@@ -301,10 +304,12 @@ function* loadTest({ payload }) {
        * src/client/assessment/sagas/items.js:saveUserResponse
        * requires current assignment id in store (studentAssignment.current)
        */
-      const { assignmentId } = testActivity?.testActivity || {}
+      const { assignmentId, timeInBlur = 0 } = testActivity?.testActivity || {}
       if (assignmentId) {
         yield put(setActiveAssignmentAction(assignmentId))
       }
+
+      yield put(setSavedBlurTimeAction(timeInBlur))
 
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===

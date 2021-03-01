@@ -12,6 +12,7 @@ import {
   notification,
   helpers,
   toggleIntercomDisplay,
+  CustomPrompt,
 } from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
@@ -578,6 +579,7 @@ class WorksheetComponent extends React.Component {
       currentPage: _currentPageInProps,
       groupId,
       itemDetail,
+      updated,
     } = this.props
 
     const {
@@ -615,6 +617,13 @@ class WorksheetComponent extends React.Component {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <CustomPrompt
+          when={!!updated}
+          onUnload
+          message={() => {
+            return 'There are unsaved changes. Are you sure you want to leave?'
+          }}
+        />
         {editMode && (
           <PDFAnnotationToolsWrapper>
             <PDFAnnotationTools
@@ -783,6 +792,7 @@ WorksheetComponent.propTypes = {
   review: PropTypes.bool,
   noCheck: PropTypes.bool,
   annotations: PropTypes.array,
+  updated: PropTypes.bool,
 }
 
 WorksheetComponent.defaultProps = {
@@ -791,6 +801,7 @@ WorksheetComponent.defaultProps = {
   noCheck: false,
   pageStructure: [],
   answersById: {},
+  updated: false,
 }
 
 const withForwardedRef = (Component) => {
@@ -850,6 +861,7 @@ const enhance = compose(
       isAnnotationsStackEmpty: state.tests.annotationsStack?.length === 0,
       pdfAnnotations: state.tests.entity?.annotations,
       isImageBlockNotification: state.user.isImageBlockNotification,
+      updated: get(state, 'tests.updated', false),
     }),
     {
       saveUserWork: saveUserWorkAction,

@@ -25,6 +25,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     disableResponse,
     isPrintPreview,
     allOptions,
+    answerScore,
+    allCorrects,
   } = resprops
   const { dropDowns: _dropDownAnswers = [] } = answers
   let val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : ''
@@ -114,6 +116,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       type="dropDowns"
       onInnerClick={onInnerClick}
       isPrintPreview={isPrintPreview}
+      answerScore={answerScore}
+      allCorrects={allCorrects}
     />
   ) : (
     <DropdownWrapper

@@ -168,6 +168,7 @@ class ClozeTextDisplay extends Component {
       isV1Migrated,
       isPrintPreview = false,
       hideCorrectAnswer,
+      answerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -189,6 +190,7 @@ class ClozeTextDisplay extends Component {
       isV1Migrated,
       cAnswers: get(item, 'validation.validResponse.value', []),
       isPrintPreview,
+      answerScore,
     }
 
     const QuestionContent = (

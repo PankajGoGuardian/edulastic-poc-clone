@@ -3,52 +3,44 @@ import PropTypes from 'prop-types'
 import { response } from '@edulastic/constants'
 
 import { IconWrapper } from './CheckboxTemplateBoxLayout/styled/IconWrapper'
-import { RightIcon } from './CheckboxTemplateBoxLayout/styled/RightIcon'
-import { WrongIcon } from './CheckboxTemplateBoxLayout/styled/WrongIcon'
+import { CheckBox } from './CheckboxTemplateBoxLayout/styled/CheckBox'
 
 const PopoverContent = ({
   indexStr,
   fontSize,
   userAnswer,
-  hasAnswered,
-  status,
   checkAnswer,
   isExpressGrader,
+  fillColor,
+  indexBgColor,
+  isPrintPreview,
+  mark,
 }) => (
-  <span
-    className="template_box dropdown"
+  <CheckBox
     style={{ fontSize, padding: 20, overflow: 'hidden', margin: '0px 4px' }}
+    fillColor={fillColor}
+    indexBgColor={indexBgColor}
+    isPrintPreview={isPrintPreview}
   >
     <span
-      className={`response-btn ${
-        hasAnswered ? 'check-answer' : ''
-      } ${status} show-answer"`}
-      style={{ position: 'relative' }}
+      className="index"
+      style={{ display: checkAnswer && !isExpressGrader ? 'none' : 'flex' }}
     >
-      <span
-        className="index index-box"
-        style={{
-          display: checkAnswer && !isExpressGrader ? 'none' : 'flex',
-          alignSelf: 'stretch',
-        }}
-      >
-        {indexStr}
-      </span>
-      <div className="text container" style={{ maxWidth: response.maxWidth }}>
-        <div style={{ whiteSpace: 'normal' }}>{userAnswer}</div>
-        <IconWrapper rightPosition={5}>
-          {hasAnswered && status === 'right' && <RightIcon />}
-          {hasAnswered && status === 'wrong' && <WrongIcon />}
-        </IconWrapper>
-      </div>
+      {indexStr}
     </span>
-  </span>
+    <div className="text" style={{ maxWidth: response.maxWidth }}>
+      <div style={{ whiteSpace: 'normal' }}>{userAnswer}</div>
+    </div>
+
+    <div className="icons">
+      {mark && <IconWrapper rightPosition={5}>{mark}</IconWrapper>}
+    </div>
+  </CheckBox>
 )
 
 PopoverContent.propTypes = {
   fontSize: PropTypes.number,
   userAnswer: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
   checkAnswer: PropTypes.bool.isRequired,
   isExpressGrader: PropTypes.bool.isRequired,
 }

@@ -125,6 +125,8 @@ const MathWithUnit = ({ resprops = {}, id }) => {
     checked,
     onInnerClick,
     showIndex,
+    answerScore,
+    allCorrects,
   } = resprops
   const { mathUnits = {} } = answers
 
@@ -159,6 +161,8 @@ const MathWithUnit = ({ resprops = {}, id }) => {
       isMath
       onInnerClick={onInnerClick}
       isPrintPreview={resprops.isPrintPreview}
+      answerScore={answerScore}
+      allCorrects={allCorrects}
     />
   ) : (
     <ClozeMathWithUnit resprops={{ ...resprops, height, width }} id={id} />

@@ -8,16 +8,8 @@ export const IndexBox = styled.div`
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  ${({ theme, checked, correct }) => `
-    background: ${
-      checked === undefined && correct === undefined
-        ? theme.checkbox.noAnswerIconColor
-        : checked === false
-        ? theme.checkbox.noAnswerIconColor
-        : checked && !correct
-        ? theme.checkbox.wrongIconColor
-        : theme.checkbox.rightIconColor
-    };
+  ${({ theme, bgColor }) => `
+    background: ${bgColor};
     color: ${theme.widgets.clozeText.indexBoxColor};
     font-size: ${theme.widgets.clozeText.indexBoxFontSize};
     font-weight: ${theme.widgets.clozeText.indexBoxFontWeight};

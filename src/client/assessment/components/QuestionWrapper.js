@@ -87,157 +87,6 @@ import {
   getCurrentLanguage,
 } from '../../common/components/LanguageSelector/duck'
 
-const QuestionContainer = styled.div`
-  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
-  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
-  justify-content: space-between;
-  ${({ style }) => style};
-  @media (max-width: ${mobileWidthMax}) {
-    flex-direction: column;
-  }
-  .ql-indent-1:not(.ql-direction-rtl) {
-    padding-left: 3em;
-  }
-  .ql-indent-1.ql-direction-rtl.ql-align-right {
-    padding-right: 3em;
-  }
-  .ql-indent-2:not(.ql-direction-rtl) {
-    padding-left: 6em;
-  }
-  .ql-indent-2.ql-direction-rtl.ql-align-right {
-    padding-right: 6em;
-  }
-  .ql-indent-3:not(.ql-direction-rtl) {
-    padding-left: 9em;
-  }
-  .ql-indent-3.ql-direction-rtl.ql-align-right {
-    padding-right: 9em;
-  }
-  .ql-indent-4:not(.ql-direction-rtl) {
-    padding-left: 12em;
-  }
-  .ql-indent-4.ql-direction-rtl.ql-align-right {
-    padding-right: 12em;
-  }
-  .ql-indent-5:not(.ql-direction-rtl) {
-    padding-left: 15em;
-  }
-  .ql-indent-5.ql-direction-rtl.ql-align-right {
-    padding-right: 15em;
-  }
-  .ql-indent-6:not(.ql-direction-rtl) {
-    padding-left: 18em;
-  }
-  .ql-indent-6.ql-direction-rtl.ql-align-right {
-    padding-right: 18em;
-  }
-  .ql-indent-7:not(.ql-direction-rtl) {
-    padding-left: 21em;
-  }
-  .ql-indent-7.ql-direction-rtl.ql-align-right {
-    padding-right: 21em;
-  }
-  .ql-indent-8:not(.ql-direction-rtl) {
-    padding-left: 24em;
-  }
-  .ql-indent-8.ql-direction-rtl.ql-align-right {
-    padding-right: 24em;
-  }
-  .ql-indent-9:not(.ql-direction-rtl) {
-    padding-left: 27em;
-  }
-  .ql-indent-9.ql-direction-rtl.ql-align-right {
-    padding-right: 27em;
-  }
-
-  .print-preview-feedback {
-    width: 100%;
-    padding: 0 35px;
-  }
-
-  @media print {
-    .__print_question-content-wrapper {
-      max-width: calc(100% - 55px);
-      display: block !important;
-      position: relative !important;
-    }
-    .question-wrapper {
-      padding: 5px;
-    }
-    .__print-question-option {
-      margin-top: 20px !important;
-    }
-    .__print-question-main-wrapper {
-      display: inline-table;
-      width: 100%;
-    }
-    .__print-space-reduce {
-      &-qlabel {
-        margin-right: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-      }
-      &-option {
-        align-items: flex-start !important;
-      }
-      &-options {
-        margin-bottom: 0px !important;
-        label {
-          padding: 0 !important;
-        }
-      }
-      &-stimulus {
-        margin-bottom: 5px !important;
-        & p {
-          br {
-            display: none !important;
-          }
-        }
-      }
-    }
-  }
-`
-
-export const TimeSpentWrapper = styled.div`
-  font-size: 19px;
-  color: ${greyThemeDark2};
-  display: flex;
-  justify-content: flex-end;
-  margin-top: auto;
-  align-items: center;
-  margin: ${({ margin }) => margin};
-  &.student-report {
-    position: absolute;
-    top: 25px;
-    right: 0px;
-    background: #f3f3f3;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    svg {
-      margin-right: 10px;
-      fill: #6a737f;
-    }
-  }
-  svg {
-    margin-right: 8px;
-    fill: ${greyThemeDark2};
-  }
-`
-
-export const FlexContainer = styled.div`
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-`
-
-export const EvaluationMessage = styled.div`
-  color: rgb(250, 135, 52);
-  width: 100%;
-  text-align: center;
-`
-
 const DummyQuestion = () => <></>
 
 const getQuestion = (type) => {
@@ -457,6 +306,20 @@ class QuestionWrapper extends Component {
   get renderData() {
     const { data, studentLanguagePreference } = this.props
     return changeDataToPreferredLanguage(data, studentLanguagePreference)
+  }
+
+  get answerScore() {
+    const { previewScore, previewMaxScore, data } = this.props
+    let score = previewScore
+    let maxScore = previewMaxScore
+    let isGradedExternally = false
+    if (data?.activity) {
+      score = data?.activity?.score
+      maxScore = data?.activity.maxScore
+      isGradedExternally = data?.activity?.isGradedExternally
+    }
+
+    return { score: (score || 0) / (maxScore || 1), isGradedExternally }
   }
 
   render() {
@@ -682,6 +545,7 @@ class QuestionWrapper extends Component {
                     item={data}
                     view={view}
                     evaluation={evaluation}
+                    answerScore={this.answerScore}
                     changePreviewTab={changePreviewTab}
                     qIndex={qIndex}
                     advancedLink={advancedLink}
@@ -849,6 +713,8 @@ const enhance = compose(
       studentLanguagePreference: languagePreferenceSelector(state, ownProps),
       authLanguage: getCurrentLanguage(state),
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      previewScore: state?.itemScore?.score, // this used only in the author preview
+      previewMaxScore: state?.itemScore?.maxScore, // this used only in the author preview
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -858,6 +724,13 @@ const enhance = compose(
 )
 
 export default enhance(QuestionWrapper)
+
+export const FlexContainer = styled.div`
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+`
 
 const StyledFlexContainer = styled(FlexContainer)`
   font-size: ${(props) => props.theme.fontSize};
@@ -888,4 +761,148 @@ const RubricTableWrapper = styled.div`
     font-size: ${(props) => props.theme.standardFont};
     margin: 0px 42px 10px;
   }
+`
+
+const QuestionContainer = styled.div`
+  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
+  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
+  justify-content: space-between;
+  ${({ style }) => style};
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+  }
+  .ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 3em;
+  }
+  .ql-indent-1.ql-direction-rtl.ql-align-right {
+    padding-right: 3em;
+  }
+  .ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 6em;
+  }
+  .ql-indent-2.ql-direction-rtl.ql-align-right {
+    padding-right: 6em;
+  }
+  .ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 9em;
+  }
+  .ql-indent-3.ql-direction-rtl.ql-align-right {
+    padding-right: 9em;
+  }
+  .ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 12em;
+  }
+  .ql-indent-4.ql-direction-rtl.ql-align-right {
+    padding-right: 12em;
+  }
+  .ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 15em;
+  }
+  .ql-indent-5.ql-direction-rtl.ql-align-right {
+    padding-right: 15em;
+  }
+  .ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 18em;
+  }
+  .ql-indent-6.ql-direction-rtl.ql-align-right {
+    padding-right: 18em;
+  }
+  .ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 21em;
+  }
+  .ql-indent-7.ql-direction-rtl.ql-align-right {
+    padding-right: 21em;
+  }
+  .ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 24em;
+  }
+  .ql-indent-8.ql-direction-rtl.ql-align-right {
+    padding-right: 24em;
+  }
+  .ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: 27em;
+  }
+  .ql-indent-9.ql-direction-rtl.ql-align-right {
+    padding-right: 27em;
+  }
+
+  .print-preview-feedback {
+    width: 100%;
+    padding: 0 35px;
+  }
+
+  @media print {
+    .__print_question-content-wrapper {
+      max-width: calc(100% - 55px);
+      display: block !important;
+      position: relative !important;
+    }
+    .question-wrapper {
+      padding: 5px;
+    }
+    .__print-question-option {
+      margin-top: 20px !important;
+    }
+    .__print-question-main-wrapper {
+      display: inline-table;
+      width: 100%;
+    }
+    .__print-space-reduce {
+      &-qlabel {
+        margin-right: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      &-option {
+        align-items: flex-start !important;
+      }
+      &-options {
+        margin-bottom: 0px !important;
+        label {
+          padding: 0 !important;
+        }
+      }
+      &-stimulus {
+        margin-bottom: 5px !important;
+        & p {
+          br {
+            display: none !important;
+          }
+        }
+      }
+    }
+  }
+`
+
+export const TimeSpentWrapper = styled.div`
+  font-size: 19px;
+  color: ${greyThemeDark2};
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  align-items: center;
+  margin: ${({ margin }) => margin};
+  &.student-report {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    background: #f3f3f3;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    svg {
+      margin-right: 10px;
+      fill: #6a737f;
+    }
+  }
+  svg {
+    margin-right: 8px;
+    fill: ${greyThemeDark2};
+  }
+`
+
+export const EvaluationMessage = styled.div`
+  color: rgb(250, 135, 52);
+  width: 100%;
+  text-align: center;
 `

@@ -6,7 +6,7 @@ import { response } from '@edulastic/constants'
 import { measureText } from '@edulastic/common'
 
 import AnswerBox from './AnswerBox'
-
+import { getEvalautionColor } from '../../../../utils/evaluation'
 import { getStemNumeration } from '../../../../utils/helpers'
 import { CLEAR } from '../../../../constants/constantsForQuestions'
 
@@ -28,7 +28,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     disableResponse,
     item: { responseIds },
     isPrintPreview = false,
+    answerScore,
   } = resprops
+
   const { index, id: answerId } = find(
     responseIds,
     (_response) => _response.id === id
@@ -44,7 +46,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const userAttempted =
     userSelections.length > 0 && evaluation[answerId] !== undefined
       ? !!userSelections[index]
-      : null
+      : false
 
   const btnStyle =
     (responsecontainerindividuals &&
@@ -66,12 +68,20 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const lessMinWidth =
     parseInt(btnStyle.width, 10) < response.minWidthShowAnswer
 
+  const { fillColor, mark, indexBgColor } = getEvalautionColor(
+    answerScore,
+    evaluation && evaluation[answerId],
+    userAttempted,
+    responseIds.every((res) => evaluation[res.id])
+  )
+
   const getContent = (inPopover) => (
     <AnswerBox
       onClick={handleClick}
-      checked={userAttempted}
+      fillColor={fillColor}
+      indexBgColor={indexBgColor}
+      mark={mark}
       userAnswer={userSelection?.value}
-      correct={evaluation && evaluation[answerId]}
       style={inPopover ? { maxWidth: response.maxWidth } : _btnStyle}
       inPopover={inPopover}
       lessMinWidth={lessMinWidth}

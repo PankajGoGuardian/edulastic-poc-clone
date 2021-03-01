@@ -16,9 +16,13 @@ const AssignmentTimeEndedAlert = ({
   history,
   utaId,
   match,
+  items,
 }) => {
   useEffect(() => {
-    const { qid } = match.params || {}
+    const { itemId = 'new' } = match.params || {}
+    const itemIndex =
+      itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
+    const qid = itemIndex > 0 ? itemIndex : 0
     const lastTime = window.localStorage.assessmentLastTime || Date.now()
     const timeSpent = Date.now() - lastTime
     autoSubmitTest({
@@ -74,9 +78,15 @@ AssignmentTimeEndedAlert.propTypes = {
 const enhance = compose(
   withTheme,
   withRouter,
-  connect(null, {
-    autoSubmitTest: finishTestAcitivityAction,
-  })
+  connect(
+    (state) => ({
+      items: state.test.items,
+    }),
+    {
+      autoSubmitTest: finishTestAcitivityAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+    }
+  )
 )
 
 export default enhance(AssignmentTimeEndedAlert)

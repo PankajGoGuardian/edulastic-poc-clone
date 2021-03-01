@@ -667,7 +667,7 @@ const AssessmentContainer = ({
      * @see https://snapwiz.atlassian.net/browse/EV-17309
      */
     const _itemId = items[currentItem]?._id
-    if (hasUserWork(_itemId, restProps.userWork || {})) {
+    if (hasUserWork(_itemId, userWork || {})) {
       return []
     }
     return questions.filter((q) => {
@@ -1027,6 +1027,7 @@ const AssessmentContainer = ({
     hasDrawingResponse,
     questions: questionsById,
     uploadToS3: uploadFile,
+    userWork,
     ...restProps,
   }
 

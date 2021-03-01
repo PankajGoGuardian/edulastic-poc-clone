@@ -1500,6 +1500,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     restrictNavigationOutAttemptsThreshold:
       entity.restrictNavigationOutAttemptsThreshold,
     blockSaveAndContinue: entity.blockSaveAndContinue,
+    scoringType: entity.scoringType,
+    penalty: entity.penalty,
   }
 
   if (isAdmin) {

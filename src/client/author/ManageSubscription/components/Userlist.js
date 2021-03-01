@@ -203,19 +203,19 @@ const Userlist = ({
       title: 'USERNAME',
       dataIndex: 'username',
       key: 'username',
-      sorter: true,
+      sorter: (a, b) => a.username?.localeCompare(b.username),
     },
     {
       title: 'EMAIL',
       dataIndex: 'email',
       key: 'email',
-      sorter: true,
+      sorter: (a, b) => a.email?.localeCompare(b.email),
     },
     {
       title: 'EXPIRATION DATE',
       dataIndex: 'expiresOn',
       key: 'expiresOn',
-      sorter: true,
+      sorter: (a, b) => a.expiresOn?.localeCompare(b.expiresOn),
       render: (exipiresOn) =>
         exipiresOn === '-'
           ? exipiresOn
@@ -225,21 +225,21 @@ const Userlist = ({
       title: 'TEACHER PREMIUM',
       dataIndex: 'hasTeacherPremium',
       key: 'actionPremium',
-      sorter: true,
+      sorter: (a, b) => a.hasTeacherPremium?.localeCompare(b.hasTeacherPremium),
       render: (_, record) => getCheckbox(record, 'hasTeacherPremium'),
     },
     {
       title: 'SPARK MATH',
       dataIndex: 'hasSparkMath',
       key: 'actionSparkMath',
-      sorter: true,
+      sorter: (a, b) => a.hasSparkMath?.localeCompare(b.hasSparkMath),
       render: (_, record) => getCheckbox(record, 'hasSparkMath'),
     },
     {
       title: 'MANAGE LICENSES',
       dataIndex: 'hasManageLicense',
       key: 'actionAdmin',
-      sorter: true,
+      sorter: (a, b) => a.hasManageLicense - b.hasManageLicense,
       render: (_, record) => getCheckbox(record, 'hasManageLicense'),
     },
   ]

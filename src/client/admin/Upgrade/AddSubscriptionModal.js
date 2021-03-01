@@ -199,7 +199,7 @@ const AddSubscriptionModal = ({
               style={{ width: '100%' }}
               placeholder="premium license"
               value={fieldData.premiumLicense}
-              min={1}
+              min={0}
               onChange={(value) => handleFieldChange('premiumLicense')(value)}
             />
           </Col>
@@ -209,7 +209,7 @@ const AddSubscriptionModal = ({
               style={{ width: '100%' }}
               placeholder="sparkMath license"
               value={fieldData.sparkMathLicense}
-              min={1}
+              min={0}
               onChange={(value) => handleFieldChange('sparkMathLicense')(value)}
             />
           </Col>

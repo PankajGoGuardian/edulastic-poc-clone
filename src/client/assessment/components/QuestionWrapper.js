@@ -14,7 +14,12 @@ import {
   borderGrey2,
   greyThemeDark2,
 } from '@edulastic/colors'
-import { withWindowSizes, ItemDetailContext, COMPACT } from '@edulastic/common'
+import {
+  withWindowSizes,
+  ItemDetailContext,
+  COMPACT,
+  FieldLabel,
+} from '@edulastic/common'
 import { PaperWrapper } from './Graph/common/styled_components'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
@@ -723,7 +728,12 @@ class QuestionWrapper extends Component {
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
                     <RubricTableWrapper>
-                      <span>Graded Rubric</span>
+                      <FieldLabel className="rubric-title">
+                        Graded Rubric
+                      </FieldLabel>
+                      <FieldLabel className="rubric-name">
+                        {rubricDetails.name}
+                      </FieldLabel>
                       <PreviewRubricTable
                         data={rubricDetails}
                         rubricFeedback={rubricFeedback}
@@ -868,11 +878,14 @@ const RubricTableWrapper = styled.div`
   border-radius: 10px;
   margin-top: 10px;
   padding: 10px 10px 0px;
-  > span {
+
+  .rubric-title {
     font-size: ${(props) => props.theme.titleSectionFontSize};
     font-weight: ${(props) => props.theme.semiBold};
-    display: inline-block;
     margin: 0px 16px 10px;
-    text-transform: uppercase;
+  }
+  .rubric-name {
+    font-size: ${(props) => props.theme.standardFont};
+    margin: 0px 42px 10px;
   }
 `

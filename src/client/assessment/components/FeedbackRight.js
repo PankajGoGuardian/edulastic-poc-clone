@@ -246,9 +246,14 @@ class FeedbackRight extends Component {
     this.setState({ showFeedbackSaveBtn: false })
   }
 
-  submitScore = () => {
+  submitScore = (e) => {
     const { changed } = this.state
-    if (changed) {
+    const { widget: { activity: { qActId } = {} } = {} } = this.props
+    /**
+     * in case of student did not visit the question, allow teacher trying to grade first time
+     * @see EV-25489
+     */
+    if (changed || (e?.type === 'blur' && !qActId)) {
       this.onScoreSubmit()
     }
   }

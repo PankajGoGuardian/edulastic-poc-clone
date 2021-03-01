@@ -45,7 +45,7 @@ const ScatterLabel = (props) => {
   const { cx, cy, handleArrowClick, handleCircleClick, ...item } = props
   const {
     studentId,
-    name,
+    fullName,
     trendAngle,
     color,
     count,
@@ -79,7 +79,7 @@ const ScatterLabel = (props) => {
           textAnchor="end"
           fill={color}
         >
-          {name}
+          {fullName}
         </text>
       )}
       {hasTrend ? (

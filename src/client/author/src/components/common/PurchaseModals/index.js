@@ -20,7 +20,6 @@ const SubscriptionAddonModal = loadable(() =>
 const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
-const MultiplePurchaseModal = loadable(() => import('./MultiplePurchaseModal'))
 const BuyMoreLicensesModal = loadable(() => import('./BuyMoreLicensesModal'))
 
 const PurchaseFlowModals = (props) => {
@@ -63,8 +62,6 @@ const PurchaseFlowModals = (props) => {
     // getSubscription on mount
     fetchUserSubscriptionStatus()
   }, [])
-
-  const closeMultiplePurchaseModal = () => setShowMultiplePurchaseModal(false)
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
@@ -128,6 +125,7 @@ const PurchaseFlowModals = (props) => {
   const handleSubscriptionAddonModalClose = () => {
     setProductData({})
     setShowSubscriptionAddonModal(false)
+    setShowMultiplePurchaseModal(false)
   }
 
   const closeBuyMoreModal = () => setShowBuyMoreModal(false)
@@ -149,9 +147,10 @@ const PurchaseFlowModals = (props) => {
 
   return (
     <>
-      {showSubscriptionAddonModal && (
+      {(showSubscriptionAddonModal || showMultiplePurchaseModal) && (
         <SubscriptionAddonModal
-          isVisible={showSubscriptionAddonModal}
+          isVisible={showSubscriptionAddonModal || showMultiplePurchaseModal}
+          showMultiplePurchaseModal={showMultiplePurchaseModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
           isPaidPremium={isPaidPremium}
           setShowUpgradeModal={setShowUpgradeModal}
@@ -162,6 +161,10 @@ const PurchaseFlowModals = (props) => {
           teacherPremium={teacherPremium}
           itemBankPremium={itemBankPremium}
           showRenewalOptions={showRenewalOptions}
+          setEmailIds={setEmailIds}
+          setProductsCart={setProductsCart}
+          products={products}
+          totalAmount={totalAmount}
         />
       )}
       {showUpgradeModal && (
@@ -188,18 +191,6 @@ const PurchaseFlowModals = (props) => {
         <PayWithPoModal
           visible={payWithPoModal}
           setShowModal={setPayWithPoModal}
-        />
-      )}
-      {showMultiplePurchaseModal && (
-        <MultiplePurchaseModal
-          isVisible={showMultiplePurchaseModal}
-          onCancel={closeMultiplePurchaseModal}
-          setShowUpgradeModal={setShowUpgradeModal}
-          setTotalAmount={setTotalAmount}
-          totalAmount={totalAmount}
-          setProductsCart={setProductsCart}
-          setEmailIds={setEmailIds}
-          products={products}
         />
       )}
       {showBuyMoreModal && (

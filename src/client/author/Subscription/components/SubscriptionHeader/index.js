@@ -131,7 +131,8 @@ const SubscriptionHeader = ({
             </EduButton>
           )}
           {!showRenewalOptions &&
-            (subType !== 'enterprise' || subType !== 'partial_premium') && (
+            subType !== 'enterprise' &&
+            subType !== 'partial_premium' && (
               <Dropdown
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 overlay={menu}

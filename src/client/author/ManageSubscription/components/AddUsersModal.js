@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { Spin } from 'antd'
-import { debounce } from 'lodash'
+import { debounce, keyBy } from 'lodash'
 import { userApi } from '@edulastic/api'
 import {
   CheckBoxGrp,
@@ -11,7 +11,19 @@ import {
 } from '@edulastic/common'
 import { CheckboxWrpper } from './styled'
 
-const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
+const sanitizeSearchResult = (users = [], existingUsersInList = []) => {
+  const result = []
+  const existingUsersInListByEmail = keyBy(existingUsersInList)
+  for (const user of users) {
+    const { email } = user?._source || {}
+    if (email) {
+      if (!existingUsersInListByEmail[email]) {
+        result.push(email)
+      }
+    }
+  }
+  return result
+}
 
 const loaderStyles = { height: '30px' }
 
@@ -23,6 +35,7 @@ const AddUsersModal = ({
   subsLicenses,
   teacherPremiumProductId,
   sparkMathProductId,
+  users,
 }) => {
   const [fieldValue, setFieldValue] = useState([])
   const [checkboxValues, setCheckboxValues] = useState([])
@@ -97,8 +110,9 @@ const AddUsersModal = ({
         role: 'teacher',
       }
       const { result } = await userApi.fetchUsers(searchData)
-      const users = sanitizeSearchResult(result)
-      setUsersList(users)
+      const addedUsersEmails = users.map((x) => x.email)
+      const _users = sanitizeSearchResult(result, addedUsersEmails)
+      setUsersList(_users)
     } catch (e) {
       setUsersList([])
       console.warn(e)

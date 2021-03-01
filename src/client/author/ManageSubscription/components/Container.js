@@ -251,6 +251,7 @@ const ManageSubscriptionContainer = ({
       />
       {showAddUsersModal && (
         <AddUsersModal
+          users={dataSource}
           isVisible={showAddUsersModal}
           onCancel={closeAddUsersModal}
           districtId={userOrgId}

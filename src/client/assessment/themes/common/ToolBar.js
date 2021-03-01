@@ -104,7 +104,7 @@ const ToolBar = ({
         />
       )}
       <ActionButton
-        title="Camera"
+        title="Upload work"
         icon={<IconCloudUpload />}
         onClick={toggleUserWorkUploadModal}
       />

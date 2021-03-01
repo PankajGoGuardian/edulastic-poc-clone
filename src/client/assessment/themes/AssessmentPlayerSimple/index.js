@@ -217,6 +217,7 @@ class AssessmentPlayerSimple extends React.Component {
       theme,
       t,
       items,
+      LCBPreviewModal,
       currentItem,
       view: previewTab,
       settings,
@@ -269,6 +270,7 @@ class AssessmentPlayerSimple extends React.Component {
             {...this.props}
             headerRef={this.headerRef}
             theme={themeToPass}
+            LCBPreviewModal={LCBPreviewModal}
             dropdownOptions={dropdownOptions}
             onOpenExitPopup={this.openExitPopup}
             onshowHideHints={showHints}

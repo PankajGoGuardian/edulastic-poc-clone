@@ -163,6 +163,7 @@ const PlayerHeader = ({
                     blockNavigationToAnsweredQuestions={
                       blockNavigationToAnsweredQuestions
                     }
+                    LCBPreviewModal={LCBPreviewModal}
                   />
                 )}
                 {!LCBPreviewModal && (

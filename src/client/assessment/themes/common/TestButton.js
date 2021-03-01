@@ -19,6 +19,7 @@ const TestButton = ({
   isBookmarked = false,
   checkAnswerInProgress,
   blockNavigationToAnsweredQuestions = false,
+  LCBPreviewModal,
 }) => {
   const handleCheckAnswer = () => {
     if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
@@ -30,7 +31,7 @@ const TestButton = ({
   const hideCheckAnswer = !TokenStorage.getAccessToken()
   return (
     <Container>
-      {!blockNavigationToAnsweredQuestions && (
+      {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
         <Tooltip placement="top" title="Bookmark">
           <StyledButton onClick={toggleBookmark} active={isBookmarked}>
             <StyledIconBookmark />
@@ -70,6 +71,11 @@ const TestButton = ({
 
 TestButton.propTypes = {
   t: PropTypes.func.isRequired,
+  LCBPreviewModal: PropTypes.bool,
+}
+
+TestButton.defaultProps = {
+  LCBPreviewModal: false,
 }
 
 const mapStateToProps = (state) => ({

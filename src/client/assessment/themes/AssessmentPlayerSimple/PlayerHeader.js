@@ -61,6 +61,7 @@ const PlayerHeader = ({
   groupId,
   hidePause,
   blockNavigationToAnsweredQuestions,
+  LCBPreviewModal = false,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -88,7 +89,7 @@ const PlayerHeader = ({
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
     />
-  );
+  )
 
   return (
     <>
@@ -160,6 +161,7 @@ const PlayerHeader = ({
                     blockNavigationToAnsweredQuestions={
                       blockNavigationToAnsweredQuestions
                     }
+                    LCBPreviewModal={LCBPreviewModal}
                   />
                 )}
                 {!showSettingIcon && (

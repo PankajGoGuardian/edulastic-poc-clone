@@ -134,7 +134,7 @@ const Insights = ({
   }
 
   return loading ? (
-    <Spin style={{ marginTop: '400px' }} />
+    <Spin />
   ) : (
     <InsightsContainer type="flex" gutter={10} justify="center">
       {showFilter && (
@@ -209,6 +209,7 @@ export default enhance(Insights)
 
 const InsightsContainer = styled(Row)`
   width: 100%;
+  height: 100%;
 `
 
 const FilterIcon = styled(FilterButton)`
@@ -231,4 +232,5 @@ const RightContainer = styled(Col)`
 const StyledCol = styled(Col)`
   display: flex;
   justify-content: center;
+  height: 100%;
 `

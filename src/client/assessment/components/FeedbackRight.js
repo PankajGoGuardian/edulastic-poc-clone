@@ -292,7 +292,7 @@ class FeedbackRight extends Component {
   }
 
   handleRubricResponse = (res, isSubmit) => {
-    this.setState({ score: res.score, changed: true }, () => {
+    this.setState({ score: res.score }, () => {
       if (isSubmit) {
         this.onScoreSubmit(res)
       }

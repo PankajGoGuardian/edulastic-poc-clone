@@ -130,19 +130,19 @@ const SubscriptionHeader = ({
               </Link>
             </EduButton>
           )}
-
-          {!showRenewalOptions && (
-            <Dropdown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={menu}
-              placement="bottomRight"
-              arrow
-            >
-              <EduButton data-cy="upgradeButton" isBlue height="24px">
-                Upgrade
-              </EduButton>
-            </Dropdown>
-          )}
+          {!showRenewalOptions &&
+            (subType !== 'enterprise' || subType !== 'partial_premium') && (
+              <Dropdown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={menu}
+                placement="bottomRight"
+                arrow
+              >
+                <EduButton data-cy="upgradeButton" isBlue height="24px">
+                  Upgrade
+                </EduButton>
+              </Dropdown>
+            )}
           {showRenewalOptions && (
             <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription

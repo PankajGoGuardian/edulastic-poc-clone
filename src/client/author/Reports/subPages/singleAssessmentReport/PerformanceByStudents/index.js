@@ -195,7 +195,7 @@ const PerformanceByStudents = ({
 
   const _columns = getColumns(
     columns,
-    res && res.testName,
+    assessmentName,
     userRole,
     location,
     pageTitle,

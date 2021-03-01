@@ -295,8 +295,9 @@ const SubscriptionMain = ({
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {(!hasAllPremiumProductAccess && !isFreeAdmin) ||
-              (!showRenewalOptions && (
+            {!hasAllPremiumProductAccess &&
+              !isFreeAdmin &&
+              !showRenewalOptions && (
                 <AuthorCompleteSignupButton
                   renderButton={(handleClick) => (
                     <CustomButton
@@ -312,7 +313,7 @@ const SubscriptionMain = ({
                   )}
                   onClick={handlePurchaseFlow}
                 />
-              ))}
+              )}
             {showRenewalOptions && (
               <EduButton onClick={handlePurchaseFlow} isBlue height="38px">
                 Renew Subscription

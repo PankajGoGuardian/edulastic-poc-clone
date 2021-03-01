@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router'
 import styled, { withTheme } from 'styled-components'
 import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
+import { AssessmentPlayerContext } from '@edulastic/common'
 import {
   finishTestAcitivityAction,
   setIsTestPreviewVisibleAction,
@@ -18,28 +19,30 @@ const AssignmentTimeEndedAlert = ({
   groupId,
   history,
   utaId,
-  match,
   isAuthorPreview,
   setIsTestPreviewVisible,
-  items,
 }) => {
+  const { currentItem } = useContext(AssessmentPlayerContext)
+
   useEffect(() => {
-    const { itemId = 'new' } = match.params || {}
-    const itemIndex =
-      itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
-    const qid = itemIndex > 0 ? itemIndex : 0
     const lastTime = window.localStorage.assessmentLastTime || Date.now()
     const timeSpent = Date.now() - lastTime
-    if (!isAuthorPreview) {
+    if (!isAuthorPreview && currentItem > -1) {
       autoSubmitTest({
         groupId,
         preventRouteChange: true,
         testActivityId: utaId,
         autoSubmit: true,
-        itemResponse: [qid, timeSpent, false, groupId, { pausing: false }],
+        itemResponse: [
+          currentItem,
+          timeSpent,
+          false,
+          groupId,
+          { pausing: false },
+        ],
       })
     }
-  }, [])
+  }, [currentItem])
 
   const handleClose = () => {
     if (!isAuthorPreview) {

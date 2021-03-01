@@ -8,6 +8,18 @@ const DisplayErrorStyled = styled.div`
   color: black;
   background-color: white;
 `
+
+const ErrorHeading = styled.h1`
+  font-weight: bold;
+`
+
+const ErrorHeadingSecondary = styled.h3`
+  font-weight: bold;
+`
+
+const ErrorDescription = styled.ul`
+  text-align: left;
+`
 export const DisplayError = ({ errorMsg }) => {
   const isErrorVisible = errorMsg && errorMsg.length > 0
 
@@ -15,7 +27,16 @@ export const DisplayError = ({ errorMsg }) => {
     <>
       {isErrorVisible && (
         <DisplayErrorStyled>
-          <h1>Camera error: {errorMsg}</h1>
+          <ErrorHeading>Your Camera is blocked</ErrorHeading>
+          <ErrorHeadingSecondary>
+            Edulastic needs the access to camera. To use Show your work
+          </ErrorHeadingSecondary>
+          <ErrorDescription>
+            <li>
+              Click on camera block icon in your browser&apos;s address bar
+            </li>
+            <li>Allow access and refresh the page</li>
+          </ErrorDescription>
         </DisplayErrorStyled>
       )}
     </>

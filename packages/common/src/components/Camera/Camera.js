@@ -226,10 +226,15 @@ function Camera({
 
   return (
     <CameraWrapper>
-      {displayError}
-      <WhiteFlash isFlashVisible={isFlashVisible} />
-      {cameraBody}
-      {delayCounter}
+      {cameraStartDisplayError ? (
+        <>{displayError}</>
+      ) : (
+        <>
+          <WhiteFlash isFlashVisible={isFlashVisible} />
+          {cameraBody}
+          {delayCounter}
+        </>
+      )}
     </CameraWrapper>
   )
 }

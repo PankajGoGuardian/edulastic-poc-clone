@@ -48,7 +48,9 @@ const BuyMoreLicensesModal = ({
     setTotalAmount(_totalPrice)
     const setProductQuantity = products.map((product) => ({
       ...product,
-      quantity: quantities[product.id],
+      quantity:
+        quantities[product.id] ||
+        (currentItemId === product.id ? 1 : undefined),
     }))
 
     setProductsCart(setProductQuantity)

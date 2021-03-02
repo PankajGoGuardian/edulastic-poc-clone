@@ -144,6 +144,7 @@ const AddSubscriptionModal = ({
           style={{ width: '100%' }}
           placeholder="Search for an organization"
           filterOption={false}
+          showSearch
           notFoundContent={
             isFetchingOrganization ? <Spin size="small" /> : null
           }

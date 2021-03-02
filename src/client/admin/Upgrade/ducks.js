@@ -1,9 +1,8 @@
 import { createSlice, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { manageSubscriptionsApi } from '@edulastic/api'
+import { manageSubscriptionsApi, adminApi } from '@edulastic/api'
 import { combineReducers } from 'redux'
 import { put, takeEvery, call, all } from 'redux-saga/effects'
-import { adminApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
 
@@ -193,7 +192,7 @@ export const manageSubscriptionsByLicenses = createSlice({
       state.searchType = payload
     },
     viewLicense: (state, { payload }) => {}, // TODO!
-    deleteLicense: (state, { payload }) => {}, // TODO!
+    deleteLicense: (state, { payload }) => {},
   },
 })
 
@@ -394,6 +393,32 @@ function* fetchLicensesByTypeSaga({ payload }) {
   }
 }
 
+function* deleteLicensesByIdsSaga({ payload }) {
+  try {
+    const { licenseIds, search } = payload
+    const result = yield call(manageSubscriptionsApi.deleteLicenses, {
+      licenseIds,
+    })
+    if (!result.error) {
+      notification({ type: 'success', msg: result.message })
+      const licenses = yield call(
+        manageSubscriptionsApi.fetchManageLicenses,
+        search
+      )
+      yield put(
+        manageSubscriptionsByLicenses.actions.fetchLicensesSuccess(licenses)
+      )
+    } else {
+      notification({ type: 'error', msg: result.message })
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Failed to delete subscriptions.',
+    })
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -408,6 +433,10 @@ function* watcherSaga() {
     yield takeEvery(
       manageSubscriptionsByLicenses.actions.fetchLicenses,
       fetchLicensesByTypeSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.deleteLicense,
+      deleteLicensesByIdsSaga
     ),
   ])
 }

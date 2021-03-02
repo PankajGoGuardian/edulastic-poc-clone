@@ -17,6 +17,7 @@ import {
   getFetchOrganizationStateSelector,
   searchOrgaizationRequestAction,
 } from '../../author/ContentCollections/ducks'
+import { manageSubscriptionsByLicenses } from './ducks'
 
 const ManageSubscription = loadable(() =>
   import('../../author/ManageSubscription')
@@ -39,7 +40,11 @@ const IconStyles = { width: '20px', cursor: 'pointer' }
 
 const paginationStyles = { margin: '15px auto' }
 
-const LicensesInvoiceTable = ({ licensesData, handleViewLicense }) => {
+const LicensesInvoiceTable = ({
+  licensesData,
+  handleViewLicense,
+  handleDeleteLicense,
+}) => {
   const columns = [
     {
       title: 'Invoice Id',
@@ -91,7 +96,11 @@ const LicensesInvoiceTable = ({ licensesData, handleViewLicense }) => {
             />
           </Tooltip>
           <Tooltip title="Delete License">
-            <IconTrash color={themeColor} style={IconStyles} />
+            <IconTrash
+              onClick={() => handleDeleteLicense(licenseIds)}
+              color={themeColor}
+              style={IconStyles}
+            />
           </Tooltip>
         </FlexContainer>
       ),
@@ -177,6 +186,7 @@ const ManageSubscriptionsByLicenses = ({
   isFetchingOrganization,
   districtList,
   searchRequest,
+  deleteLicense,
 }) => {
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
@@ -217,6 +227,17 @@ const ManageSubscriptionsByLicenses = ({
     setShowAddSubscriptionModal(false)
   }
 
+  const handleDeleteLicense = (licenseIds) => {
+    deleteLicense({
+      licenseIds,
+      search: {
+        type: searchType,
+        page,
+        limit: 10,
+      },
+    })
+  }
+
   return (
     <>
       <ManageSubscriptinModal
@@ -244,6 +265,7 @@ const ManageSubscriptionsByLicenses = ({
       <LicensesInvoiceTable
         licensesData={licenses}
         handleViewLicense={handleViewLicense}
+        handleDeleteLicense={handleDeleteLicense}
       />
       <Pagination
         hideOnSinglePage
@@ -279,7 +301,10 @@ export default connect(
     districtList: getDistrictListSelector(state),
     isFetchingOrganization: getFetchOrganizationStateSelector(state),
   }),
-  { searchRequest: searchOrgaizationRequestAction }
+  {
+    searchRequest: searchOrgaizationRequestAction,
+    deleteLicense: manageSubscriptionsByLicenses.actions.deleteLicense,
+  }
 )(ManageSubscriptionsByLicenses)
 
 const ManageSubscriptinModal = styled(CustomModalStyled)`

@@ -39,9 +39,19 @@ const fetchManageLicenses = (data) =>
     })
     .then((result) => result.data)
 
+const deleteLicenses = (data) =>
+  api
+    .callApi({
+      method: 'put',
+      url: `${BASE_URL}/archive`,
+      data,
+    })
+    .then((result) => result.data)
+
 export default {
   fetchLicenses,
   upgradeUsersSubscriptions,
   fetchManageLicenses,
   bulkEditUsersPermission,
+  deleteLicenses,
 }

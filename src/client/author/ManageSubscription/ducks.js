@@ -183,9 +183,20 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
         const existingUsersData = yield select(getUsersSelector)
         const existingUserIds = existingUsersData.map((x) => x.userId)
         const newData = [...existingUsersData]
+        const _licenses = yield select(getSubsLicensesSelector) || []
+        const licensesMap = _licenses.reduce(
+          (a, c) => ({ ...a, [c.licenseId]: 1 }),
+          {}
+        )
         Object.values(result).forEach((x) => {
           if (!existingUserIds.includes(x.userId)) {
-            newData.push(x)
+            const data = {
+              ...x,
+              hasManageLicense: !!x.hasManageLicense.find(
+                (licenseId) => licensesMap[licenseId]
+              ),
+            }
+            newData.push(data)
           }
         })
         yield put(updateManageSubscriptionsAction(newData))

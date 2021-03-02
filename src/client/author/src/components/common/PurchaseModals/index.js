@@ -214,6 +214,10 @@ const PurchaseFlowModals = (props) => {
   )
 }
 
+PurchaseFlowModals.defaultProps = {
+  setShowMultiplePurchaseModal: () => {},
+}
+
 export default compose(
   withRouter,
   connect(

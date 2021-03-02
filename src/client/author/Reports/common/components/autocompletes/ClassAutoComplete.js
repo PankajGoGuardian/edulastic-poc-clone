@@ -1,11 +1,10 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react'
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon } from 'antd'
 import { roleuser } from '@edulastic/constants'
+import MultiSelectSearch from '../widgets/MultiSelectSearch'
 
 // ducks
 import { getUser } from '../../../../src/selectors/user'
@@ -28,8 +27,9 @@ const ClassAutoComplete = ({
   subject,
   courseId,
   selectCB,
-  selectedClassId,
+  selectedClassIds,
 }) => {
+  const classFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
 
@@ -87,16 +87,9 @@ const ClassAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
-  const onSelect = (key) => {
-    const value = (searchTerms.text ? classList[key] : searchResult[key])
-      ._source.name
-    setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-    selectCB({ key, title: value })
-  }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
-      selectCB({ key: '', title: '' })
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
@@ -123,46 +116,40 @@ const ClassAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
-    setSearchTerms(DEFAULT_SEARCH_TERMS)
     setSearchResult([])
-    if (selectedClassId) {
-      selectCB({ key: '', title: '' })
-    }
+    // if (selectedClassIds.length) {
+    //   selectCB({ key: '', title: '' })
+    // }
   }, [termId, schoolIds, teacherIds, grade, subject, courseId])
   useEffect(() => {
-    if (!selectedClassId) {
+    if (!selectedClassIds.length) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     }
-  }, [selectedClassId])
+  }, [selectedClassIds])
 
   // build dropdown data
-  const dropdownData = [
-    <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
-      {Object.values(searchTerms.text ? classList : searchResult).map(
-        (item) => (
-          <AutoComplete.Option key={item._id} title={item._source.name}>
-            {item._source.name}
-          </AutoComplete.Option>
-        )
-      )}
-    </AutoComplete.OptGroup>,
-  ]
+  const dropdownData = Object.values(
+    searchTerms.text ? classList : searchResult
+  ).map((item) => {
+    return {
+      key: item._id,
+      title: item._source.name,
+    }
+  })
 
   return (
-    <AutoCompleteContainer>
-      <AutoComplete
-        getPopupContainer={(trigger) => trigger.parentNode}
-        placeholder="All Classes"
-        value={searchTerms.text}
-        onSearch={onSearch}
-        dataSource={dropdownData}
-        onSelect={onSelect}
-        onBlur={onBlur}
-        onFocus={() => getDefaultClassList()}
-      >
-        <Input suffix={<Icon type={loading ? 'loading' : 'search'} />} />
-      </AutoComplete>
-    </AutoCompleteContainer>
+    <MultiSelectSearch
+      label="Class"
+      placeholder="All Classes"
+      el={classFilterRef}
+      onChange={(e) => selectCB(e)}
+      onSearch={onSearch}
+      onBlur={onBlur}
+      onFocus={getDefaultClassList}
+      value={selectedClassIds}
+      options={!loading ? dropdownData : []}
+      loading={loading}
+    />
   )
 }
 
@@ -176,12 +163,3 @@ export default connect(
     loadClassList: receiveClassListAction,
   }
 )(ClassAutoComplete)
-
-const AutoCompleteContainer = styled.div`
-  .ant-select-auto-complete {
-    padding: 5px;
-  }
-  .ant-select-dropdown-menu-item-group-title {
-    font-weight: bold;
-  }
-`

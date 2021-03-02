@@ -6,6 +6,7 @@ import { Row, Col } from 'antd'
 import {
   StyledDropDownContainer,
   StyledFilterWrapper,
+  StyledGoButton,
 } from '../../../../common/styled'
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
@@ -222,6 +223,7 @@ const StandardsMasteryRowFilters = ({
 
   const standardProficiencyFilter = (
     <StyledDropDownContainer
+      data-cy="standardProficiency"
       xs={24}
       sm={12}
       md={12}
@@ -240,6 +242,10 @@ const StandardsMasteryRowFilters = ({
     </StyledDropDownContainer>
   )
 
+  const onGoClick = () => {
+    setFilters({ ...filters, showApply: false })
+  }
+
   return (
     <>
       <FilterTags
@@ -252,8 +258,9 @@ const StandardsMasteryRowFilters = ({
         isRowFilter
       >
         <Col span={24}>
-          <Row type="flex" justify="end">
+          <Row type="flex" justify="end" align="middle">
             <StyledDropDownContainer
+              data-cy="standardSet"
               xs={24}
               sm={12}
               md={12}
@@ -262,13 +269,16 @@ const StandardsMasteryRowFilters = ({
             >
               <ControlDropDown
                 by={filters.curriculumId}
-                selectCB={(e) => updateFilterDropdownCB(e, 'curriculumId')}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, 'curriculumId')
+                }
                 data={curriculumsList}
                 prefix="Standard Set"
                 showPrefixOnSelected={false}
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
+              data-cy="standardGrade"
               xs={24}
               sm={12}
               md={12}
@@ -277,13 +287,17 @@ const StandardsMasteryRowFilters = ({
             >
               <ControlDropDown
                 by={filters.standardGrade}
-                selectCB={(e) => updateFilterDropdownCB(e, 'standardGrade')}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, 'standardGrade')
+                }
                 data={staticDropDownData.allGrades}
                 prefix="Standard Grade"
                 showPrefixOnSelected={false}
               />
             </StyledDropDownContainer>
+
             {pageTitle !== 'Standards Progress' && standardProficiencyFilter}
+
             <StyledDropDownContainer
               xs={24}
               sm={12}
@@ -317,14 +331,20 @@ const StandardsMasteryRowFilters = ({
               >
                 <ControlDropDown
                   by={filters.standardId || standardsList[0]}
-                  selectCB={(e) => updateFilterDropdownCB(e, 'standardId')}
+                  selectCB={(e, selected) =>
+                    updateFilterDropdownCB(selected, 'standardId')
+                  }
                   data={standardsList}
                   prefix="Standard"
                   showPrefixOnSelected={false}
                 />
               </StyledDropDownContainer>
             )}
+
             {pageTitle === 'Standards Progress' && standardProficiencyFilter}
+            {filters.showApply && (
+              <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+            )}
           </Row>
         </Col>
       </StyledFilterWrapper>

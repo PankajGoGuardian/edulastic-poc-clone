@@ -7,7 +7,6 @@ import {
   RadioBtn,
   notification,
   SelectInputStyled,
-  NumberInputStyled,
   CheckboxLabel,
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
@@ -24,7 +23,10 @@ import {
   CheckBoxWrapper,
   TimeSpentInput,
 } from './styled'
-import { getUserRole } from '../../../src/selectors/user'
+import {
+  getUserRole,
+  allowedToSelectMultiLanguageInTest,
+} from '../../../src/selectors/user'
 import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
@@ -51,6 +53,7 @@ const { ShowPreviousAttempt } = redirectPolicy
 
 const QuestionDelivery = {
   [redirectPolicy.QuestionDelivery.ALL]: 'All',
+  [redirectPolicy.QuestionDelivery.SKIPPED]: 'Skipped',
   [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
 }
 
@@ -67,9 +70,10 @@ const Settings = ({
   freezeSettings = false,
   calculatorProvider,
   features,
-  multiLanguageEnabledLCB,
   match,
   totalItems,
+  lcbBultiLanguageEnabled,
+  allowedToSelectMultiLanguage,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -254,10 +258,10 @@ const Settings = ({
     autoRedirect = false,
     autoRedirectSettings,
     blockNavigationToAnsweredQuestions = tempTestSettings.blockNavigationToAnsweredQuestions,
-    multiLanguageEnabled = !!tempTestSettings.multiLanguageEnabled,
     timedAssignment = tempTestSettings.timedAssignment,
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
+    multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -268,7 +272,9 @@ const Settings = ({
       )) ||
     calculatorKeys
 
-  const showMultiLangSelection = !!multiLanguageEnabledLCB
+  const showMultiLangSelection =
+    allowedToSelectMultiLanguage && lcbBultiLanguageEnabled
+
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -301,39 +307,11 @@ const Settings = ({
         </StyledRow>
         {/* Release score */}
 
-        {/* Maximum attempt */}
-        <SettingContainer>
-          <DetailsTooltip
-            title="MAXIMUM ATTEMPTS ALLOWED"
-            content="Control the number of times a student can take the assignment."
-            premium={maxAttemptAllowed}
-          />
-          <StyledRow gutter={16} mb="15px">
-            <Col span={12}>
-              <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
-            </Col>
-            <Col span={12}>
-              <NumberInputStyled
-                size="large"
-                disabled={freezeSettings || !maxAttemptAllowed}
-                value={maxAttempts}
-                onChange={(value) => overRideSettings('maxAttempts', value)}
-                min={1}
-                step={1}
-                bg="white"
-                width="20%"
-                data-cy="max-attempts-allowed"
-              />
-            </Col>
-          </StyledRow>
-        </SettingContainer>
-        {/* Maximum attempt */}
-
         {/* Show Calculator */}
         <SettingContainer>
           <DetailsTooltip
             title="SHOW CALCULATOR"
-            content="Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+            content="If students can use an on-screen calculator, select the type to make available on the test."
             premium={assessmentSuperPowersShowCalculator}
           />
           <StyledRow gutter={16} mb="15px">
@@ -359,133 +337,32 @@ const Settings = ({
         </SettingContainer>
         {/* Show Calculator */}
 
-        {/* Answer on Paper */}
+        {/* Maximum attempt */}
         <SettingContainer>
           <DetailsTooltip
-            title="ANSWER ON PAPER"
-            content="Use this option if you are administering this assessment on paper. If you use this option, you will have to manually grade student responses after the assessment is closed."
-            placement="rightBottom"
-            premium={assessmentSuperPowersAnswerOnPaper}
+            title="MAXIMUM ATTEMPTS ALLOWED"
+            content="Control the number of times a student can take the assignment."
+            premium={maxAttemptAllowed}
           />
-          <StyledRow gutter={16} mb="15p">
+          <StyledRow gutter={16} mb="15px">
             <Col span={12}>
-              <Label>ANSWER ON PAPER</Label>
+              <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
             </Col>
             <Col span={12}>
-              <AlignSwitchRight
-                data-cy="ans-on-paper"
-                disabled={
-                  disableAnswerOnPaper ||
-                  freezeSettings ||
-                  !assessmentSuperPowersAnswerOnPaper
-                }
-                size="small"
-                checked={answerOnPaper}
-                onChange={(value) => overRideSettings('answerOnPaper', value)}
+              <InputNumber
+                disabled={freezeSettings || !maxAttemptAllowed}
+                value={maxAttempts}
+                onChange={(value) => overRideSettings('maxAttempts', value)}
+                min={1}
+                step={1}
+                bg="white"
+                width="20%"
+                data-cy="max-attempts-allowed"
               />
             </Col>
           </StyledRow>
         </SettingContainer>
-        {/* Answer on Paper */}
-
-        {/* Require Password */}
-        <SettingContainer>
-          <DetailsTooltip
-            title="REQUIRE PASSWORD"
-            content="Require your students to type a password when opening the assessment."
-            premium={assessmentSuperPowersRequirePassword}
-          />
-          <StyledRow gutter={16} mb="15px">
-            <Col span={12}>
-              <Label>REQUIRE PASSWORD</Label>
-            </Col>
-            <Col span={12}>
-              <Row>
-                <Col span={24}>
-                  <SelectInputStyled
-                    data-cy="password-policy"
-                    disabled={
-                      freezeSettings || !assessmentSuperPowersRequirePassword
-                    }
-                    placeholder="Please select"
-                    cache="false"
-                    value={passwordPolicy}
-                    onChange={changeField('passwordPolicy')}
-                    height="30px"
-                  >
-                    {Object.keys(passwordPolicyValues).map((item, index) => (
-                      <Select.Option
-                        data-cy="class"
-                        key={index}
-                        value={passwordPolicyValues[item]}
-                      >
-                        {passwordPolicyOptions[item]}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
-                </Col>
-
-                {passwordPolicy ===
-                  test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
-                  <Col span={24}>
-                    <Password
-                      disabled={freezeSettings}
-                      onChange={(e) =>
-                        overRideSettings('assignmentPassword', e.target.value)
-                      }
-                      size="large"
-                      value={assignmentPassword}
-                      type="text"
-                      placeholder="Enter Password"
-                      color={passwordStatus.color}
-                    />
-                    <MessageSpan>{passwordStatus.message}</MessageSpan>
-                  </Col>
-                )}
-
-                {passwordPolicy ===
-                  test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
-                  <Col span={24}>
-                    <Input
-                      disabled={freezeSettings}
-                      required
-                      type="number"
-                      onChange={handleUpdatePasswordExpireIn}
-                      value={passwordExpireIn / 60}
-                      style={{ width: '100px' }}
-                      max={999}
-                      min={1}
-                      step={1}
-                    />{' '}
-                    MINUTES
-                  </Col>
-                )}
-              </Row>
-            </Col>
-            {passwordPolicy ===
-              test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
-              <Col span={24} style={{ marginTop: '10px' }}>
-                The password is entered by you and does not change. Students
-                must enter this password before they can take the assessment.
-              </Col>
-            )}
-            {passwordPolicy ===
-              test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
-              <Col span={24} style={{ marginTop: '10px' }}>
-                Students must enter a password to take the assessment. The
-                password is auto-generated and revealed only when the assessment
-                is opened. If you select this method, you also need to specify
-                the time in minutes after which the password would automatically
-                expire. Use this method for highly sensitive and secure
-                assessments. If you select this method, the teacher or the
-                proctor must open the assessment manually and announce the
-                password in class when the students are ready to take the
-                assessment.
-              </Col>
-            )}
-          </StyledRow>
-        </SettingContainer>
-        {/* Require Password */}
+        {/* Maximum attempt */}
 
         {
           /* Check Answer Tries Per Question */
@@ -501,19 +378,19 @@ const Settings = ({
                   <Label>CHECK ANSWER TRIES PER QUESTION</Label>
                 </Col>
                 <Col span={12}>
-                  <NumberInputStyled
+                  <InputNumber
                     disabled={
                       freezeSettings || !assessmentSuperPowersCheckAnswerTries
                     }
                     onChange={(value) =>
                       overRideSettings('maxAnswerChecks', value)
                     }
-                    size="large"
                     value={maxAnswerChecks}
                     min={0}
                     placeholder="Number of tries"
                     bg="white"
                     data-cy="check-ans-tries"
+                    width="20%"
                   />
                 </Col>
               </StyledRow>
@@ -790,6 +667,155 @@ const Settings = ({
           </StyledRow>
         </SettingContainer>
         {/* Timed TEST */}
+
+        {/* Answer on Paper */}
+        <SettingContainer>
+          <DetailsTooltip
+            title="ANSWER ON PAPER"
+            content="Use this option if you are administering this assessment on paper. If you use this option, you will have to manually grade student responses after the assessment is closed."
+            premium={assessmentSuperPowersAnswerOnPaper}
+          />
+          <StyledRow gutter={16} mb="15p">
+            <Col span={12}>
+              <Label>ANSWER ON PAPER</Label>
+            </Col>
+            <Col span={12}>
+              <AlignSwitchRight
+                data-cy="ans-on-paper"
+                disabled={
+                  disableAnswerOnPaper ||
+                  freezeSettings ||
+                  !assessmentSuperPowersAnswerOnPaper
+                }
+                size="small"
+                checked={answerOnPaper}
+                onChange={(value) => overRideSettings('answerOnPaper', value)}
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+        {/* Answer on Paper */}
+
+        {/* Multi language */}
+        {showMultiLangSelection && (
+          <StyledRow gutter={16}>
+            <Col span={12}>
+              <Label>Multi-Language</Label>
+            </Col>
+            <Col span={12}>
+              <AlignSwitchRight
+                data-cy="multi-language"
+                size="small"
+                defaultChecked={false}
+                disabled={freezeSettings || !premium}
+                checked={multiLanguageEnabled}
+                onChange={(value) =>
+                  overRideSettings('multiLanguageEnabled', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        )}
+        {/* Multi language */}
+
+        {/* Require Password */}
+        <SettingContainer>
+          <DetailsTooltip
+            title="REQUIRE PASSWORD"
+            content="Require your students to type a password when opening the assessment."
+            premium={assessmentSuperPowersRequirePassword}
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={12}>
+              <Label>REQUIRE PASSWORD</Label>
+            </Col>
+            <Col span={12}>
+              <Row>
+                <Col span={24}>
+                  <SelectInputStyled
+                    data-cy="password-policy"
+                    disabled={
+                      freezeSettings || !assessmentSuperPowersRequirePassword
+                    }
+                    placeholder="Please select"
+                    cache="false"
+                    value={passwordPolicy}
+                    onChange={changeField('passwordPolicy')}
+                    height="30px"
+                  >
+                    {Object.keys(passwordPolicyValues).map((item, index) => (
+                      <Select.Option
+                        data-cy="class"
+                        key={index}
+                        value={passwordPolicyValues[item]}
+                      >
+                        {passwordPolicyOptions[item]}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </Col>
+
+                {passwordPolicy ===
+                  test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
+                  <Col span={24}>
+                    <Password
+                      disabled={freezeSettings}
+                      onChange={(e) =>
+                        overRideSettings('assignmentPassword', e.target.value)
+                      }
+                      size="large"
+                      value={assignmentPassword}
+                      type="text"
+                      placeholder="Enter Password"
+                      color={passwordStatus.color}
+                    />
+                    <MessageSpan>{passwordStatus.message}</MessageSpan>
+                  </Col>
+                )}
+
+                {passwordPolicy ===
+                  test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
+                  <Col span={24}>
+                    <Input
+                      disabled={freezeSettings}
+                      required
+                      type="number"
+                      onChange={handleUpdatePasswordExpireIn}
+                      value={passwordExpireIn / 60}
+                      style={{ width: '100px' }}
+                      max={999}
+                      min={1}
+                      step={1}
+                    />{' '}
+                    MINUTES
+                  </Col>
+                )}
+              </Row>
+            </Col>
+            {passwordPolicy ===
+              test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
+              <Col span={24} style={{ marginTop: '10px' }}>
+                The password is entered by you and does not change. Students
+                must enter this password before they can take the assessment.
+              </Col>
+            )}
+            {passwordPolicy ===
+              test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
+              <Col span={24} style={{ marginTop: '10px' }}>
+                Students must enter a password to take the assessment. The
+                password is auto-generated and revealed only when the assessment
+                is opened. If you select this method, you also need to specify
+                the time in minutes after which the password would automatically
+                expire. Use this method for highly sensitive and secure
+                assessments. If you select this method, the teacher or the
+                proctor must open the assessment manually and announce the
+                password in class when the students are ready to take the
+                assessment.
+              </Col>
+            )}
+          </StyledRow>
+        </SettingContainer>
+        {/* Require Password */}
       </StyledDiv>
     </SettingsWrapper>
   )
@@ -806,7 +832,8 @@ export default connect(
       : state?.tests?.entity?.summary?.totalItems,
     freezeSettings: getIsOverrideFreezeSelector(state),
     features: state?.user?.user?.features,
-    multiLanguageEnabledLCB: getmultiLanguageEnabled(state),
+    lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
+    allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
   }),
   null
 )(withRouter(Settings))

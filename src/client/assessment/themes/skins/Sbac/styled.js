@@ -102,12 +102,20 @@ export const StyledFlexContainer = styled(FlexContainer)`
       padding: 3px 0 0 0;
       background: ${navigationButtons.background}!important;
       border: 1px solid ${navigationButtons.color};
+      float: left;
       &:hover {
         border: 1px solid ${defaultButton.hover.background};
         color: ${defaultButton.hover.color};
         background: ${defaultButton.hover.background}!important;
         svg {
           fill: ${defaultButton.hover.color};
+        }
+      }
+      &:focus {
+        background: ${navigationButtons.background} !important;
+        border: 1px solid ${navigationButtons.color} !important;
+        svg {
+          fill: ${navigationButtons.color} !important;
         }
       }
       margin-right: 5px;

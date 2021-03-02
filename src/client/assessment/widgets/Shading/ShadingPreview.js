@@ -48,6 +48,7 @@ const ShadingPreview = ({
   showQuestionNumber,
   disableResponse,
   evaluation,
+  hideCorrectAnswer,
 }) => {
   const { canvas, validation } = item
   const fontSize = getFontSize(get(item, 'uiStyle.fontsize'))
@@ -238,7 +239,7 @@ const ShadingPreview = ({
             )}
           </FlexContainer>
           {view !== EDIT && <Instructions item={item} />}
-          {previewTab === SHOW && (
+          {previewTab === SHOW && !hideCorrectAnswer && (
             <>
               <CorrectAnswersContainer
                 title={t('component.shading.correctAnswer')}

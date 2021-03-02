@@ -1,11 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-// import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+
 import { MultipleAssessmentReport } from '../multipleAssessmentReport'
 import { SingleAssessmentReport } from '../singleAssessmentReport'
 import StandardsMasteryReport from '../standardsMasteryReport'
 import { StudentProfileReport } from '../studentProfileReport'
 import { SubscriptionReport } from '../subscriptionReport'
+import { EngagementReport } from '../engagementReport'
 // import SearchBox from "./SearchBox";
 import {
   StandardReportWrapper,
@@ -14,7 +15,7 @@ import {
   ReportCardsWrapper,
 } from './styled'
 
-const StandardReport = ({ premium }) => (
+const StandardReport = ({ premium, isAdmin }) => (
   <StandardReportWrapper>
     {!premium && (
       <NonPremiumBar>we give access to only one report now</NonPremiumBar>
@@ -37,6 +38,12 @@ const StandardReport = ({ premium }) => (
         <StyledCard className="student-profile-reports report">
           <StudentProfileReport premium={premium} />
         </StyledCard>
+
+        {isAdmin && (
+          <StyledCard className="student-profile-reports report">
+            <EngagementReport premium={premium} />
+          </StyledCard>
+        )}
       </ReportCardsWrapper>
       {!premium && (
         <StyledCard

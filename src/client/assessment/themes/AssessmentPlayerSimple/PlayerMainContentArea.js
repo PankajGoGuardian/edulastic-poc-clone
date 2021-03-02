@@ -81,6 +81,7 @@ const PlayerContentArea = ({
               viewComponent="practicePlayer"
               enableMagnifier={enableMagnifier}
               updateScratchpadtoStore
+              testItemId={item._id}
             />
           )}
           {testItemState === 'check' && (
@@ -101,6 +102,7 @@ const PlayerContentArea = ({
               evaluation={evaluation}
               enableMagnifier={enableMagnifier}
               changePreviewTab={changePreview}
+              testItemId={item._id}
             />
           )}
         </MainContent>

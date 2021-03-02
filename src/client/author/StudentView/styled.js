@@ -1,14 +1,13 @@
 import styled, { css } from 'styled-components'
 import { Button, Modal } from 'antd'
 import { IconEdit } from '@edulastic/icons'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, EduButton } from '@edulastic/common'
 import {
   mobileWidthMax,
   white,
   themeColor,
   desktopWidth,
-  mobileWidthLarge,
-  mediumDesktopExactWidth,
+  extraDesktopWidth,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -35,9 +34,9 @@ export const StyledFlexContainer = styled(FlexContainer)`
 `
 
 export const StudentButtonWrapper = styled(FlexContainer)`
-  width: calc(75% - 15px);
   justify-content: space-between;
   margin-bottom: 0px;
+  align-items: center;
 
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
@@ -60,32 +59,26 @@ export const StudentButtonDiv = styled.div`
   }
 `
 
-const StyledTabButton = styled.a`
-  height: 28px;
-  padding: 6px 15px;
-  font-size: 11px;
-  font-weight: 600;
-  background-color: ${({ active }) => (active ? themeColor : white)};
-  color: ${({ active }) => (active ? white : themeColor)};
-  border: 1px solid ${themeColor};
-  border-left: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    background-color: ${themeColor};
-    color: ${white};
-  }
-  &:first-child {
-    border-left: 1px solid ${themeColor};
+const StyledTabButton = styled(EduButton).attrs(() => ({
+  height: '28px',
+  ml: '0px',
+  isGhost: true,
+  fontSize: '10px',
+}))`
+  border-radius: 0px;
+  border-left: 0px;
+
+  &.ant-btn.ant-btn-primary {
+    background-color: ${({ active }) => active && themeColor};
+    color: ${({ active }) => active && white};
   }
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    padding: 6px 30px;
-  }
-  @media (max-width: ${mobileWidthLarge}) {
-    width: 100%;
-    margin: 0 !important;
+  &:focus,
+  &:hover {
+    &.ant-btn.ant-btn-primary {
+      border-color: ${themeColor};
+      background-color: ${themeColor};
+    }
   }
 `
 
@@ -93,6 +86,7 @@ export const CorrectButton = StyledTabButton
 export const WrongButton = StyledTabButton
 
 export const AllButton = styled(StyledTabButton)`
+  border-left: 1px solid;
   border-radius: 4px 0px 0px 4px;
 `
 
@@ -109,6 +103,7 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   padding: 15px 10px;
   min-width: 250px;
   position: relative;
+  margin-left: 28px;
   svg {
     position: absolute;
     left: 5px;
@@ -124,7 +119,7 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
     }
   }
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
+  @media (min-width: ${extraDesktopWidth}) {
     min-width: 300px;
     padding: 20px 10px;
   }

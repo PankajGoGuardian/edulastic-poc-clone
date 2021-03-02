@@ -3,6 +3,7 @@ import {
   assignmentPolicyOptions,
   roleuser,
   test as testConst,
+  assignmentSettingSections as sectionContants,
 } from '@edulastic/constants'
 import { Tabs } from 'antd'
 import produce from 'immer'
@@ -352,6 +353,8 @@ class SimpleOptions extends React.Component {
       isAdvancedView,
       defaultTestProfiles,
       onClassFieldChange,
+      activeTab,
+      handleTabChange,
     } = this.props
     const changeField = curry(this.onChange)
     let { openPolicy } = selectsData
@@ -400,8 +403,8 @@ class SimpleOptions extends React.Component {
 
     return (
       <OptionConationer isAdvancedView={isAdvancedView} ref={this.containerRef}>
-        <Tabs defaultActiveKey="1" onChange={() => {}}>
-          <TabPane tab="CLASS/GROUP" key="1">
+        <Tabs activeKey={activeTab} onChange={handleTabChange}>
+          <TabPane tab="CLASS/GROUP" key={sectionContants.CLASS_GROUP_SECTION}>
             {isAdvancedView ? (
               <TabContentContainer width="100%">
                 <AdvancedOptons
@@ -442,7 +445,10 @@ class SimpleOptions extends React.Component {
               </TabContentContainer>
             )}
           </TabPane>
-          <TabPane tab="TEST BEHAVIOR" key="2">
+          <TabPane
+            tab="TEST BEHAVIOR"
+            key={sectionContants.TEST_BEHAVIOR_SECTION}
+          >
             <TabContentContainer>
               <TestBehaviorGroupContainer
                 assignmentSettings={assignment}
@@ -472,7 +478,7 @@ class SimpleOptions extends React.Component {
                 <DollarPremiumSymbol premium={features?.premium} />
               </span>
             }
-            key="3"
+            key={sectionContants.ANTI_CHEATING_SECTION}
           >
             <TabContentContainer>
               <AntiCheatingGroupContainer
@@ -496,7 +502,7 @@ class SimpleOptions extends React.Component {
                 <DollarPremiumSymbol premium={features?.premium} />
               </span>
             }
-            key="4"
+            key={sectionContants.AUTO_REDIRECT_SECTION}
           >
             <TabContentContainer>
               <AutoRedirectGroupContainer
@@ -520,7 +526,7 @@ class SimpleOptions extends React.Component {
                 <DollarPremiumSymbol premium={features?.premium} />
               </span>
             }
-            key="5"
+            key={sectionContants.MISCELLANEOUS_SECTION}
           >
             <TabContentContainer>
               <MiscellaneousGroupContainer

@@ -323,7 +323,21 @@
       "deleteuser": "Please select users to delete."
     }
   },
-
+  "manageSubscriptions": {
+    "title": "Manage Subscriptions",
+    "name": "Name",
+    "username": "Username",
+    "status": "Status",
+    "usercreated": "New User Created",
+    "userexists": "User Already Exist",
+    "emailnotallowed": "This email Id is not allowed in your district.",
+    "teacherPremium": "Premium Upgrade",
+    "sparkMath": "Spark Math Access",
+    "ALREADY_PREMIUM": "Already Has Premium",
+    "UPGRADED_TO_PREMIUM": "Upgraded To Premium",
+    "ITEMBANK_ACCESS_GRANTED": "Itembank Access Granted",
+    "ALREADY_HAS_ITEMBANK_ACCESS": "Already Has Itembank Access"
+  },
   "class": {
     "title": "Classes",
     "name": "Class name",

@@ -96,6 +96,7 @@ const GroupItems = ({
   interestedGrades,
   interestedSubjects,
   interestedCurriculums: [firstCurriculum],
+  handleSaveTest,
 }) => {
   const { Panel } = Collapse
 
@@ -441,6 +442,7 @@ const GroupItems = ({
     }
 
     if (isValid) {
+      handleSaveTest()
       switchToAddItems()
     }
   }

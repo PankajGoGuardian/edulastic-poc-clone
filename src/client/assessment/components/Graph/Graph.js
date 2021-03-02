@@ -57,6 +57,8 @@ import { EDIT } from '../../constants/constantsForQuestions'
 
 const { GRAPH_EVALUATION_SETTING, subEvaluationSettingsGrouped } = mathConstants
 
+const hidePointOnEquation = ['axisSegments', 'axisLabels', 'fractionEditor']
+
 const EmptyWrapper = styled.div``
 
 const SmallSizeQuadrantsWrapper = styled.div`
@@ -472,10 +474,11 @@ class Graph extends Component {
       showQuestionNumber,
       setQuestionData,
       advancedLink,
+      hideCorrectAnswer,
       ...restProps
     } = this.props
 
-    const { symbols = defaultSymbols } = item
+    const { symbols = defaultSymbols, graphType } = item
 
     const mapFontName = {
       extra_large: 'xlarge',
@@ -545,6 +548,7 @@ class Graph extends Component {
                 <EvaluationSettings
                   method={GRAPH_EVALUATION_SETTING}
                   options={this.optionsForEvaluation}
+                  hidePointOnEquation={hidePointOnEquation.includes(graphType)}
                   changeOptions={this.handleChangeEvaluationOption}
                 />
               </Question>
@@ -650,56 +654,59 @@ class Graph extends Component {
                   />
                 )}
                 {view !== EDIT && <Instructions item={item} />}
-                {previewTab === 'show' && item.canvas && item.uiStyle && (
-                  <>
-                    <CorrectAnswersContainer
-                      minWidth="max-content"
-                      title={t('component.graphing.correctAnswer')}
-                      titleMargin="4px"
-                      noBackground
-                      showBorder
-                      padding="0px"
-                      margin="20px 0px"
-                    >
-                      <GraphDisplay
-                        disableResponse
-                        graphData={item}
-                        view={view}
-                        previewTab={previewTab}
-                        elements={validation.validResponse.value}
-                        evaluation={evaluation}
-                        elementsIsCorrect
-                        {...restProps}
-                      />
-                    </CorrectAnswersContainer>
+                {previewTab === 'show' &&
+                  !hideCorrectAnswer &&
+                  item.canvas &&
+                  item.uiStyle && (
+                    <>
+                      <CorrectAnswersContainer
+                        minWidth="max-content"
+                        title={t('component.graphing.correctAnswer')}
+                        titleMargin="4px"
+                        noBackground
+                        showBorder
+                        padding="0px"
+                        margin="20px 0px"
+                      >
+                        <GraphDisplay
+                          disableResponse
+                          graphData={item}
+                          view={view}
+                          previewTab={previewTab}
+                          elements={validation.validResponse.value}
+                          evaluation={evaluation}
+                          elementsIsCorrect
+                          {...restProps}
+                        />
+                      </CorrectAnswersContainer>
 
-                    {validation.altResponses &&
-                      validation.altResponses.map((altAnswer, i) => (
-                        <CorrectAnswersContainer
-                          minWidth="max-content"
-                          title={`${t('component.graphing.alternateAnswer')} ${
-                            i + 1
-                          }`}
-                          titleMargin="4px"
-                          noBackground
-                          showBorder
-                          padding="0px"
-                          margin="20px 0px"
-                        >
-                          <GraphDisplay
-                            disableResponse
-                            graphData={item}
-                            view={view}
-                            previewTab={previewTab}
-                            elements={altAnswer.value}
-                            evaluation={evaluation}
-                            elementsIsCorrect
-                            {...restProps}
-                          />
-                        </CorrectAnswersContainer>
-                      ))}
-                  </>
-                )}
+                      {validation.altResponses &&
+                        validation.altResponses.map((altAnswer, i) => (
+                          <CorrectAnswersContainer
+                            minWidth="max-content"
+                            title={`${t(
+                              'component.graphing.alternateAnswer'
+                            )} ${i + 1}`}
+                            titleMargin="4px"
+                            noBackground
+                            showBorder
+                            padding="0px"
+                            margin="20px 0px"
+                          >
+                            <GraphDisplay
+                              disableResponse
+                              graphData={item}
+                              view={view}
+                              previewTab={previewTab}
+                              elements={altAnswer.value}
+                              evaluation={evaluation}
+                              elementsIsCorrect
+                              {...restProps}
+                            />
+                          </CorrectAnswersContainer>
+                        ))}
+                    </>
+                  )}
               </QuestionContentWrapper>
             </FlexContainer>
           </Wrapper>

@@ -132,7 +132,7 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters) {
+    if (settings.requestFilters.termId) {
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -173,7 +173,8 @@ const MultipleAssessmentReportContainer = (props) => {
       setMARSettings({
         requestFilters: {
           ...obj,
-          testIds: selectedTests.join(','),
+          testIds: selectedTests.join(),
+          tagIds: _settings.filters.tags.join(),
         },
       })
     }
@@ -197,6 +198,14 @@ const MultipleAssessmentReportContainer = (props) => {
     'peer-progress-analysis',
     'student-progress',
   ]
+
+  useEffect(() => {
+    if (!pageTitleList.includes(pageTitle)) {
+      setDdFilter({})
+      setTempDdFilter({})
+    }
+  }, [pageTitle])
+
   const extraFilters =
     pageTitleList.includes(pageTitle) && demographics
       ? demographics.map((item) => (
@@ -228,6 +237,7 @@ const MultipleAssessmentReportContainer = (props) => {
       )}
       <FlexContainer
         alignItems="flex-start"
+        justifyContent="space-between"
         display={firstLoad ? 'none' : 'flex'}
       >
         <MultipleAssessmentReportFilters

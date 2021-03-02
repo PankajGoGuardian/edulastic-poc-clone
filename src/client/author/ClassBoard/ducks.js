@@ -677,6 +677,17 @@ export const stateExpressGraderAnswerSelector = (state) => state.answers
 export const stateQuestionAnswersSelector = (state) =>
   state.classQuestionResponse
 
+export const getAnswerByQidSelector = createSelector(
+  stateExpressGraderAnswerSelector,
+  (answers) => {
+    const answerByQid = {}
+    Object.keys(answers).forEach((answer) => {
+      const [_, qid] = answer.split('_')
+      answerByQid[qid] = answers[answer]
+    })
+    return answerByQid
+  }
+)
 const getTestItemsData = createSelector(
   stateTestActivitySelector,
   (state) => state?.data?.testItemsData || []
@@ -1096,7 +1107,7 @@ export const inProgressStudentsSelector = createSelector(
 
 export const testNameSelector = createSelector(
   stateTestActivitySelector,
-  (state) => state.additionalData.testName
+  (state) => state.additionalData?.testName
 )
 
 export const getCanMarkAssignmentSelector = createSelector(
@@ -1332,7 +1343,7 @@ export const getFeedbackResponseSelector = createSelector(
 
 export const getStudentQuestionSelector = createSelector(
   stateStudentAnswerSelector,
-  stateExpressGraderAnswerSelector,
+  getAnswerByQidSelector,
   (state, egAnswers) => {
     if (!isEmpty(state.data)) {
       const data = Array.isArray(state.data) ? state.data : [state.data]

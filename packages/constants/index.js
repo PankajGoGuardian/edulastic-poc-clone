@@ -39,6 +39,9 @@ const regexJs = require('./const/regex.js')
 const report = require('./const/report.js')
 const bannerActions = require('./const/bannerActions.js')
 const appLanguages = require('./const/languages')
+const fileTypes = require('./const/fileTypes')
+const subscriptions = require('./const/subscriptions')
+const assignmentSettingSections = require('./const/assignmentSettingSections')
 
 module.exports = {
   question,
@@ -82,4 +85,7 @@ module.exports = {
   report,
   bannerActions,
   appLanguages,
+  fileTypes,
+  subscriptions,
+  assignmentSettingSections,
 }

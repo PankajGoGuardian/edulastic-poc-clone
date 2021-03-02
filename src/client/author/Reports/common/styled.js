@@ -55,6 +55,7 @@ export const GoButtonWrapper = styled.div`
   margin-bottom: 15px;
   display: flex;
   align-items: center;
+  padding-left: 5px;
 `
 
 export const StyledFilterWrapper = styled.div`
@@ -67,9 +68,9 @@ export const StyledFilterWrapper = styled.div`
   `
       : `
     margin-right: 16px;
-    width: 230px;
+    width: 240px;
     flex-shrink: 0;
-    height: calc(100vh - 250px);
+    height: calc(100vh - 200px);
     position: relative;
   `}
 
@@ -110,6 +111,13 @@ export const StyledFilterWrapper = styled.div`
       }
     }
   }
+  .ant-collapse {
+    background: none;
+    padding-left: 5px;
+  }
+  .ant-dropdown {
+    box-shadow: 0 0 5px;
+  }
 `
 
 export const StyledReportsContentContainer = styled.div`
@@ -128,7 +136,7 @@ export const DropDownContainer = styled.div`
 export const StyledCard = styled(Card)`
   box-shadow: none;
   .ant-card-body {
-    padding: 0px;
+    padding: ${(props) => props.padding || '0px'};
   }
 `
 
@@ -277,8 +285,9 @@ export const StyledTable = styled(Table)`
 export const StyledH3 = styled.h3`
   font-weight: 700;
   color: ${fadedBlack};
-  font-size: 14px;
+  font-size: ${({ fontSize }) => fontSize || '14px'};
   margin: 0px 0px 10px;
+  margin-left: ${({ marginLeft }) => marginLeft || '0px'};
   text-align: ${({ textAlign }) => textAlign || 'left'};
 `
 
@@ -459,7 +468,9 @@ export const CustomXAxisTickTooltipContainer = styled.div`
   top: 0px;
   transform: translate(${(props) => props.x}, ${(props) => props.y});
   padding: 5px;
-  width: ${(props) => props.width}px;
+  min-width: ${(props) => props.width}px;
+  max-width: 250px;
+  overflow-wrap: anywhere;
   text-align: center;
   background: white;
   z-index: 999;
@@ -570,17 +581,35 @@ export const FilterButtonClear = styled(Button)`
   margin-left: ${({ showFilter }) => (showFilter ? -80 : 0)}px;
   padding: 5px 2px 2px;
   box-shadow: none;
-
+  transition: none;
   &:focus,
   &:hover {
     outline: unset;
   }
-
   svg {
     fill: ${({ showFilter }) =>
       showFilter ? '#1AB395' : '#434b5d'} !important;
     width: 20px;
     height: 20px;
+  }
+  @media print {
+    display: none;
+  }
+`
+
+export const ResetButtonClear = styled(Button)`
+  min-width: 35px;
+  min-height: 25px;
+  border: none;
+  margin-top: -4px;
+  padding: 5px 2px 2px;
+  box-shadow: none;
+  transition: none;
+  color: #1ab395;
+  &:focus,
+  &:hover {
+    outline: unset;
+    color: #1ab395;
   }
   @media print {
     display: none;

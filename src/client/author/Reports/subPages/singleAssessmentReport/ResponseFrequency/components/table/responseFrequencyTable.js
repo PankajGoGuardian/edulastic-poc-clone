@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
-import { find, keyBy, omitBy, isEmpty, isNaN } from 'lodash'
+import { find, groupBy, keyBy, omitBy, isEmpty, isNaN } from 'lodash'
 import { StyledCard, StyledTable } from '../styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import { ResponseTag } from './responseTag'
@@ -226,10 +226,13 @@ export const ResponseFrequencyTable = ({
         ) {
           str = record.validation[0] === comboKey ? 'Correct' : 'Incorrect'
         }
-
+        // sort characters in str
+        if (str && !['Correct', 'Incorrect'].includes(str)) {
+          str = str.split('').sort().join('')
+        }
         return {
-          value: Math.round((data[comboKey] / sum) * 100),
-          count: data[comboKey],
+          value: (data[comboKey] / sum) * 100 || 0,
+          count: data[comboKey] || 0,
           name: str,
           key: str,
           isCorrect,
@@ -242,9 +245,33 @@ export const ResponseFrequencyTable = ({
     const checkForQtypes = [
       'multiple choice - standard',
       'multiple choice - multiple response',
-      // "multiple selection"
     ]
 
+    const groupForQtypes = [
+      ...checkForQtypes,
+      'multiple choice - block layout',
+      'multiple selection',
+    ]
+
+    // group arr data by key
+    if (groupForQtypes.includes(record.qType.toLocaleLowerCase())) {
+      const groupedArr = groupBy(arr, 'key')
+      arr = Object.keys(groupedArr).map((k) => {
+        const { value, count } = groupedArr[k].reduce(
+          (res, ele) => ({
+            value: res.value + ele.value,
+            count: res.count + ele.count,
+          }),
+          {
+            value: 0,
+            count: 0,
+          }
+        )
+        return { ...groupedArr[k][0], value, count }
+      })
+    }
+
+    // augment arr data for missing choices (keys)
     if (
       checkForQtypes.includes(record.qType.toLocaleLowerCase()) &&
       hasChoiceData
@@ -270,15 +297,12 @@ export const ResponseFrequencyTable = ({
       }
     }
 
-    arr.sort((a, b) => {
-      if (a.name < b.name) {
-        return -1
-      }
-      if (a.name > b.name) {
-        return 1
-      }
-      return 0
-    })
+    // arr with rounded values & sorted by name
+    arr = arr
+      .map((_data) => ({ ..._data, value: Math.round(_data.value) }))
+      .sort((a, b) =>
+        (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase())
+      )
 
     return (
       <Row type="flex" justify="start" className="table-tag-container">

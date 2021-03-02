@@ -1,22 +1,22 @@
-import React, { useRef, useLayoutEffect } from 'react'
+import React, { useRef, useLayoutEffect, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-
+import { get } from 'lodash'
 import { TabContainer } from '@edulastic/common'
 import { updatePosition as updatePositionAction } from '../../../../../author/src/reducers/feedback'
 
 function TabWrapper({
   testReviewStyle,
-  fullHeight,
   children,
   showBorder,
   marginTop,
   updatePositionToStore,
   questionId,
   updatePosition,
-  minHeight,
+  feedbackHeight,
+  hideCorrectAnswer,
 }) {
   const containerRef = useRef(null)
-
+  const [tabHeight, setTabHeight] = useState(null)
   const heightOfContainer = containerRef.current?.clientHeight
 
   /**
@@ -37,13 +37,27 @@ function TabWrapper({
     if (containerRef.current && updatePositionToStore) {
       const top = containerRef.current.offsetTop
       const height = containerRef.current.clientHeight
-      updatePosition({ id: questionId, dimensions: { top, height } })
+      if (height < feedbackHeight && !tabHeight) {
+        // use feedback height for question
+        setTabHeight(feedbackHeight)
+      } else {
+        updatePosition({ id: questionId, dimensions: { top, height } })
+      }
     }
-  }, [containerRef.current, heightOfContainer]) // change whenever, ref or the height of container changes
+  }, [
+    containerRef.current,
+    heightOfContainer,
+    feedbackHeight,
+    hideCorrectAnswer,
+  ])
 
   const borderProps = showBorder
     ? { border: '1px solid #DADAE4', borderRadius: '10px' }
     : {}
+
+  useEffect(() => {
+    updatePosition({ id: questionId, dimensions: null })
+  }, [])
 
   return (
     <TabContainer
@@ -55,9 +69,8 @@ function TabWrapper({
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        height: fullHeight ? '100%' : 'auto',
         marginTop,
-        minHeight,
+        minHeight: tabHeight || '',
       }}
       className="question-tab-container"
     >
@@ -70,6 +83,15 @@ const mapDispatchToProps = {
   updatePosition: updatePositionAction,
 }
 
-const enhance = connect(null, mapDispatchToProps)(TabWrapper)
+const enhance = connect(
+  (state, ownProps) => ({
+    feedbackHeight: get(
+      state,
+      ['feedback', 'feedbacks', ownProps.questionId],
+      null
+    ),
+  }),
+  mapDispatchToProps
+)(TabWrapper)
 
 export default enhance

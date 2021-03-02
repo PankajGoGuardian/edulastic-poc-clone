@@ -219,6 +219,7 @@ const UseExisting = ({
           ...restRubricData,
           sharedType,
         },
+        changes: 'SHARED_TYPE',
       })
 
       setShowShareModal(false)

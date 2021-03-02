@@ -9,6 +9,7 @@ import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 
 import { Select, Modal, Tooltip } from 'antd'
 import { themeColor } from '@edulastic/colors'
+import { IconSelectCaretDown } from '@edulastic/icons'
 
 const { Option } = Select
 
@@ -107,7 +108,7 @@ export const redirectToDashbord = (type = '', history) => {
   let msg
   switch (type) {
     case 'EXPIRED':
-      msg = 'Test is expired'
+      msg = 'The due date for this assignment has passed'
       break
     case 'ARCHIVED':
       msg = ARCHIVED_TEST_MSG
@@ -116,10 +117,10 @@ export const redirectToDashbord = (type = '', history) => {
       msg = 'Redirecting to the student dashboard'
       break
     case 'NOT_FOUND':
-      msg = 'Test not found'
+      msg = 'This assignment is not available'
       break
     default:
-      msg = 'Assignment is not available for the attempt.'
+      msg = 'Assignment is not available for the attempt'
   }
   notification({ msg })
   history.push('/home/assignments')
@@ -144,7 +145,15 @@ export const showTestInfoModal = ({
   history,
   title,
   notifyCancel,
+  closeTestPreviewModal,
+  preview,
 }) => {
+  let selectedLang = ''
+  const handlChange = (value) => {
+    setSelectedLanguage(value)
+    selectedLang = value
+  }
+
   const timedContent = pauseAllowed ? (
     <p style={{ margin: '10px 0' }}>
       {' '}
@@ -175,14 +184,16 @@ export const showTestInfoModal = ({
         <>
           <p style={{ margin: '10px 0' }}>
             This test is offered in multiple languages. Please select your
-            preferred language.
+            preferred language. You can change the preferred language anytime
+            during the attempt
           </p>
           <p style={{ margin: '10px 0' }}>
             <Select
               getPopupContainer={(e) => e.parentElement}
-              defaultValue={languagePreference}
+              defaultValue={languagePreference || ''}
               style={{ width: 200 }}
-              onChange={setSelectedLanguage}
+              onChange={handlChange}
+              suffixIcon={<IconSelectCaretDown color={themeColor} />}
             >
               <Option value="" disabled>
                 Select Language
@@ -209,7 +220,7 @@ export const showTestInfoModal = ({
       <Tooltip title={title}>
         <div
           style={{
-            width: '300px',
+            maxWidth: '80%',
             textOverflow: 'ellipsis',
             overflow: 'hidden',
             whiteSpace: 'nowrap',
@@ -222,22 +233,34 @@ export const showTestInfoModal = ({
     content,
     onOk: () => {
       if (attemptCount < maxAttempts)
-        startAssignment({ testId, assignmentId, testType, classId })
-      Modal.destroyAll()
+        startAssignment({
+          testId,
+          assignmentId,
+          testType,
+          classId,
+          selectedLang,
+        })
+      if (!preview) Modal.destroyAll()
+      if (preview && multiLanguageEnabled) {
+        return !selectedLang
+      }
     },
     onCancel: () => {
       setSelectedLanguage('')
       if (notifyCancel) redirectToDashbord('HOME', history)
       else Modal.destroyAll()
+      if (preview) {
+        closeTestPreviewModal()
+      }
     },
-    okText: 'Continue',
-    // okType: "danger",
+    okText: 'YES, CONTINUE',
+    cancelText: 'NO, CANCEL',
+    className: 'ant-modal-confirm-custom-styled',
     centered: true,
-    width: 500,
-    okButtonProps: {
-      style: { background: themeColor },
-    },
+    maskClosable: !preview,
+    icon: '',
   })
+  return null
 }
 
 // case: check to where to navigate
@@ -287,6 +310,7 @@ const redirectToAssessmentPlayer = (
   }
   if ((graded || absent) && (isExpired || attemptCount === maxAttempts)) {
     if (releaseScore === releaseGradeLabels.DONT_RELEASE || absent) {
+      notification({ msg: 'The due date for this assignment has passed' })
       return history.push({
         pathname: '/home/grades',
         state: { highlightAssignment: assignmentId },

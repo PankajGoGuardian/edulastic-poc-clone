@@ -370,6 +370,7 @@ class ClassList extends React.Component {
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
               }
+              data-cy="class-grades-filter"
             >
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
@@ -395,6 +396,7 @@ class ClassList extends React.Component {
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
               }
+              data-cy="class-subject-filter"
             >
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
@@ -464,6 +466,7 @@ class ClassList extends React.Component {
                   .indexOf(input.toLowerCase()) >= 0
               }
               value={filterClassIds}
+              data-cy="selectClass"
             >
               {classList.map(({ name, _id }) => (
                 <Select.Option

@@ -120,6 +120,9 @@ export {
   useLayoutEffectDebounced,
   getRangeAtFirst,
   replaceLatexTemplate,
+  hasMediaDevice,
+  isValidUpdate,
+  removeTokenFromHtml,
 } from './src/helpers'
 
 // contexts

@@ -11,6 +11,8 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import { markQuestionLabel } from '../../assessment/Transformer'
+import { changeDataToPreferredLanguage } from '../../assessment/utils/question'
+import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
 
 // actions types
 export const LOAD_QUESTIONS = '[author questions] load questions'
@@ -332,8 +334,16 @@ export const getQuestionsArraySelector = createSelector(
   (questions) => _values(questions)
 )
 
-export const getQuestionByIdSelector = (state, qId) =>
-  state[_module].byId[qId] || {}
+// export const getQuestionByIdSelector = (state, qId) =>
+//   state[_module].byId[qId] || {}
+// this selector was used only in the ItemDetailWidget component.
+export const getQuestionByIdSelector = createSelector(
+  getQuestionsSelector,
+  getCurrentLanguage,
+  (_, qId) => qId,
+  (questionsById, currentLang, qId) =>
+    changeDataToPreferredLanguage(questionsById[qId] || {}, currentLang)
+)
 
 // get alignment of current question
 export const getQuestionAlignmentSelector = createSelector(

@@ -10,17 +10,14 @@ export const Collapsable = ({
   defaultActiveKey = null,
   children,
 }) => (
-  <CollapseContainer>
+  <CollapseContainer data-cy={header}>
     <Collapse
       bordered={false}
       defaultActiveKey={defaultActiveKey}
       expandIconPosition="right"
       expandIcon={({ isActive }) => <Icon type={isActive ? 'minus' : 'plus'} />}
     >
-      <StyledPanel
-        key={key}
-        header={<StyledH3 data-cy={header}>{header}</StyledH3>}
-      >
+      <StyledPanel key={key} header={<StyledH3>{header}</StyledH3>}>
         {children}
       </StyledPanel>
     </Collapse>

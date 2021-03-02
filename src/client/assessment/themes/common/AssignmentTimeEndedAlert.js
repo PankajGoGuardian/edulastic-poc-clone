@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router'
 import styled, { withTheme } from 'styled-components'
 import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
-import { finishTestAcitivityAction } from '../../actions/test'
+import { AssessmentPlayerContext } from '@edulastic/common'
+import {
+  finishTestAcitivityAction,
+  setIsTestPreviewVisibleAction,
+} from '../../actions/test'
 
 const AssignmentTimeEndedAlert = ({
   isVisible,
@@ -15,25 +19,44 @@ const AssignmentTimeEndedAlert = ({
   groupId,
   history,
   utaId,
-  match,
+  isAuthorPreview,
+  setIsTestPreviewVisible,
 }) => {
+  const { currentItem } = useContext(AssessmentPlayerContext)
+
   useEffect(() => {
-    const { qid } = match.params || {}
     const lastTime = window.localStorage.assessmentLastTime || Date.now()
     const timeSpent = Date.now() - lastTime
-    autoSubmitTest({
-      groupId,
-      preventRouteChange: true,
-      testActivityId: utaId,
-      autoSubmit: true,
-      itemResponse: [qid, timeSpent, false, groupId, { pausing: false }],
-    })
-  }, [])
+    if (!isAuthorPreview && currentItem > -1) {
+      autoSubmitTest({
+        groupId,
+        preventRouteChange: true,
+        testActivityId: utaId,
+        autoSubmit: true,
+        itemResponse: [
+          currentItem,
+          timeSpent,
+          false,
+          groupId,
+          { pausing: false },
+        ],
+      })
+    }
+  }, [currentItem])
+
+  const handleClose = () => {
+    if (!isAuthorPreview) {
+      history.push('/home/grades')
+    }
+    if (isAuthorPreview) {
+      setIsTestPreviewVisible(false)
+    }
+  }
 
   return (
     <Modal
       open={isVisible}
-      onClose={() => history.push('/home/grades')}
+      onClose={handleClose}
       styles={{
         modal: {
           maxWidth: '582px',
@@ -42,6 +65,7 @@ const AssignmentTimeEndedAlert = ({
           padding: '86px 57px 41px 57px',
           backgroundColor: theme.sectionBackgroundColor,
         },
+        overlay: { zIndex: 1010 },
       }}
       center
     >
@@ -51,11 +75,7 @@ const AssignmentTimeEndedAlert = ({
           You have utilized the time allocated for the assignment
         </TitleDescription>
         <ButtonContainer>
-          <StyledButton
-            type="primary"
-            btnType={2}
-            onClick={() => history.push('/home/grades')}
-          >
+          <StyledButton type="primary" btnType={2} onClick={handleClose}>
             OK
           </StyledButton>
         </ButtonContainer>
@@ -74,9 +94,15 @@ AssignmentTimeEndedAlert.propTypes = {
 const enhance = compose(
   withTheme,
   withRouter,
-  connect(null, {
-    autoSubmitTest: finishTestAcitivityAction,
-  })
+  connect(
+    (state) => ({
+      items: state.test.items,
+    }),
+    {
+      autoSubmitTest: finishTestAcitivityAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+    }
+  )
 )
 
 export default enhance(AssignmentTimeEndedAlert)

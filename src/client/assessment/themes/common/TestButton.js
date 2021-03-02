@@ -7,6 +7,7 @@ import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { TokenStorage } from '@edulastic/api'
 import { Tooltip } from '../../../common/utils/helpers'
 
 const TestButton = ({
@@ -18,6 +19,7 @@ const TestButton = ({
   isBookmarked = false,
   checkAnswerInProgress,
   blockNavigationToAnsweredQuestions = false,
+  LCBPreviewModal,
 }) => {
   const handleCheckAnswer = () => {
     if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
@@ -25,9 +27,11 @@ const TestButton = ({
     }
     checkAnswer()
   }
+
+  const hideCheckAnswer = !TokenStorage.getAccessToken()
   return (
     <Container>
-      {!blockNavigationToAnsweredQuestions && (
+      {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
         <Tooltip placement="top" title="Bookmark">
           <StyledButton onClick={toggleBookmark} active={isBookmarked}>
             <StyledIconBookmark />
@@ -35,7 +39,7 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       )}
-      {settings.maxAnswerChecks > 0 && (
+      {settings.maxAnswerChecks > 0 && !hideCheckAnswer && (
         <Tooltip
           placement="top"
           title={
@@ -67,6 +71,11 @@ const TestButton = ({
 
 TestButton.propTypes = {
   t: PropTypes.func.isRequired,
+  LCBPreviewModal: PropTypes.bool,
+}
+
+TestButton.defaultProps = {
+  LCBPreviewModal: false,
 }
 
 const mapStateToProps = (state) => ({

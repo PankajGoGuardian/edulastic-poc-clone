@@ -41,6 +41,7 @@ const HotspotPreview = ({
   t,
   evaluation,
   changePreviewTab,
+  hideCorrectAnswer,
 }) => {
   const {
     areas,
@@ -149,7 +150,7 @@ const HotspotPreview = ({
             </Svg>
           </BlockContainer>
           {view !== EDIT && <Instructions item={item} />}
-          {previewTab === 'show' && !smallSize && (
+          {previewTab === 'show' && !hideCorrectAnswer && !smallSize && (
             <>
               <CorrectAnswersContainer
                 title={t('component.graphing.correctAnswer')}

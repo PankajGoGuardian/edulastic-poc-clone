@@ -16,7 +16,7 @@ import { Avatar, Button, Dropdown, Menu, Col } from 'antd'
 import moment from 'moment'
 import produce from 'immer'
 import PropTypes from 'prop-types'
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { useDrop } from 'react-dnd'
 import { FaBars } from 'react-icons/fa'
 import { connect } from 'react-redux'
@@ -29,7 +29,6 @@ import {
 import { compose } from 'redux'
 import { pick, uniq } from 'lodash'
 import { curriculumSequencesApi } from '@edulastic/api'
-import AssessmentPlayer from '../../../assessment'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
   resumeAssignmentAction,
@@ -65,7 +64,6 @@ import { TestStatus } from '../../TestList/components/ViewModal/styled'
 import {
   AssignmentRowContainer,
   DragHandle,
-  ModalWrapper,
   IconActionButton,
   LastColumn,
   CustomIcon,
@@ -79,6 +77,9 @@ import {
   CaretUp,
   Bullet,
 } from './styled'
+import TestPreviewModal from '../../Assignments/components/Container/TestPreviewModal'
+import { getIsPreviewModalVisibleSelector } from '../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../assessment/actions/test'
 
 const { releaseGradeLabels } = testConstants
 
@@ -199,7 +200,6 @@ export const submitLTIForm = (signedRequest) => {
 /** @extends Component<Props> */
 class ModuleRow extends Component {
   state = {
-    showModal: false,
     selectedTest: '',
   }
 
@@ -239,10 +239,11 @@ class ModuleRow extends Component {
   }
 
   viewTest = (testId) => {
+    const { setIsTestPreviewVisible } = this.props
     this.setState({
-      showModal: true,
       selectedTest: testId,
     })
+    setIsTestPreviewVisible(true)
   }
 
   deleteTest = (moduleIndex, itemId) => {
@@ -275,10 +276,12 @@ class ModuleRow extends Component {
     })
   }
 
-  closeModal = () => {
+  closePreviewTest = () => {
+    const { setIsTestPreviewVisible } = this.props
     this.setState({
-      showModal: false,
+      selectedTest: '',
     })
+    setIsTestPreviewVisible(false)
   }
 
   processStudentAssignmentAction = (
@@ -581,8 +584,9 @@ class ModuleRow extends Component {
       customizeInDraft,
       currentAssignmentIds,
       toggleAssignments,
+      isPreviewModalVisible,
     } = this.props
-    const { showModal, selectedTest } = this.state
+    const { selectedTest } = this.state
     const { assignTest } = this
     const { _id, data = [] } = module
     const isParentRoleProxy = proxyUserRole === 'parent'
@@ -604,26 +608,22 @@ class ModuleRow extends Component {
         </Menu.Item>
       </Menu>
     )
-
     return (
       (isStudent && module.hidden) || (
         <>
-          {showModal && (
-            <ModalWrapper
-              footer={null}
-              visible={showModal}
-              onCancel={this.closeModal}
-              width="100%"
-              height="100%"
-              destroyOnClose
-            >
-              <AssessmentPlayer
-                playlistId={playlistId}
-                testId={selectedTest}
-                preview
-                closeTestPreviewModal={this.closeModal}
-              />
-            </ModalWrapper>
+          {isPreviewModalVisible && selectedTest && (
+            <TestPreviewModal
+              isModalVisible={isPreviewModalVisible}
+              testId={selectedTest}
+              showStudentPerformance
+              closeTestPreviewModal={this.closePreviewTest}
+              onPlayListPreviewClose={() => {
+                this.setState({
+                  selectedTest: '',
+                })
+              }}
+              isPlayListPreview
+            />
           )}
 
           <ModuleWrapper
@@ -1262,7 +1262,7 @@ ModuleRow.propTypes = {
 const enhance = compose(
   withRouter,
   connect(
-    ({ curriculumSequence, user }) => ({
+    ({ curriculumSequence, user, test }) => ({
       checkedUnitItems: curriculumSequence.checkedUnitItems,
       isContentExpanded: curriculumSequence.isContentExpanded,
       assigned: curriculumSequence.assigned,
@@ -1273,6 +1273,7 @@ const enhance = compose(
         curriculumSequence?.playlistTestDetailsModal,
       proxyUserRole: proxyRole({ user }),
       currentAssignmentIds: curriculumSequence.currentAssignmentIds,
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector({ test }),
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,
@@ -1286,6 +1287,7 @@ const enhance = compose(
       togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId,
       toggleAssignments: toggleAssignmentsAction,
       setCurrentAssignmentIds: setCurrentAssignmentIdsAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

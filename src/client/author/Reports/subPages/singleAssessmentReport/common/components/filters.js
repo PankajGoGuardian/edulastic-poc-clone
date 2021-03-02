@@ -36,13 +36,14 @@ import {
   getPerformanceBandProfile,
   getStandardMasteryScale,
 } from '../filterDataDucks'
+import { getTestListSelector } from '../../../../ducks'
 import {
   getUserRole,
   getUserOrgId,
   getUser,
 } from '../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../common/util'
-
+import TagFilter from '../../../../../src/components/common/TagFilter'
 import staticDropDownData from '../static/staticDropDownData.json'
 
 const getTestIdFromURL = (url) => {
@@ -84,6 +85,7 @@ const SingleAssessmentReportFilters = ({
   assessmentPerformanceBandProfile,
   assessmentStandardMasteryScale,
   toggleFilter,
+  testList,
 }) => {
   const assessmentTypeRef = useRef()
 
@@ -231,10 +233,11 @@ const SingleAssessmentReportFilters = ({
         studentGrade: urlStudentGrade.key,
         studentSubject: urlStudentSubject.key,
         studentCourseId: search.studentCourseId || 'All',
-        classId: search.classId || '',
-        groupId: search.groupId || '',
+        classIds: search.classIds || '',
+        groupIds: search.groupIds || '',
         standardsProficiencyProfile: urlStandardProficiency?.key || '',
         performanceBandProfile: urlPerformanceBand?.key || '',
+        tags: [],
       }
       if (role === 'teacher') {
         delete _filters.schoolIds
@@ -317,7 +320,8 @@ const SingleAssessmentReportFilters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
-    setFiltersOrTestId({ filters: _filters, testId })
+    const _testId = keyName === 'tags' ? '' : testId
+    setFiltersOrTestId({ filters: _filters, testId: _testId })
     setShowApply(true)
   }
 
@@ -329,7 +333,7 @@ const SingleAssessmentReportFilters = ({
     <StyledFilterWrapper data-cy="filters" style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
-        {showApply && (
+        {showApply && !isEmpty(testList) && (
           <StyledGoButton data-cy="applyFilter" onClick={onGoClick}>
             APPLY
           </StyledGoButton>
@@ -375,7 +379,7 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
           <SearchField>
             <MultiSelectDropdown
-              data-cy="testType"
+              dataCy="testTypes"
               label="Test Type"
               el={assessmentTypeRef}
               onChange={(e) => {
@@ -394,6 +398,20 @@ const SingleAssessmentReportFilters = ({
               )}
             />
           </SearchField>
+          <SearchField>
+            <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+            <TagFilter
+              onChangeField={(type, value) =>
+                updateFilterDropdownCB(
+                  value.map(({ _id }) => _id),
+                  type,
+                  true
+                )
+              }
+              selectedTagIds={filters.tags}
+            />
+          </SearchField>
+
           {prevSARFilterData && (
             <SearchField>
               <FilterLabel data-cy="test">Test</FilterLabel>
@@ -401,6 +419,7 @@ const SingleAssessmentReportFilters = ({
                 firstLoad={firstLoad}
                 termId={filters.termId}
                 grade={filters.grade !== 'All' && filters.grade}
+                tags={filters.tags}
                 subject={filters.subject !== 'All' && filters.subject}
                 testTypes={filters.assessmentTypes}
                 selectedTestId={testId || getTestIdFromURL(location.pathname)}
@@ -467,7 +486,6 @@ const SingleAssessmentReportFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel data-cy="classTitle">Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -479,14 +497,15 @@ const SingleAssessmentReportFilters = ({
               courseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
               }
-              selectCB={(e) => {
-                updateFilterDropdownCB(e, 'classId')
-              }}
-              selectedClassId={filters.classId}
+              selectedClassIds={
+                filters.classIds ? filters.classIds.split(',') : []
+              }
+              selectCB={(e) =>
+                updateFilterDropdownCB(e.join(','), 'classIds', true)
+              }
             />
           </SearchField>
           <SearchField>
-            <FilterLabel data-cy="group">Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -498,10 +517,12 @@ const SingleAssessmentReportFilters = ({
               courseId={
                 filters.studentCourseId !== 'All' && filters.studentCourseId
               }
-              selectCB={(e) => {
-                updateFilterDropdownCB(e, 'groupId')
-              }}
-              selectedGroupId={filters.groupId}
+              selectedGroupIds={
+                filters.groupIds ? filters.groupIds.split(',') : []
+              }
+              selectCB={(e) =>
+                updateFilterDropdownCB(e.join(','), 'groupIds', true)
+              }
             />
           </SearchField>
         </Collapsable>
@@ -567,8 +588,14 @@ const enhance = compose(
       districtId: getUserOrgId(state),
       user: getUser(state),
       prevSARFilterData: getReportsPrevSARFilterData(state),
+      performanceBandProfiles: state?.performanceBandReducer?.profiles || [],
+      standardProficiencyProfiles:
+        state?.standardsProficiencyReducer?.data || [],
+      standardProficiencyLoading:
+        state?.standardsProficiencyReducer?.loading || [],
       assessmentPerformanceBandProfile: getPerformanceBandProfile(state),
       assessmentStandardMasteryScale: getStandardMasteryScale(state),
+      testList: getTestListSelector(state),
     }),
     {
       getSARFilterDataRequest: getSARFilterDataRequestAction,

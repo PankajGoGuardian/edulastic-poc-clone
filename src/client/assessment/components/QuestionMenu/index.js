@@ -22,8 +22,8 @@ class QuestionMenu extends Component {
 
   handleScroll = (option) => {
     window.removeEventListener('scroll', this.throttledFindActiveTab)
-    const { main, advanced, theme } = this.props
-    const options = [...main, ...advanced]
+    const { main, advanced, extras, theme } = this.props
+    const options = [...main, ...advanced, ...extras]
     const activeTab = options.findIndex((opt) => opt.label === option.label)
     this.setState({ activeTab }, () => {
       const node = option.el
@@ -50,12 +50,13 @@ class QuestionMenu extends Component {
   }
 
   findActiveTab = () => {
-    const { main, advanced, advancedAreOpen, theme } = this.props
+    const { main, advanced, extras, advancedAreOpen, theme } = this.props
     const { activeTab } = this.state
     let allOptions = main
     if (advancedAreOpen) {
       allOptions = allOptions.concat(advanced)
     }
+    allOptions = allOptions.concat(extras)
     for (let i = 0; i < allOptions.length; i++) {
       const elm = allOptions[i].el
       if (
@@ -92,11 +93,11 @@ class QuestionMenu extends Component {
   }
 
   get menuOptions() {
-    const { main, advanced, isPremiumUser, isPowerTeacher } = this.props
+    const { main, advanced, extras, isPremiumUser, isPowerTeacher } = this.props
     if (!isPremiumUser || !isPowerTeacher) {
-      return main || []
+      return (main || []).concat(extras) || []
     }
-    return (main || []).concat(advanced) || []
+    return ((main || []).concat(advanced) || []).concat(extras) || []
   }
 
   render() {
@@ -152,6 +153,7 @@ class QuestionMenu extends Component {
 QuestionMenu.propTypes = {
   main: PropTypes.array,
   advanced: PropTypes.array,
+  extras: PropTypes.array,
   advancedAreOpen: PropTypes.bool.isRequired,
   handleAdvancedOpen: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
@@ -162,6 +164,7 @@ QuestionMenu.propTypes = {
 QuestionMenu.defaultProps = {
   main: [],
   advanced: [],
+  extras: [],
   scrollContainer: null,
   questionTitle: '',
 }

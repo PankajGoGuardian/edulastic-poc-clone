@@ -28,7 +28,7 @@ export const CheckboxStyle = styled(Checkbox)`
     .ant-checkbox {
       & + span {
         font-size: ${(props) => props.labelFontSize || '12px'};
-        padding: ${(props) => props.labelPadding || '0px 20px'};
+        padding: ${(props) => props.labelPadding || '0px 10px'};
       }
       .ant-checkbox-inner {
         border-color: ${greyThemeLight};

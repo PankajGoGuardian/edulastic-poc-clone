@@ -178,10 +178,9 @@ const SingleAssessmentReportContainer = (props) => {
         _settings.filters[item] === 'All' ? '' : _settings.filters[item]
       obj[item] = val
     })
-
     setSARSettings({
       selectedTest: _settings.selectedTest,
-      requestFilters: obj,
+      requestFilters: { ...obj, tagIds: _settings.filters.tags.join() },
       cliUser: isCliUser,
     })
   }
@@ -212,6 +211,14 @@ const SingleAssessmentReportContainer = (props) => {
     'performance-by-standards',
     'performance-by-students',
   ]
+
+  useEffect(() => {
+    if (!locList.includes(loc)) {
+      setDdFilter({ ...staticDropDownData.initialDdFilters })
+      setTempDdFilter({ ...staticDropDownData.initialDdFilters })
+    }
+  }, [loc])
+
   const extraFilters = locList.includes(loc)
     ? demographics &&
       demographics.map((item) => (
@@ -247,6 +254,7 @@ const SingleAssessmentReportContainer = (props) => {
         )}
         <FlexContainer
           alignItems="flex-start"
+          justifyContent="space-between"
           display={firstLoad ? 'none' : 'flex'}
         >
           <SingleAssessmentReportFilters
@@ -265,7 +273,7 @@ const SingleAssessmentReportContainer = (props) => {
               '/author/reports/performance-by-standards',
             ].find((x) => window.location.pathname.startsWith(x))}
             style={
-              reportId || !showFilter
+              isCliUser || reportId || !showFilter
                 ? { display: 'none' }
                 : { display: 'block' }
             }

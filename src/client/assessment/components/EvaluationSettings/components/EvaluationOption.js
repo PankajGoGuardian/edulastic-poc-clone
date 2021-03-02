@@ -37,6 +37,7 @@ const EvaluationOption = ({
   onChangeOption,
   onChangeAllowedOptions,
   isNumberFormatDisabled,
+  hidePointOnEquation,
 }) => {
   if (textStyle.includes(optionKey) || numberStyle.includes(optionKey)) {
     return (
@@ -117,6 +118,9 @@ const EvaluationOption = ({
     )
   }
   if (optionKey === 'graphPointsOnAnEquation') {
+    if (hidePointOnEquation) {
+      return null
+    }
     return (
       <PonitsOnAnEquation
         optionKey={optionKey}

@@ -8,7 +8,8 @@ import DateSelector from '../SimpleOptions/DateSelector'
 import QuestionPerStandardSelector from '../SimpleOptions/QuestionPerStandardSelector'
 import { StyledRow } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
+import TagFilter from '../../../src/components/common/TagFilter'
 
 const ClassGroupContainer = ({
   changeField,
@@ -32,14 +33,15 @@ const ClassGroupContainer = ({
   questionPerStandardOptions,
   tootltipWidth,
 }) => {
+  const { tags = testSettings.tags } = assignment
   return (
     <>
       {!isAssignRecommendations && (
         <>
-          <SettingContainer>
+          <SettingContainer id="class-group-setting">
             <DetailsTooltip
               width={tootltipWidth}
-              title="Class/Group Section"
+              title="Class/Group"
               content="Choose one or more classes or groups to receive the test. In the student field below, you can select individuals from these sections if not all students should receive the assignment."
               premium
             />
@@ -51,11 +53,11 @@ const ClassGroupContainer = ({
             />
           </SettingContainer>
 
-          <SettingContainer>
+          <SettingContainer id="students-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="Students"
-              content="Select individual students if required. If this field is left blank, all students in the class will receive the assignment."
+              content="If you don’t want to assign the test to all students in the class, select Specific Students here and enter individual names in the box below."
               premium
             />
             <StudentSelector
@@ -83,7 +85,7 @@ const ClassGroupContainer = ({
         tootltipWidth={tootltipWidth}
       />
 
-      <SettingContainer>
+      <SettingContainer id="open-policy-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="OPEN POLICY"
@@ -128,7 +130,7 @@ const ClassGroupContainer = ({
         </StyledRow>
       </SettingContainer>
 
-      <SettingContainer>
+      <SettingContainer id="close-policy-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="CLOSE POLICY"
@@ -154,6 +156,28 @@ const ClassGroupContainer = ({
                 </Select.Option>
               ))}
             </SelectInputStyled>
+          </Col>
+        </StyledRow>
+      </SettingContainer>
+
+      <SettingContainer id="tags-setting">
+        <DetailsTooltip
+          width={tootltipWidth}
+          title="TAGS"
+          content="Tags are keywords you can use to search for your tests in the Assignments or Insights sections.  Entering a tag makes it easier to locate an assigned test or quickly access test data."
+          premium
+          placement="rightTop"
+        />
+        <StyledRow gutter={16}>
+          <Col span={10}>
+            <FieldLabel>Tags</FieldLabel>
+          </Col>
+          <Col span={14}>
+            <TagFilter
+              selectedTags={tags}
+              canCreate
+              onChangeField={(type, value) => changeField(type)(value)}
+            />
           </Col>
         </StyledRow>
       </SettingContainer>

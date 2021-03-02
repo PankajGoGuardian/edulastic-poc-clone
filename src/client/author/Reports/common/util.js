@@ -28,12 +28,12 @@ const studentFiltersDefaultValues = [
     key: '',
     nestedFilters: [
       {
-        key: 'classId',
-        value: 'All',
+        key: 'classIds',
+        value: '',
       },
       {
-        key: 'groupId',
-        value: 'All',
+        key: 'groupIds',
+        value: '',
       },
     ],
   },
@@ -46,6 +46,15 @@ export const testTypeHashMap = {
   'common assessment': 'common',
   assessment: 'class',
 }
+
+export const DemographicCompareByOptions = [
+  'gender',
+  'race',
+  'gender',
+  'frlStatus',
+  'ellStatus',
+  'iepStatus',
+]
 
 export const percentage = (
   numerator = 0,

@@ -18,7 +18,6 @@ import {
   IconPlaylist,
   IconShare,
   IconSave,
-  IconAirdrop,
   IconUseThis,
   IconTrash,
   IconMoreVertical,
@@ -107,7 +106,6 @@ const CurriculumHeader = ({
   updateDestinationPlaylist,
   handleEditClick,
   handleUseThisClick,
-  openDropPlaylistModal,
   onShareClick,
   onApproveClick,
   handleNavChange,
@@ -212,6 +210,7 @@ const CurriculumHeader = ({
             onChange={handleNavChange}
             current={currentTab}
             showDifferentiationTab={isSparkMathPlaylist}
+            showInsightTab={role === roleuser.TEACHER}
           />
         )}
 

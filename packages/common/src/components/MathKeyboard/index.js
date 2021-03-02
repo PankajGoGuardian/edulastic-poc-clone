@@ -81,7 +81,7 @@ class MathKeyboard extends React.PureComponent {
       command: 'write',
     }))
 
-    const allBtns = customKeys
+    let allBtns = customKeys
       .map((key) => ({
         handler: key,
         label: key,
@@ -89,6 +89,12 @@ class MathKeyboard extends React.PureComponent {
         command: 'write',
       }))
       .concat(KEYBOARD_BUTTONS)
+
+    if (isCustomMode) {
+      allBtns = allBtns.concat(
+        TAB_BUTTONS.reduce((acc, curr) => [...acc, ...curr.buttons], [])
+      )
+    }
 
     const availables = isCustomMode
       ? compact(

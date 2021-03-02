@@ -145,6 +145,7 @@ class Display extends Component {
       isPrintPreview,
       userAnswers,
       setAnswers,
+      hideCorrectAnswer,
     } = this.props
 
     const showDropItemBorder = get(item, 'responseLayout.showborder', false)
@@ -296,7 +297,11 @@ class Display extends Component {
       </>
     )
     const answerBox =
-      showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
+        correctAnswerBoxLayout
+      ) : (
+        <div />
+      )
     return (
       <StyledDisplayContainer fontSize={fontSize}>
         <FlexContainer alignItems="baseline" justifyContent="flex-start">

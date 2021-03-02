@@ -14,7 +14,12 @@ import {
   borderGrey2,
   greyThemeDark2,
 } from '@edulastic/colors'
-import { withWindowSizes, ItemDetailContext, COMPACT } from '@edulastic/common'
+import {
+  withWindowSizes,
+  ItemDetailContext,
+  COMPACT,
+  FieldLabel,
+} from '@edulastic/common'
 import { PaperWrapper } from './Graph/common/styled_components'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
@@ -65,7 +70,10 @@ import Hints from './Hints'
 import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
 import ShowUserWork from './Common/ShowUserWork'
-import { playerSkinTypeSelector } from '../selectors/test'
+import {
+  getIsPreviewModalVisibleSelector,
+  playerSkinTypeSelector,
+} from '../selectors/test'
 import {
   isItemVisibiltySelector,
   ttsUserIdSelector,
@@ -74,7 +82,10 @@ import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemIn
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
 import { getFontSize } from '../utils/helpers'
 import { changeDataToPreferredLanguage } from '../utils/question'
-import { languagePreferenceSelector } from '../../common/components/LanguageSelector/duck'
+import {
+  languagePreferenceSelector,
+  getCurrentLanguage,
+} from '../../common/components/LanguageSelector/duck'
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
@@ -186,14 +197,13 @@ const QuestionContainer = styled.div`
   }
 `
 
-export const TimeSpentWrapper = styled.p`
+export const TimeSpentWrapper = styled.div`
   font-size: 19px;
   color: ${greyThemeDark2};
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
   align-items: center;
-  padding-top: 10px;
   margin: ${({ margin }) => margin};
   &.student-report {
     position: absolute;
@@ -318,6 +328,7 @@ class QuestionWrapper extends Component {
     this.state = {
       main: [],
       advanced: [],
+      extras: [],
       activeTab: 0,
       shuffledOptsOrder: [],
       page: 1,
@@ -364,7 +375,7 @@ class QuestionWrapper extends Component {
 
   static getDerivedStateFromProps(props) {
     if (props.view !== EDIT) {
-      return { main: [], advanced: [], activeTab: 0 }
+      return { main: [], advanced: [], extras: [], activeTab: 0 }
     }
     return null
   }
@@ -374,9 +385,18 @@ class QuestionWrapper extends Component {
    * @returns {boolean} whether current student is a tts user
    */
   get ttsVisibilityAuthorSide() {
-    const { studentId, ttsUserIds = [], userRole, data } = this.props
+    const {
+      studentId,
+      ttsUserIds = [],
+      userRole,
+      data,
+      isTestPreviewModalVisible,
+    } = this.props
     const key = data?.activity?.userId || studentId
-    return userRole === 'teacher' && ttsUserIds.includes(key)
+    return (
+      userRole !== roleuser.STUDENT &&
+      (ttsUserIds.includes(key) || isTestPreviewModalVisible)
+    )
   }
 
   shouldComponentUpdate(prevProps) {
@@ -385,6 +405,7 @@ class QuestionWrapper extends Component {
       windowWidth: prevWindowWidth,
       windowHeight: prevWindowHeight,
       userWork: prevUserWork,
+      hideCorrectAnswer: prevHideCorrectAnswer,
     } = prevProps
     const {
       data,
@@ -393,6 +414,7 @@ class QuestionWrapper extends Component {
       windowWidth,
       windowHeight,
       userWork,
+      hideCorrectAnswer,
     } = this.props
 
     if (
@@ -402,7 +424,8 @@ class QuestionWrapper extends Component {
       isEqual(prevUserWork, userWork) &&
       isEqual(prevData?.activity, data?.activity) &&
       prevWindowHeight === windowHeight &&
-      prevWindowWidth === windowWidth
+      prevWindowWidth === windowWidth &&
+      hideCorrectAnswer === prevHideCorrectAnswer
     ) {
       return false
     }
@@ -494,8 +517,7 @@ class QuestionWrapper extends Component {
 
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
-
-    const { main, advanced, activeTab, page } = this.state
+    const { main, advanced, extras, activeTab, page } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
     const { layoutType } = this.context
@@ -528,7 +550,7 @@ class QuestionWrapper extends Component {
     }
 
     const canShowPlayer =
-      ((showUserTTS === 'yes' && userRole === 'student') ||
+      ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
         this.ttsVisibilityAuthorSide) &&
       data.tts &&
       data.tts.taskStatus === 'COMPLETED'
@@ -614,6 +636,7 @@ class QuestionWrapper extends Component {
                     activeTab={activeTab}
                     main={main}
                     advanced={advanced}
+                    extras={extras}
                     advancedAreOpen={this.advancedAreOpen}
                     scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
@@ -627,6 +650,7 @@ class QuestionWrapper extends Component {
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 isStudentReport={isStudentReport}
+                isLCBView={isLCBView}
                 borderRadius={isLCBView ? '10px' : borderRadius}
                 style={{
                   width:
@@ -674,39 +698,42 @@ class QuestionWrapper extends Component {
                     setPage={this.setPage}
                   />
                   {!hasDrawingResponse && showFeedback && !isPrintPreview && (
-                    <>
-                      <TimeSpentWrapper
-                        className={isStudentReport ? 'student-report' : ''}
-                      >
-                        {!!showStudentWork && (
-                          <ShowUserWork
-                            style={{ marginRight: '1rem' }}
-                            onClickHandler={() => {
-                              // load the data from server and then show
-                              loadScratchPad({
-                                testActivityId: data?.activity?.testActivityId,
-                                testItemId: data?.activity?.testItemId,
-                                qActId:
-                                  data?.activity?.qActId || data?.activity?._id,
-                                callback: () => showStudentWork(),
-                              })
-                            }}
-                          >
-                            Show student work
-                          </ShowUserWork>
-                        )}
-                        {timeSpent && (
-                          <>
-                            <IconClockCircularOutline />
-                            {round(timeSpent / 1000, 1)}s
-                          </>
-                        )}
-                      </TimeSpentWrapper>
-                    </>
+                    <TimeSpentWrapper
+                      className={isStudentReport ? 'student-report' : ''}
+                    >
+                      {!!showStudentWork && (
+                        <ShowUserWork
+                          style={{ marginRight: '1rem' }}
+                          onClickHandler={() => {
+                            // load the data from server and then show
+                            loadScratchPad({
+                              testActivityId: data?.activity?.testActivityId,
+                              testItemId: data?.activity?.testItemId,
+                              qActId:
+                                data?.activity?.qActId || data?.activity?._id,
+                              callback: () => showStudentWork(),
+                            })
+                          }}
+                        >
+                          Show student work
+                        </ShowUserWork>
+                      )}
+                      {timeSpent && (
+                        <>
+                          <IconClockCircularOutline />
+                          {round(timeSpent / 1000, 1)}s
+                        </>
+                      )}
+                    </TimeSpentWrapper>
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
                     <RubricTableWrapper>
-                      <span>Graded Rubric</span>
+                      <FieldLabel className="rubric-title">
+                        Graded Rubric
+                      </FieldLabel>
+                      <FieldLabel className="rubric-name">
+                        {rubricDetails.name}
+                      </FieldLabel>
                       <PreviewRubricTable
                         data={rubricDetails}
                         rubricFeedback={rubricFeedback}
@@ -820,6 +847,8 @@ const enhance = compose(
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),
       studentLanguagePreference: languagePreferenceSelector(state, ownProps),
+      authLanguage: getCurrentLanguage(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -849,11 +878,14 @@ const RubricTableWrapper = styled.div`
   border-radius: 10px;
   margin-top: 10px;
   padding: 10px 10px 0px;
-  > span {
+
+  .rubric-title {
     font-size: ${(props) => props.theme.titleSectionFontSize};
     font-weight: ${(props) => props.theme.semiBold};
-    display: inline-block;
     margin: 0px 16px 10px;
-    text-transform: uppercase;
+  }
+  .rubric-name {
+    font-size: ${(props) => props.theme.standardFont};
+    margin: 0px 42px 10px;
   }
 `

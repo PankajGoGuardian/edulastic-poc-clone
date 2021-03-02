@@ -40,6 +40,7 @@ import {
   CHANGE_CURRENT_QUESTION,
 } from '../../sharedDucks/questions'
 import { getQuestionDataSelector } from '../../QuestionEditor/ducks'
+import { answersByQId } from '../../../assessment/selectors/test'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -159,9 +160,16 @@ function* evaluateAnswers({ payload }) {
       !item.isDocBased
     ) {
       const answers = yield select((state) => _get(state, 'answers', []))
-      const { evaluation, score, maxScore } = yield evaluateItem(answers, {
-        [question?.id]: question,
-      })
+      const answersByQids = answersByQId(answers, item._id)
+      const { evaluation, score, maxScore } = yield evaluateItem(
+        answersByQids,
+        {
+          [question?.id]: question,
+        },
+        undefined,
+        undefined,
+        item._id
+      )
 
       yield put({
         type: ADD_ITEM_EVALUATION,
@@ -183,14 +191,16 @@ function* evaluateAnswers({ payload }) {
       }
     } else {
       const answers = yield select((state) => _get(state, 'answers', {}))
-      const items = yield select((state) => state.itemDetail.item)
-      const { itemLevelScore = 0, itemLevelScoring = false } = items || {}
+      const _item = yield select((state) => state.itemDetail.item)
+      const { itemLevelScore = 0, itemLevelScoring = false } = _item || {}
       const questions = yield select(getQuestionsSelector)
+      const answersByQids = answersByQId(answers, _item._id)
       const { evaluation, score, maxScore } = yield evaluateItem(
-        answers,
+        answersByQids,
         questions,
         itemLevelScoring,
-        itemLevelScore
+        itemLevelScore,
+        _item._id
       )
       yield put({
         type: ADD_ITEM_EVALUATION,

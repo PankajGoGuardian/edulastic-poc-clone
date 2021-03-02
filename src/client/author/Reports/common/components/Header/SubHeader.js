@@ -64,7 +64,12 @@ const SubHeader = ({
   }
 
   return (
-    <SecondaryHeader style={{ marginBottom: isShowBreadcrumb ? 20 : 0 }}>
+    <SecondaryHeader
+      style={{
+        marginBottom: isShowBreadcrumb ? 20 : 0,
+        paddingLeft: '5px',
+      }}
+    >
       <HeaderTitle>
         {isShowBreadcrumb ? (
           <Breadcrumb data={breadcrumbsData} style={{ position: 'unset' }} />

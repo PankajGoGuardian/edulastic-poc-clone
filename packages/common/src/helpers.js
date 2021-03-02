@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { get, round, isNaN, isString, omit } from 'lodash'
+import { get, round, isNaN, isString, omit, isEqual } from 'lodash'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import { fileApi } from '@edulastic/api'
@@ -305,6 +305,12 @@ const parseTemplate = (tmpl) => {
     return ''
   }
   const parsedHTML = $('<div />').html(temp)
+  // Clean v1 math content for jsx parser
+  $(parsedHTML)
+    .find('.MathJax')
+    .each(function () {
+      $(this).replaceWith(`<span>${$(this).html()}</span>`)
+    })
 
   $(parsedHTML)
     .find('textinput, mathinput, textdropdown, response, mathunit')
@@ -362,6 +368,13 @@ export const reIndexResponses = (htmlStr) => {
     })
 
   return $(parsedHTML).html()
+}
+
+export const isValidUpdate = (prevContent = '', currentContent = '') => {
+  const uuidPattern = /id="(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12})"/g
+  const prevIds = prevContent.match(uuidPattern)
+  const newIds = currentContent.match(uuidPattern)
+  return isEqual(prevIds, newIds)
 }
 
 const tagMapping = {
@@ -473,7 +486,7 @@ export const removeIndexFromTemplate = (tmpl) => {
       $(this).removeAttr('responseindex')
       $(this).removeAttr('contenteditable')
     })
-  return $(parsedHTML).html()
+  return sanitizeString($(parsedHTML).html())
 }
 
 export const allowedFileTypes = [
@@ -966,6 +979,17 @@ export const toggleIntercomDisplay = () => {
   }
 }
 
+export const hasMediaDevice = async (deviceKind) => {
+  let mediaDevices = navigator.mediaDevices
+  if (!mediaDevices || !mediaDevices.enumerateDevices) {
+    return false
+  }
+
+  const devices = await mediaDevices.enumerateDevices()
+
+  return devices.some((device) => device.kind === deviceKind)
+}
+
 /** A small utiltiy to help Resolve promises sequentially */
 const executePromisesInSequence = (promises) =>
   promises.reduce(
@@ -988,13 +1012,18 @@ export const getSanitizedProps = (props, blackListedProps) => {
   return omit(props, blackListedProps)
 }
 
-export const captureSentryException = (err) => {
+export const captureSentryException = (err, extraData) => {
   // Ignore BE's business errors
   if (!err || (err && [409, 302, 422, 403].includes(err.status))) {
     return
   }
 
-  Sentry.captureException(err)
+  Sentry.withScope((scope) => {
+    if (extraData) {
+      scope.setExtra('extraData', extraData)
+    }
+    Sentry.captureException(err)
+  })
 }
 
 const removeImageTags = (text = '') => {
@@ -1007,6 +1036,31 @@ export const replaceLatexTemplate = (str) => {
     /#{(.*?)#}/g,
     '<span class="input__math" data-latex="$1"></span>'
   )
+}
+
+export const removeTokenFromHtml = (str) => {
+  const tokenArr = []
+  const regex = new RegExp(
+    '<span(.*?)class="token active-word"(.*?)>(.*?)</span>',
+    'g'
+  )
+  let match = regex.exec(str)
+
+  while (match !== null) {
+    tokenArr.push(match.splice(3))
+    match = regex.exec(str)
+  }
+
+  tokenArr.forEach((elem) => {
+    const replaceStr = elem.splice(0)
+    str = str.replace(
+      new RegExp(
+        `<span(.*?)class="token active-word"(.*?)>${replaceStr}</span>`
+      ),
+      replaceStr
+    )
+  })
+  return str
 }
 
 export default {
@@ -1037,4 +1091,6 @@ export default {
   getSanitizedProps,
   captureSentryException,
   replaceLatexTemplate,
+  hasMediaDevice,
+  removeTokenFromHtml,
 }

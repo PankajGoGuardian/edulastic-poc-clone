@@ -4,15 +4,11 @@ export const transformFiltersForSAR = ({
   studentGrade,
   studentSubject,
   studentCourseId,
-  classId,
   classIds,
-  groupId,
   groupIds,
   performanceBandProfile,
   ...requestFilters
 }) => {
-  classIds = classIds && Array.isArray(classIds) ? classIds.join(',') : classId
-  groupIds = groupIds && Array.isArray(groupIds) ? groupIds.join(',') : groupId
   return {
     ...requestFilters,
     testGrade: grade,

@@ -9,19 +9,6 @@ import { CustomChartCursor } from '../../../../../common/components/charts/chart
 
 import { getSecondsFormattedTimeInMins } from '../../utils/helpers'
 
-const chartSpecifics = {
-  barsData: [
-    {
-      key: 'avgPerformance',
-      stackId: 'a',
-      fill: getHSLFromRange1(100),
-      unit: '%',
-    },
-    { key: 'avgIncorrect', stackId: 'a', fill: getHSLFromRange1(0), unit: '%' },
-  ],
-  yAxisLabel: 'Above/Below Standard',
-}
-
 const lineYTickFormatter = (val) => {
   return getSecondsFormattedTimeInMins(val)
 }
@@ -87,9 +74,9 @@ export const SimpleStackedBarWithLineChartContainer = ({
       margin={{ top: 0, right: 60, left: 60, bottom: 0 }}
       pageSize={10}
       data={chartData}
-      barsData={chartSpecifics.barsData}
       xAxisDataKey="qLabel"
       bottomStackDataKey="avgPerformance"
+      bottomStackDataUnit="%"
       topStackDataKey="avgIncorrect"
       getTooltipJSX={getTooltipJSX}
       TooltipCursor={CustomChartCursor}

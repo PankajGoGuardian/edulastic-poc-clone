@@ -10,8 +10,8 @@
     { "key": "studentGrade", "closable": true, "subType": "class" },
     { "key": "studentSubject", "closable": true, "subType": "class" },
     { "key": "studentCourseId", "closable": true },
-    { "key": "classId", "closable": true },
-    { "key": "groupId", "closable": true },
+    { "key": "classIds", "closable": true },
+    { "key": "groupIds", "closable": true },
     { "key": "standardsProficiencyProfile", "closable": false },
     { "key": "performanceBandProfile", "closable": false },
     { "key": "race", "closable": true },
@@ -31,10 +31,11 @@
     "studentGrade": "All",
     "studentSubject": "All",
     "studentCourseId": "All",
-    "classId": "",
-    "groupId": "",
+    "classIds": "",
+    "groupIds": "",
     "standardsProficiencyProfile": "",
-    "performanceBandProfile": ""
+    "performanceBandProfile": "",
+    "tags": []
   },
   "initialDdFilters": {
     "race": "all",

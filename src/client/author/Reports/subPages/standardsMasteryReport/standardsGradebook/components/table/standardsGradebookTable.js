@@ -35,11 +35,6 @@ export const GradebookTable = styled(StyledTable)`
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
-      }
       .ant-table-body {
         overflow-x: auto !important;
       }
@@ -272,8 +267,6 @@ const StandardsGradebookTableComponent = ({
   }
 
   const getColumnsData = () => {
-    const extraColsNeeded =
-      filteredTableData.length && filteredTableData[0].standardsInfo.length
     let result = [
       {
         title: idToName[tableDdFilters.compareBy],
@@ -348,54 +341,57 @@ const StandardsGradebookTableComponent = ({
       }
     }
 
-    if (extraColsNeeded) {
-      result = [
-        ...result,
-        ...Object.values(
-          keyBy(
-            flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
-            'standardId'
-          )
-        ).map((item, index) => {
-          const standardProgressNav = getStandardProgressNav(
-            navigationItems,
-            item.standardId,
-            tableDdFilters.compareBy
-          )
-          const titleComponent = (
-            <>
-              <span>{item.standardName}</span>
-              <br />
-              <span>
-                {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
-              </span>
-            </>
-          )
-          return {
-            title: standardProgressNav ? (
-              <Link to={standardProgressNav}>{titleComponent}</Link>
-            ) : (
-              titleComponent
-            ),
-            dataIndex: item.standardId,
-            key: item.standardId,
-            align: 'center',
-            render: renderStandardIdColumns(
-              index,
-              tableDdFilters.compareBy,
-              tableDdFilters.analyseBy,
-              item.standardName,
-              item.standardId
-            ),
-          }
-        }),
-      ]
-    }
+    result = [
+      ...result,
+      ...Object.values(
+        keyBy(
+          flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
+          'standardId'
+        )
+      ).map((item, index) => {
+        const standardProgressNav = getStandardProgressNav(
+          navigationItems,
+          item.standardId,
+          tableDdFilters.compareBy
+        )
+        const titleComponent = (
+          <>
+            <span>{item.standardName}</span>
+            <br />
+            <span>
+              {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
+            </span>
+          </>
+        )
+        return {
+          title: standardProgressNav ? (
+            <Link to={standardProgressNav}>{titleComponent}</Link>
+          ) : (
+            titleComponent
+          ),
+          dataIndex: item.standardId,
+          key: item.standardId,
+          align: 'center',
+          render: renderStandardIdColumns(
+            index,
+            tableDdFilters.compareBy,
+            tableDdFilters.analyseBy,
+            item.standardName,
+            item.standardId
+          ),
+        }
+      }),
+    ]
 
     return result
   }
 
   const columnsData = getColumnsData()
+
+  const scrollX = useMemo(() => {
+    const visibleColumns = columnsData.filter((column) => !column.visibleOn)
+    return visibleColumns.length * 180 || '100%'
+  }, [columnsData])
 
   const compareByDropDownData = next(
     dropDownFormat.compareByDropDownData,
@@ -462,7 +458,7 @@ const StandardsGradebookTableComponent = ({
             tableToRender={GradebookTable}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
-            scroll={{ x: 800 }}
+            scroll={{ x: scrollX }}
           />
         </Row>
       </StyledCard>

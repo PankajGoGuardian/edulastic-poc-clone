@@ -12,6 +12,13 @@ import EduScientificCalculator from './EduScientificCalculator'
 import CalculatorTitle from './components/CalculatorTitle'
 import AppConfig from '../../../../../app-config'
 
+export function getDefaultCalculatorProvider(type) {
+  if (type === 'SCIENTIFIC') {
+    return 'DESMOS'
+  }
+  return 'EDULASTIC'
+}
+
 const defaultRndPros = {
   geogebraCalculator: { x: 0, y: 0, width: 800, height: 635 },
   basicCalculator: { x: 0, y: 0, width: 350, height: 355 },

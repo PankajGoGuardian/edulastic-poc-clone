@@ -219,6 +219,27 @@ const fetchStudentPerformance = (params) => {
     .then(({ data }) => data.result)
 }
 
+const fetchEngagementSummary = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `/report/engagement-summary`,
+    params,
+  })
+
+const fetchActivityBySchool = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `/report/activity-by-school`,
+    params,
+  })
+
+const fetchActivityByTeacher = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `/report/activity-by-teacher`,
+    params,
+  })
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -248,4 +269,7 @@ export default {
   fetchStudentList,
   fetchStudentStandards,
   fetchStudentPerformance,
+  fetchEngagementSummary,
+  fetchActivityBySchool,
+  fetchActivityByTeacher,
 }

@@ -10,7 +10,7 @@ import {
   isSEB,
 } from '@edulastic/common'
 import { IconAccessibility, IconCircleLogout, IconSend } from '@edulastic/icons'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -50,6 +50,7 @@ const SaveAndExit = ({
   hideData,
   toggleScratchpadVisibility,
   hidePause,
+  savingResponse,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
@@ -62,49 +63,66 @@ const SaveAndExit = ({
           {currentVisibilityState} student work
         </ScratchpadVisibilityToggler>
       )}
-      {showZoomBtn && (
-        <StyledButton
-          title="Visual Assistance"
-          onClick={() => setSettingsModalVisibility(true)}
-        >
-          <IconAccessibility />
-        </StyledButton>
+      {showZoomBtn && !LCBPreviewModal && (
+        <Tooltip placement="bottom" title="Test Options">
+          <StyledButton onClick={() => setSettingsModalVisibility(true)}>
+            <IconAccessibility />
+          </StyledButton>
+        </Tooltip>
       )}
       {showPause &&
         !inSEB &&
         (previewPlayer ? (
           <>
             {!isCliUserPreview && (
-              <SaveAndExitButton
-                title={hidePause?"Save & Exit disabled due to configuration":"Exit"}
-                data-cy="finishTest"
-                disabled={hidePause}
-                onClick={finishTest}
+              <Tooltip
+                placement="bottom"
+                title={
+                  hidePause
+                    ? 'This assignment is configured to completed in a single sitting'
+                    : 'Exit'
+                }
               >
-                <IconCircleLogout />
-                EXIT
-              </SaveAndExitButton>
+                <SaveAndExitButton
+                  data-cy="finishTest"
+                  disabled={hidePause}
+                  onClick={finishTest}
+                >
+                  <IconCircleLogout />
+                  EXIT
+                </SaveAndExitButton>
+              </Tooltip>
             )}
           </>
         ) : (
           <>
             {!isCliUser && (
-              <SaveAndExitButton
-                title={hidePause?"Save & Exit disabled due to configuration":"Save & Exit"}
-                disabled={hidePause}
-                data-cy="finishTest"
-                onClick={finishTest}
+              <Tooltip
+                placement="bottomRight"
+                title={
+                  hidePause
+                    ? 'This assignment is configured to completed in a single sitting'
+                    : 'Save & Exit'
+                }
               >
-                <IconCircleLogout />
-              </SaveAndExitButton>
+                <SaveAndExitButton
+                  disabled={hidePause}
+                  data-cy="finishTest"
+                  onClick={finishTest}
+                >
+                  <IconCircleLogout />
+                </SaveAndExitButton>
+              </Tooltip>
             )}
           </>
         ))}
       {onSubmit && (
-        <EduButton isGhost onClick={onSubmit}>
-          <IconSend />
-          SUBMIT
-        </EduButton>
+        <div id="submitTestButton" tabIndex="-1">
+          <EduButton isGhost onClick={onSubmit} loading={savingResponse}>
+            <IconSend />
+            SUBMIT
+          </EduButton>
+        </div>
       )}
     </FlexContainer>
   )
@@ -116,6 +134,7 @@ SaveAndExit.propTypes = {
   setSettingsModalVisibility: PropTypes.func,
   previewPlayer: PropTypes.bool,
   showZoomBtn: PropTypes.bool,
+  savingResponse: PropTypes.bool,
 }
 
 SaveAndExit.defaultProps = {
@@ -123,6 +142,7 @@ SaveAndExit.defaultProps = {
   previewPlayer: false,
   setSettingsModalVisibility: () => null,
   onSubmit: null,
+  savingResponse: false,
 }
 
 export default connect(
@@ -130,6 +150,7 @@ export default connect(
     pauseAllowed: state.test?.settings?.pauseAllowed,
     isCliUser: get(state, 'user.isCliUser', false),
     hideData: state?.scratchpad?.hideData,
+    savingResponse: get(state, 'test.savingResponse', false),
   }),
   {
     setSettingsModalVisibility: setSettingsModalVisibilityAction,

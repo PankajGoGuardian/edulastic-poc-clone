@@ -56,10 +56,12 @@ import {
   getUserFeatures,
   toggleMultipleAccountNotificationAction,
   isProxyUser as isProxyUserSelector,
+  toggleFreeAdminSubscriptionModalAction,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
   getAccountSwitchDetails,
+  isFreeAdminSelector,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser } from '../../authUtils'
@@ -207,9 +209,9 @@ class SideMenu extends Component {
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       _menuItems = _menuItems.filter((i) => libraryItems.includes(i.label))
     }
-    const collaborationItem = []
+    const conditionalMenuItems = []
     if (userRole === roleuser.TEACHER && features.showCollaborationGroups) {
-      collaborationItem.push({
+      conditionalMenuItems.push({
         label: 'Collaboration Groups',
         icon: () => (
           // TODO: replace this terrible icon with better one
@@ -233,7 +235,7 @@ class SideMenu extends Component {
     }
 
     if (!lastPlayList || !lastPlayList.value)
-      return [..._menuItems, ...collaborationItem]
+      return [..._menuItems, ...conditionalMenuItems]
 
     const [item1, ...rest] = _menuItems
     const { _id = '' } = lastPlayList.value || {}
@@ -250,9 +252,9 @@ class SideMenu extends Component {
       path: `author/playlists/playlist/${_id}/use-this`,
     }
     if (item1.divider) {
-      return [myPlayListItem, ..._menuItems, ...collaborationItem]
+      return [myPlayListItem, ..._menuItems, ...conditionalMenuItems]
     }
-    return [item1, myPlayListItem, ...rest, ...collaborationItem]
+    return [item1, myPlayListItem, ...rest, ...conditionalMenuItems]
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
@@ -271,8 +273,15 @@ class SideMenu extends Component {
 
   handleMenu = (item) => {
     if (item.key) {
-      const { history } = this.props
-      const { path } = this.MenuItems[item.key]
+      const {
+        history,
+        isFreeAdmin,
+        toggleFreeAdminSubscriptionModal,
+      } = this.props
+      const { path, label } = this.MenuItems[item.key]
+      if (label === 'Assignments' && isFreeAdmin) {
+        return toggleFreeAdminSubscriptionModal()
+      }
       if (path !== undefined) {
         if (path.match(/playlists\/.{24}\/use-this/)) {
           history.push({ pathname: `/${path}`, state: { from: 'myPlaylist' } })
@@ -759,12 +768,14 @@ const enhance = compose(
         'curriculumSequence.showUseThisNotification',
         false
       ),
+      isFreeAdmin: isFreeAdminSelector(state),
       isMultipleAccountNotification: state.user.isMultipleAccountNotification,
     }),
     {
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
       toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

@@ -7,7 +7,12 @@ import {
   assignmentPolicyOptions,
   assignmentStatusOptions,
 } from '@edulastic/constants'
-import { MainContentWrapper, notification, EduButton } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  notification,
+  EduButton,
+  SelectInputStyled,
+} from '@edulastic/common'
 import {
   getAdditionalDataSelector,
   getTestActivitySelector,
@@ -21,7 +26,6 @@ import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 import {
   OptionConationer,
   InitOptions,
-  StyledSelect,
   StyledRow,
 } from '../AssignTest/components/SimpleOptions/styled'
 import DateSelector from '../AssignTest/components/SimpleOptions/DateSelector'
@@ -151,7 +155,7 @@ function LCBAssignmentSettings({
                 </InputLabelContainer>
               </Col>
               <Col span={12}>
-                <StyledSelect
+                <SelectInputStyled
                   data-cy="selectOpenPolicy"
                   placeholder="Please select"
                   cache="false"
@@ -163,13 +167,14 @@ function LCBAssignmentSettings({
                         .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
                     status !== assignmentStatusOptions.NOT_OPEN
                   }
+                  height="30px"
                 >
                   {openPolicy.map(({ value, text }, index) => (
                     <Select.Option key={index} value={value} data-cy="open">
                       {text}
                     </Select.Option>
                   ))}
-                </StyledSelect>
+                </SelectInputStyled>
               </Col>
             </StyledRow>
             <StyledRow gutter={16}>
@@ -179,20 +184,21 @@ function LCBAssignmentSettings({
                 </InputLabelContainer>
               </Col>
               <Col span={12}>
-                <StyledSelect
+                <SelectInputStyled
                   data-cy="selectClosePolicy"
                   placeholder="Please select"
                   cache="false"
                   value={assignment?.closePolicy}
                   onChange={changeField('closePolicy')}
                   disabled={status === assignmentStatusOptions.DONE}
+                  height="30px"
                 >
                   {closePolicy.map(({ value, text }, index) => (
                     <Select.Option data-cy="class" key={index} value={value}>
                       {text}
                     </Select.Option>
                   ))}
-                </StyledSelect>
+                </SelectInputStyled>
               </Col>
             </StyledRow>
 

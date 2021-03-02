@@ -657,10 +657,10 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="contactEmails">
-                <FieldLabel>Contact</FieldLabel>
+                <FieldLabel>Parents/Guardians</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator('contactEmails')(
-                    <TextInputStyled placeholder="Enter Contact" />
+                    <TextInputStyled placeholder="Enter email comma separated..." />
                   )}
                 </Form.Item>
               </Field>

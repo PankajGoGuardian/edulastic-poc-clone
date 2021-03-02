@@ -11,6 +11,10 @@
     "message": "Image size should be less than 2MB",
     "description": ""
   },
+  "fileSizeError1MB": {
+    "message": "File size should be less than 1MB",
+    "description": ""
+  },
   "fileSizeError5MB": {
     "message": "File size should be less than 5MB",
     "description": ""
@@ -276,7 +280,7 @@
     "description": ""
   },
   "curriculumMakeApiErr": {
-    "message": "You can no longer use this, as sharing access has been revoked by author.",
+    "message": "You can no longer use this, as sharing access has been revoked by author",
     "description": ""
   },
   "curriculumMakeApiWarn": {
@@ -804,7 +808,7 @@
     "description": ""
   },
   "tryingToAccessPrivateTest": {
-    "message": "Trying to access private test",
+    "message": "This test is marked private",
     "description": ""
   },
   "redirectSuccessful": {
@@ -891,8 +895,8 @@
     "message": "Rubric is saved and published",
     "description": ""
   },
-  "rubricUpdatedSuccessfully": {
-    "message": "Rubric updated successfully",
+  "rubricSharedSuccessfully": {
+    "message": "Rubric share was successful.",
     "description": ""
   },
   "itemIsSaved": {
@@ -1117,6 +1121,10 @@
   },
   "pleaseUploadFileInImageFormat": {
     "message": "Please upload files in image format",
+    "description": ""
+  },
+  "pleaseUploadFileInRequiredFormat": {
+    "message": "Please upload files in required format",
     "description": ""
   },
   "widthShouldBeGreaterThanZero": {
@@ -1759,6 +1767,14 @@
     "message": "error parent code",
     "description": ""
   },
+  "errorParentCodeExpired": {
+    "message": "Invitation link expired. Please login using your credentials.",
+    "description": ""
+  },
+  "errorParentCodeNotFound": {
+    "message": "Invitation code not found.",
+    "description": ""
+  },
   "errorSettingPassword": {
     "message": "error setting password",
     "description": ""
@@ -1840,7 +1856,7 @@
     "description": ""
   },
   "testIsExpired": {
-    "message": "Test is expired",
+    "message": "The due date for this assignment has passed",
     "description": ""
   },
   "selectLanguage": {

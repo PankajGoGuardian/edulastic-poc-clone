@@ -47,6 +47,7 @@ const ShortTextPreview = ({
   showQuestionNumber,
   evaluation,
   isPrintPreview,
+  hideCorrectAnswer,
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer)
   const [selection, setSelection] = useState({ start: 0, end: 0 })
@@ -174,7 +175,7 @@ const ShortTextPreview = ({
             )}
           </InputWrapper>
           {view !== EDIT && <Instructions item={item} />}
-          {previewTab === SHOW && (
+          {previewTab === SHOW && !hideCorrectAnswer && (
             <>
               <CorrectAnswersContainer
                 title={t('component.shortText.correctAnswers')}

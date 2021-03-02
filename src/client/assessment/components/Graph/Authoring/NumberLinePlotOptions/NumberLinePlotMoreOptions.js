@@ -122,15 +122,10 @@ class NumberLinePlotMoreOptions extends Component {
         </Question>
 
         <Extras
-          isSection={false}
-          cleanSections={cleanSections}
           fillSections={fillSections}
+          cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
-          item={graphData}
-        >
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
+        />
       </>
     )
   }

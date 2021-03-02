@@ -65,21 +65,22 @@ import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
 
 const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
 
-function PauseToolTip({ outNavigationCounter, pauseReason }) {
+function PauseToolTip({ outNavigationCounter, pauseReason, children }) {
   let reason = null
-  console.log('pauseToolTip', { pauseReason })
   if (pauseReason === 'blocked-save-and-continue') {
-    reason = 'Paused due to idle timeout'
+    reason =
+      'Test is paused due to inactivity.  To reset, place a check mark in student card, go to More, select Resume'
   } else if (pauseReason === 'exiting') {
     reason = 'Paused due to browser exiting before submiting'
   } else if (pauseReason === 'out-of-navigation') {
     // reason = `Paused because of navigating outside asssessment ${outNavigationCounter>1?`${outNavigationCounter} times`: `${outNavigationCounter} time`}`
-    reason = 'Paused due to tab navigation'
+    reason =
+      'Test is paused due to multiple attempts to navigate away. To reset, place check mark in student card, go to More, select Resume'
   } else if (outNavigationCounter > 0) {
-    reason = `navigated ${
+    reason = `Student has navigated out of test ${
       outNavigationCounter > 1
         ? `${outNavigationCounter} times`
-        : `${outNavigationCounter} time out of assessment`
+        : `${outNavigationCounter} time`
     }`
   } else if (pauseReason) {
     reason = pauseReason
@@ -87,9 +88,11 @@ function PauseToolTip({ outNavigationCounter, pauseReason }) {
 
   return reason ? (
     <Tooltip title={reason}>
-      <QuestionIcon type="question-circle" />
+      <QuestionIcon type="warning" theme="filled" /> {children}
     </Tooltip>
-  ) : null
+  ) : (
+    children
+  )
 }
 class DisneyCardContainer extends Component {
   constructor(props) {
@@ -204,18 +207,22 @@ class DisneyCardContainer extends Component {
          */
         const enrollMentFlag =
           student.isEnrolled === false ? (
-            <span title="Not Enrolled">
-              <ExclamationMark />
-            </span>
+            <Tooltip title="Not Enrolled">
+              <span>
+                <ExclamationMark />
+              </span>
+            </Tooltip>
           ) : (
             ''
           )
         const isAcitveStudentUnassigned =
           student.isAssigned === false && student.isEnrolled
         const unAssignedMessage = isAcitveStudentUnassigned ? (
-          <span title="Unassigned">
-            <ExclamationMark />
-          </span>
+          <Tooltip title="Unassigned">
+            <span>
+              <ExclamationMark />
+            </span>
+          </Tooltip>
         ) : (
           ''
         )
@@ -329,11 +336,12 @@ class DisneyCardContainer extends Component {
                       >
                         {enrollMentFlag}
                         {unAssignedMessage}
-                        {status.status}{' '}
                         <PauseToolTip
                           outNavigationCounter={student.outNavigationCounter}
                           pauseReason={student.pauseReason}
-                        />
+                        >
+                          {status.status}{' '}
+                        </PauseToolTip>
                       </StyledParaS>
                       {pastDueTag && (
                         <StatusRow>
@@ -366,14 +374,15 @@ class DisneyCardContainer extends Component {
                   </Row>
                   <Row style={{ display: 'flex' }}>
                     {hasUsedScratchPad && (
-                      <StyledIconCol title="Student has used scratchpad">
-                        <ScratchPadIcon />
-                      </StyledIconCol>
+                      <Tooltip title="Student has used scratchpad">
+                        <StyledIconCol>
+                          <ScratchPadIcon />
+                        </StyledIconCol>
+                      </Tooltip>
                     )}
                     {student.redirected && (
                       <StyledIconCol>
-                        <i
-                          data-cy="redirected"
+                        <Tooltip
                           title={`Assignment is redirected to the student on ${
                             student.redirectedDate
                               ? moment(student.redirectedDate).format(
@@ -381,10 +390,14 @@ class DisneyCardContainer extends Component {
                                 )
                               : '-'
                           }`}
-                          className="fa fa-external-link"
-                          aria-hidden="true"
-                          style={{ color: themeColor }}
-                        />
+                        >
+                          <i
+                            data-cy="redirected"
+                            className="fa fa-external-link"
+                            aria-hidden="true"
+                            style={{ color: themeColor }}
+                          />
+                        </Tooltip>
                       </StyledIconCol>
                     )}
                   </Row>
@@ -684,7 +697,8 @@ const Refresh = styled.div`
 `
 const QuestionIcon = styled(Icon)`
   cursor: pointer;
-  color: #5eb500;
+  color: #fdcc3b;
   font-size: 15px;
-  margin-left: 6px;
+  margin-left: -2px;
+  padding-right: 2px;
 `

@@ -66,6 +66,7 @@ const ClassificationPreview = ({
   setQuestionData,
   isPrintPreview,
   isPrint,
+  hideCorrectAnswer,
 }) => {
   const listPosition = get(item, 'uiStyle.possibilityListPosition', 'left')
   const rowHeader = get(item, 'uiStyle.rowHeader', null)
@@ -491,7 +492,7 @@ const ClassificationPreview = ({
             )}
           </div>
           {view !== EDIT && <Instructions item={item} />}
-          {previewTab === SHOW || isReviewTab ? (
+          {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer ? (
             <ChoiceContainer>
               <CorrectAnswers
                 classifications={classifications}

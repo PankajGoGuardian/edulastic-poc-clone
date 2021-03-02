@@ -133,6 +133,10 @@ const StandardsGradebook = ({
     setChartFilter(_chartFilter)
   }
 
+  const onBarResetClickCB = () => {
+    setChartFilter({})
+  }
+
   const masteryScale = selectedScale || []
   const maxMasteryScore = getMaxMasteryScore(masteryScale)
 
@@ -180,7 +184,9 @@ const StandardsGradebook = ({
         <StyledCard>
           <Row type="flex" justify="start">
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledH3>Mastery Level Distribution by Standard</StyledH3>
+              <StyledH3 marginLeft="50px">
+                Mastery Level Distribution by Standard
+              </StyledH3>
             </Col>
           </Row>
           <Row>
@@ -191,6 +197,7 @@ const StandardsGradebook = ({
               masteryScale={masteryScale}
               role={userRole}
               onBarClickCB={onBarClickCB}
+              onBarResetClickCB={onBarResetClickCB}
               backendPagination={{
                 ...pageFilters,
                 pageCount:
@@ -250,5 +257,4 @@ const enhance = compose(
 )
 
 export default enhance(StandardsGradebook)
-
 // -----|-----|-----|-----|-----| COMPONENT ENDED |-----|-----|-----|-----|----- //

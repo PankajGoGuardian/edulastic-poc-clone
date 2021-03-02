@@ -47,6 +47,7 @@ import {
   ApplyFitlerLabel,
   FilterLabel,
 } from '../../../../common/styled'
+import TagFilter from '../../../../../src/components/common/TagFilter'
 
 const StandardsFilters = ({
   user,
@@ -71,6 +72,7 @@ const StandardsFilters = ({
   showApply,
   setShowApply,
   setFirstLoad,
+  firstLoad,
   reportId,
 }) => {
   const assessmentTypesRef = useRef()
@@ -172,11 +174,12 @@ const StandardsFilters = ({
         grade: urlGrade.key,
         subject: urlSubject.key,
         courseId: search.courseId || 'All',
-        classId: search.classId || '',
-        groupId: search.groupId || '',
+        classIds: search.classIds || '',
+        groupIds: search.groupIds || '',
         testGrade: urlTestGrade.key,
         testSubject: urlTestSubject.key,
         assessmentTypes: search.assessmentTypes || '',
+        tags: [],
         curriculumId: urlCurriculum.key || '',
         standardGrade: urlStandardGrade.key,
         profileId: urlStandardProficiency?.key || '',
@@ -235,6 +238,20 @@ const StandardsFilters = ({
     _onGoClick(settings)
   }
 
+  useEffect(() => {
+    if (!filters.showApply && !firstLoad) {
+      onGoClick()
+    }
+  }, [filters.showApply])
+
+  const onApplyClick = () => {
+    if (filters.showApply) {
+      setFilters({ ...filters, showApply: false })
+    } else {
+      onGoClick()
+    }
+  }
+
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     // update tags data
     const _tagsData = { ...tagsData, [keyName]: selected }
@@ -270,17 +287,19 @@ const StandardsFilters = ({
       <Spin />
     </StyledFilterWrapper>
   ) : (
-    <StyledFilterWrapper style={style}>
+    <StyledFilterWrapper data-cy="filters" style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         {showApply && (
-          <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+          <StyledGoButton data-cy="applyFilter" onClick={onApplyClick}>
+            APPLY
+          </StyledGoButton>
         )}
       </GoButtonWrapper>
       <PerfectScrollbar>
-        <Collapsable header="Find student" defaultActiveKey="0">
+        <Collapsable header="find students" defaultActiveKey="0">
           <SearchField>
-            <FilterLabel>School Year</FilterLabel>
+            <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
             <ControlDropDown
               by={filters.termId}
               selectCB={(e, selected) =>
@@ -316,7 +335,7 @@ const StandardsFilters = ({
             </>
           )}
           <SearchField>
-            <FilterLabel>Class Grade</FilterLabel>
+            <FilterLabel data-cy="classGrade">Class Grade</FilterLabel>
             <ControlDropDown
               prefix="Grade"
               by={filters.grade}
@@ -328,7 +347,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Class Subject</FilterLabel>
+            <FilterLabel data-cy="classSubject">Class Subject</FilterLabel>
             <ControlDropDown
               by={filters.subject}
               selectCB={(e, selected) =>
@@ -340,14 +359,13 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Course</FilterLabel>
+            <FilterLabel data-cy="course">Course</FilterLabel>
             <CourseAutoComplete
               selectedCourseId={filters.courseId}
               selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Class</FilterLabel>
             <ClassAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -355,14 +373,16 @@ const StandardsFilters = ({
               grade={filters.grade !== 'All' && filters.grade}
               subject={filters.subject !== 'All' && filters.subject}
               courseId={filters.courseId !== 'All' && filters.courseId}
+              selectedClassIds={
+                filters.classIds ? filters.classIds.split(',') : []
+              }
               selectCB={(e) => {
-                updateFilterDropdownCB(e, 'classId')
+                updateFilterDropdownCB(e.join(','), 'classIds', true)
               }}
               selectedClassId={filters.classId}
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Group</FilterLabel>
             <GroupsAutoComplete
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -370,16 +390,19 @@ const StandardsFilters = ({
               grade={filters.grade !== 'All' && filters.grade}
               subject={filters.subject !== 'All' && filters.subject}
               courseId={filters.courseId !== 'All' && filters.courseId}
+              selectedGroupIds={
+                filters.groupIds ? filters.groupIds.split(',') : []
+              }
               selectCB={(e) => {
-                updateFilterDropdownCB(e, 'groupId')
+                updateFilterDropdownCB(e.join(','), 'groupIds', true)
               }}
               selectedGroupId={filters.groupId}
             />
           </SearchField>
         </Collapsable>
-        <Collapsable header="Filter by test">
+        <Collapsable header="filter by test">
           <SearchField>
-            <FilterLabel>Test Grade</FilterLabel>
+            <FilterLabel data-cy="testGrade">Test Grade</FilterLabel>
             <ControlDropDown
               prefix="Grade"
               by={filters.testGrade}
@@ -391,7 +414,7 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
-            <FilterLabel>Test Subject</FilterLabel>
+            <FilterLabel data-cy="testSubject">Test Subject</FilterLabel>
             <ControlDropDown
               by={filters.testSubject}
               selectCB={(e, selected) =>
@@ -404,6 +427,7 @@ const StandardsFilters = ({
           </SearchField>
           <SearchField>
             <MultiSelectDropdown
+              dataCy="testTypes"
               label="Test Type"
               el={assessmentTypesRef}
               onChange={(e) => {
@@ -423,10 +447,25 @@ const StandardsFilters = ({
             />
           </SearchField>
           <SearchField>
+            <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+            <TagFilter
+              onChangeField={(type, value) =>
+                updateFilterDropdownCB(
+                  value.map(({ _id }) => _id),
+                  type,
+                  true
+                )
+              }
+              selectedTagIds={filters.tags}
+            />
+          </SearchField>
+          <SearchField>
             <AssessmentsAutoComplete
+              dataCy="tests"
               termId={filters.termId}
               grade={filters.testGrade !== 'All' && filters.testGrade}
               subject={filters.testSubject !== 'All' && filters.testSubject}
+              tags={filters.tags}
               testTypes={filters.assessmentTypes}
               selectedTestIds={testIds}
               selectCB={onSelectTest}

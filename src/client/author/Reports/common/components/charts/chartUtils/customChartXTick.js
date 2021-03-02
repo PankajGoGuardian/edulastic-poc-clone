@@ -14,6 +14,14 @@ export const CustomChartXTick = (props) => {
     text += '...'
   }
 
+  if (tickWidth < 80 && text.length > 10) {
+    text = `${text.substr(0, 7)}...`
+  } else if (tickWidth < 100 && text.length > 15) {
+    text = `${text.substr(0, 12)}...`
+  } else if (text.length > 20) {
+    text = `${text.substr(0, 17)}...`
+  }
+
   return (
     <g transform={`translate(${x},${y})`}>
       <StyledAxisTickText

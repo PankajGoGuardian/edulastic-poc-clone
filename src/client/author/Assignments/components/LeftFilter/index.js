@@ -17,6 +17,7 @@ import {
   getDistrictIdSelector,
   getAssignmentTeacherList,
   getAssignmentTestList,
+  getAssignmentTestsSelector,
 } from '../../../src/selectors/assignments'
 import {
   getGroupList,
@@ -27,6 +28,7 @@ import selectsData from '../../../TestPage/components/common/selectsData'
 import { FilterContainer } from './styled'
 import Folders from '../../../src/components/Folders'
 import { setItemsMoveFolderAction } from '../../../src/actions/folder'
+import TagFilter from '../../../src/components/common/TagFilter'
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData
 
@@ -47,12 +49,19 @@ class LeftFilter extends React.Component {
       districtId,
       loadAssignmentsSummary,
     } = this.props
-    let filters = { ...filterState, [key]: value }
+    let _value = value
+    if (key === 'tags') {
+      _value = value.map(({ _id }) => _id)
+    }
+    let filters = { ...filterState, [key]: _value }
 
     if (!isAdvancedView) {
-      loadAssignments({ filters })
+      if (key === 'tags') {
+        filters = { ...filters, pageNo: 1, testId: '' }
+      }
+      loadAssignments({ filters, folderId: filters.folderId })
     } else {
-      if (!['testId', 'assignedBy'].includes(key)) {
+      if (!['testId', 'assignedBy', 'tags'].includes(key)) {
         filters = { ...filters, pageNo: 1, assignedBy: '', testId: '' }
       } else if (key !== 'testId') {
         filters = { ...filters, pageNo: 1, testId: '' }
@@ -60,6 +69,7 @@ class LeftFilter extends React.Component {
         filters = { ...filters, pageNo: 1 }
       }
       loadAssignmentsSummary({
+        folderId: filters.folderId,
         districtId,
         filters: pickBy(filters, identity),
         filtering: true,
@@ -79,8 +89,8 @@ class LeftFilter extends React.Component {
       currentTerm,
     } = this.props
     const filters = folderId
-      ? { ...filterState, termId: '' }
-      : { ...filterState, termId: currentTerm }
+      ? { ...filterState, termId: '', folderId }
+      : { ...filterState, termId: currentTerm, folderId: '' }
 
     if (isAdvancedView) {
       loadAssignmentsSummary({
@@ -95,7 +105,7 @@ class LeftFilter extends React.Component {
       loadAssignments({ filters })
     }
 
-    if (filterState.termId !== filters.termId) onSetFilter(filters)
+    onSetFilter(filters)
   }
 
   deselectItemsFolder = () => {
@@ -110,8 +120,9 @@ class LeftFilter extends React.Component {
       userRole,
       classList,
       teacherList,
-      assignmentTestList,
+      assignmentTestList = [],
       isAdvancedView,
+      teacherTestList = [],
     } = this.props
     const {
       subject,
@@ -122,6 +133,8 @@ class LeftFilter extends React.Component {
       status,
       testId,
       assignedBy,
+      tags = [],
+      folderId = '',
     } = filterState
     const roleBasedTestType =
       userRole === 'teacher' ? testTypes : AdminTestTypes
@@ -238,31 +251,6 @@ class LeftFilter extends React.Component {
                 </Select.Option>
               ))}
             </SelectInputStyled>
-            <FieldLabel>Test Name</FieldLabel>
-            <SelectInputStyled
-              data-cy="filter-test-name"
-              mode="default"
-              showSearch
-              placeholder="All Tests"
-              value={testId}
-              onChange={this.handleChange('testId')}
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              }
-              margin="0px 0px 15px"
-            >
-              <Select.Option key={0} value="">
-                All Tests
-              </Select.Option>
-              {assignmentTestList?.map(({ testId: _id, title }, index) => (
-                <Select.Option key={index} value={_id}>
-                  {title}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
           </>
         )}
 
@@ -352,12 +340,52 @@ class LeftFilter extends React.Component {
           </>
         )}
 
+        <FieldLabel>Tags</FieldLabel>
+        <TagFilter
+          margin="0px 0px 15px"
+          onChangeField={(type, value) => this.handleChange(type)(value)}
+          selectedTagIds={tags}
+        />
+
+        <FieldLabel>Test Name</FieldLabel>
+        <SelectInputStyled
+          data-cy="filter-test-name"
+          mode="default"
+          showSearch
+          placeholder="All Tests"
+          value={testId}
+          onChange={this.handleChange('testId')}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+            0
+          }
+          margin="0px 0px 15px"
+        >
+          <Select.Option key={0} value="">
+            All Tests
+          </Select.Option>
+          {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) &&
+            assignmentTestList?.map(({ testId: _id, title }, index) => (
+              <Select.Option key={index} value={_id}>
+                {title}
+              </Select.Option>
+            ))}
+          {userRole === roleuser.TEACHER &&
+            teacherTestList.map(({ _id, title }, index) => (
+              <Select.Option key={index} value={_id}>
+                {title}
+              </Select.Option>
+            ))}
+        </SelectInputStyled>
+
         <Folders
           showAllItems
           removeItemFromCart={this.deselectItemsFolder}
           isAdvancedView={isAdvancedView}
           onSelectFolder={this.handleSelectFolder}
           folderType={folderTypes.ASSIGNMENT}
+          selectedFolderId={folderId}
         />
       </FilterContainer>
     )
@@ -388,6 +416,7 @@ export default connect(
     classList: getGroupList(state),
     teacherList: getAssignmentTeacherList(state),
     assignmentTestList: getAssignmentTestList(state),
+    teacherTestList: getAssignmentTestsSelector(state),
     currentTerm: getCurrentTerm(state),
   }),
   {

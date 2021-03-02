@@ -98,13 +98,10 @@ const MathFormulaOptions = ({
       />
 
       <Extras
-        advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
-      >
-        <Extras.Distractors visible={false} />
-        <Extras.Hints visible={false} />
-      </Extras>
+        advancedAreOpen={advancedAreOpen}
+      />
     </WidgetOptions>
   )
 }

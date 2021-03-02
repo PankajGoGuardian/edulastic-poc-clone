@@ -149,7 +149,7 @@ const StandardsMasteryReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters) {
+    if (settings.requestFilters.termId) {
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -190,13 +190,14 @@ const StandardsMasteryReportContainer = (props) => {
       })
       const {
         selectedTests = [],
-        filters: { domainIds = [] },
+        filters: { domainIds = [], tags = [] },
       } = _settings
       setSMRSettings({
         requestFilters: {
           ...obj,
           testIds: selectedTests.join(),
           domainIds: domainIds.join(),
+          tagIds: tags.join(),
         },
       })
     }
@@ -215,9 +216,16 @@ const StandardsMasteryReportContainer = (props) => {
     })
   }
 
+  const locList = ['standards-gradebook', 'standards-progress']
+  useEffect(() => {
+    if (!locList.includes(loc)) {
+      setDdFilter({ ...staticDropDownData.initialDdFilters })
+      setTempDdFilter({ ...staticDropDownData.initialDdFilters })
+    }
+  }, [loc])
+
   const extraFilters =
-    (loc === 'standards-gradebook' || loc === 'standards-progress') &&
-    demographics
+    locList.includes(loc) && demographics
       ? demographics.map((item) => (
           <SearchField key={item.key}>
             <FilterLabel>{item.title}</FilterLabel>
@@ -266,6 +274,7 @@ const StandardsMasteryReportContainer = (props) => {
       )}
       <FlexContainer
         alignItems="flex-start"
+        justifyContent="space-between"
         display={firstLoad ? 'none' : 'flex'}
       >
         <StandardsFilters

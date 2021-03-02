@@ -6,6 +6,7 @@ import { takeEvery, put, all, select } from 'redux-saga/effects'
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
 import { evaluateItem } from '../../author/src/utils/evalution'
+import { answersByQId } from '../selectors/test'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -87,11 +88,13 @@ function* evaluateTestItemSaga({ payload }) {
       .reduce((acc, curr) => [...acc, curr.reference], [])
       .map((qid) => allQuestionsById[qid])
     const qById = keyBy(questions, 'id')
+    const answersByQids = answersByQId(answers, testItem._id)
     const { evaluation, score, maxScore } = yield evaluateItem(
-      answers,
+      answersByQids,
       qById,
       itemLevelScoring,
-      itemLevelScore
+      itemLevelScore,
+      testItem._id
     )
     const previewUserWork = yield select(
       ({ userWork }) => userWork.present[testItemId]
@@ -105,15 +108,16 @@ function* evaluateTestItemSaga({ payload }) {
         testItemId,
         graded: true,
         notStarted: false,
-        score: answers[q.id] ? score : 0,
+        score: answers[`${testItemId}_${q.id}`] ? score : 0,
         skipped:
-          isEmpty(answers[q.id]) && !defaultManualGradedType.includes(q.type),
+          isEmpty(answers[`${testItemId}_${q.id}`]) &&
+          !defaultManualGradedType.includes(q.type),
         pendingEvaluation:
           isEmpty(evaluation) || defaultManualGradedType.includes(q.type),
         qLabel: isEmpty(q.qSubLabel)
           ? q.barLabel
           : `${q.barLabel}.${q.qSubLabel}`,
-        evaluation: evaluation[q.id],
+        evaluation: evaluation[`${testItemId}_${q.id}`],
       }
       if (previewUserWork) {
         activity.userWork = previewUserWork

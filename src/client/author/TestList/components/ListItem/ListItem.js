@@ -48,6 +48,7 @@ import {
   getCollectionsSelector,
   getUserId,
   getCollectionsToAddContent,
+  isFreeAdminSelector,
 } from '../../../src/selectors/user'
 import {
   approveOrRejectSingleTestRequestAction,
@@ -84,6 +85,9 @@ import {
 } from './styled'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import { sharedTypeMap } from '../Item/Item'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 
 class ListItem extends Component {
   static propTypes = {
@@ -141,15 +145,22 @@ class ListItem extends Component {
 
   assignTest = (e) => {
     e && e.stopPropagation()
-    const { history, item } = this.props
-    history.push({
-      pathname: `/author/assignments/${item._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    const {
+      history,
+      item,
+      toggleFreeAdminSubscriptionModal,
+      isFreeAdmin,
+    } = this.props
+    if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
+    else
+      history.push({
+        pathname: `/author/assignments/${item._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
   }
 
   openModal = () => {
@@ -157,11 +168,15 @@ class ListItem extends Component {
   }
 
   hidePreviewModal = () => {
-    this.setState({ isPreviewModalVisible: false })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
+    this.setState({ currentTestId: '' })
   }
 
   showPreviewModal = (testId) => {
-    this.setState({ isPreviewModalVisible: true, currentTestId: testId })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(true)
+    this.setState({ currentTestId: testId })
   }
 
   onApprove = (newCollections = []) => {
@@ -240,6 +255,7 @@ class ListItem extends Component {
       currentUserId,
       isTestLiked,
       collectionToWrite,
+      isPreviewModalVisible,
     } = this.props
     const { analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
@@ -247,7 +263,7 @@ class ListItem extends Component {
     const standardsIdentifiers = isPlaylist
       ? flattenPlaylistStandards(_source?.modules)
       : standards.map((_item) => _item.identifier)
-    const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state
+    const { isOpenModal, currentTestId } = this.state
     const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail
     const isInCart = !!selectedTests.find((o) => o._id === item._id)
     const allowDuplicate =
@@ -323,12 +339,14 @@ class ListItem extends Component {
           collectionName={collectionName}
         />
 
-        <TestPreviewModal
-          isModalVisible={isPreviewModalVisible}
-          testId={currentTestId}
-          showStudentPerformance
-          closeTestPreviewModal={this.hidePreviewModal}
-        />
+        {currentTestId && (
+          <TestPreviewModal
+            isModalVisible={isPreviewModalVisible}
+            testId={currentTestId}
+            showStudentPerformance
+            closeTestPreviewModal={this.hidePreviewModal}
+          />
+        )}
         <Container>
           <ContentWrapper>
             <Col span={24}>
@@ -572,10 +590,14 @@ const enhance = compose(
       isCoTeacher: isCoTeacherSelector(state),
       currentUserId: getUserId(state),
       collectionToWrite: getCollectionsToAddContent(state),
+      isFreeAdmin: isFreeAdminSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

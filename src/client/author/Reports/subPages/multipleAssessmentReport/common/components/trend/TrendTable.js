@@ -169,15 +169,15 @@ const getColumns = (
 ) => {
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
   const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
-    const { startDate, testName = 'N/A' } =
+    const { assessmentDate, testName = 'N/A' } =
       groupedAvailableTests[testId].reduce((ele, res) =>
-        ele.startDate > res.startDate ? ele : res
+        ele.assessmentDate > res.assessmentDate ? ele : res
       ) || {}
 
     return {
       key: testId,
       title: testName,
-      startDate,
+      assessmentDate,
       align: 'center',
       className: 'normal-text',
       dataIndex: 'tests',
@@ -298,8 +298,8 @@ const getColumns = (
 
   return columns.concat(
     filteredDynamicColumns.sort((a, b) =>
-      a.startDate !== b.startDate
-        ? a.startDate - b.startDate
+      a.assessmentDate !== b.assessmentDate
+        ? a.assessmentDate - b.assessmentDate
         : a.title.toLowerCase().localeCompare(b.title.toLowerCase())
     )
   )

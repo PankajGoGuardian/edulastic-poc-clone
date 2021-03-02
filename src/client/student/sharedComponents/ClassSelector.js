@@ -154,7 +154,10 @@ function StudentSelect({ changeChild, childs, currentChild }) {
     return null
   }
   return (
-    <AssignmentSelectClass id="class-dropdown-wrapper">
+    <AssignmentSelectClass
+      id="class-dropdown-wrapper"
+      style={{ marginRight: '20px' }}
+    >
       <ClassLabel>student</ClassLabel>
       <Select
         value={currentChild}
@@ -190,7 +193,7 @@ const ClassLabel = styled.span`
   font-size: ${(props) => props.theme.header.headerClassTitleFontSize};
   color: ${(props) => props.theme.header.headerClassTitleColor};
   font-weight: 600;
-  margin-right: 30px;
+  margin-right: 10px;
   align-items: center;
   letter-spacing: 0.2px;
 

@@ -42,6 +42,10 @@ function Preview({
   scractchPadUsed,
   t,
   isStudentView,
+  isStudentWorkCollapseOpen,
+  toggleStudentWorkCollapse,
+  hideCorrectAnswer,
+  testActivityId: utaId,
 }) {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -101,7 +105,6 @@ function Preview({
         qIndex={qIndex}
         evaluation={evaluation}
         showStudentWork={showStudentWork}
-        passageTestItemID={passageId}
         isQuestionView={isQuestionView}
         isExpressGrader={isExpressGrader}
         isLCBView={isLCBView}
@@ -111,12 +114,16 @@ function Preview({
         highlights={highlights}
         scratchpadDimensions={scratchpadDimensions}
         saveUserWork={() => {}}
+        isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+        toggleStudentWorkCollapse={toggleStudentWorkCollapse}
         {...scoringProps}
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
         inLCB
         itemId={item._id}
         isStudentView={isStudentView}
+        testActivityId={utaId}
+        hideCorrectAnswer={hideCorrectAnswer}
       />
     </StyledFlexContainer>
   )
@@ -139,7 +146,14 @@ class ClassQuestions extends Component {
       showPlayerModal: false,
       selectedTestItem: [],
       showDocBasedPlayer: false,
+      isStudentWorkCollapseOpen: false,
     }
+  }
+
+  toggleStudentWorkCollapse = () => {
+    this.setState(({ isStudentWorkCollapseOpen }) => ({
+      isStudentWorkCollapseOpen: !isStudentWorkCollapseOpen,
+    }))
   }
 
   // show AssessmentPlayerModal
@@ -203,7 +217,9 @@ class ClassQuestions extends Component {
         }
         if (item.itemLevelScoring) {
           const firstQid = data.questions[0].id
-          const firstQAct = userQActivities.find((x) => x._id === firstQid)
+          const firstQAct = userQActivities.find(
+            (x) => x._id === firstQid && x.testItemId === item._id
+          )
           if (firstQAct) {
             if (
               filter === 'correct' &&
@@ -243,7 +259,8 @@ class ClassQuestions extends Component {
           .map((question) => {
             const { id } = question
             let qActivities = questionActivities.filter(
-              ({ qid, id: altId }) => qid === id || altId === id
+              ({ qid, id: altId, testItemId }) =>
+                (qid === id || altId === id) && testItemId === item._id
             )
             if (qActivities.length > 1) {
               /**
@@ -419,7 +436,12 @@ class ClassQuestions extends Component {
     })
 
   render() {
-    const { showPlayerModal, selectedTestItem, showDocBasedPlayer } = this.state
+    const {
+      showPlayerModal,
+      selectedTestItem,
+      showDocBasedPlayer,
+      isStudentWorkCollapseOpen,
+    } = this.state
     const {
       questionActivities,
       currentStudent,
@@ -438,6 +460,7 @@ class ClassQuestions extends Component {
       t,
       ttsUserIds,
       isStudentView,
+      hideCorrectAnswer,
     } = this.props
     const testItems = this.getTestItems()
     const { expressGrader: isExpressGrader = false } = this.context
@@ -446,7 +469,7 @@ class ClassQuestions extends Component {
       if (curr.pendingEvaluation) {
         acc[curr.qid] = 'pending'
       } else {
-        acc[curr.qid] = curr.evaluation
+        acc[`${curr.testItemId}_${curr.qid}`] = curr.evaluation
       }
 
       return acc
@@ -488,9 +511,13 @@ class ClassQuestions extends Component {
           isLCBView={isLCBView}
           questionActivity={questionActivity}
           scractchPadUsed={scractchPadUsed}
+          isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+          toggleStudentWorkCollapse={this.toggleStudentWorkCollapse}
           userWork={userWork} // used to determine show student work button
           t={t}
+          hideCorrectAnswer={hideCorrectAnswer}
           isStudentView={isStudentView}
+          testActivityId={testActivityId || currentStudent.testActivityId}
         />
       )
     })

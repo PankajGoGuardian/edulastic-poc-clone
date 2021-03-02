@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Row, Col, Select, Input, Icon, InputNumber, Radio } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { blueBorder, red, green } from '@edulastic/colors'
@@ -12,7 +12,7 @@ import {
   MessageSpan,
 } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
-import { SettingContainer } from './styled'
+import SettingContainer from './SettingsContainer'
 
 const { passwordPolicyOptions, passwordPolicy: passwordPolicyValues } = test
 
@@ -45,6 +45,10 @@ const AntiCheatingGroupContainer = ({
     restrictNavigationOutAttemptsThreshold = testSettings.restrictNavigationOutAttemptsThreshold,
   } = assignmentSettings
 
+  const navigationThresholdMoreThan1 =
+    restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+    restrictNavigationOutAttemptsThreshold > 1
+
   const {
     assessmentSuperPowersShuffleQuestions,
     assessmentSuperPowersShuffleAnswerChoice,
@@ -54,6 +58,7 @@ const AntiCheatingGroupContainer = ({
     premium,
   } = featuresAvailable
 
+  const numInputRef = useRef()
   const validateAndUpdatePassword = (_assignmentPassword) => {
     overRideSettings('assignmentPassword', _assignmentPassword)
     if (_assignmentPassword.split(' ').length > 1) {
@@ -97,7 +102,7 @@ const AntiCheatingGroupContainer = ({
       {
         /* Shuffle Question */
         !isDocBased && (
-          <SettingContainer>
+          <SettingContainer id="shuffle-items-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="SHUFFLE ITEMS"
@@ -130,7 +135,7 @@ const AntiCheatingGroupContainer = ({
       {
         /* Shuffle Answer Choice */
         !isDocBased && (
-          <SettingContainer>
+          <SettingContainer id="shuffle-answer-choice-setting">
             <DetailsTooltip
               width={tootltipWidth}
               title="SHUFFLE ANSWER CHOICE"
@@ -161,7 +166,7 @@ const AntiCheatingGroupContainer = ({
       }
 
       {/* Require Password */}
-      <SettingContainer>
+      <SettingContainer id="require-password-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="REQUIRE PASSWORD"
@@ -263,11 +268,12 @@ const AntiCheatingGroupContainer = ({
 
       {
         /* BLOCK SAVE AND CONTINUE starts */
-        <SettingContainer>
+        <SettingContainer id="block-saveandcontinue-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="Complete test in one sitting"
-            content="Will force the students to take the test in single sitting"
+            content="If ON, then students will not be allowed to exit the test without submitting. In case they close the app they will be paused and the instructor will need to manually resume."
+            placement="rightTop"
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
@@ -279,8 +285,9 @@ const AntiCheatingGroupContainer = ({
                 disabled={freezeSettings || !premium}
                 size="small"
                 checked={blockSaveAndContinue}
+                data-cy="bockSaveAndContinueSwitch"
                 onChange={(value) =>
-                  overRideSettings('blockSaveAndContinue', !value)
+                  overRideSettings('blockSaveAndContinue', value)
                 }
               />
             </Col>
@@ -291,11 +298,34 @@ const AntiCheatingGroupContainer = ({
 
       {
         /* Restrict navigation out starts */
-        <SettingContainer>
+        <SettingContainer id="restrict-nav-out-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict Navigation Out Of Test"
-            content="If ON, students must take the test in full screen mode to prevent opening another browser window. The student will get an alert if they navigate out of full screen mode during the test. If the designated number of alerts are exceeded, the student’s assignment will be paused and the instructor will need to manually reset."
+            content={
+              <>
+                <p>
+                  If ON, students must take the test in full screen mode to
+                  prevent opening another browser window. Alert will appear if
+                  student has navigated away for more than 5 seconds. If the
+                  designated number of alerts are exceeded, the student’s
+                  assignment will be paused and the instructor will need to
+                  manually reset.
+                </p>
+                {navigationThresholdMoreThan1 ? (
+                  <>
+                    <br />
+                    <p>
+                      Alert will appear if student has navigated away for more
+                      than 5 seconds and student will be blocked after{' '}
+                      {restrictNavigationOutAttemptsThreshold * 5} seconds
+                    </p>
+                  </>
+                ) : (
+                  ''
+                )}
+              </>
+            }
             premium={premium}
           />
           <StyledRow gutter={16} mb="15px">
@@ -305,19 +335,31 @@ const AntiCheatingGroupContainer = ({
             <Col span={14}>
               <StyledRadioGroupWrapper
                 value={restrictNavigationOut || undefined}
-                disabled={freezeSettings}
+                disabled={freezeSettings || !premium}
                 onChange={(e) => {
                   overRideSettings('restrictNavigationOut', e.target.value)
                 }}
               >
-                <Radio value={undefined}>DISABLED</Radio>
+                <Radio value={undefined} data-cy="restrict-nav-out-disabled">
+                  DISABLED
+                </Radio>
                 <br />
-                <Radio value="warn-and-report">WARN AND REPORT ONLY</Radio>
+                <Radio
+                  value="warn-and-report"
+                  data-cy="restrict-nav-out-warn-report"
+                >
+                  WARN AND REPORT ONLY
+                </Radio>
                 <br />
-                <Radio value="warn-and-report-after-n-alerts">
+                <Radio
+                  value="warn-and-report-after-n-alerts"
+                  data-cy="restrict-nav-out-warn-report-alerts"
+                  title="Alert will appear if student has navigated away for more than 5 seconds"
+                >
                   WARN AND BLOCK TEST AFTER{' '}
                   <InputNumberStyled
                     size="small"
+                    ref={numInputRef}
                     min={1}
                     value={
                       restrictNavigationOut
@@ -325,10 +367,18 @@ const AntiCheatingGroupContainer = ({
                         : undefined
                     }
                     onChange={(v) => {
-                      overRideSettings(
-                        'restrictNavigationOutAttemptsThreshold',
-                        v
-                      )
+                      if (v) {
+                        overRideSettings(
+                          'restrictNavigationOutAttemptsThreshold',
+                          v
+                        )
+                      } else {
+                        numInputRef.current?.blur()
+                        overRideSettings(
+                          'restrictNavigationOut',
+                          'warn-and-report'
+                        )
+                      }
                     }}
                     disabled={
                       !(
@@ -338,6 +388,16 @@ const AntiCheatingGroupContainer = ({
                     }
                   />{' '}
                   ALERTS
+                  {navigationThresholdMoreThan1 ? (
+                    <Styled2ndLine>
+                      {' '}
+                      {`or maximum of ${
+                        restrictNavigationOutAttemptsThreshold * 5
+                      } sec.`}{' '}
+                    </Styled2ndLine>
+                  ) : (
+                    ''
+                  )}
                 </Radio>
               </StyledRadioGroupWrapper>
             </Col>
@@ -348,7 +408,7 @@ const AntiCheatingGroupContainer = ({
 
       {
         /* Restrict Question Navigation */
-        <SettingContainer>
+        <SettingContainer id="restrict-question-nav-setting">
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict question navigation"
@@ -381,7 +441,7 @@ const AntiCheatingGroupContainer = ({
       }
 
       {/* Safe Exam Browser/Kiosk Mode */}
-      <SettingContainer>
+      <SettingContainer id="safe-exam-browser-setting">
         <DetailsTooltip
           width={tootltipWidth}
           title="Require Safe Exam Browser"
@@ -444,6 +504,10 @@ const StyledRadioGroupWrapper = Styled(Radio.Group)`
     .ant-radio-wrapper span:nth-child(2){
       font-size:12px;
     }
+`
+
+const Styled2ndLine = Styled.div`
+  padding-left:24px;
 `
 
 export default AntiCheatingGroupContainer

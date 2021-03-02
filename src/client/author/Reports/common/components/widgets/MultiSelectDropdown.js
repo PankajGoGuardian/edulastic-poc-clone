@@ -13,10 +13,9 @@ const MultiSelectDropdown = ({
   showSearch = false,
 }) => (
   <>
-    <FilterLabel>{label}</FilterLabel>
+    <FilterLabel data-cy={dataCy}>{label}</FilterLabel>
     <SelectInputStyled
       showSearch={showSearch}
-      data-cy={dataCy}
       placeholder={`All ${label}`}
       mode="multiple"
       ref={el}

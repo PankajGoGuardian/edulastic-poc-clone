@@ -2,7 +2,7 @@
 /* eslint-disable func-names */
 
 import React, { useState, useEffect, useRef } from 'react'
-import { isEmpty, get } from 'lodash'
+import { isEmpty, get, set } from 'lodash'
 import PropTypes from 'prop-types'
 import { Pagination } from 'antd'
 import {
@@ -67,11 +67,11 @@ const PassageView = ({
   saveUserWork,
   clearUserWork,
   previewTab,
-  passageTestItemID,
   widgetIndex,
   viewComponent,
   page,
   setPage,
+  authLanguage,
 }) => {
   const mainContentsRef = useRef()
   const rangRef = useRef()
@@ -85,7 +85,7 @@ const PassageView = ({
     viewComponent === 'ItemDetail'
 
   const _highlights = isAuthorPreviewMode
-    ? get(userWork, `[${widgetIndex}]`, '')
+    ? get(userWork, `resourceId[${widgetIndex || 0}][${authLanguage}]`, '')
     : get(highlights, `[${widgetIndex}]`, '')
 
   const saveHistory = () => {
@@ -106,11 +106,14 @@ const PassageView = ({
     } else {
       // saving the highlights at author side
       // setHighlights is not available at author side
-      const newUserWork = userWork || {}
+      const newUserWork = set(
+        userWork || {},
+        `resourceId[${widgetIndex || 0}][${authLanguage}]`,
+        highlightContent
+      )
+
       saveUserWork({
-        [passageTestItemID]: {
-          resourceId: { ...newUserWork, [widgetIndex]: highlightContent },
-        },
+        [item.id]: newUserWork,
       })
     }
   }

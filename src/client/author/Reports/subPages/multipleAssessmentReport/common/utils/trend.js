@@ -138,7 +138,7 @@ export const augmentWithData = (
   }
 }
 
-export const calculateTrend = (groupedData) => {
+export const calculateTrend = (groupedData, sortBy) => {
   const counts = {
     up: 0,
     flat: 0,
@@ -154,7 +154,7 @@ export const calculateTrend = (groupedData) => {
     let trend = 'flat'
     const allAssessments = values(d.tests)
       .filter((a) => !a.allAbsent)
-      .sort((a, b) => a.records[0].startDate - b.records[0].startDate)
+      .sort((a, b) => a.records[0][sortBy] - b.records[0][sortBy])
 
     const n = allAssessments.length
 
@@ -215,7 +215,8 @@ export const parseTrendData = (
   metricInfo = [],
   compareBy = '',
   metaInfo = [],
-  selectedTrend = ''
+  selectedTrend = '',
+  sortBy = 'assessmentDate'
 ) => {
   const groupedMetric = groupByCompareKey(metricInfo, compareBy)
   const parsedGroupedMetric = map(groupedMetric, (metric, metricId) => {
@@ -273,7 +274,10 @@ export const parseTrendData = (
     }
   })
 
-  const [dataWithTrend, trendCount] = calculateTrend(parsedGroupedMetric)
+  const [dataWithTrend, trendCount] = calculateTrend(
+    parsedGroupedMetric,
+    sortBy
+  )
   const augmentedData = augmentWithData(dataWithTrend, compareBy, metaInfo)
   const filteredTrendData = filter(augmentedData, (record) =>
     selectedTrend ? record.trend === selectedTrend : true

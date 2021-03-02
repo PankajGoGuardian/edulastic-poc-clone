@@ -25,6 +25,7 @@ const { redirectPolicy } = testContants
 
 const QuestionDelivery = {
   [redirectPolicy.QuestionDelivery.ALL]: 'All',
+  [redirectPolicy.QuestionDelivery.SKIPPED]: 'Skipped',
   [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
 }
 
@@ -120,7 +121,8 @@ const RedirectPopUp = ({
     } else {
       let _selected = selected
       if (
-        qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG
+        qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG ||
+        qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED
       ) {
         const selectedStudentsTestActivity = testActivity.filter(
           (item) =>
@@ -284,8 +286,8 @@ const RedirectPopUp = ({
                 disabledDate={disabledDueDate}
                 style={{ width: '100%', cursor: 'pointer' }}
                 value={dueDate}
-                showTime={{ use12Hours: true }}
-                format="YYYY-MM-DD hh:mm:ss a"
+                showTime={{ use12Hours: true, format: 'hh:mm a' }}
+                format="YYYY-MM-DD hh:mm a"
                 showToday={false}
                 onChange={(v) => setDueDate(v)}
               />
@@ -320,8 +322,8 @@ const RedirectPopUp = ({
               value={endDate}
               showToday={false}
               onChange={(v) => setEndDate(v)}
-              showTime={{ use12Hours: true }}
-              format="YYYY-MM-DD hh:mm:ss a"
+              showTime={{ use12Hours: true, format: 'hh:mm a' }}
+              format="YYYY-MM-DD hh:mm a"
             />
           </Col>
         </Row>

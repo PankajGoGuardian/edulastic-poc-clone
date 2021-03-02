@@ -222,6 +222,7 @@ class AdvancedTable extends Component {
             userClassList,
             assignmentsSummary,
             showEmbedLinkModal,
+            toggleTagsEditModal,
           } = this.props
           const canEdit = canEditTest(row, userId)
           const assignmentTest = assignmentsSummary.find(
@@ -253,6 +254,7 @@ class AdvancedTable extends Component {
                   removeItemsFromFolder: () =>
                     this.handleRemoveItemsFromFolder(row),
                   showEmbedLinkModal,
+                  toggleTagsEditModal,
                 })}
                 placement="bottomRight"
                 trigger={['click']}
@@ -310,16 +312,14 @@ class AdvancedTable extends Component {
     return {}
   }
 
-  componentDidMount() {
-    this.fetchSummary(1, {})
-  }
-
   fetchSummary = (pageNo, sort) => {
     const { loadAssignmentsSummary, districtId, filters } = this.props
+    const { folderId } = filters
     loadAssignmentsSummary({
       districtId,
       filters: { ...filters, pageNo },
       sort,
+      folderId,
     })
   }
 

@@ -1,6 +1,17 @@
-import { groupBy, minBy, cloneDeep, countBy, uniq, isEmpty } from 'lodash'
+import {
+  groupBy,
+  minBy,
+  cloneDeep,
+  countBy,
+  uniq,
+  isEmpty,
+  orderBy,
+} from 'lodash'
 import { testActivityStatus } from '@edulastic/constants'
-import { getHSLFromRange1 } from '../../../../common/util'
+import {
+  getHSLFromRange1,
+  DemographicCompareByOptions,
+} from '../../../../common/util'
 import { transformMetricForStudentGroups } from '../../common/utils/transformers'
 
 export const idToLabel = {
@@ -330,6 +341,9 @@ export const parseData = (rawData, filter) => {
         : d.gender
     return { ...d, gender }
   })
+  if (DemographicCompareByOptions.includes(compareBy)) {
+    data = orderBy(data, compareBy, ['asc'])
+  }
   if (filter.compareBy === 'group') {
     data = transformMetricForStudentGroups(rawData.studentGroupInfo, data)
     compareBy = 'groupId'

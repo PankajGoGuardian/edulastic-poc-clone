@@ -147,7 +147,7 @@ const SubscriptionAddonModal = ({
   const handleQuantityChange = (itemId) => (value) => {
     const _quantities = {
       ...quantities,
-      [itemId]: value,
+      [itemId]: Math.floor(value),
     }
     setQuantities(_quantities)
   }
@@ -250,7 +250,7 @@ const SubscriptionAddonModal = ({
                     data-cy={item.type}
                     min={1}
                     max={quantities[premiumProductId] || 1}
-                    pattern="[0-9]"
+                    disabled={quantities[item.id] === undefined}
                   />
                 </NumberInputWrapper>
               )}

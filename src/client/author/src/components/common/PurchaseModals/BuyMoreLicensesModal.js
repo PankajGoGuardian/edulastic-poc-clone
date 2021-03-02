@@ -39,7 +39,7 @@ const BuyMoreLicensesModal = ({
   const handleQuantityChange = (itemId) => (value) => {
     const _quantities = {
       ...quantities,
-      [itemId]: value,
+      [itemId]: Math.floor(value),
     }
     setQuantities(_quantities)
   }

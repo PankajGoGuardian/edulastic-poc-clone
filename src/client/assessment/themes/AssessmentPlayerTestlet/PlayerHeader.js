@@ -32,11 +32,14 @@ const PlayerHeader = ({
   enableMagnifier,
   previewPlayer,
   hasSubmitButton,
+  savingResponse,
 }) => {
   let buttonText = 'Next'
   let showButton = true
   const disableButton =
-    !unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length
+    savingResponse ||
+    (!unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length)
+
   if (currentPage <= 1) {
     buttonText = 'Start'
     showButton = false

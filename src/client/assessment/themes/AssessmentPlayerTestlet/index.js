@@ -177,6 +177,7 @@ export default connect(
     selectedTheme: state.ui.selectedTheme,
     timedAssignment: state.test?.settings?.timedAssignment,
     currentAssignmentTime: state.test?.currentAssignmentTime,
+    savingResponse: state?.test?.savingResponse,
     stopTimerFlag: state.test?.stopTimerFlag,
   }),
   {

@@ -844,6 +844,9 @@ const AssessmentContainer = ({
           callback: submitPreviewTest,
         })
       }
+      if (demo) {
+        submitPreviewTest()
+      }
     }
 
     if ((isLast() || value === 'SUBMIT') && !preview) {

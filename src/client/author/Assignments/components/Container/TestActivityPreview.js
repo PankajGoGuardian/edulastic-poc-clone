@@ -43,11 +43,18 @@ const TestActivityPreview = ({
     const resources = get(testItem, ['data', 'resources'], [])
     const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
     const attachments = get(questionActivity, 'scratchPad.attachments', null)
-    const { multipartItem, itemLevelScoring, isPassageWithQuestions } = testItem
-    const scoringProps = {
+    const {
       multipartItem,
       itemLevelScoring,
       isPassageWithQuestions,
+      passageContent,
+      passageId,
+    } = testItem
+    const scoringProps = {
+      multipartItem,
+      itemLevelScoring,
+      isPassageWithQuestions:
+        isPassageWithQuestions || (passageContent && passageId),
     }
     let questionsKeyed = {
       ...keyBy(questions, 'id'),

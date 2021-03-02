@@ -90,12 +90,19 @@ const SubscriptionAddonModal = ({
   )
 
   const _totalPrice = useMemo(() => {
-    return itemBankPremium.reduce((a, c) => {
-      if (selectedProductIds.includes(c.id)) {
-        return a + c.price * (isNumber(quantities[c.id]) ? quantities[c.id] : 1)
-      }
-      return a
-    }, teacherPremium.price * (quantities[premiumProductId] || 1))
+    return itemBankPremium.reduce(
+      (a, c) => {
+        if (selectedProductIds.includes(c.id)) {
+          return (
+            a + c.price * (isNumber(quantities[c.id]) ? quantities[c.id] : 1)
+          )
+        }
+        return a
+      },
+      isPaidPremium && !showMultiplePurchaseModal
+        ? 0
+        : teacherPremium.price * (quantities[premiumProductId] || 1)
+    )
   }, [itemBankPremium, quantities, selectedProductIds, teacherPremium])
 
   const handleClick = () => {

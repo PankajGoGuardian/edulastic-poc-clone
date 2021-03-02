@@ -170,7 +170,7 @@ const SubscriptionAddonModal = ({
       footer={[
         <EduButton
           data-cy="proceedPayment"
-          disabled={totalPrice === 0}
+          disabled={_totalPrice === 0}
           onClick={handleClick}
           width="220px"
           height="45px"
@@ -250,6 +250,7 @@ const SubscriptionAddonModal = ({
                     data-cy={item.type}
                     min={1}
                     max={quantities[premiumProductId] || 1}
+                    pattern="[0-9]"
                   />
                 </NumberInputWrapper>
               )}

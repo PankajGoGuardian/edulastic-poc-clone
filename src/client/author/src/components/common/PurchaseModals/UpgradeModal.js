@@ -1,6 +1,5 @@
 import { CustomModalStyled } from '@edulastic/common'
 import { IconCredit, IconPo } from '@edulastic/icons'
-import PropTypes from 'prop-types'
 import React from 'react'
 import { ModalBody, Boxes, FlexRow } from './styled'
 
@@ -9,11 +8,9 @@ const UpgradeModal = ({
   setShowModal,
   openPaymentServiceModal,
   openPoServiceModal,
-  setShowBuyMoreModal,
 }) => {
   const closeUpgradeModal = () => {
     setShowModal(false)
-    setShowBuyMoreModal(false)
   }
   return (
     <CustomModalStyled
@@ -51,13 +48,6 @@ const UpgradeModal = ({
       </ModalBody>
     </CustomModalStyled>
   )
-}
-
-UpgradeModal.propTypes = {
-  setShowBuyMoreModal: PropTypes.func,
-}
-UpgradeModal.defaultProps = {
-  setShowBuyMoreModal: () => {},
 }
 
 export default UpgradeModal

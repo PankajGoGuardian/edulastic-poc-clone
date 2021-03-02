@@ -1,4 +1,5 @@
 import { darkGrey2, lightBlue7, title } from '@edulastic/colors'
+import { CheckboxLabel } from '@edulastic/common'
 import styled from 'styled-components'
 
 export const ModalBody = styled.div`
@@ -24,6 +25,8 @@ export const AddonList = styled.div`
 export const FlexRow = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: ${(props) => props.alignItems || null};
+  padding: ${(props) => props.padding || null};
   margin-bottom: 5px;
   .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-checked) {
     & ~ .priceCol {
@@ -77,5 +80,11 @@ export const NumberInputWrapper = styled.div`
         content: '-';
       }
     }
+  }
+`
+export const StyledCheckbox = styled(CheckboxLabel)`
+  width: 150px;
+  &.ant-checkbox-wrapper .ant-checkbox + span {
+    color: ${title};
   }
 `

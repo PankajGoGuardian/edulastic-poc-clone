@@ -1,18 +1,20 @@
-import { title } from '@edulastic/colors'
 import {
   CustomModalStyled,
   EduButton,
   NumberInputStyled,
 } from '@edulastic/common'
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { isNumber } from 'lodash'
+import React, { useMemo, useState } from 'react'
+import {
+  FlexRow,
+  ModalBody,
+  NumberInputWrapper,
+  StyledCheckbox,
+} from './SubscriptionAddonModal/styled'
 
 const BuyMoreLicensesModal = ({
   isVisible,
   onCancel,
-  isBuyMoreModalOpened,
-  setBuyCount,
-  buyCount,
   setProductsCart,
   setShowUpgradeModal,
   products,
@@ -21,37 +23,32 @@ const BuyMoreLicensesModal = ({
   handlePayment,
   licenseIds,
   emailIds,
+  currentItemId,
 }) => {
-  const [premiumCount, setPremiumCount] = useState()
-  const [sparkMathCount, setSparkMathCount] = useState()
+  const [quantities, setQuantities] = useState({})
 
-  useEffect(() => {
-    if (isBuyMoreModalOpened === 'PREMIUM') {
-      setPremiumCount(buyCount)
-    } else {
-      setSparkMathCount(buyCount)
+  const _totalPrice = useMemo(() => {
+    return products.reduce((a, c) => {
+      if (currentItemId === c.id) {
+        return a + c.price * (isNumber(quantities[c.id]) ? quantities[c.id] : 1)
+      }
+      return a
+    }, 0)
+  }, [quantities, currentItemId])
+
+  const handleQuantityChange = (itemId) => (value) => {
+    const _quantities = {
+      ...quantities,
+      [itemId]: value,
     }
-  }, [buyCount])
-
-  const handleOnChange = (value) => {
-    setBuyCount(value)
+    setQuantities(_quantities)
   }
-  const handleProceed = () => {
-    if (isBuyMoreModalOpened === 'PREMIUM') {
-      const getPremiumPrice = products.find(
-        (product) => product.type === 'PREMIUM'
-      ).price
-      setTotalAmount(buyCount * getPremiumPrice)
-    } else {
-      const getSparkPrice = products.find(
-        (product) => product.type === 'ITEM_BANK_SPARK_MATH'
-      ).price
-      setTotalAmount(buyCount * getSparkPrice)
-    }
 
+  const handleProceed = () => {
+    setTotalAmount(_totalPrice)
     const setProductQuantity = products.map((product) => ({
       ...product,
-      quantity: product.type === 'PREMIUM' ? premiumCount : sparkMathCount,
+      quantity: quantities[product.id],
     }))
 
     setProductsCart(setProductQuantity)
@@ -65,6 +62,8 @@ const BuyMoreLicensesModal = ({
       onCancel()
       return
     }
+
+    onCancel()
     setShowUpgradeModal(true)
   }
   const footer = (
@@ -72,11 +71,14 @@ const BuyMoreLicensesModal = ({
       <EduButton isGhost height="38px" onClick={onCancel}>
         No, Cancel
       </EduButton>
-      <EduButton height="38px" onClick={handleProceed} disabled={!buyCount}>
+      <EduButton height="38px" onClick={handleProceed}>
         Yes, Proceed
       </EduButton>
     </>
   )
+
+  const currentOpenedProduct =
+    products.filter((product) => product.id === currentItemId) || []
 
   return (
     <CustomModalStyled
@@ -89,31 +91,33 @@ const BuyMoreLicensesModal = ({
       width="460px"
     >
       <ModalBody>
-        <p>
-          Please enter the number of{' '}
-          {isBuyMoreModalOpened === 'PREMIUM' ? 'premium' : 'SparkMath'} license
-          count you need to buy.
-        </p>
-        <NumberInputStyled
-          type="number"
-          onChange={handleOnChange}
-          data-cy="answer-rule-argument-input"
-          min={1}
-          value={buyCount}
-          placeholder="Type the action"
-          height="38px"
-        />
+        {currentOpenedProduct.map((product) => (
+          <>
+            <p>
+              Please enter the number of {product.name} license count you need
+              to buy.
+            </p>
+            <FlexRow alignItems="center" padding="10px 0px">
+              <StyledCheckbox data-cy="teacherPremiumCheckbox" checked>
+                {product.name}
+              </StyledCheckbox>
+              <NumberInputWrapper>
+                <NumberInputStyled
+                  onChange={handleQuantityChange(product.id)}
+                  data-cy="answer-rule-argument-input"
+                  min={1}
+                  value={quantities[product.id] || 1}
+                  height="28px"
+                  width="80px"
+                />
+              </NumberInputWrapper>
+              <span className="priceCol">${_totalPrice}</span>
+            </FlexRow>
+          </>
+        ))}
       </ModalBody>
     </CustomModalStyled>
   )
 }
 
 export default BuyMoreLicensesModal
-
-const ModalBody = styled.div`
-  p {
-    font-size: 14px;
-    color: ${title};
-    font-weight: normal !important;
-  }
-`

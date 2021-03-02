@@ -43,11 +43,11 @@ const PurchaseFlowModals = (props) => {
     setShowMultiplePurchaseModal,
     showBuyMoreModal,
     setShowBuyMoreModal,
-    isBuyMoreModalOpened,
     licenseIds,
     isEdulasticAdminView = false,
     handleEdulasticAdminProductLicense,
     showRenewalOptions = false,
+    currentItemId,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -56,7 +56,6 @@ const PurchaseFlowModals = (props) => {
   const [productsCart, setProductsCart] = useState({})
   const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
-  const [buyCount, setBuyCount] = useState()
 
   useEffect(() => {
     // getSubscription on mount
@@ -171,7 +170,6 @@ const PurchaseFlowModals = (props) => {
         <UpgradeModal
           visible={showUpgradeModal}
           setShowModal={setShowUpgradeModal}
-          setShowBuyMoreModal={setShowBuyMoreModal}
           openPaymentServiceModal={openPaymentServiceModal}
           openPoServiceModal={openPoServiceModal}
         />
@@ -197,9 +195,6 @@ const PurchaseFlowModals = (props) => {
         <BuyMoreLicensesModal
           isVisible={showBuyMoreModal}
           onCancel={closeBuyMoreModal}
-          isBuyMoreModalOpened={isBuyMoreModalOpened}
-          setBuyCount={setBuyCount}
-          buyCount={buyCount}
           setProductsCart={setProductsCart}
           setShowUpgradeModal={setShowUpgradeModal}
           products={products}
@@ -208,6 +203,7 @@ const PurchaseFlowModals = (props) => {
           handlePayment={handleEdulasticAdminProductLicense}
           licenseIds={licenseIds}
           userEmailIds={emailIds}
+          currentItemId={currentItemId}
         />
       )}
     </>

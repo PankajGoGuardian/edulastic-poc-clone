@@ -72,13 +72,13 @@ const ManageSubscriptionContainer = ({
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [dataSource, setDataSource] = useState(users)
   const [searchValue, setSearchValue] = useState()
+  const [currentItemId, setCurrentItemId] = useState()
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
-  const [isBuyMoreModalOpened, setIsBuyMoreModalOpened] = useState('')
   const [productData, setProductData] = useState({})
 
   useEffect(() => setDataSource(users), [users])
@@ -217,7 +217,7 @@ const ManageSubscriptionContainer = ({
         <LicenseCountSection
           subsLicenses={subsLicenses}
           setShowBuyMoreModal={setShowBuyMoreModal}
-          setIsBuyMoreModalOpened={setIsBuyMoreModalOpened}
+          setCurrentItemId={setCurrentItemId}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}
@@ -245,9 +245,9 @@ const ManageSubscriptionContainer = ({
         setProductData={setProductData}
         showBuyMoreModal={showBuyMoreModal}
         setShowBuyMoreModal={setShowBuyMoreModal}
-        isBuyMoreModalOpened={isBuyMoreModalOpened}
         isEdulasticAdminView={isEdulasticAdminView}
         showRenewalOptions={showRenewalOptions}
+        currentItemId={currentItemId}
       />
       {showAddUsersModal && (
         <AddUsersModal

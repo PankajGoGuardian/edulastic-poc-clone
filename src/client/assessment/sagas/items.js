@@ -398,6 +398,11 @@ export function* saveUserResponse({ payload }) {
       notification({ messageKey: 'failedSavingAnswer' })
     }
     // yield call(message.error, "Failed saving the Answer");
+  } finally {
+    yield put({
+      type: SET_SAVE_USER_RESPONSE,
+      payload: false,
+    })
   }
 }
 

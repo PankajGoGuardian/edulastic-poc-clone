@@ -317,10 +317,9 @@ const PlayerContent = ({
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState
-      initState.pageNum = 12
       frameController = new ParentController(
         testletConfig.testletId,
-        { pageNum: 12 },
+        initState,
         testletState.response
       )
       frameController.connect(frameRef.current.contentWindow)

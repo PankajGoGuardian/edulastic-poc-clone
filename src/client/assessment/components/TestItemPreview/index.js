@@ -140,6 +140,7 @@ class TestItemPreview extends Component {
       isStudentReport,
       isPresentationMode,
       questions,
+      isExpressGrader,
       isPrintPreview,
       showCollapseBtn,
       studentId,
@@ -166,6 +167,7 @@ class TestItemPreview extends Component {
         showFeedback={showFeedback}
         displayFeedback={displayFeedback}
         isPrintPreview={isPrintPreview}
+        isExpressGrader={isExpressGrader}
         showCollapseBtn={showCollapseBtn}
         prevQActivityForQuestion={prevQActivityForQuestion}
         data={{ ...question, smallSize: true }}

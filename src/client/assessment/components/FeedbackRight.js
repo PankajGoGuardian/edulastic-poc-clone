@@ -147,6 +147,7 @@ class FeedbackRight extends Component {
       itemId,
       allAnswers = {},
       setTeacherEditedScore,
+      isExpressGrader,
     } = this.props
 
     if ((!score || isNaN(score)) && score != 0) {
@@ -185,6 +186,11 @@ class FeedbackRight extends Component {
     if (currentScreen === 'live_class_board') {
       payload.shouldReceiveStudentResponse = true
     }
+
+    if (isExpressGrader) {
+      payload.fromExpressGrader = true
+    }
+
     if (payload.testActivityId && payload.itemId) {
       if (allAnswers[id]) {
         // adding user responses only when not empty
@@ -248,12 +254,12 @@ class FeedbackRight extends Component {
 
   submitScore = (e) => {
     const { changed } = this.state
-    const { widget: { activity: { qActId } = {} } = {} } = this.props
+    const { widget: { activity: { qActId, _id } = {} } = {} } = this.props
     /**
      * in case of student did not visit the question, allow teacher trying to grade first time
      * @see EV-25489
      */
-    if (changed || (e?.type === 'blur' && !qActId)) {
+    if (changed || (e?.type === 'blur' && !(qActId || _id))) {
       this.onScoreSubmit()
     }
   }

@@ -711,9 +711,18 @@ function* loadTest({ payload }) {
     })
 
     if (preview) {
-      notification({ messageKey: 'youCanNoLongerUse' })
-      window.location.href = '/'
-      return Modal.destroyAll()
+      if (getAccessToken()) {
+        setTimeout(() => {
+          window.location.href = '/author/tests'
+        }, 3000)
+        yield put(push('/author/tests'))
+      } else {
+        notification({ messageKey: 'youCanNoLongerUse' })
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 3000)
+        return Modal.destroyAll()
+      }
     }
 
     let messageKey = 'failedLoadingTest'

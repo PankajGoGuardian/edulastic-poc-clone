@@ -50,7 +50,7 @@ function* fetchAssignmentsByTestIdSaga({ payload }) {
         yield put(push(`/author/tests/tab/review/id/${payload}`))
       } catch (err) {
         if (err?.status === 403) {
-          notification({ msg: 'Assignment is not available' })
+          notification({ msg: 'This assignment is not available' })
         }
         yield put(push('/author/assignments'))
       }

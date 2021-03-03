@@ -36,7 +36,7 @@ const Header = ({
     {...rest}
   >
     <Row type="flex" align="middle">
-      <StudentSlectCommon />
+      {!showReviewResponses && <StudentSlectCommon />}
       {classSelect && (
         <ClassSelect
           t={t}

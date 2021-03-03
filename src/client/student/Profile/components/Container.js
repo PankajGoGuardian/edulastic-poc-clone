@@ -92,26 +92,34 @@ class ProfileContainer extends React.Component {
               <Photo height={224} windowWidth={100} mode="small" />
             </ProfileImgMobileWrapper>
             <div>
-              <Title>{t('common.title.student')}</Title>
+              <Title>
+                {user.role === 'parent'
+                  ? t('common.title.parent')
+                  : t('common.title.student')}
+              </Title>
               <Details>
-                <DetailRow>
-                  <DetailTitle>
-                    {t('common.title.firstNameInputLabel')}
-                  </DetailTitle>
-                  <DetailData>{user.firstName || 'Anonymous'}</DetailData>
-                </DetailRow>
-                <DetailRow>
-                  <DetailTitle>
-                    {t('common.title.middleNameInputLabel')}
-                  </DetailTitle>
-                  <DetailData>{user.middleName}</DetailData>
-                </DetailRow>
-                <DetailRow>
-                  <DetailTitle>
-                    {t('common.title.lastNameInputLabel')}
-                  </DetailTitle>
-                  <DetailData>{user.lastName}</DetailData>
-                </DetailRow>
+                {user.role === 'student' && (
+                  <>
+                    <DetailRow>
+                      <DetailTitle>
+                        {t('common.title.firstNameInputLabel')}
+                      </DetailTitle>
+                      <DetailData>{user.firstName || 'Anonymous'}</DetailData>
+                    </DetailRow>
+                    <DetailRow>
+                      <DetailTitle>
+                        {t('common.title.middleNameInputLabel')}
+                      </DetailTitle>
+                      <DetailData>{user.middleName}</DetailData>
+                    </DetailRow>
+                    <DetailRow>
+                      <DetailTitle>
+                        {t('common.title.lastNameInputLabel')}
+                      </DetailTitle>
+                      <DetailData>{user.lastName}</DetailData>
+                    </DetailRow>
+                  </>
+                )}
                 <DetailRow>
                   <DetailTitle>
                     {t('common.title.emailUsernameLabel')}

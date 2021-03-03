@@ -71,6 +71,7 @@ class TestItemPreview extends Component {
         collapseDirection={collapseDirection}
         setCollapseView={this.setCollapseView}
         hideMiddle={isLCBView}
+        stackedView={this.showStackedView}
       />
     )
   }
@@ -179,7 +180,7 @@ class TestItemPreview extends Component {
     ) : null
   }
 
-  renderFeedbacks = (showStackedView) => {
+  renderFeedbacks = () => {
     const { cols } = this.props
     const { value } = this.state
     let colIndex = 0
@@ -195,10 +196,10 @@ class TestItemPreview extends Component {
             {col.tabs &&
               !!col.tabs.length &&
               value === widget.tabIndex &&
-              this.renderFeedback(widget, i, colIndex++, showStackedView)}
+              this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
             {col.tabs &&
               !col.tabs.length &&
-              this.renderFeedback(widget, i, colIndex++, showStackedView)}
+              this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
           </React.Fragment>
         ))
     )
@@ -252,6 +253,24 @@ class TestItemPreview extends Component {
     }
   }
 
+  get showStackedView() {
+    const {
+      isLCBView,
+      isQuestionView,
+      multipartItem,
+      isPassageWithQuestions,
+      itemLevelScoring,
+    } = this.props
+    let showStackedView = false
+    if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
+      if (multipartItem && !itemLevelScoring) {
+        showStackedView = true
+      }
+    }
+
+    return showStackedView
+  }
+
   render() {
     const {
       cols,
@@ -283,9 +302,7 @@ class TestItemPreview extends Component {
       showStudentWork,
       timeSpent,
       userWork,
-      multipartItem,
       itemLevelScoring,
-      isPassageWithQuestions,
       isPrintPreview,
     } = restProps
 
@@ -309,15 +326,9 @@ class TestItemPreview extends Component {
     const hasDrawingResponse = widgets.some(
       (x) => x.type === questionType.HIGHLIGHT_IMAGE
     )
-    let showStackedView = false
-    if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
-      if (multipartItem && !itemLevelScoring) {
-        showStackedView = true
-      }
-    }
 
     let dataSource = cols
-    if (!showStackedView && (isQuestionView || isExpressGrader)) {
+    if (!this.showStackedView && (isQuestionView || isExpressGrader)) {
       dataSource = dataSource.filter((col) => (col?.widgets || []).length > 0)
     }
 
@@ -360,7 +371,7 @@ class TestItemPreview extends Component {
                 height: '100%',
                 display: 'flex',
                 flexDirection:
-                  showStackedView || isPrintPreview ? 'column' : 'row',
+                  this.showStackedView || isPrintPreview ? 'column' : 'row',
               }}
             >
               {dataSource.map((col, i) => {
@@ -400,7 +411,7 @@ class TestItemPreview extends Component {
                       previewTab={previewTab}
                       isSingleQuestionView={isSingleQuestionView}
                       hideInternalOverflow={hideInternalOverflow}
-                      showStackedView={showStackedView}
+                      showStackedView={this.showStackedView}
                       teachCherFeedBack={this.renderFeedback}
                       hasDrawingResponse={hasDrawingResponse}
                       isStudentAttempt={isStudentAttempt}
@@ -439,7 +450,7 @@ class TestItemPreview extends Component {
                   isStudentAttempt={isStudentAttempt}
                   className="__print-feedback-main-wrapper"
                 >
-                  {this.renderFeedbacks(showStackedView)}
+                  {this.renderFeedbacks()}
                 </RenderFeedBack>
               )}
             </>

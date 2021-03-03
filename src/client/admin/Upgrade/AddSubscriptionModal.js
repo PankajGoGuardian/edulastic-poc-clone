@@ -55,7 +55,13 @@ const AddSubscriptionModal = ({
         })
       }
     }
-    const updatedFieldData = { ...fieldData, [fieldName]: value }
+    const updatedFieldData = {
+      ...fieldData,
+      [fieldName]:
+        fieldName === 'premiumLicense' || fieldName === 'sparkMathLicense'
+          ? Math.floor(value)
+          : value,
+    }
     setFieldData(updatedFieldData)
   }
 
@@ -197,6 +203,7 @@ const AddSubscriptionModal = ({
           <Col span={12}>
             <FieldLabel>Premium</FieldLabel>
             <NumberInputStyled
+              type="number"
               style={{ width: '100%' }}
               placeholder="premium license"
               value={fieldData.premiumLicense}
@@ -207,6 +214,7 @@ const AddSubscriptionModal = ({
           <Col span={12}>
             <FieldLabel>SparkMath</FieldLabel>
             <NumberInputStyled
+              type="number"
               style={{ width: '100%' }}
               placeholder="sparkMath license"
               value={fieldData.sparkMathLicense}

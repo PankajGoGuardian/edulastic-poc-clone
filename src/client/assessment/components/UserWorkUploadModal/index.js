@@ -8,6 +8,7 @@ const UserWorkUploadModal = ({
   onCancel,
   uploadFile,
   onUploadFinished,
+  cameraImageName,
 }) => {
   const [hasCamera, setHasCamera] = useState(false)
 
@@ -21,7 +22,7 @@ const UserWorkUploadModal = ({
 
   return (
     <ConfirmationModal
-      title="Show your work"
+      title="Upload Work"
       visible={isModalVisible}
       onCancel={onCancel}
       destroyOnClose
@@ -40,6 +41,7 @@ const UserWorkUploadModal = ({
             onCancel={onCancel}
             onUploadFinished={onUploadFinished}
             delayCount={3}
+            cameraImageName={cameraImageName}
           />
         )}
       </FlexContainer>

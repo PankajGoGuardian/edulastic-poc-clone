@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isUndefined } from 'lodash'
+import { get, isUndefined, last } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { withWindowSizes, notification } from '@edulastic/common'
@@ -44,6 +44,12 @@ import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 class AssessmentPlayerSimple extends React.Component {
   constructor(props) {
     super(props)
+    const { attachments = [] } = props
+    const lastUploadedFileNameExploded =
+      last(attachments)?.name?.split('_') || []
+    const cameraImageIndex = last(lastUploadedFileNameExploded)
+      ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+      : 1
     this.state = {
       showExitPopup: false,
       testItemState: '',
@@ -52,7 +58,17 @@ class AssessmentPlayerSimple extends React.Component {
       currentItem: 0,
       enableCrossAction: false,
       isUserWorkUploadModalVisible: false,
+      cameraImageIndex,
     }
+  }
+
+  static getCameraImageIndex(attachmentProps) {
+    const { attachments = [] } = attachmentProps
+    const lastUploadedFileNameExploded =
+      last(attachments)?.name?.split('_') || []
+    return last(lastUploadedFileNameExploded)
+      ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+      : 1
   }
 
   headerRef = React.createRef()
@@ -61,7 +77,15 @@ class AssessmentPlayerSimple extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.currentItem !== prevState.currentItem) {
+      const { attachments = [] } = nextProps
+      const lastUploadedFileNameExploded =
+        last(attachments)?.name?.split('_') || []
+      const cameraImageIndex = last(lastUploadedFileNameExploded)
+        ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+        : 1
+
       return {
+        cameraImageIndex,
         enableCrossAction: false,
         currentItem: nextProps.currentItem,
         testItemState: '', // coming from a different question, reset to clear view
@@ -203,6 +227,9 @@ class AssessmentPlayerSimple extends React.Component {
       ...(attachments || []),
       ...newAttachments,
     ])
+    this.setState(({ cameraImageIndex }) => ({
+      cameraImageIndex: cameraImageIndex + 1,
+    }))
     this.closeUserWorkUploadModal()
   }
 
@@ -238,6 +265,7 @@ class AssessmentPlayerSimple extends React.Component {
       highlights,
       utaId,
       uploadToS3,
+      user: { firstName = '', lastName = '' },
     } = this.props
     const {
       showExitPopup,
@@ -245,6 +273,7 @@ class AssessmentPlayerSimple extends React.Component {
       enableCrossAction,
       toolsOpenStatus,
       isUserWorkUploadModalVisible,
+      cameraImageIndex,
     } = this.state
 
     const dropdownOptions = Array.isArray(items)
@@ -262,7 +291,9 @@ class AssessmentPlayerSimple extends React.Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1
-
+    const cameraImageName = `${firstName}_${lastName}_${
+      currentItem + 1
+    }_${cameraImageIndex}`
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={scratchPadMode} ref={this.containerRef}>
@@ -341,6 +372,7 @@ class AssessmentPlayerSimple extends React.Component {
               onCancel={this.closeUserWorkUploadModal}
               uploadFile={uploadToS3}
               onUploadFinished={this.saveUserWorkAttachments}
+              cameraImageName={cameraImageName}
             />
           </AssessmentPlayerSkinWrapper>
         </Container>
@@ -377,6 +409,7 @@ const enhance = compose(
   withNamespaces('common'),
   connect(
     (state, ownProps) => ({
+      user: get(state, 'user.user'),
       evaluation: state.evaluation,
       preview: state.view.preview,
       settings: state.test.settings,

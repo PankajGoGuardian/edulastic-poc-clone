@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { IconCameraBlocked } from '@edulastic/icons'
 
 const DisplayErrorStyled = styled.div`
   width: 100%;
@@ -19,6 +20,7 @@ const ErrorHeadingSecondary = styled.h3`
 
 const ErrorDescription = styled.ul`
   text-align: left;
+  padding-left: 20px;
 `
 export const DisplayError = ({ errorMsg }) => {
   const isErrorVisible = errorMsg && errorMsg.length > 0
@@ -33,7 +35,9 @@ export const DisplayError = ({ errorMsg }) => {
           </ErrorHeadingSecondary>
           <ErrorDescription>
             <li>
-              Click on camera block icon in your browser&apos;s address bar
+              Click on camera block icon{' '}
+              <IconCameraBlocked margin="5px 0 -5px 0" /> in your browser&apos;s
+              address bar
             </li>
             <li>Allow access and refresh the page</li>
           </ErrorDescription>

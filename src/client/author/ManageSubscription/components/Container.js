@@ -29,6 +29,7 @@ import {
   setAddUserConfirmationModalVisibleAction,
   getLoadingStateSelector,
   bulkEditUsersPermissionAction,
+  getColumnsSelector,
 } from '../ducks'
 import AddUsersSection from './AddUsersSection'
 import Header from './Header'
@@ -64,9 +65,11 @@ const ManageSubscriptionContainer = ({
   loading,
   bulkEditUsersPermission,
   licenseIds,
+  districtId,
   userRole,
   isEdulasticAdminView,
   isSubscriptionExpired,
+  columns,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -228,10 +231,9 @@ const ManageSubscriptionContainer = ({
           users={dataSource}
           licenseIds={licenseIds}
           subsLicenses={subsLicenses}
-          userId={userId}
+          currentUserId={userId}
           bulkEditUsersPermission={bulkEditUsersPermission}
-          teacherPremiumProductId={teacherPremiumProductId}
-          sparkMathProductId={sparkMathProductId}
+          dynamicColumns={columns}
         />
       </ContentWrapper>
 
@@ -254,7 +256,7 @@ const ManageSubscriptionContainer = ({
           users={dataSource}
           isVisible={showAddUsersModal}
           onCancel={closeAddUsersModal}
-          districtId={userOrgId}
+          districtId={userOrgId || districtId}
           addAndUpgradeUsers={addAndUpgradeUsers}
           subsLicenses={subsLicenses}
           teacherPremiumProductId={teacherPremiumProductId}
@@ -294,6 +296,7 @@ const enhance = compose(
       dashboardTiles: getDashboardTilesSelector(state),
       userRole: getUserRole(state),
       isSubscriptionExpired: getIsSubscriptionExpired(state),
+      columns: getColumnsSelector(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

@@ -87,11 +87,11 @@ const LicensesInvoiceTable = ({
       title: 'Actions',
       dataIndex: 'licenseIds',
       width: 100,
-      render: (licenseIds) => (
+      render: (licenseIds, row) => (
         <FlexContainer>
           <Tooltip title="View License">
             <IconEye
-              onClick={() => handleViewLicense(licenseIds)}
+              onClick={() => handleViewLicense(licenseIds, row.districtId)}
               color={themeColor}
               style={IconStyles}
             />
@@ -195,6 +195,7 @@ const ManageSubscriptionsByLicenses = ({
   const [showArchiveAlert, setShowArchiveAlert] = useState(false)
   const [archiveLicenseIds, setArchiveLicenseIds] = useState([])
   const [currentLicenseIds, setCurrentLicenseIds] = useState()
+  const [currentDistrictId, setCurrentDistrictId] = useState()
   const [currentLicense, setCurrentLicense] = useState({})
   const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(
     false
@@ -208,8 +209,9 @@ const ManageSubscriptionsByLicenses = ({
       limit: 10,
     })
   }
-  const handleViewLicense = (licenseIds) => {
+  const handleViewLicense = (licenseIds, districtId) => {
     setCurrentLicenseIds(licenseIds)
+    setCurrentDistrictId(districtId)
     if (searchType === 'TRIAL_LICENSES') {
       const getCurrentLicense = licenses.find((license) =>
         licenseIds.includes(license.licenseIds?.[0])
@@ -264,6 +266,7 @@ const ManageSubscriptionsByLicenses = ({
         <ManageSubscription
           isEdulasticAdminView
           licenseIds={currentLicenseIds}
+          districtId={currentDistrictId}
         />
       </ManageSubscriptinModal>
 

@@ -25,6 +25,10 @@ export const getUsersSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.users
 )
+export const getColumnsSelector = createSelector(
+  manageSubscriptionSelector,
+  (state) => state.columns
+)
 export const getLoadingStateSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.loading
@@ -99,6 +103,7 @@ const initialState = {
   showUpgradeUsersSuccessModal: false,
   licenses: [],
   users: [],
+  columns: [],
 }
 
 const setLicensesData = (state, { payload }) => {
@@ -132,6 +137,7 @@ export const reducer = createReducer(initialState, {
     state.loading = false
     state.licenses = payload.licenses
     state.users = payload.users
+    state.columns = payload.columns
   },
   [FETCH_MANAGE_SUBSCRIPTIONS_ERROR]: (state) => {
     state.loading = false
@@ -192,7 +198,7 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
           if (!existingUserIds.includes(x.userId)) {
             const data = {
               ...x,
-              hasManageLicense: !!x.hasManageLicense.find(
+              hasManageLicense: !!x.ownerLicenseIds.find(
                 (licenseId) => licensesMap[licenseId]
               ),
             }

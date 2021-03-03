@@ -54,6 +54,7 @@ export default class FormText extends React.Component {
       <Input
         size="large"
         value={answer}
+        data-cy="textInput"
         style={{ width: ['check', 'show'].includes(view) && '210px' }}
         onChange={this.handleChange}
         onBlur={this.handleBlur}

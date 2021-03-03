@@ -53,6 +53,7 @@ export default class FormEssay extends React.Component {
       <Input.TextArea
         style={{ padding: '2px 11px', resize: 'none' }}
         value={answer}
+        data-cy="essayInput"
         onChange={this.handleChange}
         onBlur={this.handleBlur}
         disabled={mode === 'report'}

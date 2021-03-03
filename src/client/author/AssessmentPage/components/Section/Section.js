@@ -62,8 +62,12 @@ export default class Section extends React.Component {
 
     return (
       <Actions>
-        <IconPencilEdit onClick={handleEditClick} title="Edit" />
-        <IconTrash onClick={onDelete} title="Delete" />
+        <IconPencilEdit
+          onClick={handleEditClick}
+          title="Edit"
+          data-cy="editSection"
+        />
+        <IconTrash onClick={onDelete} title="Delete" data-cy="sectionDelete" />
       </Actions>
     )
   }
@@ -94,18 +98,21 @@ export default class Section extends React.Component {
           onChange={this.handleChangeTitle}
           onBlur={shouldBlur ? this.handleSetTitle : ''}
           onPressEnter={this.handleSetTitle}
+          data-cy="sectionInput"
         />
         <SectionFormConfirmButton
           onMouseDown={() => this.setState({ shouldBlur: false })}
           style={{ marginLeft: '5px' }}
           title="Save"
           onClick={this.handleSetTitle}
+          data-cy="sectionSave"
         />
         <IconTrash
           onClick={onDelete}
           title="Delete"
           onMouseDown={() => this.setState({ shouldBlur: false })}
           style={{ marginLeft: '5px', cursor: 'pointer' }}
+          data-cy="sectionDelete"
         />
       </SectionWrapper>
     )

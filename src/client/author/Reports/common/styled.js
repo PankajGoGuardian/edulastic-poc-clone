@@ -58,6 +58,76 @@ export const GoButtonWrapper = styled.div`
   padding-left: 5px;
 `
 
+export const ReportFiltersContainer = styled.div`
+  position: relative;
+`
+
+export const ReportFiltersWrapper = styled.div`
+  position: absolute;
+  z-index: 100;
+  top: 30px;
+  right: 0px;
+  width: 60vw;
+  padding: 10px 25px 25px;
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+
+  .ant-select-selection {
+    &__rendered {
+      padding-left: 0px;
+    }
+  }
+  .ant-select {
+    width: 100%;
+    font-size: 11px;
+  }
+  .ant-input-affix-wrapper .ant-input-suffix {
+    right: 8px;
+    i {
+      svg {
+        color: ${themeColor};
+      }
+    }
+  }
+  .control-dropdown {
+    button {
+      background-color: ${lightGreySecondary};
+      border-radius: 3px;
+      padding: 8.5px 18px;
+      padding-right: 8px;
+      height: 34px;
+      font-size: 11px;
+      font-weight: 600;
+      max-width: 100%;
+      width: 100%;
+
+      i {
+        color: ${themeColor};
+      }
+    }
+  }
+  .ant-collapse {
+    background: none;
+    padding-left: 5px;
+  }
+  .ant-dropdown {
+    box-shadow: 0 0 5px;
+  }
+  .ant-btn.ant-dropdown-trigger {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: ${(props) => (props.width ? props.width : '100%')};
+  }
+  @media print {
+    display: none;
+  }
+`
+
 export const StyledFilterWrapper = styled.div`
   ${({ isRowFilter }) =>
     isRowFilter

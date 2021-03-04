@@ -67,6 +67,11 @@ const Userlist = ({
     [subsLicenses]
   )
 
+  const licenseOwnersMap = useMemo(
+    () => subsLicenses.reduce((a, c) => ({ ...a, [c.ownerId]: true }), {}),
+    [subsLicenses]
+  )
+
   const keyedByUserId = useMemo(() => keyBy(users, 'userId'), [users])
 
   const onChangeHandler = (userId, key, isChecked) => {
@@ -127,9 +132,15 @@ const Userlist = ({
     const { userId } = record
     const isOwnerForManageLicense =
       record.userId === currentUserId && key === 'hasManageLicense'
+
+    // if user bought the license disable manage license checkbox
+    const isOwner =
+      licenseOwnersMap[record.userId] && key === 'hasManageLicense'
+
     const disabled =
       (record[key]?.length && record[key] !== licenseIdsbyType[key]) ||
-      isOwnerForManageLicense
+      isOwnerForManageLicense ||
+      isOwner
     const isChecked = record[key]
     const onChange = (e) => {
       const {

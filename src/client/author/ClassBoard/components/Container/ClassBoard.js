@@ -134,6 +134,9 @@ const NotificationComponent = (props) => {
 }
 
 function getStudentFilterCategory(x) {
+  if (x.isEnrolled === false) {
+    return 'UNENROLLED'
+  }
   if (x.isAssigned === false) {
     return 'UNASSIGNED'
   }
@@ -167,6 +170,9 @@ function filterStudentsByStatus(selectedStatus) {
   return (x) => {
     if (selectedStatus === 'ALL') {
       return true
+    }
+    if (selectedStatus === 'ALL ACTIVE') {
+      return x.isAssigned && x.isEnrolled
     }
     return getStudentFilterCategory(x) === selectedStatus
   }
@@ -207,7 +213,7 @@ class ClassBoard extends Component {
       showScoreImporvement: false,
       hasStickyHeader: false,
       toggleBackTopIcon: false,
-      studentFilter: 'ALL',
+      studentFilter: 'ALL ACTIVE',
     }
   }
 
@@ -1385,7 +1391,7 @@ class ClassBoard extends Component {
                         height="30px"
                       >
                         {[
-                          'ALL',
+                          'ALL ACTIVE',
                           'NOT STARTED',
                           'IN PROGRESS',
                           'SUBMITTED',
@@ -1397,8 +1403,10 @@ class ClassBoard extends Component {
                         ].map((x) => (
                           <FilterSelect.Option key={x} value={x}>
                             {x} (
-                            {x === 'ALL'
-                              ? testActivity.length
+                            {x === 'ALL ACTIVE'
+                              ? testActivity.filter(
+                                  (_x) => _x.isAssigned && _x.isEnrolled
+                                ).length
                               : studentFilterCategoryCounts[x] || 0}
                             )
                           </FilterSelect.Option>

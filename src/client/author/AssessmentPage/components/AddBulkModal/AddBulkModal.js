@@ -99,7 +99,9 @@ export default class AddBulkModal extends React.Component {
             <EduButton isGhost onClick={onCancel}>
               Cancel
             </EduButton>
-            <EduButton onClick={this.handleApply}>Apply</EduButton>
+            <EduButton onClick={this.handleApply} data-cy="apply">
+              Apply
+            </EduButton>
           </ModalFooter>,
         ]}
       >
@@ -112,6 +114,7 @@ export default class AddBulkModal extends React.Component {
                   min={1}
                   value={number}
                   onChange={this.handleChange('number')}
+                  data-cy="questionCount"
                 />
               </Col>
               <Col span={18}>
@@ -120,6 +123,7 @@ export default class AddBulkModal extends React.Component {
                   value={type}
                   onChange={this.handleChange('type')}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  data-cy="questionType"
                 >
                   <Select.Option value={MULTIPLE_CHOICE}>
                     Multiple Choice

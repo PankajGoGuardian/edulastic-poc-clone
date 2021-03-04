@@ -25,5 +25,6 @@ const questionTitle = {
   MCQ_MULTIPLE_RESPONSE: 'Multiple Selection',
   CHOICE_MATRIX_STANDARD: 'Match Table - Standard',
   RE_SEQUENCE: 'Re-sequence',
+  MATRICES: 'Matrices',
 }
 module.exports = questionTitle

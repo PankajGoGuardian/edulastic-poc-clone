@@ -17,6 +17,7 @@ import {
   getSuccessSelector,
   getProducts,
   getItemBankSubscriptions,
+  getIsSubscriptionExpired,
 } from '../../Subscription/ducks'
 import {
   addAndUpgradeUsersAction,
@@ -28,6 +29,7 @@ import {
   setAddUserConfirmationModalVisibleAction,
   getLoadingStateSelector,
   bulkEditUsersPermissionAction,
+  getColumnsSelector,
 } from '../ducks'
 import AddUsersSection from './AddUsersSection'
 import Header from './Header'
@@ -41,6 +43,8 @@ const AddUsersConfirmationModal = loadable(() =>
 )
 
 const { PRODUCT_NAMES } = constants
+const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
+const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
 
 const ManageSubscriptionContainer = ({
   subscription: { subEndDate, subType } = {},
@@ -61,20 +65,24 @@ const ManageSubscriptionContainer = ({
   loading,
   bulkEditUsersPermission,
   licenseIds,
+  districtId,
   userRole,
   isEdulasticAdminView,
+  isSubscriptionExpired,
+  columns,
+  licenseOwnerId,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [dataSource, setDataSource] = useState(users)
   const [searchValue, setSearchValue] = useState()
+  const [currentItemId, setCurrentItemId] = useState()
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
-  const [isBuyMoreModalOpened, setIsBuyMoreModalOpened] = useState('')
   const [productData, setProductData] = useState({})
 
   useEffect(() => setDataSource(users), [users])
@@ -131,7 +139,7 @@ const ManageSubscriptionContainer = ({
     : null
 
   useEffect(() => {
-    fetchMultipleSubscriptions({ licenseIds })
+    fetchMultipleSubscriptions({ licenseOwnerId })
   }, [])
 
   const isSubscribed =
@@ -142,6 +150,15 @@ const ManageSubscriptionContainer = ({
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
+  const isAboutToExpire = subEndDate
+    ? Date.now() + ONE_MONTH > subEndDate && Date.now() < subEndDate + TEN_DAYS
+    : false
+
+  const showRenewalOptions =
+    ((isPaidPremium && isAboutToExpire) ||
+      (!isPaidPremium && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
+
   const closeAddUsersModal = () => setShowAddUsersModal(false)
   const closeAddUsersConfirmationModal = () =>
     setAddUsersConfirmationModalVisible(false)
@@ -149,10 +166,11 @@ const ManageSubscriptionContainer = ({
   const addAndUpgradeUsers = ({ userDetails, licenses }) =>
     addAndUpgradeUsersSubscriptions({
       addUsersPayload: {
-        districtId: userOrgId,
+        districtId: userOrgId || districtId,
         userDetails,
       },
       licenses,
+      licenseOwnerId,
     })
 
   const totalPaidProducts = itemBankSubscriptions.reduce(
@@ -196,6 +214,7 @@ const ManageSubscriptionContainer = ({
           hasAllPremiumProductAccess={hasAllPremiumProductAccess}
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           settingProductData={settingProductData}
+          showRenewalOptions={showRenewalOptions}
         />
       )}
 
@@ -203,7 +222,8 @@ const ManageSubscriptionContainer = ({
         <LicenseCountSection
           subsLicenses={subsLicenses}
           setShowBuyMoreModal={setShowBuyMoreModal}
-          setIsBuyMoreModalOpened={setIsBuyMoreModalOpened}
+          setCurrentItemId={setCurrentItemId}
+          isEdulasticAdminView={isEdulasticAdminView}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}
@@ -212,12 +232,11 @@ const ManageSubscriptionContainer = ({
         />
         <Userlist
           users={dataSource}
-          licenseIds={licenseIds}
           subsLicenses={subsLicenses}
-          userId={userId}
+          currentUserId={userId}
           bulkEditUsersPermission={bulkEditUsersPermission}
-          teacherPremiumProductId={teacherPremiumProductId}
-          sparkMathProductId={sparkMathProductId}
+          dynamicColumns={columns}
+          licenseOwnerId={licenseOwnerId}
         />
       </ContentWrapper>
 
@@ -231,14 +250,16 @@ const ManageSubscriptionContainer = ({
         setProductData={setProductData}
         showBuyMoreModal={showBuyMoreModal}
         setShowBuyMoreModal={setShowBuyMoreModal}
-        isBuyMoreModalOpened={isBuyMoreModalOpened}
         isEdulasticAdminView={isEdulasticAdminView}
+        showRenewalOptions={showRenewalOptions}
+        currentItemId={currentItemId}
       />
       {showAddUsersModal && (
         <AddUsersModal
+          users={dataSource}
           isVisible={showAddUsersModal}
           onCancel={closeAddUsersModal}
-          districtId={userOrgId}
+          districtId={userOrgId || districtId}
           addAndUpgradeUsers={addAndUpgradeUsers}
           subsLicenses={subsLicenses}
           teacherPremiumProductId={teacherPremiumProductId}
@@ -277,6 +298,8 @@ const enhance = compose(
       itemBankSubscriptions: getItemBankSubscriptions(state),
       dashboardTiles: getDashboardTilesSelector(state),
       userRole: getUserRole(state),
+      isSubscriptionExpired: getIsSubscriptionExpired(state),
+      columns: getColumnsSelector(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

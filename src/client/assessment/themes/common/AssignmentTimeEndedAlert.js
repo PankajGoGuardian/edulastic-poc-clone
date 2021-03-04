@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router'
 import styled, { withTheme } from 'styled-components'
 import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
+import { AssessmentPlayerContext } from '@edulastic/common'
 import {
   finishTestAcitivityAction,
   setIsTestPreviewVisibleAction,
@@ -18,24 +19,30 @@ const AssignmentTimeEndedAlert = ({
   groupId,
   history,
   utaId,
-  match,
   isAuthorPreview,
   setIsTestPreviewVisible,
 }) => {
+  const { currentItem } = useContext(AssessmentPlayerContext)
+
   useEffect(() => {
-    const { qid } = match.params || {}
     const lastTime = window.localStorage.assessmentLastTime || Date.now()
     const timeSpent = Date.now() - lastTime
-    if (!isAuthorPreview) {
+    if (!isAuthorPreview && currentItem > -1) {
       autoSubmitTest({
         groupId,
         preventRouteChange: true,
         testActivityId: utaId,
         autoSubmit: true,
-        itemResponse: [qid, timeSpent, false, groupId, { pausing: false }],
+        itemResponse: [
+          currentItem,
+          timeSpent,
+          false,
+          groupId,
+          { pausing: false },
+        ],
       })
     }
-  }, [])
+  }, [currentItem])
 
   const handleClose = () => {
     if (!isAuthorPreview) {
@@ -87,10 +94,15 @@ AssignmentTimeEndedAlert.propTypes = {
 const enhance = compose(
   withTheme,
   withRouter,
-  connect(null, {
-    autoSubmitTest: finishTestAcitivityAction,
-    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
-  })
+  connect(
+    (state) => ({
+      items: state.test.items,
+    }),
+    {
+      autoSubmitTest: finishTestAcitivityAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+    }
+  )
 )
 
 export default enhance(AssignmentTimeEndedAlert)

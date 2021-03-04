@@ -30,7 +30,6 @@ const SubscriptionHeader = ({
   subType,
   subEndDate,
   setShowSubscriptionAddonModal,
-  isPaidPremium,
   hasAllPremiumProductAccess,
   isPremium,
   isBannerVisible,
@@ -131,20 +130,21 @@ const SubscriptionHeader = ({
               </Link>
             </EduButton>
           )}
-
-          {!showRenewalOptions && (
-            <Dropdown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={menu}
-              placement="bottomRight"
-              arrow
-            >
-              <EduButton data-cy="upgradeButton" isBlue height="24px">
-                Upgrade
-              </EduButton>
-            </Dropdown>
-          )}
-          {isPaidPremium && showRenewalOptions && (
+          {!showRenewalOptions &&
+            subType !== 'enterprise' &&
+            subType !== 'partial_premium' && (
+              <Dropdown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={menu}
+                placement="bottomRight"
+                arrow
+              >
+                <EduButton data-cy="upgradeButton" isBlue height="24px">
+                  Upgrade
+                </EduButton>
+              </Dropdown>
+            )}
+          {showRenewalOptions && (
             <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription
             </EduButton>

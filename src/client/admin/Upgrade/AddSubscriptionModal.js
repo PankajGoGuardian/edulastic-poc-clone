@@ -55,7 +55,13 @@ const AddSubscriptionModal = ({
         })
       }
     }
-    const updatedFieldData = { ...fieldData, [fieldName]: value }
+    const updatedFieldData = {
+      ...fieldData,
+      [fieldName]:
+        fieldName === 'premiumLicense' || fieldName === 'sparkMathLicense'
+          ? Math.floor(value)
+          : value,
+    }
     setFieldData(updatedFieldData)
   }
 
@@ -144,6 +150,7 @@ const AddSubscriptionModal = ({
           style={{ width: '100%' }}
           placeholder="Search for an organization"
           filterOption={false}
+          showSearch
           notFoundContent={
             isFetchingOrganization ? <Spin size="small" /> : null
           }
@@ -196,20 +203,22 @@ const AddSubscriptionModal = ({
           <Col span={12}>
             <FieldLabel>Premium</FieldLabel>
             <NumberInputStyled
+              type="number"
               style={{ width: '100%' }}
               placeholder="premium license"
               value={fieldData.premiumLicense}
-              min={1}
+              min={0}
               onChange={(value) => handleFieldChange('premiumLicense')(value)}
             />
           </Col>
           <Col span={12}>
             <FieldLabel>SparkMath</FieldLabel>
             <NumberInputStyled
+              type="number"
               style={{ width: '100%' }}
               placeholder="sparkMath license"
               value={fieldData.sparkMathLicense}
-              min={1}
+              min={0}
               onChange={(value) => handleFieldChange('sparkMathLicense')(value)}
             />
           </Col>

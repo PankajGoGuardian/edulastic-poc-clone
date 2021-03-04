@@ -295,24 +295,26 @@ const SubscriptionMain = ({
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {!hasAllPremiumProductAccess && !isFreeAdmin && (
-              <AuthorCompleteSignupButton
-                renderButton={(handleClick) => (
-                  <CustomButton
-                    height="38px"
-                    width="215px"
-                    data-cy="subscriptionUpgradebtn"
-                    isBlue
-                    onClick={handleClick}
-                    noBg
-                  >
-                    Upgrade now
-                  </CustomButton>
-                )}
-                onClick={handlePurchaseFlow}
-              />
-            )}
-            {isPaidPremium && showRenewalOptions && (
+            {!hasAllPremiumProductAccess &&
+              !isFreeAdmin &&
+              !showRenewalOptions && (
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <CustomButton
+                      height="38px"
+                      width="215px"
+                      data-cy="subscriptionUpgradebtn"
+                      isBlue
+                      onClick={handleClick}
+                      noBg
+                    >
+                      Upgrade now
+                    </CustomButton>
+                  )}
+                  onClick={handlePurchaseFlow}
+                />
+              )}
+            {showRenewalOptions && (
               <EduButton onClick={handlePurchaseFlow} isBlue height="38px">
                 Renew Subscription
               </EduButton>

@@ -75,6 +75,7 @@ class TestItemCol extends Component {
       isStudentReport,
       isLCBView,
       isFeedbackVisible,
+      hideCorrectAnswer,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question = questions[widget.reference]
@@ -91,16 +92,6 @@ class TestItemCol extends Component {
     }
 
     const displayFeedback = true
-    let minHeight = null
-    if (
-      widget.widgetType === 'question' &&
-      (isLCBView || showStackedView || isDocBased || isStudentAttempt)
-    ) {
-      // we shows multiple feedback in multiple question type
-      // when scoring type is question level.
-      // feedback wrapper is required minHeight 320 at least
-      minHeight = '320px'
-    }
     const showTabBorder = !hasDrawingResponse && isLCBView
 
     const saveUpdatedAttachments = (index) => {
@@ -127,10 +118,10 @@ class TestItemCol extends Component {
         questionId={widget.reference}
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
-        minHeight={minHeight}
         itemIndex={widgetIndex}
         marginTop={widgetIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
         showBorder={showTabBorder}
+        hideCorrectAnswer={hideCorrectAnswer}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== 'resource'}

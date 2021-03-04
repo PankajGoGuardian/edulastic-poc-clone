@@ -234,12 +234,16 @@ export function useFullScreenListener({
     if (enabled && !Fscreen.fullscreenElement) {
       setInFullScreen(false)
     }
+
     return () => {
       Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
       setTimeout(
         (win) => {
           const { pathname: _path } = win.location
+          if (!_path.includes('/uta/')) {
+            window.sessionStorage.removeItem('totalTimeInBlur')
+          }
           if (!_path.includes('/uta/') && disableSave) {
             pauseAssignment({
               history,
@@ -663,7 +667,7 @@ const AssessmentContainer = ({
      * @see https://snapwiz.atlassian.net/browse/EV-17309
      */
     const _itemId = items[currentItem]?._id
-    if (hasUserWork(_itemId, restProps.userWork || {})) {
+    if (hasUserWork(_itemId, userWork || {})) {
       return []
     }
     return questions.filter((q) => {
@@ -839,6 +843,9 @@ const AssessmentContainer = ({
           timeSpent,
           callback: submitPreviewTest,
         })
+      }
+      if (demo) {
+        submitPreviewTest()
       }
     }
 
@@ -1023,14 +1030,17 @@ const AssessmentContainer = ({
     hasDrawingResponse,
     questions: questionsById,
     uploadToS3: uploadFile,
+    userWork,
     ...restProps,
   }
 
   useEffect(() => {
-    if (savingResponse) {
-      message.loading('Submitting the response', 0)
-    } else {
-      message.destroy()
+    if (!preview) {
+      if (savingResponse) {
+        message.loading('Submitting the response', 0)
+      } else {
+        message.destroy()
+      }
     }
     return () => {
       /**

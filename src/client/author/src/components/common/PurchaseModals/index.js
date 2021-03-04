@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
+import { notification } from '@edulastic/common'
 import {
   getItemBankSubscriptions,
   getProducts,
@@ -13,15 +14,27 @@ import {
   getIsVerificationPending,
   slice,
 } from '../../../../Subscription/ducks'
+import IndividualSubscriptionModal from './IndividualSubscriptionModal'
 
-const SubscriptionAddonModal = loadable(() =>
-  import('./SubscriptionAddonModal')
+const MultipleLicensePurchase = loadable(() =>
+  import('./MultipleLicensePurchase')
 )
 const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
-const MultiplePurchaseModal = loadable(() => import('./MultiplePurchaseModal'))
 const BuyMoreLicensesModal = loadable(() => import('./BuyMoreLicensesModal'))
+
+const getInitialSelectedProductIds = ({
+  defaultSelectedProductIds,
+  isPaidPremium,
+  premiumProductId,
+}) => {
+  const productIds = defaultSelectedProductIds || []
+  if (!isPaidPremium) {
+    productIds.push(premiumProductId)
+  }
+  return productIds
+}
 
 const PurchaseFlowModals = (props) => {
   const {
@@ -44,26 +57,25 @@ const PurchaseFlowModals = (props) => {
     setShowMultiplePurchaseModal,
     showBuyMoreModal,
     setShowBuyMoreModal,
-    isBuyMoreModalOpened,
     licenseIds,
     isEdulasticAdminView = false,
     handleEdulasticAdminProductLicense,
+    showRenewalOptions = false,
+    currentItemId,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const [addOnProductIds, setAddOnProductIds] = useState([])
-  const [productsCart, setProductsCart] = useState({})
+  const [productsCart, setProductsCart] = useState([])
   const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
-  const [buyCount, setBuyCount] = useState()
+  const [quantities, setQuantities] = useState({})
 
   useEffect(() => {
     // getSubscription on mount
     fetchUserSubscriptionStatus()
   }, [])
-
-  const closeMultiplePurchaseModal = () => setShowMultiplePurchaseModal(false)
 
   const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
@@ -114,6 +126,24 @@ const PurchaseFlowModals = (props) => {
     }
   }, [subEndDate, products])
 
+  const [selectedProductIds, setSelectedProductIds] = useState(
+    getInitialSelectedProductIds({
+      defaultSelectedProductIds,
+      isPaidPremium,
+      premiumProductId,
+    })
+  )
+
+  useEffect(() => {
+    setSelectedProductIds(
+      getInitialSelectedProductIds({
+        defaultSelectedProductIds,
+        isPaidPremium,
+        premiumProductId,
+      })
+    )
+  }, [defaultSelectedProductIds, isPaidPremium, premiumProductId])
+
   const openPaymentServiceModal = () => {
     setPaymentServiceModal(true)
     segmentApi.trackTeacherClickOnUpgradeSubscription({ user })
@@ -127,9 +157,9 @@ const PurchaseFlowModals = (props) => {
   const handleSubscriptionAddonModalClose = () => {
     setProductData({})
     setShowSubscriptionAddonModal(false)
+    setShowMultiplePurchaseModal(false)
+    setShowBuyMoreModal(false)
   }
-
-  const closeBuyMoreModal = () => setShowBuyMoreModal(false)
 
   const stripePaymentActionHandler = (data) => {
     if (addOnProductIds?.length) {
@@ -142,31 +172,88 @@ const PurchaseFlowModals = (props) => {
         emailIds,
         licenseIds,
       })
-      setProductsCart({})
+      if (!isPaymentServiceModalVisible) {
+        setProductsCart([])
+      }
     }
+  }
+
+  const handleClick = ({ emails = [], productsToshow = products }) => {
+    if (showMultiplePurchaseModal) {
+      if (emails.length > quantities[premiumProductId]) {
+        return notification({
+          type: 'warn',
+          msg: 'Email count(s) can not be more than Premium count(s)',
+        })
+      }
+      const productQuantities = products.map((product) => ({
+        ...product,
+        quantity: quantities[product.id],
+      }))
+      setProductsCart(productQuantities)
+      setEmailIds(emails)
+    } else if (showBuyMoreModal) {
+      const productQuantities = productsToshow.map((product) => ({
+        ...product,
+        quantity: quantities[product.id],
+      }))
+      if (isEdulasticAdminView) {
+        handleEdulasticAdminProductLicense({
+          products: productQuantities,
+          emailIds,
+          licenseIds,
+        })
+        handleSubscriptionAddonModalClose()
+        return
+      }
+      setProductsCart(productQuantities)
+    } else {
+      setAddOnProductIds(selectedProductIds)
+    }
+
+    setTotalAmount(totalAmount)
+    handleSubscriptionAddonModalClose()
+    setShowUpgradeModal(true)
   }
 
   return (
     <>
       {showSubscriptionAddonModal && (
-        <SubscriptionAddonModal
+        <IndividualSubscriptionModal
           isVisible={showSubscriptionAddonModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
+          showMultiplePurchaseModal={showMultiplePurchaseModal}
+          handleClick={handleClick}
+          itemBankProducts={itemBankPremium}
           isPaidPremium={isPaidPremium}
-          setShowUpgradeModal={setShowUpgradeModal}
           premiumProductId={premiumProductId}
-          setTotalPurchaseAmount={setTotalAmount}
-          setAddOnProductIds={setAddOnProductIds}
-          defaultSelectedProductIds={defaultSelectedProductIds}
+          setTotalAmount={setTotalAmount}
           teacherPremium={teacherPremium}
-          itemBankPremium={itemBankPremium}
+          showRenewalOptions={showRenewalOptions}
+          setQuantities={setQuantities}
+          quantities={quantities}
+          setSelectedProductIds={setSelectedProductIds}
+          selectedProductIds={selectedProductIds}
+        />
+      )}
+      {showMultiplePurchaseModal && (
+        <MultipleLicensePurchase
+          isVisible={showMultiplePurchaseModal}
+          handleCloseModal={handleSubscriptionAddonModalClose}
+          products={products}
+          handleClick={handleClick}
+          setTotalAmount={setTotalAmount}
+          teacherPremium={teacherPremium}
+          setQuantities={setQuantities}
+          quantities={quantities}
+          setSelectedProductIds={setSelectedProductIds}
+          selectedProductIds={selectedProductIds}
         />
       )}
       {showUpgradeModal && (
         <UpgradeModal
           visible={showUpgradeModal}
           setShowModal={setShowUpgradeModal}
-          setShowBuyMoreModal={setShowBuyMoreModal}
           openPaymentServiceModal={openPaymentServiceModal}
           openPoServiceModal={openPoServiceModal}
         />
@@ -188,37 +275,28 @@ const PurchaseFlowModals = (props) => {
           setShowModal={setPayWithPoModal}
         />
       )}
-      {showMultiplePurchaseModal && (
-        <MultiplePurchaseModal
-          isVisible={showMultiplePurchaseModal}
-          onCancel={closeMultiplePurchaseModal}
-          setShowUpgradeModal={setShowUpgradeModal}
-          setTotalAmount={setTotalAmount}
-          totalAmount={totalAmount}
-          setProductsCart={setProductsCart}
-          setEmailIds={setEmailIds}
-          products={products}
-        />
-      )}
       {showBuyMoreModal && (
         <BuyMoreLicensesModal
           isVisible={showBuyMoreModal}
-          onCancel={closeBuyMoreModal}
-          isBuyMoreModalOpened={isBuyMoreModalOpened}
-          setBuyCount={setBuyCount}
-          buyCount={buyCount}
-          setProductsCart={setProductsCart}
-          setShowUpgradeModal={setShowUpgradeModal}
+          handleCloseModal={handleSubscriptionAddonModalClose}
+          handleClick={handleClick}
           products={products}
+          currentItemId={currentItemId}
           setTotalAmount={setTotalAmount}
-          isEdulasticAdminView={isEdulasticAdminView}
-          handlePayment={handleEdulasticAdminProductLicense}
-          licenseIds={licenseIds}
-          userEmailIds={emailIds}
+          setQuantities={setQuantities}
+          quantities={quantities}
+          setSelectedProductIds={setSelectedProductIds}
+          selectedProductIds={selectedProductIds}
         />
       )}
     </>
   )
+}
+
+PurchaseFlowModals.defaultProps = {
+  setShowMultiplePurchaseModal: () => {},
+  setShowSubscriptionAddonModal: () => {},
+  setShowBuyMoreModal: () => {},
 }
 
 export default compose(

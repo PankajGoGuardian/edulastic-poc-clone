@@ -59,6 +59,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       ? `${heightpx}px`
       : 'auto'
     : 'auto'
+  /**
+   * Avoiding same value of minHeight and maxHeight
+   * check https://snapwiz.atlassian.net/browse/EV-24405
+   */
+  if (!response.heightpx) {
+    btnStyle.maxHeight = dimensions.maxHeight
+  }
   btnStyle.minHeight = !globalSettings
     ? heightpx
       ? `${heightpx}px`

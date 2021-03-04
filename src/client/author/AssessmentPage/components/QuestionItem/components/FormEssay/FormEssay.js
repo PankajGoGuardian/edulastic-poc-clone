@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input } from 'antd'
+import { isSubmitButton } from '../../../../common/helpers'
 
 export default class FormEssay extends React.Component {
   static propTypes = {
@@ -30,10 +31,13 @@ export default class FormEssay extends React.Component {
     )
   }
 
-  handleBlur = () => {
-    const { clearHighlighted, saveQuestionResponse } = this.props
-    clearHighlighted()
-    saveQuestionResponse()
+  handleBlur = (ev) => {
+    // preventing blur event when relatedTarget is submit button
+    if (!isSubmitButton(ev)) {
+      const { clearHighlighted, saveQuestionResponse } = this.props
+      clearHighlighted()
+      saveQuestionResponse()
+    }
   }
 
   renderForm = () => {
@@ -49,6 +53,7 @@ export default class FormEssay extends React.Component {
       <Input.TextArea
         style={{ padding: '2px 11px', resize: 'none' }}
         value={answer}
+        data-cy="essayInput"
         onChange={this.handleChange}
         onBlur={this.handleBlur}
         disabled={mode === 'report'}

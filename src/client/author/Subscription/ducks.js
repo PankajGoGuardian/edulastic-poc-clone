@@ -44,6 +44,10 @@ export const getIsPaymentServiceModalVisible = createSelector(
   subscriptionSelector,
   (state) => state.isPaymentServiceModalVisible
 )
+export const getIsSubscriptionExpired = createSelector(
+  subscriptionSelector,
+  (state) => state.isSubscriptionExpired
+)
 
 const slice = createSlice({
   name: 'subscription',
@@ -334,14 +338,14 @@ function* fetchUserSubscription() {
 
 function* handleEdulasticAdminProductLicenseSaga({ payload }) {
   try {
-    const { productIds, emailIds: userEmailIds, licenseIds } = payload
-    const products = productIds.reduce((allProducts, product) => {
+    const { products, emailIds: userEmailIds, licenseIds } = payload
+    const _products = products.reduce((allProducts, product) => {
       const { quantity, id, linkedProductId } = product
       allProducts[id || linkedProductId] = quantity
       return allProducts
     }, {})
     const apiPaymentResponse = yield call(paymentApi.licensePurchase, {
-      products,
+      products: _products,
       userEmailIds,
       licenseIds,
     })
@@ -447,6 +451,7 @@ function* handleStripePayment({ payload }) {
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
+        yield put(fetchMultipleSubscriptionsAction({ background: true }))
       } else {
         notification({
           msg: `API Response failed: ${error}`,

@@ -56,6 +56,14 @@ const Stimulus = withTheme(
         max-width: unset !important;
       }
     }
+
+    /**
+   * @see https://snapwiz.atlassian.net/browse/EV-22888
+   * words breaking into single character each line
+   */
+    & table {
+      word-break: normal;
+    }
   `)
 )
 

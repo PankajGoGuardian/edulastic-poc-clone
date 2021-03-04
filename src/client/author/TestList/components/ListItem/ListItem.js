@@ -339,12 +339,16 @@ class ListItem extends Component {
           collectionName={collectionName}
         />
 
-        {currentTestId && (
+        {isPreviewModalVisible && currentTestId && (
           <TestPreviewModal
             isModalVisible={isPreviewModalVisible}
             testId={currentTestId}
             showStudentPerformance
             closeTestPreviewModal={this.hidePreviewModal}
+            resetOnClose={() => {
+              this.setState({ currentTestId: '' })
+            }}
+            unmountOnClose
           />
         )}
         <Container>

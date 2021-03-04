@@ -181,6 +181,7 @@ function formatDate(subEndDate) {
 }
 
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
+const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
 
 const Subscription = (props) => {
   const {
@@ -303,8 +304,13 @@ const Subscription = (props) => {
     subType === 'TRIAL_PREMIUM'
 
   const isAboutToExpire = subEndDate
-    ? Date.now() + ONE_MONTH > subEndDate
+    ? Date.now() + ONE_MONTH > subEndDate && Date.now() < subEndDate + TEN_DAYS
     : false
+
+  const showRenewalOptions =
+    ((isPaidPremium && isAboutToExpire) ||
+      (!isPaidPremium && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
 
   const itemBankProductIds = products
     .filter((prod) => prod.type === 'ITEM_BANK_SPARK_MATH')
@@ -322,10 +328,6 @@ const Subscription = (props) => {
   )
   const hasAllPremiumProductAccess =
     isPaidPremium && totalPaidProducts === products.length
-  const showRenewalOptions =
-    ((isPaidPremium && isAboutToExpire) ||
-      (!isPaidPremium && isSubscriptionExpired)) &&
-    !['enterprise', 'partial_premium'].includes(subType)
 
   const isTrialItemBank =
     itemBankSubscriptions &&
@@ -428,6 +430,7 @@ const Subscription = (props) => {
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}
+        showRenewalOptions={showRenewalOptions}
       />
 
       <HasLicenseKeyModal

@@ -1299,7 +1299,7 @@ class Setting extends Component {
                               key="warn-and-report-after-n-alerts"
                               data-cy="restrict-nav-out-warn-report-alerts"
                             >
-                              WARN AND BLOCK TEST AFTER{' '}
+                              WARN AND BLOCK TEST AFTER
                               <InputNumberStyled
                                 size="small"
                                 value={
@@ -1325,9 +1325,11 @@ class Setting extends Component {
                                 <>
                                   {' '}
                                   <br />{' '}
-                                  {`or maximum of ${
-                                    restrictNavigationOutAttemptsThreshold * 5
-                                  } sec.`}{' '}
+                                  <span style={{ textTransform: 'lowercase' }}>
+                                    {`or maximum of ${
+                                      restrictNavigationOutAttemptsThreshold * 5
+                                    } sec.`}
+                                  </span>{' '}
                                 </>
                               ) : (
                                 ''
@@ -1340,15 +1342,24 @@ class Setting extends Component {
                             If <b>ON</b>, then students must take the test in
                             full screen mode to prevent opening another browser
                             window. Alert will appear if student has navigated
-                            away for more than 5 seconds{' '}
-                            {navigationThresholdMoreThan1
-                              ? `and student will be blocked after ${
-                                  restrictNavigationOutAttemptsThreshold * 5
-                                } seconds`
-                              : ''}
-                            .If the designated number of alerts are exceeded,
-                            the student’s assignment will be paused and the
-                            instructor will need to manually reset.
+                            away for more than 5 seconds. If the designated
+                            number of alerts are exceeded, the student’s
+                            assignment will be paused and the instructor will
+                            need to manually reset.
+                            {navigationThresholdMoreThan1 ? (
+                              <>
+                                <br />
+                                <br />
+                                Alert will appear if student has navigated away
+                                for more than 5 seconds and student will be
+                                blocked after{' '}
+                                {restrictNavigationOutAttemptsThreshold *
+                                  5}{' '}
+                                seconds{' '}
+                              </>
+                            ) : (
+                              ''
+                            )}
                           </Description>
                         </Col>
                       </Row>

@@ -1451,7 +1451,10 @@ export function* updateItemDocBasedSaga({ payload }) {
         })
       )
     }
-    notification({ type: 'success', messageKey: 'itemSavedSuccess' })
+    //to avoid displaying confusing notification when no question present
+    if (data?.data?.questions?.length || data?.data?.resources.length) {
+      notification({ type: 'success', messageKey: 'itemSavedSuccess' })
+    }
     return { testId, ...item }
   } catch (err) {
     captureSentryException(err)

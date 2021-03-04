@@ -47,9 +47,9 @@ const FeatureNotAvailableModal = ({
       onCancel={handleCloseModal}
     >
       <p>
-        You are not on a premium plan and administrators are not allowed to
-        access the district level assignments. Please talk to a sales
-        representative.
+        Administrator accounts can only be upgraded with a school or district
+        Enterprise subscription.  To learn more about Edulastic Enterprise,
+        schedule a demo, or request a quote.
       </p>
       <StyledButton onClick={handleScheduleDemo}>Schedule a Demo</StyledButton>
     </CustomModalStyled>

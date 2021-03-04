@@ -37,7 +37,7 @@ const ToolBar = ({
   changeTool,
   hasDrawingResponse,
 }) => {
-  const { calcType, showMagnifier, enableScratchpad } = settings
+  const { calcType, showMagnifier, enableScratchpad, isTeacherPremium } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   const toolbarHandler = (value) => () => {
@@ -103,11 +103,13 @@ const ToolBar = ({
           onClick={handleMagnifier}
         />
       )}
-      <ActionButton
-        title="Camera"
-        icon={<IconCloudUpload />}
-        onClick={toggleUserWorkUploadModal}
-      />
+      {isTeacherPremium && (
+        <ActionButton
+          title="Upload work"
+          icon={<IconCloudUpload />}
+          onClick={toggleUserWorkUploadModal}
+        />
+      )}
     </Container>
   )
 }

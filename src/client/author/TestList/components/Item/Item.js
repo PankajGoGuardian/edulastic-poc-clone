@@ -335,12 +335,17 @@ class Item extends Component {
           isTestLiked={isTestLiked}
           collectionName={collectionName}
         />
-        {currentTestId && (
+        {/* Both conditions required so that preview model will trigger unmount */}
+        {isPreviewModalVisible && currentTestId && (
           <TestPreviewModal
             isModalVisible={isPreviewModalVisible}
             testId={currentTestId}
             showStudentPerformance
             closeTestPreviewModal={this.hidePreviewModal}
+            resetOnClose={() => {
+              this.setState({ currentTestId: '' })
+            }}
+            unmountOnClose
           />
         )}
         {isDeleteModalOpen ? (

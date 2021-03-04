@@ -134,4 +134,6 @@ const TwoLineEllipsis = styled(FieldLabel)`
 
 const RubrickName = styled(FieldLabel)`
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `

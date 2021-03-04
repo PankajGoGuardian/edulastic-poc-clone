@@ -4,6 +4,7 @@ import {
   tabGrey,
   themeColor,
   themeColorTagsBg,
+  white,
 } from '@edulastic/colors'
 import {
   AnswerContext,
@@ -73,6 +74,7 @@ class FeedbackRight extends Component {
     }
 
     this.scoreInput = React.createRef()
+    this.feedbackInputRef = React.createRef()
     this.scoreRegex = new RegExp(/^[0-9]*(\.){0,1}([0-9]+)?$/)
   }
 
@@ -145,6 +147,7 @@ class FeedbackRight extends Component {
       itemId,
       allAnswers = {},
       setTeacherEditedScore,
+      isExpressGrader,
     } = this.props
 
     if ((!score || isNaN(score)) && score != 0) {
@@ -183,6 +186,11 @@ class FeedbackRight extends Component {
     if (currentScreen === 'live_class_board') {
       payload.shouldReceiveStudentResponse = true
     }
+
+    if (isExpressGrader) {
+      payload.fromExpressGrader = true
+    }
+
     if (payload.testActivityId && payload.itemId) {
       if (allAnswers[id]) {
         // adding user responses only when not empty
@@ -244,9 +252,14 @@ class FeedbackRight extends Component {
     this.setState({ showFeedbackSaveBtn: false })
   }
 
-  submitScore = () => {
+  submitScore = (e) => {
     const { changed } = this.state
-    if (changed) {
+    const { widget: { activity: { qActId, _id } = {} } = {} } = this.props
+    /**
+     * in case of student did not visit the question, allow teacher trying to grade first time
+     * @see EV-25489
+     */
+    if (changed || (e?.type === 'blur' && !(qActId || _id))) {
       this.onScoreSubmit()
     }
   }
@@ -290,7 +303,7 @@ class FeedbackRight extends Component {
   }
 
   handleRubricResponse = (res, isSubmit) => {
-    this.setState({ score: res.score, changed: true }, () => {
+    this.setState({ score: res.score }, () => {
       if (isSubmit) {
         this.onScoreSubmit(res)
       }
@@ -299,7 +312,19 @@ class FeedbackRight extends Component {
 
   focusFeedbackInput = () => this.setState({ feedbackInputHasFocus: true })
 
-  blurFeedbackInput = () => this.setState({ feedbackInputHasFocus: false })
+  blurFeedbackInput = () =>
+    this.setState({ feedbackInputHasFocus: false, isShowFeedbackInput: false })
+
+  showFeedbackInput = () => {
+    this.setState(
+      { isShowFeedbackInput: true, feedbackInputHasFocus: true },
+      () => {
+        if (this.feedbackInputRef.current) {
+          this.feedbackInputRef.current.focus()
+        }
+      }
+    )
+  }
 
   render() {
     const {
@@ -313,6 +338,7 @@ class FeedbackRight extends Component {
       user,
       disabled,
       isPracticeQuestion,
+      isAbsolutePos,
     } = this.props
     const {
       score,
@@ -321,6 +347,7 @@ class FeedbackRight extends Component {
       changed,
       showFeedbackSaveBtn,
       feedbackInputHasFocus,
+      isShowFeedbackInput,
     } = this.state
     let rubricMaxScore = 0
     if (rubricDetails)
@@ -416,26 +443,39 @@ class FeedbackRight extends Component {
             onRubricResponse={this.handleRubricResponse}
           />
         )}
-        <LeaveDiv>
-          <span>{isError ? 'Score is too large' : 'Student Feedback!'}</span>
-          {showFeedbackSaveBtn && (
-            <EduButton height="32px" onClick={this.preCheckSubmit}>
-              Save
-            </EduButton>
-          )}
-        </LeaveDiv>
         {!isError && (
-          <FeedbackInput
-            tabIndex={0}
-            data-cy="feedBackInput"
-            onChange={this.onChangeFeedback}
-            value={feedback}
-            onFocus={this.focusFeedbackInput}
-            onBlur={this.blurFeedbackInput}
-            disabled={!activity || isPresentationMode}
-            onKeyDown={this.onKeyDownFeedback}
-            autoSize
-          />
+          <FeedbaclInputWrapper>
+            <FeedbackInputInnerWrapper isAbsolutePos={isAbsolutePos}>
+              <LeaveDiv>
+                <span>
+                  {isError ? 'Score is too large' : 'Student Feedback!'}
+                </span>
+                {showFeedbackSaveBtn && (
+                  <EduButton height="32px" onClick={this.preCheckSubmit}>
+                    Save
+                  </EduButton>
+                )}
+              </LeaveDiv>
+              {!isShowFeedbackInput && (
+                <FeedbackDisplay onClick={this.showFeedbackInput}>
+                  {feedback}
+                </FeedbackDisplay>
+              )}
+              <FeedbackInput
+                tabIndex={0}
+                autoSize
+                ref={this.feedbackInputRef}
+                data-cy="feedBackInput"
+                onChange={this.onChangeFeedback}
+                value={feedback}
+                onFocus={this.focusFeedbackInput}
+                onBlur={this.blurFeedbackInput}
+                disabled={!activity || isPresentationMode}
+                onKeyDown={this.onKeyDownFeedback}
+                isShowFeedbackInput={isShowFeedbackInput}
+              />
+            </FeedbackInputInnerWrapper>
+          </FeedbaclInputWrapper>
         )}
       </StyledCardTwo>
     )
@@ -568,7 +608,7 @@ const TextPara = styled.p`
 `
 
 const LeaveDiv = styled.div`
-  margin: 20px 0px 10px;
+  margin: 0px 0px 10px;
   font-weight: 600;
   color: ${tabGrey};
   font-size: 13px;
@@ -592,8 +632,20 @@ const FeedbackInput = styled(TextArea)`
   border-radius: 2px;
   display: inline-block;
   background: #f8f8f8;
-  min-height: 80px !important;
-  max-height: 100% !important;
+  display: ${({ isShowFeedbackInput }) => !isShowFeedbackInput && 'none'};
+`
+const FeedbackDisplay = styled.div`
+  width: 100%;
+  padding: 4px 11px;
+  overflow: hidden;
+  background: #f8f8f8;
+  border-radius: 2px;
+  line-height: 1.5;
+  max-height: 32px;
+  min-height: 32px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
 `
 
 const UserAvatar = styled(Avatar)`
@@ -608,4 +660,17 @@ const UserAvatar = styled(Avatar)`
   margin-right: 10px;
   font-size: 14px;
   text-transform: uppercase;
+`
+
+const FeedbaclInputWrapper = styled.div`
+  min-height: 74px;
+  margin-top: 12px;
+  position: relative;
+`
+
+const FeedbackInputInnerWrapper = styled.div`
+  background: ${white};
+  position: ${({ isAbsolutePos }) => isAbsolutePos && 'absolute'};
+  bottom: ${({ isAbsolutePos }) => isAbsolutePos && 0};
+  width: 100%;
 `

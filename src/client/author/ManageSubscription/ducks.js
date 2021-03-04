@@ -5,6 +5,7 @@ import { takeLatest } from 'redux-saga'
 import { all, call, put, select } from 'redux-saga/effects'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
+import { slice } from '../Subscription/ducks'
 
 // selectors
 const manageSubscriptionSelector = (state) => state.manageSubscription
@@ -23,6 +24,10 @@ export const getBulkUsersData = createSelector(
 export const getUsersSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.users
+)
+export const getColumnsSelector = createSelector(
+  manageSubscriptionSelector,
+  (state) => state.columns
 )
 export const getLoadingStateSelector = createSelector(
   manageSubscriptionSelector,
@@ -98,6 +103,7 @@ const initialState = {
   showUpgradeUsersSuccessModal: false,
   licenses: [],
   users: [],
+  columns: [],
 }
 
 const setLicensesData = (state, { payload }) => {
@@ -131,6 +137,7 @@ export const reducer = createReducer(initialState, {
     state.loading = false
     state.licenses = payload.licenses
     state.users = payload.users
+    state.columns = payload.columns
   },
   [FETCH_MANAGE_SUBSCRIPTIONS_ERROR]: (state) => {
     state.loading = false
@@ -152,7 +159,7 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* addBulkUsersAndUpgradeSaga({ payload }) {
   try {
-    const { addUsersPayload, licenses = [] } = payload
+    const { addUsersPayload, licenses = [], licenseOwnerId } = payload
     const res = yield call(userApi.adddBulkTeacher, addUsersPayload) || []
 
     const users = res.map((x) => x._id).filter((x) => x)
@@ -177,14 +184,30 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
         yield put(upgradeUsersSubscriptionsSuccessAction(Object.values(result)))
       }
       if (licenses.length) {
-        yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
+        yield put(
+          fetchMultipleSubscriptionsAction({
+            fetchInBackground: true,
+            licenseOwnerId,
+          })
+        )
       } else {
         const existingUsersData = yield select(getUsersSelector)
         const existingUserIds = existingUsersData.map((x) => x.userId)
         const newData = [...existingUsersData]
+        const _licenses = yield select(getSubsLicensesSelector) || []
+        const licensesMap = _licenses.reduce(
+          (a, c) => ({ ...a, [c.licenseId]: 1 }),
+          {}
+        )
         Object.values(result).forEach((x) => {
           if (!existingUserIds.includes(x.userId)) {
-            newData.push(x)
+            const data = {
+              ...x,
+              hasManageLicense: !!x.ownerLicenseIds.find(
+                (licenseId) => licensesMap[licenseId]
+              ),
+            }
+            newData.push(data)
           }
         })
         yield put(updateManageSubscriptionsAction(newData))
@@ -212,10 +235,10 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
 
 function* fetchManageSubscriptionsSaga({ payload }) {
   try {
-    const { licenseIds = [] } = payload
+    const { licenseOwnerId } = payload
     const params = {}
-    if (licenseIds.length) {
-      Object.assign(params, { licenseIds: licenseIds.join(',') })
+    if (licenseOwnerId) {
+      Object.assign(params, { licenseOwnerId })
     }
     const result = yield call(manageSubscriptionsApi.fetchLicenses, params)
     yield put(fetchManageSubscriptionsSuccessAction(result))
@@ -231,11 +254,12 @@ function* fetchManageSubscriptionsSaga({ payload }) {
 
 function* bulkEditUsersPermissionSaga({ payload }) {
   try {
-    const { licenseIds } = payload
+    const { licenseOwnerId, apiData, fetchOrgSubscriptions } = payload
     const result = yield call(
       manageSubscriptionsApi.bulkEditUsersPermission,
-      payload
+      apiData
     )
+
     if (result.error) {
       notification({
         type: 'error',
@@ -244,8 +268,14 @@ function* bulkEditUsersPermissionSaga({ payload }) {
       return
     }
     yield put(
-      fetchMultipleSubscriptionsAction({ fetchInBackground: true, licenseIds })
+      fetchMultipleSubscriptionsAction({
+        fetchInBackground: true,
+        licenseOwnerId,
+      })
     )
+    if (fetchOrgSubscriptions) {
+      yield put(slice.actions.fetchUserSubscriptionStatus({ background: true }))
+    }
     notification({
       type: 'success',
       msg: `Successfully updated.`,

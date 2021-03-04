@@ -163,7 +163,7 @@ const EngagementReportContainer = ({
               {showFilter ? <IconCloseFilter /> : <IconFilter />}
             </FilterButtonClear>
           ) : null}
-          <ReportContaner showFilter={showFilter}>
+          <ReportContaner showFilter={showFilter} marginLeft="15px">
             <Route
               exact
               path="/author/reports/engagement-summary"

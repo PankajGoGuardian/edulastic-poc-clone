@@ -246,6 +246,10 @@ export const ButtonIconWrap = styled.span`
   display: block;
   left: 10px;
   position: absolute;
+  padding-top: 2px;
+  &.more {
+    padding-top: 4px;
+  }
 `
 
 export const BarDiv = styled.div`

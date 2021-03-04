@@ -17,6 +17,8 @@ import {
   getFetchOrganizationStateSelector,
   searchOrgaizationRequestAction,
 } from '../../author/ContentCollections/ducks'
+import ArchiveLicenseModal from './ArchiveLicenseModal'
+import { manageSubscriptionsByLicenses } from './ducks'
 
 const ManageSubscription = loadable(() =>
   import('../../author/ManageSubscription')
@@ -30,18 +32,20 @@ const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
     name: 'Multiple Licenses',
   },
   {
-    type: 'TRIAL_PREMIUM',
-    name: 'Trial Premium Licenses',
-  },
-  {
-    type: 'TRIAL_SPARKMATH',
-    name: 'SparkMath Licenses',
+    type: 'TRIAL_LICENSES',
+    name: 'Trial Premium & Trial SparkMath Licenses',
   },
 ]
 
 const IconStyles = { width: '20px', cursor: 'pointer' }
 
-const LicensesInvoiceTable = ({ licensesData, handleViewLicense }) => {
+const paginationStyles = { margin: '15px auto' }
+
+const LicensesInvoiceTable = ({
+  licensesData,
+  handleViewLicense,
+  openArchiveAlert,
+}) => {
   const columns = [
     {
       title: 'Invoice Id',
@@ -81,19 +85,25 @@ const LicensesInvoiceTable = ({ licensesData, handleViewLicense }) => {
     },
     {
       title: 'Actions',
-      dataIndex: 'licenseId',
+      dataIndex: 'licenseIds',
       width: 100,
-      render: (licenseId) => (
+      render: (licenseIds, row) => (
         <FlexContainer>
           <Tooltip title="View License">
             <IconEye
-              onClick={() => handleViewLicense(licenseId)}
+              onClick={() =>
+                handleViewLicense(licenseIds, row.districtId, row.userId)
+              }
               color={themeColor}
               style={IconStyles}
             />
           </Tooltip>
           <Tooltip title="Delete License">
-            <IconTrash color={themeColor} style={IconStyles} />
+            <IconTrash
+              onClick={() => openArchiveAlert(licenseIds)}
+              color={themeColor}
+              style={IconStyles}
+            />
           </Tooltip>
         </FlexContainer>
       ),
@@ -131,7 +141,7 @@ const SearchFilters = Form.create({
           fetchLicensesBySearchType({
             type: searchType,
             page: 1,
-            limit: 20,
+            limit: 10,
           })
         }
       })
@@ -143,7 +153,7 @@ const SearchFilters = Form.create({
           alignItems="center"
           width="400px"
         >
-          <Form.Item style={{ width: '300px' }}>
+          <Form.Item style={{ width: '350px' }}>
             {getFieldDecorator('searchType', {
               rules: [{ required: true }],
               initialValue: MANAGE_SUBSCRIPTION_SEARCH_TYPE[0].type,
@@ -179,11 +189,16 @@ const ManageSubscriptionsByLicenses = ({
   isFetchingOrganization,
   districtList,
   searchRequest,
+  deleteLicense,
 }) => {
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
   const [isVisible, setVisible] = useState(false)
+  const [showArchiveAlert, setShowArchiveAlert] = useState(false)
+  const [archiveLicenseIds, setArchiveLicenseIds] = useState([])
   const [currentLicenseIds, setCurrentLicenseIds] = useState()
+  const [currentDistrictId, setCurrentDistrictId] = useState()
+  const [currentUserId, setCurrentUserId] = useState()
   const [currentLicense, setCurrentLicense] = useState({})
   const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(
     false
@@ -194,17 +209,22 @@ const ManageSubscriptionsByLicenses = ({
     fetchLicensesBySearchType({
       type: searchType,
       page: pageNo,
-      limit: 20,
+      limit: 10,
     })
   }
-  const handleViewLicense = (licenseId) => {
-    setCurrentLicenseIds([licenseId])
-    setVisible(true)
-    const getCurrentLicense = licenses.find(
-      (license) => license.licenseId === licenseId
-    )
-    setCurrentLicense(getCurrentLicense)
-    setShowLicenseViewModal(true)
+  const handleViewLicense = (licenseIds, districtId, userId) => {
+    setCurrentLicenseIds(licenseIds)
+    setCurrentDistrictId(districtId)
+    setCurrentUserId(userId)
+    if (searchType === 'TRIAL_LICENSES') {
+      const getCurrentLicense = licenses.find((license) =>
+        licenseIds.includes(license.licenseIds?.[0])
+      )
+      setCurrentLicense(getCurrentLicense)
+      setShowLicenseViewModal(true)
+    } else {
+      setVisible(true)
+    }
   }
   const closeViewLicenseModal = () => {
     setShowLicenseViewModal(false)
@@ -214,6 +234,27 @@ const ManageSubscriptionsByLicenses = ({
   }
   const closeAddSubscriptionModal = () => {
     setShowAddSubscriptionModal(false)
+  }
+
+  const handleDeleteLicense = () => {
+    deleteLicense({
+      licenseIds: archiveLicenseIds,
+      search: {
+        type: searchType,
+        page,
+        limit: 10,
+      },
+    })
+    setShowArchiveAlert(false)
+  }
+
+  const openArchiveAlert = (licenseIds) => {
+    setArchiveLicenseIds(licenseIds)
+    setShowArchiveAlert(true)
+  }
+
+  const closeArchiveAlert = () => {
+    setShowArchiveAlert(false)
   }
 
   return (
@@ -229,8 +270,18 @@ const ManageSubscriptionsByLicenses = ({
         <ManageSubscription
           isEdulasticAdminView
           licenseIds={currentLicenseIds}
+          districtId={currentDistrictId}
+          licenseOwnerId={currentUserId}
         />
       </ManageSubscriptinModal>
+
+      {showArchiveAlert && (
+        <ArchiveLicenseModal
+          showArchiveAlert={showArchiveAlert}
+          closeArchiveAlert={closeArchiveAlert}
+          handleDeleteLicense={handleDeleteLicense}
+        />
+      )}
       <FlexContainer justifyContent="space-between">
         <SearchFilters
           fetchLicensesBySearchType={fetchLicensesBySearchType}
@@ -243,6 +294,8 @@ const ManageSubscriptionsByLicenses = ({
       <LicensesInvoiceTable
         licensesData={licenses}
         handleViewLicense={handleViewLicense}
+        handleDeleteLicense={handleDeleteLicense}
+        openArchiveAlert={openArchiveAlert}
       />
       <Pagination
         hideOnSinglePage
@@ -250,8 +303,9 @@ const ManageSubscriptionsByLicenses = ({
         onChange={handlePageChange}
         current={page}
         total={count}
+        style={paginationStyles}
       />
-      {searchType === 'TRIAL_PREMIUM' && showLicenseViewModal && (
+      {searchType === 'TRIAL_LICENSES' && showLicenseViewModal && (
         <SubsLicenseViewModal
           isVisible={showLicenseViewModal}
           closeModal={closeViewLicenseModal}
@@ -277,7 +331,10 @@ export default connect(
     districtList: getDistrictListSelector(state),
     isFetchingOrganization: getFetchOrganizationStateSelector(state),
   }),
-  { searchRequest: searchOrgaizationRequestAction }
+  {
+    searchRequest: searchOrgaizationRequestAction,
+    deleteLicense: manageSubscriptionsByLicenses.actions.deleteLicense,
+  }
 )(ManageSubscriptionsByLicenses)
 
 const ManageSubscriptinModal = styled(CustomModalStyled)`

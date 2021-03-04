@@ -133,7 +133,7 @@ class Assignments extends Component {
       filters.termId = storedFilters.termId || ''
     }
     if (userRole === roleuser.TEACHER) {
-      loadAssignments({ filters })
+      loadAssignments({ filters, folderId: filters.folderId })
     } else {
       loadAssignmentsSummary({
         districtId,

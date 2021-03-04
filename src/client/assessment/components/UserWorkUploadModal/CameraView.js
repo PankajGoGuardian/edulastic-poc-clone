@@ -22,6 +22,7 @@ const CameraWithButtons = ({
   uploadFile,
   onUploadFinished,
   delayCount,
+  cameraImageName,
   ...rest
 }) => {
   const [isTakingPhoto, setIsTakingPhoto] = useState(false)
@@ -61,7 +62,7 @@ const CameraWithButtons = ({
   // Pass the imageData to callback and reset isTakingPhoto boolean.
   const handlePhotoData = (imageBlob) => {
     imageBlob.lastModifiedDate = new Date()
-    imageBlob.name = 'user-work-photo.png'
+    imageBlob.name = cameraImageName
     addFiles([imageBlob])
     uploadFiles()
   }
@@ -87,18 +88,20 @@ const CameraWithButtons = ({
         {...rest}
       />
       {isUploadingFiles && <Spin />}
-      <Footer className>
-        <EduButton height="40px" isGhost onClick={handleCancel}>
-          NO, CANCEL
-        </EduButton>
-        <EduButton
-          height="40px"
-          onClick={handleTakePhoto}
-          disabled={isTakePhotoButtonDisabled}
-        >
-          TAKE PICTURE
-        </EduButton>
-      </Footer>
+      {!hasCameraError && (
+        <Footer className>
+          <EduButton height="40px" isGhost onClick={handleCancel}>
+            NO, CANCEL
+          </EduButton>
+          <EduButton
+            height="40px"
+            onClick={handleTakePhoto}
+            disabled={isTakePhotoButtonDisabled}
+          >
+            TAKE PICTURE
+          </EduButton>
+        </Footer>
+      )}
     </Suspense>
   )
 }

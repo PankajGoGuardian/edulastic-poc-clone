@@ -191,6 +191,7 @@ const getSettings = (test, testActivity, preview) => {
     releaseScore,
     blockNavigationToAnsweredQuestions:
       assignmentSettings?.blockNavigationToAnsweredQuestions || false,
+    isTeacherPremium: assignmentSettings?.isTeacherPremium || false,
   }
 }
 

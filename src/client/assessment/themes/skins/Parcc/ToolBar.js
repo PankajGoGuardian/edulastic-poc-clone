@@ -40,7 +40,7 @@ const ToolBar = ({
     changeCaculateMode(value)
   }
 
-  const { calcType, enableScratchpad } = settings
+  const { calcType, enableScratchpad, isTeacherPremium } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   return (
@@ -85,7 +85,7 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-      {!isDocbased && (
+      {!isDocbased && isTeacherPremium && (
         <Tooltip placement="top" title="Upload work">
           <StyledButton onClick={toggleUserWorkUploadModal}>
             <IconCloudUpload />

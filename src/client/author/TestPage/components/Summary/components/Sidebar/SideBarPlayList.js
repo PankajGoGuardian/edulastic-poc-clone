@@ -5,6 +5,7 @@ import {
   TextInputStyled,
   FroalaEditor,
   notification,
+  CheckboxLabel,
 } from '@edulastic/common'
 import { Col, Row, Select } from 'antd'
 import { uniqBy } from 'lodash'
@@ -16,6 +17,7 @@ import { IPAD_LANDSCAPE_WIDTH } from '../../../../../../assessment/constants/oth
 import { ColorPickerContainer } from '../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer'
 import { ColorPickerWrapper } from '../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper'
 import { changePlaylistThemeAction } from '../../../../../PlaylistPage/ducks'
+import { getUserRole } from '../../../../../src/selectors/user'
 import { selectsData } from '../../../common'
 import { ColorBox, SummaryButton, SummaryDiv } from '../../common/SummaryForm'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
@@ -69,6 +71,8 @@ const Sidebar = ({
   collectionsToShow = [],
   onChangeCollection,
   collections = [],
+  fullSizeThumbnail,
+  userRole,
 }) => {
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], 'tagName')
   const subjectsList = selectsData.allSubjects
@@ -126,6 +130,8 @@ const Sidebar = ({
       setSearchValue(value)
     }
   }
+
+  const showFullSizeOption = ['author', 'curator'].includes(userRole)
 
   return (
     <Block>
@@ -364,13 +370,32 @@ const Sidebar = ({
                 )}
               </SummaryDiv>
             </Col>
-            {windowWidth > IPAD_LANDSCAPE_WIDTH && (
-              <PlayListDescription
-                onChangeField={onChangeField}
-                description={description}
-              />
-            )}
           </Row>
+          <Row>
+            <Col xs={24}>
+              {windowWidth > IPAD_LANDSCAPE_WIDTH && (
+                <PlayListDescription
+                  onChangeField={onChangeField}
+                  description={description}
+                />
+              )}
+            </Col>
+          </Row>
+          {showFullSizeOption && (
+            <Row>
+              <Col span={24}>
+                <CheckboxLabel
+                  checked={fullSizeThumbnail}
+                  onChange={(e) =>
+                    onChangeField('fullSizeThumbnail', e.target.checked)
+                  }
+                  mt="8px"
+                >
+                  use full size tile image
+                </CheckboxLabel>
+              </Col>
+            </Row>
+          )}
         </Col>
       </Row>
     </Block>
@@ -398,6 +423,6 @@ Sidebar.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
 }
 
-export default connect(null, {
+export default connect((state) => ({ userRole: getUserRole(state) }), {
   changePlayListTheme: changePlaylistThemeAction,
 })(Sidebar)

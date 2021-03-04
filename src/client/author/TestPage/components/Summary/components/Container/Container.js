@@ -131,6 +131,7 @@ const Summary = ({
         alignmentInfo={test.alignmentInfo}
         description={test.description}
         tags={test.tags}
+        fullSizeThumbnail={test.fullSizeThumbnail}
         analytics={test.analytics}
         collections={test.collections}
         collectionsToShow={collectionsToShow}

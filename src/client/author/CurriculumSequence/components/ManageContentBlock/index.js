@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import { curriculumSequencesApi } from '@edulastic/api'
 import { themeColor, white } from '@edulastic/colors'
 import { FlexContainer, notification } from '@edulastic/common'
@@ -6,7 +5,7 @@ import { test as testsConstants } from '@edulastic/constants'
 import { IconFilter, IconPlus } from '@edulastic/icons'
 import { Dropdown, Empty, Menu, Spin } from 'antd'
 import { pick, uniq } from 'lodash'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import {
   getCurrentDistrictUsersAction,
@@ -46,23 +45,25 @@ const sourceList = [
   'grade',
 ]
 
-const observeElement = (fetchTests, tests) =>
-  useCallback(
+const observeElement = (fetchTests, tests) => {
+  const observerRef = useRef()
+  return useCallback(
     (node) => {
-      if (observer) {
-        observer.disconnect()
+      if (observerRef.current) {
+        observerRef.current.disconnect()
       }
-      const observer = new IntersectionObserver((entries) => {
+      observerRef.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
           fetchTests()
         }
       })
       if (node) {
-        observer.observe(node)
+        observerRef.current.observe(node)
       }
     },
     [tests]
   )
+}
 
 const ManageContentBlock = (props) => {
   const {

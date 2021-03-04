@@ -185,7 +185,7 @@ const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
   manageLicensesData,
   setSearchType,
-  upgradeUserSubscriptionAction,
+  extendTrialLicense,
   isFetchingOrganization,
   districtList,
   searchRequest,
@@ -309,7 +309,7 @@ const ManageSubscriptionsByLicenses = ({
         <SubsLicenseViewModal
           isVisible={showLicenseViewModal}
           closeModal={closeViewLicenseModal}
-          extendTrialEndDate={upgradeUserSubscriptionAction}
+          extendTrialEndDate={extendTrialLicense}
           currentLicense={currentLicense}
         />
       )}

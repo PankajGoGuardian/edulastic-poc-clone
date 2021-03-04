@@ -20,7 +20,17 @@ const subscriptionStatus = () =>
     })
     .then((result) => result.data)
 
+const extendTrialLicense = (data) =>
+  api
+    .callApi({
+      method: 'post',
+      url: `${prefix}/extend-trial`,
+      data,
+    })
+    .then((result) => result.data)
+
 export default {
   upgradeUsingLicenseKey,
   subscriptionStatus,
+  extendTrialLicense,
 }

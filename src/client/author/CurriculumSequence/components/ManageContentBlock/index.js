@@ -443,8 +443,8 @@ const ManageContentBlock = (props) => {
             closePreviewModal()
             setIsTestPreviewVisible(false)
           }}
-          onPlayListPreviewClose={closePreviewModal}
-          isPlayListPreview
+          resetOnClose={closePreviewModal}
+          unmountOnClose
         />
       )}
     </>

@@ -10,6 +10,7 @@ import {
 import { Col, Row } from 'antd'
 import styled from 'styled-components'
 import moment from 'moment'
+import { omitBy } from 'lodash'
 
 const SubsLicenseViewModal = ({
   isVisible,
@@ -17,11 +18,11 @@ const SubsLicenseViewModal = ({
   extendTrialEndDate,
   currentLicense,
 }) => {
-  const { startDate, endDate, licenseId, productType, userId } = currentLicense
+  const { startDate, endDate, licenseIds, userId } = currentLicense
   const [fieldData, setFieldData] = useState({
     subStartDate: new Date(startDate).getTime(),
     subEndDate: new Date(endDate).getTime(),
-    csManager: '',
+    customerSuccessManager: '',
     opportunityId: '',
     notes: '',
   })
@@ -34,12 +35,22 @@ const SubsLicenseViewModal = ({
   }
 
   const handleValidateFields = () => {
-    extendTrialEndDate({
-      ...fieldData,
-      licenseId,
-      subType: productType,
-      userIds: [userId],
-    })
+    const {
+      subEndDate,
+      customerSuccessManager,
+      opportunityId,
+      notes,
+    } = fieldData
+    const data = {
+      licenseId: licenseIds[0],
+      userId,
+      subEndDate,
+      customerSuccessManager,
+      opportunityId,
+      notes,
+    }
+    const payload = omitBy(data, (x) => !x)
+    extendTrialEndDate(payload)
   }
 
   const footer = (
@@ -101,8 +112,10 @@ const SubsLicenseViewModal = ({
         <FieldLabel>CS Manager</FieldLabel>
         <TextInputStyled
           placeholder="Type the CS Manager"
-          value={fieldData.csManager || ''}
-          onChange={(e) => handleFieldChange('csManager')(e.target.value)}
+          value={fieldData.customerSuccessManager || ''}
+          onChange={(e) =>
+            handleFieldChange('customerSuccessManager')(e.target.value)
+          }
         />
       </StyledFieldRow>
       <StyledFieldRow>

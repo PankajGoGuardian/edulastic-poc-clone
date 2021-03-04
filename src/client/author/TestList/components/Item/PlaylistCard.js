@@ -49,7 +49,8 @@ const PlaylistCard = ({
   _id,
 }) => {
   const grade = first(_source.grades)
-  const { thumbnail, fullSizeThumbnail } = _source
+  const { thumbnail, skin } = _source
+  const isSparkMathSkin = skin === 'SPARK'
   const isDraft = status === 'draft'
 
   const playListId = testItemId ? (
@@ -85,12 +86,17 @@ const PlaylistCard = ({
     </ShareIcon>
   )
 
-  if (fullSizeThumbnail) {
+  if (isSparkMathSkin) {
     return (
       <FullSizeThumbnailCard
         isPlaylist
+        onClick={moveToItem}
         cover={<CardCover uri={thumbnail} />}
-        actions={[playListId, playListUsage, isDraft ? playListStatus : '']}
+        actions={[
+          playListId,
+          playListUsage,
+          isDraft ? playListStatus : '',
+        ].filter((x) => x)}
       />
     )
   }

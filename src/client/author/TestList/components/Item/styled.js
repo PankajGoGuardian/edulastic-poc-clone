@@ -216,6 +216,7 @@ export const ShareIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
   align-items: center;
+  float: right;
 `
 
 export const EllipsisWrapper = styled.div`

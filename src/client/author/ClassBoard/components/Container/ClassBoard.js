@@ -133,6 +133,19 @@ const NotificationComponent = (props) => {
   return null
 }
 
+function capitalizeIt(str) {
+  if (str && typeof str === 'string') {
+    str = str.toLowerCase().split(' ')
+    for (let i = 0, x = str.length; i < x; i++) {
+      if (str[i]) {
+        str[i] = str[i][0].toUpperCase() + str[i].substr(1)
+      }
+    }
+    return str.join(' ')
+  }
+  return str
+}
+
 function getStudentFilterCategory(x) {
   if (x.isEnrolled === false) {
     return 'UNENROLLED'
@@ -1382,13 +1395,15 @@ class ClassBoard extends Component {
                     <SwitchBox>
                       <FilterSpan>FILTER BY STATUS</FilterSpan>
                       <FilterSelect
+                        className="student-status-filter"
                         value={studentFilter}
+                        dropdownMenuStyle={{ fontSize: 29 }}
                         onChange={(v) => {
                           studentUnselectAll()
                           this.setState({ studentFilter: v })
                         }}
                         width="170px"
-                        height="30px"
+                        height="24px"
                       >
                         {[
                           'ALL ACTIVE',
@@ -1401,8 +1416,13 @@ class ClassBoard extends Component {
                           'REDIRECTED',
                           'UNASSIGNED',
                         ].map((x) => (
-                          <FilterSelect.Option key={x} value={x}>
-                            {x} (
+                          <FilterSelect.Option
+                            className="student-status-filter-item"
+                            key={x}
+                            value={x}
+                            style={{ fontSize: 11 }}
+                          >
+                            {capitalizeIt(x)} (
                             {x === 'ALL ACTIVE'
                               ? testActivity.filter(
                                   (_x) => _x.isAssigned && _x.isEnrolled
@@ -1540,7 +1560,7 @@ class ClassBoard extends Component {
                       placement="bottomRight"
                     >
                       <RedirectButton data-cy="moreAction" last>
-                        <ButtonIconWrap>
+                        <ButtonIconWrap className="more">
                           <IconMoreHorizontal />
                         </ButtonIconWrap>
                         MORE
@@ -2011,10 +2031,13 @@ const FilterSelect = styled(SelectInputStyled)`
   display: inline-block;
   width: ${(props) => props.width};
   height: ${(props) => props.height};
-  margin-left: 10px;
+  margin-left: 25px;
+  .ant-select-selection-selected-value {
+    font-size: 11px;
+  }
 `
 const FilterSpan = styled.span`
-  padding-right: 5px;
+  padding-right: 15px;
   font-size: 12px;
   font-weight: 600;
 `

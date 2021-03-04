@@ -45,8 +45,8 @@ const Userlist = ({
   currentUserId,
   bulkEditUsersPermission,
   subsLicenses = [],
-  licenseIds,
   dynamicColumns = [],
+  licenseOwnerId,
 }) => {
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
@@ -248,7 +248,11 @@ const Userlist = ({
     }
 
     const fetchOrgSubscriptions = rowUserId === currentUserId
-    bulkEditUsersPermission({ apiData, licenseIds, fetchOrgSubscriptions })
+    bulkEditUsersPermission({
+      apiData,
+      licenseOwnerId,
+      fetchOrgSubscriptions,
+    })
   }
 
   return (

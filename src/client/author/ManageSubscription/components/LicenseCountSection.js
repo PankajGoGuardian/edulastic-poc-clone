@@ -8,6 +8,7 @@ const LicenseCountSection = ({
   subsLicenses,
   setShowBuyMoreModal,
   setCurrentItemId,
+  isEdulasticAdminView,
 }) => {
   const openBuyMoreModal = (itemId) => {
     setShowBuyMoreModal(true)
@@ -31,7 +32,7 @@ const LicenseCountSection = ({
             onClick={() => openBuyMoreModal(license.productId)}
             data-cy="buyMoreLicenseButton"
           >
-            buy more
+            {isEdulasticAdminView ? 'Add More' : 'Buy More'}
           </EduButton>
         </LeftCol>
         <RightCol>

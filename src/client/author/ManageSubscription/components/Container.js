@@ -221,6 +221,7 @@ const ManageSubscriptionContainer = ({
           subsLicenses={subsLicenses}
           setShowBuyMoreModal={setShowBuyMoreModal}
           setCurrentItemId={setCurrentItemId}
+          isEdulasticAdminView={isEdulasticAdminView}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}

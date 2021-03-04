@@ -44,3 +44,8 @@ export const Boxes = styled.div`
 export const StyledCol = styled(Col)`
   margin-bottom: 25px;
 `
+
+export const EmailWrapper = styled.div`
+  margin-top: 25px;
+  margin-bottom: 15px;
+`

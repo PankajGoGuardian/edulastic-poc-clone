@@ -43,7 +43,7 @@ const ToolBar = ({
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
 
-  const { calcType, enableScratchpad } = settings
+  const { calcType, enableScratchpad, isTeacherPremium } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const handleZoomIn = () => {
     if (zoom !== zoomIndex.length - 1) {
@@ -126,7 +126,7 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-      {!isDocbased && (
+      {!isDocbased && isTeacherPremium &&(
         <Tooltip placement="top" title="Upload work">
           <StyledButton onClick={toggleUserWorkUploadModal}>
             <IconCloudUpload />

@@ -1,6 +1,10 @@
 import { createSlice, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { manageSubscriptionsApi, adminApi } from '@edulastic/api'
+import {
+  manageSubscriptionsApi,
+  adminApi,
+  subscriptionApi,
+} from '@edulastic/api'
 import { combineReducers } from 'redux'
 import { put, takeEvery, call, all } from 'redux-saga/effects'
 import { notification } from '@edulastic/common'
@@ -191,8 +195,9 @@ export const manageSubscriptionsByLicenses = createSlice({
     setSearchType: (state, { payload }) => {
       state.searchType = payload
     },
-    viewLicense: (state, { payload }) => {}, // TODO!
-    deleteLicense: (state, { payload }) => {},
+    viewLicense: () => {},
+    deleteLicense: () => {},
+    extendTrialLicense: () => {},
   },
 })
 
@@ -419,6 +424,25 @@ function* deleteLicensesByIdsSaga({ payload }) {
   }
 }
 
+function* extendTrialLicenseSaga({ payload }) {
+  try {
+    const { result } = yield call(
+      subscriptionApi.extendTrialLicense,
+      payload
+    ) || {}
+    if (result.success) {
+      notification({ type: 'success', msg: result.message })
+    } else {
+      notification({ type: 'error', msg: result.message })
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Failed to extend trial subscription.',
+    })
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -437,6 +461,10 @@ function* watcherSaga() {
     yield takeEvery(
       manageSubscriptionsByLicenses.actions.deleteLicense,
       deleteLicensesByIdsSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.extendTrialLicense,
+      extendTrialLicenseSaga
     ),
   ])
 }

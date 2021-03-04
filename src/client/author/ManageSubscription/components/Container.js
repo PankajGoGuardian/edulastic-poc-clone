@@ -70,6 +70,7 @@ const ManageSubscriptionContainer = ({
   isEdulasticAdminView,
   isSubscriptionExpired,
   columns,
+  licenseOwnerId,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -138,7 +139,7 @@ const ManageSubscriptionContainer = ({
     : null
 
   useEffect(() => {
-    fetchMultipleSubscriptions({ licenseIds })
+    fetchMultipleSubscriptions({ licenseOwnerId })
   }, [])
 
   const isSubscribed =
@@ -165,10 +166,11 @@ const ManageSubscriptionContainer = ({
   const addAndUpgradeUsers = ({ userDetails, licenses }) =>
     addAndUpgradeUsersSubscriptions({
       addUsersPayload: {
-        districtId: userOrgId,
+        districtId: userOrgId || districtId,
         userDetails,
       },
       licenses,
+      licenseOwnerId,
     })
 
   const totalPaidProducts = itemBankSubscriptions.reduce(
@@ -230,11 +232,11 @@ const ManageSubscriptionContainer = ({
         />
         <Userlist
           users={dataSource}
-          licenseIds={licenseIds}
           subsLicenses={subsLicenses}
           currentUserId={userId}
           bulkEditUsersPermission={bulkEditUsersPermission}
           dynamicColumns={columns}
+          licenseOwnerId={licenseOwnerId}
         />
       </ContentWrapper>
 

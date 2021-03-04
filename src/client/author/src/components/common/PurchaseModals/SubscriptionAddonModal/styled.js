@@ -20,13 +20,13 @@ export const ModalBody = styled.div`
   }
 `
 export const AddonList = styled.div`
-  margin-top: 40px;
+  margin-top: ${(props) => props.marginTop || '40px'};
+  margin-bottom: ${({ marginBottom }) => marginBottom};
 `
 export const FlexRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: ${(props) => props.alignItems || null};
-  padding: ${(props) => props.padding || null};
   margin-bottom: 5px;
   .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-checked) {
     & ~ .priceCol {
@@ -41,10 +41,7 @@ export const Total = styled.div`
   margin-top: 15px;
   padding-top: 15px;
 `
-export const EmailWrapper = styled.div`
-  margin-top: 25px;
-  margin-bottom: 15px;
-`
+
 export const NumberInputWrapper = styled.div`
   .ant-input-number-input {
     text-align: center;
@@ -54,7 +51,7 @@ export const NumberInputWrapper = styled.div`
     border: none;
     opacity: 1;
     right: -30px;
-    font-size: 25px;
+    font-size: 18px;
     & .ant-input-number-handler-up-inner,
     & .ant-input-number-handler-down-inner {
       display: none;
@@ -64,20 +61,27 @@ export const NumberInputWrapper = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 25px !important;
+      width: 15px;
+      height: 15px !important;
+      background: #878a91;
+      border-radius: 50%;
+      top: 5px;
       position: absolute;
       border: none;
       font-weight: 500 !important;
     }
     .ant-input-number-handler-up {
-      margin-left: -120px;
+      margin-left: -110px;
       &:before {
         content: '+';
+        color: white;
       }
     }
     .ant-input-number-handler-down {
       &:after {
         content: '-';
+        color: white;
+        margin-top: -2px;
       }
     }
   }

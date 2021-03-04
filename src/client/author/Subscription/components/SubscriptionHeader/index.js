@@ -39,6 +39,7 @@ const SubscriptionHeader = ({
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
   title,
+  isPartialPremium,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -71,7 +72,7 @@ const SubscriptionHeader = ({
           />
         )}
       </Menu.Item>
-      {!['partial_premium'].includes(subType) && (
+      {!isPartialPremium && (
         <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -83,7 +84,7 @@ const SubscriptionHeader = ({
           />
         </Menu.Item>
       )}
-      {!['partial_premium'].includes(subType) && (
+      {!isPartialPremium && (
         <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (

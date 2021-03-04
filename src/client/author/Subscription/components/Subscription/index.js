@@ -363,6 +363,8 @@ const Subscription = (props) => {
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
 
+  const isPartialPremium = user.features?.premiumGradeSubject?.length
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -379,6 +381,7 @@ const Subscription = (props) => {
         showMultipleSubscriptions={showMultipleSubscriptions}
         isFreeAdmin={isFreeAdmin}
         toggleShowFeatureNotAvailableModal={setShowFeatureNotAvailableModal}
+        isPartialPremium={isPartialPremium}
       />
 
       <SubscriptionMain

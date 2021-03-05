@@ -4,6 +4,7 @@ import {
   manageSubscriptionsApi,
   adminApi,
   subscriptionApi,
+  paymentApi,
 } from '@edulastic/api'
 import { combineReducers } from 'redux'
 import { put, takeEvery, call, all } from 'redux-saga/effects'
@@ -198,6 +199,17 @@ export const manageSubscriptionsByLicenses = createSlice({
     viewLicense: () => {},
     deleteLicense: () => {},
     extendTrialLicense: () => {},
+    fetchProducts: (state) => {
+      state.loading = true
+    },
+    fetchProductsSuccess: (state, { payload }) => {
+      state.loading = false
+      state.products = payload.products
+    },
+    fetchProductsError: (state) => {
+      state.loading = false
+    },
+    addSubscription: () => {},
   },
 })
 
@@ -443,6 +455,37 @@ function* extendTrialLicenseSaga({ payload }) {
   }
 }
 
+function* fetchProductsSaga() {
+  try {
+    const result = yield call(subscriptionApi.fetchProducts)
+    yield put(
+      manageSubscriptionsByLicenses.actions.fetchProductsSuccess(result)
+    )
+  } catch (err) {
+    manageSubscriptionsByLicenses.actions.fetchProductsError()
+    yield call(notification, {
+      type: 'error',
+      msg: 'Failed to load product details.',
+    })
+  }
+}
+
+function* addSubscriptionSaga({ payload }) {
+  try {
+    const result = yield call(paymentApi.licensePurchase, payload) || {}
+    if (result.licenseKeys) {
+      notification({ type: 'success', msg: 'License(s) created successfully!' })
+    } else {
+      notification({ type: 'error', msg: 'License(s) creation failed!' })
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Failed to add subscription.',
+    })
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -465,6 +508,14 @@ function* watcherSaga() {
     yield takeEvery(
       manageSubscriptionsByLicenses.actions.extendTrialLicense,
       extendTrialLicenseSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.fetchProducts,
+      fetchProductsSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.addSubscription,
+      addSubscriptionSaga
     ),
   ])
 }

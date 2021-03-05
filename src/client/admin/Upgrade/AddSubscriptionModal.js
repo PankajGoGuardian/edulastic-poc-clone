@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CustomModalStyled,
   DatePickerStyled,
@@ -13,7 +13,7 @@ import {
 import { Col, Row, Spin } from 'antd'
 import styled from 'styled-components'
 import moment from 'moment'
-import { debounce } from 'lodash'
+import { debounce, isNumber, omitBy } from 'lodash'
 import { userApi } from '@edulastic/api'
 
 const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
@@ -24,6 +24,8 @@ const AddSubscriptionModal = ({
   isFetchingOrganization,
   districtList,
   searchRequest,
+  addSubscription,
+  products,
 }) => {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
   const [usersList, setUsersList] = useState([])
@@ -35,11 +37,9 @@ const AddSubscriptionModal = ({
     managerEmail: [],
     subStartDate: moment().valueOf(),
     subEndDate: moment().add(1, 'years').valueOf(),
-    csManager: '',
+    customerSuccessManager: '',
     opportunityId: '',
     notes: '',
-    premiumLicense: '',
-    sparkMathLicense: '',
   })
 
   const disabledStartDate = (current) =>
@@ -55,15 +55,16 @@ const AddSubscriptionModal = ({
         })
       }
     }
-    const updatedFieldData = {
-      ...fieldData,
-      [fieldName]:
-        fieldName === 'premiumLicense' || fieldName === 'sparkMathLicense'
-          ? Math.floor(value)
-          : value,
-    }
-    setFieldData(updatedFieldData)
+
+    setFieldData((prev) => ({
+      ...prev,
+      [fieldName]: isNumber(value) ? Math.round(value) : value,
+    }))
   }
+
+  useEffect(() => products.forEach((x) => handleFieldChange(x.type)(1)), [
+    products,
+  ])
 
   const fetchUsers = async (searchString) => {
     const { districtId } = fieldData
@@ -123,7 +124,63 @@ const AddSubscriptionModal = ({
   }
 
   const handleValidateFields = () => {
-    console.log('fieldData', fieldData)
+    const {
+      managerEmail = [],
+      subStartDate,
+      subEndDate,
+      customerSuccessManager,
+      opportunityId,
+      notes,
+    } = fieldData
+    if (subStartDate >= subEndDate) {
+      return notification({
+        type: 'warn',
+        msg: `StartDate cannot be greater or equal to EndDate!`,
+      })
+    }
+    if (!managerEmail.length) {
+      return notification({
+        type: 'warn',
+        msg: `Atleast one bookkeeper's email is required!`,
+      })
+    }
+    const _products = products.reduce(
+      (a, c) => ({
+        ...a,
+        [c._id]: fieldData[c.type] ? fieldData[c.type] : undefined,
+      }),
+      {}
+    )
+
+    const requiredFields = [
+      'subStartDate',
+      'subEndDate',
+      'customerSuccessManager',
+      'notes',
+    ]
+
+    for (const field of requiredFields) {
+      if (!fieldData[field]) {
+        return notification({
+          type: 'warn',
+          msg: `${field} is required!`,
+        })
+      }
+    }
+
+    const data = {
+      products: _products,
+      userEmailIds: managerEmail,
+      subStartDate,
+      subEndDate,
+      customerSuccessManager,
+      opportunityId,
+      notes,
+    }
+
+    const payload = omitBy(data, (x) => !x)
+    addSubscription(payload)
+    closeModal()
   }
 
   const footer = (
@@ -200,28 +257,20 @@ const AddSubscriptionModal = ({
           <Col span={24}>
             <h3>Products</h3>
           </Col>
-          <Col span={12}>
-            <FieldLabel>Premium</FieldLabel>
-            <NumberInputStyled
-              type="number"
-              style={{ width: '100%' }}
-              placeholder="premium license"
-              value={fieldData.premiumLicense}
-              min={0}
-              onChange={(value) => handleFieldChange('premiumLicense')(value)}
-            />
-          </Col>
-          <Col span={12}>
-            <FieldLabel>SparkMath</FieldLabel>
-            <NumberInputStyled
-              type="number"
-              style={{ width: '100%' }}
-              placeholder="sparkMath license"
-              value={fieldData.sparkMathLicense}
-              min={0}
-              onChange={(value) => handleFieldChange('sparkMathLicense')(value)}
-            />
-          </Col>
+          {products.map((product) => (
+            <Col span={12} key={product._id}>
+              <FieldLabel>{product.name}</FieldLabel>
+              <NumberInputStyled
+                type="number"
+                style={{ width: '100%' }}
+                placeholder={`${product.name.toLowerCase()} license`}
+                value={fieldData[product.type]}
+                min={product.type === 'PREMIUM' ? 1 : 0}
+                max={product.type === 'PREMIUM' ? Infinity : fieldData.PREMIUM}
+                onChange={(value) => handleFieldChange(product.type)(value)}
+              />
+            </Col>
+          ))}
         </Row>
       </StyledFieldRow>
       <StyledFieldRow>
@@ -266,8 +315,10 @@ const AddSubscriptionModal = ({
         <FieldLabel>CS Manager</FieldLabel>
         <TextInputStyled
           placeholder="Type the CS Manager"
-          value={fieldData.csManager || ''}
-          onChange={(e) => handleFieldChange('csManager')(e.target.value)}
+          value={fieldData.customerSuccessManager || ''}
+          onChange={(e) =>
+            handleFieldChange('customerSuccessManager')(e.target.value)
+          }
         />
       </StyledFieldRow>
       <StyledFieldRow>

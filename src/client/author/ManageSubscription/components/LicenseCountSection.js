@@ -48,11 +48,6 @@ const LicenseCountSection = ({
     }
   }, [subsLicenses])
 
-  console.log('subsLicenses', {
-    subsLicenses,
-    mergedLicenses,
-  })
-
   const showLicenses =
     mergedLicenses?.length > 0 ? mergedLicenses : subsLicenses
 

@@ -352,7 +352,7 @@ const Subscription = (props) => {
 
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
-    : null
+    : []
 
   const isPremium = subType && subType !== 'FREE' // here user can be premium, trial premium, or partial premium
 
@@ -362,6 +362,8 @@ const Subscription = (props) => {
 
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
+
+  const isPartialPremium = user.features?.premiumGradeSubject?.length
 
   return (
     <Wrapper>
@@ -379,6 +381,7 @@ const Subscription = (props) => {
         showMultipleSubscriptions={showMultipleSubscriptions}
         isFreeAdmin={isFreeAdmin}
         toggleShowFeatureNotAvailableModal={setShowFeatureNotAvailableModal}
+        isPartialPremium={isPartialPremium}
       />
 
       <SubscriptionMain
@@ -426,7 +429,7 @@ const Subscription = (props) => {
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        defaultSelectedProductIds={defaultSelectedProductIds}
+        defaultSelectedProductIds={[...defaultSelectedProductIds]}
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}

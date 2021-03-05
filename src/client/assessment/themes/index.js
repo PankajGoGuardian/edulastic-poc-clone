@@ -1035,10 +1035,12 @@ const AssessmentContainer = ({
   }
 
   useEffect(() => {
-    if (savingResponse) {
-      message.loading('Submitting the response', 0)
-    } else {
-      message.destroy()
+    if (!preview) {
+      if (savingResponse) {
+        message.loading('Submitting the response', 0)
+      } else {
+        message.destroy()
+      }
     }
     return () => {
       /**

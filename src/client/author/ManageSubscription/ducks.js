@@ -25,6 +25,10 @@ export const getUsersSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.users
 )
+export const getColumnsSelector = createSelector(
+  manageSubscriptionSelector,
+  (state) => state.columns
+)
 export const getLoadingStateSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.loading
@@ -99,6 +103,7 @@ const initialState = {
   showUpgradeUsersSuccessModal: false,
   licenses: [],
   users: [],
+  columns: [],
 }
 
 const setLicensesData = (state, { payload }) => {
@@ -132,6 +137,7 @@ export const reducer = createReducer(initialState, {
     state.loading = false
     state.licenses = payload.licenses
     state.users = payload.users
+    state.columns = payload.columns
   },
   [FETCH_MANAGE_SUBSCRIPTIONS_ERROR]: (state) => {
     state.loading = false
@@ -153,7 +159,7 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* addBulkUsersAndUpgradeSaga({ payload }) {
   try {
-    const { addUsersPayload, licenses = [] } = payload
+    const { addUsersPayload, licenses = [], licenseOwnerId } = payload
     const res = yield call(userApi.adddBulkTeacher, addUsersPayload) || []
 
     const users = res.map((x) => x._id).filter((x) => x)
@@ -178,7 +184,12 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
         yield put(upgradeUsersSubscriptionsSuccessAction(Object.values(result)))
       }
       if (licenses.length) {
-        yield put(fetchMultipleSubscriptionsAction({ fetchInBackground: true }))
+        yield put(
+          fetchMultipleSubscriptionsAction({
+            fetchInBackground: true,
+            licenseOwnerId,
+          })
+        )
       } else {
         const existingUsersData = yield select(getUsersSelector)
         const existingUserIds = existingUsersData.map((x) => x.userId)
@@ -192,7 +203,7 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
           if (!existingUserIds.includes(x.userId)) {
             const data = {
               ...x,
-              hasManageLicense: !!x.hasManageLicense.find(
+              hasManageLicense: !!x.ownerLicenseIds.find(
                 (licenseId) => licensesMap[licenseId]
               ),
             }
@@ -224,10 +235,10 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
 
 function* fetchManageSubscriptionsSaga({ payload }) {
   try {
-    const { licenseIds = [] } = payload
+    const { licenseOwnerId } = payload
     const params = {}
-    if (licenseIds.length) {
-      Object.assign(params, { licenseIds: licenseIds.join(',') })
+    if (licenseOwnerId) {
+      Object.assign(params, { licenseOwnerId })
     }
     const result = yield call(manageSubscriptionsApi.fetchLicenses, params)
     yield put(fetchManageSubscriptionsSuccessAction(result))
@@ -243,7 +254,7 @@ function* fetchManageSubscriptionsSaga({ payload }) {
 
 function* bulkEditUsersPermissionSaga({ payload }) {
   try {
-    const { licenseIds, apiData, fetchOrgSubscriptions } = payload
+    const { licenseOwnerId, apiData, fetchOrgSubscriptions } = payload
     const result = yield call(
       manageSubscriptionsApi.bulkEditUsersPermission,
       apiData
@@ -257,7 +268,10 @@ function* bulkEditUsersPermissionSaga({ payload }) {
       return
     }
     yield put(
-      fetchMultipleSubscriptionsAction({ fetchInBackground: true, licenseIds })
+      fetchMultipleSubscriptionsAction({
+        fetchInBackground: true,
+        licenseOwnerId,
+      })
     )
     if (fetchOrgSubscriptions) {
       yield put(slice.actions.fetchUserSubscriptionStatus({ background: true }))

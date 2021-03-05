@@ -50,7 +50,11 @@ const ResetPasswordPopup = (props) => {
             <p>Reset Password</p>
             <p>
               Hi, <Icon type="user" />{' '}
-              {`${resetPasswordUser.firstName} ${
+              {`${
+                resetPasswordUser.firstName
+                  ? `${resetPasswordUser.firstName} `
+                  : ''
+              } ${
                 resetPasswordUser.middleName
                   ? `${resetPasswordUser.middleName} `
                   : ''

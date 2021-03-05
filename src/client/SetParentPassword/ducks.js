@@ -59,10 +59,11 @@ function* sendParentCodeSaga({ payload }) {
 
 function* resetPasswordSaga({ payload }) {
   try {
-    const { username, password: newPassword } = payload
+    const { username, password: newPassword, role } = payload
     const result = yield call(userApi.resetMyPassword, {
       username,
       newPassword,
+      role,
     })
     yield put(fetchUserAction())
     window.location.href = '/home/assignments'

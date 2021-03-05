@@ -80,7 +80,7 @@ function SetParentPassword({
         notification({ messageKey: 'passwordShouldBeAtleast7Characters' })
         return
       }
-      resetPassword({ password, username: loadedUserName })
+      resetPassword({ password, username: loadedUserName, role: 'parent' })
     })
   }
 

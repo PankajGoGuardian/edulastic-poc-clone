@@ -55,6 +55,7 @@ const SettingMenu = ({
               }
             : {})}
           key="save"
+          data-cy="finishTest"
         >
           Save & Exit
         </Menu.Item>
@@ -67,7 +68,7 @@ const SettingMenu = ({
       overlay={menu}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
     >
-      <StyledButton style={{ width: 'auto' }}>
+      <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
         <IconUser />
         {firstName} <Icon type="down" />
       </StyledButton>

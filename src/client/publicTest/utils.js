@@ -120,7 +120,7 @@ export const redirectToDashbord = (type = '', history) => {
       msg = 'This assignment is not available'
       break
     default:
-      msg = 'Assignment is not available for the attempt'
+      msg = 'This assignment is not available'
   }
   notification({ msg })
   history.push('/home/assignments')

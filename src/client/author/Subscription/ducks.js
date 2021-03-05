@@ -338,14 +338,19 @@ function* fetchUserSubscription() {
 
 function* handleEdulasticAdminProductLicenseSaga({ payload }) {
   try {
-    const { productIds, emailIds: userEmailIds, licenseIds } = payload
-    const products = productIds.reduce((allProducts, product) => {
+    const {
+      products,
+      emailIds: userEmailIds,
+      licenseIds,
+      licenseOwnerId,
+    } = payload
+    const _products = products.reduce((allProducts, product) => {
       const { quantity, id, linkedProductId } = product
       allProducts[id || linkedProductId] = quantity
       return allProducts
     }, {})
     const apiPaymentResponse = yield call(paymentApi.licensePurchase, {
-      products,
+      products: _products,
       userEmailIds,
       licenseIds,
     })
@@ -355,7 +360,9 @@ function* handleEdulasticAdminProductLicenseSaga({ payload }) {
           apiPaymentResponse.licenseKeys
         )
       )
-      yield put(fetchMultipleSubscriptionsAction({ licenseIds }))
+      yield put(
+        fetchMultipleSubscriptionsAction({ background: true, licenseOwnerId })
+      )
     }
   } catch (err) {
     notification({
@@ -379,6 +386,7 @@ function* handleMultiplePurchasePayment({ payload }) {
       productIds,
       emailIds: userEmailIds,
       licenseIds,
+      licenseOwnerId,
     } = payload
     const { token, error } = yield stripe.createToken(data)
     if (token) {
@@ -400,7 +408,7 @@ function* handleMultiplePurchasePayment({ payload }) {
           )
         )
         yield put(slice.actions.setPaymentServiceModal(false))
-        yield put(fetchMultipleSubscriptionsAction({ licenseIds }))
+        yield put(fetchMultipleSubscriptionsAction({ licenseOwnerId }))
         yield put(fetchUserAction({ background: true }))
         notification({
           type: 'success',

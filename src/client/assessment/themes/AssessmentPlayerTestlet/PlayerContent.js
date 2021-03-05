@@ -280,14 +280,14 @@ const PlayerContent = ({
       if (
         Object.prototype.hasOwnProperty.call(currentPageIds, scoringId.trim())
       ) {
-        const eduQuestions = getEduQuestions()
+        const eduQuestions = getEduQuestions(scoringId.trim())
         if (isEmpty(eduQuestions)) {
           continue
         }
         eduQuestions.forEach((eduQuestion) => {
           const data = getUserResponse(eduQuestion, response)
           if (!previewPlayer && !isEmpty(data)) {
-            setUserAnswer(scoringId.trim(), eduQuestion.id, data)
+            setUserAnswer(eduQuestion.id, data)
           }
         })
       }
@@ -317,10 +317,9 @@ const PlayerContent = ({
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState
-      initState.pageNum = 12
       frameController = new ParentController(
         testletConfig.testletId,
-        { pageNum: 12 },
+        initState,
         testletState.response
       )
       frameController.connect(frameRef.current.contentWindow)

@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
-import { get, keyBy, isUndefined } from 'lodash'
+import { get, keyBy, isUndefined, last } from 'lodash'
 import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
 import { nonAutoGradableTypes, test } from '@edulastic/constants'
 
@@ -56,7 +56,13 @@ import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props)
-    const { settings } = props
+    const { settings, attachments = [] } = props
+    const lastUploadedFileNameExploded =
+      last(attachments)?.name?.split('_') || []
+    const cameraImageIndex = last(lastUploadedFileNameExploded)
+      ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+      : 1
+
     const calcType = this.calculatorType
     this.state = {
       cloneCurrentItem: props.currentItem,
@@ -74,6 +80,7 @@ class AssessmentPlayerDefault extends React.Component {
       defaultContentWidth: 900,
       defaultHeaderHeight: 62,
       isUserWorkUploadModalVisible: false,
+      cameraImageIndex,
     }
     this.scrollContainer = React.createRef()
   }
@@ -241,6 +248,10 @@ class AssessmentPlayerDefault extends React.Component {
       ...(attachments || []),
       ...newAttachments,
     ])
+    this.setState(({ cameraImageIndex }) => ({
+      cameraImageIndex: cameraImageIndex + 1,
+    }))
+
     this.closeUserWorkUploadModal()
   }
 
@@ -257,9 +268,17 @@ class AssessmentPlayerDefault extends React.Component {
         currentToolMode.push(0)
       }
 
+      const { attachments = [] } = next
+      const lastUploadedFileNameExploded =
+        last(attachments)?.name?.split('_') || []
+      const cameraImageIndex = last(lastUploadedFileNameExploded)
+        ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+        : 1
+
       const nextState = {
         currentToolMode,
         cloneCurrentItem: next.currentItem,
+        cameraImageIndex,
         history: 0,
         enableCrossAction: currentToolMode.indexOf(3) !== -1,
         testItemState: '', // start in clear preview mode (attemptable mode)
@@ -336,6 +355,7 @@ class AssessmentPlayerDefault extends React.Component {
       hidePause,
       blockNavigationToAnsweredQuestions,
       uploadToS3,
+      user: { firstName = '', lastName = '' },
     } = this.props
     const { settings } = this.props
     const {
@@ -350,6 +370,7 @@ class AssessmentPlayerDefault extends React.Component {
       defaultHeaderHeight,
       currentToolMode,
       isUserWorkUploadModalVisible,
+      cameraImageIndex,
     } = this.state
     const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC', 'EDULASTIC']
     const dropdownOptions = Array.isArray(items)
@@ -453,7 +474,9 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
-
+    const cameraImageName = `${firstName}_${lastName}_${
+      currentItem + 1
+    }_${cameraImageIndex}`
     return (
       /**
        * zoom only in student side, otherwise not
@@ -680,6 +703,7 @@ class AssessmentPlayerDefault extends React.Component {
               onCancel={this.closeUserWorkUploadModal}
               uploadFile={uploadToS3}
               onUploadFinished={this.saveUserWorkAttachments}
+              cameraImageName={cameraImageName}
             />
           </AssessmentPlayerSkinWrapper>
         </Container>
@@ -841,6 +865,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     (state, ownProps) => ({
+      user: get(state, 'user.user'),
       evaluation: state.evaluation,
       preview: state.view.preview,
       scratchPad: get(

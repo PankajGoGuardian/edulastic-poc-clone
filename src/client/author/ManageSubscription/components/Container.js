@@ -10,6 +10,7 @@ import {
   getUserOrgId,
   getUserRole,
   getUserIdSelector,
+  getUserFeatures,
 } from '../../src/selectors/user'
 import { getDashboardTilesSelector } from '../../Dashboard/ducks'
 import {
@@ -29,6 +30,7 @@ import {
   setAddUserConfirmationModalVisibleAction,
   getLoadingStateSelector,
   bulkEditUsersPermissionAction,
+  getColumnsSelector,
 } from '../ducks'
 import AddUsersSection from './AddUsersSection'
 import Header from './Header'
@@ -64,9 +66,13 @@ const ManageSubscriptionContainer = ({
   loading,
   bulkEditUsersPermission,
   licenseIds,
+  districtId,
   userRole,
   isEdulasticAdminView,
   isSubscriptionExpired,
+  columns,
+  userFeature,
+  licenseOwnerId,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -132,10 +138,10 @@ const ManageSubscriptionContainer = ({
 
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
-    : null
+    : []
 
   useEffect(() => {
-    fetchMultipleSubscriptions({ licenseIds })
+    fetchMultipleSubscriptions({ licenseOwnerId })
   }, [])
 
   const isSubscribed =
@@ -162,10 +168,11 @@ const ManageSubscriptionContainer = ({
   const addAndUpgradeUsers = ({ userDetails, licenses }) =>
     addAndUpgradeUsersSubscriptions({
       addUsersPayload: {
-        districtId: userOrgId,
+        districtId: userOrgId || districtId,
         userDetails,
       },
       licenses,
+      licenseOwnerId,
     })
 
   const totalPaidProducts = itemBankSubscriptions.reduce(
@@ -193,6 +200,8 @@ const ManageSubscriptionContainer = ({
 
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
 
+  const isPartialPremium = userFeature?.premiumGradeSubject?.length
+
   if (loading) {
     return <StyledSpin />
   }
@@ -210,6 +219,7 @@ const ManageSubscriptionContainer = ({
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           settingProductData={settingProductData}
           showRenewalOptions={showRenewalOptions}
+          isPartialPremium={isPartialPremium}
         />
       )}
 
@@ -218,6 +228,7 @@ const ManageSubscriptionContainer = ({
           subsLicenses={subsLicenses}
           setShowBuyMoreModal={setShowBuyMoreModal}
           setCurrentItemId={setCurrentItemId}
+          isEdulasticAdminView={isEdulasticAdminView}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}
@@ -226,20 +237,20 @@ const ManageSubscriptionContainer = ({
         />
         <Userlist
           users={dataSource}
-          licenseIds={licenseIds}
           subsLicenses={subsLicenses}
-          userId={userId}
+          currentUserId={userId}
           bulkEditUsersPermission={bulkEditUsersPermission}
-          teacherPremiumProductId={teacherPremiumProductId}
-          sparkMathProductId={sparkMathProductId}
+          dynamicColumns={columns}
+          licenseOwnerId={licenseOwnerId}
         />
       </ContentWrapper>
 
       <PurchaseFlowModals
         licenseIds={licenseIds}
+        licenseOwnerId={licenseOwnerId}
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        defaultSelectedProductIds={defaultSelectedProductIds}
+        defaultSelectedProductIds={[...defaultSelectedProductIds]}
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}
@@ -254,7 +265,7 @@ const ManageSubscriptionContainer = ({
           users={dataSource}
           isVisible={showAddUsersModal}
           onCancel={closeAddUsersModal}
-          districtId={userOrgId}
+          districtId={userOrgId || districtId}
           addAndUpgradeUsers={addAndUpgradeUsers}
           subsLicenses={subsLicenses}
           teacherPremiumProductId={teacherPremiumProductId}
@@ -294,6 +305,8 @@ const enhance = compose(
       dashboardTiles: getDashboardTilesSelector(state),
       userRole: getUserRole(state),
       isSubscriptionExpired: getIsSubscriptionExpired(state),
+      columns: getColumnsSelector(state),
+      userFeature: getUserFeatures(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

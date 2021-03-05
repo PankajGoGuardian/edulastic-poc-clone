@@ -17,6 +17,7 @@ import {
   getFetchOrganizationStateSelector,
   searchOrgaizationRequestAction,
 } from '../../author/ContentCollections/ducks'
+import ArchiveLicenseModal from './ArchiveLicenseModal'
 import { manageSubscriptionsByLicenses } from './ducks'
 
 const ManageSubscription = loadable(() =>
@@ -43,7 +44,7 @@ const paginationStyles = { margin: '15px auto' }
 const LicensesInvoiceTable = ({
   licensesData,
   handleViewLicense,
-  handleDeleteLicense,
+  openArchiveAlert,
 }) => {
   const columns = [
     {
@@ -86,18 +87,20 @@ const LicensesInvoiceTable = ({
       title: 'Actions',
       dataIndex: 'licenseIds',
       width: 100,
-      render: (licenseIds) => (
+      render: (licenseIds, row) => (
         <FlexContainer>
           <Tooltip title="View License">
             <IconEye
-              onClick={() => handleViewLicense(licenseIds)}
+              onClick={() =>
+                handleViewLicense(licenseIds, row.districtId, row.userId)
+              }
               color={themeColor}
               style={IconStyles}
             />
           </Tooltip>
           <Tooltip title="Delete License">
             <IconTrash
-              onClick={() => handleDeleteLicense(licenseIds)}
+              onClick={() => openArchiveAlert(licenseIds)}
               color={themeColor}
               style={IconStyles}
             />
@@ -182,7 +185,7 @@ const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
   manageLicensesData,
   setSearchType,
-  upgradeUserSubscriptionAction,
+  extendTrialLicense,
   isFetchingOrganization,
   districtList,
   searchRequest,
@@ -191,7 +194,11 @@ const ManageSubscriptionsByLicenses = ({
   const { licenses = [], count = 0, searchType } = manageLicensesData
   const [page, setPage] = useState(1)
   const [isVisible, setVisible] = useState(false)
+  const [showArchiveAlert, setShowArchiveAlert] = useState(false)
+  const [archiveLicenseIds, setArchiveLicenseIds] = useState([])
   const [currentLicenseIds, setCurrentLicenseIds] = useState()
+  const [currentDistrictId, setCurrentDistrictId] = useState()
+  const [currentUserId, setCurrentUserId] = useState()
   const [currentLicense, setCurrentLicense] = useState({})
   const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(
     false
@@ -205,8 +212,10 @@ const ManageSubscriptionsByLicenses = ({
       limit: 10,
     })
   }
-  const handleViewLicense = (licenseIds) => {
+  const handleViewLicense = (licenseIds, districtId, userId) => {
     setCurrentLicenseIds(licenseIds)
+    setCurrentDistrictId(districtId)
+    setCurrentUserId(userId)
     if (searchType === 'TRIAL_LICENSES') {
       const getCurrentLicense = licenses.find((license) =>
         licenseIds.includes(license.licenseIds?.[0])
@@ -227,15 +236,25 @@ const ManageSubscriptionsByLicenses = ({
     setShowAddSubscriptionModal(false)
   }
 
-  const handleDeleteLicense = (licenseIds) => {
+  const handleDeleteLicense = () => {
     deleteLicense({
-      licenseIds,
+      licenseIds: archiveLicenseIds,
       search: {
         type: searchType,
         page,
         limit: 10,
       },
     })
+    setShowArchiveAlert(false)
+  }
+
+  const openArchiveAlert = (licenseIds) => {
+    setArchiveLicenseIds(licenseIds)
+    setShowArchiveAlert(true)
+  }
+
+  const closeArchiveAlert = () => {
+    setShowArchiveAlert(false)
   }
 
   return (
@@ -251,8 +270,18 @@ const ManageSubscriptionsByLicenses = ({
         <ManageSubscription
           isEdulasticAdminView
           licenseIds={currentLicenseIds}
+          districtId={currentDistrictId}
+          licenseOwnerId={currentUserId}
         />
       </ManageSubscriptinModal>
+
+      {showArchiveAlert && (
+        <ArchiveLicenseModal
+          showArchiveAlert={showArchiveAlert}
+          closeArchiveAlert={closeArchiveAlert}
+          handleDeleteLicense={handleDeleteLicense}
+        />
+      )}
       <FlexContainer justifyContent="space-between">
         <SearchFilters
           fetchLicensesBySearchType={fetchLicensesBySearchType}
@@ -266,6 +295,7 @@ const ManageSubscriptionsByLicenses = ({
         licensesData={licenses}
         handleViewLicense={handleViewLicense}
         handleDeleteLicense={handleDeleteLicense}
+        openArchiveAlert={openArchiveAlert}
       />
       <Pagination
         hideOnSinglePage
@@ -279,7 +309,7 @@ const ManageSubscriptionsByLicenses = ({
         <SubsLicenseViewModal
           isVisible={showLicenseViewModal}
           closeModal={closeViewLicenseModal}
-          extendTrialEndDate={upgradeUserSubscriptionAction}
+          extendTrialEndDate={extendTrialLicense}
           currentLicense={currentLicense}
         />
       )}

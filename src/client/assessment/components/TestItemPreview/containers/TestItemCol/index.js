@@ -154,14 +154,15 @@ class TestItemCol extends Component {
         />
         {!isStudentAttempt &&
           !isStudentReport &&
-          imageAttachments.length > 0 && (
+          imageAttachments.length > 0 &&
+          !LCBPreviewModal && (
             <StudentWorkCollapse
               isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
               toggleStudentWorkCollapse={toggleStudentWorkCollapse}
               imageAttachments={imageAttachments}
             />
           )}
-        {attachments && attachments.length > 0 && (
+        {attachments && attachments.length > 0 && !LCBPreviewModal && (
           <>
             <StyleH2Heading>Attachments</StyleH2Heading>
             <FilesViewContainer>

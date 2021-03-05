@@ -32,7 +32,7 @@ export const Divider = styled.div`
     props.isCollapsed ? '#e5e5e5' : 'transparent'};
   border-radius: 10px;
   z-index: 1000;
-  height: 80%;
+  height: ${({ stackedView }) => (stackedView ? 'auto' : '80%')};
   .button-wrapper {
     background: #a7b5c1;
     display: flex;

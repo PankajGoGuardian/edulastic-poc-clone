@@ -112,7 +112,7 @@ export const ReportFiltersWrapper = styled.div`
       }
     }
   }
-  .ant-collapse {
+  .ant-collapse h3 {
     background: none;
     padding-left: 5px;
   }
@@ -545,6 +545,7 @@ export const HideLinkLabel = styled(StyledLabel)`
 
 export const ReportContainer = styled.div`
   position: relative;
+  margin-left: ${({ marginLeft }) => marginLeft};
 `
 
 export const FilterButton = styled(Button)`
@@ -624,6 +625,7 @@ export const ResetButtonClear = styled(Button)`
 export const SearchField = styled.div`
   margin-bottom: 10px;
   padding-right: 15px;
+  padding-left: 5px;
 `
 
 export const ApplyFitlerLabel = styled(FieldLabel)`

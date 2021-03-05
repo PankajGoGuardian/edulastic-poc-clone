@@ -601,16 +601,20 @@ class Questions extends React.Component {
               <AnswerAction
                 active={previewMode === 'check'}
                 onClick={this.handleCheckAnswer}
+                data-cy="checkAnswer"
               >
                 Check Answer
               </AnswerAction>
               <AnswerAction
                 active={previewMode === 'show'}
                 onClick={this.handleShowAnswer}
+                data-cy="showAnswer"
               >
                 Show Answer
               </AnswerAction>
-              <AnswerAction onClick={this.handleClear}>Clear</AnswerAction>
+              <AnswerAction onClick={this.handleClear} data-cy="clearAnswer">
+                Clear
+              </AnswerAction>
             </AnswerActionsWrapper>
           )}
         </QuestionsWrapper>

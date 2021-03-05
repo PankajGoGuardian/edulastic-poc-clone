@@ -69,7 +69,7 @@ const Thumbnails = ({
       minimized={minimized}
     >
       <PerfectScrollbar>
-        <ThumbnailsList>
+        <ThumbnailsList data-cy="thumbnailsList">
           {list.map((item, key) => (
             <ThumbnailsItem
               key={key}

@@ -25,6 +25,7 @@
       "confirmPasswordLengthErrorMessage": "Please enter at least 4 characters.",
       "instructor": "Instructor Information",
       "student": "Student Information",
+      "parent": "Parent Information",
       "emailAlreadyExistsMessage": "Email/Username already exists.",
       "invalidEmailMessage": "Please provide valid Username or Email id",
       "emailLengthMessage": "Must less than 256 characters!",

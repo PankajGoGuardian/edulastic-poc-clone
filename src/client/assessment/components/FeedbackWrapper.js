@@ -30,6 +30,7 @@ const FeedbackWrapper = ({
   itemId,
   studentName,
   updatePosition,
+  isExpressGrader,
   t,
 }) => {
   const feedbackRef = useRef()
@@ -111,6 +112,7 @@ const FeedbackWrapper = ({
             rubricDetails={rubricDetails}
             isPracticeQuestion={isPracticeQuestion}
             itemId={itemId}
+            isExpressGrader={isExpressGrader}
             isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
             {...presentationModeProps}
           />

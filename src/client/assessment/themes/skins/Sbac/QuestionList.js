@@ -16,7 +16,11 @@ const QuestionList = ({
         Select question <StyledIcon type="down" />
       </Menu.Item>
       {options.map((option) => (
-        <Menu.Item key={option} disabled={blockNavigationToAnsweredQuestions}>
+        <Menu.Item
+          key={option}
+          data-cy="questionSelectOptions"
+          disabled={blockNavigationToAnsweredQuestions}
+        >
           Question&nbsp;&nbsp;&nbsp;{`0${option + 1}`.slice(-2)}
         </Menu.Item>
       ))}
@@ -28,7 +32,11 @@ const QuestionList = ({
       overlay={menu}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
     >
-      <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+      <a
+        className="ant-dropdown-link"
+        onClick={(e) => e.preventDefault()}
+        data-cy="options"
+      >
         Question {`0${currentItem + 1}`.slice(-2)} <StyledIcon type="down" />
       </a>
     </StyledDropdown>
@@ -36,7 +44,7 @@ const QuestionList = ({
 }
 
 QuestionList.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.number),
+  options: PropTypes.arrayOf(PropTypes.number).isRequired,
   currentItem: PropTypes.number.isRequired,
   gotoQuestion: PropTypes.func.isRequired,
 }

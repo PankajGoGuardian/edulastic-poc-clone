@@ -64,14 +64,28 @@ class AssessmentPlayerTestlet extends React.Component {
     this.setState({ currentTool: tool })
   }
 
-  submitAnswer = (uuid, timeSpent, groupId, extData) => {
-    const { items, saveUserAnswer } = this.props
+  getCurrentItemIndex = (uuid) => {
+    const { items } = this.props
     const currentItemIndex = findIndex(items, (item) =>
       get(item, 'data.questions', [])
         .map((q) => q.id)
         .includes(uuid)
     )
-    saveUserAnswer(currentItemIndex, timeSpent, false, groupId, extData)
+    return currentItemIndex
+  }
+
+  submitAnswer = (uuid, timeSpent, groupId, extData) => {
+    const { saveUserAnswer } = this.props
+    const itemIndex = this.getCurrentItemIndex(uuid)
+    saveUserAnswer(itemIndex, timeSpent, false, groupId, extData)
+  }
+
+  setUserAnswerToStore = (uuid, answers) => {
+    const { items, setUserAnswer } = this.props
+    const itemIndex = this.getCurrentItemIndex(uuid)
+    if (items[itemIndex]) {
+      setUserAnswer(items[itemIndex]._id, uuid, answers)
+    }
   }
 
   saveTestletLog = (log) => {
@@ -117,6 +131,7 @@ class AssessmentPlayerTestlet extends React.Component {
           <PlayerContent
             {...this.props}
             currentTool={currentTool}
+            setUserAnswer={this.setUserAnswerToStore}
             openExitPopup={this.openExitPopup}
             changeTool={this.changeTool}
             calculateMode={calculateMode}

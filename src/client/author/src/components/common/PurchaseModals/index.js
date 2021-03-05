@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { notification } from '@edulastic/common'
+import { uniq, compact } from 'lodash'
 import {
   getItemBankSubscriptions,
   getProducts,
@@ -29,11 +30,11 @@ const getInitialSelectedProductIds = ({
   isPaidPremium,
   premiumProductId,
 }) => {
-  const productIds = defaultSelectedProductIds || []
+  const productIds = [...defaultSelectedProductIds]
   if (!isPaidPremium) {
     productIds.push(premiumProductId)
   }
-  return productIds
+  return uniq(compact(productIds))
 }
 
 const PurchaseFlowModals = (props) => {

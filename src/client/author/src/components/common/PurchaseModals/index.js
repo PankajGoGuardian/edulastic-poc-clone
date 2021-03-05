@@ -1,5 +1,5 @@
 import { segmentApi } from '@edulastic/api'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
@@ -74,12 +74,21 @@ const PurchaseFlowModals = (props) => {
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
 
+  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+  const [selectedProductIds, setSelectedProductIds] = useState(
+    getInitialSelectedProductIds({
+      defaultSelectedProductIds,
+      isPaidPremium,
+      premiumProductId,
+    })
+  )
+
+  const defaultSelectedProductIdsRef = useRef()
+
   useEffect(() => {
     // getSubscription on mount
     fetchUserSubscriptionStatus()
   }, [])
-
-  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const DEFAULT_ITEMBANK_PRICE = 100
@@ -128,22 +137,21 @@ const PurchaseFlowModals = (props) => {
     }
   }, [subEndDate, products])
 
-  const [selectedProductIds, setSelectedProductIds] = useState(
-    getInitialSelectedProductIds({
-      defaultSelectedProductIds,
-      isPaidPremium,
-      premiumProductId,
-    })
-  )
-
   useEffect(() => {
-    setSelectedProductIds(
-      getInitialSelectedProductIds({
-        defaultSelectedProductIds,
-        isPaidPremium,
-        premiumProductId,
-      })
-    )
+    if (
+      defaultSelectedProductIdsRef.current === undefined ||
+      JSON.stringify(defaultSelectedProductIdsRef.current) !==
+        JSON.stringify(defaultSelectedProductIds)
+    ) {
+      setSelectedProductIds(
+        getInitialSelectedProductIds({
+          defaultSelectedProductIds,
+          isPaidPremium,
+          premiumProductId,
+        })
+      )
+      defaultSelectedProductIdsRef.current = [...defaultSelectedProductIds]
+    }
   }, [defaultSelectedProductIds, isPaidPremium, premiumProductId])
 
   const openPaymentServiceModal = () => {

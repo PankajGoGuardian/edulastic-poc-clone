@@ -15,6 +15,12 @@ const BuyMoreLicensesModal = ({
   selectedProductIds,
   currentItemId,
 }) => {
+  useEffect(() => {
+    return () => {
+      setSelectedProductIds([])
+      setQuantities({})
+    }
+  }, [])
   useEffect(() => setSelectedProductIds([currentItemId]), [])
 
   const productsToshow = useMemo(

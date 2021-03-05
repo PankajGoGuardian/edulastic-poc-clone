@@ -29,9 +29,6 @@ const ProductsList = ({
   currentItemId,
 }) => {
   const premiumProductId = teacherPremium?.id
-  useEffect(() => {
-    setQuantities({})
-  }, [])
 
   const _totalPrice = useMemo(() => {
     return productsToshow.reduce((a, c) => {

@@ -31,7 +31,7 @@ export const DisplayError = ({ errorMsg }) => {
         <DisplayErrorStyled>
           <ErrorHeading>Your Camera is blocked</ErrorHeading>
           <ErrorHeadingSecondary>
-            Edulastic needs the access to camera. To use Show your work
+            Edulastic needs access to your camera. To use upload work
           </ErrorHeadingSecondary>
           <ErrorDescription>
             <li>

@@ -91,7 +91,9 @@ const LicensesInvoiceTable = ({
         <FlexContainer>
           <Tooltip title="View License">
             <IconEye
-              onClick={() => handleViewLicense(licenseIds, row.districtId)}
+              onClick={() =>
+                handleViewLicense(licenseIds, row.districtId, row.userId)
+              }
               color={themeColor}
               style={IconStyles}
             />
@@ -183,7 +185,7 @@ const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
   manageLicensesData,
   setSearchType,
-  upgradeUserSubscriptionAction,
+  extendTrialLicense,
   isFetchingOrganization,
   districtList,
   searchRequest,
@@ -196,6 +198,7 @@ const ManageSubscriptionsByLicenses = ({
   const [archiveLicenseIds, setArchiveLicenseIds] = useState([])
   const [currentLicenseIds, setCurrentLicenseIds] = useState()
   const [currentDistrictId, setCurrentDistrictId] = useState()
+  const [currentUserId, setCurrentUserId] = useState()
   const [currentLicense, setCurrentLicense] = useState({})
   const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(
     false
@@ -209,9 +212,10 @@ const ManageSubscriptionsByLicenses = ({
       limit: 10,
     })
   }
-  const handleViewLicense = (licenseIds, districtId) => {
+  const handleViewLicense = (licenseIds, districtId, userId) => {
     setCurrentLicenseIds(licenseIds)
     setCurrentDistrictId(districtId)
+    setCurrentUserId(userId)
     if (searchType === 'TRIAL_LICENSES') {
       const getCurrentLicense = licenses.find((license) =>
         licenseIds.includes(license.licenseIds?.[0])
@@ -267,6 +271,7 @@ const ManageSubscriptionsByLicenses = ({
           isEdulasticAdminView
           licenseIds={currentLicenseIds}
           districtId={currentDistrictId}
+          licenseOwnerId={currentUserId}
         />
       </ManageSubscriptinModal>
 
@@ -304,7 +309,7 @@ const ManageSubscriptionsByLicenses = ({
         <SubsLicenseViewModal
           isVisible={showLicenseViewModal}
           closeModal={closeViewLicenseModal}
-          extendTrialEndDate={upgradeUserSubscriptionAction}
+          extendTrialEndDate={extendTrialLicense}
           currentLicense={currentLicense}
         />
       )}

@@ -1392,12 +1392,13 @@ class ClassBoard extends Component {
                         ? 'SELECT ALL'
                         : 'UNSELECT ALL'}
                     </CheckboxLabel>
-                    <SwitchBox>
+                    <SwitchBox style={{ position: 'relative' }}>
                       <FilterSpan>FILTER BY STATUS</FilterSpan>
                       <FilterSelect
                         className="student-status-filter"
                         value={studentFilter}
                         dropdownMenuStyle={{ fontSize: 29 }}
+                        getPopupContainer={(trigger) => trigger.parentElement}
                         onChange={(v) => {
                           studentUnselectAll()
                           this.setState({ studentFilter: v })
@@ -2028,7 +2029,6 @@ ClassBoard.propTypes = {
   qActivityByStudent: PropTypes.any,
 }
 const FilterSelect = styled(SelectInputStyled)`
-  display: inline-block;
   width: ${(props) => props.width};
   height: ${(props) => props.height};
   margin-left: 25px;

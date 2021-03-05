@@ -62,6 +62,7 @@ const PurchaseFlowModals = (props) => {
     handleEdulasticAdminProductLicense,
     showRenewalOptions = false,
     currentItemId,
+    licenseOwnerId,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -171,6 +172,7 @@ const PurchaseFlowModals = (props) => {
         productIds: [...productsCart],
         emailIds,
         licenseIds,
+        licenseOwnerId,
       })
       if (!isPaymentServiceModalVisible) {
         setProductsCart([])
@@ -202,6 +204,7 @@ const PurchaseFlowModals = (props) => {
           products: productQuantities,
           emailIds,
           licenseIds,
+          licenseOwnerId,
         })
         handleSubscriptionAddonModalClose()
         return

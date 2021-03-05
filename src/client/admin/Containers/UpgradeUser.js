@@ -58,7 +58,7 @@ function UpgradeUser({
   deleteLicense,
   manageLicensesData,
   setSearchType,
-  extendTrialEndDate,
+  extendTrialLicense,
 }) {
   const [activeTab, setActiveTab] = useState('manageSubscriptionByDistrict')
   const onChangeTab = (tabKey) => setActiveTab(tabKey)
@@ -119,8 +119,7 @@ function UpgradeUser({
           deleteLicense={deleteLicense}
           manageLicensesData={manageLicensesData}
           setSearchType={setSearchType}
-          extendTrialEndDate={extendTrialEndDate}
-          upgradeUserSubscriptionAction={upgradeUserSubscriptionAction}
+          extendTrialLicense={extendTrialLicense}
         />
       </TabPane>
     </Tabs>
@@ -162,6 +161,7 @@ const withConnect = connect(mapStateToProps, {
   fetchLicenses: manageSubscriptionsByLicenses.actions.fetchLicenses,
   viewLicense: manageSubscriptionsByLicenses.actions.viewLicense,
   deleteLicense: manageSubscriptionsByLicenses.actions.deleteLicense,
+  extendTrialLicense: manageSubscriptionsByLicenses.actions.extendTrialLicense,
 })
 
 export default compose(withConnect)(UpgradeUser)

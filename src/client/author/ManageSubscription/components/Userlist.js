@@ -45,8 +45,8 @@ const Userlist = ({
   currentUserId,
   bulkEditUsersPermission,
   subsLicenses = [],
-  licenseIds,
   dynamicColumns = [],
+  licenseOwnerId,
 }) => {
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
@@ -64,6 +64,11 @@ const Userlist = ({
         (a, c) => ({ ...a, [c.productType]: c.licenseId }),
         {}
       ),
+    [subsLicenses]
+  )
+
+  const licenseOwnersMap = useMemo(
+    () => subsLicenses.reduce((a, c) => ({ ...a, [c.ownerId]: true }), {}),
     [subsLicenses]
   )
 
@@ -127,9 +132,15 @@ const Userlist = ({
     const { userId } = record
     const isOwnerForManageLicense =
       record.userId === currentUserId && key === 'hasManageLicense'
+
+    // if user bought the license disable manage license checkbox
+    const isOwner =
+      licenseOwnersMap[record.userId] && key === 'hasManageLicense'
+
     const disabled =
       (record[key]?.length && record[key] !== licenseIdsbyType[key]) ||
-      isOwnerForManageLicense
+      isOwnerForManageLicense ||
+      isOwner
     const isChecked = record[key]
     const onChange = (e) => {
       const {
@@ -248,7 +259,11 @@ const Userlist = ({
     }
 
     const fetchOrgSubscriptions = rowUserId === currentUserId
-    bulkEditUsersPermission({ apiData, licenseIds, fetchOrgSubscriptions })
+    bulkEditUsersPermission({
+      apiData,
+      licenseOwnerId,
+      fetchOrgSubscriptions,
+    })
   }
 
   return (

@@ -14,6 +14,7 @@ const BuyMoreLicensesModal = ({
   setSelectedProductIds,
   selectedProductIds,
   currentItemId,
+  totalAmount,
 }) => {
   useEffect(() => {
     return () => {
@@ -34,7 +35,7 @@ const BuyMoreLicensesModal = ({
     <EduButton isGhost height="38px" onClick={handleCloseModal}>
       No, Cancel
     </EduButton>,
-    <EduButton height="38px" onClick={handleProceed}>
+    <EduButton height="38px" onClick={handleProceed} disabled={!totalAmount}>
       Yes, Proceed
     </EduButton>,
   ]

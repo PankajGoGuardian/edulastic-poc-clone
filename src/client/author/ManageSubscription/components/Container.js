@@ -242,6 +242,7 @@ const ManageSubscriptionContainer = ({
 
       <PurchaseFlowModals
         licenseIds={licenseIds}
+        licenseOwnerId={licenseOwnerId}
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         defaultSelectedProductIds={defaultSelectedProductIds}

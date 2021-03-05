@@ -305,6 +305,7 @@ class AssessmentPlayerSimple extends React.Component {
             dropdownOptions={dropdownOptions}
             onOpenExitPopup={this.openExitPopup}
             onshowHideHints={showHints}
+            toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
             checkAnswer={() => this.changeTabItemState('check')}
             toggleToolsOpenStatus={this.toggleToolsOpenStatus}
             toolsOpenStatus={toolsOpenStatus}

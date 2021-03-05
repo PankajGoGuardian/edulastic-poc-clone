@@ -198,7 +198,11 @@ const PlayerHeader = ({
                       placement="top"
                       title={hidePause ? `Save & Exit disabled` : `Save & Exit`}
                     >
-                      <StyledButton disabled={hidePause} onClick={finishTest}>
+                      <StyledButton
+                        data-cy="finishTest"
+                        disabled={hidePause}
+                        onClick={finishTest}
+                      >
                         <StyledIcon type="save" theme="filled" />
                       </StyledButton>
                     </Tooltip>

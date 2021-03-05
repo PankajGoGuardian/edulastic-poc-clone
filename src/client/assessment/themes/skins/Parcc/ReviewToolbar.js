@@ -56,6 +56,7 @@ const ReviewToolbar = ({
             key={option}
             style={!skipped[option] && { paddingLeft: '33px' }}
             disabled={blockNavigationToAnsweredQuestions}
+            data-cy="questionSelectOptions"
           >
             {skipped[option] && (
               <FontAwesomeIcon
@@ -101,7 +102,7 @@ const ReviewToolbar = ({
         content={content}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
       >
-        <StyledButton>
+        <StyledButton data-cy="options">
           <StyledIconList />
           <span>{t('common.test.review')}</span>
         </StyledButton>

@@ -31,7 +31,7 @@ const SubscriptionHeader = ({
   subEndDate,
   setShowSubscriptionAddonModal,
   hasAllPremiumProductAccess,
-  isPremium,
+  isPremiumUser,
   isBannerVisible,
   setShowMultiplePurchaseModal,
   settingProductData,
@@ -115,7 +115,7 @@ const SubscriptionHeader = ({
             YOUR PLAN
           </PlanText>
           <PlanText data-cy="currentPlan" className="free">
-            {isSubscribed && subType && licenseExpiryDate
+            {isSubscribed && subType && licenseExpiryDate && isPremiumUser
               ? `${
                   subType === 'partial_premium'
                     ? 'Enterprise'
@@ -157,14 +157,14 @@ const SubscriptionHeader = ({
       {isBannerVisible && (
         <BannerContent>
           <h3>
-            {isPremium ? (
+            {isPremiumUser ? (
               <span>You are on the Premium Plan</span>
             ) : (
               <span>There&apos;s a lot more in premium!</span>
             )}
           </h3>
           <p>
-            {isPremium
+            {isPremiumUser
               ? `This plan expires on ${licenseExpiryDate}`
               : `Upgrade to premium for additional features, including:`}
           </p>

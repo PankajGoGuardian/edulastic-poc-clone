@@ -325,6 +325,10 @@ const MyClasses = ({
 
   const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
 
+  const defaultSelectedProductIds = productData.productId
+    ? [productData.productId]
+    : []
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -348,7 +352,7 @@ const MyClasses = ({
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        defaultSelectedProductIds={[productData.productId]}
+        defaultSelectedProductIds={[...defaultSelectedProductIds]}
         setProductData={setProductData}
       />
       {showItemBankTrialUsedModal && (

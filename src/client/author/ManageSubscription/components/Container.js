@@ -138,7 +138,7 @@ const ManageSubscriptionContainer = ({
 
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
-    : null
+    : []
 
   useEffect(() => {
     fetchMultipleSubscriptions({ licenseOwnerId })
@@ -250,7 +250,7 @@ const ManageSubscriptionContainer = ({
         licenseOwnerId={licenseOwnerId}
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        defaultSelectedProductIds={defaultSelectedProductIds}
+        defaultSelectedProductIds={[...defaultSelectedProductIds]}
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}

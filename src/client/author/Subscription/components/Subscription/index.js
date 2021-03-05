@@ -352,7 +352,7 @@ const Subscription = (props) => {
 
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
-    : null
+    : []
 
   const isPremium = subType && subType !== 'FREE' // here user can be premium, trial premium, or partial premium
 
@@ -429,7 +429,7 @@ const Subscription = (props) => {
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        defaultSelectedProductIds={defaultSelectedProductIds}
+        defaultSelectedProductIds={[...defaultSelectedProductIds]}
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}

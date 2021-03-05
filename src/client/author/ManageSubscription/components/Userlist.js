@@ -230,9 +230,14 @@ const Userlist = ({
       rowUserId = userId
 
       for (const type of Object.keys(
-        omit(permissions, ['userId', 'hasManageLicense'])
+        omit(permissions, [
+          'userId',
+          'hasManageLicense',
+          'districtId',
+          'institutionIds',
+        ])
       )) {
-        if (isBoolean(permissions[type])) {
+        if (isBoolean(permissions[type]) && !type.startsWith(`TRIAL_`)) {
           licensesPermission = getUpdatedValue(
             permissions[type],
             userId,

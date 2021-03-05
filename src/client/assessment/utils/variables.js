@@ -196,6 +196,8 @@ export const replaceVariables = (
       if (key === 'id' || key === 'variable') return
       if (key === 'validation') {
         useMathTemplate = false
+      } else {
+        useMathTemplate = true
       }
       draft[key] = replaceValues(
         draft[key],

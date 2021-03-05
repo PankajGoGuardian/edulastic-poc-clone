@@ -545,7 +545,6 @@ export const HideLinkLabel = styled(StyledLabel)`
 
 export const ReportContainer = styled.div`
   position: relative;
-  margin-left: ${({ marginLeft }) => marginLeft};
 `
 
 export const FilterButton = styled(Button)`

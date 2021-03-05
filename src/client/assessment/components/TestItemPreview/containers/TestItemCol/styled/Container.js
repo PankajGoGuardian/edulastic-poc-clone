@@ -32,7 +32,7 @@ const zoomedStyle = css`
     let header =
       viewComponent === 'practicePlayer'
         ? 180
-        : headerHeight + paddingTopBottom + 8
+        : headerHeight + paddingTopBottom + 12
 
     if (shouldZoom && zoomed) {
       header /= zoomLevel
@@ -57,7 +57,7 @@ export const Container = styled.div`
     props.theme.testItemPreview.itemColBorderColor};
   background-color: ${(props) => props.isStudentAttempt && '#fff'};
   border-radius: ${(props) => props.isStudentAttempt && '8px'};
-  margin-top: ${(props) => props.isStudentAttempt && '8px'};
+  margin-top: ${(props) => props.isStudentAttempt && '12px'};
   overflow: ${(props) =>
     props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
       ? 'auto'
@@ -75,7 +75,7 @@ export const WidgetContainer = styled.div`
   flex-wrap: wrap;
   align-items: stretch;
   position: relative;
-  flex-grow: 1;
+  flex-grow: ${({ isStudentAttempt }) => !isStudentAttempt && 1};
   min-height: max-content; // to fix height issue with safari
 `
 export const FilesViewContainer = styled.div`

@@ -33,6 +33,7 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 import staticDropDownData from '../static/staticDropDownData.json'
 
 const EngagementReportFilters = ({
+  reportId,
   loc,
   location,
   history,
@@ -102,7 +103,6 @@ const EngagementReportFilters = ({
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
-    console.log('\n\nthis', selected, keyName, multiple)
     // update tags data
     const _tagsData = { ...tagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
@@ -148,11 +148,12 @@ const EngagementReportFilters = ({
   return (
     <>
       <FilterTags
+        visible={!reportId}
         tagsData={tagsData}
         tagTypes={staticDropDownData.tagTypes}
         handleCloseTag={handleCloseTag}
       />
-      <ReportFiltersContainer>
+      <ReportFiltersContainer visible={!reportId}>
         <EduButton
           isGhost={!showFilter}
           onClick={toggleFilter}

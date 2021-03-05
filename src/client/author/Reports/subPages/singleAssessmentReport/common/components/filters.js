@@ -243,6 +243,7 @@ const SingleAssessmentReportFilters = ({
         termId: urlSchoolYear.key,
         grade: urlGrade.key,
         subject: urlSubject.key,
+        tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
@@ -253,7 +254,6 @@ const SingleAssessmentReportFilters = ({
         groupIds: search.groupIds || '',
         standardsProficiencyProfile: urlStandardProficiency?.key || '',
         performanceBandProfile: urlPerformanceBand?.key || '',
-        tags: [],
       }
       if (role === 'teacher') {
         delete _filters.schoolIds
@@ -336,7 +336,7 @@ const SingleAssessmentReportFilters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
-    const _testId = keyName === 'tags' ? '' : testId
+    const _testId = keyName === 'tagIds' ? '' : testId
     setFiltersOrTestId({ filters: _filters, testId: _testId })
     setShowApply(true)
   }
@@ -377,11 +377,12 @@ const SingleAssessmentReportFilters = ({
   return (
     <>
       <FilterTags
+        visible={!reportId}
         tagsData={tagsData}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
       />
-      <ReportFiltersContainer>
+      <ReportFiltersContainer visible={!reportId}>
         <EduButton
           isGhost={!showFilter}
           onClick={toggleFilter}
@@ -473,14 +474,15 @@ const SingleAssessmentReportFilters = ({
                       <Col span={6}>
                         <FilterLabel data-cy="tags-select">Tags</FilterLabel>
                         <TagFilter
-                          onChangeField={(type, value) =>
-                            updateFilterDropdownCB(
-                              value.map(({ _id }) => _id),
-                              type,
-                              true
+                          onChangeField={(type, selected) => {
+                            const _selected = selected.map(
+                              ({ _id: key, tagName: title }) => ({ key, title })
                             )
+                            updateFilterDropdownCB(_selected, 'tagIds', true)
+                          }}
+                          selectedTagIds={
+                            filters.tagIds ? filters.tagIds.split(',') : []
                           }
-                          selectedTagIds={filters.tags}
                         />
                       </Col>
 
@@ -491,7 +493,7 @@ const SingleAssessmentReportFilters = ({
                             firstLoad={firstLoad}
                             termId={filters.termId}
                             grade={filters.grade !== 'All' && filters.grade}
-                            tags={filters.tags}
+                            tagIds={filters.tagIds}
                             subject={
                               filters.subject !== 'All' && filters.subject
                             }
@@ -599,11 +601,7 @@ const SingleAssessmentReportFilters = ({
                             filters.classIds ? filters.classIds.split(',') : []
                           }
                           selectCB={(e) =>
-                            updateFilterDropdownCB(
-                              e.join(','),
-                              'classIds',
-                              true
-                            )
+                            updateFilterDropdownCB(e, 'classIds', true)
                           }
                         />
                       </Col>
@@ -628,11 +626,7 @@ const SingleAssessmentReportFilters = ({
                             filters.groupIds ? filters.groupIds.split(',') : []
                           }
                           selectCB={(e) =>
-                            updateFilterDropdownCB(
-                              e.join(','),
-                              'groupIds',
-                              true
-                            )
+                            updateFilterDropdownCB(e, 'groupIds', true)
                           }
                         />
                       </Col>

@@ -162,6 +162,7 @@ const MultipleAssessmentReportFilters = ({
         termId: urlSchoolYear.key,
         subject: urlSubject.key,
         grade: urlGrade.key,
+        tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
@@ -171,7 +172,6 @@ const MultipleAssessmentReportFilters = ({
         classIds: search.classId || '',
         groupIds: search.groupId || '',
         profileId: urlPerformanceBand?.key || '',
-        tags: [],
       }
       if (role === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -221,7 +221,7 @@ const MultipleAssessmentReportFilters = ({
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
-    // update tags data
+    // update filter tags data
     const _tagsData = { ...tagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tagsData[keyName]
@@ -288,11 +288,12 @@ const MultipleAssessmentReportFilters = ({
   return (
     <>
       <FilterTags
+        visible={!reportId}
         tagsData={tagsData}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
       />
-      <ReportFiltersContainer>
+      <ReportFiltersContainer visible={!reportId}>
         <EduButton
           isGhost={!showFilter}
           onClick={toggleFilter}
@@ -377,14 +378,15 @@ const MultipleAssessmentReportFilters = ({
                       <Col span={6}>
                         <FilterLabel data-cy="tags-select">Tags</FilterLabel>
                         <TagFilter
-                          onChangeField={(type, value) =>
-                            updateFilterDropdownCB(
-                              value.map(({ _id }) => _id),
-                              type,
-                              true
+                          onChangeField={(type, selected) => {
+                            const _selected = selected.map(
+                              ({ _id: key, tagName: title }) => ({ key, title })
                             )
+                            updateFilterDropdownCB(_selected, 'tagIds', true)
+                          }}
+                          selectedTagIds={
+                            filters.tagIds ? filters.tagIds.split(',') : []
                           }
-                          selectedTagIds={filters.tags}
                         />
                       </Col>
                       {prevMARFilterData && (
@@ -397,7 +399,7 @@ const MultipleAssessmentReportFilters = ({
                               filters.subject !== 'All' && filters.subject
                             }
                             testTypes={filters.assessmentTypes}
-                            tags={filters.tags}
+                            tagIds={filters.tagIds}
                             selectedTestIds={testIds}
                             selectCB={onSelectTest}
                           />
@@ -495,14 +497,9 @@ const MultipleAssessmentReportFilters = ({
                           selectedClassIds={
                             filters.classIds ? filters.classIds.split(',') : []
                           }
-                          selectCB={(e) => {
-                            updateFilterDropdownCB(
-                              e.join(','),
-                              'classIds',
-                              true
-                            )
-                          }}
-                          selectedClassId={filters.classId}
+                          selectCB={(e) =>
+                            updateFilterDropdownCB(e, 'classIds', true)
+                          }
                         />
                       </Col>
                       <Col span={6}>
@@ -525,14 +522,9 @@ const MultipleAssessmentReportFilters = ({
                           selectedGroupIds={
                             filters.groupIds ? filters.groupIds.split(',') : []
                           }
-                          selectCB={(e) => {
-                            updateFilterDropdownCB(
-                              e.join(','),
-                              'groupIds',
-                              true
-                            )
-                          }}
-                          selectedGroupId={filters.groupId}
+                          selectCB={(e) =>
+                            updateFilterDropdownCB(e, 'groupIds', true)
+                          }
                         />
                       </Col>
                     </Row>

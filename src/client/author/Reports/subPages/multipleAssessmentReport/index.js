@@ -35,7 +35,7 @@ import { resetAllReportsAction } from '../../common/reportsRedux'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
-import { ReportContaner, FilterLabel } from '../../common/styled'
+import { ReportContainer, FilterLabel } from '../../common/styled'
 
 const MultipleAssessmentReportContainer = (props) => {
   const {
@@ -171,7 +171,6 @@ const MultipleAssessmentReportContainer = (props) => {
         requestFilters: {
           ...obj,
           testIds: selectedTests.join(),
-          tagIds: _settings.filters.tags.join(),
         },
       })
     }
@@ -259,7 +258,7 @@ const MultipleAssessmentReportContainer = (props) => {
           toggleFilter={toggleFilter}
         />
       </SubHeader>
-      <ReportContaner>
+      <ReportContainer>
         {firstLoad && <Spin size="large" />}
         <Route
           exact
@@ -311,7 +310,7 @@ const MultipleAssessmentReportContainer = (props) => {
             )
           }}
         />
-      </ReportContaner>
+      </ReportContainer>
     </>
   )
 }

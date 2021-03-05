@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { Tag, Popover, Tooltip } from 'antd'
 
-const FilterTags = ({ tagsData, tagTypes = [], handleCloseTag }) => {
+const FilterTags = ({ visible, tagsData, tagTypes = [], handleCloseTag }) => {
   const containerRef = useRef(null)
 
   const closableTypes = tagTypes.filter((t) => t.closable).map((t) => t.key)
@@ -91,7 +91,7 @@ const FilterTags = ({ tagsData, tagTypes = [], handleCloseTag }) => {
   })
 
   return (
-    <TagsContainer ref={containerRef}>
+    <TagsContainer ref={containerRef} visible={visible}>
       {bodyArray?.length > 0 && bodyArray.map((e) => e)}
       {popOverArray?.length > 0 && (
         <Popover
@@ -117,13 +117,14 @@ const TagsStyle = css`
   padding: 2px 10px;
   border: none;
   font-weight: bold;
-  border-radius: 6px;
+  border-radius: 2px;
   margin-bottom: 5px;
+  margin-right: 0px;
 `
 
 const TagsContainer = styled.div`
   width: 100%;
-  display: flex;
+  display: ${({ visible }) => (visible ? 'flex' : 'none')};
   justify-self: center;
   margin-right: auto;
   margin-left: 10px;
@@ -132,6 +133,7 @@ const TagsContainer = styled.div`
   .ant-tag {
     ${TagsStyle};
     margin-top: 7px;
+    margin-right: 6px;
   }
 `
 

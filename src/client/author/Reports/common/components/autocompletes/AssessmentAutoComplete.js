@@ -31,7 +31,7 @@ const AssessmentAutoComplete = ({
   testTypes,
   selectedTestId,
   selectCB,
-  tags,
+  tagIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
@@ -72,8 +72,8 @@ const AssessmentAutoComplete = ({
         ? testTypes
         : testTypes.split(',')
     }
-    if (tags?.length) {
-      q.search.tagIds = tags
+    if (tagIds) {
+      q.search.tagIds = tagIds.split(',')
     }
     return q
   }, [
@@ -83,7 +83,7 @@ const AssessmentAutoComplete = ({
     grade,
     subject,
     testTypes,
-    tags,
+    tagIds,
   ])
 
   // handle autocomplete actions

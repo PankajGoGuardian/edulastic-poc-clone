@@ -26,7 +26,7 @@ import {
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner } from '../../common/styled'
+import { ReportContainer } from '../../common/styled'
 
 const EngagementReportContainer = ({
   settings,
@@ -129,7 +129,6 @@ const EngagementReportContainer = ({
       actionOnInaccessible="hidden"
     >
       <>
-        {firstLoad && <Spin size="large" />}
         {sharingState && (
           <ShareReportModal
             reportType={loc}
@@ -154,7 +153,8 @@ const EngagementReportContainer = ({
             setFirstLoad={setFirstLoad}
           />
         </SubHeader>
-        <ReportContaner showFilter={showFilter}>
+        <ReportContainer>
+          {firstLoad && <Spin size="large" />}
           <Route
             exact
             path="/author/reports/engagement-summary"
@@ -191,7 +191,7 @@ const EngagementReportContainer = ({
               />
             )}
           />
-        </ReportContaner>
+        </ReportContainer>
       </>
     </FeaturesSwitch>
   )

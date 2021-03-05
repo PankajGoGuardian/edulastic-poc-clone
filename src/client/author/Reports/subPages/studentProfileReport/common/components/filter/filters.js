@@ -334,11 +334,12 @@ const StudentProfileReportFilters = ({
   return (
     <>
       <FilterTags
+        visible={!reportId}
         tagsData={tagsData}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
       />
-      <ReportFiltersContainer>
+      <ReportFiltersContainer visible={!reportId}>
         <EduButton
           isGhost={!showFilter}
           onClick={toggleFilter}

@@ -16,7 +16,7 @@ import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 
 import { setSPRSettingsAction, getReportsSPRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner } from '../../common/styled'
+import { ReportContainer } from '../../common/styled'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
@@ -167,7 +167,7 @@ const StudentProfileReportContainer = (props) => {
             toggleFilter={toggleFilter}
           />
         </SubHeader>
-        <ReportContaner>
+        <ReportContainer>
           <Route
             exact
             path="/author/reports/student-mastery-profile/student/:studentId?"
@@ -206,7 +206,7 @@ const StudentProfileReportContainer = (props) => {
               />
             )}
           />
-        </ReportContaner>
+        </ReportContainer>
       </>
     </FeaturesSwitch>
   )

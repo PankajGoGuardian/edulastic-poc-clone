@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Result, Spin } from 'antd'
 import { TypeToConfirmModal } from '@edulastic/common'
 import { report } from '@edulastic/constants'
+import { SubHeader } from '../../common/components/Header'
 import SharedReportsTable from './SharedReportsTable'
 import { StyledContainer } from '../../common/styled'
 
@@ -25,6 +26,8 @@ const SharedReportsContainer = ({
   isLoading,
   history,
   currentUserId,
+  breadcrumbData,
+  isCliUser,
 }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [reportToArchive, setReportToArchive] = useState({})
@@ -109,29 +112,32 @@ const SharedReportsContainer = ({
   }, [sharedReportList, collaborativeGroupList])
 
   return (
-    <StyledContainer>
-      <TypeToConfirmModal
-        modalVisible={showConfirmationModal}
-        title="Revoke Sharing"
-        handleOnOkClick={handleArchiveReport}
-        wordToBeTyped="REVOKE"
-        primaryLabel="Are you sure you want to revoke sharing of the following report?"
-        secondaryLabel={reportToArchive.title}
-        closeModal={() => setReportToArchive({})}
-      />
-      {isLoading ? (
-        <Spin size="small" />
-      ) : sharedReportList.length ? (
-        <SharedReportsTable
-          sharedReportsData={sharedReportsData}
-          showReport={showReport}
-          setReportToArchive={setReportToArchive}
-          currentUserId={currentUserId}
+    <>
+      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
+      <StyledContainer>
+        <TypeToConfirmModal
+          modalVisible={showConfirmationModal}
+          title="Revoke Sharing"
+          handleOnOkClick={handleArchiveReport}
+          wordToBeTyped="REVOKE"
+          primaryLabel="Are you sure you want to revoke sharing of the following report?"
+          secondaryLabel={reportToArchive.title}
+          closeModal={() => setReportToArchive({})}
         />
-      ) : (
-        <Result title="No report found" />
-      )}
-    </StyledContainer>
+        {isLoading ? (
+          <Spin size="small" />
+        ) : sharedReportList.length ? (
+          <SharedReportsTable
+            sharedReportsData={sharedReportsData}
+            showReport={showReport}
+            setReportToArchive={setReportToArchive}
+            currentUserId={currentUserId}
+          />
+        ) : (
+          <Result title="No report found" />
+        )}
+      </StyledContainer>
+    </>
   )
 }
 

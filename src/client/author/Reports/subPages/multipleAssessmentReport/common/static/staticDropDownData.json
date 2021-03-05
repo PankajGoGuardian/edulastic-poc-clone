@@ -21,6 +21,7 @@
     { "key": "termId", "closable": false },
     { "key": "grade", "closable": true, "subType": "test" },
     { "key": "subject", "closable": true, "subType": "test" },
+    { "key": "tagIds", "closable": true },
     { "key": "assessmentTypes", "closable": true },
     { "key": "testIds", "closable": true },
     { "key": "schoolIds", "closable": true },
@@ -42,6 +43,7 @@
     "termId": "",
     "grade": "All",
     "subject": "All",
+    "tagIds": "",
     "assessmentTypes": "",
     "schoolIds": "",
     "teacherIds": "",
@@ -50,8 +52,7 @@
     "studentCourseId": "All",
     "classIds": "",
     "groupIds": "",
-    "profileId": "",
-    "tags": []
+    "profileId": ""
   },
   "initialDdFilters": {
     "race": "all",

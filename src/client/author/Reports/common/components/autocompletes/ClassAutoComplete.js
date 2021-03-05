@@ -142,7 +142,7 @@ const ClassAutoComplete = ({
       label="Class"
       placeholder="All Classes"
       el={classFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultClassList}

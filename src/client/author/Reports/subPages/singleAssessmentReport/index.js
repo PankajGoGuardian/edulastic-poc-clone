@@ -41,7 +41,7 @@ import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner, FilterLabel } from '../../common/styled'
+import { ReportContainer, FilterLabel } from '../../common/styled'
 
 const SingleAssessmentReportContainer = (props) => {
   const {
@@ -168,15 +168,14 @@ const SingleAssessmentReportContainer = (props) => {
   const onGoClick = (_settings) => {
     const obj = {}
     const arr = Object.keys(_settings.filters)
-    // eslint-disable-next-line array-callback-return
-    arr.map((item) => {
+    arr.forEach((item) => {
       const val =
         _settings.filters[item] === 'All' ? '' : _settings.filters[item]
       obj[item] = val
     })
     setSARSettings({
       selectedTest: _settings.selectedTest,
-      requestFilters: { ...obj, tagIds: _settings.filters.tags.join() },
+      requestFilters: obj,
       cliUser: isCliUser,
     })
   }
@@ -282,7 +281,7 @@ const SingleAssessmentReportContainer = (props) => {
             setFirstLoad={setFirstLoad}
           />
         </SubHeader>
-        <ReportContaner>
+        <ReportContainer>
           {firstLoad && <Spin size="large" />}
           <Route
             exact
@@ -366,7 +365,7 @@ const SingleAssessmentReportContainer = (props) => {
               />
             )}
           />
-        </ReportContaner>
+        </ReportContainer>
       </>
     </FeaturesSwitch>
   )

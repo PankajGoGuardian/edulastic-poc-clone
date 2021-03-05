@@ -143,7 +143,7 @@ const GroupsAutoComplete = ({
       label="Group"
       placeholder="All Groups"
       el={groupFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultGroupList}

@@ -16,7 +16,7 @@ import StandardsMasteryReportFilters from './common/components/Filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
-import { ReportContaner, FilterLabel } from '../../common/styled'
+import { ReportContainer, FilterLabel } from '../../common/styled'
 
 import { setSMRSettingsAction, getReportsSMRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
@@ -188,14 +188,13 @@ const StandardsMasteryReportContainer = (props) => {
       })
       const {
         selectedTests = [],
-        filters: { domainIds = [], tags = [] },
+        filters: { domainIds = [] },
       } = _settings
       setSMRSettings({
         requestFilters: {
           ...obj,
           testIds: selectedTests.join(),
           domainIds: domainIds.join(),
-          tagIds: tags.join(),
         },
       })
     }
@@ -294,7 +293,7 @@ const StandardsMasteryReportContainer = (props) => {
           setFirstLoad={setFirstLoad}
         />
       </SubHeader>
-      <ReportContaner showFilter={showFilter}>
+      <ReportContainer>
         {firstLoad && <Spin size="large" />}
         <Route
           exact
@@ -349,7 +348,7 @@ const StandardsMasteryReportContainer = (props) => {
             )
           }}
         />
-      </ReportContaner>
+      </ReportContainer>
     </>
   )
 }

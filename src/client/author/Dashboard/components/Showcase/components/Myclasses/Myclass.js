@@ -352,7 +352,7 @@ const MyClasses = ({
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        defaultSelectedProductIds={[...defaultSelectedProductIds]}
+        defaultSelectedProductIds={defaultSelectedProductIds}
         setProductData={setProductData}
       />
       {showItemBankTrialUsedModal && (

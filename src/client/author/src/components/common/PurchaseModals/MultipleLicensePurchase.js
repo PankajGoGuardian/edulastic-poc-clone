@@ -25,6 +25,13 @@ const MultipleLicensePurchase = ({
     }
   }, [])
 
+  useEffect(() => {
+    return () => {
+      setSelectedProductIds([])
+      setQuantities({})
+    }
+  }, [])
+
   const handleInputEmailAddress = (ele) => {
     const value = ele.target.value
     setEmailValues(value)

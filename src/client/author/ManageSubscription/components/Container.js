@@ -242,6 +242,7 @@ const ManageSubscriptionContainer = ({
           bulkEditUsersPermission={bulkEditUsersPermission}
           dynamicColumns={columns}
           licenseOwnerId={licenseOwnerId}
+          subType={subType}
         />
       </ContentWrapper>
 

@@ -1,4 +1,22 @@
 {
+  "filterSections": {
+    "CLASS_FILTERS": {
+      "key": "0",
+      "title": "Class Filter"
+    },
+    "TEST_FILTERS": {
+      "key": "1",
+      "title": "Filter by Test"
+    },
+    "DEMOGRAPHIC_FILTERS": {
+      "key": "2",
+      "title": "Demographic Filter"
+    },
+    "STANDARD_FILTERS": {
+      "key": "3",
+      "title": "Standard Filter"
+    }
+  },
   "tagTypes": [
     { "key": "termId", "closable": false },
     { "key": "schoolIds", "closable": true },

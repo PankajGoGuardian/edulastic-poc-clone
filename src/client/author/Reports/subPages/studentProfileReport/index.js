@@ -5,18 +5,18 @@ import { Route } from 'react-router-dom'
 import next from 'immer'
 import qs from 'qs'
 
-import { FlexContainer } from '@edulastic/common'
-import { IconFilter, IconCloseFilter } from '@edulastic/icons'
+import { SubHeader } from '../../common/components/Header'
+
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import StudentMasteryProfile from './StudentMasteryProfile'
 import StudentAssessmentProfile from './StudentAssessmentProfile'
 import StudentProfileSummary from './StudentProfileSummary'
-import StudentProfileReportsFilters from './common/components/filter/StudentProfileReportsFilters'
+import StudentProfileReportFilters from './common/components/filter/filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 
 import { setSPRSettingsAction, getReportsSPRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner, FilterButtonClear } from '../../common/styled'
+import { ReportContaner } from '../../common/styled'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
@@ -40,6 +40,8 @@ const StudentProfileReportContainer = (props) => {
     sharingState,
     setSharingState,
     sharedReportList,
+    breadcrumbData,
+    isCliUser,
   } = props
 
   const [reportId] = useState(
@@ -124,6 +126,16 @@ const StudentProfileReportContainer = (props) => {
     }
   }
 
+  const performanceBandRequired = [
+    'student-profile-summary',
+    'student-assessment-profile',
+  ].includes(loc)
+
+  const standardProficiencyRequired = [
+    'student-profile-summary',
+    'student-mastery-profile',
+  ].includes(loc)
+
   return (
     <FeaturesSwitch
       inputFeatures="singleAssessmentReport"
@@ -141,74 +153,60 @@ const StudentProfileReportContainer = (props) => {
             setShowModal={setSharingState}
           />
         )}
-        <FlexContainer alignItems="flex-start" justifyContent="space-between">
-          <StudentProfileReportsFilters
+        <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
+          <StudentProfileReportFilters
             reportId={reportId}
             onGoClick={onGoClick}
             loc={loc}
             history={history}
             location={location}
             match={match}
-            style={
-              reportId || !showFilter
-                ? { display: 'none' }
-                : { display: 'block' }
-            }
-            performanceBandRequired={[
-              '/author/reports/student-profile-summary',
-              '/author/reports/student-assessment-profile',
-            ].find((x) => window.location.pathname.startsWith(x))}
-            standardProficiencyRequired={[
-              '/author/reports/student-profile-summary',
-              '/author/reports/student-mastery-profile',
-            ].find((x) => window.location.pathname.startsWith(x))}
+            performanceBandRequired={performanceBandRequired}
+            standardProficiencyRequired={standardProficiencyRequired}
+            showFilter={showFilter}
+            toggleFilter={toggleFilter}
           />
-          {!reportId ? (
-            <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-              {showFilter ? <IconCloseFilter /> : <IconFilter />}
-            </FilterButtonClear>
-          ) : null}
-          <ReportContaner showFilter={showFilter}>
-            <Route
-              exact
-              path="/author/reports/student-mastery-profile/student/:studentId?"
-              render={(_props) => (
-                <StudentMasteryProfile
-                  {..._props}
-                  settings={transformedSettings}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/student-assessment-profile/student/:studentId?"
-              render={(_props) => (
-                <StudentAssessmentProfile
-                  {..._props}
-                  settings={transformedSettings}
-                  pageTitle={loc}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/student-profile-summary/student/:studentId?"
-              render={(_props) => (
-                <StudentProfileSummary
-                  {..._props}
-                  settings={transformedSettings}
-                  pageTitle={loc}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-          </ReportContaner>
-        </FlexContainer>
+        </SubHeader>
+        <ReportContaner>
+          <Route
+            exact
+            path="/author/reports/student-mastery-profile/student/:studentId?"
+            render={(_props) => (
+              <StudentMasteryProfile
+                {..._props}
+                settings={transformedSettings}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/student-assessment-profile/student/:studentId?"
+            render={(_props) => (
+              <StudentAssessmentProfile
+                {..._props}
+                settings={transformedSettings}
+                pageTitle={loc}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/student-profile-summary/student/:studentId?"
+            render={(_props) => (
+              <StudentProfileSummary
+                {..._props}
+                settings={transformedSettings}
+                pageTitle={loc}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+        </ReportContaner>
       </>
     </FeaturesSwitch>
   )

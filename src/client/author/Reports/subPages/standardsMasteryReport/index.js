@@ -5,22 +5,18 @@ import qs from 'qs'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
 
-import { Spin } from 'antd'
-import { FlexContainer } from '@edulastic/common'
-import { IconFilter, IconCloseFilter } from '@edulastic/icons'
+import { Spin, Col } from 'antd'
+
+import { SubHeader } from '../../common/components/Header'
+
 import StandardsPerfromance from './standardsPerformance'
 import StandardsGradebook from './standardsGradebook'
 import StandardsProgress from './standardsProgress'
-import StandardsFilters from './common/components/Filters'
+import StandardsMasteryReportFilters from './common/components/Filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
-import {
-  ReportContaner,
-  SearchField,
-  FilterLabel,
-  FilterButtonClear,
-} from '../../common/styled'
+import { ReportContaner, FilterLabel } from '../../common/styled'
 
 import { setSMRSettingsAction, getReportsSMRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
@@ -70,6 +66,8 @@ const StandardsMasteryReportContainer = (props) => {
     setSharingState,
     sharedReportList,
     demographics,
+    breadcrumbData,
+    isCliUser,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -216,18 +214,21 @@ const StandardsMasteryReportContainer = (props) => {
     })
   }
 
-  const locList = ['standards-gradebook', 'standards-progress']
+  const demographicsRequired = [
+    'standards-gradebook',
+    'standards-progress',
+  ].includes(loc)
   useEffect(() => {
-    if (!locList.includes(loc)) {
+    if (!demographicsRequired) {
       setDdFilter({ ...staticDropDownData.initialDdFilters })
       setTempDdFilter({ ...staticDropDownData.initialDdFilters })
     }
   }, [loc])
 
   const extraFilters =
-    locList.includes(loc) && demographics
+    demographicsRequired && demographics
       ? demographics.map((item) => (
-          <SearchField key={item.key}>
+          <Col span={6} key={item.key}>
             <FilterLabel>{item.title}</FilterLabel>
             <ControlDropDown
               selectCB={updateCB}
@@ -235,7 +236,7 @@ const StandardsMasteryReportContainer = (props) => {
               comData={item.key}
               by={tempDdFilter[item.key] || item.data[0]}
             />
-          </SearchField>
+          </Col>
         ))
       : []
 
@@ -260,7 +261,6 @@ const StandardsMasteryReportContainer = (props) => {
 
   return (
     <>
-      {firstLoad && <Spin size="large" />}
       {sharingState && (
         <ShareReportModal
           reportType={loc}
@@ -272,90 +272,84 @@ const StandardsMasteryReportContainer = (props) => {
           setShowModal={setSharingState}
         />
       )}
-      <FlexContainer
-        alignItems="flex-start"
-        justifyContent="space-between"
-        display={firstLoad ? 'none' : 'flex'}
-      >
-        <StandardsFilters
+      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
+        <StandardsMasteryReportFilters
           reportId={reportId}
           onGoClick={onGoClick}
           loc={loc}
           history={history}
           location={location}
           match={match}
-          style={
-            reportId || !showFilter ? { display: 'none' } : { display: 'block' }
-          }
           extraFilters={extraFilters}
+          tempDdFilter={tempDdFilter}
+          setTempDdFilter={setTempDdFilter}
           tagsData={tagsData}
           setTagsData={setTagsData}
+          demographicsRequired={demographicsRequired}
           showApply={showApply}
           setShowApply={setShowApply}
+          showFilter={showFilter}
+          toggleFilter={toggleFilter}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
         />
-        {!reportId ? (
-          <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            {showFilter ? <IconCloseFilter /> : <IconFilter />}
-          </FilterButtonClear>
-        ) : null}
-        <ReportContaner showFilter={showFilter}>
-          <Route
-            exact
-            path="/author/reports/standards-performance-summary"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <StandardsPerfromance
-                  {..._props}
-                  toggleFilter={toggleFilter}
-                  settings={transformedSettings}
-                  userRole={userRole}
-                  sharedReport={sharedReport}
-                />
-              )
-            }}
-          />
-          <Route
-            exact
-            path="/author/reports/standards-gradebook"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <StandardsGradebook
-                  {..._props}
-                  navigationItems={navigationItems}
-                  pageTitle={loc}
-                  toggleFilter={toggleFilter}
-                  settings={transformedSettings}
-                  ddfilter={ddfilter}
-                  userRole={userRole}
-                  sharedReport={sharedReport}
-                />
-              )
-            }}
-          />
-          <Route
-            exact
-            path="/author/reports/standards-progress"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <StandardsProgress
-                  {..._props}
-                  pageTitle={loc}
-                  toggleFilter={toggleFilter}
-                  settings={transformedSettings}
-                  ddfilter={ddfilter}
-                  userRole={userRole}
-                  sharedReport={sharedReport}
-                />
-              )
-            }}
-          />
-        </ReportContaner>
-      </FlexContainer>
+      </SubHeader>
+      <ReportContaner showFilter={showFilter}>
+        {firstLoad && <Spin size="large" />}
+        <Route
+          exact
+          path="/author/reports/standards-performance-summary"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <StandardsPerfromance
+                {..._props}
+                toggleFilter={toggleFilter}
+                settings={transformedSettings}
+                userRole={userRole}
+                sharedReport={sharedReport}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/standards-gradebook"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <StandardsGradebook
+                {..._props}
+                navigationItems={navigationItems}
+                pageTitle={loc}
+                toggleFilter={toggleFilter}
+                settings={transformedSettings}
+                ddfilter={ddfilter}
+                userRole={userRole}
+                sharedReport={sharedReport}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/standards-progress"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <StandardsProgress
+                {..._props}
+                pageTitle={loc}
+                toggleFilter={toggleFilter}
+                settings={transformedSettings}
+                ddfilter={ddfilter}
+                userRole={userRole}
+                sharedReport={sharedReport}
+              />
+            )
+          }}
+        />
+      </ReportContaner>
     </>
   )
 }

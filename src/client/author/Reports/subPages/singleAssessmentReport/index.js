@@ -4,11 +4,10 @@ import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 
-import { Spin } from 'antd'
-
+import { Spin, Col } from 'antd'
 import { SubHeader } from '../../common/components/Header'
 
-import SARFilters from './common/components/filters'
+import SingleAssessmentReportFilters from './common/components/filters'
 
 import ResponseFrequency from './ResponseFrequency'
 import AssessmentSummary from './AssessmentSummary'
@@ -42,7 +41,7 @@ import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner, SearchField, FilterLabel } from '../../common/styled'
+import { ReportContaner, FilterLabel } from '../../common/styled'
 
 const SingleAssessmentReportContainer = (props) => {
   const {
@@ -230,7 +229,7 @@ const SingleAssessmentReportContainer = (props) => {
   const extraFilters = demographicsRequired
     ? demographics &&
       demographics.map((item) => (
-        <SearchField key={item.key}>
+        <Col span={6} key={item.key}>
           <FilterLabel>{item.title}</FilterLabel>
           <ControlDropDown
             selectCB={updateCB}
@@ -238,7 +237,7 @@ const SingleAssessmentReportContainer = (props) => {
             comData={item.key}
             by={tempDdFilter[item.key] || item.data[0]}
           />
-        </SearchField>
+        </Col>
       ))
     : []
 
@@ -248,28 +247,6 @@ const SingleAssessmentReportContainer = (props) => {
       actionOnInaccessible="hidden"
     >
       <>
-        <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
-          <SARFilters
-            reportId={reportId}
-            onGoClick={onGoClick}
-            loc={loc}
-            history={history}
-            location={location}
-            match={match}
-            performanceBandRequired={performanceBandRequired}
-            standardProficiencyRequired={standardsProficiencyRequired}
-            demographicsRequired={demographicsRequired}
-            extraFilters={extraFilters}
-            tagsData={tagsData}
-            setTagsData={setTagsData}
-            showApply={showApply}
-            setShowApply={setShowApply}
-            showFilter={showFilter}
-            toggleFilter={toggleFilter}
-            firstLoad={firstLoad}
-            setFirstLoad={setFirstLoad}
-          />
-        </SubHeader>
         {sharingState && (
           <ShareReportModal
             reportType={loc}
@@ -281,6 +258,30 @@ const SingleAssessmentReportContainer = (props) => {
             setShowModal={setSharingState}
           />
         )}
+        <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
+          <SingleAssessmentReportFilters
+            reportId={reportId}
+            onGoClick={onGoClick}
+            loc={loc}
+            history={history}
+            location={location}
+            match={match}
+            performanceBandRequired={performanceBandRequired}
+            standardProficiencyRequired={standardsProficiencyRequired}
+            demographicsRequired={demographicsRequired}
+            extraFilters={extraFilters}
+            tempDdFilter={tempDdFilter}
+            setTempDdFilter={setTempDdFilter}
+            tagsData={tagsData}
+            setTagsData={setTagsData}
+            showApply={showApply}
+            setShowApply={setShowApply}
+            showFilter={showFilter}
+            toggleFilter={toggleFilter}
+            firstLoad={firstLoad}
+            setFirstLoad={setFirstLoad}
+          />
+        </SubHeader>
         <ReportContaner>
           {firstLoad && <Spin size="large" />}
           <Route

@@ -6,16 +6,16 @@ import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 
-import { Spin } from 'antd'
-import { FlexContainer } from '@edulastic/common'
-import { IconFilter, IconCloseFilter } from '@edulastic/icons'
+import { Spin, Col } from 'antd'
+
+import { SubHeader } from '../../common/components/Header'
 
 import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForMAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
 
-import MultipleAssessmentReportFilters from './common/components/filters/MultipleAssessmentReportFilters'
+import MultipleAssessmentReportFilters from './common/components/filters/filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import PeerProgressAnalysis from './PeerProgressAnalysis'
@@ -35,12 +35,7 @@ import { resetAllReportsAction } from '../../common/reportsRedux'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
-import {
-  ReportContaner,
-  SearchField,
-  FilterLabel,
-  FilterButtonClear,
-} from '../../common/styled'
+import { ReportContaner, FilterLabel } from '../../common/styled'
 
 const MultipleAssessmentReportContainer = (props) => {
   const {
@@ -65,6 +60,8 @@ const MultipleAssessmentReportContainer = (props) => {
     setSharingState,
     sharedReportList,
     demographics,
+    isCliUser,
+    breadcrumbData,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -193,23 +190,28 @@ const MultipleAssessmentReportContainer = (props) => {
     setShowApply(true)
   }
 
-  const pageTitleList = [
+  const performanceBandRequired = [
+    'performance-over-time',
+    'student-progress',
+  ].includes(pageTitle)
+
+  const demographicsRequired = [
     'performance-over-time',
     'peer-progress-analysis',
     'student-progress',
-  ]
+  ].includes(pageTitle)
 
   useEffect(() => {
-    if (!pageTitleList.includes(pageTitle)) {
+    if (!demographicsRequired) {
       setDdFilter({})
       setTempDdFilter({})
     }
   }, [pageTitle])
 
   const extraFilters =
-    pageTitleList.includes(pageTitle) && demographics
+    demographicsRequired && demographics
       ? demographics.map((item) => (
-          <SearchField key={item.key}>
+          <Col span={6} key={item.key}>
             <FilterLabel>{item.title}</FilterLabel>
             <ControlDropDown
               selectCB={updateCB}
@@ -217,13 +219,12 @@ const MultipleAssessmentReportContainer = (props) => {
               comData={item.key}
               by={tempDdFilter[item.key] || item.data[0]}
             />
-          </SearchField>
+          </Col>
         ))
       : []
 
   return (
     <>
-      {firstLoad && <Spin size="large" />}
       {sharingState && (
         <ShareReportModal
           reportType={pageTitle}
@@ -235,11 +236,7 @@ const MultipleAssessmentReportContainer = (props) => {
           setShowModal={setSharingState}
         />
       )}
-      <FlexContainer
-        alignItems="flex-start"
-        justifyContent="space-between"
-        display={firstLoad ? 'none' : 'flex'}
-      >
+      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
         <MultipleAssessmentReportFilters
           reportId={reportId}
           onGoClick={onGoClick}
@@ -247,79 +244,74 @@ const MultipleAssessmentReportContainer = (props) => {
           history={history}
           location={location}
           match={match}
-          performanceBandRequired={[
-            '/author/reports/student-progress',
-            '/author/reports/performance-over-time',
-          ].find((x) => window.location.pathname.startsWith(x))}
-          style={
-            reportId || !showFilter ? { display: 'none' } : { display: 'block' }
-          }
-          extraFilter={extraFilters}
+          performanceBandRequired={performanceBandRequired}
+          demographicsRequired={demographicsRequired}
+          extraFilters={extraFilters}
+          tempDdFilter={tempDdFilter}
+          setTempDdFilter={setTempDdFilter}
           tagsData={tagsData}
           setTagsData={setTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
+          showFilter={showFilter}
+          toggleFilter={toggleFilter}
         />
-        {!reportId ? (
-          <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            {showFilter ? <IconCloseFilter /> : <IconFilter />}
-          </FilterButtonClear>
-        ) : null}
-        <ReportContaner showFilter={showFilter}>
-          <Route
-            exact
-            path="/author/reports/peer-progress-analysis/"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <PeerProgressAnalysis
-                  {..._props}
-                  settings={transformedSettings}
-                  ddfilter={ddfilter}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )
-            }}
-          />
-          <Route
-            exact
-            path="/author/reports/student-progress/"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <StudentProgress
-                  {..._props}
-                  settings={transformedSettings}
-                  pageTitle={pageTitle}
-                  ddfilter={ddfilter}
-                  MARFilterData={MARFilterData}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )
-            }}
-          />
-          <Route
-            exact
-            path="/author/reports/performance-over-time/"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <PerformanceOverTime
-                  {..._props}
-                  settings={transformedSettings}
-                  ddfilter={ddfilter}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )
-            }}
-          />
-        </ReportContaner>
-      </FlexContainer>
+      </SubHeader>
+      <ReportContaner>
+        {firstLoad && <Spin size="large" />}
+        <Route
+          exact
+          path="/author/reports/peer-progress-analysis/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <PeerProgressAnalysis
+                {..._props}
+                settings={transformedSettings}
+                ddfilter={ddfilter}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/student-progress/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <StudentProgress
+                {..._props}
+                settings={transformedSettings}
+                pageTitle={pageTitle}
+                ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/performance-over-time/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <PerformanceOverTime
+                {..._props}
+                settings={transformedSettings}
+                ddfilter={ddfilter}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+      </ReportContaner>
     </>
   )
 }

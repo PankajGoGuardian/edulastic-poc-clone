@@ -5,8 +5,7 @@ import qs from 'qs'
 import { connect } from 'react-redux'
 
 import { Spin } from 'antd'
-import { FlexContainer } from '@edulastic/common'
-import { IconFilter, IconCloseFilter } from '@edulastic/icons'
+import { SubHeader } from '../../common/components/Header'
 
 import EngagementSummary from './EngagementSummary'
 import ActivityBySchool from './ActivityBySchool'
@@ -27,7 +26,7 @@ import {
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner, FilterButtonClear } from '../../common/styled'
+import { ReportContaner } from '../../common/styled'
 
 const EngagementReportContainer = ({
   settings,
@@ -44,6 +43,8 @@ const EngagementReportContainer = ({
   sharingState,
   setSharingState,
   sharedReportList,
+  breadcrumbData,
+  isCliUser,
 }) => {
   const [firstLoad, setFirstLoad] = useState(true)
   const [reportId] = useState(
@@ -137,10 +138,7 @@ const EngagementReportContainer = ({
             setShowModal={setSharingState}
           />
         )}
-        <FlexContainer
-          alignItems="flex-start"
-          display={firstLoad ? 'none' : 'flex'}
-        >
+        <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
           <EngagementReportFilters
             reportId={reportId}
             onGoClick={onGoClick}
@@ -148,60 +146,52 @@ const EngagementReportContainer = ({
             history={history}
             location={location}
             match={match}
-            style={
-              reportId || !showFilter
-                ? { display: 'none' }
-                : { display: 'block' }
-            }
             showApply={showApply}
             setShowApply={setShowApply}
+            showFilter={showFilter}
+            toggleFilter={toggleFilter}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
           />
-          {!reportId ? (
-            <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-              {showFilter ? <IconCloseFilter /> : <IconFilter />}
-            </FilterButtonClear>
-          ) : null}
-          <ReportContaner showFilter={showFilter}>
-            <Route
-              exact
-              path="/author/reports/engagement-summary"
-              render={(_props) => (
-                <EngagementSummary
-                  {..._props}
-                  settings={settings}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/activity-by-school"
-              render={(_props) => (
-                <ActivityBySchool
-                  {..._props}
-                  settings={settings}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/activity-by-teacher"
-              render={(_props) => (
-                <ActivityByTeacher
-                  {..._props}
-                  settings={settings}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-          </ReportContaner>
-        </FlexContainer>
+        </SubHeader>
+        <ReportContaner showFilter={showFilter}>
+          <Route
+            exact
+            path="/author/reports/engagement-summary"
+            render={(_props) => (
+              <EngagementSummary
+                {..._props}
+                settings={settings}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/activity-by-school"
+            render={(_props) => (
+              <ActivityBySchool
+                {..._props}
+                settings={settings}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/activity-by-teacher"
+            render={(_props) => (
+              <ActivityByTeacher
+                {..._props}
+                settings={settings}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+        </ReportContaner>
       </>
     </FeaturesSwitch>
   )

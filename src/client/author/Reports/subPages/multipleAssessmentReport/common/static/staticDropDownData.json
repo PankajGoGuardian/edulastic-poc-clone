@@ -1,4 +1,22 @@
 { 
+  "filterSections": {
+    "TEST_FILTERS": {
+      "key": "0",
+      "title": "Find the test"
+    },
+    "CLASS_FILTERS": {
+      "key": "1",
+      "title": "Class Filter"
+    },
+    "PERFORMANCE_FILTERS": {
+      "key": "2",
+      "title": "Performance"
+    },
+    "DEMOGRAPHIC_FILTERS": {
+      "key": "3",
+      "title": "Demographic"
+    }
+  },
   "tagTypes": [
     { "key": "termId", "closable": false },
     { "key": "grade", "closable": true, "subType": "test" },

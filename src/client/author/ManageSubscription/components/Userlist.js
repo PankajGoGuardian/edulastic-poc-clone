@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { CheckboxLabel } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import {
   isBoolean,
   keyBy,
@@ -47,6 +48,7 @@ const Userlist = ({
   subsLicenses = [],
   dynamicColumns = [],
   licenseOwnerId,
+  subType,
 }) => {
   const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
@@ -137,10 +139,16 @@ const Userlist = ({
     const isOwner =
       licenseOwnersMap[record.userId] && key === 'hasManageLicense'
 
+    const isUserAdmin =
+      [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(record.role) &&
+      key !== 'hasManageLicense' &&
+      subType !== 'enterprise'
+
     const disabled =
       (record[key]?.length && record[key] !== licenseIdsbyType[key]) ||
       isOwnerForManageLicense ||
-      isOwner
+      isOwner ||
+      isUserAdmin
     const isChecked = record[key]
     const onChange = (e) => {
       const {
@@ -235,6 +243,7 @@ const Userlist = ({
           'hasManageLicense',
           'districtId',
           'institutionIds',
+          'role',
         ])
       )) {
         if (isBoolean(permissions[type]) && !type.startsWith(`TRIAL_`)) {

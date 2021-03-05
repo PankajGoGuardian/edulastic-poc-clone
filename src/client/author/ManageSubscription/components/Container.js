@@ -10,6 +10,7 @@ import {
   getUserOrgId,
   getUserRole,
   getUserIdSelector,
+  getUserFeatures,
 } from '../../src/selectors/user'
 import { getDashboardTilesSelector } from '../../Dashboard/ducks'
 import {
@@ -70,6 +71,7 @@ const ManageSubscriptionContainer = ({
   isEdulasticAdminView,
   isSubscriptionExpired,
   columns,
+  userFeature,
   licenseOwnerId,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
@@ -198,6 +200,8 @@ const ManageSubscriptionContainer = ({
 
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
 
+  const isPartialPremium = userFeature?.premiumGradeSubject?.length
+
   if (loading) {
     return <StyledSpin />
   }
@@ -215,6 +219,7 @@ const ManageSubscriptionContainer = ({
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           settingProductData={settingProductData}
           showRenewalOptions={showRenewalOptions}
+          isPartialPremium={isPartialPremium}
         />
       )}
 
@@ -301,6 +306,7 @@ const enhance = compose(
       userRole: getUserRole(state),
       isSubscriptionExpired: getIsSubscriptionExpired(state),
       columns: getColumnsSelector(state),
+      userFeature: getUserFeatures(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

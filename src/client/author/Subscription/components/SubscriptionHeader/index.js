@@ -39,6 +39,7 @@ const SubscriptionHeader = ({
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
   title,
+  isPartialPremium,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -71,26 +72,30 @@ const SubscriptionHeader = ({
           />
         )}
       </Menu.Item>
-      <Menu.Item>
-        <AuthorCompleteSignupButton
-          renderButton={(handleClick) => (
-            <span data-cy="multipleSubscription" onClick={handleClick}>
-              MULTIPLE SUBSCRIPTIONS
-            </span>
-          )}
-          onClick={openMultiplePurchaseModal}
-        />
-      </Menu.Item>
-      <Menu.Item>
-        <AuthorCompleteSignupButton
-          renderButton={(handleClick) => (
-            <span data-cy="enterpriseSubscription" onClick={handleClick}>
-              ENTERPRISE SUBSCRIPTION
-            </span>
-          )}
-          onClick={handleEnterpriseClick}
-        />
-      </Menu.Item>
+      {!isPartialPremium && (
+        <Menu.Item>
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <span data-cy="multipleSubscription" onClick={handleClick}>
+                MULTIPLE SUBSCRIPTIONS
+              </span>
+            )}
+            onClick={openMultiplePurchaseModal}
+          />
+        </Menu.Item>
+      )}
+      {!isPartialPremium && (
+        <Menu.Item>
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <span data-cy="enterpriseSubscription" onClick={handleClick}>
+                ENTERPRISE SUBSCRIPTION
+              </span>
+            )}
+            onClick={handleEnterpriseClick}
+          />
+        </Menu.Item>
+      )}
     </Menu>
   )
 
@@ -130,20 +135,18 @@ const SubscriptionHeader = ({
               </Link>
             </EduButton>
           )}
-          {!showRenewalOptions &&
-            subType !== 'enterprise' &&
-            subType !== 'partial_premium' && (
-              <Dropdown
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                overlay={menu}
-                placement="bottomRight"
-                arrow
-              >
-                <EduButton data-cy="upgradeButton" isBlue height="24px">
-                  Upgrade
-                </EduButton>
-              </Dropdown>
-            )}
+          {!showRenewalOptions && !['enterprise'].includes(subType) && (
+            <Dropdown
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              overlay={menu}
+              placement="bottomRight"
+              arrow
+            >
+              <EduButton data-cy="upgradeButton" isBlue height="24px">
+                Upgrade
+              </EduButton>
+            </Dropdown>
+          )}
           {showRenewalOptions && (
             <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription

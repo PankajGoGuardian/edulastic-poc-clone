@@ -9,7 +9,7 @@ import { IconEye, IconTrash } from '@edulastic/icons'
 import loadable from '@loadable/component'
 import { Form, Pagination, Table, Tooltip } from 'antd'
 import moment from 'moment'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import connect from 'react-redux/lib/connect/connect'
 import styled from 'styled-components'
 import {
@@ -190,8 +190,10 @@ const ManageSubscriptionsByLicenses = ({
   districtList,
   searchRequest,
   deleteLicense,
+  addSubscription,
+  fetchProducts,
 }) => {
-  const { licenses = [], count = 0, searchType } = manageLicensesData
+  const { licenses = [], count = 0, searchType, products } = manageLicensesData
   const [page, setPage] = useState(1)
   const [isVisible, setVisible] = useState(false)
   const [showArchiveAlert, setShowArchiveAlert] = useState(false)
@@ -204,6 +206,11 @@ const ManageSubscriptionsByLicenses = ({
     false
   )
   const [showLicenseViewModal, setShowLicenseViewModal] = useState(false)
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
   const handlePageChange = (pageNo) => {
     setPage(pageNo)
     fetchLicensesBySearchType({
@@ -320,6 +327,8 @@ const ManageSubscriptionsByLicenses = ({
           isFetchingOrganization={isFetchingOrganization}
           districtList={districtList}
           searchRequest={searchRequest}
+          addSubscription={addSubscription}
+          products={products}
         />
       )}
     </>
@@ -334,6 +343,8 @@ export default connect(
   {
     searchRequest: searchOrgaizationRequestAction,
     deleteLicense: manageSubscriptionsByLicenses.actions.deleteLicense,
+    fetchProducts: manageSubscriptionsByLicenses.actions.fetchProducts,
+    addSubscription: manageSubscriptionsByLicenses.actions.addSubscription,
   }
 )(ManageSubscriptionsByLicenses)
 

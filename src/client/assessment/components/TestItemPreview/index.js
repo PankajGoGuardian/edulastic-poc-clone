@@ -161,7 +161,7 @@ class TestItemPreview extends Component {
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question.id
     )
-
+    const testActivityId = question?.activity?.testActivityId
     return displayFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
@@ -177,6 +177,7 @@ class TestItemPreview extends Component {
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
         itemId={itemId}
+        key={`${testActivityId}_${index}`}
         ref={this.feedbackRef}
       />
     ) : null

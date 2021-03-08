@@ -11,7 +11,7 @@ const Header = ({
   settingProductData,
   hasAllPremiumProductAccess,
   showRenewalOptions,
-  isPartialPremium,
+  isPremiumUser,
 }) => {
   return (
     <SubscriptionHeader
@@ -26,7 +26,7 @@ const Header = ({
       setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
       settingProductData={settingProductData}
       showRenewalOptions={showRenewalOptions}
-      isPartialPremium={isPartialPremium}
+      isPremiumUser={isPremiumUser}
     />
   )
 }

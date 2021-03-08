@@ -392,7 +392,9 @@ function* handleMultiplePurchasePayment({ payload }) {
     if (token) {
       const products = productIds.reduce((allProducts, product) => {
         const { quantity, id, linkedProductId } = product
-        allProducts[id || linkedProductId] = quantity
+        if (quantity) {
+          allProducts[id || linkedProductId] = quantity
+        }
         return allProducts
       }, {})
       const apiPaymentResponse = yield call(paymentApi.licensePurchase, {

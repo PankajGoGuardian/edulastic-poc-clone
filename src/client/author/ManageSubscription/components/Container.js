@@ -171,7 +171,7 @@ const ManageSubscriptionContainer = ({
 
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
 
-  const isPartialPremium = userFeature?.premiumGradeSubject?.length
+  const isPremiumUser = userFeature?.premium
 
   if (loading) {
     return <StyledSpin />
@@ -189,7 +189,7 @@ const ManageSubscriptionContainer = ({
           hasAllPremiumProductAccess={hasAllPremiumProductAccess}
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           showRenewalOptions={showRenewalOptions}
-          isPartialPremium={isPartialPremium}
+          isPremiumUser={isPremiumUser}
         />
       )}
 

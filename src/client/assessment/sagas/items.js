@@ -433,7 +433,8 @@ const timeOut = process.env.NODE_ENV === 'development' ? 12000 : 8000
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield Effects.throttleAction(timeOut, SAVE_USER_RESPONSE, saveUserResponse),
+    // yield Effects.throttleAction(timeOut, SAVE_USER_RESPONSE, saveUserResponse),
+    yield takeLatest(SAVE_USER_RESPONSE, saveUserResponse),
     yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse),
   ])
 }

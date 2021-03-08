@@ -413,7 +413,8 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
       '602383287e63eb0007a54233', // vvk@content.com - Conetnt Author
       '6023834b7e63eb0007a54234', // vvk@approver.com - Content Editor
       '5ee90bb54e6a8b000713dae9', // QA testing author account
-      '5e3138446247305142d94332', // QA testing publisher account
+      '5e3138446247305142d94332', // QA testing publisher account,
+      '5ee90bb54e6a8b000713dae9', // QA testing account (staging)
       '5ec422aabdde150007764df1', // "Edulastic Premium Content"
     ]
     return allowedUserIds.includes(state)

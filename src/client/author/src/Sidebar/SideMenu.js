@@ -49,6 +49,7 @@ import {
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { helpCenterUrl } from '@edulastic/constants/const/common'
 import { getLastPlayListSelector } from '../../Playlist/ducks'
 import { logoutAction } from '../actions/auth'
 import { toggleSideBarAction } from '../actions/toggleMenu'
@@ -619,7 +620,7 @@ class SideMenu extends Component {
             <MenuFooter>
               <QuestionButton isCollapsed={isCollapsed}>
                 <a
-                  href="https://edulastic.com/help-center/"
+                  href={helpCenterUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

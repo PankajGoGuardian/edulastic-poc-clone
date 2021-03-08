@@ -171,6 +171,7 @@ function* addBulkUsersAndUpgradeSaga({ payload }) {
         {
           users,
           licenses,
+          licenseOwnerId,
         }
       ) || {}
 

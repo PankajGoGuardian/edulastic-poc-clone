@@ -19,17 +19,13 @@ import { TimeSpentWrapper } from '../QuestionWrapper'
 import ShowUserWork from '../Common/ShowUserWork'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
+import { togglePassageTabAction } from '../../../author/sharedDucks/testPlayer'
 
 class TestItemPreview extends Component {
   constructor(props) {
     super(props)
-    const { isPassageWithQuestions, isLCBView } = props
-    const toggleCollapseMode =
-      (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions) ||
-      (isPassageWithQuestions && isLCBView)
     this.state = {
-      toggleCollapseMode,
-      collapseDirection: toggleCollapseMode ? 'left' : '',
+      toggleCollapseMode: false,
       value: 0,
       dimensions: { height: 0, width: 0 },
       isFeedbackVisible: false,
@@ -57,15 +53,16 @@ class TestItemPreview extends Component {
   }
 
   setCollapseView = (dir) => {
-    this.setState((prevState) => ({
-      collapseDirection:
-        !prevState.toggleCollapseMode && prevState.collapseDirection ? '' : dir,
-    }))
+    const { togglePassageTab, collapseDirection, itemId } = this.props
+    const { toggleCollapseMode } = this.state
+    togglePassageTab({
+      [itemId]: !toggleCollapseMode && collapseDirection ? '' : dir,
+    })
   }
 
   renderCollapseButtons = () => {
-    const { isLCBView } = this.props
-    const { collapseDirection } = this.state
+    const { isLCBView, collapseDirection } = this.props
+    // const { collapseDirection } = this.state
     return (
       <Divider
         collapseDirection={collapseDirection}
@@ -221,15 +218,28 @@ class TestItemPreview extends Component {
         })
       }
     }
+    const {
+      isPassageWithQuestions,
+      isLCBView,
+      togglePassageTab,
+      itemId,
+    } = this.props
+
+    const toggleCollapseMode =
+      (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions) ||
+      (isPassageWithQuestions && isLCBView)
 
     /**
      * https://snapwiz.atlassian.net/browse/EV-20465
      * When feedbackElem is getting rendered we can say it is visible
      * */
     const feedbackElem = this.feedbackRef.current
-    if (feedbackElem) {
-      this.setState({ isFeedbackVisible: true })
-    }
+    this.setState(
+      { toggleCollapseMode, isFeedbackVisible: !!feedbackElem },
+      () => {
+        togglePassageTab({ [itemId]: toggleCollapseMode ? 'left' : '' })
+      }
+    )
   }
 
   componentDidUpdate(prevProps) {
@@ -239,6 +249,8 @@ class TestItemPreview extends Component {
       isPassageWithQuestions,
       scratchPadMode,
       isLCBView,
+      togglePassageTab,
+      itemId,
     } = this.props
     if (
       !scratchPadMode &&
@@ -246,13 +258,15 @@ class TestItemPreview extends Component {
       window.innerWidth < IPAD_LANDSCAPE_WIDTH &&
       (!isEqual(cols, preCols) || scratchPadMode !== prevProps.scratchPadMode)
     ) {
-      this.setState({ toggleCollapseMode: true, collapseDirection: 'left' })
+      this.setState({ toggleCollapseMode: true }, () => {
+        togglePassageTab({ [itemId]: 'left' })
+      })
     } else if (
       scratchPadMode !== prevProps.scratchPadMode &&
       scratchPadMode &&
       !isLCBView
     ) {
-      this.setState({ collapseDirection: '' })
+      togglePassageTab({ [itemId]: '' })
     }
   }
 
@@ -307,9 +321,10 @@ class TestItemPreview extends Component {
       userWork,
       itemLevelScoring,
       isPrintPreview,
+      collapseDirection,
     } = restProps
 
-    const { isFeedbackVisible, collapseDirection } = this.state
+    const { isFeedbackVisible } = this.state
     const { isStudentAttempt } = this.context
 
     const widgets = (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
@@ -489,14 +504,18 @@ const enhance = compose(
   withWindowSizes,
   withTheme,
   withNamespaces('student'),
-  connect((state) => ({
-    isCliUser: get(state, 'user.isCliUser', false),
-    showPreviousAttempt: get(
-      state,
-      'test.settings.showPreviousAttempt',
-      'NONE'
-    ),
-  }))
+  connect(
+    (state, ownProps) => ({
+      isCliUser: get(state, 'user.isCliUser', false),
+      collapseDirection: state.testPlayer.collapseDirection[ownProps.itemId],
+      showPreviousAttempt: get(
+        state,
+        'test.settings.showPreviousAttempt',
+        'NONE'
+      ),
+    }),
+    { togglePassageTab: togglePassageTabAction }
+  )
 )
 
 export default enhance(TestItemPreview)

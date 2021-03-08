@@ -76,13 +76,13 @@ class TestItemCol extends Component {
       isLCBView,
       isFeedbackVisible,
       hideCorrectAnswer,
+      fullHeight,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question = questions[widget.reference]
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question.id
     )
-    const { fullHeight } = restProps
     if (!question) {
       return <div />
     }

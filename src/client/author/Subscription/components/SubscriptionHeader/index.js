@@ -40,7 +40,6 @@ const SubscriptionHeader = ({
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
   title,
-  isPartialPremium,
   orgData,
   userRole,
 }) => {

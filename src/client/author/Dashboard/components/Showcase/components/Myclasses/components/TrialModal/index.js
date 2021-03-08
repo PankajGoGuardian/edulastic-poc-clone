@@ -35,13 +35,11 @@ const TrialModal = ({
   )
   const [productIds, setProductIds] = useState(map(productsToShow, 'id'))
 
-  const {
-    PREMIUM: teacherPremium = [],
-    ITEM_BANK_SPARK_MATH: itemBankPremium = [],
-  } = useMemo(() => {
+  const { PREMIUM: teacherPremium = [], ...ITEM_BANKS } = useMemo(() => {
     return groupBy(productsToShow, 'type')
   }, [products])
 
+  const itemBankPremium = Object.values(ITEM_BANKS).flatMap((x) => x)
   const isProceedDisabled = productIds.length === 0
 
   const closeModal = () => {

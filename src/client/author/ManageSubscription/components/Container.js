@@ -173,6 +173,8 @@ const ManageSubscriptionContainer = ({
 
   const isPartialPremium = userFeature?.premiumGradeSubject?.length
 
+  const isPremiumUser = userFeature?.premium
+
   if (loading) {
     return <StyledSpin />
   }
@@ -190,6 +192,7 @@ const ManageSubscriptionContainer = ({
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           showRenewalOptions={showRenewalOptions}
           isPartialPremium={isPartialPremium}
+          isPremiumUser={isPremiumUser}
         />
       )}
 

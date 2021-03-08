@@ -63,7 +63,11 @@ const Userlist = ({
   const licenseIdsbyType = useMemo(
     () =>
       subsLicenses.reduce(
-        (a, c) => ({ ...a, [c.productType]: c.licenseId }),
+        (a, c) => ({
+          ...a,
+          // Picking the first license of its type as per current requirement
+          [c.productType]: a[c.productType] ? a[c.productType] : c.licenseId,
+        }),
         {}
       ),
     [subsLicenses]
@@ -248,6 +252,7 @@ const Userlist = ({
     let licensesPermission = {}
     let manageLicensePermission = {}
     let rowUserId = ''
+    const usersById = keyBy(users, 'userId')
     for (const permissions of changes) {
       const { hasManageLicense, userId } = permissions
       rowUserId = userId
@@ -266,7 +271,7 @@ const Userlist = ({
             permissions[type],
             userId,
             licensesPermission,
-            licenseIdsbyType[type]
+            permissions[type] ? licenseIdsbyType[type] : usersById[userId][type]
           )
         }
       }

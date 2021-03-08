@@ -74,6 +74,7 @@ const ManageSubscriptionContainer = ({
   orgData,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
+  const [selectedLicenseId, setSelectedLicenseId] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [dataSource, setDataSource] = useState(users)
   const [searchValue, setSearchValue] = useState()
@@ -203,6 +204,7 @@ const ManageSubscriptionContainer = ({
           setShowBuyMoreModal={setShowBuyMoreModal}
           setCurrentItemId={setCurrentItemId}
           isEdulasticAdminView={isEdulasticAdminView}
+          setSelectedLicenseId={setSelectedLicenseId}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}
@@ -234,6 +236,8 @@ const ManageSubscriptionContainer = ({
         isEdulasticAdminView={isEdulasticAdminView}
         showRenewalOptions={showRenewalOptions}
         currentItemId={currentItemId}
+        selectedLicenseId={selectedLicenseId}
+        setSelectedLicenseId={setSelectedLicenseId}
       />
       {showAddUsersModal && (
         <AddUsersModal

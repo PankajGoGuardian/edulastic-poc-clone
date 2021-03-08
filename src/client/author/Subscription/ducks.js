@@ -369,7 +369,10 @@ function* handleEdulasticAdminProductLicenseSaga({ payload }) {
       type: 'error',
       msg: 'Process failed.',
     })
-    console.error('ERROR WHILE PROCESSING LICENSE PURCHASE : ', err)
+    console.error(
+      '[Edulastic Admin] ERROR WHILE PROCESSING LICENSE PURCHASE : ',
+      err
+    )
     captureSentryException(err)
   }
 }

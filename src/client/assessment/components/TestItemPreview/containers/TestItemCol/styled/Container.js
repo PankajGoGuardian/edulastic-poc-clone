@@ -75,7 +75,7 @@ export const WidgetContainer = styled.div`
   flex-wrap: wrap;
   align-items: stretch;
   position: relative;
-  flex-grow: ${({ isStudentAttempt }) => !isStudentAttempt && 1};
+  flex-grow: 1;
   min-height: max-content; // to fix height issue with safari
 `
 export const FilesViewContainer = styled.div`

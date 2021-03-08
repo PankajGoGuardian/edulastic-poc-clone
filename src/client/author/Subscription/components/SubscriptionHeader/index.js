@@ -119,7 +119,7 @@ const SubscriptionHeader = ({
           <PlanText data-cy="currentPlan" className="free">
             {isSubscribed && subType && licenseExpiryDate && isPremiumUser
               ? `${
-                  subType === 'partial_premium'
+                  isPartialPremiumUgradedUser
                     ? 'Enterprise'
                     : capitalize(subType.replace(/_/g, ' '))
                 } Version`

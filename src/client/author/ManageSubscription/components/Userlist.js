@@ -124,8 +124,23 @@ const Userlist = ({
       }
       return user
     })
-    const stringInitialUsers = JSON.stringify(users)
-    const stringNewUsers = JSON.stringify(newUsers)
+    // Pick only required fields to compare
+    const fieldsToOmit = [
+      'institutionIds',
+      'role',
+      'username',
+      'userId',
+      '_id',
+      'districtId',
+      'email',
+      'expiresOn',
+    ]
+    const stringInitialUsers = JSON.stringify(
+      users.map((u) => omit(u, fieldsToOmit))
+    )
+    const stringNewUsers = JSON.stringify(
+      newUsers.map((u) => omit(u, fieldsToOmit))
+    )
     setCurrentUsers(newUsers)
     setIsSaveButtonVisible(stringInitialUsers !== stringNewUsers)
   }

@@ -392,7 +392,7 @@ function* handleMultiplePurchasePayment({ payload }) {
     if (token) {
       const products = productIds.reduce((allProducts, product) => {
         const { quantity, id, linkedProductId } = product
-        if (quantity !== 0) {
+        if (quantity) {
           allProducts[id || linkedProductId] = quantity
         }
         return allProducts

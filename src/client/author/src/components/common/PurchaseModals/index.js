@@ -246,6 +246,7 @@ const PurchaseFlowModals = (props) => {
           quantities={quantities}
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
+          totalAmount={totalAmount}
         />
       )}
       {showMultiplePurchaseModal && (
@@ -299,6 +300,7 @@ const PurchaseFlowModals = (props) => {
           quantities={quantities}
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
+          totalAmount={totalAmount}
         />
       )}
     </>

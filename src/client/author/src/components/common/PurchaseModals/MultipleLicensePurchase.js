@@ -53,6 +53,7 @@ const MultipleLicensePurchase = ({
       data-cy="proceedPayment"
       width="220px"
       height="45px"
+      disabled={!quantities[teacherPremium.id]}
     >
       PROCEED WITH PAYMENT
     </EduButton>,

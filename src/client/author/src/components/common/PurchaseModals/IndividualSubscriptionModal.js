@@ -17,6 +17,7 @@ const IndividualSubscriptionModal = ({
   selectedProductIds,
   itemBankProducts,
   showMultiplePurchaseModal,
+  totalAmount,
 }) => {
   const productsToshow = useMemo(() => {
     if (isPaidPremium && !showRenewalOptions) {
@@ -47,6 +48,7 @@ const IndividualSubscriptionModal = ({
       data-cy="proceedPayment"
       width="220px"
       height="45px"
+      disabled={!totalAmount}
     >
       PROCEED WITH PAYMENT
     </EduButton>,

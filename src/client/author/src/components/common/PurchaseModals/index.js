@@ -301,6 +301,7 @@ const PurchaseFlowModals = (props) => {
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
           totalAmount={totalAmount}
+          isEdulasticAdminView={isEdulasticAdminView}
         />
       )}
     </>

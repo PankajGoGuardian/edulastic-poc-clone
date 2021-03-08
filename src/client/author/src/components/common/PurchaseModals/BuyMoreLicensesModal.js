@@ -15,6 +15,7 @@ const BuyMoreLicensesModal = ({
   selectedProductIds,
   currentItemId,
   totalAmount,
+  isEdulasticAdminView,
 }) => {
   useEffect(() => {
     return () => {
@@ -43,7 +44,7 @@ const BuyMoreLicensesModal = ({
   return (
     <SubscriptionAddonModal
       isVisible={isVisible}
-      title="Buy More"
+      title={isEdulasticAdminView ? 'Add More' : 'Buy More'}
       modalDescription={`Please enter the number of ${
         productsToshow?.[0]?.name || ''
       } license you need to buy.`}

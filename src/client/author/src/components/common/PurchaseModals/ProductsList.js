@@ -79,17 +79,6 @@ const ProductsList = ({
     return pressedKey
   }
 
-  const handleInputBlur = (e) => (id) => {
-    const value = e.target.value
-    if (value === '') {
-      const _quantities = {
-        ...quantities,
-        [id]: 1,
-      }
-      setQuantities(_quantities)
-    }
-  }
-
   useEffect(
     () => handleQuantityChange(isBuyMore ? currentItemId : premiumProductId)(1),
     [premiumProductId, currentItemId, isBuyMore]
@@ -139,7 +128,6 @@ const ProductsList = ({
                     isBuyMore ? false : quantities[product.id] === undefined
                   }
                   onKeyDown={handleKeyPress}
-                  onBlur={(e) => handleInputBlur(e)(product.id)}
                 />
               </NumberInputWrapper>
             )}

@@ -59,6 +59,8 @@ const PurchaseFlowModals = (props) => {
     showBuyMoreModal,
     setShowBuyMoreModal,
     licenseIds,
+    selectedLicenseId,
+    setSelectedLicenseId,
     isEdulasticAdminView = false,
     handleEdulasticAdminProductLicense,
     showRenewalOptions = false,
@@ -180,9 +182,12 @@ const PurchaseFlowModals = (props) => {
         ...data,
         productIds: [...productsCart],
         emailIds,
-        licenseIds,
+        licenseIds: selectedLicenseId ? [selectedLicenseId] : licenseIds,
         licenseOwnerId,
       })
+      if (selectedLicenseId) {
+        setSelectedLicenseId(null)
+      }
       if (!isPaymentServiceModalVisible) {
         setProductsCart([])
       }
@@ -212,10 +217,11 @@ const PurchaseFlowModals = (props) => {
         handleEdulasticAdminProductLicense({
           products: productQuantities,
           emailIds,
-          licenseIds,
+          licenseIds: [selectedLicenseId],
           licenseOwnerId,
         })
         handleSubscriptionAddonModalClose()
+        setSelectedLicenseId(null)
         return
       }
       setProductsCart(productQuantities)
@@ -312,6 +318,7 @@ PurchaseFlowModals.defaultProps = {
   setShowMultiplePurchaseModal: () => {},
   setShowSubscriptionAddonModal: () => {},
   setShowBuyMoreModal: () => {},
+  setSelectedLicenseId: () => {},
 }
 
 export default compose(

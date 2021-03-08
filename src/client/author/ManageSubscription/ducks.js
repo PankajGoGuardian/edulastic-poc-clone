@@ -135,7 +135,9 @@ export const reducer = createReducer(initialState, {
   },
   [FETCH_MANAGE_SUBSCRIPTIONS_SUCCESS]: (state, { payload }) => {
     state.loading = false
-    state.licenses = payload.licenses
+    state.licenses = payload?.licenses?.sort(
+      (a, b) => new Date(a.expiresOn) - new Date(b.expiresOn)
+    )
     state.users = payload.users
     state.columns = payload.columns
   },

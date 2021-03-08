@@ -380,7 +380,6 @@ const Subscription = (props) => {
         showMultipleSubscriptions={showMultipleSubscriptions}
         isFreeAdmin={isFreeAdmin}
         toggleShowFeatureNotAvailableModal={setShowFeatureNotAvailableModal}
-        isPartialPremium={isPartialPremium}
         orgData={user.orgData}
         userRole={user.role}
       />

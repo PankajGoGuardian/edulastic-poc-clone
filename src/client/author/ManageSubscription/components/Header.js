@@ -12,8 +12,6 @@ const Header = ({
   hasAllPremiumProductAccess,
   showRenewalOptions,
   isPremiumUser,
-  orgData,
-  userRole,
 }) => {
   return (
     <SubscriptionHeader
@@ -29,8 +27,6 @@ const Header = ({
       settingProductData={settingProductData}
       showRenewalOptions={showRenewalOptions}
       isPremiumUser={isPremiumUser}
-      orgData={orgData}
-      userRole={userRole}
     />
   )
 }

@@ -7,7 +7,6 @@ import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
-import { roleuser } from '@edulastic/constants'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
   TopBanner,
@@ -40,9 +39,6 @@ const SubscriptionHeader = ({
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
   title,
-  isPartialPremium,
-  orgData,
-  userRole,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -63,8 +59,6 @@ const SubscriptionHeader = ({
 
   const isPartialPremiumUgradedUser =
     ['partial_premium'].includes(subType) && isPremiumUser
-  const { defaultGrades = [], defaultSubjects = [] } = orgData
-  const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
 
   const menu = (
     <Menu>
@@ -143,26 +137,18 @@ const SubscriptionHeader = ({
               </Link>
             </EduButton>
           )}
-          {!showRenewalOptions &&
-            !(
-              ['enterprise'].includes(subType) && roleuser.TEACHER !== userRole
-            ) &&
-            !(
-              ['enterprise'].includes(subType) &&
-              roleuser.TEACHER === userRole &&
-              isGradeSubjectSelected
-            ) && (
-              <Dropdown
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                overlay={menu}
-                placement="bottomRight"
-                arrow
-              >
-                <EduButton data-cy="upgradeButton" isBlue height="24px">
-                  Upgrade
-                </EduButton>
-              </Dropdown>
-            )}
+          {!showRenewalOptions && !['enterprise'].includes(subType) && (
+            <Dropdown
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              overlay={menu}
+              placement="bottomRight"
+              arrow
+            >
+              <EduButton data-cy="upgradeButton" isBlue height="24px">
+                Upgrade
+              </EduButton>
+            </Dropdown>
+          )}
           {showRenewalOptions && (
             <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription

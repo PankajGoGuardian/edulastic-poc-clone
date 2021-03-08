@@ -10,7 +10,6 @@ import {
   getUserRole,
   getUserIdSelector,
   getUserFeatures,
-  getOrgDataSelector,
 } from '../../src/selectors/user'
 import {
   getSubscriptionSelector,
@@ -71,7 +70,6 @@ const ManageSubscriptionContainer = ({
   columns,
   userFeature,
   licenseOwnerId,
-  orgData,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
@@ -192,8 +190,6 @@ const ManageSubscriptionContainer = ({
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           showRenewalOptions={showRenewalOptions}
           isPremiumUser={isPremiumUser}
-          userRole={userRole}
-          orgData={orgData}
         />
       )}
 
@@ -281,7 +277,6 @@ const enhance = compose(
       isSubscriptionExpired: getIsSubscriptionExpired(state),
       columns: getColumnsSelector(state),
       userFeature: getUserFeatures(state),
-      orgData: getOrgDataSelector(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

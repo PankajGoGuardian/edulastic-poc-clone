@@ -290,7 +290,7 @@ class SideMenu extends Component {
               <MenuFooter>
                 <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
                   <a
-                    href="https://edulastic.zendesk.com/hc/en-us"
+                    href="https://edulastic.com/help-center/"
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{

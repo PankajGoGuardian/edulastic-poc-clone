@@ -197,7 +197,6 @@ class Item extends Component {
         tags = [],
         _source = {},
         thumbnail,
-        status,
         _id: testId,
         collections = [],
         summary = {},
@@ -219,7 +218,7 @@ class Item extends Component {
       duplicatePlayList,
       isPreviewModalVisible,
     } = this.props
-    const { analytics = [] } = isPlaylist ? _source : item
+    const { status, analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
     const usage = analytics?.[0]?.usage || '0'
     const { isOpenModal, currentTestId, isDeleteModalOpen } = this.state

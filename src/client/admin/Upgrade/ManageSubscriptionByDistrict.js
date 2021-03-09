@@ -141,7 +141,6 @@ const ManageDistrictPrimaryForm = Form.create({
                 isUpdate: true,
                 subscriptionId,
               })
-              delete rest.subType
             }
             upgradeDistrictSubscriptionAction({
               districtId,

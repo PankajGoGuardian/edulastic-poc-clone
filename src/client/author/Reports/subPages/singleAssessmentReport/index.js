@@ -229,7 +229,7 @@ const SingleAssessmentReportContainer = (props) => {
     ? demographics &&
       demographics.map((item) => (
         <Col span={6} key={item.key}>
-          <FilterLabel>{item.title}</FilterLabel>
+          <FilterLabel data-cy={item.key}>{item.title}</FilterLabel>
           <ControlDropDown
             selectCB={updateCB}
             data={item.data}

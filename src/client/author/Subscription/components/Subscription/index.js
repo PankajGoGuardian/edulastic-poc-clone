@@ -333,7 +333,10 @@ const Subscription = (props) => {
     itemBankSubscriptions &&
     itemBankSubscriptions?.length > 0 &&
     itemBankSubscriptions?.filter((x) => {
-      return x.itemBankId === productData?.itemBankId && x.isTrial
+      return (
+        x.itemBankId ===
+          currentItemBank?.config?.subscriptionData?.itemBankId && x.isTrial
+      )
     })?.length > 0
 
   const setShowSubscriptionAddonModalWithId = () => {
@@ -461,7 +464,7 @@ const Subscription = (props) => {
           showTrialConfirmationMessage={showTrialConfirmationMessage}
           isTrialItemBank={isTrialItemBank}
           isBlocked={currentItemBank?.isBlocked}
-          title={productData?.productName}
+          title={currentItemBank?.config?.subscriptionData?.productName}
           handleGoToCollectionClick={handleGoToCollectionClick}
           history={history}
         />

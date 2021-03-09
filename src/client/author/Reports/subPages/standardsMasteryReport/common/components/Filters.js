@@ -474,6 +474,7 @@ const StandardsMasteryReportFilters = ({
                         <>
                           <Col span={6}>
                             <SchoolAutoComplete
+                              dataCy="schools"
                               selectedSchoolIds={
                                 filters.schoolIds
                                   ? filters.schoolIds.split(',')
@@ -486,6 +487,7 @@ const StandardsMasteryReportFilters = ({
                           </Col>
                           <Col span={6}>
                             <TeacherAutoComplete
+                              dataCy="teachers"
                               termId={filters.termId}
                               school={filters.schoolIds}
                               selectedTeacherIds={
@@ -539,6 +541,7 @@ const StandardsMasteryReportFilters = ({
                       </Col>
                       <Col span={6}>
                         <ClassAutoComplete
+                          dataCy="classes"
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
@@ -557,6 +560,7 @@ const StandardsMasteryReportFilters = ({
                       </Col>
                       <Col span={6}>
                         <GroupsAutoComplete
+                          dataCy="groups"
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}

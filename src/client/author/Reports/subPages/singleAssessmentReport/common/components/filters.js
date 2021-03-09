@@ -516,6 +516,7 @@ const SingleAssessmentReportFilters = ({
                         <>
                           <Col span={6}>
                             <SchoolAutoComplete
+                              dataCy="schools"
                               selectedSchoolIds={
                                 filters.schoolIds
                                   ? filters.schoolIds.split(',')
@@ -528,6 +529,7 @@ const SingleAssessmentReportFilters = ({
                           </Col>
                           <Col span={6}>
                             <TeacherAutoComplete
+                              dataCy="teachers"
                               termId={filters.termId}
                               school={filters.schoolIds}
                               testId={testId}
@@ -582,6 +584,7 @@ const SingleAssessmentReportFilters = ({
                       </Col>
                       <Col span={6}>
                         <ClassAutoComplete
+                          dataCy="classes"
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
@@ -607,6 +610,7 @@ const SingleAssessmentReportFilters = ({
                       </Col>
                       <Col span={6}>
                         <GroupsAutoComplete
+                          dataCy="groups"
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}

@@ -315,7 +315,9 @@ const MultipleAssessmentReportFilters = ({
                   >
                     <Row type="flex" gutter={[5, 10]}>
                       <Col span={6}>
-                        <FilterLabel>School Year</FilterLabel>
+                        <FilterLabel data-cy="schoolYear">
+                          School Year
+                        </FilterLabel>
                         <ControlDropDown
                           by={filters.termId}
                           selectCB={(e, selected) =>
@@ -327,7 +329,9 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel>Test Grade</FilterLabel>
+                        <FilterLabel data-cy="testGrade">
+                          Test Grade
+                        </FilterLabel>
                         <ControlDropDown
                           prefix="Grade"
                           className="custom-1-scrollbar"
@@ -340,7 +344,9 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel>Test Subject</FilterLabel>
+                        <FilterLabel data-cy="testSubject">
+                          Test Subject
+                        </FilterLabel>
                         <ControlDropDown
                           by={filters.subject}
                           selectCB={(e, selected) =>
@@ -353,6 +359,7 @@ const MultipleAssessmentReportFilters = ({
                       </Col>
                       <Col span={6}>
                         <MultiSelectDropdown
+                          dataCy="testTypes"
                           label="Test Type"
                           el={assessmentTypesRef}
                           onChange={(e) => {
@@ -392,6 +399,7 @@ const MultipleAssessmentReportFilters = ({
                       {prevMARFilterData && (
                         <Col span={6}>
                           <AssessmentsAutoComplete
+                            dataCy="tests"
                             firstLoad={firstLoad}
                             termId={filters.termId}
                             grade={filters.grade !== 'All' && filters.grade}
@@ -417,6 +425,7 @@ const MultipleAssessmentReportFilters = ({
                         <>
                           <Col span={6}>
                             <SchoolAutoComplete
+                              dataCy="schools"
                               selectedSchoolIds={
                                 filters.schoolIds
                                   ? filters.schoolIds.split(',')
@@ -429,6 +438,7 @@ const MultipleAssessmentReportFilters = ({
                           </Col>
                           <Col span={6}>
                             <TeacherAutoComplete
+                              dataCy="teachers"
                               termId={filters.termId}
                               school={filters.schoolIds}
                               selectedTeacherIds={
@@ -444,7 +454,9 @@ const MultipleAssessmentReportFilters = ({
                         </>
                       )}
                       <Col span={6}>
-                        <FilterLabel>Class Grade</FilterLabel>
+                        <FilterLabel data-cy="classGrade">
+                          Class Grade
+                        </FilterLabel>
                         <ControlDropDown
                           prefix="Grade"
                           className="custom-1-scrollbar"
@@ -457,7 +469,9 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel>Class Subject</FilterLabel>
+                        <FilterLabel data-cy="classSubject">
+                          Class Subject
+                        </FilterLabel>
                         <ControlDropDown
                           by={filters.studentSubject}
                           selectCB={(e, selected) =>
@@ -469,7 +483,7 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel>Course</FilterLabel>
+                        <FilterLabel data-cy="course">Course</FilterLabel>
                         <CourseAutoComplete
                           selectedCourseId={filters.studentCourseId}
                           selectCB={(e) =>
@@ -479,6 +493,7 @@ const MultipleAssessmentReportFilters = ({
                       </Col>
                       <Col span={6}>
                         <ClassAutoComplete
+                          dataCy="classes"
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
@@ -504,6 +519,7 @@ const MultipleAssessmentReportFilters = ({
                       </Col>
                       <Col span={6}>
                         <GroupsAutoComplete
+                          dataCy="groups"
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
@@ -543,7 +559,9 @@ const MultipleAssessmentReportFilters = ({
                     >
                       <Row type="flex" gutter={[5, 10]}>
                         <Col span={6}>
-                          <FilterLabel>Performance Band</FilterLabel>
+                          <FilterLabel data-cy="performanceBand">
+                            Performance Band
+                          </FilterLabel>
                           <ControlDropDown
                             by={{ key: filters.profileId }}
                             selectCB={(e, selected) =>

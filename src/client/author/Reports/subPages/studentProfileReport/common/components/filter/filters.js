@@ -355,7 +355,7 @@ const StudentProfileReportFilters = ({
             style={{ padding: '10px 5px 0 5px' }}
           >
             <Col span={6}>
-              <FilterLabel>School Year</FilterLabel>
+              <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
               <ControlDropDown
                 by={filters.termId}
                 selectCB={(e, selected) =>
@@ -368,6 +368,7 @@ const StudentProfileReportFilters = ({
             </Col>
             <Col span={6}>
               <CourseAutoComplete
+                dataCy="courses"
                 selectedCourseIds={
                   filters.courseIds ? filters.courseIds.split(',') : []
                 }
@@ -375,7 +376,7 @@ const StudentProfileReportFilters = ({
               />
             </Col>
             <Col span={6}>
-              <FilterLabel>Class Grade</FilterLabel>
+              <FilterLabel data-cy="classGrade">Class Grade</FilterLabel>
               <ControlDropDown
                 by={filters.grade}
                 selectCB={(e, selected) =>
@@ -387,7 +388,7 @@ const StudentProfileReportFilters = ({
               />
             </Col>
             <Col span={6}>
-              <FilterLabel>Class Subject</FilterLabel>
+              <FilterLabel data-cy="classSubject">Class Subject</FilterLabel>
               <ControlDropDown
                 by={filters.subject}
                 selectCB={(e, selected) =>
@@ -400,6 +401,7 @@ const StudentProfileReportFilters = ({
             </Col>
             <Col span={6}>
               <ClassAutoComplete
+                dataCy="classes"
                 termId={filters.termId}
                 selectedCourseIds={filters.courseIds}
                 selectedGrade={filters.grade !== 'All' && filters.grade}
@@ -411,7 +413,7 @@ const StudentProfileReportFilters = ({
               />
             </Col>
             <Col span={6}>
-              <FilterLabel>Student</FilterLabel>
+              <FilterLabel data-cy="student">Student</FilterLabel>
               <StudentAutoComplete
                 termId={filters.termId || selectedTerm.key}
                 selectedCourseIds={filters.courseIds}
@@ -424,7 +426,9 @@ const StudentProfileReportFilters = ({
             </Col>
             {performanceBandRequired && (
               <Col span={6}>
-                <FilterLabel>Performance Band</FilterLabel>
+                <FilterLabel data-cy="performanceBand">
+                  Performance Band
+                </FilterLabel>
                 <ControlDropDown
                   by={selectedPerformanceBand}
                   selectCB={(e, selected) =>
@@ -438,7 +442,9 @@ const StudentProfileReportFilters = ({
             )}
             {standardProficiencyRequired && (
               <Col span={6}>
-                <FilterLabel>Standard Proficiency</FilterLabel>
+                <FilterLabel data-cy="standardProficiency">
+                  Standard Proficiency
+                </FilterLabel>
                 <ControlDropDown
                   by={selectedStandardProficiency}
                   selectCB={(e, selected) =>

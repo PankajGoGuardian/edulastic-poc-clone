@@ -93,8 +93,6 @@ const PurchaseFlowModals = (props) => {
   }, [])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
-    const DEFAULT_ITEMBANK_PRICE = 100
-    const DEFAULT_PERIOD = 365
     const boughtPremiumBankIds = itemBankSubscriptions
       .filter((x) => !x.isTrial)
       .map((x) => x.itemBankId)
@@ -112,20 +110,20 @@ const PurchaseFlowModals = (props) => {
       ) {
         return {
           ...product,
-          period: DEFAULT_PERIOD,
-          price: DEFAULT_ITEMBANK_PRICE,
+          period: product.period,
+          price: product.price,
         }
       }
       let currentDate = new Date()
       const itemBankSubEndDate = new Date(
-        currentDate.setDate(currentDate.getDate() + DEFAULT_PERIOD)
+        currentDate.setDate(currentDate.getDate() + product.period)
       ).valueOf()
       const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
       currentDate = Date.now()
       const amountFactor =
         (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
-      const dynamicPrice = Math.round(amountFactor * DEFAULT_ITEMBANK_PRICE)
-      const dynamicPeriodInDays = Math.round(amountFactor * DEFAULT_PERIOD)
+      const dynamicPrice = Math.round(amountFactor * product.price)
+      const dynamicPeriodInDays = Math.round(amountFactor * product.period)
 
       return {
         ...product,

@@ -183,6 +183,7 @@ const Userlist = ({
 
     return (
       <CheckboxLabel
+        data-cy={`${key}Checkbox`}
         onChange={onChange}
         checked={isChecked}
         disabled={disabled}
@@ -323,6 +324,7 @@ const Userlist = ({
       {saveButtonState !== SAVE_BUTTON_STATES.NOT_VISIBLE && (
         <Col span={2} offset={22}>
           <SaveButton
+            data-cy="saveButton"
             disabled={saveButtonState === SAVE_BUTTON_STATES.DISABLED}
             onClick={onSaveHandler}
           >

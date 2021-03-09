@@ -105,9 +105,9 @@ const AssessmentAutoComplete = ({
   // build dropdown data
   const dropdownData = testList.map((item) => ({
     key: item._id,
-    title: `${item.title} (ID: ${
-      item._id?.substring(item._id.length - 5) || ''
-    })`,
+    title: `${
+      item.title.length > 25 ? `${item.title.slice(0, 22)}...` : item.title
+    } (ID: ${item._id?.substring(item._id.length - 5) || ''})`,
   }))
 
   const setAssessments = (assessments) => {

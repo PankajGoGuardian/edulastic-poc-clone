@@ -32,6 +32,7 @@ const SubscriptionHeader = ({
   isPaidPremium,
   hasAllPremiumProductAccess,
   isPremium,
+  isPremiumUser,
 }) => {
   const handlePurchaseFlow = () => {
     setShowSubscriptionAddonModal(true)
@@ -47,6 +48,9 @@ const SubscriptionHeader = ({
     window.open('https://edulastic.com/teacher-premium/', '_blank')
   }
 
+  const isPartialPremiumUgradedUser =
+    ['partial_premium'].includes(subType) && isPremiumUser
+
   const menu = (
     <Menu>
       <Menu.Item>
@@ -61,26 +65,30 @@ const SubscriptionHeader = ({
           />
         )}
       </Menu.Item>
-      <Menu.Item>
-        <AuthorCompleteSignupButton
-          renderButton={(handleClick) => (
-            <span data-cy="multipleSubscription" onClick={handleClick}>
-              MULTIPLE SUBSCRIPTIONS
-            </span>
-          )}
-          onClick={multipleSubscriptionClick}
-        />
-      </Menu.Item>
-      <Menu.Item>
-        <AuthorCompleteSignupButton
-          renderButton={(handleClick) => (
-            <span data-cy="enterpriseSubscription" onClick={handleClick}>
-              ENTERPRISE SUBSCRIPTION
-            </span>
-          )}
-          onClick={handleEnterpriseClick}
-        />
-      </Menu.Item>
+      {!isPartialPremiumUgradedUser && (
+        <Menu.Item>
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <span data-cy="multipleSubscription" onClick={handleClick}>
+                MULTIPLE SUBSCRIPTIONS
+              </span>
+            )}
+            onClick={multipleSubscriptionClick}
+          />
+        </Menu.Item>
+      )}
+      {!isPartialPremiumUgradedUser && (
+        <Menu.Item>
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <span data-cy="enterpriseSubscription" onClick={handleClick}>
+                ENTERPRISE SUBSCRIPTION
+              </span>
+            )}
+            onClick={handleEnterpriseClick}
+          />
+        </Menu.Item>
+      )}
     </Menu>
   )
 
@@ -102,7 +110,7 @@ const SubscriptionHeader = ({
           <PlanText data-cy="currentPlan" className="free">
             {isSubscribed && subType && licenseExpiryDate
               ? `${
-                  subType === 'partial_premium'
+                  isPartialPremiumUgradedUser
                     ? 'Enterprise'
                     : capitalize(subType.replace(/_/g, ' '))
                 } Version`
@@ -130,14 +138,14 @@ const SubscriptionHeader = ({
       </HeaderSubscription>
       <BannerContent>
         <h3>
-          {isPremium ? (
+          {isPremium || isPartialPremiumUgradedUser ? (
             <span>You are on the Premium Plan</span>
           ) : (
             <span>There&apos;s a lot more in premium!</span>
           )}
         </h3>
         <p>
-          {isPremium
+          {isPremium || isPartialPremiumUgradedUser
             ? `This plan expires on ${licenseExpiryDate}`
             : `Upgrade to premium for additional features, including:`}
         </p>

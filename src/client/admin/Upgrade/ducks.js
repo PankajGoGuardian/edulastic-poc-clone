@@ -258,6 +258,7 @@ const {
   searchUsersByEmailsOrIds: searchUsersByEmailsOrIdsApi,
   searchSchoolsById: searchSchoolsByIdApi,
   saveOrgPermissionsApi,
+  updateSubscriptionApi,
 } = adminApi
 
 // SAGAS
@@ -274,14 +275,30 @@ function* getDistrictData({ payload }) {
 
 function* upgradeDistrict({ payload }) {
   try {
-    const { result } = yield call(manageSubscriptionApi, payload)
-    if (result.success) {
-      notification({ type: 'success', msg: result.message })
-      yield put(
-        manageSubscriptionsBydistrict.actions.subscribeSuccess(
-          result.subscriptionResult[0]
+    const { isUpdate, subscriptionId, ...rest } = payload
+    if (isUpdate) {
+      const result = yield call(updateSubscriptionApi, {
+        data: rest,
+        subscriptionId,
+      })
+      if (result.success) {
+        notification({ type: 'success', msg: result.message })
+        yield put(
+          manageSubscriptionsBydistrict.actions.subscribeSuccess(
+            result.subscription
+          )
         )
-      )
+      }
+    } else {
+      const { result } = yield call(manageSubscriptionApi, rest)
+      if (result.success) {
+        notification({ type: 'success', msg: result.message })
+        yield put(
+          manageSubscriptionsBydistrict.actions.subscribeSuccess(
+            result.subscriptionResult[0]
+          )
+        )
+      }
     }
   } catch (err) {
     console.error(err)

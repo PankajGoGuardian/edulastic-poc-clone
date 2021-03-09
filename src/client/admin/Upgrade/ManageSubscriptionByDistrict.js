@@ -89,6 +89,7 @@ const ManageDistrictPrimaryForm = Form.create({
       customerSuccessManager,
       opportunityId,
       licenceCount,
+      _id: subscriptionId,
     } = subscription
     const { subType: currentSubType = 'free' } = getFieldsValue(['subType'])
 
@@ -134,6 +135,14 @@ const ManageDistrictPrimaryForm = Form.create({
       validateFields(
         (err, { subStartDate: startDate, subEndDate: endDate, ...rest }) => {
           if (!err) {
+            if (currentSubType === 'free' && subType !== 'free') {
+              Object.assign(rest, {
+                status: 0,
+                isUpdate: true,
+                subscriptionId,
+              })
+              delete rest.subType
+            }
             upgradeDistrictSubscriptionAction({
               districtId,
               subStartDate: startDate.valueOf(),

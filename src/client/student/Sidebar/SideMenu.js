@@ -18,6 +18,7 @@ import {
   IconSignoutHighlight,
   IconPlaylist,
 } from '@edulastic/icons'
+import { helpCenterUrl } from '@edulastic/constants/const/common'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import {
   white,
@@ -290,7 +291,7 @@ class SideMenu extends Component {
               <MenuFooter>
                 <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
                   <a
-                    href="https://edulastic.zendesk.com/hc/en-us"
+                    href={helpCenterUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{

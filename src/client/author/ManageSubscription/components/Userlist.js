@@ -50,6 +50,7 @@ const Userlist = ({
   dynamicColumns = [],
   licenseOwnerId,
   subType,
+  isEdulasticAdminView,
   saveButtonState,
   setSaveButtonState,
 }) => {
@@ -291,6 +292,11 @@ const Userlist = ({
       apiData.licensesPermission = licensesPermission
     }
     if (Object.keys(manageLicensePermission).length) {
+      if (isEdulasticAdminView) {
+        Object.assign(manageLicensePermission, {
+          licenseIds: subsLicenses.map((x) => x.licenseId),
+        })
+      }
       apiData.manageLicensePermission = manageLicensePermission
     }
     const updatingUserIds = Object.values(licensesPermission).flatMap((x) =>

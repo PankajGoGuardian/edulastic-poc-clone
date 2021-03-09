@@ -6,6 +6,7 @@ import { all, call, put, select } from 'redux-saga/effects'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { slice } from '../Subscription/ducks'
+import { fetchUserAction } from '../../student/Login/ducks'
 
 // selectors
 const manageSubscriptionSelector = (state) => state.manageSubscription
@@ -33,6 +34,10 @@ export const getLoadingStateSelector = createSelector(
   manageSubscriptionSelector,
   (state) => state.loading
 )
+export const getSaveButtonState = createSelector(
+  manageSubscriptionSelector,
+  (state) => state.saveButtonState
+)
 
 // action types
 export const SET_LICENSES_DATA =
@@ -58,6 +63,8 @@ const UPGRADE_USERS_SUBSCRIPTIONS_ERROR =
 
 const BULK_EDIT_USERS_PERMISSION_REQUEST =
   '[users] bulk edit users permission request'
+
+const UPDATE_SAVE_BUTTON_STATE = '[users] set save button state'
 
 // action creators
 export const addAndUpgradeUsersAction = createAction(ADD_BULK_USERS_REQUEST)
@@ -91,6 +98,14 @@ export const bulkEditUsersPermissionAction = createAction(
   BULK_EDIT_USERS_PERMISSION_REQUEST
 )
 
+export const updateSaveButtonState = createAction(UPDATE_SAVE_BUTTON_STATE)
+
+export const SAVE_BUTTON_STATES = {
+  NOT_VISIBLE: 0,
+  VISIBLE: 1,
+  DISABLED: 2,
+}
+
 // initial State
 const initialState = {
   loading: false,
@@ -104,6 +119,7 @@ const initialState = {
   licenses: [],
   users: [],
   columns: [],
+  saveButtonState: SAVE_BUTTON_STATES.NOT_VISIBLE,
 }
 
 const setLicensesData = (state, { payload }) => {
@@ -155,6 +171,9 @@ export const reducer = createReducer(initialState, {
   },
   [UPGRADE_USERS_SUBSCRIPTIONS_ERROR]: (state) => {
     state.showUpgradeUsersSuccessModal = false
+  },
+  [UPDATE_SAVE_BUTTON_STATE]: (state, { payload }) => {
+    state.saveButtonState = payload
   },
 })
 
@@ -278,12 +297,14 @@ function* bulkEditUsersPermissionSaga({ payload }) {
     )
     if (fetchOrgSubscriptions) {
       yield put(slice.actions.fetchUserSubscriptionStatus({ background: true }))
+      yield put(fetchUserAction({ background: true }))
     }
     notification({
       type: 'success',
       msg: `Successfully updated.`,
     })
   } catch (err) {
+    yield put(updateSaveButtonState(SAVE_BUTTON_STATES.VISIBLE))
     captureSentryException(err)
     notification({
       type: 'error',

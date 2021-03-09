@@ -14,6 +14,7 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
+import { SAVE_BUTTON_STATES } from '../ducks'
 import { StyledAntdTable, SaveButton } from './styled'
 
 const getClubbedValue = (prev = [], curr) => prev.concat(curr)
@@ -49,15 +50,14 @@ const Userlist = ({
   dynamicColumns = [],
   licenseOwnerId,
   subType,
+  saveButtonState,
+  setSaveButtonState,
 }) => {
-  const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
-  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
   const [currentUsers, setCurrentUsers] = useState(users)
 
   useEffect(() => {
     setCurrentUsers(users)
-    setIsSaveButtonVisible(false)
-    setIsSaveButtonDisabled(false)
+    setSaveButtonState(SAVE_BUTTON_STATES.NOT_VISIBLE)
   }, [users])
 
   const licenseIdsbyType = useMemo(
@@ -146,7 +146,11 @@ const Userlist = ({
       newUsers.map((u) => omit(u, fieldsToOmit))
     )
     setCurrentUsers(newUsers)
-    setIsSaveButtonVisible(stringInitialUsers !== stringNewUsers)
+    /**
+     * convert to number from bool (hidden: 0, visible: 1)
+     * not setting disabled here
+     */
+    setSaveButtonState(+(stringInitialUsers !== stringNewUsers))
   }
 
   const getCheckbox = (record, key) => {
@@ -248,14 +252,12 @@ const Userlist = ({
       return returnObject
     })
 
-    setIsSaveButtonDisabled(true)
+    setSaveButtonState(SAVE_BUTTON_STATES.DISABLED)
     let licensesPermission = {}
     let manageLicensePermission = {}
-    let rowUserId = ''
     const usersById = keyBy(users, 'userId')
     for (const permissions of changes) {
       const { hasManageLicense, userId } = permissions
-      rowUserId = userId
 
       for (const type of Object.keys(
         omit(permissions, [
@@ -291,8 +293,10 @@ const Userlist = ({
     if (Object.keys(manageLicensePermission).length) {
       apiData.manageLicensePermission = manageLicensePermission
     }
-
-    const fetchOrgSubscriptions = rowUserId === currentUserId
+    const updatingUserIds = Object.values(licensesPermission).flatMap((x) =>
+      (x.userIdsToAdd || []).concat(x.userIdsToRemove || [])
+    )
+    const fetchOrgSubscriptions = updatingUserIds.includes(currentUserId)
     bulkEditUsersPermission({
       apiData,
       licenseOwnerId,
@@ -310,9 +314,12 @@ const Userlist = ({
           pagination={false}
         />
       </Col>
-      {isSaveButtonVisible && (
+      {saveButtonState !== SAVE_BUTTON_STATES.NOT_VISIBLE && (
         <Col span={2} offset={22}>
-          <SaveButton disabled={isSaveButtonDisabled} onClick={onSaveHandler}>
+          <SaveButton
+            disabled={saveButtonState === SAVE_BUTTON_STATES.DISABLED}
+            onClick={onSaveHandler}
+          >
             Save
           </SaveButton>
         </Col>

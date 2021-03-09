@@ -597,9 +597,10 @@ class Container extends Component {
             <BackLink onClick={history.goBack}>Back to Item List</BackLink>
           )}
           <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-            {(allowedToSelectMultiLanguage &&
-              useLanguageFeatureQn.includes(questionType)) ||
-              (isAuthorOrCurator && <LanguageSelector />)}
+            {useLanguageFeatureQn.includes(questionType) &&
+              (allowedToSelectMultiLanguage || isAuthorOrCurator) && (
+                <LanguageSelector />
+              )}
             {view !== 'preview' && view !== 'auditTrail' && (
               <EduButton
                 isGhost

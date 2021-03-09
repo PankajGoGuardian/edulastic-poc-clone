@@ -355,8 +355,9 @@ class AssessmentPlayerDefault extends React.Component {
       hidePause,
       blockNavigationToAnsweredQuestions,
       uploadToS3,
-      user: { firstName = '', lastName = '' },
+      user = {},
     } = this.props
+    const { firstName = '', lastName = '' } = user
     const { settings } = this.props
     const {
       testItemState,

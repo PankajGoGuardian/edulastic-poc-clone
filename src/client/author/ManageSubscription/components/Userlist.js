@@ -63,7 +63,11 @@ const Userlist = ({
   const licenseIdsbyType = useMemo(
     () =>
       subsLicenses.reduce(
-        (a, c) => ({ ...a, [c.productType]: c.licenseId }),
+        (a, c) => ({
+          ...a,
+          // Picking the first license of its type as per current requirement
+          [c.productType]: a[c.productType] ? a[c.productType] : c.licenseId,
+        }),
         {}
       ),
     [subsLicenses]
@@ -124,8 +128,23 @@ const Userlist = ({
       }
       return user
     })
-    const stringInitialUsers = JSON.stringify(users)
-    const stringNewUsers = JSON.stringify(newUsers)
+    // Pick only required fields to compare
+    const fieldsToOmit = [
+      'institutionIds',
+      'role',
+      'username',
+      'userId',
+      '_id',
+      'districtId',
+      'email',
+      'expiresOn',
+    ]
+    const stringInitialUsers = JSON.stringify(
+      users.map((u) => omit(u, fieldsToOmit))
+    )
+    const stringNewUsers = JSON.stringify(
+      newUsers.map((u) => omit(u, fieldsToOmit))
+    )
     setCurrentUsers(newUsers)
     setIsSaveButtonVisible(stringInitialUsers !== stringNewUsers)
   }
@@ -233,6 +252,7 @@ const Userlist = ({
     let licensesPermission = {}
     let manageLicensePermission = {}
     let rowUserId = ''
+    const usersById = keyBy(users, 'userId')
     for (const permissions of changes) {
       const { hasManageLicense, userId } = permissions
       rowUserId = userId
@@ -251,7 +271,7 @@ const Userlist = ({
             permissions[type],
             userId,
             licensesPermission,
-            licenseIdsbyType[type]
+            permissions[type] ? licenseIdsbyType[type] : usersById[userId][type]
           )
         }
       }

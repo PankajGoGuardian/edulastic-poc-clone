@@ -364,13 +364,17 @@ const Sidebar = ({
                 )}
               </SummaryDiv>
             </Col>
-            {windowWidth > IPAD_LANDSCAPE_WIDTH && (
-              <PlayListDescription
-                onChangeField={onChangeField}
-                description={description}
-              />
-            )}
           </Row>
+          {windowWidth > IPAD_LANDSCAPE_WIDTH && (
+            <Row>
+              <Col xs={24}>
+                <PlayListDescription
+                  onChangeField={onChangeField}
+                  description={description}
+                />
+              </Col>
+            </Row>
+          )}
         </Col>
       </Row>
     </Block>

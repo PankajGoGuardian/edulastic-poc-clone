@@ -580,7 +580,7 @@ class ShareModal extends React.Component {
                       key={item}
                       disabled={
                         (!isPublished && item !== sharedKeysObj.INDIVIDUAL) ||
-                        hasPremiumQuestion ||
+                        (hasPremiumQuestion && item === sharedKeysObj.PUBLIC) ||
                         features.isCurator ||
                         features.isPublisherAuthor ||
                         !hasPlaylistEditAccess ||

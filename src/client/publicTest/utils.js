@@ -182,12 +182,13 @@ export const showTestInfoModal = ({
     <FlexContainer flexDirection="column">
       {multiLanguageEnabled && (
         <>
-          <p style={{ margin: '10px 0' }}>
+          <p>
             This test is offered in multiple languages. Please select your
             preferred language. You can change the preferred language anytime
             during the attempt
           </p>
-          <p style={{ margin: '10px 0' }}>
+          <p style={{ marginTop: '10px' }}>PREFERRED LANGUAGE</p>
+          <p>
             <Select
               getPopupContainer={(e) => e.parentElement}
               defaultValue={languagePreference || ''}
@@ -204,9 +205,14 @@ export const showTestInfoModal = ({
           </p>
         </>
       )}
-      {timedAssignment && timedContent}
+      {timedAssignment && (
+        <div>
+          <p style={{ marginTop: '10px' }}>TIME LIMIT</p>
+          <p>{timedContent}</p>
+        </div>
+      )}
       {hasInstruction && instruction && (
-        <p style={{ margin: '10px 0' }}>
+        <p>
           <MathFormulaDisplay
             dangerouslySetInnerHTML={{ __html: instruction }}
           />

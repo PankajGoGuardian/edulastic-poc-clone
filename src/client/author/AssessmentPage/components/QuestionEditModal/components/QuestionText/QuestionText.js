@@ -103,7 +103,7 @@ export default class QuestionText extends React.Component {
             score,
             matchingRule: allow,
           },
-          altResponses,
+          altResponses: newAltResponses,
         },
       }
 
@@ -129,7 +129,7 @@ export default class QuestionText extends React.Component {
             score,
             matchingRule: allow,
           },
-          altResponses,
+          altResponses: newAltResponses,
         },
       }
       onUpdate(data)
@@ -156,7 +156,7 @@ export default class QuestionText extends React.Component {
             matchCase: checked,
             matchingRule: allow,
           },
-          altResponses,
+          altResponses: newAltResponses,
         },
       }
       onUpdate(data)
@@ -217,7 +217,7 @@ export default class QuestionText extends React.Component {
             score,
             matchingRule: allow,
           },
-          altResponses,
+          altResponses: newAltResponses,
         },
       }
       onUpdate(data)

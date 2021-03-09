@@ -4,6 +4,7 @@ import {
   DatePickerStyled,
   EduButton,
   FieldLabel,
+  notification,
   TextAreaInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
@@ -41,6 +42,18 @@ const SubsLicenseViewModal = ({
       opportunityId,
       notes,
     } = fieldData
+
+    const requiredFields = ['subEndDate', 'customerSuccessManager', 'notes']
+
+    for (const field of requiredFields) {
+      if (!fieldData[field]) {
+        return notification({
+          type: 'warn',
+          msg: `${field} is required!`,
+        })
+      }
+    }
+
     const data = {
       licenseId: licenseIds[0],
       userId,
@@ -51,6 +64,7 @@ const SubsLicenseViewModal = ({
     }
     const payload = omitBy(data, (x) => !x)
     extendTrialEndDate(payload)
+    closeModal()
   }
 
   const footer = (

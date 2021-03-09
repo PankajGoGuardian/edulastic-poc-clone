@@ -9,10 +9,12 @@ const LicenseCountSection = ({
   setShowBuyMoreModal,
   setCurrentItemId,
   isEdulasticAdminView,
+  setSelectedLicenseId,
 }) => {
-  const openBuyMoreModal = (itemId) => {
+  const openBuyMoreModal = (itemId, licenseId) => {
     setShowBuyMoreModal(true)
     setCurrentItemId(itemId)
+    setSelectedLicenseId(licenseId)
   }
 
   const LicenseCountContainer =
@@ -29,7 +31,9 @@ const LicenseCountSection = ({
             isGhost
             height="24px"
             ml="0px"
-            onClick={() => openBuyMoreModal(license.productId)}
+            onClick={() =>
+              openBuyMoreModal(license.productId, license.licenseId)
+            }
             data-cy="buyMoreLicenseButton"
           >
             {isEdulasticAdminView ? 'Add More' : 'Buy More'}

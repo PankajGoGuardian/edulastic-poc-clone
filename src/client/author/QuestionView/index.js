@@ -457,7 +457,9 @@ class QuestionViewContainer extends Component {
             >
               {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
               <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                correct answers
+                {hideCorrectAnswer
+                  ? 'Expand correct answers'
+                  : 'Collapse correct answers'}
               </span>
             </EduButton>
           </StudentButtonWrapper>

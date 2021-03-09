@@ -7,6 +7,7 @@ import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
+import { roleuser } from '@edulastic/constants'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
   TopBanner,
@@ -31,7 +32,7 @@ const SubscriptionHeader = ({
   subEndDate,
   setShowSubscriptionAddonModal,
   hasAllPremiumProductAccess,
-  isPremium,
+  isPremiumUser,
   isBannerVisible,
   setShowMultiplePurchaseModal,
   settingProductData,
@@ -39,7 +40,8 @@ const SubscriptionHeader = ({
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
   title,
-  isPartialPremium,
+  orgData,
+  userRole,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -58,6 +60,11 @@ const SubscriptionHeader = ({
     )
   }
 
+  const isPartialPremiumUgradedUser =
+    ['partial_premium'].includes(subType) && isPremiumUser
+  const { defaultGrades = [], defaultSubjects = [] } = orgData
+  const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
+
   const menu = (
     <Menu>
       <Menu.Item>
@@ -72,7 +79,7 @@ const SubscriptionHeader = ({
           />
         )}
       </Menu.Item>
-      {!isPartialPremium && (
+      {!isPartialPremiumUgradedUser && (
         <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -84,7 +91,7 @@ const SubscriptionHeader = ({
           />
         </Menu.Item>
       )}
-      {!isPartialPremium && (
+      {!isPartialPremiumUgradedUser && (
         <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -115,9 +122,9 @@ const SubscriptionHeader = ({
             YOUR PLAN
           </PlanText>
           <PlanText data-cy="currentPlan" className="free">
-            {isSubscribed && subType && licenseExpiryDate
+            {isSubscribed && subType && licenseExpiryDate && isPremiumUser
               ? `${
-                  subType === 'partial_premium'
+                  isPartialPremiumUgradedUser
                     ? 'Enterprise'
                     : capitalize(subType.replace(/_/g, ' '))
                 } Version`
@@ -135,18 +142,26 @@ const SubscriptionHeader = ({
               </Link>
             </EduButton>
           )}
-          {!showRenewalOptions && !['enterprise'].includes(subType) && (
-            <Dropdown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={menu}
-              placement="bottomRight"
-              arrow
-            >
-              <EduButton data-cy="upgradeButton" isBlue height="24px">
-                Upgrade
-              </EduButton>
-            </Dropdown>
-          )}
+          {!showRenewalOptions &&
+            !(
+              ['enterprise'].includes(subType) && roleuser.TEACHER !== userRole
+            ) &&
+            !(
+              ['enterprise'].includes(subType) &&
+              roleuser.TEACHER === userRole &&
+              isGradeSubjectSelected
+            ) && (
+              <Dropdown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={menu}
+                placement="bottomRight"
+                arrow
+              >
+                <EduButton data-cy="upgradeButton" isBlue height="24px">
+                  Upgrade
+                </EduButton>
+              </Dropdown>
+            )}
           {showRenewalOptions && (
             <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription
@@ -157,14 +172,14 @@ const SubscriptionHeader = ({
       {isBannerVisible && (
         <BannerContent>
           <h3>
-            {isPremium ? (
+            {isPremiumUser ? (
               <span>You are on the Premium Plan</span>
             ) : (
               <span>There&apos;s a lot more in premium!</span>
             )}
           </h3>
           <p>
-            {isPremium
+            {isPremiumUser
               ? `This plan expires on ${licenseExpiryDate}`
               : `Upgrade to premium for additional features, including:`}
           </p>

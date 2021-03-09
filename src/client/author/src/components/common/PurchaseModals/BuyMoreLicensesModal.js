@@ -14,7 +14,15 @@ const BuyMoreLicensesModal = ({
   setSelectedProductIds,
   selectedProductIds,
   currentItemId,
+  totalAmount,
+  isEdulasticAdminView,
 }) => {
+  useEffect(() => {
+    return () => {
+      setSelectedProductIds([])
+      setQuantities({})
+    }
+  }, [])
   useEffect(() => setSelectedProductIds([currentItemId]), [])
 
   const productsToshow = useMemo(
@@ -28,7 +36,7 @@ const BuyMoreLicensesModal = ({
     <EduButton isGhost height="38px" onClick={handleCloseModal}>
       No, Cancel
     </EduButton>,
-    <EduButton height="38px" onClick={handleProceed}>
+    <EduButton height="38px" onClick={handleProceed} disabled={!totalAmount}>
       Yes, Proceed
     </EduButton>,
   ]
@@ -36,7 +44,7 @@ const BuyMoreLicensesModal = ({
   return (
     <SubscriptionAddonModal
       isVisible={isVisible}
-      title="Buy More"
+      title={isEdulasticAdminView ? 'Add More' : 'Buy More'}
       modalDescription={`Please enter the number of ${
         productsToshow?.[0]?.name || ''
       } license you need to buy.`}

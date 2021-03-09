@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { subscriptions as constants, roleuser } from '@edulastic/constants'
-import { groupBy } from 'lodash'
 import loadable from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -11,8 +10,8 @@ import {
   getUserRole,
   getUserIdSelector,
   getUserFeatures,
+  getOrgDataSelector,
 } from '../../src/selectors/user'
-import { getDashboardTilesSelector } from '../../Dashboard/ducks'
 import {
   getSubscriptionSelector,
   getSuccessSelector,
@@ -58,7 +57,6 @@ const ManageSubscriptionContainer = ({
   setAddUsersConfirmationModalVisible,
   showUpgradeUsersSuccessModal = false,
   userDataSource = [],
-  dashboardTiles,
   products,
   itemBankSubscriptions = [],
   t,
@@ -73,8 +71,10 @@ const ManageSubscriptionContainer = ({
   columns,
   userFeature,
   licenseOwnerId,
+  orgData,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
+  const [selectedLicenseId, setSelectedLicenseId] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [dataSource, setDataSource] = useState(users)
   const [searchValue, setSearchValue] = useState()
@@ -85,12 +85,8 @@ const ManageSubscriptionContainer = ({
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
-  const [productData, setProductData] = useState({})
 
   useEffect(() => setDataSource(users), [users])
-
-  const { FEATURED } = groupBy(dashboardTiles, 'type')
-  const featuredBundles = FEATURED || []
 
   const {
     sparkMathProductId,
@@ -116,29 +112,7 @@ const ManageSubscriptionContainer = ({
     }
   }, [products])
 
-  const currentItemBank =
-    featuredBundles &&
-    featuredBundles.find(
-      (bundle) =>
-        bundle?.config?.subscriptionData?.productId === sparkMathProductId
-    )
-
-  const settingProductData = () => {
-    const { config = {} } = currentItemBank
-    const { subscriptionData } = config
-
-    setProductData({
-      productId: subscriptionData.productId,
-      productName: subscriptionData.productName,
-      description: subscriptionData.description,
-      hasTrial: subscriptionData.hasTrial,
-      itemBankId: subscriptionData.itemBankId,
-    })
-  }
-
-  const defaultSelectedProductIds = productData.productId
-    ? [productData.productId]
-    : []
+  const defaultSelectedProductIds = []
 
   useEffect(() => {
     fetchMultipleSubscriptions({ licenseOwnerId })
@@ -200,7 +174,7 @@ const ManageSubscriptionContainer = ({
 
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
 
-  const isPartialPremium = userFeature?.premiumGradeSubject?.length
+  const isPremiumUser = userFeature?.premium
 
   if (loading) {
     return <StyledSpin />
@@ -217,9 +191,10 @@ const ManageSubscriptionContainer = ({
           setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
           hasAllPremiumProductAccess={hasAllPremiumProductAccess}
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
-          settingProductData={settingProductData}
           showRenewalOptions={showRenewalOptions}
-          isPartialPremium={isPartialPremium}
+          isPremiumUser={isPremiumUser}
+          userRole={userRole}
+          orgData={orgData}
         />
       )}
 
@@ -229,6 +204,7 @@ const ManageSubscriptionContainer = ({
           setShowBuyMoreModal={setShowBuyMoreModal}
           setCurrentItemId={setCurrentItemId}
           isEdulasticAdminView={isEdulasticAdminView}
+          setSelectedLicenseId={setSelectedLicenseId}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}
@@ -251,15 +227,17 @@ const ManageSubscriptionContainer = ({
         licenseOwnerId={licenseOwnerId}
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        defaultSelectedProductIds={[...defaultSelectedProductIds]}
+        defaultSelectedProductIds={defaultSelectedProductIds}
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
-        setProductData={setProductData}
+        setProductData={() => {}}
         showBuyMoreModal={showBuyMoreModal}
         setShowBuyMoreModal={setShowBuyMoreModal}
         isEdulasticAdminView={isEdulasticAdminView}
         showRenewalOptions={showRenewalOptions}
         currentItemId={currentItemId}
+        selectedLicenseId={selectedLicenseId}
+        setSelectedLicenseId={setSelectedLicenseId}
       />
       {showAddUsersModal && (
         <AddUsersModal
@@ -303,11 +281,11 @@ const enhance = compose(
       userDataSource: getBulkUsersData(state),
       products: getProducts(state),
       itemBankSubscriptions: getItemBankSubscriptions(state),
-      dashboardTiles: getDashboardTilesSelector(state),
       userRole: getUserRole(state),
       isSubscriptionExpired: getIsSubscriptionExpired(state),
       columns: getColumnsSelector(state),
       userFeature: getUserFeatures(state),
+      orgData: getOrgDataSelector(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

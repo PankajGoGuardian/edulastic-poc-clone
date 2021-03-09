@@ -1,5 +1,5 @@
 import { segmentApi } from '@edulastic/api'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
@@ -59,6 +59,8 @@ const PurchaseFlowModals = (props) => {
     showBuyMoreModal,
     setShowBuyMoreModal,
     licenseIds,
+    selectedLicenseId,
+    setSelectedLicenseId,
     isEdulasticAdminView = false,
     handleEdulasticAdminProductLicense,
     showRenewalOptions = false,
@@ -74,12 +76,21 @@ const PurchaseFlowModals = (props) => {
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
 
+  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+  const [selectedProductIds, setSelectedProductIds] = useState(
+    getInitialSelectedProductIds({
+      defaultSelectedProductIds,
+      isPaidPremium,
+      premiumProductId,
+    })
+  )
+
+  const defaultSelectedProductIdsRef = useRef()
+
   useEffect(() => {
     // getSubscription on mount
     fetchUserSubscriptionStatus()
   }, [])
-
-  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const DEFAULT_ITEMBANK_PRICE = 100
@@ -128,22 +139,21 @@ const PurchaseFlowModals = (props) => {
     }
   }, [subEndDate, products])
 
-  const [selectedProductIds, setSelectedProductIds] = useState(
-    getInitialSelectedProductIds({
-      defaultSelectedProductIds,
-      isPaidPremium,
-      premiumProductId,
-    })
-  )
-
   useEffect(() => {
-    setSelectedProductIds(
-      getInitialSelectedProductIds({
-        defaultSelectedProductIds,
-        isPaidPremium,
-        premiumProductId,
-      })
-    )
+    if (
+      defaultSelectedProductIdsRef.current === undefined ||
+      JSON.stringify(defaultSelectedProductIdsRef.current) !==
+        JSON.stringify(defaultSelectedProductIds)
+    ) {
+      setSelectedProductIds(
+        getInitialSelectedProductIds({
+          defaultSelectedProductIds,
+          isPaidPremium,
+          premiumProductId,
+        })
+      )
+      defaultSelectedProductIdsRef.current = [...defaultSelectedProductIds]
+    }
   }, [defaultSelectedProductIds, isPaidPremium, premiumProductId])
 
   const openPaymentServiceModal = () => {
@@ -172,9 +182,12 @@ const PurchaseFlowModals = (props) => {
         ...data,
         productIds: [...productsCart],
         emailIds,
-        licenseIds,
+        licenseIds: selectedLicenseId ? [selectedLicenseId] : licenseIds,
         licenseOwnerId,
       })
+      if (selectedLicenseId) {
+        setSelectedLicenseId(null)
+      }
       if (!isPaymentServiceModalVisible) {
         setProductsCart([])
       }
@@ -204,10 +217,11 @@ const PurchaseFlowModals = (props) => {
         handleEdulasticAdminProductLicense({
           products: productQuantities,
           emailIds,
-          licenseIds,
+          licenseIds: [selectedLicenseId],
           licenseOwnerId,
         })
         handleSubscriptionAddonModalClose()
+        setSelectedLicenseId(null)
         return
       }
       setProductsCart(productQuantities)
@@ -238,6 +252,7 @@ const PurchaseFlowModals = (props) => {
           quantities={quantities}
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
+          totalAmount={totalAmount}
         />
       )}
       {showMultiplePurchaseModal && (
@@ -291,6 +306,8 @@ const PurchaseFlowModals = (props) => {
           quantities={quantities}
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
+          totalAmount={totalAmount}
+          isEdulasticAdminView={isEdulasticAdminView}
         />
       )}
     </>
@@ -301,6 +318,7 @@ PurchaseFlowModals.defaultProps = {
   setShowMultiplePurchaseModal: () => {},
   setShowSubscriptionAddonModal: () => {},
   setShowBuyMoreModal: () => {},
+  setSelectedLicenseId: () => {},
 }
 
 export default compose(

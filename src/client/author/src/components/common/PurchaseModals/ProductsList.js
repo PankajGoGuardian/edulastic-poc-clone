@@ -29,9 +29,6 @@ const ProductsList = ({
   currentItemId,
 }) => {
   const premiumProductId = teacherPremium?.id
-  useEffect(() => {
-    setQuantities({})
-  }, [])
 
   const _totalPrice = useMemo(() => {
     return productsToshow.reduce((a, c) => {
@@ -71,6 +68,15 @@ const ProductsList = ({
       [itemId]: Math.floor(value),
     }
     setQuantities(_quantities)
+  }
+
+  const handleKeyPress = (e) => {
+    const specialCharRegex = new RegExp('[0-9\b\t]+') // allow numbers, backspace and tab
+    const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
+    if (!specialCharRegex.test(pressedKey)) {
+      return e.preventDefault()
+    }
+    return pressedKey
   }
 
   useEffect(
@@ -121,6 +127,7 @@ const ProductsList = ({
                   disabled={
                     isBuyMore ? false : quantities[product.id] === undefined
                   }
+                  onKeyDown={handleKeyPress}
                 />
               </NumberInputWrapper>
             )}

@@ -227,6 +227,7 @@ const ManageSubscriptionContainer = ({
           dynamicColumns={columns}
           licenseOwnerId={licenseOwnerId}
           subType={subType}
+          isEdulasticAdminView={isEdulasticAdminView}
           saveButtonState={saveButtonState}
           setSaveButtonState={setSaveButtonState}
         />

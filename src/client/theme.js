@@ -2662,5 +2662,51 @@ export const themes = {
         questionMarkColor: '#00AD50',
       },
     },
+    quester: {
+      header: {
+        background: '#40505b',
+        logoColor: themeColor,
+        border: '#2B2B2B',
+      },
+      defaultButton: {
+        background: '#EEEEEE',
+        color: '#7A7A7A',
+        active: {
+          background: '#7A7A7A',
+          color: '#ffffff',
+        },
+      },
+      navigationButtons: {
+        background: '#0564CC',
+        color: '#ffffff',
+        fontSize: '11px',
+      },
+      menuItem: {
+        hover: {
+          background: '#0564CC',
+          color: 'white',
+        },
+        activeColor: '#ff9900',
+      },
+      breadcrumb: {
+        background: '#666666',
+        color: 'white',
+        fontSize: '11px',
+      },
+      tools: {
+        color: '#EEEEEE',
+        svgColor: '#7A7A7A',
+        active: {
+          color: '#4A4A4A',
+          svgColor: 'white',
+          background: '#4A4A4A',
+        },
+      },
+      review: {
+        card: {
+          background: 'lightgrey',
+        },
+      },
+    },
   },
 }

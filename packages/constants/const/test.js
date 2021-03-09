@@ -226,6 +226,7 @@ module.exports = {
     cmas: 'Colorado - CMAS',
     casspp: 'California - CASSPP',
     testlet: 'ETS Testlet Player',
+    quester: 'Quester',
   },
   playerSkinValues: {
     edulastic: 'edulastic',
@@ -234,6 +235,7 @@ module.exports = {
     cmas: 'cmas',
     casspp: 'casspp',
     testlet: 'testlet',
+    quester: 'quester',
   },
   languageCodes: {
     ENGLISH: 'en',

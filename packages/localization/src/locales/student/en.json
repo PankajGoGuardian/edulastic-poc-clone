@@ -59,7 +59,11 @@
       "checkanswer": "Check Answer",
       "hint": "hint",
       "bookmark": "bookmark",
-      "review": "review"
+      "review": "review",
+      "answerEliminator": "answer eliminator",
+      "ruler": "ruler",
+      "calculator": "calculator",
+      "scratchPad": "scratch pad"
     }
   },
   "component": {

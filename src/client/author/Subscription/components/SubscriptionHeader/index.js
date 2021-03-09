@@ -39,7 +39,6 @@ const SubscriptionHeader = ({
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
   title,
-  isPartialPremium,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -58,6 +57,9 @@ const SubscriptionHeader = ({
     )
   }
 
+  const isPartialPremiumUgradedUser =
+    ['partial_premium'].includes(subType) && isPremiumUser
+
   const menu = (
     <Menu>
       <Menu.Item>
@@ -72,7 +74,7 @@ const SubscriptionHeader = ({
           />
         )}
       </Menu.Item>
-      {!isPartialPremium && (
+      {!isPartialPremiumUgradedUser && (
         <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -84,7 +86,7 @@ const SubscriptionHeader = ({
           />
         </Menu.Item>
       )}
-      {!isPartialPremium && (
+      {!isPartialPremiumUgradedUser && (
         <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -117,7 +119,7 @@ const SubscriptionHeader = ({
           <PlanText data-cy="currentPlan" className="free">
             {isSubscribed && subType && licenseExpiryDate && isPremiumUser
               ? `${
-                  subType === 'partial_premium'
+                  isPartialPremiumUgradedUser
                     ? 'Enterprise'
                     : capitalize(subType.replace(/_/g, ' '))
                 } Version`
@@ -157,14 +159,14 @@ const SubscriptionHeader = ({
       {isBannerVisible && (
         <BannerContent>
           <h3>
-            {isPremiumUser ? (
+            {isPremiumUser || isPartialPremiumUgradedUser ? (
               <span>You are on the Premium Plan</span>
             ) : (
               <span>There&apos;s a lot more in premium!</span>
             )}
           </h3>
           <p>
-            {isPremiumUser
+            {isPremiumUser || isPartialPremiumUgradedUser
               ? `This plan expires on ${licenseExpiryDate}`
               : `Upgrade to premium for additional features, including:`}
           </p>

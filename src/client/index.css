@@ -1910,10 +1910,6 @@ span.token.active-word {
   box-shadow: 0 0 1px 1px #5eb50066;
 }
 
-.jsx-parser p {
-  margin-bottom: 8px;
-}
-
 .katex .mfrac .frac-line {
   min-height: 1vh !important;
 }
@@ -2570,6 +2566,7 @@ div[class*='_pendo'] button {
   font-weight: 600;
   width: 100%;
   margin-bottom: 10px;
+  padding: 0 !important;
 }
 .ant-modal-confirm-custom-styled .ant-modal-confirm-btns {
   border: none;

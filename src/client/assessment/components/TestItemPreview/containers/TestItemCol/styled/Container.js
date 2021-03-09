@@ -32,7 +32,7 @@ const zoomedStyle = css`
     let header =
       viewComponent === 'practicePlayer'
         ? 180
-        : headerHeight + paddingTopBottom + 8
+        : headerHeight + paddingTopBottom + 12
 
     if (shouldZoom && zoomed) {
       header /= zoomLevel
@@ -57,7 +57,7 @@ export const Container = styled.div`
     props.theme.testItemPreview.itemColBorderColor};
   background-color: ${(props) => props.isStudentAttempt && '#fff'};
   border-radius: ${(props) => props.isStudentAttempt && '8px'};
-  margin-top: ${(props) => props.isStudentAttempt && '8px'};
+  margin-top: ${(props) => props.isStudentAttempt && '12px'};
   overflow: ${(props) =>
     props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
       ? 'auto'

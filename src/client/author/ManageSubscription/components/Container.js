@@ -10,6 +10,7 @@ import {
   getUserRole,
   getUserIdSelector,
   getUserFeatures,
+  getOrgDataSelector,
 } from '../../src/selectors/user'
 import {
   getSubscriptionSelector,
@@ -70,8 +71,10 @@ const ManageSubscriptionContainer = ({
   columns,
   userFeature,
   licenseOwnerId,
+  orgData,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
+  const [selectedLicenseId, setSelectedLicenseId] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [dataSource, setDataSource] = useState(users)
   const [searchValue, setSearchValue] = useState()
@@ -171,7 +174,7 @@ const ManageSubscriptionContainer = ({
 
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
 
-  const isPartialPremium = userFeature?.premiumGradeSubject?.length
+  const isPremiumUser = userFeature?.premium
 
   if (loading) {
     return <StyledSpin />
@@ -189,7 +192,9 @@ const ManageSubscriptionContainer = ({
           hasAllPremiumProductAccess={hasAllPremiumProductAccess}
           setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           showRenewalOptions={showRenewalOptions}
-          isPartialPremium={isPartialPremium}
+          isPremiumUser={isPremiumUser}
+          userRole={userRole}
+          orgData={orgData}
         />
       )}
 
@@ -199,6 +204,7 @@ const ManageSubscriptionContainer = ({
           setShowBuyMoreModal={setShowBuyMoreModal}
           setCurrentItemId={setCurrentItemId}
           isEdulasticAdminView={isEdulasticAdminView}
+          setSelectedLicenseId={setSelectedLicenseId}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}
@@ -230,6 +236,8 @@ const ManageSubscriptionContainer = ({
         isEdulasticAdminView={isEdulasticAdminView}
         showRenewalOptions={showRenewalOptions}
         currentItemId={currentItemId}
+        selectedLicenseId={selectedLicenseId}
+        setSelectedLicenseId={setSelectedLicenseId}
       />
       {showAddUsersModal && (
         <AddUsersModal
@@ -277,6 +285,7 @@ const enhance = compose(
       isSubscriptionExpired: getIsSubscriptionExpired(state),
       columns: getColumnsSelector(state),
       userFeature: getUserFeatures(state),
+      orgData: getOrgDataSelector(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,

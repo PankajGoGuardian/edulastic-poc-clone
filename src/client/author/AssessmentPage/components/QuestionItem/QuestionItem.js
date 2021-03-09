@@ -184,7 +184,9 @@ class QuestionItem extends React.Component {
     return (
       <DetailsContainer>
         <DetailTitle>Correct Answer:</DetailTitle>
-        <DetailContents>{answerRenderer(value, options)}</DetailContents>
+        <DetailContents data-cy="correctAns">
+          {answerRenderer(value, options)}
+        </DetailContents>
         {alternateResponsesDisplay}
       </DetailsContainer>
     )

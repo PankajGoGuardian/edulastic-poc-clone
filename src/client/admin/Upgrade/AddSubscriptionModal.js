@@ -13,7 +13,7 @@ import {
 import { Col, Row, Spin } from 'antd'
 import styled from 'styled-components'
 import moment from 'moment'
-import { debounce, isNumber, omitBy } from 'lodash'
+import { debounce, identity, isNumber, omitBy } from 'lodash'
 import { userApi } from '@edulastic/api'
 
 const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
@@ -183,6 +183,15 @@ const AddSubscriptionModal = ({
     closeModal()
   }
 
+  const handleKeyPress = (e) => {
+    const specialCharRegex = new RegExp('[0-9\b\t]+') // allow numbers, backspace and tab
+    const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
+    if (!specialCharRegex.test(pressedKey)) {
+      return e.preventDefault()
+    }
+    return pressedKey
+  }
+
   const footer = (
     <>
       <EduButton isGhost onClick={closeModal}>
@@ -258,7 +267,7 @@ const AddSubscriptionModal = ({
             <h3>Products</h3>
           </Col>
           {products.map((product) => (
-            <Col span={12} key={product._id}>
+            <Col span={12} key={product._id} style={{ marginBottom: '15px' }}>
               <FieldLabel>{product.name}</FieldLabel>
               <NumberInputStyled
                 type="number"
@@ -268,6 +277,8 @@ const AddSubscriptionModal = ({
                 min={product.type === 'PREMIUM' ? 1 : 0}
                 max={product.type === 'PREMIUM' ? Infinity : fieldData.PREMIUM}
                 onChange={(value) => handleFieldChange(product.type)(value)}
+                data-cy={product.type}
+                onKeyDown={handleKeyPress}
               />
             </Col>
           ))}

@@ -313,7 +313,7 @@ const Subscription = (props) => {
     !['enterprise', 'partial_premium'].includes(subType)
 
   const itemBankProductIds = products
-    .filter((prod) => prod.type === 'ITEM_BANK_SPARK_MATH')
+    .filter((prod) => prod.type && prod.type.startsWith('ITEM_BANK_'))
     .map((prod) => prod.linkedProductId)
 
   const totalPaidProducts = itemBankSubscriptions.reduce(
@@ -363,8 +363,6 @@ const Subscription = (props) => {
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
 
-  const isPartialPremium = user.features?.premiumGradeSubject?.length
-
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -382,7 +380,8 @@ const Subscription = (props) => {
         showMultipleSubscriptions={showMultipleSubscriptions}
         isFreeAdmin={isFreeAdmin}
         toggleShowFeatureNotAvailableModal={setShowFeatureNotAvailableModal}
-        isPartialPremium={isPartialPremium}
+        orgData={user.orgData}
+        userRole={user.role}
       />
 
       <SubscriptionMain
@@ -405,6 +404,7 @@ const Subscription = (props) => {
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
         itemBankSubscriptions={itemBankSubscriptions}
         settingProductData={settingProductData}
+        setProductData={setProductData}
         sparkMathItemBankId={sparkMathItemBankId}
         sparkMathProductId={sparkMathProductId}
         setShowItemBankTrialUsedModal={setShowItemBankTrialUsedModal}

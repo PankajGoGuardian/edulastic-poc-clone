@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   EduButton,
@@ -219,9 +219,17 @@ const SubscriptionMain = ({
   showFeatureNotAvailableModal,
   handleCloseFeatureNotAvailableModal,
   isFreeAdmin,
+  setProductData,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+
+  // Whenever trial modal is closed, clear the states it was using
+  useEffect(() => {
+    if (!isTrialModalVisible) {
+      setProductData({})
+    }
+  }, [isTrialModalVisible])
 
   const isPaidSparkMath =
     itemBankSubscriptions &&

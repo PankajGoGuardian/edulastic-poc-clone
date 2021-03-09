@@ -115,7 +115,7 @@ const LicensesInvoiceTable = ({
       <h2>The list of active Licenses are :</h2>
       <Table
         columns={columns}
-        rowKey={(record) => record._id}
+        rowKey={(record) => record.userId}
         dataSource={licensesData.map((el, index) => ({ ...el, index }))}
         pagination={false}
         bordered
@@ -306,7 +306,7 @@ const ManageSubscriptionsByLicenses = ({
       />
       <Pagination
         hideOnSinglePage
-        pageSize={20}
+        pageSize={10}
         onChange={handlePageChange}
         current={page}
         total={count}

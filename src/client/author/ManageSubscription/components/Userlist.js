@@ -14,6 +14,7 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
+import { SAVE_BUTTON_STATES } from '../ducks'
 import { StyledAntdTable, SaveButton } from './styled'
 
 const getClubbedValue = (prev = [], curr) => prev.concat(curr)
@@ -49,15 +50,15 @@ const Userlist = ({
   dynamicColumns = [],
   licenseOwnerId,
   subType,
+  isEdulasticAdminView,
+  saveButtonState,
+  setSaveButtonState,
 }) => {
-  const [isSaveButtonVisible, setIsSaveButtonVisible] = useState(false)
-  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false)
   const [currentUsers, setCurrentUsers] = useState(users)
 
   useEffect(() => {
     setCurrentUsers(users)
-    setIsSaveButtonVisible(false)
-    setIsSaveButtonDisabled(false)
+    setSaveButtonState(SAVE_BUTTON_STATES.NOT_VISIBLE)
   }, [users])
 
   const licenseIdsbyType = useMemo(
@@ -128,10 +129,29 @@ const Userlist = ({
       }
       return user
     })
-    const stringInitialUsers = JSON.stringify(users)
-    const stringNewUsers = JSON.stringify(newUsers)
+    // Pick only required fields to compare
+    const fieldsToOmit = [
+      'institutionIds',
+      'role',
+      'username',
+      'userId',
+      '_id',
+      'districtId',
+      'email',
+      'expiresOn',
+    ]
+    const stringInitialUsers = JSON.stringify(
+      users.map((u) => omit(u, fieldsToOmit))
+    )
+    const stringNewUsers = JSON.stringify(
+      newUsers.map((u) => omit(u, fieldsToOmit))
+    )
     setCurrentUsers(newUsers)
-    setIsSaveButtonVisible(stringInitialUsers !== stringNewUsers)
+    /**
+     * convert to number from bool (hidden: 0, visible: 1)
+     * not setting disabled here
+     */
+    setSaveButtonState(+(stringInitialUsers !== stringNewUsers))
   }
 
   const getCheckbox = (record, key) => {
@@ -163,6 +183,7 @@ const Userlist = ({
 
     return (
       <CheckboxLabel
+        data-cy={`${key}Checkbox`}
         onChange={onChange}
         checked={isChecked}
         disabled={disabled}
@@ -233,14 +254,12 @@ const Userlist = ({
       return returnObject
     })
 
-    setIsSaveButtonDisabled(true)
+    setSaveButtonState(SAVE_BUTTON_STATES.DISABLED)
     let licensesPermission = {}
     let manageLicensePermission = {}
-    let rowUserId = ''
     const usersById = keyBy(users, 'userId')
     for (const permissions of changes) {
       const { hasManageLicense, userId } = permissions
-      rowUserId = userId
 
       for (const type of Object.keys(
         omit(permissions, [
@@ -274,10 +293,17 @@ const Userlist = ({
       apiData.licensesPermission = licensesPermission
     }
     if (Object.keys(manageLicensePermission).length) {
+      if (isEdulasticAdminView) {
+        Object.assign(manageLicensePermission, {
+          licenseIds: subsLicenses.map((x) => x.licenseId),
+        })
+      }
       apiData.manageLicensePermission = manageLicensePermission
     }
-
-    const fetchOrgSubscriptions = rowUserId === currentUserId
+    const updatingUserIds = Object.values(licensesPermission).flatMap((x) =>
+      (x.userIdsToAdd || []).concat(x.userIdsToRemove || [])
+    )
+    const fetchOrgSubscriptions = updatingUserIds.includes(currentUserId)
     bulkEditUsersPermission({
       apiData,
       licenseOwnerId,
@@ -295,9 +321,13 @@ const Userlist = ({
           pagination={false}
         />
       </Col>
-      {isSaveButtonVisible && (
+      {saveButtonState !== SAVE_BUTTON_STATES.NOT_VISIBLE && (
         <Col span={2} offset={22}>
-          <SaveButton disabled={isSaveButtonDisabled} onClick={onSaveHandler}>
+          <SaveButton
+            data-cy="saveButton"
+            disabled={saveButtonState === SAVE_BUTTON_STATES.DISABLED}
+            onClick={onSaveHandler}
+          >
             Save
           </SaveButton>
         </Col>

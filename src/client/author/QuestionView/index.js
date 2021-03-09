@@ -170,9 +170,9 @@ class QuestionViewContainer extends Component {
       additionalData,
       studentsList,
       filter,
+      isDocBased,
     } = this.props
     const { loading, hideCorrectAnswer } = this.state
-
     let filteredItems = testItems?.filter((item) =>
       item.data.questions.some((q) => q.id === question.id)
     )
@@ -210,7 +210,9 @@ class QuestionViewContainer extends Component {
     //     return "";
     //   });
     // }
-    const activeQuestions = classQuestion
+    const activeQuestions = isDocBased
+      ? classQuestion.filter((x) => x.qid === question.id)
+      : classQuestion
     /**
      * copied from
      *  https://github.com/snapwiz/edulastic-poc/blob/eacf271e7792e2e452b2fcc427340fc57c67434d/src/client/author/StudentView/index.js#L197
@@ -510,6 +512,7 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       studentsList: getAllStudentsList(state),
       filter: state?.author_classboard_testActivity?.studentViewFilter,
+      isDocBased: state?.author_classboard_testActivity?.data?.test?.isDocBased,
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,

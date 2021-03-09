@@ -30,6 +30,8 @@ import {
   getLoadingStateSelector,
   bulkEditUsersPermissionAction,
   getColumnsSelector,
+  updateSaveButtonState,
+  getSaveButtonState,
 } from '../ducks'
 import AddUsersSection from './AddUsersSection'
 import Header from './Header'
@@ -72,6 +74,8 @@ const ManageSubscriptionContainer = ({
   userFeature,
   licenseOwnerId,
   orgData,
+  saveButtonState,
+  setSaveButtonState,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [selectedLicenseId, setSelectedLicenseId] = useState(false)
@@ -149,12 +153,16 @@ const ManageSubscriptionContainer = ({
       licenseOwnerId,
     })
 
-  const totalPaidProducts = itemBankSubscriptions.reduce(
-    (a, c) => {
-      if (c.isTrial) return a
-      return a + 1
-    },
-    isPaidPremium ? 1 : 0
+  const totalPaidProducts = useMemo(
+    () =>
+      itemBankSubscriptions.reduce(
+        (a, c) => {
+          if (c.isTrial) return a
+          return a + 1
+        },
+        isPaidPremium ? 1 : 0
+      ),
+    [itemBankSubscriptions, isPaidPremium]
   )
 
   const handleTableSearch = (e) => {
@@ -219,6 +227,9 @@ const ManageSubscriptionContainer = ({
           dynamicColumns={columns}
           licenseOwnerId={licenseOwnerId}
           subType={subType}
+          isEdulasticAdminView={isEdulasticAdminView}
+          saveButtonState={saveButtonState}
+          setSaveButtonState={setSaveButtonState}
         />
       </ContentWrapper>
 
@@ -286,12 +297,14 @@ const enhance = compose(
       columns: getColumnsSelector(state),
       userFeature: getUserFeatures(state),
       orgData: getOrgDataSelector(state),
+      saveButtonState: getSaveButtonState(state),
     }),
     {
       addAndUpgradeUsersSubscriptions: addAndUpgradeUsersAction,
       setAddUsersConfirmationModalVisible: setAddUserConfirmationModalVisibleAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
       bulkEditUsersPermission: bulkEditUsersPermissionAction,
+      setSaveButtonState: updateSaveButtonState,
     }
   )
 )

@@ -277,8 +277,9 @@ function* upgradeDistrict({ payload }) {
   try {
     const { isUpdate, subscriptionId, ...rest } = payload
     if (isUpdate) {
+      const { status } = payload
       const result = yield call(updateSubscriptionApi, {
-        data: rest,
+        data: { status },
         subscriptionId,
       })
       if (result.success) {

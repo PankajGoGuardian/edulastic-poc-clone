@@ -94,7 +94,11 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
-  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+  const isPaidPremium = !(
+    !subType ||
+    subType === 'TRIAL_PREMIUM' ||
+    subType === 'partial_premium'
+  )
   const isCliUser = user.openIdProvider === 'CLI'
 
   const isPremiumUser = user.features.premium

@@ -238,7 +238,11 @@ const Subscription = (props) => {
     fetchUserSubscriptionStatus()
   }, [])
 
-  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+  const isPaidPremium = !(
+    !subType ||
+    subType === 'TRIAL_PREMIUM' ||
+    subType === 'partial_premium'
+  )
 
   const isPremiumUser = user.features.premium
 

@@ -1,6 +1,7 @@
 import { has, omitBy } from 'lodash'
 import uuid from 'uuid'
 import produce from 'immer'
+import { questionType } from '@edulastic/constants'
 
 const mathRegex = /<span class="input__math" data-latex="([^"]+)"><\/span>/g
 
@@ -191,14 +192,20 @@ export const replaceVariables = (
     !item.variable.enabled
   )
     return item
+  const keysToIgnore = ['id', 'validation', 'variable', 'template']
   return produce(item, (draft) => {
     Object.keys(item).forEach((key) => {
       if (key === 'id' || key === 'variable') return
-      if (key === 'validation') {
-        useMathTemplate = false
-      } else {
-        useMathTemplate = true
+      if (
+        [
+          questionType.CLOZE_DROP_DOWN,
+          questionType.CLOZE_IMAGE_DROP_DOWN,
+          questionType.EXPRESSION_MULTIPART,
+        ].includes(item.type)
+      ) {
+        keysToIgnore.push('options')
       }
+      useMathTemplate = !keysToIgnore.includes(key)
       draft[key] = replaceValues(
         draft[key],
         item.variable,

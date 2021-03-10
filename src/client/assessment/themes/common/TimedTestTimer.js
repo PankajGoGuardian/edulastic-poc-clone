@@ -65,6 +65,7 @@ const TimedTestTimer = ({
   userRole,
   isPreview,
   allowedTime,
+  style = {},
 }) => {
   const [uta, setUtaDoc] = useState()
   const [upstreamUta, setUpstreamUta] = useState()
@@ -198,11 +199,12 @@ const TimedTestTimer = ({
 
   return (
     <>
-      {(uta || isAuthorPreview) && currentAssignmentTime !== 0 && (
+      {(uta || isAuthorPreview) && (
         <TimerWrapper
           isDanger={currentAssignmentTime <= CAUTION_TIME}
           fgColor={fgColor}
           bgColor={bgColor}
+          style={style}
         >
           <Icon type="clock-circle" />
           <Label

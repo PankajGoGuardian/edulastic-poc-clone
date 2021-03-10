@@ -62,7 +62,7 @@ const ReviewQuestionsModal = ({
       width="640px"
     >
       <StyledWrapper>
-        <p>
+        <p style={{ width: '90%' }}>
           You have answered{' '}
           <b>
             {totalQuestions - totalUnanswered} of {totalQuestions}

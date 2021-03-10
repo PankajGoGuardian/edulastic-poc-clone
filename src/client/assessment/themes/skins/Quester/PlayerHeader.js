@@ -31,6 +31,8 @@ import {
 import { themes } from '../../../../theme'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
+import TimedTestTimer from '../../common/TimedTestTimer'
+import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 
 const {
   playerSkin: { quester },
@@ -55,6 +57,10 @@ const PlayerHeader = ({
   testType,
   gotoSummary,
   previewPlayer,
+  timedAssignment,
+  utaId,
+  groupId,
+  hidePause,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -67,6 +73,8 @@ const PlayerHeader = ({
     totalUnanswered:
       totalUnanswered > 0 ? `0${totalUnanswered}`.slice(-2) : totalUnanswered,
   }
+  const _pauseAllowed = useUtaPauseAllowed(utaId)
+  const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
 
   const [showReviewPopup, setShowReviewPopup] = useState(false)
 
@@ -109,14 +117,37 @@ const PlayerHeader = ({
       >
         <StyledHeaderTitle>
           <div>{title}</div>
-          <SignOut onClick={finishTest}>
-            <FontAwesomeIcon
-              style={{ width: '10px', marginRight: '4px' }}
-              icon={faPause}
-              aria-hidden="true"
-            />
-            /Sign out
-          </SignOut>
+          <RightContent>
+            {timedAssignment && (
+              <TimedTestTimer
+                utaId={utaId}
+                groupId={groupId}
+                style={{ marginRight: '50px', padding: '0' }}
+              />
+            )}
+
+            {showPause && (
+              <Tooltip
+                placement="top"
+                title={hidePause ? `Save & Exit disabled` : `Save & Exit`}
+              >
+                <SignOut
+                  data-cy="finishTest"
+                  onClick={finishTest}
+                  disabled={hidePause}
+                >
+                  {!hidePause && (
+                    <FontAwesomeIcon
+                      style={{ width: '10px', marginRight: '4px' }}
+                      icon={faPause}
+                      aria-hidden="true"
+                    />
+                  )}
+                  {!hidePause && '/'}Sign out
+                </SignOut>
+              </Tooltip>
+            )}
+          </RightContent>
         </StyledHeaderTitle>
         <HeaderMainMenu style={{ background: '#334049' }}>
           <NavigationHeader>
@@ -217,4 +248,9 @@ const SignOut = styled.div`
   svg {
     color: #fff;
   }
+`
+
+const RightContent = styled.div`
+  display: flex;
+  align-items: center;
 `

@@ -389,6 +389,7 @@ const Subscription = (props) => {
         toggleShowFeatureNotAvailableModal={setShowFeatureNotAvailableModal}
         orgData={user.orgData}
         userRole={user.role}
+        history={history}
       />
 
       <SubscriptionMain

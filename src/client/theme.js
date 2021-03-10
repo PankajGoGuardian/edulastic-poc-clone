@@ -2669,15 +2669,21 @@ export const themes = {
         border: '#2B2B2B',
       },
       defaultButton: {
-        background: '#EEEEEE',
-        color: '#7A7A7A',
+        color: '#434B5D',
+        disabledColor: '#d9d9d9',
+        hover: {
+          background: '#00AD50',
+          color: 'white',
+        },
         active: {
           background: '#7A7A7A',
           color: '#ffffff',
         },
+        audioPauseColor: '#00AD50',
+        questionMarkColor: '#00AD50',
       },
       navigationButtons: {
-        background: '#0564CC',
+        background: '#a2d8fd',
         color: '#ffffff',
         fontSize: '11px',
       },

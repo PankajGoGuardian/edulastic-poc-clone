@@ -6,15 +6,39 @@ import {
   IconClose,
   IconScratchPad,
   IconCalculator,
+  IconMore,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
-import { test as testConstants } from '@edulastic/constants'
+import { test as testConstants, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { get } from 'lodash'
 import styled from 'styled-components'
 import questionType from '@edulastic/constants/const/questionType'
+import { Rnd } from 'react-rnd'
+import { withWindowSizes } from '@edulastic/common'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
+import AudioControls from '../../../AudioControls'
+import { getUserRole } from '../../../../author/src/selectors/user'
+import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
+// import { themes } from '../../../../theme'
+
+// const {
+//   playerSkin: { quester },
+// } = themes
+
+const style = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  border: 'solid 1px #ddd',
+  background: '#334049',
+  padding: '10px',
+  borderRadius: '5px',
+}
+
+// const { defaultButton, navigationButtons } = quester
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 
@@ -36,6 +60,11 @@ const PlayerFooter = ({
   qType,
   hasDrawingResponse,
   settings,
+  showUserTTS,
+  userRole,
+  LCBPreviewModal,
+  isTestPreviewModalVisible,
+  windowWidth,
 }) => {
   const [zoom, setZoom] = useState(0)
   const { calcType, enableScratchpad } = settings
@@ -55,6 +84,14 @@ const PlayerFooter = ({
     }
   }
 
+  const showAudioControls = userRole === 'teacher' && !!LCBPreviewModal
+  const data = items[currentItem]?.data?.questions[0]
+  const canShowPlayer =
+    ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
+      (userRole !== roleuser.STUDENT &&
+        (!!LCBPreviewModal || isTestPreviewModalVisible))) &&
+    data?.tts &&
+    data?.tts?.taskStatus === 'COMPLETED'
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
       <ActionContainer>
@@ -127,6 +164,29 @@ const PlayerFooter = ({
           <span>{t('common.test.scratchPad')}</span>
         </ActionContainer>
       )}
+
+      {canShowPlayer && windowWidth && (
+        <Rnd
+          style={style}
+          default={{
+            x: windowWidth - 300,
+            y: -80,
+            width: '250px',
+            height: '60',
+          }}
+        >
+          Play All
+          <AudioControls
+            showAudioControls={showAudioControls}
+            key={data.id}
+            item={data}
+            qId={data.id}
+            audioSrc={data?.tts?.titleAudioURL}
+            className="quester-question-audio-controller"
+          />
+          <IconMoreVertical color="#fff" hoverColor="#fff" />
+        </Rnd>
+      )}
     </MainFooter>
   )
 }
@@ -134,9 +194,20 @@ const PlayerFooter = ({
 // export default PlayerFooter
 const enhance = compose(
   withNamespaces('student'),
-  connect(null, {
-    setZoomLevel: setZoomLevelAction,
-  })
+  withWindowSizes,
+  connect(
+    (state) => ({
+      settings: state.test.settings,
+      showUserTTS: get(state, 'user.user.tts', 'no'),
+      userRole: getUserRole(state),
+      timedAssignment: state.test?.settings?.timedAssignment,
+      testType: state.test?.settings?.testType,
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+    }),
+    {
+      setZoomLevel: setZoomLevelAction,
+    }
+  )
 )
 
 export default enhance(PlayerFooter)
@@ -153,6 +224,49 @@ const MainFooter = styled.div`
   border-top: 1px solid #2b2b2b;
   color: #fff;
   font-size: 13px;
+  .quester-question-audio-controller {
+    position: relative;
+    height: auto;
+    padding: 0;
+    margin-left: 5px;
+    button {
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      padding: 3px 0 0 0;
+      background: #a2d8fd !important;
+      border: none;
+      float: left;
+      &:focus,
+      &:active,
+      &:hover {
+        background: #a2d8fd !important;
+        border: none !important;
+        svg {
+          fill: #334049 !important;
+        }
+      }
+
+      margin-right: 5px;
+      svg {
+        fill: #334049;
+      }
+      .audio-pause {
+        fill: #34049;
+      }
+      .anticon-loading {
+        position: relative;
+        left: 0;
+        top: 0;
+      }
+    }
+  }
+`
+
+const IconMoreVertical = styled(IconMore)`
+  transform: rotate(90deg);
+  position: absolute;
+  right: 10px;
 `
 
 const ActionContainer = styled.div`

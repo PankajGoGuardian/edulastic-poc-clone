@@ -37,6 +37,7 @@ const style = {
   background: '#334049',
   padding: '10px',
   borderRadius: '5px',
+  zIndex: 999,
 }
 
 const { footer, button } = quester
@@ -123,6 +124,7 @@ const PlayerFooter = ({
               ? toggleBookmark
               : () => toggleBookmark(items[currentItem]?._id)
           }
+          title={t('common.test.bookmark')}
         >
           <IconWrapper>
             <IconBookmark
@@ -138,8 +140,13 @@ const PlayerFooter = ({
       <ActionContainer
         hoverEffect
         active={tool.includes(CROSS_BUTTON)}
-        onClick={() => changeTool(CROSS_BUTTON)}
+        onClick={() => (isDisableCrossBtn ? null : changeTool(CROSS_BUTTON))}
         disabled={isDisableCrossBtn}
+        title={
+          isDisableCrossBtn
+            ? 'This option is available only for multiple choice'
+            : 'Crossout'
+        }
       >
         <IconWrapper>
           <IconClose color={footer.textColor} hoverColor={button.background} />
@@ -152,6 +159,7 @@ const PlayerFooter = ({
           hoverEffect
           active={tool.includes(CALC)}
           onClick={() => changeTool(CALC)}
+          title={t('common.test.calculator')}
         >
           <IconWrapper>
             <IconCalculator
@@ -168,6 +176,7 @@ const PlayerFooter = ({
           hoverEffect
           active={tool.includes(SCRATCHPAD)}
           onClick={() => changeTool(SCRATCHPAD)}
+          title={t('common.test.scratchPad')}
         >
           <IconWrapper>
             <IconScratchPad
@@ -180,7 +189,11 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
       {isTeacherPremium && (
-        <ActionContainer hoverEffect onClick={toggleUserWorkUploadModal}>
+        <ActionContainer
+          hoverEffect
+          onClick={toggleUserWorkUploadModal}
+          title={t('common.test.uploadWork')}
+        >
           <IconWrapper>
             <IconCloudUpload
               color={footer.textColor}
@@ -197,6 +210,7 @@ const PlayerFooter = ({
           hoverEffect
           active={enableMagnifier}
           onClick={handleMagnifier}
+          title={t('common.test.magnify')}
         >
           <IconWrapper>
             <IconMagnify
@@ -265,7 +279,7 @@ const MainFooter = styled.div`
   right: 0;
   display: flex;
   padding: 0 15px;
-  z-index: 2;
+  z-index: 9999;
   background: ${footer.background};
   border-top: 1px solid ${footer.border};
   color: ${footer.textColor};
@@ -323,20 +337,26 @@ const ActionContainer = styled.div`
   flex-direction: column;
   padding: 8px 15px;
   transition: all 0.5s ease;
+  cursor: pointer;
+  ${(props) =>
+    props.disabled &&
+    `
+    cursor:default;
+
+  `}
   ${(props) =>
     props.active &&
     `
       background-color: ${footer.hover.background};
       color: ${footer.hover.color};
-      cursor: pointer;
     `}
   ${(props) =>
     props.hoverEffect &&
+    !props.disabled &&
     `
       &:hover{
         background-color: ${footer.hover.background};
         color: ${footer.hover.color};
-        cursor: pointer;
       }
     `}
 `

@@ -145,11 +145,15 @@ const AssessmentPlayerSkinWrapper = ({
 
   const footer = () => {
     if (playerSkinType === 'quester') {
+      const toolToggleFunc = toggleToolsOpenStatus || changeTool
+      const tool = restProps.toolsOpenStatus || restProps.tool
       return (
         <PlayerFooter
           {...restProps}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
+          changeTool={toolToggleFunc}
+          tool={tool}
         />
       )
     }
@@ -211,7 +215,7 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '68px' : '37px',
+        marginTop: '68px',
       }
     }
     return { width: '100%' }

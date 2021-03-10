@@ -139,7 +139,7 @@ const PlayerFooter = ({
       <Devider />
       <ActionContainer
         hoverEffect
-        active={tool.includes(CROSS_BUTTON)}
+        active={tool?.includes(CROSS_BUTTON)}
         onClick={() => (isDisableCrossBtn ? null : changeTool(CROSS_BUTTON))}
         disabled={isDisableCrossBtn}
         title={
@@ -157,7 +157,7 @@ const PlayerFooter = ({
       {calcType !== testConstants.calculatorTypes.NONE && (
         <ActionContainer
           hoverEffect
-          active={tool.includes(CALC)}
+          active={tool?.includes(CALC)}
           onClick={() => changeTool(CALC)}
           title={t('common.test.calculator')}
         >
@@ -174,7 +174,7 @@ const PlayerFooter = ({
       {enableScratchpad && !hasDrawingResponse && (
         <ActionContainer
           hoverEffect
-          active={tool.includes(SCRATCHPAD)}
+          active={tool?.includes(SCRATCHPAD)}
           onClick={() => changeTool(SCRATCHPAD)}
           title={t('common.test.scratchPad')}
         >

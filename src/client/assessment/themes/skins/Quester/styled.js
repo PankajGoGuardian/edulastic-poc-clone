@@ -1,12 +1,11 @@
 import styled from 'styled-components'
 import { Popover, Dropdown, Menu, Icon } from 'antd'
-// import { smallDesktopWidth } from '@edulastic/colors'
 import { themes } from '../../../../theme'
 
 const {
   playerSkin: { quester },
 } = themes
-const { defaultButton, menuItem, breadcrumb, header } = quester
+const { footer, header1, button } = quester
 
 export const StyledPopover = styled(Popover)`
   padding: 0;
@@ -16,9 +15,9 @@ export const StyledPopover = styled(Popover)`
 `
 
 export const StyledButton = styled.div`
-  background-color: #a2d8fd;
+  background-color: ${button.background};
   border: none;
-  color: #334049;
+  color: ${button.textColor};
   cursor: pointer;
   font-weight: bold;
   padding: 7px 15px;
@@ -27,16 +26,16 @@ export const StyledButton = styled.div`
 
 export const ControlBtn = styled.button`
   border: none;
-  color: #334049;
+  color: ${button.textColor};
   cursor: pointer;
   font-weight: bold;
   padding: 7px 15px;
-  background-color: #a2d8fd;
+  background-color: ${button.background};
   &[disabled] {
     cursor: default;
     opacity: 0.3;
     svg {
-      fill: ${defaultButton.color};
+      fill: ${button.textColor};
     }
   }
 `
@@ -49,8 +48,8 @@ export const StyledMenu = styled(Menu)`
   .ant-menu-item {
     font-weight: 600;
     &:hover {
-      background: ${menuItem.hover.background};
-      color: ${menuItem.hover.color};
+      background: #fcaf17;
+      color: white;
     }
   }
   .ant-dropdown-menu-item-disabled {
@@ -81,20 +80,20 @@ export const StyledMenu = styled(Menu)`
 export const StyledHeaderTitle = styled.div`
   display: flex;
   align-items: center;
-  background: ${header.background};
+  background: ${header1.background};
   width: 100%;
   font-size: 14px;
-  color: ${breadcrumb.color}!important;
-  border-bottom: 1px solid #2b2b2b;
+  color: ${footer.textColor} !important;
+  border-bottom: 1px solid ${header1.border};
   padding: 8px 15px;
   justify-content: space-between;
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator,
   a {
-    color: ${breadcrumb.color}!important;
+    color: ${footer.textColor} !important;
   }
   svg {
-    fill: ${breadcrumb.color};
+    fill: ${footer.textColor};
   }
 `
 

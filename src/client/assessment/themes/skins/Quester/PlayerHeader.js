@@ -48,9 +48,9 @@ import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 // import { IconRightArrow } from '../../../../author/Dashboard/components/Showcase/components/Myclasses/components/CardTextContent/styled'
 
 const {
-  playerSkin: { parcc },
+  playerSkin: { quester },
 } = themes
-const { header } = parcc
+const { button, header1 } = quester
 
 const PlayerHeader = ({
   t,
@@ -150,7 +150,7 @@ const PlayerHeader = ({
       <Header
         ref={headerRef}
         style={{
-          background: header.background,
+          background: header1.background,
           flexDirection: 'column',
           padding: '0',
           zIndex: 505,
@@ -261,7 +261,7 @@ const NavigationHeader = styled(FlexContainer)`
 `
 
 const SignOut = styled.div`
-  border-bottom: 3px solid lightblue;
+  border-bottom: 3px solid ${button.background};
   cursor: pointer;
   svg {
     color: #fff;

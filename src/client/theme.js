@@ -2663,54 +2663,25 @@ export const themes = {
       },
     },
     quester: {
-      header: {
+      header1: {
         background: '#40505b',
-        logoColor: themeColor,
-        border: '#2B2B2B',
+        border: '#2b2b2b',
       },
-      defaultButton: {
-        color: '#434B5D',
-        disabledColor: '#d9d9d9',
-        hover: {
-          background: '#00AD50',
-          color: 'white',
-        },
-        active: {
-          background: '#7A7A7A',
-          color: '#ffffff',
-        },
-        audioPauseColor: '#00AD50',
-        questionMarkColor: '#00AD50',
+      header2: {
+        background: '#334049',
       },
-      navigationButtons: {
+      button: {
         background: '#a2d8fd',
-        color: '#ffffff',
-        fontSize: '11px',
+        textColor: '#334049',
       },
-      menuItem: {
+      footer: {
+        background: '#334049',
+        border: '#2b2b2b',
+        textColor: '#fff',
+        textHoverColor: '#334049',
         hover: {
-          background: '#0564CC',
-          color: 'white',
-        },
-        activeColor: '#ff9900',
-      },
-      breadcrumb: {
-        background: '#666666',
-        color: 'white',
-        fontSize: '11px',
-      },
-      tools: {
-        color: '#EEEEEE',
-        svgColor: '#7A7A7A',
-        active: {
-          color: '#4A4A4A',
-          svgColor: 'white',
-          background: '#4A4A4A',
-        },
-      },
-      review: {
-        card: {
-          background: 'lightgrey',
+          color: '#a2d8fd',
+          background: '#40505b',
         },
       },
     },

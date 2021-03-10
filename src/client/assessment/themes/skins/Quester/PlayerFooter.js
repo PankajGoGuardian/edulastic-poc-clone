@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import {
   IconBookmark,
   IconMinusRounded,
@@ -22,11 +21,11 @@ import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import AudioControls from '../../../AudioControls'
 import { getUserRole } from '../../../../author/src/selectors/user'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
-// import { themes } from '../../../../theme'
+import { themes } from '../../../../theme'
 
-// const {
-//   playerSkin: { quester },
-// } = themes
+const {
+  playerSkin: { quester },
+} = themes
 
 const style = {
   display: 'flex',
@@ -38,7 +37,7 @@ const style = {
   borderRadius: '5px',
 }
 
-// const { defaultButton, navigationButtons } = quester
+const { footer, button } = quester
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 
@@ -97,11 +96,11 @@ const PlayerFooter = ({
       <ActionContainer>
         <PlusOrMinus>
           <IconWrap className="hover-effect" onClick={handleZoomOut}>
-            <IconMinusRounded color="#fff" />
+            <IconMinusRounded color={footer.textColor} />
           </IconWrap>
           <Devider />
           <IconWrap className="hover-effect" onClick={handleZoomIn}>
-            <IconPlus color="#fff" />
+            <IconPlus color={footer.textColor} />
           </IconWrap>
         </PlusOrMinus>
         <div>Zoom</div>
@@ -117,8 +116,8 @@ const PlayerFooter = ({
         >
           <IconWrapper>
             <IconBookmark
-              color={isBookmarked ? '#a2d8fd' : '#fff'}
-              hoverColor="#a2d8fd"
+              color={isBookmarked ? button.background : footer.textColor}
+              hoverColor={button.background}
             />
           </IconWrapper>
 
@@ -133,7 +132,7 @@ const PlayerFooter = ({
         disabled={isDisableCrossBtn}
       >
         <IconWrapper>
-          <IconClose color="#fff" hoverColor="#a2d8fd" />
+          <IconClose color={footer.textColor} hoverColor={button.background} />
         </IconWrapper>
 
         <span>{t('common.test.answerEliminator')}</span>
@@ -145,7 +144,10 @@ const PlayerFooter = ({
           onClick={() => changeTool(CALC)}
         >
           <IconWrapper>
-            <IconCalculator color="#fff" hoverColor="#a2d8fd" />
+            <IconCalculator
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
           </IconWrapper>
 
           <span>{t('common.test.calculator')}</span>
@@ -158,7 +160,10 @@ const PlayerFooter = ({
           onClick={() => changeTool(SCRATCHPAD)}
         >
           <IconWrapper>
-            <IconScratchPad color="#fff" hoverColor="#a2d8fd" />
+            <IconScratchPad
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
           </IconWrapper>
 
           <span>{t('common.test.scratchPad')}</span>
@@ -171,7 +176,7 @@ const PlayerFooter = ({
           default={{
             x: windowWidth - 300,
             y: -80,
-            width: '250px',
+            width: '200px',
             height: '60',
           }}
         >
@@ -184,7 +189,10 @@ const PlayerFooter = ({
             audioSrc={data?.tts?.titleAudioURL}
             className="quester-question-audio-controller"
           />
-          <IconMoreVertical color="#fff" hoverColor="#fff" />
+          <IconMoreVertical
+            color={footer.textColor}
+            hoverColor={footer.textColor}
+          />
         </Rnd>
       )}
     </MainFooter>
@@ -220,9 +228,9 @@ const MainFooter = styled.div`
   display: flex;
   padding: 0 15px;
   z-index: 2;
-  background: #334049;
-  border-top: 1px solid #2b2b2b;
-  color: #fff;
+  background: ${footer.background};
+  border-top: 1px solid ${footer.border};
+  color: ${footer.textColor};
   font-size: 13px;
   .quester-question-audio-controller {
     position: relative;
@@ -234,25 +242,25 @@ const MainFooter = styled.div`
       width: 35px;
       height: 35px;
       padding: 3px 0 0 0;
-      background: #a2d8fd !important;
+      background: ${button.background} !important;
       border: none;
       float: left;
       &:focus,
       &:active,
       &:hover {
-        background: #a2d8fd !important;
+        background: ${button.background} !important;
         border: none !important;
         svg {
-          fill: #334049 !important;
+          fill: ${footer.background} !important;
         }
       }
 
       margin-right: 5px;
       svg {
-        fill: #334049;
+        fill: ${footer.background};
       }
       .audio-pause {
-        fill: #34049;
+        fill: ${footer.background};
       }
       .anticon-loading {
         position: relative;
@@ -276,26 +284,27 @@ const ActionContainer = styled.div`
   justify-content: space-evenly;
   flex-direction: column;
   padding: 8px 15px;
+  transition: all 0.5s ease;
   ${(props) =>
     props.active &&
     `
-      background-color: #40505b;
-      color: #a2d8fd;
+      background-color: ${footer.hover.background};
+      color: ${footer.hover.color};
       cursor: pointer;
     `}
   ${(props) =>
     props.hoverEffect &&
     `
       &:hover{
-        background-color: #40505b;
-        color: #a2d8fd;
+        background-color: ${footer.hover.background};
+        color: ${footer.hover.color};
         cursor: pointer;
       }
     `}
 `
 
 const PlusOrMinus = styled.div`
-  border: 1px solid #fff;
+  border: 1px solid ${footer.textColor};
   display: flex;
   justify-content: space-between;
   border-radius: 5px;
@@ -308,13 +317,13 @@ const IconWrap = styled.span`
   display: inline-block;
   cursor: pointer;
   &:hover {
-    background-color: #40505b;
-    color: #a2d8fd;
+    background-color: ${footer.hover.background};
+    color: ${footer.hover.color};
   }
 `
 const Devider = styled.div`
   width: 1px;
-  background: #fff;
+  background: ${footer.textColor};
 `
 
 const IconWrapper = styled.div`

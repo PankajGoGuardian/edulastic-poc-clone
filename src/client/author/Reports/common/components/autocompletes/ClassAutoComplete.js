@@ -140,6 +140,7 @@ const ClassAutoComplete = ({
   return (
     <MultiSelectSearch
       label="Class"
+      dataCy="classes"
       placeholder="All Classes"
       el={classFilterRef}
       onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}

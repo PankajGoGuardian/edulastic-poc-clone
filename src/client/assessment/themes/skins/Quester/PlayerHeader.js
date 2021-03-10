@@ -219,7 +219,7 @@ const PlayerHeader = ({
                       moveToNext()
                       e.target.blur()
                     }}
-                    style={{ marginLeft: '5px' }}
+                    style={{ marginLeft: '15px' }}
                   >
                     <FontAwesomeIcon icon={faAngleRight} aria-hidden="true" />
                   </ControlBtn>
@@ -256,7 +256,7 @@ const enhance = compose(
 export default enhance(PlayerHeader)
 
 const NavigationHeader = styled(FlexContainer)`
-  padding: 15px 30px;
+  padding: 15px 15px 10px 15px;
   justify-content: space-between;
 `
 

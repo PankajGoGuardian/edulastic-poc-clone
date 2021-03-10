@@ -4,7 +4,6 @@ import {
   IconMinusRounded,
   IconPlus,
   IconClose,
-  IconInRuler,
   IconScratchPad,
   IconCalculator,
 } from '@edulastic/icons'
@@ -18,6 +17,10 @@ import questionType from '@edulastic/constants/const/questionType'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
+
+const CALC = 2
+const CROSS_BUTTON = 3
+const SCRATCHPAD = 5
 
 const PlayerFooter = ({
   setZoomLevel,
@@ -88,8 +91,8 @@ const PlayerFooter = ({
       <Devider />
       <ActionContainer
         hoverEffect
-        active={tool.includes(3)}
-        onClick={() => changeTool(3)}
+        active={tool.includes(CROSS_BUTTON)}
+        onClick={() => changeTool(CROSS_BUTTON)}
         disabled={isDisableCrossBtn}
       >
         <IconWrapper>
@@ -98,22 +101,11 @@ const PlayerFooter = ({
 
         <span>{t('common.test.answerEliminator')}</span>
       </ActionContainer>
-      <ActionContainer
-        hoverEffect
-        active={tool.includes(1)}
-        onClick={() => changeTool(1)}
-      >
-        <IconWrapper>
-          <IconInRuler color="#fff" hoverColor="#a2d8fd" />
-        </IconWrapper>
-
-        <span>{t('common.test.ruler')}</span>
-      </ActionContainer>
       {calcType !== testConstants.calculatorTypes.NONE && (
         <ActionContainer
           hoverEffect
-          active={tool.includes(2)}
-          onClick={() => changeTool(2)}
+          active={tool.includes(CALC)}
+          onClick={() => changeTool(CALC)}
         >
           <IconWrapper>
             <IconCalculator color="#fff" hoverColor="#a2d8fd" />
@@ -125,8 +117,8 @@ const PlayerFooter = ({
       {enableScratchpad && !hasDrawingResponse && (
         <ActionContainer
           hoverEffect
-          active={tool.includes(5)}
-          onClick={() => changeTool(5)}
+          active={tool.includes(SCRATCHPAD)}
+          onClick={() => changeTool(SCRATCHPAD)}
         >
           <IconWrapper>
             <IconScratchPad color="#fff" hoverColor="#a2d8fd" />
@@ -155,7 +147,7 @@ const MainFooter = styled.div`
   left: 0;
   right: 0;
   display: flex;
-  padding: 7px 5px 2px 15px;
+  padding: 0 15px;
   z-index: 2;
   background: #334049;
   border-top: 1px solid #2b2b2b;
@@ -193,6 +185,7 @@ const PlusOrMinus = styled.div`
   display: flex;
   justify-content: space-between;
   border-radius: 5px;
+  overflow: hidden;
 `
 
 const IconWrap = styled.span`

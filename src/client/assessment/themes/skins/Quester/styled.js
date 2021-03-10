@@ -33,9 +33,8 @@ export const ControlBtn = styled.button`
   padding: 7px 15px;
   background-color: #a2d8fd;
   &[disabled] {
-    color: ${defaultButton.color};
-    background: ${defaultButton.background};
     cursor: default;
+    opacity: 0.3;
     svg {
       fill: ${defaultButton.color};
     }
@@ -87,7 +86,7 @@ export const StyledHeaderTitle = styled.div`
   font-size: 14px;
   color: ${breadcrumb.color}!important;
   border-bottom: 1px solid #2b2b2b;
-  padding: 8px 30px;
+  padding: 8px 15px;
   justify-content: space-between;
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator,

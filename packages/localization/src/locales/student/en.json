@@ -63,7 +63,9 @@
       "answerEliminator": "answer eliminator",
       "ruler": "ruler",
       "calculator": "calculator",
-      "scratchPad": "scratch pad"
+      "scratchPad": "scratch pad",
+      "uploadWork": "Upload work",
+      "magnify": "Magnify"
     }
   },
   "component": {

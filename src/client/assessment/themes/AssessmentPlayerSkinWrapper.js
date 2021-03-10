@@ -145,7 +145,13 @@ const AssessmentPlayerSkinWrapper = ({
 
   const footer = () => {
     if (playerSkinType === 'quester') {
-      return <PlayerFooter {...restProps} />
+      return (
+        <PlayerFooter
+          {...restProps}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+        />
+      )
     }
     return null
   }

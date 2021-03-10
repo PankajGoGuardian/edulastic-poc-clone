@@ -6,6 +6,8 @@ import {
   IconScratchPad,
   IconCalculator,
   IconMore,
+  IconCloudUpload,
+  IconMagnify,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
@@ -64,9 +66,17 @@ const PlayerFooter = ({
   LCBPreviewModal,
   isTestPreviewModalVisible,
   windowWidth,
+  toggleUserWorkUploadModal,
+  enableMagnifier,
+  handleMagnifier,
 }) => {
   const [zoom, setZoom] = useState(0)
-  const { calcType, enableScratchpad } = settings
+  const {
+    calcType,
+    enableScratchpad,
+    isTeacherPremium,
+    showMagnifier,
+  } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   const handleZoomIn = () => {
@@ -167,6 +177,35 @@ const PlayerFooter = ({
           </IconWrapper>
 
           <span>{t('common.test.scratchPad')}</span>
+        </ActionContainer>
+      )}
+      {isTeacherPremium && (
+        <ActionContainer hoverEffect onClick={toggleUserWorkUploadModal}>
+          <IconWrapper>
+            <IconCloudUpload
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
+          </IconWrapper>
+
+          <span>{t('common.test.uploadWork')}</span>
+        </ActionContainer>
+      )}
+
+      {showMagnifier && (
+        <ActionContainer
+          hoverEffect
+          active={enableMagnifier}
+          onClick={handleMagnifier}
+        >
+          <IconWrapper>
+            <IconMagnify
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
+          </IconWrapper>
+
+          <span>{t('common.test.magnify')}</span>
         </ActionContainer>
       )}
 

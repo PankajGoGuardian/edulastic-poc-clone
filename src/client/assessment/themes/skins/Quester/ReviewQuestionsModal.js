@@ -59,7 +59,7 @@ const ReviewQuestionsModal = ({
       destroyOnClose
       footer={null}
       title="Review"
-      width="50%"
+      width="640px"
     >
       <StyledWrapper>
         <p>

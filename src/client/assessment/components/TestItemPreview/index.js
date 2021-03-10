@@ -19,6 +19,7 @@ import { TimeSpentWrapper } from '../QuestionWrapper'
 import ShowUserWork from '../Common/ShowUserWork'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
+import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -57,10 +58,18 @@ class TestItemPreview extends Component {
   }
 
   setCollapseView = (dir) => {
-    this.setState((prevState) => ({
-      collapseDirection:
-        !prevState.toggleCollapseMode && prevState.collapseDirection ? '' : dir,
-    }))
+    this.setState(
+      (prevState) => ({
+        collapseDirection:
+          !prevState.toggleCollapseMode && prevState.collapseDirection
+            ? ''
+            : dir,
+      }),
+      () => {
+        const { changedPlayerContent } = this.props
+        changedPlayerContent()
+      }
+    )
   }
 
   renderCollapseButtons = () => {
@@ -238,6 +247,7 @@ class TestItemPreview extends Component {
       isPassageWithQuestions,
       scratchPadMode,
       isLCBView,
+      changedPlayerContent,
     } = this.props
     if (
       !scratchPadMode &&
@@ -245,13 +255,20 @@ class TestItemPreview extends Component {
       window.innerWidth < IPAD_LANDSCAPE_WIDTH &&
       (!isEqual(cols, preCols) || scratchPadMode !== prevProps.scratchPadMode)
     ) {
-      this.setState({ toggleCollapseMode: true, collapseDirection: 'left' })
+      this.setState(
+        { toggleCollapseMode: true, collapseDirection: 'left' },
+        () => {
+          changedPlayerContent()
+        }
+      )
     } else if (
       scratchPadMode !== prevProps.scratchPadMode &&
       scratchPadMode &&
       !isLCBView
     ) {
-      this.setState({ collapseDirection: '' })
+      this.setState({ collapseDirection: '' }, () => {
+        changedPlayerContent()
+      })
     }
   }
 
@@ -488,14 +505,19 @@ const enhance = compose(
   withWindowSizes,
   withTheme,
   withNamespaces('student'),
-  connect((state) => ({
-    isCliUser: get(state, 'user.isCliUser', false),
-    showPreviousAttempt: get(
-      state,
-      'test.settings.showPreviousAttempt',
-      'NONE'
-    ),
-  }))
+  connect(
+    (state) => ({
+      isCliUser: get(state, 'user.isCliUser', false),
+      showPreviousAttempt: get(
+        state,
+        'test.settings.showPreviousAttempt',
+        'NONE'
+      ),
+    }),
+    {
+      changedPlayerContent: changedPlayerContentAction,
+    }
+  )
 )
 
 export default enhance(TestItemPreview)

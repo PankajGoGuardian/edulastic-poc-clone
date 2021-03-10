@@ -6,7 +6,6 @@ import { withNamespaces } from 'react-i18next'
 import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
-import { Link } from 'react-router-dom'
 import { roleuser } from '@edulastic/constants'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -42,6 +41,7 @@ const SubscriptionHeader = ({
   title,
   orgData,
   userRole,
+  history,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -58,6 +58,10 @@ const SubscriptionHeader = ({
       'https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform',
       '_blank'
     )
+  }
+
+  const handleManageSubscription = () => {
+    history.push('/author/manage-subscriptions')
   }
 
   const isPartialPremiumUgradedUser =
@@ -131,16 +135,20 @@ const SubscriptionHeader = ({
               : 'Free'}
           </PlanText>
           {isBannerVisible && showMultipleSubscriptions && (
-            <EduButton
-              data-cy="manageSubscriptionButton"
-              isBlue
-              isGhost
-              height="24px"
-            >
-              <Link to="/author/manage-subscriptions">
-                MANAGE SUBSCRIPTIONS
-              </Link>
-            </EduButton>
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <EduButton
+                  data-cy="manageSubscriptionButton"
+                  isBlue
+                  isGhost
+                  height="24px"
+                  onClick={handleClick}
+                >
+                  MANAGE SUBSCRIPTIONS
+                </EduButton>
+              )}
+              onClick={handleManageSubscription}
+            />
           )}
           {!showRenewalOptions &&
             !(

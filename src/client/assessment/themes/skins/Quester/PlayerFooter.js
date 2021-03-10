@@ -199,7 +199,6 @@ const PlayerFooter = ({
   )
 }
 
-// export default PlayerFooter
 const enhance = compose(
   withNamespaces('student'),
   withWindowSizes,

@@ -1,18 +1,11 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-// import { LeftOutlined ,RightOutlined} from 'antd'
 import styled from 'styled-components'
 
 import { withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-// import {
-//   extraDesktopWidthMax,
-//   mediumDesktopExactWidth,
-// } from '@edulastic/colors'
-// import { IconBookmark, IconPause } from '@edulastic/icons'
 import { test as testConstants } from '@edulastic/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -26,16 +19,9 @@ import {
   FlexContainer,
   HeaderWrapper,
   HeaderMainMenu,
-  // LogoCompact,
-  // MainActionWrapper,
 } from '../../common'
 
-// import { MAX_MOBILE_WIDTH } from '../../../constants/others'
-
 import ReviewQuestionsModal from './ReviewQuestionsModal'
-// import SettingMenu from './SettingMenu'
-// import ToolBar from './ToolBar'
-// import Breadcrumb from '../../../../student/sharedComponents/Breadcrumb'
 import {
   StyledButton,
   ControlBtn,
@@ -45,7 +31,6 @@ import {
 import { themes } from '../../../../theme'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
-// import { IconRightArrow } from '../../../../author/Dashboard/components/Showcase/components/Myclasses/components/CardTextContent/styled'
 
 const {
   playerSkin: { quester },
@@ -57,37 +42,16 @@ const PlayerHeader = ({
   title,
   currentItem,
   gotoQuestion,
-  // settings,
-  // toggleBookmark,
-  // isBookmarked,
   headerRef,
-  // isMobile,
   moveToPrev,
   moveToNext,
   overlayStyle,
   options,
   skipped = [],
   bookmarks = [],
-  // changeTool,
-  // toggleToolsOpenStatus,
-  // tool,
-  // calcBrands,
-  // changeCaculateMode,
   finishTest,
-  // qType,
-  // defaultAP,
   isDocbased,
-  // items,
-  // toolsOpenStatus,
-  // handleMagnifier,
-  // enableMagnifier,
-  // toggleUserWorkUploadModal,
-  // timedAssignment,
-  // utaId,
-  // groupId,
-  // hidePause,
   blockNavigationToAnsweredQuestions = false,
-  // setSettingsModalVisibility,
   testType,
   gotoSummary,
   previewPlayer,
@@ -107,21 +71,8 @@ const PlayerHeader = ({
   const [showReviewPopup, setShowReviewPopup] = useState(false)
 
   const isFirst = () => (isDocbased ? true : currentItem === 0)
-  // const onSettingsChange = (e) => {
-  //   switch (e.key) {
-  //     case 'save':
-  //       return finishTest()
-  //     case 'enableMagnifier':
-  //       return handleMagnifier()
-  //     case 'testOptions':
-  //       return setSettingsModalVisibility(true)
-  //     default:
-  //       break
-  //   }
-  // }
 
   const handleOpen = () => {
-    // console.log("this func")
     setShowReviewPopup(true)
   }
 

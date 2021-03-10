@@ -1,7 +1,5 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import { compose } from 'redux'
-// import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { Menu } from 'antd'
@@ -16,7 +14,6 @@ const {
 } = themes
 
 const ReviewQuestionsModal = ({
-  // t,
   options,
   filterData = {},
   gotoQuestion,
@@ -131,10 +128,6 @@ const ReviewQuestionsModal = ({
     </CustomModalStyled>
   )
 }
-
-// ReviewQuestionsModal.propTypes = {
-//   t: PropTypes.func.isRequired,
-// }
 
 const enhance = compose(withNamespaces('student'))
 

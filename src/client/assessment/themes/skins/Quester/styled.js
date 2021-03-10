@@ -5,6 +5,7 @@ import { themes } from '../../../../theme'
 const {
   playerSkin: { quester },
 } = themes
+
 const { footer, header1, button } = quester
 
 export const StyledPopover = styled(Popover)`

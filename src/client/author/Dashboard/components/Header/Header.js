@@ -79,6 +79,7 @@ const getContent = ({ setvisible, needsRenewal }) => (
 )
 
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
+const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
 
 const HeaderSection = ({
   user,
@@ -120,7 +121,6 @@ const HeaderSection = ({
 
   const { user: userInfo } = user
   const { currentSignUpState } = userInfo
-  const premium = userInfo?.features?.premium
 
   useEffect(() => {
     fetchUserSubscriptionStatus()
@@ -138,14 +138,23 @@ const HeaderSection = ({
     openLaunchHangout()
   }
 
+  const isPaidPremium = !(
+    !subType ||
+    subType === 'TRIAL_PREMIUM' ||
+    subType === 'partial_premium'
+  )
+
   const isAboutToExpire = subEndDate
-    ? Date.now() + ONE_MONTH > subEndDate
+    ? Date.now() + ONE_MONTH > subEndDate && Date.now() < subEndDate + TEN_DAYS
     : false
 
   const needsRenewal =
-    (premium && isAboutToExpire) || (!premium && isSubscriptionExpired)
+    ((isPaidPremium && isAboutToExpire) ||
+      (!isPaidPremium && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
+
   const showPopup =
-    (needsRenewal || !premium) &&
+    (needsRenewal || !isPaidPremium) &&
     !['enterprise', 'partial_premium'].includes(subType)
 
   const createNewClass = () => history.push('/author/manageClass/createClass')

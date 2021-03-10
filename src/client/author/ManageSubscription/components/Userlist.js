@@ -132,6 +132,8 @@ const Userlist = ({
     // Pick only required fields to compare
     const fieldsToOmit = [
       'institutionIds',
+      'fullName',
+      'ownerLicenseIds',
       'role',
       'username',
       'userId',
@@ -139,6 +141,7 @@ const Userlist = ({
       'districtId',
       'email',
       'expiresOn',
+      'status',
     ]
     const stringInitialUsers = JSON.stringify(
       users.map((u) => omit(u, fieldsToOmit))

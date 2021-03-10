@@ -307,7 +307,7 @@ function* bulkEditUsersPermissionSaga({ payload }) {
     yield put(updateSaveButtonState(SAVE_BUTTON_STATES.VISIBLE))
     captureSentryException(err)
     notification({
-      type: 'error',
+      type: 'info',
       msg:
         err?.response?.data?.message || 'Unable to update user(s) permission.',
     })

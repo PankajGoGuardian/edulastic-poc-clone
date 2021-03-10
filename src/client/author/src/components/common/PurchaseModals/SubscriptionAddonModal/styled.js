@@ -61,27 +61,32 @@ export const NumberInputWrapper = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 15px;
-      height: 15px !important;
-      background: #878a91;
-      border-radius: 50%;
-      top: 5px;
+      width: 16px;
+      height: 16px !important;
+      top: 4px;
       position: absolute;
       border: none;
       font-weight: 500 !important;
-    }
-    .ant-input-number-handler-up {
-      margin-left: -110px;
-      &:before {
-        content: '+';
-        color: white;
+      &:before,
+      &:after {
+        font-family: 'fontAwesome';
+        font-size: 17px;
+        color: #878a91;
+        font-weight: normal;
+      }
+      &-disabled {
+        opacity: 0.3;
       }
     }
     .ant-input-number-handler-down {
+      margin-left: -110px;
+      &:before {
+        content: '\f056';
+      }
+    }
+    .ant-input-number-handler-up {
       &:after {
-        content: '-';
-        color: white;
-        margin-top: -2px;
+        content: '\f055';
       }
     }
   }

@@ -8,7 +8,6 @@ function TabWrapper({
   testReviewStyle,
   children,
   showBorder,
-  marginTop,
   updatePositionToStore,
   questionId,
   updatePosition,
@@ -69,7 +68,6 @@ function TabWrapper({
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        marginTop,
         minHeight: tabHeight || '',
       }}
       className="question-tab-container"

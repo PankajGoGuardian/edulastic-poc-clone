@@ -207,6 +207,32 @@ function* checkAssessmentExpiredDetails({
   }
 }
 
+const createQuestionActiviy = (item = {}, question = {}, testActivity = {}) => {
+  const qActivity = {
+    qid: question.id,
+    testActivityId: testActivity._id,
+    testItemId: item._id,
+    groupId: testActivity.groupId,
+    assignedBy: testActivity.assignedBy,
+    assignmentId: testActivity.assignmentId,
+    autoGrade: item.autoGrade,
+    bookmarked: false,
+    correct: false,
+    districtId: testActivity.districtId,
+    evaluation: {},
+    graded: item.autoGrade,
+    maxScore: item.maxScore,
+    qLabel: question.barLabel,
+    qType: question.type,
+    score: item.autoGrade ? 0 : '',
+    scratchPad: { scratchpad: false },
+    skipped: item.autoGrade,
+    testId: testActivity.testId,
+    timeSpent: 0,
+  }
+  return qActivity
+}
+
 function* loadTestActivityReport({ payload }) {
   try {
     const { testActivityId, groupId, testId } = payload
@@ -290,7 +316,7 @@ function* loadTestActivityReport({ payload }) {
       }
       return question
     })
-    const { questionActivities = [] } = reports
+    const { questionActivities = [], testActivity = {} } = reports
     const { passages = [] } = test
     const scratchpadUsedItems = questionActivities.filter((activity) => {
       const { scratchPad: { scratchpad = false } = {}, qType } = activity
@@ -319,6 +345,10 @@ function* loadTestActivityReport({ payload }) {
           draft.data.questions.forEach((question) => {
             if (qActsKeysByQid[`${item._id}_${question.id}`]) {
               question.activity = qActsKeysByQid[`${item._id}_${question.id}`]
+            } else {
+              const uqa = createQuestionActiviy(item, question, testActivity)
+              reports.questionActivities.push(uqa)
+              question.activity = uqa
             }
           })
         })

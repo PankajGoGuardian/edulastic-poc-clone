@@ -11,6 +11,7 @@ import {
   getEvaluationByIdSelector,
   getUserPrevAnswerSelector,
 } from '../../selectors/answers'
+import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
 
 const getQuestionId = (questionId) => questionId || 'tmp'
 
@@ -21,6 +22,7 @@ export default (WrappedComponent) => {
     evaluation,
     userAnswer: _userAnswer,
     userPrevAnswer,
+    changedPlayerContent,
     ...props
   }) => {
     const { data: question } = props
@@ -31,6 +33,7 @@ export default (WrappedComponent) => {
         const _testItemId =
           testItemId || props.itemId || props.data?.activity?.testItemId
         setUserAnswer(_testItemId, questionId, data)
+        changedPlayerContent()
       }
     }
 
@@ -72,6 +75,7 @@ export default (WrappedComponent) => {
       },
       {
         setUserAnswer: setUserAnswerAction,
+        changedPlayerContent: changedPlayerContentAction,
       }
     )
   )

@@ -108,6 +108,7 @@ const AddUsersModal = ({
         limit: 25,
         page: 1,
         role: 'teacher',
+        status: 1,
       }
       const { result } = await userApi.fetchUsers(searchData)
       const addedUsersEmails = users.map((x) => x.email)

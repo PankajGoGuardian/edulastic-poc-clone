@@ -45,12 +45,13 @@ const LicensesInvoiceTable = ({
   licensesData,
   handleViewLicense,
   openArchiveAlert,
+  searchType,
 }) => {
   const columns = [
     {
-      title: 'Invoice Id',
-      dataIndex: 'invoiceId',
-      render: (invoiceId) => <span>{invoiceId}</span>,
+      title: 'Serial No',
+      dataIndex: 'serialNo',
+      render: (serialNo) => <span>{serialNo}</span>,
       width: 100,
       align: 'center',
     },
@@ -115,7 +116,7 @@ const LicensesInvoiceTable = ({
       <h2>The list of active Licenses are :</h2>
       <Table
         columns={columns}
-        rowKey={(record) => record.userId}
+        rowKey={(record) => `${record.serialNo}-${searchType}`}
         dataSource={licensesData.map((el, index) => ({ ...el, index }))}
         pagination={false}
         bordered
@@ -129,6 +130,7 @@ const SearchFilters = Form.create({
 })(
   ({
     form: { getFieldDecorator, validateFields },
+    setPage,
     fetchLicensesBySearchType,
     setSearchType,
   }) => {
@@ -138,6 +140,7 @@ const SearchFilters = Form.create({
       validateFields((err, { searchType }) => {
         if (!err) {
           setSearchType(searchType)
+          setPage(1)
           fetchLicensesBySearchType({
             type: searchType,
             page: 1,
@@ -293,6 +296,7 @@ const ManageSubscriptionsByLicenses = ({
         <SearchFilters
           fetchLicensesBySearchType={fetchLicensesBySearchType}
           setSearchType={setSearchType}
+          setPage={setPage}
         />
         <EduButton isBlue onClick={handleAddSubscription}>
           Add Subscription
@@ -303,6 +307,7 @@ const ManageSubscriptionsByLicenses = ({
         handleViewLicense={handleViewLicense}
         handleDeleteLicense={handleDeleteLicense}
         openArchiveAlert={openArchiveAlert}
+        searchType={searchType}
       />
       <Pagination
         hideOnSinglePage

@@ -598,9 +598,8 @@ class Container extends Component {
           )}
           <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
             {useLanguageFeatureQn.includes(questionType) &&
-              (allowedToSelectMultiLanguage || isAuthorOrCurator) && (
-                <LanguageSelector />
-              )}
+              allowedToSelectMultiLanguage &&
+              isAuthorOrCurator && <LanguageSelector />}
             {view !== 'preview' && view !== 'auditTrail' && (
               <EduButton
                 isGhost

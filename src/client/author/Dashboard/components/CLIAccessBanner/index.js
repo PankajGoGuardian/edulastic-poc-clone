@@ -27,6 +27,7 @@ const CLIAccessBanner = ({
   logout,
   location,
   isCliUser,
+  openIdProvider,
 }) => {
   const [isVisible, setVisible] = useState(false)
 
@@ -38,13 +39,14 @@ const CLIAccessBanner = ({
 
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
-  const isShowBanner = cliUser || isCliUser
+  const isShowBanner = !(openIdProvider === 'CLI' || cliUser || isCliUser)
 
   const toggleDropdown = () => {
     setVisible(!isVisible)
   }
+
   return (
-    !isShowBanner && (
+    isShowBanner && (
       <Modal
         open={visible}
         onClose={() => {}}
@@ -122,6 +124,7 @@ export default connect(
     firstName: state.user.user.firstName,
     lastName: state.user.user.lastName,
     isCliUser: get(state, 'user.isCliUser', false),
+    openIdProvider: state.user?.user?.openIdProvider,
   }),
   {
     logout: logoutAction,

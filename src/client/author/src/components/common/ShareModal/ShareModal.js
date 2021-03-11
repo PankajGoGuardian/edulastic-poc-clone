@@ -488,9 +488,7 @@ class ShareModal extends React.Component {
     const individuals = sharedUsersList.filter(
       (item) => item.sharedType === sharedKeysObj.INDIVIDUAL
     )
-    const others = sharedUsersList.filter(
-      (item) => item.sharedType !== sharedKeysObj.INDIVIDUAL
-    )
+
     return (
       <SharingModal
         width="700px"
@@ -506,15 +504,19 @@ class ShareModal extends React.Component {
               : 'Collaborate with other Co-Authors'}
           </h2>
           <ShareBlock>
-            <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
-            <FlexContainer>
-              {sharedUsersList.length === 0 && (
-                <CopyBlockLayer onClick={this.handleCopyBlock} />
-              )}
-              <TitleCopy copyable={{ text: sharableURL }}>
-                <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
-              </TitleCopy>
-            </FlexContainer>
+            {isPublished && (
+              <>
+                <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
+                <FlexContainer>
+                  {sharedUsersList.length === 0 && (
+                    <CopyBlockLayer onClick={this.handleCopyBlock} />
+                  )}
+                  <TitleCopy copyable={{ text: sharableURL }}>
+                    <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
+                  </TitleCopy>
+                </FlexContainer>
+              </>
+            )}
             {isPublished && sharedUsersList.length !== 0 && (
               <>
                 <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
@@ -536,22 +538,6 @@ class ShareModal extends React.Component {
                 <ShareListTitle>CO-AUTHORS FOR THIS TEST</ShareListTitle>
                 <ShareList>
                   {individuals.map((data, index) => (
-                    <SharedRow
-                      data={data}
-                      index={index}
-                      getEmail={() => this.getEmail(data)}
-                      getUserName={() => this.getUserName(data)}
-                      removeHandler={() => this.removeHandler(data)}
-                    />
-                  ))}
-                </ShareList>
-              </>
-            )}
-            {!isPublished && !!others.length && (
-              <>
-                <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
-                <ShareList>
-                  {others.map((data, index) => (
                     <SharedRow
                       data={data}
                       index={index}

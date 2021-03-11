@@ -102,13 +102,20 @@ const StaticMath = ({
   const handleFocusInner = (innerField) => {
     const { innerFields = [] } = mQuill.current
     innerFields.forEach((field) => {
+      // remove retaining cursors from other input fields
       if (field.id !== innerField.id) {
-        const cursors = field?.el()?.querySelectorAll('.mq-cursor')
-        if (!isEmpty(cursors)) {
-          field?.__controller?.cursor?.hide()?.parent?.blur()
-        }
-        cursors.forEach((cursor) => {
-          cursor.remove()
+        field?.__controller?.cursor?.hide()?.parent?.blur()
+      }
+
+      // check current input field.
+      //  when there are more than two cursors,
+      // remove them except that last one.
+      const cursors = field?.el()?.querySelectorAll('.mq-cursor')
+      if (cursors.length > 1) {
+        cursors.forEach((cursor, index) => {
+          if (index < cursors.length - 1) {
+            cursor.remove()
+          }
         })
       }
     })

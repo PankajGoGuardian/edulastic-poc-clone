@@ -119,6 +119,7 @@ export const CLEAR_ITEM_DETAIL = '[itemDetail] clear item detail'
 export const SET_ITEM_DETAIL_DATA = '[itemDetail] set data'
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
   '[itemDetail] set item level scoring'
+export const SET_ITEM_DETAIL_MULTIPART_EVALUATION_SETTING = '[itemDetail] set multipart evaluation setting'
 export const SET_ITEM_LEVEL_SCORING_FROM_RUBRIC =
   '[itemDetail] set item level scoring from rubric'
 export const SET_ITEM_DETAIL_SCORE = '[itemDetail] set item score'
@@ -343,6 +344,7 @@ export const clearRedirectTestAction = createAction(ITEM_CLEAR_REDIRECT_TEST)
 export const setItemLevelScoringAction = createAction(
   SET_ITEM_DETAIL_ITEM_LEVEL_SCORING
 )
+export const setMultipartEvaluationSettingAction = createAction(SET_ITEM_DETAIL_MULTIPART_EVALUATION_SETTING)
 export const setItemLevelScoreAction = createAction(SET_ITEM_DETAIL_SCORE)
 export const incrementItemLevelScore = createAction(INC_ITEM_DETAIL_SCORE)
 export const decrementItemLevelScore = createAction(DEC_ITEM_DETAIL_SCORE)
@@ -780,6 +782,9 @@ export function reducer(state = initialState, { type, payload }) {
 
     case SET_ITEM_DETAIL_ITEM_LEVEL_SCORING:
       return { ...state, item: { ...state.item, itemLevelScoring: !!payload } }
+
+    case SET_ITEM_DETAIL_MULTIPART_EVALUATION_SETTING:
+      return { ...state, item: { ...state.item, [payload.type]: payload.value } }
 
     case SET_ITEM_LEVEL_SCORING_FROM_RUBRIC:
       return { ...state, item: { ...state.item, itemLevelScoring: !!payload } }

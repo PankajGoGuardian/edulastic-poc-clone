@@ -135,7 +135,25 @@
       "showVerticalDivider": "Show vertical divider",
       "enableScrolling": "Enable Scrolling For Long Content",
       "tags": "Tags",
-      "flowLayout": "Use Flow Layout"
+      "flowLayout": "Use Flow Layout",
+      "multipartSettings": "Multipart Settings",
+      "itemScoringType": "Score Allocation & Reporting",
+      "itemGradingType": "Scoring of Item",
+      "partScoringType": "Scoring of Part",
+      "multipartSettingsOptions": {
+        "itemScoringType": {
+          "itemLevelScoring": "Single score for entire item",
+          "partLevelScoring": "Part Level Scores"
+        },
+        "itemGradingType": {
+          "allCorrectMust": "All parts need to be correct",
+          "firstCorrectMust": "First part has to be correct(EBSR Grading)",
+          "anyCorrect": "Any of the parts can be correct"
+        },
+        "partScoringType": {
+          "assignPartialCredit": "Assign partial credit if applicable"
+        }
+      }
     },
     "pickupcomponent": {
       "headertitle": "Select a Question or Resource",

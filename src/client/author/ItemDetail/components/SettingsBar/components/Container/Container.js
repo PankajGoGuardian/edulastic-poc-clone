@@ -1,7 +1,8 @@
 import { themeColor, title } from '@edulastic/colors'
-import { Button, CheckboxLabel, EduSwitchStyled } from '@edulastic/common'
+import { Button, CheckboxLabel, EduSwitchStyled, RadioGrp, RadioBtn, FieldLabel } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
+import { keys as _keys } from 'lodash'
 import { Col, Row } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -16,6 +17,7 @@ import {
   Items,
   SettingsButtonWrapper,
 } from './styled'
+import { multipartEvaluationSettings, ITEM_SCORING_TYPE, PART_SCORING_TYPE } from '../../../../constants'
 
 const layouts = [
   {
@@ -119,6 +121,29 @@ class Container extends Component {
     onCancel()
   }
 
+  handleSettingsChange = (e) => {
+    const { setItemLevelScoring, setMultipartEvaluationSetting } = this.props
+    const type = e.target.name
+    const value = type === PART_SCORING_TYPE ? e.target.checked : e.target.value
+    switch(type) {
+      case ITEM_SCORING_TYPE:
+        setItemLevelScoring(value === 'itemLevelScoring')
+        break
+      default:
+        setMultipartEvaluationSetting({type, value})
+        break
+    }
+  }
+
+  getRadioCheckedOption = (setting, opt) => {
+    const { itemGradingType, itemLevelScoring } = this.props
+    if (setting === ITEM_SCORING_TYPE) {
+      return opt === 'itemLevelScoring' ? itemLevelScoring : !itemLevelScoring
+    } else {
+      return opt === itemGradingType
+    }
+  }
+
   render() {
     const {
       onCancel,
@@ -140,9 +165,10 @@ class Container extends Component {
       isMultiDimensionLayout,
       isPassageQuestion,
       disableScoringLevel = false,
+      itemGradingType,
+      partScoringType
     } = this.props
     const singleLayout = type === layouts[0].value
-
     const multipleItemsSettings = () => (
       <>
         <SettingsButtonWrapper justifyContent="flex-end">
@@ -159,7 +185,64 @@ class Container extends Component {
             <IconClose color={title} />
           </Button>
         </SettingsButtonWrapper>
+        <Heading>{t('author:component.settingsBar.multipartSettings')}</Heading>
+
+        {_keys(multipartEvaluationSettings).map((setting) => (
+          <Row
+            type="flex"
+            style={{
+              flexDirection: 'column',
+              borderRadius: '5px',
+              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.07)',
+              padding: '15px',
+              marginBottom: '20px',
+              backgroundColor: '#fff',
+            }}
+          >
+            <Row
+              style={{
+                color: themeColor,
+                fontSize: '13px',
+                fontWeight: '600',
+                marginBottom: '8px',
+              }}
+            >
+              {t(`author:component.settingsBar.${setting}`)}
+            </Row>
+            {setting === PART_SCORING_TYPE ? (
+              <Checkboxes>
+                {multipartEvaluationSettings[setting].map((opt) => (
+                  <CheckboxLabel name={setting} onChange={(e) => this.handleSettingsChange(e)} checked={partScoringType}>
+                    {t(`author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`)}
+                  </CheckboxLabel>
+                ))}
+              </Checkboxes>
+            ): (
+              <RadioGrp name={setting}>
+                {multipartEvaluationSettings[setting].map((opt) => (
+                  <RadioBtn
+                    key={opt}
+                    value={opt}
+                    mb="20px"
+                    vertical
+                    checked={this.getRadioCheckedOption(setting, opt)}
+                    onClick={(e) => this.handleSettingsChange(e)}
+                  >
+                    <FieldLabel
+                      marginBottom='0px'
+                      display='inline-block'
+                    >
+                      {t(`author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`)}
+                    </FieldLabel>
+                  </RadioBtn>
+                ))}
+              </RadioGrp>
+            )}
+          </Row>
+        ))}
+
         <Heading>{t('author:component.settingsBar.layout')}</Heading>
+
         <Items>
           {layouts.map((item) => (
             <SettingsBarItem
@@ -190,7 +273,7 @@ class Container extends Component {
           />
         )}
 
-        {questionsCount > 1 && (
+        {/* {questionsCount > 1 && (
           <Row
             type="flex"
             style={{
@@ -225,7 +308,7 @@ class Container extends Component {
               </Col>
             </Row>
           </Row>
-        )}
+        )} */}
         {!isMultipart && (
           <Checkboxes>
             <CheckboxLabel

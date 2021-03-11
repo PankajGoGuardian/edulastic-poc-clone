@@ -36,6 +36,8 @@ const patternsByQuestionType = {
     ...commonPatterns,
     /options\.(\d)/,
     /stems\.(.*\d+)/,
+    /uiStyle\.optionRowTitle/,
+    /uiStyle\.stemTitle/,
   ],
   [questionType.CLOZE_DROP_DOWN]: [
     ...commonPatterns,

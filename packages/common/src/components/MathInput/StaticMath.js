@@ -114,7 +114,6 @@ const StaticMath = ({
       if (cursors.length > 1) {
         cursors.forEach((cursor, index) => {
           if (index < cursors.length - 1) {
-            console.log(index, cursors.length)
             cursor.remove()
           }
         })

@@ -694,17 +694,21 @@ function* loadTest({ payload }) {
           questionIndex++
         }
       }
+      const playerTestType =
+        testType === testContants.type.COMMON
+          ? testContants.type.ASSESSMENT
+          : testType
       if (testItems.length === questionIndex) {
         yield put(
           push(
-            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
+            `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
           )
         )
       } else {
         const itemId = testItems[questionIndex]._id
         yield put(
           push(
-            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
+            `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
           )
         )
       }

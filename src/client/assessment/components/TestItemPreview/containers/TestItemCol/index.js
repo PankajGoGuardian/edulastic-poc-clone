@@ -30,14 +30,18 @@ class TestItemCol extends Component {
   constructor() {
     super()
     this.state = {
-      value: 0,
+      currentTab: 0,
     }
   }
 
-  handleTabChange = (value) => {
-    this.setState({
-      value,
-    })
+  handleTabChange = (tabIndex) => {
+    const { changedPlayerContent } = this.props
+    this.setState(
+      {
+        currentTab: tabIndex,
+      },
+      () => changedPlayerContent()
+    )
   }
 
   renderTabContent = (widget, flowLayout, widgetIndex, showStackedView) => {
@@ -258,7 +262,7 @@ class TestItemCol extends Component {
       saveUserWork,
       ...restProps
     } = this.props
-    const { value } = this.state
+    const { currentTab } = this.state
     const {
       showStackedView,
       viewComponent,
@@ -277,7 +281,7 @@ class TestItemCol extends Component {
     return (
       <Container
         style={style}
-        value={value}
+        value={currentTab}
         colWidth={colWidth}
         viewComponent={viewComponent}
         showScratchpad={this.showScratchpad}
@@ -292,7 +296,7 @@ class TestItemCol extends Component {
         {!isPrintPreview && (
           <>
             {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
-              <Tabs value={value} onChange={this.handleTabChange}>
+              <Tabs value={currentTab} onChange={this.handleTabChange}>
                 {col.tabs.map((tab, tabIndex) => (
                   <Tabs.Tab
                     key={tabIndex}
@@ -310,7 +314,7 @@ class TestItemCol extends Component {
             {col.tabs &&
               windowWidth < MAX_MOBILE_WIDTH &&
               !!col.tabs.length &&
-              value === 0 && (
+              currentTab === 0 && (
                 <MobileRightSide onClick={() => this.handleTabChange(1)}>
                   <IconArrow type="left" />
                 </MobileRightSide>
@@ -318,7 +322,7 @@ class TestItemCol extends Component {
             {col.tabs &&
               windowWidth < MAX_MOBILE_WIDTH &&
               !!col.tabs.length &&
-              value === 1 && (
+              currentTab === 1 && (
                 <MobileLeftSide onClick={() => this.handleTabChange(0)}>
                   <IconArrow type="right" />
                 </MobileLeftSide>
@@ -335,7 +339,7 @@ class TestItemCol extends Component {
               <React.Fragment key={i}>
                 {col.tabs &&
                   !!col.tabs.length &&
-                  value === widget.tabIndex &&
+                  currentTab === widget.tabIndex &&
                   !isPrintPreview &&
                   this.renderTabContent(
                     widget,

@@ -76,7 +76,11 @@ const PurchaseFlowModals = (props) => {
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
 
-  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+  const isPaidPremium = !(
+    !subType ||
+    subType === 'TRIAL_PREMIUM' ||
+    subType === 'partial_premium'
+  )
   const [selectedProductIds, setSelectedProductIds] = useState(
     getInitialSelectedProductIds({
       defaultSelectedProductIds,

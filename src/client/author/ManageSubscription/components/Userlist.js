@@ -11,6 +11,7 @@ import {
   omit,
   isUndefined,
   omitBy,
+  isEmpty,
 } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
@@ -19,7 +20,7 @@ import { StyledAntdTable, SaveButton } from './styled'
 
 const getClubbedValue = (prev = [], curr) => prev.concat(curr)
 
-const getUpdatedValue = (attr, userId, data, licenseId) =>
+const getUpdatedValue = (isManageLicense, attr, userId, data, licenseId) =>
   produce(data, (draft) => {
     if (!draft[licenseId] && licenseId) {
       draft[licenseId] = {}
@@ -28,14 +29,14 @@ const getUpdatedValue = (attr, userId, data, licenseId) =>
       const key = 'userIdsToAdd'
       if (licenseId) {
         draft[licenseId][key] = getClubbedValue(draft[licenseId][key], userId)
-      } else {
+      } else if (isManageLicense) {
         draft[key] = getClubbedValue(draft[key], userId)
       }
     } else {
       const key = 'userIdsToRemove'
       if (licenseId) {
         draft[licenseId][key] = getClubbedValue(draft[licenseId][key], userId)
-      } else {
+      } else if (isManageLicense) {
         draft[key] = getClubbedValue(draft[key], userId)
       }
     }
@@ -81,11 +82,22 @@ const Userlist = ({
 
   const keyedByUserId = useMemo(() => keyBy(users, 'userId'), [users])
 
+  const isTeacherPremiumExists = useMemo(() => {
+    return !isEmpty(
+      dynamicColumns.find(({ dataIndex }) => dataIndex === 'PREMIUM')
+    )
+  }, [dynamicColumns])
+
   const onChangeHandler = (userId, key, isChecked) => {
     const newUsers = currentUsers.map((user) => {
       if (user.userId === userId) {
         const newUser = JSON.parse(JSON.stringify(user))
-        if (key.startsWith('ITEM_BANK_') && isChecked && !newUser.PREMIUM) {
+        if (
+          key.startsWith('ITEM_BANK_') &&
+          isChecked &&
+          !newUser.PREMIUM &&
+          isTeacherPremiumExists
+        ) {
           newUser.PREMIUM = keyedByUserId[userId].PREMIUM || true
         }
 
@@ -275,6 +287,7 @@ const Userlist = ({
       )) {
         if (isBoolean(permissions[type]) && !type.startsWith(`TRIAL_`)) {
           licensesPermission = getUpdatedValue(
+            false,
             permissions[type],
             userId,
             licensesPermission,
@@ -285,6 +298,7 @@ const Userlist = ({
 
       if (isBoolean(hasManageLicense)) {
         manageLicensePermission = getUpdatedValue(
+          true,
           hasManageLicense,
           userId,
           manageLicensePermission

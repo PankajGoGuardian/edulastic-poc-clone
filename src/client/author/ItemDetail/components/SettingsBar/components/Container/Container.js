@@ -1,9 +1,16 @@
 import { themeColor, title } from '@edulastic/colors'
-import { Button, CheckboxLabel, EduSwitchStyled, RadioGrp, RadioBtn, FieldLabel } from '@edulastic/common'
+import {
+  Button,
+  CheckboxLabel,
+  // EduSwitchStyled,
+  // RadioGrp,
+  RadioBtn,
+  FieldLabel,
+} from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { keys as _keys } from 'lodash'
-import { Col, Row } from 'antd'
+import { Row } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import ReactOutsideEvent from 'react-outside-event'
@@ -13,11 +20,16 @@ import SettingsFlowLayout from '../SettingsFlowLayout/SettingFlowLayout'
 import {
   Checkboxes,
   Content,
+  FlexRadioGroup,
   Heading,
   Items,
   SettingsButtonWrapper,
 } from './styled'
-import { multipartEvaluationSettings, ITEM_SCORING_TYPE, PART_SCORING_TYPE } from '../../../../constants'
+import {
+  multipartEvaluationSettings,
+  ITEM_SCORING_TYPE,
+  PART_SCORING_TYPE,
+} from '../../../../constants'
 
 const layouts = [
   {
@@ -125,12 +137,12 @@ class Container extends Component {
     const { setItemLevelScoring, setMultipartEvaluationSetting } = this.props
     const type = e.target.name
     const value = type === PART_SCORING_TYPE ? e.target.checked : e.target.value
-    switch(type) {
+    switch (type) {
       case ITEM_SCORING_TYPE:
         setItemLevelScoring(value === 'itemLevelScoring')
         break
       default:
-        setMultipartEvaluationSetting({type, value})
+        setMultipartEvaluationSetting({ type, value })
         break
     }
   }
@@ -139,9 +151,8 @@ class Container extends Component {
     const { itemGradingType, itemLevelScoring } = this.props
     if (setting === ITEM_SCORING_TYPE) {
       return opt === 'itemLevelScoring' ? itemLevelScoring : !itemLevelScoring
-    } else {
-      return opt === itemGradingType
     }
+    return opt === itemGradingType
   }
 
   render() {
@@ -157,16 +168,16 @@ class Container extends Component {
       scrolling,
       onVerticalDividerChange,
       onScrollingChange,
-      itemLevelScoring,
-      setItemLevelScoring,
-      questionsCount,
+      // itemLevelScoring,
+      // setItemLevelScoring,
+      // questionsCount,
       isSingleQuestion = false,
       isMultipart,
       isMultiDimensionLayout,
       isPassageQuestion,
-      disableScoringLevel = false,
-      itemGradingType,
-      partScoringType
+      // disableScoringLevel = false,
+      // itemGradingType,
+      partScoringType,
     } = this.props
     const singleLayout = type === layouts[0].value
     const multipleItemsSettings = () => (
@@ -212,13 +223,19 @@ class Container extends Component {
             {setting === PART_SCORING_TYPE ? (
               <Checkboxes>
                 {multipartEvaluationSettings[setting].map((opt) => (
-                  <CheckboxLabel name={setting} onChange={(e) => this.handleSettingsChange(e)} checked={partScoringType}>
-                    {t(`author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`)}
+                  <CheckboxLabel
+                    name={setting}
+                    onChange={(e) => this.handleSettingsChange(e)}
+                    checked={partScoringType}
+                  >
+                    {t(
+                      `author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`
+                    )}
                   </CheckboxLabel>
                 ))}
               </Checkboxes>
-            ): (
-              <RadioGrp name={setting}>
+            ) : (
+              <FlexRadioGroup name={setting}>
                 {multipartEvaluationSettings[setting].map((opt) => (
                   <RadioBtn
                     key={opt}
@@ -228,15 +245,14 @@ class Container extends Component {
                     checked={this.getRadioCheckedOption(setting, opt)}
                     onClick={(e) => this.handleSettingsChange(e)}
                   >
-                    <FieldLabel
-                      marginBottom='0px'
-                      display='inline-block'
-                    >
-                      {t(`author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`)}
+                    <FieldLabel marginBottom="0px" display="inline-block">
+                      {t(
+                        `author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`
+                      )}
                     </FieldLabel>
                   </RadioBtn>
                 ))}
-              </RadioGrp>
+              </FlexRadioGroup>
             )}
           </Row>
         ))}

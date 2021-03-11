@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { title, cardBg, mobileWidth } from '@edulastic/colors'
+import { Radio } from 'antd'
 
 export const Content = styled.div`
   width: 25vw;
@@ -46,5 +47,20 @@ export const Checkboxes = styled.div`
     color: rgba(67, 75, 93, 0.9);
     font-weight: bold;
     font-size: 13px;
+  }
+`
+
+export const FlexRadioGroup = styled(Radio.Group)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .ant-radio-wrapper {
+    display: flex;
+    span:nth-child(2) {
+      label {
+        white-space: normal;
+      }
+    }
   }
 `

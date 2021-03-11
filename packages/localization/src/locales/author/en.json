@@ -147,7 +147,7 @@
         },
         "itemGradingType": {
           "allCorrectMust": "All parts need to be correct",
-          "firstCorrectMust": "First part has to be correct(EBSR Grading)",
+          "firstCorrectMust": "First part has to be correct (EBSR Grading)",
           "anyCorrect": "Any of the parts can be correct"
         },
         "partScoringType": {

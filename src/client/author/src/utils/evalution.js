@@ -3,14 +3,34 @@ import produce from 'immer'
 import evaluators from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
 
+// TODO use this helper to get final score and refactor score logic below
+// const getAchievedScore = (
+//   itemLevelScoring,
+//   itemLevelScore,
+//   itemGradingType,
+//   totalScore,
+//   allCorrect,
+//   firstCorrect
+// ) => {
+//   if (itemGradingType === 'FIRST_CORRECT' && !firstCorrect) {
+//     return 0
+//   }
+//   if (itemLevelScoring) {
+//     return min([itemLevelScore, allCorrect ? itemLevelScore : totalScore])
+//   }
+//   return totalScore
+// }
+
 export const evaluateItem = async (
   answers,
   validations,
   itemLevelScoring = false,
   itemLevelScore = 0,
-  itemId = ''
+  itemId = '',
+  itemGradingType
 ) => {
   const questionIds = Object.keys(validations)
+  console.log(questionIds, validations)
   const results = {}
   let totalScore = 0
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0
@@ -18,7 +38,8 @@ export const evaluateItem = async (
     (x) => validations?.[x]?.validation
   ).length
   let allCorrect = true
-  for (const id of questionIds) {
+  let firstCorrect = false
+  for (const [index, id] of questionIds.entries()) {
     const evaluationId = `${itemId}_${id}`
     const answer = answers[id]
     if (validations && validations[id]) {
@@ -49,10 +70,21 @@ export const evaluateItem = async (
           },
           type
         )
-        if (allCorrect) {
-          allCorrect = score === maxScore
-        }
 
+        const isCorrect = score === maxScore
+        if (allCorrect) {
+          allCorrect = isCorrect
+        }
+        if (itemGradingType === 'FIRST_CORRECT' && index === 0) {
+          firstCorrect = isCorrect
+        }
+        console.log('current id', id, {
+          evaluation,
+          score,
+          maxScore,
+          itemGradingType,
+          firstCorrect,
+        })
         results[evaluationId] = evaluation
         if (itemLevelScoring) {
           totalScore += round(score, 2)
@@ -68,12 +100,26 @@ export const evaluateItem = async (
       results[evaluationId] = []
     }
   }
+  console.info({ results, firstCorrect })
   if (itemLevelScoring) {
+    let achievedScore = min([
+      itemLevelScore,
+      allCorrect ? itemLevelScore : totalScore,
+    ])
+    if (itemGradingType === 'FIRST_CORRECT' && !firstCorrect) {
+      achievedScore = 0
+    }
+
     return {
       evaluation: results,
       maxScore: itemLevelScore,
-      score: min([itemLevelScore, allCorrect ? itemLevelScore : totalScore]),
+      score: achievedScore,
     }
   }
+
+  if (itemGradingType === 'FIRST_CORRECT' && !firstCorrect) {
+    totalScore = 0
+  }
+
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore }
 }

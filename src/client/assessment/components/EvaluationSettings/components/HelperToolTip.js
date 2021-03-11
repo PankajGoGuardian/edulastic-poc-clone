@@ -6,7 +6,13 @@ import { MathSpan, FieldLabel, replaceLatexTemplate } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { IconCharInfo } from '@edulastic/icons'
 
-const HelperToolTip = ({ t, optionKey, large, isGraph }) => {
+const HelperToolTip = ({
+  t,
+  optionKey,
+  large,
+  isGraph,
+  placement = 'right',
+}) => {
   const text = useMemo(() => {
     let helperTextKey = `component.math.helperText.${optionKey}`
     if (isGraph && optionKey === 'tolerance') {
@@ -42,7 +48,7 @@ const HelperToolTip = ({ t, optionKey, large, isGraph }) => {
   return (
     <Wrapper>
       {hasHelperText && (
-        <Popover content={content} placement="right" zIndex={1500}>
+        <Popover content={content} placement={placement} zIndex={1500}>
           <InfoIcon />
         </Popover>
       )}

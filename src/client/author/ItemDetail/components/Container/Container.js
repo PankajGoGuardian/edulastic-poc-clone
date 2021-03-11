@@ -1139,6 +1139,7 @@ Container.propTypes = {
   view: PropTypes.string.isRequired,
   addWidgetToPassage: PropTypes.func.isRequired,
   itemDeleting: PropTypes.any.isRequired,
+  setMultipartEvaluationSetting: PropTypes.func,
 }
 
 Container.defaultProps = {

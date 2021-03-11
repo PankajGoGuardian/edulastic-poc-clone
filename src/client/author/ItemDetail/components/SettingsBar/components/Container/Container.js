@@ -30,6 +30,7 @@ import {
   ITEM_SCORING_TYPE,
   PART_SCORING_TYPE,
 } from '../../../../constants'
+import HelperToolTip from '../../../../../../assessment/components/EvaluationSettings/components/HelperToolTip'
 
 const layouts = [
   {
@@ -170,7 +171,7 @@ class Container extends Component {
       onScrollingChange,
       // itemLevelScoring,
       // setItemLevelScoring,
-      // questionsCount,
+      questionsCount,
       isSingleQuestion = false,
       isMultipart,
       isMultiDimensionLayout,
@@ -198,64 +199,66 @@ class Container extends Component {
         </SettingsButtonWrapper>
         <Heading>{t('author:component.settingsBar.multipartSettings')}</Heading>
 
-        {_keys(multipartEvaluationSettings).map((setting) => (
-          <Row
-            type="flex"
-            style={{
-              flexDirection: 'column',
-              borderRadius: '5px',
-              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.07)',
-              padding: '15px',
-              marginBottom: '20px',
-              backgroundColor: '#fff',
-            }}
-          >
+        {questionsCount > 1 &&
+          _keys(multipartEvaluationSettings).map((setting) => (
             <Row
+              type="flex"
               style={{
-                color: themeColor,
-                fontSize: '13px',
-                fontWeight: '600',
-                marginBottom: '8px',
+                flexDirection: 'column',
+                borderRadius: '5px',
+                boxShadow: '0 2px 5px 0 rgba(0,0,0,0.07)',
+                padding: '15px',
+                marginBottom: '20px',
+                backgroundColor: '#fff',
               }}
             >
-              {t(`author:component.settingsBar.${setting}`)}
-            </Row>
-            {setting === PART_SCORING_TYPE ? (
-              <Checkboxes>
-                {multipartEvaluationSettings[setting].map((opt) => (
-                  <CheckboxLabel
-                    name={setting}
-                    onChange={(e) => this.handleSettingsChange(e)}
-                    checked={partScoringType}
-                  >
-                    {t(
-                      `author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`
-                    )}
-                  </CheckboxLabel>
-                ))}
-              </Checkboxes>
-            ) : (
-              <FlexRadioGroup name={setting}>
-                {multipartEvaluationSettings[setting].map((opt) => (
-                  <RadioBtn
-                    key={opt}
-                    value={opt}
-                    mb="20px"
-                    vertical
-                    checked={this.getRadioCheckedOption(setting, opt)}
-                    onClick={(e) => this.handleSettingsChange(e)}
-                  >
-                    <FieldLabel marginBottom="0px" display="inline-block">
+              <Row
+                style={{
+                  color: themeColor,
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  marginBottom: '8px',
+                }}
+              >
+                {t(`author:component.settingsBar.${setting}`)}
+              </Row>
+              {setting === PART_SCORING_TYPE ? (
+                <Checkboxes>
+                  {multipartEvaluationSettings[setting].map((opt) => (
+                    <CheckboxLabel
+                      name={setting}
+                      onChange={(e) => this.handleSettingsChange(e)}
+                      checked={partScoringType}
+                    >
                       {t(
                         `author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`
                       )}
-                    </FieldLabel>
-                  </RadioBtn>
-                ))}
-              </FlexRadioGroup>
-            )}
-          </Row>
-        ))}
+                    </CheckboxLabel>
+                  ))}
+                </Checkboxes>
+              ) : (
+                <FlexRadioGroup name={setting}>
+                  {multipartEvaluationSettings[setting].map((opt) => (
+                    <RadioBtn
+                      key={opt}
+                      value={opt}
+                      mb="20px"
+                      vertical
+                      checked={this.getRadioCheckedOption(setting, opt)}
+                      onClick={(e) => this.handleSettingsChange(e)}
+                    >
+                      <FieldLabel marginBottom="0px" display="inline-block">
+                        {t(
+                          `author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`
+                        )}
+                        <HelperToolTip optionKey={opt} placement="topLeft" />
+                      </FieldLabel>
+                    </RadioBtn>
+                  ))}
+                </FlexRadioGroup>
+              )}
+            </Row>
+          ))}
 
         <Heading>{t('author:component.settingsBar.layout')}</Heading>
 

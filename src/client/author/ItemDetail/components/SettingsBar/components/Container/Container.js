@@ -1,4 +1,4 @@
-import { themeColor, title } from '@edulastic/colors'
+import { themeColor, title, greyThemeDark1 } from '@edulastic/colors'
 import {
   Button,
   CheckboxLabel,
@@ -216,7 +216,7 @@ class Container extends Component {
                 style={{
                   color: themeColor,
                   fontSize: '13px',
-                  fontWeight: '600',
+                  fontWeight: '600 !important',
                   marginBottom: '8px',
                 }}
               >
@@ -229,6 +229,9 @@ class Container extends Component {
                       name={setting}
                       onChange={(e) => this.handleSettingsChange(e)}
                       checked={partScoringType}
+                      labelFontSize="11px"
+                      labelFontWeight={600}
+                      labelColor={greyThemeDark1}
                     >
                       {t(
                         `author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`

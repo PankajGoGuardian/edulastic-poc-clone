@@ -216,7 +216,7 @@ class Container extends Component {
                 style={{
                   color: themeColor,
                   fontSize: '13px',
-                  fontWeight: '600 !important',
+                  fontWeight: '600',
                   marginBottom: '8px',
                 }}
               >

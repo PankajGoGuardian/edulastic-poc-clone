@@ -2,6 +2,7 @@ import { set, round, min } from 'lodash'
 import produce from 'immer'
 import evaluators from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
+import { FIRST_CORRECT_MUST } from '../../ItemDetail/constants'
 
 // TODO use this helper to get final score and refactor score logic below
 // const getAchievedScore = (
@@ -12,7 +13,7 @@ import { replaceVariables } from '../../../assessment/utils/variables'
 //   allCorrect,
 //   firstCorrect
 // ) => {
-//   if (itemGradingType === 'FIRST_CORRECT' && !firstCorrect) {
+//   if (itemGradingType === FIRST_CORRECT_MUST && !firstCorrect) {
 //     return 0
 //   }
 //   if (itemLevelScoring) {
@@ -30,7 +31,7 @@ export const evaluateItem = async (
   itemGradingType
 ) => {
   const questionIds = Object.keys(validations)
-  console.log(questionIds, validations)
+  // console.log(questionIds, validations)
   const results = {}
   let totalScore = 0
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0
@@ -75,16 +76,16 @@ export const evaluateItem = async (
         if (allCorrect) {
           allCorrect = isCorrect
         }
-        if (itemGradingType === 'FIRST_CORRECT' && index === 0) {
+        if (itemGradingType === FIRST_CORRECT_MUST && index === 0) {
           firstCorrect = isCorrect
         }
-        console.log('current id', id, {
-          evaluation,
-          score,
-          maxScore,
-          itemGradingType,
-          firstCorrect,
-        })
+        // console.log('current id', id, {
+        //   evaluation,
+        //   score,
+        //   maxScore,
+        //   itemGradingType,
+        //   firstCorrect,
+        // })
         results[evaluationId] = evaluation
         if (itemLevelScoring) {
           totalScore += round(score, 2)
@@ -100,13 +101,13 @@ export const evaluateItem = async (
       results[evaluationId] = []
     }
   }
-  console.info({ results, firstCorrect })
+  // console.info({ results, firstCorrect })
   if (itemLevelScoring) {
     let achievedScore = min([
       itemLevelScore,
       allCorrect ? itemLevelScore : totalScore,
     ])
-    if (itemGradingType === 'FIRST_CORRECT' && !firstCorrect) {
+    if (itemGradingType === FIRST_CORRECT_MUST && !firstCorrect) {
       achievedScore = 0
     }
 
@@ -117,7 +118,7 @@ export const evaluateItem = async (
     }
   }
 
-  if (itemGradingType === 'FIRST_CORRECT' && !firstCorrect) {
+  if (itemGradingType === FIRST_CORRECT_MUST && !firstCorrect) {
     totalScore = 0
   }
 

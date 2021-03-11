@@ -2444,7 +2444,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
 function* getEvaluation(testItemId, newScore) {
   const testItems = yield select(getTestItemsSelector)
   const testItem = testItems.find((x) => x._id === testItemId) || {}
-  const { itemLevelScore, itemLevelScoring = false } = testItem
+  const { itemLevelScore, itemLevelScoring = false, itemGradingType } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
@@ -2453,12 +2453,13 @@ function* getEvaluation(testItemId, newScore) {
     questions,
     itemLevelScoring,
     newScore || itemLevelScore,
-    testItem._id
+    testItem._id,
+    itemGradingType
   )
   return evaluation
 }
 function* getEvaluationFromItem(testItem, newScore) {
-  const { itemLevelScore, itemLevelScoring = false } = testItem
+  const { itemLevelScore, itemLevelScoring = false, itemGradingType } = testItem
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
@@ -2467,7 +2468,8 @@ function* getEvaluationFromItem(testItem, newScore) {
     questions,
     itemLevelScoring,
     newScore || itemLevelScore,
-    testItem._id
+    testItem._id,
+    itemGradingType
   )
   return evaluation
 }

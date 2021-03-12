@@ -94,14 +94,23 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
+  const isPremiumUser = user?.features?.premium
+
+  /**
+   *  a user is paid premium user if
+   *  - subType exists and
+   *  - premium is not through trial ie, only - (enterprise, premium, partial_premium) and
+   *  - is partial premium user & premium is true
+   *
+   * TODO: refactor and define this at the top level
+   */
   const isPaidPremium = !(
     !subType ||
     subType === 'TRIAL_PREMIUM' ||
-    subType === 'partial_premium'
+    (subType === 'partial_premium' && !isPremiumUser)
   )
-  const isCliUser = user.openIdProvider === 'CLI'
 
-  const isPremiumUser = user.features.premium
+  const isCliUser = user.openIdProvider === 'CLI'
 
   const sortableClasses = classData
     .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
@@ -219,10 +228,10 @@ const MyClasses = ({
 
   if (isCliUser) {
     filteredBundles = filteredBundles.filter(
-      (feature) => feature.description !== 'Spark Math'
+      (feature) => !feature?.config?.subscriptionData?.itemBankId
     )
     bannerSlides = bannerSlides.filter(
-      (banner) => banner.description !== 'Spark Math Playlist'
+      (banner) => !banner.description?.toLowerCase?.()?.includes('spark')
     )
   }
 

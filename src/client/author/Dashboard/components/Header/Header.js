@@ -138,10 +138,20 @@ const HeaderSection = ({
     openLaunchHangout()
   }
 
+  const isPremiumUser = user.user?.features?.premium
+
+  /**
+   *  a user is paid premium user if
+   *  - subType exists and
+   *  - premium is not through trial ie, only - (enterprise, premium, partial_premium) and
+   *  - is partial premium user & premium is true
+   *
+   * TODO: refactor and define this at the top level
+   */
   const isPaidPremium = !(
     !subType ||
     subType === 'TRIAL_PREMIUM' ||
-    subType === 'partial_premium'
+    (subType === 'partial_premium' && !isPremiumUser)
   )
 
   const isAboutToExpire = subEndDate
@@ -170,8 +180,6 @@ const HeaderSection = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-
-  const isPremiumUser = user.user?.features?.premium
 
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0

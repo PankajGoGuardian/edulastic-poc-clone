@@ -48,6 +48,10 @@ export const getIsSubscriptionExpired = createSelector(
   subscriptionSelector,
   (state) => state.isSubscriptionExpired
 )
+export const getAddOnProductIds = createSelector(
+  subscriptionSelector,
+  (state) => state.addOnProductIds
+)
 
 const slice = createSlice({
   name: 'subscription',
@@ -61,6 +65,7 @@ const slice = createSlice({
     products: [],
     isPaymentServiceModalVisible: false,
     showHeaderTrialModal: false,
+    addOnProductIds: [],
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -107,10 +112,10 @@ const slice = createSlice({
       state.verificationPending = false
       state.subscriptionData = payload
       state.error = ''
+      state.addOnProductIds = []
     },
     stripePaymentFailure: (state, { payload }) => {
       state.verificationPending = false
-      state.subscriptionData = {}
       state.error = payload
     },
     updateUserSubscriptionExpired: (state, { payload }) => {
@@ -149,6 +154,9 @@ const slice = createSlice({
     },
     setShowHeaderTrialModal: (state, { payload }) => {
       state.showHeaderTrialModal = payload
+    },
+    setAddOnProductIds: (state, { payload }) => {
+      state.addOnProductIds = payload
     },
   },
 })

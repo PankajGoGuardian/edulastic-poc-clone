@@ -128,7 +128,21 @@ const ManageSubscriptionContainer = ({
     isSuccess ||
     subType === 'TRIAL_PREMIUM'
 
-  const isPaidPremium = !(!subType || subType === 'TRIAL_PREMIUM')
+  const isPremiumUser = userFeature?.premium
+
+  /**
+   *  a user is paid premium user if
+   *  - subType exists and
+   *  - premium is not through trial ie, only - (enterprise, premium, partial_premium) and
+   *  - is partial premium user & premium is true
+   *
+   * TODO: refactor and define this at the top level
+   */
+  const isPaidPremium = !(
+    !subType ||
+    subType === 'TRIAL_PREMIUM' ||
+    (subType === 'partial_premium' && !isPremiumUser)
+  )
 
   const isAboutToExpire = subEndDate
     ? Date.now() + ONE_MONTH > subEndDate && Date.now() < subEndDate + TEN_DAYS
@@ -181,8 +195,6 @@ const ManageSubscriptionContainer = ({
   }
 
   const hasAllPremiumProductAccess = totalPaidProducts === products.length
-
-  const isPremiumUser = userFeature?.premium
 
   if (loading) {
     return <StyledSpin />

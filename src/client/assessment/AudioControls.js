@@ -360,7 +360,7 @@ export default connect(
 
 const AudioButtonsWrapper = styled.div`
   top: 0px;
-  padding: 8px 20px;
+  padding: 20px 20px 0;
   ${({ btnWithText, hideVisibility }) => {
     const visibility = hideVisibility ? 'hidden' : 'visible'
     const display = btnWithText ? 'flex' : 'block'

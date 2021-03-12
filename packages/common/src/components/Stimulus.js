@@ -6,14 +6,14 @@ import { withMathFormula } from '../HOC/withMathFormula'
 
 const Stimulus = withTheme(
   withMathFormula(styled.div`
-    line-height: 1;
-    word-break: break-word;
-    font-weight: ${fonts.previewFontWeight};
-    user-select: ${(props) => (props.userSelect ? 'text !important' : 'none')};
-
+    margin-bottom: 15px;
     img {
       max-height: unset !important;
     }
+    word-break: break-word;
+    font-size: ${(props) => props.fontSize};
+    font-weight: ${fonts.previewFontWeight};
+    user-select: ${(props) => (props.userSelect ? 'text !important' : 'none')};
 
     & * {
       user-select: ${(props) =>

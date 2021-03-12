@@ -397,7 +397,7 @@ export const PaperWrapper = styled(StyledPaperWrapper)`
       ? '20px 100px 20px 20px'
       : props.isLCBView
       ? '16px 28px 8px'
-      : '8px 28px'};
+      : '35px'};
   min-width: ${({ style }) => style.minWidth};
   ${({ style }) => style};
 

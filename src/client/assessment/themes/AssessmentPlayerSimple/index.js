@@ -410,7 +410,7 @@ const enhance = compose(
   withNamespaces('common'),
   connect(
     (state, ownProps) => ({
-      user: get(state, 'user.user'),
+      user: get(state, 'user.user', {}),
       evaluation: state.evaluation,
       preview: state.view.preview,
       settings: state.test.settings,

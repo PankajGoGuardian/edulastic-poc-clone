@@ -133,7 +133,7 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    if (usedTrialItemBankId) {
+    if (usedTrialItemBankId || (isPremiumTrialUsed && !isPremiumUser)) {
       setShowItemBankTrialUsedModal(true)
     } else {
       setIsPurchaseModalVisible(true)

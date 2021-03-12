@@ -238,13 +238,21 @@ const Subscription = (props) => {
     fetchUserSubscriptionStatus()
   }, [])
 
+  const isPremiumUser = user?.features?.premium
+
+  /**
+   *  a user is paid premium user if
+   *  - subType exists and
+   *  - premium is not through trial ie, only - (enterprise, premium, partial_premium) and
+   *  - is partial premium user & premium is true
+   *
+   * TODO: refactor and define this at the top level
+   */
   const isPaidPremium = !(
     !subType ||
     subType === 'TRIAL_PREMIUM' ||
-    subType === 'partial_premium'
+    (subType === 'partial_premium' && !isPremiumUser)
   )
-
-  const isPremiumUser = user.features.premium
 
   const openComparePlanModal = () => setComparePlan(true)
   const closeComparePlansModal = () => setComparePlan(false)

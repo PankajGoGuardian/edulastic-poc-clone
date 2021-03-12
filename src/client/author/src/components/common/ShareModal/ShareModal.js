@@ -694,6 +694,7 @@ class ShareModal extends React.Component {
           <DoneButtonContainer>
             <EduButton
               height="32px"
+              width={!isPublished ? '175px' : null}
               onClick={onClose}
               style={{ display: 'inline-flex' }}
             >
@@ -701,12 +702,13 @@ class ShareModal extends React.Component {
             </EduButton>
             <EduButton
               height="32px"
+              width={!isPublished ? '175px' : null}
               data-cy="share-button-pop"
               onClick={this.handleShare}
               style={{ display: 'inline-flex' }}
             >
               <IconShare />
-              SHARE
+              {isPublished ? 'SHARE' : 'Invite Co-Authors'}
             </EduButton>
           </DoneButtonContainer>
         </ModalContainer>

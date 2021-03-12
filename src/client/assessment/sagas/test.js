@@ -683,29 +683,30 @@ function* loadTest({ payload }) {
       testActivity.questionActivities.length &&
       !test.isDocBased
     ) {
-      let questionIndex = 0
-      const qActivitiesSorted = testActivity.questionActivities.sort((a, b) => {
-        if (a.qLabel > b.qLabel) return 1
-        return -1
-      })
-      for (let i = 0; i < qActivitiesSorted.length; i++) {
-        const qActivity = qActivitiesSorted[i]
-        if (qActivity.qLabel.includes(`Q${i + 1}`)) {
-          questionIndex++
+      const testItemIds = testItems.map((i) => i._id)
+      let lastVisitedQuestion = testActivity.questionActivities[0]
+      let lastVisitedItemIndex = 0
+      testActivity.questionActivities.forEach((item) => {
+        const itemIndex = testItemIds.indexOf(item.testItemId)
+        if (itemIndex > testItemIds.indexOf(lastVisitedQuestion.testItemId)) {
+          lastVisitedQuestion = item
+          lastVisitedItemIndex = itemIndex
         }
-      }
+      })
+
       const playerTestType =
         testType === testContants.type.COMMON
           ? testContants.type.ASSESSMENT
           : testType
-      if (testItems.length === questionIndex) {
+
+      if (testItems.length === lastVisitedItemIndex + 1) {
         yield put(
           push(
             `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
           )
         )
       } else {
-        const itemId = testItems[questionIndex]._id
+        const itemId = testItems[lastVisitedItemIndex + 1]._id
         yield put(
           push(
             `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`

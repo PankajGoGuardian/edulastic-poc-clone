@@ -340,7 +340,7 @@ export function useTabNavigationCounterEffect({
   assignmentId,
   classId,
   userId,
-  onTimeInBlurChange,
+  onTimeInBlurChange = () => {},
   blurTimeAlreadySaved,
 }) {
   const inFocusRef = useRef(true)

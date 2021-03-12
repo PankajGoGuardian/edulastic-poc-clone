@@ -9,7 +9,6 @@ import {
   MathSpan,
   highlightSelectedText,
   RefContext,
-  removeTokenFromHtml,
 } from '@edulastic/common'
 
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
@@ -34,6 +33,7 @@ import {
   getWordsArray,
   getCustomArray,
   getCustomTokenTemplate,
+  removeTokenFromHtml,
 } from './helpers'
 
 const Template = ({
@@ -189,7 +189,6 @@ const Template = ({
             value={item.template}
             toolbarId="tokens-template"
             border="border"
-            tokenHighlightTemplate
           />
         )}
 

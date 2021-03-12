@@ -42,6 +42,7 @@ const SubscriptionHeader = ({
   orgData,
   userRole,
   history,
+  isCliUser,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -87,7 +88,7 @@ const SubscriptionHeader = ({
           />
         )}
       </Menu.Item>
-      {!isPartialPremiumUgradedUser && (
+      {!isPartialPremiumUgradedUser && !isCliUser && (
         <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (

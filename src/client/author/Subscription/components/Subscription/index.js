@@ -375,6 +375,7 @@ const Subscription = (props) => {
     user.role
   )
 
+  const isCliUser = user.openIdProvider === 'CLI'
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
 
@@ -398,6 +399,7 @@ const Subscription = (props) => {
         orgData={user.orgData}
         userRole={user.role}
         history={history}
+        isCliUser={isCliUser}
       />
 
       <SubscriptionMain

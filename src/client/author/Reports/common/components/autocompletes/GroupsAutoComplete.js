@@ -28,6 +28,7 @@ const GroupsAutoComplete = ({
   courseId,
   selectCB,
   selectedGroupIds,
+  dataCy,
 }) => {
   const groupFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -141,6 +142,7 @@ const GroupsAutoComplete = ({
   return (
     <MultiSelectSearch
       label="Group"
+      dataCy={dataCy}
       placeholder="All Groups"
       el={groupFilterRef}
       onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}

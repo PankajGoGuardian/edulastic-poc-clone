@@ -28,6 +28,7 @@ const ClassAutoComplete = ({
   courseId,
   selectCB,
   selectedClassIds,
+  dataCy,
 }) => {
   const classFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -140,7 +141,7 @@ const ClassAutoComplete = ({
   return (
     <MultiSelectSearch
       label="Class"
-      dataCy="classes"
+      dataCy={dataCy}
       placeholder="All Classes"
       el={classFilterRef}
       onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}

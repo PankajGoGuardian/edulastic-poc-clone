@@ -145,4 +145,6 @@ EvaluationSettings.defaultProps = {
   changeOptions: () => null,
 }
 
+EvaluationSettings.EnabledSettings = EnabledSettings
+
 export default EvaluationSettings

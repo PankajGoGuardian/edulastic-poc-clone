@@ -122,6 +122,7 @@ export {
   replaceLatexTemplate,
   hasMediaDevice,
   isValidUpdate,
+  removeTokenFromHtml,
 } from './src/helpers'
 
 // contexts

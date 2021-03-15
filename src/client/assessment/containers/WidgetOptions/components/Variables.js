@@ -70,19 +70,28 @@ class Variables extends Component {
     const examples = get(questionData, 'variable.examples', [])
 
     const types = Object.keys(variableTypes)
-    const columns = Object.keys(variables).map((variableName) => ({
-      title: variableName,
-      dataIndex: variableName,
-      key: variables[variableName].id,
-      render: (latex) =>
-        latex !== 'Recursion_Error' ? (
-          <MathFormulaDisplay
-            dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(latex) }}
-          />
-        ) : (
-          <ErrorText />
-        ),
-    }))
+    const columns = Object.keys(variables).map((variableName) => {
+      const isFormula = variables[variableName].type.includes('FORMULA')
+      return {
+        title: variableName,
+        dataIndex: variableName,
+        key: variables[variableName].id,
+        render: (text) => {
+          if (isFormula) {
+            return text !== 'Recursion_Error' ? (
+              <MathFormulaDisplay
+                dangerouslySetInnerHTML={{
+                  __html: getMathFormulaTemplate(text),
+                }}
+              />
+            ) : (
+              <ErrorText />
+            )
+          }
+          return <span>{text}</span>
+        },
+      }
+    })
 
     const generateExample = (variable) => {
       const factor = 10 ** variable.decimal
@@ -587,16 +596,18 @@ class Variables extends Component {
                     </Col>
                   )}
                   <Col md={6} style={{ paddingTop: 10 }}>
-                    {variable.exampleValue !== 'Recursion_Error' && (
+                    {isFormula && variable.exampleValue !== 'Recursion_Error' && (
                       <MathFormulaDisplay
                         dangerouslySetInnerHTML={{
                           __html: getMathFormulaTemplate(variable.exampleValue),
                         }}
                       />
                     )}
-                    {variable.exampleValue === 'Recursion_Error' && (
-                      <ErrorText />
-                    )}
+                    {isFormula &&
+                      variable.exampleValue === 'Recursion_Error' && (
+                        <ErrorText />
+                      )}
+                    {!isFormula && <span>{variable.exampleValue}</span>}
                   </Col>
                 </Row>
               )

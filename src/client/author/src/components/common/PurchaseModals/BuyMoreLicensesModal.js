@@ -33,10 +33,20 @@ const BuyMoreLicensesModal = ({
   const handleProceed = () => handleClick({ productsToshow })
 
   const Footer = [
-    <EduButton isGhost height="38px" onClick={handleCloseModal}>
+    <EduButton
+      data-cy="cancelBuyMoreLicense"
+      isGhost
+      height="38px"
+      onClick={handleCloseModal}
+    >
       No, Cancel
     </EduButton>,
-    <EduButton height="38px" onClick={handleProceed} disabled={!totalAmount}>
+    <EduButton
+      data-cy="proceedBuyMoreLicense"
+      height="38px"
+      onClick={handleProceed}
+      disabled={!totalAmount}
+    >
       Yes, Proceed
     </EduButton>,
   ]

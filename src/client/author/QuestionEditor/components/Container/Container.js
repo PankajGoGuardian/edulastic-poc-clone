@@ -542,6 +542,7 @@ class Container extends Component {
       currentLanguage,
       isAuthorOrCurator,
       allowedToSelectMultiLanguage,
+      t,
     } = this.props
 
     if (!question) {
@@ -575,7 +576,7 @@ class Container extends Component {
           onUnload
           message={(loc) => {
             console.log('path: ', loc.pathname) // TODO: keep this comment for now, then remove
-            return 'There are unsaved changes. Are you sure you want to leave?'
+            return t('component.common.modal.exitPageWarning')
           }}
         />
         {showModal && (

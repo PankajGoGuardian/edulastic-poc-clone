@@ -2,8 +2,11 @@ import React, { useEffect } from 'react'
 import { Result, Spin } from 'antd'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+
+import { SubHeader } from '../../common/components/Header'
 import { StyledContainer } from '../../common/styled'
 import CustomReportCard from './customReportCard/customReportCard'
+
 import {
   getCustomReportAction,
   getCustomReportList,
@@ -11,7 +14,14 @@ import {
 } from './ducks'
 
 const CustomReports = (props) => {
-  const { customReportList = [], getCustomReport, isLoading, history } = props
+  const {
+    customReportList = [],
+    getCustomReport,
+    isLoading,
+    history,
+    breadcrumbData,
+    isCliUser,
+  } = props
   const showLoader = () => <Spin size="small" />
   useEffect(() => {
     if (customReportList.length === 0) {
@@ -24,18 +34,21 @@ const CustomReports = (props) => {
   }
 
   return (
-    <StyledContainer>
-      {isLoading ? (
-        showLoader()
-      ) : customReportList.length > 0 ? (
-        <CustomReportCard
-          reportCards={customReportList}
-          showReport={showReport}
-        />
-      ) : (
-        <Result title="No report found" />
-      )}
-    </StyledContainer>
+    <>
+      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
+      <StyledContainer>
+        {isLoading ? (
+          showLoader()
+        ) : customReportList.length > 0 ? (
+          <CustomReportCard
+            reportCards={customReportList}
+            showReport={showReport}
+          />
+        ) : (
+          <Result title="No report found" />
+        )}
+      </StyledContainer>
+    </>
   )
 }
 

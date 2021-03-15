@@ -1,23 +1,67 @@
 {
-  "defaults": {
-    "teacher": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "assessmentType": "All"
+  "filterSections": {
+    "TEST_FILTERS": {
+      "key": "0",
+      "title": "Find the test"
     },
-    "other": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "schoolId": "All",
-      "teacherId": "All",
-      "assessmentType": "All"
+    "CLASS_FILTERS": {
+      "key": "1",
+      "title": "Class Filter"
+    },
+    "PERFORMANCE_FILTERS": {
+      "key": "2",
+      "title": "Performance"
+    },
+    "DEMOGRAPHIC_FILTERS": {
+      "key": "3",
+      "title": "Demographic"
     }
+  },
+  "tagTypes": [
+    { "key": "termId", "closable": false },
+    { "key": "grade", "closable": true, "subType": "test" },
+    { "key": "subject", "closable": true, "subType": "test" },
+    { "key": "tagIds", "closable": true },
+    { "key": "assessmentTypes", "closable": true },
+    { "key": "testId", "closable": false },
+    { "key": "schoolIds", "closable": true },
+    { "key": "teacherIds", "closable": true },
+    { "key": "studentGrade", "closable": true, "subType": "class" },
+    { "key": "studentSubject", "closable": true, "subType": "class" },
+    { "key": "studentCourseId", "closable": true },
+    { "key": "classIds", "closable": true },
+    { "key": "groupIds", "closable": true },
+    { "key": "standardsProficiencyProfile", "closable": false },
+    { "key": "performanceBandProfile", "closable": false },
+    { "key": "race", "closable": true },
+    { "key": "gender", "closable": true },
+    { "key": "iepStatus", "closable": true },
+    { "key": "frlStatus", "closable": true },
+    { "key": "ellStatus", "closable": true }
+  ],
+  "initialFilters": {
+    "reportId": "",
+    "termId": "",
+    "grade": "All",
+    "subject": "All",
+    "tagIds": "",
+    "assessmentTypes": "",
+    "schoolIds": "",
+    "teacherIds": "",
+    "studentGrade": "All",
+    "studentSubject": "All",
+    "studentCourseId": "All",
+    "classIds": "",
+    "groupIds": "",
+    "standardsProficiencyProfile": "",
+    "performanceBandProfile": ""
+  },
+  "initialDdFilters": {
+    "race": "all",
+    "gender": "all",
+    "iepStatus": "all",
+    "frlStatus": "all",
+    "ellStatus": "all"
   },
   "subjects": [
     { "key": "All", "title": "All Subjects" },

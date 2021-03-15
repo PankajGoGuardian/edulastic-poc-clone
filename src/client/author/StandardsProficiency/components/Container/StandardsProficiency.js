@@ -59,7 +59,7 @@ const defaultData = {
       shortName: 'E',
       threshold: 90,
       masteryLevel: 'Exceeds Mastery',
-      color: '#F39300',
+      color: '#60B14F',
       domainMastery: true,
     },
     {
@@ -67,7 +67,7 @@ const defaultData = {
       shortName: 'M',
       threshold: 80,
       masteryLevel: 'Mastered',
-      color: '#3DB04E',
+      color: '#7CE37A',
       domainMastery: true,
     },
     {
@@ -83,7 +83,7 @@ const defaultData = {
       shortName: 'N',
       threshold: 0,
       masteryLevel: 'Not Mastered',
-      color: '#B22222',
+      color: '#EF9202',
       domainMastery: false,
     },
   ],

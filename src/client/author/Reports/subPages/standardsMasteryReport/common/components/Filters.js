@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy } from 'lodash'
+import { get, isEmpty, pickBy, upperFirst } from 'lodash'
 import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Spin } from 'antd'
@@ -228,8 +228,11 @@ const StandardsFilters = ({
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
+    const filterKey = ['grade', 'subject', 'courseId'].includes(keyName)
+      ? `student${upperFirst(keyName)}`
+      : keyName
     const _filters = { ...filters }
-    resetStudentFilters(_filters, keyName, selected, multiple)
+    resetStudentFilters(_filters, filterKey, selected, multiple)
     _filters[keyName] = multiple ? selected : selected.key
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
     setShowApply(true)
@@ -318,9 +321,7 @@ const StandardsFilters = ({
           <SearchField>
             <FilterLabel data-cy="course">Course</FilterLabel>
             <CourseAutoComplete
-              selectedCourseId={
-                filters.studentCourseId !== 'All' && filters.studentCourseId
-              }
+              selectedCourseId={filters.courseId !== 'All' && filters.courseId}
               selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
             />
           </SearchField>

@@ -277,12 +277,11 @@ const getColumns = (
       width: 150,
       align: 'center',
       visibleOn: ['browser'],
-      render: (tests, { testName, trend }) => {
-        const augmentedTests = map(tests, (test) => ({
-          ...test,
-          testName,
-        })).sort((a, b) => a.records[0].startDate - b.records[0].startDate)
-        return <TrendColumn type={trend} tests={augmentedTests} />
+      render: (tests, { trend }) => {
+        const sortedTests = Object.values(tests).sort(
+          (a, b) => a.records[0].assessmentDate - b.records[0].assessmentDate
+        )
+        return <TrendColumn type={trend} tests={sortedTests} />
       },
     },
     {

@@ -20,6 +20,7 @@ export const SubResourceView = ({
   type,
   isStudent,
   inDiffrentiation,
+  isCommonStudentResources = false,
   disabled = false,
 }) => {
   const viewResource = (data) => (e) => {
@@ -36,10 +37,15 @@ export const SubResourceView = ({
 
   const deleteSubResource = (data) => (e) => {
     e.stopPropagation()
-    if (inDiffrentiation) {
+    if (inDiffrentiation && !isCommonStudentResources) {
       removeSubResource({
         type,
         parentTestId: itemData.testId,
+        contentId: data.contentId,
+      })
+    } else if (isCommonStudentResources) {
+      removeSubResource({
+        type,
         contentId: data.contentId,
       })
     } else {

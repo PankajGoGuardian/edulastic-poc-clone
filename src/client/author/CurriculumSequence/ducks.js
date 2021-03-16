@@ -168,6 +168,10 @@ export const SET_DIFFERENTIATION_WORK =
   '[differentiation] set differentiation work'
 export const SET_DIFFERENTIATION_SELECTED_DATA =
   '[differentiation] set differentiation selected data'
+export const ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES =
+  '[differentiation] add differentiation resources'
+export const REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES =
+  '[differentiation] remove differentiation resources'
 export const ADD_TEST_TO_DIFFERENTIATION = '[differentiation] add test'
 export const REMOVE_RESOURCE_FROM_DIFFERENTIATION =
   '[differentiation] remove resource'
@@ -300,6 +304,12 @@ export const setDifferentiationWorkAction = createAction(
 )
 export const setDifferentiationSelectedDataAction = createAction(
   SET_DIFFERENTIATION_SELECTED_DATA
+)
+export const addDifferentiationResourcesAction = createAction(
+  ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES
+)
+export const removeDifferentiationResourcesAction = createAction(
+  REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES
 )
 export const addRecommendationsAction = createAction(
   ADD_RECOMMENDATIONS_ACTIONS
@@ -479,6 +489,11 @@ export const getRecommendationsToAssignSelector = createSelector(
 export const getDifferentiationSelectedDataSelector = createSelector(
   getCurriculumSequenceState,
   (curriculumSequence) => curriculumSequence.differentiationSelectedData
+)
+
+export const getDifferentiationResourcesSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.differentiationResources
 )
 
 const getPublisher = (state) => {
@@ -2060,6 +2075,7 @@ const initialState = {
   differentiationStudentList: [],
   differentiationWork: {},
   differentiationSelectedData: {},
+  differentiationResources: {},
   isFetchingDifferentiationWork: false,
   workStatusData: {},
 
@@ -2628,6 +2644,40 @@ export default createReducer(initialState, {
       ...state.differentiationSelectedData,
       ...payload,
     }
+  },
+  [ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES]: (state, { payload }) => {
+    const {
+      type,
+      contentId,
+      contentTitle,
+      contentType,
+      contentSubType,
+      contentUrl,
+    } = payload
+    const alreadyPresent = (state.differentiationResources?.[type] || []).find(
+      (x) => x.contentId === contentId
+    )
+    if (!alreadyPresent) {
+      state.differentiationResources[type] = [
+        ...(state.differentiationResources[type] || []),
+        {
+          type,
+          contentId,
+          description: contentTitle,
+          contentTitle,
+          contentType,
+          contentSubType,
+          contentUrl,
+        },
+      ]
+    }
+  },
+  [REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES]: (state, { payload }) => {
+    const { type, contentId } = payload
+    state.differentiationResources[type] =
+      state.differentiationResources?.[type]?.filter(
+        (x) => x.contentId !== contentId
+      ) || []
   },
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload

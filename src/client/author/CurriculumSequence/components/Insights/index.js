@@ -223,6 +223,7 @@ const FilterColumn = styled(Col)`
 
 const GraphContainer = styled(Col)`
   width: ${(props) => `calc(100% - ${props.showFilter ? '470px' : '250px'})`};
+  height: fit-content;
 `
 
 const RightContainer = styled(Col)`

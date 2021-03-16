@@ -126,7 +126,7 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
         xl={3}
         style={{ textAlign: 'right' }}
       >
-        TIME SPENT (LOW)
+        TIME SPENT (HIGH)
       </StyledCol>
       <StyledCol xs={20} sm={18} md={18} lg={18} xl={18}>
         <Row type="flex" justify="center" style={{ width: '100%' }}>
@@ -187,7 +187,7 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
         </Row>
       </StyledCol>
       <StyledCol xs={2} sm={3} md={3} lg={3} xl={3}>
-        TIME SPENT (HIGH)
+        TIME SPENT (LOW)
       </StyledCol>
     </Row>
   )

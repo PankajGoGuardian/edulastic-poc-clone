@@ -212,7 +212,7 @@ const MiscellaneousGroupContainer = ({
                             onChange={(e) =>
                               overRideSettings(key, e.target.value)
                             }
-                            defaultValue={isUndefined(value) ? true : value}
+                            value={isUndefined(value) ? true : value}
                           >
                             <Radio value data-cy={`${key}-enable`}>
                               ENABLE

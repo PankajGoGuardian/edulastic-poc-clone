@@ -79,11 +79,11 @@ const SmallSizeAxisWrapper = styled.div`
 `
 
 const getFontSizeList = () => [
-  { value: 'small', label: 'Small' },
-  { value: 'normal', label: 'Normal' },
-  { value: 'large', label: 'Large' },
-  { value: 'extra_large', label: 'Extra large' },
-  { value: 'huge', label: 'Huge' },
+  { value: 'small', label: 'small' },
+  { value: 'normal', label: 'normal' },
+  { value: 'large', label: 'large' },
+  { value: 'extra_large', label: 'extraLarge' },
+  { value: 'huge', label: 'huge' },
 ]
 
 class Graph extends Component {

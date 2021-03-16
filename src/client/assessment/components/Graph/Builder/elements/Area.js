@@ -1,5 +1,7 @@
+/* eslint-disable no-empty */
 import JXG from 'jsxgraph'
 import { flattenDeep, isEqual, max, min } from 'lodash'
+import { notification } from '@edulastic/common'
 import { parse } from 'mathjs'
 import { CONSTANT } from '../config'
 import {
@@ -41,10 +43,8 @@ const AVAILABLE_TYPES = [
   Parabola.jxgType,
   Parabola2.jxgType,
   Polynom.jxgType,
-  Secant.jxgType,
   Sin.jxgType,
   Cos.jxgType,
-  Tangent.jxgType,
   Equation.jxgType,
 ]
 
@@ -59,6 +59,12 @@ function getColorParams(color) {
     highlightStrokeColor: color,
     highlightFillColor: '#fff',
   }
+}
+
+function checkElements(shapes) {
+  return shapes.some(
+    (el) => el.type === Secant.jxgType || el.type === Tangent.jxgType
+  )
 }
 
 function getFunctions(shapes) {
@@ -768,6 +774,14 @@ function create(board, object, settings = {}) {
 }
 
 function canDrawAreaByPoint(board, { x, y }) {
+  const hasTangetOrSecant = checkElements(board.elements)
+  if (hasTangetOrSecant) {
+    notification({
+      msg: 'Cannot shade with Tangent or Secant',
+      type: 'warning',
+    })
+    return false
+  }
   const funcs = getFunctions(board.elements)
   const lines = getAreaLinesByPoint({ usrX: x, usrY: y }, board, funcs)
   const newAreaBounding = getAreaBounding(lines)

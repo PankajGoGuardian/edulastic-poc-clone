@@ -39,51 +39,52 @@ import {
   PopupContent,
 } from './styled_components'
 import utils from './utils'
+import { CONSTANT } from '../Builder/config'
 
 const allTools = [
-  'point',
-  'segment',
-  'polygon',
-  'ray',
-  'vector',
-  'line',
-  'circle',
-  'ellipse',
-  'parabola',
-  'parabola2',
-  'hyperbola',
-  'polynom',
-  'exp',
-  'logarithm',
-  'sine',
-  'cos',
-  'tangent',
-  'area',
-  'dashed',
-  'secant',
+  CONSTANT.TOOLS.POINT,
+  CONSTANT.TOOLS.SEGMENT,
+  CONSTANT.TOOLS.POLYGON,
+  CONSTANT.TOOLS.RAY,
+  CONSTANT.TOOLS.VECTOR,
+  CONSTANT.TOOLS.LINE,
+  CONSTANT.TOOLS.CIRCLE,
+  CONSTANT.TOOLS.ELLIPSE,
+  CONSTANT.TOOLS.PARABOLA,
+  CONSTANT.TOOLS.PARABOLA2,
+  CONSTANT.TOOLS.HYPERBOLA,
+  CONSTANT.TOOLS.POLYNOM,
+  CONSTANT.TOOLS.EXPONENT,
+  CONSTANT.TOOLS.LOGARITHM,
+  CONSTANT.TOOLS.SIN,
+  CONSTANT.TOOLS.COS,
+  CONSTANT.TOOLS.TANGENT,
+  CONSTANT.TOOLS.AREA,
+  CONSTANT.TOOLS.DASHED,
+  CONSTANT.TOOLS.SECANT,
 ]
 
 const iconsByToolName = {
-  point: <IconPoint width={11} height={11} />,
-  segment: <IconSegment width={26} height={16} />,
-  polygon: <IconPolygon width={26} height={14} />,
-  ray: <IconRay width={34} height={18} />,
-  vector: <IconVector width={24} height={20} />,
-  line: <IconLine width={22} height={15} />,
-  circle: <IconCircle width={16} height={16} />,
-  ellipse: <IconEllipse width={27} height={16} />,
-  parabola: <IconParabola width={35} height={19} />,
-  parabola2: <IconParabola2 width={40} height={25} />,
-  hyperbola: <IconHyperbola width={40} height={25} />,
-  polynom: <IconPolynom width={58} height={19} />,
-  exp: <IconExponent width={37} height={21} />,
-  logarithm: <IconLogarithm width={37} height={21} />,
-  sine: <IconSine width={27} height={24} />,
-  cos: <IconCos width={23} height={27} />,
-  tangent: <IconTangent width={24} height={24} />,
-  area: <IconArea width={25} height={16} />,
-  dashed: <IconDashed width={27} height={16} />,
-  secant: <IconSecant width={40} height={24} />,
+  [CONSTANT.TOOLS.POINT]: <IconPoint width={11} height={11} />,
+  [CONSTANT.TOOLS.SEGMENT]: <IconSegment width={26} height={16} />,
+  [CONSTANT.TOOLS.POLYGON]: <IconPolygon width={26} height={14} />,
+  [CONSTANT.TOOLS.RAY]: <IconRay width={34} height={18} />,
+  [CONSTANT.TOOLS.VECTOR]: <IconVector width={24} height={20} />,
+  [CONSTANT.TOOLS.LINE]: <IconLine width={22} height={15} />,
+  [CONSTANT.TOOLS.CIRCLE]: <IconCircle width={16} height={16} />,
+  [CONSTANT.TOOLS.ELLIPSE]: <IconEllipse width={27} height={16} />,
+  [CONSTANT.TOOLS.PARABOLA]: <IconParabola width={35} height={19} />,
+  [CONSTANT.TOOLS.PARABOLA2]: <IconParabola2 width={40} height={25} />,
+  [CONSTANT.TOOLS.HYPERBOLA]: <IconHyperbola width={40} height={25} />,
+  [CONSTANT.TOOLS.POLYNOM]: <IconPolynom width={58} height={19} />,
+  [CONSTANT.TOOLS.EXPONENT]: <IconExponent width={37} height={21} />,
+  [CONSTANT.TOOLS.LOGARITHM]: <IconLogarithm width={37} height={21} />,
+  [CONSTANT.TOOLS.SIN]: <IconSine width={27} height={24} />,
+  [CONSTANT.TOOLS.COS]: <IconCos width={23} height={27} />,
+  [CONSTANT.TOOLS.TANGENT]: <IconTangent width={24} height={24} />,
+  [CONSTANT.TOOLS.AREA]: <IconArea width={25} height={16} />,
+  [CONSTANT.TOOLS.DASHED]: <IconDashed width={27} height={16} />,
+  [CONSTANT.TOOLS.SECANT]: <IconSecant width={40} height={24} />,
   undo: <IconUndo width={16} height={15} />,
   redo: <IconRedo width={16} height={15} />,
   clear: (
@@ -112,29 +113,28 @@ export default function Tools(props) {
   } = props
 
   const [toolsPopupExpanded, setToolsPopupExpanded] = useState(false)
-  const [popupTools, setPopupTools] = useState(tools)
 
   const isActive = (tool) => selected.includes(tool)
 
   const onSelectPopupTool = (tool) => {
-    let newTools = [...popupTools]
+    let newTools = [...tools]
     if (newTools.includes(tool)) {
       newTools = newTools.filter((item) => item !== tool)
     } else {
       newTools.push(tool)
     }
-    setPopupTools(newTools)
+
     setTools(newTools)
   }
 
-  const isSelectedPopupTool = (tool) => popupTools.includes(tool)
+  const isSelectedPopupTool = (tool) => tools.includes(tool)
 
   const addTools = () => {
     setToolsPopupExpanded(true)
   }
 
   const hideToolsPopup = () => {
-    if (popupTools && popupTools.length > 0) {
+    if (tools && tools.length > 0) {
       setToolsPopupExpanded(false)
     }
   }

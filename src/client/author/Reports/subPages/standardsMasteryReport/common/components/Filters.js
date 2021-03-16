@@ -768,6 +768,7 @@ const StandardsMasteryReportFilters = ({
                   style={{ maxWidth: '200px' }}
                   isGhost
                   key="cancelButton"
+                  data-cy="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
                   No, Cancel
@@ -777,6 +778,7 @@ const StandardsMasteryReportFilters = ({
                   height="40px"
                   style={{ maxWidth: '200px' }}
                   key="applyButton"
+                  data-cy="applyFilter"
                   disabled={!showApply}
                   onClick={() => onGoClick()}
                 >

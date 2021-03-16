@@ -328,6 +328,11 @@ const Sidebar = styled.div`
 
 const StyledMainContainer = styled.div`
   main {
+    .jsx-parser {
+      p {
+        margin-bottom: 8px;
+      }
+    }
     ${({ mainContainerStyle }) => mainContainerStyle};
     .practice-player-footer {
       left: ${({ isSidebarVisible }) => (isSidebarVisible ? '220px' : '0px')};

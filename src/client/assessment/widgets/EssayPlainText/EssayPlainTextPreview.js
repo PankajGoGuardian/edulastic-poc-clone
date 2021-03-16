@@ -88,13 +88,13 @@ const EssayPlainTextPreview = ({
     if (!disableResponse) {
       saveAnswer(text)
     }
+    setWordCount(getWordCount(text))
   }, [text])
 
   const handleTextChange = (e) => {
     const val = e.target.value
     if (typeof val === 'string') {
       setText(val)
-      setWordCount(getWordCount(val))
     }
   }
 

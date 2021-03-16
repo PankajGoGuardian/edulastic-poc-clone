@@ -28,7 +28,6 @@ import {
   differenceBy,
   round,
   pick,
-  isUndefined,
 } from 'lodash'
 import {
   testsApi,
@@ -1608,12 +1607,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     penalty: entity.penalty,
     blockNavigationToAnsweredQuestions:
       entity.blockNavigationToAnsweredQuestions || false,
-    showMagnifier: isUndefined(entity.showMagnifier)
-      ? true
-      : entity.showMagnifier,
-    enableScratchpad: isUndefined(entity.enableScratchpad)
-      ? true
-      : entity.enableScratchpad,
+    showMagnifier: !!entity.showMagnifier,
+    enableScratchpad: !!entity.enableScratchpad,
   }
 
   if (isAdmin) {

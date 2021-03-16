@@ -61,7 +61,7 @@ const MyClasses = ({
   isPremiumTrialUsed,
   itemBankSubscriptions = [],
   startTrialAction,
-  usedTrialItemBankId,
+  usedTrialItemBankIds = [],
   showTrialSubsConfirmationAction,
   showTrialConfirmationMessage,
   isConfirmationModalVisible,
@@ -142,7 +142,10 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    if (usedTrialItemBankId || (isPremiumTrialUsed && !isPremiumUser)) {
+    if (
+      usedTrialItemBankIds.includes(subscriptionData.productId) ||
+      (isPremiumTrialUsed && !isPremiumUser)
+    ) {
       setShowItemBankTrialUsedModal(true)
     } else {
       setIsPurchaseModalVisible(true)
@@ -336,7 +339,9 @@ const MyClasses = ({
   const showTrialButton =
     (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
 
-  const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
+  const isCurrentItemBankUsed = usedTrialItemBankIds.includes(
+    productData?.itemBankId
+  )
 
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
@@ -433,8 +438,8 @@ export default compose(
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
       itemBankSubscriptions:
         state.subscription?.subscriptionData?.itemBankSubscriptions,
-      usedTrialItemBankId:
-        state.subscription?.subscriptionData?.usedTrialItemBankId,
+      usedTrialItemBankIds:
+        state.subscription?.subscriptionData?.usedTrialItemBankIds,
       subscription: state.subscription?.subscriptionData?.subscription,
       isConfirmationModalVisible: state.subscription?.showTrialSubsConfirmation,
       showTrialConfirmationMessage:

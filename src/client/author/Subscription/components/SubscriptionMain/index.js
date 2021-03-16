@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import {
   EduButton,
@@ -205,12 +205,11 @@ const SubscriptionMain = ({
   startTrialAction,
   isPaidPremium,
   setShowSubscriptionAddonModalWithId,
-  usedTrialItemBankId,
+  usedTrialItemBankIds,
   products,
   hasAllPremiumProductAccess,
   itemBankSubscriptions,
   settingProductData,
-  sparkMathProductId,
   sparkMathItemBankId,
   setShowItemBankTrialUsedModal,
   openHasLicenseKeyModal,
@@ -231,6 +230,24 @@ const SubscriptionMain = ({
     }
   }, [isTrialModalVisible])
 
+  const { itemBankProductIds = [], itemBankIds = [] } = useMemo(() => {
+    if (products) {
+      const itemBankProducts = products.filter(({ type }) => type !== 'PREMIUM')
+      return {
+        itemBankProductIds: itemBankProducts
+          .filter(
+            ({ linkedProductId }) =>
+              !usedTrialItemBankIds.includes(linkedProductId)
+          )
+          .map(({ id }) => id),
+        itemBankIds: itemBankProducts.map(
+          ({ linkedProductId }) => linkedProductId
+        ),
+      }
+    }
+    return {}
+  }, [products, usedTrialItemBankIds])
+
   const isPaidSparkMath =
     itemBankSubscriptions &&
     itemBankSubscriptions?.length > 0 &&
@@ -244,6 +261,12 @@ const SubscriptionMain = ({
 
   const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
+  const hasUsedAllItemBankTrials = () => {
+    return itemBankIds.every((itemBankId) =>
+      usedTrialItemBankIds.includes(itemBankId)
+    )
+  }
+
   const handleStartTrial = () => {
     settingProductData()
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
@@ -254,7 +277,7 @@ const SubscriptionMain = ({
       })
     }
 
-    if (usedTrialItemBankId) {
+    if (hasUsedAllItemBankTrials()) {
       setShowItemBankTrialUsedModal(true)
       return
     }
@@ -264,7 +287,7 @@ const SubscriptionMain = ({
   // Show item bank trial button when item bank trial is not used yet and user is either premium
   // or hasn't used premium trial yet.
   const hasTrialButton =
-    usedTrialItemBankId !== sparkMathItemBankId &&
+    !hasUsedAllItemBankTrials() &&
     !isPaidSparkMath &&
     (!isPremiumTrialUsed || isPremiumUser)
 
@@ -357,7 +380,7 @@ const SubscriptionMain = ({
       </ContentSection>
       {isTrialModalVisible && (
         <TrialModal
-          addOnProductIds={[sparkMathProductId]}
+          addOnProductIds={[...itemBankProductIds]}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}

@@ -199,7 +199,7 @@ const Subscription = (props) => {
     isConfirmationModalVisible,
     showTrialSubsConfirmationAction,
     products,
-    usedTrialItemBankId,
+    usedTrialItemBankIds = [],
     setPaymentServiceModal,
     showTrialConfirmationMessage,
     dashboardTiles,
@@ -362,7 +362,9 @@ const Subscription = (props) => {
 
   const handleCloseItemTrialModal = () => setShowItemBankTrialUsedModal(false)
 
-  const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
+  const isCurrentItemBankUsed = usedTrialItemBankIds.includes(
+    productData?.itemBankId
+  )
   const showMultipleSubscriptions = user?.features?.showMultipleSubscriptions
 
   const defaultSelectedProductIds = productData.productId
@@ -413,7 +415,7 @@ const Subscription = (props) => {
         startTrialAction={startTrialAction}
         isPaidPremium={isPaidPremium}
         showRenewalOptions={showRenewalOptions}
-        usedTrialItemBankId={usedTrialItemBankId}
+        usedTrialItemBankIds={usedTrialItemBankIds}
         isPremiumUser={isPremiumUser}
         isPremium={isPremium}
         setShowSubscriptionAddonModalWithId={
@@ -513,8 +515,8 @@ export default compose(
       isConfirmationModalVisible:
         state?.subscription?.showTrialSubsConfirmation,
       products: state?.subscription?.products,
-      usedTrialItemBankId:
-        state?.subscription?.subscriptionData?.usedTrialItemBankId,
+      usedTrialItemBankIds:
+        state?.subscription?.subscriptionData?.usedTrialItemBankIds,
       showTrialConfirmationMessage:
         state?.subscription?.showTrialConfirmationMessage,
       dashboardTiles: state.dashboardTeacher.configurableTiles,

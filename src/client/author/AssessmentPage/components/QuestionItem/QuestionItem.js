@@ -422,6 +422,7 @@ class QuestionItem extends React.Component {
         review={testMode || review}
         annotations={annotations}
         pdfPreview={pdfPreview}
+        data-cy="questionItem"
       >
         <AnswerForm
           style={{ justifyContent: review ? 'flex-start' : 'space-between' }}

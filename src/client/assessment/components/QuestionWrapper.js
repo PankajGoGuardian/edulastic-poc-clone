@@ -701,6 +701,7 @@ class QuestionWrapper extends Component {
                   {!hasDrawingResponse && showFeedback && !isPrintPreview && (
                     <TimeSpentWrapper
                       className={isStudentReport ? 'student-report' : ''}
+                      data-cy="showStudentWorkWrap"
                     >
                       {!!showStudentWork && (
                         <ShowUserWork

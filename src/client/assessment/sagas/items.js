@@ -429,7 +429,7 @@ function* loadUserResponse({ payload }) {
 const timeOut =
   process.env.NODE_ENV === 'development'
     ? 12000
-    : process.env.QA_ENV
+    : process.env.REACT_APP_QA_ENV
     ? 60000
     : 8000
 

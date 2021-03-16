@@ -1002,7 +1002,7 @@ export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
     yield Effects.throttleAction(
-      process.env.QA_ENV ? 60000 : 10000,
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
       FINISH_TEST,
       submitTest
     ),

@@ -277,7 +277,7 @@ export default function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_TEST_ITEM_REQUEST, createTestItemSaga),
     yield Effects.throttleAction(
-      process.env.QA_ENV ? 60000 : 10000,
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
       UPDATE_TEST_ITEM_REQUEST,
       updateTestItemSaga
     ),

@@ -3042,7 +3042,7 @@ export function* watcherSaga() {
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
     yield Effects.throttleAction(
-      10000,
+      process.env.QA_ENV ? 60000 : 10000,
       UPDATE_TEST_DOC_BASED_REQUEST,
       updateTestDocBasedSaga
     ),

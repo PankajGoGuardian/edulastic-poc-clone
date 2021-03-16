@@ -1084,7 +1084,11 @@ function* redirectToDashboard() {
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_ASSIGNMENTS_DATA, fetchAssignments),
-    yield Effects.throttleAction(10000, START_ASSIGNMENT, startAssignment),
+    yield Effects.throttleAction(
+      process.env.QA_ENV ? 60000 : 10000,
+      START_ASSIGNMENT,
+      startAssignment
+    ),
     yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
     yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
     yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment),

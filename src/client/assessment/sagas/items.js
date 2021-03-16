@@ -426,7 +426,12 @@ function* loadUserResponse({ payload }) {
   }
 }
 
-const timeOut = process.env.NODE_ENV === 'development' ? 12000 : 8000
+const timeOut =
+  process.env.NODE_ENV === 'development'
+    ? 12000
+    : process.env.QA_ENV
+    ? 60000
+    : 8000
 
 /*
   The race condition in Effects.throttleAction times out on slow connections/dev envs

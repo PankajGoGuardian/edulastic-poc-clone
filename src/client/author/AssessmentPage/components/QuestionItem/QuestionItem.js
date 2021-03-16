@@ -300,10 +300,10 @@ class QuestionItem extends React.Component {
   }
 
   renderAnswerIndicator = (type) => {
-    let { evaluation } = this.props
-    if (!evaluation) {
-      evaluation = this.props?.data?.activity?.evaluation
-    }
+    const {
+      evaluation = get(this.props, 'data.activity.evaluation'),
+    } = this.props
+
     if (isUndefined(evaluation) || type === ESSAY_PLAIN_TEXT) {
       return null
     }

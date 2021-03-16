@@ -803,15 +803,8 @@ class CurriculumSequence extends Component {
       collections,
       'playlist'
     )
-
-    /**
-     * Hide customize button if
-     * - its not playlist review page or my playlist page
-     * - AND status is published (ie, not in edit mode)
-     * - AND customize is turned off or duplication not allowed
-     */
-    const shouldHideCustomizeButton =
-      !(isPlaylistDetailsPage || urlHasUseThis) &&
+    const shouldHidCustomizeButton =
+      (isPlaylistDetailsPage || urlHasUseThis) &&
       status === 'published' &&
       (!enableCustomize || !canAllowDuplicate)
 
@@ -911,7 +904,7 @@ class CurriculumSequence extends Component {
                   urlHasUseThis={urlHasUseThis}
                   showRightPanel={
                     showRightPanel &&
-                    !shouldHideCustomizeButton &&
+                    !shouldHidCustomizeButton &&
                     !!activeRightPanel
                   }
                   showBreadCrumb={showBreadCrumb}
@@ -930,7 +923,7 @@ class CurriculumSequence extends Component {
                     isManageContentActive={isManageContentActive}
                     isContentExpanded={isContentExpanded}
                     toggleManageContentClick={this.toggleManageContentClick}
-                    shouldHideCustomizeButton={shouldHideCustomizeButton}
+                    shouldHidCustomizeButton={shouldHidCustomizeButton}
                     isAuthoringFlowReview={current === 'review'}
                     customizeInDraft={customizeInDraft}
                   />
@@ -990,7 +983,7 @@ class CurriculumSequence extends Component {
                   urlHasUseThis={urlHasUseThis}
                   hideRightpanel={this.hideRightpanel}
                   summaryData={summaryData}
-                  shouldHideCustomizeButton={shouldHideCustomizeButton}
+                  shouldHidCustomizeButton={shouldHidCustomizeButton}
                   isManageContentActive={isManageContentActive}
                   isNotStudentOrParent={isNotStudentOrParent}
                   destinationCurriculumSequence={destinationCurriculumSequence}

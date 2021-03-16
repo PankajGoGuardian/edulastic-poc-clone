@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { capitalize, get, isEmpty, pickBy, groupBy } from 'lodash'
+import { get, isEmpty, pickBy, groupBy, upperFirst } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -327,8 +327,8 @@ const StandardsMasteryReportFilters = ({
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
-    const filterKey = ['grade', 'subject'].includes(keyName)
-      ? `student${capitalize(keyName)}`
+    const filterKey = ['grade', 'subject', 'courseId'].includes(keyName)
+      ? `student${upperFirst(keyName)}`
       : keyName
     resetStudentFilters(_tagsData, _filters, filterKey, _selected)
     setTagsData(_tagsData)
@@ -383,8 +383,8 @@ const StandardsMasteryReportFilters = ({
       setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
-      const filterKey = ['grade', 'subject'].includes(type)
-        ? `student${capitalize(type)}`
+      const filterKey = ['grade', 'subject', 'courseId'].includes(type)
+        ? `student${upperFirst(type)}`
         : type
       resetStudentFilters(_tagsData, _filters, filterKey, '')
       // handles single selection filters

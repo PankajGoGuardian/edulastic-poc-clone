@@ -26,7 +26,7 @@ const CurriculumSubHeader = ({
   isManageContentActive,
   isContentExpanded,
   toggleManageContentClick,
-  shouldHidCustomizeButton,
+  shouldHideCustomizeButton,
   isAuthoringFlowReview,
   customizeInDraft = false,
   urlHasUseThis = false,
@@ -122,7 +122,7 @@ const CurriculumSubHeader = ({
             <ButtonWrapper>
               {(!isManageContentActive || !showRightPanel) &&
                 enableCustomize &&
-                !shouldHidCustomizeButton && (
+                !shouldHideCustomizeButton && (
                   <CustomizeButton
                     isGhost
                     isBlue

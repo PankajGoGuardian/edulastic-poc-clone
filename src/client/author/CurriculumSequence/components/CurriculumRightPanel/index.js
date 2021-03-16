@@ -20,7 +20,7 @@ const CurriculumRightPanel = ({
   isManageContentActive,
   isNotStudentOrParent,
   destinationCurriculumSequence,
-  shouldHidCustomizeButton,
+  shouldHideCustomizeButton,
 }) => {
   if (!showRightPanel || !activeRightPanel) {
     return <></>
@@ -39,7 +39,7 @@ const CurriculumRightPanel = ({
     ((isNotStudentOrParent &&
       isManageContentActive &&
       !urlHasUseThis &&
-      !shouldHidCustomizeButton) ||
+      !shouldHideCustomizeButton) ||
       (urlHasUseThis && isManageContentActive)) &&
     !isStudent
   const showSummaryBlock = !isManageContentActive || isStudent

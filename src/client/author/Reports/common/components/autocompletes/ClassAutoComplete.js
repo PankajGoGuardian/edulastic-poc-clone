@@ -28,6 +28,7 @@ const ClassAutoComplete = ({
   courseId,
   selectCB,
   selectedClassIds,
+  dataCy,
 }) => {
   const classFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -117,7 +118,15 @@ const ClassAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
+    // if (selectedClassIds.length) {
+    //   selectCB({ key: '', title: '' })
+    // }
   }, [termId, schoolIds, teacherIds, grade, subject, courseId])
+  useEffect(() => {
+    if (!selectedClassIds.length) {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+    }
+  }, [selectedClassIds])
 
   // build dropdown data
   const dropdownData = Object.values(
@@ -132,9 +141,10 @@ const ClassAutoComplete = ({
   return (
     <MultiSelectSearch
       label="Class"
+      dataCy={dataCy}
       placeholder="All Classes"
       el={classFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultClassList}

@@ -33,10 +33,18 @@ const AssessmentAutoComplete = ({
   selectedTestIds,
   selectCB,
   dataCy,
-  tags,
+  tagIds,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+
+  // build dropdown data
+  const dropdownData = testList.map((item) => ({
+    key: item._id,
+    title: `${item.title} (ID: ${
+      item._id?.substring(item._id.length - 5) || ''
+    })`,
+  }))
 
   // build search query
   const query = useMemo(() => {
@@ -69,15 +77,32 @@ const AssessmentAutoComplete = ({
     if (testTypes) {
       q.search.testTypes = testTypes.split(',')
     }
-    if (tags?.length) {
-      q.search.tagIds = tags
+    if (tagIds) {
+      q.search.tagIds = tagIds.split(',')
     }
     return q
-  }, [searchTerms.text, termId, grade, subject, testTypes, tags])
+  }, [searchTerms.text, termId, grade, subject, testTypes, tagIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value, searchedText: value })
+  }
+  const onChange = (selected, selectedElements) => {
+    const _selectedTestIds = !selected.length
+      ? []
+      : typeof selected === 'string'
+      ? [selected]
+      : selected
+    setSearchTerms({
+      ...searchTerms,
+      searchedText: '',
+      selectedKey: _selectedTestIds.join(','),
+    })
+    const _selectedTests = selectedElements.map(({ props }) => ({
+      key: props.value,
+      title: props.children,
+    }))
+    selectCB(_selectedTests)
   }
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
@@ -91,10 +116,10 @@ const AssessmentAutoComplete = ({
   }, [query])
   useEffect(() => {
     if (searchTerms.selectedKey && !searchTerms.searchedText) {
-      const validTestIds = selectedTestIds.filter((testId) => {
-        return testList.find((t) => t._id === testId)
-      })
-      selectCB(validTestIds)
+      const validTests = dropdownData.filter((d) =>
+        selectedTestIds.includes(d.key)
+      )
+      selectCB(validTests)
     }
     setSearchTerms({
       ...searchTerms,
@@ -102,35 +127,13 @@ const AssessmentAutoComplete = ({
     })
   }, [testList])
 
-  // build dropdown data
-  const dropdownData = testList.map((item) => ({
-    key: item._id,
-    title: `${
-      item.title.length > 25 ? `${item.title.slice(0, 22)}...` : item.title
-    } (ID: ${item._id?.substring(item._id.length - 5) || ''})`,
-  }))
-
-  const setAssessments = (assessments) => {
-    const selectedAssessmentIds = !assessments.length
-      ? []
-      : typeof assessments === 'string'
-      ? [assessments]
-      : assessments
-    setSearchTerms({
-      ...searchTerms,
-      searchedText: '',
-      selectedKey: selectedAssessmentIds.join(','),
-    })
-    selectCB(selectedAssessmentIds)
-  }
-
   return (
     <MultiSelectSearch
       dataCy={dataCy}
       label="Test"
       placeholder="All Tests"
       el={assessmentFilterRef}
-      onChange={(selected) => setAssessments(selected)}
+      onChange={onChange}
       onSearch={onSearch}
       value={selectedTestIds}
       options={!loading ? dropdownData : []}

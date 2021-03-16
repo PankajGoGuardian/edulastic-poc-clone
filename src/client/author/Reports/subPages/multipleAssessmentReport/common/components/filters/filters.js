@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo, Fragment, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
@@ -10,76 +10,63 @@ import { roleuser } from '@edulastic/constants'
 import { EduButton } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
-import FilterTags from '../../../../common/components/FilterTags'
-import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
-import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
-import AssessmentAutoComplete from '../../../../common/components/autocompletes/AssessmentAutoComplete'
-import SchoolAutoComplete from '../../../../common/components/autocompletes/SchoolAutoComplete'
-import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
-import TeacherAutoComplete from '../../../../common/components/autocompletes/TeacherAutoComplete'
-import ClassAutoComplete from '../../../../common/components/autocompletes/ClassAutoComplete'
-import GroupsAutoComplete from '../../../../common/components/autocompletes/GroupsAutoComplete'
-import TagFilter from '../../../../../src/components/common/TagFilter'
+import FilterTags from '../../../../../common/components/FilterTags'
+import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
+import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
+import AssessmentsAutoComplete from '../../../../../common/components/autocompletes/AssessmentsAutoComplete'
+import CourseAutoComplete from '../../../../../common/components/autocompletes/CourseAutoComplete'
+import ClassAutoComplete from '../../../../../common/components/autocompletes/ClassAutoComplete'
+import GroupsAutoComplete from '../../../../../common/components/autocompletes/GroupsAutoComplete'
+import SchoolAutoComplete from '../../../../../common/components/autocompletes/SchoolAutoComplete'
+import TeacherAutoComplete from '../../../../../common/components/autocompletes/TeacherAutoComplete'
+import TagFilter from '../../../../../../src/components/common/TagFilter'
 import {
   ReportFiltersContainer,
   ReportFiltersWrapper,
   FilterLabel,
-} from '../../../../common/styled'
+} from '../../../../../common/styled'
+
+import { processSchoolYear } from '../../utils/transformers'
 
 import {
-  getReportsSARFilterLoadingState,
-  getSARFilterDataRequestAction,
-  getReportsSARFilterData,
-  getFiltersAndTestIdSelector,
-  setFiltersOrTestIdAction,
-  getReportsPrevSARFilterData,
-  setPrevSARFilterDataAction,
-  getPerformanceBandProfile,
-  getStandardMasteryScale,
-} from '../filterDataDucks'
-import { getTestListSelector } from '../../../../ducks'
-import {
-  getUserRole,
-  getUserOrgId,
-  getUser,
-} from '../../../../../src/selectors/user'
-import { resetStudentFilters } from '../../../../common/util'
-import staticDropDownData from '../static/staticDropDownData.json'
+  getReportsMARFilterLoadingState,
+  getMARFilterDataRequestAction,
+  getReportsMARFilterData,
+  getFiltersSelector,
+  setFiltersAction,
+  getTestIdSelector,
+  setTestIdAction,
+  getReportsPrevMARFilterData,
+  setPrevMARFilterDataAction,
+} from '../../filterDataDucks'
+import { getUserRole, getUser } from '../../../../../../src/selectors/user'
+import { resetStudentFilters } from '../../../../../common/util'
+
+import staticDropDownData from '../../static/staticDropDownData.json'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
-const getTestIdFromURL = (url) => {
-  if (url.length > 16) {
-    const _url = url.substring(16)
-    const index = _url.indexOf('test/')
-    if (index >= 0) {
-      const testId = _url.substring(index + 5)
-      return testId
-    }
-  }
-  return ''
-}
-
-const SingleAssessmentReportFilters = ({
+const MultipleAssessmentReportFilters = ({
   isPrinting,
   loading,
-  SARFilterData,
+  MARFilterData,
+  filters,
+  testIds,
+  tempDdFilter,
+  tagsData,
   user,
   role,
-  getSARFilterDataRequest,
-  filtersAndTestId: { filters, testId },
-  setFiltersOrTestId,
-  tempDdFilter,
+  getMARFilterDataRequest,
+  setFilters,
+  setTestIds,
   setTempDdFilter,
-  tagsData,
   setTagsData,
   onGoClick: _onGoClick,
   location,
   history,
-  setPrevSARFilterData,
-  prevSARFilterData,
+  setPrevMARFilterData,
+  prevMARFilterData,
   performanceBandRequired,
-  standardProficiencyRequired,
   demographicsRequired,
   extraFilters,
   showApply,
@@ -87,125 +74,60 @@ const SingleAssessmentReportFilters = ({
   firstLoad,
   setFirstLoad,
   reportId,
-  assessmentPerformanceBandProfile,
-  assessmentStandardMasteryScale,
   showFilter,
   toggleFilter,
-  testList,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
-  const assessmentTypeRef = useRef()
+  const assessmentTypesRef = useRef()
 
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
-      (performanceBandRequired || t.key !== 'performanceBandProfile') &&
-      (standardProficiencyRequired ||
-        t.key !== 'standardsProficiencyProfile') &&
+      (performanceBandRequired || t.key !== 'profileId') &&
       (demographicsRequired || !ddFilterTypes.includes(t.key))
   )
 
-  const performanceBandProfiles = get(SARFilterData, 'data.result.bandInfo', [])
+  const performanceBandProfiles = get(MARFilterData, 'data.result.bandInfo', [])
   const performanceBandList = useMemo(
-    () =>
-      performanceBandProfiles.map((profile) => ({
-        key: profile._id,
-        title: profile.name,
-      })),
+    () => performanceBandProfiles.map((p) => ({ key: p._id, title: p.name })),
     [performanceBandProfiles]
   )
-  const standardProficiencyProfiles = get(
-    SARFilterData,
-    'data.result.scaleInfo',
-    []
-  )
-  const standardProficiencyList = useMemo(
-    () =>
-      standardProficiencyProfiles.map((s) => ({ key: s._id, title: s.name })),
-    [standardProficiencyProfiles]
-  )
-
+  const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '')
-  const schoolYear = useMemo(() => {
-    let schoolYears = []
-    const arr = get(user, 'orgData.terms', [])
-    if (arr.length) {
-      schoolYears = arr.map((item) => ({ key: item._id, title: item.name }))
-    }
-    return schoolYears
-  }, [user])
-
-  const selectedPerformanceBand =
-    performanceBandList.find((p) => p.key === filters.performanceBandProfile) ||
-    performanceBandList.find(
-      (p) => p.key === assessmentPerformanceBandProfile?._id
-    ) ||
-    performanceBandList[0]
-
-  const selectedStandardProficiency =
-    standardProficiencyList.find(
-      (p) => p.key === filters.standardsProficiencyProfile
-    ) ||
-    standardProficiencyList.find(
-      (p) => p.key === assessmentStandardMasteryScale?._id
-    ) ||
-    standardProficiencyList[0]
 
   useEffect(() => {
     const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true }),
+      qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
     if (reportId) {
-      getSARFilterDataRequest({ reportId })
-      const _testId = getTestIdFromURL(location.pathname)
-      setFiltersOrTestId({
-        filters: { ...filters, ...search },
-        testId: _testId,
-      })
-    } else if (SARFilterData !== prevSARFilterData) {
+      getMARFilterDataRequest({ reportId })
+      setFilters({ ...filters, ...search })
+      setTestIds([])
+    } else if (MARFilterData !== prevMARFilterData) {
       const termId =
         search.termId ||
         defaultTermId ||
-        (schoolYear.length ? schoolYear[0].key : '')
+        (schoolYears.length ? schoolYears[0].key : '')
       const q = { ...search, termId }
       if (firstLoad && isEmpty(search)) {
         q.firstLoad = true
       }
-      getSARFilterDataRequest(q)
+      if (role === roleuser.SCHOOL_ADMIN) {
+        q.schoolIds = get(user, 'institutionIds', []).join(',')
+      }
+      getMARFilterDataRequest(q)
     }
   }, [])
 
-  /**
-   * if performanceBandProfile / standardsProficiencyProfile is not selected
-   * performance band / standards mastery is fetched from the assessment (page data api)
-   * this behaviour is kept dynamic for any selected test (apply button is not shown)
-   * until the user manually selects a performance band / standards proficiency
-   * however, filter tags need to reflect these dynamic changes
-   * hence, the useEffect only updates tagsData for now
-   */
-  useEffect(() => {
-    const _tagsData = {
-      ...tagsData,
-      performanceBandProfile: selectedPerformanceBand,
-      standardsProficiencyProfile: selectedStandardProficiency,
-    }
-    setTagsData(_tagsData)
-  }, [assessmentPerformanceBandProfile, assessmentStandardMasteryScale])
-
-  if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
+  if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
     const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true }),
+      qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
-    const _testId = getTestIdFromURL(location.pathname) || ''
     if (reportId) {
-      _onGoClick({
-        filters: { ...filters, ...search },
-        selectedTest: { key: _testId },
-      })
-      setShowApply(false)
+      _onGoClick({ selectedTests: [], filters: { ...filters, ...search } })
     } else {
       // select common assessment as default if assessment type is not set for admins
       if (
@@ -215,9 +137,9 @@ const SingleAssessmentReportFilters = ({
         search.assessmentTypes = search.assessmentTypes || 'common assessment'
       }
       const urlSchoolYear =
-        schoolYear.find((item) => item.key === search.termId) ||
-        schoolYear.find((item) => item.key === defaultTermId) ||
-        (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
+        schoolYears.find((item) => item.key === search.termId) ||
+        schoolYears.find((item) => item.key === defaultTermId) ||
+        (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
       const urlSubject =
         staticDropDownData.subjects.find(
           (item) => item.key === search.subject
@@ -233,97 +155,74 @@ const SingleAssessmentReportFilters = ({
         staticDropDownData.grades.find(
           (item) => item.key === search.studentGrade
         ) || staticDropDownData.grades[0]
-      const urlStandardProficiency = standardProficiencyList.find(
-        (item) => item.key === search.standardsProficiencyProfile
-      )
-      const urlPerformanceBand = performanceBandList.find(
-        (item) => item.key === search.performanceBandProfile
-      )
+      const urlPerformanceBand =
+        performanceBandList.find((item) => item.key === search.profileId) ||
+        performanceBandList[0]
 
       const _filters = {
         termId: urlSchoolYear.key,
-        grade: urlGrade.key,
         subject: urlSubject.key,
+        grade: urlGrade.key,
         tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        studentGrade: urlStudentGrade.key,
         studentSubject: urlStudentSubject.key,
+        studentGrade: urlStudentGrade.key,
         studentCourseId: search.studentCourseId || 'All',
-        classIds: search.classIds || '',
-        groupIds: search.groupIds || '',
-        standardsProficiencyProfile: urlStandardProficiency?.key || '',
-        performanceBandProfile: urlPerformanceBand?.key || '',
+        classIds: search.classId || '',
+        groupIds: search.groupId || '',
+        profileId: urlPerformanceBand?.key || '',
       }
-      if (role === 'teacher') {
+      if (role === roleuser.TEACHER) {
         delete _filters.schoolIds
         delete _filters.teacherIds
+      }
+      if (role === roleuser.SCHOOL_ADMIN) {
+        _filters.schoolIds =
+          _filters.schoolIds || get(user, 'institutionIds', []).join(',')
       }
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tagsData = {
         termId: urlSchoolYear,
-        grade: urlGrade,
         subject: urlSubject,
+        grade: urlGrade,
         assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
           assessmentTypesArr.includes(a.key)
         ),
-        studentGrade: urlStudentGrade,
         studentSubject: urlStudentSubject,
-        standardsProficiencyProfile: urlStandardProficiency,
-        performanceBandProfile: urlPerformanceBand,
+        studentGrade: urlStudentGrade,
+        profileId: urlPerformanceBand,
       }
+
       // set tagsData, filters and testId
       setTagsData(_tagsData)
-      setFiltersOrTestId({ filters: _filters, testId: _testId })
+      setFilters(_filters)
+      // TODO: enable selection of testIds from url and saved filters
+      // const urlTestIds = search.testIds ? search.testIds.split(',') : []
+      // setTestIds(urlTestIds)
+      setTestIds([])
+      _onGoClick({
+        filters: { ..._filters },
+        selectedTests: [],
+      })
     }
-    // update prevSARFilterData
-    setPrevSARFilterData(SARFilterData)
+    setFirstLoad(false)
+    // update prevMARFilterData
+    setPrevMARFilterData(MARFilterData)
   }
 
-  const onGoClick = () => {
+  const onGoClick = (_settings = {}) => {
     const settings = {
       filters: { ...filters },
-      selectedTest: { key: testId },
+      selectedTests: testIds,
+      ..._settings,
     }
-    setShowApply(false)
     _onGoClick(settings)
   }
 
-  const getNewPathname = () => {
-    const splitted = location.pathname.split('/')
-    splitted.splice(splitted.length - 1)
-    return `${splitted.join('/')}/`
-  }
-
-  const updateTestId = (selected) => {
-    const _tagsData = { ...tagsData, testId: selected }
-    if (firstLoad && !selected.key) {
-      delete _tagsData.testId
-      toggleFilter(null, true)
-      setFirstLoad(false)
-      return
-    }
-    setTagsData(_tagsData)
-    const _testId = selected.key || ''
-    setFiltersOrTestId({ testId: _testId })
-    if (reportId) {
-      setFirstLoad(false)
-    } else if (firstLoad && selected.key) {
-      setFirstLoad(false)
-      _onGoClick({
-        filters: { ...filters },
-        selectedTest: { key: _testId },
-      })
-    } else if (selected.key) {
-      setShowApply(true)
-    } else if (firstLoad) {
-      setFirstLoad(false)
-    }
-  }
-
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
-    // update tags data
+    // update filter tags data
     const _tagsData = { ...tagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tagsData[keyName]
@@ -336,19 +235,31 @@ const SingleAssessmentReportFilters = ({
     setTagsData(_tagsData)
     // update filters
     _filters[keyName] = _selected
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
-    const _testId = keyName === 'tagIds' ? '' : testId
-    setFiltersOrTestId({ filters: _filters, testId: _testId })
+    history.push(`${location.pathname}?${qs.stringify(_filters)}`)
+    setFilters(_filters)
+    setShowApply(true)
+  }
+
+  const onSelectTest = (selected) => {
+    setTagsData({ ...tagsData, testIds: selected })
+    setTestIds(selected.map((o) => o.key))
     setShowApply(true)
   }
 
   const handleCloseTag = (type, { key }) => {
     const _tagsData = { ...tagsData }
-    // handles tempDdFilters
-    if (ddFilterTypes.includes(type)) {
+    // handles testIds
+    if (type === 'testIds') {
+      if (testIds.includes(key)) {
+        const _testIds = testIds.filter((d) => d !== key)
+        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        setTestIds(_testIds)
+      }
+    } // handles tempDdFilters
+    else if (ddFilterTypes.includes(type)) {
       const _tempDdFilter = { ...tempDdFilter }
       if (tempDdFilter[type] === key) {
-        _tempDdFilter[type] = staticDropDownData.initialDdFilters[type]
+        _tempDdFilter[type] = ''
         delete _tagsData[type]
       }
       setTempDdFilter(_tempDdFilter)
@@ -368,7 +279,7 @@ const SingleAssessmentReportFilters = ({
           .join(',')
         _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
       }
-      setFiltersOrTestId({ filters: _filters, testId })
+      setFilters(_filters)
     }
     setTagsData(_tagsData)
     setShowApply(true)
@@ -414,7 +325,7 @@ const SingleAssessmentReportFilters = ({
                           selectCB={(e, selected) =>
                             updateFilterDropdownCB(selected, 'termId')
                           }
-                          data={schoolYear}
+                          data={schoolYears}
                           prefix="School Year"
                           showPrefixOnSelected={false}
                         />
@@ -424,12 +335,13 @@ const SingleAssessmentReportFilters = ({
                           Test Grade
                         </FilterLabel>
                         <ControlDropDown
+                          prefix="Grade"
+                          className="custom-1-scrollbar"
                           by={filters.grade}
                           selectCB={(e, selected) =>
                             updateFilterDropdownCB(selected, 'grade')
                           }
                           data={staticDropDownData.grades}
-                          prefix="Test Grade"
                           showPrefixOnSelected={false}
                         />
                       </Col>
@@ -443,7 +355,7 @@ const SingleAssessmentReportFilters = ({
                             updateFilterDropdownCB(selected, 'subject')
                           }
                           data={staticDropDownData.subjects}
-                          prefix="Test Subject"
+                          prefix="Subject"
                           showPrefixOnSelected={false}
                         />
                       </Col>
@@ -451,7 +363,7 @@ const SingleAssessmentReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="testTypes"
                           label="Test Type"
-                          el={assessmentTypeRef}
+                          el={assessmentTypesRef}
                           onChange={(e) => {
                             const selected = staticDropDownData.assessmentType.filter(
                               (a) => e.includes(a.key)
@@ -463,8 +375,7 @@ const SingleAssessmentReportFilters = ({
                             )
                           }}
                           value={
-                            filters.assessmentTypes &&
-                            filters.assessmentTypes !== 'All'
+                            filters.assessmentTypes
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
@@ -487,34 +398,32 @@ const SingleAssessmentReportFilters = ({
                           }
                         />
                       </Col>
-
-                      {prevSARFilterData && (
+                      {prevMARFilterData && (
                         <Col span={6}>
-                          <FilterLabel data-cy="test">Test</FilterLabel>
-                          <AssessmentAutoComplete
+                          <AssessmentsAutoComplete
+                            dataCy="tests"
                             firstLoad={firstLoad}
                             termId={filters.termId}
                             grade={filters.grade !== 'All' && filters.grade}
-                            tagIds={filters.tagIds}
                             subject={
                               filters.subject !== 'All' && filters.subject
                             }
                             testTypes={filters.assessmentTypes}
-                            selectedTestId={
-                              testId || getTestIdFromURL(location.pathname)
-                            }
-                            selectCB={updateTestId}
+                            tagIds={filters.tagIds}
+                            selectedTestIds={testIds}
+                            selectCB={onSelectTest}
                           />
                         </Col>
                       )}
                     </Row>
                   </Tabs.TabPane>
+
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.CLASS_FILTERS.key}
                     tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
                   >
                     <Row type="flex" gutter={[5, 10]}>
-                      {role !== 'teacher' && (
+                      {role !== roleuser.TEACHER && (
                         <>
                           <Col span={6}>
                             <SchoolAutoComplete
@@ -534,7 +443,6 @@ const SingleAssessmentReportFilters = ({
                               dataCy="teachers"
                               termId={filters.termId}
                               school={filters.schoolIds}
-                              testId={testId}
                               selectedTeacherIds={
                                 filters.teacherIds
                                   ? filters.teacherIds.split(',')
@@ -552,12 +460,13 @@ const SingleAssessmentReportFilters = ({
                           Class Grade
                         </FilterLabel>
                         <ControlDropDown
+                          prefix="Grade"
+                          className="custom-1-scrollbar"
                           by={filters.studentGrade}
                           selectCB={(e, selected) =>
                             updateFilterDropdownCB(selected, 'studentGrade')
                           }
                           data={staticDropDownData.grades}
-                          prefix="Grade"
                           showPrefixOnSelected={false}
                         />
                       </Col>
@@ -638,7 +547,8 @@ const SingleAssessmentReportFilters = ({
                       </Col>
                     </Row>
                   </Tabs.TabPane>
-                  {(standardProficiencyRequired || performanceBandRequired) && (
+
+                  {performanceBandRequired && (
                     <Tabs.TabPane
                       key={
                         staticDropDownData.filterSections.PERFORMANCE_FILTERS
@@ -650,46 +560,20 @@ const SingleAssessmentReportFilters = ({
                       }
                     >
                       <Row type="flex" gutter={[5, 10]}>
-                        {standardProficiencyRequired && (
-                          <Col span={6}>
-                            <FilterLabel data-cy="standardProficiency">
-                              Standard Proficiency
-                            </FilterLabel>
-                            <ControlDropDown
-                              by={selectedStandardProficiency.key}
-                              selectCB={(e, selected) =>
-                                updateFilterDropdownCB(
-                                  selected,
-                                  'standardsProficiencyProfile',
-                                  false
-                                )
-                              }
-                              data={standardProficiencyList}
-                              prefix="Standard Proficiency"
-                              showPrefixOnSelected={false}
-                            />
-                          </Col>
-                        )}
-                        {performanceBandRequired && (
-                          <Col span={6}>
-                            <FilterLabel data-cy="performanceBand">
-                              Performance Band
-                            </FilterLabel>
-                            <ControlDropDown
-                              by={selectedPerformanceBand}
-                              selectCB={(e, selected) =>
-                                updateFilterDropdownCB(
-                                  selected,
-                                  'performanceBandProfile',
-                                  false
-                                )
-                              }
-                              data={performanceBandList}
-                              prefix="Performance Band"
-                              showPrefixOnSelected={false}
-                            />
-                          </Col>
-                        )}
+                        <Col span={6}>
+                          <FilterLabel data-cy="performanceBand">
+                            Performance Band
+                          </FilterLabel>
+                          <ControlDropDown
+                            by={{ key: filters.profileId }}
+                            selectCB={(e, selected) =>
+                              updateFilterDropdownCB(selected, 'profileId')
+                            }
+                            data={performanceBandList}
+                            prefix="Performance Band"
+                            showPrefixOnSelected={false}
+                          />
+                        </Col>
                       </Row>
                     </Tabs.TabPane>
                   )}
@@ -727,7 +611,7 @@ const SingleAssessmentReportFilters = ({
                   height="40px"
                   style={{ maxWidth: '200px' }}
                   key="applyButton"
-                  disabled={!showApply || isEmpty(testList)}
+                  disabled={!showApply}
                   onClick={() => onGoClick()}
                 >
                   Apply
@@ -744,28 +628,21 @@ const SingleAssessmentReportFilters = ({
 const enhance = compose(
   connect(
     (state) => ({
-      loading: getReportsSARFilterLoadingState(state),
-      SARFilterData: getReportsSARFilterData(state),
-      filtersAndTestId: getFiltersAndTestIdSelector(state),
+      loading: getReportsMARFilterLoadingState(state),
+      MARFilterData: getReportsMARFilterData(state),
+      filters: getFiltersSelector(state),
+      testIds: getTestIdSelector(state),
       role: getUserRole(state),
-      districtId: getUserOrgId(state),
       user: getUser(state),
-      prevSARFilterData: getReportsPrevSARFilterData(state),
-      performanceBandProfiles: state?.performanceBandReducer?.profiles || [],
-      standardProficiencyProfiles:
-        state?.standardsProficiencyReducer?.data || [],
-      standardProficiencyLoading:
-        state?.standardsProficiencyReducer?.loading || [],
-      assessmentPerformanceBandProfile: getPerformanceBandProfile(state),
-      assessmentStandardMasteryScale: getStandardMasteryScale(state),
-      testList: getTestListSelector(state),
+      prevMARFilterData: getReportsPrevMARFilterData(state),
     }),
     {
-      getSARFilterDataRequest: getSARFilterDataRequestAction,
-      setFiltersOrTestId: setFiltersOrTestIdAction,
-      setPrevSARFilterData: setPrevSARFilterDataAction,
+      getMARFilterDataRequest: getMARFilterDataRequestAction,
+      setFilters: setFiltersAction,
+      setTestIds: setTestIdAction,
+      setPrevMARFilterData: setPrevMARFilterDataAction,
     }
   )
 )
 
-export default enhance(SingleAssessmentReportFilters)
+export default enhance(MultipleAssessmentReportFilters)

@@ -23,7 +23,7 @@ const ICON_COLORS = {
 }
 
 const StatusComponent = ({ type, color, text }) => (
-  <StatusDiv>
+  <StatusDiv data-cy="status">
     <StyledStatusIcon type={type} iconColor={color} />
     {text}
   </StatusDiv>
@@ -186,6 +186,7 @@ const AddUsersConfirmationModal = ({
       <Row>
         <Col span={24}>
           <Table
+            data-cy="addUserTable"
             rowKey={(record) => record._id}
             columns={columns}
             dataSource={dataSource}

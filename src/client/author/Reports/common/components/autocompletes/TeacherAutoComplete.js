@@ -123,7 +123,7 @@ const TeacherAutoComplete = ({
       label="Teacher"
       placeholder="All Teachers"
       el={teacherFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={() => getDefaultTeacherList()}

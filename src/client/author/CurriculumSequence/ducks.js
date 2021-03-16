@@ -169,6 +169,8 @@ export const SET_DIFFERENTIATION_WORK =
 export const SET_DIFFERENTIATION_SELECTED_DATA =
   '[differentiation] set differentiation selected data'
 export const ADD_TEST_TO_DIFFERENTIATION = '[differentiation] add test'
+export const REMOVE_RESOURCE_FROM_DIFFERENTIATION =
+  '[differentiation] remove resource'
 export const ADD_RECOMMENDATIONS_ACTIONS =
   '[differentiation] add recommendations'
 export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE =
@@ -311,6 +313,9 @@ export const updateDestinationCurriculumSequenceRequestAction = createAction(
 export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA)
 export const addTestToDifferentationAction = createAction(
   ADD_TEST_TO_DIFFERENTIATION
+)
+export const removeResourceFromDifferentiationAction = createAction(
+  REMOVE_RESOURCE_FROM_DIFFERENTIATION
 )
 export const addResourceToDifferentiationAction = createAction(
   ADD_RESOURCE_TO_DIFFERENTIATION
@@ -2638,6 +2643,12 @@ export default createReducer(initialState, {
         testStandards,
       })
     }
+  },
+  [REMOVE_RESOURCE_FROM_DIFFERENTIATION]: (state, { payload }) => {
+    const { type, testId } = payload
+    state.differentiationWork[type] = state.differentiationWork[type]?.filter(
+      (x) => x.testId !== testId
+    )
   },
   [ADD_RESOURCE_TO_DIFFERENTIATION]: (state, { payload }) => {
     const {

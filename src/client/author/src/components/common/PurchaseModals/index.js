@@ -106,6 +106,18 @@ const PurchaseFlowModals = (props) => {
     fetchUserSubscriptionStatus()
   }, [])
 
+  const shouldProrate = useMemo(() => {
+    const oneDay = 1000 * 60 * 60 * 24
+    if (subEndDate) {
+      const remainingDaysForPremiumExpiry = Math.round(
+        (new Date(subEndDate).getTime() - new Date().getTime()) / oneDay
+      )
+
+      return remainingDaysForPremiumExpiry > 90
+    }
+    return true
+  }, [subEndDate])
+
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const boughtPremiumBankIds = itemBankSubscriptions
       .filter((x) => !x.isTrial)
@@ -128,21 +140,29 @@ const PurchaseFlowModals = (props) => {
           price: product.price,
         }
       }
-      let currentDate = new Date()
-      const itemBankSubEndDate = new Date(
-        currentDate.setDate(currentDate.getDate() + product.period)
-      ).valueOf()
-      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
-      currentDate = Date.now()
-      const amountFactor =
-        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
-      const dynamicPrice = Math.round(amountFactor * product.price)
-      const dynamicPeriodInDays = Math.round(amountFactor * product.period)
+
+      let dynamicPrice = product.price
+      let dynamicPeriodInDays = product.period
+
+      if (shouldProrate) {
+        let currentDate = new Date()
+        const itemBankSubEndDate = new Date(
+          currentDate.setDate(currentDate.getDate() + product.period)
+        ).valueOf()
+        const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
+        currentDate = Date.now()
+        const amountFactor = Math.min(
+          (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate),
+          1
+        )
+        dynamicPrice = Math.ceil(amountFactor * product.price)
+        dynamicPeriodInDays = Math.ceil(amountFactor * product.period)
+      }
 
       return {
         ...product,
-        price: dynamicPrice,
         period: dynamicPeriodInDays,
+        price: dynamicPrice,
       }
     })
     return {
@@ -264,6 +284,7 @@ const PurchaseFlowModals = (props) => {
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
           totalAmount={totalAmount}
+          shouldProrate={shouldProrate}
         />
       )}
       {showMultiplePurchaseModal && (

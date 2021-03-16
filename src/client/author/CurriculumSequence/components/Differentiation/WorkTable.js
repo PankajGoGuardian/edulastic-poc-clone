@@ -3,7 +3,7 @@ import { useDrop } from 'react-dnd'
 import { Popover } from 'antd'
 import { groupBy, compact, isEmpty } from 'lodash'
 import { EduButton, FlexContainer, notification } from '@edulastic/common' //  ProgressBar,
-import { IconUser } from '@edulastic/icons'
+import { IconClose, IconUser } from '@edulastic/icons'
 // import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import {
   TableContainer,
@@ -19,6 +19,7 @@ import {
 import { ResouceIcon } from '../ResourceItem/index'
 import Tags from '../../../src/components/common/Tags'
 import { SubResourceView } from '../PlaylistResourceRow'
+import { InlineDelete } from '../PlaylistResourceRow/styled'
 
 function ContentDropContainer({ children, ...props }) {
   const [{ isOver }, dropRef] = useDrop({
@@ -116,6 +117,7 @@ const InnerWorkTable = ({
   setEmbeddedVideoPreviewModal,
   showResource,
   removeSubResource,
+  removeResourceFromDifferentiation,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [masteryRange, setMasteryRange] = useState([0, 10])
@@ -384,6 +386,27 @@ const InnerWorkTable = ({
       width: '145px',
       align: 'center',
       render: (s) => <Tag>{s === 'ADDED' ? 'ASSIGNED' : s}</Tag>,
+    },
+    {
+      title: '',
+      key: 'action-delete',
+      dataIndex: 'delete',
+      width: '40px',
+      align: 'center',
+      render: (_, _record) => (
+        <InlineDelete
+          data-cy="delete-test"
+          title="Delete Test"
+          onClick={() =>
+            removeResourceFromDifferentiation({
+              ..._record,
+              type: type?.toLowerCase(),
+            })
+          }
+        >
+          <IconClose />
+        </InlineDelete>
+      ),
     },
   ]
 

@@ -199,7 +199,7 @@ const Userlist = ({
 
     return (
       <CheckboxLabel
-        data-cy={`${key}Checkbox`}
+        data-cy={`${key}_${record.email}Checkbox`}
         onChange={onChange}
         checked={isChecked}
         disabled={disabled}

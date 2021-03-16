@@ -553,7 +553,8 @@ class QuestionWrapper extends Component {
       ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
         this.ttsVisibilityAuthorSide) &&
       data.tts &&
-      data.tts.taskStatus === 'COMPLETED'
+      data.tts.taskStatus === 'COMPLETED' &&
+      playerSkinType !== test.playerSkinValues.quester
 
     /**
      * we need to render the tts buttons at author, if it was rendered at student side

@@ -4,14 +4,15 @@ import { mobileWidth } from '@edulastic/colors'
 // need to calculate zoomed style
 // see: https://snapwiz.atlassian.net/browse/EV-21562
 const zoomedStyle = css`
-  ${({ theme, isStudentAttempt, viewComponent }) => {
+  ${(props) => {
+    const { theme, isStudentAttempt, viewComponent } = props
     if (!isStudentAttempt) {
       return
     }
 
-    const { shouldZoom, zoomLevel, headerHeight } = theme
+    const { shouldZoom, zoomLevel, headerHeight, playerSkinType } = theme
     const zoomed = zoomLevel > '1' && zoomLevel !== undefined
-
+    const questerFooterHeight = 66
     // need to think about padding of Main wrapper
     // see: themes/common/Main.js
 
@@ -33,10 +34,11 @@ const zoomedStyle = css`
       viewComponent === 'practicePlayer'
         ? 180
         : headerHeight + paddingTopBottom + 12
-
+    if (playerSkinType === 'quester') {
+      header += questerFooterHeight
+    }
     if (shouldZoom && zoomed) {
       header /= zoomLevel
-
       return `
         min-height: calc(${100 / zoomLevel}vh - ${header}px);
         max-height: calc(${100 / zoomLevel}vh - ${header}px);

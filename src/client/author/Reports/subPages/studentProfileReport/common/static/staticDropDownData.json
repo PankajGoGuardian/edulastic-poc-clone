@@ -1,21 +1,23 @@
 {
   "tagTypes": [
     { "key": "termId", "closable": false },
-    { "key": "schoolIds", "closable": true },
-    { "key": "teacherIds", "closable": true },
+    { "key": "courseIds", "closable": true },
     { "key": "grade", "closable": true, "subType": "class" },
     { "key": "subject", "closable": true, "subType": "class" },
-    { "key": "assessmentTypes", "closable": true }
+    { "key": "classIds", "closable": true },
+    { "key": "student", "closable": false },
+    { "key": "performanceBandProfileId", "closable": false },
+    { "key": "standardsProficiencyProfileId", "closable": false }
   ],
   "initialFilters": {
     "reportId": "",
-    "termId": "",
-    "schoolIds": "",
-    "teacherIds": "",
+		"termId": "",
+    "courseIds": "",
     "grade": "All",
-    "subject": "All",
-    "assessmentTypes": ""
-  },
+		"subject": "All",
+    "performanceBandProfileId": "",
+    "standardsProficiencyProfileId": ""
+	},
   "subjects": [
     { "key": "All", "title": "All Subjects" },
     { "key": "Mathematics", "title": "Mathematics" },
@@ -41,12 +43,6 @@
     { "key": "10", "title": "Grade 10" },
     { "key": "11", "title": "Grade 11" },
     { "key": "12", "title": "Grade 12" },
-    { "key": "O", "title": "Other" }
-  ],
-  "assessmentType": [
-    { "key": "All", "title": "All Assessment Types" },
-    { "key": "common assessment", "title": "Common" },
-    { "key": "assessment", "title": "Class" },
-    { "key": "practice", "title": "Practice" }
+    { "key": "other", "title": "Other" }
   ]
 }

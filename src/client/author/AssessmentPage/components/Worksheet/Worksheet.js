@@ -648,6 +648,7 @@ class WorksheetComponent extends React.Component {
             footer={[
               <StyledCancelBtn
                 onClick={() => this.setDeleteConfirmation(false)}
+                data-cy="no"
               >
                 No
               </StyledCancelBtn>,
@@ -657,6 +658,7 @@ class WorksheetComponent extends React.Component {
                   this.handleDeletePage(selected)
                   this.setDeleteConfirmation(false)
                 }}
+                data-cy="yes"
               >
                 Yes
               </StyledSubmitBtn>,

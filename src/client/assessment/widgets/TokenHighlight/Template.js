@@ -189,6 +189,7 @@ const Template = ({
             value={item.template}
             toolbarId="tokens-template"
             border="border"
+            sanitizeClipboardHtml
             tokenHighlightTemplate
           />
         )}

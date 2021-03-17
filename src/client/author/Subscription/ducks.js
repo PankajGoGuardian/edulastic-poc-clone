@@ -3,7 +3,12 @@ import { message } from 'antd'
 import { isEmpty } from 'lodash'
 import moment from 'moment'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { subscriptionApi, paymentApi, segmentApi } from '@edulastic/api'
+import {
+  subscriptionApi,
+  paymentApi,
+  segmentApi,
+  userApi,
+} from '@edulastic/api'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { fetchUserAction } from '../../student/Login/ducks'
@@ -53,6 +58,11 @@ export const getAddOnProductIds = createSelector(
   (state) => state.addOnProductIds
 )
 
+export const getBookKeepersInviteSuccessStatus = createSelector(
+  subscriptionSelector,
+  (state) => state.isBookKeepersInviteSuccess
+)
+
 const slice = createSlice({
   name: 'subscription',
   initialState: {
@@ -66,6 +76,7 @@ const slice = createSlice({
     isPaymentServiceModalVisible: false,
     showHeaderTrialModal: false,
     addOnProductIds: [],
+    isBookKeepersInviteSuccess: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -158,6 +169,10 @@ const slice = createSlice({
     setAddOnProductIds: (state, { payload }) => {
       state.addOnProductIds = payload
     },
+    setBookKeepersInviteSuccess: (state, { payload }) => {
+      state.isBookKeepersInviteSuccess = payload
+    },
+    bulkInviteBookKeepersAction: () => {},
   },
 })
 
@@ -528,6 +543,21 @@ function* handleFreeTrialSaga({ payload }) {
   }
 }
 
+function* bulkInviteBookKeepersSaga({ payload }) {
+  try {
+    const res = yield call(userApi.adddBulkTeacher, payload) || []
+    if (res) {
+      yield put(slice.actions.setBookKeepersInviteSuccess(true))
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while inviting bookeepers',
+    })
+    captureSentryException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
@@ -544,6 +574,10 @@ export function* watcherSaga() {
     yield takeEvery(
       slice.actions.fetchUserSubscriptionStatus,
       fetchUserSubscription
+    ),
+    yield takeEvery(
+      slice.actions.bulkInviteBookKeepersAction,
+      bulkInviteBookKeepersSaga
     ),
   ])
 }

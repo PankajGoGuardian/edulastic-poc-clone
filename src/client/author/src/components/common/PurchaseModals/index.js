@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
-import { notification } from '@edulastic/common'
 import { uniq, compact } from 'lodash'
 import {
   getItemBankSubscriptions,
@@ -14,9 +13,11 @@ import {
   getPremiumProductId,
   getIsVerificationPending,
   getAddOnProductIds,
+  getBookKeepersInviteSuccessStatus,
   slice,
 } from '../../../../Subscription/ducks'
 import IndividualSubscriptionModal from './IndividualSubscriptionModal'
+import { getUserOrgId } from '../../../selectors/user'
 
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
@@ -69,6 +70,10 @@ const PurchaseFlowModals = (props) => {
     licenseOwnerId,
     addOnProductIds,
     setAddOnProductIds,
+    userOrgId,
+    bulkInviteBookKeepers,
+    isBookKeepersInviteSuccess,
+    setBookKeepersInviteSuccess,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -207,12 +212,6 @@ const PurchaseFlowModals = (props) => {
 
   const handleClick = ({ emails = [], productsToshow = products }) => {
     if (showMultiplePurchaseModal) {
-      if (emails.length > quantities[premiumProductId]) {
-        return notification({
-          type: 'warn',
-          msg: 'Email count(s) can not be more than Premium count(s)',
-        })
-      }
       const productQuantities = products.map((product) => ({
         ...product,
         quantity: quantities[product.id],
@@ -278,6 +277,10 @@ const PurchaseFlowModals = (props) => {
           quantities={quantities}
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
+          bulkInviteBookKeepers={bulkInviteBookKeepers}
+          districtId={userOrgId}
+          isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
+          setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
         />
       )}
       {showUpgradeModal && (
@@ -344,6 +347,8 @@ export default compose(
       isPaymentServiceModalVisible: getIsPaymentServiceModalVisible(state),
       user: state.user.user,
       addOnProductIds: getAddOnProductIds(state),
+      userOrgId: getUserOrgId(state),
+      isBookKeepersInviteSuccess: getBookKeepersInviteSuccessStatus(state),
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,
@@ -353,6 +358,8 @@ export default compose(
       fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       setAddOnProductIds: slice.actions.setAddOnProductIds,
+      bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,
+      setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,
     }
   )
 )(PurchaseFlowModals)

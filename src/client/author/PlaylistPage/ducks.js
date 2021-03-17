@@ -490,6 +490,7 @@ function addSubresource(entity, payload) {
     fromPlaylistTestsBox,
     standardIdentifiers,
     status,
+    contentSubType,
     ...itemObj
   } = item
   const newEntity = produce(entity, (draft) => {
@@ -499,7 +500,7 @@ function addSubresource(entity, payload) {
     const resources = draft.modules[moduleIndex].data[itemIndex].resources
 
     if (!resources.find((x) => x.contentId === contentId)) {
-      resources.push({ contentId, contentType, ...itemObj })
+      resources.push({ contentId, contentType, contentSubType, ...itemObj })
       draft.modules[moduleIndex].data[itemIndex].resources = resources
     }
   })

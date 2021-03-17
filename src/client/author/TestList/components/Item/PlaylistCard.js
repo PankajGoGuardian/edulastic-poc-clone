@@ -25,6 +25,8 @@ import {
   PlaylistSkinType,
   Grade,
   ButtonWrapper,
+  FullSizeThumbnailCard,
+  CardCover,
 } from './styled'
 import Tags from '../../../src/components/common/Tags'
 import { TestStatus } from '../ListItem/styled'
@@ -47,7 +49,57 @@ const PlaylistCard = ({
   _id,
 }) => {
   const grade = first(_source.grades)
-  const { thumbnail } = _source
+  const { thumbnail, skin } = _source
+  const isSparkMathSkin = skin === 'SPARK'
+  const isDraft = status === 'draft'
+
+  const playListId = testItemId ? (
+    <PlaylistId data-cy="test-id" key="playlistId">
+      <span>#</span>
+      <span>{testItemId}</span>
+    </PlaylistId>
+  ) : null
+
+  const playListStatus = (
+    <TestStatusWrapper
+      status={status || _source?.status}
+      checkUser={false}
+      key="playlist-status"
+    >
+      {({ children, ...rest }) => (
+        <TestStatus
+          {...rest}
+          view="tile"
+          data-cy="test-status"
+          className="playlist-status"
+        >
+          {children}
+        </TestStatus>
+      )}
+    </TestStatusWrapper>
+  )
+
+  const playListUsage = !isDraft && (
+    <ShareIcon>
+      <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
+      <IconText>{usage}</IconText>
+    </ShareIcon>
+  )
+
+  if (isSparkMathSkin) {
+    return (
+      <FullSizeThumbnailCard
+        isPlaylist
+        onClick={moveToItem}
+        cover={<CardCover uri={thumbnail} />}
+        actions={[
+          playListId,
+          playListUsage,
+          isDraft ? playListStatus : '',
+        ].filter((x) => x)}
+      />
+    )
+  }
 
   return (
     <Container
@@ -121,33 +173,12 @@ const PlaylistCard = ({
             </AuthorWrapper>
           </Author>
         )}
-        <StatusRow>
-          <TestStatusWrapper
-            status={status || _source?.status}
-            checkUser={false}
-          >
-            {({ children, ...rest }) => (
-              <TestStatus data-cy="test-status" {...rest} view="tile">
-                {children}
-              </TestStatus>
-            )}
-          </TestStatusWrapper>
-        </StatusRow>
+        <StatusRow>{playListStatus}</StatusRow>
       </Inner>
 
       <Footer>
-        {testItemId ? (
-          <PlaylistId data-cy="test-id">
-            <span>#</span>
-            <span>{testItemId}</span>
-          </PlaylistId>
-        ) : null}
-        {status !== 'draft' && (
-          <ShareIcon>
-            <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
-            <IconText>{usage}</IconText>
-          </ShareIcon>
-        )}
+        {playListId}
+        {playListUsage}
       </Footer>
     </Container>
   )

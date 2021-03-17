@@ -7,6 +7,8 @@ import { Dropdown, Empty, Menu, Spin } from 'antd'
 import { pick, uniq } from 'lodash'
 import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
@@ -26,7 +28,6 @@ import {
   ManageContentOuterWrapper,
   ResourceDataList,
   SearchBar,
-  ManageContentLabel,
   SearchBoxContainer,
   SearchIcon,
   SearchByNavigationBar,
@@ -37,13 +38,6 @@ import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/te
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 
 const resourceTabs = ['tests', 'resources']
-const sourceList = [
-  'everything',
-  'learnzillion',
-  'khan academy',
-  'ck12',
-  'grade',
-]
 
 const observeElement = (fetchTests, tests) => {
   const observerRef = useRef()
@@ -75,7 +69,6 @@ const ManageContentBlock = (props) => {
     grades,
     subject,
     collection,
-    sources,
     setDefaults,
     fetchTests,
     tests = [],
@@ -85,7 +78,8 @@ const ManageContentBlock = (props) => {
     setGradesAction,
     setSubjectAction,
     setCollectionAction,
-    setSourcesAction,
+    setStandardsAction,
+    setCurriculumAction,
     resetAndFetchTests,
     searchStrings,
     setTestSearchAction,
@@ -112,6 +106,7 @@ const ManageContentBlock = (props) => {
     setEmbeddedVideoPreviewModal,
     isDifferentiationTab = false,
     setIsTestPreviewVisible,
+    history,
   } = props
 
   const lastResourceItemRef = observeElement(fetchTests, tests)
@@ -158,6 +153,16 @@ const ManageContentBlock = (props) => {
     }
   }
 
+  const onTestMenuChange = ({ key }) => {
+    switch (key) {
+      case '1':
+        history.push('/author/tests/select')
+        break
+      default:
+        break
+    }
+  }
+
   const openContentFilterModal = () => setShowContentFilterModal(true)
   const closeContentFilterModal = () => setShowContentFilterModal(false)
 
@@ -182,12 +187,11 @@ const ManageContentBlock = (props) => {
     </Menu>
   )
 
-  const onSourceChange = ({ checked, value }) =>
-    setSourcesAction(
-      checked
-        ? sources?.concat(value)
-        : sources?.filter((x) => x !== value) || []
-    )
+  const testMenu = (
+    <Menu onClick={onTestMenuChange}>
+      <Menu.Item key="1">{enhanceTextWeight('Create New test')}</Menu.Item>
+    </Menu>
+  )
   let fetchCall
 
   if (tests.length > 10) {
@@ -297,7 +301,18 @@ const ManageContentBlock = (props) => {
       <ManageContentOuterWrapper>
         <div className="inner-wrapper">
           <ManageContentContainer data-cy="play-list-search-container">
-            <ManageContentLabel>Select Content to Add</ManageContentLabel>
+            <SearchByNavigationBar justify="flex-start">
+              {resourceTabs.map((tab) => (
+                <SearchByTab
+                  data-cy={tab}
+                  onClick={() => setSearchByTab(tab)}
+                  isTabActive={tab.includes(searchResourceBy)}
+                >
+                  {tab}
+                </SearchByTab>
+              ))}
+            </SearchByNavigationBar>
+            <br />
             {/* <SearchByNavigationBar>
             <SearchByTab onClick={() => setSearchBy("keywords")} isTabActive={searchBy === "keywords"}>
               keywords
@@ -331,7 +346,11 @@ const ManageContentBlock = (props) => {
                   height={20}
                 />
               </ActionButton>
-              <Dropdown overlay={menu} placement="bottomRight">
+              <Dropdown
+                overlay={searchResourceBy === 'tests' ? testMenu : menu}
+                placement="bottomRight"
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              >
                 <ActionButton>
                   <IconPlus color={themeColor} width={15} height={15} />
                 </ActionButton>
@@ -339,19 +358,6 @@ const ManageContentBlock = (props) => {
             </FlexContainer>
             <br />
 
-            <SearchByNavigationBar justify="flex-start">
-              {resourceTabs.map((tab) => (
-                <SearchByTab
-                  data-cy={tab}
-                  onClick={() => setSearchByTab(tab)}
-                  isTabActive={tab.includes(searchResourceBy)}
-                >
-                  {tab}
-                </SearchByTab>
-              ))}
-            </SearchByNavigationBar>
-
-            <br />
             <ResourceDataList
               urlHasUseThis={urlHasUseThis}
               isDifferentiationTab={isDifferentiationTab}
@@ -404,7 +410,10 @@ const ManageContentBlock = (props) => {
             onGradesChange={(prop) => setGradesAction(prop)}
             onSubjectChange={(prop) => setSubjectAction(prop)}
             onCollectionChange={(prop) => setCollectionAction(prop)}
+            onStandardsChange={(prop) => setStandardsAction(prop)}
+            onCurriculumChange={(prop) => setCurriculumAction(prop)}
             handleApplyFilters={handleApplyFilters}
+            searchResourceBy={searchResourceBy}
           />
         )}
 
@@ -450,49 +459,54 @@ const ManageContentBlock = (props) => {
   )
 }
 
-export default connect(
-  (state) => ({
-    isLoading: state.playlistTestBox?.isLoading,
-    loadedPage: state.playlistTestBox?.loadedPage,
-    filter: state.playlistTestBox?.filter,
-    status: state.playlistTestBox?.status,
-    authoredBy: state.playlistTestBox?.authoredBy,
-    subject: state.playlistTestBox?.subject,
-    grades: state.playlistTestBox?.grades,
-    tests: state.playlistTestBox?.tests,
-    collection: state.playlistTestBox?.collection,
-    sources: state.playlistTestBox?.sources,
-    searchStrings: state.playlistTestBox?.searchString,
-    testPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
-    selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
-    externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
-    collections: state.user?.user?.orgData?.itemBanks,
-    currentDistrictUsers: getCurrentDistrictUsersSelector(state),
-    districtId: state?.user?.user?.orgData?.districtIds?.[0],
-    userFeatures: state?.user?.user?.features,
-    searchResourceBy: state.playlistTestBox?.searchResourceBy,
-    resources: state.playlistTestBox?.resources,
-  }),
-  {
-    setFilterAction: slice.actions?.setFilterAction,
-    setDefaults: slice.actions?.setDefaults,
-    fetchTests: slice.actions?.fetchTests,
-    setStatusAction: slice.actions?.setStatusAction,
-    setAuthoredAction: slice.actions?.setAuthoredAction,
-    setSubjectAction: slice.actions?.setSubjectAction,
-    setGradesAction: slice.actions?.setGradesAction,
-    setCollectionAction: slice.actions?.setCollectionAction,
-    setSourcesAction: slice.actions?.setSourcesAction,
-    resetAndFetchTests: slice.actions?.resetAndFetchTests,
-    setTestSearchAction: slice.actions?.setTestSearchAction,
-    showPreviewModal: slice.actions?.showTestPreviewModal,
-    closePreviewModal: slice.actions?.closeTestPreviewModal,
-    getCurrentDistrictUsers: getCurrentDistrictUsersAction,
-    fetchExternalToolProvidersAction:
-      slice.actions?.fetchExternalToolProvidersAction,
-    setSearchByTab: slice.actions?.setSearchByTab,
-    addResource: slice.actions?.addResource,
-    setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
-    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
-  }
-)(ManageContentBlock)
+const enhance = compose(
+  withRouter,
+  connect(
+    (state) => ({
+      isLoading: state.playlistTestBox?.isLoading,
+      loadedPage: state.playlistTestBox?.loadedPage,
+      filter: state.playlistTestBox?.filter,
+      status: state.playlistTestBox?.status,
+      authoredBy: state.playlistTestBox?.authoredBy,
+      subject: state.playlistTestBox?.subject,
+      grades: state.playlistTestBox?.grades,
+      tests: state.playlistTestBox?.tests,
+      collection: state.playlistTestBox?.collection,
+      searchStrings: state.playlistTestBox?.searchString,
+      testPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
+      externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
+      collections: state.user?.user?.orgData?.itemBanks,
+      currentDistrictUsers: getCurrentDistrictUsersSelector(state),
+      districtId: state?.user?.user?.orgData?.districtIds?.[0],
+      userFeatures: state?.user?.user?.features,
+      searchResourceBy: state.playlistTestBox?.searchResourceBy,
+      resources: state.playlistTestBox?.resources,
+    }),
+    {
+      setFilterAction: slice.actions?.setFilterAction,
+      setDefaults: slice.actions?.setDefaults,
+      fetchTests: slice.actions?.fetchTests,
+      setStatusAction: slice.actions?.setStatusAction,
+      setAuthoredAction: slice.actions?.setAuthoredAction,
+      setSubjectAction: slice.actions?.setSubjectAction,
+      setGradesAction: slice.actions?.setGradesAction,
+      setCollectionAction: slice.actions?.setCollectionAction,
+      setStandardsAction: slice.actions?.setStandardsAction,
+      setCurriculumAction: slice.actions?.setCurriculumAction,
+      resetAndFetchTests: slice.actions?.resetAndFetchTests,
+      setTestSearchAction: slice.actions?.setTestSearchAction,
+      showPreviewModal: slice.actions?.showTestPreviewModal,
+      closePreviewModal: slice.actions?.closeTestPreviewModal,
+      getCurrentDistrictUsers: getCurrentDistrictUsersAction,
+      fetchExternalToolProvidersAction:
+        slice.actions?.fetchExternalToolProvidersAction,
+      setSearchByTab: slice.actions?.setSearchByTab,
+      addResource: slice.actions?.addResource,
+      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+    }
+  )
+)
+
+export default enhance(ManageContentBlock)

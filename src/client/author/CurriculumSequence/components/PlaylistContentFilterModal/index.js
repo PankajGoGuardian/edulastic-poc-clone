@@ -1,11 +1,15 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import { EduButton } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  FieldLabel,
+  SelectInputStyled,
+} from '@edulastic/common'
 import { FILTERS } from '../ManageContentBlock/ducks'
 import SELECT_DATA from '../../../TestPage/components/common/selectsData'
-import { StyledModal, StyledSelect, Title } from './styled'
-
-const { Option } = StyledSelect
+import { Title, FlexRow } from './styled'
+import ResourcesFiltersModal from './ResourcesFiltersModal'
 
 const PlaylistTestBoxFilter = (props) => {
   const {
@@ -15,6 +19,12 @@ const PlaylistTestBoxFilter = (props) => {
     status = '',
     onStatusChange,
     grades = [],
+    standards = [],
+    allStandards = [],
+    onStandardsChange,
+    curriculum = '',
+    allCurriculum = [],
+    onCurriculumChange,
     onGradesChange,
     subject = '',
     onSubjectChange,
@@ -26,6 +36,7 @@ const PlaylistTestBoxFilter = (props) => {
     authoredBy,
     onAuthorChange,
     handleApplyFilters,
+    searchResourceBy,
   } = props
 
   const { allGrades, allSubjects, allStatus } = SELECT_DATA
@@ -51,106 +62,139 @@ const PlaylistTestBoxFilter = (props) => {
   ]
 
   return (
-    <StyledModal
+    <CustomModalStyled
       title="Filter"
       visible={isVisible}
       onCancel={onCancel}
       footer={Footer}
-      width="521px"
-      height="422px"
+      modalWidth="520px"
+      centered
     >
-      <Title>type</Title>
-      <StyledSelect
-        dropdownClassName="playlist-content-box"
-        data-cy="content-type"
-        placeholder="Select Filter Type"
-        value={filter}
-        onChange={onFilterChange}
-      >
-        {FILTERS.map(({ text, filter: _filter }) => (
-          <Option key={_filter} value={_filter}>
-            {text}
-          </Option>
-        ))}
-      </StyledSelect>
+      {searchResourceBy === 'resources' ? (
+        <ResourcesFiltersModal
+          subject={subject}
+          onSubjectChange={onSubjectChange}
+          allSubjects={allSubjects}
+          curriculum={curriculum}
+          onCurriculumChange={onCurriculumChange}
+          allCurriculum={allCurriculum}
+          standards={standards}
+          onStandardsChange={onStandardsChange}
+          allStandards={allStandards}
+        />
+      ) : (
+        <>
+          <FlexRow>
+            <FieldLabel>type</FieldLabel>
+            <SelectInputStyled
+              dropdownClassName="playlist-content-box"
+              data-cy="content-type"
+              placeholder="Select Filter Type"
+              value={filter}
+              onChange={onFilterChange}
+              height="36px"
+            >
+              {FILTERS.map(({ text, filter: _filter }) => (
+                <SelectInputStyled.Option key={_filter} value={_filter}>
+                  {text}
+                </SelectInputStyled.Option>
+              ))}
+            </SelectInputStyled>
+          </FlexRow>
 
-      <Title>status</Title>
-      <StyledSelect
-        dropdownClassName="playlist-content-box"
-        data-cy="content-status"
-        placeholder="Select Status"
-        value={status}
-        onChange={onStatusChange}
-      >
-        {allStatus.map(({ text, value }) => (
-          <Option key={value} value={value}>
-            {text}
-          </Option>
-        ))}
-      </StyledSelect>
+          <FlexRow>
+            <FieldLabel>status</FieldLabel>
+            <SelectInputStyled
+              dropdownClassName="playlist-content-box"
+              data-cy="content-status"
+              placeholder="Select Status"
+              value={status}
+              onChange={onStatusChange}
+              height="36px"
+            >
+              {allStatus.map(({ text, value }) => (
+                <SelectInputStyled.Option key={value} value={value}>
+                  {text}
+                </SelectInputStyled.Option>
+              ))}
+            </SelectInputStyled>
+          </FlexRow>
 
-      <Title>authored by</Title>
-      <StyledSelect
-        dropdownClassName="playlist-content-box"
-        data-cy="content-authored"
-        placeholder="Select Authored"
-        style={{ width: '100%', height: 40, lineHeight: 40 }}
-        value={authoredBy || undefined}
-        onChange={onAuthorChange}
-      >
-        {authoredList.map(({ text, value }) => (
-          <Option key={value} value={value}>
-            {text}
-          </Option>
-        ))}
-      </StyledSelect>
+          <FlexRow>
+            <FieldLabel>authored by</FieldLabel>
+            <SelectInputStyled
+              dropdownClassName="playlist-content-box"
+              data-cy="content-authored"
+              placeholder="Select Authored"
+              value={authoredBy || undefined}
+              onChange={onAuthorChange}
+              height="36px"
+            >
+              {authoredList.map(({ text, value }) => (
+                <SelectInputStyled.Option key={value} value={value}>
+                  {text}
+                </SelectInputStyled.Option>
+              ))}
+            </SelectInputStyled>
+          </FlexRow>
 
-      <Title>grade</Title>
-      <StyledSelect
-        dropdownClassName="playlist-content-box"
-        data-cy="content-grade"
-        mode="multiple"
-        placeholder="Select Grades"
-        value={grades}
-        onChange={onGradesChange}
-      >
-        {allGrades?.map(({ text, value }) => (
-          <Option key={value} value={value}>
-            {text}
-          </Option>
-        ))}
-      </StyledSelect>
+          <FlexRow>
+            <FieldLabel>grade</FieldLabel>
+            <SelectInputStyled
+              dropdownClassName="playlist-content-box"
+              data-cy="content-grade"
+              mode="multiple"
+              placeholder="Select Grades"
+              value={grades}
+              onChange={onGradesChange}
+              height="36px"
+            >
+              {allGrades?.map(({ text, value }) => (
+                <SelectInputStyled.Option key={value} value={value}>
+                  {text}
+                </SelectInputStyled.Option>
+              ))}
+            </SelectInputStyled>
+          </FlexRow>
 
-      <Title>subject</Title>
-      <StyledSelect
-        dropdownClassName="playlist-content-box"
-        data-cy="content-subject"
-        placeholder="Select Subject"
-        value={subject}
-        onChange={onSubjectChange}
-      >
-        {allSubjects.map(({ text, value }) => (
-          <Option key={value} value={value}>
-            {text}
-          </Option>
-        ))}
-      </StyledSelect>
+          <FlexRow>
+            <FieldLabel>subject</FieldLabel>
+            <SelectInputStyled
+              dropdownClassName="playlist-content-box"
+              data-cy="content-subject"
+              placeholder="Select Subject"
+              value={subject}
+              onChange={onSubjectChange}
+              height="36px"
+            >
+              {allSubjects.map(({ text, value }) => (
+                <SelectInputStyled.Option key={value} value={value}>
+                  {text}
+                </SelectInputStyled.Option>
+              ))}
+            </SelectInputStyled>
+          </FlexRow>
 
-      <Title>collection</Title>
-      <StyledSelect
-        dropdownClassName="playlist-content-box"
-        data-cy="content-collection"
-        placeholder="Select Collection"
-        value={collection || undefined}
-        onChange={onCollectionChange}
-      >
-        {collectionsList.map(({ text, value }) => (
-          <Option key={value} value={value}>
-            {text}
-          </Option>
-        ))}
-      </StyledSelect>
-    </StyledModal>
+          <FlexRow>
+            <FieldLabel>collection</FieldLabel>
+            <SelectInputStyled
+              dropdownClassName="playlist-content-box"
+              data-cy="content-collection"
+              placeholder="Select Collection"
+              value={collection || undefined}
+              onChange={onCollectionChange}
+              height="36px"
+            >
+              {collectionsList.map(({ text, value }) => (
+                <SelectInputStyled.Option key={value} value={value}>
+                  {text}
+                </SelectInputStyled.Option>
+              ))}
+            </SelectInputStyled>
+          </FlexRow>
+        </>
+      )}
+    </CustomModalStyled>
   )
 }
 

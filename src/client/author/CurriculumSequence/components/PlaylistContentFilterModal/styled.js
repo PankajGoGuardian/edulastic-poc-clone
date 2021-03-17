@@ -1,35 +1,14 @@
 import styled from 'styled-components'
-import { Checkbox, Modal, Select } from 'antd'
+import { Checkbox } from 'antd'
 import { title, themeColor } from '@edulastic/colors'
 
-export const StyledModal = styled(Modal)`
-  .ant-modal-close-x {
-    font-size: 24px;
-    font-weight: 600;
-    color: black;
-    margin: 10px 20px;
-  }
-
-  .ant-modal-header {
-    border: none;
-
-    .ant-modal-title {
-      font-size: 24px;
-      font-weight: 600;
-      padding: 12px 16px;
-    }
-  }
-
-  .ant-modal-body {
-    padding: 0px 40px;
-  }
-
-  .ant-modal-footer {
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 30px 40px 30px 35px;
+export const FilterContainer = styled.div`
+  margin-bottom: 20px;
+  height: ${({ urlHasUseThis }) =>
+    urlHasUseThis ? 'calc(100vh - 255px)' : 'calc(100vh - 305px)'};
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 6px;
   }
 `
 
@@ -40,6 +19,11 @@ export const Title = styled.div`
   font-weight: 700;
   margin: 15px 0px 5px;
   user-select: none;
+`
+
+export const FlexRow = styled.div`
+  width: 100%;
+  margin-bottom: 15px;
 `
 
 export const StyledCheckbox = styled(Checkbox)`
@@ -72,22 +56,4 @@ export const Label = styled.label`
   padding-left: 25px;
   cursor: inherit;
   text-transform: uppercase;
-`
-
-export const StyledSelect = styled(Select)`
-  width: 100%;
-  min-height: 40px;
-  margin-bottom: 5px;
-  .ant-select-selection__rendered {
-    line-height: 40px;
-  }
-
-  .ant-select-selection__choice {
-    background-color: #b3bcc4;
-  }
-
-  .ant-select-selection--multiple > ul > li,
-  .ant-select-selection--multiple .ant-select-selection__rendered > ul > li {
-    margin-top: 8px;
-  }
 `

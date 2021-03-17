@@ -14,6 +14,7 @@ import WorkTable from './WorkTable'
 import {
   fetchDifferentiationStudentListAction,
   getDifferentiationStudentListSelector,
+  getDifferentiationResourcesSelector,
   getDifferentiationSelectedDataSelector,
   fetchDifferentiationWorkAction,
   setRecommendationsToAssignAction,
@@ -27,6 +28,8 @@ import {
   removeSubResourceInDiffAction,
   setDifferentiationSelectedDataAction,
   removeResourceFromDifferentiationAction,
+  addDifferentiationResourcesAction,
+  removeDifferentiationResourcesAction,
 } from '../../ducks'
 import ManageContentBlock from '../ManageContentBlock'
 import { HideRightPanel } from '../CurriculumRightPanel'
@@ -37,6 +40,7 @@ const Differentiation = ({
   termId,
   assignments,
   differentiationStudentList,
+  differentiationResources,
   differentiationWork,
   differentiationSelectedData,
   isFetchingWork,
@@ -57,6 +61,8 @@ const Differentiation = ({
   activeRightPanel,
   history,
   removeResourceFromDifferentiation,
+  addDifferentiationResources,
+  removeDifferentiationResources,
 }) => {
   const [classList, setClassList] = useState([])
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
@@ -206,6 +212,7 @@ const Differentiation = ({
 
   const workTableCommonProps = {
     differentiationStudentList,
+    differentiationResources,
     setRecommendationsToAssign,
     recommendationsToAssign,
     selectedData: selectedClass,
@@ -218,6 +225,8 @@ const Differentiation = ({
     removeSubResource,
     toggleAssignModal,
     removeResourceFromDifferentiation,
+    addDifferentiationResources,
+    removeDifferentiationResources,
   }
 
   return (
@@ -368,6 +377,7 @@ const enhance = compose(
       termId: getCurrentTerm(state),
       assignments: getAssignmentsSelector(state),
       differentiationStudentList: getDifferentiationStudentListSelector(state),
+      differentiationResources: getDifferentiationResourcesSelector(state),
       differentiationWork: getDifferentiationWorkSelector(state),
       recommendationsToAssign: getRecommendationsToAssignSelector(state),
       isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
@@ -381,6 +391,8 @@ const enhance = compose(
       fetchDifferentiationStudentList: fetchDifferentiationStudentListAction,
       fetchDifferentiationWork: fetchDifferentiationWorkAction,
       setRecommendationsToAssign: setRecommendationsToAssignAction,
+      addDifferentiationResources: addDifferentiationResourcesAction,
+      removeDifferentiationResources: removeDifferentiationResourcesAction,
       addTestToDifferentiation: addTestToDifferentationAction,
       addResourceToDifferentiation: addResourceToDifferentiationAction,
       addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,

@@ -15,6 +15,7 @@ import {
   ActivityDropConainer,
   StyledDescription,
   StudentName,
+  CommonStudentResourcesContainer,
 } from './style'
 import { ResouceIcon } from '../ResourceItem/index'
 import Tags from '../../../src/components/common/Tags'
@@ -36,6 +37,7 @@ function ContentDropContainer({ children, ...props }) {
         addTestToDifferentiation,
         addResourceToDifferentiation,
         addSubResourceToTestInDiff,
+        addDifferentiationResources,
       } = props
       if (props.dropType === 'activity') {
         if (item.contentType === 'test') {
@@ -57,6 +59,15 @@ function ContentDropContainer({ children, ...props }) {
             contentUrl: item.contentUrl,
           })
         }
+      } else if (props.dropType === 'TOP_LEVEL_STUDENT_RESOURCE') {
+        addDifferentiationResources({
+          type: type.toLowerCase(),
+          contentId: item.id,
+          contentTitle: item.contentTitle,
+          contentType: item.contentType,
+          contentUrl: item.contentUrl,
+          contentSubType: 'STUDENT',
+        })
       } else {
         addSubResourceToTestInDiff({
           type: type.toLowerCase(),
@@ -105,6 +116,7 @@ const InnerWorkTable = ({
   setRecommendationsToAssign,
   toggleAssignModal,
   selectedData,
+  differentiationResources,
   differentiationStudentList,
   data = [],
   isFetchingWork,
@@ -118,6 +130,8 @@ const InnerWorkTable = ({
   showResource,
   removeSubResource,
   removeResourceFromDifferentiation,
+  addDifferentiationResources,
+  removeDifferentiationResources,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [masteryRange, setMasteryRange] = useState([0, 10])
@@ -564,6 +578,30 @@ const InnerWorkTable = ({
           </EduButton>
         </span>
       </TableHeader>
+      <CommonStudentResourcesContainer>
+        <SubResourceView
+          data={{
+            resources: differentiationResources?.[type.toLowerCase()] || [],
+          }}
+          mode="embedded"
+          showResource={showResource}
+          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+          removeSubResource={removeDifferentiationResources}
+          type={type.toLowerCase()}
+          inDiffrentiation
+          isCommonStudentResources
+        />
+        {showSupportingResource && (
+          <ContentDropContainer
+            dropType="TOP_LEVEL_STUDENT_RESOURCE"
+            type={type}
+            addDifferentiationResources={addDifferentiationResources}
+          >
+            Student Resource
+          </ContentDropContainer>
+        )}
+      </CommonStudentResourcesContainer>
+
       {!showNewActivity || data.length ? (
         <StyledTable
           columns={columns}

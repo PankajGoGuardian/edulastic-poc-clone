@@ -100,6 +100,6 @@ export const ANNOTATION_TOOLS = [
   {
     key: 'point',
     title: 'Comment',
-    icon: <MessageIcon data-cy="point" />,
+    icon: <MessageIcon data-cy="comment" />,
   },
 ]

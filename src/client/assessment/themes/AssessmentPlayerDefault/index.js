@@ -356,6 +356,7 @@ class AssessmentPlayerDefault extends React.Component {
       blockNavigationToAnsweredQuestions,
       uploadToS3,
       user = {},
+      gotoSummary,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -484,7 +485,13 @@ class AssessmentPlayerDefault extends React.Component {
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
       <ThemeProvider
-        theme={{ ...themeToPass, shouldZoom: true, zoomLevel, headerHeight }}
+        theme={{
+          ...themeToPass,
+          shouldZoom: true,
+          zoomLevel,
+          headerHeight,
+          playerSkinType,
+        }}
       >
         <Container
           scratchPadMode={scratchPadMode}
@@ -546,6 +553,7 @@ class AssessmentPlayerDefault extends React.Component {
             blockNavigationToAnsweredQuestions={
               blockNavigationToAnsweredQuestions
             }
+            gotoSummary={gotoSummary}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"

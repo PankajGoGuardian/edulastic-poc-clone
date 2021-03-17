@@ -11,6 +11,8 @@ import ParccHeader from './skins/Parcc/PlayerHeader'
 import SidebarQuestionList from './AssessmentPlayerSimple/PlayerSideBar'
 import { IPAD_LANDSCAPE_WIDTH } from '../constants/others'
 import { Nav } from './common'
+import PlayerFooter from './skins/Quester/PlayerFooter'
+import QuesterHeader from './skins/Quester/PlayerHeader'
 import SbacHeader from './skins/Sbac/PlayerHeader'
 import Magnifier from '../../common/components/Magnifier'
 import { Tooltip } from '../../common/utils/helpers'
@@ -103,6 +105,18 @@ const AssessmentPlayerSkinWrapper = ({
         />
       )
     }
+    if (playerSkinType === 'quester') {
+      return (
+        <QuesterHeader
+          {...restProps}
+          options={restProps.options || restProps.dropdownOptions}
+          defaultAP={defaultAP}
+          isDocbased={isDocBased}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+        />
+      )
+    }
     if (docUrl || docUrl === '') {
       return (
         <DocBasedPlayerHeader
@@ -127,6 +141,23 @@ const AssessmentPlayerSkinWrapper = ({
         enableMagnifier={enableMagnifier}
       />
     )
+  }
+
+  const footer = () => {
+    if (playerSkinType === 'quester') {
+      const toolToggleFunc = toggleToolsOpenStatus || changeTool
+      const tool = restProps.toolsOpenStatus || restProps.tool
+      return (
+        <PlayerFooter
+          {...restProps}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+          changeTool={toolToggleFunc}
+          tool={tool}
+        />
+      )
+    }
+    return null
   }
 
   const leftSideBar = () => {
@@ -177,6 +208,16 @@ const AssessmentPlayerSkinWrapper = ({
         marginTop: defaultAP ? '78px' : '38px',
       }
     }
+    if (
+      playerSkinType.toLowerCase() ===
+      test.playerSkinValues.quester.toLowerCase()
+    ) {
+      return {
+        paddingLeft: 0,
+        paddingRight: 0,
+        marginTop: '68px',
+      }
+    }
     return { width: '100%' }
   }
 
@@ -196,7 +237,10 @@ const AssessmentPlayerSkinWrapper = ({
     if (
       playerSkinType.toLowerCase() ===
         test.playerSkinValues.parcc.toLowerCase() ||
-      playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
+      playerSkinType.toLowerCase() ===
+        test.playerSkinValues.sbac.toLowerCase() ||
+      playerSkinType.toLowerCase() ===
+        test.playerSkinValues.quester.toLowerCase()
     ) {
       return {
         width: '100%',
@@ -267,6 +311,7 @@ const AssessmentPlayerSkinWrapper = ({
         {playerSkinType === test.playerSkinValues.edulastic.toLowerCase() &&
           defaultAP &&
           navigationBtns()}
+        {footer()}
       </FlexContainer>
     </Magnifier>
   )
@@ -283,6 +328,11 @@ const Sidebar = styled.div`
 
 const StyledMainContainer = styled.div`
   main {
+    .jsx-parser {
+      p {
+        margin-bottom: 8px;
+      }
+    }
     ${({ mainContainerStyle }) => mainContainerStyle};
     .practice-player-footer {
       left: ${({ isSidebarVisible }) => (isSidebarVisible ? '220px' : '0px')};

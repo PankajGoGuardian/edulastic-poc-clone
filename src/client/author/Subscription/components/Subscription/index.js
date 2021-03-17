@@ -199,7 +199,7 @@ const Subscription = (props) => {
     isConfirmationModalVisible,
     showTrialSubsConfirmationAction,
     products,
-    usedTrialItemBankId,
+    usedTrialItemBankIds = [],
     setPaymentServiceModal,
     showTrialConfirmationMessage,
     dashboardTiles,
@@ -238,13 +238,21 @@ const Subscription = (props) => {
     fetchUserSubscriptionStatus()
   }, [])
 
+  const isPremiumUser = user?.features?.premium
+
+  /**
+   *  a user is paid premium user if
+   *  - subType exists and
+   *  - premium is not through trial ie, only - (enterprise, premium, partial_premium) and
+   *  - is partial premium user & premium is true
+   *
+   * TODO: refactor and define this at the top level
+   */
   const isPaidPremium = !(
     !subType ||
     subType === 'TRIAL_PREMIUM' ||
-    subType === 'partial_premium'
+    (subType === 'partial_premium' && !isPremiumUser)
   )
-
-  const isPremiumUser = user.features.premium
 
   const openComparePlanModal = () => setComparePlan(true)
   const closeComparePlansModal = () => setComparePlan(false)
@@ -354,7 +362,9 @@ const Subscription = (props) => {
 
   const handleCloseItemTrialModal = () => setShowItemBankTrialUsedModal(false)
 
-  const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
+  const isCurrentItemBankUsed = usedTrialItemBankIds.includes(
+    productData?.itemBankId
+  )
   const showMultipleSubscriptions = user?.features?.showMultipleSubscriptions
 
   const defaultSelectedProductIds = productData.productId
@@ -367,6 +377,7 @@ const Subscription = (props) => {
     user.role
   )
 
+  const isCliUser = user.openIdProvider === 'CLI'
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
 
@@ -390,6 +401,7 @@ const Subscription = (props) => {
         orgData={user.orgData}
         userRole={user.role}
         history={history}
+        isCliUser={isCliUser}
       />
 
       <SubscriptionMain
@@ -403,7 +415,7 @@ const Subscription = (props) => {
         startTrialAction={startTrialAction}
         isPaidPremium={isPaidPremium}
         showRenewalOptions={showRenewalOptions}
-        usedTrialItemBankId={usedTrialItemBankId}
+        usedTrialItemBankIds={usedTrialItemBankIds}
         isPremiumUser={isPremiumUser}
         isPremium={isPremium}
         setShowSubscriptionAddonModalWithId={
@@ -503,8 +515,8 @@ export default compose(
       isConfirmationModalVisible:
         state?.subscription?.showTrialSubsConfirmation,
       products: state?.subscription?.products,
-      usedTrialItemBankId:
-        state?.subscription?.subscriptionData?.usedTrialItemBankId,
+      usedTrialItemBankIds:
+        state?.subscription?.subscriptionData?.usedTrialItemBankIds,
       showTrialConfirmationMessage:
         state?.subscription?.showTrialConfirmationMessage,
       dashboardTiles: state.dashboardTeacher.configurableTiles,

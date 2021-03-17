@@ -2662,5 +2662,28 @@ export const themes = {
         questionMarkColor: '#00AD50',
       },
     },
+    quester: {
+      header1: {
+        background: '#40505b',
+        border: '#2b2b2b',
+      },
+      header2: {
+        background: '#334049',
+      },
+      button: {
+        background: '#a2d8fd',
+        textColor: '#334049',
+      },
+      footer: {
+        background: '#334049',
+        border: '#2b2b2b',
+        textColor: '#fff',
+        textHoverColor: '#334049',
+        hover: {
+          color: '#a2d8fd',
+          background: '#40505b',
+        },
+      },
+    },
   },
 }

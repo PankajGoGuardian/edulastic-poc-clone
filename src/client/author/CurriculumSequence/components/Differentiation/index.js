@@ -26,6 +26,7 @@ import {
   addSubResourceToTestInDiffAction,
   removeSubResourceInDiffAction,
   setDifferentiationSelectedDataAction,
+  removeResourceFromDifferentiationAction,
 } from '../../ducks'
 import ManageContentBlock from '../ManageContentBlock'
 import { HideRightPanel } from '../CurriculumRightPanel'
@@ -55,6 +56,7 @@ const Differentiation = ({
   toggleManageContent,
   activeRightPanel,
   history,
+  removeResourceFromDifferentiation,
 }) => {
   const [classList, setClassList] = useState([])
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
@@ -215,6 +217,7 @@ const Differentiation = ({
     showResource,
     removeSubResource,
     toggleAssignModal,
+    removeResourceFromDifferentiation,
   }
 
   return (
@@ -383,6 +386,7 @@ const enhance = compose(
       addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,
       removeSubResource: removeSubResourceInDiffAction,
       setDifferentiationSelectedData: setDifferentiationSelectedDataAction,
+      removeResourceFromDifferentiation: removeResourceFromDifferentiationAction,
     }
   )
 )

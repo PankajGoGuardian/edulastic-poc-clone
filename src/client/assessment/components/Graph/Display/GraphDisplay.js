@@ -738,6 +738,12 @@ class GraphDisplay extends Component {
           numberlineAxis && numberlineAxis.shuffleAnswerChoices,
         responseBoxPosition:
           (numberlineAxis && numberlineAxis.responseBoxPosition) || 'bottom',
+        strokeColor: uiStyle.xStrokeColor || '#434B5D',
+        highlightStrokeColor: uiStyle.xStrokeHoverColor || '#434B5D',
+        tickColors: {
+          strokeColor: '#434B5D',
+          highlightStrokeColor: '#434B5D',
+        },
       },
       layout: {
         width: parseInt(width, 10),
@@ -761,27 +767,6 @@ class GraphDisplay extends Component {
         ),
         showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false,
-      },
-      xAxesParameters: {
-        ticksDistance: safeParseFloat(uiStyle.xTickDistance),
-        name: uiStyle.xShowAxisLabel ? uiStyle.xAxisLabel : '',
-        showTicks: !uiStyle.xHideTicks,
-        drawLabels: uiStyle.xDrawLabel,
-        maxArrow: uiStyle.xMaxArrow,
-        minArrow: uiStyle.xMinArrow,
-        commaInLabel: uiStyle.xCommaInLabel,
-        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : '#434B5D',
-        tickEndings: uiStyle.xTickEndings ? uiStyle.xTickEndings : false,
-      },
-      yAxesParameters: {
-        ticksDistance: safeParseFloat(uiStyle.yTickDistance),
-        name: uiStyle.yShowAxisLabel ? uiStyle.yAxisLabel : '',
-        showTicks: !uiStyle.yHideTicks,
-        drawLabels: uiStyle.yDrawLabel,
-        maxArrow: uiStyle.yMaxArrow,
-        minArrow: uiStyle.yMinArrow,
-        commaInLabel: uiStyle.yCommaInLabel,
-        minorTicks: uiStyle.yMinorTicks ? uiStyle.yMinorTicks : 0,
       },
       gridParams: {
         gridY: safeParseFloat(uiStyle.yDistance),

@@ -37,6 +37,7 @@ import {
   passageApi,
   testItemsApi,
   analyticsApi,
+  settingsApi,
 } from '@edulastic/api'
 import moment from 'moment'
 import nanoid from 'nanoid'
@@ -301,6 +302,18 @@ export const UPDATE_EMAIL_NOTIFICATION_DATA =
   '[test] update email notification data'
 export const GET_REGRADE_ACTIONS = '[tests] get available regrade actions'
 export const SET_REGRADE_ACTIONS = '[tests] set available regrade actions'
+export const SET_DEFAULT_TEST_SETTINGS = '[tests] set default test settings'
+export const SAVE_TEST_SETTINGS = '[tests] save test settings'
+export const SET_CURRENT_TEST_SETTINGS_ID =
+  '[tests] set current test settings id action'
+export const FETCH_TEST_SETTINGS_LIST = '[tests] fetch test settings list'
+export const SET_TEST_SETTINGS_LIST = '[tests] set test settings list'
+export const UPDATE_TEST_SETTING_IN_LIST = '[tests] update test setting in list'
+export const ADD_TEST_SETTING_IN_LIST = '[tests] add test setting in list'
+export const REMOVE_TEST_SETTING_FROM_LIST =
+  '[tests] remove test setting from list'
+export const DELETE_TEST_SETTING_REQUEST = '[tests] delete test setting request'
+export const UPDATE_TEST_SETTING_REQUEST = '[tests] update test setting request'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -505,6 +518,29 @@ export const setCorrectPassageItemsCreatedAction = createAction(
 )
 export const getRegradeSettingsAction = createAction(GET_REGRADE_ACTIONS)
 
+export const setDefaultTestSettingsAction = createAction(
+  SET_DEFAULT_TEST_SETTINGS
+)
+export const saveTestSettingsAction = createAction(SAVE_TEST_SETTINGS)
+export const setCurrentTestSettingsIdAction = createAction(
+  SET_CURRENT_TEST_SETTINGS_ID
+)
+export const fetchTestSettingsListAction = createAction(
+  FETCH_TEST_SETTINGS_LIST
+)
+export const setTestSettingsListAction = createAction(SET_TEST_SETTINGS_LIST)
+export const updateTestSettingInList = createAction(UPDATE_TEST_SETTING_IN_LIST)
+export const addTestSettingInList = createAction(ADD_TEST_SETTING_IN_LIST)
+export const removeTestSettingFromList = createAction(
+  REMOVE_TEST_SETTING_FROM_LIST
+)
+export const deleteTestSettingRequestAction = createAction(
+  DELETE_TEST_SETTING_REQUEST
+)
+export const updateTestSettingRequestAction = createAction(
+  UPDATE_TEST_SETTING_REQUEST
+)
+
 export const defaultImage =
   'https://cdn2.edulastic.com/default/default-test-1.jpg'
 
@@ -605,6 +641,16 @@ export const getDisableAnswerOnPaperSelector = createSelector(
 export const getCurentTestPassagesSelector = createSelector(
   getTestEntitySelector,
   (_test) => _test.passages || []
+)
+
+export const getTestDefaultSettingsSelector = createSelector(
+  stateSelector,
+  (state) => state.defaultTestSettings
+)
+
+export const getTestSettingsListSelector = createSelector(
+  stateSelector,
+  (state) => state.savedTestSettingsList
 )
 
 export const getTestStatusSelector = createSelector(
@@ -857,6 +903,9 @@ const initialState = {
   notificationMessage: '',
   loadRegradeSettings: false,
   availableRegradeSettings: [`ADD`, `EDIT`, `REMOVE`, `SETTINGS`],
+  defaultTestSettings: {},
+  savedTestSettingsList: [],
+  currentTestSettingsId: '',
 }
 
 export const testTypeAsProfileNameType = {
@@ -1403,6 +1452,41 @@ export const reducer = (state = initialState, { type, payload }) => {
         availableRegradeSettings: payload,
         loadRegradeSettings: false,
       }
+    case SET_DEFAULT_TEST_SETTINGS:
+      return {
+        ...state,
+        defaultTestSettings: payload,
+      }
+    case SET_CURRENT_TEST_SETTINGS_ID:
+      return {
+        ...state,
+        currentTestSettingsId: payload,
+      }
+    case SET_TEST_SETTINGS_LIST:
+      return {
+        ...state,
+        savedTestSettingsList: payload,
+      }
+    case ADD_TEST_SETTING_IN_LIST:
+      return {
+        ...state,
+        savedTestSettingsList: [...state.savedTestSettingsList, payload],
+      }
+    case REMOVE_TEST_SETTING_FROM_LIST:
+      return {
+        ...state,
+        savedTestSettingsList: state.savedTestSettingsList.filter(
+          (t) => t._id !== payload
+        ),
+      }
+    case UPDATE_TEST_SETTING_IN_LIST:
+      return {
+        ...state,
+        savedTestSettingsList: state.savedTestSettingsList.map((t) => {
+          if (payload._id === t._id) return payload
+          return t
+        }),
+      }
     default:
       return state
   }
@@ -1490,6 +1574,11 @@ export const getTestCreatedItemsSelector = createSelector(
   (state) => get(state, 'createdItems', [])
 )
 
+export const getCurrentSettingsIdSelector = createSelector(
+  stateSelector,
+  (state) => state.currentTestSettingsId
+)
+
 const setTime = (userRole) => {
   const addDate = userRole !== 'teacher' ? 28 : 7
   return moment()
@@ -1516,6 +1605,10 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     blockSaveAndContinue: entity.blockSaveAndContinue,
     scoringType: entity.scoringType,
     penalty: entity.penalty,
+    blockNavigationToAnsweredQuestions:
+      entity.blockNavigationToAnsweredQuestions || false,
+    showMagnifier: !!entity.showMagnifier,
+    enableScratchpad: !!entity.enableScratchpad,
   }
 
   if (isAdmin) {
@@ -1668,6 +1761,15 @@ function* receiveTestByIdSaga({ payload }) {
       features,
     })
     yield put(updateAssingnmentSettingsAction(assignSettings))
+    let defaultTestSettings = yield select(
+      ({ assignmentSettings }) => assignmentSettings
+    )
+    defaultTestSettings = omit(defaultTestSettings, [
+      'startDate',
+      'class',
+      'endDate',
+    ])
+    yield put(setDefaultTestSettingsAction(defaultTestSettings))
   } catch (err) {
     captureSentryException(err)
     console.log({ err })
@@ -3036,13 +3138,65 @@ function* getRegradeSettingsSaga({ payload }) {
   }
 }
 
+function* fetchSavedTestSettingsListSaga({ payload }) {
+  try {
+    const settingsList = yield call(settingsApi.getTestSettingsList, payload)
+    yield put(
+      setTestSettingsListAction(settingsList.filter(({ title }) => !!title))
+    )
+  } catch (err) {
+    Sentry.captureException(err)
+  }
+}
+
+function* saveTestSettingsSaga({ payload }) {
+  try {
+    const result = yield call(settingsApi.createTestSetting, payload.data)
+    if (payload.switchSetting)
+      yield put(setCurrentTestSettingsIdAction(result._id))
+    yield put(addTestSettingInList(result))
+    notification({ type: 'success', msg: 'Test settings saved successfully' })
+  } catch (err) {
+    Sentry.captureException(err)
+    const errorMessage =
+      err?.response?.data?.message || 'Failed to save test settings'
+    notification({ type: 'error', msg: errorMessage })
+  }
+}
+
+function* deleteTestSettingRequestSaga({ payload }) {
+  try {
+    yield call(settingsApi.removeTestSetting, payload)
+    yield put(removeTestSettingFromList(payload))
+    notification({ type: 'success', msg: 'Test setting removed successfully' })
+  } catch (err) {
+    Sentry.captureException(err)
+    const errorMessage =
+      err?.response?.data?.message || 'Failed to delete test setting'
+    notification({ type: 'error', msg: errorMessage })
+  }
+}
+
+function* updateTestSettingRequestSaga({ payload }) {
+  try {
+    const result = yield call(settingsApi.updateTestSetting, payload)
+    yield put(updateTestSettingInList(result))
+    notification({ type: 'success', msg: 'Test setting updated successfully' })
+  } catch (err) {
+    Sentry.captureException(err)
+    const errorMessage =
+      err?.response?.data?.message || 'Failed to udate test setting'
+    notification({ type: 'error', msg: errorMessage })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
     yield Effects.throttleAction(
-      10000,
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
       UPDATE_TEST_DOC_BASED_REQUEST,
       updateTestDocBasedSaga
     ),
@@ -3071,5 +3225,9 @@ export function* watcherSaga() {
     yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
     yield takeLatest(GET_TESTID_FROM_VERSIONID, getTestIdFromVersionIdSaga),
     yield takeLatest(GET_REGRADE_ACTIONS, getRegradeSettingsSaga),
+    yield takeLatest(FETCH_TEST_SETTINGS_LIST, fetchSavedTestSettingsListSaga),
+    yield takeLatest(SAVE_TEST_SETTINGS, saveTestSettingsSaga),
+    yield takeLatest(DELETE_TEST_SETTING_REQUEST, deleteTestSettingRequestSaga),
+    yield takeLatest(UPDATE_TEST_SETTING_REQUEST, updateTestSettingRequestSaga),
   ])
 }

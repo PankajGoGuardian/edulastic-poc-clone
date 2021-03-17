@@ -40,51 +40,62 @@ export const PrintablePrefix = styled.b`
   }
 `
 
-export const StyledGoButton = styled(EduButton)`
-  height: 24px;
-  line-height: 1;
-  width: 80px;
-  font-size: 11px;
-`
-
 export const FilterLabel = styled(FieldLabel)`
   font-size: 10px;
 `
 
-export const GoButtonWrapper = styled.div`
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  padding-left: 5px;
+export const ReportFiltersContainer = styled.div`
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
+  position: relative;
+  @media print {
+    display: none;
+  }
 `
 
-export const StyledFilterWrapper = styled.div`
-  ${({ isRowFilter }) =>
-    isRowFilter
-      ? `
-    width: 60%;
-    display: flex;
-    justify-content: flex-end;
-  `
-      : `
-    margin-right: 16px;
-    width: 240px;
-    flex-shrink: 0;
-    height: calc(100vh - 200px);
-    position: relative;
-  `}
+export const ReportFiltersWrapper = styled.div`
+  position: absolute;
+  z-index: 100;
+  top: 30px;
+  right: 0px;
+  width: 60vw;
+  padding: 10px 25px 25px;
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 
   .ant-select-selection {
     &__rendered {
       padding-left: 0px;
     }
   }
-
   .ant-select {
     width: 100%;
     font-size: 11px;
   }
-
+  .ant-select-selection.ant-select-selection--multiple {
+    background-color: ${lightGreySecondary};
+    border-color: ${fadedGrey};
+    min-height: 34px !important;
+  }
+  .ant-select-selection.ant-select-selection--multiple
+    .ant-select-selection__rendered
+    .ant-select-selection__choice {
+    margin: 4px 0 0 5px !important;
+  }
+  .ant-select-auto-complete.ant-select .ant-input {
+    background-color: #f8f8f8;
+    border-color: #e5e5e5;
+    border-radius: 2px;
+    min-height: 34px;
+  }
   .ant-input-affix-wrapper .ant-input-suffix {
     right: 8px;
     i {
@@ -93,7 +104,6 @@ export const StyledFilterWrapper = styled.div`
       }
     }
   }
-
   .control-dropdown {
     button {
       background-color: ${lightGreySecondary};
@@ -118,10 +128,13 @@ export const StyledFilterWrapper = styled.div`
   .ant-dropdown {
     box-shadow: 0 0 5px;
   }
-`
-
-export const StyledReportsContentContainer = styled.div`
-  padding: 0px 30px;
+  .ant-btn.ant-dropdown-trigger {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: ${(props) => (props.width ? props.width : '100%')};
+  }
 `
 
 export const DropDownContainer = styled.div`
@@ -536,11 +549,8 @@ export const HideLinkLabel = styled(StyledLabel)`
   font-size: 9px;
 `
 
-export const ReportContaner = styled.div`
-  width: ${({ showFilter }) =>
-    showFilter ? 'calc(100% - 250px)' : 'calc(100% - 35px)'};
+export const ReportContainer = styled.div`
   position: relative;
-  margin-left: ${({ marginLeft }) => marginLeft};
 `
 
 export const FilterButton = styled(Button)`

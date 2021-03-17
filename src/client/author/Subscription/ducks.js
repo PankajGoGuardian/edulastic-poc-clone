@@ -1,6 +1,6 @@
 import { captureSentryException, notification } from '@edulastic/common'
 import { message } from 'antd'
-import { isEmpty } from 'lodash'
+import { isEmpty, uniq, compact } from 'lodash'
 import moment from 'moment'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { subscriptionApi, paymentApi, segmentApi } from '@edulastic/api'
@@ -48,6 +48,10 @@ export const getIsSubscriptionExpired = createSelector(
   subscriptionSelector,
   (state) => state.isSubscriptionExpired
 )
+export const getAddOnProductIds = createSelector(
+  subscriptionSelector,
+  (state) => state.addOnProductIds
+)
 
 const slice = createSlice({
   name: 'subscription',
@@ -61,6 +65,7 @@ const slice = createSlice({
     products: [],
     isPaymentServiceModalVisible: false,
     showHeaderTrialModal: false,
+    addOnProductIds: [],
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -107,10 +112,10 @@ const slice = createSlice({
       state.verificationPending = false
       state.subscriptionData = payload
       state.error = ''
+      state.addOnProductIds = []
     },
     stripePaymentFailure: (state, { payload }) => {
       state.verificationPending = false
-      state.subscriptionData = {}
       state.error = payload
     },
     updateUserSubscriptionExpired: (state, { payload }) => {
@@ -149,6 +154,9 @@ const slice = createSlice({
     },
     setShowHeaderTrialModal: (state, { payload }) => {
       state.showHeaderTrialModal = payload
+    },
+    setAddOnProductIds: (state, { payload }) => {
+      state.addOnProductIds = payload
     },
   },
 })
@@ -297,7 +305,7 @@ function* fetchUserSubscription() {
     const data = {
       isPremiumTrialUsed: result?.isPremiumTrialUsed,
       itemBankSubscriptions: result?.itemBankSubscriptions,
-      usedTrialItemBankId: result?.usedTrialItemBankId,
+      usedTrialItemBankIds: result?.usedTrialItemBankIds,
       premiumProductId,
     }
 
@@ -455,7 +463,7 @@ function* handleStripePayment({ payload }) {
     const { token, error } = yield stripe.createToken(data)
     if (token) {
       const apiPaymentResponse = yield call(paymentApi.pay, {
-        productIds,
+        productIds: uniq(compact(productIds)),
         token,
       })
       if (apiPaymentResponse.success) {

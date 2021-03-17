@@ -1,7 +1,6 @@
 import React from 'react'
 import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
-import { isUndefined } from 'lodash'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -212,7 +211,7 @@ const MiscellaneousGroupContainer = ({
                             onChange={(e) =>
                               overRideSettings(key, e.target.value)
                             }
-                            defaultValue={isUndefined(value) ? true : value}
+                            value={value}
                           >
                             <Radio value data-cy={`${key}-enable`}>
                               ENABLE

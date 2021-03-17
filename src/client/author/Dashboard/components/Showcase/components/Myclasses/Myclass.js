@@ -61,7 +61,7 @@ const MyClasses = ({
   isPremiumTrialUsed,
   itemBankSubscriptions = [],
   startTrialAction,
-  usedTrialItemBankId,
+  usedTrialItemBankIds = [],
   showTrialSubsConfirmationAction,
   showTrialConfirmationMessage,
   isConfirmationModalVisible,
@@ -94,14 +94,23 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
+  const isPremiumUser = user?.features?.premium
+
+  /**
+   *  a user is paid premium user if
+   *  - subType exists and
+   *  - premium is not through trial ie, only - (enterprise, premium, partial_premium) and
+   *  - is partial premium user & premium is true
+   *
+   * TODO: refactor and define this at the top level
+   */
   const isPaidPremium = !(
     !subType ||
     subType === 'TRIAL_PREMIUM' ||
-    subType === 'partial_premium'
+    (subType === 'partial_premium' && !isPremiumUser)
   )
-  const isCliUser = user.openIdProvider === 'CLI'
 
-  const isPremiumUser = user.features.premium
+  const isCliUser = user.openIdProvider === 'CLI'
 
   const sortableClasses = classData
     .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
@@ -133,7 +142,10 @@ const MyClasses = ({
     collections.some((collection) => collection._id === itemBankId)
 
   const handleBlockedClick = ({ subscriptionData }) => {
-    if (usedTrialItemBankId || (isPremiumTrialUsed && !isPremiumUser)) {
+    if (
+      usedTrialItemBankIds.includes(subscriptionData.productId) ||
+      (isPremiumTrialUsed && !isPremiumUser)
+    ) {
       setShowItemBankTrialUsedModal(true)
     } else {
       setIsPurchaseModalVisible(true)
@@ -219,10 +231,10 @@ const MyClasses = ({
 
   if (isCliUser) {
     filteredBundles = filteredBundles.filter(
-      (feature) => feature.description !== 'Spark Math'
+      (feature) => !feature?.config?.subscriptionData?.itemBankId
     )
     bannerSlides = bannerSlides.filter(
-      (banner) => banner.description !== 'Spark Math Playlist'
+      (banner) => !banner.description?.toLowerCase?.()?.includes('spark')
     )
   }
 
@@ -327,7 +339,9 @@ const MyClasses = ({
   const showTrialButton =
     (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
 
-  const isCurrentItemBankUsed = usedTrialItemBankId === productData?.itemBankId
+  const isCurrentItemBankUsed = usedTrialItemBankIds.includes(
+    productData?.itemBankId
+  )
 
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
@@ -424,8 +438,8 @@ export default compose(
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
       itemBankSubscriptions:
         state.subscription?.subscriptionData?.itemBankSubscriptions,
-      usedTrialItemBankId:
-        state.subscription?.subscriptionData?.usedTrialItemBankId,
+      usedTrialItemBankIds:
+        state.subscription?.subscriptionData?.usedTrialItemBankIds,
       subscription: state.subscription?.subscriptionData?.subscription,
       isConfirmationModalVisible: state.subscription?.showTrialSubsConfirmation,
       showTrialConfirmationMessage:

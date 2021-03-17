@@ -42,6 +42,7 @@ const SubscriptionHeader = ({
   orgData,
   userRole,
   history,
+  isCliUser,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -69,6 +70,10 @@ const SubscriptionHeader = ({
   const { defaultGrades = [], defaultSubjects = [] } = orgData
   const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
 
+  // hide upgrade if no options will be displayed in dropdown
+  const showUpgradeBtn =
+    !hasAllPremiumProductAccess || !isPartialPremiumUgradedUser
+
   const menu = (
     <Menu>
       <Menu.Item>
@@ -83,7 +88,7 @@ const SubscriptionHeader = ({
           />
         )}
       </Menu.Item>
-      {!isPartialPremiumUgradedUser && (
+      {!isPartialPremiumUgradedUser && !isCliUser && (
         <Menu.Item>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -158,9 +163,10 @@ const SubscriptionHeader = ({
               ['enterprise'].includes(subType) &&
               roleuser.TEACHER === userRole &&
               isGradeSubjectSelected
-            ) && (
+            ) &&
+            showUpgradeBtn && (
               <Dropdown
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                getPopupContainer={(node) => node.parentNode}
                 overlay={menu}
                 placement="bottomRight"
                 arrow

@@ -20,6 +20,7 @@ import {
 } from '@edulastic/constants'
 import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
 import {
   getAllAssignmentsSelector,
   fetchAssignmentsByTestAction,
@@ -1021,6 +1022,7 @@ class Container extends PureComponent {
       userRole,
       editEnable,
       writableCollections,
+      t,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -1099,7 +1101,7 @@ class Container extends PureComponent {
               return true
             }
 
-            return 'There are unsaved changes. Are you sure you want to leave?'
+            return t('component.common.modal.exitPageWarning')
           }}
         />
         {this.renderModal()}
@@ -1230,6 +1232,7 @@ Container.defaultProps = {
 const enhance = compose(
   withRouter,
   withWindowSizes,
+  withNamespaces('author'),
   connect(
     (state) => ({
       test: getTestSelector(state),

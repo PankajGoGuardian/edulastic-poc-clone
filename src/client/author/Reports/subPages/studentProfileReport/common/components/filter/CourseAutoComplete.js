@@ -21,6 +21,7 @@ const CourseAutoComplete = ({
   loadCourseList,
   selectedCourseIds,
   selectCB,
+  dataCy,
 }) => {
   const courseAutocompleteRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -85,9 +86,10 @@ const CourseAutoComplete = ({
 
   return (
     <MultiSelectSearch
+      dataCy={dataCy}
       label="Course"
       el={courseAutocompleteRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultCourseList}

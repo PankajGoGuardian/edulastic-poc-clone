@@ -270,21 +270,21 @@ export function PerformanceBandAlt(props) {
         orgType: 'district',
         performanceBand: [
           {
-            color: '#3DB04E',
+            color: '#60B14F',
             name: 'Proficient',
             aboveOrAtStandard: true,
             from: 100,
             to: 71,
           },
           {
-            color: '#576BA9',
+            color: '#EBDD54',
             name: 'Basic',
             aboveOrAtStandard: true,
             from: 70,
             to: 51,
           },
           {
-            color: '#F39300',
+            color: '#EF9202',
             name: 'Below Basic',
             aboveOrAtStandard: false,
             from: 50,

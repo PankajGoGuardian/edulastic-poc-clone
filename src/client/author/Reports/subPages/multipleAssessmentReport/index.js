@@ -6,16 +6,16 @@ import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 
-import { Spin } from 'antd'
-import { FlexContainer } from '@edulastic/common'
-import { IconFilter, IconCloseFilter } from '@edulastic/icons'
+import { Spin, Col } from 'antd'
+
+import { SubHeader } from '../../common/components/Header'
 
 import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForMAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
 
-import MultipleAssessmentReportFilters from './common/components/filters/MultipleAssessmentReportFilters'
+import MultipleAssessmentReportFilters from './common/components/filters/filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import PeerProgressAnalysis from './PeerProgressAnalysis'
@@ -26,17 +26,16 @@ import { setMARSettingsAction, getReportsMARSettings } from './ducks'
 import {
   getReportsMARFilterData,
   getMAFilterDemographics,
+  getTempDdFilterSelector,
+  setTempDdFilterAction,
+  getTagsDataSelector,
+  setTagsDataAction,
 } from './common/filterDataDucks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
-import {
-  ReportContaner,
-  SearchField,
-  FilterLabel,
-  FilterButtonClear,
-} from '../../common/styled'
+import { ReportContainer, FilterLabel } from '../../common/styled'
 
 const MultipleAssessmentReportContainer = (props) => {
   const {
@@ -53,16 +52,22 @@ const MultipleAssessmentReportContainer = (props) => {
     updateNavigation,
     onRefineResultsCB,
     MARFilterData: _MARFilterData,
+    tempDdFilter,
+    setTempDdFilter,
+    tagsData,
+    setTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
     demographics,
+    isCliUser,
+    breadcrumbData,
+    isPrinting,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
   const [MARFilterData, setMARFilterData] = useState({})
   const [ddfilter, setDdFilter] = useState({})
-  const [selectedExtras, setSelectedExtras] = useState({})
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
@@ -102,9 +107,9 @@ const MultipleAssessmentReportContainer = (props) => {
 
   useEffect(() => {
     if (!showApply) {
-      setDdFilter({ ...selectedExtras })
+      setDdFilter({ ...tempDdFilter })
     }
-  }, [showApply, selectedExtras])
+  }, [showApply, tempDdFilter])
 
   const computeChartNavigationLinks = (filt) => {
     if (navigation.locToData[pageTitle]) {
@@ -167,7 +172,6 @@ const MultipleAssessmentReportContainer = (props) => {
         requestFilters: {
           ...obj,
           testIds: selectedTests.join(),
-          tagIds: _settings.filters.tags.join(),
         },
       })
     }
@@ -175,44 +179,52 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   const updateCB = (event, selected, comData) => {
-    setShowApply(true)
-    setSelectedExtras({
-      ...selectedExtras,
+    setTempDdFilter({
+      ...tempDdFilter,
       [comData]: selected.key === 'all' ? '' : selected.key,
     })
+    setTagsData({
+      ...tagsData,
+      [comData]: selected,
+    })
+    setShowApply(true)
   }
 
-  const pageTitleList = [
+  const performanceBandRequired = [
+    'performance-over-time',
+    'student-progress',
+  ].includes(pageTitle)
+
+  const demographicsRequired = [
     'performance-over-time',
     'peer-progress-analysis',
     'student-progress',
-  ]
+  ].includes(pageTitle)
 
   useEffect(() => {
-    if (!pageTitleList.includes(pageTitle)) {
+    if (!demographicsRequired) {
       setDdFilter({})
-      setSelectedExtras({})
+      setTempDdFilter({})
     }
   }, [pageTitle])
 
   const extraFilters =
-    pageTitleList.includes(pageTitle) && demographics
+    demographicsRequired && demographics
       ? demographics.map((item) => (
-          <SearchField key={item.key}>
+          <Col span={6} key={item.key}>
             <FilterLabel>{item.title}</FilterLabel>
             <ControlDropDown
               selectCB={updateCB}
               data={item.data}
               comData={item.key}
-              by={ddfilter[item.key] || item.data[0]}
+              by={tempDdFilter[item.key] || item.data[0]}
             />
-          </SearchField>
+          </Col>
         ))
       : []
 
   return (
     <>
-      {firstLoad && <Spin size="large" />}
       {sharingState && (
         <ShareReportModal
           reportType={pageTitle}
@@ -224,89 +236,83 @@ const MultipleAssessmentReportContainer = (props) => {
           setShowModal={setSharingState}
         />
       )}
-      <FlexContainer
-        alignItems="flex-start"
-        justifyContent="space-between"
-        display={firstLoad ? 'none' : 'flex'}
-      >
+      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
         <MultipleAssessmentReportFilters
+          isPrinting={isPrinting}
           reportId={reportId}
           onGoClick={onGoClick}
           loc={pageTitle}
           history={history}
           location={location}
           match={match}
-          performanceBandRequired={[
-            '/author/reports/student-progress',
-            '/author/reports/performance-over-time',
-          ].find((x) => window.location.pathname.startsWith(x))}
-          style={
-            reportId || !showFilter ? { display: 'none' } : { display: 'block' }
-          }
-          extraFilter={extraFilters}
+          performanceBandRequired={performanceBandRequired}
+          demographicsRequired={demographicsRequired}
+          extraFilters={extraFilters}
+          tempDdFilter={tempDdFilter}
+          setTempDdFilter={setTempDdFilter}
+          tagsData={tagsData}
+          setTagsData={setTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
+          showFilter={showFilter}
+          toggleFilter={toggleFilter}
         />
-        {!reportId ? (
-          <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            {showFilter ? <IconCloseFilter /> : <IconFilter />}
-          </FilterButtonClear>
-        ) : null}
-        <ReportContaner showFilter={showFilter}>
-          <Route
-            exact
-            path="/author/reports/peer-progress-analysis/"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <PeerProgressAnalysis
-                  {..._props}
-                  settings={transformedSettings}
-                  ddfilter={ddfilter}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )
-            }}
-          />
-          <Route
-            exact
-            path="/author/reports/student-progress/"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <StudentProgress
-                  {..._props}
-                  settings={transformedSettings}
-                  pageTitle={pageTitle}
-                  ddfilter={ddfilter}
-                  MARFilterData={MARFilterData}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )
-            }}
-          />
-          <Route
-            exact
-            path="/author/reports/performance-over-time/"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <PerformanceOverTime
-                  {..._props}
-                  settings={transformedSettings}
-                  ddfilter={ddfilter}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )
-            }}
-          />
-        </ReportContaner>
-      </FlexContainer>
+      </SubHeader>
+      <ReportContainer>
+        {firstLoad && <Spin size="large" />}
+        <Route
+          exact
+          path="/author/reports/peer-progress-analysis/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <PeerProgressAnalysis
+                {..._props}
+                settings={transformedSettings}
+                ddfilter={ddfilter}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/student-progress/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <StudentProgress
+                {..._props}
+                settings={transformedSettings}
+                pageTitle={pageTitle}
+                ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/performance-over-time/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <PerformanceOverTime
+                {..._props}
+                settings={transformedSettings}
+                ddfilter={ddfilter}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+      </ReportContainer>
     </>
   )
 }
@@ -316,12 +322,16 @@ const ConnectedMultipleAssessmentReportContainer = connect(
     demographics: getMAFilterDemographics(state),
     settings: getReportsMARSettings(state),
     MARFilterData: getReportsMARFilterData(state),
+    tempDdFilter: getTempDdFilterSelector(state),
+    tagsData: getTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
   }),
   {
     setMARSettings: setMARSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setTempDdFilter: setTempDdFilterAction,
+    setTagsData: setTagsDataAction,
     setSharingState: setSharingStateAction,
   }
 )(MultipleAssessmentReportContainer)

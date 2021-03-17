@@ -340,7 +340,7 @@ export function useTabNavigationCounterEffect({
   assignmentId,
   classId,
   userId,
-  onTimeInBlurChange,
+  onTimeInBlurChange = () => {},
   blurTimeAlreadySaved,
 }) {
   const inFocusRef = useRef(true)
@@ -1031,6 +1031,7 @@ const AssessmentContainer = ({
     questions: questionsById,
     uploadToS3: uploadFile,
     userWork,
+    gotoSummary,
     ...restProps,
   }
 
@@ -1066,7 +1067,6 @@ const AssessmentContainer = ({
         answers={answers}
         answersById={answersById}
         saveProgress={saveProgress}
-        gotoSummary={gotoSummary}
         {...props}
       />
     )
@@ -1078,7 +1078,6 @@ const AssessmentContainer = ({
         testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
-        gotoSummary={gotoSummary}
         {...test}
       />
     )

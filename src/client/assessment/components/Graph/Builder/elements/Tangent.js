@@ -1,9 +1,10 @@
-import { Point } from '.'
+import { notification } from '@edulastic/common'
+import { Point, Area } from '.'
 import { CONSTANT } from '../config'
 import { handleSnap, colorGenerator, setLabel } from '../utils'
 import { getLabelParameters } from '../settings'
 
-const jxgType = 91
+export const jxgType = 91
 
 const defaultConfig = {
   fixed: false,
@@ -73,8 +74,19 @@ function create(board, object, tangentPoints, settings = {}) {
   return newLine
 }
 
+function hasArea(shapes) {
+  return shapes.some((el) => el.type === Area.jxgType)
+}
+
 function onHandler() {
   return (board, event) => {
+    if (hasArea(board.elements)) {
+      notification({
+        msg: 'Cannot draw Tangent on Shading',
+        type: 'warning',
+      })
+      return
+    }
     const newPoint = Point.onHandler(board, event)
     newPoint.isTemp = true
     points.push(newPoint)

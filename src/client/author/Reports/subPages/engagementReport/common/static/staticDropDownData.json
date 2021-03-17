@@ -1,4 +1,21 @@
 {
+  "tagTypes": [
+    { "key": "termId", "closable": false },
+    { "key": "schoolIds", "closable": true },
+    { "key": "teacherIds", "closable": true },
+    { "key": "grade", "closable": true, "subType": "class" },
+    { "key": "subject", "closable": true, "subType": "class" },
+    { "key": "assessmentTypes", "closable": true }
+  ],
+  "initialFilters": {
+    "reportId": "",
+    "termId": "",
+    "schoolIds": "",
+    "teacherIds": "",
+    "grade": "All",
+    "subject": "All",
+    "assessmentTypes": ""
+  },
   "subjects": [
     { "key": "All", "title": "All Subjects" },
     { "key": "Mathematics", "title": "Mathematics" },

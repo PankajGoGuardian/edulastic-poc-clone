@@ -12,6 +12,7 @@ import {
   isUndefined,
   omitBy,
   isEmpty,
+  pick,
 } from 'lodash'
 import produce from 'immer'
 import { Col, Row } from 'antd'
@@ -198,7 +199,7 @@ const Userlist = ({
 
     return (
       <CheckboxLabel
-        data-cy={`${key}Checkbox`}
+        data-cy={`${key}_${record.email}Checkbox`}
         onChange={onChange}
         checked={isChecked}
         disabled={disabled}
@@ -277,13 +278,10 @@ const Userlist = ({
       const { hasManageLicense, userId } = permissions
 
       for (const type of Object.keys(
-        omit(permissions, [
-          'userId',
-          'hasManageLicense',
-          'districtId',
-          'institutionIds',
-          'role',
-        ])
+        pick(
+          permissions,
+          dynamicColumns.map(({ dataIndex }) => dataIndex)
+        )
       )) {
         if (isBoolean(permissions[type]) && !type.startsWith(`TRIAL_`)) {
           licensesPermission = getUpdatedValue(

@@ -87,6 +87,10 @@ const EditTagsModal = ({
       okButtonProps={{
         disabled: disableUpdate,
         loading: tagsUpdatingState === 'UPDATING',
+        'data-cy': 'modal-update-button',
+      }}
+      cancelButtonProps={{
+        'data-cy': 'modal-cancel-button',
       }}
     >
       <TagFilter

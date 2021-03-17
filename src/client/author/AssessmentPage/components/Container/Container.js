@@ -410,7 +410,16 @@ class Container extends React.Component {
         <CustomPrompt
           when={!!updated || !!newQuestionsAdded}
           onUnload
-          message={() => t('component.common.modal.exitPageWarning')}
+          message={(loc = {}) => {
+            const { pathname = '' } = loc
+            const allow = pathname.startsWith('/author/assessments/')
+
+            if (allow) {
+              return true
+            }
+
+            return t('component.common.modal.exitPageWarning')
+          }}
         />
         <ShareModal
           shareLabel="TEST URL"

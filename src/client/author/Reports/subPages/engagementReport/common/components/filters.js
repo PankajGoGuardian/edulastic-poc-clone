@@ -264,6 +264,7 @@ const EngagementReportFilters = ({
                 style={{ maxWidth: '200px' }}
                 isGhost
                 key="cancelButton"
+                data-cy="cancelFilter"
                 onClick={(e) => toggleFilter(e, false)}
               >
                 No, Cancel
@@ -273,6 +274,7 @@ const EngagementReportFilters = ({
                 height="40px"
                 style={{ maxWidth: '200px' }}
                 key="applyButton"
+                data-cy="applyFilter"
                 disabled={!showApply}
                 onClick={() => onGoClick()}
               >

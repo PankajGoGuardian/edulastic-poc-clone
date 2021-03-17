@@ -2,15 +2,15 @@
   "filterSections": {
     "CLASS_FILTERS": {
       "key": "0",
-      "title": "Class Filter"
+      "title": "Select Students"
     },
     "TEST_FILTERS": {
       "key": "1",
-      "title": "Filter by Test"
+      "title": "Select Assessment(s)"
     },
     "DEMOGRAPHIC_FILTERS": {
       "key": "2",
-      "title": "Demographic Filter"
+      "title": "Demographics"
     },
     "STANDARD_FILTERS": {
       "key": "3",

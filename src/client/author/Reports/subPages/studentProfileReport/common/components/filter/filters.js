@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { get, find, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 
-import { Row, Col } from 'antd'
+import { Tabs, Row, Col } from 'antd'
 
 import { EduButton } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
@@ -104,6 +104,9 @@ const StudentProfileReportFilters = ({
   history,
   reportId,
 }) => {
+  const [activeTabKey, setActiveTabKey] = useState(
+    staticDropDownData.filterSections.STUDENT_FILTERS.key
+  )
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
       (performanceBandRequired || t.key !== 'performanceBandProfileId') &&
@@ -351,116 +354,138 @@ const StudentProfileReportFilters = ({
           FILTERS
         </EduButton>
         <ReportFiltersWrapper visible={showFilter}>
-          <Row
-            type="flex"
-            gutter={[5, 10]}
-            style={{ padding: '10px 5px 0 5px' }}
-          >
-            <Col span={6}>
-              <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
-              <ControlDropDown
-                by={filters.termId}
-                selectCB={(e, selected) =>
-                  updateFilterDropdownCB(selected, 'termId')
-                }
-                data={termOptions}
-                prefix="School Year"
-                showPrefixOnSelected={false}
-              />
+          <Row>
+            <Col span={24} style={{ padding: '0 5px' }}>
+              <Tabs activeKey={activeTabKey} onChange={setActiveTabKey}>
+                <Tabs.TabPane
+                  key={staticDropDownData.filterSections.STUDENT_FILTERS.key}
+                  tab={staticDropDownData.filterSections.STUDENT_FILTERS.title}
+                >
+                  <Row type="flex" gutter={[5, 10]}>
+                    <Col span={6}>
+                      <FilterLabel data-cy="schoolYear">
+                        School Year
+                      </FilterLabel>
+                      <ControlDropDown
+                        by={filters.termId}
+                        selectCB={(e, selected) =>
+                          updateFilterDropdownCB(selected, 'termId')
+                        }
+                        data={termOptions}
+                        prefix="School Year"
+                        showPrefixOnSelected={false}
+                      />
+                    </Col>
+                    <Col span={6}>
+                      <CourseAutoComplete
+                        dataCy="courses"
+                        selectedCourseIds={
+                          filters.courseIds ? filters.courseIds.split(',') : []
+                        }
+                        selectCB={(e) =>
+                          updateFilterDropdownCB(e, 'courseIds', true)
+                        }
+                      />
+                    </Col>
+                    <Col span={6}>
+                      <FilterLabel data-cy="classGrade">
+                        Class Grade
+                      </FilterLabel>
+                      <ControlDropDown
+                        by={filters.grade}
+                        selectCB={(e, selected) =>
+                          updateFilterDropdownCB(selected, 'grade')
+                        }
+                        data={gradeOptions}
+                        prefix="Grade"
+                        showPrefixOnSelected={false}
+                      />
+                    </Col>
+                    <Col span={6}>
+                      <FilterLabel data-cy="classSubject">
+                        Class Subject
+                      </FilterLabel>
+                      <ControlDropDown
+                        by={filters.subject}
+                        selectCB={(e, selected) =>
+                          updateFilterDropdownCB(selected, 'subject')
+                        }
+                        data={subjectOptions}
+                        prefix="Subject"
+                        showPrefixOnSelected={false}
+                      />
+                    </Col>
+                    <Col span={6}>
+                      <ClassAutoComplete
+                        dataCy="classes"
+                        termId={filters.termId}
+                        selectedCourseIds={filters.courseIds}
+                        selectedGrade={filters.grade !== 'All' && filters.grade}
+                        selectedSubject={
+                          filters.subject !== 'All' && filters.subject
+                        }
+                        selectedClassIds={
+                          selectedClassIds ? selectedClassIds.split(',') : []
+                        }
+                        selectCB={updateSelectedClassIds}
+                      />
+                    </Col>
+                    <Col span={6}>
+                      <FilterLabel data-cy="student">Student</FilterLabel>
+                      <StudentAutoComplete
+                        termId={filters.termId || selectedTerm.key}
+                        selectedCourseIds={filters.courseIds}
+                        selectedGrade={filters.grade !== 'All' && filters.grade}
+                        selectedSubject={
+                          filters.subject !== 'All' && filters.subject
+                        }
+                        selectedClasses={selectedClassIds}
+                        selectedStudent={student}
+                        selectCB={onStudentSelect}
+                      />
+                    </Col>
+                    {performanceBandRequired && (
+                      <Col span={6}>
+                        <FilterLabel data-cy="performanceBand">
+                          Performance Band
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={selectedPerformanceBand}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(
+                              selected,
+                              'performanceBandProfileId'
+                            )
+                          }
+                          data={performanceBandsList}
+                          prefix="Performance Band"
+                          showPrefixOnSelected={false}
+                        />
+                      </Col>
+                    )}
+                    {standardProficiencyRequired && (
+                      <Col span={6}>
+                        <FilterLabel data-cy="standardProficiency">
+                          Standard Proficiency
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={selectedStandardProficiency}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(
+                              selected,
+                              'standardsProficiencyProfileId'
+                            )
+                          }
+                          data={standardProficiencyList}
+                          prefix="Standard Proficiency"
+                          showPrefixOnSelected={false}
+                        />
+                      </Col>
+                    )}
+                  </Row>
+                </Tabs.TabPane>
+              </Tabs>
             </Col>
-            <Col span={6}>
-              <CourseAutoComplete
-                dataCy="courses"
-                selectedCourseIds={
-                  filters.courseIds ? filters.courseIds.split(',') : []
-                }
-                selectCB={(e) => updateFilterDropdownCB(e, 'courseIds', true)}
-              />
-            </Col>
-            <Col span={6}>
-              <FilterLabel data-cy="classGrade">Class Grade</FilterLabel>
-              <ControlDropDown
-                by={filters.grade}
-                selectCB={(e, selected) =>
-                  updateFilterDropdownCB(selected, 'grade')
-                }
-                data={gradeOptions}
-                prefix="Grade"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-            <Col span={6}>
-              <FilterLabel data-cy="classSubject">Class Subject</FilterLabel>
-              <ControlDropDown
-                by={filters.subject}
-                selectCB={(e, selected) =>
-                  updateFilterDropdownCB(selected, 'subject')
-                }
-                data={subjectOptions}
-                prefix="Subject"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-            <Col span={6}>
-              <ClassAutoComplete
-                dataCy="classes"
-                termId={filters.termId}
-                selectedCourseIds={filters.courseIds}
-                selectedGrade={filters.grade !== 'All' && filters.grade}
-                selectedSubject={filters.subject !== 'All' && filters.subject}
-                selectedClassIds={
-                  selectedClassIds ? selectedClassIds.split(',') : []
-                }
-                selectCB={updateSelectedClassIds}
-              />
-            </Col>
-            <Col span={6}>
-              <FilterLabel data-cy="student">Student</FilterLabel>
-              <StudentAutoComplete
-                termId={filters.termId || selectedTerm.key}
-                selectedCourseIds={filters.courseIds}
-                selectedGrade={filters.grade !== 'All' && filters.grade}
-                selectedSubject={filters.subject !== 'All' && filters.subject}
-                selectedClasses={selectedClassIds}
-                selectedStudent={student}
-                selectCB={onStudentSelect}
-              />
-            </Col>
-            {performanceBandRequired && (
-              <Col span={6}>
-                <FilterLabel data-cy="performanceBand">
-                  Performance Band
-                </FilterLabel>
-                <ControlDropDown
-                  by={selectedPerformanceBand}
-                  selectCB={(e, selected) =>
-                    updateFilterDropdownCB(selected, 'performanceBandProfileId')
-                  }
-                  data={performanceBandsList}
-                  prefix="Performance Band"
-                  showPrefixOnSelected={false}
-                />
-              </Col>
-            )}
-            {standardProficiencyRequired && (
-              <Col span={6}>
-                <FilterLabel data-cy="standardProficiency">
-                  Standard Proficiency
-                </FilterLabel>
-                <ControlDropDown
-                  by={selectedStandardProficiency}
-                  selectCB={(e, selected) =>
-                    updateFilterDropdownCB(
-                      selected,
-                      'standardsProficiencyProfileId'
-                    )
-                  }
-                  data={standardProficiencyList}
-                  prefix="Standard Proficiency"
-                  showPrefixOnSelected={false}
-                />
-              </Col>
-            )}
           </Row>
         </ReportFiltersWrapper>
       </ReportFiltersContainer>

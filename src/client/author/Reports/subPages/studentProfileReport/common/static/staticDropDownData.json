@@ -1,4 +1,10 @@
 {
+  "filterSections": {
+    "STUDENT_FILTERS": {
+      "key": "0",
+      "title": "Select Student"
+    }
+  },
   "tagTypes": [
     { "key": "termId", "closable": false },
     { "key": "courseIds", "closable": true },

@@ -489,7 +489,7 @@ const SingleAssessmentReportFilters = ({
                       </Col>
 
                       {prevSARFilterData && (
-                        <Col span={6}>
+                        <Col span={18}>
                           <FilterLabel data-cy="test">Test</FilterLabel>
                           <AssessmentAutoComplete
                             firstLoad={firstLoad}
@@ -718,6 +718,7 @@ const SingleAssessmentReportFilters = ({
                   style={{ maxWidth: '200px' }}
                   isGhost
                   key="cancelButton"
+                  data-cy="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
                   No, Cancel
@@ -727,6 +728,7 @@ const SingleAssessmentReportFilters = ({
                   height="40px"
                   style={{ maxWidth: '200px' }}
                   key="applyButton"
+                  data-cy="applyFilter"
                   disabled={!showApply || isEmpty(testList)}
                   onClick={() => onGoClick()}
                 >

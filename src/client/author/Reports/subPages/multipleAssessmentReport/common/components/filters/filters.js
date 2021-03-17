@@ -399,7 +399,7 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
                       {prevMARFilterData && (
-                        <Col span={6}>
+                        <Col span={18}>
                           <AssessmentsAutoComplete
                             dataCy="tests"
                             firstLoad={firstLoad}
@@ -602,6 +602,7 @@ const MultipleAssessmentReportFilters = ({
                   style={{ maxWidth: '200px' }}
                   isGhost
                   key="cancelButton"
+                  data-cy="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
                   No, Cancel
@@ -611,6 +612,7 @@ const MultipleAssessmentReportFilters = ({
                   height="40px"
                   style={{ maxWidth: '200px' }}
                   key="applyButton"
+                  data-cy="applyFilter"
                   disabled={!showApply}
                   onClick={() => onGoClick()}
                 >

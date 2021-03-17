@@ -13,7 +13,7 @@ import {
 } from '../../../../student/Login/ducks'
 import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../ducks'
 import { submitLTIForm } from '../CurriculumModuleRow'
-import PlaylistContentFilterModal from '../PlaylistContentFilterModal'
+import PlaylistTestBoxFilter from '../PlaylistTestBoxFilter'
 import ResourceItem from '../ResourceItem'
 import WebsiteResourceModal from './components/WebsiteResourceModal'
 import ExternalVideoLink from './components/ExternalVideoLink'
@@ -118,7 +118,7 @@ const ManageContentBlock = (props) => {
 
   const [searchBy] = useState('keywords')
   // const [searchResourceBy] = useState("all");
-  const [showContentFilterModal, setShowContentFilterModal] = useState(false)
+  const [isShowFilter, setShowFilter] = useState(false)
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(
     false
   )
@@ -158,12 +158,11 @@ const ManageContentBlock = (props) => {
     }
   }
 
-  const openContentFilterModal = () => setShowContentFilterModal(true)
-  const closeContentFilterModal = () => setShowContentFilterModal(false)
-
-  const handleApplyFilters = () => {
-    resetAndFetchTests()
-    closeContentFilterModal()
+  const toggleTestFilter = () => {
+    if (isShowFilter) {
+      resetAndFetchTests()
+    }
+    setShowFilter((x) => !x)
   }
 
   const onSearchChange = (list) => setTestSearchAction(list)
@@ -322,11 +321,11 @@ const ManageContentBlock = (props) => {
               </SearchBoxContainer>
               <ActionButton
                 data-cy="test-filter"
-                onClick={openContentFilterModal}
-                isActive={showContentFilterModal}
+                onClick={toggleTestFilter}
+                isActive={isShowFilter}
               >
                 <IconFilter
-                  color={showContentFilterModal ? white : themeColor}
+                  color={isShowFilter ? white : themeColor}
                   width={20}
                   height={20}
                 />
@@ -338,31 +337,66 @@ const ManageContentBlock = (props) => {
               </Dropdown>
             </FlexContainer>
             <br />
+            {isShowFilter ? (
+              <PlaylistTestBoxFilter
+                authoredList={[]} // Send authors data
+                collectionsList={uniq(
+                  [
+                    ...testsConstants.collectionDefaultFilter?.filter(
+                      (c) => c?.value
+                    ),
+                    ...collections.map((o) => ({
+                      value: o?._id,
+                      text: o?.name,
+                    })),
+                  ],
+                  'value'
+                )}
+                sourceList={sourceList}
+                filter={filter}
+                status={status}
+                authoredBy={authoredBy}
+                grades={grades}
+                subject={subject}
+                collection={collection}
+                sources={sources}
+                urlHasUseThis={urlHasUseThis}
+                onFilterChange={(prop) => setFilterAction(prop)}
+                onStatusChange={(prop) => setStatusAction(prop)}
+                onAuthoredChange={(prop) => setAuthoredAction(prop)}
+                onGradesChange={(prop) => setGradesAction(prop)}
+                onSubjectChange={(prop) => setSubjectAction(prop)}
+                onCollectionChange={(prop) => setCollectionAction(prop)}
+                onSourceChange={onSourceChange}
+              />
+            ) : (
+              <>
+                <SearchByNavigationBar justify="flex-start">
+                  {resourceTabs.map((tab) => (
+                    <SearchByTab
+                      data-cy={tab}
+                      onClick={() => setSearchByTab(tab)}
+                      isTabActive={tab.includes(searchResourceBy)}
+                    >
+                      {tab}
+                    </SearchByTab>
+                  ))}
+                </SearchByNavigationBar>
 
-            <SearchByNavigationBar justify="flex-start">
-              {resourceTabs.map((tab) => (
-                <SearchByTab
-                  data-cy={tab}
-                  onClick={() => setSearchByTab(tab)}
-                  isTabActive={tab.includes(searchResourceBy)}
+                <br />
+                <ResourceDataList
+                  urlHasUseThis={urlHasUseThis}
+                  isDifferentiationTab={isDifferentiationTab}
                 >
-                  {tab}
-                </SearchByTab>
-              ))}
-            </SearchByNavigationBar>
-
-            <br />
-            <ResourceDataList
-              urlHasUseThis={urlHasUseThis}
-              isDifferentiationTab={isDifferentiationTab}
-            >
-              {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
-              {isLoading && loadedPage !== 0 && (
-                <LoaderWrapper>
-                  <Spin />
-                </LoaderWrapper>
-              )}
-            </ResourceDataList>
+                  {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
+                  {isLoading && loadedPage !== 0 && (
+                    <LoaderWrapper>
+                      <Spin />
+                    </LoaderWrapper>
+                  )}
+                </ResourceDataList>
+              </>
+            )}
 
             {/* <ExternalLTIModalForm
             onModalClose={onModalClose}
@@ -375,38 +409,6 @@ const ManageContentBlock = (props) => {
           /> */}
           </ManageContentContainer>
         </div>
-
-        {showContentFilterModal && (
-          <PlaylistContentFilterModal
-            isVisible={showContentFilterModal}
-            onCancel={closeContentFilterModal}
-            collectionsList={uniq(
-              [
-                ...testsConstants.collectionDefaultFilter?.filter(
-                  (c) => c?.value
-                ),
-                ...collections.map((o) => ({
-                  value: o?._id,
-                  text: o?.name,
-                })),
-              ],
-              'value'
-            )}
-            filter={filter}
-            status={status}
-            authoredBy={authoredBy}
-            grades={grades}
-            subject={subject}
-            collection={collection}
-            onFilterChange={(prop) => setFilterAction(prop)}
-            onStatusChange={(prop) => setStatusAction(prop)}
-            onAuthoredChange={(prop) => setAuthoredAction(prop)}
-            onGradesChange={(prop) => setGradesAction(prop)}
-            onSubjectChange={(prop) => setSubjectAction(prop)}
-            onCollectionChange={(prop) => setCollectionAction(prop)}
-            handleApplyFilters={handleApplyFilters}
-          />
-        )}
 
         {isWebsiteUrlResourceModal && (
           <WebsiteResourceModal

@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from 'react'
 import { largeDesktopWidth } from '@edulastic/colors'
 import { useRealtimeV2 } from '@edulastic/common'
 import useInterval from '@use-it/interval'
 import { Layout, Spin } from 'antd'
 import { get, values } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import NoDataNotification from '../../../common/components/NoDataNotification'
@@ -33,6 +33,7 @@ import {
   notStartedReportsByAssignmentId,
   getSelectedLanguageSelector,
 } from '../ducks'
+import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 
 const withinThreshold = (targetDate, threshold) => {
   const diff = new Date(targetDate) - Date.now()
@@ -86,6 +87,11 @@ const Content = ({
   setSelectedLanguage,
   languagePreference,
 }) => {
+  const [
+    showVideoResourcePreviewModal,
+    seShowVideoResourcePreviewModal,
+  ] = useState(null)
+
   useEffect(() => {
     fetchAssignments(currentGroup)
   }, [currentChild, currentGroup])
@@ -152,6 +158,9 @@ const Content = ({
     />
   )
 
+  const setEmbeddedVideoPreviewModal = (x) => seShowVideoResourcePreviewModal(x)
+  const resetVideoPreviewModal = () => seShowVideoResourcePreviewModal(null)
+
   const renderAssignments = () => (
     <AssignmentWrapper>
       {assignments.map((item, i) => (
@@ -164,6 +173,7 @@ const Content = ({
           uta={notStartedReportsByAssignment[`${item._id}_${item.classId}`]}
           languagePreference={languagePreference}
           setSelectedLanguage={setSelectedLanguage}
+          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
         />
       ))}
     </AssignmentWrapper>
@@ -180,6 +190,13 @@ const Content = ({
             : noDataNotification()
           : showLoader()}
       </Wrapper>
+
+      {showVideoResourcePreviewModal && (
+        <EmbeddedVideoPreviewModal
+          isVisible={showVideoResourcePreviewModal}
+          closeCallback={resetVideoPreviewModal}
+        />
+      )}
     </LayoutContent>
   )
 }

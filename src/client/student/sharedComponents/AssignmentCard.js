@@ -10,7 +10,6 @@ import {
   lightGreySecondary,
   largeDesktopWidth,
   desktopWidth,
-  black,
   tabletWidth,
 } from '@edulastic/colors'
 import { test as testConstants } from '@edulastic/constants'
@@ -18,7 +17,7 @@ import { test as testConstants } from '@edulastic/constants'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { first, maxBy, isNaN } from 'lodash'
-import { Row, Col, Icon } from 'antd'
+import { Row, Col } from 'antd'
 import { maxDueDateFromClassess, getServerTs } from '../utils'
 
 //  components
@@ -88,6 +87,7 @@ const AssignmentCard = memo(
     setSelectedLanguage,
     languagePreference,
     history,
+    setEmbeddedVideoPreviewModal,
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
@@ -126,6 +126,7 @@ const AssignmentCard = memo(
       hasInstruction = false,
       instruction = '',
       multiLanguageEnabled = false,
+      studentResources = [],
     } = data
 
     const serverTimeStamp = getServerTs(data)
@@ -413,19 +414,12 @@ const AssignmentCard = memo(
             lastAttempt={lastAttempt}
             isDueDate={!!dueDate}
             serverTimeStamp={serverTimeStamp}
+            timedAssignment={timedAssignment}
+            allowedTime={allowedTime}
+            timedTestIconType={theme.assignment.cardTimeIconType}
+            setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+            studentResources={studentResources}
           />
-          <TimeIndicator type={type}>
-            {timedAssignment && (
-              <>
-                <Icon
-                  className="timerIcon"
-                  color={black}
-                  type={theme.assignment.cardTimeIconType}
-                />
-                <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
-              </>
-            )}
-          </TimeIndicator>
 
           <ButtonAndDetail>
             <DetailContainer type={type}>
@@ -650,21 +644,4 @@ const Title = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     font-size: ${(props) => props.theme.smallLinkFontSize};
   }
-`
-
-const TimeIndicator = styled.div`
-  width: 125px;
-  margin: auto;
-  padding-top: ${(props) => props.type === 'reports' && '25px'};
-
-  .timerIcon {
-    transform: scale(1.2);
-  }
-`
-
-const StyledLabel = styled.label`
-  margin-left: 10px;
-  text-transform: uppercase;
-  font: 11px/15px Open Sans;
-  font-weight: 600;
 `

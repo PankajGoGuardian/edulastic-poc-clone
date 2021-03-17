@@ -214,15 +214,21 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     })
   }
   if (hasItemBankPermissions) {
-    const { subEndDate } = itemBankPermissions[0]
-    segmentApi.trackProductPurchase({
-      user,
-      data: {
-        event: `order smath ${eventType}`,
-        SMath_status: eventType,
-        SMath_purchase_date: new Date(),
-        SMath_expiry_date: new Date(subEndDate),
-      },
+    const purchaseDate = new Date()
+    itemBankPermissions.forEach((permissions) => {
+      const { name, subEndDate } = permissions
+      const [pFirstName, pSecondName] = name.split(' ')
+      const productName = `${pFirstName[0]}${pSecondName}`
+      const data = {
+        event: `order ${productName.toLowerCase()} ${eventType}`,
+        [`${productName}_status`]: eventType,
+        [`${productName}_purchase_date`]: purchaseDate,
+        [`${productName}_expiry_date`]: new Date(subEndDate),
+      }
+      segmentApi.trackProductPurchase({
+        user,
+        data,
+      })
     })
   }
 

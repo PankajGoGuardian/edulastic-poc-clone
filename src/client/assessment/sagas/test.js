@@ -192,6 +192,10 @@ const getSettings = (test, testActivity, preview) => {
     blockNavigationToAnsweredQuestions:
       assignmentSettings?.blockNavigationToAnsweredQuestions || false,
     isTeacherPremium: assignmentSettings?.isTeacherPremium || false,
+    blockSaveAndContinue: assignmentSettings?.blockSaveAndContinue || false,
+    restrictNavigationOut: assignmentSettings?.restrictNavigationOut || false,
+    restrictNavigationOutAttemptsThreshold:
+      assignmentSettings?.restrictNavigationOutAttemptsThreshold,
   }
 }
 
@@ -440,7 +444,11 @@ function* loadTest({ payload }) {
         (state) => state?.studentAssignment?.byId || {}
       )
       const assignmentObj = assignmentById[activity.assignmentId]
-      if (assignmentObj?.restrictNavigationOut && isiOS()) {
+      if (
+        (assignmentObj?.restrictNavigationOut ||
+          settings.restrictNavigationOut) &&
+        isiOS()
+      ) {
         Fscreen.safeExitfullScreen()
         yield put(push('/home/assignments'))
         yield put(toggleIosRestrictNavigationModalAction(true))

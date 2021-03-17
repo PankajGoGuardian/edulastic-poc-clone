@@ -33,8 +33,8 @@ const MultiSelectSearch = ({
       value={value}
       maxTagCount={4}
       maxTagTextLength={10}
-      optionFilterProp="children"
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      filterOption={false}
     >
       {options &&
         options.map((data) => (

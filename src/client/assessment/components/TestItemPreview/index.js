@@ -6,7 +6,6 @@ import { ThemeProvider, withTheme } from 'styled-components'
 import { get, isEqual } from 'lodash'
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { IconClockCircularOutline } from '@edulastic/icons'
 import { AssessmentPlayerContext, withWindowSizes } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 
@@ -15,8 +14,7 @@ import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
 import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
-import { TimeSpentWrapper } from '../QuestionWrapper'
-import ShowUserWork from '../Common/ShowUserWork'
+import QuestionBottomAction from '../Common/QuestionBottomAction'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
@@ -446,13 +444,13 @@ class TestItemPreview extends Component {
             </div>
           </Container>
           {hasDrawingResponse && (isLCBView || isExpressGrader) && userWork && (
-            <TimeSpentWrapper margin="0px 12px 12px">
-              <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
-                Show student work
-              </ShowUserWork>
-              <IconClockCircularOutline />
-              {timeSpent}s
-            </TimeSpentWrapper>
+            <QuestionBottomAction
+              margin="0px 12px 12px"
+              isStudentReport={isStudentReport}
+              isShowStudentWork={!!showStudentWork}
+              onClickHandler={showStudentWork}
+              timeSpent={timeSpent}
+            />
           )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}

@@ -5,6 +5,7 @@ import { compose } from 'redux'
 import styled, { css, withTheme } from 'styled-components'
 import { questionType } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
+import { greyThemeDark2 } from '@edulastic/colors'
 import { get, isEmpty, round } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
@@ -12,7 +13,6 @@ import { PrintPreviewScore } from './printPreviewScore'
 import FeedBackContainer from './FeedBackContainer'
 import FeedbackRight from './FeedbackRight'
 import StudentReportFeedback from '../../student/TestAcitivityReport/components/StudentReportFeedback'
-import { TimeSpentWrapper } from './QuestionWrapper'
 import { updateHeight as updateHeightAction } from '../../author/src/reducers/feedback'
 
 const FeedbackWrapper = ({
@@ -185,6 +185,33 @@ const StyledFeedbackWrapper = styled.div`
     dimensions &&
     dimensions.top &&
     wrapperPosition};
+`
+const TimeSpentWrapper = styled.div`
+  font-size: 19px;
+  color: ${greyThemeDark2};
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  align-items: center;
+  margin: ${({ margin }) => margin};
+  &.student-report {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    background: #f3f3f3;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    svg {
+      margin-right: 10px;
+      fill: #6a737f;
+    }
+  }
+  svg {
+    margin-right: 8px;
+    fill: ${greyThemeDark2};
+  }
 `
 
 FeedbackWrapper.propTypes = {

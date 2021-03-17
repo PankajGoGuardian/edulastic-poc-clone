@@ -92,6 +92,12 @@ export const CLEAR_ITEM_EVALUATION = '[evaluation] clear evaluation'
 
 export const TOGGLE_CREATE_ITEM_MODAL = '[testItem] toggle create item modal'
 
+export const CORRECT_ITEM_UPDATE_REQUEST =
+  '[testItem] update correct testItem in LCB request'
+
+export const CORRECT_ITEM_UPDATE_SUCCESS =
+  '[testItem] update correct testItem in LCB success'
+
 // Tests
 export const RECEIVE_TESTS_REQUEST = '[tests] receive list request'
 export const RECEIVE_TESTS_SUCCESS = '[tests] receive list success'

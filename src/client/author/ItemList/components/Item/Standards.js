@@ -11,8 +11,9 @@ const Standards = ({
   search,
   margin,
   labelStyle,
+  show,
 }) => {
-  const { curriculumId, standardIds } = search
+  const { curriculumId = '', standardIds = [] } = search
   const domains = []
   let standards = []
   if (item.data && item.data.questions) {
@@ -68,11 +69,20 @@ const Standards = ({
   return standards.length ? (
     <Tags
       tags={standards.map((_item) => ({ ..._item, tagName: _item.name }))}
-      show={2}
+      show={show}
       labelStyle={labelStyle}
       margin={margin}
     />
   ) : null
+}
+
+Standards.defaultProps = {
+  item: {},
+  interestedCurriculums: [],
+  search: {},
+  margin: '',
+  labelStyle: {},
+  show: 2,
 }
 
 export default connect(

@@ -376,6 +376,7 @@ function* handleEdulasticAdminProductLicenseSaga({ payload }) {
       products: _products,
       userEmailIds,
       licenseIds,
+      licenseOwnerId,
     })
     if (apiPaymentResponse.licenseKeys) {
       yield put(

@@ -194,10 +194,12 @@ const AddSubscriptionModal = ({
 
   const footer = (
     <>
-      <EduButton isGhost onClick={closeModal}>
+      <EduButton data-cy="cancelButton" isGhost onClick={closeModal}>
         CANCEL
       </EduButton>
-      <EduButton onClick={handleValidateFields}>APPLY</EduButton>
+      <EduButton data-cy="applyButton" onClick={handleValidateFields}>
+        APPLY
+      </EduButton>
     </>
   )
 
@@ -212,6 +214,7 @@ const AddSubscriptionModal = ({
       <StyledFieldRow>
         <FieldLabel>Organization</FieldLabel>
         <SelectInputStyled
+          data-cy="searchOrganisation"
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           style={{ width: '100%' }}
           placeholder="Search for an organization"
@@ -325,6 +328,7 @@ const AddSubscriptionModal = ({
       <StyledFieldRow>
         <FieldLabel>CS Manager</FieldLabel>
         <TextInputStyled
+          data-cy="csManagerInput"
           placeholder="Type the CS Manager"
           value={fieldData.customerSuccessManager || ''}
           onChange={(e) =>
@@ -335,6 +339,7 @@ const AddSubscriptionModal = ({
       <StyledFieldRow>
         <FieldLabel>Opportunity Id</FieldLabel>
         <TextInputStyled
+          data-cy="oppurtunityIdInput"
           placeholder="Type the ID"
           value={fieldData.opportunityId || ''}
           onChange={(e) => handleFieldChange('opportunityId')(e.target.value)}
@@ -343,6 +348,7 @@ const AddSubscriptionModal = ({
       <StyledFieldRow>
         <FieldLabel>Notes</FieldLabel>
         <TextAreaInputStyled
+          dat-cy="notesInput"
           height="80px"
           placeholder="Type notes..."
           value={fieldData.notes || ''}

@@ -92,6 +92,7 @@ const LicensesInvoiceTable = ({
         <FlexContainer>
           <Tooltip title="View License">
             <IconEye
+              data-cy={`${row.username}-viewLicense`}
               onClick={() =>
                 handleViewLicense(licenseIds, row.districtId, row.userId)
               }
@@ -101,6 +102,7 @@ const LicensesInvoiceTable = ({
           </Tooltip>
           <Tooltip title="Delete License">
             <IconTrash
+              data-cy={`${row.username}-deleteLicense`}
               onClick={() => openArchiveAlert(licenseIds)}
               color={themeColor}
               style={IconStyles}
@@ -156,7 +158,10 @@ const SearchFilters = Form.create({
           alignItems="center"
           width="400px"
         >
-          <Form.Item style={{ width: '350px' }}>
+          <Form.Item
+            data-cy="searchByLicenseTypeDropDown"
+            style={{ width: '350px' }}
+          >
             {getFieldDecorator('searchType', {
               rules: [{ required: true }],
               initialValue: MANAGE_SUBSCRIPTION_SEARCH_TYPE[0].type,
@@ -174,7 +179,7 @@ const SearchFilters = Form.create({
             )}
           </Form.Item>
           <Form.Item>
-            <EduButton isBlue htmlType="submit">
+            <EduButton data-cy="searchButton" isBlue htmlType="submit">
               Search
             </EduButton>
           </Form.Item>
@@ -298,7 +303,11 @@ const ManageSubscriptionsByLicenses = ({
           setSearchType={setSearchType}
           setPage={setPage}
         />
-        <EduButton isBlue onClick={handleAddSubscription}>
+        <EduButton
+          data-cy="addSubscriptionButton"
+          isBlue
+          onClick={handleAddSubscription}
+        >
           Add Subscription
         </EduButton>
       </FlexContainer>

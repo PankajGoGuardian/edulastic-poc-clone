@@ -1,12 +1,9 @@
 import { segmentApi } from '@edulastic/api'
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import qs from 'qs'
-import loadable from '@loadable/component'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
-import { groupBy } from 'lodash'
 import { roleuser } from '@edulastic/constants'
 import { slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
@@ -15,6 +12,7 @@ import { Wrapper } from '../styled/commonStyled'
 import SubscriptionHeader from '../SubscriptionHeader'
 import SubscriptionMain from '../SubscriptionMain'
 import PurchaseFlowModals from '../../../src/components/common/PurchaseModals'
+import { getCollectionsSelector } from '../../../src/selectors/user'
 import {
   CompareModal,
   PlanCard,
@@ -27,12 +25,6 @@ import {
 import { resetTestFiltersAction } from '../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
 import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
-
-const TrialConfirmationModal = loadable(() =>
-  import(
-    '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/TrialConfimationModal'
-  )
-)
 
 const comparePlansData = [
   {
@@ -205,15 +197,8 @@ const Subscription = (props) => {
     dashboardTiles,
     resetTestFilters,
     resetPlaylistFilters,
+    collections,
   } = props
-
-  const {
-    id: sparkMathProductId,
-    linkedProductId: sparkMathItemBankId,
-  } = useMemo(
-    () => products.find((product) => product.name === 'Spark Math') || {},
-    [products]
-  )
 
   const [comparePlan, setComparePlan] = useState(false)
   const [hasLicenseKeyModal, setHasLicenseKeyModal] = useState(false)
@@ -266,49 +251,6 @@ const Subscription = (props) => {
   const openPurchaseLicenseModal = () => setpurchaseLicenseModal(true)
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
 
-  const { FEATURED } = groupBy(dashboardTiles, 'type')
-  const featuredBundles = FEATURED || []
-
-  const currentItemBank =
-    featuredBundles &&
-    featuredBundles.find(
-      (bundle) =>
-        bundle?.config?.subscriptionData?.productId === sparkMathProductId
-    )
-
-  const settingProductData = () => {
-    const { config = {} } = currentItemBank
-    const { subscriptionData } = config
-
-    setProductData({
-      productId: subscriptionData.productId,
-      productName: subscriptionData.productName,
-      description: subscriptionData.description,
-      hasTrial: subscriptionData.hasTrial,
-      itemBankId: subscriptionData.itemBankId,
-    })
-  }
-
-  const handleGoToCollectionClick = () => {
-    const { config = {} } = currentItemBank
-    const { filters, contentType } = config
-
-    const content = contentType?.toLowerCase() || 'tests'
-
-    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
-      removeInterestedFilters: true,
-    })
-    const filter = qs.stringify(entries)
-
-    if (content === 'tests') {
-      resetTestFilters()
-    } else {
-      resetPlaylistFilters()
-    }
-    history.push(`/author/${content}?${filter}`)
-    showTrialSubsConfirmationAction(false)
-  }
-
   const isSubscribed =
     subType === 'premium' ||
     subType === 'enterprise' ||
@@ -340,16 +282,6 @@ const Subscription = (props) => {
   )
   const hasAllPremiumProductAccess =
     isPaidPremium && totalPaidProducts === products.length
-
-  const isTrialItemBank =
-    itemBankSubscriptions &&
-    itemBankSubscriptions?.length > 0 &&
-    itemBankSubscriptions?.filter((x) => {
-      return (
-        x.itemBankId ===
-          currentItemBank?.config?.subscriptionData?.itemBankId && x.isTrial
-      )
-    })?.length > 0
 
   const setShowSubscriptionAddonModalWithId = () => {
     setShowSubscriptionAddonModal(true)
@@ -423,18 +355,23 @@ const Subscription = (props) => {
         }
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
         itemBankSubscriptions={itemBankSubscriptions}
-        settingProductData={settingProductData}
         setProductData={setProductData}
-        sparkMathItemBankId={sparkMathItemBankId}
-        sparkMathProductId={sparkMathProductId}
         setShowItemBankTrialUsedModal={setShowItemBankTrialUsedModal}
         handleCloseFeatureNotAvailableModal={
           handleCloseFeatureNotAvailableModal
         }
         showFeatureNotAvailableModal={showFeatureNotAvailableModal}
         isFreeAdmin={isFreeAdmin}
+        showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+        showTrialConfirmationMessage={showTrialConfirmationMessage}
+        dashboardTiles={dashboardTiles}
+        resetTestFilters={resetTestFilters}
+        resetPlaylistFilters={resetPlaylistFilters}
+        isConfirmationModalVisible={isConfirmationModalVisible}
+        collections={collections}
+        history={history}
+        productData={productData}
       />
-
       <CompareModal
         title=""
         visible={comparePlan}
@@ -474,18 +411,6 @@ const Subscription = (props) => {
         openPaymentServiceModal={openPaymentServiceModal}
         verificationPending={verificationPending}
       />
-      {isConfirmationModalVisible && (
-        <TrialConfirmationModal
-          visible={isConfirmationModalVisible}
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-          showTrialConfirmationMessage={showTrialConfirmationMessage}
-          isTrialItemBank={isTrialItemBank}
-          isBlocked={currentItemBank?.isBlocked}
-          title={currentItemBank?.config?.subscriptionData?.productName}
-          handleGoToCollectionClick={handleGoToCollectionClick}
-          history={history}
-        />
-      )}
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal
           title={productData?.productName}
@@ -520,6 +445,7 @@ export default compose(
       showTrialConfirmationMessage:
         state?.subscription?.showTrialConfirmationMessage,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
+      collections: getCollectionsSelector(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

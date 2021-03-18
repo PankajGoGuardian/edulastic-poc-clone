@@ -412,9 +412,11 @@ const MyClasses = ({
           visible={isConfirmationModalVisible}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
           showTrialConfirmationMessage={showTrialConfirmationMessage}
-          isTrialItemBank={isTrialItemBank}
-          title={productData?.productName}
-          isBlocked={getClickedBundle?.isBlocked}
+          trialAddOnProductIds={
+            productData?.productId ? [productData?.productId] : []
+          }
+          collections={collections}
+          products={products}
           handleGoToCollectionClick={handleGoToCollectionClick}
           history={history}
         />

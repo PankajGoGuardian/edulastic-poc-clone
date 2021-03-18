@@ -35,7 +35,18 @@ const TrialModal = ({
       (product.type === 'PREMIUM' && hasPremiumTrialIncluded) ||
       addOnProductIds.includes(product.id)
   )
-  const [productIds, setProductIds] = useState(map(productsToShow, 'id'))
+
+  const [productIds, setProductIds] = useState(
+    map(
+      productsToShow.filter((product) => {
+        return (
+          (product.type === 'PREMIUM' && hasPremiumTrialIncluded) ||
+          !hasAllTrialProducts
+        )
+      }),
+      'id'
+    )
+  )
 
   const { PREMIUM: teacherPremium = [], ...ITEM_BANKS } = useMemo(() => {
     return groupBy(productsToShow, 'type')

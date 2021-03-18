@@ -505,15 +505,21 @@ class ShareModal extends React.Component {
           </h2>
           {!!(isPublished || (!isPublished && individuals.length)) && (
             <ShareBlock>
-              <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
-              <FlexContainer>
-                {sharedUsersList.length === 0 && (
-                  <CopyBlockLayer onClick={this.handleCopyBlock} />
-                )}
-                <TitleCopy copyable={{ text: sharableURL }}>
-                  <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
-                </TitleCopy>
-              </FlexContainer>
+              {isPublished && (
+                <>
+                  <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
+                  <FlexContainer>
+                    {sharedUsersList.length === 0 && (
+                      <CopyBlockLayer onClick={this.handleCopyBlock} />
+                    )}
+                    <TitleCopy copyable={{ text: sharableURL }}>
+                      <ShareUrlDiv title={sharableURL}>
+                        {sharableURL}
+                      </ShareUrlDiv>
+                    </TitleCopy>
+                  </FlexContainer>
+                </>
+              )}
               {isPublished && sharedUsersList.length !== 0 && (
                 <>
                   <ShareListTitle>WHO HAS ACCESS</ShareListTitle>

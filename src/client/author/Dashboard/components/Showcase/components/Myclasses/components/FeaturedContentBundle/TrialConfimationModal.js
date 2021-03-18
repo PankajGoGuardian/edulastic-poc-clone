@@ -28,7 +28,7 @@ const TrialConfirmationModal = ({
       productItemBankIds.includes(collection._id)
     ).length
     return availableCollections.length === productItemBankIds.length
-  }, [collections])
+  }, [collections, products])
 
   const sparkMathProduct = products.find(
     (product) => product.type === 'ITEM_BANK_SPARK_MATH'

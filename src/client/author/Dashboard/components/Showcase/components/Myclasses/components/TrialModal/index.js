@@ -23,6 +23,7 @@ const TrialModal = ({
   products = [],
   setShowHeaderTrialModal,
   setTrialAddOnProductIds = () => {},
+  hasAllTrialProducts = false,
 }) => {
   const hasPremiumTrialIncluded = useMemo(
     () => !isPremiumUser && !isPremiumTrialUsed,
@@ -92,7 +93,7 @@ const TrialModal = ({
           <FlexRow>
             <StyledCheckbox
               data-cy={`${camelCase(item.name)}TrialCheckbox`}
-              defaultChecked
+              checked={!hasAllTrialProducts}
               onChange={handleOnChange(item.id)}
             >
               {item.name} TRIAL

@@ -61,6 +61,7 @@ const PlayerHeader = ({
   utaId,
   groupId,
   hidePause,
+  items,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -79,6 +80,7 @@ const PlayerHeader = ({
   const [showReviewPopup, setShowReviewPopup] = useState(false)
 
   const isFirst = () => (isDocbased ? true : currentItem === 0)
+  const isLast = () => currentItem === items.length - 1
 
   const handleOpen = () => {
     setShowReviewPopup(true)
@@ -158,7 +160,11 @@ const PlayerHeader = ({
                   onClick={handleOpen}
                 >
                   <StyledButton data-cy="options">
-                    <span>{t('common.test.review')}</span>
+                    <span>
+                      {isLast()
+                        ? t('common.test.reviewAndSubmit')
+                        : t('common.test.review')}
+                    </span>
                   </StyledButton>
                 </Container>
               )}

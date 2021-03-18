@@ -351,15 +351,13 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const getClickedBundle =
-    featuredBundles &&
-    featuredBundles.find(
-      (bundle) =>
-        bundle?.config?.subscriptionData?.productId === productData?.productId
-    )
-
-  const handleGoToCollectionClick = () => {
-    handleFeatureClick(getClickedBundle)
+  const handleGoToCollectionClick = (productId) => {
+    const featuredBundle =
+      featuredBundles &&
+      featuredBundles.find(
+        (bundle) => bundle?.config?.subscriptionData?.productId === productId
+      )
+    handleFeatureClick(featuredBundle)
     showTrialSubsConfirmationAction(false)
   }
 

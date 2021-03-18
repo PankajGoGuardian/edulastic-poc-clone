@@ -33,6 +33,7 @@ const ProductsList = ({
     if (subsLicenses) {
       return keyBy(subsLicenses, 'productId')
     }
+    return {}
   }, [subsLicenses])
 
   const premiumProductId = teacherPremium?.id
@@ -70,8 +71,9 @@ const ProductsList = ({
   }
   const handleQuantityChange = (itemId) => (value) => {
     if (isBuyMore) {
-      const tpCount = licenseMapKeyByProductId[premiumProductId].totalCount || 0
-      const productCount = licenseMapKeyByProductId[itemId].totalCount || 0
+      const tpCount =
+        licenseMapKeyByProductId[premiumProductId]?.totalCount || 0
+      const productCount = licenseMapKeyByProductId[itemId]?.totalCount || 0
       const currentCount = Math.floor(value) + productCount
       if (itemId !== premiumProductId && currentCount > tpCount) {
         const _quantities = {
@@ -150,8 +152,8 @@ const ProductsList = ({
                       : quantities[premiumProductId] ||
                         Math.max(
                           licenseMapKeyByProductId[premiumProductId]
-                            .totalCount -
-                            licenseMapKeyByProductId[product.id].totalCount,
+                            ?.totalCount -
+                            licenseMapKeyByProductId[product.id]?.totalCount,
                           1
                         )
                   }

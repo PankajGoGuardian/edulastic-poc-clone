@@ -110,6 +110,7 @@ const QuestionBottomAction = ({
         <div>
           {isShowStudentWork && (
             <EduButton
+              data-cy="showStudentWork"
               isGhost
               height="24px"
               type="primary"

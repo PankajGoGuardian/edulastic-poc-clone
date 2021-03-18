@@ -524,13 +524,11 @@ const AssessmentContainer = ({
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
-  const restrictNavigationOut =
-    assignmentObj?.restrictNavigationOut || restProps?.restrictNavigationOut
-  const restrictNavigationOutAttemptsThreshold =
-    assignmentObj?.restrictNavigationOutAttemptsThreshold ||
-    restProps?.restrictNavigationOutAttemptsThreshold
-  const blockSaveAndContinue =
-    assignmentObj?.blockSaveAndContinue || restProps?.blockSaveAndContinue
+  const {
+    restrictNavigationOut = false,
+    restrictNavigationOutAttemptsThreshold,
+    blockSaveAndContinue = false,
+  } = restProps
 
   const hidePause = blockSaveAndContinue
   const currentlyFullScreen = useFullScreenListener({

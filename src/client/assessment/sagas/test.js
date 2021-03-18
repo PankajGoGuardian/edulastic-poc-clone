@@ -443,12 +443,8 @@ function* loadTest({ payload }) {
       assignmentById = yield select(
         (state) => state?.studentAssignment?.byId || {}
       )
-      const assignmentObj = assignmentById[activity.assignmentId]
-      if (
-        (assignmentObj?.restrictNavigationOut ||
-          settings.restrictNavigationOut) &&
-        isiOS()
-      ) {
+
+      if (settings.restrictNavigationOut && isiOS()) {
         Fscreen.safeExitfullScreen()
         yield put(push('/home/assignments'))
         yield put(toggleIosRestrictNavigationModalAction(true))

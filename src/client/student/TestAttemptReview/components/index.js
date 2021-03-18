@@ -33,6 +33,8 @@ const SummaryContainer = (props) => {
     currentAssignment,
     userId,
     fetchAssignments,
+    restrictNavigationOut = false,
+    blockSaveAndContinue = false,
   } = props
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
@@ -40,11 +42,6 @@ const SummaryContainer = (props) => {
   const handlerConfirmationModal = () => {
     setShowConfirmationModal(true)
   }
-
-  const restrictNavigationOut =
-    assignmentObj?.restrictNavigationOut || props?.restrictNavigationOut
-  const blockSaveAndContinue =
-    assignmentObj?.blockSaveAndContinue || props?.blockSaveAndContinue
 
   const { groupId, utaId } = match.params
 

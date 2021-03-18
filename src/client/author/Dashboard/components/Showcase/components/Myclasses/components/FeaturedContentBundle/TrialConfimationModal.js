@@ -14,8 +14,9 @@ const TrialConfirmationModal = ({
   handleGoToCollectionClick,
   history,
 }) => {
-  const itemBankProducts = products.filter((product) =>
-    trialAddOnProductIds.includes(product.id)
+  const itemBankProducts = products.filter(
+    (product) =>
+      trialAddOnProductIds.includes(product.id) && product.type !== 'PREMIUM'
   )
 
   const productItemBankIds = itemBankProducts.map(

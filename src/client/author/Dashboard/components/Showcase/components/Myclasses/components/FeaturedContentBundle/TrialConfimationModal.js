@@ -24,11 +24,11 @@ const TrialConfirmationModal = ({
 
   // Check if trial successfully started for all item banks.
   const isTrialPurchaseSuccess = useMemo(() => {
-    const availableCollections = collections.filter((collection) =>
-      productItemBankIds.includes(collection._id)
-    ).length
+    const availableCollections = collections.filter((collection) => {
+      return productItemBankIds.includes(collection._id)
+    })
     return availableCollections.length === productItemBankIds.length
-  }, [collections, products])
+  }, [collections, products, trialAddOnProductIds])
 
   const sparkMathProduct = products.find(
     (product) => product.type === 'ITEM_BANK_SPARK_MATH'

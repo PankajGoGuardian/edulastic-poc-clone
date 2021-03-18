@@ -399,7 +399,7 @@ const SubscriptionMain = ({
       return null
     }
 
-    const { id: productId, linkedProductId: itemBankId } =
+    const { id: productId, linkedProductId: itemBankId, name } =
       productsKeyedByType[dataMap[title]] || {}
     const isPaidSparkProduct = getIsPaidSparkProduct(itemBankId)
     const hasPurchaseLink = !isPaidSparkProduct
@@ -414,7 +414,7 @@ const SubscriptionMain = ({
         {hasPurchaseLink && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
-              <PurchaseLink data-cy="Purchase" onClick={handleClick}>
+              <PurchaseLink data-cy={`Purchase_${name}`} onClick={handleClick}>
                 Purchase
               </PurchaseLink>
             )}
@@ -424,7 +424,7 @@ const SubscriptionMain = ({
         {hasTrialLink && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
-              <span data-cy="trialPurchase" onClick={handleClick}>
+              <span data-cy={`trialPurchase_${name}`} onClick={handleClick}>
                 try
               </span>
             )}

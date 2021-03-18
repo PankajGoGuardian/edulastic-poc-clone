@@ -552,10 +552,11 @@ function* handleFreeTrialSaga({ payload }) {
 
 function* bulkInviteBookKeepersSaga({ payload }) {
   try {
-    const res = yield call(userApi.adddBulkTeacher, payload) || []
-    if (res) {
-      yield put(slice.actions.setBookKeepersInviteSuccess(true))
+    if (payload?.userDetails?.length) {
+      yield call(userApi.adddBulkTeacher, payload)
     }
+
+    yield put(slice.actions.setBookKeepersInviteSuccess(true))
   } catch (err) {
     notification({
       type: 'error',

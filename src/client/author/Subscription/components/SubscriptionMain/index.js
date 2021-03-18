@@ -9,7 +9,7 @@ import {
 import qs from 'qs'
 import loadable from '@loadable/component'
 import { Link } from 'react-router-dom'
-import { isBoolean, groupBy, keyBy, difference } from 'lodash'
+import { isBoolean, groupBy, keyBy, difference, map } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 
 // TODO: Update SVG imports here
@@ -435,8 +435,20 @@ const SubscriptionMain = ({
     )
   }
 
+  // if the product has paid subscription or the trial is used then its not available for trial.
+  const allAvailableTrialItemBankIds = difference(productItemBankIds, [
+    ...paidItemBankIds,
+    ...usedTrialItemBankIds,
+  ])
+
+  const allAvailableItemProductIds = map(
+    products.filter((product) =>
+      allAvailableTrialItemBankIds.includes(product.linkedProductId)
+    ),
+    'id'
+  )
   const productsToShowInTrialModal = hasAllTrialProducts
-    ? difference(trialUnuseditemBankProductIds, paidItemBankIds)
+    ? allAvailableItemProductIds
     : productData.productId
     ? [productData?.productId]
     : []

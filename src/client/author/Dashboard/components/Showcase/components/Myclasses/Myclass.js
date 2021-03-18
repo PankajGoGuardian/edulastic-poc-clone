@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, groupBy, isEmpty, difference } from 'lodash'
+import { get, groupBy, isEmpty, difference, map } from 'lodash'
 import qs from 'qs'
 import loadable from '@loadable/component'
 
@@ -298,26 +298,17 @@ const MyClasses = ({
     }
   }
 
-  const {
-    trialUnuseditemBankProductIds = [],
-    productItemBankIds = [],
-  } = useMemo(() => {
+  const { productItemBankIds = [] } = useMemo(() => {
     if (products) {
       const itemBankProducts = products.filter(({ type }) => type !== 'PREMIUM')
       return {
-        trialUnuseditemBankProductIds: itemBankProducts
-          .filter(
-            ({ linkedProductId }) =>
-              !usedTrialItemBankIds.includes(linkedProductId)
-          )
-          .map(({ id }) => id),
         productItemBankIds: itemBankProducts.map(
           ({ linkedProductId }) => linkedProductId
         ),
       }
     }
     return {}
-  }, [products, usedTrialItemBankIds])
+  }, [products])
 
   const paidItemBankIds = useMemo(() => {
     if (!itemBankSubscriptions) {
@@ -339,7 +330,20 @@ const MyClasses = ({
       return [productData.productId]
     }
 
-    return difference(trialUnuseditemBankProductIds, paidItemBankIds)
+    // if the product has paid subscription or the trial is used then its not available for trial.
+    const allAvailableTrialItemBankIds = difference(productItemBankIds, [
+      ...paidItemBankIds,
+      ...usedTrialItemBankIds,
+    ])
+
+    const allAvailableItemProductIds = map(
+      products.filter((product) =>
+        allAvailableTrialItemBankIds.includes(product.linkedProductId)
+      ),
+      'id'
+    )
+
+    return allAvailableItemProductIds
   }, [
     itemBankSubscriptions,
     products,

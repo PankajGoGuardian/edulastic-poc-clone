@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { EduButton, FieldLabel, TextInputStyled } from '@edulastic/common'
+import {
+  EduButton,
+  FieldLabel,
+  notification,
+  TextInputStyled,
+} from '@edulastic/common'
 import SubscriptionAddonModal from './SubscriptionAddonModal'
 import ProductsList from './ProductsList'
-
 import { EmailWrapper } from './styled'
+import { emailRegex } from '../../../../../common/utils/helpers'
 
 const MultipleLicensePurchase = ({
   isVisible,
@@ -16,6 +21,10 @@ const MultipleLicensePurchase = ({
   quantities,
   setSelectedProductIds,
   selectedProductIds,
+  bulkInviteBookKeepers,
+  districtId,
+  isBookKeepersInviteSuccess,
+  setBookKeepersInviteSuccess,
 }) => {
   const [emailValues, setEmailValues] = useState('')
 
@@ -32,6 +41,24 @@ const MultipleLicensePurchase = ({
     }
   }, [])
 
+  useEffect(() => {
+    if (isBookKeepersInviteSuccess) {
+      const emails = emailValues
+        .split(',')
+        .map((x) => x.replace(/\s/g, ''))
+        .filter((x) => x)
+
+      handleClick({
+        emails,
+      })
+    }
+    return () => {
+      if (isBookKeepersInviteSuccess) {
+        setBookKeepersInviteSuccess(false)
+      }
+    }
+  }, [emailValues, isBookKeepersInviteSuccess])
+
   const handleInputEmailAddress = (ele) => {
     const value = ele.target.value
     setEmailValues(value)
@@ -42,8 +69,19 @@ const MultipleLicensePurchase = ({
       .split(',')
       .map((x) => x.replace(/\s/g, ''))
       .filter((x) => x)
-    handleClick({
-      emails,
+
+    for (const email of emails) {
+      if (!emailRegex.test(email)) {
+        return notification({
+          type: 'warn',
+          msg: `${email} is invalid email!`,
+        })
+      }
+    }
+
+    bulkInviteBookKeepers({
+      districtId,
+      userDetails: emails,
     })
   }
 

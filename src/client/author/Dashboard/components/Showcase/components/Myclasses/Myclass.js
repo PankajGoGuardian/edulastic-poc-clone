@@ -80,6 +80,7 @@ const MyClasses = ({
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -454,6 +455,7 @@ const MyClasses = ({
           startPremiumTrial={startTrialAction}
           products={products}
           setShowHeaderTrialModal={setShowHeaderTrialModal}
+          setTrialAddOnProductIds={setTrialAddOnProductIds}
         />
       )}
       {isConfirmationModalVisible && (
@@ -461,9 +463,7 @@ const MyClasses = ({
           visible={isConfirmationModalVisible}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
           showTrialConfirmationMessage={showTrialConfirmationMessage}
-          trialAddOnProductIds={
-            productData?.productId ? [productData?.productId] : []
-          }
+          trialAddOnProductIds={trialAddOnProductIds}
           collections={collections}
           products={products}
           handleGoToCollectionClick={handleGoToCollectionClick}

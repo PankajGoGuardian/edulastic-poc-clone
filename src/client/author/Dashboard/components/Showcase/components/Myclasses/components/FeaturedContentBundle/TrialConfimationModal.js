@@ -27,6 +27,7 @@ const TrialConfirmationModal = ({
     const availableCollections = collections.filter((collection) => {
       return productItemBankIds.includes(collection._id)
     })
+
     return availableCollections.length === productItemBankIds.length
   }, [collections, products, trialAddOnProductIds])
 
@@ -76,7 +77,7 @@ const TrialConfirmationModal = ({
             >
               Go To Dashboard
             </EduButton>
-            {itemBankProducts.length && (
+            {!!itemBankProducts.length && (
               <EduButton
                 data-cy="goToItemBank"
                 onClick={handleItemBankClick}
@@ -90,7 +91,7 @@ const TrialConfirmationModal = ({
         ]}
         centered
       >
-        {!isTrialPurchaseSuccess && itemBankProducts.length && (
+        {!isTrialPurchaseSuccess && !!itemBankProducts.length && (
           <SpinContainer>
             <StyledSpin size="large" />
           </SpinContainer>

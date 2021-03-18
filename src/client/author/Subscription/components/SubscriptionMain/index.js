@@ -9,7 +9,7 @@ import {
 import qs from 'qs'
 import loadable from '@loadable/component'
 import { Link } from 'react-router-dom'
-import { isBoolean, groupBy, keyBy } from 'lodash'
+import { isBoolean, groupBy, keyBy, difference } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 
 // TODO: Update SVG imports here
@@ -232,11 +232,12 @@ const SubscriptionMain = ({
   isConfirmationModalVisible,
   collections,
   history,
-  productData,
+  productData = {},
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
+  const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
 
   const productsKeyedByType = keyBy(products, 'type')
 
@@ -244,6 +245,7 @@ const SubscriptionMain = ({
   useEffect(() => {
     if (!isTrialModalVisible) {
       setProductData({})
+      setHasAllTrialProducts(false)
     }
   }, [isTrialModalVisible])
 
@@ -283,9 +285,6 @@ const SubscriptionMain = ({
       .map((subscription) => subscription.itemBankId)
   }, [itemBankSubscriptions])
 
-  const hasAllPaidItemBanks =
-    paidItemBankIds.length === productItemBankIds.length
-
   const hasUsedAllItemBankTrials = trialUnuseditemBankProductIds.length === 0
 
   const getIsPaidSparkProduct = (itemBankId) =>
@@ -309,8 +308,10 @@ const SubscriptionMain = ({
     )
 
   const settingProductData = (productId) => {
+    // Flow when main start trial button is clicked
     if (!productId) {
       setProductData({})
+      setHasAllTrialProducts(true)
       return
     }
     const currentItemBank = getBundleByProductId(productId)
@@ -346,10 +347,21 @@ const SubscriptionMain = ({
   // Show item bank trial button when item bank trial is not used yet and user is either premium
   // or hasn't used premium trial yet.
   const hasStartTrialButton = useMemo(() => {
-    !hasAllPaidItemBanks &&
-      !hasUsedAllItemBankTrials &&
-      (!isPremiumTrialUsed || isPremiumUser)
-  }, [])
+    if (!isPremiumTrialUsed && !isPremiumUser) {
+      return true
+    }
+
+    for (const productItemBankId of productItemBankIds) {
+      if (
+        !gethasUsedItemBankTrial(productItemBankId) &&
+        !getIsPaidSparkProduct(productItemBankId)
+      ) {
+        return true
+      }
+    }
+
+    return false
+  }, [itemBankSubscriptions, isPremiumTrialUsed, isPremiumUser])
 
   const handleSparkPurchaseClick = (productId) => {
     settingProductData(productId)
@@ -395,6 +407,7 @@ const SubscriptionMain = ({
       !isPaidSparkProduct &&
       !gethasUsedItemBankTrial(itemBankId) &&
       !isFreeAdmin
+    const handleSparkStartTrial = () => handleStartTrialButtonClick(productId)
 
     return (
       <>
@@ -415,12 +428,18 @@ const SubscriptionMain = ({
                 try
               </span>
             )}
-            onClick={handleStartTrialButtonClick}
+            onClick={handleSparkStartTrial}
           />
         )}
       </>
     )
   }
+
+  const productsToShowInTrialModal = hasAllTrialProducts
+    ? difference(trialUnuseditemBankProductIds, paidItemBankIds)
+    : productData.productId
+    ? [productData?.productId]
+    : []
 
   return (
     <>
@@ -506,7 +525,7 @@ const SubscriptionMain = ({
       </ContentSection>
       {isTrialModalVisible && (
         <TrialModal
-          addOnProductIds={[productData?.productId]}
+          addOnProductIds={productsToShowInTrialModal}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
@@ -514,6 +533,7 @@ const SubscriptionMain = ({
           startPremiumTrial={startTrialAction}
           products={products}
           setTrialAddOnProductIds={setTrialAddOnProductIds}
+          hasAllTrialProducts={hasAllTrialProducts}
         />
       )}
       {isConfirmationModalVisible && (

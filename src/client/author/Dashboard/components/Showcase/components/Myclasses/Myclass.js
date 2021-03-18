@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, groupBy, isEmpty } from 'lodash'
+import { get, groupBy, isEmpty, difference } from 'lodash'
 import qs from 'qs'
 import loadable from '@loadable/component'
 
@@ -297,6 +297,55 @@ const MyClasses = ({
     }
   }
 
+  const {
+    trialUnuseditemBankProductIds = [],
+    productItemBankIds = [],
+  } = useMemo(() => {
+    if (products) {
+      const itemBankProducts = products.filter(({ type }) => type !== 'PREMIUM')
+      return {
+        trialUnuseditemBankProductIds: itemBankProducts
+          .filter(
+            ({ linkedProductId }) =>
+              !usedTrialItemBankIds.includes(linkedProductId)
+          )
+          .map(({ id }) => id),
+        productItemBankIds: itemBankProducts.map(
+          ({ linkedProductId }) => linkedProductId
+        ),
+      }
+    }
+    return {}
+  }, [products, usedTrialItemBankIds])
+
+  const paidItemBankIds = useMemo(() => {
+    if (!itemBankSubscriptions) {
+      return []
+    }
+
+    return itemBankSubscriptions
+      .filter(
+        (subscription) =>
+          // only include the itembanks which are sold as products
+          !subscription.isTrial &&
+          productItemBankIds.includes(subscription.itemBankId)
+      )
+      .map((subscription) => subscription.itemBankId)
+  }, [itemBankSubscriptions])
+
+  const productsToShowInTrialModal = useMemo(() => {
+    if (!showHeaderTrialModal || isTrialModalVisible) {
+      return [productData.productId]
+    }
+
+    return difference(trialUnuseditemBankProductIds, paidItemBankIds)
+  }, [
+    itemBankSubscriptions,
+    products,
+    showHeaderTrialModal,
+    isTrialModalVisible,
+  ])
+
   if (loading) {
     return <Spin style={{ marginTop: '80px' }} />
   }
@@ -397,7 +446,7 @@ const MyClasses = ({
       )}
       {(isTrialModalVisible || showHeaderTrialModal) && (
         <TrialModal
-          addOnProductIds={[isTrialModalVisible && productData.productId]}
+          addOnProductIds={productsToShowInTrialModal}
           isVisible={isTrialModalVisible || showHeaderTrialModal}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}

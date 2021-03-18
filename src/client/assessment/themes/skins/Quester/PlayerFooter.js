@@ -1,13 +1,11 @@
 import {
-  IconBookmark,
   IconMinusRounded,
   IconPlus,
-  IconClose,
   IconScratchPad,
-  IconCalculator,
   IconMore,
   IconCloudUpload,
   IconMagnify,
+  IconQuester,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
@@ -24,6 +22,8 @@ import AudioControls from '../../../AudioControls'
 import { getUserRole } from '../../../../author/src/selectors/user'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 import { themes } from '../../../../theme'
+
+const { IconAnswerEliminator, IconBookMark, IconCalculator } = IconQuester
 
 const {
   playerSkin: { quester },
@@ -127,7 +127,7 @@ const PlayerFooter = ({
           title={t('common.test.bookmark')}
         >
           <IconWrapper>
-            <IconBookmark
+            <IconBookMark
               color={isBookmarked ? button.background : footer.textColor}
               hoverColor={button.background}
             />
@@ -149,7 +149,10 @@ const PlayerFooter = ({
         }
       >
         <IconWrapper>
-          <IconClose color={footer.textColor} hoverColor={button.background} />
+          <IconAnswerEliminator
+            color={footer.textColor}
+            hoverColor={button.background}
+          />
         </IconWrapper>
 
         <span>{t('common.test.answerEliminator')}</span>

@@ -503,53 +503,51 @@ class ShareModal extends React.Component {
               ? 'Share with others'
               : 'Collaborate with other Co-Authors'}
           </h2>
-          <ShareBlock>
-            {isPublished && (
-              <>
-                <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
-                <FlexContainer>
-                  {sharedUsersList.length === 0 && (
-                    <CopyBlockLayer onClick={this.handleCopyBlock} />
-                  )}
-                  <TitleCopy copyable={{ text: sharableURL }}>
-                    <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
-                  </TitleCopy>
-                </FlexContainer>
-              </>
-            )}
-            {isPublished && sharedUsersList.length !== 0 && (
-              <>
-                <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
-                <ShareList>
-                  {sharedUsersList.map((data, index) => (
-                    <SharedRow
-                      data={data}
-                      index={index}
-                      getEmail={() => this.getEmail(data)}
-                      getUserName={() => this.getUserName(data)}
-                      removeHandler={() => this.removeHandler(data)}
-                    />
-                  ))}
-                </ShareList>
-              </>
-            )}
-            {!isPublished && !!individuals.length && (
-              <>
-                <ShareListTitle>CO-AUTHORS FOR THIS TEST</ShareListTitle>
-                <ShareList>
-                  {individuals.map((data, index) => (
-                    <SharedRow
-                      data={data}
-                      index={index}
-                      getEmail={() => this.getEmail(data)}
-                      getUserName={() => this.getUserName(data)}
-                      removeHandler={() => this.removeHandler(data)}
-                    />
-                  ))}
-                </ShareList>
-              </>
-            )}
-          </ShareBlock>
+          {!!(isPublished || (!isPublished && individuals.length)) && (
+            <ShareBlock>
+              <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
+              <FlexContainer>
+                {sharedUsersList.length === 0 && (
+                  <CopyBlockLayer onClick={this.handleCopyBlock} />
+                )}
+                <TitleCopy copyable={{ text: sharableURL }}>
+                  <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
+                </TitleCopy>
+              </FlexContainer>
+              {isPublished && sharedUsersList.length !== 0 && (
+                <>
+                  <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
+                  <ShareList>
+                    {sharedUsersList.map((data, index) => (
+                      <SharedRow
+                        data={data}
+                        index={index}
+                        getEmail={() => this.getEmail(data)}
+                        getUserName={() => this.getUserName(data)}
+                        removeHandler={() => this.removeHandler(data)}
+                      />
+                    ))}
+                  </ShareList>
+                </>
+              )}
+              {!isPublished && !!individuals.length && (
+                <>
+                  <ShareListTitle>CO-AUTHORS FOR THIS TEST</ShareListTitle>
+                  <ShareList>
+                    {individuals.map((data, index) => (
+                      <SharedRow
+                        data={data}
+                        index={index}
+                        getEmail={() => this.getEmail(data)}
+                        getUserName={() => this.getUserName(data)}
+                        removeHandler={() => this.removeHandler(data)}
+                      />
+                    ))}
+                  </ShareList>
+                </>
+              )}
+            </ShareBlock>
+          )}
           <PeopleBlock>
             <PeopleLabel>
               {isPublished ? 'GIVE ACCESS TO' : 'Invite Co-Authors'}

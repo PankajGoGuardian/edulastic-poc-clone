@@ -326,7 +326,7 @@ function* fetchUserSubscription() {
     const data = {
       isPremiumTrialUsed: result?.isPremiumTrialUsed,
       itemBankSubscriptions: result?.itemBankSubscriptions,
-      usedTrialItemBankId: result?.usedTrialItemBankId,
+      usedTrialItemBankIds: result?.usedTrialItemBankIds,
       premiumProductId,
     }
 

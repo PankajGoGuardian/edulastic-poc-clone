@@ -22,6 +22,7 @@ const TrialModal = ({
   startPremiumTrial,
   products = [],
   setShowHeaderTrialModal,
+  setTrialAddOnProductIds = () => {},
 }) => {
   const hasPremiumTrialIncluded = useMemo(
     () => !isPremiumUser && !isPremiumTrialUsed,
@@ -56,6 +57,7 @@ const TrialModal = ({
   }
 
   const onProceed = () => {
+    setTrialAddOnProductIds([...productIds])
     startPremiumTrial({ productIds })
     closeModal()
   }

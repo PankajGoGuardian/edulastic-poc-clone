@@ -93,7 +93,7 @@ const TrialModal = ({
           <FlexRow>
             <StyledCheckbox
               data-cy={`${camelCase(item.name)}TrialCheckbox`}
-              checked={!hasAllTrialProducts}
+              defaultChecked={!hasAllTrialProducts}
               onChange={handleOnChange(item.id)}
             >
               {item.name} TRIAL

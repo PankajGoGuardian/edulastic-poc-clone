@@ -162,6 +162,8 @@
       "keypad": "Keypad",
       "maximumLines": "Maximum lines",
       "defaultMode": "Default mode",
+      "saveCustomKeypad": "Save Custom Keypad",
+      "updateCustomKeypad": "Update Custom Keypad",
       "numberPad": "Number Pad",
       "symbols": "Symbols",
       "distractor": "Distractor",

@@ -119,6 +119,7 @@ const PlayerFooter = ({
       {!blockNavigationToAnsweredQuestions && (
         <ActionContainer
           hoverEffect
+          active={isBookmarked}
           onClick={
             defaultAP
               ? toggleBookmark

@@ -275,18 +275,30 @@ class TestItemPreview extends Component {
     const {
       isLCBView,
       isQuestionView,
-      multipartItem,
+      multipartItem: v2Multipart,
       isPassageWithQuestions,
       itemLevelScoring,
+      cols,
     } = this.props
+    const isV1Multipart = (cols || []).some((col) => col.isV1Multipart)
     let showStackedView = false
+
     if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
-      if (multipartItem && !itemLevelScoring) {
+      if (
+        !itemLevelScoring &&
+        this.widgets.length > 1 &&
+        (v2Multipart || isV1Multipart)
+      ) {
         showStackedView = true
       }
     }
 
     return showStackedView
+  }
+
+  get widgets() {
+    const { cols } = this.props
+    return (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
   }
 
   render() {
@@ -327,7 +339,8 @@ class TestItemPreview extends Component {
     const { isFeedbackVisible, collapseDirection } = this.state
     const { isStudentAttempt } = this.context
 
-    const widgets = (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
+    const widgets = this.widgets
+
     if (widgets.length === 0) {
       return null
     }

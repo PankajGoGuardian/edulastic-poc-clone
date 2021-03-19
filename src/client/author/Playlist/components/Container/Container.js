@@ -128,6 +128,7 @@ class TestList extends Component {
     isShowFilter: false,
     openSidebar: false,
     isPlaylistAvailableModalVisible: false,
+    filteredSparkInfo: {},
   }
 
   getUrlToPush(page = undefined) {
@@ -215,14 +216,17 @@ class TestList extends Component {
     getAllTags({ type: 'playlist' })
     receiveRecentPlayLists()
 
-    const sparkMathId = collectionSelector.find(
-      (item) => item.name === 'Spark Math'
-    )?._id
-
-    if (
-      searchFilters.collections.includes(sparkMathId) &&
-      !recentPlaylist.length
+    const selectedCollectionInfo = collectionSelector.filter(
+      (x) => x._id === searchFilters?.collections[0]
     )
+
+    const { _id } = selectedCollectionInfo?.[0] || {}
+
+    this.setState({
+      filteredSparkInfo: selectedCollectionInfo?.[0] || {},
+    })
+
+    if (searchFilters?.collections?.includes(_id) && !recentPlaylist?.length)
       this.setState({ isPlaylistAvailableModalVisible: true })
   }
 
@@ -512,6 +516,7 @@ class TestList extends Component {
       t,
       isProxyUser,
       sort = {},
+      dashboardTiles,
     } = this.props
 
     const {
@@ -519,6 +524,7 @@ class TestList extends Component {
       isShowFilter,
       openSidebar,
       isPlaylistAvailableModalVisible,
+      filteredSparkInfo,
     } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
@@ -527,6 +533,15 @@ class TestList extends Component {
         toggleFilter={this.toggleFilter}
       />
     )
+
+    const sparkDescription = dashboardTiles?.find(
+      (x) => x.config?.subscriptionData?.itemBankId === filteredSparkInfo._id
+    )
+
+    const { config = {} } = sparkDescription
+    const { subscriptionData = {} } = config
+    const { description = '' } = subscriptionData
+
     return (
       <>
         <ListHeader
@@ -669,6 +684,9 @@ class TestList extends Component {
             <PlaylistAvailableModal
               isVisible={isPlaylistAvailableModalVisible}
               closeModal={this.closePlaylistAvailableModal}
+              filteredSpark={filteredSparkInfo}
+              dashboardTiles={dashboardTiles}
+              description={description}
             />
           )}
         </Container>
@@ -700,6 +718,7 @@ const enhance = compose(
       sort: getSortFilterStateSelector(state),
       recentPlaylist: getRecentPlaylistSelector(state),
       collectionSelector: getCollectionsSelector(state),
+      dashboardTiles: state.dashboardTeacher.configurableTiles,
     }),
     {
       receivePlaylists: receivePlaylistsAction,

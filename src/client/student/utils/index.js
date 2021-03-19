@@ -20,6 +20,9 @@ export const formatTime = (time) =>
 export const formatDateAndTime = (time) =>
   moment(normaliseTime(time)).format('MMM DD, YYYY hh:mm A')
 
+export const formatDateAndTimeForAssignmentCard = (time) =>
+  moment(normaliseTime(time)).format('ddd, MMM DD')
+
 export const setStatusBgColor = ({ selectedTheme, filter, theme, enabled }) => {
   if (!enabled) {
     return 'transparent'

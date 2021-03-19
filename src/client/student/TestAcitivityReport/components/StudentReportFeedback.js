@@ -7,6 +7,7 @@ import { get } from 'lodash'
 import { IconCheck } from '@edulastic/icons'
 import { white } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import {
   FeedbackByQIdSelector,
   getMaxScoreFromCurrentItem,
@@ -94,10 +95,21 @@ const StudentFeedback = ({
           <IconCheckWrapper>
             <IconCheck />
           </IconCheckWrapper>
-          <ScoreWrapper>
-            <Score data-cy="score">{_score}</Score>
-            <Total data-cy="maxscore">{_maxScore}</Total>
-          </ScoreWrapper>
+          {isPracticeQuestion ? (
+            <UnScored
+              width="140px"
+              height="32px"
+              margin="0px 0px 0px 20px"
+              fontSize="14px"
+              text="UNSCORED"
+              fontWeight="700"
+            />
+          ) : (
+            <ScoreWrapper>
+              <Score data-cy="score">{_score}</Score>
+              <Total data-cy="maxscore">{_maxScore}</Total>
+            </ScoreWrapper>
+          )}
           <Feedback>
             <FeedbackGiven data-cy="feedback">
               {feedbackTextByTeacher}

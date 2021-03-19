@@ -315,6 +315,7 @@ const StandardsMasteryReportFilters = ({
     }
     setShowApply(false)
     _onGoClick(settings)
+    toggleFilter(null, false)
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
@@ -439,6 +440,7 @@ const StandardsMasteryReportFilters = ({
       />
       <ReportFiltersContainer visible={!reportId}>
         <EduButton
+          data-cy="filters"
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
@@ -446,7 +448,7 @@ const StandardsMasteryReportFilters = ({
           <IconFilter width={15} height={15} />
           FILTERS
         </EduButton>
-        <ReportFiltersWrapper data-cy="filters" visible={showFilter}>
+        <ReportFiltersWrapper visible={showFilter}>
           {loading ? (
             <Spin />
           ) : (
@@ -773,7 +775,7 @@ const StandardsMasteryReportFilters = ({
                   data-cy="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
-                  No, Cancel
+                  Cancel
                 </EduButton>
                 <EduButton
                   width="25%"

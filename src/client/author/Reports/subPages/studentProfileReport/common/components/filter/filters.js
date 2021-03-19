@@ -346,6 +346,7 @@ const StudentProfileReportFilters = ({
       />
       <ReportFiltersContainer visible={!reportId}>
         <EduButton
+          data-cy="filters"
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}

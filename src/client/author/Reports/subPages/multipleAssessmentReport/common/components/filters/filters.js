@@ -218,7 +218,9 @@ const MultipleAssessmentReportFilters = ({
       selectedTests: testIds,
       ..._settings,
     }
+    setShowApply(false)
     _onGoClick(settings)
+    toggleFilter(null, false)
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
@@ -297,6 +299,7 @@ const MultipleAssessmentReportFilters = ({
       />
       <ReportFiltersContainer visible={!reportId}>
         <EduButton
+          data-cy="filters"
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
@@ -605,7 +608,7 @@ const MultipleAssessmentReportFilters = ({
                   data-cy="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
-                  No, Cancel
+                  Cancel
                 </EduButton>
                 <EduButton
                   width="25%"

@@ -101,6 +101,7 @@ const EngagementReportFilters = ({
     }
     setShowApply(false)
     _onGoClick(settings)
+    toggleFilter(null, false)
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
@@ -157,6 +158,7 @@ const EngagementReportFilters = ({
       />
       <ReportFiltersContainer visible={!reportId}>
         <EduButton
+          data-cy="filters"
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
@@ -267,7 +269,7 @@ const EngagementReportFilters = ({
                 data-cy="cancelFilter"
                 onClick={(e) => toggleFilter(e, false)}
               >
-                No, Cancel
+                Cancel
               </EduButton>
               <EduButton
                 width="25%"

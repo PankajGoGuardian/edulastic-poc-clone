@@ -86,12 +86,12 @@ const comparePlansData = [
       {
         title: 'In-depth Reporting',
         description:
-          'Showstudent growth over time. Analyze answer distractor. See coplete student mastery profile.',
+          'Show student growth over time. Analyze answer distractor. See complete student mastery profile.',
       },
       {
-        title: 'Advanced Assessment Optons',
+        title: 'Advanced Assessment Options',
         description:
-          'Shuffle qustion order for each student. Show student scoes but hide correct answers.',
+          'Shuffle question order for each student. Show student scores but hide correct answers.',
       },
       {
         title: 'Read Aloud',
@@ -109,7 +109,7 @@ const comparePlansData = [
       {
         title: 'Presentation Mode',
         description:
-          'Review answers and common mistake with the class without showing names.',
+          'Review answers and common mistakes with the class without showing names.',
       },
     ],
   },

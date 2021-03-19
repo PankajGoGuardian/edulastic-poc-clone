@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { Title, StyledInput, StyledSelect } from '../common/commonStyles'
 import EdulasticResourceModal from '../common/EdulasticResourceModal'
 import { privacyOptions, configOptions, matchOptions } from './selectData.js'
+import ResourcesAlignment from '../../../ResourcesAlignment'
 
 // LTIResourceModal modal to external lti links
 
@@ -159,8 +160,11 @@ const LTIResourceModal = (props) => {
           >
             {getMatchByOptions()}
           </StyledSelect>
+          <br />
         </>
       )}
+      <br />
+      <ResourcesAlignment />
     </EdulasticResourceModal>
   )
 }

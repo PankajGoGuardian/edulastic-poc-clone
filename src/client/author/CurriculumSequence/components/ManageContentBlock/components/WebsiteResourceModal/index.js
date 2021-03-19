@@ -4,6 +4,7 @@ import { notification } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import { Title, StyledInput } from '../common/commonStyles'
 import EdulasticResourceModal from '../common/EdulasticResourceModal'
+import ResourcesAlignment from '../../../ResourcesAlignment'
 
 // WebsiteResource modal to add external links
 
@@ -69,6 +70,8 @@ const WebsiteResourceModal = (props) => {
         value={url}
         onChange={(e) => setUrl(e.target.value)}
       />
+      <br />
+      <ResourcesAlignment/>
     </EdulasticResourceModal>
   )
 }

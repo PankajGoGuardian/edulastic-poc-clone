@@ -5,6 +5,7 @@ import { flatten, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { isTouchDevice } from '../../../../../utils/helpers'
 import { ALPHABET } from '../../../constants/alphabet'
 import { CheckboxContainer } from '../styled/CheckboxContainer'
 import { IconCheck } from '../styled/IconCheck'
@@ -219,12 +220,12 @@ const Option = (props) => {
       showBorder={showBorder}
       label={label}
       onMouseEnter={() => {
-        if (setCrossAction) {
+        if (setCrossAction && !isTouchDevice()) {
           toggleHover(true)
         }
       }}
       onMouseLeave={() => {
-        if (setCrossAction) {
+        if (setCrossAction && !isTouchDevice()) {
           toggleHover(false)
         }
       }}

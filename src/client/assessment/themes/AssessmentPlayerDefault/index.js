@@ -8,6 +8,7 @@ import { get, keyBy, isUndefined, last } from 'lodash'
 import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
 import { nonAutoGradableTypes, test } from '@edulastic/constants'
 
+import { playerSkinValues } from '@edulastic/constants/const/test'
 import { themes } from '../../../theme'
 import MainWrapper from './MainWrapper'
 import ToolbarModal from '../common/ToolbarModal'
@@ -101,7 +102,7 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   changeTool = (val) => {
-    const { hasDrawingResponse } = this.props
+    const { hasDrawingResponse, playerSkinType } = this.props
     let { currentToolMode, enableCrossAction } = this.state
     if (val === 3 || val === 5) {
       const index = currentToolMode.indexOf(val)
@@ -118,9 +119,14 @@ class AssessmentPlayerDefault extends React.Component {
             !hasDrawingResponse &&
             showScratchpadInfoNotification(items[currentItem])
           ) {
+            const config =
+              playerSkinType === playerSkinValues.quester
+                ? { bottom: '64px' }
+                : {}
             notification({
               type: 'info',
               messageKey: 'scratchpadInfoMultipart',
+              ...config,
             })
           }
         }

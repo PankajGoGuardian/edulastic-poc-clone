@@ -14,10 +14,19 @@ const ArchiveLicenseModal = ({
       destroyOnClose
       footer={[
         <>
-          <EduButton isGhost isBlue onClick={closeArchiveAlert}>
+          <EduButton
+            data-cy="cancelButton"
+            isGhost
+            isBlue
+            onClick={closeArchiveAlert}
+          >
             Cancel
           </EduButton>
-          <EduButton isBlue onClick={handleDeleteLicense}>
+          <EduButton
+            data-cy="archiveButton"
+            isBlue
+            onClick={handleDeleteLicense}
+          >
             Archive
           </EduButton>
         </>,

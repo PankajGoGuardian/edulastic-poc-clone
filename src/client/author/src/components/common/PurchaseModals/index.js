@@ -322,7 +322,6 @@ const PurchaseFlowModals = (props) => {
           selectedProductIds={selectedProductIds}
           totalAmount={totalAmount}
           isEdulasticAdminView={isEdulasticAdminView}
-          teacherPremium={teacherPremium}
         />
       )}
     </>

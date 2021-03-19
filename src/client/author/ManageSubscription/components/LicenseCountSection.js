@@ -17,10 +17,6 @@ const LicenseCountSection = ({
     setSelectedLicenseId(licenseId)
   }
 
-  const { totalCount: totalTpLicenseCount = 0 } =
-    (subsLicenses &&
-      subsLicenses.find(({ productType }) => productType === 'PREMIUM')) ||
-    {}
   const LicenseCountContainer =
     subsLicenses &&
     subsLicenses.map((license) => (
@@ -31,13 +27,6 @@ const LicenseCountSection = ({
           </span>
           <h4>{license.productName}</h4>
           <EduButton
-            disabled={
-              !(license.productType === 'PREMIUM') &&
-              !(
-                license.productType !== 'PREMIUM' &&
-                license.totalCount < totalTpLicenseCount
-              )
-            }
             key={license.productId}
             isGhost
             height="24px"

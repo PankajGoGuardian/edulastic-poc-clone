@@ -1,6 +1,6 @@
-import { NumberInputStyled, notification } from '@edulastic/common'
+import { NumberInputStyled } from '@edulastic/common'
 import { Tooltip } from 'antd'
-import { camelCase, isNumber, keyBy } from 'lodash'
+import { camelCase, isNumber } from 'lodash'
 import React, { useEffect, useMemo } from 'react'
 import {
   AddonList,
@@ -27,15 +27,7 @@ const ProductsList = ({
   setSelectedProductIds,
   isBuyMore,
   currentItemId,
-  subsLicenses,
 }) => {
-  const licenseMapKeyByProductId = useMemo(() => {
-    if (subsLicenses) {
-      return keyBy(subsLicenses, 'productId')
-    }
-    return {}
-  }, [subsLicenses])
-
   const premiumProductId = teacherPremium?.id
 
   const _totalPrice = useMemo(() => {
@@ -69,27 +61,8 @@ const ProductsList = ({
       setSelectedProductIds((x) => x.filter((y) => y !== id))
     }
   }
+
   const handleQuantityChange = (itemId) => (value) => {
-    if (isBuyMore) {
-      const tpCount =
-        licenseMapKeyByProductId[premiumProductId]?.totalCount || 0
-      const productCount = licenseMapKeyByProductId[itemId]?.totalCount || 0
-      const currentCount = Math.floor(value) + productCount
-      if (itemId !== premiumProductId && currentCount > tpCount) {
-        const _quantities = {
-          ...quantities,
-          [itemId]: Math.max(tpCount - productCount, 0),
-        }
-        setQuantities(_quantities)
-        notification({
-          type: 'warn',
-          msg: `${
-            productsToshow?.[0]?.name || ''
-          } licenses cannot be more than Teacher Premium licenses.`,
-        })
-        return
-      }
-    }
     const _quantities = {
       ...quantities,
       [itemId]: Math.floor(value),
@@ -147,15 +120,9 @@ const ProductsList = ({
                   data-cy={product.type}
                   min={1}
                   max={
-                    premiumProductId === product.id
+                    isBuyMore || premiumProductId === product.id
                       ? Infinity
-                      : quantities[premiumProductId] ||
-                        Math.max(
-                          licenseMapKeyByProductId[premiumProductId]
-                            ?.totalCount -
-                            licenseMapKeyByProductId[product.id]?.totalCount,
-                          1
-                        )
+                      : quantities[premiumProductId] || 1
                   }
                   disabled={
                     isBuyMore ? false : quantities[product.id] === undefined

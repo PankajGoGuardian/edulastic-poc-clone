@@ -148,11 +148,15 @@ class AssessmentPlayerDefault extends React.Component {
       answerChecksUsedForItem,
       settings,
       groupId,
+      playerSkinType,
     } = this.props
+    const config =
+      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
       return notification({
         type: 'warn',
         messageKey: 'checkAnswerLimitExceededForItem',
+        ...config,
       })
     checkAnswer(groupId)
     this.setState({ testItemState: value })

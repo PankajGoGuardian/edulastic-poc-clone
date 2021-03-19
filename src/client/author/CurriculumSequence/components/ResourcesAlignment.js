@@ -1,16 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import { Col, Row, Select } from 'antd'
-import { FieldLabel } from '@edulastic/common'
-import { IconWrapper } from './ResourceItem/styled'
+import {
+  removeFromLocalStorage,
+  storeInLocalStorage,
+} from '@edulastic/api/src/utils/Storage'
+import { themeColor } from '@edulastic/colors'
+import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { IconExpandBox } from '@edulastic/icons'
-import CustomTreeSelect from '../../../assessment/containers/QuestionMetadata/CustomTreeSelect'
-import { ItemBody } from '../../ItemList/components/Search/styled'
-import { SelectInputStyled } from '../../../assessment/styled/InputStyles'
-import { selectsData } from '../../TestPage/components/common'
-import RecentStandardsList from '../../../assessment/containers/QuestionMetadata/RecentStandardsList'
+import { Col, Row, Select } from 'antd'
+import { get, pick } from 'lodash'
+import React, { useEffect, useState } from 'react'
 import { withNamespaces } from 'react-i18next'
-import { compose } from 'redux'
 import connect from 'react-redux/lib/connect/connect'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import CustomTreeSelect from '../../../assessment/containers/QuestionMetadata/CustomTreeSelect'
+import RecentStandardsList from '../../../assessment/containers/QuestionMetadata/RecentStandardsList'
+import StandardsModal from '../../../assessment/containers/QuestionMetadata/StandardsModal'
+import { ItemBody } from '../../../assessment/containers/QuestionMetadata/styled/ItemBody'
+import {
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction,
+} from '../../../student/Login/ducks'
+import { setDefaultInterests } from '../../dataUtils'
+import {
+  getDictCurriculumsAction,
+  getDictStandardsForCurriculumAction,
+  updateDefaultCurriculumAction,
+} from '../../src/actions/dictionaries'
 import {
   getCurriculumsListSelector,
   getFormattedCurriculumsSelector,
@@ -18,22 +33,7 @@ import {
   getStandardsListSelector,
   standardsSelector,
 } from '../../src/selectors/dictionaries'
-import {
-  getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction,
-  updateDefaultCurriculumAction,
-} from '../../src/actions/dictionaries'
-import { get, pick } from 'lodash'
-import {
-  updateDefaultGradesAction,
-  updateDefaultSubjectAction,
-} from '../../../student/Login/ducks'
-import {
-  removeFromLocalStorage,
-  storeInLocalStorage,
-} from '@edulastic/api/src/utils/Storage'
-import { setDefaultInterests } from '../../dataUtils'
-import StandardsModal from '../../../assessment/containers/QuestionMetadata/StandardsModal'
+import { selectsData } from '../../TestPage/components/common'
 
 const defaultAlignment = {
   standards: [],
@@ -51,11 +51,10 @@ const ResourcesAlignment = ({
   getCurriculums,
   curriculumStandards,
   getCurriculumStandards,
-  handleShowBrowseModal,
   t,
   formattedCuriculums = [],
   curriculumStandardsLoading,
-  recentStandardsList,
+  recentStandardsList = [],
   updateDefaultCurriculum,
   updateDefaultSubject,
   updateDefaultGrades,
@@ -146,6 +145,11 @@ const ResourcesAlignment = ({
     getCurriculumStandards(curriculumId, grades, '')
   }
 
+  const handleShowBrowseModal = () => {
+    handleStandardFocus()
+    setShowModal(true)
+  }
+
   const handleSearchStandard = (searchStr) => {
     getCurriculumStandards(curriculumId, grades, searchStr)
   }
@@ -200,7 +204,6 @@ const ResourcesAlignment = ({
       <Row gutter={24}>
         <Col md={12}>
           <CustomTreeSelect
-            bg="white"
             data-cy="subjectStandardSet"
             title={`${curriculum}${curriculum && grades.length ? ' - ' : ''}${
               grades.length ? 'Grade - ' : ''
@@ -266,7 +269,6 @@ const ResourcesAlignment = ({
         <Col md={12}>
           <div data-cy="searchStandardSelectItem">
             <SelectInputStyled
-              bg="white"
               data-cy="searchStandardSelect"
               mode="multiple"
               style={{ margin: 'auto', display: 'block' }}
@@ -304,18 +306,20 @@ const ResourcesAlignment = ({
                 ))}
             </SelectInputStyled>
           </div>
-          {recentStandardsList && recentStandardsList.length > 0 && (
-            <RecentStandardsList
-              recentStandardsList={recentStandardsList}
-              standardsArr={standardsArr}
-              handleAddStandard={handleAddStandard}
-            />
-          )}
         </Col>
 
         <IconWrapper>
           <IconExpandBox onClick={handleShowBrowseModal} />
         </IconWrapper>
+        {recentStandardsList && recentStandardsList.length > 0 && (
+          <Col xs={24}>
+            <RecentStandardsList
+              recentStandardsList={recentStandardsList}
+              standardsArr={standardsArr}
+              handleAddStandard={handleAddStandard}
+            />
+          </Col>
+        )}
       </Row>
       {showModal && (
         <StandardsModal
@@ -367,3 +371,12 @@ const enhance = compose(
 )
 
 export default enhance(ResourcesAlignment)
+
+export const IconWrapper = styled.div`
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  z-index: 1;
+  color: ${themeColor};
+  cursor: pointer;
+`

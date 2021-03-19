@@ -10,19 +10,19 @@ import propTypes from 'prop-types'
 import { FlexContainer } from '../..'
 
 const UnScored = ({ width, height, margin, fontSize, text, fontWeight }) => (
-  <UnScoredBlock
-    width={width}
-    height={height}
-    margin={margin}
-    justifyContent="center"
-    alignItems="center"
-    fontSize={fontSize}
-    fontWeight={fontWeight}
-  >
-    <Tooltip title="UNSCORED">
+  <Tooltip title="UNSCORED">
+    <UnScoredBlock
+      width={width}
+      margin={margin}
+      justifyContent="center"
+      alignItems="center"
+      fontSize={fontSize}
+      fontWeight={fontWeight}
+      height={height}
+    >
       <span>{text}</span>
-    </Tooltip>
-  </UnScoredBlock>
+    </UnScoredBlock>
+  </Tooltip>
 )
 
 UnScored.propTypes = {

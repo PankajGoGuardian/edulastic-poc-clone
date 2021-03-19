@@ -230,6 +230,10 @@ const AssessmentStatisticTable = (props) => {
         isCsvDownloading={isCsvDownloading}
         tableToRender={PrintableTable}
         scroll={{ x: '100%' }}
+        pagination={{
+          hideOnSinglePage: true,
+          pageSize: 10,
+        }}
       />
     </div>
   )

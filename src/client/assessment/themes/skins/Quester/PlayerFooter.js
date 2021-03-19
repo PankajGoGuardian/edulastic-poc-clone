@@ -6,6 +6,7 @@ import {
   IconCloudUpload,
   IconMagnify,
   IconQuester,
+  IconCheck,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
@@ -17,6 +18,7 @@ import styled from 'styled-components'
 import questionType from '@edulastic/constants/const/questionType'
 import { Rnd } from 'react-rnd'
 import { withWindowSizes } from '@edulastic/common'
+import { TokenStorage } from '@edulastic/api'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import AudioControls from '../../../AudioControls'
 import { getUserRole } from '../../../../author/src/selectors/user'
@@ -70,6 +72,9 @@ const PlayerFooter = ({
   toggleUserWorkUploadModal,
   enableMagnifier,
   handleMagnifier,
+  answerChecksUsedForItem,
+  checkAnswerInProgress,
+  checkAnswer,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
@@ -77,6 +82,7 @@ const PlayerFooter = ({
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,
+    maxAnswerChecks,
   } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
@@ -94,6 +100,13 @@ const PlayerFooter = ({
     }
   }
 
+  const handleCheckAnswer = () => {
+    if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
+      return null
+    }
+    checkAnswer()
+  }
+
   const showAudioControls = userRole === 'teacher' && !!LCBPreviewModal
   const data = items[currentItem]?.data?.questions[0]
   const canShowPlayer =
@@ -102,6 +115,8 @@ const PlayerFooter = ({
         (!!LCBPreviewModal || isTestPreviewModalVisible))) &&
     data?.tts &&
     data?.tts?.taskStatus === 'COMPLETED'
+  const hideCheckAnswer = !TokenStorage.getAccessToken()
+
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
       <ActionContainer>
@@ -227,6 +242,24 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
 
+      {maxAnswerChecks > 0 && !hideCheckAnswer && (
+        <ActionContainer
+          hoverEffect
+          onClick={handleCheckAnswer}
+          title={
+            checkAnswerInProgress
+              ? 'In progess'
+              : answerChecksUsedForItem >= maxAnswerChecks
+              ? 'Usage limit exceeded'
+              : 'Check Answer'
+          }
+          data-cy="checkAnswer"
+        >
+          <IconCheck color={footer.textColor} hoverColor={button.background} />
+          <span> {t('common.test.checkanswer')}</span>
+        </ActionContainer>
+      )}
+
       {canShowPlayer && windowWidth && (
         <Rnd
           style={style}
@@ -267,6 +300,7 @@ const enhance = compose(
       timedAssignment: state.test?.settings?.timedAssignment,
       testType: state.test?.settings?.testType,
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      checkAnswerInProgress: state?.test?.checkAnswerInProgress,
     }),
     {
       setZoomLevel: setZoomLevelAction,

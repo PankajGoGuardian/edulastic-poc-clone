@@ -710,6 +710,7 @@ class AssignTest extends React.Component {
                   value={currentSettingsId}
                   getPopupContainer={(node) => node.parentNode}
                   onChange={this.handleSettingsSelection}
+                  data-cy="select-save-test-settings"
                 >
                   <Select.Option key="1" value="">
                     DEFAULT

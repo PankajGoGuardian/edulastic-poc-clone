@@ -27,6 +27,7 @@ import {
   recommendationsApi,
   TokenStorage as Storage,
   testsApi,
+  resourcesApi,
 } from '@edulastic/api'
 import produce from 'immer'
 import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks'
@@ -675,16 +676,27 @@ function* putCurriculumSequence({ payload }) {
       'collectionName',
       'testItems',
     ])
+    const resourceMap = {}
     dataToSend.modules = dataToSend.modules.map((mod) => {
-      mod.data = mod.data.map((test) =>
-        omit(test, [
+      mod.data = mod.data.map((test) => {
+        if (test.contentType === 'test' && test.resources) {
+          const testId = test.contentId
+          test.resources = test.resources.map((resource) => {
+            const { contentId: resourceId, updateStandards } = resource
+            if (updateStandards) {
+              resourceMap[testId] = [...(resourceMap[testId] || []), resourceId]
+            }
+            return omit(resource, ['updateStandards'])
+          })
+        }
+        return omit(test, [
           'standards',
           'alignment',
           'assignments',
           'testType',
           'status',
         ])
-      )
+      })
       return mod
     })
     const response = yield curriculumSequencesApi.updateCurriculumSequence(
@@ -692,6 +704,10 @@ function* putCurriculumSequence({ payload }) {
       dataToSend
     )
     if (Object.keys(response).length > 0) {
+      if (!isEmpty(resourceMap)) {
+        yield call(resourcesApi.updateStandards, resourceMap)
+      }
+
       const { authors, version, _id } = response
       const userId = yield select(getUserId)
       if (authors && authors.map((author) => author._id).includes(userId)) {
@@ -2751,6 +2767,9 @@ export default createReducer(initialState, {
       fromPlaylistTestsBox,
       standardIdentifiers,
       status,
+      contentSubType,
+      hasStandardsOnCreation,
+      standards = [],
       ...itemObj
     } = item
     if (
@@ -2765,7 +2784,14 @@ export default createReducer(initialState, {
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
     if (!resources.find((x) => x.contentId === contentId)) {
-      resources.push({ contentId, contentType, ...itemObj })
+      const updateStandards = !hasStandardsOnCreation && standards.length < 15
+      resources.push({
+        contentId,
+        contentType,
+        contentSubType,
+        updateStandards,
+        ...itemObj,
+      })
     }
   },
   [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {

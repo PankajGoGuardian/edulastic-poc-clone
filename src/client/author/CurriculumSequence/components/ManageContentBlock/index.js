@@ -233,6 +233,8 @@ const ManageContentBlock = (props) => {
             contentDescription,
             data,
             contentUrl,
+            hasStandardsOnCreation,
+            standards,
           },
           idx
         ) => {
@@ -243,6 +245,8 @@ const ManageContentBlock = (props) => {
               contentTitle={contentTitle}
               contentDescription={contentDescription}
               contentUrl={contentUrl}
+              hasStandardsOnCreation={hasStandardsOnCreation}
+              standards={standards}
               key={`resource-${idx}`}
               data={data}
               isAdded={testsInPlaylist.includes(_id)}

@@ -22,7 +22,20 @@ const Stimulus = withTheme(
     }
 
     & *:not(a) {
-      color: ${({ theme }) => theme.questionTextColor};
+      color: #ffff00;
+    }
+
+    & .input__math[contenteditable='false'] {
+      background-color: #464646;
+      opacity: 0.7;
+      background-image: linear-gradient(135deg, #000000 25%, transparent 25%),
+        linear-gradient(225deg, #000000 25%, transparent 25%),
+        linear-gradient(45deg, #000000 25%, transparent 25%),
+        linear-gradient(315deg, #000000 25%, #464646 25%);
+      background-position: 20px 0, 20px 0, 0 0, 0 0;
+      background-size: 20px 20px;
+      background-repeat: repeat;
+      padding: 5px;
     }
 
     & .input__math,

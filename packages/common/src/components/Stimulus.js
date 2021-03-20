@@ -27,7 +27,7 @@ const Stimulus = withTheme(
 
     & .input__math[contenteditable='false'] {
       background-color: #464646;
-      opacity: 0.7;
+      opacity: 0.6;
       background-image: linear-gradient(135deg, #000000 25%, transparent 25%),
         linear-gradient(225deg, #000000 25%, transparent 25%),
         linear-gradient(45deg, #000000 25%, transparent 25%),

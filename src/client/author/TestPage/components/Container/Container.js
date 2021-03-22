@@ -5,7 +5,14 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { cloneDeep, uniq as _uniq, isEmpty, get, without } from 'lodash'
+import {
+  cloneDeep,
+  uniq as _uniq,
+  isEmpty,
+  get,
+  without,
+  isEqual,
+} from 'lodash'
 import uuidv4 from 'uuid/v4'
 import {
   withWindowSizes,
@@ -110,6 +117,7 @@ import {
   getSelectedLanguageSelector,
 } from '../../../../student/Assignments/ducks'
 import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
+import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -189,11 +197,14 @@ class Container extends PureComponent {
       isOrganizationDA,
       isVersionFlow,
       getTestIdFromVersionId,
+      fetchUserKeypads,
+      test: { grades = [], keypad = {} } = {},
     } = this.props
 
     const { versionId, id } = match.params
 
     if (userRole !== roleuser.STUDENT) {
+      fetchUserKeypads()
       const self = this
       const { showCancelButton = false, editAssigned = false } =
         history.location.state || this.state
@@ -253,6 +264,31 @@ class Container extends PureComponent {
       } else {
         setRegradeOldId('')
       }
+
+      if (this.isTestEditable) {
+        if (isEmpty(keypad) || keypad.updated === false) {
+          const highestGrade = grades.reduce((acc, curr) => {
+            const currentGrade = parseInt(curr, 10)
+            if (currentGrade > acc) {
+              acc = currentGrade
+            }
+            return acc
+          }, 0)
+          if (highestGrade <= 5) {
+            setData({
+              keypad: { updated: false, type: 'predefined', value: 'basic' },
+            })
+          } else if (highestGrade > 5 && highestGrade <= 12) {
+            setData({
+              keypad: {
+                updated: false,
+                type: 'predefined',
+                value: 'intermediate',
+              },
+            })
+          }
+        }
+      }
       if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
     } else {
       fetchAssignmentsByTest({ testId: id })
@@ -290,6 +326,7 @@ class Container extends PureComponent {
       editEnable,
       languagePreference,
       setSelectedLanguage,
+      setData,
     } = this.props
 
     const { testLoaded, studentRedirected } = this.state
@@ -340,6 +377,33 @@ class Container extends PureComponent {
         prevProps?.test?._id !== test?._id
       ) {
         getDefaultTestSettings(test)
+      }
+      if (!isEqual(prevProps.test.grades, test.grades)) {
+        if (
+          this.isTestEditable &&
+          (isEmpty(test.keypad) || test?.keypad?.updated === false)
+        ) {
+          const highestGrade = (test.grades || []).reduce((acc, curr) => {
+            const currentGrade = parseInt(curr, 10)
+            if (currentGrade > acc) {
+              acc = currentGrade
+            }
+            return acc
+          }, 0)
+          if (highestGrade <= 5) {
+            setData({
+              keypad: { updated: false, type: 'predefined', value: 'basic' },
+            })
+          } else if (highestGrade > 5 && highestGrade <= 12) {
+            setData({
+              keypad: {
+                updated: false,
+                type: 'predefined',
+                value: 'intermediate',
+              },
+            })
+          }
+        }
       }
     } else if (userRole === roleuser.STUDENT) {
       if (
@@ -531,6 +595,29 @@ class Container extends PureComponent {
   handleSaveTestId = () => {
     const { test, saveCurrentEditingTestId } = this.props
     saveCurrentEditingTestId(test._id)
+  }
+
+  get isTestEditable() {
+    const {
+      test,
+      match,
+      userId,
+      userFeatures,
+      userRole,
+      collections,
+      editEnable,
+      testStatus,
+    } = this.props
+    const { params = {} } = match
+
+    const isOwner =
+      (test.authors && test.authors.some((x) => x._id === userId)) ||
+      !params.id ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (userFeatures.isCurator &&
+        allowContentEditCheck(test.collections, collections))
+
+    return isOwner && (editEnable || testStatus === statusConstants.DRAFT)
   }
 
   renderContent = () => {
@@ -1301,6 +1388,7 @@ const enhance = compose(
       resetPageState: resetPageStateAction,
       getTestIdFromVersionId: getTestIdFromVersionIdAction,
       setSelectedLanguage: setSelectedLanguageAction,
+      fetchUserKeypads: fetchCustomKeypadAction,
     }
   )
 )

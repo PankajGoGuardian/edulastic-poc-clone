@@ -62,6 +62,7 @@ import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
 import { StyledRow } from '../../../../../AssignTest/components/SimpleOptions/styled'
+import KeypadDropdown from './KeypadDropdown'
 
 const {
   settingCategories,
@@ -332,6 +333,15 @@ class Setting extends Component {
     this.setState({ [panelType]: value })
   }
 
+  get keypadDropdownValue() {
+    const { entity: { keypad: testKeypad = {} } = {} } = this.props
+    if (!testKeypad.type) return 'item-level-keypad'
+    if (testKeypad.type === 'custom') {
+      return testKeypad.value?._id
+    }
+    return testKeypad.value
+  }
+
   render() {
     const {
       showPassword,
@@ -358,7 +368,6 @@ class Setting extends Component {
       calculatorProvider,
       allowedToSelectMultiLanguage,
     } = this.props
-
     const {
       isDocBased,
       releaseScore,
@@ -1703,6 +1712,41 @@ class Setting extends Component {
                           </Col>
                         </StyledRow>
                       ))}
+                    </RadioWrapper>
+                    <RadioWrapper
+                      disabled={!owner || !isEditable}
+                      style={{
+                        marginTop: '5px',
+                        marginBottom: 0,
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <StyledRow align="middle">
+                        <Col span={6}>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            Keypad <DollarPremiumSymbol premium={premium} />
+                          </span>
+                        </Col>
+                        <Col span={12}>
+                          <KeypadDropdown
+                            value={this.keypadDropdownValue}
+                            onChangeHandler={this.updateTestData('keypad')}
+                            disabled={!owner || !isEditable || !premium}
+                          />
+                        </Col>
+                        <Col span={24}>
+                          <Description>
+                            Select keypad to apply current selection to all
+                            questions in the test
+                          </Description>
+                        </Col>
+                      </StyledRow>
                     </RadioWrapper>
                   </Block>
 

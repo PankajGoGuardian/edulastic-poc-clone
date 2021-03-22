@@ -74,6 +74,7 @@ import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Logi
 import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
+import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 
 const { ASSESSMENT, COMMON } = testConst.type
 const { evalTypeLabels } = testConst
@@ -189,6 +190,7 @@ class AssignTest extends React.Component {
       fetchTestSettingsList,
       userId,
       userFeatures: { premium },
+      fetchUserCustomKeypads,
     } = this.props
 
     if (isFreeAdmin) {
@@ -212,6 +214,7 @@ class AssignTest extends React.Component {
     })
 
     if (premium) {
+      fetchUserCustomKeypads()
       fetchTestSettingsList({
         orgId: userId,
         orgType: roleuser.ORG_TYPE.USER,
@@ -821,6 +824,7 @@ const enhance = compose(
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
       deleteTestSettingRequest: deleteTestSettingRequestAction,
       updateTestSettingRequest: updateTestSettingRequestAction,
+      fetchUserCustomKeypads: fetchCustomKeypadAction,
     }
   )
 )

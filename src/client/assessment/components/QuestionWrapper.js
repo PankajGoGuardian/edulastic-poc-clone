@@ -4,15 +4,12 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, round, isEqual } from 'lodash'
-import { IconClockCircularOutline } from '@edulastic/icons'
-
+import { get, isEqual } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import {
   mobileWidthMax,
   smallDesktopWidth,
   borderGrey2,
-  greyThemeDark2,
 } from '@edulastic/colors'
 import {
   withWindowSizes,
@@ -69,7 +66,7 @@ import PreviewRubricTable from '../../author/GradingRubric/Components/common/Pre
 import Hints from './Hints'
 import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
-import ShowUserWork from './Common/ShowUserWork'
+import BottomAction from './Common/QuestionBottomAction'
 import {
   getIsPreviewModalVisibleSelector,
   playerSkinTypeSelector,
@@ -194,34 +191,6 @@ const QuestionContainer = styled.div`
         }
       }
     }
-  }
-`
-
-export const TimeSpentWrapper = styled.div`
-  font-size: 19px;
-  color: ${greyThemeDark2};
-  display: flex;
-  justify-content: flex-end;
-  margin-top: auto;
-  align-items: center;
-  margin: ${({ margin }) => margin};
-  &.student-report {
-    position: absolute;
-    top: 25px;
-    right: 0px;
-    background: #f3f3f3;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    svg {
-      margin-right: 10px;
-      fill: #6a737f;
-    }
-  }
-  svg {
-    margin-right: 8px;
-    fill: ${greyThemeDark2};
   }
 `
 
@@ -422,7 +391,7 @@ class QuestionWrapper extends Component {
       !isExpressGrader &&
       data?.activity &&
       isEqual(prevUserWork, userWork) &&
-      isEqual(prevData?.activity, data?.activity) &&
+      isEqual(prevData, data) &&
       prevWindowHeight === windowHeight &&
       prevWindowWidth === windowWidth &&
       hideCorrectAnswer === prevHideCorrectAnswer
@@ -430,6 +399,17 @@ class QuestionWrapper extends Component {
       return false
     }
     return true
+  }
+
+  openStudentWork() {
+    const { data, loadScratchPad, showStudentWork } = this.props
+    // load the data from server and then show
+    loadScratchPad({
+      testActivityId: data?.activity?.testActivityId,
+      testItemId: data?.activity?.testItemId,
+      qActId: data?.activity?.qActId || data?.activity?._id,
+      callback: () => showStudentWork(),
+    })
   }
 
   get advancedAreOpen() {
@@ -600,7 +580,7 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && (
+          {canShowPlayer && !hideVisibility && (
             <AudioControls
               btnWithText={
                 playerSkinType.toLowerCase() ===
@@ -699,34 +679,18 @@ class QuestionWrapper extends Component {
                     setPage={this.setPage}
                   />
                   {!hasDrawingResponse && showFeedback && !isPrintPreview && (
-                    <TimeSpentWrapper
-                      className={isStudentReport ? 'student-report' : ''}
-                      data-cy="showStudentWorkWrap"
-                    >
-                      {!!showStudentWork && (
-                        <ShowUserWork
-                          style={{ marginRight: '1rem' }}
-                          onClickHandler={() => {
-                            // load the data from server and then show
-                            loadScratchPad({
-                              testActivityId: data?.activity?.testActivityId,
-                              testItemId: data?.activity?.testItemId,
-                              qActId:
-                                data?.activity?.qActId || data?.activity?._id,
-                              callback: () => showStudentWork(),
-                            })
-                          }}
-                        >
-                          Show student work
-                        </ShowUserWork>
-                      )}
-                      {(timeSpent || timeSpent === 0) && (
-                        <>
-                          <IconClockCircularOutline />
-                          {round(timeSpent / 1000, 1)}s
-                        </>
-                      )}
-                    </TimeSpentWrapper>
+                    <BottomAction
+                      isStudentReport={isStudentReport}
+                      isShowStudentWork={!!showStudentWork}
+                      onClickHandler={this.openStudentWork}
+                      timeSpent={timeSpent}
+                      item={data}
+                      QuestionComp={Question}
+                      advancedLink={advancedLink}
+                      advancedAreOpen={this.advancedAreOpen}
+                      saveAnswer={restProps.saveAnswer}
+                      t={restProps.t}
+                    />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
                     <RubricTableWrapper>

@@ -12,6 +12,7 @@ import StudentMasteryProfile from './StudentMasteryProfile'
 import StudentAssessmentProfile from './StudentAssessmentProfile'
 import StudentProfileSummary from './StudentProfileSummary'
 import StudentProfileReportFilters from './common/components/filter/filters'
+import StudentProgressProfile from './StudentProgressProfile'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 
 import { setSPRSettingsAction, getReportsSPRSettings } from './ducks'
@@ -135,6 +136,7 @@ const StudentProfileReportContainer = (props) => {
   const standardProficiencyRequired = [
     'student-profile-summary',
     'student-mastery-profile',
+    'student-progress-profile',
   ].includes(loc)
 
   return (
@@ -200,6 +202,19 @@ const StudentProfileReportContainer = (props) => {
             path="/author/reports/student-profile-summary/student/:studentId?"
             render={(_props) => (
               <StudentProfileSummary
+                {..._props}
+                settings={transformedSettings}
+                pageTitle={loc}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/student-progress-profile/student/:studentId?"
+            render={(_props) => (
+              <StudentProgressProfile
                 {..._props}
                 settings={transformedSettings}
                 pageTitle={loc}

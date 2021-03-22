@@ -5,7 +5,7 @@ import { Tag, Popover, Tooltip } from 'antd'
 const FilterTags = ({
   visible,
   isPrinting,
-  tagsData,
+  tagsData = {},
   tagTypes = [],
   handleCloseTag,
 }) => {
@@ -66,6 +66,7 @@ const FilterTags = ({
     if (
       typeof tagData === 'object' &&
       tagData.key &&
+      tagData.title &&
       tagData.key.toLowerCase() !== 'all'
     ) {
       getTag(type, subType, tagData, bodyArray, popOverArray, containerWidthObj)

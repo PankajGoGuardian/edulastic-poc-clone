@@ -7,7 +7,6 @@ import qs from 'qs'
 import { Spin, Tabs, Row, Col } from 'antd'
 
 import { roleuser } from '@edulastic/constants'
-import { EduButton } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
 import FilterTags from '../../../../common/components/FilterTags'
@@ -25,6 +24,7 @@ import {
   ReportFiltersContainer,
   ReportFiltersWrapper,
   FilterLabel,
+  StyledEduButton,
 } from '../../../../common/styled'
 
 import { resetStudentFilters, toggleItem } from '../../../../common/util'
@@ -57,6 +57,7 @@ const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
 const StandardsMasteryReportFilters = ({
   isPrinting,
+  tagsData,
   user,
   history,
   location,
@@ -69,8 +70,8 @@ const StandardsMasteryReportFilters = ({
   setTestIds,
   tempDdFilter,
   setTempDdFilter,
-  tagsData,
-  setTagsData,
+  tempTagsData,
+  setTempTagsData,
   demographicsRequired,
   onGoClick: _onGoClick,
   getStandardsFiltersRequest,
@@ -185,8 +186,8 @@ const StandardsMasteryReportFilters = ({
         ...filters,
         standardId: standardIdFromPageData,
       })
-      setTagsData({
-        ...tagsData,
+      setTempTagsData({
+        ...tempTagsData,
         standardId: standardFromPageData,
       })
     }
@@ -201,6 +202,7 @@ const StandardsMasteryReportFilters = ({
       _onGoClick({
         filters: { ...filters, ...search },
         selectedTests: [],
+        tagsData: {},
       })
     } else {
       // get saved filters from backend
@@ -271,7 +273,7 @@ const StandardsMasteryReportFilters = ({
         delete _filters.teacherIds
       }
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
-      const _tagsData = {
+      const _tempTagsData = {
         termId: urlSchoolYear,
         grade: urlGrade,
         subject: urlSubject,
@@ -284,8 +286,8 @@ const StandardsMasteryReportFilters = ({
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
       }
-      // set tagsData, filters and testId
-      setTagsData(_tagsData)
+      // set tempTagsData, filters and testId
+      setTempTagsData(_tempTagsData)
       setFilters(_filters)
       // TODO: enable selection of testIds from url and saved filters
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
@@ -294,6 +296,7 @@ const StandardsMasteryReportFilters = ({
       _onGoClick({
         filters: { ..._filters },
         selectedTests: [],
+        tagsData: { ..._tempTagsData },
       })
     }
     setFirstLoad(false)
@@ -307,6 +310,7 @@ const StandardsMasteryReportFilters = ({
     const settings = {
       filters: { ...filters },
       selectedTests: testIds,
+      tagsData: { ...tempTagsData },
       ..._settings,
     }
     if (role === roleuser.SCHOOL_ADMIN) {
@@ -315,13 +319,14 @@ const StandardsMasteryReportFilters = ({
     }
     setShowApply(false)
     _onGoClick(settings)
+    toggleFilter(null, false)
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     // update tags data
-    const _tagsData = { ...tagsData, [keyName]: selected }
+    const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
-      delete _tagsData[keyName]
+      delete _tempTagsData[keyName]
     }
     const _filters = { ...filters }
     const _selected = multiple
@@ -330,8 +335,8 @@ const StandardsMasteryReportFilters = ({
     const filterKey = ['grade', 'subject', 'courseId'].includes(keyName)
       ? `student${upperFirst(keyName)}`
       : keyName
-    resetStudentFilters(_tagsData, _filters, filterKey, _selected)
-    setTagsData(_tagsData)
+    resetStudentFilters(_tempTagsData, _filters, filterKey, _selected)
+    setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
@@ -340,7 +345,7 @@ const StandardsMasteryReportFilters = ({
   }
 
   const onSelectTest = (selected) => {
-    setTagsData({ ...tagsData, testIds: selected })
+    setTempTagsData({ ...tempTagsData, testIds: selected })
     setTestIds(selected.map((o) => o.key))
     setShowApply(true)
   }
@@ -350,26 +355,26 @@ const StandardsMasteryReportFilters = ({
       allDomainIds.includes(o)
     )
     const domainTagsData = domainsList.filter((d) => _domainIds.includes(d.key))
-    setTagsData({ ...tagsData, domainIds: domainTagsData })
+    setTempTagsData({ ...tempTagsData, domainIds: domainTagsData })
     setFilters({ ...filters, domainIds: _domainIds })
     setShowApply(true)
   }
 
   const onChangeDomains = (domains) => {
     if (!domains?.length) {
-      setTagsData({ ...tagsData, domainIds: [] })
+      setTempTagsData({ ...tempTagsData, domainIds: [] })
       setFilters({ ...filters, domainIds: [] })
       setShowApply(true)
     }
   }
 
   const handleCloseTag = (type, { key }) => {
-    const _tagsData = { ...tagsData }
+    const _tempTagsData = { ...tempTagsData }
     // handles testIds
     if (type === 'testIds') {
       if (testIds.includes(key)) {
         const _testIds = testIds.filter((d) => d !== key)
-        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
         setTestIds(_testIds)
       }
     }
@@ -378,7 +383,7 @@ const StandardsMasteryReportFilters = ({
       const _tempDdFilter = { ...tempDdFilter }
       if (tempDdFilter[type] === key) {
         _tempDdFilter[type] = staticDropDownData.initialDdFilters[type]
-        delete _tagsData[type]
+        delete _tempTagsData[type]
       }
       setTempDdFilter(_tempDdFilter)
     } else {
@@ -386,11 +391,11 @@ const StandardsMasteryReportFilters = ({
       const filterKey = ['grade', 'subject', 'courseId'].includes(type)
         ? `student${upperFirst(type)}`
         : type
-      resetStudentFilters(_tagsData, _filters, filterKey, '')
+      resetStudentFilters(_tempTagsData, _filters, filterKey, '')
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]
-        delete _tagsData[type]
+        delete _tempTagsData[type]
       }
       // handles multiple selection filters
       else if (filters[type].includes(key)) {
@@ -400,11 +405,11 @@ const StandardsMasteryReportFilters = ({
               .split(',')
               .filter((d) => d !== key)
               .join(',')
-        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
       }
       setFilters(_filters)
     }
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
     setShowApply(true)
     toggleFilter(null, true)
   }
@@ -438,15 +443,17 @@ const StandardsMasteryReportFilters = ({
         handleCloseTag={handleCloseTag}
       />
       <ReportFiltersContainer visible={!reportId}>
-        <EduButton
+        <StyledEduButton
+          data-cy="filters"
+          btnType="primary"
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
         >
           <IconFilter width={15} height={15} />
           FILTERS
-        </EduButton>
-        <ReportFiltersWrapper data-cy="filters" visible={showFilter}>
+        </StyledEduButton>
+        <ReportFiltersWrapper visible={showFilter}>
           {loading ? (
             <Spin />
           ) : (
@@ -653,7 +660,7 @@ const StandardsMasteryReportFilters = ({
                           }
                         />
                       </Col>
-                      <Col span={6}>
+                      <Col span={18}>
                         <AssessmentsAutoComplete
                           dataCy="tests"
                           termId={filters.termId}
@@ -764,26 +771,28 @@ const StandardsMasteryReportFilters = ({
                 </Tabs>
               </Col>
               <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
-                <EduButton
+                <StyledEduButton
                   width="25%"
                   height="40px"
                   style={{ maxWidth: '200px' }}
                   isGhost
                   key="cancelButton"
+                  data-cy="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
-                  No, Cancel
-                </EduButton>
-                <EduButton
+                  Cancel
+                </StyledEduButton>
+                <StyledEduButton
                   width="25%"
                   height="40px"
                   style={{ maxWidth: '200px' }}
                   key="applyButton"
+                  data-cy="applyFilter"
                   disabled={!showApply}
                   onClick={() => onGoClick()}
                 >
                   Apply
-                </EduButton>
+                </StyledEduButton>
               </Col>
             </Row>
           )}

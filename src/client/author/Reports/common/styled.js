@@ -71,19 +71,45 @@ export const ReportFiltersWrapper = styled.div`
   -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 
-  .ant-select-selection {
-    &__rendered {
-      padding-left: 0px;
-    }
+  .ant-tabs {
+    overflow: visible;
   }
   .ant-select {
     width: 100%;
     font-size: 11px;
   }
+  .ant-select-dropdown {
+    font-size: 11px;
+    .ant-select-dropdown-menu-item {
+      padding: 4px 12px;
+    }
+    .ant-select-dropdown-menu-item-selected,
+    .ant-select-dropdown-menu-item-active {
+      background-color: ${themeColor};
+      color: #ffffff;
+    }
+    .ant-select-dropdown-menu-item,
+    .ant-select-dropdown-menu-submenu-title {
+      font-size: 11px;
+    }
+  }
+  .ant-select-selection {
+    &__rendered {
+      padding-left: 0px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+  }
   .ant-select-selection.ant-select-selection--multiple {
     background-color: ${lightGreySecondary};
     border-color: ${fadedGrey};
     min-height: 34px !important;
+    padding-bottom: 0px;
+    .ant-select-arrow-icon {
+      color: ${themeColor};
+      font-size: 11px;
+      transform: none;
+    }
   }
   .ant-select-selection.ant-select-selection--multiple
     .ant-select-selection__rendered
@@ -95,6 +121,8 @@ export const ReportFiltersWrapper = styled.div`
     border-color: #e5e5e5;
     border-radius: 2px;
     min-height: 34px;
+    font-size: 11px;
+    font-weight: 600;
   }
   .ant-input-affix-wrapper .ant-input-suffix {
     right: 8px;
@@ -115,7 +143,6 @@ export const ReportFiltersWrapper = styled.div`
       font-weight: 600;
       max-width: 100%;
       width: 100%;
-
       i {
         color: ${themeColor};
       }
@@ -133,7 +160,24 @@ export const ReportFiltersWrapper = styled.div`
     overflow: hidden;
     max-width: 100%;
     text-overflow: ellipsis;
-    width: ${(props) => (props.width ? props.width : '100%')};
+    width: 100%;
+  }
+`
+
+export const StyledEduButton = styled(EduButton)`
+  &:focus,
+  &:hover {
+    &.ant-btn.ant-btn-primary {
+      background-color: ${themeColor};
+      border-color: ${themeColor};
+      color: ${white};
+    }
+    svg {
+      &:focus,
+      &:hover {
+        fill: ${white};
+      }
+    }
   }
 `
 
@@ -321,11 +365,6 @@ export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
     font-weight: 900;
   }
 `
-
-export const Capitalized = styled.span`
-  text-transform: capitalize;
-`
-
 export const StyledSlider = styled(Slider)`
   height: 22px;
   .ant-slider-rail {

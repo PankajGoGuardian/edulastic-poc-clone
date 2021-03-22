@@ -22,6 +22,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import { setTeacherEditedScore as setTeacherEditedScoreAction } from '../../author/ExpressGrader/ducks'
 import { updateStudentQuestionActivityScoreAction } from '../../author/sharedDucks/classResponses'
 import { hasValidAnswers } from '../utils/answer'
@@ -415,25 +416,29 @@ class FeedbackRight extends Component {
             responseLoading={studentResponseLoading}
           />
         )}
-        <StyledDivSec>
-          <ScoreInputWrapper>
-            <ScoreInput
-              data-cy="scoreInput"
-              onChange={this.onChangeScore}
-              onBlur={this.submitScore}
-              value={_score}
-              disabled={
-                isPresentationMode ||
-                isPracticeQuestion ||
-                studentResponseLoading
-              }
-              ref={this.scoreInput}
-              onKeyDown={this.onKeyDownFeedback}
-              tabIndex={0}
-            />
-            <TextPara>{_maxScore}</TextPara>
-          </ScoreInputWrapper>
-        </StyledDivSec>
+        {!isPracticeQuestion ? (
+          <StyledDivSec>
+            <ScoreInputWrapper>
+              <ScoreInput
+                data-cy="scoreInput"
+                onChange={this.onChangeScore}
+                onBlur={this.submitScore}
+                value={_score}
+                disabled={
+                  isPresentationMode ||
+                  isPracticeQuestion ||
+                  studentResponseLoading
+                }
+                ref={this.scoreInput}
+                onKeyDown={this.onKeyDownFeedback}
+                tabIndex={0}
+              />
+              <TextPara>{_maxScore}</TextPara>
+            </ScoreInputWrapper>
+          </StyledDivSec>
+        ) : (
+          <UnScored text="UNSCORED" height="50px" />
+        )}
         {showGradingRubricButton && (
           <RubricGrading
             rubricData={rubricDetails}

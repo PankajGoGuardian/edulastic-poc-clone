@@ -323,6 +323,7 @@ const Container = (props) => {
             `/author/reports/student-mastery-profile/student/`,
             `/author/reports/student-assessment-profile/student/`,
             `/author/reports/student-profile-summary/student/`,
+            `/author/reports/student-progress-profile/student/`,
           ]}
           render={(_props) => {
             setShowHeader(true)

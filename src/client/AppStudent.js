@@ -30,6 +30,7 @@ import {
 } from './student/Login/ducks'
 import NotificationListener from './HangoutVideoCallNotification'
 import AppUpdate from './common/components/AppUpdate'
+import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal';
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 
@@ -193,6 +194,7 @@ class App extends Component {
           />
         )}
         <AppUpdate visible={showAppUpdate} />
+        <StudentSessionExpiredModal />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

@@ -41,7 +41,7 @@ const EnabledSettings = ({
           if (syntax) {
             label = syntax.label
           }
-        } else if (key === 'unit') {
+        } else if (key === 'unit' || key === 'latex') {
           const mathHtml = getMathHtml(options[key] || '')
           label = `${mathHtml} ${t(`component.math.${key}`)}`
         } else if (options[key]) {

@@ -524,21 +524,27 @@ const AssessmentContainer = ({
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
-  const hidePause = assignmentObj?.blockSaveAndContinue
+  const {
+    restrictNavigationOut = false,
+    restrictNavigationOutAttemptsThreshold,
+    blockSaveAndContinue = false,
+  } = restProps
+
+  const hidePause = blockSaveAndContinue
   const currentlyFullScreen = useFullScreenListener({
-    enabled: assignmentObj?.restrictNavigationOut,
+    enabled: restrictNavigationOut,
     assignmentId: assignmentObj?._id,
     classId: groupId,
     testActivityId: restProps.utaId,
     history,
-    disableSave: assignmentObj?.blockSaveAndContinue,
+    disableSave: blockSaveAndContinue,
     userId,
   })
 
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,
-    enabled: assignmentObj?.restrictNavigationOut,
-    threshold: assignmentObj?.restrictNavigationOutAttemptsThreshold,
+    enabled: restrictNavigationOut,
+    threshold: restrictNavigationOutAttemptsThreshold,
     history,
     assignmentId: assignmentObj?._id,
     classId: groupId,
@@ -974,7 +980,7 @@ const AssessmentContainer = ({
     if (!demo) window.addEventListener('beforeunload', cb)
 
     const unloadCb = () => {
-      if (assignmentObj?.blockSaveAndContinue) {
+      if (blockSaveAndContinue) {
         pauseAssignment({
           history,
           testActivityId: restProps.utaId,
@@ -1097,7 +1103,7 @@ const AssessmentContainer = ({
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
     >
-      {assignmentObj?.restrictNavigationOut && (
+      {restrictNavigationOut && (
         <>
           <ForceFullScreenModal
             testActivityId={restProps.utaId}
@@ -1107,7 +1113,7 @@ const AssessmentContainer = ({
               history.location.pathname.includes('/uta/')
             }
             takeItLaterCb={
-              assignmentObj?.blockSaveAndContinue
+              blockSaveAndContinue
                 ? null
                 : () =>
                     saveCurrentAnswer({
@@ -1119,12 +1125,11 @@ const AssessmentContainer = ({
         </>
       )}
 
-      {(assignmentObj.blockSaveAndContinue ||
-        assignmentObj?.restrictNavigationOut) && (
+      {(blockSaveAndContinue || restrictNavigationOut) && (
         <FirestorePings
           testActivityId={restProps.utaId}
           history={history}
-          blockSaveAndContinue={assignmentObj?.blockSaveAndContinue}
+          blockSaveAndContinue={blockSaveAndContinue}
           userId={userId}
           classId={groupId}
           assignmentId={assignmentObj?._id}
@@ -1241,6 +1246,10 @@ const enhance = compose(
       currentAssignment: get(state, 'studentAssignment.current'),
       blockNavigationToAnsweredQuestions:
         state.test?.settings?.blockNavigationToAnsweredQuestions,
+      blockSaveAndContinue: state.test?.settings?.blockSaveAndContinue,
+      restrictNavigationOut: state.test?.settings?.restrictNavigationOut,
+      restrictNavigationOutAttemptsThreshold:
+        state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
     }),
     {

@@ -284,10 +284,21 @@ export default class API {
               localStorage.setItem('loginRedirectUrl', getCurrentPath())
             }
             window.location.href = '/login'
+          } else if (
+            data.response.status === 409 &&
+            data.response.data?.message === 'oldToken'
+          ) {
+            window.dispatchEvent(new Event('student-session-expired'))
           }
         }
-
-        return Promise.reject(err)
+        if (
+          !(
+            data?.response?.status === 409 &&
+            data.response.data?.message === 'oldToken'
+          )
+        ) {
+          return Promise.reject(err)
+        }
       }
     )
   }

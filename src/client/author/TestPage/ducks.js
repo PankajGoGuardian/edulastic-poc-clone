@@ -867,6 +867,7 @@ export const createBlankTest = () => ({
   freezeSettings: false,
   multiLanguageEnabled: false,
   playerSkinType: 'edulastic',
+  keypad: { type: 'item-level', value: 'item-level-keypad', updated: false },
 })
 
 const initialState = {
@@ -2559,6 +2560,7 @@ function* getEvaluation(testItemId, newScore) {
   )
   return evaluation
 }
+
 function* getEvaluationFromItem(testItem, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem
   const questions = _keyBy(testItem.data.questions, 'id')

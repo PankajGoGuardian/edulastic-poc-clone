@@ -14,11 +14,13 @@ import feedbackResponse from './author/src/reducers/feedbackResponse'
 import view from './author/src/reducers/view'
 import { reducer as assessmentCreate } from './author/AssessmentCreate/ducks'
 import { reducer as itemDetail } from './author/ItemDetail/ducks'
+import { reportReducer } from './author/Reports/ducks'
 
 export const studentReducers = combineReducers({
   ...allStudentReducers,
   ...assessmentReducers,
   ...commonReducers,
+  reportReducer,
   authorUi,
   dictionaries,
   tutorial,

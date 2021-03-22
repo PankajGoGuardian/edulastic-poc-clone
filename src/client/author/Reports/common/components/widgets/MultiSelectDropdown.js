@@ -30,7 +30,7 @@ const MultiSelectDropdown = ({
     >
       {options &&
         options.map((data) => (
-          <Select.Option key={data.key} value={data.key}>
+          <Select.Option key={data.key} value={data.key} title={data.title}>
             {data.name === 'All' ? `All ${label}` : data.title}
           </Select.Option>
         ))}

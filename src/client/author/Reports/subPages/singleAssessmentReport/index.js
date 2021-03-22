@@ -34,8 +34,8 @@ import {
   getSAFilterDemographics,
   getTempDdFilterSelector,
   setTempDdFilterAction,
-  getTagsDataSelector,
-  setTagsDataAction,
+  getTempTagsDataSelector,
+  setTempTagsDataAction,
 } from './common/filterDataDucks'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
@@ -63,8 +63,8 @@ const SingleAssessmentReportContainer = (props) => {
     demographics,
     tempDdFilter,
     setTempDdFilter,
-    tagsData,
-    setTagsData,
+    tempTagsData,
+    setTempTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
@@ -178,6 +178,7 @@ const SingleAssessmentReportContainer = (props) => {
       selectedTest: _settings.selectedTest,
       requestFilters: obj,
       cliUser: isCliUser,
+      tagsData: { ..._settings.tagsData },
     })
   }
 
@@ -196,8 +197,8 @@ const SingleAssessmentReportContainer = (props) => {
       ...tempDdFilter,
       [comData]: selected.key,
     })
-    setTagsData({
-      ...tagsData,
+    setTempTagsData({
+      ...tempTagsData,
       [comData]: selected,
     })
     setShowApply(true)
@@ -273,14 +274,15 @@ const SingleAssessmentReportContainer = (props) => {
             extraFilters={extraFilters}
             tempDdFilter={tempDdFilter}
             setTempDdFilter={setTempDdFilter}
-            tagsData={tagsData}
-            setTagsData={setTagsData}
+            tempTagsData={tempTagsData}
+            setTempTagsData={setTempTagsData}
             showApply={showApply}
             setShowApply={setShowApply}
             showFilter={showFilter}
             toggleFilter={toggleFilter}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
+            tagsData={settings.tagsData}
           />
         </SubHeader>
         <ReportContainer>
@@ -378,7 +380,7 @@ const ConnectedSingleAssessmentReportContainer = connect(
     settings: getReportsSARSettings(state),
     demographics: getSAFilterDemographics(state),
     tempDdFilter: getTempDdFilterSelector(state),
-    tagsData: getTagsDataSelector(state),
+    tempTagsData: getTempTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
   }),
@@ -386,7 +388,7 @@ const ConnectedSingleAssessmentReportContainer = connect(
     setSARSettings: setSARSettingsAction,
     resetAllReports: resetAllReportsAction,
     setTempDdFilter: setTempDdFilterAction,
-    setTagsData: setTagsDataAction,
+    setTempTagsData: setTempTagsDataAction,
     updateCliUser: updateCliUserAction,
     resetSARSettings: resetSARSettingsAction,
     setSharingState: setSharingStateAction,

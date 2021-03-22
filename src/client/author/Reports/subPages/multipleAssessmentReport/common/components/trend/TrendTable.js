@@ -89,12 +89,17 @@ const getCol = (
   isCellClickable,
   pageTitle,
   location,
-  test
+  test,
+  compareBy = {}
 ) => {
   if (isCellClickable && text) {
     const { assignmentId, groupId, testActivityId } = test.records[0]
 
-    return (
+    return compareBy.key === 'standard' ? (
+      <StyledCell justify="center" style={{ backgroundColor }}>
+        {text}
+      </StyledCell>
+    ) : (
       <StyledCell justify="center" style={{ backgroundColor }}>
         <Link
           style={{ color: reportLinkColor }}
@@ -127,10 +132,9 @@ const getCol = (
   )
 }
 
-const getCellAttributes = (test = {}, analyseBy = {}) => {
+const getCellAttributes = (test = {}, analyseBy = {}, masteryScale = {}) => {
   let value = '-'
   let color = 'transparent'
-
   switch (analyseBy.key) {
     case 'proficiencyBand':
       if (test.proficiencyBand) {
@@ -143,6 +147,20 @@ const getCellAttributes = (test = {}, analyseBy = {}) => {
         ? 'Above Standard'
         : 'Below Standard'
       color = getHSLFromRange1((test.proficiencyBand.aboveStandard || 0) * 100)
+      break
+    case 'masteryScore':
+      value = test.fm
+      color =
+        masteryScale.find((scale) => scale.score === test.fm)?.color ||
+        'transparent'
+      break
+    case 'masteryLevel':
+      value =
+        masteryScale.find((scale) => scale.score === test.fm)?.masteryName ||
+        '-'
+      color =
+        masteryScale.find((scale) => scale.score === test.fm)?.color ||
+        'transparent'
       break
     default:
       value = formatText(test, analyseBy.key)
@@ -165,7 +183,8 @@ const getColumns = (
   isCellClickable,
   location,
   pageTitle,
-  isSharedReport
+  isSharedReport,
+  masteryScale = {}
 ) => {
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
   const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
@@ -189,7 +208,11 @@ const getColumns = (
           return getCol('-', 'transparent')
         }
 
-        const { color, value } = getCellAttributes(currentTest, analyseBy)
+        const { color, value } = getCellAttributes(
+          currentTest,
+          analyseBy,
+          masteryScale
+        )
 
         if (value === 'Absent') {
           return getCol('Absent', '#cccccc')
@@ -217,7 +240,8 @@ const getColumns = (
                 isCellClickable,
                 pageTitle,
                 location,
-                record.tests[testId]
+                record.tests[testId],
+                compareBy
               )
             }
           />
@@ -229,32 +253,80 @@ const getColumns = (
   // filter out test data without testName
   const filteredDynamicColumns = dynamicColumns.filter((t) => t.title)
 
+  const leftColumns =
+    compareBy.key === 'standard'
+      ? [
+          {
+            key: 'domainId',
+            title: 'Domain',
+            align: 'left',
+            fixed: 'left',
+            width: 180,
+            className: 'class-name-column',
+            dataIndex: 'domain',
+            sorter: (a, b) => {
+              const keyword = 'domain'
+              return a[keyword]
+                .toLowerCase()
+                .localeCompare(b[keyword].toLowerCase())
+            },
+          },
+          {
+            key: 'standardId',
+            title: 'Standard',
+            width: 180,
+            className: 'class-name-column',
+            dataIndex: 'standard',
+            render: (data, record) =>
+              !isSharedReport ? (
+                <Link
+                  to={`/author/reports/standards-progress?termId=${filters?.termId}&standardId=${record?.standardId}&curriculumId=${record?.curriculumId}`}
+                >
+                  {data}
+                </Link>
+              ) : (
+                data
+              ),
+            sorter: (a, b) => {
+              const keyword = 'standard'
+              return a[keyword]
+                .toLowerCase()
+                .localeCompare(b[keyword].toLowerCase())
+            },
+          },
+        ]
+      : [
+          {
+            key: compareBy.key,
+            title: capitalize(compareBy.title),
+            align: 'left',
+            fixed: 'left',
+            width: 180,
+            className: 'class-name-column',
+            dataIndex: compareByMap[compareBy.key],
+            render: (data, record) =>
+              compareBy.key === 'student' && !isSharedReport ? (
+                <Link
+                  to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
+                >
+                  {data}
+                </Link>
+              ) : compareBy.key === 'school' && isEmpty(data) ? (
+                '-'
+              ) : (
+                data
+              ),
+            sorter: (a, b) => {
+              const keyword = compareByMap[compareBy.key]
+              return a[keyword]
+                .toLowerCase()
+                .localeCompare(b[keyword].toLowerCase())
+            },
+          },
+        ]
+
   const columns = [
-    {
-      key: compareBy.key,
-      title: capitalize(compareBy.title),
-      align: 'left',
-      fixed: 'left',
-      width: 180,
-      className: 'class-name-column',
-      dataIndex: compareByMap[compareBy.key],
-      render: (data, record) =>
-        compareBy.key === 'student' && !isSharedReport ? (
-          <Link
-            to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
-          >
-            {data}
-          </Link>
-        ) : compareBy.key === 'school' && isEmpty(data) ? (
-          '-'
-        ) : (
-          data
-        ),
-      sorter: (a, b) => {
-        const keyword = compareByMap[compareBy.key]
-        return a[keyword].toLowerCase().localeCompare(b[keyword].toLowerCase())
-      },
-    },
+    ...leftColumns,
     {
       title: 'SIS ID',
       dataIndex: 'sisId',
@@ -322,6 +394,7 @@ const TrendTable = ({
   isSharedReport,
   backendPagination,
   setBackendPagination,
+  masteryScale = {},
 }) => {
   const columns = getColumns(
     rawMetric,
@@ -333,7 +406,8 @@ const TrendTable = ({
     isCellClickable,
     location,
     pageTitle,
-    isSharedReport
+    isSharedReport,
+    masteryScale
   )
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
 

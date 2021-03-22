@@ -2786,8 +2786,10 @@ export default createReducer(initialState, {
     } else {
       state.destinationCurriculumSequence = {}
     }
-    if (payload.isAuthoring) {
+    if (payload.isAuthoring || payload.isCreatePage) {
       state.activeRightPanel = 'manageContent'
+    } else {
+      state.activeRightPanel = 'summary'
     }
 
     state.destinationDirty = false

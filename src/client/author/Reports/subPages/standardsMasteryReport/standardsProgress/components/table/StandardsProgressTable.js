@@ -139,7 +139,7 @@ const StandardsProgressTable = ({
       render: (data, record) =>
         tableFilters.compareBy.key === 'student' && !isSharedReport ? (
           <Link
-            to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}
+            to={`/author/reports/student-progress-profile/student/${record.id}?termId=${filters?.termId}`}
           >
             {data || '-'}
           </Link>

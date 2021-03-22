@@ -2,15 +2,15 @@
   "filterSections": {
     "CLASS_FILTERS": {
       "key": "0",
-      "title": "Class Filter"
+      "title": "Select Students"
     },
     "TEST_FILTERS": {
       "key": "1",
-      "title": "Filter by Test"
+      "title": "Select Assessment(s)"
     },
     "DEMOGRAPHIC_FILTERS": {
       "key": "2",
-      "title": "Demographic Filter"
+      "title": "Demographics"
     },
     "STANDARD_FILTERS": {
       "key": "3",
@@ -18,29 +18,29 @@
     }
   },
   "tagTypes": [
-    { "key": "termId", "closable": false },
-    { "key": "schoolIds", "closable": true },
-    { "key": "teacherIds", "closable": true },
-    { "key": "grade", "closable": false, "subType": "class" },
-    { "key": "subject", "closable": true, "subType": "class" },
-    { "key": "courseId", "closable": true },
-    { "key": "classIds", "closable": true },
-    { "key": "groupIds", "closable": true },
-    { "key": "testGrade", "closable": true, "subType": "test" },
-    { "key": "testSubject", "closable": true, "subType": "test" },
-    { "key": "tagIds", "closable": true },
-    { "key": "assessmentTypes", "closable": true },
-    { "key": "testIds", "closable": true },
-    { "key": "curriculumId", "closable": false },
-    { "key": "standardGrade", "closable": true, "subType": "standard" },
-    { "key": "profileId", "closable": false },
-    { "key": "domainIds", "closable": true },
-    { "key": "standardId", "closable": false },
-    { "key": "race", "closable": true },
-    { "key": "gender", "closable": true },
-    { "key": "iepStatus", "closable": true },
-    { "key": "frlStatus", "closable": true },
-    { "key": "ellStatus", "closable": true }
+    { "key": "termId" },
+    { "key": "schoolIds" },
+    { "key": "teacherIds" },
+    { "key": "grade", "subType": "class" },
+    { "key": "subject", "subType": "class" },
+    { "key": "courseId" },
+    { "key": "classIds" },
+    { "key": "groupIds" },
+    { "key": "testGrade", "subType": "test" },
+    { "key": "testSubject", "subType": "test" },
+    { "key": "tagIds" },
+    { "key": "assessmentTypes" },
+    { "key": "testIds" },
+    { "key": "curriculumId" },
+    { "key": "standardGrade", "subType": "standard" },
+    { "key": "profileId" },
+    { "key": "domainIds" },
+    { "key": "standardId" },
+    { "key": "race" },
+    { "key": "gender" },
+    { "key": "iepStatus" },
+    { "key": "frlStatus" },
+    { "key": "ellStatus" }
   ],
   "initialFilters": {
     "reportId": "",

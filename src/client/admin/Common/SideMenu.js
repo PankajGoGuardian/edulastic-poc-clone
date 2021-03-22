@@ -178,6 +178,7 @@ const SideMenu = ({
       >
         {siderMenuData.map((item) => (
           <Menu.Item
+            data-cy={item.label}
             onClick={() => {
               toggleState(false)
               if (item.href) {

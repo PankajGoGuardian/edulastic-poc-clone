@@ -7,7 +7,6 @@ import qs from 'qs'
 import { Spin, Tabs, Row, Col } from 'antd'
 
 import { roleuser } from '@edulastic/constants'
-import { EduButton } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
 import FilterTags from '../../../../common/components/FilterTags'
@@ -24,6 +23,7 @@ import {
   ReportFiltersContainer,
   ReportFiltersWrapper,
   FilterLabel,
+  StyledEduButton,
 } from '../../../../common/styled'
 
 import {
@@ -62,6 +62,7 @@ const getTestIdFromURL = (url) => {
 
 const SingleAssessmentReportFilters = ({
   isPrinting,
+  tagsData,
   loading,
   SARFilterData,
   user,
@@ -71,8 +72,8 @@ const SingleAssessmentReportFilters = ({
   setFiltersOrTestId,
   tempDdFilter,
   setTempDdFilter,
-  tagsData,
-  setTagsData,
+  tempTagsData,
+  setTempTagsData,
   onGoClick: _onGoClick,
   location,
   history,
@@ -183,15 +184,15 @@ const SingleAssessmentReportFilters = ({
    * this behaviour is kept dynamic for any selected test (apply button is not shown)
    * until the user manually selects a performance band / standards proficiency
    * however, filter tags need to reflect these dynamic changes
-   * hence, the useEffect only updates tagsData for now
+   * hence, the useEffect only updates tempTagsData for now
    */
   useEffect(() => {
-    const _tagsData = {
-      ...tagsData,
+    const _tempTagsData = {
+      ...tempTagsData,
       performanceBandProfile: selectedPerformanceBand,
       standardsProficiencyProfile: selectedStandardProficiency,
     }
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
   }, [assessmentPerformanceBandProfile, assessmentStandardMasteryScale])
 
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
@@ -204,6 +205,7 @@ const SingleAssessmentReportFilters = ({
       _onGoClick({
         filters: { ...filters, ...search },
         selectedTest: { key: _testId },
+        tagsData: { ...tempTagsData },
       })
       setShowApply(false)
     } else {
@@ -261,7 +263,7 @@ const SingleAssessmentReportFilters = ({
         delete _filters.teacherIds
       }
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
-      const _tagsData = {
+      const _tempTagsData = {
         termId: urlSchoolYear,
         grade: urlGrade,
         subject: urlSubject,
@@ -273,8 +275,8 @@ const SingleAssessmentReportFilters = ({
         standardsProficiencyProfile: urlStandardProficiency,
         performanceBandProfile: urlPerformanceBand,
       }
-      // set tagsData, filters and testId
-      setTagsData(_tagsData)
+      // set tempTagsData, filters and testId
+      setTempTagsData(_tempTagsData)
       setFiltersOrTestId({ filters: _filters, testId: _testId })
     }
     // update prevSARFilterData
@@ -285,9 +287,11 @@ const SingleAssessmentReportFilters = ({
     const settings = {
       filters: { ...filters },
       selectedTest: { key: testId },
+      tagsData: { ...tempTagsData },
     }
     setShowApply(false)
     _onGoClick(settings)
+    toggleFilter(null, false)
   }
 
   const getNewPathname = () => {
@@ -297,14 +301,19 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateTestId = (selected) => {
-    const _tagsData = { ...tagsData, testId: selected }
+    const _tempTagsData = { ...tempTagsData, testId: selected }
     if (firstLoad && !selected.key) {
-      delete _tagsData.testId
+      delete _tempTagsData.testId
       toggleFilter(null, true)
       setFirstLoad(false)
+      _onGoClick({
+        filters: { ...filters },
+        selectedTest: { key: '' },
+        tagsData: { ..._tempTagsData },
+      })
       return
     }
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
     const _testId = selected.key || ''
     setFiltersOrTestId({ testId: _testId })
     if (reportId) {
@@ -314,6 +323,7 @@ const SingleAssessmentReportFilters = ({
       _onGoClick({
         filters: { ...filters },
         selectedTest: { key: _testId },
+        tagsData: { ..._tempTagsData },
       })
     } else if (selected.key) {
       setShowApply(true)
@@ -324,16 +334,16 @@ const SingleAssessmentReportFilters = ({
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     // update tags data
-    const _tagsData = { ...tagsData, [keyName]: selected }
+    const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
-      delete _tagsData[keyName]
+      delete _tempTagsData[keyName]
     }
     const _filters = { ...filters }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
-    resetStudentFilters(_tagsData, _filters, keyName, _selected)
-    setTagsData(_tagsData)
+    resetStudentFilters(_tempTagsData, _filters, keyName, _selected)
+    setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
@@ -343,22 +353,22 @@ const SingleAssessmentReportFilters = ({
   }
 
   const handleCloseTag = (type, { key }) => {
-    const _tagsData = { ...tagsData }
+    const _tempTagsData = { ...tempTagsData }
     // handles tempDdFilters
     if (ddFilterTypes.includes(type)) {
       const _tempDdFilter = { ...tempDdFilter }
       if (tempDdFilter[type] === key) {
         _tempDdFilter[type] = staticDropDownData.initialDdFilters[type]
-        delete _tagsData[type]
+        delete _tempTagsData[type]
       }
       setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
-      resetStudentFilters(_tagsData, _filters, type, '')
+      resetStudentFilters(_tempTagsData, _filters, type, '')
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]
-        delete _tagsData[type]
+        delete _tempTagsData[type]
       }
       // handles multiple selection filters
       else if (filters[type].includes(key)) {
@@ -366,11 +376,11 @@ const SingleAssessmentReportFilters = ({
           .split(',')
           .filter((d) => d !== key)
           .join(',')
-        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
       }
       setFiltersOrTestId({ filters: _filters, testId })
     }
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
     setShowApply(true)
     toggleFilter(null, true)
   }
@@ -385,14 +395,15 @@ const SingleAssessmentReportFilters = ({
         handleCloseTag={handleCloseTag}
       />
       <ReportFiltersContainer visible={!reportId}>
-        <EduButton
+        <StyledEduButton
+          data-cy="filters"
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
         >
           <IconFilter width={15} height={15} />
           FILTERS
-        </EduButton>
+        </StyledEduButton>
         <ReportFiltersWrapper visible={showFilter}>
           {loading ? (
             <Spin />
@@ -489,7 +500,7 @@ const SingleAssessmentReportFilters = ({
                       </Col>
 
                       {prevSARFilterData && (
-                        <Col span={6}>
+                        <Col span={18}>
                           <FilterLabel data-cy="test">Test</FilterLabel>
                           <AssessmentAutoComplete
                             firstLoad={firstLoad}
@@ -656,7 +667,7 @@ const SingleAssessmentReportFilters = ({
                               Standard Proficiency
                             </FilterLabel>
                             <ControlDropDown
-                              by={selectedStandardProficiency.key}
+                              by={selectedStandardProficiency?.key}
                               selectCB={(e, selected) =>
                                 updateFilterDropdownCB(
                                   selected,
@@ -712,26 +723,28 @@ const SingleAssessmentReportFilters = ({
                 </Tabs>
               </Col>
               <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
-                <EduButton
+                <StyledEduButton
                   width="25%"
                   height="40px"
                   style={{ maxWidth: '200px' }}
                   isGhost
                   key="cancelButton"
+                  data-cy="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
-                  No, Cancel
-                </EduButton>
-                <EduButton
+                  Cancel
+                </StyledEduButton>
+                <StyledEduButton
                   width="25%"
                   height="40px"
                   style={{ maxWidth: '200px' }}
                   key="applyButton"
+                  data-cy="applyFilter"
                   disabled={!showApply || isEmpty(testList)}
                   onClick={() => onGoClick()}
                 >
                   Apply
-                </EduButton>
+                </StyledEduButton>
               </Col>
             </Row>
           )}

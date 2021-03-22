@@ -1,9 +1,8 @@
-import { get, without, countBy } from 'lodash'
+import { get, without } from 'lodash'
 import { createHmac } from 'crypto-browserify'
 import AppConfig from '../../../src/app-config'
 
 const allowedRoles = ['teacher', 'school-admin', 'district-admin']
-const minFeatures = 5
 
 const trackingParameters = {
   CATEGORY_WEB_APPLICATION: 'Web Application',
@@ -61,7 +60,7 @@ const analyticsIdentify = ({ user }) => {
       role = '',
       _id,
       v1Id,
-      features = { premiumUser: false },
+      features = { premium: false },
       firstName,
       lastName,
       orgData: {
@@ -80,8 +79,7 @@ const analyticsIdentify = ({ user }) => {
           grade,
           subject,
           name: without([firstName, lastName], undefined, null, '').join(' '),
-          premium_user:
-            (countBy(Object.values(features), Boolean).true || 0) > minFeatures,
+          premium_user: features.premium,
         },
         {
           Intercom: {

@@ -23,7 +23,7 @@ const SET_REPORTS_PREV_SAR_FILTER_DATA =
 
 const SET_FILTERS_OR_TEST_ID = '[reports] set sar filters or testId'
 const SET_TEMP_DD_FILTER = '[reports] set sar tempDdFilter'
-const SET_TAGS_DATA = '[reports] set sar tagsData'
+const SET_TEMP_TAGS_DATA = '[reports] set sar temp tempTagsData'
 
 const SET_PERFORMANCE_BAND_PROFILE = '[reports] set sar peformance band profile'
 const SET_STANDARD_MANTERY_PROFILE = '[reports] set sar standard matery profile'
@@ -42,7 +42,7 @@ export const setFiltersOrTestIdAction = createAction(SET_FILTERS_OR_TEST_ID)
 
 export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
 
-export const setTagsDataAction = createAction(SET_TAGS_DATA)
+export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
 export const setPerformanceBandProfileAction = createAction(
   SET_PERFORMANCE_BAND_PROFILE
@@ -76,9 +76,9 @@ export const getTempDdFilterSelector = createSelector(
   (state) => state.tempDdFilter
 )
 
-export const getTagsDataSelector = createSelector(
+export const getTempTagsDataSelector = createSelector(
   stateSelector,
-  (state) => state.tagsData
+  (state) => state.tempTagsData
 )
 
 export const getReportsPrevSARFilterData = createSelector(
@@ -131,7 +131,7 @@ const initialState = {
   tempDdFilter: {
     ...staticDropDownData.initialDdFilters,
   },
-  tagsData: {},
+  tempTagsData: {},
   loading: false,
 }
 
@@ -157,8 +157,8 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
   [SET_TEMP_DD_FILTER]: (state, { payload }) => {
     state.tempDdFilter = payload
   },
-  [SET_TAGS_DATA]: (state, { payload }) => {
-    state.tagsData = payload
+  [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
+    state.tempTagsData = payload
   },
   [RESET_REPORTS_SAR_FILTER_DATA]: (state) => {
     state.SARFilterData = {}

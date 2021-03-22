@@ -46,6 +46,7 @@ const initialState = {
     classIds: '',
     groupIds: '',
   },
+  tagsData: {},
 }
 
 export const reportMARSettingsReducer = createReducer(initialState, {

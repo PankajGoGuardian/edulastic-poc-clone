@@ -3,7 +3,12 @@ import { message } from 'antd'
 import { isEmpty, uniq, compact } from 'lodash'
 import moment from 'moment'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { subscriptionApi, paymentApi, segmentApi } from '@edulastic/api'
+import {
+  subscriptionApi,
+  paymentApi,
+  segmentApi,
+  userApi,
+} from '@edulastic/api'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { fetchUserAction } from '../../student/Login/ducks'
@@ -53,6 +58,11 @@ export const getAddOnProductIds = createSelector(
   (state) => state.addOnProductIds
 )
 
+export const getBookKeepersInviteSuccessStatus = createSelector(
+  subscriptionSelector,
+  (state) => state.isBookKeepersInviteSuccess
+)
+
 const slice = createSlice({
   name: 'subscription',
   initialState: {
@@ -66,6 +76,7 @@ const slice = createSlice({
     isPaymentServiceModalVisible: false,
     showHeaderTrialModal: false,
     addOnProductIds: [],
+    isBookKeepersInviteSuccess: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -158,6 +169,10 @@ const slice = createSlice({
     setAddOnProductIds: (state, { payload }) => {
       state.addOnProductIds = payload
     },
+    setBookKeepersInviteSuccess: (state, { payload }) => {
+      state.isBookKeepersInviteSuccess = payload
+    },
+    bulkInviteBookKeepersAction: () => {},
   },
 })
 
@@ -199,15 +214,21 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     })
   }
   if (hasItemBankPermissions) {
-    const { subEndDate } = itemBankPermissions[0]
-    segmentApi.trackProductPurchase({
-      user,
-      data: {
-        event: `order smath ${eventType}`,
-        SMath_status: eventType,
-        SMath_purchase_date: new Date(),
-        SMath_expiry_date: new Date(subEndDate),
-      },
+    const purchaseDate = new Date()
+    itemBankPermissions.forEach((permissions) => {
+      const { name, subEndDate } = permissions
+      const [pFirstName, pSecondName] = name.split(' ')
+      const productName = `${pFirstName[0]}${pSecondName}`
+      const data = {
+        event: `order ${productName.toLowerCase()} ${eventType}`,
+        [`${productName}_status`]: eventType,
+        [`${productName}_purchase_date`]: purchaseDate,
+        [`${productName}_expiry_date`]: new Date(subEndDate),
+      }
+      segmentApi.trackProductPurchase({
+        user,
+        data,
+      })
     })
   }
 
@@ -361,6 +382,7 @@ function* handleEdulasticAdminProductLicenseSaga({ payload }) {
       products: _products,
       userEmailIds,
       licenseIds,
+      licenseOwnerId,
     })
     if (apiPaymentResponse.licenseKeys) {
       yield put(
@@ -528,6 +550,22 @@ function* handleFreeTrialSaga({ payload }) {
   }
 }
 
+function* bulkInviteBookKeepersSaga({ payload }) {
+  try {
+    if (payload?.userDetails?.length) {
+      yield call(userApi.adddBulkTeacher, payload)
+    }
+
+    yield put(slice.actions.setBookKeepersInviteSuccess(true))
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while inviting bookeepers',
+    })
+    captureSentryException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
@@ -544,6 +582,10 @@ export function* watcherSaga() {
     yield takeEvery(
       slice.actions.fetchUserSubscriptionStatus,
       fetchUserSubscription
+    ),
+    yield takeEvery(
+      slice.actions.bulkInviteBookKeepersAction,
+      bulkInviteBookKeepersSaga
     ),
   ])
 }

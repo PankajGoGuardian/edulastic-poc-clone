@@ -1,3 +1,7 @@
+import { combineReducers } from 'redux'
+import { put, takeEvery, call, all, select } from 'redux-saga/effects'
+import { notification } from '@edulastic/common'
+import { keyBy } from 'lodash'
 import { createSlice, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import {
@@ -6,10 +10,6 @@ import {
   subscriptionApi,
   paymentApi,
 } from '@edulastic/api'
-import { combineReducers } from 'redux'
-import { put, takeEvery, call, all } from 'redux-saga/effects'
-import { notification } from '@edulastic/common'
-import { keyBy } from 'lodash'
 
 // ACTIONS
 const GET_DISTRICT_DATA = '[admin-upgrade] GET_DISTRICT_DATA'
@@ -492,6 +492,13 @@ function* addSubscriptionSaga({ payload }) {
   try {
     const result = yield call(paymentApi.licensePurchase, payload) || {}
     if (result.licenseKeys) {
+      const { searchType } = yield select(getManageSubscriptionByLicensesData)
+      const data = {
+        type: searchType,
+        page: 1,
+        limit: 10,
+      }
+      yield put(manageSubscriptionsByLicenses.actions.fetchLicenses(data))
       notification({ type: 'success', msg: 'License(s) created successfully!' })
     } else {
       notification({ type: 'error', msg: 'License(s) creation failed!' })

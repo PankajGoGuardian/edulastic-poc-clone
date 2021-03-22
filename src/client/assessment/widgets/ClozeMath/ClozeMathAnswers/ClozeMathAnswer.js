@@ -57,6 +57,7 @@ class ClozeMathAnswer extends Component {
       onChangeKeypad,
       onChangeAllowedOptions,
       extraOptions,
+      tabIndex,
     } = this.props
     const { showAdditionals } = this.state
     const { responseContainers = [], uiStyle } = item
@@ -121,7 +122,7 @@ class ClozeMathAnswer extends Component {
                     onDelete={() =>
                       onDelete({ methodIndex, methodId: method.id })
                     }
-                    key={methodIndex + answer.index}
+                    key={`${method.id}-${tabIndex}`}
                     item={item}
                     index={methodIndex}
                     answer={method.value}
@@ -163,6 +164,7 @@ ClozeMathAnswer.propTypes = {
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  tabIndex: PropTypes.number.isRequired,
 }
 
 export default withNamespaces('assessment')(ClozeMathAnswer)

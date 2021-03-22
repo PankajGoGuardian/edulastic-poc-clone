@@ -7,7 +7,6 @@ import qs from 'qs'
 import { Spin, Tabs, Row, Col } from 'antd'
 
 import { roleuser } from '@edulastic/constants'
-import { EduButton } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
 import FilterTags from '../../../../../common/components/FilterTags'
@@ -24,6 +23,7 @@ import {
   ReportFiltersContainer,
   ReportFiltersWrapper,
   FilterLabel,
+  StyledEduButton,
 } from '../../../../../common/styled'
 
 import { processSchoolYear } from '../../utils/transformers'
@@ -48,19 +48,20 @@ const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
 const MultipleAssessmentReportFilters = ({
   isPrinting,
+  tagsData,
   loading,
   MARFilterData,
   filters,
   testIds,
   tempDdFilter,
-  tagsData,
+  tempTagsData,
   user,
   role,
   getMARFilterDataRequest,
   setFilters,
   setTestIds,
   setTempDdFilter,
-  setTagsData,
+  setTempTagsData,
   onGoClick: _onGoClick,
   location,
   history,
@@ -127,7 +128,11 @@ const MultipleAssessmentReportFilters = ({
       (f) => f !== 'All' && !isEmpty(f)
     )
     if (reportId) {
-      _onGoClick({ selectedTests: [], filters: { ...filters, ...search } })
+      _onGoClick({
+        selectedTests: [],
+        filters: { ...filters, ...search },
+        tagsData: {},
+      })
     } else {
       // select common assessment as default if assessment type is not set for admins
       if (
@@ -183,7 +188,7 @@ const MultipleAssessmentReportFilters = ({
           _filters.schoolIds || get(user, 'institutionIds', []).join(',')
       }
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
-      const _tagsData = {
+      const _tempTagsData = {
         termId: urlSchoolYear,
         subject: urlSubject,
         grade: urlGrade,
@@ -195,8 +200,8 @@ const MultipleAssessmentReportFilters = ({
         profileId: urlPerformanceBand,
       }
 
-      // set tagsData, filters and testId
-      setTagsData(_tagsData)
+      // set tempTagsData, filters and testId
+      setTempTagsData(_tempTagsData)
       setFilters(_filters)
       // TODO: enable selection of testIds from url and saved filters
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
@@ -205,6 +210,7 @@ const MultipleAssessmentReportFilters = ({
       _onGoClick({
         filters: { ..._filters },
         selectedTests: [],
+        tagsData: { ..._tempTagsData },
       })
     }
     setFirstLoad(false)
@@ -216,23 +222,26 @@ const MultipleAssessmentReportFilters = ({
     const settings = {
       filters: { ...filters },
       selectedTests: testIds,
+      tagsData: { ...tempTagsData },
       ..._settings,
     }
+    setShowApply(false)
     _onGoClick(settings)
+    toggleFilter(null, false)
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     // update filter tags data
-    const _tagsData = { ...tagsData, [keyName]: selected }
+    const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
-      delete _tagsData[keyName]
+      delete _tempTagsData[keyName]
     }
     const _filters = { ...filters }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
-    resetStudentFilters(_tagsData, _filters, keyName, _selected)
-    setTagsData(_tagsData)
+    resetStudentFilters(_tempTagsData, _filters, keyName, _selected)
+    setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
@@ -241,18 +250,18 @@ const MultipleAssessmentReportFilters = ({
   }
 
   const onSelectTest = (selected) => {
-    setTagsData({ ...tagsData, testIds: selected })
+    setTempTagsData({ ...tempTagsData, testIds: selected })
     setTestIds(selected.map((o) => o.key))
     setShowApply(true)
   }
 
   const handleCloseTag = (type, { key }) => {
-    const _tagsData = { ...tagsData }
+    const _tempTagsData = { ...tempTagsData }
     // handles testIds
     if (type === 'testIds') {
       if (testIds.includes(key)) {
         const _testIds = testIds.filter((d) => d !== key)
-        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
         setTestIds(_testIds)
       }
     } // handles tempDdFilters
@@ -260,16 +269,16 @@ const MultipleAssessmentReportFilters = ({
       const _tempDdFilter = { ...tempDdFilter }
       if (tempDdFilter[type] === key) {
         _tempDdFilter[type] = ''
-        delete _tagsData[type]
+        delete _tempTagsData[type]
       }
       setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
-      resetStudentFilters(_tagsData, _filters, type, '')
+      resetStudentFilters(_tempTagsData, _filters, type, '')
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]
-        delete _tagsData[type]
+        delete _tempTagsData[type]
       }
       // handles multiple selection filters
       else if (filters[type].includes(key)) {
@@ -277,11 +286,11 @@ const MultipleAssessmentReportFilters = ({
           .split(',')
           .filter((d) => d !== key)
           .join(',')
-        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
       }
       setFilters(_filters)
     }
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
     setShowApply(true)
     toggleFilter(null, true)
   }
@@ -296,14 +305,15 @@ const MultipleAssessmentReportFilters = ({
         handleCloseTag={handleCloseTag}
       />
       <ReportFiltersContainer visible={!reportId}>
-        <EduButton
+        <StyledEduButton
+          data-cy="filters"
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
         >
           <IconFilter width={15} height={15} />
           FILTERS
-        </EduButton>
+        </StyledEduButton>
         <ReportFiltersWrapper visible={showFilter}>
           {loading ? (
             <Spin />
@@ -596,7 +606,7 @@ const MultipleAssessmentReportFilters = ({
                 </Tabs>
               </Col>
               <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
-                <EduButton
+                <StyledEduButton
                   width="25%"
                   height="40px"
                   style={{ maxWidth: '200px' }}
@@ -605,9 +615,9 @@ const MultipleAssessmentReportFilters = ({
                   data-cy="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
-                  No, Cancel
-                </EduButton>
-                <EduButton
+                  Cancel
+                </StyledEduButton>
+                <StyledEduButton
                   width="25%"
                   height="40px"
                   style={{ maxWidth: '200px' }}
@@ -617,7 +627,7 @@ const MultipleAssessmentReportFilters = ({
                   onClick={() => onGoClick()}
                 >
                   Apply
-                </EduButton>
+                </StyledEduButton>
               </Col>
             </Row>
           )}

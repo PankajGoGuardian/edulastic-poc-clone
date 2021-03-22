@@ -123,7 +123,7 @@ const QuestionBottomAction = ({
           )}
         </div>
         <RightWrapper>
-          {item && (
+          {item && !isStudentReport && (
             <EduButton
               isGhost
               height="24px"
@@ -144,7 +144,7 @@ const QuestionBottomAction = ({
           )}
         </RightWrapper>
       </BottomActionWrapper>
-      {openQuestionMoal && QuestionComp && questionData && (
+      {!isStudentReport && openQuestionMoal && QuestionComp && questionData && (
         <QuestionPreviewModal
           visible={openQuestionMoal}
           onCancel={onCloseQuestionModal}

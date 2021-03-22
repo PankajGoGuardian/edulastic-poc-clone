@@ -237,7 +237,12 @@ const AddSubscriptionModal = ({
               return _aName.localeCompare(_bName)
             })
             .map(({ _id, name }) => (
-              <SelectInputStyled.Option key={_id} value={_id} name={name}>
+              <SelectInputStyled.Option
+                key={_id}
+                value={_id}
+                name={name}
+                data-cy={name}
+              >
                 {name}
               </SelectInputStyled.Option>
             ))}
@@ -258,7 +263,7 @@ const AddSubscriptionModal = ({
           notFoundContent={isFetchingUsers ? <Spin size="small" /> : null}
         >
           {usersList.map((emailId) => (
-            <SelectInputStyled.Option key={emailId}>
+            <SelectInputStyled.Option key={emailId} data-cy={emailId}>
               {emailId}
             </SelectInputStyled.Option>
           ))}

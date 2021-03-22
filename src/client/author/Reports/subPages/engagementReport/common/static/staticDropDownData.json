@@ -1,11 +1,11 @@
 {
   "tagTypes": [
-    { "key": "termId", "closable": false },
-    { "key": "schoolIds", "closable": true },
-    { "key": "teacherIds", "closable": true },
-    { "key": "grade", "closable": true, "subType": "class" },
-    { "key": "subject", "closable": true, "subType": "class" },
-    { "key": "assessmentTypes", "closable": true }
+    { "key": "termId" },
+    { "key": "schoolIds" },
+    { "key": "teacherIds" },
+    { "key": "grade", "subType": "class" },
+    { "key": "subject", "subType": "class" },
+    { "key": "assessmentTypes" }
   ],
   "initialFilters": {
     "reportId": "",

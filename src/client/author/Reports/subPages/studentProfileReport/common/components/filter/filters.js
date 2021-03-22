@@ -5,7 +5,6 @@ import qs from 'qs'
 
 import { Tabs, Row, Col } from 'antd'
 
-import { EduButton } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
 import FilterTags from '../../../../../common/components/FilterTags'
@@ -44,6 +43,7 @@ import {
   ReportFiltersContainer,
   ReportFiltersWrapper,
   FilterLabel,
+  StyledEduButton,
 } from '../../../../../common/styled'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
@@ -345,14 +345,15 @@ const StudentProfileReportFilters = ({
         handleCloseTag={handleCloseTag}
       />
       <ReportFiltersContainer visible={!reportId}>
-        <EduButton
+        <StyledEduButton
+          data-cy="filters"
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
         >
           <IconFilter width={15} height={15} />
           FILTERS
-        </EduButton>
+        </StyledEduButton>
         <ReportFiltersWrapper visible={showFilter}>
           <Row>
             <Col span={24} style={{ padding: '0 5px' }}>

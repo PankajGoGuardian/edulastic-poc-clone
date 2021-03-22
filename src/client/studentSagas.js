@@ -14,6 +14,7 @@ import {
 } from './student/sagas'
 import assessmentSagas from './assessment/sagas'
 import { watcherSaga as curriculumSequenceSaga } from './author/CurriculumSequence/ducks'
+import { reportSaga } from './author/Reports/ducks'
 
 export function* studentsSagas() {
   yield all([
@@ -29,5 +30,6 @@ export function* studentsSagas() {
     expressGraderWatcherSaga(),
     curriculumSequenceSaga(),
     ...assessmentSagas,
+    reportSaga(),
   ])
 }

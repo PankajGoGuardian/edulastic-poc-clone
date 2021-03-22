@@ -164,6 +164,23 @@ export const ReportFiltersWrapper = styled.div`
   }
 `
 
+export const StyledEduButton = styled(EduButton)`
+  &:focus,
+  &:hover {
+    &.ant-btn.ant-btn-primary {
+      background-color: ${themeColor};
+      border-color: ${themeColor};
+      color: ${white};
+    }
+    svg {
+      &:focus,
+      &:hover {
+        fill: ${white};
+      }
+    }
+  }
+`
+
 export const DropDownContainer = styled.div`
   .dropdown-container {
     text-align: left;

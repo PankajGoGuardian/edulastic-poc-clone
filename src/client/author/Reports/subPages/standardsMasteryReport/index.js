@@ -24,8 +24,8 @@ import {
   getSMRFilterDemographics,
   getTempDdFilterSelector,
   setTempDdFilterAction,
-  getTagsDataSelector,
-  setTagsDataAction,
+  getTempTagsDataSelector,
+  setTempTagsDataAction,
 } from './common/filterDataDucks'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
@@ -60,8 +60,8 @@ const StandardsMasteryReportContainer = (props) => {
     showApply,
     tempDdFilter,
     setTempDdFilter,
-    tagsData,
-    setTagsData,
+    tempTagsData,
+    setTempTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
@@ -197,6 +197,7 @@ const StandardsMasteryReportContainer = (props) => {
           testIds: selectedTests.join(),
           domainIds: domainIds.join(),
         },
+        tagsData: { ..._settings.tagsData }
       })
     }
     setShowApply(false)
@@ -208,8 +209,8 @@ const StandardsMasteryReportContainer = (props) => {
       ...tempDdFilter,
       [comData]: selected.key,
     })
-    setTagsData({
-      ...tagsData,
+    setTempTagsData({
+      ...tempTagsData,
       [comData]: selected,
     })
   }
@@ -284,8 +285,8 @@ const StandardsMasteryReportContainer = (props) => {
           extraFilters={extraFilters}
           tempDdFilter={tempDdFilter}
           setTempDdFilter={setTempDdFilter}
-          tagsData={tagsData}
-          setTagsData={setTagsData}
+          tempTagsData={tempTagsData}
+          setTempTagsData={setTempTagsData}
           demographicsRequired={demographicsRequired}
           showApply={showApply}
           setShowApply={setShowApply}
@@ -293,6 +294,7 @@ const StandardsMasteryReportContainer = (props) => {
           toggleFilter={toggleFilter}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
+          tagsData={settings.tagsData}
         />
       </SubHeader>
       <ReportContainer>
@@ -361,7 +363,7 @@ const ConnectedStandardsMasteryReportContainer = connect(
     demographics: getSMRFilterDemographics(state),
     settings: getReportsSMRSettings(state),
     tempDdFilter: getTempDdFilterSelector(state),
-    tagsData: getTagsDataSelector(state),
+    tempTagsData: getTempTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
@@ -370,7 +372,7 @@ const ConnectedStandardsMasteryReportContainer = connect(
     setSMRSettings: setSMRSettingsAction,
     resetAllReports: resetAllReportsAction,
     setTempDdFilter: setTempDdFilterAction,
-    setTagsData: setTagsDataAction,
+    setTempTagsData: setTempTagsDataAction,
     setSharingState: setSharingStateAction,
   }
 )(StandardsMasteryReportContainer)

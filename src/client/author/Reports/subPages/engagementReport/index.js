@@ -121,7 +121,7 @@ const EngagementReportContainer = ({
         _settings.filters[item] === 'All' ? '' : _settings.filters[item]
       obj[item] = val
     })
-    setERSettings({ requestFilters: obj })
+    setERSettings({ requestFilters: obj, tagsData: _settings.tagsData })
   }
 
   return (
@@ -153,6 +153,7 @@ const EngagementReportContainer = ({
             toggleFilter={toggleFilter}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
+            tagsData={settings.tagsData}
           />
         </SubHeader>
         <ReportContainer>

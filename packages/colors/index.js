@@ -54,6 +54,7 @@ export const greyishBorder = '#B6B6CC'
 export const mainTextColor = '#444444'
 export const secondaryTextColor = '#434b5d'
 export const greyDarken = '#979BA1'
+export const tagTextColor = '#676e74'
 export const titleColor = darkGrey2
 export const greyScoreCardTitleColor = lightGrey11
 export const cardTitleColor = lightGrey11
@@ -166,6 +167,7 @@ export const tabGrey = '#7C848E'
 export const inputBgGrey = '#F8F8FB'
 export const redHeart = '#e35783'
 export const inputBorder = '#d9d9d9'
+export const inputBorder1 = '#b9b9b9'
 export const selectColor = '#5a6171'
 
 export const cardBg = '#f8f8fb'

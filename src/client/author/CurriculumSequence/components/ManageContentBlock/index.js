@@ -169,7 +169,6 @@ const ManageContentBlock = (props) => {
 
   const handleApplyFilters = () => {
     const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
-    console.log('selectedStandardIds', selectedStandardIds)
     resetAndFetchTests()
     closeContentFilterModal()
   }

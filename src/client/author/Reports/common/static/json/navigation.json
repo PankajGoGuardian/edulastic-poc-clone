@@ -210,6 +210,20 @@
       "group": "studentProfileReport",
       "groupTitle": "Student Profile Report"
     },
+    "student-progress-profile": {
+      "title": "Student Progress Profile",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT PROGRESS PROFILE"
+        }
+      ],
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
+    },
     "engagement-summary": {
       "title": "Engagement Summary",
       "breadcrumb": [
@@ -367,6 +381,11 @@
         "key": "student-assessment-profile",
         "title": "Student Assessment Profile",
         "location": "/author/reports/student-assessment-profile/student/"
+      },
+      {
+        "key": "student-progress-profile",
+        "title": "Student Progress Profile",
+        "location": "/author/reports/student-progress-profile/student/"
       }
     ],
     "engagementReport": [

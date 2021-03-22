@@ -771,6 +771,11 @@ export const getTotalPoints = createSelector(
   (_test) => _test?.summary?.totalPoints
 )
 
+export const getIsDocBasedTestSelector = createSelector(
+  getClassResponseSelector,
+  (_test) => _test?.isDocBased
+)
+
 export const getCurrentTestActivityIdSelector = createSelector(
   stateTestActivitySelector,
   (state) => state.currentTestActivityId || ''

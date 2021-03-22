@@ -658,7 +658,7 @@ const SingleAssessmentReportFilters = ({
                               Standard Proficiency
                             </FilterLabel>
                             <ControlDropDown
-                              by={selectedStandardProficiency.key}
+                              by={selectedStandardProficiency?.key}
                               selectCB={(e, selected) =>
                                 updateFilterDropdownCB(
                                   selected,

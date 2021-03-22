@@ -44,7 +44,7 @@ const defaultAlignment = {
   curriculum: '',
 }
 
-const triggerParent = (el) => el.parentNode
+export const triggerParent = (el) => el.parentNode
 
 const ResourcesAlignment = ({
   curriculums,
@@ -213,7 +213,6 @@ const ResourcesAlignment = ({
           <Col md={24}>
             <Alignments
               selectsData={selectsData}
-              triggerParent={triggerParent}
               subject={subject}
               curriculum={curriculum}
               formattedCuriculums={formattedCuriculums}
@@ -235,7 +234,6 @@ const ResourcesAlignment = ({
             >
               <Alignments
                 selectsData={selectsData}
-                triggerParent={triggerParent}
                 subject={subject}
                 curriculum={curriculum}
                 formattedCuriculums={formattedCuriculums}

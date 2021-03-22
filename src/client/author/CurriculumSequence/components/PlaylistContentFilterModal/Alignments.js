@@ -2,10 +2,10 @@ import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { Select } from 'antd'
 import React from 'react'
 import { ItemBody } from '../../../../assessment/containers/QuestionMetadata/styled/ItemBody'
+import { triggerParent } from '../ResourcesAlignment'
 
 const Alignments = ({
   selectsData,
-  triggerParent,
   subject,
   curriculum,
   formattedCuriculums,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -18,6 +18,7 @@ import NoDataNotification from '../../../common/components/NoDataNotification'
 import { assignmentIdsByTestIdSelector } from '../../Assignments/ducks'
 import { updateTestIdRealTimeAction } from '../../sharedDucks/AssignmentModule/ducks'
 import { setAssignmentIsPausedAction } from '../../sharedDucks/ReportsModule/ducks'
+import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 
 const Content = ({
   flag,
@@ -33,6 +34,11 @@ const Content = ({
   allClasses,
   userId,
 }) => {
+  const [
+    showVideoResourcePreviewModal,
+    seShowVideoResourcePreviewModal,
+  ] = useState(null)
+
   useEffect(() => {
     fetchAssignments(currentGroup)
   }, [currentChild, currentGroup])
@@ -68,6 +74,9 @@ const Content = ({
     return <Spin size="large" />
   }
   const { highlightAssignment } = state
+  const setEmbeddedVideoPreviewModal = (x) => seShowVideoResourcePreviewModal(x)
+  const resetVideoPreviewModal = () => seShowVideoResourcePreviewModal(null)
+
   return (
     <LayoutContent flag={flag}>
       <Wrapper>
@@ -85,10 +94,18 @@ const Content = ({
               type="reports"
               highlightMode={item._id === highlightAssignment}
               index={i}
+              setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             />
           ))
         )}
       </Wrapper>
+
+      {showVideoResourcePreviewModal && (
+        <EmbeddedVideoPreviewModal
+          isVisible={showVideoResourcePreviewModal}
+          closeCallback={resetVideoPreviewModal}
+        />
+      )}
     </LayoutContent>
   )
 }

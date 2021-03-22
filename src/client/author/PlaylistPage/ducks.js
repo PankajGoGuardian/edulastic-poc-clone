@@ -2,11 +2,12 @@ import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
 import { call, put, all, takeEvery, select } from 'redux-saga/effects'
 import { push, replace } from 'connected-react-router'
-import { omit, get, set, isNumber } from 'lodash'
+import { omit, get, set, isNumber, isEmpty } from 'lodash'
 import {
   curriculumSequencesApi,
   contentSharingApi,
   testsApi,
+  resourcesApi,
 } from '@edulastic/api'
 import produce from 'immer'
 import { notification } from '@edulastic/common'
@@ -491,6 +492,8 @@ function addSubresource(entity, payload) {
     standardIdentifiers,
     status,
     contentSubType,
+    hasStandardsOnCreation,
+    standards = [],
     ...itemObj
   } = item
   const newEntity = produce(entity, (draft) => {
@@ -500,7 +503,14 @@ function addSubresource(entity, payload) {
     const resources = draft.modules[moduleIndex].data[itemIndex].resources
 
     if (!resources.find((x) => x.contentId === contentId)) {
-      resources.push({ contentId, contentType, contentSubType, ...itemObj })
+      const updateStandards = !hasStandardsOnCreation && standards.length < 15
+      resources.push({
+        contentId,
+        contentType,
+        contentSubType,
+        updateStandards,
+        ...itemObj,
+      })
       draft.modules[moduleIndex].data[itemIndex].resources = resources
     }
   })
@@ -854,10 +864,21 @@ function* updatePlaylistSaga({ payload }) {
       'testItems',
     ])
 
+    const resourceMap = {}
     dataToSend.modules = dataToSend.modules.map((mod) => {
-      mod.data = mod.data.map((test) =>
-        omit(test, ['standards', 'alignment', 'assignments'])
-      )
+      mod.data = mod.data.map((test) => {
+        if (test.contentType === 'test' && test.resources) {
+          const testId = test.contentId
+          test.resources = test.resources.map((resource) => {
+            const { contentId: resourceId, updateStandards } = resource
+            if (updateStandards) {
+              resourceMap[testId] = [...(resourceMap[testId] || []), resourceId]
+            }
+            return omit(resource, ['updateStandards'])
+          })
+        }
+        return omit(test, ['standards', 'alignment', 'assignments'])
+      })
       return mod
     })
 
@@ -866,6 +887,9 @@ function* updatePlaylistSaga({ payload }) {
       data: dataToSend,
     })
 
+    if (!isEmpty(resourceMap)) {
+      yield call(resourcesApi.updateStandards, resourceMap)
+    }
     yield put(updatePlaylistSuccessAction(entity))
     if (!payload.hideNotification) {
       yield call(notification, {

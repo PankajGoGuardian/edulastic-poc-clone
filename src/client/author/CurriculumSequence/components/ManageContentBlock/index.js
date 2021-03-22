@@ -430,6 +430,8 @@ const ManageContentBlock = (props) => {
             addResource={addResource}
             alignment={alignment}
             setAlignment={setAlignment}
+            selectedStandards={selectedStandards}
+            setSelectedStandards={setSelectedStandards}
           />
         )}
 
@@ -441,6 +443,8 @@ const ManageContentBlock = (props) => {
             externalToolsProviders={externalToolsProviders}
             alignment={alignment}
             setAlignment={setAlignment}
+            selectedStandards={selectedStandards}
+            setSelectedStandards={setSelectedStandards}
           />
         )}
       </ManageContentOuterWrapper>

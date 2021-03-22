@@ -37,7 +37,7 @@ const WebsiteResourceModal = (props) => {
 
   const submitCallback = () => {
     const validationStatus = validateFields()
-    const selectedStandardIds = selectedStandards?.map((x) => x._id)
+    const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
     if (!validationStatus) {
       addResource({
         contentTitle: title,

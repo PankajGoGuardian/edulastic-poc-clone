@@ -21,7 +21,7 @@ const SET_REPORTS_PREV_MAR_FILTER_DATA =
 const SET_FILTERS = '[reports] set mar filters'
 const SET_TEST_ID = '[reports] set mar testId'
 const SET_TEMP_DD_FILTER = '[reports] set mar tempDdFilter'
-const SET_TAGS_DATA = '[reports] set mar tagsData'
+const SET_TEMP_TAGS_DATA = '[reports] set mar temp tempTagsData'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -35,7 +35,7 @@ export const setPrevMARFilterDataAction = createAction(
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setTestIdAction = createAction(SET_TEST_ID)
 export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
-export const setTagsDataAction = createAction(SET_TAGS_DATA)
+export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -78,9 +78,9 @@ export const getTempDdFilterSelector = createSelector(
   (state) => state.tempDdFilter
 )
 
-export const getTagsDataSelector = createSelector(
+export const getTempTagsDataSelector = createSelector(
   stateSelector,
-  (state) => state.tagsData
+  (state) => state.tempTagsData
 )
 
 export const getReportsPrevMARFilterData = createSelector(
@@ -111,7 +111,7 @@ const initialState = {
   },
   testId: [],
   tempDdFilter: {},
-  tagsData: {},
+  tempTagsData: {},
   loading: false,
 }
 
@@ -173,8 +173,8 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
   [SET_TEMP_DD_FILTER]: (state, { payload }) => {
     state.tempDdFilter = payload
   },
-  [SET_TAGS_DATA]: (state, { payload }) => {
-    state.tagsData = payload
+  [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
+    state.tempTagsData = payload
   },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [SET_REPORTS_PREV_MAR_FILTER_DATA]: (state, { payload }) => {

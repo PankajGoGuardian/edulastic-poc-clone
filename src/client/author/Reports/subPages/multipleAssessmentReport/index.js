@@ -28,8 +28,8 @@ import {
   getMAFilterDemographics,
   getTempDdFilterSelector,
   setTempDdFilterAction,
-  getTagsDataSelector,
-  setTagsDataAction,
+  getTempTagsDataSelector,
+  setTempTagsDataAction,
 } from './common/filterDataDucks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { getSharingState, setSharingStateAction } from '../../ducks'
@@ -54,8 +54,8 @@ const MultipleAssessmentReportContainer = (props) => {
     MARFilterData: _MARFilterData,
     tempDdFilter,
     setTempDdFilter,
-    tagsData,
-    setTagsData,
+    tempTagsData,
+    setTempTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
@@ -159,22 +159,21 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   const onGoClick = (_settings) => {
-    if (_settings.selectedTests) {
-      const obj = {}
-      const arr = Object.keys(_settings.filters)
-      arr.forEach((item) => {
-        const val =
-          _settings.filters[item] === 'All' ? '' : _settings.filters[item]
-        obj[item] = val
-      })
-      const { selectedTests = [] } = _settings
-      setMARSettings({
-        requestFilters: {
-          ...obj,
-          testIds: selectedTests.join(),
-        },
-      })
-    }
+    const obj = {}
+    const arr = Object.keys(_settings.filters)
+    arr.forEach((item) => {
+      const val =
+        _settings.filters[item] === 'All' ? '' : _settings.filters[item]
+      obj[item] = val
+    })
+    const { selectedTests = [] } = _settings
+    setMARSettings({
+      requestFilters: {
+        ...obj,
+        testIds: selectedTests.join(),
+      },
+      tagsData: { ..._settings.tagsData },
+    })
     setShowApply(false)
   }
 
@@ -183,8 +182,8 @@ const MultipleAssessmentReportContainer = (props) => {
       ...tempDdFilter,
       [comData]: selected.key === 'all' ? '' : selected.key,
     })
-    setTagsData({
-      ...tagsData,
+    setTempTagsData({
+      ...tempTagsData,
       [comData]: selected,
     })
     setShowApply(true)
@@ -250,14 +249,15 @@ const MultipleAssessmentReportContainer = (props) => {
           extraFilters={extraFilters}
           tempDdFilter={tempDdFilter}
           setTempDdFilter={setTempDdFilter}
-          tagsData={tagsData}
-          setTagsData={setTagsData}
+          tempTagsData={tempTagsData}
+          setTempTagsData={setTempTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
           showFilter={showFilter}
           toggleFilter={toggleFilter}
+          tagsData={settings.tagsData}
         />
       </SubHeader>
       <ReportContainer>
@@ -323,7 +323,7 @@ const ConnectedMultipleAssessmentReportContainer = connect(
     settings: getReportsMARSettings(state),
     MARFilterData: getReportsMARFilterData(state),
     tempDdFilter: getTempDdFilterSelector(state),
-    tagsData: getTagsDataSelector(state),
+    tempTagsData: getTempTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
   }),
@@ -331,7 +331,7 @@ const ConnectedMultipleAssessmentReportContainer = connect(
     setMARSettings: setMARSettingsAction,
     resetAllReports: resetAllReportsAction,
     setTempDdFilter: setTempDdFilterAction,
-    setTagsData: setTagsDataAction,
+    setTempTagsData: setTempTagsDataAction,
     setSharingState: setSharingStateAction,
   }
 )(MultipleAssessmentReportContainer)

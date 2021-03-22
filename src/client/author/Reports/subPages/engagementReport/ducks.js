@@ -41,6 +41,7 @@ const initialState = {
     subject: '',
     assessmentTypes: '',
   },
+  tagsData: {},
 }
 
 export const reportERSettingsReducer = createReducer(initialState, {

@@ -5,7 +5,6 @@ import { get, isEmpty, pickBy } from 'lodash'
 import qs from 'qs'
 
 import { Row, Col } from 'antd'
-import { EduButton } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 
 import FilterTags from '../../../../common/components/FilterTags'
@@ -17,13 +16,14 @@ import {
   ReportFiltersContainer,
   ReportFiltersWrapper,
   FilterLabel,
+  StyledEduButton,
 } from '../../../../common/styled'
 
 import {
   getFiltersSelector,
   setFiltersAction,
-  getTagsDataSelector,
-  setTagsDataAction,
+  getTempTagsDataSelector,
+  setTempTagsDataAction,
 } from '../filterDataDucks'
 import { getUser } from '../../../../../src/selectors/user'
 
@@ -43,11 +43,12 @@ const EngagementReportFilters = ({
   showFilter,
   toggleFilter,
   setFirstLoad,
+  tagsData,
   user,
   filters,
   setFilters,
-  tagsData,
-  setTagsData,
+  tempTagsData,
+  setTempTagsData,
   onGoClick: _onGoClick,
 }) => {
   const assessmentTypesRef = useRef()
@@ -80,7 +81,7 @@ const EngagementReportFilters = ({
       assessmentTypes: search.assessmentTypes || '',
     }
     const assessmentTypesArr = (search.assessmentTypes || '').split(',')
-    const _tagsData = {
+    const _tempTagsData = {
       termId: urlSchoolYear,
       grade: urlGrade,
       subject: urlSubject,
@@ -88,15 +89,16 @@ const EngagementReportFilters = ({
         assessmentTypesArr.includes(a.key)
       ),
     }
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
     setFilters(_filters)
-    _onGoClick({ filters: { ..._filters } })
+    _onGoClick({ filters: { ..._filters }, tagsData: { ..._tempTagsData } })
     setFirstLoad(false)
   }, [])
 
   const onGoClick = (_settings = {}) => {
     const settings = {
       filters: { ...filters },
+      tagsData: { ...tempTagsData },
       ..._settings,
     }
     setShowApply(false)
@@ -106,16 +108,16 @@ const EngagementReportFilters = ({
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     // update tags data
-    const _tagsData = { ...tagsData, [keyName]: selected }
+    const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
-      delete _tagsData[keyName]
+      delete _tempTagsData[keyName]
     }
     const _filters = { ...filters }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
-    resetStudentFilters(_tagsData, _filters, keyName, _selected)
-    setTagsData(_tagsData)
+    resetStudentFilters(_tempTagsData, _filters, keyName, _selected)
+    setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
@@ -124,14 +126,13 @@ const EngagementReportFilters = ({
   }
 
   const handleCloseTag = (type, { key }) => {
-    const _tagsData = { ...tagsData }
-    // handles tempDdFilters
+    const _tempTagsData = { ...tempTagsData }
     const _filters = { ...filters }
-    resetStudentFilters(_tagsData, _filters, type, '')
+    resetStudentFilters(_tempTagsData, _filters, type, '')
     // handles single selection filters
     if (filters[type] === key) {
       _filters[type] = staticDropDownData.initialFilters[type]
-      delete _tagsData[type]
+      delete _tempTagsData[type]
     }
     // handles multiple selection filters
     else if (filters[type].includes(key)) {
@@ -139,10 +140,10 @@ const EngagementReportFilters = ({
         .split(',')
         .filter((d) => d !== key)
         .join(',')
-      _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+      _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
     }
     setFilters(_filters)
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
     setShowApply(true)
     toggleFilter(null, true)
   }
@@ -157,7 +158,7 @@ const EngagementReportFilters = ({
         handleCloseTag={handleCloseTag}
       />
       <ReportFiltersContainer visible={!reportId}>
-        <EduButton
+        <StyledEduButton
           data-cy="filters"
           isGhost={!showFilter}
           onClick={toggleFilter}
@@ -165,7 +166,7 @@ const EngagementReportFilters = ({
         >
           <IconFilter width={15} height={15} />
           FILTERS
-        </EduButton>
+        </StyledEduButton>
         <ReportFiltersWrapper visible={showFilter}>
           <Row>
             <Col span={24} style={{ padding: '10px 5px 0 5px' }}>
@@ -260,7 +261,7 @@ const EngagementReportFilters = ({
               </Row>
             </Col>
             <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
-              <EduButton
+              <StyledEduButton
                 width="25%"
                 height="40px"
                 style={{ maxWidth: '200px' }}
@@ -270,8 +271,8 @@ const EngagementReportFilters = ({
                 onClick={(e) => toggleFilter(e, false)}
               >
                 Cancel
-              </EduButton>
-              <EduButton
+              </StyledEduButton>
+              <StyledEduButton
                 width="25%"
                 height="40px"
                 style={{ maxWidth: '200px' }}
@@ -281,7 +282,7 @@ const EngagementReportFilters = ({
                 onClick={() => onGoClick()}
               >
                 Apply
-              </EduButton>
+              </StyledEduButton>
             </Col>
           </Row>
         </ReportFiltersWrapper>
@@ -295,11 +296,11 @@ const enhance = compose(
     (state) => ({
       user: getUser(state),
       filters: getFiltersSelector(state),
-      tagsData: getTagsDataSelector(state),
+      tempTagsData: getTempTagsDataSelector(state),
     }),
     {
       setFilters: setFiltersAction,
-      setTagsData: setTagsDataAction,
+      setTempTagsData: setTempTagsDataAction,
     }
   )
 )

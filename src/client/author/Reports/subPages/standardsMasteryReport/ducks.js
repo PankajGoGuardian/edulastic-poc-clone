@@ -50,6 +50,7 @@ const initialState = {
     profileId: '',
     domainIds: '',
   },
+  tagsData: {},
 }
 
 export const reportSMRSettingsReducer = createReducer(initialState, {

@@ -8,19 +8,25 @@ import { FlexRow } from '../../styled'
 // ExternalVideoLink modal to add embedded video links
 
 const ExternalVideoLink = (props) => {
-  const { closeCallback, addResource } = props
+  const {
+    closeCallback,
+    addResource,
+    alignment,
+    setAlignment,
+    selectedStandards,
+    setSelectedStandards,
+  } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
-
-  useEffect(() => clearFields, [])
 
   const clearFields = () => {
     setTitle('')
     setDescription('')
     setUrl('')
   }
+  useEffect(() => clearFields, [])
 
   const validateFields = () => {
     if (!title) return 'Title is required'
@@ -31,12 +37,14 @@ const ExternalVideoLink = (props) => {
 
   const submitCallback = () => {
     const validationStatus = validateFields()
+    const selectedStandardIds = selectedStandards?.map((x) => x._id)
     if (!validationStatus) {
       addResource({
         contentTitle: title,
         contentDescription: description,
         contentUrl: url,
         contentType: 'video_resource',
+        standards: selectedStandardIds,
       })
       closeCallback()
     } else notification({ type: 'warn', msg: validationStatus })
@@ -77,7 +85,11 @@ const ExternalVideoLink = (props) => {
         />
       </FlexRow>
       <FlexRow>
-        <ResourcesAlignment />
+        <ResourcesAlignment
+          alignment={alignment}
+          setAlignment={setAlignment}
+          setSelectedStandards={setSelectedStandards}
+        />
       </FlexRow>
     </EdulasticResourceModal>
   )

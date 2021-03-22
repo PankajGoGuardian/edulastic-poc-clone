@@ -122,6 +122,9 @@ const ManageContentBlock = (props) => {
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(
     false
   )
+  const [alignment, setAlignment] = useState({})
+  const [selectedStandards, setSelectedStandards] = useState([])
+
   const [
     isExternalVideoResourceModal,
     setExternalVideoResourceModal,
@@ -413,6 +416,10 @@ const ManageContentBlock = (props) => {
             closeCallback={() => setWebsiteUrlResourceModal(false)}
             isVisible={isWebsiteUrlResourceModal}
             addResource={addResource}
+            alignment={alignment}
+            setAlignment={setAlignment}
+            selectedStandards={selectedStandards}
+            setSelectedStandards={setSelectedStandards}
           />
         )}
 
@@ -421,6 +428,8 @@ const ManageContentBlock = (props) => {
             closeCallback={() => setExternalVideoResourceModal(false)}
             isVisible={isExternalVideoResourceModal}
             addResource={addResource}
+            alignment={alignment}
+            setAlignment={setAlignment}
           />
         )}
 
@@ -430,6 +439,8 @@ const ManageContentBlock = (props) => {
             isVisible={isLTIResourceModal}
             addResource={addResource}
             externalToolsProviders={externalToolsProviders}
+            alignment={alignment}
+            setAlignment={setAlignment}
           />
         )}
       </ManageContentOuterWrapper>

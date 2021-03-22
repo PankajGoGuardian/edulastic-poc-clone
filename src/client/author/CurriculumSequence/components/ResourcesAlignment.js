@@ -58,8 +58,10 @@ const ResourcesAlignment = ({
   updateDefaultCurriculum,
   updateDefaultSubject,
   updateDefaultGrades,
+  alignment,
+  setAlignment,
+  setSelectedStandards = () => {},
 }) => {
-  const [alignment, setAlignment] = useState({})
   const [showModal, setShowModal] = useState(false)
 
   const { elo: curriculumStandardsELO = [], tlo: curriculumStandardsTLO = [] } =
@@ -136,6 +138,8 @@ const ResourcesAlignment = ({
     } else {
       newStandards = [...standards, newStandard]
     }
+
+    setSelectedStandards(newStandards)
     handleEditAlignment({
       standards: newStandards,
     })
@@ -177,6 +181,7 @@ const ResourcesAlignment = ({
       (el) => el.identifier !== removedElement
     )
     handleEditAlignment({ standards: newStandards })
+    setSelectedStandards(newStandards)
   }
 
   const handleApply = (data) => {
@@ -195,6 +200,7 @@ const ResourcesAlignment = ({
       standards: data.eloStandards,
     })
 
+    setSelectedStandards(data.eloStandards)
     setShowModal(false)
   }
 
@@ -339,6 +345,7 @@ const ResourcesAlignment = ({
           curriculumStandardsLoading={curriculumStandardsLoading}
           editAlignment={handleEditAlignment}
           alignmentIndex={0}
+          isPlaylistView
         />
       )}
     </Row>

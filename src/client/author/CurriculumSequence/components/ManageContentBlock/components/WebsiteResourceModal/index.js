@@ -8,19 +8,25 @@ import { FlexRow } from '../../styled'
 // WebsiteResource modal to add external links
 
 const WebsiteResourceModal = (props) => {
-  const { closeCallback, addResource } = props
+  const {
+    closeCallback,
+    addResource,
+    alignment,
+    setAlignment,
+    selectedStandards,
+    setSelectedStandards,
+  } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
-
-  useEffect(() => clearFields, [])
 
   const clearFields = () => {
     setTitle('')
     setDescription('')
     setUrl('')
   }
+  useEffect(() => clearFields, [])
 
   const validateFields = () => {
     if (!title) return 'Title is required'
@@ -31,12 +37,14 @@ const WebsiteResourceModal = (props) => {
 
   const submitCallback = () => {
     const validationStatus = validateFields()
+    const selectedStandardIds = selectedStandards?.map((x) => x._id)
     if (!validationStatus) {
       addResource({
         contentTitle: title,
         contentDescription: description,
         contentUrl: url,
         contentType: 'website_resource',
+        standards: selectedStandardIds,
       })
       closeCallback()
     } else notification({ type: 'warn', msg: validationStatus })
@@ -77,7 +85,11 @@ const WebsiteResourceModal = (props) => {
         />
       </FlexRow>
       <FlexRow>
-        <ResourcesAlignment />
+        <ResourcesAlignment
+          alignment={alignment}
+          setAlignment={setAlignment}
+          setSelectedStandards={setSelectedStandards}
+        />
       </FlexRow>
     </EdulasticResourceModal>
   )

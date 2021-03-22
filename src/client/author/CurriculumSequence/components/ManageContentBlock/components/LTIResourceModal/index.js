@@ -15,7 +15,15 @@ import { FlexRow } from '../../styled'
 // LTIResourceModal modal to external lti links
 
 const LTIResourceModal = (props) => {
-  const { closeCallback, addResource, externalToolsProviders = [] } = props
+  const {
+    closeCallback,
+    addResource,
+    alignment,
+    setAlignment,
+    externalToolsProviders = [],
+    selectedStandards,
+    setSelectedStandards,
+  } = props
 
   const [isAddNew, setAddNew] = useState(false)
   const [title, setTitle] = useState('')
@@ -25,8 +33,6 @@ const LTIResourceModal = (props) => {
   const [privacy, setPrivacy] = useState('')
   const [configurationType, setConfigType] = useState('')
   const [matchBy, setMatchBy] = useState('')
-
-  useEffect(() => clearFields, [])
 
   const clearFields = () => {
     setTitle('')
@@ -39,6 +45,7 @@ const LTIResourceModal = (props) => {
     setAddNew(false)
   }
 
+  useEffect(() => clearFields, [])
   const validateFields = () => {
     if (!title) return 'Title is required'
     if (!url) return 'URL is required'
@@ -54,11 +61,13 @@ const LTIResourceModal = (props) => {
 
   const submitCallback = () => {
     const validationStatus = validateFields()
+    const selectedStandardIds = selectedStandards?.map((x) => x._id)
     if (!validationStatus) {
       addResource({
         contentTitle: title,
         contentUrl: url,
         contentType: 'lti_resource',
+        standards: selectedStandardIds,
         data: {
           consumerKey,
           sharedSecret,
@@ -184,7 +193,11 @@ const LTIResourceModal = (props) => {
         </>
       )}
       <FlexRow>
-        <ResourcesAlignment />
+        <ResourcesAlignment
+          alignment={alignment}
+          setAlignment={setAlignment}
+          setSelectedStandards={setSelectedStandards}
+        />
       </FlexRow>
     </EdulasticResourceModal>
   )

@@ -78,8 +78,6 @@ const ManageContentBlock = (props) => {
     setGradesAction,
     setSubjectAction,
     setCollectionAction,
-    setStandardsAction,
-    setCurriculumAction,
     resetAndFetchTests,
     searchStrings,
     setTestSearchAction,
@@ -170,6 +168,8 @@ const ManageContentBlock = (props) => {
   const closeContentFilterModal = () => setShowContentFilterModal(false)
 
   const handleApplyFilters = () => {
+    const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
+    console.log('selectedStandardIds', selectedStandardIds)
     resetAndFetchTests()
     closeContentFilterModal()
   }
@@ -417,10 +417,11 @@ const ManageContentBlock = (props) => {
             onGradesChange={(prop) => setGradesAction(prop)}
             onSubjectChange={(prop) => setSubjectAction(prop)}
             onCollectionChange={(prop) => setCollectionAction(prop)}
-            onStandardsChange={(prop) => setStandardsAction(prop)}
-            onCurriculumChange={(prop) => setCurriculumAction(prop)}
             handleApplyFilters={handleApplyFilters}
             searchResourceBy={searchResourceBy}
+            alignment={alignment}
+            setAlignment={setAlignment}
+            setSelectedStandards={setSelectedStandards}
           />
         )}
 
@@ -511,8 +512,6 @@ const enhance = compose(
       setSubjectAction: slice.actions?.setSubjectAction,
       setGradesAction: slice.actions?.setGradesAction,
       setCollectionAction: slice.actions?.setCollectionAction,
-      setStandardsAction: slice.actions?.setStandardsAction,
-      setCurriculumAction: slice.actions?.setCurriculumAction,
       resetAndFetchTests: slice.actions?.resetAndFetchTests,
       setTestSearchAction: slice.actions?.setTestSearchAction,
       showPreviewModal: slice.actions?.showTestPreviewModal,

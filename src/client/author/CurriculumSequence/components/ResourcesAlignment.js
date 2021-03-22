@@ -15,7 +15,6 @@ import styled from 'styled-components'
 import CustomTreeSelect from '../../../assessment/containers/QuestionMetadata/CustomTreeSelect'
 import RecentStandardsList from '../../../assessment/containers/QuestionMetadata/RecentStandardsList'
 import StandardsModal from '../../../assessment/containers/QuestionMetadata/StandardsModal'
-import { ItemBody } from '../../../assessment/containers/QuestionMetadata/styled/ItemBody'
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
@@ -34,6 +33,7 @@ import {
   standardsSelector,
 } from '../../src/selectors/dictionaries'
 import { selectsData } from '../../TestPage/components/common'
+import Alignments from './PlaylistContentFilterModal/Alignments'
 
 const defaultAlignment = {
   standards: [],
@@ -61,6 +61,7 @@ const ResourcesAlignment = ({
   alignment,
   setAlignment,
   setSelectedStandards = () => {},
+  isVerticalView,
 }) => {
   const [showModal, setShowModal] = useState(false)
 
@@ -206,74 +207,50 @@ const ResourcesAlignment = ({
 
   return (
     <Row style={{ width: '100%' }}>
-      <FieldLabel>Standards (optional)</FieldLabel>
+      {!isVerticalView && <FieldLabel>Standards (optional)</FieldLabel>}
       <Row gutter={24}>
-        <Col md={12}>
-          <CustomTreeSelect
-            data-cy="subjectStandardSet"
-            title={`${curriculum}${curriculum && grades.length ? ' - ' : ''}${
-              grades.length ? 'Grade - ' : ''
-            }${grades.length ? grades : ''}`}
-          >
-            <>
-              <ItemBody data-cy="subjectItem">
-                <FieldLabel>{t('component.options.subject')}</FieldLabel>
-                <SelectInputStyled
-                  getPopupContainer={triggerParent}
-                  data-cy="subjectSelect"
-                  value={subject}
-                  onChange={setSubject}
-                >
-                  {selectsData.allSubjects.map(({ text, value }) =>
-                    value ? (
-                      <Select.Option key={value} value={value}>
-                        {text}
-                      </Select.Option>
-                    ) : (
-                      ''
-                    )
-                  )}
-                </SelectInputStyled>
-              </ItemBody>
-              <ItemBody data-cy="standardItem">
-                <FieldLabel>{t('component.options.standardSet')}</FieldLabel>
-                <SelectInputStyled
-                  data-cy="standardSetSelect"
-                  showSearch
-                  filterOption
-                  value={curriculum}
-                  onChange={handleChangeStandard}
-                  getPopupContainer={triggerParent}
-                >
-                  {formattedCuriculums.map(({ value, text, disabled }) => (
-                    <Select.Option key={value} value={text} disabled={disabled}>
-                      {text}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </ItemBody>
-              <ItemBody data-cy="gradeItem">
-                <FieldLabel>{t('component.options.grade')}</FieldLabel>
-                <SelectInputStyled
-                  data-cy="gradeSelect"
-                  mode="multiple"
-                  showSearch
-                  value={grades}
-                  onChange={setGrades}
-                  getPopupContainer={triggerParent}
-                >
-                  {selectsData.allGrades.map(({ text, value }) => (
-                    <Select.Option key={text} value={value}>
-                      {text}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </ItemBody>
-            </>
-          </CustomTreeSelect>
-        </Col>
-        <Col md={12}>
+        {isVerticalView ? (
+          <Col md={24}>
+            <Alignments
+              selectsData={selectsData}
+              triggerParent={triggerParent}
+              subject={subject}
+              curriculum={curriculum}
+              formattedCuriculums={formattedCuriculums}
+              grades={grades}
+              t={t}
+              setGrades={setGrades}
+              setSubject={setSubject}
+              handleChangeStandard={handleChangeStandard}
+              isVerticalView={isVerticalView}
+            />
+          </Col>
+        ) : (
+          <Col md={12}>
+            <CustomTreeSelect
+              data-cy="subjectStandardSet"
+              title={`${curriculum}${curriculum && grades.length ? ' - ' : ''}${
+                grades.length ? 'Grade - ' : ''
+              }${grades.length ? grades : ''}`}
+            >
+              <Alignments
+                selectsData={selectsData}
+                triggerParent={triggerParent}
+                subject={subject}
+                curriculum={curriculum}
+                formattedCuriculums={formattedCuriculums}
+                grades={grades}
+                t={t}
+                setGrades={setGrades}
+                setSubject={setSubject}
+                handleChangeStandard={handleChangeStandard}
+              />
+            </CustomTreeSelect>
+          </Col>
+        )}
+        <StyledCol className={isVerticalView && 'col-view'} md={12}>
           <div data-cy="searchStandardSelectItem">
+            {isVerticalView && <FieldLabel>Standards</FieldLabel>}
             <SelectInputStyled
               data-cy="searchStandardSelect"
               mode="multiple"
@@ -312,20 +289,22 @@ const ResourcesAlignment = ({
                 ))}
             </SelectInputStyled>
           </div>
-        </Col>
+          <IconWrapper className="expand-icon">
+            <IconExpandBox onClick={handleShowBrowseModal} />
+          </IconWrapper>
+        </StyledCol>
 
-        <IconWrapper>
-          <IconExpandBox onClick={handleShowBrowseModal} />
-        </IconWrapper>
-        {recentStandardsList && recentStandardsList.length > 0 && (
-          <Col xs={24}>
-            <RecentStandardsList
-              recentStandardsList={recentStandardsList}
-              standardsArr={standardsArr}
-              handleAddStandard={handleAddStandard}
-            />
-          </Col>
-        )}
+        {recentStandardsList &&
+          recentStandardsList.length > 0 &&
+          !isVerticalView && (
+            <Col xs={24}>
+              <RecentStandardsList
+                recentStandardsList={recentStandardsList}
+                standardsArr={standardsArr}
+                handleAddStandard={handleAddStandard}
+              />
+            </Col>
+          )}
       </Row>
       {showModal && (
         <StandardsModal
@@ -386,4 +365,14 @@ export const IconWrapper = styled.div`
   z-index: 1;
   color: ${themeColor};
   cursor: pointer;
+`
+export const StyledCol = styled(Col)`
+  &.col-view {
+    width: 100%;
+    margin-top: 15px;
+    position: relative;
+    .expand-icon {
+      top: 33px;
+    }
+  }
 `

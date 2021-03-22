@@ -9,7 +9,7 @@ import {
 import { FILTERS } from '../ManageContentBlock/ducks'
 import SELECT_DATA from '../../../TestPage/components/common/selectsData'
 import { Title, FlexRow } from './styled'
-import ResourcesFiltersModal from './ResourcesFiltersModal'
+import ResourcesAlignment from '../ResourcesAlignment'
 
 const PlaylistTestBoxFilter = (props) => {
   const {
@@ -22,7 +22,6 @@ const PlaylistTestBoxFilter = (props) => {
     standards = [],
     allStandards = [],
     onStandardsChange,
-    curriculum = '',
     allCurriculum = [],
     onCurriculumChange,
     onGradesChange,
@@ -37,6 +36,9 @@ const PlaylistTestBoxFilter = (props) => {
     onAuthorChange,
     handleApplyFilters,
     searchResourceBy,
+    alignment,
+    setAlignment,
+    setSelectedStandards,
   } = props
 
   const { allGrades, allSubjects, allStatus } = SELECT_DATA
@@ -71,16 +73,11 @@ const PlaylistTestBoxFilter = (props) => {
       centered
     >
       {searchResourceBy === 'resources' ? (
-        <ResourcesFiltersModal
-          subject={subject}
-          onSubjectChange={onSubjectChange}
-          allSubjects={allSubjects}
-          curriculum={curriculum}
-          onCurriculumChange={onCurriculumChange}
-          allCurriculum={allCurriculum}
-          standards={standards}
-          onStandardsChange={onStandardsChange}
-          allStandards={allStandards}
+        <ResourcesAlignment
+          alignment={alignment}
+          setAlignment={setAlignment}
+          setSelectedStandards={setSelectedStandards}
+          isVerticalView
         />
       ) : (
         <>

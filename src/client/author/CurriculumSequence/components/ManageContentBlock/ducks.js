@@ -57,8 +57,6 @@ const slice = createSlice({
     subject: '',
     grades: [],
     collection: '',
-    standards: [],
-    curriculums: [],
     sources: [],
     isLoading: false,
     loadedPage: 0,
@@ -105,12 +103,6 @@ const slice = createSlice({
     },
     setCollectionAction: (state, { payload }) => {
       state.collection = payload
-    },
-    setStandardsAction: (state, { payload }) => {
-      state.standards = payload
-    },
-    setCurriculumAction: (state, { payload }) => {
-      state.curriculums = payload
     },
     setSourcesAction: (state, { payload }) => {
       state.sources = payload

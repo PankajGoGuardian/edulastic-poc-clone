@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { uniqBy, map, round, reduce } from 'lodash'
@@ -428,6 +428,10 @@ const PerformanceAnalysisTable = ({
 
   const columns = getAnalysisColumns()
 
+  const scrollX = useMemo(() => columns?.length * 160 || '100%', [
+    columns?.length,
+  ])
+
   // format the student names in the data & sort in ascending order
   const dataSource = map(tableData, (d) => ({
     ...d,
@@ -442,7 +446,7 @@ const PerformanceAnalysisTable = ({
       isCsvDownloading={isCsvDownloading}
       tableToRender={AnalysisTable}
       dataSource={dataSource}
-      scroll={{ x: '100%' }}
+      scroll={{ x: scrollX }}
       columns={columns}
     />
   )

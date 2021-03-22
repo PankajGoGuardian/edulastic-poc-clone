@@ -48,17 +48,23 @@ const PlayerContentArea = ({
   const previousQuestionActivity = previousQuestionActivities[item._id]
   const responsiveWidth = getZoomedResponsiveWidth({
     windowWidth,
-    diff: 290,
+    diff:
+      playerSkinType.toLowerCase() ===
+      test.playerSkinValues.edulastic.toLowerCase()
+        ? 290
+        : 70,
     zoomLevel,
   })
-
+  const canScroll = playerSkinType !== test.playerSkinValues.edulastic
   return (
-    <Main ref={scrollContainerRef} zoomed={isZoomApplied} zoomLevel={zoomLevel}>
+    <Main zoomed={isZoomApplied} zoomLevel={zoomLevel} canScroll={canScroll}>
       <ScrollContext.Provider
         value={{ getScrollElement: () => scrollContainerRef.current }}
       >
         <MainContent
           skin
+          ref={scrollContainerRef}
+          zoomLevel={zoomLevel}
           responsiveWidth={responsiveWidth}
           className="scrollable-main-wrapper"
         >

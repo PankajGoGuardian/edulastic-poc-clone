@@ -196,7 +196,7 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '82px' : '47px',
+        marginTop: defaultAP ? '82px' : '95px',
       }
     }
     if (
@@ -205,7 +205,7 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '78px' : '38px',
+        marginTop: defaultAP ? '78px' : '95px',
       }
     }
     if (

@@ -3,9 +3,9 @@ import styled from 'styled-components'
 
 import Breadcrumb from '../../../../src/components/Breadcrumb'
 
-const SubHeader = ({ breadcrumbData, isCliUser, children }) =>
+const SubHeader = ({ breadcrumbData, isCliUser, alignment, children }) =>
   !isCliUser ? (
-    <SecondaryHeader>
+    <SecondaryHeader alignItems={alignment}>
       <HeaderTitle className="report-breadcrumb">
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </HeaderTitle>
@@ -40,7 +40,7 @@ const SecondaryHeader = styled.div`
   margin-bottom: 20px;
   padding-left: 5px;
   justify-content: space-between;
-  align-items: center;
+  align-items: ${({ alignItems }) => alignItems || 'center'};
   @media print {
     padding-left: 0px;
     .report-breadcrumb {

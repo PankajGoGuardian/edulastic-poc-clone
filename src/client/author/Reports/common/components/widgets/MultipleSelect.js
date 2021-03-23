@@ -74,6 +74,7 @@ const MultipleSelect = ({
         placeholder={placeholder}
         mode="multiple"
         dropdownStyle={dropdownStyle}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
       >
         {dataSource}
       </Select>

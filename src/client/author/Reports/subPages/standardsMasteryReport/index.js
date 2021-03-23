@@ -197,7 +197,7 @@ const StandardsMasteryReportContainer = (props) => {
           testIds: selectedTests.join(),
           domainIds: domainIds.join(),
         },
-        tagsData: { ..._settings.tagsData }
+        tagsData: { ..._settings.tagsData },
       })
     }
     setShowApply(false)
@@ -273,7 +273,11 @@ const StandardsMasteryReportContainer = (props) => {
           setShowModal={setSharingState}
         />
       )}
-      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
+      <SubHeader
+        breadcrumbData={breadcrumbData}
+        isCliUser={isCliUser}
+        alignment="baseline"
+      >
         <StandardsMasteryReportFilters
           isPrinting={isPrinting}
           reportId={reportId}

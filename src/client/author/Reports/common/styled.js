@@ -458,7 +458,33 @@ export const StyledDropDownContainer = styled(Col)`
     overflow: hidden;
     max-width: 100%;
     text-overflow: ellipsis;
+    border-radius: 2px;
     width: ${(props) => (props.width ? props.width : '100%')};
+  }
+  .ant-select-selection--multiple {
+    font-size: 11px;
+    border-radius: 2px;
+  }
+  .standards-mastery-report-domain-autocomplete {
+    .ant-select {
+      width: 100%;
+      height: 32px;
+    }
+    .ant-select-dropdown-menu-item-group {
+      font-size: 11px;
+      .ant-select-dropdown-menu-item {
+        padding: 4px 12px;
+      }
+      .ant-select-dropdown-menu-item-selected,
+      .ant-select-dropdown-menu-item-active {
+        background-color: ${themeColor};
+        color: #ffffff;
+      }
+      .ant-select-dropdown-menu-item,
+      .ant-select-dropdown-menu-submenu-title {
+        font-size: 11px;
+      }
+    }
   }
   @media print {
     display: none;

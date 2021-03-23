@@ -135,7 +135,7 @@ const TagsContainer = styled.div`
   justify-self: center;
   margin-right: auto;
   margin-left: 10px;
-  justify-content: flex-start;
+  justify-content: flex-end;
   flex-wrap: nowrap;
   .ant-tag {
     ${TagsStyle};

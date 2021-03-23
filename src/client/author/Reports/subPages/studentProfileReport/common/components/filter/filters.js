@@ -80,6 +80,7 @@ const IndependentFilterIds = [
 ]
 
 const StudentProfileReportFilters = ({
+  loc,
   isPrinting,
   onGoClick: _onGoClick,
   SPRFilterData,
@@ -182,6 +183,21 @@ const StudentProfileReportFilters = ({
       }
     }
   }, [])
+
+  const isTabRequired = (tabKey) => {
+    switch (tabKey) {
+      case staticDropDownData.filterSections.STUDENT_FILTERS.key:
+        return true
+      default:
+        return false
+    }
+  }
+
+  useEffect(() => {
+    if (showFilter && !isTabRequired(activeTabKey)) {
+      setActiveTabKey(staticDropDownData.filterSections.STUDENT_FILTERS.key)
+    }
+  }, [loc, showFilter])
 
   if (SPRFilterData !== prevSPRFilterData && !isEmpty(SPRFilterData)) {
     setPrevSPRFilterData(SPRFilterData)

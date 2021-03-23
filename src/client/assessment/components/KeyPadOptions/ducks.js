@@ -7,6 +7,8 @@ import isEmpty from 'lodash/isEmpty'
 
 import { userContextApi } from '@edulastic/api'
 import { math } from '@edulastic/constants'
+import notification from '@edulastic/common/src/components/Notification'
+
 import { getTestEntitySelector } from '../../../author/TestPage/ducks'
 
 const { symbols: predefinedKeypads } = math
@@ -83,6 +85,16 @@ export const allKeypadForTestSelector = createSelector(
 
 function* storeCustomKeypadSaga({ payload }) {
   try {
+    const previousKeypads = yield select(customKeypadSelector)
+    const { label } = payload || {}
+    const hasSameLabel = (keypad) => keypad.label?.trim() === label?.trim()
+    if (previousKeypads.find(hasSameLabel)) {
+      notification({
+        type: 'warn',
+        msg: `Keyboard name already exists`,
+      })
+      return
+    }
     yield call(userContextApi.storeCustomKeypad, payload)
     yield put({
       type: RETRIEVE_USER_CUSTOM_KEYPAD,

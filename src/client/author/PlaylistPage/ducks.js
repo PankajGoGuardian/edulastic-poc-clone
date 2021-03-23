@@ -502,7 +502,11 @@ function addSubresource(entity, payload) {
     }
     const resources = draft.modules[moduleIndex].data[itemIndex].resources
 
-    if (!resources.find((x) => x.contentId === contentId)) {
+    if (
+      !resources.find(
+        (x) => x.contentId === contentId && x.contentSubType === contentSubType
+      )
+    ) {
       const updateStandards = !hasStandardsOnCreation && standards.length < 15
       resources.push({
         contentId,

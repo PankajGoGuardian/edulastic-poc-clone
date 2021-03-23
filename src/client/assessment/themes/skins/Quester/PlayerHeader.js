@@ -7,9 +7,11 @@ import styled, { css } from 'styled-components'
 import { withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { test as testConstants } from '@edulastic/constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
-import { IconEduLogo, IconSignoutHighlight } from '@edulastic/icons'
+import {
+  IconEduLogo,
+  IconSignoutHighlight,
+  IconQuester,
+} from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -192,7 +194,7 @@ const PlayerHeader = ({
                       e.target.blur()
                     }}
                   >
-                    <FontAwesomeIcon icon={faAngleLeft} aria-hidden="true" />
+                    <IconQuester.IconPrevious />
                   </ControlBtn>
                 </Tooltip>
                 <Tooltip
@@ -209,11 +211,7 @@ const PlayerHeader = ({
                     }}
                     style={{ marginLeft: '15px' }}
                   >
-                    <FontAwesomeIcon
-                      icon={faAngleRight}
-                      aria-hidden="true"
-                      style={{ marginRight: '10px' }}
-                    />
+                    <IconQuester.IconNext style={{ marginRight: '10px' }} />
                     <span>{isLast() ? 'SUBMIT' : 'NEXT'}</span>
                   </ControlBtn>
                 </Tooltip>

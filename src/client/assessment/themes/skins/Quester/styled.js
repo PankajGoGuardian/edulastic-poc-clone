@@ -41,10 +41,19 @@ export const ControlBtn = styled.button`
   cursor: pointer;
   padding: 10px 20px;
   border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  svg {
+    fill: ${button.textColor};
+  }
   &:hover {
     background-color: ${button.textColor};
     color: ${button.background};
     border: 1px solid ${button.background};
+    svg {
+      fill: ${button.background};
+    }
   }
   &:focus {
     outline: none;

@@ -239,12 +239,12 @@ export function useFullScreenListener({
       Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
       setTimeout(
-        (win) => {
+        (win, _disableSave) => {
           const { pathname: _path } = win.location
           if (!_path.includes('/uta/')) {
             window.sessionStorage.removeItem('totalTimeInBlur')
           }
-          if (!_path.includes('/uta/') && disableSave) {
+          if (!_path.includes('/uta/') && _disableSave) {
             pauseAssignment({
               history,
               assignmentId,
@@ -257,7 +257,8 @@ export function useFullScreenListener({
           }
         },
         5000,
-        window
+        window,
+        disableSave
       )
     }
   }, [enabled])
@@ -527,7 +528,7 @@ const AssessmentContainer = ({
   const {
     restrictNavigationOut = false,
     restrictNavigationOutAttemptsThreshold,
-    blockSaveAndContinue = false,
+    blockSaveAndContinue = assignmentObj?.blockSaveAndContinue,
   } = restProps
 
   const hidePause = blockSaveAndContinue

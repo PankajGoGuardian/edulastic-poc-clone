@@ -410,7 +410,11 @@ const SingleAssessmentReportFilters = ({
           ) : (
             <Row>
               <Col span={24} style={{ padding: '0 5px' }}>
-                <Tabs activeKey={activeTabKey} onChange={setActiveTabKey}>
+                <Tabs
+                  animated={false}
+                  activeKey={activeTabKey}
+                  onChange={setActiveTabKey}
+                >
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.TEST_FILTERS.key}
                     tab={staticDropDownData.filterSections.TEST_FILTERS.title}

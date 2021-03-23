@@ -357,7 +357,11 @@ const StudentProfileReportFilters = ({
         <ReportFiltersWrapper visible={showFilter}>
           <Row>
             <Col span={24} style={{ padding: '0 5px' }}>
-              <Tabs activeKey={activeTabKey} onChange={setActiveTabKey}>
+              <Tabs
+                animated={false}
+                activeKey={activeTabKey}
+                onChange={setActiveTabKey}
+              >
                 <Tabs.TabPane
                   key={staticDropDownData.filterSections.STUDENT_FILTERS.key}
                   tab={staticDropDownData.filterSections.STUDENT_FILTERS.title}

@@ -115,9 +115,6 @@ const slice = createSlice({
       state.loadedPage = 0
       state.tests = []
     },
-    fetchPlaylistResources: (state) => {
-      state.isLoading = true
-    },
     setTestSearchAction: (state, { payload }) => {
       state.searchString = payload
     },
@@ -193,15 +190,6 @@ function* fetchTestsSaga() {
   }
 }
 
-function* fetchResourceFilterSaga({ payload }) {
-  try {
-    console.log('payload', payload)
-    yield put(slice.actions.resetAndFetchResources())
-  } catch (e) {
-    console.error('Error Occured: fetchExternalTools ', e)
-  }
-}
-
 function* fetchTestsBySearchString() {
   try {
     yield delay(600)
@@ -266,8 +254,9 @@ function* addResourceSaga({ payload }) {
   }
 }
 
-function* fetchResourceSaga() {
+function* fetchResourceSaga({ payload }) {
   try {
+    console.log('payload', payload)
     const result = yield call(resourcesApi.fetchResources)
     if (!result) {
       notification({ msg: result.error })
@@ -284,10 +273,6 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.fetchTests, fetchTestsSaga),
     yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsSaga),
-    yield takeEvery(
-      slice.actions.fetchPlaylistResources,
-      fetchResourceFilterSaga
-    ),
     yield takeLatest(
       slice.actions.setTestSearchAction,
       fetchTestsBySearchString

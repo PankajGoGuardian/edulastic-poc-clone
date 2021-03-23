@@ -21,6 +21,7 @@ import { CustomStyleBtn } from '../../../../styled/ButtonStyles'
 import { RadioLabel, RadioLabelGroup } from '../../../../styled/RadioWithLabel'
 import { InnerTitle } from '../../../../styled/InnerTitle'
 import utils from '../../common/utils'
+import { CONSTANT } from '../../Builder/config'
 
 class DrawingObjects extends Component {
   state = {
@@ -64,24 +65,24 @@ class DrawingObjects extends Component {
     }
 
     const iconsByToolName = {
-      point: () => <IconPoint {...options} />,
-      line: () => <IconLine {...options} />,
-      ray: () => <IconRay {...options} />,
-      segment: () => <IconSegment {...options} />,
-      vector: () => <IconVector {...options} />,
-      circle: () => <IconCircle {...options} />,
-      ellipse: () => <IconLine {...options} />,
-      hyperbola: () => <IconLine {...options} />,
-      tangent: () => <IconLine {...options} />,
-      secant: () => <IconLine {...options} />,
-      exp: () => <IconLine {...options} />,
-      logarithm: () => <IconLine {...options} />,
-      polynom: () => <IconLine {...options} />,
-      parabola: () => <IconParabola {...options} />,
-      parabola2: () => <IconParabola2 {...options} />,
-      sine: () => <IconSine {...options} />,
-      polygon: () => <IconPolygon {...options} />,
-      area: () => <IconArea {...options} />,
+      [CONSTANT.TOOLS.POINT]: () => <IconPoint {...options} />,
+      [CONSTANT.TOOLS.LINE]: () => <IconLine {...options} />,
+      [CONSTANT.TOOLS.RAY]: () => <IconRay {...options} />,
+      [CONSTANT.TOOLS.SEGMENT]: () => <IconSegment {...options} />,
+      [CONSTANT.TOOLS.VECTOR]: () => <IconVector {...options} />,
+      [CONSTANT.TOOLS.CIRCLE]: () => <IconCircle {...options} />,
+      [CONSTANT.TOOLS.ELLIPSE]: () => <IconLine {...options} />,
+      [CONSTANT.TOOLS.HYPERBOLA]: () => <IconLine {...options} />,
+      [CONSTANT.TOOLS.TANGENT]: () => <IconLine {...options} />,
+      [CONSTANT.TOOLS.SECANT]: () => <IconLine {...options} />,
+      [CONSTANT.TOOLS.EXPONENT]: () => <IconLine {...options} />,
+      [CONSTANT.TOOLS.LOGARITHM]: () => <IconLine {...options} />,
+      [CONSTANT.TOOLS.POLYNOM]: () => <IconLine {...options} />,
+      [CONSTANT.TOOLS.PARABOLA]: () => <IconParabola {...options} />,
+      [CONSTANT.TOOLS.PARABOLA2]: () => <IconParabola2 {...options} />,
+      [CONSTANT.TOOLS.SIN]: () => <IconSine {...options} />,
+      [CONSTANT.TOOLS.POLYGON]: () => <IconPolygon {...options} />,
+      [CONSTANT.TOOLS.AREA]: () => <IconArea {...options} />,
     }
 
     return iconsByToolName[toolName]()

@@ -105,7 +105,7 @@ function clean(board) {
 function getConfig(cos) {
   return {
     _type: cos.type,
-    type: CONSTANT.TOOLS.SIN,
+    type: CONSTANT.TOOLS.COS,
     id: cos.id,
     label: cos.labelHTML || false,
     baseColor: cos.baseColor,

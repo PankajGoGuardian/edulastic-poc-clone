@@ -42,6 +42,7 @@ const appLanguages = require('./const/languages')
 const fileTypes = require('./const/fileTypes')
 const subscriptions = require('./const/subscriptions')
 const assignmentSettingSections = require('./const/assignmentSettingSections')
+const graph = require('./const/graph')
 
 module.exports = {
   question,
@@ -88,4 +89,5 @@ module.exports = {
   fileTypes,
   subscriptions,
   assignmentSettingSections,
+  graph,
 }

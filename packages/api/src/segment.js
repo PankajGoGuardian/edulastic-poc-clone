@@ -55,7 +55,7 @@ const analyticsIdentify = ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
     return
   }
-  if (user) {
+  if (user && user.orgData) {
     const {
       role = '',
       _id,

@@ -120,16 +120,17 @@ const PlayerFooter = ({
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
       <ActionContainer>
-        <PlusOrMinus>
-          <IconWrap className="hover-effect" onClick={handleZoomOut}>
-            <IconMinusRounded color={footer.textColor} />
-          </IconWrap>
-          <Devider />
-          <IconWrap className="hover-effect" onClick={handleZoomIn}>
-            <IconPlus color={footer.textColor} />
-          </IconWrap>
-        </PlusOrMinus>
-        <div>Zoom</div>
+        <IconWrap className="hover-effect" onClick={handleZoomOut}>
+          <IconMinusRounded color={footer.textColor} />
+        </IconWrap>
+        <span>ZOOM IN</span>
+      </ActionContainer>
+
+      <ActionContainer>
+        <IconWrap className="hover-effect" onClick={handleZoomIn}>
+          <IconPlus color={footer.textColor} />
+        </IconWrap>
+        <span>ZOOM OUT</span>
       </ActionContainer>
       {!blockNavigationToAnsweredQuestions && (
         <ActionContainer
@@ -322,6 +323,7 @@ const MainFooter = styled.div`
   border-top: 1px solid ${footer.border};
   color: ${footer.textColor};
   font-size: 13px;
+  height: 80px;
   .quester-question-audio-controller {
     position: relative;
     height: auto;
@@ -376,6 +378,8 @@ const ActionContainer = styled.div`
   padding: 8px 15px;
   transition: all 0.5s ease;
   cursor: pointer;
+  text-transform: uppercase;
+  font-size: 11px;
   ${(props) =>
     props.disabled &&
     `
@@ -399,19 +403,12 @@ const ActionContainer = styled.div`
     `}
 `
 
-const PlusOrMinus = styled.div`
-  border: 1px solid ${footer.textColor};
-  display: flex;
-  justify-content: space-between;
-  border-radius: 5px;
-  overflow: hidden;
-`
-
 const IconWrap = styled.span`
-  padding: 5px 20px;
+  padding: 4px 15px 0px 15px;
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  border: 1px solid ${footer.textColor};
   &:hover {
     background-color: ${footer.hover.background};
     color: ${footer.hover.color};
@@ -419,7 +416,7 @@ const IconWrap = styled.span`
 `
 const Devider = styled.div`
   width: 1px;
-  background: ${footer.textColor};
+  background: ${footer.hover.background};
 `
 
 const IconWrapper = styled.div`

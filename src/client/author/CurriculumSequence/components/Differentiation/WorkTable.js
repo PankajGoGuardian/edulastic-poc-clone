@@ -31,34 +31,20 @@ function ContentDropContainer({ children, ...props }) {
     }),
     drop: (item) => {
       const {
-        parentTestId,
         type,
         masteryRange,
         addTestToDifferentiation,
-        addResourceToDifferentiation,
-        addSubResourceToTestInDiff,
         addDifferentiationResources,
       } = props
-      if (props.dropType === 'activity') {
-        if (item.contentType === 'test') {
-          addTestToDifferentiation({
-            type: type.toLowerCase(),
-            testId: item.id,
-            testStandards: item.standardIdentifiers || [],
-            masteryRange,
-            title: item.contentTitle,
-            contentType: item.contentType,
-          })
-        } else {
-          addResourceToDifferentiation({
-            type: type.toLowerCase(),
-            contentId: item.id,
-            masteryRange,
-            contentTitle: item.contentTitle,
-            contentType: item.contentType,
-            contentUrl: item.contentUrl,
-          })
-        }
+      if (props.dropType === 'activity' && item.contentType === 'test') {
+        addTestToDifferentiation({
+          type: type.toLowerCase(),
+          testId: item.id,
+          testStandards: item.standardIdentifiers || [],
+          masteryRange,
+          title: item.contentTitle,
+          contentType: item.contentType,
+        })
       } else if (props.dropType === 'TOP_LEVEL_STUDENT_RESOURCE') {
         addDifferentiationResources({
           type: type.toLowerCase(),
@@ -67,16 +53,6 @@ function ContentDropContainer({ children, ...props }) {
           contentType: item.contentType,
           contentUrl: item.contentUrl,
           contentSubType: 'STUDENT',
-        })
-      } else {
-        addSubResourceToTestInDiff({
-          type: type.toLowerCase(),
-          contentId: item.id,
-          masteryRange,
-          contentTitle: item.contentTitle,
-          contentType: item.contentType,
-          contentUrl: item.contentUrl,
-          parentTestId,
         })
       }
     },
@@ -125,10 +101,8 @@ const InnerWorkTable = ({
   addResourceToDifferentiation,
   showNewActivity,
   showSupportingResource,
-  addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
   showResource,
-  removeSubResource,
   removeResourceFromDifferentiation,
   addDifferentiationResources,
   removeDifferentiationResources,
@@ -335,7 +309,6 @@ const InnerWorkTable = ({
         const containerProps = {
           type,
           masteryRange,
-          addResourceToDifferentiation,
           addTestToDifferentiation,
         }
         return (
@@ -346,30 +319,6 @@ const InnerWorkTable = ({
             >
               {record.description}
             </StyledDescription>
-            <SubResourceView
-              data={record}
-              mode="embedded"
-              disabled={record.status === 'ADDED'}
-              showResource={showResource}
-              setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-              removeSubResource={removeSubResource}
-              type={type.toLowerCase()}
-              inDiffrentiation
-            />
-            {showSupportingResource &&
-              activeHoverIndex === index &&
-              itemContentType !== 'test' &&
-              record.testId && (
-                <ContentDropContainer
-                  dropType="subResource"
-                  {...containerProps}
-                  parentTestId={record.testId}
-                  addSubResourceToTestInDiff={addSubResourceToTestInDiff}
-                >
-                  Supporting Resource
-                </ContentDropContainer>
-              )}
-
             {showNewActivity && activeHoverIndex === index && (
               <ContentDropContainer dropType="activity" {...containerProps}>
                 New Activity

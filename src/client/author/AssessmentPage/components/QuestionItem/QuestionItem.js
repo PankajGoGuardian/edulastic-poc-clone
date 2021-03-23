@@ -333,7 +333,9 @@ class QuestionItem extends React.Component {
       !!teacherComments?.text && (
         <DetailsContainer>
           <DetailTitle>{teacherComments.teacherName}:</DetailTitle>
-          <DetailContents>{teacherComments.text}</DetailContents>
+          <DetailContents data-cy="feedBack">
+            {teacherComments.text}
+          </DetailContents>
         </DetailsContainer>
       )
     )

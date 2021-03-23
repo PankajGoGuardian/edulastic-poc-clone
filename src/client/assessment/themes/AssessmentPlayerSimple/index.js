@@ -10,6 +10,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { withWindowSizes, notification } from '@edulastic/common'
 
 // actions
+import { playerSkinValues } from '@edulastic/constants/const/test'
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 // components
@@ -96,7 +97,7 @@ class AssessmentPlayerSimple extends React.Component {
 
   toggleToolsOpenStatus = (tool) => {
     let { toolsOpenStatus, enableCrossAction } = this.state
-    const { hasDrawingResponse } = this.props
+    const { hasDrawingResponse, playerSkinType } = this.props
     if (tool === 3 || tool === 5) {
       const index = toolsOpenStatus.indexOf(tool)
       if (index !== -1) {
@@ -111,9 +112,14 @@ class AssessmentPlayerSimple extends React.Component {
             !hasDrawingResponse &&
             showScratchpadInfoNotification(items[currentItem])
           ) {
+            const config =
+              playerSkinType === playerSkinValues.quester
+                ? { bottom: '64px' }
+                : {}
             notification({
               type: 'info',
               messageKey: 'scratchpadInfoMultipart',
+              ...config,
             })
           }
         }
@@ -135,11 +141,15 @@ class AssessmentPlayerSimple extends React.Component {
       answerChecksUsedForItem,
       settings,
       groupId,
+      playerSkinType,
     } = this.props
+    const config =
+      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
       return notification({
         type: 'warn',
         messageKey: 'checkAnswerLimitExceededForItem',
+        ...config,
       })
     checkAnswer(groupId)
     this.setState({ testItemState: value })

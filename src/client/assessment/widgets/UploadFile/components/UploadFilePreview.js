@@ -105,15 +105,17 @@ const UploadFilePreview = ({
             <Uploader onCompleted={uploadFinished} mt="26px" item={item} />
           )}
 
-          <SubTitle>Attachments</SubTitle>
-          {(!isEmpty(attachments) || !isEmpty(localAttachments)) && (
-            <FilesView
-              cols={3}
-              mt="12px"
-              hideDelete={isReadOnly}
-              onDelete={deleteAttachment}
-              files={attachments?.length ? attachments : localAttachments}
-            />
+          {!isEmpty(localAttachments) && (
+            <React.Fragment>
+              <SubTitle>Attachments</SubTitle>
+              <FilesView
+                cols={3}
+                mt="12px"
+                hideDelete={isReadOnly}
+                onDelete={deleteAttachment}
+                files={localAttachments}
+              />
+            </React.Fragment>
           )}
 
           <Instructions item={item} />

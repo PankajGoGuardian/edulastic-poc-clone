@@ -538,9 +538,8 @@ class TestList extends Component {
       (x) => x.config?.subscriptionData?.itemBankId === filteredSparkInfo._id
     )
 
-    const { config = {} } = sparkDescription
-    const { subscriptionData = {} } = config
-    const { description = '' } = subscriptionData
+    const { description = '' } =
+      sparkDescription?.config?.subscriptionData || {}
 
     return (
       <>

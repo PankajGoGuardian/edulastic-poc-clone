@@ -49,6 +49,7 @@ const firestoreCollectionName = 'timedAssignmentUTAs'
 function handlePaused(history) {
   notification({
     msg: 'Assignment is Paused , Please check with your instructor.',
+    zIndex: 10000,
   })
   history.push('/home/assignments')
 }

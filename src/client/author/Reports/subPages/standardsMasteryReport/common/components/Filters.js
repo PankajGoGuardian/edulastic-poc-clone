@@ -177,6 +177,27 @@ const StandardsMasteryReportFilters = ({
     }
   }, [])
 
+  const isTabRequired = (tabKey) => {
+    switch (tabKey) {
+      case staticDropDownData.filterSections.TEST_FILTERS.key:
+        return true
+      case staticDropDownData.filterSections.CLASS_FILTERS.key:
+        return true
+      case staticDropDownData.filterSections.STANDARD_FILTERS.key:
+        return true
+      case staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS.key:
+        return demographicsRequired && !isEmpty(extraFilters)
+      default:
+        return false
+    }
+  }
+
+  useEffect(() => {
+    if (showFilter && !isTabRequired(activeTabKey)) {
+      setActiveTabKey(staticDropDownData.filterSections.CLASS_FILTERS.key)
+    }
+  }, [loc, showFilter])
+
   useEffect(() => {
     if (standardIdFromPageData) {
       const standardFromPageData = standardsList.find(
@@ -459,7 +480,11 @@ const StandardsMasteryReportFilters = ({
           ) : (
             <Row>
               <Col span={24} style={{ padding: '0 5px' }}>
-                <Tabs activeKey={activeTabKey} onChange={setActiveTabKey}>
+                <Tabs
+                  animated={false}
+                  activeKey={activeTabKey}
+                  onChange={setActiveTabKey}
+                >
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.CLASS_FILTERS.key}
                     tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
@@ -679,7 +704,9 @@ const StandardsMasteryReportFilters = ({
                     </Row>
                   </Tabs.TabPane>
 
-                  {demographicsRequired && !isEmpty(extraFilters) && (
+                  {isTabRequired(
+                    staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS.key
+                  ) && (
                     <Tabs.TabPane
                       key={
                         staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS

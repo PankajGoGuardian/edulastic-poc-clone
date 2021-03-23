@@ -197,7 +197,7 @@ const SubscriptionHeader = ({
               ? `This plan expires on ${licenseExpiryDate}`
               : `Upgrade to premium for additional features, including:`}
           </p>
-          <LearnMore onClick={openComparePlanModal}>Learn More</LearnMore>
+          <LearnMore onClick={openComparePlanModal}>Compare Plans</LearnMore>
         </BannerContent>
       )}
     </TopBanner>

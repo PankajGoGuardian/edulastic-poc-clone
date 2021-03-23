@@ -172,7 +172,7 @@
       "inviteteacher": {
         "title": "Bulk Add Teacher",
         "text1": "To add multiple teachers, type or paste teacher emails below. Teachers will receive an email inviting them to select a school and create a password.",
-        "text2": "Use seperate lines or semi-colons to add teachers.",
+        "text2": "Use separate lines or semicolon to add teachers.",
         "nocancel": "No, Cancel",
         "yesadd": "Yes, Add Teacher(s)"
       },
@@ -329,7 +329,7 @@
     "username": "Username",
     "status": "Status",
     "usercreated": "New User Created",
-    "userexists": "User Already Exist",
+    "userexists": "User Already Exists",
     "emailnotallowed": "This email Id is not allowed in your district.",
     "teacherPremium": "Premium Upgrade",
     "sparkMath": "Spark Math Access",

@@ -47,6 +47,7 @@ import staticDropDownData from '../../static/staticDropDownData.json'
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
 const MultipleAssessmentReportFilters = ({
+  loc,
   isPrinting,
   tagsData,
   loading,
@@ -121,6 +122,27 @@ const MultipleAssessmentReportFilters = ({
       getMARFilterDataRequest(q)
     }
   }, [])
+
+  const isTabRequired = (tabKey) => {
+    switch (tabKey) {
+      case staticDropDownData.filterSections.TEST_FILTERS.key:
+        return true
+      case staticDropDownData.filterSections.CLASS_FILTERS.key:
+        return true
+      case staticDropDownData.filterSections.PERFORMANCE_FILTERS.key:
+        return performanceBandRequired
+      case staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS.key:
+        return demographicsRequired && !isEmpty(extraFilters)
+      default:
+        return false
+    }
+  }
+
+  useEffect(() => {
+    if (showFilter && !isTabRequired(activeTabKey)) {
+      setActiveTabKey(staticDropDownData.filterSections.TEST_FILTERS.key)
+    }
+  }, [loc, showFilter])
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
     const search = pickBy(
@@ -320,7 +342,11 @@ const MultipleAssessmentReportFilters = ({
           ) : (
             <Row>
               <Col span={24} style={{ padding: '0 5px' }}>
-                <Tabs activeKey={activeTabKey} onChange={setActiveTabKey}>
+                <Tabs
+                  animated={false}
+                  activeKey={activeTabKey}
+                  onChange={setActiveTabKey}
+                >
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.TEST_FILTERS.key}
                     tab={staticDropDownData.filterSections.TEST_FILTERS.title}
@@ -558,7 +584,9 @@ const MultipleAssessmentReportFilters = ({
                     </Row>
                   </Tabs.TabPane>
 
-                  {performanceBandRequired && (
+                  {isTabRequired(
+                    staticDropDownData.filterSections.PERFORMANCE_FILTERS.key
+                  ) && (
                     <Tabs.TabPane
                       key={
                         staticDropDownData.filterSections.PERFORMANCE_FILTERS
@@ -587,7 +615,9 @@ const MultipleAssessmentReportFilters = ({
                       </Row>
                     </Tabs.TabPane>
                   )}
-                  {demographicsRequired && !isEmpty(extraFilters) && (
+                  {isTabRequired(
+                    staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS.key
+                  ) && (
                     <Tabs.TabPane
                       key={
                         staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS

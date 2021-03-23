@@ -5,8 +5,8 @@ import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Popover, Tooltip } from 'antd'
-import { white, themeColor, darkOrange1 } from '@edulastic/colors'
+import { Tooltip } from 'antd'
+import { white, themeColor } from '@edulastic/colors'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
 import {
   IconClockDashboard,
@@ -14,23 +14,13 @@ import {
   IconManage,
   IconPlusCircle,
 } from '@edulastic/icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { get } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 
-import { signUpState } from '@edulastic/constants'
+import { signUpState, roleuser } from '@edulastic/constants'
 import { slice } from '../../../Subscription/ducks'
 // TODO: Change to SVG
-import IMG from '../../../Subscription/static/6.png'
-import {
-  PopoverCancel,
-  PopoverDetail,
-  PopoverTitle,
-  PopoverWrapper,
-  UpgradeBtn,
-  StyledLink,
-} from './styled'
+import { StyledLink } from './styled'
 import { launchHangoutOpen } from '../../ducks'
 import {
   getUserSelector,
@@ -55,28 +45,10 @@ import {
 import CanvasClassSelectModal from '../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
 import ClassSelectModal from '../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
-
-const getContent = ({ setvisible, needsRenewal }) => (
-  <FlexContainer width="475px" alignItems="flex-start">
-    <img src={IMG} width="165" height="135" alt="" />
-    <FlexContainer flexDirection="column" width="280px" padding="15px 0 0 6px">
-      <PopoverTitle>Get Started!</PopoverTitle>
-      <PopoverDetail>
-        Get additional reports, options to assist students, collaborate with
-        colleagues, anti-cheating tools and more.
-      </PopoverDetail>
-      <FlexContainer padding="15px 0 15px 0" width="100%">
-        <PopoverCancel onClick={() => setvisible(false)}>
-          {' '}
-          NO, THANKS
-        </PopoverCancel>
-        <Link to="/author/subscription">
-          <UpgradeBtn>{needsRenewal ? 'Renew Now' : 'UPGRADE NOW'}</UpgradeBtn>
-        </Link>
-      </FlexContainer>
-    </FlexContainer>
-  </FlexContainer>
-)
+import UpgradeButton from '../../../src/components/common/UpgradeButton'
+import FeatureNotAvailableModal from '../Showcase/components/Myclasses/components/FeatureNotAvailableModal'
+import CalendlyScheduleModal from '../../../Subscription/components/SubscriptionMain/CalendlyScheduleModal'
+import PurchaseFlowModals from '../../../src/components/common/PurchaseModals'
 
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
 const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
@@ -115,18 +87,30 @@ const HeaderSection = ({
   schoolPolicy,
   setShowHeaderTrialModal,
   isPremiumTrialUsed,
+  products,
+  itemBankSubscriptions = [],
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
-
+  const [
+    showFeatureNotAvailableModal,
+    setShowFeatureNotAvailableModal,
+  ] = useState(false)
+  const [showSelectStates, setShowSelectStates] = useState(false)
+  const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
+    false
+  )
+  const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
+    false
+  )
   const { user: userInfo } = user
-  const { currentSignUpState } = userInfo
+  const { currentSignUpState, role: userRole, openIdProvider } = userInfo
+
+  const isCliUser = openIdProvider === 'CLI'
 
   useEffect(() => {
     fetchUserSubscriptionStatus()
   }, [])
-
-  const [visible, setvisible] = useState(false)
 
   const trackClick = (event) => () =>
     segmentApi.trackUserClick({
@@ -163,10 +147,6 @@ const HeaderSection = ({
       (!isPaidPremium && isSubscriptionExpired)) &&
     !['enterprise', 'partial_premium'].includes(subType)
 
-  const showPopup =
-    (needsRenewal || !isPaidPremium) &&
-    !['enterprise', 'partial_premium'].includes(subType)
-
   const createNewClass = () => history.push('/author/manageClass/createClass')
 
   const sortableClasses = classData
@@ -188,6 +168,7 @@ const HeaderSection = ({
   const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
 
   const handleShowTrialModal = () => setShowHeaderTrialModal(true)
+  const handleSelectStateModal = () => setShowSelectStates(true)
 
   const hasNoActiveClassFallback =
     !loading &&
@@ -203,6 +184,49 @@ const HeaderSection = ({
     districtPolicy?.enableGoogleMeet === true
       ? true
       : schoolPolicy?.[0]?.enableGoogleMeet === true
+
+  const itemBankProductIds = products
+    .filter((prod) => prod.type && prod.type.startsWith('ITEM_BANK_'))
+    .map((prod) => prod.linkedProductId)
+
+  const totalPaidProducts = itemBankSubscriptions.reduce(
+    (a, c) => {
+      if (itemBankProductIds.includes(c.itemBankId)) {
+        if (c.isTrial) return a
+        return a + 1
+      }
+      return a
+    },
+    isPaidPremium ? 1 : 0
+  )
+  const hasAllPremiumProductAccess =
+    isPaidPremium && totalPaidProducts === products.length
+
+  const isPartialPremiumUgradedUser =
+    ['partial_premium'].includes(subType) && isPremiumUser
+
+  const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
+
+  // hide upgrade if no options will be displayed in dropdown
+  const showUpgradeBtn =
+    !hasAllPremiumProductAccess || !isPartialPremiumUgradedUser
+
+  const isFreeAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
+    userRole
+  )
+
+  const handleCloseFeatureNotAvailableModal = () =>
+    setShowFeatureNotAvailableModal(false)
+
+  const handlePurchaseFlow = () => {
+    if (isFreeAdmin) {
+      setShowFeatureNotAvailableModal(true)
+      return
+    }
+    setShowSubscriptionAddonModal(true)
+  }
+
+  const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -308,45 +332,39 @@ const HeaderSection = ({
           onClick={createNewClass}
           trackClick={trackClick('dashboard:create-new-class:click')}
         />
-        {showPopup && (
-          <PopoverWrapper>
-            <Popover
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              trigger="click"
-              placement="bottomRight"
-              content={getContent({ setvisible, needsRenewal })}
-              onClick={() => setvisible(true)}
-              visible={visible}
-            >
-              {needsRenewal ? (
-                <EduButton
-                  type="primary"
-                  isBlue
-                  style={{
-                    marginLeft: '5px',
-                    backgroundColor: darkOrange1,
-                    border: 'none',
-                  }}
-                >
-                  <FontAwesomeIcon
-                    icon={faExclamationTriangle}
-                    aria-hidden="true"
-                  />
-                  <span>RENEW SUBSCRIPTION</span>
-                </EduButton>
-              ) : (
-                <EduButton
-                  isBlue
-                  style={{ marginLeft: '5px' }}
-                  data-cy="upgradeButton"
-                  onClick={trackClick('dashboard:upgrade:click')}
-                >
-                  <i className="fa fa-unlock-alt" aria-hidden="true" />
-                  Upgrade
-                </EduButton>
-              )}
-            </Popover>
-          </PopoverWrapper>
+        <UpgradeButton
+          hasAllPremiumProductAccess={hasAllPremiumProductAccess}
+          handlePurchaseFlow={handlePurchaseFlow}
+          isPartialPremiumUgradedUser={isPartialPremiumUgradedUser}
+          isCliUser={isCliUser}
+          openMultiplePurchaseModal={openMultiplePurchaseModal}
+          showRenewalOptions={needsRenewal}
+          subType={subType}
+          userRole={userRole}
+          roleuser={roleuser}
+          isGradeSubjectSelected={isGradeSubjectSelected}
+          showUpgradeBtn={showUpgradeBtn}
+          isDashboardView
+        />
+        <PurchaseFlowModals
+          showSubscriptionAddonModal={showSubscriptionAddonModal}
+          setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+          showMultiplePurchaseModal={showMultiplePurchaseModal}
+          setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+          showRenewalOptions={needsRenewal}
+        />
+        {showFeatureNotAvailableModal && (
+          <FeatureNotAvailableModal
+            isVisible={showFeatureNotAvailableModal}
+            handleCloseModal={handleCloseFeatureNotAvailableModal}
+            handleSelectStateModal={handleSelectStateModal}
+          />
+        )}
+        {showSelectStates && (
+          <CalendlyScheduleModal
+            visible={showSelectStates}
+            setShowSelectStates={setShowSelectStates}
+          />
         )}
       </FlexContainer>
     </MainHeader>
@@ -395,6 +413,9 @@ const enhance = compose(
       loading: state.dashboardTeacher.loading,
       isPremiumTrialUsed:
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
+      products: state?.subscription?.products,
+      itemBankSubscriptions:
+        state?.subscription?.subscriptionData?.itemBankSubscriptions,
     }),
     {
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,

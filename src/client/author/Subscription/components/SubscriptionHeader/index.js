@@ -3,10 +3,8 @@ import { IconSubscriptionHighlight } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { memo } from 'react'
 import { withNamespaces } from 'react-i18next'
-import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
-import { roleuser } from '@edulastic/constants'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
   TopBanner,
@@ -17,6 +15,7 @@ import {
   LearnMore,
   PlanText,
 } from './styled'
+import UpgradeButton from '../../../src/components/common/UpgradeButton'
 
 function formatDate(subEndDate) {
   if (!subEndDate) return null
@@ -54,12 +53,6 @@ const SubscriptionHeader = ({
     }
     setShowSubscriptionAddonModal(true)
   }
-  const handleEnterpriseClick = () => {
-    window.open(
-      'https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform',
-      '_blank'
-    )
-  }
 
   const handleManageSubscription = () => {
     history.push('/author/manage-subscriptions')
@@ -73,47 +66,6 @@ const SubscriptionHeader = ({
   // hide upgrade if no options will be displayed in dropdown
   const showUpgradeBtn =
     !hasAllPremiumProductAccess || !isPartialPremiumUgradedUser
-
-  const menu = (
-    <Menu>
-      <Menu.Item>
-        {!hasAllPremiumProductAccess && (
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <span data-cy="individualSubscription" onClick={handleClick}>
-                INDIVIDUAL SUBSCRIPTION
-              </span>
-            )}
-            onClick={handlePurchaseFlow}
-          />
-        )}
-      </Menu.Item>
-      {!isPartialPremiumUgradedUser && !isCliUser && (
-        <Menu.Item>
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <span data-cy="multipleSubscription" onClick={handleClick}>
-                MULTIPLE SUBSCRIPTIONS
-              </span>
-            )}
-            onClick={openMultiplePurchaseModal}
-          />
-        </Menu.Item>
-      )}
-      {!isPartialPremiumUgradedUser && (
-        <Menu.Item>
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <span data-cy="enterpriseSubscription" onClick={handleClick}>
-                ENTERPRISE SUBSCRIPTION
-              </span>
-            )}
-            onClick={handleEnterpriseClick}
-          />
-        </Menu.Item>
-      )}
-    </Menu>
-  )
 
   const licenseExpiryDate = formatDate(subEndDate)
 
@@ -155,32 +107,18 @@ const SubscriptionHeader = ({
               onClick={handleManageSubscription}
             />
           )}
-          {!showRenewalOptions &&
-            !(
-              ['enterprise'].includes(subType) && roleuser.TEACHER !== userRole
-            ) &&
-            !(
-              ['enterprise'].includes(subType) &&
-              roleuser.TEACHER === userRole &&
-              isGradeSubjectSelected
-            ) &&
-            showUpgradeBtn && (
-              <Dropdown
-                getPopupContainer={(node) => node.parentNode}
-                overlay={menu}
-                placement="bottomRight"
-                arrow
-              >
-                <EduButton data-cy="upgradeButton" isBlue height="24px">
-                  Upgrade
-                </EduButton>
-              </Dropdown>
-            )}
-          {showRenewalOptions && (
-            <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
-              Renew Subscription
-            </EduButton>
-          )}
+          <UpgradeButton
+            hasAllPremiumProductAccess={hasAllPremiumProductAccess}
+            handlePurchaseFlow={handlePurchaseFlow}
+            isPartialPremiumUgradedUser={isPartialPremiumUgradedUser}
+            isCliUser={isCliUser}
+            openMultiplePurchaseModal={openMultiplePurchaseModal}
+            showRenewalOptions={showRenewalOptions}
+            subType={subType}
+            userRole={userRole}
+            isGradeSubjectSelected={isGradeSubjectSelected}
+            showUpgradeBtn={showUpgradeBtn}
+          />
         </ActionButtons>
       </HeaderSubscription>
       {isBannerVisible && (

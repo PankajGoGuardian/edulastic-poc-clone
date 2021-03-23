@@ -55,7 +55,7 @@ const PurchaseFlowModals = (props) => {
     showSubscriptionAddonModal,
     setShowSubscriptionAddonModal,
     setProductData,
-    defaultSelectedProductIds,
+    defaultSelectedProductIds = [],
     showMultiplePurchaseModal,
     setShowMultiplePurchaseModal,
     showBuyMoreModal,
@@ -258,10 +258,9 @@ const PurchaseFlowModals = (props) => {
     } else {
       setAddOnProductIds(selectedProductIds)
     }
-
-    setTotalAmount(totalAmount)
     handleSubscriptionAddonModalClose()
     setShowUpgradeModal(true)
+    setTotalAmount(totalAmount)
   }
 
   return (
@@ -355,6 +354,7 @@ PurchaseFlowModals.defaultProps = {
   setShowSubscriptionAddonModal: () => {},
   setShowBuyMoreModal: () => {},
   setSelectedLicenseId: () => {},
+  setProductData: () => {},
 }
 
 export default compose(

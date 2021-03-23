@@ -1,5 +1,5 @@
 import { NumberInputStyled, notification } from '@edulastic/common'
-import { Tooltip } from 'antd'
+import { Spin, Tooltip } from 'antd'
 import { camelCase, isNumber, keyBy } from 'lodash'
 import React, { useEffect, useMemo } from 'react'
 import {
@@ -113,6 +113,7 @@ const ProductsList = ({
 
   return (
     <>
+      {!productsToshow && <Spin size="large" />}
       <AddonList
         marginTop={isBuyMore && '20px'}
         marginBottom={isBuyMore && '10px'}

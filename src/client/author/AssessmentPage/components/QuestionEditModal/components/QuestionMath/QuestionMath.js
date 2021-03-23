@@ -101,7 +101,7 @@ const QuestionMath = ({ onUpdate, question }) => {
 
   return (
     <ThemeProvider theme={themes.default}>
-      <QuestionFormWrapper>
+      <QuestionFormWrapper key={question.id}>
         <FormGroup>
           <MathFormulaAnswerMethod
             labelValue="Correct Answer"

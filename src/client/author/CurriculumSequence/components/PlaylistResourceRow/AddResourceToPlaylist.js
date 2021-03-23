@@ -66,7 +66,7 @@ const AddResourceToPlaylist = ({
   <>
     {isTestType && showSupportingResource && (
       <Row gutter={16}>
-        <Col md={5}>
+        <Col md={8}>
           <SubResourceDropContainer
             data-cy="supporting-resource"
             moduleIndex={moduleIndex}
@@ -78,7 +78,7 @@ const AddResourceToPlaylist = ({
           </SubResourceDropContainer>
         </Col>
 
-        <Col md={5}>
+        <Col md={8}>
           <SubResourceDropContainer
             data-cy="supporting-resource"
             moduleIndex={moduleIndex}
@@ -93,7 +93,7 @@ const AddResourceToPlaylist = ({
     )}
     {showNewActivity && (
       <Row gutter={16}>
-        <Col md={10}>
+        <Col md={16}>
           <NewActivityTargetContainer
             moduleIndex={moduleIndex}
             afterIndex={index}

@@ -254,8 +254,9 @@ function* addResourceSaga({ payload }) {
   }
 }
 
-function* fetchResourceSaga() {
+function* fetchResourceSaga({ payload }) {
   try {
+    console.log('payload', payload)
     const result = yield call(resourcesApi.fetchResources)
     if (!result) {
       notification({ msg: result.error })

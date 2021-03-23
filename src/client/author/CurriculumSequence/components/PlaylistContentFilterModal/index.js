@@ -29,11 +29,9 @@ const PlaylistTestBoxFilter = (props) => {
     onSubjectChange,
     collection = '',
     onCollectionChange,
-    authoredList = [],
     filter,
     onFilterChange,
     authoredBy,
-    onAuthorChange,
     handleApplyFilters,
     searchResourceBy,
     alignment,
@@ -110,24 +108,6 @@ const PlaylistTestBoxFilter = (props) => {
               height="36px"
             >
               {allStatus.map(({ text, value }) => (
-                <SelectInputStyled.Option key={value} value={value}>
-                  {text}
-                </SelectInputStyled.Option>
-              ))}
-            </SelectInputStyled>
-          </FlexRow>
-
-          <FlexRow>
-            <FieldLabel>authored by</FieldLabel>
-            <SelectInputStyled
-              dropdownClassName="playlist-content-box"
-              data-cy="content-authored"
-              placeholder="Select Authored"
-              value={authoredBy || undefined}
-              onChange={onAuthorChange}
-              height="36px"
-            >
-              {authoredList.map(({ text, value }) => (
                 <SelectInputStyled.Option key={value} value={value}>
                   {text}
                 </SelectInputStyled.Option>

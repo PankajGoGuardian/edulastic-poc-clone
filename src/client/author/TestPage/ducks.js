@@ -3113,6 +3113,7 @@ function* getTestIdFromVersionIdSaga({ payload }) {
   } catch (err) {
     Sentry.captureException(err)
     console.error(err)
+    yield put(resetUpdatedStateAction())
     const errorMessage =
       err?.response?.data?.statusCode === 404
         ? 'You can no longer use this, as sharing access has been revoked by author'
@@ -3121,6 +3122,7 @@ function* getTestIdFromVersionIdSaga({ payload }) {
     if (err.status === 403) {
       notification({
         type: 'error',
+        msg: err?.response?.data?.message || null,
         messageKey: 'curriculumMakeApiErr',
         exact: true,
       })

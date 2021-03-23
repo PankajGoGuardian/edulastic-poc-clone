@@ -65,7 +65,6 @@ const ManageContentBlock = (props) => {
     loadedPage,
     filter,
     status,
-    authoredBy,
     grades,
     subject,
     collection,
@@ -74,7 +73,6 @@ const ManageContentBlock = (props) => {
     tests = [],
     setFilterAction,
     setStatusAction,
-    setAuthoredAction,
     setGradesAction,
     setSubjectAction,
     setCollectionAction,
@@ -412,13 +410,11 @@ const ManageContentBlock = (props) => {
             )}
             filter={filter}
             status={status}
-            authoredBy={authoredBy}
             grades={grades}
             subject={subject}
             collection={collection}
             onFilterChange={(prop) => setFilterAction(prop)}
             onStatusChange={(prop) => setStatusAction(prop)}
-            onAuthoredChange={(prop) => setAuthoredAction(prop)}
             onGradesChange={(prop) => setGradesAction(prop)}
             onSubjectChange={(prop) => setSubjectAction(prop)}
             onCollectionChange={(prop) => setCollectionAction(prop)}
@@ -492,7 +488,6 @@ const enhance = compose(
       loadedPage: state.playlistTestBox?.loadedPage,
       filter: state.playlistTestBox?.filter,
       status: state.playlistTestBox?.status,
-      authoredBy: state.playlistTestBox?.authoredBy,
       subject: state.playlistTestBox?.subject,
       grades: state.playlistTestBox?.grades,
       tests: state.playlistTestBox?.tests,
@@ -513,7 +508,6 @@ const enhance = compose(
       setDefaults: slice.actions?.setDefaults,
       fetchTests: slice.actions?.fetchTests,
       setStatusAction: slice.actions?.setStatusAction,
-      setAuthoredAction: slice.actions?.setAuthoredAction,
       setSubjectAction: slice.actions?.setSubjectAction,
       setGradesAction: slice.actions?.setGradesAction,
       setCollectionAction: slice.actions?.setCollectionAction,

@@ -572,6 +572,7 @@ const ClozeMathAnswers = ({
                       item={item}
                       onChange={_updateInputCorrectAnswer}
                       answers={[answer]}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -593,6 +594,7 @@ const ClozeMathAnswers = ({
                       key={index}
                       onChange={_changeAltInputMethod(correctTab - 1)}
                       answers={[altAnswer]}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -620,6 +622,7 @@ const ClozeMathAnswers = ({
                       answers={[answer]}
                       onChangeKeypad={onChangeKeypad}
                       extraOptions={extraOpts}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -647,6 +650,7 @@ const ClozeMathAnswers = ({
                       answers={[altAnswer]}
                       onChangeKeypad={onChangeKeypad}
                       extraOptions={extraOpts}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -659,6 +663,7 @@ const ClozeMathAnswers = ({
                       item={item}
                       onChange={_updateDropDownCorrectAnswer}
                       answers={[answer]}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -678,6 +683,7 @@ const ClozeMathAnswers = ({
                       item={item}
                       onChange={_changeAltDropDownMethod(correctTab - 1)}
                       answers={[altAnswer]}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -702,6 +708,7 @@ const ClozeMathAnswers = ({
                       )}
                       onChangeKeypad={onChangeKeypad}
                       extraOptions={extraOpts}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -729,6 +736,7 @@ const ClozeMathAnswers = ({
                       )}
                       onChangeKeypad={onChangeKeypad}
                       extraOptions={extraOpts}
+                      tabIndex={correctTab}
                     />
                   )
                 }

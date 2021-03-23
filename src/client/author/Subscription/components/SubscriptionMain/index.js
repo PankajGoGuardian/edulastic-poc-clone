@@ -373,7 +373,7 @@ const SubscriptionMain = ({
               data-cy="subscriptionHaveLicenseKey"
               onClick={openHasLicenseKeyModal}
             >
-              HAVE LICENSE KEY
+              {/* HAVE LICENSE KEY */}
             </HaveLicenseKey>
           )}
         </ContentCards>

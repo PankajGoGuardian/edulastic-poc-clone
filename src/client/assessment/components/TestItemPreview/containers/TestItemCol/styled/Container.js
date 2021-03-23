@@ -33,7 +33,7 @@ const zoomedStyle = css`
     let header =
       viewComponent === 'practicePlayer'
         ? 180
-        : headerHeight + paddingTopBottom + 12
+        : headerHeight + paddingTopBottom + 8
     if (playerSkinType === 'quester') {
       header += questerFooterHeight
     }

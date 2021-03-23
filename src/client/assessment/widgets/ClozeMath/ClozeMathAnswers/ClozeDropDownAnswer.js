@@ -89,7 +89,7 @@ class ClozeDropDownAnswer extends Component {
   }
 
   render() {
-    const { answers, item } = this.props
+    const { answers, item, tabIndex } = this.props
     const { options, responseContainers = [] } = item
     const minWidthMap = this.minWidthForOptions
 
@@ -117,7 +117,7 @@ class ClozeDropDownAnswer extends Component {
             return (
               <Panel
                 header={`Text Dropdown ${answer.index + 1}`}
-                key={answer.index}
+                key={`${answer.id}-${tabIndex}`}
               >
                 <AnswerSelect
                   value={answer.value}
@@ -147,6 +147,7 @@ ClozeDropDownAnswer.propTypes = {
   answers: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  tabIndex: PropTypes.number.isRequired,
 }
 
 export default withNamespaces('assessment')(ClozeDropDownAnswer)

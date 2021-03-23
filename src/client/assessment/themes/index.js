@@ -122,6 +122,7 @@ function pauseAssignment({
         msg: errorMsg,
         duration: 0,
         key: errorMsg,
+        zIndex: 10000,
       })
       if (history.location.pathname === '/home/assignments') {
         history.push('/home/assignmentss') // this hack needed to re-render route
@@ -154,6 +155,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
           msg,
           duration: 0,
           key: msg,
+          zIndex: 10000,
         })
         Fscreen.exitFullscreen()
         history.push('/home/assignments')
@@ -163,6 +165,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
           msg:
             'Test Security: Moving out of the assignment has been recorded and the teacher will be notified',
           duration: 0,
+          zIndex: 10000,
         })
       }
     })
@@ -944,6 +947,7 @@ const AssessmentContainer = ({
   if (items && items.length > 0 && Object.keys(testItem).length === 0) {
     notification({
       messageKey: 'invalidAction',
+      zIndex: 10000,
     })
     if (userRole === roleuser.STUDENT) {
       history.push('/home/assignments')

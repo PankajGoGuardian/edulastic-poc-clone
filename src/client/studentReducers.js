@@ -4,6 +4,10 @@ import assessmentReducers from './assessment/reducers'
 import authorUi from './author/src/reducers/authorUi'
 import dictionaries from './author/src/reducers/dictionaries'
 import { reducer as tests } from './author/TestPage/ducks'
+import { reducer as playlists } from './author/Playlist/ducks'
+import curriculumSequence from './author/CurriculumSequence/ducks'
+import authorUserList from './author/sharedDucks/userDetails'
+import author_assignments from './author/src/reducers/assignments'
 import authorQuestions from './author/sharedDucks/questions'
 import studentTestItems from './student/sharedDucks/TestItem'
 import commonReducers from './common/ducks'
@@ -33,4 +37,8 @@ export const studentReducers = combineReducers({
   assessmentCreate,
   feedbackResponse,
   itemDetail,
+  playlists,
+  curriculumSequence,
+  authorUserList,
+  author_assignments,
 })

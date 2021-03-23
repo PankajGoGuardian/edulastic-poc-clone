@@ -74,6 +74,7 @@ export const ADD_TEST_IN_PLAYLIST_BULK =
 export const DELETE_TEST_FROM_PLAYLIST_BULK =
   '[playlists] remove test from module in Bulk'
 export const SET_USER_CUSTOMIZE = '[playlists] set user customize'
+export const SET_PLAYLIST_MODE = '[playlists] set mode'
 export const REMOVE_TEST_FROM_MODULE = '[playlists] remove test from module'
 export const REMOVE_TEST_FROM_PLAYLIST = '[playlists] remove test from playlist'
 export const MOVE_CONTENT = '[playlists] move content in playlist'
@@ -189,6 +190,7 @@ export const removeTestFromPlaylistAction = createAction(
   REMOVE_TEST_FROM_PLAYLIST
 )
 export const moveContentInPlaylistAction = createAction(MOVE_CONTENT)
+export const setPlaylistModeAction = createAction(SET_PLAYLIST_MODE)
 // reducer
 
 const initialPlaylistState = {
@@ -214,6 +216,7 @@ const initialPlaylistState = {
   tags: [],
   active: 1,
   customize: false,
+  playlistMode: 'teacher',
   bgColor: themeColor,
   textColor: white,
   analytics: [
@@ -683,6 +686,14 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         sharedUsersList: payload,
       }
+    case SET_PLAYLIST_MODE:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          playlistMode: payload,
+        },
+      }
     case SET_USER_CUSTOMIZE:
       return {
         ...state,
@@ -753,6 +764,10 @@ export const getTestsLoadingSelector = createSelector(
 
 export const getUserCustomizeSelector = createSelector(stateSelector, (state) =>
   get(state.entity, 'customize', true)
+)
+
+export const getPlaylistModeSelector = createSelector(stateSelector, (state) =>
+  get(state.entity, 'playlistMode', 'teacher')
 )
 
 export const getUserListSelector = createSelector(stateSelector, (state) => {

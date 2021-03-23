@@ -79,6 +79,7 @@ const ManageContentBlock = (props) => {
     setSubjectAction,
     setCollectionAction,
     resetAndFetchTests,
+    fetchPlaylistResources,
     searchStrings,
     setTestSearchAction,
     testsInPlaylist = [],
@@ -168,8 +169,12 @@ const ManageContentBlock = (props) => {
   const closeContentFilterModal = () => setShowContentFilterModal(false)
 
   const handleApplyFilters = () => {
-    const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
-    resetAndFetchTests()
+    if (searchResourceBy === 'tests') {
+      resetAndFetchTests()
+    } else {
+      const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
+      fetchPlaylistResources({ selectedStandardIds })
+    }
     closeContentFilterModal()
   }
 
@@ -513,6 +518,7 @@ const enhance = compose(
       setGradesAction: slice.actions?.setGradesAction,
       setCollectionAction: slice.actions?.setCollectionAction,
       resetAndFetchTests: slice.actions?.resetAndFetchTests,
+      fetchPlaylistResources: slice.actions?.fetchPlaylistResources,
       setTestSearchAction: slice.actions?.setTestSearchAction,
       showPreviewModal: slice.actions?.showTestPreviewModal,
       closePreviewModal: slice.actions?.closeTestPreviewModal,

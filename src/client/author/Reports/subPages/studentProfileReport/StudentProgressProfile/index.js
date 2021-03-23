@@ -128,6 +128,7 @@ const StudentProgressProfile = ({
 
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onStandardSelect = (_, selected) => setSelectedStandard(selected)
+  const onAnalyseBySelect = (_, selected) => setAnalyseBy(selected)
   const onCsvConvert = (_data) =>
     downloadCSV(`Student Progress Profile.csv`, _data)
 
@@ -188,7 +189,7 @@ const StudentProgressProfile = ({
             <ControlDropDown
               prefix="Analyze By"
               by={analyseBy}
-              selectCB={setAnalyseBy}
+              selectCB={onAnalyseBySelect}
               data={dropDownData.analyseByData}
             />
           </>

@@ -141,6 +141,10 @@ class TestItemCol extends Component {
           displayFeedback={displayFeedback}
           calculatedHeight={showStackedView || fullHeight ? '100%' : 'auto'}
           fullMode
+          saveAttachments={saveAttachments}
+          attachments={attachments}
+          isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+          toggleStudentWorkCollapse={toggleStudentWorkCollapse}
           {...restProps}
           hasDrawingResponse={hasDrawingResponse}
           style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}

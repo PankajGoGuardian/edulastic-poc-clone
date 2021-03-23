@@ -68,7 +68,7 @@ class MathInput extends React.PureComponent {
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { mathField } = this.state
     const { resetMath } = this.props
-    if (resetMath && mathField  && mathField.latex() !== nextProps.value) {
+    if (resetMath && mathField && mathField.latex() !== nextProps.value) {
       mathField.latex(this.sanitizeLatex(nextProps.value))
     }
   }

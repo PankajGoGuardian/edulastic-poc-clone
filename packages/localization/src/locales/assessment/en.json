@@ -24,6 +24,24 @@
     "annotation": {
       "annotations": "Annotations",
       "addAnnotation": "Add new Annotation"
+    },
+    "multipartSettings": {
+      "itemLevelScoring": "Single score for entire item",
+      "partLevelScoring": "Part level Scores",
+      "allCorrectMust": "All parts needs to be correct",
+      "firstCorrectMust": "EBSR Grading",
+      "anyCorrect": "Any of the parts can be correct",
+      "layoutStyle": "Layout Style",
+      "useTabs": "Use Tabs",
+      "helperText": {
+        "itemLevelScoring": "Automatically divide score equally between parts, there will be one score reported. For example, the item is worth 10 points and has 5 parts, so 2 points will be allocated to each part.",
+        "partLevelScoring": "Manually specify the different scores for each part and report it separately.",
+        "allCorrectMust": "Credit will only be awarded for this item if each part is correct.",
+        "firstCorrectMust": "The first part needs to be completely correct in order for credit to be given on other parts. For example if the student gets parts 2 and 3 correct, but not the first part, they will get zero.",
+        "anyCorrect": "Credit will be awarded if any part is correct based on how the part is scored",
+        "layoutStyle": "Select the layout style that fits your item. The two column style with different sizes allow you to add a passage or resource on the left and one or more question parts on the right.",
+        "useTabs": "Enable tabs on the left or right panel of the layout. This can be used in cases where you want to show multiple passages to the student."
+      }
     }
   },
   "component": {

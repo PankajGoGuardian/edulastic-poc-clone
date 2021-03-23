@@ -61,6 +61,7 @@ import {
   clearRedirectTestAction,
   setRedirectTestAction,
   setItemLevelScoringAction,
+  setMultipartEvaluationSettingAction,
   setItemLevelScoreAction,
   getPassageSelector,
   addWidgetToPassageAction,
@@ -914,6 +915,7 @@ class Container extends Component {
       toggleSideBar,
       history,
       setItemLevelScoring,
+      setMultipartEvaluationSetting,
       isTestFlow,
       passage,
       preview,
@@ -1005,7 +1007,10 @@ class Container extends Component {
               verticalDivider={item.verticalDivider}
               scrolling={item.scrolling}
               itemLevelScoring={item.itemLevelScoring}
+              itemGradingType={item.itemGradingType}
+              assignPartialCredit={item.assignPartialCredit}
               setItemLevelScoring={setItemLevelScoring}
+              setMultipartEvaluationSetting={setMultipartEvaluationSetting}
               isPassageQuestion={isPassageQuestion}
               questionsCount={qLength}
               isMultiDimensionLayout={rows.length > 1}
@@ -1134,6 +1139,7 @@ Container.propTypes = {
   view: PropTypes.string.isRequired,
   addWidgetToPassage: PropTypes.func.isRequired,
   itemDeleting: PropTypes.any.isRequired,
+  setMultipartEvaluationSetting: PropTypes.func,
 }
 
 Container.defaultProps = {
@@ -1145,6 +1151,7 @@ Container.defaultProps = {
   navigateToPickupQuestionType: () => {},
   testItemStatus: '',
   setItemLevelScoring: () => {},
+  setMultipartEvaluationSetting: () => {},
   isTestFlow: false,
 }
 
@@ -1186,6 +1193,7 @@ const enhance = compose(
       toggleCreateItemModal: toggleCreateItemModalAction,
       toggleSideBar: toggleSideBarAction,
       setItemLevelScoring: setItemLevelScoringAction,
+      setMultipartEvaluationSetting: setMultipartEvaluationSettingAction,
       setItemLevelScore: setItemLevelScoreAction,
       clearAnswers: clearAnswersAction,
       changePreviewTab: changePreviewTabAction,

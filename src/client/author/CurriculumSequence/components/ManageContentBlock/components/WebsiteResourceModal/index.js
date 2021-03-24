@@ -7,6 +7,8 @@ import { FlexRow } from '../../styled'
 
 // WebsiteResource modal to add external links
 
+const validURLExpression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
+
 const WebsiteResourceModal = (props) => {
   const {
     closeCallback,
@@ -29,9 +31,14 @@ const WebsiteResourceModal = (props) => {
   useEffect(() => clearFields, [])
 
   const validateFields = () => {
-    if (!title) return 'Title is required'
-    if (!description) return 'Description is required'
-    if (!url) return 'URL is required'
+    if (!title) return 'Title is required!'
+    if (!description) return 'Description is required!'
+    if (!url) return 'URL is required!'
+
+    const regex = new RegExp(validURLExpression)
+    if (!url.match(regex)) {
+      return 'Invalid URL format! URL must begin with "http://" or "https://" followed by a valid domain name!'
+    }
     return false
   }
 

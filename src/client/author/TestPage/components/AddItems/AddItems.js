@@ -530,7 +530,7 @@ class AddItems extends PureComponent {
           <Element>
             <MobileFilterIcon>
               <FilterToggleBtn
-                isShowFilter={isShowFilter}
+                isShowFilter={!isShowFilter}
                 toggleFilter={toggleFilter}
               />
             </MobileFilterIcon>

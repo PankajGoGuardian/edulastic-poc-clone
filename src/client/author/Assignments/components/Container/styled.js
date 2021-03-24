@@ -9,7 +9,7 @@ import {
   smallDesktopWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  themeColorBlue,
+  filterIconColor,
 } from '@edulastic/colors'
 import {
   FlexContainer,
@@ -190,12 +190,12 @@ export const FilterButton = styled(Button)`
   &:focus,
   &:hover {
     outline: unset;
-    color: ${(props) => (props.isShowFilter ? white : themeColorBlue)};
+    color: ${(props) => (props.isShowFilter ? white : filterIconColor)};
   }
 
   svg {
     fill: ${(props) =>
-      props.showFilter ? themeColor : themeColorBlue} !important;
+      props.showFilter ? themeColor : filterIconColor} !important;
   }
 
   @media (max-width: ${smallDesktopWidth}) {

@@ -10,27 +10,20 @@ export const FilterContainer = styled.div`
   &::-webkit-scrollbar {
     width: 6px;
   }
-
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #888;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
 `
 
 export const Title = styled.div`
   text-transform: uppercase;
   color: ${title};
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   margin: 15px 0px 5px;
   user-select: none;
+`
+
+export const FlexRow = styled.div`
+  width: 100%;
+  margin-bottom: 15px;
 `
 
 export const StyledCheckbox = styled(Checkbox)`

@@ -10,13 +10,24 @@ import {
   mobileWidthMax,
   smallDesktopWidth,
   desktopWidth,
+  themeColor,
+  black,
 } from '@edulastic/colors'
 import {
   test,
   testActivity as testActivityConstants,
 } from '@edulastic/constants'
-import { formatDateAndTime, formatStudentPastDueTag } from '../utils'
+import {
+  formatDateAndTimeForAssignmentCard,
+  formatStudentPastDueTag,
+} from '../utils'
 import { themes } from '../../theme'
+import { ResouceIcon } from '../../author/CurriculumSequence/components/ResourceItem'
+import { FlexContainer, notification } from '@edulastic/common'
+import { IconSchedule } from '@edulastic/icons'
+import { curriculumSequencesApi } from '@edulastic/api'
+import { pick } from 'lodash'
+import { submitLTIForm } from '../../author/CurriculumSequence/components/CurriculumModuleRow'
 
 const { pastDueTagBackground, pastDueTagColor } = themes.default.default
 
@@ -28,7 +39,6 @@ const { ASSESSMENT, PRACTICE } = test.type
 const AssessmentDetails = ({
   title,
   thumbnail,
-  theme,
   testType,
   t,
   started,
@@ -43,6 +53,11 @@ const AssessmentDetails = ({
   lastAttempt,
   isDueDate,
   serverTimeStamp,
+  timedAssignment,
+  timedTestIconType,
+  allowedTime,
+  setEmbeddedVideoPreviewModal,
+  studentResources = [],
 }) => {
   const status =
     started || resume
@@ -61,6 +76,38 @@ const AssessmentDetails = ({
 
   if (endDate && dueDate && endDate > dueDate) {
     endDate = dueDate
+  }
+
+  const showResource = async (resource) => {
+    resource =
+      resource &&
+      pick(resource, [
+        'toolProvider',
+        'url',
+        'customParams',
+        'consumerKey',
+        'sharedSecret',
+      ])
+    try {
+      const signedRequest = await curriculumSequencesApi.getSignedRequest({
+        resource,
+      })
+      submitLTIForm(signedRequest)
+    } catch (e) {
+      notification({ messageKey: 'failedToLoadResource' })
+    }
+  }
+
+  const viewResource = (data) => (e) => {
+    e.stopPropagation()
+    if (data.contentType === 'lti_resource') showResource(data.contentId)
+    if (data.contentType === 'website_resource')
+      window.open(data.contentUrl, '_blank')
+    if (data.contentType === 'video_resource')
+      setEmbeddedVideoPreviewModal({
+        title: data.contentTitle,
+        url: data.contentUrl,
+      })
   }
 
   return (
@@ -85,59 +132,108 @@ const AssessmentDetails = ({
             </TestType>
           </Tooltip>
         </CardTitle>
-        {!!(endDate || dueDate) && (
-          <CardDate>
-            <Icon type={theme.assignment.cardTimeIconType} />
-            <DueDetails data-cy="date">
-              {type === 'assignment'
-                ? new Date(startDate) > new Date(serverTimeStamp)
-                  ? `${t('common.opensIn')} ${formatDateAndTime(
-                      startDate
-                    )} and ${t('common.dueOn')} ${formatDateAndTime(dueDate)}`
-                  : `${t('common.dueOn')} ${formatDateAndTime(dueDate)}`
-                : `${t('common.completedOn')} ${formatDateAndTime(endDate)}`}
-            </DueDetails>
-          </CardDate>
-        )}
-        <StatusWrapper>
-          {type === 'assignment' ? (
-            <>
+        <FlexContainer alignItems="center" justifyContent="flex-start">
+          <StatusWrapper>
+            {type === 'assignment' ? (
+              <>
+                <StatusButton
+                  isPaused={isPaused}
+                  isSubmitted={started || resume}
+                  assignment={type === 'assignment'}
+                >
+                  <span data-cy="status">{status}</span>
+                </StatusButton>
+                {safeBrowser && (
+                  <SafeExamIcon
+                    src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
+                    title={t('common.safeExamToolTip')}
+                  />
+                )}
+              </>
+            ) : (
               <StatusButton
-                isPaused={isPaused}
-                isSubmitted={started || resume}
-                assignment={type === 'assignment'}
+                isSubmitted={started}
+                graded={graded}
+                absent={absent}
               >
-                <span data-cy="status">{status}</span>
+                <span data-cy="status">
+                  {absent
+                    ? t('common.absent')
+                    : started
+                    ? t(`common.${graded}`)
+                    : t('common.absent')}
+                </span>
               </StatusButton>
-              {safeBrowser && (
-                <SafeExamIcon
-                  src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
-                  title={t('common.safeExamToolTip')}
+            )}
+            {pastDueTag && (
+              <StatusRow data-cy="pastDueTag">{pastDueTag}</StatusRow>
+            )}
+          </StatusWrapper>
+          {!!(endDate || dueDate) && (
+            <CardDate>
+              <IconSchedule />
+              <DueDetails data-cy="date">
+                {type === 'assignment'
+                  ? new Date(startDate) > new Date(serverTimeStamp)
+                    ? `${t(
+                        'common.opensIn'
+                      )} ${formatDateAndTimeForAssignmentCard(
+                        startDate
+                      )} and ${t(
+                        'common.dueOn'
+                      )} ${formatDateAndTimeForAssignmentCard(dueDate)}`
+                    : `${t(
+                        'common.dueOn'
+                      )} ${formatDateAndTimeForAssignmentCard(dueDate)}`
+                  : `${t(
+                      'common.completedOn'
+                    )} ${formatDateAndTimeForAssignmentCard(endDate)}`}
+              </DueDetails>
+            </CardDate>
+          )}
+
+          <TimeIndicator type={type}>
+            {timedAssignment && (
+              <>
+                <Icon
+                  className="timerIcon"
+                  color={black}
+                  type={timedTestIconType}
                 />
-              )}
-            </>
-          ) : (
-            <StatusButton isSubmitted={started} graded={graded} absent={absent}>
-              <span data-cy="status">
-                {absent
-                  ? t('common.absent')
-                  : started
-                  ? t(`common.${graded}`)
-                  : t('common.absent')}
-              </span>
-            </StatusButton>
-          )}
-          {pastDueTag && (
-            <StatusRow data-cy="pastDueTag">{pastDueTag}</StatusRow>
-          )}
-        </StatusWrapper>
+                <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
+              </>
+            )}
+          </TimeIndicator>
+        </FlexContainer>
+
+        {!!studentResources?.length && (
+          <ResourcesContainer>
+            <span>Resources</span>
+            <FlexContainer
+              width="100%"
+              flexWrap="wrap"
+              justifyContent="flex-start"
+            >
+              {studentResources.map((data) => (
+                <ResourceWrapper
+                  key={data.contentId}
+                  data-cy={data.contentId}
+                  onClick={viewResource(data)}
+                  showBorder
+                >
+                  <ResouceIcon type={data.contentType} isAdded />
+                  <Title>{data.contentTitle}</Title>
+                </ResourceWrapper>
+              ))}
+            </FlexContainer>
+          </ResourcesContainer>
+        )}
       </CardDetails>
     </Wrapper>
   )
 }
 
 AssessmentDetails.propTypes = {
-  theme: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   dueDate: PropTypes.string.isRequired,
   started: PropTypes.bool.isRequired,
@@ -239,7 +335,7 @@ const AssignmentTitle = React.memo(styled.span`
 
 const CardDetails = React.memo(styled(Col)`
   @media (min-width: ${extraDesktopWidth}) {
-    width: 22vw;
+    width: 40vw;
   }
 
   @media (max-width: ${extraDesktopWidth}) {
@@ -247,7 +343,7 @@ const CardDetails = React.memo(styled(Col)`
   }
 
   @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${extraDesktopWidth}) {
-    width: 22vw;
+    width: 40vw;
   }
 
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${desktopWidth}) {
@@ -292,6 +388,7 @@ const CardTitle = React.memo(styled.div`
 
 const CardDate = React.memo(styled.div`
   display: flex;
+  align-items: center;
   font-family: ${(props) => props.theme.assignment.cardTitleFontFamily};
   font-size: ${(props) => props.theme.assignment.cardTimeTextFontSize};
   font-weight: normal;
@@ -301,19 +398,10 @@ const CardDate = React.memo(styled.div`
   letter-spacing: normal;
   text-align: left;
   color: ${(props) => props.theme.assignment.cardTimeTextColor};
-  padding-bottom: 5px;
+  padding: 0px 15px 0px 20px;
 
-  i {
-    color: ${(props) => props.theme.assignment.cardTimeIconColor};
-    position: relative;
-    top: -1px;
-  }
-
-  .anticon-clock-circle {
-    svg {
-      width: 17px;
-      height: 17px;
-    }
+  svg {
+    transform: scale(1.1);
   }
 
   @media (max-width: ${largeDesktopWidth}) {
@@ -402,4 +490,71 @@ const StatusRow = styled.div`
   padding: 6px 24px;
   border-radius: 5px;
   margin-left: 6px;
+`
+
+const ResourcesContainer = styled.div`
+  margin-top: 10px;
+  display: flex;
+  width: 100%;
+
+  span {
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 10px 0 0;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    span {
+      font-size: 10px;
+    }
+  }
+`
+
+const ResourceWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin: 4px 0px;
+  width: auto;
+  cursor: pointer;
+  border: 1px solid ${themeColor};
+  margin-right: 10px;
+
+  &:last-child {
+    margin-right: 0px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    padding: 4px 6px;
+  }
+`
+const TimeIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  width: 125px;
+  padding: 0px 5px;
+  padding-top: ${(props) => props.type === 'reports' && '25px'};
+`
+const StyledLabel = styled.label`
+  margin-left: 10px;
+  text-transform: uppercase;
+  font: 11px/15px Open Sans;
+  font-weight: 600;
+`
+
+const Title = styled.div`
+  font-size: 12px;
+  color: ${themeColor};
+  padding-top: 2px;
+  font: 10px/15px Open Sans;
+  font-weight: 600;
+  text-transform: uppercase;
+  user-select: none;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    font: 9px;
+  }
 `

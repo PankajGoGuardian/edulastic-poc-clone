@@ -7,13 +7,15 @@ import { Dropdown, Empty, Menu, Spin } from 'antd'
 import { pick, uniq } from 'lodash'
 import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
 } from '../../../../student/Login/ducks'
 import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../ducks'
 import { submitLTIForm } from '../CurriculumModuleRow'
-import PlaylistTestBoxFilter from '../PlaylistTestBoxFilter'
+import PlaylistContentFilterModal from '../PlaylistContentFilterModal'
 import ResourceItem from '../ResourceItem'
 import WebsiteResourceModal from './components/WebsiteResourceModal'
 import ExternalVideoLink from './components/ExternalVideoLink'
@@ -26,7 +28,6 @@ import {
   ManageContentOuterWrapper,
   ResourceDataList,
   SearchBar,
-  ManageContentLabel,
   SearchBoxContainer,
   SearchIcon,
   SearchByNavigationBar,
@@ -37,13 +38,6 @@ import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/te
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 
 const resourceTabs = ['tests', 'resources']
-const sourceList = [
-  'everything',
-  'learnzillion',
-  'khan academy',
-  'ck12',
-  'grade',
-]
 
 const observeElement = (fetchTests, tests) => {
   const observerRef = useRef()
@@ -71,22 +65,19 @@ const ManageContentBlock = (props) => {
     loadedPage,
     filter,
     status,
-    authoredBy,
     grades,
     subject,
     collection,
-    sources,
     setDefaults,
     fetchTests,
     tests = [],
     setFilterAction,
     setStatusAction,
-    setAuthoredAction,
     setGradesAction,
     setSubjectAction,
     setCollectionAction,
-    setSourcesAction,
     resetAndFetchTests,
+    fetchResource,
     searchStrings,
     setTestSearchAction,
     testsInPlaylist = [],
@@ -112,16 +103,20 @@ const ManageContentBlock = (props) => {
     setEmbeddedVideoPreviewModal,
     isDifferentiationTab = false,
     setIsTestPreviewVisible,
+    history,
   } = props
 
   const lastResourceItemRef = observeElement(fetchTests, tests)
 
   const [searchBy] = useState('keywords')
   // const [searchResourceBy] = useState("all");
-  const [isShowFilter, setShowFilter] = useState(false)
+  const [showContentFilterModal, setShowContentFilterModal] = useState(false)
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(
     false
   )
+  const [alignment, setAlignment] = useState({})
+  const [selectedStandards, setSelectedStandards] = useState([])
+
   const [
     isExternalVideoResourceModal,
     setExternalVideoResourceModal,
@@ -158,11 +153,27 @@ const ManageContentBlock = (props) => {
     }
   }
 
-  const toggleTestFilter = () => {
-    if (isShowFilter) {
-      resetAndFetchTests()
+  const onTestMenuChange = ({ key }) => {
+    switch (key) {
+      case '1':
+        history.push('/author/tests/select')
+        break
+      default:
+        break
     }
-    setShowFilter((x) => !x)
+  }
+
+  const openContentFilterModal = () => setShowContentFilterModal(true)
+  const closeContentFilterModal = () => setShowContentFilterModal(false)
+
+  const handleApplyFilters = () => {
+    if (searchResourceBy === 'tests') {
+      resetAndFetchTests()
+    } else {
+      const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
+      fetchResource({ standardIds: selectedStandardIds })
+    }
+    closeContentFilterModal()
   }
 
   const onSearchChange = (list) => setTestSearchAction(list)
@@ -181,12 +192,11 @@ const ManageContentBlock = (props) => {
     </Menu>
   )
 
-  const onSourceChange = ({ checked, value }) =>
-    setSourcesAction(
-      checked
-        ? sources?.concat(value)
-        : sources?.filter((x) => x !== value) || []
-    )
+  const testMenu = (
+    <Menu onClick={onTestMenuChange}>
+      <Menu.Item key="1">{enhanceTextWeight('Create New test')}</Menu.Item>
+    </Menu>
+  )
   let fetchCall
 
   if (tests.length > 10) {
@@ -232,6 +242,8 @@ const ManageContentBlock = (props) => {
             contentDescription,
             data,
             contentUrl,
+            hasStandardsOnCreation,
+            standards,
           },
           idx
         ) => {
@@ -242,6 +254,8 @@ const ManageContentBlock = (props) => {
               contentTitle={contentTitle}
               contentDescription={contentDescription}
               contentUrl={contentUrl}
+              hasStandardsOnCreation={hasStandardsOnCreation}
+              standards={standards}
               key={`resource-${idx}`}
               data={data}
               isAdded={testsInPlaylist.includes(_id)}
@@ -296,7 +310,19 @@ const ManageContentBlock = (props) => {
       <ManageContentOuterWrapper>
         <div className="inner-wrapper">
           <ManageContentContainer data-cy="play-list-search-container">
-            <ManageContentLabel>Select Content to Add</ManageContentLabel>
+            <SearchByNavigationBar justify="flex-start">
+              {resourceTabs.map((tab) => (
+                <SearchByTab
+                  key={tab}
+                  data-cy={tab}
+                  onClick={() => setSearchByTab(tab)}
+                  isTabActive={tab.includes(searchResourceBy)}
+                >
+                  {tab}
+                </SearchByTab>
+              ))}
+            </SearchByNavigationBar>
+            <br />
             {/* <SearchByNavigationBar>
             <SearchByTab onClick={() => setSearchBy("keywords")} isTabActive={searchBy === "keywords"}>
               keywords
@@ -321,82 +347,38 @@ const ManageContentBlock = (props) => {
               </SearchBoxContainer>
               <ActionButton
                 data-cy="test-filter"
-                onClick={toggleTestFilter}
-                isActive={isShowFilter}
+                onClick={openContentFilterModal}
+                isActive={showContentFilterModal}
               >
                 <IconFilter
-                  color={isShowFilter ? white : themeColor}
+                  color={showContentFilterModal ? white : themeColor}
                   width={20}
                   height={20}
                 />
               </ActionButton>
-              <Dropdown overlay={menu} placement="bottomRight">
+              <Dropdown
+                overlay={searchResourceBy === 'tests' ? testMenu : menu}
+                placement="bottomRight"
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              >
                 <ActionButton>
                   <IconPlus color={themeColor} width={15} height={15} />
                 </ActionButton>
               </Dropdown>
             </FlexContainer>
             <br />
-            {isShowFilter ? (
-              <PlaylistTestBoxFilter
-                authoredList={[]} // Send authors data
-                collectionsList={uniq(
-                  [
-                    ...testsConstants.collectionDefaultFilter?.filter(
-                      (c) => c?.value
-                    ),
-                    ...collections.map((o) => ({
-                      value: o?._id,
-                      text: o?.name,
-                    })),
-                  ],
-                  'value'
-                )}
-                sourceList={sourceList}
-                filter={filter}
-                status={status}
-                authoredBy={authoredBy}
-                grades={grades}
-                subject={subject}
-                collection={collection}
-                sources={sources}
-                urlHasUseThis={urlHasUseThis}
-                onFilterChange={(prop) => setFilterAction(prop)}
-                onStatusChange={(prop) => setStatusAction(prop)}
-                onAuthoredChange={(prop) => setAuthoredAction(prop)}
-                onGradesChange={(prop) => setGradesAction(prop)}
-                onSubjectChange={(prop) => setSubjectAction(prop)}
-                onCollectionChange={(prop) => setCollectionAction(prop)}
-                onSourceChange={onSourceChange}
-              />
-            ) : (
-              <>
-                <SearchByNavigationBar justify="flex-start">
-                  {resourceTabs.map((tab) => (
-                    <SearchByTab
-                      data-cy={tab}
-                      onClick={() => setSearchByTab(tab)}
-                      isTabActive={tab.includes(searchResourceBy)}
-                    >
-                      {tab}
-                    </SearchByTab>
-                  ))}
-                </SearchByNavigationBar>
 
-                <br />
-                <ResourceDataList
-                  urlHasUseThis={urlHasUseThis}
-                  isDifferentiationTab={isDifferentiationTab}
-                >
-                  {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
-                  {isLoading && loadedPage !== 0 && (
-                    <LoaderWrapper>
-                      <Spin />
-                    </LoaderWrapper>
-                  )}
-                </ResourceDataList>
-              </>
-            )}
+            <ResourceDataList
+              urlHasUseThis={urlHasUseThis}
+              isDifferentiationTab={isDifferentiationTab}
+            >
+              {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
+              {isLoading && loadedPage !== 0 && (
+                <LoaderWrapper>
+                  <Spin />
+                </LoaderWrapper>
+              )}
+            </ResourceDataList>
 
             {/* <ExternalLTIModalForm
             onModalClose={onModalClose}
@@ -410,11 +392,49 @@ const ManageContentBlock = (props) => {
           </ManageContentContainer>
         </div>
 
+        {showContentFilterModal && (
+          <PlaylistContentFilterModal
+            isVisible={showContentFilterModal}
+            onCancel={closeContentFilterModal}
+            collectionsList={uniq(
+              [
+                ...testsConstants.collectionDefaultFilter?.filter(
+                  (c) => c?.value
+                ),
+                ...collections.map((o) => ({
+                  value: o?._id,
+                  text: o?.name,
+                })),
+              ],
+              'value'
+            )}
+            filter={filter}
+            status={status}
+            grades={grades}
+            subject={subject}
+            collection={collection}
+            onFilterChange={(prop) => setFilterAction(prop)}
+            onStatusChange={(prop) => setStatusAction(prop)}
+            onGradesChange={(prop) => setGradesAction(prop)}
+            onSubjectChange={(prop) => setSubjectAction(prop)}
+            onCollectionChange={(prop) => setCollectionAction(prop)}
+            handleApplyFilters={handleApplyFilters}
+            searchResourceBy={searchResourceBy}
+            alignment={alignment}
+            setAlignment={setAlignment}
+            setSelectedStandards={setSelectedStandards}
+          />
+        )}
+
         {isWebsiteUrlResourceModal && (
           <WebsiteResourceModal
             closeCallback={() => setWebsiteUrlResourceModal(false)}
             isVisible={isWebsiteUrlResourceModal}
             addResource={addResource}
+            alignment={alignment}
+            setAlignment={setAlignment}
+            selectedStandards={selectedStandards}
+            setSelectedStandards={setSelectedStandards}
           />
         )}
 
@@ -423,6 +443,10 @@ const ManageContentBlock = (props) => {
             closeCallback={() => setExternalVideoResourceModal(false)}
             isVisible={isExternalVideoResourceModal}
             addResource={addResource}
+            alignment={alignment}
+            setAlignment={setAlignment}
+            selectedStandards={selectedStandards}
+            setSelectedStandards={setSelectedStandards}
           />
         )}
 
@@ -432,6 +456,10 @@ const ManageContentBlock = (props) => {
             isVisible={isLTIResourceModal}
             addResource={addResource}
             externalToolsProviders={externalToolsProviders}
+            alignment={alignment}
+            setAlignment={setAlignment}
+            selectedStandards={selectedStandards}
+            setSelectedStandards={setSelectedStandards}
           />
         )}
       </ManageContentOuterWrapper>
@@ -452,49 +480,51 @@ const ManageContentBlock = (props) => {
   )
 }
 
-export default connect(
-  (state) => ({
-    isLoading: state.playlistTestBox?.isLoading,
-    loadedPage: state.playlistTestBox?.loadedPage,
-    filter: state.playlistTestBox?.filter,
-    status: state.playlistTestBox?.status,
-    authoredBy: state.playlistTestBox?.authoredBy,
-    subject: state.playlistTestBox?.subject,
-    grades: state.playlistTestBox?.grades,
-    tests: state.playlistTestBox?.tests,
-    collection: state.playlistTestBox?.collection,
-    sources: state.playlistTestBox?.sources,
-    searchStrings: state.playlistTestBox?.searchString,
-    testPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
-    selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
-    externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
-    collections: state.user?.user?.orgData?.itemBanks,
-    currentDistrictUsers: getCurrentDistrictUsersSelector(state),
-    districtId: state?.user?.user?.orgData?.districtIds?.[0],
-    userFeatures: state?.user?.user?.features,
-    searchResourceBy: state.playlistTestBox?.searchResourceBy,
-    resources: state.playlistTestBox?.resources,
-  }),
-  {
-    setFilterAction: slice.actions?.setFilterAction,
-    setDefaults: slice.actions?.setDefaults,
-    fetchTests: slice.actions?.fetchTests,
-    setStatusAction: slice.actions?.setStatusAction,
-    setAuthoredAction: slice.actions?.setAuthoredAction,
-    setSubjectAction: slice.actions?.setSubjectAction,
-    setGradesAction: slice.actions?.setGradesAction,
-    setCollectionAction: slice.actions?.setCollectionAction,
-    setSourcesAction: slice.actions?.setSourcesAction,
-    resetAndFetchTests: slice.actions?.resetAndFetchTests,
-    setTestSearchAction: slice.actions?.setTestSearchAction,
-    showPreviewModal: slice.actions?.showTestPreviewModal,
-    closePreviewModal: slice.actions?.closeTestPreviewModal,
-    getCurrentDistrictUsers: getCurrentDistrictUsersAction,
-    fetchExternalToolProvidersAction:
-      slice.actions?.fetchExternalToolProvidersAction,
-    setSearchByTab: slice.actions?.setSearchByTab,
-    addResource: slice.actions?.addResource,
-    setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
-    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
-  }
-)(ManageContentBlock)
+const enhance = compose(
+  withRouter,
+  connect(
+    (state) => ({
+      isLoading: state.playlistTestBox?.isLoading,
+      loadedPage: state.playlistTestBox?.loadedPage,
+      filter: state.playlistTestBox?.filter,
+      status: state.playlistTestBox?.status,
+      subject: state.playlistTestBox?.subject,
+      grades: state.playlistTestBox?.grades,
+      tests: state.playlistTestBox?.tests,
+      collection: state.playlistTestBox?.collection,
+      searchStrings: state.playlistTestBox?.searchString,
+      testPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
+      externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
+      collections: state.user?.user?.orgData?.itemBanks,
+      currentDistrictUsers: getCurrentDistrictUsersSelector(state),
+      districtId: state?.user?.user?.orgData?.districtIds?.[0],
+      userFeatures: state?.user?.user?.features,
+      searchResourceBy: state.playlistTestBox?.searchResourceBy,
+      resources: state.playlistTestBox?.resources,
+    }),
+    {
+      setFilterAction: slice.actions?.setFilterAction,
+      setDefaults: slice.actions?.setDefaults,
+      fetchTests: slice.actions?.fetchTests,
+      setStatusAction: slice.actions?.setStatusAction,
+      setSubjectAction: slice.actions?.setSubjectAction,
+      setGradesAction: slice.actions?.setGradesAction,
+      setCollectionAction: slice.actions?.setCollectionAction,
+      resetAndFetchTests: slice.actions?.resetAndFetchTests,
+      fetchResource: slice.actions?.fetchResource,
+      setTestSearchAction: slice.actions?.setTestSearchAction,
+      showPreviewModal: slice.actions?.showTestPreviewModal,
+      closePreviewModal: slice.actions?.closeTestPreviewModal,
+      getCurrentDistrictUsers: getCurrentDistrictUsersAction,
+      fetchExternalToolProvidersAction:
+        slice.actions?.fetchExternalToolProvidersAction,
+      setSearchByTab: slice.actions?.setSearchByTab,
+      addResource: slice.actions?.addResource,
+      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+    }
+  )
+)
+
+export default enhance(ManageContentBlock)

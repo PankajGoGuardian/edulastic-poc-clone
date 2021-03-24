@@ -77,6 +77,7 @@ const LTIResourceModal = (props) => {
         },
       })
       closeCallback()
+      setAlignment({})
     } else notification({ type: 'warn', msg: validationStatus })
   }
 

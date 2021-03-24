@@ -165,7 +165,20 @@ export const ReportFiltersWrapper = styled.div`
 `
 
 export const StyledEduButton = styled(EduButton)`
-  &:focus,
+  &,
+  &:focus {
+    &.ant-btn.ant-btn-primary {
+      background-color: ${white};
+      color: ${themeColor};
+      border-color: ${themeColor};
+    }
+    svg {
+      fill: ${themeColor} !important;
+    }
+  }
+  /* isGhost prop => filter inactive */
+  ${({ isGhost }) => (isGhost ? '' : '&,&:focus,')}
+  &:active,
   &:hover {
     &.ant-btn.ant-btn-primary {
       background-color: ${themeColor};
@@ -173,10 +186,7 @@ export const StyledEduButton = styled(EduButton)`
       color: ${white};
     }
     svg {
-      &:focus,
-      &:hover {
-        fill: ${white};
-      }
+      fill: ${white} !important;
     }
   }
 `

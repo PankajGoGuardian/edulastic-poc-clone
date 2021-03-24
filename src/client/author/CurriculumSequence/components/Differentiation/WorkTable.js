@@ -450,7 +450,6 @@ const InnerWorkTable = ({
 
       if (groups.tests) {
         const testIds = groups.tests.map((x) => x.testId)
-        const resources = groups.tests.flatMap((x) => x.resources || [])
         const obj = {
           assignmentId: selectedData.assignmentId,
           groupId: selectedData.classId,
@@ -464,7 +463,7 @@ const InnerWorkTable = ({
           ...(rowsData[0]?.resources?.length
             ? { resources: rowsData[0]?.resources }
             : {}),
-          resources,
+          resources: differentiationResources?.[type.toLowerCase()] || [],
         }
         recommendations.push(obj)
       }

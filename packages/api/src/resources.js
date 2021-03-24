@@ -20,7 +20,17 @@ const addResource = (data) =>
     })
     .then((result) => result.data.result)
 
+const updateStandards = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/standards`,
+      method: 'put',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   addResource,
   fetchResources,
+  updateStandards,
 }

@@ -191,6 +191,7 @@ class AssignTest extends React.Component {
       userId,
       userFeatures: { premium },
       fetchUserCustomKeypads,
+      setCurrentTestSettingsId,
     } = this.props
 
     if (isFreeAdmin) {
@@ -219,6 +220,7 @@ class AssignTest extends React.Component {
         orgId: userId,
         orgType: roleuser.ORG_TYPE.USER,
       })
+      setCurrentTestSettingsId('')
     }
 
     const isAdmin =
@@ -709,7 +711,6 @@ class AssignTest extends React.Component {
               <SavedSettingsContainer>
                 <div>SAVED SETTINGS</div>
                 <Select
-                  style={{ width: '180px' }}
                   value={currentSettingsId}
                   getPopupContainer={(node) => node.parentNode}
                   onChange={this.handleSettingsSelection}

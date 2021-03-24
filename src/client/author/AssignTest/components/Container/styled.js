@@ -138,6 +138,9 @@ export const SavedSettingsContainer = styled.div`
   > div:first-child {
     margin-right: 15px;
   }
+  .ant-select {
+    width: 200px;
+  }
   .ant-select-selection {
     border-color: ${themeColor};
   }
@@ -151,6 +154,7 @@ export const SavedSettingsContainer = styled.div`
   .ant-select-dropdown-menu {
     li {
       font-size: 12px;
+      word-break: break-word;
       > span {
         display: flex;
         align-items: center;

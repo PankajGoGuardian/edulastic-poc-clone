@@ -5,12 +5,13 @@ import { Select } from 'antd'
 import { isObject, isArray } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+
 import { math } from '@edulastic/constants'
 import { Keyboard, FlexContainer, EduButton } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { numBtnColors } from '@edulastic/colors'
-
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+
 // import NumberPad from "../NumberPad";
 import KeyPad from '../KeyPad'
 import Question from '../Question'
@@ -26,6 +27,7 @@ import {
   updateCustomKeypadAction,
   getCustomKeypads,
 } from './ducks'
+import { StyledSelectContainer } from './styled/StyledSelectContainer'
 
 const defaultCustomKeypad = {
   label: 'label',
@@ -81,16 +83,29 @@ const KeyPadOptions = ({
     [isCustom]
   )
 
-  const symbolsData = useMemo(() => {
+  const symbolsData = useMemo(
+    () => {
+      return [
+        { value: 'custom', label: t('component.options.addCustom') },
+        // ...storedKeypads,
+        ...math.symbols,
+      ]
+    },
+    [
+      // storedKeypads
+    ]
+  )
+
+  const allKeypads = useMemo(() => {
     return [
       { value: 'custom', label: t('component.options.addCustom') },
-      ...storedKeypads,
       ...math.symbols,
+      ...storedKeypads,
     ]
   }, [storedKeypads])
 
   const handleSymbolsChange = (valueIndx) => {
-    const newSymbol = symbolsData[valueIndx]
+    const newSymbol = allKeypads[valueIndx]
     const data = [...item.symbols]
     if (newSymbol.value === 'custom') {
       data[0] = defaultCustomKeypad
@@ -99,7 +114,6 @@ const KeyPadOptions = ({
     } else {
       data[0] = newSymbol.value
     }
-
     onChange('symbols', data)
   }
 
@@ -126,15 +140,15 @@ const KeyPadOptions = ({
     let selectedIndex = null
     if (isCustom) {
       if (symbol._id) {
-        selectedIndex = symbolsData.findIndex((s) => s._id === symbol._id)
+        selectedIndex = allKeypads.findIndex((s) => s._id === symbol._id)
       } else {
         selectedIndex = 0
       }
     } else {
-      selectedIndex = symbolsData.findIndex((s) => s.value === symbol)
+      selectedIndex = allKeypads.findIndex((s) => s.value === symbol)
     }
     setSelected(selectedIndex)
-  }, [symbolsData, symbol])
+  }, [symbolsData, symbol, storedKeypads])
 
   useEffect(() => {
     fetchCustomKeypad()
@@ -182,19 +196,31 @@ const KeyPadOptions = ({
               )}
             </FlexContainer>
           </Row>
-          <SelectInputStyled
-            size="large"
-            value={selected}
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            onChange={handleSymbolsChange}
-            data-cy="text-formatting-options-select"
-          >
-            {symbolsData.map((ite, indx) => (
-              <Select.Option key={indx} value={indx}>
-                {ite.label}
-              </Select.Option>
-            ))}
-          </SelectInputStyled>
+          <StyledSelectContainer>
+            <SelectInputStyled
+              size="large"
+              value={selected}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              onChange={handleSymbolsChange}
+              data-cy="text-formatting-options-select"
+            >
+              {symbolsData.map((ite, indx) => (
+                <Select.Option key={indx} value={indx}>
+                  {ite.label}
+                </Select.Option>
+              ))}
+              <Select.OptGroup label={t('component.options.customKeypadLabel')}>
+                {storedKeypads.map((ite, index) => (
+                  <Select.Option
+                    key={item._id}
+                    value={symbolsData.length + index}
+                  >
+                    {ite.label}
+                  </Select.Option>
+                ))}
+              </Select.OptGroup>
+            </SelectInputStyled>
+          </StyledSelectContainer>
         </Col>
         <Col span={12} />
       </Row>

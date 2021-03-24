@@ -328,3 +328,7 @@ export const ModalWrapper = styled(Modal)`
     }
   }
 `
+export const FlexRow = styled.div`
+  width: 100%;
+  margin-bottom: 15px;
+`

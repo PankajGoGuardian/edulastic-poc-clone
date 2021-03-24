@@ -24,7 +24,7 @@ export default function StudentSessionExpiredModal() {
 
   return (
     <CustomModalStyled
-      title="Session To Be Closed"
+      title="Oops! Multiple Logins"
       centered
       onCancel={closePopupFn}
       onOk={closePopupFn}
@@ -36,8 +36,8 @@ export default function StudentSessionExpiredModal() {
       }
     >
       <p>
-        We have detected multiple logins into the same account and this session
-        has to be closed
+        We noticed you are already logged in. This session will close, but you
+        can continue working in the session you logged into first.
       </p>
     </CustomModalStyled>
   )

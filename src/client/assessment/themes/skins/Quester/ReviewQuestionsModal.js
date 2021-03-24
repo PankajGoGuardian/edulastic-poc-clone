@@ -2,16 +2,21 @@ import React, { useState } from 'react'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
-import { Menu } from 'antd'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { CustomModalStyled, FlexContainer } from '@edulastic/common'
-import { StyledButton, StyledMenu } from './styled'
-import { themes } from '../../../../theme'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import { StyledMenu, MenuItem } from './styled'
 
-const {
-  playerSkin: { parcc },
-} = themes
+const getItemStatusColor = (selectedCard) => {
+  switch (selectedCard) {
+    case 'notAnswered':
+      return '#b1b1b1'
+    case 'answered':
+      return '#5aabeb'
+    case 'bookmarks':
+      return '#f8c165'
+    default:
+      return '#b1b1b1'
+  }
+}
 
 const ReviewQuestionsModal = ({
   options,
@@ -26,17 +31,16 @@ const ReviewQuestionsModal = ({
   previewPlayer,
   finishTest,
 }) => {
-  const [selectedCard, setSelectedCard] = useState('all')
+  const [selectedCard, setSelectedCard] = useState('notAnswered')
   const handleCardClick = (cardType) => setSelectedCard(cardType)
   const { totalQuestions, totalBookmarks, totalUnanswered } = filterData
-  const cardStyle = {
-    background: parcc.review.card.background,
-  }
 
   const getOptions = () => {
     switch (selectedCard) {
       case 'notAnswered':
         return options.filter((o, i) => skipped[i])
+      case 'answered':
+        return options.filter((o, i) => !skipped[i])
       case 'bookmarks':
         return options.filter((o, i) => bookmarks[i])
       default:
@@ -57,74 +61,93 @@ const ReviewQuestionsModal = ({
       visible={showReviewPopup}
       onCancel={handleClose}
       destroyOnClose
-      footer={null}
+      footer={[
+        <EduButton
+          height="40px"
+          isGhost
+          key="cancelButton"
+          onClick={handleClose}
+          style={{ padding: '10px 40px' }}
+        >
+          NO, CANCEL
+        </EduButton>,
+        <EduButton
+          height="40px"
+          key="okButton"
+          onClick={previewPlayer ? finishTest : gotoSummary}
+          style={{ padding: '10px 40px' }}
+        >
+          SUBMIT TEST
+        </EduButton>,
+      ]}
       title="Review"
       width="640px"
     >
-      <StyledWrapper>
-        <p style={{ width: '90%' }}>
+      <div>
+        <LeadingParagraph>
           You have answered{' '}
           <b>
             {totalQuestions - totalUnanswered} of {totalQuestions}
           </b>{' '}
           questions. Click on a question number to go back to it.
-        </p>
-        <div>
-          <StyledButton
-            style={{ width: '130px', textAlign: 'center' }}
-            onClick={previewPlayer ? finishTest : gotoSummary}
-          >
-            Submit Test
-          </StyledButton>
-        </div>
-        <div style={{ fontWeight: 'bold', margin: '10px 0', fontSize: '16px' }}>
-          Test questions
-        </div>
-        <FlexContainer style={{ marginBottom: '20px' }}>
-          <Card
-            style={selectedCard === 'all' ? cardStyle : {}}
-            onClick={() => handleCardClick('all')}
-          >
-            <StyledCounter>{totalQuestions}</StyledCounter>
-            <div>All questions</div>
-          </Card>
-          <Card
-            style={selectedCard === 'notAnswered' ? cardStyle : {}}
-            onClick={() => handleCardClick('notAnswered')}
-          >
-            <StyledCounter>{totalUnanswered}</StyledCounter>
-            <div>Not answered</div>
-          </Card>
-          <Card
-            style={selectedCard === 'bookmarks' ? cardStyle : {}}
-            onClick={() => handleCardClick('bookmarks')}
-          >
-            <StyledCounter>{totalBookmarks}</StyledCounter>
-            <div>Bookmarks</div>
-          </Card>
+        </LeadingParagraph>
+        <FlexContainer
+          marginBottom="20px"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <QuestionHead>Questions</QuestionHead>
+          <ReviewFilters>
+            <Card
+              selected={selectedCard === 'notAnswered'}
+              onClick={() => handleCardClick('notAnswered')}
+            >
+              <div>UNANSWERED ({totalUnanswered})</div>
+            </Card>
+            <Card
+              selected={selectedCard === 'answered'}
+              onClick={() => handleCardClick('answered')}
+            >
+              <div>ANSWERED ({totalQuestions - totalUnanswered})</div>
+            </Card>
+            <Card
+              selected={selectedCard === 'bookmarks'}
+              onClick={() => handleCardClick('bookmarks')}
+            >
+              <div>BOOKMARKED ({totalBookmarks})</div>
+            </Card>
+          </ReviewFilters>
         </FlexContainer>
         <StyledMenu
           style={{ height: '250px', overflow: 'auto', border: '0' }}
           onClick={handleQuestionCLick}
         >
           {getOptions().map((option) => (
-            <Menu.Item
+            <MenuItem
               key={option}
               disabled={blockNavigationToAnsweredQuestions}
               data-cy="questionSelectOptions"
+              bg={getItemStatusColor(selectedCard)}
             >
-              {skipped[option] && (
-                <FontAwesomeIcon
-                  icon={faCircle}
-                  aria-hidden="true"
-                  color={parcc.menuItem.activeColor}
-                />
-              )}
-              Q{option + 1}
-            </Menu.Item>
+              {option + 1}
+            </MenuItem>
           ))}
         </StyledMenu>
-      </StyledWrapper>
+        <LegendsContainer>
+          <LegendWrapper>
+            <LegendColor color={getItemStatusColor('unanswered')} />
+            UNANSWERED
+          </LegendWrapper>
+          <LegendWrapper>
+            <LegendColor color={getItemStatusColor('answered')} />
+            ANSWERED
+          </LegendWrapper>
+          <LegendWrapper>
+            <LegendColor color={getItemStatusColor('bookmarks')} />
+            BOOKMARKED
+          </LegendWrapper>
+        </LegendsContainer>
+      </div>
     </CustomModalStyled>
   )
 }
@@ -133,23 +156,62 @@ const enhance = compose(withNamespaces('student'))
 
 export default enhance(ReviewQuestionsModal)
 
-const StyledCounter = styled.div`
-  margin-bottom: 10px;
-  font-size: 16px;
-  font-weight: bold;
-`
-
 const Card = styled.div`
-  height: 60px;
-  width: 33.33%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
   font-size: 10px;
-  font-weight: 700;
   cursor: pointer;
+  padding: 2px 15px;
+  border-right: 1px solid #1ab394;
+  color: #1ab394;
+  background: ${(props) => (props.selected ? '#3f85e5' : '#ffffff')};
+  color: ${(props) => (props.selected ? '#ffffff' : '#40b395')};
+  width: 130px;
+  font-weight: 600;
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    color: #ffffff;
+    background: #3f85e5;
+  }
+  :last-child {
+    border: none;
+  }
 `
 
-const StyledWrapper = styled.div``
+const LegendsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  font-size: 10px;
+`
+const LegendWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0px 10px;
+`
+const LegendColor = styled.div`
+  background: ${(props) => props.color};
+  margin-right: 10px;
+  width: 12px;
+  height: 12px;
+`
+const QuestionHead = styled.div`
+  font-weight: bold;
+  margin: 10px 0;
+  font-size: 16px;
+`
+
+const ReviewFilters = styled.div`
+  display: flex;
+  border: 1px solid #40b394;
+  border-radius: 3px;
+`
+
+const LeadingParagraph = styled.div`
+  width: 90%;
+`

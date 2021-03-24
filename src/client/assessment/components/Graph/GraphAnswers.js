@@ -17,6 +17,7 @@ import {
   getQuestionDataSelector,
 } from '../../../author/QuestionEditor/ducks'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+import { CONSTANT } from './Builder/config'
 
 class GraphAnswers extends Component {
   constructor() {
@@ -98,23 +99,23 @@ class GraphAnswers extends Component {
 
   getDrawingObjects = (value) => {
     const allowedTypes = [
-      'point',
-      'line',
-      'ray',
-      'segment',
-      'vector',
-      'circle',
-      'ellipse',
-      'sine',
-      'tangent',
-      'secant',
-      'exp',
-      'logarithm',
-      'polynom',
-      'hyperbola',
-      'polygon',
-      'parabola',
-      'parabola2',
+      CONSTANT.TOOLS.POINT,
+      CONSTANT.TOOLS.LINE,
+      CONSTANT.TOOLS.RAY,
+      CONSTANT.TOOLS.SEGMENT,
+      CONSTANT.TOOLS.VECTOR,
+      CONSTANT.TOOLS.CIRCLE,
+      CONSTANT.TOOLS.ELLIPSE,
+      CONSTANT.TOOLS.SIN,
+      CONSTANT.TOOLS.TANGENT,
+      CONSTANT.TOOLS.SECANT,
+      CONSTANT.TOOLS.EXPONENT,
+      CONSTANT.TOOLS.LOGARITHM,
+      CONSTANT.TOOLS.POLYNOM,
+      CONSTANT.TOOLS.HYPERBOLA,
+      CONSTANT.TOOLS.POLYGON,
+      CONSTANT.TOOLS.PARABOLA,
+      CONSTANT.TOOLS.PARABOLA2,
     ]
 
     const shapes = value.filter(

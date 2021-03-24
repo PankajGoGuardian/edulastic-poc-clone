@@ -14,6 +14,7 @@ import WorkTable from './WorkTable'
 import {
   fetchDifferentiationStudentListAction,
   getDifferentiationStudentListSelector,
+  getDifferentiationResourcesSelector,
   getDifferentiationSelectedDataSelector,
   fetchDifferentiationWorkAction,
   setRecommendationsToAssignAction,
@@ -22,11 +23,9 @@ import {
   getWorkStatusDataSelector,
   getRecommendationsToAssignSelector,
   addTestToDifferentationAction,
-  addResourceToDifferentiationAction,
-  addSubResourceToTestInDiffAction,
-  removeSubResourceInDiffAction,
   setDifferentiationSelectedDataAction,
-  removeResourceFromDifferentiationAction,
+  addDifferentiationResourcesAction,
+  removeDifferentiationResourcesAction,
 } from '../../ducks'
 import ManageContentBlock from '../ManageContentBlock'
 import { HideRightPanel } from '../CurriculumRightPanel'
@@ -37,6 +36,7 @@ const Differentiation = ({
   termId,
   assignments,
   differentiationStudentList,
+  differentiationResources,
   differentiationWork,
   differentiationSelectedData,
   isFetchingWork,
@@ -47,16 +47,14 @@ const Differentiation = ({
   setRecommendationsToAssign,
   recommendationsToAssign,
   addTestToDifferentiation,
-  addResourceToDifferentiation,
-  addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
   setDifferentiationSelectedData,
   showResource,
-  removeSubResource,
   toggleManageContent,
   activeRightPanel,
   history,
-  removeResourceFromDifferentiation,
+  addDifferentiationResources,
+  removeDifferentiationResources,
 }) => {
   const [classList, setClassList] = useState([])
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
@@ -206,18 +204,17 @@ const Differentiation = ({
 
   const workTableCommonProps = {
     differentiationStudentList,
+    differentiationResources,
     setRecommendationsToAssign,
     recommendationsToAssign,
     selectedData: selectedClass,
     isFetchingWork,
     addTestToDifferentiation,
-    addResourceToDifferentiation,
-    addSubResourceToTestInDiff,
     setEmbeddedVideoPreviewModal,
     showResource,
-    removeSubResource,
     toggleAssignModal,
-    removeResourceFromDifferentiation,
+    addDifferentiationResources,
+    removeDifferentiationResources,
   }
 
   return (
@@ -368,6 +365,7 @@ const enhance = compose(
       termId: getCurrentTerm(state),
       assignments: getAssignmentsSelector(state),
       differentiationStudentList: getDifferentiationStudentListSelector(state),
+      differentiationResources: getDifferentiationResourcesSelector(state),
       differentiationWork: getDifferentiationWorkSelector(state),
       recommendationsToAssign: getRecommendationsToAssignSelector(state),
       isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
@@ -381,12 +379,10 @@ const enhance = compose(
       fetchDifferentiationStudentList: fetchDifferentiationStudentListAction,
       fetchDifferentiationWork: fetchDifferentiationWorkAction,
       setRecommendationsToAssign: setRecommendationsToAssignAction,
+      addDifferentiationResources: addDifferentiationResourcesAction,
+      removeDifferentiationResources: removeDifferentiationResourcesAction,
       addTestToDifferentiation: addTestToDifferentationAction,
-      addResourceToDifferentiation: addResourceToDifferentiationAction,
-      addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,
-      removeSubResource: removeSubResourceInDiffAction,
       setDifferentiationSelectedData: setDifferentiationSelectedDataAction,
-      removeResourceFromDifferentiation: removeResourceFromDifferentiationAction,
     }
   )
 )

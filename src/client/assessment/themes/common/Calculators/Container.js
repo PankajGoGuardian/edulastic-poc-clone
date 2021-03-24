@@ -91,7 +91,9 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
     }
 
     if (desmosScientificRef.current && calculateMode === 'SCIENTIFIC_DESMOS') {
-      Desmos.ScientificCalculator(desmosScientificRef.current)
+      Desmos.ScientificCalculator(desmosScientificRef.current, {
+        degreeMode: true,
+      })
     }
 
     if (calculateMode === 'GRAPHING_GEOGEBRASCIENTIFIC') {

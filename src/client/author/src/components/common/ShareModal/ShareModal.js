@@ -483,7 +483,12 @@ class ShareModal extends React.Component {
     const shareTypeKeysToDisplay = (isDA
       ? shareTypeKeyForDa
       : shareTypeKeys
-    ).filter((k) => (isPlaylist && k !== sharedKeysObj.LINK) || !isPlaylist)
+    ).filter(
+      (shareType) =>
+        (isPlaylist &&
+          ![sharedKeysObj.LINK, sharedKeysObj.PUBLIC].includes(shareType)) ||
+        !isPlaylist
+    )
 
     const individuals = sharedUsersList.filter(
       (item) => item.sharedType === sharedKeysObj.INDIVIDUAL

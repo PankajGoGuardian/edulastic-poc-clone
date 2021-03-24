@@ -1,6 +1,8 @@
 import styled, { css } from 'styled-components'
 import { mobileWidth } from '@edulastic/colors'
+import { test as testConstants } from '@edulastic/constants'
 
+const { playerSkinValues } = testConstants
 // need to calculate zoomed style
 // see: https://snapwiz.atlassian.net/browse/EV-21562
 const zoomedStyle = css`
@@ -10,7 +12,7 @@ const zoomedStyle = css`
       return
     }
 
-    const { shouldZoom, zoomLevel, headerHeight, playerSkinType } = theme
+    const { shouldZoom, zoomLevel, headerHeight = 90, playerSkinType } = theme
     const zoomed = zoomLevel > '1' && zoomLevel !== undefined
     const questerFooterHeight = 66
     // need to think about padding of Main wrapper
@@ -29,11 +31,11 @@ const zoomedStyle = css`
     paddingTopBottom *= 2
 
     // 8 is margin-top of Container. Check this file
-
-    let header =
-      viewComponent === 'practicePlayer'
-        ? 180
-        : headerHeight + paddingTopBottom + 8
+    const hasFooter =
+      viewComponent === 'practicePlayer' &&
+      (playerSkinType === playerSkinValues.quester ||
+        playerSkinType === playerSkinValues.edulastic)
+    let header = hasFooter ? 180 : headerHeight + paddingTopBottom + 8
     if (playerSkinType === 'quester') {
       header += questerFooterHeight
     }

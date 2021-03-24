@@ -1190,6 +1190,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           columnTitles: ['COLUMN 1', 'COLUMN 2'],
           rowCount: 1,
           rowTitles: ['ROW1'],
+          rowMinHeight: '100px',
         },
         classifications: [
           { id: uuidsForFill[0], rowIndex: 0, columnIndex: 0 },

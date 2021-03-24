@@ -34,6 +34,7 @@ const AssessmentAutoComplete = ({
   tagIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const [fieldValue, setFieldValue] = useState('')
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
   const [isFocused, setIsFocused] = useState(false)
 
@@ -90,10 +91,16 @@ const AssessmentAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
+  const onChange = useCallback((_text, element) => {
+    const _title = element?.props?.title
+    setSearchTerms((s) => ({ ...s, text: _title || _text }))
+    setFieldValue(_title || _text)
+  }, [])
   const onSelect = (key) => {
     if (key) {
       const value = testList.find((s) => s._id === key)?.title
       setSearchTerms({ text: value, selectedText: value, selectedKey: key })
+      setFieldValue(value)
       selectCB({ key, title: value })
     } else {
       selectCB({ key: '', title: '' })
@@ -107,6 +114,7 @@ const AssessmentAutoComplete = ({
         selectedText: '',
         text: searchTerms.selectedText,
       })
+      setFieldValue(searchTerms.selectedText)
     }
     setIsFocused(false)
   }
@@ -120,8 +128,10 @@ const AssessmentAutoComplete = ({
     const { _id, title } = selectedTest
     if (_id) {
       setSearchTerms({ text: title, selectedText: title, selectedKey: _id })
+      setFieldValue(title)
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS, selectedKey: selectedTestId })
+      setFieldValue('')
     }
   }, [selectedTestId])
   useEffect(() => {
@@ -134,6 +144,7 @@ const AssessmentAutoComplete = ({
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
+      setFieldValue('')
     }
   }, [termId, grade, subject, testTypes])
   useEffect(() => {
@@ -181,12 +192,13 @@ const AssessmentAutoComplete = ({
       <AutoCompleteContainer>
         <AutoComplete
           getPopupContainer={(trigger) => trigger.parentNode}
-          value={searchTerms.text}
+          value={fieldValue}
           onSearch={onSearch}
           dataSource={dropdownData}
           onSelect={onSelect}
           onBlur={onBlur}
           onFocus={() => setIsFocused(true)}
+          onChange={onChange}
           allowClear={!loading && searchTerms.selectedText && isFocused}
           clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
         >

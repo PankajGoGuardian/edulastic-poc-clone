@@ -219,13 +219,15 @@ class FeedbackRight extends Component {
       widget: { id, activity = {} },
       match,
       userThumbnail,
+      itemId,
     } = this.props
     const {
       testActivityId,
       groupId = match?.params?.classId,
       testItemId,
     } = activity
-    if (!id || !user || !user.user || !testActivityId) {
+
+    if (!id || !user || !user.user) {
       return
     }
     loadFeedbackResponses({
@@ -239,9 +241,9 @@ class FeedbackRight extends Component {
         groupId,
       },
       studentId,
-      testActivityId,
+      testActivityId: testActivityId || this.getTestActivityId(),
       questionId: id,
-      itemId: testItemId,
+      itemId: testItemId || itemId,
     })
   }
 

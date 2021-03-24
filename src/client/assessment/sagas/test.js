@@ -652,6 +652,8 @@ function* loadTest({ payload }) {
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
         languagePreference: testActivity.testActivity?.languagePreference,
+        grades: test.grades,
+        subjects: test.subjects,
       },
     })
     if (preview) {

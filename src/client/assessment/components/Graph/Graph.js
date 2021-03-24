@@ -54,6 +54,7 @@ import EvaluationSettings from '../EvaluationSettings'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
+import { CONSTANT } from './Builder/config'
 
 const { GRAPH_EVALUATION_SETTING, subEvaluationSettingsGrouped } = mathConstants
 
@@ -181,23 +182,23 @@ class Graph extends Component {
 
   getDrawingObjects = (value) => {
     const allowedTypes = [
-      'point',
-      'line',
-      'ray',
-      'segment',
-      'vector',
-      'circle',
-      'ellipse',
-      'sine',
-      'tangent',
-      'secant',
-      'exp',
-      'logarithm',
-      'polynom',
-      'hyperbola',
-      'polygon',
-      'parabola',
-      'parabola2',
+      CONSTANT.TOOLS.POINT,
+      CONSTANT.TOOLS.LINE,
+      CONSTANT.TOOLS.RAY,
+      CONSTANT.TOOLS.SEGMENT,
+      CONSTANT.TOOLS.VECTOR,
+      CONSTANT.TOOLS.CIRCLE,
+      CONSTANT.TOOLS.ELLIPSE,
+      CONSTANT.TOOLS.SIN,
+      CONSTANT.TOOLS.TANGENT,
+      CONSTANT.TOOLS.SECANT,
+      CONSTANT.TOOLS.EXPONENT,
+      CONSTANT.TOOLS.LOGARITHM,
+      CONSTANT.TOOLS.POLYNOM,
+      CONSTANT.TOOLS.HYPERBOLA,
+      CONSTANT.TOOLS.POLYGON,
+      CONSTANT.TOOLS.PARABOLA,
+      CONSTANT.TOOLS.PARABOLA2,
     ]
 
     const shapes = value.filter(

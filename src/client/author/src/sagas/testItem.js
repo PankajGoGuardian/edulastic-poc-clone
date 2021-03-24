@@ -168,7 +168,9 @@ function* evaluateAnswers({ payload }) {
         },
         undefined,
         undefined,
-        item._id
+        item._id,
+        item.itemGradingType,
+        item.assignPartialCredit
       )
 
       yield put({
@@ -200,7 +202,9 @@ function* evaluateAnswers({ payload }) {
         questions,
         itemLevelScoring,
         itemLevelScore,
-        _item._id
+        _item._id,
+        _item.itemGradingType,
+        _item.assignPartialCredit
       )
       yield put({
         type: ADD_ITEM_EVALUATION,

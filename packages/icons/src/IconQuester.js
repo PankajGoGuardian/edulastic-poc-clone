@@ -159,10 +159,39 @@ const IconPlus = withIconStyles((props) => (
   </SVG>
 ))
 
+const IconNext = withIconStyles((props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="8.689"
+    height="15.244"
+    viewBox="0 0 8.689 15.244"
+    {...props}
+  >
+    <path d="M8.377,6.867,1.822.313A1.067,1.067,0,0,0,.313,1.822l5.8,5.8-5.8,5.8a1.067,1.067,0,0,0,1.51,1.51L8.377,8.377a1.067,1.067,0,0,0,0-1.509Z" />
+  </SVG>
+))
+
+const IconPrevious = withIconStyles((props) => (
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    width="8.689"
+    height="15.243"
+    viewBox="0 0 8.689 15.243"
+    {...props}
+  >
+    <path
+      d="M105.515,8.376,98.961,14.93a1.067,1.067,0,0,1-1.51-1.509l5.8-5.8-5.8-5.8a1.067,1.067,0,0,1,1.51-1.51l6.554,6.554a1.067,1.067,0,0,1,0,1.509Z"
+      transform="translate(105.828 15.243) rotate(180)"
+    />
+  </SVG>
+))
+
 export default {
   IconAnswerEliminator,
   IconBookMark,
   IconCalculator,
   IconMinus,
   IconPlus,
+  IconNext,
+  IconPrevious,
 }

@@ -5,6 +5,7 @@ import {
   TextInputStyled,
   FroalaEditor,
   notification,
+  CheckboxLabel,
 } from '@edulastic/common'
 import { Col, Row, Select } from 'antd'
 import { uniqBy } from 'lodash'
@@ -69,6 +70,7 @@ const Sidebar = ({
   collectionsToShow = [],
   onChangeCollection,
   collections = [],
+  skin,
 }) => {
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], 'tagName')
   const subjectsList = selectsData.allSubjects
@@ -124,6 +126,14 @@ const Sidebar = ({
       setSearchValue('')
     } else {
       setSearchValue(value)
+    }
+  }
+
+  const handleChangeSkin = (e) => {
+    if (e.target.checked) {
+      onChangeField('skin', 'SPARK')
+    } else {
+      onChangeField('skin', '')
     }
   }
 
@@ -372,6 +382,17 @@ const Sidebar = ({
                   onChangeField={onChangeField}
                   description={description}
                 />
+              </Col>
+              <Col xs={24}>
+                <CheckboxLabel
+                  mt="16px"
+                  data-cy="useFullSizeTile"
+                  name="useFullSizeTile"
+                  onChange={handleChangeSkin}
+                  checked={skin === 'SPARK'}
+                >
+                  use full size tile image
+                </CheckboxLabel>
               </Col>
             </Row>
           )}
